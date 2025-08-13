@@ -80,6 +80,14 @@ cc: c=cache:clear ## Clear the cache
 cc: console
 .PHONY: cc
 
+license-headers-check: ## Verify that the license headers is present all files
+	@$(PHP) vendor/bin/licence-headers-check
+.PHONY: license-headers-check
+
+license-headers-fix: ## Add the missing license headers in all files
+	@$(PHP) vendor/bin/licence-headers-check --fix
+.PHONY: license-headers-fix
+
 ## —— Database —————————————————————————————————————————————————————————————————
 db-install: ## Install local development's database
 	@$(CONSOLE) database:install \
@@ -141,8 +149,22 @@ phpunit: ## Run phpunits tests, example: make phpunit c='phpunit/functional/Glpi
 .PHONY: phpunit
 
 phpstan: ## Run phpstan
-	@$(PHP) php vendor/bin/phpstan --memory-limit=1G
+	@$(eval c ?=)
+	@$(PHP) php vendor/bin/phpstan --memory-limit=1G $(c)
 .PHONY: phpstan
+
+phpstan-generate-baseline: c=--generate-baseline=.phpstan-baseline.php analyze  ## Generate phpstan baseline file
+phpstan-generate-baseline: phpstan
+.PHONY: phpstan-generate-baseline
+
+## —— Coding standards —————————————————————————————————————————————————————————
+phpcsfixer-check: ## Check for php coding standards issues
+	@$(PHP) vendor/bin/php-cs-fixer check --diff -vvv
+.PHONY: phpcsfixer-check
+
+phpcsfixer-fix: ## Fix php coding standards issues
+	@$(PHP) vendor/bin/php-cs-fixer fix
+.PHONY: phpcsfixer-fix
 
 ## —— Linters ——————————————————————————————————————————————————————————————————
 lint: lint-php lint-scss lint-twig lint-js ## Run all linters
