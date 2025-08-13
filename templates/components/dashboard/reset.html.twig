@@ -34,17 +34,21 @@
 {% import 'components/alerts_macros.html.twig' as alerts %}
 
 <div class="dashboard-reset-container">
-    <div>
-        {{ alerts.alert_danger(__('This will reset all filters, cards, and sharing options in this dashboard with the one selected!')) }}
-        {{ fields.dropdownArrayField('default_dashboard_key', null, default_dashboards, __('Default dashboard to reset to'), {
-            full_width: true,
-            is_horizontal: false,
-        }) }}
-    </div>
-    <div class="flex-row-reverse">
-        <button type="button" class="btn btn-danger" name="confirm-reset-dashboard">
-            <i class="ti ti-refresh-alert me-1 alert-icon"></i>
-            {{ __('Reset to default') }}
-        </button>
-    </div>
+    {% if dashboard.fields['context'] == 'core' or dashboard.fields['context'] == 'mini_core' %}
+        <div>
+            {{ alerts.alert_danger(__('This will reset all filters, cards, and sharing options in this dashboard with the one selected!')) }}
+            {{ fields.dropdownArrayField('default_dashboard_key', null, default_dashboards, __('Default dashboard to reset to'), {
+                full_width: true,
+                is_horizontal: false,
+            }) }}
+        </div>
+        <div class="flex-row-reverse">
+            <button type="button" class="btn btn-danger" name="confirm-reset-dashboard">
+                <i class="ti ti-refresh-alert me-1 alert-icon"></i>
+                {{ __('Reset to default') }}
+            </button>
+        </div>
+    {% else %}
+        {{ alerts.alert_danger(__('Resetting this dashboard is not currently supported.')) }}
+    {% endif %}
 </div>
