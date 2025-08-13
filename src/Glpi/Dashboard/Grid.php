@@ -305,6 +305,7 @@ HTML;
         $filter_label     = __s("Toggle filter mode");
         $add_dash_label   = __s("Add a new dashboard");
         $save_label       = _sx('button', "Save");
+        $reset_label      = __s("Reset dashboard to default");
 
         $gridstack_items = $this->getGridItemsHtml(!$mini);
 
@@ -339,9 +340,24 @@ HTML;
                 $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-share fs-toggle open-embed' data-bs-toggle='tooltip' data-bs-placement='bottom' title='$embed_label'></i>";
                 $rename = "<div class='edit-dashboard-properties'>
                <input type='text' class='dashboard-name form-control' value='{$dashboard_title}' size='1'>
-               <i class='btn btn-ghost-secondary ti ti-device-floppy ms-1 save-dashboard-name' data-bs-toggle='tooltip' data-bs-placement='bottom' title='{$save_label}'></i>
+               <button class='btn btn-ghost-secondary btn-icon btn-sm fs-2 ms-1 save-dashboard-name' data-bs-toggle='tooltip' data-bs-placement='bottom' title='{$save_label}'>
+                   <i class='ti ti-device-floppy' ></i>
+               </button>
+               <button class='btn btn-ghost-danger btn-icon btn-sm fs-2 ms-1 reset-dashboard' data-bs-toggle='tooltip' data-bs-placement='bottom' title='{$reset_label}'>
+                   <i class='ti ti-refresh' ></i>
+               </button>
                <span class='display-message'></span>
             </div>";
+            }
+            if ($mini && $can_edit) {
+                $rename = <<<HTML
+                    <div class='edit-dashboard-properties'>
+                        <button class='btn btn-ghost-danger btn-icon btn-sm fs-2 ms-1 reset-dashboard' title='{$reset_label}'>
+                           <i class='ti ti-refresh' ></i>
+                       </button>
+                    </div>
+HTML;
+
             }
             if (!$mini && $can_purge) {
                 $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-trash fs-toggle delete-dashboard' data-bs-toggle='tooltip' data-bs-placement='bottom' title='$delete_label'></i>";
@@ -365,6 +381,17 @@ HTML;
                   </div>
                   $rename
                </span>
+HTML;
+            } else {
+                $left_toolbar = <<<HTML
+                    <div class="toolbar left-toolbar mb-3 position-relative">
+                        <div class='edit-dashboard-properties'>
+                            <button class='btn btn-ghost-danger btn-sm ms-1 reset-dashboard'>
+                               <i class='ti ti-refresh' ></i>
+                               {$reset_label}
+                           </button>
+                        </div>
+                    </div>
 HTML;
             }
 

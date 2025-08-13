@@ -36,6 +36,7 @@
 namespace Glpi\Dashboard;
 
 use CommonDBTM;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
 use Glpi\Exception\TooManyResultsException;
 use Ramsey\Uuid\Uuid;
@@ -325,6 +326,60 @@ class Dashboard extends CommonDBTM
         }
     }
 
+    /**
+     * Reset the current dashboard to a default state.
+     * @param string $default_dashboard_key The key of the dashboard in the default data to use as the source of the state.
+     * @return bool true on success, false on failure
+     */
+    public function resetToDefault(string $default_dashboard_key): bool
+    {
+        $this->load();
+        if ($this->fields['context'] !== 'core' && $this->fields['context'] !== 'mini_core') {
+            return false;
+        }
+
+        $default_dashboards = require(GLPI_ROOT . '/install/migrations/update_9.4.x_to_9.5.0/dashboards.php');
+
+        $target_dashboard = null;
+
+        foreach ($default_dashboards as $dashboard) {
+            if ($dashboard['key'] === $default_dashboard_key) {
+                $target_dashboard = $dashboard;
+                $target_dashboard['_items'] = array_map(static function ($item) {
+                    $item['card_options'] = json_decode($item['card_options'], true);
+                    return $item;
+                }, $target_dashboard['_items']);
+                break;
+            }
+        }
+
+        if ($target_dashboard === null || $target_dashboard['context'] !== $this->fields['context']) {
+            return false;
+        }
+
+        $this->saveFilter('');
+        $this->saveRights([]);
+        $this->saveItems($target_dashboard['_items']);
+
+        return true;
+    }
+
+    public function showResetForm(): void
+    {
+        $this->load();
+        $default_dashboard_data = require(GLPI_ROOT . '/install/migrations/update_9.4.x_to_9.5.0/dashboards.php');
+        $default_dashboards = [];
+        foreach ($default_dashboard_data as $dashboard) {
+            if ($dashboard['context'] !== $this->fields['context']) {
+                continue;
+            }
+            $default_dashboards[$dashboard['key']] = $dashboard['name'];
+        }
+        TemplateRenderer::getInstance()->display('components/dashboard/reset.html.twig', [
+            'dashboard' => $this,
+            'default_dashboards' => $default_dashboards,
+        ]);
+    }
 
     public function cleanDBonPurge()
     {

@@ -1,0 +1,54 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
+
+<div class="dashboard-reset-container">
+    {% if dashboard.fields['context'] == 'core' or dashboard.fields['context'] == 'mini_core' %}
+        <div>
+            {{ alerts.alert_danger(__('This will reset all filters, cards, and sharing options in this dashboard with the one selected!')) }}
+            {{ fields.dropdownArrayField('default_dashboard_key', null, default_dashboards, __('Default dashboard to reset to'), {
+                full_width: true,
+                is_horizontal: false,
+            }) }}
+        </div>
+        <div class="flex-row-reverse">
+            <button type="button" class="btn btn-danger" name="confirm-reset-dashboard">
+                <i class="ti ti-refresh-alert me-1 alert-icon"></i>
+                {{ __('Reset to default') }}
+            </button>
+        </div>
+    {% else %}
+        {{ alerts.alert_danger(__('Resetting this dashboard is not currently supported.')) }}
+    {% endif %}
+</div>

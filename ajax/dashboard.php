@@ -39,6 +39,7 @@ use Glpi\Debug\Profiler;
 use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 
+use Glpi\Exception\Http\UnprocessableEntityHttpException;
 use function Safe\json_decode;
 use function Safe\json_encode;
 
@@ -141,6 +142,21 @@ switch ($_POST['action'] ?? null) {
         }
         Config::setConfigurationValues('core', ['is_demo_dashboards' => 0]);
         return;
+
+    case 'prepare_reset':
+        if (!Session::haveRight(Config::$rightname, UPDATE)) {
+            throw new AccessDeniedHttpException();
+        }
+        $dashboard->showResetForm();
+        return;
+
+    case 'reset':
+        if (!Session::haveRight(Config::$rightname, UPDATE) || !isset($_POST['default_dashboard_key'])) {
+            throw new AccessDeniedHttpException();
+        }
+        if (!$dashboard->resetToDefault($_POST['default_dashboard_key'])) {
+            throw new UnprocessableEntityHttpException();
+        }
 }
 
 switch ($_GET['action'] ?? null) {
