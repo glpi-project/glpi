@@ -334,4 +334,62 @@ GRAPHQL);
                 ->isOK();
         });
     }
+
+    public function testExtractQueryFromBodyWithApplicationGraphQLContentType()
+    {
+        $this->login();
+
+        $query = 'query { Computer(id: 1) { id name } }';
+        $request = new Request('POST', '/GraphQL', ['Content-Type' => 'application/graphql'], $query);
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->jsonContent(function ($content) {
+                    $this->assertCount(1, $content['data']);
+                    $this->assertCount(1, $content['data']['Computer']);
+                    $this->assertEquals(1, $content['data']['Computer'][0]['id']);
+                    $this->assertEquals('_test_pc01', $content['data']['Computer'][0]['name']);
+                });
+        });
+    }
+
+    public function testExtractQueryFromBodyWithApplicationJsonContentType()
+    {
+        $this->login();
+
+        $query = 'query { Computer(id: 1) { id name } }';
+        $body = json_encode(['query' => $query]);
+        $request = new Request('POST', '/GraphQL', ['Content-Type' => 'application/json'], $body);
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->jsonContent(function ($content) {
+                    $this->assertCount(1, $content['data']);
+                    $this->assertCount(1, $content['data']['Computer']);
+                    $this->assertEquals(1, $content['data']['Computer'][0]['id']);
+                    $this->assertEquals('_test_pc01', $content['data']['Computer'][0]['name']);
+                });
+        });
+    }
+
+    public function testExtractQueryFromBodyWithOtherContentTypeFallback()
+    {
+        $this->login();
+
+        $query = 'query { Computer(id: 1) { id name } }';
+        $request = new Request('POST', '/GraphQL', ['Content-Type' => 'text/plain'], $query);
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->jsonContent(function ($content) {
+                    $this->assertCount(1, $content['data']);
+                    $this->assertCount(1, $content['data']['Computer']);
+                    $this->assertEquals(1, $content['data']['Computer'][0]['id']);
+                    $this->assertEquals('_test_pc01', $content['data']['Computer'][0]['name']);
+                });
+        });
+    }
 }
