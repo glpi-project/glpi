@@ -61,6 +61,12 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface, ProvideTra
     public const TRANSLATION_KEY_DESCRIPTION = 'description';
 
     #[Override]
+    public function getWeight(): int
+    {
+        return 20;
+    }
+
+    #[Override]
     public function getLabel(): string
     {
         return __("GLPI page");

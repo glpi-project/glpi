@@ -176,7 +176,7 @@ class HelpdeskTranslationTest extends \DbTestCase
         $this->login();
 
         // Remove existing tiles
-        $tilesManager = new TilesManager();
+        $tilesManager = TilesManager::getInstance();
         array_map(fn($tile) => $tilesManager->deleteTile($tile), $tilesManager->getAllTiles());
 
         $entity = $this->createItem(Entity::class, [

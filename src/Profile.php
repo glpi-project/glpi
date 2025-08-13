@@ -3798,7 +3798,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
     private function showHelpdeskHomeConfig(): void
     {
-        $tiles_manager = new TilesManager();
+        $tiles_manager = TilesManager::getInstance();
         $tiles_manager->showConfigFormForItem($this);
     }
 

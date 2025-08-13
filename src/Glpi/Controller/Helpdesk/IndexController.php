@@ -52,7 +52,7 @@ final class IndexController extends AbstractController
 
     public function __construct()
     {
-        $this->tiles_manager = new TilesManager();
+        $this->tiles_manager = TilesManager::getInstance();
     }
 
     #[SecurityStrategy(Firewall::STRATEGY_HELPDESK_ACCESS)]
