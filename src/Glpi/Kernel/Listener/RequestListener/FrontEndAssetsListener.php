@@ -86,7 +86,7 @@ final class FrontEndAssetsListener implements EventSubscriberInterface
 
         $path_matches = [];
         if (
-            preg_match('#^/plugins/(?<plugin_key>[^\/]+)/.*$#', $path, $path_matches) === 1
+            preg_match(Plugin::PLUGIN_RESOURCE_PATTERN, $path, $path_matches) === 1
             && Plugin::isPluginLoaded($path_matches['plugin_key']) === false
         ) {
             // Plugin is not loaded, forward to 404 error page.

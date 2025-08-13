@@ -125,6 +125,34 @@ class SessionManagerTest extends \DbTestCase
                 'path'         => $root_doc . '/front/planning.php?genical',
                 'is_stateless' => true,
             ];
+
+            // root of tester plugin - no ending "/"
+            yield [
+                'root_doc'     => $root_doc,
+                'path'         => $root_doc . '/plugins/tester',
+                'is_stateless' => true,
+            ];
+
+            // root of tester plugin - with ending "/"
+            yield [
+                'root_doc'     => $root_doc,
+                'path'         => $root_doc . '/plugins/tester/',
+                'is_stateless' => true,
+            ];
+
+            // stateless URI of tester plugin
+            yield [
+                'root_doc'     => $root_doc,
+                'path'         => $root_doc . '/plugins/tester/StatelessURI',
+                'is_stateless' => true,
+            ];
+
+            // any URI of tester plugin
+            yield [
+                'root_doc'     => $root_doc,
+                'path'         => $root_doc . '/plugins/tester/AnyURI',
+                'is_stateless' => false,
+            ];
         }
     }
 

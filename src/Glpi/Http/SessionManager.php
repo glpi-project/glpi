@@ -34,6 +34,7 @@
 
 namespace Glpi\Http;
 
+use Plugin;
 use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\preg_match;
@@ -79,8 +80,7 @@ final class SessionManager
         $path = $this->normalizePath($request);
 
         $path_matches = [];
-        $plugin_path_pattern = '#^/plugins/(?<plugin_key>[^/]+)(?<plugin_resource>/.+)$#';
-        if (preg_match($plugin_path_pattern, $path, $path_matches) === 1) {
+        if (preg_match(Plugin::PLUGIN_RESOURCE_PATTERN, $path, $path_matches) === 1) {
             $plugin_key      = $path_matches['plugin_key'];
             $plugin_resource = $path_matches['plugin_resource'];
 

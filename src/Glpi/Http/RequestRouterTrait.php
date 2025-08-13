@@ -34,6 +34,7 @@
 
 namespace Glpi\Http;
 
+use Plugin;
 use Symfony\Component\HttpFoundation\Request;
 use Toolbox;
 
@@ -68,7 +69,7 @@ trait RequestRouterTrait
     protected function getTargetFile(string $path): ?string
     {
         $path_matches = [];
-        if (preg_match('#^/plugins/(?<plugin_key>[^\/]+)(?<plugin_resource>/.+)$#', $path, $path_matches) === 1) {
+        if (preg_match(Plugin::PLUGIN_RESOURCE_PATTERN, $path, $path_matches) === 1) {
             $plugin_dir = null;
             foreach ($this->plugin_directories as $plugins_directory) {
                 $to_check = $plugins_directory . DIRECTORY_SEPARATOR . $path_matches['plugin_key'];
@@ -117,6 +118,11 @@ trait RequestRouterTrait
         // Get URI path relative to GLPI (i.e. without alias directory prefix).
         $path = $request->getPathInfo();
 
+        if ($path === '/') {
+            // GLPI index, no need to normalize
+            return $path;
+        }
+
         // Normalize plugins paths.
         // All plugins resources should now be accessed using the `/plugins/${plugin_key}/${resource_path}`.
         if (\str_starts_with($path, '/marketplace/')) {
@@ -148,7 +154,7 @@ trait RequestRouterTrait
             // All plugins public resources should now be accessed without explicitely using the `/public` path,
             // e.g. `/plugins/myplugin/public/css.php` -> `/plugins/myplugin/css.php`.
             $path_matches = [];
-            if (preg_match('#^/plugins/(?<plugin_key>[^\/]+)/public(?<plugin_resource>/.+)$#', $filepath, $path_matches) === 1) {
+            if (preg_match('#^/plugins/(?<plugin_key>[^/]+)/public(?<plugin_resource>/.+)$#', $filepath, $path_matches) === 1) {
                 $new_path = \sprintf('/plugins/%s%s', $path_matches['plugin_key'], $path_matches['plugin_resource']);
                 if ($this->getTargetFile($new_path) !== null) {
                     // To not break URLs than can be found in the wild (in e-mail, forums, external apps configuration, ...),
@@ -170,6 +176,12 @@ trait RequestRouterTrait
             // If URI matches a directory path, consider `index.php` is the requested script.
             if ($this->getTargetFile($path . '/index.php') !== null) {
                 $path .= '/index.php';
+            }
+
+            // Force plugin root directory path to have an ending slash.
+            // This is a special case to be sure that index toutes of plugins are correctly matched.
+            if (preg_match('#^/plugins/(?<plugin_key>[^\/]+)$#', $path, $path_matches) === 1) {
+                $path .= '/';
             }
         }
 

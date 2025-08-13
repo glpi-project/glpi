@@ -96,8 +96,8 @@ class FirewallTest extends \DbTestCase
                         ],
                         'public' => [
                             'css.php' => '',
+                            'index.php' => '',
                         ],
-                        'index.php' => '',
                     ],
                 ],
                 'myplugindir' => [
@@ -129,23 +129,36 @@ class FirewallTest extends \DbTestCase
             '/front/foo/bar.php'                        => $default_for_core_legacy,
             '/front/computer.php'                       => $default_for_core_legacy,
             '/Core/Route'                               => $default_for_symfony_routes,
-
-            '/marketplace/myplugin/ajax/bar/script.php' => $default_for_plugins_legacy,
-            '/marketplace/myplugin/ajax/foo.php'        => $default_for_plugins_legacy,
-            '/marketplace/myplugin/front/dir/bar.php'   => $default_for_plugins_legacy,
-            '/marketplace/myplugin/front/foo.php'       => $default_for_plugins_legacy,
-            '/marketplace/myplugin/public/css.php'      => $default_for_plugins_legacy, // /public/css.php file accessed with its legacy path
-            '/marketplace/myplugin/css.php'             => $default_for_plugins_legacy, // /public/css.php file accessed with the expected path
-            '/marketplace/myplugin/index.php'           => $default_for_plugins_legacy,
-            '/marketplace/myplugin/PluginRoute'         => $default_for_symfony_routes,
-
-            '/myplugindir/pluginb/ajax/foo/bar.php'     => $default_for_plugins_legacy,
-            '/myplugindir/pluginb/ajax/barfoo.php'      => $default_for_plugins_legacy,
-            '/myplugindir/pluginb/front/a/b.php'        => $default_for_plugins_legacy,
-            '/myplugindir/pluginb/front/foo.php'        => $default_for_plugins_legacy,
-            '/myplugindir/pluginb/test.php'             => $default_for_plugins_legacy,
-            '/myplugindir/pluginb/Route/To/Something'   => $default_for_symfony_routes,
         ];
+
+        foreach (['/marketplace', '/plugins'] as $plugin_path_prefix) {
+            $default_mapping = \array_merge(
+                $default_mapping,
+                [
+                    $plugin_path_prefix . '/myplugin/ajax/bar/script.php' => $default_for_plugins_legacy,
+                    $plugin_path_prefix . '/myplugin/ajax/foo.php'        => $default_for_plugins_legacy,
+                    $plugin_path_prefix . '/myplugin/front/dir/bar.php'   => $default_for_plugins_legacy,
+                    $plugin_path_prefix . '/myplugin/front/foo.php'       => $default_for_plugins_legacy,
+                    // /public/css.php file accessed with its legacy path
+                    $plugin_path_prefix . '/myplugin/public/css.php'      => $default_for_plugins_legacy,
+                    // /public/css.php file accessed with the expected path
+                    $plugin_path_prefix . '/myplugin/css.php'             => $default_for_plugins_legacy,
+                    $plugin_path_prefix . '/myplugin/index.php'           => $default_for_plugins_legacy,
+                    // matches the `/public/index.php` legacy script
+                    $plugin_path_prefix . '/myplugin/'                    => $default_for_plugins_legacy,
+                    $plugin_path_prefix . '/myplugin/PluginRoute'         => $default_for_symfony_routes,
+
+                    $plugin_path_prefix . '/pluginb/ajax/foo/bar.php'     => $default_for_plugins_legacy,
+                    $plugin_path_prefix . '/pluginb/ajax/barfoo.php'      => $default_for_plugins_legacy,
+                    $plugin_path_prefix . '/pluginb/front/a/b.php'        => $default_for_plugins_legacy,
+                    $plugin_path_prefix . '/pluginb/front/foo.php'        => $default_for_plugins_legacy,
+                    $plugin_path_prefix . '/pluginb/Route/To/Something'   => $default_for_symfony_routes,
+                    $plugin_path_prefix . '/pluginb/'                     => $default_for_symfony_routes,
+                    // outside the public dir, the file will not be served and the router will try to match a symfony route
+                    $plugin_path_prefix . '/pluginb/test.php'             => $default_for_symfony_routes,
+                ]
+            );
+        }
 
         foreach (['', '/glpi', '/path/to/app'] as $root_doc) {
             // Default strategies

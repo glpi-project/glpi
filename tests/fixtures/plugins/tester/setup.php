@@ -101,3 +101,9 @@ function plugin_init_tester(): void
 
     $PLUGIN_HOOKS['menu_toadd']['tester'] = ['management' => MyPsr4Class::class];
 }
+
+function plugin_tester_boot()
+{
+    \Glpi\Http\SessionManager::registerPluginStatelessPath('tester', '#^/$#');
+    \Glpi\Http\SessionManager::registerPluginStatelessPath('tester', '#^/StatelessURI$#');
+}
