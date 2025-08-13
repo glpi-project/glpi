@@ -46,8 +46,8 @@
 
                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
                <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
-               <input type="hidden" name="items_id" value="{{ item.getID() }}" />
-               <input type="hidden" name="requesttypes_id" value="{{ item.getRequestTypesId() }}" />
+               <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
+               <input type="hidden" name="requesttypes_id" value="{{ item.fields['requesttypes_id'] }}" />
 
                <div class="card-header">
                   {{ __('Approval of the solution') }}
