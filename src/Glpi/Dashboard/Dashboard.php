@@ -324,7 +324,6 @@ class Dashboard extends CommonDBTM
 
         $this->saveFilter('');
         $this->saveRights([]);
-        $this->saveTitle($target_dashboard['name']);
         $this->saveItems($target_dashboard['_items']);
 
         return true;
