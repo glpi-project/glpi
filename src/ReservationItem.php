@@ -854,13 +854,13 @@ TWIG, $twig_params);
         if ($item::class === self::class) {
             $tabs = [];
             if (Session::haveRightsOr("reservation", [READ, self::RESERVEANITEM])) {
-                $tabs[1] = Reservation::getTypeName(Session::getPluralNumber());
+                $tabs[1] = self::createTabEntry(Reservation::getTypeName(Session::getPluralNumber()));
             }
             if (
                 (Session::getCurrentInterface() === "central")
                 && Session::haveRight("reservation", READ)
             ) {
-                $tabs[2] = __('Administration');
+                $tabs[2] = self::createTabEntry(__('Administration'), icon: 'ti ti-shield-check');
             }
             return $tabs;
         }

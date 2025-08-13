@@ -98,7 +98,7 @@ abstract class NotificationSetting extends CommonDBTM
     {
         switch ($item->getType()) {
             case static::class:
-                $tabs[1] = __('Setup');
+                $tabs[1] = self::createTabEntry(__('Setup'));
                 return $tabs;
         }
         return '';

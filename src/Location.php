@@ -416,8 +416,8 @@ class Location extends CommonTreeDropdown
             switch ($item::class) {
                 case self::class:
                     $ong    = [];
-                    $ong[1] = self::getTypeName(Session::getPluralNumber());
-                    $ong[2] = _n('Item', 'Items', Session::getPluralNumber());
+                    $ong[1] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()));
+                    $ong[2] = self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), icon: 'ti ti-package');
                     return $ong;
             }
         }

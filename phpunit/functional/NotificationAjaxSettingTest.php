@@ -55,13 +55,16 @@ class NotificationAjaxSettingTest extends DbTestCase
     {
         $instance = new \NotificationAjaxSetting();
         $tabs = $instance->defineTabs();
+        $tabs = array_map('strip_tags', $tabs);
         $this->assertSame(['NotificationAjaxSetting$1' => 'Setup'], $tabs);
     }
 
     public function testGetTabNameForItem()
     {
         $instance = new \NotificationAjaxSetting();
-        $this->assertSame(['1' => 'Setup'], $instance->getTabNameForItem($instance));
+        $tabs = $instance->getTabNameForItem($instance);
+        $tabs = array_map('strip_tags', $tabs);
+        $this->assertSame(['1' => 'Setup'], $tabs);
     }
 
     public function testDisplayTabContentForItem()

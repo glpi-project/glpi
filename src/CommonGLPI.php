@@ -407,8 +407,8 @@ class CommonGLPI implements CommonGLPIInterface
         if (method_exists(static::class, 'getIcon')) {
             $icon = static::getIcon();
         }
-        $icon = $icon ? "<i class='$icon me-2'></i>" : '';
-        $ong[static::getType() . '$main'] = '<span>' . $icon . static::getTypeName(1) . '</span>';
+        $icon = $icon ? "<i class='" . htmlescape($icon) . " me-2'></i>" : '';
+        $ong[static::getType() . '$main'] = '<span>' . $icon . htmlescape(static::getTypeName(1)) . '</span>';
         return $this;
     }
 
@@ -759,7 +759,7 @@ class CommonGLPI implements CommonGLPIInterface
         $counter_html = '';
         if ($nb > 0) {
             $badge_content = $total_nb !== null ? "$nb/$total_nb" : "$nb";
-            $counter_html = sprintf(' <span class="badge glpi-badge">%s</span>', $badge_content);
+            $counter_html = sprintf(' <span class="badge glpi-badge">%s</span>', htmlescape($badge_content));
         }
 
         return sprintf(

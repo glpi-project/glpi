@@ -104,7 +104,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             && $item->isRecursive()
             && $item->can($item->fields['id'], UPDATE)
         ) {
-            return __('Merging');
+            return self::createTabEntry(__('Merging'), icon: 'ti ti-arrow-merge');
         }
         return '';
     }

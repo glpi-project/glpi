@@ -334,9 +334,7 @@ class Conf extends CommonGLPI
                 $tabs[1] = self::createTabEntry(__('Configuration'), 0, $item::getType());
             }
             if ($item->enabled_inventory && Session::haveRight(self::$rightname, self::IMPORTFROMFILE)) {
-                $icon = "<i class='ti ti-upload me-2'></i>";
-                $text = '<span>' . $icon . __s('Import from file') . '</span>';
-                $tabs[2] = $text;
+                $tabs[2] = self::createTabEntry(__('Import from file'), icon: 'ti ti-upload');
             }
             return $tabs;
         }

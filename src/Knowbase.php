@@ -58,8 +58,8 @@ class Knowbase extends CommonGLPI
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item::class === self::class) {
-            $tabs[1] = _x('button', 'Search');
-            $tabs[2] = _x('button', 'Browse');
+            $tabs[1] = self::createTabEntry(_x('button', 'Search'), icon: 'ti ti-search');
+            $tabs[2] = self::createTabEntry(_x('button', 'Browse'), icon: 'ti ti-list-tree');
 
             return $tabs;
         }

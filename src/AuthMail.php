@@ -383,7 +383,7 @@ TWIG, $twig_params);
         /** @var CommonDBTM $item */
         if (!$withtemplate && $item->can($item->getField('id'), READ)) {
             $ong = [];
-            $ong[1] = _sx('button', 'Test');    // test connection
+            $ong[1] = self::createTabEntry(_x('button', 'Test'), icon: 'ti ti-stethoscope');
 
             return $ong;
         }

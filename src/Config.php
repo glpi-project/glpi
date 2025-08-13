@@ -969,7 +969,7 @@ class Config extends CommonDBTM
                 return self::createTabEntry(GLPINetwork::getTypeName(), 0, $item::getType(), GLPINetwork::getIcon());
 
             case Impact::getType():
-                return Impact::getTypeName();
+                return self::createTabEntry(Impact::getTypeName());
         }
         return '';
     }

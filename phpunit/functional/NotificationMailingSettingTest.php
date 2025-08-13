@@ -55,6 +55,7 @@ class NotificationMailingSettingTest extends DbTestCase
     {
         $instance = new \NotificationMailingSetting();
         $tabs = $instance->defineTabs();
+        $tabs = array_map('strip_tags', $tabs);
         $this->assertSame(
             ['NotificationMailingSetting$1' => 'Setup'],
             $tabs
@@ -64,10 +65,9 @@ class NotificationMailingSettingTest extends DbTestCase
     public function testGetTabNameForItem()
     {
         $instance = new \NotificationMailingSetting();
-        $this->assertSame(
-            ['1' => 'Setup'],
-            $instance->getTabNameForItem($instance)
-        );
+        $tabs = $instance->getTabNameForItem($instance);
+        $tabs = array_map('strip_tags', $tabs);
+        $this->assertSame(['1' => 'Setup'], $tabs);
     }
 
     public function testDisplayTabContentForItem()
