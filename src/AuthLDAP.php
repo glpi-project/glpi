@@ -2866,6 +2866,17 @@ TWIG, $twig_params);
         self::$last_errno = null;
         self::$last_error = null;
 
+        if (!is_string($host) || empty($host) || $host === NOT_AVAILABLE) {
+            throw new RuntimeException(
+                'No host provided for connection!'
+            );
+        }
+        if (!is_numeric($port) || empty($port)) {
+            throw new RuntimeException(
+                'No port provided for connection!'
+            );
+        }
+
         //Use an LDAP connection string
         $ldapuri = sprintf(
             '%s://%s:%s',
