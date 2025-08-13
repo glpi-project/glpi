@@ -125,7 +125,7 @@
                                         <div class="ms-4">
                                             <h2 class="card-title mb-2">
                                                 {% if is_tile_provide_translations %}
-                                                    {{ translate_item_key(tile, constant('TRANSLATION_KEY_TITLE', tile)) }}
+                                                    {{ translate_helpdesk_item_key(tile, constant('TRANSLATION_KEY_TITLE', tile)) }}
                                                 {% else %}
                                                     {{ tile.getTitle() }}
                                                 {% endif %}
@@ -133,7 +133,7 @@
                                             <div class="text-secondary remove-last-tinymce-margin">
                                                 {# If the tile provides translations, use the translation handler to get the description #}
                                                 {% if is_tile_provide_translations %}
-                                                    {{ translate_item_key(tile, constant('TRANSLATION_KEY_DESCRIPTION', tile))|safe_html }}
+                                                    {{ translate_helpdesk_item_key(tile, constant('TRANSLATION_KEY_DESCRIPTION', tile))|safe_html }}
                                                 {% else %}
                                                     {{ tile.getDescription()|safe_html }}
                                                 {% endif %}
