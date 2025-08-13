@@ -43,7 +43,6 @@ use Glpi\Form\FormTranslation;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Glpi\ItemTranslation\Context\TranslationHandler;
-use Glpi\ItemTranslation\ItemTranslation;
 use Override;
 use Session;
 

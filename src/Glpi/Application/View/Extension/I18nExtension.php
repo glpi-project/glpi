@@ -39,7 +39,6 @@ use CommonDBTM;
 use Glpi\Form\FormTranslation;
 use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
-use Glpi\ItemTranslation\ItemTranslation;
 use Locale;
 use Session;
 use Twig\Extension\AbstractExtension;

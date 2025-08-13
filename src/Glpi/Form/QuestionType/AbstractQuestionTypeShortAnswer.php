@@ -39,7 +39,6 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\FormTranslation;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
-use Glpi\ItemTranslation\ItemTranslation;
 use Override;
 
 /**
