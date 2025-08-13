@@ -51,13 +51,13 @@ plugin-test-setup: ## Setup the plugin for tests
 	@$(CONSOLE) plugin:enable --env=testing $(PLUGIN_DIR)
 .PHONY: plugin-test-setup
 
-plugin-licence-headers-check: ## Verify that the licence headers is present all files
+plugin-license-headers-check: ## Verify that the license headers is present all files
 	@$(PLUGIN) vendor/bin/licence-headers-check
-.PHONY: plugin-licence-headers-check
+.PHONY: plugin-license-headers-check
 
-plugin-licence-headers-fix: ## Add the missing licence headers in all files
+plugin-license-headers-fix: ## Add the missing license headers in all files
 	@$(PLUGIN) vendor/bin/licence-headers-check --fix
-.PHONY: plugin-licence-headers-fix
+.PHONY: plugin-license-headers-fix
 
 ##—— Dependencies ——————————————————————————————————————————————————————————————
 vendor: ## Install dependencies
