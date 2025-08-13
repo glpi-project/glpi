@@ -4353,7 +4353,7 @@ JAVASCRIPT;
                 $teamtable  = 'glpi_projecttaskteams';
                 $condition .= "`glpi_projects`.`is_template` = 0";
 
-                // If user has READALL right on projects, no team restriction
+                // Team restrictions if the user does not have READALL rights on projects
                 if (!Session::haveRight('project', Project::READALL)) {
                     $condition .= " AND ((`$teamtable`.`itemtype` = 'User'
                                  AND `$teamtable`.`items_id` = '" . Session::getLoginUserID() . "')";
