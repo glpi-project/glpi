@@ -2873,12 +2873,12 @@ TWIG, $twig_params);
         self::$last_error = null;
 
         if (!is_string($host) || empty($host) || $host === NOT_AVAILABLE) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'No host provided for connection!'
             );
         }
         if (!is_numeric($port) || empty($port) || $port === NOT_AVAILABLE) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'No port provided for connection!'
             );
         }
