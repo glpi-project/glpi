@@ -30,7 +30,8 @@ When the client is created, there will be an automatically generated client ID a
 - `email`: Access to the user's own default email address
 - `user`: Access to the user's information
 - `status`: Access to the status endpoints (Does not apply when accessed via the CLI commands)
-- `inventory`: Access to submit inventory from the GLPI Agent via Client Credentials grant.
+- `inventory`: Access to submit inventory from the GLPI Agent via Client Credentials grant
+- `graphql`: Access to the GraphQL endpoint
 - `api`: Access to the API (All other endpoints not handled by their own scope)
 
 

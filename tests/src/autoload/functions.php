@@ -678,7 +678,7 @@ function loadDataset()
             [
                 'redirect_uri' => ["/api.php/oauth2/redirection"],
                 'grants' => ['password', 'client_credentials', 'authorization_code'],
-                'scopes' => ['api'],
+                'scopes' => ['email', 'user', 'api', 'inventory', 'status', 'graphql'],
                 'is_active' => 1,
                 'is_confidential' => 1,
                 'name' => 'Test OAuth Client',
