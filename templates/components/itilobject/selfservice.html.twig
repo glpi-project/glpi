@@ -282,7 +282,7 @@ $(function () {
                 'nodelegate': (is_for_me ? 1 : 0),
                 '_users_id_requester': {{ params['_users_id_requester'] }},
                 '_users_id_requester_notif': {{ params['_users_id_requester_notif']|json_encode()|raw }},
-                'use_notification': {{ params['_users_id_requester_notif']['use_notification'] }},
+                'use_notification': {{ params['_users_id_requester_notif']['use_notification'] is array ? params['_users_id_requester_notif']['use_notification'][0] : params['_users_id_requester_notif']['use_notification'] }},
                 'entity_restrict':  {{ session('glpiactive_entity') }}
             });
     })
