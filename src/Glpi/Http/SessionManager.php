@@ -79,10 +79,10 @@ final class SessionManager
         $path = $this->normalizePath($request);
 
         $path_matches = [];
-        $plugin_path_pattern = '#^/plugins/(?<plugin_key>[^/]+)(?<plugin_resource>/.+)$#';
+        $plugin_path_pattern = '#^/plugins/(?<plugin_key>[^/]+)(?<plugin_resource>/.+)?$#';
         if (preg_match($plugin_path_pattern, $path, $path_matches) === 1) {
             $plugin_key      = $path_matches['plugin_key'];
-            $plugin_resource = $path_matches['plugin_resource'];
+            $plugin_resource = $path_matches['plugin_resource'] ?? '/';
 
             foreach (self::$plugins_statelass_paths[$plugin_key] ?? [] as $pattern) {
                 if (preg_match($pattern, $plugin_resource) === 1) {
