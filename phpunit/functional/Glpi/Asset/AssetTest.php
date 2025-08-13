@@ -259,4 +259,16 @@ class AssetTest extends DbTestCase
         $this->assertEquals('default2', $asset->fields['custom_test_string_two']);
         $this->assertEquals(['1', '2'], $asset->fields['custom_test_dropdown']);
     }
+
+    public function testCanView(): void
+    {
+        $definition = $this->initAssetDefinition();
+        $this->login();
+        $this->assertTrue((new ($definition->getAssetClassName()))::canView());
+        $definition->update([
+            'id' => $definition->getID(),
+            'is_active' => 0,
+        ]);
+        $this->assertFalse((new ($definition->getAssetClassName()))::canView());
+    }
 }
