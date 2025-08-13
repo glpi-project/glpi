@@ -65,6 +65,12 @@ final class Lexer
      */
     public const T_VALUE = 7;
 
+    /**
+     * @var int Token used when a value would be expected but not found.
+     * This could indicate an incomplete filter, or it could simply be a normal occurance if the preceding operator is a unary operator (=isempty= for example).
+     */
+    public const T_UNSPECIFIED_VALUE = 8;
+
     public const CHAR_AND = ';';
     public const CHAR_OR = ',';
     public const CHAR_GROUP_OPEN = '(';
@@ -123,18 +129,18 @@ final class Lexer
             } elseif (!$in_filter && preg_match(self::CHARS_PROPERTY, $char)) {
                 $in_filter = true;
                 $buffer .= $char;
-                // Property should continue until a '=' is found.
-                while ($pos + 1 < $length && $query[$pos + 1] !== '=') {
+                // Property should continue until a '=' or '!' (in the case of != operator) is found.
+                while ($pos + 1 < $length && $query[$pos + 1] !== '=' && $query[$pos + 1] !== '!') {
                     $buffer .= $query[++$pos];
                 }
                 $tokens[] = [self::T_PROPERTY, $buffer];
                 // Now the operator is started
-                $buffer = '=';
                 $pos++;
-                if (!isset($query[$pos]) || $query[$pos] !== '=') {
+                if (!isset($query[$pos]) || ($query[$pos] !== '=' && $query[$pos] !== '!')) {
                     throw new RSQLException('', sprintf(__('RSQL query is missing an operator in filter for property "%1$s"'), $tokens[count($tokens) - 1][1]));
                 }
                 $fn_validate_pos();
+                $buffer = $query[$pos];
                 // Operator should continue until the next '=' is found.
                 while ($pos + 1 < $length && $query[$pos + 1] !== '=') {
                     $buffer .= $query[++$pos];
@@ -149,7 +155,8 @@ final class Lexer
                 $fn_validate_pos();
                 $in_value = true;
                 if (!isset($query[$pos])) {
-                    throw new RSQLException('', sprintf(__('RSQL query is missing a value in filter for property "%1$s"'), $tokens[count($tokens) - 2][1]));
+                    $tokens[] = [self::T_UNSPECIFIED_VALUE, ''];
+                    break;
                 }
                 // If the current char is ', ", or (, then the value continues until the matching closing quote or parenthesis is found.
                 // When matching, we ignore escaped quotes and parenthesis.
@@ -191,7 +198,7 @@ final class Lexer
                     $tokens[] = [self::T_VALUE, $buffer];
                     $buffer = '';
                 } elseif ($tokens[count($tokens) - 1][0] === self::T_OPERATOR) {
-                    throw new RSQLException('', sprintf(__('RSQL query is missing a value in filter for property "%1$s"'), $tokens[count($tokens) - 2][1]));
+                    $tokens[] = [self::T_UNSPECIFIED_VALUE, ''];
                 }
             }
             $pos++;

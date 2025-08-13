@@ -368,7 +368,7 @@ TWIG, $twig_params);
                             <input type="hidden" name="tickets_id" value="{{ item.getID() }}">
                         {% endif %}
                         <input type="hidden" name="entities_id" value="{{ item.getEntityID() }}">
-                        <input type="hidden" name="is_recursive" value="{{ is_recursive }}">
+                        <input type="hidden" name="is_recursive" value="{{ is_recursive ? 1 : 0 }}">
                         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                         <div class="d-flex">
                             {{ fields.dropdownField('Certificate', 'certificates_id', null, '', dropdown_params|merge({

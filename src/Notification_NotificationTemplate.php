@@ -113,7 +113,6 @@ class Notification_NotificationTemplate extends CommonDBRelation
      **/
     public static function showForNotification(Notification $notif, $withtemplate = 0): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $notif->getID();
@@ -218,7 +217,6 @@ TWIG, $twig_params);
      */
     public static function showForNotificationTemplate(NotificationTemplate $template, $withtemplate = 0): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $template->getID();
@@ -369,7 +367,6 @@ TWIG, $twig_params);
      */
     public static function registerMode($mode, $label, $from)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         self::getModes();
@@ -386,7 +383,6 @@ TWIG, $twig_params);
      **/
     public static function getModes()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $core_modes = [
@@ -547,7 +543,6 @@ TWIG, $twig_params);
      */
     public static function hasActiveMode()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         foreach (array_keys(self::getModes()) as $mode) {
             if ($CFG_GLPI['notifications_' . $mode]) {

@@ -50,7 +50,6 @@ use Glpi\RichText\UserMention;
 use Glpi\Search\FilterableInterface;
 use Glpi\Search\SearchOption;
 use Glpi\Socket;
-use Psr\SimpleCache\CacheInterface;
 
 use function Safe\getimagesize;
 use function Safe\preg_grep;
@@ -332,7 +331,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getFromDB($ID)
     {
-        /** @var DBmysql $DB */
         global $DB;
         // Make new database object and fill variables
 
@@ -416,7 +414,6 @@ class CommonDBTM extends CommonGLPI
      */
     public function getFromDBByCrit(array $criteria)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = [
@@ -456,7 +453,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getFromDBByRequest(array $request)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Limit the request to the useful expressions
@@ -540,7 +536,6 @@ class CommonDBTM extends CommonGLPI
      */
     public function showForm($ID, array $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->initForm($ID, $options);
@@ -608,7 +603,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function find($condition = [], $order = [], $limit = null)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = [
@@ -656,7 +650,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getEmpty()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // make an empty database object
@@ -716,7 +709,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function updateInDB($updates, $oldvalues = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $tobeupdated = [];
@@ -763,7 +755,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function addToDB()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $nb_fields = count($this->fields);
@@ -805,7 +796,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function restoreInDB()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($this->maybeDeleted()) {
@@ -832,7 +822,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function deleteFromDB($force = false)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (
@@ -895,7 +884,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function cleanHistory()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($this->dohistory) {
@@ -921,7 +909,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function cleanRelationData()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $RELATION = getDbRelations();
@@ -1075,10 +1062,6 @@ class CommonDBTM extends CommonGLPI
      */
     public function cleanRelationTable()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (in_array(static::class, $CFG_GLPI['assignable_types'], true)) {
@@ -1292,16 +1275,13 @@ class CommonDBTM extends CommonGLPI
      * @param array   $input   the _POST vars returned by the item form when press add
      * @param array   $options with the insert options
      *   - unicity_message : do not display message if item it a duplicate (default is yes)
+     *   - disable_infocom_creation: do not automatically create infocom (default is false)
      * @param boolean $history do history log ? (true by default)
      *
      * @return false|integer the new ID of the added item (or false if fail)
      **/
     public function add(array $input, $options = [], $history = true)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if ($DB->isSlave()) {
@@ -1420,7 +1400,8 @@ class CommonDBTM extends CommonGLPI
 
                     // Auto create infocoms
                     if (
-                        isset($CFG_GLPI["auto_create_infocoms"]) && $CFG_GLPI["auto_create_infocoms"]
+                        ($options['disable_infocom_creation'] ?? false) !== true
+                        && isset($CFG_GLPI["auto_create_infocoms"]) && $CFG_GLPI["auto_create_infocoms"]
                         && (!isset($input['clone']) || !$input['clone'])
                         && Infocom::canApplyOn($this)
                     ) {
@@ -1655,10 +1636,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function update(array $input, $history = true, $options = [])
     {
-        /**
-         * @var DBmysql $DB
-         * @var CacheInterface $GLPI_CACHE
-         */
         global $DB, $GLPI_CACHE;
 
         if ($DB->isSlave()) {
@@ -1896,7 +1873,6 @@ class CommonDBTM extends CommonGLPI
      */
     protected function manageLocks()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $lockedfield = new Lockedfield();
@@ -1944,7 +1920,6 @@ class CommonDBTM extends CommonGLPI
      **/
     protected function forwardEntityInformations()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!isset($this->fields['id']) || $this->fields['id'] < 0) {
@@ -2112,7 +2087,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function delete(array $input, $force = false, $history = true)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($DB->isSlave()) {
@@ -2608,10 +2582,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function canUnrecurs()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $ID  = $this->fields['id'];
@@ -3496,7 +3466,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function isField($field)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (static::$notable === true) {
@@ -3908,7 +3877,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function rawSearchOptions()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $tab = [];
@@ -4127,7 +4095,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getWhitelistedSingleMassiveActions()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $actions = ['MassiveAction:add_transfer_list'];
@@ -4154,10 +4121,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getSpecificMassiveActions($checkitem = null)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $actions = [];
@@ -4526,7 +4489,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function checkUnicity($add = false, $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $p = [
@@ -4697,7 +4659,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function deleteByCriteria($crit = [], $force = false, $history = true)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ok = false;
@@ -4783,7 +4744,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getValueToDisplay($field_id_or_search_options, $values, $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $param = [
@@ -5039,7 +4999,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $param = [
@@ -5292,7 +5251,6 @@ class CommonDBTM extends CommonGLPI
      */
     public static function listTemplates($itemtype, $target, $add = false)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!($item = getItemForItemtype($itemtype))) {
@@ -5505,7 +5463,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function addFiles(array $input, $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $default_options = [
@@ -5741,7 +5698,6 @@ class CommonDBTM extends CommonGLPI
      */
     private function assetBusinessRules($condition)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($this->input === false) {
@@ -5817,7 +5773,6 @@ class CommonDBTM extends CommonGLPI
      */
     public static function checkCircularRelation($items_id, $parents_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $fk = static::getForeignKeyField();

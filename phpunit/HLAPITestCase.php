@@ -70,7 +70,7 @@ class HLAPITestCase extends DbTestCase
         return parent::login($user_name, $user_pass, $noauto, $expected);
     }
 
-    public function login(string $user_name = TU_USER, string $user_pass = TU_PASS, bool $noauto = true, bool $expected = true): Auth
+    public function login(string $user_name = TU_USER, string $user_pass = TU_PASS, bool $noauto = true, bool $expected = true, array $api_options = []): Auth
     {
         $request = new Request('POST', '/token', [
             'Content-Type' => 'application/json',
@@ -80,7 +80,7 @@ class HLAPITestCase extends DbTestCase
             'client_secret' => TU_OAUTH_CLIENT_SECRET,
             'username' => $user_name,
             'password' => $user_pass,
-            'scope' => 'api',
+            'scope' => $api_options['scope'] ?? 'email user api inventory status graphql',
         ]));
         $this->api->call($request, function ($call) {
             /** @var HLAPICallAsserter $call */
@@ -803,7 +803,6 @@ final class HLAPIHelper
                 });
         }, false);
 
-        /** @var DBmysql $DB */
         global $DB;
 
         $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_OWNED;

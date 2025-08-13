@@ -105,7 +105,6 @@ class Change_Problem extends CommonITILObject_CommonITILObject
      **/
     public static function showForProblem(Problem $problem)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $problem->getField('id');
@@ -196,7 +195,6 @@ class Change_Problem extends CommonITILObject_CommonITILObject
      **/
     public static function showForChange(Change $change)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $change->getField('id');

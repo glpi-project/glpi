@@ -94,7 +94,6 @@ class StateTest extends DbTestCase
 
     public function testVisibility(): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $state = new \State();
@@ -189,7 +188,6 @@ class StateTest extends DbTestCase
 
     public function testHasFeature(): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         foreach ($CFG_GLPI['state_types'] as $itemtype) {
@@ -202,10 +200,6 @@ class StateTest extends DbTestCase
 
     public function testRegisteredTypes(): void
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         foreach ($CFG_GLPI['state_types'] as $itemtype) {
@@ -246,7 +240,6 @@ class StateTest extends DbTestCase
 
     public function testIsStateVisible(): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $itemtype = $CFG_GLPI['state_types'][0];
@@ -271,7 +264,6 @@ class StateTest extends DbTestCase
 
     public function testGetStateVisibilityCriteria(): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $itemtype = $CFG_GLPI['state_types'][0];

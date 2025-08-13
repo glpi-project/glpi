@@ -131,7 +131,6 @@ class Consumable extends CommonDBChild
      */
     public function backToStock(array $input, $history = true)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->update(
@@ -171,7 +170,6 @@ class Consumable extends CommonDBChild
      **/
     public function out($ID, $itemtype = '', $items_id = 0)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (
@@ -214,7 +212,6 @@ class Consumable extends CommonDBChild
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $input = $ma->getInput();
@@ -316,7 +313,6 @@ class Consumable extends CommonDBChild
      **/
     public static function getTotalNumber($tID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -336,7 +332,6 @@ class Consumable extends CommonDBChild
      **/
     public static function getOldNumber($tID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -359,7 +354,6 @@ class Consumable extends CommonDBChild
      **/
     public static function getUnusedNumber($tID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -382,7 +376,6 @@ class Consumable extends CommonDBChild
      */
     public static function getStockTarget(int $tID): int
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $it = $DB->request([
@@ -406,7 +399,6 @@ class Consumable extends CommonDBChild
      */
     public static function getAlarmThreshold(int $tID): int
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $it = $DB->request([
@@ -470,7 +462,6 @@ class Consumable extends CommonDBChild
      **/
     public static function isNew($cID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -493,7 +484,6 @@ class Consumable extends CommonDBChild
      **/
     public static function isOld($cID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -582,7 +572,6 @@ class Consumable extends CommonDBChild
 
     public static function showForUser(User $user)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $itemtype = $user::class;
@@ -687,7 +676,6 @@ class Consumable extends CommonDBChild
      **/
     public static function showSummary()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!self::canView()) {

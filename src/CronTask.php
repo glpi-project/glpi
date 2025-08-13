@@ -190,7 +190,6 @@ class CronTask extends CommonDBTM
      **/
     public static function getUsedItemtypes()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $types = [];
@@ -235,7 +234,6 @@ class CronTask extends CommonDBTM
      **/
     public function start()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!isset($this->fields['id']) || ($DB->isSlave())) {
@@ -324,7 +322,6 @@ class CronTask extends CommonDBTM
      **/
     public function end($retcode, int $log_state = CronTaskLog::STATE_STOP)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!isset($this->fields['id'])) {
@@ -409,7 +406,6 @@ class CronTask extends CommonDBTM
      **/
     public function getNeedToRun($mode = 0, $name = '')
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $hour_criteria = new QueryExpression('hour(curtime())');
@@ -521,7 +517,6 @@ class CronTask extends CommonDBTM
      */
     private function sendNotificationOnError(): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $alert_iterator = $DB->request(
@@ -795,7 +790,6 @@ class CronTask extends CommonDBTM
      **/
     private static function get_lock()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Change name every hour in case of MySQL blocking (it happens)
@@ -814,7 +808,6 @@ class CronTask extends CommonDBTM
      **/
     private static function release_lock()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (self::$lockname) {
@@ -834,7 +827,6 @@ class CronTask extends CommonDBTM
      **/
     public static function launch($mode, $max = 1, $name = '')
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // No cron in maintenance mode
@@ -1013,7 +1005,6 @@ class CronTask extends CommonDBTM
      **/
     public static function unregister($plugin)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (empty($plugin)) {
@@ -1048,7 +1039,6 @@ class CronTask extends CommonDBTM
      **/
     public function showStatistics()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $nbstart = countElementsInTable(
@@ -1141,7 +1131,6 @@ class CronTask extends CommonDBTM
      **/
     public function showHistory()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (isset($_GET["crontasklogs_id"]) && $_GET["crontasklogs_id"]) {
@@ -1213,7 +1202,6 @@ class CronTask extends CommonDBTM
      **/
     public function showHistoryDetail($logid)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -1378,7 +1366,6 @@ TWIG, ['msg' => __('Last run list')]);
 
     public function rawSearchOptions()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $tab = [];
@@ -1766,7 +1753,6 @@ TWIG, ['msg' => __('Last run list')]);
      **/
     public static function cronLogs($task)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $vol = 0;
@@ -1809,7 +1795,6 @@ TWIG, ['msg' => __('Last run list')]);
      */
     public static function getZombieCronTasks(): DBmysqlIterator
     {
-        /** @var DBmysql $DB */
         global $DB;
         return $DB->request([
             'FROM'   => self::getTable(),
@@ -1897,7 +1882,6 @@ TWIG, ['msg' => __('Last run list')]);
      **/
     public static function callCronForce()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (self::mustRunWebTasks()) {
@@ -1955,7 +1939,6 @@ TWIG, ['msg' => __('Last run list')]);
      */
     public static function showSearchStatusArea()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $crontask = new self();

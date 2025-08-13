@@ -31,19 +31,65 @@
  */
 
 describe('Calendar', () => {
+    let calendar_id;
+
+    before(() => {
+        cy.createWithAPI('Calendar', {
+            name: 'Test Calendar',
+            entities_id: 1
+        }).then(id => {
+            calendar_id = id;
+        });
+        cy.createWithAPI('Holiday', {
+            name: 'Test Holiday',
+            entities_id: 1,
+            begin_date: '2025-01-13',
+            end_date: '2025-01-14',
+            is_perpetual: 1,
+        });
+    });
+
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Super-Admin');
     });
-    it('Time range form loads', () => {
-        // Go to the default calendar
-        cy.visit('/front/calendar.form.php?id=1&forcetab=CalendarSegment$1');
 
-        cy.get('form[name=asset_form]').within(() => {
-            cy.findByLabelText('Day').should('be.visible');
-            cy.findByLabelText('Start').should('be.visible');
-            cy.findByLabelText('End').should('be.visible');
-            cy.findByRole('button', { name: 'Add' }).should('be.visible');
+    it('Time range form', () => {
+        cy.visit(`/front/calendar.form.php?id=${calendar_id}`);
+
+        cy.findByRole('tab', { name: 'Time ranges' }).click();
+        cy.findByRole('tabpanel').within(() => {
+            cy.getDropdownByLabelText('Day').selectDropdownValue('Tuesday');
+            cy.getDropdownByLabelText('Start').selectDropdownValue('08:00');
+            cy.getDropdownByLabelText('End').selectDropdownValue('18:00');
+            cy.findByRole('button', { name: 'Add' }).click();
+
+            cy.findAllByRole('row').then($rows => {
+                expect($rows).to.have.length(2);
+                cy.wrap($rows).eq(1).within(() => {
+                    cy.findByText('Tuesday').should('exist');
+                    cy.findByText('08:00:00').should('exist');
+                    cy.findByText('18:00:00').should('exist');
+                });
+            });
+        });
+    });
+
+    it('Close times form', () => {
+        cy.visit(`/front/calendar.form.php?id=${calendar_id}`);
+
+        cy.findByRole('tab', { name: 'Close times' }).click();
+        cy.findByRole('tabpanel').within(() => {
+            cy.getDropdownByLabelText('Add a close time').selectDropdownValue('Test Holiday');
+            cy.findByRole('button', { name: 'Add' }).click();
+            cy.findAllByRole('row').then($rows => {
+                expect($rows).to.have.length(2);
+                cy.wrap($rows).eq(1).within(() => {
+                    cy.findByText('Test Holiday').should('exist');
+                    cy.findByText('2025-01-13').should('exist');
+                    cy.findByText('2025-01-14').should('exist');
+                    cy.findByText('Yes').should('exist');
+                });
+            });
         });
     });
 });

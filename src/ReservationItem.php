@@ -327,7 +327,7 @@ class ReservationItem extends CommonDBChild
                 <input type="hidden" name="items_id" value="{{ item.getID() }}">
                 <input type="hidden" name="itemtype" value="{{ get_class(item) }}">
                 <input type="hidden" name="entities_id" value="{{ item.getEntityID() }}">
-                <input type="hidden" name="is_recursive" value="{{ item.isRecursive() }}">
+                <input type="hidden" name="is_recursive" value="{{ item.isRecursive() ? 1 : 0 }}">
                 <input type="hidden" name="is_active" value="{{ reservable ? (toggle_state ? 0 : 1) : 1 }}">
                 {% if reservable %}
                     <button name="update" class="btn btn-{{ toggle_state ? 'danger' : 'primary' }} mx-1">
@@ -379,10 +379,6 @@ TWIG, $twig_params);
 
     public static function showListSimple()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (!Session::haveRightsOr(self::$rightname, [READ, self::RESERVEANITEM])) {
@@ -707,10 +703,6 @@ TWIG, $twig_params);
      **/
     public static function cronReservation($task = null)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (!$CFG_GLPI["use_notifications"]) {
@@ -862,13 +854,13 @@ TWIG, $twig_params);
         if ($item::class === self::class) {
             $tabs = [];
             if (Session::haveRightsOr("reservation", [READ, self::RESERVEANITEM])) {
-                $tabs[1] = Reservation::getTypeName(Session::getPluralNumber());
+                $tabs[1] = self::createTabEntry(Reservation::getTypeName(Session::getPluralNumber()));
             }
             if (
                 (Session::getCurrentInterface() === "central")
                 && Session::haveRight("reservation", READ)
             ) {
-                $tabs[2] = __('Administration');
+                $tabs[2] = self::createTabEntry(__('Administration'), icon: 'ti ti-shield-check');
             }
             return $tabs;
         }
@@ -941,7 +933,6 @@ TWIG, $twig_params);
      */
     public static function getAvailableItems(string $itemtype): DBmysqlIterator
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $reservation_table = self::getTable();
@@ -965,7 +956,6 @@ TWIG, $twig_params);
      */
     public static function countAvailableItems(string $itemtype): int
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = self::getAvailableItemsCriteria($itemtype);

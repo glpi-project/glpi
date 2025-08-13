@@ -83,7 +83,6 @@ class HasPeripheralAssetsCapacity extends AbstractCapacity
 
     private function countPeripheralItemsUsage(string $asset_classname, string $relation_classname): int
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $count = 0;

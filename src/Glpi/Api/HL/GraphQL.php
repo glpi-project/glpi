@@ -42,7 +42,6 @@ use Glpi\Http\Request;
 use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Utils\BuildSchema;
-use Psr\Log\LoggerInterface;
 use Throwable;
 
 use function Safe\json_decode;
@@ -108,7 +107,6 @@ final class GraphQL
                 }
             );
         } catch (Throwable $e) {
-            /** @var LoggerInterface $PHPLOGGER */
             global $PHPLOGGER;
             $PHPLOGGER->error(
                 "Error processing GraphQL request: {$e->getMessage()}",

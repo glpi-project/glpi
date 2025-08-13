@@ -1406,7 +1406,6 @@ class EntityTest extends DbTestCase
 
     public function testGetEntitySelectorTree(): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $this->login();

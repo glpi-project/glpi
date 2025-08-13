@@ -119,7 +119,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
     public static function canView(): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         return (Session::haveRightsOr(self::$rightname, [READ, self::READFAQ])
@@ -167,7 +166,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
     public static function getSearchURL($full = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $dir = ($full ? $CFG_GLPI['root_doc'] : '');
@@ -180,7 +178,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
     public static function getFormURL($full = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $dir = ($full ? $CFG_GLPI['root_doc'] : '');
@@ -422,7 +419,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      **/
     public function isPubliclyVisible()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!$CFG_GLPI['use_public_faq']) {
@@ -469,7 +465,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      */
     public static function getVisibilityCriteria(bool $forceall = false): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Build common JOIN clause
@@ -501,7 +496,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      */
     private static function getVisibilityCriteriaCommonJoin(bool $forceall = false)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $join = [];
@@ -849,7 +843,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      */
     public function updateCounter()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // update counter view
@@ -873,10 +866,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      **/
     public function showFull($options = [])
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (!$this->can($this->fields['id'], READ)) {
@@ -973,7 +962,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      **/
     public function searchForm($options)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (
@@ -1030,7 +1018,6 @@ TWIG, $twig_params);
      **/
     public static function getListRequest(array $params, $type = 'search')
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $params = array_replace([
@@ -1363,7 +1350,6 @@ TWIG, $twig_params);
      **/
     public static function showList($options, $type = 'search')
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $DBread = DBConnection::getReadConnection();
@@ -1669,7 +1655,6 @@ TWIG, $twig_params);
      **/
     public static function showRecentPopular(string $type = "", bool $display = true)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $faq = !Session::haveRight(self::$rightname, READ);
@@ -2128,7 +2113,6 @@ TWIG, $twig_params);
      */
     public static function getForCategory($category_id, $kbi = null)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($kbi === null) {

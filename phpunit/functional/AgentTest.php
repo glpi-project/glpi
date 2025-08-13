@@ -102,7 +102,6 @@ class AgentTest extends DbTestCase
 
     public function testHandleAgentWOType()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         //explicitly remove agent type
@@ -188,7 +187,6 @@ class AgentTest extends DbTestCase
         $this->assertSame('000005', $metadata['tag']);
         $this->assertCount(10, $metadata['provider']);
 
-        /** @var \DBmysql $DB */
         global $DB;
         //check created agent
         $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
@@ -293,7 +291,6 @@ class AgentTest extends DbTestCase
         $this->assertSame('000005', $metadata['tag']);
         $this->assertCount(10, $metadata['provider']);
 
-        /** @var \DBmysql $DB */
         global $DB;
         //check created agent
         $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
@@ -395,7 +392,6 @@ class AgentTest extends DbTestCase
         $this->assertNull($metadata['port']);
         $this->assertSame('000005', $metadata['tag']);
 
-        /** @var \DBmysql $DB */
         global $DB;
         //check created agent
         $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
@@ -432,7 +428,6 @@ class AgentTest extends DbTestCase
         $this->assertSame('000005', $metadata['tag']);
         $this->assertCount(10, $metadata['provider']);
 
-        /** @var \DBmysql $DB */
         global $DB;
         //check created agent
         $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();

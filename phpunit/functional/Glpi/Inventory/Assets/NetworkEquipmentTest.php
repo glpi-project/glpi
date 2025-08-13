@@ -298,7 +298,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
      */
     public function testStackedDellSwitch()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
@@ -3208,7 +3207,6 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
 
     public function testStackedExtremeNetworks3650GTS()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/extreme_3650GTS.xml');
@@ -3252,7 +3250,6 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
 
     public function testStackedExtremeNetworks5420F()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/extreme_5420F.xml');

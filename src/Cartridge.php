@@ -237,7 +237,6 @@ class Cartridge extends CommonDBRelation
      */
     public function backToStock(array $input, $history = true)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->update(
@@ -268,7 +267,6 @@ class Cartridge extends CommonDBRelation
      **/
     public function install($pID, $tID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Get first unused cartridge
@@ -321,7 +319,6 @@ class Cartridge extends CommonDBRelation
      **/
     public function uninstall($ID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($this->getFromDB($ID)) {
@@ -518,7 +515,6 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      **/
     public static function getTotalNumber($tID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $row = $DB->request([
@@ -540,7 +536,6 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      **/
     public static function getTotalNumberForPrinter($pID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $row = $DB->request([
@@ -560,7 +555,6 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      **/
     public static function getUsedNumber($tID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $row = $DB->request([
@@ -589,7 +583,6 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      **/
     public static function getUsedNumberForPrinter($pID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -613,7 +606,6 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      **/
     public static function getOldNumber($tID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -638,7 +630,6 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      **/
     public static function getOldNumberForPrinter($pID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -661,7 +652,6 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      **/
     public static function getUnusedNumber($tID)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -684,7 +674,6 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      */
     public static function getStockTarget(int $tID): int
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $it = $DB->request([
@@ -708,7 +697,6 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      */
     public static function getAlarmThreshold(int $tID): int
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $it = $DB->request([
@@ -750,7 +738,6 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      **/
     public static function showForCartridgeItem(CartridgeItem $cartitem, $show_old = 0)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $tID = $cartitem->getField('id');
@@ -998,7 +985,6 @@ TWIG, $twig_params);
      **/
     public static function showForPrinter(Printer $printer, $old = 0)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $instID = $printer->getField('id');

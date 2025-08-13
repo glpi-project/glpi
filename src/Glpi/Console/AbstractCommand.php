@@ -116,7 +116,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
         /** @var DBmysql|null $DB */
         global $DB;
 
-        if ($this->requires_db && (!($DB instanceof DBmysql) || !$DB->connected)) {
+        if ($this->requires_db && !\DBConnection::isDbAvailable()) {
             throw new EarlyExitException(
                 '<error>' . __('Unable to connect to database.') . '</error>',
                 Application::ERROR_DB_UNAVAILABLE

@@ -176,7 +176,6 @@ final class QueryBuilder implements SearchInputInterface
      */
     public static function displaySearchoption($request = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         if (
             !isset($request["itemtype"])
@@ -398,7 +397,6 @@ final class QueryBuilder implements SearchInputInterface
      */
     public static function displayCriteria($request = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (
@@ -654,7 +652,6 @@ final class QueryBuilder implements SearchInputInterface
     #[Override]
     public static function manageParams($itemtype, $params = [], $usesession = true, $forcebookmark = false): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $default_values = [];
@@ -943,7 +940,6 @@ final class QueryBuilder implements SearchInputInterface
      */
     public static function getDefaultCriteria($itemtype): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $field = '';

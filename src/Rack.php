@@ -404,7 +404,6 @@ class Rack extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbIn
      **/
     public static function showForRoom(DCRoom $room): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $room_id = $room->getID();
@@ -620,7 +619,6 @@ class Rack extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbIn
      */
     public function getFilled($itemtype = null, $items_id = null)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

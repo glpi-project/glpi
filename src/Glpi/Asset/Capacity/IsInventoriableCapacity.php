@@ -37,7 +37,6 @@ namespace Glpi\Asset\Capacity;
 use Agent;
 use AutoUpdateSystem;
 use CommonGLPI;
-use DBmysql;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CapacityConfig;
 use Glpi\Inventory\Inventory;
@@ -155,7 +154,6 @@ class IsInventoriableCapacity extends AbstractCapacity
 
     public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
-        /** @var DBmysql $DB */
         global $DB;
         $this->unregisterFromTypeConfig('inventory_types', $classname);
         $this->unregisterFromTypeConfig('agent_types', $classname);

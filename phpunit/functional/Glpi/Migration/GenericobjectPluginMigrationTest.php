@@ -62,7 +62,6 @@ class GenericobjectPluginMigrationTest extends DbTestCase
 {
     public static function setUpBeforeClass(): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         parent::setUpBeforeClass();
@@ -77,7 +76,6 @@ class GenericobjectPluginMigrationTest extends DbTestCase
 
     public static function tearDownAfterClass(): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $tables = $DB->listTables('glpi\_plugin\_genericobject\_%');
@@ -90,7 +88,6 @@ class GenericobjectPluginMigrationTest extends DbTestCase
 
     public function setUp(): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         parent::setUp();
@@ -107,8 +104,11 @@ class GenericobjectPluginMigrationTest extends DbTestCase
     public function testProcessMigration(): void
     {
         // Arrange
-        /** @var \DBmysql $DB */
         global $DB;
+
+        // Forces the `auto_create_infocoms` config to validate that it is correctly supported by the migration.
+        global $CFG_GLPI;
+        $CFG_GLPI['auto_create_infocoms'] = true;
 
         $migration = new GenericobjectPluginMigration($DB);
         $result    = new PluginMigrationResult();

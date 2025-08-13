@@ -66,10 +66,11 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item::class === Domain::class) {
+            $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
-                return self::createTabEntry(_n('Record', 'Records', Session::getPluralNumber()), self::countForDomain($item), $item::class);
+                $nb =  self::countForDomain($item);
             }
-            return _n('Record', 'Records', Session::getPluralNumber());
+            return self::createTabEntry(_n('Record', 'Records', Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
@@ -289,7 +290,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
     {
         if (($add && empty($input['domains_id'])) || (isset($input['domains_id']) && empty($input['domains_id']))) {
             Session::addMessageAfterRedirect(
-                __('A domain is required'),
+                __s('A domain is required'),
                 true,
                 ERROR
             );
@@ -399,7 +400,6 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
      **/
     public static function showForDomain(Domain $domain)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $instID = $domain->fields['id'];

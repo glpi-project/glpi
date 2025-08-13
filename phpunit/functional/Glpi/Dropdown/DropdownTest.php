@@ -166,4 +166,16 @@ class DropdownTest extends DbTestCase
         $dropdown = $this->createItem($definition->getDropdownClassName(), ['name' => 'test dropdown']);
         $this->assertIsArray($dropdown->searchOptions());
     }
+
+    public function testCanView(): void
+    {
+        $definition = $this->initDropdownDefinition();
+        $this->login();
+        $this->assertTrue((new ($definition->getDropdownClassName()))::canView());
+        $definition->update([
+            'id' => $definition->getID(),
+            'is_active' => 0,
+        ]);
+        $this->assertFalse((new ($definition->getDropdownClassName()))::canView());
+    }
 }

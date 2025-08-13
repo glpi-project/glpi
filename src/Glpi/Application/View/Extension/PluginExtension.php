@@ -132,7 +132,6 @@ class PluginExtension extends AbstractExtension
      */
     public function getPluginsCssFiles(bool $is_anonymous_page): array
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $hook = $is_anonymous_page ? Hooks::ADD_CSS_ANONYMOUS_PAGE : Hooks::ADD_CSS;
@@ -170,7 +169,6 @@ class PluginExtension extends AbstractExtension
      */
     public function getPluginsJsScriptsFiles(bool $is_anonymous_page): array
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $hook = $is_anonymous_page ? Hooks::ADD_JAVASCRIPT_ANONYMOUS_PAGE : Hooks::ADD_JAVASCRIPT;
@@ -206,7 +204,6 @@ class PluginExtension extends AbstractExtension
      */
     public function getPluginsJsModulesFiles(bool $is_anonymous_page): array
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $hook = $is_anonymous_page ? Hooks::ADD_JAVASCRIPT_MODULE_ANONYMOUS_PAGE : Hooks::ADD_JAVASCRIPT_MODULE;
@@ -242,7 +239,6 @@ class PluginExtension extends AbstractExtension
      */
     public function getPluginsHeaderTags(bool $is_anonymous_page): array
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $hook = $is_anonymous_page ? Hooks::ADD_HEADER_TAG_ANONYMOUS_PAGE : Hooks::ADD_HEADER_TAG;

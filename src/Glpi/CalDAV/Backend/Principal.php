@@ -36,7 +36,6 @@
 namespace Glpi\CalDAV\Backend;
 
 use CommonDBTM;
-use DBmysql;
 use Glpi\CalDAV\Node\Property;
 use Glpi\CalDAV\Traits\CalDAVPrincipalsTrait;
 use Glpi\CalDAV\Traits\CalDAVUriUtilTrait;
@@ -124,7 +123,6 @@ class Principal extends AbstractBackend
     public function getGroupMemberSet($path)
     {
 
-        /** @var DBmysql $DB */
         global $DB;
 
         $principal_itemtype = $this->getPrincipalItemtypeFromUri($path);
@@ -181,7 +179,6 @@ class Principal extends AbstractBackend
     public function getGroupMembership($path)
     {
 
-        /** @var DBmysql $DB */
         global $DB;
 
         $groups_query = [

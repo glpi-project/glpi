@@ -39,7 +39,6 @@ use DirectoryIterator;
 use Glpi\Kernel\Kernel;
 use InvalidArgumentException;
 use Psr\Cache\CacheItemPoolInterface;
-use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
 use RuntimeException;
 use Safe\Exceptions\FilesystemException;
@@ -232,7 +231,6 @@ class CacheManager
      */
     public function getCacheStorageAdapter(string $context): CacheItemPoolInterface
     {
-        /** @var LoggerInterface $PHPLOGGER */
         global $PHPLOGGER;
 
         if (!$this->isContextValid($context)) {

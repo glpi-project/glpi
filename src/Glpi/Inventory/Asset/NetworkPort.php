@@ -36,7 +36,6 @@
 
 namespace Glpi\Inventory\Asset;
 
-use DBmysql;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\Inventory\Conf;
@@ -46,7 +45,6 @@ use NetworkPort_NetworkPort;
 use NetworkPort_Vlan;
 use NetworkPortAggregate;
 use NetworkPortType;
-use Psr\SimpleCache\CacheInterface;
 use RuleImportAssetCollection;
 use RuleMatchedLog;
 use stdClass;
@@ -175,7 +173,6 @@ class NetworkPort extends InventoryAsset
      */
     private function prepareConnections(stdClass $port)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $results = [];
@@ -428,7 +425,6 @@ class NetworkPort extends InventoryAsset
 
     private function handleVlans(stdClass $port, int $netports_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!property_exists($port, 'logical_number')) {
@@ -773,7 +769,6 @@ class NetworkPort extends InventoryAsset
      */
     public function getNameForMac($mac)
     {
-        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $exploded = explode(':', $mac);
@@ -932,7 +927,6 @@ class NetworkPort extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $this->conf = $conf;
         return in_array($this->item::class, $CFG_GLPI['networkport_types']);

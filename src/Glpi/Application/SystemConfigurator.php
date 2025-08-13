@@ -280,9 +280,6 @@ final class SystemConfigurator
 
     private function initLogger(): void
     {
-        /**
-         * @var LoggerInterface $PHPLOGGER
-         */
         global $PHPLOGGER;
 
         $PHPLOGGER = new Logger('glpi');

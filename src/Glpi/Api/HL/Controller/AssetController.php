@@ -114,7 +114,6 @@ final class AssetController extends AbstractController
 
     public static function getRawKnownSchemas(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $schemas = [];
 

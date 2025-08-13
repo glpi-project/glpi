@@ -280,7 +280,6 @@ class Enclosure extends CommonDBTM implements AssignableItemInterface, DCBreadcr
      */
     public function getFilled($itemtype = null, $items_id = null)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

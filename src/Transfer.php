@@ -170,7 +170,6 @@ final class Transfer extends CommonDBTM
      **/
     public function moveItems(array $items, int $to, array $options): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // unset notifications
@@ -352,7 +351,6 @@ final class Transfer extends CommonDBTM
 
     private function simulateDirectConnections(): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $DC_CONNECT = [];
@@ -428,10 +426,6 @@ final class Transfer extends CommonDBTM
 
     private function simulateSoftware(): void
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (!$this->options['keep_software']) {
@@ -515,7 +509,6 @@ final class Transfer extends CommonDBTM
 
     private function simulateSoftwareLicenses(): void
     {
-        /** @var DBmysql $DB */
         global $DB;
         if ($this->haveItemsToTransfer(Software::class)) {
             // Move license of software
@@ -542,7 +535,6 @@ final class Transfer extends CommonDBTM
 
     private function simulateDevices(): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!$this->options['keep_device']) {
@@ -609,10 +601,6 @@ final class Transfer extends CommonDBTM
 
     private function simulateTickets(): void
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (!$this->options['keep_ticket']) {
@@ -647,10 +635,6 @@ final class Transfer extends CommonDBTM
 
     private function simulateCertificates(): void
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (!$this->options['keep_certificate']) {
@@ -728,10 +712,6 @@ final class Transfer extends CommonDBTM
 
     private function simulateContracts(): void
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
         if (!$this->options['keep_contract']) {
             return;
@@ -802,7 +782,6 @@ final class Transfer extends CommonDBTM
 
     private function simulateSuppliers(): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!$this->options['keep_supplier']) {
@@ -962,7 +941,6 @@ final class Transfer extends CommonDBTM
 
     private function simulateContacts(): void
     {
-        /** @var DBmysql $DB */
         global $DB;
         if (!$this->options['keep_contact']) {
             return;
@@ -1022,7 +1000,6 @@ final class Transfer extends CommonDBTM
 
     private function simulateDocuments(): void
     {
-        /** @var DBmysql $DB */
         global $DB;
         if (!$this->options['keep_document']) {
             return;
@@ -1083,7 +1060,6 @@ final class Transfer extends CommonDBTM
 
     private function simulateCartridges(): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!$this->options['keep_cartridgeitem'] || !$this->haveItemsToTransfer(Printer::class)) {
@@ -1110,7 +1086,6 @@ final class Transfer extends CommonDBTM
      **/
     private function simulateTransfer(array $items): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Init types :
@@ -1157,7 +1132,6 @@ final class Transfer extends CommonDBTM
      **/
     private function transferItem($itemtype, $ID, $newID)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!($item = getItemForItemtype($itemtype))) {
@@ -1364,7 +1338,6 @@ final class Transfer extends CommonDBTM
      **/
     private function transferDropdownSocket(int $sockets_id): int
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($sockets_id > 0) {
@@ -1423,7 +1396,6 @@ final class Transfer extends CommonDBTM
      **/
     private function transferPrinterCartridges($ID, $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Get cartrdiges linked
@@ -1570,7 +1542,6 @@ final class Transfer extends CommonDBTM
      **/
     private function copySingleSoftware($ID): int
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (isset($this->already_transfer['Software'][$ID])) {
@@ -1634,7 +1605,6 @@ final class Transfer extends CommonDBTM
      **/
     private function copySingleVersion($ID): int
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (isset($this->already_transfer['SoftwareVersion'][$ID])) {
@@ -1707,7 +1677,6 @@ final class Transfer extends CommonDBTM
      **/
     private function transferItemSoftwares($itemtype, $ID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Get Installed version
@@ -1782,7 +1751,6 @@ final class Transfer extends CommonDBTM
      **/
     private function transferAffectedLicense($ID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $item_softwarelicense = new Item_SoftwareLicense();
@@ -1871,7 +1839,6 @@ final class Transfer extends CommonDBTM
      **/
     private function transferSoftwareLicensesAndVersions($ID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -1958,7 +1925,6 @@ final class Transfer extends CommonDBTM
      **/
     private function transferCertificates($itemtype, $ID, $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // if keep
@@ -2143,7 +2109,6 @@ final class Transfer extends CommonDBTM
      **/
     private function transferContracts($itemtype, $ID, $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // if keep
@@ -2328,7 +2293,6 @@ final class Transfer extends CommonDBTM
      **/
     private function transferDocuments($itemtype, $ID, $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // if keep
@@ -2523,7 +2487,6 @@ final class Transfer extends CommonDBTM
      **/
     private function transferDirectConnection($itemtype, $ID, $link_type): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Only same Item case : no duplication of computers
@@ -2736,7 +2699,6 @@ final class Transfer extends CommonDBTM
      **/
     private function managePeripheralMainAsset(string $peripheral_itemtype, int $ID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Get connections
@@ -2803,7 +2765,6 @@ final class Transfer extends CommonDBTM
      **/
     private function transferTickets($itemtype, $ID, $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $job   = new Ticket();
@@ -2889,7 +2850,6 @@ final class Transfer extends CommonDBTM
      **/
     private function transferLinkedSuppliers($itemtype, $ID, $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!is_a($itemtype, CommonITILObject::class, true)) {
@@ -2966,7 +2926,6 @@ final class Transfer extends CommonDBTM
      **/
     private function transferTaskCategory($itemtype, $ID, $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!is_a($itemtype, CommonITILObject::class, true)) {
@@ -3058,7 +3017,6 @@ final class Transfer extends CommonDBTM
      **/
     private function transferHistory($itemtype, $ID, $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($ID == $newID) {
@@ -3101,7 +3059,6 @@ final class Transfer extends CommonDBTM
      **/
     private function transferCompatiblePrinters($ID, $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($ID == $newID) {
@@ -3133,7 +3090,6 @@ final class Transfer extends CommonDBTM
      **/
     private function transferInfocoms($itemtype, $ID, $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ic = new Infocom();
@@ -3198,7 +3154,6 @@ final class Transfer extends CommonDBTM
      **/
     private function transferSingleSupplier($ID): int
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // TODO clean system : needed ?
@@ -3304,7 +3259,6 @@ final class Transfer extends CommonDBTM
      **/
     private function transferSupplierContacts($ID, $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // if keep
@@ -3513,7 +3467,6 @@ final class Transfer extends CommonDBTM
      **/
     private function transferDevices($itemtype, $ID, $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Only same case because no duplication of computers
@@ -3688,7 +3641,6 @@ final class Transfer extends CommonDBTM
      **/
     private function transferNetworkLink($itemtype, $ID, $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
         /// TODO manage with new network system
         $np = new NetworkPort();
@@ -3825,7 +3777,6 @@ final class Transfer extends CommonDBTM
      */
     public function showTransferList(): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $transfer_list = [];

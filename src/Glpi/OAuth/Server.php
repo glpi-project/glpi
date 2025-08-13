@@ -184,6 +184,7 @@ final class Server
             'api' => 'api',
             'inventory' => 'inventory',
             'status' => 'status',
+            'graphql' => 'graphql',
         ];
     }
 
@@ -195,6 +196,7 @@ final class Server
             'api' => __('Access to the API'),
             'inventory' => __('Access to submit inventory from an agent'),
             'status' => __('Access to the status endpoint'),
+            'graphql' => __('Access to the GraphQL endpoint'),
         ];
     }
 

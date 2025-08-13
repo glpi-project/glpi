@@ -36,7 +36,6 @@
 namespace Glpi\Api\HL\Controller;
 
 use CommonDBTM;
-use DBmysql;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
@@ -181,7 +180,6 @@ final class AdministrationController extends AbstractController
                         'type' => Doc\Schema::TYPE_STRING,
                         'x-mapped-from' => 'picture',
                         'x-mapper' => static function ($v) {
-                            /** @var array $CFG_GLPI */
                             global $CFG_GLPI;
                             $path = Toolbox::getPictureUrl($v, false);
                             if (!empty($path)) {
@@ -381,7 +379,6 @@ final class AdministrationController extends AbstractController
      */
     private function getEmailDataForUser(int $users_id): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -549,7 +546,6 @@ final class AdministrationController extends AbstractController
     )]
     public function getMyPicture(Request $request): Response
     {
-        /** @var DBmysql $DB */
         global $DB;
         $it = $DB->request([
             'SELECT' => ['name', 'picture'],
@@ -593,7 +589,6 @@ final class AdministrationController extends AbstractController
     )]
     public function getUserPictureByID(Request $request): Response
     {
-        /** @var DBmysql $DB */
         global $DB;
         $it = $DB->request([
             'SELECT' => ['name', 'picture'],
@@ -613,7 +608,6 @@ final class AdministrationController extends AbstractController
     )]
     public function getUserPictureByUsername(Request $request): Response
     {
-        /** @var DBmysql $DB */
         global $DB;
         $it = $DB->request([
             'SELECT' => ['name', 'picture'],
@@ -660,7 +654,6 @@ final class AdministrationController extends AbstractController
 
     private function getUsedOrManagedItems(int $users_id, bool $is_managed, array $request_params, string $api_version): Response
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Create a union schema with all relevant item types

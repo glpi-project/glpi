@@ -149,7 +149,6 @@ class AuthTest extends DbTestCase
     #[DataProvider('lockStrategyProvider')]
     public function testAccountLockStrategy(string $last_update, int $exp_delay, int $lock_delay, bool $expected_lock)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // reset session to prevent session having less rights to create a user

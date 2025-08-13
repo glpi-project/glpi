@@ -854,10 +854,6 @@ class Contract extends CommonDBTM implements StateInterface
      **/
     public static function showCentral(bool $display = true)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (!self::canView()) {
@@ -1040,7 +1036,6 @@ class Contract extends CommonDBTM implements StateInterface
      **/
     public function getSuppliersNames()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -1078,10 +1073,6 @@ class Contract extends CommonDBTM implements StateInterface
      **/
     public static function cronContract(?CronTask $task = null)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (!$CFG_GLPI["use_notifications"]) {
@@ -1398,7 +1389,6 @@ class Contract extends CommonDBTM implements StateInterface
      **/
     public static function dropdown($options = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         //$name,$entity_restrict=-1,$alreadyused=array(),$nochecklimit=false
@@ -1632,7 +1622,6 @@ class Contract extends CommonDBTM implements StateInterface
         $is_deleted = false,
         ?CommonDBTM $checkitem = null
     ) {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (in_array($itemtype, $CFG_GLPI["contract_types"], true)) {
@@ -1652,7 +1641,6 @@ class Contract extends CommonDBTM implements StateInterface
 
     public static function getNotExpiredCriteria()
     {
-        /** @var DBmysql $DB */
         global $DB;
         return [
             'OR' => [

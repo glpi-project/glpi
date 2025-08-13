@@ -377,7 +377,6 @@ class ProfileTest extends DbTestCase
 
     public function testDefaultProfileMoreThanRights()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         // Some profiles are not directly heirarchically comparable, so we list the rights that can be ignored for this test

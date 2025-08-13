@@ -35,7 +35,6 @@
 namespace Glpi\Dashboard\Filters;
 
 use Change;
-use DBmysql;
 use Glpi\Features\AssignableItem;
 use Group;
 use Group_Item;
@@ -67,7 +66,6 @@ abstract class AbstractGroupFilter extends AbstractFilter
 
     public static function canBeApplied(string $table): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         return Toolbox::hasTrait(getItemtypeForTable($table), AssignableItem::class)
@@ -77,7 +75,6 @@ abstract class AbstractGroupFilter extends AbstractFilter
 
     public static function getCriteria(string $table, $value): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = [];
@@ -143,7 +140,6 @@ abstract class AbstractGroupFilter extends AbstractFilter
 
     public static function getSearchCriteria(string $table, $value): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = [];

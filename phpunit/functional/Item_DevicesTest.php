@@ -38,6 +38,7 @@ use DbTestCase;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDevicesCapacity;
 use Glpi\Features\Clonable;
+use Glpi\Search\SearchOption;
 use Item_Devices;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Toolbox;
@@ -46,7 +47,6 @@ class Item_DevicesTest extends DbTestCase
 {
     public function testRelatedItemHasTab()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->initAssetDefinition(capacities: [new Capacity(name: HasDevicesCapacity::class)]);
@@ -66,7 +66,6 @@ class Item_DevicesTest extends DbTestCase
 
     public function testRelatedItemCloneRelations()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->initAssetDefinition(capacities: [new Capacity(name: HasDevicesCapacity::class)]);
@@ -133,5 +132,29 @@ class Item_DevicesTest extends DbTestCase
     public function testGetItemAffinities(string $itemtype, array $expected)
     {
         $this->assertEqualsCanonicalizing($expected, Item_Devices::getItemAffinities($itemtype));
+    }
+
+    /**
+     * Test that the default search result columns for Item_Device* include an itemlink to the device
+     * @return void
+     */
+    public function testDeviceSearchHasItemlinkByDefault()
+    {
+        foreach (Item_Devices::getDeviceTypes() as $device_type) {
+            $search_options = SearchOption::getOptionsForItemtype($device_type);
+            $default_columns = SearchOption::getDefaultToView($device_type);
+            $has_itemlink = false;
+            $this->assertNotEmpty($default_columns, "Device type $device_type has no default search result columns");
+            foreach ($default_columns as $column) {
+                if (($search_options[$column]['datatype'] ?? '') === 'itemlink') {
+                    $has_itemlink = true;
+                    break;
+                }
+            }
+            $this->assertTrue(
+                $has_itemlink,
+                "Device type $device_type does not have an itemlink in its default search result columns"
+            );
+        }
     }
 }

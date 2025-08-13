@@ -2838,16 +2838,26 @@ var GLPIImpact = {
                 hit = true;
 
                 if (trigger) {
-                    var target = badgeHitboxDetails.target;
+                    let target = badgeHitboxDetails.target;
 
-                    // Add items_id criteria
-                    target += "&criteria[0][link]=AND&criteria[0][field]=13&criteria[0][searchtype]=contains&criteria[0][value]=" + badgeHitboxDetails.id;
-                    // Add itemtype criteria
-                    target += "&criteria[1][link]=AND&criteria[1][field]=131&criteria[1][searchtype]=equals&criteria[1][value]=" + badgeHitboxDetails.itemtype;
+                    let next_criteria = 0;
+                    if (badgeHitboxDetails.id_option) {
+                        // Add items_id/itemtype metacriteria since we know the ID field for the asset type
+                        target += `&criteria[0][link]=AND&criteria[0][field]=${badgeHitboxDetails.id_option}&criteria[0][itemtype]=${badgeHitboxDetails.itemtype}&criteria[0][meta]=1&criteria[0][searchtype]=contains&criteria[0][value]=${badgeHitboxDetails.id}`;
+                        next_criteria = 1;
+                    } else {
+                        // Asset type doesn't have an ID metacriteria that we know of so fallback to the options directly on the ITIL item
+                        // Add items_id criteria
+                        target += `&criteria[0][link]=AND&criteria[0][field]=13&criteria[0][searchtype]=contains&criteria[0][value]=${badgeHitboxDetails.id}`;
+                        // Add itemtype criteria
+                        target += `&criteria[1][link]=AND&criteria[1][field]=131&criteria[1][searchtype]=equals&criteria[1][value]=${badgeHitboxDetails.itemtype}`;
+                        next_criteria = 2;
+                    }
+
                     // Add type criteria (incident)
-                    target += "&criteria[2][link]=AND&criteria[2][field]=14&criteria[2][searchtype]=equals&criteria[2][value]=1";
+                    target += `&criteria[${next_criteria}][link]=AND&criteria[${next_criteria}][field]=14&criteria[${next_criteria}][searchtype]=equals&criteria[${next_criteria}][value]=1`;
                     // Add status criteria (not solved)
-                    target += "&criteria[3][link]=AND&criteria[3][field]=12&criteria[3][searchtype]=equals&criteria[3][value]=notold";
+                    target += `&criteria[${next_criteria + 1}][link]=AND&criteria[${next_criteria + 1}][field]=12&criteria[${next_criteria + 1}][searchtype]=equals&criteria[${next_criteria + 1}][value]=notold`;
 
                     if (blank) {
                         window.open(target);
@@ -4170,6 +4180,7 @@ var GLPIImpact = {
                     target  : node.data('badge').target,
                     itemtype: node.data('id').split(GLPIImpact.NODE_ID_SEPERATOR)[0],
                     id      : node.data('id').split(GLPIImpact.NODE_ID_SEPERATOR)[1],
+                    id_option: node.data('id_option'),
                 });
 
                 // Draw the badge
@@ -4193,5 +4204,7 @@ var GLPIImpact = {
         });
     }
 };
+// Explicitly bind to the `window` object for Jest tests
+window.GLPIImpact = GLPIImpact;
 
-var searchAssetsDebounced = _.debounce(GLPIImpact.searchAssets, 400, false);
+var searchAssetsDebounced = _.debounce(window.GLPIImpact.searchAssets, 400, false);

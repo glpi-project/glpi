@@ -88,10 +88,9 @@ final class CheckDatabaseStatusListener implements EventSubscriberInterface
             return;
         }
 
-        /** @var DBmysql|null $DB */
         global $DB;
 
-        if (!($DB instanceof DBmysql)) {
+        if (!($DB instanceof DBmysql)) { // @phpstan-ignore instanceof.alwaysTrue (the database may be unavailable at this point)
             // Setting the `_controller` attribute will force Symfony to consider that routing was resolved already.
             // @see `\Symfony\Component\HttpKernel\EventListener\RouterListener::onKernelRequest()`
             $event->getRequest()->attributes->set('_controller', [InstallController::class, 'installRequired']);

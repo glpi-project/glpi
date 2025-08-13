@@ -247,7 +247,6 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
     #[Override]
     public static function provideConvertFieldConfigFromFormCreator(): iterable
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         yield 'Category from template or none' => [

@@ -374,4 +374,20 @@ class CoreControllerTest extends \HLAPITestCase
                 });
         });
     }
+
+    public function testStatusScope()
+    {
+        $this->login(api_options: ['scope' => 'api']);
+        $this->api->call(new Request('GET', '/Status'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isAccessDenied();
+        });
+        $this->login(api_options: ['scope' => 'status']);
+        $this->api->call(new Request('GET', '/Status'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK();
+        });
+    }
 }

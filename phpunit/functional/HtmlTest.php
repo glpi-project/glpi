@@ -715,7 +715,6 @@ class HtmlTest extends \DbTestCase
 
     public function testDisplayBackLink()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         ob_start();
@@ -940,7 +939,6 @@ class HtmlTest extends \DbTestCase
     #[DataProvider('providerGetBackUrl')]
     public function testGetBackUrl(string $referer, string $base_url, string $expected): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $_SERVER['HTTP_REFERER'] = $referer;

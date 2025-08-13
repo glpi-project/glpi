@@ -89,7 +89,6 @@ final class ServiceCatalog extends CommonGLPI
     #[Override]
     public static function getSearchURL($full = true): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         return $full ? $CFG_GLPI['root_doc'] . '/ServiceCatalog' : '/ServiceCatalog';

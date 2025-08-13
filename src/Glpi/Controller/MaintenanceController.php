@@ -48,9 +48,6 @@ class MaintenanceController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function __invoke(): Response
     {
-        /**
-         * @var array $CFG_GLPI
-         */
         global $CFG_GLPI;
 
         return $this->render(

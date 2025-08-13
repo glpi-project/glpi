@@ -56,7 +56,6 @@ class HookManager
     {
         Toolbox::deprecated();
 
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $PLUGIN_HOOKS[Hooks::CSRF_COMPLIANT][$this->plugin] = true;
@@ -90,7 +89,6 @@ class HookManager
      */
     protected function registerFile(string $hook, string $file): void
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         // Check if the given hook is a valid file hook
@@ -118,7 +116,6 @@ class HookManager
         string $hook,
         callable $function
     ): void {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         // Check if the given hook is a valid functional hook
@@ -142,7 +139,6 @@ class HookManager
         string $itemtype,
         callable $function
     ): void {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         // Check if the given hook is a valid item hook
@@ -161,7 +157,6 @@ class HookManager
      */
     public function registerSecureFields(array $fields): void
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $PLUGIN_HOOKS[Hooks::SECURED_FIELDS][$this->plugin] = $fields;
@@ -174,7 +169,6 @@ class HookManager
      */
     public function registerSecureConfigs(array $configs): void
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $PLUGIN_HOOKS[Hooks::SECURED_CONFIGS][$this->plugin] = $configs;

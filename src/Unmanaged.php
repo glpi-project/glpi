@@ -299,7 +299,6 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         switch ($ma->getAction()) {
             case 'convert':
@@ -317,7 +316,6 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
         CommonDBTM $item,
         array $ids
     ) {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         switch ($ma->getAction()) {
             case 'convert':
@@ -344,7 +342,6 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
      */
     public function convert(int $items_id, ?string $itemtype = null): int
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $this->getFromDB($items_id);

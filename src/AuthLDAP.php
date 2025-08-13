@@ -436,7 +436,7 @@ class AuthLDAP extends CommonDBTM
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                         } else {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                            $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION, $group_dn));
+                            $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION, htmlescape($group_dn)));
                         }
                     }
                     // Clean history as id does not correspond to group
@@ -465,7 +465,7 @@ class AuthLDAP extends CommonDBTM
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                     } else {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION, $id));
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION, htmlescape($id)));
                     }
                 }
                 return;
@@ -565,7 +565,6 @@ TWIG, $twig_params);
      */
     public function showFormReplicatesConfig()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ID     = $this->getField('id');
@@ -1256,7 +1255,6 @@ TWIG, ['authldaps_id' => $ID]);
      */
     public static function ldapStamp2UnixStamp($ldapstamp, $ldap_time_offset = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Check if timestamp is well format, otherwise return ''
@@ -1893,7 +1891,6 @@ TWIG, $twig_params);
      */
     public static function getAllUsers(array $options, &$results, &$limitexceeded)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $config_ldap = new self();
@@ -2262,7 +2259,6 @@ TWIG, $twig_params);
         $entity,
         &$limitexceeded
     ) {
-        /** @var DBmysql $DB */
         global $DB;
 
         $config_ldap = new self();
@@ -2412,7 +2408,6 @@ TWIG, $twig_params);
         $search_in_groups = true,
         $groups = []
     ) {
-        /** @var DBmysql $DB */
         global $DB;
 
         //First look for groups in group objects
@@ -2627,7 +2622,6 @@ TWIG, $twig_params);
         $ldap_server,
         $display = false
     ) {
-        /** @var DBmysql $DB */
         global $DB;
 
         $config_ldap = new self();
@@ -2871,6 +2865,17 @@ TWIG, $twig_params);
     ) {
         self::$last_errno = null;
         self::$last_error = null;
+
+        if (!is_string($host) || empty($host) || $host === NOT_AVAILABLE) {
+            throw new RuntimeException(
+                'No host provided for connection!'
+            );
+        }
+        if (!is_numeric($port) || empty($port)) {
+            throw new RuntimeException(
+                'No port provided for connection!'
+            );
+        }
 
         //Use an LDAP connection string
         $ldapuri = sprintf(
@@ -3275,7 +3280,6 @@ TWIG, $twig_params);
      */
     public static function tryLdapAuth($auth, $login, $password, $auths_id = 0, $user_dn = false, $break = true)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         //If no specific source is given, test all ldap directories
@@ -3815,17 +3819,17 @@ TWIG, $twig_params);
     {
         if (
             self::connectToServer(
-                $authldap->getField('host'),
-                $authldap->getField('port'),
-                $authldap->getField('rootdn'),
-                (new GLPIKey())->decrypt($authldap->getField('rootdn_passwd')),
-                $authldap->getField('use_tls'),
-                $authldap->getField('deref_option'),
-                $authldap->getField('tls_certfile'),
-                $authldap->getField('tls_keyfile'),
-                $authldap->getField('use_bind'),
-                $authldap->getField('timeout'),
-                $authldap->getField('tls_version')
+                $authldap->fields['host'],
+                $authldap->fields['port'],
+                $authldap->fields['rootdn'],
+                (new GLPIKey())->decrypt($authldap->fields['rootdn_passwd']),
+                $authldap->fields['use_tls'],
+                $authldap->fields['deref_option'],
+                $authldap->fields['tls_certfile'],
+                $authldap->fields['tls_keyfile'],
+                $authldap->fields['use_bind'],
+                $authldap->fields['timeout'],
+                $authldap->fields['tls_version']
             )
         ) {
             self::showLdapUsers();
@@ -3934,7 +3938,6 @@ TWIG, $twig_params);
      */
     public static function getServersWithImportByEmailActive()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ldaps = [];
@@ -4043,7 +4046,6 @@ TWIG, $twig_params);
      */
     public static function getAllReplicateForAMaster($master_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $replicates = [];
@@ -4095,7 +4097,6 @@ TWIG, $twig_params);
      */
     public function getLdapExistingUser($name, $authldaps_id, $sync = null)
     {
-        /** @var DBmysql $DB */
         global $DB;
         $user = new User();
 

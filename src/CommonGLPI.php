@@ -309,7 +309,6 @@ class CommonGLPI implements CommonGLPIInterface
      */
     final public function defineAllTabs($options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $onglets = [];
@@ -383,7 +382,6 @@ class CommonGLPI implements CommonGLPIInterface
      */
     public function addImpactTab(array &$ong, array $options)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Check if impact analysis is enabled for this item type
@@ -409,8 +407,8 @@ class CommonGLPI implements CommonGLPIInterface
         if (method_exists(static::class, 'getIcon')) {
             $icon = static::getIcon();
         }
-        $icon = $icon ? "<i class='$icon me-2'></i>" : '';
-        $ong[static::getType() . '$main'] = '<span>' . $icon . static::getTypeName(1) . '</span>';
+        $icon = $icon ? "<i class='" . htmlescape($icon) . " me-2'></i>" : '';
+        $ong[static::getType() . '$main'] = '<span>' . $icon . htmlescape(static::getTypeName(1)) . '</span>';
         return $this;
     }
 
@@ -761,7 +759,7 @@ class CommonGLPI implements CommonGLPIInterface
         $counter_html = '';
         if ($nb > 0) {
             $badge_content = $total_nb !== null ? "$nb/$total_nb" : "$nb";
-            $counter_html = sprintf(' <span class="badge glpi-badge">%s</span>', $badge_content);
+            $counter_html = sprintf(' <span class="badge glpi-badge">%s</span>', htmlescape($badge_content));
         }
 
         return sprintf(
@@ -794,7 +792,6 @@ class CommonGLPI implements CommonGLPIInterface
      */
     public function getRedirectToListUrl(): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!empty($_GET['withtemplate'])) {
@@ -1023,7 +1020,6 @@ class CommonGLPI implements CommonGLPIInterface
      */
     public function showNavigationHeader($options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // for objects not in table like central
@@ -1307,6 +1303,9 @@ class CommonGLPI implements CommonGLPIInterface
      * @return string
      *
      * @final
+     *
+     * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
+     * @psalm-taint-sink html $object (string will be added to HTML source)
      */
     public function getErrorMessage($error, $object = '')
     {
@@ -1314,11 +1313,11 @@ class CommonGLPI implements CommonGLPIInterface
             $object = $this->getLink();
         }
         return match ($error) {
-            ERROR_NOT_FOUND => sprintf(__('%1$s: %2$s'), $object, __('Unable to get item')),
-            ERROR_RIGHT => sprintf(__('%1$s: %2$s'), $object, __('Authorization error')),
-            ERROR_COMPAT => sprintf(__('%1$s: %2$s'), $object, __('Incompatible items')),
-            ERROR_ON_ACTION => sprintf(__('%1$s: %2$s'), $object, __('Error on executing the action')),
-            ERROR_ALREADY_DEFINED => sprintf(__('%1$s: %2$s'), $object, __('Item already defined')),
+            ERROR_NOT_FOUND => sprintf(__s('%1$s: %2$s'), $object, __s('Unable to get item')),
+            ERROR_RIGHT => sprintf(__s('%1$s: %2$s'), $object, __s('Authorization error')),
+            ERROR_COMPAT => sprintf(__s('%1$s: %2$s'), $object, __s('Incompatible items')),
+            ERROR_ON_ACTION => sprintf(__s('%1$s: %2$s'), $object, __s('Error on executing the action')),
+            ERROR_ALREADY_DEFINED => sprintf(__s('%1$s: %2$s'), $object, __s('Item already defined')),
             default => '',
         };
     }
@@ -1332,10 +1331,6 @@ class CommonGLPI implements CommonGLPIInterface
      */
     public function getKBLinks()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (!($this instanceof CommonDBTM)) {

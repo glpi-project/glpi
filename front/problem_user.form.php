@@ -42,7 +42,6 @@ use Glpi\Exception\Http\BadRequestHttpException;
  * @since 0.83
  */
 
-/** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
 $link = new Problem_User();

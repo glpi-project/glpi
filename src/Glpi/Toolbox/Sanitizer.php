@@ -35,7 +35,6 @@
 
 namespace Glpi\Toolbox;
 
-use DBmysql;
 use Stringable;
 use Toolbox;
 
@@ -422,7 +421,6 @@ class Sanitizer
             return $value;
         }
 
-        /** @var DBmysql $DB */
         global $DB;
         return $DB->escape($value);
     }

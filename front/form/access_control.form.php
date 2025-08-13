@@ -36,7 +36,6 @@
 require_once(__DIR__ . '/../_check_webserver_config.php');
 
 use Glpi\Form\AccessControl\FormAccessControl;
-use Psr\Log\LoggerInterface;
 
 use function Safe\json_encode;
 
@@ -70,7 +69,6 @@ try {
     }
 } catch (Throwable $e) {
     // Log error
-    /** @var LoggerInterface $PHPLOGGER */
     global $PHPLOGGER;
     $PHPLOGGER->error(
         $e->getMessage() . ": " . json_encode($_POST),
@@ -78,7 +76,7 @@ try {
     );
 
     Session::addMessageAfterRedirect(
-        __('An unexpected error occurred'),
+        __s('An unexpected error occurred'),
         false,
         ERROR
     );

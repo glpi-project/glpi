@@ -523,7 +523,6 @@ TWIG, $twig_params);
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!$withtemplate) {
@@ -608,7 +607,6 @@ TWIG, $twig_params);
      */
     protected static function countForActor(CommonDBTM $item): int
     {
-        /** @var DBmysql $DB **/
         global $DB;
 
         /** @var CommonITILObject $itil */
@@ -662,7 +660,6 @@ TWIG, $twig_params);
      **/
     public static function showListForItem(CommonDBTM $item, $withtemplate = 0, $options = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!static::$itemtype_1::canView()) {
@@ -778,10 +775,6 @@ TWIG, $twig_params);
      **/
     public static function dropdownMyDevices($userID = 0, $entity_restrict = -1, $itemtype = '', $items_id = 0, $options = [])
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $params = [
@@ -939,10 +932,6 @@ TWIG, $twig_params);
      */
     private static function getMyAssigneeDevices(int $userID, mixed $entity_restrict = -1, array &$already_add = []): array
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $devices = [];
@@ -997,10 +986,6 @@ TWIG, $twig_params);
      */
     private static function getMyGroupsDevices(int $userID, mixed $entity_restrict = -1, array &$already_add = []): array
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $devices = [];
@@ -1099,10 +1084,6 @@ TWIG, $twig_params);
      */
     private static function getLinkedSoftware(array $devices, mixed $entity_restrict = -1, array &$already_add = []): array
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $software = [];
@@ -1170,10 +1151,6 @@ TWIG, $twig_params);
      */
     private static function getLinkedItemsToComputers(array $devices, mixed $entity_restrict = -1, array &$already_add = []): array
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $linked_items = [];
@@ -1259,7 +1236,6 @@ TWIG, $twig_params);
      **/
     public static function dropdown($options = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $p = array_replace([
@@ -1340,7 +1316,6 @@ TWIG, $twig_params);
      **/
     public static function showFormMassiveAction($ma)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $dropdown_params = [
@@ -1635,7 +1610,6 @@ TWIG, $twig_params);
         $entity_restrict = -1,
         $options = []
     ) {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $params = [static::$items_id_1 => 0,

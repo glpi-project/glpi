@@ -104,7 +104,6 @@ final class RichText
         bool $preserve_case = false,
         bool $preserve_line_breaks = false
     ): string {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $content = self::normalizeHtmlContent($content);
@@ -318,7 +317,6 @@ HTML;
      */
     private static function fixImagesPath(string $content): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $patterns = [

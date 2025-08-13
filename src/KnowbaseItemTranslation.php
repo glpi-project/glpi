@@ -85,9 +85,9 @@ class KnowbaseItemTranslation extends CommonDBChild
         if (!$withtemplate) {
             switch ($item::class) {
                 case self::class:
-                    $ong[1] = self::getTypeName(1);
+                    $ong[1] = self::createTabEntry(self::getTypeName(1));
                     if ($item->canUpdateItem()) {
-                        $ong[3] = __('Edit');
+                        $ong[3] = self::createTabEntry(__('Edit'), icon: 'ti ti-edit');
                     }
                     return $ong;
             }
@@ -320,7 +320,6 @@ TWIG, $twig_params);
      **/
     public static function getAlreadyTranslatedForItem(KnowbaseItem $item): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $tab = [];

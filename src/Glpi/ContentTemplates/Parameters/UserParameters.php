@@ -89,7 +89,6 @@ class UserParameters extends AbstractParameters
 
     protected function defineValues(CommonDBTM $user): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $fields = $user->fields;

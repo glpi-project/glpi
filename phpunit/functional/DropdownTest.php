@@ -2519,7 +2519,6 @@ HTML;
 
     public function testShowTimeStamp()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $CFG_GLPI["time_step"] = 30;
         $out = \Dropdown::showTimeStamp('timestamp', [

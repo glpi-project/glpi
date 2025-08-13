@@ -40,6 +40,9 @@ await import('select2/dist/js/select2.full').then((select2) => {
     // Select2 exports a function that registers itself as a jQuery plugin
     select2.default();
 });
+await import('lodash').then((lodash) => {
+    window._ = lodash.default;
+});
 
 // Add a flag variable to know in other scripts if they are run in tests. Should not affect how they behave, just how functions/vars in non-modules are bound.
 window.GLPI_TEST_ENV = true;

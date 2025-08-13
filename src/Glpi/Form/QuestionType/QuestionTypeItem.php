@@ -109,7 +109,6 @@ class QuestionTypeItem extends AbstractQuestionType implements FormQuestionDataC
      */
     public function getAllowedItemtypes(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         return [

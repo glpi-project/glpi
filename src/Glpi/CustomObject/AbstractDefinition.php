@@ -35,7 +35,6 @@
 namespace Glpi\CustomObject;
 
 use CommonDBTM;
-use DBmysql;
 use DisplayPreference;
 use Dropdown;
 use Gettext\Languages\Category as Language_Category;
@@ -201,7 +200,6 @@ abstract class AbstractDefinition extends CommonDBTM
 
     public function showForm($ID, array $options = [])
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $this->initForm($ID, $options);
@@ -257,7 +255,6 @@ abstract class AbstractDefinition extends CommonDBTM
      */
     protected function showProfilesForm(): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $possible_rights = $this->getPossibleCustomObjectRights();
@@ -333,7 +330,6 @@ abstract class AbstractDefinition extends CommonDBTM
      */
     protected function showTranslationForm(): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $asset_name_translations = $this->getDecodedTranslationsField();
@@ -661,7 +657,6 @@ abstract class AbstractDefinition extends CommonDBTM
      */
     protected function syncProfilesRights(): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $rightname = $this->getCustomObjectRightname();
@@ -917,7 +912,6 @@ TWIG, ['name' => $name, 'value' => $value]);
      */
     protected function validateTranslationsArray(mixed $translations): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!is_array($translations)) {
@@ -959,7 +953,6 @@ TWIG, ['name' => $name, 'value' => $value]);
      */
     public static function getPluralFormsForLanguage(string $language): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // check language exists in GLPI configuration
@@ -1008,7 +1001,6 @@ TWIG, ['name' => $name, 'value' => $value]);
      */
     protected function validateProfileArray(mixed $profiles, bool $check_values = true): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!is_array($profiles)) {

@@ -39,7 +39,6 @@ class BarcodeManager
 {
     public function generateQRCode(CommonDBTM $item)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         if (
             $item->isNewItem() ||

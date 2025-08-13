@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 use Glpi\Application\View\TemplateRenderer;
-use Psr\SimpleCache\CacheInterface;
 
 class Calendar_Holiday extends CommonDBRelation
 {
@@ -66,7 +65,6 @@ class Calendar_Holiday extends CommonDBRelation
      */
     public static function showForCalendar(Calendar $calendar)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $calendar->getField('id');
@@ -108,8 +106,7 @@ class Calendar_Holiday extends CommonDBRelation
 
         if ($canedit) {
             TemplateRenderer::getInstance()->display('pages/setup/calendar_holiday.html.twig', [
-                'item' => new self(),
-                'calendars_id' => $ID,
+                'calendar' => $calendar,
                 'used' => $used,
                 'params' => [
                     'canedit' => true,
@@ -218,10 +215,6 @@ class Calendar_Holiday extends CommonDBRelation
      */
     public function getHolidaysForCalendar(int $calendars_id): array
     {
-        /**
-         * @var DBmysql $DB
-         * @var CacheInterface $GLPI_CACHE
-         */
         global $DB, $GLPI_CACHE;
 
         $cache_key = $this->getCalendarHolidaysCacheKey($calendars_id);
@@ -260,7 +253,6 @@ class Calendar_Holiday extends CommonDBRelation
      */
     public function invalidateHolidayCache(int $holidays_id): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $success = true;
@@ -302,7 +294,6 @@ class Calendar_Holiday extends CommonDBRelation
      */
     private function invalidateCalendarCache(int $calendars_id): bool
     {
-        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
         return $GLPI_CACHE->delete($this->getCalendarHolidaysCacheKey($calendars_id));
     }

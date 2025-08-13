@@ -35,7 +35,6 @@
 
 namespace Glpi\OAuth;
 
-use DBmysql;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
@@ -58,7 +57,6 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
 
     public function persistNewAccessToken(AccessTokenEntityInterface $accessTokenEntity): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $DB->insert('glpi_oauth_access_tokens', [
@@ -72,7 +70,6 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
 
     public function revokeAccessToken($tokenId): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $DB->delete('glpi_oauth_access_tokens', ['identifier' => $tokenId]);
@@ -80,7 +77,6 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
 
     public function isAccessTokenRevoked($tokenId): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

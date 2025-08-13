@@ -35,10 +35,6 @@
 
 require_once(__DIR__ . '/../_check_webserver_config.php');
 
-/**
- * @var array $CFG_GLPI
- */
-
 use Glpi\Asset\Asset;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Event;

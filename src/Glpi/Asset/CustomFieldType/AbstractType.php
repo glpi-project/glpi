@@ -34,7 +34,6 @@
 
 namespace Glpi\Asset\CustomFieldType;
 
-use DBmysql;
 use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Asset\CustomFieldOption\BooleanOption;
 use Glpi\Asset\CustomFieldOption\ProfileRestrictOption;
@@ -111,7 +110,6 @@ abstract class AbstractType implements TypeInterface
 
     protected function getCommonSearchOptionData(): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         return [

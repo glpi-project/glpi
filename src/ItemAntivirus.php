@@ -258,26 +258,22 @@ class ItemAntivirus extends CommonDBChild
      **/
     public function showForm($ID, array $options = [])
     {
-        $itemtype = $this->fields['itemtype'];
-
-        if (!Session::haveRight($itemtype::$rightname, READ)) {
-            return false;
+        if (isset($options['parent'])) {
+            $options['itemtype'] = $options['parent']::class;
+            $options['items_id'] = $options['parent']->getID();
         }
 
-        if (!is_a($itemtype, CommonDBTM::class, true)) {
-            return false;
-        }
-
-        $asset = new $itemtype();
         if ($ID > 0) {
+            $asset = getItemForItemtype($this->fields['itemtype']);
             $this->check($ID, READ);
             $asset->getFromDB($this->fields['items_id']);
         } else {
+            $asset = getItemForItemtype($options['itemtype']);
             $this->check(-1, CREATE, $options);
             $asset->getFromDB($options['items_id']);
         }
 
-        $options['canedit'] = Session::haveRight($itemtype::$rightname, UPDATE);
+        $options['canedit'] = $asset->can($asset->getID(), UPDATE);
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('components/form/item_antivirus.html.twig', [
             'item'   => $this,
@@ -299,7 +295,6 @@ class ItemAntivirus extends CommonDBChild
      **/
     private static function showForItem(CommonDBTM $asset, $withtemplate = 0)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $asset->fields['id'];
@@ -324,11 +319,15 @@ class ItemAntivirus extends CommonDBChild
             ]
         );
 
-        TemplateRenderer::getInstance()->display('components/form/item_antivirus_item.html.twig', [
-            'canedit'               => ($canedit && !(!empty($withtemplate) && ($withtemplate == 2))),
-            'has_antivirus'         => ($result->numrows() != 0),
-            'antivirus_form_url'    => ItemAntivirus::getFormURL() .
-                                        "?itemtype=$itemtype&items_id=$ID&withtemplate=" . $withtemplate,
+        TemplateRenderer::getInstance()->display('components/form/viewsubitem.html.twig', [
+            'type' => self::class,
+            'parenttype' => $itemtype,
+            'items_id' => $asset::getForeignKeyField(),
+            'id' => $ID,
+            'cancreate' => ($canedit && !(!empty($withtemplate) && ($withtemplate == 2))),
+            'add_new_label' => __('Add an antivirus'),
+            'ajax_form_submit' => true,
+            'reload_tab' => true,
         ]);
 
         $antivirus = new self();

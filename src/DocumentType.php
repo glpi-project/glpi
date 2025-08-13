@@ -122,7 +122,6 @@ class DocumentType extends CommonDropdown
 
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!is_array($values)) {
@@ -171,7 +170,6 @@ class DocumentType extends CommonDropdown
      **/
     public static function showAvailableTypesLink($options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $p = [
@@ -209,7 +207,6 @@ class DocumentType extends CommonDropdown
      */
     public static function getUploadableFilePattern(): string
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (self::$uploadable_patterns === null) {

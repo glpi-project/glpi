@@ -225,7 +225,6 @@ TWIG, $twig_params);
      */
     public static function getItemTypesForRules()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $types = [];

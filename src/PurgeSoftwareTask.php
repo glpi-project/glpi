@@ -69,7 +69,6 @@ class PurgeSoftwareTask
 
     protected function purgeItems(array $scope, $em, int $max): int
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $total = 0;

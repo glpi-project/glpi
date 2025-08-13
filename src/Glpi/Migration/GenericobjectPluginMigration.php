@@ -817,6 +817,9 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                     $asset = $this->importItem(
                         $asset_class,
                         input: $input,
+                        options: [
+                            'disable_infocom_creation' => true,
+                        ]
                     );
 
                     $this->mapItem(

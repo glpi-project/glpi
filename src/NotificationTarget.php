@@ -579,7 +579,6 @@ class NotificationTarget extends CommonDBChild
      **/
     public function addToRecipientsList(array $data)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $new_lang = '';
 
@@ -875,7 +874,6 @@ class NotificationTarget extends CommonDBChild
      **/
     final public function addForGroup($manager, $group_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // members/managers of the group allowed on object entity
@@ -1033,7 +1031,6 @@ class NotificationTarget extends CommonDBChild
 
     public function addProfilesToTargets()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $profiles = $DB->request(['FROM' => Profile::getTable()]);
@@ -1052,7 +1049,6 @@ class NotificationTarget extends CommonDBChild
      **/
     final public function addGroupsToTargets($entity)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Filter groups which can be notified and have members (as notifications are sent to members)
@@ -1167,7 +1163,6 @@ class NotificationTarget extends CommonDBChild
      **/
     final public function addUserByField($field, $search_in_object = false)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $id = [];
@@ -1242,7 +1237,6 @@ class NotificationTarget extends CommonDBChild
      */
     final public function addForProfile($profiles_id)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
@@ -1300,7 +1294,6 @@ class NotificationTarget extends CommonDBChild
      **/
     public function getUrlBase()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $url_base = trim(Entity::getUsedConfig('url_base', $this->getEntity(), '', ''));
@@ -1413,7 +1406,6 @@ class NotificationTarget extends CommonDBChild
 
     private function removeExcludedTargets(array $target_list)
     {
-        /** @var DBmysql $DB */
         global $DB;
         $exclusions = iterator_to_array($DB->request([
             'SELECT' => ['type', 'items_id'],
@@ -1682,7 +1674,6 @@ class NotificationTarget extends CommonDBChild
      **/
     public static function countForGroup(Group $group)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $count = $DB->request([
@@ -1720,7 +1711,6 @@ class NotificationTarget extends CommonDBChild
      **/
     public static function showForGroup(Group $group): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!Notification::canView()) {

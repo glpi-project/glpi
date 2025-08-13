@@ -35,9 +35,6 @@
 
 use function Safe\preg_match;
 
-/**
- * @var DBmysql $DB
- */
 global $DB;
 
 header("Content-Type: text/html; charset=UTF-8");

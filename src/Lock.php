@@ -77,10 +77,6 @@ class Lock extends CommonGLPI
      **/
     public static function showForItem(CommonDBTM $item)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $ID       = $item->getID();
@@ -1293,7 +1289,6 @@ TWIG);
         $is_deleted = false,
         ?CommonDBTM $checkitem = null
     ) {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!is_subclass_of($itemtype, CommonDBTM::class)) {
@@ -1369,7 +1364,6 @@ TWIG);
         CommonDBTM $baseitem,
         array $ids
     ) {
-        /** @var DBmysql $DB */
         global $DB;
 
         switch ($ma->getAction()) {

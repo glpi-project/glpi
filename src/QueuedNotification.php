@@ -403,9 +403,6 @@ class QueuedNotification extends CommonDBTM
 
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
-        /**
-         * @var array $CFG_GLPI
-         */
         global $CFG_GLPI;
 
         if (!is_array($values)) {
@@ -551,10 +548,6 @@ class QueuedNotification extends CommonDBTM
      */
     public static function getPendings($send_time = null, $limit = 20, $limit_modes = null, $extra_where = [])
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if ($send_time === null) {
@@ -657,7 +650,6 @@ class QueuedNotification extends CommonDBTM
      **/
     public static function cronQueuedNotificationClean(?CronTask $task = null)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $vol = 0;
@@ -690,10 +682,6 @@ class QueuedNotification extends CommonDBTM
      **/
     public static function cronQueuedNotificationCleanStaleAjax(?CronTask $task = null)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $vol = 0;

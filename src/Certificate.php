@@ -682,7 +682,6 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
      **/
     public static function getTypes($all = false)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $types = $CFG_GLPI['certificate_types'];
@@ -719,10 +718,6 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
      **/
     public static function cronCertificate($task = null)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (!$CFG_GLPI['use_notifications']) {

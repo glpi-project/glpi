@@ -931,10 +931,8 @@ class LockedfieldTest extends DbTestCase
     {
         $this->login('glpi', 'glpi');
 
-        /** @var \DBmysql $DB */
         global $DB;
 
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         foreach ($CFG_GLPI['inventory_lockable_objects'] as $itemtype) {
             $this->assertTrue($DB->fieldExists($itemtype::getTable(), 'is_dynamic'), "$itemtype does not have is_dynamic field");

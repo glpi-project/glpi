@@ -35,7 +35,6 @@
 
 namespace Glpi\CalDAV\Traits;
 
-use DBmysql;
 use EmptyIterator;
 use Group;
 use Iterator;
@@ -121,7 +120,6 @@ trait CalDAVPrincipalsTrait
     protected function getVisibleGroupsIterator(): Iterator
     {
 
-        /** @var DBmysql $DB */
         global $DB;
 
         if (

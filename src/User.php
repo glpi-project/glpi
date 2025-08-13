@@ -241,7 +241,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
 
         //prevent delete / purge from API
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         if ($this->fields['id'] == $CFG_GLPI['system_user']) {
             return false;
@@ -272,7 +271,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
     public static function isMassiveActionAllowed(int $items_id): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         return $CFG_GLPI['system_user'] != $items_id;
     }
@@ -285,7 +283,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
      */
     public function computePreferences()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (isset($this->fields['id'])) {
@@ -313,7 +310,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
      */
     final public function loadPreferencesInSession(): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->computePreferences();
@@ -375,7 +371,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         switch (get_class($item)) {
@@ -439,7 +434,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
     public function post_getEmpty()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->fields["is_active"] = 1;
@@ -453,7 +447,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
     public function pre_deleteItem()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $entities = $this->getEntities();
@@ -489,8 +482,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
     public function cleanDBonPurge()
     {
-
-        /** @var DBmysql $DB */
         global $DB;
 
         // ObjectLock does not extends CommonDBConnexity
@@ -671,7 +662,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
      */
     public static function getUsersIdByEmails(string $email, array $condition = []): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $query = [
@@ -843,7 +833,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
     public function prepareInputForAdd($input)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $input = $this->cleanInput($input);
@@ -1041,7 +1030,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
     public function prepareInputForUpdate($input)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $input = $this->cleanInput($input);
@@ -1218,8 +1206,8 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 if ($ignored_fields !== []) {
                     Session::addMessageAfterRedirect(
                         sprintf(
-                            __('You are not allowed to update the following fields: %s'),
-                            implode(', ', $ignored_fields)
+                            __s('You are not allowed to update the following fields: %s'),
+                            htmlescape(implode(', ', $ignored_fields))
                         ),
                         false,
                         ERROR
@@ -1598,7 +1586,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
      */
     public function syncLdapGroups()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // input["_groups"] not set when update from user.form or preference
@@ -1833,7 +1820,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
      */
     public function syncDynamicEmails()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $userUpdated = false;
@@ -1914,7 +1900,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
     protected function computeFriendlyName()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (isset($this->fields["id"]) && ($this->fields["id"] > 0)) {
@@ -1979,7 +1964,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
      */
     private function getFromLDAPGroupVirtual($ldap_connection, array $ldap_method, $userdn, $login): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Search in DB the ldap_field we need to search for in LDAP
@@ -2095,7 +2079,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
      */
     private function getFromLDAPGroupDiscret($ldap_connection, array $ldap_method, $userdn, $login)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // No group_member_field : unable to get group
@@ -2153,10 +2136,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
      */
     public function getFromLDAP($ldap_connection, array $ldap_method, $userdn, $login, $import = true)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         // we prevent some delay...
@@ -2495,7 +2474,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
      */
     public function getFromIMAP(array $mail_method, $name)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // we prevent some delay..
@@ -2553,10 +2531,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
      */
     public function getFromSSO()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $a_field = [];
@@ -2664,7 +2638,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
      */
     public function blankPassword()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!empty($this->fields["name"])) {
@@ -2771,8 +2744,6 @@ HTML;
      */
     public function showForm($ID, array $options = [])
     {
-        /**
-         * @var DBmysql $DB */
         global $DB;
 
         // Affiche un formulaire User
@@ -2859,10 +2830,6 @@ HTML;
      */
     public function showMyForm($target, $ID)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         // Affiche un formulaire User
@@ -2913,7 +2880,6 @@ HTML;
 
     public function pre_updateInDB()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (($key = array_search('name', $this->updates)) !== false) {
@@ -3050,7 +3016,6 @@ HTML;
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         switch ($ma->getAction()) {
@@ -3184,7 +3149,7 @@ HTML;
                                 }
                             } catch (ForgetPasswordException $e) {
                                 $ma->itemDone(self::class, $id, MassiveAction::ACTION_KO);
-                                $ma->addMessage(sprintf(__('%1$s: %2$s'), $user->getFriendlyName(), $e->getMessage()));
+                                $ma->addMessage(htmlescape(sprintf(__('%1$s: %2$s'), $user->getFriendlyName(), $e->getMessage())));
                             }
                         } else {
                             $ma->itemDone(self::class, $id, MassiveAction::ACTION_KO);
@@ -3698,7 +3663,6 @@ HTML;
      */
     public static function getDelegateGroupsForUser($entities_id = '')
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -3786,7 +3750,6 @@ HTML;
         $inactive_deleted = false,
         $with_no_right = 0
     ) {
-        /** @var DBmysql $DB */
         global $DB;
 
 
@@ -4194,7 +4157,6 @@ HTML;
      */
     public static function dropdown($options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         // Default values
         $p = [
@@ -4503,7 +4465,6 @@ HTML;
      */
     public static function changeAuthMethod(array $IDs = [], $authtype = 1, $server = 0)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
@@ -4618,10 +4579,6 @@ HTML;
      */
     public function showItems($tech)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $ID = $this->getField('id');
@@ -4796,10 +4753,6 @@ HTML;
      */
     public static function getOrImportByEmail($email = '', bool $createuserfromemail = false)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $iterator = $DB->request([
@@ -4865,7 +4818,6 @@ HTML;
      */
     public static function manageDeletedUserInLdap($users_id)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         //The only case where users_id can be null if when a user has been imported into GLPI
@@ -4948,7 +4900,6 @@ HTML;
      */
     public static function manageRestoredUserInLdap($users_id): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         //The only case where users_id can be null if when a user has been imported into GLPI
@@ -5020,7 +4971,6 @@ HTML;
      */
     public static function getIdByField($field, $value)
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -5179,7 +5129,6 @@ HTML;
 
         // Clear password reset token data.
         // Use a direct DB query to bypass rights checks.
-        /** @var DBmysql $DB */
         global $DB;
         $DB->update(
             'glpi_users',
@@ -5287,7 +5236,6 @@ HTML;
      */
     public function forgetPassword(string $email, bool $firstpassword = false): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         if ($firstpassword) {
             $event = 'passwordinit';
@@ -5343,7 +5291,6 @@ HTML;
 
         // Store password reset token and date.
         // Use a direct DB query to bypass rights checks.
-        /** @var DBmysql $DB */
         global $DB;
         $DB->update(
             'glpi_users',
@@ -5485,7 +5432,6 @@ HTML;
      */
     public static function getUniqueToken($field = 'personal_token')
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ok = false;
@@ -5537,7 +5483,6 @@ HTML;
      */
     public function getAuthToken($field = 'personal_token', $force_new = false)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($this->isNewItem()) {
@@ -5590,7 +5535,6 @@ HTML;
      */
     public static function checkDefaultPasswords()
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $passwords = ['glpi'      => 'glpi',
@@ -5631,7 +5575,6 @@ HTML;
      */
     public static function getURLForPicture($picture, $full = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $url = Toolbox::getPictureUrl($picture, $full);
@@ -5654,7 +5597,6 @@ HTML;
      */
     public static function getThumbnailURLForPicture(?string $picture = null)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!empty($picture)) {
@@ -5856,10 +5798,6 @@ HTML;
      */
     public static function cronPasswordExpiration(CronTask $task)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $expiration_delay   = (int) $CFG_GLPI['password_expiration_delay'];
@@ -6010,7 +5948,6 @@ HTML;
      */
     public function getPasswordExpirationTime()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!array_key_exists('id', $this->fields) || $this->fields['id'] < 1) {
@@ -6043,7 +5980,6 @@ HTML;
      */
     public function shouldChangePassword()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($this->hasPasswordExpired()) {
@@ -6083,7 +6019,6 @@ HTML;
 
     public function getPasswordExpirationMessage(): ?string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $expiration_msg = null;
         if ($this->fields['authtype'] == Auth::DB_GLPI && $this->shouldChangePassword()) {
@@ -6103,7 +6038,6 @@ HTML;
 
     public static function getFriendlyNameSearchCriteria(string $filter): array
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $table     = self::getTable();
@@ -6136,7 +6070,6 @@ HTML;
 
     public static function getFriendlyNameFields(string $alias = "name")
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $config = Config::getConfigurationValues('core');
@@ -6367,7 +6300,6 @@ HTML;
      */
     public function getPicturePath(bool $enable_anonymization = false): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($enable_anonymization && Session::getCurrentInterface() == 'helpdesk' && Entity::getAnonymizeConfig() !== Entity::ANONYMIZE_DISABLED) {
@@ -6458,10 +6390,6 @@ HTML;
      */
     public static function getUserByForgottenPasswordToken(string $token): ?User
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (empty($token)) {
@@ -6512,7 +6440,6 @@ HTML;
      */
     private static function createUserFromMail(string $email): ?User
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -6552,7 +6479,6 @@ HTML;
      */
     public static function getNameForLog(int $ID): string
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -6632,7 +6558,6 @@ HTML;
      */
     final public function isSubstituteOf(int $users_id_delegator, bool $use_date_range = true): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($this->isNewItem()) {
@@ -6691,7 +6616,6 @@ HTML;
      */
     public function validatePassword(string $password, array &$errors = []): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Clear errors
@@ -6756,7 +6680,6 @@ HTML;
      */
     final public function isUserNotificationEnable(): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $user_pref = $this->fields['is_notif_enable_default'];

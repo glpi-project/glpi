@@ -235,7 +235,6 @@ GRAPHQL;
 
     public function testGetDirectlyWithoutRight()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $this->assertTrue($DB->insert('glpi_tickets', [
@@ -284,7 +283,6 @@ GRAPHQL;
 
     public function testGetTicketIndirectlyWithoutRight()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $this->assertTrue($DB->insert('glpi_tickets', [
@@ -317,6 +315,24 @@ GRAPHQL;
                         $this->assertNull($ticket['entity']['comment']);
                     }
                 });
+        });
+    }
+
+    public function testGraphQLScope()
+    {
+        $this->login(api_options: ['scope' => 'api']);
+        $request = new Request('POST', '/GraphQL', [], 'query { Ticket { id name } }');
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isAccessDenied();
+        });
+        $this->login(api_options: ['scope' => 'graphql']);
+        $request = new Request('POST', '/GraphQL', [], 'query { Ticket { id name } }');
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK();
         });
     }
 }

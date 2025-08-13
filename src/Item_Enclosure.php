@@ -79,7 +79,6 @@ class Item_Enclosure extends CommonDBRelation
      **/
     public static function showItems(Enclosure $enclosure): bool
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ID = $enclosure->getID();
@@ -155,10 +154,6 @@ class Item_Enclosure extends CommonDBRelation
 
     public function showForm($ID, array $options = [])
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         echo "<div class='center'>";

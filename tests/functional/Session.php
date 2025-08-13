@@ -1318,9 +1318,6 @@ class Session extends \DbTestCase
      */
     public function testFaqAccessAccess(int $rights, bool $use_public_faq, ?\Throwable $exception): void
     {
-        /**
-         * @var array $CFG_GLPI
-         */
         global $CFG_GLPI;
 
         $this->login();

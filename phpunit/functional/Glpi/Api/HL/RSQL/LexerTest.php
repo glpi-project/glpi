@@ -61,6 +61,74 @@ class LexerTest extends GLPITestCase
                 'name==(test', // In this case, "(test" is a valid value
                 [[5, 'name'], [6, '=='], [7, '(test']],
             ],
+            [
+                'name!=test', // Only operator that doesn't start with '='
+                [[5, 'name'], [6, '!='], [7, 'test']],
+            ],
+            [
+                'name=in=test',
+                [[5, 'name'], [6, '=in='], [7, 'test']],
+            ],
+            [
+                'name=out=test',
+                [[5, 'name'], [6, '=out='], [7, 'test']],
+            ],
+            [
+                'name=lt=test',
+                [[5, 'name'], [6, '=lt='], [7, 'test']],
+            ],
+            [
+                'name=le=test',
+                [[5, 'name'], [6, '=le='], [7, 'test']],
+            ],
+            [
+                'name=gt=test',
+                [[5, 'name'], [6, '=gt='], [7, 'test']],
+            ],
+            [
+                'name=ge=test',
+                [[5, 'name'], [6, '=ge='], [7, 'test']],
+            ],
+            [
+                'name=like=test',
+                [[5, 'name'], [6, '=like='], [7, 'test']],
+            ],
+            [
+                'name=ilike=test',
+                [[5, 'name'], [6, '=ilike='], [7, 'test']],
+            ],
+            [
+                'name=isnull=test',
+                [[5, 'name'], [6, '=isnull='], [7, 'test']],
+            ],
+            [
+                'name=isnull=',
+                [[5, 'name'], [6, '=isnull='], [8, '']],
+            ],
+            [
+                'name=notnull=test',
+                [[5, 'name'], [6, '=notnull='], [7, 'test']],
+            ],
+            [
+                'name=notnull=',
+                [[5, 'name'], [6, '=notnull='], [8, '']],
+            ],
+            [
+                'name=empty=test',
+                [[5, 'name'], [6, '=empty='], [7, 'test']],
+            ],
+            [
+                'name=empty=',
+                [[5, 'name'], [6, '=empty='], [8, '']],
+            ],
+            [
+                'name=notempty=test',
+                [[5, 'name'], [6, '=notempty='], [7, 'test']],
+            ],
+            [
+                'name=notempty=',
+                [[5, 'name'], [6, '=notempty='], [8, '']],
+            ],
         ];
     }
 
@@ -92,13 +160,6 @@ class LexerTest extends GLPITestCase
         $this->expectException(RSQLException::class);
         $this->expectExceptionMessage('RSQL query has an incomplete operator in filter for property "id"');
         Lexer::tokenize($query);
-    }
-
-    public function testMissingValue()
-    {
-        $this->expectException(RSQLException::class);
-        $this->expectExceptionMessage('RSQL query is missing a value in filter for property "id"');
-        Lexer::tokenize('id=like=');
     }
 
     public static function unclosedGroupProvider()

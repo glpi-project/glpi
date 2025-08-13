@@ -81,7 +81,6 @@ class NotificationTemplateTest extends DbTestCase
 
     public static function linksProvider(): iterable
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $base_url = $CFG_GLPI['url_base'];

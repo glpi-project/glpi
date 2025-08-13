@@ -1098,7 +1098,6 @@ class Webhook extends CommonDBTM implements FilterableInterface
      */
     public static function raise(string $event, CommonDBTM $item): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // Ignore raising if the table doesn't exist (happens during install/update)
