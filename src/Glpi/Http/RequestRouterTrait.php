@@ -170,7 +170,6 @@ trait RequestRouterTrait
             // Fallback to requested URI
             $path = $init_path;
 
-
             // Clean trailing `/`.
             $path = \rtrim($path, '/');
 
