@@ -8209,4 +8209,70 @@ HTML,
             'recipientname' => 'tech',
         ]));
     }
+
+    public function testShowListForItem(): void
+    {
+        $this->login('glpi', 'glpi');
+
+        $user = getItemByTypeName(User::class, 'glpi');
+        $normal = getItemByTypeName(User::class, 'normal');
+
+        // Ticket not visible for normal user
+        $ticket1_id = $this->createItem(
+            \Ticket::class,
+            [
+                'name'        => 'Test Ticket 1',
+                'content'     => 'Test Ticket 1 Content',
+                'entities_id' => 0,
+                '_actors'     => [
+                    'requester' => [
+                        ['itemtype' => 'User', 'items_id' => $user->getID()],
+                    ],
+                ],
+            ],
+        )->getID();
+
+        // Ticket visible for normal user
+        $ticket2_id = $this->createItem(
+            \Ticket::class,
+            [
+                'name'        => 'Test Ticket 2',
+                'content'     => 'Test Ticket 2 Content',
+                'entities_id' => 0,
+                '_actors'     => [
+                    'requester' => [
+                        ['itemtype' => 'User', 'items_id' => $user->getID()],
+                    ],
+                    'observer' => [
+                        ['itemtype' => 'User', 'items_id' => $normal->getID()],
+                    ],
+                ],
+            ],
+        )->getID();
+
+        $this->login('normal', 'normal');
+
+        // Remove permission to see all tickets
+        $_SESSION['glpiactiveprofile']['ticket'] = Ticket::READMY;
+
+        ob_start();
+        Ticket::showListForItem($user);
+        $out = ob_get_clean();
+
+        $crawler = new Crawler($out);
+        $rows = $crawler->filter('table.tab_cadre_fixehov tr');
+
+        $found = [];
+        foreach ($rows as $row) {
+            $cells = (new Crawler($row))->filter('td');
+            if (!empty($cells->getNode(1))) {
+                $ticket_id = trim($cells->getNode(1)->textContent);
+                if (!empty($ticket_id)) {
+                    $found[$ticket_id] = true;
+                }
+            }
+        }
+        $this->assertArrayNotHasKey($ticket1_id, $found);
+        $this->assertArrayHasKey($ticket2_id, $found);
+    }
 }
