@@ -327,7 +327,7 @@ class ReservationItem extends CommonDBChild
                 <input type="hidden" name="items_id" value="{{ item.getID() }}">
                 <input type="hidden" name="itemtype" value="{{ get_class(item) }}">
                 <input type="hidden" name="entities_id" value="{{ item.getEntityID() }}">
-                <input type="hidden" name="is_recursive" value="{{ item.isRecursive() }}">
+                <input type="hidden" name="is_recursive" value="{{ item.isRecursive() ? 1 : 0 }}">
                 <input type="hidden" name="is_active" value="{{ reservable ? (toggle_state ? 0 : 1) : 1 }}">
                 {% if reservable %}
                     <button name="update" class="btn btn-{{ toggle_state ? 'danger' : 'primary' }} mx-1">

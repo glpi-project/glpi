@@ -63,8 +63,8 @@
     ) }}
 
     {% if item.isNewID(id) %}
-        <input type='hidden' name='projects_id' value='{{ projects_id }}'>
-        <input type='hidden' name='is_recursive' value='{{ recursive }}'>
+        <input type="hidden" name="projects_id" value="{{ projects_id }}">
+        <input type="hidden" name="is_recursive" value="{{ recursive ? 1 : 0 }}">
     {% endif %}
 
     {{ fields.dropdownField(
