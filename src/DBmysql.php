@@ -1220,7 +1220,12 @@ class DBmysql
         }
 
         //handle aliases
-        $names = preg_split('/\s+AS\s+/i', $name);
+        try {
+            $names = preg_split('/\s+AS\s+/i', $name);
+        } catch (Throwable $e) {
+            $names = [];
+            $name = 'nonono';
+        }
         if (count($names) > 2) {
             throw new RuntimeException(
                 'Invalid field name ' . $name

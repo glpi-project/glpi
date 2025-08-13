@@ -3525,7 +3525,22 @@ JS
                 continue;
             }
 
+            $available_criteria = $rule->getCriterias();
+            $available_actions   = $rule->getActions();
+
             foreach ($rulexml->xpath('./rulecriteria') as $criteriaxml) {
+                if (!array_key_exists((string) $criteriaxml->criteria, $available_criteria)) {
+                    trigger_error(
+                        sprintf(
+                            'Unknown criteria `%s` for rule `%s`.',
+                            (string) $criteriaxml->criteria,
+                            (string) $rulexml->uuid
+                        ),
+                        E_USER_WARNING
+                    );
+                    $has_errors = true;
+                    continue;
+                }
                 $criteria_input = [
                     'rules_id'  => $rule_id,
                     'criteria'  => (string) $criteriaxml->criteria,
@@ -3546,6 +3561,18 @@ JS
             }
 
             foreach ($rulexml->xpath('./ruleaction') as $actionxml) {
+                if (!array_key_exists((string) $actionxml->field, $available_actions)) {
+                    trigger_error(
+                        sprintf(
+                            'Unknown action field `%s` for rule `%s`.',
+                            (string) $actionxml->field,
+                            (string) $rulexml->uuid
+                        ),
+                        E_USER_WARNING
+                    );
+                    $has_errors = true;
+                    continue;
+                }
                 $action_input = [
                     'rules_id'    => $rule_id,
                     'action_type' => (string) $actionxml->action_type,

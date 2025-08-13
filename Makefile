@@ -129,7 +129,7 @@ test-db-update: ## Update testing's database
 		--force \
 		--skip-db-checks \
 		--env=testing
-.PHONY: db-update
+.PHONY: test-db-update
 
 ## —— Dependencies —————————————————————————————————————————————————————————————
 composer: ## Run a composer command, example: make composer c='require mypackage/package'
