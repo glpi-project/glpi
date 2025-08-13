@@ -82,7 +82,7 @@ final class SessionManager
         $path_matches = [];
         if (preg_match(Plugin::PLUGIN_RESOURCE_PATTERN, $path, $path_matches) === 1) {
             $plugin_key      = $path_matches['plugin_key'];
-            $plugin_resource = $path_matches['plugin_resource'] ?? '/';
+            $plugin_resource = $path_matches['plugin_resource'];
 
             foreach (self::$plugins_statelass_paths[$plugin_key] ?? [] as $pattern) {
                 if (preg_match($pattern, $plugin_resource) === 1) {
