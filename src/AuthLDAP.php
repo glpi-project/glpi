@@ -2877,7 +2877,7 @@ TWIG, $twig_params);
                 'No host provided for connection!'
             );
         }
-        if (!is_numeric($port) || empty($port) || $port === NOT_AVAILABLE) {
+        if (!is_numeric($port) || empty($port)) {
             throw new RuntimeException(
                 'No port provided for connection!'
             );
