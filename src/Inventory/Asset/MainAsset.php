@@ -854,12 +854,11 @@ abstract class MainAsset extends InventoryAsset
             //Or printer that has not changed its IP
             //do not update to prevents discoveries to remove all ports, IPs and so on found with network inventory
             if (
-                $itemtype == NetworkEquipment::getType()
-                ||
                 (
-                    $itemtype == Printer::getType()
-                && !AssetPrinter::needToBeUpdatedFromDiscovery($this->item, $val)
+                    $itemtype == NetworkEquipment::getType()
+                    || $itemtype == Printer::getType()
                 )
+                && !(\Glpi\Inventory\Asset\NetworkEquipment::needToBeUpdatedFromDiscovery($this->item, $val))
             ) {
                 //only update autoupdatesystems_id, last_inventory_update, snmpcredentials_id
                 $input = $this->handleInput($val, $this->item);
