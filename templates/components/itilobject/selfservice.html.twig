@@ -46,6 +46,9 @@
     'input_class': 'col-lg-9',
 }) %}
 
+{% set user_info_is_enabled = config('use_check_pref') %}
+{% set delegation_is_enabled = not params['nodelegate'] %}
+
 <div class="container-lg">
 
     {% if has_tickets_to_validate and not url_validate is empty %}
@@ -67,16 +70,18 @@
 
         <div class="card-body bg-secondary-lt pt-0">
             {% if delegating|length %}
-                <div class="row align-items-end w-100">
+                <div class="row">
                     <div class="col-sm-6">
 
                         {% set actor_add_form %}
-                            <div id="delegate_other{{ rand }}" class="card mt-2">
+                            <div id="delegate_other{{ rand }}" class="card mt-2  {{ delegation_is_enabled ? "" : "d-none" }}">
                                 <div class="card-body">
-                                    {{ item.showActorAddFormOnCreate(
-                                        constant('CommonITILActor::REQUESTER'),
-                                        params
-                                    )|u.truncate(0) }}
+                                    {% if delegation_is_enabled %}
+                                        {{ item.showActorAddFormOnCreate(
+                                            constant('CommonITILActor::REQUESTER'),
+                                            params
+                                        )|u.truncate(0) }}
+                                    {% endif %}
                                 </div>
                             </div>
                         {% endset %}
@@ -90,7 +95,9 @@
                             })
                         ) }}
                     </div>
-                    <div class="col-sm-6 {{ config('use_check_pref') and params['nodelegate'] ? "" : "d-none" }}" id="user-info{{ rand }}-block">
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 {{ user_info_is_enabled and not delegation_is_enabled ? "" : "d-none" }}" id="user-info{{ rand }}-block">
                         {% set personal_information %}
                         <div class="d-inline-flex">
                             <div class="card mb-0" id="user-info{{ rand }}">
@@ -110,7 +117,7 @@
                         {{ fields.field(
                             '',
                             personal_information,
-                            __('Check your personnal information'),
+                            __('Check your personal information'),
                             base_field_options
                         ) }}
                     </div>
@@ -274,18 +281,29 @@ $(function () {
 
     $('#dropdown_nodelegate{{ rand }}').on('change', function() {
         var is_for_me = ($(this).val() == '1');
-        $('#user-info{{ rand }}-block').toggleClass('d-none', !is_for_me);
-        $('#delegate_other{{ rand }} .card-body')
-            .html("")
-            .load('{{ path('ajax/dropdownDelegationUsers.php') }}', {
-                'right': "delegate",
-                'nodelegate': (is_for_me ? 1 : 0),
-                '_users_id_requester': {{ params['_users_id_requester'] }},
-                '_users_id_requester_notif': {{ params['_users_id_requester_notif']|json_encode()|raw }},
-                'use_notification': {{ params['_users_id_requester_notif']['use_notification'] is array ? params['_users_id_requester_notif']['use_notification'][0] : params['_users_id_requester_notif']['use_notification'] }},
-                'entity_restrict':  {{ session('glpiactive_entity') }}
-            });
-    })
+        {% if user_info_is_enabled %}
+            $('#user-info{{ rand }}-block').toggleClass('d-none', !is_for_me);
+        {% endif %}
+
+        if (is_for_me) {
+            $('#delegate_other{{ rand }}').addClass("d-none");
+            $('#delegate_other{{ rand }} .card-body').html("");
+        } else {
+            $('#delegate_other{{ rand }} .card-body')
+                .html("")
+                .load('{{ path('ajax/dropdownDelegationUsers.php') }}', {
+                    'right': "delegate",
+                    'nodelegate': (is_for_me ? 1 : 0),
+                    '_users_id_requester': {{ params['_users_id_requester'] }},
+                    '_users_id_requester_notif': {{ params['_users_id_requester_notif']|json_encode()|raw }},
+                    'use_notification': {{ params['_users_id_requester_notif']['use_notification'] is array ? params['_users_id_requester_notif']['use_notification'][0] : params['_users_id_requester_notif']['use_notification'] }},
+                    'entity_restrict':  {{ session('glpiactive_entity') }}
+                }, () => {
+                    $('#delegate_other{{ rand }}').removeClass("d-none");
+                })
+            ;
+        }
+    });
 
     saveActorsToDom();
 });
