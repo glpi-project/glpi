@@ -107,7 +107,7 @@ switch ($type) {
         $supplier = Supplier::getById($_GET["id"]);
         $title   = sprintf(
             __s('%1$s: %2$s'),
-            Supplier::getTypeName(1),
+            htmlescape(Supplier::getTypeName(1)),
             $supplier !== false ? $supplier->getLink(['comments' => true]) : ''
         );
         break;
@@ -119,7 +119,7 @@ switch ($type) {
         $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $type);
         $title   = sprintf(
             __s('%1$s: %2$s'),
-            User::getTypeName(1),
+            htmlescape(User::getTypeName(1)),
             getUserLink($_GET["id"])
         );
         break;

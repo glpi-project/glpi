@@ -142,13 +142,13 @@ final class KnowbaseItemController extends AbstractController
                         && $data['visibility_count'] > 0))
             ) {
                 $icon_class = "ti ti-help faq";
-                $icon_title = __s("This item is part of the FAQ");
+                $icon_title = __("This item is part of the FAQ");
             } elseif (
                 isset($data['visibility_count'])
                 && $data['visibility_count'] <= 0
             ) {
                 $icon_class = "ti ti-eye-off not-published";
-                $icon_title = __s("This item is not published yet");
+                $icon_title = __("This item is not published yet");
             }
 
             $results[] = [

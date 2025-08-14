@@ -4137,7 +4137,7 @@ class CommonDBTM extends CommonGLPI
 
             if (in_array(static::getType(), Appliance::getTypes(true))) {
                 $actions['Appliance' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item'] =
-                "<i class='" . Appliance::getIcon() . "'></i>" . _sx('button', 'Associate to an appliance');
+                "<i class='" . htmlescape(Appliance::getIcon()) . "'></i>" . _sx('button', 'Associate to an appliance');
             }
 
             if (in_array(static::getType(), $CFG_GLPI['rackable_types'])) {

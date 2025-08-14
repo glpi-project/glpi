@@ -412,7 +412,7 @@ class Contract extends CommonDBTM implements StateInterface
             $actions[$prefix . 'add']    = "<i class='ti ti-package'></i>" . _sx('button', 'Add an item');
             $actions[$prefix . 'remove'] = "<i class='ti ti-package-off'></i>" . _sx('button', 'Remove an item');
             $actions['Contract_Supplier' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-               = "<i class='" . Supplier::getIcon() . "'></i>" . _sx('button', 'Add a supplier');
+               = "<i class='" . htmlescape(Supplier::getIcon()) . "'></i>" . _sx('button', 'Add a supplier');
         }
 
         return $actions;
@@ -1627,7 +1627,7 @@ class Contract extends CommonDBTM implements StateInterface
         if (in_array($itemtype, $CFG_GLPI["contract_types"], true)) {
             if (self::canUpdate()) {
                 $action_prefix                    = 'Contract_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;
-                $actions[$action_prefix . 'add']    = "<i class='" . self::getIcon() . "'></i>" .
+                $actions[$action_prefix . 'add']    = "<i class='" . htmlescape(self::getIcon()) . "'></i>" .
                                                 _sx('button', 'Add a contract');
                 $actions[$action_prefix . 'remove'] = _sx('button', 'Remove a contract');
             }

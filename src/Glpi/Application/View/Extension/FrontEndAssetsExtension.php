@@ -242,16 +242,16 @@ class FrontEndAssetsExtension extends AbstractExtension
             $locales_domains[$plugin] = Plugin::getPluginFilesVersion($plugin);
         }
 
-        $script = <<<JAVASCRIPT
-         $(function() {
-            i18n.setLocale('{$_SESSION['glpilanguage']}');
-         });
+        $script = "
+            $(function() {
+                i18n.setLocale('" . \jsescape($_SESSION['glpilanguage']) . "');
+            });
 
-         $.fn.select2.defaults.set(
-            'language',
-            '{$CFG_GLPI['languages'][$_SESSION['glpilanguage']][2]}',
-         );
-JAVASCRIPT;
+            $.fn.select2.defaults.set(
+                'language',
+                '" . \jsescape($CFG_GLPI['languages'][$_SESSION['glpilanguage']][2]) . "',
+            );
+        ";
 
         foreach ($locales_domains as $locale_domain => $locale_version) {
             $locales_path = Html::getPrefixedUrl(
@@ -259,17 +259,17 @@ JAVASCRIPT;
                 . '?domain=' . $locale_domain
                 . '&v=' . FrontEnd::getVersionCacheKey($locale_version)
             );
-            $script .= <<<JAVASCRIPT
-            $(function() {
-               $.ajax({
-                  type: 'GET',
-                  url: '{$locales_path}',
-                  success: function(json) {
-                     i18n.loadJSON(json, '{$locale_domain}');
-                  }
-               });
-            });
-JAVASCRIPT;
+            $script .= "
+                $(function() {
+                    $.ajax({
+                        type: 'GET',
+                        url: '" . \jsescape($locales_path) . "',
+                        success: function(json) {
+                            i18n.loadJSON(json, '" . \jsescape($locale_domain) . "');
+                        }
+                    });
+                });
+            ";
         }
 
         return Html::scriptBlock($script);
