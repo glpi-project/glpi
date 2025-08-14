@@ -39,7 +39,10 @@ use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\preg_match;
 
-final class SessionManager
+/**
+ * @final
+ */
+class SessionManager
 {
     use RequestRouterTrait;
 
