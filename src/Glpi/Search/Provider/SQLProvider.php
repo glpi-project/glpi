@@ -5966,7 +5966,6 @@ final class SQLProvider implements SearchProviderInterface
 
                         switch ($table . "." . $field) {
                             case "glpi_tickets.time_to_resolve":
-                            case "glpi_tickets.internal_time_to_resolve":
                             case "glpi_problems.time_to_resolve":
                             case "glpi_changes.time_to_resolve":
                                 $solve_date = $data[$ID][0]['solvedate'];
