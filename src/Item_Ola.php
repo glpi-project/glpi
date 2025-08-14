@@ -165,28 +165,26 @@ class Item_Ola extends CommonDBRelation
             $item_ola_data['waiting_time']
         );
 
-        // - update end_time
+        // - update end_time (if not already set)
         // for TTO, endtime is when the ticket is assigned to the dedicated group.
         // - except if update is triggered by a rule
-        // - except if end_time is already set
-        // @todoseb refacto en mettant end_time, sur l'ensemble.
-
-        if ($item_ola_data['ola_type'] === SLM::TTO) {
-            if (
-                (!isset($ticket->input['_rule_process']) || !$ticket->input['_rule_process'])
-                && $item_ola_data['end_time'] == null
-                // current is in the OLA group Or ticket is just assigned to a group associated with the OLA Or
-                && (self::isCurrentUserInOlaGroup((int) $ola->fields['groups_id']) || in_array($ola->fields['groups_id'], $new_assigned_groups) || self::isCurrentUserInNewAssignedUsers($new_assigned_users))
-            ) {
-                $item_ola_data['end_time'] = Session::getCurrentTime();
+        if (is_null($item_ola_data['end_time'])) {
+            if ($item_ola_data['ola_type'] === SLM::TTO) {
+                if (
+                    (!isset($ticket->input['_rule_process']) || !$ticket->input['_rule_process'])
+                    // current is in the OLA group Or ticket is just assigned to a group associated with the OLA Or
+                    && (self::isCurrentUserInOlaGroup((int) $ola->fields['groups_id']) || in_array($ola->fields['groups_id'], $new_assigned_groups) || self::isCurrentUserInNewAssignedUsers($new_assigned_users))
+                ) {
+                    $item_ola_data['end_time'] = Session::getCurrentTime();
+                }
             }
-        }
 
-        // For TTR, end_time is when the ticket is closed
-        // set it only if it is not already set
-        if ($item_ola_data['ola_type'] === SLM::TTR && $item_ola_data['end_time'] == null) {
-            if ($ticket->isClosed() || $ticket->isSolved()) {
-                $item_ola_data['end_time'] = Session::getCurrentTime();
+            // For TTR, end_time is when the ticket is closed
+            // set it only if it is not already set
+            if ($item_ola_data['ola_type'] === SLM::TTR) {
+                if ($ticket->isClosed() || $ticket->isSolved()) {
+                    $item_ola_data['end_time'] = Session::getCurrentTime();
+                }
             }
         }
 
@@ -320,9 +318,6 @@ class Item_Ola extends CommonDBRelation
         return $this->sort($merged_data);
     }
 
-    /**
-     * @todo better fetch item from $this, but for performance issue, we rely on existing Ticket instance.
-     */
     private function isLate(Ticket $ticket): bool
     {
         $now_timestamp = strtotime(Session::getCurrentTime());
@@ -410,26 +405,25 @@ class Item_Ola extends CommonDBRelation
      * - closes ticket (via compute()->doLevelForTicket())
      *
      * update items_ola which has no end_time of tickets
-     * @todo also filter by ticket status ? to ovoid useless updates
      * @used-by CronTask
      *
      * @return int 1 if at least one item_ola has been processed, 0 otherwise
      */
     public static function cronOlaTicket(CronTask $cronTask): int
     {
-        $io = new static();
-        $ios = $io->find(['end_time' => null, 'itemtype' => Ticket::class]);
+        $items_olas = new static();
+        $ios = $items_olas->find(['end_time' => null, 'itemtype' => Ticket::class]);
 
         OLA::deleteAllLevelsToDo(); // todo levels are rebuild in Item_Ola::compute()
 
         $processed = 0;
-        foreach ($ios as $io) {
-            $itil = getItemForItemtype($io['itemtype']);
+        foreach ($ios as $item_ola) {
+            $itil = getItemForItemtype($item_ola['itemtype']);
             if (!$itil instanceof Ticket) {
                 throw new RuntimeException('Item_Ola cron only works for Ticket at the moment. Implemetation needed.');
             }
-            $itil->getFromDB($io['items_id']);
-            static::compute($itil, (int) $io['olas_id']);
+            $itil->getFromDB($item_ola['items_id']);
+            static::compute($itil, (int) $item_ola['olas_id']);
             $processed++;
         }
 

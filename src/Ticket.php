@@ -2521,7 +2521,7 @@ JAVASCRIPT;
         ];
 
         // Minimal OLA/SLA TTO/TTR due time
-        // @todo label is wrong, nothing to do with escalation level, and nothing to do with future (can give date in the past)
+        // Label is wrong, nothing to do with escalation level, and nothing to do with future (can give date in the past)
         $max_date = new QueryExpression('99999999');
         $tab[] = [
             'id'                 => '188',
