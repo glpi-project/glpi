@@ -47,7 +47,7 @@
     ) }}
 
     {# group #}
-    {{ fields.dropdownField('Group', 'groups_id', item.fields['groups_id'], __('Group'), {
+    {{ fields.dropdownField('Group', 'groups_id', item.fields['groups_id'], _n('Group', 'Groups', get_plural_number()), {
         'helper': __('Actions done by users of this group will trigger the TTO/TTR.'),
         'rand': rand,
         'condition': {'is_assign': 1}
