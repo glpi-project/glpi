@@ -1,13 +1,6 @@
 #!/bin/bash
 set -e -u -x -o pipefail
 
-ATOUM_ADDITIONNAL_OPTIONS=""
-if [[ "$CODE_COVERAGE" = true ]]; then
-  export COVERAGE_DIR="coverage-functional"
-else
-  ATOUM_ADDITIONNAL_OPTIONS="--no-code-coverage";
-fi
-
 # Get additional test arguments from -f, -d and -m options.
 SCOPE="-d tests/functional"
 METHODS=""
@@ -34,7 +27,7 @@ vendor/bin/atoum \
   --bootstrap-file tests/bootstrap.php \
   --fail-if-void-methods \
   --fail-if-skipped-methods \
-  $ATOUM_ADDITIONNAL_OPTIONS \
+  --no-code-coverage \
   --max-children-number 1 \
   $SCOPE \
   $METHODS
