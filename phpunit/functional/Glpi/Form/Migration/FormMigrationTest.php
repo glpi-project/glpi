@@ -2265,11 +2265,10 @@ final class FormMigrationTest extends DbTestCase
         $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
 
         // Verify that the question has not been migrated
-        countElementsInTable(
+        this->assertEquals(0, countElementsInTable(
             'glpi_forms_questions',
             ['name' => $question_name],
-            0
-        );
+        ));
 
         // Verify that the migration result contains an error
         $this->assertTrue($result->hasErrors());
