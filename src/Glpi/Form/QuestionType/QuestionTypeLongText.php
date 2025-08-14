@@ -158,8 +158,6 @@ TWIG;
                 {
                     'enable_richtext': true,
                     'enable_images'  : is_authenticated,
-                    'editor_height'  : "100",
-                    'rows'           : 1,
                     'init'           : question is not null ? true   : false,
                     'is_horizontal'  : false,
                     'full_width'     : true,
