@@ -90,9 +90,6 @@ class OLA extends LevelAgreement
      */
     public function cleanDBonPurge()
     {
-        /** @var DBmysql $DB */
-        global $DB;
-
         // Clean levels
         $ola_fk = getForeignKeyFieldForItemType(static::class);
         $level = getItemForItemtype(static::$levelclass);
