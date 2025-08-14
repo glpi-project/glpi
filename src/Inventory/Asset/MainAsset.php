@@ -41,7 +41,6 @@ use AutoUpdateSystem;
 use Blacklist;
 use CommonDBTM;
 use Dropdown;
-use Glpi\Inventory\Asset\Printer as AssetPrinter;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
 use Glpi\Toolbox\Sanitizer;

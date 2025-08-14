@@ -36,10 +36,8 @@
 
 namespace Glpi\Inventory\Asset;
 
-use Blacklist;
 use CommonDBTM;
 use Glpi\Toolbox\Sanitizer;
-use IPAddress;
 use Printer as GPrinter;
 use PrinterLog;
 use PrinterModel;
