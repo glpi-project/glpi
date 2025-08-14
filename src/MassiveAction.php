@@ -591,7 +591,7 @@ class MassiveAction
         ) {
             $actions[self::class . self::CLASS_ACTION_SEPARATOR . 'add_transfer_list']
                   = "<i class='ti ti-corner-right-up'></i>" .
-                    _x('button', 'Add to transfer list');
+                    _sx('button', 'Add to transfer list');
         }
     }
 
@@ -640,14 +640,14 @@ class MassiveAction
             if ($canpurge) {
                 if (in_array($itemtype, Item_Devices::getConcernedItems())) {
                     $actions[$self_pref . 'purge_item_but_devices']
-                                             = _x('button', 'Delete permanently but keep devices');
-                    $actions[$self_pref . 'purge']  = _x('button', 'Delete permanently and remove devices');
+                                             = _sx('button', 'Delete permanently but keep devices');
+                    $actions[$self_pref . 'purge']  = _sx('button', 'Delete permanently and remove devices');
                 } else {
-                    $actions[$self_pref . 'purge']  = _x('button', 'Delete permanently');
+                    $actions[$self_pref . 'purge']  = _sx('button', 'Delete permanently');
                 }
             }
             if ($candelete) {
-                $actions[$self_pref . 'restore'] = _x('button', 'Restore');
+                $actions[$self_pref . 'restore'] = _sx('button', 'Restore');
             }
         } else {
             if (
@@ -657,12 +657,12 @@ class MassiveAction
                      && Infocom::canUpdate()))
             ) {
                 //TRANS: select action 'update' (before doing it)
-                $actions[$self_pref . 'update'] = _x('button', 'Update');
+                $actions[$self_pref . 'update'] = _sx('button', 'Update');
 
                 if ($cancreate && Toolbox::hasTrait($itemtype, Clonable::class)) {
-                    $actions[$self_pref . 'clone'] = "<i class='ti ti-copy'></i>" . _x('button', 'Clone');
+                    $actions[$self_pref . 'clone'] = "<i class='ti ti-copy'></i>" . _sx('button', 'Clone');
                     if ($item->maybeTemplate()) {
-                        $actions[$self_pref . 'create_template'] = "<i class='ti ti-copy'></i>" . _x('button', 'Create template');
+                        $actions[$self_pref . 'create_template'] = "<i class='ti ti-copy'></i>" . _sx('button', 'Create template');
                     }
                 }
             }
@@ -683,17 +683,17 @@ class MassiveAction
                 && !$item->useDeletedToLockIfDynamic()
             ) {
                 if ($candelete) {
-                    $actions[$self_pref . 'delete'] = _x('button', 'Put in trashbin');
+                    $actions[$self_pref . 'delete'] = _sx('button', 'Put in trashbin');
                 }
             } elseif ($canpurge) {
                 if ($item instanceof CommonDBRelation) {
-                    $actions[$self_pref . 'purge'] = _x('button', 'Delete permanently the relation with selected elements');
+                    $actions[$self_pref . 'purge'] = _sx('button', 'Delete permanently the relation with selected elements');
                 } else {
-                    $actions[$self_pref . 'purge'] = _x('button', 'Delete permanently');
+                    $actions[$self_pref . 'purge'] = _sx('button', 'Delete permanently');
                 }
                 if ($item instanceof CommonDropdown) {
                     $actions[$self_pref . 'purge_but_item_linked']
-                     = _x('button', 'Delete permanently even if linked items');
+                     = _sx('button', 'Delete permanently even if linked items');
                 }
             }
 
@@ -707,12 +707,12 @@ class MassiveAction
             // Amend comment for objects with a 'comment' field
             $item->getEmpty();
             if ($canupdate && isset($item->fields['comment'])) {
-                $actions[$self_pref . 'amend_comment'] = "<i class='ti ti-message-circle'></i>" . __("Amend comment");
+                $actions[$self_pref . 'amend_comment'] = "<i class='ti ti-message-circle'></i>" . __s("Amend comment");
             }
 
             // Add a note for objects with the UPDATENOTE rights
             if (Session::haveRight($item::$rightname, UPDATENOTE)) {
-                $actions[$self_pref . 'add_note'] = "<i class='ti ti-note'></i>" . __("Add note");
+                $actions[$self_pref . 'add_note'] = "<i class='ti ti-note'></i>" . __s("Add note");
             }
 
             // Plugin Specific actions

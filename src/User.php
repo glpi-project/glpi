@@ -3008,7 +3008,7 @@ HTML;
             $actions[$prefix . 'disable_2fa']           = "<i class='ti ti-shield-off'></i>" .
                                                       __s('Disable 2FA');
             $actions[$prefix . 'send_pw_reset'] = "<i class='ti ti-mail'></i>" . __s('Send password reset email');
-            $actions[$prefix . 'reapply_rights']            = "<i class='" . Profile::getIcon() . "'></i>" .
+            $actions[$prefix . 'reapply_rights']            = "<i class='" . htmlescape(Profile::getIcon()) . "'></i>" .
                                                       __s('Reapply authorization assignment rules');
         }
         return $actions;

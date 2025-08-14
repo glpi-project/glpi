@@ -1302,8 +1302,8 @@ TWIG);
             Session::haveRight($itemtype::$rightname, UPDATE)
             && in_array($itemtype, $CFG_GLPI['inventory_types'] + $CFG_GLPI['inventory_lockable_objects'], true)
         ) {
-            $actions[$action_unlock_component] = __('Unlock components');
-            $actions[$action_unlock_fields] = __('Unlock fields');
+            $actions[$action_unlock_component] = __s('Unlock components');
+            $actions[$action_unlock_fields] = __s('Unlock fields');
         }
     }
 

@@ -2132,21 +2132,21 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             if (ITILFollowup::canCreate()) {
                 $icon = ITILFollowup::getIcon();
                 $actions['ITILFollowup' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_followup']
-                = "<i class='$icon'></i>" .
+                = "<i class='" . htmlescape($icon) . "'></i>" .
                  __s('Add a new followup');
             }
 
             if (TicketTask::canCreate()) {
                 $icon = TicketTask::getIcon();
                 $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task']
-                = "<i class='$icon'></i>" .
+                = "<i class='" . htmlescape($icon) . "'></i>" .
                  __s('Add a new task');
             }
 
             if (TicketValidation::canCreate()) {
                 $icon = TicketValidation::getIcon();
                 $actions['TicketValidation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'submit_validation']
-                = "<i class='$icon'></i>" .
+                = "<i class='" . htmlescape($icon) . "'></i>" .
                  __s('Approval request');
             }
 

@@ -342,7 +342,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                 'dropdown_params' => $dropdown_params,
                 'asset' => $asset,
                 'label' => __('Connect an item'),
-                'btn_label' => _sx('button', 'Connect'),
+                'btn_label' => _x('button', 'Connect'),
                 'withtemplate' => (int) $withtemplate === 1 ? 1 : 0,
             ];
             // language=Twig
@@ -515,7 +515,7 @@ TWIG, $twig_params);
                 'label' => __('Connect to an item'),
                 'peripheral' => $peripheral,
                 'dropdown_params' => $dropdown_params,
-                'btn_label' => _sx('button', 'Connect'),
+                'btn_label' => _x('button', 'Connect'),
                 'withtemplate' => (int) $withtemplate === 1 ? 1 : 0,
             ];
             // language=Twig

@@ -101,7 +101,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_count_method']
                      = "<i class='ti ti-adjustments-alt'></i>" . __s('Change count method');
         $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_visibility']
-                     = "<i class='ti ti-eye-search'></i>" . __('Change visibility');
+                     = "<i class='ti ti-eye-search'></i>" . __s('Change visibility');
         if (Session::haveRight('transfer', READ)) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_entity']
                      = "<i class='ti ti-corner-right-up'></i>" . __s('Change entity');

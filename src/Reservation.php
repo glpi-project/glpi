@@ -1253,13 +1253,13 @@ JAVASCRIPT;
                 }
             }
             if ($show_all || !$reservable) {
-                $actions[$action_prefix . 'enable'] = "<i class='" . self::getIcon() . "'></i>" . __s('Authorize reservations');
+                $actions[$action_prefix . 'enable'] = "<i class='" . htmlescape(self::getIcon()) . "'></i>" . __s('Authorize reservations');
             }
             if ($show_all || $reservable) {
                 $actions[$action_prefix . 'disable'] = "<i class='ti ti-calendar-off'></i>" . __s('Prohibit reservations');
             }
             if ($show_all || ($reservable && !$available)) {
-                $actions[$action_prefix . 'available'] = "<i class='" . self::getIcon() . "'></i>" . __s('Make available for reservations');
+                $actions[$action_prefix . 'available'] = "<i class='" . htmlescape(self::getIcon()) . "'></i>" . __s('Make available for reservations');
             }
             if ($show_all || $available) {
                 $actions[$action_prefix . 'unavailable'] = "<i class='ti ti-calendar-off'></i>" . __s('Make unavailable for reservations');
