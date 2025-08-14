@@ -326,7 +326,7 @@ class RuleLocationTest extends DbTestCase
         $inventory = new Inventory($json);
 
         if ($inventory->inError()) {
-            $this->dump($inventory->getErrors());
+            dump($inventory->getErrors());
         }
         $this->assertFalse($inventory->inError());
         $this->assertEmpty($inventory->getErrors());

@@ -103,7 +103,7 @@ class RuleMatchedLogTest extends DbTestCase
         $date_add = $_SESSION['glpi_currenttime'];
 
         if ($inventory->inError()) {
-            $this->dump($inventory->getErrors());
+            dump($inventory->getErrors());
         }
         $this->assertFalse($inventory->inError());
         $this->assertEmpty($inventory->getErrors());
@@ -153,7 +153,7 @@ class RuleMatchedLogTest extends DbTestCase
         $inventoryupdate = new Inventory($jsonupdate);
         $date_update = $_SESSION['glpi_currenttime'];
         if ($inventoryupdate->inError()) {
-            $this->dump($inventoryupdate->getErrors());
+            dump($inventoryupdate->getErrors());
         }
         $this->assertFalse($inventoryupdate->inError());
         $this->assertEmpty($inventoryupdate->getErrors());

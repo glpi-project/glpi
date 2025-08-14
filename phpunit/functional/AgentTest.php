@@ -170,7 +170,7 @@ class AgentTest extends DbTestCase
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
         $this->assertFalse($inventory->inError());
@@ -274,7 +274,7 @@ class AgentTest extends DbTestCase
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
         $this->assertFalse($inventory->inError());
@@ -324,7 +324,7 @@ class AgentTest extends DbTestCase
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
         $this->assertFalse($inventory->inError());
@@ -378,7 +378,7 @@ class AgentTest extends DbTestCase
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
         $this->assertFalse($inventory->inError());
@@ -411,7 +411,7 @@ class AgentTest extends DbTestCase
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
         $this->assertFalse($inventory->inError());

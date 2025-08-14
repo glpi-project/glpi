@@ -6097,9 +6097,6 @@ class SearchTest extends DbTestCase
         sort($names);
         sort($expected);
 
-        //var_dump($data['sql']['search']);ob_flush();
-        //var_dump(getAllDataFromTable('glpi_tickets'));ob_flush();
-
         // Validate results
         $this->assertEquals(
             $expected,
