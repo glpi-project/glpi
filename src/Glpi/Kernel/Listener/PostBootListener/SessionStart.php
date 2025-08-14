@@ -95,13 +95,6 @@ final class SessionStart implements EventSubscriberInterface
 
         if (!$is_stateless) {
             Session::start();
-
-            // Copy the configuration defaults to the session
-            foreach ($CFG_GLPI['user_pref_field'] as $field) {
-                if (!isset($_SESSION["glpi$field"]) && isset($CFG_GLPI[$field])) {
-                    $_SESSION["glpi$field"] = $CFG_GLPI[$field];
-                }
-            }
         } else {
             // Stateless endpoints will often have to start their own PHP session (based on a token for instance).
             // Be sure to not use cookies defined in the request or to send a cookie in the response.
@@ -111,6 +104,14 @@ final class SessionStart implements EventSubscriberInterface
             // Indeed, the GLPI code often refers to the `$_SESSION` variable
             // and we have to set them to prevent massive undefined array key access.
             Session::initVars();
+        }
+
+        // Copy the "preference" defaults to the session, if they are not already set.
+        // They are set during the authentication but may be accessed in a sessionless context (cron, anonymous pages, ...).
+        foreach ($CFG_GLPI['user_pref_field'] as $field) {
+            if (!isset($_SESSION["glpi$field"]) && isset($CFG_GLPI[$field])) {
+                $_SESSION["glpi$field"] = $CFG_GLPI[$field];
+            }
         }
 
         Profiler::getInstance()->stop('SessionStart::execute');
