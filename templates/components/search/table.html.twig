@@ -148,10 +148,10 @@
                      {% set colkey = col['itemtype'] ~ '_' ~ col['id'] %}
                      {# showItem function returns "<td ...>...</td>" #}
                      {% if col['meta'] is defined and col['meta'] %}
-                        {{ showItem(0, row[colkey]['displayname'], 0, 0)|raw }}
+                        {{ showItem(0, row[colkey]['displayname'], 0, 0) }}
                      {% else %}
                         {# Add a data-searchopt-content-id to each td to allow easy css selectors for a whole column #}
-                        {{ showItem(0, row[colkey]['displayname'], 0, 0, "data-searchopt-content-id=\"" ~ col['id'] ~ "\" " ~ call('Search::displayConfigItem', [itemtype, col['id'], row]))|raw }}
+                        {{ showItem(0, row[colkey]['displayname'], 0, 0, "data-searchopt-content-id=\"" ~ col['id'] ~ "\" " ~ call('Search::displayConfigItem', [itemtype, col['id'], row])) }}
                      {% endif %}
                   {% endfor %}
 
