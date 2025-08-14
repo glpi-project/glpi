@@ -266,7 +266,7 @@ class LockedfieldTest extends DbTestCase
         $inventory = new Inventory($json);
 
         if ($inventory->inError()) {
-            $this->dump($inventory->getErrors());
+            dump($inventory->getErrors());
         }
         $this->assertFalse($inventory->inError());
         $this->assertEmpty($inventory->getErrors());
@@ -338,7 +338,7 @@ class LockedfieldTest extends DbTestCase
         $inventory = new Inventory($json);
 
         if ($inventory->inError()) {
-            $this->dump($inventory->getErrors());
+            dump($inventory->getErrors());
         }
         $this->assertFalse($inventory->inError());
         $this->assertEmpty($inventory->getErrors());
@@ -391,7 +391,7 @@ class LockedfieldTest extends DbTestCase
         $inventory = new Inventory($json);
 
         if ($inventory->inError()) {
-            $this->dump($inventory->getErrors());
+            dump($inventory->getErrors());
         }
         $this->assertFalse($inventory->inError());
         $this->assertEmpty($inventory->getErrors());
@@ -440,7 +440,7 @@ class LockedfieldTest extends DbTestCase
         $inventory = new Inventory($json);
 
         if ($inventory->inError()) {
-            $this->dump($inventory->getErrors());
+            dump($inventory->getErrors());
         }
         $this->assertFalse($inventory->inError());
         $this->assertEmpty($inventory->getErrors());
@@ -510,7 +510,7 @@ class LockedfieldTest extends DbTestCase
         $inventory = new Inventory($json);
 
         if ($inventory->inError()) {
-            $this->dump($inventory->getErrors());
+            dump($inventory->getErrors());
         }
         $this->assertFalse($inventory->inError());
         $this->assertEmpty($inventory->getErrors());
@@ -563,7 +563,7 @@ class LockedfieldTest extends DbTestCase
         $inventory = new Inventory($json);
 
         if ($inventory->inError()) {
-            $this->dump($inventory->getErrors());
+            dump($inventory->getErrors());
         }
         $this->assertFalse($inventory->inError());
         $this->assertEmpty($inventory->getErrors());
@@ -710,7 +710,7 @@ class LockedfieldTest extends DbTestCase
 
         $inventory = new Inventory($json);
         if ($inventory->inError()) {
-            $this->dump($inventory->getErrors());
+            dump($inventory->getErrors());
         }
         $this->assertFalse($inventory->inError());
         $this->assertEmpty($inventory->getErrors());
@@ -747,7 +747,7 @@ class LockedfieldTest extends DbTestCase
 
         $inventory = new Inventory($json);
         if ($inventory->inError()) {
-            $this->dump($inventory->getErrors());
+            dump($inventory->getErrors());
         }
         $this->assertFalse($inventory->inError());
         $this->assertEmpty($inventory->getErrors());
@@ -1019,7 +1019,7 @@ class LockedfieldTest extends DbTestCase
 
         // Output inventory errors if any are present (for debugging purposes)
         if ($inventory->inError()) {
-            $this->dump($inventory->getErrors());
+            dump($inventory->getErrors());
         }
 
         // Assert no error occurred during inventory conversion or import
