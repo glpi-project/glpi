@@ -122,7 +122,7 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
         $this->assertFalse($inventory->inError());
@@ -174,7 +174,7 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
         $this->assertFalse($inventory->inError());

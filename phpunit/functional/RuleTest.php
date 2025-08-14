@@ -651,7 +651,7 @@ class RuleTest extends DbTestCase
 
         //FIXME: missing tests?
         /*$result = $rule->getCriteriaDisplayPattern(9, \Rule::PATTERN_IS, 1);
-        var_dump($result);*/
+        dump($result);*/
     }
 
     public function testRanking()
