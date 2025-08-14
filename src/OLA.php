@@ -264,7 +264,7 @@ class OLA extends LevelAgreement
     {
         if (0 === $groups_id) {
             Session::addMessageAfterRedirect(
-                __('You must select a group to associate with the OLA.'),
+                __s('You must select a group to associate with the OLA.'),
                 false,
                 ERROR
             );
@@ -274,7 +274,7 @@ class OLA extends LevelAgreement
         if (!$this->canGroupBeAssociated($groups_id)) {
             Session::addMessageAfterRedirect(
                 sprintf(
-                    __('The group #%s is not allowed to be associated with an OLA. group.is_assign must be set to 1'),
+                    __s('The group #%d is not allowed to be associated with an OLA. group.is_assign must be set to 1'),
                     $groups_id
                 ),
                 false,
