@@ -2814,7 +2814,6 @@ final class SQLProvider implements SearchProviderInterface
             $specific_leftjoin_criteria = Plugin::doOneHook($plugin_name, $hook_closure);
             $specific_leftjoin_criteria ??= []; // convert null into an empty array
             if (!is_array($specific_leftjoin_criteria)) {
-                // Toolbox::deprecated('Plugin hook ' . $hook_function . ' should return an array of join criteria');
                 $specific_leftjoin_criteria = self::parseJoinString($specific_leftjoin_criteria);
             }
         }
@@ -2833,7 +2832,11 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     return [];
                 };
-                $specific_leftjoin_criteria = self::parseJoinString(Plugin::doOneHook($plugin_name, $hook_closure));
+                $specific_leftjoin_criteria = Plugin::doOneHook($plugin_name, $hook_closure);
+                $specific_leftjoin_criteria ??= []; // convert null into an empty array
+                if (!is_array($specific_leftjoin_criteria)) {
+                    $specific_leftjoin_criteria = self::parseJoinString($specific_leftjoin_criteria);
+                }
             }
         }
         if (!empty($linkfield)) {
