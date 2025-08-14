@@ -5006,7 +5006,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     QueryFunction::if(
                         condition: [
                             "{$table}.ola_type" => $ola_type_to_filter,
-                            // + ticket status is not WAITING // @todoseb à implementer ?
                             "$table.is_late" => 1,
                         ],
                         true_expression: new QueryExpression('1'),
@@ -5049,7 +5048,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     false_expression: new QueryExpression('0')
                 );
 
-            case 'internal_time_to_resolve':
             case 'time_to_resolve':
                 return QueryFunction::if(
                     condition: [

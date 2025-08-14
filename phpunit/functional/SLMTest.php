@@ -226,7 +226,6 @@ class SLMTest extends DbTestCase
         ]);
         $this->checkInput($ruleaction, $act_id, $act_input);
         // assign olas
-        // @todoseb reécrire avec RuleBuilder
         $act_id = $ruleaction->add($act_input = [
             'rules_id'    => $ruletid,
             'action_type' => 'append',
@@ -846,8 +845,6 @@ class SLMTest extends DbTestCase
     /**
      * Ensure all SLA time_to_own and time_to_resolve + OLA due_time are properly set
      * in a ticket as well as their escalation date
-     *
-     * @return void
      */
     public function testDueDatesAndEscalationDate(): void
     {
@@ -1895,8 +1892,6 @@ class SLMTest extends DbTestCase
             $this->assertContains($expected_la, array_column($associated_olas, 'olas_id'));
 
             // Check that the target date is correct (+ 2 hours)
-            //            dump(array_column($associated_olas, 'olas_id'));
-            //            dump($expected_la);
             $associated_ola = array_values(array_filter($associated_olas, fn($io) => $io['olas_id'] == $expected_la))[0];
             $this->assertEquals('2034-08-16 15:00:00', $associated_ola['due_time']); // tmp remettre
         }
@@ -1959,10 +1954,6 @@ class SLMTest extends DbTestCase
             array_unique(array_column($sa_levels_ticket, 'date'))
         );
     }
-
-    // @todo write tests to ensure that there is No execution of levels
-    // - when ticket status is CLOSED or CLOSED
-    // - when levelAgreement is an TTO and takeintoaccount_delay_stat is > 0
 
     /**
      * Escalation level changes when time passes for SLA TTR
@@ -2268,8 +2259,6 @@ class SLMTest extends DbTestCase
 
     /**
      * Test with two OLA TTO with escalation levels
-     * @todoseb tester avec ttr, mix tto/ttr, mix sla/ola
-     * @return void
      */
     public function testEscalationLevelsChangesWithMultiplesOlas(): void
     {
@@ -2307,13 +2296,10 @@ class SLMTest extends DbTestCase
             '_skip_auto_assign' => true,
         ]);
 
-        //        dump($ticket->getGroups(\CommonITILActor::ASSIGN));
-        //        dump($ticket->getUsers(\CommonITILActor::ASSIGN));
         assert(empty($ticket->getGroups(\CommonITILActor::ASSIGN) + $ticket->getUsers(\CommonITILActor::ASSIGN)), 'Ticket should not be assigned, escalation don\'t work for ola tto in this case.');
         assert(0 === $ticket->fields['takeintoaccount_delay_stat'], 'Ticket takeintoaccount_delay_stat field should be 0, escalation don\'t work for ola tto in this case.');
 
         // go 70 minutes forward, so esaclation level is reached
-        // @todoseb tester avant le delai pour voir l'état - doit être cohérent avec comportement précédent (ou pas, à voir)
         $this->setCurrentTime('2025-05-26 11:10:00');
 
         // -- assert : levels should be in olalevels_tickets
@@ -2324,10 +2310,6 @@ class SLMTest extends DbTestCase
             $map_level_to_olalevels_id($levels_todo)
         );
     }
-
-    // @todoseb write tests to ensure/document that there is No execution of levels
-    // - when ticket status is CLOSED or CLOSED
-    // - when levelAgreement is an TTO and takeintoaccount_delay_stat is > 0
 
     /**
      * Check recalculating the SLA when the SLA is changed to an SLA with a different calendar

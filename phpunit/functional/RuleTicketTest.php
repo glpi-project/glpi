@@ -52,7 +52,6 @@ use Ticket_Contract;
 require_once __DIR__ . '/../abstracts/RuleCommonITILObjectTest.php';
 
 /**
- * Test Plan / Spec (@todo need to be completed)
  * Ola :
  *  - Actions
  *      - assign an ola :
