@@ -124,7 +124,7 @@ final class IllustrationManagerTest extends GLPITestCase
             "cellphone",
         ];
         foreach ($to_check as $string) {
-            $this->assertStringContainsString('_sx("Icon", "' . $string . '")', $content);
+            $this->assertStringContainsString('_x("Icon", "' . $string . '")', $content);
         }
     }
 }
