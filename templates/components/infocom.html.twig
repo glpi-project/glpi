@@ -337,7 +337,7 @@
 
                      {% do call_plugin_hook_func(constant('Glpi\\Plugin\\Hooks::INFOCOM'), item) %}
 
-                     <div class="card-body mx-n2 mb-4  border-top">
+                     <div class="card-body mx-n2 border-top d-flex flex-row-reverse align-items-start flex-wrap">
                         {% if can_global_update %}
                            <button class="btn btn-primary me-2" type="submit" name="update">
                               <i class="ti ti-device-floppy"></i>
