@@ -302,7 +302,7 @@
                               'toadd'          : {'-1': __('Lifelong')},
                               'unit'           : 'month',
                               'disabled'       : disabled,
-                              'add_field_html' : '<span class="text-muted">' ~ __('Valid to %s')|format(warrantyexpir) ~ '</span>'
+                              'add_field_html' : warrantyexpir is not empty ? ('<span class="text-muted">' ~ __('Valid to %s')|format(warrantyexpir) ~ '</span>') : ''
                            }
                         ) }}
                      {% endif %}
