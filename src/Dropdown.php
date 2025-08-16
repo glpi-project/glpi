@@ -403,14 +403,8 @@ class Dropdown
             }
 
             // Supplier Links
-            if ($itemtype == "Supplier") {
-                /** @var Supplier $item */
-                if ($item->getFromDB($params['value'])) {
-                    $link_icon = '<div>';
-                    $link_icon .= $item->getLinks();
-                    $link_icon .= '</div>';
-                    $icon_array[] = $link_icon;
-                }
+            if ($item instanceof Supplier && $item->getFromDB($params['value'])) {
+                $icon_array[] = $item->getLinks();
             }
 
             // Location icon
