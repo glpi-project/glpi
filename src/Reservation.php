@@ -566,6 +566,16 @@ class Reservation extends CommonDBChild
             && count(self::getReservableItemtypes()) > 0
         );
 
+        $default_date = date('Y-m-d');
+        if (isset($_REQUEST['defaultDate'])) {
+            $default_date = $_REQUEST['defaultDate'];
+        } elseif (isset($_REQUEST['month'], $_REQUEST['year'])) {
+            $month = (int) $_REQUEST['month'];
+            $year  = (int) $_REQUEST['year'];
+            $default_date = sprintf('%04d-%02d-01', $year, $month);
+        }
+        $default_date = htmlescape($default_date);
+
         $js = "
             $(function() {
                 var reservation = new Reservations();
@@ -575,6 +585,7 @@ class Reservation extends CommonDBChild
                     rand: $rand,
                     can_reserve: " . ($can_reserve ? "true" : "false") . ",
                     now: '" . jsescape($_SESSION["glpi_currenttime"]) . "',
+                    defaultDate: '$default_date',
                 });
                 reservation.displayPlanning();
           });
@@ -1002,7 +1013,15 @@ class Reservation extends CommonDBChild
         echo "<h1>" . __s('Reservations for this item') . "</h1>";
         echo "<div id='reservations_planning_$rand' class='reservations-planning tabbed'></div>";
 
-        $defaultDate = htmlescape($_REQUEST['defaultDate'] ?? date('Y-m-d'));
+        $default_date = date('Y-m-d');
+        if (isset($_REQUEST['defaultDate'])) {
+            $default_date = $_REQUEST['defaultDate'];
+        } elseif (isset($_REQUEST['month'], $_REQUEST['year'])) {
+            $month = (int) $_REQUEST['month'];
+            $year  = (int) $_REQUEST['year'];
+            $default_date = sprintf('%04d-%02d-01', $year, $month);
+        }
+        $default_date = htmlescape($default_date);
         $now = date("Y-m-d H:i:s");
         $js = <<<JAVASCRIPT
             $(() => {
@@ -1013,7 +1032,7 @@ class Reservation extends CommonDBChild
                     is_tab: true,
                     rand: $rand,
                     currentv: 'listFull',
-                    defaultDate: '$defaultDate',
+                    defaultDate: '$default_date',
                     now: '$now',
                 });
                 reservation.displayPlanning();
@@ -1145,7 +1164,7 @@ JAVASCRIPT;
 
             if (!$is_old) {
                 [$annee, $mois] = explode("-", $data["start_date"]);
-                $href = htmlescape($CFG_GLPI["root_doc"]) . "/front/reservation.php?reservationitems_id={$data['id']}&mois_courant=$mois&annee_courante=$annee";
+                $href = htmlescape($CFG_GLPI["root_doc"]) . "/front/reservation.php?reservationitems_id={$data['id']}&month=$mois&year=$annee";
                 $entry['planning'] = "<a href='$href' title='" . __s('See planning') . "'>";
                 $entry['planning'] .= "<i class='" . Planning::getIcon() . "'></i>";
                 $entry['planning'] .= "<span class='sr-only'>" . __s('See planning') . "</span>";
