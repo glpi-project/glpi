@@ -1,4 +1,5 @@
 includes:
+    - vendor/phpstan/phpstan-deprecation-rules/rules.neon
     - .phpstan-baseline.php
     - .phpstan-baseline.specific.php
 
