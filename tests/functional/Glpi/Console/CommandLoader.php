@@ -278,8 +278,20 @@ PHP,
         $all_names_to_class = array_merge($core_names_to_class, $plugins_names_to_class);
 
         // Mock plugin
-        $plugin = $this->newMockInstance('Plugin');
-        $this->calling($plugin)->isActivated = true;
+        $plugin = new class extends \Plugin {
+            public static function getPlugins()
+            {
+                return ['awesome', 'random'];
+            }
+
+            public static function getPhpDir(string $plugin_key = "", $full = true)
+            {
+                return match ($plugin_key) {
+                    'awesome' => vfsStream::url('glpi/plugins/awesome'),
+                    'random' => vfsStream::url('glpi/tests/fixtures/plugins/random'),
+                };
+            }
+        };
 
         // Check with plugins
         $this->when(

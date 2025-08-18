@@ -35,7 +35,6 @@
 
 namespace Glpi\Console;
 
-use AppendIterator;
 use DirectoryIterator;
 use Glpi\Application\Environment;
 use Glpi\Kernel\Kernel;
@@ -224,37 +223,14 @@ class CommandLoader implements CommandLoaderInterface
             return;
         }
 
-        $plugins_directories = new AppendIterator();
-        foreach (GLPI_PLUGINS_DIRECTORIES as $directory) {
-            $directory = str_replace(GLPI_ROOT, $this->rootdir, $directory);
-            $plugins_directories->append(new DirectoryIterator($directory));
-        }
-
-        $already_loaded = [];
-
-        /** @var SplFileInfo $plugin_directory */
-        foreach ($plugins_directories as $plugin_directory) {
-            if (in_array($plugin_directory->getFilename(), ['.', '..'])) {
-                continue;
-            }
-
-            $plugin_key = $plugin_directory->getFilename();
-
-            if (in_array($plugin_key, $already_loaded)) {
-                continue; // Do not load twice commands of plugin that is installed on multiple locations
-            }
-
-            if (!$this->plugin->isActivated($plugin_key)) {
-                continue; // Do not load commands of disabled plugins
-            }
+        foreach ($this->plugin->getPlugins() as $plugin_key) {
+            $plugin_directory = $this->plugin->getPhpDir($plugin_key);
 
             foreach (['inc', 'src'] as $source_dir) {
-                $plugin_basedir = $plugin_directory->getPathname() . DIRECTORY_SEPARATOR . $source_dir;
+                $plugin_basedir = $plugin_directory . DIRECTORY_SEPARATOR . $source_dir;
                 if (!is_readable($plugin_basedir) || !is_dir($plugin_basedir)) {
                     continue;
                 }
-
-                $plugin_dirname = $plugin_directory->getFilename();
 
                 $plugin_files = new RecursiveIteratorIterator(
                     new RecursiveDirectoryIterator($plugin_basedir),
@@ -275,8 +251,8 @@ class CommandLoader implements CommandLoaderInterface
                         $file,
                         $plugin_basedir,
                         [
-                            NS_PLUG . ucfirst($plugin_dirname) . '\\',
-                            'Plugin' . ucfirst($plugin_dirname),
+                            NS_PLUG . ucfirst($plugin_key) . '\\',
+                            'Plugin' . ucfirst($plugin_key),
                             '',
                         ]
                     );
@@ -287,7 +263,7 @@ class CommandLoader implements CommandLoaderInterface
 
                     $expected_pattern = '/^'
                         . 'plugins:'            // starts with `plugins:` prefix
-                        . $plugin_dirname       // followed by plugin key (directory name)
+                        . $plugin_key       // followed by plugin key (directory name)
                         . '(:[^:]+)+'           // followed by, at least, another command name part
                         . '$/';
                     $names = [$command->getName(), ...$command->getAliases()];
@@ -298,7 +274,7 @@ class CommandLoader implements CommandLoaderInterface
                                 sprintf(
                                     'Plugin command `%s` must be moved in the `plugins:%s` namespace.',
                                     $name,
-                                    $plugin_dirname
+                                    $plugin_key
                                 ),
                                 E_USER_WARNING
                             );
@@ -309,8 +285,6 @@ class CommandLoader implements CommandLoaderInterface
                     $this->registerCommand($command);
                 }
             }
-
-            $already_loaded[] = $plugin_key;
         }
     }
 
