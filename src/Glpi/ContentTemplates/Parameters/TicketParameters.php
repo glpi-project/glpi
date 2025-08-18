@@ -81,8 +81,8 @@ class TicketParameters extends CommonITILObjectParameters
             new AttributeParameter("ttr", __('Time to resolve'), 'date("d/m/y H:i")'),
             new ObjectParameter(new SLAParameters(), 'sla_tto'),
             new ObjectParameter(new SLAParameters(), 'sla_ttr'),
-            new ObjectParameter(new OLAParameters(), 'ola_tto'),
-            new ObjectParameter(new OLAParameters(), 'ola_ttr'),
+            new ArrayParameter('olas_tto', new OLAParameters(), __('OLA TTO')),
+            new ArrayParameter('olas_ttr', new OLAParameters(), __('OLA TTR')),
             new ObjectParameter(new RequestTypeParameters()),
             new ObjectParameter(new LocationParameters()),
             new ArrayParameter("knowbaseitems", new KnowbaseItemParameters(), KnowbaseItem_Item::getTypeName(Session::getPluralNumber())),
@@ -95,7 +95,6 @@ class TicketParameters extends CommonITILObjectParameters
         global $CFG_GLPI;
 
         $fields = $ticket->fields;
-
         $values = parent::defineValues($ticket);
 
         /** @var Ticket $ticket  */
@@ -104,7 +103,7 @@ class TicketParameters extends CommonITILObjectParameters
         $values['tto'] = $fields['time_to_own'];
         $values['ttr'] = $fields['time_to_resolve'];
 
-        // Add ticket's SLA / OLA
+        // Add ticket's SLA
         $sla_parameters = new SLAParameters();
         if ($sla = SLA::getById($fields['slas_id_tto'])) {
             $values['sla_tto'] = $sla_parameters->getValues($sla);
@@ -112,13 +111,12 @@ class TicketParameters extends CommonITILObjectParameters
         if ($sla = SLA::getById($fields['slas_id_ttr'])) {
             $values['sla_ttr'] = $sla_parameters->getValues($sla);
         }
+
+        // Add ticket's OLA
         $ola_parameters = new OLAParameters();
-        if ($ola = OLA::getById($fields['olas_id_tto'])) {
-            $values['ola_tto'] = $ola_parameters->getValues($ola);
-        }
-        if ($ola = OLA::getById($fields['olas_id_ttr'])) {
-            $values['ola_ttr'] = $ola_parameters->getValues($ola);
-        }
+        $_getOlas = fn(array $ola_datas) => OLA::getByIds(array_column($ola_datas, 'olas_id'));
+        $values['olas_tto'] = array_map([$ola_parameters, 'getValues'], $_getOlas($ticket->getOlasTTOData()));
+        $values['olas_ttr'] = array_map([$ola_parameters, 'getValues'], $_getOlas($ticket->getOlasTTRData()));
 
         // Add ticket's request type
         if ($requesttype = RequestType::getById($fields['requesttypes_id'])) {
