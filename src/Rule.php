@@ -2569,6 +2569,9 @@ JS
             && ($rc = getItemForItemtype($this->rulecriteriaclass))
         ) {
             echo Html::input($name, ['value' => $value]);
+            if (in_array($condition, [self::REGEX_MATCH, self::REGEX_NOT_MATCH])) {
+                echo '<span class="text-muted position-absolute">' . __s('Patterns must include delimiters, e.g. /pattern/') . '</span>';
+            }
         }
     }
 
