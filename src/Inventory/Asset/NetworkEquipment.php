@@ -450,4 +450,34 @@ class NetworkEquipment extends MainAsset
     {
         return \NetworkEquipment::class;
     }
+
+    /**
+     * Try to know if networkEquipement need to be updated from discovery
+     * Only if IP has changed
+     * @return boolean
+     */
+    public static function needToBeUpdatedFromDiscovery(\CommonDBTM $item, $val)
+    {
+        if (property_exists($val, 'ips')) {
+            foreach ($val->ips as $ip) {
+                $blacklist = new Blacklist();
+                //exclude IP if needed
+                if ('' != $blacklist->process(Blacklist::IP, $ip)) {
+                    //try to find IP (get from discovery) from known IP of item
+                    //if found refuse update
+                    //if no, item IP have changed so  we allow the update from discovery
+                    $ipaddress = new \IPAddress($ip);
+                    $tmp['mainitems_id'] = $item->fields['id'];
+                    $tmp['mainitemtype'] = $item::getType();
+                    $tmp['is_dynamic']   = 1;
+                    $tmp['name']         = $ipaddress->getTextual();
+                    if ($ipaddress->getFromDBByCrit(Sanitizer::sanitize($tmp))) {
+                        return false;
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
