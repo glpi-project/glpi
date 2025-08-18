@@ -194,7 +194,7 @@ class MailCollector extends CommonDBTM
         }
         if (!empty($missing_fields)) {
             Session::addMessageAfterRedirect(
-                htmlspecialchars(
+                htmlescape(
                     sprintf(
                         __('Mandatory fields are not filled. Please correct: %s'),
                         implode(', ', $missing_fields)
