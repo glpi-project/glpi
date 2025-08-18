@@ -62,9 +62,6 @@
     {% endset %}
     {{ fields.htmlField('no_matter', slm_link, __('SLM')) }}
 
-    {# lastupdate #}
-    {{ fields.datetimeField('last_update', item.fields['date_mod'], __('Last update'), {'disabled': true}) }}
-
     {# type #}
     {{ fields.dropdownArrayField(
         'type',
