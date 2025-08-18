@@ -32,35 +32,29 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Helpdesk\Tile;
+namespace GlpiPlugin\Tester\Form;
 
-use CommonDBChild;
-use Glpi\Form\AccessControl\FormAccessControlManager;
-use Glpi\Form\AccessControl\FormAccessParameters;
-use Glpi\Form\Form;
+use CommonDBTM;
+use Glpi\Helpdesk\Tile\Item_Tile;
+use Glpi\Helpdesk\Tile\TileInterface;
 use Glpi\Session\SessionInfo;
-use Html;
+use Glpi\UI\IllustrationManager;
 use Override;
-use Ticket;
 
-final class FormTile extends CommonDBChild implements TileInterface
+final class CustomTile extends CommonDBTM implements TileInterface
 {
     public static $rightname = 'config';
-    public static $itemtype = Form::class;
-    public static $items_id = 'forms_forms_id';
-
-    private Form $form;
 
     #[Override]
     public function getWeight(): int
     {
-        return 10;
+        return 40;
     }
 
     #[Override]
     public function getLabel(): string
     {
-        return Form::getTypeName(1);
+        return __("Custom tile");
     }
 
     #[Override]
@@ -76,70 +70,32 @@ final class FormTile extends CommonDBChild implements TileInterface
     }
 
     #[Override]
-    public function post_getFromDB(): void
-    {
-        $form = $this->getItem();
-        if (!($form instanceof Form)) {
-            throw new InvalidTileException("Unable to load linked form");
-        } else {
-            $this->form = $form;
-        }
-    }
-
-    #[Override]
     public function getTitle(): string
     {
-        return $this->form->getServiceCatalogItemTitle();
+        return "My custom title";
     }
 
     #[Override]
     public function getDescription(): string
     {
-        return $this->form->getServiceCatalogItemDescription();
+        return "My custom description";
     }
 
     #[Override]
     public function getIllustration(): string
     {
-        return $this->form->getServiceCatalogItemIllustration();
+        return IllustrationManager::DEFAULT_ILLUSTRATION;
     }
 
     #[Override]
     public function getTileUrl(): string
     {
-        return Html::getPrefixedUrl('/Form/Render/' . $this->form->getID());
+        return "https://my-custom-url.com";
     }
 
     #[Override]
     public function isAvailable(SessionInfo $session_info): bool
     {
-        $form_access_manager = FormAccessControlManager::getInstance();
-
-        if (!$session_info->hasRight(Ticket::$rightname, CREATE)) {
-            return false;
-        }
-
-        // Form must be active
-        if (!$this->form->isActive()) {
-            return false;
-        }
-
-        // Form must not be deleted
-        if ($this->form->isDeleted()) {
-            return false;
-        }
-
-        // Check that the form entity is visible
-        if (!$this->form->isAccessibleFromEntities($session_info->getActiveEntitiesIds())) {
-            return false;
-        }
-
-        // Check if the user can answer the form
-        $form_access_params = new FormAccessParameters(session_info: $session_info);
-        if (!$form_access_manager->canAnswerForm($this->form, $form_access_params)) {
-            return false;
-        }
-
         return true;
     }
 
@@ -152,7 +108,7 @@ final class FormTile extends CommonDBChild implements TileInterface
     #[Override]
     public function getConfigFieldsTemplate(): string
     {
-        return "pages/admin/form_tile_config_fields.html.twig";
+        return "@tester/custom_tile.html.twig";
     }
 
     #[Override]
@@ -163,10 +119,5 @@ final class FormTile extends CommonDBChild implements TileInterface
                 Item_Tile::class,
             ]
         );
-    }
-
-    public function getFormId(): int
-    {
-        return $this->fields['forms_forms_id'] ?? 0;
     }
 }

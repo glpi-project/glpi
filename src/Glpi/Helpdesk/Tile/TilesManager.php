@@ -45,15 +45,54 @@ use RuntimeException;
 final class TilesManager
 {
     /**
+     * Singleton instance
+     * @var TilesManager|null
+     */
+    private static ?TilesManager $instance = null;
+
+    /** @var array<TileInterface&CommonDBTM> $tiles_types */
+    private array $tiles_types = [];
+
+    private bool $tiles_are_sorted = false;
+
+    private function __construct()
+    {
+        $this->tiles_types[] = new GlpiPageTile();
+        $this->tiles_types[] = new ExternalPageTile();
+        $this->tiles_types[] = new FormTile();
+    }
+
+    /**
+     * Get the singleton instance
+     *
+     * @return TilesManager
+     */
+    public static function getInstance(): TilesManager
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
+    /**
      * @return array<TileInterface&CommonDBTM>
      */
     public function getTileTypes(): array
     {
-        return [
-            new GlpiPageTile(),
-            new ExternalPageTile(),
-            new FormTile(),
-        ];
+        if (!$this->tiles_are_sorted) {
+            $this->sortTilesTypes();
+        }
+
+        return $this->tiles_types;
+    }
+
+    public function registerPluginTileType(
+        TileInterface&CommonDBTM $type
+    ): void {
+        $this->tiles_types[] = $type;
+        $this->tiles_are_sorted = false;
     }
 
     /** @return array<TileInterface&CommonDBTM> */
@@ -320,5 +359,17 @@ final class TilesManager
         ])->current();
 
         return $rank['max_rank'] ?? 0;
+    }
+
+    private function sortTilesTypes(): void
+    {
+        usort(
+            $this->tiles_types,
+            fn(
+                TileInterface $a,
+                TileInterface $b,
+            ): int => $a->getWeight() <=> $b->getWeight()
+        );
+        $this->tiles_are_sorted = true;
     }
 }

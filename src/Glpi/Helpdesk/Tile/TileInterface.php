@@ -38,6 +38,12 @@ use Glpi\Session\SessionInfo;
 
 interface TileInterface
 {
+    /**
+     * Used to sort tiles in dropdowns.
+     * Lowest weight will be displayed first.
+     */
+    public function getWeight(): int;
+
     public function getLabel(): string;
 
     public function getTitle(): string;

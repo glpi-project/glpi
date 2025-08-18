@@ -3208,7 +3208,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     public function showHelpdeskHomeConfig(): bool
     {
         $twig = TemplateRenderer::getInstance();
-        $tiles_manager = new TilesManager();
+        $tiles_manager = TilesManager::getInstance();
 
         if (
             // Is not root entity
