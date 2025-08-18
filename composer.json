@@ -112,7 +112,6 @@
         "glpi-project/tools": "^0.7",
         "mikey179/vfsstream": "^1.6",
         "php-parallel-lint/php-parallel-lint": "^1.4",
-        "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpunit/phpunit": "^11.5",
@@ -155,9 +154,6 @@
             "php": "8.2.99"
         },
         "sort-packages": true,
-        "allow-plugins": {
-            "phpstan/extension-installer": true
-        },
         "audit": {
             "abandoned": "report"
         }
