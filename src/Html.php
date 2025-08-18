@@ -4435,7 +4435,7 @@ JS;
      * @param string $name
      * @param string $field_id  ID of the dom element
      * @param string $url       URL to get datas
-     * @param array $params     Array of parameters
+     * @param array $params     Array of parameters, see $default_options below
      *            must contains :
      *                if single select
      *                   - 'value'       : default value selected
@@ -4469,6 +4469,7 @@ JS;
             'templateSelection'   => 'templateSelection',
             'container_css_class' => '',
             'aria_label'          => '',
+            'required'            => false,
         ];
         $params = array_merge($default_options, $params);
 
@@ -4568,6 +4569,10 @@ JS;
 
         // display select tag
         $options['class'] = $params['class'] ?? 'form-select';
+        if ($params['required'] === true) {
+            $options['required'] = 'required';
+        }
+
         $output .= self::select($name, $values, $options);
 
         return $output;
