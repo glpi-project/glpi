@@ -1,4 +1,4 @@
-# Create a file named "Makefile" in the root directory your plugin and add
+# Create a file named "Makefile" in the root directory of your plugin and add
 # the following lines:
 # PLUGIN_DIR = my_plugin_directory
 # USE_COMPOSER = true|false (if your plugin require php dependencies)
@@ -30,34 +30,34 @@ bash: ## Start a shell inside the php container, in the plugin directory
 .PHONY: bash
 
 ##—— Plugin actions ————————————————————————————————————————————————————————————
-plugin-install: ## Install the plugin
+install: ## Install the plugin
 	@$(CONSOLE) plugin:install $(PLUGIN_DIR) -u glpi
-.PHONY: plugin-install
+.PHONY: install
 
-plugin-uninstall: ## Uninstall the plugin
+uninstall: ## Uninstall the plugin
 	@$(CONSOLE) plugin:uninstall $(PLUGIN_DIR)
-.PHONY: plugin-uninstall
+.PHONY: uninstall
 
-plugin-enable: ## Enable the plugin
+enable: ## Enable the plugin
 	@$(CONSOLE) plugin:enable $(PLUGIN_DIR)
-.PHONY: plugin-enable
+.PHONY: enable
 
-plugin-disable: ## Disable the plugin
+disable: ## Disable the plugin
 	@$(CONSOLE) plugin:disable $(PLUGIN_DIR)
-.PHONY: plugin-disable
+.PHONY: disable
 
-plugin-test-setup: ## Setup the plugin for tests
+test-setup: ## Setup the plugin for tests
 	@$(CONSOLE) plugin:install --env=testing $(PLUGIN_DIR) -u glpi --force
 	@$(CONSOLE) plugin:enable --env=testing $(PLUGIN_DIR)
-.PHONY: plugin-test-setup
+.PHONY: test-setup
 
-plugin-license-headers-check: ## Verify that the license headers is present all files
+license-headers-check: ## Verify that the license headers is present all files
 	@$(PLUGIN) vendor/bin/licence-headers-check
-.PHONY: plugin-license-headers-check
+.PHONY: license-headers-check
 
-plugin-license-headers-fix: ## Add the missing license headers in all files
+license-headers-fix: ## Add the missing license headers in all files
 	@$(PLUGIN) vendor/bin/licence-headers-check --fix
-.PHONY: plugin-license-headers-fix
+.PHONY: license-headers-fix
 
 ##—— Dependencies ——————————————————————————————————————————————————————————————
 vendor: ## Install dependencies
@@ -84,15 +84,22 @@ phpstan: ## Run phpstan
 	@$(eval c ?=)
 	@$(PLUGIN) php vendor/bin/phpstan --memory-limit=1G $(c)
 .PHONY: phpstan
-# TODO: maybe we should reuse the binary from the main dir like phpunit?
+
+psalm: ## Run psalm analysis
+	@$(eval c ?=)
+	@$(PHP) php vendor/bin/psalm $(c) -c /var/www/glpi/plugins/$(PLUGIN_DIR)/psalm.xml $(c)
+.PHONY: psalm
+
+rector: ## Run rector
+	@$(eval c ?=)
+	@$(PLUGIN) php vendor/bin/rector $(c)
+.PHONY: rector
 
 ## —— Coding standards —————————————————————————————————————————————————————————
 phpcsfixer-check: ## Check for php coding standards issues
 	@$(PLUGIN) vendor/bin/php-cs-fixer check --diff -vvv
 .PHONY: phpcsfixer-check
-# TODO: maybe we should reuse the binary from the main dir like phpunit?
 
 phpcsfixer-fix: ## Fix php coding standards issues
 	@$(PLUGIN) vendor/bin/php-cs-fixer fix
 .PHONY: phpcsfixer-fix
-# TODO: maybe we should reuse the binary from the main dir like phpunit?
