@@ -96,13 +96,6 @@ describe('Edit helpdesk translations', () => {
         cy.login();
         cy.changeProfile('Super-Admin');
 
-        // Remove any existing translations
-        cy.initApi().doApiRequest("GET", 'Glpi\\Helpdesk\\HelpdeskTranslation').then((response) => {
-            response.body.forEach((translation) => {
-                cy.initApi().doApiRequest("DELETE", `Glpi\\Helpdesk\\HelpdeskTranslation/${translation.id}`);
-            });
-        });
-
         cy.createWithAPI('Glpi\\Helpdesk\\Tile\\GlpiPageTile', {
             'title': tile_title,
             'description': tile_description,
@@ -125,6 +118,19 @@ describe('Edit helpdesk translations', () => {
         });
 
         cy.findByRole('region', { name: 'Helpdesk translations' }).as('helpdeskTranslations');
+
+        // Delete all helpdesk translations if any exist
+        cy.get('@helpdeskTranslations').then((translations) => {
+            if (translations.find('button[aria-label="Edit translation"]').length > 0) {
+                cy.findAllByRole('button', { name: 'Edit translation' }).each(button => {
+                    cy.wrap(button).click();
+                    cy.findByRole('dialog').should('have.attr', 'data-cy-shown', 'true');
+                    cy.findByRole('button', { name: 'Delete translation' }).click();
+                    cy.checkAndCloseAlert('Item successfully purged');
+                    cy.findByRole('dialog').should('not.exist');
+                });
+            }
+        });
     });
 
     afterEach(() => {
