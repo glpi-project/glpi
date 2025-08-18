@@ -90,10 +90,15 @@ psalm: ## Run psalm analysis
 	@$(PHP) php vendor/bin/psalm $(c) -c /var/www/glpi/plugins/$(PLUGIN_DIR)/psalm.xml $(c)
 .PHONY: psalm
 
-rector: ## Run rector
+rector-check: ## Run rector with dry run
+	@$(eval c ?=)
+	@$(PLUGIN) php vendor/bin/rector --dry-run $(c)
+.PHONY: rector
+
+rector-apply: ## Run rector
 	@$(eval c ?=)
 	@$(PLUGIN) php vendor/bin/rector $(c)
-.PHONY: rector
+.PHONY: rector-apply
 
 ## —— Coding standards —————————————————————————————————————————————————————————
 phpcsfixer-check: ## Check for php coding standards issues

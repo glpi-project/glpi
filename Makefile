@@ -162,10 +162,15 @@ psalm: ## Run psalm analysis
 	@$(PHP) php vendor/bin/psalm $(c)
 .PHONY: psalm
 
-rector: ## Run rector
+rector-check: ## Run rector with dry run
+	@$(eval c ?=)
+	@$(PHP) php vendor/bin/rector --dry-run $(c)
+.PHONY: rector-check
+
+rector-apply: ## Run rector
 	@$(eval c ?=)
 	@$(PHP) php vendor/bin/rector $(c)
-.PHONY: rector
+.PHONY: rector-apply
 
 ## —— Coding standards —————————————————————————————————————————————————————————
 phpcsfixer-check: ## Check for php coding standards issues
