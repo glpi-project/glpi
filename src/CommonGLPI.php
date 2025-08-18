@@ -1176,7 +1176,7 @@ class CommonGLPI implements CommonGLPIInterface
             }
 
             // Second set of header pagination actions, displayed on the right side of the page
-            echo "<div class='right-icons>";
+            echo "<div class='right-icons'>";
 
             echo "<span class='py-1 px-3 " . ($current !== false ? '' : 'bs-invisible') . "'>" . ($current + 1) . "/" . count($glpilistitems ?? []) . "</span>";
 
