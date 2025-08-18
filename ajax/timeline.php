@@ -119,7 +119,7 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
         'item'            => $parent,
         'subitem'         => $item,
         'mention_options' => $mention_options,
-        'has_pending_reason'=> PendingReason_Item::getForItem($parent) !== false,
+        'has_pending_reason' => PendingReason_Item::getForItem($parent) !== false,
     ];
 
     if ($_REQUEST['type'] === ITILFollowup::class) {
