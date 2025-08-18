@@ -120,6 +120,7 @@ class DomainTest extends DbTestCase
                 getItemByTypeName('Entity', '_test_root_entity', true)   => 1,
                 getItemByTypeName('Entity', '_test_child_1', true)       => 1,
                 getItemByTypeName('Entity', '_test_child_2', true)       => 1,
+                getItemByTypeName('Entity', '_test_child_3', true)       => 1,
             ],
             \Entity::getEntitiesToNotify('use_domains_alert')
         );

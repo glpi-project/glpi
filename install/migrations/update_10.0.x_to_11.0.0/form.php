@@ -293,7 +293,7 @@ if (!$DB->fieldExists("glpi_entities", $field)) {
     $migration->addPostQuery(
         $DB->buildUpdate(
             'glpi_entities',
-            [$field => 0],
+            [$field => 1], // Ticket details shown by default for upgraded installations to maintain previous behavior
             ['id' => 0]
         )
     );

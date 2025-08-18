@@ -376,6 +376,9 @@ class FormMigration extends AbstractPluginMigration
             'targets_change' => $this->countRecords('glpi_plugin_formcreator_targetchanges') * 2,
             'translations' => $this->countRecords('glpi_plugin_formcreator_forms_languages'),
             'conditions' => $this->countRecords('glpi_plugin_formcreator_conditions'),
+            'configs' => $this->countRecords('glpi_plugin_formcreator_entityconfigs', [
+                'replace_helpdesk' => [-2, 2],
+            ]),
         ];
 
         // Set total progress steps
@@ -396,6 +399,7 @@ class FormMigration extends AbstractPluginMigration
         $this->processMigrationOfTranslations();
         $this->processMigrationOfVisibilityConditions();
         $this->processMigrationOfValidationConditions();
+        $this->processMigrationOfConfigs();
 
         $this->progress_indicator?->setProgressBarMessage('');
         $this->progress_indicator?->finish();
@@ -1798,6 +1802,28 @@ class FormMigration extends AbstractPluginMigration
             $targetTable,
             $sourceItemtype
         );
+    }
+
+    private function processMigrationOfConfigs(): void
+    {
+        $entity_configs = $this->db->request([
+            'SELECT' => [
+                'entities_id',
+                'replace_helpdesk',
+            ],
+            'FROM'   => 'glpi_plugin_formcreator_entityconfigs',
+        ]);
+        foreach ($entity_configs as $entity_config) {
+            $this->db->update('glpi_entities', [
+                'show_tickets_properties_on_helpdesk' => match ($entity_config['replace_helpdesk']) {
+                    -2 => -2, // Inherit from parent entity
+                    1 => 0, // Simple service catalog -> Do not show ticket properties
+                    default => 1, // Helpdesk view was not replaced or Full service catalog -> Use GLPI default of showing ticket properties
+                },
+            ], ['id' => $entity_config['entities_id']]);
+
+            $this->progress_indicator?->advance();
+        }
     }
 
     /**
