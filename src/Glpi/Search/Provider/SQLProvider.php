@@ -2833,7 +2833,10 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     return [];
                 };
-                $specific_leftjoin_criteria = self::parseJoinString(Plugin::doOneHook($plugin_name, $hook_closure));
+                $specific_plugin_leftjoin_criteria = Plugin::doOneHook($plugin_name, $hook_closure);
+                if (!is_array($specific_plugin_leftjoin_criteria)){
+                    $specific_leftjoin_criteria = self::parseJoinString($specific_plugin_leftjoin_criteria);
+                }
             }
         }
         if (!empty($linkfield)) {
