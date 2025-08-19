@@ -93,9 +93,11 @@ class DebugResponseMiddleware extends AbstractMiddleware implements ResponseMidd
 
         // Pretty print JSON responses
         if ($input->response instanceof JSONResponse) {
-            $content = $input->response->getBody();
-            $pretty_print_json = json_encode(json_decode($content), JSON_PRETTY_PRINT);
-            $input->response = $input->response->withBody(Utils::streamFor($pretty_print_json));
+            $content = (string) $input->response->getBody();
+            if (!empty($content)) {
+                $pretty_print_json = json_encode(json_decode($content), JSON_PRETTY_PRINT);
+                $input->response = $input->response->withBody(Utils::streamFor($pretty_print_json));
+            }
         }
 
         // Call the next middleware
