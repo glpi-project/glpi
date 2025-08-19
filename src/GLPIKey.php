@@ -400,7 +400,7 @@ class GLPIKey
      *
      * @return string|null
      */
-    public function decrypt(?string $string, $key = null): ?string
+    public function decrypt(?string $string, ?string $key = null): ?string
     {
         if (empty($string)) {
             // Avoid sodium exception for blank content. Just return the null/empty value.
