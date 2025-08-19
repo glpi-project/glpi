@@ -559,7 +559,7 @@ $CFG_GLPI['javascript'] = [
     'preference'   => ['clipboard'],
     'self-service' => $reservations_libs,
     'reservation'   => $reservations_libs,
-    'helpdesk-home' => ['home-scss-file'],
+    'helpdesk-home' => ['home-scss-file', 'gridstack', 'dashboard'],
 ];
 
 // push reservations libs to reservations itemtypes (they shoul in asset sector)

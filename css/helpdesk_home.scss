@@ -226,8 +226,36 @@ header {
         padding-top: 16px;
         padding-bottom: 8px;
     }
+
+    .search-results {
+        // Prevent double border issues
+        border-left: 0 !important;
+        border-right: 0 !important;
+    }
 }
 
 .search-result-container {
     background-color: var(--glpi-tabs-bg);
+}
+
+.dashboard {
+    margin-top: 10px;
+
+    .filter-dashboard {
+        // This action is not accessible on the helpdesk
+        display: none;
+    }
+
+    .change-dashboard {
+        // Small adjustment to make sur it aligns with others UI elements specific to this page
+        margin-left: 4px;
+    }
+}
+
+#tabspanel {
+    border-bottom: 1px solid var(--tblr-border-color) !important;
+
+    a.active {
+        border-bottom: 1px solid var(--tblr-border-color) !important;
+    }
 }
