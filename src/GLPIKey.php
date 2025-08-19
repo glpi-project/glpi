@@ -36,6 +36,7 @@ use Glpi\Plugin\Hooks;
 use Safe\Exceptions\FilesystemException;
 use Safe\Exceptions\SodiumException;
 
+use Safe\Exceptions\UrlException;
 use function Safe\base64_decode;
 use function Safe\file_put_contents;
 use function Safe\sodium_crypto_aead_xchacha20poly1305_ietf_decrypt;
@@ -418,7 +419,7 @@ class GLPIKey
 
         try {
             $string = base64_decode($string);
-        } catch (\Safe\Exceptions\UrlException $e) {
+        } catch (UrlException $e) {
             trigger_error(
                 'Unable to base64_decode the string. The string was probably not encrypted using GLPIKey::encrypt',
                 E_USER_WARNING
