@@ -36,22 +36,25 @@ namespace Glpi\Form\Condition\ConditionHandler;
 
 use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
+use Glpi\Form\QuestionType\QuestionTypeUserDevice;
+use Glpi\Form\QuestionType\QuestionTypeUserDevicesConfig;
 use Override;
 
-class StringConditionHandler implements ConditionHandlerInterface
+/**
+ * Allow text comparison on items using contains operator.
+ */
+final class UserDevicesAsTextConditionHandler implements ConditionHandlerInterface
 {
+    public function __construct(
+        private QuestionTypeUserDevicesConfig $question_config
+    ) {}
+
     #[Override]
     public function getSupportedValueOperators(): array
     {
         return [
-            ValueOperator::EQUALS,
-            ValueOperator::NOT_EQUALS,
             ValueOperator::CONTAINS,
             ValueOperator::NOT_CONTAINS,
-            ValueOperator::LENGTH_GREATER_THAN,
-            ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS,
-            ValueOperator::LENGTH_LESS_THAN,
-            ValueOperator::LENGTH_LESS_THAN_OR_EQUALS,
         ];
     }
 
@@ -64,21 +67,7 @@ class StringConditionHandler implements ConditionHandlerInterface
     #[Override]
     public function getTemplateParameters(ConditionData $condition): array
     {
-        switch ($condition->getValueOperator()) {
-            case ValueOperator::LENGTH_GREATER_THAN:
-            case ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS:
-            case ValueOperator::LENGTH_LESS_THAN:
-            case ValueOperator::LENGTH_LESS_THAN_OR_EQUALS:
-                // For length operators, we want to display a number input.
-                return [
-                    'attributes' => [
-                        'type' => 'number',
-                        'step' => 'any',
-                    ],
-                ];
-            default:
-                return [];
-        }
+        return [];
     }
 
     #[Override]
@@ -87,21 +76,32 @@ class StringConditionHandler implements ConditionHandlerInterface
         ValueOperator $operator,
         mixed $b,
     ): bool {
-        // Normalize strings.
-        $a = strtolower(strval($a));
+        if (!$this->question_config->isMultipleDevices() && is_string($a)) {
+            $a = [$a];
+        }
+
+        if (!is_array($a)) {
+            return false;
+        }
+
+        // Get valid item names from the raw answer
+        $a = (new QuestionTypeUserDevice())->getConditionValueAsString($a, $this->question_config);
+
+        // Normalize values
+        $a = array_map(fn(string $item) => strtolower(strval($item)), $a);
         $b = strtolower(strval($b));
 
         return match ($operator) {
-            ValueOperator::EQUALS          => $a === $b,
-            ValueOperator::NOT_EQUALS      => $a !== $b,
-            ValueOperator::CONTAINS        => str_contains($b, $a),
-            ValueOperator::NOT_CONTAINS    => !str_contains($b, $a),
-
-            // Length comparison operators
-            ValueOperator::LENGTH_GREATER_THAN           => strlen($a) > intval($b),
-            ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS => strlen($a) >= intval($b),
-            ValueOperator::LENGTH_LESS_THAN              => strlen($a) < intval($b),
-            ValueOperator::LENGTH_LESS_THAN_OR_EQUALS    => strlen($a) <= intval($b),
+            ValueOperator::CONTAINS     => array_reduce(
+                $a,
+                fn(bool $carry, string $item) => $carry || str_contains($item, $b),
+                false
+            ),
+            ValueOperator::NOT_CONTAINS => !array_reduce(
+                $a,
+                fn(bool $carry, string $item) => $carry || str_contains($item, $b),
+                false
+            ),
 
             // Unsupported operators
             default => false,

@@ -44,6 +44,11 @@ use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
 
 final class SingleChoiceFromValuesConditionHandlerTest extends AbstractConditionHandler
 {
+    public static function getConditionHandler(): ConditionHandlerInterface
+    {
+        return new SingleChoiceFromValuesConditionHandler(['opt']);
+    }
+
     #[Override]
     public static function conditionHandlerProvider(): iterable
     {

@@ -39,7 +39,9 @@ use CommonDBTM;
 use CommonItilObject_Item;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionHandler\UserDevicesAsTextConditionHandler;
 use Glpi\Form\Condition\ConditionHandler\UserDevicesConditionHandler;
+use Glpi\Form\Condition\ConditionValueAsStringProviderInterface;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
 use InvalidArgumentException;
@@ -50,7 +52,9 @@ use Session;
 use function Safe\json_decode;
 use function Safe\preg_match;
 
-final class QuestionTypeUserDevice extends AbstractQuestionType implements UsedAsCriteriaInterface
+final class QuestionTypeUserDevice extends AbstractQuestionType implements
+    UsedAsCriteriaInterface,
+    ConditionValueAsStringProviderInterface
 {
     #[Override]
     public function validateExtraDataInput(array $input): bool
@@ -302,7 +306,33 @@ TWIG;
 
         return array_merge(
             parent::getConditionHandlers($question_config),
-            [new UserDevicesConditionHandler($question_config->isMultipleDevices())],
+            [
+                new UserDevicesConditionHandler($question_config->isMultipleDevices()),
+                new UserDevicesAsTextConditionHandler($question_config),
+            ]
         );
+    }
+
+    #[Override]
+    public function getConditionValueAsString(mixed $value, ?JsonFieldInterface $question_config): array
+    {
+        if (!is_array($value)) {
+            $value = [$value];
+        }
+
+        $devices = [];
+        foreach ($value as $device) {
+            if (preg_match('/^([A-Za-z]+)_\d+$/', $device, $matches)) {
+                $itemtype = $matches[1];
+                $item_id = substr($device, strlen($itemtype) + 1); // Get the ID part after the itemtype
+                $item = getItemForItemtype($itemtype);
+
+                if ($item instanceof CommonDBTM && $item->getFromDB($item_id)) {
+                    $devices[] = $item->getName();
+                }
+            }
+        }
+
+        return $devices;
     }
 }

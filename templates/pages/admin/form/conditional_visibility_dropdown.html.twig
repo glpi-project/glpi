@@ -45,7 +45,7 @@
 
         {% set hide = question_strategy == enum('Glpi\\Form\\Condition\\VisibilityStrategy').ALWAYS_VISIBLE %}
         {% set force_show = force_show|default(false) %}
-        class="btn-group ms-1 {{ (hide and not force_show) ? 'd-none' : '' }}"
+        class="dropdown-center btn-group ms-1 {{ (hide and not force_show) ? 'd-none' : '' }}"
 
         {# May be displayed on section, comment and question #}
         {# We can't use instanceOf here as `item` may be null #}

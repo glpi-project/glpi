@@ -1743,7 +1743,14 @@ final class FormMigrationTest extends DbTestCase
                     'fieldname' => 'range',
                 ],
             ],
-            ValidationStrategy::NO_VALIDATION,
+            ValidationStrategy::VALID_IF,
+            [
+                [
+                    'value_operator' => ValueOperator::MATCH_REGEX,
+                    'value'          => '/^[A-Za-z0-9]+$/',
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
         ];
     }
 

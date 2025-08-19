@@ -1206,6 +1206,18 @@ describe ('Conditions', () => {
                         value: 10,
                         valueType: 'number'
                     },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/^[0-9]$/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/^[0-9]$/',
+                        valueType: 'string'
+                    },
                 ]
             },
         ],
@@ -1423,6 +1435,18 @@ describe ('Conditions', () => {
                         value: '2021-01-01',
                         valueType: 'date'
                     },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/^2021-01-01$/',
+                        valueType: 'date'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/^2021-01-01$/',
+                        valueType: 'date'
+                    },
                 ]
             },
         ],
@@ -1478,6 +1502,18 @@ describe ('Conditions', () => {
                         logic: 'Or',
                         operator: 'Is less than or equals to',
                         value: '12:00',
+                        valueType: 'date'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/^12:00$/',
+                        valueType: 'date'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/^12:00$/',
                         valueType: 'date'
                     },
                 ]
@@ -1537,6 +1573,18 @@ describe ('Conditions', () => {
                         value: '2021-01-01T12:00',
                         valueType: 'date'
                     },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/^2021-01-01T12:00$/',
+                        valueType: 'date'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/^2021-01-01T12:00$/',
+                        valueType: 'date'
+                    },
                 ]
             },
         ],
@@ -1580,7 +1628,19 @@ describe ('Conditions', () => {
                         operator: 'Do not contains',
                         value: 'glpi',
                         valueType: 'dropdown'
-                    }
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/glpi/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/glpi/',
+                        valueType: 'string'
+                    },
                 ],
             }
         ],
@@ -1624,7 +1684,19 @@ describe ('Conditions', () => {
                         operator: 'Do not contains',
                         value: 'glpi',
                         valueType: 'dropdown'
-                    }
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/glpi/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/glpi/',
+                        valueType: 'string'
+                    },
                 ],
             }
         ],
@@ -1668,7 +1740,19 @@ describe ('Conditions', () => {
                         operator: 'Do not contains',
                         value: 'glpi',
                         valueType: 'dropdown'
-                    }
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/glpi/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/glpi/',
+                        valueType: 'string'
+                    },
                 ],
             }
         ],
@@ -1725,6 +1809,18 @@ describe ('Conditions', () => {
                         value: 'High',
                         valueType: 'dropdown'
                     },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/^1$/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/^1$/',
+                        valueType: 'string'
+                    }
                 ],
             },
         ],
@@ -1751,6 +1847,24 @@ describe ('Conditions', () => {
                         value: 'Request',
                         valueType: 'dropdown'
                     },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not equal to',
+                        value: 'Request',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/^1$/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/^1$/',
+                        valueType: 'string'
+                    }
                 ],
             },
         ],
@@ -1771,6 +1885,18 @@ describe ('Conditions', () => {
                         value: null,
                         valueType: null
                     },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/^file_[0-9]+\\.txt$/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/^file_[0-9]+\\.txt$/',
+                        valueType: 'string'
+                    }
                 ],
             },
         ],
@@ -1803,6 +1929,18 @@ describe ('Conditions', () => {
                         operator: 'Is not equal to',
                         value: 'Option 2',
                         valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '^Option [1-4]$',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '^Option [1-4]$',
+                        valueType: 'string'
                     }
                 ]
             }
@@ -1848,6 +1986,18 @@ describe ('Conditions', () => {
                         operator: 'Do not contains',
                         value: ['Option 1', 'Option 3'],
                         valueType: 'dropdown_multiple'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '^Option [1-4]$',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '^Option [1-4]$',
+                        valueType: 'string'
                     }
                 ]
             },
@@ -1881,6 +2031,18 @@ describe ('Conditions', () => {
                         operator: 'Is not equal to',
                         value: 'Option 2',
                         valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '^Option [1-4]$',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '^Option [1-4]$',
+                        valueType: 'string'
                     }
                 ]
             },
@@ -1926,6 +2088,18 @@ describe ('Conditions', () => {
                         operator: 'Do not contains',
                         value: ['Option 2', 'Option 4'],
                         valueType: 'dropdown_multiple'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '^Option [1-4]$',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '^Option [1-4]$',
+                        valueType: 'string'
                     }
                 ]
             },
@@ -1970,6 +2144,18 @@ describe ('Conditions', () => {
                         logic: 'Or',
                         operator: 'Do not contains',
                         value: 'Computer - {uuid}',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/Computer/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/Computer/',
                         valueType: 'string'
                     }
                 ]
@@ -2016,7 +2202,19 @@ describe ('Conditions', () => {
                         operator: 'Do not contains',
                         value: 'Location - {uuid}',
                         valueType: 'string'
-                    }
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/Location/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/Location/',
+                        valueType: 'string'
+                    },
                 ]
             },
         ],
@@ -2050,6 +2248,30 @@ describe ('Conditions', () => {
                         value: 'Computer',
                         valueType: 'dropdown'
                     },
+                    {
+                        logic: 'Or',
+                        operator: 'Contains',
+                        value: 'Computer',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not contains',
+                        value: 'Computer',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/Computer/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/Computer/',
+                        valueType: 'string'
+                    },
                 ]
             },
         ],
@@ -2082,6 +2304,30 @@ describe ('Conditions', () => {
                         operator: 'All items of itemtype',
                         value: ['Computer'],
                         valueType: 'dropdown_multiple'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Contains',
+                        value: 'Computer',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not contains',
+                        value: 'Computer',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/Computer/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/Computer/',
+                        valueType: 'string'
                     },
                 ]
             }

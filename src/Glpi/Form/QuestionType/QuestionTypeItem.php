@@ -43,6 +43,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionHandler\ItemAsTextConditionHandler;
 use Glpi\Form\Condition\ConditionHandler\ItemConditionHandler;
+use Glpi\Form\Condition\ConditionValueAsStringProviderInterface;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
@@ -51,6 +52,7 @@ use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use InvalidArgumentException;
 use Line;
+use LogicException;
 use Override;
 use PassiveDCEquipment;
 use PDU;
@@ -61,7 +63,10 @@ use TicketRecurrent;
 use function Safe\json_decode;
 use function Safe\json_encode;
 
-class QuestionTypeItem extends AbstractQuestionType implements FormQuestionDataConverterInterface, UsedAsCriteriaInterface
+class QuestionTypeItem extends AbstractQuestionType implements
+    FormQuestionDataConverterInterface,
+    UsedAsCriteriaInterface,
+    ConditionValueAsStringProviderInterface
 {
     protected string $itemtype_aria_label;
     protected string $items_id_aria_label;
@@ -318,6 +323,48 @@ class QuestionTypeItem extends AbstractQuestionType implements FormQuestionDataC
                 new ItemAsTextConditionHandler($question_config->getItemtype()),
             ],
         );
+    }
+
+    #[Override]
+    public function getConditionValueAsString(mixed $value, ?JsonFieldInterface $question_config): string
+    {
+        // Handle empty cases first
+        if (empty($value)) {
+            return '';
+        }
+
+        // If it's a JSON string (from database), decode it
+        if (is_string($value) && json_validate($value)) {
+            $value = json_decode($value, true);
+        }
+
+        // Check the extra data config
+        if (!($question_config instanceof QuestionTypeItemExtraDataConfig)) {
+            throw new LogicException(
+                'Expected QuestionTypeItemExtraDataConfig, got ' . ($question_config !== null ? get_class($question_config) : self::class)
+            );
+        }
+
+        // Get the default value config
+        $config = $this->getDefaultValueConfig($value);
+        if (!($config instanceof QuestionTypeItemDefaultValueConfig)) {
+            throw new LogicException(
+                'Expected QuestionTypeItemDefaultValueConfig, got ' . ($config !== null ? get_class($config) : self::class)
+            );
+        }
+
+        // Check if items_id is set and valid
+        if (empty($config->getItemsId())) {
+            // If items_id is not > 0, consider it empty
+            return '';
+        }
+
+        $item = getItemForItemtype($question_config->getItemtype());
+        if ($item && $item->getfromDB($config->getItemsId())) {
+            return $item->getName();
+        }
+
+        return '';
     }
 
     public function exportDynamicDefaultValue(

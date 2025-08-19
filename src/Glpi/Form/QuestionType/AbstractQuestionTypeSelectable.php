@@ -36,9 +36,12 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionValueAsStringProviderInterface;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Glpi\ItemTranslation\Context\TranslationHandler;
+use LogicException;
 use Override;
 use Safe\Exceptions\JsonException;
 
@@ -47,7 +50,7 @@ use function Safe\json_decode;
 /**
  * Short answers are single line inputs used to answer simple questions.
  */
-abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType implements FormQuestionDataConverterInterface, TranslationAwareQuestionType
+abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType implements FormQuestionDataConverterInterface, TranslationAwareQuestionType, ConditionValueAsStringProviderInterface
 {
     public const TRANSLATION_KEY_OPTION = 'option';
 
@@ -470,5 +473,25 @@ TWIG;
     public function getExtraDataConfigClass(): ?string
     {
         return QuestionTypeSelectableExtraDataConfig::class;
+    }
+
+    #[Override]
+    public function getConditionValueAsString(mixed $value, ?JsonFieldInterface $question_config): array
+    {
+        // Handle empty cases first
+        if (empty($value)) {
+            return [];
+        }
+
+        if (!($question_config instanceof QuestionTypeSelectableExtraDataConfig)) {
+            throw new LogicException('Invalid question config');
+        }
+
+        if (is_string($value)) {
+            // If it's a string, try to split it into an array
+            $value = explode(',', $value);
+        }
+
+        return array_filter(array_map(fn($item) => $question_config->getOptions()[$item] ?? null, $value));
     }
 }

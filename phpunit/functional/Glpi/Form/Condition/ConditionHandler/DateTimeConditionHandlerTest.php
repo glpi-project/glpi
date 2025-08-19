@@ -42,6 +42,11 @@ use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
 
 final class DateTimeConditionHandlerTest extends AbstractConditionHandler
 {
+    public static function getConditionHandler(): ConditionHandlerInterface
+    {
+        return new DateAndTimeConditionHandler();
+    }
+
     #[Override]
     public static function conditionHandlerProvider(): iterable
     {

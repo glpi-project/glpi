@@ -39,12 +39,13 @@ use CommonITILObject;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionHandler\UrgencyConditionHandler;
+use Glpi\Form\Condition\ConditionValueAsStringProviderInterface;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Override;
 
-final class QuestionTypeUrgency extends AbstractQuestionType implements UsedAsCriteriaInterface, FormQuestionDataConverterInterface
+final class QuestionTypeUrgency extends AbstractQuestionType implements UsedAsCriteriaInterface, FormQuestionDataConverterInterface, ConditionValueAsStringProviderInterface
 {
     /**
      * Retrieve the default value for the urgency question type
@@ -188,6 +189,12 @@ TWIG;
         ?JsonFieldInterface $question_config
     ): array {
         return array_merge(parent::getConditionHandlers($question_config), [new UrgencyConditionHandler()]);
+    }
+
+    #[Override]
+    public function getConditionValueAsString(mixed $value, ?JsonFieldInterface $question_config): string
+    {
+        return strval($value);
     }
 
     #[Override]
