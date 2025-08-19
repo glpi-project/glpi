@@ -93,6 +93,15 @@
         field_options
     ) }}
 
+    {{ fields.checkboxField(
+        'allow_unauthenticated_uploads',
+        config['allow_unauthenticated_uploads'] ?? false,
+        __('Allow unauthenticated uploads'),
+        field_options|merge({
+            helper: __("Do not use this option if your GLPI is reachable from the internet. Use at your own risk."),
+        })
+    ) }}
+
 </div>
 
 <div class="hr-text">
