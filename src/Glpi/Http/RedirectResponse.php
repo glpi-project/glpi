@@ -60,8 +60,8 @@ class RedirectResponse extends \Symfony\Component\HttpFoundation\RedirectRespons
     </head>
     <body></body>
 </html>',
-                \htmlspecialchars($url),
-                \htmlspecialchars(\sprintf('Redirecting to %s...', $url))
+                \htmlescape($url),
+                \htmlescape(\sprintf('Redirecting to %s...', $url))
             )
         );
 

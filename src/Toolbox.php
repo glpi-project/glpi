@@ -3037,14 +3037,14 @@ class Toolbox
         }
 
         if ($html) {
-            $formatted = <<<HTML
-            <span title="{$number}"
-                  class="formatted-number"
-                  data-precision='{$precision}'>
-               <span class="number">$formatted</span>
-               <span class="suffix">$suffix</span>
-            </span>
-HTML;
+            $formatted = '
+                <span title="' . htmlescape($number) . '"
+                      class="formatted-number"
+                      data-precision="' . htmlescape($precision) . '">
+                    <span class="number">' . htmlescape($formatted) . '</span>
+                    <span class="suffix">' . htmlescape($suffix) . '</span>
+                </span>
+            ';
         } else {
             $formatted .= $suffix;
         }
@@ -3118,7 +3118,7 @@ HTML;
     {
         $fg_color = "FFFFFF";
         if ($color !== "") {
-            if (preg_match('/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/', $color, $matches)) {
+            if (preg_match('/^rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)$/', $color, $matches)) {
                 $rgb_color = [
                     "R" => intval($matches[1]),
                     "G" => intval($matches[2]),

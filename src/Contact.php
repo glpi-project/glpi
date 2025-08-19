@@ -205,7 +205,7 @@ class Contact extends CommonDBTM
 
         if ($ID > 0) {
             $vcard_lbl = __s('Vcard');
-            $vcard_url = htmlspecialchars(self::getFormURLWithID($ID) . "&getvcard=1");
+            $vcard_url = htmlescape(self::getFormURLWithID($ID) . "&getvcard=1");
             $vcard_btn = <<<HTML
             <a href="{$vcard_url}" target="_blank"
                      class="btn btn-icon btn-sm btn-ghost-secondary"
