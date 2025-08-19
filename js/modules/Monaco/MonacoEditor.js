@@ -60,6 +60,10 @@ export default class MonacoEditor {
 
         // Can't just specify the loader when registering the language apparently...
         async function registerNewLangLoaderData() {
+            // If the language is not registered or does not have a loader, we can't set language configuration
+            if (!existing_lang || typeof existing_lang.loader !== "function") {
+                return;
+            }
             const loader = await existing_lang.loader();
             window.monaco.languages.setMonarchTokensProvider(new_lang_id, loader.language);
             window.monaco.languages.setLanguageConfiguration(new_lang_id, loader.conf);
