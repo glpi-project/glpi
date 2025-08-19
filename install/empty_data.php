@@ -9577,12 +9577,37 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             $tables['glpi_oauthclients'][] = [
                 'name' => 'Test E2E OAuth Client',
                 'redirect_uri' => json_encode(["/api.php/oauth2/redirection"]),
-                'grants' => json_encode(['authorization_code']),
-                'scopes' => json_encode(['api', 'user']),
+                'grants' => json_encode(['authorization_code', 'password']),
+                'scopes' => json_encode(['api', 'user', 'graphql', 'status', 'email']),
                 'is_active' => 1,
                 'is_confidential' => 1,
                 'identifier' => '9246d35072ff62193330003a8106d947fafe5ac036d11a51ebc7ca11b9bc135e',
                 'secret' => (new GLPIKey())->encrypt('d2c4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1'),
+            ];
+
+            $tables['glpi_authldaps'][] = [
+                'name'            => '_local_ldap',
+                'host'            => 'openldap',
+                'basedn'          => 'dc=glpi,dc=org',
+                'rootdn'          => 'cn=Manager,dc=glpi,dc=org',
+                'port'            => '3890',
+                'condition'       => '(objectclass=inetOrgPerson)',
+                'login_field'     => 'uid',
+                'rootdn_passwd'   => (new GLPIKey())->encrypt('insecure'),
+                'is_default'      => 1,
+                'is_active'       => 1,
+                'use_tls'         => 0,
+                'email1_field'    => 'mail',
+                'realname_field'  => 'cn',
+                'firstname_field' => 'sn',
+                'phone_field'     => 'telephonenumber',
+                'comment_field'   => 'description',
+                'title_field'     => 'title',
+                'category_field'  => 'businesscategory',
+                'language_field'  => 'preferredlanguage',
+                'group_search_type'  => AuthLDAP::GROUP_SEARCH_GROUP,
+                'group_condition' => '(objectclass=groupOfNames)',
+                'group_member_field' => 'member',
             ];
         }
 
