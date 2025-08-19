@@ -148,7 +148,7 @@ final class DefaultDataManager
          */
         global $CFG_GLPI, $TRANSLATE, $DB;
 
-        $query = $DB->buildInsert(ItemTranslation::getTable(), [
+        $form_query = $DB->buildInsert(ItemTranslation::getTable(), [
             'itemtype' => Form::class,
             'items_id' => $forms_id,
             'key'      => new QueryParam(),
@@ -156,18 +156,31 @@ final class DefaultDataManager
             'translations' => new QueryParam(),
             'hash' => new QueryParam(),
         ]);
-        $stmt = $DB->prepare($query);
+        $section_query = $DB->buildInsert(ItemTranslation::getTable(), [
+            'itemtype' => Section::class,
+            'items_id' => new QueryParam(),
+            'key'      => new QueryParam(),
+            'language' => new QueryParam(),
+            'translations' => new QueryParam(),
+            'hash' => new QueryParam(),
+        ]);
+        $form_stmt = $DB->prepare($form_query);
+        $section_stmt = $DB->prepare($section_query);
+        $first_section = current(Form::getById($forms_id)->getSections());
         $name_hash = md5($name);
         $description_hash = md5($description);
+        $section_name_hash = md5($first_section->fields['name']);
         foreach (array_keys($CFG_GLPI['languages']) as $lang) {
             $translated_name = $TRANSLATE->translate($name, 'glpi', $lang);
             $translated_description = $TRANSLATE->translate($description, 'glpi', $lang);
             if ($translated_name !== $name) {
-                $stmt->execute([Form::TRANSLATION_KEY_NAME, $lang, json_encode(['one' => $translated_name]), $name_hash]);
+                $form_stmt->execute([Form::TRANSLATION_KEY_NAME, $lang, json_encode(['one' => $translated_name]), $name_hash]);
             }
             if ($translated_description !== $description) {
-                $stmt->execute([Form::TRANSLATION_KEY_DESCRIPTION, $lang, json_encode(['one' => $translated_description]), $description_hash]);
+                $form_stmt->execute([Form::TRANSLATION_KEY_DESCRIPTION, $lang, json_encode(['one' => $translated_description]), $description_hash]);
             }
+            $translated_section_name = $TRANSLATE->translate($first_section->fields['name'], 'glpi', $lang);
+            $section_stmt->execute([$first_section->getID(), Section::TRANSLATION_KEY_NAME, $lang, json_encode(['one' => $translated_section_name]), $section_name_hash]);
         }
     }
 
