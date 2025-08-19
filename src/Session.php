@@ -921,9 +921,7 @@ class Session
 
             return str_starts_with($dir, 'core_');
         });
-        $core_folders = array_map(static function ($dir) {
-            return GLPI_LOCAL_I18N_DIR . "/$dir";
-        }, $core_folders);
+        $core_folders = array_map(static fn($dir) => GLPI_LOCAL_I18N_DIR . "/$dir", $core_folders);
         $core_folders = [GLPI_I18N_DIR, ...$core_folders];
 
         foreach ($core_folders as $core_folder) {
