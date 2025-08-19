@@ -1,33 +1,31 @@
 # Create a file named "Makefile" in the root directory of your plugin and add
-# the following lines:
-#
-# PLUGIN_DIR = my_plugin_directory
-#
-# These two options will change the behavior of the `make vendor` command.
-# USE_COMPOSER = true
-# USE_NPM = false
-#
-# These options will change the behavior of several lint/static analysis commands.
-# By default, you do not need to change anything as these binaries are provided by
-# GLPI's core.
-# You only need to set it to true if your plugin load its own binary
-# in its vendor directory for one of these tools.
-# USE_LOCAL_PHPUNIT_BIN = false
-# USE_LOCAL_PHPSTAN_BIN = false
-# USE_LOCAL_PSALM_BIN = false
-# USE_LOCAL_RECTOR_BIN = false
-# USE_LOCAL_PHPCSFIXER_BIN = false
-#
+# the following line:
 # include ../../PluginsMakefile.mk
 
+# Shell to use
 SHELL=bash
 
-COMPOSE = docker compose
+# Current plugin directory
+PLUGIN_DIR = $(shell pwd | xargs basename)
 
+# Check if composer and npm are used
+USE_COMPOSER = $(shell test -f composer.json)
+USE_NPM = $(shell test -f package.json)
+
+# Docker commands
+COMPOSE = docker compose
 PHP = $(COMPOSE) exec app
 PLUGIN = $(COMPOSE) exec -w /var/www/glpi/plugins/$(PLUGIN_DIR) app
 DB = $(COMPOSE) exec db
 CONSOLE = $(PHP) bin/console
+
+# Check which binaries we need to use for some tools that can be suplied by
+# either GLPI's core or the plugin itself.
+PHPSTAN_BIN    = $(shell test -f vendor/bin/phpstan      && echo vendor/bin/phpstan      || echo ../../vendor/bin/phpstan)
+PHPUNIT_BIN    = $(shell test -f vendor/bin/phpunit      && echo vendor/bin/phpunit      || echo ../../vendor/bin/phpunit)
+RECTOR_BIN     = $(shell test -f vendor/bin/rector       && echo vendor/bin/rector       || echo ../../vendor/bin/rector)
+PSALM_BIN      = $(shell test -f vendor/bin/psalm        && echo vendor/bin/psalm        || echo ../../vendor/bin/psalm)
+PHPCSFIXER_BIN = $(shell test -f vendor/bin/php-cs-fixer && echo vendor/bin/php-cs-fixer || echo ../../vendor/bin/php-cs-fixer)
 
 ##
 ##This Makefile is used for *local development* only.
@@ -66,6 +64,7 @@ test-setup: ## Setup the plugin for tests
 	@$(CONSOLE) plugin:enable --env=testing $(PLUGIN_DIR)
 .PHONY: test-setup
 
+##—— Licenses  —————————————————————————————————————————————————————————————————
 license-headers-check: ## Verify that the license headers is present all files
 	@$(PLUGIN) vendor/bin/licence-headers-check
 .PHONY: license-headers-check
@@ -89,65 +88,42 @@ composer: ## Run a composer command, example: make composer c='require mypackage
 	@$(PLUGIN) composer $(c)
 .PHONY: composer
 
-## —— Testing and static analysis ——————————————————————————————————————————————
+npm: ## Run a npm command, example: make npm c='install mypackage/package'
+	@$(eval c ?=)
+	@$(PLUGIN) npm $(c)
+.PHONY: npm
+
+##—— Testing and static analysis ———————————————————————————————————————————————
 phpunit: ## Run phpunits tests, example: make phpunit c='phpunit/functional/Glpi/MySpecificTest.php'
 	@$(eval c ?=)
-ifeq ($(USE_LOCAL_PHPUNIT_BIN),true)
-	@$(PLUGIN) php vendor/bin/phpunit $(c)
-else
-	@$(PHP) php vendor/bin/phpunit -c /var/www/glpi/plugins/$(PLUGIN_DIR)/phpunit.xml $(c)
-endif
+	@$(PLUGIN) php $(PHPUNIT_BIN) $(c)
 .PHONY: phpunit
 
 phpstan: ## Run phpstan
 	@$(eval c ?=)
-ifeq ($(USE_LOCAL_PHPSTAN_BIN),true)
-	@$(PLUGIN) php vendor/bin/phpstan --memory-limit=1G $(c)
-else
-	@$(PHP) php vendor/bin/phpstan --memory-limit=1G analyze -c /var/www/glpi/plugins/$(PLUGIN_DIR)/phpstan.neon $(c)
-endif
+	@$(PLUGIN) php $(PHPSTAN_BIN) --memory-limit=1G $(c)
 .PHONY: phpstan
 
 psalm: ## Run psalm analysis
 	@$(eval c ?=)
-ifeq ($(USE_LOCAL_PSALM_BIN),true)
-	@$(PLUGIN) php vendor/bin/psalm $(c) $(c)
-else
-	@$(PHP) php vendor/bin/psalm -c /var/www/glpi/plugins/$(PLUGIN_DIR)/psalm.xml $(c)
-endif
+	@$(PLUGIN) php $(PSALM_BIN) $(c)
 .PHONY: psalm
 
 rector-check: ## Run rector with dry run
 	@$(eval c ?=)
-ifeq ($(USE_LOCAL_RECTOR_BIN),true)
-	@$(PLUGIN) php vendor/bin/rector --dry-run $(c)
-else
-	@$(PHP) php vendor/bin/rector --config /var/www/glpi/plugins/$(PLUGIN_DIR)/rector.php --dry-run $(c)
-endif
+	@$(PLUGIN) php $(RECTOR_BIN) --dry-run $(c)
 .PHONY: rector
 
 rector-apply: ## Run rector
 	@$(eval c ?=)
-ifeq ($(USE_LOCAL_RECTOR_BIN),true)
-	@$(PLUGIN) php vendor/bin/rector $(c)
-else
-	@$(PHP) php vendor/bin/rector --config /var/www/glpi/plugins/$(PLUGIN_DIR)/rector.php $(c)
-endif
+	@$(PLUGIN) php $(RECTOR_BIN) $(c)
 .PHONY: rector-apply
 
-## —— Coding standards —————————————————————————————————————————————————————————
+##—— Coding standards ——————————————————————————————————————————————————————————
 phpcsfixer-check: ## Check for php coding standards issues
-ifeq ($(USE_LOCAL_PHPCSFIXER_BIN),true)
-	@$(PLUGIN) vendor/bin/php-cs-fixer check --diff -vvv
-else
-	@$(PHP) php vendor/bin/php-cs-fixer check --config /var/www/glpi/plugins/$(PLUGIN_DIR)/.php-cs-fixer.php --diff -vvv
-endif
+	@$(PLUGIN) $(PHPCSFIXER_BIN) check --diff -vvv
 .PHONY: phpcsfixer-check
 
 phpcsfixer-fix: ## Fix php coding standards issues
-ifeq ($(USE_LOCAL_PHPCSFIXER_BIN),true)
-	@$(PLUGIN) vendor/bin/php-cs-fixer fix
-else
-	@$(PHP) php vendor/bin/php-cs-fixer fix --config /var/www/glpi/plugins/$(PLUGIN_DIR)/.php-cs-fixer.php
-endif
+	@$(PLUGIN) $(PHPCSFIXER_BIN) fix
 .PHONY: phpcsfixer-fix
