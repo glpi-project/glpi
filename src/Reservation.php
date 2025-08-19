@@ -574,7 +574,6 @@ class Reservation extends CommonDBChild
             $year  = (int) $_REQUEST['year'];
             $default_date = sprintf('%04d-%02d-01', $year, $month);
         }
-        $default_date = htmlescape($default_date);
 
         $js = "
             $(function() {
@@ -585,7 +584,7 @@ class Reservation extends CommonDBChild
                     rand: $rand,
                     can_reserve: " . ($can_reserve ? "true" : "false") . ",
                     now: '" . jsescape($_SESSION["glpi_currenttime"]) . "',
-                    defaultDate: '$default_date',
+                    defaultDate: '" . jsescape($default_date) . "',
                 });
                 reservation.displayPlanning();
           });
@@ -1021,7 +1020,7 @@ class Reservation extends CommonDBChild
             $year  = (int) $_REQUEST['year'];
             $default_date = sprintf('%04d-%02d-01', $year, $month);
         }
-        $default_date = htmlescape($default_date);
+        $default_date = jsescape($default_date);
         $now = date("Y-m-d H:i:s");
         $js = <<<JAVASCRIPT
             $(() => {
