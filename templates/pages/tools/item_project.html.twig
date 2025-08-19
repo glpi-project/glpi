@@ -30,21 +30,36 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
-<form method="post" action="{{ 'Item_Project'|itemtype_form_path }}" class="mb-2">
-    {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
-    {{ inputs.hidden('items_id', item.getID()) }}
-    {{ inputs.hidden('itemtype', get_class(item)) }}
-    <div class="d-flex">
-        {{ 'Project'|itemtype_dropdown({
-            'entity': item.getEntityID(),
-            'used': used,
-        }) }}
-    </div>
-    <div class="d-flex flex-row-reverse pe-2">
-        {{ inputs.submit('add', _x('button', 'Add'), 1) }}
-    </div>
-</form>
+{% if can_edit %}
+    <form method="post" action="{{ 'Item_Project'|itemtype_form_path }}" class="mb-2">
+        {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+        {% if item is instanceof('Project') %}
+            {{ inputs.hidden('projects_id', item.getID()) }}
+            <div class="d-flex">
+                {{ fields.dropdownItemsFromItemtypes('items_id', __('Add an item'), {
+                    itemtypes: config('project_asset_types'),
+                    used: used,
+                    entity: item.getEntityID(),
+                    entity_sons: item.isRecursive() ? 1 : 0
+                }) }}
+            </div>
+        {% else %}
+            {{ inputs.hidden('items_id', item.getID()) }}
+            {{ inputs.hidden('itemtype', get_class(item)) }}
+            <div class="d-flex">
+                {{ 'Project'|itemtype_dropdown({
+                    'entity': item.getEntityID(),
+                    'used': used,
+                }) }}
+            </div>
+        {% endif %}
+        <div class="d-flex flex-row-reverse pe-2">
+            {{ inputs.submit('add', _x('button', 'Add'), 1) }}
+        </div>
+    </form>
+{% endif %}
 
 {{ include('components/datatable.html.twig', datatable_params, with_context = false) }}
