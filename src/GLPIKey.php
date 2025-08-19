@@ -35,8 +35,8 @@
 use Glpi\Plugin\Hooks;
 use Safe\Exceptions\FilesystemException;
 use Safe\Exceptions\SodiumException;
-
 use Safe\Exceptions\UrlException;
+
 use function Safe\base64_decode;
 use function Safe\file_put_contents;
 use function Safe\sodium_crypto_aead_xchacha20poly1305_ietf_decrypt;
