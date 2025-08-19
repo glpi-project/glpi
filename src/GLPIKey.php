@@ -393,13 +393,12 @@ class GLPIKey
     }
 
     /**
-     * Descrypt a string.
+     * Decrypt a string.
      *
      * @param string|null $string String to decrypt.
      * @param string|null $key Key to use, fallback to default key if null.
      *
      * @return string|null
-     * @throws SodiumException
      */
     public function decrypt(?string $string, $key = null): ?string
     {
@@ -417,7 +416,15 @@ class GLPIKey
             return $string;
         }
 
-        $string = base64_decode($string);
+        try {
+            $string = base64_decode($string);
+        } catch (\Safe\Exceptions\UrlException $e) {
+            trigger_error(
+                'Unable to base64_decode the string. The string was probably not encrypted using GLPIKey::encrypt',
+                E_USER_WARNING
+            );
+            return '';
+        }
 
         $nonce = mb_substr($string, 0, SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES, '8bit');
         if (mb_strlen($nonce, '8bit') !== SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES) {
