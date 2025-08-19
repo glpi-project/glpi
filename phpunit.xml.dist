@@ -4,6 +4,7 @@
     xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
     bootstrap="phpunit/bootstrap.php"
     colors="true"
+    cacheDirectory="files/_cache/phpunit"
 >
   <source>
     <include>
