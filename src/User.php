@@ -4152,6 +4152,7 @@ HTML;
      *    - inactive_deleted : retreive also inactive or deleted users
      *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
      *    - readonly         : boolean / return getUserName is true (default false)
+     *    - required         : boolean / is the field required (default false)
      *
      * @return integer|string Random value if displayed, string otherwise
      */
@@ -4189,6 +4190,7 @@ HTML;
             'readonly'            => false,
             'multiple'            => false,
             'init'                => true,
+            'required'            => false,
         ];
 
         if (is_array($options) && count($options)) {
@@ -4304,6 +4306,7 @@ HTML;
                 'entity_restrict' => $entity_restrict,
             ]),
             'aria_label'          => $p['aria_label'] ?? '',
+            'required'            => $p['required'],
         ];
 
         if ($p['multiple']) {

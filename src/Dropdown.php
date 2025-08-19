@@ -79,6 +79,7 @@ class Dropdown
      * @param array  $options   array of possible options:
      *    - name                 : string / name of the select (default is depending itemtype)
      *    - value                : integer / preselected value (default -1)
+     *    - required             : boolean / is the field required (default false)
      *    - comments             : boolean / is the comments displayed near the dropdown (default true)
      *    - toadd                : array / array of specific values to add at the begining
      *    - entity               : integer or array / restrict to a defined entity or array of entities
@@ -157,6 +158,7 @@ class Dropdown
         $params['multiple']             = false;
         $params['init']                 = true;
         $params['aria_label']           = '';
+        $params['required']             = false;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -270,6 +272,7 @@ class Dropdown
             $params['condition'] = static::addNewCondition($params['condition']);
         }
 
+        // parameters for Html::jsAjaxDropdown
         $p = [
             'width'                => $params['width'],
             'itemtype'             => $itemtype,
