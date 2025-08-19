@@ -37,6 +37,8 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 
+use function Safe\parse_url;
+
 global $CFG_GLPI;
 
 $rr = new Reservation();
@@ -47,6 +49,44 @@ if (Session::getCurrentInterface() == "helpdesk") {
     Html::header(Reservation::getTypeName(Session::getPluralNumber()), '', "tools", "reservationitem");
 }
 
+$fn_redirect_back = static function ($begin_year = null, $begin_month = null) {
+    $back_url = Html::getBackUrl();
+    if ($begin_year === null && $begin_month === null) {
+        // Try to get from POST data
+        if (isset($_POST['resa']["begin"])) {
+            $begin = $_POST['resa']["begin"];
+            [$begin_year, $begin_month] = explode("-", $begin);
+        } else {
+            // Default to current month/year
+            $begin_year  = date('Y');
+            $begin_month = date('m');
+        }
+    }
+
+    // Remove old month/year params
+    $back_url_params = [];
+    $back_url_base = parse_url($back_url, PHP_URL_PATH) ?? '';
+    parse_str(parse_url($back_url, PHP_URL_QUERY) ?? '', $back_url_params);
+    unset($back_url_params['month'], $back_url_params['year'], $back_url_params['tab_params']);
+    if ($back_url_params !== []) {
+        $back_url = $back_url_base . '?' . Toolbox::append_params($back_url_params);
+    }
+    if (str_contains($back_url, 'front/reservation.php')) {
+        $back_url .= (!str_contains($back_url, '?') ? '?' : '&') . Toolbox::append_params([
+            'month' => $begin_month,
+            'year' => $begin_year,
+        ]);
+    } else {
+        $back_url .= (!str_contains($back_url, '?') ? '?' : '&') . Toolbox::append_params([
+            'tab_params' => [
+                'month' => $begin_month,
+                'year' => $begin_year,
+            ],
+        ]);
+    }
+    Html::redirect($back_url);
+};
+
 if (isset($_POST["update"])) {
     $rr->check($_POST["id"], UPDATE);
 
@@ -55,7 +95,7 @@ if (isset($_POST["update"])) {
     $_POST['begin']   = $_POST['resa']["begin"];
     $_POST['end']     = $_POST['resa']["end"];
     $rr->update($_POST);
-    Html::back();
+    $fn_redirect_back();
 } elseif (isset($_POST["purge"])) {
     $rr->check($_POST["id"], PURGE);
 
@@ -76,11 +116,10 @@ if (isset($_POST["update"])) {
     }
 
     [$begin_year, $begin_month] = explode("-", $rr->fields["begin"]);
-    Html::redirect($CFG_GLPI["root_doc"] . "/front/reservation.php?reservationitems_id=" .
-        "$reservationitems_id&mois_courant=$begin_month&annee_courante=$begin_year");
+    $fn_redirect_back($begin_year, $begin_month);
 } elseif (isset($_POST["add"])) {
     Reservation::handleAddForm($_POST);
-    Html::back();
+    $fn_redirect_back();
 } elseif (isset($_GET["id"])) {
     if (!empty($_GET["id"])) {
         $rr->check($_GET["id"], READ);
