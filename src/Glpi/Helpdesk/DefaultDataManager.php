@@ -389,9 +389,7 @@ final class DefaultDataManager
         return [
             'type' => QuestionTypeShortText::class,
             'name' => __("Title"),
-            'translation' => static function (Translator $trans, string $lang, string $key) {
-                return $key === 'question_name' ? $trans->translate('Title', 'glpi', $lang) : null;
-            },
+            'translation' => static fn(Translator $trans, string $lang, string $key) => $key === 'question_name' ? $trans->translate('Title', 'glpi', $lang) : null,
         ];
     }
 
@@ -400,9 +398,7 @@ final class DefaultDataManager
         return [
             'type' => QuestionTypeLongText::class,
             'name' => __("Description"),
-            'translation' => static function (Translator $trans, string $lang, string $key) {
-                return $key === 'question_name' ? $trans->translate('Description', 'glpi', $lang) : null;
-            },
+            'translation' => static fn(Translator $trans, string $lang, string $key) => $key === 'question_name' ? $trans->translate('Description', 'glpi', $lang) : null,
             'is_mandatory' => true,
         ];
     }
@@ -412,9 +408,7 @@ final class DefaultDataManager
         return [
             'type' => QuestionTypeItemDropdown::class,
             'name' => _n('Category', 'Categories', 1),
-            'translation' => static function (Translator $trans, string $lang, string $key) {
-                return $key === 'question_name' ? $trans->translatePlural('Category', 'Categories', 1, 'glpi', $lang) : null;
-            },
+            'translation' => static fn(Translator $trans, string $lang, string $key) => $key === 'question_name' ? $trans->translatePlural('Category', 'Categories', 1, 'glpi', $lang) : null,
             'default_value' => null,
             'extra_data' => json_encode([
                 'itemtype'          => ITILCategory::class,
@@ -430,9 +424,7 @@ final class DefaultDataManager
         return [
             'type' => QuestionTypeUserDevice::class,
             'name' => __("User devices"),
-            'translation' => static function (Translator $trans, string $lang, string $key) {
-                return $key === 'question_name' ? $trans->translate('User devices', 'glpi', $lang) : null;
-            },
+            'translation' => static fn(Translator $trans, string $lang, string $key) => $key === 'question_name' ? $trans->translate('User devices', 'glpi', $lang) : null,
             'default_value' => 0,
             'extra_data' => json_encode(['is_multiple_devices' => false]),
         ];
@@ -443,9 +435,7 @@ final class DefaultDataManager
         return [
             'type' => QuestionTypeItemDropdown::class,
             'name' => _n('Location', 'Locations', 1),
-            'translation' => static function (Translator $trans, string $lang, string $key) {
-                return $key === 'question_name' ? $trans->translatePlural('Location', 'Locations', 1, 'glpi', $lang) : null;
-            },
+            'translation' => static fn(Translator $trans, string $lang, string $key) => $key === 'question_name' ? $trans->translatePlural('Location', 'Locations', 1, 'glpi', $lang) : null,
             'default_value' => null,
             'extra_data' => json_encode([
                 'itemtype'          => Location::class,
@@ -461,9 +451,7 @@ final class DefaultDataManager
         return [
             'type' => QuestionTypeUrgency::class,
             'name' => __("Urgency"),
-            'translation' => static function (Translator $trans, string $lang, string $key) {
-                return $key === 'question_name' ? $trans->translate('Urgency', 'glpi', $lang) : null;
-            },
+            'translation' => static fn(Translator $trans, string $lang, string $key) => $key === 'question_name' ? $trans->translate('Urgency', 'glpi', $lang) : null,
         ];
     }
 
@@ -472,9 +460,7 @@ final class DefaultDataManager
         return [
             'type' => QuestionTypeObserver::class,
             'name' => _n('Observer', 'Observers', Session::getPluralNumber()),
-            'translation' => static function (Translator $trans, string $lang, string $key) {
-                return $key === 'question_name' ? $trans->translatePlural('Observer', 'Observers', Session::getPluralNumber(), 'glpi', $lang) : null;
-            },
+            'translation' => static fn(Translator $trans, string $lang, string $key) => $key === 'question_name' ? $trans->translatePlural('Observer', 'Observers', Session::getPluralNumber(), 'glpi', $lang) : null,
             'extra_data' => json_encode(['is_multiple_actors' => true]),
         ];
     }
