@@ -380,25 +380,13 @@ class Supplier extends CommonDBTM
      **/
     public function getLinks($withname = false)
     {
-        global $CFG_GLPI;
-
-        $ret = '&nbsp;&nbsp;&nbsp;&nbsp;';
-
-        if ($withname) {
-            $ret .= htmlescape($this->fields["name"]);
-            $ret .= "&nbsp;&nbsp;";
-        }
+        $ret = $withname ? ('<span class="ms-3 me-1">' . htmlescape($this->fields["name"]) . '</span>') : '';
 
         if (!empty($this->fields['website'])) {
-            $ret .= "<a href='" . Toolbox::formatOutputWebLink($this->fields['website']) . "' target='_blank'>
-                  <img src='" . $CFG_GLPI["root_doc"] . "/pics/web.png' class='middle' alt=\"" .
-                   __s('Web') . "\" title=\"" . __s('Web') . "\"></a>&nbsp;&nbsp;";
-        }
-
-        if ($this->can($this->fields['id'], READ)) {
-            $ret .= "<a href='" . self::getFormURLWithID($this->fields['id']) . "'>
-                  <img src='" . $CFG_GLPI["root_doc"] . "/pics/edit.png' class='middle' alt=\"" .
-                   __s('Update') . "\" title=\"" . __s('Update') . "\"></a>";
+            $ret .= "<a class='btn btn-icon btn-outline-secondary' href='" . htmlescape(Toolbox::formatOutputWebLink($this->fields['website'])) . "'
+                target='_blank' title=\"" . __s('Web') . "\">
+                <i class='ti ti-world' ></i>
+                </a>";
         }
         return $ret;
     }
