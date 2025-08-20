@@ -366,7 +366,8 @@ class Cartridge extends CommonDBRelation
      *
      * @param integer         $tID      ID of the cartridge item
      * @param integer         $alarm_threshold Alarm threshold value
-     * @param integer|boolean $nohtml          True if the return value should be without HTML tags (default 0/false)
+     * @param integer|boolean $nohtml          True if the return value should be without HTML tags (default 0/false).
+     *                                         The return value will anyway be a safe HTML string.
      *
      * @return string String to display
      **/
@@ -421,19 +422,21 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
             } else {
                 //TRANS : for display cartridges count : %1$d is the total number,
                 //        %2$d the new one, %3$d the used one, %4$d worn one
-                $out .= sprintf(
-                    __('Total: %1$d (%2$d new, %3$d used, %4$d worn)'),
-                    $total,
-                    $unused,
-                    $used,
-                    $old
+                $out .= htmlescape(
+                    sprintf(
+                        __('Total: %1$d (%2$d new, %3$d used, %4$d worn)'),
+                        $total,
+                        $unused,
+                        $used,
+                        $old
+                    )
                 );
             }
         } else {
             if (!$nohtml) {
                 $out .= "<div class='bg-danger-lt fst-italic'>" . __s('No cartridge') . "</div>";
             } else {
-                $out .= __('No cartridge');
+                $out .= __s('No cartridge');
             }
         }
         return $out;
@@ -445,7 +448,8 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      * @since 0.85
      *
      * @param integer         $pID    ID of the printer
-     * @param integer|boolean $nohtml True if the return value should be without HTML tags (default 0/false)
+     * @param integer|boolean $nohtml True if the return value should be without HTML tags (default 0/false).
+     *                                The return value will anyway be a safe HTML string.
      *
      * @return string String to display
      **/
@@ -494,13 +498,13 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
             } else {
                 //TRANS : for display cartridges count : %1$d is the total number,
                 //        %2$d the used one, %3$d the worn one
-                $out .= sprintf(__('Total: %1$d (%2$d used, %3$d worn)'), $total, $used, $old);
+                $out .= htmlescape(sprintf(__('Total: %1$d (%2$d used, %3$d worn)'), $total, $used, $old));
             }
         } else {
             if (!$nohtml) {
                 $out .= "<div class='bg-danger-lt fst-italic'>" . __s('No cartridge') . "</div>";
             } else {
-                $out .= __('No cartridge');
+                $out .= __s('No cartridge');
             }
         }
         return $out;

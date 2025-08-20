@@ -62,7 +62,7 @@ trait TreeBrowse
     {
         global $CFG_GLPI;
 
-        $ajax_url    = $CFG_GLPI["root_doc"] . "/ajax/treebrowse.php";
+        $ajax_url    = \jsescape($CFG_GLPI["root_doc"] . "/ajax/treebrowse.php");
 
         $start       = isset($params['start'])
                             ? (int) $params['start']
@@ -77,35 +77,35 @@ trait TreeBrowse
                             ? (int) $params['unpublished']
                             : 1;
 
+        $js_itemtype = \jsescape($itemtype);
         $criteria    = json_encode($params['criteria']);
         $sort        = json_encode($_REQUEST['sort'] ?? []);
         $order       = json_encode($_REQUEST['order'] ?? []);
 
         $category_list = json_encode(self::getTreeCategoryList($itemtype, $params));
-        $no_cat_found  = __s("No category found");
 
         $JS = <<<JAVASCRIPT
-        $('#items_list').html(`<span class="spinner-border spinner-border position-absolute m-5 start-50" role="status" aria-hidden="true"></span>`);
-        window.loadNode = function(cat_id) {
             $('#items_list').html(`<span class="spinner-border spinner-border position-absolute m-5 start-50" role="status" aria-hidden="true"></span>`);
-            $('#items_list').load('$ajax_url', {
-                'action': 'getItemslist',
-                'cat_id': cat_id,
-                'itemtype': '$itemtype',
-                'start': $start,
-                'browse': $browse,
-                'is_deleted': $is_deleted,
-                'unpublished': $unpublished,
-                'criteria': $criteria,
-                'sort': $sort,
-                'order': $order,
-            });
-        };
+            window.loadNode = function(cat_id) {
+                $('#items_list').html(`<span class="spinner-border spinner-border position-absolute m-5 start-50" role="status" aria-hidden="true"></span>`);
+                $('#items_list').load('$ajax_url', {
+                    'action': 'getItemslist',
+                    'cat_id': cat_id,
+                    'itemtype': '$js_itemtype',
+                    'start': $start,
+                    'browse': $browse,
+                    'is_deleted': $is_deleted,
+                    'unpublished': $unpublished,
+                    'criteria': $criteria,
+                    'sort': $sort,
+                    'order': $order,
+                });
+            };
 JAVASCRIPT;
 
         if ($update) {
             $JS .= <<<JAVASCRIPT
-            $('#tree_category').fancytree('option', 'source', {$category_list});
+                $('#tree_category').fancytree('option', 'source', {$category_list});
 JAVASCRIPT;
 
             $params['criteria'][] = $_SESSION['treebrowse'][$itemtype];
@@ -113,6 +113,8 @@ JAVASCRIPT;
             $results['searchform_id'] = $params['searchform_id'] ?? null;
             Search::displayData($results);
         } else {
+            $no_cat_found  = jsescape(__("No category found"));
+
             $JS .= <<<JAVASCRIPT
             $(function() {
                 $('#tree_category').fancytree({
@@ -129,7 +131,7 @@ JAVASCRIPT;
                     },
 
                     persist: {
-                        cookiePrefix: '$itemtype',
+                        cookiePrefix: '$js_itemtype',
                         expandLazy: true,
                         overrideSource: true,
                         store: "auto"
@@ -323,7 +325,7 @@ JAVASCRIPT;
             ];
 
             if ($category['items_count'] > 0) {
-                $node['title'] .= ' <span class="badge bg-azure-lt" title="' . __s('This category contains ') . $itemtype::getTypeName() . '">'
+                $node['title'] .= ' <span class="badge bg-azure-lt" title="' . \htmlescape(\sprintf(__('This category contains %s'), $itemtype::getTypeName())) . '">'
                 . $category['items_count']
                 . '</span>';
             }

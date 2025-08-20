@@ -1092,7 +1092,7 @@ class Conf extends CommonGLPI
                             echo htmlescape($action['label'] ?? '');
                             echo "</td>";
                             echo "<td width='20%'>";
-                            echo $field;
+                            echo $field; // $field is expected to be a safe HTML string provided by the plugin
                             echo "</td>";
 
                             if (!$odd) {

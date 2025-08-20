@@ -124,20 +124,19 @@ trait Inventoriable
                 $CFG_GLPI["root_doc"],
                 $download_file
             );
-            $title = sprintf(
-                //TRANS: parameter is the name of the asset
-                __s('Download "%1$s" inventory file'),
-                htmlescape($this->getName())
-            );
 
             echo sprintf(
                 "<a href='%s' style='float: right;' target='_blank'><i class='ti ti-download' title='%s'></i></a>",
                 \htmlescape($href),
-                \htmlescape($title)
+                sprintf(
+                    //TRANS: parameter is the name of the asset
+                    __s('Download "%1$s" inventory file'),
+                    htmlescape($this->getName())
+                )
             );
 
             if (static::class === RefusedEquipment::class) { //@phpstan-ignore-line - phpstan bug with traits
-                $url = $CFG_GLPI['root_doc'] . '/Inventory/RefusedEquipment';
+                $url = \htmlescape($CFG_GLPI['root_doc'] . '/Inventory/RefusedEquipment');
                 $title = __s('Try a reimport from stored inventory file');
                 echo <<<HTML
                         <button type="submit" class="btn btn-sm btn-ghost-secondary" name="redo_inventory"
@@ -214,31 +213,31 @@ HTML;
         $status = Agent::ACTION_STATUS;
         $inventory = Agent::ACTION_INVENTORY;
         $agents_id = (int) $this->agent->fields['id'];
+        $root_doc = \jsescape($CFG_GLPI['root_doc']);
         $js = <<<JAVASCRIPT
-         $(function() {
-            $('#update-status').on('click', function() {
-               $.post({
-                  url: '{$CFG_GLPI['root_doc']}/ajax/agent.php',
-                  timeout: 3000, //3 seconds timeout
-                  data: {'action': '{$status}', 'id': '{$agents_id}'},
-                  success: function(json) {
-                     $('#agent_status').html(json.answer);
-                  }
-               });
-            });
+            $(function() {
+                $('#update-status').on('click', function() {
+                    $.post({
+                        url: '{$root_doc}/ajax/agent.php',
+                        timeout: 3000, //3 seconds timeout
+                        data: {'action': '{$status}', 'id': '{$agents_id}'},
+                        success: function(json) {
+                            $('#agent_status').html(json.answer);
+                        }
+                    });
+                });
 
-            $('#update-inventory').on('click', function() {
-               $.post({
-                  url: '{$CFG_GLPI['root_doc']}/ajax/agent.php',
-                  timeout: 3000, //3 seconds timeout
-                  data: {'action': '{$inventory}', 'id': '{$agents_id}'},
-                  success: function(json) {
-                     $('#inventory_status').html(json.answer);
-                  }
-               });
+                $('#update-inventory').on('click', function() {
+                    $.post({
+                        url: '{$root_doc}/ajax/agent.php',
+                        timeout: 3000, //3 seconds timeout
+                        data: {'action': '{$inventory}', 'id': '{$agents_id}'},
+                        success: function(json) {
+                            $('#inventory_status').html(json.answer);
+                        }
+                    });
+                });
             });
-
-         });
 JAVASCRIPT;
         echo Html::scriptBlock($js);
     }

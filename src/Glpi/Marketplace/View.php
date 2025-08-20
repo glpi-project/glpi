@@ -497,7 +497,7 @@ HTML;
                     var element = option.element;
                     var icon = $(element).data('icon');
 
-                    return $("<span><i class='"+icon+"'></i>&nbsp;"+option.text+"</span>");
+                    return $("<span><i class='"+icon+"'></i>&nbsp;" + _.escape(option.text) + "</span>");
                 };
 
                 $('.sort-control').select2({
@@ -762,7 +762,7 @@ JS;
                     'update_btn' => '<a href="#" class="btn btn-info w-100 modify_plugin"
                                            data-action="install_plugin"
                                            data-bs-dismiss="modal">
-                                           ' . _x("button", "Update") . '
+                                           ' . _sx("button", "Update") . '
                                        </a>',
                 ]);
             } else {
