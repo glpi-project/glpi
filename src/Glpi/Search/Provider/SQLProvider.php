@@ -169,6 +169,7 @@ final class SQLProvider implements SearchProviderInterface
                 // Plugin can override core definition for its type
                 if ($plug = isPluginItemType($itemtype)) {
                     $default_select = Plugin::doOneHook($plug['plugin'], Hooks::AUTO_ADD_DEFAULT_SELECT, $itemtype);
+                    // @FIXME Deprecate string result to expect array|QueryExpression|null
                     if (!empty($default_select)) {
                         $ret[] = new QueryExpression(rtrim($default_select, ' ,'));
                     }
@@ -246,6 +247,7 @@ final class SQLProvider implements SearchProviderInterface
         // Plugin can override core definition for its type
         if ($plug = isPluginItemType($itemtype)) {
             $out = Plugin::doOneHook($plug['plugin'], Hooks::AUTO_ADD_SELECT, $itemtype, $ID, "{$itemtype}_{$ID}");
+            // @FIXME Deprecate string result to expect array|QueryExpression|null
             if (!empty($out)) {
                 return new QueryExpression($out);
             }
@@ -516,6 +518,7 @@ final class SQLProvider implements SearchProviderInterface
         if (preg_match($plugin_table_pattern, $table, $matches) && count($matches) === 2) {
             $plug     = $matches[1];
             $out = Plugin::doOneHook($plug, Hooks::AUTO_ADD_SELECT, $itemtype, $ID, "{$itemtype}_{$ID}");
+            // @FIXME Deprecate string result to expect array|QueryExpression|null
             if (!empty($out)) {
                 return [new QueryExpression($out)];
             }
@@ -1072,6 +1075,7 @@ final class SQLProvider implements SearchProviderInterface
                 // Plugin can override core definition for its type
                 if ($plug = isPluginItemType($itemtype)) {
                     $default_where = Plugin::doOneHook($plug['plugin'], Hooks::AUTO_ADD_DEFAULT_WHERE, $itemtype);
+                    // @FIXME Deprecate string result to expect array|QueryExpression|null
                     if (!empty($default_where)) {
                         $criteria = is_array($default_where) ? $default_where : [new QueryExpression($default_where)];
                     }
@@ -1356,6 +1360,7 @@ final class SQLProvider implements SearchProviderInterface
                 $val,
                 $searchtype
             );
+            // @FIXME Deprecate string result to expect array|QueryExpression|null
             if (!empty($out)) {
                 return is_array($out) ? $out : [new QueryExpression($out)];
             }
@@ -1776,6 +1781,7 @@ final class SQLProvider implements SearchProviderInterface
                     $val,
                     $searchtype
                 );
+                // @FIXME Deprecate string result to expect array|QueryExpression|null
                 if (!empty($out)) {
                     return is_array($out) ? $out : [new QueryExpression($out)];
                 }
@@ -2628,9 +2634,9 @@ final class SQLProvider implements SearchProviderInterface
                         }
                     };
                     $out = Plugin::doOneHook($plugin_name, $hook_closure);
+                    // @FIXME Deprecate string result to expect array|QueryExpression|null
                     $out ??= []; // convert null into an empty array
                     if (!is_array($out)) {
-                        // Toolbox::deprecated('Plugin hook ' . $hook_function . ' should return an array');
                         $out = self::parseJoinString($out);
                     }
                 }
@@ -2812,6 +2818,7 @@ final class SQLProvider implements SearchProviderInterface
                 return [];
             };
             $specific_leftjoin_criteria = Plugin::doOneHook($plugin_name, $hook_closure);
+            // @FIXME Deprecate string result to expect array|QueryExpression|null
             $specific_leftjoin_criteria ??= []; // convert null into an empty array
             if (!is_array($specific_leftjoin_criteria)) {
                 $specific_leftjoin_criteria = self::parseJoinString($specific_leftjoin_criteria);
@@ -2833,6 +2840,7 @@ final class SQLProvider implements SearchProviderInterface
                     return [];
                 };
                 $specific_leftjoin_criteria = Plugin::doOneHook($plugin_name, $hook_closure);
+                // @FIXME Deprecate string result to expect array|QueryExpression|null
                 $specific_leftjoin_criteria ??= []; // convert null into an empty array
                 if (!is_array($specific_leftjoin_criteria)) {
                     $specific_leftjoin_criteria = self::parseJoinString($specific_leftjoin_criteria);
@@ -3802,6 +3810,7 @@ final class SQLProvider implements SearchProviderInterface
                 $val,
                 "{$itemtype}_{$ID}"
             );
+            // @FIXME Deprecate string result to expect array|QueryExpression|null
             if (!empty($out)) {
                 return is_array($out) ? $out : [new QueryExpression($out)];
             }
@@ -3822,6 +3831,7 @@ final class SQLProvider implements SearchProviderInterface
                     $val,
                     "{$itemtype}_{$ID}"
                 );
+                // @FIXME Deprecate string result to expect array|QueryExpression|null
                 if (!empty($out)) {
                     return is_array($out) ? $out : [new QueryExpression($out)];
                 }
@@ -4001,6 +4011,7 @@ final class SQLProvider implements SearchProviderInterface
                     $order,
                     "{$itemtype}_{$ID}"
                 );
+                // @FIXME Deprecate string result to expect array|QueryExpression|null
                 $out = $out !== null ? trim($out) : null;
                 if (!empty($out)) {
                     $out = preg_replace('/^ORDER BY /', '', $out);
@@ -4071,6 +4082,7 @@ final class SQLProvider implements SearchProviderInterface
                         $order,
                         "{$itemtype}_{$ID}"
                     );
+                    // @FIXME Deprecate string result to expect array|QueryExpression|null
                     $out = $out !== null ? trim($out) : null;
                     if (!empty($out)) {
                         $out = preg_replace('/^ORDER BY /', '', $out);
