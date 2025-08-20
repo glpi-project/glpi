@@ -1327,7 +1327,7 @@ class Toolbox
      * @param array $extra_options Extra options to pass to the Guzzle client constructor
      * @return Client Guzzle client
      */
-    public static function getGuzzleClient(array $extra_options): Client
+    public static function getGuzzleClient(array $extra_options = []): Client
     {
         global $CFG_GLPI;
 
