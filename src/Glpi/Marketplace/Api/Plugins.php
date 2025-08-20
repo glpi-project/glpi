@@ -54,7 +54,6 @@ class Plugins
     protected $last_error  = null;
 
     public const COL_PAGE    = 200;
-    protected const TIMEOUT     = 5;
 
     /**
      * Max request attemps on READ operations.
@@ -77,7 +76,6 @@ class Plugins
         // init guzzle client with base options
         $this->httpClient = Toolbox::getGuzzleClient([
             'base_uri'        => GLPI_MARKETPLACE_PLUGINS_API_URI,
-            'connect_timeout' => self::TIMEOUT,
         ]);
     }
 
