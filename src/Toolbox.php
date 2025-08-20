@@ -1331,7 +1331,7 @@ class Toolbox
     {
         global $CFG_GLPI;
 
-        $options = $extra_options;
+        $options = $extra_options + ['connect_timeout' => 5];
         // add proxy string if configured in glpi
         if (!empty($CFG_GLPI["proxy_name"])) {
             $proxy_creds      = !empty($CFG_GLPI["proxy_user"])

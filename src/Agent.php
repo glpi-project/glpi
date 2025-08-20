@@ -62,10 +62,6 @@ class Agent extends CommonDBTM
     /** @var string */
     public const ACTION_INVENTORY = 'inventory';
 
-
-    /** @var integer */
-    protected const TIMEOUT  = 5;
-
     /** @var boolean */
     public $dohistory = true;
 
@@ -705,7 +701,6 @@ class Agent extends CommonDBTM
         foreach ($addresses as $address) {
             $options = [
                 'base_uri'        => $address,
-                'connect_timeout' => self::TIMEOUT,
             ];
 
             // init guzzle client with base options
