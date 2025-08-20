@@ -1,18 +1,29 @@
-# Create a file named "Makefile" in the root directory your plugin and add
-# the following lines:
-# PLUGIN_DIR = my_plugin_directory
-# USE_COMPOSER = true|false (if your plugin require php dependencies)
-# USE_NPM = true|false (if your plugin require js dependencies)
+# Create a file named "Makefile" in the root directory of your plugin and add
+# the following line:
 # include ../../PluginsMakefile.mk
 
+# Shell to use
 SHELL=bash
 
-COMPOSE = docker compose
+# Current plugin directory
+PLUGIN_DIR = $(shell pwd | xargs basename)
 
+# Check if composer and npm are used
+USE_COMPOSER = $(shell test -f composer.json)
+USE_NPM = $(shell test -f package.json)
+
+# Docker commands
+COMPOSE = docker compose
 PHP = $(COMPOSE) exec app
 PLUGIN = $(COMPOSE) exec -w /var/www/glpi/plugins/$(PLUGIN_DIR) app
 DB = $(COMPOSE) exec db
 CONSOLE = $(PHP) bin/console
+
+# Check which binaries we need to use for some tools that can be suplied by
+# either GLPI's core or the plugin itself.
+PHPSTAN_BIN    = $(shell test -f vendor/bin/phpstan      && echo vendor/bin/phpstan      || echo ../../vendor/bin/phpstan)
+PHPUNIT_BIN    = $(shell test -f vendor/bin/phpunit      && echo vendor/bin/phpunit      || echo ../../vendor/bin/phpunit)
+PHPCSFIXER_BIN = $(shell test -f vendor/bin/php-cs-fixer && echo vendor/bin/php-cs-fixer || echo ../../vendor/bin/php-cs-fixer)
 
 ##
 ##This Makefile is used for *local development* only.
@@ -30,34 +41,34 @@ bash: ## Start a shell inside the php container, in the plugin directory
 .PHONY: bash
 
 ##—— Plugin actions ————————————————————————————————————————————————————————————
-plugin-install: ## Install the plugin
+install: ## Install the plugin
 	@$(CONSOLE) plugin:install $(PLUGIN_DIR) -u glpi
-.PHONY: plugin-install
+.PHONY: install
 
-plugin-uninstall: ## Uninstall the plugin
+uninstall: ## Uninstall the plugin
 	@$(CONSOLE) plugin:uninstall $(PLUGIN_DIR)
-.PHONY: plugin-uninstall
+.PHONY: uninstall
 
-plugin-enable: ## Enable the plugin
+enable: ## Enable the plugin
 	@$(CONSOLE) plugin:enable $(PLUGIN_DIR)
-.PHONY: plugin-enable
+.PHONY: enable
 
-plugin-disable: ## Disable the plugin
+disable: ## Disable the plugin
 	@$(CONSOLE) plugin:disable $(PLUGIN_DIR)
-.PHONY: plugin-disable
+.PHONY: disable
 
-plugin-test-setup: ## Setup the plugin for tests
+test-setup: ## Setup the plugin for tests
 	@$(CONSOLE) plugin:install --config-dir=./tests/config $(PLUGIN_DIR) -u glpi --force
 	@$(CONSOLE) plugin:enable --config-dir=./tests/config $(PLUGIN_DIR)
-.PHONY: plugin-test-setup
+.PHONY: test-setup
 
-plugin-license-headers-check: ## Verify that the license headers is present all files
+license-headers-check: ## Verify that the license headers is present all files
 	@$(PLUGIN) vendor/bin/licence-headers-check
-.PHONY: plugin-license-headers-check
+.PHONY: license-headers-check
 
-plugin-license-headers-fix: ## Add the missing license headers in all files
+license-headers-fix: ## Add the missing license headers in all files
 	@$(PLUGIN) vendor/bin/licence-headers-check --fix
-.PHONY: plugin-license-headers-fix
+.PHONY: license-headers-fix
 
 ##—— Dependencies ——————————————————————————————————————————————————————————————
 vendor: ## Install dependencies
@@ -74,25 +85,27 @@ composer: ## Run a composer command, example: make composer c='require mypackage
 	@$(PLUGIN) composer $(c)
 .PHONY: composer
 
-## —— Testing and static analysis ——————————————————————————————————————————————
+npm: ## Run a npm command, example: make npm c='install mypackage/package'
+	@$(eval c ?=)
+	@$(PLUGIN) npm $(c)
+.PHONY: npm
+
+##—— Testing and static analysis ———————————————————————————————————————————————
 phpunit: ## Run phpunits tests, example: make phpunit c='phpunit/functional/Glpi/MySpecificTest.php'
 	@$(eval c ?=)
-	@$(PHP) php vendor/bin/phpunit -c /var/www/glpi/plugins/$(PLUGIN_DIR)/phpunit.xml $(c)
+	@$(PLUGIN) php $(PHPUNIT_BIN) $(c)
 .PHONY: phpunit
 
 phpstan: ## Run phpstan
 	@$(eval c ?=)
-	@$(PLUGIN) php vendor/bin/phpstan --memory-limit=1G $(c)
+	@$(PLUGIN) php $(PHPSTAN_BIN) --memory-limit=1G $(c)
 .PHONY: phpstan
-# TODO: maybe we should reuse the binary from the main dir like phpunit?
 
-## —— Coding standards —————————————————————————————————————————————————————————
+##—— Coding standards ——————————————————————————————————————————————————————————
 phpcsfixer-check: ## Check for php coding standards issues
-	@$(PLUGIN) vendor/bin/php-cs-fixer check --diff -vvv
+	@$(PLUGIN) $(PHPCSFIXER_BIN) check --diff -vvv
 .PHONY: phpcsfixer-check
-# TODO: maybe we should reuse the binary from the main dir like phpunit?
 
 phpcsfixer-fix: ## Fix php coding standards issues
-	@$(PLUGIN) vendor/bin/php-cs-fixer fix
+	@$(PLUGIN) $(PHPCSFIXER_BIN) fix
 .PHONY: phpcsfixer-fix
-# TODO: maybe we should reuse the binary from the main dir like phpunit?
