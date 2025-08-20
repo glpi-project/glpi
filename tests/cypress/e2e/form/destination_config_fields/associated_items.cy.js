@@ -84,7 +84,7 @@ describe('Associated items configuration', () => {
         cy.checkAndCloseAlert('Item successfully updated');
 
         // Go to destination tab
-        cy.findByRole('tab', { 'name': "Items to create 1" }).click();
+        cy.findByRole('tab', { 'name': "Destinations 1" }).click();
     };
 
     it('can use all possibles configuration options', () => {
@@ -188,7 +188,7 @@ describe('Associated items configuration', () => {
         });
 
         // Go to destination tab
-        cy.findByRole('tab', { 'name': "Items to create 1" }).click();
+        cy.findByRole('tab', { 'name': "Destinations 1" }).click();
 
         // Retrieve configuration section
         cy.openAccordionItem('Destination fields accordion', 'Associated items');
@@ -256,7 +256,7 @@ describe('Associated items configuration', () => {
 
     it('can add a specifc item, add another strategy and add another specific item', () => {
         // Go to destination tab
-        cy.findByRole('tab', { 'name': "Items to create 1" }).click();
+        cy.findByRole('tab', { 'name': "Destinations 1" }).click();
 
         // Retrieve configuration section
         cy.openAccordionItem('Destination fields accordion', 'Associated items');

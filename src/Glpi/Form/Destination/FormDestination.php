@@ -65,7 +65,7 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
     #[Override]
     public static function getTypeName($nb = 0)
     {
-        return _n('Item to create', 'Items to create', $nb);
+        return _n('Destination', 'Destinations', $nb);
     }
 
     #[Override]
