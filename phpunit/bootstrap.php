@@ -54,7 +54,7 @@ require_once dirname(__DIR__) . '/src/Glpi/Application/ResourcesChecker.php';
 // It seems calling $cache_manager->resetAllCaches(); mess up with the kernel
 // leading to some issues. It is safer to use the console directly as it goes
 // throught another process.
-exec("bin/console cache:clear --env='testing'");
+exec(sprintf("php %s cache:clear --env='testing'", realpath(GLPI_ROOT . '/bin/console')));
 
 global $GLPI_CACHE;
 
