@@ -83,8 +83,8 @@ if (isset($_POST["add"])) {
     );
     $asset = getItemForItemtype($_POST['itemtype']);
     $asset->getFromDB($item_vm->fields['items_id']);
-    Html::redirect($asset->getFormURLWithID($item_vm->fields['items_id']) .
-                  ($asset->fields['is_template'] ? "&withtemplate=1" : ""));
+    Html::redirect($asset->getFormURLWithID($item_vm->fields['items_id'])
+                  . ($asset->fields['is_template'] ? "&withtemplate=1" : ""));
 } elseif (isset($_POST["purge"])) {
     $item_vm->check($_POST["id"], PURGE);
 
@@ -100,8 +100,8 @@ if (isset($_POST["add"])) {
     }
     $asset = getItemForItemtype($item_vm->fields['itemtype']);
     $asset->getFromDB($item_vm->fields['items_id']);
-    Html::redirect($asset->getFormURLWithID($item_vm->fields['items_id']) .
-                  ($asset->fields['is_template'] ? "&withtemplate=1" : ""));
+    Html::redirect($asset->getFormURLWithID($item_vm->fields['items_id'])
+                  . ($asset->fields['is_template'] ? "&withtemplate=1" : ""));
 } elseif (isset($_POST["update"])) {
     $item_vm->check($_POST["id"], UPDATE);
 

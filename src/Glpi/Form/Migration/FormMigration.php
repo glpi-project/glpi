@@ -1152,8 +1152,8 @@ class FormMigration extends AbstractPluginMigration
                 continue;
             }
 
-            $targets_actors[$target_id][$raw_target_actor['actor_role']][$raw_target_actor['actor_type']][] =
-                $raw_target_actor['actor_value'];
+            $targets_actors[$target_id][$raw_target_actor['actor_role']][$raw_target_actor['actor_type']][]
+                = $raw_target_actor['actor_value'];
         }
 
         foreach ($targets_actors as $destination_id => $actors) {

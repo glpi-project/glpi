@@ -58,8 +58,8 @@ class InventoryTest extends \GLPITestCase
                 'headers' => [
                     'Content-Type' => 'application/xml',
                 ],
-                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
-                  "<REQUEST>
+                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
+                  . "<REQUEST>
                   <CONTENT>
                      <BIOS>
                         <ASSETTAG />  <BDATE>06/02/2016</BDATE>

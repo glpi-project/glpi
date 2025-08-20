@@ -264,8 +264,8 @@ EOT;
                     }
                     foreach ($middlewares as $middleware_info) {
                         if (
-                            !isset($middleware_info['middleware']) ||
-                            !is_subclass_of($middleware_info['middleware'], AbstractMiddleware::class, true)
+                            !isset($middleware_info['middleware'])
+                            || !is_subclass_of($middleware_info['middleware'], AbstractMiddleware::class, true)
                         ) {
                             continue;
                         }

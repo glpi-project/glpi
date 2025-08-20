@@ -418,10 +418,10 @@ TWIG, $twig_params);
         }
         $criteria['WHERE'] += getEntitiesRestrictCriteria(Domain::getTable(), '', '', true);
 
-        $criteria['WHERE'] +=
+        $criteria['WHERE']
             //deleted and dynamic domain_item are displayed from lock tab
             //non dynamic domain_item are always displayed
-            [
+            += [
                 'OR'  => [
                     'AND' => [
                         "glpi_domains_items.is_deleted" => 0,

@@ -490,12 +490,12 @@ class ReportController extends AbstractController
     public function getITILStats(Request $request): Response
     {
         $itemtype = $request->getAttribute('assistance_type');
-        $date_end = $request->hasParameter('date_end') ?
-            $request->getParameter('date_end') :
-            date('Y-m-d', strtotime($_SESSION['glpi_currenttime']));
-        $date_start = $request->hasParameter('date_start') ?
-            $request->getParameter('date_start') :
-            date('Y-m-d', strtotime('-1 year', strtotime($date_end)));
+        $date_end = $request->hasParameter('date_end')
+            ? $request->getParameter('date_end')
+            : date('Y-m-d', strtotime($_SESSION['glpi_currenttime']));
+        $date_start = $request->hasParameter('date_start')
+            ? $request->getParameter('date_start')
+            : date('Y-m-d', strtotime('-1 year', strtotime($date_end)));
         $field = $request->getParameter('field');
 
         $items = Stat::getItems(
@@ -683,12 +683,12 @@ class ReportController extends AbstractController
     public function getAssetStats(Request $request): Response
     {
         $itemtype = $request->getAttribute('assistance_type');
-        $date_end = $request->hasParameter('date_end') ?
-            $request->getParameter('date_end') :
-            date('Y-m-d', strtotime($_SESSION['glpi_currenttime']));
-        $date_start = $request->hasParameter('date_start') ?
-            $request->getParameter('date_start') :
-            date('Y-m-d', strtotime('-1 year', strtotime($date_end)));
+        $date_end = $request->hasParameter('date_end')
+            ? $request->getParameter('date_end')
+            : date('Y-m-d', strtotime($_SESSION['glpi_currenttime']));
+        $date_start = $request->hasParameter('date_start')
+            ? $request->getParameter('date_start')
+            : date('Y-m-d', strtotime('-1 year', strtotime($date_end)));
 
         $assets = Stat::getAssetsWithITIL($date_start, $date_end, $itemtype);
         $results = [];
@@ -831,12 +831,12 @@ class ReportController extends AbstractController
     public function getAssetCharacteristicsStats(Request $request): Response
     {
         $itemtype = $request->getAttribute('assistance_type');
-        $date_end = $request->hasParameter('date_end') ?
-            $request->getParameter('date_end') :
-            date('Y-m-d', strtotime($_SESSION['glpi_currenttime']));
-        $date_start = $request->hasParameter('date_start') ?
-            $request->getParameter('date_start') :
-            date('Y-m-d', strtotime('-1 year', strtotime($date_end)));
+        $date_end = $request->hasParameter('date_end')
+            ? $request->getParameter('date_end')
+            : date('Y-m-d', strtotime($_SESSION['glpi_currenttime']));
+        $date_start = $request->hasParameter('date_start')
+            ? $request->getParameter('date_start')
+            : date('Y-m-d', strtotime('-1 year', strtotime($date_end)));
         $field = $request->getParameter('field');
 
         $items = Stat::getItems(

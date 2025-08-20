@@ -127,17 +127,17 @@ class DomainTest extends DbTestCase
 
         $iterator = $DB->request(\Domain::expiredDomainsCriteria($entity->fields['id']));
         $this->assertSame(
-            "SELECT * FROM `glpi_domains` WHERE " .
-            "NOT (`date_expiration` IS NULL) AND `entities_id` = '{$entity->fields['id']}' AND `is_deleted` = '0' " .
-            "AND DATEDIFF(CURDATE(), `date_expiration`) > 1 AND DATEDIFF(CURDATE(), `date_expiration`) > 0",
+            "SELECT * FROM `glpi_domains` WHERE "
+            . "NOT (`date_expiration` IS NULL) AND `entities_id` = '{$entity->fields['id']}' AND `is_deleted` = '0' "
+            . "AND DATEDIFF(CURDATE(), `date_expiration`) > 1 AND DATEDIFF(CURDATE(), `date_expiration`) > 0",
             $iterator->getSql()
         );
 
         $iterator = $DB->request(\Domain::closeExpiriesDomainsCriteria($entity->fields['id']));
         $this->assertSame(
-            "SELECT * FROM `glpi_domains` WHERE " .
-            "NOT (`date_expiration` IS NULL) AND `entities_id` = '{$entity->fields['id']}' AND `is_deleted` = '0' " .
-            "AND DATEDIFF(CURDATE(), `date_expiration`) > -7 AND DATEDIFF(CURDATE(), `date_expiration`) < 0",
+            "SELECT * FROM `glpi_domains` WHERE "
+            . "NOT (`date_expiration` IS NULL) AND `entities_id` = '{$entity->fields['id']}' AND `is_deleted` = '0' "
+            . "AND DATEDIFF(CURDATE(), `date_expiration`) > -7 AND DATEDIFF(CURDATE(), `date_expiration`) < 0",
             $iterator->getSql()
         );
     }

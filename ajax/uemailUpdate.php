@@ -64,9 +64,9 @@ if (
         if ((int) $_POST["value"] !== 0) {
             // Make sure to not expose others users emails unless the current user
             // is allowed to see them.
-            $can_view_user_emails =
+            $can_view_user_emails
                 // User can always see their own emails
-                $_POST["value"] === Session::getLoginUserID()
+                = $_POST["value"] === Session::getLoginUserID()
 
                 // Users that are allowed to see the specified user can also see his emails
                 || $user->can($_POST["value"], READ)

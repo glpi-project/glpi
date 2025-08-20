@@ -119,8 +119,8 @@ if (isset($_POST["action"])) {
         Html::redirect($rule_class::getSearchURL());
     }
 
-    echo "<div class='position-relative fw-bold'>" . htmlescape($rulecollection->getTitle()) . "<br>" .
-         __s('Replay the rules dictionary') . "</div>";
+    echo "<div class='position-relative fw-bold'>" . htmlescape($rulecollection->getTitle()) . "<br>"
+         . __s('Replay the rules dictionary') . "</div>";
     echo "<div class='text-center mb-3'>";
     echo Html::getProgressBar(
         $current_offset / $total_items * 100,
@@ -142,8 +142,8 @@ if (isset($_POST["action"])) {
         Html::redirect($rule_class::getSearchURL());
     } else {
         // Need more work
-        Html::redirect($rule_class::getSearchURL() . "?start=$start&replay_rule=1&offset=$offset&total=$total_items&manufacturer=" .
-                     "$manufacturer");
+        Html::redirect($rule_class::getSearchURL() . "?start=$start&replay_rule=1&offset=$offset&total=$total_items&manufacturer="
+                     . "$manufacturer");
     }
 }
 

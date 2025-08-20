@@ -590,8 +590,8 @@ class MassiveAction
             && !isAPI()
         ) {
             $actions[self::class . self::CLASS_ACTION_SEPARATOR . 'add_transfer_list']
-                  = "<i class='ti ti-corner-right-up'></i>" .
-                    _sx('button', 'Add to transfer list');
+                  = "<i class='ti ti-corner-right-up'></i>"
+                    . _sx('button', 'Add to transfer list');
         }
     }
 

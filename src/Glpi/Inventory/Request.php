@@ -328,8 +328,8 @@ class Request extends AbstractRequest
                 'remoteinventory',
             ];
             if (
-                !empty(array_intersect($enabled_tasks, $taskneededinv)) &&
-                !in_array('inventory', $enabled_tasks)
+                !empty(array_intersect($enabled_tasks, $taskneededinv))
+                && !in_array('inventory', $enabled_tasks)
             ) {
                 $enabled_tasks[] = 'inventory';
             }

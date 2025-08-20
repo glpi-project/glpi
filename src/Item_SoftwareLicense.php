@@ -317,9 +317,9 @@ class Item_SoftwareLicense extends CommonDBRelation
                         if ($input['itemtype'] == User::class) {
                             $item_licence = new SoftwareLicense_User();
                             if (
-                                $license->getField('number') != -1 &&
-                                $number >= $license->getField('number') &&
-                                !$license->getField('allow_overquota')
+                                $license->getField('number') != -1
+                                && $number >= $license->getField('number')
+                                && !$license->getField('allow_overquota')
                             ) {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage(sprintf(__s('Maximum number of items reached for license "%s".'), htmlescape($license->getName())));
@@ -994,9 +994,9 @@ JAVASCRIPT;
 
             foreach ($columns as $key => $val) {
                 $val = htmlescape($val);
-                $header_end .= "<th" . ($sort == "`$key`" ? " class='order_$order'" : '') . ">" .
-                            "<a href='javascript:reloadTab(\"sort=$key&amp;order=" .
-                            (($order == "ASC") ? "DESC" : "ASC") . "&amp;start=0\");'>$val</a></th>";
+                $header_end .= "<th" . ($sort == "`$key`" ? " class='order_$order'" : '') . ">"
+                            . "<a href='javascript:reloadTab(\"sort=$key&amp;order="
+                            . (($order == "ASC") ? "DESC" : "ASC") . "&amp;start=0\");'>$val</a></th>";
             }
 
             $header_end .= "</tr>\n";

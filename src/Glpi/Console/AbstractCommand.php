@@ -329,9 +329,9 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
         $this->progress_bar = new ProgressBar($this->output);
         $this->progress_bar->setMessage(''); // Empty message on iteration start
         $this->progress_bar->start(
-            !is_null($count) ?
-            $count :
-            (is_countable($iterable) ? \count($iterable) : 0)
+            !is_null($count)
+            ? $count
+            : (is_countable($iterable) ? \count($iterable) : 0)
         );
 
         // Iterate on items

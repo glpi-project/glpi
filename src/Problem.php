@@ -913,9 +913,9 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                         $options['criteria'][1]['value']      = 'mygroups';
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/problem.php?" .
-                         Toolbox::append_params($options, '&amp;') . "\">" .
-                         Html::makeTitle(__('Problems on pending status'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/problem.php?"
+                         . Toolbox::append_params($options, '&amp;') . "\">"
+                         . Html::makeTitle(__('Problems on pending status'), $displayed_row_count, $total_row_count) . "</a>";
                         break;
 
                     case "process":
@@ -929,9 +929,9 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                         $options['criteria'][1]['value']      = 'mygroups';
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/problem.php?" .
-                         Toolbox::append_params($options, '&amp;') . "\">" .
-                         Html::makeTitle(__('Problems to be processed'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/problem.php?"
+                         . Toolbox::append_params($options, '&amp;') . "\">"
+                         . Html::makeTitle(__('Problems to be processed'), $displayed_row_count, $total_row_count) . "</a>";
                         break;
 
                     default:
@@ -945,9 +945,9 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                         $options['criteria'][1]['value']      = 'mygroups';
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/problem.php?" .
-                         Toolbox::append_params($options, '&amp;') . "\">" .
-                         Html::makeTitle(__('Your problems in progress'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/problem.php?"
+                         . Toolbox::append_params($options, '&amp;') . "\">"
+                         . Html::makeTitle(__('Your problems in progress'), $displayed_row_count, $total_row_count) . "</a>";
                 }
             } else {
                 switch ($status) {
@@ -962,9 +962,9 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                         $options['criteria'][1]['value']      = Session::getLoginUserID();
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/problem.php?" .
-                         Toolbox::append_params($options, '&amp;') . "\">" .
-                         Html::makeTitle(__('Problems on pending status'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/problem.php?"
+                         . Toolbox::append_params($options, '&amp;') . "\">"
+                         . Html::makeTitle(__('Problems on pending status'), $displayed_row_count, $total_row_count) . "</a>";
                         break;
 
                     case "process":
@@ -978,9 +978,9 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                         $options['criteria'][1]['value']      = 'process';
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/problem.php?" .
-                         Toolbox::append_params($options, '&amp;') . "\">" .
-                         Html::makeTitle(__('Problems to be processed'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/problem.php?"
+                         . Toolbox::append_params($options, '&amp;') . "\">"
+                         . Html::makeTitle(__('Problems to be processed'), $displayed_row_count, $total_row_count) . "</a>";
                         break;
 
                     default:
@@ -994,9 +994,9 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                         $options['criteria'][1]['value']      = 'notold';
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/problem.php?" .
-                        Toolbox::append_params($options, '&amp;') . "\">" .
-                        Html::makeTitle(__('Your problems in progress'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/problem.php?"
+                        . Toolbox::append_params($options, '&amp;') . "\">"
+                        . Html::makeTitle(__('Your problems in progress'), $displayed_row_count, $total_row_count) . "</a>";
                 }
             }
 
@@ -1048,12 +1048,12 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                         ) {
                             foreach ($problem->users[CommonITILActor::REQUESTER] as $d) {
                                 if ($d["users_id"] > 0) {
-                                    $name = '<i class="fs-4 ti ti-user text-muted me-1"></i>' .
-                                        htmlescape(getUserName($d["users_id"]));
+                                    $name = '<i class="fs-4 ti ti-user text-muted me-1"></i>'
+                                        . htmlescape(getUserName($d["users_id"]));
                                     $requesters[] = $name;
                                 } else {
-                                    $requesters[] = '<i class="fs-4 ti ti-mail text-muted me-1"></i>' .
-                                        $d['alternative_email'];
+                                    $requesters[] = '<i class="fs-4 ti ti-mail text-muted me-1"></i>'
+                                        . $d['alternative_email'];
                                 }
                             }
                         }
@@ -1063,14 +1063,14 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                             && count($problem->groups[CommonITILActor::REQUESTER])
                         ) {
                             foreach ($problem->groups[CommonITILActor::REQUESTER] as $d) {
-                                $requesters[] = '<i class="fs-4 ti ti-users text-muted me-1"></i>' .
-                                    Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+                                $requesters[] = '<i class="fs-4 ti ti-users text-muted me-1"></i>'
+                                    . Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
                             }
                         }
                         $row['values'][] = implode('<br>', $requesters);
 
-                        $link = "<a id='problem" . $problem->fields["id"] . $rand . "' href='" .
-                            Problem::getFormURLWithID($problem->fields["id"]);
+                        $link = "<a id='problem" . $problem->fields["id"] . $rand . "' href='"
+                            . Problem::getFormURLWithID($problem->fields["id"]);
                         $link .= "'>";
                         $link .= "<span class='b'>" . $problem->fields["name"] . "</span></a>";
                         $link = sprintf(
@@ -1305,8 +1305,8 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
             echo "</td>";
 
             echo "<td>";
-            $link = "<a id='problem" . $problem->getID() . $rand . "' href='" .
-                  htmlescape(Problem::getFormURLWithID($problem->getID()));
+            $link = "<a id='problem" . $problem->getID() . $rand . "' href='"
+                  . htmlescape(Problem::getFormURLWithID($problem->getID()));
             if ($forcetab != '') {
                 $link .= "&amp;forcetab=" . htmlescape($forcetab);
             }

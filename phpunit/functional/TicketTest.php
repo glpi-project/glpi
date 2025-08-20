@@ -7604,9 +7604,9 @@ HTML,
             $has_weblink = false;
             foreach ($timeline as $entry) {
                 if (
-                    $entry['type'] === \TicketTask::class &&
-                    isset($entry['item']['content']) &&
-                    $entry['item']['content'] !== 'private task assigned to normal user'
+                    $entry['type'] === \TicketTask::class
+                    && isset($entry['item']['content'])
+                    && $entry['item']['content'] !== 'private task assigned to normal user'
                 ) {
                     $this->assertArrayHasKey('documents', $entry);
                 }

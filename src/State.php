@@ -763,8 +763,8 @@ class State extends CommonTreeDropdown
         $where = [];
         foreach ($unicity_fields as $unicity_field) {
             if (
-                isset($input[$unicity_field]) &&
-                (!isset($this->fields[$unicity_field]) || $input[$unicity_field] != $this->fields[$unicity_field])
+                isset($input[$unicity_field])
+                && (!isset($this->fields[$unicity_field]) || $input[$unicity_field] != $this->fields[$unicity_field])
             ) {
                 $has_changed = true;
             }

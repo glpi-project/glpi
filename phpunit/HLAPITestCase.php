@@ -199,7 +199,7 @@ final class HLAPIHelper
         return $all_routes;
     }
 
-    private function getRoutePathBodySchema(RoutePath $route_path, string $method, array $attributes = []): array|null
+    private function getRoutePathBodySchema(RoutePath $route_path, string $method, array $attributes = []): ?array
     {
         $doc = $route_path->getRouteDoc($method);
         $this->test->assertNotNull($doc, 'No documentation found for route ' . $route_path->getRoutePath() . ' with method ' . $method);
@@ -225,7 +225,7 @@ final class HLAPIHelper
         return $schema;
     }
 
-    private function getRoutePathResponseSchema(RoutePath $route_path, string $method, $status = 200, array $attributes = []): array|null
+    private function getRoutePathResponseSchema(RoutePath $route_path, string $method, $status = 200, array $attributes = []): ?array
     {
         $doc = $route_path->getRouteDoc($method);
         $this->test->assertNotNull($doc, 'No documentation found for route ' . $route_path->getRoutePath() . ' with method ' . $method);
@@ -267,8 +267,8 @@ final class HLAPIHelper
         $match = $this->router->match($request);
         $is_default_route = false;
         if (
-            $match !== null &&
-            ($match->getController() === CoreController::class && $match->getMethod()->getShortName() === 'defaultRoute')
+            $match !== null
+            && ($match->getController() === CoreController::class && $match->getMethod()->getShortName() === 'defaultRoute')
         ) {
             $is_default_route = true;
         }
@@ -1081,7 +1081,7 @@ final class HLAPIResponseAsserter
         return $this;
     }
 
-    public function matchesSchema(string|array $schema, string|null $fail_msg = null, string|null $operation = null): HLAPIResponseAsserter
+    public function matchesSchema(string|array $schema, ?string $fail_msg = null, ?string $operation = null): HLAPIResponseAsserter
     {
         if (is_string($schema)) {
             $is_schema_array = str_ends_with($schema, '[]');

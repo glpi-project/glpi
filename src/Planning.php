@@ -1062,10 +1062,10 @@ TWIG, $twig_params);
             }
 
             echo "<div class='center'>";
-            echo "<a href='" . htmlescape($url) . "' class='btn btn-outline-secondary'>" .
-                "<i class='ti ti-eye'></i>" .
-                "<span>" . __s("View this item in its context") . "</span>" .
-            "</a>";
+            echo "<a href='" . htmlescape($url) . "' class='btn btn-outline-secondary'>"
+                . "<i class='ti ti-eye'></i>"
+                . "<span>" . __s("View this item in its context") . "</span>"
+            . "</a>";
             echo "</div>";
             echo "<hr>";
             $item->showForm((int) $params['id'], $options);
@@ -1647,9 +1647,9 @@ TWIG, $twig_params);
                 continue;
             }
 
-            $users_id = (!empty($event['users_id_tech']) ?
-                        $event['users_id_tech'] :
-                        $event['users_id']);
+            $users_id = (!empty($event['users_id_tech'])
+                        ? $event['users_id_tech']
+                        : $event['users_id']);
             $content = self::displayPlanningItem($event, $users_id, 'in', false) ?: ($event['content'] ?? "");
             $tooltip = self::displayPlanningItem($event, $users_id, 'in', true) ?: ($event['tooltip'] ?? "");
 
@@ -1684,16 +1684,16 @@ TWIG, $twig_params);
                              && !$_SESSION['glpi_plannings']['filters']['OnlyBgEvents']['display']
                               ? 'background'
                               : '',
-                'color'       => (empty($event['color']) ?
-                              self::$palette_bg[$index_color] :
-                              $event['color']),
-                'borderColor' => (empty($event['event_type_color']) ?
-                              self::getPaletteColor('ev', $event['itemtype']) :
-                              $event['event_type_color']),
+                'color'       => (empty($event['color'])
+                              ? self::$palette_bg[$index_color]
+                              : $event['color']),
+                'borderColor' => (empty($event['event_type_color'])
+                              ? self::getPaletteColor('ev', $event['itemtype'])
+                              : $event['event_type_color']),
                 'textColor'   => self::$palette_fg[$index_color],
-                'typeColor'   => (empty($event['event_type_color']) ?
-                              self::getPaletteColor('ev', $event['itemtype']) :
-                              $event['event_type_color']),
+                'typeColor'   => (empty($event['event_type_color'])
+                              ? self::getPaletteColor('ev', $event['itemtype'])
+                              : $event['event_type_color']),
                 'url'         => $event['url'] ?? "",
                 'ajaxurl'     => $event['ajaxurl'] ?? "",
                 'itemtype'    => $event['itemtype'] ?? "",

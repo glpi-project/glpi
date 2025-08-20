@@ -134,8 +134,8 @@ class NotificationAjax implements NotificationInterface
                     'recipient'    => Session::getLoginUserID(),
                     'mode'         => Notification_NotificationTemplate::MODE_AJAX,
                     new QueryExpression(
-                        QueryFunction::unixTimestamp('send_time') . ' + ' . $secs .
-                            ' > ' . QueryFunction::unixTimestamp()
+                        QueryFunction::unixTimestamp('send_time') . ' + ' . $secs
+                            . ' > ' . QueryFunction::unixTimestamp()
                     ),
                 ],
             ]);

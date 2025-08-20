@@ -1801,10 +1801,10 @@ TWIG, ['msg' => __('Last run list')]);
             'WHERE'  => [
                 'state'  => self::STATE_RUNNING,
                 'OR'     => [
-                    new QueryExpression(QueryFunction::unixTimestamp('lastrun') . ' + 2 * ' .
-                        $DB::quoteName('frequency') . ' < ' . QueryFunction::unixTimestamp()),
-                    new QueryExpression(QueryFunction::unixTimestamp('lastrun') . ' + 2 * ' .
-                        HOUR_TIMESTAMP . ' < ' . QueryFunction::unixTimestamp()),
+                    new QueryExpression(QueryFunction::unixTimestamp('lastrun') . ' + 2 * '
+                        . $DB::quoteName('frequency') . ' < ' . QueryFunction::unixTimestamp()),
+                    new QueryExpression(QueryFunction::unixTimestamp('lastrun') . ' + 2 * '
+                        . HOUR_TIMESTAMP . ' < ' . QueryFunction::unixTimestamp()),
                 ],
             ],
         ]);

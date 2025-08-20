@@ -83,8 +83,8 @@ if (isset($_POST["add"])) {
     $itemtype = $mgmt->fields['itemtype'];
     $item = getItemForItemtype($itemtype);
     $item->getFromDB($mgmt->fields['items_id']);
-    Html::redirect($itemtype::getFormURLWithID($mgmt->fields['items_id']) .
-                  ($item->fields['is_template'] ? "&withtemplate=1" : ""));
+    Html::redirect($itemtype::getFormURLWithID($mgmt->fields['items_id'])
+                  . ($item->fields['is_template'] ? "&withtemplate=1" : ""));
 } elseif (isset($_POST["update"])) {
     $mgmt->check($_POST["id"], UPDATE);
 

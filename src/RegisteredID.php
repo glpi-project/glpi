@@ -79,8 +79,8 @@ class RegisteredID extends CommonDBChild
             $result .= "<option value=\'$name\'>$label</option>";
         }
         $result .= "</select> : ";
-        $result .= "<input type=\'text\' size=\'30\' " . "name=\'" . $field_name .
-                "[-'+$child_count_js_var+']\'>";
+        $result .= "<input type=\'text\' size=\'30\' " . "name=\'" . $field_name
+                . "[-'+$child_count_js_var+']\'>";
         return $result;
     }
 

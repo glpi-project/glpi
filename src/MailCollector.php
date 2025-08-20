@@ -1933,8 +1933,8 @@ class MailCollector extends CommonDBTM
         // Normalized header, no translation
         $mail->subject('Re: ' . $subject);
         $mail->text(
-            __("Your email could not be processed.\nIf the problem persists, contact the administrator") .
-             "\n-- \n" . $CFG_GLPI["mailing_signature"]
+            __("Your email could not be processed.\nIf the problem persists, contact the administrator")
+             . "\n-- \n" . $CFG_GLPI["mailing_signature"]
         );
         $mmail->send();
     }

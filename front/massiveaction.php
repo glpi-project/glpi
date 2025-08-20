@@ -45,8 +45,8 @@ try {
 } catch (Throwable $e) {
     Html::popHeader(__('Bulk modification error'));
 
-    echo "<div class='center'><img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='" .
-      __s('Warning') . "'><br><br>";
+    echo "<div class='center'><img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='"
+      . __s('Warning') . "'><br><br>";
     echo "<span class='b'>" . htmlescape($e->getMessage()) . "</span><br>";
     Html::displayBackLink();
     echo "</div>";

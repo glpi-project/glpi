@@ -1468,10 +1468,10 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                             $data['begin'] = $data['notp_date'];
                             $data['end'] = $data['notp_edate'];
                         }
-                        $key = $data["begin"] .
-                         "$$$" . $itemtype .
-                         "$$$" . $data["id"] .
-                         "$$$" . $who . "$$$" . $whogroup;
+                        $key = $data["begin"]
+                         . "$$$" . $itemtype
+                         . "$$$" . $data["id"]
+                         . "$$$" . $who . "$$$" . $whogroup;
 
                         if (isset($options['from_group_users'])) {
                             $key .= "_gu";
@@ -1484,15 +1484,15 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                         if (!$options['genical']) {
                             $interv[$key]["url"] = $parentitemtype::getFormURLWithID($url_id);
                         } else {
-                            $interv[$key]["url"] = $CFG_GLPI["url_base"] .
-                                            $parentitemtype::getFormURLWithID($url_id, false);
+                            $interv[$key]["url"] = $CFG_GLPI["url_base"]
+                                            . $parentitemtype::getFormURLWithID($url_id, false);
                         }
-                        $interv[$key]["ajaxurl"] = $CFG_GLPI["root_doc"] . "/ajax/planning.php" .
-                                             "?action=edit_event_form" .
-                                             "&itemtype=" . $itemtype .
-                                             "&parentitemtype=" . $parentitemtype .
-                                             "&parentid=" . $item->fields[$parentitem->getForeignKeyField()] .
-                                             "&id=" . $data['id'];
+                        $interv[$key]["ajaxurl"] = $CFG_GLPI["root_doc"] . "/ajax/planning.php"
+                                             . "?action=edit_event_form"
+                                             . "&itemtype=" . $itemtype
+                                             . "&parentitemtype=" . $parentitemtype
+                                             . "&parentid=" . $item->fields[$parentitem->getForeignKeyField()]
+                                             . "&id=" . $data['id'];
 
                         $interv[$key][$item->getForeignKeyField()] = $data["id"];
                         $interv[$key]["id"]                        = $data["id"];
@@ -1602,8 +1602,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             return false;
         }
 
-        $html .= "<img src='" . $CFG_GLPI["root_doc"] . "/pics/rdv_interv.png' alt='' title=\"" .
-             htmlescape($parent->getTypeName(1)) . "\">&nbsp;&nbsp;";
+        $html .= "<img src='" . $CFG_GLPI["root_doc"] . "/pics/rdv_interv.png' alt='' title=\""
+             . htmlescape($parent->getTypeName(1)) . "\">&nbsp;&nbsp;";
         $html .= $parent->getStatusIcon($val['status']);
         $html .= "&nbsp;<a id='content_tracking_" . $val["id"] . $rand . "'
                    href='" . $parenttype::getFormURLWithID($val[$parenttype_fk]) . "'
@@ -1637,8 +1637,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 $recall = "<span class='b'>" . sprintf(
                     __s('Recall on %s'),
                     Html::convDateTime($pr->fields['when'])
-                ) .
-                      "<span>";
+                )
+                      . "<span>";
             }
         }
 
@@ -1836,9 +1836,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                         return;
                     }
                     $linked_itemtype = str_replace("Task", "", $itemtype);
-                    $main_header = "<a href=\"" . $linked_itemtype::getSearchURL() . "?" .
-                      Toolbox::append_params($options, '&amp;') . "\">" .
-                      Html::makeTitle($title, $displayed_row_count, $total_row_count) . "</a>";
+                    $main_header = "<a href=\"" . $linked_itemtype::getSearchURL() . "?"
+                      . Toolbox::append_params($options, '&amp;') . "\">"
+                      . Html::makeTitle($title, $displayed_row_count, $total_row_count) . "</a>";
                     break;
 
                 default:
@@ -1964,8 +1964,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             echo "</td>";
 
             echo "<td>";
-            $link = "<a id='" . htmlescape(strtolower($item_link->getType())) . "ticket" . htmlescape($item_link->fields["id"] . $rand) . "' href='" .
-                   htmlescape($item_link->getFormURLWithID($item_link->fields["id"]));
+            $link = "<a id='" . htmlescape(strtolower($item_link->getType())) . "ticket" . htmlescape($item_link->fields["id"] . $rand) . "' href='"
+                   . htmlescape($item_link->getFormURLWithID($item_link->fields["id"]));
             $link .= "&amp;forcetab=" . htmlescape($tab_name) . "$1";
             $link   .= "'>";
             $link = htmlescape(

@@ -574,19 +574,19 @@ trait PlanningEvent
         if (count($iterator)) {
             foreach ($iterator as $data) {
                 if ($event_obj->getFromDB($data["id"]) && $event_obj->canViewItem()) {
-                    $key = $data["begin"] .
-                      "$$" . $itemtype .
-                      "$$" . $data["id"] .
-                      "$$" . $who .
-                      "$$" . $whogroup;
+                    $key = $data["begin"]
+                      . "$$" . $itemtype
+                      . "$$" . $data["id"]
+                      . "$$" . $who
+                      . "$$" . $whogroup;
                     if (isset($options['from_group_users'])) {
                         $key .= "_gu";
                     }
 
                     $url = (!$options['genical'])
                     ? $event_obj->getFormURLWithID($data['id'])
-                    : $CFG_GLPI["url_base"] .
-                    static::getFormURLWithID($data['id'], false);
+                    : $CFG_GLPI["url_base"]
+                    . static::getFormURLWithID($data['id'], false);
 
                     $is_rrule = isset($data['rrule']) && strlen($data['rrule']) > 0;
 
@@ -604,10 +604,10 @@ trait PlanningEvent
                         'text'             => $data['text'] !== null
                      ? RichText::getSafeHtml($data['text'])
                      : '',
-                        'ajaxurl'          => $CFG_GLPI["root_doc"] . "/ajax/planning.php" .
-                                        "?action=edit_event_form" .
-                                        "&itemtype=$itemtype" .
-                                        "&id=" . $data['id'],
+                        'ajaxurl'          => $CFG_GLPI["root_doc"] . "/ajax/planning.php"
+                                        . "?action=edit_event_form"
+                                        . "&itemtype=$itemtype"
+                                        . "&id=" . $data['id'],
                         'editable'         => $event_obj->canUpdateItem(),
                         'url'              => $url,
                         'begin'            => !$is_rrule && (strcmp($begin, $data["begin"]) > 0)
@@ -695,10 +695,10 @@ trait PlanningEvent
             $img      = "rdv_public.png";
         }
 
-        $html .= "<img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/" . htmlescape($img) . "' alt='' title=\"" .
-             static::getTypeName(1) . "\">&nbsp;";
-        $html .= "<a id='reminder_" . htmlescape($val[$item_fk] . $rand) . "' href='" .
-             htmlescape(Reminder::getFormURLWithID($val[$item_fk])) . "'>";
+        $html .= "<img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/" . htmlescape($img) . "' alt='' title=\""
+             . static::getTypeName(1) . "\">&nbsp;";
+        $html .= "<a id='reminder_" . htmlescape($val[$item_fk] . $rand) . "' href='"
+             . htmlescape(Reminder::getFormURLWithID($val[$item_fk])) . "'>";
 
         $html .= $users_id;
         $html .= "</a>";
@@ -715,8 +715,8 @@ trait PlanningEvent
                 $recall = "<br><span class='b'>" . htmlescape(sprintf(
                     __('Recall on %s'),
                     Html::convDateTime($pr->fields['when'])
-                )) .
-                      "<span>";
+                ))
+                      . "<span>";
             }
         }
 

@@ -230,9 +230,9 @@ class Item_Disk extends CommonDBChild
             $canedit
             && !(!empty($withtemplate) && ($withtemplate == 2))
         ) {
-            echo "<div class='mt-1 mb-3 text-center'>" .
-               "<a class='btn btn-primary' href='" . htmlescape(self::getFormURL()) . "?itemtype=" . htmlescape($item::class) . "&items_id=$ID&amp;withtemplate=" .
-                  (int) $withtemplate . "'>";
+            echo "<div class='mt-1 mb-3 text-center'>"
+               . "<a class='btn btn-primary' href='" . htmlescape(self::getFormURL()) . "?itemtype=" . htmlescape($item::class) . "&items_id=$ID&amp;withtemplate="
+                  . (int) $withtemplate . "'>";
             echo __s('Add a volume');
             echo "</a></div>\n";
         }

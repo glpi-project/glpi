@@ -106,7 +106,7 @@
     "require-dev": {
         "ext-xml": "*",
         "atoum/atoum": "^4.3",
-        "friendsofphp/php-cs-fixer": "^3.84",
+        "friendsofphp/php-cs-fixer": "^3.86",
         "friendsoftwig/twigcs": "^6.5",
         "glpi-project/phpstan-glpi": "^1.1",
         "glpi-project/tools": "^0.7",

@@ -1035,11 +1035,11 @@ TWIG, $twig_params);
             'SELECT' => [
                 'glpi_knowbaseitems.*',
                 new QueryExpression(
-                    QueryFunction::count('glpi_knowbaseitems_users.id') . ' + ' .
-                    QueryFunction::count('glpi_groups_knowbaseitems.id') . ' + ' .
-                    QueryFunction::count('glpi_knowbaseitems_profiles.id') . ' + ' .
-                    QueryFunction::count('glpi_entities_knowbaseitems.id') . ' AS ' .
-                    $DB::quoteName('visibility_count')
+                    QueryFunction::count('glpi_knowbaseitems_users.id') . ' + '
+                    . QueryFunction::count('glpi_groups_knowbaseitems.id') . ' + '
+                    . QueryFunction::count('glpi_knowbaseitems_profiles.id') . ' + '
+                    . QueryFunction::count('glpi_entities_knowbaseitems.id') . ' AS '
+                    . $DB::quoteName('visibility_count')
                 ),
             ],
             'FROM'   => 'glpi_knowbaseitems',
@@ -1569,8 +1569,8 @@ TWIG, $twig_params);
                         $knowbaseitemcategories_id
                     );
                     if ($output_type === Search::HTML_OUTPUT) {
-                        $cathref = self::getSearchURL() . "?knowbaseitemcategories_id=" .
-                            $knowbaseitemcategories_id . '&amp;forcetab=Knowbase$2';
+                        $cathref = self::getSearchURL() . "?knowbaseitemcategories_id="
+                            . $knowbaseitemcategories_id . '&amp;forcetab=Knowbase$2';
                         $categories_names[] = "<a class='kb-category'"
                             . " href='$cathref'"
                             . " data-category-id='" . $knowbaseitemcategories_id . "'"
@@ -1605,8 +1605,8 @@ TWIG, $twig_params);
                 }
 
                 if (isset($options['item_itemtype'], $options['item_items_id']) && ($output_type === Search::HTML_OUTPUT)) {
-                    $content = "<button type='button' class='btn btn-link use_solution' data-solution-id='" . $data['id'] . "'>" .
-                        __s('Use as a solution') . "</button>";
+                    $content = "<button type='button' class='btn btn-link use_solution' data-solution-id='" . $data['id'] . "'>"
+                        . __s('Use as a solution') . "</button>";
                     echo Search::showItem($output_type, $content, $item_num, $row_num);
                 }
 

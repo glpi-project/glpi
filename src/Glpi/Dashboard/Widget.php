@@ -1858,8 +1858,8 @@ HTML;
 
             $content_size = strlen($entry['content']);
             $content = strlen($entry['content'])
-                ? RichText::getEnhancedHtml($entry['content']) .
-                    (
+                ? RichText::getEnhancedHtml($entry['content'])
+                    . (
                         $content_size > 300
                         ? "<p class='read_more'><span class='read_more_button'>...</span></p>"
                         : ""

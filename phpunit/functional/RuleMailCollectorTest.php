@@ -226,8 +226,8 @@ class RuleMailCollectorTest extends DbTestCase
     {
         return [
             [
-                'headers' =>
-                [
+                'headers'
+                => [
                     'auto-submitted' => 'auto-replied',
                 ],
                 'rule_param' => [
@@ -243,8 +243,8 @@ class RuleMailCollectorTest extends DbTestCase
                 'result_match' => true,
             ],
             [
-                'headers' =>
-                [
+                'headers'
+                => [
                     'auto-submitted' => 'no',
                 ],
                 'rule_param' => [
@@ -260,8 +260,8 @@ class RuleMailCollectorTest extends DbTestCase
                 'result_match' => false,
             ],
             [
-                'headers' =>
-                [
+                'headers'
+                => [
                     'auto-submitted'                                       => 'auto-replied',
                     'x-ms-exchange-organization-expirationstarttimereason' => 'QuarantineReleased',
                 ],
@@ -283,8 +283,8 @@ class RuleMailCollectorTest extends DbTestCase
                 'result_match' => false,
             ],
             [
-                'headers' =>
-                [
+                'headers'
+                => [
                     'auto-submitted' => 'auto-replied',
                 ],
                 'rule_param' => [

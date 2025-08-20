@@ -233,8 +233,8 @@ function update090xto910()
         );
         $notid = $DB->insertId();
 
-        $contentText =
-         '##objectlock.type## ###objectlock.id## - ##objectlock.name##
+        $contentText
+         = '##objectlock.type## ###objectlock.id## - ##objectlock.name##
 
          ##lang.objectlock.url##
          ##objectlock.url##
@@ -248,8 +248,8 @@ function update090xto910()
          Regards,
          ##objectlock.requester.firstname##';
 
-        $contentHtml =
-         '&lt;table&gt;
+        $contentHtml
+         = '&lt;table&gt;
          &lt;tbody&gt;
          &lt;tr&gt;&lt;th colspan=\"2\"&gt;&lt;a href=\"##objectlock.url##\"&gt;##objectlock.type## ###objectlock.id## - ##objectlock.name##&lt;/a&gt;&lt;/th&gt;&lt;/tr&gt;
          &lt;tr&gt;

@@ -265,8 +265,8 @@ class ProjectCost extends CommonDBChild
         $rowspan = 3;
         echo "<td rowspan='$rowspan'>" . __s('Comments') . "</td>";
         echo "<td rowspan='$rowspan' class='middle'>";
-        echo "<textarea class='form-control' rows='" . ($rowspan + 3) . "' name='comment' >" . $this->fields["comment"] .
-           "</textarea>";
+        echo "<textarea class='form-control' rows='" . ($rowspan + 3) . "' name='comment' >" . $this->fields["comment"]
+           . "</textarea>";
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'><td>" . __s('End date') . "</td>";
@@ -332,14 +332,14 @@ class ProjectCost extends CommonDBChild
             );
             echo "};";
             echo "</script>";
-            echo "<div class='center firstbloc'>" .
-               "<a class='btn btn-primary' href='javascript:viewAddCost" . $ID . "_$rand();'>";
+            echo "<div class='center firstbloc'>"
+               . "<a class='btn btn-primary' href='javascript:viewAddCost" . $ID . "_$rand();'>";
             echo __s('Add a new cost') . "</a></div>";
         }
         $total = 0;
         echo "<table class='tab_cadre_fixehov'>";
-        echo "<tr class='noHover'><th colspan='5'>" . htmlescape(self::getTypeName(count($iterator))) .
-            "</th></tr>";
+        echo "<tr class='noHover'><th colspan='5'>" . htmlescape(self::getTypeName(count($iterator)))
+            . "</th></tr>";
 
         if (count($iterator)) {
             echo "<tr><th>" . __s('Name') . "</th>";

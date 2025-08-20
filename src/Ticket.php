@@ -1308,8 +1308,8 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         }
 
         if (
-            in_array("takeintoaccount_delay_stat", $this->updates) &&
-            $this->fields['takeintoaccount_delay_stat'] == 0
+            in_array("takeintoaccount_delay_stat", $this->updates)
+            && $this->fields['takeintoaccount_delay_stat'] == 0
         ) {
             if (!in_array("takeintoaccountdate", $this->updates)) {
                 $this->updates[] = "takeintoaccountdate";
@@ -2119,35 +2119,35 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         if (Session::getCurrentInterface() === 'central') {
             if (Ticket::canUpdate() && Ticket::canDelete()) {
                 $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge_as_followup']
-                 = "<i class='ti ti-git-merge'></i>" .
-                 __s('Merge as Followup');
+                 = "<i class='ti ti-git-merge'></i>"
+                 . __s('Merge as Followup');
             }
 
             if (Item_Ticket::canCreate()) {
                 $actions['Item_Ticket' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item']
-                = "<i class='ti ti-plus'></i>" .
-                 _sx('button', 'Add an item');
+                = "<i class='ti ti-plus'></i>"
+                 . _sx('button', 'Add an item');
             }
 
             if (ITILFollowup::canCreate()) {
                 $icon = ITILFollowup::getIcon();
                 $actions['ITILFollowup' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_followup']
-                = "<i class='" . htmlescape($icon) . "'></i>" .
-                 __s('Add a new followup');
+                = "<i class='" . htmlescape($icon) . "'></i>"
+                 . __s('Add a new followup');
             }
 
             if (TicketTask::canCreate()) {
                 $icon = TicketTask::getIcon();
                 $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task']
-                = "<i class='" . htmlescape($icon) . "'></i>" .
-                 __s('Add a new task');
+                = "<i class='" . htmlescape($icon) . "'></i>"
+                 . __s('Add a new task');
             }
 
             if (TicketValidation::canCreate()) {
                 $icon = TicketValidation::getIcon();
                 $actions['TicketValidation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'submit_validation']
-                = "<i class='" . htmlescape($icon) . "'></i>" .
-                 __s('Approval request');
+                = "<i class='" . htmlescape($icon) . "'></i>"
+                 . __s('Approval request');
             }
 
             if (Item_Ticket::canDelete()) {
@@ -2160,13 +2160,13 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'update_notif'] = __s('Set notifications for all actors');
                 if (ProjectTask_Ticket::canCreate()) {
                     $actions['ProjectTask_Ticket' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-                        = "<i class='ti ti-link'></i>" .
-                        _sx('button', 'Link project task');
+                        = "<i class='ti ti-link'></i>"
+                        . _sx('button', 'Link project task');
                 }
                 if (Ticket_Contract::canCreate()) {
                     $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_contract']
-                        = "<i class='" . Contract::getIcon() . "'></i>" .
-                        _sx('button', 'Add contract');
+                        = "<i class='" . Contract::getIcon() . "'></i>"
+                        . _sx('button', 'Add contract');
                 }
 
                 KnowbaseItem_Item::getMassiveActionsForItemtype($actions, self::class, false, $checkitem);
@@ -2174,8 +2174,8 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
             if (self::canUpdate()) {
                 $actions[self::getType() . MassiveAction::CLASS_ACTION_SEPARATOR . 'resolve_tickets']
-                = "<i class='ti ti-check'></i>" .
-                __s("Resolve selected tickets");
+                = "<i class='ti ti-check'></i>"
+                . __s("Resolve selected tickets");
             }
         }
 
@@ -4108,9 +4108,9 @@ JAVASCRIPT;
                         $options['criteria'][1]['link']       = 'AND';
                         $forcetab                 = 'Ticket$2';
 
-                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?" .
-                         Toolbox::append_params($options, '&amp;') . "\">" .
-                         Html::makeTitle(__('Your tickets to close'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?"
+                         . Toolbox::append_params($options, '&amp;') . "\">"
+                         . Html::makeTitle(__('Your tickets to close'), $displayed_row_count, $total_row_count) . "</a>";
                         break;
 
                     case "waiting":
@@ -4124,9 +4124,9 @@ JAVASCRIPT;
                         $options['criteria'][1]['value']      = 'mygroups';
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?" .
-                         Toolbox::append_params($options, '&amp;') . "\">" .
-                         Html::makeTitle(__('Tickets on pending status'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?"
+                         . Toolbox::append_params($options, '&amp;') . "\">"
+                         . Html::makeTitle(__('Tickets on pending status'), $displayed_row_count, $total_row_count) . "</a>";
                         break;
 
                     case "process":
@@ -4156,9 +4156,9 @@ JAVASCRIPT;
                             ],
                         ];
 
-                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?" .
-                         Toolbox::append_params($options, '&amp;') . "\">" .
-                         Html::makeTitle(__('Tickets to be processed'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?"
+                         . Toolbox::append_params($options, '&amp;') . "\">"
+                         . Html::makeTitle(__('Tickets to be processed'), $displayed_row_count, $total_row_count) . "</a>";
                         break;
 
                     case "observed":
@@ -4172,9 +4172,9 @@ JAVASCRIPT;
                         $options['criteria'][1]['value']      = 'mygroups';
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?" .
-                         Toolbox::append_params($options, '&amp;') . "\">" .
-                         Html::makeTitle(__('Your observed tickets'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?"
+                         . Toolbox::append_params($options, '&amp;') . "\">"
+                         . Html::makeTitle(__('Your observed tickets'), $displayed_row_count, $total_row_count) . "</a>";
                         break;
 
                     case "requestbyself":
@@ -4189,9 +4189,9 @@ JAVASCRIPT;
                         $options['criteria'][1]['value']      = 'mygroups';
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?" .
-                        Toolbox::append_params($options, '&amp;') . "\">" .
-                        Html::makeTitle(__('Your tickets in progress'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?"
+                        . Toolbox::append_params($options, '&amp;') . "\">"
+                        . Html::makeTitle(__('Your tickets in progress'), $displayed_row_count, $total_row_count) . "</a>";
                 }
             } else {
                 switch ($status) {
@@ -4206,9 +4206,9 @@ JAVASCRIPT;
                         $options['criteria'][1]['value']      = Session::getLoginUserID();
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?" .
-                         Toolbox::append_params($options, '&amp;') . "\">" .
-                         Html::makeTitle(__('Tickets on pending status'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?"
+                         . Toolbox::append_params($options, '&amp;') . "\">"
+                         . Html::makeTitle(__('Tickets on pending status'), $displayed_row_count, $total_row_count) . "</a>";
                         break;
 
                     case "process":
@@ -4238,9 +4238,9 @@ JAVASCRIPT;
                             ],
                         ];
 
-                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?" .
-                         Toolbox::append_params($options, '&amp;') . "\">" .
-                         Html::makeTitle(__('Tickets to be processed'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?"
+                         . Toolbox::append_params($options, '&amp;') . "\">"
+                         . Html::makeTitle(__('Tickets to be processed'), $displayed_row_count, $total_row_count) . "</a>";
                         break;
 
                     case "tovalidate":
@@ -4277,9 +4277,9 @@ JAVASCRIPT;
                         $options['criteria'][3]['link']       = 'AND';
                         $forcetab                         = 'TicketValidation$1';
 
-                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?" .
-                        Toolbox::append_params($options, '&amp;') . "\">" .
-                        Html::makeTitle(__('Your tickets to approve'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?"
+                        . Toolbox::append_params($options, '&amp;') . "\">"
+                        . Html::makeTitle(__('Your tickets to approve'), $displayed_row_count, $total_row_count) . "</a>";
 
                         break;
 
@@ -4295,9 +4295,9 @@ JAVASCRIPT;
                         $options['criteria'][1]['value']      = Session::getLoginUserID();
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?" .
-                        Toolbox::append_params($options, '&amp;') . "\">" .
-                        Html::makeTitle(__('Your tickets having rejected approval status'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?"
+                        . Toolbox::append_params($options, '&amp;') . "\">"
+                        . Html::makeTitle(__('Your tickets having rejected approval status'), $displayed_row_count, $total_row_count) . "</a>";
 
                         break;
 
@@ -4312,9 +4312,9 @@ JAVASCRIPT;
                         $options['criteria'][1]['value']      = Session::getLoginUserID();
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?" .
-                        Toolbox::append_params($options, '&amp;') . "\">" .
-                        Html::makeTitle(__('Your tickets having rejected solution'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?"
+                        . Toolbox::append_params($options, '&amp;') . "\">"
+                        . Html::makeTitle(__('Your tickets having rejected solution'), $displayed_row_count, $total_row_count) . "</a>";
 
                         break;
 
@@ -4341,9 +4341,9 @@ JAVASCRIPT;
 
                         $forcetab                 = 'Ticket$2';
 
-                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?" .
-                        Toolbox::append_params($options, '&amp;') . "\">" .
-                        Html::makeTitle(__('Your tickets to close'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?"
+                        . Toolbox::append_params($options, '&amp;') . "\">"
+                        . Html::makeTitle(__('Your tickets to close'), $displayed_row_count, $total_row_count) . "</a>";
                         break;
 
                     case "observed":
@@ -4357,9 +4357,9 @@ JAVASCRIPT;
                         $options['criteria'][1]['value']      = 'notold';
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?" .
-                        Toolbox::append_params($options, '&amp;') . "\">" .
-                        Html::makeTitle(__('Your observed tickets'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?"
+                        . Toolbox::append_params($options, '&amp;') . "\">"
+                        . Html::makeTitle(__('Your observed tickets'), $displayed_row_count, $total_row_count) . "</a>";
                         break;
 
                     case "survey":
@@ -4429,9 +4429,9 @@ JAVASCRIPT;
                         }
                         $forcetab                 = 'Ticket$3';
 
-                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?" .
-                         Toolbox::append_params($options, '&amp;') . "\">" .
-                         Html::makeTitle(__('Satisfaction survey'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?"
+                         . Toolbox::append_params($options, '&amp;') . "\">"
+                         . Html::makeTitle(__('Satisfaction survey'), $displayed_row_count, $total_row_count) . "</a>";
                         break;
 
                     case "requestbyself":
@@ -4446,9 +4446,9 @@ JAVASCRIPT;
                         $options['criteria'][1]['value']      = 'notold';
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?" .
-                        Toolbox::append_params($options, '&amp;') . "\">" .
-                        Html::makeTitle(__('Your tickets in progress'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . Ticket::getSearchURL() . "?"
+                        . Toolbox::append_params($options, '&amp;') . "\">"
+                        . Html::makeTitle(__('Your tickets in progress'), $displayed_row_count, $total_row_count) . "</a>";
                 }
             }
 
@@ -4507,12 +4507,12 @@ JAVASCRIPT;
                         ) {
                             foreach ($job->users[CommonITILActor::REQUESTER] as $d) {
                                 if ($d["users_id"] > 0) {
-                                    $name = '<i class="fs-4 ti ti-user text-muted me-1"></i>' .
-                                        htmlescape(getUserName($d["users_id"]));
+                                    $name = '<i class="fs-4 ti ti-user text-muted me-1"></i>'
+                                        . htmlescape(getUserName($d["users_id"]));
                                     $requesters[] = $name;
                                 } else {
-                                    $requesters[] = '<i class="fs-4 ti ti-mail text-muted me-1"></i>' .
-                                        $d['alternative_email'];
+                                    $requesters[] = '<i class="fs-4 ti ti-mail text-muted me-1"></i>'
+                                        . $d['alternative_email'];
                                 }
                             }
                         }
@@ -4522,8 +4522,8 @@ JAVASCRIPT;
                             && count($job->groups[CommonITILActor::REQUESTER])
                         ) {
                             foreach ($job->groups[CommonITILActor::REQUESTER] as $d) {
-                                $requesters[] = '<i class="fs-4 ti ti-users text-muted me-1"></i>' .
-                                    Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+                                $requesters[] = '<i class="fs-4 ti ti-users text-muted me-1"></i>'
+                                    . Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
                             }
                         }
                         $row['values'][] = implode('<br>', $requesters);
@@ -4786,8 +4786,8 @@ JAVASCRIPT;
             echo "<div class='center'><table class='tab_cadre_fixe' style='min-width: 85%'>";
             //TRANS: %d is the number of new tickets
             echo "<tr><th colspan='12'>" . sprintf(_sn('%d new ticket', '%d new tickets', $number), $number);
-            echo "<a href='" . htmlescape(Ticket::getSearchURL()) . "?" .
-                Toolbox::append_params($options, '&amp;') . "'>" . __s('Show all') . "</a>";
+            echo "<a href='" . htmlescape(Ticket::getSearchURL()) . "?"
+                . Toolbox::append_params($options, '&amp;') . "'>" . __s('Show all') . "</a>";
             echo "</th></tr>";
 
             self::commonListHeader(Search::HTML_OUTPUT);
@@ -5455,10 +5455,10 @@ JAVASCRIPT;
 
         $sla = new SLA();
         $ola = new OLA();
-        $sla_tto_link =
-        $sla_ttr_link =
-        $ola_tto_link =
-        $ola_ttr_link = "";
+        $sla_tto_link
+        = $sla_ttr_link
+        = $ola_tto_link
+        = $ola_ttr_link = "";
 
         if ($sla->getFromDB($this->fields['slas_id_tto'])) {
             $sla_tto_link = "<a href='" . $sla->getLinkURL() . "'>
@@ -5492,32 +5492,32 @@ JAVASCRIPT;
                 'timestamp' => $internal_time_to_own,
                 'label'     => __('Internal time to own') . " " . $ola_tto_link,
                 'class'     => ($internal_time_to_own < $goal_takeintoaccount
-                               ? 'passed' : '') . " " .
-                           ($date_takeintoaccount != ''
+                               ? 'passed' : '') . " "
+                           . ($date_takeintoaccount != ''
                                ? 'checked' : ''),
             ],
             $time_to_own . '_time_to_own' => [
                 'timestamp' => $time_to_own,
                 'label'     => __('Time to own') . " " . $sla_tto_link,
                 'class'     => ($time_to_own < $goal_takeintoaccount
-                               ? 'passed' : '') . " " .
-                           ($date_takeintoaccount != ''
+                               ? 'passed' : '') . " "
+                           . ($date_takeintoaccount != ''
                                ? 'checked' : ''),
             ],
             $internal_time_to_resolve . '_internal_time_to_resolve' => [
                 'timestamp' => $internal_time_to_resolve,
                 'label'     => __('Internal time to resolve') . " " . $ola_ttr_link,
                 'class'     => ($internal_time_to_resolve < $goal_solvedate
-                               ? 'passed' : '') . " " .
-                           ($solvedate != ''
+                               ? 'passed' : '') . " "
+                           . ($solvedate != ''
                                ? 'checked' : ''),
             ],
             $time_to_resolve . '_time_to_resolve' => [
                 'timestamp' => $time_to_resolve,
                 'label'     => __('Time to resolve') . " " . $sla_ttr_link,
                 'class'     => ($time_to_resolve < $goal_solvedate
-                               ? 'passed' : '') . " " .
-                           ($solvedate != ''
+                               ? 'passed' : '') . " "
+                           . ($solvedate != ''
                                ? 'checked' : ''),
             ],
             $solvedate . '_solvedate' => [
@@ -5876,16 +5876,16 @@ JAVASCRIPT;
                             $users = array_filter($users, function ($user) use ($existing_users) {
                                 foreach ($existing_users as $existing_user) {
                                     if (
-                                        $existing_user['users_id'] > 0 && $user['users_id'] > 0 &&
-                                        $existing_user['users_id'] === $user['users_id'] &&
-                                        $existing_user['type'] === $user['type']
+                                        $existing_user['users_id'] > 0 && $user['users_id'] > 0
+                                        && $existing_user['users_id'] === $user['users_id']
+                                        && $existing_user['type'] === $user['type']
                                     ) {
                                         // Internal users
                                         return false;
                                     } elseif (
-                                        $existing_user['users_id'] == 0 && $user['users_id'] == 0 &&
-                                        $existing_user['alternative_email'] === $user['alternative_email'] &&
-                                        $existing_user['type'] === $user['type']
+                                        $existing_user['users_id'] == 0 && $user['users_id'] == 0
+                                        && $existing_user['alternative_email'] === $user['alternative_email']
+                                        && $existing_user['type'] === $user['type']
                                     ) {
                                         // External users
                                         return false;
@@ -5896,8 +5896,8 @@ JAVASCRIPT;
                             $groups = array_filter($groups, function ($group) use ($existing_groups) {
                                 foreach ($existing_groups as $existing_group) {
                                     if (
-                                        $existing_group['groups_id'] === $group['groups_id'] &&
-                                        $existing_group['type'] === $group['type']
+                                        $existing_group['groups_id'] === $group['groups_id']
+                                        && $existing_group['type'] === $group['type']
                                     ) {
                                         return false;
                                     }
@@ -5907,16 +5907,16 @@ JAVASCRIPT;
                             $suppliers = array_filter($suppliers, function ($supplier) use ($existing_suppliers) {
                                 foreach ($existing_suppliers as $existing_supplier) {
                                     if (
-                                        $existing_supplier['suppliers_id'] > 0 && $supplier['suppliers_id'] > 0 &&
-                                        $existing_supplier['suppliers_id'] === $supplier['suppliers_id'] &&
-                                        $existing_supplier['type'] === $supplier['type']
+                                        $existing_supplier['suppliers_id'] > 0 && $supplier['suppliers_id'] > 0
+                                        && $existing_supplier['suppliers_id'] === $supplier['suppliers_id']
+                                        && $existing_supplier['type'] === $supplier['type']
                                     ) {
                                         // Internal suppliers
                                         return false;
                                     } elseif (
-                                        $existing_supplier['suppliers_id'] == 0 && $supplier['suppliers_id'] == 0 &&
-                                        $existing_supplier['alternative_email'] === $supplier['alternative_email'] &&
-                                        $existing_supplier['type'] === $supplier['type']
+                                        $existing_supplier['suppliers_id'] == 0 && $supplier['suppliers_id'] == 0
+                                        && $existing_supplier['alternative_email'] === $supplier['alternative_email']
+                                        && $existing_supplier['type'] === $supplier['type']
                                     ) {
                                         // External suppliers
                                         return false;

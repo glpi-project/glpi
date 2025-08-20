@@ -75,8 +75,8 @@ class AllowListTest extends \DbTestCase
         $this->assertNotEmpty($class);
 
         // Ensure the class exists and is valid
-        $is_valid =
-            is_a($class, JsonFieldInterface::class)
+        $is_valid
+            = is_a($class, JsonFieldInterface::class)
             && !(new \ReflectionClass($class))->isAbstract()
         ;
         $this->assertTrue($is_valid);

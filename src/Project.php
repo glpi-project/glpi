@@ -1665,9 +1665,9 @@ TWIG, $twig_params);
         }
         $project_ids = array_map(
             static fn($e) => $e['id'],
-            array_filter($projects, static fn($e) =>
+            array_filter($projects, static fn($e)
                 // Filter tasks of closed projects in Global view
-                $ID > 0 || !$e['is_finished'])
+                => $ID > 0 || !$e['is_finished'])
         );
         $projectteams = count($project_ids) ? $projectteam->find(['projects_id' => $project_ids]) : [];
 
@@ -1949,8 +1949,8 @@ TWIG, $twig_params);
     {
         $project = new Project();
         if (
-            ($ID <= 0 && !self::canView()) ||
-            ($ID > 0 && (!$project->getFromDB($ID) || !$project->canViewItem()))
+            ($ID <= 0 && !self::canView())
+            || ($ID > 0 && (!$project->getFromDB($ID) || !$project->canViewItem()))
         ) {
             return false;
         }

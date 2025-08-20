@@ -444,7 +444,7 @@ class Schema implements ArrayAccess
         };
     }
 
-    public function isValid(array $content, string|null $operation = null): bool
+    public function isValid(array $content, ?string $operation = null): bool
     {
         $flattened_schema = self::flattenProperties($this->toArray()['properties'], '', false);
 

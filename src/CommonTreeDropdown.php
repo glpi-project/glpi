@@ -675,8 +675,8 @@ TWIG, $twig_params);
 
         if ($isadmin) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_under']
-                  = "<i class='ti ti-sitemap'></i>" .
-                    _sx('button', 'Move under');
+                  = "<i class='ti ti-sitemap'></i>"
+                    . _sx('button', 'Move under');
         }
 
         return $actions;
@@ -695,8 +695,8 @@ TWIG, $twig_params);
                     'entity'   => $_SESSION['glpiactive_entity'],
                     'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
                 ]);
-                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
-                           _sx('button', 'Move') . "'>\n";
+                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='"
+                           . _sx('button', 'Move') . "'>\n";
                 return true;
         }
         return parent::showMassiveActionsSubForm($ma);

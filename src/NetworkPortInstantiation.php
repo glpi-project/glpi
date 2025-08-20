@@ -709,8 +709,8 @@ TWIG, $twig_params);
         Ajax::updateItemOnSelectEvent(
             "dropdown_NetworkPortConnect_itemtype$rand",
             "show_" . $p['name'] . "$rand",
-            $CFG_GLPI["root_doc"] .
-                                       "/ajax/dropdownConnectNetworkPortDeviceType.php",
+            $CFG_GLPI["root_doc"]
+                                       . "/ajax/dropdownConnectNetworkPortDeviceType.php",
             $params
         );
 

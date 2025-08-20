@@ -329,9 +329,9 @@ JS);
                     // Content: one row per item
                     echo '<tr class=tab_bg_1><div></div>';
                     echo '<td class="impact-left" width="15%">';
-                    echo '<div><a target="_blank" href="' .
-                    $itemtype_item['stored']->getLinkURL() . '">' .
-                    htmlescape($itemtype_item['stored']->getFriendlyName()) . '</a></div>';
+                    echo '<div><a target="_blank" href="'
+                    . $itemtype_item['stored']->getLinkURL() . '">'
+                    . htmlescape($itemtype_item['stored']->getFriendlyName()) . '</a></div>';
                     echo '</td>';
                     echo '<td width="40%"><div>';
 

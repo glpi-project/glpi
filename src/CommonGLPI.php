@@ -442,11 +442,11 @@ class CommonGLPI implements CommonGLPIInterface
                     && $item->canCreate()
                 ) {
                     if ($item->maybeTemplate()) {
-                        $menu['links']['add'] = '/front/setup.templates.php?' . 'itemtype=' . $type .
-                                          '&add=1';
+                        $menu['links']['add'] = '/front/setup.templates.php?' . 'itemtype=' . $type
+                                          . '&add=1';
                         if (!in_array('template', $forbidden)) {
-                            $menu['links']['template'] = '/front/setup.templates.php?' . 'itemtype=' . $type .
-                                                '&add=0';
+                            $menu['links']['template'] = '/front/setup.templates.php?' . 'itemtype=' . $type
+                                                . '&add=0';
                         }
                     } else {
                         $menu['links']['add'] = $item->getFormURL(false);
@@ -1184,8 +1184,8 @@ class CommonGLPI implements CommonGLPIInterface
                  id='nextpage'
                  class='btn btn-sm btn-icon btn-ghost-secondary ms-2 " . ($next >= 0 ? '' : 'bs-invisible') . "'
                  title=\"" . __s('Next') . "\"
-                 data-bs-toggle='tooltip' data-bs-placement='bottom'>" .
-            "<i class='fs-2 ti ti-chevron-right'></i>
+                 data-bs-toggle='tooltip' data-bs-placement='bottom'>"
+            . "<i class='fs-2 ti ti-chevron-right'></i>
                 </a>";
             if ($next >= 0) {
                 $js = '$("body").keydown(function(e) {
@@ -1201,8 +1201,8 @@ class CommonGLPI implements CommonGLPIInterface
             echo "<a href='" . htmlescape("$cleantarget?id=$last$extraparamhtml") . "'
                  class='btn btn-sm btn-icon btn-ghost-secondary ms-2 " . ($last >= 0 ? '' : 'bs-invisible') . "'
                  title=\"" . __s('Last') . "\"
-                 data-bs-toggle='tooltip' data-bs-placement='bottom'>" .
-            "<i class='fs-2 ti ti-chevrons-right'></i></a>";
+                 data-bs-toggle='tooltip' data-bs-placement='bottom'>"
+            . "<i class='fs-2 ti ti-chevrons-right'></i></a>";
 
             echo "</div>";
 
@@ -1390,8 +1390,8 @@ class CommonGLPI implements CommonGLPIInterface
                     );
                 };
                 ");
-                $ret .= "<label for='dropdown_knowbaseitems_id$rand'>" .
-                    KnowbaseItem::getTypeName() . "</label>&nbsp;";
+                $ret .= "<label for='dropdown_knowbaseitems_id$rand'>"
+                    . KnowbaseItem::getTypeName() . "</label>&nbsp;";
                 $ret .= KnowbaseItem::dropdown([
                     'value'     => reset($found_kbitem)['id'],
                     'display'   => false,

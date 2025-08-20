@@ -419,8 +419,8 @@ class InventoryTest extends InventoryTestCase
                     'states_id' => 0,
                 ],
             ],
-            'Item_DeviceProcessor' =>
-               [
+            'Item_DeviceProcessor'
+               => [
                    [
                        'items_id' => $computers_id,
                        'itemtype' => 'Computer',
@@ -439,8 +439,8 @@ class InventoryTest extends InventoryTestCase
                        'states_id' => 0,
                    ],
                ],
-            'Item_DeviceMemory' =>
-               [
+            'Item_DeviceMemory'
+               => [
                    [
                        'items_id' => $computers_id,
                        'itemtype' => 'Computer',
@@ -9093,8 +9093,8 @@ JSON;
     public function testRuleRefuseUpdateComputerVirtualMachines()
     {
         // Helper function to create JSON string
-        $json_str =
-        <<<JSON
+        $json_str
+        = <<<JSON
             {
                 "action": "inventory",
                 "content": {

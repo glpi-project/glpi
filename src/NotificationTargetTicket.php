@@ -83,8 +83,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             && MailCollector::countActiveCollectors()
             && $this->allowResponse()
         ) {
-            return self::HEADERTAG . ' ' . __('To answer by email, write above this line') . ' ' .
-                self::HEADERTAG;
+            return self::HEADERTAG . ' ' . __('To answer by email, write above this line') . ' '
+                . self::HEADERTAG;
         }
 
         return '';
@@ -102,8 +102,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             && MailCollector::countActiveCollectors()
             && $this->allowResponse()
         ) {
-            return self::FOOTERTAG . ' ' . __('To answer by email, write under this line') . ' ' .
-                self::FOOTERTAG;
+            return self::FOOTERTAG . ' ' . __('To answer by email, write under this line') . ' '
+                . self::FOOTERTAG;
         }
 
         return '';

@@ -908,8 +908,8 @@ abstract class CommonITILValidation extends CommonDBChild
         Ajax::updateItemOnSelectEvent(
             "dropdown_validatortype$rand",
             "show_massiveaction_field",
-            $CFG_GLPI["root_doc"] .
-                                       "/ajax/dropdownMassiveActionAddValidator.php",
+            $CFG_GLPI["root_doc"]
+                                       . "/ajax/dropdownMassiveActionAddValidator.php",
             $paramsmassaction
         );
 
@@ -1541,9 +1541,9 @@ HTML;
             'name'               => __('Approver substitute'),
             'datatype'           => 'itemlink',
             'right'              => (
-                static::$itemtype == 'Ticket' ?
-                ['validate_request', 'validate_incident'] :
-                'validate'
+                static::$itemtype == 'Ticket'
+                ? ['validate_request', 'validate_incident']
+                : 'validate'
             ),
             'forcegroupby'       => true,
             'massiveaction'      => false,
@@ -1623,9 +1623,9 @@ HTML;
             'name'               => __('Substitute of a member of approver group'),
             'datatype'           => 'itemlink',
             'right'              => (
-                static::$itemtype == 'Ticket' ?
-                ['validate_request', 'validate_incident'] :
-                'validate'
+                static::$itemtype == 'Ticket'
+                ? ['validate_request', 'validate_incident']
+                : 'validate'
             ),
             'forcegroupby'       => true,
             'massiveaction'      => false,

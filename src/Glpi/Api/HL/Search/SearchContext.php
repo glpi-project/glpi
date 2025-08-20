@@ -225,9 +225,9 @@ final class SearchContext
         $primary_key = $join_params[$pkey_field];
         $prop_matches = array_filter(
             $this->getFlattenedProperties(),
-            static fn($prop_name) =>
+            static fn($prop_name)
                 // Filter matches for the primary key
-                preg_match('/^' . preg_quote($join, '/') . '\.' . preg_quote($primary_key, '/') . '$/', $prop_name) === 1,
+                => preg_match('/^' . preg_quote($join, '/') . '\.' . preg_quote($primary_key, '/') . '$/', $prop_name) === 1,
             ARRAY_FILTER_USE_KEY
         );
 

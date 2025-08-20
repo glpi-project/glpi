@@ -958,12 +958,12 @@ TWIG, $twig_params);
                 $criteria['WHERE']['glpi_softwares.is_template'] = 0;
             }
             $criteria['SELECT'][] = "$deleted_field AS itemdeleted";
-            $criteria['SELECT'][] = ($location_field !== null ?
-                "$location_field AS locationname" :
-                new QueryExpression($DB::quoteValue(''), 'locationname'));
-            $criteria['SELECT'][] = ($location_field !== null ?
-                "glpi_locations.id AS locationID" :
-                new QueryExpression($DB::quoteValue(''), 'locationID'));
+            $criteria['SELECT'][] = ($location_field !== null
+                ? "$location_field AS locationname"
+                : new QueryExpression($DB::quoteValue(''), 'locationname'));
+            $criteria['SELECT'][] = ($location_field !== null
+                ? "glpi_locations.id AS locationID"
+                : new QueryExpression($DB::quoteValue(''), 'locationID'));
 
             $criteria['LEFT JOIN'] += [
                 'glpi_contracts_items'  => [

@@ -1372,8 +1372,8 @@ TWIG, $twig_params);
             $task_team = '';
             foreach ($projecttask->getTeam() as $projecttaskteam) {
                 $item = getItemForItemtype($projecttaskteam['itemtype']);
-                $task_team .= "<a href='" . htmlescape($item->getFormURLWithID($projecttaskteam['items_id'])) . "'>" .
-                    htmlescape($projecttaskteam['display_name']) . '</a><br>';
+                $task_team .= "<a href='" . htmlescape($item->getFormURLWithID($projecttaskteam['items_id'])) . "'>"
+                    . htmlescape($projecttaskteam['display_name']) . '</a><br>';
             }
             $entry['task_team'] = $task_team;
             $entries[] = $entry;
@@ -1944,23 +1944,23 @@ TWIG, $twig_params);
                         $data['plan_start_date'] = $data['notp_date'];
                         $data['plan_end_date'] = $data['notp_edate'];
                     }
-                    $key = $data["plan_start_date"] .
-                      "$$$" . "ProjectTask" .
-                      "$$$" . $data["id"] .
-                      "$$$" . $who . "$$$" . $whogroup;
+                    $key = $data["plan_start_date"]
+                      . "$$$" . "ProjectTask"
+                      . "$$$" . $data["id"]
+                      . "$$$" . $who . "$$$" . $whogroup;
                     $interv[$key]['color']            = $options['color'];
                     $interv[$key]['event_type_color'] = $options['event_type_color'];
                     $interv[$key]['itemtype']         = 'ProjectTask';
                     if (!$options['genical']) {
                         $interv[$key]["url"] = Project::getFormURLWithID($task->fields['projects_id']);
                     } else {
-                        $interv[$key]["url"] = $CFG_GLPI["url_base"] .
-                                        Project::getFormURLWithID($task->fields['projects_id'], false);
+                        $interv[$key]["url"] = $CFG_GLPI["url_base"]
+                                        . Project::getFormURLWithID($task->fields['projects_id'], false);
                     }
-                    $interv[$key]["ajaxurl"] = $CFG_GLPI["root_doc"] . "/ajax/planning.php" .
-                                          "?action=edit_event_form" .
-                                          "&itemtype=ProjectTask" .
-                                          "&id=" . $data['id'];
+                    $interv[$key]["ajaxurl"] = $CFG_GLPI["root_doc"] . "/ajax/planning.php"
+                                          . "?action=edit_event_form"
+                                          . "&itemtype=ProjectTask"
+                                          . "&id=" . $data['id'];
 
                     $interv[$key][$task::getForeignKeyField()] = $data["id"];
                     $interv[$key]["id"]                        = $data["id"];

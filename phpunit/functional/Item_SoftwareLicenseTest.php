@@ -321,8 +321,8 @@ class Item_SoftwareLicenseTest extends DbTestCase
         $this->assertEquals(1, \SoftwareLicense_User::countForLicense($license_id));
 
         // Total count should include both computer and user
-        $total_count = Item_SoftwareLicense::countForLicense($license_id) +
-            \SoftwareLicense_User::countForLicense($license_id);
+        $total_count = Item_SoftwareLicense::countForLicense($license_id)
+            + \SoftwareLicense_User::countForLicense($license_id);
         $this->assertEquals(2, $total_count);
 
         // Add another computer - this should be allowed as we're at the limit but not over

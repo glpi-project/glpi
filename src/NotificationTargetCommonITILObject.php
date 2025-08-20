@@ -1229,8 +1229,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         $data["##$objettype.urlapprove##"]
                            = $this->formatURL(
                                $options['additionnaloption']['usertype'],
-                               $objettype . "_" . $item->getField("id") . "_" .
-                               $item->getType() . $tab
+                               $objettype . "_" . $item->getField("id") . "_"
+                               . $item->getType() . $tab
                            );
 
         $entity = new Entity();

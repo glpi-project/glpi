@@ -246,8 +246,8 @@ abstract class API
             }
 
             if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
-                header("Access-Control-Allow-Headers: " .
-                   "origin, content-type, accept, session-token, authorization, app-token");
+                header("Access-Control-Allow-Headers: "
+                   . "origin, content-type, accept, session-token, authorization, app-token");
             }
             exit(0); // @phpstan-ignore glpi.forbidExit (API response is streamed)
         }
@@ -1827,8 +1827,8 @@ abstract class API
             $cleaned_data['rawdata'] = $rawdata;
         }
 
-        $cleaned_data['content-range'] = implode('-', $params['range']) .
-                                       "/" . $cleaned_data['totalcount'];
+        $cleaned_data['content-range'] = implode('-', $params['range'])
+                                       . "/" . $cleaned_data['totalcount'];
 
         // return data
         return $cleaned_data;

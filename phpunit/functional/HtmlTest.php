@@ -123,12 +123,12 @@ class HtmlTest extends \DbTestCase
 
     public function testResume_text()
     {
-        $origin = 'This is a very long string which will be truncated by a dedicated method. ' .
-         'If the string is not truncated, well... We\'re wrong and got a very serious issue in our codebase!' .
-         'And if the string has been correctly truncated, well... All is ok then, let\'s show if all the other tests are OK :)';
-        $expected = 'This is a very long string which will be truncated by a dedicated method. ' .
-         'If the string is not truncated, well... We&#039;re wrong and got a very serious issue in our codebase!' .
-         'And if the string has been correctly truncated, well... All is ok then, let&#039;s show i&nbsp;(...)';
+        $origin = 'This is a very long string which will be truncated by a dedicated method. '
+         . 'If the string is not truncated, well... We\'re wrong and got a very serious issue in our codebase!'
+         . 'And if the string has been correctly truncated, well... All is ok then, let\'s show if all the other tests are OK :)';
+        $expected = 'This is a very long string which will be truncated by a dedicated method. '
+         . 'If the string is not truncated, well... We&#039;re wrong and got a very serious issue in our codebase!'
+         . 'And if the string has been correctly truncated, well... All is ok then, let&#039;s show i&nbsp;(...)';
         $this->assertSame($expected, \Html::resume_text($origin));
 
         $origin = 'A string that is longer than 10 characters.';
@@ -398,8 +398,8 @@ class HtmlTest extends \DbTestCase
         ];
         $dir = str_replace(realpath(GLPI_ROOT), '', realpath(GLPI_TMP_DIR));
         $version_key = FrontEnd::getVersionCacheKey(GLPI_VERSION);
-        $base_expected = '<link rel="stylesheet" type="text/css" href="' .
-         $CFG_GLPI['root_doc'] . $dir . '/%url?v=' . $version_key . '" %attrs>';
+        $base_expected = '<link rel="stylesheet" type="text/css" href="'
+         . $CFG_GLPI['root_doc'] . $dir . '/%url?v=' . $version_key . '" %attrs>';
         $base_attrs = 'media="all"';
 
         //create test files
@@ -509,8 +509,8 @@ class HtmlTest extends \DbTestCase
         ];
         $dir = str_replace(realpath(GLPI_ROOT), '', realpath(GLPI_TMP_DIR));
         $version_key = FrontEnd::getVersionCacheKey(GLPI_VERSION);
-        $base_expected = '<script type="text/javascript" src="' .
-         $CFG_GLPI['root_doc'] . $dir . '/%url?v=' . $version_key . '"></script>';
+        $base_expected = '<script type="text/javascript" src="'
+         . $CFG_GLPI['root_doc'] . $dir . '/%url?v=' . $version_key . '"></script>';
 
         //create test files
         foreach ($fake_files as $fake_file) {
