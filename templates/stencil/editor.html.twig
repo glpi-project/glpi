@@ -59,7 +59,7 @@
                 {% if nb_zones > 0 %}
                     {% set start_zone_index = params.start_zone_index ?? 1 %}
                     {% for zone_number in start_zone_index..nb_zones %}
-                        {% set zone_defined = (zones[zone_number]|length > 0) %}
+                        {% set zone_defined = (zones[zone_number] ?? []|length > 0) %}
                         <button type="button" data-zone-index="{{ zone_number }}" class="btn btn-sm btn-icon {{ zone_defined ? " btn-success" : " btn-outline-secondary" }} px-1 set-zone-data" style="min-width: 4%;">
                             <span class="overflow-hidden">{{ zones[zone_number]['label'] ?? zone_number }}</span>
                             <i class="ti {{ zone_defined ? " ti-check" : " ti-file-unknown" }} ms-1"></i>
