@@ -218,7 +218,7 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
             'contact'              => null,
             'contact_num'          => null,
             'users_id_tech'        => 0,
-            'groups_id_tech'       => 0,
+            'groups_id_tech'       => [],
             'comment'              => null,
             'locations_id'         => 0,
             'networks_id'          => 0,
