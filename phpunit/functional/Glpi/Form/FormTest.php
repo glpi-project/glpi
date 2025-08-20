@@ -608,7 +608,7 @@ class FormTest extends DbTestCase
                 'Form',
                 'Service catalog',
                 'Access control 1',
-                'Items to create 1',
+                'Destinations 1',
                 'Form translations',
             ],
         ];
@@ -620,7 +620,7 @@ class FormTest extends DbTestCase
                 'Service catalog',
                 'Tickets 1',
                 'Access control 1',
-                'Items to create 1',
+                'Destinations 1',
                 'Form translations',
             ],
         ];
@@ -632,7 +632,7 @@ class FormTest extends DbTestCase
                 'Service catalog',
                 'Tickets 5',
                 'Access control 1',
-                'Items to create 1',
+                'Destinations 1',
                 'Form translations',
             ],
         ];
@@ -652,7 +652,7 @@ class FormTest extends DbTestCase
                 'Form',
                 'Service catalog',
                 'Access control 1',
-                'Items to create 4',
+                'Destinations 4',
                 'Form translations',
             ],
         ];
@@ -664,7 +664,7 @@ class FormTest extends DbTestCase
                 'Service catalog',
                 'Tickets 4', // (1 (default) + 3) destinations * 1 answer
                 'Access control 1',
-                'Items to create 4',
+                'Destinations 4',
                 'Form translations',
             ],
         ];
@@ -676,7 +676,7 @@ class FormTest extends DbTestCase
                 'Service catalog',
                 'Tickets 20', // (1 (default) + 3) destinations 5 answers
                 'Access control 1',
-                'Items to create 4',
+                'Destinations 4',
                 'Form translations',
             ],
         ];
@@ -696,7 +696,7 @@ class FormTest extends DbTestCase
                 'Form',
                 'Service catalog',
                 'Access control 1',
-                'Items to create 4',
+                'Destinations 4',
                 'Form translations',
             ],
         ];
@@ -709,7 +709,7 @@ class FormTest extends DbTestCase
                 'Tickets 1',
                 'Changes 3', // 3 destinations * 1 answer
                 'Access control 1',
-                'Items to create 4',
+                'Destinations 4',
                 'Form translations',
             ],
         ];
@@ -722,7 +722,7 @@ class FormTest extends DbTestCase
                 'Tickets 5',
                 'Changes 15', // 3 destinations * 5 answers
                 'Access control 1',
-                'Items to create 4',
+                'Destinations 4',
                 'Form translations',
             ],
         ];
@@ -742,7 +742,7 @@ class FormTest extends DbTestCase
                 'Form',
                 'Service catalog',
                 'Access control 1',
-                'Items to create 4',
+                'Destinations 4',
                 'Form translations',
             ],
         ];
@@ -755,7 +755,7 @@ class FormTest extends DbTestCase
                 'Tickets 1',
                 'Problems 3', // 3 destinations * 1 answer
                 'Access control 1',
-                'Items to create 4',
+                'Destinations 4',
                 'Form translations',
             ],
         ];
@@ -768,7 +768,7 @@ class FormTest extends DbTestCase
                 'Tickets 5',
                 'Problems 15', // 3 destinations * 5 answers
                 'Access control 1',
-                'Items to create 4',
+                'Destinations 4',
                 'Form translations',
             ],
         ];

@@ -55,7 +55,7 @@ describe('SLA TTR configuration', () => {
         });
 
         // Go to destination tab
-        cy.findByRole('tab', { 'name': "Items to create 1" }).click();
+        cy.findByRole('tab', { 'name': "Destinations 1" }).click();
     });
 
     it('can use all possibles configuration options', () => {
