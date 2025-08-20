@@ -796,8 +796,8 @@ class Item_Devices extends CommonDBRelation implements StateInterface
         ]);
 
         if ($canedit) {
-            echo "<input type='submit' class='btn btn-primary' name='updateall' value='" .
-               _sx('button', 'Save') . "'>";
+            echo "<input type='submit' class='btn btn-primary' name='updateall' value='"
+               . _sx('button', 'Save') . "'>";
 
             Html::closeForm();
         }

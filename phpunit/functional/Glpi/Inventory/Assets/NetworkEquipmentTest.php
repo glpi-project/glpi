@@ -2689,8 +2689,8 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
     public static function prepareConnectionsProvider()
     {
         return [
-            ['json_source' =>
-                '{
+            ['json_source'
+                => '{
                   "content": {
                       "network_ports": [
                          {
@@ -2709,8 +2709,8 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                    }
                 }',
             ],
-            ['json_source' =>
-                '{
+            ['json_source'
+                => '{
                   "content": {
                       "network_ports": [
                          {
@@ -2729,8 +2729,8 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                    }
                 }',
             ],
-            ['json_source' =>
-                '{
+            ['json_source'
+                => '{
                   "content": {
                       "network_ports": [
                          {

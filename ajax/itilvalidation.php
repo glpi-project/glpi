@@ -100,8 +100,8 @@ if (!empty($targets)) {
     $approver_input = [
         'validatortype'   => $itemtype,
         'groups_id'       => $itemtype == 'Group_User' ? $target['groups_id'] : null,
-        'items_id_target' => ($itemtype == 'Group' || $itemtype == 'User') && count($items_id_target) == 1 ?
-            $items_id_target[0] : $items_id_target,
+        'items_id_target' => ($itemtype == 'Group' || $itemtype == 'User') && count($items_id_target) == 1
+            ? $items_id_target[0] : $items_id_target,
     ];
 }
 

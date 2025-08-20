@@ -131,8 +131,8 @@ class DocumentType extends CommonDropdown
         switch ($field) {
             case 'icon':
                 if (!empty($values[$field])) {
-                    return "&nbsp;<img style='vertical-align:middle;' alt='' src='" .
-                      htmlescape($CFG_GLPI["typedoc_icon_dir"] . "/" . $values[$field]) . "'>";
+                    return "&nbsp;<img style='vertical-align:middle;' alt='' src='"
+                      . htmlescape($CFG_GLPI["typedoc_icon_dir"] . "/" . $values[$field]) . "'>";
                 }
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);

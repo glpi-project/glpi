@@ -2246,7 +2246,7 @@ class DBmysql
     /**
      * Decode HTML special chars on fetch operation result.
      */
-    private function decodeFetchResult(array|object|null|false $values): array|object|null|false
+    private function decodeFetchResult(array|object|false|null $values): array|object|false|null
     {
         if ($values === null || $values === false) {
             // No more results or error on fetch operation.

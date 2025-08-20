@@ -80,8 +80,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
     public function canUpdateItem(): bool
     {
-        return Session::haveRight(self::$rightname, UPDATE) ||
-            $this->fields["users_id"] === Session::getLoginUserID();
+        return Session::haveRight(self::$rightname, UPDATE)
+            || $this->fields["users_id"] === Session::getLoginUserID();
     }
 
     public function getForbiddenStandardMassiveAction()

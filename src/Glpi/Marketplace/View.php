@@ -175,8 +175,8 @@ class View extends CommonGLPI
             if (!$registration_info['is_valid']) {
                 $valid = false;
 
-                $config_url = $CFG_GLPI['root_doc'] . "/front/config.form.php?forcetab=" .
-                        urlencode('GLPINetwork$1');
+                $config_url = $CFG_GLPI['root_doc'] . "/front/config.form.php?forcetab="
+                        . urlencode('GLPINetwork$1');
                 $messages[] = sprintf(__s('Your %1$s registration is not valid.'), 'GLPI Network');
                 $messages[] = __s('A registration, at least a free one, is required to use marketplace!');
                 $messages[] = "<a href='" . htmlescape(GLPI_NETWORK_SERVICES) . "'>" . sprintf(__s('Register on %1$s'), 'GLPI Network') . "</a> "

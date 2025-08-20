@@ -115,7 +115,7 @@ class Plugins
         try {
             $response = $this->httpClient->request($method, $endpoint, $options);
             $this->last_error = null; // Reset error buffer
-        } catch (RequestException | ConnectException $e) {
+        } catch (RequestException|ConnectException $e) {
             $this->last_error = [
                 'title'     => "Plugins API error",
                 'exception' => $e->getMessage(),

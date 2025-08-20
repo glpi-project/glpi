@@ -393,8 +393,8 @@ class PendingReason extends CommonDropdown
 
     public function prepareInput($input)
     {
-        $input['is_pending_per_default'] = isset($input['is_default']) && $input['is_default'] ?
-            ($input['is_pending_per_default'] ?? 0) : 0;
+        $input['is_pending_per_default'] = isset($input['is_default']) && $input['is_default']
+            ? ($input['is_pending_per_default'] ?? 0) : 0;
 
         return $input;
     }

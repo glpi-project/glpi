@@ -130,8 +130,8 @@ class ITILTemplateTest extends DbTestCase
         $tid = (int) $object->add($content);
         $this->assertSame(0, $tid);
 
-        $err_msg = 'Mandatory fields are not filled. Please correct: Title' .
-         ($itiltype === \Ticket::getType() ? ', Location' : '') . ', Description';
+        $err_msg = 'Mandatory fields are not filled. Please correct: Title'
+         . ($itiltype === \Ticket::getType() ? ', Location' : '') . ', Description';
         $this->hasSessionMessages(ERROR, [$err_msg]);
         $this->assertFalse($object->checkRequiredFieldsFilled());
 

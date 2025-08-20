@@ -933,7 +933,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         return $controller_class::getKnownSchemas(Router::API_VERSION)[$schema_name] ?? null;
     }
 
-    public static function getMonacoSuggestions(string|null $itemtype): array
+    public static function getMonacoSuggestions(?string $itemtype): array
     {
         if (empty($itemtype)) {
             return [];
@@ -1072,7 +1072,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
                     'message' => $response->getReasonPhrase(),
                 ];
             }
-        } catch (ClientException | RequestException $e) {
+        } catch (ClientException|RequestException $e) {
             $challenge_response['status'] = false;
             if ($e->hasResponse()) {
                 $response = $e->getResponse();

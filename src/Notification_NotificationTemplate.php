@@ -161,9 +161,9 @@ TWIG, $twig_params);
             $tpl_link = $tpl->getLink();
             if (empty($tpl_link)) {
                 $tpl_link = "<i class='ti ti-alert-triangle red'></i>
-                        <a href='" . htmlescape($notiftpl->getLinkUrl()) . "'>" .
-                         __s("No template selected") .
-                      "</a>";
+                        <a href='" . htmlescape($notiftpl->getLinkUrl()) . "'>"
+                         . __s("No template selected")
+                      . "</a>";
             }
             $mode = self::getMode($data['mode']);
             if ($mode === NOT_AVAILABLE) {

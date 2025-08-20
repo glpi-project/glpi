@@ -606,9 +606,9 @@ TWIG, $twig_params);
                 }
                 $item_link = htmlescape(sprintf(__('%1$s - %2$s'), $typename, $row["name"]));
                 if ($itemtype::canView()) {
-                    $item_link = "<a href='" . htmlescape($itemtype::getFormURLWithId($row['items_id'])) . "&forcetab=Reservation$1'>" .
-                        $item_link .
-                        "</a>";
+                    $item_link = "<a href='" . htmlescape($itemtype::getFormURLWithId($row['items_id'])) . "&forcetab=Reservation$1'>"
+                        . $item_link
+                        . "</a>";
                 }
                 $entry['item'] = $item_link;
 
@@ -746,8 +746,8 @@ TWIG, $twig_params);
                 'WHERE'     => [
                     'glpi_reservationitems.entities_id' => $entity,
                     new QueryExpression(
-                        QueryFunction::unixTimestamp('glpi_reservations.end') . ' - ' . $secs .
-                            ' < ' . QueryFunction::unixTimestamp()
+                        QueryFunction::unixTimestamp('glpi_reservations.end') . ' - ' . $secs
+                            . ' < ' . QueryFunction::unixTimestamp()
                     ),
                     'glpi_reservations.begin'  => ['<', QueryFunction::now()],
                     'glpi_alerts.date'         => null,

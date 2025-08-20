@@ -1351,8 +1351,8 @@ class GenericAssetInventoryTest extends InventoryTestCase
                     'states_id' => 0,
                 ],
             ],
-            'Item_DeviceProcessor' =>
-                [
+            'Item_DeviceProcessor'
+                => [
                     [
                         'items_id' => $assets_id,
                         'itemtype' => $classname,
@@ -1371,8 +1371,8 @@ class GenericAssetInventoryTest extends InventoryTestCase
                         'states_id' => 0,
                     ],
                 ],
-            'Item_DeviceMemory' =>
-                [
+            'Item_DeviceMemory'
+                => [
                     [
                         'items_id' => $assets_id,
                         'itemtype' => $classname,

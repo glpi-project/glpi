@@ -2676,8 +2676,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         $this->updates[]                          = "internal_time_to_resolve";
                         $this->fields['internal_time_to_resolve'] = date(
                             'Y-m-d H:i:s',
-                            $delay_time +
-                            strtotime($this->fields['internal_time_to_resolve'])
+                            $delay_time
+                            + strtotime($this->fields['internal_time_to_resolve'])
                         );
                     }
                 }
@@ -4084,11 +4084,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 || Session::haveRight(Problem::$rightname, UPDATE);
             if ($can_update_itilobject) {
                 $actions['CommonITILObject_CommonITILObject' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-                    = "<i class='ti ti-link'></i>" .
-                    _sx('button', 'Link ITIL Object');
+                    = "<i class='ti ti-link'></i>"
+                    . _sx('button', 'Link ITIL Object');
                 $actions['CommonITILObject_CommonITILObject' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete']
-                    = "<i class='ti ti-unlink'></i>" .
-                    _sx('button', 'Unlink ITIL Object');
+                    = "<i class='ti ti-unlink'></i>"
+                    . _sx('button', 'Unlink ITIL Object');
             }
         }
 
@@ -4139,8 +4139,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 Ajax::updateItemOnSelectEvent(
                     "dropdown_actortype$rand",
                     "show_massiveaction_field",
-                    $CFG_GLPI["root_doc"] .
-                                             "/ajax/dropdownMassiveActionAddActor.php",
+                    $CFG_GLPI["root_doc"]
+                                             . "/ajax/dropdownMassiveActionAddActor.php",
                     $paramsmassaction
                 );
                 echo "<span id='show_massiveaction_field'>&nbsp;</span>\n";
@@ -6762,8 +6762,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $eleventh_column = '';
                 if (count($items)) {
                     $eleventh_column = "<span class='pointer'
-                                 id='" . htmlescape($item::class . $item->fields["id"]) . "planning$rand'>" .
-                                 $eleventh_column . '</span>';
+                                 id='" . htmlescape($item::class . $item->fields["id"]) . "planning$rand'>"
+                                 . $eleventh_column . '</span>';
                     $eleventh_column = sprintf(
                         __('%1$s %2$s'),
                         $eleventh_column,
@@ -7548,8 +7548,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
                 if (!$params['check_view_rights'] || $followup->canViewItem()) {
                     $followup_row['can_edit'] = $followup->canUpdateItem();
-                    $followup_row['can_promote'] =
-                        Session::getCurrentInterface() === 'central'
+                    $followup_row['can_promote']
+                        = Session::getCurrentInterface() === 'central'
                         && $this instanceof Ticket
                         && Ticket::canCreate()
                     ;
@@ -7578,8 +7578,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
                 if (!$params['check_view_rights'] || $tltask->canViewItem()) {
                     $task_row['can_edit'] = $tltask->canUpdateItem();
-                    $task_row['can_promote'] =
-                        Session::getCurrentInterface() === 'central'
+                    $task_row['can_promote']
+                        = Session::getCurrentInterface() === 'central'
                         && $this instanceof Ticket
                         && Ticket::canCreate()
                     ;
@@ -7683,10 +7683,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         'timeline_position' => $validation_row['timeline_position'],
                     ],
                     'itiltype' => 'Validation',
-                    'class'    => 'validation-request ' .
-                    ($validation_row['status'] == CommonITILValidation::WAITING ? "validation-waiting" : "") .
-                    ($validation_row['status'] == CommonITILValidation::ACCEPTED ? "validation-accepted" : "") .
-                    ($validation_row['status'] == CommonITILValidation::REFUSED ? "validation-refused" : ""),
+                    'class'    => 'validation-request '
+                    . ($validation_row['status'] == CommonITILValidation::WAITING ? "validation-waiting" : "")
+                    . ($validation_row['status'] == CommonITILValidation::ACCEPTED ? "validation-accepted" : "")
+                    . ($validation_row['status'] == CommonITILValidation::REFUSED ? "validation-refused" : ""),
                     'item_action' => 'validation-request',
                     'object'      => $validation,
                 ];
@@ -7697,8 +7697,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         'item' => [
                             'id'        => $validations_id,
                             'date'      => $validation_row['validation_date'],
-                            'content'   => __('Approval request answer') . " : " .
-                            _sx('status', ucfirst($validation_class::getStatus($validation_row['status']))),
+                            'content'   => __('Approval request answer') . " : "
+                            . _sx('status', ucfirst($validation_class::getStatus($validation_row['status']))),
                             'comment_validation' => $validation_row['comment_validation'],
                             'users_id'  => $validation_row['users_id_validate'],
                             'status'    => "status_" . $validation_row['status'],
@@ -9097,9 +9097,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     ? sprintf('_additional_%ss', $actor_type)
                     : sprintf('_additional_%ss_%ss', strtolower($actor_itemtype), $actor_type);
 
-                $get_unique_key = (fn(array $actor): string =>
+                $get_unique_key = (fn(array $actor): string
                     // Use alternative_email in value key for "email" actors
-                    sprintf('%s_%s', $actors_id_input_key, $actor['items_id'] ?: $actor['alternative_email'] ?? ''));
+                    => sprintf('%s_%s', $actors_id_input_key, $actor['items_id'] ?: $actor['alternative_email'] ?? ''));
 
                 if (array_key_exists($actors_id_input_key, $this->input)) {
                     if (is_array($this->input[$actors_id_input_key])) {

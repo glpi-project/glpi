@@ -376,8 +376,8 @@ class OperatingSystemTest extends AbstractInventoryAsset
                 'is_active' => 1,
             ],
             [
-                "sub_type" =>
-                    [
+                "sub_type"
+                    => [
                         RuleDictionnaryOperatingSystem::class,
                         RuleDictionnaryOperatingSystemEdition::class,
                         RuleDictionnaryOperatingSystemVersion::class,
@@ -1184,8 +1184,8 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'is_active' => 1,
                 ],
                 [
-                    "sub_type" =>
-                    [
+                    "sub_type"
+                    => [
                         RuleDictionnaryOperatingSystem::class,
                     ],
                 ]

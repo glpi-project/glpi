@@ -1164,8 +1164,8 @@ class Conf extends CommonGLPI
 
         if (isset($values['auth_required']) && $values['auth_required'] === Conf::BASIC_AUTH) {
             if (
-                !empty($values['basic_auth_password']) &&
-                !empty($values['basic_auth_login'])
+                !empty($values['basic_auth_password'])
+                && !empty($values['basic_auth_login'])
             ) {
                 $values['basic_auth_password'] = (new GLPIKey())->encrypt($values['basic_auth_password']);
             } else {

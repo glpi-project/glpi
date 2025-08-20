@@ -489,32 +489,32 @@ class ITILCategory extends CommonTreeDropdown
                 echo "<td>" . $itilcategory->getLink(['comments' => true]) . "</td>";
                 if ($data['tickettemplates_id_incident'] == $ID) {
                     echo "<td class='center'>
-                     <img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/ok.png' alt=\"" . __s('OK') .
-                        "\" width='14' height='14'>
+                     <img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/ok.png' alt=\"" . __s('OK')
+                        . "\" width='14' height='14'>
                      </td>";
                 } else {
                     echo "<td>&nbsp;</td>";
                 }
                 if ($data['tickettemplates_id_demand'] == $ID) {
                     echo "<td class='center'>
-                     <img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/ok.png' alt=\"" . __s('OK') .
-                        "\" width='14' height='14'>
+                     <img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/ok.png' alt=\"" . __s('OK')
+                        . "\" width='14' height='14'>
                      </td>";
                 } else {
                     echo "<td>&nbsp;</td>";
                 }
                 if ($data['changetemplates_id'] == $ID) {
                     echo "<td class='center'>
-                     <img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/ok.png' alt=\"" . __s('OK') .
-                        "\" width='14' height='14'>
+                     <img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/ok.png' alt=\"" . __s('OK')
+                        . "\" width='14' height='14'>
                      </td>";
                 } else {
                     echo "<td>&nbsp;</td>";
                 }
                 if ($data['problemtemplates_id'] == $ID) {
                     echo "<td class='center'>
-                     <img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/ok.png' alt=\"" . __s('OK') .
-                        "\" width='14' height='14'>
+                     <img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/ok.png' alt=\"" . __s('OK')
+                        . "\" width='14' height='14'>
                      </td>";
                 } else {
                     echo "<td>&nbsp;</td>";

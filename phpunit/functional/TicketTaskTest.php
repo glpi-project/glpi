@@ -344,8 +344,8 @@ final class TicketTaskTest extends CommonITILTaskTestCase
         $this->hasSessionMessages(
             WARNING,
             [
-                "The user $usr_str is busy at the selected timeframe.<br/>- Ticket task: from 2019-08-13 00:00 to 2019-08-14 00:00:<br/><a href='" .
-            $ticket->getFormURLWithID($tid) . "&amp;forcetab=TicketTask$1'>ticket title</a><br/>",
+                "The user $usr_str is busy at the selected timeframe.<br/>- Ticket task: from 2019-08-13 00:00 to 2019-08-14 00:00:<br/><a href='"
+            . $ticket->getFormURLWithID($tid) . "&amp;forcetab=TicketTask$1'>ticket title</a><br/>",
             ]
         );
         $this->assertGreaterThan(0, $tid);
@@ -385,8 +385,8 @@ final class TicketTaskTest extends CommonITILTaskTestCase
         $this->hasSessionMessages(
             WARNING,
             [
-                "The user $usr_str is busy at the selected timeframe.<br/>- Ticket task: from 2019-08-10 00:00 to 2019-08-20 00:00:<br/><a href='" .
-            $ticket->getFormURLWithID($tid) . "&amp;forcetab=TicketTask$1'>ticket title</a><br/>- Ticket task: from 2019-08-13 00:00 to 2019-08-14 00:00:<br/><a href='" . $ticket
+                "The user $usr_str is busy at the selected timeframe.<br/>- Ticket task: from 2019-08-10 00:00 to 2019-08-20 00:00:<br/><a href='"
+            . $ticket->getFormURLWithID($tid) . "&amp;forcetab=TicketTask$1'>ticket title</a><br/>- Ticket task: from 2019-08-13 00:00 to 2019-08-14 00:00:<br/><a href='" . $ticket
             ->getFormURLWithID($tid) . "&amp;forcetab=TicketTask$1'>ticket title</a><br/>",
             ]
         );

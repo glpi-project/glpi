@@ -248,14 +248,14 @@ class Group extends CommonTreeDropdown
         $actions = parent::getSpecificMassiveActions($checkitem);
         if ($isadmin) {
             $prefix                            = 'Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$prefix . 'add']            = "<i class='ti ti-user-plus'></i>" .
-                                              _sx('button', 'Add a user');
-            $actions[$prefix . 'add_supervisor'] = "<i class='ti ti-user-star'></i>" .
-                                              _sx('button', 'Add a manager');
-            $actions[$prefix . 'add_delegatee']  = "<i class='fas fa-user-check'></i>" .
-                                              _sx('button', 'Add a delegatee');
-            $actions[$prefix . 'remove']         = "<i class='ti ti-user-minus'></i>" .
-                                              _sx('button', 'Remove a user');
+            $actions[$prefix . 'add']            = "<i class='ti ti-user-plus'></i>"
+                                              . _sx('button', 'Add a user');
+            $actions[$prefix . 'add_supervisor'] = "<i class='ti ti-user-star'></i>"
+                                              . _sx('button', 'Add a manager');
+            $actions[$prefix . 'add_delegatee']  = "<i class='fas fa-user-check'></i>"
+                                              . _sx('button', 'Add a delegatee');
+            $actions[$prefix . 'remove']         = "<i class='ti ti-user-minus'></i>"
+                                              . _sx('button', 'Remove a user');
         }
 
         return $actions;
@@ -285,8 +285,8 @@ class Group extends CommonTreeDropdown
                                 'used'      => [$group->fields["id"]],
                                 'condition' => $condition,
                             ]);
-                            echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
-                                  _sx('button', 'Move') . "'>";
+                            echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='"
+                                  . _sx('button', 'Move') . "'>";
                             return true;
                         }
                     }
@@ -943,15 +943,15 @@ class Group extends CommonTreeDropdown
         parent::post_updateItem($history);
         // Changing a group's parent might invalidate the group cache if recursive
         // membership is enabled
-        $parent_changed =
-            isset($this->oldvalues['groups_id'])
+        $parent_changed
+            = isset($this->oldvalues['groups_id'])
             && $this->fields['groups_id'] !== $this->oldvalues['groups_id']
         ;
 
         // Enabling or disabling recursion on a group will invalidate the group
         // cache
-        $recursive_membership_changed =
-            isset($this->oldvalues['recursive_membership'])
+        $recursive_membership_changed
+            = isset($this->oldvalues['recursive_membership'])
             && $this->fields['recursive_membership'] !== $this->oldvalues['recursive_membership']
         ;
 

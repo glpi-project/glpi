@@ -604,8 +604,8 @@ class Location extends CommonTreeDropdown
     {
         $input = parent::prepareInputForAdd($input);
         if (
-            empty($input['latitude']) && empty($input['longitude']) && empty($input['altitude']) &&
-            !empty($input[static::getForeignKeyField()])
+            empty($input['latitude']) && empty($input['longitude']) && empty($input['altitude'])
+            && !empty($input[static::getForeignKeyField()])
         ) {
             $parent = new static();
             $parent->getFromDB($input[static::getForeignKeyField()]);

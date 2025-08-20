@@ -2463,8 +2463,8 @@ TWIG,
             ) {
                 $out .= "<span class='btn btn-sm border-danger text-danger me-1'>
                             <i class='ti ti-corner-left-down mt-1' style='margin-left: -2px;'></i>"
-                            . __s('Selection too large, massive action disabled.') .
-                        "</span>";
+                            . __s('Selection too large, massive action disabled.')
+                        . "</span>";
                 if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
                     $out .= Html::showToolTip(
                         __s('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.'),
@@ -4176,8 +4176,8 @@ JAVASCRIPT
     {
         if (($num > 0) && ($num < $tot)) {
             // TRANS %1$d %2$d are numbers (displayed, total)
-            $cpt = "<span class='primary-bg primary-fg count'>" .
-            htmlescape(sprintf(__('%1$d on %2$d'), $num, $tot)) . "</span>";
+            $cpt = "<span class='primary-bg primary-fg count'>"
+            . htmlescape(sprintf(__('%1$d on %2$d'), $num, $tot)) . "</span>";
         } else {
             // $num is 0, so means configured to display nothing
             // or $num == $tot
@@ -4995,8 +4995,8 @@ HTML;
             unset($options['version']);
         }
 
-        $type = (isset($options['type']) && $options['type'] === 'module') ||
-         preg_match('/^js\/modules\//', $url) === 1 ? 'module' : 'text/javascript';
+        $type = (isset($options['type']) && $options['type'] === 'module')
+         || preg_match('/^js\/modules\//', $url) === 1 ? 'module' : 'text/javascript';
 
         if ($minify === true) {
             $url = self::getMiniFile($url);
@@ -5215,8 +5215,8 @@ HTML;
                       . ($p['multiple'] ? " multiple='multiple'" : "")
                       . ($p['onlyimages'] ? " accept='.gif,.png,.jpg,.jpeg'" : "") . ">";
 
-        $display .= "<div id='progress{$rand_id}' style='display:none'>" .
-                "<div role='progressbar' class='uploadbar' style='width: 0%;'></div></div>";
+        $display .= "<div id='progress{$rand_id}' style='display:none'>"
+                . "<div role='progressbar' class='uploadbar' style='width: 0%;'></div></div>";
         $progressall_js = "
         progressall: function(event, data) {
             var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -5358,8 +5358,8 @@ HTML;
         $required = $p['required'] ? 'required="required"' : '';
         $display = '';
         $display .= "<textarea class='form-control' name='" . $p['name'] . "' id='" . $p['editor_id'] . "'
-                             rows='" . $p['rows'] . "' cols='" . $p['cols'] . "' $required>" .
-                  $p['value'] . "</textarea>";
+                             rows='" . $p['rows'] . "' cols='" . $p['cols'] . "' $required>"
+                  . $p['value'] . "</textarea>";
 
         if ($p['enable_richtext']) {
             $display .= Html::initEditorSystem($p['editor_id'], $p['rand'], false, false, $p['enable_images']);
@@ -5815,8 +5815,8 @@ JS);
         if ($withVersion) {
             $message .= GLPI_VERSION . " ";
         }
-        $message .= "Copyright (C) 2015-" . GLPI_YEAR . " Teclib' and contributors" .
-         "</a>";
+        $message .= "Copyright (C) 2015-" . GLPI_YEAR . " Teclib' and contributors"
+         . "</a>";
         return $message;
     }
 
@@ -5855,8 +5855,8 @@ JS);
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/flatpickr.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/flatpickr_buttons_plugin.js';
                 if (isset($_SESSION['glpilanguage'])) {
-                    $filename = "lib/flatpickr/l10n/" .
-                    strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]) . ".js";
+                    $filename = "lib/flatpickr/l10n/"
+                    . strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]) . ".js";
                     if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
                         $_SESSION['glpi_js_toload'][$name][] = $filename;
                         break;
@@ -5867,8 +5867,8 @@ JS);
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/fullcalendar.js';
                 if (isset($_SESSION['glpilanguage'])) {
                     foreach ([2, 3] as $loc) {
-                        $filename = "lib/fullcalendar/core/locales/" .
-                         strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][$loc]) . ".js";
+                        $filename = "lib/fullcalendar/core/locales/"
+                         . strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][$loc]) . ".js";
                         if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
                             $_SESSION['glpi_js_toload'][$name][] = $filename;
                             break;
@@ -5967,8 +5967,8 @@ JS);
         //locales for js libraries
         if (isset($_SESSION['glpilanguage'])) {
             // select2
-            $filename = "lib/select2/js/i18n/" .
-                     $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2] . ".js";
+            $filename = "lib/select2/js/i18n/"
+                     . $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2] . ".js";
             if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
                 echo Html::script($filename);
             }
@@ -6190,9 +6190,9 @@ JS);
                                 if (isset($submenu['title']) && strlen($submenu['title']) > 0) {
                                     $fuzzy_entries[] = [
                                         'url'   => self::getPrefixedUrl($submenu['page']),
-                                        'title' => $firstlvl['title'] . " > " .
-                                            $menu['title'] . " > " .
-                                            $submenu['title'],
+                                        'title' => $firstlvl['title'] . " > "
+                                            . $menu['title'] . " > "
+                                            . $submenu['title'],
                                     ];
                                 }
                             }

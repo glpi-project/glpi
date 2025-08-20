@@ -388,8 +388,8 @@ abstract class Spreadsheet extends ExportSearchOutput
             }
         }
         if (
-            isset($data['search']['metacriteria']) &&
-            count($data['search']['metacriteria'])
+            isset($data['search']['metacriteria'])
+            && count($data['search']['metacriteria'])
         ) {
             $metanames = [];
             foreach ($data['search']['metacriteria'] as $metacriteria) {

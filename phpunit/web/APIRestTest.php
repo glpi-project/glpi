@@ -1758,19 +1758,19 @@ class APIRestTest extends TestCase
 
         $relative_uri = (!in_array($resource_path, ['getItem', 'getItems', 'createItems', 'updateItems', 'deleteItems'])
                          ? $resource_path . '/'
-                         : '') .
-                      (isset($params['parent_itemtype'])
+                         : '')
+                      . (isset($params['parent_itemtype'])
                          ? $params['parent_itemtype'] . '/'
-                         : '') .
-                      (isset($params['parent_id'])
+                         : '')
+                      . (isset($params['parent_id'])
                          ? $params['parent_id'] . '/'
-                         : '') .
-                      (isset($params['itemtype'])
+                         : '')
+                      . (isset($params['itemtype'])
                          ? $params['itemtype'] . '/'
-                         : '') .
-                      ($params['id']
-                         ?? '') .
-                      (!empty($resource_query)
+                         : '')
+                      . ($params['id']
+                         ?? '')
+                      . (!empty($resource_query)
                          ? '?' . $resource_query
                          : '');
 

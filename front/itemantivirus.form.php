@@ -83,8 +83,8 @@ if (isset($_POST["add"])) {
     $itemtype = $antivirus->fields['itemtype'];
     $item = getItemForItemtype($itemtype);
     $item->getFromDB($antivirus->fields['items_id']);
-    Html::redirect(Toolbox::getItemTypeFormURL($antivirus->fields['itemtype']) . '?id=' . $antivirus->fields['items_id'] .
-                  ($item->fields['is_template'] ? "&withtemplate=1" : ""));
+    Html::redirect(Toolbox::getItemTypeFormURL($antivirus->fields['itemtype']) . '?id=' . $antivirus->fields['items_id']
+                  . ($item->fields['is_template'] ? "&withtemplate=1" : ""));
 } elseif (isset($_POST["update"])) {
     $antivirus->check($_POST["id"], UPDATE);
 

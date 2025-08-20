@@ -469,14 +469,14 @@ class Migration
 
         if ($format) {
             if (!$DB->fieldExists($table, $field, false)) {
-                $this->change[$table][] = "ADD `$field` $format " . $params['comment'] . " " .
-                                      $params['null'] . $params['first'] . $params['after'];
+                $this->change[$table][] = "ADD `$field` $format " . $params['comment'] . " "
+                                      . $params['null'] . $params['first'] . $params['after'];
 
                 if ($params['update'] !== '') {
                     $this->migrationOneTable($table);
                     $query = "UPDATE `$table`
-                        SET `$field` = " . $params['update'] . " " .
-                        $params['condition'] . "";
+                        SET `$field` = " . $params['update'] . " "
+                        . $params['condition'] . "";
                     $DB->doQuery($query);
                 }
                 return true;
@@ -546,8 +546,8 @@ class Migration
             }
 
             if ($format) {
-                $this->change[$table][] = "CHANGE `$oldfield` `$newfield` $format " . $params['comment'] . " " .
-                                      $params['null'] . $params['first'] . $params['after'];
+                $this->change[$table][] = "CHANGE `$oldfield` `$newfield` $format " . $params['comment'] . " "
+                                      . $params['null'] . $params['first'] . $params['after'];
             }
             return true;
         }
@@ -1849,14 +1849,14 @@ class Migration
                         foreach ($query['criteria'] as $cid => $criterion) {
                             $is_meta = isset($criterion['meta']) && (int) $criterion['meta'] === 1;
                             if (
-                                ($is_meta &&
-                                 isset($criterion['itemtype'], $criterion['field']) &&
-                                 $criterion['itemtype'] === $itemtype &&
-                                 (int) $criterion['field'] === $old_search_opt) ||
-                                 (!$is_meta &&
-                                 $data['itemtype'] === $itemtype &&
-                                 isset($criterion['field']) &&
-                                 (int) $criterion['field'] === $old_search_opt)
+                                ($is_meta
+                                 && isset($criterion['itemtype'], $criterion['field'])
+                                 && $criterion['itemtype'] === $itemtype
+                                 && (int) $criterion['field'] === $old_search_opt)
+                                 || (!$is_meta
+                                 && $data['itemtype'] === $itemtype
+                                 && isset($criterion['field'])
+                                 && (int) $criterion['field'] === $old_search_opt)
                             ) {
                                 if ($new_search_opt === null) {
                                     unset($query['criteria'][$cid]);

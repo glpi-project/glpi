@@ -852,11 +852,11 @@ HTML;
         $is_recursive = $_SESSION['glpiactive_entity_recursive'];
         $token        = self::getToken($this->current, $entities_id, $is_recursive);
 
-        $embed_url    = $CFG_GLPI['url_base'] .
-         "/front/central.php?embed&dashboard=" . $this->current .
-         "&entities_id=$entities_id" .
-         "&is_recursive=$is_recursive" .
-         "&token=$token";
+        $embed_url    = $CFG_GLPI['url_base']
+         . "/front/central.php?embed&dashboard=" . $this->current
+         . "&entities_id=$entities_id"
+         . "&is_recursive=$is_recursive"
+         . "&token=$token";
 
         echo "<label>" . __s("Embed in another application") . "</label><br>";
         echo "<fieldset class='embed_block'>";
@@ -893,9 +893,9 @@ HTML;
 
         echo "<form class='no-shadow display-rights-form'>";
 
-        echo "<label for='dropdown_rights_id$rand'>" .
-           __s("Or share the dashboard to these target objects:") .
-           "</label><br>";
+        echo "<label for='dropdown_rights_id$rand'>"
+           . __s("Or share the dashboard to these target objects:")
+           . "</label><br>";
 
         $values = [
             'profiles_id' => self::$all_dashboards[$this->current]['rights']['profiles_id'] ?? [],
@@ -949,15 +949,15 @@ HTML;
 
         // retrieve card
         $notfound_html = "<div class='empty-card card-warning '>
-         <i class='ti ti-alert-triangle'></i>" .
-         __s('empty card!') . "
+         <i class='ti ti-alert-triangle'></i>"
+         . __s('empty card!') . "
       </div>";
         $render_error_html = "<div class='empty-card card-error '>
-         <i class='ti ti-alert-triangle'></i>" .
-         __s('Error rendering card!') .
-            "</br>" .
-            \htmlescape($card_id) .
-            "</div>";
+         <i class='ti ti-alert-triangle'></i>"
+         . __s('Error rendering card!')
+            . "</br>"
+            . \htmlescape($card_id)
+            . "</div>";
 
         Profiler::getInstance()->start(__METHOD__ . ' get card data');
         try {

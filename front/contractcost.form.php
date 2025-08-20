@@ -81,8 +81,8 @@ if (isset($_POST["add"])) {
     }
     $contract = new Contract();
     $contract->getFromDB($cost->fields['contracts_id']);
-    Html::redirect(Toolbox::getItemTypeFormURL('Contract') . '?id=' . $cost->fields['contracts_id'] .
-                  ($contract->fields['is_template'] ? "&withtemplate=1" : ""));
+    Html::redirect(Toolbox::getItemTypeFormURL('Contract') . '?id=' . $cost->fields['contracts_id']
+                  . ($contract->fields['is_template'] ? "&withtemplate=1" : ""));
 } elseif (isset($_POST["update"])) {
     $cost->check($_POST["id"], UPDATE);
 

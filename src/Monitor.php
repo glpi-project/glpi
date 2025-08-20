@@ -215,8 +215,8 @@ class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrum
             Asset_PeripheralAsset::getMassiveActionsForItemtype($actions, self::class, false, $checkitem);
             $actions += [
                 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
-               => "<i class='ma-icon fas fa-key'></i>" .
-                  _sx('button', 'Add a license'),
+               => "<i class='ma-icon fas fa-key'></i>"
+                  . _sx('button', 'Add a license'),
             ];
             KnowbaseItem_Item::getMassiveActionsForItemtype($actions, self::class, false, $checkitem);
         }

@@ -349,9 +349,9 @@ class Contract extends CommonDBTM implements StateInterface
             'datatype'           => 'decimal',
             'massiveaction'      => false,
             'joinparams'         => $joinparamscost,
-            'computation'        => '(' . QueryFunction::sum('TABLE.cost') . ' / ' .
-                QueryFunction::count('TABLE.id') . ') * ' .
-                QueryFunction::count('TABLE.id', distinct: true),
+            'computation'        => '(' . QueryFunction::sum('TABLE.cost') . ' / '
+                . QueryFunction::count('TABLE.id') . ') * '
+                . QueryFunction::count('TABLE.id', distinct: true),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
@@ -765,9 +765,9 @@ class Contract extends CommonDBTM implements StateInterface
             'joinparams'         => [
                 'jointype'           => 'child',
             ],
-            'computation'        => '(' . QueryFunction::sum('TABLE.cost') . ' / ' .
-                QueryFunction::count('TABLE.id') . ') * ' .
-                QueryFunction::count('TABLE.id', distinct: true),
+            'computation'        => '(' . QueryFunction::sum('TABLE.cost') . ' / '
+                . QueryFunction::count('TABLE.id') . ') * '
+                . QueryFunction::count('TABLE.id', distinct: true),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
@@ -1211,8 +1211,8 @@ class Contract extends CommonDBTM implements StateInterface
                     if (!isset($contract_messages[$type][$entity])) {
                         switch ($type) {
                             case 'notice':
-                                $contract_messages[$type][$entity] = __('Contract entered in notice time') .
-                                                            "<br>";
+                                $contract_messages[$type][$entity] = __('Contract entered in notice time')
+                                                            . "<br>";
                                 break;
 
                             case 'end':
@@ -1627,8 +1627,8 @@ class Contract extends CommonDBTM implements StateInterface
         if (in_array($itemtype, $CFG_GLPI["contract_types"], true)) {
             if (self::canUpdate()) {
                 $action_prefix                    = 'Contract_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;
-                $actions[$action_prefix . 'add']    = "<i class='" . htmlescape(self::getIcon()) . "'></i>" .
-                                                _sx('button', 'Add a contract');
+                $actions[$action_prefix . 'add']    = "<i class='" . htmlescape(self::getIcon()) . "'></i>"
+                                                . _sx('button', 'Add a contract');
                 $actions[$action_prefix . 'remove'] = _sx('button', 'Remove a contract');
             }
         }

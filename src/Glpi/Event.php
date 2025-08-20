@@ -142,10 +142,10 @@ class Event extends CommonDBTM
                 $message_type = "[" . $type . " " . $id . "] ";
             }
 
-            $full_message = "[" . $service . "] " .
-                         $message_type .
-                         $level . ": " .
-                         $event . "\n";
+            $full_message = "[" . $service . "] "
+                         . $message_type
+                         . $level . ": "
+                         . $event . "\n";
 
             Toolbox::logInFile("event", $full_message);
         }
@@ -233,8 +233,8 @@ class Event extends CommonDBTM
         } else {
             switch ($type) {
                 case "rules":
-                    echo "<a href=\"" . \htmlescape($CFG_GLPI["root_doc"]) . "/front/rule.generic.form.php?id=" .
-                     $items_id . "\">" . $items_id . "</a>";
+                    echo "<a href=\"" . \htmlescape($CFG_GLPI["root_doc"]) . "/front/rule.generic.form.php?id="
+                     . $items_id . "\">" . $items_id . "</a>";
                     break;
 
                 case "infocom":
@@ -252,8 +252,8 @@ class Event extends CommonDBTM
                     break;
 
                 case "reservationitem":
-                    echo "<a href=\"" . \htmlescape($CFG_GLPI["root_doc"]) . "/front/reservation.php?reservationitems_id=" .
-                     $items_id . "\">" . $items_id . "</a>";
+                    echo "<a href=\"" . \htmlescape($CFG_GLPI["root_doc"]) . "/front/reservation.php?reservationitems_id="
+                     . $items_id . "\">" . $items_id . "</a>";
                     break;
 
                 default:
@@ -330,8 +330,8 @@ class Event extends CommonDBTM
                 [
                     [
                         'colspan'   => 5,
-                        'content'   => "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/event.php\">" .
-                     sprintf(__('Last %d events'), $_SESSION['glpilist_limit']) . "</a>",
+                        'content'   => "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/event.php\">"
+                     . sprintf(__('Last %d events'), $_SESSION['glpilist_limit']) . "</a>",
                     ],
                 ],
                 [

@@ -48,7 +48,7 @@ final class QuestionTypeItemDefaultValueConfig implements JsonFieldInterface
      *                                  replaces the ID with the item name during serialization.
      */
     public function __construct(
-        private null|int|string $items_id = null
+        private int|string|null $items_id = null
     ) {}
 
     #[Override]

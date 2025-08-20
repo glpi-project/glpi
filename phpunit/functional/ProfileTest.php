@@ -355,9 +355,9 @@ class ProfileTest extends DbTestCase
                     $previous_right = null;
                     foreach ($rights as $right) {
                         $failure_message = 'A right is missing a field name. Please check that the class has the rightname property set or the right is otherwise defined with the field property in the array.';
-                        $locator_message = $previous_right ?
-                            "The previous right was: " . print_r($previous_right, true) . " in {$interface}/{$form}/{$group}" :
-                            "The right was the first one in {$interface}/{$form}/{$group}";
+                        $locator_message = $previous_right
+                            ? "The previous right was: " . print_r($previous_right, true) . " in {$interface}/{$form}/{$group}"
+                            : "The right was the first one in {$interface}/{$form}/{$group}";
                         $this->assertNotEmpty($right['field'], $failure_message . ' ' . $locator_message);
                         $search_opt_matches = array_filter($search_opts, static function ($opt) use ($right) {
                             return array_key_exists('rightname', $opt) && $opt['rightname'] === $right['field'];

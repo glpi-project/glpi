@@ -214,8 +214,8 @@ class NetworkPort extends InventoryAsset
                                 'n2.mac'       => $connection->sysmac,
                             ],
                         ];
-                        $criteria['LEFT JOIN'][GlobalNetworkPort::getTable() . ' AS n2'][] =
-                            new QueryExpression("`n1`.`items_id`=`n2`.`items_id` AND `n1`.`itemtype`=`n2`.`itemtype`");
+                        $criteria['LEFT JOIN'][GlobalNetworkPort::getTable() . ' AS n2'][]
+                            = new QueryExpression("`n1`.`items_id`=`n2`.`items_id` AND `n1`.`itemtype`=`n2`.`itemtype`");
 
                         $iterator = $DB->request($criteria);
                         if (count($iterator)) {

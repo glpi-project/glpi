@@ -246,8 +246,8 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             && (countElementsInTable("glpi_rules", ['sub_type' => 'RuleSoftwareCategory']) > 0)
         ) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'compute_software_category']
-            = "<i class='ti ti-calculator'></i>" .
-              __s('Recalculate the category');
+            = "<i class='ti ti-calculator'></i>"
+              . __s('Recalculate the category');
         }
 
         if (
@@ -255,8 +255,8 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             && (countElementsInTable("glpi_rules", ['sub_type' => 'RuleDictionnarySoftware']) > 0)
         ) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'replay_dictionnary']
-            = "<i class='ti ti-arrow-back-up'></i>" .
-              __s('Replay the dictionary rules');
+            = "<i class='ti ti-arrow-back-up'></i>"
+              . __s('Replay the dictionary rules');
         }
 
         if ($isadmin) {

@@ -757,8 +757,8 @@ abstract class CommonDBChild extends CommonDBConnexity
      **/
     public static function getJSCodeToAddForItemChild($field_name, $child_count_js_var)
     {
-        return "<input type=\'text\' size=\'40\' " . "name=\'" . $field_name .
-             "[-'+$child_count_js_var+']\'>";
+        return "<input type=\'text\' size=\'40\' " . "name=\'" . $field_name
+             . "[-'+$child_count_js_var+']\'>";
     }
 
 
@@ -851,11 +851,11 @@ abstract class CommonDBChild extends CommonDBConnexity
 
             // Beware : -1 is for the first element added ...
             $result = "&nbsp;<script type='text/javascript'>var $child_count_js_var=2; </script>";
-            $result .= "<span id='add" . $lower_name . "button' class='ti ti-plus cursor-pointer'" .
-              " title=\"" . __s('Add') . "\"" . "aria-label=\"" . $add_label . "\"" .
-                "\" onClick=\"var row = $('#" . $div_id . "');
-                             row.append('" .
-               static::getJSCodeToAddForItemChild($field_name, $child_count_js_var) . "');
+            $result .= "<span id='add" . $lower_name . "button' class='ti ti-plus cursor-pointer'"
+              . " title=\"" . __s('Add') . "\"" . "aria-label=\"" . $add_label . "\""
+                . "\" onClick=\"var row = $('#" . $div_id . "');
+                             row.append('"
+               . static::getJSCodeToAddForItemChild($field_name, $child_count_js_var) . "');
                             $child_count_js_var++;\"
                ><span class='sr-only'>" . __s('Add') . "</span></span>";
         }

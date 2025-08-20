@@ -1755,7 +1755,7 @@ HTML;
     public static function buildItemtypesDropdownOptions(
         array $types,
         bool $checkright = false
-    ): array|null {
+    ): ?array {
         $options = []; // Initialize the options array to accumulate results.
 
         foreach ($types as $label => $type) {
@@ -2519,11 +2519,11 @@ HTML;
             $deselect = __s('None');
             $output  .= "<div class='invisible' id='selectallbuttons_" . htmlescape($field_id) . "'>";
             $output  .= "<div class='d-flex justify-content-around p-1'>";
-            $output  .= "<a class='btn btn-sm' " .
-                      "onclick=\"selectAll('" . htmlescape(jsescape($field_id)) . "');$('#" . htmlescape(jsescape($field_id)) . "').select2('close');\">$select" .
-                     "</a> ";
-            $output  .= "<a class='btn btn-sm' onclick=\"deselectAll('" . htmlescape(jsescape($field_id)) . "');\">$deselect" .
-                     "</a>";
+            $output  .= "<a class='btn btn-sm' "
+                      . "onclick=\"selectAll('" . htmlescape(jsescape($field_id)) . "');$('#" . htmlescape(jsescape($field_id)) . "').select2('close');\">$select"
+                     . "</a> ";
+            $output  .= "<a class='btn btn-sm' onclick=\"deselectAll('" . htmlescape(jsescape($field_id)) . "');\">$deselect"
+                     . "</a>";
             $output  .= "</div></div>";
 
             $multichecksappend_varname = "multichecksappend" . preg_replace('/[^\w]/', '_', $field_id);
@@ -2640,9 +2640,9 @@ HTML;
                 );
                 echo "&nbsp;";
 
-                echo "<span class='fa fa-info pointer'" .
-                 " title=\"" . __s('Duplicate the element as many times as there are connections') .
-                 "\"><span class='sr-only'>" . __s('Duplicate the element as many times as there are connections') . "</span></span>";
+                echo "<span class='fa fa-info pointer'"
+                 . " title=\"" . __s('Duplicate the element as many times as there are connections')
+                 . "\"><span class='sr-only'>" . __s('Duplicate the element as many times as there are connections') . "</span></span>";
             }
         } else {
             if ($params['management_restrict'] == 2) {
@@ -2658,8 +2658,8 @@ HTML;
             } else {
                 // Templates edition
                 if (!empty($params['withtemplate'])) {
-                    echo "<input type='hidden' name='is_global' value='" .
-                        htmlescape($params['management_restrict']) . "'>";
+                    echo "<input type='hidden' name='is_global' value='"
+                        . htmlescape($params['management_restrict']) . "'>";
                     echo(!$params['management_restrict'] ? __s('Unit management') : __s('Global management'));
                 } else {
                     echo(!$params['value'] ? __s('Unit management') : __s('Global management'));
@@ -2780,9 +2780,9 @@ HTML;
 
         $rand = mt_rand();
         Dropdown::showFromArray('display_type', $values, ['rand' => $rand]);
-        echo "<button type='submit' name='export' class='btn' " .
-             " title=\"" . _sx('button', 'Export') . "\">" .
-             "<i class='ti ti-device-floppy'></i><span class='sr-only'>" . _sx('button', 'Export') . "<span>";
+        echo "<button type='submit' name='export' class='btn' "
+             . " title=\"" . _sx('button', 'Export') . "\">"
+             . "<i class='ti ti-device-floppy'></i><span class='sr-only'>" . _sx('button', 'Export') . "<span>";
     }
 
 

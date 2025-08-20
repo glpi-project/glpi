@@ -151,8 +151,8 @@ class Appliance_Item extends CommonDBRelation
 
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_2'>";
-            echo "<th colspan='2'>" .
-               __s('Add an item') . "</th></tr>";
+            echo "<th colspan='2'>"
+               . __s('Add an item') . "</th></tr>";
 
             echo "<tr class='tab_bg_1'><td class='center'>";
             Dropdown::showSelectItemFromItemtypes(

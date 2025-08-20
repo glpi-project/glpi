@@ -1540,11 +1540,11 @@ class Plugin extends CommonDBTM
             $is_marketplace = file_exists(GLPI_MARKETPLACE_DIR . "/" . $plugin['directory']);
             $install_method = $is_marketplace ? "Marketplace" : "Manual";
 
-            $msg  = substr(str_pad($plugin['directory'], 30), 0, 20) .
-                 " Name: " . Toolbox::substr(str_pad($name, 40), 0, 30) .
-                 " Version: " . str_pad($version, 10) .
-                 " State: " . str_pad($state, 40) .
-                 " Install Method: " . $install_method;
+            $msg  = substr(str_pad($plugin['directory'], 30), 0, 20)
+                 . " Name: " . Toolbox::substr(str_pad($name, 40), 0, 30)
+                 . " Version: " . str_pad($version, 10)
+                 . " State: " . str_pad($state, 40)
+                 . " Install Method: " . $install_method;
             $content .= "\n" . $msg;
         }
         return [
@@ -2077,8 +2077,8 @@ class Plugin extends CommonDBTM
                     unset($opt['id']);
 
                     if (isset($options[$optid])) {
-                        $message = "Duplicate key $optid ({$options[$optid]['name']}/{$opt['name']}) in " .
-                        $itemtype . " searchOptions!";
+                        $message = "Duplicate key $optid ({$options[$optid]['name']}/{$opt['name']}) in "
+                        . $itemtype . " searchOptions!";
                         trigger_error($message, E_USER_WARNING);
                     }
 
@@ -3048,20 +3048,20 @@ TWIG;
 
         if (Session::getCurrentInterface() === 'central' && Config::canUpdate()) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'install']
-            = "<i class='ti ti-folder-plus'></i>" .
-            __s('Install');
+            = "<i class='ti ti-folder-plus'></i>"
+            . __s('Install');
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall']
-            = "<i class='ti ti-folder-minus'></i>" .
-            __s('Uninstall');
+            = "<i class='ti ti-folder-minus'></i>"
+            . __s('Uninstall');
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'enable']
-            = "<i class='ti ti-toggle-right-filled'></i>" .
-            __s('Enable');
+            = "<i class='ti ti-toggle-right-filled'></i>"
+            . __s('Enable');
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'disable']
-            = "<i class='ti ti-toggle-left-filled'></i>" .
-            __s('Disable');
+            = "<i class='ti ti-toggle-left-filled'></i>"
+            . __s('Disable');
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'clean']
-            = "<i class='ti ti-recycle'></i>" .
-            __s('Clean');
+            = "<i class='ti ti-recycle'></i>"
+            . __s('Clean');
         }
 
         $actions += parent::getSpecificMassiveActions($checkitem);

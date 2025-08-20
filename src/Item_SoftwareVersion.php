@@ -737,8 +737,8 @@ class Item_SoftwareVersion extends CommonDBRelation
                 }
 
                 if ($crit == "softwares_id") {
-                    echo "<td><a href='" . htmlescape(SoftwareVersion::getFormURLWithID($data['vID'])) . "'>" .
-                     htmlescape($data['version']) . "</a></td>";
+                    echo "<td><a href='" . htmlescape(SoftwareVersion::getFormURLWithID($data['vID'])) . "'>"
+                     . htmlescape($data['version']) . "</a></td>";
                 }
 
                 $itemname = $data['itemname'];
@@ -1286,8 +1286,8 @@ class Item_SoftwareVersion extends CommonDBRelation
                 $rand = mt_rand();
                 Html::openMassiveActionsForm('massSoftwareLicense' . $rand);
 
-                $actions = ['Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR .
-                              'install' => _x('button', 'Install'),
+                $actions = ['Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR
+                              . 'install' => _x('button', 'Install'),
                 ];
                 if (SoftwareLicense::canUpdate()) {
                     $actions['purge'] = _x('button', 'Delete permanently');
@@ -1433,10 +1433,10 @@ class Item_SoftwareVersion extends CommonDBRelation
 
                 $link_item = Toolbox::getItemTypeFormURL('SoftwareLicense');
                 $link      = $link_item . "?id=" . $licdata['id'];
-                $comment   = "<table><tr><td>" . __s('Name') . "</td><td>" . htmlescape($licdata['name']) . "</td></tr>" .
-                         "<tr><td>" . __s('Serial number') . "</td><td>" . htmlescape($licdata['serial']) . "</td></tr>" .
-                         "<tr><td>" . __s('Comments') . '</td><td>' . htmlescape($licdata['comment']) . "</td></tr>" .
-                         "</table>";
+                $comment   = "<table><tr><td>" . __s('Name') . "</td><td>" . htmlescape($licdata['name']) . "</td></tr>"
+                         . "<tr><td>" . __s('Serial number') . "</td><td>" . htmlescape($licdata['serial']) . "</td></tr>"
+                         . "<tr><td>" . __s('Comments') . '</td><td>' . htmlescape($licdata['comment']) . "</td></tr>"
+                         . "</table>";
 
                 Html::showToolTip($comment, ['link' => $link]);
                 echo "<br>";
@@ -1521,9 +1521,9 @@ class Item_SoftwareVersion extends CommonDBRelation
             echo " - " . htmlescape($serial);
         }
 
-        $comment = "<table><tr><td>" . __s('Name') . "</td>" . "<td>" . htmlescape($data['name']) . "</td></tr>" .
-                 "<tr><td>" . __s('Serial number') . "</td><td>" . htmlescape($data['serial']) . "</td></tr>" .
-                 "<tr><td>" . __s('Comments') . "</td><td>" . htmlescape($data['comment']) . "</td></tr></table>";
+        $comment = "<table><tr><td>" . __s('Name') . "</td>" . "<td>" . htmlescape($data['name']) . "</td></tr>"
+                 . "<tr><td>" . __s('Serial number') . "</td><td>" . htmlescape($data['serial']) . "</td></tr>"
+                 . "<tr><td>" . __s('Comments') . "</td><td>" . htmlescape($data['comment']) . "</td></tr></table>";
 
         Html::showToolTip($comment, ['link' => $link]);
         echo "</td></tr>\n";

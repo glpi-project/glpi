@@ -1380,9 +1380,9 @@ JS;
         $ic       = new self();
 
         if (in_array($item->getType(), self::getExcludedTypes())) {
-            echo "<div class='firstbloc center'>" .
-                __s('For this type of item, the financial and administrative information are only a model for the items which you should add.') .
-                "</div>";
+            echo "<div class='firstbloc center'>"
+                . __s('For this type of item, the financial and administrative information are only a model for the items which you should add.')
+                . "</div>";
         }
 
         $ic->getFromDBforDevice($item->getType(), $dev_ID);
@@ -2025,8 +2025,8 @@ JS;
             Infocom::canApplyOn($itemtype)
             && static::canCreate()
         ) {
-            $actions[$action_name] = "<i class='" . htmlescape(self::getIcon()) . "'></i>" .
-                                  __s('Enable the financial and administrative information');
+            $actions[$action_name] = "<i class='" . htmlescape(self::getIcon()) . "'></i>"
+                                  . __s('Enable the financial and administrative information');
         }
     }
 

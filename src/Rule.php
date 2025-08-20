@@ -655,8 +655,8 @@ class Rule extends CommonDBTM
                     'width'           => '50%',
                     'order'           => 'ranking',
                 ]);
-                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
-                           _sx('button', 'Move') . "'>\n";
+                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='"
+                           . _sx('button', 'Move') . "'>\n";
                 return true;
         }
         return parent::showMassiveActionsSubForm($ma);

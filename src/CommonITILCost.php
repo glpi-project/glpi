@@ -221,10 +221,10 @@ abstract class CommonITILCost extends CommonDBChild
             ],
             'computation'        => new QueryExpression(
                 '(' . QueryFunction::sum(
-                    expression: new QueryExpression($DB::quoteName('TABLE.actiontime') . ' * ' . $DB::quoteName('TABLE.cost_time') . ' / ' .
-                        HOUR_TIMESTAMP . ' + ' . $DB::quoteName('TABLE.cost_fixed') . ' + ' . $DB::quoteName('TABLE.cost_material'))
-                ) . ' / ' . QueryFunction::count('TABLE.id') . ') * ' .
-                    QueryFunction::count(expression: 'TABLE.id', distinct: true)
+                    expression: new QueryExpression($DB::quoteName('TABLE.actiontime') . ' * ' . $DB::quoteName('TABLE.cost_time') . ' / '
+                        . HOUR_TIMESTAMP . ' + ' . $DB::quoteName('TABLE.cost_fixed') . ' + ' . $DB::quoteName('TABLE.cost_material'))
+                ) . ' / ' . QueryFunction::count('TABLE.id') . ') * '
+                    . QueryFunction::count(expression: 'TABLE.id', distinct: true)
             ),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
@@ -243,10 +243,10 @@ abstract class CommonITILCost extends CommonDBChild
             ],
             'computation'        => new QueryExpression(
                 '(' . QueryFunction::sum(
-                    expression: new QueryExpression($DB::quoteName('TABLE.actiontime') . ' * ' . $DB::quoteName('TABLE.cost_time') . ' / ' .
-                        HOUR_TIMESTAMP)
-                ) . ' / ' . QueryFunction::count('TABLE.id') . ') * ' .
-                    QueryFunction::count(expression: 'TABLE.id', distinct: true)
+                    expression: new QueryExpression($DB::quoteName('TABLE.actiontime') . ' * ' . $DB::quoteName('TABLE.cost_time') . ' / '
+                        . HOUR_TIMESTAMP)
+                ) . ' / ' . QueryFunction::count('TABLE.id') . ') * '
+                    . QueryFunction::count(expression: 'TABLE.id', distinct: true)
             ),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
@@ -280,8 +280,8 @@ abstract class CommonITILCost extends CommonDBChild
             'computation'        => new QueryExpression(
                 '(' . QueryFunction::sum(
                     expression: 'TABLE.cost_fixed'
-                ) . ' / ' . QueryFunction::count('TABLE.id') . ') * ' .
-                    QueryFunction::count(expression: 'TABLE.id', distinct: true)
+                ) . ' / ' . QueryFunction::count('TABLE.id') . ') * '
+                    . QueryFunction::count(expression: 'TABLE.id', distinct: true)
             ),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
@@ -301,8 +301,8 @@ abstract class CommonITILCost extends CommonDBChild
             'computation'        => new QueryExpression(
                 '(' . QueryFunction::sum(
                     expression: 'TABLE.cost_material'
-                ) . ' / ' . QueryFunction::count('TABLE.id') . ') * ' .
-                    QueryFunction::count(expression: 'TABLE.id', distinct: true)
+                ) . ' / ' . QueryFunction::count('TABLE.id') . ') * '
+                    . QueryFunction::count(expression: 'TABLE.id', distinct: true)
             ),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];

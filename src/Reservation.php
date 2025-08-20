@@ -543,10 +543,10 @@ class Reservation extends CommonDBChild
                 $name = sprintf(__('%1$s - %2$s'), $type, $name);
             }
 
-            $all = "<a class='btn btn-primary ms-2 view-all' href='reservation.php?reservationitems_id=0'>" .
-               __s('View all items') .
-               "&nbsp;<i class='ti ti-eye'></i>" .
-            "</a>";
+            $all = "<a class='btn btn-primary ms-2 view-all' href='reservation.php?reservationitems_id=0'>"
+               . __s('View all items')
+               . "&nbsp;<i class='ti ti-eye'></i>"
+            . "</a>";
         } else {
             $type = "";
             $name = __('All reservable devices');
@@ -1289,8 +1289,8 @@ JAVASCRIPT;
     {
         switch ($ma->getAction()) {
             case 'enable':
-                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
-                    __s('Authorize reservations') . "'>";
+                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='"
+                    . __s('Authorize reservations') . "'>";
                 return true;
             case 'disable':
                 echo '<div class="alert alert-warning">';
@@ -1298,16 +1298,16 @@ JAVASCRIPT;
                 echo '<br>';
                 echo "<span class='fw-bold'>" . __s('That will remove all the reservations in progress.') . "</span>";
                 echo '</div>';
-                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
-                    __s('Prohibit reservations') . "'>";
+                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='"
+                    . __s('Prohibit reservations') . "'>";
                 return true;
             case 'available':
-                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
-                    __s('Make available for reservations') . "'>";
+                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='"
+                    . __s('Make available for reservations') . "'>";
                 return true;
             case 'unavailable':
-                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
-                    __s('Make unavailable for reservations') . "'>";
+                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='"
+                    . __s('Make unavailable for reservations') . "'>";
                 return true;
         }
         return parent::showMassiveActionsSubForm($ma);

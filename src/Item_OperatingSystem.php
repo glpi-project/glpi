@@ -253,9 +253,9 @@ class Item_OperatingSystem extends CommonDBRelation
 
         foreach ($columns as $key => $val) {
             $val = htmlescape($val);
-            $header_end .= "<th" . ($sort == $key ? " class='order_$order'" : '') . ">" .
-                        "<a href='javascript:reloadTab(\"sort=$key&amp;order=" .
-                          (($order == "ASC") ? "DESC" : "ASC") . "&amp;start=0\");'>$val</a></th>";
+            $header_end .= "<th" . ($sort == $key ? " class='order_$order'" : '') . ">"
+                        . "<a href='javascript:reloadTab(\"sort=$key&amp;order="
+                          . (($order == "ASC") ? "DESC" : "ASC") . "&amp;start=0\");'>$val</a></th>";
         }
 
         $header_end .= "</tr>";
@@ -599,8 +599,8 @@ class Item_OperatingSystem extends CommonDBRelation
         Ajax::updateItemOnSelectEvent(
             "dropdown_os_field$rand",
             "results_os_field$rand",
-            $CFG_GLPI["root_doc"] .
-            "/ajax/dropdownMassiveActionOs.php",
+            $CFG_GLPI["root_doc"]
+            . "/ajax/dropdownMassiveActionOs.php",
             [
                 'itemtype'  => '__VALUE__',
                 'rand'      => $rand,

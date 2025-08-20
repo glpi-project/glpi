@@ -301,7 +301,7 @@ final class RuleController extends AbstractController
         return $visible_collections;
     }
 
-    private function checkCollectionAccess(Request $request, int $right): Response|null
+    private function checkCollectionAccess(Request $request, int $right): ?Response
     {
         $rule_subtype = 'Rule' . $request->getAttribute('collection');
         if (!class_exists($rule_subtype)) {

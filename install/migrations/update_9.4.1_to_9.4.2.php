@@ -102,9 +102,9 @@ function update941to942()
         ],
     ];
 
-    $fix_content_fct = (fn($content, $itil_id, $itil_fkey) =>
+    $fix_content_fct = (fn($content, $itil_id, $itil_fkey)
         // Add itil object param between docid param ($1) and ending quote ($2)
-        preg_replace(
+        => preg_replace(
             '/' . $missing_param_pattern . '/',
             '$1&amp;' . http_build_query([$itil_fkey => $itil_id]) . '$2',
             $content
