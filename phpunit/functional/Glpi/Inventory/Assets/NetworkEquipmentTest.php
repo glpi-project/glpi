@@ -36,8 +36,6 @@ namespace tests\units\Glpi\Inventory\Asset;
 
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
-/* Test for inc/inventory/asset/networkequipment.class.php */
-
 class NetworkEquipmentTest extends AbstractInventoryAsset
 {
     public const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
