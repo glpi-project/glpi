@@ -76,7 +76,11 @@
                   ) }}
                {% else %}
                   {% set entity_html %}
-                     {{ call('Entity::badgeCompletenameLinkById', [item.fields['entities_id']])|raw }}
+                      {% if has_itemtype_right('Entity', constant('READ')) %}
+                          {{ call('Entity::badgeCompletenameLinkById', [item.fields['entities_id']])|raw }}
+                      {% else %}
+                          {{ call('Entity::badgeCompletenameById', [item.fields['entities_id']])|raw }}
+                      {% endif %}
                   {% endset %}
 
                   {{ fields.field(

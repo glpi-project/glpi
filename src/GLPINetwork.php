@@ -246,8 +246,8 @@ class GLPINetwork extends CommonGLPI
     public static function getSupportPromoteMessage(): string
     {
         return nl2br(sprintf(
-            __s("Having troubles setting up an advanced GLPI module?\n" .
-            "We can help you solve them. Sign up for support on %s."),
+            __s("Having troubles setting up an advanced GLPI module?\n"
+            . "We can help you solve them. Sign up for support on %s."),
             "<a href='" . GLPI_NETWORK_SERVICES . "' target='_blank'>" . GLPI_NETWORK_SERVICES . "</a>"
         ));
     }

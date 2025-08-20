@@ -41,8 +41,8 @@ class BarcodeManager
     {
         global $CFG_GLPI;
         if (
-            $item->isNewItem() ||
-            !in_array($item::class, $CFG_GLPI["asset_types"])
+            $item->isNewItem()
+            || !in_array($item::class, $CFG_GLPI["asset_types"])
         ) {
             return false;
         }

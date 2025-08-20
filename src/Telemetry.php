@@ -472,11 +472,11 @@ class Telemetry extends CommonGLPI
     {
         $out = "<h3>" . __('Reference your GLPI') . "</h3>";
         $out .= sprintf(
-            __("Besides, if you appreciate GLPI and its community, " .
-            "please take a minute to reference your organization by filling %1\$s"),
+            __("Besides, if you appreciate GLPI and its community, "
+            . "please take a minute to reference your organization by filling %1\$s"),
             sprintf(
-                "<a href='" . GLPI_TELEMETRY_URI . "/reference?showmodal&uuid=" .
-                self::getRegistrationUuid() . "' class='btn btn-sm btn-info' target='_blank'>
+                "<a href='" . GLPI_TELEMETRY_URI . "/reference?showmodal&uuid="
+                . self::getRegistrationUuid() . "' class='btn btn-sm btn-info' target='_blank'>
                <i class='ti ti-writing-sign me-1'></i>
                %1\$s
             </a>",

@@ -129,7 +129,7 @@ trait InventoryNetworkPort
         $this->handleUpdates();
         $this->handleCreates();
 
-        if ($this instanceof NetworkPort) {
+        if ($this instanceof \Glpi\Inventory\Asset\NetworkPort) {
             $this->handleAggregations();
         }
 

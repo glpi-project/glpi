@@ -47,7 +47,7 @@ class SearchExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('showItem', [$this, 'showItem']),
+            new TwigFunction('showItem', [$this, 'showItem'], ['is_safe' => ['html']]),
         ];
     }
 

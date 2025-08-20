@@ -53,7 +53,6 @@ use Glpi\Inventory\Asset\InventoryAsset;
 use Glpi\Inventory\Asset\InventoryNetworkPort;
 use Glpi\Inventory\Asset\NetworkCard;
 use Glpi\Inventory\Conf;
-use Glpi\Inventory\MainAsset\Printer as MainAssetPrinter;
 use Glpi\Inventory\Request;
 use NetworkEquipment;
 use Printer;
@@ -548,6 +547,13 @@ abstract class MainAsset extends InventoryAsset
     {
         $blacklist = new Blacklist();
 
+        $ruleEntity = new RuleImportEntityCollection();
+        $ruleEntity->getCollectionPart();
+        $ruleLocation = new RuleLocationCollection();
+        $ruleLocation->getCollectionPart();
+        $ruleImportAsset = new RuleImportAssetCollection();
+        $ruleImportAsset->getCollectionPart();
+
         foreach ($this->data as $key => $data) {
             $blacklist->processBlackList($data);
 
@@ -556,9 +562,6 @@ abstract class MainAsset extends InventoryAsset
 
             if (!$this->isAccessPoint($data)) {
                 $entity_input = $this->prepareEntitiesRulesInput($data, $input);
-
-                $ruleEntity = new RuleImportEntityCollection();
-                $ruleEntity->getCollectionPart();
                 $dataEntity = $ruleEntity->processAllRules($entity_input, []);
 
                 if (isset($dataEntity['_ignore_import'])) {
@@ -591,8 +594,6 @@ abstract class MainAsset extends InventoryAsset
                     }
                 }
 
-                $ruleLocation = new RuleLocationCollection();
-                $ruleLocation->getCollectionPart();
                 $dataLocation = $ruleLocation->processAllRules($input, []);
 
                 if (isset($dataLocation['locations_id']) && $dataLocation['locations_id'] != -1) {
@@ -605,9 +606,7 @@ abstract class MainAsset extends InventoryAsset
 
             //call rules on current collected data to find item
             //a callback on rulepassed() will be done if one is found.
-            $rule = new RuleImportAssetCollection();
-            $rule->getCollectionPart();
-            $datarules = $rule->processAllRules($input, [], ['class' => $this]);
+            $datarules = $ruleImportAsset->processAllRules($input, [], ['class' => $this]);
 
             if (isset($datarules['_no_rule_matches']) && $datarules['_no_rule_matches'] == '1') {
                 //no rule matched, this is a new one
@@ -879,12 +878,11 @@ abstract class MainAsset extends InventoryAsset
             //Or printer that has not changed its IP
             //do not update to prevents discoveries to remove all ports, IPs and so on found with network inventory
             if (
-                $itemtype == NetworkEquipment::getType()
-                ||
                 (
-                    $itemtype == Printer::getType()
-                && !MainAssetPrinter::needToBeUpdatedFromDiscovery($this->item, $val)
+                    $itemtype == NetworkEquipment::class
+                    || $itemtype == Printer::class
                 )
+                && !(\Glpi\Inventory\MainAsset\NetworkEquipment::needToBeUpdatedFromDiscovery($this->item, $val))
             ) {
                 //only update autoupdatesystems_id, last_inventory_update, snmpcredentials_id
                 $input = $this->handleInput($val, $this->item);

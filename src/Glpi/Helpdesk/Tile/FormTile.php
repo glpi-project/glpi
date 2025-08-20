@@ -52,6 +52,12 @@ final class FormTile extends CommonDBChild implements TileInterface
     private Form $form;
 
     #[Override]
+    public function getWeight(): int
+    {
+        return 10;
+    }
+
+    #[Override]
     public function getLabel(): string
     {
         return Form::getTypeName(1);

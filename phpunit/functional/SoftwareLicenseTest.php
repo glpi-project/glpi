@@ -415,8 +415,8 @@ class SoftwareLicenseTest extends DbTestCase
             ]);
         }
 
-        $total_count = \Item_SoftwareLicense::countForLicense($license_id) +
-            \SoftwareLicense_User::countForLicense($license_id);
+        $total_count = \Item_SoftwareLicense::countForLicense($license_id)
+            + \SoftwareLicense_User::countForLicense($license_id);
         $this->assertEquals($initial_total + 5, $total_count);
 
         $this->assertTrue($license->getFromDB($license_id));
@@ -437,8 +437,8 @@ class SoftwareLicenseTest extends DbTestCase
             'users_id' => $user_id,
         ]);
 
-        $total_count = \Item_SoftwareLicense::countForLicense($license_id) +
-            \SoftwareLicense_User::countForLicense($license_id);
+        $total_count = \Item_SoftwareLicense::countForLicense($license_id)
+            + \SoftwareLicense_User::countForLicense($license_id);
         $this->assertEquals($initial_total + 6, $total_count);
 
         // Define software for deletion at the end

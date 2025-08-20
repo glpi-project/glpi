@@ -214,10 +214,10 @@ final class QueryBuilder implements SearchInputInterface
         }
 
         $normalized_itemtype = Toolbox::getNormalizedItemtype($request["itemtype"]);
-        $dropdownname = Html::cleanId("spansearchtype$fieldname" .
-            $normalized_itemtype .
-            $prefix .
-            $num);
+        $dropdownname = Html::cleanId("spansearchtype$fieldname"
+            . $normalized_itemtype
+            . $prefix
+            . $num);
         $searchopt = [];
         if (count($actions) > 0) {
             // get already get search options
@@ -377,9 +377,9 @@ final class QueryBuilder implements SearchInputInterface
             $message = $fieldpattern['validation_message'];
 
             $field_title = __s('Criteria value');
-            echo "<input type='text' class='form-control' size='13' aria-label='" . htmlescape($field_title) . "' name='" . htmlescape($inputname) . "' value=\"" .
-                htmlescape($request['value']) . "\" pattern=\"" . htmlescape($pattern) . "\">" .
-                "<span class='invalid-tooltip'>" . htmlescape($message) . "</span>";
+            echo "<input type='text' class='form-control' size='13' aria-label='" . htmlescape($field_title) . "' name='" . htmlescape($inputname) . "' value=\""
+                . htmlescape($request['value']) . "\" pattern=\"" . htmlescape($pattern) . "\">"
+                . "<span class='invalid-tooltip'>" . htmlescape($message) . "</span>";
         }
     }
 

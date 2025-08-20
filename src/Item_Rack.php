@@ -818,8 +818,8 @@ JAVASCRIPT;
 
             $tip = "<span class='tipcontent'>";
             $tip .= "<span>
-                  <label>" .
-                  ($rear
+                  <label>"
+                  . ($rear
                      ? __s("asset rear side")
                      : __s("asset front side")) . "
                   </label>
@@ -865,8 +865,8 @@ JAVASCRIPT;
                gs-id='" . htmlescape($gs_item['id']) . "'   gs-locked='true' {$readonly_attr}
                style='background-color: " . htmlescape($bg_color) . "; color: " . htmlescape($fg_color) . ";'>
             <div class='grid-stack-item-content' style='" . htmlescape($fg_color_s) . " " . htmlescape($img_s) . "'>
-               $icon" .
-               (!empty($gs_item['url'])
+               $icon"
+               . (!empty($gs_item['url'])
                   ? "<a href='" . htmlescape($gs_item['url']) . "' class='itemrack_name' style='" . htmlescape($fg_color_s) . "'>" . htmlescape($gs_item['name']) . "</a>"
                   : "<span class='itemrack_name'>" . htmlescape($gs_item['name']) . "</span>") . "
                <a href='" . htmlescape($gs_item['rel_url']) . "' class='edit_rack_item'>
@@ -1027,8 +1027,8 @@ JAVASCRIPT;
              * @var int $required_units
              */
             if (
-                $position > $rack->fields['number_units'] ||
-                $position + $required_units  > $rack->fields['number_units'] + 1
+                $position > $rack->fields['number_units']
+                || $position + $required_units  > $rack->fields['number_units'] + 1
             ) {
                 $error_detected[] = __('Item is out of rack bounds');
             } elseif (!count($error_detected)) {

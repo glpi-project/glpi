@@ -182,8 +182,8 @@ class NotificationTargetPlanningRecall extends NotificationTarget
             $this->data['##recall.item.url##']
                   = $this->formatURL(
                       $options['additionnaloption']['usertype'],
-                      $target_object->getType() .
-                      "_" . $target_object->getID()
+                      $target_object->getType()
+                      . "_" . $target_object->getID()
                   );
         }
         $this->data['##recall.item.name##'] = '';

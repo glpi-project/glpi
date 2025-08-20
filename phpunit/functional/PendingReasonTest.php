@@ -50,6 +50,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
 use ProblemTask;
 use SolutionTemplate;
+use Symfony\Component\DomCrawler\Crawler;
 use Ticket;
 use TicketTask;
 
@@ -500,13 +501,7 @@ class PendingReasonTest extends DbTestCase
         $this->login();
         $entity = getItemByTypeName('Entity', '_test_root_entity', true);
 
-        // Create a pending reason and a ticket for our tests
-        $pending_reason = $this->createItem('PendingReason', [
-            'entities_id'                => $entity,
-            'name'                       => 'Pending reason 1',
-            'followup_frequency'         => 604800,
-            'followups_before_resolution' => 3,
-        ]);
+        $pending_reason = getItemByTypeName(PendingReason::class, 'needupdate_pendingreason');
         $ticket = $this->createItem('Ticket', [
             'name'                => 'Ticket',
             'content'             => 'Ticket',
@@ -517,7 +512,7 @@ class PendingReasonTest extends DbTestCase
 
         // Set the ticket as pending with a reason
         $this->createItem('ITILFollowup', [
-            'itemtype'                   => $ticket->getType(),
+            'itemtype'                   => Ticket::class,
             'items_id'                   => $ticket->getID(),
             'content'                    => 'Followup with pending reason',
             'pending'                    => true,
@@ -534,7 +529,7 @@ class PendingReasonTest extends DbTestCase
 
         // Add a new followup, keeping the pending state
         $this->createItem('ITILFollowup', [
-            'itemtype'                   => $ticket->getType(),
+            'itemtype'                   => Ticket::class,
             'items_id'                   => $ticket->getID(),
             'content'                    => 'Followup that should not remove the pending reason',
             'pending'                    => true,
@@ -548,9 +543,9 @@ class PendingReasonTest extends DbTestCase
 
         // Add a new followup, removing the pending state
         $this->createItem('ITILFollowup', [
-            'itemtype'                   => $ticket->getType(),
+            'itemtype'                   => Ticket::class,
             'items_id'                   => $ticket->getID(),
-            'content'                    => 'Followup that should not remove the pending reason',
+            'content'                    => 'Followup that should remove the pending reason',
             'pending'                    => false,
         ], ['pending']);
         $p_item = PendingReason_Item::getForItem($ticket);
@@ -566,13 +561,7 @@ class PendingReasonTest extends DbTestCase
         $this->login();
         $entity = getItemByTypeName('Entity', '_test_root_entity', true);
 
-        // Create a pending reason and a ticket for our tests
-        $pending_reason = $this->createItem('PendingReason', [
-            'entities_id'                   => $entity,
-            'name'                          => 'Pending reason 1',
-            'followup_frequency'            => 604800,
-            'followups_before_resolution'   => 3,
-        ]);
+        $pending_reason = getItemByTypeName(PendingReason::class, 'needupdate_pendingreason', true);
 
         foreach (
             [
@@ -596,14 +585,14 @@ class PendingReasonTest extends DbTestCase
                 'items_id'                      => $item->getID(),
                 'content'                       => 'Followup with pending reason',
                 'pending'                       => true,
-                'pendingreasons_id'             => $pending_reason->getID(),
+                'pendingreasons_id'             => $pending_reason,
                 'followup_frequency'            => 604800,
                 'followups_before_resolution'   => 3,
             ], ['pending', 'pendingreasons_id', 'followup_frequency', 'followups_before_resolution']);
 
             // Check that pending reason is applied to parent item
             $p_item = PendingReason_Item::getForItem($item);
-            $this->assertEquals($pending_reason->getID(), $p_item->fields['pendingreasons_id']);
+            $this->assertEquals($pending_reason, $p_item->fields['pendingreasons_id']);
             $this->assertEquals(604800, $p_item->fields['followup_frequency']);
             $this->assertEquals(3, $p_item->fields['followups_before_resolution']);
             $this->assertEquals($status, $p_item->fields['previous_status']);
@@ -1387,20 +1376,7 @@ class PendingReasonTest extends DbTestCase
             'items_id' => 7, // Writer
         ]);
 
-        $solutiontemplate = new SolutionTemplate();
-        $solutiontemplates_id = $solutiontemplate->add([
-            'name' => __FUNCTION__,
-            'content' => __FUNCTION__,
-            'entities_id' => $entities_id,
-        ]);
-        $pending_reason = new PendingReason();
-        $pending_reason->add([
-            'name' => __FUNCTION__,
-            'entities_id' => $entities_id,
-            'followup_frequency' => DAY_TIMESTAMP,
-            'followups_before_resolution' => 3,
-            'solutiontemplates_id' => $solutiontemplates_id,
-        ]);
+        $pending_reason = getItemByTypeName(PendingReason::class, 'needupdate_pendingreason');
 
         $this->login();
         $ticket = new Ticket();
@@ -1438,5 +1414,39 @@ class PendingReasonTest extends DbTestCase
 
         PendingReason_Item::deleteForItem($ticket);
         $this->assertCount(1, getAllDataFromTable('glpi_queuednotifications', ['notificationtemplates_id' => $remove_template_id]));
+    }
+
+    public function testPendingReasonsMessages()
+    {
+        $this->login();
+
+        $ticket = getItemByTypeName(Ticket::class, '_ticket01');
+        $this->createItem(TicketTask::class, [
+            'tickets_id' => $ticket->getID(),
+            'content' => 'Test task content',
+            'pending' => 1,
+            'pendingreasons_id' => getItemByTypeName(PendingReason::class, 'needupdate_pendingreason', true),
+            'followup_frequency' => DAY_TIMESTAMP,
+            'followups_before_resolution' => 3,
+        ], ['pending', 'pendingreasons_id', 'followup_frequency', 'followups_before_resolution']);
+        $ticket->getFromDB($ticket->getID());
+        $this->assertEquals(CommonITILObject::WAITING, $ticket->fields['status']);
+        ob_start();
+        $ticket->showForm($ticket->getID());
+        $content = ob_get_clean();
+        $crawler = new Crawler($content);
+        $badges_text = $crawler->filter('.timeline-item.ITILTask:not(#new-TicketTask-block) .bg-blue-lt')->innerText();
+        $this->assertStringContainsString('Pending:', $badges_text);
+        $ticket->update([
+            'id' => $ticket->getID(),
+            'status' => CommonITILObject::INCOMING,
+        ]);
+        $this->assertEquals(CommonITILObject::INCOMING, $ticket->fields['status']);
+        ob_start();
+        $ticket->showForm($ticket->getID());
+        $content = ob_get_clean();
+        $crawler = new Crawler($content);
+        $badges_text = $crawler->filter('.timeline-item.ITILTask:not(#new-TicketTask-block) .bg-transparent')->innerText();
+        $this->assertStringContainsString('Done:', $badges_text);
     }
 }

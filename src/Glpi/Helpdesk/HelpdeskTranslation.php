@@ -122,7 +122,7 @@ final class HelpdeskTranslation extends ItemTranslation implements ProvideTransl
     #[Override]
     public function listTranslationsHandlers(): array
     {
-        $tiles_manager = new TilesManager();
+        $tiles_manager = TilesManager::getInstance();
         $entities = array_map(
             fn($entity_id) => Entity::getById($entity_id),
             array_keys((new Entity())->find())
@@ -141,7 +141,7 @@ final class HelpdeskTranslation extends ItemTranslation implements ProvideTransl
 
     public static function getTranslationsForHelpdesk(): array
     {
-        $tiles_manager = new TilesManager();
+        $tiles_manager = TilesManager::getInstance();
         $entities = array_map(
             fn($entity_id) => Entity::getById($entity_id),
             array_keys((new Entity())->find())
@@ -184,5 +184,12 @@ final class HelpdeskTranslation extends ItemTranslation implements ProvideTransl
     protected function getTranslationsHandlersForStats(): array
     {
         return $this->listTranslationsHandlers();
+    }
+
+    public static function getSystemSQLCriteria(?string $tablename = null): array
+    {
+        return [
+            'itemtype' => array_map(static fn($tile) => $tile::class, (TilesManager::getInstance())->getTileTypes()),
+        ];
     }
 }

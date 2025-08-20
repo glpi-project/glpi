@@ -110,8 +110,8 @@ class ProjectTaskTest extends DbTestCase
         $this->hasSessionMessages(
             WARNING,
             [
-                "The user $usr_str is busy at the selected timeframe.<br/>- Project task: from 2019-08-13 00:00 to 2019-08-14 00:00:<br/><a href='" .
-            $ptask->getFormURLWithID($task_id) . "'>first test, whole period</a><br/>",
+                "The user $usr_str is busy at the selected timeframe.<br/>- Project task: from 2019-08-13 00:00 to 2019-08-14 00:00:<br/><a href='"
+            . $ptask->getFormURLWithID($task_id) . "'>first test, whole period</a><br/>",
             ]
         );
         $this->assertGreaterThan(0, $tid);
@@ -185,8 +185,8 @@ class ProjectTaskTest extends DbTestCase
         $this->hasSessionMessages(
             WARNING,
             [
-                "The user $usr_str is busy at the selected timeframe.<br/>- Project task: from 2019-08-11 00:00 to 2019-08-12 00:00:<br/><a href='" .
-            $ptask->getFormURLWithID($task_id) . "'>first test, whole period</a><br/>",
+                "The user $usr_str is busy at the selected timeframe.<br/>- Project task: from 2019-08-11 00:00 to 2019-08-12 00:00:<br/><a href='"
+            . $ptask->getFormURLWithID($task_id) . "'>first test, whole period</a><br/>",
             ]
         );
         $this->assertGreaterThan(0, $ttask_id);

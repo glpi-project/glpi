@@ -393,8 +393,8 @@ class Database extends CommonDBChild
         $canedit = $instance->canEdit($ID);
 
         if ($canedit) {
-            echo "<div class='center firstbloc'>" .
-            "<a class='btn btn-primary' href='" . htmlescape(static::getFormURL()) . "?databaseinstances_id=$ID'>";
+            echo "<div class='center firstbloc'>"
+            . "<a class='btn btn-primary' href='" . htmlescape(static::getFormURL()) . "?databaseinstances_id=$ID'>";
             echo __s('Add a database');
             echo "</a></div>\n";
         }
@@ -471,8 +471,8 @@ class Database extends CommonDBChild
         $links = [];
         $label = htmlescape(DatabaseInstance::getTypeName(Session::getPluralNumber()));
         if (static::canView()) {
-            $insts = "<i class=\"ti ti-database-import\" title=\"$label\"" .
-            "></i><span class='d-none d-xxl-block'>$label</span>";
+            $insts = "<i class=\"ti ti-database-import\" title=\"$label\""
+            . "></i><span class='d-none d-xxl-block'>$label</span>";
             $links[$insts] = DatabaseInstance::getSearchURL(false);
         }
         if (count($links)) {

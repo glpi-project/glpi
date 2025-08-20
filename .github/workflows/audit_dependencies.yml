@@ -20,6 +20,7 @@ jobs:
       matrix:
         include:
           - {branch: "10.0/bugfixes", php-version: "7.4"}
+          - {branch: "11.0/bugfixes", php-version: "8.2"}
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"

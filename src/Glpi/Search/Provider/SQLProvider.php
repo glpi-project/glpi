@@ -346,9 +346,9 @@ final class SQLProvider implements SearchProviderInterface
                 $_table_add_table = $table . ($meta ? $addtable2 : $addtable);
                 $SELECT = [
                     QueryFunction::floor(
-                        expression: new QueryExpression(QueryFunction::sum("{$_table_add_table}.{$field}") . ' * ' .
-                            QueryFunction::count("{$_table_add_table}.id", true) . ' / ' .
-                            QueryFunction::count("{$_table_add_table}.id")),
+                        expression: new QueryExpression(QueryFunction::sum("{$_table_add_table}.{$field}") . ' * '
+                            . QueryFunction::count("{$_table_add_table}.id", true) . ' / '
+                            . QueryFunction::count("{$_table_add_table}.id")),
                         alias: $NAME
                     ),
                     QueryFunction::min("{$_table_add_table}.{$field}", "{$NAME}_min"),
@@ -784,30 +784,30 @@ final class SQLProvider implements SearchProviderInterface
                     $searchopt
                         = SearchOption::getOptionsForItemtype($itemtype);
                     $requester_table
-                        = '`glpi_tickets_users_' .
-                        self::computeComplexJoinID($searchopt[4]['joinparams']['beforejoin']
+                        = '`glpi_tickets_users_'
+                        . self::computeComplexJoinID($searchopt[4]['joinparams']['beforejoin']
                         ['joinparams']) . '`';
                     $requestergroup_table
-                        = '`glpi_groups_tickets_' .
-                        self::computeComplexJoinID($searchopt[71]['joinparams']['beforejoin']
+                        = '`glpi_groups_tickets_'
+                        . self::computeComplexJoinID($searchopt[71]['joinparams']['beforejoin']
                         ['joinparams']) . '`';
 
                     $assign_table
-                        = '`glpi_tickets_users_' .
-                        self::computeComplexJoinID($searchopt[5]['joinparams']['beforejoin']
+                        = '`glpi_tickets_users_'
+                        . self::computeComplexJoinID($searchopt[5]['joinparams']['beforejoin']
                         ['joinparams']) . '`';
                     $assigngroup_table
-                        = '`glpi_groups_tickets_' .
-                        self::computeComplexJoinID($searchopt[8]['joinparams']['beforejoin']
+                        = '`glpi_groups_tickets_'
+                        . self::computeComplexJoinID($searchopt[8]['joinparams']['beforejoin']
                         ['joinparams']) . '`';
 
                     $observer_table
-                        = '`glpi_tickets_users_' .
-                        self::computeComplexJoinID($searchopt[66]['joinparams']['beforejoin']
+                        = '`glpi_tickets_users_'
+                        . self::computeComplexJoinID($searchopt[66]['joinparams']['beforejoin']
                         ['joinparams']) . '`';
                     $observergroup_table
-                        = '`glpi_groups_tickets_' .
-                        self::computeComplexJoinID($searchopt[65]['joinparams']['beforejoin']
+                        = '`glpi_groups_tickets_'
+                        . self::computeComplexJoinID($searchopt[65]['joinparams']['beforejoin']
                         ['joinparams']) . '`';
 
                     $condition = "(";
@@ -908,25 +908,25 @@ final class SQLProvider implements SearchProviderInterface
 
                     $searchopt       = SearchOption::getOptionsForItemtype($itemtype);
                     if (Session::haveRight("$right", $itemtype::READMY)) {
-                        $requester_table      = '`glpi_' . $table . '_users_' .
-                            self::computeComplexJoinID($searchopt[4]['joinparams']
+                        $requester_table      = '`glpi_' . $table . '_users_'
+                            . self::computeComplexJoinID($searchopt[4]['joinparams']
                             ['beforejoin']['joinparams']) . '`';
-                        $requestergroup_table = $groupetable .
-                            self::computeComplexJoinID($searchopt[71]['joinparams']
-                            ['beforejoin']['joinparams']) . '`';
-
-                        $observer_table       = '`glpi_' . $table . '_users_' .
-                            self::computeComplexJoinID($searchopt[66]['joinparams']
-                            ['beforejoin']['joinparams']) . '`';
-                        $observergroup_table  = $groupetable .
-                            self::computeComplexJoinID($searchopt[65]['joinparams']
+                        $requestergroup_table = $groupetable
+                            . self::computeComplexJoinID($searchopt[71]['joinparams']
                             ['beforejoin']['joinparams']) . '`';
 
-                        $assign_table         = '`glpi_' . $table . '_users_' .
-                            self::computeComplexJoinID($searchopt[5]['joinparams']
+                        $observer_table       = '`glpi_' . $table . '_users_'
+                            . self::computeComplexJoinID($searchopt[66]['joinparams']
                             ['beforejoin']['joinparams']) . '`';
-                        $assigngroup_table    = $groupetable .
-                            self::computeComplexJoinID($searchopt[8]['joinparams']
+                        $observergroup_table  = $groupetable
+                            . self::computeComplexJoinID($searchopt[65]['joinparams']
+                            ['beforejoin']['joinparams']) . '`';
+
+                        $assign_table         = '`glpi_' . $table . '_users_'
+                            . self::computeComplexJoinID($searchopt[5]['joinparams']
+                            ['beforejoin']['joinparams']) . '`';
+                        $assigngroup_table    = $groupetable
+                            . self::computeComplexJoinID($searchopt[8]['joinparams']
                             ['beforejoin']['joinparams']) . '`';
 
                         $criteria['OR'][] = [
@@ -1899,8 +1899,8 @@ final class SQLProvider implements SearchProviderInterface
                             }
                             $regs[1] .= $regs[2];
                             return [
-                                new QueryExpression("$date_computation " . $regs[1] . " " .
-                                    QueryFunction::dateAdd(
+                                new QueryExpression("$date_computation " . $regs[1] . " "
+                                    . QueryFunction::dateAdd(
                                         date: QueryFunction::now(),
                                         interval: new QueryExpression($numeric_matches[1] . $numeric_matches[2]),
                                         interval_unit: $search_unit
@@ -4022,8 +4022,8 @@ final class SQLProvider implements SearchProviderInterface
                                 && isset($searchopt[$ID]['joinparams']['beforejoin']['table'])
                                 && in_array($searchopt[$ID]['joinparams']['beforejoin']['table'], ['glpi_tickets_users', 'glpi_changes_users', 'glpi_problems_users'])
                             ) { // For tickets_users
-                                $ticket_user_table = $searchopt[$ID]['joinparams']['beforejoin']['table'] . "_" .
-                                    self::computeComplexJoinID($searchopt[$ID]['joinparams']['beforejoin']['joinparams']);
+                                $ticket_user_table = $searchopt[$ID]['joinparams']['beforejoin']['table'] . "_"
+                                    . self::computeComplexJoinID($searchopt[$ID]['joinparams']['beforejoin']['joinparams']);
                                 $addaltemail = ",
                                 IFNULL(`$ticket_user_table`.`alternative_email`, '')";
                             }
@@ -4312,8 +4312,8 @@ final class SQLProvider implements SearchProviderInterface
             // request currentuser for SQL supervision, not displayed
             $query_num = "SELECT $count,
                               " . $DB->quote($_SESSION['glpiname']) . " AS currentuser
-                       FROM `$itemtable`" .
-                $COMMONLEFTJOIN;
+                       FROM `$itemtable`"
+                . $COMMONLEFTJOIN;
 
             $first     = true;
 
@@ -4374,8 +4374,8 @@ final class SQLProvider implements SearchProviderInterface
                                            AND `$reftable`.`itemtype` = '{$DB->escape($ctype)}')";
 
                             $query_num = str_replace(
-                                "FROM `" .
-                                $CFG_GLPI["union_search_type"][$data['itemtype']] . "`",
+                                "FROM `"
+                                . $CFG_GLPI["union_search_type"][$data['itemtype']] . "`",
                                 $replace,
                                 $tmpquery
                             );
@@ -4445,9 +4445,9 @@ final class SQLProvider implements SearchProviderInterface
                     $tmpquery = "";
                     // AllAssets case
                     if ($data['itemtype'] == AllAssets::getType()) {
-                        $tmpquery = $SELECT . ", '{$DB->escape($ctype)}' AS TYPE " .
-                            $FROM .
-                            $WHERE;
+                        $tmpquery = $SELECT . ", '{$DB->escape($ctype)}' AS TYPE "
+                            . $FROM
+                            . $WHERE;
 
                         $system_criteria_sql = self::getMainItemtypeSystemSQLCriteria($ctype);
                         if ($system_criteria_sql !== '') {
@@ -4466,8 +4466,8 @@ final class SQLProvider implements SearchProviderInterface
                             $tmpquery .= " AND `$ctable`.`is_template` = 0 ";
                         }
 
-                        $tmpquery .= $GROUPBY .
-                            $HAVING;
+                        $tmpquery .= $GROUPBY
+                            . $HAVING;
 
                         // Replace 'asset_types' by itemtype table name
                         $tmpquery = str_replace(
@@ -4487,9 +4487,9 @@ final class SQLProvider implements SearchProviderInterface
 
                         $tmpquery = $SELECT . ", '{$DB->escape($ctype)}' AS TYPE,
                                       `$reftable`.`id` AS refID, " . "
-                                      `$ctable`.`entities_id` AS ENTITY " .
-                            $FROM .
-                            $WHERE;
+                                      `$ctable`.`entities_id` AS ENTITY "
+                            . $FROM
+                            . $WHERE;
                         if ($data['item']->maybeDeleted()) {
                             $tmpquery = str_replace(
                                 "`" . $CFG_GLPI["union_search_type"][$data['itemtype']] . "`.
@@ -4504,8 +4504,8 @@ final class SQLProvider implements SearchProviderInterface
                                  ON (`$reftable`.`items_id`=`$ctable`.`id`" . "
                                      AND `$reftable`.`itemtype` = '{$DB->escape($ctype)}')";
                         $tmpquery = str_replace(
-                            "FROM `" .
-                            $CFG_GLPI["union_search_type"][$data['itemtype']] . "`",
+                            "FROM `"
+                            . $CFG_GLPI["union_search_type"][$data['itemtype']] . "`",
                             $replace,
                             $tmpquery
                         );
@@ -4563,8 +4563,8 @@ final class SQLProvider implements SearchProviderInterface
                 Profiler::getInstance()->stop('SQLProvider::constructSQL');
                 return;
             }
-            $QUERY .= str_replace($CFG_GLPI["union_search_type"][$data['itemtype']] . ".", "", $ORDER) .
-                $LIMIT;
+            $QUERY .= str_replace($CFG_GLPI["union_search_type"][$data['itemtype']] . ".", "", $ORDER)
+                . $LIMIT;
         } else {
             $system_criteria_sql = self::getMainItemtypeSystemSQLCriteria($data['itemtype']);
             if ($system_criteria_sql !== '') {
@@ -4580,13 +4580,13 @@ final class SQLProvider implements SearchProviderInterface
                 'ORDER' => $ORDER,
                 'LIMIT' => $LIMIT,
             ];
-            $QUERY = $SELECT .
-                $FROM .
-                $WHERE .
-                $GROUPBY .
-                $HAVING .
-                $ORDER .
-                $LIMIT;
+            $QUERY = $SELECT
+                . $FROM
+                . $WHERE
+                . $GROUPBY
+                . $HAVING
+                . $ORDER
+                . $LIMIT;
         }
         $data['sql']['search'] = $QUERY;
         Profiler::getInstance()->stop('SQLProvider::constructSQL');
@@ -5187,9 +5187,9 @@ final class SQLProvider implements SearchProviderInterface
             if ($error_no == 1116) { // Too many tables; MySQL can only use 61 tables in a join
                 echo Search::showError(
                     $data['search']['display_type'],
-                    __("'All' criterion is not usable with this object list, " .
-                        "sql query fails (too many tables). " .
-                        "Please use 'Items seen' criterion instead")
+                    __("'All' criterion is not usable with this object list, "
+                        . "sql query fails (too many tables). "
+                        . "Please use 'Items seen' criterion instead")
                 );
             }
         }
@@ -5653,8 +5653,8 @@ final class SQLProvider implements SearchProviderInterface
 
                 case "glpi_documenttypes.icon":
                     if (!empty($data[$ID][0]['name'])) {
-                        return "<img class='middle' alt='' src='" . $CFG_GLPI["typedoc_icon_dir"] . "/" .
-                            $data[$ID][0]['name'] . "'>";
+                        return "<img class='middle' alt='' src='" . $CFG_GLPI["typedoc_icon_dir"] . "/"
+                            . $data[$ID][0]['name'] . "'>";
                     }
                     return '';
 
@@ -5724,8 +5724,8 @@ final class SQLProvider implements SearchProviderInterface
                             $options['reset'] = 'reset';
 
                             $out  = "<a id='problem$itemtype" . $data['id'] . "' ";
-                            $out .= "href=\"" . $CFG_GLPI["root_doc"] . "/front/problem.php?" .
-                                Toolbox::append_params($options, '&amp;') . "\">";
+                            $out .= "href=\"" . $CFG_GLPI["root_doc"] . "/front/problem.php?"
+                                . Toolbox::append_params($options, '&amp;') . "\">";
                             $out .= \htmlescape($data[$ID][0]['name']) . "</a>";
                             return $out;
                         }
@@ -5785,8 +5785,8 @@ final class SQLProvider implements SearchProviderInterface
                             $options['reset'] = 'reset';
 
                             $out  = "<a id='ticket$itemtype" . $data['id'] . "' ";
-                            $out .= "href=\"" . $CFG_GLPI["root_doc"] . "/front/ticket.php?" .
-                                Toolbox::append_params($options, '&amp;') . "\">";
+                            $out .= "href=\"" . $CFG_GLPI["root_doc"] . "/front/ticket.php?"
+                                . Toolbox::append_params($options, '&amp;') . "\">";
                             $out .= \htmlescape($data[$ID][0]['name']) . "</a>";
                             return $out;
                         }
@@ -6030,21 +6030,21 @@ final class SQLProvider implements SearchProviderInterface
 
                 case 'glpi_changes.status':
                     $status = Change::getStatus($data[$ID][0]['name']);
-                    return "<span class='text-nowrap'>" .
-                        Change::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status" .
-                        "</span>";
+                    return "<span class='text-nowrap'>"
+                        . Change::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status"
+                        . "</span>";
 
                 case 'glpi_problems.status':
                     $status = Problem::getStatus($data[$ID][0]['name']);
-                    return "<span class='text-nowrap'>" .
-                        Problem::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status" .
-                        "</span>";
+                    return "<span class='text-nowrap'>"
+                        . Problem::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status"
+                        . "</span>";
 
                 case 'glpi_tickets.status':
                     $status = Ticket::getStatus($data[$ID][0]['name']);
-                    return "<span class='text-nowrap'>" .
-                        Ticket::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status" .
-                        "</span>";
+                    return "<span class='text-nowrap'>"
+                        . Ticket::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status"
+                        . "</span>";
 
                 case 'glpi_projectstates.name':
                     $name = $data[$ID][0]['name'];
@@ -6234,9 +6234,9 @@ final class SQLProvider implements SearchProviderInterface
 
                 case 'glpi_reservationitems._virtual':
                     if ($data[$ID][0]['is_active']) {
-                        return "<a href='reservation.php?reservationitems_id=" .
-                            $data["refID"] . "' title=\"" . __s('See planning') . "\">" .
-                            "<i class='ti ti-calendar'></i><span class='sr-only'>" . __('See planning') . "</span></a>";
+                        return "<a href='reservation.php?reservationitems_id="
+                            . $data["refID"] . "' title=\"" . __s('See planning') . "\">"
+                            . "<i class='ti ti-calendar'></i><span class='sr-only'>" . __('See planning') . "</span></a>";
                     } else {
                         return '';
                     }
@@ -6425,9 +6425,9 @@ final class SQLProvider implements SearchProviderInterface
                                 $name = \htmlescape($name);
                             }
 
-                            $out  .= "<a id='" . $linkitemtype . "_" . $data['id'] . "_" .
-                                $data[$ID][$k]['id'] . "' href='$page'>" .
-                                $name . "</a>";
+                            $out  .= "<a id='" . $linkitemtype . "_" . $data['id'] . "_"
+                                . $data[$ID][$k]['id'] . "' href='$page'>"
+                                . $name . "</a>";
                         }
                     }
                     return $out;

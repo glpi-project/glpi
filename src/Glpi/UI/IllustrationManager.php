@@ -77,11 +77,11 @@ final class IllustrationManager
         $this->icons_definition_file = $icons_definition_file ?? GLPI_ROOT
             . '/public/lib/glpi-project/illustrations/icons.json'
         ;
-        $this->icons_sprites_path = $icons_sprites_path ??
-            '/lib/glpi-project/illustrations/glpi-illustrations-icons.svg'
+        $this->icons_sprites_path = $icons_sprites_path
+            ?? '/lib/glpi-project/illustrations/glpi-illustrations-icons.svg'
         ;
-        $this->scenes_gradient_sprites_path = $scenes_gradient_sprites_path ??
-            '/lib/glpi-project/illustrations/glpi-illustrations-scenes-gradient.svg'
+        $this->scenes_gradient_sprites_path = $scenes_gradient_sprites_path
+            ?? '/lib/glpi-project/illustrations/glpi-illustrations-scenes-gradient.svg'
         ;
 
         $this->checkIconFile($this->icons_definition_file);

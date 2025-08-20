@@ -205,7 +205,7 @@ class Contact extends CommonDBTM
 
         if ($ID > 0) {
             $vcard_lbl = __s('Vcard');
-            $vcard_url = htmlspecialchars(self::getFormURLWithID($ID) . "&getvcard=1");
+            $vcard_url = htmlescape(self::getFormURLWithID($ID) . "&getvcard=1");
             $vcard_btn = <<<HTML
             <a href="{$vcard_url}" target="_blank"
                      class="btn btn-icon btn-sm btn-ghost-secondary"
@@ -227,7 +227,7 @@ HTML;
 
         if ($isadmin) {
             $actions['Contact_Supplier' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-               = "<i class='" . Supplier::getIcon() . "'></i>" . _sx('button', 'Add a supplier');
+               = "<i class='" . htmlescape(Supplier::getIcon()) . "'></i>" . _sx('button', 'Add a supplier');
         }
 
         return $actions;

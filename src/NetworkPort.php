@@ -707,12 +707,12 @@ class NetworkPort extends CommonDBChild
                 DisplayPreference::GENERAL,
             ])
         ) {
-            $search_config_top .= "<span class='ti ti-table-row cursor-pointer' title='" .
-            __s('Select default items to show') . "' data-bs-toggle='modal' data-bs-target='#search_config_top'>
+            $search_config_top .= "<span class='ti ti-table-row cursor-pointer' title='"
+            . __s('Select default items to show') . "' data-bs-toggle='modal' data-bs-target='#search_config_top'>
             <span class='sr-only'>" . __s('Select default items to show') . "</span></span>";
 
-            $pref_url = $CFG_GLPI["root_doc"] . "/front/displaypreference.form.php?itemtype=" .
-                     self::getType();
+            $pref_url = $CFG_GLPI["root_doc"] . "/front/displaypreference.form.php?itemtype="
+                     . self::getType();
             $search_config_top .= Ajax::createIframeModalWindow(
                 'search_config_top',
                 $pref_url,

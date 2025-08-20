@@ -35,14 +35,15 @@
 
 namespace Glpi\Form\QuestionType;
 
+use Config;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionHandler\RichTextConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
+use Glpi\Form\FormTranslation;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Glpi\ItemTranslation\Context\TranslationHandler;
-use Glpi\ItemTranslation\ItemTranslation;
 use Override;
 use Session;
 
@@ -143,7 +144,7 @@ TWIG;
     public function renderEndUserTemplate(Question $question): string
     {
         // TODO: handle required
-        $translated_default_value = ItemTranslation::translate(
+        $translated_default_value = FormTranslation::translate(
             $question,
             Question::TRANSLATION_KEY_DEFAULT_VALUE,
             1
@@ -157,9 +158,7 @@ TWIG;
                 "",
                 {
                     'enable_richtext': true,
-                    'enable_images'  : is_authenticated,
-                    'editor_height'  : "100",
-                    'rows'           : 1,
+                    'enable_images'  : enable_images,
                     'init'           : question is not null ? true   : false,
                     'is_horizontal'  : false,
                     'full_width'     : true,
@@ -173,7 +172,7 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'question'      => $question,
             'default_value' => $translated_default_value,
-            'is_authenticated' => Session::isAuthenticated(),
+            'enable_images' => Session::isAuthenticated() || Config::allowUnauthenticatedUploads(),
         ]);
     }
 

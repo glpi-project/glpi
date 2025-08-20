@@ -910,8 +910,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                         'general' => [
                             $fn_get_rights(SoftwareLicense::class, 'central'),
                             $fn_get_rights(Contact::class, 'central', [
-                                'label' => _n('Contact', 'Contacts', Session::getPluralNumber()) . " / " .
-                                    _n('Supplier', 'Suppliers', Session::getPluralNumber()),
+                                'label' => _n('Contact', 'Contacts', Session::getPluralNumber()) . " / "
+                                    . _n('Supplier', 'Suppliers', Session::getPluralNumber()),
                             ]),
                             $fn_get_rights(Document::class, 'central'),
                             $fn_get_rights(Contract::class, 'central'),
@@ -1772,8 +1772,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'id'                 => '143',
             'table'              => 'glpi_profilerights',
             'field'              => 'rights',
-            'name'               => _n('Contact', 'Contacts', Session::getPluralNumber()) . " / " .
-                _n('Supplier', 'Suppliers', Session::getPluralNumber()),
+            'name'               => _n('Contact', 'Contacts', Session::getPluralNumber()) . " / "
+                . _n('Supplier', 'Suppliers', Session::getPluralNumber()),
             'datatype'           => 'right',
             'rightclass'         => Contact::class,
             'rightname'          => 'contact_enterprise',
@@ -3699,8 +3699,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             }
             $out                        .= $label . '&nbsp;';
             $cb_options['name']          = $param['field'] . '[' . $element . ']';
-            $cb_options['id']            = Html::cleanId('checkbox_linear_' . $cb_options['name'] .
-                                                      '_' . $param['rand']);
+            $cb_options['id']            = Html::cleanId('checkbox_linear_' . $cb_options['name']
+                                                      . '_' . $param['rand']);
             $cb_options['zero_on_empty'] = $param['zero_on_empty'];
 
             $cb_options['checked']       = $param['check_method'](
@@ -3723,8 +3723,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             if ($nb_checked > (count($elements) / 2)) {
                 $cb_options['checked'] = true;
             }
-            $out .= "&nbsp;-&nbsp;<i><b>" . __s('Select/unselect all') . "</b></i>&nbsp;" .
-                  Html::getCheckbox($cb_options);
+            $out .= "&nbsp;-&nbsp;<i><b>" . __s('Select/unselect all') . "</b></i>&nbsp;"
+                  . Html::getCheckbox($cb_options);
         }
 
         if (!$param['display']) {
@@ -3788,7 +3788,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
     private function showHelpdeskHomeConfig(): void
     {
-        $tiles_manager = new TilesManager();
+        $tiles_manager = TilesManager::getInstance();
         $tiles_manager->showConfigFormForItem($this);
     }
 

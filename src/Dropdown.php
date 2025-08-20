@@ -79,6 +79,7 @@ class Dropdown
      * @param array  $options   array of possible options:
      *    - name                 : string / name of the select (default is depending itemtype)
      *    - value                : integer / preselected value (default -1)
+     *    - required             : boolean / is the field required (default false)
      *    - comments             : boolean / is the comments displayed near the dropdown (default true)
      *    - toadd                : array / array of specific values to add at the begining
      *    - entity               : integer or array / restrict to a defined entity or array of entities
@@ -157,6 +158,7 @@ class Dropdown
         $params['multiple']             = false;
         $params['init']                 = true;
         $params['aria_label']           = '';
+        $params['required']             = false;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -270,6 +272,7 @@ class Dropdown
             $params['condition'] = static::addNewCondition($params['condition']);
         }
 
+        // parameters for Html::jsAjaxDropdown
         $p = [
             'width'                => $params['width'],
             'itemtype'             => $itemtype,
@@ -348,52 +351,54 @@ class Dropdown
                 'display'   => false,
             ];
 
-            if ($item->canView()) {
-                if (
-                    $params['value']
-                    && $item->getFromDB($params['value'])
-                    && $item->canViewItem()
-                ) {
-                    $options_tooltip['link']       = $item->getLinkURL();
+            if (Session::getCurrentInterface() === 'central') {
+                if ($item::canView()) {
+                    if (
+                        $params['value']
+                        && $item->getFromDB($params['value'])
+                        && $item->canViewItem()
+                    ) {
+                        $options_tooltip['link'] = $item->getLinkURL();
+                    } else {
+                        $options_tooltip['link'] = $item::getSearchURL();
+                    }
                 } else {
-                    $options_tooltip['link']       = $item->getSearchURL();
+                    $options_tooltip['awesome-class'] = 'btn btn-outline-secondary fa-info';
                 }
-            } else {
-                $options_tooltip['awesome-class'] = 'btn btn-outline-secondary fa-info';
-            }
 
-            if (empty($comment)) {
-                $comment = htmlescape(
-                    Toolbox::ucfirst(
-                        sprintf(
-                            __('Show %1$s'),
-                            $item::getTypeName(Session::getPluralNumber())
+                if (empty($comment)) {
+                    $comment = htmlescape(
+                        Toolbox::ucfirst(
+                            sprintf(
+                                __('Show %1$s'),
+                                $item::getTypeName(Session::getPluralNumber())
+                            )
                         )
-                    )
+                    );
+                }
+
+                $paramscomment = [];
+                if ($item::canView()) {
+                    $paramscomment['withlink'] = $link_id;
+                }
+
+                // Comment icon
+                $comment_icon = Ajax::updateItemOnSelectEvent(
+                    $field_id,
+                    $comment_id,
+                    $CFG_GLPI["root_doc"] . "/ajax/comments.php",
+                    $paramscomment,
+                    false
                 );
+                $options_tooltip['link_class'] = 'btn btn-outline-secondary';
+                $comment_icon .= Html::showToolTip($comment, $options_tooltip);
+                $icon_array[] = $comment_icon;
             }
-
-            $paramscomment = [];
-            if ($item->canView()) {
-                $paramscomment['withlink'] = $link_id;
-            }
-
-            // Comment icon
-            $comment_icon = Ajax::updateItemOnSelectEvent(
-                $field_id,
-                $comment_id,
-                $CFG_GLPI["root_doc"] . "/ajax/comments.php",
-                $paramscomment,
-                false
-            );
-            $options_tooltip['link_class'] = 'btn btn-outline-secondary';
-            $comment_icon .= Html::showToolTip($comment, $options_tooltip);
-            $icon_array[] = $comment_icon;
 
             // Add icon
             if (
                 ($item instanceof CommonDropdown)
-                && $item->canCreate()
+                && $item::canCreate()
                 && !isset($_REQUEST['_in_modal'])
                 && $params['addicon']
             ) {
@@ -401,18 +406,12 @@ class Dropdown
             }
 
             // Supplier Links
-            if ($itemtype == "Supplier") {
-                /** @var Supplier $item */
-                if ($item->getFromDB($params['value'])) {
-                    $link_icon = '<div>';
-                    $link_icon .= $item->getLinks();
-                    $link_icon .= '</div>';
-                    $icon_array[] = $link_icon;
-                }
+            if ($item instanceof Supplier && $item->getFromDB($params['value'])) {
+                $icon_array[] = $item->getLinks();
             }
 
             // Location icon
-            if ($itemtype == 'Location') {
+            if ($itemtype === 'Location' && Location::canView()) {
                 $location_icon = "<div role='button' class='btn btn-outline-secondary' onclick='showMapForLocation(this)'
                                        data-fid='" . htmlescape($field_id) . "' title='" . __s('Display on map') . "' data-bs-toggle='tooltip'>";
                 $location_icon .= "<i class='ti ti-map'></i></div>";
@@ -1756,7 +1755,7 @@ HTML;
     public static function buildItemtypesDropdownOptions(
         array $types,
         bool $checkright = false
-    ): array|null {
+    ): ?array {
         $options = []; // Initialize the options array to accumulate results.
 
         foreach ($types as $label => $type) {
@@ -2520,11 +2519,11 @@ HTML;
             $deselect = __s('None');
             $output  .= "<div class='invisible' id='selectallbuttons_" . htmlescape($field_id) . "'>";
             $output  .= "<div class='d-flex justify-content-around p-1'>";
-            $output  .= "<a class='btn btn-sm' " .
-                      "onclick=\"selectAll('" . htmlescape(jsescape($field_id)) . "');$('#" . htmlescape(jsescape($field_id)) . "').select2('close');\">$select" .
-                     "</a> ";
-            $output  .= "<a class='btn btn-sm' onclick=\"deselectAll('" . htmlescape(jsescape($field_id)) . "');\">$deselect" .
-                     "</a>";
+            $output  .= "<a class='btn btn-sm' "
+                      . "onclick=\"selectAll('" . htmlescape(jsescape($field_id)) . "');$('#" . htmlescape(jsescape($field_id)) . "').select2('close');\">$select"
+                     . "</a> ";
+            $output  .= "<a class='btn btn-sm' onclick=\"deselectAll('" . htmlescape(jsescape($field_id)) . "');\">$deselect"
+                     . "</a>";
             $output  .= "</div></div>";
 
             $multichecksappend_varname = "multichecksappend" . preg_replace('/[^\w]/', '_', $field_id);
@@ -2641,9 +2640,9 @@ HTML;
                 );
                 echo "&nbsp;";
 
-                echo "<span class='fa fa-info pointer'" .
-                 " title=\"" . __s('Duplicate the element as many times as there are connections') .
-                 "\"><span class='sr-only'>" . __s('Duplicate the element as many times as there are connections') . "</span></span>";
+                echo "<span class='fa fa-info pointer'"
+                 . " title=\"" . __s('Duplicate the element as many times as there are connections')
+                 . "\"><span class='sr-only'>" . __s('Duplicate the element as many times as there are connections') . "</span></span>";
             }
         } else {
             if ($params['management_restrict'] == 2) {
@@ -2659,8 +2658,8 @@ HTML;
             } else {
                 // Templates edition
                 if (!empty($params['withtemplate'])) {
-                    echo "<input type='hidden' name='is_global' value='" .
-                        htmlescape($params['management_restrict']) . "'>";
+                    echo "<input type='hidden' name='is_global' value='"
+                        . htmlescape($params['management_restrict']) . "'>";
                     echo(!$params['management_restrict'] ? __s('Unit management') : __s('Global management'));
                 } else {
                     echo(!$params['value'] ? __s('Unit management') : __s('Global management'));
@@ -2781,9 +2780,9 @@ HTML;
 
         $rand = mt_rand();
         Dropdown::showFromArray('display_type', $values, ['rand' => $rand]);
-        echo "<button type='submit' name='export' class='btn' " .
-             " title=\"" . _sx('button', 'Export') . "\">" .
-             "<i class='ti ti-device-floppy'></i><span class='sr-only'>" . _sx('button', 'Export') . "<span>";
+        echo "<button type='submit' name='export' class='btn' "
+             . " title=\"" . _sx('button', 'Export') . "\">"
+             . "<i class='ti ti-device-floppy'></i><span class='sr-only'>" . _sx('button', 'Export') . "<span>";
     }
 
 

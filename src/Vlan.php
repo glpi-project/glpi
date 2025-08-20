@@ -157,8 +157,8 @@ class Vlan extends CommonDropdown
                         __('%1$s: %2$s'),
                         __('ID TAG'),
                         $vlan->fields['tag']
-                    )) . "<br>" .
-                    htmlescape(sprintf(
+                    )) . "<br>"
+                    . htmlescape(sprintf(
                         __('%1$s: %2$s'),
                         _n('Comment', 'Comments', Session::getPluralNumber()),
                         $vlan->fields['comment']

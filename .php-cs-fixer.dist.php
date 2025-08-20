@@ -49,9 +49,9 @@ $finder = (new PhpCsFixer\Finder())
 
 return (new PhpCsFixer\Config())
     ->setParallelConfig(PhpCsFixer\Runner\Parallel\ParallelConfigFactory::detect())
-    ->setCacheFile(sys_get_temp_dir() . '/php-cs-fixer.glpi.cache')
+    ->setCacheFile('files/_cache/php-cs-fixer/php-cs-fixer.cache')
     ->setRules([
-        '@PER-CS2.0' => true,
+        '@PER-CS3.0' => true,
         '@PHP84Migration' => true,
         'fully_qualified_strict_types' => ['import_symbols' => true],
         'ordered_imports' => ['imports_order' => ['class', 'const', 'function']],

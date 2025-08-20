@@ -50,7 +50,7 @@ abstract class AbstractTileController extends AbstractController
 
     public function __construct()
     {
-        $this->tiles_manager = new TilesManager();
+        $this->tiles_manager = TilesManager::getInstance();
     }
 
     protected function getAndValidateLinkedItemFromDatabase(

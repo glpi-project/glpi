@@ -224,11 +224,11 @@ class RequestTest extends TestCase
                 'headers' => [
                     'Content-Type' => 'application/xml',
                 ],
-                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
-                '<REQUEST>' .
-                  '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
-                  '<QUERY>PROLOG</QUERY>' .
-                '</REQUEST>',
+                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
+                . '<REQUEST>'
+                  . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                  . '<QUERY>PROLOG</QUERY>'
+                . '</REQUEST>',
             ]
         );
         $this->checkXmlResponse($res, '<PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE>', 200);
@@ -243,11 +243,11 @@ class RequestTest extends TestCase
                 'headers' => [
                     'Content-Type' => 'application/xml',
                 ],
-                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
-                '<REQUEST>' .
-                  '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
-                  '<QUERY>PROLOG</QUERY>' .
-                '</REQUEST>',
+                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
+                . '<REQUEST>'
+                  . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                  . '<QUERY>PROLOG</QUERY>'
+                . '</REQUEST>',
             ]
         );
         $this->checkXmlResponse($res, '<PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE>', 200);
@@ -262,11 +262,11 @@ class RequestTest extends TestCase
                 'headers' => [
                     'Content-Type' => 'application/xml',
                 ],
-                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
-                '<REQUEST>' .
-                  '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
-                  '<QUERY>PROLOG</QUERY>' .
-                '</REQUEST>',
+                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
+                . '<REQUEST>'
+                  . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                  . '<QUERY>PROLOG</QUERY>'
+                . '</REQUEST>',
             ]
         );
         $this->checkXmlResponse($res, '<PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE>', 200);
@@ -294,11 +294,11 @@ class RequestTest extends TestCase
                     'headers' => [
                         'Content-Type' => 'application/xml',
                     ],
-                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
-                        '<REQUEST>' .
-                        '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
-                        '<QUERY>PROLOG</QUERY>' .
-                        '</REQUEST>',
+                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
+                        . '<REQUEST>'
+                        . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                        . '<QUERY>PROLOG</QUERY>'
+                        . '</REQUEST>',
                 ]
             );
         } catch (RequestException $e) {
@@ -316,11 +316,11 @@ class RequestTest extends TestCase
                     'Content-Type' => 'application/xml',
                     'Authorization' => 'Basic ' . base64_encode($basic_auth_login . ":" . $basic_auth_password),
                 ],
-                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
-                '<REQUEST>' .
-                  '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
-                  '<QUERY>PROLOG</QUERY>' .
-                '</REQUEST>',
+                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
+                . '<REQUEST>'
+                  . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                  . '<QUERY>PROLOG</QUERY>'
+                . '</REQUEST>',
             ]
         );
         $this->checkXmlResponse($res, '<PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE>', 200);
@@ -356,11 +356,11 @@ class RequestTest extends TestCase
                     'headers' => [
                         'Content-Type' => 'application/xml',
                     ],
-                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
-                        '<REQUEST>' .
-                        '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
-                        '<QUERY>PROLOG</QUERY>' .
-                        '</REQUEST>',
+                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
+                        . '<REQUEST>'
+                        . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                        . '<QUERY>PROLOG</QUERY>'
+                        . '</REQUEST>',
                 ]
             );
         } catch (RequestException $e) {
@@ -380,11 +380,11 @@ class RequestTest extends TestCase
                         //deliberate omission of "Basic "
                         'Authorization' => base64_encode($basic_auth_login . ":" . $basic_auth_password),
                     ],
-                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
-                        '<REQUEST>' .
-                        '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
-                        '<QUERY>PROLOG</QUERY>' .
-                        '</REQUEST>',
+                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
+                        . '<REQUEST>'
+                        . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                        . '<QUERY>PROLOG</QUERY>'
+                        . '</REQUEST>',
                 ]
             );
         } catch (RequestException $e) {
@@ -427,11 +427,11 @@ class RequestTest extends TestCase
                     'headers' => [
                         'Content-Type' => 'application/xml',
                     ],
-                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
-                        '<REQUEST>' .
-                        '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
-                        '<QUERY>PROLOG</QUERY>' .
-                        '</REQUEST>',
+                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
+                        . '<REQUEST>'
+                        . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                        . '<QUERY>PROLOG</QUERY>'
+                        . '</REQUEST>',
                 ]
             );
         } catch (RequestException $e) {
@@ -450,11 +450,11 @@ class RequestTest extends TestCase
                         'Content-Type' => 'application/xml',
                         'Authorization' => base64_encode("Basic wrong_login:wrong_password"),
                     ],
-                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
-                        '<REQUEST>' .
-                        '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
-                        '<QUERY>PROLOG</QUERY>' .
-                        '</REQUEST>',
+                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
+                        . '<REQUEST>'
+                        . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                        . '<QUERY>PROLOG</QUERY>'
+                        . '</REQUEST>',
                 ]
             );
         } catch (RequestException $e) {
@@ -541,11 +541,11 @@ class RequestTest extends TestCase
                     'headers' => [
                         'Content-Type' => 'application/xml',
                     ],
-                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
-                        '<REQUEST>' .
-                        '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
-                        '<QUERY>PROLOG</QUERY>' .
-                        '</REQUEST>',
+                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
+                        . '<REQUEST>'
+                        . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                        . '<QUERY>PROLOG</QUERY>'
+                        . '</REQUEST>',
                 ]
             );
         } catch (RequestException $e) {
@@ -563,11 +563,11 @@ class RequestTest extends TestCase
                     'Content-Type' => 'application/xml',
                     'Authorization' => 'Bearer ' . $responseContent['access_token'],
                 ],
-                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
-                    '<REQUEST>' .
-                    '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
-                    '<QUERY>PROLOG</QUERY>' .
-                    '</REQUEST>',
+                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
+                    . '<REQUEST>'
+                    . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                    . '<QUERY>PROLOG</QUERY>'
+                    . '</REQUEST>',
             ]
         );
 
@@ -599,11 +599,11 @@ class RequestTest extends TestCase
                     'headers' => [
                         'Content-Type' => 'application/xml',
                     ],
-                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
-                        '<REQUEST>' .
-                        '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
-                        '<QUERY>PROLOG</QUERY>' .
-                        '</REQUEST>',
+                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
+                        . '<REQUEST>'
+                        . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                        . '<QUERY>PROLOG</QUERY>'
+                        . '</REQUEST>',
                 ]
             );
         } catch (RequestException $e) {
@@ -622,11 +622,11 @@ class RequestTest extends TestCase
                         'Content-Type' => 'application/xml',
                         'Authorization' => 'Bearer ' . $invalid_bearer_token,
                     ],
-                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
-                        '<REQUEST>' .
-                        '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
-                        '<QUERY>PROLOG</QUERY>' .
-                        '</REQUEST>',
+                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
+                        . '<REQUEST>'
+                        . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                        . '<QUERY>PROLOG</QUERY>'
+                        . '</REQUEST>',
                 ]
             );
         } catch (RequestException $e) {

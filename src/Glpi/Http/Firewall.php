@@ -37,6 +37,7 @@ namespace Glpi\Http;
 use Config;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use LogicException;
+use Plugin;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -173,8 +174,8 @@ final class Firewall
         $path = $this->normalizePath($request);
 
         $path_matches = [];
-        $plugin_path_pattern = '#^/plugins/(?<plugin_key>[^/]+)(?<plugin_resource>/.+)$#';
-        if (preg_match($plugin_path_pattern, $path, $path_matches) === 1) {
+
+        if (preg_match(Plugin::PLUGIN_RESOURCE_PATTERN, $path, $path_matches) === 1) {
             return $this->computeFallbackStrategyForPlugin(
                 $path_matches['plugin_key'],
                 $path_matches['plugin_resource']
@@ -210,6 +211,11 @@ final class Firewall
             '/install/' => self::STRATEGY_NO_CHECK, // No check during install/update
         ];
 
+        if (Config::allowUnauthenticatedUploads()) {
+            $paths['/ajax/fileupload.php'] = self::STRATEGY_NO_CHECK;
+            $paths['/ajax/getFileTag.php'] = self::STRATEGY_NO_CHECK;
+        }
+
         foreach ($paths as $checkPath => $strategy) {
             if (\str_starts_with($path, $checkPath)) {
                 return $strategy;
@@ -224,14 +230,17 @@ final class Firewall
      */
     private function computeFallbackStrategyForPlugin(string $plugin_key, string $plugin_resource): string
     {
-        // Check if the file exists to apply the strategies related to legacyy scripts
+        // Check if the file exists to apply the strategies related to legacy scripts
         foreach ($this->plugin_directories as $plugin_dir) {
             $expected_filenames = [
-                $plugin_dir . '/' . $plugin_key . $plugin_resource,
-
                 // A PHP script located in the `/public` directory of a plugin will not have the `/public` prefix in its URL
                 $plugin_dir . '/' . $plugin_key . '/public' . $plugin_resource,
             ];
+            if (preg_match('#^/(ajax|front|report)/.+#', $plugin_resource) === 1) {
+                // Only `/ajax`, `/front` and `/report` can be publicly accessed outside the `/public` dir
+                $expected_filenames[] = $plugin_dir . '/' . $plugin_key . $plugin_resource;
+            }
+
             $resource_matches = [];
             if (preg_match('#^(?<filename>.+\.php)(/.*)$#', $plugin_resource, $resource_matches)) {
                 // /front/api.php/path/to/endpoint -> /front/api.php

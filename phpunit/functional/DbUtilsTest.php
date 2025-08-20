@@ -668,6 +668,7 @@ class DbUtilsTest extends DbTestCase
         $root = getItemByTypeName('Entity', '_test_root_entity', true);
         $child1 = getItemByTypeName('Entity', '_test_child_1', true);
         $child2 = getItemByTypeName('Entity', '_test_child_2', true);
+        $child3 = getItemByTypeName('Entity', '_test_child_3', true);
 
         // See all, really all
         $_SESSION['glpishowallentities'] = 1; // will be restored by setEntity call
@@ -688,23 +689,23 @@ class DbUtilsTest extends DbTestCase
         $this->setEntity('_test_root_entity', true);
 
         $this->assertSame(
-            "WHERE ( `glpi_computers`.`entities_id` IN ('$root', '$child1', '$child2')  ) ",
+            "WHERE ( `glpi_computers`.`entities_id` IN ('$root', '$child1', '$child2', '$child3')  ) ",
             $instance->getEntitiesRestrictRequest('WHERE', 'glpi_computers')
         );
         $it->execute(['FROM' => 'glpi_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_computers')]);
         $this->assertSame(
-            "SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN ('$root', '$child1', '$child2')",
+            "SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN ('$root', '$child1', '$child2', '$child3')",
             $it->getSql()
         );
 
         //keep testing old method from db.function
         $this->assertSame(
-            "WHERE ( `glpi_computers`.`entities_id` IN ('$root', '$child1', '$child2')  ) ",
+            "WHERE ( `glpi_computers`.`entities_id` IN ('$root', '$child1', '$child2', '$child3')  ) ",
             getEntitiesRestrictRequest('WHERE', 'glpi_computers')
         );
         $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria('glpi_computers')]);
         $this->assertSame(
-            "SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN ('$root', '$child1', '$child2'))",
+            "SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN ('$root', '$child1', '$child2', '$child3'))",
             $it->getSql()
         );
 
@@ -847,9 +848,9 @@ class DbUtilsTest extends DbTestCase
             $it->getSql()
         );
 
-        $it->execute(['FROM' => 'glpi_entities', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_entities', '', 7, true)]);
+        $it->execute(['FROM' => 'glpi_entities', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_entities', '', 9, true)]);
         $this->assertSame(
-            'SELECT * FROM `glpi_entities` WHERE `glpi_entities`.`id` = \'7\'',
+            'SELECT * FROM `glpi_entities` WHERE `glpi_entities`.`id` = \'9\'',
             $it->getSql()
         );
 
@@ -882,9 +883,9 @@ class DbUtilsTest extends DbTestCase
             $it->getSql()
         );
 
-        $it->execute(['FROM' => 'glpi_entities', 'WHERE' => getEntitiesRestrictCriteria('glpi_entities', '', 7, true)]);
+        $it->execute(['FROM' => 'glpi_entities', 'WHERE' => getEntitiesRestrictCriteria('glpi_entities', '', 9, true)]);
         $this->assertSame(
-            'SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` = \'7\')',
+            'SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` = \'9\')',
             $it->getSql()
         );
 
@@ -1085,6 +1086,7 @@ class DbUtilsTest extends DbTestCase
         $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
         $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
         $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
+        $ent3 = getItemByTypeName('Entity', '_test_child_3', true);
         $instance = new \DbUtils();
 
         //Cache tests:
@@ -1095,9 +1097,10 @@ class DbUtilsTest extends DbTestCase
         $ckey_ent0 = 'sons_cache_glpi_entities_' . $ent0;
         $ckey_ent1 = 'sons_cache_glpi_entities_' . $ent1;
         $ckey_ent2 = 'sons_cache_glpi_entities_' . $ent2;
+        $ckey_ent3 = 'sons_cache_glpi_entities_' . $ent3;
 
         //test on ent0
-        $expected = [$ent0 => $ent0, $ent1 => $ent1, $ent2 => $ent2];
+        $expected = [$ent0 => $ent0, $ent1 => $ent1, $ent2 => $ent2, $ent3 => $ent3];
         if ($cache === true && $hit === false) {
             $this->assertFalse($GLPI_CACHE->has($ckey_ent0));
         } elseif ($cache === true && $hit === true) {
@@ -1214,7 +1217,7 @@ class DbUtilsTest extends DbTestCase
             $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent1));
         }
 
-        $expected = [$ent0 => $ent0, $ent1 => $ent1, $ent2 => $ent2];
+        $expected = [$ent0 => $ent0, $ent1 => $ent1, $ent2 => $ent2, $ent3 => $ent3];
         $sons = $instance->getSonsOf('glpi_entities', $ent0);
         $this->assertSame($expected, $sons);
         if ($cache === true) {

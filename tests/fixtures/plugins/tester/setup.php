@@ -35,7 +35,9 @@
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\Destination\FormDestinationManager;
 use Glpi\Form\QuestionType\QuestionTypesManager;
+use Glpi\Helpdesk\Tile\TilesManager;
 use GlpiPlugin\Tester\Form\ComputerDestination;
+use GlpiPlugin\Tester\Form\CustomTile;
 use GlpiPlugin\Tester\Form\DayOfTheWeekPolicy;
 use GlpiPlugin\Tester\Form\QuestionTypeRange;
 use GlpiPlugin\Tester\Form\QuestionTypeColor;
@@ -99,5 +101,15 @@ function plugin_init_tester(): void
     $destination_manager = FormDestinationManager::getInstance();
     $destination_manager->registerPluginDestinationType(new ComputerDestination());
 
+    // Register custom tiles types
+    $tiles_manager = TilesManager::getInstance();
+    $tiles_manager->registerPluginTileType(new CustomTile());
+
     $PLUGIN_HOOKS['menu_toadd']['tester'] = ['management' => MyPsr4Class::class];
+}
+
+function plugin_tester_boot()
+{
+    \Glpi\Http\SessionManager::registerPluginStatelessPath('tester', '#^/$#');
+    \Glpi\Http\SessionManager::registerPluginStatelessPath('tester', '#^/StatelessURI$#');
 }

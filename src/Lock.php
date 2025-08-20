@@ -168,8 +168,8 @@ TWIG;
                     }
                 } elseif (in_array($lockable_itemtype, $CFG_GLPI['directconnect_types'], true)) {
                     //we need to restrict scope with Asset_PeripheralAsset to prevent loading of all lockedfield
-                    $query['LEFT JOIN'][Asset_PeripheralAsset::getTable()] =
-                    [
+                    $query['LEFT JOIN'][Asset_PeripheralAsset::getTable()]
+                    = [
                         'FKEY'   => [
                             Asset_PeripheralAsset::getTable() => 'items_id_peripheral',
                             $lockable_itemtype::getTable()    => 'id',
@@ -526,15 +526,15 @@ TWIG, $twig_params);
                     $url  = "<a href='" . $item->getFormURLWithID($link_item) . "'>";
                     $url .= htmlescape($item->fields["name"]) . "</a>";
 
-                    $tooltip = "<table><tr><td>" . __s('Name') . "</td><td>" . htmlescape($item->fields['name']) .
-                        '</td></tr>';
+                    $tooltip = "<table><tr><td>" . __s('Name') . "</td><td>" . htmlescape($item->fields['name'])
+                        . '</td></tr>';
                     if (isset($item->fields['serial'])) {
-                        $tooltip .= "<tr><td>" . __s('Serial number') . "</td><td>" . htmlescape($item->fields['serial']) .
-                            '</td></tr>';
+                        $tooltip .= "<tr><td>" . __s('Serial number') . "</td><td>" . htmlescape($item->fields['serial'])
+                            . '</td></tr>';
                     }
                     if (isset($item->fields['comment'])) {
-                        $tooltip .= "<tr><td>" . __s('Comments') . "</td><td>" . htmlescape($item->fields['comment']) .
-                            '</td></tr></table>';
+                        $tooltip .= "<tr><td>" . __s('Comments') . "</td><td>" . htmlescape($item->fields['comment'])
+                            . '</td></tr></table>';
                     }
 
                     $url .= "&nbsp; " . Html::showToolTip($tooltip, ['display' => false]);
@@ -1302,8 +1302,8 @@ TWIG);
             Session::haveRight($itemtype::$rightname, UPDATE)
             && in_array($itemtype, $CFG_GLPI['inventory_types'] + $CFG_GLPI['inventory_lockable_objects'], true)
         ) {
-            $actions[$action_unlock_component] = __('Unlock components');
-            $actions[$action_unlock_fields] = __('Unlock fields');
+            $actions[$action_unlock_component] = __s('Unlock components');
+            $actions[$action_unlock_fields] = __s('Unlock fields');
         }
     }
 

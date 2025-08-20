@@ -234,16 +234,16 @@ class UploadHandler
 
     protected function get_full_url()
     {
-        $https = !empty($_SERVER['HTTPS']) && strcasecmp($_SERVER['HTTPS'], 'on') === 0 ||
-            !empty($_SERVER['HTTP_X_FORWARDED_PROTO']) &&
-            strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0;
+        $https = !empty($_SERVER['HTTPS']) && strcasecmp($_SERVER['HTTPS'], 'on') === 0
+            || !empty($_SERVER['HTTP_X_FORWARDED_PROTO'])
+            && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0;
         return
-            ($https ? 'https://' : 'http://') .
-            (!empty($_SERVER['REMOTE_USER']) ? $_SERVER['REMOTE_USER'] . '@' : '') .
-            ($_SERVER['HTTP_HOST'] ?? ($_SERVER['SERVER_NAME'] .
-                ($https && $_SERVER['SERVER_PORT'] === 443 ||
-                $_SERVER['SERVER_PORT'] === 80 ? '' : ':' . $_SERVER['SERVER_PORT']))) .
-            substr($_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_NAME'], '/'));
+            ($https ? 'https://' : 'http://')
+            . (!empty($_SERVER['REMOTE_USER']) ? $_SERVER['REMOTE_USER'] . '@' : '')
+            . ($_SERVER['HTTP_HOST'] ?? ($_SERVER['SERVER_NAME']
+                . ($https && $_SERVER['SERVER_PORT'] === 443
+                || $_SERVER['SERVER_PORT'] === 80 ? '' : ':' . $_SERVER['SERVER_PORT'])))
+            . substr($_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_NAME'], '/'));
     }
 
     protected function get_user_id()
@@ -539,25 +539,25 @@ class UploadHandler
         }
         if (
             $this->options['max_file_size'] && (
-                $file_size > $this->options['max_file_size'] ||
-                $file->size > $this->options['max_file_size']
+                $file_size > $this->options['max_file_size']
+                || $file->size > $this->options['max_file_size']
             )
         ) {
             $file->error = $this->get_error_message('max_file_size');
             return false;
         }
         if (
-            $this->options['min_file_size'] &&
-            $file_size < $this->options['min_file_size']
+            $this->options['min_file_size']
+            && $file_size < $this->options['min_file_size']
         ) {
             $file->error = $this->get_error_message('min_file_size');
             return false;
         }
         if (
-            is_int($this->options['max_number_of_files']) &&
-            ($this->count_file_objects() >= $this->options['max_number_of_files']) &&
+            is_int($this->options['max_number_of_files'])
+            && ($this->count_file_objects() >= $this->options['max_number_of_files'])
             // Ignore additional chunks of existing files:
-            !is_file($this->get_upload_path($file->name))
+            && !is_file($this->get_upload_path($file->name))
         ) {
             $file->error = $this->get_error_message('max_number_of_files');
             return false;
@@ -635,8 +635,8 @@ class UploadHandler
     ) {
         // Add missing file extension for known image types:
         if (
-            !str_contains($name, '.') &&
-            preg_match('/^image\/(gif|jpe?g|png)/', $type, $matches)
+            !str_contains($name, '.')
+            && preg_match('/^image\/(gif|jpe?g|png)/', $type, $matches)
         ) {
             $name .= '.' . $matches[1];
         }
@@ -879,8 +879,8 @@ class UploadHandler
             error_log('Function not found: imagecreatetruecolor');
             return false;
         }
-        [$file_path, $new_file_path] =
-            $this->get_scaled_image_file_paths($file_name, $version);
+        [$file_path, $new_file_path]
+            = $this->get_scaled_image_file_paths($file_name, $version);
         $type = strtolower(substr(strrchr($file_name, '.'), 1));
         switch ($type) {
             case 'jpg':
@@ -1103,8 +1103,8 @@ class UploadHandler
                 mkdir($upload_dir, $this->options['mkdir_mode'], true);
             }
             $file_path = $this->get_upload_path($file->name);
-            $append_file = $content_range && is_file($file_path) &&
-                $file->size > $this->get_file_size($file_path);
+            $append_file = $content_range && is_file($file_path)
+                && $file->size > $this->get_file_size($file_path);
             if ($uploaded_file && is_uploaded_file($uploaded_file)) {
                 // multipart/formdata uploads (POST method uploads)
                 if ($append_file) {
@@ -1378,8 +1378,8 @@ class UploadHandler
         $upload = $this->get_upload_data($this->options['param_name']);
         // Parse the Content-Disposition header, if available:
         $content_disposition_header = $this->get_server_var('HTTP_CONTENT_DISPOSITION');
-        $file_name = $content_disposition_header ?
-            rawurldecode(preg_replace(
+        $file_name = $content_disposition_header
+            ? rawurldecode(preg_replace(
                 '/(^[^"]+")|("$)/',
                 '',
                 $content_disposition_header
@@ -1387,8 +1387,8 @@ class UploadHandler
         // Parse the Content-Range header, which has the following form:
         // Content-Range: bytes 0-524287/2000000
         $content_range_header = $this->get_server_var('HTTP_CONTENT_RANGE');
-        $content_range = $content_range_header ?
-            preg_split('/[^0-9]+/', $content_range_header) : null;
+        $content_range = $content_range_header
+            ? preg_split('/[^0-9]+/', $content_range_header) : null;
         $size =  @$content_range[3];
         $files = [];
         if ($upload) {

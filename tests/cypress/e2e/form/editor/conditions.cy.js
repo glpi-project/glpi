@@ -1079,16 +1079,76 @@ describe ('Conditions', () => {
                 conditions: [
                     {
                         logic: null,
-                        operator: 'Contains',
-                        value: 'Expected answer',
-                        valueType: 'string'
+                        operator: 'Is visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not visible',
+                        value: null,
+                        valueType: null
                     },
                     {
                         logic: 'Or',
                         operator: 'Is equal to',
                         value: 'Exact match',
                         valueType: 'string'
-                    }
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not equal to',
+                        value: 'Exact match',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Contains',
+                        value: 'Expected answer',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not contains',
+                        value: 'Expected answer',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/Expected answer/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/Expected answer/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Length is greater than',
+                        value: 5,
+                        valueType: 'number'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Length is less than',
+                        value: 10,
+                        valueType: 'number'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Length is greater than or equals to',
+                        value: 5,
+                        valueType: 'number'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Length is less than or equals to',
+                        value: 10,
+                        valueType: 'number'
+                    },
                 ]
             },
         ],
@@ -1100,20 +1160,216 @@ describe ('Conditions', () => {
                 conditions: [
                     {
                         logic: null,
-                        operator: 'Is greater than',
+                        operator: 'Is visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is equal to',
                         value: 10,
                         valueType: 'number'
                     },
                     {
                         logic: 'Or',
-                        operator: 'Is less than',
-                        value: 50,
+                        operator: 'Is not equal to',
+                        value: 10,
                         valueType: 'number'
-                    }
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is greater than',
+                        value: 5,
+                        valueType: 'number'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is less than',
+                        value: 10,
+                        valueType: 'number'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is greater than or equals to',
+                        value: 5,
+                        valueType: 'number'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is less than or equals to',
+                        value: 10,
+                        valueType: 'number'
+                    },
                 ]
             },
         ],
-        'QuestionTypeDateTime': [
+        'QuestionTypeEmail': [
+            {
+                name: 'My email question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeEmail',
+                conditions: [
+                    {
+                        logic: null,
+                        operator: 'Is visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is equal to',
+                        value: 'Exact match',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not equal to',
+                        value: 'Exact match',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Contains',
+                        value: 'Expected answer',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not contains',
+                        value: 'Expected answer',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/Expected answer/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/Expected answer/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Length is greater than',
+                        value: 5,
+                        valueType: 'number'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Length is less than',
+                        value: 10,
+                        valueType: 'number'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Length is greater than or equals to',
+                        value: 5,
+                        valueType: 'number'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Length is less than or equals to',
+                        value: 10,
+                        valueType: 'number'
+                    },
+                ]
+            },
+        ],
+        'QuestionTypeLongText': [
+            {
+                name: 'My long text question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeLongText',
+                conditions: [
+                    {
+                        logic: null,
+                        operator: 'Is visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is equal to',
+                        value: 'Exact match',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not equal to',
+                        value: 'Exact match',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Contains',
+                        value: 'Expected answer',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not contains',
+                        value: 'Expected answer',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/Expected answer/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/Expected answer/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Length is greater than',
+                        value: 5,
+                        valueType: 'number'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Length is less than',
+                        value: 10,
+                        valueType: 'number'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Length is greater than or equals to',
+                        value: 5,
+                        valueType: 'number'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Length is less than or equals to',
+                        value: 10,
+                        valueType: 'number'
+                    },
+                ],
+            },
+        ],
+        'QuestionTypeDate': [
             {
                 name: 'My date question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeDateTime',
@@ -1121,12 +1377,56 @@ describe ('Conditions', () => {
                 conditions: [
                     {
                         logic: null,
+                        operator: 'Is visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is equal to',
+                        value: '2021-01-01',
+                        valueType: 'date'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not equal to',
+                        value: '2021-01-01',
+                        valueType: 'date'
+                    },
+                    {
+                        logic: 'Or',
                         operator: 'Is greater than',
                         value: '2021-01-01',
                         valueType: 'date'
-                    }
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is less than',
+                        value: '2021-01-01',
+                        valueType: 'date'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is greater than or equals to',
+                        value: '2021-01-01',
+                        valueType: 'date'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is less than or equals to',
+                        value: '2021-01-01',
+                        valueType: 'date'
+                    },
                 ]
             },
+        ],
+        'QuestionTypeTime': [
             {
                 name: 'My time question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeDateTime',
@@ -1134,12 +1434,56 @@ describe ('Conditions', () => {
                 conditions: [
                     {
                         logic: null,
-                        operator: 'Is greater than',
-                        value: '15:40',
+                        operator: 'Is visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is equal to',
+                        value: '12:00',
                         valueType: 'date'
-                    }
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not equal to',
+                        value: '12:00',
+                        valueType: 'date'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is greater than',
+                        value: '12:00',
+                        valueType: 'date'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is less than',
+                        value: '12:00',
+                        valueType: 'date'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is greater than or equals to',
+                        value: '12:00',
+                        valueType: 'date'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is less than or equals to',
+                        value: '12:00',
+                        valueType: 'date'
+                    },
                 ]
             },
+        ],
+        'QuestionTypeDateTime': [
             {
                 name: 'My datetime question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeDateTime',
@@ -1147,12 +1491,186 @@ describe ('Conditions', () => {
                 conditions: [
                     {
                         logic: null,
-                        operator: 'Is greater than',
-                        value: '2021-01-01T15:40',
+                        operator: 'Is visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is equal to',
+                        value: '2021-01-01T12:00',
                         valueType: 'date'
-                    }
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not equal to',
+                        value: '2021-01-01T12:00',
+                        valueType: 'date'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is greater than',
+                        value: '2021-01-01T12:00',
+                        valueType: 'date'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is less than',
+                        value: '2021-01-01T12:00',
+                        valueType: 'date'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is greater than or equals to',
+                        value: '2021-01-01T12:00',
+                        valueType: 'date'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is less than or equals to',
+                        value: '2021-01-01T12:00',
+                        valueType: 'date'
+                    },
                 ]
             },
+        ],
+        'QuestionTypeRequester': [
+            {
+                name: 'My requester question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeRequester',
+                conditions: [
+                    {
+                        logic: null,
+                        operator: 'Is visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is equal to',
+                        value: 'glpi',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not equal to',
+                        value: 'glpi',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Contains',
+                        value: 'glpi',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not contains',
+                        value: 'glpi',
+                        valueType: 'dropdown'
+                    }
+                ],
+            }
+        ],
+        'QuestionTypeObserver': [
+            {
+                name: 'My observer question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeObserver',
+                conditions: [
+                    {
+                        logic: null,
+                        operator: 'Is visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is equal to',
+                        value: 'glpi',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not equal to',
+                        value: 'glpi',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Contains',
+                        value: 'glpi',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not contains',
+                        value: 'glpi',
+                        valueType: 'dropdown'
+                    }
+                ],
+            }
+        ],
+        'QuestionTypeAssignee': [
+            {
+                name: 'My assignee question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeAssignee',
+                conditions: [
+                    {
+                        logic: null,
+                        operator: 'Is visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is equal to',
+                        value: 'glpi',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not equal to',
+                        value: 'glpi',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Contains',
+                        value: 'glpi',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not contains',
+                        value: 'glpi',
+                        valueType: 'dropdown'
+                    }
+                ],
+            }
         ],
         'QuestionTypeUrgency': [
             {
@@ -1161,11 +1679,53 @@ describe ('Conditions', () => {
                 conditions: [
                     {
                         logic: null,
+                        operator: 'Is visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
                         operator: 'Is equal to',
-                        value: 'Low',
+                        value: 'High',
                         valueType: 'dropdown'
-                    }
-                ]
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not equal to',
+                        value: 'High',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is greater than',
+                        value: 'High',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is less than',
+                        value: 'High',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is greater than or equals to',
+                        value: 'High',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is less than or equals to',
+                        value: 'High',
+                        valueType: 'dropdown'
+                    },
+                ],
             },
         ],
         'QuestionTypeRequestType': [
@@ -1175,14 +1735,46 @@ describe ('Conditions', () => {
                 conditions: [
                     {
                         logic: null,
+                        operator: 'Is visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
                         operator: 'Is equal to',
                         value: 'Request',
                         valueType: 'dropdown'
-                    }
-                ]
+                    },
+                ],
             },
         ],
-        'QuestionTypeSelectable': [
+        'QuestionTypeFile': [
+            {
+                name: 'My file question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeFile',
+                conditions: [
+                    {
+                        logic: null,
+                        operator: 'Is visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not visible',
+                        value: null,
+                        valueType: null
+                    },
+                ],
+            },
+        ],
+        'QuestionTypeRadio': [
             {
                 name: 'My radio question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeRadio',
@@ -1190,12 +1782,32 @@ describe ('Conditions', () => {
                 conditions: [
                     {
                         logic: null,
+                        operator: 'Is visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
                         operator: 'Is equal to',
                         value: 'Option 3',
                         valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not equal to',
+                        value: 'Option 2',
+                        valueType: 'dropdown'
                     }
                 ]
-            },
+            }
+        ],
+        'QuestionTypeCheckbox': [
             {
                 name: 'My checkbox question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeCheckbox',
@@ -1203,12 +1815,44 @@ describe ('Conditions', () => {
                 conditions: [
                     {
                         logic: null,
+                        operator: 'Is visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is equal to',
+                        value: ['Option 2', 'Option 4'],
+                        valueType: 'dropdown_multiple'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not equal to',
+                        value: ['Option 2', 'Option 4'],
+                        valueType: 'dropdown_multiple'
+                    },
+                    {
+                        logic: 'Or',
                         operator: 'Contains',
                         value: ['Option 2', 'Option 4'],
+                        valueType: 'dropdown_multiple'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not contains',
+                        value: ['Option 1', 'Option 3'],
                         valueType: 'dropdown_multiple'
                     }
                 ]
             },
+        ],
+        'QuestionTypeDropdownSingle': [
             {
                 name: 'My single value dropdown question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeDropdown',
@@ -1216,12 +1860,32 @@ describe ('Conditions', () => {
                 conditions: [
                     {
                         logic: null,
+                        operator: 'Is visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is equal to',
+                        value: 'Option 3',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
                         operator: 'Is not equal to',
                         value: 'Option 2',
                         valueType: 'dropdown'
                     }
                 ]
             },
+        ],
+        'QuestionTypeDropdownMultiple': [
             {
                 name: 'My multiple value dropdown question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeDropdown',
@@ -1229,47 +1893,39 @@ describe ('Conditions', () => {
                 conditions: [
                     {
                         logic: null,
-                        operator: 'Is not equal to',
-                        value: ['Option 1', 'Option 2'],
+                        operator: 'Is visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is equal to',
+                        value: ['Option 2', 'Option 4'],
                         valueType: 'dropdown_multiple'
-                    }
-                ]
-            },
-        ],
-        'QuestionTypeActor': [
-            {
-                name: 'My requester question',
-                type: 'Glpi\\Form\\QuestionType\\QuestionTypeRequester',
-                conditions: [
+                    },
                     {
-                        logic: null,
-                        operator: 'Is equal to',
-                        value: 'E2E Tests',
-                        valueType: 'dropdown'
-                    }
-                ]
-            },
-            {
-                name: 'My observer question',
-                type: 'Glpi\\Form\\QuestionType\\QuestionTypeObserver',
-                conditions: [
+                        logic: 'Or',
+                        operator: 'Is not equal to',
+                        value: ['Option 2', 'Option 4'],
+                        valueType: 'dropdown_multiple'
+                    },
                     {
-                        logic: null,
-                        operator: 'Is equal to',
-                        value: 'E2E Tests',
-                        valueType: 'dropdown'
-                    }
-                ]
-            },
-            {
-                name: 'My assignee question',
-                type: 'Glpi\\Form\\QuestionType\\QuestionTypeAssignee',
-                conditions: [
+                        logic: 'Or',
+                        operator: 'Contains',
+                        value: ['Option 2', 'Option 4'],
+                        valueType: 'dropdown_multiple'
+                    },
                     {
-                        logic: null,
-                        operator: 'Is equal to',
-                        value: 'E2E Tests',
-                        valueType: 'dropdown'
+                        logic: 'Or',
+                        operator: 'Do not contains',
+                        value: ['Option 2', 'Option 4'],
+                        valueType: 'dropdown_multiple'
                     }
                 ]
             },
@@ -1282,12 +1938,44 @@ describe ('Conditions', () => {
                 conditions: [
                     {
                         logic: null,
+                        operator: 'Is visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
                         operator: 'Is equal to',
                         value: 'Computer - {uuid}',
                         valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not equal to',
+                        value: 'Computer - {uuid}',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Contains',
+                        value: 'Computer - {uuid}',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not contains',
+                        value: 'Computer - {uuid}',
+                        valueType: 'string'
                     }
                 ]
             },
+        ],
+        'QuestionTypeItemDropdown': [
             {
                 name: 'My dropdown item question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeItemDropdown',
@@ -1295,12 +1983,44 @@ describe ('Conditions', () => {
                 conditions: [
                     {
                         logic: null,
+                        operator: 'Is visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
                         operator: 'Is equal to',
                         value: '»Location - {uuid}',
                         valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not equal to',
+                        value: '»Location - {uuid}',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Contains',
+                        value: 'Location - {uuid}',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not contains',
+                        value: 'Location - {uuid}',
+                        valueType: 'string'
                     }
                 ]
             },
+        ],
+        'QuestionTypeUserDeviceSingle': [
             {
                 name: 'My single user devices question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeUserDevice',
@@ -1308,12 +2028,32 @@ describe ('Conditions', () => {
                 conditions: [
                     {
                         logic: null,
+                        operator: 'Is visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
                         operator: 'Is of itemtype',
                         value: 'Computer',
                         valueType: 'dropdown'
-                    }
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not of itemtype',
+                        value: 'Computer',
+                        valueType: 'dropdown'
+                    },
                 ]
             },
+        ],
+        'QuestionTypeUserDeviceMultiple': [
             {
                 name: 'My multiple user devices question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeUserDevice',
@@ -1321,14 +2061,65 @@ describe ('Conditions', () => {
                 conditions: [
                     {
                         logic: null,
+                        operator: 'Is visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not visible',
+                        value: null,
+                        valueType: null
+                    },
+                    {
+                        logic: 'Or',
                         operator: 'At least one item of itemtype',
                         value: ['Computer'],
                         valueType: 'dropdown_multiple'
-                    }
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'All items of itemtype',
+                        value: ['Computer'],
+                        valueType: 'dropdown_multiple'
+                    },
                 ]
             }
         ]
     };
+
+    it('can all questions type are tested for conditions', () => {
+        const expected_types = Object.values(questionsToAdd).reduce((acc, questions) => {
+            return acc.concat(questions.map(q => q.type));
+        }, []);
+
+        // Create the test form
+        createForm();
+
+        // Add a question
+        addQuestion('Test question');
+        getAndFocusQuestion('Test question').within(() => {
+            cy.get('select[aria-label="Question type"]').then(($dropdown) => {
+                // Check that all question types are available in the dropdown
+                const categories = $dropdown.find('option').toArray().map(option => option.textContent.trim());
+                for (const category of categories) {
+                    // Exclude tester plugin category
+                    if (category === 'Tester plugin') {
+                        continue;
+                    }
+
+                    cy.getDropdownByLabelText('Question type').selectDropdownValue(category);
+                    cy.get('select[aria-label="Question sub type"]').then(($subtypeDropdown) => {
+                        $subtypeDropdown.find('option').toArray()
+                            .forEach((subtype) => {
+                                // Check that the subtype is contained in the expected types
+                                expect(expected_types).to.include(subtype.value);
+                            });
+                    });
+                }
+            });
+        });
+    });
 
     Object.entries(questionsToAdd).forEach(([type, questionsList]) => {
         it(`can apply all available conditions on ${type}`, () => {
@@ -1384,11 +2175,36 @@ describe ('Conditions', () => {
                 initVisibilityConfiguration();
                 setConditionStrategy('Visible if...');
 
+                let cIndex = 0;
+
                 // Add conditions for each question in this type
                 questionsList.forEach((question, qIndex) => {
-                    question.conditions.forEach((condition, cIndex) => {
+                    if (qIndex > 0) {
+                        // Add a new empty condition if not the first one
+                        addNewEmptyCondition();
+                        cy.findByRole('button', {'name': 'Add another criteria'}).should('not.exist');
+                    }
+
+                    // Check if all operators are tested
+                    const expected_operators = question.conditions.map(c => c.operator);
+                    cy.get('[data-glpi-conditions-editor-condition-index]').eq(-1).as('condition');
+                    cy.get('@condition').getDropdownByLabelText('Item').selectDropdownValue(question.name);
+                    cy.get('@condition').within(() => {
+                        cy.get('select[aria-label="Value operator"]').last().then(($dropdown) => {
+                            const operators = $dropdown.find('option').toArray().map(option => option.textContent.trim());
+                            for (const operator of operators) {
+                                expect(expected_operators).to.include(operator, `Operator "${operator}" is not tested for question "${question.name}"`);
+                            }
+                        });
+
+                        // Delete the condition
+                        // eslint-disable-next-line
+                        cy.findByRole('button', {'name': 'Delete criteria'}).as('deleteButton').click().should('not.exist');
+                    });
+
+                    question.conditions.forEach((condition) => {
                         // Calculate overall condition index
-                        const conditionIndex = qIndex > 0 ? qIndex + cIndex : cIndex;
+                        const conditionIndex = cIndex;
 
                         // Add new empty condition if not the first one
                         if (conditionIndex > 0) {
@@ -1414,6 +2230,9 @@ describe ('Conditions', () => {
                             value,
                             condition.valueType
                         );
+
+                        // Increment condition index
+                        cIndex++;
                     });
                 });
             });

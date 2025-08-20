@@ -1821,7 +1821,7 @@ class PrinterTest extends AbstractInventoryAsset
         $inventory = new Inventory($source);
 
         if ($inventory->inError()) {
-            $this->dump($inventory->getErrors());
+            dump($inventory->getErrors());
         }
         $this->assertFalse($inventory->inError());
         $this->assertEmpty($inventory->getErrors());
@@ -2058,7 +2058,7 @@ class PrinterTest extends AbstractInventoryAsset
         $inventory = new Inventory($source);
 
         if ($inventory->inError()) {
-            $this->dump($inventory->getErrors());
+            dump($inventory->getErrors());
         }
         $this->assertFalse($inventory->inError());
         $this->assertEmpty($inventory->getErrors());
@@ -2169,7 +2169,7 @@ class PrinterTest extends AbstractInventoryAsset
         $inventory = new Inventory($source);
 
         if ($inventory->inError()) {
-            $this->dump($inventory->getErrors());
+            dump($inventory->getErrors());
         }
         $this->assertFalse($inventory->inError());
         $this->assertEmpty($inventory->getErrors());

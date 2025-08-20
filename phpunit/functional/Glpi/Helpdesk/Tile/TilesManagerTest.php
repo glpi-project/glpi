@@ -48,11 +48,11 @@ use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\Session\SessionInfo;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use GlpiPlugin\Tester\Form\CustomTile;
 use InvalidArgumentException;
 use Profile;
 use Session;
 use Ticket;
-use User;
 
 final class TilesManagerTest extends DbTestCase
 {
@@ -60,7 +60,7 @@ final class TilesManagerTest extends DbTestCase
 
     private function getManager(): TilesManager
     {
-        return new TilesManager();
+        return TilesManager::getInstance();
     }
 
     public function testTilesCanBeAddedToHelpdeskProfiles(): void
@@ -717,5 +717,28 @@ final class TilesManagerTest extends DbTestCase
         );
 
         return count($tiles) > 0;
+    }
+
+    public function testPluginsCanRegisterNewTilesTypes(): void
+    {
+        // Act: get all tiles type
+        $manager = $this->getManager();
+        $types = $manager->getTileTypes();
+
+        // Assert: tiles from plugins should be found
+        $titles_types = array_map(fn($t) => $t::class, $types);
+        $this->assertContains(CustomTile::class, $titles_types);
+    }
+
+    public function testTilesTypesAreSortedByWeight(): void
+    {
+        // Act: get all tiles type
+        $manager = $this->getManager();
+        $types = $manager->getTileTypes();
+
+        // Assert: tiles should be ordered by weight
+        $this->assertInstanceOf(FormTile::class, $types[0]);
+        $this->assertInstanceOf(GlpiPageTile::class, $types[1]);
+        $this->assertInstanceOf(ExternalPageTile::class, $types[2]);
     }
 }

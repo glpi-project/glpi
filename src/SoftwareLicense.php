@@ -572,13 +572,13 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
             'usehaving'          => true,
             'datatype'           => 'specific',
             'massiveaction'      => false,
-            'computation'        => '(' .
-                '(SELECT COUNT(*) FROM ' . Item_SoftwareLicense::getTable() .
-                ' WHERE softwarelicenses_id = TABLE.id AND is_deleted = 0)' .
-                ' + ' .
-                '(SELECT COUNT(*) FROM ' . SoftwareLicense_User::getTable() .
-                ' WHERE softwarelicenses_id = TABLE.id)' .
-                ')',
+            'computation'        => '('
+                . '(SELECT COUNT(*) FROM ' . Item_SoftwareLicense::getTable()
+                . ' WHERE softwarelicenses_id = TABLE.id AND is_deleted = 0)'
+                . ' + '
+                . '(SELECT COUNT(*) FROM ' . SoftwareLicense_User::getTable()
+                . ' WHERE softwarelicenses_id = TABLE.id)'
+                . ')',
             'computationgroupby' => true,
             'computationtype' => 'count',
         ];

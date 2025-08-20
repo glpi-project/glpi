@@ -136,6 +136,10 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType imple
                         }
                     });
                 {% endif %}
+
+                // The module above will trigger some input changes, we need
+                // to reset the global unsaved form state after this.
+                window.setHasUnsavedChanges(false);
             });
 TWIG;
 
@@ -419,7 +423,7 @@ TWIG;
                         class="form-check-input" {{ value.checked ? 'checked' : '' }}
                     >
                     <span class="form-check-label">
-                        {{ translate_item_key(
+                        {{ translate_form_item_key(
                             question,
                             '%s-%s'|format(
                                 constant('Glpi\\\\Form\\\\QuestionType\\\\AbstractQuestionTypeSelectable::TRANSLATION_KEY_OPTION'),

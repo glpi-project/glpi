@@ -263,9 +263,9 @@ class CalendarSegment extends CommonDBChild
                     $endstamp = $beginstamp - $delay;
                 }
                 $units      = Toolbox::getTimestampTimeUnits($endstamp);
-                return str_pad($units['hour'], 2, '0', STR_PAD_LEFT) . ':' .
-                     str_pad($units['minute'], 2, '0', STR_PAD_LEFT) . ':' .
-                     str_pad($units['second'], 2, '0', STR_PAD_LEFT);
+                return str_pad($units['hour'], 2, '0', STR_PAD_LEFT) . ':'
+                     . str_pad($units['minute'], 2, '0', STR_PAD_LEFT) . ':'
+                     . str_pad($units['second'], 2, '0', STR_PAD_LEFT);
             } else {
                 $delay -= $tstamp;
             }

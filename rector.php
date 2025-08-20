@@ -59,7 +59,7 @@ return RectorConfig::configure()
     ->withPhpVersion(PhpVersion::PHP_82)
     ->withCache(
         cacheClass: FileCacheStorage::class,
-        cacheDirectory: sys_get_temp_dir() . '/rector'
+        cacheDirectory: 'files/_cache/rector',
     )
     ->withParallel(timeoutSeconds: 300)
     // handled by PHP-CS-Fixer with `fully_qualified_strict_types` rule ->withImportNames()

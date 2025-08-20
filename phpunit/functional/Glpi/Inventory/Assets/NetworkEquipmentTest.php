@@ -41,8 +41,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
-/* Test for inc/inventory/asset/networkequipment.class.php */
-
 class NetworkEquipmentTest extends AbstractInventoryAsset
 {
     public const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
@@ -385,7 +383,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
         $this->assertFalse($inventory->inError());
@@ -511,7 +509,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
         $this->assertFalse($inventory->inError());
@@ -598,7 +596,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
         $this->assertFalse($inventory->inError());
@@ -666,7 +664,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
         $this->assertFalse($inventory->inError());
@@ -783,7 +781,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
         $this->assertFalse($inventory->inError());
@@ -888,7 +886,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
         $this->assertFalse($inventory->inError());
@@ -997,7 +995,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
         $this->assertFalse($inventory->inError());
@@ -1093,7 +1091,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
         $this->assertFalse($inventory->inError());
@@ -1216,7 +1214,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
         $this->assertFalse($inventory->inError());
@@ -1363,7 +1361,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
         $this->assertFalse($inventory->inError());
@@ -1512,7 +1510,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
         $this->assertFalse($inventory->inError());
@@ -1653,7 +1651,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
 
@@ -1785,7 +1783,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
 
@@ -2689,8 +2687,8 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
     public static function prepareConnectionsProvider()
     {
         return [
-            ['json_source' =>
-                '{
+            ['json_source'
+                => '{
                   "content": {
                       "network_ports": [
                          {
@@ -2709,8 +2707,8 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                    }
                 }',
             ],
-            ['json_source' =>
-                '{
+            ['json_source'
+                => '{
                   "content": {
                       "network_ports": [
                          {
@@ -2729,8 +2727,8 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                    }
                 }',
             ],
-            ['json_source' =>
-                '{
+            ['json_source'
+                => '{
                   "content": {
                       "network_ports": [
                          {
@@ -3011,7 +3009,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
         $this->assertFalse($inventory->inError());
@@ -3177,7 +3175,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
         $this->assertFalse($inventory->inError());
@@ -3219,7 +3217,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
         $this->assertFalse($inventory->inError());
@@ -3262,7 +3260,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
         $this->assertFalse($inventory->inError());
@@ -3307,7 +3305,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
         $this->assertFalse($inventory->inError());
@@ -3368,7 +3366,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
         $this->assertFalse($inventory->inError());
@@ -3417,7 +3415,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
-                var_dump($error);
+                dump($error);
             }
         }
         $this->assertFalse($inventory->inError());
@@ -4161,5 +4159,227 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
                 $port['name'],
             );
         }
+    }
+
+    public function testSnmpNetworkEquipementDiscoveryUpdate()
+    {
+        $ip_address = new \IPAddress();
+        $rule_matched_log = new \RuleMatchedLog();
+        $network_equipement = new \NetworkEquipment();
+
+        /*Create the network equipment*/
+
+        $xml_source = '<?xml version="1.0" encoding="UTF-8"?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <AUTHSNMP>3</AUTHSNMP>
+      <DESCRIPTION>Cisco NX-OS(tm) m9700, RELEASE SOFTWARE Copyright (c) 2002-2024 by Cisco Systems, Inc.</DESCRIPTION>
+      <DNSHOSTNAME>10.15.1.115</DNSHOSTNAME>
+      <ENTITY>0</ENTITY>
+      <FIRMWARE>9.4(2a)</FIRMWARE>
+      <IP>10.15.1.115</IP>
+      <IPS>
+        <IP>10.15.1.115</IP>
+      </IPS>
+      <MAC>c8:60:8f:03:c0:5c</MAC>
+      <MANUFACTURER>Cisco</MANUFACTURER>
+      <MODEL>DS-C970A</MODEL>
+      <SERIAL>FOX123</SERIAL>
+      <SNMPHOSTNAME>MD123</SNMPHOSTNAME>
+      <TYPE>NETWORKING</TYPE>
+      <UPTIME>57 days, 20:34:23.47</UPTIME>
+    </DEVICE>
+    <MODULEVERSION>6.8</MODULEVERSION>
+    <PROCESSNUMBER>30129</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>ABC-2025-06-25-13-28-42</DEVICEID>
+  <QUERY>NETDISCOVERY</QUERY>
+</REQUEST>';
+
+        //Prepare the data
+        $converter = new Converter();
+        $json = json_decode($converter->convert($xml_source));
+
+        $data = (array) $json->content;
+        $inventory = new Inventory();
+        $this->assertTrue($inventory->setData($json));
+
+        // Create the agent
+        $agent = new \Agent();
+        $this->assertSame(0, $agent->handleAgent($inventory->extractMetadata()));
+
+        //Prepare the inventory
+        $main = new \Glpi\Inventory\MainAsset\NetworkEquipment($network_equipement, $json);
+        $main->setAgent($agent)->setExtraData($data);
+        $main->checkConf(new Conf());
+        $main->setDiscovery(true);
+        $result = $main->prepare();
+        $this->assertCount(1, $result);
+        $result = (array) $result[0];
+        $this->assertSame('MD123', $result['name']);
+        $this->assertSame('FOX123', $result['serial']);
+
+        //Handle the inventory
+        $main->handle();
+        $inventory->doInventory();
+
+        //Check the result
+        $this->assertEquals(1, count($ip_address->find([
+            'mainitemtype' => \NetworkEquipment::class,
+            'mainitems_id' => $network_equipement->fields['id'],
+            'name' => '10.15.1.115',
+        ])));
+
+        $this->assertEquals(0, count($rule_matched_log->find([
+            'itemtype' => \NetworkEquipment::class,
+            'items_id' => $network_equipement->fields['id'],
+            'method' => 'netdiscovery',
+        ])));
+
+        /*Network Equipement create log because IP Address don"t change*/
+
+        $xml_source = '<?xml version="1.0" encoding="UTF-8"?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <AUTHSNMP>3</AUTHSNMP>
+      <DESCRIPTION>Cisco NX-OS(tm) m9700, RELEASE SOFTWARE Copyright (c) 2002-2024 by Cisco Systems, Inc.</DESCRIPTION>
+      <DNSHOSTNAME>10.15.1.115</DNSHOSTNAME>
+      <ENTITY>0</ENTITY>
+      <FIRMWARE>9.4(2a)</FIRMWARE>
+      <IP>10.15.1.115</IP>
+      <IPS>
+        <IP>10.15.1.115</IP>
+      </IPS>
+      <MAC>c8:60:8f:03:c0:5c</MAC>
+      <MANUFACTURER>Cisco</MANUFACTURER>
+      <MODEL>DS-C970A</MODEL>
+      <SERIAL>FOX123</SERIAL>
+      <SNMPHOSTNAME>MD124</SNMPHOSTNAME>
+      <TYPE>NETWORKING</TYPE>
+      <UPTIME>57 days, 20:34:23.47</UPTIME>
+    </DEVICE>
+    <MODULEVERSION>6.8</MODULEVERSION>
+    <PROCESSNUMBER>30129</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>ABC-2025-06-25-13-28-42</DEVICEID>
+  <QUERY>NETDISCOVERY</QUERY>
+</REQUEST>';
+
+        //Prepare the data
+        $converter = new Converter();
+        $json = json_decode($converter->convert($xml_source));
+
+        $network_equipement = new \NetworkEquipment();
+
+        $data = (array) $json->content;
+        $inventory = new Inventory();
+        $this->assertTrue($inventory->setData($json));
+
+        // Create the agent
+        $agent = new \Agent();
+        $this->assertSame(0, $agent->handleAgent($inventory->extractMetadata()));
+
+        //Prepare the inventory
+        $main = new \Glpi\Inventory\MainAsset\NetworkEquipment($network_equipement, $json);
+        $main->setAgent($agent)->setExtraData($data);
+        $main->checkConf(new Conf());
+        $main->setDiscovery(true);
+        $result = $main->prepare();
+        $this->assertCount(1, $result);
+        $result = (array) $result[0];
+        $this->assertSame('MD124', $result['name']);
+        $this->assertSame('FOX123', $result['serial']);
+
+        //Handle the inventory
+        $main->handle();
+        $inventory->doInventory();
+
+        //Check the result
+        $this->assertEquals(1, count($ip_address->find([
+            'mainitemtype' => \NetworkEquipment::class,
+            'mainitems_id' => $network_equipement->fields['id'],
+            'name' => '10.15.1.115',
+        ])));
+
+        //Verif if log is created
+        $this->assertEquals(1, count($rule_matched_log->find([
+            'itemtype' => \NetworkEquipment::class,
+            'items_id' => $network_equipement->fields['id'],
+            'method' => 'netdiscovery',
+        ])));
+
+        $this->assertTrue($rule_matched_log->deleteByCriteria([
+            'itemtype' => \NetworkEquipment::class,
+            'items_id' => $network_equipement->fields['id'],
+            'method' => 'netdiscovery',
+        ]));
+
+        //Network Equipement update log because IP Address change
+        $xml_source = '<?xml version="1.0" encoding="UTF-8"?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <AUTHSNMP>3</AUTHSNMP>
+      <DESCRIPTION>Cisco NX-OS(tm) m9700, RELEASE SOFTWARE Copyright (c) 2002-2024 by Cisco Systems, Inc.</DESCRIPTION>
+      <DNSHOSTNAME>10.15.1.116</DNSHOSTNAME>
+      <ENTITY>0</ENTITY>
+      <FIRMWARE>9.4(2a)</FIRMWARE>
+      <IP>10.15.1.16</IP>
+      <IPS>
+        <IP>10.15.1.116</IP>
+      </IPS>
+      <MAC>c8:60:8f:03:c0:5c</MAC>
+      <MANUFACTURER>Cisco</MANUFACTURER>
+      <MODEL>DS-C970A</MODEL>
+      <SERIAL>FOX123</SERIAL>
+      <SNMPHOSTNAME>MD125</SNMPHOSTNAME>
+      <TYPE>NETWORKING</TYPE>
+      <UPTIME>57 days, 20:34:23.47</UPTIME>
+    </DEVICE>
+    <MODULEVERSION>6.8</MODULEVERSION>
+    <PROCESSNUMBER>30129</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>ABC-2025-06-25-13-28-42</DEVICEID>
+  <QUERY>NETDISCOVERY</QUERY>
+</REQUEST>';
+
+        $converter = new Converter();
+        $json = json_decode($converter->convert($xml_source));
+
+        $network_equipement = new \NetworkEquipment();
+
+        $data = (array) $json->content;
+        $inventory = new Inventory();
+        $this->assertTrue($inventory->setData($json));
+
+        $agent = new \Agent();
+        $this->assertSame(0, $agent->handleAgent($inventory->extractMetadata()));
+
+        $main = new \Glpi\Inventory\MainAsset\NetworkEquipment($network_equipement, $json);
+        $main->setAgent($agent)->setExtraData($data);
+        $main->checkConf(new Conf());
+        $main->setDiscovery(true);
+        $result = $main->prepare();
+        $this->assertCount(1, $result);
+        $result = (array) $result[0];
+        $this->assertSame('MD125', $result['name']);
+        $this->assertSame('FOX123', $result['serial']);
+
+        $main->handle();
+        $inventory->doInventory();
+
+        $this->assertEquals(1, count($ip_address->find([
+            'mainitemtype' => \NetworkEquipment::class,
+            'mainitems_id' => $network_equipement->fields['id'],
+            'name' => '10.15.1.116',
+        ])));
+
+        $this->assertEquals(0, count($rule_matched_log->find([
+            'itemtype' => \NetworkEquipment::class,
+            'items_id' => $network_equipement->fields['id'],
+            'method' => 'netdiscovery',
+        ])));
     }
 }

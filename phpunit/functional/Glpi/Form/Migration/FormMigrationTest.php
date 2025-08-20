@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Form\Migration;
 
 use Computer;
 use DbTestCase;
+use Entity;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
@@ -2167,6 +2168,125 @@ final class FormMigrationTest extends DbTestCase
         );
     }
 
+    public function testFormMigrationQuestionDropdownItemWithEmptyValues(): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        // Create a form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_forms',
+            [
+                'name' => 'Test form migration question for dropdown item question with empty values',
+            ]
+        ));
+        $form_id = $DB->insertId();
+
+        // Insert a section for the form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_sections',
+            [
+                'plugin_formcreator_forms_id' => $form_id,
+            ]
+        ));
+
+        $section_id = $DB->insertId();
+
+        // Insert a question for the form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'name'                           => 'Test form migration question for dropdown item question with empty values',
+                'plugin_formcreator_sections_id' => $section_id,
+                'fieldtype'                      => 'dropdown',
+                'itemtype'                       => 'ITILCategory',
+                'values'                         => '', // Empty values
+            ]
+        ));
+
+        // Process migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Verify that the question has been migrated correctly
+        /** @var Question $question */
+        $question = getItemByTypeName(Question::class, 'Test form migration question for dropdown item question with empty values');
+        /** @var QuestionTypeItemDropdown $question_type */
+        $question_type = $question->getQuestionType();
+        $this->assertEquals(\ITILCategory::getType(), $question_type->getDefaultValueItemtype($question));
+        $this->assertEquals([], $question_type->getCategoriesFilter($question));
+        $this->assertEquals(0, $question_type->getRootItemsId($question));
+        $this->assertEquals(0, $question_type->getSubtreeDepth($question));
+    }
+
+    public function testFormMigrationQuestionDropdownItemWithInvalidItemtype(): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        $form_name     = 'Test form migration question for dropdown item question with invalid itemtype';
+        $question_name = 'Test form migration question for dropdown item question with invalid itemtype';
+
+        // Create a form
+        $this->assertTrue($DB->insert('glpi_plugin_formcreator_forms', ['name' => $form_name]));
+        $form_id = $DB->insertId();
+
+        // Insert a section for the form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_sections',
+            [
+                'plugin_formcreator_forms_id' => $form_id,
+            ]
+        ));
+
+        $section_id = $DB->insertId();
+
+        // Insert a question for the form with an invalid itemtype
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'name'                           => $question_name,
+                'plugin_formcreator_sections_id' => $section_id,
+                'fieldtype'                      => 'dropdown',
+                'itemtype'                       => 'InvalidItemType', // Invalid itemtype
+                'values'                         => '', // Empty values
+            ]
+        ));
+
+        // Process migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $result = new PluginMigrationResult();
+        $this->setPrivateProperty($migration, 'result', $result);
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Verify that the question has not been migrated
+        $this->assertEquals(0, countElementsInTable(
+            'glpi_forms_questions',
+            ['name' => $question_name],
+        ));
+
+        // Verify that the migration result contains an error
+        $this->assertTrue($result->hasErrors());
+        $errors = array_filter(
+            $result->getMessages(),
+            fn($m) => $m['type'] == MessageType::Error
+        );
+        $errors = array_column($errors, "message");
+        $this->assertContains(
+            sprintf(
+                'Error while importing question "%s" in section "N/A" and form "%s": Invalid extra data for question',
+                $question_name,
+                $form_name
+            ),
+            $errors
+        );
+    }
+
     public function testFormMigrationQuestionDropdownItemWithAdvancedOptions(): void
     {
         global $DB;
@@ -2625,5 +2745,55 @@ final class FormMigrationTest extends DbTestCase
                 $form->getConfiguredConditionsData()
             )
         );
+    }
+
+    public function testFormMigrationConfigs(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $entities_id_1 = getItemByTypeName(Entity::class, '_test_root_entity', true);
+        $entities_id_2 = getItemByTypeName(Entity::class, '_test_child_1', true);
+        $entities_id_3 = getItemByTypeName(Entity::class, '_test_child_2', true);
+        $entities_id_4 = getItemByTypeName(Entity::class, '_test_child_3', true);
+
+        $DB->insert('glpi_plugin_formcreator_entityconfigs', [
+            'entities_id' => $entities_id_1,
+            'replace_helpdesk' => -2, // Inherit from parent
+        ]);
+        $DB->insert('glpi_plugin_formcreator_entityconfigs', [
+            'entities_id' => $entities_id_2,
+            'replace_helpdesk' => 0, // Helpdesk not replaced
+        ]);
+        $DB->insert('glpi_plugin_formcreator_entityconfigs', [
+            'entities_id' => $entities_id_3,
+            'replace_helpdesk' => 1, // Simple service desk
+        ]);
+        $DB->insert('glpi_plugin_formcreator_entityconfigs', [
+            'entities_id' => $entities_id_4,
+            'replace_helpdesk' => 2, // Full service desk
+        ]);
+
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->callPrivateMethod($migration, 'processMigrationOfConfigs');
+
+        $configs = $DB->request([
+            'SELECT' => ['id', 'completename', 'show_tickets_properties_on_helpdesk'],
+            'FROM' => Entity::getTable(),
+            'WHERE' => [
+                'id' => [$entities_id_1, $entities_id_2, $entities_id_3, $entities_id_4],
+            ],
+        ]);
+        foreach ($configs as $c) {
+            $this->assertEquals(
+                match ($c['id']) {
+                    $entities_id_1 => -2,
+                    $entities_id_3 => 0,
+                    $entities_id_2, $entities_id_4 => 1,
+                },
+                $c['show_tickets_properties_on_helpdesk'],
+                "Entity {$c['completename']} has incorrect show_tickets_properties_on_helpdesk value"
+            );
+        }
     }
 }

@@ -85,14 +85,12 @@ class Item_Project extends CommonDBRelation
     /**
      * Print the HTML array for Items linked to a project
      *
-     * @param $project Project object
+     * @param Project $project
      *
      * @return bool
      **/
     public static function showForProject(Project $project): bool
     {
-        global $CFG_GLPI;
-
         $instID = $project->getID();
 
         if (!$project->can($instID, READ)) {
@@ -102,121 +100,94 @@ class Item_Project extends CommonDBRelation
         $rand    = mt_rand();
 
         $types_iterator = self::getDistinctTypes($instID);
-        $number = count($types_iterator);
-
-        if ($canedit) {
-            echo "<div class='firstbloc'>";
-            echo "<form name='projectitem_form$rand' id='projectitem_form$rand' method='post'
-                action='" . htmlescape(Toolbox::getItemTypeFormURL(self::class)) . "'>";
-
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='2'>" . __s('Add an item') . "</th></tr>";
-
-            echo "<tr class='tab_bg_1'><td>";
-            Dropdown::showSelectItemFromItemtypes(['itemtypes'
-                                                      => $CFG_GLPI["project_asset_types"],
-                'entity_restrict'
-                                                      => ($project->fields['is_recursive']
-                                                          ? getSonsOf(
-                                                              'glpi_entities',
-                                                              $project->fields['entities_id']
-                                                          )
-                                                          : $project->fields['entities_id']),
-            ]);
-            echo "</td><td class='center' width='30%'>";
-            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-            echo "<input type='hidden' name='projects_id' value='$instID'>";
-            echo "</td></tr>";
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
-        }
-
-        echo "<div class='spaced'>";
-        if ($canedit && $number) {
-            Html::openMassiveActionsForm('mass' . self::class . $rand);
-            $massiveactionparams = ['container' => 'mass' . self::class . $rand];
-            Html::showMassiveActions($massiveactionparams);
-        }
-        echo "<table class='tab_cadre_fixe'>";
-        $header_begin  = "<tr>";
-        $header_top    = '';
-        $header_bottom = '';
-        $header_end    = '';
-        if ($canedit && $number) {
-            $header_top    .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . self::class . $rand);
-            $header_top    .= "</th>";
-            $header_bottom .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . self::class . $rand);
-            $header_bottom .= "</th>";
-        }
-        $header_end .= "<th>" . _sn('Type', 'Types', 1) . "</th>";
-        $header_end .= "<th>" . htmlescape(Entity::getTypeName(1)) . "</th>";
-        $header_end .= "<th>" . __s('Name') . "</th>";
-        $header_end .= "<th>" . __s('Serial number') . "</th>";
-        $header_end .= "<th>" . __s('Inventory number') . "</th></tr>";
-        echo $header_begin . $header_top . $header_end;
 
         $totalnb = 0;
+        $entity_names_cache = [];
+        $entries = [];
+        $used = [];
+
         foreach ($types_iterator as $row) {
             $itemtype = $row['itemtype'];
-            if (!($item = getItemForItemtype($itemtype))) {
+            if (!($item = getItemForItemtype($itemtype)) || !$item::canView()) {
                 continue;
             }
 
-            if ($item->canView()) {
-                $iterator = self::getTypeItems($instID, $itemtype);
-                $nb = count($iterator);
+            $itemtype_name = $item::getTypeName(1);
+            $iterator = self::getTypeItems($instID, $itemtype);
+            $nb = count($iterator);
 
-                $prem = true;
-                foreach ($iterator as $data) {
-                    $name = $data[$itemtype::getNameField()];
-                    if (
-                        $_SESSION["glpiis_ids_visible"]
-                        || empty($data[$itemtype::getNameField()])
-                    ) {
-                        $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
-                    }
-                    $link     = $item::getFormURLWithID($data['id']);
-                    $namelink = "<a href=\"" . htmlescape($link) . "\">" . htmlescape($name) . "</a>";
-
-                    echo "<tr class='tab_bg_1'>";
-                    if ($canedit) {
-                        echo "<td width='10'>";
-                        Html::showMassiveActionCheckBox(self::class, $data["linkid"]);
-                        echo "</td>";
-                    }
-                    if ($prem) {
-                        $typename = $item->getTypeName($nb);
-                        echo "<td class='center top' rowspan='$nb'>" .
-                         htmlescape(($nb > 1) ? sprintf(__('%1$s: %2$s'), $typename, $nb) : $typename) . "</td>";
-                        $prem = false;
-                    }
-                    echo "<td class='center'>";
-                    echo htmlescape(Dropdown::getDropdownName("glpi_entities", $data['entity'])) . "</td>";
-                    echo "<td class='center" .
-                        (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'");
-                    echo ">" . $namelink . "</td>";
-                    echo "<td class='center'>" . (isset($data["serial"]) ? "" . htmlescape($data["serial"]) . "" : "-") .
-                    "</td>";
-                    echo "<td class='center'>" .
-                      (isset($data["otherserial"]) ? "" . htmlescape($data["otherserial"]) . "" : "-") . "</td>";
-                    echo "</tr>";
+            foreach ($iterator as $data) {
+                $name = $data[$itemtype::getNameField()];
+                if (
+                    $_SESSION["glpiis_ids_visible"]
+                    || empty($data[$itemtype::getNameField()])
+                ) {
+                    $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
                 }
-                $totalnb += $nb;
+                $link     = $item::getFormURLWithID($data['id']);
+                $namelink = "<a href=\"" . htmlescape($link) . "\">" . htmlescape($name) . "</a>";
+
+                if (!isset($entity_names_cache[$data['entity']])) {
+                    $entity_names_cache[$data['entity']] = Dropdown::getDropdownName("glpi_entities", $data['entity']);
+                }
+
+                $entries[] = [
+                    'itemtype' => self::class,
+                    'id' => $data['linkid'],
+                    'row_class' => (isset($data['is_deleted']) && $data['is_deleted']) ? 'table-deleted' : '',
+                    'type' => $itemtype_name,
+                    'name' => $namelink,
+                    'entity' => $entity_names_cache[$data['entity']],
+                    'serial' => isset($data["serial"]) ? htmlescape($data["serial"]) : '-',
+                    'otherserial' => isset($data["otherserial"]) ? htmlescape($data["otherserial"]) : '-',
+                ];
+                $used[$itemtype][$data['id']] = $data['id'];
             }
+            $totalnb += $nb;
         }
+
+        $columns = [
+            'type' => _n('Type', 'Types', 1),
+        ];
+        if (Session::isMultiEntitiesMode()) {
+            $columns['entity'] = Entity::getTypeName(1);
+        }
+        $columns += [
+            'name' => __('Name'),
+            'serial' => __('Serial number'),
+            'otherserial' => __('Inventory number'),
+        ];
+        $formatters = [
+            'name' => 'raw_html',
+        ];
+        $footers = [];
         if ($totalnb > 0) {
-            echo "<tr class='tab_bg_2'>";
-            echo "<td class='center' colspan='2'>" . htmlescape(sprintf(__('%1$s = %2$s'), __('Total'), $totalnb));
-            echo "</td><td colspan='4'>&nbsp;</td></tr> ";
+            $footers = [
+                [sprintf(__('%1$s = %2$s'), __('Total'), $totalnb)],
+            ];
         }
-        echo "</table>";
-        if ($canedit && $number) {
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
-        }
-        echo "</div>";
+
+        TemplateRenderer::getInstance()->display('pages/tools/item_project.html.twig', [
+            'item' => $project,
+            'can_edit' => $canedit,
+            'used' => $used,
+            'datatable_params' => [
+                'is_tab' => true,
+                'nofilter' => true,
+                'nosort' => true,
+                'columns' => $columns,
+                'formatters' => $formatters,
+                'entries' => $entries,
+                'footers' => $footers,
+                'total_number' => count($entries),
+                'filtered_number' => count($entries),
+                'showmassiveactions' => $canedit,
+                'massiveactionparams' => [
+                    'container' => 'massiveactioncontainer' . $rand,
+                    'itemtype'  => self::class,
+                ],
+            ],
+        ]);
 
         return true;
     }
@@ -290,10 +261,9 @@ class Item_Project extends CommonDBRelation
 
     private static function showForAsset(CommonDBTM $item): bool
     {
-
         $item_project = new self();
         $item_projects = $item_project->find([
-            'itemtype' => $item->getType(),
+            'itemtype' => $item::class,
             'items_id' => $item->getID(),
         ]);
 
@@ -304,7 +274,7 @@ class Item_Project extends CommonDBRelation
             $project = new Project();
             $result = $project->getFromDB($value['projects_id']);
 
-            if ($result === false) {
+            if ($result === false || !$project->can($project->getID(), READ)) {
                 continue;
             }
 
@@ -312,29 +282,21 @@ class Item_Project extends CommonDBRelation
             $prioritycolor  = $_SESSION["glpipriority_" . $project->fields['priority']];
             $state = ProjectState::getById($project->fields['projectstates_id']);
 
-            if (!$project->can($project->fields['id'], READ)) {
-                $data = [
-                    'name' => $project->getLink(),
-                    'projectstates_id' => '',
-                    'priority' => '',
-                    'percent_done' => '',
-                ];
-            } else {
-                $data = [
-                    'name' => $project->getLink(),
-                    'projectstates_id' => $state !== false
-                        ? [
-                            'content' => $state->fields['name'],
-                            'color' => $state->fields['color'],
-                        ] : '',
-                    'priority' => [
-                        'content' => $priority,
-                        'color' => $prioritycolor,
-                    ],
-                    'percent_done' => Html::getProgressBar((float) $project->fields['percent_done']),
-                ];
-            }
-            $entries[] = array_merge($project->fields, $data);
+            $entries[] = [
+                'name' => $project->getLink(),
+                'priority' => [
+                    'content' => $priority,
+                    'color' => $prioritycolor,
+                ],
+                'code' => $project->fields['code'],
+                'projectstates_id' => $state !== false
+                    ? [
+                        'content' => $state->fields['name'],
+                        'color' => $state->fields['color'],
+                    ] : '',
+                'percent_done' => (float) $project->fields['percent_done'],
+                'creation_date' => $project->fields['date_creation'],
+            ];
         }
 
         $cols = [
@@ -345,19 +307,19 @@ class Item_Project extends CommonDBRelation
                 "projectstates_id" => _n('State', 'States', 1),
                 "percent_done" => __('Percent done'),
                 "creation_date" => __('Creation date'),
-                "content" => __('Description'),
             ],
             'formatters' => [
                 'name' => 'raw_html',
                 'priority' => 'badge',
                 'projectstates_id' => 'badge',
-                'percent_done' => 'raw_html',
+                'percent_done' => 'progress',
                 'creation_date' => 'date',
             ],
         ];
 
         TemplateRenderer::getInstance()->display('pages/tools/item_project.html.twig', [
             'item' => $item,
+            'can_edit' => $item->canEdit($item->getID()),
             'used' => $used,
             'datatable_params' => [
                 'is_tab' => true,

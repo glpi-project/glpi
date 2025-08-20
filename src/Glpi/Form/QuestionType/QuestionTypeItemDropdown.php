@@ -115,7 +115,12 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
     #[Override]
     public function convertExtraData(array $rawData): mixed
     {
-        $values = json_decode($rawData['values'] ?? '', true) ?? [];
+        // Decode JSON string to array
+        $values = [];
+        if (!empty($rawData['values']) && is_string($rawData['values'])) {
+            $values = json_decode($rawData['values'], true);
+        }
+
         $categories_filter = [];
         if (isset($values['show_ticket_categories'])) {
             $categories_filter = match ($values['show_ticket_categories']) {

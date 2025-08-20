@@ -136,8 +136,8 @@ class IPNetwork_Vlan extends CommonDBRelation
             echo "<tr class='tab_bg_1'><td class='center'>";
             echo "<input type='hidden' name='ipnetworks_id' value='$ID'>";
             Vlan::dropdown(['used' => $used]);
-            echo "&nbsp;<input type='submit' name='add' value='" . _sx('button', 'Associate') .
-                      "' class='btn btn-primary'>";
+            echo "&nbsp;<input type='submit' name='add' value='" . _sx('button', 'Associate')
+                      . "' class='btn btn-primary'>";
             echo "</td></tr>";
 
             echo "</table>";
@@ -182,8 +182,8 @@ class IPNetwork_Vlan extends CommonDBRelation
                 $name = sprintf(__s('%1$s (%2$s)'), $name, (int) $data["id"]);
             }
             echo "<td class='center b'>
-               <a href='" . htmlescape(Vlan::getFormURLWithID($data["id"])) . "'>" . $name .
-              "</a>";
+               <a href='" . htmlescape(Vlan::getFormURLWithID($data["id"])) . "'>" . $name
+              . "</a>";
             echo "</td>";
             echo "<td class='center'>" . htmlescape(Dropdown::getDropdownName("glpi_entities", $data["entities_id"])) . '</td>';
             echo "<td class='numeric'>" . htmlescape($data["tag"]) . "</td>";

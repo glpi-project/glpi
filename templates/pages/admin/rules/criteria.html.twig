@@ -41,7 +41,7 @@
         {{ inputs.hidden(rule.getRuleIdField, item.fields[rules_id_field]) }}
         {% set criteria_dropdown %}
             <div class="d-flex">
-                <div class="btn-group">
+                <div>
                     {% do call([rule, 'dropdownCriteria'], [{
                         value: item.fields['criteria'],
                         rand: rand

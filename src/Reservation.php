@@ -543,10 +543,10 @@ class Reservation extends CommonDBChild
                 $name = sprintf(__('%1$s - %2$s'), $type, $name);
             }
 
-            $all = "<a class='btn btn-primary ms-2 view-all' href='reservation.php?reservationitems_id=0'>" .
-               __s('View all items') .
-               "&nbsp;<i class='ti ti-eye'></i>" .
-            "</a>";
+            $all = "<a class='btn btn-primary ms-2 view-all' href='reservation.php?reservationitems_id=0'>"
+               . __s('View all items')
+               . "&nbsp;<i class='ti ti-eye'></i>"
+            . "</a>";
         } else {
             $type = "";
             $name = __('All reservable devices');
@@ -566,6 +566,15 @@ class Reservation extends CommonDBChild
             && count(self::getReservableItemtypes()) > 0
         );
 
+        $default_date = date('Y-m-d');
+        if (isset($_REQUEST['defaultDate'])) {
+            $default_date = $_REQUEST['defaultDate'];
+        } elseif (isset($_REQUEST['month'], $_REQUEST['year'])) {
+            $month = (int) $_REQUEST['month'];
+            $year  = (int) $_REQUEST['year'];
+            $default_date = sprintf('%04d-%02d-01', $year, $month);
+        }
+
         $js = "
             $(function() {
                 var reservation = new Reservations();
@@ -575,6 +584,7 @@ class Reservation extends CommonDBChild
                     rand: $rand,
                     can_reserve: " . ($can_reserve ? "true" : "false") . ",
                     now: '" . jsescape($_SESSION["glpi_currenttime"]) . "',
+                    defaultDate: '" . jsescape($default_date) . "',
                 });
                 reservation.displayPlanning();
           });
@@ -1002,7 +1012,15 @@ class Reservation extends CommonDBChild
         echo "<h1>" . __s('Reservations for this item') . "</h1>";
         echo "<div id='reservations_planning_$rand' class='reservations-planning tabbed'></div>";
 
-        $defaultDate = htmlescape($_REQUEST['defaultDate'] ?? date('Y-m-d'));
+        $default_date = date('Y-m-d');
+        if (isset($_REQUEST['defaultDate'])) {
+            $default_date = $_REQUEST['defaultDate'];
+        } elseif (isset($_REQUEST['month'], $_REQUEST['year'])) {
+            $month = (int) $_REQUEST['month'];
+            $year  = (int) $_REQUEST['year'];
+            $default_date = sprintf('%04d-%02d-01', $year, $month);
+        }
+        $default_date = jsescape($default_date);
         $now = date("Y-m-d H:i:s");
         $js = <<<JAVASCRIPT
             $(() => {
@@ -1013,7 +1031,7 @@ class Reservation extends CommonDBChild
                     is_tab: true,
                     rand: $rand,
                     currentv: 'listFull',
-                    defaultDate: '$defaultDate',
+                    defaultDate: '$default_date',
                     now: '$now',
                 });
                 reservation.displayPlanning();
@@ -1145,7 +1163,7 @@ JAVASCRIPT;
 
             if (!$is_old) {
                 [$annee, $mois] = explode("-", $data["start_date"]);
-                $href = htmlescape($CFG_GLPI["root_doc"]) . "/front/reservation.php?reservationitems_id={$data['id']}&mois_courant=$mois&annee_courante=$annee";
+                $href = htmlescape($CFG_GLPI["root_doc"]) . "/front/reservation.php?reservationitems_id={$data['id']}&month=$mois&year=$annee";
                 $entry['planning'] = "<a href='$href' title='" . __s('See planning') . "'>";
                 $entry['planning'] .= "<i class='" . Planning::getIcon() . "'></i>";
                 $entry['planning'] .= "<span class='sr-only'>" . __s('See planning') . "</span>";
@@ -1253,13 +1271,13 @@ JAVASCRIPT;
                 }
             }
             if ($show_all || !$reservable) {
-                $actions[$action_prefix . 'enable'] = "<i class='" . self::getIcon() . "'></i>" . __s('Authorize reservations');
+                $actions[$action_prefix . 'enable'] = "<i class='" . htmlescape(self::getIcon()) . "'></i>" . __s('Authorize reservations');
             }
             if ($show_all || $reservable) {
                 $actions[$action_prefix . 'disable'] = "<i class='ti ti-calendar-off'></i>" . __s('Prohibit reservations');
             }
             if ($show_all || ($reservable && !$available)) {
-                $actions[$action_prefix . 'available'] = "<i class='" . self::getIcon() . "'></i>" . __s('Make available for reservations');
+                $actions[$action_prefix . 'available'] = "<i class='" . htmlescape(self::getIcon()) . "'></i>" . __s('Make available for reservations');
             }
             if ($show_all || $available) {
                 $actions[$action_prefix . 'unavailable'] = "<i class='ti ti-calendar-off'></i>" . __s('Make unavailable for reservations');
@@ -1271,8 +1289,8 @@ JAVASCRIPT;
     {
         switch ($ma->getAction()) {
             case 'enable':
-                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
-                    __s('Authorize reservations') . "'>";
+                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='"
+                    . __s('Authorize reservations') . "'>";
                 return true;
             case 'disable':
                 echo '<div class="alert alert-warning">';
@@ -1280,16 +1298,16 @@ JAVASCRIPT;
                 echo '<br>';
                 echo "<span class='fw-bold'>" . __s('That will remove all the reservations in progress.') . "</span>";
                 echo '</div>';
-                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
-                    __s('Prohibit reservations') . "'>";
+                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='"
+                    . __s('Prohibit reservations') . "'>";
                 return true;
             case 'available':
-                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
-                    __s('Make available for reservations') . "'>";
+                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='"
+                    . __s('Make available for reservations') . "'>";
                 return true;
             case 'unavailable':
-                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
-                    __s('Make unavailable for reservations') . "'>";
+                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='"
+                    . __s('Make unavailable for reservations') . "'>";
                 return true;
         }
         return parent::showMassiveActionsSubForm($ma);

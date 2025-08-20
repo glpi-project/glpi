@@ -399,9 +399,9 @@ function update94xto950()
     /** Make datacenter pictures path relative */
     $doc_send_url = '/front/document.send.php?file=_pictures/';
 
-    $fix_picture_fct = (fn($path) =>
+    $fix_picture_fct = (fn($path)
         // Keep only part of URL corresponding to relative path inside GLPI_PICTURE_DIR
-        preg_replace('/^.*' . preg_quote($doc_send_url, '/') . '(.+)$/', '$1', $path));
+        => preg_replace('/^.*' . preg_quote($doc_send_url, '/') . '(.+)$/', '$1', $path));
 
     $common_dc_model_tables = [
         'glpi_computermodels',

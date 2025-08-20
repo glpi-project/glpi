@@ -134,7 +134,7 @@ abstract class AbstractFilter
         $rand  = mt_rand();
         $class = $filled ? "filled" : "";
 
-        $js = <<<JAVASCRIPT
+        $js = "
             $(function () {
                 $('#filter-{$rand} input')
                     .on('input', function() {
@@ -150,24 +150,24 @@ abstract class AbstractFilter
 
                 $('#filter-{$rand}')
                     .hover(function() {
-                        $('.dashboard .card.filter-{$id}').addClass('filter-impacted');
+                        $('.dashboard .card.filter-" . \jsescape($id) . "').addClass('filter-impacted');
                     }, function() {
-                        $('.dashboard .card.filter-{$id}').removeClass('filter-impacted');
+                        $('.dashboard .card.filter-" . \jsescape($id) . "').removeClass('filter-impacted');
                     });
                 });
-JAVASCRIPT;
+        ";
         $js = Html::scriptBlock($js);
 
-        $html  = <<<HTML
-            <fieldset id='filter-{$rand}' class='filter $class' data-filter-id='{$id}'>
-                $field
-                <legend>$label</legend>
+        $html  = '
+            <fieldset id="filter-' . $rand . '" class="filter ' . \htmlescape($class) . '" data-filter-id="' . \htmlescape($id) . '">
+                ' . $field . '
+                <legend>' . \htmlescape($label) . '</legend>
                 <button class="btn btn-sm btn-icon btn-ghost-secondary delete-filter">
-                    <i class='ti ti-trash'></i>
+                    <i class="ti ti-trash"></i>
                 </button>
-                {$js}
+                ' . $js . '
             </fieldset>
-HTML;
+        ';
 
         return $html;
     }
@@ -194,16 +194,16 @@ HTML;
             'width'               => '',
         ] + $add_params);
 
-        $js = <<<JAVASCRIPT
+        $js = "
             var on_change_{$rand} = function() {
-                var dom_elem    = $('#dropdown_{$fieldname}{$rand}');
+                var dom_elem    = $('#dropdown_" . \jsescape($fieldname . $rand) . "');
                 var selected    = dom_elem.find(':selected').val();
 
-                GLPI.Dashboard.getActiveDashboard().saveFilter('{$fieldname}', selected);
+                GLPI.Dashboard.getActiveDashboard().saveFilter('" . \jsescape($fieldname) . "', selected);
 
-                $(dom_elem).closest("fieldset").toggleClass("filled", selected !== null)
+                $(dom_elem).closest('fieldset').toggleClass('filled', selected !== null);
             };
-JAVASCRIPT;
+        ";
         $field .= Html::scriptBlock($js);
 
         return self::field($fieldname, $field, $label, $value !== null);

@@ -328,8 +328,8 @@ class DBmysqlIteratorTest extends DbTestCase
             ]
         );
         $this->assertSame(
-            'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`) ' .
-            'LEFT JOIN `baz` ON (`baz`.`id` = `foo`.`baz_id`)',
+            'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`) '
+            . 'LEFT JOIN `baz` ON (`baz`.`id` = `foo`.`baz_id`)',
             $it->getSql()
         );
 

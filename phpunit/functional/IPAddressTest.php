@@ -257,7 +257,6 @@ class IPAddressTest extends DbTestCase
             unset($currentIP['is_dynamic']);
             unset($currentIP['mainitems_id']);
             unset($currentIP['mainitemtype']);
-            //var_dump($currentIP);
             $this->assertSame($expected, $currentIP);
         }
 

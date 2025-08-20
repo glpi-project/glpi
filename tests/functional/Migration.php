@@ -200,12 +200,12 @@ class Migration extends \GLPITestCase
         $this->migration->executeMigration();
 
         $this->array($this->queries)->isIdenticalTo([
-            0 => 'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables`' .
-               ' WHERE `table_schema` = \'' . $DB->dbdefault .
-               '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'table1\'',
-            1 => 'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables`' .
-               ' WHERE `table_schema` = \'' . $DB->dbdefault .
-               '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'table2\'',
+            0 => 'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables`'
+               . ' WHERE `table_schema` = \'' . $DB->dbdefault
+               . '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'table1\'',
+            1 => 'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables`'
+               . ' WHERE `table_schema` = \'' . $DB->dbdefault
+               . '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'table2\'',
         ]);
 
         //try to backup existant tables
@@ -247,8 +247,8 @@ class Migration extends \GLPITestCase
         $this->migration->executeMigration();
 
         $this->array($this->queries)->isIdenticalTo([
-            "ALTER TABLE `change_table` DROP `id` ,\n" .
-         "CHANGE `ID` `id` INT NOT NULL DEFAULT '0'   FIRST  ",
+            "ALTER TABLE `change_table` DROP `id` ,\n"
+         . "CHANGE `ID` `id` INT NOT NULL DEFAULT '0'   FIRST  ",
         ]);
 
         // Test change field with move to after another column
@@ -260,8 +260,8 @@ class Migration extends \GLPITestCase
 
         $collate = $DB->use_utf8mb4 ? 'utf8mb4_unicode_ci' : 'utf8_unicode_ci';
         $this->array($this->queries)->isIdenticalTo([
-            "ALTER TABLE `change_table` DROP `name` ,\n" .
-         "CHANGE `NAME` `name` VARCHAR(255) COLLATE $collate DEFAULT NULL   AFTER `id` ",
+            "ALTER TABLE `change_table` DROP `name` ,\n"
+         . "CHANGE `NAME` `name` VARCHAR(255) COLLATE $collate DEFAULT NULL   AFTER `id` ",
         ]);
     }
 

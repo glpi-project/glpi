@@ -214,7 +214,7 @@ class SourceCodeIntegrityChecker
      * @param array $errors
      * @return string|null Release file path.
      */
-    private function getGLPIRelease(array &$errors = []): string|null
+    private function getGLPIRelease(array &$errors = []): ?string
     {
         global $CFG_GLPI;
 

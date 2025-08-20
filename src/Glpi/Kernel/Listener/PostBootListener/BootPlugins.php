@@ -54,8 +54,12 @@ final readonly class BootPlugins implements EventSubscriberInterface
 
     public function onPostBoot(): void
     {
-        if (!$this->isDatabaseUsable()) {
-            // Requires the database to be available.
+        global $DB;
+
+        if (
+            !$this->isDatabaseUsable()
+            || !$DB->tableExists(Plugin::getTable())
+        ) {
             return;
         }
 

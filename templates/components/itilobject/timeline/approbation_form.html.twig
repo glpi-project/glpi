@@ -6,6 +6,7 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
+ # @copyright 2025 Kyndryl Inc.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -45,7 +46,7 @@
                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
                <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
                <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
-               <input type="hidden" name="requesttypes_id" value="{{ item.fields['id'] }}" />
+               <input type="hidden" name="requesttypes_id" value="0" />
 
                <div class="card-header">
                   {{ __('Approval of the solution') }}

@@ -35,13 +35,14 @@
  * @var Migration $migration
  */
 $migration->addConfig([
-    'password_init_token_delay' => '86400',
-    'toast_location'    => 'bottom-right',
-    'set_followup_tech' => '0',
-    'set_solution_tech' => '0',
-    'is_demo_dashboards' => '0',
-    'planned_task_state' => '1',
-    'plugins_execution_mode' => 'on', // Plugin::EXECUTION_MODE_ON
+    'password_init_token_delay'     => '86400',
+    'toast_location'                => 'bottom-right',
+    'set_followup_tech'             => '0',
+    'set_solution_tech'             => '0',
+    'is_demo_dashboards'            => '0',
+    'planned_task_state'            => '1',
+    'plugins_execution_mode'        => 'on', // Plugin::EXECUTION_MODE_ON
+    'allow_unauthenticated_uploads' => '0',
 ]);
 $migration->addField('glpi_users', 'toast_location', 'string');
 

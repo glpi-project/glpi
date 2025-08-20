@@ -48,8 +48,9 @@ class ReminderTest extends DbTestCase
         $test_root       = getItemByTypeName('Entity', '_test_root_entity', true);
         $test_child_1    = getItemByTypeName('Entity', '_test_child_1', true);
         $test_child_2    = getItemByTypeName('Entity', '_test_child_2', true);
+        $test_child_3    = getItemByTypeName('Entity', '_test_child_3', true);
 
-        $all_entities = "'0', '$test_root', '$e2e_root', '$e2e_test_child1', '$e2e_test_child2', '$test_child_1', '$test_child_2'";
+        $all_entities = "'0', '$test_root', '$e2e_root', '$e2e_test_child1', '$e2e_test_child2', '$test_child_1', '$test_child_2', '$test_child_3'";
 
         //first, as a super-admin
         $this->login();
@@ -58,10 +59,10 @@ class ReminderTest extends DbTestCase
                OR `glpi_reminders_users`.`users_id` = '$users_id'
                OR (`glpi_profiles_reminders`.`profiles_id` = '4'
                     AND (`glpi_profiles_reminders`.`no_entity_restriction` = '1'
-                         OR ((`glpi_profiles_reminders`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2')
+                         OR ((`glpi_profiles_reminders`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2', '$test_child_3')
                                    OR (`glpi_profiles_reminders`.`is_recursive` = '1'
                                         AND `glpi_profiles_reminders`.`entities_id` IN ('0'))))))
-               OR ((`glpi_entities_reminders`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2')
+               OR ((`glpi_entities_reminders`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2', '$test_child_3')
                          OR (`glpi_entities_reminders`.`is_recursive` = '1'
                               AND `glpi_entities_reminders`.`entities_id` IN ('0')))))");
         $this->assertSame(

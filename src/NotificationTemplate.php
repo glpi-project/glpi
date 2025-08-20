@@ -283,10 +283,10 @@ class NotificationTemplate extends CommonDBTM
 
                     $css = $this->fields['css'] ?? '';
 
-                    $lang['content_html'] =
+                    $lang['content_html']
 
-                     "<!DOCTYPE html>" .
-                     "<html>
+                     = "<!DOCTYPE html>"
+                     . "<html>
                         <head>
                          <meta charset='utf-8' />
                          <meta name='viewport' content='width=device-width, initial-scale=1' />
@@ -295,12 +295,12 @@ class NotificationTemplate extends CommonDBTM
                            {$css}
                          </style>
                         </head>
-                        <body>\n" . (!empty($add_header) ? $add_header . "\n<br><br>" : '') .
-                        $template_datas['content_html'] .
-                     "<br><br>-- \n<br>" . $signature_html .
-                     "<br>$footer_string" .
-                     "<br><br>\n" . (!empty($add_footer) ? $add_footer . "\n<br><br>" : '') .
-                     "\n</body></html>";
+                        <body>\n" . (!empty($add_header) ? $add_header . "\n<br><br>" : '')
+                        . $template_datas['content_html']
+                     . "<br><br>-- \n<br>" . $signature_html
+                     . "<br>$footer_string"
+                     . "<br><br>\n" . (!empty($add_footer) ? $add_footer . "\n<br><br>" : '')
+                     . "\n</body></html>";
                 }
 
                 $signature_text = RichText::getTextFromHtml($this->signature, false, false);

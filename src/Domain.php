@@ -462,13 +462,13 @@ class Domain extends CommonDBTM implements AssignableItemInterface
                     ]
                 );
                 self::dropdownDomains([]);
-                echo "&nbsp;" .
-                 Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
+                echo "&nbsp;"
+                 . Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 return true;
             case 'remove_domain':
                 self::dropdownDomains([]);
-                echo "&nbsp;" .
-                 Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
+                echo "&nbsp;"
+                 . Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 return true;
             case "install":
                 Dropdown::showSelectItemFromItemtypes([

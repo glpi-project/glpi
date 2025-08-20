@@ -598,8 +598,8 @@ abstract class CommonDropdown extends CommonDBTM
     {
 
         if ($this->haveChildren()) {
-            echo "<div class='center'><p class='red'>" .
-               __s("You can't delete that item, because it has sub-items") . "</p></div>";
+            echo "<div class='center'><p class='red'>"
+               . __s("You can't delete that item, because it has sub-items") . "</p></div>";
             return false;
         }
 
@@ -613,8 +613,8 @@ abstract class CommonDropdown extends CommonDBTM
 
         if (!$this->must_be_replace) {
             // Delete form (set to 0)
-            echo "<p>" . __s('If you confirm the deletion, all uses of this dropdown will be blanked.') .
-              "</p>";
+            echo "<p>" . __s('If you confirm the deletion, all uses of this dropdown will be blanked.')
+              . "</p>";
             echo "<form action='" . $target . "' method='post'>";
             echo "<table class='tab_cadre'><tr>";
             echo "<td><input type='hidden' name='id' value='$ID'>";

@@ -35,6 +35,12 @@
 
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Dropdown\DropdownDefinitionManager;
+use Glpi\Form\Form;
+use Glpi\Form\FormTranslation;
+use Glpi\Form\Question;
+use Glpi\Form\Section;
+use Glpi\Helpdesk\HelpdeskTranslation;
+use Glpi\Helpdesk\Tile\GlpiPageTile;
 use Glpi\Socket;
 
 function loadDataset()
@@ -56,6 +62,9 @@ function loadDataset()
                 'entities_id' => '_test_root_entity',
             ], [
                 'name'        => '_test_child_2',
+                'entities_id' => '_test_root_entity',
+            ], [
+                'name'        => '_test_child_3',
                 'entities_id' => '_test_root_entity',
             ],
         ], 'Computer' => [
@@ -743,6 +752,33 @@ function loadDataset()
                 'entities_id' => '_test_root_entity',
             ],
         ],
+        'ITILFollowupTemplate' => [
+            [
+                'name' => 'needupdate_followuptemplate',
+                'entities_id' => '_test_root_entity',
+                'is_recursive' => 1,
+                'content' => 'We are waiting for your response to update the ticket.',
+            ],
+        ],
+        'SolutionTemplate' => [
+            [
+                'name' => 'noupdate_solutiontemplate',
+                'entities_id' => '_test_root_entity',
+                'is_recursive' => 1,
+                'content' => 'We have not received any update from you. We are closing the ticket.',
+            ],
+        ],
+        'PendingReason' => [
+            [
+                'name' => 'needupdate_pendingreason',
+                'entities_id' => '_test_root_entity',
+                'is_recursive' => 1,
+                'itilfollowuptemplates_id' => 'needupdate_followuptemplate',
+                'followup_frequency' => DAY_TIMESTAMP,
+                'followups_before_resolution' => 3,
+                'solutiontemplates_id' => 'noupdate_solutiontemplate',
+            ],
+        ],
     ];
 
     // To bypass various right checks
@@ -807,6 +843,7 @@ function loadDataset()
                 }
             }
         }
+        initFormTranslationFixtures();
         Search::$search = [];
         Config::setConfigurationValues('phpunit', ['dataset' => $data['_version']]);
     }
@@ -842,4 +879,61 @@ function getItemByTypeName(string $type, string $name, bool $onlyid = false): Co
         throw new RuntimeException(sprintf('Unable to load a single `%s` item with the name `%s` (none or many exist may exist).', $type, $name));
     }
     return ($onlyid ? $item->getID() : $item);
+}
+
+function initFormTranslationFixtures()
+{
+    /** @var DBmysql $DB */
+    global $DB;
+
+    $form = getItemByTypeName(Form::class, 'Request a service');
+    $section = new Section();
+    $section->getFromDBByCrit([
+        'forms_forms_id' => $form->getID(),
+        'name' => 'First Section',
+    ]);
+    $question = new Question();
+    $question->getFromDBByCrit([
+        'forms_sections_id' => $section->getID(),
+        'name' => 'Title',
+    ]);
+
+    $DB->insert(FormTranslation::getTable(), [
+        'itemtype' => Form::class,
+        'items_id' => $form->getID(),
+        'key' => 'form_name',
+        'language' => 'en_XX',
+        'translations' => '{"one": "Request a service translated"}',
+        'hash' => md5('Request a service'),
+    ]);
+    $DB->insert(FormTranslation::getTable(), [
+        'itemtype' => Section::class,
+        'items_id' => $section->getID(),
+        'key' => 'section_name',
+        'language' => 'en_XX',
+        'translations' => '{"one": "First Section translated"}',
+        'hash' => md5('First Section'),
+    ]);
+    $DB->insert(FormTranslation::getTable(), [
+        'itemtype' => Question::class,
+        'items_id' => $question->getID(),
+        'key' => 'question_name',
+        'language' => 'en_XX',
+        'translations' => '{"one": "Title translated"}',
+        'hash' => md5('Title'),
+    ]);
+
+    $glpi_tile = new GlpiPageTile();
+    $glpi_tile->getFromDBByCrit([
+        'title' => 'Browse help articles',
+    ]);
+
+    $DB->insert(HelpdeskTranslation::getTable(), [
+        'itemtype' => GlpiPageTile::class,
+        'items_id' => $question->getID(),
+        'key' => 'title',
+        'language' => 'en_XX',
+        'translations' => '{"one": "Browse help articles translated"}',
+        'hash' => md5('Browse help articles'),
+    ]);
 }

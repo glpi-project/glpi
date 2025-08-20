@@ -47,7 +47,10 @@ use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\ini_set;
 
-final class SessionStart implements EventSubscriberInterface
+/**
+ * @final
+ */
+class SessionStart implements EventSubscriberInterface
 {
     use KernelListenerTrait;
     use RequestRouterTrait;
@@ -57,6 +60,7 @@ final class SessionStart implements EventSubscriberInterface
         #[Autowire('%kernel.project_dir%')]
         string $glpi_root,
         array $plugin_directories = GLPI_PLUGINS_DIRECTORIES,
+        private string $php_sapi = PHP_SAPI
     ) {
         $this->glpi_root = $glpi_root;
         $this->plugin_directories = $plugin_directories;
@@ -86,7 +90,7 @@ final class SessionStart implements EventSubscriberInterface
             );
         }
 
-        if (PHP_SAPI === 'cli') {
+        if ($this->php_sapi === 'cli') {
             $is_stateless = true;
         } else {
             $request = Request::createFromGlobals();
@@ -95,22 +99,25 @@ final class SessionStart implements EventSubscriberInterface
 
         if (!$is_stateless) {
             Session::start();
-
-            // Copy the configuration defaults to the session
-            foreach ($CFG_GLPI['user_pref_field'] as $field) {
-                if (!isset($_SESSION["glpi$field"]) && isset($CFG_GLPI[$field])) {
-                    $_SESSION["glpi$field"] = $CFG_GLPI[$field];
-                }
-            }
         } else {
-            // Stateless endpoints will often have to start their own PHP session (based on a token for instance).
-            // Be sure to not use cookies defined in the request or to send a cookie in the response.
-            ini_set('session.use_cookies', 0);
+            if ($this->php_sapi !== 'cli') {
+                // Stateless endpoints will often have to start their own PHP session (based on a token for instance).
+                // Be sure to not use cookies defined in the request or to send a cookie in the response.
+                ini_set('session.use_cookies', 0);
+            }
 
             // The session base vars must always be defined.
             // Indeed, the GLPI code often refers to the `$_SESSION` variable
             // and we have to set them to prevent massive undefined array key access.
             Session::initVars();
+        }
+
+        // Copy the "preference" defaults to the session, if they are not already set.
+        // They are set during the authentication but may be accessed in a sessionless context (cron, anonymous pages, ...).
+        foreach ($CFG_GLPI['user_pref_field'] as $field) {
+            if (!isset($_SESSION["glpi$field"]) && isset($CFG_GLPI[$field])) {
+                $_SESSION["glpi$field"] = $CFG_GLPI[$field];
+            }
         }
 
         Profiler::getInstance()->stop('SessionStart::execute');

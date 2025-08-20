@@ -194,9 +194,9 @@ class Appliance_Item_Relation extends CommonDBRelation
             $itemtype = $row['itemtype'];
             $item = getItemForItemtype($itemtype);
             $item->getFromDB($row['items_id']);
-            $relations[$row['id']] = "<i class='" . $item->getIcon() . "' title='" . htmlescape($item::getTypeName(1)) . "'></i>" .
-                        "&nbsp;" . htmlescape($item::getTypeName(1)) .
-                        "&nbsp;-&nbsp;" . $item->getLink();
+            $relations[$row['id']] = "<i class='" . $item->getIcon() . "' title='" . htmlescape($item::getTypeName(1)) . "'></i>"
+                        . "&nbsp;" . htmlescape($item::getTypeName(1))
+                        . "&nbsp;-&nbsp;" . $item->getLink();
         }
 
         return $relations;

@@ -117,8 +117,8 @@ class NetworkCard extends Device
                     if (
                         property_exists($controller, 'type')
                         && ($val->description == $controller->type
-                        || strtolower($val->description . " controller") ==
-                              strtolower($controller->type))
+                        || strtolower($val->description . " controller")
+                              == strtolower($controller->type))
                         && !isset($this->ignored['controllers'][$controller->name])
                     ) {
                         $found_controller = $controller;

@@ -50,6 +50,7 @@ use Toolbox;
 
 use function Safe\ob_get_clean;
 use function Safe\ob_start;
+use function Safe\preg_match;
 
 /**
  * Widget class
@@ -327,49 +328,63 @@ class Widget
         ];
         $p = array_merge($default, $params);
 
+
         $formatted_number = Toolbox::shortenNumber($p['number']);
+
+        $bg_color         = $p['color'];
+        if (
+            preg_match('/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/i', $bg_color) !== 1
+            && preg_match('/^#[A-F0-9]+$/i', $bg_color) !== 1
+        ) {
+            $bg_color = '#CCCCCC';
+        }
         $fg_color         = Toolbox::getFgColor($p['color']);
         $fg_hover_color   = Toolbox::getFgColor($p['color'], 15);
         $fg_hover_border  = Toolbox::getFgColor($p['color'], 30);
 
-        $class = count($p['filters']) > 0 ? " filter-" . implode(' filter-', $p['filters']) : "";
+        $class = htmlescape(count($p['filters']) > 0 ? " filter-" . implode(' filter-', $p['filters']) : "");
 
         $href = strlen($p['url'])
-         ? "href='{$p['url']}'"
-         : "";
+            ? 'href="' . \htmlescape($p['url']) . '"'
+            : "";
 
-        $label = $p['label'];
+        $label = \htmlescape($p['label']);
+        $alt = \htmlescape($p['alt']);
+        $icon = \htmlescape($p['icon']);
+
+        $id = Toolbox::slugify($p['id']);
+
         $html = <<<HTML
-      <style>
-         #{$p['id']} {
-            background-color: {$p['color']};
-            color: {$fg_color};
-         }
+            <style>
+                #{$id} {
+                    background-color: {$bg_color};
+                    color: {$fg_color};
+                }
 
-         #{$p['id']}:hover {
-            background-color: {$fg_hover_color};
-            border: 1px solid {$fg_hover_border};
-         }
+                #{$id}:hover {
+                    background-color: {$fg_hover_color};
+                    border: 1px solid {$fg_hover_border};
+                }
 
-         .theme-dark #{$p['id']} {
-            background-color: {$fg_color};
-            color: {$p['color']};
-         }
+                .theme-dark #{$id} {
+                    background-color: {$fg_color};
+                    color: {$bg_color};
+                }
 
-         .theme-dark #{$p['id']}:hover {
-            background-color: {$fg_hover_color};
-            color: {$fg_color};
-            border: 1px solid {$fg_hover_border};
-         }
-      </style>
-      <a {$href}
-         id="{$p['id']}"
-         class="card big-number $class"
-         title="{$p['alt']}">
-         <span class="content">$formatted_number</span>
-         <div class="label" title="{$label}">{$label}</div>
-         <i class="main-icon {$p['icon']}"></i>
-      </a>
+                .theme-dark #{$id}:hover {
+                    background-color: {$fg_hover_color};
+                    color: {$fg_color};
+                    border: 1px solid {$fg_hover_border};
+                }
+            </style>
+            <a {$href}
+               id="{$id}"
+               class="card big-number $class"
+               title="{$alt}">
+                <span class="content">$formatted_number</span>
+                <div class="label" title="{$label}">{$label}</div>
+                <i class="main-icon {$icon}"></i>
+            </a>
 HTML;
 
         return $html;
@@ -428,6 +443,13 @@ HTML;
         $nb_lines = min($p['limit'], count($p['data']));
         array_splice($p['data'], $nb_lines);
 
+        $bg_color         = $p['color'];
+        if (
+            preg_match('/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/i', $bg_color) !== 1
+            && preg_match('/^#[A-F0-9]+$/i', $bg_color) !== 1
+        ) {
+            $bg_color = '#CCCCCC';
+        }
         $fg_color = Toolbox::getFgColor($p['color']);
 
         $class = $p['class'];
@@ -442,25 +464,28 @@ HTML;
             $entry = array_merge($default_entry, $entry);
 
             $href = strlen($entry['url'])
-            ? "href='{$entry['url']}'"
-            : "";
+                ? 'href="' . \htmlescape($entry['url']) . '"'
+                : "";
 
             $color = isset($entry['color'])
-            ? "style=\"color: {$entry['color']};\""
-            : "";
+                ? 'style="color: ' . \htmlescape($entry['color']) . ';"'
+                : "";
 
             $color2 = isset($entry['color'])
-            ? "style=\"color: " . Toolbox::getFgColor($entry['color'], 20) . ";\""
-            : "";
+                ? 'style="color: ' . \htmlescape(Toolbox::getFgColor($entry['color'], 20)) . ';"'
+                : "";
 
             $formatted_number = Toolbox::shortenNumber($entry['number']);
 
+            $icon = \htmlescape($entry['icon']);
+            $label = \htmlescape($entry['label']);
+
             $numbers_html .= <<<HTML
-            <a {$href} class="line line-{$i}">
-               <span class="content" {$color}>$formatted_number</span>
-               <i class="icon {$entry['icon']}" {$color2}></i>
-               <span class="label" {$color2}>{$entry['label']}</span>
-            </a>
+                <a {$href} class="line line-{$i}">
+                    <span class="content" {$color}>$formatted_number</span>
+                    <i class="icon {$icon}" {$color2}></i>
+                    <span class="label" {$color2}>{$label}</span>
+                </a>
 HTML;
             $i++;
         }
@@ -471,9 +496,11 @@ HTML;
                <span class='content'>
                   <i class='icon ti ti-alert-triangle'></i>
                </span>
-               <span class='label'>" . __('No data found') . "</span>
+               <span class='label'>" . __s('No data found') . "</span>
             <span>";
         }
+
+        $rand = (int) $p['rand'];
 
         $palette_style = "";
         if ($p['use_gradient']) {
@@ -484,45 +511,51 @@ HTML;
                 $color     = Toolbox::getFgColor($bgcolor);
 
                 $palette_style .= "
-               #chart-{$p['rand']} .line-$letter {
-                  background-color: $bgcolor;
-                  color: $color;
-               }
+                    #chart-{$rand} .line-$letter {
+                        background-color: $bgcolor;
+                        color: $color;
+                    }
 
-               #chart-{$p['rand']} .line-$letter:hover {
-                  background-color: $bgcolor_h;
-                  font-weight: bold;
-               }
-            ";
+                    #chart-{$rand} .line-$letter:hover {
+                        background-color: $bgcolor_h;
+                        font-weight: bold;
+                    }
+                ";
             }
         }
 
+
+        $label = \htmlescape($p['label']);
+        $alt = \htmlescape($p['alt']);
+        $icon = \htmlescape($p['icon']);
+        $class = \htmlescape($class);
+
         $html = <<<HTML
-      <style>
-         {$palette_style}
+            <style>
+                {$palette_style}
 
-         #chart-{$p['rand']} {
-            background-color: {$p['color']};
-            color: {$fg_color};
-         }
+                #chart-{$rand} {
+                    background-color: {$bg_color};
+                    color: {$fg_color};
+                }
 
-         .theme-dark #chart-{$p['rand']} {
-            background-color: {$fg_color};
-            color: {$p['color']};
-         }
-      </style>
+                .theme-dark #chart-{$rand} {
+                    background-color: {$fg_color};
+                    color: {$bg_color};
+                }
+            </style>
 
-      <div class="card $class"
-           id="chart-{$p['rand']}"
-           title="{$p['alt']}">
-         <div class='scrollable'>
-            <div class='table'>
-            {$numbers_html}
+            <div class="card $class"
+                 id="chart-{$rand}"
+                 title="{$alt}">
+                <div class="scrollable">
+                    <div class="table">
+                        {$numbers_html}
+                    </div>
+                </div>
+                <span class="main-label">{$label}</span>
+                <i class="main-icon {$icon}" style="color: {$fg_color}"></i>
             </div>
-         </div>
-         <span class="main-label">{$p['label']}</span>
-         <i class="main-icon {$p['icon']}" style="color: {$fg_color}"></i>
-      </div>
 HTML;
 
         return $html;
@@ -582,6 +615,13 @@ HTML;
 
         $nodata   = isset($p['data']['nodata']) && $p['data']['nodata'];
 
+        $bg_color         = $p['color'];
+        if (
+            preg_match('/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/i', $bg_color) !== 1
+            && preg_match('/^#[A-F0-9]+$/i', $bg_color) !== 1
+        ) {
+            $bg_color = '#CCCCCC';
+        }
         $fg_color      = Toolbox::getFgColor($p['color']);
         $dark_bg_color = Toolbox::getFgColor($p['color'], 80);
         $dark_fg_color = Toolbox::getFgColor($p['color'], 40);
@@ -596,29 +636,33 @@ HTML;
         $no_data_html = "";
         if ($nodata) {
             $no_data_html = "<span class='empty-card no-data'>
-               <div>" . __('No data found') . "</div>
+               <div>" . __s('No data found') . "</div>
             <span>";
         }
 
         $nb_series = min($p['limit'], count($p['data']));
 
-        $html = <<<HTML
-        <style>
-            #{$chart_id} {
-                background-color: {$p['color']};
-                color: {$fg_color}
-            }
+        $label = \htmlescape($p['label']);
+        $icon = \htmlescape($p['icon']);
+        $class = \htmlescape($class);
 
-            .theme-dark #{$chart_id} {
-                background-color: {$dark_bg_color};
-                color: {$dark_fg_color};
-            }
-        </style>
-        <div class="card g-chart {$class}" id="{$chart_id}">
-            <div class="chart ct-chart">{$no_data_html}</div>
-            <span class="main-label">{$p['label']}</span>
-            <i class="main-icon {$p['icon']}"></i>
-        </div>
+        $html = <<<HTML
+            <style>
+                #{$chart_id} {
+                    background-color: {$bg_color};
+                    color: {$fg_color}
+                }
+
+                .theme-dark #{$chart_id} {
+                    background-color: {$dark_bg_color};
+                    color: {$dark_fg_color};
+                }
+            </style>
+            <div class="card g-chart {$class}" id="{$chart_id}">
+                <div class="chart ct-chart">{$no_data_html}</div>
+                <span class="main-label">{$label}</span>
+                <i class="main-icon {$icon}"></i>
+            </div>
 HTML;
 
         if ($nodata) {
@@ -1072,6 +1116,13 @@ TWIG, $twig_params);
             $serie_i++;
         }
 
+        $bg_color         = $p['color'];
+        if (
+            preg_match('/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/i', $bg_color) !== 1
+            && preg_match('/^#[A-F0-9]+$/i', $bg_color) !== 1
+        ) {
+            $bg_color = '#CCCCCC';
+        }
         $fg_color        = Toolbox::getFgColor($p['color']);
         $dark_bg_color   = Toolbox::getFgColor($p['color'], 80);
         $dark_fg_color   = Toolbox::getFgColor($p['color'], 40);
@@ -1088,27 +1139,31 @@ TWIG, $twig_params);
         $no_data_html = "";
         if ($nodata) {
             $no_data_html = "<span class='empty-card no-data'>
-               <div>" . __('No data found') . "</div>
+               <div>" . __s('No data found') . "</div>
             <span>";
         }
 
+        $label = \htmlescape($p['label']);
+        $icon = \htmlescape($p['icon']);
+        $class = \htmlescape($class);
+
         $html = <<<HTML
             <style>
-            #{$chart_id} {
-                background-color: {$p['color']};
-                color: {$fg_color}
-            }
+                #{$chart_id} {
+                    background-color: {$bg_color};
+                    color: {$fg_color}
+                }
 
-            .theme-dark #{$chart_id} {
-                background-color: {$dark_bg_color};
-                color: {$dark_fg_color};
-            }
+                .theme-dark #{$chart_id} {
+                    background-color: {$dark_bg_color};
+                    color: {$dark_fg_color};
+                }
             </style>
 
             <div class="card g-chart $class" id="{$chart_id}">
                 <div class="chart ct-chart">$no_data_html</div>
-                <span class="main-label">{$p['label']}</span>
-                <i class="main-icon {$p['icon']}"></i>
+                <span class="main-label">{$label}</span>
+                <i class="main-icon {$icon}"></i>
             </div>
 HTML;
 
@@ -1452,6 +1507,13 @@ TWIG, $twig_params);
             $serie_i++;
         }
 
+        $bg_color         = $p['color'];
+        if (
+            preg_match('/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/i', $bg_color) !== 1
+            && preg_match('/^#[A-F0-9]+$/i', $bg_color) !== 1
+        ) {
+            $bg_color = '#CCCCCC';
+        }
         $fg_color        = Toolbox::getFgColor($p['color']);
         $dark_bg_color   = Toolbox::getFgColor($p['color'], 80);
         $dark_fg_color   = Toolbox::getFgColor($p['color'], 40);
@@ -1461,23 +1523,27 @@ TWIG, $twig_params);
         $class .= $p['multiple'] ? " multiple" : "";
         $class .= count($p['filters']) > 0 ? " filter-" . implode(' filter-', $p['filters']) : "";
 
+        $label = \htmlescape($p['label']);
+        $icon = \htmlescape($p['icon']);
+        $class = \htmlescape($class);
+
         $html = <<<HTML
             <style>
-            #{$chart_id} {
-                background-color: {$p['color']};
-                color: {$fg_color}
-            }
-
-            .theme-dark #{$chart_id} {
-                background-color: {$dark_bg_color};
-                color: {$dark_fg_color};
-            }
+                #{$chart_id} {
+                    background-color: {$bg_color};
+                    color: {$fg_color}
+                }
+    
+                .theme-dark #{$chart_id} {
+                    background-color: {$dark_bg_color};
+                    color: {$dark_fg_color};
+                }
             </style>
 
             <div class="card g-chart $class" id="{$chart_id}">
                 <div class="chart ct-chart"></div>
-                <span class="main-label">{$p['label']}</span>
-                <i class="main-icon {$p['icon']}"></i>
+                <span class="main-label">{$label}</span>
+                <i class="main-icon {$icon}"></i>
             </div>
 HTML;
 
@@ -1592,24 +1658,33 @@ TWIG, $twig_params);
         ];
         $p = array_merge($default, $params);
 
-        $ph           = __("Type markdown text here");
+        $ph           = __s("Type markdown text here");
+
+        $bg_color         = $p['color'];
+        if (
+            preg_match('/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/i', $bg_color) !== 1
+            && preg_match('/^#[A-F0-9]+$/i', $bg_color) !== 1
+        ) {
+            $bg_color = '#CCCCCC';
+        }
         $fg_color     = Toolbox::getFgColor($p['color']);
         $border_color = Toolbox::getFgColor($p['color'], 10);
 
         // Parse markdown
         $md = new MarkdownRenderer();
 
-        $content = RichText::getSafeHtml($md->disableHeadings()->render($p['markdown_content']));
+        $html_content = RichText::getSafeHtml($md->disableHeadings()->render($p['markdown_content']));
+        $md_content   = \htmlescape($p['markdown_content']);
 
         $html = <<<HTML
       <div
          class="card markdown"
-         style="background-color: {$p['color']}; color: {$fg_color}; border-color: {$border_color}">
+         style="background-color: {$bg_color}; color: {$fg_color}; border-color: {$border_color}">
 
-         <div class="html_content">{$content}</div>
+         <div class="html_content">{$html_content}</div>
          <textarea
             class="markdown_content"
-            placeholder="{$ph}">{$p['markdown_content']}</textarea>
+            placeholder="{$ph}">{$md_content}</textarea>
 
       </div>
 HTML;
@@ -1658,6 +1733,13 @@ HTML;
         $color = new Color($p['color']);
         $is_light = $color->isLight();
 
+        $bg_color         = $p['color'];
+        if (
+            preg_match('/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/i', $bg_color) !== 1
+            && preg_match('/^#[A-F0-9]+$/i', $bg_color) !== 1
+        ) {
+            $bg_color = '#CCCCCC';
+        }
         $fg_color  = Toolbox::getFgColor($p['color'], $is_light ? 65 : 40);
         $fg_color2 = Toolbox::getFgColor($p['color'], 5);
 
@@ -1690,24 +1772,27 @@ HTML;
         $crawler = new Crawler(ob_get_clean());
         $search_result = $crawler->filter('.search-results')->outerHtml();
 
+        $label = \htmlescape($p['label']);
+        $icon = \htmlescape($p['icon']);
+        $class = \htmlescape($class);
+
         $html = <<<HTML
-      <style>
-         #{$id} table th {
-            background: {$fg_color2};
-         }
-      </style>
-      <div
-         class="card search-table {$class}"
-         id="{$id}"
-         style="background-color: {$p['color']}; color: {$fg_color}">
-         <div class='table-container'>
-            $search_result
-         </div>
-         <span class="main-label">
-            <a {$href}>{$p['label']}</a>
-         </span>
-         <i class="main-icon {$p['icon']}"></i>
-      </div>
+            <style>
+                #{$id} table th {
+                    background: {$fg_color2};
+                }
+            </style>
+            <div class="card search-table {$class}"
+                 id="{$id}"
+                 style="background-color: {$bg_color}; color: {$fg_color}">
+                <div class='table-container'>
+                    $search_result
+                </div>
+                <span class="main-label">
+                    <a {$href}>{$label}</a>
+                </span>
+                <i class="main-icon {$icon}"></i>
+            </div>
 HTML;
 
         return $html;
@@ -1738,11 +1823,21 @@ HTML;
 
         $nb_lines = min($p['limit'], count($p['data']));
         array_splice($p['data'], $nb_lines);
+
+        $bg_color         = $p['color'];
+        if (
+            preg_match('/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/i', $bg_color) !== 1
+            && preg_match('/^#[A-F0-9]+$/i', $bg_color) !== 1
+        ) {
+            $bg_color = '#CCCCCC';
+        }
         $fg_color = Toolbox::getFgColor($p['color']);
         $bg_color_2 = Toolbox::getFgColor($p['color'], 5);
 
         $class = $p['class'];
         $class .= count($p['filters']) > 0 ? " filter-" . implode(' filter-', $p['filters']) : "";
+
+        $label = \htmlescape($p['label']);
 
         $i = 0;
         $list_html = "";
@@ -1754,89 +1849,97 @@ HTML;
             $entry = array_merge($default_entry, $entry);
 
             $href = strlen($entry['url'])
-            ? "href='{$entry['url']}'"
-            : "";
+                ? 'href="' . \htmlescape($entry['url']) . '"'
+                : "";
 
             $author = strlen($entry['author'])
-            ? "<i class='ti ti-user'></i>&nbsp;{$entry['author']}"
-            : "";
+                ? "<i class='ti ti-user'></i>&nbsp;" . \htmlescape($entry['author'])
+                : "";
 
             $content_size = strlen($entry['content']);
             $content = strlen($entry['content'])
-            ? RichText::getEnhancedHtml($entry['content']) .
-              (
-                  $content_size > 300
-               ? "<p class='read_more'><span class='read_more_button'>...</span></p>"
-               : ""
-              )
-             : "";
+                ? RichText::getEnhancedHtml($entry['content'])
+                    . (
+                        $content_size > 300
+                        ? "<p class='read_more'><span class='read_more_button'>...</span></p>"
+                        : ""
+                    )
+                : "";
+
+            $date = \htmlescape($p['date']);
 
             $list_html .= <<<HTML
-            <li class="line"><a {$href}>
-               <span class="label">{$entry['label']}</span>
-               <div class="content long_text">{$content}</div>
-               <span class="author">$author</span>
-               <span class="date">{$entry['date']}</span>
-            </a></li>
+                <li class="line"><a {$href}>
+                    <span class="label">{$label}</span>
+                    <div class="content long_text">{$content}</div>
+                    <span class="author">{$author}</span>
+                    <span class="date">{$date}</span>
+                </a></li>
 HTML;
             $i++;
         }
 
         $nodata = isset($p['data']['nodata']) && $p['data']['nodata'];
         if ($nodata) {
-            $list_html = "<span class='line empty-card no-data'>
-            <span class='content'>
-               <i class='icon ti ti-alert-triangle'></i>
-            </span>
-            <span class='label'>" . __('No data found') . "</span>
-         <span>";
+            $list_html = "
+                <span class='line empty-card no-data'>
+                    <span class='content'>
+                        <i class='icon ti ti-alert-triangle'></i>
+                    </span>
+                    <span class='label'>" . __s('No data found') . "</span>
+                <span>
+            ";
         }
 
         $view_all = strlen($p['url'])
-         ? "<a href='{$p['url']}'><i class='ti ti-eye' title='" . __("See all") . "'></i></a>"
-         : "";
+            ? "<a href='" . \htmlescape($p['url']) . "'><i class='ti ti-eye' title='" . __s("See all") . "'></i></a>"
+            : "";
+
+        $rand = (int) $p['rand'];
+        $icon = \htmlescape($p['icon']);
+        $class = \htmlescape($class);
 
         $html = <<<HTML
-      <style>
-         #chart-{$p['rand']} .line {
-            background-color: $bg_color_2;
-         }
+            <style>
+                #chart-{$rand} .line {
+                    background-color: $bg_color_2;
+                }
 
-         #chart-{$p['rand']} .ti-eye {
-            color: {$fg_color};
-         }
-      </style>
+                #chart-{$rand} .ti-eye {
+                    color: {$fg_color};
+                }
+            </style>
 
-      <div class="card {$class}"
-           id="chart-{$p['rand']}"
-           title="{$p['alt']}"
-           style="background-color: {$p['color']}; color: {$fg_color}">
-         <div class='scrollable'>
-            <ul class='list'>
-            {$list_html}
-   </ul>
-         </div>
-         <span class="main-label">
-            {$p['label']}
-            $view_all
-         </span>
-         <i class="main-icon {$p['icon']}" style="color: {$fg_color}"></i>
-      </div>
+            <div class="card {$class}"
+                 id="chart-{$rand}"
+                 title="{$p['alt']}"
+                 style="background-color: {$bg_color}; color: {$fg_color}">
+                <div class='scrollable'>
+                    <ul class='list'>
+                        {$list_html}
+                    </ul>
+                </div>
+                <span class="main-label">
+                    {$label}
+                    $view_all
+                </span>
+                <i class="main-icon {$icon}" style="color: {$fg_color}"></i>
+            </div>
 HTML;
 
         $js = <<<JAVASCRIPT
-      $(function () {
-         // init readmore controls
-         read_more();
+            $(function () {
+                // init readmore controls
+                read_more();
 
-         // set dates in relative format
-         $('#chart-{$p['rand']} .date').each(function() {
-            var line_date = $(this).html();
-            var rel_date = relativeDate(line_date);
+                // set dates in relative format
+                $('#chart-{$rand} .date').each(function() {
+                    var line_date = $(this).html();
+                    var rel_date = relativeDate(line_date);
 
-            $(this).html(rel_date).attr('title', line_date);
-         });
-      });
+                    $(this).html(rel_date).attr('title', line_date);
+                });
+            });
 JAVASCRIPT;
         $js = Html::scriptBlock($js);
 

@@ -173,6 +173,7 @@ $empty_data_builder = new class {
             'planning_end' => '20:00:00',
             'utf8_conv' => '1',
             'use_public_faq' => '0',
+            'allow_unauthenticated_uploads' => '0',
             'url_base' => 'http://localhost',
             'show_link_in_mail' => '0',
             'text_login' => '',

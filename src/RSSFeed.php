@@ -764,8 +764,8 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
                 return false;
             }
 
-            $titre = "<a href='" . htmlescape(RSSFeed::getSearchURL()) . "'>" .
-                    _sn('Personal RSS feed', 'Personal RSS feeds', Session::getPluralNumber()) . "</a>";
+            $titre = "<a href='" . htmlescape(RSSFeed::getSearchURL()) . "'>"
+                    . _sn('Personal RSS feed', 'Personal RSS feeds', Session::getPluralNumber()) . "</a>";
         } else {
             // Show public rssfeeds / not mines : need to have access to public rssfeeds
             if (!self::canView()) {
@@ -773,8 +773,8 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
             }
 
             if (Session::getCurrentInterface() === 'central') {
-                $titre = "<a href='" . htmlescape(RSSFeed::getSearchURL()) . "'>" .
-                       _sn('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber()) . "</a>";
+                $titre = "<a href='" . htmlescape(RSSFeed::getSearchURL()) . "'>"
+                       . _sn('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber()) . "</a>";
             } else {
                 $titre = _sn('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber());
             }
@@ -810,8 +810,8 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
         ) {
             $output .= "<span class='float-end'>";
             $output .= "<a href='" . htmlescape(RSSFeed::getFormURL()) . "'>";
-            $output .= "<img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/plus.png' alt='" . __s('Add') . "' title=\"" .
-                __s('Add') . "\"></a></span>";
+            $output .= "<img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/plus.png' alt='" . __s('Add') . "' title=\""
+                . __s('Add') . "\"></a></span>";
         }
 
         $output .= "</div></th></tr>";

@@ -1228,11 +1228,11 @@ function update91xto920()
         $migration->addKey("glpi_logs", "id_search_option");
     } else {
         //Just display a Warning to the user.
-        $migration->addWarningMessage("An index must be added in the 'id_search_option' field " .
-         "of the 'glpi_logs table'; but your glpi_logs table is " .
-         "too huge. You'll have to add it on your database " .
-         "with the following query:\n" .
-         "'ALTER TABLE glpi_logs ADD INDEX id_search_option(id_search_option);'");
+        $migration->addWarningMessage("An index must be added in the 'id_search_option' field "
+         . "of the 'glpi_logs table'; but your glpi_logs table is "
+         . "too huge. You'll have to add it on your database "
+         . "with the following query:\n"
+         . "'ALTER TABLE glpi_logs ADD INDEX id_search_option(id_search_option);'");
     }
 
     // count cron task
@@ -2366,9 +2366,9 @@ Regards,',
                 $DB->buildUpdate(
                     $update,
                     [
-                        "$tl_table.timeline_position" => new QueryExpression("IF(" .
-                     DBmysql::quoteName("glpi_tickets_users.type") . " NOT IN (1,3) AND " .
-                     DBmysql::quoteName("glpi_tickets_users.type") . " IN (2), 4, 1)"),
+                        "$tl_table.timeline_position" => new QueryExpression("IF("
+                     . DBmysql::quoteName("glpi_tickets_users.type") . " NOT IN (1,3) AND "
+                     . DBmysql::quoteName("glpi_tickets_users.type") . " IN (2), 4, 1)"),
                     ],
                     $where
                 )
@@ -2401,16 +2401,16 @@ Regards,',
             }
 
             $update = new QueryExpression(
-                DBmysql::quoteName($tl_table) . ", " . DBmysql::quoteName("glpi_groups_tickets") .
-                ", " . DBmysql::quoteName("glpi_groups_users")
+                DBmysql::quoteName($tl_table) . ", " . DBmysql::quoteName("glpi_groups_tickets")
+                . ", " . DBmysql::quoteName("glpi_groups_users")
             );
             $migration->addPostQuery(
                 $DB->buildUpdate(
                     $update,
                     [
-                        "$tl_table.timeline_position" => new QueryExpression("IF(" .
-                     DBmysql::quoteName("glpi_groups_tickets.type") . " NOT IN (1,3) AND " .
-                     DBmysql::quoteName("glpi_groups_tickets.type") . " IN (2), 4, 1)"),
+                        "$tl_table.timeline_position" => new QueryExpression("IF("
+                     . DBmysql::quoteName("glpi_groups_tickets.type") . " NOT IN (1,3) AND "
+                     . DBmysql::quoteName("glpi_groups_tickets.type") . " IN (2), 4, 1)"),
                     ],
                     $where
                 )

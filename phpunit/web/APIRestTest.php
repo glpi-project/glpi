@@ -38,6 +38,12 @@ use APIClient;
 use Auth;
 use Computer;
 use Config;
+use Glpi\Form\Form;
+use Glpi\Form\FormTranslation;
+use Glpi\Form\Question;
+use Glpi\Form\Section;
+use Glpi\Helpdesk\HelpdeskTranslation;
+use Glpi\Helpdesk\Tile\GlpiPageTile;
 use Glpi\Tests\Api\Deprecated\Computer_Item;
 use Glpi\Tests\Api\Deprecated\Computer_SoftwareLicense;
 use Glpi\Tests\Api\Deprecated\Computer_SoftwareVersion;
@@ -1752,19 +1758,19 @@ class APIRestTest extends TestCase
 
         $relative_uri = (!in_array($resource_path, ['getItem', 'getItems', 'createItems', 'updateItems', 'deleteItems'])
                          ? $resource_path . '/'
-                         : '') .
-                      (isset($params['parent_itemtype'])
+                         : '')
+                      . (isset($params['parent_itemtype'])
                          ? $params['parent_itemtype'] . '/'
-                         : '') .
-                      (isset($params['parent_id'])
+                         : '')
+                      . (isset($params['parent_id'])
                          ? $params['parent_id'] . '/'
-                         : '') .
-                      (isset($params['itemtype'])
+                         : '')
+                      . (isset($params['itemtype'])
                          ? $params['itemtype'] . '/'
-                         : '') .
-                      ($params['id']
-                         ?? '') .
-                      (!empty($resource_query)
+                         : '')
+                      . ($params['id']
+                         ?? '')
+                      . (!empty($resource_query)
                          ? '?' . $resource_query
                          : '');
 
@@ -3484,23 +3490,66 @@ class APIRestTest extends TestCase
         $this->assertEquals('Multi-update entity 2', $entity_obj->fields['comment']);
     }
 
-    public function testSystemSQLCriteria()
+    public static function testSystemSQLCriteriaProvider()
+    {
+        yield [
+            'type' => 'Glpi\\CustomAsset\\Test01Asset',
+            'field' => 'name',
+            'expected' => ['TestA', 'TestB'],
+            'not_expected' => ['Test02 A', 'Test02 B'],
+        ];
+        yield [
+            'type' => 'Glpi\\CustomAsset\\Test02Asset',
+            'field' => 'name',
+            'expected' => ['Test02 A', 'Test02 B'],
+            'not_expected' => ['TestA', 'TestB'],
+        ];
+
+        yield [
+            'type' => FormTranslation::class,
+            'field' => 'itemtype',
+            'expected' => [
+                Form::class,
+                Section::class,
+                Question::class,
+            ],
+            'not_expected' => [
+                GlpiPageTile::class,
+            ],
+        ];
+
+        yield [
+            'type' => HelpdeskTranslation::class,
+            'field' => 'itemtype',
+            'expected' => [
+                GlpiPageTile::class,
+            ],
+            'not_expected' => [
+                Form::class,
+                Section::class,
+                Question::class,
+            ],
+        ];
+    }
+
+    /**
+     * Some itemtypes share the same DB table and use `getSystemSQLCriteria` to specify criteria needed to limit DB queries to related types only.
+     * This test checks that the `getSystemSQLCriteria` method works correctly for these itemtypes in the legacy API.
+     */
+    #[DataProvider('testSystemSQLCriteriaProvider')]
+    public function testSystemSQLCriteria(string $type, string $field, array $expected, array $not_expected = []): void
     {
         $headers = ['Session-Token' => $this->session_token];
-        $data = json_decode($this->query('Glpi\\CustomAsset\\Test01Asset', [
+        $data = json_decode($this->query($type, [
             'headers' => $headers,
         ], no_decode: true));
-        $this->assertCount(2, $data);
-        $names = array_column($data, 'name');
-        $this->assertContains('TestA', $names);
-        $this->assertContains('TestB', $names);
-
-        $data = json_decode($this->query('Glpi\\CustomAsset\\Test02Asset', [
-            'headers' => $headers,
-        ], no_decode: true));
-        $this->assertCount(2, $data);
-        $names = array_column($data, 'name');
-        $this->assertContains('Test02 A', $names);
-        $this->assertContains('Test02 B', $names);
+        $this->assertCount(count($expected), $data);
+        $values = array_column($data, $field);
+        foreach ($expected as $v) {
+            $this->assertContains($v, $values);
+        }
+        foreach ($not_expected as $v) {
+            $this->assertNotContains($v, $values);
+        }
     }
 }

@@ -47,8 +47,8 @@ class RemoteManagement extends InventoryAsset
 
         if (!in_array($this->item->getType(), $CFG_GLPI['remote_management_types'])) {
             throw new RuntimeException(
-                'Remote Management are handled for following types only: ' .
-                implode(', ', $CFG_GLPI['remote_management_types'])
+                'Remote Management are handled for following types only: '
+                . implode(', ', $CFG_GLPI['remote_management_types'])
             );
         }
 

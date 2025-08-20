@@ -698,8 +698,8 @@ class QueuedNotification extends CommonDBTM
                     'is_deleted'   => 0,
                     'mode'         => Notification_NotificationTemplate::MODE_AJAX,
                     new QueryExpression(
-                        QueryFunction::unixTimestamp('send_time') . ' + ' . $secs .
-                            ' < ' . QueryFunction::unixTimestamp()
+                        QueryFunction::unixTimestamp('send_time') . ' + ' . $secs
+                            . ' < ' . QueryFunction::unixTimestamp()
                     ),
                 ]
             );

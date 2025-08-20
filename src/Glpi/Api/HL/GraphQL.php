@@ -58,7 +58,7 @@ final class GraphQL
     public static function processRequest(Request $request): array
     {
         $api_version = $request->getHeaderLine('GLPI-API-Version') ?: Router::API_VERSION;
-        $query = (string) $request->getBody();
+        $query = self::extractQueryFromBody($request);
         $generator = new GraphQLGenerator($api_version);
         Profiler::getInstance()->start('GraphQL::processRequest', Profiler::CATEGORY_HLAPI);
         Profiler::getInstance()->start('Build GraphQLSchema', Profiler::CATEGORY_HLAPI);
@@ -248,5 +248,16 @@ final class GraphQL
             unset($schema_properties[$property]);
         }
         return $schema_properties;
+    }
+
+    private static function extractQueryFromBody(Request $request): string
+    {
+        $contentType = $request->getHeaderLine('Content-Type');
+
+        return match ($contentType) {
+            'application/graphql' => (string) $request->getBody(),
+            'application/json' => json_decode((string) $request->getBody(), true)['query'] ?? '',
+            default => (string) $request->getBody(),
+        };
     }
 }

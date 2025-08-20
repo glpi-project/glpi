@@ -171,9 +171,9 @@ class Toolbox
 
         $pos = self::strpos(self::strtolower($str), self::strtolower($shortcut));
         if ($pos !== false) {
-            return self::substr($str, 0, $pos) .
-                "<u>" . self::substr($str, $pos, 1) . "</u>" .
-                self::substr($str, $pos + 1);
+            return self::substr($str, 0, $pos)
+                . "<u>" . self::substr($str, $pos, 1) . "</u>"
+                . self::substr($str, $pos + 1);
         }
         return $str;
     }
@@ -337,8 +337,8 @@ class Toolbox
         $extra = [];
         $extra['user'] = Session::getLoginUserID() . '@' . php_uname('n');
         if ($tps && function_exists('memory_get_usage')) {
-            $extra['mem_usage'] = number_format(microtime(true) - $tps, 3) . '", ' .
-                      number_format(memory_get_usage() / 1024 / 1024, 2) . 'Mio)';
+            $extra['mem_usage'] = number_format(microtime(true) - $tps, 3) . '", '
+                      . number_format(memory_get_usage() / 1024 / 1024, 2) . 'Mio)';
         }
 
         $msg = "";
@@ -419,8 +419,8 @@ class Toolbox
             $message = "  Backtrace :\n";
             $traces  = debug_backtrace();
             foreach ($traces as $trace) {
-                $script = ($trace["file"] ?? "") . ":" .
-                        ($trace["line"] ?? "");
+                $script = ($trace["file"] ?? "") . ":"
+                        . ($trace["line"] ?? "");
                 if (str_starts_with($script, GLPI_ROOT)) {
                     $script = substr($script, strlen(GLPI_ROOT) + 1);
                 }
@@ -429,9 +429,9 @@ class Toolbox
                 } else {
                     $script = str_pad($script, 50);
                 }
-                $call = ($trace["class"] ?? "") .
-                    ($trace["type"] ?? "") .
-                    $trace["function"];
+                $call = ($trace["class"] ?? "")
+                    . ($trace["type"] ?? "")
+                    . $trace["function"];
                 if ($call == $hide) {
                     $call = '';
                 }
@@ -471,8 +471,8 @@ class Toolbox
             return;
         }
         if (
-            $strict === true ||
-            GLPI_STRICT_ENV === true
+            $strict === true
+            || GLPI_STRICT_ENV === true
         ) {
             trigger_error($message, E_USER_DEPRECATED);
         }
@@ -624,10 +624,10 @@ class Toolbox
             $max_age = WEEK_TIMESTAMP;
             $headers['Expires'] = gmdate('D, d M Y H:i:s \G\M\T', time() + $max_age);
         }
-        $content_disposition = "$attachment filename=\"" .
-            addslashes(mb_convert_encoding($filename, 'ISO-8859-1', 'UTF-8')) .
-            "\"; filename*=utf-8''" .
-            rawurlencode($filename);
+        $content_disposition = "$attachment filename=\""
+            . addslashes(mb_convert_encoding($filename, 'ISO-8859-1', 'UTF-8'))
+            . "\"; filename*=utf-8''"
+            . rawurlencode($filename);
         $headers['Content-Disposition'] = $content_disposition;
         $headers['Content-type'] = $mime;
 
@@ -1326,13 +1326,12 @@ class Toolbox
      * Get a new Guzzle client with proxy if configured and the specified other options.
      * @param array $extra_options Extra options to pass to the Guzzle client constructor
      * @return Client Guzzle client
-     * @throws SodiumException
      */
-    public static function getGuzzleClient(array $extra_options): Client
+    public static function getGuzzleClient(array $extra_options = []): Client
     {
         global $CFG_GLPI;
 
-        $options = $extra_options;
+        $options = $extra_options + ['connect_timeout' => 5];
         // add proxy string if configured in glpi
         if (!empty($CFG_GLPI["proxy_name"])) {
             $proxy_creds      = !empty($CFG_GLPI["proxy_user"])
@@ -2522,8 +2521,8 @@ class Toolbox
                             $linked_object->getType(),
                             $linked_object->fields['id']
                         );
-                        $img = "<img alt='" . $image['tag'] . "' src='" . $base_path .
-                          "/front/document.send.php?docid=" . $id . $object_url_param . "'/>";
+                        $img = "<img alt='" . $image['tag'] . "' src='" . $base_path
+                          . "/front/document.send.php?docid=" . $id . $object_url_param . "'/>";
 
                         // 1 - Replace direct tag (with prefix and suffix) by the image
                         $content_text = preg_replace(
@@ -3037,14 +3036,14 @@ class Toolbox
         }
 
         if ($html) {
-            $formatted = <<<HTML
-            <span title="{$number}"
-                  class="formatted-number"
-                  data-precision='{$precision}'>
-               <span class="number">$formatted</span>
-               <span class="suffix">$suffix</span>
-            </span>
-HTML;
+            $formatted = '
+                <span title="' . htmlescape($number) . '"
+                      class="formatted-number"
+                      data-precision="' . htmlescape($precision) . '">
+                    <span class="number">' . htmlescape($formatted) . '</span>
+                    <span class="suffix">' . htmlescape($suffix) . '</span>
+                </span>
+            ';
         } else {
             $formatted .= $suffix;
         }
@@ -3118,7 +3117,7 @@ HTML;
     {
         $fg_color = "FFFFFF";
         if ($color !== "") {
-            if (preg_match('/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/', $color, $matches)) {
+            if (preg_match('/^rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)$/', $color, $matches)) {
                 $rgb_color = [
                     "R" => intval($matches[1]),
                     "G" => intval($matches[2]),

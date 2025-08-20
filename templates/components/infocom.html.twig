@@ -302,7 +302,7 @@
                               'toadd'          : {'-1': __('Lifelong')},
                               'unit'           : 'month',
                               'disabled'       : disabled,
-                              'add_field_html' : '<span class="text-muted">' ~ __('Valid to %s')|format(warrantyexpir) ~ '</span>'
+                              'add_field_html' : warrantyexpir is not empty ? ('<span class="text-muted">' ~ __('Valid to %s')|format(warrantyexpir) ~ '</span>') : ''
                            }
                         ) }}
                      {% endif %}
@@ -337,7 +337,7 @@
 
                      {% do call_plugin_hook_func(constant('Glpi\\Plugin\\Hooks::INFOCOM'), item) %}
 
-                     <div class="card-body mx-n2 mb-4  border-top">
+                     <div class="card-body mx-n2 border-top d-flex flex-row-reverse align-items-start flex-wrap">
                         {% if can_global_update %}
                            <button class="btn btn-primary me-2" type="submit" name="update">
                               <i class="ti ti-device-floppy"></i>

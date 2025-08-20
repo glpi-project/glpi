@@ -87,8 +87,8 @@ enum ValidationFieldStrategy: string
             return true;
         }
 
-        return isset($value['itemtype']) && is_string($value['itemtype']) &&
-            isset($value['items_id']) && is_numeric($value['items_id']);
+        return isset($value['itemtype']) && is_string($value['itemtype'])
+            && isset($value['items_id']) && is_numeric($value['items_id']);
     }
 
     private function getActorsForSpecificAnswers(

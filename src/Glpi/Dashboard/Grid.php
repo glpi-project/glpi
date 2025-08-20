@@ -284,16 +284,16 @@ HTML;
         $all_widgets = Widget::getAllTypes();
 
         // prepare labels
-        $embed_label      = __("Share or embed this dashboard");
-        $delete_label     = __("Delete this dashboard");
-        $history_label    = __("Toggle auto-refresh");
-        $night_label      = __("Toggle night mode");
-        $fs_label         = __("Toggle fullscreen");
-        $clone_label      = __("Clone this dashboard");
-        $edit_label       = __("Toggle edit mode");
-        $filter_label     = __("Toggle filter mode");
-        $add_dash_label   = __("Add a new dashboard");
-        $save_label       = _x('button', "Save");
+        $embed_label      = __s("Share or embed this dashboard");
+        $delete_label     = __s("Delete this dashboard");
+        $history_label    = __s("Toggle auto-refresh");
+        $night_label      = __s("Toggle night mode");
+        $fs_label         = __s("Toggle fullscreen");
+        $clone_label      = __s("Clone this dashboard");
+        $edit_label       = __s("Toggle edit mode");
+        $filter_label     = __s("Toggle filter mode");
+        $add_dash_label   = __s("Add a new dashboard");
+        $save_label       = _sx('button', "Save");
 
         $gridstack_items = $this->getGridItemsHtml(!$mini);
 
@@ -309,7 +309,7 @@ HTML;
             ]);
         }
 
-        $dashboard_title = htmlspecialchars($this->dashboard->getTitle());
+        $dashboard_title = \htmlescape($this->dashboard->getTitle());
 
         $l_tb_icons   = "";
         $r_tb_icons   = "";
@@ -852,11 +852,11 @@ HTML;
         $is_recursive = $_SESSION['glpiactive_entity_recursive'];
         $token        = self::getToken($this->current, $entities_id, $is_recursive);
 
-        $embed_url    = $CFG_GLPI['url_base'] .
-         "/front/central.php?embed&dashboard=" . $this->current .
-         "&entities_id=$entities_id" .
-         "&is_recursive=$is_recursive" .
-         "&token=$token";
+        $embed_url    = $CFG_GLPI['url_base']
+         . "/front/central.php?embed&dashboard=" . $this->current
+         . "&entities_id=$entities_id"
+         . "&is_recursive=$is_recursive"
+         . "&token=$token";
 
         echo "<label>" . __s("Embed in another application") . "</label><br>";
         echo "<fieldset class='embed_block'>";
@@ -893,9 +893,9 @@ HTML;
 
         echo "<form class='no-shadow display-rights-form'>";
 
-        echo "<label for='dropdown_rights_id$rand'>" .
-           __s("Or share the dashboard to these target objects:") .
-           "</label><br>";
+        echo "<label for='dropdown_rights_id$rand'>"
+           . __s("Or share the dashboard to these target objects:")
+           . "</label><br>";
 
         $values = [
             'profiles_id' => self::$all_dashboards[$this->current]['rights']['profiles_id'] ?? [],
@@ -949,15 +949,15 @@ HTML;
 
         // retrieve card
         $notfound_html = "<div class='empty-card card-warning '>
-         <i class='ti ti-alert-triangle'></i>" .
-         __s('empty card!') . "
+         <i class='ti ti-alert-triangle'></i>"
+         . __s('empty card!') . "
       </div>";
         $render_error_html = "<div class='empty-card card-error '>
-         <i class='ti ti-alert-triangle'></i>" .
-         __s('Error rendering card!') .
-            "</br>" .
-            \htmlescape($card_id) .
-            "</div>";
+         <i class='ti ti-alert-triangle'></i>"
+         . __s('Error rendering card!')
+            . "</br>"
+            . \htmlescape($card_id)
+            . "</div>";
 
         Profiler::getInstance()->start(__METHOD__ . ' get card data');
         try {

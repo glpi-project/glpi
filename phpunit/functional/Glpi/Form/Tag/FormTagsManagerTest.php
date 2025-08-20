@@ -237,8 +237,8 @@ final class FormTagsManagerTest extends DbTestCase
             'Comment description: Comment description'
         );
 
-        $content_with_tag =
-            "$form_name_tag->html, "
+        $content_with_tag
+            = "$form_name_tag->html, "
             . "$section_tag->html, "
             . "$first_name_question_tag->html: $first_name_answer_tag->html, "
             . "$last_name_question_tag->html: $last_name_answer_tag->html, "

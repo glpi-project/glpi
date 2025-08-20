@@ -236,8 +236,8 @@ class Phone extends CommonDBTM implements AssignableItemInterface, StateInterfac
             Asset_PeripheralAsset::getMassiveActionsForItemtype($actions, self::class, false, $checkitem);
             $actions += [
                 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
-               => "<i class='ti ti-key'></i>" .
-                  _sx('button', 'Add a license'),
+               => "<i class='ti ti-key'></i>"
+                  . _sx('button', 'Add a license'),
             ];
             KnowbaseItem_Item::getMassiveActionsForItemtype($actions, self::class, false, $checkitem);
         }

@@ -61,6 +61,7 @@ class SavedSearchTest extends DbTestCase
         $test_root    = getItemByTypeName('Entity', '_test_root_entity', true);
         $test_child_1 = getItemByTypeName('Entity', '_test_child_1', true);
         $test_child_2 = getItemByTypeName('Entity', '_test_child_2', true);
+        $test_child_3 = getItemByTypeName('Entity', '_test_child_3', true);
 
         //first, as a super-admin
         $this->login();
@@ -94,7 +95,7 @@ class SavedSearchTest extends DbTestCase
         // Check entity restriction
         $this->setEntity('_test_root_entity', true);
         $this->assertSame(
-            "((`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5') OR (`glpi_savedsearches`.`is_private` = '0')) AND ((`glpi_savedsearches`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2') OR (`glpi_savedsearches`.`is_recursive` = '1' AND `glpi_savedsearches`.`entities_id` IN ('0'))))",
+            "((`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5') OR (`glpi_savedsearches`.`is_private` = '0')) AND ((`glpi_savedsearches`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2', '$test_child_3') OR (`glpi_savedsearches`.`is_recursive` = '1' AND `glpi_savedsearches`.`entities_id` IN ('0'))))",
             SavedSearch::addVisibilityRestrict()
         );
     }

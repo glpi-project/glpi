@@ -559,4 +559,25 @@ CREATE TABLE `glpi_plugin_formcreator_questionregexes` (
   KEY `plugin_formcreator_questions_id` (`plugin_formcreator_questions_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=297 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+CREATE TABLE `glpi_plugin_formcreator_entityconfigs` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `entities_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `replace_helpdesk` int(11) NOT NULL DEFAULT -2,
+  `default_form_list_mode` int(11) NOT NULL DEFAULT -2,
+  `sort_order` int(11) NOT NULL DEFAULT -2,
+  `is_kb_separated` int(11) NOT NULL DEFAULT -2,
+  `is_search_visible` int(11) NOT NULL DEFAULT -2,
+  `is_dashboard_visible` int(11) NOT NULL DEFAULT -2,
+  `is_header_visible` int(11) NOT NULL DEFAULT -2,
+  `is_search_issue_visible` int(11) NOT NULL DEFAULT -2,
+  `tile_design` int(11) NOT NULL DEFAULT -2,
+  `home_page` int(11) NOT NULL DEFAULT -2,
+  `is_category_visible` int(11) NOT NULL DEFAULT -2,
+  `is_folded_menu` int(11) NOT NULL DEFAULT -2,
+  `header` text DEFAULT NULL,
+  `service_catalog_home` int(11) NOT NULL DEFAULT -2,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`entities_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC
+
 -- Dump completed on 2025-01-21 11:41:32

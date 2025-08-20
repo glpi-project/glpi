@@ -458,8 +458,8 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             : ['itemtype' => Ticket::class, 'items_id' => $this->fields['tickets_id']];
 
         if (self::canView() || $this->canViewFile($can_view_options)) {
-            $open  = "<a href='" . $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" .
-                    $this->fields['id'] . $link_params . "' alt=\"" . $initfileout . "\"
+            $open  = "<a href='" . $CFG_GLPI["root_doc"] . "/front/document.send.php?docid="
+                    . $this->fields['id'] . $link_params . "' alt=\"" . $initfileout . "\"
                     title=\"" . $initfileout . "\"target='_blank'>";
             $close = "</a>";
         }
@@ -481,9 +481,9 @@ class Document extends CommonDBTM implements TreeBrowseInterface
                 if (!file_exists(GLPI_ROOT . "/pics/icones/$icon")) {
                     $icon = "defaut-dist.png";
                 }
-                $out .= "<img class='middle' style='margin-left:3px; margin-right:6px;' alt=\"" .
-                              $initfileout . "\" title=\"" . $initfileout . "\" src='" .
-                              $CFG_GLPI["typedoc_icon_dir"] . "/$icon'>";
+                $out .= "<img class='middle' style='margin-left:3px; margin-right:6px;' alt=\""
+                              . $initfileout . "\" title=\"" . $initfileout . "\" src='"
+                              . $CFG_GLPI["typedoc_icon_dir"] . "/$icon'>";
             }
         }
         $out .= "$open<span class='fw-bold'>" . $fileout . "</span>$close";
@@ -1063,8 +1063,8 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             && is_file(GLPI_DOC_DIR . "/" . $input['current_filepath'])
             && (countElementsInTable(
                 'glpi_documents',
-                ['sha1sum' => sha1_file(GLPI_DOC_DIR . "/" .
-                $input['current_filepath']),
+                ['sha1sum' => sha1_file(GLPI_DOC_DIR . "/"
+                . $input['current_filepath']),
                 ]
             ) <= 1)
         ) {
@@ -1182,8 +1182,8 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             && is_file(GLPI_DOC_DIR . "/" . $input['current_filepath'])
             && (countElementsInTable(
                 'glpi_documents',
-                ['sha1sum' => sha1_file(GLPI_DOC_DIR . "/" .
-                $input['current_filepath']),
+                ['sha1sum' => sha1_file(GLPI_DOC_DIR . "/"
+                . $input['current_filepath']),
                 ]
             ) <= 1)
         ) {
@@ -1526,10 +1526,10 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
         if (self::canApplyOn($itemtype)) {
             if (self::canView()) {
-                $actions[$action_prefix . 'add']    = "<i class='ti ti-file-plus'></i>" .
-                                                _sx('button', 'Add a document');
-                $actions[$action_prefix . 'remove'] = "<i class='ti ti-file-minus'></i>" .
-                                                _sx('button', 'Remove a document');
+                $actions[$action_prefix . 'add']    = "<i class='ti ti-file-plus'></i>"
+                                                . _sx('button', 'Add a document');
+                $actions[$action_prefix . 'remove'] = "<i class='ti ti-file-minus'></i>"
+                                                . _sx('button', 'Remove a document');
             }
         }
 

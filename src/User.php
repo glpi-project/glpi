@@ -212,8 +212,8 @@ class User extends CommonDBTM implements TreeBrowseInterface
             ($_SESSION['glpiactive_entity'] > 0)
             && (Profile::getDefault() == 0)
         ) {
-            echo "<div class='tab_cadre_fixe warning'>" .
-                __s('You must define a default profile to create a new user') . "</div>";
+            echo "<div class='tab_cadre_fixe warning'>"
+                . __s('You must define a default profile to create a new user') . "</div>";
         }
 
         return false;
@@ -675,8 +675,8 @@ class User extends CommonDBTM implements TreeBrowseInterface
                     ],
                 ],
             ],
-            'WHERE' =>
-                [
+            'WHERE'
+                => [
                     'RAW' => [
                         'LOWER(' . UserEmail::getTable() . '.email' . ')'  => Toolbox::strtolower($email),
                     ],
@@ -2042,9 +2042,9 @@ class User extends CommonDBTM implements TreeBrowseInterface
                         $lgroups = [];
                         foreach ($v[$i][$field] as $lgroup) {
                             $lgroups[] = [
-                                new QueryExpression($DB->quoteValue($lgroup) .
-                                             " LIKE " .
-                                             $DB->quoteName('ldap_value')),
+                                new QueryExpression($DB->quoteValue($lgroup)
+                                             . " LIKE "
+                                             . $DB->quoteName('ldap_value')),
                             ];
                         }
                         $group_iterator = $DB->request([
@@ -2981,35 +2981,35 @@ HTML;
 
         if ($isadmin) {
             $actions['Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-                                                         = "<i class='ti ti-users-plus'></i>" .
-                                                           __s('Associate to a group');
+                                                         = "<i class='ti ti-users-plus'></i>"
+                                                           . __s('Associate to a group');
             $actions['Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'remove']
-                                                         = "<i class='ti ti-users-minus'></i>" .
-                                                           __s('Dissociate from a group');
+                                                         = "<i class='ti ti-users-minus'></i>"
+                                                           . __s('Dissociate from a group');
             $actions['Profile_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-                                                         = "<i class='ti ti-shield-plus'></i>" .
-                                                           __s('Associate to a profile');
+                                                         = "<i class='ti ti-shield-plus'></i>"
+                                                           . __s('Associate to a profile');
             $actions['Profile_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'remove']
-                                                         = "<i class='ti ti-shield-minus'></i>" .
-                                                           __s('Dissociate from a profile');
+                                                         = "<i class='ti ti-shield-minus'></i>"
+                                                           . __s('Dissociate from a profile');
             $actions['Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_group_user']
-                                                         = "<i class='ti ti-users-group'></i>" .
-                                                           __s("Move to group");
+                                                         = "<i class='ti ti-users-group'></i>"
+                                                           . __s("Move to group");
             $actions["{$prefix}delete_emails"] = __s("Delete associated emails");
         }
 
         if (Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
-            $actions[$prefix . 'change_authtype']        = "<i class='ti ti-user-cog'></i>" .
-                                                      _sx('button', 'Change the authentication method');
-            $actions[$prefix . 'force_user_ldap_update'] = "<i class='ti ti-refresh'></i>" .
-                                                      __s('Force synchronization');
-            $actions[$prefix . 'clean_ldap_fields'] = "<i class='ti ti-recycle'></i>" .
-                                                    __s('Clean LDAP fields and force synchronisation');
-            $actions[$prefix . 'disable_2fa']           = "<i class='ti ti-shield-off'></i>" .
-                                                      __s('Disable 2FA');
+            $actions[$prefix . 'change_authtype']        = "<i class='ti ti-user-cog'></i>"
+                                                      . _sx('button', 'Change the authentication method');
+            $actions[$prefix . 'force_user_ldap_update'] = "<i class='ti ti-refresh'></i>"
+                                                      . __s('Force synchronization');
+            $actions[$prefix . 'clean_ldap_fields'] = "<i class='ti ti-recycle'></i>"
+                                                    . __s('Clean LDAP fields and force synchronisation');
+            $actions[$prefix . 'disable_2fa']           = "<i class='ti ti-shield-off'></i>"
+                                                      . __s('Disable 2FA');
             $actions[$prefix . 'send_pw_reset'] = "<i class='ti ti-mail'></i>" . __s('Send password reset email');
-            $actions[$prefix . 'reapply_rights']            = "<i class='" . Profile::getIcon() . "'></i>" .
-                                                      __s('Reapply authorization assignment rules');
+            $actions[$prefix . 'reapply_rights']            = "<i class='" . htmlescape(Profile::getIcon()) . "'></i>"
+                                                      . __s('Reapply authorization assignment rules');
         }
         return $actions;
     }
@@ -3025,8 +3025,8 @@ HTML;
                 Ajax::updateItemOnSelectEvent(
                     "dropdown_authtype$rand",
                     "show_massiveaction_field",
-                    $CFG_GLPI["root_doc"] .
-                                             "/ajax/dropdownMassiveActionAuthMethods.php",
+                    $CFG_GLPI["root_doc"]
+                                             . "/ajax/dropdownMassiveActionAuthMethods.php",
                     $paramsmassaction
                 );
                 echo "<span id='show_massiveaction_field'><br><br>";
@@ -4152,6 +4152,7 @@ HTML;
      *    - inactive_deleted : retreive also inactive or deleted users
      *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
      *    - readonly         : boolean / return getUserName is true (default false)
+     *    - required         : boolean / is the field required (default false)
      *
      * @return integer|string Random value if displayed, string otherwise
      */
@@ -4189,6 +4190,7 @@ HTML;
             'readonly'            => false,
             'multiple'            => false,
             'init'                => true,
+            'required'            => false,
         ];
 
         if (is_array($options) && count($options)) {
@@ -4304,6 +4306,7 @@ HTML;
                 'entity_restrict' => $entity_restrict,
             ]),
             'aria_label'          => $p['aria_label'] ?? '',
+            'required'            => $p['required'],
         ];
 
         if ($p['multiple']) {
@@ -4385,15 +4388,15 @@ HTML;
             $icons .= '<div class="btn btn-outline-secondary">';
             $icons .= Ajax::createIframeModalWindow(
                 'userimport' . $rand,
-                $CFG_GLPI["root_doc"] .
-                                                      "/front/ldap.import.php?entity=" .
-                                                      $_SESSION['glpiactive_entity'],
+                $CFG_GLPI["root_doc"]
+                                                      . "/front/ldap.import.php?entity="
+                                                      . $_SESSION['glpiactive_entity'],
                 ['title'   => __s('Import a user'),
                     'display' => false,
                 ]
             );
-            $icons .= "<span title=\"" . __s('Import a user') . "\"" .
-            " data-bs-toggle='modal' data-bs-target='#userimport{$rand}'>
+            $icons .= "<span title=\"" . __s('Import a user') . "\""
+            . " data-bs-toggle='modal' data-bs-target='#userimport{$rand}'>
             <i class='ti ti-plus'></i>
             <span class='sr-only'>" . __s('Import a user') . "</span>
          </span>";

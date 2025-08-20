@@ -1188,9 +1188,9 @@ TWIG, ['authldaps_id' => $ID]);
                 $msg   = '';
                 $first = true;
                 foreach ($fields as $label => $field) {
-                    $msg .= (!$first ? ', ' : '') .
-                        ($label !== 'Server' ? "\n\t" : '') . $label . ': ' .
-                        ($value[$field] ? '\'' . $value[$field] . '\'' : 'none');
+                    $msg .= (!$first ? ', ' : '')
+                        . ($label !== 'Server' ? "\n\t" : '') . $label . ': '
+                        . ($value[$field] ? '\'' . $value[$field] . '\'' : 'none');
                     $first = false;
                 }
                 $content .= $msg . "\n\n";

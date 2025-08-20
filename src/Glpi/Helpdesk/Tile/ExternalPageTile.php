@@ -49,6 +49,12 @@ final class ExternalPageTile extends CommonDBTM implements TileInterface, Provid
     public const TRANSLATION_KEY_DESCRIPTION = 'description';
 
     #[Override]
+    public function getWeight(): int
+    {
+        return 30;
+    }
+
+    #[Override]
     public function getLabel(): string
     {
         return __("External page");

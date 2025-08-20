@@ -97,8 +97,8 @@ class NetworkAlias extends FQDNLabel
         echo "&nbsp;:</td><td>";
 
         if ($ID <= 0) {
-            echo "<input type='hidden' name='networknames_id' value='" .
-               $this->fields["networknames_id"] . "'>";
+            echo "<input type='hidden' name='networknames_id' value='"
+               . $this->fields["networknames_id"] . "'>";
         }
         $this->displayRecursiveItems($recursiveItems, "Link");
         echo "</td><td>" . __s('Name') . "</td><td>";
@@ -396,10 +396,10 @@ class NetworkAlias extends FQDNLabel
 
             echo "<table class='tab_cadre_fixe'><tr>";
 
-            echo "<th><a href='javascript:reloadTab(\"order=alias\");'>" . htmlescape(self::getTypeName(1)) .
-              "</a></th>"; // Alias
-            echo "<th><a href='javascript:reloadTab(\"order=realname\");'>" . __s("Computer's name") .
-              "</a></th>";
+            echo "<th><a href='javascript:reloadTab(\"order=alias\");'>" . htmlescape(self::getTypeName(1))
+              . "</a></th>"; // Alias
+            echo "<th><a href='javascript:reloadTab(\"order=realname\");'>" . __s("Computer's name")
+              . "</a></th>";
             echo "<th>" . __s('Comments') . "</th>";
             echo "</tr>";
 
@@ -439,10 +439,10 @@ class NetworkAlias extends FQDNLabel
                 Session::addToNavigateListItems($alias->getType(), $data["alias_id"]);
                 if ($address->getFromDB($data["address_id"])) {
                     echo "<tr class='tab_bg_1'>";
-                    echo "<td><a href='" . htmlescape($alias->getFormURLWithID($data['alias_id'])) . "'>" .
-                          htmlescape($data['alias']) . "</a></td>";
-                    echo "<td><a href='" . htmlescape($address->getLinkURL()) . "'>" . htmlescape($address->getInternetName()) .
-                    "</a></td>";
+                    echo "<td><a href='" . htmlescape($alias->getFormURLWithID($data['alias_id'])) . "'>"
+                          . htmlescape($data['alias']) . "</a></td>";
+                    echo "<td><a href='" . htmlescape($address->getLinkURL()) . "'>" . htmlescape($address->getInternetName())
+                    . "</a></td>";
                     echo "<td>" . htmlescape($data['comment']) . "</td>";
                     echo "</tr>";
                 }

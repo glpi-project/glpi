@@ -656,8 +656,8 @@ class CommonDBTM extends CommonGLPI
         $table = static::getTable();
 
         if (
-            !empty($table) &&
-            ($fields = $DB->listFields($table))
+            !empty($table)
+            && ($fields = $DB->listFields($table))
         ) {
             foreach (array_keys($fields) as $key) {
                 $this->fields[$key] = "";
@@ -3784,8 +3784,7 @@ class CommonDBTM extends CommonGLPI
 
         if (
             $p['forceid']
-            ||
-            (
+            || (
                 isset($_SESSION['glpiis_ids_visible'])
                 && $_SESSION['glpiis_ids_visible']
             )
@@ -3954,8 +3953,8 @@ class CommonDBTM extends CommonGLPI
 
             if (defined('TU_USER') && $itemtype != null) {
                 if (isset($all_options[$optid])) {
-                    $message = "Duplicate key $optid ({$all_options[$optid]['name']}/{$opt['name']}) in " .
-                    self::class . " searchOptionsToAdd for $itemtype!";
+                    $message = "Duplicate key $optid ({$all_options[$optid]['name']}/{$opt['name']}) in "
+                    . self::class . " searchOptionsToAdd for $itemtype!";
 
                     trigger_error($message, E_USER_WARNING);
                 }
@@ -4136,13 +4135,13 @@ class CommonDBTM extends CommonGLPI
             }
 
             if (in_array(static::getType(), Appliance::getTypes(true))) {
-                $actions['Appliance' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item'] =
-                "<i class='" . Appliance::getIcon() . "'></i>" . _sx('button', 'Associate to an appliance');
+                $actions['Appliance' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item']
+                = "<i class='" . htmlescape(Appliance::getIcon()) . "'></i>" . _sx('button', 'Associate to an appliance');
             }
 
             if (in_array(static::getType(), $CFG_GLPI['rackable_types'])) {
-                $actions['Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete'] =
-                "<i class='ti ti-server-off'></i>" . _sx('button', 'Remove from a rack');
+                $actions['Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete']
+                = "<i class='ti ti-server-off'></i>" . _sx('button', 'Remove from a rack');
             }
         }
 

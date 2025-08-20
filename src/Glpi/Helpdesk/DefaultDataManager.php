@@ -74,7 +74,7 @@ final class DefaultDataManager
     public function __construct()
     {
         $this->answer_tag_provider = new AnswerTagProvider();
-        $this->tiles_manager = new TilesManager();
+        $this->tiles_manager = TilesManager::getInstance();
     }
 
     public function initializeDataIfNeeded(): void

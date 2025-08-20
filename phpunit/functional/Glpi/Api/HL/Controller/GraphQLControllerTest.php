@@ -47,7 +47,7 @@ class GraphQLControllerTest extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->isOK()
                 ->jsonContent(function ($content) {
                     $this->assertGreaterThan(150, $content['data']['__schema']['types']);
                     $types = $content['data']['__schema']['types'];
@@ -69,7 +69,7 @@ class GraphQLControllerTest extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->isOK()
                 ->jsonContent(function ($content) {
                     $types = $content['data']['__schema']['types'];
                     foreach ($types as $type) {
@@ -84,7 +84,7 @@ class GraphQLControllerTest extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->isOK()
                 ->jsonContent(function ($content) {
                     $types = $content['data']['__schema']['types'];
                     foreach ($types as $type) {
@@ -104,7 +104,7 @@ class GraphQLControllerTest extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->isOK()
                 ->jsonContent(function ($content) {
                     $this->assertCount(1, $content['data']);
                     $this->assertCount(1, $content['data']['Computer']);
@@ -122,7 +122,7 @@ class GraphQLControllerTest extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->isOK()
                 ->jsonContent(function ($content) {
                     $this->assertCount(1, $content['data']);
                     $this->assertGreaterThan(2, count($content['data']['Computer']));
@@ -138,7 +138,7 @@ class GraphQLControllerTest extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->isOK()
                 ->jsonContent(function ($content) {
                     $this->assertCount(1, $content['data']);
                     $this->assertCount(9, $content['data']['Computer']);
@@ -167,7 +167,7 @@ class GraphQLControllerTest extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->isOK()
                 ->jsonContent(function ($content) {
                     $this->assertCount(1, $content['data']);
                     $this->assertArrayHasKey('id', $content['data']['CartridgeItem'][0]);
@@ -218,7 +218,7 @@ GRAPHQL);
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->isOK()
                 ->jsonContent(function ($content) {
                     $this->assertCount(1, $content['data']);
                     $this->assertCount(1, $content['data']['Computer']);
@@ -253,7 +253,7 @@ GRAPHQL);
         $this->api->call(new Request('POST', '/GraphQL', [], 'query { Ticket { id name } }'), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->isOK()
                 ->jsonContent(function ($content) {
                     $this->assertEmpty($content['data']['Ticket']);
                 });
@@ -265,7 +265,7 @@ GRAPHQL);
         $this->api->call(new Request('POST', '/GraphQL', [], 'query { Ticket { id name } }'), function ($call) use ($tickets_id) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->isOK()
                 ->jsonContent(function ($content) use ($tickets_id) {
                     $this->assertNotContains($tickets_id, array_column($content['data']['Ticket'], 'id'));
                 });
@@ -273,7 +273,7 @@ GRAPHQL);
         $this->api->call(new Request('POST', '/GraphQL', [], 'query { Ticket(id: ' . $tickets_id . ') { id name } }'), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->isOK()
                 ->jsonContent(function ($content) {
                     $this->assertEmpty($content['data']['Ticket']);
                 });
@@ -305,7 +305,7 @@ GRAPHQL);
         $this->api->call(new Request('POST', '/GraphQL', [], 'query { Ticket { id name entity { id name comment } } }'), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->isOK()
                 ->jsonContent(function ($content) {
                     foreach ($content['data']['Ticket'] as $ticket) {
                         // The name is part of the partial schema, so it is always visible
@@ -332,6 +332,64 @@ GRAPHQL);
             /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK();
+        });
+    }
+
+    public function testExtractQueryFromBodyWithApplicationGraphQLContentType()
+    {
+        $this->login();
+
+        $query = 'query { Computer(id: 1) { id name } }';
+        $request = new Request('POST', '/GraphQL', ['Content-Type' => 'application/graphql'], $query);
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertCount(1, $content['data']);
+                    $this->assertCount(1, $content['data']['Computer']);
+                    $this->assertEquals(1, $content['data']['Computer'][0]['id']);
+                    $this->assertEquals('_test_pc01', $content['data']['Computer'][0]['name']);
+                });
+        });
+    }
+
+    public function testExtractQueryFromBodyWithApplicationJsonContentType()
+    {
+        $this->login();
+
+        $query = 'query { Computer(id: 1) { id name } }';
+        $body = json_encode(['query' => $query]);
+        $request = new Request('POST', '/GraphQL', ['Content-Type' => 'application/json'], $body);
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertCount(1, $content['data']);
+                    $this->assertCount(1, $content['data']['Computer']);
+                    $this->assertEquals(1, $content['data']['Computer'][0]['id']);
+                    $this->assertEquals('_test_pc01', $content['data']['Computer'][0]['name']);
+                });
+        });
+    }
+
+    public function testExtractQueryFromBodyWithOtherContentTypeFallback()
+    {
+        $this->login();
+
+        $query = 'query { Computer(id: 1) { id name } }';
+        $request = new Request('POST', '/GraphQL', ['Content-Type' => 'text/plain'], $query);
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertCount(1, $content['data']);
+                    $this->assertCount(1, $content['data']['Computer']);
+                    $this->assertEquals(1, $content['data']['Computer'][0]['id']);
+                    $this->assertEquals('_test_pc01', $content['data']['Computer'][0]['name']);
+                });
         });
     }
 }

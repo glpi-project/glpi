@@ -275,8 +275,8 @@ abstract class AbstractRequest
                     $agent_credential = base64_decode($matches[1]);
                     [$agent_login, $agent_password] = explode(':', $agent_credential, 2);
                     if (
-                        $inventory_login == $agent_login &&
-                        $inventory_password == $agent_password
+                        $inventory_login == $agent_login
+                        && $inventory_password == $agent_password
                     ) {
                         $allowed = true;
                     }

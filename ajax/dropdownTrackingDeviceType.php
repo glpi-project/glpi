@@ -64,8 +64,8 @@ if ($isValidItemtype) {
 
     // Message for post-only
     if (!isset($_POST["admin"]) || ($_POST["admin"] == 0)) {
-        echo "<span class='text-muted'>" .
-         __s('Enter the first letters (user, item name, serial or asset number)')
+        echo "<span class='text-muted'>"
+         . __s('Enter the first letters (user, item name, serial or asset number)')
          . "</span>";
     }
     $field_id = Html::cleanId("dropdown_" . $_POST['myname'] . $rand);

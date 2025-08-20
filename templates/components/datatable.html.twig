@@ -292,7 +292,7 @@
                                                     {{ initials }}
                                                 {% endif %}
                                             </span>
-                                        {% elseif formatter == "badge" %}
+                                        {% elseif formatter == "badge" and entry[colkey] is not empty %}
                                             {% set entry_data = entry[colkey] %}
                                             {% set content = entry_data['content'] %}
                                             {% set color = entry_data['color'] ?? '#BBBBBB' %}

@@ -1012,8 +1012,8 @@ class MassiveActionTest extends DbTestCase
                 'item'        => $ticket,
                 'input'       => [
                     'locations_id' => $location_id_1,
-                    'search_options' =>
-                    [
+                    'search_options'
+                    => [
                         $ticket->getType() => 83,
                     ],
                     'field' => 'locations_id',
@@ -1026,8 +1026,8 @@ class MassiveActionTest extends DbTestCase
                 'item'        => $ticket,
                 'input'       => [
                     'locations_id' => $location_id_2,
-                    'search_options' =>
-                    [
+                    'search_options'
+                    => [
                         $ticket->getType() => 83,
                     ],
                     'field' => 'locations_id',

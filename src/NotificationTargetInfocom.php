@@ -66,8 +66,8 @@ class NotificationTargetInfocom extends NotificationTarget
                                      = $item['warrantyexpiration'];
                 $tmp['##infocom.url##']  = $this->formatURL(
                     $options['additionnaloption']['usertype'],
-                    $item['itemtype'] . "_" .
-                    $item['items_id'] . "_Infocom"
+                    $item['itemtype'] . "_"
+                    . $item['items_id'] . "_Infocom"
                 );
             }
             $this->data['infocoms'][] = $tmp;

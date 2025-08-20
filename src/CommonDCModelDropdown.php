@@ -266,8 +266,8 @@ abstract class CommonDCModelDropdown extends CommonDropdown
         if (isset($cell[$hpos])) {
             // Get the first $depth * 4 units of the cell to check if they are filled
             $accurateCell = array_slice(
-                $orientation ?
-                    array_reverse($cell[$hpos]) // If orientation is rear, reverse the array
+                $orientation
+                    ? array_reverse($cell[$hpos]) // If orientation is rear, reverse the array
                     : $cell[$hpos],
                 0,
                 (int) ceil($depth * 4)

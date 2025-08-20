@@ -465,8 +465,8 @@ class Link extends CommonDBTM
             );
         }
 
-        $vars['LOCATION'] = $item->isField('locations_id') ?
-            Dropdown::getDropdownName('glpi_locations', $item->getField('locations_id')) : '';
+        $vars['LOCATION'] = $item->isField('locations_id')
+            ? Dropdown::getDropdownName('glpi_locations', $item->getField('locations_id')) : '';
 
         if (in_array($item::class, $CFG_GLPI['domain_types'], true)) {
             $domain_table = Domain::getTable();
@@ -706,9 +706,9 @@ TWIG, $buttons_params);
                     // same name for all files, ex name = foo.txt
                     $file = reset($files);
                 }
-                $url             = $CFG_GLPI["root_doc"] . "/front/link.send.php?lID=" . $params['id'] .
-                                 "&itemtype=" . $item::class .
-                                 "&id=" . $item->getID() . "&rank=$key";
+                $url             = $CFG_GLPI["root_doc"] . "/front/link.send.php?lID=" . $params['id']
+                                 . "&itemtype=" . $item::class
+                                 . "&id=" . $item->getID() . "&rank=$key";
                 $newlink         = '<a href="' . htmlescape($url) . '" target="_blank">';
                 $newlink        .= "<i class='fs-2 ti ti-link me-2'></i>";
                 $linkname        = htmlescape(sprintf(__('%1$s #%2$s'), $name, $i));

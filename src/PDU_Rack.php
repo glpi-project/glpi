@@ -552,23 +552,23 @@ JAVASCRIPT;
 
                     $tip = "<span class='tipcontent'>";
                     $tip .= "<span>
-                        <label>" . _sn('Type', 'Types', 1) . ":</label>" .
-                        htmlescape($pdu->getTypeName()) . "
+                        <label>" . _sn('Type', 'Types', 1) . ":</label>"
+                        . htmlescape($pdu->getTypeName()) . "
                      </span>
                      <span>
-                        <label>" . __s('name') . ":</label>" .
-                        htmlescape($pdu->getName()) . "
+                        <label>" . __s('name') . ":</label>"
+                        . htmlescape($pdu->getName()) . "
                      </span>";
                     if (!empty($pdu->fields['serial'])) {
                         $tip .= "<span>
-                           <label>" . __s('serial') . ":</label>" .
-                           htmlescape($pdu->fields['serial']) . "
+                           <label>" . __s('serial') . ":</label>"
+                           . htmlescape($pdu->fields['serial']) . "
                         </span>";
                     }
                     if (!empty($pdu->fields['otherserial'])) {
                         $tip .= "<span>
-                           <label>" . __s('Inventory number') . ":</label>" .
-                           htmlescape($pdu->fields['otherserial']) . "
+                           <label>" . __s('Inventory number') . ":</label>"
+                           . htmlescape($pdu->fields['otherserial']) . "
                         </span>";
                     }
                     if (!empty($model_name)) {
