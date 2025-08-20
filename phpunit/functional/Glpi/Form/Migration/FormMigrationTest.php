@@ -1550,6 +1550,26 @@ final class FormMigrationTest extends DbTestCase
             'expected_visibility_strategy' => VisibilityStrategy::ALWAYS_VISIBLE,
             'expected_conditions'          => [],
         ];
+
+        yield 'QuestionTypeShortText - Visible if value is not empty' => [
+            'field_type' => 'text',
+            'show_rule'  => 2,
+            'conditions' => [
+                [
+                    'show_condition' => 2,
+                    'show_value'     => '',
+                    'show_logic'     => 1,
+                ],
+            ],
+            'expected_visibility_strategy' => VisibilityStrategy::VISIBLE_IF,
+            'expected_conditions'          => [
+                [
+                    'value_operator' => ValueOperator::NOT_EMPTY,
+                    'value'          => '',
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
+        ];
     }
 
     #[DataProvider('provideFormMigrationVisibilityConditionsForQuestions')]

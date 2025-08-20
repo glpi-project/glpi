@@ -351,7 +351,8 @@ final class EditorManagerTest extends GLPITestCase
                 'length_greater_than_or_equals' => __('Length is greater than or equals to'),
                 'length_less_than'              => __('Length is less than'),
                 'length_less_than_or_equals'    => __('Length is less than or equals to'),
-
+                'empty'                         => __('Is empty'),
+                'not_empty'                     => __('Is not empty'),
             ],
         ];
 
@@ -431,6 +432,8 @@ final class EditorManagerTest extends GLPITestCase
             'not_visible'     => __("Is not visible"),
             'match_regex'     => __("Match regular expression"),
             'not_match_regex' => __("Do not match regular expression"),
+            'empty'           => __("Is empty"),
+            'not_empty'       => __("Is not empty"),
         ], $dropdown_values);
     }
 

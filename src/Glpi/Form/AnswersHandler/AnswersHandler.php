@@ -110,6 +110,7 @@ final class AnswersHandler
             // Check if the question is not answered (empty or not set)
             if (
                 empty($answers[$question->getID()])
+                || (is_string($answers[$question->getID()]) && empty(strip_tags($answers[$question->getID()])))
                 || (isset($answers[$question->getID()]['items_id']) && empty($answers[$question->getID()]['items_id']))
             ) {
                 $result->addError($question, __('This field is mandatory'));

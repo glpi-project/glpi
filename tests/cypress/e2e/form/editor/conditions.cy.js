@@ -1078,18 +1078,6 @@ describe ('Conditions', () => {
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
                         logic: 'Or',
                         operator: 'Is equal to',
                         value: 'Exact match',
@@ -1158,18 +1146,6 @@ describe ('Conditions', () => {
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeNumber',
                 subType: 'Number',
                 conditions: [
-                    {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
                     {
                         logic: 'Or',
                         operator: 'Is equal to',
@@ -1307,18 +1283,6 @@ describe ('Conditions', () => {
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeLongText',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
                         logic: 'Or',
                         operator: 'Is equal to',
                         value: 'Exact match',
@@ -1388,18 +1352,6 @@ describe ('Conditions', () => {
                 extra_data: '{"is_default_value_current_time":"0","is_date_enabled":"1","is_time_enabled":"0"}',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
                         logic: 'Or',
                         operator: 'Is equal to',
                         value: '2021-01-01',
@@ -1456,18 +1408,6 @@ describe ('Conditions', () => {
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeDateTime',
                 extra_data: '{"is_default_value_current_time":"0","is_date_enabled":"0","is_time_enabled":"1"}',
                 conditions: [
-                    {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
                     {
                         logic: 'Or',
                         operator: 'Is equal to',
@@ -1526,18 +1466,6 @@ describe ('Conditions', () => {
                 extra_data: '{"is_default_value_current_time":"0","is_date_enabled":"1","is_time_enabled":"1"}',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
                         logic: 'Or',
                         operator: 'Is equal to',
                         value: '2021-01-01T12:00',
@@ -1594,18 +1522,6 @@ describe ('Conditions', () => {
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeRequester',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
                         logic: 'Or',
                         operator: 'Is equal to',
                         value: 'glpi',
@@ -1649,18 +1565,6 @@ describe ('Conditions', () => {
                 name: 'My observer question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeObserver',
                 conditions: [
-                    {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
                     {
                         logic: 'Or',
                         operator: 'Is equal to',
@@ -1706,18 +1610,6 @@ describe ('Conditions', () => {
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeAssignee',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
                         logic: 'Or',
                         operator: 'Is equal to',
                         value: 'glpi',
@@ -1761,18 +1653,6 @@ describe ('Conditions', () => {
                 name: 'My urgency question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeUrgency',
                 conditions: [
-                    {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
                     {
                         logic: 'Or',
                         operator: 'Is equal to',
@@ -1830,18 +1710,6 @@ describe ('Conditions', () => {
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeRequestType',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
                         logic: 'Or',
                         operator: 'Is equal to',
                         value: 'Request',
@@ -1874,18 +1742,6 @@ describe ('Conditions', () => {
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeFile',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
                         logic: 'Or',
                         operator: 'Match regular expression',
                         value: '/^file_[0-9]+\\.txt$/',
@@ -1896,7 +1752,7 @@ describe ('Conditions', () => {
                         operator: 'Do not match regular expression',
                         value: '/^file_[0-9]+\\.txt$/',
                         valueType: 'string'
-                    }
+                    },
                 ],
             },
         ],
@@ -1906,18 +1762,6 @@ describe ('Conditions', () => {
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeRadio',
                 extra_data: '{"options":{"1":"Option 1","2":"Option 2","3":"Option 3","4":"Option 4"}}',
                 conditions: [
-                    {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
                     {
                         logic: 'Or',
                         operator: 'Is equal to',
@@ -1951,18 +1795,6 @@ describe ('Conditions', () => {
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeCheckbox',
                 extra_data: '{"options":{"1":"Option 1","2":"Option 2","3":"Option 3","4":"Option 4"}}',
                 conditions: [
-                    {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
                     {
                         logic: 'Or',
                         operator: 'Is equal to',
@@ -2009,18 +1841,6 @@ describe ('Conditions', () => {
                 extra_data: '{"is_multiple_dropdown":false,"options":{"1":"Option 1","2":"Option 2","3":"Option 3","4":"Option 4"}}',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
                         logic: 'Or',
                         operator: 'Is equal to',
                         value: 'Option 3',
@@ -2053,18 +1873,6 @@ describe ('Conditions', () => {
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeDropdown',
                 extra_data: '{"is_multiple_dropdown":true,"options":{"1":"Option 1","2":"Option 2","3":"Option 3","4":"Option 4"}}',
                 conditions: [
-                    {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
                     {
                         logic: 'Or',
                         operator: 'Is equal to',
@@ -2111,18 +1919,6 @@ describe ('Conditions', () => {
                 extra_data: '{"itemtype":"Computer"}',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
                         logic: 'Or',
                         operator: 'Is equal to',
                         value: 'Computer - {uuid}',
@@ -2167,18 +1963,6 @@ describe ('Conditions', () => {
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeItemDropdown',
                 extra_data: '{"itemtype":"Location","categories_filter":[],"root_items_id":0,"subtree_depth":0}',
                 conditions: [
-                    {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
                     {
                         logic: 'Or',
                         operator: 'Is equal to',
@@ -2225,18 +2009,6 @@ describe ('Conditions', () => {
                 extra_data: '{"is_multiple_devices":false}',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
                         logic: 'Or',
                         operator: 'Is of itemtype',
                         value: 'Computer',
@@ -2282,18 +2054,6 @@ describe ('Conditions', () => {
                 extra_data: '{"is_multiple_devices":true}',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
                         logic: 'Or',
                         operator: 'At least one item of itemtype',
                         value: ['Computer'],
@@ -2331,8 +2091,40 @@ describe ('Conditions', () => {
                     },
                 ]
             }
-        ]
+        ],
     };
+
+    // All questions implement "Is visible", "Is not visible", "Is empty" and "Is not empty" conditions
+    Object.values(questionsToAdd).forEach((questions) => {
+        questions.forEach((question) => {
+            question.conditions.push(
+                {
+                    logic: null,
+                    operator: 'Is visible',
+                    value: null,
+                    valueType: null
+                },
+                {
+                    logic: 'Or',
+                    operator: 'Is not visible',
+                    value: null,
+                    valueType: null
+                },
+                {
+                    logic: 'Or',
+                    operator: 'Is empty',
+                    value: null,
+                    valueType: null
+                },
+                {
+                    logic: 'Or',
+                    operator: 'Is not empty',
+                    value: null,
+                    valueType: null
+                }
+            );
+        });
+    });
 
     it('can all questions type are tested for conditions', () => {
         const expected_types = Object.values(questionsToAdd).reduce((acc, questions) => {
