@@ -695,8 +695,8 @@ trait PlanningEvent
             $img      = "rdv_public.png";
         }
 
-        $html .= "<img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/" . htmlescape($img) . "' alt='' title=\""
-             . static::getTypeName(1) . "\">&nbsp;";
+        $html .= "<img src='" . htmlescape($CFG_GLPI["root_doc"] . "/pics/" . $img) . "' alt='' title=\""
+             . htmlescape(static::getTypeName(1)) . "\">&nbsp;";
         $html .= "<a id='reminder_" . htmlescape($val[$item_fk] . $rand) . "' href='"
              . htmlescape(Reminder::getFormURLWithID($val[$item_fk])) . "'>";
 
@@ -774,7 +774,7 @@ trait PlanningEvent
             'rand' => mt_rand(),
         ];
         $options = array_merge($default_options, $options);
-        $rand    = $options['rand'];
+        $rand    = (int) $options['rand'];
 
         $out = "<div class='card' style='padding: 5px; width: 100%;'>";
         $out .= Dropdown::showFromArray('rrule[freq]', [
@@ -816,7 +816,7 @@ trait PlanningEvent
         $out .= "<div id='advanced_repetition$rand' style='display: $display_ar; max-width: 23'>";
 
         $out .= "<div class='field'>";
-        $out .= "<label for='dropdown_interval$rand'>" . __("Interval") . "</label>";
+        $out .= "<label for='dropdown_interval$rand'>" . __s("Interval") . "</label>";
         $out .= "<div>" . Dropdown::showNumber('rrule[interval]', [
             'value'   => $rrule['interval'],
             'min'     => 1,
@@ -826,7 +826,7 @@ trait PlanningEvent
         $out .= "</div>";
 
         $out .= "<div class='field'>";
-        $out .= "<label for='showdate$rand'>" . __("Until") . "</label>";
+        $out .= "<label for='showdate$rand'>" . __s("Until") . "</label>";
         $out .= "<div>" . Html::showDateField('rrule[until]', [
             'value'   => $rrule['until'],
             'rand'    => $rand,
@@ -835,7 +835,7 @@ trait PlanningEvent
         $out .= "</div>";
 
         $out .= "<div class='field'>";
-        $out .= "<label for='dropdown_byday$rand'>" . __("By day") . "</label>";
+        $out .= "<label for='dropdown_byday$rand'>" . __s("By day") . "</label>";
         $out .= "<div>" . Dropdown::showFromArray('rrule[byday]', [
             'MO' => __('Monday'),
             'TU' => __('Tuesday'),
@@ -855,7 +855,7 @@ trait PlanningEvent
         $out .= "</div>";
 
         $out .= "<div class='field'>";
-        $out .= "<label for='dropdown_bymonth$rand'>" . __("By month") . "</label>";
+        $out .= "<label for='dropdown_bymonth$rand'>" . __s("By month") . "</label>";
         $out .= "<div>" . Dropdown::showFromArray('rrule[bymonth]', [
             1  => __('January'),
             2  => __('February'),
@@ -881,7 +881,7 @@ trait PlanningEvent
 
         $rand = mt_rand();
         $out .= "<div class='field'>";
-        $out .= "<label for='showdate$rand'>" . __("Exceptions") . "</label>";
+        $out .= "<label for='showdate$rand'>" . __s("Exceptions") . "</label>";
         $out .= "<div>" . Html::showDateField('rrule[exceptions]', [
             'value'    => implode(', ', $rrule['exceptions']),
             'rand'     => $rand,
@@ -912,15 +912,15 @@ trait PlanningEvent
             $objectitemtype = (method_exists($item, 'getItilObjectItemType') ? $item::getItilObjectItemType() : $itemtype);
 
             //TRANS: %1$s is a type, %2$$ is a date, %3$s is a date
-            $out  = sprintf(
+            $out  = htmlescape(sprintf(
                 __('%1$s: from %2$s to %3$s:'),
                 $item->getTypeName(1),
                 Html::convDateTime($val["begin"]),
                 Html::convDateTime($val["end"])
-            );
-            $out .= "<br/><a href='" . $objectitemtype::getFormURLWithID($val[getForeignKeyFieldForItemType($objectitemtype)]);
+            ));
+            $out .= "<br/><a href='" . htmlescape($objectitemtype::getFormURLWithID($val[getForeignKeyFieldForItemType($objectitemtype)]));
             if ($item instanceof CommonITILTask) {
-                $out .= "&amp;forcetab=" . $itemtype . "$1";
+                $out .= "&amp;forcetab=" . htmlescape($itemtype) . "$1";
             }
             $out .= "'>";
             $out .= Html::resume_text($val["name"], 80) . '</a>';

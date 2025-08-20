@@ -58,11 +58,11 @@ HTML,
             'expected_result' => 'Root entity > Это испытание!',
         ];
 
-        // Malformed HTML (some special chars are not encoded)
-        // It is not considered as sanitized, so it will be returned verbatim.
+        // HTML containing both encoded and non encoded special chars
+        // -> encoded special chars will be decoded, as the input is expected to be a safe HTML string
         yield [
-            'value'           => '&#60;span&#62;span containing non encoded > special char&#60;/span&#62;',
-            'expected_result' => '&#60;span&#62;span containing non encoded > special char&#60;/span&#62;',
+            'value'           => '&#60;span&#62;text containing non encoded > special char&#60;/span&#62;',
+            'expected_result' => '<span>text containing non encoded > special char</span>',
         ];
 
         // Ticket title column

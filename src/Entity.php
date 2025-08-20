@@ -3014,7 +3014,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
         // Construct HTML with special chars encoded.
         if ($title === null) {
-            $title = htmlescape(implode(' > ', $names));
+            $title = implode(' > ', $names);
         }
         $breadcrumbs = implode(
             '<i class="ti ti-caret-right-filled mx-1"></i>',
@@ -3024,7 +3024,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             )
         );
 
-        return '<span class="glpi-badge" title="' . $title . '">' . $breadcrumbs . "</span>";
+        return '<span class="glpi-badge" title="' . htmlescape($title) . '">' . $breadcrumbs . "</span>";
     }
 
     /**

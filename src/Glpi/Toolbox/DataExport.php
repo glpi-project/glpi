@@ -89,6 +89,16 @@ class DataExport
             $spacing_chars_pattern = '(' . implode('|', $spacing_chars) . ')+';
             $value = preg_replace('/^' . $spacing_chars_pattern . '/u', '', $value);
             $value = preg_replace('/' . $spacing_chars_pattern . '$/u', '', $value);
+        } else {
+            // Be sure to remove unexpected HTML tags.
+            // This is necessary because the rendering methods (`giveItem()`, `getSpecificValueToDisplay()`, ...)
+            // do not always adapt their output to the rendering context.
+            $value = \strip_tags($value);
+
+            // Decode entities.
+            // This is necessary because the rendering methods (`giveItem()`, `getSpecificValueToDisplay()`, ...)
+            // are actually always providing an escaped value.
+            $value = \html_entity_decode($value);
         }
 
         $value = preg_replace('/' . Search::LBBR . '/', "\n", $value);

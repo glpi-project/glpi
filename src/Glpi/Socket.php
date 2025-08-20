@@ -503,12 +503,12 @@ class Socket extends CommonDBChild
                     if ($values[$field] > 0) {
                         $item = new $values['itemtype']();
                         $item->getFromDB($values[$field]);
-                        return "<a href='" . $item->getLinkURL() . "'>" . $item->fields['name'] . "</a>";
+                        return "<a href='" . \htmlescape($item->getLinkURL()) . "'>" . \htmlescape($item->fields['name']) . "</a>";
                     }
                 }
                 return ' ';
             case 'wiring_side':
-                return self::getWiringSideName($values[$field]);
+                return \htmlescape(self::getWiringSideName($values[$field]));
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

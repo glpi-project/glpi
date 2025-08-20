@@ -311,7 +311,7 @@ class Event extends CommonDBTM
             $twig_params = [
                 'class'        => 'table table-hover table-bordered',
                 'header_rows'  => [
-                    [__('No Event')],
+                    [__s('No Event')],
                 ],
                 'rows'         => [],
             ];
@@ -330,20 +330,21 @@ class Event extends CommonDBTM
                 [
                     [
                         'colspan'   => 5,
-                        'content'   => "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/event.php\">"
-                     . sprintf(__('Last %d events'), $_SESSION['glpilist_limit']) . "</a>",
+                        'content'   => "<a href=\"" . \htmlescape($CFG_GLPI["root_doc"]) . "/front/event.php\">"
+                            . \htmlescape(sprintf(__('Last %d events'), $_SESSION['glpilist_limit']))
+                            . "</a>",
                     ],
                 ],
                 [
-                    __('Source'),
-                    __('Id'),
-                    _n('Date', 'Dates', 1),
+                    __s('Source'),
+                    __s('Id'),
+                    _sn('Date', 'Dates', 1),
                     [
-                        'content'   => __('Service'),
+                        'content'   => __s('Service'),
                         'style'     => 'width: 10%',
                     ],
                     [
-                        'content'   => __('Message'),
+                        'content'   => __s('Message'),
                         'style'     => 'width: 50%',
                     ],
                 ],
@@ -378,11 +379,11 @@ class Event extends CommonDBTM
             $twig_params['rows'][] = [
                 'class'  => 'tab_bg_2',
                 'values' => [
-                    $itemtype,
-                    $item_log_id,
-                    Html::convDateTime($date),
-                    $logService[$service] ?? '',
-                    $message,
+                    \htmlescape($itemtype),
+                    $item_log_id, // safe HTML returned by `displayItemLogID()`
+                    \htmlescape(Html::convDateTime($date)),
+                    \htmlescape($logService[$service] ?? ''),
+                    \htmlescape($message),
                 ],
             ];
         }
@@ -555,10 +556,10 @@ class Event extends CommonDBTM
         if ($field === 'service') {
             $value = $values['service'];
             if (empty($value)) {
-                return NOT_AVAILABLE;
+                return \htmlescape(NOT_AVAILABLE);
             }
             $services = self::logArray()[1];
-            return $services[$value] ?? $value;
+            return \htmlescape($services[$value] ?? $value);
         } elseif ($field === 'items_id') {
             $type = $values['type'] ?? null;
             if (
@@ -573,7 +574,7 @@ class Event extends CommonDBTM
                 }
             }
             // Show the ID at least if it is valid (There may be a plugin that is disabled)
-            return ((int) $values['items_id']) > 0 ? $values['items_id'] : NOT_AVAILABLE;
+            return \htmlescape(((int) $values['items_id']) > 0 ? $values['items_id'] : NOT_AVAILABLE);
         } elseif ($field === 'type') {
             $value = $values['type'];
             if (empty($value)) {
@@ -589,7 +590,7 @@ class Event extends CommonDBTM
                 $icon = '';
             }
 
-            return '<i class="text-muted me-1 ' . $icon . '"></i><span>' . $display_value . '</span>';
+            return '<i class="text-muted me-1 ' . \htmlescape($icon) . '"></i><span>' . \htmlescape($display_value) . '</span>';
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

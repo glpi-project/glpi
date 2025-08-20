@@ -305,15 +305,15 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
         if ($issort) {
             $class = "order_$order";
         }
-        $out = "<th $options class='$class'>";
+        $out = "<th $options class='" . \htmlescape($class) . "'>";
         if (!empty($linkto)) {
-            $out .= "<a href=\"$linkto\">";
+            $out .= "<a href=\"" . \htmlescape($linkto) . "\">";
         }
         $out .= $value;
         if (!empty($linkto)) {
             $out .= "</a>";
         }
-        $out .= "</th>\n";
+        $out .= "</th>";
         $num++;
         return $out;
     }
@@ -373,6 +373,6 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
 
     public static function showError($message = ''): string
     {
-        return "<div class='center b'>$message</div>\n";
+        return "<div class='center b'>" . \htmlescape($message) . "</div>";
     }
 }

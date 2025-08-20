@@ -5439,7 +5439,7 @@ final class SQLProvider implements SearchProviderInterface
                                                 $itemtype::getById($data['id'])->getEntityId()
                                             ))
                                         ) {
-                                            $out .= $anon_name;
+                                            $out .= \htmlescape($anon_name);
                                         } else {
                                             $user = new User();
                                             if ($user->getFromDB($data[$ID][$k]['name'])) {
@@ -5569,7 +5569,7 @@ final class SQLProvider implements SearchProviderInterface
                                     $out .= Search::LBBR;
                                 }
                                 $count_display++;
-                                $out     .= $text;
+                                $out     .= htmlescape($text);
                                 $added[]  = $data[$ID][$k]['name'] . "-" . $data[$ID][$k]['entities_id'];
                             }
                         }
@@ -5616,7 +5616,7 @@ final class SQLProvider implements SearchProviderInterface
                                     $out .= Search::LBBR;
                                 }
                                 $count_display++;
-                                $out    .= $text;
+                                $out    .= htmlescape($text);
                                 $added[] = $data[$ID][$k]['name'] . "-" . $data[$ID][$k]['profiles_id'];
                             }
                         }
@@ -5634,9 +5634,9 @@ final class SQLProvider implements SearchProviderInterface
                             if (!$_SESSION['glpiuse_flat_dropdowntree_on_search_result']) {
                                 $split_name = explode(">", $completename);
                                 $entity_name = trim(end($split_name));
-                                return $entity_name;
+                                return htmlescape($entity_name);
                             }
-                            return $completename;
+                            return htmlescape($completename);
                         }
                     }
                     break;
@@ -5647,14 +5647,13 @@ final class SQLProvider implements SearchProviderInterface
                         && !$_SESSION['glpiuse_flat_dropdowntree_on_search_result'] //user doesn't want the completename
                     ) {
                         $split_name = explode(">", $data[$ID][0]['name']);
-                        return trim(end($split_name));
+                        return htmlescape(trim(end($split_name)));
                     }
                     break;
 
                 case "glpi_documenttypes.icon":
                     if (!empty($data[$ID][0]['name'])) {
-                        return "<img class='middle' alt='' src='" . $CFG_GLPI["typedoc_icon_dir"] . "/"
-                            . $data[$ID][0]['name'] . "'>";
+                        return "<img class='middle' alt='' src='" . htmlescape($CFG_GLPI["typedoc_icon_dir"] . "/" . $data[$ID][0]['name']) . "'>";
                     }
                     return '';
 
@@ -5663,7 +5662,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($doc->getFromDB($data['id'])) {
                         return $doc->getDownloadLink();
                     }
-                    return NOT_AVAILABLE;
+                    return \htmlescape(NOT_AVAILABLE);
 
                 case "glpi_tickets_tickets.tickets_id_1":
                     $out        = "";
@@ -5683,7 +5682,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $link_text = sprintf(__('%1$s (%2$s)'), $link_text, $linkid);
                             }
                             $text  = "<a ";
-                            $text .= "href=\"" . Ticket::getFormURLWithID($linkid) . "\">";
+                            $text .= "href=\"" . htmlescape(Ticket::getFormURLWithID($linkid)) . "\">";
                             $text .= \htmlescape($link_text) . "</a>";
                             if (count($displayed)) {
                                 $out .= Search::LBBR;
@@ -5723,9 +5722,8 @@ final class SQLProvider implements SearchProviderInterface
 
                             $options['reset'] = 'reset';
 
-                            $out  = "<a id='problem$itemtype" . $data['id'] . "' ";
-                            $out .= "href=\"" . $CFG_GLPI["root_doc"] . "/front/problem.php?"
-                                . Toolbox::append_params($options, '&amp;') . "\">";
+                            $out  = "<a id='problem" . \htmlescape($itemtype . $data['id']) . "' ";
+                            $out .= "href=\"" . \htmlescape($CFG_GLPI["root_doc"] . "/front/problem.php?" . Toolbox::append_params($options, '&')) . "\">";
                             $out .= \htmlescape($data[$ID][0]['name']) . "</a>";
                             return $out;
                         }
@@ -5784,9 +5782,8 @@ final class SQLProvider implements SearchProviderInterface
 
                             $options['reset'] = 'reset';
 
-                            $out  = "<a id='ticket$itemtype" . $data['id'] . "' ";
-                            $out .= "href=\"" . $CFG_GLPI["root_doc"] . "/front/ticket.php?"
-                                . Toolbox::append_params($options, '&amp;') . "\">";
+                            $out  = "<a id='ticket" . \htmlescape($itemtype . $data['id']) . "' ";
+                            $out .= "href=\"" . \htmlescape($CFG_GLPI["root_doc"] . "/front/ticket.php?" . Toolbox::append_params($options, '&')) . "\">";
                             $out .= \htmlescape($data[$ID][0]['name']) . "</a>";
                             return $out;
                         }
@@ -5801,7 +5798,7 @@ final class SQLProvider implements SearchProviderInterface
                 case "glpi_tickets.internal_time_to_resolve":
                     // Due date + progress
                     if (in_array($orig_id, [151, 158, 181, 186])) {
-                        $out = Html::convDateTime($data[$ID][0]['name']);
+                        $out = htmlescape(Html::convDateTime($data[$ID][0]['name']));
 
                         $color = null;
                         if (
@@ -6005,45 +6002,45 @@ final class SQLProvider implements SearchProviderInterface
 
                 case "glpi_softwarelicenses.number":
                     if ($data[$ID][0]['min'] == -1) {
-                        return __('Unlimited');
+                        return __s('Unlimited');
                     }
                     if (empty($data[$ID][0]['name'])) {
                         return '';
                     }
-                    return $data[$ID][0]['name'];
+                    return \htmlescape($data[$ID][0]['name']);
 
                 case "glpi_reservationitems.comment":
                     if (empty($data[$ID][0]['name'])) {
-                        $text = __('None');
+                        $text = __s('None');
                     } else {
                         $text = Html::resume_text($data[$ID][0]['name']);
                     }
                     if (Session::haveRight('reservation', UPDATE)) {
                         return "<a title=\"" . __s('Modify the comment') . "\"
-                           href='" . ReservationItem::getFormURLWithID($data['refID']) . "' >" . $text . "</a>";
+                           href='" . \htmlescape(ReservationItem::getFormURLWithID($data['refID'])) . "' >" . $text . "</a>";
                     }
                     return $text;
 
                 case 'glpi_crontasks.description':
                     $tmp = new CronTask();
-                    return $tmp->getDescription($data[$ID][0]['name']);
+                    return \htmlescape($tmp->getDescription($data[$ID][0]['name']));
 
                 case 'glpi_changes.status':
                     $status = Change::getStatus($data[$ID][0]['name']);
                     return "<span class='text-nowrap'>"
-                        . Change::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status"
+                        . Change::getStatusIcon($data[$ID][0]['name']) . "&nbsp;" . \htmlescape($status)
                         . "</span>";
 
                 case 'glpi_problems.status':
                     $status = Problem::getStatus($data[$ID][0]['name']);
                     return "<span class='text-nowrap'>"
-                        . Problem::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status"
+                        . Problem::getStatusIcon($data[$ID][0]['name']) . "&nbsp;" . \htmlescape($status)
                         . "</span>";
 
                 case 'glpi_tickets.status':
                     $status = Ticket::getStatus($data[$ID][0]['name']);
                     return "<span class='text-nowrap'>"
-                        . Ticket::getStatusIcon($data[$ID][0]['name']) . "&nbsp;$status"
+                        . Ticket::getStatusIcon($data[$ID][0]['name']) . "&nbsp;" . \htmlescape($status)
                         . "</span>";
 
                 case 'glpi_projectstates.name':
@@ -6101,9 +6098,7 @@ final class SQLProvider implements SearchProviderInterface
                                     !empty($val['name'])
                                     && ($item = getItemForItemtype($val['name']))
                                 ) {
-                                    $item = getItemForItemtype($val['name']);
-                                    $name = $item->getTypeName();
-                                    $itemtypes[] = __($name);
+                                    $itemtypes[] = \htmlescape($item->getTypeName());
                                 }
                             }
                         }
@@ -6123,12 +6118,12 @@ final class SQLProvider implements SearchProviderInterface
                     ) {
                         $link = $itemtype::getFormURLWithID($data[$ID][0]['id']);
 
-                        $out  = "<a id='$itemtype" . $data[$ID][0]['id'] . "' href=\"" . $link;
+                        $out  = "<a id='" . \htmlescape($itemtype . $data[$ID][0]['id']) . "' href=\"" . \htmlescape($link);
                         // Force solution tab if solved
                         if ($item = getItemForItemtype($itemtype)) {
                             /** @var CommonITILObject $item */
                             if (in_array($data[$ID][0]['status'], $item->getSolvedStatusArray())) {
-                                $out .= "&amp;forcetab=$itemtype$2";
+                                $out .= "&amp;forcetab=" . \htmlescape($itemtype) . "$2";
                             }
                         }
                         $out .= "\">";
@@ -6180,15 +6175,19 @@ final class SQLProvider implements SearchProviderInterface
                     break;
 
                 case 'glpi_projects._virtual_planned_duration':
-                    return Html::timestampToString(
-                        ProjectTask::getTotalPlannedDurationForProject($data["id"]),
-                        false
+                    return \htmlescape(
+                        Html::timestampToString(
+                            ProjectTask::getTotalPlannedDurationForProject($data["id"]),
+                            false
+                        )
                     );
 
                 case 'glpi_projects._virtual_effective_duration':
-                    return Html::timestampToString(
-                        ProjectTask::getTotalEffectiveDurationForProject($data["id"]),
-                        false
+                    return \htmlescape(
+                        Html::timestampToString(
+                            ProjectTask::getTotalEffectiveDurationForProject($data["id"]),
+                            false
+                        )
                     );
 
                 case 'glpi_cartridgeitems._virtual':
@@ -6235,7 +6234,7 @@ final class SQLProvider implements SearchProviderInterface
                 case 'glpi_reservationitems._virtual':
                     if ($data[$ID][0]['is_active']) {
                         return "<a href='reservation.php?reservationitems_id="
-                            . $data["refID"] . "' title=\"" . __s('See planning') . "\">"
+                            . \htmlescape($data["refID"]) . "' title=\"" . __s('See planning') . "\">"
                             . "<i class='ti ti-calendar'></i><span class='sr-only'>" . __('See planning') . "</span></a>";
                     } else {
                         return '';
@@ -6247,7 +6246,7 @@ final class SQLProvider implements SearchProviderInterface
                 case "glpi_changes.priority":
                 case "glpi_projects.priority":
                     $index = $data[$ID][0]['name'];
-                    $color = $_SESSION["glpipriority_$index"];
+                    $color = \htmlescape($_SESSION["glpipriority_$index"]);
                     $name  = CommonITILObject::getPriorityName($index);
                     return "<div class='badge_block' style='border-color: $color'>
                         <span style='background: $color'></span>&nbsp;" . \htmlescape($name) . "
@@ -6312,7 +6311,7 @@ final class SQLProvider implements SearchProviderInterface
                         $icon_class = "ti ti-eye-off not-published";
                         $icon_title = __s("This item is not published yet");
                     }
-                    return "<div class='kb'> <i class='$icon_class' title='$icon_title'></i> <a href='$href'>" . \htmlescape($name) . "</a></div>";
+                    return "<div class='kb'> <i class='$icon_class' title='$icon_title'></i> <a href='" . \htmlescape($href) . "'>" . \htmlescape($name) . "</a></div>";
                 case "glpi_certificates.date_expiration":
                     if (
                         !in_array($orig_id, [151, 158, 181, 186])
@@ -6378,6 +6377,9 @@ final class SQLProvider implements SearchProviderInterface
                         $ID
                     );
                     if (!empty($out)) {
+                        // We assume that plugins returns a safe HTML string.
+                        // Not escaping the plugin hook result is the only way to permit plugins to use HTML tags for a
+                        // custom rendering.
                         return $out;
                     }
                 }
@@ -6425,8 +6427,8 @@ final class SQLProvider implements SearchProviderInterface
                                 $name = \htmlescape($name);
                             }
 
-                            $out  .= "<a id='" . $linkitemtype . "_" . $data['id'] . "_"
-                                . $data[$ID][$k]['id'] . "' href='$page'>"
+                            $out  .= "<a id='" . \htmlescape($linkitemtype . "_" . $data['id'] . "_" . $data[$ID][$k]['id']) . "'"
+                                . " href='" . \htmlescape($page) . "'>"
                                 . $name . "</a>";
                         }
                     }
@@ -6467,7 +6469,7 @@ final class SQLProvider implements SearchProviderInterface
                                     'onclick'       => true,
                                 ];
                                 $out .= sprintf(
-                                    __('%1$s %2$s'),
+                                    __s('%1$s %2$s'),
                                     "<span id='text$rand'>" . Html::resume_text($plaintext, $CFG_GLPI['cut']) . '</span>',
                                     Html::showToolTip(
                                         '<div class="fup-popup">' . RichText::getEnhancedHtml($data[$ID][$k]['name']) . '</div>',
@@ -6489,9 +6491,9 @@ final class SQLProvider implements SearchProviderInterface
                             is_null($data[$ID][$k]['name'])
                             && isset($so['emptylabel']) && $so['emptylabel']
                         ) {
-                            $out .= (empty($out) ? '' : Search::LBBR) . $so['emptylabel'];
+                            $out .= (empty($out) ? '' : Search::LBBR) . \htmlescape($so['emptylabel']);
                         } else {
-                            $out .= (empty($out) ? '' : Search::LBBR) . Html::convDate($data[$ID][$k]['name']);
+                            $out .= (empty($out) ? '' : Search::LBBR) . \htmlescape(Html::convDate($data[$ID][$k]['name']));
                         }
                     }
                     $out = "<span class='text-nowrap'>$out</span>";
@@ -6504,9 +6506,9 @@ final class SQLProvider implements SearchProviderInterface
                             is_null($data[$ID][$k]['name'])
                             && isset($so['emptylabel']) && $so['emptylabel']
                         ) {
-                            $out .= (empty($out) ? '' : Search::LBBR) . $so['emptylabel'];
+                            $out .= (empty($out) ? '' : Search::LBBR) . \htmlescape($so['emptylabel']);
                         } else {
-                            $out .= (empty($out) ? '' : Search::LBBR) . Html::convDateTime($data[$ID][$k]['name']);
+                            $out .= (empty($out) ? '' : Search::LBBR) . \htmlescape(Html::convDateTime($data[$ID][$k]['name']));
                         }
                     }
                     $out = "<span class='text-nowrap'>$out</span>";
@@ -6524,11 +6526,14 @@ final class SQLProvider implements SearchProviderInterface
 
                     $out   = '';
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
-                        $out .= (empty($out) ? '' : '<br>') . Html::timestampToString(
-                            $data[$ID][$k]['name'],
-                            $withseconds,
-                            $withdays
-                        );
+                        $out .= (empty($out) ? '' : '<br>')
+                            . \htmlescape(
+                                Html::timestampToString(
+                                    $data[$ID][$k]['name'],
+                                    $withseconds,
+                                    $withdays
+                                )
+                            );
                     }
                     $out = "<span class='text-nowrap'>$out</span>";
                     return $out;
@@ -6585,7 +6590,7 @@ final class SQLProvider implements SearchProviderInterface
                             }
                         }
                     }
-                    $out = "<span class='text-nowrap'>$out</span>";
+                    $out = "<span class='text-nowrap'>" . \htmlescape($out) . "</span>";
                     return $out;
 
                 case "decimal":
@@ -6607,7 +6612,7 @@ final class SQLProvider implements SearchProviderInterface
                             }
                         }
                     }
-                    $out = "<span class='text-nowrap'>$out</span>";
+                    $out = "<span class='text-nowrap'>" . \htmlescape($out) . "</span>";
                     return $out;
 
                 case "bool":
@@ -6622,7 +6627,7 @@ final class SQLProvider implements SearchProviderInterface
                             $out .= Dropdown::getYesNo($data[$ID][$k]['name']);
                         }
                     }
-                    return $out;
+                    return \htmlescape($out);
 
                 case "itemtypename":
                     $out           = "";
@@ -6661,20 +6666,14 @@ final class SQLProvider implements SearchProviderInterface
                         ];
                     }
 
-                    $out = "";
-                    $out = <<<HTML
-                <span class='text-nowrap'>
-                    {$progressbar_data['text']}
-                </span>
-                <div class="progress" style="height: 16px">
-                    <div class="progress-bar progress-bar-striped" role="progressbar"
-                        style="width: {$progressbar_data['percent']}%; background-color: {$progressbar_data['color']};"
-                        aria-valuenow="{$progressbar_data['percent']}"
-                        aria-valuemin="0" aria-valuemax="100">
-                    {$progressbar_data['percent_text']}%
-                    </div>
-                </div>
-HTML;
+                    $out = '<span class="text-nowrap">' . \htmlescape($progressbar_data['text']) . '</span>'
+                        . '<div class="progress" style="height: 16px">'
+                        . '<div class="progress-bar progress-bar-striped" role="progressbar"'
+                        . ' style="width:' . \htmlescape($progressbar_data['percent']) . '%; background-color:' . \htmlescape($progressbar_data['color']) . ';"'
+                        . ' aria-valuenow="' . \htmlescape($progressbar_data['percent']) . '" aria-valuemin="0" aria-valuemax="100">'
+                        . \htmlescape($progressbar_data['percent_text']) . '%'
+                        . '</div>'
+                        . '</div>';
 
                     return $out;
                 case 'color':
@@ -6696,6 +6695,7 @@ HTML;
 
         $append_specific = static function ($specific, $field_data, &$out) use ($so) {
             if (!empty($specific)) {
+                // result of `getSpecificValueToDisplay()` is expected to be safe HTML
                 $out .= $specific;
             } elseif (isset($field_data['values'])) {
                 // Aggregate values; No special handling
@@ -6709,14 +6709,13 @@ HTML;
                 } else {
                     // Trans field exists
                     if (isset($field_data['trans']) && !empty($field_data['trans'])) {
-                        $out .= $field_data['trans'];
+                        $out .= \htmlescape($field_data['trans']);
                     } elseif (isset($field_data['trans_completename']) && !empty($field_data['trans_completename'])) {
-                        $out .= $field_data['trans_completename'];
+                        $out .= \htmlescape($field_data['trans_completename']);
                     } elseif (isset($field_data['trans_name']) && !empty($field_data['trans_name'])) {
-                        $out .= $field_data['trans_name'];
+                        $out .= \htmlescape($field_data['trans_name']);
                     } else {
-                        $value = $field_data['name'];
-                        $out .= \htmlescape($value ?: '');
+                        $out .= \htmlescape($field_data['name'] ?: '');
                     }
                 }
             }
