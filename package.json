@@ -96,5 +96,8 @@
         "terser": "^5.43.1",
         "webpack": "^5.99.9",
         "webpack-cli": "^6.0.1"
+    },
+    "overrides": {
+        "tmp": "0.2.5"
     }
 }
