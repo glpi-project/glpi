@@ -4260,7 +4260,7 @@ msgstr "Dita e fundit"
 #: templates/components/printer_graph_buttons.html.twig
 #, php-format
 msgid "Last %s days"
-msgstr "Ditët e fundit të %"
+msgstr "Ditët e fundit të %s"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Last quarter"
@@ -9392,7 +9392,7 @@ msgstr "URL e synuar"
 
 #: templates/pages/admin/group.html.twig src/Group.php:473
 msgid "Recursive membership"
-msgstr "Recursive Membership"
+msgstr "Anëtarësim Rekursiv"
 
 #: templates/pages/admin/group.html.twig
 msgid ""
@@ -9400,8 +9400,7 @@ msgid ""
 "children groups"
 msgstr ""
 "Nëse aktivizohet, anëtarët e këtij grupi do të bëhen gjithashtu anëtarë të "
-"nënkuptuar të grupeve të fëmijëve të tijIf enabled, members of this group "
-"will also become implicit members of its children groups"
+"nënkuptuar të grupeve të fëmijëve të tij"
 
 #: templates/pages/admin/group.html.twig
 msgid "Visible in a ticket"
@@ -9695,7 +9694,7 @@ msgstr "Sinkronizimi i përdoruesve të importuar tashmë"
 #: templates/pages/admin/ldap.users.html.twig
 #: templates/pages/admin/ldap.user_criteria.html.twig
 msgid "Import new users"
-msgstr "Import New Users"
+msgstr "Importo përdorues të rinj"
 
 #: templates/pages/admin/helpdesk_home_translation.html.twig
 #: templates/pages/admin/form/form_translation.html.twig
@@ -9803,8 +9802,8 @@ msgid ""
 "If 2FA is mandatory for this user, they will be required to set it back up "
 "the next time they log in."
 msgstr ""
-"If 2FA is required for this user, they will be required to set it back up "
-"the next time they log in."
+"Nëse 2FA është i detyrueshëm për këtë përdorues, atij do t'i kërkohet ta "
+"konfigurojë përsëri herën tjetër që të hyjë në sistem."
 
 #: templates/pages/admin/user/user.html.twig src/AuthLDAP.php:3886
 #: src/Glpi/Marketplace/View.php:782 src/Plugin.php:3061
@@ -9861,7 +9860,7 @@ msgstr "Debugoj"
 
 #: templates/pages/admin/user/user.html.twig
 msgid "Use GLPI in mode"
-msgstr "Use in GLPI mode"
+msgstr "Përdorni GLPI në modalitetin"
 
 #: templates/pages/admin/user/user.html.twig
 msgid "Contact information"
@@ -9902,7 +9901,7 @@ msgstr "Kërko Filter për Përdoruesit"
 
 #: templates/pages/admin/group_ldap.html.twig src/AuthLDAP.php:686
 msgid "In users"
-msgstr "In Users"
+msgstr "Në përdorues"
 
 #: templates/pages/admin/group_ldap.html.twig src/Group.php:344
 msgid "Attribute of the user containing its groups"
@@ -9914,7 +9913,7 @@ msgstr "Attribute Value"
 
 #: templates/pages/admin/group_ldap.html.twig src/AuthLDAP.php:687
 msgid "In groups"
-msgstr "In Groups"
+msgstr "Në grupe"
 
 #: templates/pages/admin/group_ldap.html.twig src/AuthLDAP.php:2188
 #: src/Group.php:360
@@ -10472,11 +10471,11 @@ msgstr "Titull"
 
 #: templates/pages/admin/profile/legend.html.twig
 msgid "Global right"
-msgstr "Global Right"
+msgstr "E drejta globale"
 
 #: templates/pages/admin/profile/legend.html.twig
 msgid "Entity right"
-msgstr "Entity Right"
+msgstr "E drejta e entitetit"
 
 #: templates/pages/admin/profile/assistance_simple.html.twig
 #: templates/pages/admin/profile/assistance.html.twig
@@ -10486,7 +10485,7 @@ msgstr "Modelet ITIL"
 #: templates/pages/admin/profile/assistance_simple.html.twig
 #: templates/pages/admin/profile/assistance.html.twig src/Profile.php:2702
 msgid "Default ticket template"
-msgstr "Default Ticket Template"
+msgstr "Shablloni i parazgjedhur i biletës"
 
 #: templates/pages/admin/profile/assistance_simple.html.twig
 #: templates/pages/admin/profile/assistance.html.twig
@@ -10504,8 +10503,7 @@ msgid ""
 "Enables or disables the ability to mention users within the application."
 msgstr ""
 "Mundëson ose çaktivizon aftësinë për të përmendur përdoruesit brenda "
-"aplikacionit.Enables or disables the ability to mention users within the "
-"application."
+"aplikacionit."
 
 #: templates/pages/admin/profile/assistance_simple.html.twig
 #: templates/pages/admin/profile/assistance.html.twig
@@ -10523,8 +10521,8 @@ msgid ""
 "Displays all users. Mentioned users will be added as observers if they are "
 "not already actors."
 msgstr ""
-"Shfaq të gjithë përdoruesit.Displays all users. Mentioned users will be "
-"added as observers if they are not already actors."
+"Shfaq të gjithë përdoruesit. Përdoruesit e përmendur do të shtohen si "
+"vëzhgues nëse nuk janë tashmë aktorë."
 
 #: templates/pages/admin/profile/assistance_simple.html.twig
 #: templates/pages/admin/profile/assistance.html.twig
@@ -10548,11 +10546,11 @@ msgstr "Artikuj të shoqërueshëm për bileta, ndryshime dhe probleme"
 
 #: templates/pages/admin/profile/assistance.html.twig
 msgid "Default change template"
-msgstr "Default Change Template"
+msgstr "Shablloni i parazgjedhur i ndryshimit"
 
 #: templates/pages/admin/profile/assistance.html.twig
 msgid "Default problem template"
-msgstr "Default Problem Template"
+msgstr "Shablloni i parazgjedhur i problemit"
 
 #: templates/pages/admin/profile/assistance.html.twig
 msgid "ITIL object"
@@ -10587,12 +10585,12 @@ msgstr "Inventar"
 msgid "Rule"
 msgid_plural "Rules"
 msgstr[0] "Rule"
-msgstr[1] "Rules"
+msgstr[1] "Rregullat"
 
 #: templates/pages/admin/profile/admin.html.twig src/Profile.php:1036
 #: src/Profile.php:2457
 msgid "Dropdowns dictionary"
-msgstr "Dropdowns Dictionary"
+msgstr "Fjalor me meny zbritëse"
 
 #: templates/pages/admin/profile/lifecycle_simple.html.twig
 #: templates/pages/admin/profile/lifecycle.html.twig src/Profile.php:2811
@@ -10603,7 +10601,7 @@ msgstr "Cikli jetësor i biletave"
 msgid "Custom asset"
 msgid_plural "Custom assets"
 msgstr[0] "Custom asset"
-msgstr[1] "Custom assets"
+msgstr[1] "Asete të personalizuara"
 
 #: templates/pages/admin/profile/lifecycle.html.twig src/Profile.php:2821
 msgid "Life cycle of problems"
@@ -10629,9 +10627,7 @@ msgid ""
 " engine of the GLPI framework."
 msgstr ""
 "Ne kemi nevojë për këtë informacion për të dërguar skedarin e inventarit në "
-"motorin e duhur të inventarit të kornizës GLPI.We need this information to "
-"send the inventory file in the correct inventory engine of the GLPI "
-"framework."
+"motorin e duhur të inventarit të kornizës GLPI."
 
 #: templates/pages/admin/assetdefinition/fields_display.html.twig
 msgid "New field"
@@ -10651,9 +10647,7 @@ msgid ""
 "You have disabled one or more capacities that are used by assets. Disabling "
 "them will result in the deletion of associated data."
 msgstr ""
-"Ju keni çaktivizuar një ose më shumë kapacitete që përdoren nga pasuritë.You"
-" have disabled one or more capacities that are used by assets. Disabling "
-"them will result in the deletion of associated data."
+"Ju keni çaktivizuar një ose më shumë kapacitete që përdoren nga pasuritë."
 
 #: templates/pages/admin/assetdefinition/capacities.html.twig
 msgctxt "button"
@@ -10664,9 +10658,7 @@ msgstr "Po, çaktivizo atë!"
 msgid ""
 "There is currently no profile with access to items with current definition."
 msgstr ""
-"Aktualisht nuk ka asnjë profil me qasje në artikuj me përkufizim "
-"aktual.There is currently no profile with access to items with current "
-"definition."
+"Aktualisht nuk ka asnjë profil me qasje në artikuj me përkufizim aktual."
 
 #: templates/pages/admin/customobjects/main.html.twig
 #: templates/pages/assets/customfield.html.twig
@@ -10683,8 +10675,7 @@ msgid ""
 "GLPI like Computer, Monitor, etc."
 msgstr ""
 "Mund të personalizohet, por disa fjalë janë të rezervuara siç janë klasa nga"
-" GLPI si kompjuteri, monitorimi, etj.It can be personalized, but some words "
-"are reserved such as classes from GLPI like Computer, Monitor, etc."
+" GLPI si kompjuteri, monitorimi, etj."
 
 #: templates/pages/admin/customobjects/main.html.twig
 #, php-format
@@ -10757,16 +10748,15 @@ msgid ""
 "Substitutes are users who can approve or refuse tickets on your behalf."
 msgstr ""
 "Zëvendësuesit janë përdorues që mund të aprovojnë ose refuzojnë biletat në "
-"emrin tuaj.Substitutes are users who can approve or refuse tickets on your "
-"behalf."
+"emrin tuaj."
 
 #: templates/pages/admin/user.substitute.html.twig
 msgid "Start date "
-msgstr "Start Date "
+msgstr "Data e fillimit"
 
 #: templates/pages/admin/user.substitute.html.twig
 msgid "End date "
-msgstr "End Date "
+msgstr "Data e përfundimit"
 
 #: templates/pages/admin/user.substitute.html.twig
 msgid "Approval substitutes"
@@ -10777,16 +10767,16 @@ msgid ""
 "Delegators are users who gave you the right to approve or refuse tickets on "
 "their behalf."
 msgstr ""
-"Delegators are users who gave you the permission to approve or refuse "
-"tickets on their behalf."
+"Deleguesit janë përdorues që ju kanë dhënë të drejtën të miratoni ose "
+"refuzoni biletat në emër të tyre."
 
 #: templates/pages/admin/user.substitute.html.twig src/User.php:3583
 msgid "Substitution start date"
-msgstr "Substitution Start Date"
+msgstr "Data e Fillimit të Zëvendësimit"
 
 #: templates/pages/admin/user.substitute.html.twig src/User.php:3591
 msgid "Substitution end date"
-msgstr "Substitution End Date"
+msgstr "Data e Mbarimit të Zëvendësimit"
 
 #: templates/pages/admin/transfer_list.html.twig
 msgid ""
@@ -10794,8 +10784,7 @@ msgid ""
 "now."
 msgstr ""
 "Ju mund të vazhdoni të shtoni elemente që të transferohen ose të ekzekutoni "
-"transferimin tani.You can continue to add elements to be transferred or "
-"execute the transfer now."
+"transferimin tani."
 
 #: templates/pages/admin/transfer_list.html.twig
 msgid "Think of making a backup before transfering items."
@@ -10811,7 +10800,7 @@ msgstr "Pastroni listën e elementeve që do të transferohen"
 
 #: templates/pages/admin/transfer_list.html.twig
 msgid "Items to transfer"
-msgstr "Items to Transfer"
+msgstr "Artikuj për t'u transferuar"
 
 #: templates/pages/admin/transfer_list.html.twig src/Profile_User.php:109
 msgid "No selected element or badly defined operation"
@@ -10819,19 +10808,19 @@ msgstr "Asnjë element i zgjedhur ose një operacion i përcaktuar keq"
 
 #: templates/pages/admin/logs_list.html.twig
 msgid "Log files"
-msgstr "Log Files"
+msgstr "Skedarët e regjistrave"
 
 #: templates/pages/admin/logs_list.html.twig
 msgid "Sort by file path"
-msgstr "Sort by File Path"
+msgstr "Rendit sipas shtegut të skedarit"
 
 #: templates/pages/admin/logs_list.html.twig
 msgid "Sort by size"
-msgstr "Sort by Size"
+msgstr "Rendit sipas madhësisë"
 
 #: templates/pages/admin/logs_list.html.twig
 msgid "Sort by date"
-msgstr "Sort by Date"
+msgstr "Rendit sipas datës"
 
 #: templates/pages/admin/logs_list.html.twig
 #: templates/pages/admin/log_viewer.html.twig
@@ -10841,16 +10830,16 @@ msgstr "madhësia e skedarit"
 #: templates/pages/admin/logs_list.html.twig
 #: templates/pages/admin/log_viewer.html.twig
 msgid "date of last modification"
-msgstr "Date of Last Modification"
+msgstr "data e modifikimit të fundit"
 
 #: templates/pages/admin/logs_list.html.twig
 msgid "File actions"
-msgstr "File Actions"
+msgstr "Veprimet e skedarit"
 
 #: templates/pages/admin/logs_list.html.twig
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Empty file"
-msgstr "Empty File"
+msgstr "Skedar bosh"
 
 #: templates/pages/admin/logs_list.html.twig
 #: templates/pages/admin/log_viewer.html.twig
@@ -10865,7 +10854,7 @@ msgstr "A jeni i sigurt që doni të fshini këtë skedar?"
 #: templates/pages/admin/logs_list.html.twig
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Delete file"
-msgstr "Delete File"
+msgstr "Fshij skedarin"
 
 #: templates/pages/admin/group_user.html.twig src/Group_User.php:218
 #: src/Group_User.php:507 src/Group_User.php:633 src/Group.php:445
@@ -11308,7 +11297,7 @@ msgstr "Pastro statusin"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Download file"
-msgstr "Download File"
+msgstr "Shkarko skedarin"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "filter logs"
@@ -11316,7 +11305,7 @@ msgstr "regjistrat e filtrit"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Scroll to bottom"
-msgstr "Scroll to Bottom"
+msgstr "Lëviz deri në fund"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Last entries to show:"
@@ -11324,7 +11313,7 @@ msgstr "Hyrjet e fundit për të treguar:"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Toggle auto refresh"
-msgstr "Toggle Auto Refresh"
+msgstr "Aktivizo/çaktivizo rifreskimin automatik"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Collapse"
@@ -11345,11 +11334,11 @@ msgstr ""
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Enable auto-refresh"
-msgstr "Enable Auto-Refresh"
+msgstr "Aktivizo rifreskimin automatik"
 
 #: templates/pages/admin/rules/criteria.html.twig
 msgid "Add a criterion"
-msgstr "Add a Criterion"
+msgstr "Shto një kriter"
 
 #: templates/pages/admin/rules/engine_summary.html.twig
 msgid "The engine will stop after the first matched rule."
@@ -11414,7 +11403,7 @@ msgstr "Veprimet e refuzuara"
 
 #: templates/pages/admin/rules/import_preview.html.twig src/Rule.php:1129
 msgid "Action type"
-msgstr "Action Type"
+msgstr "Lloji i veprimit"
 
 #: templates/pages/admin/rules/import_preview.html.twig
 #: ajax/dropdownMassiveActionField.php:58
@@ -11491,15 +11480,14 @@ msgid ""
 "Match data with an existing asset, create a new asset, or deny the import"
 msgstr ""
 "Përputhni të dhënat me një aktiv ekzistues, krijoni një pasuri të re ose "
-"mohoni importinMatch data with an existing asset, create a new asset, or "
-"deny the import"
+"mohoni importin"
 
 #: templates/pages/admin/rules/index.html.twig front/dictionnary.php:44
 #: src/Rule.php:276
 msgid "Dictionary"
 msgid_plural "Dictionaries"
 msgstr[0] "Dictionary"
-msgstr[1] "Dictionaries"
+msgstr[1] "Fjalorë"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "Normalize sub-data (like softwares, OS and models)"
@@ -11508,7 +11496,7 @@ msgstr "Normalizoni nën-të dhënat (si softuerët, OS dhe modelet)"
 #: templates/pages/admin/rules/index.html.twig src/RuleAsset.php:48
 #: src/RuleAssetCollection.php:45 src/Profile.php:1027
 msgid "Business rules for assets"
-msgstr "Business Rules for Assets"
+msgstr "Rregullat e Biznesit për Asetet"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "Alter asset fields based on their data"
@@ -11544,19 +11532,19 @@ msgstr "Eksport"
 #: templates/pages/admin/rules/engine_preview_results.html.twig
 #: src/Rule.php:2123
 msgid "Result details"
-msgstr "Result Details"
+msgstr "Detajet e rezultatit"
 
 #: templates/pages/admin/rules/engine_preview_results.html.twig
 #: src/Rule.php:2190
 msgid "Rule results"
-msgstr "Rule Results"
+msgstr "Rezultatet e Rregullave"
 
 #: templates/pages/admin/rules/engine_preview_results.html.twig
 #: src/Rule.php:2128 src/Rule.php:2140
 msgid "Validation"
 msgid_plural "Validations"
 msgstr[0] "Validation"
-msgstr[1] "Validations"
+msgstr[1] "Validimet"
 
 #: templates/pages/admin/rules/preview_criteria.html.twig
 #: src/RuleImportAsset.php:1037 src/Glpi/Search/SearchEngine.php:539
@@ -11578,11 +11566,11 @@ msgstr "Nuk ka pllaka të përcaktuara për këtë artikull."
 
 #: templates/pages/admin/ldap.user_criteria.html.twig
 msgid "Expert mode"
-msgstr "Expert Mode"
+msgstr "Modaliteti i ekspertit"
 
 #: templates/pages/admin/ldap.user_criteria.html.twig
 msgid "Simple mode"
-msgstr "Simple Mode"
+msgstr "Modaliteti i thjeshtë"
 
 #: templates/pages/admin/ldap.user_criteria.html.twig
 msgid "Search criteria for users"
@@ -11596,7 +11584,7 @@ msgstr "Telefon"
 
 #: templates/pages/admin/ldap.user_criteria.html.twig
 msgid "View updated users"
-msgstr "View Updated Users"
+msgstr "Shiko Përdoruesit e Përditësuar"
 
 #: templates/pages/admin/helpdesk_home_config_for_empty_entity.html.twig
 msgid "There are no tiles defined for this entity."
@@ -11965,10 +11953,9 @@ msgid ""
 "should retrieve it from your previous installation or encrypted data will be"
 " unreadable."
 msgstr ""
-"Skedari kryesor \"%s \" i përdorur për të kriptuar/deshifruar të dhënat e "
-"ndjeshme mungojnë.The key file \"%s\" used to encrypt/decrypt sensitive data"
-" is missing. You should retrieve it from your previous installation or "
-"encrypted data will be unreadable."
+"Skedari kyç \"%s\" i përdorur për të enkriptuar/dekriptuar të dhëna të "
+"ndjeshme mungon. Duhet ta merrni nga instalimi juaj i mëparshëm ose të "
+"dhënat e enkriptuara do të jenë të palexueshme."
 
 #: install/update.php:86
 msgid "Ignore warning"
@@ -11985,7 +11972,7 @@ msgstr "Kthehuni te GLPI"
 #: install/update.php:135
 #, php-format
 msgid "Caution! You will update the GLPI database named: %s"
-msgstr "Warning! You're about to update the following GLPI database: %s"
+msgstr "Kujdes! Do të përditësoni bazën e të dhënave GLPI me emrin: %s"
 
 #: install/update.php:165
 msgid "Updating the database..."
@@ -11997,8 +11984,7 @@ msgid ""
 "config_db.php file"
 msgstr ""
 "Lidhja me bazën e të dhënave dështoi, verifikoni parametrat e lidhjes të "
-"përfshira në skedarin konfigurim_db.phpConnection to database failed, verify"
-" the connection parameters included in config_db.php file"
+"përfshira në skedarin konfigurim_db.php"
 
 #: install/migrations/update_9.4.0_to_9.4.1.php:99
 #: install/migrations/update_9.4.2_to_9.4.3.php:59
@@ -12635,7 +12621,7 @@ msgstr "Gazetë"
 #: resources/.illustrations_translations.php:103
 msgctxt "Icon"
 msgid "notes"
-msgstr "dërrmohen"
+msgstr "Shenimet"
 
 #: resources/.illustrations_translations.php:104
 msgctxt "Icon"
@@ -18243,9 +18229,7 @@ msgstr "Koha e brendshme rillogaritet kur caktoni OLA"
 #: src/OLA.php:80
 msgid ""
 "The assignment of an OLA to a ticket causes the recalculation of the date."
-msgstr ""
-"Caktimi i një OLA në një biletë shkakton rillogaritjen e datës.The "
-"assignment of an OLA to a ticket causes the recalculation of the date."
+msgstr "Caktimi i një OLA në një biletë shkakton rillogaritjen e datës."
 
 #: src/OLA.php:81
 msgid "Escalations defined in the OLA will be triggered under this new date."
@@ -20744,7 +20728,7 @@ msgstr "Ju nuk jeni vërtetuar"
 #: src/Glpi/Api/HL/Router.php:644
 msgctxt "api"
 msgid "The Authorization header is missing or invalid"
-msgstr "The authorization header is missing or invalid"
+msgstr "Titulli i Autorizimit mungon ose është i pavlefshëm"
 
 #: src/Glpi/Socket.php:296 src/Item_Rack.php:143 src/Item_Rack.php:332
 #: src/Item_Rack.php:665
@@ -20758,13 +20742,13 @@ msgstr "Para"
 
 #: src/Glpi/Socket.php:301
 msgid "Create both"
-msgstr "Create Both"
+msgstr "Krijo të dyja"
 
 #: src/Glpi/Socket.php:329
 msgid "Socket"
 msgid_plural "Sockets"
 msgstr[0] "Socket"
-msgstr[1] "Sockets"
+msgstr[1] "Prizat"
 
 #: src/Glpi/Socket.php:361 src/Problem.php:499
 #: src/CommonItilObject_Item.php:1466 src/Ticket.php:2755 src/Change.php:542
@@ -20773,12 +20757,12 @@ msgstr[1] "Sockets"
 msgid "Associated item type"
 msgid_plural "Associated item types"
 msgstr[0] "Associated Item Type"
-msgstr[1] "Associated Item Types"
+msgstr[1] "Llojet e artikujve të lidhur"
 
 #: src/Glpi/Socket.php:376 src/QueuedNotification.php:365
 #: src/Contract_Item.php:151 src/QueuedWebhook.php:369
 msgid "Associated item ID"
-msgstr "Associated Item ID"
+msgstr "ID e artikullit të lidhur"
 
 #: src/Glpi/Socket.php:771 src/NotificationTargetObjectLock.php:60
 msgid "Item Name"
@@ -20791,7 +20775,7 @@ msgstr "Emër aset"
 
 #: src/Glpi/CustomObject/AbstractDefinition.php:395
 msgid "The system name is mandatory."
-msgstr "The system name is required."
+msgstr "Emri i sistemit është i detyrueshëm."
 
 #: src/Glpi/CustomObject/AbstractDefinition.php:418
 msgid "The system name is a reserved name."
@@ -20837,8 +20821,7 @@ msgstr "Zbuloj"
 msgid "%1$s services website seems not available from your network or offline"
 msgstr ""
 "Uebfaqja e Shërbimeve %1 $ S duket se nuk është e disponueshme nga rrjeti "
-"juaj ose jashtë linje%1$s services website seems not available from your "
-"network or offline"
+"juaj ose jashtë linje%1$s "
 
 #: src/Glpi/Marketplace/View.php:170
 msgid "Maybe you could setup a proxy"
@@ -20856,7 +20839,7 @@ msgstr "Regjistrimi juaj %1 $ s nuk është i vlefshëm."
 #: src/Glpi/Marketplace/View.php:181
 msgid "A registration, at least a free one, is required to use marketplace!"
 msgstr ""
-"A registration, at least a free one, is required to use the marketplace!"
+"Një regjistrim, të paktën falas, është i nevojshëm për të përdorur tregun!"
 
 #: src/Glpi/Marketplace/View.php:182
 #, php-format
@@ -20887,9 +20870,9 @@ msgid ""
 "Unable to fetch plugin list due to %s services website unavailability. "
 "Please try again later."
 msgstr ""
-"Në pamundësi për të marrë listën e shtojcave për shkak të faqes së "
-"internetit të shërbimeve %të padisponueshmërisë.Unable to fetch plugin list "
-"due to %s services website unavailability. Please try again later."
+"Nuk mund të marrë listën e shtojcave për shkak të mungesës së "
+"disponueshmërisë së faqes së internetit të shërbimeve %s. Ju lutemi provoni "
+"përsëri më vonë."
 
 #: src/Glpi/Marketplace/View.php:363
 #, php-format
@@ -20897,22 +20880,22 @@ msgid ""
 "Plugin list may be truncated due to %s services website unavailability. "
 "Please try again later."
 msgstr ""
-"Lista e shtojcave mund të cungohet për shkak të faqes së internetit të "
-"Shërbimeve %të padisponueshmërisë.Plugin list may be truncated due to %s "
-"services website unavailability. Please try again later."
+"Lista e shtojcave mund të jetë e shkurtuar për shkak të mungesës së "
+"disponueshmërisë së faqes së internetit të shërbimeve %s. Ju lutemi provoni "
+"përsëri më vonë."
 
 #: src/Glpi/Marketplace/View.php:378
 #, php-format
 msgid "We can't write on the markeplace directory (%s)."
-msgstr "Ne nuk mund të shkruajmë në drejtorinë e Markës (%S)."
+msgstr "Ne nuk mund të shkruajm ne dertjorin e Markes(%s)."
 
 #: src/Glpi/Marketplace/View.php:380
 msgid ""
 "If you want to ease the plugins download, please check permissions and "
 "ownership of this directory."
 msgstr ""
-"If you want to ease the plugins download, please check the permissions and "
-"ownership of this directory."
+"Nëse doni ta lehtësoni shkarkimin e shtojcave, ju lutemi kontrolloni lejet "
+"dhe pronësinë e kësaj drejtorie."
 
 #: src/Glpi/Marketplace/View.php:382
 msgid ""
@@ -20920,8 +20903,7 @@ msgid ""
 "manually."
 msgstr ""
 "Përndryshe, do t'ju duhet të shkarkoni dhe zhbllokoni arkivat e shtojcave me"
-" dorë.Otherwise, you will need to download and unzip the plugins archives "
-"manually."
+" dorë."
 
 #: src/Glpi/Marketplace/View.php:422
 msgid "Alpha ASC"
@@ -20987,7 +20969,6 @@ msgid ""
 "Download archive manually, you must uncompress it in plugins directory (%s)"
 msgstr ""
 "Shkarkoni Arkivin me dorë, ju duhet ta kompresoni atë në Directory Plugins "
-"(%S)Download archive manually, you must uncompress it in plugins directory "
 "(%s)"
 
 #: src/Glpi/Marketplace/View.php:699
@@ -20996,8 +20977,7 @@ msgid ""
 "versioning."
 msgstr ""
 "Shtojca ka një azhurnim të disponueshëm, por drejtoria e tij lokale përmban "
-"versionimin e burimit.The plugin has an available update but its local "
-"directory contains source versioning."
+"versionimin e burimit."
 
 #: src/Glpi/Marketplace/View.php:700
 #: src/Glpi/Console/Marketplace/DownloadCommand.php:89
@@ -21006,8 +20986,7 @@ msgid ""
 "disabled."
 msgstr ""
 "Për të shmangur mbishkrimin e një dege të mundshme në zhvillim, shkarkimi "
-"është i çaktivizuar.To avoid overwriting a potential branch under "
-"development, downloading is disabled."
+"është i çaktivizuar."
 
 #: src/Glpi/Marketplace/View.php:716
 #, php-format
@@ -21040,18 +21019,17 @@ msgid ""
 "By uninstalling the \"%s\" plugin you will lose all the data of the plugin."
 msgstr ""
 "Duke çinstaluar shtojcën \"%s \" ju do të humbni të gjitha të dhënat e "
-"shtojcës.By uninstalling the \"%s\" plugin you will lose all the data of the"
-" plugin."
+"shtojcës."
 
 #: src/Glpi/Marketplace/View.php:883
 #, php-format
 msgid "You must have a %s subscription to get this plugin"
-msgstr "Ju duhet të keni një pajtim %S për të marrë këtë shtojcë"
+msgstr "Ju duhet të keni një pajtim %s për të marrë këtë shtojcë"
 
 #: src/Glpi/Marketplace/View.php:888
 #, php-format
 msgid "You need at least the %s subscription level to get this plugin"
-msgstr "Ju duhet të paktën niveli i pajtimit %S për të marrë këtë shtojcë"
+msgstr "Ju duhet të paktën niveli i pajtimit %s për të marrë këtë shtojcë"
 
 #: src/Glpi/Marketplace/View.php:993
 #, php-format
@@ -21071,7 +21049,7 @@ msgstr "GLPI siguron një treg të ri për të shkarkuar dhe instaluar shtojcat.
 #: src/Glpi/Marketplace/View.php:1046
 msgid "Do you want to replace the plugins setup page by the new marketplace?"
 msgstr ""
-"Do you want to replace the plugins setup page with the new marketplace?"
+"Dëshironi ta zëvendësoni faqen e konfigurimit të shtojcave me tregun e ri?"
 
 #: src/Glpi/Marketplace/View.php:1060
 msgid "Later"
@@ -21126,7 +21104,7 @@ msgstr "Në pamundësi për të shkarkuar arkivin e shtojcave."
 #: src/Glpi/Marketplace/Controller.php:214
 #, php-format
 msgid "Plugin archive format is not supported by your system : %s."
-msgstr "Plugin archive format is not supported by your system: %s."
+msgstr "Formati i arkivit të plugin-it nuk mbështetet nga sistemi juaj: %s."
 
 #: src/Glpi/Marketplace/Controller.php:244
 msgid "Unable to extract plugin archive."
@@ -21171,8 +21149,7 @@ msgid ""
 " = task frequency * cycle)"
 msgstr ""
 "Koha e ekzekutimit (në cikle) nga e cila detyra konsiderohet si e mbërthyer "
-"(vonesa = cikli i frekuencës së detyrës *)Execution time (in cycles) from "
-"which the task is considered as stuck (delay = task frequency * cycle)"
+"(vonesa = cikli i frekuencës së detyrës *)"
 
 #: src/Glpi/Console/Task/UnlockCommand.php:78
 msgid ""
@@ -21180,8 +21157,7 @@ msgid ""
 "(default: 1800)"
 msgstr ""
 "Koha e ekzekutimit (në sekonda) nga e cila detyra konsiderohet si e "
-"mbërthyer (parazgjedhur: 1800)Execution time (in seconds) from which the "
-"task is considered as stuck (default: 1800)"
+"mbërthyer (parazgjedhur: 1800)"
 
 #: src/Glpi/Console/Task/UnlockCommand.php:86
 msgid "Itemtype::name of task to unlock (e.g: \"MailCollector::mailgate\")"
@@ -21230,8 +21206,7 @@ msgid ""
 "You have to specify which tasks to unlock using --all or --task options."
 msgstr ""
 "Ju duhet të specifikoni se cilat detyra për të zhbllokuar duke përdorur -të "
-"gjitha ose -të detyroni opsionet.You have to specify which tasks to unlock "
-"using --all or --task options."
+"gjitha ose -të detyroni opsionet."
 
 #: src/Glpi/Console/Traits/TelemetryActivationTrait.php:62
 #, php-format
@@ -21262,9 +21237,7 @@ msgid ""
 msgstr ""
 "Që nga GLPI 9.2, ne kemi prezantuar një veçori të re të statistikave të "
 "quajtur \"Telemetry\", që në mënyrë anonime me lejen tuaj, dërgon të dhëna "
-"në faqen tonë të internetit të Telemetry.Since GLPI 9.2, we’ve introduced a "
-"new statistics feature called “Telemetry”, that anonymously with your "
-"permission, sends data to our telemetry website."
+"në faqen tonë të internetit të Telemetry."
 
 #: src/Glpi/Console/Traits/TelemetryActivationTrait.php:102
 #: src/Telemetry.php:459
@@ -21273,9 +21246,7 @@ msgid ""
 "range of GLPI developers."
 msgstr ""
 "Pasi të dërgohen, statistikat e përdorimit janë grumbulluar dhe vihen në "
-"dispozicion të një game të gjerë të zhvilluesve të GLPI.Once sent, usage "
-"statistics are aggregated and made available to a broad range of GLPI "
-"developers."
+"dispozicion të një game të gjerë të zhvilluesve të GLPI."
 
 #: src/Glpi/Console/Traits/TelemetryActivationTrait.php:103
 #: src/Telemetry.php:460
@@ -21283,8 +21254,7 @@ msgid ""
 "Let us know your usage to improve future versions of GLPI and its plugins!"
 msgstr ""
 "Na tregoni përdorimin tuaj për të përmirësuar versionet e ardhshme të GLPI "
-"dhe shtojcat e tij!Let us know your usage to improve future versions of GLPI"
-" and its plugins!"
+"dhe shtojcat e tij!"
 
 #: src/Glpi/Console/Traits/TelemetryActivationTrait.php:112
 msgid "Do you want to send \"usage statistics\"?"
@@ -21328,7 +21298,7 @@ msgstr "Kontrolloni integritetin e skedarit të kodit burimor GLPI."
 
 #: src/Glpi/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:82
 msgid "Show diff of altered files"
-msgstr "Show difference of altered files"
+msgstr "Trego ndryshimin e skedarëve të ndryshuar"
 
 #: src/Glpi/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:88
 msgid "Allow downloading the GLPI release if needed"
@@ -21361,8 +21331,7 @@ msgid ""
 "archive. Do you want to allow this operation?"
 msgstr ""
 "Gjenerimi i ndryshimit të kodit burimor mund të kërkojë shkarkimin e arkivit"
-" të lëshimit GLPI.Generating the source code diff could require downloading "
-"the GLPI release archive. Do you want to allow this operation?"
+" të lëshimit GLPI.G"
 
 #: src/Glpi/Console/Diagnostic/CheckDocumentsIntegrityCommand.php:57
 msgid "Validate files integrity for GLPI's documents."
@@ -21375,7 +21344,7 @@ msgstr "Kontrollimi i dokumentit #%s \"%s \" (%s) ..."
 
 #: src/Glpi/Console/Diagnostic/CheckDocumentsIntegrityCommand.php:162
 msgid "File not found"
-msgstr "File Not Found"
+msgstr "Skedari nuk u gjet"
 
 #: src/Glpi/Console/Diagnostic/CheckDocumentsIntegrityCommand.php:165
 msgid "Invalid checksum"
@@ -21383,7 +21352,7 @@ msgstr "Kontrolli i pavlefshëm"
 
 #: src/Glpi/Console/Diagnostic/CheckDocumentsIntegrityCommand.php:169
 msgid "Unknown error"
-msgstr "Unknown Error"
+msgstr "Gabim i panjohur"
 
 #: src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php:110
 msgid "Check for badly HTML encoded content in database."
@@ -21391,7 +21360,7 @@ msgstr "Kontrolloni për përmbajtjen e koduar keq HTML në bazën e të dhënav
 
 #: src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php:116
 msgid "Fix detected issues"
-msgstr "Fix Detected Issues"
+msgstr "Rregullo problemet e zbuluara"
 
 #: src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php:123
 msgid ""
@@ -21399,8 +21368,7 @@ msgid ""
 "changes"
 msgstr ""
 "Rruga e skedarit ku do të ruhet pyetjet SQL që mund të përdoren për të "
-"kthyer ndryshimetPath of file where will be stored SQL queries that can be "
-"used to rollback changes"
+"kthyer ndryshimet"
 
 #: src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php:135
 msgid "No item to fix."
@@ -21411,18 +21379,18 @@ msgstr "Asnjë artikull për të rregulluar."
 msgid "Found %d item to fix."
 msgid_plural "Found %d items to fix."
 msgstr[0] "Found %d item to fix."
-msgstr[1] "Found %d items to fix."
+msgstr[1] "U gjetën %d artikuj për t'u rregulluar."
 
 #: src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php:149
 msgid "Do you want to fix it?"
 msgid_plural "Do you want to fix them?"
 msgstr[0] "Do you want to fix it?"
-msgstr[1] "Do you want to fix them?"
+msgstr[1] "A doni t'i rregulloni ato?"
 
 #: src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php:166
 #, php-format
 msgid "Unable to update %s items"
-msgstr "Në pamundësi për të azhurnuar artikujt %S"
+msgstr "Në pamundësi për të azhurnuar artikujt %s"
 
 #: src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php:172
 msgid "HTML encoding has been fixed."
@@ -21432,7 +21400,7 @@ msgstr "Kodimi HTML është fiksuar."
 #, php-format
 msgid "File %s contains SQL queries that can be used to rollback command."
 msgstr ""
-"Skedari %S përmban pyetje SQL që mund të përdoren për të kthyer komandën."
+"Skedari %s përmban pyetje SQL që mund të përdoren për të kthyer komandën."
 
 #: src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php:219
 #, php-format
@@ -21465,8 +21433,7 @@ msgid ""
 "code integrity."
 msgstr ""
 "Gjeneroni manifestimin e kodit burimor GLPI që mund të përdoret për të "
-"vërtetuar integritetin e kodit burimor.Generate GLPI source code manifest "
-"that could be used to validate source code integrity."
+"vërtetuar integritetin e kodit burimor."
 
 #: src/Glpi/Console/Build/GenerateCodeManifestCommand.php:63
 msgid "Hash algorithm to use"
@@ -21511,7 +21478,7 @@ msgstr "Artikuj të shoqërueshëm për një biletë"
 
 #: src/Glpi/Console/Migration/DatabasesPluginToCoreCommand.php:180
 msgid "Importing relations with other itemtypes..."
-msgstr "Importing relations with other item types..."
+msgstr "Importimi i marrëdhënieve me lloje të tjera artikujsh..."
 
 #: src/Glpi/Console/Migration/DatabasesPluginToCoreCommand.php:207
 #: src/Glpi/Console/Migration/DatabasesPluginToCoreCommand.php:292
@@ -21568,7 +21535,7 @@ msgstr "Në pamundësi për të krijuar%s \"%s \" (%d)."
 #: src/Glpi/Console/Migration/DomainsPluginToCoreCommand.php:196
 #, php-format
 msgid "Updating existing %s \"%s\"..."
-msgstr "Përditësimi i %ekzistues %s \" %s \" ..."
+msgstr "Përditësimi i ekzistues %s \" %s \" ..."
 
 #: src/Glpi/Console/Migration/DatabasesPluginToCoreCommand.php:525
 #, php-format
@@ -21624,7 +21591,7 @@ msgstr "Remove the existing core data"
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:190
 #, php-format
 msgid "Run Racks plugin update (you need version %s files to do this)"
-msgstr "Run Racks Update PLUGIN (ju duhet Files Versioni %S për ta bërë këtë)"
+msgstr "Run Racks Update PLUGIN (ju duhet Files Versioni %s për ta bërë këtë)"
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:200
 #, php-format
@@ -21632,16 +21599,16 @@ msgid ""
 "Enable migration without plugin files (we cannot validate that plugin data "
 "are compatible with supported %s version)"
 msgstr ""
-"Enable migration without plugin files (we cannot validate that plugin data "
-"is compatible with the supported %s version)"
+"Aktivizo migrimin pa skedarë plugin-esh (nuk mund të vërtetojmë që të dhënat"
+" e plugin-it janë të pajtueshme me versionin e mbështetur %s)"
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:217
 msgid ""
 "You are about to launch migration of Racks plugin data into GLPI core "
 "tables."
 msgstr ""
-"You are about to launch the migration of Racks plugin data into GLPI core "
-"tables."
+"Jeni gati të nisni migrimin e të dhënave të shtojcave Racks në tabelat bazë "
+"të GLPI."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:218
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:160
@@ -21649,8 +21616,7 @@ msgstr ""
 msgid "It is better to make a backup of your existing data before continuing."
 msgstr ""
 "Shtë më mirë të bëni një kopje rezervë të të dhënave tuaja ekzistuese "
-"përpara se të vazhdoni.It is better to make a backup of your existing data "
-"before continuing."
+"përpara se të vazhdoni."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:256
 msgid "Checking plugin version..."
@@ -21661,8 +21627,8 @@ msgid ""
 "Racks plugin is not part of GLPI plugin list. It has never been installed or"
 " has been cleaned."
 msgstr ""
-"Racks plugin is not part of the GLPI plugin list. It has never been "
-"installed or has been cleaned."
+"Shtojca Racks nuk është pjesë e listës së shtojcave GLPI. Nuk është "
+"instaluar kurrë dhe as nuk është pastruar."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:267
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:282
@@ -21681,7 +21647,7 @@ msgstr "Shtojca migruese në versionin %s ..."
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:319
 #, php-format
 msgid "Plugin migration to %s version failed."
-msgstr "Migrimi i shtojcave në versionin %S dështoi."
+msgstr "Migrimi i shtojcave në versionin %s dështoi."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:330
 #, php-format
@@ -21704,16 +21670,15 @@ msgid ""
 "used."
 msgstr ""
 "Modelet dhe artikujt e tjerë nuk mund të migrohen kur përdoret opsioni-pa "
-"ndërtim.Other models and items cannot be migrated when --no-interaction "
-"option is used."
+"ndërtim."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:466
 msgid "Creating datacenter..."
-msgstr "Creating the datacenter..."
+msgstr "Duke krijuar një qendër të dhënash..."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:482
 msgid "Unable to create datacenter."
-msgstr "Unable to create the datacenter."
+msgstr "Nuk mund të krijohet qendra e të dhënave."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:504
 msgid "Importing other models..."
@@ -21721,7 +21686,7 @@ msgstr "Importimi i modeleve të tjera ..."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:517
 msgid "Other items do not exist in GLPI core."
-msgstr "Other items do not exist in the GLPI core."
+msgstr "Artikujt e tjerë nuk ekzistojnë në bërthamën GLPI."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:519
 #, php-format
@@ -21729,8 +21694,8 @@ msgid ""
 "We found %d models for other items. For each, we will ask you where you want"
 " to import it."
 msgstr ""
-"Ne gjetëm Modele %D për artikujt e tjerë.We found %d models for other items."
-" For each, we will ask you where you want to import it."
+"Ne gjetëm %d modele për artikuj të tjerë. Për secilin, do t'ju pyesim se ku "
+"dëshironi ta importoni."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:537
 #, php-format
@@ -21744,7 +21709,7 @@ msgstr "Injoroni (parazgjedhur)"
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:602
 #, php-format
 msgid "Unable to import other model \"%s\"."
-msgstr "Unable to import another model \"%s\"."
+msgstr "Nuk mund të importohet modeli tjetër \"%s\"."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:619
 #, php-format
@@ -21754,7 +21719,7 @@ msgstr "Importimi i artikujve nga modeli \"%s \" ..."
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:657
 #, php-format
 msgid "Unable to import other item \"%s\"."
-msgstr "Unable to import another item \"%s\"."
+msgstr "Nuk mund të importohet artikulli tjetër \"%s\"."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:701
 msgid "Importing items specifications..."
@@ -21777,16 +21742,16 @@ msgstr "Në pamundësi për të azhurnuar modelin %s ( %s)."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:776
 msgid "No items specifications found."
-msgstr "No item specifications were found."
+msgstr "Nuk u gjetën specifikime për artikujt."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:795
 msgid "Importing rack models..."
-msgstr "Importimi i modeleve të raftit ..."
+msgstr "Duke importuar modele raftesh..."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:813
 #, php-format
 msgid "Importing rack model \"%s\"..."
-msgstr "Importimi i modelit të raftit \"%s \" ..."
+msgstr "Duke importuar modelin e raftit \"%s\"..."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:834
 #, php-format
@@ -21796,11 +21761,11 @@ msgstr "Në pamundësi për të importuar modelin e raftit \"%s \"."
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:855
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:936
 msgid "No rack models found."
-msgstr "No rack models were found."
+msgstr "Nuk u gjetën modele raftesh."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:874
 msgid "Importing rack types..."
-msgstr "Importimi i llojeve të rafteve ..."
+msgstr "Duke importuar llojet e rafteve..."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:892
 #, php-format
@@ -21828,7 +21793,7 @@ msgstr "Në pamundësi për të importuar gjendjen e raftit \"%s \"."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:1018
 msgid "No rack states found."
-msgstr "No rack states were found."
+msgstr "Nuk u gjetën gjendje rafti."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:1037
 msgid "Importing rooms..."
@@ -21846,7 +21811,7 @@ msgstr "Në pamundësi për të importuar dhomën \"%s \"."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:1101
 msgid "No rooms found."
-msgstr "No rooms were found."
+msgstr "Nuk u gjet asnjë dhomë."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:1120
 msgid "Importing racks..."
@@ -21864,7 +21829,7 @@ msgstr "Në pamundësi për të importuar raft \"%s \"."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:1228
 msgid "No racks found."
-msgstr "No racks were found."
+msgstr "Nuk u gjetën rafte."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:1247
 msgid "Importing rack items..."
@@ -21893,11 +21858,11 @@ msgstr "Në pamundësi për të importuar artikullin e raftit %s ( %s)."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:1358
 msgid "No rack items found."
-msgstr "No rack items were found."
+msgstr "Nuk u gjetën artikuj në raft."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:1445
 msgid "Unable to create default room."
-msgstr "Unable to create the default room."
+msgstr "Nuk mund të krijohet dhoma e parazgjedhur."
 
 #: src/Glpi/Console/Migration/UnsignedKeysCommand.php:69
 msgid "Migrate primary/foreign keys to unsigned integers"
@@ -21907,8 +21872,8 @@ msgstr "Migroni çelësat parësor/të huaj në numër të plotë të nënshkrua
 #, php-format
 msgid "Found %s primary/foreign key columns(s) using signed integers."
 msgstr ""
-"Gjeti kolonat (et) e çelësave parësor/të huaj duke përdorur numër të plotë "
-"të nënshkruar."
+"U gjetën %s kolona me çelës primar/të huaj duke përdorur numra të plotë me "
+"shenjë."
 
 #: src/Glpi/Console/Migration/UnsignedKeysCommand.php:87
 #: src/Glpi/Console/Migration/MyIsamToInnoDbCommand.php:85
@@ -21917,12 +21882,12 @@ msgstr ""
 #: src/Glpi/Console/Migration/DynamicRowFormatCommand.php:111
 #: src/Glpi/Console/Database/UpdateCommand.php:200
 msgid "No migration needed."
-msgstr "No migration is needed."
+msgstr "Nuk ka nevojë për migrim."
 
 #: src/Glpi/Console/Migration/UnsignedKeysCommand.php:94
 #, php-format
 msgid "Migrating column \"%s.%s\"..."
-msgstr "Kolona migruese \"%s.%S \" ..."
+msgstr "Duke migruar kolonën \"%s.%s\"..."
 
 #: src/Glpi/Console/Migration/UnsignedKeysCommand.php:115
 #, php-format
@@ -21930,9 +21895,8 @@ msgid ""
 "Migration of column \"%s.%s\" cannot be done as it is referenced in "
 "CONSTRAINT \"%s\" of table \"%s.%s\"."
 msgstr ""
-"Migrimi i kolonës \"%s.%S \" nuk mund të bëhet pasi referohet në kufizimin "
-"\"%s \" të tabelës \"%s.%S \".Migration of column \"%s.%s\" cannot be done "
-"as it is referenced in CONSTRAINT \"%s\" of table \"%s.%s\"."
+"Migrimi i kolonës \"%s.%s\" nuk mund të bëhet pasi është i referuar në "
+"KUFIZIMIN \"%s\" të tabelës \"%s.%s\""
 
 #: src/Glpi/Console/Migration/UnsignedKeysCommand.php:137
 #, php-format
@@ -21940,33 +21904,31 @@ msgid ""
 "Migration of column \"%s.%s\" cannot be done as its default value is "
 "negative."
 msgstr ""
-"Migrimi i kolonës \"%s.%S \" nuk mund të bëhet pasi vlera e tij e "
-"paracaktuar është negative.Migration of column \"%s.%s\" cannot be done as "
-"its default value is negative."
+"Migrimi i kolonës \"%s.%s\" nuk mund të bëhet pasi vlera e saj e "
+"parazgjedhur është negative."
 
 #: src/Glpi/Console/Migration/UnsignedKeysCommand.php:161
 #, php-format
 msgid "Column \"%s.%s\" contains negative values. Updating them to \"%s\"..."
-msgstr "Kolona \"%s.%S \" përmban vlera negative."
+msgstr "Kolona \"%s.%s\" përmban vlera negative. Duke i përditësuar ato në \"%s\"..."
 
 #: src/Glpi/Console/Migration/UnsignedKeysCommand.php:175
 #, php-format
 msgid "Updating column \"%s.%s\" values failed with message \"(%s) %s\"."
-msgstr "Përditësimi i kolonës \"%s.%S \" vlerat dështuan me mesazhin \"(%s)%s \"."
+msgstr "Përditësimi i vlerave të kolonës \"%s.%s\" dështoi me mesazhin \"(%s) %s\"."
 
 #: src/Glpi/Console/Migration/UnsignedKeysCommand.php:192
 #, php-format
 msgid ""
 "Migration of column \"%s.%s\" cannot be done as it contains negative values."
 msgstr ""
-"Migrimi i kolonës \"%s.%S \" nuk mund të bëhet pasi përmban vlera "
-"negative.Migration of column \"%s.%s\" cannot be done as it contains "
-"negative values."
+"Migrimi i kolonës \"%s.%s\" nuk mund të bëhet pasi ajo përmban vlera "
+"negative."
 
 #: src/Glpi/Console/Migration/UnsignedKeysCommand.php:220
 #, php-format
 msgid "Migration of column \"%s.%s\" failed with message \"(%s) %s\"."
-msgstr "Migrimi i kolonës \"%s.%S \" dështoi me mesazhin \"(%s)%s \"."
+msgstr "Migrimi i kolonës \"%s.%s\" dështoi me mesazhin \"(%s) %s\"."
 
 #: src/Glpi/Console/Migration/UnsignedKeysCommand.php:241
 #: src/Glpi/Console/Migration/TimestampsCommand.php:227
@@ -21994,20 +21956,19 @@ msgid ""
 "command again."
 msgstr ""
 "Ju duhet të përpiqeni të azhurnoni këto shtojca në versionin e tyre të "
-"fundit dhe të ekzekutoni përsëri komandën.You should try to update these "
-"plugins to their latest version and run the command again."
+"fundit dhe të ekzekutoni përsëri komandën."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:158
 msgid ""
 "You are about to launch migration of Appliances plugin data into GLPI core "
 "tables."
 msgstr ""
-"You are about to launch the migration of Appliances plugin data into GLPI "
-"core tables."
+"Je gati të nisësh migrimin e të dhënave të shtojcës Appliances në tabelat "
+"kryesore të GLPI."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:159
 msgid "Any previous appliance created in core will be lost."
-msgstr "Any previous appliance created in the core will be lost."
+msgstr "Çdo pajisje e krijuar më parë në bërthamë do të humbasë."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:189
 #, php-format
@@ -22119,8 +22080,8 @@ msgid ""
 "You are about to launch migration of \"%s\" plugin data into GLPI core "
 "tables."
 msgstr ""
-"You are about to launch the migration of \"%s\" plugin data into GLPI core "
-"tables."
+"Je gati të nisësh migrimin e të dhënave të plugin-it \"%s\" në tabelat "
+"kryesore të GLPI-së"
 
 #: src/Glpi/Console/Migration/AbstractPluginToCoreCommand.php:137
 #, php-format
@@ -22128,14 +22089,15 @@ msgid ""
 "Previously installed installed plugin %s version was %s. Minimal version "
 "supported by migration is %s."
 msgstr ""
-"Previously installed plugin %s version was %s. The minimal version supported"
-" by migration is %s."
+"Versioni %s i plugin-it të instaluar më parë ishte %s. Versioni minimal i "
+"mbështetur nga migrimi është %s"
 
 #: src/Glpi/Console/Migration/AbstractPluginToCoreCommand.php:149
 #, php-format
 msgid "Unable to validate that previously installed plugin %s version was %s."
 msgstr ""
-"Unable to validate that the previously installed plugin %s version was %s."
+"Nuk mund të vërtetohet që versioni %s i plugin-it të instaluar më parë ishte"
+" %s."
 
 #: src/Glpi/Console/Migration/AbstractPluginToCoreCommand.php:173
 #, php-format
@@ -22179,7 +22141,7 @@ msgstr ""
 #: src/Glpi/Console/Migration/TimestampsCommand.php:83
 #, php-format
 msgid "Found %s table(s) requiring migration."
-msgstr "Tabela (et) e gjetura %që kërkojnë migrim."
+msgstr "Tabela (et) e gjetura %s që kërkojnë migrim."
 
 #: src/Glpi/Console/Migration/TimestampsCommand.php:217
 msgid "Timezones usage cannot be activated due to missing requirements."
@@ -22192,7 +22154,7 @@ msgstr ""
 #: src/Glpi/Console/Application.php:432
 #, php-format
 msgid "Run the \"%1$s\" command for more details."
-msgstr "Drejtoni komandën \"%1 $ s \" për më shumë detaje."
+msgstr "Drejtoni komandën \" %1$s \" për më shumë detaje."
 
 #: src/Glpi/Console/Migration/Utf8mb4Command.php:88
 msgid "Convert database character set from \"utf8\" to \"utf8mb4\"."
@@ -22211,12 +22173,12 @@ msgstr ""
 #, php-format
 msgid "%d tables are still using Compact or Redundant row format."
 msgstr ""
-"%D Tabelat janë ende duke përdorur format kompakt ose të tepërt të rreshtit."
+"%d Tabelat janë ende duke përdorur format kompakt ose të tepërt të rreshtit."
 
 #: src/Glpi/Console/Migration/Utf8mb4Command.php:158
 #, php-format
 msgid "Found %s table(s) requiring migration to \"utf8mb4\"."
-msgstr "Tabela (et) e gjetura %S që kërkojnë migrim në \"utf8mb4 \"."
+msgstr "Tabela (et) e gjetura %s që kërkojnë migrim në \"utf8mb4 \"."
 
 #: src/Glpi/Console/Migration/Utf8mb4Command.php:178
 #, php-format
@@ -22238,14 +22200,12 @@ msgid ""
 "character support)."
 msgstr ""
 "Shndërroni tabelat e bazës së të dhënave në formatin \"dinamik \" të "
-"rreshtit (kërkohet për mbështetjen e karakterit \"utf8mb4 \").Convert "
-"database tables to \"Dynamic\" row format (required for \"utf8mb4\" "
-"character support)."
+"rreshtit (kërkohet për mbështetjen e karakterit \"utf8mb4 \")."
 
 #: src/Glpi/Console/Migration/DynamicRowFormatCommand.php:117
 #, php-format
 msgid "Found %s table(s) requiring a migration to \"ROW_FORMAT=DYNAMIC\"."
-msgstr "Tabela (et) e gjetur %S që kërkojnë migrim në \"row_format = dinamik \"."
+msgstr "Tabela (et) e gjetur %s që kërkojnë migrim në \"row_format = dinamik \"."
 
 #: src/Glpi/Console/User/ResetPasswordCommand.php:50
 msgid "Reset the password of a local GLPI user"
@@ -22265,8 +22225,7 @@ msgid ""
 "password."
 msgstr ""
 "Konfigurimi i metodës së vërtetimit nuk ju lejon të ndryshoni fjalëkalimin "
-"tuaj.The authentication method configuration doesn't allow you to change "
-"your password."
+"tuaj."
 
 #: src/Glpi/Console/User/ResetPasswordCommand.php:84 src/User.php:5095
 #: src/User.php:5105
@@ -22343,7 +22302,8 @@ msgstr "Përdoruesi i aktivizuar"
 #: src/Glpi/Console/Cache/ConfigureCommand.php:160
 #: src/Glpi/Console/Cache/ConfigureCommand.php:200
 msgid "Unable to write cache configuration file."
-msgstr "Unable to write a cache configuration file."
+msgstr ""
+"Nuk mund të shkruhet skedari i konfigurimit të memories së përkohshme."
 
 #: src/Glpi/Console/Cache/SetNamespacePrefixCommand.php:98
 #: src/Glpi/Console/Cache/ConfigureCommand.php:165
@@ -22357,14 +22317,14 @@ msgstr "Konteksti i cache (d.m.th. 'thelbi' ose 'plugin: plugin_name')"
 
 #: src/Glpi/Console/Cache/ConfigureCommand.php:95
 msgid "Cache system DSN"
-msgstr "Sistemi Cache DSN"
+msgstr "DSN i sistemit të memorjes së përkohshme"
 
 #: src/Glpi/Console/Cache/ConfigureCommand.php:102
 msgid ""
 "Unset cache configuration to use default filesystem cache for given context"
 msgstr ""
-"Unset cache configuration to use default filesystem cache for the given "
-"context"
+"Çaktivizo konfigurimin e memorjes së përkohshme për të përdorur memorjen e "
+"përkohshme të sistemit të skedarëve të parazgjedhur për kontekstin e dhënë"
 
 #: src/Glpi/Console/Cache/ConfigureCommand.php:109
 msgid "Skip connection checks"
@@ -22380,15 +22340,16 @@ msgstr "Sistemet e vlefshme të cache janë: %s."
 #: src/Glpi/Console/Cache/ConfigureCommand.php:125
 #, php-format
 msgid "%s DSN format: %s"
-msgstr "Formati %S DSN: %S"
+msgstr "Formati %s DSN: %s"
 
 #: src/Glpi/Console/Cache/ConfigureCommand.php:127
 msgid ""
 "Cache namespace can be use to ensure either separation or sharing of "
 "multiple GLPI instances data on same cache system."
 msgstr ""
-"Cache namespace can be used to ensure either separation or sharing of "
-"multiple GLPI instances data on the same cache system."
+"Hapësira e emrave të memorjes së përkohshme mund të përdoret për të siguruar"
+" ndarjen ose ndarjen e të dhënave të shumëfishta të instancave GLPI në të "
+"njëjtin sistem memorjeje të përkohshme."
 
 #: src/Glpi/Console/Cache/ConfigureCommand.php:141
 #: src/Glpi/Console/Cache/DebugCommand.php:83
@@ -22411,7 +22372,7 @@ msgstr ""
 #: src/Glpi/Console/Cache/ConfigureCommand.php:178
 #, php-format
 msgid "Invalid cache DSN: \"%s\"."
-msgstr "Cache e pavlefshme DSN: \"%s \"."
+msgstr "Cache e pavlefshme DSN: \" %s \"."
 
 #: src/Glpi/Console/Cache/ConfigureCommand.php:187
 #, php-format
@@ -22443,13 +22404,12 @@ msgid ""
 "Cache context to clear (i.e. 'core' or 'plugin:plugin_name'). All contexts "
 "are cleared by default."
 msgstr ""
-"Konteksti i cache për të pastruar (d.m.th. 'thelbi' ose 'plugin: "
-"plugin_name').Cache context to clear (i.e. 'core' or 'plugin:plugin_name'). "
-"All contexts are cleared by default."
+"Ruaj kontekstin në memorien e përkohshme që do të pastrohet (p.sh. 'core' "
+"ose 'plugin:plugin_name'). Të gjitha kontekstet pastrohen si parazgjedhje"
 
 #: src/Glpi/Console/Cache/ClearCommand.php:103
 msgid "Failed to clear cache."
-msgstr "Failed to clear the cache."
+msgstr "Pastrimi i memorjes së përkohshme dështoi."
 
 #: src/Glpi/Console/Cache/ClearCommand.php:109
 msgid "Cache cleared successfully."
@@ -22511,7 +22471,7 @@ msgstr "Plugin \"%s \" nuk është i instaluar."
 
 #: src/Glpi/Console/Plugin/InstallCommand.php:73
 msgid "Additionnal parameters to pass to the plugin install hook function"
-msgstr "Additional parameters to pass to the plugin install hook function"
+msgstr "Parametra shtesë për t'i kaluar funksionit të instalimit të plugin-it"
 
 #: src/Glpi/Console/Plugin/InstallCommand.php:75
 msgid "\"-p foo\" will set \"foo\" param value to true"
@@ -22526,13 +22486,13 @@ msgid ""
 "Name of user used during installation script (among other things to set "
 "plugin admin rights)"
 msgstr ""
-"Name of the user used during installation script (among other things is used"
-" to set plugin admin rights)"
+"Emri i përdoruesit të përdorur gjatë skriptit të instalimit (ndër të tjera "
+"për të vendosur të drejtat e administratorit të plugin-it)"
 
 #: src/Glpi/Console/Plugin/InstallCommand.php:93
 msgid "Force execution of installation, even if plugin is already installed"
 msgstr ""
-"Force execution of installation, even if the plugin is already installed"
+"Detyro ekzekutimin e instalimit, edhe nëse plugin është instaluar tashmë"
 
 #: src/Glpi/Console/Plugin/InstallCommand.php:154
 #, php-format
@@ -24823,15 +24783,15 @@ msgstr "Numër i madh"
 
 #: src/Glpi/Dashboard/Widget.php:249
 msgid "Multiple numbers"
-msgstr "[NEEDS MANUAL TRANSLATION] Multiple numbers"
+msgstr "Numra të shumëfishtë"
 
 #: src/Glpi/Dashboard/Widget.php:259
 msgid "Editable markdown"
-msgstr "[NEEDS MANUAL TRANSLATION] Editable markdown"
+msgstr "Zbritje e modifikueshme"
 
 #: src/Glpi/Dashboard/Widget.php:266
 msgid "Search result"
-msgstr "[NEEDS MANUAL TRANSLATION] Search result"
+msgstr "Rezultati i kërkimit"
 
 #: src/Glpi/Dashboard/Widget.php:274
 msgid "Summary numbers"
@@ -24849,12 +24809,12 @@ msgstr "Asnjë të dhënë nuk u gjet"
 #: src/Glpi/Dashboard/Widget.php:707 src/Glpi/Dashboard/Widget.php:1192
 #: src/Glpi/Dashboard/Widget.php:1568
 msgid "View data"
-msgstr "View Data"
+msgstr "Shiko të dhënat"
 
 #: src/Glpi/Dashboard/Widget.php:711 src/Glpi/Dashboard/Widget.php:1196
 #: src/Glpi/Dashboard/Widget.php:1572 src/Stat.php:2019 src/Stat.php:2148
 msgid "Save as image"
-msgstr "Save as Image"
+msgstr "Ruaj si imazh"
 
 #: src/Glpi/Dashboard/Widget.php:1661
 msgid "Type markdown text here"
@@ -24863,7 +24823,7 @@ msgstr "Shkruani tekstin e shënimit këtu"
 #: src/Glpi/Dashboard/Widget.php:1895 src/Problem.php:1437 src/Change.php:836
 #: src/Project.php:138
 msgid "See all"
-msgstr "See All"
+msgstr "Shiko të gjitha"
 
 #: src/Glpi/Dashboard/Grid.php:287 js/modules/Dashboard/Dashboard.js:223
 msgid "Share or embed this dashboard"
@@ -24883,7 +24843,7 @@ msgstr "Modaliteti i Natës së Ndaluar"
 
 #: src/Glpi/Dashboard/Grid.php:291
 msgid "Toggle fullscreen"
-msgstr "Toggle Fullscreen"
+msgstr "Aktivizo/çaktivizo ekranin e plotë"
 
 #: src/Glpi/Dashboard/Grid.php:292
 msgid "Clone this dashboard"
@@ -24956,8 +24916,7 @@ msgid ""
 "explicitly share the dashboard"
 msgstr ""
 "Një pult personal nuk është i dukshëm nga administratorët e tjerë nëse nuk e"
-" ndani në mënyrë të qartë pultinA personal dashboard is not visible by other"
-" administrators unless you explicitly share the dashboard"
+" ndani në mënyrë të qartë pultin"
 
 #: src/Glpi/Dashboard/Grid.php:953
 msgid "empty card!"
@@ -24976,14 +24935,14 @@ msgstr "Numri i %s"
 #: src/Glpi/Dashboard/Grid.php:1193
 #, php-format
 msgid "Number of %s by type"
-msgstr "Numri i %S sipas llojit"
+msgstr "Numri i %s sipas llojit"
 
 #: src/Glpi/Dashboard/Grid.php:1201 src/Glpi/Dashboard/Grid.php:1210
 #: src/Glpi/Dashboard/Grid.php:1222
 msgid "Device"
 msgid_plural "Devices"
 msgstr[0] "Device"
-msgstr[1] "Devices"
+msgstr[1] "Pajisjet"
 
 #: src/Glpi/Dashboard/Grid.php:1224
 #, php-format
@@ -25002,7 +24961,7 @@ msgstr "Biletat që presin miratimin tuaj"
 #: src/Glpi/Dashboard/Grid.php:1268 src/Ticket.php:5042
 #: src/NotificationTargetTicket.php:146 src/NotificationTargetTicket.php:779
 msgid "Not solved tickets"
-msgstr "Not Solved Tickets"
+msgstr "Bileta të pazgjidhura"
 
 #: src/Glpi/Dashboard/Grid.php:1269
 msgid "New tickets"
@@ -25112,17 +25071,17 @@ msgstr "Smtp+oauth"
 msgid "Third party type"
 msgid_plural "Third party types"
 msgstr[0] "Third Party Type"
-msgstr[1] "Third Party Types"
+msgstr[1] "Llojet e palëve të treta"
 
 #: src/DeviceSensorModel.php:46
 msgid "Device sensor model"
 msgid_plural "Device sensor models"
 msgstr[0] "Device Sensor Model"
-msgstr[1] "Device Sensor Models"
+msgstr[1] "Modelet e sensorëve të pajisjes"
 
 #: src/NotificationTargetDBConnection.php:55
 msgid "Desynchronization SQL replica"
-msgstr "Desynchronization SQL Replica"
+msgstr "Replika SQL e desinkronizimit"
 
 #: src/NotificationTargetDBConnection.php:63
 msgid "Can't connect to the database."
@@ -25139,14 +25098,12 @@ msgstr "Baza e të dhënave për kopje jashtë sinkronizimit!"
 
 #: src/NotificationTargetDBConnection.php:95
 msgid "The replica database is desynchronized. The difference is of:"
-msgstr "Baza e të dhënave për kopje është e desynchronized."
+msgstr "Baza e të dhënave e replikuar është e desinkronizuar. Dallimi është:"
 
 #: src/CleanSoftwareCron.php:56
 msgid ""
 "Remove software versions with no installation and software with no version"
-msgstr ""
-"Hiq versionet e softuerit pa instalim dhe softuer pa versionRemove software "
-"versions with no installation and software with no version"
+msgstr "Hiq versionet e softuerit pa instalim dhe softuer pa version"
 
 #: src/Line.php:60
 msgid "Line"
@@ -25175,63 +25132,63 @@ msgstr "Shtoni një artikull"
 #: src/Document.php:1538 src/Contract.php:413
 msgctxt "button"
 msgid "Remove an item"
-msgstr "Remove an Item"
+msgstr "Hiq një artikull"
 
 #: src/LevelAgreementLevel.php:256
 #, php-format
 msgid "+ %d minute"
 msgid_plural "+ %d minutes"
 msgstr[0] "+ %d minute"
-msgstr[1] "+ %d minutes"
+msgstr[1] "+ %d minuta"
 
 #: src/LevelAgreementLevel.php:260 src/Html.php:3023
 #, php-format
 msgid "- %d minute"
 msgid_plural "- %d minutes"
 msgstr[0] "- %d minute"
-msgstr[1] "- %d minutes"
+msgstr[1] "- %d minuta"
 
 #: src/LevelAgreementLevel.php:267 src/Html.php:3064
 #, php-format
 msgid "+ %d hour"
 msgid_plural "+ %d hours"
 msgstr[0] "+ %d hour"
-msgstr[1] "+ %d hours"
+msgstr[1] "+ %d orë"
 
 #: src/LevelAgreementLevel.php:272 src/Html.php:3019
 #, php-format
 msgid "- %d hour"
 msgid_plural "- %d hours"
 msgstr[0] "- %d hour"
-msgstr[1] "- %d hours"
+msgstr[1] "- %dorë"
 
 #: src/LevelAgreementLevel.php:281 src/Html.php:3069
 #, php-format
 msgid "+ %d day"
 msgid_plural "+ %d days"
 msgstr[0] "+ %d day"
-msgstr[1] "+ %d days"
+msgstr[1] "+ %d ditë"
 
 #: src/LevelAgreementLevel.php:285 src/Html.php:3028
 #, php-format
 msgid "- %d day"
 msgid_plural "- %d days"
 msgstr[0] "- %d day"
-msgstr[1] "- %d days"
+msgstr[1] "- %d ditë"
 
 #: src/RuleChange.php:43 src/RuleChangeCollection.php:44 src/Profile.php:2329
 msgid "Business rules for changes"
-msgstr "Business Rules for Changes"
+msgstr "Rregullat e biznesit për ndryshimet"
 
 #: src/CronTask.php:99
 msgid "Automatic action"
 msgid_plural "Automatic actions"
 msgstr[0] "Automatic Action"
-msgstr[1] "Automatic Actions"
+msgstr[1] "Veprime automatike"
 
 #: src/CronTask.php:225 src/CronTask.php:349
 msgid "Action aborted"
-msgstr "Action Aborted"
+msgstr "Veprimi u ndërpre"
 
 #: src/CronTask.php:346
 msgid "Execution error"
@@ -25265,7 +25222,7 @@ msgstr "No Task with Run Mode = CLI, fix your tasks configuration"
 #: src/CronTask.php:859 src/Link.php:689 src/Link.php:714
 #, php-format
 msgid "%1$s #%2$s"
-msgstr "%1 $ s #%2 $ s"
+msgstr "%1$s #%2$s"
 
 #: src/CronTask.php:860
 msgid "External"
@@ -25282,11 +25239,11 @@ msgstr "Filloj"
 #: src/CronTask.php:894
 #, php-format
 msgid "Error during %s execution. Check in \"%s\" for more details."
-msgstr "Error during %s execution. Check-in \"%s\" for more details."
+msgstr "Gabim gjatë ekzekutimit të %s. Kontrolloni në \"%s\" për më shumë detaje."
 
 #: src/CronTask.php:912 src/CronTask.php:924
 msgid "Can't start"
-msgstr "Can't Start"
+msgstr "Nuk mund të fillojë"
 
 #: src/CronTask.php:917
 #, php-format
@@ -25295,11 +25252,11 @@ msgstr "Funksion i papërcaktuar %s (për cron)"
 
 #: src/CronTask.php:929
 msgid "Nothing to launch"
-msgstr "Nothing to Launch"
+msgstr "Asgjë për të nisur"
 
 #: src/CronTask.php:936
 msgid "Can't get DB lock"
-msgstr "Can't get DB Lock"
+msgstr "Nuk mund të marr bllokimin e DB-së"
 
 #: src/CronTask.php:1213
 msgid "Last run list"
@@ -25322,7 +25279,8 @@ msgstr "Ora e mbarimit të periudhës së drejtimit"
 msgid "Clean %1$d session file created since more than %2$s seconds"
 msgid_plural "Clean %1$d session files created since more than %2$s seconds"
 msgstr[0] "Clean %1$d session file created since more than %2$s seconds"
-msgstr[1] "Clean %1$d session files created since more than %2$s seconds"
+msgstr[1] ""
+"Pastro %1$d skedarë sesioni të krijuar që prej më shumë se %2$s sekondash"
 
 #: src/CronTask.php:1594
 #, php-format
@@ -25337,29 +25295,32 @@ msgstr "Në pamundësi për të fshirë skedarin e arkivuar të regjistrit: %s"
 #: src/CronTask.php:1615
 #, php-format
 msgid "Archiving log file: %1$s to %2$s"
-msgstr "Skedari i arkivimit të regjistrit: %1 $ s në %2 $ s"
+msgstr "Skedari i arkivimit të regjistrit: %1$s në %2$s"
 
 #: src/CronTask.php:1619
 #, php-format
 msgid ""
 "Unable to archive log file: %1$s. %2$s already exists. Wait till next day."
 msgstr ""
-"Në pamundësi për të arkivuar skedarin e regjistrit: %1 $ s.Unable to archive"
-" log file: %1$s. %2$s already exists. Wait till next day."
+"Nuk mund të arkivohet skedari i regjistrit: %1$s. %2$s ekziston tashmë. "
+"Prisni deri ditën tjetër."
 
 #: src/CronTask.php:1664
 #, php-format
 msgid "Clean %1$d graph file created since more than %2$s seconds"
 msgid_plural "Clean %1$d graph files created since more than %2$s seconds"
 msgstr[0] "Clean %1$d graph file created since more than %2$s seconds"
-msgstr[1] "Clean %1$d graph files created since more than %2$s seconds"
+msgstr[1] ""
+"Pastron %1$d skedarë grafikësh të krijuar që prej më shumë se %2$s sekondash"
 
 #: src/CronTask.php:1733
 #, php-format
 msgid "Clean %1$d temporary file created since more than %2$s seconds"
 msgid_plural "Clean %1$d temporary files created since more than %2$s seconds"
 msgstr[0] "Clean %1$d temporary file created since more than %2$s seconds"
-msgstr[1] "Clean %1$d temporary files created since more than %2$s seconds"
+msgstr[1] ""
+"Pastroni %1$d skedarë të përkohshëm të krijuar që prej më shumë se %2$s "
+"sekondash"
 
 #: src/CronTask.php:1852
 msgid "Check for new updates"
@@ -25388,7 +25349,7 @@ msgstr "Pastroni skedarët e përkohshëm"
 
 #: src/CronTask.php:1871
 msgid "Archives log files and deletes aging ones"
-msgstr "Archives log files & deletes aging ones"
+msgstr "Arkivon skedarët e regjistrit dhe fshin ato të vjetëruara"
 
 #: src/CronTask.php:1872
 msgid "Number of days to keep archived logs"
@@ -25400,8 +25361,7 @@ msgid ""
 "you to switch to CLI mode."
 msgstr ""
 "Ju keni të paktën një veprim automatik të konfiguruar në modalitetin GLPI, "
-"ju këshillojmë të kaloni në modalitetin CLI.You have at least one automatic "
-"action configured in GLPI mode, we advise you to switch to CLI mode."
+"ju këshillojmë të kaloni në modalitetin CLI."
 
 #: src/CronTask.php:1956
 msgid ""
@@ -25419,20 +25379,20 @@ msgstr "Veprimet automatike mund të mos jenë duke u ekzekutuar siç pritet"
 msgid "Rack type"
 msgid_plural "Rack types"
 msgstr[0] "Rack Type"
-msgstr[1] "Rack Types"
+msgstr[1] "Llojet e rafteve"
 
 #: src/Contract_User.php:194 src/Contract_Item.php:344 src/Cartridge.php:882
 #: src/Cartridge.php:884 src/Cartridge.php:1184 src/Cartridge.php:1186
 msgid "month"
 msgid_plural "months"
 msgstr[0] "month"
-msgstr[1] "months"
+msgstr[1] "muaj"
 
 #: src/DeviceCaseType.php:41
 msgid "Case type"
 msgid_plural "Case types"
 msgstr[0] "Case Type"
-msgstr[1] "Case Types"
+msgstr[1] "Llojet e rasteve"
 
 #: src/MonitorType.php:41 src/Rule.php:390
 msgid "Monitor type"
@@ -26230,7 +26190,7 @@ msgstr "Rregullat e zbatueshme në nën-entitetet"
 msgid "Blacklist"
 msgid_plural "Blacklists"
 msgstr[0] "Blacklist"
-msgstr[1] "Blacklists"
+msgstr[1] "lista e zeze"
 
 #: src/RuleCollection.php:2128
 msgid "Global dictionary"
@@ -27559,11 +27519,11 @@ msgstr "Ftesë për të plotësuar sondazhin"
 
 #: src/Ticket.php:136
 msgid "Create ticket"
-msgstr "Create Ticket"
+msgstr "Krijo biletë"
 
 #: src/Ticket.php:712 src/Ticket.php:762
 msgid "Created tickets"
-msgstr "Created Tickets"
+msgstr "Bileta të krijuara"
 
 #: src/Ticket.php:1573
 #, php-format
@@ -27604,23 +27564,23 @@ msgstr "Zgjidhni biletat e zgjedhura"
 
 #: src/Ticket.php:2209
 msgid "Merge followups"
-msgstr "Merge Followups"
+msgstr "Bashkoni ndjekjet"
 
 #: src/Ticket.php:2215
 msgid "Merge documents"
-msgstr "Merge Documents"
+msgstr "Bashkoni dokumentet"
 
 #: src/Ticket.php:2221
 msgid "Merge tasks"
-msgstr "Merge Tasks"
+msgstr "Bashkoni detyrat"
 
 #: src/Ticket.php:2227
 msgid "Merge actors"
-msgstr "Merge Actors"
+msgstr "Aktorët e bashkimit"
 
 #: src/Ticket.php:2233
 msgid "Link type"
-msgstr "Link Type"
+msgstr "Lloji i lidhjes"
 
 #: src/Ticket.php:2244
 msgid "Confirm the merge? This ticket will be deleted!"
@@ -27645,7 +27605,7 @@ msgstr "Problemi i zgjedhur nuk mund të ngarkohet"
 
 #: src/Ticket.php:2467
 msgid "Missing mandatory field in input"
-msgstr "Missing required field in input"
+msgstr "Mungon një fushë e detyrueshme në të dhënat hyrëse"
 
 #: src/Ticket.php:2524
 msgid "No contract specified"
@@ -27657,7 +27617,7 @@ msgstr "Koha që nga hapja"
 
 #: src/Ticket.php:2604
 msgid "Time to own + Progress"
-msgstr "Time to Own + Progress"
+msgstr "Koha për të zotëruar + Progres"
 
 #: src/Ticket.php:2614
 msgid "Time to own exceeded"
@@ -27690,23 +27650,23 @@ msgstr "Niveli tjetër i përshkallëzimit"
 
 #: src/Ticket.php:2909
 msgid "Take into account time"
-msgstr "Take into Account Time"
+msgstr "Merrni parasysh kohën"
 
 #: src/Ticket.php:2930
 msgid "All linked tickets"
-msgstr "All Linked Tickets"
+msgstr "Merrni parasysh kohën"
 
 #: src/Ticket.php:2944
 msgid "Duplicated tickets"
-msgstr "Duplicated Tickets"
+msgstr "Bileta të dyfishta"
 
 #: src/Ticket.php:2959
 msgid "Number of all linked tickets"
-msgstr "Number of All Linked Tickets"
+msgstr "Numri i të gjitha biletave të lidhura"
 
 #: src/Ticket.php:2972
 msgid "Number of duplicated tickets"
-msgstr "Number of Duplicated Tickets"
+msgstr "Numri i biletave të dyfishta"
 
 #: src/Ticket.php:2987
 msgid "Parent tickets"
@@ -27731,23 +27691,23 @@ msgstr "%s orë %s minuta"
 
 #: src/Ticket.php:4113 src/Ticket.php:4346
 msgid "Your tickets to close"
-msgstr "Your Tickets to Close"
+msgstr "Biletat tuaja për t'u mbyllur"
 
 #: src/Ticket.php:4129 src/Ticket.php:4211
 msgid "Tickets on pending status"
-msgstr "Tickets on Pending Status"
+msgstr "Biletat në statusin në pritje"
 
 #: src/Ticket.php:4161 src/Ticket.php:4243
 msgid "Tickets to be processed"
-msgstr "Tickets to be Processed"
+msgstr "Biletat që do të përpunohen"
 
 #: src/Ticket.php:4177 src/Ticket.php:4362
 msgid "Your observed tickets"
-msgstr "Your Observed Tickets"
+msgstr "Biletat tuaja të vëzhguara"
 
 #: src/Ticket.php:4194 src/Ticket.php:4451
 msgid "Your tickets in progress"
-msgstr "Your Tickets in Progress"
+msgstr "Biletat tuaja në vazhdim"
 
 #: src/Ticket.php:4282
 msgid "Your tickets to approve"
@@ -27755,11 +27715,11 @@ msgstr "Biletat tuaja për të aprovuar"
 
 #: src/Ticket.php:4300
 msgid "Your tickets having rejected approval status"
-msgstr "Your tickets that have rejected approval status"
+msgstr "Biletat tuaja kanë statusin e miratimit të refuzuar"
 
 #: src/Ticket.php:4317
 msgid "Your tickets having rejected solution"
-msgstr "Your tickets that have rejected solution"
+msgstr "Biletat tuaja kanë refuzuar zgjidhjen"
 
 #: src/Ticket.php:4576 src/Ticket.php:4971 src/Change.php:1429
 msgid "No ticket in progress."
@@ -27771,23 +27731,23 @@ msgstr "No Ticket in Progress."
 msgid "%d new ticket"
 msgid_plural "%d new tickets"
 msgstr[0] "%d new ticket"
-msgstr[1] "%d new tickets"
+msgstr[1] "%d bileta të reja"
 
 #: src/Ticket.php:4803
 msgid "No ticket found."
-msgstr "No Ticket Found."
+msgstr "Nuk u gjet asnjë biletë."
 
 #: src/Ticket.php:5013 src/CommonITILObject.php:10414
 msgid "Assign equipment"
-msgstr "Assign Equipment"
+msgstr "Cakto pajisjet"
 
 #: src/Ticket.php:5039
 msgid "Automatic tickets closing"
-msgstr "Automatic Tickets Closing"
+msgstr "Mbyllja automatike e biletave"
 
 #: src/Ticket.php:5046
 msgid "Automatic closed tickets purge"
-msgstr "Automatic purging of closed tickets"
+msgstr "Fshirje automatike e biletave të mbyllura"
 
 #: src/Ticket.php:5047
 msgid "Maximum number of tickets purged per entity (0 = unlimited)"
@@ -27795,33 +27755,33 @@ msgstr "Numri maksimal i biletave të pastruara për entitet (0 = i pakufizuar)"
 
 #: src/Ticket.php:5293
 msgid "See my ticket"
-msgstr "See My Ticket"
+msgstr "Shiko biletën time"
 
 #. TRANS: short for : See tickets created by my groups
 #: src/Ticket.php:5295
 msgid "See group ticket"
-msgstr "See Group Ticket"
+msgstr "Shiko biletën e grupit"
 
 #: src/Ticket.php:5296
 msgid "See tickets created by my groups"
-msgstr "See Tickets Created by my Groups"
+msgstr "Shiko biletat e krijuara nga grupet e mia"
 
 #: src/Ticket.php:5299
 msgid "See all tickets"
-msgstr "See All Tickets"
+msgstr "Shiko të gjitha biletat"
 
 #. TRANS: short for : See assigned tickets (group associated)
 #: src/Ticket.php:5301
 msgid "See assigned"
-msgstr "See Assigned"
+msgstr "Shih të caktuar"
 
 #: src/Ticket.php:5302
 msgid "See assigned tickets"
-msgstr "See Assigned Tickets"
+msgstr "Shihni biletat e caktuara"
 
 #: src/Ticket.php:5306
 msgid "Assign a ticket"
-msgstr "Assign a Ticket"
+msgstr "Cakto një biletë"
 
 #. TRANS: short for : Steal a ticket
 #: src/Ticket.php:5309
@@ -27830,7 +27790,7 @@ msgstr "Vjedh"
 
 #: src/Ticket.php:5310
 msgid "Steal a ticket"
-msgstr "Steal a Ticket"
+msgstr "Cakto një biletë"
 
 #. TRANS: short for : To be in charge of a ticket
 #: src/Ticket.php:5313
@@ -27839,11 +27799,11 @@ msgstr "Jam përgjegjës"
 
 #: src/Ticket.php:5314
 msgid "To be in charge of a ticket"
-msgstr "To be assigned of a ticket"
+msgstr "Të jesh përgjegjës për një biletë"
 
 #: src/Ticket.php:5316
 msgid "Change the priority"
-msgstr "Change the Priority"
+msgstr "Ndrysho përparësinë"
 
 #: src/Ticket.php:5317
 msgid "Approve solution/Reply survey (my ticket)"
@@ -27851,7 +27811,8 @@ msgstr "Miratoni Sondazhin e Zgjidhjes/Përgjigjeve (Bileta ime)"
 
 #: src/Ticket.php:5318
 msgid "Approve solution and reply to survey for ticket created by me"
-msgstr "Approve solution & reply to survey for ticket created by me"
+msgstr ""
+"Miratoni zgjidhjen dhe përgjigjuni anketës për biletën e krijuar nga unë"
 
 #: src/Ticket.php:5320
 msgid "View new tickets"
@@ -33854,11 +33815,11 @@ msgstr "Next Month"
 msgid "Line operator"
 msgid_plural "Line operators"
 msgstr[0] "Line Operator"
-msgstr[1] "Line Operators"
+msgstr[1] "Operatorët e linjës"
 
 #: src/LineOperator.php:55 src/LineOperator.php:75
 msgid "Mobile Country Code"
-msgstr "Cell Country Code"
+msgstr "Kodi i vendit celular"
 
 #: src/LineOperator.php:60 src/LineOperator.php:83
 msgid "Mobile Network Code"

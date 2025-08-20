@@ -6,9 +6,9 @@
 # Translators:
 # Jan Friberg, 2023
 # DOMBRE Julien <moyo@indepnet.net>, 2025
-# Peter Rundqvist, 2025
 # Daniel M, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
+# Peter Rundqvist, 2025
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +17,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-19 14:20+0200\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2025\n"
+"Last-Translator: Peter Rundqvist, 2025\n"
 "Language-Team: Swedish (Sweden) (https://app.transifex.com/glpi/teams/1637/sv_SE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -388,7 +388,7 @@ msgstr "Som underkategori till"
 #: templates/generic_show_form.html.twig src/Software.php:485
 #: src/Appliance.php:339 src/RuleDictionnarySoftware.php:103
 msgid "Associable to a ticket"
-msgstr "Kopplingsbar till ärenden"
+msgstr "Kan kopplas till ett ärende"
 
 #: templates/generic_show_form.html.twig src/Cable.php:385 src/Cable.php:400
 #: src/Datacenter.php:158
@@ -510,7 +510,7 @@ msgstr[1] "Typer"
 #: src/DefaultFilter.php:116 src/Appliance_Item.php:198
 #: src/DisplayPreference.php:799 src/ITILSolution.php:492
 msgid "Itemtype"
-msgstr "Enhetstyp"
+msgstr "Typ av objekt"
 
 #: templates/generic_show_form.html.twig src/Domain.php:149
 msgid "Registration date"
@@ -604,8 +604,8 @@ msgstr "Webbsajt"
 #: src/Entity.php:878
 msgid "Email"
 msgid_plural "Emails"
-msgstr[0] "E-post"
-msgstr[1] "E-post"
+msgstr[0] "E-postmeddelande"
+msgstr[1] "E-postmeddelanden"
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/admin/entity/address.html.twig src/Location.php:75
@@ -685,7 +685,7 @@ msgstr "Förfallodatum"
 
 #: templates/generic_show_form.html.twig
 msgid "Empty for infinite"
-msgstr "Tom för oändlighet"
+msgstr "Alltid tom"
 
 #: templates/generic_show_form.html.twig src/Consumable.php:653
 #: src/NotificationTargetCartridgeItem.php:96
@@ -883,7 +883,7 @@ msgstr "Storlek"
 msgid "Network"
 msgid_plural "Networks"
 msgstr[0] "Nätverk"
-msgstr[1] "Nätverksenheter"
+msgstr[1] "Nätverk"
 
 #: templates/generic_show_form.html.twig
 #: templates/components/form/itemvirtualmachine.html.twig
@@ -1094,7 +1094,7 @@ msgstr "Aktiv"
 #: templates/generic_show_form.html.twig src/Computer.php:510
 #: src/DatabaseInstance.php:289
 msgid "Last boot date"
-msgstr "Senaste boot datum"
+msgstr "Senaste omstart"
 
 #: templates/layout/parts/saved_searches.html.twig src/SavedSearch.php:73
 msgid "Saved search"
@@ -1121,7 +1121,7 @@ msgstr "Stäng panelen"
 #: src/Glpi/Migration/GenericobjectPluginMigration.php:1253
 #: src/Glpi/Dashboard/Grid.php:1426 src/Dropdown.php:1408
 msgid "Others"
-msgstr "Övrigt"
+msgstr "Övriga"
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Filter list"
@@ -1129,11 +1129,11 @@ msgstr "Filtrera lista"
 
 #: templates/layout/parts/dcbreadcrumbs.html.twig src/PDU_Rack.php:420
 msgid "On left"
-msgstr "På vänster"
+msgstr "Vänster"
 
 #: templates/layout/parts/dcbreadcrumbs.html.twig src/PDU_Rack.php:424
 msgid "On right"
-msgstr "På höger"
+msgstr "Höger"
 
 #: templates/layout/parts/dcbreadcrumbs.html.twig src/PDU_Rack.php:428
 msgid "On top"
@@ -1189,11 +1189,11 @@ msgstr "Låst: %1$s av %2$s"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Ask for unlock"
-msgstr "Fråga efter upplåsning"
+msgstr "Begär upplåsning"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Alert me when unlocked"
-msgstr "Varna mig när den är upplåst"
+msgstr "Meddela mig vid upplåsning"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Locked by you!"
@@ -1221,7 +1221,7 @@ msgstr "Visa alla"
 #: templates/layout/parts/context_links.html.twig
 #: src/Item_SoftwareLicense.php:1156 src/Item_SoftwareVersion.php:1578
 msgid "Summary"
-msgstr "Summering"
+msgstr "Sammanfattning"
 
 #: templates/layout/parts/context_links.html.twig
 msgid "Global Kanban"
@@ -1383,7 +1383,7 @@ msgstr ""
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Search entity"
-msgstr "Sökenhet"
+msgstr "Sök enhet"
 
 #: templates/layout/parts/profile_selector.html.twig
 #: templates/components/search/controls.html.twig
@@ -1426,7 +1426,7 @@ msgstr "Du har inte registrerat några sparade sökningar ännu"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "Default search"
-msgstr "Förinställd sökning"
+msgstr "Standardsökning"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "mark as default"
@@ -1476,7 +1476,7 @@ msgstr "Bekräftelse av nytt lösenord"
 #: templates/pages/setup/general/security_setup.html.twig
 #: templates/pages/admin/user/change_other_password.html.twig
 msgid "Password security policy"
-msgstr "Policy för lösenordssäkerhet"
+msgstr "Lösenordspolicy"
 
 #: templates/password_form.html.twig
 msgid "Save new password"
@@ -4086,6 +4086,8 @@ msgstr "Visa andra åtgärder"
 msgid ""
 "Solving this %s is not possible as one or more mandatory field is not filled"
 msgstr ""
+"Att lösa detta %s är inte möjligt eftersom ett eller flera obligatoriska "
+"fält inte är ifyllda."
 
 #: templates/components/itilobject/footer.html.twig
 msgid "Cancel ticket"
@@ -7630,13 +7632,15 @@ msgstr "Tillåt anonym access till FAQ"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Allow unauthenticated uploads"
-msgstr ""
+msgstr "Tillåt oautentiserade användare att ladda upp filer"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid ""
 "Do not use this option if your GLPI is reachable from the internet. Use at "
 "your own risk."
 msgstr ""
+"Varning! Använd inte det här alternativet om din GLPI-instans är åtkomlig "
+"från internet. Använd på egen risk."
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Dynamic display"
@@ -7681,7 +7685,7 @@ msgstr "Standardgräns för sökresultat (sida)"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Default characters limit (summary text boxes)"
-msgstr "Standardgräns för tecken (sammanfattningstextrutor)"
+msgstr "Max antal tecken som standard (sammanfattningstextrutor)"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Default url length limit"
@@ -17196,7 +17200,7 @@ msgstr "Misslyckades att ansluta till proxyserver (%s)"
 
 #: src/Toolbox.php:1389
 msgid "No data available on the website"
-msgstr ""
+msgstr "Inga data tillgängliga på webbplatsen"
 
 #: src/Toolbox.php:1420 src/Glpi/System/Status/StatusChecker.php:403
 #, php-format
@@ -19746,7 +19750,7 @@ msgstr "Åtkomst till status-endpointen"
 
 #: src/Glpi/OAuth/Server.php:199
 msgid "Access to the GraphQL endpoint"
-msgstr ""
+msgstr "Åtkomst till GraphQL-slutpunkt"
 
 #: src/Glpi/Kernel/Listener/RequestListener/CheckDatabaseStatusListener.php:103
 msgid ""
@@ -20319,11 +20323,11 @@ msgstr "Ta med i beräkning"
 #: src/Glpi/ContentTemplates/TemplateManager.php:149
 #, php-format
 msgid "Invalid twig template (%s)"
-msgstr ""
+msgstr "Ogiltig twig-mall (%s)"
 
 #: src/Glpi/ContentTemplates/TemplateManager.php:197
 msgid "Root variables"
-msgstr ""
+msgstr "Rotvariabler"
 
 #: src/Glpi/ContentTemplates/Parameters/KnowbaseItemParameters.php:70
 #: src/Glpi/ContentTemplates/Parameters/CommonITILObjectParameters.php:63
@@ -20334,7 +20338,7 @@ msgstr[0] "Länkar"
 
 #: src/Glpi/ContentTemplates/Parameters/CommonITILObjectParameters.php:62
 msgid "Reference (# + id)"
-msgstr ""
+msgstr "Referens (# + id)"
 
 #: src/Glpi/ContentTemplates/Parameters/CommonITILObjectParameters.php:68
 #: src/NotificationTargetCommonITILObject.php:1975 src/Ticket.php:5530
@@ -20372,7 +20376,7 @@ msgstr "Fullständigt namn"
 
 #: src/Glpi/ContentTemplates/Parameters/UserParameters.php:79
 msgid "Mobile"
-msgstr ""
+msgstr "Mobil"
 
 #: src/Glpi/ContentTemplates/TemplateDocumentation.php:88
 #, php-format
@@ -20385,7 +20389,7 @@ msgstr "Variabel"
 
 #: src/Glpi/ContentTemplates/TemplateDocumentation.php:127
 msgid "Usage"
-msgstr ""
+msgstr "Användning"
 
 #: src/Glpi/ContentTemplates/TemplateDocumentation.php:128
 msgid "References"
@@ -21002,11 +21006,11 @@ msgstr "Mycket hög"
 
 #: src/Glpi/Console/Task/UnlockCommand.php:57
 msgid "Unlock automatic tasks"
-msgstr ""
+msgstr "Lås upp automatiska aktiviteter"
 
 #: src/Glpi/Console/Task/UnlockCommand.php:63
 msgid "Unlock all tasks"
-msgstr ""
+msgstr "Lås upp alla aktiviteter"
 
 #: src/Glpi/Console/Task/UnlockCommand.php:70
 msgid ""
@@ -21027,16 +21031,20 @@ msgstr ""
 #: src/Glpi/Console/Task/UnlockCommand.php:86
 msgid "Itemtype::name of task to unlock (e.g: \"MailCollector::mailgate\")"
 msgstr ""
+"Objekttyp::namn för den aktivitet som ska låsas upp (t.ex. "
+"\"MailCollector::mailgate\")"
 
 #: src/Glpi/Console/Task/UnlockCommand.php:131
 #, php-format
 msgid "Task \"%s\" is still running but not in the whitelist."
 msgstr ""
+"Aktiviteten \"%s\" körs fortfarande, men finns inte i listan över godkända "
+"aktiviteter."
 
 #: src/Glpi/Console/Task/UnlockCommand.php:143
 #, php-format
 msgid "Task \"%s\" unlocked."
-msgstr ""
+msgstr "Aktiviteten \"%s\" låstes upp."
 
 #: src/Glpi/Console/Task/UnlockCommand.php:149
 #, php-format
@@ -21046,28 +21054,31 @@ msgstr "Ett fel uppstår när du försöker låsa upp uppgiften \"%s\"."
 #: src/Glpi/Console/Task/UnlockCommand.php:157
 #, php-format
 msgid "Number of tasks unlocked: %d."
-msgstr ""
+msgstr "Antal upplåsta aktiviteter: %d."
 
 #: src/Glpi/Console/Task/UnlockCommand.php:182
 msgid "Option --cycle is not compatible with option --delay."
 msgstr ""
+"Alternativet '--cycle' är inte kompatibelt med alternativet '--delay'."
 
 #: src/Glpi/Console/Task/UnlockCommand.php:188
 msgid "Option --cycle has to be an integer."
-msgstr ""
+msgstr "Alternativet '--cycle' måste vara ett heltal."
 
 #: src/Glpi/Console/Task/UnlockCommand.php:194
 msgid "Option --delay has to be an integer."
-msgstr ""
+msgstr "Alternativet '--delay' måste vara ett heltal."
 
 #: src/Glpi/Console/Task/UnlockCommand.php:204
 msgid "Option --all is not compatible with option --task."
-msgstr ""
+msgstr "Alternativet '--all' är inte kompatibelt med alternativet '--task'."
 
 #: src/Glpi/Console/Task/UnlockCommand.php:210
 msgid ""
 "You have to specify which tasks to unlock using --all or --task options."
 msgstr ""
+"Du måste ange vilka aktiviteter som ska låsas upp med hjälp av alternativen "
+"'--all' eller '--task'."
 
 #: src/Glpi/Console/Traits/TelemetryActivationTrait.php:62
 #, php-format
@@ -21289,19 +21300,21 @@ msgid ""
 "Generate GLPI source code manifest that could be used to validate source "
 "code integrity."
 msgstr ""
+"Generera ett GLPI‑källkodmanifest som kan användas för att verifiera "
+"källkodens integritet."
 
 #: src/Glpi/Console/Build/GenerateCodeManifestCommand.php:63
 msgid "Hash algorithm to use"
-msgstr ""
+msgstr "Hash-algoritm som ska användas"
 
 #: src/Glpi/Console/Build/GenerateCodeManifestCommand.php:75
 msgid "Manifest successfully generated."
-msgstr ""
+msgstr "Manifestet genererades."
 
 #: src/Glpi/Console/Build/GenerateCodeManifestCommand.php:77
 #, php-format
 msgid "Failed to generate manifest. Error was: %s"
-msgstr ""
+msgstr "Kunde inte generera manifest. Felmeddelande: %s"
 
 #: src/Glpi/Console/Migration/GenericobjectPluginToCoreCommand.php:53
 msgid "Migrate plugin data into GLPI core tables"
@@ -22326,6 +22339,8 @@ msgid ""
 "Name of user used during installation script (among other things to set "
 "plugin admin rights)"
 msgstr ""
+"Namn på användare som används av installationsskriptet (bland annat för att "
+"ange administratörsrättigheter för tillägg)"
 
 #: src/Glpi/Console/Plugin/InstallCommand.php:93
 msgid "Force execution of installation, even if plugin is already installed"
@@ -22336,25 +22351,25 @@ msgstr ""
 #: src/Glpi/Console/Plugin/InstallCommand.php:154
 #, php-format
 msgid "Plugin \"%s\" installation failed."
-msgstr ""
+msgstr "Installationen av tillägget \"%s\" misslyckades."
 
 #: src/Glpi/Console/Plugin/InstallCommand.php:163
 #, php-format
 msgid "Plugin \"%1$s\" has been installed and must be configured."
-msgstr ""
+msgstr "Tillägget \"%1$s\" har installerats och måste konfigureras."
 
 #: src/Glpi/Console/Plugin/InstallCommand.php:164
 #, php-format
 msgid "Plugin \"%1$s\" has been installed and can be activated."
-msgstr ""
+msgstr "Tillägget \"%1$s\" har installerats och kan aktiveras."
 
 #: src/Glpi/Console/Plugin/InstallCommand.php:182
 msgid "Which plugin(s) do you want to install (comma separated values)?"
-msgstr ""
+msgstr "Vilka tillägg vill du installera (kommaavgränsade värden)?"
 
 #: src/Glpi/Console/Plugin/InstallCommand.php:261
 msgid "User name defined by --username option is invalid."
-msgstr ""
+msgstr "Användarnamn angivet med alternativet '--username' är ogiltigt."
 
 #: src/Glpi/Console/Plugin/InstallCommand.php:318
 #, php-format
@@ -22362,16 +22377,18 @@ msgid ""
 "Plugin \"%s\" is already installed. Use --force option to force "
 "reinstallation."
 msgstr ""
+"Tillägget \"%s\" är redan installerat. Använd alternativet '--force' för att"
+" påtvinga en ominstallation."
 
 #: src/Glpi/Console/Plugin/InstallCommand.php:334
 #, php-format
 msgid "Plugin \"%s\" function \"%s\" is missing."
-msgstr ""
+msgstr "Tillägget \"%s\" saknar funktionen \"%s\"."
 
 #: src/Glpi/Console/Plugin/InstallCommand.php:357
 #, php-format
 msgid "Plugin \"%s\" requirements not met."
-msgstr ""
+msgstr "Installationskraven för tillägget ”%s” uppfylls inte."
 
 #: src/Glpi/Console/Plugin/AbstractPluginCommand.php:64
 msgid "Run command on all plugins"
@@ -22389,50 +22406,51 @@ msgstr "Alla insticksprogram"
 
 #: src/Glpi/Console/Plugin/SuspendExecutionCommand.php:50
 msgid "Suspend execution of all active plugins"
-msgstr ""
+msgstr "Pausa körningen av alla aktiva tillägg"
 
 #: src/Glpi/Console/Plugin/ActivateCommand.php:94
 #, php-format
 msgid "Plugin \"%s\" activation failed."
-msgstr ""
+msgstr "Aktiveringen av tillägget ”%s” misslyckades."
 
 #: src/Glpi/Console/Plugin/ActivateCommand.php:103
 #, php-format
 msgid "Plugin \"%1$s\" has been activated."
-msgstr ""
+msgstr "Tillägget ”%1$s” har aktiverats."
 
 #: src/Glpi/Console/Plugin/ActivateCommand.php:148
 #, php-format
 msgid "Plugin \"%s\" is already active."
-msgstr ""
+msgstr "Tillägget ”%s” är redan aktivt."
 
 #: src/Glpi/Console/Plugin/ActivateCommand.php:156
 #, php-format
 msgid "Plugin \"%s\" have to be installed and configured prior to activation."
 msgstr ""
+"Tillägget ”%s” måste installeras och konfigureras innan det kan aktiveras."
 
 #: src/Glpi/Console/Plugin/ActivateCommand.php:168
 msgid "Which plugin(s) do you want to activate (comma separated values)?"
-msgstr ""
+msgstr "Vilka tillägg vill du aktivera (kommaavgränsade värden)?"
 
 #: src/Glpi/Console/Plugin/DeactivateCommand.php:94
 #, php-format
 msgid "Plugin \"%s\" deactivation failed."
-msgstr ""
+msgstr "Inaktiveringen av tillägget ”%s” misslyckades."
 
 #: src/Glpi/Console/Plugin/DeactivateCommand.php:103
 #, php-format
 msgid "Plugin \"%1$s\" has been deactivated."
-msgstr ""
+msgstr "Tillägget ”%1$s” har inaktiverats."
 
 #: src/Glpi/Console/Plugin/DeactivateCommand.php:148
 #, php-format
 msgid "Plugin \"%s\" is already inactive."
-msgstr ""
+msgstr "Tillägget ”%s” är redan inaktivt."
 
 #: src/Glpi/Console/Plugin/DeactivateCommand.php:160
 msgid "Which plugin(s) do you want to deactivate (comma separated values)?"
-msgstr ""
+msgstr "Vilka tillägg vill du inaktivera (kommaavgränsade värden)?"
 
 #: src/Glpi/Console/Plugin/ListCommand.php:87
 msgid "Manually installed"
@@ -22656,7 +22674,7 @@ msgstr "Kör \"%s\" för ytterligare detaljer"
 
 #: src/Glpi/Console/Config/SetCommand.php:63
 msgid "Set configuration value"
-msgstr ""
+msgstr "Ange konfigurationsvärde"
 
 #: src/Glpi/Console/Config/SetCommand.php:73
 msgid "Configuration value:"
@@ -22665,7 +22683,7 @@ msgstr "Konfigurationsvärde:"
 #: src/Glpi/Console/Config/SetCommand.php:90
 #, php-format
 msgid "Invalid context \"%s\"."
-msgstr ""
+msgstr "Ogiltigt kontext \"%s\"."
 
 #: src/Glpi/Console/Security/DisableTFACommand.php:53
 msgid "Disable 2FA for a user"
@@ -22942,7 +22960,7 @@ msgstr "INFO"
 
 #: src/Glpi/Console/Application.php:137
 msgid "The command to execute"
-msgstr ""
+msgstr "Kommando att köra"
 
 #: src/Glpi/Console/Application.php:144
 msgid "Display this help message"
@@ -22957,6 +22975,8 @@ msgid ""
 "Increase the verbosity of messages: 1 for normal output, 2 for more verbose "
 "output and 3 for debug"
 msgstr ""
+"Öka detaljnivån för meddelanden: 1 för normal nivå, 2 för mer detaljerad "
+"nivå och 3 för felsökning"
 
 #: src/Glpi/Console/Application.php:162
 msgid "Display this application version"
@@ -22977,21 +22997,23 @@ msgstr "Ställ inga interaktiva frågor"
 #: src/Glpi/Console/Application.php:186
 #, php-format
 msgid "Environment to use, possible values are: %s"
-msgstr ""
+msgstr "Miljö att använda. Möjliga värden är: %s"
 
 #: src/Glpi/Console/Application.php:193
 msgid "Configuration directory to use. Deprecated option"
-msgstr ""
+msgstr "Konfigurationskatalog att använda. Föråldrat alternativ."
 
 #: src/Glpi/Console/Application.php:199
 msgid ""
 "Output language (default value is existing GLPI \"language\" configuration "
 "or \"en_GB\")"
 msgstr ""
+"Utmatningsspråk (standardvärdet är befintlig GLPI-konfiguration för "
+"”language” eller ”en_GB”)"
 
 #: src/Glpi/Console/Application.php:207
 msgid "Allow the console to be executed by the root user"
-msgstr ""
+msgstr "Tillåt att konsolen körs av root-användaren"
 
 #: src/Glpi/Console/Application.php:228
 #, php-format
@@ -23001,21 +23023,21 @@ msgstr "Ogiltigt \"--lang\" alternativvärde \"%s\". "
 #: src/Glpi/Console/Application.php:299
 #, php-format
 msgid "Run the \"%1$s\" command to process to the update."
-msgstr ""
+msgstr "Kör kommandot ”%1$s” för att genomföra uppdateringen."
 
 #: src/Glpi/Console/Application.php:329
 #, php-format
 msgid "Time elapsed: %s."
-msgstr ""
+msgstr "Tidsåtgång: %s."
 
 #: src/Glpi/Console/Application.php:335
 #, php-format
 msgid "Memory usage: %s."
-msgstr ""
+msgstr "Minnesanvändning: %s."
 
 #: src/Glpi/Console/Application.php:418
 msgid "Some mandatory system requirements are missing:"
-msgstr ""
+msgstr "Vissa obligatoriska systemkrav är inte uppfyllda:"
 
 #: src/Glpi/Console/Assets/PurgeSoftwareCommand.php:70
 #, php-format
@@ -23040,6 +23062,7 @@ msgid ""
 "Do not check database schema integrity before and after performing the "
 "update"
 msgstr ""
+"Kontrollera inte databasens schemaintegritet före och efter uppdateringen"
 
 #: src/Glpi/Console/Database/UpdateCommand.php:140
 msgid ""
@@ -23090,16 +23113,16 @@ msgstr ""
 
 #: src/Glpi/Console/Database/UpdateCommand.php:244
 msgid "Update failed."
-msgstr ""
+msgstr "Uppdateringen misslyckades."
 
 #: src/Glpi/Console/Database/UpdateCommand.php:251
 #, php-format
 msgid "An error occurred during the database update. The error was: %s"
-msgstr ""
+msgstr "Ett fel uppstod under databasuppdateringen. Felmeddelande: %s"
 
 #: src/Glpi/Console/Database/UpdateCommand.php:265
 msgid "The database schema integrity check has been skipped."
-msgstr ""
+msgstr "Kontrollen av databasens schemaintegritet har hoppats över."
 
 #: src/Glpi/Console/Database/UpdateCommand.php:267
 #, php-format
@@ -23107,6 +23130,8 @@ msgid ""
 "It is recommended to run the \"%s\" command to validate that the database "
 "schema is consistent with the current GLPI version."
 msgstr ""
+"Det är rekommenderat att köra kommandot ”%s” för att validera att "
+"databasschemat är konsekvent med den aktuella GLPI-versionen."
 
 #: src/Glpi/Console/Database/UpdateCommand.php:310
 msgid "Checking database schema integrity..."
@@ -23131,7 +23156,7 @@ msgstr ""
 #: src/Glpi/Console/Database/UpdateCommand.php:330
 #, php-format
 msgid "Run the \"%1$s\" command to view found differences."
-msgstr ""
+msgstr "Kör kommandot ”%1$s” för att visa hittade skillnader."
 
 #: src/Glpi/Console/Database/UpdateCommand.php:333
 #, php-format
@@ -23145,7 +23170,7 @@ msgstr "Databasschemat är OK."
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:123
 msgid "Database password"
-msgstr ""
+msgstr "Databaslösenord"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:130
 msgid "Database port"
@@ -23154,12 +23179,16 @@ msgstr "Databasport"
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:144
 msgid "Reconfigure database, override configuration file if it already exists"
 msgstr ""
+"Konfigurera om databasen och skriv över konfigurationsfilen om den redan "
+"finns"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:151
 msgid ""
 "Use strict configuration, to enforce warnings triggering on deprecated or "
 "discouraged usages"
 msgstr ""
+"Använd strikt konfiguration för att tvinga fram varningar vid föråldrad "
+"eller avrådd användning"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:159
 msgid "Database name:"
@@ -23190,7 +23219,7 @@ msgstr "Databasanslutningen misslyckades med meddelandet \"(%s) %s\"."
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:292
 msgid "Saving configuration file..."
-msgstr ""
+msgstr "Sparar konfigurationsfil..."
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:308
 #, php-format
@@ -23219,7 +23248,7 @@ msgstr "Tidszoner kan inte aktiveras på grund av följande fel:"
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:459
 #, php-format
 msgid "Fix them and run the \"%1$s\" command to enable timezones."
-msgstr ""
+msgstr "Åtgärda dem och kör kommandot ”%1$s” för att aktivera tidszoner."
 
 #: src/Glpi/Console/Database/InstallCommand.php:112
 msgid "Default language of GLPI"
@@ -23273,7 +23302,7 @@ msgstr ""
 
 #: src/Glpi/Console/Database/CheckSchemaIntegrityCommand.php:96
 msgid "Strict comparison of definitions"
-msgstr ""
+msgstr "Strikt jämförelse av definitioner"
 
 #: src/Glpi/Console/Database/CheckSchemaIntegrityCommand.php:103
 msgid "Check tokens related to all databases migrations."
@@ -23310,6 +23339,8 @@ msgid ""
 "Plugin to check. If option is not used, checks will be done on GLPI core "
 "database tables."
 msgstr ""
+"Tillägg att kontrollera. Om alternativet inte används kommer kontroller att "
+"göras på GLPI:s kärndatabastabeller."
 
 #: src/Glpi/Console/Database/CheckSchemaIntegrityCommand.php:179
 #, php-format
@@ -23319,22 +23350,22 @@ msgstr "Kontroll av databasintegriteten för version \"%s\" stöds inte."
 #: src/Glpi/Console/Database/CheckSchemaIntegrityCommand.php:180
 #, php-format
 msgid "Checking database integrity of plugin \"%s\" is not supported."
-msgstr ""
+msgstr "Kontroll av databasens integritet för tillägget ”%s” stöds inte."
 
 #: src/Glpi/Console/Database/CheckSchemaIntegrityCommand.php:201
 #, php-format
 msgid "Table schema differs for table \"%s\"."
-msgstr ""
+msgstr "Tabellschemat skiljer sig för tabellen \"%s\"."
 
 #: src/Glpi/Console/Database/CheckSchemaIntegrityCommand.php:204
 #, php-format
 msgid "Table \"%s\" is missing."
-msgstr ""
+msgstr "Tabellen \"%s\" saknas."
 
 #: src/Glpi/Console/Database/CheckSchemaIntegrityCommand.php:207
 #, php-format
 msgid "Unknown table \"%s\" has been found in database."
-msgstr ""
+msgstr "En okänd tabell \"%s\" hittades i databasen."
 
 #: src/Glpi/Console/Database/EnableTimezonesCommand.php:75
 msgid "Enable timezones usage."
@@ -23342,7 +23373,7 @@ msgstr "Aktivera användning av tidszoner."
 
 #: src/Glpi/Console/Database/EnableTimezonesCommand.php:110
 msgid "Timezone usage has been enabled."
-msgstr ""
+msgstr "Användning av tidzoner har aktiverats."
 
 #: src/Glpi/Features/Inventoriable.php:141
 msgid "Try a reimport from stored inventory file"
@@ -24846,11 +24877,11 @@ msgstr "Skillnad mellan huvud och replika"
 
 #: src/NotificationTargetDBConnection.php:93
 msgid "Replica database out of sync!"
-msgstr ""
+msgstr "Replikadatabasen är inte synkroniserad!"
 
 #: src/NotificationTargetDBConnection.php:95
 msgid "The replica database is desynchronized. The difference is of:"
-msgstr ""
+msgstr "Replikadatabasen är inte synkroniserad. Skillnaden är:"
 
 #: src/CleanSoftwareCron.php:56
 msgid ""
@@ -24969,6 +25000,7 @@ msgstr "Ett minimum av 64 Mb krävs vanligtvis för GLPI."
 #: src/CronTask.php:850
 msgid "No task with Run mode = CLI, fix your tasks configuration"
 msgstr ""
+"Ingen aktivitet med Run mode = CLI. Åtgärda aktivitetskonfigurationen."
 
 #. TRANS: %1$s is mode (external or internal), %2$s is an order number,
 #: src/CronTask.php:859 src/Link.php:689 src/Link.php:714
@@ -25109,22 +25141,27 @@ msgid ""
 "You have at least one automatic action configured in GLPI mode, we advise "
 "you to switch to CLI mode."
 msgstr ""
+"Det finns minst en automatisk åtgärd konfigurerad att köras i GLPI-läge. Vi "
+"rekommenderar att du byter till CLI-läge."
 
 #: src/CronTask.php:1956
 msgid ""
 "You have more actions scheduled to run every minute than the number allowed "
 "to run at once. Increase this config."
 msgstr ""
+"Antalet schemalagda åtgärder som är konfigurerade att köras varje minut är "
+"fler än antalet åtgärder som enligt inställningarna får köras samtidigt. "
+"Utöka antalet i inställningarna."
 
 #: src/CronTask.php:1960
 msgid "Automatic actions may not be running as expected"
-msgstr ""
+msgstr "Automatiska åtgärder kanske inte körs som förväntat"
 
 #: src/RackType.php:41
 msgid "Rack type"
 msgid_plural "Rack types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Racktyp"
+msgstr[1] "Racktyper"
 
 #: src/Contract_User.php:194 src/Contract_Item.php:344 src/Cartridge.php:882
 #: src/Cartridge.php:884 src/Cartridge.php:1184 src/Cartridge.php:1186
@@ -25280,7 +25317,7 @@ msgstr[1] "Databasinstanskategorier"
 
 #: src/CommonItilObject_Item.php:505
 msgid "Knowledge base entries"
-msgstr ""
+msgstr "Kunskapsbasposter"
 
 #: src/CommonItilObject_Item.php:814 src/CommonItilObject_Item.php:870
 #: src/Profile.php:3323 src/Profile.php:3330
@@ -25435,8 +25472,8 @@ msgstr "Inventerades senast"
 #: src/Item_Environment.php:51 src/Appliance.php:276
 msgid "Environment"
 msgid_plural "Environments"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Miljö"
+msgstr[1] "Miljöer"
 
 #: src/RuleDictionnaryManufacturerCollection.php:46
 msgid "Dictionary of manufacturers"
@@ -25544,7 +25581,7 @@ msgstr "Antal skärmar"
 #: src/CommonITILSatisfaction.php:188
 #, php-format
 msgid "Comment is required if score is less than or equal to %d"
-msgstr ""
+msgstr "Kommentar krävs om poängen är mindre än eller lika med %d"
 
 #: src/CommonITILSatisfaction.php:391
 msgid "Response date"
@@ -25580,23 +25617,23 @@ msgstr "Duplicerad av"
 
 #: src/Telemetry.php:55
 msgid "Telemetry"
-msgstr ""
+msgstr "Telemetri"
 
 #: src/Telemetry.php:290
 msgid "Send telemetry information"
-msgstr ""
+msgstr "Skicka telemetri"
 
 #: src/Telemetry.php:378
 msgid "See what would be sent..."
-msgstr ""
+msgstr "Visa vad som skulle skickas..."
 
 #: src/Telemetry.php:454
 msgid "Send \"usage statistics\""
-msgstr ""
+msgstr "Skicka information om användandet"
 
 #: src/Telemetry.php:473
 msgid "Reference your GLPI"
-msgstr ""
+msgstr "Hänvisa till din GLPI-instans"
 
 #: src/Telemetry.php:475
 #, php-format
@@ -25725,7 +25762,7 @@ msgstr "som börjar med"
 
 #: src/RuleCriteria.php:589
 msgid "finished by"
-msgstr ""
+msgstr "avslutad av"
 
 #: src/RuleCriteria.php:590
 msgid "regular expression matches"
@@ -26507,7 +26544,7 @@ msgstr "Ingen enhetstyp definierad"
 
 #: src/Rule.php:2573
 msgid "Patterns must include delimiters, e.g. /pattern/"
-msgstr ""
+msgstr "Mönster måste innehålla avgränsare, t.ex. /mönster/"
 
 #: src/Rule.php:2858
 msgid "Skip remaining rules"
@@ -26868,7 +26905,7 @@ msgstr[0] "Koppla ärenden/problemärenden"
 #: src/NotificationEvent.php:224
 #, php-format
 msgid "Unable to send notification using %1$s"
-msgstr ""
+msgstr "Kunde inte skicka avisering via %1$s"
 
 #: src/EnclosureModel.php:41
 msgid "Enclosure model"
@@ -26888,7 +26925,7 @@ msgstr "En version krävs!"
 #: src/Item_SoftwareLicense.php:325
 #, php-format
 msgid "Maximum number of items reached for license \"%s\"."
-msgstr ""
+msgstr "Maximalt antal objekt har uppnåtts för \"%s\"-licensen."
 
 #: src/Item_SoftwareLicense.php:533
 msgid "Number of affected items"
@@ -26896,13 +26933,13 @@ msgstr "Antal påverkade enheter"
 
 #: src/Item_SoftwareLicense.php:959
 msgid "No software linked"
-msgstr ""
+msgstr "Ingen länkad mjukvara"
 
 #: src/Item_SoftwareLicense.php:1158 src/Contract_Item.php:216
 msgid "Affected item"
 msgid_plural "Affected items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Berört objekt"
+msgstr[1] "Berörda objekt"
 
 #. TRANS: %1$s is the user login, %2$s the revision number
 #: src/KnowbaseItemTranslation.php:372
@@ -27673,7 +27710,7 @@ msgstr "Ogiltig process"
 
 #: src/MassiveAction.php:557 src/MassiveAction.php:964
 msgid "Select the type of the item on which applying this action"
-msgstr ""
+msgstr "Välj typ av objekt som denna åtgärd ska utföras på"
 
 #: src/MassiveAction.php:594
 msgctxt "button"
@@ -27693,7 +27730,7 @@ msgstr "Ta bort permanent inklusive enheter"
 #: src/MassiveAction.php:665
 msgctxt "button"
 msgid "Create template"
-msgstr ""
+msgstr "Skapa mall"
 
 #: src/MassiveAction.php:696
 msgctxt "button"
@@ -28084,20 +28121,20 @@ msgstr "lika med"
 
 #: src/SavedSearch_Alert.php:403
 msgid "not equals to"
-msgstr ""
+msgstr "ej lika med"
 
 #: src/SavedSearch_Alert.php:407
 msgid "greater or equals than"
-msgstr ""
+msgstr "större än eller lika med"
 
 #: src/SavedSearch_Alert.php:411
 msgid "greater than"
-msgstr ""
+msgstr "större än"
 
 #: src/SavedSearch_Alert.php:421
 #, php-format
 msgid "Results count for %1$s is %2$s %3$s"
-msgstr ""
+msgstr "Antal resultat för %1$s är %2$s %3$s"
 
 #: src/RuleDictionnaryPrinterTypeCollection.php:43
 msgid "Dictionary of printer types"
@@ -29193,8 +29230,8 @@ msgstr "med svar via e-post"
 #: src/TicketTask.php:40
 msgid "Ticket task"
 msgid_plural "Ticket tasks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ärendeaktivitet"
+msgstr[1] "Ärendeaktiviteter"
 
 #: src/ProjectTask.php:90
 msgid "Project task"
@@ -33117,7 +33154,7 @@ msgstr "Kan ansvara för en uppgift"
 
 #: src/Group.php:481
 msgid "Group code"
-msgstr ""
+msgstr "Gruppkod"
 
 #: src/Group.php:905
 msgid "Helpdesk group"
