@@ -59,6 +59,9 @@ enum ValueOperator: string
     case VISIBLE = 'visible';
     case NOT_VISIBLE = 'not_visible';
 
+    case EMPTY = 'empty';
+    case NOT_EMPTY = 'not_empty';
+
     public function getLabel(): string
     {
         return match ($this) {
@@ -84,6 +87,9 @@ enum ValueOperator: string
 
             self::VISIBLE                => __("Is visible"),
             self::NOT_VISIBLE            => __("Is not visible"),
+
+            self::EMPTY                 => __("Is empty"),
+            self::NOT_EMPTY             => __("Is not empty"),
         };
     }
 

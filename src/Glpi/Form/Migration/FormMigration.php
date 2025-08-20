@@ -223,13 +223,14 @@ class FormMigration extends AbstractPluginMigration
      * Get the value operator from the legacy value
      *
      * @param int $value_operator The legacy value operator
+     * @param mixed $value The value to compare against
      * @return ValueOperator|null The corresponding value operator or null if not found
      */
-    private function getValueOperatorFromLegacy(int $value_operator): ?ValueOperator
+    private function getValueOperatorFromLegacy(int $value_operator, mixed $value): ?ValueOperator
     {
         return match ($value_operator) {
-            1 => ValueOperator::EQUALS,
-            2 => ValueOperator::NOT_EQUALS,
+            1 => $value === "" ? ValueOperator::EMPTY : ValueOperator::EQUALS,
+            2 => $value === "" ? ValueOperator::NOT_EMPTY : ValueOperator::NOT_EQUALS,
             3 => ValueOperator::LESS_THAN,
             4 => ValueOperator::GREATER_THAN,
             5 => ValueOperator::LESS_THAN_OR_EQUALS,
@@ -1382,7 +1383,7 @@ class FormMigration extends AbstractPluginMigration
                 $condition_handlers = $question_type->getConditionHandlers($config);
 
                 // Get the value operator before trying to find a compatible handler
-                $value_operator = $this->getValueOperatorFromLegacy($raw_condition['show_condition']);
+                $value_operator = $this->getValueOperatorFromLegacy($raw_condition['show_condition'], $value);
 
                 // If the value operator is null, we skip this condition
                 if ($value_operator === null) {
@@ -1436,7 +1437,7 @@ class FormMigration extends AbstractPluginMigration
                         'value'          => $value,
                         'item_type'      => 'question',
                         'item_uuid'      => $question->getUUID(),
-                        'value_operator' => $this->getValueOperatorFromLegacy($raw_condition['show_condition']),
+                        'value_operator' => $this->getValueOperatorFromLegacy($raw_condition['show_condition'], $value),
                         'logic_operator' => $this->getLogicOperatorFromLegacy($raw_condition['show_logic']),
                     ];
                 }
@@ -1449,7 +1450,7 @@ class FormMigration extends AbstractPluginMigration
                         'value'          => $value,
                         'item_type'      => 'question',
                         'item_uuid'      => $question->getUUID(),
-                        'value_operator' => $this->getValueOperatorFromLegacy($raw_condition['show_condition']),
+                        'value_operator' => $this->getValueOperatorFromLegacy($raw_condition['show_condition'], $value),
                         'logic_operator' => $this->getLogicOperatorFromLegacy($raw_condition['show_logic']),
                     ];
                 }
