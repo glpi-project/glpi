@@ -66,8 +66,8 @@ function addTranslations() {
 }
 
 function checkTranslations(title, description) {
-    cy.findByRole('heading', { name: 'Form title' }).should('exist').contains(title);
-    cy.findByRole('note', { name: 'Form description' }).should('exist').contains(description);
+    cy.findByTestId('form-title').should('exist').contains(title);
+    cy.findByTestId('form-description').should('exist').contains(description);
 }
 
 function changeUserLanguage(language) {
@@ -376,8 +376,7 @@ describe('Edit form translations', () => {
         });
 
         // Check default translations
-        cy.findByRole('heading', { name: 'Form title' }).should('exist').contains('Tests form translations');
-        cy.findByRole('note', { name: 'Form description' }).should('exist').contains('This form is used to test form translations');
+        checkTranslations('Tests form translations', 'This form is used to test form translations');
         cy.findByRole('heading', { name: 'Radio question' }).should('exist');
         cy.findByRole('radio', { name: 'First option' }).should('exist');
         cy.findByRole('radio', { name: 'Second option' }).should('exist');
@@ -388,8 +387,7 @@ describe('Edit form translations', () => {
         cy.reload();
 
         // Check the translations for the radio question
-        cy.findByRole('heading', { name: 'Form title' }).should('exist').contains('Tests form translations');
-        cy.findByRole('note', { name: 'Form description' }).should('exist').contains('This form is used to test form translations');
+        checkTranslations('Tests form translations', 'This form is used to test form translations');
         cy.findByRole('heading', { name: 'Radio question' }).should('exist');
         cy.findByRole('radio', { name: 'Première option' }).should('exist');
         cy.findByRole('radio', { name: 'Deuxième option' }).should('exist');
@@ -444,8 +442,7 @@ describe('Edit form translations', () => {
         });
 
         // Check default translations
-        cy.findByRole('heading', { name: 'Form title' }).should('exist').contains('Tests form translations');
-        cy.findByRole('note', { name: 'Form description' }).should('exist').contains('This form is used to test form translations');
+        checkTranslations('Tests form translations', 'This form is used to test form translations');
         cy.findByRole('heading', { name: 'Long answer question' }).should('exist');
         cy.findAllByLabelText('Long answer question').awaitTinyMCE().should('have.text', 'This is a long answer question');
 
@@ -454,8 +451,7 @@ describe('Edit form translations', () => {
         cy.reload();
 
         // Check the translations for the long answer question
-        cy.findByRole('heading', { name: 'Form title' }).should('exist').contains('Tests form translations');
-        cy.findByRole('note', { name: 'Form description' }).should('exist').contains('This form is used to test form translations');
+        checkTranslations('Tests form translations', 'This form is used to test form translations');
         cy.findByRole('heading', { name: 'Long answer question' }).should('exist');
         cy.findAllByLabelText('Long answer question').awaitTinyMCE().should('have.text', 'Ceci est une question de texte long');
     });
@@ -505,8 +501,7 @@ describe('Edit form translations', () => {
         });
 
         // Check default translations
-        cy.findByRole('heading', { name: 'Form title' }).should('exist').contains('Tests form translations');
-        cy.findByRole('note', { name: 'Form description' }).should('exist').contains('This form is used to test form translations');
+        checkTranslations('Tests form translations', 'This form is used to test form translations');
         cy.findByRole('heading', { name: 'Short answer question' }).should('exist');
         cy.findByRole('textbox', { name: 'Short answer question' }).should('exist').should('have.value', 'This is a short answer question');
 
@@ -515,8 +510,7 @@ describe('Edit form translations', () => {
         cy.reload();
 
         // Check the translations for the short answer question
-        cy.findByRole('heading', { name: 'Form title' }).should('exist').contains('Tests form translations');
-        cy.findByRole('note', { name: 'Form description' }).should('exist').contains('This form is used to test form translations');
+        checkTranslations('Tests form translations', 'This form is used to test form translations');
         cy.findByRole('heading', { name: 'Short answer question' }).should('exist');
         cy.findByRole('textbox', { name: 'Short answer question' }).should('exist').should('have.value', 'Ceci est une question de réponse courte');
     });

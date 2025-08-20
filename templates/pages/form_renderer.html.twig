@@ -60,11 +60,11 @@
                 class="mb-4"
                 data-glpi-form-renderer-form-header
             >
-                <h1 class="form-title mb-2" aria-label="{{ __('Form title') }}">
+                <h1 class="form-title mb-2" aria-label="{{ __('Form title') }}" data-testid="form-title">
                     {{ translate_form_item_key(form, constant('TRANSLATION_KEY_NAME', form)) }}
                 </h1>
 
-                <div class="text-muted form-description" aria-label="{{ __('Form description') }}" role="note">
+                <div class="text-muted form-description" aria-label="{{ __('Form description') }}" role="note" data-testid="form-description">
                     {{ translate_form_item_key(form, constant('TRANSLATION_KEY_HEADER', form))|safe_html }}
                 </div>
             </div>
