@@ -87,6 +87,6 @@ class OAuthRequestMiddleware extends AbstractMiddleware implements RequestMiddle
             }
         }
 
-        $input->response = AbstractController::getAccessDeniedErrorResponse();
+        $input->response = AbstractController::getAccessDeniedErrorResponse('You do not have the required scope(s) to access this endpoint.');
     }
 }

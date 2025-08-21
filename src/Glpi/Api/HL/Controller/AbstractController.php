@@ -297,10 +297,14 @@ abstract class AbstractController
     /**
      * @return Response
      */
-    public static function getAccessDeniedErrorResponse(): Response
+    public static function getAccessDeniedErrorResponse(array|null|string $detail = null): Response
     {
         return new JSONResponse(
-            self::getErrorResponseBody(self::ERROR_RIGHT_MISSING, "You don't have permission to perform this action."),
+            self::getErrorResponseBody(
+                status: self::ERROR_RIGHT_MISSING,
+                title: "You don't have permission to perform this action.",
+                detail: $detail,
+            ),
             403
         );
     }

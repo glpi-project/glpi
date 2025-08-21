@@ -542,12 +542,18 @@ class AdministrationControllerTest extends \HLAPITestCase
         $this->api->call(new Request('GET', '/Administration/User/Me'), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->isAccessDenied();
+                ->isAccessDenied()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('You do not have the required scope(s) to access this endpoint.', $content['detail']);
+                });
         });
         $this->api->call(new Request('GET', '/Administration/User/Me/Emails/Default'), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->isAccessDenied();
+                ->isAccessDenied()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('You do not have the required scope(s) to access this endpoint.', $content['detail']);
+                });
         });
         $this->login(api_options: ['scope' => 'user']);
         $this->api->call(new Request('GET', '/Administration/User/Me'), function ($call) {
@@ -568,19 +574,28 @@ class AdministrationControllerTest extends \HLAPITestCase
         $this->api->call(new Request('GET', '/Administration/User/me'), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->isAccessDenied();
+                ->isAccessDenied()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('You do not have the required scope(s) to access this endpoint.', $content['detail']);
+                });
         });
         $this->api->call(new Request('GET', '/Administration/User/me/Emails/Default'), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->isAccessDenied();
+                ->isAccessDenied()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('You do not have the required scope(s) to access this endpoint.', $content['detail']);
+                });
         });
         $this->login(api_options: ['scope' => 'email']);
         // Access to email scope doesn't allow broad access to current user info
         $this->api->call(new Request('GET', '/Administration/User/me'), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->isAccessDenied();
+                ->isAccessDenied()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('You do not have the required scope(s) to access this endpoint.', $content['detail']);
+                });
         });
         $this->api->call(new Request('GET', '/Administration/User/me/Emails/Default'), function ($call) {
             /** @var \HLAPICallAsserter $call */
