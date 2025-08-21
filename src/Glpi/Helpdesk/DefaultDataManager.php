@@ -141,11 +141,6 @@ final class DefaultDataManager
 
     private function addFormTranslations(int $forms_id, string $name, string $description): void
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var TranslatorInterface $TRANSLATE
-         * @var \DBmysql $DB
-         */
         global $CFG_GLPI, $TRANSLATE, $DB;
 
         $form_query = $DB->buildInsert(ItemTranslation::getTable(), [
@@ -336,12 +331,8 @@ final class DefaultDataManager
         Section $section,
         array $question_data,
     ): Question {
-        /**
-         * @var array $CFG_GLPI
-         * @var TranslatorInterface $TRANSLATE
-         * @var \DBmysql $DB
-         */
         global $CFG_GLPI, $TRANSLATE, $DB;
+
         // Refresh data
         $section->getFromDB($section->getID());
 

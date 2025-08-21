@@ -903,10 +903,6 @@ class Session
      */
     public static function loadAllCoreLocales(): void
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var Translator $TRANSLATE
-         */
         global $CFG_GLPI, $TRANSLATE;
 
         $core_folders = is_dir(GLPI_LOCAL_I18N_DIR) ? scandir(GLPI_LOCAL_I18N_DIR) : [];
