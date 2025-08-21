@@ -62,7 +62,6 @@ use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\ItemTranslation\ItemTranslation;
 use ITILCategory;
 use Laminas\I18n\Translator\Translator;
-use Laminas\I18n\Translator\TranslatorInterface;
 use Location;
 use RuntimeException;
 use Session;
