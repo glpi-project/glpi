@@ -43,7 +43,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionHandler\ItemAsTextConditionHandler;
 use Glpi\Form\Condition\ConditionHandler\ItemConditionHandler;
-use Glpi\Form\Condition\ConditionValueAsStringProviderInterface;
+use Glpi\Form\Condition\ConditionValueTransformerInterface;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
@@ -66,7 +66,7 @@ use function Safe\json_encode;
 class QuestionTypeItem extends AbstractQuestionType implements
     FormQuestionDataConverterInterface,
     UsedAsCriteriaInterface,
-    ConditionValueAsStringProviderInterface
+    ConditionValueTransformerInterface
 {
     protected string $itemtype_aria_label;
     protected string $items_id_aria_label;
@@ -326,7 +326,7 @@ class QuestionTypeItem extends AbstractQuestionType implements
     }
 
     #[Override]
-    public function getConditionValueAsString(mixed $value, ?JsonFieldInterface $question_config): string
+    public function transformConditionValueForComparisons(mixed $value, ?JsonFieldInterface $question_config): string
     {
         // Handle empty cases first
         if (empty($value)) {

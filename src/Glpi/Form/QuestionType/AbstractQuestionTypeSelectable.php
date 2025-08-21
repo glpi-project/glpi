@@ -37,7 +37,7 @@ namespace Glpi\Form\QuestionType;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Condition\ConditionValueAsStringProviderInterface;
+use Glpi\Form\Condition\ConditionValueTransformerInterface;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Glpi\ItemTranslation\Context\TranslationHandler;
@@ -50,7 +50,7 @@ use function Safe\json_decode;
 /**
  * Short answers are single line inputs used to answer simple questions.
  */
-abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType implements FormQuestionDataConverterInterface, TranslationAwareQuestionType, ConditionValueAsStringProviderInterface
+abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType implements FormQuestionDataConverterInterface, TranslationAwareQuestionType, ConditionValueTransformerInterface
 {
     public const TRANSLATION_KEY_OPTION = 'option';
 
@@ -476,7 +476,7 @@ TWIG;
     }
 
     #[Override]
-    public function getConditionValueAsString(mixed $value, ?JsonFieldInterface $question_config): array
+    public function transformConditionValueForComparisons(mixed $value, ?JsonFieldInterface $question_config): array
     {
         // Handle empty cases first
         if (empty($value)) {

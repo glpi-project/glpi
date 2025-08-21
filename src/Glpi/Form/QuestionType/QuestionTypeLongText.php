@@ -38,7 +38,7 @@ namespace Glpi\Form\QuestionType;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionHandler\RichTextConditionHandler;
-use Glpi\Form\Condition\ConditionValueAsStringProviderInterface;
+use Glpi\Form\Condition\ConditionValueTransformerInterface;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\FormTranslation;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
@@ -54,7 +54,7 @@ final class QuestionTypeLongText extends AbstractQuestionType implements
     FormQuestionDataConverterInterface,
     UsedAsCriteriaInterface,
     TranslationAwareQuestionType,
-    ConditionValueAsStringProviderInterface
+    ConditionValueTransformerInterface
 {
     #[Override]
     public function getFormEditorJsOptions(): string
@@ -203,7 +203,7 @@ TWIG;
     }
 
     #[Override]
-    public function getConditionValueAsString(mixed $value, ?JsonFieldInterface $question_config): string
+    public function transformConditionValueForComparisons(mixed $value, ?JsonFieldInterface $question_config): string
     {
         return strip_tags(strval($value));
     }

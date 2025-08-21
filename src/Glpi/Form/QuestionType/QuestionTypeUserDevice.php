@@ -41,7 +41,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionHandler\UserDevicesAsTextConditionHandler;
 use Glpi\Form\Condition\ConditionHandler\UserDevicesConditionHandler;
-use Glpi\Form\Condition\ConditionValueAsStringProviderInterface;
+use Glpi\Form\Condition\ConditionValueTransformerInterface;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
 use InvalidArgumentException;
@@ -54,7 +54,7 @@ use function Safe\preg_match;
 
 final class QuestionTypeUserDevice extends AbstractQuestionType implements
     UsedAsCriteriaInterface,
-    ConditionValueAsStringProviderInterface
+    ConditionValueTransformerInterface
 {
     #[Override]
     public function validateExtraDataInput(array $input): bool
@@ -314,7 +314,7 @@ TWIG;
     }
 
     #[Override]
-    public function getConditionValueAsString(mixed $value, ?JsonFieldInterface $question_config): array
+    public function transformConditionValueForComparisons(mixed $value, ?JsonFieldInterface $question_config): array
     {
         if (!is_array($value)) {
             $value = [$value];

@@ -85,7 +85,7 @@ final class UserDevicesAsTextConditionHandler implements ConditionHandlerInterfa
         }
 
         // Get valid item names from the raw answer
-        $a = (new QuestionTypeUserDevice())->getConditionValueAsString($a, $this->question_config);
+        $a = (new QuestionTypeUserDevice())->transformConditionValueForComparisons($a, $this->question_config);
 
         // Normalize values
         $a = array_map(fn(string $item) => strtolower(strval($item)), $a);

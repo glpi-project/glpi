@@ -39,7 +39,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionHandler\MultipleChoiceFromValuesConditionHandler;
 use Glpi\Form\Condition\ConditionHandler\SingleChoiceFromValuesConditionHandler;
-use Glpi\Form\Condition\ConditionValueAsStringProviderInterface;
+use Glpi\Form\Condition\ConditionValueTransformerInterface;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
 use InvalidArgumentException;
@@ -49,7 +49,7 @@ use function Safe\json_decode;
 
 final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable implements
     UsedAsCriteriaInterface,
-    ConditionValueAsStringProviderInterface
+    ConditionValueTransformerInterface
 {
     #[Override]
     public function getInputType(?Question $question): string

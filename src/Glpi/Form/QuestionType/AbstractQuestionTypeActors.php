@@ -40,7 +40,7 @@ use Exception;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionHandler\ActorConditionHandler;
-use Glpi\Form\Condition\ConditionValueAsStringProviderInterface;
+use Glpi\Form\Condition\ConditionValueTransformerInterface;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
@@ -64,7 +64,7 @@ use function Safe\json_encode;
 abstract class AbstractQuestionTypeActors extends AbstractQuestionType implements
     FormQuestionDataConverterInterface,
     UsedAsCriteriaInterface,
-    ConditionValueAsStringProviderInterface
+    ConditionValueTransformerInterface
 {
     /**
      * Retrieve the allowed actor types
@@ -466,7 +466,7 @@ TWIG;
     }
 
     #[Override]
-    public function getConditionValueAsString(mixed $value, ?JsonFieldInterface $question_config): array
+    public function transformConditionValueForComparisons(mixed $value, ?JsonFieldInterface $question_config): array
     {
         // Handle empty cases first
         if (empty($value)) {

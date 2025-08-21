@@ -36,7 +36,7 @@ namespace Glpi\Form\Condition\ConditionHandler;
 
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionData;
-use Glpi\Form\Condition\ConditionValueAsStringProviderInterface;
+use Glpi\Form\Condition\ConditionValueTransformerInterface;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Override;
@@ -75,8 +75,8 @@ class RegexConditionHandler implements ConditionHandlerInterface
         ValueOperator $operator,
         mixed $b,
     ): bool {
-        if ($this->questionType instanceof ConditionValueAsStringProviderInterface) {
-            $a = $this->questionType->getConditionValueAsString($a, $this->question_config);
+        if ($this->questionType instanceof ConditionValueTransformerInterface) {
+            $a = $this->questionType->transformConditionValueForComparisons($a, $this->question_config);
         }
 
         $a = is_array($a) ? $a : [$a];
