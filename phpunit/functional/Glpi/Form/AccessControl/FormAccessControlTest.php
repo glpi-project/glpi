@@ -241,15 +241,15 @@ class FormAccessControlTest extends DbTestCase
     public function testGetTabNameForEmptyForm(): void
     {
         $form = $this->createAndGetSimpleForm();
-        $this->checkGetTabNameForItem($form, "Access control 1"); // 1 for default policy
+        $this->checkGetTabNameForItem($form, "Access controls 1"); // 1 for default policy
     }
 
     public function testGetTabNameWithActivePolicies(): void
     {
         $form = $this->createAndGetComplexForm();
 
-        $this->checkGetTabNameForItem($form, "Access control 2");
-        $this->checkGetTabNameForItem($form, "Access control", count: false);
+        $this->checkGetTabNameForItem($form, "Access controls 2");
+        $this->checkGetTabNameForItem($form, "Access controls", count: false);
     }
 
     public function testGetTabNameWithInactiveAndActivePolicies(): void
@@ -260,8 +260,8 @@ class FormAccessControlTest extends DbTestCase
             'is_active' => false,
         ]);
 
-        $this->checkGetTabNameForItem($form, "Access control 1");
-        $this->checkGetTabNameForItem($form, "Access control", count: false);
+        $this->checkGetTabNameForItem($form, "Access controls 1");
+        $this->checkGetTabNameForItem($form, "Access controls", count: false);
     }
 
     public function testGetTabNameWithInactivePolicies(): void
@@ -275,7 +275,7 @@ class FormAccessControlTest extends DbTestCase
         $this->updateItem(FormAccessControl::class, $direct_access_control->getId(), [
             'is_active' => false,
         ]);
-        $this->checkGetTabNameForItem($form, "Access control");
+        $this->checkGetTabNameForItem($form, "Access controls");
     }
 
     private function checkGetTabNameForItem(

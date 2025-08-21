@@ -471,7 +471,7 @@ class FormTest extends DbTestCase
                 ->addQuestion('Question 1', QuestionTypeShortText::class)
                 ->addQuestion('Question 2', QuestionTypeShortText::class)
                 ->addQuestion('Question 3', QuestionTypeShortText::class)
-                ->addDestination(FormDestinationTicket::class, 'Destination 1')
+                ->addDestination(FormDestinationTicket::class, 'Destinations 1')
                 ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(AllowList::class, new AllowListConfig())
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig())
@@ -498,7 +498,7 @@ class FormTest extends DbTestCase
                 ->addSection('Section 1')
                 ->addQuestion('Question 1', QuestionTypeShortText::class)
                 ->addComment('Comment 1', 'Comment 1 description')
-                ->addDestination(FormDestinationTicket::class, 'Destination 1')
+                ->addDestination(FormDestinationTicket::class, 'Destinations 1')
                 ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig())
         );
@@ -575,7 +575,7 @@ class FormTest extends DbTestCase
             (new FormBuilder())->setIsDraft(true)
                 ->addSection('Section 1')
                 ->addQuestion('Question 1', QuestionTypeShortText::class)
-                ->addDestination(FormDestinationTicket::class, 'Destination 1')
+                ->addDestination(FormDestinationTicket::class, 'Destinations 1')
                 ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig())
         );
@@ -607,7 +607,7 @@ class FormTest extends DbTestCase
             'expected_tabs' => [
                 'Form',
                 'Service catalog',
-                'Access control 1',
+                'Access controls 1',
                 'Destinations 1',
                 'Form translations',
             ],
@@ -619,7 +619,7 @@ class FormTest extends DbTestCase
                 'Form',
                 'Service catalog',
                 'Tickets 1',
-                'Access control 1',
+                'Access controls 1',
                 'Destinations 1',
                 'Form translations',
             ],
@@ -631,7 +631,7 @@ class FormTest extends DbTestCase
                 'Form',
                 'Service catalog',
                 'Tickets 5',
-                'Access control 1',
+                'Access controls 1',
                 'Destinations 1',
                 'Form translations',
             ],
@@ -641,9 +641,9 @@ class FormTest extends DbTestCase
     public static function defineTabsProvider_withAdditionalTickets(): iterable
     {
         $form = new FormBuilder("My form");
-        $form->addDestination(FormDestinationTicket::class, 'Destination 1');
-        $form->addDestination(FormDestinationTicket::class, 'Destination 2');
-        $form->addDestination(FormDestinationTicket::class, 'Destination 3');
+        $form->addDestination(FormDestinationTicket::class, 'Destinations 1');
+        $form->addDestination(FormDestinationTicket::class, 'Destinations 2');
+        $form->addDestination(FormDestinationTicket::class, 'Destinations 3');
 
         yield 'Form with multiple tickets destinations and no answers' => [
             'form' => $form,
@@ -651,7 +651,7 @@ class FormTest extends DbTestCase
             'expected_tabs' => [
                 'Form',
                 'Service catalog',
-                'Access control 1',
+                'Access controls 1',
                 'Destinations 4',
                 'Form translations',
             ],
@@ -663,7 +663,7 @@ class FormTest extends DbTestCase
                 'Form',
                 'Service catalog',
                 'Tickets 4', // (1 (default) + 3) destinations * 1 answer
-                'Access control 1',
+                'Access controls 1',
                 'Destinations 4',
                 'Form translations',
             ],
@@ -675,7 +675,7 @@ class FormTest extends DbTestCase
                 'Form',
                 'Service catalog',
                 'Tickets 20', // (1 (default) + 3) destinations 5 answers
-                'Access control 1',
+                'Access controls 1',
                 'Destinations 4',
                 'Form translations',
             ],
@@ -685,9 +685,9 @@ class FormTest extends DbTestCase
     public static function defineTabsProvider_withAdditionalChanges(): iterable
     {
         $form = new FormBuilder("My form");
-        $form->addDestination(FormDestinationChange::class, 'Destination 1');
-        $form->addDestination(FormDestinationChange::class, 'Destination 2');
-        $form->addDestination(FormDestinationChange::class, 'Destination 3');
+        $form->addDestination(FormDestinationChange::class, 'Destinations 1');
+        $form->addDestination(FormDestinationChange::class, 'Destinations 2');
+        $form->addDestination(FormDestinationChange::class, 'Destinations 3');
 
         yield 'Form with multiple changes destinations and no answers' => [
             'form' => $form,
@@ -695,7 +695,7 @@ class FormTest extends DbTestCase
             'expected_tabs' => [
                 'Form',
                 'Service catalog',
-                'Access control 1',
+                'Access controls 1',
                 'Destinations 4',
                 'Form translations',
             ],
@@ -708,7 +708,7 @@ class FormTest extends DbTestCase
                 'Service catalog',
                 'Tickets 1',
                 'Changes 3', // 3 destinations * 1 answer
-                'Access control 1',
+                'Access controls 1',
                 'Destinations 4',
                 'Form translations',
             ],
@@ -721,7 +721,7 @@ class FormTest extends DbTestCase
                 'Service catalog',
                 'Tickets 5',
                 'Changes 15', // 3 destinations * 5 answers
-                'Access control 1',
+                'Access controls 1',
                 'Destinations 4',
                 'Form translations',
             ],
@@ -731,9 +731,9 @@ class FormTest extends DbTestCase
     public static function defineTabsProvider_withAdditionalProblems(): iterable
     {
         $form = new FormBuilder("My form");
-        $form->addDestination(FormDestinationProblem::class, 'Destination 1');
-        $form->addDestination(FormDestinationProblem::class, 'Destination 2');
-        $form->addDestination(FormDestinationProblem::class, 'Destination 3');
+        $form->addDestination(FormDestinationProblem::class, 'Destinations 1');
+        $form->addDestination(FormDestinationProblem::class, 'Destinations 2');
+        $form->addDestination(FormDestinationProblem::class, 'Destinations 3');
 
         yield 'Form with multiple problems destinations and no answers' => [
             'form' => $form,
@@ -741,7 +741,7 @@ class FormTest extends DbTestCase
             'expected_tabs' => [
                 'Form',
                 'Service catalog',
-                'Access control 1',
+                'Access controls 1',
                 'Destinations 4',
                 'Form translations',
             ],
@@ -754,7 +754,7 @@ class FormTest extends DbTestCase
                 'Service catalog',
                 'Tickets 1',
                 'Problems 3', // 3 destinations * 1 answer
-                'Access control 1',
+                'Access controls 1',
                 'Destinations 4',
                 'Form translations',
             ],
@@ -767,7 +767,7 @@ class FormTest extends DbTestCase
                 'Service catalog',
                 'Tickets 5',
                 'Problems 15', // 3 destinations * 5 answers
-                'Access control 1',
+                'Access controls 1',
                 'Destinations 4',
                 'Form translations',
             ],

@@ -48,6 +48,7 @@ use LogicException;
 use Override;
 use ReflectionClass;
 use RuntimeException;
+use Session;
 
 use function Safe\json_decode;
 use function Safe\json_encode;
@@ -88,7 +89,7 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
         }
 
         return self::createTabEntry(
-            self::getTypeName(),
+            self::getTypeName(Session::getPluralNumber()),
             $count,
             null,
             self::getIcon() // Must be passed manually for some reason
