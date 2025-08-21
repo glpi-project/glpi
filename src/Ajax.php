@@ -283,8 +283,6 @@ class Ajax
         $orientation = 'vertical',
         $options = []
     ) {
-        global $CFG_GLPI;
-
         if (count($tabs) === 0) {
             return;
         }
@@ -370,7 +368,7 @@ class Ajax
                             <a
                                 class='nav-link justify-content-between $navlinkp $display_class'
                                 data-bs-toggle='tab'
-                                title='" . htmlescape($title_clean) . "'
+                                title='" . $title_clean . "'
                                 data-glpi-ajax-content='" . htmlescape($tab_content_url) . "'
                                 href='" . htmlescape($direct_link_url) . "'
                                 data-bs-target='#" . htmlescape($target) . "'
@@ -383,7 +381,7 @@ class Ajax
                     $html_tabs .= <<<HTML
                         <li class='nav-item $navitemml'>
                             <a class='nav-link justify-content-between $navlinkp $display_class' data-bs-toggle='tab'
-                                title='" . htmlescape($title_clean) . "' href='#' data-show-all-tabs="true">{$title}</a>
+                                title='" . $title_clean . "' href='#' data-show-all-tabs="true">{$title}</a>
                         </li>
 HTML;
                     $html_sele .= "<option value='$i' {$selected}>{$title}</option>";
@@ -406,6 +404,7 @@ HTML;
             $ID = jsescape($ID);
             $withtemplate = (int) ($_GET['withtemplate'] ?? 0);
             $tabdiv_id = jsescape($tabdiv_id);
+            $active_id = jsescape($active_id);
             $js = <<<JS
          var url_hash = window.location.hash;
          var loadTabContents = function (tablink, force_reload = false, update_session_tab = true) {
@@ -420,7 +419,7 @@ HTML;
 
             const updateCurrentTab = () => {
                 $.get(
-                  '{$CFG_GLPI['root_doc']}/ajax/updatecurrenttab.php',
+                  CFG_GLPI.root_doc + '/ajax/updatecurrenttab.php',
                   {
                      itemtype: '$type',
                      id: '$ID',

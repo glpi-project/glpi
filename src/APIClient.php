@@ -179,14 +179,14 @@ class APIClient extends CommonDBTM
         switch ($field) {
             case 'dolog_method':
                 $methods = self::getLogMethod();
-                return $methods[$values[$field]];
+                return htmlescape($methods[$values[$field]]);
 
             case 'ipv4_range_start':
             case 'ipv4_range_end':
                 if (empty($values[$field])) {
                     return '';
                 }
-                return long2ip((int) $values[$field]);
+                return htmlescape(long2ip((int) $values[$field]));
         }
 
         return parent::getSpecificValueToDisplay($field, $values, $options);

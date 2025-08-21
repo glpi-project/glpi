@@ -36,6 +36,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssignableItem;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Features\Clonable;
+use Glpi\Features\DCBreadcrumbInterface;
 use Glpi\Features\StateInterface;
 use Glpi\Socket;
 use Glpi\SocketModel;
@@ -107,8 +108,8 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
     {
         $links = [];
         if (static::canView()) {
-            $insts = "<i class=\"fas fa-ethernet pointer\" title=\"" . Socket::getTypeName(Session::getPluralNumber())
-            . "\"></i><span class=\"sr-only\">" . Socket::getTypeName(Session::getPluralNumber()) . "</span>";
+            $insts = "<i class=\"fas fa-ethernet pointer\" title=\"" . htmlescape(Socket::getTypeName(Session::getPluralNumber()))
+            . "\"></i><span class=\"sr-only\">" . htmlescape(Socket::getTypeName(Session::getPluralNumber())) . "</span>";
             $links[$insts] = Socket::getSearchURL(false);
         }
         if (count($links)) {
@@ -450,7 +451,7 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
                     if ($values[$field] > 0) {
                         $item = new $itemtype();
                         $item->getFromDB($values[$field]);
-                        return "<a href='" . $item->getLinkURL() . "'>" . $item->fields['name'] . "</a>";
+                        return "<a href='" . htmlescape($item->getLinkURL()) . "'>" . htmlescape($item->fields['name']) . "</a>";
                     }
                 } else {
                     return ' ';
@@ -460,8 +461,7 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
                 $itemtype = $values['itemtype_endpoint_b'] ?? $values['itemtype_endpoint_a'];
                 $items_id = $values['items_id_endpoint_b'] ?? $values['items_id_endpoint_a'];
 
-                if (method_exists($itemtype, 'renderDcBreadcrumb')) {
-                    /** @var class-string $itemtype */
+                if ($itemtype instanceof DCBreadcrumbInterface) {
                     return $itemtype::renderDcBreadcrumb($items_id);
                 }
         }

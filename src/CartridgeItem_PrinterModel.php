@@ -119,7 +119,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
         if ($canedit) {
             echo "<div class='firstbloc'>";
             echo "<form name='printermodel_form$rand' id='printermodel_form$rand' method='post'";
-            echo " action='" . static::getFormURL() . "'>";
+            echo " action='" . htmlescape(static::getFormURL()) . "'>";
 
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'>";
@@ -178,8 +178,8 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
                         ],
                     ],
                 ];
-                $url = Printer::getSearchURL() . "?" . Toolbox::append_params($opt, '&amp;');
-                echo "<td class='center'><a href='" . $url . "'>" . htmlescape($data["name"]) . "</a></td>";
+                $url = Printer::getSearchURL() . "?" . Toolbox::append_params($opt);
+                echo "<td class='center'><a href='" . htmlescape($url) . "'>" . htmlescape($data["name"]) . "</a></td>";
                 echo "</tr>";
             }
             echo $header_begin . $header_bottom . $header_end;

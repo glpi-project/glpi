@@ -1207,9 +1207,9 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                         $options['criteria'][1]['value']      = 'mygroups';
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/change.php?"
-                         . Toolbox::append_params($options, '&amp;') . "\">"
-                         . Html::makeTitle(__('Changes on pending status'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . htmlescape(Change::getSearchURL() . '?' . Toolbox::append_params($options)) . "\">"
+                            . Html::makeTitle(__('Changes on pending status'), $displayed_row_count, $total_row_count)
+                            . "</a>";
                         break;
 
                     case "process":
@@ -1223,9 +1223,9 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                         $options['criteria'][1]['value']      = 'mygroups';
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/change.php?"
-                        . Toolbox::append_params($options, '&amp;') . "\">"
-                        . Html::makeTitle(__('Changes to be processed'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . htmlescape(Change::getSearchURL() . '?' . Toolbox::append_params($options)) . "\">"
+                            . Html::makeTitle(__('Changes to be processed'), $displayed_row_count, $total_row_count)
+                            . "</a>";
                         break;
 
                     default:
@@ -1239,9 +1239,9 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                         $options['criteria'][1]['value']      = 'mygroups';
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/change.php?"
-                        . Toolbox::append_params($options, '&amp;') . "\">"
-                        . Html::makeTitle(__('Your changes in progress'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . htmlescape(Change::getSearchURL() . '?' . Toolbox::append_params($options)) . "\">"
+                            . Html::makeTitle(__('Your changes in progress'), $displayed_row_count, $total_row_count)
+                            . "</a>";
                 }
             } else {
                 switch ($status) {
@@ -1256,9 +1256,9 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                         $options['criteria'][1]['value']      = Session::getLoginUserID();
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/change.php?"
-                         . Toolbox::append_params($options, '&amp;') . "\">"
-                         . Html::makeTitle(__('Changes on pending status'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . htmlescape(Change::getSearchURL() . '?' . Toolbox::append_params($options)) . "\">"
+                            . Html::makeTitle(__('Changes on pending status'), $displayed_row_count, $total_row_count)
+                            . "</a>";
                         break;
 
                     case "tovalidate":
@@ -1295,9 +1295,9 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                         $options['criteria'][3]['link']       = 'AND';
                         $forcetab                         = 'ChangeValidation$1';
 
-                        $main_header = "<a href=\"" . Change::getSearchURL() . "?"
-                        . Toolbox::append_params($options, '&amp;') . "\">"
-                        . Html::makeTitle(__('Your changes to approve'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . htmlescape(Change::getSearchURL() . '?' . Toolbox::append_params($options)) . "\">"
+                            . Html::makeTitle(__('Your changes to approve'), $displayed_row_count, $total_row_count)
+                            . "</a>";
 
                         break;
 
@@ -1312,9 +1312,9 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                         $options['criteria'][1]['value']      = 'process';
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/change.php?"
-                        . Toolbox::append_params($options, '&amp;') . "\">"
-                        . Html::makeTitle(__('Changes to be processed'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . htmlescape(Change::getSearchURL() . '?' . Toolbox::append_params($options)) . "\">"
+                            . Html::makeTitle(__('Changes to be processed'), $displayed_row_count, $total_row_count)
+                            . "</a>";
                         break;
 
                     default:
@@ -1328,9 +1328,9 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                         $options['criteria'][1]['value']      = 'notold';
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/change.php?"
-                        . Toolbox::append_params($options, '&amp;') . "\">"
-                        . Html::makeTitle(__('Your changes in progress'), $displayed_row_count, $total_row_count) . "</a>";
+                        $main_header = "<a href=\"" . htmlescape(Change::getSearchURL() . '?' . Toolbox::append_params($options)) . "\">"
+                            . Html::makeTitle(__('Your changes in progress'), $displayed_row_count, $total_row_count)
+                            . "</a>";
                 }
             }
 
@@ -1367,8 +1367,8 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                     ];
 
                     if ($change->getFromDBwithData($data['id'])) {
-                        $bgcolor = $_SESSION["glpipriority_" . $change->fields["priority"]];
-                        $name = sprintf(__('%1$s: %2$s'), __('ID'), $change->fields["id"]);
+                        $bgcolor = htmlescape($_SESSION["glpipriority_" . $change->fields["priority"]]);
+                        $name = htmlescape(sprintf(__('%1$s: %2$s'), __('ID'), $change->fields["id"]));
                         $row['values'][] = [
                             'class' => 'badge_block',
                             'content' => "<span style='background: $bgcolor'></span>&nbsp;$name",
@@ -1386,7 +1386,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                                     $requesters[] = $name;
                                 } else {
                                     $requesters[] = '<i class="fs-4 ti ti-mail text-muted me-1"></i>'
-                                        . $d['alternative_email'];
+                                        . htmlescape($d['alternative_email']);
                                 }
                             }
                         }
@@ -1397,20 +1397,20 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                         ) {
                             foreach ($change->groups[CommonITILActor::REQUESTER] as $d) {
                                 $requesters[] = '<i class="fs-4 ti ti-users text-muted me-1"></i>'
-                                    . Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+                                    . htmlescape(Dropdown::getDropdownName("glpi_groups", $d["groups_id"]));
                             }
                         }
                         $row['values'][] = implode('<br>', $requesters);
 
-                        $link = "<a id='change" . $change->fields["id"] . $rand . "' href='"
-                            . Change::getFormURLWithID($change->fields["id"]);
+                        $link = "<a id='change" . $change->getID() . $rand . "' href='"
+                            . htmlescape(Change::getFormURLWithID($change->fields["id"]));
                         if ($forcetab != '') {
-                            $link .= "&amp;forcetab=" . $forcetab;
+                            $link .= "&amp;forcetab=" . htmlescape($forcetab);
                         }
                         $link .= "'>";
-                        $link .= "<span class='b'>" . $change->fields["name"] . "</span></a>";
+                        $link .= "<span class='b'>" . htmlescape($change->fields["name"]) . "</span></a>";
                         $link = sprintf(
-                            __('%1$s %2$s'),
+                            __s('%1$s %2$s'),
                             $link,
                             Html::showToolTip(
                                 RichText::getEnhancedHtml($change->fields['content']),
@@ -1426,7 +1426,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                         $row['values'] = [
                             [
                                 'colspan' => 6,
-                                'content' => "<i>" . __('No ticket in progress.') . "</i>",
+                                'content' => "<i>" . __s('No ticket in progress.') . "</i>",
                             ],
                         ];
                     }

@@ -171,7 +171,7 @@ class Blacklist extends CommonDropdown
         switch ($field) {
             case 'type':
                 $types = self::getTypes();
-                return $types[$values[$field]];
+                return htmlescape($types[$values[$field]]);
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

@@ -454,19 +454,18 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
                     ]
                 );
 
-                $message = "";
-                $items   = [];
+                $messages = [];
+                $items    = [];
 
                 foreach ($result as $cartridge) {
                     if (($unused = Cartridge::getUnusedNumber($cartridge["cartID"])) <= $cartridge["threshold"]) {
                         //TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining number
-                        $message .= sprintf(
+                        $messages[] = sprintf(
                             __('Threshold of alarm reached for the type of cartridge: %1$s - Reference %2$s - Remaining %3$d'),
                             $cartridge["name"],
                             $cartridge["ref"],
                             $unused
                         );
-                        $message .= '<br>';
 
                         $items[$cartridge["cartID"]] = $cartridge;
 
@@ -486,14 +485,14 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
                     $entityname = Dropdown::getDropdownName("glpi_entities", $entity);
                     if (NotificationEvent::raiseEvent('alert', new CartridgeItem(), $options)) {
                         if ($task) {
-                            $task->log(sprintf(__('%1$s: %2$s') . "\n", $entityname, $message));
+                            $task->log(sprintf(__('%1$s: %2$s') . "\n", $entityname, implode("\n", $messages)));
                             $task->addVolume(1);
                         } else {
-                            Session::addMessageAfterRedirect(htmlescape(sprintf(
-                                __('%1$s: %2$s'),
-                                $entityname,
-                                $message
-                            )));
+                            Session::addMessageAfterRedirect(sprintf(
+                                __s('%1$s: %2$s'),
+                                htmlescape($entityname),
+                                implode('<br>', array_map('htmlescape', $messages))
+                            ));
                         }
 
                         $input = [

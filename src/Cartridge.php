@@ -806,10 +806,10 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
         if ($canedit && $number) {
             $actions = [
                 'purge' => _x('button', 'Delete permanently'),
-                'Infocom' . MassiveAction::CLASS_ACTION_SEPARATOR . 'activate' => __('Enable the financial and administrative information'),
+                'Infocom' . MassiveAction::CLASS_ACTION_SEPARATOR . 'activate' => __s('Enable the financial and administrative information'),
             ];
             if (!$show_old) {
-                $actions['Cartridge' . MassiveAction::CLASS_ACTION_SEPARATOR . 'backtostock'] = __('Back to stock');
+                $actions['Cartridge' . MassiveAction::CLASS_ACTION_SEPARATOR . 'backtostock'] = __s('Back to stock');
             }
         }
         $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], $number),
@@ -833,7 +833,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
                     }
                     $printer_link = "<a href='" . htmlescape(Printer::getFormURLWithID($data["printID"])) . "'><span class='fw-bold'>" . htmlescape($printname) . "</span></a>";
                 } else {
-                    $printer_link = NOT_AVAILABLE;
+                    $printer_link = htmlescape(NOT_AVAILABLE);
                 }
                 $tmp_dbeg       = explode("-", $data["date_in"]);
                 $tmp_dend       = explode("-", $data["date_use"]);
@@ -1045,7 +1045,7 @@ TWIG, $twig_params);
         if ($canedit && !$old) {
             $twig_params = [
                 'printer' => $printer,
-                'install_label' => _sx('button', 'Install'),
+                'install_label' => _x('button', 'Install'),
                 'count_label' => __('Count'),
             ];
             // language=Twig
@@ -1107,13 +1107,13 @@ TWIG, ['printer_id' => $printer->getID()]);
         $pages = $printer->fields['init_pages_counter'];
         if (!$old) {
             $actions = [
-                self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall' => __('End of life'),
-                self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'backtostock' => __('Back to stock'),
+                self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall' => __s('End of life'),
+                self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'backtostock' => __s('Back to stock'),
             ];
         } else {
             $actions = [
-                self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'updatepages' => __('Update printer counter'),
-                'purge' => _x('button', 'Delete permanently'),
+                self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'updatepages' => __s('Update printer counter'),
+                'purge' => _sx('button', 'Delete permanently'),
             ];
         }
         $massiveactionparams = [

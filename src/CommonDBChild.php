@@ -39,6 +39,7 @@ use Glpi\Plugin\Hooks;
 use function Safe\ob_get_clean;
 use function Safe\ob_start;
 use function Safe\preg_match;
+use function Safe\preg_replace;
 
 /**
  * Common DataBase Relation Table Manager Class
@@ -743,7 +744,10 @@ abstract class CommonDBChild extends CommonDBConnexity
 
 
     /**
-     * get the Javascript "code" to add to the form when clicking on "+"
+     * Get the Javascript "code" to add to the form when clicking on "+".
+     *
+     * The output will be encapsulated in a JS string (i.e. `row.append('{$output}')`) and must therefore be escaped
+     * for JS context.
      *
      * @since 0.84
      *
@@ -757,8 +761,13 @@ abstract class CommonDBChild extends CommonDBConnexity
      **/
     public static function getJSCodeToAddForItemChild($field_name, $child_count_js_var)
     {
-        return "<input type=\'text\' size=\'40\' " . "name=\'" . $field_name
-             . "[-'+$child_count_js_var+']\'>";
+        $html = "<input type='text' size='40' name='" . htmlescape($field_name) . "[-__JS_PLACEHOLDER__]'>";
+
+        return str_replace(
+            '__JS_PLACEHOLDER__',
+            "'+{$child_count_js_var}+'", // string closing, + operator, JS variable name, + operator, string reopening
+            jsescape($html)
+        );
     }
 
 
@@ -844,9 +853,9 @@ abstract class CommonDBChild extends CommonDBConnexity
         $result = '';
 
         if ($canedit) {
-            $lower_name         = strtolower(static::class);
-            $child_count_js_var = htmlescape('nb' . $lower_name . 's');
-            $div_id             = htmlescape("add_" . $lower_name . "_to_" . $item->getType() . "_" . $items_id);
+            $lower_name         = preg_replace('/[^\w]/g', '_', strtolower(static::class));
+            $child_count_js_var = 'nb' . $lower_name . 's';
+            $div_id             = "add_" . $lower_name . "_to_" . preg_replace('/[^\w]/g', '_', strtolower($item::class)) . "_" . $items_id;
             $add_label          = htmlescape(sprintf(__('Add a new %s'), static::getTypeName()));
 
             // Beware : -1 is for the first element added ...
@@ -854,8 +863,7 @@ abstract class CommonDBChild extends CommonDBConnexity
             $result .= "<span id='add" . $lower_name . "button' class='ti ti-plus cursor-pointer'"
               . " title=\"" . __s('Add') . "\"" . "aria-label=\"" . $add_label . "\""
                 . "\" onClick=\"var row = $('#" . $div_id . "');
-                             row.append('"
-               . static::getJSCodeToAddForItemChild($field_name, $child_count_js_var) . "');
+                             row.append('" . static::getJSCodeToAddForItemChild($field_name, $child_count_js_var) . "');
                             $child_count_js_var++;\"
                ><span class='sr-only'>" . __s('Add') . "</span></span>";
         }
@@ -904,8 +912,8 @@ abstract class CommonDBChild extends CommonDBConnexity
             }
         }
 
-        $lower_name = strtolower(static::class);
-        $div_id     = htmlescape("add_" . $lower_name . "_to_" . $item->getType() . "_" . $items_id);
+        $lower_name = preg_replace('/[^\w]/g', '_', strtolower(static::class));
+        $div_id     = "add_" . $lower_name . "_to_" . preg_replace('/[^\w]/g', '_', strtolower($item::class)) . "_" . $items_id;
 
         $query = [
             'FROM'   => static::getTable(),

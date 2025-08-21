@@ -380,7 +380,7 @@ class AuthLDAP extends CommonDBTM
         }
         switch ($field) {
             case 'group_search_type':
-                return self::getGroupSearchTypeName($values[$field]);
+                return htmlescape(self::getGroupSearchTypeName($values[$field]));
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -567,7 +567,7 @@ TWIG, $twig_params);
     {
         global $DB;
 
-        $ID     = $this->getField('id');
+        $ID     = $this->getID();
         $target = static::getFormURL();
 
         AuthLdapReplicate::addNewReplicateForm($target, $ID);
@@ -594,9 +594,9 @@ TWIG, ['msg' => _x('button', 'Test')]);
                             $(e.target).prepend(`<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>`);
                             $(e.target).prop('disabled', true);
                             $.post(
-                                '{{ path('ajax/ldap.php') }}',
+                                '{{ path('ajax/ldap.php')|e('js') }}',
                                 {
-                                    id: '{{ authldaps_id }}',
+                                    id: '{{ authldaps_id|e('js') }}',
                                     ldap_replicate_id: replicate_id,
                                     action: 'test_ldap_replicate'
                                 }
@@ -1663,7 +1663,7 @@ TWIG, $twig_params);
             if (isset($userinfos['id']) && User::canView()) {
                 $entry['user'] = "<a href='" . htmlescape($userinfos['link']) . "'>" . htmlescape($userinfos['name']) . "</a>";
             } else {
-                $entry['user'] = $userinfos['link'];
+                $entry['user'] = htmlescape($userinfos['link']);
             }
 
             $date_mod = '';
@@ -3834,7 +3834,7 @@ TWIG, $twig_params);
         ) {
             self::showLdapUsers();
         } else {
-            echo "<div class='text-center fw-bold mb-3'>" . __s('Unable to connect to the LDAP directory');
+            echo "<div class='text-center fw-bold mb-3'>" . __s('Unable to connect to the LDAP directory') . "</div>";
         }
     }
 

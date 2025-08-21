@@ -511,10 +511,10 @@ class Central extends CommonGLPI
         $user->getFromDB(Session::getLoginUserID());
         $expiration_msg = $user->getPasswordExpirationMessage();
         if ($expiration_msg !== null) {
-            $messages['warnings'][] = $expiration_msg
+            $messages['warnings'][] = htmlescape($expiration_msg)
              . ' '
-             . '<a href="' . $CFG_GLPI['root_doc'] . '/front/updatepassword.php">'
-             . __('Update my password')
+             . '<a href="' . htmlescape($CFG_GLPI['root_doc']) . '/front/updatepassword.php">'
+             . __s('Update my password')
              . '</a>';
         }
 
@@ -528,30 +528,30 @@ class Central extends CommonGLPI
                     $accounts[] = $user->getLink();
                 }
                 $messages['warnings'][] = sprintf(
-                    __('For security reasons, please change the password for the default users: %s'),
+                    __s('For security reasons, please change the password for the default users: %s'),
                     implode(" ", $accounts)
                 );
             }
 
             if (($myisam_count = $DB->getMyIsamTables()->count()) > 0) {
-                $messages['warnings'][] = sprintf(__('%d tables are using the deprecated MyISAM storage engine.'), $myisam_count)
-                . ' '
-                . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:myisam_to_innodb');
+                $messages['warnings'][] = sprintf(__s('%d tables are using the deprecated MyISAM storage engine.'), $myisam_count)
+                    . ' '
+                    . sprintf(__s('Run the "%1$s" command to migrate them.'), 'php bin/console migration:myisam_to_innodb');
             }
             if (($datetime_count = $DB->getTzIncompatibleTables()->count()) > 0) {
-                $messages['warnings'][] = sprintf(__('%1$s columns are using the deprecated datetime storage field type.'), $datetime_count)
-                . ' '
-                . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:timestamps');
+                $messages['warnings'][] = sprintf(__s('%1$s columns are using the deprecated datetime storage field type.'), $datetime_count)
+                    . ' '
+                    . sprintf(__s('Run the "%1$s" command to migrate them.'), 'php bin/console migration:timestamps');
             }
             if (($non_utf8mb4_count = $DB->getNonUtf8mb4Tables()->count()) > 0) {
-                $messages['warnings'][] = sprintf(__('%1$s tables are using the deprecated utf8mb3 storage charset.'), $non_utf8mb4_count)
-                . ' '
-                . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:utf8mb4');
+                $messages['warnings'][] = sprintf(__s('%1$s tables are using the deprecated utf8mb3 storage charset.'), $non_utf8mb4_count)
+                    . ' '
+                    . sprintf(__s('Run the "%1$s" command to migrate them.'), 'php bin/console migration:utf8mb4');
             }
             if (($signed_keys_col_count = $DB->getSignedKeysColumns()->count()) > 0) {
-                $messages['warnings'][] = sprintf(__('%d primary or foreign keys columns are using signed integers.'), $signed_keys_col_count)
-                . ' '
-                . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:unsigned_keys');
+                $messages['warnings'][] = sprintf(__s('%d primary or foreign keys columns are using signed integers.'), $signed_keys_col_count)
+                    . ' '
+                    . sprintf(__s('Run the "%1$s" command to migrate them.'), 'php bin/console migration:unsigned_keys');
             }
 
             $form_migration = new FormMigration(
@@ -562,9 +562,9 @@ class Central extends CommonGLPI
                 !$form_migration->hasBeenExecuted()
                 && $form_migration->hasPluginData()
             ) {
-                $messages['warnings'][] = __("You have some forms from the 'Formcreator' plugin.")
-                . ' '
-                . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:formcreator_plugin_to_core');
+                $messages['warnings'][] = __s("You have some forms from the 'Formcreator' plugin.")
+                    . ' '
+                    . sprintf(__s('Run the "%1$s" command to migrate them.'), 'php bin/console migration:formcreator_plugin_to_core');
             }
 
             $assets_migration = new GenericobjectPluginMigration($DB);
@@ -572,9 +572,9 @@ class Central extends CommonGLPI
                 !$assets_migration->hasBeenExecuted()
                 && $assets_migration->hasPluginData()
             ) {
-                $messages['warnings'][] = __("You have some assets from the 'Generic object' plugin.")
-                . ' '
-                . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:genericobject_plugin_to_core');
+                $messages['warnings'][] = __s("You have some assets from the 'Generic object' plugin.")
+                    . ' '
+                    . sprintf(__s('Run the "%1$s" command to migrate them.'), 'php bin/console migration:genericobject_plugin_to_core');
             }
 
             /*
@@ -601,10 +601,10 @@ class Central extends CommonGLPI
                         ],
                     ],
                 ];
-                $link = '<a href="' . Notification::getSearchURL() . '?' . Toolbox::append_params($criteria) . '">' . __('notification') . '</a>';
+                $link = '<a href="' . htmlescape(Notification::getSearchURL() . '?' . Toolbox::append_params($criteria)) . '">' . __s('notification') . '</a>';
 
                 $messages['warnings'][] = sprintf(
-                    __('You have defined pending reasons without any respective active %s.'),
+                    __s('You have defined pending reasons without any respective active %s.'),
                     $link
                 );
             }
@@ -615,13 +615,15 @@ class Central extends CommonGLPI
             ];
             foreach ($security_requirements as $requirement) {
                 if (!$requirement->isValidated()) {
-                    $messages['warnings'] = array_merge(($messages['warnings'] ?? []), $requirement->getValidationMessages());
+                    foreach ($requirement->getValidationMessages() as $message) {
+                        $messages['warnings'][] = htmlescape($message);
+                    }
                 }
             }
         }
 
         if ($DB->isSlave() && !$DB->first_connection) {
-            $messages['warnings'][] = __('SQL replica: read only');
+            $messages['warnings'][] = __s('SQL replica: read only');
         }
 
         return $messages;
