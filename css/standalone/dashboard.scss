@@ -562,6 +562,7 @@ $break_tablet: 1400px;
     .grid-guide {
         display: none;
         position: absolute;
+        top: 0;
         bottom: var(--gs-cell-height);
         width: calc(100% + 1px);
         border: 1px solid var(--tblr-body-bg);
