@@ -389,7 +389,7 @@ TWIG, $twig_params);
 
         foreach ($certificates as $data) {
             $certificateID = $data["id"];
-            $link = NOT_AVAILABLE;
+            $link = htmlescape(NOT_AVAILABLE);
 
             if ($certificate->getFromDB($certificateID)) {
                 $link = $certificate->getLink();

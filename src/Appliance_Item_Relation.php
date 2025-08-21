@@ -35,8 +35,6 @@
 
 use Glpi\DBAL\QueryExpression;
 
-use function Safe\json_encode;
-
 class Appliance_Item_Relation extends CommonDBRelation
 {
     public static $itemtype_1 = 'Appliance_Item';
@@ -194,7 +192,7 @@ class Appliance_Item_Relation extends CommonDBRelation
             $itemtype = $row['itemtype'];
             $item = getItemForItemtype($itemtype);
             $item->getFromDB($row['items_id']);
-            $relations[$row['id']] = "<i class='" . $item->getIcon() . "' title='" . htmlescape($item::getTypeName(1)) . "'></i>"
+            $relations[$row['id']] = "<i class='" . htmlescape($item->getIcon()) . "' title='" . htmlescape($item::getTypeName(1)) . "'></i>"
                         . "&nbsp;" . htmlescape($item::getTypeName(1))
                         . "&nbsp;-&nbsp;" . $item->getLink();
         }
@@ -250,9 +248,8 @@ class Appliance_Item_Relation extends CommonDBRelation
     ) {
         if ($canedit) {
             $form_url  = Appliance_Item_Relation::getFormURL();
-            $modal_html = json_encode("
-                <form action='{$form_url}' method='POST'>
-                <p>"
+            $modal_html = "<form action='" . htmlescape($form_url) . "' method='POST'>"
+                . "<p>"
                 . Dropdown::showSelectItemFromItemtypes([
                     'items_id_name'   => 'items_id',
                     'itemtypes'       => Appliance_Item_Relation::getTypes(true),
@@ -262,43 +259,41 @@ class Appliance_Item_Relation extends CommonDBRelation
                     'checkright'     => true,
                     'display'        => false,
                 ])
-                . "</p>
-                <input type='hidden' name='appliances_items_id'>
-                " . Html::submit(_x('button', "Add"), ['name' => 'add']) . "
-            " . Html::closeForm(false));
+                . "</p>"
+                . "<input type='hidden' name='appliances_items_id'>"
+                . Html::submit(_x('button', "Add"), ['name' => 'add'])
+                . Html::closeForm(false);
 
             $crsf_token = Session::getNewCSRFToken();
 
-            $add_button = json_encode(_x('button', "Add an item"));
+            $js = "
+                $(function() {
+                    $(document).on('click', '.add_relation', function() {
+                        var appliances_items_id = $(this).data('appliances-items-id');
 
-            $js = <<<JAVASCRIPT
-         $(function() {
-            $(document).on('click', '.add_relation', function() {
-               var appliances_items_id = $(this).data('appliances-items-id');
+                        glpi_html_dialog({
+                            title: '" . jsescape(_x('button', "Add an item")) . "',
+                            body: '" . jsescape($modal_html) . "',
+                            id: 'add_relation_dialog',
+                            show: function() {
+                                $('#add_relation_dialog input[name=appliances_items_id]').val(appliances_items_id);
+                            },
+                        })
+                    });
 
-               glpi_html_dialog({
-                  title: {$add_button},
-                  body: {$modal_html},
-                  id: 'add_relation_dialog',
-                  show: function() {
-                     $('#add_relation_dialog input[name=appliances_items_id]').val(appliances_items_id);
-                  },
-               })
-            });
+                    $(document).on('click', '.delete_relation', function() {
+                        var relations_id = $(this).data('relations-id');
 
-            $(document).on('click', '.delete_relation', function() {
-               var relations_id = $(this).data('relations-id');
-
-               $.post('{$form_url}', {
-                  'id': relations_id,
-                  '_glpi_csrf_token': '$crsf_token',
-                  'purge': 1,
-               }, function() {
-                  location.reload();
-               })
-            });
-         });
-JAVASCRIPT;
+                        $.post('" . jsescape($form_url) . "', {
+                            'id': relations_id,
+                            '_glpi_csrf_token': '" . jsescape($crsf_token) . "',
+                            'purge': 1,
+                        }, function() {
+                            location.reload();
+                        })
+                    });
+                });
+            ";
             return Html::scriptBlock($js);
         }
 

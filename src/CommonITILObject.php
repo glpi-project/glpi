@@ -6971,7 +6971,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             if ($item->canViewItem()) {
                 $name  = sprintf(
                     __s('%1$s (%2$s)'),
-                    '<a id="' . $name_link_id . '" href="' . htmlescape($item->getLinkURL()) . '">' . $name . '</a><br>',
+                    '<a id="' . htmlescape($name_link_id) . '" href="' . htmlescape($item->getLinkURL()) . '">' . $name . '</a><br>',
                     sprintf(
                         __s('%1$s - %2$s'),
                         $item->numberOfFollowups($showprivate_fup),
@@ -7171,15 +7171,15 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 }
 
                 if (count($items)) {
-                    $entry['planification'] = "<span class='pointer' id='{$itemtype}{$item->fields['id']}planning{$rand}'>" . count($items) . '</span>';
+                    $planification_id = "{$itemtype}{$item->fields['id']}planning{$rand}";
                     $entry['planification'] = sprintf(
-                        __('%1$s %2$s'),
-                        $entry['planification'],
+                        __s('%1$s %2$s'),
+                        "<span class='pointer' id='" . htmlescape($planification_id) . "'>" . count($items) . '</span>',
                         Html::showToolTip(
                             $planned_info,
                             [
                                 'display' => false,
-                                'applyto' => "{$itemtype}{$item->fields['id']}planning{$rand}",
+                                'applyto' => $planification_id,
                             ]
                         )
                     );

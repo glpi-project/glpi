@@ -4181,7 +4181,7 @@ JAVASCRIPT
         } else {
             // $num is 0, so means configured to display nothing
             // or $num == $tot
-            $cpt = "<span class='primary-bg primary-fg count'>$tot</span>";
+            $cpt = "<span class='primary-bg primary-fg count'>" . htmlescape($tot) . "</span>";
         }
         return sprintf(__s('%1$s %2$s'), htmlescape($string), $cpt);
     }
