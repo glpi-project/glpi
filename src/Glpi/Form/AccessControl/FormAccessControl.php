@@ -82,7 +82,7 @@ final class FormAccessControl extends CommonDBChild
             $count = count($form_access_mananger->getActiveAccessControlsForForm($item));
         }
 
-        return self::createTabEntry(self::getTypeName($count), $count);
+        return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $count);
     }
 
     #[Override]

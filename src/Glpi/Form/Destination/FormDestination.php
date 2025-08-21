@@ -88,7 +88,7 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
         }
 
         return self::createTabEntry(
-            self::getTypeName($count),
+            self::getTypeName(Session::getPluralNumber()),
             $count,
             null,
             self::getIcon() // Must be passed manually for some reason

@@ -86,7 +86,7 @@ final class FormTranslation extends ItemTranslation
             }
 
             return self::createTabEntry(
-                self::getTypeName($count),
+                self::getTypeName(Session::getPluralNumber()),
                 $count,
             );
         } elseif ($item instanceof FormTranslation) {
