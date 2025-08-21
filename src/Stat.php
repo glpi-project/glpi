@@ -150,7 +150,7 @@ class Stat extends CommonGLPI
                     $val[] = [
                         'itemtype' => Group::class,
                         'id'     => $line['id'],
-                        'link'   => $line['name'],
+                        'link'   => htmlescape($line['name']),
                     ];
                 }
                 break;
@@ -183,7 +183,7 @@ class Stat extends CommonGLPI
                     $val[] = [
                         'itemtype' => ITILCategory::class,
                         'id'     => $line['id'],
-                        'link'   => $line['category'],
+                        'link'   => htmlescape($line['category']),
                     ];
                 }
                 break;
@@ -216,7 +216,7 @@ class Stat extends CommonGLPI
                     $val[] = [
                         'itemtype' => Location::class,
                         'id'     => $line['id'],
-                        'link'   => $line['location'],
+                        'link'   => htmlescape($line['location']),
                     ];
                 }
                 break;
@@ -230,7 +230,7 @@ class Stat extends CommonGLPI
                 $types = $item::getTypes(); // @phpstan-ignore method.staticCall (phpstan seems to think that method_exist = non static method, which is not true)
                 foreach ($types as $id => $v) {
                     $tmp['id']   = $id;
-                    $tmp['link'] = $v;
+                    $tmp['link'] = htmlescape($v);
                     $val[]       = $tmp;
                 }
                 break;
@@ -326,7 +326,7 @@ class Stat extends CommonGLPI
                         $val[] = [
                             'itemtype' => $item::class,
                             'id'     => $line['id'],
-                            'link'   => $line['designation'],
+                            'link'   => htmlescape($line['designation']),
                         ];
                     }
                 } else {
@@ -356,7 +356,7 @@ class Stat extends CommonGLPI
                         $val[] = [
                             'itemtype' => $type,
                             'id'     => $line['id'],
-                            'link'   => $line[$field],
+                            'link'   => htmlescape($line[$field]),
                         ];
                     }
                 }
@@ -488,10 +488,9 @@ class Stat extends CommonGLPI
                         'itemtype' => $itemtype,
                         'type'     => $type,
                         'value2'   => 0,
-                    ],
-                    '&amp;'
+                    ]
                 );
-                $html_output .= $output::showHeaderItem("<a href='$url'>" . __s('Back') . "</a>", $header_num);
+                $html_output .= $output::showHeaderItem("<a href='" . htmlescape($url) . "'>" . __s('Back') . "</a>", $header_num);
             } else {
                 $html_output .= $output::showHeaderItem("&nbsp;", $header_num);
             }
@@ -525,7 +524,7 @@ class Stat extends CommonGLPI
         $header_num    = 1;
 
         if ($is_html_output) {
-            $html_output .= $output::showHeaderItem($subname, $header_num);
+            $html_output .= $output::showHeaderItem(htmlescape($subname), $header_num);
         } else {
             $headers[] = $subname;
         }
@@ -597,6 +596,7 @@ class Stat extends CommonGLPI
             $item_num = 1;
             $colnum = 0;
             $html_output .= $output::showNewLine($i % 2 === 1);
+            $value_link = $value[$i]['link']; // `link` contains a safe HTML string (built in `Stat::getItems()`)
             if (
                 $is_html_output
                 && str_contains($type, '_tree')
@@ -610,13 +610,12 @@ class Stat extends CommonGLPI
                         'itemtype' => $itemtype,
                         'type'     => $type,
                         'value2'  => $value[$i]['id'],
-                    ],
-                    '&amp;'
+                    ]
                 );
-                $html_output .= $output::showItem("<a href='$url'>" . htmlescape($value[$i]['link']) . "</a>", $item_num, $row_num);
+                $html_output .= $output::showItem("<a href='" . htmlescape($url) . "'>" . $value_link . "</a>", $item_num, $row_num);
             } else {
                 if ($is_html_output) {
-                    $html_output .= $output::showItem($value[$i]['link'], $item_num, $row_num);
+                    $html_output .= $output::showItem($value_link, $item_num, $row_num);
                 } else {
                     $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $value[$i]['link']];
                 }
@@ -633,10 +632,9 @@ class Stat extends CommonGLPI
                             'itemtype' => $itemtype,
                             'type'     => $type,
                             'champ'    => $value2,
-                        ],
-                        '&amp;'
+                        ]
                     );
-                    $link = "<a href='$url' title='" . __s('View graph') . "'>"
+                    $link = "<a href='" . htmlescape($url) . "' title='" . __s('View graph') . "'>"
                       . "<i class='ti ti-graph fs-1'></i>"
                       . "</a>";
                 }
@@ -710,7 +708,7 @@ class Stat extends CommonGLPI
                         $avgsatisfaction = TicketSatisfaction::displaySatisfaction($avgsatisfaction, 0);
                     }
                 } else {
-                    $avgsatisfaction = ($is_html_output ? '&nbsp;' : '');
+                    $avgsatisfaction = '&nbsp;';
                 }
                 if ($is_html_output) {
                     $html_output .= $output::showItem($avgsatisfaction, $item_num, $row_num);
@@ -739,9 +737,7 @@ class Stat extends CommonGLPI
                 } elseif ($output instanceof Csv) {
                     $timedisplay = Html::timestampToCsvString($timedisplay);
                 }
-                if ($is_html_output) {
-                    $timedisplay = htmlescape($timedisplay);
-                }
+                $timedisplay = htmlescape($timedisplay);
 
                 if ($is_html_output) {
                     $html_output .= $output::showItem($timedisplay, $item_num, $row_num);
@@ -774,9 +770,7 @@ class Stat extends CommonGLPI
             } elseif ($output instanceof Csv) {
                 $timedisplay = Html::timestampToCsvString($timedisplay);
             }
-            if ($is_html_output) {
-                $timedisplay = htmlescape($timedisplay);
-            }
+            $timedisplay = htmlescape($timedisplay);
 
             if ($is_html_output) {
                 $html_output .= $output::showItem($timedisplay, $item_num, $row_num);
@@ -808,9 +802,7 @@ class Stat extends CommonGLPI
             } elseif ($output instanceof Csv) {
                 $timedisplay = Html::timestampToCsvString($timedisplay);
             }
-            if ($is_html_output) {
-                $timedisplay = htmlescape($timedisplay);
-            }
+            $timedisplay = htmlescape($timedisplay);
 
             if ($is_html_output) {
                 $html_output .= $output::showItem($timedisplay, $item_num, $row_num);
@@ -860,9 +852,7 @@ class Stat extends CommonGLPI
             } elseif ($output instanceof Csv) {
                 $timedisplay = Html::timestampToCsvString($timedisplay);
             }
-            if ($is_html_output) {
-                $timedisplay = htmlescape($timedisplay);
-            }
+            $timedisplay = htmlescape($timedisplay);
 
             if ($is_html_output) {
                 $html_output .= $output::showItem($timedisplay, $item_num, $row_num);
@@ -877,9 +867,7 @@ class Stat extends CommonGLPI
             } elseif ($output instanceof Csv) {
                 $timedisplay = Html::timestampToCsvString($timedisplay);
             }
-            if ($is_html_output) {
-                $timedisplay = htmlescape($timedisplay);
-            }
+            $timedisplay = htmlescape($timedisplay);
 
             if ($is_html_output) {
                 $html_output .= $output::showItem($timedisplay, $item_num, $row_num);
@@ -1662,14 +1650,11 @@ class Stat extends CommonGLPI
             echo $output::showHeader($end_display - $start + 1, 2, 1);
             $header_num = 1;
             echo $output::showNewLine();
-            $item_label = _n('Associated element', 'Associated elements', $numrows);
-            echo $output::showHeaderItem($is_html_output ? htmlescape($item_label) : $item_label, $header_num);
+            echo $output::showHeaderItem(_sn('Associated element', 'Associated elements', $numrows), $header_num);
             if ($view_entities) {
-                $entity_label = Entity::getTypeName(1);
-                echo $output::showHeaderItem($is_html_output ? htmlescape($entity_label) : $entity_label, $header_num);
+                echo $output::showHeaderItem(htmlescape(Entity::getTypeName(1)), $header_num);
             }
-            $nb_tickets_label = __('Number of tickets');
-            echo $output::showHeaderItem($is_html_output ? htmlescape($nb_tickets_label) : $nb_tickets_label, $header_num);
+            echo $output::showHeaderItem(__s('Number of tickets'), $header_num);
             echo $output::showEndLine(false);
 
             $i = $start;
@@ -1682,9 +1667,7 @@ class Stat extends CommonGLPI
                 $item_num = 1;
                 // Get data and increment loop variables
                 echo $output::showNewLine($i % 2 === 1);
-                $link = $is_html_output
-                    ? sprintf(__s('%1$s - %2$s'), htmlescape($data['itemtype']::getTypeName()), $data['link'])
-                    : sprintf(__('%1$s - %2$s'), $data['itemtype']::getTypeName(), $data['link']);
+                $link = sprintf(__s('%1$s - %2$s'), htmlescape($data['itemtype']::getTypeName()), $data['link']);
                 echo $output::showItem(
                     $link,
                     $item_num,
@@ -1694,7 +1677,7 @@ class Stat extends CommonGLPI
                 );
                 if ($view_entities) {
                     echo $output::showItem(
-                        $is_html_output ? htmlescape($data['entity_name']) : $data['entity_name'],
+                        htmlescape($data['entity_name']),
                         $item_num,
                         $i - $start + 1,
                         "class='text-center'" . " " . ($data['is_deleted'] ? " class='deleted' "
@@ -1702,7 +1685,7 @@ class Stat extends CommonGLPI
                     );
                 }
                 echo $output::showItem(
-                    $is_html_output ? htmlescape($data["NB"]) : $data["NB"],
+                    htmlescape($data["NB"]),
                     $item_num,
                     $i - $start + 1,
                     "class='center'" . " " . ($data['is_deleted'] ? " class='deleted' "

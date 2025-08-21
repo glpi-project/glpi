@@ -83,7 +83,10 @@ abstract class AbstractSearchOutput
      * @param string        $extraparam  Extra parameters for display (default '')
      *
      * @return string HTML to display
-     **/
+     *
+     * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
+     * @psalm-taint-sink html $value (string will be added to HTML source)
+     */
     abstract public static function showItem($value, &$num, $row, $extraparam = ''): string;
 
 
@@ -130,7 +133,10 @@ abstract class AbstractSearchOutput
      * @param string           $options  Options to add (default '')
      *
      * @return string HTML to display
-     **/
+     *
+     * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
+     * @psalm-taint-sink html $value (string will be added to HTML source)
+     */
     abstract public static function showHeaderItem($value, &$num, $linkto = "", $issort = 0, $order = "", $options = ""): string;
 
     /**
