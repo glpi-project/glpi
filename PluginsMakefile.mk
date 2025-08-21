@@ -9,8 +9,8 @@ SHELL=bash
 PLUGIN_DIR = $(shell pwd | xargs basename)
 
 # Check if composer and npm are used
-USE_COMPOSER = $(shell test -f composer.json)
-USE_NPM = $(shell test -f package.json)
+USE_COMPOSER = $(shell test -f composer.json && echo true || echo false)
+USE_NPM = $(shell test -f package.json && echo true || echo false)
 
 # Docker commands
 COMPOSE = docker compose
