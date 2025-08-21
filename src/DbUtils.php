@@ -1812,7 +1812,7 @@ final class DbUtils
         return sprintf(
             '<a title="%s" href="%s">%s</a>',
             htmlescape($username),
-            User::getFormURLWithID($id),
+            htmlescape(User::getFormURLWithID($id)),
             htmlescape($username)
         );
     }

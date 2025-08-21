@@ -143,7 +143,7 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
             }
 
             $headers_line .= static::showHeaderItem(
-                $name,
+                \htmlescape($name),
                 $header_num,
                 '',
                 (!$val['meta']
@@ -155,7 +155,7 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
         // Add specific column Header
         if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
             $headers_line .= static::showHeaderItem(
-                __('Item type'),
+                __s('Item type'),
                 $header_num
             );
         }
@@ -187,7 +187,7 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
                 $colkey = "{$col['itemtype']}_{$col['id']}";
                 if (!$col['meta']) {
                     echo static::showItem(
-                        $row[$colkey]['displayname'],
+                        $row[$colkey]['displayname'], // `displayname` is provided by `giveItem()` and expected to be a safe HTML string
                         $item_num,
                         $row_num,
                         static::displayConfigItem(
@@ -198,7 +198,7 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
                     );
                 } else { // META case
                     echo static::showItem(
-                        $row[$colkey]['displayname'],
+                        $row[$colkey]['displayname'], // `displayname` is provided by `giveItem()` and expected to be a safe HTML string
                         $item_num,
                         $row_num
                     );
@@ -212,7 +212,7 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
                     }
                 }
                 echo static::showItem(
-                    $typenames[$row["TYPE"]],
+                    htmlescape($typenames[$row["TYPE"]]),
                     $item_num,
                     $row_num
                 );

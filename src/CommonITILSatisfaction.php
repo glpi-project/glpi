@@ -246,11 +246,11 @@ abstract class CommonITILSatisfaction extends CommonDBTM
      **/
     public static function displaySatisfaction($value, $entities_id)
     {
-        if (is_null($value)) {
+        if (!is_numeric($value)) {
             return "";
         }
 
-        $max_rate = Entity::getUsedConfig(
+        $max_rate = (int) Entity::getUsedConfig(
             'inquest_config',
             $entities_id,
             'inquest_max_rate' . static::getConfigSufix()
