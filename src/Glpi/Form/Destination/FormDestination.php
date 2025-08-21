@@ -48,6 +48,7 @@ use LogicException;
 use Override;
 use ReflectionClass;
 use RuntimeException;
+use Session;
 
 use function Safe\json_decode;
 use function Safe\json_encode;

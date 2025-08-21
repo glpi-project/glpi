@@ -40,6 +40,7 @@ use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\ItemTranslation\ItemTranslation;
 use Override;
+use Session;
 
 final class FormTranslation extends ItemTranslation
 {

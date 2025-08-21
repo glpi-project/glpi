@@ -46,6 +46,7 @@ use Glpi\Form\Form;
 use InvalidArgumentException;
 use Override;
 use ReflectionClass;
+use Session;
 
 use function Safe\json_decode;
 use function Safe\json_encode;
