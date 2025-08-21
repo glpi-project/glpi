@@ -42,6 +42,11 @@ use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
 
 final class TimeConditionHandlerTest extends AbstractConditionHandler
 {
+    public static function getConditionHandler(): ConditionHandlerInterface
+    {
+        return new TimeConditionHandler();
+    }
+
     #[Override]
     public static function conditionHandlerProvider(): iterable
     {

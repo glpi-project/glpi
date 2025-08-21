@@ -46,6 +46,11 @@ use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
 
 final class ItemConditionHandlerTest extends AbstractConditionHandler
 {
+    public static function getConditionHandler(): ConditionHandlerInterface
+    {
+        return new ItemConditionHandler('Computer');
+    }
+
     private static function getDefaultExtraDataConfig(string $question_type): QuestionTypeItemExtraDataConfig
     {
         switch ($question_type) {
@@ -109,56 +114,5 @@ final class ItemConditionHandlerTest extends AbstractConditionHandler
                 'question_extra_data' => $extra_data,
             ];
         }
-
-        $extra_data = self::getDefaultExtraDataConfig(QuestionTypeItem::class);
-        $type = QuestionTypeItem::class;
-
-        // Test item answers with the CONTAINS operator
-        yield "Contains check - case 1 for $type" => [
-            'question_type'       => $type,
-            'condition_operator'  => ValueOperator::CONTAINS,
-            'condition_value'     => '_test_pc0',
-            'submitted_answer'    => [
-                'itemtype' => Computer::class,
-                'items_id' => getItemByTypeName(Computer::class, "_test_pc01", true),
-            ],
-            'expected_result'     => true,
-            'question_extra_data' => $extra_data,
-        ];
-        yield "Contains check - case 2 for $type" => [
-            'question_type'       => $type,
-            'condition_operator'  => ValueOperator::EQUALS,
-            'condition_value'     => '_test_pc02',
-            'submitted_answer'    => [
-                'itemtype' => Computer::class,
-                'items_id' => getItemByTypeName(Computer::class, "_test_pc01", true),
-            ],
-            'expected_result'     => false,
-            'question_extra_data' => $extra_data,
-        ];
-
-        // Test item answers with the NOT_CONTAINS operator
-        yield "Not contains check - case 1 for $type" => [
-            'question_type'       => $type,
-            'condition_operator'  => ValueOperator::NOT_CONTAINS,
-            'condition_value'     => '_test_pc0',
-            'submitted_answer'    => [
-                'itemtype' => Computer::class,
-                'items_id' => getItemByTypeName(Computer::class, "_test_pc01", true),
-            ],
-            'expected_result'     => false,
-            'question_extra_data' => $extra_data,
-        ];
-        yield "Not contains check - case 2 for $type" => [
-            'question_type'       => $type,
-            'condition_operator'  => ValueOperator::NOT_CONTAINS,
-            'condition_value'     => '_test_pc02',
-            'submitted_answer'    => [
-                'itemtype' => Computer::class,
-                'items_id' => getItemByTypeName(Computer::class, "_test_pc01", true),
-            ],
-            'expected_result'     => true,
-            'question_extra_data' => $extra_data,
-        ];
     }
 }

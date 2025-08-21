@@ -42,6 +42,11 @@ use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
 
 final class StringConditionHandlerTest extends AbstractConditionHandler
 {
+    public static function getConditionHandler(): ConditionHandlerInterface
+    {
+        return new StringConditionHandler();
+    }
+
     #[Override]
     public static function conditionHandlerProvider(): iterable
     {
@@ -199,49 +204,109 @@ final class StringConditionHandlerTest extends AbstractConditionHandler
                 'expected_result'    => false,
             ];
 
-            // Test string answers with the MATCH_REGEX operator
-            yield "Match regex check - case 1 for $type" => [
+            // Test string answers with the LENGTH_GREATER_THAN operator
+            yield "Length greater than check - case 1 for $type" => [
                 'question_type'      => $type,
-                'condition_operator' => ValueOperator::MATCH_REGEX,
-                'condition_value'    => "/[09]+/",
-                'submitted_answer'   => "Invalid format",
+                'condition_operator' => ValueOperator::LENGTH_GREATER_THAN,
+                'condition_value'    => 10,
+                'submitted_answer'   => "short",
                 'expected_result'    => false,
             ];
-            yield "Match regex check - case 2 for $type" => [
+            yield "Length greater than check - case 2 for $type" => [
                 'question_type'      => $type,
-                'condition_operator' => ValueOperator::MATCH_REGEX,
-                'condition_value'    => "/[09]+/",
-                'submitted_answer'   => "0124511",
+                'condition_operator' => ValueOperator::LENGTH_GREATER_THAN,
+                'condition_value'    => 10,
+                'submitted_answer'   => "longer than ten characters",
                 'expected_result'    => true,
             ];
-            yield "Match regex check - case 3 for $type" => [
+            yield "Length greater than check - case 3 for $type" => [
                 'question_type'      => $type,
-                'condition_operator' => ValueOperator::MATCH_REGEX,
-                'condition_value'    => "not a regex", // Invalid regex should not trigger errors
-                'submitted_answer'   => "answer",
+                'condition_operator' => ValueOperator::LENGTH_GREATER_THAN,
+                'condition_value'    => 10,
+                'submitted_answer'   => "exactlyten",
                 'expected_result'    => false,
             ];
 
-            // Test string answers with the NOT_MATCH_REGEX operator
-            yield "Not match regex check - case 1 for $type" => [
+            // Test string answers with the LENGTH_GREATER_THAN_OR_EQUALS operator
+            yield "Length greater than or equals check - case 1 for $type" => [
                 'question_type'      => $type,
-                'condition_operator' => ValueOperator::NOT_MATCH_REGEX,
-                'condition_value'    => "/[09]+/",
-                'submitted_answer'   => "Invalid format",
-                'expected_result'    => true,
-            ];
-            yield "Not match regex check - case 2 for $type" => [
-                'question_type'      => $type,
-                'condition_operator' => ValueOperator::NOT_MATCH_REGEX,
-                'condition_value'    => "/[09]+/",
-                'submitted_answer'   => "0124511",
+                'condition_operator' => ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS,
+                'condition_value'    => 10,
+                'submitted_answer'   => "short",
                 'expected_result'    => false,
             ];
-            yield "Not match regex check - case 3 for $type" => [
+            yield "Length greater than or equals check - case 2 for $type" => [
                 'question_type'      => $type,
-                'condition_operator' => ValueOperator::NOT_MATCH_REGEX,
-                'condition_value'    => "not a regex", // Invalid regex should not trigger errors
-                'submitted_answer'   => "answer",
+                'condition_operator' => ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS,
+                'condition_value'    => 10,
+                'submitted_answer'   => "longer than ten characters",
+                'expected_result'    => true,
+            ];
+            yield "Length greater than or equals check - case 3 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS,
+                'condition_value'    => 10,
+                'submitted_answer'   => "exactlyten",
+                'expected_result'    => true,
+            ];
+            yield "Length greater than or equals check - case 4 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS,
+                'condition_value'    => 10,
+                'submitted_answer'   => "nine",
+                'expected_result'    => false,
+            ];
+
+            // Test string answers with the LENGTH_LESS_THAN operator
+            yield "Length less than check - case 1 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::LENGTH_LESS_THAN,
+                'condition_value'    => 10,
+                'submitted_answer'   => "longer than ten characters",
+                'expected_result'    => false,
+            ];
+            yield "Length less than check - case 2 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::LENGTH_LESS_THAN,
+                'condition_value'    => 10,
+                'submitted_answer'   => "short",
+                'expected_result'    => true,
+            ];
+            yield "Length less than check - case 3 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::LENGTH_LESS_THAN,
+                'condition_value'    => 10,
+                'submitted_answer'   => "exactlyten",
+                'expected_result'    => false,
+            ];
+
+            // Test string answers with the LENGTH_LESS_THAN_OR_EQUALS operator
+            yield "Length less than or equals check - case 1 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::LENGTH_LESS_THAN_OR_EQUALS,
+                'condition_value'    => 10,
+                'submitted_answer'   => "longer than ten characters",
+                'expected_result'    => false,
+            ];
+            yield "Length less than or equals check - case 2 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::LENGTH_LESS_THAN_OR_EQUALS,
+                'condition_value'    => 10,
+                'submitted_answer'   => "short",
+                'expected_result'    => true,
+            ];
+            yield "Length less than or equals check - case 3 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::LENGTH_LESS_THAN_OR_EQUALS,
+                'condition_value'    => 10,
+                'submitted_answer'   => "exactlyten",
+                'expected_result'    => true,
+            ];
+            yield "Length less than or equals check - case 4 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::LENGTH_LESS_THAN_OR_EQUALS,
+                'condition_value'    => 10,
+                'submitted_answer'   => "nine",
                 'expected_result'    => true,
             ];
         }

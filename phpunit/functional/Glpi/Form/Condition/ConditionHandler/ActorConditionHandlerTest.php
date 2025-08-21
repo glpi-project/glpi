@@ -44,6 +44,14 @@ use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
 
 final class ActorConditionHandlerTest extends AbstractConditionHandler
 {
+    public static function getConditionHandler(): ConditionHandlerInterface
+    {
+        return new ActorConditionHandler(
+            new QuestionTypeRequester(),
+            new QuestionTypeActorsExtraDataConfig()
+        );
+    }
+
     public static function conditionHandlerProvider(): iterable
     {
         /** @var class-string<AbstractQuestionTypeActors>[] $types */

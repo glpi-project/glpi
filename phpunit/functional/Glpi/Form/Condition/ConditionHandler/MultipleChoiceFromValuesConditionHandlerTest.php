@@ -44,6 +44,11 @@ use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
 
 final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditionHandler
 {
+    public static function getConditionHandler(): ConditionHandlerInterface
+    {
+        return new MultipleChoiceFromValuesConditionHandler(['opt']);
+    }
+
     #[Override]
     public static function conditionHandlerProvider(): iterable
     {

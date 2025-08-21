@@ -37,6 +37,7 @@ namespace Glpi\Form\QuestionType;
 
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Glpi\Form\Condition\ConditionHandler\RegexConditionHandler;
 use Glpi\Form\Condition\ConditionHandler\VisibilityConditionHandler;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
@@ -245,6 +246,9 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     public function getConditionHandlers(
         ?JsonFieldInterface $question_config
     ): array {
-        return [new VisibilityConditionHandler()];
+        return [
+            new VisibilityConditionHandler(),
+            new RegexConditionHandler($this, $question_config),
+        ];
     }
 }

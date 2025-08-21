@@ -42,6 +42,11 @@ use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
 
 final class UrgencyConditionHandlerTest extends AbstractConditionHandler
 {
+    public static function getConditionHandler(): ConditionHandlerInterface
+    {
+        return new UrgencyConditionHandler();
+    }
+
     #[Override]
     public static function conditionHandlerProvider(): iterable
     {

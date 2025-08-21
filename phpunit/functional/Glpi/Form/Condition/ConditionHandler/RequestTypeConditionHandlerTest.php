@@ -42,6 +42,11 @@ use Ticket;
 
 final class RequestTypeConditionHandlerTest extends AbstractConditionHandler
 {
+    public static function getConditionHandler(): ConditionHandlerInterface
+    {
+        return new RequestTypeConditionHandler();
+    }
+
     #[Override]
     public static function conditionHandlerProvider(): iterable
     {
@@ -75,6 +80,36 @@ final class RequestTypeConditionHandlerTest extends AbstractConditionHandler
             'condition_value'    => Ticket::DEMAND_TYPE,
             'submitted_answer'   => Ticket::DEMAND_TYPE,
             'expected_result'    => true,
+        ];
+
+        // Test request type answers with the NOT_EQUALS operator
+        yield "Not equals check - case 1 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_EQUALS,
+            'condition_value'    => Ticket::INCIDENT_TYPE,
+            'submitted_answer'   => Ticket::DEMAND_TYPE,
+            'expected_result'    => true,
+        ];
+        yield "Not equals check - case 2 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_EQUALS,
+            'condition_value'    => Ticket::INCIDENT_TYPE,
+            'submitted_answer'   => Ticket::INCIDENT_TYPE,
+            'expected_result'    => false,
+        ];
+        yield "Not equals check - case 3 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_EQUALS,
+            'condition_value'    => Ticket::DEMAND_TYPE,
+            'submitted_answer'   => Ticket::INCIDENT_TYPE,
+            'expected_result'    => true,
+        ];
+        yield "Not equals check - case 4 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_EQUALS,
+            'condition_value'    => Ticket::DEMAND_TYPE,
+            'submitted_answer'   => Ticket::DEMAND_TYPE,
+            'expected_result'    => false,
         ];
     }
 }

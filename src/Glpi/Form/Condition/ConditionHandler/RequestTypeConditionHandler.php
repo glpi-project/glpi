@@ -44,7 +44,10 @@ class RequestTypeConditionHandler implements ConditionHandlerInterface
     #[Override]
     public function getSupportedValueOperators(): array
     {
-        return [ValueOperator::EQUALS];
+        return [
+            ValueOperator::EQUALS,
+            ValueOperator::NOT_EQUALS,
+        ];
     }
 
     #[Override]
@@ -70,7 +73,8 @@ class RequestTypeConditionHandler implements ConditionHandlerInterface
         $b = (int) $b;
 
         return match ($operator) {
-            ValueOperator::EQUALS => $a === $b,
+            ValueOperator::EQUALS     => $a === $b,
+            ValueOperator::NOT_EQUALS => $a !== $b,
 
             // Unsupported operators
             default => false,
