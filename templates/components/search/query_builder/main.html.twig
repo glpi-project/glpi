@@ -120,7 +120,7 @@
             <span class="ms-auto {{ action_count > 1 ? 'btn-group' : '' }}">
                 {% if (showaction) %}
                 {# Display submit button #}
-                <button class="btn {{ p['is_criteria_filter'] ? 'btn-ghost-secondary' : 'btn-sm btn-primary' }}" type="button" name="{{ p['actionname'] }}">
+                <button class="btn {{ p['is_criteria_filter'] ? 'btn-ghost-secondary' : 'btn-sm btn-primary' }}" type="submit" name="{{ p['actionname'] }}">
                     <i class="ti ti-search"></i>
                     <span class="d-none d-sm-block">{{ p['actionvalue'] }}</span>
                 </button>
