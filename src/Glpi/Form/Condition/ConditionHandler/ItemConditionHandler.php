@@ -34,16 +34,19 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
+use CommonDBTM;
 use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
+use Glpi\Form\Migration\ConditionHandlerDataConverterInterface;
 use Override;
 
 use function Safe\json_decode;
 
-final class ItemConditionHandler implements ConditionHandlerInterface
+final class ItemConditionHandler implements ConditionHandlerInterface, ConditionHandlerDataConverterInterface
 {
     use ArrayConditionHandlerTrait;
 
+    /** @param class-string<CommonDBTM> $itemtype */
     public function __construct(
         private string $itemtype,
     ) {}
@@ -85,5 +88,24 @@ final class ItemConditionHandler implements ConditionHandlerInterface
         }
 
         return $this->applyArrayValueOperator($a, $operator, $b);
+    }
+
+    #[Override]
+    public function convertConditionValue(string $value): int
+    {
+        $item = getItemForItemtype($this->itemtype);
+        $nameFields = [$item->getNameField()];
+        if ($item->isField($item->getCompleteNameField())) {
+            $nameFields[] = $item->getCompleteNameField();
+        }
+
+        foreach ($nameFields as $nameField) {
+            // Retrieve item by name
+            if ($item->getFromDBByCrit([$nameField => $value])) {
+                return $item->getID();
+            }
+        }
+
+        return 0;
     }
 }

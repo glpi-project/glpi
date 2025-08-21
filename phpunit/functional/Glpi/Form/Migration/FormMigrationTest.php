@@ -1480,6 +1480,48 @@ final class FormMigrationTest extends DbTestCase
             ],
             'values' => '["First option","Second option","Third option"]',
         ];
+
+        yield 'QuestionTypeItem - Visible if' => [
+            'field_type' => 'glpiselect',
+            'itemtype'   => 'Computer',
+            'show_rule'  => 2,
+            'conditions' => [
+                [
+                    'show_condition' => 1,
+                    'show_value'     => '_test_pc01',
+                    'show_logic'     => 1,
+                ],
+            ],
+            'expected_visibility_strategy' => VisibilityStrategy::VISIBLE_IF,
+            'expected_conditions'          => [
+                [
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => getItemByTypeName('Computer', '_test_pc01', true),
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
+        ];
+
+        yield 'QuestionTypeItemDropdown - Visible if' => [
+            'field_type' => 'dropdown',
+            'itemtype'   => 'Location',
+            'show_rule'  => 2,
+            'conditions' => [
+                [
+                    'show_condition' => 1,
+                    'show_value'     => '_location01 > _sublocation01',
+                    'show_logic'     => 1,
+                ],
+            ],
+            'expected_visibility_strategy' => VisibilityStrategy::VISIBLE_IF,
+            'expected_conditions'          => [
+                [
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => getItemByTypeName('Location', '_sublocation01', true),
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
+        ];
     }
 
     #[DataProvider('provideFormMigrationVisibilityConditionsForQuestions')]
@@ -1489,7 +1531,8 @@ final class FormMigrationTest extends DbTestCase
         array $conditions,
         VisibilityStrategy $expected_visibility_strategy,
         array $expected_conditions = [],
-        ?string $values = null
+        ?string $values = null,
+        ?string $itemtype = null,
     ): void {
         global $DB;
 
@@ -1520,6 +1563,7 @@ final class FormMigrationTest extends DbTestCase
                 'plugin_formcreator_sections_id' => $section_id,
                 'fieldtype'                      => $field_type,
                 'values'                         => $values,
+                'itemtype'                       => $itemtype ?? '',
                 'row'                            => 0,
                 'col'                            => 0,
             ]
