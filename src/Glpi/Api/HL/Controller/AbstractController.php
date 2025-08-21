@@ -295,9 +295,10 @@ abstract class AbstractController
     }
 
     /**
+     * @param array|string|null $detail
      * @return Response
      */
-    public static function getAccessDeniedErrorResponse(array|null|string $detail = null): Response
+    public static function getAccessDeniedErrorResponse(array|string|null $detail = null): Response
     {
         return new JSONResponse(
             self::getErrorResponseBody(
