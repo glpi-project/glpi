@@ -853,9 +853,9 @@ abstract class CommonDBChild extends CommonDBConnexity
         $result = '';
 
         if ($canedit) {
-            $lower_name         = preg_replace('/[^\w]/g', '_', strtolower(static::class));
+            $lower_name         = preg_replace('/[^\w]/', '_', strtolower(static::class));
             $child_count_js_var = 'nb' . $lower_name . 's';
-            $div_id             = "add_" . $lower_name . "_to_" . preg_replace('/[^\w]/g', '_', strtolower($item::class)) . "_" . $items_id;
+            $div_id             = "add_" . $lower_name . "_to_" . preg_replace('/[^\w]/', '_', strtolower($item::class)) . "_" . $items_id;
             $add_label          = htmlescape(sprintf(__('Add a new %s'), static::getTypeName()));
 
             // Beware : -1 is for the first element added ...
@@ -912,8 +912,8 @@ abstract class CommonDBChild extends CommonDBConnexity
             }
         }
 
-        $lower_name = preg_replace('/[^\w]/g', '_', strtolower(static::class));
-        $div_id     = "add_" . $lower_name . "_to_" . preg_replace('/[^\w]/g', '_', strtolower($item::class)) . "_" . $items_id;
+        $lower_name = preg_replace('/[^\w]/', '_', strtolower(static::class));
+        $div_id     = "add_" . $lower_name . "_to_" . preg_replace('/[^\w]/', '_', strtolower($item::class)) . "_" . $items_id;
 
         $query = [
             'FROM'   => static::getTable(),
