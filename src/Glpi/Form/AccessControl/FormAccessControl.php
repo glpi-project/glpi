@@ -58,7 +58,7 @@ final class FormAccessControl extends CommonDBChild
     #[Override]
     public static function getTypeName($nb = 0)
     {
-        return __('Access control');
+        return _n('Access control', 'Access controls', $nb);
     }
 
     #[Override]
@@ -82,7 +82,7 @@ final class FormAccessControl extends CommonDBChild
             $count = count($form_access_mananger->getActiveAccessControlsForForm($item));
         }
 
-        return self::createTabEntry(self::getTypeName(), $count);
+        return self::createTabEntry(self::getTypeName($count), $count);
     }
 
     #[Override]
