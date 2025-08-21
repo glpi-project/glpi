@@ -1522,6 +1522,34 @@ final class FormMigrationTest extends DbTestCase
                 ],
             ],
         ];
+
+        yield 'QuestionTypeDropdown - Visible if with an invalid value operator' => [
+            'field_type' => 'select',
+            'show_rule'  => 2,
+            'conditions' => [
+                [
+                    'show_condition' => 56, // Invalid value operator, condition should be ignored
+                    'show_value'     => 'Test item',
+                    'show_logic'     => 1,
+                ],
+            ],
+            'expected_visibility_strategy' => VisibilityStrategy::ALWAYS_VISIBLE,
+            'expected_conditions'          => [],
+        ];
+
+        yield 'QuestionTypeDropdown - Visible if with a value operator not supported by the question type' => [
+            'field_type' => 'select',
+            'show_rule'  => 2,
+            'conditions' => [
+                [
+                    'show_condition' => 3, // Less than operator, not supported by item type
+                    'show_value'     => 'Test item',
+                    'show_logic'     => 1,
+                ],
+            ],
+            'expected_visibility_strategy' => VisibilityStrategy::ALWAYS_VISIBLE,
+            'expected_conditions'          => [],
+        ];
     }
 
     #[DataProvider('provideFormMigrationVisibilityConditionsForQuestions')]
@@ -2948,5 +2976,85 @@ final class FormMigrationTest extends DbTestCase
                 "Entity {$c['completename']} has incorrect show_tickets_properties_on_helpdesk value"
             );
         }
+    }
+
+    public function testFormMigrationQuestionWithUnsupportedValueOperator(): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        // Arrange: insert a form with a question that has an unsupported value operator
+        $DB->insert('glpi_plugin_formcreator_forms', [
+            'name' => 'Form with unsupported value operator',
+        ]);
+        $formId = $DB->insertId();
+
+        $DB->insert('glpi_plugin_formcreator_sections', [
+            'plugin_formcreator_forms_id' => $formId,
+        ]);
+        $sectionId = $DB->insertId();
+
+        // Insert target question
+        $DB->insert('glpi_plugin_formcreator_questions', [
+            'name' => 'Target question with unsupported value operator',
+            'fieldtype' => 'select',
+            'plugin_formcreator_sections_id' => $sectionId,
+        ]);
+        $targetQuestionId = $DB->insertId();
+
+        // Insert source question
+        $DB->insert('glpi_plugin_formcreator_questions', [
+            'name' => 'Source question with unsupported value operator',
+            'fieldtype' => 'text',
+            'plugin_formcreator_sections_id' => $sectionId,
+            'show_rule' => 2, // Visible if condition is met
+        ]);
+        $sourceQuestionId = $DB->insertId();
+
+        // Insert a condition with a supported value operator
+        $DB->insert('glpi_plugin_formcreator_conditions', [
+            'itemtype' => 'PluginFormcreatorQuestion',
+            'items_id' => $sourceQuestionId,
+            'plugin_formcreator_questions_id' => $targetQuestionId,
+            'show_condition' => 1, // Equals condition
+            'show_value' => 'Test',
+            'show_logic' => 1, // AND logic
+        ]);
+
+        // Insert a condition with an unsupported value operator
+        $DB->insert('glpi_plugin_formcreator_conditions', [
+            'itemtype' => 'PluginFormcreatorQuestion',
+            'items_id' => $sourceQuestionId,
+            'plugin_formcreator_questions_id' => $targetQuestionId,
+            'show_condition' => 9, // Regex condition (unsupported)
+            'show_value' => 'Test',
+            'show_logic' => 1, // AND logic
+        ]);
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $result = $migration->execute();
+
+        // Assert: make sure the migration was completed
+        $this->assertTrue($result->isFullyProcessed());
+
+        // Assert: verify that the source question has been migrated correctly without the unsupported condition
+        /** @var Question $sourceQuestion */
+        $sourceQuestion = getItemByTypeName(Question::class, 'Source question with unsupported value operator');
+        $this->assertNotFalse($sourceQuestion);
+        $this->assertCount(1, $sourceQuestion->getConfiguredConditionsData());
+
+        // Assert: verify a warning message was added for the unsupported value operator
+        $warnings = array_filter(
+            $result->getMessages(),
+            fn($m) => $m['type'] == MessageType::Warning
+        );
+        $warnings = array_column($warnings, "message");
+        $this->assertContains(
+            'A visibility condition used in "Question" "Source question with unsupported value operator" (Form "Form with unsupported value operator") with value operator "Match regular expression" is not supported by the question type. It will be ignored.',
+            $warnings,
+        );
     }
 }
