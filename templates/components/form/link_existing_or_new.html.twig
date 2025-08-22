@@ -35,7 +35,7 @@
 {% set rand = rand|default(random()) %}
 <div class="firstbloc">
    <form id="{{ link_itemtype|lower ~ "_form" ~ rand }}" name="{{ link_itemtype|lower ~ "_form" ~ rand }}" method="post" action="{{ link_itemtype|itemtype_form_path }}">
-      {{ fields.largeTitle(__("Add a %s")|format(target_itemtype|itemtype_name)) }}
+      {{ form_label }}
       {{ fields.hiddenField(source_itemtype|itemtype_foreign_key, source_items_id, '', {
          no_label: true,
       }) }}
@@ -85,7 +85,7 @@
                {% set create_url = create_link['url'] is defined ? create_link['url'] : target_form_path %}
                <a href="{{ create_url }}" class="btn btn-primary">
                   <i class="ti ti-plus"></i>
-                  <span>{{ __("Create a %1$s from this %2$s")|format(target_itemtype|itemtype_name, source_itemtype|itemtype_name) }}</span>
+                  <span>{{ button_label }}</span>
                </a>
             {% endif %}
          </div>

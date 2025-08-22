@@ -227,6 +227,8 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
                     'displaywith' => ['id'],
                 ],
                 'create_link' => false,
+                'form_label' => __('Add a ticket'),
+                'button_label' => __('Create a ticket from this problem'),
             ]);
         }
 
@@ -302,6 +304,8 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
                     'displaywith' => ['id'],
                 ],
                 'create_link' => Session::haveRight(Problem::$rightname, CREATE),
+                'form_label' => __('Add a problem'),
+                'button_label' => __('Create a problem from this ticket'),
             ]);
         }
 
