@@ -267,7 +267,7 @@ class Request extends AbstractRequest
             $this->addError($hook_response['errors'], 400);
         } else {
             //nothing expected happens; this is an error
-            $this->addError("Query '" . $this->query . "' is not supported.", 400);
+            $this->addError("Query '" . $this->query . "' is not supported.", 501);
         }
     }
 
