@@ -1391,12 +1391,10 @@ class FormMigration extends AbstractPluginMigration
 
                 $condition_handler = current(array_filter(
                     $condition_handlers,
-                    function (ConditionHandlerInterface $handler) use ($value_operator) {
-                        return in_array(
-                            $value_operator,
-                            $handler->getSupportedValueOperators()
-                        );
-                    }
+                    fn(ConditionHandlerInterface $handler) => in_array(
+                        $value_operator,
+                        $handler->getSupportedValueOperators()
+                    )
                 ));
 
                 // If no condition handler is found for the value operator, we skip this condition

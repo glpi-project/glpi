@@ -3028,7 +3028,7 @@ final class FormMigrationTest extends DbTestCase
             'itemtype' => 'PluginFormcreatorQuestion',
             'items_id' => $sourceQuestionId,
             'plugin_formcreator_questions_id' => $targetQuestionId,
-            'show_condition' => 9, // Regex condition (unsupported)
+            'show_condition' => 4, // Greater than condition (unsupported)
             'show_value' => 'Test',
             'show_logic' => 1, // AND logic
         ]);
@@ -3053,7 +3053,7 @@ final class FormMigrationTest extends DbTestCase
         );
         $warnings = array_column($warnings, "message");
         $this->assertContains(
-            'A visibility condition used in "Question" "Source question with unsupported value operator" (Form "Form with unsupported value operator") with value operator "Match regular expression" is not supported by the question type. It will be ignored.',
+            'A visibility condition used in "Question" "Source question with unsupported value operator" (Form "Form with unsupported value operator") with value operator "Is greater than" is not supported by the question type. It will be ignored.',
             $warnings,
         );
     }
