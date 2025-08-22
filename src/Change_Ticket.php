@@ -267,6 +267,8 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
                     'displaywith' => ['id'],
                 ],
                 'create_link' => false,
+                'form_label' => __('Add a change'),
+                'button_label' => __('Create a change from this ticket'),
             ]);
         }
 
@@ -367,6 +369,8 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
                     'condition'   => Change::getOpenCriteria(),
                 ],
                 'create_link' => Session::haveRight(Change::$rightname, CREATE),
+                'form_label' => __('Add a change'),
+                'button_label' => __('Create a change from this ticket'),
             ]);
         }
 

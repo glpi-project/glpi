@@ -178,6 +178,8 @@ class ProjectTask_Ticket extends CommonDBRelation
                     'condition'   => $condition,
                 ],
                 'create_link' => Session::haveRight(Ticket::$rightname, CREATE),
+                'form_label' => __('Add a ticket'),
+                'button_label' => __('Create a ticket from this project task'),
             ]);
         }
 
@@ -322,6 +324,8 @@ class ProjectTask_Ticket extends CommonDBRelation
                     'params' => $p,
                 ],
                 'create_link' => false,
+                'form_label' => __('Add a project task'),
+                'button_label' => __('Create a project task from this ticket'),
             ]);
         }
 
