@@ -720,7 +720,7 @@ class Plugin extends DbTestCase
     /**
      * Test state checking on a valid directory corresponding to a known active plugin with no modifications
      * having nor check_prerequisites nor check_config function.
-     * Should results in no changes.
+     * Shouldn't trigger changes.
      */
     public function testCheckPluginStateForActiveAndNotUpdatedPluginHavingNoCheckFunctions()
     {
