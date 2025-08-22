@@ -101,10 +101,10 @@ describe('User form', () => {
     it('can add and remove my substitutes', () => {
         cy.visit('/front/preference.php');
         cy.findByRole('tab', { name: /Authorized substitutes/ }).click();
-        cy.getDropdownByLabelText('Approval substitutes').selectDropdownValue('tech');
+        cy.getDropdownByLabelText('Approval substitutes').selectDropdownValue('normal');
         cy.findByRole('button', { name: 'Save' }).click();
         cy.findByRole('tab', { name: /Authorized substitutes/ }).click();
-        cy.getDropdownByLabelText('Approval substitutes').should('contain.text', 'tech');
+        cy.getDropdownByLabelText('Approval substitutes').should('contain.text', 'normal');
         cy.getDropdownByLabelText('Approval substitutes').closest('.select2-container').find('.select2-selection__choice__remove').click();
         cy.findByRole('button', { name: 'Save' }).click();
         cy.findByRole('tab', { name: /Authorized substitutes/ }).click();
