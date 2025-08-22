@@ -31,10 +31,10 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2025
 # Ta Bo, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
-# Seidler Jean-Louis <jl.seidler@gmx.ch>, 2025
 # BaLieEDV, 2025
 # Viktor Schopf, 2025
 # Stephan <stephan.rennert@web.de>, 2025
+# Seidler Jean-Louis <jl.seidler@gmx.ch>, 2025
 # 
 #, fuzzy
 msgid ""
@@ -43,7 +43,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-21 06:27+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Stephan <stephan.rennert@web.de>, 2025\n"
+"Last-Translator: Seidler Jean-Louis <jl.seidler@gmx.ch>, 2025\n"
 "Language-Team: German (Germany) (https://app.transifex.com/glpi/teams/1637/de_DE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3811,7 +3811,7 @@ msgstr ""
 
 #: templates/components/itilobject/footer.html.twig
 msgid "Cancel ticket"
-msgstr ""
+msgstr "Ticket annulieren"
 
 #: templates/components/itilobject/footer.html.twig
 msgid "Toggle panels width"
@@ -4070,7 +4070,7 @@ msgstr "Querformat PDF"
 
 #: templates/components/search/controls.html.twig
 msgid "Portrait PDF"
-msgstr ""
+msgstr "PDF Querformat"
 
 #: templates/components/search/controls.html.twig
 #: templates/pages/assistance/planning/single_filter.html.twig
@@ -4526,7 +4526,7 @@ msgstr ""
 
 #: templates/components/illustration/icon_picker_modal.html.twig
 msgid "Use selected file"
-msgstr ""
+msgstr "Ausgewählte Datei verwenden"
 
 #: templates/components/danger_modal.html.twig
 #: templates/pages/admin/assetdefinition/capacities.html.twig
@@ -4553,7 +4553,7 @@ msgstr ""
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "Address to send the notification"
-msgstr ""
+msgstr "Notiz an folgende Adresse senden"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 #, php-format
@@ -5637,7 +5637,7 @@ msgstr ""
 
 #: templates/pages/tools/search_knowbaseitem.html.twig
 msgid "Back to results"
-msgstr ""
+msgstr "Zurück zu den Resultate"
 
 #: templates/pages/tools/search_knowbaseitem.html.twig
 #: src/Glpi/Search/Provider/SQLProvider.php:6162
@@ -7097,7 +7097,7 @@ msgstr ""
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Security policy configuration"
-msgstr ""
+msgstr "Einstellung Sicherheitsregeln"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Password minimum length"
@@ -8464,7 +8464,7 @@ msgstr "Authentifizierung"
 
 #: templates/pages/setup/mailcollector/setup_form.html.twig
 msgid "Folders setup"
-msgstr ""
+msgstr "Register Einstellung"
 
 #: templates/pages/setup/mailcollector/setup_form.html.twig
 msgid "Incoming mail folder (optional, often INBOX)"
@@ -9426,7 +9426,7 @@ msgstr "Verbleibend"
 #: templates/pages/management/license_progressbar.html.twig
 msgctxt "adjective"
 msgid "Over"
-msgstr ""
+msgstr "Über"
 
 #: templates/pages/management/document_item.html.twig
 msgctxt "button"
@@ -9609,7 +9609,7 @@ msgstr ""
 #: templates/pages/admin/helpdesk_home_translations.html.twig
 #: templates/pages/admin/form/form_translations.html.twig
 msgid "Translated"
-msgstr ""
+msgstr "übersetzt"
 
 #: templates/pages/admin/helpdesk_home_translations.html.twig
 #: templates/pages/admin/form/form_translations.html.twig
@@ -9670,7 +9670,7 @@ msgstr ""
 
 #: templates/pages/admin/form/form_question.html.twig
 msgid "Copy uuid"
-msgstr ""
+msgstr "UUID kopieren"
 
 #: templates/pages/admin/form/form_question.html.twig
 #: templates/pages/admin/form/form_comment.html.twig
@@ -11085,19 +11085,19 @@ msgstr ""
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Left side"
-msgstr ""
+msgstr "Linke Seite"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Left side configuration"
-msgstr ""
+msgstr "Einstellung linke Seite"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Right side"
-msgstr ""
+msgstr "Rechte Seite"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Right side configuration"
-msgstr ""
+msgstr "Einstellung rechte Seite"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Default illustration preview"
@@ -11125,7 +11125,7 @@ msgstr ""
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Main title"
-msgstr ""
+msgstr "Haupttitel"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Default title preview"
@@ -11155,7 +11155,7 @@ msgstr ""
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Search bar"
-msgstr ""
+msgstr "Suchbalken"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Save general settings"
@@ -11167,7 +11167,7 @@ msgstr ""
 
 #: templates/pages/admin/helpdesk_home_config_edit_tile_form.html.twig
 msgid "Delete tile"
-msgstr ""
+msgstr "Datei löschen"
 
 #: templates/pages/admin/user.substitute.html.twig
 msgid ""
@@ -11248,7 +11248,7 @@ msgstr ""
 
 #: templates/pages/admin/user/user_picture_field.html.twig
 msgid "Change picture"
-msgstr ""
+msgstr "Bild auswechseln"
 
 #: templates/pages/admin/user/change_other_password.html.twig
 msgid "Send an email to the user to set their own new password."
@@ -11464,7 +11464,7 @@ msgstr "Neue Gruppen importieren"
 
 #: templates/pages/admin/assetdefinition/fields_display.html.twig
 msgid "New field"
-msgstr ""
+msgstr "Neue Feld"
 
 #: templates/pages/admin/assetdefinition/capacity/is_inventoriable_capacity_configuration_form.html.twig
 msgid "Please select the type that represents the best the asset."
@@ -11642,7 +11642,7 @@ msgstr "Regel anwenden bei"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "Inventory rules"
-msgstr ""
+msgstr "Inventar Regeln"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "Agent sends an inventory file"
@@ -11808,7 +11808,7 @@ msgstr "Kein Element zum Testen vorhanden"
 
 #: templates/pages/admin/external_page_tile_config_fields.html.twig
 msgid "Target url"
-msgstr ""
+msgstr "Ziel URL"
 
 #: templates/pages/admin/plugins/list_suspend_banner.html.twig
 msgid "The execution of the plugins is suspended."
@@ -11845,11 +11845,11 @@ msgstr "Automatische Aktualisierung umschalten"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Collapse"
-msgstr ""
+msgstr "Minimieren"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Expand"
-msgstr ""
+msgstr "Maximieren"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "The log file is empty"
@@ -12113,15 +12113,15 @@ msgstr "%1$s (Vorgesetzte(r) von %2$s)"
 
 #: ajax/dropdownValidator.php:113
 msgid "Select a user"
-msgstr ""
+msgstr "Ein Benutzer auswählen"
 
 #: ajax/dropdownValidator.php:126 ajax/dropdownValidator.php:140
 msgid "Select a group"
-msgstr ""
+msgstr "Eine Gruppe auswählen"
 
 #: ajax/dropdownValidator.php:202
 msgid "Select users"
-msgstr ""
+msgstr "Benutzer auswählen"
 
 #: ajax/dropdownTrackingDeviceType.php:68
 msgid "Enter the first letters (user, item name, serial or asset number)"
@@ -12308,12 +12308,12 @@ msgstr ""
 #: resources/.illustrations_translations.php:4
 msgctxt "Icon"
 msgid "Agent config"
-msgstr ""
+msgstr "Agent Einstellung"
 
 #: resources/.illustrations_translations.php:5
 msgctxt "Icon"
 msgid "alert"
-msgstr ""
+msgstr "Warnung"
 
 #: resources/.illustrations_translations.php:6
 msgctxt "Icon"
@@ -12338,7 +12338,7 @@ msgstr "Antivirus"
 #: resources/.illustrations_translations.php:10
 msgctxt "Icon"
 msgid "Application"
-msgstr ""
+msgstr "Anwendung"
 
 #: resources/.illustrations_translations.php:11
 msgctxt "Icon"
@@ -12378,7 +12378,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:18
 msgctxt "Icon"
 msgid "Laptop"
-msgstr ""
+msgstr "Notebook"
 
 #: resources/.illustrations_translations.php:19
 msgctxt "Icon"
@@ -12414,7 +12414,7 @@ msgstr "Server"
 #: resources/.illustrations_translations.php:157
 msgctxt "Icon"
 msgid "Smartphone"
-msgstr ""
+msgstr "Smartphone"
 
 #: resources/.illustrations_translations.php:26
 msgctxt "Icon"
@@ -12429,7 +12429,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:28
 msgctxt "Icon"
 msgid "Bank"
-msgstr ""
+msgstr "Bank"
 
 #: resources/.illustrations_translations.php:29
 msgctxt "Icon"
@@ -12449,7 +12449,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:32
 msgctxt "Icon"
 msgid "Bookmark"
-msgstr ""
+msgstr "Lesezeichen"
 
 #: resources/.illustrations_translations.php:33
 msgctxt "Icon"
@@ -12464,7 +12464,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:35
 msgctxt "Icon"
 msgid "Building"
-msgstr ""
+msgstr "Gebäude"
 
 #: resources/.illustrations_translations.php:36
 msgctxt "Icon"
@@ -12474,7 +12474,7 @@ msgstr "Kalender"
 #: resources/.illustrations_translations.php:37
 msgctxt "Icon"
 msgid "Car"
-msgstr ""
+msgstr "Fahrzeug"
 
 #: resources/.illustrations_translations.php:38
 msgctxt "Icon"
@@ -12489,22 +12489,22 @@ msgstr ""
 #: resources/.illustrations_translations.php:40
 msgctxt "Icon"
 msgid "Area chart"
-msgstr ""
+msgstr "Flächen Diagramm"
 
 #: resources/.illustrations_translations.php:41
 msgctxt "Icon"
 msgid "Bars chart"
-msgstr ""
+msgstr "Balken Diagramm"
 
 #: resources/.illustrations_translations.php:42
 msgctxt "Icon"
 msgid "Donut chart"
-msgstr ""
+msgstr "Kreis Diagramm"
 
 #: resources/.illustrations_translations.php:43
 msgctxt "Icon"
 msgid "Line chart"
-msgstr ""
+msgstr "Linien Diagramm"
 
 #: resources/.illustrations_translations.php:44
 msgctxt "Icon"
@@ -12514,7 +12514,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:45
 msgctxt "Icon"
 msgid "Pie chart"
-msgstr ""
+msgstr "Kuchen Diagramm"
 
 #: resources/.illustrations_translations.php:46
 msgctxt "Icon"
@@ -12569,12 +12569,12 @@ msgstr ""
 #: resources/.illustrations_translations.php:56
 msgctxt "Icon"
 msgid "Container"
-msgstr ""
+msgstr "Gefäss"
 
 #: resources/.illustrations_translations.php:57
 msgctxt "Icon"
 msgid "Containers"
-msgstr ""
+msgstr "Gefässe"
 
 #: resources/.illustrations_translations.php:58
 msgctxt "Icon"
@@ -12606,7 +12606,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:194
 msgctxt "Icon"
 msgid "database"
-msgstr ""
+msgstr "Datenbank"
 
 #: resources/.illustrations_translations.php:64
 msgctxt "Icon"
@@ -12616,12 +12616,12 @@ msgstr ""
 #: resources/.illustrations_translations.php:65
 msgctxt "Icon"
 msgid "download"
-msgstr ""
+msgstr "herunterladen"
 
 #: resources/.illustrations_translations.php:66
 msgctxt "Icon"
 msgid "Error 404"
-msgstr ""
+msgstr "Fehlercode 404"
 
 #: resources/.illustrations_translations.php:67
 msgctxt "Icon"
@@ -12636,7 +12636,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:69
 msgctxt "Icon"
 msgid "fields"
-msgstr ""
+msgstr "Felder"
 
 #: resources/.illustrations_translations.php:70
 msgctxt "Icon"
@@ -12646,7 +12646,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:71
 msgctxt "Icon"
 msgid "Firewall"
-msgstr ""
+msgstr "Brandmauer"
 
 #: resources/.illustrations_translations.php:72
 msgctxt "Icon"
@@ -12656,7 +12656,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:73
 msgctxt "Icon"
 msgid "Folder"
-msgstr ""
+msgstr "Register"
 
 #: resources/.illustrations_translations.php:74
 msgctxt "Icon"
@@ -12671,7 +12671,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:76
 msgctxt "Icon"
 msgid "Gear"
-msgstr ""
+msgstr "Getriebe"
 
 #: resources/.illustrations_translations.php:77
 msgctxt "Icon"
@@ -12726,17 +12726,17 @@ msgstr "Helpdesk"
 #: resources/.illustrations_translations.php:87
 msgctxt "Icon"
 msgid "Hierarchy"
-msgstr ""
+msgstr "Hierarchie"
 
 #: resources/.illustrations_translations.php:88
 msgctxt "Icon"
 msgid "holiday"
-msgstr ""
+msgstr "Ferien"
 
 #: resources/.illustrations_translations.php:89
 msgctxt "Icon"
 msgid "Inbox"
-msgstr ""
+msgstr "Eingangsfach"
 
 #: resources/.illustrations_translations.php:90
 msgctxt "Icon"
@@ -12811,7 +12811,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:104
 msgctxt "Icon"
 msgid "notes"
-msgstr ""
+msgstr "Notizen"
 
 #: resources/.illustrations_translations.php:105
 msgctxt "Icon"
@@ -12841,7 +12841,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:110
 msgctxt "Icon"
 msgid "Partner"
-msgstr ""
+msgstr "Partner"
 
 #: resources/.illustrations_translations.php:111
 #: resources/.illustrations_translations.php:337
@@ -12983,12 +12983,12 @@ msgstr "Zeit"
 #: resources/.illustrations_translations.php:138
 msgctxt "Icon"
 msgid "Training"
-msgstr ""
+msgstr "Ausbildung"
 
 #: resources/.illustrations_translations.php:139
 msgctxt "Icon"
 msgid "translation"
-msgstr ""
+msgstr "Übersetzung"
 
 #: resources/.illustrations_translations.php:140
 msgctxt "Icon"
@@ -13048,7 +13048,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:151
 msgctxt "Icon"
 msgid "World"
-msgstr ""
+msgstr "Welt"
 
 #: resources/.illustrations_translations.php:152
 msgctxt "Icon"
@@ -13058,7 +13058,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:153
 msgctxt "Icon"
 msgid "charts"
-msgstr ""
+msgstr "Diagramme"
 
 #: resources/.illustrations_translations.php:154
 msgctxt "Icon"
@@ -13073,7 +13073,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:156
 msgctxt "Icon"
 msgid "Qrcode"
-msgstr ""
+msgstr "QR-Code"
 
 #: resources/.illustrations_translations.php:158
 msgctxt "Icon"
@@ -13093,7 +13093,7 @@ msgstr "Benachrichtigung"
 #: resources/.illustrations_translations.php:161
 msgctxt "Icon"
 msgid "warning"
-msgstr ""
+msgstr "Warnung"
 
 #: resources/.illustrations_translations.php:162
 msgctxt "Icon"
@@ -13108,12 +13108,12 @@ msgstr ""
 #: resources/.illustrations_translations.php:164
 msgctxt "Icon"
 msgid "file"
-msgstr ""
+msgstr "Datei"
 
 #: resources/.illustrations_translations.php:165
 msgctxt "Icon"
 msgid "folder"
-msgstr ""
+msgstr "Register"
 
 #: resources/.illustrations_translations.php:166
 msgctxt "Icon"
@@ -13173,7 +13173,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:177
 msgctxt "Icon"
 msgid "printer"
-msgstr ""
+msgstr "Drucker"
 
 #: resources/.illustrations_translations.php:178
 msgctxt "Icon"
@@ -13183,7 +13183,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:179
 msgctxt "Icon"
 msgid "monitor"
-msgstr ""
+msgstr "Bildschirm"
 
 #: resources/.illustrations_translations.php:180
 msgctxt "Icon"
@@ -13213,7 +13213,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:185
 msgctxt "Icon"
 msgid "keyboard"
-msgstr ""
+msgstr "Tastatur"
 
 #: resources/.illustrations_translations.php:186
 msgctxt "Icon"
@@ -13263,7 +13263,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:196
 msgctxt "Icon"
 msgid "building"
-msgstr ""
+msgstr "Gebäude"
 
 #: resources/.illustrations_translations.php:198
 msgctxt "Icon"
@@ -13273,7 +13273,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:199
 msgctxt "Icon"
 msgid "finance"
-msgstr ""
+msgstr "Finanz"
 
 #: resources/.illustrations_translations.php:200
 msgctxt "Icon"
@@ -13303,7 +13303,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:206
 msgctxt "Icon"
 msgid "theme"
-msgstr ""
+msgstr "Thema"
 
 #: resources/.illustrations_translations.php:207
 msgctxt "Icon"
@@ -13338,7 +13338,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:213
 msgctxt "Icon"
 msgid "date"
-msgstr ""
+msgstr "Datum"
 
 #: resources/.illustrations_translations.php:214
 msgctxt "Icon"
@@ -13353,7 +13353,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:216
 msgctxt "Icon"
 msgid "time"
-msgstr ""
+msgstr "Zeit"
 
 #: resources/.illustrations_translations.php:217
 msgctxt "Icon"
@@ -13368,7 +13368,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:219
 msgctxt "Icon"
 msgid "vehicle"
-msgstr ""
+msgstr "Fahrzeug"
 
 #: resources/.illustrations_translations.php:220
 msgctxt "Icon"
@@ -13378,7 +13378,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:221
 msgctxt "Icon"
 msgid "automobile"
-msgstr ""
+msgstr "Fahrzeug"
 
 #: resources/.illustrations_translations.php:222
 msgctxt "Icon"
@@ -13388,7 +13388,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:223
 msgctxt "Icon"
 msgid "environment"
-msgstr ""
+msgstr "Umgebung"
 
 #: resources/.illustrations_translations.php:224
 msgctxt "Icon"
@@ -13413,7 +13413,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:228
 msgctxt "Icon"
 msgid "message"
-msgstr ""
+msgstr "Meldung"
 
 #: resources/.illustrations_translations.php:229
 msgctxt "Icon"
@@ -13433,7 +13433,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:232
 msgctxt "Icon"
 msgid "network"
-msgstr ""
+msgstr "Netzwerk"
 
 #: resources/.illustrations_translations.php:233
 msgctxt "Icon"
@@ -13443,7 +13443,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:234
 msgctxt "Icon"
 msgid "connection"
-msgstr ""
+msgstr "Verbindung"
 
 #: resources/.illustrations_translations.php:235
 msgctxt "Icon"
@@ -13463,17 +13463,17 @@ msgstr ""
 #: resources/.illustrations_translations.php:238
 msgctxt "Icon"
 msgid "agreement"
-msgstr ""
+msgstr "Vereinbarung"
 
 #: resources/.illustrations_translations.php:239
 msgctxt "Icon"
 msgid "signature"
-msgstr ""
+msgstr "Unterschrift"
 
 #: resources/.illustrations_translations.php:240
 msgctxt "Icon"
 msgid "ticket"
-msgstr ""
+msgstr "Ticket"
 
 #: resources/.illustrations_translations.php:241
 msgctxt "Icon"
@@ -13503,7 +13503,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:246
 msgctxt "Icon"
 msgid "not found"
-msgstr ""
+msgstr "nicht gefunden"
 
 #: resources/.illustrations_translations.php:247
 msgctxt "Icon"
@@ -13528,7 +13528,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:251
 msgctxt "Icon"
 msgid "industry"
-msgstr ""
+msgstr "Industrie"
 
 #: resources/.illustrations_translations.php:252
 msgctxt "Icon"
@@ -13548,7 +13548,7 @@ msgstr "Datei"
 #: resources/.illustrations_translations.php:255
 msgctxt "Icon"
 msgid "document"
-msgstr ""
+msgstr "Dokument"
 
 #: resources/.illustrations_translations.php:256
 msgctxt "Icon"
@@ -13563,12 +13563,12 @@ msgstr ""
 #: resources/.illustrations_translations.php:258
 msgctxt "Icon"
 msgid "security"
-msgstr ""
+msgstr "Sicherheit"
 
 #: resources/.illustrations_translations.php:259
 msgctxt "Icon"
 msgid "protection"
-msgstr ""
+msgstr "Schutz"
 
 #: resources/.illustrations_translations.php:260
 msgctxt "Icon"
@@ -13578,17 +13578,17 @@ msgstr ""
 #: resources/.illustrations_translations.php:261
 msgctxt "Icon"
 msgid "problem"
-msgstr ""
+msgstr "Problem"
 
 #: resources/.illustrations_translations.php:262
 msgctxt "Icon"
 msgid "error"
-msgstr ""
+msgstr "Fehler"
 
 #: resources/.illustrations_translations.php:263
 msgctxt "Icon"
 msgid "directory"
-msgstr ""
+msgstr "Verzeichnis"
 
 #: resources/.illustrations_translations.php:264
 msgctxt "Icon"
@@ -13638,7 +13638,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:273
 msgctxt "Icon"
 msgid "artificial-intelligence"
-msgstr ""
+msgstr "Künstliche Intelligenz"
 
 #: resources/.illustrations_translations.php:274
 msgctxt "Icon"
@@ -13818,7 +13818,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:309
 msgctxt "Icon"
 msgid "invoice"
-msgstr ""
+msgstr "Rechnung"
 
 #: resources/.illustrations_translations.php:310
 msgctxt "Icon"
@@ -13828,12 +13828,12 @@ msgstr ""
 #: resources/.illustrations_translations.php:311
 msgctxt "Icon"
 msgid "purchase"
-msgstr ""
+msgstr "Einkauf"
 
 #: resources/.illustrations_translations.php:312
 msgctxt "Icon"
 msgid "training"
-msgstr ""
+msgstr "Ausbildung"
 
 #: resources/.illustrations_translations.php:313
 msgctxt "Icon"

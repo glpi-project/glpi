@@ -94,11 +94,11 @@ msgstr "Veuillez sélectionner une base de données :"
 
 #: templates/install/step3.html.twig
 msgid "Create a new database:"
-msgstr "Créer une nouvelle base de données:"
+msgstr "Créer une nouvelle base de données :"
 
 #: templates/install/step3.html.twig
 msgid "Or use an existing one:"
-msgstr "Ou utiliser une existante:"
+msgstr "Ou utiliser une base existante :"
 
 #: templates/install/step3.html.twig
 msgid "Please select a database to update:"
@@ -107,11 +107,11 @@ msgstr "Veuillez sélectionner une base de données à mettre à jour :"
 #: templates/install/install.install_required.html.twig install/update.php:100
 #: install/update.php:120 install/install.php:60 install/install.php:82
 msgid "GLPI setup"
-msgstr "Setup GLPI"
+msgstr "GLPI Installation"
 
 #: templates/install/install.install_required.html.twig
 msgid "The GLPI database must be configured and installed."
-msgstr "La base de données de  GLPI doit être configurée et installée."
+msgstr "La base de données de  GLPI doit être installée et configurée."
 
 #: templates/install/install.install_required.html.twig
 msgid "Go to install page"
@@ -1389,7 +1389,7 @@ msgstr "Commentaires"
 #: src/Search.php:966 src/CartridgeItem_PrinterModel.php:194
 #: js/modules/Form/GeolocationField.js:87
 msgid "No results found"
-msgstr "Aucuns résultats trouvés"
+msgstr "Aucun résultat trouvé"
 
 #: templates/components/form/item_disk.html.twig
 #: templates/pages/admin/inventory/agent.html.twig
@@ -2089,11 +2089,11 @@ msgstr "Module"
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "Input"
-msgstr "Entrée"
+msgstr "Valeur d'entrée"
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "See input"
-msgstr "Voir l'entrée"
+msgstr "Voir la valeur"
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "No input"
@@ -2551,7 +2551,7 @@ msgstr "Sélectionner une statistique à comparer"
 #: templates/components/printer_graph_buttons.html.twig src/Stat.php:2012
 #: src/Stat.php:2144 src/Impact.php:389
 msgid "Export to CSV"
-msgstr "Export en CSV"
+msgstr "Exporter en CSV"
 
 #: templates/components/infocom.html.twig src/Infocom.php:2029
 #: src/Cartridge.php:809
@@ -3159,8 +3159,8 @@ msgid ""
 "This template affects one or more items, are you sure you want to perform "
 "this action?"
 msgstr ""
-"Ce modèle impact un ou plusieurs objets, êtes-vous certains de vouloir "
-"effectuer cette action ?"
+"Ce modèle impacte un ou plusieurs objets, êtes-vous sûr de vouloir effectuer"
+" cette action ?"
 
 #: templates/components/itilobject/fields/global_validation.html.twig
 #: src/NotificationTargetTicket.php:141 src/NotificationTargetTicket.php:788
@@ -3374,7 +3374,7 @@ msgstr "Importé depuis"
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 msgid "Screenshot"
-msgstr "capture d'écran"
+msgstr "Capture d'écran"
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 msgid "Screen recording"
@@ -3665,7 +3665,7 @@ msgstr "Lien vers l'entrée de la base de connaissance #%id"
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig
 #, php-format
 msgid "Created: %1$s by %2$s for the group %3$s"
-msgstr "Créé: %1$s par %2$s pour le groupe %3$s"
+msgstr "Créé : %1$s par %2$s pour le groupe %3$s"
 
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig
 #, php-format
@@ -3757,7 +3757,7 @@ msgstr "Suivi par courriel"
 
 #: templates/components/itilobject/actors/main.html.twig
 msgid "Notifications are disabled because:"
-msgstr "Les notifications sont désactivées car:"
+msgstr "Les notifications sont désactivées car :"
 
 #: templates/components/itilobject/actors/main.html.twig
 msgid "User does not have an email address."
@@ -3765,7 +3765,7 @@ msgstr "L'utilisateur ne dispose pas d'un adresse de courriel"
 
 #: templates/components/itilobject/actors/main.html.twig
 msgid "User has disabled notifications from its preferences."
-msgstr "L'utilisateur a désactivé les notifications de ces préférences."
+msgstr "L'utilisateur a désactivé les notifications de ses préférences."
 
 #: templates/components/itilobject/actors/main.html.twig
 msgid "Notifications are disabled in this entity."
@@ -3853,7 +3853,7 @@ msgstr "Enquête de satisfaction expirée."
 
 #: templates/components/itilobject/itilsatisfaction.html.twig
 msgid "After 12 hours, you can no longer modify your response."
-msgstr "Passé 12 heures vous ne pourrez plus modifier votre réponse."
+msgstr "Après 12 heures vous ne pourrez plus modifier votre réponse."
 
 #: templates/components/itilobject/itilsatisfaction.html.twig
 msgid "No response given"
@@ -3871,11 +3871,11 @@ msgstr "Date de réponse à l'enquête de satisfaction"
 #: templates/components/itilobject/linked_itilobjects.html.twig
 msgctxt "button"
 msgid "Unlink"
-msgstr "Détacher"
+msgstr "Délier"
 
 #: templates/components/search/query_builder/sort/main.html.twig
 msgid "Add another sort"
-msgstr "Ajouter un tri"
+msgstr "Ajouter un autre tri"
 
 #: templates/components/search/query_builder/sort/main.html.twig
 #: templates/components/search/controls.html.twig
@@ -3948,7 +3948,7 @@ msgstr "Aucun filtre trouvé"
 
 #: templates/components/search/criteria_filter.html.twig
 msgid "There is no filter defined yet for this item."
-msgstr "Il n'y a encore aucun filtre de définit pour cet objet"
+msgstr "Il n'y a encore aucun filtre de défini pour cet objet"
 
 #: templates/components/search/criteria_filter.html.twig
 msgid "Create a filter"
@@ -4025,7 +4025,7 @@ msgid ""
 "configured."
 msgstr ""
 "Ces préférences sont utilisées par tout le monde et n'ont pas de vue "
-"personnalisée de configurée"
+"personnalisée de configurée."
 
 #: templates/components/search/displaypreference_config.html.twig
 msgid "No personal criteria. Create personal parameters?"
@@ -4307,7 +4307,7 @@ msgstr "Aucune entrée d'historique ne correspond à vos filtres"
 #: templates/components/logs.html.twig
 #: templates/components/datatable.html.twig
 msgid "Entries to show:"
-msgstr "Entrées à afficher:"
+msgstr "Entrées à afficher :"
 
 #: templates/components/user/info_card.html.twig
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
@@ -4333,7 +4333,7 @@ msgstr "Création d'un utilisateur"
 #: templates/components/user/password_security_checks.html.twig
 #, php-format
 msgid "Minimum length: %s"
-msgstr "Longueur minimum: %s"
+msgstr "Longueur minimale : %s"
 
 #: templates/components/user/password_security_checks.html.twig
 msgid "Digit"
@@ -4568,11 +4568,11 @@ msgstr "Sélectionner l'utilisateur à déléguer"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "He doesn't want"
-msgstr "Il ne veut pas"
+msgstr "Non souhaité"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "He wants"
-msgstr "il veut"
+msgstr "Souhaité"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "Do you want to be notified of future events of this ticket"
@@ -5186,7 +5186,7 @@ msgstr "Couleur"
 
 #: templates/impact/edit_edge_modal.html.twig
 msgid "Edit edge"
-msgstr "Modifier la liaison"
+msgstr "Modifier la relation"
 
 #: templates/impact/ongoing_modal.html.twig
 #: src/Glpi/Helpdesk/HomePageTabs.php:77
@@ -5236,7 +5236,7 @@ msgstr ""
 #: templates/pages/2fa/2fa_config.html.twig
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Enforce 2FA"
-msgstr "Imposer 2FA"
+msgstr "Forcer 2FA"
 
 #: templates/pages/2fa/2fa_config.html.twig
 #: templates/pages/admin/entity/assistance.html.twig
@@ -5389,7 +5389,7 @@ msgstr "Catalogue de services"
 
 #: templates/pages/self-service/service_catalog.html.twig
 msgid "Sort by: "
-msgstr "Trier par:"
+msgstr "Trier par :"
 
 #: templates/pages/self-service/service_catalog.html.twig
 msgid "Sort by"
@@ -5565,11 +5565,11 @@ msgstr[2] "Notifications utilisées :"
 
 #: templates/pages/tools/savedsearch/alert_list_notification.html.twig
 msgid "Notification does not exist"
-msgstr "Cette notification n'existe pas"
+msgstr "Aucune notification rattachée à cette alerte"
 
 #: templates/pages/tools/savedsearch/alert_list_notification.html.twig
 msgid "Create it now"
-msgstr "Le créer maintenant"
+msgstr "Cliquez ici pour la créer"
 
 #: templates/pages/tools/savedsearch/alert_list_notification.html.twig
 msgid "Add an alert"
@@ -5669,7 +5669,7 @@ msgstr[2] "Calendriers"
 
 #: templates/pages/tools/search_knowbaseitem.html.twig
 msgid "Use this entry"
-msgstr "Utiliser cette entrée"
+msgstr "Utiliser cet article"
 
 #: templates/pages/tools/search_knowbaseitem.html.twig
 msgid "Back to results"
@@ -6254,8 +6254,8 @@ msgid ""
 "The system name field corresponds to what will be used when development is "
 "involved. Examples: API calls, webhooks, etc."
 msgstr ""
-"Le champ nom du système correspond à ce qui sera utilisé lors d'un "
-"développement. Exemples : appels d'API, webhooks, etc."
+"Le nom système correspond à ce qui sera utilisé lors d'un développement. "
+"Exemples : appels d'API, webhooks, etc."
 
 #: templates/pages/assets/customfield.html.twig
 msgid ""
@@ -6360,9 +6360,9 @@ msgstr "Poids max."
 #: src/RuleImportAsset.php:147
 msgid "Port number"
 msgid_plural "Port number"
-msgstr[0] "Port numéro"
-msgstr[1] "Port numéro"
-msgstr[2] "Port numéro"
+msgstr[0] "Numéro de port"
+msgstr[1] "Numéro de port"
+msgstr[2] "Numéro de port"
 
 #: templates/pages/assets/networkport/form.html.twig src/Location.php:65
 #: src/Dropdown.php:792 src/NetworkPort.php:1670
@@ -6576,11 +6576,11 @@ msgstr "API"
 #: templates/pages/setup/general/api_setup.html.twig
 #: src/Glpi/Api/HL/Controller/CoreController.php:231
 msgid "API Getting Started"
-msgstr "API Commencer"
+msgstr "API Getting Started"
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "API Endpoints"
-msgstr "API terminaux"
+msgstr "API Endpoints"
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "URL of the API"
@@ -6633,9 +6633,9 @@ msgid ""
 "Allow to login to API and get a session token with user external token. See "
 "Remote access key in user Settings tab"
 msgstr ""
-"Autoriser la connexion à l'API et obtenir le jeton de session avec un jeton "
-"d'utilisateur externe. Voir la clé d'accès distant dans l'onglet des "
-"paramètres utilisateur"
+"Permet de se connecter à l’API et d’obtenir un jeton de session à l’aide du "
+"jeton externe de l’utilisateur. Voir \"Jeton d'API\" dans l’onglet principal"
+" de la fiche utilisateur."
 
 #: templates/pages/setup/general/systeminfo_table.html.twig
 msgid "Information about system installation and configuration"
@@ -7071,11 +7071,11 @@ msgstr "Source"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Writable"
-msgstr "Modifiable"
+msgstr "En écriture"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Read-Only"
-msgstr "Lecture seule"
+msgstr "Read-Only"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "MySQL server returned an error:"
@@ -7083,7 +7083,7 @@ msgstr "Le serveur MySQL a retourné une erreur : "
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Server ID:"
-msgstr "ID serveur:"
+msgstr "Server ID:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Binary log file:"
@@ -7146,15 +7146,15 @@ msgstr "IO running:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "SQL running:"
-msgstr "SQL en cours d'execution:"
+msgstr "SQL running:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "IO Error:"
-msgstr "IO Erreur:"
+msgstr "IO Error:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "SQL Error:"
-msgstr "SQL Erreur:"
+msgstr "SQL Error:"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Security policy validation"
@@ -7617,7 +7617,7 @@ msgstr ""
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 msgid "GLPI update"
-msgstr "Mise à jour GLPI"
+msgstr "Mise à jour de GLPI"
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 msgid "Check if a new version is available"
@@ -7745,7 +7745,7 @@ msgstr "Demander avant de remplacer"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "Replace plugins page with marketplace"
-msgstr "Remplacer la page des plugins par celle du marketplace"
+msgstr "Remplacer la page des plugins par celle du Marketplace"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "Never replace plugins page"
@@ -7765,7 +7765,7 @@ msgstr ""
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "Access GLPI Network Marketplace"
-msgstr "Accès au Marketplace de GLPI Network "
+msgstr "Accéder au Marketplace GLPI Network"
 
 #: templates/pages/setup/general/assistance_setup.html.twig
 msgid "Step for the hours (minutes)"
@@ -8347,7 +8347,7 @@ msgstr "Utiliser la configuration globale"
 #: templates/pages/setup/notification/notification.html.twig
 #: src/NotificationMailingSetting.php:130
 msgid "No documents"
-msgstr "Aucun documents"
+msgstr "Aucun document"
 
 #: templates/pages/setup/notification/notification.html.twig
 #: src/NotificationMailingSetting.php:131
@@ -8426,11 +8426,11 @@ msgstr "Identifiants client"
 
 #: templates/pages/setup/oauthclient.html.twig
 msgid "Authorization code"
-msgstr "Authorization code"
+msgstr "Code d'autorisation"
 
 #: templates/pages/setup/oauthclient.html.twig
 msgid "Grants"
-msgstr "Autorisations"
+msgstr "Grants"
 
 #: templates/pages/setup/oauthclient.html.twig
 #: templates/pages/setup/webhook/webhook_security.html.twig
@@ -8453,7 +8453,7 @@ msgstr "URI de redirection autorisées"
 
 #: templates/pages/setup/oauthclient.html.twig
 msgid "Only applies to Authorization Code grants"
-msgstr "S’applique uniquement aux Grants de type Authorization Code"
+msgstr "S’applique uniquement aux Grants de type \"Code d'autorisation\""
 
 #: templates/pages/setup/oauthclient.html.twig
 #: templates/pages/setup/webhook/webhook_headers.html.twig
@@ -8609,7 +8609,7 @@ msgstr ""
 
 #: templates/pages/setup/mailcollector/setup_form.html.twig
 msgid "Automatically create user from email"
-msgstr "Créer automatiquement un utilisateur à partir du mail"
+msgstr "Créer automatiquement un utilisateur à partir du courriel"
 
 #: templates/pages/setup/mailcollector/folder_list.html.twig
 #, php-format
@@ -8886,11 +8886,11 @@ msgstr "CRA Challenge"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "CRA result"
-msgstr "CRA résultat"
+msgstr "CRA result"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "OAuth Authentication"
-msgstr "Oauth Authentification"
+msgstr "Authentification OAuth"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Use OAuth"
@@ -9052,7 +9052,7 @@ msgstr "Le champ de synchronisation ne peut être changé une fois utilisé."
 #: templates/pages/setup/ldap/test_form.html.twig
 #, php-format
 msgid "Test LDAP server: %s"
-msgstr "Test LDAP Serveur: %s"
+msgstr "Test LDAP Serveur : %s"
 
 #: templates/pages/setup/ldap/user_config_form.html.twig
 msgid "Binding to the LDAP directory"
@@ -9769,7 +9769,7 @@ msgstr "Configurer la validation"
 
 #: templates/pages/admin/form/form_question.html.twig
 msgid "Copy uuid"
-msgstr "Copier uuid"
+msgstr "Copier l'UUID"
 
 #: templates/pages/admin/form/form_question.html.twig
 #: templates/pages/admin/form/form_comment.html.twig
@@ -9856,7 +9856,7 @@ msgstr "Opérateur logique"
 #: templates/pages/admin/form/conditional_visibility_editor.html.twig
 #: templates/pages/admin/form/conditional_validation_editor.html.twig
 msgid "Select an item..."
-msgstr "Sélectionner un élément"
+msgstr "Sélectionner un élément..."
 
 #: templates/pages/admin/form/conditional_visibility_editor.html.twig
 #: templates/pages/admin/form/conditional_validation_editor.html.twig
@@ -10026,9 +10026,9 @@ msgstr ""
 #: src/Glpi/Form/FormTranslation.php:51
 msgid "Form translation"
 msgid_plural "Form translations"
-msgstr[0] "Traduction formulaire"
-msgstr[1] "Traduction des formulaires"
-msgstr[2] "Traduction formulaire"
+msgstr[0] "Traduction"
+msgstr[1] "Traductions"
+msgstr[2] "Traductions"
 
 #: templates/pages/admin/form/form_destination_commonitil_config.html.twig
 msgid "Destination fields accordion"
@@ -10036,7 +10036,7 @@ msgstr "Accordéon des champs de destination"
 
 #: templates/pages/admin/form/form_destination_commonitil_config.html.twig
 msgid "Auto config"
-msgstr "configuration automatique"
+msgstr "Configuration automatique"
 
 #: templates/pages/admin/form/form_destination_commonitil_config.html.twig
 msgid ""
@@ -10048,7 +10048,7 @@ msgstr ""
 
 #: templates/pages/admin/form/form_destination_commonitil_config.html.twig
 msgid "Select strategy..."
-msgstr "Sélectionner une stratégie"
+msgstr "Sélectionner une stratégie..."
 
 #: templates/pages/admin/form/form_destination_commonitil_config.html.twig
 #: templates/pages/admin/form/itil_config_fields/linked_itilobjects.html.twig
@@ -10061,7 +10061,7 @@ msgstr "Combiner avec une autre option"
 
 #: templates/pages/admin/form/import/step1_index.html.twig
 msgid "Select your file"
-msgstr "Sélectionner votre fichier"
+msgstr "Sélectionner un fichier"
 
 #: templates/pages/admin/form/import/step1_index.html.twig
 #: templates/pages/admin/form/import/step3_resolve_issues.html.twig
@@ -10183,7 +10183,7 @@ msgstr "Configuration du catalogue de service"
 
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 msgid " Active"
-msgstr "active"
+msgstr "Active"
 
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 #: templates/pages/admin/glpi_page_tile_config_fields.html.twig
@@ -10235,7 +10235,7 @@ msgstr "Disposition en blocs horizontaux"
 
 #: templates/pages/admin/form/form_horizontal_block.html.twig
 msgid "Horizontal blocks"
-msgstr "Blocks horizontaux"
+msgstr "Blocs horizontaux"
 
 #: templates/pages/admin/form/form_horizontal_block_placeholder.html.twig
 msgid "Form horizontal block placeholder"
@@ -10296,7 +10296,7 @@ msgstr "Enregistrer"
 #: templates/pages/admin/helpdesk_home_translation.html.twig
 #: templates/pages/admin/customobjects/translations.html.twig
 msgid "Delete translation"
-msgstr "supprimer la traduction"
+msgstr "Supprimer la traduction"
 
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/helpdesk_home_translation.html.twig
@@ -10776,7 +10776,7 @@ msgstr "ID matériel"
 #: src/Document.php:897 src/NotificationTemplateTranslation.php:370
 #: src/Agent.php:153 src/Agent.php:305
 msgid "Tag"
-msgstr "Balise"
+msgstr "Étiquette"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Agent configuration"
@@ -11319,8 +11319,8 @@ msgid ""
 "Delegators are users who gave you the right to approve or refuse tickets on "
 "their behalf."
 msgstr ""
-"Les délégants sont des utilisateurs qui vous accordent le droit de valider "
-"ou refuser des tickets en leur nom."
+"Les délégants sont des utilisateurs qui vous confient le droit de valider ou"
+" de refuser des tickets en leur nom."
 
 #: templates/pages/admin/user.substitute.html.twig src/User.php:3583
 msgid "Substitution start date"
@@ -11474,7 +11474,7 @@ msgstr "Information de contact"
 
 #: templates/pages/admin/user/user.html.twig
 msgid "Passwords and access keys"
-msgstr "Mots de passe et clés d'accès"
+msgstr "Mot de passe et jeton d'accès"
 
 #: templates/pages/admin/user/user.html.twig
 msgid "API token"
@@ -11508,7 +11508,7 @@ msgstr "Fichiers de logs"
 
 #: templates/pages/admin/logs_list.html.twig
 msgid "Sort by file path"
-msgstr "Trier par chemin du fichier"
+msgstr "Trier par nom"
 
 #: templates/pages/admin/logs_list.html.twig
 msgid "Sort by size"
@@ -11624,7 +11624,7 @@ msgstr ""
 #: templates/pages/admin/assetdefinition/capacities.html.twig
 msgctxt "button"
 msgid "Yes, disable it!"
-msgstr "Oui, désactiver!"
+msgstr "Oui, désactiver !"
 
 #: templates/pages/admin/form_tile_config_fields.html.twig
 msgid "Target form"
@@ -11705,7 +11705,7 @@ msgstr "Cette configuration d'actif n'est utilisée par aucun item."
 #: templates/pages/admin/customobjects/main.html.twig
 msgctxt "button"
 msgid "Yes, delete it!"
-msgstr "Oui, supprimer!"
+msgstr "Oui, supprimer !"
 
 #: templates/pages/admin/group_ldap.html.twig src/AuthLDAP.php:686
 msgid "In users"
@@ -11785,7 +11785,7 @@ msgstr "L'agent envoie un fichier d'inventaire"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "Transform itemtypes"
-msgstr "Transforme le type des actifs"
+msgstr "Règles pour définir un type aux actifs inventoriés"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "Override the asset to another custom definition (like Servers)"
@@ -11949,7 +11949,7 @@ msgstr "Aucun élément à tester"
 
 #: templates/pages/admin/external_page_tile_config_fields.html.twig
 msgid "Target url"
-msgstr "url cible"
+msgstr "URL cible"
 
 #: templates/pages/admin/plugins/list_suspend_banner.html.twig
 msgid "The execution of the plugins is suspended."
@@ -13151,7 +13151,7 @@ msgstr "Mise à jour 1"
 #: resources/.illustrations_translations.php:143
 msgctxt "Icon"
 msgid "Update 2"
-msgstr "Mise à jour 1"
+msgstr "Mise à jour 2"
 
 #: resources/.illustrations_translations.php:144
 msgctxt "Icon"
@@ -15939,7 +15939,7 @@ msgstr "Valeur héritée depuis une entité parente"
 
 #: src/Entity.php:3347
 msgid "How can we help you?"
-msgstr "Comment pouvons-nous vous aider ?"
+msgstr "Besoin d’aide ? Une question ?"
 
 #: src/Entity.php:3359
 msgid "Tiles may be overriden by profile."
@@ -25199,7 +25199,7 @@ msgstr "%1$s entrées de base de connaissance attachées à %2$s actifs"
 
 #: src/Glpi/Asset/Capacity/HasAntivirusCapacity.php:58
 msgid "List antivirus software"
-msgstr "Lister les logiciels antivirus"
+msgstr "Lister les antivirus"
 
 #: src/Glpi/Asset/Capacity/HasAntivirusCapacity.php:82
 #, php-format
@@ -26117,9 +26117,9 @@ msgstr[2] "Matériels de l'utilisateur"
 #: src/CommonITILObject.php:5592
 msgid "Time"
 msgid_plural "Times"
-msgstr[0] "Délai"
-msgstr[1] "Délais"
-msgstr[2] "Délais"
+msgstr[0] "Heure"
+msgstr[1] "Heures"
+msgstr[2] "Heures"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeDateTime.php:139
 msgid "Current date"
@@ -26445,7 +26445,7 @@ msgstr "L'inventaire est désactivé, pensez à l'activer si nécessaire."
 
 #: src/Glpi/Inventory/Conf.php:416
 msgid "Authorization header"
-msgstr "En-tête d’autorisation"
+msgstr "Authentification des agents"
 
 #: src/Glpi/Inventory/Conf.php:421
 msgid "OAuth - Client credentials"
@@ -26985,7 +26985,7 @@ msgstr "Vous n'êtes pas authentifé"
 #: src/Glpi/Api/HL/Router.php:644
 msgctxt "api"
 msgid "The Authorization header is missing or invalid"
-msgstr "L’en-tête d’autorisation est manquant ou invalide"
+msgstr "L’en-tête d’authentification est manquante ou invalide"
 
 #: src/Glpi/Api/HL/RSQL/Parser.php:73
 #, php-format
@@ -32966,7 +32966,7 @@ msgstr "Plus ..."
 
 #: src/Impact.php:1068
 msgid "No results"
-msgstr "Aucuns résultats"
+msgstr "Aucun résultat"
 
 #: src/Impact.php:1091
 msgid "Show impact"

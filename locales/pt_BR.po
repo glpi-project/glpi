@@ -32,10 +32,10 @@
 # Matheus Rafael, 2025
 # DOMBRE Julien <moyo@indepnet.net>, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
-# pedroalves5770, 2025
 # Cédric Anne, 2025
 # Eduardo Mozart de Oliveira <eduardomozart182@gmail.com>, 2025
 # Arthur Schaefer <arthur.r.schaefer@gmail.com>, 2025
+# pedroalves5770, 2025
 # 
 #, fuzzy
 msgid ""
@@ -44,7 +44,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-21 06:27+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Arthur Schaefer <arthur.r.schaefer@gmail.com>, 2025\n"
+"Last-Translator: pedroalves5770, 2025\n"
 "Language-Team: Portuguese (Brazil) (https://app.transifex.com/glpi/teams/1637/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3830,6 +3830,8 @@ msgstr "Ver outras ações"
 msgid ""
 "Solving this %s is not possible as one or more mandatory field is not filled"
 msgstr ""
+"Não é possível resolver este %s, pois um ou mais campos obrigatórios não "
+"foram preenchidos"
 
 #: templates/components/itilobject/footer.html.twig
 msgid "Cancel ticket"
@@ -7395,13 +7397,15 @@ msgstr "Permitir acesso anônimo ao FAQ"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Allow unauthenticated uploads"
-msgstr ""
+msgstr "Permitir uploads sem autenticação"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid ""
 "Do not use this option if your GLPI is reachable from the internet. Use at "
 "your own risk."
 msgstr ""
+"Não use esta opção se o seu GLPI puder ser acessado pela internet. Use por "
+"sua conta e risco."
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Dynamic display"
@@ -10294,9 +10298,9 @@ msgstr "Remover item"
 #: src/Glpi/Form/Destination/FormDestination.php:68
 msgid "Destination"
 msgid_plural "Destinations"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Destino"
+msgstr[1] "Destinos"
+msgstr[2] "Destinos"
 
 #: templates/pages/admin/form/form_destination.html.twig
 msgid "No items will be created for this form."
@@ -12523,42 +12527,42 @@ msgstr "Smartphone"
 #: resources/.illustrations_translations.php:26
 msgctxt "Icon"
 msgid "Backup and restoration 1"
-msgstr ""
+msgstr "Backup e restauração 1"
 
 #: resources/.illustrations_translations.php:27
 msgctxt "Icon"
 msgid "Backup and restoration 2"
-msgstr ""
+msgstr "Backup e restauração 2"
 
 #: resources/.illustrations_translations.php:28
 msgctxt "Icon"
 msgid "Bank"
-msgstr ""
+msgstr "Banco"
 
 #: resources/.illustrations_translations.php:29
 msgctxt "Icon"
 msgid "Business Intelligence and Reporting 1"
-msgstr ""
+msgstr "BI e Relatórios 1"
 
 #: resources/.illustrations_translations.php:30
 msgctxt "Icon"
 msgid "Business Intelligence and Reporting 2"
-msgstr ""
+msgstr "BI e Relatórios 2"
 
 #: resources/.illustrations_translations.php:31
 msgctxt "Icon"
 msgid "Business Intelligence and Reporting 3"
-msgstr ""
+msgstr "BI e Relatórios 3"
 
 #: resources/.illustrations_translations.php:32
 msgctxt "Icon"
 msgid "Bookmark"
-msgstr ""
+msgstr "Marcador"
 
 #: resources/.illustrations_translations.php:33
 msgctxt "Icon"
 msgid "branding"
-msgstr ""
+msgstr "branding"
 
 #: resources/.illustrations_translations.php:34
 msgctxt "Icon"
@@ -12568,7 +12572,7 @@ msgstr "Procure artigos de ajuda"
 #: resources/.illustrations_translations.php:35
 msgctxt "Icon"
 msgid "Building"
-msgstr ""
+msgstr "Prédio"
 
 #: resources/.illustrations_translations.php:36
 msgctxt "Icon"
@@ -12583,32 +12587,32 @@ msgstr "Carro"
 #: resources/.illustrations_translations.php:38
 msgctxt "Icon"
 msgid "carbon"
-msgstr ""
+msgstr "carbono"
 
 #: resources/.illustrations_translations.php:39
 msgctxt "Icon"
 msgid "centreon"
-msgstr ""
+msgstr "centreon"
 
 #: resources/.illustrations_translations.php:40
 msgctxt "Icon"
 msgid "Area chart"
-msgstr ""
+msgstr "Gráfico de área"
 
 #: resources/.illustrations_translations.php:41
 msgctxt "Icon"
 msgid "Bars chart"
-msgstr ""
+msgstr "Gráfico de barras"
 
 #: resources/.illustrations_translations.php:42
 msgctxt "Icon"
 msgid "Donut chart"
-msgstr ""
+msgstr "Gráfico de rosca"
 
 #: resources/.illustrations_translations.php:43
 msgctxt "Icon"
 msgid "Line chart"
-msgstr ""
+msgstr "Gráfico de linha"
 
 #: resources/.illustrations_translations.php:44
 msgctxt "Icon"
@@ -12618,22 +12622,22 @@ msgstr "Gráfico múltiplo"
 #: resources/.illustrations_translations.php:45
 msgctxt "Icon"
 msgid "Pie chart"
-msgstr ""
+msgstr "Gráfico de pizza"
 
 #: resources/.illustrations_translations.php:46
 msgctxt "Icon"
 msgid "Search chart"
-msgstr ""
+msgstr "Gráfico de busca"
 
 #: resources/.illustrations_translations.php:47
 msgctxt "Icon"
 msgid "Chat 1"
-msgstr ""
+msgstr "Chat 1"
 
 #: resources/.illustrations_translations.php:48
 msgctxt "Icon"
 msgid "Chat 2"
-msgstr ""
+msgstr "Chat 2"
 
 #: resources/.illustrations_translations.php:49
 msgctxt "Icon"
@@ -12643,27 +12647,27 @@ msgstr "Nuvem"
 #: resources/.illustrations_translations.php:50
 msgctxt "Icon"
 msgid "Cloud instance"
-msgstr ""
+msgstr "Instância de nuvem"
 
 #: resources/.illustrations_translations.php:51
 msgctxt "Icon"
 msgid "cloud-inventory"
-msgstr ""
+msgstr "inventário-de-nuvem"
 
 #: resources/.illustrations_translations.php:52
 msgctxt "Icon"
 msgid "Cloud Network 1"
-msgstr ""
+msgstr "Rede de nuvem 1"
 
 #: resources/.illustrations_translations.php:53
 msgctxt "Icon"
 msgid "Cloud Network 2"
-msgstr ""
+msgstr "Rede de nuvem 2"
 
 #: resources/.illustrations_translations.php:54
 msgctxt "Icon"
 msgid "collaborative-tools"
-msgstr ""
+msgstr "ferramentas-colaborativas"
 
 #: resources/.illustrations_translations.php:55
 msgctxt "Icon"
@@ -12673,12 +12677,12 @@ msgstr "Problema de conectividade"
 #: resources/.illustrations_translations.php:56
 msgctxt "Icon"
 msgid "Container"
-msgstr ""
+msgstr "Container"
 
 #: resources/.illustrations_translations.php:57
 msgctxt "Icon"
 msgid "Containers"
-msgstr ""
+msgstr "Containers"
 
 #: resources/.illustrations_translations.php:58
 msgctxt "Icon"
@@ -12694,28 +12698,28 @@ msgstr "Assinatura do contrato 2"
 #: resources/.illustrations_translations.php:197
 msgctxt "Icon"
 msgid "credit"
-msgstr ""
+msgstr "crédito"
 
 #: resources/.illustrations_translations.php:61
 msgctxt "Icon"
 msgid "Data export"
-msgstr ""
+msgstr "Exportação de dados"
 
 #: resources/.illustrations_translations.php:62
 msgctxt "Icon"
 msgid "data-injection"
-msgstr ""
+msgstr "injeção-de-dados"
 
 #: resources/.illustrations_translations.php:63
 #: resources/.illustrations_translations.php:194
 msgctxt "Icon"
 msgid "database"
-msgstr ""
+msgstr "banco de dados"
 
 #: resources/.illustrations_translations.php:64
 msgctxt "Icon"
 msgid "Delivery"
-msgstr ""
+msgstr "Entrega"
 
 #: resources/.illustrations_translations.php:65
 msgctxt "Icon"
@@ -12730,7 +12734,7 @@ msgstr "Erro 404"
 #: resources/.illustrations_translations.php:67
 msgctxt "Icon"
 msgid "escalade"
-msgstr ""
+msgstr "escalar"
 
 #: resources/.illustrations_translations.php:68
 msgctxt "Icon"
@@ -12740,12 +12744,12 @@ msgstr "Fábrica"
 #: resources/.illustrations_translations.php:69
 msgctxt "Icon"
 msgid "fields"
-msgstr ""
+msgstr "campos"
 
 #: resources/.illustrations_translations.php:70
 msgctxt "Icon"
 msgid "Sheet file"
-msgstr ""
+msgstr "Arquivo de planilha"
 
 #: resources/.illustrations_translations.php:71
 msgctxt "Icon"
@@ -12755,7 +12759,7 @@ msgstr "Firewall"
 #: resources/.illustrations_translations.php:72
 msgctxt "Icon"
 msgid "Fixing bug"
-msgstr ""
+msgstr "Corrigir erro"
 
 #: resources/.illustrations_translations.php:73
 msgctxt "Icon"
@@ -12765,12 +12769,12 @@ msgstr "Pasta"
 #: resources/.illustrations_translations.php:74
 msgctxt "Icon"
 msgid "formcreator"
-msgstr ""
+msgstr "formcreator"
 
 #: resources/.illustrations_translations.php:75
 msgctxt "Icon"
 msgid "gdpr-tools"
-msgstr ""
+msgstr "ferramentas-lgpd"
 
 #: resources/.illustrations_translations.php:76
 msgctxt "Icon"
@@ -12780,27 +12784,27 @@ msgstr "Engrenagem"
 #: resources/.illustrations_translations.php:77
 msgctxt "Icon"
 msgid "Gear hand"
-msgstr ""
+msgstr "Mão com engrenagem"
 
 #: resources/.illustrations_translations.php:78
 msgctxt "Icon"
 msgid "generic-objects"
-msgstr ""
+msgstr "objetos-genéricos"
 
 #: resources/.illustrations_translations.php:79
 msgctxt "Icon"
 msgid "glpi-ai"
-msgstr ""
+msgstr "glpi-ia"
 
 #: resources/.illustrations_translations.php:80
 msgctxt "Icon"
 msgid "GLPI Cloud Support 1"
-msgstr ""
+msgstr "Suporte GLPI Cloud 1"
 
 #: resources/.illustrations_translations.php:81
 msgctxt "Icon"
 msgid "GLPI Cloud Support 2"
-msgstr ""
+msgstr "Suporte GLPI Cloud 2"
 
 #: resources/.illustrations_translations.php:82
 msgctxt "Icon"
@@ -15829,6 +15833,8 @@ msgid ""
 "Replace the agent name with a customisable nickname and the group name with "
 "a generic name"
 msgstr ""
+"Substituir o nome do agente por um apelido personalizável e o nome do grupo "
+"por um nome genérico"
 
 #: src/Entity.php:2524 src/PlanningRecall.php:308 src/LevelAgreement.php:638
 #: src/CommonITILRecurrent.php:262 src/Dropdown.php:2575
@@ -21728,6 +21734,8 @@ msgstr "Gerente da requisição"
 msgid ""
 "Predefined task templates will be added according to their creation order"
 msgstr ""
+"Os modelos de tarefas predefinidos serão adicionados de acordo com a sua "
+"ordem de criação"
 
 #: src/NetworkPortWifi.php:45
 msgid "Wifi port"
@@ -32671,11 +32679,11 @@ msgstr[2] "Tipos de dispositivo"
 
 #: src/Reservation.php:166
 msgid "You do not have permission to create reservations"
-msgstr ""
+msgstr "Você não tem permissão para criar reservas"
 
 #: src/Reservation.php:176
 msgid "You do not have permission to create reservations for other users"
-msgstr ""
+msgstr "Você não tem permissão para criar reservas para outros usuários"
 
 #: src/Reservation.php:230
 #, php-format

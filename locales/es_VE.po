@@ -6,9 +6,9 @@
 # Translators:
 # DOMBRE Julien <moyo@indepnet.net>, 2025
 # 5b63a00e0726b96d7ef35c99d5553cd0_b787b5f <8bb2d0f7e8927228f17fba8639d787be_31711>, 2025
-# Francisco Bolivar, 2025
 # Cédric Anne, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
+# Francisco Bolivar, 2025
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +17,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-21 06:27+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2025\n"
+"Last-Translator: Francisco Bolivar, 2025\n"
 "Language-Team: Spanish (Venezuela) (https://app.transifex.com/glpi/teams/1637/es_VE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -10300,9 +10300,9 @@ msgstr "Eliminar artículo"
 #: src/Glpi/Form/Destination/FormDestination.php:68
 msgid "Destination"
 msgid_plural "Destinations"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Destino"
+msgstr[1] "Destinos"
+msgstr[2] "Destinos"
 
 #: templates/pages/admin/form/form_destination.html.twig
 msgid "No items will be created for this form."
@@ -12427,7 +12427,7 @@ msgstr "paneles-avanzados"
 #: resources/.illustrations_translations.php:4
 msgctxt "Icon"
 msgid "Agent config"
-msgstr ""
+msgstr "Configuración del agente"
 
 #: resources/.illustrations_translations.php:5
 msgctxt "Icon"
@@ -13192,7 +13192,7 @@ msgstr "panel"
 #: resources/.illustrations_translations.php:156
 msgctxt "Icon"
 msgid "Qrcode"
-msgstr ""
+msgstr "Código QR"
 
 #: resources/.illustrations_translations.php:158
 msgctxt "Icon"
@@ -14052,17 +14052,17 @@ msgstr "metadatos"
 #: resources/.illustrations_translations.php:332
 msgctxt "Icon"
 msgid "request"
-msgstr ""
+msgstr "solicitud"
 
 #: resources/.illustrations_translations.php:333
 msgctxt "Icon"
 msgid "incident"
-msgstr ""
+msgstr "incidente"
 
 #: resources/.illustrations_translations.php:334
 msgctxt "Icon"
 msgid "list"
-msgstr ""
+msgstr "lista"
 
 #: resources/.illustrations_translations.php:335
 msgctxt "Icon"
@@ -26631,7 +26631,7 @@ msgstr "Sin Categoría"
 #: src/Glpi/Features/TreeBrowse.php:328
 #, php-format
 msgid "This category contains %s"
-msgstr ""
+msgstr "Esta categoría contiene %s"
 
 #: src/Glpi/Features/PlanningEvent.php:785
 msgid "Each year"
