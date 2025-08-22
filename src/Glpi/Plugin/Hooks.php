@@ -1325,6 +1325,17 @@ class Hooks
     public const AUTO_STATUS = 'status';
 
     /**
+     * Register a function to perform a configuration check.
+     * It can be used to :
+     * - set the plugin in `TOBECONFIGURED` state (installation & checkPluginState())
+     * - prevent the plugin from being activated
+     *
+     * The function is called with no parameters.
+     * The function must return a boolean. Returning true has the same effect as not implementing the hook, returning false will have the effects described above.
+     */
+    public const CHECK_CONFIG = 'check_config';
+
+    /**
      * Get file hooks
      *
      * @return array
