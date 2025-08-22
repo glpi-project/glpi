@@ -80,7 +80,10 @@
                               'multiple': 'multiple',
                               'used': [user.fields['id']],
                               'value': substitutes,
-                              'right': 'create_ticket_validate',
+                              'right': [
+                                 'validate_request',
+                                 'validate_incident'
+                              ]
                         }
                      ) }}
 
