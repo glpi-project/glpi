@@ -1335,6 +1335,14 @@ class Hooks
      */
     public const CHECK_CONFIG = 'check_config';
 
+
+    /**
+     * Automatic hook function called to allow plugin activation.
+     * The function is called with no parameters.
+     * The function must return a boolean: false to prevent the plugin from being activated, true to allow it.
+     */
+    public const ACTIVATE = 'activate';
+
     /**
      * Get file hooks
      *
