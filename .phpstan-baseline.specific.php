@@ -775,7 +775,14 @@ $ignoreErrors[] = [
 
 // Reported in PHP 7.4
 $ignoreErrors[] = [
-	'message' => '#^Comparison operation "\\<" between 80499 and 80000 is always false\\.$#',
+	'message' => '#^Comparison operation "\\<" between \d{5} and 80000 is always false\\.$#',
+	'identifier' => 'smaller.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+// Reported in PHP 8.x
+$ignoreErrors[] = [
+	'message' => '#^Comparison operation "\\<" between int\\<\d{5}, \d{5}\\> and 80000 is always false\\.$#',
 	'identifier' => 'smaller.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',
