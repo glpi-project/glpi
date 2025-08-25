@@ -55,9 +55,10 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% set existing_replacements = replacements|length %}
                     {% for issue in issues %}
                         {% set original_name = issue.default_name ?? issue.name %}
-
+                        {% set replacement_index = loop.index0 + existing_replacements %}
                         <tr>
                             <td class="px-4 align-middle">
                                 <div class="d-flex align-items-center">
@@ -69,11 +70,11 @@
                                 <span>{{ original_name }}</span>
                             </td>
                             <td class="px-4">
-                                <input type="hidden" name="replacements[{{ loop.index0 }}][itemtype]" value="{{ issue.itemtype }}"/>
-                                <input type="hidden" name="replacements[{{ loop.index0 }}][original_name]" value="{{ original_name }}"/>
+                                <input type="hidden" name="replacements[{{ replacement_index }}][itemtype]" value="{{ issue.itemtype }}"/>
+                                <input type="hidden" name="replacements[{{ replacement_index }}][original_name]" value="{{ original_name }}"/>
                                 {{ fields.dropdownField(
                                     issue.itemtype,
-                                    'replacements[' ~ loop.index0 ~ '][replacement_id]',
+                                    'replacements[' ~ replacement_index ~ '][replacement_id]',
                                     issue.replacement_id|default(''),
                                     '',
                                     {

@@ -64,7 +64,7 @@ final class Step3ResolveIssuesController extends AbstractController
         $replacements = $request->request->all()["replacements"] ?? [];
         foreach ($replacements as $itemtype => $replacements_for_itemtype) {
             foreach ($replacements_for_itemtype as $original_name => $items_id) {
-                $mapper->addMappedItem($itemtype, $original_name, $items_id);
+                $mapper->addMappedItem($itemtype, $original_name, (int) $items_id);
             }
         }
 
