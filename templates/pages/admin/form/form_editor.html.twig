@@ -245,6 +245,7 @@
         editor-footer
         justify-content-end
         d-flex
+        flex-row-reverse
         py-2
         px-3
         {# Negative margins to cancel parent padding, this is needed as we want
@@ -252,9 +253,81 @@
         ms-n2
         me-n2
     ">
+        {% if item.fields.is_draft %}
+            {# Add action (which is an update form as we just change the is_draft field's value) #}
+            <button
+                class="btn btn-primary"
+                type="submit"
+                name="update"
+                form="main-form"
+                title="{{ __("Add") }}"
+            >
+                <i class="ti ti-plus me-1"></i>
+                <span class="d-block add-label">{{ __("Add") }}</span>
+            </button>
+        {% elseif can_update %}
+            {# Update action #}
+            <button
+                class="btn btn-primary"
+                type="submit"
+                name="update"
+                form="main-form"
+                title="{{ __("Save") }}"
+            >
+                <i class="ti ti-device-floppy me-1"></i>
+                <span class="d-block save-label">{{ __("Save") }}</span>
+            </button>
+        {% endif %}
+
+        {# Restore action #}
+        {% if item.canDelete() %}
+            <button
+                class="
+                    btn
+                    btn-ghost-secondary
+                    me-2
+                    {{ not item.fields.is_deleted ? "d-none" : "" }}
+                "
+                type="submit"
+                name="restore"
+                form="main-form"
+            >
+                <i class="ti ti-trash-off me-1"></i>{{ __("Restore") }}
+            </button>
+        {% endif %}
+
+        {# Purge action #}
+        {% if item.canPurge() %}
+            <button
+                class="btn btn-ghost-danger me-2 {{ not item.fields.is_deleted ? "d-none" : "" }}"
+                type="submit"
+                name="purge"
+                form="main-form"
+            >
+                <i class="ti ti-trash me-1"></i>{{ _x("button", "Delete permanently") }}
+            </button>
+        {% endif %}
+
+        {# Move to trashbin form action #}
+        {% if item.canDelete() %}
+            {# Hidden if the item is still in draft mode #}
+            <button
+                class="
+                    btn
+                    btn-ghost-warning
+                    me-2
+                    {{ item.fields.is_deleted ? "d-none" : "" }}
+                    {{ item.fields.is_draft ? "d-none" : "" }}
+                "
+                type="submit"
+                name="delete"
+                form="main-form"
+            >
+                <i class="ti ti-trash me-1"></i>{{ __("Put in trashbin") }}
+            </button>
+        {% endif %}
+
         {# Preview form action #}
-        {# Mostly useful to test forms ATM. Final UI/UX are not really thought out #}
-        {# TODO: UI/UX #}
         <div class="me-auto" data-glpi-form-editor-preview-actions>
             <a
                 href="{{ path('/Form/Render/' ~ item.fields.id) }}"
@@ -283,81 +356,6 @@
                 <span class="d-none d-xl-block">{{ __("Save and preview") }}</span>
             </button>
         </div>
-
-        {# Move to trashbin form action #}
-        {% if item.canDelete() %}
-            {# Hidden if the item is still in draft mode #}
-            <button
-                class="
-                    btn
-                    btn-ghost-warning
-                    me-2
-                    {{ item.fields.is_deleted ? "d-none" : "" }}
-                    {{ item.fields.is_draft ? "d-none" : "" }}
-                "
-                type="submit"
-                name="delete"
-                form="main-form"
-            >
-                <i class="ti ti-trash me-1"></i>{{ __("Put in trashbin") }}
-            </button>
-        {% endif %}
-
-        {# Purge action #}
-        {% if item.canPurge() %}
-            <button
-                class="btn btn-ghost-danger me-2 {{ not item.fields.is_deleted ? "d-none" : "" }}"
-                type="submit"
-                name="purge"
-                form="main-form"
-            >
-                <i class="ti ti-trash me-1"></i>{{ _x("button", "Delete permanently") }}
-            </button>
-        {% endif %}
-
-        {# Restore action #}
-        {% if item.canDelete() %}
-            <button
-                class="
-                    btn
-                    btn-ghost-secondary
-                    me-2
-                    {{ not item.fields.is_deleted ? "d-none" : "" }}
-                "
-                type="submit"
-                name="restore"
-                form="main-form"
-            >
-                <i class="ti ti-trash-off me-1"></i>{{ __("Restore") }}
-            </button>
-        {% endif %}
-
-        {% if item.fields.is_draft %}
-            {# Add action (which is an update form as we just change the is_draft field's value) #}
-            <button
-                class="btn btn-primary"
-                type="submit"
-                name="update"
-                form="main-form"
-                title="{{ __("Add") }}"
-            >
-                <i class="ti ti-plus me-1"></i>
-                <span class="d-block add-label">{{ __("Add") }}</span>
-            </button>
-        {% elseif can_update %}
-            {# Update action #}
-            <button
-                class="btn btn-primary"
-                type="submit"
-                name="update"
-                form="main-form"
-                title="{{ __("Save") }}"
-            >
-                <i class="ti ti-device-floppy me-1"></i>
-                <span class="d-block save-label">{{ __("Save") }}</span>
-            </button>
-        {% endif %}
-        </button>
     </div>
 
     {# Form id #}
