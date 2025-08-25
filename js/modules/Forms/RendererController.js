@@ -143,7 +143,19 @@ export class GlpiFormRendererController
         $(this.#target).removeClass('pointer-events-none');
     }
 
+    /**
+     * Save all TinyMCE editors content to their respective form fields
+     */
+    #saveTinymceEditors() {
+        if (window.tinymce !== undefined) {
+            tinymce.get().forEach(editor => editor.save());
+        }
+    }
+
     async #checkCurrentSectionValidity() {
+        // Update tinymce values
+        this.#saveTinymceEditors();
+
         // In single page mode, validate all sections
         if (this.#render_layout === 'single_page') {
             return await this.#checkAllSectionsValidity();
@@ -242,11 +254,7 @@ export class GlpiFormRendererController
             this.#disableActions();
 
             // Update tinymce values
-            if (window.tinymce !== undefined) {
-                tinymce.get().forEach(editor => {
-                    editor.save();
-                });
-            }
+            this.#saveTinymceEditors();
 
             if (!await this.#checkCurrentSectionValidity()) {
                 this.#enableActions();
