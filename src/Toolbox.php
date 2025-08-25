@@ -1544,7 +1544,10 @@ class Toolbox
         $curl_error = curl_error($ch) ?: null;
         $curl_info = curl_getinfo($ch);
         $curl_redirect = $curl_info['redirect_url'] ?? null;
-        curl_close($ch);
+        if (PHP_VERSION_ID < 80000) {
+            // `curl_close` is usefull only with PHP < 8.0.
+            curl_close($ch);
+        }
 
         if ($curl_error !== null) {
             if (empty($CFG_GLPI["proxy_name"])) {

@@ -36,6 +36,7 @@ jobs:
         include:
           - {php-version: "7.4"} # Lint on lower PHP version to detected too early usage of new syntaxes
           - {php-version: "8.4"} # Lint on higher PHP version to detected deprecated elements usage
+          - {php-version: "8.5"} # next PHP release
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
@@ -116,6 +117,7 @@ jobs:
             MATRIX='
               {
                 "include": [
+                  {"php-version": "8.5", "db-image": "mariadb:11.8"},
                   {"php-version": "8.4", "db-image": "mariadb:11.8"},
                   {"php-version": "8.3", "db-image": "mariadb:11.8"},
                   {"php-version": "8.2", "db-image": "mariadb:11.8"},
@@ -134,6 +136,7 @@ jobs:
             MATRIX='
               {
                 "include": [
+                  {"php-version": "8.5", "db-image": "mariadb:11.8"},
                   {"php-version": "8.4", "db-image": "mariadb:11.8"},
                   {"php-version": "8.4", "db-image": "mysql:8.4"}
                 ]
