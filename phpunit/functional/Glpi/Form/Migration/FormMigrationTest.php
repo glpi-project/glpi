@@ -1752,6 +1752,108 @@ final class FormMigrationTest extends DbTestCase
                 ],
             ],
         ];
+
+        // FormCreator used 0 as default values when no validation was intended
+        yield 'QuestionTypeShortText - Zero range_min should be ignored' => [
+            'text',
+            [
+                [
+                    'range_min' => '0',
+                    'range_max' => null,
+                    'fieldname' => 'range',
+                ],
+            ],
+            ValidationStrategy::NO_VALIDATION,
+            [],
+        ];
+
+        yield 'QuestionTypeShortText - Zero range_max should be ignored' => [
+            'text',
+            [
+                [
+                    'range_min' => null,
+                    'range_max' => '0',
+                    'fieldname' => 'range',
+                ],
+            ],
+            ValidationStrategy::NO_VALIDATION,
+            [],
+        ];
+
+        yield 'QuestionTypeShortText - Both zero ranges should be ignored' => [
+            'text',
+            [
+                [
+                    'range_min' => '0',
+                    'range_max' => '0',
+                    'fieldname' => 'range',
+                ],
+            ],
+            ValidationStrategy::NO_VALIDATION,
+            [],
+        ];
+
+        yield 'QuestionTypeShortText - Valid range_min with zero range_max should only apply range_min' => [
+            'text',
+            [
+                [
+                    'range_min' => '5',
+                    'range_max' => '0',
+                    'fieldname' => 'range',
+                ],
+            ],
+            ValidationStrategy::VALID_IF,
+            [
+                [
+                    'value_operator' => ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS,
+                    'value'          => '5',
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
+        ];
+
+        yield 'QuestionTypeShortText - Zero range_min with valid range_max should apply both conditions' => [
+            'text',
+            [
+                [
+                    'range_min' => '0',
+                    'range_max' => '50',
+                    'fieldname' => 'range',
+                ],
+            ],
+            ValidationStrategy::VALID_IF,
+            [
+                [
+                    'value_operator' => ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS,
+                    'value'          => '0',
+                    'logic_operator' => LogicOperator::AND,
+                ],
+                [
+                    'value_operator' => ValueOperator::LENGTH_LESS_THAN_OR_EQUALS,
+                    'value'          => '50',
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
+        ];
+
+        yield 'QuestionTypeShortText - Invalid range 50-10 should only apply range_min' => [
+            'text',
+            [
+                [
+                    'range_min' => '50',
+                    'range_max' => '10',
+                    'fieldname' => 'range',
+                ],
+            ],
+            ValidationStrategy::VALID_IF,
+            [
+                [
+                    'value_operator' => ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS,
+                    'value'          => '50',
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
+        ];
     }
 
     #[DataProvider('provideFormMigrationValidationConditionsForQuestions')]
