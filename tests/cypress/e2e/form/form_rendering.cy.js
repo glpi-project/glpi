@@ -222,7 +222,39 @@ describe('Form rendering', () => {
         });
     });
 
-    it("Display untitled labels for questions and comments in form preview", () => {
+    it("Verify that long text question completion is properly handled in a scenario with multiple sections", () => {
+        // Login and create a new form
+        cy.login();
+        cy.createFormWithAPI().visitFormTab();
+
+        // Init form sections and questions
+        cy.addQuestion('Description');
+        cy.getDropdownByLabelText('Question type').selectDropdownValue('Long answer');
+        cy.findByRole('checkbox', { name: 'Mandatory' }).check();
+        cy.addSection('Second section');
+        cy.addQuestion('Short text');
+        cy.saveFormEditorAndReload();
+
+        // Navigate to the preview page (changing target to avoid opening in new tab)
+        cy.findByRole("link", { name: "Preview" })
+            .invoke('attr', 'target', '_self')
+            .click();
+
+        // Try to get to the second section
+        cy.findByRole('button', { name: 'Continue' }).click();
+
+        // Fill description
+        cy.findByLabelText('Description').awaitTinyMCE().type('This is a test note');
+
+        // Go to the second section
+        cy.findByRole('button', { name: 'Continue' }).click();
+
+        // Check that the first section is hidden and the second section is visible
+        cy.findByRole('region', { name: 'Description' }).should('not.exist');
+        cy.findByRole('textbox', { name: 'Short text' }).should('be.visible');
+    });
+
+    it("Displays error messages for mandatory questions", () => {
         // Login and create a new form
         cy.login();
         cy.createFormWithAPI().visitFormTab();
