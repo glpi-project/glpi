@@ -78,7 +78,6 @@ use function Safe\error_log;
 use function Safe\fclose;
 use function Safe\file_get_contents;
 use function Safe\filemtime;
-use function Safe\finfo_close;
 use function Safe\finfo_open;
 use function Safe\fopen;
 use function Safe\fwrite;
@@ -594,7 +593,7 @@ class Toolbox
         if ($mime === null && preg_match('/\.(...)$/', $path)) {
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
             $mime = finfo_file($finfo, $path);
-            finfo_close($finfo);
+            unset($finfo);
         }
 
         $can_be_inlined = false;

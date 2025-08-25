@@ -1,0 +1,183 @@
+diff --git a/classes/asserters/adapter/call/manager.php b/classes/asserters/adapter/call/manager.php
+index afb59c09..f09e4193 100644
+--- a/classes/asserters/adapter/call/manager.php
++++ b/classes/asserters/adapter/call/manager.php
+@@ -15,14 +15,14 @@ class manager
+ 
+     public function add(adapter\call $call)
+     {
+-        $this->calls->attach($call);
++        $this->calls->offsetSet($call);
+ 
+         return $this;
+     }
+ 
+     public function remove(adapter\call $call)
+     {
+-        $this->calls->detach($call);
++        $this->calls->offsetUnset($call);
+ 
+         return $this;
+     }
+diff --git a/classes/autoloader.php b/classes/autoloader.php
+index 3d8b58f5..07a7b36b 100644
+--- a/classes/autoloader.php
++++ b/classes/autoloader.php
+@@ -58,7 +58,7 @@ class autoloader
+             self::$registeredAutoloaders = new \splObjectStorage();
+         }
+ 
+-        self::$registeredAutoloaders->attach($this);
++        self::$registeredAutoloaders->offsetSet($this);
+ 
+         return $this;
+     }
+@@ -69,7 +69,7 @@ class autoloader
+             throw new \runtimeException('Unable to unregister');
+         }
+ 
+-        self::$registeredAutoloaders->detach($this);
++        self::$registeredAutoloaders->offsetUnset($this);
+ 
+         return $this;
+     }
+diff --git a/classes/runner.php b/classes/runner.php
+index cb820a46..34c2d50d 100644
+--- a/classes/runner.php
++++ b/classes/runner.php
+@@ -446,14 +446,14 @@ class runner implements observable
+ 
+     public function addObserver(observer $observer)
+     {
+-        $this->observers->attach($observer);
++        $this->observers->offsetSet($observer);
+ 
+         return $this;
+     }
+ 
+     public function removeObserver(observer $observer)
+     {
+-        $this->observers->detach($observer);
++        $this->observers->offsetUnset($observer);
+ 
+         return $this;
+     }
+@@ -720,7 +720,7 @@ class runner implements observable
+     public function addReport(report $report)
+     {
+         if ($this->reportSet === null || $this->reportSet->isOverridableBy($report)) {
+-            $this->reports->attach($report);
++            $this->reports->offsetSet($report);
+ 
+             $this->addObserver($report);
+         }
+@@ -734,7 +734,7 @@ class runner implements observable
+             $this->reportSet = null;
+         }
+ 
+-        $this->reports->detach($report);
++        $this->reports->offsetUnset($report);
+ 
+         return $this->removeObserver($report);
+     }
+@@ -754,7 +754,7 @@ class runner implements observable
+                 }
+ 
+                 $this->removeObserver($report);
+-                $this->reports->detach($report);
++                $this->reports->offsetUnset($report);
+             }
+         }
+ 
+@@ -802,7 +802,7 @@ class runner implements observable
+         }
+ 
+         $extension = $this->getExtension($extension);
+-        $this->extensions->detach($extension);
++        $this->extensions->offsetUnset($extension);
+ 
+         return $this->removeObserver($extension);
+     }
+@@ -820,12 +820,12 @@ class runner implements observable
+ 
+     public function addExtension(extension $extension, ?extension\configuration $configuration = null)
+     {
+-        if ($this->extensions->contains($extension) === false) {
++        if ($this->extensions->offsetExists($extension) === false) {
+             $extension->setRunner($this);
+             $this->addObserver($extension);
+         }
+ 
+-        $this->extensions->attach($extension, $configuration);
++        $this->extensions->offsetSet($extension, $configuration);
+ 
+         return $this;
+     }
+diff --git a/classes/test.php b/classes/test.php
+index 3f6d2458..d3c39d23 100644
+--- a/classes/test.php
++++ b/classes/test.php
+@@ -1096,14 +1096,14 @@ abstract class test implements observable, \countable
+ 
+     public function addObserver(observer $observer)
+     {
+-        $this->observers->attach($observer);
++        $this->observers->offsetSet($observer);
+ 
+         return $this;
+     }
+ 
+     public function removeObserver(observer $observer)
+     {
+-        $this->observers->detach($observer);
++        $this->observers->offsetUnset($observer);
+ 
+         return $this;
+     }
+@@ -1977,7 +1977,7 @@ abstract class test implements observable, \countable
+ 
+     public function removeExtension(extension $extension)
+     {
+-        $this->extensions->detach($extension);
++        $this->extensions->offsetUnset($extension);
+ 
+         return $this->removeObserver($extension);
+     }
+@@ -1995,12 +1995,12 @@ abstract class test implements observable, \countable
+ 
+     public function addExtension(extension $extension, ?extension\configuration $configuration = null)
+     {
+-        if ($this->extensions->contains($extension) === false) {
+-            $this->extensions->detach($extension);
++        if ($this->extensions->offsetExists($extension) === false) {
++            $this->extensions->offsetUnset($extension);
+             $this->removeObserver($extension);
+         }
+ 
+-        $this->extensions->attach($extension, $configuration);
++        $this->extensions->offsetSet($extension, $configuration);
+ 
+         $extension->setTest($this);
+ 
+diff --git a/classes/test/adapter/storage.php b/classes/test/adapter/storage.php
+index 43662fea..43f1e0fd 100644
+--- a/classes/test/adapter/storage.php
++++ b/classes/test/adapter/storage.php
+@@ -22,7 +22,7 @@ class storage implements \countable, \iteratorAggregate
+     public function add(adapter $adapter)
+     {
+         if ($this->contains($adapter) === false) {
+-            $this->adapters->attach($adapter);
++            $this->adapters->offsetSet($adapter);
+         }
+ 
+         return $this;
+@@ -30,7 +30,7 @@ class storage implements \countable, \iteratorAggregate
+ 
+     public function contains(adapter $adapter)
+     {
+-        return $this->adapters->contains($adapter);
++        return $this->adapters->offsetExists($adapter);
+     }
+ 
+     public function reset()
