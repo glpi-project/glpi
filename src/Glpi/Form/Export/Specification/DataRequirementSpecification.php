@@ -36,6 +36,7 @@
 namespace Glpi\Form\Export\Specification;
 
 use CommonDBTM;
+use CommonTreeDropdown;
 
 final class DataRequirementSpecification
 {
