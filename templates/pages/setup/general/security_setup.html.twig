@@ -158,6 +158,14 @@
    ) }}
 
    {{ fields.largeTitle(__('Two-factor authentication (2FA)'), 'ti ti-2fa') }}
+    {{ fields.textField(
+        '2fa_suffix',
+        config['2fa_suffix'],
+        __('2FA Suffix'),
+        field_options|merge({
+            helper: __("This will be added in the issuer name for authenticator app."),
+        })
+    ) }}
 
    {{ fields.sliderField(
       '2fa_enforced',

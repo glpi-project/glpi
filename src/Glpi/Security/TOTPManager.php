@@ -111,6 +111,23 @@ final class TOTPManager
     public static string $brand_label = 'GLPI';
 
     /**
+     * Mainly used to get the displayed issuer for the TOTP in Authenticator app
+     * @return string
+     */
+    public function getIssuer(): string
+    {
+        global $CFG_GLPI;
+        $label = $CFG_GLPI['app_name'] ?? self::$brand_label;
+
+        $tfaSuffix = $CFG_GLPI['2fa_suffix'] ?? '';
+        if (!empty($tfaSuffix)) {
+            $label .= ' (' . $tfaSuffix . ')';
+        }
+
+        return $label;
+    }
+
+    /**
      * Get an instance of the TwoFactorAuth class
      * @param string $algorithm Algorithm used to generate the TOTP code.
      * @return TwoFactorAuth
@@ -122,7 +139,7 @@ final class TOTPManager
         if ($tfa === null) {
             $tfa = new TwoFactorAuth(
                 new BaconQrCodeProvider(4, '#ffffff', '#000000', 'svg'),
-                self::$brand_label,
+                $this->getIssuer(),
                 self::CODE_LENGTH_DIGITS,
                 self::CODE_VALIDITY_SECONDS,
                 Algorithm::from($algorithm)
@@ -529,7 +546,7 @@ final class TOTPManager
     {
         $secret = $this->createSecret();
         $tfa = $this->getTwoFactorAuth();
-        $name = self::$brand_label;
+        $name = $this->getIssuer();
         if (isset($_SESSION['mfa_pre_auth'])) {
             $name = $_SESSION['mfa_pre_auth']['user']['name'];
         } elseif (isset($_SESSION['glpiname'])) {

@@ -240,4 +240,17 @@ class TOTPManagerTest extends \DbTestCase
         $CFG_GLPI['2fa_grace_days'] = 0;
         $this->assertEquals(0, $tfa->getGracePeriodDaysLeft());
     }
+
+    public function testGet2faIssuer()
+    {
+        global $CFG_GLPI;
+
+        $tfa = new TOTPManager();
+
+        // No custom suffix
+        $this->assertEquals('GLPI', $tfa->getIssuer());
+
+        $CFG_GLPI['2fa_suffix'] = 'test';
+        $this->assertEquals('GLPI (test)', $tfa->getIssuer());
+    }
 }
