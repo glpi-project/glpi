@@ -180,7 +180,7 @@ class RuleDefineItemtype extends Rule
         $twig_params = [
             'entity_as_criterion' => false,
             'fields'              => $fields,
-            'type_match'          => $this->fields['match'] === Rule::AND_MATCHING ? __('AND') : __('OR'),
+            'type_match'          => ($this->fields['match'] ?? Rule::AND_MATCHING) === Rule::AND_MATCHING ? __('AND') : __('OR'),
         ];
         foreach ($this->criterias as $criterion) {
             if ($criterion->fields['criteria'] === 'entities_id') {

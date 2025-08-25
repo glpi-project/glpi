@@ -1034,7 +1034,7 @@ class RuleImportAsset extends Rule
         $twig_params = [
             'entity_as_criterion' => false,
             'fields'              => $fields,
-            'type_match'          => $this->fields['match'] === Rule::AND_MATCHING ? __('AND') : __('OR'),
+            'type_match'          => ($this->fields['match'] ?? Rule::AND_MATCHING) === Rule::AND_MATCHING ? __('AND') : __('OR'),
         ];
         foreach ($this->criterias as $criterion) {
             if ($criterion->fields['criteria'] === 'entities_id') {
@@ -1058,7 +1058,7 @@ class RuleImportAsset extends Rule
                     input_class: 'col-7'
                 }) }}
             {% endif %}
-            {{ fields.htmlField('', loop.first ? '' : type_match|e, '', {
+            {{ fields.htmlField('', type_match|e, '', {
                 no_label: true,
                 field_class: 'col-2',
                 input_class: 'col-12'
