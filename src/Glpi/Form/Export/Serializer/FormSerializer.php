@@ -53,6 +53,7 @@ use Glpi\Form\Export\Result\ImportResultPreview;
 use Glpi\Form\Export\Specification\AccesControlPolicyContentSpecification;
 use Glpi\Form\Export\Specification\CommentContentSpecification;
 use Glpi\Form\Export\Specification\ConditionDataSpecification;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Export\Specification\DestinationContentSpecification;
 use Glpi\Form\Export\Specification\ExportContentSpecification;
 use Glpi\Form\Export\Specification\FormContentSpecification;
@@ -282,14 +283,16 @@ final class FormSerializer extends AbstractFormSerializer
 
         // Export entity
         $entity = Entity::getById($form->fields['entities_id']);
-        $spec->entity_name = $entity->fields['name'];
-        $spec->addDataRequirement(Entity::class, $entity->fields['name']);
+        $requirement = DataRequirementSpecification::fromItem($entity);
+        $spec->addDataRequirement($requirement);
+        $spec->entity_name = $requirement->name;
 
         // Export category
         $category = new Category();
         if ($category->getFromDB($form->fields[Category::getForeignKeyField()])) {
-            $spec->category_name = $category->fields['name'];
-            $spec->addDataRequirement(Category::class, $category->fields['name']);
+            $requirement = DataRequirementSpecification::fromItem($category);
+            $spec->addDataRequirement($requirement);
+            $spec->category_name = $requirement->name;
         }
 
         return $spec;

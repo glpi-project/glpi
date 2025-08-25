@@ -571,9 +571,9 @@ TWIG;
                     continue;
                 }
 
-                $name = $item->getName();
-                $default_value_config[$data_key][$i] = $name;
-                $requirements[] = new DataRequirementSpecification($itemtype, $name);
+                $requirement = DataRequirementSpecification::fromItem($item);
+                $requirements[] = $requirement;
+                $default_value_config[$data_key][$i] = $requirement->name;
             }
         }
 

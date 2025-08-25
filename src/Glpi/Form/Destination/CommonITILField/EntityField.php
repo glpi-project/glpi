@@ -262,9 +262,8 @@ final class EntityField extends AbstractConfigField implements DestinationFieldC
         }
 
         // Insert entity name and requirement
-        $name = $entity->getName();
-        $config[EntityFieldConfig::SPECIFIC_ENTITY_ID] = $name;
-        $requirement = new DataRequirementSpecification(Entity::class, $name);
+        $requirement = DataRequirementSpecification::fromItem($entity);
+        $config[EntityFieldConfig::SPECIFIC_ENTITY_ID] = $requirement->name;
 
         return new DynamicExportDataField($config, [$requirement]);
     }

@@ -228,9 +228,8 @@ final class ITILCategoryField extends AbstractConfigField implements Destination
         }
 
         // Insert category name and requirement
-        $name = $category->getName();
-        $config[ITILCategoryFieldConfig::SPECIFIC_ITILCATEGORY_ID] = $name;
-        $requirement = new DataRequirementSpecification(ITILCategory::class, $name);
+        $requirement = DataRequirementSpecification::fromItem($category);
+        $config[ITILCategoryFieldConfig::SPECIFIC_ITILCATEGORY_ID] = $requirement->name;
 
         return new DynamicExportDataField($config, [$requirement]);
     }

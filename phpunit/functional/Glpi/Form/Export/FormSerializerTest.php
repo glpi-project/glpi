@@ -268,7 +268,11 @@ final class FormSerializerTest extends \DbTestCase
         // Import into another entity
         $another_entity_id = getItemByTypeName(Entity::class, "_test_child_1", true);
         $mapper = new DatabaseMapper(Session::getActiveEntities());
-        $mapper->addMappedItem(Entity::class, 'My entity', $another_entity_id);
+        $mapper->addMappedItem(
+            Entity::class,
+            "Root entity > _test_root_entity > My entity",
+            $another_entity_id
+        );
 
         $form_copy = $this->importForm($json, $mapper, []);
         $this->assertEquals($another_entity_id, $form_copy->fields['entities_id']);
@@ -1070,7 +1074,11 @@ final class FormSerializerTest extends \DbTestCase
 
         // Add mapped item to fix the form
         $mapper = new DatabaseMapper([$this->getTestRootEntity(only_id: true)]);
-        $mapper->addMappedItem(Entity::class, 'My entity', $this->getTestRootEntity(only_id: true));
+        $mapper->addMappedItem(
+            Entity::class,
+            "Root entity > _test_root_entity > My entity",
+            $this->getTestRootEntity(only_id: true)
+        );
 
         // Act: preview the import again
         $preview = self::$serializer->previewImport($json, $mapper, []);
@@ -1165,7 +1173,11 @@ final class FormSerializerTest extends \DbTestCase
 
         // Add mapped item to fix the form
         $mapper = new DatabaseMapper([$this->getTestRootEntity(only_id: true)]);
-        $mapper->addMappedItem(Entity::class, 'My entity', $this->getTestRootEntity(only_id: true));
+        $mapper->addMappedItem(
+            Entity::class,
+            "Root entity > _test_root_entity > My entity",
+            $this->getTestRootEntity(only_id: true)
+        );
 
         // Act: import the form again
         $import_result = self::$serializer->importFormsFromJson($json, $mapper, []);
@@ -1238,6 +1250,74 @@ final class FormSerializerTest extends \DbTestCase
             getDbRelations()[Form::getTable()],
             $ids_for_default_form,
             $ids_for_imported_form,
+        );
+    }
+
+    public function testExportAndImportEntityWithCompleteName(): void
+    {
+        // Need an active session to create entities
+        $this->login();
+
+        // Arrange: we will create two entities with the same name but different
+        // parents.
+        $form = $this->createAndGetFormWithBasicPropertiesFilled();
+        $parent_entity_1 = $this->createItem(Entity::class, [
+            'name' => 'Parent entity 1',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $parent_entity_2 = $this->createItem(Entity::class, [
+            'name' => 'Parent entity 2',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $child_entity_1 = $this->createItem(Entity::class, [
+            'name' => 'Child entity',
+            'entities_id' => $parent_entity_1->getID(),
+        ]);
+        $this->createItem(Entity::class, [
+            'name' => 'Child entity',
+            'entities_id' =>  $parent_entity_2->getID(),
+        ]);
+        $form->fields['entities_id'] = $child_entity_1->getID();
+
+        // Act: export then import
+        $form_copy = $this->exportAndImportForm($form);
+        $this->assertEquals(
+            $child_entity_1->getID(),
+            $form_copy->fields['entities_id']
+        );
+    }
+
+    public function testExportAndImportFormCategoryWithCompleteName(): void
+    {
+        // Need an active session to create entities
+        $this->login();
+
+        // Arrange: we will create two categories with the same name but different
+        // parents.
+        $form = $this->createAndGetFormWithBasicPropertiesFilled();
+        $parent_category_1 = $this->createItem(Category::class, [
+            'name' => 'Parent category 1',
+            Category::getForeignKeyField() => 0,
+        ]);
+        $parent_category_2 = $this->createItem(Category::class, [
+            'name' => 'Parent category 2',
+            Category::getForeignKeyField() => 0,
+        ]);
+        $child_category_1 = $this->createItem(Category::class, [
+            'name' => 'Child category',
+            Category::getForeignKeyField() => $parent_category_1->getID(),
+        ]);
+        $this->createItem(Category::class, [
+            'name' => 'Child category',
+            Category::getForeignKeyField() => $parent_category_2->getID(),
+        ]);
+        $form->fields[Category::getForeignKeyField()] = $child_category_1->getID();
+
+        // Act: export then import
+        $form_copy = $this->exportAndImportForm($form);
+        $this->assertEquals(
+            $child_category_1->getID(),
+            $form_copy->fields[Category::getForeignKeyField()]
         );
     }
 
