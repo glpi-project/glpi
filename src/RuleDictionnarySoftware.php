@@ -134,7 +134,7 @@ class RuleDictionnarySoftware extends Rule
             'actions' => $this->actions,
             'fields' => $fields,
             'action_names' => [],
-            'type_match'          => $this->fields['match'] === Rule::AND_MATCHING ? __('AND') : __('OR'),
+            'type_match' => ($this->fields['match'] ?? Rule::AND_MATCHING) ? __('AND') : __('OR'),
         ];
         $actions = $this->getAllActions();
         foreach ($actions as $key => $action) {
