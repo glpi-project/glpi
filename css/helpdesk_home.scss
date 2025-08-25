@@ -89,6 +89,10 @@ header {
 
     h1 {
         font-size:3.7rem;
+
+        // The default `--tblr-line-height-h1` line height does not play well
+        // with the font size we apply here, it is better to remove it.
+        line-height: unset !important;
     }
 
     .search-bar-container {
