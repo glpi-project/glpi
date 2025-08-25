@@ -47,9 +47,9 @@ final class DataRequirementSpecification
     public static function fromItem(CommonDBTM $item): self
     {
         if ($item instanceof CommonTreeDropdown) {
-            $name = $item->getName();
-        } else {
             $name = $item->getName(['complete' => true]);
+        } else {
+            $name = $item->getName();
         }
         return new self($item::class, $name);
     }
