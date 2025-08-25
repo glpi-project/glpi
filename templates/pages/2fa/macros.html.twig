@@ -34,7 +34,7 @@
    <div class="d-flex justify-content-center">
       {% for i in 1..digits %}
          <input type="text" class="form-control text-center {{ i != 1 ? 'ms-2' : '' }} fw-bold" name="totp_code[]"
-             maxlength="1" pattern="[0-9]" inputmode="numeric" required style="width: 2em; font-size: 1.5em"
+             maxlength="1" pattern="[0-9]" inputmode="numeric" required style="width: 2.5em; font-size: 1.5em"
              aria-label="{{ __('2FA code digit %s of %s')|format(i, digits) }}">
       {% endfor %}
    </div>
