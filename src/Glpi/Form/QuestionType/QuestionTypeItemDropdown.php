@@ -139,7 +139,11 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
         }
 
         $subtree_depth = 0;
-        if (isset($values['show_tree_depth']) && is_numeric($values['show_tree_depth'])) {
+        if (
+            isset($values['show_tree_depth'])
+            && is_numeric($values['show_tree_depth'])
+            && $values['show_tree_depth'] > 0
+        ) {
             $subtree_depth = (int) $values['show_tree_depth'];
         }
 

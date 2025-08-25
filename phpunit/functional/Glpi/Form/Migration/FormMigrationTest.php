@@ -2341,7 +2341,7 @@ final class FormMigrationTest extends DbTestCase
                 'itemtype'                       => 'ITILCategory',
                 'values'                         => json_encode([
                     'show_ticket_categories' => 'request',
-                    'show_tree_depth'        => '0',
+                    'show_tree_depth'        => '-1', // All levels
                     'show_tree_root'         => $itilcategory->getId(),
                     'selectable_tree_root'   => '0',
                     'entity_restrict'        => '3', // Entity restriction
