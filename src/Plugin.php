@@ -45,12 +45,14 @@ use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\VersionParser;
+use Safe\Exceptions\FilesystemException;
 
 use function Safe\ini_get;
 use function Safe\ob_end_clean;
 use function Safe\ob_start;
 use function Safe\preg_grep;
 use function Safe\preg_match;
+use function Safe\realpath;
 use function Safe\scandir;
 
 class Plugin extends CommonDBTM
@@ -3021,19 +3023,34 @@ TWIG;
 
         Toolbox::deprecated('All plugins resources should be accessed from the `/plugins/` path.');
 
-        $directory = self::getPhpDir($plugin_key, false);
-        if ($directory === false) {
+        try {
+            $marketplace_dir = realpath(GLPI_MARKETPLACE_DIR);
+        } catch (FilesystemException) {
+            $marketplace_dir = null;
+        }
+
+        $found       = false;
+        $marketplace = false;
+        foreach (GLPI_PLUGINS_DIRECTORIES as $plugins_directory) {
+            if (is_dir("$plugins_directory/$plugin_key")) {
+                $found       = true;
+                $marketplace = realpath($plugins_directory) === $marketplace_dir;
+                break;
+            }
+        }
+
+        if (!$found) {
             return false;
         }
 
-        $directory = ltrim($directory, '/\\');
+        $path = ($marketplace ? 'marketplace' : 'plugins') . '/' . $plugin_key;
 
         if ($full) {
             $root = $use_url_base ? $CFG_GLPI['url_base'] : $CFG_GLPI["root_doc"];
-            $directory = "$root/$directory";
+            $path = "$root/$path";
         }
 
-        return str_replace('\\', '/', $directory);
+        return $path;
     }
 
 
