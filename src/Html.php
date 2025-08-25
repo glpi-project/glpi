@@ -5922,6 +5922,9 @@ JS);
             case 'cable':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/cable.js';
                 break;
+            case 'altcha':
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/altcha.js';
+                break;
             default:
                 $found = false;
                 if (isset($PLUGIN_HOOKS[Hooks::JAVASCRIPT][$name])) {

@@ -45,6 +45,7 @@ use Glpi\Form\Form;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
+use Html;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -70,6 +71,8 @@ final class RendererController extends AbstractController
     )]
     public function __invoke(Request $request): Response
     {
+        $is_unauthenticated_user = !Session::isAuthenticated();
+
         $form = $this->loadTargetForm($request);
         $this->checkFormAccessPolicies($form, $request);
 
@@ -95,11 +98,16 @@ final class RendererController extends AbstractController
         $engine = new Engine($form, EngineInput::fromForm($form));
         $visibility_engine_output = $engine->computeVisibility();
 
+        // Insert altcha for public forms
+        if ($is_unauthenticated_user) {
+            Html::requireJs('altcha');
+        }
+
         return $this->render('pages/form_renderer.html.twig', [
             'title' => $form->fields['name'],
             'menu' => ['helpdesk', ServiceCatalog::getType()],
             'form' => $form,
-            'unauthenticated_user' => !Session::isAuthenticated(),
+            'unauthenticated_user' => $is_unauthenticated_user,
             'my_tickets_url_param' => http_build_query($my_tickets_criteria),
             'visibility_engine_output' => $visibility_engine_output,
             'params' => $request->query->all(),
