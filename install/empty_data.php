@@ -367,6 +367,7 @@ $empty_data_builder = new class {
             '2fa_enforced' => 0,
             '2fa_grace_date_start' => null,
             '2fa_grace_days' => 0,
+            '2fa_suffix' => '',
             'is_notif_enable_default' => 1,
             'show_search_form' => 0,
             'search_pagination_on_top' => 0,
