@@ -44,7 +44,7 @@
         {% endif %}
 
         {% if id <= 0 %}
-            <label for="nb_zones" class="form-label">{{ params['nb_zones_label']|default(__("Set number of zones")) }}</label>
+            <label for="nb_zones-{{ rand }}" class="form-label">{{ params['nb_zones_label']|default(__("Set number of zones")) }}</label>
             <input type="number" id="nb_zones-{{ rand }}" name="nb_zones" class="form-control d-inline-block" style="width: 65px" min="1" max="{{ stencil.getMaxZoneNumber() }}" value="{{ nb_zones }}">
 
         {% else %}
@@ -59,7 +59,7 @@
                 {% if nb_zones > 0 %}
                     {% set start_zone_index = params.start_zone_index ?? 1 %}
                     {% for zone_number in start_zone_index..nb_zones %}
-                        {% set zone_defined = (zones[zone_number]|length > 0) %}
+                        {% set zone_defined = (zones[zone_number] is defined) %}
                         <button type="button" data-zone-index="{{ zone_number }}" class="btn btn-sm btn-icon {{ zone_defined ? " btn-success" : " btn-outline-secondary" }} px-1 set-zone-data" style="min-width: 4%;">
                             <span class="overflow-hidden">{{ zones[zone_number]['label'] ?? zone_number }}</span>
                             <i class="ti {{ zone_defined ? " ti-check" : " ti-file-unknown" }} ms-1"></i>
@@ -74,10 +74,10 @@
                     </template>
 
                     <div class="d-flex gap-1 justify-content-center" style="min-width: 4%;">
-                        <button type="button" name="add-new-zone" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="{{ params['add_zone_label'] ?? __("Add zone") }}" class="btn btn-sm btn-ghost-secondary px-1">
+                        <button type="button" name="add-new-zone" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="{{ params['add_zone_label'] ?? __("Add zone") }}" aria-label="{{ __("Add zone") }}" class="btn btn-sm btn-ghost-secondary px-1">
                             <i class="ti ti-plus"></i>
                         </button>
-                        <button type="button" name="remove-zone" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="{{ params['remove_zone_label'] ?? __("Add zone") }}" class="btn btn-sm btn-ghost-danger px-1">
+                        <button type="button" name="remove-zone" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="{{ params['remove_zone_label'] ?? __("Remove zone") }}" aria-label="{{ __("Remove zone") }}" class="btn btn-sm btn-ghost-danger px-1">
                             <i class="ti ti-minus"></i>
                         </button>
                     </div>
@@ -90,9 +90,9 @@
                 <div class="col-auto">
                     <div class="row">
                         {% if params.zone_label is defined %}
-                            <label for="zone_label" class="col-auto col-form-label">{{ params['zone_label'] }}</label>
+                            <label for="zone_label-{{ rand }}" class="col-auto col-form-label">{{ params['zone_label'] }}</label>
                         {% else %}
-                            <label for="zone_label" class="col-auto col-form-label">{{ __("Zone label") }}</label>
+                            <label for="zone_label-{{ rand }}" class="col-auto col-form-label">{{ __("Zone label") }}</label>
                         {% endif %}
                         <div class="col-auto">
                             <input type="text" id="zone_label-{{ rand }}" class="form-control" placeholder="" form="zone-data-form-{{ rand }}">
@@ -102,9 +102,9 @@
                 <div class="col-auto">
                     <div class="row">
                         {% if params.zone_number_label is defined %}
-                            <label for="zone_number" class="col-auto col-form-label">{{ params['zone_number_label'] }}</label>
+                            <label for="zone_number-{{ rand }}" class="col-auto col-form-label">{{ params['zone_number_label'] }}</label>
                         {% else %}
-                            <label for="zone_number" class="col-auto col-form-label">{{ __("Zone number") }}</label>
+                            <label for="zone_number-{{ rand }}" class="col-auto col-form-label">{{ __("Zone number") }}</label>
                         {% endif %}
                         <div class="col-auto">
                             <input type="text" id="zone_number-{{ rand }}" class="form-control" placeholder="" form="zone-data-form-{{ rand }}">
