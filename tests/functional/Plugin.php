@@ -825,7 +825,7 @@ class Plugin extends DbTestCase
 
         return implode(
             DIRECTORY_SEPARATOR,
-            [GLPI_ROOT, 'plugins', $directory]
+            [GLPI_ROOT, 'tests', 'fixtures', 'plugins', $directory]
         );
     }
 
