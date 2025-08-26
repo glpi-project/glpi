@@ -1072,15 +1072,15 @@ abstract class CommonITILValidation extends CommonDBChild
                         <div class="flex-shrink-0"><strong>{{ step_name }}</strong></div>
                         <div class="flex-shrink-0">
                             {% if step_status == constant('CommonITILValidation::ACCEPTED') %}
-                                <span class="text-green" data-bs-toogle="tooltip" title="{{ __("Approval step accepted") }}">
+                                <span class="text-green" data-bs-toogle="tooltip" title="{{ accepted_label }}">
                                     <i class="ti ti-check"></i>
                                 </span>
                             {% elseif step_status == constant('CommonITILValidation::REFUSED') %}
-                                <span class="text-red" data-bs-toggle="tooltip" title="{{ __("Approval step refused") }}">
+                                <span class="text-red" data-bs-toggle="tooltip" title="{{ refused_label }}">
                                     <i class="ti ti-ban"></i>
                                 </span>
                             {% elseif step_status == constant('CommonITILValidation::WAITING') %}
-                                <span class="text-yellow" data-bs-toggle="tooltip" title="{{ __("Approval step pending") }}">
+                                <span class="text-yellow" data-bs-toggle="tooltip" title="{{ pending_label }}">
                                     <i class="ti ti-clock"></i>
                                 </span>
                             {% endif %}
@@ -1124,6 +1124,9 @@ abstract class CommonITILValidation extends CommonDBChild
                     'edit_dialog_params' => $edit_dialog_params,
                     'edit_button_label'  => __('Edit approval step'),
                     'progress_label'     => __('Progress: %1$s%% of %2$s%% required'),
+                    'accepted_label'     => __('Approval step accepted'),
+                    'refused_label'      => __('Approval step refused'),
+                    'pending_label'      => __('Approval step pending'),
                 ]
             );
 

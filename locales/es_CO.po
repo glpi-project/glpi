@@ -16,17 +16,17 @@
 # Andrey Amado Benavides <andrey66@gmail.com>, 2025
 # Vladimir Támara Patiño <vtamara@pasosdeJesus.org>, 2025
 # DOMBRE Julien <moyo@indepnet.net>, 2025
-# alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # Haider López <hlopez@itsoluciones.com.co>, 2025
+# alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-26 10:20+0000\n"
+"POT-Creation-Date: 2025-08-26 12:21+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Haider López <hlopez@itsoluciones.com.co>, 2025\n"
+"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2025\n"
 "Language-Team: Spanish (Colombia) (https://app.transifex.com/glpi/teams/1637/es_CO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -812,7 +812,7 @@ msgstr ""
 #: templates/components/itilobject/timeline/main_description.html.twig
 #: templates/components/user/info_card.html.twig
 #: templates/pages/tools/kb/comments.html.twig src/KnowbaseItem.php:245
-#: src/KnowbaseItemTranslation.php:90 src/CommonITILValidation.php:1188
+#: src/KnowbaseItemTranslation.php:90 src/CommonITILValidation.php:1191
 #: js/src/vue/CustomObject/FieldPreview/Field.vue:30
 msgid "Edit"
 msgstr "Editar"
@@ -1460,7 +1460,7 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 #: templates/components/form/basic_inputs_macros.html.twig
-#: src/CommonITILValidation.php:1773
+#: src/CommonITILValidation.php:1776
 msgid "Validate"
 msgstr "Validar"
 
@@ -1984,7 +1984,7 @@ msgstr "Número de inventario"
 #: src/Computer.php:461 src/ProjectTask_Ticket.php:336 src/Certificate.php:278
 #: src/CronTask.php:1274 src/CronTask.php:1412
 #: src/CommonItilObject_Item.php:506 src/PDU.php:203 src/CommonDBTM.php:3513
-#: src/CommonITILValidation.php:1356 src/Plugin.php:2657
+#: src/CommonITILValidation.php:1359 src/Plugin.php:2657
 msgid "Status"
 msgstr "Estado"
 
@@ -3476,7 +3476,7 @@ msgstr[2] ""
 #: src/CommonITILObject.php:4737 src/CommonITILObject.php:4746
 #: src/CommonITILObject.php:6847 src/CommonITILObject.php:6894
 #: src/CommonITILObject.php:10159 src/NotificationTargetChange.php:308
-#: src/NotImportedEmail.php:179 src/CommonITILValidation.php:1498
+#: src/NotImportedEmail.php:179 src/CommonITILValidation.php:1501
 msgid "Requester"
 msgid_plural "Requesters"
 msgstr[0] "Solicitante"
@@ -3487,7 +3487,7 @@ msgstr[2] "Solicitantes"
 #: src/NotificationTargetTicket.php:676 src/NotificationTargetTicket.php:706
 #: src/NotificationTargetCommonITILObject.php:976
 #: src/ITILValidationTemplate.php:81 src/NotificationTargetChange.php:327
-#: src/CommonITILValidation.php:1391 src/CommonITILValidation.php:1518
+#: src/CommonITILValidation.php:1394 src/CommonITILValidation.php:1521
 msgid "Approver"
 msgstr "Aprobador"
 
@@ -4228,7 +4228,7 @@ msgstr "No hay históricos"
 #: src/OAuthClient.php:94 src/Item_RemoteManagement.php:207
 #: src/Item_RemoteManagement.php:238 src/Certificate.php:125
 #: src/CronTask.php:1391 src/Contact.php:282 src/PDU.php:114
-#: src/CommonDBTM.php:4385 src/CommonITILValidation.php:1329
+#: src/CommonDBTM.php:4385 src/CommonITILValidation.php:1332
 #: src/Domain.php:233 src/Domain.php:257 src/ConsumableItem.php:167
 msgid "ID"
 msgstr "ID"
@@ -5778,7 +5778,7 @@ msgstr ""
 #: src/Project.php:904 src/ProjectTask.php:963
 #: src/NotificationTargetProjectTask.php:553
 #: src/NotificationTargetProjectTask.php:568 src/Cartridge.php:895
-#: src/CommonITILValidation.php:1252
+#: src/CommonITILValidation.php:1255
 msgctxt "item"
 msgid "State"
 msgstr "Estado"
@@ -17352,7 +17352,7 @@ msgid "Observer group except manager users"
 msgstr ""
 
 #: src/NotificationTargetCommonITILObject.php:973
-#: src/CommonITILValidation.php:1254 src/CommonITILValidation.php:1381
+#: src/CommonITILValidation.php:1257 src/CommonITILValidation.php:1384
 msgid "Approval requester"
 msgstr "Solicitante de la aprobación"
 
@@ -33236,7 +33236,7 @@ msgstr "No está sujeto a una aprobación"
 msgid "Granted + Not subject to approval"
 msgstr "Concedido + No esta sujeto a aprobación"
 
-#: src/CommonITILValidation.php:891 src/CommonITILValidation.php:1836
+#: src/CommonITILValidation.php:891 src/CommonITILValidation.php:1839
 msgid "Group user(s)"
 msgstr ""
 
@@ -33249,67 +33249,79 @@ msgstr ""
 msgid "Progress: %1$s%% of %2$s%% required"
 msgstr ""
 
-#: src/CommonITILValidation.php:1253 src/CommonITILValidation.php:1365
-#: src/CommonITILValidation.php:1472
+#: src/CommonITILValidation.php:1127
+msgid "Approval step accepted"
+msgstr ""
+
+#: src/CommonITILValidation.php:1128
+msgid "Approval step refused"
+msgstr ""
+
+#: src/CommonITILValidation.php:1129
+msgid "Approval step pending"
+msgstr ""
+
+#: src/CommonITILValidation.php:1256 src/CommonITILValidation.php:1368
+#: src/CommonITILValidation.php:1475
 msgid "Request date"
 msgstr "Fecha de la solicitud"
 
-#: src/CommonITILValidation.php:1255 src/CommonITILValidation.php:1338
-#: src/CommonITILValidation.php:1430
+#: src/CommonITILValidation.php:1258 src/CommonITILValidation.php:1341
+#: src/CommonITILValidation.php:1433
 msgid "Request comments"
 msgstr "Comentario de la solicitud"
 
-#: src/CommonITILValidation.php:1256 src/CommonITILValidation.php:1373
-#: src/CommonITILValidation.php:1485
+#: src/CommonITILValidation.php:1259 src/CommonITILValidation.php:1376
+#: src/CommonITILValidation.php:1488
 msgid "Approval date"
 msgstr "Fecha de aprobación"
 
-#: src/CommonITILValidation.php:1257 src/CommonITILValidation.php:1400
+#: src/CommonITILValidation.php:1260 src/CommonITILValidation.php:1403
 msgid "Requested approver type"
 msgstr ""
 
-#: src/CommonITILValidation.php:1258
+#: src/CommonITILValidation.php:1261
 msgid "Requested approver"
 msgstr ""
 
-#: src/CommonITILValidation.php:1259
+#: src/CommonITILValidation.php:1262
 msgid "Approval Comment"
 msgstr ""
 
-#: src/CommonITILValidation.php:1260
+#: src/CommonITILValidation.php:1263
 #: src/NotificationTargetKnowbaseItem.php:218
 msgid "Documents"
 msgstr "Documentos"
 
-#: src/CommonITILValidation.php:1347 src/CommonITILValidation.php:1444
+#: src/CommonITILValidation.php:1350 src/CommonITILValidation.php:1447
 msgid "Approval comments"
 msgstr "Comentario de la aprobación"
 
-#: src/CommonITILValidation.php:1459
+#: src/CommonITILValidation.php:1462
 msgid "Approval status"
 msgstr "Estado de aprobación"
 
-#: src/CommonITILValidation.php:1541
+#: src/CommonITILValidation.php:1544
 msgid "Approver substitute"
 msgstr ""
 
-#: src/CommonITILValidation.php:1601
+#: src/CommonITILValidation.php:1604
 msgid "Approver group"
 msgstr ""
 
-#: src/CommonITILValidation.php:1623
+#: src/CommonITILValidation.php:1626
 msgid "Substitute of a member of approver group"
 msgstr ""
 
-#: src/CommonITILValidation.php:1694
+#: src/CommonITILValidation.php:1697
 msgid "Approval status by users"
 msgstr ""
 
-#: src/CommonITILValidation.php:1849
+#: src/CommonITILValidation.php:1852
 msgid "Approver type"
 msgstr ""
 
-#: src/CommonITILValidation.php:1954
+#: src/CommonITILValidation.php:1957
 msgid ""
 "This item is waiting for approval, do you really want to resolve or close "
 "it?"
@@ -33317,11 +33329,11 @@ msgstr ""
 "Este asunto está en espera para ser aprobado, realmente quiere resolverlo o "
 "cerrarlo?"
 
-#: src/CommonITILValidation.php:1995
+#: src/CommonITILValidation.php:1998
 msgid "This item is waiting for approval."
 msgstr "Este elemento está esperando aprobación."
 
-#: src/CommonITILValidation.php:1996
+#: src/CommonITILValidation.php:1999
 msgid "Do you really want to resolve or close it?"
 msgstr "¿De verdad quieres resolverlo o cerrarlo?"
 
@@ -34419,7 +34431,7 @@ msgstr "Expresión regular"
 
 #: js/src/vue/Kanban/Kanban.vue:1339
 msgid "Search or filter results"
-msgstr ""
+msgstr "Buscar o filtrar resultados"
 
 #: js/src/vue/Kanban/Kanban.vue:1342
 msgid "Add column"

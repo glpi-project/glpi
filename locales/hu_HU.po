@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-26 10:20+0000\n"
+"POT-Creation-Date: 2025-08-26 12:21+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
 "Last-Translator: Márk Klung, 2025\n"
 "Language-Team: Hungarian (Hungary) (https://app.transifex.com/glpi/teams/1637/hu_HU/)\n"
@@ -795,7 +795,7 @@ msgstr ""
 #: templates/components/itilobject/timeline/main_description.html.twig
 #: templates/components/user/info_card.html.twig
 #: templates/pages/tools/kb/comments.html.twig src/KnowbaseItem.php:245
-#: src/KnowbaseItemTranslation.php:90 src/CommonITILValidation.php:1188
+#: src/KnowbaseItemTranslation.php:90 src/CommonITILValidation.php:1191
 #: js/src/vue/CustomObject/FieldPreview/Field.vue:30
 msgid "Edit"
 msgstr "Szerkeszt"
@@ -1439,7 +1439,7 @@ msgid "Cancel"
 msgstr "Mégsem"
 
 #: templates/components/form/basic_inputs_macros.html.twig
-#: src/CommonITILValidation.php:1773
+#: src/CommonITILValidation.php:1776
 msgid "Validate"
 msgstr "Érvényesítés"
 
@@ -1958,7 +1958,7 @@ msgstr "Leltári szám"
 #: src/Computer.php:461 src/ProjectTask_Ticket.php:336 src/Certificate.php:278
 #: src/CronTask.php:1274 src/CronTask.php:1412
 #: src/CommonItilObject_Item.php:506 src/PDU.php:203 src/CommonDBTM.php:3513
-#: src/CommonITILValidation.php:1356 src/Plugin.php:2657
+#: src/CommonITILValidation.php:1359 src/Plugin.php:2657
 msgid "Status"
 msgstr "Státusz"
 
@@ -3438,7 +3438,7 @@ msgstr[1] ""
 #: src/CommonITILObject.php:4737 src/CommonITILObject.php:4746
 #: src/CommonITILObject.php:6847 src/CommonITILObject.php:6894
 #: src/CommonITILObject.php:10159 src/NotificationTargetChange.php:308
-#: src/NotImportedEmail.php:179 src/CommonITILValidation.php:1498
+#: src/NotImportedEmail.php:179 src/CommonITILValidation.php:1501
 msgid "Requester"
 msgid_plural "Requesters"
 msgstr[0] "Kérelmező"
@@ -3448,7 +3448,7 @@ msgstr[1] "Kérelmezők"
 #: src/NotificationTargetTicket.php:676 src/NotificationTargetTicket.php:706
 #: src/NotificationTargetCommonITILObject.php:976
 #: src/ITILValidationTemplate.php:81 src/NotificationTargetChange.php:327
-#: src/CommonITILValidation.php:1391 src/CommonITILValidation.php:1518
+#: src/CommonITILValidation.php:1394 src/CommonITILValidation.php:1521
 msgid "Approver"
 msgstr "Érvényesítő felhasználó"
 
@@ -4184,7 +4184,7 @@ msgstr "Nincs történet"
 #: src/OAuthClient.php:94 src/Item_RemoteManagement.php:207
 #: src/Item_RemoteManagement.php:238 src/Certificate.php:125
 #: src/CronTask.php:1391 src/Contact.php:282 src/PDU.php:114
-#: src/CommonDBTM.php:4385 src/CommonITILValidation.php:1329
+#: src/CommonDBTM.php:4385 src/CommonITILValidation.php:1332
 #: src/Domain.php:233 src/Domain.php:257 src/ConsumableItem.php:167
 msgid "ID"
 msgstr "ID"
@@ -5722,7 +5722,7 @@ msgstr ""
 #: src/Project.php:904 src/ProjectTask.php:963
 #: src/NotificationTargetProjectTask.php:553
 #: src/NotificationTargetProjectTask.php:568 src/Cartridge.php:895
-#: src/CommonITILValidation.php:1252
+#: src/CommonITILValidation.php:1255
 msgctxt "item"
 msgid "State"
 msgstr "Állapot"
@@ -17199,7 +17199,7 @@ msgid "Observer group except manager users"
 msgstr ""
 
 #: src/NotificationTargetCommonITILObject.php:973
-#: src/CommonITILValidation.php:1254 src/CommonITILValidation.php:1381
+#: src/CommonITILValidation.php:1257 src/CommonITILValidation.php:1384
 msgid "Approval requester"
 msgstr "Érvényesítés kérelmező"
 
@@ -32708,7 +32708,7 @@ msgstr "Nem kell jóváhagyni"
 msgid "Granted + Not subject to approval"
 msgstr "Engedélyezve + nem kell jóváhagyni"
 
-#: src/CommonITILValidation.php:891 src/CommonITILValidation.php:1836
+#: src/CommonITILValidation.php:891 src/CommonITILValidation.php:1839
 msgid "Group user(s)"
 msgstr ""
 
@@ -32721,77 +32721,89 @@ msgstr ""
 msgid "Progress: %1$s%% of %2$s%% required"
 msgstr ""
 
-#: src/CommonITILValidation.php:1253 src/CommonITILValidation.php:1365
-#: src/CommonITILValidation.php:1472
+#: src/CommonITILValidation.php:1127
+msgid "Approval step accepted"
+msgstr ""
+
+#: src/CommonITILValidation.php:1128
+msgid "Approval step refused"
+msgstr ""
+
+#: src/CommonITILValidation.php:1129
+msgid "Approval step pending"
+msgstr ""
+
+#: src/CommonITILValidation.php:1256 src/CommonITILValidation.php:1368
+#: src/CommonITILValidation.php:1475
 msgid "Request date"
 msgstr "Igénylés dátuma"
 
-#: src/CommonITILValidation.php:1255 src/CommonITILValidation.php:1338
-#: src/CommonITILValidation.php:1430
+#: src/CommonITILValidation.php:1258 src/CommonITILValidation.php:1341
+#: src/CommonITILValidation.php:1433
 msgid "Request comments"
 msgstr "Igénylés megjegyzései"
 
-#: src/CommonITILValidation.php:1256 src/CommonITILValidation.php:1373
-#: src/CommonITILValidation.php:1485
+#: src/CommonITILValidation.php:1259 src/CommonITILValidation.php:1376
+#: src/CommonITILValidation.php:1488
 msgid "Approval date"
 msgstr "Érvényesítés dátuma"
 
-#: src/CommonITILValidation.php:1257 src/CommonITILValidation.php:1400
+#: src/CommonITILValidation.php:1260 src/CommonITILValidation.php:1403
 msgid "Requested approver type"
 msgstr ""
 
-#: src/CommonITILValidation.php:1258
+#: src/CommonITILValidation.php:1261
 msgid "Requested approver"
 msgstr ""
 
-#: src/CommonITILValidation.php:1259
+#: src/CommonITILValidation.php:1262
 msgid "Approval Comment"
 msgstr ""
 
-#: src/CommonITILValidation.php:1260
+#: src/CommonITILValidation.php:1263
 #: src/NotificationTargetKnowbaseItem.php:218
 msgid "Documents"
 msgstr "Dokumentumok"
 
-#: src/CommonITILValidation.php:1347 src/CommonITILValidation.php:1444
+#: src/CommonITILValidation.php:1350 src/CommonITILValidation.php:1447
 msgid "Approval comments"
 msgstr "Érvényesség kommentálása"
 
-#: src/CommonITILValidation.php:1459
+#: src/CommonITILValidation.php:1462
 msgid "Approval status"
 msgstr "Érvényesítési státusz"
 
-#: src/CommonITILValidation.php:1541
+#: src/CommonITILValidation.php:1544
 msgid "Approver substitute"
 msgstr ""
 
-#: src/CommonITILValidation.php:1601
+#: src/CommonITILValidation.php:1604
 msgid "Approver group"
 msgstr ""
 
-#: src/CommonITILValidation.php:1623
+#: src/CommonITILValidation.php:1626
 msgid "Substitute of a member of approver group"
 msgstr ""
 
-#: src/CommonITILValidation.php:1694
+#: src/CommonITILValidation.php:1697
 msgid "Approval status by users"
 msgstr ""
 
-#: src/CommonITILValidation.php:1849
+#: src/CommonITILValidation.php:1852
 msgid "Approver type"
 msgstr ""
 
-#: src/CommonITILValidation.php:1954
+#: src/CommonITILValidation.php:1957
 msgid ""
 "This item is waiting for approval, do you really want to resolve or close "
 "it?"
 msgstr "Ez az elem jóváhagyásra vár, biztosan megoldod vagy lezárod ?"
 
-#: src/CommonITILValidation.php:1995
+#: src/CommonITILValidation.php:1998
 msgid "This item is waiting for approval."
 msgstr "Ez az elem jóváhagyásra vár."
 
-#: src/CommonITILValidation.php:1996
+#: src/CommonITILValidation.php:1999
 msgid "Do you really want to resolve or close it?"
 msgstr ""
 
