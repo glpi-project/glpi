@@ -478,7 +478,7 @@ abstract class CommonDropdown extends CommonDBTM
         }
 
         if ($DB->fieldExists($this->getTable(), 'picture_front')) {
-            $options[] = [
+            $tab[] = [
                 'id'            => '137',
                 'table'         => $this->getTable(),
                 'field'         => 'picture_front',
@@ -491,7 +491,7 @@ abstract class CommonDropdown extends CommonDBTM
         }
 
         if ($DB->fieldExists($this->getTable(), 'picture_rear')) {
-            $options[] = [
+            $tab[] = [
                 'id'            => '138',
                 'table'         => $this->getTable(),
                 'field'         => 'picture_rear',
