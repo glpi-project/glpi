@@ -181,7 +181,7 @@ class Hooks
     public const VCARD_DATA            = 'vcard_data';
 
     /**
-     * Register a function to be called when the plugin is disabled.
+     * Register a function to be called when another plugin is disabled.
      * The function is called with the plugin name as a parameter.
      */
     public const POST_PLUGIN_DISABLE   = 'post_plugin_disable';
@@ -193,19 +193,19 @@ class Hooks
     public const POST_PLUGIN_CLEAN     = 'post_plugin_clean';
 
     /**
-     * Register a function to be called when the plugin is installed.
+     * Register a function to be called when another plugin is installed.
      * The function is called with the plugin name as a parameter.
      */
     public const POST_PLUGIN_INSTALL   = 'post_plugin_install';
 
     /**
-     * Register a function to be called when the plugin is uninstalled.
+     * Register a function to be called when another plugin is uninstalled.
      * The function is called with the plugin name as a parameter.
      */
     public const POST_PLUGIN_UNINSTALL = 'post_plugin_uninstall';
 
     /**
-     * Register a function to be called when the plugin is enabled.
+     * Register a function to be called when another the plugin is enabled.
      * The function is called with the plugin name as a parameter.
      */
     public const POST_PLUGIN_ENABLE    = 'post_plugin_enable' ;
