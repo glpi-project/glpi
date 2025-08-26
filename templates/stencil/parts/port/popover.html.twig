@@ -30,7 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
-<span href="{{ 'NetworkPort'|itemtype_form_path(port['id']|default(null)) }}">
+<span>
     {% include 'stencil/parts/port/status.html.twig' with {
         'port': port,
         'with_text': true,
