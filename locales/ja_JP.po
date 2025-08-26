@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-26 10:20+0000\n"
+"POT-Creation-Date: 2025-08-26 12:21+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
 "Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2025\n"
 "Language-Team: Japanese (Japan) (https://app.transifex.com/glpi/teams/1637/ja_JP/)\n"
@@ -790,7 +790,7 @@ msgstr "表示のみモード"
 #: templates/components/itilobject/timeline/main_description.html.twig
 #: templates/components/user/info_card.html.twig
 #: templates/pages/tools/kb/comments.html.twig src/KnowbaseItem.php:245
-#: src/KnowbaseItemTranslation.php:90 src/CommonITILValidation.php:1188
+#: src/KnowbaseItemTranslation.php:90 src/CommonITILValidation.php:1191
 #: js/src/vue/CustomObject/FieldPreview/Field.vue:30
 msgid "Edit"
 msgstr "編集"
@@ -1428,7 +1428,7 @@ msgid "Cancel"
 msgstr "取消"
 
 #: templates/components/form/basic_inputs_macros.html.twig
-#: src/CommonITILValidation.php:1773
+#: src/CommonITILValidation.php:1776
 msgid "Validate"
 msgstr "検証"
 
@@ -1941,7 +1941,7 @@ msgstr "資産番号"
 #: src/Computer.php:461 src/ProjectTask_Ticket.php:336 src/Certificate.php:278
 #: src/CronTask.php:1274 src/CronTask.php:1412
 #: src/CommonItilObject_Item.php:506 src/PDU.php:203 src/CommonDBTM.php:3513
-#: src/CommonITILValidation.php:1356 src/Plugin.php:2657
+#: src/CommonITILValidation.php:1359 src/Plugin.php:2657
 msgid "Status"
 msgstr "状態"
 
@@ -3406,7 +3406,7 @@ msgstr[0] "承認ステップ"
 #: src/CommonITILObject.php:4737 src/CommonITILObject.php:4746
 #: src/CommonITILObject.php:6847 src/CommonITILObject.php:6894
 #: src/CommonITILObject.php:10159 src/NotificationTargetChange.php:308
-#: src/NotImportedEmail.php:179 src/CommonITILValidation.php:1498
+#: src/NotImportedEmail.php:179 src/CommonITILValidation.php:1501
 msgid "Requester"
 msgid_plural "Requesters"
 msgstr[0] "依頼者"
@@ -3415,7 +3415,7 @@ msgstr[0] "依頼者"
 #: src/NotificationTargetTicket.php:676 src/NotificationTargetTicket.php:706
 #: src/NotificationTargetCommonITILObject.php:976
 #: src/ITILValidationTemplate.php:81 src/NotificationTargetChange.php:327
-#: src/CommonITILValidation.php:1391 src/CommonITILValidation.php:1518
+#: src/CommonITILValidation.php:1394 src/CommonITILValidation.php:1521
 msgid "Approver"
 msgstr "承認者"
 
@@ -4144,7 +4144,7 @@ msgstr "履歴はありません"
 #: src/OAuthClient.php:94 src/Item_RemoteManagement.php:207
 #: src/Item_RemoteManagement.php:238 src/Certificate.php:125
 #: src/CronTask.php:1391 src/Contact.php:282 src/PDU.php:114
-#: src/CommonDBTM.php:4385 src/CommonITILValidation.php:1329
+#: src/CommonDBTM.php:4385 src/CommonITILValidation.php:1332
 #: src/Domain.php:233 src/Domain.php:257 src/ConsumableItem.php:167
 msgid "ID"
 msgstr "ID"
@@ -5673,7 +5673,7 @@ msgstr "自動計算が有効の場合、状態をこのタスク完了率を元
 #: src/Project.php:904 src/ProjectTask.php:963
 #: src/NotificationTargetProjectTask.php:553
 #: src/NotificationTargetProjectTask.php:568 src/Cartridge.php:895
-#: src/CommonITILValidation.php:1252
+#: src/CommonITILValidation.php:1255
 msgctxt "item"
 msgid "State"
 msgstr "状態"
@@ -17035,7 +17035,7 @@ msgid "Observer group except manager users"
 msgstr "管理者ユーザーを除く関係者グループ"
 
 #: src/NotificationTargetCommonITILObject.php:973
-#: src/CommonITILValidation.php:1254 src/CommonITILValidation.php:1381
+#: src/CommonITILValidation.php:1257 src/CommonITILValidation.php:1384
 msgid "Approval requester"
 msgstr "承認依頼者"
 
@@ -32260,7 +32260,7 @@ msgstr "承認不要"
 msgid "Granted + Not subject to approval"
 msgstr "承認済み + 承認の対象外"
 
-#: src/CommonITILValidation.php:891 src/CommonITILValidation.php:1836
+#: src/CommonITILValidation.php:891 src/CommonITILValidation.php:1839
 msgid "Group user(s)"
 msgstr "グループ ユーザー"
 
@@ -32273,77 +32273,89 @@ msgstr "承認ステップの編集"
 msgid "Progress: %1$s%% of %2$s%% required"
 msgstr "進捗 ( %1$s%% / %2$s%% 必要 )"
 
-#: src/CommonITILValidation.php:1253 src/CommonITILValidation.php:1365
-#: src/CommonITILValidation.php:1472
+#: src/CommonITILValidation.php:1127
+msgid "Approval step accepted"
+msgstr ""
+
+#: src/CommonITILValidation.php:1128
+msgid "Approval step refused"
+msgstr ""
+
+#: src/CommonITILValidation.php:1129
+msgid "Approval step pending"
+msgstr ""
+
+#: src/CommonITILValidation.php:1256 src/CommonITILValidation.php:1368
+#: src/CommonITILValidation.php:1475
 msgid "Request date"
 msgstr "要求日"
 
-#: src/CommonITILValidation.php:1255 src/CommonITILValidation.php:1338
-#: src/CommonITILValidation.php:1430
+#: src/CommonITILValidation.php:1258 src/CommonITILValidation.php:1341
+#: src/CommonITILValidation.php:1433
 msgid "Request comments"
 msgstr "要求についてのコメント"
 
-#: src/CommonITILValidation.php:1256 src/CommonITILValidation.php:1373
-#: src/CommonITILValidation.php:1485
+#: src/CommonITILValidation.php:1259 src/CommonITILValidation.php:1376
+#: src/CommonITILValidation.php:1488
 msgid "Approval date"
 msgstr "承認日"
 
-#: src/CommonITILValidation.php:1257 src/CommonITILValidation.php:1400
+#: src/CommonITILValidation.php:1260 src/CommonITILValidation.php:1403
 msgid "Requested approver type"
 msgstr "要求を受けた承認者の型"
 
-#: src/CommonITILValidation.php:1258
+#: src/CommonITILValidation.php:1261
 msgid "Requested approver"
 msgstr "要求を受けた承認者"
 
-#: src/CommonITILValidation.php:1259
+#: src/CommonITILValidation.php:1262
 msgid "Approval Comment"
 msgstr "承認コメント"
 
-#: src/CommonITILValidation.php:1260
+#: src/CommonITILValidation.php:1263
 #: src/NotificationTargetKnowbaseItem.php:218
 msgid "Documents"
 msgstr "ドキュメント"
 
-#: src/CommonITILValidation.php:1347 src/CommonITILValidation.php:1444
+#: src/CommonITILValidation.php:1350 src/CommonITILValidation.php:1447
 msgid "Approval comments"
 msgstr "承認のコメント"
 
-#: src/CommonITILValidation.php:1459
+#: src/CommonITILValidation.php:1462
 msgid "Approval status"
 msgstr "承認状況"
 
-#: src/CommonITILValidation.php:1541
+#: src/CommonITILValidation.php:1544
 msgid "Approver substitute"
 msgstr "承認者の代理人"
 
-#: src/CommonITILValidation.php:1601
+#: src/CommonITILValidation.php:1604
 msgid "Approver group"
 msgstr "承認者グループ"
 
-#: src/CommonITILValidation.php:1623
+#: src/CommonITILValidation.php:1626
 msgid "Substitute of a member of approver group"
 msgstr "承認グループメンバーの代理人"
 
-#: src/CommonITILValidation.php:1694
+#: src/CommonITILValidation.php:1697
 msgid "Approval status by users"
 msgstr "ユーザーによる承認状態"
 
-#: src/CommonITILValidation.php:1849
+#: src/CommonITILValidation.php:1852
 msgid "Approver type"
 msgstr "承認者の型"
 
-#: src/CommonITILValidation.php:1954
+#: src/CommonITILValidation.php:1957
 msgid ""
 "This item is waiting for approval, do you really want to resolve or close "
 "it?"
 msgstr "このアイテムは承認を待っています。解決または終了にして、よろしいですか?"
 
-#: src/CommonITILValidation.php:1995
+#: src/CommonITILValidation.php:1998
 msgid "This item is waiting for approval."
 msgstr "このアイテムは承認待ちです。"
 
-#: src/CommonITILValidation.php:1996
+#: src/CommonITILValidation.php:1999
 msgid "Do you really want to resolve or close it?"
 msgstr "解決または終了に変更します。よろしいですか？"
 
