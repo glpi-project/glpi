@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ca82ba60571183921bbe9d52bfd5fe0e",
+    "content-hash": "6b8cde027893aaed19cd45a9663ee57a",
     "packages": [
         {
             "name": "apereo/phpcas",
@@ -10897,16 +10897,16 @@
         },
         {
             "name": "glpi-project/tools",
-            "version": "0.7.8",
+            "version": "0.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/tools.git",
-                "reference": "bd78ad2ab0d30510729530c077f84d52b8f02866"
+                "reference": "7c2dcec105ed3427183bdfd382d785363aade436"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/tools/zipball/bd78ad2ab0d30510729530c077f84d52b8f02866",
-                "reference": "bd78ad2ab0d30510729530c077f84d52b8f02866",
+                "url": "https://api.github.com/repos/glpi-project/tools/zipball/7c2dcec105ed3427183bdfd382d785363aade436",
+                "reference": "7c2dcec105ed3427183bdfd382d785363aade436",
                 "shasum": ""
             },
             "require": {
@@ -10949,7 +10949,7 @@
                 "issues": "https://github.com/glpi-project/tools/issues",
                 "source": "https://github.com/glpi-project/tools"
             },
-            "time": "2025-08-20T09:58:56+00:00"
+            "time": "2025-08-26T10:18:38+00:00"
         },
         {
             "name": "kelunik/certificate",
