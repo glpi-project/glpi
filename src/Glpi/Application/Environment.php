@@ -167,6 +167,7 @@ enum Environment: string
                 'GLPI_PLUGINS_DIRECTORIES'      => [
                     $root_dir . '/plugins',
                     '{GLPI_MARKETPLACE_DIR}',
+                    $root_dir . '/tests/fixtures/plugins',
                 ],
             ],
             self::DEVELOPMENT => [
