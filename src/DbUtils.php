@@ -1292,6 +1292,8 @@ final class DbUtils
      * @return ($withcomment is true ? array : string)
      *
      * @see DbUtils::getTreeValueCompleteName
+     *
+     * @TODO Deprecate the `$withcomment` parameter, it is never used.
      */
     public function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = true)
     {
@@ -1362,13 +1364,13 @@ final class DbUtils
                 $name = $result['name'];
             }
 
-            $comment      = $name . " :<br/>";
+            $comment      = htmlescape($name) . " :<br/>";
             $transcomment = $result['transcomment'];
 
             if ($translate && !empty($transcomment)) {
-                $comment .= nl2br($transcomment);
+                $comment .= nl2br(htmlescape($transcomment));
             } elseif (!empty($result['comment'])) {
-                $comment .= nl2br($result['comment']);
+                $comment .= nl2br(htmlescape($result['comment']));
             }
         }
 

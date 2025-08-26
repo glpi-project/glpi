@@ -981,7 +981,7 @@ class Consumable extends CommonDBChild
         switch ($options['searchopt']['id']) {
             case '3': // State
                 $date_out = $values['date_out'];
-                return empty($date_out) ? __("New") : __("Used");
+                return empty($date_out) ? __s("New") : __s("Used");
 
             case '6': // Given to
                 $itemtype = $values['itemtype'];

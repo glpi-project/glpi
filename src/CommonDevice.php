@@ -186,8 +186,8 @@ abstract class CommonDevice extends CommonDropdown
                                 $key::getTypeName(1)
                             );
 
-                            $listLabel = '<i class="ti ti-list pointer" title="' . $itemTypeName . '"></i>'
-                            . '<span class="sr-only">' . $itemTypeName . '</span>';
+                            $listLabel = '<i class="ti ti-list pointer" title="' . htmlescape($itemTypeName) . '"></i>'
+                            . '<span class="sr-only">' . htmlescape($itemTypeName) . '</span>';
                             $menu['options'][$key]['links'][$listLabel] = $itemClass::getSearchURL(false);
 
                             // item device self links

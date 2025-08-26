@@ -433,7 +433,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
         $link_types = static::getITILLinkTypes();
 
         if (!isset($link_types[$value])) {
-            return NOT_AVAILABLE;
+            return htmlescape(NOT_AVAILABLE);
         }
 
         $icon_tag = '<i class="fas %1$s me-1" title="%2$s" data-bs-toggle="tooltip"></i>%2$s';

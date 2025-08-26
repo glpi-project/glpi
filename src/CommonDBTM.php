@@ -2904,7 +2904,7 @@ class CommonDBTM extends CommonGLPI
 
         echo "<table class='tab_cadre_fixe'>";
         echo "<tr class='tab_bg_2'>";
-        echo "<td class='center' colspan='" . ($params['colspan'] * 2) . "'>";
+        echo "<td class='center' colspan='" . ((int) $params['colspan'] * 2) . "'>";
     }
 
     public static function isNewID($ID)

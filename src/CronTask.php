@@ -1163,7 +1163,7 @@ class CronTask extends CommonDBTM
                 'id'       => $data['id'],
                 'date'     => sprintf(
                     '<a href="javascript:reloadTab(\'crontasklogs_id=%s\');">%s</a>',
-                    $data['id'],
+                    (int) $data['id'],
                     htmlescape(Html::convDateTime($data['date']))
                 ),
                 'elapsed'  => $data['elapsed'],
@@ -1316,8 +1316,8 @@ TWIG, ['msg' => __('Last run list')]);
             $values = [$field => $values];
         }
         return match ($field) {
-            'mode' => self::getModeName($values[$field]),
-            'state' => self::getStateName($values[$field]),
+            'mode' => htmlescape(self::getModeName($values[$field])),
+            'state' => htmlescape(self::getStateName($values[$field])),
             default => parent::getSpecificValueToDisplay($field, $values, $options),
         };
     }
@@ -1885,7 +1885,7 @@ TWIG, ['msg' => __('Last run list')]);
         global $CFG_GLPI;
 
         if (self::mustRunWebTasks()) {
-            $path = $CFG_GLPI['root_doc'] . "/front/cron.php";
+            $path = htmlescape($CFG_GLPI['root_doc'] . "/front/cron.php");
             echo "<div style=\"background-image: url('$path');\"></div>";
         }
 

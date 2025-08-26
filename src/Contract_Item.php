@@ -101,7 +101,7 @@ class Contract_Item extends CommonDBRelation
                     if (isset($options['comments']) && $options['comments']) {
                         $comments = Dropdown::getDropdownComments($table, $value);
                         return sprintf(
-                            __('%1$s %2$s'),
+                            __s('%1$s %2$s'),
                             htmlescape($name),
                             Html::showToolTip($comments, ['display' => false])
                         );

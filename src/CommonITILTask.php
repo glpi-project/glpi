@@ -1532,8 +1532,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                             && !empty($parentitem->hardwaredatas)
                         ) {
                             foreach ($parentitem->hardwaredatas as $hardwaredata) {
-                                $interv[$key]["device"][$hardwaredata->fields['id']] = ($hardwaredata
-                                                   ? $hardwaredata->getName() : '');
+                                $interv[$key]["device"][$hardwaredata->fields['id']] = htmlescape($hardwaredata ? $hardwaredata->getName() : '');
                             }
                             if (is_array($interv[$key]["device"])) {
                                 $interv[$key]["device"] = implode("<br>", $interv[$key]["device"]);
@@ -1602,21 +1601,21 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             return false;
         }
 
-        $html .= "<img src='" . $CFG_GLPI["root_doc"] . "/pics/rdv_interv.png' alt='' title=\""
+        $html .= "<img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/rdv_interv.png' alt='' title=\""
              . htmlescape($parent->getTypeName(1)) . "\">&nbsp;&nbsp;";
         $html .= $parent->getStatusIcon($val['status']);
-        $html .= "&nbsp;<a id='content_tracking_" . $val["id"] . $rand . "'
-                   href='" . $parenttype::getFormURLWithID($val[$parenttype_fk]) . "'
+        $html .= "&nbsp;<a id='content_tracking_" . htmlescape($val["id"] . $rand) . "'
+                   href='" . htmlescape($parenttype::getFormURLWithID($val[$parenttype_fk])) . "'
                    style='$styleText'>";
 
-        if (!empty($val["device"])) {
+        if (!empty($val["device"])) { // $val['device'] has already been sanitized by self::populatePlanning()
             $html .= "<br>" . $val["device"];
         }
 
         if ($who <= 0) { // show tech for "show all and show group"
             $html .= "<br>";
             //TRANS: %s is user name
-            $html .= sprintf(__s('By %s'), getUserName($val["users_id_tech"]));
+            $html .= sprintf(__s('By %s'), htmlescape(getUserName($val["users_id_tech"])));
         }
 
         $html .= "</a>";
@@ -1636,7 +1635,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             ) {
                 $recall = "<span class='b'>" . sprintf(
                     __s('Recall on %s'),
-                    Html::convDateTime($pr->fields['when'])
+                    htmlescape(Html::convDateTime($pr->fields['when']))
                 )
                       . "<span>";
             }
@@ -1644,14 +1643,14 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         if (isset($val["state"])) {
             $html .= "<span>";
-            $html .= Planning::getState($val["state"]);
+            $html .= htmlescape(Planning::getState($val["state"]));
             $html .= "</span>";
         }
         $html .= "<div>";
         $html .= htmlescape(sprintf(__('%1$s: %2$s'), __('Priority'), $parent->getPriorityName($val["priority"])));
         $html .= "</div>";
 
-        // $val['content'] has already been sanitized and decoded by self::populatePlanning()
+        // $val['content'] has already been sanitized by self::populatePlanning()
         $content = $val['content'];
         $html .= "<div class='event-description rich_text_container'>" . $content . "</div>";
         $html .= $recall;
@@ -1836,8 +1835,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                         return;
                     }
                     $linked_itemtype = str_replace("Task", "", $itemtype);
-                    $main_header = "<a href=\"" . $linked_itemtype::getSearchURL() . "?"
-                      . Toolbox::append_params($options, '&amp;') . "\">"
+                    $main_header = "<a href=\"" . htmlescape($linked_itemtype::getSearchURL() . "?"
+                      . Toolbox::append_params($options, '&')) . "\">"
                       . Html::makeTitle($title, $displayed_row_count, $total_row_count) . "</a>";
                     break;
 
@@ -1887,22 +1886,22 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                     }
 
                     // Parent item id with priority hint
-                    $bgcolor = $_SESSION["glpipriority_" . $parent_item->fields["priority"]];
-                    $name = sprintf(__('%1$s: %2$s'), __('ID'), $parent_item->fields["id"]);
+                    $bgcolor = htmlescape($_SESSION["glpipriority_" . $parent_item->fields["priority"]]);
+                    $name = htmlescape(sprintf(__('%1$s: %2$s'), __('ID'), $parent_item->fields["id"]));
                     $row['values'][] = [
                         'content' => "<div class='badge_block' style='border-color: $bgcolor'><span style='background: $bgcolor'></span>&nbsp;$name</div>",
                     ];
 
                     // Parent item name
                     $row['values'][] = [
-                        'content' => $parent_item->fields['name'],
+                        'content' => htmlescape($parent_item->fields['name']),
                     ];
 
                     // Task description
                     $href = $parent_item::getFormURLWithID($parent_item->fields['id']);
                     $link_title = Html::resume_text(RichText::getTextFromHtml($task->fields['content'], false, true), 50);
                     $row['values'][] = [
-                        'content' => "<a href='$href'>$link_title</a>",
+                        'content' => "<a href='" . htmlescape($href) . "'>$link_title</a>",
                     ];
 
                     $twig_params['rows'][] = $row;
@@ -1968,12 +1967,10 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                    . htmlescape($item_link->getFormURLWithID($item_link->fields["id"]));
             $link .= "&amp;forcetab=" . htmlescape($tab_name) . "$1";
             $link   .= "'>";
-            $link = htmlescape(
-                sprintf(
-                    __('%1$s %2$s'),
-                    $link,
-                    Html::resume_text(RichText::getTextFromHtml($job->fields['content'], false, true), 50)
-                )
+            $link = sprintf(
+                __s('%1$s %2$s'),
+                htmlescape($link),
+                Html::resume_text(RichText::getTextFromHtml($job->fields['content'], false, true), 50)
             );
             echo $link;
 
