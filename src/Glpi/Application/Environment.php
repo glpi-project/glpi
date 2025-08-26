@@ -165,6 +165,7 @@ enum Environment: string
                 ],
                 'GLPI_MARKETPLACE_DIR'          => $root_dir . '/tests/fixtures/marketplace',
                 'GLPI_PLUGINS_DIRECTORIES'      => [
+                    $root_dir . '/plugins',
                     '{GLPI_MARKETPLACE_DIR}',
                     $root_dir . '/tests/fixtures/plugins',
                 ],
