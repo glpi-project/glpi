@@ -405,11 +405,9 @@ class QuestionTypeItem extends AbstractQuestionType implements
 
         // Replace id and register requirement
         $key = QuestionTypeItemDefaultValueConfig::KEY_ITEMS_ID;
-        $default_value_data[$key] = $item->getName();
-        $requirements[] = new DataRequirementSpecification(
-            $itemtype,
-            $item->getName(),
-        );
+        $requirement = DataRequirementSpecification::fromItem($item);
+        $requirements[] = $requirement;
+        $default_value_data[$key] = $requirement->name;
 
         return new DynamicExportDataField($default_value_data, $requirements);
     }

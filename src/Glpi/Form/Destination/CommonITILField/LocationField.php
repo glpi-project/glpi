@@ -234,9 +234,8 @@ final class LocationField extends AbstractConfigField implements DestinationFiel
         }
 
         // Insert location name and requirement
-        $name = $location->getName();
-        $config[LocationFieldConfig::SPECIFIC_LOCATION_ID] = $name;
-        $requirement = new DataRequirementSpecification(Location::class, $name);
+        $requirement = DataRequirementSpecification::fromItem($location);
+        $config[LocationFieldConfig::SPECIFIC_LOCATION_ID] = $requirement->name;
 
         return new DynamicExportDataField($config, [$requirement]);
     }

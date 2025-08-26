@@ -175,12 +175,9 @@ final class ITILTaskField extends AbstractConfigField
             $template = TaskTemplate::getById($template_id);
             if ($template) {
                 // Insert template name and requirement
-                $name = $template->getName();
-                $config[ITILTaskFieldConfig::TASKTEMPLATE_IDS][$i] = $name;
-                $requirements[] = new DataRequirementSpecification(
-                    TaskTemplate::class,
-                    $name
-                );
+                $requirement = DataRequirementSpecification::fromItem($template);
+                $requirements[] = $requirement;
+                $config[ITILTaskFieldConfig::TASKTEMPLATE_IDS][$i] = $requirement->name;
             }
         }
 

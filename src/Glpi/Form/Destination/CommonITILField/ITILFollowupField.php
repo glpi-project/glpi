@@ -175,12 +175,9 @@ final class ITILFollowupField extends AbstractConfigField
             $template = ITILFollowupTemplate::getById($template_id);
             if ($template) {
                 // Insert template name and requirement
-                $name = $template->getName();
-                $config[ITILFollowupFieldConfig::ITILFOLLOWUPTEMPLATE_IDS][$i] = $name;
-                $requirements[] = new DataRequirementSpecification(
-                    ITILFollowupTemplate::class,
-                    $name
-                );
+                $requirement = DataRequirementSpecification::fromItem($template);
+                $requirements[] = $requirement;
+                $config[ITILFollowupFieldConfig::ITILFOLLOWUPTEMPLATE_IDS][$i] = $requirement->name;
             }
         }
 

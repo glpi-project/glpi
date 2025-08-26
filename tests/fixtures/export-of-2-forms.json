@@ -6,7 +6,7 @@
             "uuid": "form-1",
             "name": "My valid form",
             "illustration": "report-issue",
-            "entity_name": "E2ETestEntity",
+            "entity_name": "Root entity > E2ETestEntity",
             "is_recursive": false,
             "is_active": false,
             "submit_button_visibility_strategy": "always_visible",
@@ -46,7 +46,7 @@
             "data_requirements": [
                 {
                     "itemtype": "Entity",
-                    "name": "E2ETestEntity"
+                    "name": "Root entity > E2ETestEntity"
                 },
                 {
                     "itemtype": "User",
