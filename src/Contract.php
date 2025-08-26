@@ -1197,7 +1197,7 @@ class Contract extends CommonDBTM implements StateInterface
                     $entity  = $data['entities_id'];
 
                     $message = sprintf(
-                        __('%1$s: %2$s') . "<br>\n",
+                        __('%1$s: %2$s'),
                         $data["name"],
                         Infocom::getWarrantyExpir(
                             $data["begin_date"],
@@ -1211,16 +1211,15 @@ class Contract extends CommonDBTM implements StateInterface
                     if (!isset($contract_messages[$type][$entity])) {
                         switch ($type) {
                             case 'notice':
-                                $contract_messages[$type][$entity] = __('Contract entered in notice time')
-                                                            . "<br>";
+                                $contract_messages[$type][$entity][] = __('Contract entered in notice time');
                                 break;
 
                             case 'end':
-                                $contract_messages[$type][$entity] = __('Contract ended') . "<br>";
+                                $contract_messages[$type][$entity][] = __('Contract ended');
                                 break;
                         }
                     }
-                    $contract_messages[$type][$entity] .= $message;
+                    $contract_messages[$type][$entity][] = $message;
                 }
             }
 
@@ -1285,20 +1284,20 @@ class Contract extends CommonDBTM implements StateInterface
                             $alert->clear(self::class, $data['id'], $event);
                             // Computation of the real date => add Config [alert xxx days before]
                             $real_alert_date = date('Y-m-d', strtotime($next_alert[$type] . " +" . ($before) . " day"));
-                            $message = sprintf(__('%1$s: %2$s') . "<br>\n", $data["name"], Html::convDate($real_alert_date));
+                            $message = sprintf(__('%1$s: %2$s'), $data["name"], Html::convDate($real_alert_date));
                             $data['alert_date'] = $real_alert_date;
                             $contract_infos[$type][$entity][$data['id']] = $data;
 
                             switch ($type) {
                                 case 'periodicitynotice':
-                                    $contract_messages[$type][$entity] = __('Contract entered in notice time for period') . "<br>";
+                                    $contract_messages[$type][$entity][] = __('Contract entered in notice time for period');
                                     break;
 
                                 case 'periodicity':
-                                    $contract_messages[$type][$entity] = __('Contract period ended') . "<br>";
+                                    $contract_messages[$type][$entity][] = __('Contract period ended');
                                     break;
                             }
-                            $contract_messages[$type][$entity] .= $message;
+                            $contract_messages[$type][$entity][] = $message;
                         }
                     }
                 }
@@ -1323,18 +1322,18 @@ class Contract extends CommonDBTM implements StateInterface
                             ]
                         )
                     ) {
-                        $message     = $contract_messages[$event][$entity];
+                        $messages    = $contract_messages[$event][$entity];
                         $cron_status = 1;
                         $entityname  = Dropdown::getDropdownName("glpi_entities", $entity);
                         if ($task) {
-                            $task->log(sprintf(__('%1$s: %2$s') . "\n", $entityname, $message));
+                            $task->log(sprintf(__('%1$s: %2$s') . "\n", $entityname, implode("\n", $messages)));
                             $task->addVolume(1);
                         } else {
-                            Session::addMessageAfterRedirect(htmlescape(sprintf(
-                                __('%1$s: %2$s'),
-                                $entityname,
-                                $message
-                            )));
+                            Session::addMessageAfterRedirect(sprintf(
+                                __s('%1$s: %2$s'),
+                                htmlescape($entityname),
+                                implode('<br>', array_map('htmlescape', $messages))
+                            ));
                         }
 
                         $alert = new Alert();

@@ -305,7 +305,7 @@ TWIG, $twig_params);
                 if (!preg_match("?https*://?", $website)) {
                     $website = "http://" . $website;
                 }
-                $website = "<a target=_blank href='$website'>" . $data['website'] . "</a>";
+                $website = "<a target=_blank href='" . htmlescape($website) . "'>" . htmlescape($data['website']) . "</a>";
             }
 
             if (!isset($entity_cache[$data['entity']])) {
@@ -334,6 +334,7 @@ TWIG, $twig_params);
             ],
             'formatters' => [
                 'name' => 'raw_html',
+                'website' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),

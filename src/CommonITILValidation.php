@@ -718,7 +718,7 @@ abstract class CommonITILValidation extends CommonDBChild
                     break;
             }
 
-            return sprintf('<span><i class="validationstatus %s"></i> %s</span>', $classes, $label);
+            return sprintf('<span><i class="validationstatus %s"></i> %s</span>', $classes, htmlescape($label));
         }
 
         return $label;
@@ -1721,7 +1721,7 @@ HTML;
             }
             foreach ($targets as $target) {
                 if (!empty($target['status'])) {
-                    $status  = static::getStatus($target['status']);
+                    $status  = \htmlescape(static::getStatus($target['status']));
                     $bgcolor = \htmlescape(static::getStatusColor($target['status']));
                     $content = "<div class='badge_block' style='border-color: $bgcolor'><span style='background: $bgcolor'></span>&nbsp;" . $status . "</div>";
                     if (isset($target['itemtype_target']) && is_a($target['itemtype_target'], CommonDBTM::class, true) && isset($target['items_id_target'])) {
@@ -1870,7 +1870,7 @@ HTML;
         );
 
         if (!isset($options['applyto'])) {
-            $out .= "<br><span id='" . $params['applyto'] . "'>&nbsp;</span>\n";
+            $out .= "<br><span id='" . htmlescape($params['applyto']) . "'>&nbsp;</span>\n";
         }
 
         if ($params['display']) {
@@ -1954,10 +1954,9 @@ HTML;
         }
         $status  = array_merge($item->getClosedStatusArray(), $item->getSolvedStatusArray());
 
-        $message = __s("This item is waiting for approval, do you really want to resolve or close it?");
-
         switch ($type) {
             case 'status':
+                $message = __("This item is waiting for approval, do you really want to resolve or close it?");
                 $jsScript = "
                $(document).ready(
                   function() {
@@ -1981,7 +1980,7 @@ HTML;
                         }
                         if ((status_ko == 1)
                             && ('" . ($item->fields['global_validation'] ?? '') . "' == '" . self::WAITING . "')) {
-                           alert('" . $message . "');
+                           alert('" . jsescape($message) . "');
                         }
                      });
                   }

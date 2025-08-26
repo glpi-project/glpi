@@ -351,11 +351,11 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         if ($item = getItemForItemtype($itemtype)) {
             if ($params['visible']) {
                 $item->getFromDB($items_id);
-                $result =  "<div id='{$itemtype}_$items_id'>";
-                $result .= $item->getTypeName(1) . " : " . $item->getLink(['comments' => true]);
+                $result =  "<div id='" . htmlescape("{$itemtype}_{$items_id}") . "'>";
+                $result .= htmlescape($item->getTypeName(1)) . " : " . $item->getLink(['comments' => true]);
                 $result .= Html::hidden("items_id[$itemtype][$items_id]", ['value' => $items_id]);
                 if ($params['delete']) {
-                    $result .= " <i class='ti ti-circle-x pointer' onclick=\"itemAction" . $params['rand'] . "('delete', '$itemtype', '$items_id');\"></i>";
+                    $result .= " <i class='ti ti-circle-x pointer' onclick=\"itemAction" . htmlescape($params['rand']) . "('delete', '" . htmlescape(jsescape($itemtype)) . "', '" . htmlescape(jsescape($items_id)) . "');\"></i>";
                 }
                 if ($params['kblink']) {
                     $result .= ' ' . $item->getKBLinks();
@@ -456,7 +456,6 @@ TWIG, $twig_params);
             if (!($item = getItemForItemtype($itemtype)) || !in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"], true)) {
                 continue;
             }
-            $typename = htmlescape($item::getTypeName(1));
 
             $iterator = static::getTypeItems($instID, $itemtype);
             foreach ($iterator as $data) {
@@ -465,7 +464,7 @@ TWIG, $twig_params);
                     'itemtype' => static::class,
                     'id'   => $data["linkid"],
                     'row_class' => $data['is_deleted'] ? 'table-deleted' : '',
-                    'linked_itemtype' => $typename,
+                    'linked_itemtype' => $item::getTypeName(1),
                     'serial'  => $data["serial"] ?? "-",
                     'otherserial' => $data["otherserial"] ?? "-",
                     'entity' => Dropdown::getDropdownName("glpi_entities", $data['entity']),
@@ -479,11 +478,11 @@ TWIG, $twig_params);
                     $_SESSION["glpiis_ids_visible"]
                     || empty($data["name"])
                 ) {
-                    $name = sprintf(__s('%1$s (%2$s)'), $name, $data["id"]);
+                    $name = sprintf(__s('%1$s (%2$s)'), $name, (int) $data["id"]);
                 }
                 if ((Session::getCurrentInterface() !== 'helpdesk') && $item::canView()) {
                     $link     = $itemtype::getFormURLWithID($data['id']);
-                    $namelink = "<a href=\"" . $link . "\">" . $name . "</a>";
+                    $namelink = "<a href=\"" . htmlescape($link) . "\">" . $name . "</a>";
                 } else {
                     $namelink = $name;
                 }
@@ -1569,7 +1568,7 @@ TWIG, $twig_params);
                 if (isset($options['comments']) && $options['comments']) {
                     $comments = Dropdown::getDropdownComments($table, $value);
                     return sprintf(
-                        __('%1$s %2$s'),
+                        __s('%1$s %2$s'),
                         htmlescape($name),
                         Html::showToolTip($comments, ['display' => false])
                     );

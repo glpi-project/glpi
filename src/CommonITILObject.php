@@ -5271,7 +5271,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 return false;
         }
 
-        echo "<div " . ($inobject ? "style='display:none'" : '') . " id='itilactor$rand_type' class='actor-dropdown'>";
+        echo "<div " . ($inobject ? "style='display:none'" : '') . " id='itilactor" . htmlescape($rand_type) . "' class='actor-dropdown'>";
         $rand   = Dropdown::showFromArray(
             "_itil_" . $typename . "[_type]",
             $types,
@@ -6831,7 +6831,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $header_num                      = 1;
 
         $items                           = [];
-        $items[(empty($mass_id) ? '&nbsp' : Html::getCheckAllAsCheckbox($mass_id))] = '';
+
+        echo Search::showHeaderItem($output_type, (empty($mass_id) ? '' : Html::getCheckAllAsCheckbox($mass_id)), $header_num);
 
         $items[__('ID')]           = "id";
         $items[__('Title')]        = "name";
@@ -6860,8 +6861,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         foreach (array_keys($items) as $key) {
-            $link   = "";
-            echo Search::showHeaderItem($output_type, htmlescape($key), $header_num, $link);
+            echo Search::showHeaderItem($output_type, htmlescape($key), $header_num);
         }
 
         // End Line for column headers
@@ -7658,11 +7658,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $request_key = $validation_obj::getType() . '_' . $validations_id
                     . (empty($validation_row['validation_date']) ? '' : '_request'); // If no answer, no suffix to see attached documents on request
 
-                $content = __('Approval request');
+                $content = __s('Approval request');
                 if (is_a($validation_row['itemtype_target'], CommonDBTM::class, true)) {
                     $validation_target = new $validation_row['itemtype_target']();
                     if ($validation_target->getFromDB($validation_row['items_id_target'])) {
-                        $content .= " <i class='ti ti-arrow-right'></i><i class='{$validation_target->getIcon()} text-muted me-1'></i>"
+                        $content .= " <i class='ti ti-arrow-right'></i><i class='" . htmlescape($validation_target->getIcon()) . " text-muted me-1'></i>"
                             . $validation_target->getlink();
                     }
                 }
@@ -7697,8 +7697,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         'item' => [
                             'id'        => $validations_id,
                             'date'      => $validation_row['validation_date'],
-                            'content'   => __('Approval request answer') . " : "
-                            . _sx('status', ucfirst($validation_class::getStatus($validation_row['status']))),
+                            'content'   => __s('Approval request answer') . " : " . $validation_class::getStatus($validation_row['status']),
                             'comment_validation' => $validation_row['comment_validation'],
                             'users_id'  => $validation_row['users_id_validate'],
                             'status'    => "status_" . $validation_row['status'],
@@ -7824,9 +7823,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $content = sprintf(
                 '<span>%1$s%2$s (<span data-bs-toggle="popover" data-bs-html="true" data-bs-sanitize="true" data-bs-content="%3$s"><u>%4$s</u></span>)</span>',
                 '<i class="ti ti-refresh-alert text-warning me-1"></i>',
-                ITILReminder::getTypeName(1),
+                htmlescape(ITILReminder::getTypeName(1)),
                 $autoreminder_obj->fields['content'] ?? '',
-                $autoreminder_obj->fields['name']
+                htmlescape($autoreminder_obj->fields['name'])
             );
 
             $timeline["ITILReminder_" . $autoreminder_id] = [
@@ -9912,7 +9911,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $done = count(array_filter($item['_steps'], static fn($l) => in_array($l['status'], static::getClosedStatusArray())));
                 $total = count($item['_steps']);
                 $content .= "<div class='flex-break'></div>";
-                $content .= sprintf(__('%s / %s tasks complete'), $done, $total);
+                $content .= sprintf(__s('%s / %s tasks complete'), $done, $total);
             }
             $content .= "<div class='flex-break'></div>";
 

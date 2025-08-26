@@ -382,8 +382,8 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
                     ]
                 );
 
-                $message = "";
-                $items   = [];
+                $messages = [];
+                $items    = [];
 
                 foreach ($alerts_result as $consumable) {
                     if (
@@ -392,13 +392,12 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
                     ) {
                         // define message alert
                         //TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining number
-                        $message .= sprintf(
+                        $messages[] = sprintf(
                             __('Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s - Remaining %3$d'),
                             $consumable['name'],
                             $consumable['ref'],
                             $unused
                         );
-                        $message .= '<br>';
 
                         $items[$consumable["consID"]] = $consumable;
 
@@ -417,16 +416,18 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
 
                     if (NotificationEvent::raiseEvent('alert', new ConsumableItem(), $options)) {
                         if ($task) {
-                            $task->log(Dropdown::getDropdownName(
-                                "glpi_entities",
-                                $entity
-                            ) . " :  $message\n");
+                            $task->log(
+                                Dropdown::getDropdownName("glpi_entities", $entity)
+                                . " : "
+                                . implode("\n", $messages)
+                            );
                             $task->addVolume(1);
                         } else {
-                            Session::addMessageAfterRedirect(htmlescape(Dropdown::getDropdownName(
-                                "glpi_entities",
-                                $entity
-                            ) . " :  $message"));
+                            Session::addMessageAfterRedirect(
+                                htmlescape(Dropdown::getDropdownName("glpi_entities", $entity))
+                                . " : "
+                                . implode('<br>', array_map('htmlescape', $messages))
+                            );
                         }
 
                         $input = [

@@ -309,7 +309,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         }
         switch ($field) {
             case 'type':
-                return self::getTypeInquestName($values[$field]);
+                return htmlescape(self::getTypeInquestName($values[$field]));
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
