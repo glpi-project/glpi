@@ -178,4 +178,24 @@ abstract class AssetType extends CommonType
 
         return $input;
     }
+
+    public function rawSearchOptions()
+    {
+        // Get parent search options, but skip the ones from the immediate CommonDCModelDropdown parent
+        $options = parent::rawSearchOptions();
+
+        foreach ($options as &$option) {
+            if (
+                is_array($option)
+                && array_key_exists('table', $option)
+                && $option['table'] === static::getTable()
+            ) {
+                // Search class could not be able to retrieve the concrete class when using `getItemTypeForTable()`,
+                // so we have to define an `itemtype` here.
+                $option['itemtype'] = static::class;
+            }
+        }
+
+        return $options;
+    }
 }
