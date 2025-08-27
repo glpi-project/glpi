@@ -90,7 +90,6 @@
 
 {% macro tfa_setup(secret, qrcode, enforced = false, in_grace_period = false, grace_period_days_left = 0) %}
    <form method="post" action="{{ path('MFA/Verify') }}" autocomplete="off" class="{{ enforced ? 'm-n5' : '' }}">
-      <input type="hidden" name="regenerate_backup_codes" value="1" />
       <div class="card mx-auto" style="width: fit-content">
          <div class="card-header">
             {% if enforced %}
@@ -148,4 +147,86 @@
          </div>
       </div>
    </form>
+{% endmacro %}
+
+{% macro tfa_backup_codes_container(backup_codes = [], regen_button_name = 'regenerate_backup_codes') %}
+    <div id="backup_codes" class="d-none py-2" style="width: fit-content;">
+        <h3 class="mb-2 alert alert-warning">{{ __('Backup codes (This is the only time these will be shown)') }}</h3>
+        <h4 class="mb-2">{{ __('These are one-time use codes in case your authenticator is inaccessible') }}</h4>
+    </div>
+    <script type="module">
+        $('#backup_codes').on('click', 'button[name="copy_backup_codes"]', function() {
+            const codes = [];
+            $('#backup_codes').find('td.backup-code').each(function () {
+                codes.push($(this).text());
+            });
+            const newline = navigator.platform.match(/Windows/) ? "\r\n" : "\n";
+            navigator.clipboard.writeText(codes.join(newline));
+            const btn = $(this);
+
+            btn.find('i').removeClass('ti ti-copy').addClass('ti ti-check');
+            btn.removeClass('btn-outline-secondary').addClass('btn-success');
+            btn.text('{{ __('Copied') }}');
+        });
+
+        function showCodes(codes) {
+            const backup_code_container = $('#backup_codes');
+            if (codes.length === 0) {
+                // An error occurred
+                backup_code_container.html('{{ __('An error occurred') }}');
+            } else {
+                //Remove any previous code table
+                backup_code_container.find('table').remove();
+                backup_code_container.append(`<table class="table table-bordered mx-auto text-center" style="width: fit-content"><tbody></tbody></table>`);
+                const table_body = backup_code_container.find('tbody');
+                $.each(codes, function (index, value) {
+                    let code_item = $('<tr><td class="backup-code"></td></tr>');
+                    // Stylize the codes to make them easier to read and reduce ambiguity
+                    for (let i = 0; i < value.length; i++) {
+                        if (isNaN(value[i])) {
+                            if (value[i] === value[i].toUpperCase()) {
+                                code_item.find('td').append($('<u></u>').text(value[i]));
+                            } else {
+                                code_item.find('td').append(value[i]);
+                            }
+                        } else {
+                            code_item.find('td').append($('<span></span>').addClass('text-info').text(value[i]));
+                        }
+                    }
+                    table_body.append(code_item);
+                });
+                table_body.append(`<tr><td>
+                            <button class="btn btn-outline-secondary" type="button" name="copy_backup_codes">
+                                <i class="ti ti-copy"></i>
+                                {{ __('Copy backup codes') }}
+                            </button>
+                        </td></tr>`);
+            }
+            backup_code_container.removeClass('d-none');
+        }
+
+        if ($('button[name="{{ regen_button_name }}"]').length > 0) {
+            $('button[name="{{ regen_button_name }}"]').on('click', function () {
+                $.ajax({
+                    url: CFG_GLPI.root_doc + '/ajax/2fa.php',
+                    method: 'POST',
+                    data: {
+                        regenerate_backup_codes: 1
+                    },
+                    success: function (data) {
+                        showCodes(JSON.parse(data));
+                    },
+                    error: function () {
+                        const backup_code_container = $('#backup_codes');
+                        backup_code_container.html('{{ __('An error occurred') }}');
+                        backup_code_container.removeClass('d-none');
+                    }
+                });
+            });
+        }
+
+        {% if backup_codes is not empty %}
+            showCodes({{ backup_codes|json_encode|raw }});
+        {% endif %}
+    </script>
 {% endmacro %}

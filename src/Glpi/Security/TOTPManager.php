@@ -560,4 +560,16 @@ final class TOTPManager
             'grace_period_days_left' => $this->getGracePeriodDaysLeft(),
         ]);
     }
+
+    /**
+     * Show the backup codes for the specified user.
+     * Intended for use after setting up 2FA during the login process.
+     * @return void
+     */
+    public function showBackupCodes(int $users_id): void
+    {
+        TemplateRenderer::getInstance()->display('pages/2fa/2fa_backup_codes.html.twig', [
+            'backup_codes' => $this->regenerateBackupCodes($users_id),
+        ]);
+    }
 }

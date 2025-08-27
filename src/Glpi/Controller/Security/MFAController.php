@@ -128,6 +128,26 @@ final class MFAController extends AbstractController
         }
 
         $_SESSION['mfa_success'] = true;
-        return new RedirectResponse($CFG_GLPI['root_doc'] . '/front/login.php');
+        return new RedirectResponse($CFG_GLPI['root_doc'] . '/MFA/ShowBackupCodes');
+    }
+
+    #[Route(
+        path: "/MFA/ShowBackupCodes",
+        name: "mfa_show_status",
+        methods: ['GET']
+    )]
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
+    public function showBackupCodes(Request $request): Response
+    {
+        global $CFG_GLPI;
+
+        $pre_auth_data = $_SESSION['mfa_pre_auth'] ?? null;
+        if (!isset($_SESSION['mfa_success'], $pre_auth_data)) {
+            return new RedirectResponse($CFG_GLPI['root_doc'] . '/front/login.php');
+        }
+        $totp = new TOTPManager();
+        return new StreamedResponse(static function () use ($pre_auth_data, $totp) {
+            $totp->showBackupCodes((int) $pre_auth_data['user']['id']);
+        });
     }
 }
