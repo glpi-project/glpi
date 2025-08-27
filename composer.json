@@ -100,7 +100,7 @@
         "twig/markdown-extra": "^3.21",
         "twig/string-extra": "^3.21",
         "twig/twig": "^3.15",
-        "wapmorgan/unified-archive": "^1.2",
+        "wapmorgan/unified-archive": "^1.3",
         "webonyx/graphql-php": "^15.21"
     },
     "require-dev": {
@@ -199,8 +199,7 @@
             "patch -f -p1 -d vendor/apereo/phpcas/ < tools/patches/apereo-phpcas-php8.4-compat.patch || true",
             "patch -f -p1 -d vendor/guzzlehttp/guzzle/ < tools/patches/guzzlehttp-guzzle-restrict-http-methods.patch || true",
             "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-laminas-mail-address-no-length-check.patch || true",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-laminas-mail-invalid-header-ignore.patch || true",
-            "patch -f -p1 -d vendor/wapmorgan/unified-archive/ < tools/patches/wapmorgan-unified-archive-php-8.4-compat.patch || true"
+            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-laminas-mail-invalid-header-ignore.patch || true"
         ]
     }
 }
