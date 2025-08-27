@@ -89,7 +89,7 @@
 {% endmacro %}
 
 {% macro tfa_setup(secret, qrcode, enforced = false, in_grace_period = false, grace_period_days_left = 0) %}
-   <form method="post" action="#" autocomplete="off" class="{{ enforced ? 'm-n5' : '' }}">
+   <form method="post" action="{{ path('MFA/Verify') }}" autocomplete="off" class="{{ enforced ? 'm-n5' : '' }}">
       <input type="hidden" name="regenerate_backup_codes" value="1" />
       <div class="card mx-auto" style="width: fit-content">
          <div class="card-header">

@@ -110,34 +110,6 @@ final class IndexController extends AbstractController
             Toolbox::manageRedirect($redirect);
         }
 
-        if (isset($_SESSION['mfa_pre_auth'])) {
-            if (isset($_POST['skip_mfa'])) {
-                return new RedirectResponse($CFG_GLPI['root_doc'] . '/front/login.php?skip_mfa=1');
-            }
-            if (isset($_GET['mfa_setup']) && isset($_POST['secret'], $_POST['totp_code'])) {
-                $code = is_array($_POST['totp_code']) ? implode('', $_POST['totp_code']) : $_POST['totp_code'];
-                $totp = new TOTPManager();
-                if (Session::validateIDOR($_POST) && ($algorithm = $totp->verifyCodeForSecret($code, $_POST['secret'])) !== false) {
-                    $totp->setSecretForUser((int) $_SESSION['mfa_pre_auth']['user']['id'], $_POST['secret'], $algorithm);
-                } else {
-                    Session::addMessageAfterRedirect(__s('Invalid code'), false, ERROR);
-                }
-                return new RedirectResponse(Preference::getSearchURL());
-            }
-
-            return new StreamedResponse(static function () {
-                if (isset($_GET['mfa_setup'])) {
-                    // Login started. 2FA needs configured.
-                    $totp = new TOTPManager();
-                    $totp->showTOTPSetupForm((int) $_SESSION['mfa_pre_auth']['user']['id']);
-                } else {
-                    // Login started. Need to ask for the TOTP code.
-                    $totp = new TOTPManager();
-                    $totp->showTOTPPrompt((int) $_SESSION['mfa_pre_auth']['user']['id']);
-                }
-            });
-        }
-
         // Random number for html id/label
         $rand = mt_rand();
 

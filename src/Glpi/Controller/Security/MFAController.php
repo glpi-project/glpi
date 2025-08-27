@@ -1,0 +1,133 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2025 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+namespace Glpi\Controller\Security;
+
+use Glpi\Controller\AbstractController;
+use Glpi\Exception\AuthenticationFailedException;
+use Glpi\Http\Firewall;
+use Glpi\Security\Attribute\SecurityStrategy;
+use Glpi\Security\TOTPManager;
+use Preference;
+use Session;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\Routing\Attribute\Route;
+
+final class MFAController extends AbstractController
+{
+    #[Route(
+        path: "/MFA/Setup",
+        name: "mfa_setup",
+    )]
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
+    public function setup(Request $request): Response
+    {
+        global $CFG_GLPI;
+        if (!isset($_SESSION['mfa_pre_auth'])) {
+            return new RedirectResponse($CFG_GLPI['root_doc'] . '/front/login.php');
+        }
+        return new StreamedResponse(static function () {
+            $totp = new TOTPManager();
+            $totp->showTOTPSetupForm((int)$_SESSION['mfa_pre_auth']['user']['id']);
+        });
+    }
+
+    #[Route(
+        path: "/MFA/Prompt",
+        name: "mfa_prompt",
+        methods: ['GET']
+    )]
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
+    public function prompt(Request $request): Response
+    {
+        $totp = new TOTPManager();
+        return new StreamedResponse(static function () use ($totp) {
+            $totp->showTOTPPrompt((int) $_SESSION['mfa_pre_auth']['user']['id']);
+        });
+    }
+
+    #[Route(
+        path: "/MFA/Verify",
+        name: "mfa_verify_totp",
+        methods: ['POST']
+    )]
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
+    public function verify(Request $request): Response
+    {
+        global $CFG_GLPI;
+
+        $pre_auth_data = $_SESSION['mfa_pre_auth'] ?? null;
+        if (!$pre_auth_data) {
+            return new RedirectResponse($CFG_GLPI['root_doc'] . '/MFA/Prompt');
+        }
+        $totp = new TOTPManager();
+        $backup_code = $request->request->get('backup_code');
+        $totp_code = $request->get('totp_code');
+        if (is_array($totp_code)) {
+            $totp_code = implode('', $totp_code);
+        }
+        $secret = $request->request->get('secret');
+        $algorithm = null;
+
+        if (
+            !(
+                (isset($backup_code) && $totp->verifyBackupCodeForUser($backup_code, $pre_auth_data['user']['id']))
+                || (isset($totp_code, $secret) && ($algorithm = $totp->verifyCodeForSecret($totp_code, $secret)))
+                || (isset($totp_code) && !isset($secret) && $totp->verifyCodeForUser($totp_code, $pre_auth_data['user']['id']))
+            )
+        ) {
+            // Verification failure
+            if (isset($backup_code)) {
+                throw new AuthenticationFailedException(authentication_errors: [__('Invalid backup code')]);
+            } else {
+                throw new AuthenticationFailedException(authentication_errors: [__('Invalid TOTP code')]);
+            }
+        }
+
+        if (
+            isset($secret)
+            && !(Session::validateIDOR($request->request->all())
+                && $totp->setSecretForUser((int) $pre_auth_data['user']['id'], $_POST['secret'], $algorithm))
+        ) {
+            Session::addMessageAfterRedirect(__s('Invalid code'), false, ERROR);
+            return new RedirectResponse($CFG_GLPI['root_doc'] . '/MFA/Prompt');
+        }
+
+        $_SESSION['mfa_success'] = true;
+        return new RedirectResponse($CFG_GLPI['root_doc'] . '/front/login.php');
+    }
+}
