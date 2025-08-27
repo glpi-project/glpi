@@ -252,7 +252,7 @@ describe('Service catalog page', () => {
         cy.get('@filter_input').type('application');
         cy.waitForNetworkIdle(1000);
         findItemInServiceCatalog(kb_name_1).should('not.exist');
-        findItemInServiceCatalog(kb_name_2).should('not.exist');
+        findItemInServiceCatalog(kb_name_2).should('exist');
     });
 
     it('can pick a category in the service catalog', () => {
@@ -689,5 +689,37 @@ describe('Service catalog page', () => {
         // Validate that the form is still not displayed
         cy.findByRole('region', { 'name': form_name }).should('not.exist');
         cy.findByRole('region', { 'name': 'Forms' }).contains('No forms found').should('exist');
+    });
+
+    it('can filter forms, kb items and categories nested in category', () => {
+        const uuid = Cypress._.uniqueId(Date.now().toString());
+
+        // Arrange: Create categories, form and KB item
+        cy.createWithAPI('Glpi\\Form\\Category', {
+            'name': `Root Category ${uuid}`,
+        }).then(category_id => {
+            cy.createWithAPI('Glpi\\Form\\Category', {
+                'name': `Nested category ${uuid}`,
+                'forms_categories_id': category_id
+            }).then(sub_category_id => {
+                createActiveForm(`Nested form for ${sub_category_id}`, sub_category_id);
+            });
+
+            createActiveForm(`Nested form ${uuid}`, category_id);
+            createKnowledgeBaseItem(`Nested KB item ${uuid}`, {'forms_categories_id': category_id});
+        });
+
+        // Act: Visit the service catalog and apply filters
+        cy.visit('/ServiceCatalog');
+        cy.findByPlaceholderText('Search for forms...').as('filter_input');
+        cy.get('@filter_input').type(`Nested ${uuid}`);
+
+        // Wait input debounce
+        cy.waitForNetworkIdle(1000);
+
+        // Assert: Check that the correct category, form and KB item are displayed
+        findItemInServiceCatalog(`Nested category ${uuid}`).should('exist');
+        findItemInServiceCatalog(`Nested form ${uuid}`).should('exist');
+        findItemInServiceCatalog(`Nested KB item ${uuid}`).should('exist');
     });
 });

@@ -687,7 +687,8 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         // Get the root items
         $this->login();
         $item_request = new ItemRequest(
-            new FormAccessParameters(Session::getCurrentSessionInfo()),
+            access_parameters: new FormAccessParameters(Session::getCurrentSessionInfo()),
+            category_id: 0,
         );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
