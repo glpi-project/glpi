@@ -175,7 +175,7 @@ abstract class LevelAgreement extends CommonDBChild
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __s('SLM') . "</td>";
         echo "<td>";
-        echo htmlescape($slm->getLink());
+        echo $slm->getLink();
         echo "<input type='hidden' name='slms_id' value='" . intval($this->fields['slms_id']) . "'>";
         echo "</td></tr>";
 
