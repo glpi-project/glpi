@@ -58,7 +58,7 @@ final class IndexController extends AbstractController
     public function __construct()
     {
         // TODO: replace by autowiring once dependency injection is fully implemented.
-        $this->service_catalog_manager = new ServiceCatalogManager();
+        $this->service_catalog_manager = ServiceCatalogManager::getInstance();
         $this->interface = Session::getCurrentInterface();
     }
 

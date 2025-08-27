@@ -35,43 +35,49 @@
 
 namespace Glpi\Form\ServiceCatalog;
 
-use Glpi\Form\AccessControl\FormAccessParameters;
-use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyEnum;
+use Glpi\Form\ServiceCatalog\Provider\FormProvider;
+use Glpi\Form\ServiceCatalog\Provider\KnowbaseItemProvider;
+use Glpi\Form\ServiceCatalog\Provider\LeafProviderInterface;
+use Glpi\Toolbox\SingletonTrait;
 
-final class ItemRequest
+final class HomeSearchManager
 {
-    public function __construct(
-        public FormAccessParameters $access_parameters,
-        public string $filter = "",
-        public ?int $category_id = null,
-        public int $page = 1,
-        public int $items_per_page = ServiceCatalogManager::ITEMS_PER_PAGE,
-        public SortStrategyEnum $sort_strategy = SortStrategyEnum::POPULARITY,
-        public ItemRequestContext $context = ItemRequestContext::SERVICE_CATALOG,
-    ) {}
+    use SingletonTrait;
 
-    public function getFormAccessParameters(): FormAccessParameters
+    /** @var int */
+    private const MAX_ITEMS_PER_TYPE = 20;
+
+    /** @var LeafProviderInterface[] */
+    private array $providers;
+
+    public function __construct()
     {
-        return $this->access_parameters;
+        $this->providers = [
+            new FormProvider(),
+            new KnowbaseItemProvider(),
+        ];
     }
 
-    public function getFilter(): string
+    /** @return array<string, ServiceCatalogLeafInterface[]> */
+    public function getItems(ItemRequest $item_request): array
     {
-        return $this->filter;
-    }
+        $item_request->context = ItemRequestContext::HOME_PAGE_SEARCH;
+        $items_by_label = [];
 
-    public function getCategoryID(): ?int
-    {
-        return $this->category_id;
-    }
+        foreach ($this->providers as $leaf_provider) {
+            $items = $leaf_provider->getItems($item_request);
+            if ($items === []) {
+                // Skip empty data
+                continue;
+            }
 
-    public function getSortStrategy(): SortStrategyEnum
-    {
-        return $this->sort_strategy;
-    }
+            // Limit result size
+            $items = array_slice($items, 0, self::MAX_ITEMS_PER_TYPE);
 
-    public function getContext(): ItemRequestContext
-    {
-        return $this->context;
+            // Add items to results
+            $items_by_label[$leaf_provider->getItemsLabel()] = $items;
+        }
+
+        return $items_by_label;
     }
 }

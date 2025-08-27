@@ -36,11 +36,10 @@ namespace Glpi\Controller\Helpdesk;
 
 use Glpi\Controller\AbstractController;
 use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\ServiceCatalog\HomeSearchManager;
 use Glpi\Form\ServiceCatalog\ItemRequest;
-use Glpi\Form\ServiceCatalog\Provider\FormProvider;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
-use KnowbaseItem;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,13 +47,6 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class SearchController extends AbstractController
 {
-    private FormProvider $form_provider;
-
-    public function __construct()
-    {
-        $this->form_provider = new FormProvider();
-    }
-
     #[SecurityStrategy(Firewall::STRATEGY_HELPDESK_ACCESS)]
     #[Route(
         "/Helpdesk/Search",
@@ -63,32 +55,21 @@ final class SearchController extends AbstractController
     )]
     public function __invoke(Request $request): Response
     {
-        global $DB;
-
         // Read parameters
         $filter = $request->query->getString('filter');
 
-        // Get forms
+        // Filter items
+        $manager = HomeSearchManager::getInstance();
         $items_request = new ItemRequest(
             access_parameters: new FormAccessParameters(
                 session_info: Session::getCurrentSessionInfo(),
             ),
-            filter: $filter
+            filter: $filter,
         );
-        $forms = $this->form_provider->getItems($items_request);
-
-        // Get FAQ entries
-        $query = KnowbaseItem::getListRequest([
-            'faq'                       => true,
-            'start'                     => 0,
-            'knowbaseitemcategories_id' => null,
-            'contains'                  => $filter,
-        ], 'search');
-        $faq_entries = $DB->request($query);
+        $items = $manager->getItems($items_request);
 
         return $this->render('pages/helpdesk/search.html.twig', [
-            'forms' => $forms,
-            'faq_entries' => $faq_entries,
+            'items_by_label' => $items,
         ]);
     }
 }

@@ -35,6 +35,7 @@
 namespace Glpi\Form\ServiceCatalog\Provider;
 
 use Glpi\Form\ServiceCatalog\ItemRequest;
+use Glpi\Form\ServiceCatalog\ItemRequestContext;
 use Glpi\FuzzyMatcher\FuzzyMatcher;
 use Glpi\FuzzyMatcher\PartialMatchStrategy;
 use KnowbaseItem;
@@ -56,17 +57,19 @@ final class KnowbaseItemProvider implements LeafProviderInterface
         $category_id = $item_request->getCategoryID();
         $filter = $item_request->getFilter();
 
-        $category_restriction = [];
+        $knowbase_items = [];
+
+        $criteria = [];
         if ($category_id !== null) {
-            $category_restriction = [
-                'forms_categories_id' => $category_id,
-            ];
+            $criteria['forms_categories_id'] = $category_id;
         }
 
-        $knowbase_items = [];
-        $raw_knowbase_items = (new KnowbaseItem())->find([
-            'show_in_service_catalog' => true,
-        ] + $category_restriction, ['name']);
+        // On the home page we want to search for all KB items even if they are
+        // not enabled for the service catalog itself.
+        if ($item_request->getContext() !== ItemRequestContext::HOME_PAGE_SEARCH) {
+            $criteria['show_in_service_catalog'] = true;
+        }
+        $raw_knowbase_items = (new KnowbaseItem())->find($criteria, ['name']);
 
         foreach ($raw_knowbase_items as $raw_knowbase_item) {
             $knowbase_item = new KnowbaseItem();
@@ -97,5 +100,11 @@ final class KnowbaseItemProvider implements LeafProviderInterface
         }
 
         return $knowbase_items;
+    }
+
+    #[Override]
+    public function getItemsLabel(): string
+    {
+        return __("FAQ articles");
     }
 }

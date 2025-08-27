@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,17 +32,20 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\ServiceCatalog\Provider;
+namespace Glpi\Toolbox;
 
-use Glpi\Form\ServiceCatalog\ItemRequest;
-
-/**
- * @template T of \Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface
- */
-interface LeafProviderInterface extends ItemProviderInterface
+trait SingletonTrait
 {
-    /** @return T[] */
-    public function getItems(ItemRequest $item_request): array;
+    private static ?self $instance = null;
 
-    public function getItemsLabel(): string;
+    private function __construct() {}
+
+    public static function getInstance(): static
+    {
+        if (self::$instance === null) {
+            self::$instance = new static();
+        }
+
+        return self::$instance;
+    }
 }

@@ -61,7 +61,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
 
     public static function setUpBeforeClass(): void
     {
-        self::$manager = new ServiceCatalogManager();
+        self::$manager = ServiceCatalogManager::getInstance();
         parent::setUpBeforeClass();
     }
 

@@ -41,6 +41,7 @@ use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\FuzzyMatcher\FuzzyMatcher;
 use Glpi\FuzzyMatcher\PartialMatchStrategy;
 use Override;
+use Session;
 
 /** @implements LeafProviderInterface<Form> */
 final class FormProvider implements LeafProviderInterface
@@ -108,5 +109,11 @@ final class FormProvider implements LeafProviderInterface
         }
 
         return $forms;
+    }
+
+    #[Override]
+    public function getItemsLabel(): string
+    {
+        return Form::getTypeName(Session::getPluralNumber());
     }
 }
