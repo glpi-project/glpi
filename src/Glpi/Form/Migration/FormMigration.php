@@ -1401,8 +1401,11 @@ class FormMigration extends AbstractPluginMigration
                 if ($condition_handler === false) {
                     /** @var Question|Comment|Section|FormDestination $item */
                     $item = getItemForItemtype($target_item['itemtype']);
-                    if ($item->getFromDB($target_item['items_id']) !== false) {
+                    if ($item !== false && $item->getFromDB($target_item['items_id']) !== false) {
                         $form = $item->getForm();
+                    } else {
+                        $item = null
+                        $form = null;
                     }
 
                     $this->result->addMessage(
@@ -1411,7 +1414,7 @@ class FormMigration extends AbstractPluginMigration
                             __('A visibility condition used in "%s" "%s" (Form "%s") with value operator "%s" is not supported by the question type. It will be ignored.'),
                             $item->getTypeName(1) ?? $target_item['itemtype'],
                             $item->getName() ?? $target_item['items_id'],
-                            $form?->getName() ?? NOT_AVAILABLE,
+                            $form->getName() ?? NOT_AVAILABLE,
                             $value_operator->getLabel()
                         )
                     );
