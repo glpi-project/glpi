@@ -48,6 +48,7 @@ use function Safe\ldap_bind;
 use function Safe\parse_url;
 use function Safe\preg_match;
 use function Safe\session_name;
+use function Safe\session_write_close;
 
 /**
  *  Identification class used to login
@@ -1018,6 +1019,20 @@ class Auth extends CommonGLPI
         return $this->auth_succeded;
     }
 
+    private function getMFAPreAuthParameters(bool $remember_me): array
+    {
+        $user_fields = $this->user->fields;
+        // Remove LDAP connection resource if present to avoid serialization issues
+        unset($user_fields['_ldap_conn']);
+        return [
+            'user' => $user_fields,
+            'auth_type' => $this->auth_type,
+            'extauth' => $this->extauth,
+            'remember_me' => $remember_me,
+            'user_present' => $this->user_present,
+        ];
+    }
+
     /**
      * Manage use authentication and initialize the session
      *
@@ -1068,13 +1083,7 @@ class Auth extends CommonGLPI
                     if ($totp->is2FAEnabled($this->user->fields['id'])) {
                         if (!isset($mfa_params['totp_code']) && !isset($mfa_params['backup_code'])) {
                             // Need to remember that this user entered the correct username/password, and then ask for the TOTP token
-                            $_SESSION['mfa_pre_auth'] = [
-                                'user' => $this->user->fields,
-                                'auth_type' => $this->auth_type,
-                                'extauth' => $this->extauth,
-                                'remember_me' => $remember_me,
-                                'user_present' => $this->user_present,
-                            ];
+                            $_SESSION['mfa_pre_auth'] = $this->getMFAPreAuthParameters($remember_me);
 
                             $redirect_params = [
                                 'mfa' => 1,
@@ -1083,6 +1092,8 @@ class Auth extends CommonGLPI
                                 $redirect_params['redirect'] = \rawurlencode($_POST['redirect']);
                             }
 
+                            // Manually close session here so that serialization issues are properly reported to avoid a difficult debugging situation when if silently fails when closed at the end of the request
+                            session_write_close();
                             Html::redirect($CFG_GLPI["root_doc"] . '/?' . http_build_query($redirect_params));
                         } elseif (isset($mfa_params['totp_code']) && !$totp->verifyCodeForUser($mfa_params['totp_code'], $this->user->fields['id'])) {
                             $this->addToError(__('Invalid TOTP code'));
@@ -1094,13 +1105,9 @@ class Auth extends CommonGLPI
                     } elseif ($enforcement !== TOTPManager::ENFORCEMENT_OPTIONAL) {
                         if ($enforcement === TOTPManager::ENFORCEMENT_MANDATORY || !isset($_REQUEST['skip_mfa'])) {
                             // If MFA is mandatory the user has not already skipped MFA while in a grace period for this login, then we need to ask for it now
-                            $_SESSION['mfa_pre_auth'] = [
-                                'user' => $this->user->fields,
-                                'auth_type' => $this->auth_type,
-                                'extauth' => $this->extauth,
-                                'remember_me' => $remember_me,
-                                'user_present' => $this->user_present,
-                            ];
+                            $_SESSION['mfa_pre_auth'] = $this->getMFAPreAuthParameters($remember_me);
+                            // Manually close session here so that serialization issues are properly reported to avoid a difficult debugging situation when if silently fails when closed at the end of the request
+                            session_write_close();
                             Html::redirect($CFG_GLPI["root_doc"] . '/?mfa_setup=1');
                         }
                     }
