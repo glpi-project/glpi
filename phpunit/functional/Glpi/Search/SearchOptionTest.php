@@ -45,6 +45,7 @@ class SearchOptionTest extends DbTestCase
     {
         return [
             [\Computer::class, [1, 80]], // Name, Entity
+            [\ITILCategory::class, [1, 80]], // Completename, Entity
             [\Item_DeviceSimcard::class, [10, 80]], // Serial (marked as the name field), Entity
             [\Ticket::class, [2, 1, 80]], // ID (Always shown for ITIL Objects), Name, Entity
             [\KnowbaseItem::class, [1, 80]], // Name, Entity Target
