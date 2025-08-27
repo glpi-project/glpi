@@ -82,39 +82,6 @@ final class AltchaManager
 {
     use SingletonTrait;
 
-    /**
-     * Define the complexity of the proof-of-work task.
-     *
-     * See: https://altcha.org/docs/v2/complexity/.
-     *
-     * Higher complexity may significantly increase the computational load on
-     * client devices, potentially impacting user experience.
-     *
-     * Lower complexity might reduce security against automated attacks but can
-     * enhance user accessibility.
-     *
-     * To increase security, we could implements in the future a "dynamic
-     * complexity" mecanism.
-     * This mecanism would adapts complexity based on server load and/or user
-     * behavior, ensuring a balance between security and usability.
-     *
-     * @var int
-     */
-    private const MAX_NUMBER = 50000;
-
-    /**
-     * Define the expiration time for the challenge.
-     *
-     * See: https://altcha.org/docs/v2/security-recommendations.
-     *
-     * It is recommended to use a short challenge expiration to ensure that
-     * challenges are invalidated after they expire. As a general guideline,
-     * set the expiration time between 20 minutes and 1 hour.
-     *
-     * @var string
-     */
-    private const EXPIRES_INTERVAL = 'PT20M';
-
     /** @var string */
     private const SESSION_STORAGE_KEY = 'altcha_challenges';
 
@@ -128,51 +95,40 @@ final class AltchaManager
 
     public function isEnabled(): bool
     {
-        if (defined('GLPI_ALTCHA_ENABLED') && is_bool(GLPI_ALTCHA_ENABLED)) {
-            return GLPI_ALTCHA_ENABLED;
+        // @phpstan-ignore function.alreadyNarrowedType (don't trust custom user config)
+        if (!is_bool(GLPI_ALTCHA_ENABLED)) {
+            throw new RuntimeException();
         }
 
-        return true;
+        return GLPI_ALTCHA_ENABLED;
     }
 
     public function shouldStartWidgetOnLoad(): bool
     {
-        if (
-            defined('GLPI_ALTCHA_WIDGET_AUTOSTART')
-            && is_bool(GLPI_ALTCHA_WIDGET_AUTOSTART)
-        ) {
-            return GLPI_ALTCHA_WIDGET_AUTOSTART;
+        // @phpstan-ignore function.alreadyNarrowedType (don't trust custom user config)
+        if (!is_bool(GLPI_ALTCHA_WIDGET_AUTOSTART)) {
+            throw new RuntimeException();
         }
 
-        return true;
+        return GLPI_ALTCHA_WIDGET_AUTOSTART;
     }
 
     public function shouldHideWidget(): bool
     {
-        if (
-            defined('GLPI_ALTCHA_WIDGET_HIDE')
-            && is_bool(GLPI_ALTCHA_WIDGET_HIDE)
-        ) {
-            return GLPI_ALTCHA_WIDGET_HIDE;
+        // @phpstan-ignore function.alreadyNarrowedType (don't trust custom user config)
+        if (!is_bool(GLPI_ALTCHA_WIDGET_HIDE)) {
+            throw new RuntimeException();
         }
 
-        return true;
+        return GLPI_ALTCHA_WIDGET_HIDE;
     }
 
     public function generateChallenge(): Challenge
     {
-        // Allow manual override of max number parameter
-        $max_number = self::MAX_NUMBER;
-        if (defined('GLPI_ALTCHA_MAX_NUMBER') && is_int(GLPI_ALTCHA_MAX_NUMBER)) {
-            $max_number = GLPI_ALTCHA_MAX_NUMBER;
-        }
-
         // Create challenge
         $options = new ChallengeOptions(
-            maxNumber: $max_number,
-            expires: (new DateTimeImmutable())->add(
-                new DateInterval(self::EXPIRES_INTERVAL)
-            ),
+            maxNumber: $this->getComplexity(),
+            expires: (new DateTimeImmutable())->add($this->getExpiresAtInterval()),
         );
         $challenge = $this->altcha->createChallenge($options);
         $this->storeOngoingChallenge($challenge->challenge);
@@ -291,5 +247,50 @@ final class AltchaManager
         }
 
         return $payload['challenge'];
+    }
+
+    /**
+     * Define the complexity of the proof-of-work task.
+     *
+     * See: https://altcha.org/docs/v2/complexity/.
+     *
+     * Higher complexity may significantly increase the computational load on
+     * client devices, potentially impacting user experience.
+     *
+     * Lower complexity might reduce security against automated attacks but can
+     * enhance user accessibility.
+     *
+     * To increase security, we could implements in the future a "dynamic
+     * complexity" mecanism.
+     * This mecanism would adapts complexity based on server load and/or user
+     * behavior, ensuring a balance between security and usability.
+     */
+    private function getComplexity(): int
+    {
+        // @phpstan-ignore function.alreadyNarrowedType (don't trust custom user config)
+        if (!is_int(GLPI_ALTCHA_MAX_NUMBER)) {
+            throw new RuntimeException();
+        }
+
+        return GLPI_ALTCHA_MAX_NUMBER;
+    }
+
+    /**
+     * Define the expiration time for the challenge.
+     *
+     * See: https://altcha.org/docs/v2/security-recommendations.
+     *
+     * It is recommended to use a short challenge expiration to ensure that
+     * challenges are invalidated after they expire. As a general guideline,
+     * set the expiration time between 20 minutes and 1 hour.
+     */
+    private function getExpiresAtInterval(): DateInterval
+    {
+        // @phpstan-ignore instanceof.alwaysTrue (don't trust custom user config)
+        if (!GLPI_ALTCHA_EXPIRATION_INTERVAL instanceof DateInterval) {
+            throw new RuntimeException();
+        }
+
+        return GLPI_ALTCHA_EXPIRATION_INTERVAL;
     }
 }

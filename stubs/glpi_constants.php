@@ -94,4 +94,14 @@
     define('GLPI_USER_AGENT_EXTRA_COMMENTS', $random_val(['', 'app-version:5']));
     define('GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING', $random_val([false, true]));
     define('GLPI_WEBHOOK_CRA_MANDATORY', $random_val([false, true]));
+
+    // Altcha
+    define('GLPI_ALTCHA_ENABLED', $random_val([false, true]));
+    define('GLPI_ALTCHA_WIDGET_AUTOSTART', $random_val([false, true]));
+    define('GLPI_ALTCHA_WIDGET_HIDE', $random_val([false, true]));
+    define('GLPI_ALTCHA_MAX_NUMBER', $random_val([50000, 100000]));
+    define('GLPI_ALTCHA_EXPIRATION_INTERVAL', $random_val([
+        new DateInterval('PT20M'),
+        new DateInterval('PT40M'),
+    ]));
 })();

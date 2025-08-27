@@ -34,6 +34,7 @@
 
 namespace Glpi\Application;
 
+use DateInterval;
 use Glpi\Error\ErrorHandler;
 use Glpi\Log\AccessLogHandler;
 use Glpi\Log\ErrorLogHandler;
@@ -175,6 +176,13 @@ final class SystemConfigurator
                 'GLPI_TEXT_MAXSIZE'           => '4000', // character threshold for displaying read more button
                 'GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING' => '0', // allow (1) or not (0) to save webhook response in database
                 'GLPI_WEBHOOK_CRA_MANDATORY' => false, // make challenge-response authentication mandatory or not for webhooks
+
+                // Altcha
+                'GLPI_ALTCHA_ENABLED'             => true,
+                'GLPI_ALTCHA_WIDGET_AUTOSTART'    => true,
+                'GLPI_ALTCHA_WIDGET_HIDE'         => true,
+                'GLPI_ALTCHA_MAX_NUMBER'          => 50000,
+                'GLPI_ALTCHA_EXPIRATION_INTERVAL' => new DateInterval('PT20M'), // 20 min
             ],
         ];
 

@@ -98,7 +98,7 @@ final class AltchaManagerTest extends GLPITestCase
         $payload = base64_encode(json_encode([
             'algorithm' => $challenge->algorithm,
             'challenge' => $challenge->challenge,
-            'number'    => 80000, // Should be higher than AltchaManager::MAX_NUMBER to make sure the test isn't flaky
+            'number'    => GLPI_ALTCHA_MAX_NUMBER + 10, // Impossible value
             'salt'      => $challenge->salt,
             'signature' => $challenge->signature,
         ]));
