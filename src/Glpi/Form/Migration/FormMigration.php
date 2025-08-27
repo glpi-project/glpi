@@ -1404,7 +1404,7 @@ class FormMigration extends AbstractPluginMigration
                     if ($item !== false && $item->getFromDB($target_item['items_id']) !== false) {
                         $form = $item->getForm();
                     } else {
-                        $item = null
+                        $item = null;
                         $form = null;
                     }
 
