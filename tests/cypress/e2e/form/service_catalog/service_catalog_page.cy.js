@@ -252,7 +252,7 @@ describe('Service catalog page', () => {
         cy.get('@filter_input').type('application');
         cy.waitForNetworkIdle(1000);
         findItemInServiceCatalog(kb_name_1).should('not.exist');
-        findItemInServiceCatalog(kb_name_2).should('not.exist');
+        findItemInServiceCatalog(kb_name_2).should('exist');
     });
 
     it('can pick a category in the service catalog', () => {
