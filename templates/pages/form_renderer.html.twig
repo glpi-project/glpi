@@ -75,7 +75,6 @@
 
             {% for section in form.getSections() %}
                 {% set is_first_section = loop.index0 == 0 %}
-                {% set is_last_section = loop.last %}
                 {% set section_index = loop.index0 %}
 
                 <div
@@ -112,7 +111,6 @@
                                 {% if form_group_blocks is not iterable %}
                                     {% set form_group_blocks = [form_group_blocks] %}
                                 {% endif %}
-                                {% set is_last_section = loop.last %}
 
                                 <section data-glpi-form-renderer-horizontal-blocks>
                                     {% set previous_index = -1 %}
@@ -187,14 +185,6 @@
                                     {% endfor %}
                                 </section>
                             {% endfor %}
-
-                            {% if is_last_section and unauthenticated_user %}
-                                {{ include(
-                                    'components/altcha/widget.html.twig',
-                                    {},
-                                    with_context: false
-                                ) }}
-                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -203,6 +193,17 @@
 
             {# Form reference #}
             <input type="hidden" name="forms_id" value="{{ form.fields.id }}">
+
+            <div class="d-flex justify-content-end mb-3" data-glpi-form-renderer-actions>
+                {# Altcha #}
+                {% if unauthenticated_user %}
+                    {{ include(
+                        'components/altcha/widget.html.twig',
+                        {},
+                        with_context: false
+                    ) }}
+                {% endif %}
+            </div>
 
             {# Actions #}
             <div class="d-flex justify-content-end" data-glpi-form-renderer-actions>

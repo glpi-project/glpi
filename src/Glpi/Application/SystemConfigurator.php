@@ -179,7 +179,7 @@ final class SystemConfigurator
                 'GLPI_WEBHOOK_CRA_MANDATORY' => false, // make challenge-response authentication mandatory or not for webhooks
 
                 // Altcha
-                'GLPI_ALTCHA_MODE'                => AltchaMode::HIDDEN,
+                'GLPI_ALTCHA_MODE'                => AltchaMode::AUTO,
                 'GLPI_ALTCHA_MAX_NUMBER'          => 50000,
                 'GLPI_ALTCHA_EXPIRATION_INTERVAL' => new DateInterval('PT20M'), // 20 min
             ],
