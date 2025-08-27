@@ -36,12 +36,12 @@ namespace Glpi\Altcha;
 
 use LogicException;
 
-enum AltchaMode
+enum AltchaMode: string
 {
-    case DISABLED;
-    case HIDDEN;
-    case AUTO;
-    case INTERACTIVE;
+    case DISABLED = "disabled";
+    case HIDDEN = "hidden";
+    case AUTO = "auto";
+    case INTERACTIVE = "interactive";
 
     public function isEnabled(): bool
     {

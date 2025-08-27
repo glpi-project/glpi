@@ -237,11 +237,15 @@ final class AltchaManager
     private function getMode(): AltchaMode
     {
         // @phpstan-ignore instanceof.alwaysTrue (don't trust custom user config)
-        if (!GLPI_ALTCHA_MODE instanceof AltchaMode) {
+        if (GLPI_ALTCHA_MODE instanceof AltchaMode) {
+            $mode = GLPI_ALTCHA_MODE;
+        } elseif (is_string(GLPI_ALTCHA_MODE)) {
+            $mode = AltchaMode::tryFrom(GLPI_ALTCHA_MODE);
+        } else {
             throw new RuntimeException();
         }
 
-        return GLPI_ALTCHA_MODE;
+        return $mode;
     }
 
     /**

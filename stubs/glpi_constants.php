@@ -1,7 +1,5 @@
 <?php
 
-use Glpi\Altcha\AltchaMode;
-
 /**
  * ---------------------------------------------------------------------
  *
@@ -33,6 +31,8 @@ use Glpi\Altcha\AltchaMode;
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Altcha\AltchaMode;
 
 // This file contains stubs for GLPI constants.
 // Please try to keep them alphabetically ordered.
@@ -98,7 +98,10 @@ use Glpi\Altcha\AltchaMode;
     define('GLPI_WEBHOOK_CRA_MANDATORY', $random_val([false, true]));
 
     // Altcha
-    define('GLPI_ALTCHA_MODE', $random_val(AltchaMode::cases()));
+    define('GLPI_ALTCHA_MODE', $random_val([
+        ...AltchaMode::cases(),
+        ...array_map(fn(AltchaMode $m): string => $m->value, AltchaMode::cases()),
+    ]));
     define('GLPI_ALTCHA_MAX_NUMBER', $random_val([50000, 100000]));
     define('GLPI_ALTCHA_EXPIRATION_INTERVAL', $random_val([
         new DateInterval('PT20M'),
