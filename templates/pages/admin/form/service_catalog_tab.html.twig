@@ -35,7 +35,7 @@
 <form method="POST" action="{{ item.getFormURL() }}" data-submit-once>
     <div class="py-2 px-3 container-narrow ms-0">
         <section data-service-catalog-config
-            style="{{ item.isField('show_in_service_catalog') and item.fields.show_in_service_catalog ? "opacity: 0.5" : "" }}"
+            style="{{ item.isField('show_in_service_catalog') and item.fields.show_in_service_catalog ? "" : "opacity: 0.5" }}"
         >
             <h2 class="d-flex align-items-center">
                 <i class="{{ icon }} me-2"></i>
