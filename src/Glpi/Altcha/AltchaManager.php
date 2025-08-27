@@ -240,7 +240,7 @@ final class AltchaManager
         if (GLPI_ALTCHA_MODE instanceof AltchaMode) {
             $mode = GLPI_ALTCHA_MODE;
         } elseif (is_string(GLPI_ALTCHA_MODE)) {
-            $mode = AltchaMode::tryFrom(GLPI_ALTCHA_MODE);
+            $mode = AltchaMode::from(GLPI_ALTCHA_MODE);
         } else {
             throw new RuntimeException();
         }
