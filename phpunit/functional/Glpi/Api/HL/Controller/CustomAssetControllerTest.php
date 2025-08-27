@@ -120,4 +120,40 @@ class CustomAssetControllerTest extends HLAPITestCase
     {
         $this->api->autoTestAssignableItemRights('/Assets/Custom/Test01', 'Glpi\\CustomAsset\\Test01Asset');
     }
+
+    public function testAssetModelAndTypeProperties()
+    {
+        $this->login();
+
+        $asset_1 = getItemByTypeName('Glpi\\CustomAsset\\Test01Asset', 'TestB', true);
+        $model_1 = getItemByTypeName('Glpi\\CustomAsset\\Test01AssetModel', 'Test01Model01', true);
+        $type_1 = getItemByTypeName('Glpi\\CustomAsset\\Test01AssetType', 'Test01Type01', true);
+
+        $this->api->call(new Request('GET', '/Assets/Custom/Test01/' . $asset_1), function ($call) {
+            /** @var HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertNull($content['model']);
+                    $this->assertNull($content['type']);
+                });
+        });
+
+        $request = new Request('PATCH', '/Assets/Custom/Test01/' . $asset_1);
+        $request->setParameter('model', $model_1);
+        $request->setParameter('type', $type_1);
+        $this->api->call($request, function ($call) {
+            /** @var HLAPICallAsserter $call */
+            $call->response->isOK();
+        });
+        $this->api->call(new Request('GET', '/Assets/Custom/Test01/' . $asset_1), function ($call) use ($model_1, $type_1) {
+            /** @var HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($model_1, $type_1) {
+                    $this->assertEquals($model_1, $content['model']['id']);
+                    $this->assertEquals($type_1, $content['type']['id']);
+                });
+        });
+    }
 }
