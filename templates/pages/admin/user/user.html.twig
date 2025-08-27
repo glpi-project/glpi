@@ -97,7 +97,7 @@
                                 readonly: external_auth,
                             }) }}
 
-                            {% if timezones is not null %}
+                            {% if use_timezones %}
                                 {{ fields.dropdownArrayField('timezone', item.fields['timezone'], timezones, __('Timezone'), field_options|merge({
                                     display_emptychoice: true,
                                     emptylabel: __('Use server configuration')

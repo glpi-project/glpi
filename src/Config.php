@@ -688,7 +688,8 @@ class Config extends CommonDBTM
             'config' => $data,
             'palettes' => array_combine(array_keys($palettes), array_column($palettes, 'name')),
             'palettes_isdark' => array_combine(array_keys($palettes), array_column($palettes, 'dark')),
-            'timezones' => $DB->use_timezones ? $DB->getTimezones() : null,
+            'use_timezones' => $DB->use_timezones,
+            'timezones' => $DB->use_timezones ? $DB->getTimezones() : [],
             'central_tabs' => $central_tabs,
         ]);
     }

@@ -239,7 +239,6 @@ class DashboardTest extends DbTestCase
     {
         $reflector = new \ReflectionClass("Glpi\Dashboard\Dashboard");
         $property  = $reflector->getProperty($propertyName);
-        $property->setAccessible(true);
 
         return $property->getValue($this->dashboard);
     }

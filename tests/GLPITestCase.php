@@ -145,7 +145,6 @@ class GLPITestCase extends atoum
     protected function callPrivateMethod($instance, string $methodName, ...$args)
     {
         $method = new ReflectionMethod($instance, $methodName);
-        $method->setAccessible(true);
 
         return $method->invoke($instance, ...$args);
     }

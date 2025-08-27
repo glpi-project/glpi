@@ -600,6 +600,8 @@ class Inventory
             'links'   => $links,
         ];
 
+        $links['lists'] = ''; // Add `Lists` button for subitems
+
         if (Session::haveRight(Agent::$rightname, READ)) {
             $menu['options'][Agent::class] = [
                 'icon'  => Agent::getIcon(),
@@ -608,6 +610,7 @@ class Inventory
                 'links' => [
                     'search' => '/front/agent.php',
                 ] + $links,
+                'lists_itemtype' => Agent::class,
             ];
         }
 
@@ -619,6 +622,7 @@ class Inventory
                 'links' => [
                     "<i class=\"ti ti-plus\" title=\"" . __s('Add global lock') . "\"></i><span class='d-none d-xxl-block'>" . __s('Add global lock') . "</span>" => Lockedfield::getFormURL(false),
                 ] + $links,
+                'lists_itemtype' => Lockedfield::class,
             ];
         }
 
@@ -628,6 +632,7 @@ class Inventory
                 'title' => RefusedEquipment::getTypeName(Session::getPluralNumber()),
                 'page'  => RefusedEquipment::getSearchURL(false),
                 'links' => $links,
+                'lists_itemtype' => RefusedEquipment::class,
             ];
         }
 
@@ -640,6 +645,7 @@ class Inventory
                     'add' => '/front/snmpcredential.form.php',
                     'search' => '/front/snmpcredential.php',
                 ] + $links,
+                'lists_itemtype' => SNMPCredential::class,
             ];
         }
 

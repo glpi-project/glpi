@@ -1474,7 +1474,6 @@ class Toolbox
         $content = curl_exec($ch);
         $curl_info = curl_getinfo($ch);
         $curl_redirect = $curl_info['redirect_url'] ?? null;
-        curl_close($ch);
 
         if (!empty($curl_redirect)) {
             return self::callCurl($curl_redirect, $eopts, $msgerr, $curl_error, $check_url_safeness, $curl_info);

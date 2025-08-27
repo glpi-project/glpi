@@ -231,7 +231,6 @@ class ImportMapGeneratorTest extends GLPITestCase
         $generator = $this->createMockGenerator(vfsStream::url('glpi'));
         $reflection = new \ReflectionClass($generator);
         $method = $reflection->getMethod('generateVersionParam');
-        $method->setAccessible(true);
 
         // Test file path
         $file_path = vfsStream::url('glpi/js/modules/TestModule.js');
@@ -309,7 +308,6 @@ class ImportMapGeneratorTest extends GLPITestCase
         // Get reflection access to static instance property
         $reflection = new \ReflectionClass(ImportMapGenerator::class);
         $instance_property = $reflection->getProperty('instance');
-        $instance_property->setAccessible(true);
 
         // Reset singleton instance
         $instance_property->setValue(null, null);
