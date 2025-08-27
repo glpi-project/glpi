@@ -94,6 +94,11 @@ final class ItemsController extends AbstractController
             url_parameters: $request->query->all()
         );
 
+        // If we have a filter, we search in all categories
+        if (!empty($filter)) {
+            $category_id = null;
+        }
+
         // Get items from the service catalog
         $item_request = new ItemRequest(
             access_parameters: $parameters,

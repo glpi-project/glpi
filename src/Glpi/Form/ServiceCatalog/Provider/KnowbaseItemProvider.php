@@ -56,11 +56,17 @@ final class KnowbaseItemProvider implements LeafProviderInterface
         $category_id = $item_request->getCategoryID();
         $filter = $item_request->getFilter();
 
+        $category_restriction = [];
+        if ($category_id !== null) {
+            $category_restriction = [
+                'forms_categories_id' => $category_id,
+            ];
+        }
+
         $knowbase_items = [];
         $raw_knowbase_items = (new KnowbaseItem())->find([
-            'forms_categories_id'     => $category_id ?? 0,
             'show_in_service_catalog' => true,
-        ], ['name']);
+        ] + $category_restriction, ['name']);
 
         foreach ($raw_knowbase_items as $raw_knowbase_item) {
             $knowbase_item = new KnowbaseItem();
@@ -69,11 +75,11 @@ final class KnowbaseItemProvider implements LeafProviderInterface
 
             // Fuzzy matching
             $name        = $knowbase_item->fields['name'] ?? "";
-            $content     = $knowbase_item->fields['content'] ?? "";
+            $answer     = $knowbase_item->fields['answer'] ?? "";
             $description = $knowbase_item->fields['description'] ?? "";
             if (
                 !$this->matcher->match($name, $filter)
-                && !$this->matcher->match($content, $filter)
+                && !$this->matcher->match($answer, $filter)
                 && !$this->matcher->match($description, $filter)
             ) {
                 continue;
