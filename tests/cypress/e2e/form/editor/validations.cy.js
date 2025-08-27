@@ -121,11 +121,11 @@ function checkThatValidationOptionsAreVisible() {
 }
 
 function checkThatConditionEditorIsDisplayed() {
-    cy.getDropdownByLabelText('Item').should('exist');
+    cy.getDropdownByLabelText('Value operator').should('exist');
 }
 
 function checkThatConditionEditorIsNotDisplayed() {
-    cy.getDropdownByLabelText('Item').should('not.exist');
+    cy.getDropdownByLabelText('Value operator').should('not.exist');
 }
 
 function addNewEmptyCondition() {
