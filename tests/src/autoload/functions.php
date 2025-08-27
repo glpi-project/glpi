@@ -721,6 +721,26 @@ function loadDataset()
                 'profiles' => ['4' => ALLSTANDARDRIGHT | READ_ASSIGNED | UPDATE_ASSIGNED | READ_OWNED | UPDATE_OWNED],
             ],
         ],
+        'Glpi\\CustomAsset\\Test02AssetType' => [
+            [
+                'name' => 'Test02Type01',
+            ],
+        ],
+        'Glpi\\CustomAsset\\Test01AssetType' => [
+            [
+                'name' => 'Test01Type01',
+            ],
+        ],
+        'Glpi\\CustomAsset\\Test02AssetModel' => [
+            [
+                'name' => 'Test02Model01',
+            ],
+        ],
+        'Glpi\\CustomAsset\\Test01AssetModel' => [
+            [
+                'name' => 'Test01Model01',
+            ],
+        ],
         'Glpi\\Asset\\CustomFieldDefinition' => [
             [
                 'system_name' => 'teststring',
