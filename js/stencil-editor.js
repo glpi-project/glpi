@@ -55,31 +55,33 @@ const StencilEditor = function (container, rand, zones_definition) {
 
         // define set of croppers (and initialize them)
         Array.prototype.forEach.call(document.querySelectorAll('.stencil-image'), (img) => {
-            croppers.push(new window.Cropper(img));
+            const cropper = new window.Cropper(img);
+            croppers.push(cropper);
+            img.cropper = cropper;
         });
 
         // set default state of croppers objects
         croppers.forEach((cropper) => {
-            const cr_selection = cropper.getCropperSelection();
-            cr_selection.hidden = true;
-            cr_selection
-                .$reset()
-                .hidden = true;
+            setTimeout(() => {
+                const cr_selection = cropper.getCropperSelection();
+                cr_selection.$clear();
 
-            cropper.getCropperCanvas().disabled = true;
+                cropper.container.querySelector('cropper-canvas').disabled = true;
+                cropper.container.querySelector('cropper-shade').hidden = true;
 
-            const cr_image = cropper.getCropperImage();
-            cr_image.$ready(() => {
-                // center image (by stretching y axis to max)
-                cr_image.$center('cover');
+                const cr_image = cropper.getCropperImage();
+                cr_image.$ready(() => {
+                    // center image (by stretching y axis to max)
+                    cr_image.$center('cover');
 
-                // adapt canvas to have the same height as the image
-                const img_rect = cr_image.getBoundingClientRect();
-                const cr_canvas = cropper.getCropperCanvas();
-                $(container).find(cr_canvas).css('height', img_rect.height);
+                    // adapt canvas to have the same height as the image
+                    const img_rect = cr_image.getBoundingClientRect();
+                    const cr_canvas = cropper.getCropperCanvas();
+                    $(container).find(cr_canvas).css('height', img_rect.height);
 
-                // re-center image (after heigh adjust of container, the image is off on top)
-                cr_image.$center();
+                    // re-center image (after heigh adjust of container, the image is off on top)
+                    cr_image.$center();
+                });
             });
         });
 
@@ -186,7 +188,7 @@ const StencilEditor = function (container, rand, zones_definition) {
 
         croppers.forEach((cropper, side) => {
             cropper.getCropperSelection()
-                .$reset()
+                .$clear()
                 .hidden = false;
             cropper.getCropperCanvas()
                 .disabled = false;
@@ -308,6 +310,8 @@ const StencilEditor = function (container, rand, zones_definition) {
                 .disabled = true;
             cropper.getCropperImage()
                 .$center('contain');
+
+            cropper.container.querySelector('cropper-shade').hidden = true;
         });
 
         $(container).find('.set-zone-data').removeClass('btn-warning');
@@ -417,7 +421,7 @@ const StencilEditor = function (container, rand, zones_definition) {
 
                 // Reset zone data
                 var zoneData = $(`.set-zone-data[data-zone-index="${zoneId}"]`);
-                zoneData.removeClass('btn-success').removeClass('btn-warning');
+                zoneData.removeClass('btn-success').removeClass('btn-warning').addClass('btn-outline-secondary');
                 zoneData.find('span').text(zoneId);
                 zoneData.find('i').removeClass('ti-check').addClass('ti-file-unknown');
 

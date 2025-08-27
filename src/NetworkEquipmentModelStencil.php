@@ -93,6 +93,7 @@ class NetworkEquipmentModelStencil extends Stencil
             $portInformation = self::getPortInformation($zone);
             $statusHtml = TemplateRenderer::getInstance()->render('stencil/parts/port/status.html.twig', [
                 'port' => $portInformation,
+                'with_text' => false,
             ]);
             $zoneLabel .= $statusHtml;
         }
@@ -116,6 +117,7 @@ class NetworkEquipmentModelStencil extends Stencil
     {
         $networkPort = new NetworkPort();
 
+        $port['ifstatus'] = -1;
         if (
             $networkPort->getFromDBByCrit([
                 'logical_number' => $port['number'],
