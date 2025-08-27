@@ -204,9 +204,6 @@ body.in_modal {
 }
 
 .btn {
-    min-width: unset;
-    min-height: unset;
-
     .btn-group .select2-container ~ & {
         max-width: 25px;
     }
