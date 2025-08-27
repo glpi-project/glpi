@@ -9,6 +9,7 @@
  *
  * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2025 Kyndryl Inc.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -452,6 +453,10 @@ final class SearchOption implements ArrayAccess
                 }
                 foreach ($actions['searchopt']['searchtype'] as $searchtype) {
                     switch ($searchtype) {
+                        case "matches":
+                            $actions['matches'] = __('matches');
+                            break;
+                            
                         case "equals":
                             $actions['equals'] = __('is');
                             break;
@@ -580,6 +585,7 @@ final class SearchOption implements ArrayAccess
                 case 'name':
                 case 'completename':
                     $actions = [
+                        'matches'     => __('matches'),
                         'contains'    => __('contains'),
                         'notcontains' => __('not contains'),
                         'equals'      => __('is'),
