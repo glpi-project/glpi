@@ -95,32 +95,17 @@ final class AltchaManager
 
     public function isEnabled(): bool
     {
-        // @phpstan-ignore function.alreadyNarrowedType (don't trust custom user config)
-        if (!is_bool(GLPI_ALTCHA_ENABLED)) {
-            throw new RuntimeException();
-        }
-
-        return GLPI_ALTCHA_ENABLED;
+        return $this->getMode()->isEnabled();
     }
 
     public function shouldStartWidgetOnLoad(): bool
     {
-        // @phpstan-ignore function.alreadyNarrowedType (don't trust custom user config)
-        if (!is_bool(GLPI_ALTCHA_WIDGET_AUTOSTART)) {
-            throw new RuntimeException();
-        }
-
-        return GLPI_ALTCHA_WIDGET_AUTOSTART;
+        return $this->getMode()->shouldStartOnLoad();
     }
 
     public function shouldHideWidget(): bool
     {
-        // @phpstan-ignore function.alreadyNarrowedType (don't trust custom user config)
-        if (!is_bool(GLPI_ALTCHA_WIDGET_HIDE)) {
-            throw new RuntimeException();
-        }
-
-        return GLPI_ALTCHA_WIDGET_HIDE;
+        return !$this->getMode()->isVisible();
     }
 
     public function generateChallenge(): Challenge
@@ -247,6 +232,16 @@ final class AltchaManager
         }
 
         return $payload['challenge'];
+    }
+
+    private function getMode(): AltchaMode
+    {
+        // @phpstan-ignore instanceof.alwaysTrue (don't trust custom user config)
+        if (!GLPI_ALTCHA_MODE instanceof AltchaMode) {
+            throw new RuntimeException();
+        }
+
+        return GLPI_ALTCHA_MODE;
     }
 
     /**

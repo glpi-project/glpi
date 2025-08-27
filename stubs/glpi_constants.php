@@ -1,5 +1,7 @@
 <?php
 
+use Glpi\Altcha\AltchaMode;
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -96,9 +98,7 @@
     define('GLPI_WEBHOOK_CRA_MANDATORY', $random_val([false, true]));
 
     // Altcha
-    define('GLPI_ALTCHA_ENABLED', $random_val([false, true]));
-    define('GLPI_ALTCHA_WIDGET_AUTOSTART', $random_val([false, true]));
-    define('GLPI_ALTCHA_WIDGET_HIDE', $random_val([false, true]));
+    define('GLPI_ALTCHA_MODE', $random_val(AltchaMode::cases()));
     define('GLPI_ALTCHA_MAX_NUMBER', $random_val([50000, 100000]));
     define('GLPI_ALTCHA_EXPIRATION_INTERVAL', $random_val([
         new DateInterval('PT20M'),
