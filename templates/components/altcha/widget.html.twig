@@ -30,10 +30,18 @@
  # ---------------------------------------------------------------------
  #}
 
-<altcha-widget
-    challengeurl="{{ path('/Altcha/Challenge') }}"
-    auto="onload"
-    class="d-none"
-    hidefooter="true"
-    hidelogo="true"
-></altcha-widget>
+{% set manager = call('Glpi\\Altcha\\AltchaManager::getInstance') %}
+
+{% if manager.isEnabled() %}
+    <altcha-widget
+        challengeurl="{{ path('/Altcha/Challenge') }}"
+        {% if manager.shouldStartWidgetOnLoad() %}
+            auto="onload"
+        {% endif %}
+        {% if manager.shouldHideWidget() %}
+            class="d-none"
+        {% endif %}
+        hidefooter="true"
+        hidelogo="true"
+    ></altcha-widget>
+{% endif %}

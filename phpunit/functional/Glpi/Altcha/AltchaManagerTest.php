@@ -35,10 +35,26 @@
 namespace tests\units\Glpi\Altcha;
 
 use Glpi\Altcha\AltchaManager;
+use Glpi\Application\View\TemplateRenderer;
 use GLPITestCase;
 
 final class AltchaManagerTest extends GLPITestCase
 {
+    public function testIsEnabledByDefault(): void
+    {
+        $altcha_manager = AltchaManager::getInstance();
+        $this->assertTrue($altcha_manager->isEnabled());
+    }
+
+    public function testDefaultWidgetParameters(): void
+    {
+        $renderer = TemplateRenderer::getInstance();
+        $html = $renderer->render('components/altcha/widget.html.twig');
+        $this->assertStringContainsString('<altcha-widget', $html);
+        $this->assertStringContainsString('auto="onload"', $html);
+        $this->assertStringContainsString('class="d-none"', $html);
+    }
+
     public function testValidSolution(): void
     {
         // Prepare: create a challenge.

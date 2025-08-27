@@ -126,21 +126,66 @@ final class AltchaManager
         $this->initSessionStorage();
     }
 
+    public function isEnabled(): bool
+    {
+        if (defined('GLPI_ALTCHA_ENABLED') && is_bool(GLPI_ALTCHA_ENABLED)) {
+            return GLPI_ALTCHA_ENABLED;
+        }
+
+        return true;
+    }
+
+    public function shouldStartWidgetOnLoad(): bool
+    {
+        if (
+            defined('GLPI_ALTCHA_WIDGET_AUTOSTART')
+            && is_bool(GLPI_ALTCHA_WIDGET_AUTOSTART)
+        ) {
+            return GLPI_ALTCHA_WIDGET_AUTOSTART;
+        }
+
+        return true;
+    }
+
+    public function shouldHideWidget(): bool
+    {
+        if (
+            defined('GLPI_ALTCHA_WIDGET_HIDE')
+            && is_bool(GLPI_ALTCHA_WIDGET_HIDE)
+        ) {
+            return GLPI_ALTCHA_WIDGET_HIDE;
+        }
+
+        return true;
+    }
+
     public function generateChallenge(): Challenge
     {
+        // Allow manual override of max number parameter
+        $max_number = self::MAX_NUMBER;
+        if (defined('GLPI_ALTCHA_MAX_NUMBER') && is_int(GLPI_ALTCHA_MAX_NUMBER)) {
+            $max_number = GLPI_ALTCHA_MAX_NUMBER;
+        }
+
+        // Create challenge
         $options = new ChallengeOptions(
-            maxNumber: self::MAX_NUMBER,
+            maxNumber: $max_number,
             expires: (new DateTimeImmutable())->add(
                 new DateInterval(self::EXPIRES_INTERVAL)
             ),
         );
         $challenge = $this->altcha->createChallenge($options);
         $this->storeOngoingChallenge($challenge->challenge);
+
         return $challenge;
     }
 
     public function verifySolution(string $raw_payload): bool
     {
+        if (!$this->isEnabled()) {
+            return true;
+        }
+
         try {
             $payload = $this->decodePayload($raw_payload);
             $challenge = $this->getChallengeHashFromPayload($payload);
@@ -168,6 +213,10 @@ final class AltchaManager
      */
     public function removeChallenge(string $raw_payload): void
     {
+        if (!$this->isEnabled()) {
+            return;
+        }
+
         try {
             $payload = $this->decodePayload($raw_payload);
             $challenge = $this->getChallengeHashFromPayload($payload);
