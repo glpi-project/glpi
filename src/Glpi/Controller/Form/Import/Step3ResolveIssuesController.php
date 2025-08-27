@@ -62,10 +62,12 @@ final class Step3ResolveIssuesController extends AbstractController
         $mapper = new DatabaseMapper(Session::getActiveEntities());
 
         $replacements = $request->request->all()["replacements"] ?? [];
-        foreach ($replacements as $itemtype => $replacements_for_itemtype) {
-            foreach ($replacements_for_itemtype as $original_name => $items_id) {
-                $mapper->addMappedItem($itemtype, $original_name, (int) $items_id);
-            }
+        foreach ($replacements as $replacements_data) {
+            $mapper->addMappedItem(
+                $replacements_data['itemtype'],
+                $replacements_data['original_name'],
+                (int) $replacements_data['replacement_id'],
+            );
         }
 
         $issues = $serializer->listIssues($mapper, $json)->getIssues()[$form_id];
