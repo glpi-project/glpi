@@ -42,6 +42,7 @@
         {{ inputs.hidden('itemtype', get_class(item)) }}
     {% endif %}
     <div class="d-flex">
+        <div class="col-auto">
         {% if get_class(item) == 'KnowbaseItem' %}
             {# TODO pass used array to restrict visible items in list #}
             {% set dropdown %}
@@ -56,8 +57,9 @@
                 'on_change': "enableSubmitButton(this)",
             }) }}
         {% endif %}
-    </div>
-    <div class="d-flex flex-row-reverse pe-2">
-        {{ inputs.submit('add', _x('button', 'Add'), 1, {'additional_attributes': {'disabled': 'disabled'}}) }}
+        </div>
+        <div class="col-auto">
+            {{ inputs.submit('add', _x('button', 'Add'), 1, {'class': 'btn btn-primary ms-1', 'icon': 'ti ti-link', 'additional_attributes': {'disabled': 'disabled'}}) }}
+        </div>
     </div>
 </form>
