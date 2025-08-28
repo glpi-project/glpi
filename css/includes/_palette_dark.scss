@@ -71,6 +71,11 @@
     --glpi-timeline-badge-fg: rgb(236, 236, 236, 80%);
     --glpi-badge-bg: color-mix(in srgb, var(--tblr-link-color), var(--tblr-dark) 85%);
 
+    --glpi-illustrations-background: rgb(204, 204, 204);
+    --glpi-illustrations-primary: hsl(from var(--tblr-primary) h s 65);
+    --glpi-illustrations-header-dark: hsl(from var(--glpi-illustrations-background) h s 30);
+    --glpi-illustrations-header-light: hsl(from var(--glpi-illustrations-background) h s 50);
+
     .navbar-nav.user-menu .bg-red-lt {
         background-color: rgb(214, 57, 57, 20%) !important
     }
