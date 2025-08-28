@@ -2021,9 +2021,10 @@ document.addEventListener('hidden.bs.modal', (e) => {
 });
 
 function enableSubmitButton(select) {
-    if ($(select).val() > 0) {
-        $(select).closest('form').find('button[type=submit]').prop('disabled', false);
+    let _button = select.closest('form').querySelector('button[type=submit]')
+    if (select.value > 0) {
+        _button.removeAttribute('disabled');
     } else {
-        $(select).closest('form').find('button[type=submit]').prop('disabled', true);
+        _button.setAttribute('disabled', 'disabled');
     }
 }
