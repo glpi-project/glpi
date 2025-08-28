@@ -23,6 +23,7 @@
         "@glpi-project/illustrations": "^0.7.0",
         "@tabler/core": "^1.4.0",
         "@tabler/icons-webfont": "^3.34.1",
+        "altcha": "^2.1.0",
         "animate.css": "^4.1.1",
         "bootstrap": "^5.3.6",
         "cropperjs": "^2.0.1",

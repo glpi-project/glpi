@@ -35,6 +35,7 @@
 
 namespace Glpi\Controller\Form;
 
+use Glpi\Altcha\AltchaManager;
 use Glpi\Controller\AbstractController;
 use Glpi\Controller\Form\Utils\CanCheckAccessPolicies;
 use Glpi\Exception\Http\BadRequestHttpException;
@@ -64,11 +65,23 @@ final class SubmitAnswerController extends AbstractController
     )]
     public function __invoke(Request $request): Response
     {
+        $is_unauthenticated_user = !Session::isAuthenticated();
+        if ($is_unauthenticated_user) {
+            $altcha = $request->request->getString('altcha');
+            if (!AltchaManager::getInstance()->verifySolution($altcha)) {
+                throw new BadRequestHttpException();
+            }
+        }
+
         $form = $this->loadSubmittedForm($request);
         $this->checkFormAccessPolicies($form, $request);
 
         $answers = $this->saveSubmittedAnswers($form, $request);
         $links = $answers->getLinksToCreatedItems();
+
+        if ($is_unauthenticated_user) {
+            AltchaManager::getInstance()->removeChallenge($altcha);
+        }
 
         return new JsonResponse([
             'links_to_created_items' => $links,
