@@ -169,7 +169,7 @@ class HTMLTableGroup extends HTMLTableBase
                 $p['display_title_for_each_group']
                 && !empty($this->content)
             ) {
-                echo "\t<tbody><tr><th colspan='$totalNumberOfColumn'>" . htmlescape($this->content)
+                echo "\t<tbody><tr><th colspan='" . ((int) $totalNumberOfColumn) . "'>" . htmlescape($this->content)
                  . "</th></tr></tbody>\n";
             }
 
@@ -203,7 +203,7 @@ class HTMLTableGroup extends HTMLTableBase
                 }
                 $currentNumberOfSubRow = $row->getNumberOfSubRows();
                 if (($previousNumberOfSubRows * $currentNumberOfSubRow) > 1) {
-                    echo "\t<tbody><tr class='tab_bg_1'><td colspan='$totalNumberOfColumn'><hr></td></tr>"
+                    echo "\t<tbody><tr class='tab_bg_1'><td colspan='" . ((int) $totalNumberOfColumn) . "'><hr></td></tr>"
                     . "</tbody>\n";
                 }
                 $row->displayRow($this->ordered_headers);

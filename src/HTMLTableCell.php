@@ -247,9 +247,9 @@ class HTMLTableCell extends HTMLTableEntity
                 if ($this->item instanceof CommonDBTM) {
                     Session::addToNavigateListItems($this->item::class, $this->item->getID());
                 }
-                echo "\t\t\t<td colspan='" . $this->header->getColSpan() . "'";
+                echo "\t\t\t<td colspan='" . ((int) $this->header->getColSpan()) . "'";
                 if ($this->numberOfLines > 1) {
-                    echo " rowspan='" . $this->numberOfLines . "'";
+                    echo " rowspan='" . ((int) $this->numberOfLines) . "'";
                 }
                 $this->displayEntityAttributs($options);
                 echo ">";

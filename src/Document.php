@@ -458,8 +458,8 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             : ['itemtype' => Ticket::class, 'items_id' => $this->fields['tickets_id']];
 
         if (self::canView() || $this->canViewFile($can_view_options)) {
-            $open  = "<a href='" . $CFG_GLPI["root_doc"] . "/front/document.send.php?docid="
-                    . $this->fields['id'] . $link_params . "' alt=\"" . $initfileout . "\"
+            $open  = "<a href='" . htmlescape($CFG_GLPI["root_doc"] . "/front/document.send.php?docid="
+                    . $this->fields['id'] . $link_params) . "' alt=\"" . $initfileout . "\"
                     title=\"" . $initfileout . "\"target='_blank'>";
             $close = "</a>";
         }
@@ -483,7 +483,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
                 }
                 $out .= "<img class='middle' style='margin-left:3px; margin-right:6px;' alt=\""
                               . $initfileout . "\" title=\"" . $initfileout . "\" src='"
-                              . $CFG_GLPI["typedoc_icon_dir"] . "/$icon'>";
+                              . htmlescape($CFG_GLPI["typedoc_icon_dir"] . "/$icon") . "'>";
             }
         }
         $out .= "$open<span class='fw-bold'>" . $fileout . "</span>$close";

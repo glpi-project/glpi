@@ -2884,6 +2884,10 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         }
     }
 
+    /**
+     * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
+     * @psalm-taint-sink html $value (string will be added to HTML source)
+     */
     public static function inheritedValue($value = "", bool $inline = false, bool $display = true): string
     {
         if (trim($value) === '') {

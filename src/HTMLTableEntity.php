@@ -146,6 +146,9 @@ abstract class HTMLTableEntity
 
     /**
      * @param $content
+     *
+     * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
+     * @psalm-taint-sink html $content (string will be added to HTML source)
      **/
     public function setContent($content)
     {

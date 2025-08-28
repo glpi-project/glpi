@@ -562,7 +562,7 @@ TWIG, $twig_params);
         $entries = [];
         foreach ($domains as $data) {
             $domainID = $data["id"];
-            $link     = NOT_AVAILABLE;
+            $link     = htmlescape(NOT_AVAILABLE);
 
             if ($domain->getFromDB($domainID)) {
                 $link = $domain->getLink();

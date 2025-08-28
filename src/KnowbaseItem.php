@@ -1456,7 +1456,7 @@ TWIG, $twig_params);
                     $params['start'],
                     $rows,
                     $pager_url,
-                    Toolbox::append_params($parameters, '&amp;'),
+                    Toolbox::append_params($parameters),
                     'KnowbaseItem'
                 );
             }
@@ -1635,7 +1635,7 @@ TWIG, $twig_params);
                     $params['start'],
                     $rows,
                     $pager_url,
-                    Toolbox::append_params($parameters, '&amp;'),
+                    Toolbox::append_params($parameters),
                     'KnowbaseItem'
                 );
             }

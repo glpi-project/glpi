@@ -1861,7 +1861,11 @@ TWIG, $twig_params);
                 $parentname = $item['_parent_name'] ?? $item['_parents_id'];
 
                 $content .= "<div>";
-                $content .= Html::link(htmlescape(sprintf(__('%s of %s'), $childref, $parentname)), Project::getFormURLWithID($item['_parents_id']));
+                $content .= sprintf(
+                    '<a href="%1$s">%2$s</a>',
+                    htmlescape(Project::getFormURLWithID($item['_parents_id'])),
+                    htmlescape(sprintf(__('%s of %s'), $childref, $parentname))
+                );
                 $content .= "</div>";
             }
             $content .= "<div class='flex-break'></div>";

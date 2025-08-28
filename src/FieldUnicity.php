@@ -420,7 +420,7 @@ class FieldUnicity extends CommonDropdown
                                 $message[] = $searchOption['name'];
                             }
                         }
-                        return implode(', ', $message);
+                        return htmlescape(implode(', ', $message));
                     }
                 }
                 break;

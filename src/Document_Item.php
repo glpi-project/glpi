@@ -678,8 +678,8 @@ TWIG, $twig_params);
         $entries  = [];
         foreach ($documents as $data) {
             $docID        = $data["id"];
-            $name         = NOT_AVAILABLE;
-            $downloadlink = NOT_AVAILABLE;
+            $name         = htmlescape(NOT_AVAILABLE);
+            $downloadlink = htmlescape(NOT_AVAILABLE);
 
 
             if ($document->getFromDB($docID)) {

@@ -1635,8 +1635,7 @@ class Stat extends CommonGLPI
                             'date2'     => $date2,
                             'type'      => 'hardwares',
                             'start'     => $start,
-                        ],
-                        '&amp;'
+                        ]
                     ),
                     'Stat'
                 );
