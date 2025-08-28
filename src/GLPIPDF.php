@@ -115,7 +115,7 @@ class GLPIPDF extends TCPDF
      *
      * @see TCPDF::Header()
     **/
-    public function Header() // phpcs:ignore PSR1.Methods.CamelCapsMethodName
+    public function Header()
     {
         // Title
         $this->Cell(0, $this->config['margin_bottom'], $this->title, 0, 0, 'C', false, '', 0, false, 'M', 'M');
@@ -127,7 +127,7 @@ class GLPIPDF extends TCPDF
      *
      * @see TCPDF::Footer()
     **/
-    public function Footer() // phpcs:ignore PSR1.Methods.CamelCapsMethodName
+    public function Footer()
     {
         // Position at 15 mm from bottom
         $this->SetY(-$this->config['margin_bottom']);
