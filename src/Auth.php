@@ -813,6 +813,25 @@ class Auth extends CommonGLPI
                 && !empty($this->user->fields['name'])
             ) {
                 // Used for log when login process failed
+
+                // If we use $ssovariable, we have to make sure to only select the realm described in
+                // the variable. In case of multiple LDAPs, this will avoid username collisions and
+                // hostile profile takeovers.
+                // Note that multiple AuthLDAP could use the same realm (although the user should only
+                // be in one of them), so we use an array of LDAP IDs here.
+                $ssovariable = Dropdown::getDropdownName('glpi_ssovariables', $CFG_GLPI["ssovariables_id"]);
+                $sso_realm = "";
+                $sso_ldap_servers = [];
+                if (isset($_SERVER[$ssovariable])) {
+                    $sso_realm = explode("@", $_SERVER[$ssovariable])[1];
+                    $authldap = new AuthLdap();
+                    foreach (AuthLDAP::getLdapServers() as $ldap_config) {
+                        $authldap->getFromDB($ldap_config["id"]);
+                        if ($authldap->isActive() and $sso_realm == $authldap->getKerberosRealm()) {
+                            $sso_ldap_servers[] = $authldap->fields["id"];
+                        }
+                    }
+                }
                 $login_name                        = $this->user->fields['name'];
                 $this->auth_succeded               = true;
                 $this->user_present                = $this->user->getFromDBbyName(addslashes($login_name));
@@ -827,6 +846,36 @@ class Auth extends CommonGLPI
                 $ldapservers_status = false;
                 //if LDAP enabled too, get user's infos from LDAP
                 if ((!isset($this->user->fields['authtype']) || $this->user->fields['authtype'] === self::LDAP) && Toolbox::canUseLdap()) {
+
+                    // Wrong user: user's directory is different from SSO's realm.
+                    // This is a case of either username collision or hostile action.
+                    // We need to correct the info.
+                    if ($sso_ldap_servers
+                        && isset($this->user->fields["auths_id"])
+                        && !in_array($this->user->fields["auths_id"], $sso_ldap_servers)) {
+                        $this->user_present = false;
+                        $this->user->fields["auths_id"] = 0;
+                        foreach ($sso_ldap_servers as $ldap_id) {
+                            // There shouldn't be more than one login_name per realm, so
+                            // we can exit when we find it, even if several servers point to
+                            // the same LDAP.
+                            // (If the GLPI instance is configured to allow the same AD user
+                            // to have two profiles via two AuthLDAP pointing to the same LDAP
+                            // this will most probably break. But I'm not sorry, because whoever
+                            // set it up that way did a Very Wrong Thing.)
+                            $this->user_present = $this->user->getFromDBByCrit(['name' => $login_name, 'authtype' => self::LDAP, 'auths_id' => $ldap_id]);
+                            if ($this->user_present) {
+                                break;
+                            }
+                        }
+                        // There can be a case where multiple LDAPs know the same login_name, but
+                        // only some of them are known by GLPI yet (user is not yet sync'ed, or is deleted).
+                        // So the user may try their login in good faith but we must refuse it.
+                        if (!$this->user_present) {
+                            $this->auth_succeded = false;
+                        }
+                    }
+
                     //User has already authenticated, at least once: it's ldap server if filled
                     if (
                         isset($this->user->fields["auths_id"])
