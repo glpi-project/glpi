@@ -1087,7 +1087,7 @@ class Auth extends CommonGLPI
                         // Manually close session here so that serialization issues are properly reported to avoid a difficult debugging situation when if silently fails when closed at the end of the request
                         session_write_close();
                         Html::redirect($CFG_GLPI["root_doc"] . '/MFA/Prompt');
-                    } elseif ($enforcement === TOTPManager::ENFORCEMENT_MANDATORY || !isset($_REQUEST['skip_mfa'])) {
+                    } elseif ($enforcement === TOTPManager::ENFORCEMENT_MANDATORY && !isset($_REQUEST['skip_mfa'])) {
                         // If MFA is mandatory the user has not already skipped MFA while in a grace period for this login, then we need to ask for it now
                         $_SESSION['mfa_pre_auth'] = $this->getMFAPreAuthParameters($remember_me);
                         // Manually close session here so that serialization issues are properly reported to avoid a difficult debugging situation when if silently fails when closed at the end of the request

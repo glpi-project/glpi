@@ -62,7 +62,7 @@ final class MFAController extends AbstractController
         }
         return new StreamedResponse(static function () {
             $totp = new TOTPManager();
-            $totp->showTOTPSetupForm((int)$_SESSION['mfa_pre_auth']['user']['id']);
+            $totp->showTOTPSetupForm((int) $_SESSION['mfa_pre_auth']['user']['id']);
         });
     }
 
