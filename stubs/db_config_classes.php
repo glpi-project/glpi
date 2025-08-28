@@ -35,8 +35,6 @@
 // This file contains class stubs for the DB config classes.
 // It permits to indicates to PHPStan and IDEs that the `DB` and the `DBSlave` classes are extending the `DBmysql` class.
 
-// phpcs:disable PSR1.Classes.ClassDeclaration
-
 if (!class_exists('DB', false)) {
     class DB extends DBmysql {}
 }
