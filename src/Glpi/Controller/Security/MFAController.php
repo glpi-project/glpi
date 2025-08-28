@@ -39,7 +39,7 @@ use Glpi\Exception\AuthenticationFailedException;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Glpi\Security\TOTPManager;
-use Preference;
+use Html;
 use Session;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -90,8 +90,9 @@ final class MFAController extends AbstractController
     {
         global $CFG_GLPI;
 
-        $pre_auth_data = $_SESSION['mfa_pre_auth'] ?? null;
-        if (!$pre_auth_data) {
+        $from_login = isset($_SESSION['mfa_pre_auth']);
+        $users_id = $from_login ? (int) $_SESSION['mfa_pre_auth']['user']['id'] : (int) Session::getLoginUserID();
+        if (!$users_id) {
             return new RedirectResponse($CFG_GLPI['root_doc'] . '/MFA/Prompt');
         }
         $totp = new TOTPManager();
@@ -105,9 +106,9 @@ final class MFAController extends AbstractController
 
         if (
             !(
-                (isset($backup_code) && $totp->verifyBackupCodeForUser($backup_code, $pre_auth_data['user']['id']))
+                (isset($backup_code) && $totp->verifyBackupCodeForUser($backup_code, $users_id))
                 || (isset($totp_code, $secret) && ($algorithm = $totp->verifyCodeForSecret($totp_code, $secret)))
-                || (isset($totp_code) && !isset($secret) && $totp->verifyCodeForUser($totp_code, $pre_auth_data['user']['id']))
+                || (isset($totp_code) && !isset($secret) && $totp->verifyCodeForUser($totp_code, $users_id))
             )
         ) {
             // Verification failure
@@ -121,14 +122,14 @@ final class MFAController extends AbstractController
         if (
             isset($secret)
             && !(Session::validateIDOR($request->request->all())
-                && $totp->setSecretForUser((int) $pre_auth_data['user']['id'], $_POST['secret'], $algorithm))
+                && $totp->setSecretForUser($users_id, $_POST['secret'], $algorithm))
         ) {
             Session::addMessageAfterRedirect(__s('Invalid code'), false, ERROR);
-            return new RedirectResponse($CFG_GLPI['root_doc'] . '/MFA/Prompt');
+            return new RedirectResponse($from_login ? ($CFG_GLPI['root_doc'] . '/MFA/Prompt') : Html::getBackUrl());
         }
 
         $_SESSION['mfa_success'] = true;
-        return new RedirectResponse($CFG_GLPI['root_doc'] . '/MFA/ShowBackupCodes');
+        return new RedirectResponse($from_login ? ($CFG_GLPI['root_doc'] . '/MFA/ShowBackupCodes') : Html::getBackUrl());
     }
 
     #[Route(

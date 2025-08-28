@@ -31,20 +31,19 @@
  #}
 
 {% import 'pages/2fa/macros.html.twig' as tfa %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 
 <form method="post" action="#" data-submit-once>
-   <div class="alert alert-info">
-      <h1>{{ __('2FA enabled') }}</h1>
-      <h2>
-         {% if enforcement == constant('Glpi\\Security\\TOTPManager::ENFORCEMENT_MANDATORY_GRACE_PERIOD') %}
+    {% set status_message %}
+        {% if enforcement == constant('Glpi\\Security\\TOTPManager::ENFORCEMENT_MANDATORY_GRACE_PERIOD') %}
             {{ __('2FA grace period ends %s')|format(grace_period_end|relative_datetime) }}
-         {% elseif enforcement == constant('Glpi\\Security\\TOTPManager::ENFORCEMENT_MANDATORY') %}
+        {% elseif enforcement == constant('Glpi\\Security\\TOTPManager::ENFORCEMENT_MANDATORY') %}
             {{ __('Mandatory') }}
-         {% else %}
+        {% else %}
             {{ __('Optional') }}
-         {% endif %}
-      </h2>
-   </div>
+        {% endif %}
+    {% endset %}
+    {{ alerts.alert_info(__('2FA enabled'), [status_message]) }}
    {{ tfa.tfa_backup_codes_container() }}
    <div>
       <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
