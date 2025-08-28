@@ -82,7 +82,7 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
         $p['condition']           = $_POST['condition'];
         $idor_params['condition'] = $_POST['condition'];
     }
-    if (isset($_POST['used'])) {
+    if (isset($_POST['used']) && !is_array($_POST['used'])) {
         $_POST['used'] = Toolbox::jsonDecode($_POST['used'], true);
     }
     if (isset($_POST['used'][$_POST['idtable']])) {
