@@ -51,7 +51,7 @@ final class AltchaManagerTest extends GLPITestCase
         $renderer = TemplateRenderer::getInstance();
         $html = $renderer->render('components/altcha/widget.html.twig');
         $this->assertStringContainsString('<altcha-widget', $html);
-        $this->assertStringContainsString('auto="onload"', $html);
+        $this->assertStringNotContainsString('auto="onload"', $html);
         $this->assertStringNotContainsString('class="d-none"', $html);
     }
 

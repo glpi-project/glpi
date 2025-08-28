@@ -136,6 +136,20 @@
     --glpi-illustrations-gradient-1: hsl(from var(--glpi-mainmenu-bg) h s 92);
     --glpi-illustrations-gradient-2: hsl(from var(--glpi-mainmenu-bg) h s 72);
     --glpi-illustrations-gradient-3: hsl(from var(--glpi-mainmenu-bg) h s 45);
+
+    // Variables for Altcha
+    // See: https://altcha.org/docs/v2/widget-customization/
+    --altcha-color-base   : var(--tblr-bg-surface);
+    --altcha-border-radius: var(--tblr-border-radius-lg);
+    --altcha-color-border : var(--tblr-border-color-translucent);
+    --altcha-color-text   : var(--tblr-dark);
+    --altcha-color-text   : var(--tblr-dark);
+}
+
+// Push the altcha logo away from the checkbox label in order to make the label
+// feel more connected to its left side checkbox rather than its right side logo.
+.altcha-label {
+    margin-right: 1rem !important;
 }
 
 @media(prefers-reduced-motion) {
