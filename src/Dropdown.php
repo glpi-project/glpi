@@ -301,6 +301,7 @@ class Dropdown
             'multiple'             => $params['multiple'] ?? false,
             'init'                 => $params['init'] ?? true,
             'aria_label'           => $params['aria_label'],
+            'required'             => $params['required'],
         ];
 
         if ($params['multiple']) {
