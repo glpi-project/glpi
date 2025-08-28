@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1756293102" clover="68aee7eeab6d9">
-  <project timestamp="1756293102" name="atoum code coverage">
-    <package name="atoumCodeCoverage">
-      <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" methods="0" coveredmethods="0" testduration="0" testfailures="0" testpasses="0" testruns="0" classes="0" loc="0" ncloc="0" files="0"/>
-    </package>
-    <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" methods="0" coveredmethods="0" testduration="0" testfailures="0" testpasses="0" testruns="0" classes="0" loc="0" ncloc="0" files="0" packages="1"/>
-  </project>
-</coverage>
