@@ -315,10 +315,11 @@ TWIG, $twig_params);
                                     no_label: true,
                                     used: used,
                                     entity: entities_id,
+                                    on_change: "enableSubmitButton(this)",
                                 }) }}
                             </div>
                             <div>
-                                <button class="btn btn-primary ms-3" type="submit" name="add" value="">{{ btn_msg }}</button>
+                                <button class="btn btn-primary ms-3" type="submit" name="add" value="" disabled="disabled">{{ btn_msg }}</button>
                             </div>
                         </form>
                     </div>

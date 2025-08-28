@@ -53,7 +53,8 @@
             {{ fields.dropdownField(primary_dropdown_itemtype, primary_dropdown_itemtype|itemtype_foreign_key, '', '', {
                no_label: true,
                field_class: '',
-               rand: rand
+               rand: rand,
+               on_change: 'enableSubmitButton(this)',
             }|merge(dropdown_options)) }}
             {% if ajax_dropdown is defined %}
                {% do call('Ajax::updateItemOnSelectEvent', [
@@ -74,7 +75,7 @@
             {% endif %}
          </div>
          <div class="col-auto">
-            <button class="btn btn-primary ms-1" type="submit" name="add">
+            <button class="btn btn-primary ms-1" type="submit" name="add" disabled="disabled">
                <i class="ti ti-link"></i>
                <span>{{ _x('button', 'Add') }}</span>
             </button>

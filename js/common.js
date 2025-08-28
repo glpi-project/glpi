@@ -2019,3 +2019,11 @@ document.addEventListener('hidden.bs.modal', (e) => {
         modal.setAttribute('data-cy-shown', 'false');
     }
 });
+
+function enableSubmitButton(select) {
+    if ($(select).val() > 0) {
+        $(select).closest('form').find('button[type=submit]').prop('disabled', false);
+    } else {
+        $(select).closest('form').find('button[type=submit]').prop('disabled', true);
+    }
+}
