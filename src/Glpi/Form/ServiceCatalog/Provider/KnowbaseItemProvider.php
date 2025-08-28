@@ -78,7 +78,7 @@ final class KnowbaseItemProvider implements LeafProviderInterface
 
             // Fuzzy matching
             $name        = $knowbase_item->fields['name'] ?? "";
-            $answer     = $knowbase_item->fields['answer'] ?? "";
+            $answer      = $knowbase_item->fields['answer'] ?? "";
             $description = $knowbase_item->fields['description'] ?? "";
             if (
                 !$this->matcher->match($name, $filter)
@@ -106,5 +106,11 @@ final class KnowbaseItemProvider implements LeafProviderInterface
     public function getItemsLabel(): string
     {
         return __("FAQ articles");
+    }
+
+    #[Override]
+    public function getWeight(): int
+    {
+        return 20;
     }
 }

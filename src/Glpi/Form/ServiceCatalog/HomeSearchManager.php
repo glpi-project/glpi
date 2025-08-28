@@ -50,6 +50,8 @@ final class HomeSearchManager
     /** @var LeafProviderInterface[] */
     private array $providers;
 
+    private bool $providers_are_sorted = false;
+
     public function __construct()
     {
         $this->providers = [
@@ -64,7 +66,7 @@ final class HomeSearchManager
         $item_request->context = ItemRequestContext::HOME_PAGE_SEARCH;
         $items_by_label = [];
 
-        foreach ($this->providers as $leaf_provider) {
+        foreach ($this->getProviders() as $leaf_provider) {
             $items = $leaf_provider->getItems($item_request);
             if ($items === []) {
                 // Skip empty data
@@ -79,5 +81,34 @@ final class HomeSearchManager
         }
 
         return $items_by_label;
+    }
+
+    public function registerPluginProvider(
+        LeafProviderInterface $provider
+    ): void {
+        $this->providers[] = $provider;
+        $this->providers_are_sorted = false;
+    }
+
+    /** @return LeafProviderInterface[] */
+    private function getProviders(): array
+    {
+        if (!$this->providers_are_sorted) {
+            $this->sortProviders();
+        }
+
+        return $this->providers;
+    }
+
+    private function sortProviders(): void
+    {
+        usort(
+            $this->providers,
+            fn(
+                LeafProviderInterface $a,
+                LeafProviderInterface $b,
+            ): int => $a->getWeight() <=> $b->getWeight()
+        );
+        $this->providers_are_sorted = true;
     }
 }

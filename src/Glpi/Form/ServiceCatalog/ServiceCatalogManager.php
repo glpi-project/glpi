@@ -64,6 +64,12 @@ final class ServiceCatalogManager
         ];
     }
 
+    public function registerPluginProvider(
+        ItemProviderInterface $provider
+    ): void {
+        $this->providers[] = $provider;
+    }
+
     /**
      * Return all available forms and non empties categories for the given user.
      *

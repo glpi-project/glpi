@@ -34,6 +34,8 @@
 
 namespace tests\units\Glpi\Form\ServiceCatalog;
 
+use Computer;
+use ComputerType;
 use DbTestCase;
 use Entity;
 use Entity_KnowbaseItem;
@@ -43,6 +45,7 @@ use Glpi\Form\ServiceCatalog\HomeSearchManager;
 use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use GlpiPlugin\Tester\Form\ComputerForServiceCatalog;
 use KnowbaseItem;
 use Session;
 
@@ -140,5 +143,36 @@ final class HomeSearchManagerTest extends DbTestCase
 
         // Assert: only 20 results should be found
         $this->assertCount(20, $results["Forms"]);
+    }
+
+    public function testPluginCanRegisterProviders(): void
+    {
+        // Arrange: create some computers in the 'test' type
+        $type = $this->createItem(ComputerType::class, [
+            'name' => 'test',
+        ]);
+        $to_create = ['Computer 1', 'Computer 2', 'Computer 3'];
+        foreach ($to_create as $name) {
+            $this->createItem(Computer::class, [
+                'name' => $name,
+                'entities_id' => $this->getTestRootEntity(only_id: true),
+                ComputerType::getForeignKeyField() => $type->getID(),
+            ]);
+        }
+
+        // Act: get items
+        $this->login('post-only');
+        $item_request = new ItemRequest(
+            new FormAccessParameters(Session::getCurrentSessionInfo())
+        );
+        $results = HomeSearchManager::getInstance()->getItems($item_request);
+
+        // Assert: computers should be found thanks to the ComputerProvider from
+        // the tester plugin
+        $names = array_map(
+            fn(ComputerForServiceCatalog $c) => $c->getServiceCatalogItemTitle(),
+            $results["Computers with the 'test' type"],
+        );
+        $this->assertEquals(['Computer 1', 'Computer 2', 'Computer 3'], $names);
     }
 }

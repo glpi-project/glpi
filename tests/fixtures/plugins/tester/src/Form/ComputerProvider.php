@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,19 +32,48 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\ServiceCatalog\Provider;
+namespace GlpiPlugin\Tester\Form;
 
+use Computer;
+use ComputerType;
+use Glpi\Form\ServiceCatalog\Provider\LeafProviderInterface;
 use Glpi\Form\ServiceCatalog\ItemRequest;
+use Override;
 
-/**
- * @template T of \Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface
- */
-interface LeafProviderInterface extends ItemProviderInterface
+/** @implements LeafProviderInterface<ComputerForServiceCatalog> */
+final class ComputerProvider implements LeafProviderInterface
 {
-    /** @return T[] */
-    public function getItems(ItemRequest $item_request): array;
+    #[Override]
+    public function getItems(ItemRequest $item_request): array
+    {
+        $target_type = new ComputerType();
+        if (!$target_type->getFromDBByCrit(['name' => 'test'])) {
+            return [];
+        }
 
-    public function getItemsLabel(): string;
+        $computers = [];
+        $raw_computers = (new Computer())->find([
+            ComputerType::getForeignKeyField() => $target_type->getId(),
+        ]);
+        foreach ($raw_computers as $raw_computer) {
+            $computer = new Computer();
+            $computer->getFromResultSet($raw_computer);
+            $computer->post_getFromDB();
+            $computers[] = new ComputerForServiceCatalog($computer);
+        }
 
-    public function getWeight(): int;
+        return $computers;
+    }
+
+    #[Override]
+    public function getItemsLabel(): string
+    {
+        return __("Computers with the 'test' type");
+    }
+
+    #[Override]
+    public function getWeight(): int
+    {
+        return 30;
+    }
 }

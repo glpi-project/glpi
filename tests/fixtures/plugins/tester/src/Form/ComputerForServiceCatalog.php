@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,19 +32,48 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\ServiceCatalog\Provider;
+namespace GlpiPlugin\Tester\Form;
 
-use Glpi\Form\ServiceCatalog\ItemRequest;
+use Computer;
+use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
+use Glpi\UI\IllustrationManager;
+use Override;
 
-/**
- * @template T of \Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface
- */
-interface LeafProviderInterface extends ItemProviderInterface
+// Example of how a core class can be enabled for the service catalog without
+// modifying the core itself.
+final class ComputerForServiceCatalog implements ServiceCatalogLeafInterface
 {
-    /** @return T[] */
-    public function getItems(ItemRequest $item_request): array;
+    public function __construct(
+        private Computer $computer,
+    ) {}
 
-    public function getItemsLabel(): string;
+    #[Override]
+    public function getServiceCatalogLink(): string
+    {
+        return $this->computer->getLinkURL();
+    }
 
-    public function getWeight(): int;
+    #[Override]
+    public function getServiceCatalogItemTitle(): string
+    {
+        return $this->computer->fields['name'];
+    }
+
+    #[Override]
+    public function getServiceCatalogItemDescription(): string
+    {
+        return $this->computer->fields['comment'];
+    }
+
+    #[Override]
+    public function getServiceCatalogItemIllustration(): string
+    {
+        return IllustrationManager::DEFAULT_ILLUSTRATION;
+    }
+
+    #[Override]
+    public function isServiceCatalogItemPinned(): bool
+    {
+        return false;
+    }
 }

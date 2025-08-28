@@ -116,4 +116,10 @@ final class FormProvider implements LeafProviderInterface
     {
         return Form::getTypeName(Session::getPluralNumber());
     }
+
+    #[Override]
+    public function getWeight(): int
+    {
+        return 10;
+    }
 }
