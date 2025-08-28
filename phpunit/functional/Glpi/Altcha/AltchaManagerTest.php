@@ -52,7 +52,7 @@ final class AltchaManagerTest extends GLPITestCase
         $html = $renderer->render('components/altcha/widget.html.twig');
         $this->assertStringContainsString('<altcha-widget', $html);
         $this->assertStringContainsString('auto="onload"', $html);
-        $this->assertStringContainsString('class="d-none"', $html);
+        $this->assertStringNotContainsString('class="d-none"', $html);
     }
 
     public function testValidSolution(): void
