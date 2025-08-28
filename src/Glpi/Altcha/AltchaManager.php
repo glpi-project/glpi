@@ -82,6 +82,15 @@ final class AltchaManager
 {
     use SingletonTrait;
 
+    /** @var AltchaMode */
+    public const DEFAULT_MODE = AltchaMode::INTERACTIVE;
+
+    /** @var int */
+    public const DEFAULT_COMPLEXITY = 50000;
+
+    /** @var string */
+    public const DEFAULT_EXPIRATION_INTERVAL = 'PT20M';
+
     /** @var string */
     private const SESSION_STORAGE_KEY = 'altcha_challenges';
 
@@ -236,16 +245,21 @@ final class AltchaManager
 
     private function getMode(): AltchaMode
     {
-        // @phpstan-ignore instanceof.alwaysTrue (don't trust custom user config)
-        if (GLPI_ALTCHA_MODE instanceof AltchaMode) {
-            $mode = GLPI_ALTCHA_MODE;
-        } elseif (is_string(GLPI_ALTCHA_MODE)) {
-            $mode = AltchaMode::from(GLPI_ALTCHA_MODE);
-        } else {
-            throw new RuntimeException();
+        // Should never happens as it is defined by SystemConfigurator.php
+        // but it it still another safety to avoid failure.
+        if (!defined('GLPI_ALTCHA_MODE')) {
+            // @phpstan-ignore theCodingMachineSafe.function (we checked just above if it is defined)
+            define('GLPI_ALTCHA_MODE', self::DEFAULT_MODE);
         }
 
-        return $mode;
+        $mode = GLPI_ALTCHA_MODE;
+        if ($mode instanceof AltchaMode) {
+            return $mode;
+        } elseif (is_string($mode) && AltchaMode::tryFrom($mode) !== null) {
+            return AltchaMode::from($mode);
+        }
+
+        throw new RuntimeException();
     }
 
     /**
@@ -266,12 +280,19 @@ final class AltchaManager
      */
     private function getComplexity(): int
     {
-        // @phpstan-ignore function.alreadyNarrowedType (don't trust custom user config)
-        if (!is_int(GLPI_ALTCHA_MAX_NUMBER)) {
+        // Should never happens as it is defined by SystemConfigurator.php
+        // but it it still another safety to avoid failure.
+        if (!defined('GLPI_ALTCHA_MAX_NUMBER')) {
+            // @phpstan-ignore theCodingMachineSafe.function (we checked just above if it is defined)
+            define('GLPI_ALTCHA_MAX_NUMBER', self::DEFAULT_COMPLEXITY);
+        }
+
+        $complexity = GLPI_ALTCHA_MAX_NUMBER;
+        if (!is_int($complexity)) {
             throw new RuntimeException();
         }
 
-        return GLPI_ALTCHA_MAX_NUMBER;
+        return $complexity;
     }
 
     /**
@@ -285,11 +306,20 @@ final class AltchaManager
      */
     private function getExpiresAtInterval(): DateInterval
     {
-        // @phpstan-ignore instanceof.alwaysTrue (don't trust custom user config)
-        if (!GLPI_ALTCHA_EXPIRATION_INTERVAL instanceof DateInterval) {
-            throw new RuntimeException();
+        // Should never happens as it is defined by SystemConfigurator.php
+        // but it it still another safety to avoid failure.
+        if (!defined('GLPI_ALTCHA_EXPIRATION_INTERVAL')) {
+            // @phpstan-ignore theCodingMachineSafe.function (we checked just above if it is defined)
+            define('GLPI_ALTCHA_EXPIRATION_INTERVAL', self::DEFAULT_EXPIRATION_INTERVAL);
         }
 
-        return GLPI_ALTCHA_EXPIRATION_INTERVAL;
+        $interval = GLPI_ALTCHA_EXPIRATION_INTERVAL;
+        if ($interval instanceof DateInterval) {
+            return $interval;
+        } elseif (is_string($interval)) {
+            return new DateInterval($interval);
+        }
+
+        throw new RuntimeException();
     }
 }

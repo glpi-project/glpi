@@ -32,8 +32,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Altcha\AltchaMode;
-
 // This file contains stubs for GLPI constants.
 // Please try to keep them alphabetically ordered.
 // Keep in sync with the dynamicConstantNames config option in the PHPStan config file
@@ -96,15 +94,4 @@ use Glpi\Altcha\AltchaMode;
     define('GLPI_USER_AGENT_EXTRA_COMMENTS', $random_val(['', 'app-version:5']));
     define('GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING', $random_val([false, true]));
     define('GLPI_WEBHOOK_CRA_MANDATORY', $random_val([false, true]));
-
-    // Altcha
-    define('GLPI_ALTCHA_MODE', $random_val([
-        ...AltchaMode::cases(),
-        ...array_map(fn(AltchaMode $m): string => $m->value, AltchaMode::cases()),
-    ]));
-    define('GLPI_ALTCHA_MAX_NUMBER', $random_val([50000, 100000]));
-    define('GLPI_ALTCHA_EXPIRATION_INTERVAL', $random_val([
-        new DateInterval('PT20M'),
-        new DateInterval('PT40M'),
-    ]));
 })();

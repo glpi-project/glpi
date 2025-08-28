@@ -34,8 +34,7 @@
 
 namespace Glpi\Application;
 
-use DateInterval;
-use Glpi\Altcha\AltchaMode;
+use Glpi\Altcha\AltchaManager;
 use Glpi\Error\ErrorHandler;
 use Glpi\Log\AccessLogHandler;
 use Glpi\Log\ErrorLogHandler;
@@ -179,9 +178,9 @@ final class SystemConfigurator
                 'GLPI_WEBHOOK_CRA_MANDATORY' => false, // make challenge-response authentication mandatory or not for webhooks
 
                 // Altcha
-                'GLPI_ALTCHA_MODE'                => AltchaMode::INTERACTIVE,
-                'GLPI_ALTCHA_MAX_NUMBER'          => 50000,
-                'GLPI_ALTCHA_EXPIRATION_INTERVAL' => new DateInterval('PT20M'), // 20 min
+                'GLPI_ALTCHA_MODE'                => AltchaManager::DEFAULT_MODE,
+                'GLPI_ALTCHA_MAX_NUMBER'          => AltchaManager::DEFAULT_COMPLEXITY,
+                'GLPI_ALTCHA_EXPIRATION_INTERVAL' => AltchaManager::DEFAULT_EXPIRATION_INTERVAL,
             ],
         ];
 
