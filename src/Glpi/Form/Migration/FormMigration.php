@@ -1380,29 +1380,49 @@ class FormMigration extends AbstractPluginMigration
                     json_decode($question->fields['extra_data'], true)
                 );
                 $condition_handlers = $question_type->getConditionHandlers($config);
-                $condition_handler   = null;
 
                 // Get the value operator before trying to find a compatible handler
                 $value_operator = $this->getValueOperatorFromLegacy($raw_condition['show_condition']);
 
-                if ($value_operator !== null) {
-                    $condition_handler = current(array_filter(
-                        $condition_handlers,
-                        function (ConditionHandlerInterface $handler) use ($value_operator) {
-                            if (!($handler instanceof ConditionHandlerDataConverterInterface)) {
-                                return false;
-                            }
-
-                            return in_array(
-                                $value_operator,
-                                $handler->getSupportedValueOperators()
-                            );
-                        }
-                    ));
+                // If the value operator is null, we skip this condition
+                if ($value_operator === null) {
+                    continue;
                 }
 
-                if ($condition_handler) {
-                    /** @var ConditionHandlerDataConverterInterface $condition_handler */
+                $condition_handler = current(array_filter(
+                    $condition_handlers,
+                    fn(ConditionHandlerInterface $handler) => in_array(
+                        $value_operator,
+                        $handler->getSupportedValueOperators()
+                    )
+                ));
+
+                // If no condition handler is found for the value operator, we skip this condition
+                if ($condition_handler === false) {
+                    /** @var Question|Comment|Section|FormDestination $item */
+                    $item = getItemForItemtype($target_item['itemtype']);
+                    if ($item !== false && $item->getFromDB($target_item['items_id']) !== false) {
+                        $form = $item->getForm();
+                    } else {
+                        $item = null;
+                        $form = null;
+                    }
+
+                    $this->result->addMessage(
+                        MessageType::Warning,
+                        sprintf(
+                            __('A visibility condition used in "%s" "%s" (Form "%s") with value operator "%s" is not supported by the question type. It will be ignored.'),
+                            $item->getTypeName(1) ?? $target_item['itemtype'],
+                            $item->getName() ?? $target_item['items_id'],
+                            $form->getName() ?? NOT_AVAILABLE,
+                            $value_operator->getLabel()
+                        )
+                    );
+                    continue;
+                }
+
+                // Convert the condition value if a data converter is available
+                if ($condition_handler instanceof ConditionHandlerDataConverterInterface) {
                     $value = $condition_handler->convertConditionValue($value);
                 }
             }
