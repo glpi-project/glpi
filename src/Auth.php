@@ -824,7 +824,7 @@ class Auth extends CommonGLPI
                 $sso_ldap_servers = [];
                 if (isset($_SERVER[$ssovariable])) {
                     $sso_realm = explode("@", $_SERVER[$ssovariable])[1];
-                    $authldap = new AuthLdap();
+                    $authldap = new AuthLDAP();
                     foreach (AuthLDAP::getLdapServers() as $ldap_config) {
                         $authldap->getFromDB($ldap_config["id"]);
                         if ($authldap->isActive() and $sso_realm == $authldap->getKerberosRealm()) {
