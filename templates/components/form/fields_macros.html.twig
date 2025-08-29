@@ -370,6 +370,7 @@
                  blank_input.val(blank_input.val() ? '' : true);
                  if ($(this).closest('.picture_gallery_item').length) {
                     $(this).closest('.picture_gallery_item').hide();
+                    $(this).closest('.picture_gallery').siblings('.deletion_pending').removeClass('d-none');
                  } else {
                     $(this).closest('.img-overlay-wrapper').hide();
                  }
@@ -389,6 +390,9 @@
 
 {% macro imageGalleryField(name, value, label = '', options = {}) %}
    {% set field %}
+       <div class="text-warning deletion_pending d-none">
+           {{ __('The deletion will only take effect after saving the form') }}
+       </div>
       <div class="picture_gallery d-flex flex-wrap overflow-auto p-3">
          {% for i, picture in value %}
             <div class="picture_gallery_item" style="position: relative; width: fit-content">
