@@ -6712,7 +6712,7 @@ class CommonDBTM extends CommonGLPI
     }
 
     /** @return static[] */
-    public static function getItemsByCriteria(
+    public static function getSeveralFromDBByCrit(
         array $where = [],
         array $order = [],
         ?int $limit = null,

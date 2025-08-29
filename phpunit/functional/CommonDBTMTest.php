@@ -2237,7 +2237,7 @@ class CommonDBTMTest extends DbTestCase
         }
     }
 
-    public function testGetItemsByCriteria(): void
+    public function testGetSeveralFromDBByCrit(): void
     {
         // Arrange: create some computers
         $names = [
@@ -2256,7 +2256,7 @@ class CommonDBTMTest extends DbTestCase
         }
 
         // Act: get computer starting by "Computer A"
-        $items = Computer::getItemsByCriteria(['name' => ['LIKE', 'Computer A%']]);
+        $items = Computer::getSeveralFromDBByCrit(['name' => ['LIKE', 'Computer A%']]);
 
         // Assert: only the expected computers should be found
         $this->assertCount(4, $items);
