@@ -585,9 +585,9 @@ final class SearchOption implements ArrayAccess
                 case 'name':
                 case 'completename':
                     $actions = [
-                        'matches'     => __('matches'),
                         'contains'    => __('contains'),
                         'notcontains' => __('not contains'),
+                        'matches'     => __('matches'),
                         'equals'      => __('is'),
                         'notequals'   => __('is not'),
                         'empty'       => __('is empty'),
