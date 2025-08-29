@@ -6710,4 +6710,27 @@ class CommonDBTM extends CommonGLPI
             'as_map'             => false,
         ]);
     }
+
+    /** @return static[] */
+    public static function getItemsByCriteria(
+        array $where = [],
+        array $order = [],
+        ?int $limit = null,
+    ): array {
+        $items = [];
+
+        $data = (new static())->find(
+            $where,
+            $order,
+            $limit,
+        );
+        foreach ($data as $row) {
+            $item = new static();
+            $item->getFromResultSet($row);
+            $item->post_getFromDB();
+            $items[$row['id']] = $item;
+        }
+
+        return $items;
+    }
 }
