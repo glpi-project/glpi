@@ -572,3 +572,14 @@ html {
 div:has(> [data-glpi-form-editor-section-details].d-none) {
     display: none !important;
 }
+
+// Hide some actions if the form is readonly
+.form-editor-readonly {
+    [data-glpi-form-editor-state-action] {
+        display: none;
+    }
+
+    input, div.tox-tinymce, span.select2, label.form-check, [data-glpi-form-editor-visibility-dropdown] {
+        pointer-events: none;
+    }
+}

@@ -54,6 +54,9 @@
         different background color than the parent item #}
         mt-n2
         mb-n2
+        {% if not can_update %}
+            form-editor-readonly
+        {% endif %}
     "
     method="POST"
     action="{{ item.getFormURL() }}"
@@ -483,7 +486,8 @@
             'id': destination.fields.id,
             'name': destination.fields.name,
             'conditions': destination.getConfiguredConditionsData(),
-        })|json_encode|raw }}
+        })|json_encode|raw }},
+        {{ can_update ? 'false' : 'true' }}, // is_readonly
     );
 
     // Temporary solution, would be better to import it directly where it is needed but the current

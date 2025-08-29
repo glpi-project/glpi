@@ -68,6 +68,7 @@
                     class="glpi-form-editor-question-handle ti ti-grip-horizontal cursor-grab ms-auto me-auto mt-n3 mb-n2"
                     data-glpi-form-editor-question-handle
                     draggable="true"
+                    data-glpi-form-editor-state-action
                 ></i>
             </div>
             {# Display comment's title #}
@@ -101,6 +102,7 @@
                     title="{{ __("Duplicate comment") }}"
                     data-glpi-form-editor-on-click="duplicate-comment"
                     data-glpi-form-editor-comment-extra-details
+                    data-glpi-form-editor-state-action
                 ></i>
 
                 {# Delete comment #}
@@ -113,6 +115,7 @@
                     aria-label="{{ __("Delete") }}"
                     data-glpi-form-editor-on-click="delete-comment"
                     data-glpi-form-editor-comment-extra-details
+                    data-glpi-form-editor-state-action
                 ></i>
 
                 {# Extra actions #}
@@ -123,6 +126,7 @@
                         aria-expanded="false"
                         role="button"
                         title="{{ __('More actions') }}"
+                        data-glpi-form-editor-state-action
                     ></i>
                     <ul class="dropdown-menu" data-bs-popper="none">
                         <li>
