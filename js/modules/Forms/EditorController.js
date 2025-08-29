@@ -94,6 +94,11 @@ export class GlpiFormEditorController
     #do_preview_after_save = false;
 
     /**
+     * @type {boolean}
+     */
+    #is_readonly = false;
+
+    /**
      * Create a new GlpiFormEditorController instance for the given target.
      * The target must be a valid form.
      *
@@ -103,7 +108,7 @@ export class GlpiFormEditorController
      * @param {string} templates
      * @param {object} destination_conditions
      */
-    constructor(target, is_draft, defaultQuestionType, templates, destination_conditions) {
+    constructor(target, is_draft, defaultQuestionType, templates, destination_conditions, is_readonly) {
         this.#target                         = target;
         this.#is_draft                       = is_draft;
         this.#defaultQuestionType            = defaultQuestionType;
@@ -112,16 +117,13 @@ export class GlpiFormEditorController
         this.#options                        = {};
         this.#question_subtypes_options      = {};
         this.#conditions_editors_controllers = [];
+        this.#is_readonly = is_readonly;
 
         // Validate target
         if ($(this.#target).prop("tagName") != "FORM") {
             throw new Error("Target must be a valid form");
         }
 
-        // Validate default question type
-        if (this.#getQuestionTemplate(this.#defaultQuestionType).length == 0) {
-            throw new Error(`Invalid default question type: ${defaultQuestionType}`);
-        }
 
         // Adjust container height and init handlers
         this.#adjustContainerHeight();
@@ -135,16 +137,24 @@ export class GlpiFormEditorController
                 this.#computeDynamicInputSize(input);
             });
 
-        // Enable sortable on questions
-        this.#enableSortable(
-            $(this.#target).find("[data-glpi-form-editor-blocks]")
-        );
+        // These computations are only needed if the form will be edited.
+        if (!this.#is_readonly) {
+            // Validate default question type
+            if (this.#getQuestionTemplate(this.#defaultQuestionType).length == 0) {
+                throw new Error(`Invalid default question type: ${defaultQuestionType}`);
+            }
 
-        // Focus the form's name input if there are no questions
-        if (this.#getQuestionsCount() === 0) {
-            $(this.#target)
-                .find("[data-glpi-form-editor-form-details-name]")[0]
-                .select();
+            // Enable sortable on questions
+            this.#enableSortable(
+                $(this.#target).find("[data-glpi-form-editor-blocks]")
+            );
+
+            // Focus the form's name input if there are no questions
+            if (this.#getQuestionsCount() === 0) {
+                $(this.#target)
+                    .find("[data-glpi-form-editor-form-details-name]")[0]
+                    .select();
+            }
         }
 
         this.computeState();
