@@ -34,9 +34,13 @@
 {% extends 'layout/page_card_notlogged.html.twig' %}
 {% import 'pages/2fa/macros.html.twig' as tfa %}
 
+{% set pre_auth_data = session('mfa_pre_auth')|default({}) %}
+{% set redirect = pre_auth_data['redirect']|default('') %}
+
 {% block content_block %}
     {{ tfa.tfa_backup_codes_container(backup_codes) }}
     <form class="d-flex flex-row-reverse" method="get" action="{{ path('front/login.php') }}">
+        <input type="hidden" name="redirect" value="{{ redirect }}"/>
         <button type="submit" class="btn btn-primary">{{ __('Continue') }}</button>
     </form>
 {% endblock %}

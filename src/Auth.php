@@ -1024,13 +1024,17 @@ class Auth extends CommonGLPI
         $user_fields = $this->user->fields;
         // Remove LDAP connection resource if present to avoid serialization issues
         unset($user_fields['_ldap_conn'], $user_fields['2fa']);
-        return [
+        $params = [
             'user' => $user_fields,
             'auth_type' => $this->auth_type,
             'extauth' => $this->extauth,
             'remember_me' => $remember_me,
             'user_present' => $this->user_present,
         ];
+        if (isset($_REQUEST['redirect'])) {
+            $params['redirect'] = $_REQUEST['redirect'];
+        }
+        return $params;
     }
 
     /**

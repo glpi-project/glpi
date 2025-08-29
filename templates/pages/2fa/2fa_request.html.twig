@@ -38,9 +38,8 @@
 {% endblock %}
 
 {% block content_block %}
-   <form method="post" action="{{ path('MFA/Verify') }}" data-submit-once autocomplete="off" class="m-md-n4" data-code-type="code">
+   <form method="post" action="{{ path('MFA/Verify') ~ (redirect is not empty ? ('/?redirect=' ~ redirect) : '') }}" data-submit-once autocomplete="off" class="m-md-n4" data-code-type="code">
       <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-      <input type="hidden" name="redirect" value="{{ redirect }}"/>
       <div>
          {{ tfa.tfa_code_input() }}
          <input type="text" name="backup_code" class="form-control d-none" disabled="disabled" placeholder="{{ __('Backup code') }}"/>

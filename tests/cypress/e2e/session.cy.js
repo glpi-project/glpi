@@ -135,6 +135,9 @@ describe("Session", () => {
             });
         });
 
+        // Navigate past the 2FA backup codes page
+        cy.findByRole('button', {'name': 'Continue'}).click();
+
         // Should be redirected to requested page
         cy.url().should('contains', "/front/ticket.form.php");
     });

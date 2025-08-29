@@ -489,10 +489,9 @@ final class TOTPManager
 
     /**
      * Show a form asking the user for their TOTP code.
-     * @param int $users_id ID of the user
      * @return void
      */
-    public function showTOTPPrompt(int $users_id): void
+    public function showTOTPPrompt(): void
     {
         TemplateRenderer::getInstance()->display('pages/2fa/2fa_request.html.twig', [
             'redirect' => $_GET['redirect'] ?? '',

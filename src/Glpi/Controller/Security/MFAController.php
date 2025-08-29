@@ -76,7 +76,7 @@ final class MFAController extends AbstractController
     {
         $totp = new TOTPManager();
         return new StreamedResponse(static function () use ($totp) {
-            $totp->showTOTPPrompt((int) $_SESSION['mfa_pre_auth']['user']['id']);
+            $totp->showTOTPPrompt();
         });
     }
 
@@ -144,7 +144,8 @@ final class MFAController extends AbstractController
 
         $pre_auth_data = $_SESSION['mfa_pre_auth'] ?? null;
         if (!isset($_SESSION['mfa_success'], $pre_auth_data)) {
-            return new RedirectResponse($CFG_GLPI['root_doc'] . '/front/login.php');
+            $query_params = isset($pre_auth_data['redirect']) ? http_build_query($pre_auth_data['redirect']) : '';
+            return new RedirectResponse($CFG_GLPI['root_doc'] . '/front/login.php?' . $query_params);
         }
         $totp = new TOTPManager();
         return new StreamedResponse(static function () use ($pre_auth_data, $totp) {
