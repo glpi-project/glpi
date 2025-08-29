@@ -136,6 +136,8 @@ describe("Session", () => {
         });
 
         // Navigate past the 2FA backup codes page
+        cy.findByText(/Backup codes \(This is the only time these will be shown\)/i).should('exist');
+        cy.get('.backup-code').should('have.length', 5);
         cy.findByRole('button', {'name': 'Continue'}).click();
 
         // Should be redirected to requested page
