@@ -333,7 +333,7 @@ foreach ($fields as $field) {
     }
 }
 
-$fields = ['enable_helpdesk_home_search_bar', 'enable_helpdesk_service_catalog'];
+$fields = ['enable_helpdesk_home_search_bar', 'enable_helpdesk_service_catalog', 'expand_service_catalog'];
 foreach ($fields as $field) {
     if (!$DB->fieldExists("glpi_entities", $field)) {
         $migration->addField(

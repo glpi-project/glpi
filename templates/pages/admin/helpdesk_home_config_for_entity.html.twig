@@ -314,6 +314,35 @@
                     ]) %}
                 </div>
             </div>
+
+            <div class="col-6">
+                {% if is_root_entity %}
+                    {% set expand_categories_options = {
+                        1: __("Enabled"),
+                        0: __("Disabled"),
+                    } %}
+                {% else %}
+                    {% set expand_categories_config = entity.shouldExpandCategoriesInServiceCatalog() %}
+                    {% set expand_categories_options = {
+                        1: __("Enabled"),
+                        0: __("Disabled"),
+                        (constant("Entity::CONFIG_PARENT")): __("Inherited from parent entity (%1$s)")|format(expand_categories_config ? __("Enabled") : __("Disabled")),
+                    } %}
+                {% endif %}
+
+                <h3 class="mb-2 mt-1">{{ __("Expand categories in the service catalog") }}</h3>
+                <div class="mb-2">
+                    {% do call('Dropdown::showFromArray', [
+                        'expand_service_catalog',
+                        expand_categories_options,
+                        {
+                            value: entity.fields.expand_service_catalog,
+                            width: "100%",
+                            aria_label: __('Expand categories in the service catalog'),
+                        }
+                    ]) %}
+                </div>
+            </div>
         </div>
 
         {# Form actions #}

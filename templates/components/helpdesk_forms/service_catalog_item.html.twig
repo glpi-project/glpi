@@ -31,13 +31,17 @@
  #}
 
 {% set unique_dom_id = 'service-catalog-tree-' ~ random() %}
-{% set is_pinned = item.fields['is_pinned'] %}
+{% set is_pinned = item.fields['is_pinned']|default(false) %}
 
 <div class="col-12 col-sm-6 col-md-4 d-flex">
     <a
         class="card mx-1 my-2 flex-grow-1 {{ is_pinned ? "border-menu" : "" }}"
         {% if item is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogLeafInterface") %}
             href="{{ path(item.getServiceCatalogLink()) }}"
+        {% elseif item is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogCompositeInterface") %}
+            href="?{{ item.getChildrenUrlParameters() }}"
+            data-children-url-parameters="{{ item.getChildrenUrlParameters() }}"
+            data-composite-item
         {% endif %}
     >
         <section

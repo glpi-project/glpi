@@ -103,6 +103,7 @@ final class IndexController extends AbstractController
             'items' => $items,
             'sort_strategies' => SortStrategyEnum::getAvailableStrategies(),
             'default_sort_strategy' => SortStrategyEnum::getDefault()->value,
+            'expand_categories' => $entity->shouldExpandCategoriesInServiceCatalog(),
         ]);
     }
 }

@@ -2535,6 +2535,7 @@ $empty_data_builder = new class {
                 'custom_helpdesk_home_title' => '',
                 'enable_helpdesk_home_search_bar' => 1,
                 'enable_helpdesk_service_catalog' => 1,
+                'expand_service_catalog' => 1,
             ],
         ];
 
