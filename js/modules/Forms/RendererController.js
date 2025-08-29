@@ -247,11 +247,14 @@ export class GlpiFormRendererController
      * Submit the target form using an AJAX request.
      */
     async #submitForm() {
+        const submit = $(this.#target).find('button[data-glpi-form-renderer-action=submit]');
+
         // Form will be sumitted using an AJAX request instead
         try {
             // Disable actions immediately to avoid someone clicking on the actions
             // while the form is being submitted.
             this.#disableActions();
+            submit.addClass('btn-loading');
 
             // Update tinymce values
             this.#saveTinymceEditors();
@@ -309,6 +312,7 @@ export class GlpiFormRendererController
             );
         } finally {
             this.#enableActions();
+            submit.removeClass('btn-loading');
         }
     }
 
