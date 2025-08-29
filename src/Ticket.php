@@ -1639,27 +1639,15 @@ class Ticket extends CommonITILObject
         return 0;
     }
 
-    private function handleContracts()
+    private function handleContractInputs()
     {
         $contracts_id = $this->input['_contracts_id'] ?? 0;
         if (!is_array($contracts_id)) {
             $contracts_id = [$contracts_id];
         }
         $contracts_id = array_filter($contracts_id, static fn($val) => ((int) $val > 0));
-        if (empty($contracts_id)) {
-            return;
-        }
         $ticketcontract = new Ticket_Contract();
-        $current_contracts = $ticketcontract->find(['tickets_id' => $this->getID()]);
-        $to_add = array_diff($contracts_id, array_column($current_contracts, 'contracts_id'));
-        $to_remove = array_diff(array_column($current_contracts, 'contracts_id'), $contracts_id);
-        foreach ($to_remove as $contract_id) {
-            $ticketcontract->deleteByCriteria([
-                'tickets_id'   => $this->getID(),
-                'contracts_id' => $contract_id,
-            ]);
-        }
-        foreach ($to_add as $contract_id) {
+        foreach ($contracts_id as $contract_id) {
             $ticketcontract->add([
                 'contracts_id' => $contract_id,
                 'tickets_id'   => $this->getID(),
@@ -1816,7 +1804,7 @@ class Ticket extends CommonITILObject
         }
 
         // Add linked contract
-        $this->handleContracts();
+        $this->handleContractInputs();
 
         // Add linked project
         $projects_ids = $this->input['_projects_id'] ?? [];
@@ -2226,7 +2214,7 @@ class Ticket extends CommonITILObject
         }
 
         // Add linked contract
-        $this->handleContracts();
+        $this->handleContractInputs();
 
         // Add linked project
         $projects_ids = $this->input['_projects_id'] ?? [];

@@ -8320,7 +8320,8 @@ HTML,
             '_contracts_id' => $contract_2->getID(),
         ]);
         $linked_contracts = array_values($tc->find(['tickets_id' => $ticket->getID()]));
-        $this->assertCount(1, $linked_contracts);
-        $this->assertEquals($contract_2->getID(), $linked_contracts[0]['contracts_id']);
+        $this->assertCount(2, $linked_contracts);
+        $this->assertContains($contract_1->getID(), array_column($linked_contracts, 'contracts_id'));
+        $this->assertContains($contract_2->getID(), array_column($linked_contracts, 'contracts_id'));
     }
 }
