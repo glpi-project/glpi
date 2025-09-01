@@ -64,8 +64,13 @@ jobs:
             files/_cache/php-cs-fixer
             /tmp/phpstan
             files/_cache/rector
-          key: "app_home_lint-${{ matrix.php-version }}-${{ github.base_ref || github.ref_name }}-${{ github.sha }}"
+          # If we are on a commit, the prefix should be like this:
+          # {version}-{branch name}-{workflow id}
+          # If we are on a pull request, the prefix should be like this:
+          # {version}-{merge target branch name}-{merge source branch name}-{workflow id}
+          key: "${{ github.base_ref == ''}} ? app_home_lint-${{ matrix.php-version }}-${{ github.ref_name }}-${{ github.run_id }} : app_home_lint-${{ matrix.php-version }}-${{ github.base_ref }}-${{ github.ref_name }}-${{ github.run_id }}"
           restore-keys: |
+            ${{ github.base_ref }} == '' ? app_home_lint-${{ matrix.php-version }}-${{ github.ref_name }} : app_home_lint-${{ matrix.php-version }}-${{ github.base_ref }}-${{ github.ref_name }}
             app_home_lint-${{ matrix.php-version }}-${{ github.base_ref || github.ref_name }}
             app_home_lint-${{ matrix.php-version }}
             app_home_lint-
