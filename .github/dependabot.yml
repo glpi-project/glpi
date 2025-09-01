@@ -16,6 +16,7 @@ updates:
     schedule:
       interval: "cron"
       cronjob: "0 9 1 * *"
+      timezone: "Europe/Paris"
     open-pull-requests-limit: 100
     rebase-strategy: "disabled"
     target-branch: "10.0/bugfixes"
@@ -38,6 +39,7 @@ updates:
     schedule:
       interval: "cron"
       cronjob: "0 9 1 * *"
+      timezone: "Europe/Paris"
     open-pull-requests-limit: 100
     rebase-strategy: "disabled"
     target-branch: "10.0/bugfixes"
@@ -63,6 +65,7 @@ updates:
     schedule:
       interval: "cron"
       cronjob: "0 11 1 * *"
+      timezone: "Europe/Paris"
     open-pull-requests-limit: 100
     rebase-strategy: "disabled"
     target-branch: "11.0/bugfixes"
@@ -99,6 +102,7 @@ updates:
     schedule:
       interval: "cron"
       cronjob: "0 11 1 * *"
+      timezone: "Europe/Paris"
     open-pull-requests-limit: 100
     rebase-strategy: "disabled"
     target-branch: "11.0/bugfixes"
@@ -139,6 +143,7 @@ updates:
     schedule:
       interval: "cron"
       cronjob: "0 13 1 * *"
+      timezone: "Europe/Paris"
     open-pull-requests-limit: 100
     rebase-strategy: "disabled"
     target-branch: "main"
@@ -174,6 +179,7 @@ updates:
     schedule:
       interval: "cron"
       cronjob: "0 13 1 * *"
+      timezone: "Europe/Paris"
     open-pull-requests-limit: 100
     rebase-strategy: "disabled"
     target-branch: "main"
