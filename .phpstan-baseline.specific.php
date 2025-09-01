@@ -814,6 +814,19 @@ $ignoreErrors[] = [
 	'count' => 1,
 	'path' => __DIR__ . '/src/UploadHandler.php',
 ];
+// reported in PHP 8.5
+$ignoreErrors[] = [
+	'message' => '#^Left side of && is always true\\.$#',
+	'identifier' => 'booleanAnd.leftAlwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Right side of && is always true\\.$#',
+	'identifier' => 'booleanAnd.rightAlwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
 
 // Only reported in PHP < 8.1
 $ignoreErrors[] = [
