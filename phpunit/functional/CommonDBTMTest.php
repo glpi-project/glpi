@@ -2236,4 +2236,34 @@ class CommonDBTMTest extends DbTestCase
             $this->assertArrayNotHasKey($unexpected_action, $actions);
         }
     }
+
+    public function testGetSeveralFromDBByCrit(): void
+    {
+        // Arrange: create some computers
+        $names = [
+            "Computer A1",
+            "Computer A2",
+            "Computer A3",
+            "Computer A4",
+            "Computer B1",
+            "Computer B2",
+        ];
+        foreach ($names as $name) {
+            $this->createItem(Computer::class, [
+                'name' => $name,
+                'entities_id' => $this->getTestRootEntity(only_id: true),
+            ]);
+        }
+
+        // Act: get computer starting by "Computer A"
+        $items = Computer::getSeveralFromDBByCrit(['name' => ['LIKE', 'Computer A%']]);
+
+        // Assert: only the expected computers should be found
+        $items = iterator_to_array($items);
+        $this->assertCount(4, $items);
+        $this->assertEquals("Computer A1", $items[0]->getName());
+        $this->assertEquals("Computer A2", $items[1]->getName());
+        $this->assertEquals("Computer A3", $items[2]->getName());
+        $this->assertEquals("Computer A4", $items[3]->getName());
+    }
 }

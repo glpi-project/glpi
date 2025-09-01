@@ -6710,4 +6710,23 @@ class CommonDBTM extends CommonGLPI
             'as_map'             => false,
         ]);
     }
+
+    /** @return iterable<static> */
+    public static function getSeveralFromDBByCrit(
+        array $where = [],
+        array $order = [],
+        ?int $limit = null,
+    ): iterable {
+        $data = (new static())->find(
+            $where,
+            $order,
+            $limit,
+        );
+        foreach ($data as $row) {
+            $item = new static();
+            $item->getFromResultSet($row);
+            $item->post_getFromDB();
+            yield $item;
+        }
+    }
 }
