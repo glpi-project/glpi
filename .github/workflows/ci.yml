@@ -62,7 +62,7 @@ jobs:
         with:
           path: |
             files/_cache/php-cs-fixer
-            /tmp/phpstan
+            files/_cache/phpstan
             files/_cache/rector
           # If we are on a commit, the prefix should be like this:
           # {version}-{branch name}-{workflow id}
