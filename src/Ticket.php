@@ -1639,6 +1639,21 @@ class Ticket extends CommonITILObject
         return 0;
     }
 
+    private function handleContractInputs()
+    {
+        $contracts_id = $this->input['_contracts_id'] ?? 0;
+        if (!is_array($contracts_id)) {
+            $contracts_id = [$contracts_id];
+        }
+        $contracts_id = array_filter($contracts_id, static fn($val) => ((int) $val > 0));
+        $ticketcontract = new Ticket_Contract();
+        foreach ($contracts_id as $contract_id) {
+            $ticketcontract->add([
+                'contracts_id' => $contract_id,
+                'tickets_id'   => $this->getID(),
+            ]);
+        }
+    }
 
     public function post_updateItem($history = true)
     {
@@ -1787,6 +1802,9 @@ class Ticket extends CommonITILObject
                 ]
             );
         }
+
+        // Add linked contract
+        $this->handleContractInputs();
 
         // Add linked project
         $projects_ids = $this->input['_projects_id'] ?? [];
@@ -2196,14 +2214,7 @@ class Ticket extends CommonITILObject
         }
 
         // Add linked contract
-        $contracts_id = $this->input['_contracts_id'] ?? 0;
-        if ($contracts_id) {
-            $ticketcontract = new Ticket_Contract();
-            $ticketcontract->add([
-                'contracts_id' => $this->input['_contracts_id'],
-                'tickets_id'   => $this->getID(),
-            ]);
-        }
+        $this->handleContractInputs();
 
         // Add linked project
         $projects_ids = $this->input['_projects_id'] ?? [];
