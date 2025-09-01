@@ -419,7 +419,7 @@ class NotificationTargetTest extends DbTestCase
         }
     }
 
-    public static function testGetInstanceClassProvider(): Generator
+    public static function getInstanceClassProvider(): Generator
     {
         yield [
             'itemtype' => 'Test',
@@ -440,14 +440,14 @@ class NotificationTargetTest extends DbTestCase
     /**
      * Tests for NotificationTarget::getInstanceClass
      */
-    #[DataProvider('testGetInstanceClassProvider')]
+    #[DataProvider('getInstanceClassProvider')]
     public function testGetInstanceClass(string $itemtype, string $class): void
     {
         $output = NotificationTarget::getInstanceClass($itemtype);
         $this->assertEquals($class, $output);
     }
 
-    public static function testFormatUrlProvider(): iterable
+    public static function formatUrlProvider(): iterable
     {
         global $CFG_GLPI;
 
@@ -483,7 +483,7 @@ class NotificationTargetTest extends DbTestCase
         ];
     }
 
-    #[DataProvider('testFormatUrlProvider')]
+    #[DataProvider('formatUrlProvider')]
     public function testFormatUrl(int $usertype, string $redirect, string $expected): void
     {
         $instance = new NotificationTarget();

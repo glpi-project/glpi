@@ -805,7 +805,7 @@ class EntityTest extends DbTestCase
         $this->assertSame($expected, $entity->getCustomCssTag());
     }
 
-    public static function testAnonymizeSettingProvider(): array
+    public static function anonymizeSettingProvider(): array
     {
         return [
             [
@@ -875,7 +875,7 @@ class EntityTest extends DbTestCase
         ];
     }
 
-    #[DataProvider('testAnonymizeSettingProvider')]
+    #[DataProvider('anonymizeSettingProvider')]
     public function testAnonymizeSetting(
         string $interface,
         int $setting,

@@ -287,7 +287,7 @@ class ITILFollowupTest extends DbTestCase
         $_SESSION['glpiset_default_requester'] = $oldConf['glpiset_default_requester'];
     }
 
-    public static function testIsFromSupportAgentProvider()
+    public static function isFromSupportAgentProvider()
     {
         return [
             [
@@ -332,7 +332,7 @@ class ITILFollowupTest extends DbTestCase
         ];
     }
 
-    #[DataProvider('testIsFromSupportAgentProvider')]
+    #[DataProvider('isFromSupportAgentProvider')]
     public function testIsFromSupportAgent(
         array $roles,
         string $profile,

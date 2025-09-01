@@ -45,7 +45,7 @@ use Twig\Sandbox\SecurityPolicy;
 
 class TemplateManagerTest extends DbTestCase
 {
-    public static function testTemplatesProvider(): array
+    public static function templatesProvider(): array
     {
         return [
             [
@@ -112,7 +112,7 @@ class TemplateManagerTest extends DbTestCase
         ];
     }
 
-    #[DataProvider('testTemplatesProvider')]
+    #[DataProvider('templatesProvider')]
     public function testRender(
         string $content,
         array $params,
@@ -130,7 +130,7 @@ class TemplateManagerTest extends DbTestCase
         $this->assertEquals($expected, $html);
     }
 
-    #[DataProvider('testTemplatesProvider')]
+    #[DataProvider('templatesProvider')]
     public function testValidate(
         string $content,
         array $params,
