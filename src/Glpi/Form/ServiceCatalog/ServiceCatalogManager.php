@@ -42,10 +42,13 @@ use Glpi\Form\ServiceCatalog\Provider\ItemProviderInterface;
 use Glpi\Form\ServiceCatalog\Provider\KnowbaseItemProvider;
 use Glpi\Form\ServiceCatalog\Provider\LeafProviderInterface;
 use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyEnum;
+use Glpi\Toolbox\SingletonTrait;
 use RuntimeException;
 
 final class ServiceCatalogManager
 {
+    use SingletonTrait;
+
     /** @var int */
     public const ITEMS_PER_PAGE = 12;
 
@@ -61,6 +64,12 @@ final class ServiceCatalogManager
         ];
     }
 
+    public function registerPluginProvider(
+        ItemProviderInterface $provider
+    ): void {
+        $this->providers[] = $provider;
+    }
+
     /**
      * Return all available forms and non empties categories for the given user.
      *
@@ -69,6 +78,7 @@ final class ServiceCatalogManager
     public function getItems(ItemRequest $item_request): array
     {
         $all_items = [];
+        $item_request->context = ItemRequestContext::SERVICE_CATALOG;
 
         // Load root items
         foreach ($this->providers as $provider) {

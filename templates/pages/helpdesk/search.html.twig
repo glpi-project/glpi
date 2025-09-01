@@ -30,71 +30,44 @@
  # ---------------------------------------------------------------------
  #}
 
-{% if faq_entries|length %}
+{% for label, items in items_by_label %}
+    {% if not loop.first %}
+        <hr class="mb-2 mt-0">
+    {% endif %}
+
     <h2 class="search-results-title mt-2 d-flex align-items-center px-3 mb-0">
-        <span class="text-muted text-uppercase">{{ __("FAQ articles") }}</span>
-        <span class="ms-2 badge bg-secondary-lt">{{ faq_entries|length }}</span>
+        <span class="text-muted text-uppercase">{{ label }}</span>
+        <span class="ms-2 badge bg-secondary-lt">{{ items|length }}</span>
     </h2>
 
     <div class="list-group list-group-flush list-group-hoverable pb-3">
-        {% for faq in faq_entries|slice(0, 20) %}
+        {% for item in items %}
             <div class="list-group-item border-0 pt-1 pb-1">
                 <a
-                    href="{{ path("/front/helpdesk.faq.php?id=" ~ faq.id) }}"
+                    href="{{ item.getServiceCatalogLink() }}"
                     class="row align-items-center"
-                    aria-label="{{ faq.name }}"
+                    aria-label="{{ item.getServiceCatalogItemTitle() }}"
                 >
                     <div class="col-auto">
-                        {{ render_illustration("browse-kb", 60) }}
+                        {{ render_illustration(
+                            item.getServiceCatalogItemIllustration(),
+                            60,
+                        ) }}
                     </div>
                     <div class="col">
-                        <span class="text-body d-block mb-1">{{ faq.name }}</span>
+                        <span class="text-body d-block mb-1">
+                            {{ item.getServiceCatalogItemTitle() }}
+                        </span>
                         <div class="text-secondary text-truncate richtext-strip-margin">
-                            {{ faq.answer|striptags }}
+                            {{ item.getServiceCatalogItemDescription()|striptags }}
                         </div>
                     </div>
                 </a>
             </div>
         {% endfor %}
     </div>
-
-{% endif %}
-
-{% if faq_entries|length and forms|length %}
-    <hr class="mb-2 mt-0">
-{% endif %}
-
-{% if forms|length %}
-    <h2 class="search-results-title mt-2 d-flex align-items-center px-3 mb-0">
-        <span class="text-muted text-uppercase">{{ __("Forms") }}</span>
-        <span class="ms-2 badge bg-secondary-lt">{{ forms|length }}</span>
-    </h2>
-
-    <div class="list-group list-group-flush list-group-hoverable pb-3">
-        {% for form in forms %}
-            <div class="list-group-item border-0 pt-1 pb-1">
-                <a
-                    href="{{ path("/Form/Render/" ~ form.getID()) }}"
-                    class="row align-items-center"
-                    aria-label="{{ form.fields.name }}"
-                >
-                    <div class="col-auto">
-                        {{ render_illustration(form.fields.illustration, 60) }}
-                    </div>
-                    <div class="col">
-                        <span class="text-body d-block mb-1"> {{ form.fields.name }} </span>
-                        <div class="text-secondary text-truncate">
-                            {{ form.fields.description|striptags }}
-                        </div>
-                    </div>
-                </a>
-            </div>
-        {% endfor %}
-    </div>
-{% endif %}
-
-{% if not faq_entries|length and not forms|length %}
+{% else %}
     <div class="px-3 py-2">
         {{ __("No results found") }}
     </div>
-{% endif %}
+{% endfor %}

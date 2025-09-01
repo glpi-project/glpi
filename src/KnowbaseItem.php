@@ -42,7 +42,6 @@ use Glpi\Features\TreeBrowseInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
 use Glpi\RichText\RichText;
-use Glpi\UI\IllustrationManager;
 
 use function Safe\preg_match;
 use function Safe\preg_replace;
@@ -2237,13 +2236,17 @@ TWIG, $twig_params);
     #[Override]
     public function getServiceCatalogItemDescription(): string
     {
-        return $this->fields['description'] ?? "";
+        // Fallback to answer when using the home page search results as the
+        // service catalog data may not be specified in this case.
+        return $this->fields['description'] ?? $this->fields['answer'] ?? "";
     }
 
     #[Override]
     public function getServiceCatalogItemIllustration(): string
     {
-        return $this->fields['illustration'] ?: IllustrationManager::DEFAULT_ILLUSTRATION;
+        // Fallback to a specific icon when using the home page search results
+        // as the service catalog data may not be specified in this case.
+        return $this->fields['illustration'] ?: "browse-kb";
     }
 
     #[Override]

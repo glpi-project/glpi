@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,45 +32,48 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\ServiceCatalog;
+namespace GlpiPlugin\Tester\Form;
 
-use Glpi\Form\AccessControl\FormAccessParameters;
-use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyEnum;
+use Computer;
+use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
+use Glpi\UI\IllustrationManager;
+use Override;
 
-final class ItemRequest
+// Example of how a core class can be enabled for the service catalog without
+// modifying the core itself.
+final class ComputerForServiceCatalog implements ServiceCatalogLeafInterface
 {
     public function __construct(
-        public FormAccessParameters $access_parameters,
-        public string $filter = "",
-        public ?int $category_id = null,
-        public int $page = 1,
-        public int $items_per_page = ServiceCatalogManager::ITEMS_PER_PAGE,
-        public SortStrategyEnum $sort_strategy = SortStrategyEnum::POPULARITY,
-        public ItemRequestContext $context = ItemRequestContext::SERVICE_CATALOG,
+        private Computer $computer,
     ) {}
 
-    public function getFormAccessParameters(): FormAccessParameters
+    #[Override]
+    public function getServiceCatalogLink(): string
     {
-        return $this->access_parameters;
+        return $this->computer->getLinkURL();
     }
 
-    public function getFilter(): string
+    #[Override]
+    public function getServiceCatalogItemTitle(): string
     {
-        return $this->filter;
+        return $this->computer->fields['name'];
     }
 
-    public function getCategoryID(): ?int
+    #[Override]
+    public function getServiceCatalogItemDescription(): string
     {
-        return $this->category_id;
+        return $this->computer->fields['comment'];
     }
 
-    public function getSortStrategy(): SortStrategyEnum
+    #[Override]
+    public function getServiceCatalogItemIllustration(): string
     {
-        return $this->sort_strategy;
+        return IllustrationManager::DEFAULT_ILLUSTRATION;
     }
 
-    public function getContext(): ItemRequestContext
+    #[Override]
+    public function isServiceCatalogItemPinned(): bool
     {
-        return $this->context;
+        return false;
     }
 }
