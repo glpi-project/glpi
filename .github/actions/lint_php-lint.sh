@@ -14,6 +14,7 @@ vendor/bin/php-cs-fixer check \
 
 echo "Run code static analysis"
 vendor/bin/phpstan analyze \
+  --verbose \
   --ansi \
   --memory-limit=1G \
   --no-interaction
