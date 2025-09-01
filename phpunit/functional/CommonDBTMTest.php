@@ -2259,8 +2259,8 @@ class CommonDBTMTest extends DbTestCase
         $items = Computer::getSeveralFromDBByCrit(['name' => ['LIKE', 'Computer A%']]);
 
         // Assert: only the expected computers should be found
+        $items = iterator_to_array($items);
         $this->assertCount(4, $items);
-        $items = array_values($items); // Use numeric keys for simpler comparison
         $this->assertEquals("Computer A1", $items[0]->getName());
         $this->assertEquals("Computer A2", $items[1]->getName());
         $this->assertEquals("Computer A3", $items[2]->getName());

@@ -6711,14 +6711,12 @@ class CommonDBTM extends CommonGLPI
         ]);
     }
 
-    /** @return static[] */
+    /** @return iterable<static> */
     public static function getSeveralFromDBByCrit(
         array $where = [],
         array $order = [],
         ?int $limit = null,
-    ): array {
-        $items = [];
-
+    ): iterable {
         $data = (new static())->find(
             $where,
             $order,
@@ -6728,9 +6726,7 @@ class CommonDBTM extends CommonGLPI
             $item = new static();
             $item->getFromResultSet($row);
             $item->post_getFromDB();
-            $items[$row['id']] = $item;
+            yield $item;
         }
-
-        return $items;
     }
 }
