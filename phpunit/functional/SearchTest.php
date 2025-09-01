@@ -541,7 +541,7 @@ class SearchTest extends DbTestCase
         );
     }
 
-    public static function testViewCriterionProvider(): array
+    public static function viewCriterionProvider(): array
     {
         return [
             [
@@ -739,7 +739,7 @@ class SearchTest extends DbTestCase
         ];
     }
 
-    #[DataProvider('testViewCriterionProvider')]
+    #[DataProvider('viewCriterionProvider')]
     public function testViewCriterionNew(string $itemtype, array $criteria, int $expected)
     {
         $data = $this->doSearch($itemtype, [
@@ -2979,7 +2979,7 @@ class SearchTest extends DbTestCase
         return $searchable_classes;
     }
 
-    public static function testNamesOutputProvider(): array
+    public static function namesOutputProvider(): array
     {
         return [
             [
@@ -3023,7 +3023,7 @@ class SearchTest extends DbTestCase
         ];
     }
 
-    #[DataProvider('testNamesOutputProvider')]
+    #[DataProvider('namesOutputProvider')]
     public function testNamesOutput(array $params, array $expected)
     {
         $this->login();

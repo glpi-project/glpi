@@ -165,7 +165,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         );
     }
 
-    public static function testMailHeaderCriteriaProvider()
+    public static function mailHeaderCriteriaProvider()
     {
         return [
             [
@@ -195,7 +195,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         ];
     }
 
-    #[DataProvider('testMailHeaderCriteriaProvider')]
+    #[DataProvider('mailHeaderCriteriaProvider')]
     public function testMailHeaderCriteria(
         string $pattern,
         string $header

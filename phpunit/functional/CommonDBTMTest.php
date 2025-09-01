@@ -1227,7 +1227,7 @@ class CommonDBTMTest extends DbTestCase
     }
 
 
-    public static function testCheckTemplateEntityProvider()
+    public static function checkTemplateEntityProvider()
     {
         $sv1 = getItemByTypeName('SoftwareVersion', '_test_softver_1');
 
@@ -1273,7 +1273,7 @@ class CommonDBTMTest extends DbTestCase
         ];
     }
 
-    #[DataProvider('testCheckTemplateEntityProvider')]
+    #[DataProvider('checkTemplateEntityProvider')]
     public function testCheckTemplateEntity(
         array $data,
         $parent_id,

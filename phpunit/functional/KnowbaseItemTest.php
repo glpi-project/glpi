@@ -537,7 +537,7 @@ HTML,
         $this->assertEquals($expected, $search);
     }
 
-    public static function testGetListRequestProvider(): array
+    public static function getListRequestProvider(): array
     {
         return [
             [
@@ -741,7 +741,7 @@ HTML,
         ];
     }
 
-    #[DataProvider('testGetListRequestProvider')]
+    #[DataProvider('getListRequestProvider')]
     public function testGetListRequest(array $params, string $type, int $count, ?array $sort): void
     {
         global $DB;

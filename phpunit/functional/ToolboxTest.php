@@ -976,7 +976,7 @@ HTML;
         );
     }
 
-    public static function testIsCommonDBTMProvider()
+    public static function isCommonDBTMProvider()
     {
         return [
             [
@@ -998,7 +998,7 @@ HTML;
         ];
     }
 
-    #[DataProvider('testIsCommonDBTMProvider')]
+    #[DataProvider('isCommonDBTMProvider')]
     public function testIsCommonDBTM(string $class, bool $is_commondbtm)
     {
         $this->assertSame(
@@ -1007,7 +1007,7 @@ HTML;
         );
     }
 
-    public static function testIsAPIDeprecatedProvider()
+    public static function isAPIDeprecatedProvider()
     {
         return [
             [
@@ -1029,7 +1029,7 @@ HTML;
         ];
     }
 
-    #[DataProvider('testIsAPIDeprecatedProvider')]
+    #[DataProvider('isAPIDeprecatedProvider')]
     public function testIsAPIDeprecated(string $class, bool $is_deprecated)
     {
         $this->assertSame(

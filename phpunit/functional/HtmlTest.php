@@ -1003,7 +1003,7 @@ SCSS,
     }
 
 
-    public static function testGetGenericDateTimeSearchItemsProvider(): array
+    public static function getGenericDateTimeSearchItemsProvider(): array
     {
         return [
             [
@@ -1083,7 +1083,7 @@ SCSS,
         ];
     }
 
-    #[DataProvider('testGetGenericDateTimeSearchItemsProvider')]
+    #[DataProvider('getGenericDateTimeSearchItemsProvider')]
     public function testGetGenericDateTimeSearchItems(
         array $options,
         array $check_values,
@@ -1194,7 +1194,7 @@ SCSS,
         $this->assertEquals($expected, \Html::getMenuSectorForItemtype($itemtype));
     }
 
-    public static function testTimestampToRelativeStrProvider(): iterable
+    public static function timestampToRelativeStrProvider(): iterable
     {
         yield [
             'current' => '2025-01-01 00:00:00.000',
@@ -1407,7 +1407,7 @@ SCSS,
         ];
     }
 
-    #[DataProvider('testTimestampToRelativeStrProvider')]
+    #[DataProvider('timestampToRelativeStrProvider')]
     public function testTimestampToRelativeStr(string $current, ?string $timestamp, string $expected): void
     {
         $this->login();

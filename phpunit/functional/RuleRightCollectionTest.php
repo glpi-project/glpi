@@ -78,7 +78,7 @@ class RuleRightCollectionTest extends DbTestCase
         }
     }
 
-    public static function testExportXMLProvider()
+    public static function exportXMLProvider()
     {
         yield [
             'rule_data' => [
@@ -291,7 +291,7 @@ class RuleRightCollectionTest extends DbTestCase
         ];
     }
 
-    #[DataProvider('testExportXMLProvider')]
+    #[DataProvider('exportXMLProvider')]
     public function testExportXML(array $rule_data, ?array $itemtype_data)
     {
         $this->login();

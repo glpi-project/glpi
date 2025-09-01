@@ -326,7 +326,7 @@ class PlanningTest extends \DbTestCase
         $this->assertFalse($events[2]['allDay'] ?? false);
     }
 
-    public static function testCheckAlreadyPlannedProvider()
+    public static function checkAlreadyPlannedProvider()
     {
         $begin_task = '2025-05-13 00:00:00';
         $end_task   = '2025-05-13 01:00:00';
@@ -410,7 +410,7 @@ class PlanningTest extends \DbTestCase
         ];
     }
 
-    #[DataProvider('testCheckAlreadyPlannedProvider')]
+    #[DataProvider('checkAlreadyPlannedProvider')]
     public function testCheckAlreadyPlanned(array $params, array $expected)
     {
         $this->login('glpi', 'glpi');
