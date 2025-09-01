@@ -101,39 +101,46 @@ final class MFAController extends AbstractController
         $secret = $request->request->get('secret');
         $algorithm = null;
 
-        if (
-            !(
-                (isset($backup_code) && $totp->verifyBackupCodeForUser($backup_code, $users_id))
-                || (isset($totp_code, $secret) && ($algorithm = $totp->verifyCodeForSecret($totp_code, $secret)))
-                || (isset($totp_code) && !isset($secret) && $totp->verifyCodeForUser($totp_code, $users_id))
-            )
-        ) {
-            // Verification failure
-            if (isset($backup_code)) {
-                throw new AuthenticationFailedException(authentication_errors: [__('Invalid backup code')]);
-            } else {
-                throw new AuthenticationFailedException(authentication_errors: [__('Invalid TOTP code')]);
-            }
-        }
-
-        if (
-            isset($secret)
-            && !(Session::validateIDOR($request->request->all())
-                && $totp->setSecretForUser($users_id, $request->request->getString('secret'), $algorithm))
-        ) {
-            Session::addMessageAfterRedirect(__s('Invalid code'), false, ERROR);
-            return new RedirectResponse($from_login ? ($request->getBasePath() . '/MFA/Prompt') : Html::getBackUrl());
-        }
-
-        $_SESSION['mfa_success'] = true;
+        $in_grace_period = $totp->get2FAEnforcement($users_id) === TOTPManager::ENFORCEMENT_MANDATORY_GRACE_PERIOD && !$totp->is2FAEnabled($users_id);
         $query_params = isset($pre_auth_data['redirect']) ? http_build_query($pre_auth_data['redirect']) : '';
-        if ($from_login) {
-            // If backup codes already generated, continue the login. Otherwise show/generate them.
-            $next_page = $totp->isBackupCodesAvailable($users_id) ? ('/front/login.php?' . $query_params) : '/MFA/ShowBackupCodes';
-            $next_page = $request->getBasePath() . $next_page;
+
+        if (!($in_grace_period && $request->request->has('skip_mfa'))) {
+            if (
+                !(
+                    (isset($backup_code) && $totp->verifyBackupCodeForUser($backup_code, $users_id))
+                    || (isset($totp_code, $secret) && ($algorithm = $totp->verifyCodeForSecret($totp_code, $secret)))
+                    || (isset($totp_code) && !isset($secret) && $totp->verifyCodeForUser($totp_code, $users_id))
+                )
+            ) {
+                // Verification failure
+                if (isset($backup_code)) {
+                    throw new AuthenticationFailedException(authentication_errors: [__('Invalid backup code')]);
+                } else {
+                    throw new AuthenticationFailedException(authentication_errors: [__('Invalid TOTP code')]);
+                }
+            }
+
+            if (
+                isset($secret)
+                && !(Session::validateIDOR($request->request->all())
+                    && $totp->setSecretForUser($users_id, $request->request->getString('secret'), $algorithm))
+            ) {
+                Session::addMessageAfterRedirect(__s('Invalid code'), false, ERROR);
+                return new RedirectResponse($from_login ? ($request->getBasePath() . '/MFA/Prompt') : Html::getBackUrl());
+            }
+            $_SESSION['mfa_success'] = true;
+            if ($from_login) {
+                // If backup codes already generated, continue the login. Otherwise show/generate them.
+                $next_page = $totp->isBackupCodesAvailable($users_id) ? ('/front/login.php?' . $query_params) : '/MFA/ShowBackupCodes';
+                $next_page = $request->getBasePath() . $next_page;
+            } else {
+                $next_page = Html::getBackUrl();
+            }
         } else {
-            $next_page = Html::getBackUrl();
+            // 2FA is not set up yet, the user is in a grace period, and the user chose to skip it
+            $next_page = '/front/login.php?' . $query_params . '&skip_mfa=1';
         }
+
         return new RedirectResponse($next_page);
     }
 
