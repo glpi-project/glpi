@@ -2523,6 +2523,7 @@ describe ('Conditions', () => {
             .should('have.attr', 'data-cy-shown', 'true')
             .within(() => {
                 cy.findByRole('link', {'name': 'My second question'}).should('be.visible');
+                cy.findByRole('link', {'name': 'First section'}).should('not.exist');
                 cy.findByRole('button', {'name': 'Close'}).click();
             });
         saveAndReload();
@@ -2546,6 +2547,7 @@ describe ('Conditions', () => {
             .should('have.attr', 'data-cy-shown', 'true')
             .within(() => {
                 cy.findByRole('link', {'name': 'My second question'}).should('be.visible');
+                cy.findByRole('link', {'name': 'First section'}).should('not.exist');
                 cy.findByRole('button', {'name': 'Close'}).click();
             });
 
@@ -2582,6 +2584,7 @@ describe ('Conditions', () => {
             .should('have.attr', 'data-cy-shown', 'true')
             .within(() => {
                 cy.findByRole('link', {'name': 'My question'}).should('be.visible');
+                cy.findByRole('link', {'name': 'First section'}).should('not.exist');
                 cy.findByRole('button', {'name': 'Close'}).click();
             });
         saveAndReload();
@@ -2606,6 +2609,7 @@ describe ('Conditions', () => {
             .should('have.attr', 'data-cy-shown', 'true')
             .within(() => {
                 cy.findByRole('link', {'name': 'My question'}).should('be.visible');
+                cy.findByRole('link', {'name': 'First section'}).should('not.exist');
                 cy.findByRole('button', {'name': 'Close'}).click();
             });
 
