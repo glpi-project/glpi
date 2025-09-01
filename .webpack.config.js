@@ -178,8 +178,8 @@ const filesToCopy = [
     },
     // SCSS files
     {
-        package: 'bootstrap',
-        from: 'scss/vendor/_rfs.scss',
+        package: 'rfs',
+        from: 'scss.scss',
         to: scssOutputPath,
     },
     {
