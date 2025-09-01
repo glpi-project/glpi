@@ -425,16 +425,8 @@
 {% endmacro %}
 
 {% macro hiddenField(name, value, label = '', options = {}) %}
-   {% if options.no_label ?? false %}
-      {% set options = {
-         mb: 'mb-0'
-      }|merge(options) %}
-   {% endif %}
-   {% set field %}
-        {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
-        {{ _inputs.hidden(name, value, options) }}
-   {% endset %}
-   {{ _self.field(name, field, label, options) }}
+    {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
+    {{ _inputs.hidden(name, value, options) }}
 {% endmacro %}
 
 {% macro dropdownNumberField(name, value, label = '', options = {}) %}
