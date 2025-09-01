@@ -92,10 +92,6 @@ updates:
       fullcalendar:
         patterns:
           - "@fullcalendar/*"
-      tabler:
-        patterns:
-          - "@tabler/core"
-          - "bootstrap"
 
   - package-ecosystem: "composer"
     directory: "/"
@@ -169,10 +165,6 @@ updates:
       fullcalendar:
         patterns:
           - "@fullcalendar/*"
-      tabler:
-        patterns:
-          - "@tabler/core"
-          - "bootstrap"
 
   - package-ecosystem: "composer"
     directory: "/"
