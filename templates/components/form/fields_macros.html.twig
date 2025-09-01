@@ -365,8 +365,18 @@
          {% endif %}
          {% if clearable %}
             <input type="hidden" name="_blank_{{ name }}" />
+             {%- set clear_js -%}
+                 const blank_input = $('input[name=\'_blank_{{ name }}\']');
+                 blank_input.val(blank_input.val() ? '' : true);
+                 if ($(this).closest('.picture_gallery_item').length) {
+                    $(this).closest('.picture_gallery_item').hide();
+                    $(this).closest('.picture_gallery').siblings('.deletion_pending').removeClass('d-none');
+                 } else {
+                    $(this).closest('.img-overlay-wrapper').hide();
+                 }
+             {%- endset -%}
             <button type="button" class="btn p-2 position-absolute top-0 start-0" title="{{ __('Delete') }}"
-                    onclick="const blank_input = $('input[name=\'_blank_{{ name }}\']'); blank_input.val(blank_input.val() ? '' : true); $(this).toggleClass('btn-danger')">
+                    onclick="{{ clear_js }}">
                <i class="ti ti-x"></i>
             </button>
          {% endif %}
@@ -380,9 +390,12 @@
 
 {% macro imageGalleryField(name, value, label = '', options = {}) %}
    {% set field %}
+       <div class="text-warning deletion_pending d-none">
+           {{ __('The deletion will only take effect after saving the form') }}
+       </div>
       <div class="picture_gallery d-flex flex-wrap overflow-auto p-3">
          {% for i, picture in value %}
-            <div style="position: relative; width: fit-content">
+            <div class="picture_gallery_item" style="position: relative; width: fit-content">
                {{ _self.imageField(name ~ '_' ~ i, picture, '', {
                   'style': 'max-width: 300px; max-height: 150px',
                   'class': 'picture_square',
