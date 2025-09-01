@@ -61,9 +61,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            ${{ env.APP_CONTAINER_HOME }}/files/_cache/php-cs-fixer
+            files/_cache/php-cs-fixer
             /tmp/phpstan
-            ${{ env.APP_CONTAINER_HOME }}/files/_cache/rector
+            files/_cache/rector
           key: "app_home_lint-${{ matrix.php-version }}-${{ github.base_ref || github.ref }}"
           restore-keys: |
             app_home_lint-${{ matrix.php-version }}
