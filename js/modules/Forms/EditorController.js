@@ -1190,17 +1190,17 @@ export class GlpiFormEditorController
                     type: 'question',
                     element: parentItem
                 });
-            }
-
-            // Check if condition is in a section
-            const parentSection = $(element).closest('[data-glpi-form-editor-section]');
-            if (parentSection.length > 0) {
-                elementsWithConditions.push({
-                    name: this.#getItemInput(parentSection, "name"),
-                    uuid: this.#getItemInput(parentSection, "uuid"),
-                    type: 'section',
-                    element: parentSection
-                });
+            } else {
+                // Check if condition is in a section
+                const parentSection = $(element).closest('[data-glpi-form-editor-section]');
+                if (parentSection.length > 0) {
+                    elementsWithConditions.push({
+                        name: this.#getItemInput(parentSection, "name"),
+                        uuid: this.#getItemInput(parentSection, "uuid"),
+                        type: 'section',
+                        element: parentSection
+                    });
+                }
             }
         });
 
