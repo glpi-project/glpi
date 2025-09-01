@@ -37,6 +37,7 @@ namespace tests\units;
 use CommonITILActor;
 use CommonITILObject;
 use Computer;
+use Contract;
 use CronTask;
 use DbTestCase;
 use Entity;
@@ -59,6 +60,7 @@ use Supplier;
 use Supplier_Ticket;
 use Symfony\Component\DomCrawler\Crawler;
 use Ticket;
+use Ticket_Contract;
 use Ticket_User;
 use TicketValidation;
 use User;
@@ -9193,5 +9195,38 @@ HTML,
         }
         $this->assertArrayNotHasKey($ticket1_id, $found);
         $this->assertArrayHasKey($ticket2_id, $found);
+    }
+
+    public function testHandleAddContracts()
+    {
+        $this->login();
+        $contract_1 = $this->createItem(Contract::class, [
+            'name' => 'Contract 1',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $contract_2 = $this->createItem(Contract::class, [
+            'name' => 'Contract 2',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name' => 'Ticket with contracts',
+            'content' => 'test',
+            'entities_id' => $this->getTestRootEntity(true),
+            '_contracts_id' => $contract_1->getID(),
+        ]);
+        $tc = new Ticket_Contract();
+        $linked_contracts = array_values($tc->find(['tickets_id' => $ticket->getID()]));
+        $this->assertCount(1, $linked_contracts);
+        $this->assertEquals($contract_1->getID(), $linked_contracts[0]['contracts_id']);
+
+        $ticket->update([
+            'id' => $ticket->getID(),
+            '_contracts_id' => $contract_2->getID(),
+        ]);
+        $linked_contracts = array_values($tc->find(['tickets_id' => $ticket->getID()]));
+        $this->assertCount(2, $linked_contracts);
+        $this->assertContains($contract_1->getID(), array_column($linked_contracts, 'contracts_id'));
+        $this->assertContains($contract_2->getID(), array_column($linked_contracts, 'contracts_id'));
     }
 }
