@@ -51,6 +51,7 @@ use SoftwareVersion;
 
 class CommonDBTMTest extends DbTestCase
 {
+
     public function testgetIndexNameOtherThanID()
     {
         $networkport = new \NetworkPort();
