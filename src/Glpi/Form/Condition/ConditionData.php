@@ -84,6 +84,32 @@ final class ConditionData implements JsonSerializable
         return ValueOperator::tryFrom($this->value_operator ?? "");
     }
 
+    /**
+     * Check if the condition is valid and fully specified
+     *
+     * @return bool True if the condition is valid, false otherwise
+     */
+    public function isValid(): bool
+    {
+        // Check if item UUID is not empty
+        if (empty($this->item_uuid)) {
+            return false;
+        }
+
+        // Check if item type is valid
+        if (Type::tryFrom($this->item_type) === null) {
+            return false;
+        }
+
+        // Check if value operator is valid
+        $value_operator = $this->getValueOperator();
+        if ($value_operator === null) {
+            return false;
+        }
+
+        return true;
+    }
+
     #[Override]
     public function jsonSerialize(): array
     {
