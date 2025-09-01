@@ -217,9 +217,6 @@ body.in_modal {
 }
 
 .btn {
-    min-width: unset;
-    min-height: unset;
-
     .btn-group .select2-container ~ & {
         max-width: 25px;
     }
@@ -396,6 +393,13 @@ table {
     .fancytree-folder {
         .fancytree-title {
             font-weight: bold;
+        }
+    }
+
+    .fancytree-title {
+        .btn {
+            min-width: unset;
+            min-height: unset;
         }
     }
 
