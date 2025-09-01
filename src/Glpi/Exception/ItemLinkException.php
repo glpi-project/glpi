@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,32 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
-require_once(__DIR__ . '/_check_webserver_config.php');
+namespace Glpi\Exception;
 
-use Glpi\Event;
-use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Exception\ItemLinkException;
+use Exception;
 
-$item = new Problem_Ticket();
-
-if (isset($_POST["add"])) {
-    try {
-        $item->check(-1, CREATE, $_POST);
-    } catch (ItemLinkException $e) {
-        Html::back();
-    }
-
-    if ($item->add($_POST)) {
-        Event::log(
-            $_POST["problems_id"],
-            "problem",
-            4,
-            "maintain",
-            //TRANS: %s is the user login
-            sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"])
-        );
-    }
-    Html::back();
-}
-
-throw new BadRequestHttpException();
+final class ItemLinkException extends Exception {}
