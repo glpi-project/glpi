@@ -383,6 +383,13 @@ table {
         }
     }
 
+    .fancytree-title {
+        .btn {
+            min-width: unset;
+            min-height: unset;
+        }
+    }
+
     .fancytree-selected {
         background-color: var(--tblr-primary);
     }
