@@ -173,7 +173,7 @@
             const backup_code_container = $('#backup_codes');
             if (codes.length === 0) {
                 // An error occurred
-                backup_code_container.html('{{ __('An error occurred') }}');
+                backup_code_container.html('{{ __('An error occurred')|e('js') }}');
             } else {
                 //Remove any previous code table
                 backup_code_container.find('table').remove();
@@ -218,7 +218,7 @@
                     },
                     error: function () {
                         const backup_code_container = $('#backup_codes');
-                        backup_code_container.html('{{ __('An error occurred') }}');
+                        backup_code_container.html('{{ __('An error occurred')|e('js') }}');
                         backup_code_container.removeClass('d-none');
                     }
                 });

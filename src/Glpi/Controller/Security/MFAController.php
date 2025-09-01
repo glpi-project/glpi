@@ -93,7 +93,7 @@ final class MFAController extends AbstractController
         $from_login = isset($_SESSION['mfa_pre_auth']);
         $users_id = $from_login ? (int) $_SESSION['mfa_pre_auth']['user']['id'] : (int) Session::getLoginUserID();
         if (!$users_id) {
-            return new RedirectResponse($CFG_GLPI['root_doc'] . '/MFA/Prompt');
+            return new RedirectResponse($request->getBasePath() . '/MFA/Prompt');
         }
         $totp = new TOTPManager();
         $backup_code = $request->request->get('backup_code');
@@ -122,7 +122,7 @@ final class MFAController extends AbstractController
         if (
             isset($secret)
             && !(Session::validateIDOR($request->request->all())
-                && $totp->setSecretForUser($users_id, $_POST['secret'], $algorithm))
+                && $totp->setSecretForUser($users_id, $request->request->getString('secret'), $algorithm))
         ) {
             Session::addMessageAfterRedirect(__s('Invalid code'), false, ERROR);
             return new RedirectResponse($from_login ? ($CFG_GLPI['root_doc'] . '/MFA/Prompt') : Html::getBackUrl());
