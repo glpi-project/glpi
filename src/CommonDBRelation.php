@@ -35,6 +35,7 @@
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Exception\ItemLinkException;
 
 use function Safe\preg_match;
 
@@ -2144,5 +2145,46 @@ abstract class CommonDBRelation extends CommonDBConnexity
             // Not a member of this relation
             return 0;
         }
+    }
+
+    public function check($ID, int $right, ?array &$input = null): void
+    {
+        $error_types = [];
+        $required_fields = [];
+        $must_check = $input !== null && $right == CREATE;
+
+        if ($must_check && static::$mustBeAttached_1 === true && (!isset($input[static::$items_id_1]) || empty($input[static::$items_id_1]))) {
+            $itemtype = static::$itemtype_1;
+            if (!preg_match('/^itemtype/', $itemtype)) {
+                $itemtype = static::$itemtype_1::getTypeName(1);
+            }
+            $error_types[] = $itemtype;
+            $required_fields[] = static::$items_id_1;
+        }
+        if ($must_check && static::$mustBeAttached_2 === true && (!isset($input[static::$items_id_2]) || empty($input[static::$items_id_2]))) {
+            $itemtype = static::$itemtype_2;
+            if (!preg_match('/^itemtype/', $itemtype)) {
+                $itemtype = static::$itemtype_2::getTypeName(1);
+            }
+            $error_types[] = $itemtype;
+            $required_fields[] = static::$items_id_2;
+        }
+
+        if (count($error_types) > 0) {
+            $message = sprintf(
+                __('Mandatory fields are not filled. Please correct: %s'),
+                implode(', ', $error_types)
+            );
+            Session::addMessageAfterRedirect(htmlescape($message), true, ERROR);
+
+            throw new ItemLinkException(
+                sprintf(
+                    'Post data must contain (greater than 0): %s',
+                    implode(', ', $required_fields),
+                )
+            );
+        }
+
+        parent::check($ID, $right, $input);
     }
 }

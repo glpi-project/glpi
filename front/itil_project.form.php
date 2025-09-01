@@ -37,6 +37,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\ItemLinkException;
 
 /**
  * @since 9.4.0
@@ -45,7 +46,11 @@ use Glpi\Exception\Http\BadRequestHttpException;
 $item = new Itil_Project();
 
 if (isset($_POST['add'])) {
-    $item->check(-1, CREATE, $_POST);
+    try {
+        $item->check(-1, CREATE, $_POST);
+    } catch (ItemLinkException $e) {
+        Html::back();
+    }
 
     if ($item->add($_POST)) {
         Event::log(

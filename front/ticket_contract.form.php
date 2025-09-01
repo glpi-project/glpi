@@ -36,27 +36,16 @@
 require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\ItemLinkException;
 
 $item = new Ticket_Contract();
 
 if (isset($_POST["add"])) {
-    if (!empty($_POST['tickets_id']) && empty($_POST['contracts_id'])) {
-        $message = sprintf(
-            __('Mandatory fields are not filled. Please correct: %s'),
-            Contract::getTypeName(1)
-        );
-        Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
+    try {
+        $item->check(-1, CREATE, $_POST);
+    } catch (ItemLinkException $e) {
         Html::back();
     }
-    if (empty($_POST['tickets_id']) && !empty($_POST['contracts_id'])) {
-        $message = sprintf(
-            __('Mandatory fields are not filled. Please correct: %s'),
-            Ticket::getTypeName(1)
-        );
-        Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
-        Html::back();
-    }
-    $item->check(-1, CREATE, $_POST);
     $item->add($_POST);
 
     Html::back();
