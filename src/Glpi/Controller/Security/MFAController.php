@@ -56,9 +56,8 @@ final class MFAController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function setup(Request $request): Response
     {
-        global $CFG_GLPI;
         if (!isset($_SESSION['mfa_pre_auth'])) {
-            return new RedirectResponse($CFG_GLPI['root_doc'] . '/front/login.php');
+            return new RedirectResponse($request->getBasePath() . '/front/login.php');
         }
         return new StreamedResponse(static function () {
             $totp = new TOTPManager();
@@ -88,8 +87,6 @@ final class MFAController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function verify(Request $request): Response
     {
-        global $CFG_GLPI;
-
         $from_login = isset($_SESSION['mfa_pre_auth']);
         $users_id = $from_login ? (int) $_SESSION['mfa_pre_auth']['user']['id'] : (int) Session::getLoginUserID();
         if (!$users_id) {
@@ -125,11 +122,19 @@ final class MFAController extends AbstractController
                 && $totp->setSecretForUser($users_id, $request->request->getString('secret'), $algorithm))
         ) {
             Session::addMessageAfterRedirect(__s('Invalid code'), false, ERROR);
-            return new RedirectResponse($from_login ? ($CFG_GLPI['root_doc'] . '/MFA/Prompt') : Html::getBackUrl());
+            return new RedirectResponse($from_login ? ($request->getBasePath() . '/MFA/Prompt') : Html::getBackUrl());
         }
 
         $_SESSION['mfa_success'] = true;
-        return new RedirectResponse($from_login ? ($CFG_GLPI['root_doc'] . '/MFA/ShowBackupCodes') : Html::getBackUrl());
+        $query_params = isset($pre_auth_data['redirect']) ? http_build_query($pre_auth_data['redirect']) : '';
+        if ($from_login) {
+            // If backup codes already generated, continue the login. Otherwise show/generate them.
+            $next_page = $totp->isBackupCodesAvailable($users_id) ? ('/front/login.php?' . $query_params) : '/MFA/ShowBackupCodes';
+            $next_page = $request->getBasePath() . $next_page;
+        } else {
+            $next_page = Html::getBackUrl();
+        }
+        return new RedirectResponse($next_page);
     }
 
     #[Route(
@@ -140,12 +145,10 @@ final class MFAController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function showBackupCodes(Request $request): Response
     {
-        global $CFG_GLPI;
-
         $pre_auth_data = $_SESSION['mfa_pre_auth'] ?? null;
         if (!isset($_SESSION['mfa_success'], $pre_auth_data)) {
             $query_params = isset($pre_auth_data['redirect']) ? http_build_query($pre_auth_data['redirect']) : '';
-            return new RedirectResponse($CFG_GLPI['root_doc'] . '/front/login.php?' . $query_params);
+            return new RedirectResponse($request->getBasePath() . '/front/login.php?' . $query_params);
         }
         $totp = new TOTPManager();
         return new StreamedResponse(static function () use ($pre_auth_data, $totp) {
