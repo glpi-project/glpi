@@ -12,8 +12,8 @@
 # WangHongbin <wanghongbin@outlook.com>, 2025
 # Robert Zhang, 2025
 # Cédric Anne, 2025
-# DWXXX, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
+# DWXXX, 2025
 # 
 #, fuzzy
 msgid ""
@@ -22,7 +22,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-02 08:48+0200\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2025\n"
+"Last-Translator: DWXXX, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/glpi/teams/1637/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2903,7 +2903,7 @@ msgstr "重建"
 
 #: templates/components/form/fields_macros.html.twig
 msgid "The deletion will only take effect after saving the form"
-msgstr ""
+msgstr "保存表单后删除生效"
 
 #: templates/components/form/fields_macros.html.twig
 #, php-format
@@ -4978,7 +4978,7 @@ msgstr "增加区域"
 
 #: templates/stencil/editor.html.twig
 msgid "Remove zone"
-msgstr ""
+msgstr "移除区域"
 
 #: templates/stencil/editor.html.twig
 msgid "Zone label"
@@ -9319,7 +9319,7 @@ msgstr "搜索栏"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Expand categories in the service catalog"
-msgstr ""
+msgstr "在服务目录中展开分类"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Save general settings"
@@ -9782,7 +9782,7 @@ msgstr "直接访问URL"
 
 #: templates/pages/admin/form/access_control/direct_access.html.twig
 msgid "Click to change the token"
-msgstr ""
+msgstr "点击更换令牌"
 
 #: templates/pages/admin/form/access_control/direct_access.html.twig
 msgid "Allow unauthenticated users"
@@ -17999,7 +17999,7 @@ msgstr "正在导入可见的条件..."
 msgid ""
 "A visibility condition used in \"%s\" \"%s\" (Form \"%s\") with value "
 "operator \"%s\" is not supported by the question type. It will be ignored."
-msgstr ""
+msgstr "一个可见的使用条件使用在 \"%s\" \"%s\" (自 \"%s\") ，使用操作符 \"%s\"不被问题类型支持。将被忽略。"
 
 #: src/Glpi/Form/Migration/FormMigration.php:1533
 #, php-format
@@ -18501,11 +18501,11 @@ msgstr "不可见"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:91
 msgid "Is empty"
-msgstr ""
+msgstr "是否空"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:92
 msgid "Is not empty"
-msgstr ""
+msgstr "是否非空"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:120
 #, php-format
@@ -19935,7 +19935,7 @@ msgstr "结案"
 #: src/CommonITILObject.php:5605 src/CommonITILObject.php:6859
 #: src/CommonITILObject.php:6902 src/Stat.php:578
 msgid "Resolution"
-msgstr "决议"
+msgstr "解决方案"
 
 #: src/Glpi/Stat/Data/Sglobal/StatDataTicketAverageTime.php:77
 #: src/Glpi/Stat/Data/Graph/StatDataTicketNumber.php:73
@@ -19976,7 +19976,7 @@ msgstr "引用(# + id)"
 #: src/NotificationTargetCommonITILObject.php:1975 src/Ticket.php:5541
 #: src/CommonITILObject.php:4364 src/CommonITILObject.php:5582
 msgid "Closing date"
-msgstr "截止日期"
+msgstr "关闭日期"
 
 #: src/Glpi/ContentTemplates/Parameters/CommonITILObjectParameters.php:80
 msgid "Assigned group"
