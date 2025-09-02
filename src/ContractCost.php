@@ -326,7 +326,7 @@ class ContractCost extends CommonDBChild
                             method: 'POST',
                             data: {
                                 type: 'ContractCost',
-                                parenttype: '{{ item.getType() }}',
+                                parenttype: '{{ item.getType()|e('js') }}',
                                 contracts_id: {{ item.getID() }},
                                 id: subitems_id
                             },
@@ -353,7 +353,7 @@ TWIG, $twig_params);
                 $data['id']
             ) : $data['name'];
             $name = sprintf(
-                __('%1$s %2$s'),
+                __s('%1$s %2$s'),
                 htmlescape($name),
                 Html::showToolTip(htmlescape($data['comment']), ['display' => false])
             );

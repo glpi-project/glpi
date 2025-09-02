@@ -131,4 +131,4 @@ $input-focus-border-color: color-mix(in srgb, var(--tblr-primary), white 50%);
 $input-focus-box-shadow: 0 0 1 .25rem color-mix(in srgb, var(--tblr-primary), transparent 75%);
 
 // RFS. Done as import because of complexity.
-@import "../lib/bootstrap/rfs";
+@import "../lib/rfs/scss";

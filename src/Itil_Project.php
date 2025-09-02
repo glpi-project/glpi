@@ -306,19 +306,24 @@ TWIG, $twig_params);
                     {% import 'components/form/fields_macros.html.twig' as fields %}
                     <div class="mb-3">
                         <form method="post" action="{{ 'Itil_Project'|itemtype_form_path }}">
-                            <input type="hidden" name="itemtype" value="{{ itemtype }}"/>
-                            <input type="hidden" name="items_id" value="{{ items_id }}"/>
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
                             <div class="d-flex">
-                                {{ fields.dropdownField('Project', 'projects_id', '', null, {
-                                    add_field_class: 'd-inline',
-                                    no_label: true,
-                                    used: used,
-                                    entity: entities_id,
-                                }) }}
-                            </div>
-                            <div>
-                                <button class="btn btn-primary ms-3" type="submit" name="add" value="">{{ btn_msg }}</button>
+                                <input type="hidden" name="itemtype" value="{{ itemtype }}"/>
+                                <input type="hidden" name="items_id" value="{{ items_id }}"/>
+                                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+                                <div class="col-auto">
+                                    {{ fields.dropdownField('Project', 'projects_id', '', null, {
+                                        add_field_class: 'd-inline',
+                                        no_label: true,
+                                        used: used,
+                                        entity: entities_id
+                                    }) }}
+                                </div>
+                                <div class="col-auto">
+                                    <button class="btn btn-primary ms-1" type="submit" name="add" value="">
+                                        <i class="ti ti-link"></i>
+                                        {{ btn_msg }}
+                                    </button>
+                                </div>
                             </div>
                         </form>
                     </div>

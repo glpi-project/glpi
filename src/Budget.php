@@ -485,7 +485,7 @@ class Budget extends CommonDropdown
                 $items[$itemtype] = getItemForItemtype($itemtype);
             }
 
-            $name = NOT_AVAILABLE;
+            $name = htmlescape(NOT_AVAILABLE);
             if ($items[$itemtype]->getFromDB($data["id"])) {
                 if ($items[$itemtype] instanceof Item_Devices) {
                     $tmpitem = getItemForItemtype($items[$itemtype]::$itemtype_2);

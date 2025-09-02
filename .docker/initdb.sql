@@ -4,4 +4,3 @@
 # This may be executed before automatic `glpi` user creation, so we have to create it manually.
 CREATE USER IF NOT EXISTS 'glpi'@'%' IDENTIFIED BY 'glpi';
 SET PASSWORD FOR 'glpi'@'%' = PASSWORD('glpi');
-GRANT SELECT ON `mysql`.`time_zone_name` TO 'glpi'@'%';

@@ -1078,18 +1078,6 @@ describe ('Conditions', () => {
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
                         logic: 'Or',
                         operator: 'Is equal to',
                         value: 'Exact match',
@@ -1159,18 +1147,6 @@ describe ('Conditions', () => {
                 subType: 'Number',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
                         logic: 'Or',
                         operator: 'Is equal to',
                         value: 10,
@@ -1205,6 +1181,18 @@ describe ('Conditions', () => {
                         operator: 'Is less than or equals to',
                         value: 10,
                         valueType: 'number'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/^[0-9]$/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/^[0-9]$/',
+                        valueType: 'string'
                     },
                 ]
             },
@@ -1295,18 +1283,6 @@ describe ('Conditions', () => {
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeLongText',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
                         logic: 'Or',
                         operator: 'Is equal to',
                         value: 'Exact match',
@@ -1376,18 +1352,6 @@ describe ('Conditions', () => {
                 extra_data: '{"is_default_value_current_time":"0","is_date_enabled":"1","is_time_enabled":"0"}',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
                         logic: 'Or',
                         operator: 'Is equal to',
                         value: '2021-01-01',
@@ -1421,6 +1385,18 @@ describe ('Conditions', () => {
                         logic: 'Or',
                         operator: 'Is less than or equals to',
                         value: '2021-01-01',
+                        valueType: 'date'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/^2021-01-01$/',
+                        valueType: 'date'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/^2021-01-01$/',
                         valueType: 'date'
                     },
                 ]
@@ -1433,18 +1409,6 @@ describe ('Conditions', () => {
                 extra_data: '{"is_default_value_current_time":"0","is_date_enabled":"0","is_time_enabled":"1"}',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
                         logic: 'Or',
                         operator: 'Is equal to',
                         value: '12:00',
@@ -1478,6 +1442,18 @@ describe ('Conditions', () => {
                         logic: 'Or',
                         operator: 'Is less than or equals to',
                         value: '12:00',
+                        valueType: 'date'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/^12:00$/',
+                        valueType: 'date'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/^12:00$/',
                         valueType: 'date'
                     },
                 ]
@@ -1490,18 +1466,6 @@ describe ('Conditions', () => {
                 extra_data: '{"is_default_value_current_time":"0","is_date_enabled":"1","is_time_enabled":"1"}',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
                         logic: 'Or',
                         operator: 'Is equal to',
                         value: '2021-01-01T12:00',
@@ -1535,6 +1499,18 @@ describe ('Conditions', () => {
                         logic: 'Or',
                         operator: 'Is less than or equals to',
                         value: '2021-01-01T12:00',
+                        valueType: 'date'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/^2021-01-01T12:00$/',
+                        valueType: 'date'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/^2021-01-01T12:00$/',
                         valueType: 'date'
                     },
                 ]
@@ -1546,18 +1522,6 @@ describe ('Conditions', () => {
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeRequester',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
                         logic: 'Or',
                         operator: 'Is equal to',
                         value: 'glpi',
@@ -1580,7 +1544,19 @@ describe ('Conditions', () => {
                         operator: 'Do not contains',
                         value: 'glpi',
                         valueType: 'dropdown'
-                    }
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/glpi/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/glpi/',
+                        valueType: 'string'
+                    },
                 ],
             }
         ],
@@ -1590,18 +1566,6 @@ describe ('Conditions', () => {
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeObserver',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
                         logic: 'Or',
                         operator: 'Is equal to',
                         value: 'glpi',
@@ -1624,7 +1588,19 @@ describe ('Conditions', () => {
                         operator: 'Do not contains',
                         value: 'glpi',
                         valueType: 'dropdown'
-                    }
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/glpi/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/glpi/',
+                        valueType: 'string'
+                    },
                 ],
             }
         ],
@@ -1634,18 +1610,6 @@ describe ('Conditions', () => {
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeAssignee',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
                         logic: 'Or',
                         operator: 'Is equal to',
                         value: 'glpi',
@@ -1668,7 +1632,19 @@ describe ('Conditions', () => {
                         operator: 'Do not contains',
                         value: 'glpi',
                         valueType: 'dropdown'
-                    }
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/glpi/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/glpi/',
+                        valueType: 'string'
+                    },
                 ],
             }
         ],
@@ -1677,18 +1653,6 @@ describe ('Conditions', () => {
                 name: 'My urgency question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeUrgency',
                 conditions: [
-                    {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
                     {
                         logic: 'Or',
                         operator: 'Is equal to',
@@ -1725,6 +1689,18 @@ describe ('Conditions', () => {
                         value: 'High',
                         valueType: 'dropdown'
                     },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/^1$/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/^1$/',
+                        valueType: 'string'
+                    }
                 ],
             },
         ],
@@ -1734,23 +1710,29 @@ describe ('Conditions', () => {
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeRequestType',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
                         logic: 'Or',
                         operator: 'Is equal to',
                         value: 'Request',
                         valueType: 'dropdown'
                     },
+                    {
+                        logic: 'Or',
+                        operator: 'Is not equal to',
+                        value: 'Request',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/^1$/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/^1$/',
+                        valueType: 'string'
+                    }
                 ],
             },
         ],
@@ -1760,16 +1742,16 @@ describe ('Conditions', () => {
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeFile',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/^file_[0-9]+\\.txt$/',
+                        valueType: 'string'
                     },
                     {
                         logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
+                        operator: 'Do not match regular expression',
+                        value: '/^file_[0-9]+\\.txt$/',
+                        valueType: 'string'
                     },
                 ],
             },
@@ -1781,18 +1763,6 @@ describe ('Conditions', () => {
                 extra_data: '{"options":{"1":"Option 1","2":"Option 2","3":"Option 3","4":"Option 4"}}',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
                         logic: 'Or',
                         operator: 'Is equal to',
                         value: 'Option 3',
@@ -1803,6 +1773,18 @@ describe ('Conditions', () => {
                         operator: 'Is not equal to',
                         value: 'Option 2',
                         valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '^Option [1-4]$',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '^Option [1-4]$',
+                        valueType: 'string'
                     }
                 ]
             }
@@ -1813,18 +1795,6 @@ describe ('Conditions', () => {
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeCheckbox',
                 extra_data: '{"options":{"1":"Option 1","2":"Option 2","3":"Option 3","4":"Option 4"}}',
                 conditions: [
-                    {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
                     {
                         logic: 'Or',
                         operator: 'Is equal to',
@@ -1848,6 +1818,18 @@ describe ('Conditions', () => {
                         operator: 'Do not contains',
                         value: ['Option 1', 'Option 3'],
                         valueType: 'dropdown_multiple'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '^Option [1-4]$',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '^Option [1-4]$',
+                        valueType: 'string'
                     }
                 ]
             },
@@ -1859,18 +1841,6 @@ describe ('Conditions', () => {
                 extra_data: '{"is_multiple_dropdown":false,"options":{"1":"Option 1","2":"Option 2","3":"Option 3","4":"Option 4"}}',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
                         logic: 'Or',
                         operator: 'Is equal to',
                         value: 'Option 3',
@@ -1881,6 +1851,18 @@ describe ('Conditions', () => {
                         operator: 'Is not equal to',
                         value: 'Option 2',
                         valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '^Option [1-4]$',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '^Option [1-4]$',
+                        valueType: 'string'
                     }
                 ]
             },
@@ -1891,18 +1873,6 @@ describe ('Conditions', () => {
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeDropdown',
                 extra_data: '{"is_multiple_dropdown":true,"options":{"1":"Option 1","2":"Option 2","3":"Option 3","4":"Option 4"}}',
                 conditions: [
-                    {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
                     {
                         logic: 'Or',
                         operator: 'Is equal to',
@@ -1926,6 +1896,18 @@ describe ('Conditions', () => {
                         operator: 'Do not contains',
                         value: ['Option 2', 'Option 4'],
                         valueType: 'dropdown_multiple'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '^Option [1-4]$',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '^Option [1-4]$',
+                        valueType: 'string'
                     }
                 ]
             },
@@ -1936,18 +1918,6 @@ describe ('Conditions', () => {
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeItem',
                 extra_data: '{"itemtype":"Computer"}',
                 conditions: [
-                    {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
                     {
                         logic: 'Or',
                         operator: 'Is equal to',
@@ -1970,6 +1940,18 @@ describe ('Conditions', () => {
                         logic: 'Or',
                         operator: 'Do not contains',
                         value: 'Computer - {uuid}',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/Computer/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/Computer/',
                         valueType: 'string'
                     }
                 ]
@@ -1982,18 +1964,6 @@ describe ('Conditions', () => {
                 extra_data: '{"itemtype":"Location","categories_filter":[],"root_items_id":0,"subtree_depth":0}',
                 conditions: [
                     {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
                         logic: 'Or',
                         operator: 'Is equal to',
                         value: '»Location - {uuid}',
@@ -2016,7 +1986,19 @@ describe ('Conditions', () => {
                         operator: 'Do not contains',
                         value: 'Location - {uuid}',
                         valueType: 'string'
-                    }
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/Location/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/Location/',
+                        valueType: 'string'
+                    },
                 ]
             },
         ],
@@ -2026,18 +2008,6 @@ describe ('Conditions', () => {
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeUserDevice',
                 extra_data: '{"is_multiple_devices":false}',
                 conditions: [
-                    {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
                     {
                         logic: 'Or',
                         operator: 'Is of itemtype',
@@ -2050,6 +2020,30 @@ describe ('Conditions', () => {
                         value: 'Computer',
                         valueType: 'dropdown'
                     },
+                    {
+                        logic: 'Or',
+                        operator: 'Contains',
+                        value: 'Computer',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not contains',
+                        value: 'Computer',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/Computer/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/Computer/',
+                        valueType: 'string'
+                    },
                 ]
             },
         ],
@@ -2059,18 +2053,6 @@ describe ('Conditions', () => {
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeUserDevice',
                 extra_data: '{"is_multiple_devices":true}',
                 conditions: [
-                    {
-                        logic: null,
-                        operator: 'Is visible',
-                        value: null,
-                        valueType: null
-                    },
-                    {
-                        logic: 'Or',
-                        operator: 'Is not visible',
-                        value: null,
-                        valueType: null
-                    },
                     {
                         logic: 'Or',
                         operator: 'At least one item of itemtype',
@@ -2083,10 +2065,66 @@ describe ('Conditions', () => {
                         value: ['Computer'],
                         valueType: 'dropdown_multiple'
                     },
+                    {
+                        logic: 'Or',
+                        operator: 'Contains',
+                        value: 'Computer',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not contains',
+                        value: 'Computer',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Match regular expression',
+                        value: '/Computer/',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Do not match regular expression',
+                        value: '/Computer/',
+                        valueType: 'string'
+                    },
                 ]
             }
-        ]
+        ],
     };
+
+    // All questions implement "Is visible", "Is not visible", "Is empty" and "Is not empty" conditions
+    Object.values(questionsToAdd).forEach((questions) => {
+        questions.forEach((question) => {
+            question.conditions.push(
+                {
+                    logic: null,
+                    operator: 'Is visible',
+                    value: null,
+                    valueType: null
+                },
+                {
+                    logic: 'Or',
+                    operator: 'Is not visible',
+                    value: null,
+                    valueType: null
+                },
+                {
+                    logic: 'Or',
+                    operator: 'Is empty',
+                    value: null,
+                    valueType: null
+                },
+                {
+                    logic: 'Or',
+                    operator: 'Is not empty',
+                    value: null,
+                    valueType: null
+                }
+            );
+        });
+    });
 
     it('can all questions type are tested for conditions', () => {
         const expected_types = Object.values(questionsToAdd).reduce((acc, questions) => {
@@ -2849,5 +2887,49 @@ describe ('Conditions', () => {
         deleteConditon(0);
         closeConditionEditor();
         checkConditionsCount('0');
+    });
+
+    it('check whether uploading a file in a “File” question updates the visibility of a target question', () => {
+        createForm();
+
+        // Add a target question
+        addQuestion('My target question');
+
+        // Add a file upload question
+        addQuestion('My file question');
+        setQuestionTypeCategory('File');
+
+        // Add a condition to show the target question if the file question is not empty
+        getAndFocusQuestion('My target question').within(() => {
+            initVisibilityConfiguration();
+            setConditionStrategy('Visible if...');
+            fillCondition(0, null, 'My file question', 'Is not empty', null, null);
+            closeVisibilityConfiguration();
+        });
+
+        // Save and reload to ensure conditions are applied
+        saveAndReload();
+
+        // Preview the form
+        preview();
+
+        // Check that the target question is not visible initially
+        validateThatQuestionIsNotVisible('My target question');
+
+        // Upload a file to the file question
+        cy.findByRole('region', {'name': 'My file question'}).within(() => {
+            cy.get('input[type="file"]').selectFile('fixtures/uploads/bar.png');
+        });
+
+        // Check that the target question is now visible
+        validateThatQuestionIsVisible('My target question');
+
+        // Remove the uploaded file
+        cy.findByRole('region', {'name': 'My file question'}).within(() => {
+            cy.get('.fileupload .remove_file_upload').click();
+        });
+
+        // Check that the target question is not visible anymore
+        validateThatQuestionIsNotVisible('My target question');
     });
 });

@@ -417,8 +417,8 @@ final class Form extends CommonDBTM implements
         $export_url .= "/Form/Export?" . http_build_query(['ids' => $ids]);
 
         $label = __s("Click here to download the exported forms...");
-        echo "<a href=\"$export_url\">$label</a>";
-        echo Html::scriptBlock("window.location.href = '$export_url';");
+        echo "<a href=\"" . \htmlescape($export_url) . "\">$label</a>";
+        echo Html::scriptBlock("window.location.href = '" . \jsescape($export_url) . "';");
 
         return true;
     }

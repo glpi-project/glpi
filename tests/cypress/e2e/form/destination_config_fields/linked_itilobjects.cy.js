@@ -64,7 +64,7 @@ describe('Linked ITIL Objects configuration', () => {
         cy.checkAndCloseAlert('Item successfully updated');
 
         // Go to destination tab
-        cy.findByRole('tab', { 'name': "Items to create 1" }).click();
+        cy.findByRole('tab', { 'name': "Destinations 1" }).click();
 
         // Rename default destination
         cy.findByRole('region', { 'name': "Ticket" }).findByRole('textbox', { 'name': "Form destination name" }).as("destination_name_input");

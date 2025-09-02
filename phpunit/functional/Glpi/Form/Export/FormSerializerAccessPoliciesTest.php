@@ -301,7 +301,7 @@ final class FormSerializerAccessPoliciesTest extends \DbTestCase
         $data = json_decode($json, true);
         $requirements = $data['forms'][0]['data_requirements'];
         $this->assertEquals([
-            ['itemtype' => Entity::class,  'name' => "_test_root_entity"],
+            ['itemtype' => Entity::class,  'name' => "Root entity > _test_root_entity"],
             ['itemtype' => User::class,    'name' => "User 1"],
             ['itemtype' => User::class,    'name' => "User 2"],
             ['itemtype' => Group::class,   'name' => "Group 1"],

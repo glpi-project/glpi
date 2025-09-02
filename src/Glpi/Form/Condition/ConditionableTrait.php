@@ -74,6 +74,12 @@ trait ConditionableTrait
             'conditions' => $raw_data,
         ]);
 
-        return $form_data->getConditionsData();
+        // Filter out invalid conditions
+        $conditions = array_filter(
+            $form_data->getConditionsData(),
+            fn(ConditionData $condition) => $condition->isValid()
+        );
+
+        return $conditions;
     }
 }

@@ -48,8 +48,6 @@ class StringConditionHandler implements ConditionHandlerInterface
             ValueOperator::NOT_EQUALS,
             ValueOperator::CONTAINS,
             ValueOperator::NOT_CONTAINS,
-            ValueOperator::MATCH_REGEX,
-            ValueOperator::NOT_MATCH_REGEX,
             ValueOperator::LENGTH_GREATER_THAN,
             ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS,
             ValueOperator::LENGTH_LESS_THAN,
@@ -98,14 +96,6 @@ class StringConditionHandler implements ConditionHandlerInterface
             ValueOperator::NOT_EQUALS      => $a !== $b,
             ValueOperator::CONTAINS        => str_contains($b, $a),
             ValueOperator::NOT_CONTAINS    => !str_contains($b, $a),
-
-            // Note: we do not want to throw warnings here if an invalid regex
-            // is configured by the user.
-            // There is no clean way to test that a regex is valid in PHP,
-            // therefore the simplest way to deal with that is to ignore
-            // warnings using the "@" prefix.
-            ValueOperator::MATCH_REGEX     => @preg_match($b, $a), // @phpstan-ignore theCodingMachineSafe.function
-            ValueOperator::NOT_MATCH_REGEX => !@preg_match($b, $a), // @phpstan-ignore theCodingMachineSafe.function
 
             // Length comparison operators
             ValueOperator::LENGTH_GREATER_THAN           => strlen($a) > intval($b),

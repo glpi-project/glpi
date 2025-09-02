@@ -43,6 +43,14 @@ use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
 
 final class UserDevicesConditionHandlerTest extends AbstractConditionHandler
 {
+    public static function getConditionHandler(): array
+    {
+        return [
+            new UserDevicesConditionHandler(is_multiple_devices: false),
+            new UserDevicesConditionHandler(is_multiple_devices: true),
+        ];
+    }
+
     #[Override]
     public static function conditionHandlerProvider(): iterable
     {

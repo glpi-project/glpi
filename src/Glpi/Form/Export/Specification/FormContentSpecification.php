@@ -82,12 +82,8 @@ final class FormContentSpecification
     }
 
     public function addDataRequirement(
-        string $class,
-        string $name,
+        DataRequirementSpecification $requirement
     ): void {
-        $requirement = new DataRequirementSpecification();
-        $requirement->itemtype = $class;
-        $requirement->name = $name;
         $this->data_requirements[] = $requirement;
     }
 

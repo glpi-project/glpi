@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Form\Condition;
 
 use DbTestCase;
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\Engine;
 use Glpi\Form\Condition\EngineInput;
 use Glpi\Form\Condition\LogicOperator;
@@ -53,6 +54,45 @@ abstract class AbstractConditionHandler extends DbTestCase
     use FormTesterTrait;
 
     abstract public static function conditionHandlerProvider(): iterable;
+
+    /**
+     * Get the condition handler instance.
+     * This method must return an instance of `ConditionHandlerInterface` or an array of such instances.
+     * It is used to provide the condition handler for the tests.
+     *
+     * @return ConditionHandlerInterface|ConditionHandlerInterface[] An instance of the condition handler or an array of instances.
+     */
+    abstract public static function getConditionHandler(): ConditionHandlerInterface|array;
+
+    public function testAllAvailableOperatorsAreProvided(): void
+    {
+        $handlers = $this->getConditionHandler();
+        if (!is_array($handlers)) {
+            $handlers = [$handlers];
+        }
+
+        $available_operators = array_map(
+            fn($op) => $op->value,
+            array_merge(
+                ...array_map(
+                    fn(ConditionHandlerInterface $handler) => $handler->getSupportedValueOperators(),
+                    $handlers
+                )
+            )
+        );
+        $current_operators = array_unique(
+            array_map(
+                fn($op) => $op['condition_operator']->value,
+                iterator_to_array($this->conditionHandlerProvider())
+            )
+        );
+
+        $this->assertSame(
+            array_values($available_operators),
+            array_values($current_operators),
+            'All available operators must be provided by the condition handler',
+        );
+    }
 
     #[DataProvider('conditionHandlerProvider')]
     public function testConditionHandlerProvider(

@@ -416,13 +416,11 @@ final class ValidationField extends AbstractConfigField implements DestinationFi
                         $item = getItemForItemtype($itemtype);
                         if ($item->getFromDB($item_id)) {
                             // Register requirement with item name
-                            $requirements[] = new DataRequirementSpecification(
-                                $itemtype,
-                                $item->getName(),
-                            );
+                            $requirement = DataRequirementSpecification::fromItem($item);
+                            $requirements[] = $requirement;
 
                             // Replace item ID with name in config
-                            $config[ValidationFieldConfig::STRATEGY_CONFIGS][$index][ValidationFieldStrategyConfig::SPECIFIC_ACTORS][$itemtype][$id_index] = $item->getName();
+                            $config[ValidationFieldConfig::STRATEGY_CONFIGS][$index][ValidationFieldStrategyConfig::SPECIFIC_ACTORS][$itemtype][$id_index] = $requirement->name;
                         }
                     }
                 }

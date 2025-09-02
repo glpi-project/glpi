@@ -587,8 +587,8 @@ class Inventory
         ];
         $links = [];
         foreach ($classes as $class) {
-            $entry = "<i class=\"" . $class::getIcon() . " pointer\" title=\"" . $class::getTypeName(Session::getPluralNumber())
-            . "\"></i><span class=\"d-none d-xxl-block\">" . $class::getTypeName(Session::getPluralNumber()) . "</span>";
+            $entry = "<i class=\"" . \htmlescape($class::getIcon()) . " pointer\" title=\"" . \htmlescape($class::getTypeName(Session::getPluralNumber()))
+            . "\"></i><span class=\"d-none d-xxl-block\">" . \htmlescape($class::getTypeName(Session::getPluralNumber())) . "</span>";
             $links[$entry] = $class::getSearchURL(false);
         }
 
@@ -600,6 +600,8 @@ class Inventory
             'links'   => $links,
         ];
 
+        $links['lists'] = ''; // Add `Lists` button for subitems
+
         if (Session::haveRight(Agent::$rightname, READ)) {
             $menu['options'][Agent::class] = [
                 'icon'  => Agent::getIcon(),
@@ -608,6 +610,7 @@ class Inventory
                 'links' => [
                     'search' => '/front/agent.php',
                 ] + $links,
+                'lists_itemtype' => Agent::class,
             ];
         }
 
@@ -617,8 +620,9 @@ class Inventory
                 'title' => Lockedfield::getTypeName(Session::getPluralNumber()),
                 'page'  => Lockedfield::getSearchURL(false),
                 'links' => [
-                    "<i class=\"ti ti-plus\" title=\"" . __('Add global lock') . "\"></i><span class='d-none d-xxl-block'>" . __('Add global lock') . "</span>" => Lockedfield::getFormURL(false),
+                    "<i class=\"ti ti-plus\" title=\"" . __s('Add global lock') . "\"></i><span class='d-none d-xxl-block'>" . __s('Add global lock') . "</span>" => Lockedfield::getFormURL(false),
                 ] + $links,
+                'lists_itemtype' => Lockedfield::class,
             ];
         }
 
@@ -628,6 +632,7 @@ class Inventory
                 'title' => RefusedEquipment::getTypeName(Session::getPluralNumber()),
                 'page'  => RefusedEquipment::getSearchURL(false),
                 'links' => $links,
+                'lists_itemtype' => RefusedEquipment::class,
             ];
         }
 
@@ -640,6 +645,7 @@ class Inventory
                     'add' => '/front/snmpcredential.form.php',
                     'search' => '/front/snmpcredential.php',
                 ] + $links,
+                'lists_itemtype' => SNMPCredential::class,
             ];
         }
 

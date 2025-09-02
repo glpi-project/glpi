@@ -55,7 +55,7 @@
             }) }}
 
             {{ inputs.hidden('entities_id', entity) }}
-            {{ inputs.hidden('is_recursive', item.isRecursive()) }}
+            {{ inputs.hidden('is_recursive', item.isRecursive() ? '1' : '0') }}
             {{ inputs.hidden('itemtype', item.getType()) }}
             {{ inputs.hidden('items_id', item.getID()) }}
             {% if item.getType == 'Ticket' %}

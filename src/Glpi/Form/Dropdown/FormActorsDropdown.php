@@ -75,8 +75,8 @@ final class FormActorsDropdown extends AbstractRightsDropdown
         $params['templateSelection'] = <<<JS
             function (data) {
                 let icon = '';
-                let text = data.text;
-                let title = data.title;
+                let text = _.escape(data.text);
+                let title = _.escape(data.title);
                 if (
                     (data.itemtype && data.itemtype === 'User')
                     || (data.id && data.id.startsWith('users_id-'))

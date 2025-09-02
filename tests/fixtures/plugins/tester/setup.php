@@ -35,8 +35,11 @@
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\Destination\FormDestinationManager;
 use Glpi\Form\QuestionType\QuestionTypesManager;
+use Glpi\Form\ServiceCatalog\HomeSearchManager;
+use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
 use Glpi\Helpdesk\Tile\TilesManager;
 use GlpiPlugin\Tester\Form\ComputerDestination;
+use GlpiPlugin\Tester\Form\ComputerProvider;
 use GlpiPlugin\Tester\Form\CustomTile;
 use GlpiPlugin\Tester\Form\DayOfTheWeekPolicy;
 use GlpiPlugin\Tester\Form\QuestionTypeRange;
@@ -104,6 +107,14 @@ function plugin_init_tester(): void
     // Register custom tiles types
     $tiles_manager = TilesManager::getInstance();
     $tiles_manager->registerPluginTileType(new CustomTile());
+
+    // Register custom home page search provider
+    $home_manager = HomeSearchManager::getInstance();
+    $home_manager->registerPluginProvider(new ComputerProvider());
+
+    // Register custom service catalog content provider
+    $service_catalog_manager = ServiceCatalogManager::getInstance();
+    $service_catalog_manager->registerPluginProvider(new ComputerProvider());
 
     $PLUGIN_HOOKS['menu_toadd']['tester'] = ['management' => MyPsr4Class::class];
 }

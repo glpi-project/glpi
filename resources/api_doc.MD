@@ -131,7 +131,7 @@ The implementation of the GraphQL does not include any mutators. It is read-only
 
 The GraphQL API supports the same parameters as the REST API for filtering, sorting, and pagination.
 
-Example:
+Basic Example:
 ```graphql
 query {
     Ticket(limit: 1, filter: "name=ilike=test") {
@@ -140,6 +140,21 @@ query {
         status {
             id
             name
+        }
+    }
+}
+```
+
+Example crossing between schemas:
+```graphql
+query {
+    CartridgeItem {
+        id
+        name
+         printer_models {
+            name
+            # the product number is not usually returned by the REST API, but is available in GraphQL since you can access the full PrinterModel schema here.
+            product_number
         }
     }
 }

@@ -57,14 +57,19 @@ final class CategoryProvider implements CompositeProviderInterface
         $category_id = $item_request->getCategoryID();
         $filter = $item_request->getFilter();
 
-        $categories = [];
-        $raw_categories = (new Category())->find([
-            'forms_categories_id' => $category_id ?? 0,
-        ], ['name']);
+        $category_restriction = [];
+        if ($category_id !== null) {
+            $category_restriction = [
+                'forms_categories_id' => $category_id,
+            ];
+        }
 
-        foreach ($raw_categories as $raw_categoriy) {
+        $categories = [];
+        $raw_categories = (new Category())->find($category_restriction, ['name']);
+
+        foreach ($raw_categories as $raw_category) {
             $category = new Category();
-            $category->getFromResultSet($raw_categoriy);
+            $category->getFromResultSet($raw_category);
             $category->post_getFromDB();
 
             // Fuzzy matching

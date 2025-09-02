@@ -223,13 +223,14 @@ class FormMigration extends AbstractPluginMigration
      * Get the value operator from the legacy value
      *
      * @param int $value_operator The legacy value operator
+     * @param mixed $value The value to compare against
      * @return ValueOperator|null The corresponding value operator or null if not found
      */
-    private function getValueOperatorFromLegacy(int $value_operator): ?ValueOperator
+    private function getValueOperatorFromLegacy(int $value_operator, mixed $value): ?ValueOperator
     {
         return match ($value_operator) {
-            1 => ValueOperator::EQUALS,
-            2 => ValueOperator::NOT_EQUALS,
+            1 => $value === "" ? ValueOperator::EMPTY : ValueOperator::EQUALS,
+            2 => $value === "" ? ValueOperator::NOT_EMPTY : ValueOperator::NOT_EQUALS,
             3 => ValueOperator::LESS_THAN,
             4 => ValueOperator::GREATER_THAN,
             5 => ValueOperator::LESS_THAN_OR_EQUALS,
@@ -1380,29 +1381,49 @@ class FormMigration extends AbstractPluginMigration
                     json_decode($question->fields['extra_data'], true)
                 );
                 $condition_handlers = $question_type->getConditionHandlers($config);
-                $condition_handler   = null;
 
                 // Get the value operator before trying to find a compatible handler
-                $value_operator = $this->getValueOperatorFromLegacy($raw_condition['show_condition']);
+                $value_operator = $this->getValueOperatorFromLegacy($raw_condition['show_condition'], $value);
 
-                if ($value_operator !== null) {
-                    $condition_handler = current(array_filter(
-                        $condition_handlers,
-                        function (ConditionHandlerInterface $handler) use ($value_operator) {
-                            if (!($handler instanceof ConditionHandlerDataConverterInterface)) {
-                                return false;
-                            }
-
-                            return in_array(
-                                $value_operator,
-                                $handler->getSupportedValueOperators()
-                            );
-                        }
-                    ));
+                // If the value operator is null, we skip this condition
+                if ($value_operator === null) {
+                    continue;
                 }
 
-                if ($condition_handler) {
-                    /** @var ConditionHandlerDataConverterInterface $condition_handler */
+                $condition_handler = current(array_filter(
+                    $condition_handlers,
+                    fn(ConditionHandlerInterface $handler) => in_array(
+                        $value_operator,
+                        $handler->getSupportedValueOperators()
+                    )
+                ));
+
+                // If no condition handler is found for the value operator, we skip this condition
+                if ($condition_handler === false) {
+                    /** @var Question|Comment|Section|FormDestination $item */
+                    $item = getItemForItemtype($target_item['itemtype']);
+                    if ($item !== false && $item->getFromDB($target_item['items_id']) !== false) {
+                        $form = $item->getForm();
+                    } else {
+                        $item = null;
+                        $form = null;
+                    }
+
+                    $this->result->addMessage(
+                        MessageType::Warning,
+                        sprintf(
+                            __('A visibility condition used in "%s" "%s" (Form "%s") with value operator "%s" is not supported by the question type. It will be ignored.'),
+                            $item->getTypeName(1) ?? $target_item['itemtype'],
+                            $item->getName() ?? $target_item['items_id'],
+                            $form->getName() ?? NOT_AVAILABLE,
+                            $value_operator->getLabel()
+                        )
+                    );
+                    continue;
+                }
+
+                // Convert the condition value if a data converter is available
+                if ($condition_handler instanceof ConditionHandlerDataConverterInterface) {
                     $value = $condition_handler->convertConditionValue($value);
                 }
             }
@@ -1416,7 +1437,7 @@ class FormMigration extends AbstractPluginMigration
                         'value'          => $value,
                         'item_type'      => 'question',
                         'item_uuid'      => $question->getUUID(),
-                        'value_operator' => $this->getValueOperatorFromLegacy($raw_condition['show_condition']),
+                        'value_operator' => $this->getValueOperatorFromLegacy($raw_condition['show_condition'], $value),
                         'logic_operator' => $this->getLogicOperatorFromLegacy($raw_condition['show_logic']),
                     ];
                 }
@@ -1429,7 +1450,7 @@ class FormMigration extends AbstractPluginMigration
                         'value'          => $value,
                         'item_type'      => 'question',
                         'item_uuid'      => $question->getUUID(),
-                        'value_operator' => $this->getValueOperatorFromLegacy($raw_condition['show_condition']),
+                        'value_operator' => $this->getValueOperatorFromLegacy($raw_condition['show_condition'], $value),
                         'logic_operator' => $this->getLogicOperatorFromLegacy($raw_condition['show_logic']),
                     ];
                 }
@@ -1595,57 +1616,20 @@ class FormMigration extends AbstractPluginMigration
                 fn(ValueOperator $operator): bool => $operator->canBeUsedForValidation()
             );
 
-            // Apply minimum range condition
-            if (is_numeric($raw_condition['range_min']) && !empty(array_intersect(
-                [ValueOperator::GREATER_THAN_OR_EQUALS->value, ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS->value],
-                array_map(fn($vp) => $vp->value, $supported_value_operators)
-            ))) {
-                $value_operator = current(array_intersect(
-                    [ValueOperator::GREATER_THAN_OR_EQUALS->value, ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS->value],
-                    array_map(fn($vp) => $vp->value, $supported_value_operators)
-                ));
-                $input['_validation_conditions'][] = [
-                    'item'           => sprintf('question-%s', $question->getUUID()),
-                    'value'          => $raw_condition['range_min'],
-                    'item_type'      => 'question',
-                    'item_uuid'      => $question->getUUID(),
-                    'value_operator' => $value_operator,
-                    'logic_operator' => LogicOperator::AND->value,
-                ];
-            }
-
-            // Apply maximum range condition
-            if (is_numeric($raw_condition['range_max']) && !empty(array_intersect(
-                [ValueOperator::LESS_THAN_OR_EQUALS->value, ValueOperator::LENGTH_LESS_THAN_OR_EQUALS->value],
-                array_map(fn($vp) => $vp->value, $supported_value_operators)
-            ))) {
-                $value_operator = current(array_intersect(
-                    [ValueOperator::LESS_THAN_OR_EQUALS->value, ValueOperator::LENGTH_LESS_THAN_OR_EQUALS->value],
-                    array_map(fn($vp) => $vp->value, $supported_value_operators)
-                ));
-                $input['_validation_conditions'][] = [
-                    'item'           => sprintf('question-%s', $question->getUUID()),
-                    'value'          => $raw_condition['range_max'],
-                    'item_type'      => 'question',
-                    'item_uuid'      => $question->getUUID(),
-                    'value_operator' => $value_operator,
-                    'logic_operator' => LogicOperator::AND->value,
-                ];
-            }
+            // Process range validations using helper method
+            $this->addRangeValidationConditions($input, $raw_condition, $question, $supported_value_operators);
 
             // Apply regex validation condition
             if (!empty($raw_condition['regex']) && in_array(
                 ValueOperator::MATCH_REGEX,
                 $supported_value_operators
             )) {
-                $input['_validation_conditions'][] = [
-                    'item'           => sprintf('question-%s', $question->getUUID()),
-                    'value'          => $raw_condition['regex'],
-                    'item_type'      => 'question',
-                    'item_uuid'      => $question->getUUID(),
-                    'value_operator' => ValueOperator::MATCH_REGEX->value,
-                    'logic_operator' => LogicOperator::AND->value,
-                ];
+                $this->addValidationCondition(
+                    $input,
+                    $question,
+                    ValueOperator::MATCH_REGEX->value,
+                    $raw_condition['regex']
+                );
             }
 
             if (isset($input['_validation_conditions'])) {
@@ -1659,6 +1643,85 @@ class FormMigration extends AbstractPluginMigration
             }
 
             $this->progress_indicator?->advance();
+        }
+    }
+
+    /**
+     * Add a single validation condition to the input array
+     *
+     * @param array $input The input array to modify
+     * @param Question $question The question object
+     * @param string $value_operator The value operator to use
+     * @param string $value The value for the condition
+     */
+    private function addValidationCondition(array &$input, Question $question, string $value_operator, string $value): void
+    {
+        $input['_validation_conditions'][] = [
+            'item'           => sprintf('question-%s', $question->getUUID()),
+            'value'          => $value,
+            'item_type'      => 'question',
+            'item_uuid'      => $question->getUUID(),
+            'value_operator' => $value_operator,
+            'logic_operator' => LogicOperator::AND->value,
+        ];
+    }
+
+    /**
+     * Add range validation conditions (min/max) with proper handling of FormCreator's default zero values
+     *
+     * @param array $input The input array to modify
+     * @param array $raw_condition The raw condition data from FormCreator
+     * @param Question $question The question object
+     * @param array $supported_value_operators List of supported value operators
+     */
+    private function addRangeValidationConditions(array &$input, array $raw_condition, Question $question, array $supported_value_operators): void
+    {
+        // Skip if both range_min and range_max are 0 since FormCreator used 0 as default values when no validation was intended
+        $range_min = $raw_condition['range_min'] ?? null;
+        $range_max = $raw_condition['range_max'] ?? null;
+
+        $has_valid_min = is_numeric($range_min) && $range_min > 0;
+        $has_valid_max = is_numeric($range_max) && $range_max > 0;
+        $has_zero_min = is_numeric($range_min) && $range_min == 0;
+        $has_zero_max = is_numeric($range_max) && $range_max == 0;
+
+        // Skip processing if both are zero (FormCreator defaults)
+        if ($has_zero_min && $has_zero_max) {
+            return;
+        }
+
+        // Skip range_max if range_min > range_max (invalid range)
+        if (is_numeric($range_min) && is_numeric($range_max) && $range_min > $range_max) {
+            // Keep only range_min, ignore range_max as it creates an invalid range
+            $range_max = null;
+            $has_valid_max = false;
+            $has_zero_max = false;
+        }
+
+        // Define operator mappings for min and max validations
+        $min_operators = [ValueOperator::GREATER_THAN_OR_EQUALS->value, ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS->value];
+        $max_operators = [ValueOperator::LESS_THAN_OR_EQUALS->value, ValueOperator::LENGTH_LESS_THAN_OR_EQUALS->value];
+
+        $supported_operator_values = array_map(fn($vp) => $vp->value, $supported_value_operators);
+
+        // Apply minimum range condition
+        // Allow range_min = 0 only if range_max > 0 (e.g., 0-12 is a valid range)
+        if (is_numeric($range_min) && ($has_valid_min || ($has_zero_min && $has_valid_max))) {
+            $matching_operators = array_intersect($min_operators, $supported_operator_values);
+            if ($matching_operators !== []) {
+                $value_operator = current($matching_operators);
+                $this->addValidationCondition($input, $question, $value_operator, $range_min);
+            }
+        }
+
+        // Apply maximum range condition
+        // Allow range_max = 0 only if range_min > 0 (unusual but possible)
+        if (is_numeric($range_max) && ($has_valid_max || ($has_zero_max && $has_valid_min))) {
+            $matching_operators = array_intersect($max_operators, $supported_operator_values);
+            if ($matching_operators !== []) {
+                $value_operator = current($matching_operators);
+                $this->addValidationCondition($input, $question, $value_operator, $range_max);
+            }
         }
     }
 

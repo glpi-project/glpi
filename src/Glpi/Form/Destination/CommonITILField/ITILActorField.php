@@ -388,11 +388,9 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
                 $item = getItemForItemtype($itemtype);
                 if ($item->getFromDB($item_id)) {
                     // Insert name instead of id and register requirement
-                    $items[$itemtype][$i] = $item->getName();
-                    $requirements[] = new DataRequirementSpecification(
-                        $itemtype,
-                        $item->getName(),
-                    );
+                    $requirement = DataRequirementSpecification::fromItem($item);
+                    $requirements[] = $requirement;
+                    $items[$itemtype][$i] = $requirement->name;
                 }
             }
         }

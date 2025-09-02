@@ -110,7 +110,7 @@ enum QuestionTypeCategory: string implements QuestionTypeCategoryInterface
             self::FILE => __("File"),
             self::RADIO => __("Radio"),
             self::CHECKBOX => __("Checkbox"),
-            self::DROPDOWN => _n('Dropdown', 'Dropdowns', 1),
+            self::DROPDOWN => _nx('form_editor', 'Dropdown', 'Dropdowns', 1),
             self::ITEM => _n('Item', 'Items', 1)
         };
     }

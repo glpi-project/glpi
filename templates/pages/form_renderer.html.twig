@@ -74,7 +74,6 @@
             </div>
 
             {% for section in form.getSections() %}
-                {# Is this the first section of a form ? #}
                 {% set is_first_section = loop.index0 == 0 %}
                 {% set section_index = loop.index0 %}
 
@@ -194,6 +193,17 @@
 
             {# Form reference #}
             <input type="hidden" name="forms_id" value="{{ form.fields.id }}">
+
+            <div class="d-flex justify-content-end mb-3" data-glpi-form-renderer-actions>
+                {# Altcha #}
+                {% if unauthenticated_user %}
+                    {{ include(
+                        'components/altcha/widget.html.twig',
+                        {},
+                        with_context: false
+                    ) }}
+                {% endif %}
+            </div>
 
             {# Actions #}
             <div class="d-flex justify-content-end" data-glpi-form-renderer-actions>

@@ -4181,7 +4181,7 @@ JAVASCRIPT
         } else {
             // $num is 0, so means configured to display nothing
             // or $num == $tot
-            $cpt = "<span class='primary-bg primary-fg count'>$tot</span>";
+            $cpt = "<span class='primary-bg primary-fg count'>" . htmlescape($tot) . "</span>";
         }
         return sprintf(__s('%1$s %2$s'), htmlescape($string), $cpt);
     }
@@ -5921,6 +5921,9 @@ JS);
                 break;
             case 'cable':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/cable.js';
+                break;
+            case 'altcha':
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/altcha.js';
                 break;
             default:
                 $found = false;

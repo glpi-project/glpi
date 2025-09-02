@@ -40,6 +40,7 @@ use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\ItemTranslation\ItemTranslation;
 use Override;
+use Session;
 
 final class FormTranslation extends ItemTranslation
 {
@@ -76,13 +77,18 @@ final class FormTranslation extends ItemTranslation
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if ($item instanceof Form) {
-            return self::createTabEntry(
-                self::getTypeName(),
-                countDistinctElementsInTable(
+            $count = 0;
+            if ($_SESSION['glpishow_count_on_tabs']) {
+                $count = countDistinctElementsInTable(
                     static::getTable(),
                     'language',
                     ['items_id' => $item->getID(), 'itemtype' => $item->getType()]
-                ),
+                );
+            }
+
+            return self::createTabEntry(
+                self::getTypeName(Session::getPluralNumber()),
+                $count,
             );
         } elseif ($item instanceof FormTranslation) {
             return self::createTabEntry($item->getName());

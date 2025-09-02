@@ -40,6 +40,7 @@ use Exception;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionHandler\ActorConditionHandler;
+use Glpi\Form\Condition\ConditionValueTransformerInterface;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
@@ -48,6 +49,7 @@ use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Group;
 use InvalidArgumentException;
+use LogicException;
 use Override;
 use Safe\Exceptions\JsonException;
 use Supplier;
@@ -59,7 +61,10 @@ use function Safe\json_encode;
 /**
  * "Actors" questions represent an input field for actors (requesters, ...)
  */
-abstract class AbstractQuestionTypeActors extends AbstractQuestionType implements FormQuestionDataConverterInterface, UsedAsCriteriaInterface
+abstract class AbstractQuestionTypeActors extends AbstractQuestionType implements
+    FormQuestionDataConverterInterface,
+    UsedAsCriteriaInterface,
+    ConditionValueTransformerInterface
 {
     /**
      * Retrieve the allowed actor types
@@ -461,6 +466,53 @@ TWIG;
     }
 
     #[Override]
+    public function transformConditionValueForComparisons(mixed $value, ?JsonFieldInterface $question_config): array
+    {
+        // Handle empty cases first
+        if (empty($value)) {
+            return [];
+        }
+
+        // If it's a JSON string (from database), decode it
+        if (is_string($value) && json_validate($value)) {
+            $value = json_decode($value, true);
+        } elseif (is_array($value)) {
+            $value = json_decode($this->formatDefaultValueForDB($value), true);
+        }
+
+        $config = $this->getDefaultValueConfig($value);
+        if (!($config instanceof QuestionTypeActorsDefaultValueConfig)) {
+            throw new LogicException(
+                'Expected QuestionTypeActorsDefaultValueConfig, got ' . get_class($config)
+            );
+        }
+
+        $actors = [];
+        foreach ($config->getUsersIds() as $user_id) {
+            $user = User::getById($user_id);
+            if ($user) {
+                $actors[] = $user->getName();
+            }
+        }
+
+        foreach ($config->getGroupsIds() as $group_id) {
+            $group = Group::getById($group_id);
+            if ($group) {
+                $actors[] = $group->getName();
+            }
+        }
+
+        foreach ($config->getSuppliersIds() as $supplier_id) {
+            $supplier = Supplier::getById($supplier_id);
+            if ($supplier) {
+                $actors[] = $supplier->getName();
+            }
+        }
+
+        return $actors;
+    }
+
+    #[Override]
     public function getCategory(): QuestionTypeCategory
     {
         return QuestionTypeCategory::ACTORS;
@@ -519,9 +571,9 @@ TWIG;
                     continue;
                 }
 
-                $name = $item->getName();
-                $default_value_config[$data_key][$i] = $name;
-                $requirements[] = new DataRequirementSpecification($itemtype, $name);
+                $requirement = DataRequirementSpecification::fromItem($item);
+                $requirements[] = $requirement;
+                $default_value_config[$data_key][$i] = $requirement->name;
             }
         }
 

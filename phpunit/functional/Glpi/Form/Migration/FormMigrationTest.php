@@ -1480,6 +1480,96 @@ final class FormMigrationTest extends DbTestCase
             ],
             'values' => '["First option","Second option","Third option"]',
         ];
+
+        yield 'QuestionTypeItem - Visible if' => [
+            'field_type' => 'glpiselect',
+            'itemtype'   => 'Computer',
+            'show_rule'  => 2,
+            'conditions' => [
+                [
+                    'show_condition' => 1,
+                    'show_value'     => '_test_pc01',
+                    'show_logic'     => 1,
+                ],
+            ],
+            'expected_visibility_strategy' => VisibilityStrategy::VISIBLE_IF,
+            'expected_conditions'          => [
+                [
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => getItemByTypeName('Computer', '_test_pc01', true),
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
+        ];
+
+        yield 'QuestionTypeItemDropdown - Visible if' => [
+            'field_type' => 'dropdown',
+            'itemtype'   => 'Location',
+            'show_rule'  => 2,
+            'conditions' => [
+                [
+                    'show_condition' => 1,
+                    'show_value'     => '_location01 > _sublocation01',
+                    'show_logic'     => 1,
+                ],
+            ],
+            'expected_visibility_strategy' => VisibilityStrategy::VISIBLE_IF,
+            'expected_conditions'          => [
+                [
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => getItemByTypeName('Location', '_sublocation01', true),
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
+        ];
+
+        yield 'QuestionTypeDropdown - Visible if with an invalid value operator' => [
+            'field_type' => 'select',
+            'show_rule'  => 2,
+            'conditions' => [
+                [
+                    'show_condition' => 56, // Invalid value operator, condition should be ignored
+                    'show_value'     => 'Test item',
+                    'show_logic'     => 1,
+                ],
+            ],
+            'expected_visibility_strategy' => VisibilityStrategy::ALWAYS_VISIBLE,
+            'expected_conditions'          => [],
+        ];
+
+        yield 'QuestionTypeDropdown - Visible if with a value operator not supported by the question type' => [
+            'field_type' => 'select',
+            'show_rule'  => 2,
+            'conditions' => [
+                [
+                    'show_condition' => 3, // Less than operator, not supported by item type
+                    'show_value'     => 'Test item',
+                    'show_logic'     => 1,
+                ],
+            ],
+            'expected_visibility_strategy' => VisibilityStrategy::ALWAYS_VISIBLE,
+            'expected_conditions'          => [],
+        ];
+
+        yield 'QuestionTypeShortText - Visible if value is not empty' => [
+            'field_type' => 'text',
+            'show_rule'  => 2,
+            'conditions' => [
+                [
+                    'show_condition' => 2,
+                    'show_value'     => '',
+                    'show_logic'     => 1,
+                ],
+            ],
+            'expected_visibility_strategy' => VisibilityStrategy::VISIBLE_IF,
+            'expected_conditions'          => [
+                [
+                    'value_operator' => ValueOperator::NOT_EMPTY,
+                    'value'          => '',
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
+        ];
     }
 
     #[DataProvider('provideFormMigrationVisibilityConditionsForQuestions')]
@@ -1489,7 +1579,8 @@ final class FormMigrationTest extends DbTestCase
         array $conditions,
         VisibilityStrategy $expected_visibility_strategy,
         array $expected_conditions = [],
-        ?string $values = null
+        ?string $values = null,
+        ?string $itemtype = null,
     ): void {
         global $DB;
 
@@ -1520,6 +1611,7 @@ final class FormMigrationTest extends DbTestCase
                 'plugin_formcreator_sections_id' => $section_id,
                 'fieldtype'                      => $field_type,
                 'values'                         => $values,
+                'itemtype'                       => $itemtype ?? '',
                 'row'                            => 0,
                 'col'                            => 0,
             ]
@@ -1743,7 +1835,116 @@ final class FormMigrationTest extends DbTestCase
                     'fieldname' => 'range',
                 ],
             ],
+            ValidationStrategy::VALID_IF,
+            [
+                [
+                    'value_operator' => ValueOperator::MATCH_REGEX,
+                    'value'          => '/^[A-Za-z0-9]+$/',
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
+        ];
+
+        // FormCreator used 0 as default values when no validation was intended
+        yield 'QuestionTypeShortText - Zero range_min should be ignored' => [
+            'text',
+            [
+                [
+                    'range_min' => '0',
+                    'range_max' => null,
+                    'fieldname' => 'range',
+                ],
+            ],
             ValidationStrategy::NO_VALIDATION,
+            [],
+        ];
+
+        yield 'QuestionTypeShortText - Zero range_max should be ignored' => [
+            'text',
+            [
+                [
+                    'range_min' => null,
+                    'range_max' => '0',
+                    'fieldname' => 'range',
+                ],
+            ],
+            ValidationStrategy::NO_VALIDATION,
+            [],
+        ];
+
+        yield 'QuestionTypeShortText - Both zero ranges should be ignored' => [
+            'text',
+            [
+                [
+                    'range_min' => '0',
+                    'range_max' => '0',
+                    'fieldname' => 'range',
+                ],
+            ],
+            ValidationStrategy::NO_VALIDATION,
+            [],
+        ];
+
+        yield 'QuestionTypeShortText - Valid range_min with zero range_max should only apply range_min' => [
+            'text',
+            [
+                [
+                    'range_min' => '5',
+                    'range_max' => '0',
+                    'fieldname' => 'range',
+                ],
+            ],
+            ValidationStrategy::VALID_IF,
+            [
+                [
+                    'value_operator' => ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS,
+                    'value'          => '5',
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
+        ];
+
+        yield 'QuestionTypeShortText - Zero range_min with valid range_max should apply both conditions' => [
+            'text',
+            [
+                [
+                    'range_min' => '0',
+                    'range_max' => '50',
+                    'fieldname' => 'range',
+                ],
+            ],
+            ValidationStrategy::VALID_IF,
+            [
+                [
+                    'value_operator' => ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS,
+                    'value'          => '0',
+                    'logic_operator' => LogicOperator::AND,
+                ],
+                [
+                    'value_operator' => ValueOperator::LENGTH_LESS_THAN_OR_EQUALS,
+                    'value'          => '50',
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
+        ];
+
+        yield 'QuestionTypeShortText - Invalid range 50-10 should only apply range_min' => [
+            'text',
+            [
+                [
+                    'range_min' => '50',
+                    'range_max' => '10',
+                    'fieldname' => 'range',
+                ],
+            ],
+            ValidationStrategy::VALID_IF,
+            [
+                [
+                    'value_operator' => ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS,
+                    'value'          => '50',
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
         ];
     }
 
@@ -2334,7 +2535,7 @@ final class FormMigrationTest extends DbTestCase
                 'itemtype'                       => 'ITILCategory',
                 'values'                         => json_encode([
                     'show_ticket_categories' => 'request',
-                    'show_tree_depth'        => '0',
+                    'show_tree_depth'        => '-1', // All levels
                     'show_tree_root'         => $itilcategory->getId(),
                     'selectable_tree_root'   => '0',
                     'entity_restrict'        => '3', // Entity restriction
@@ -2795,5 +2996,85 @@ final class FormMigrationTest extends DbTestCase
                 "Entity {$c['completename']} has incorrect show_tickets_properties_on_helpdesk value"
             );
         }
+    }
+
+    public function testFormMigrationQuestionWithUnsupportedValueOperator(): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        // Arrange: insert a form with a question that has an unsupported value operator
+        $DB->insert('glpi_plugin_formcreator_forms', [
+            'name' => 'Form with unsupported value operator',
+        ]);
+        $formId = $DB->insertId();
+
+        $DB->insert('glpi_plugin_formcreator_sections', [
+            'plugin_formcreator_forms_id' => $formId,
+        ]);
+        $sectionId = $DB->insertId();
+
+        // Insert target question
+        $DB->insert('glpi_plugin_formcreator_questions', [
+            'name' => 'Target question with unsupported value operator',
+            'fieldtype' => 'select',
+            'plugin_formcreator_sections_id' => $sectionId,
+        ]);
+        $targetQuestionId = $DB->insertId();
+
+        // Insert source question
+        $DB->insert('glpi_plugin_formcreator_questions', [
+            'name' => 'Source question with unsupported value operator',
+            'fieldtype' => 'text',
+            'plugin_formcreator_sections_id' => $sectionId,
+            'show_rule' => 2, // Visible if condition is met
+        ]);
+        $sourceQuestionId = $DB->insertId();
+
+        // Insert a condition with a supported value operator
+        $DB->insert('glpi_plugin_formcreator_conditions', [
+            'itemtype' => 'PluginFormcreatorQuestion',
+            'items_id' => $sourceQuestionId,
+            'plugin_formcreator_questions_id' => $targetQuestionId,
+            'show_condition' => 1, // Equals condition
+            'show_value' => 'Test',
+            'show_logic' => 1, // AND logic
+        ]);
+
+        // Insert a condition with an unsupported value operator
+        $DB->insert('glpi_plugin_formcreator_conditions', [
+            'itemtype' => 'PluginFormcreatorQuestion',
+            'items_id' => $sourceQuestionId,
+            'plugin_formcreator_questions_id' => $targetQuestionId,
+            'show_condition' => 4, // Greater than condition (unsupported)
+            'show_value' => 'Test',
+            'show_logic' => 1, // AND logic
+        ]);
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $result = $migration->execute();
+
+        // Assert: make sure the migration was completed
+        $this->assertTrue($result->isFullyProcessed());
+
+        // Assert: verify that the source question has been migrated correctly without the unsupported condition
+        /** @var Question $sourceQuestion */
+        $sourceQuestion = getItemByTypeName(Question::class, 'Source question with unsupported value operator');
+        $this->assertNotFalse($sourceQuestion);
+        $this->assertCount(1, $sourceQuestion->getConfiguredConditionsData());
+
+        // Assert: verify a warning message was added for the unsupported value operator
+        $warnings = array_filter(
+            $result->getMessages(),
+            fn($m) => $m['type'] == MessageType::Warning
+        );
+        $warnings = array_column($warnings, "message");
+        $this->assertContains(
+            'A visibility condition used in "Question" "Source question with unsupported value operator" (Form "Form with unsupported value operator") with value operator "Is greater than" is not supported by the question type. It will be ignored.',
+            $warnings,
+        );
     }
 }

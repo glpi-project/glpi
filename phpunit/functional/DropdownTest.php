@@ -1969,7 +1969,7 @@ HTML;
      *
      * @return Generator
      */
-    public static function testDropdownNumberProvider(): Generator
+    public static function dropdownNumberProvider(): Generator
     {
         yield [
             'params' => [
@@ -2045,7 +2045,7 @@ HTML;
      *
      * @return void
      */
-    #[DataProvider('testDropdownNumberProvider')]
+    #[DataProvider('dropdownNumberProvider')]
     public function testDropdownNumber(array $params, array $expected): void
     {
         $params['display'] = false;

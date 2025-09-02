@@ -55,7 +55,7 @@ final class FormDestinationTest extends DbTestCase
         $form = $this->createAndGetFormWithFourDestinations();
 
         // 5 because 4 specific + 1 mandatory destination
-        $this->checkGetTabNameForItem($form, "Items to create 5");
+        $this->checkGetTabNameForItem($form, "Destinations 5");
     }
 
     public function testGetTabNameForFormWithDestinationsWithoutCount()
@@ -65,7 +65,7 @@ final class FormDestinationTest extends DbTestCase
         $_SESSION['glpishow_count_on_tabs'] = false;
         $form = $this->createAndGetFormWithFourDestinations();
 
-        $this->checkGetTabNameForItem($form, "Items to create");
+        $this->checkGetTabNameForItem($form, "Destinations");
     }
 
     private function checkGetTabNameForItem(

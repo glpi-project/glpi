@@ -44,7 +44,7 @@ describe('Content configuration', () => {
         cy.checkAndCloseAlert('Item successfully updated');
 
         // Go to destination tab
-        cy.findByRole('tab', { 'name': "Items to create 1" }).click();
+        cy.findByRole('tab', { 'name': "Destinations 1" }).click();
     });
 
     // Configuration test is already covered by the forms tags tests, no need to redo it here

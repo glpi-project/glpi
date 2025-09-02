@@ -297,8 +297,6 @@ abstract class CommonDBVisible extends CommonDBTM
             }
         }
 
-        echo "</table>";
-
         $massiveactionparams = [
             'num_displayed' => count($entries),
             'container' => 'mass' . static::class . $rand,

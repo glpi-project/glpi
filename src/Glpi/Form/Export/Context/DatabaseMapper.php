@@ -36,6 +36,7 @@
 namespace Glpi\Form\Export\Context;
 
 use CommonDBTM;
+use CommonTreeDropdown;
 use Glpi\Form\Comment;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Question;
@@ -161,9 +162,12 @@ final class DatabaseMapper
         $query = [
             'FROM' => $item::getTable(),
         ];
-        $condition = [
-            'name' => $name,
-        ];
+
+        if ($item instanceof CommonTreeDropdown) {
+            $condition = ['completename' => $name];
+        } else {
+            $condition = ['name' => $name];
+        }
 
         // Check entities
         if ($item->isEntityAssign()) {

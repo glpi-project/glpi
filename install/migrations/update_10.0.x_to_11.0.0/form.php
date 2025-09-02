@@ -263,11 +263,19 @@ if (!$DB->tableExists('glpi_helpdesks_tiles_glpipagetiles')) {
         "CREATE TABLE `glpi_helpdesks_tiles_glpipagetiles` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `title` varchar(255) DEFAULT NULL,
-            `description` varchar(255) DEFAULT NULL,
+            `description` text DEFAULT null,
             `illustration` varchar(255) DEFAULT NULL,
             `page` varchar(255) DEFAULT NULL,
             PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
+    );
+} else {
+    // Fix a bad type, description was created as varchar(255) when it should have been a text field.
+    $migration->changeField(
+        'glpi_helpdesks_tiles_glpipagetiles',
+        'description',
+        'description',
+        'text',
     );
 }
 if (!$DB->tableExists('glpi_helpdesks_tiles_externalpagetiles')) {
@@ -275,11 +283,19 @@ if (!$DB->tableExists('glpi_helpdesks_tiles_externalpagetiles')) {
         "CREATE TABLE `glpi_helpdesks_tiles_externalpagetiles` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `title` varchar(255) DEFAULT NULL,
-            `description` varchar(255) DEFAULT NULL,
+            `description` text DEFAULT null,
             `illustration` varchar(255) DEFAULT NULL,
             `url` text DEFAULT NULL,
             PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
+    );
+} else {
+    // Fix a bad type, description was created as varchar(255) when it should have been a text field.
+    $migration->changeField(
+        'glpi_helpdesks_tiles_externalpagetiles',
+        'description',
+        'description',
+        'text',
     );
 }
 
@@ -317,7 +333,7 @@ foreach ($fields as $field) {
     }
 }
 
-$fields = ['enable_helpdesk_home_search_bar', 'enable_helpdesk_service_catalog'];
+$fields = ['enable_helpdesk_home_search_bar', 'enable_helpdesk_service_catalog', 'expand_service_catalog'];
 foreach ($fields as $field) {
     if (!$DB->fieldExists("glpi_entities", $field)) {
         $migration->addField(

@@ -1854,7 +1854,7 @@ class DBmysql
     }
 
     /**
-     * Returns list of timezones.
+     * Returns list of available timezones.
      *
      * @return string[]
      *
@@ -1862,24 +1862,36 @@ class DBmysql
      */
     public function getTimezones()
     {
-        if (!$this->use_timezones) {
-            return [];
+        $list = [];
+
+        $timezones = DateTimeZone::listIdentifiers();
+        $results_queries = [];
+        foreach ($timezones as $index => $timezone) {
+            $results_queries[] =  new QuerySubQuery([
+                'SELECT' => ['name', 'value'],
+                'FROM' => new QueryExpression(
+                    sprintf(
+                        '(SELECT %1$s as %2$s, CONVERT_TZ(%3$s, %4$s, %5$s) as %6$s) as %7$s',
+                        self::quoteValue($timezone),
+                        self::quoteName('name'),
+                        self::quoteValue('2000-01-01 00:00:00'),
+                        self::quoteValue('GMT'),
+                        self::quoteValue($timezone),
+                        self::quoteName('value'),
+                        self::quoteName(sprintf('timezone_%d', $index)),
+                    )
+                ),
+                'WHERE' => [
+                    ['NOT' => ['value' => null]],
+                ],
+            ]);
         }
 
-        $list = []; //default $tz is empty
-
-        $from_php = DateTimeZone::listIdentifiers();
-        $now = new DateTime();
-
-        $iterator = $this->request([
-            'SELECT' => 'Name',
-            'FROM'   => 'mysql.time_zone_name',
-            'WHERE'  => ['Name' => $from_php],
-        ]);
-
-        foreach ($iterator as $from_mysql) {
-            $now->setTimezone(new DateTimeZone($from_mysql['Name']));
-            $list[$from_mysql['Name']] = $from_mysql['Name'] . $now->format(" (T P)");
+        $iterator = $this->request(['FROM' => new QueryUnion($results_queries)]);
+        foreach ($iterator as $row) {
+            $now = new DateTime();
+            $now->setTimezone(new DateTimeZone($row['name']));
+            $list[$row['name']] = $row['name'] . $now->format(" (T P)");
         }
 
         return $list;

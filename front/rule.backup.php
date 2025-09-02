@@ -86,13 +86,11 @@ switch ($action) {
         echo "<a href='" . htmlescape($itemtype::getSearchURL()) . "'>" . __s('Back') . "</a>";
         echo "</div>";
         Html::redirect("rule.backup.php?action=export&itemtype=" . urlencode($_REQUEST['itemtype']));
-        // phpcs doesn't understand that the script stops in Html::redirect() so we need a comment to avoid the fallthrough warning
         // no break
     case "process_import":
         $rulecollection->checkGlobal(UPDATE);
         RuleCollection::processImportRules();
         Html::back();
-        // phpcs doesn't understand that the script stops in Html::redirect() so we need a comment to avoid the fallthrough warning
 }
 if ($action !== "export") {
     Html::footer();

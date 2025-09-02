@@ -180,6 +180,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             'contracts_strategy_default', 'contracts_id_default', 'show_tickets_properties_on_helpdesk',
             'custom_helpdesk_home_scene_left', 'custom_helpdesk_home_scene_right',
             'custom_helpdesk_home_title', 'enable_helpdesk_home_search_bar', 'enable_helpdesk_service_catalog',
+            'expand_service_catalog',
         ],
         // Configuration
         'config' => ['enable_custom_css', 'custom_css_code'],
@@ -3014,7 +3015,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
         // Construct HTML with special chars encoded.
         if ($title === null) {
-            $title = htmlescape(implode(' > ', $names));
+            $title = implode(' > ', $names);
         }
         $breadcrumbs = implode(
             '<i class="ti ti-caret-right-filled mx-1"></i>',
@@ -3024,7 +3025,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             )
         );
 
-        return '<span class="glpi-badge" title="' . $title . '">' . $breadcrumbs . "</span>";
+        return '<span class="glpi-badge" title="' . htmlescape($title) . '">' . $breadcrumbs . "</span>";
     }
 
     /**
@@ -3335,6 +3336,21 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         if ($value == self::CONFIG_PARENT) {
             $value = self::getUsedConfig(
                 'enable_helpdesk_service_catalog',
+                $this->fields['entities_id']
+            );
+        }
+
+        return $value === 1;
+    }
+
+    public function shouldExpandCategoriesInServiceCatalog(): bool
+    {
+        $value = $this->fields['expand_service_catalog'] ?? '';
+
+        // Load from parent if needed
+        if ($value == self::CONFIG_PARENT) {
+            $value = self::getUsedConfig(
+                'expand_service_catalog',
                 $this->fields['entities_id']
             );
         }

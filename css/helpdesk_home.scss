@@ -89,6 +89,10 @@ header {
 
     h1 {
         font-size:3.7rem;
+
+        // The default `--tblr-line-height-h1` line height does not play well
+        // with the font size we apply here, it is better to remove it.
+        line-height: unset !important;
     }
 
     .search-bar-container {
@@ -118,6 +122,14 @@ header {
         bottom: 0;
         width: 555px;
         height:90%;
+        display: flex;
+        flex-direction: row;
+        align-items: flex-end;
+        z-index: 0;
+
+        svg {
+            height: 393px;
+        }
 
         // Hide for screens smaller than 1600px
         @media (max-width: 1600px) {
@@ -131,6 +143,13 @@ header {
 
     .scene-right {
         right: 0;
+    }
+
+    h1 {
+        // Make sure the title is always diplayed above the illustrations in case
+        // of overlap.
+        z-index: 1;
+        position: relative;
     }
 }
 

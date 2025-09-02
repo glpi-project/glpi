@@ -2194,7 +2194,7 @@ class UserTest extends \DbTestCase
         $this->assertNotContains($profiles_id, Profile_User::getUserProfiles($user->getID()));
     }
 
-    public static function testGetFriendlyNameFieldsProvider()
+    public static function getFriendlyNameFieldsProvider()
     {
         return [
             [
@@ -2264,7 +2264,7 @@ class UserTest extends \DbTestCase
         ];
     }
 
-    #[DataProvider('testGetFriendlyNameFieldsProvider')]
+    #[DataProvider('getFriendlyNameFieldsProvider')]
     public function testGetFriendlyNameFields(
         array $input,
         int $names_format,

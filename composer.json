@@ -31,6 +31,7 @@
         "ext-simplexml": "*",
         "ext-tokenizer": "*",
         "ext-zlib": "*",
+        "altcha-org/altcha": "^1.1",
         "apereo/phpcas": "^1.6",
         "bacon/bacon-qr-code": "^3.0",
         "donatj/phpuseragentparser": "^1.10",
@@ -54,7 +55,7 @@
         "monolog/monolog": "^3.9",
         "paragonie/sodium_compat": "^2.1",
         "phpdocumentor/reflection-docblock": "^5.6",
-        "phpoffice/phpspreadsheet": "^4.5",
+        "phpoffice/phpspreadsheet": "^5.0",
         "psr/cache": "^3.0",
         "psr/container": "^1.1",
         "psr/log": "^3.0",
@@ -109,7 +110,7 @@
         "friendsofphp/php-cs-fixer": "^3.86",
         "friendsoftwig/twigcs": "^6.5",
         "glpi-project/phpstan-glpi": "^1.1",
-        "glpi-project/tools": "^0.7",
+        "glpi-project/tools": "^0.8.0",
         "mikey179/vfsstream": "^1.6",
         "php-parallel-lint/php-parallel-lint": "^1.4",
         "phpstan/phpstan": "^2.1",
@@ -199,8 +200,7 @@
             "patch -f -p1 -d vendor/apereo/phpcas/ < tools/patches/apereo-phpcas-php8.4-compat.patch || true",
             "patch -f -p1 -d vendor/guzzlehttp/guzzle/ < tools/patches/guzzlehttp-guzzle-restrict-http-methods.patch || true",
             "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-laminas-mail-address-no-length-check.patch || true",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-laminas-mail-invalid-header-ignore.patch || true",
-            "patch -f -p1 -d vendor/wapmorgan/unified-archive/ < tools/patches/wapmorgan-unified-archive-php-8.4-compat.patch || true"
+            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-laminas-mail-invalid-header-ignore.patch || true"
         ]
     }
 }

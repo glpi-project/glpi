@@ -49,24 +49,32 @@
             <table class="table table-card mb-0">
                 <thead>
                     <tr>
-                        <th class="w-25 px-4">{{ __("Original value") }}</th>
-                        <th class="w-75 px-4">{{ __("Replacement value") }}</th>
+                        <th class="w-30 px-4">{{ __("Itemtype") }}</th>
+                        <th class="w-20 px-4">{{ __("Original value") }}</th>
+                        <th class="w-50 px-4">{{ __("Replacement value") }}</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {% set existing_replacements = replacements|length %}
                     {% for issue in issues %}
                         {% set original_name = issue.default_name ?? issue.name %}
-
+                        {% set replacement_index = loop.index0 + existing_replacements %}
                         <tr>
+                            <td class="px-4 align-middle">
+                                <div class="d-flex align-items-center">
+                                    <i class="me-2 {{ issue.itemtype|itemtype_icon }}"></i>
+                                    <span>{{ issue.itemtype|itemtype_name }}</span>
+                                </div>
+                            </td>
                             <td class="px-4 align-middle">
                                 <span>{{ original_name }}</span>
                             </td>
                             <td class="px-4">
-                                <input type="hidden" name="replacements[{{ loop.index0 }}][itemtype]" value="{{ issue.itemtype }}"/>
-                                <input type="hidden" name="replacements[{{ loop.index0 }}][original_name]" value="{{ original_name }}"/>
+                                <input type="hidden" name="replacements[{{ replacement_index }}][itemtype]" value="{{ issue.itemtype }}"/>
+                                <input type="hidden" name="replacements[{{ replacement_index }}][original_name]" value="{{ original_name }}"/>
                                 {{ fields.dropdownField(
                                     issue.itemtype,
-                                    'replacements[' ~ loop.index0 ~ '][replacement_id]',
+                                    'replacements[' ~ replacement_index ~ '][replacement_id]',
                                     issue.replacement_id|default(''),
                                     '',
                                     {

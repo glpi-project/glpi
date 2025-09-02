@@ -41,6 +41,11 @@ use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
 
 final class NumberConditionHandlerTest extends AbstractConditionHandler
 {
+    public static function getConditionHandler(): ConditionHandlerInterface
+    {
+        return new NumberConditionHandler();
+    }
+
     #[Override]
     public static function conditionHandlerProvider(): iterable
     {

@@ -653,6 +653,7 @@ The present file will list all changes made to the project; according to the
 ### Added
 
 ### Changed
+- Assign contract Ticket rule action now works with update rules.
 
 ### Deprecated
 

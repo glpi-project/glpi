@@ -688,7 +688,8 @@ class Config extends CommonDBTM
             'config' => $data,
             'palettes' => array_combine(array_keys($palettes), array_column($palettes, 'name')),
             'palettes_isdark' => array_combine(array_keys($palettes), array_column($palettes, 'dark')),
-            'timezones' => $DB->use_timezones ? $DB->getTimezones() : null,
+            'use_timezones' => $DB->use_timezones,
+            'timezones' => $DB->use_timezones ? $DB->getTimezones() : [],
             'central_tabs' => $central_tabs,
         ]);
     }
@@ -1074,11 +1075,11 @@ class Config extends CommonDBTM
         if (isCommandLine()) {
             echo $message . "\n";
         } else {
-            $img = "<img src='" . $CFG_GLPI['root_doc'] . "/pics/";
+            $img = "<img src='" . htmlescape($CFG_GLPI['root_doc']) . "/pics/";
             $img .= ($error > 0 ? "ko_min" : "ok_min") . ".png' alt='" . htmlescape($message) . "' title='" . htmlescape($message) . "'/>";
 
             if ($fordebug) {
-                echo $img . $message . "\n";
+                echo $img . htmlescape($message) . "\n";
             } else {
                 $html = "<td";
                 if ($error > 0) {

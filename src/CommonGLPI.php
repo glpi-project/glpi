@@ -659,7 +659,7 @@ class CommonGLPI implements CommonGLPIInterface
                 if (count($ong)) {
                     foreach ($ong as $key => $val) {
                         if ($key != 'empty') {
-                            echo "<div class='alltab'>" . $val . "</div>";
+                            echo "<div class='alltab'>" . $val . "</div>"; // $val is expected to be a safe HTML string
                             self::displayStandardTab($item, $key, $withtemplate, $options);
                         }
                     }
@@ -1391,7 +1391,7 @@ class CommonGLPI implements CommonGLPIInterface
                 };
                 ");
                 $ret .= "<label for='dropdown_knowbaseitems_id$rand'>"
-                    . KnowbaseItem::getTypeName() . "</label>&nbsp;";
+                    . htmlescape(KnowbaseItem::getTypeName()) . "</label>&nbsp;";
                 $ret .= KnowbaseItem::dropdown([
                     'value'     => reset($found_kbitem)['id'],
                     'display'   => false,

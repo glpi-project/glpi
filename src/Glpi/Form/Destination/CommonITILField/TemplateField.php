@@ -207,9 +207,8 @@ final class TemplateField extends AbstractConfigField implements DestinationFiel
         }
 
         // Insert template name and requirement
-        $name = $template->getName();
-        $config[TemplateFieldConfig::TEMPLATE_ID] = $name;
-        $requirement = new DataRequirementSpecification($template_type, $name);
+        $requirement = DataRequirementSpecification::fromItem($template);
+        $config[TemplateFieldConfig::TEMPLATE_ID] = $requirement->name;
 
         return new DynamicExportDataField($config, [$requirement]);
     }

@@ -42,7 +42,6 @@ use Glpi\Features\TreeBrowseInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
 use Glpi\RichText\RichText;
-use Glpi\UI\IllustrationManager;
 
 use function Safe\preg_match;
 use function Safe\preg_replace;
@@ -1511,14 +1510,14 @@ TWIG, $twig_params);
                 if ($output_type === Search::HTML_OUTPUT) {
                     $toadd = '';
                     if (isset($options['item_itemtype'], $options['item_items_id'])) {
-                        $href  = " href='#' data-bs-toggle='modal' data-bs-target='#kbshow{$data['id']}'";
+                        $href  = " href='#' data-bs-toggle='modal' data-bs-target='#kbshow" . htmlescape($data['id']) . "'";
                         $toadd = Ajax::createIframeModalWindow(
                             'kbshow' . $data["id"],
                             self::getFormURLWithID($data["id"]),
                             ['display' => false]
                         );
                     } else {
-                        $href = " href=\"" . self::getFormURLWithID($data["id"]) . "\" ";
+                        $href = " href=\"" . htmlescape(self::getFormURLWithID($data["id"])) . "\" ";
                     }
 
                     $icon_class = "";
@@ -1572,8 +1571,8 @@ TWIG, $twig_params);
                         $cathref = self::getSearchURL() . "?knowbaseitemcategories_id="
                             . $knowbaseitemcategories_id . '&amp;forcetab=Knowbase$2';
                         $categories_names[] = "<a class='kb-category'"
-                            . " href='$cathref'"
-                            . " data-category-id='" . $knowbaseitemcategories_id . "'"
+                            . " href='" . htmlescape($cathref) . "'"
+                            . " data-category-id='" . htmlescape($knowbaseitemcategories_id) . "'"
                             . ">" . htmlescape($fullcategoryname) . '</a>';
                     } else {
                         $categories_names[] = htmlescape($fullcategoryname);
@@ -1605,7 +1604,7 @@ TWIG, $twig_params);
                 }
 
                 if (isset($options['item_itemtype'], $options['item_items_id']) && ($output_type === Search::HTML_OUTPUT)) {
-                    $content = "<button type='button' class='btn btn-link use_solution' data-solution-id='" . $data['id'] . "'>"
+                    $content = "<button type='button' class='btn btn-link use_solution' data-solution-id='" . htmlescape($data['id']) . "'>"
                         . __s('Use as a solution') . "</button>";
                     echo Search::showItem($output_type, $content, $item_num, $row_num);
                 }
@@ -2237,13 +2236,17 @@ TWIG, $twig_params);
     #[Override]
     public function getServiceCatalogItemDescription(): string
     {
-        return $this->fields['description'] ?? "";
+        // Fallback to answer when using the home page search results as the
+        // service catalog data may not be specified in this case.
+        return $this->fields['description'] ?? $this->fields['answer'] ?? "";
     }
 
     #[Override]
     public function getServiceCatalogItemIllustration(): string
     {
-        return $this->fields['illustration'] ?: IllustrationManager::DEFAULT_ILLUSTRATION;
+        // Fallback to a specific icon when using the home page search results
+        // as the service catalog data may not be specified in this case.
+        return $this->fields['illustration'] ?: "browse-kb";
     }
 
     #[Override]

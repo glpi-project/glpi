@@ -35,6 +35,7 @@
 namespace Glpi\Form\ServiceCatalog\Provider;
 
 use Glpi\Form\ServiceCatalog\ItemRequest;
+use Glpi\Form\ServiceCatalog\ItemRequestContext;
 use Glpi\FuzzyMatcher\FuzzyMatcher;
 use Glpi\FuzzyMatcher\PartialMatchStrategy;
 use KnowbaseItem;
@@ -57,10 +58,18 @@ final class KnowbaseItemProvider implements LeafProviderInterface
         $filter = $item_request->getFilter();
 
         $knowbase_items = [];
-        $raw_knowbase_items = (new KnowbaseItem())->find([
-            'forms_categories_id'     => $category_id ?? 0,
-            'show_in_service_catalog' => true,
-        ], ['name']);
+
+        $criteria = [];
+        if ($category_id !== null) {
+            $criteria['forms_categories_id'] = $category_id;
+        }
+
+        // On the home page we want to search for all KB items even if they are
+        // not enabled for the service catalog itself.
+        if ($item_request->getContext() !== ItemRequestContext::HOME_PAGE_SEARCH) {
+            $criteria['show_in_service_catalog'] = true;
+        }
+        $raw_knowbase_items = (new KnowbaseItem())->find($criteria, ['name']);
 
         foreach ($raw_knowbase_items as $raw_knowbase_item) {
             $knowbase_item = new KnowbaseItem();
@@ -69,11 +78,11 @@ final class KnowbaseItemProvider implements LeafProviderInterface
 
             // Fuzzy matching
             $name        = $knowbase_item->fields['name'] ?? "";
-            $content     = $knowbase_item->fields['content'] ?? "";
+            $answer      = $knowbase_item->fields['answer'] ?? "";
             $description = $knowbase_item->fields['description'] ?? "";
             if (
                 !$this->matcher->match($name, $filter)
-                && !$this->matcher->match($content, $filter)
+                && !$this->matcher->match($answer, $filter)
                 && !$this->matcher->match($description, $filter)
             ) {
                 continue;
@@ -91,5 +100,17 @@ final class KnowbaseItemProvider implements LeafProviderInterface
         }
 
         return $knowbase_items;
+    }
+
+    #[Override]
+    public function getItemsLabel(): string
+    {
+        return __("FAQ articles");
+    }
+
+    #[Override]
+    public function getWeight(): int
+    {
+        return 20;
     }
 }

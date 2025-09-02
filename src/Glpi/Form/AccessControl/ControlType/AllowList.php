@@ -227,12 +227,9 @@ final class AllowList implements ControlTypeInterface
                 }
 
                 // Replace id with name and add a requirement
-                $name = $item->getName();
-                $data[$data_key][$i] = $name;
-                $requirements[] = new DataRequirementSpecification(
-                    $itemtype,
-                    $name
-                );
+                $requirement = DataRequirementSpecification::fromItem($item);
+                $requirements[] = $requirement;
+                $data[$data_key][$i] = $requirement->name;
             }
         }
 

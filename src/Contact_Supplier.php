@@ -149,7 +149,7 @@ class Contact_Supplier extends CommonDBRelation
                 if (!preg_match("?https*://?", $website)) {
                     $website = "http://" . $website;
                 }
-                $website = "<a target=_blank href='$website'>" . htmlescape($data["website"]) . "</a>";
+                $website = "<a target=_blank href='" . htmlescape($website) . "'>" . htmlescape($data["website"]) . "</a>";
             }
             $supplier->getFromDB($data["id"]);
             if (!isset($suppliertype_cache[$data["suppliertypes_id"]])) {

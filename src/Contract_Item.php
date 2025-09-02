@@ -101,7 +101,7 @@ class Contract_Item extends CommonDBRelation
                     if (isset($options['comments']) && $options['comments']) {
                         $comments = Dropdown::getDropdownComments($table, $value);
                         return sprintf(
-                            __('%1$s %2$s'),
+                            __s('%1$s %2$s'),
                             htmlescape($name),
                             Html::showToolTip($comments, ['display' => false])
                         );
@@ -286,21 +286,25 @@ class Contract_Item extends CommonDBRelation
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 {% import 'components/form/fields_macros.html.twig' as fields %}
+                {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
                 <div class="mb-3">
                     <form method="post" action="{{ 'Contract_Item'|itemtype_form_path }}">
                         <input type="hidden" name="itemtype" value="{{ get_class(item) }}">
                         <input type="hidden" name="items_id" value="{{ item.getID() }}">
                         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                         <div class="d-flex">
+                            <div class="col-auto">
                             {{ fields.dropdownField('Contract', 'contracts_id', 0, null, {
+                                add_field_class: 'd-inline',
+                                no_label: true,
                                 entity: item.fields['entities_id'],
                                 used: used,
-                                expired: false,
+                                expired: false
                             }) }}
-                            {% set btn %}
-                                <button type="submit" name="add" class="btn btn-primary">{{ btn_label }}</button>
-                            {% endset %}
-                            {{ fields.htmlField('', btn, null) }}
+                            </div>
+                            <div class="col-auto">
+                            {{ inputs.submit('add', _x('button', 'Add'), 1, {'class': 'btn btn-primary ms-1', 'icon': 'ti ti-link'}) }}
+                           </div>
                         </div>
                     </form>
                 </div>

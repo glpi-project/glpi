@@ -39,7 +39,10 @@ use Contract;
 use DbTestCase;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Controller\ServiceCatalog\IndexController;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Form\Category;
+use Glpi\Form\Form;
 use Glpi\Helpdesk\HomePageTabs;
 use ITILFollowup;
 use ITILSolution;
@@ -49,6 +52,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Profile_User;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpFoundation\Request;
 use Ticket;
 use Ticket_Contract;
 use Ticket_User;
@@ -801,7 +805,7 @@ class EntityTest extends DbTestCase
         $this->assertSame($expected, $entity->getCustomCssTag());
     }
 
-    public static function testAnonymizeSettingProvider(): array
+    public static function anonymizeSettingProvider(): array
     {
         return [
             [
@@ -871,7 +875,7 @@ class EntityTest extends DbTestCase
         ];
     }
 
-    #[DataProvider('testAnonymizeSettingProvider')]
+    #[DataProvider('anonymizeSettingProvider')]
     public function testAnonymizeSetting(
         string $interface,
         int $setting,
@@ -1888,6 +1892,108 @@ class EntityTest extends DbTestCase
         $this->assertCount(
             $should_be_enabled ? 1 : 0,
             $search_bar
+        );
+    }
+
+    public static function helpdeskExpandCategoriesConfigIsAppliedProvider(): iterable
+    {
+        yield 'One entity without config' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => -2],
+            ],
+            'entity' => 'entity_a',
+            'should_be_expanded' => true, // Inherit from root
+        ];
+
+        yield 'Inherit enabled from parent' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 1],
+                ['name' => 'entity_aa', 'parent' => 'entity_a', 'config' => -2],
+            ],
+            'entity' => 'entity_aa',
+            'should_be_expanded' => true,
+        ];
+
+        yield 'Inherit disabled from parent' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 0],
+                ['name' => 'entity_aa', 'parent' => 'entity_a', 'config' => -2],
+            ],
+            'entity' => 'entity_aa',
+            'should_be_expanded' => false,
+        ];
+
+        yield 'Enabled from child' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 0],
+                ['name' => 'entity_aa', 'parent' => 'entity_a', 'config' => 1],
+            ],
+            'entity' => 'entity_aa',
+            'should_be_expanded' => true,
+        ];
+
+        yield 'Disabled from child' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 1],
+                ['name' => 'entity_aa', 'parent' => 'entity_a', 'config' => 0],
+            ],
+            'entity' => 'entity_aa',
+            'should_be_expanded' => false,
+        ];
+    }
+
+    #[DataProvider('helpdeskExpandCategoriesConfigIsAppliedProvider')]
+    public function testHelpdeskExpandCategoriesConfigIsApplied(
+        array $entities,
+        string $entity,
+        bool $should_be_expanded,
+    ): void {
+        // Arrange: create requested entities
+        $this->login();
+        $root = $this->getTestRootEntity(only_id: true);
+        foreach ($entities as $to_create) {
+            if (isset($to_create['parent'])) {
+                $parent = getItemByTypeName(
+                    Entity::class,
+                    $to_create['parent'],
+                    onlyid: true,
+                );
+            } else {
+                $parent = $root;
+            }
+
+            $this->createItem(Entity::class, [
+                'name'                   => $to_create['name'],
+                'entities_id'            => $parent,
+                'expand_service_catalog' => $to_create['config'],
+            ]);
+        }
+
+        // Create a category and move the request form into it
+        $category = $this->createItem(Category::class, [
+            'name' => 'My category',
+        ]);
+        $request_form = getItemByTypeName(Form::class, "Request a service");
+        $this->updateItem(Form::class, $request_form->getID(), [
+            Category::getForeignKeyField() => $category->getID(),
+        ]);
+
+        // Act: render service catalog page
+        $entity = getItemByTypeName(Entity::class, $entity);
+        $this->login('post-only');
+        $this->setEntity($entity->getId(), true);
+        $controller = new IndexController();
+        $response = $controller->__invoke(Request::create(""));
+        $html = $response->getContent();
+
+        // Assert: try to find the request form, it should only be displayed
+        // if categories are expanded
+        $request_form = (new Crawler($html))
+            ->filter("a[href=\"/Form/Render/{$request_form->getID()}\"]")
+        ;
+        $this->assertCount(
+            $should_be_expanded ? 1 : 0,
+            $request_form
         );
     }
 }

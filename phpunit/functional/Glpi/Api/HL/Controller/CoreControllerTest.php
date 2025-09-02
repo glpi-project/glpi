@@ -250,12 +250,15 @@ class CoreControllerTest extends \HLAPITestCase
             'scope' => '',
         ];
 
-        // Expect 401 error if no grant is set
         $request = new Request('POST', '/Token', ['Content-Type' => 'application/json'], json_encode($auth_data));
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn($status) => $this->assertEquals(401, $status));
+                ->status(fn($status) => $this->assertEquals(400, $status))
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('unauthorized_client', $content['error']);
+                    $this->assertEquals('The authenticated client is not authorized to use this authorization grant type.', $content['error_description']);
+                });
         });
 
         $client->update([
@@ -348,12 +351,15 @@ class CoreControllerTest extends \HLAPITestCase
             'scope' => 'inventory',
         ];
 
-        // Expect 401 error if no grant is set
         $request = new Request('POST', '/Token', ['Content-Type' => 'application/json'], json_encode($auth_data));
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn($status) => $this->assertEquals(401, $status));
+                ->status(fn($status) => $this->assertEquals(400, $status))
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('unauthorized_client', $content['error']);
+                    $this->assertEquals('The authenticated client is not authorized to use this authorization grant type.', $content['error_description']);
+                });
         });
 
         $client->update([
@@ -381,7 +387,10 @@ class CoreControllerTest extends \HLAPITestCase
         $this->api->call(new Request('GET', '/Status'), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->isAccessDenied();
+                ->isAccessDenied()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('You do not have the required scope(s) to access this endpoint.', $content['detail']);
+                });
         });
         $this->login(api_options: ['scope' => 'status']);
         $this->api->call(new Request('GET', '/Status'), function ($call) {

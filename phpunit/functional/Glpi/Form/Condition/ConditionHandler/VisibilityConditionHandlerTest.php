@@ -72,6 +72,11 @@ use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
 
 final class VisibilityConditionHandlerTest extends AbstractConditionHandler
 {
+    public static function getConditionHandler(): ConditionHandlerInterface
+    {
+        return new VisibilityConditionHandler();
+    }
+
     #[Override]
     public static function conditionHandlerProvider(): iterable
     {

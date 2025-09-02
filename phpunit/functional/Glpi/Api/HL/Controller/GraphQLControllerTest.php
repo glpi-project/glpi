@@ -324,7 +324,10 @@ GRAPHQL);
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->isAccessDenied();
+                ->isAccessDenied()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('You do not have the required scope(s) to access this endpoint.', $content['detail']);
+                });
         });
         $this->login(api_options: ['scope' => 'graphql']);
         $request = new Request('POST', '/GraphQL', [], 'query { Ticket { id name } }');

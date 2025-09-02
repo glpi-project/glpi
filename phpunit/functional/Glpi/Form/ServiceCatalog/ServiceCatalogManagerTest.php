@@ -35,6 +35,8 @@
 namespace tests\units\Glpi\Form;
 
 use AbstractRightsDropdown;
+use Computer;
+use ComputerType;
 use Entity;
 use Entity_KnowbaseItem;
 use Glpi\Form\AccessControl\ControlType\AllowList;
@@ -47,6 +49,7 @@ use Glpi\Form\ServiceCatalog\ServiceCatalogItemInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use GlpiPlugin\Tester\Form\ComputerForServiceCatalog;
 use KnowbaseItem;
 use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -61,7 +64,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
 
     public static function setUpBeforeClass(): void
     {
-        self::$manager = new ServiceCatalogManager();
+        self::$manager = ServiceCatalogManager::getInstance();
         parent::setUpBeforeClass();
     }
 
@@ -687,7 +690,8 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         // Get the root items
         $this->login();
         $item_request = new ItemRequest(
-            new FormAccessParameters(Session::getCurrentSessionInfo()),
+            access_parameters: new FormAccessParameters(Session::getCurrentSessionInfo()),
+            category_id: 0,
         );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
@@ -1087,5 +1091,36 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         // Assert: expected forms must be found
         $forms_names = array_map(fn(Form $form) => $form->fields['name'], $forms);
         $this->assertEquals($expected_forms_names, $forms_names);
+    }
+
+    public function testPluginCanRegisterProviders(): void
+    {
+        // Arrange: create some computers in the 'test' type
+        $type = $this->createItem(ComputerType::class, [
+            'name' => 'test',
+        ]);
+        $to_create = ['Computer 1', 'Computer 2', 'Computer 3'];
+        foreach ($to_create as $name) {
+            $this->createItem(Computer::class, [
+                'name' => $name,
+                'entities_id' => $this->getTestRootEntity(only_id: true),
+                ComputerType::getForeignKeyField() => $type->getID(),
+            ]);
+        }
+
+        // Act: get items
+        $this->login('post-only');
+        $item_request = new ItemRequest(
+            new FormAccessParameters(Session::getCurrentSessionInfo())
+        );
+        $results = ServiceCatalogManager::getInstance()->getItems($item_request);
+
+        // Assert: computers should be found thanks to the ComputerProvider from
+        // the tester plugin
+        $names = array_map(
+            fn(ComputerForServiceCatalog $c) => $c->getServiceCatalogItemTitle(),
+            $results["items"],
+        );
+        $this->assertEquals(['Computer 1', 'Computer 2', 'Computer 3'], $names);
     }
 }

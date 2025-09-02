@@ -234,7 +234,7 @@
 
    {{ fields.dropdownYesNo('highcontrast_css', config['highcontrast_css'], __('Enable high contrast'), field_options) }}
 
-   {% if timezones is not null %}
+   {% if use_timezones %}
       {{ fields.dropdownArrayField('timezone', config['timezone']|default(''), timezones, __('Timezone'), field_options|merge({
          display_emptychoice: true,
          emptylabel: __('Use server configuration')

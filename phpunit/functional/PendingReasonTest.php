@@ -56,7 +56,7 @@ use TicketTask;
 
 class PendingReasonTest extends DbTestCase
 {
-    public static function testGetNextFollowupDateProvider(): array
+    public static function getNextFollowupDateProvider(): array
     {
         return [
             [
@@ -167,7 +167,7 @@ class PendingReasonTest extends DbTestCase
         ];
     }
 
-    #[DataProvider('testGetNextFollowupDateProvider')]
+    #[DataProvider('getNextFollowupDateProvider')]
     public function testGetNextFollowupDate(array $fields, $expected)
     {
         if (isset($fields['calendar_holiday'])) {
@@ -183,7 +183,7 @@ class PendingReasonTest extends DbTestCase
         $this->assertEquals($expected, $pending_reason_item->getNextFollowupDate());
     }
 
-    public static function testGetAutoResolvedateProvider(): array
+    public static function getAutoResolvedateProvider(): array
     {
         return [
             [
@@ -354,7 +354,7 @@ class PendingReasonTest extends DbTestCase
         ];
     }
 
-    #[DataProvider('testGetAutoResolvedateProvider')]
+    #[DataProvider('getAutoResolvedateProvider')]
     public function testGetAutoResolvedate(array $fields, $expected)
     {
         if (isset($fields['calendar_holiday'])) {

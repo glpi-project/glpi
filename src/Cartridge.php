@@ -366,7 +366,8 @@ class Cartridge extends CommonDBRelation
      *
      * @param integer         $tID      ID of the cartridge item
      * @param integer         $alarm_threshold Alarm threshold value
-     * @param integer|boolean $nohtml          True if the return value should be without HTML tags (default 0/false)
+     * @param integer|boolean $nohtml          True if the return value should be without HTML tags (default 0/false).
+     *                                         The return value will anyway be a safe HTML string.
      *
      * @return string String to display
      **/
@@ -421,19 +422,21 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
             } else {
                 //TRANS : for display cartridges count : %1$d is the total number,
                 //        %2$d the new one, %3$d the used one, %4$d worn one
-                $out .= sprintf(
-                    __('Total: %1$d (%2$d new, %3$d used, %4$d worn)'),
-                    $total,
-                    $unused,
-                    $used,
-                    $old
+                $out .= htmlescape(
+                    sprintf(
+                        __('Total: %1$d (%2$d new, %3$d used, %4$d worn)'),
+                        $total,
+                        $unused,
+                        $used,
+                        $old
+                    )
                 );
             }
         } else {
             if (!$nohtml) {
                 $out .= "<div class='bg-danger-lt fst-italic'>" . __s('No cartridge') . "</div>";
             } else {
-                $out .= __('No cartridge');
+                $out .= __s('No cartridge');
             }
         }
         return $out;
@@ -445,7 +448,8 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      * @since 0.85
      *
      * @param integer         $pID    ID of the printer
-     * @param integer|boolean $nohtml True if the return value should be without HTML tags (default 0/false)
+     * @param integer|boolean $nohtml True if the return value should be without HTML tags (default 0/false).
+     *                                The return value will anyway be a safe HTML string.
      *
      * @return string String to display
      **/
@@ -494,13 +498,13 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
             } else {
                 //TRANS : for display cartridges count : %1$d is the total number,
                 //        %2$d the used one, %3$d the worn one
-                $out .= sprintf(__('Total: %1$d (%2$d used, %3$d worn)'), $total, $used, $old);
+                $out .= htmlescape(sprintf(__('Total: %1$d (%2$d used, %3$d worn)'), $total, $used, $old));
             }
         } else {
             if (!$nohtml) {
                 $out .= "<div class='bg-danger-lt fst-italic'>" . __s('No cartridge') . "</div>";
             } else {
-                $out .= __('No cartridge');
+                $out .= __s('No cartridge');
             }
         }
         return $out;
@@ -802,10 +806,10 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
         if ($canedit && $number) {
             $actions = [
                 'purge' => _x('button', 'Delete permanently'),
-                'Infocom' . MassiveAction::CLASS_ACTION_SEPARATOR . 'activate' => __('Enable the financial and administrative information'),
+                'Infocom' . MassiveAction::CLASS_ACTION_SEPARATOR . 'activate' => __s('Enable the financial and administrative information'),
             ];
             if (!$show_old) {
-                $actions['Cartridge' . MassiveAction::CLASS_ACTION_SEPARATOR . 'backtostock'] = __('Back to stock');
+                $actions['Cartridge' . MassiveAction::CLASS_ACTION_SEPARATOR . 'backtostock'] = __s('Back to stock');
             }
         }
         $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], $number),
@@ -829,7 +833,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
                     }
                     $printer_link = "<a href='" . htmlescape(Printer::getFormURLWithID($data["printID"])) . "'><span class='fw-bold'>" . htmlescape($printname) . "</span></a>";
                 } else {
-                    $printer_link = NOT_AVAILABLE;
+                    $printer_link = htmlescape(NOT_AVAILABLE);
                 }
                 $tmp_dbeg       = explode("-", $data["date_in"]);
                 $tmp_dend       = explode("-", $data["date_use"]);
@@ -1041,7 +1045,7 @@ TWIG, $twig_params);
         if ($canedit && !$old) {
             $twig_params = [
                 'printer' => $printer,
-                'install_label' => _sx('button', 'Install'),
+                'install_label' => _x('button', 'Install'),
                 'count_label' => __('Count'),
             ];
             // language=Twig
@@ -1103,13 +1107,13 @@ TWIG, ['printer_id' => $printer->getID()]);
         $pages = $printer->fields['init_pages_counter'];
         if (!$old) {
             $actions = [
-                self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall' => __('End of life'),
-                self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'backtostock' => __('Back to stock'),
+                self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall' => __s('End of life'),
+                self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'backtostock' => __s('Back to stock'),
             ];
         } else {
             $actions = [
-                self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'updatepages' => __('Update printer counter'),
-                'purge' => _x('button', 'Delete permanently'),
+                self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'updatepages' => __s('Update printer counter'),
+                'purge' => _sx('button', 'Delete permanently'),
             ];
         }
         $massiveactionparams = [

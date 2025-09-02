@@ -62,4 +62,5 @@ $migration->addConfig([
     '2fa_enforced' => 0,
     '2fa_grace_date_start' => null,
     '2fa_grace_days' => 0,
+    '2fa_suffix' => '',
 ]);

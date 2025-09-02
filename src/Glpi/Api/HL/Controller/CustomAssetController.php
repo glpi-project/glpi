@@ -220,6 +220,28 @@ final class CustomAssetController extends AbstractController
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 ],
             ];
+            $custom_assets[$schema_name]['properties']['type'] = [
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-itemtype' => $asset_type_class,
+                'x-field' => 'assets_assettypes_id',
+                'x-full-schema' => $type_schema_name,
+                'x-join' => [
+                    'table' => $asset_type_class::getTable(), // The table to join
+                    'fkey' => 'assets_assettypes_id', // The field in the main table to use as a reference
+                    'field' => 'id', // The field in the joined table the reference points to
+                    'condition' => [
+                        'assets_assetdefinitions_id' => $definition->getID(),
+                    ],
+                ],
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'x-readonly' => true,
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
+                ],
+            ];
 
             $asset_model_class = $definition->getAssetModelClassName();
             $model_schema_name = 'CustomAsset_' . $asset_system_name . 'Model';
@@ -265,6 +287,28 @@ final class CustomAssetController extends AbstractController
                     ],
                     'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                ],
+            ];
+            $custom_assets[$schema_name]['properties']['model'] = [
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-itemtype' => $asset_model_class,
+                'x-field' => 'assets_assetmodels_id',
+                'x-full-schema' => $model_schema_name,
+                'x-join' => [
+                    'table' => $asset_model_class::getTable(), // The table to join
+                    'fkey' => 'assets_assetmodels_id', // The field in the main table to use as a reference
+                    'field' => 'id', // The field in the joined table the reference points to
+                    'condition' => [
+                        'assets_assetdefinitions_id' => $definition->getID(),
+                    ],
+                ],
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'x-readonly' => true,
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
                 ],
             ];
         }

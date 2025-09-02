@@ -186,7 +186,6 @@ class GLPITestCase extends TestCase
     protected function callPrivateMethod($instance, string $methodName, ...$args)
     {
         $method = new ReflectionMethod($instance, $methodName);
-        $method->setAccessible(true);
 
         return $method->invoke($instance, ...$args);
     }
@@ -206,7 +205,6 @@ class GLPITestCase extends TestCase
         $instance = $class->newInstanceWithoutConstructor();
 
         $constructor = $class->getConstructor();
-        $constructor->setAccessible(true);
         $constructor->invokeArgs($instance, $args);
 
         return $instance;
@@ -222,7 +220,6 @@ class GLPITestCase extends TestCase
     protected function setPrivateProperty($instance, string $propertyName, $value)
     {
         $property = new ReflectionProperty($instance, $propertyName);
-        $property->setAccessible(true);
         $property->setValue($instance, $value);
     }
 
@@ -442,7 +439,6 @@ class GLPITestCase extends TestCase
 
         $reflection = new ReflectionClass(DBmysql::class);
         $property = $reflection->getProperty("dbh");
-        $property->setAccessible(true);
         return $property->getValue($DB);
     }
 

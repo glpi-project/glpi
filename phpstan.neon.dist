@@ -67,6 +67,9 @@ parameters:
         - GLPI_VAR_DIR
         - GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING
         - GLPI_WEBHOOK_CRA_MANDATORY
+        - GLPI_ALTCHA_MODE
+        - GLPI_ALTCHA_MAX_NUMBER
+        - GLPI_ALTCHA_EXPIRATION_INTERVAL
         - TU_USER
     ignoreErrors:
         -

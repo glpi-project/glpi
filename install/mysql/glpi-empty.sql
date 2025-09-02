@@ -2851,6 +2851,7 @@ CREATE TABLE `glpi_entities` (
   `custom_helpdesk_home_title` varchar(255) NOT NULL DEFAULT '-2',
   `enable_helpdesk_home_search_bar` tinyint NOT NULL DEFAULT '-2',
   `enable_helpdesk_service_catalog` tinyint NOT NULL DEFAULT '-2',
+  `expand_service_catalog` tinyint NOT NULL DEFAULT '-2',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`entities_id`,`name`),
   KEY `name` (`name`),
@@ -3201,7 +3202,7 @@ DROP TABLE IF EXISTS `glpi_helpdesks_tiles_glpipagetiles`;
 CREATE TABLE `glpi_helpdesks_tiles_glpipagetiles` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(255) DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
+  `description` text DEFAULT null,
   `illustration` varchar(255) DEFAULT NULL,
   `page` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -3213,7 +3214,7 @@ DROP TABLE IF EXISTS `glpi_helpdesks_tiles_externalpagetiles`;
 CREATE TABLE `glpi_helpdesks_tiles_externalpagetiles` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(255) DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
+  `description` text DEFAULT null,
   `illustration` varchar(255) DEFAULT NULL,
   `url` text DEFAULT NULL,
   PRIMARY KEY (`id`)

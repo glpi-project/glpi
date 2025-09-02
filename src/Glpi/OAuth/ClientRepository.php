@@ -36,6 +36,7 @@
 namespace Glpi\OAuth;
 
 use League\OAuth2\Server\Entities\ClientEntityInterface;
+use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 use OAuthClient;
 
@@ -65,6 +66,9 @@ class ClientRepository implements ClientRepositoryInterface
         return null;
     }
 
+    /**
+     * @throws OAuthServerException If the requested grant type is not allowed for the client
+     */
     public function validateClient($clientIdentifier, $clientSecret, $grantType): bool
     {
         $client = new OAuthClient();
@@ -78,6 +82,9 @@ class ClientRepository implements ClientRepositoryInterface
 
         $global_grants = ['refresh_token'];
         $allowed_grants = array_merge($client->fields['grants'], $global_grants);
-        return in_array($grantType, $allowed_grants, true);
+        if (!in_array($grantType, $allowed_grants, true)) {
+            throw OAuthServerException::unauthorizedClient();
+        }
+        return true;
     }
 }

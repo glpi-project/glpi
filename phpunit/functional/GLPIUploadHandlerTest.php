@@ -102,7 +102,6 @@ class GLPIUploadHandlerTest extends DbTestCase
         $reflection = new ReflectionClass($instance);
 
         $options_property = $reflection->getProperty('options');
-        $options_property->setAccessible(true);
         $options_property->setValue(
             $instance,
             [

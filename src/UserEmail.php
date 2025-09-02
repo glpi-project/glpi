@@ -172,22 +172,20 @@ class UserEmail extends CommonDBChild
         return false;
     }
 
-
-    /**
-     * @since 0.84
-     *
-     * @param $field_name
-     * @param $child_count_js_var
-     *
-     * @return string
-     **/
+    #[Override()]
     public static function getJSCodeToAddForItemChild($field_name, $child_count_js_var)
     {
+        $html = "<div class='d-flex'>"
+            . "<input title='" . __s('Default email') . "' type='radio' name='_default_email' value='-__JS_PLACEHOLDER__' aria-label='" . __s('Set as default email') . "'>"
+            . "&nbsp;"
+            . "<input type='text' size='30' class='form-control' " . "name='" . htmlescape($field_name) . "[-__JS_PLACEHOLDER__]'  aria-label='" . __s('Email address') . "'>"
+            . "</div>";
 
-        return "<div class=\'d-flex\'><input title=\'" . __s('Default email') . "\' type=\'radio\' name=\'_default_email\'"
-             . " value=\'-'+" . htmlescape($child_count_js_var) . "+'\' aria-label=\'" . __s('Set as default email') . "\'>&nbsp;"
-             . "<input type=\'text\' size=\'30\' class=\'form-control\' " . "name=\'" . htmlescape($field_name)
-             . "[-'+" . htmlescape($child_count_js_var) . "+']\'  aria-label=\'" . __s('Email address') . "\'></div>";
+        return str_replace(
+            '__JS_PLACEHOLDER__',
+            "'+{$child_count_js_var}+'", // string closing, + operator, JS variable name, + operator, string reopening
+            jsescape($html)
+        );
     }
 
 

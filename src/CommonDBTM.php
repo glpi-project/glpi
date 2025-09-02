@@ -2904,7 +2904,7 @@ class CommonDBTM extends CommonGLPI
 
         echo "<table class='tab_cadre_fixe'>";
         echo "<tr class='tab_bg_2'>";
-        echo "<td class='center' colspan='" . ($params['colspan'] * 2) . "'>";
+        echo "<td class='center' colspan='" . ((int) $params['colspan'] * 2) . "'>";
     }
 
     public static function isNewID($ID)
@@ -6709,5 +6709,24 @@ class CommonDBTM extends CommonGLPI
             'order'              => $order,
             'as_map'             => false,
         ]);
+    }
+
+    /** @return iterable<static> */
+    public static function getSeveralFromDBByCrit(
+        array $where = [],
+        array $order = [],
+        ?int $limit = null,
+    ): iterable {
+        $data = (new static())->find(
+            $where,
+            $order,
+            $limit,
+        );
+        foreach ($data as $row) {
+            $item = new static();
+            $item->getFromResultSet($row);
+            $item->post_getFromDB();
+            yield $item;
+        }
     }
 }

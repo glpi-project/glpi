@@ -35,23 +35,33 @@
 {# @var string                                                  url #}
 
 {# Readonly input used to display the link, can be copied by clicking on it #}
-<div
-    class="input-icon cursor-pointer mb-3"
-    data-glpi-clipboard-text="{{ url }}"
-    data-bs-toggle="tooltip"
-    data-bs-placement="top"
-    title="{{ __("Click to copy to clipboard") }}"
->
-    <input
-        type="text"
-        class="form-control cursor-pointer"
-        readonly=""
-        value="{{ url }}"
-        aria-label="{{ __("Direct access URL") }}"
+<div class="d-flex w-100 mb-3">
+    <div
+        class="input-icon cursor-pointer flex-grow-1"
+        data-glpi-clipboard-text="{{ url }}"
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+        title="{{ __("Click to copy to clipboard") }}"
     >
-    <span class="input-icon-addon">
-        <i class="ti ti-files"></i>
-    </span>
+        <input
+            type="text"
+            class="form-control cursor-pointer rounded-end-0 border-end-0"
+            readonly=""
+            value="{{ url }}"
+            aria-label="{{ __("Direct access URL") }}"
+            data-glpi-direct-access-refresh-url
+        >
+        <span class="input-icon-addon">
+            <i class="ti ti-files"></i>
+        </span>
+    </div>
+    <i
+        class="ti ti-refresh btn h-auto rounded-start-0"
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+        title="{{ __("Click to change the token") }}"
+        data-glpi-direct-access-refresh-token
+    ></i>
 </div>
 
 {# Unauthenticated access configuration #}
@@ -86,4 +96,28 @@
     type="hidden"
     name="{{ access_control.getNormalizedInputName("_token") }}"
     value="{{ config.getToken() }}"
+    data-glpi-direct-access-token-input
 >
+
+<script>
+    (() => {
+        const refresh_button = document.querySelector('[data-glpi-direct-access-refresh-token]');
+        const input = document.querySelector('[data-glpi-direct-access-token-input]');
+        const preview = document.querySelector('[data-glpi-direct-access-refresh-url]');
+
+        refresh_button.addEventListener('click', () => {
+            // Quick copy of Toolbox::getRandomString()
+            const keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            let token = '';
+            for (let i = 0; i <= 40; i++) {
+                token += keyspace[Math.floor(Math.random() * keyspace.length)];
+            }
+
+            input.value = token;
+
+            let url = new URL(preview.value);
+            url.searchParams.set("token", token);
+            preview.value = url;
+        });
+    })();
+</script>

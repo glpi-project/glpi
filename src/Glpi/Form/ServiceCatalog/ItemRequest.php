@@ -46,7 +46,8 @@ final class ItemRequest
         public ?int $category_id = null,
         public int $page = 1,
         public int $items_per_page = ServiceCatalogManager::ITEMS_PER_PAGE,
-        public SortStrategyEnum $sort_strategy = SortStrategyEnum::POPULARITY
+        public SortStrategyEnum $sort_strategy = SortStrategyEnum::POPULARITY,
+        public ItemRequestContext $context = ItemRequestContext::SERVICE_CATALOG,
     ) {}
 
     public function getFormAccessParameters(): FormAccessParameters
@@ -67,5 +68,10 @@ final class ItemRequest
     public function getSortStrategy(): SortStrategyEnum
     {
         return $this->sort_strategy;
+    }
+
+    public function getContext(): ItemRequestContext
+    {
+        return $this->context;
     }
 }

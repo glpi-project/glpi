@@ -38,87 +38,13 @@ use Glpi\System\Requirement\DbTimezones;
 
 class DbTimezonesTest extends \GLPITestCase
 {
-    public function testCheckWithUnavailableMysqlDb()
+    public function testCheckWithTimezonenameEmptyList()
     {
         $db = $this->getMockBuilder(\DB::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['request'])
+            ->onlyMethods(['getTimezones'])
             ->getMock();
-
-        $db->method('request')->willReturnCallback(
-            function ($criteria) {
-                $result = $this->getMockBuilder(\DBmysqlIterator::class)
-                    ->setConstructorArgs([null])
-                    ->onlyMethods(['count'])
-                    ->getMock();
-                if ($criteria['FROM'] == 'information_schema.schemata' && $criteria['WHERE']['schema_name'] == 'mysql') {
-                    $result->method('count')->willReturn(0);
-                }
-                return $result;
-            }
-        );
-
-        $instance = new DbTimezones($db);
-        $this->assertFalse($instance->isValidated());
-        $this->assertEquals(
-            ['Access to timezone database (mysql) is not allowed.'],
-            $instance->getValidationMessages()
-        );
-    }
-
-    public function testCheckWithUnavailableTimezonenameTable()
-    {
-        $db = $this->getMockBuilder(\DB::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['request'])
-            ->getMock();
-
-        $db->method('request')->willReturnCallback(
-            function ($criteria) {
-                $result = $this->getMockBuilder(\DBmysqlIterator::class)
-                    ->setConstructorArgs([null])
-                    ->onlyMethods(['count'])
-                    ->getMock();
-                if ($criteria['FROM'] == 'information_schema.schemata' && $criteria['WHERE']['schema_name'] == 'mysql') {
-                    $result->method('count')->willReturn(1);
-                } elseif ($criteria['FROM'] == 'information_schema.tables' && $criteria['WHERE']['table_schema'] == 'mysql') {
-                    $result->method('count')->willReturn(0);
-                }
-                return $result;
-            }
-        );
-
-        $instance = new DbTimezones($db);
-        $this->assertFalse($instance->isValidated());
-        $this->assertEquals(
-            ['Access to timezone table (mysql.time_zone_name) is not allowed.'],
-            $instance->getValidationMessages()
-        );
-    }
-
-    public function testCheckWithTimezonenameEmptyTable()
-    {
-        $db = $this->getMockBuilder(\DB::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['request'])
-            ->getMock();
-
-        $db->method('request')->willReturnCallback(
-            function ($criteria) {
-                $result = $this->getMockBuilder(\DBmysqlIterator::class)
-                    ->setConstructorArgs([null])
-                    ->onlyMethods(['count', 'current'])
-                    ->getMock();
-                if ($criteria['FROM'] == 'information_schema.schemata' && $criteria['WHERE']['schema_name'] == 'mysql') {
-                    $result->method('count')->willReturn(1);
-                } elseif ($criteria['FROM'] == 'information_schema.tables' && $criteria['WHERE']['table_schema'] == 'mysql') {
-                    $result->method('count')->willReturn(1);
-                } else {
-                    $result->method('current')->willReturn(['cpt' => 0]);
-                }
-                return $result;
-            }
-        );
+        $db->method('getTimezones')->willReturn([]);
 
         $instance = new DbTimezones($db);
         $this->assertFalse($instance->isValidated());
@@ -132,25 +58,18 @@ class DbTimezonesTest extends \GLPITestCase
     {
         $db = $this->getMockBuilder(\DB::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['request'])
+            ->onlyMethods(['getTimezones'])
             ->getMock();
-
-        $db->method('request')->willReturnCallback(
-            function ($criteria) {
-                $result = $this->getMockBuilder(\DBmysqlIterator::class)
-                    ->setConstructorArgs([null])
-                    ->onlyMethods(['count', 'current'])
-                    ->getMock();
-                if ($criteria['FROM'] == 'information_schema.schemata' && $criteria['WHERE']['schema_name'] == 'mysql') {
-                    $result->method('count')->willReturn(1);
-                } elseif ($criteria['FROM'] == 'information_schema.tables' && $criteria['WHERE']['table_schema'] == 'mysql') {
-                    $result->method('count')->willReturn(1);
-                } else {
-                    $result->method('current')->willReturn(['cpt' => 30]);
-                }
-                return $result;
-            }
-        );
+        $db->method('getTimezones')->willReturn([
+            'Africa/Abidjan',
+            'America/Cancun',
+            'Asia/Beirut',
+            'Atlantic/Faeroe',
+            'Australia/Canberra',
+            'Europe/Paris',
+            'Pacific/Noumea',
+            'UTC',
+        ]);
 
         $instance = new DbTimezones($db);
         $this->assertTrue($instance->isValidated());

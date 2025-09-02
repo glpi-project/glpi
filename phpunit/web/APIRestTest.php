@@ -2678,7 +2678,7 @@ class APIRestTest extends TestCase
         }
     }
 
-    public static function testGetMassiveActionParametersProvider(): array
+    public static function getMassiveActionParametersProvider(): array
     {
         return [
             [
@@ -2821,7 +2821,7 @@ class APIRestTest extends TestCase
     /**
      * Tests for the "getMassiveActionParameters" endpoint
      */
-    #[DataProvider('testGetMassiveActionParametersProvider')]
+    #[DataProvider('getMassiveActionParametersProvider')]
     public function testGetMassiveActionParameters(
         string $url,
         int $status,
@@ -3490,7 +3490,7 @@ class APIRestTest extends TestCase
         $this->assertEquals('Multi-update entity 2', $entity_obj->fields['comment']);
     }
 
-    public static function testSystemSQLCriteriaProvider()
+    public static function systemSQLCriteriaProvider()
     {
         yield [
             'type' => 'Glpi\\CustomAsset\\Test01Asset',
@@ -3536,7 +3536,7 @@ class APIRestTest extends TestCase
      * Some itemtypes share the same DB table and use `getSystemSQLCriteria` to specify criteria needed to limit DB queries to related types only.
      * This test checks that the `getSystemSQLCriteria` method works correctly for these itemtypes in the legacy API.
      */
-    #[DataProvider('testSystemSQLCriteriaProvider')]
+    #[DataProvider('systemSQLCriteriaProvider')]
     public function testSystemSQLCriteria(string $type, string $field, array $expected, array $not_expected = []): void
     {
         $headers = ['Session-Token' => $this->session_token];

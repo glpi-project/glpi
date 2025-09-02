@@ -499,7 +499,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
             $papa = clone $this;
 
             if ($papa->getFromDB($this->fields[$this->getForeignKeyField()])) {
-                $link = $papa->getTreeLink() . " > ";
+                $link = $papa->getTreeLink() . " &gt; ";
             }
         }
         return $link . $this->getLink();

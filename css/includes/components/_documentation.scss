@@ -154,14 +154,14 @@
     }
 }
 
-@include media-breakpoint-down(lg) {
-    .documentation {
-        margin-left: 200px;
+@include media-breakpoint-down(xxl) {
+    .documentation-large {
+        margin-left: 240px;
     }
 }
 
-@include media-breakpoint-down(xl) {
+@include media-breakpoint-down(sm) {
     .documentation-large {
-        margin-left: 200px;
+        margin-left: 0;
     }
 }

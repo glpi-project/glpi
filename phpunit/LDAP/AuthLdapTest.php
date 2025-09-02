@@ -1470,7 +1470,7 @@ class AuthLdapTest extends DbTestCase
      *
      * @return iterable
      */
-    public static function testRemovedUserProvider(): iterable
+    public static function removedUserProvider(): iterable
     {
         $user_options = [
             \AuthLDAP::DELETED_USER_ACTION_USER_DO_NOTHING,
@@ -1510,7 +1510,7 @@ class AuthLdapTest extends DbTestCase
      * @return void
      */
     #[RequiresPhpExtension('ldap')]
-    #[DataProvider('testRemovedUserProvider')]
+    #[DataProvider('removedUserProvider')]
     public function testRemovedUser(
         int $user_option_value,
         int $groups_option_value,
@@ -2132,7 +2132,7 @@ class AuthLdapTest extends DbTestCase
         );
     }
 
-    public static function testSyncWithManagerProvider()
+    public static function syncWithManagerProvider()
     {
         $dns = [
             "Test Test",
@@ -2164,7 +2164,7 @@ class AuthLdapTest extends DbTestCase
     }
 
     #[RequiresPhpExtension('ldap')]
-    #[DataProvider('testSyncWithManagerProvider')]
+    #[DataProvider('syncWithManagerProvider')]
     public function testSyncWithManager($manager_dn, array $manager_entry)
     {
         // Static conf

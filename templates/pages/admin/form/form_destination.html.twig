@@ -40,7 +40,7 @@
 <div class="py-2 px-3">
     <h2 class="d-flex">
         <i class="{{ icon }} me-2"></i>
-        {{ _n("Item to create", "Items to create", get_plural_number()) }}
+        {{ _n("Destination", "Destinations", get_plural_number()) }}
     </h2>
 
     {% for warning in warnings %}
@@ -73,7 +73,7 @@
                     type="submit"
                     value="{{ type }}"
                 >
-                    <i class="ti ti-plus me-1"></i> {{ __("Add %s"|format(label)) }}
+                    <i class="ti ti-plus me-1"></i> {{ __("Add %s")|format(label) }}
                 </button>
             {% endfor %}
         </div>

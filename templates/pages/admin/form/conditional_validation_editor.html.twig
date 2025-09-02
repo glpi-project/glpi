@@ -60,25 +60,6 @@
                     {% endif %}
 
                     {% set question_key = 'question-' ~ question_uuid %}
-                    <span class="me-2 question-selector">
-                        {% do call('Dropdown::showFromArray', [
-                            '_validation_conditions[' ~ loop.index0 ~ '][item]',
-                            {
-                                (question_key): question_name,
-                            },
-                            {
-                                'value': question_key,
-                                'aria_label' : _n('Item', 'Items', 1),
-                                'add_data_attributes': {
-                                    'glpi-conditions-editor-item': '',
-                                },
-                                'display_emptychoice': true,
-                                'emptylabel': __("Select an item..."),
-                                'disabled': true
-                            }
-                        ]) %}
-                    </span>
-
                     <input
                         type="hidden"
                         value="{{ question_key }}"

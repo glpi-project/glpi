@@ -79,7 +79,7 @@
             <i class="ti ti-stack"></i>
             {{ current_entity_short|u.truncate(35, '...') }}
         </a>
-        <div class="dropdown-menu p-3">
+        <div class="dropdown-menu p-3 overflow-y-auto" style="max-height: calc(100vh - 8rem)">
             <h3>{{ __('Select the desired entity') }}</h3>
 
             <div class="alert alert-info" role="alert">

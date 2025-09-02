@@ -78,13 +78,13 @@ export class GlpiFormConditionEngine
             const value = entry[1];
 
             // Skip data unrelated to form answers
-            if (key.indexOf('answers_') !== 0) {
+            if (key.indexOf('answers_') !== 0 && key.indexOf('_answers_') !== 0) {
                 continue;
             }
 
             if (key.includes('[')) {
                 // Handle array values: answers_questionId[] or answers_questionId[key]
-                const array_key_regex = /^answers_([^[]+)(\[(\d*|[^\]]*)\])$/;
+                const array_key_regex = /^_?answers_([^[]+)(\[(\d*|[^\]]*)\])$/;
                 const match = array_key_regex.exec(key);
 
                 if (match && match[1]) {

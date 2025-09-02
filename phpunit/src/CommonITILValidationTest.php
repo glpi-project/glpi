@@ -1384,7 +1384,7 @@ abstract class CommonITILValidationTest extends DbTestCase
         $this->assertValidationStatusEquals(CommonITILValidation::ACCEPTED, $itil->fields['global_validation']);
     }
 
-    public static function testgetNumberToValidateProvider(): array
+    public static function getNumberToValidateProvider(): array
     {
         return [
             [
@@ -1416,7 +1416,7 @@ abstract class CommonITILValidationTest extends DbTestCase
         ];
     }
 
-    #[DataProvider('testgetNumberToValidateProvider')]
+    #[DataProvider('getNumberToValidateProvider')]
     public function testgetNumberToValidate(
         array $input,
         bool $expected,

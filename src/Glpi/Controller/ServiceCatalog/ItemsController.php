@@ -34,6 +34,7 @@
 
 namespace Glpi\Controller\ServiceCatalog;
 
+use Entity;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Form\AccessControl\FormAccessParameters;
@@ -43,6 +44,7 @@ use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
 use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyEnum;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
+use LogicException;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -55,7 +57,7 @@ final class ItemsController extends AbstractController
     public function __construct()
     {
         // TODO: replace by autowiring once dependency injection is fully implemented.
-        $this->service_catalog_manager = new ServiceCatalogManager();
+        $this->service_catalog_manager = ServiceCatalogManager::getInstance();
     }
 
     #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
@@ -89,10 +91,22 @@ final class ItemsController extends AbstractController
         );
 
         // Build session + url params
+        $session = Session::getCurrentSessionInfo();
         $parameters = new FormAccessParameters(
-            session_info: Session::getCurrentSessionInfo(),
+            session_info: $session,
             url_parameters: $request->query->all()
         );
+
+        // Load entity
+        $entity = Entity::getById($session->getCurrentEntityId());
+        if (!$entity) {
+            throw new LogicException();
+        }
+
+        // If we have a filter, we search in all categories
+        if (!empty($filter)) {
+            $category_id = null;
+        }
 
         // Get items from the service catalog
         $item_request = new ItemRequest(
@@ -115,6 +129,7 @@ final class ItemsController extends AbstractController
                 'current_page'      => $page,
                 'items_per_page'    => $items_per_page,
                 'is_default_search' => false,
+                'expand_categories' => $entity->shouldExpandCategoriesInServiceCatalog(),
             ]
         );
     }

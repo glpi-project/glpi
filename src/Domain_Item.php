@@ -524,7 +524,7 @@ TWIG, $twig_params);
                           action="{{ 'Domain'|itemtype_form_path }}" data-submit-once>
                         {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                         {{ inputs.hidden('entities_id', entity) }}
-                        {{ inputs.hidden('is_recursive', is_recursive) }}
+                        {{ inputs.hidden('is_recursive', is_recursive ? '1' : '0') }}
                         {{ inputs.hidden('itemtype', item.getType()) }}
                         {{ inputs.hidden('items_id', item.getID()) }}
                         {% if item.getType() == 'Ticket' %}

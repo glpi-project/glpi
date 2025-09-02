@@ -39,35 +39,43 @@
         ) }}
     {% endif %}
     {% if item is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogCompositeInterface") %}
-        <div class="col-12 d-flex">
-            {% set unique_dom_id = 'service-catalog-tree-' ~ random() %}
-            <section
-                class="card mx-1 my-2 flex-grow-1"
-                aria-labelledby="{{ unique_dom_id }}"
-            >
-                <div class="card-body">
-                    <div class="card-title mb-0 d-flex align-items-center w-100">
-                        <h2 id="{{ unique_dom_id }}" class="mb-0 fs-2">
-                            {{ item.getServiceCatalogItemTitle() }}
-                        </h2>
-                        <div class="card-subtitle ms-2 remove-last-tinymce-margin">
-                            {{ item.getServiceCatalogItemDescription()|safe_html }}
+        {% if expand_categories %}
+            <div class="col-12 d-flex">
+                {% set unique_dom_id = 'service-catalog-tree-' ~ random() %}
+                <section
+                    class="card mx-1 my-2 flex-grow-1"
+                    aria-labelledby="{{ unique_dom_id }}"
+                >
+                    <div class="card-body">
+                        <div class="card-title mb-0 d-flex align-items-center w-100">
+                            <h2 id="{{ unique_dom_id }}" class="mb-0 fs-2">
+                                {{ item.getServiceCatalogItemTitle() }}
+                            </h2>
+                            <div class="card-subtitle ms-2 remove-last-tinymce-margin">
+                                {{ item.getServiceCatalogItemDescription()|safe_html }}
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="card-body p-0">
-                    <div class="row g-0">
-                        {% for child in item.getChildren() %}
-                            {{ include(
-                                'components/helpdesk_forms/service_catalog_nested_item.html.twig',
-                                {child: child},
-                                with_context = false
-                            ) }}
-                        {% endfor %}
+                    <div class="card-body p-0">
+                        <div class="row g-0">
+                            {% for child in item.getChildren() %}
+                                {{ include(
+                                    'components/helpdesk_forms/service_catalog_nested_item.html.twig',
+                                    {child: child},
+                                    with_context = false
+                                ) }}
+                            {% endfor %}
+                        </div>
                     </div>
-                </div>
-            </section>
-        </div>
+                </section>
+            </div>
+        {% else %}
+            {{ include(
+                'components/helpdesk_forms/service_catalog_item.html.twig',
+                {item: item},
+                with_context = false
+            ) }}
+        {% endif %}
     {% endif %}
 {% else %}
     {% if is_default_search %}

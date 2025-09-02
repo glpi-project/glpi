@@ -124,7 +124,7 @@ export class GlpiFormRendererController
             () => this.#computeItemsVisibilities(),
             400,
         );
-        $(document).on('input tinyMCEInput', this.#target, () => {
+        $(document).on('input tinyMCEInput glpi_fileupload_remove', this.#target, () => {
             // Disable actions immediately to avoid someone clicking on the actions
             // while the conditions have not been computed yet.
             this.#disableActions();
@@ -143,7 +143,19 @@ export class GlpiFormRendererController
         $(this.#target).removeClass('pointer-events-none');
     }
 
+    /**
+     * Save all TinyMCE editors content to their respective form fields
+     */
+    #saveTinymceEditors() {
+        if (window.tinymce !== undefined) {
+            tinymce.get().forEach(editor => editor.save());
+        }
+    }
+
     async #checkCurrentSectionValidity() {
+        // Update tinymce values
+        this.#saveTinymceEditors();
+
         // In single page mode, validate all sections
         if (this.#render_layout === 'single_page') {
             return await this.#checkAllSectionsValidity();
@@ -235,18 +247,17 @@ export class GlpiFormRendererController
      * Submit the target form using an AJAX request.
      */
     async #submitForm() {
+        const submit = $(this.#target).find('button[data-glpi-form-renderer-action=submit]');
+
         // Form will be sumitted using an AJAX request instead
         try {
             // Disable actions immediately to avoid someone clicking on the actions
             // while the form is being submitted.
             this.#disableActions();
+            submit.addClass('btn-loading');
 
             // Update tinymce values
-            if (window.tinymce !== undefined) {
-                tinymce.get().forEach(editor => {
-                    editor.save();
-                });
-            }
+            this.#saveTinymceEditors();
 
             if (!await this.#checkCurrentSectionValidity()) {
                 this.#enableActions();
@@ -301,6 +312,7 @@ export class GlpiFormRendererController
             );
         } finally {
             this.#enableActions();
+            submit.removeClass('btn-loading');
         }
     }
 
