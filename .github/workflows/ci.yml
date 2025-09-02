@@ -61,13 +61,16 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            ${{ env.APP_CONTAINER_HOME }}/phpcs.cache
-            /tmp/phpstan
-            /tmp/rector
-          key: "app_home_lint-${{ matrix.php-version }}-${{ github.base_ref || github.ref }}"
+            files/_cache/php-cs-fixer
+            files/_cache/phpstan
+            files/_cache/rector
+          # If we are on a commit, the prefix should be like this:
+          # {version}-{branch name}-{workflow id}
+          # If we are on a pull request, the prefix should be like this:
+          # {version}-{merge target branch name}-{merge source branch name}-{workflow id}
+          key: ${{ github.base_ref == '' && format('app_home_lint-{0}-{1}-{2}', matrix.php-version, github.ref_name, github.run_id) || format('app_home_lint-{0}-{1}-{2}-{3}', matrix.php-version, github.base_ref, github.ref_name, github.run_id) }}
           restore-keys: |
-            app_home_lint-${{ matrix.php-version }}
-            app_home_lint-
+            ${{ github.base_ref == '' && format('app_home_lint-{0}-{1}', matrix.php-version, github.ref_name) || format('app_home_lint-{0}-{1}-{2}', matrix.php-version, github.base_ref, github.ref_name) }}
       - name: "Initialize containers"
         run: |
           .github/actions/init_containers-start.sh

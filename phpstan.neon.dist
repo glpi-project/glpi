@@ -15,6 +15,7 @@ parameters:
         - inc
         - install
         - src
+    tmpDir: files/_cache/phpstan
     treatPhpDocTypesAsCertain: false
     universalObjectCratesClasses:
         - Sabre\VObject\Node
