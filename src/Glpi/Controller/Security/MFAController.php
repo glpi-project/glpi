@@ -104,7 +104,7 @@ final class MFAController extends AbstractController
         $algorithm = null;
 
         $in_grace_period = $totp->get2FAEnforcement($users_id) === TOTPManager::ENFORCEMENT_MANDATORY_GRACE_PERIOD && !$totp->is2FAEnabled($users_id);
-        $query_params = isset($pre_auth_data['redirect']) ? http_build_query($pre_auth_data['redirect']) : '';
+        $query_params = isset($pre_auth_data['redirect']) ? sprintf('redirect=%s', $pre_auth_data['redirect']) : '';
 
         if (!($in_grace_period && $request->request->has('skip_mfa'))) {
             if (
