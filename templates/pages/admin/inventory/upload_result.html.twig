@@ -30,6 +30,12 @@
  # ---------------------------------------------------------------------
  #}
 
+{% extends "layout/page_without_tabs.html.twig" %}
+
+{% set title = __('Inventory') %}
+{% set menu = ["admin", "glpi\\inventory\\inventory"] %}
+
+{% block content_body %}
 <div class="container-fluid">
     <div class="search_page">
         <div class="search-container">
@@ -89,3 +95,4 @@
         </div>
     </div>
 </div>
+{% endblock content_body %}

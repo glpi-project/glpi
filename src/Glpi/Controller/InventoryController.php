@@ -140,4 +140,24 @@ final class InventoryController extends AbstractController
         $response = new RedirectResponse($redirect_url);
         return $response;
     }
+
+    #[Route("/Inventory/ImportFiles", name: "glpi_inventory_report", methods: ['POST'])]
+    public function report(Request $request): Response
+    {
+        $conf = new Conf();
+
+        $to_import = [];
+        foreach ($_FILES['inventory_files']['name'] as $filekey => $filename) {
+            if ($_FILES['inventory_files']['error'][$filekey] == 0) {
+                $to_import[$filename] = $_FILES['inventory_files']['tmp_name'][$filekey];
+            }
+        }
+
+        return $this->render(
+            'pages/admin/inventory/upload_result.html.twig',
+            [
+                'imported_files' => $conf->importFiles($to_import),
+            ]
+        );
+    }
 }
