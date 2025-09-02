@@ -54,7 +54,7 @@ final class HomeSearchManager
     public function __construct()
     {
         $this->providers = [
-            new FormProvider(),
+            FormProvider::getInstance(),
             new KnowbaseItemProvider(),
         ];
     }

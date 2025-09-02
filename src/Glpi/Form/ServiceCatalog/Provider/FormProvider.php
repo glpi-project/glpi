@@ -40,19 +40,50 @@ use Glpi\Form\Form;
 use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\FuzzyMatcher\FuzzyMatcher;
 use Glpi\FuzzyMatcher\PartialMatchStrategy;
+use Glpi\Toolbox\SingletonTrait;
 use Override;
 use Session;
 
 /** @implements LeafProviderInterface<Form> */
 final class FormProvider implements LeafProviderInterface
 {
+    use SingletonTrait;
+
     private FormAccessControlManager $access_manager;
     private FuzzyMatcher $matcher;
+    private array $entity_restriction_cache = [];
 
-    public function __construct()
+    private function __construct()
     {
         $this->access_manager = FormAccessControlManager::getInstance();
         $this->matcher = new FuzzyMatcher(new PartialMatchStrategy());
+    }
+
+    /**
+     * Get entity restriction criteria with caching
+     *
+     * @param string $table The table name
+     * @param mixed $value The entities values
+     * @param bool $is_recursive Whether recursive entities are included
+     * @return array The entity restriction criteria
+     */
+    private function getCachedEntityRestriction(string $table, mixed $value, bool $is_recursive): array
+    {
+        $cache_key = md5(serialize([
+            'table' => $table,
+            'value' => $value,
+            'is_recursive' => $is_recursive,
+        ]));
+
+        if (!isset($this->entity_restriction_cache[$cache_key])) {
+            $this->entity_restriction_cache[$cache_key] = getEntitiesRestrictCriteria(
+                table: $table,
+                value: $value,
+                is_recursive: $is_recursive,
+            );
+        }
+
+        return $this->entity_restriction_cache[$cache_key];
     }
 
     #[Override]
@@ -69,7 +100,7 @@ final class FormProvider implements LeafProviderInterface
             ];
         }
 
-        $entity_restriction = getEntitiesRestrictCriteria(
+        $entity_restriction = $this->getCachedEntityRestriction(
             table: Form::getTable(),
             value: $parameters->getSessionInfo()->getActiveEntitiesIds(),
             is_recursive: true,
