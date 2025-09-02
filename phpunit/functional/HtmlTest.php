@@ -776,11 +776,11 @@ class HtmlTest extends \DbTestCase
         $this->assertSame($expected, \Html::image($path, $options));
 
         $options = ['url' => 'mypage.php'];
-        $expected = '<a href="mypage.php" ><img src="/path/to/image.png" title="" alt="" class="pointer" /></a>';
+        $expected = '<a href="mypage.php"><img src="/path/to/image.png" title="" alt="" class="pointer" /></a>';
         $this->assertSame($expected, \Html::image($path, $options));
 
         $options = ['url' => 'mypage.php', 'class' => 'specific-class'];
-        $expected = '<a href="mypage.php" ><img src="/path/to/image.png" class="specific-class" title="" alt="" /></a>';
+        $expected = '<a href="mypage.php"><img src="/path/to/image.png" class="specific-class" title="" alt="" /></a>';
         $this->assertSame($expected, \Html::image($path, $options));
     }
 
