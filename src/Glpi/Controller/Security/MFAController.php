@@ -87,8 +87,10 @@ final class MFAController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function verify(Request $request): Response
     {
-        $from_login = isset($_SESSION['mfa_pre_auth']);
-        $users_id = $from_login ? (int) $_SESSION['mfa_pre_auth']['user']['id'] : (int) Session::getLoginUserID();
+        $pre_auth_data = $_SESSION['mfa_pre_auth'] ?? null;
+
+        $from_login = $pre_auth_data !== null;
+        $users_id = $from_login ? (int) $pre_auth_data['user']['id'] : (int) Session::getLoginUserID();
         if (!$users_id) {
             return new RedirectResponse($request->getBasePath() . '/MFA/Prompt');
         }
