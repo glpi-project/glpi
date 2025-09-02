@@ -111,6 +111,8 @@ class Hooks
     public const PRE_ITEM_PURGE            = 'pre_item_purge';
     public const PRE_ITEM_RESTORE          = 'pre_item_restore';
     public const SHOW_ITEM_STATS           = 'show_item_stats';
+    public const SHOW_ITEM_RESP_PARAM      = 'show_item_resp_param';
+    public const SHOW_ITEM_RESP_VALUE      = 'show_item_resp_value';
 
     // Item hooks expecting an array parameter (available keys: item, options)
     public const ITEM_TRANSFER           = 'item_transfer';
@@ -235,6 +237,8 @@ class Hooks
             self::POST_SHOW_TAB,
             self::POST_PREPAREADD,
             self::SHOW_ITEM_STATS,
+            self::SHOW_ITEM_RESP_PARAM,
+            self::SHOW_ITEM_RESP_VALUE,
             self::TIMELINE_ACTIONS,
         ];
     }
