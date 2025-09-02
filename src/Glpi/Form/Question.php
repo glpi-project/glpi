@@ -52,6 +52,7 @@ use JsonException;
 use Log;
 use Override;
 use Ramsey\Uuid\Uuid;
+use ReflectionClass;
 use RuntimeException;
 
 use function Safe\json_decode;
@@ -188,7 +189,11 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     public function getQuestionType(): ?QuestionTypeInterface
     {
         $type = $this->fields['type'] ?? "";
-        if (!QuestionTypesManager::getInstance()->isValidQuestionType($type)) {
+        if (
+            !is_a($type, QuestionTypeInterface::class, true)
+            || (new ReflectionClass($type))->isAbstract()
+            || !QuestionTypesManager::getInstance()->isValidQuestionType($type)
+        ) {
             return null;
         }
 
