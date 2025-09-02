@@ -48,6 +48,7 @@ use function Safe\ldap_bind;
 use function Safe\parse_url;
 use function Safe\preg_match;
 use function Safe\session_name;
+use function Safe\session_write_close;
 
 /**
  *  Identification class used to login
@@ -1018,6 +1019,24 @@ class Auth extends CommonGLPI
         return $this->auth_succeded;
     }
 
+    private function getMFAPreAuthParameters(bool $remember_me): array
+    {
+        $user_fields = $this->user->fields;
+        // Remove LDAP connection resource if present to avoid serialization issues
+        unset($user_fields['_ldap_conn'], $user_fields['2fa']);
+        $params = [
+            'user' => $user_fields,
+            'auth_type' => $this->auth_type,
+            'extauth' => $this->extauth,
+            'remember_me' => $remember_me,
+            'user_present' => $this->user_present,
+        ];
+        if (isset($_REQUEST['redirect'])) {
+            $params['redirect'] = $_REQUEST['redirect'];
+        }
+        return $params;
+    }
+
     /**
      * Manage use authentication and initialize the session
      *
@@ -1049,13 +1068,14 @@ class Auth extends CommonGLPI
         // Ok, we have gathered sufficient data, if the first return false the user
         // is not present on the DB, so we add him.
         // if not, we update him.
+        $mfa_success = $_SESSION['mfa_success'] ?? false;
 
         if ($mfa_pre_auth || $this->validateLogin($login_name, $login_password, $noauto, $login_auth)) {
             if (isset($this->user->fields['_deny_login'])) {
                 $this->addToError(__('User not authorized to connect in GLPI'));
                 $this->auth_succeded = false;
                 $this->denied_by_rule = true;
-            } else {
+            } elseif (!$mfa_success) {
                 // Check MFA
                 $totp = new TOTPManager();
                 $web_access = !isAPI() && !isCommandLine();
@@ -1066,43 +1086,17 @@ class Auth extends CommonGLPI
                 if ($web_access && $this->auth_type !== self::COOKIE) {
                     $enforcement = $totp->get2FAEnforcement($this->user->fields['id']);
                     if ($totp->is2FAEnabled($this->user->fields['id'])) {
-                        if (!isset($mfa_params['totp_code']) && !isset($mfa_params['backup_code'])) {
-                            // Need to remember that this user entered the correct username/password, and then ask for the TOTP token
-                            $_SESSION['mfa_pre_auth'] = [
-                                'user' => $this->user->fields,
-                                'auth_type' => $this->auth_type,
-                                'extauth' => $this->extauth,
-                                'remember_me' => $remember_me,
-                                'user_present' => $this->user_present,
-                            ];
-
-                            $redirect_params = [
-                                'mfa' => 1,
-                            ];
-                            if (isset($_POST['redirect'])) {
-                                $redirect_params['redirect'] = \rawurlencode($_POST['redirect']);
-                            }
-
-                            Html::redirect($CFG_GLPI["root_doc"] . '/?' . http_build_query($redirect_params));
-                        } elseif (isset($mfa_params['totp_code']) && !$totp->verifyCodeForUser($mfa_params['totp_code'], $this->user->fields['id'])) {
-                            $this->addToError(__('Invalid TOTP code'));
-                            $this->auth_succeded = false;
-                        } elseif (isset($mfa_params['backup_code']) && !$totp->verifyBackupCodeForUser($mfa_params['backup_code'], $this->user->fields['id'])) {
-                            $this->addToError(__('Invalid backup code'));
-                            $this->auth_succeded = false;
-                        }
-                    } elseif ($enforcement !== TOTPManager::ENFORCEMENT_OPTIONAL) {
-                        if ($enforcement === TOTPManager::ENFORCEMENT_MANDATORY || !isset($_REQUEST['skip_mfa'])) {
-                            // If MFA is mandatory the user has not already skipped MFA while in a grace period for this login, then we need to ask for it now
-                            $_SESSION['mfa_pre_auth'] = [
-                                'user' => $this->user->fields,
-                                'auth_type' => $this->auth_type,
-                                'extauth' => $this->extauth,
-                                'remember_me' => $remember_me,
-                                'user_present' => $this->user_present,
-                            ];
-                            Html::redirect($CFG_GLPI["root_doc"] . '/?mfa_setup=1');
-                        }
+                        // If MFA is mandatory the user has not already skipped MFA while in a grace period for this login, then we need to ask for it now
+                        $_SESSION['mfa_pre_auth'] = $this->getMFAPreAuthParameters($remember_me);
+                        // Manually close session here so that serialization issues are properly reported to avoid a difficult debugging situation when if silently fails when closed at the end of the request
+                        session_write_close();
+                        Html::redirect($CFG_GLPI["root_doc"] . '/MFA/Prompt');
+                    } elseif ($enforcement === TOTPManager::ENFORCEMENT_MANDATORY || ($enforcement === TOTPManager::ENFORCEMENT_MANDATORY_GRACE_PERIOD && !isset($_REQUEST['skip_mfa']))) {
+                        // If MFA is mandatory the user has not already skipped MFA while in a grace period for this login, then we need to ask for it now
+                        $_SESSION['mfa_pre_auth'] = $this->getMFAPreAuthParameters($remember_me);
+                        // Manually close session here so that serialization issues are properly reported to avoid a difficult debugging situation when if silently fails when closed at the end of the request
+                        session_write_close();
+                        Html::redirect($CFG_GLPI["root_doc"] . '/MFA/Setup');
                     }
                 }
             }

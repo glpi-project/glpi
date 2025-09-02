@@ -489,10 +489,9 @@ final class TOTPManager
 
     /**
      * Show a form asking the user for their TOTP code.
-     * @param int $users_id ID of the user
      * @return void
      */
-    public function showTOTPPrompt(int $users_id): void
+    public function showTOTPPrompt(): void
     {
         TemplateRenderer::getInstance()->display('pages/2fa/2fa_request.html.twig', [
             'redirect' => $_GET['redirect'] ?? '',
@@ -558,6 +557,18 @@ final class TOTPManager
             'secret' => $secret,
             'enforcement' => $this->get2FAEnforcement($users_id),
             'grace_period_days_left' => $this->getGracePeriodDaysLeft(),
+        ]);
+    }
+
+    /**
+     * Show the backup codes for the specified user.
+     * Intended for use after setting up 2FA during the login process.
+     * @return void
+     */
+    public function showBackupCodes(int $users_id): void
+    {
+        TemplateRenderer::getInstance()->display('pages/2fa/2fa_backup_codes.html.twig', [
+            'backup_codes' => $this->regenerateBackupCodes($users_id),
         ]);
     }
 }

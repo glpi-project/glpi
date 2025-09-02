@@ -40,14 +40,9 @@ use Dropdown;
 use Glpi\Http\Firewall;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\Attribute\SecurityStrategy;
-use Glpi\Security\TOTPManager;
 use Html;
-use Preference;
-use Session;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Toolbox;
 
@@ -108,34 +103,6 @@ final class IndexController extends AbstractController
 
         if ($redirect !== '') {
             Toolbox::manageRedirect($redirect);
-        }
-
-        if (isset($_SESSION['mfa_pre_auth'])) {
-            if (isset($_POST['skip_mfa'])) {
-                return new RedirectResponse($CFG_GLPI['root_doc'] . '/front/login.php?skip_mfa=1');
-            }
-            if (isset($_GET['mfa_setup']) && isset($_POST['secret'], $_POST['totp_code'])) {
-                $code = is_array($_POST['totp_code']) ? implode('', $_POST['totp_code']) : $_POST['totp_code'];
-                $totp = new TOTPManager();
-                if (Session::validateIDOR($_POST) && ($algorithm = $totp->verifyCodeForSecret($code, $_POST['secret'])) !== false) {
-                    $totp->setSecretForUser((int) $_SESSION['mfa_pre_auth']['user']['id'], $_POST['secret'], $algorithm);
-                } else {
-                    Session::addMessageAfterRedirect(__s('Invalid code'), false, ERROR);
-                }
-                return new RedirectResponse(Preference::getSearchURL());
-            }
-
-            return new StreamedResponse(static function () {
-                if (isset($_GET['mfa_setup'])) {
-                    // Login started. 2FA needs configured.
-                    $totp = new TOTPManager();
-                    $totp->showTOTPSetupForm((int) $_SESSION['mfa_pre_auth']['user']['id']);
-                } else {
-                    // Login started. Need to ask for the TOTP code.
-                    $totp = new TOTPManager();
-                    $totp->showTOTPPrompt((int) $_SESSION['mfa_pre_auth']['user']['id']);
-                }
-            });
         }
 
         // Random number for html id/label
