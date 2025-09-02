@@ -56,7 +56,7 @@
 
    {% if (options.is_disclosable or options.is_copyable) and options.id is null %}
       {% set options = options|merge({
-         id: name|slug ~ '_' ~ random()
+         id: name|slug('_') ~ '_' ~ random()
       }) %}
    {% endif %}
 
@@ -224,7 +224,7 @@
     }|merge(options) %}
 
     {% set options = {
-        'id': name|slug ~ '_' ~ options.rand
+        'id': name|slug('_') ~ '_' ~ options.rand
     }|merge(options) %}
 
     {% if options.fields_template.isReadonlyField(name)|default(false) %}

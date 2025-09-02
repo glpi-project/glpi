@@ -4574,7 +4574,7 @@ JS;
         $placeholder         = jsescape($placeholder);
         $url                 = jsescape($url);
         $parent_id_field     = jsescape($parent_id_field);
-        $on_change           = jsescape($on_change ?: ''); // will be executed with `eval()`
+        $on_change           = json_encode($on_change); // will be executed with `eval()`, do not use jsescape to not alter JS tokens
         $container_css_class = jsescape($params['container_css_class']);
         $js_params           = json_encode($params);
 
@@ -4590,7 +4590,7 @@ JS;
                 dropdown_max: {$dropdown_max},
                 url: '{$url}',
                 parent_id_field: '{$parent_id_field}',
-                on_change: '{$on_change}',
+                on_change: {$on_change},
                 templateResult: {$templateResult},
                 templateSelection: {$templateSelection},
                 container_css_class: '{$container_css_class}',
