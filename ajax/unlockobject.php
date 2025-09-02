@@ -66,9 +66,10 @@ if (isset($_POST['unlock']) && isset($_POST["id"])) {
                 Log::HISTORY_UNLOCK_ITEM
             );
             $ret = 1;
+        } else {
+            Response::sendError(400, 'Not allowed');
         }
     }
-    Response::sendError(400, 'Not allowed');
 } elseif (
     isset($_POST['requestunlock'])
            && isset($_POST["id"])
