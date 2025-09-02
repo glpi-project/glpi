@@ -40,6 +40,7 @@ use Glpi\Http\RedirectResponse;
 use Glpi\Inventory\Conf;
 use RefusedEquipment;
 use Session;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -147,16 +148,18 @@ final class InventoryController extends AbstractController
         $conf = new Conf();
 
         $to_import = [];
-        foreach ($_FILES['inventory_files']['name'] as $filekey => $filename) {
-            if ($_FILES['inventory_files']['error'][$filekey] == 0) {
-                $to_import[$filename] = $_FILES['inventory_files']['tmp_name'][$filekey];
+        foreach ($request->files->get('inventory_files') as $file) {
+            if ($file instanceof UploadedFile && $file->isValid()) {
+                $to_import[$file->getClientOriginalName()] = $file->getPathname();
             }
         }
+
+        $imported_files = $conf->importFiles($to_import);
 
         return $this->render(
             'pages/admin/inventory/upload_result.html.twig',
             [
-                'imported_files' => $conf->importFiles($to_import),
+                'imported_files' => $imported_files,
             ]
         );
     }
