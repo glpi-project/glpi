@@ -254,4 +254,10 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
             new EmptyConditionHandler($this, $question_config),
         ];
     }
+
+    #[Override]
+    public function isHiddenInput(): bool
+    {
+        return false;
+    }
 }
