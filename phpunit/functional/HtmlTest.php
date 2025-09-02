@@ -1115,7 +1115,7 @@ SCSS,
 
         yield [
             'name'      => 'foo\'"$**_23',
-            'expected'  => 'foo_23',
+            'expected'  => 'foo__23',
         ];
 
         // Make sure the format used in form destination config is not broken
@@ -1140,14 +1140,14 @@ SCSS,
 
         yield [
             'name'      => 'foo\'"$**_23-1',
-            'expected'  => 'foo_23-1',
+            'expected'  => 'foo__23-1',
         ];
     }
 
     #[DataProvider('domIdProvider')]
     public function testSanitizeDomId(string $name, string $expected): void
     {
-        $this->assertEquals($expected, \Html::sanitizeInputName($name));
+        $this->assertEquals($expected, \Html::sanitizeDomId($name));
     }
 
     public static function getMenuSectorForItemtypeProvider(): iterable

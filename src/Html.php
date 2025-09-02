@@ -6641,17 +6641,17 @@ CSS;
      */
     public static function sanitizeInputName(string $name): string
     {
-        return preg_replace('/[^a-z0-9_\[\]\-]/i', '', $name);
+        return preg_replace('/[^a-z0-9_\[\]\-]+/i', '_', $name);
     }
 
     /**
      * Sanitize a DOM ID to prevent XSS.
      *
-     * @param string $name
+     * @param string $id
      * @return string
      */
-    public static function sanitizeDomId(string $name): string
+    public static function sanitizeDomId(string $id): string
     {
-        return preg_replace('/[^a-z0-9_-]/i', '', $name);
+        return preg_replace('/[^a-z0-9_-]+/i', '_', $id);
     }
 }
