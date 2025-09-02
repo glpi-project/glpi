@@ -456,7 +456,7 @@ final class SearchOption implements ArrayAccess
                         case "matches":
                             $actions['matches'] = __('matches');
                             break;
-                            
+
                         case "equals":
                             $actions['equals'] = __('is');
                             break;

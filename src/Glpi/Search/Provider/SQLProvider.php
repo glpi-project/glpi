@@ -1337,7 +1337,7 @@ final class SQLProvider implements SearchProviderInterface
                     $SEARCH = null;
                 }
                 break;
-            
+
             case "matches":
                 $SEARCH = [$nott ? "<>" : "=", $val];
                 break;
