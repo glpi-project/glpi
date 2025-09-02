@@ -92,6 +92,11 @@
         display: none !important;
     }
 
+    // Some questions may be hidden by design and should never be displayed.
+    [data-glpi-form-renderer-hidden-input] {
+        display: none !important;
+    }
+
     .input-group {
         > div:not(.d-none) {
             &:has(> span.select2-container) {

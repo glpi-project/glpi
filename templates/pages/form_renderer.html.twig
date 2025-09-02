@@ -150,6 +150,10 @@
 
                                                 {% if form_block is instanceof('Glpi\\Form\\Question') %}
                                                     data-glpi-form-renderer-question
+
+                                                    {% if form_block.getQuestionType().isHiddenInput() %}
+                                                        data-glpi-form-renderer-hidden-input
+                                                    {% endif %}
                                                 {% elseif form_block is instanceof('Glpi\\Form\\Comment') %}
                                                     data-glpi-form-renderer-comment
                                                 {% endif %}

@@ -283,4 +283,11 @@ interface QuestionTypeInterface extends UsedAsCriteriaInterface
         array|int|float|bool|string|null $default_value_data,
         DatabaseMapper $mapper,
     ): array|int|float|bool|string|null;
+
+    /**
+     * If true, the question will not be displayed in the form renderer.
+     * Needed if you want to send some input from the client side without
+     * displaying the information (e.g. add the IP address of the client).
+     */
+    public function isHiddenInput(): bool;
 }
