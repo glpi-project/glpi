@@ -39,11 +39,13 @@ use CommonDBTM;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ArrayParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
+use Glpi\Plugin\Hooks;
 use Item_Ticket;
 use KnowbaseItem;
 use KnowbaseItem_Item;
 use Location;
 use OLA;
+use Plugin;
 use RequestType;
 use Session;
 use SLA;
@@ -74,7 +76,7 @@ class TicketParameters extends CommonITILObjectParameters
 
     public function getAvailableParameters(): array
     {
-        return array_merge(parent::getAvailableParameters(), [
+        $availableParameters = array_merge(parent::getAvailableParameters(), [
             new AttributeParameter("type", _n('Type', 'Types', 1)),
             new AttributeParameter("global_validation", _n('Approval', 'Approvals', 1)),
             new AttributeParameter("tto", __('Time to own'), 'date("d/m/y H:i")'),
@@ -88,6 +90,8 @@ class TicketParameters extends CommonITILObjectParameters
             new ArrayParameter("knowbaseitems", new KnowbaseItemParameters(), KnowbaseItem_Item::getTypeName(Session::getPluralNumber())),
             new ArrayParameter("assets", new AssetParameters(), Item_Ticket::getTypeName(Session::getPluralNumber())),
         ]);
+
+        return Plugin::doHookFunction(Hooks::SHOW_ITEM_RESP_PARAM, $availableParameters);
     }
 
     protected function defineValues(CommonDBTM $ticket): array
@@ -161,6 +165,6 @@ class TicketParameters extends CommonITILObjectParameters
             }
         }
 
-        return $values;
+        return Plugin::doHookFunction(Hooks::SHOW_ITEM_RESP_VALUE, $values);
     }
 }

@@ -566,6 +566,20 @@ class Hooks
     public const SHOW_ITEM_STATS           = 'show_item_stats';
 
     /**
+     * Register a function to display new variables in reply messages.
+     * The function is called with the array of available variables as a parameter.
+     * The function is expected to return new array of available variables.
+     */
+    public const SHOW_ITEM_RESP_PARAM      = 'show_item_resp_param';
+
+    /**
+     * Register a function to display new variables in reply messages.
+     * The function is called with the array of available variables as a parameter.
+     * The function is expected to return new array of available variables.
+     */
+    public const SHOW_ITEM_RESP_VALUE       = 'show_item_resp_value';
+
+    /**
      * Register a function to add additional permission restrictions for the item.
      * The function is called with the item as a parameter.
      * The function is expected to return nothing.
@@ -1408,6 +1422,8 @@ class Hooks
             self::POST_SHOW_TAB,
             self::POST_PREPAREADD,
             self::SHOW_ITEM_STATS,
+            self::SHOW_ITEM_RESP_PARAM,
+            self::SHOW_ITEM_RESP_VALUE,
             self::TIMELINE_ACTIONS,
         ];
     }
