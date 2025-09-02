@@ -24,7 +24,7 @@
         "@tabler/core": "^1.4.0",
         "@tabler/icons-webfont": "^3.34.1",
         "animate.css": "^4.1.1",
-        "bootstrap": "^5.3.6",
+        "bootstrap": "^5.3.8",
         "cropperjs": "^2.0.1",
         "cytoscape": "^3.33.0",
         "cytoscape-canvas": "^3.0.1",
