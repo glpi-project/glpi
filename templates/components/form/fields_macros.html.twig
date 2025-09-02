@@ -224,7 +224,7 @@
 
    {% if options.id is not defined %}
        {# `id` is mandatory at this point to correctly handle file uploads #}
-       {% set options = {id: name ~ '_' ~ options.rand}|merge(options) %}
+       {% set options = {id: name|slug ~ '_' ~ options.rand}|merge(options) %}
    {% endif %}
 
    {% set field %}
@@ -415,7 +415,7 @@
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
-   {% set id = (options.id is defined and options.id|length > 0) ? options.id : (name ~ '_' ~ (options.rand ?? "")) %}
+   {% set id = (options.id is defined and options.id|length > 0) ? options.id : (name|slug ~ '_' ~ (options.rand ?? "")) %}
    {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
    {{ _inputs.label(label, id, options) }}
    {{ _self.field(name, field, label, options|merge({
