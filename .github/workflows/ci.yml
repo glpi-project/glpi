@@ -66,11 +66,18 @@ jobs:
             files/_cache/rector
           # If we are on a commit, the prefix should be like this:
           # {version}-{branch name}-{workflow id}
+          # And we shoud fallback to:
+          # {version}-{branch name}
+          #
           # If we are on a pull request, the prefix should be like this:
           # {version}-{merge target branch name}-{merge source branch name}-{workflow id}
+          # And we shoud fallback to:
+          # {version}-{merge target branch name}-{merge source branch name}
+          # {version}-{merge target branch name}
           key: ${{ github.base_ref == '' && format('app_home_lint-{0}-{1}-{2}', matrix.php-version, github.ref_name, github.run_id) || format('app_home_lint-{0}-{1}-{2}-{3}', matrix.php-version, github.base_ref, github.ref_name, github.run_id) }}
           restore-keys: |
             ${{ github.base_ref == '' && format('app_home_lint-{0}-{1}', matrix.php-version, github.ref_name) || format('app_home_lint-{0}-{1}-{2}', matrix.php-version, github.base_ref, github.ref_name) }}
+            ${{ github.base_ref != '' && format('app_home_lint-{0}-{1}', matrix.php-version, github.base_ref) }}
       - name: "Initialize containers"
         run: |
           .github/actions/init_containers-start.sh
