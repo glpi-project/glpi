@@ -5244,8 +5244,8 @@ HTML;
         }
 
         // sanitize name and random id
-        $name    = preg_replace('/[^a-z0-9_\[\]]/', '', $p['name']);
-        $rand_id = (int) $p['rand'];
+        $name    = self::sanitizeInputName($p['name']);
+        $rand_id = self::sanitizeDomId($p['rand']);
 
         if (!$p['only_uploaded_files']) {
             // manage file upload without tinymce editor
