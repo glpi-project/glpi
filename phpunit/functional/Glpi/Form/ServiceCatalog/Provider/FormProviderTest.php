@@ -50,7 +50,7 @@ class FormProviderTest extends DbTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->provider = new FormProvider();
+        $this->provider = FormProvider::getInstance();
     }
 
     /**
