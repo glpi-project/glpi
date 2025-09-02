@@ -82,7 +82,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     #[Override]
     public static function getTypeName($nb = 0)
     {
-        return _n('Step', 'Steps', $nb);
+        return _n('Section', 'Sections', $nb);
     }
 
     #[Override]
