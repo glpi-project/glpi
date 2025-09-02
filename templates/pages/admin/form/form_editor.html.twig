@@ -85,6 +85,24 @@
                                 data-glpi-form-editor-on-click="set-active"
                                 aria-label="{{ __("Form details") }}"
                             >
+                                {% if invalid_questions|length %}
+                                    <div class="alert alert-danger" role="alert">
+                                        <div class="alert-icon">
+                                            <i class="ti ti-exclamation-circle"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="alert-heading">{{ __("These questions have an unknown type and will be deleted the next time this form is saved:") }}</h4>
+                                            <div class="alert-description">
+                                                <ul class="alert-list">
+                                                    {% for invalid_question in invalid_questions %}
+                                                        <li>{{ invalid_question.fields['name'] }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
                                 {# Card containing the main form data: title, header and status #}
                                 <div class="card form-details">
                                     <div

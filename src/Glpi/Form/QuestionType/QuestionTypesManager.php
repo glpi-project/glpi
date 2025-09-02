@@ -59,6 +59,17 @@ final class QuestionTypesManager
     private array $question_types = [];
 
     /**
+     * Store classes used by $question_types.
+     * This avoid having to map $question_types each time we want to validate
+     * that a given question type is valid.
+     * Types are stored in keys to allow using isset instead of in_array for
+     * faster lookup.
+     * See self::isValidQuestionType().
+     * @var array<class-string<QuestionTypeInterface>, true>
+     */
+    private array $raw_question_types_map = [];
+
+    /**
      * Available question categories
      * @var QuestionTypeCategoryInterface[]
      */
@@ -172,7 +183,7 @@ final class QuestionTypesManager
     public function registerPluginQuestionType(
         QuestionTypeInterface $question_type
     ): void {
-        $this->question_types[] = $question_type;
+        $this->addQuestionType($question_type);
         $this->question_types_are_sorted = false;
     }
 
@@ -261,6 +272,17 @@ JS;
         return $category::class;
     }
 
+    public function isValidQuestionType(string $type): bool
+    {
+        return isset($this->raw_question_types_map[$type]);
+    }
+
+    private function addQuestionType(QuestionTypeInterface $type): void
+    {
+        $this->question_types[] = $type;
+        $this->raw_question_types_map[$type::class] = true;
+    }
+
     protected function isClassAValidQuestionType(?string $classname): bool
     {
         return
@@ -285,7 +307,7 @@ JS;
             // Validate that the class is a valid question type
             if ($this->isClassAValidQuestionType($classname)) {
                 // @phpstan-ignore glpi.forbidDynamicInstantiation (Type is checked by `self::isClassAValidQuestionType()`)
-                $this->question_types[] = new $classname();
+                $this->addQuestionType( new $classname());
             }
 
             $directory_iterator->next();

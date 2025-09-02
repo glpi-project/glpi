@@ -189,11 +189,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     public function getQuestionType(): ?QuestionTypeInterface
     {
         $type = $this->fields['type'] ?? "";
-
-        if (
-            !is_a($type, QuestionTypeInterface::class, true)
-            || (new ReflectionClass($type))->isAbstract()
-        ) {
+        if (!QuestionTypesManager::getInstance()->isValidQuestionType($type)) {
             return null;
         }
 
