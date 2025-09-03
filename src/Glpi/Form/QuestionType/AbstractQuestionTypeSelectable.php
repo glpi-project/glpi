@@ -54,7 +54,6 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType imple
 {
     public const TRANSLATION_KEY_OPTION = 'option';
 
-    #[Override]
     public function __construct() {}
 
     #[Override]
@@ -494,4 +493,14 @@ TWIG;
 
         return array_filter(array_map(fn($item) => $question_config->getOptions()[$item] ?? null, $value));
     }
+
+    #[Override]
+    public function getTargetQuestionType(array $rawData): string
+    {
+        return static::class;
+    }
+
+
+    #[Override]
+    public function beforeConversion(array $rawData): void {}
 }

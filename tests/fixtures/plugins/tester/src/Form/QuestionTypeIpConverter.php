@@ -32,38 +32,36 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Migration;
+namespace GlpiPlugin\Tester\Form;
 
-use Glpi\Form\QuestionType\QuestionTypeInterface;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
+use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Override;
 
-interface FormQuestionDataConverterInterface
+/**
+ * Convert IP questions into normal text questions
+ */
+final class QuestionTypeIpConverter implements FormQuestionDataConverterInterface
 {
-    /**
-     * Convert default value
-     *
-     * @param array $rawData
-     * @return mixed
-     */
-    public function convertDefaultValue(array $rawData): mixed;
+    #[Override]
+    public function convertDefaultValue(array $rawData): null
+    {
+        return null;
+    }
 
-    /**
-     * Convert extra data
-     *
-     * @param array $rawData
-     * @return mixed
-     */
-    public function convertExtraData(array $rawData): mixed;
+    #[Override]
+    public function convertExtraData(array $rawData): null
+    {
+        return null;
+    }
 
-    /**
-     * @return class-string<QuestionTypeInterface>
-     */
-    public function getTargetQuestionType(array $rawData): string;
+    #[Override]
+    public function getTargetQuestionType(array $rawData): string
+    {
+        return QuestionTypeShortText::class;
+    }
 
-    /**
-     * Allow the converter to run some arbitrary code before we begin converting
-     * values.
-     *
-     * For example, it might be used to create some required database items.
-     */
-    public function beforeConversion(array $rawData): void;
+    #[Override]
+    public function beforeConversion(array $rawData): void {}
+
 }

@@ -67,20 +67,6 @@ use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
 use Glpi\Form\Question;
-use Glpi\Form\QuestionType\QuestionTypeCheckbox;
-use Glpi\Form\QuestionType\QuestionTypeDateTime;
-use Glpi\Form\QuestionType\QuestionTypeDropdown;
-use Glpi\Form\QuestionType\QuestionTypeEmail;
-use Glpi\Form\QuestionType\QuestionTypeFile;
-use Glpi\Form\QuestionType\QuestionTypeItem;
-use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
-use Glpi\Form\QuestionType\QuestionTypeLongText;
-use Glpi\Form\QuestionType\QuestionTypeNumber;
-use Glpi\Form\QuestionType\QuestionTypeRadio;
-use Glpi\Form\QuestionType\QuestionTypeRequester;
-use Glpi\Form\QuestionType\QuestionTypeRequestType;
-use Glpi\Form\QuestionType\QuestionTypeShortText;
-use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\Section;
 use Glpi\Message\MessageType;
 use Glpi\Migration\AbstractPluginMigration;
@@ -129,44 +115,7 @@ class FormMigration extends AbstractPluginMigration
      */
     public function getTypesConvertMap(): array
     {
-        return [
-            // TODO: We do not have a question of type "Actor",
-            // we have more specific types: "Assignee", "Requester" and "Observer"
-            'actor'       => QuestionTypeRequester::class,
-
-            'checkboxes'  => QuestionTypeCheckbox::class,
-            'date'        => QuestionTypeDateTime::class,
-            'datetime'    => QuestionTypeDateTime::class,
-            'dropdown'    => QuestionTypeItemDropdown::class,
-            'email'       => QuestionTypeEmail::class,
-            'file'        => QuestionTypeFile::class,
-            'float'       => QuestionTypeNumber::class,
-            'glpiselect'  => QuestionTypeItem::class,
-            'integer'     => QuestionTypeNumber::class,
-            'multiselect' => QuestionTypeDropdown::class,
-            'radios'      => QuestionTypeRadio::class,
-            'requesttype' => QuestionTypeRequestType::class,
-            'select'      => QuestionTypeDropdown::class,
-            'textarea'    => QuestionTypeLongText::class,
-            'text'        => QuestionTypeShortText::class,
-            'time'        => QuestionTypeDateTime::class,
-            'urgency'     => QuestionTypeUrgency::class,
-
-            // Description is replaced by a new block : Comment
-            'description' => null,
-
-            // TODO: Must be implemented
-            'fields'      => null,
-            'tag'         => null,
-
-            // TODO: This types are not supported by the new form system
-            // we need to define alternative ways to handle them
-            'hidden'      => null,
-            'hostname'    => null,
-            'ip'          => null,
-            'ldapselect'  => null,
-            'undefined'   => null,
-        ];
+        return TypesConversionMapper::getInstance()->getQuestionTypesConversionMap();
     }
 
     private const PUBLIC_ACCESS_TYPE = 0;
@@ -592,9 +541,9 @@ class FormMigration extends AbstractPluginMigration
             }
 
             $fieldtype = $raw_question['fieldtype'];
-            $type_class = $this->getTypesConvertMap()[$fieldtype] ?? null;
+            $converter = $this->getTypesConvertMap()[$fieldtype] ?? null;
 
-            if ($type_class === null) {
+            if ($converter === null) {
                 // Retrieve the form to provide context in the error message
                 $section = Section::getById($section_id);
                 $form = $section->getForm();
@@ -613,10 +562,12 @@ class FormMigration extends AbstractPluginMigration
 
             $default_value = null;
             $extra_data = null;
-            if (is_a($type_class, FormQuestionDataConverterInterface::class, true)) {
-                $converter     = new $type_class();
+            if ($converter instanceof FormQuestionDataConverterInterface) {
+                $converter->beforeConversion($raw_question);
+
                 $default_value = $converter->convertDefaultValue($raw_question);
                 $extra_data    = $converter->convertExtraData($raw_question);
+                $type_class    = $converter->getTargetQuestionType($raw_question);
             }
 
             $question = new Question();
