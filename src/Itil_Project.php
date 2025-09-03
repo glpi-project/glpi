@@ -182,6 +182,7 @@ class Itil_Project extends CommonDBRelation
                 'btn_msg' => _x('button', 'Add'),
                 'used'    => $used,
                 'ID'      => $ID,
+                'entity_restrict' => $project->getEntityID(),
             ];
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -196,6 +197,7 @@ class Itil_Project extends CommonDBRelation
                                     no_label: true,
                                     itemtypes: config('itil_types'),
                                     used: used,
+                                    entity_restrict: entity_restrict
                                 }) }}
                                 <div>
                                     <button class="btn btn-primary ms-3" type="submit" name="add" value="">{{ btn_msg }}</button>
