@@ -582,6 +582,8 @@ EOT;
 
     public function handleRequest(Request $request): Response
     {
+        global $CFG_GLPI;
+
         // Start an output buffer to capture any potential debug errors
         $current_output_buffer_level = ob_get_level();
         ob_start();
@@ -619,17 +621,20 @@ EOT;
             }
         }
 
-        try {
-            $this->handleAuth($request);
-        } catch (OAuthServerException $e) {
-            return new JSONResponse(
-                content: AbstractController::getErrorResponseBody(
-                    status: AbstractController::ERROR_INVALID_PARAMETER,
-                    title: 'Invalid OAuth token',
-                    detail: $e->getHint()
-                ),
-                status: 400
-            );
+        if ($CFG_GLPI['enable_hlapi']) {
+            // OAuth will only be used if the API is enabled
+            try {
+                $this->handleAuth($request);
+            } catch (OAuthServerException $e) {
+                return new JSONResponse(
+                    content: AbstractController::getErrorResponseBody(
+                        status: AbstractController::ERROR_INVALID_PARAMETER,
+                        title: 'Invalid OAuth token',
+                        detail: $e->getHint()
+                    ),
+                    status: 400
+                );
+            }
         }
 
         $this->original_request = clone $request;
