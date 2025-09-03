@@ -2657,7 +2657,7 @@ describe ('Conditions', () => {
             checkThatConditionExist(
                 0,
                 null,
-                'Steps - First section',
+                'Sections - First section',
                 'Is visible',
                 null,
                 null,
@@ -2725,7 +2725,7 @@ describe ('Conditions', () => {
         checkThatConditionExist(
             1,
             null,
-            'Steps - My section',
+            'Sections - My section',
             'Is visible',
             null,
             null
