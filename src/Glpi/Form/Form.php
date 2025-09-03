@@ -179,6 +179,7 @@ final class Form extends CommonDBTM implements
             'can_update'                   => $this->canUpdate(),
             'params'                       => $options,
             'question_types_manager'       => $types_manager,
+            'invalid_questions'            => $this->getInvalidQuestions(),
             'allow_unauthenticated_access' => FormAccessControlManager::getInstance()->allowUnauthenticatedAccess($this),
         ]);
         return true;
@@ -565,6 +566,29 @@ final class Form extends CommonDBTM implements
             $questions += $section->getQuestions();
         }
         return $questions;
+    }
+
+    /**  @return Question[] */
+    public function getInvalidQuestions(): array
+    {
+        $invalid_questions = [];
+        foreach ($this->getSections() as $section) {
+            // Its important to use the "+" operator here and not array_merge
+            // because the keys must be preserved
+            $questions_data = (new Question())->find(
+                [$section::getForeignKeyField() => $section->fields['id']],
+                'vertical_rank ASC, horizontal_rank ASC',
+            );
+            foreach ($questions_data as $row) {
+                $question = new Question();
+                $question->getFromResultSet($row);
+                $question->post_getFromDB();
+                if ($question->getQuestionType() === null) {
+                    $invalid_questions[] = $question;
+                }
+            }
+        }
+        return $invalid_questions;
     }
 
     /**
