@@ -72,6 +72,7 @@ use Glpi\Form\QuestionType\QuestionTypeDateTime;
 use Glpi\Form\QuestionType\QuestionTypeDropdown;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeFile;
+use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
@@ -224,17 +225,23 @@ class FormMigration extends AbstractPluginMigration
      *
      * @param int $value_operator The legacy value operator
      * @param mixed $value The value to compare against
+     * @param QuestionTypeInterface $question_type The question type interface
      * @return ValueOperator|null The corresponding value operator or null if not found
      */
-    private function getValueOperatorFromLegacy(int $value_operator, mixed $value): ?ValueOperator
+    private function getValueOperatorFromLegacy(int $value_operator, mixed $value, QuestionTypeInterface $question_type): ?ValueOperator
     {
+        // String condition handler support length comparison but with a different operator
+        $has_string_condition_handler = in_array($question_type::class, [
+            QuestionTypeShortText::class, QuestionTypeEmail::class, QuestionTypeLongText::class,
+        ]);
+
         return match ($value_operator) {
             1 => $value === "" ? ValueOperator::EMPTY : ValueOperator::EQUALS,
             2 => $value === "" ? ValueOperator::NOT_EMPTY : ValueOperator::NOT_EQUALS,
-            3 => ValueOperator::LESS_THAN,
-            4 => ValueOperator::GREATER_THAN,
-            5 => ValueOperator::LESS_THAN_OR_EQUALS,
-            6 => ValueOperator::GREATER_THAN_OR_EQUALS,
+            3 => $has_string_condition_handler ? ValueOperator::LENGTH_LESS_THAN : ValueOperator::LESS_THAN,
+            4 => $has_string_condition_handler ? ValueOperator::LENGTH_GREATER_THAN : ValueOperator::GREATER_THAN,
+            5 => $has_string_condition_handler ? ValueOperator::LENGTH_LESS_THAN_OR_EQUALS : ValueOperator::LESS_THAN_OR_EQUALS,
+            6 => $has_string_condition_handler ? ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS : ValueOperator::GREATER_THAN_OR_EQUALS,
             7 => ValueOperator::VISIBLE,
             8 => ValueOperator::NOT_VISIBLE,
             9 => ValueOperator::MATCH_REGEX,
@@ -1371,19 +1378,20 @@ class FormMigration extends AbstractPluginMigration
                 continue;
             }
 
+            $question_type = $question->getQuestionType();
+            if ($question_type === null) {
+                continue;
+            }
+
             $value = $raw_condition['show_value'];
             if (isset($question->fields['extra_data'])) {
-                $question_type = $question->getQuestionType();
-                if ($question_type === null) {
-                    continue;
-                }
                 $config = $question_type->getExtraDataConfig(
                     json_decode($question->fields['extra_data'], true)
                 );
                 $condition_handlers = $question_type->getConditionHandlers($config);
 
                 // Get the value operator before trying to find a compatible handler
-                $value_operator = $this->getValueOperatorFromLegacy($raw_condition['show_condition'], $value);
+                $value_operator = $this->getValueOperatorFromLegacy($raw_condition['show_condition'], $value, $question_type);
 
                 // If the value operator is null, we skip this condition
                 if ($value_operator === null) {
@@ -1437,7 +1445,7 @@ class FormMigration extends AbstractPluginMigration
                         'value'          => $value,
                         'item_type'      => 'question',
                         'item_uuid'      => $question->getUUID(),
-                        'value_operator' => $this->getValueOperatorFromLegacy($raw_condition['show_condition'], $value),
+                        'value_operator' => $this->getValueOperatorFromLegacy($raw_condition['show_condition'], $value, $question_type),
                         'logic_operator' => $this->getLogicOperatorFromLegacy($raw_condition['show_logic']),
                     ];
                 }
@@ -1450,7 +1458,7 @@ class FormMigration extends AbstractPluginMigration
                         'value'          => $value,
                         'item_type'      => 'question',
                         'item_uuid'      => $question->getUUID(),
-                        'value_operator' => $this->getValueOperatorFromLegacy($raw_condition['show_condition'], $value),
+                        'value_operator' => $this->getValueOperatorFromLegacy($raw_condition['show_condition'], $value, $question_type),
                         'logic_operator' => $this->getLogicOperatorFromLegacy($raw_condition['show_logic']),
                     ];
                 }
