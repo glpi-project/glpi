@@ -289,6 +289,14 @@ body.in_modal {
     }
 }
 
+.btn-group {
+    box-shadow: none;
+
+    .btn, input.form-control {
+        box-shadow: none;
+    }
+}
+
 .status {
     --tblr-status-color: var(--tblr-secondary);
 
