@@ -151,7 +151,7 @@ class PluginExtension extends AbstractExtension
 
                 foreach ($files as $file) {
                     $css_files[] = [
-                        'path' => "plugins/{$plugin}/{$file}",
+                        'path' => "/plugins/{$plugin}/{$file}",
                         'options' => [
                             'version' => $plugin_version,
                         ],
