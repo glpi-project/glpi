@@ -214,7 +214,7 @@ final class EditorManagerTest extends GLPITestCase
                     'question-2' => 'Question 2',
                     'question-3' => 'Question 3',
                 ],
-                'Steps' => [
+                'Sections' => [
                     'section-2' => 'Section 2',
                     'section-3' => 'Section 3',
                 ],
@@ -234,7 +234,7 @@ final class EditorManagerTest extends GLPITestCase
                     'question-2' => 'Question 2',
                     'question-3' => 'Question 3',
                 ],
-                'Steps' => [
+                'Sections' => [
                     'section-1' => 'Section 1',
                     'section-2' => 'Section 2',
                     'section-3' => 'Section 3',
@@ -256,7 +256,7 @@ final class EditorManagerTest extends GLPITestCase
                     'question-2' => 'Question 2',
                     'question-3' => 'Question 3',
                 ],
-                'Steps' => [
+                'Sections' => [
                     'section-1' => 'Section 1',
                     'section-2' => 'Section 2',
                     'section-3' => 'Section 3',
