@@ -378,4 +378,14 @@ TWIG;
             throw new RuntimeException();
         }
     }
+
+    #[Override]
+    public function getTargetQuestionType(array $rawData): string
+    {
+        return static::class;
+    }
+
+
+    #[Override]
+    public function beforeConversion(array $rawData): void {}
 }

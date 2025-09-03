@@ -456,4 +456,14 @@ class QuestionTypeItem extends AbstractQuestionType implements
     {
         return [];
     }
+
+    #[Override]
+    public function getTargetQuestionType(array $rawData): string
+    {
+        return static::class;
+    }
+
+
+    #[Override]
+    public function beforeConversion(array $rawData): void {}
 }

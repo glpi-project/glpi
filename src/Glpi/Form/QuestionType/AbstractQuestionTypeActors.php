@@ -622,4 +622,14 @@ TWIG;
 
         return $default_value_data;
     }
+
+    #[Override]
+    public function getTargetQuestionType(array $rawData): string
+    {
+        return static::class;
+    }
+
+
+    #[Override]
+    public function beforeConversion(array $rawData): void {}
 }

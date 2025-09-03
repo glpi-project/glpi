@@ -38,10 +38,11 @@ namespace Glpi\Form\QuestionType;
 use Config;
 use Document;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Override;
 
-final class QuestionTypeFile extends AbstractQuestionType
+final class QuestionTypeFile extends AbstractQuestionType implements FormQuestionDataConverterInterface
 {
     #[Override]
     public function prepareEndUserAnswer(Question $question, mixed $answer): mixed
@@ -137,5 +138,27 @@ TWIG;
     public function isAllowedForUnauthenticatedAccess(): bool
     {
         return Config::allowUnauthenticatedUploads();
+    }
+
+    #[Override]
+    public function getTargetQuestionType(array $rawData): string
+    {
+        return self::class;
+    }
+
+
+    #[Override]
+    public function beforeConversion(array $rawData): void {}
+
+    #[Override]
+    public function convertDefaultValue(array $rawData): null
+    {
+        return null;
+    }
+
+    #[Override]
+    public function convertExtraData(array $rawData): null
+    {
+        return null;
     }
 }

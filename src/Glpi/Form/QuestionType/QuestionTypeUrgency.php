@@ -212,4 +212,14 @@ TWIG;
     {
         return null;
     }
+
+    #[Override]
+    public function getTargetQuestionType(array $rawData): string
+    {
+        return self::class;
+    }
+
+
+    #[Override]
+    public function beforeConversion(array $rawData): void {}
 }

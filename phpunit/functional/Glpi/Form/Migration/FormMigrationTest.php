@@ -59,6 +59,7 @@ use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
 use Glpi\Form\Migration\FormMigration;
+use Glpi\Form\Migration\TypesConversionMapper;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\AbstractQuestionTypeSelectable;
 use Glpi\Form\QuestionType\QuestionTypeActorsDefaultValueConfig;
@@ -86,6 +87,7 @@ use Glpi\Form\Section;
 use Glpi\Message\MessageType;
 use Glpi\Migration\PluginMigrationResult;
 use Glpi\Tests\FormTesterTrait;
+use GlpiPlugin\Tester\Form\QuestionTypeIpConverter;
 use Location;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -586,7 +588,10 @@ final class FormMigrationTest extends DbTestCase
         $exportable_questions = array_filter($questions, function ($question) use ($migration) {
             return in_array(
                 $question->getQuestionType()::class,
-                array_values($migration->getTypesConvertMap())
+                array_map(
+                    fn($type) => $type !== null ? $type::class : null,
+                    $migration->getTypesConvertMap(),
+                ),
             );
         });
 
@@ -3075,6 +3080,44 @@ final class FormMigrationTest extends DbTestCase
         $this->assertContains(
             'A visibility condition used in "Question" "Source question with unsupported value operator" (Form "Form with unsupported value operator") with value operator "Is greater than" is not supported by the question type. It will be ignored.',
             $warnings,
+        );
+    }
+
+    public function testPluginIntegration(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Arrange: register the IP question converter and create a form with
+        // an IP question.
+        TypesConversionMapper::getInstance()->registerPluginQuestionTypeConverter(
+            'ip',
+            new QuestionTypeIpConverter(),
+        );
+        $DB->insert('glpi_plugin_formcreator_forms', [
+            'name' => 'Form with ip address question',
+        ]);
+        $form_id = $DB->insertId();
+        $DB->insert('glpi_plugin_formcreator_sections', [
+            'plugin_formcreator_forms_id' => $form_id,
+        ]);
+        $section_id = $DB->insertId();
+        $DB->insert('glpi_plugin_formcreator_questions', [
+            'name' => 'My IP question',
+            'fieldtype' => 'ip',
+            'plugin_formcreator_sections_id' => $section_id,
+        ]);
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $result = $migration->execute();
+
+        // Assert: make sure the question type was migrated as expected (short text)
+        $this->assertTrue($result->isFullyProcessed());
+        $ip_question = getItemByTypeName(Question::class, 'My IP question');
+        $this->assertInstanceOf(
+            QuestionTypeShortText::class,
+            $ip_question->getQuestionType()
         );
     }
 }
