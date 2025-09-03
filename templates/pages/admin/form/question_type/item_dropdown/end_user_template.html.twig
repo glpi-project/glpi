@@ -34,12 +34,7 @@
 
 {{ fields.hiddenField(
     question.getEndUserInputName() ~ '[itemtype]',
-    itemtype,
-    '',
-    {
-        'no_label': true,
-        'mb': ''
-    }
+    itemtype
 ) }}
 {{ fields.dropdownField(
     itemtype,

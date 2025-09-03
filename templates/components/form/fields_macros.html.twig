@@ -424,7 +424,7 @@
    })) }}
 {% endmacro %}
 
-{% macro hiddenField(name, value, label = '', options = {}) %}
+{% macro hiddenField(name, value, options = {}) %}
     {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
     {{ _inputs.hidden(name, value, options) }}
 {% endmacro %}
