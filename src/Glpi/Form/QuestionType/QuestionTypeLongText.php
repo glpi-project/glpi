@@ -242,7 +242,7 @@ TWIG;
     #[Override]
     public function getTargetQuestionType(array $rawData): string
     {
-        return static::class;
+        return self::class;
     }
 
 
