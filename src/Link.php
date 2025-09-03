@@ -595,7 +595,7 @@ TWIG, $buttons_params);
                 if ($manuallink->canUpdateItem()) {
                     $actions .= '<a href="' . htmlescape(ManualLink::getFormURLWithID($row[$item->getIndexName()])) . '" title="' . _sx('button', 'Update') . '">';
                     $actions .= '<i class="ti ti-edit"></i>';
-                    $actions .= '<span class="sr-only">' . _x('button', 'Update') . '</span>';
+                    $actions .= '<span class="sr-only">' . _sx('button', 'Update') . '</span>';
                     $actions .= '</a>';
                 }
                 $entry['actions'] = $actions;

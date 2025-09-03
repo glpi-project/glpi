@@ -216,10 +216,10 @@ class Infocom extends CommonDBChild
         }
         switch ($field) {
             case 'sink_type':
-                return self::getAmortTypeName($values[$field]);
+                return htmlescape(self::getAmortTypeName($values[$field]));
 
             case 'alert':
-                return self::getAlertName($values[$field]);
+                return htmlescape(self::getAlertName($values[$field]));
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -648,8 +648,6 @@ class Infocom extends CommonDBChild
         if (!$CFG_GLPI["use_notifications"]) {
             return 0;
         }
-
-        $message        = [];
         $cron_status    = 0;
         $items_infos    = [];
         $items_messages = [];
@@ -692,6 +690,8 @@ class Infocom extends CommonDBChild
                 ],
             ]);
 
+            $items_messages[$entity] = [];
+
             foreach ($iterator as $data) {
                 if ($item_infocom = getItemForItemtype($data["itemtype"])) {
                     if ($item_infocom->getFromDB($data["items_id"])) {
@@ -704,23 +704,21 @@ class Infocom extends CommonDBChild
                             $item_infocom->getName()
                         );
                         //TRANS: %1$s is the warranty end date and %2$s the name of the item
-                        $message = sprintf(
+                        $items_messages[$entity][] = sprintf(
                             __('Item reaching the end of warranty on %1$s: %2$s'),
                             $warranty,
                             $name
-                        ) . "<br>";
+                        );
 
                         $data['warrantyexpiration']        = $warranty;
                         $data['item_name']                 = $item_infocom->getName();
                         $data['is_deleted']                = $item_infocom->maybeDeleted() ? (int) $item_infocom->fields['is_deleted'] : 0;
                         $items_infos[$entity][$data['id']] = $data;
-
-                        if (!isset($items_messages[$entity])) {
-                            $items_messages[$entity] = __('No item reaching the end of warranty.') . "<br>";
-                        }
-                        $items_messages[$entity] .= $message;
                     }
                 }
+            }
+            if (count($items_messages[$entity]) === 0) {
+                $items_messages[$entity] = __('No item reaching the end of warranty.');
             }
         }
 
@@ -734,24 +732,23 @@ class Infocom extends CommonDBChild
                     'items'       => $not_deleted_items,
                 ])
             ) {
-                $message     = $items_messages[$entity];
+                $messages    = $items_messages[$entity];
                 $cron_status = 1;
                 if ($task) {
                     $task->log(sprintf(
                         __('%1$s: %2$s') . "\n",
                         Dropdown::getDropdownName("glpi_entities", $entity),
-                        $message
+                        implode("\n", $messages)
                     ));
                     $task->addVolume(1);
                 } else {
-                    Session::addMessageAfterRedirect(htmlescape(sprintf(
-                        __('%1$s: %2$s'),
-                        Dropdown::getDropdownName(
-                            "glpi_entities",
-                            $entity
-                        ),
-                        $message
-                    )));
+                    Session::addMessageAfterRedirect(
+                        sprintf(
+                            __s('%1$s: %2$s'),
+                            htmlescape(Dropdown::getDropdownName("glpi_entities", $entity)),
+                            implode('<br>', array_map('htmlescape', $messages))
+                        )
+                    );
                 }
 
                 $alert             = new Alert();
@@ -1012,8 +1009,8 @@ class Infocom extends CommonDBChild
 
         $out = '';
         if ($item->canView()) {
-            $out .= "<span class='infocom_link' style='cursor:pointer' data-itemtype='{$itemtype}' data-items_id='{$device_id}'>
-               <img src=\"" . $CFG_GLPI["root_doc"] . "/pics/dollar$add.png\" alt=\"$text\" title=\"$text\">
+            $out .= "<span class='infocom_link' style='cursor:pointer' data-itemtype='" . htmlescape($itemtype) . "' data-items_id='" . htmlescape($device_id) . "'>
+               <img src=\"" . htmlescape($CFG_GLPI["root_doc"] . "/pics/dollar$add.png") . "\" alt=\"$text\" title=\"$text\">
                </span>";
             $form_url = Infocom::getFormURL();
             $html = <<<HTML
@@ -1031,10 +1028,10 @@ class Infocom extends CommonDBChild
                     </div>
                 </div>
 HTML;
-            $js = <<<JS
+            $js = "
                 $(() => {
                     if ($('#infocom_display_modal').length === 0) {
-                        $('body').append(`$html`);
+                        $('body').append(`" . jsescape($html) . "`);
                         const modal_el = $('#infocom_display_modal');
                         $(document).on('click', '.infocom_link', (e) => {
                             modal_el.data('itemtype', e.currentTarget.getAttribute('data-itemtype'));
@@ -1043,12 +1040,12 @@ HTML;
                         });
                         modal_el.on('shown.bs.modal', () => {
                             $('#iframeinfocom_display_modal')
-                                .attr('src', '{$form_url}?itemtype=' + modal_el.data('itemtype') + '&items_id=' + modal_el.data('items_id'))
+                                .attr('src', '" . jsescape($form_url) . "?itemtype=' + modal_el.data('itemtype') + '&items_id=' + modal_el.data('items_id'))
                                 .removeClass('hidden');
                         });
                     }
                 });
-JS;
+            ";
             $out .= Html::scriptBlock($js);
         }
         if ($display) {

@@ -278,7 +278,7 @@ TWIG;
                     $related_object = new $default_itemtype();
                     $related_object->getFromDB($object->fields[$default_items_id]);
                     $name = htmlescape($related_object->getName());
-                    $default_object_link = "<a href='" . $object->getLinkURL() . "'" . $name . ">" . $name . "</a>";
+                    $default_object_link = "<a href='" . htmlescape($object->getLinkURL()) . "'" . $name . ">" . $name . "</a>";
                 }
 
                 $entries[] = [
@@ -394,7 +394,7 @@ TWIG, $twig_params);
                 $relation_item = new Asset_PeripheralAsset();
                 $show_checkbox = $relation_item->can($result['id'], UPDATE) || $relation_item->can($result['id'], PURGE);
                 $subtable['entries'][] = [
-                    'chk' => $show_checkbox ? "<input type='checkbox' name='Glpi\\Asset\\Asset_PeripheralAsset[{$result['id']}]'>" : '',
+                    'chk' => $show_checkbox ? "<input type='checkbox' name='Glpi\\Asset\\Asset_PeripheralAsset[" . ((int) $result['id']) . "]'>" : '',
                     'type' => $peripheral::getTypeName(),
                     'item' => $peripheral->getLink(),
                     'serial' => $peripheral->fields['serial'],
@@ -523,7 +523,7 @@ TWIG, $twig_params);
             if ($link_item = ItemVirtualMachine::findVirtualMachine($item_vm->fields)) {
                 $item = new $itemtype();
                 if ($item->can($link_item, READ)) {
-                    $url  = "<a href='" . $item->getFormURLWithID($link_item) . "'>";
+                    $url  = "<a href='" . htmlescape($item->getFormURLWithID($link_item)) . "'>";
                     $url .= htmlescape($item->fields["name"]) . "</a>";
 
                     $tooltip = "<table><tr><td>" . __s('Name') . "</td><td>" . htmlescape($item->fields['name'])
@@ -904,10 +904,10 @@ TWIG, $twig_params);
                     $object_item_type = getItemForItemtype($type);
                     $object_item_type->getFromDB($data['id']);
                     $object_name = htmlescape($data['name']);
-                    $object_link = "<a href='" . $object_item_type->getLinkURL() . "'>{$object_name}</a>";
+                    $object_link = "<a href='" . htmlescape($object_item_type->getLinkURL()) . "'>{$object_name}</a>";
 
                     $subtable['entries'][] = [
-                        'chk' => $show_checkbox ? "<input type='checkbox' name='{$type}[{$data['id']}]'>" : '',
+                        'chk' => $show_checkbox ? "<input type='checkbox' name='" . htmlescape("{$type}[{$data['id']}") . "]'>" : '',
                         'item' => $object_link,
                         'placeholder_1' => '',
                         'placeholder_2' => '',
@@ -1004,7 +1004,7 @@ TWIG, $twig_params);
 
             $show_checkbox = $domain_item->can($row['id'], UPDATE) || $domain_item->can($row['id'], PURGE);
             $subtable['entries'][] = [
-                'chk' => $show_checkbox ? "<input type='checkbox' name='Domain_Item[{$row['id']}]'>" : '',
+                'chk' => $show_checkbox ? "<input type='checkbox' name='Domain_Item[" . ((int) $row['id']) . "]'>" : '',
                 'item' => $link,
                 'relation' => $relation_name,
                 'placeholder_1' => '',
@@ -1055,8 +1055,8 @@ TWIG, $twig_params);
         $twig_params = [
             'check_all_msg' => __('Check all'),
             'uncheck_all_msg' => __('Uncheck all'),
-            'unlock_msg' => _sx('button', 'Unlock'),
-            'purge_msg' => _sx('button', 'Delete permanently'),
+            'unlock_msg' => _x('button', 'Unlock'),
+            'purge_msg' => _x('button', 'Delete permanently'),
         ];
         if (count($rendered_subtables) > 0) {
             // language=Twig

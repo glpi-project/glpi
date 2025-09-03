@@ -194,16 +194,6 @@ class Item_OperatingSystem extends CommonDBRelation
 
         $canedit = $item->canEdit($item->getID());
 
-        //multi OS for an item is not an existing feature right now.
-        /*if ($canedit && $number >= 1
-           && !(!empty($withtemplate) && ($withtemplate == 2))) {
-          echo "<div class='center firstbloc'>".
-             "<a class='btn btn-primary' href='" . Toolbox::getItemTypeFormURL(self::getType()) . "?items_id=" . $item->getID() .
-             "&amp;itemtype=" . $item->getType() . "&amp;withtemplate=" . $withtemplate."'>";
-          echo __('Add an operating system');
-          echo "</a></div>\n";
-        }*/
-
         if ($number <= 1) {
             $id = -1;
             $instance = new self();

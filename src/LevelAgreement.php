@@ -633,16 +633,16 @@ TWIG, $twig_params);
             case 'number_time':
                 switch ($values['definition_time']) {
                     case 'minute':
-                        return sprintf(_n('%d minute', '%d minutes', $values[$field]), $values[$field]);
+                        return htmlescape(sprintf(_n('%d minute', '%d minutes', $values[$field]), $values[$field]));
                     case 'hour':
-                        return sprintf(_n('%d hour', '%d hours', $values[$field]), $values[$field]);
+                        return htmlescape(sprintf(_n('%d hour', '%d hours', $values[$field]), $values[$field]));
                     case 'day':
-                        return sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]);
+                        return htmlescape(sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]));
                 }
                 break;
 
             case 'type':
-                return self::getOneTypeName($values[$field]);
+                return htmlescape(self::getOneTypeName($values[$field]));
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

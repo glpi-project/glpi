@@ -330,7 +330,7 @@ JS);
                     echo '<tr class=tab_bg_1><div></div>';
                     echo '<td class="impact-left" width="15%">';
                     echo '<div><a target="_blank" href="'
-                    . $itemtype_item['stored']->getLinkURL() . '">'
+                    . htmlescape($itemtype_item['stored']->getLinkURL()) . '">'
                     . htmlescape($itemtype_item['stored']->getFriendlyName()) . '</a></div>';
                     echo '</td>';
                     echo '<td width="40%"><div>';
@@ -385,7 +385,7 @@ JS);
         // Toolbar
         echo '<div class="impact-list-toolbar">';
         if ($has_impact) {
-            echo '<a target="_blank" href="' . htmlescape($CFG_GLPI['root_doc']) . '/front/impactcsv.php?itemtype=' . htmlescape($impact_item->fields['itemtype']) . '&items_id=' . htmlescape($impact_item->fields['items_id']) . '">';
+            echo '<a target="_blank" href="' . htmlescape($CFG_GLPI['root_doc'] . '/front/impactcsv.php?itemtype=' . $impact_item->fields['itemtype'] . '&items_id=' . $impact_item->fields['items_id']) . '">';
             echo '<i class="ti ti-download impact-pointer impact-list-tools" title="' . __s('Export to CSV') . '"></i>';
             echo '</a>';
         }
@@ -395,7 +395,7 @@ JS);
         echo '</div>';
 
         // Settings dialog
-        $setting_dialog = "''";
+        $setting_dialog = '';
         if ($can_update && $impact_context) {
             $rand = mt_rand();
 
@@ -423,7 +423,6 @@ JS);
             ]);
             $setting_dialog .=  Html::submit(__('Save'), ['name' => 'update']);
             $setting_dialog .= Html::closeForm(false);
-            $setting_dialog = json_encode($setting_dialog);
         }
 
         echo '</div>';
@@ -501,8 +500,8 @@ TWIG, $twig_params);
             echo Html::scriptBlock('
             $("#impact-list-settings").click(function() {
                glpi_html_dialog({
-                  title: ' . json_encode(__("Settings")) . ',
-                  body: ' . $setting_dialog . ',
+                  title: "' . jsescape(__("Settings")) . '",
+                  body: "' . jsescape($setting_dialog) . '",
                });
             });
 
@@ -575,11 +574,11 @@ TWIG, $twig_params);
             }
             $extra = 'id="' . $id . '" style="background-color:' . htmlescape($user->fields["priority_$priority"]) . '; cursor:pointer;"';
 
-            echo Html::scriptBlock(<<<JS
+            echo Html::scriptBlock('
                 $(document).on("click", "#$id", () => {
-                    window.open("$link");
+                    window.open("' . jsescape($link) . '");
                 });
-JS);
+            ');
         }
 
         echo '<td class="text-center" ' . $extra . '><div>' . $count . '</div></td>';
@@ -790,7 +789,7 @@ JS);
             $('#sviewgraph i').addClass('selected');
 
             if (window.GLPIImpact !== undefined && GLPIImpact.cy === null) {
-               GLPIImpact.buildNetwork($graph, $params, $readonly);
+               GLPIImpact.buildNetwork($graph, $params, " . ($readonly ? 'true' : 'false') . ");
             }
          }
 
@@ -865,7 +864,7 @@ JS);
 
                $.ajax({
                   type: "GET",
-                  url: "' . htmlescape($CFG_GLPI['root_doc']) . '/ajax/impact.php",
+                  url: CFG_GLPI.root_doc + "/ajax/impact.php",
                   data: {
                      itemtype: values[0],
                      items_id: values[1],
@@ -1054,7 +1053,7 @@ JS);
         echo '<h4><i class="ti ti-chevron-left"></i><img><span></span></h4>';
         echo Html::input("impact-side-filter-assets", [
             'id' => 'impact-side-filter-assets',
-            'placeholder' => __s('Filter assets...'),
+            'placeholder' => __('Filter assets...'),
         ]);
 
         echo '<div class="impact-side-search-panel">';
