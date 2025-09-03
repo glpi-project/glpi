@@ -73,9 +73,7 @@
                           {% elseif field is same as 'template_name' and withtemplate == 1 and no_header %}
                               {{ fields.autoNameField('template_name', item, __('Template name'), 0, specific_field_options) }}
                           {% elseif item.isField('is_active') and field is same as '_template_is_active' and withtemplate >= 1 %}
-                              {{ fields.hiddenField('is_active', item.fields['is_active'], __('Is active'), {
-                                  'add_field_html': __('No')
-                              }) }}
+                              {{ fields.hiddenField('is_active', item.fields['is_active']) }}
                           {% elseif field is same as 'states_id' and item is usingtrait('Glpi\\Features\\State') %}
                               {{ fields.dropdownField(
                                   'State',

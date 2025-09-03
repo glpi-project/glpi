@@ -424,7 +424,16 @@
    })) }}
 {% endmacro %}
 
-{% macro hiddenField(name, value, label = '', options = {}) %}
+{% macro hiddenField(name, value, options = {}) %}
+    {% if options is not iterable %}
+        {#
+            If `options` is not iterable, it means that this macro was used
+            with its previous signature (name, value, label, options = {}).
+            We get the `options` value from the extra positional arguments (available in `varargs`).
+            @TODO Add a deprecation in GLPI 11.1.
+         #}
+        {% set options = varargs[0]|default({}) %}
+    {% endif %}
     {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
     {{ _inputs.hidden(name, value, options) }}
 {% endmacro %}

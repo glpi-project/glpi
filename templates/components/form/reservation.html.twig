@@ -48,11 +48,7 @@
             ) }}
             {{ fields.hiddenField(
                 'items[' ~ item.id ~ ']',
-                item.id,
-                '',
-                {
-                    add_field_class: 'd-none'
-                }
+                item.id
             ) }}
         {% endfor %}
     {% else %}
