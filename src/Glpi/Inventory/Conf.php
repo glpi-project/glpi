@@ -281,30 +281,6 @@ class Conf extends CommonGLPI
     }
 
     /**
-     * Import inventory files and display result.
-     *
-     * @param array $files $_FILES
-     *
-     * @return void
-     */
-    public function displayImportFiles($files)
-    {
-        $to_import = [];
-
-        foreach ($files['inventory_files']['name'] as $filekey => $filename) {
-            if ($files['inventory_files']['error'][$filekey] == 0) {
-                $to_import[$filename] = $files['inventory_files']['tmp_name'][$filekey];
-            }
-        }
-
-        TemplateRenderer::getInstance()->display('pages/admin/inventory/upload_result.html.twig', [
-            'imported_files' => $this->importFiles($to_import),
-        ]);
-
-        Html::displayMessageAfterRedirect(true);
-    }
-
-    /**
      * Get possible actions for stale agents
      *
      * @return array

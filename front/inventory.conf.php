@@ -43,9 +43,7 @@ Html::header(__('Inventory'), '', "admin", "glpi\inventory\inventory");
 
 $conf = new Conf();
 
-if (isset($_FILES['inventory_files'])) {
-    $conf->displayImportFiles($_FILES);
-} elseif (isset($_POST['update'])) {
+if (isset($_POST['update'])) {
     unset($_POST['update']);
     if ($conf->saveConf($_POST)) {
         Session::addMessageAfterRedirect(

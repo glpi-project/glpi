@@ -32,7 +32,7 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-<form method='POST' enctype='multipart/form-data'>
+<form method='POST' enctype='multipart/form-data' action="{{ path('Inventory/ImportFiles') }}">
     <h2>
         {{ __("Import inventory files") }}
     </h2>

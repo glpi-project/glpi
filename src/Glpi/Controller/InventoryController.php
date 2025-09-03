@@ -40,6 +40,7 @@ use Glpi\Http\RedirectResponse;
 use Glpi\Inventory\Conf;
 use RefusedEquipment;
 use Session;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -139,5 +140,27 @@ final class InventoryController extends AbstractController
         $redirect_url = $refused->handleInventoryRequest($inventory_request);
         $response = new RedirectResponse($redirect_url);
         return $response;
+    }
+
+    #[Route("/Inventory/ImportFiles", name: "glpi_inventory_report", methods: ['POST'])]
+    public function report(Request $request): Response
+    {
+        $conf = new Conf();
+
+        $to_import = [];
+        foreach ($request->files->get('inventory_files') as $file) {
+            if ($file instanceof UploadedFile && $file->isValid()) {
+                $to_import[$file->getClientOriginalName()] = $file->getPathname();
+            }
+        }
+
+        $imported_files = $conf->importFiles($to_import);
+
+        return $this->render(
+            'pages/admin/inventory/upload_result.html.twig',
+            [
+                'imported_files' => $imported_files,
+            ]
+        );
     }
 }
