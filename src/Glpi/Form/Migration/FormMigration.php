@@ -232,7 +232,7 @@ class FormMigration extends AbstractPluginMigration
     {
         // String condition handler support length comparison but with a different operator
         $has_string_condition_handler = in_array($question_type::class, [
-            QuestionTypeShortText::class, QuestionTypeEmail::class, QuestionTypeLongText::class
+            QuestionTypeShortText::class, QuestionTypeEmail::class, QuestionTypeLongText::class,
         ]);
 
         return match ($value_operator) {
