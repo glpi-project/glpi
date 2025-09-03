@@ -567,7 +567,7 @@ class Item_SoftwareLicense extends CommonDBRelation
             }
 
             if (count($target_types)) {
-                echo "<tr class='tab_bg_2'><td colspan='2'>{$data['completename']}</td></tr>";
+                echo "<tr class='tab_bg_2'><td colspan='2'>" . htmlescape($data['completename']) . "</td></tr>";
                 foreach ($target_types as $itemtype) {
                     $nb = self::countForLicense($softwarelicense_id, $data['id'], $itemtype);
                     $typename = htmlescape($itemtype::getTypeName());
@@ -635,7 +635,7 @@ class Item_SoftwareLicense extends CommonDBRelation
             && ($license->getField('number') == -1 || $number < $license->getField('number')
             || $license->getField('allow_overquota'))
         ) {
-            echo "<form method='post' action='" . Item_SoftwareLicense::getFormURL() . "'>";
+            echo "<form method='post' action='" . htmlescape(Item_SoftwareLicense::getFormURL()) . "'>";
             echo "<input type='hidden' name='softwarelicenses_id' value='$searchID'>";
 
             echo "<table class='tab_cadre_fixe'>";
@@ -690,12 +690,11 @@ JAVASCRIPT;
 
             echo "</table>";
             Html::closeForm();
-            $ajax_url = $CFG_GLPI['root_doc'] . '/ajax/dropdownAllItems.php';
             $js = <<<JAVASCRIPT
 function updateItemDropdown(itemtype_el) {
    $.ajax({
       method: "POST",
-      url: "$ajax_url",
+      url: CFG_GLPI.root_doc + '/ajax/dropdownAllItems.php',
       data: {
          name: 'items_id',
          idtable: itemtype_el.value
@@ -1023,7 +1022,7 @@ JAVASCRIPT;
 
                 $itemname = htmlescape($itemname);
                 if ($canshowitems[$data['item_type']]) {
-                    echo "<td><a href='" . $data['item_type']::getFormURLWithID($data['iID']) . "'>$itemname</a></td>";
+                    echo "<td><a href='" . htmlescape($data['item_type']::getFormURLWithID($data['iID'])) . "'>$itemname</a></td>";
                 } else {
                     echo "<td>" . $itemname . "</td>";
                 }

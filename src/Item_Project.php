@@ -138,8 +138,8 @@ class Item_Project extends CommonDBRelation
                     'type' => $itemtype_name,
                     'name' => $namelink,
                     'entity' => $entity_names_cache[$data['entity']],
-                    'serial' => isset($data["serial"]) ? htmlescape($data["serial"]) : '-',
-                    'otherserial' => isset($data["otherserial"]) ? htmlescape($data["otherserial"]) : '-',
+                    'serial' => $data["serial"] ?? '-',
+                    'otherserial' => $data["otherserial"] ?? '-',
                 ];
                 $used[$itemtype][$data['id']] = $data['id'];
             }

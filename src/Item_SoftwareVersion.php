@@ -789,7 +789,7 @@ class Item_SoftwareVersion extends CommonDBRelation
                             $serial = sprintf(__('%1$s (%2$s)'), $serial, $lic['type']);
                         }
 
-                        echo "<a href='" . SoftwareLicense::getFormURLWithID($lic['id']) . "'>" . htmlescape($lic['name']);
+                        echo "<a href='" . htmlescape(SoftwareLicense::getFormURLWithID($lic['id'])) . "'>" . htmlescape($lic['name']);
                         echo "</a> - " . htmlescape($serial);
 
                         echo "<br>";

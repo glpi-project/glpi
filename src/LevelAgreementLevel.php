@@ -175,7 +175,7 @@ abstract class LevelAgreementLevel extends RuleTicket
             case 'execution_time':
                 $possible_values = self::getExecutionTimes();
                 if (isset($possible_values[$values[$field]])) {
-                    return $possible_values[$values[$field]];
+                    return htmlescape($possible_values[$values[$field]]);
                 }
                 break;
         }

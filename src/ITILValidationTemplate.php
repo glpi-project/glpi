@@ -58,7 +58,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
     {
         if (isset($input['validationsteps_id']) && !(new ValidationStep())->getFromDB($input['validationsteps_id'])) {
             Session::addMessageAfterRedirect(
-                htmlescape(__('Invalid approval step')),
+                __s('Invalid approval step'),
                 false,
                 ERROR
             );

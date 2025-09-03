@@ -613,7 +613,7 @@ abstract class ITILTemplate extends CommonDropdown
 
         switch ($ma->getAction()) {
             case 'merge':
-                echo "&nbsp;" . $_SESSION['glpiactive_entity_shortname'];
+                echo "&nbsp;" . htmlescape($_SESSION['glpiactive_entity_shortname']);
                 echo "<br><br>" . Html::submit(_x('button', 'Merge'), ['name' => 'massiveaction']);
                 return true;
         }

@@ -390,12 +390,12 @@ class ITILSolution extends CommonDBChild
                 $value = $values[$field];
                 $statuses = self::getStatuses();
 
-                return ($statuses[$value] ?? $value);
+                return htmlescape($statuses[$value] ?? $value);
             case 'itemtype':
                 if (in_array($values['itemtype'], ['Ticket', 'Change', 'Problem'])) {
-                    return $values['itemtype']::getTypeName(1);
+                    return htmlescape($values['itemtype']::getTypeName(1));
                 }
-                return $values['itemtype'];
+                return htmlescape($values['itemtype']);
         }
 
         return parent::getSpecificValueToDisplay($field, $values, $options);

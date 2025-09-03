@@ -421,19 +421,19 @@ class Item_Rack extends CommonDBRelation
         $rack_add_tip = __s('Insert an item here');
         $ajax_url     = $CFG_GLPI['root_doc'] . "/ajax/rack.php";
 
-        $js = <<<JAVASCRIPT
-      // init variables to pass to js/rack.js
-      var grid_link_url      = "{$link->getFormURL()}";
-      var grid_item_ajax_url = "{$ajax_url}";
-      var grid_rack_id       = $ID;
-      var grid_rack_units    = {$rack->fields['number_units']};
-      var grid_rack_add_tip  = "{$rack_add_tip}";
+        $js = '
+            // init variables to pass to js/rack.js
+            var grid_link_url      = "' . jsescape($link->getFormURL()) . '";
+            var grid_item_ajax_url = "' . $ajax_url . '";
+            var grid_rack_id       = ' . $ID . ';
+            var grid_rack_units    = ' . ((int) $rack->fields['number_units']) . ';
+            var grid_rack_add_tip  = "' . jsescape($rack_add_tip) . '";
 
-      $(function() {
-         // initialize grid with function defined in js/rack.js
-         initRack();
-      });
-JAVASCRIPT;
+            $(function() {
+                // initialize grid with function defined in js/rack.js
+                initRack();
+            });
+        ';
         echo Html::scriptBlock($js);
 
         return true;
@@ -905,10 +905,10 @@ JAVASCRIPT;
         }
 
         if (!empty($icon)) {
-            $icon = "<i class='item_rack_icon $icon'></i>";
+            $icon = "<i class='item_rack_icon " . htmlescape($icon) . "'></i>";
         }
 
-        return $icon;
+        return "";
     }
 
     public function prepareInputForAdd($input)

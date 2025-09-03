@@ -105,8 +105,8 @@ class Item_Plug extends CommonDBRelation
             $rand = mt_rand();
             echo "\n<form id='form_device_add$rand' name='form_device_add$rand'
                action='" . htmlescape(Toolbox::getItemTypeFormURL(self::class)) . "' method='post'>\n";
-            echo "\t<input type='hidden' name='" . static::$items_id_1 . "' value='$ID'>\n";
-            echo "\t<input type='hidden' name='itemtype' value='" . $item::class . "'>\n";
+            echo "\t<input type='hidden' name='" . htmlescape(static::$items_id_1) . "' value='$ID'>\n";
+            echo "\t<input type='hidden' name='itemtype' value='" . htmlescape($item::class) . "'>\n";
             echo "<table class='tab_cadre_fixe'><tr class='tab_bg_1'><td>";
             echo "<label for='dropdown_plugs_id$rand'>" . __s('Add a new plug') . "</label></td><td>";
             Plug::dropdown([

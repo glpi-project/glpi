@@ -305,12 +305,12 @@ class ItemVirtualMachine extends CommonDBChild
                 'name'                      => $vm->getLink(),
                 'comment'                   => $virtualmachine['comment'],
                 'dynamic'                   => $virtualmachine['is_dynamic'] ? __('Yes') : __('No'),
-                'virtualmachinesystems_id'  => $system ? $system->getLink() : NOT_AVAILABLE,
-                'virtualmachinestates_id'   => $state ? $state->getLink() : NOT_AVAILABLE,
+                'virtualmachinesystems_id'  => $system ? $system->getLink() : htmlescape(NOT_AVAILABLE),
+                'virtualmachinestates_id'   => $state ? $state->getLink() : htmlescape(NOT_AVAILABLE),
                 'uuid'                      => $virtualmachine['uuid'],
                 'vcpu'                      => $virtualmachine['vcpu'],
                 'ram'                       => $virtualmachine['ram'],
-                'asset'                     => $type ? $type->getLink() : NOT_AVAILABLE,
+                'asset'                     => $type ? $type->getLink() : htmlescape(NOT_AVAILABLE),
             ];
         }
 
