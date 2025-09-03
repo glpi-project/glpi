@@ -146,7 +146,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
         } else {
             echo "<td class='subheader'";
         }
-        echo " colspan='" . $this->colSpan . "'>";
+        echo " colspan='" . ((int) $this->colSpan) . "'>";
         if ($with_content) {
             $this->displayContent();
         } else {

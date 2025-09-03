@@ -572,7 +572,7 @@ class ToolboxTest extends DbTestCase
 
         $content_text   = '<img id="' . $img_tag . '" width="10" height="10" />';
         $expected_url   = str_replace('{docid}', $doc_id, $expected_url);
-        $expected_result = '<a href="' . $expected_url . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . $expected_url . '" /></a>';
+        $expected_result = '<a href="' . htmlescape($expected_url) . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . htmlescape($expected_url) . '" /></a>';
 
 
         $this->assertEquals(
@@ -629,7 +629,7 @@ class ToolboxTest extends DbTestCase
 
         $content_text   = '<img id="' . $img_tag . '" width="10" height="10" />';
         $expected_url   = str_replace('{docid}', $doc_id, $expected_url);
-        $expected_result = '<a href="' . $expected_url . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . $expected_url . '" /></a>';
+        $expected_result = '<a href="' . htmlescape($expected_url) . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . htmlescape($expected_url) . '" /></a>';
 
         // Get result
         $CFG_GLPI['url_base'] = $url_base;
@@ -693,7 +693,7 @@ class ToolboxTest extends DbTestCase
             $expected_url    .= '&itemtype=' . $item->getType();
             $expected_url    .= '&items_id=' . $item->fields['id'];
             $content_text    .= '<img id="' . $doc['tag'] . '" width="10" height="10" />';
-            $expected_result .= '<a href="' . $expected_url . '" target="_blank" ><img alt="' . $doc['tag'] . '" width="10" src="' . $expected_url . '" /></a>';
+            $expected_result .= '<a href="' . htmlescape($expected_url) . '" target="_blank" ><img alt="' . $doc['tag'] . '" width="10" src="' . htmlescape($expected_url) . '" /></a>';
         }
 
         $this->assertEquals(
@@ -736,11 +736,11 @@ class ToolboxTest extends DbTestCase
         $expected_url_1    = '/front/document.send.php?docid=' . $doc_id_1;
         $expected_url_1     .= '&itemtype=' . $item->getType();
         $expected_url_1     .= '&items_id=' . $item->fields['id'];
-        $expected_result_1 = '<a href="' . $expected_url_1 . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . $expected_url_1 . '" /></a>';
+        $expected_result_1 = '<a href="' . htmlescape($expected_url_1) . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . htmlescape($expected_url_1) . '" /></a>';
         $expected_url_2    = '/front/document.send.php?docid=' . $doc_id_2;
         $expected_url_2     .= '&itemtype=' . $item->getType();
         $expected_url_2     .= '&items_id=' . $item->fields['id'];
-        $expected_result_2 = '<a href="' . $expected_url_2 . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . $expected_url_2 . '" /></a>';
+        $expected_result_2 = '<a href="' . htmlescape($expected_url_2) . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . htmlescape($expected_url_2) . '" /></a>';
 
         $this->assertEquals(
             $expected_result_1,
@@ -778,7 +778,7 @@ class ToolboxTest extends DbTestCase
         $expected_url     = '/front/document.send.php?docid=' . $doc_id;
         $expected_url    .= '&itemtype=' . $item->getType();
         $expected_url    .= '&items_id=' . $item->fields['id'];
-        $expected_result  = '<a href="' . $expected_url . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . $expected_url . '" /></a>';
+        $expected_result  = '<a href="' . htmlescape($expected_url) . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . htmlescape($expected_url) . '" /></a>';
         $expected_result .= $expected_result;
 
         $this->assertEquals(
@@ -822,13 +822,13 @@ class ToolboxTest extends DbTestCase
 HTML;
 
         $image_1_src = sprintf(
-            '/front/document.send.php?docid=%d&itemtype=%s&items_id=%d',
+            '/front/document.send.php?docid=%d&amp;itemtype=%s&amp;items_id=%d',
             $document_1->getID(),
             $item->getType(),
             $item->fields['id']
         );
         $image_2_src = sprintf(
-            '/front/document.send.php?docid=%d&itemtype=%s&items_id=%d',
+            '/front/document.send.php?docid=%d&amp;itemtype=%s&amp;items_id=%d',
             $document_2->getID(),
             $item->getType(),
             $item->fields['id']

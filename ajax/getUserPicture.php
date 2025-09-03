@@ -75,7 +75,11 @@ foreach ($_REQUEST['users_id'] as $user_id) {
                 'class'          => $_REQUEST['class'] ?? '',
             ]);
             if (isset($_REQUEST['link']) && $_REQUEST['link']) {
-                $imgs[$user_id] = Html::link($img, User::getFormURLWithID($user_id));
+                $imgs[$user_id] = sprintf(
+                    '<a href="%1$s">%2$s</a>',
+                    htmlescape(User::getFormURLWithID($user_id)),
+                    $img
+                );
             } else {
                 $imgs[$user_id] = $img;
             }
