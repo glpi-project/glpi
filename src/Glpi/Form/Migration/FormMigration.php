@@ -543,7 +543,10 @@ class FormMigration extends AbstractPluginMigration
             $fieldtype = $raw_question['fieldtype'];
             $converter = $this->getTypesConvertMap()[$fieldtype] ?? null;
 
-            if ($converter === null) {
+            if (
+                $converter === null
+                || !$converter instanceof FormQuestionDataConverterInterface
+            ) {
                 // Retrieve the form to provide context in the error message
                 $section = Section::getById($section_id);
                 $form = $section->getForm();
@@ -562,13 +565,11 @@ class FormMigration extends AbstractPluginMigration
 
             $default_value = null;
             $extra_data = null;
-            if ($converter instanceof FormQuestionDataConverterInterface) {
-                $converter->beforeConversion($raw_question);
 
-                $default_value = $converter->convertDefaultValue($raw_question);
-                $extra_data    = $converter->convertExtraData($raw_question);
-                $type_class    = $converter->getTargetQuestionType($raw_question);
-            }
+            $converter->beforeConversion($raw_question);
+            $default_value = $converter->convertDefaultValue($raw_question);
+            $extra_data    = $converter->convertExtraData($raw_question);
+            $type_class    = $converter->getTargetQuestionType($raw_question);
 
             $question = new Question();
             $data = array_filter([
