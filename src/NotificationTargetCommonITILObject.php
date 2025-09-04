@@ -1611,6 +1611,20 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $data["##$objettype.numberofunresolved##"]
                = countElementsInTableForEntity($item->getTable(), $this->getEntity(), $restrict, false);
 
+            // Get incoming items
+            $incoming_restrict = [
+                'NOT' => [
+                    $item->getTable() . '.status' => $item->getProcessStatusArray(),
+                ],
+            ];
+
+            if ($item->maybeDeleted()) {
+                $incoming_restrict[$item->getTable() . '.is_deleted'] = 0;
+            }
+
+            $data["##$objettype.numberofincoming##"]
+               = countElementsInTableForEntity($item->getTable(), $this->getEntity(), $incoming_restrict, false);
+
             // Document
             $iterator = $DB->request([
                 'SELECT'    => 'glpi_documents.*',
@@ -2062,6 +2076,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             'followup.requesttype'              => RequestType::getTypeName(1),
             $objettype . '.numberoffollowups'     => _x('quantity', 'Number of followups'),
             $objettype . '.numberofunresolved'    => __('Number of unresolved items'),
+            $objettype . '.numberofincoming'      => __('Number of incoming items'),
             $objettype . '.numberofdocuments'     => _x('quantity', 'Number of documents'),
             $objettype . '.costtime'              => __('Time cost'),
             $objettype . '.costfixed'             => __('Fixed cost'),
