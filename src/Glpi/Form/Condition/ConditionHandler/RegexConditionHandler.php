@@ -80,7 +80,7 @@ class RegexConditionHandler implements ConditionHandlerInterface
         }
 
         $a = is_array($a) ? $a : [$a];
-        $b = strtolower(strval($b));
+        $b = strval($b);
 
         // Handle empty array input: empty values don't match any regex,
         // so MATCH_REGEX returns false and NOT_MATCH_REGEX returns true
@@ -90,7 +90,7 @@ class RegexConditionHandler implements ConditionHandlerInterface
 
         $matches_count = 0;
         foreach ($a as $value) {
-            $value = strtolower(strval($value));
+            $value = strval($value);
 
             // Note: we do not want to throw warnings here if an invalid regex
             // is configured by the user.
