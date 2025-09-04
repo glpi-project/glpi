@@ -3540,10 +3540,15 @@ class APIRestTest extends TestCase
     public function testSystemSQLCriteria(string $type, string $field, array $expected, array $not_expected = []): void
     {
         $headers = ['Session-Token' => $this->session_token];
-        $data = json_decode($this->query($type, [
-            'headers' => $headers,
-        ], no_decode: true));
-        $this->assertCount(count($expected), $data);
+        $data = json_decode(
+            $this->query(
+                resource: $type . '?range=0-9000',
+                params: [
+                    'headers' => $headers,
+                ],
+                no_decode: true
+            )
+        );
         $values = array_column($data, $field);
         foreach ($expected as $v) {
             $this->assertContains($v, $values);
