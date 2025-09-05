@@ -1004,20 +1004,23 @@ class Item_SoftwareVersion extends CommonDBRelation
             (empty($withtemplate) || ($withtemplate != 2))
             && $canedit
         ) {
+            echo "<div class='firstbloc'>";
             echo "<form method='post' action='" . htmlescape(Item_SoftwareVersion::getFormURL()) . "'>";
-            echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_1'><td class='center'>";
-            echo _sn('Software', 'Software', Session::getPluralNumber()) . "&nbsp;&nbsp;";
+            echo __s('Install a software');
             echo "<input type='hidden' name='itemtype' value='" . htmlescape($itemtype) . "'>";
             echo "<input type='hidden' name='items_id' value='$items_id'>";
+            echo "<div class='d-flex'>";
+            echo "<div class='col-auto'>";
             Software::dropdownSoftwareToInstall("softwareversions_id", $entities_id);
-            echo "</td><td width='20%'>";
-            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Install') . "\"
-                class='btn btn-primary'>";
-            echo "</td>";
-            echo "</tr>\n";
-            echo "</table></div>\n";
+            echo "</div>";
+            echo "<div class='col-auto'>";
+            echo "<button type='submit' name='add' class='btn btn-primary ms-1'>";
+            echo "<i class='ti ti-link'></i>" . _sx('button', 'Install');
+            echo "</button>";
+            echo "</div>";
+            echo "</div>"; // d-flex
             Html::closeForm();
+            echo "</div>"; //firstbloc
         }
         echo "<div class='spaced'>";
 
@@ -1201,22 +1204,33 @@ class Item_SoftwareVersion extends CommonDBRelation
             echo "<p class='center b'>" . __s('No results found') . "</p>";
         }
         echo "</div>";
+
         if (
             (empty($withtemplate) || ($withtemplate != 2))
             && $canedit
         ) {
+            echo "<div class='firstbloc'>";
+            echo "<form method='post' action='" . htmlescape(Item_SoftwareLicense::getFormURL()) . "'>";
+            echo __('Add a licence');
+            echo "<input type='hidden' name='itemtype' value='" . htmlescape($itemtype) . "'>";
+            echo "<input type='hidden' name='items_id' value='$items_id'>";
+            echo "<div class='d-flex'>";
+            echo "<div class='col-auto'>";
+            Software::dropdownLicenseToInstall("softwarelicenses_id", $entities_id);
+            echo "</div>";
+            echo "<div class='col-auto'>";
+            echo "<button type='submit' name='add' class='btn btn-primary ms-1'>";
+            echo "<i class='ti ti-link'></i>" . _sx('button', 'Add');
+            echo "</button>";
+            echo "</div>";
+            echo "</div>"; // d-flex
+            Html::closeForm();
+            echo "</div>"; //firstbloc
+
+
             echo "<form method='post' action='" . htmlescape(Item_SoftwareLicense::getFormURL()) . "'>";
             echo "<div class='spaced'><table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'><th colspan='2'>" . htmlescape(SoftwareLicense::getTypeName(Session::getPluralNumber())) . "</th></tr>";
-            echo "<tr class='tab_bg_1'>";
-            echo "<td class='center'>";
-            echo htmlescape(SoftwareLicense::getTypeName(Session::getPluralNumber())) . "&nbsp;&nbsp;";
-            echo "<input type='hidden' name='itemtype' value='" . htmlescape($itemtype) . "'>";
-            echo "<input type='hidden' name='items_id' value='$items_id'>";
-            Software::dropdownLicenseToInstall("softwarelicenses_id", $entities_id);
-            echo "</td><td width='20%'>";
-            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-            echo "</td></tr>";
             echo "</table></div>";
             Html::closeForm();
         }
