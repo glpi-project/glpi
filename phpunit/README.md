@@ -4,7 +4,7 @@ To run the GLPI test suite you need
 
 * [phpunit](https://phpunit.de)
 
-Note: `phpunit` directory contains current tests. There are still a few test in `tests` direcotry that still uses atoum framework, but they are being migrated to phpunit.
+Note: `phpunit` directory contains current tests. There are still a few test in `tests` directory that still uses atoum framework, but they are being migrated to phpunit.
 
 Installing dependencies
 -----------------------
