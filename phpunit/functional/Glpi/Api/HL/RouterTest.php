@@ -94,6 +94,15 @@ class RouterTest extends GLPITestCase
         $this->assertEquals('50.1.2', TestRouter::normalizeAPIVersion('50.1'));
         $this->assertEquals('50.2.0', TestRouter::normalizeAPIVersion('50.2'));
     }
+
+    public function testHLAPIDisabled()
+    {
+        global $CFG_GLPI;
+
+        $CFG_GLPI['enable_hlapi'] = 0;
+        $router = TestRouter::getInstance();
+        $this->assertEquals(401, $router->handleRequest(new Request('GET', '/Computer'))->getStatusCode());
+    }
 }
 
 // @codingStandardsIgnoreStart

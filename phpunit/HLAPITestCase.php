@@ -51,6 +51,12 @@ class HLAPITestCase extends DbTestCase
 {
     private $bearer_token = null;
 
+    public function setUp(): void
+    {
+        global $CFG_GLPI;
+        parent::setUp();
+        $CFG_GLPI['enable_hlapi'] = 1;
+    }
     public function tearDown(): void
     {
         // kill session

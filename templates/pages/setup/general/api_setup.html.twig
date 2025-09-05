@@ -52,6 +52,7 @@
         readonly: true,
         copyable: true
     }) }}
+    {{ fields.sliderField('enable_hlapi', config['enable_hlapi'], __("Enable API")) }}
 
     {{ fields.smallTitle(__('Legacy API')) }}
     {% if config['enable_api'] %}

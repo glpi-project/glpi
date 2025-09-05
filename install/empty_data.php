@@ -304,6 +304,7 @@ $empty_data_builder = new class {
             'default_central_tab' => '0',
             'smtp_check_certificate' => '1',
             'enable_api' => $enable_api,
+            'enable_hlapi' => $enable_api,
             'enable_api_login_credentials' => $enable_api_login_credentials,
             'enable_api_login_external_token' => '1',
             'login_remember_time' => '604800',
