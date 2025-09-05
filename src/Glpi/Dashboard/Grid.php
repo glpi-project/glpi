@@ -993,8 +993,7 @@ HTML;
                 global $CFG_GLPI;
                 Profiler::getInstance()->start($card['provider'] . ' (Provider function)');
                 $provider_func = explode('::', $card['provider']);
-                /** @phpstan-ignore booleanAnd.leftAlwaysFalse */
-                if ($CFG_GLPI['is_demo_dashboards'] ?? 0 && $provider_func[0] === Provider::class) {
+                if (($CFG_GLPI['is_demo_dashboards'] ?? 0) && $provider_func[0] === Provider::class) {
                     $fake_provider_func = FakeProvider::class . '::' . $provider_func[1];
                     $widget_args = call_user_func_array($fake_provider_func, array_values($provider_args));
                 } else {
