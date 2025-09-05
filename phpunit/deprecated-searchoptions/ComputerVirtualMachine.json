@@ -12,9 +12,9 @@
         "available_searchtypes": [
             "contains",
             "notcontains",
-            "matches",
             "equals",
             "notequals",
+            "matches",
             "empty"
         ],
         "uid": "ComputerVirtualMachine.name"
