@@ -1152,8 +1152,8 @@ class Item_SoftwareVersion extends CommonDBRelation
                     ]
                 ) . "
                     </td>
-                    <td>" .
-                    SoftwareCategory::dropdown([
+                    <td>"
+                    . SoftwareCategory::dropdown([
                         'value'      => $crit,
                         'toadd'      => ['-1' =>  __('All categories')],
                         'emptylabel' => __('Uncategorized software'),
@@ -1216,7 +1216,7 @@ class Item_SoftwareVersion extends CommonDBRelation
         ) {
             echo "<div class='firstbloc'>";
             echo "<form method='post' action='" . htmlescape(Item_SoftwareLicense::getFormURL()) . "'>";
-            echo __('Add a licence');
+            echo __s('Add a licence');
             echo "<input type='hidden' name='itemtype' value='" . htmlescape($itemtype) . "'>";
             echo "<input type='hidden' name='items_id' value='$items_id'>";
             echo "<div class='d-flex'>";
