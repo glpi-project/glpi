@@ -39,7 +39,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Toolbox;
 
 use function Safe\preg_match;
-use function Safe\preg_replace;
 
 trait RequestRouterTrait
 {

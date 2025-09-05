@@ -34,9 +34,12 @@
  */
 
 namespace Glpi\Http;
+
+use Symfony\Component\HttpFoundation\Request;
+
 use function Safe\preg_replace;
 
-class SymfonyRequest extends \Symfony\Component\HttpFoundation\Request
+class SymfonyRequest extends Request
 {
     public function __construct(array $query = [], array $request = [], array $attributes = [], array $cookies = [], array $files = [], array $server = [], $content = null)
     {
