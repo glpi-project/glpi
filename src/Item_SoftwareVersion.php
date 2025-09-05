@@ -1152,9 +1152,14 @@ class Item_SoftwareVersion extends CommonDBRelation
                     ]
                 ) . "
                     </td>
-                    <td>
-                        <input type='text' class='form-control' name='filters[software_category]'>
-                    </td>
+                    <td>" .
+                    SoftwareCategory::dropdown([
+                        'value'      => $crit,
+                        'toadd'      => ['-1' =>  __('All categories')],
+                        'emptylabel' => __('Uncategorized software'),
+                        'display'    => false,
+                    ])
+                     . "</td>
                     <td></td>
                     <td></td>
                 </tr>";
