@@ -26,6 +26,7 @@
         "available_searchtypes": [
             "contains",
             "notcontains",
+            "matches",
             "equals",
             "notequals"
         ],
@@ -40,7 +41,8 @@
         "nodisplay": false,
         "available_searchtypes": [
             "contains",
-            "notcontains",
+            "notcontains",            
+            "matches",
             "equals",
             "notequals",
             "empty"

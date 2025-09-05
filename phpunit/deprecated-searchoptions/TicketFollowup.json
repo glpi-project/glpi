@@ -24,6 +24,7 @@
         "available_searchtypes": [
             "contains",
             "equals",
+            "matches",
             "notequals"
         ],
         "uid": "TicketFollowup.RequestType.name"
@@ -68,7 +69,8 @@
         "available_searchtypes": [
             "contains",
             "equals",
-            "notequals"
+            "notequals",
+            "matches"
         ],
         "uid": "TicketFollowup.User.name"
     },
