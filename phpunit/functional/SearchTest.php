@@ -1043,6 +1043,43 @@ class SearchTest extends DbTestCase
         }
     }
 
+    public function testMatchesSearchOption()
+    {
+        $classes = $this->getSearchableClasses();
+        foreach ($classes as $class) {
+            $item = new $class();
+            $name = '_test_matches_' . uniqid();
+            // Test only if the name field exists
+            if ($item->fields && array_key_exists('name', $item->fields)) {
+                $id = $item->add([
+                    'name' => $name,
+                    'entities_id' => 0,
+                    'is_recursive' => 1,
+                ]);
+                $this->assertGreaterThan(0, $id);
+
+                $search_params = [
+                    'is_deleted'   => 0,
+                    'start'        => 0,
+                    'matches'      => $name,
+                    'criteria'     => [],
+                ];
+                $data = $this->doSearch($class, $search_params);
+
+                $found = false;
+                if (isset($data['data']['rows'])) {
+                    foreach ($data['data']['rows'] as $row) {
+                        if (isset($row['name']) && $row['name'] === $name) {
+                            $found = true;
+                            break;
+                        }
+                    }
+                }
+                $this->assertTrue($found, $class);
+            }
+        }
+    }
+
     /**
      * Get criterion params for corresponding SO.
      *
