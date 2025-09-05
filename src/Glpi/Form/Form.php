@@ -43,11 +43,13 @@ use CronTask;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Features\Clonable;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\Clone\FormCloneHelper;
 use Glpi\Form\Condition\CommentData;
 use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
@@ -91,6 +93,10 @@ final class Form extends CommonDBTM implements
     ConditionableVisibilityInterface
 {
     use ConditionableVisibilityTrait;
+    use Clonable {
+        Clonable::prepareInputForClone as parentPrepareInputForClone;
+        Clonable::post_clone as parentPostClone;
+    }
 
     public const TRANSLATION_KEY_NAME = 'form_name';
     public const TRANSLATION_KEY_HEADER = 'form_header';
@@ -710,6 +716,26 @@ final class Form extends CommonDBTM implements
     public function getCommentsStateForConditionEditor(): array
     {
         return FormData::createFromForm($this)->getCommentsData();
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [
+            Section::class,
+            FormAccessControl::class,
+            FormDestination::class,
+            FormTranslation::class,
+        ];
+    }
+    public function prepareInputForClone($input): array
+    {
+        $input = $this->parentPrepareInputForClone($input);
+        return FormCloneHelper::getInstance()->prepareFormInputForClone($input);
+    }
+
+    public function post_clone($source, $history): void
+    {
+        FormCloneHelper::getInstance()->postFormClone($this);
     }
 
     /**

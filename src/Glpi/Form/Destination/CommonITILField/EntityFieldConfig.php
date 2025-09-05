@@ -37,8 +37,10 @@ namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Destination\ConfigFieldWithStrategiesInterface;
+use Glpi\Form\Destination\HasFieldWithQuestionId;
 use Override;
 
+#[HasFieldWithQuestionId(self::SPECIFIC_QUESTION_ID)]
 final class EntityFieldConfig implements
     JsonFieldInterface,
     ConfigFieldWithStrategiesInterface

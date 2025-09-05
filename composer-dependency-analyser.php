@@ -80,6 +80,7 @@ return $config
         'symfony/polyfill-ctype',
         'symfony/polyfill-iconv',
         'symfony/polyfill-php83',
+        'symfony/polyfill-php84',
         'symfony/property-access',
         'symfony/polyfill-mbstring',
     ], [ErrorType::UNUSED_DEPENDENCY])

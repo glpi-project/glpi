@@ -37,8 +37,10 @@ namespace Glpi\Form\Destination\CommonITILField;
 use CommonITILObject;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Destination\ConfigFieldWithStrategiesInterface;
+use Glpi\Form\Destination\HasFieldWithQuestionId;
 use Override;
 
+#[HasFieldWithQuestionId(self::SPECIFIC_QUESTION_IDS, is_array: true)]
 final class AssociatedItemsFieldConfig implements
     JsonFieldInterface,
     ConfigFieldWithStrategiesInterface

@@ -35,8 +35,20 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Destination\HasFieldWithDestinationId;
+use Glpi\Form\Destination\HasFieldWithQuestionId;
 use Override;
 
+#[HasFieldWithQuestionId(
+    LinkedITILObjectsFieldStrategyConfig::SPECIFIC_QUESTION_IDS,
+    is_array: true,
+    list_of_strategies_field: self::STRATEGY_CONFIGS,
+)]
+#[HasFieldWithDestinationId(
+    LinkedITILObjectsFieldStrategyConfig::SPECIFIC_DESTINATION_IDS,
+    is_array: true,
+    list_of_strategies_field: self::STRATEGY_CONFIGS,
+)]
 final class LinkedITILObjectsFieldConfig implements JsonFieldInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names

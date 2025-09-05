@@ -36,17 +36,18 @@
 namespace Glpi\Form\AccessControl\ControlType;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\DBAL\PrepareForCloneInterface;
 use Override;
 use Toolbox;
 
-final class DirectAccessConfig implements JsonFieldInterface
+final class DirectAccessConfig implements JsonFieldInterface, PrepareForCloneInterface
 {
     public function __construct(
         private string $token = "",
         private bool $allow_unauthenticated = false,
     ) {
         if (empty($this->token)) {
-            $this->token = Toolbox::getRandomString(40);
+            $this->token = $this->generateToken();
         }
     }
 
@@ -68,6 +69,14 @@ final class DirectAccessConfig implements JsonFieldInterface
         ];
     }
 
+    #[Override]
+    public function prepareInputForClone(array $data): array
+    {
+        // Make sure the token is always unique
+        $data['token'] = $this->generateToken();
+        return $data;
+    }
+
     public function getToken(): string
     {
         return $this->token;
@@ -76,5 +85,10 @@ final class DirectAccessConfig implements JsonFieldInterface
     public function allowUnauthenticated(): bool
     {
         return $this->allow_unauthenticated;
+    }
+
+    private function generateToken(): string
+    {
+        return Toolbox::getRandomString(40);
     }
 }
