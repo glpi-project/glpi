@@ -123,21 +123,6 @@ trait RequestRouterTrait
             return $path;
         }
 
-        // Normalize plugins paths.
-        // All plugins resources should now be accessed using the `/plugins/${plugin_key}/${resource_path}`.
-        if (\str_starts_with($path, '/marketplace/')) {
-            // /!\ `/marketplace/` URLs were massively used prior to GLPI 11.0.
-            //
-            // To not break URLs than can be found in the wild (in e-mail, forums, external apps configuration, ...),
-            // please do not remove this behaviour before, at least, 2030 (about 5 years after GLPI 11.0.0 release).
-            Toolbox::deprecated('Accessing the plugins resources from the `/marketplace/` path is deprecated. Use the `/plugins/` path instead.');
-            $path = preg_replace(
-                '#^/marketplace/#',
-                '/plugins/',
-                $path
-            );
-        }
-
         // Parse URI to find requested script and PathInfo
         $init_path = $path;
         $path = '';
