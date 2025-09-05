@@ -27,7 +27,8 @@
             "contains",
             "notcontains",
             "equals",
-            "notequals"
+            "notequals",
+            "matches"
         ],
         "uid": "Computer_SoftwareVersion.Computer.name"
     },
@@ -43,6 +44,7 @@
             "notcontains",
             "equals",
             "notequals",
+            "matches",
             "empty"
         ],
         "uid": "Computer_SoftwareVersion.SoftwareVersion.name"
