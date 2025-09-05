@@ -95,8 +95,11 @@ use User;
  *              - is not done when a user of the dedicated group is assigned to the ticket by foreign user of the ola group : @see self::testOlaTtoIsCompleteWhenTicketIsAssignedToUserInDedicatedGroupByUserOfAnotherGroup()
  *              - is not done when a non dedicated group is assigned to the ticket : @see self::testOlaIsNotCompleteWhenTicketIsAssignedToNonDedicatedGroup()
  *              - is not done when a user not in the dedicated group is assigned to the ticket : @see self::testOlaTtoIsNotCompleteWhenTicketIsAssignedToUserNotInDedicatedGroup()
+ *              - same with group & ola assigned by rule : @see self::testOlaTtoIsNotCompleteWhenTicketIsAssignedToDedicatedGroupByRuleAndOlaIsAddedByRule()
  *              - is not done when the group is added and the ola added by rule : @see self::testOlaTtoIsNotCompleteWhenTicketIsAssignedToDedicatedGroupAndOlaAddedByRule()
- *              - is done when a group associated to ola is removed from ticket assigned group : @see self::testOlaTtoIsCompleteWhenGroupAssociatedToOlaIsRemovedFromTicketAssignedGroup()
+ *              - is done when a group associated to ola is removed from ticket assigned group :
+ *                  - @see self::testOlaTtoIsCompleteWhenGroupAssociatedToOlaIsRemovedFromTicketAssignedGroup()
+ *                  - @see self::testOlaTtoIstCompleteWhenTicketIsAssignedToDedicatedGroupByRuleAndOlaIsAddedByRuleThenGroupRemoved()
  *              - is done when ticket is "taken into account" (add task, add followup) by a user of the ola group :
  *                  - @see self::testOlaTtoIsCompleteWhenUserOfGroupAssociatedToOlaTakesTicketIntoAccountWithAFollowup()
  *                  - @see self::testOlaTtoIsCompleteWhenUserOfGroupAssociatedToOlaTakesTicketIntoAccountWithATask()
@@ -747,11 +750,11 @@ class OLATest extends DbTestCase
     }
 
     /**
-     * - un ticket est ajouté dans l'entité Delpharm
-     * - cela déclenche la règle Affectation SLA par defaut : ajout du groupe G_servicedesk + ajout de 2 SLA
-     * - au besoin, vous faites une escalade : l'assignation du ticket au groupe G_N1
-     * - cela enclenche la règle OLA N1 : ajout de 2 OLA : OLA_N1_TTO & OLA_N1_TTR (le premier problème est rencontré à ce niveau car l'ola est directement considére comme accompli puisque le groupe associé à l'ola est assigné au ticket).
-     * - la même chose se produit si on a ensuite une affectation du ticket au groupe N2.
+     * - a ticket is added
+     * - this triggers the default OLA assignment rule: adding the G_servicedesk group + adding 2 OLAs
+     * - if needed, technician performs an escalation: assigning the ticket to the G_N1 group
+     * - this triggers the N1 OLA rule: adding 2 OLAs: OLA_N1_TTO & OLA_N1_TTR
+     * Added olas should not be complete as ticket is not assigned to G_N1 group
      */
     public function testOlaTtoIsNotCompleteWhenTicketIsAssignedToDedicatedGroupAndOlaAddedByRule(): void
     {
@@ -786,6 +789,89 @@ class OLATest extends DbTestCase
 
         // assert OLA TTO is not complete
         $this->assertNull($fetched_ola_data['end_time']);
+    }
+
+    /**
+     * Same as @see self::testOlaTtoIsNotCompleteWhenTicketIsAssignedToDedicatedGroupAndOlaAddedByRule()
+     * + ensure ola is complete when group is removed from ticket assigned groups
+     */
+    public function testOlaTtoIsNotCompleteWhenTicketIsAssignedToDedicatedGroupByRuleAndOlaIsAddedByRule(): void
+    {
+        // --- arrange
+        $this->login();
+        $root_entity_id = $this->getTestRootEntity(true);
+        // create groups + ola
+        $group_desk = $this->createItem(Group::class, ['name' => 'G_desk', 'is_assign' => 1]);
+        $group_n1 = $this->createItem(Group::class, ['name' => 'N1', 'is_assign' => 1]);
+        $ola_tto_n1 = $this->createOLA(ola_type: SLM::TTO, group: $group_n1)['ola'];
+
+        // rule to assign ticket to group N1
+
+        // rule to assign ticket to group N1 + add OLA N1 TTO to ticket
+        $rule_builder = new RuleBuilder('add ola n1 tto');
+        $rule_builder->addCriteria('entities_id', Rule::PATTERN_IS, $root_entity_id);
+        $rule_builder->addAction('assign', '_groups_id_assign', $group_n1->getID());
+        $rule_builder->addAction('append', 'olas_id', $ola_tto_n1->getID());
+        $rule_builder->setCondtion(RuleTicket::ONADD);
+
+        $this->createRule($rule_builder);
+
+        // -- act : create ticket in entity
+        $ticket = $this->createTicket([
+            'entities_id' => $root_entity_id,
+        ]);
+        // check rule has processed : ticket is assigned to group N1 + OLA TTO is added to ticket
+        assert($ticket->isGroup(CommonITILActor::ASSIGN, $group_n1->getID()), 'Ticket should be assigned to group N1 by rule');
+        $fetched_ola_data = $ticket->getOlasTTOData()[0] ?? throw new \Exception('OLA TTO should be added to ticket by rule');
+        assert($fetched_ola_data['olas_id'] === $ola_tto_n1->getID(), 'OLA TTO should be added to ticket by rule');
+
+        // --- assert OLA TTO is not complete
+        $this->assertNull($fetched_ola_data['end_time']);
+    }
+
+    /**
+     * Same code as testOlaTtoIsNotCompleteWhenTicketIsAssignedToDedicatedGroupByRuleAndOlaIsAddedByRule()
+     * + remove group associated to OLA from ticket assigned groups
+     * then assert OLA is complete
+     */
+    public function testOlaTtoIstCompleteWhenTicketIsAssignedToDedicatedGroupByRuleAndOlaIsAddedByRuleThenGroupRemoved(): void
+    {
+        // --- arrange
+        $this->login();
+        $root_entity_id = $this->getTestRootEntity(true);
+        // create groups + ola
+        $group_desk = $this->createItem(Group::class, ['name' => 'G_desk', 'is_assign' => 1]);
+        $group_n1 = $this->createItem(Group::class, ['name' => 'N1', 'is_assign' => 1]);
+        $ola_tto_n1 = $this->createOLA(ola_type: SLM::TTO, group: $group_n1)['ola'];
+
+        // onadd rule to assign ticket to group N1 + add OLA N1 TTO to ticket
+        $rule_builder = new RuleBuilder('add ola n1 tto');
+        $rule_builder->addCriteria('entities_id', Rule::PATTERN_IS, $root_entity_id);
+        $rule_builder->addAction('assign', '_groups_id_assign', $group_n1->getID());
+        $rule_builder->addAction('append', 'olas_id', $ola_tto_n1->getID());
+        $rule_builder->setCondtion(RuleTicket::ONADD);
+        $this->createRule($rule_builder);
+
+        // -- act : create ticket in entity then remove group associated to OLA from ticket assigned groups
+        $ticket = $this->createTicket([
+            'entities_id' => $root_entity_id,
+            '_groups_id_assign' => $group_desk->getID(), // to be sure the rule assign the ticket to group N1
+        ]);
+        // check rule has processed : ticket is assigned to group N1 + OLA TTO is added to ticket
+        assert($ticket->isGroup(CommonITILActor::ASSIGN, $group_n1->getID()), 'Ticket should be assigned to group N1 by rule');
+        $fetched_ola_data = $ticket->getOlasTTOData()[0] ?? throw new \Exception('OLA TTO should be added to ticket by rule');
+        assert($fetched_ola_data['olas_id'] === $ola_tto_n1->getID(), 'OLA TTO should be added to ticket by rule');
+
+        assert(null === $fetched_ola_data['end_time'], 'OLA TTO should not be complete yet - fix testOlaTtoIsNotCompleteWhenTicketIsAssignedToDedicatedGroupByRuleAndOlaIsAddedByRule() first');
+
+        // --- assert OLA TTO complete after removing group associated to OLA from ticket assigned groups
+        $gt = new \Group_Ticket();
+        assert(true === $gt->deleteByCriteria(['tickets_id' => $ticket->getID(), 'groups_id' => $group_n1->getID()]));
+        $ticket = $this->reloadItem($ticket);
+        assert(false === $ticket->haveAGroup(CommonITILActor::ASSIGN, [$group_n1->getID()]));
+        $fetched_ola_data = $ticket->getOlasTTOData()[0] ?? throw new \Exception('OLA TTO should still be associated to ticket.');
+
+        $this->assertNotNull($fetched_ola_data['end_time']);
     }
 
     public function testOlaTtoIsCompleteWhenGroupAssociatedToOlaIsRemovedFromTicketAssignedGroup(): void
