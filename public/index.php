@@ -32,6 +32,7 @@
  * ---------------------------------------------------------------------
  */
 use Glpi\Application\ResourcesChecker;
+use Glpi\Http\SymfonyRequest;
 use Glpi\Kernel\Kernel;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -65,7 +66,7 @@ unset($self_script);
 
 $kernel = new Kernel();
 
-$request = Request::createFromGlobals();
+$request = SymfonyRequest::createFromGlobals();
 
 $response = $kernel->handle($request);
 
