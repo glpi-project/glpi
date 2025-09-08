@@ -53,7 +53,6 @@ use Glpi\Kernel\Listener\RequestListener\ErrorHandlerRequestListener;
 use Glpi\Kernel\Listener\RequestListener\FrontEndAssetsListener;
 use Glpi\Kernel\Listener\RequestListener\LegacyItemtypeRouteListener;
 use Glpi\Kernel\Listener\RequestListener\LegacyRouterListener;
-use Glpi\Kernel\Listener\RequestListener\MarketplaceDeprecationRequestListener;
 use Glpi\Kernel\Listener\RequestListener\PluginsRouterListener;
 use Glpi\Kernel\Listener\RequestListener\RedirectLegacyRouteListener;
 use Glpi\Kernel\Listener\RequestListener\SessionCheckCookieListener;
@@ -83,10 +82,6 @@ final class ListenersPriority
         // Registers the current request to the error handler.
         // Keep it in top priority as is required during handling of errors that may be triggered by any other listener.
         ErrorHandlerRequestListener::class => 1000,
-
-        // Trigger a deprecation when a `/marketplace` URL is used.
-        // Keep it right after the `ErrorHandlerRequestListener` listener.
-        MarketplaceDeprecationRequestListener::class => 999,
 
         // Static assets must be served without executing anything else.
         // Keep the listener on top priority.

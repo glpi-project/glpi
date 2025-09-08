@@ -551,11 +551,6 @@ class LegacyRouterListenerTest extends \GLPITestCase
 
         $instance->onKernelRequest($event);
 
-        $this->hasPhpLogRecordThatContains(
-            'Accessing the plugins resources from the `/marketplace/` path is deprecated. Use the `/plugins/` path instead.',
-            LogLevel::INFO
-        );
-
         $this->assertEquals(LegacyFileLoadController::class, $event->getRequest()->attributes->get('_controller'));
         $this->assertEquals(vfsStream::url('glpi/marketplace/tester/front/test.php'), $event->getRequest()->attributes->get('_glpi_file_to_load'));
     }

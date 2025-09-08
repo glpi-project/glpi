@@ -580,11 +580,6 @@ class FrontEndAssetsListenerTest extends \GLPITestCase
         $instance->onKernelRequest($event);
         $response = $event->getResponse();
 
-        $this->hasPhpLogRecordThatContains(
-            'Accessing the plugins resources from the `/marketplace/` path is deprecated. Use the `/plugins/` path instead.',
-            LogLevel::INFO
-        );
-
         $this->assertInstanceOf(BinaryFileResponse::class, $response);
         $file = $response->getFile();
         $this->assertInstanceOf(File::class, $response->getFile());

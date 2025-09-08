@@ -203,28 +203,43 @@ class SessionManagerTest extends \DbTestCase
     {
         $instance = new SessionManager();
 
+        $instance->registerPluginStatelessPath('myplugin', '#^/$#');
         $instance->registerPluginStatelessPath('myplugin', '#^/api/#');
         $instance->registerPluginStatelessPath('myplugin', '#^/front/state.less.php#');
 
         foreach (['', '/glpi', '/path/to/app'] as $root_doc) {
+            // Check an URL matching the index URL
+            $request = $this->getMockedRequest($root_doc, '/plugins/myplugin/');
+            $this->assertEquals(true, $instance->isResourceStateless($request));
+            $request = $this->getMockedRequest($root_doc, '/marketplace/myplugin/');
+            $this->assertEquals(true, $instance->isResourceStateless($request));
+
             // Check an URL matching the API stateless pattern
             $request = $this->getMockedRequest($root_doc, '/plugins/myplugin/api/Computer/1');
+            $this->assertEquals(true, $instance->isResourceStateless($request));
+            $request = $this->getMockedRequest($root_doc, '/marketplace/myplugin/api/Computer/1');
             $this->assertEquals(true, $instance->isResourceStateless($request));
 
             // Check an URL matching the front stateless pattern
             $request = $this->getMockedRequest($root_doc, '/plugins/myplugin/front/state.less.php?id=5');
             $this->assertEquals(true, $instance->isResourceStateless($request));
+            $request = $this->getMockedRequest($root_doc, '/marketplace/myplugin/front/state.less.php?id=5');
+            $this->assertEquals(true, $instance->isResourceStateless($request));
 
             // Check an URL not matching any stateless pattern
             $request = $this->getMockedRequest($root_doc, '/plugins/myplugin/front/foo.form.php');
+            $this->assertEquals(false, $instance->isResourceStateless($request));
+            $request = $this->getMockedRequest($root_doc, '/marketplace/myplugin/front/foo.form.php');
             $this->assertEquals(false, $instance->isResourceStateless($request));
 
             // Check that the pattern is not altering GLPI results
             $request = $this->getMockedRequest($root_doc, '/front/state.less.php?id=5');
             $this->assertEquals(false, $instance->isResourceStateless($request));
 
-            // Check that the pattern is not altering anothe plugin results
+            // Check that the pattern is not altering another plugin results
             $request = $this->getMockedRequest($root_doc, '/plugins/anotherplugin/front/state.less.php?id=5');
+            $this->assertEquals(false, $instance->isResourceStateless($request));
+            $request = $this->getMockedRequest($root_doc, '/marketplace/anotherplugin/front/state.less.php?id=5');
             $this->assertEquals(false, $instance->isResourceStateless($request));
         }
     }
