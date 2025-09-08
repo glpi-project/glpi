@@ -38,7 +38,6 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Kernel\Listener\RequestListener\FrontEndAssetsListener;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
@@ -579,11 +578,6 @@ class FrontEndAssetsListenerTest extends \GLPITestCase
         $event = new RequestEvent($this->createMock(KernelInterface::class), $request, HttpKernelInterface::MAIN_REQUEST);
         $instance->onKernelRequest($event);
         $response = $event->getResponse();
-
-        $this->hasPhpLogRecordThatContains(
-            'Accessing the plugins resources from the `/marketplace/` path is deprecated. Use the `/plugins/` path instead.',
-            LogLevel::INFO
-        );
 
         $this->assertInstanceOf(BinaryFileResponse::class, $response);
         $file = $response->getFile();

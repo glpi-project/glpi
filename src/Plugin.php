@@ -133,7 +133,7 @@ class Plugin extends CommonDBTM
      *      `plugin_key`: the plugin key;
      *      `plugin_resource`: the resource path relative to the plugin.
      */
-    public const PLUGIN_RESOURCE_PATTERN = '#^/plugins/(?<plugin_key>[^/]+)(?<plugin_resource>/.*)$#';
+    public const PLUGIN_RESOURCE_PATTERN = '#^/(?:plugins|marketplace)/(?<plugin_key>[^/]+)(?<plugin_resource>/.*)$#';
 
     /**
      * Plugin key validation pattern.

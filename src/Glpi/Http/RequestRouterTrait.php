@@ -130,7 +130,6 @@ trait RequestRouterTrait
             //
             // To not break URLs than can be found in the wild (in e-mail, forums, external apps configuration, ...),
             // please do not remove this behaviour before, at least, 2030 (about 5 years after GLPI 11.0.0 release).
-            Toolbox::deprecated('Accessing the plugins resources from the `/marketplace/` path is deprecated. Use the `/plugins/` path instead.');
             $path = preg_replace(
                 '#^/marketplace/#',
                 '/plugins/',

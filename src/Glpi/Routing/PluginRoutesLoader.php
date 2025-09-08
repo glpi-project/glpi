@@ -68,9 +68,17 @@ class PluginRoutesLoader extends Loader
                 continue;
             }
 
-            $plugin_routes->addPrefix(sprintf('/plugins/%s/', $plugin_key));
-            $plugin_routes->addNamePrefix(sprintf('@%s:', $plugin_key));
-            $routes->addCollection($plugin_routes);
+            $name_prefix_mapping = [
+                'plugins'     => sprintf('@%s:', $plugin_key),
+                'marketplace' => sprintf('@%s_marketplace:', $plugin_key),
+            ];
+
+            foreach ($name_prefix_mapping as $plugin_dir => $name_prefix) {
+                $prefixed_plugin_routes = clone $plugin_routes;
+                $prefixed_plugin_routes->addPrefix(sprintf('/%s/%s/', $plugin_dir, $plugin_key));
+                $prefixed_plugin_routes->addNamePrefix($name_prefix);
+                $routes->addCollection($prefixed_plugin_routes);
+            }
         }
 
         return $routes;
