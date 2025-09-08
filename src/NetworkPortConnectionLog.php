@@ -120,7 +120,7 @@ class NetworkPortConnectionLog extends CommonDBChild
                     'status' => '<i class="ti ' . $co_class . '" title="' . $title . '"></i>',
                     'date' => $row['date'],
                     'connected_item' => sprintf(
-                        '%1$s on %2$s',
+                        __s('%1$s on %2$s'),
                         $cport_link,
                         $citem->getLink()
                     ),

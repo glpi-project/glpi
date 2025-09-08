@@ -128,7 +128,7 @@ class NetworkPort_Vlan extends CommonDBRelation
                 'id' => $ID,
                 'used' => $used,
                 'tagged_label' => __('Tagged'),
-                'btn_label' => _sx('button', 'Associate'),
+                'btn_label' => _x('button', 'Associate'),
             ];
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG

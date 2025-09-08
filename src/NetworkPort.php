@@ -1287,7 +1287,7 @@ class NetworkPort extends CommonDBChild
         } else {
             $link = sprintf(
                 '<i class="%1$s"></i> %2$s </i>',
-                $asset->getIcon(),
+                htmlescape($asset->getIcon()),
                 $asset->getLink(),
             );
         }
@@ -1794,9 +1794,9 @@ class NetworkPort extends CommonDBChild
         if ($equipment && $equipment->getFromDB($this->fields['items_id'])) {
             return sprintf(
                 '<i class="%1$s"></i> %2$s > <i class="%3$s"></i> %4$s',
-                $equipment::getIcon(),
+                htmlescape($equipment::getIcon()),
                 $equipment->getLink(),
-                self::getIcon(),
+                htmlescape(self::getIcon()),
                 $port_link,
             );
         }

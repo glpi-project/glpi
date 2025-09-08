@@ -3090,10 +3090,10 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         }
         switch ($field) {
             case 'interface':
-                return self::getInterfaceName($values[$field]);
+                return htmlescape(self::getInterfaceName($values[$field]));
 
             case 'helpdesk_hardware':
-                return self::getHelpdeskHardwareTypeName($values[$field]);
+                return htmlescape(self::getHelpdeskHardwareTypeName($values[$field]));
 
             case "helpdesk_item_type":
                 $types = explode(',', $values[$field]);
@@ -3103,7 +3103,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                         $message[] = $item::getTypeName();
                     }
                 }
-                return implode(', ', $message);
+                return htmlescape(implode(', ', $message));
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -3697,7 +3697,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             } else {
                 $out .= "\n\t\t";
             }
-            $out                        .= $label . '&nbsp;';
+            $out                        .= htmlescape($label) . '&nbsp;';
             $cb_options['name']          = $param['field'] . '[' . $element . ']';
             $cb_options['id']            = Html::cleanId('checkbox_linear_' . $cb_options['name']
                                                       . '_' . $param['rand']);

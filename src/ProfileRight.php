@@ -321,7 +321,7 @@ class ProfileRight extends CommonDBChild
 
         $itemtype = $options['searchopt']['rightclass'];
         if (!($item = getItemForItemtype($itemtype))) {
-            return __('None');
+            return __s('None');
         }
         $rights   = '';
         $prem     = true;
@@ -339,7 +339,7 @@ class ProfileRight extends CommonDBChild
                 }
             }
         }
-        return ($rights ?: __('None'));
+        return htmlescape($rights ?: __('None'));
     }
 
 

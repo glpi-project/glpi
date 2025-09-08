@@ -1056,9 +1056,12 @@ class MailCollector extends CommonDBTM
                  )))
             ) {
                 if ($tkt['_supplier_email']) {
-                    $tkt['content'] = sprintf(__('From %s'), $requester)
-                    . ($this->body_is_html ? '<br /><br />' : "\n\n")
-                    . $tkt['content'];
+                    $tkt['content'] = (
+                        $this->body_is_html
+                            ? htmlescape(sprintf(__('From %s'), $requester)) . '<br /><br />'
+                            : sprintf(__('From %s'), $requester) . "\n\n"
+                    )
+                        . $tkt['content'];
                 }
 
                 $header_tag      = NotificationTargetTicket::HEADERTAG;
@@ -1112,7 +1115,10 @@ class MailCollector extends CommonDBTM
 
         // Add message from getAttached
         if ($this->addtobody) {
-            $tkt['content'] .= $this->addtobody;
+            $tkt['content'] .= $this->body_is_html
+                ? nl2br(htmlescape($this->addtobody))
+                : $this->addtobody
+            ;
         }
 
         //If files are present and content is html

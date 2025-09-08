@@ -305,7 +305,7 @@ class Planning extends CommonGLPI
                     break;
 
             }
-            return $('<span><i class="itilstatus ' + classes + '"></i> ' + option.text + '</span>');
+            return $('<span><i class="itilstatus ' + classes + '"></i> ' + _.escape(option.text) + '</span>');
         }
 JAVASCRIPT;
 
@@ -881,7 +881,7 @@ JAVASCRIPT;
                     $(() => {
                         $('#dropdown_planning_type{{ rand }}').on('change', function() {
                             const planning_type = $(this).val();
-                            $('#add_planning_subform{{ rand }}').load('{{ path('ajax/planning.php') }}', {
+                            $('#add_planning_subform{{ rand }}').load('{{ path('ajax/planning.php')|e('js') }}', {
                                 action: 'add_' + planning_type + '_form'
                             });
                         });
@@ -1299,7 +1299,7 @@ TWIG, $twig_params);
         global $CFG_GLPI;
 
         if (isset($params["id"]) && ($params["id"] > 0)) {
-            echo "<input type='hidden' name='plan[id]' value='" . (int) $params["id"] . "'>";
+            echo "<input type='hidden' name='plan[id]' value='" . ((int) $params["id"]) . "'>";
         }
 
         $display_dates = $params['_display_dates'] ?? true;
@@ -1370,7 +1370,7 @@ TWIG, $twig_params);
             Ajax::createIframeModalWindow(
                 'planningcheck' . $rand,
                 $CFG_GLPI["root_doc"] . "/front/planning.php?" . Toolbox::append_params($append_params),
-                ['title'  => __s('Availability')]
+                ['title'  => __('Availability')]
             );
         }
     }
@@ -1946,8 +1946,8 @@ TWIG, $twig_params);
                 $raw_events[] = [
                     'users_id'         => Session::getLoginUserID(),
                     'name'             => $title,
-                    'tooltip'          => trim($title . "\n" . $description),
-                    'content'          => $description,
+                    'tooltip'          => trim(htmlescape($title) . "<br>" . htmlescape($description)),
+                    'content'          => htmlescape($description),
                     'begin'            => $begin_dt->format('Y-m-d H:i:s'),
                     'end'              => $end_dt->format('Y-m-d H:i:s'),
                     'event_type_color' => $planning_params['color'],

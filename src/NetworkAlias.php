@@ -97,8 +97,7 @@ class NetworkAlias extends FQDNLabel
         echo "&nbsp;:</td><td>";
 
         if ($ID <= 0) {
-            echo "<input type='hidden' name='networknames_id' value='"
-               . $this->fields["networknames_id"] . "'>";
+            echo "<input type='hidden' name='networknames_id' value='" . htmlescape($this->fields["networknames_id"]) . "'>";
         }
         $this->displayRecursiveItems($recursiveItems, "Link");
         echo "</td><td>" . __s('Name') . "</td><td>";
@@ -255,20 +254,23 @@ class NetworkAlias extends FQDNLabel
 
         if ($canedit) {
             echo "<div class='firstbloc'>";
-            echo "<script type='text/javascript' >";
-            echo "function viewAddAlias$rand() {";
-            $params = ['type'            => self::class,
-                'parenttype'      => 'NetworkName',
-                'networknames_id' => $ID,
-                'id'              => -1,
-            ];
-            Ajax::updateItemJsCode(
-                "viewnetworkalias$rand",
-                $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
-                $params
+
+            echo Html::scriptBlock(
+                "function viewAddAlias$rand() {"
+                . Ajax::updateItemJsCode(
+                    "viewnetworkalias$rand",
+                    $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
+                    [
+                        'type'            => self::class,
+                        'parenttype'      => 'NetworkName',
+                        'networknames_id' => $ID,
+                        'id'              => -1,
+                    ],
+                    display: false
+                )
+                . "};"
             );
-            echo "};";
-            echo "</script>";
+
             echo "<a class='btn btn-primary' href='javascript:viewAddAlias$rand();'>";
             echo __s('Add a network alias') . "</a>";
             echo "</div>";
