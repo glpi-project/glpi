@@ -404,40 +404,35 @@ TWIG, $twig_params);
                         $data['entity'] = $item->fields['entities_id'];
                     }
 
-                    if ($item instanceof CommonITILObject) {
-                        $data["name"] = sprintf(__('%1$s: %2$s'), $item::getTypeName(1), $data["id"]);
-                    }
-
-                    if ($item instanceof SoftwareLicense) {
-                        $soft = new Software();
-                        $soft->getFromDB($data['softwares_id']);
-                        $data["name"] = sprintf(
-                            __('%1$s - %2$s'),
-                            $data["name"],
-                            $soft->fields['name']
-                        );
-                    }
-                    $linkname = match (true) {
-                        $item instanceof CommonDevice => $data["designation"],
-                        $item instanceof Item_Devices, $item instanceof Notepad => $data["itemtype"],
-                        default => $data[$item::getNameField()]
-                    };
-
-                    if (
-                        $_SESSION["glpiis_ids_visible"]
-                        || empty($data["name"])
-                    ) {
-                        $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
-                    }
                     if ($item instanceof Item_Devices) {
                         $tmpitem = getItemForItemtype($item::$itemtype_2);
-                        if ($tmpitem->getFromDB($data[$item::$items_id_2])) {
-                            $linkname = $tmpitem->getLink();
-                        }
-                    }
+                        $name = $tmpitem->getFromDB($data[$item::$items_id_2]) ? $tmpitem->getLink() : htmlescape(NOT_AVAILABLE);
+                    } else {
+                        $link = $item::getFormURLWithID($data['id']);
 
-                    $link = $item::getFormURLWithID($data['id']);
-                    $name = '<a href="' . htmlescape($link) . '">' . htmlescape($linkname) . ' ' . htmlescape($linkname_extra) . "</a>";
+                        $linkname = match (true) {
+                            $item instanceof CommonDevice => $data["designation"],
+                            $item instanceof CommonITILObject => sprintf(__('%1$s: %2$s'), $item::getTypeName(1), $data["id"]),
+                            $item instanceof Notepad => $data["itemtype"],
+                            $item instanceof SoftwareLicense => ($soft = new Software())->getFromDB($data['softwares_id'])
+                                ? sprintf(
+                                    __('%1$s - %2$s'),
+                                    $data["name"],
+                                    $soft->fields['name']
+                                )
+                                : NOT_AVAILABLE,
+                            default => $data[$item::getNameField()]
+                        };
+
+                        if (
+                            $_SESSION["glpiis_ids_visible"]
+                            || empty($data["name"])
+                        ) {
+                            $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
+                        }
+
+                        $name = '<a href="' . htmlescape($link) . '">' . htmlescape($linkname) . ' ' . htmlescape($linkname_extra) . "</a>";
+                    }
 
                     $entity_name = '-';
                     if (isset($data['entity'])) {
