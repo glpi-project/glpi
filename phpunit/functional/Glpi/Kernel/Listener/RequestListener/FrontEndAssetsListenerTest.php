@@ -38,7 +38,6 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Kernel\Listener\RequestListener\FrontEndAssetsListener;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
