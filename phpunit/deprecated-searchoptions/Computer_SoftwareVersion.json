@@ -27,8 +27,7 @@
             "contains",
             "notcontains",
             "equals",
-            "notequals",
-            "matches"
+            "notequals"
         ],
         "uid": "Computer_SoftwareVersion.Computer.name"
     },
@@ -42,9 +41,9 @@
         "available_searchtypes": [
             "contains",
             "notcontains",
+            "matches",
             "equals",
             "notequals",
-            "matches",
             "empty"
         ],
         "uid": "Computer_SoftwareVersion.SoftwareVersion.name"

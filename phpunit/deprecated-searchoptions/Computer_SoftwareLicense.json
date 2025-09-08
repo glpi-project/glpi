@@ -26,9 +26,9 @@
         "available_searchtypes": [
             "contains",
             "notcontains",
+            "matches",
             "equals",
             "notequals",
-            "matches",
             "empty",
             "under",
             "notunder"
@@ -46,8 +46,7 @@
             "contains",
             "notcontains",
             "equals",
-            "notequals",
-            "matches"
+            "notequals"
         ],
         "uid": "Computer_SoftwareLicense.Computer.name"
     }
