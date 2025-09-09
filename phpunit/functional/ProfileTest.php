@@ -282,9 +282,9 @@ class ProfileTest extends DbTestCase
                         if (empty($right['field'])) {
                             echo 'A right is missing a field name. Please check that the class has the rightname property set or the right is otherwise defined with the field property in the array';
                             if ($previous_right) {
-                                echo 'The previous right was: ' . print_r($previous_right, true) . " in ${$interface}/${$form}/${$group}";
+                                echo 'The previous right was: ' . print_r($previous_right, true) . " in {$interface}/{$form}/{$group}";
                             } else {
-                                echo "The right was the first one in ${$interface}/${$form}/${$group}";
+                                echo "The right was the first one in {$interface}/{$form}/{$group}";
                             }
                             continue;
                         }

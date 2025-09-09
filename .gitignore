@@ -16,8 +16,6 @@
 /.settings/
 /.vscode/
 /.idea/
-/tools/composer.lock
-/tools/vendor/
 /tools/api/
 /tools/htmlcov/
 /vendor/*

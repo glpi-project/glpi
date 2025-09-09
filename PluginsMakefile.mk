@@ -24,7 +24,7 @@ CONSOLE = $(PHP) bin/console
 PHPSTAN_BIN    = $(shell test -f vendor/bin/phpstan      && echo vendor/bin/phpstan      || echo ../../vendor/bin/phpstan)
 PHPUNIT_BIN    = $(shell test -f vendor/bin/phpunit      && echo vendor/bin/phpunit      || echo ../../vendor/bin/phpunit)
 PHPCSFIXER_BIN = $(shell test -f vendor/bin/php-cs-fixer && echo vendor/bin/php-cs-fixer || echo ../../vendor/bin/php-cs-fixer)
-
+PARALLEL-LINT_BIN = $(shell test -f vendor/bin/parallel-lint && echo vendor/bin/parallel-lint || echo ../../vendor/bin/parallel-lint)
 ##
 ##This Makefile is used for *local development* only.
 ##Production or deployment should be handled following GLPI's documentation.
@@ -100,6 +100,17 @@ phpstan: ## Run phpstan
 	@$(eval c ?=)
 	@$(PLUGIN) php $(PHPSTAN_BIN) --memory-limit=1G $(c)
 .PHONY: phpstan
+
+parallel-lint: ## Check php syntax with parallel-lint
+	@$(eval c ?=.)
+	$(PLUGIN) php $(PARALLEL-LINT_BIN) \
+		--show-deprecated \
+		--colors \
+		--exclude ./lib/ \
+		--exclude ./node_modules/ \
+		--exclude ./vendor/ \
+		$(c)
+.PHONY: parallel-lint
 
 ##—— Coding standards ——————————————————————————————————————————————————————————
 phpcsfixer-check: ## Check for php coding standards issues
