@@ -42,6 +42,7 @@ use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\CreationStrategy;
 use Glpi\Form\Condition\LogicOperator;
 use Glpi\Form\Condition\Type;
+use Glpi\Form\Condition\ValidationStrategy;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Condition\VisibilityStrategy;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsField;
@@ -637,6 +638,139 @@ final class FormSerializerTest extends \DbTestCase
                 'conditions'          => [],
             ],
         ], $questions_data);
+    }
+
+
+    public function testExportAndImportQuestionValidationConditions(): void
+    {
+        $this->login();
+
+        // Arrange: create a form with a question validation condition.
+        $builder = new FormBuilder();
+        $builder->addSection("My first section");
+        $builder->addQuestion("My question", QuestionTypeShortText::class);
+        $builder->setQuestionValidation(
+            "My question",
+            ValidationStrategy::VALID_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::NOT_EQUALS,
+                    'value'          => "forbidden value",
+                ],
+            ],
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export and import the form
+        $form_copy = $this->exportAndImportForm($form);
+
+        // Assert: validate the condition exist on the question
+        $questions = $form_copy->getQuestions();
+        $question = array_pop($questions);
+        $question_uuid = Question::getById(
+            $this->getQuestionId($form_copy, "My question")
+        )->fields['uuid'];
+
+        $expected_data = [
+            (new ConditionData(
+                item_uuid: $question_uuid,
+                item_type: Type::QUESTION->value,
+                logic_operator: LogicOperator::AND->value,
+                value_operator: ValueOperator::NOT_EQUALS->value,
+                value: "forbidden value",
+            ))->jsonSerialize(),
+        ];
+        $this->assertEquals(
+            $expected_data,
+            json_decode($question->fields['validation_conditions'], true)
+        );
+    }
+
+    public function testExportAndImportQuestionWithValidationConditionsAndVisibilityConditions(): void
+    {
+        $this->login();
+
+        // Arrange: create a form with a question validation condition and visibility condition.
+        $builder = new FormBuilder();
+        $builder->addSection("My first section");
+        $builder->addQuestion("My first question", QuestionTypeShortText::class);
+        $builder->addQuestion("My second question", QuestionTypeShortText::class);
+        $builder->setQuestionValidation(
+            "My second question",
+            ValidationStrategy::VALID_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My first question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "test",
+                ],
+            ],
+        );
+        $builder->setQuestionVisibility(
+            "My second question",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My first question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "test2",
+                ],
+            ]
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export and import the form
+        $form_copy = $this->exportAndImportForm($form);
+
+        // Assert: validate the conditions exist on the question
+        $questions = $form_copy->getQuestions();
+        $question = array_pop($questions);
+        $first_question_uuid = Question::getById(
+            $this->getQuestionId($form_copy, "My first question")
+        )->fields['uuid'];
+
+        $expected_validation_data = [
+            (new ConditionData(
+                item_uuid: $first_question_uuid,
+                item_type: Type::QUESTION->value,
+                logic_operator: LogicOperator::AND->value,
+                value_operator: ValueOperator::EQUALS->value,
+                value: "test",
+            ))->jsonSerialize(),
+        ];
+        $this->assertEquals(
+            $expected_validation_data,
+            json_decode($question->fields['validation_conditions'], true)
+        );
+        $this->assertEquals(
+            ValidationStrategy::VALID_IF->value,
+            $question->fields['validation_strategy']
+        );
+
+        $expected_visibility_data = [
+            (new ConditionData(
+                item_uuid: $first_question_uuid,
+                item_type: Type::QUESTION->value,
+                logic_operator: LogicOperator::AND->value,
+                value_operator: ValueOperator::EQUALS->value,
+                value: "test2",
+            ))->jsonSerialize(),
+        ];
+        $this->assertEquals(
+            $expected_visibility_data,
+            json_decode($question->fields['conditions'], true)
+        );
+        $this->assertEquals(
+            VisibilityStrategy::VISIBLE_IF->value,
+            $question->fields['visibility_strategy']
+        );
     }
 
     public function testExportAndImportCommentsConditions(): void

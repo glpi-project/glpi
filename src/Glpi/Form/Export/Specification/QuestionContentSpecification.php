@@ -49,7 +49,11 @@ final class QuestionContentSpecification implements ContentSpecificationInterfac
     public ?array $extra_data = null;
     public int $section_id;
     public string $visibility_strategy;
+    public string $validation_strategy;
 
     /** @var ConditionDataSpecification[] $conditions */
     public array $conditions;
+    /** @var ConditionDataSpecification[] $validation_conditions */
+    public array $validation_conditions;
+
 }
