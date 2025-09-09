@@ -36,10 +36,14 @@ PARALLEL-LINT_BIN = $(shell test -f vendor/bin/parallel-lint && echo vendor/bin/
 # helper: $(call run_if_exists,<file>,<target>)
 define run_if_exists
   $(if $(wildcard $1), \
-    $(MAKE) --no-print-directory $2, \
+    (echo -e "\033[36mRunning $2...\033[m" && $(MAKE) --no-print-directory $2), \
     echo -e "\033[43mSkipping $2: $1 not found\033[m")
 endef
 
+# helper: $(call run_always,<target>)
+define run_always
+  (echo -e "\033[36mRunning $1...\033[m" && $(MAKE) --no-print-directory $1)
+endef
 
 ##—— General ———————————————————————————————————————————————————————————————————
 .DEFAULT_GOAL := help
@@ -112,13 +116,13 @@ npm: ## Run a npm command, example: make npm c='install mypackage/package'
 
 ##—— Testing and static analysis ———————————————————————————————————————————————
 verify:  ## Run all our lints/tests/static analysis
-	@$(MAKE) --no-print-directory license-headers-check
-	@$(MAKE) --no-print-directory parallel-lint
-	@$(call run_if_exists,phpstan.neon,phpstan)
-	@$(call run_if_exists,.php-cs-fixer.php,phpcsfixer-check)
-	@$(call run_if_exists,rector.php,rector-check)
-	@$(call run_if_exists,psalm.xml,psalm)
-	@$(call run_if_exists,phpunit.xml,phpunit)
+	@$(call run_always, license-headers-check)
+	@$(call run_always, parallel-lint)
+	@$(call run_if_exists, phpstan.neon, phpstan)
+	@$(call run_if_exists, .php-cs-fixer.php, phpcsfixer-check)
+	@$(call run_if_exists, rector.php, rector-check)
+	@$(call run_if_exists, psalm.xml, psalm)
+	@$(call run_if_exists, phpunit.xml, phpunit)
 .PHONY: verify
 
 phpunit: ## Run phpunits tests, example: make phpunit c='phpunit/functional/Glpi/MySpecificTest.php'
