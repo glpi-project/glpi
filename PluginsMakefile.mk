@@ -33,6 +33,14 @@ PARALLEL-LINT_BIN = $(shell test -f vendor/bin/parallel-lint && echo vendor/bin/
 ##Production or deployment should be handled following GLPI's documentation.
 ##
 
+# helper: $(call run_if_exists,<file>,<target>)
+define run_if_exists
+  $(if $(wildcard $1), \
+    $(MAKE) --no-print-directory $2, \
+    echo -e "\033[43mSkipping $2: $1 not found\033[m")
+endef
+
+
 ##—— General ———————————————————————————————————————————————————————————————————
 .DEFAULT_GOAL := help
 help: ## Show this help message
@@ -106,35 +114,11 @@ npm: ## Run a npm command, example: make npm c='install mypackage/package'
 verify:  ## Run all our lints/tests/static analysis
 	@$(MAKE) --no-print-directory license-headers-check
 	@$(MAKE) --no-print-directory parallel-lint
-ifeq ($(shell test -f phpstan.neon && echo ok),ok)
-	@$(MAKE) --no-print-directory phpstan
-else
-	@echo -e "\033[43mSkipping phpstan: phpstan.neon not found\033[m"
-endif
-
-ifeq ($(shell test -f .php-cs-fixer.php && echo ok),ok)
-	@$(MAKE) --no-print-directory phpcsfixer-check
-else
-	@echo -e "\033[43mSkipping phpcsfixer-check: .php-cs-fixer.php not found\033[m"
-endif
-
-ifeq ($(shell test -f rector.php && echo ok),ok)
-	@$(MAKE) --no-print-directory rector-check
-else
-	@echo -e "\033[43mSkipping rector-check: rector.php not found\033[m"
-endif
-
-ifeq ($(shell test -f psalm.xml && echo ok),ok)
-	@$(MAKE) --no-print-directory psalm
-else
-	@echo -e "\033[43mSkipping psalm: psalm.xml not found\033[m"
-endif
-
-ifeq ($(shell test -f phpunit.xml && echo ok),ok)
-	@$(MAKE) --no-print-directory phpunit
-else
-	@echo -e "\033[43mSkipping phpunit: phpunit.xml not found\033[m"
-endif
+	@$(call run_if_exists,phpstan.neon,phpstan)
+	@$(call run_if_exists,.php-cs-fixer.php,phpcsfixer-check)
+	@$(call run_if_exists,rector.php,rector-check)
+	@$(call run_if_exists,psalm.xml,psalm)
+	@$(call run_if_exists,phpunit.xml,phpunit)
 .PHONY: verify
 
 phpunit: ## Run phpunits tests, example: make phpunit c='phpunit/functional/Glpi/MySpecificTest.php'
