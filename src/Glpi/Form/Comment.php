@@ -147,6 +147,11 @@ final class Comment extends CommonDBChild implements
             $input['forms_sections_uuid'] = $section->fields['uuid'];
         }
 
+        // Set horizontal rank to null if not set
+        if (isset($input['horizontal_rank']) && $input['horizontal_rank'] === "-1") {
+            $input['horizontal_rank'] = 'NULL';
+        }
+
         if (isset($input['_conditions'])) {
             $input['conditions'] = json_encode($input['_conditions']);
             unset($input['_conditions']);
