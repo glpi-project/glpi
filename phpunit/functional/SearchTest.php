@@ -1061,8 +1061,13 @@ class SearchTest extends DbTestCase
                 $search_params = [
                     'is_deleted'   => 0,
                     'start'        => 0,
-                    'matches'      => $name,
-                    'criteria'     => [],
+                    'criteria'     => [
+                        [
+                            'field'      => '1', // name
+                            'searchtype' => 'matches',
+                            'value'      => $name,
+                        ],
+                    ],
                 ];
                 $data = $this->doSearch($class, $search_params);
 
