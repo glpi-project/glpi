@@ -182,7 +182,7 @@
         "files": ["tests/src/autoload/functions.php"]
     },
     "scripts": {
-        "lint": "parallel-lint  --exclude files --exclude marketplace --exclude plugins --exclude vendor --exclude tools/vendor .",
+        "lint": "parallel-lint --show-deprecated --colors --exclude ./files/ --exclude ./marketplace/ --exclude ./plugins/ --exclude ./vendor/ .",
         "post-install-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
             "@patch",

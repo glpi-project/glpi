@@ -72,9 +72,13 @@ vendor: c=dependencies install ## Install dependencies
 vendor: console
 .PHONY: vendor
 
-locales: c=locales:compile ## Compile locales
-locales: console
-.PHONY: locales
+locales-extract: ## Extract locales
+	@$(PHP) vendor/bin/extract-locales
+.PHONY: locales-extract
+
+locales-compile: c=locales:compile ## Compile locales
+locales-compile: console
+.PHONY: locales-compile
 
 cc: c=cache:clear ## Clear the cache
 cc: console
@@ -156,6 +160,18 @@ phpstan: ## Run phpstan
 phpstan-generate-baseline: c=--generate-baseline=.phpstan-baseline.php analyze  ## Generate phpstan baseline file
 phpstan-generate-baseline: phpstan
 .PHONY: phpstan-generate-baseline
+
+parallel-lint:
+	@$(eval c ?=.)
+	$(PHP) php vendor/bin/parallel-lint \
+		--show-deprecated \
+		--colors \
+		--exclude ./files/ \
+		--exclude ./marketplace/ \
+		--exclude ./plugins/ \
+		--exclude ./vendor/ \
+		$(c)
+.PHONY: parallel-lint
 
 psalm: ## Run psalm analysis
 	@$(eval c ?=)

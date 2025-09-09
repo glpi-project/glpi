@@ -3,7 +3,14 @@ set -e -u -x -o pipefail
 
 ROOT_DIR=$(readlink -f "$(dirname $0)/../..")
 
-composer run lint
+vendor/bin/parallel-lint \
+  --show-deprecated \
+  --colors \
+  --exclude ./files/ \
+  --exclude ./marketplace/ \
+  --exclude ./plugins/ \
+  --exclude ./vendor/ \
+  .
 
 vendor/bin/composer-dependency-analyser
 

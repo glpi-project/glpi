@@ -94,6 +94,7 @@ dev_nodes=(
     "phpstan.neon.dist"
     "phpunit"
     "phpunit.xml.dist"
+    "PluginsMakefile.mk"
     "psalm.xml"
     "rector.php"
     "stubs"
@@ -101,7 +102,6 @@ dev_nodes=(
     "tools"
     "vendor/glpi-project/inventory_format/examples"
     "vendor/glpi-project/inventory_format/source_files"
-    "PluginsMakefile.mk"
 )
 for node in "${dev_nodes[@]}"
 do

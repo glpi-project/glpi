@@ -26,6 +26,7 @@ PHPUNIT_BIN    = $(shell test -f vendor/bin/phpunit      && echo vendor/bin/phpu
 RECTOR_BIN     = $(shell test -f vendor/bin/rector       && echo vendor/bin/rector       || echo ../../vendor/bin/rector)
 PSALM_BIN      = $(shell test -f vendor/bin/psalm        && echo vendor/bin/psalm        || echo ../../vendor/bin/psalm)
 PHPCSFIXER_BIN = $(shell test -f vendor/bin/php-cs-fixer && echo vendor/bin/php-cs-fixer || echo ../../vendor/bin/php-cs-fixer)
+PARALLEL-LINT_BIN = $(shell test -f vendor/bin/parallel-lint && echo vendor/bin/parallel-lint || echo ../../vendor/bin/parallel-lint)
 
 ##
 ##This Makefile is used for *local development* only.
@@ -64,6 +65,14 @@ test-setup: ## Setup the plugin for tests
 	@$(CONSOLE) plugin:enable --env=testing $(PLUGIN_DIR)
 .PHONY: test-setup
 
+locales-extract: ## Extract locales
+	@$(PLUGIN) vendor/bin/extract-locales
+.PHONY: locales-extract
+
+locales-compile: ## Compile locales
+	@$(PLUGIN) vendor/bin/plugin-release --compile-mo
+.PHONY: locales-compile
+
 ##—— Licenses  —————————————————————————————————————————————————————————————————
 license-headers-check: ## Verify that the license headers is present all files
 	@$(PLUGIN) vendor/bin/licence-headers-check
@@ -94,6 +103,9 @@ npm: ## Run a npm command, example: make npm c='install mypackage/package'
 .PHONY: npm
 
 ##—— Testing and static analysis ———————————————————————————————————————————————
+verify: license-headers-check parallel-lint phpstan phpcsfixer-check phpunit ## Run all our lints/tests/static analysis
+.PHONY: verify
+
 phpunit: ## Run phpunits tests, example: make phpunit c='phpunit/functional/Glpi/MySpecificTest.php'
 	@$(eval c ?=)
 	@$(PLUGIN) php $(PHPUNIT_BIN) $(c)
@@ -103,6 +115,17 @@ phpstan: ## Run phpstan
 	@$(eval c ?=)
 	@$(PLUGIN) php $(PHPSTAN_BIN) --memory-limit=1G $(c)
 .PHONY: phpstan
+
+parallel-lint: ## Check php syntax with parallel-lint
+	@$(eval c ?=.)
+	$(PLUGIN) php $(PARALLEL-LINT_BIN) \
+		--show-deprecated \
+		--colors \
+		--exclude ./lib/ \
+		--exclude ./node_modules/ \
+		--exclude ./vendor/ \
+		$(c)
+.PHONY: parallel-lint
 
 psalm: ## Run psalm analysis
 	@$(eval c ?=)

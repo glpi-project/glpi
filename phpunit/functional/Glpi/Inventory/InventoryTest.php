@@ -7294,8 +7294,6 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
     public function testBusinessRuleOnAddAndOnUpdateNetworkEquipment()
     {
-        global $DB;
-
         //prepare rule contents
         $state = new \State();
         $states_id = $state->add(['name' => 'Test status']);
@@ -9492,5 +9490,156 @@ JSON;
             'id' => $rules_id,
             'is_active' => 0,
         ]));
+    }
+
+    public function testRuleLocationSingleEquipment(): void
+    {
+        $this->login();
+
+        $location = new \Location();
+        $locations_id = $location->add([
+            'name' => 'New location from test',
+        ]);
+        $this->assertGreaterThan(0, $locations_id);
+        $count_locations = count($location->find());
+
+        $rule = new \Rule();
+        $input = [
+            'is_active' => 1,
+            'name'      => 'location rule test context',
+            'match'     => 'AND',
+            'sub_type'  => 'RuleLocation',
+            'ranking'   => 1,
+        ];
+        $rules_id = $rule->add($input);
+        $this->assertGreaterThan(0, $rules_id);
+
+        $rulecriteria = new \RuleCriteria();
+        $input = [
+            'rules_id'  => $rules_id,
+            'criteria'  => "tag",
+            'pattern'   => "/(.*)/",
+            'condition' => \RuleImportEntity::REGEX_MATCH,
+        ];
+        $this->assertGreaterThan(0, $rulecriteria->add($input));
+
+        $ruleaction = new \RuleAction();
+        $input = [
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'locations_id',
+            'value'       => $locations_id,
+        ];
+        $this->assertGreaterThan(0, $ruleaction->add($input));
+
+        //inventory a new network equipment
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <FIRMWARES>
+        <DESCRIPTION>device firmware</DESCRIPTION>
+        <MANUFACTURER>Cisco</MANUFACTURER>
+        <NAME>UCS 6248UP 48-Port</NAME>
+        <TYPE>device</TYPE>
+        <VERSION>5.0(3)N2(4.02b)</VERSION>
+      </FIRMWARES>
+      <INFO>
+        <COMMENTS>Cisco NX-OS(tm) ucs, Software (ucs-6100-k9-system), Version 5.0(3)N2(4.02b), RELEASE SOFTWARE Copyright (c) 2002-2013 by Cisco Systems, Inc.   Compiled 1/16/2019 18:00:00</COMMENTS>
+        <CONTACT>noc@glpi-project.org</CONTACT>
+        <CPU>4</CPU>
+        <FIRMWARE>5.0(3)N2(4.02b)</FIRMWARE>
+        <ID>0</ID>
+        <LOCATION>paris.pa3</LOCATION>
+        <MAC>8c:60:4f:8d:ae:fc</MAC>
+        <MANUFACTURER>Cisco</MANUFACTURER>
+        <MODEL>UCS 6248UP 48-Port</MODEL>
+        <NAME>ucs6248up-cluster-pa3-B</NAME>
+        <SERIAL>SSI1912014B</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+        <UPTIME>482 days, 05:42:18.50</UPTIME>
+        <IPS>
+           <IP>127.0.0.1</IP>
+           <IP>10.2.5.10</IP>
+           <IP>192.168.12.5</IP>
+        </IPS>
+      </INFO>
+    </DEVICE>
+    <MODULEVERSION>4.1</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        //check created network equipment
+        $neteq = new \NetworkEquipment();
+        $this->assertTrue($neteq->getFromDBByCrit(['serial' => 'SSI1912014B']));
+        $this->assertSame($locations_id, $neteq->fields['locations_id']);
+        //check no location has been added
+        $this->assertCount($count_locations, $location->find());
+    }
+
+    public function testRuleLocationStackedEquipment(): void
+    {
+        $this->login();
+
+        $location = new \Location();
+        $locations_id = $location->add([
+            'name' => 'New location from test',
+        ]);
+        $this->assertGreaterThan(0, $locations_id);
+        $count_locations = count($location->find());
+
+        $rule = new \Rule();
+        $input = [
+            'is_active' => 1,
+            'name'      => 'location rule test context',
+            'match'     => 'AND',
+            'sub_type'  => 'RuleLocation',
+            'ranking'   => 1,
+        ];
+        $rules_id = $rule->add($input);
+        $this->assertGreaterThan(0, $rules_id);
+
+        $rulecriteria = new \RuleCriteria();
+        $input = [
+            'rules_id'  => $rules_id,
+            'criteria'  => "tag",
+            'pattern'   => "/(.*)/",
+            'condition' => \RuleImportEntity::REGEX_MATCH,
+        ];
+        $this->assertGreaterThan(0, $rulecriteria->add($input));
+
+        $ruleaction = new \RuleAction();
+        $input = [
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'locations_id',
+            'value'       => $locations_id,
+        ];
+        $this->assertGreaterThan(0, $ruleaction->add($input));
+
+        //inventory a new stacked network equipment
+        $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/stacked_switch_name.xml');
+
+        $this->doInventory($xml_source, true);
+
+        //check created network equipments
+        $neteq = new \NetworkEquipment();
+
+        //check created equipments
+        $expected_eq_count = 2;
+        $equipments = $neteq->find(['is_dynamic' => 1]);
+        $this->assertCount($expected_eq_count, $equipments);
+
+        foreach ($equipments as $equipment) {
+            $this->assertSame($locations_id, $equipment['locations_id']);
+        }
+
+        //check no location has been added
+        $this->assertCount($count_locations, $location->find());
     }
 }
