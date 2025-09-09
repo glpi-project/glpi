@@ -213,7 +213,10 @@ abstract class InventoryAsset
         $locks = $lockedfield->getLockedNames($itemtype, $items_id);
 
         $data = $this->data;
-        foreach ($data as &$value) {
+        foreach ($data as $key => &$value) {
+            if (property_exists($this, 'current_key') && $this->current_key !== null && $key !== $this->current_key) {
+                continue;
+            }
             $blacklist->processBlackList($value);
             // save raw manufacture name before its replacement by id for importing model
             // (we need manufacturers name in when importing model in dictionary)
