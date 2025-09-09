@@ -201,7 +201,7 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
             $installed_version = trim($installed_version);
         }
 
-        if ($checker->hasTables($context)) {
+        if (!$checker->hasTables($context)) {
             $message = $plugin_key === null
                 ? __('The database contains no GLPI tables.')
                 : sprintf(__('The database contains no tables of the plugin "%s".'), $plugin_key);
