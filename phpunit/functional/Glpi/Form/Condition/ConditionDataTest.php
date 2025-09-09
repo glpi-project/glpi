@@ -34,19 +34,27 @@
 
 namespace tests\units\Glpi\Form\Condition;
 
+use DbTestCase;
+use Glpi\Form\Comment;
 use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\LogicOperator;
 use Glpi\Form\Condition\Type;
 use Glpi\Form\Condition\ValueOperator;
-use GLPITestCase;
+use Glpi\Form\Form;
+use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypeNumber;
+use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Form\QuestionType\QuestionTypeUserDevice;
+use Glpi\Form\QuestionType\QuestionTypeUserDevicesConfig;
+use Glpi\Form\Section;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-final class ConditionDataTest extends GLPITestCase
+final class ConditionDataTest extends DbTestCase
 {
     public static function provideValidConditions(): iterable
     {
         yield 'Valid condition with EQUALS operator' => [
-            'item_uuid' => '123',
+            'item_uuid' => null,
             'item_type' => Type::QUESTION->value,
             'value_operator' => ValueOperator::EQUALS->value,
             'value' => 'test_value',
@@ -55,7 +63,7 @@ final class ConditionDataTest extends GLPITestCase
         ];
 
         yield 'Valid condition with VISIBLE operator' => [
-            'item_uuid' => '456',
+            'item_uuid' => null,
             'item_type' => Type::SECTION->value,
             'value_operator' => ValueOperator::VISIBLE->value,
             'value' => null,
@@ -64,18 +72,18 @@ final class ConditionDataTest extends GLPITestCase
         ];
 
         yield 'Valid condition with empty value' => [
-            'item_uuid' => '789',
+            'item_uuid' => null,
             'item_type' => Type::COMMENT->value,
-            'value_operator' => ValueOperator::CONTAINS->value,
+            'value_operator' => ValueOperator::VISIBLE->value,
             'value' => '',
             'logic_operator' => null,
             'expected' => true,
         ];
 
         yield 'Valid condition with null value' => [
-            'item_uuid' => 'abc',
+            'item_uuid' => null,
             'item_type' => Type::QUESTION->value,
-            'value_operator' => ValueOperator::GREATER_THAN->value,
+            'value_operator' => ValueOperator::CONTAINS->value,
             'value' => null,
             'logic_operator' => LogicOperator::AND->value,
             'expected' => true,
@@ -93,17 +101,8 @@ final class ConditionDataTest extends GLPITestCase
             'expected' => false,
         ];
 
-        yield 'Null item UUID' => [
-            'item_uuid' => null,
-            'item_type' => Type::QUESTION->value,
-            'value_operator' => ValueOperator::EQUALS->value,
-            'value' => 'test_value',
-            'logic_operator' => LogicOperator::AND->value,
-            'expected' => false,
-        ];
-
         yield 'Invalid item type' => [
-            'item_uuid' => '123',
+            'item_uuid' => null,
             'item_type' => 'invalid_type',
             'value_operator' => ValueOperator::EQUALS->value,
             'value' => 'test_value',
@@ -112,7 +111,7 @@ final class ConditionDataTest extends GLPITestCase
         ];
 
         yield 'Null value operator' => [
-            'item_uuid' => '123',
+            'item_uuid' => null,
             'item_type' => Type::QUESTION->value,
             'value_operator' => null,
             'value' => 'test_value',
@@ -121,7 +120,7 @@ final class ConditionDataTest extends GLPITestCase
         ];
 
         yield 'Empty value operator' => [
-            'item_uuid' => '123',
+            'item_uuid' => null,
             'item_type' => Type::QUESTION->value,
             'value_operator' => '',
             'value' => 'test_value',
@@ -130,7 +129,7 @@ final class ConditionDataTest extends GLPITestCase
         ];
 
         yield 'Invalid value operator' => [
-            'item_uuid' => '123',
+            'item_uuid' => null,
             'item_type' => Type::QUESTION->value,
             'value_operator' => 'invalid_operator',
             'value' => 'test_value',
@@ -148,8 +147,27 @@ final class ConditionDataTest extends GLPITestCase
         ?string $logic_operator,
         bool $expected
     ): void {
+        $form = $this->createItem(Form::class, []);
+        $section = current($form->getSections());
+        $question = $this->createItem(Question::class, [
+            Section::getForeignKeyField() => $section->getID(),
+            'type'                        => QuestionTypeShortText::class,
+        ]);
+        $comment = $this->createItem(Comment::class, [
+            Section::getForeignKeyField() => $section->getID(),
+        ]);
+
+        if ($item_uuid === null) {
+            $item_uuid = match ($item_type) {
+                Type::QUESTION->value => $question->getUuid(),
+                Type::SECTION->value  => $section->getUuid(),
+                Type::COMMENT->value  => $comment->getUuid(),
+                default               => null,
+            };
+        }
+
         $condition = new ConditionData(
-            item_uuid: $item_uuid ?? '',
+            item_uuid: $item_uuid,
             item_type: $item_type,
             value_operator: $value_operator,
             value: $value,
@@ -168,8 +186,14 @@ final class ConditionDataTest extends GLPITestCase
         ?string $logic_operator,
         bool $expected
     ): void {
+        $form = $this->createItem(Form::class, []);
+        $question = $this->createItem(Question::class, [
+            Section::getForeignKeyField() => current($form->getSections())->getID(),
+            'type'                        => QuestionTypeShortText::class,
+        ]);
+
         $condition = new ConditionData(
-            item_uuid: $item_uuid ?? '',
+            item_uuid: $item_uuid ?? $question->getUuid(),
             item_type: $item_type,
             value_operator: $value_operator,
             value: $value,
@@ -182,34 +206,62 @@ final class ConditionDataTest extends GLPITestCase
     public function testIsValidWithAllValueOperators(): void
     {
         $validOperators = [
-            ValueOperator::EQUALS,
-            ValueOperator::NOT_EQUALS,
-            ValueOperator::CONTAINS,
-            ValueOperator::NOT_CONTAINS,
-            ValueOperator::GREATER_THAN,
-            ValueOperator::GREATER_THAN_OR_EQUALS,
-            ValueOperator::LESS_THAN,
-            ValueOperator::LESS_THAN_OR_EQUALS,
-            ValueOperator::VISIBLE,
-            ValueOperator::NOT_VISIBLE,
-            ValueOperator::EMPTY,
-            ValueOperator::NOT_EMPTY,
-            ValueOperator::MATCH_REGEX,
-            ValueOperator::NOT_MATCH_REGEX,
+            ValueOperator::EQUALS->value                        => QuestionTypeShortText::class,
+            ValueOperator::NOT_EQUALS->value                    => QuestionTypeShortText::class,
+            ValueOperator::CONTAINS->value                      => QuestionTypeShortText::class,
+            ValueOperator::NOT_CONTAINS->value                  => QuestionTypeShortText::class,
+            ValueOperator::GREATER_THAN->value                  => QuestionTypeNumber::class,
+            ValueOperator::GREATER_THAN_OR_EQUALS->value        => QuestionTypeNumber::class,
+            ValueOperator::LESS_THAN->value                     => QuestionTypeNumber::class,
+            ValueOperator::LESS_THAN_OR_EQUALS->value           => QuestionTypeNumber::class,
+            ValueOperator::IS_ITEMTYPE->value                   => [
+                'type_class' => QuestionTypeUserDevice::class,
+                'extra_data' => json_encode((new QuestionTypeUserDevicesConfig(false))->jsonSerialize()),
+            ],
+            ValueOperator::IS_NOT_ITEMTYPE->value               => [
+                'type_class' => QuestionTypeUserDevice::class,
+                'extra_data' => json_encode((new QuestionTypeUserDevicesConfig(false))->jsonSerialize()),
+            ],
+            ValueOperator::AT_LEAST_ONE_ITEM_OF_ITEMTYPE->value => [
+                'type_class' => QuestionTypeUserDevice::class,
+                'extra_data' => json_encode((new QuestionTypeUserDevicesConfig(true))->jsonSerialize()),
+            ],
+            ValueOperator::ALL_ITEMS_OF_ITEMTYPE->value         => [
+                'type_class' => QuestionTypeUserDevice::class,
+                'extra_data' => json_encode((new QuestionTypeUserDevicesConfig(true))->jsonSerialize()),
+            ],
+            ValueOperator::MATCH_REGEX->value                   => QuestionTypeShortText::class,
+            ValueOperator::NOT_MATCH_REGEX->value               => QuestionTypeShortText::class,
+            ValueOperator::LENGTH_GREATER_THAN->value           => QuestionTypeShortText::class,
+            ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS->value => QuestionTypeShortText::class,
+            ValueOperator::LENGTH_LESS_THAN->value              => QuestionTypeShortText::class,
+            ValueOperator::LENGTH_LESS_THAN_OR_EQUALS->value    => QuestionTypeShortText::class,
+            ValueOperator::VISIBLE->value                       => QuestionTypeShortText::class,
+            ValueOperator::NOT_VISIBLE->value                   => QuestionTypeShortText::class,
+            ValueOperator::EMPTY->value                         => QuestionTypeShortText::class,
+            ValueOperator::NOT_EMPTY->value                     => QuestionTypeShortText::class,
         ];
 
-        foreach ($validOperators as $operator) {
+        $form = $this->createItem(Form::class, []);
+
+        foreach ($validOperators as $operator => $question_data) {
+            $question = $this->createItem(Question::class, [
+                Section::getForeignKeyField() => current($form->getSections())->getID(),
+                'type'                        => $question_data['type_class'] ?? $question_data,
+                'extra_data'                  => $question_data['extra_data'] ?? null,
+            ]);
+
             $condition = new ConditionData(
-                item_uuid: 'test-uuid',
+                item_uuid: $question->getUuid(),
                 item_type: Type::QUESTION->value,
-                value_operator: $operator->value,
+                value_operator: $operator,
                 value: 'test_value',
                 logic_operator: LogicOperator::AND->value
             );
 
             $this->assertTrue(
                 $condition->isValid(),
-                "Condition should be valid with operator: {$operator->value}"
+                "Condition should be valid with operator: {$operator}"
             );
         }
     }
@@ -222,11 +274,28 @@ final class ConditionDataTest extends GLPITestCase
             Type::COMMENT,
         ];
 
+        $form = $this->createItem(Form::class, []);
+        $section = current($form->getSections());
+        $question = $this->createItem(Question::class, [
+            Section::getForeignKeyField() => $section->getID(),
+            'type'                        => QuestionTypeShortText::class,
+        ]);
+        $comment = $this->createItem(Comment::class, [
+            Section::getForeignKeyField() => $section->getID(),
+        ]);
+
         foreach ($validTypes as $type) {
+            $item_uuid = match ($type) {
+                Type::QUESTION => $question->getUuid(),
+                Type::SECTION  => $section->getUuid(),
+                Type::COMMENT  => $comment->getUuid(),
+                default        => null,
+            };
+
             $condition = new ConditionData(
-                item_uuid: 'test-uuid',
+                item_uuid: $item_uuid,
                 item_type: $type->value,
-                value_operator: ValueOperator::EQUALS->value,
+                value_operator: ValueOperator::VISIBLE->value,
                 value: 'test_value',
                 logic_operator: LogicOperator::AND->value
             );
@@ -240,8 +309,14 @@ final class ConditionDataTest extends GLPITestCase
 
     public function testGettersWorkCorrectlyWithValidCondition(): void
     {
+        $form = $this->createItem(Form::class, []);
+        $question = $this->createItem(Question::class, [
+            Section::getForeignKeyField() => current($form->getSections())->getID(),
+            'type'                        => QuestionTypeShortText::class,
+        ]);
+
         $condition = new ConditionData(
-            item_uuid: 'test-uuid-123',
+            item_uuid: $question->getUuid(),
             item_type: Type::QUESTION->value,
             value_operator: ValueOperator::CONTAINS->value,
             value: 'test_value',
@@ -249,19 +324,25 @@ final class ConditionDataTest extends GLPITestCase
         );
 
         $this->assertTrue($condition->isValid());
-        $this->assertEquals('test-uuid-123', $condition->getItemUuid());
+        $this->assertEquals($question->getUuid(), $condition->getItemUuid());
         $this->assertEquals(Type::QUESTION, $condition->getItemType());
         $this->assertEquals(ValueOperator::CONTAINS, $condition->getValueOperator());
         $this->assertEquals('test_value', $condition->getValue());
         $this->assertEquals(LogicOperator::OR, $condition->getLogicOperator());
-        $this->assertEquals('question-test-uuid-123', $condition->getItemDropdownKey());
+        $this->assertEquals('question-' . $question->getUuid(), $condition->getItemDropdownKey());
     }
 
     public function testJsonSerializationIncludesValidation(): void
     {
+        $form = $this->createItem(Form::class, []);
+        $question = $this->createItem(Question::class, [
+            Section::getForeignKeyField() => current($form->getSections())->getID(),
+            'type'                        => QuestionTypeShortText::class,
+        ]);
+
         $condition = new ConditionData(
-            item_uuid: 'json-test-uuid',
-            item_type: Type::SECTION->value,
+            item_uuid: $question->getUuid(),
+            item_type: Type::QUESTION->value,
             value_operator: ValueOperator::EQUALS->value,
             value: 'json_value',
             logic_operator: LogicOperator::AND->value
@@ -272,9 +353,9 @@ final class ConditionDataTest extends GLPITestCase
         $serialized = json_encode($condition);
         $decoded = json_decode($serialized, true);
 
-        $this->assertEquals('section-json-test-uuid', $decoded['item']);
-        $this->assertEquals('json-test-uuid', $decoded['item_uuid']);
-        $this->assertEquals('section', $decoded['item_type']);
+        $this->assertEquals('question-' . $question->getUuid(), $decoded['item']);
+        $this->assertEquals($question->getUuid(), $decoded['item_uuid']);
+        $this->assertEquals('question', $decoded['item_type']);
         $this->assertEquals('equals', $decoded['value_operator']);
         $this->assertEquals('json_value', $decoded['value']);
         $this->assertEquals('and', $decoded['logic_operator']);
