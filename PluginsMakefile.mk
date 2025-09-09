@@ -104,6 +104,18 @@ npm: ## Run a npm command, example: make npm c='install mypackage/package'
 
 ##—— Testing and static analysis ———————————————————————————————————————————————
 verify: license-headers-check parallel-lint phpstan phpcsfixer-check phpunit ## Run all our lints/tests/static analysis
+ifeq ($(shell test -f rector.php && echo ok),ok)
+	@$(MAKE) rector-check
+else
+	@echo "Skipping rector-check: rector.php not found"
+endif
+
+ifeq ($(shell test -f psalm.xml && echo ok),ok)
+	@$(MAKE) psalm
+else
+	@echo "Skipping psalm: psalm.xml not found"
+endif
+.PHONY: verify
 .PHONY: verify
 
 phpunit: ## Run phpunits tests, example: make phpunit c='phpunit/functional/Glpi/MySpecificTest.php'
