@@ -62,6 +62,11 @@ test-setup: ## Setup the plugin for tests
 	@$(CONSOLE) plugin:enable --config-dir=./tests/config $(PLUGIN_DIR)
 .PHONY: test-setup
 
+locales: ## Compile locales
+	@$(PLUGIN) vendor/bin/plugin-release --compile-mo
+.PHONY: locales
+
+##—— Licenses  —————————————————————————————————————————————————————————————————
 license-headers-check: ## Verify that the license headers is present all files
 	@$(PLUGIN) vendor/bin/licence-headers-check
 .PHONY: license-headers-check
@@ -91,6 +96,9 @@ npm: ## Run a npm command, example: make npm c='install mypackage/package'
 .PHONY: npm
 
 ##—— Testing and static analysis ———————————————————————————————————————————————
+verify: license-headers-check phpstan phpcsfixer-check phpunit ## Run all our lints/tests/static analysis
+.PHONY: verify
+
 phpunit: ## Run phpunits tests, example: make phpunit c='phpunit/functional/Glpi/MySpecificTest.php'
 	@$(eval c ?=)
 	@$(PLUGIN) php $(PHPUNIT_BIN) $(c)
