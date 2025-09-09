@@ -103,10 +103,13 @@ phpstan: ## Run phpstan
 
 parallel-lint: ## Check php syntax with parallel-lint
 	@$(eval c ?=.)
-	$(PLUGIN) php $(PARALLEL-LINT_BIN) --show-deprecated --colors --no-progress \
-        --exclude ./lib/ \
-        --exclude ./node_modules/ \
-        --exclude ./vendor/ $(c)
+	$(PLUGIN) php $(PARALLEL-LINT_BIN) \
+		--show-deprecated \
+		--colors \
+		--exclude ./lib/ \
+		--exclude ./node_modules/ \
+		--exclude ./vendor/ \
+		$(c)
 .PHONY: parallel-lint
 
 ##—— Coding standards ——————————————————————————————————————————————————————————

@@ -159,12 +159,14 @@ phpstan-generate-baseline: phpstan
 
 parallel-lint:
 	@$(eval c ?=.)
-	$(PHP) php vendor/bin/parallel-lint --show-deprecated --colors --no-progress \
-  		  --exclude ./files/ \
-          --exclude ./marketplace/ \
-          --exclude ./plugins/ \
-          --exclude ./tools/vendor/ \
-          --exclude ./vendor/ $(c)
+	$(PHP) php vendor/bin/parallel-lint \
+		--show-deprecated \
+		--colors \
+		--exclude ./files/ \
+		--exclude ./marketplace/ \
+		--exclude ./plugins/ \
+		--exclude ./vendor/ \
+		$(c)
 .PHONY: parallel-lint
 
 ## —— Coding standards —————————————————————————————————————————————————————————
