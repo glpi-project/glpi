@@ -106,8 +106,18 @@ npm: ## Run a npm command, example: make npm c='install mypackage/package'
 verify:  ## Run all our lints/tests/static analysis
 	@$(MAKE) --no-print-directory license-headers-check
 	@$(MAKE) --no-print-directory parallel-lint
+ifeq ($(shell test -f phpstan.neon && echo ok),ok)
 	@$(MAKE) --no-print-directory phpstan
+else
+	@echo -e "\033[43mSkipping phpstan: phpstan.neon not found\033[m"
+endif
+
+ifeq ($(shell test -f .php-cs-fixer.php && echo ok),ok)
 	@$(MAKE) --no-print-directory phpcsfixer-check
+else
+	@echo -e "\033[43mSkipping phpcsfixer-check: .php-cs-fixer.php not found\033[m"
+endif
+
 ifeq ($(shell test -f rector.php && echo ok),ok)
 	@$(MAKE) --no-print-directory rector-check
 else
@@ -119,7 +129,12 @@ ifeq ($(shell test -f psalm.xml && echo ok),ok)
 else
 	@echo -e "\033[43mSkipping psalm: psalm.xml not found\033[m"
 endif
+
+ifeq ($(shell test -f phpunit.xml && echo ok),ok)
 	@$(MAKE) --no-print-directory phpunit
+else
+	@echo -e "\033[43mSkipping phpunit: phpunit.xml not found\033[m"
+endif
 .PHONY: verify
 
 phpunit: ## Run phpunits tests, example: make phpunit c='phpunit/functional/Glpi/MySpecificTest.php'
