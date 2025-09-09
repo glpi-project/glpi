@@ -1159,7 +1159,7 @@ TWIG, $twig_params);
         }
 
         foreach ($rules['rule'] as $k_rule => &$rule) {
-            if (!$rule_subtypes[$rule['sub_type']]) {
+            if (!isset($rule_subtypes[$rule['sub_type']])) {
                 if (!is_a($rule['sub_type'], Rule::class, true)) {
                     continue;
                 }
@@ -1179,7 +1179,7 @@ TWIG, $twig_params);
             if ($tmprule->isEntityAssign()) {
                 $entities_found = $entity->find(['completename' => $rule['entities_id']]);
                 if (empty($entities_found)) {
-                    $refused_rule['reasons']['entity'][] = ['id' => $rule['entities_id']];
+                    $refused_rule['reasons']['entity'] = $rule['entities_id'];
                 }
             }
 
@@ -1301,7 +1301,7 @@ TWIG, $twig_params);
         foreach ($rules_refused as $k => $rule) {
             $r = [];
             if (isset($rule['reasons']['entity'])) {
-                $r['entity'] = array_map(static fn($c) => $c['id'], $rule['reasons']['entity']);
+                $r['entity'] = true;
             }
             if (isset($rule['reasons']['criteria'])) {
                 $r['criterias'] = array_map(static fn($c) => $c['id'], $rule['reasons']['criteria']);
