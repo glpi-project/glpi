@@ -72,9 +72,13 @@ vendor: c=dependencies install ## Install dependencies
 vendor: console
 .PHONY: vendor
 
-locales: c=locales:compile ## Compile locales
-locales: console
-.PHONY: locales
+locales-extract: ## Extract locales
+	@$(PHP) vendor/bin/extract-locales
+.PHONY: locales-extract
+
+locales-compile: c=locales:compile ## Compile locales
+locales-compile: console
+.PHONY: locales-compile
 
 cc: c=cache:clear ## Clear the cache
 cc: console
