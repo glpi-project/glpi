@@ -157,6 +157,16 @@ phpstan-generate-baseline: c=--generate-baseline=.phpstan-baseline.php analyze  
 phpstan-generate-baseline: phpstan
 .PHONY: phpstan-generate-baseline
 
+parallel-lint:
+	@$(eval c ?=.)
+	$(PHP) php vendor/bin/parallel-lint --show-deprecated --colors --no-progress \
+  		  --exclude ./files/ \
+          --exclude ./marketplace/ \
+          --exclude ./plugins/ \
+          --exclude ./tools/vendor/ \
+          --exclude ./vendor/ $(c)
+.PHONY: parallel-lint
+
 ## —— Coding standards —————————————————————————————————————————————————————————
 phpcsfixer-check: ## Check for php coding standards issues
 	@$(PHP) vendor/bin/php-cs-fixer check --diff -vvv
