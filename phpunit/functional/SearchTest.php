@@ -2614,6 +2614,16 @@ class SearchTest extends DbTestCase
                 'expected' => "(`glpi_users_users_id_supervisor`.`id` = '5')",
             ],
             [
+                'link' => ' ',
+                'nott' => 0,
+                'itemtype' => User::class,
+                'ID' => 99,
+                'searchtype' => 'matches',
+                'val' => 'glpi',
+                'meta' => false,
+                'expected' => "(`glpi_users_users_id_supervisor`.`name` = 'glpi')",
+            ],
+            [
                 'link' => ' AND ',
                 'nott' => 0,
                 'itemtype' => \CartridgeItem::class,
@@ -2698,6 +2708,16 @@ class SearchTest extends DbTestCase
                 'nott' => 0,
                 'itemtype' => \NetworkName::class,
                 'ID' => 13, // Search ID 13 (IPAddress name field)
+                'searchtype' => 'matches',
+                'val' => '192.168.1.10',
+                'meta' => false,
+                'expected' => "AND (`glpi_ipaddresses`.`name` = '192.168.1.10')",
+            ],
+            [
+                'link' => ' AND ',
+                'nott' => 0,
+                'itemtype' => \NetworkName::class,
+                'ID' => 13, // Search ID 13 (IPAddress name field)
                 'searchtype' => 'contains',
                 'val' => '> 192.168.1.10',
                 'meta' => false,
@@ -2712,6 +2732,16 @@ class SearchTest extends DbTestCase
                 'val' => 'null',
                 'meta' => false,
                 'expected' => "((`glpi_computers`.`name` = '') OR `glpi_computers`.`name` IS NULL)",
+            ],
+            [
+                'link' => ' ',
+                'nott' => 0,
+                'itemtype' => Computer::class,
+                'ID' => 1,
+                'searchtype' => 'matches',
+                'val' => 'My computer',
+                'meta' => false,
+                'expected' => "(`glpi_computers`.`name` = 'My computer')",
             ],
         ];
     }
