@@ -78,9 +78,14 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
     public const ERROR_NO_DB_CONNECTION = 5;
 
     /**
+     * Error code returned when the GLPI version cannot be found.
+     */
+    public const ERROR_NO_VERSION_FOUND = 6;
+
+    /**
      * Error code returned when no tables are found in the database.
      */
-    public const ERROR_NO_TABLES_FOUND = 6;
+    public const ERROR_NO_TABLES_FOUND = 7;
 
     protected $requires_db = false;
 
@@ -194,7 +199,14 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
             $installed_version = null; // Cannot know installed schema of plugins
         } else {
             $context = 'core';
-            $installed_version = $CFG_GLPI['dbversion'] ?? $CFG_GLPI['version'] ?? '0.0'; // `dbversion` has been added in GLPI 9.2
+            $installed_version = $CFG_GLPI['dbversion'] ?? $CFG_GLPI['version'] ?? null; // `dbversion` has been added in GLPI 9.2
+
+            if ($installed_version === null) {
+                throw new \Glpi\Console\Exception\EarlyExitException(
+                    '<error>' . __('Unable to fetch GLPI version.') . '</error>',
+                    self::ERROR_NO_VERSION_FOUND
+                );
+            }
 
             // Some versions were stored with unexpected whitespaces.
             // e.g. ` 0.80`, ` 0.80.1`, ...
