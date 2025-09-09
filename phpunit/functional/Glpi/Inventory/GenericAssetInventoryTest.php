@@ -1190,10 +1190,6 @@ class GenericAssetInventoryTest extends InventoryTestCase
         ];
 
         $ips = [
-            'lo'  => [
-                'v4'   => '127.0.0.1',
-                'v6'   => '::1',
-            ],
             'enp57s0u1u4'  => [
                 'v4'   => '192.168.1.142',
                 'v6'   => 'fe80::b283:4fa3:d3f2:96b1',
