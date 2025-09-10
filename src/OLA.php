@@ -148,9 +148,9 @@ class OLA extends LevelAgreement
 
         $_ticket = new Ticket();
         if (
-            $_ticket->getFromDB($ticket->getID()) &&
-            $this->levelCanBeAddedInLevelsTodo($ticket, $items_ola) &&
-            $date !== null
+            $_ticket->getFromDB($ticket->getID())
+            && $this->levelCanBeAddedInLevelsTodo($ticket, $items_ola)
+            && $date !== null
         ) {
             $toadd = [];
             $toadd['date'] = $date;
@@ -243,10 +243,10 @@ class OLA extends LevelAgreement
     private function levelCanBeAddedInLevelsTodo(Ticket $ticket, Item_Ola $items_ola): bool
     {
         if (
-            $ticket->isDeleted() ||
-            $ticket->fields['status'] == CommonITILObject::CLOSED ||
-            $ticket->fields['status'] == CommonITILObject::SOLVED ||
-            !is_null($items_ola->fields['end_time'])
+            $ticket->isDeleted()
+            || $ticket->fields['status'] == CommonITILObject::CLOSED
+            || $ticket->fields['status'] == CommonITILObject::SOLVED
+            || !is_null($items_ola->fields['end_time'])
         ) {
             return false;
         }

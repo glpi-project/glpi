@@ -5394,7 +5394,7 @@ JAVASCRIPT;
     public function showStatsDates()
     {
         // function to get strtotime safely, do not use if string is supposed to always be defined
-        $safe_get_strtime = static function ($date_string): int|null {
+        $safe_get_strtime = static function ($date_string): ?int {
             try {
                 return strtotime((string) $date_string);
             } catch (DatetimeException $e) {
@@ -6436,14 +6436,14 @@ JAVASCRIPT;
 
         // remove old fields and add new fields
         if (isset($input['olas_id_tto'])) {
-            Toolbox::deprecated('Passing `olas_id_tto` input to ticket is deprecated.' .
-                ' Use `_olas_id` (array) + `_la_update` instead.', version: "11.1");
+            Toolbox::deprecated('Passing `olas_id_tto` input to ticket is deprecated.'
+                . ' Use `_olas_id` (array) + `_la_update` instead.', version: "11.1");
             $input['_olas_id'][] = $input['olas_id_tto'];
             unset($input['olas_id_tto']);
         }
         if (isset($input['olas_id_ttr'])) {
-            Toolbox::deprecated('Passing `olas_id_ttr` input to ticket is deprecated.' .
-                ' Use `_olas_id` (array) + `_la_update` instead.', version: "11.1");
+            Toolbox::deprecated('Passing `olas_id_ttr` input to ticket is deprecated.'
+                . ' Use `_olas_id` (array) + `_la_update` instead.', version: "11.1");
             $input['_olas_id'][] = $input['olas_id_ttr'];
             unset($input['olas_id_ttr']);
         }

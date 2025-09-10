@@ -5813,7 +5813,7 @@ final class SQLProvider implements SearchProviderInterface
                 case "glpi_tickets.time_to_own":
                     // Due date + progress
                     if (in_array($orig_id, [151, 158, 181])) {
-                        $out = htmlescape(\Html::convDateTime($data[$ID][0]['name']));
+                        $out = htmlescape(Html::convDateTime($data[$ID][0]['name']));
 
                         $color = null;
                         if (
@@ -6053,7 +6053,7 @@ final class SQLProvider implements SearchProviderInterface
                                 ($ticket_status == Ticket::SOLVED)
                                 || ($ticket_status == Ticket::CLOSED)
                             ) {
-                                $out .= $ola_name . ' : ' . htmlescape(\Html::convDateTime($due_time)) . '</br>';
+                                $out .= $ola_name . ' : ' . htmlescape(Html::convDateTime($due_time)) . '</br>';
                                 continue;
                             }
 
@@ -6067,7 +6067,7 @@ final class SQLProvider implements SearchProviderInterface
                                 ($ola_type == SLM::TTO && $ola_end_time)
                                 || (in_array($orig_id, [180, 185]))
                             ) {
-                                $out .= $ola_name . ' : ' . htmlescape(\Html::convDateTime($due_time)) . '</br>';
+                                $out .= $ola_name . ' : ' . htmlescape(Html::convDateTime($due_time)) . '</br>';
                                 continue;
                             }
 

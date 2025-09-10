@@ -122,8 +122,8 @@ function migrate_items_olas_data(Migration $migration): void
         // olas_id_tto field is removed : considere migration as done
         return;
     }
-    $tickets_with_ola = $_ticket->find(['OR' =>
-        [
+    $tickets_with_ola = $_ticket->find(['OR'
+        => [
             ['NOT' => ['olas_id_tto' => null]],
             ['NOT' => ['olas_id_ttr' => null]],
         ]]);
