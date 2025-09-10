@@ -115,15 +115,15 @@ npm: ## Run a npm command, example: make npm c='install mypackage/package'
 .PHONY: npm
 
 ##—— Testing and static analysis ———————————————————————————————————————————————
-verify:  ## Run all our lints/tests/static analysis
+test:  ## Run all our lints/tests/static analysis
 	@$(call run_if_exists, tools/HEADER, license-headers-check)
 	@$(call run_always, parallel-lint)
 	@$(call run_if_exists, phpstan.neon, phpstan)
 	@$(call run_if_exists, .php-cs-fixer.php, phpcsfixer-check)
+	@$(call run_if_exists, phpunit.xml, phpunit)
 	@$(call run_if_exists, rector.php, rector-check)
 	@$(call run_if_exists, psalm.xml, psalm)
-	@$(call run_if_exists, phpunit.xml, phpunit)
-.PHONY: verify
+.PHONY: test
 
 phpunit: ## Run phpunits tests, example: make phpunit c='phpunit/functional/Glpi/MySpecificTest.php'
 	@$(eval c ?=)
