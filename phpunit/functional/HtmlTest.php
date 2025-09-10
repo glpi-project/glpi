@@ -1002,6 +1002,27 @@ SCSS,
         );
     }
 
+    public function testCompileScssForPlugin()
+    {
+        $compiled_scss = \Html::compileScss(['file' => '/plugins/tester/css/styles.scss']);
+
+        // Strip comments to ease comparison.
+        $compiled_scss = \preg_replace('~/\*.*\*/~s', '', $compiled_scss);
+
+        $this->assertEquals(
+            <<<CSS
+            
+            nav > ul {
+              margin: 0;
+              padding: 0;
+              list-style: none;
+              color: blue;
+            }
+            CSS,
+            $compiled_scss
+        );
+    }
+
 
     public static function getGenericDateTimeSearchItemsProvider(): array
     {
