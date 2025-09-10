@@ -66,8 +66,16 @@ final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable implemen
     #[Override]
     public function convertExtraData(array $rawData): array
     {
+        $values = json_decode($rawData['values'], true) ?? [];
+
+        // Convert array values to use index + 1 as keys
+        $options = [];
+        foreach ($values as $index => $value) {
+            $options[$index + 1] = $value;
+        }
+
         $config = new QuestionTypeDropdownExtraDataConfig(
-            options: json_decode($rawData['values'] ?? '[]', true) ?? [],
+            options: $options,
             is_multiple_dropdown: $rawData['fieldtype'] === 'multiselect'
         );
         return $config->jsonSerialize();
