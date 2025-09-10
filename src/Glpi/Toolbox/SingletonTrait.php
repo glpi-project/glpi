@@ -36,16 +36,17 @@ namespace Glpi\Toolbox;
 
 trait SingletonTrait
 {
-    private static ?self $instance = null;
+    private static array $_instances = [];
 
     private function __construct() {}
 
     public static function getInstance(): static
     {
-        if (self::$instance === null) {
-            self::$instance = new static();
+        $class = static::class;
+        if (!isset(self::$_instances[$class])) {
+            self::$_instances[$class] = new $class();
         }
 
-        return self::$instance;
+        return self::$_instances[$class];
     }
 }
