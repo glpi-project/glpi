@@ -34,6 +34,9 @@
 
 namespace Glpi\Toolbox;
 
+/**
+ * @phpstan-ignore trait.unused
+ */
 trait AbstractSingletonTrait
 {
     private static array $_instances = [];
