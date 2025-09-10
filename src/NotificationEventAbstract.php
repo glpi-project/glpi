@@ -86,9 +86,17 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                             //If ther user's language is the same as the template's one
                             $options['item'] = $item;
 
+                            // Clone the notification target for each user to ensure data isolation
+                            // This prevents plugins from sharing data (like tokens) between users
+                            $user_specific_target = clone $notificationtarget;
+                            $user_specific_target->clearAddressesList();
+                            $user_specific_target->addToRecipientsList($users_infos);
+                            // Reset data to ensure fresh data generation for each user
+                            $user_specific_target->data = [];
+
                             if (
                                 $tid = $template->getTemplateByLanguage(
-                                    $notificationtarget,
+                                    $user_specific_target,
                                     $users_infos,
                                     $event,
                                     $options
@@ -100,7 +108,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                     $items_id = method_exists($item, "getID") ? max($item->getID(), 0) : 0;
 
                                     $send_data = $template->getDataToSend(
-                                        $notificationtarget,
+                                        $user_specific_target,
                                         $tid,
                                         $key,
                                         $users_infos,
