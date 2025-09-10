@@ -84,14 +84,13 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
             {% set display_associatedsla_field = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_tto') %}
             {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('slas_id_tto') %}
 
-            <td class="right pe-2 align-middle border-0">{{ __('TTO') }}</td>
-            <td class="d-flex ms-n2 border-0 py-0">
-
+            <td class="right pe-2 align-middle border-0 p-1">{{ __('TTO') }}</td>
+            <td class="d-flex border-0 p-1">
                 {% set _rand = random() %}
 
                 {# state flag #}
                 <div class="align-middle my-2 me-2">
-                    <i class="ti ti-flag"></i>
+                    <i class="ti ti-flag text-secondary mx-1"></i>
                 </div>
 
                 {# datetime field #}
@@ -141,8 +140,8 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
             {% endif %}
             {% set _rand = random() %}
 
-            <td class="right pe-2 align-middle border-0">{{ _label }}</td>
-            <td class="d-flex ms-n2 border-0 py-0">
+            <td class="right pe-2 align-middle border-0 p-1">{{ _label }}</td>
+            <td class="d-flex border-0 p-1">
                 {# state flag + datetime field + badge/dropdown field #}
                 {{ _self.linkedSlaField(
                     sla,
@@ -164,13 +163,13 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
             {% set display_associatedsla_field = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_ttr') %}
             {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('slas_id_ttr') %}
 
-            <td class="right pe-2 align-middle border-0">{{ __('TTR') }}</td>
-            <td class="d-flex ms-n2 border-0 py-0">
+            <td class="right pe-2 align-middle border-0 p-1">{{ __('TTR') }}</td>
+            <td class="d-flex border-0 p-1">
 
                 {% set _rand = random() %}
                 {# state flag #}
                 <div class="align-middle my-2 me-2">
-                    <i class="ti ti-flag"></i>
+                    <i class="ti ti-flag text-secondary mx-1"></i>
                 </div>
 
                 {# datetime field #}
@@ -236,8 +235,8 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
                     {% set _label = __('TTR') %}
                 {% endif %}
 
-                <td class="right pe-2 align-middle border-0">{{ _label }}</td>
-                <td class="d-flex ms-n2 border-0 py-0">
+                <td class="right pe-2 align-middle border-0 p-1">{{ _label }}</td>
+                <td class="d-flex border-0 p-1">
                     {{ _self.linkedOlaField(
                         ola,
                         field_options|merge({
@@ -274,22 +273,28 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
 
     {% set assign_la_id = 'assign_la_' ~ options.rand %}
 
-    <div class="{{ options.new_item ? '' : 'collapsed' }} w-100 mt-1" id="dropdown_{{ assign_la_id }}">
+    <div class="{{ options.new_item ? '' : 'collapsed' }} w-100 mt-1 d-inline-flex" id="dropdown_{{ assign_la_id }}">
         {% if la.due_time is defined %}
             {# flag + due time #}
             <span class="text-muted">
                 {% if la.end_time %}
-                    <i class="ti ti-flag-filled text-primary"
+                    <i class="ti ti-flag-check text-success mx-1"
                        title="{{ __('%s completed')|format(__('OLA')) }}"
                        data-bs-toggle="tooltip"
-                       data-bs-placement="left" ></i> {{ la.due_time|formatted_datetime }}
-                {% else %}
-                    <i class="ti ti-flag"
+                       data-bs-placement="left" ></i>
+                {% elseif la.is_late %}
+                    <i class="ti ti-flag-exclamation text-danger mx-1"
+                       title="{{ __('%s is late')|format(__('OLA')) }}"
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="left" ></i>
+                {% else %} {# ola running #}
+                    <i class="ti ti-flag text-secondary mx-1"
                        title="{{ __('%s not completed')|format(__('OLA')) }}"
                        data-bs-toggle="tooltip"
-                       data-bs-placement="left" ></i> {{ la.due_time|formatted_datetime }}
+                       data-bs-placement="left" ></i>
                 {% endif %}
              </span>
+            <span>{{ la.due_time|formatted_datetime }}</span>
         {% endif %}
 
             <span class="level_name badge itil-badge bg-body border-info ms-1 flex-column flex-sm-row">
@@ -363,19 +368,24 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
 
     {% set assign_la_id = 'assign_la_' ~ options.rand %}
 
-    <div class="{{ options.new_item ? '' : 'collapsed' }} w-100 mt-1" id="dropdown_{{ assign_la_id }}">
+    <div class="{{ options.new_item ? '' : 'collapsed' }} w-100 mt-1 d-inline-flex" id="dropdown_{{ assign_la_id }}">
         {% if options.display_datetime_field %}
             {% if la.item.fields['takeintoaccount_delay_stat'] > 0 %}
-                <i class="ti ti-flag-filled text-primary"
-                   title="{{ __('%s completed')|format(__('SLA')) }}"
+                <i class="ti ti-flag-check text-primary mx-1"
+                   title="{{ __('%s completed')|format(__('OLA')) }}"
                    data-bs-toggle="tooltip"
                    data-bs-placement="left" ></i> {{ la.due_time|formatted_datetime }}
+              {# sla is late - see is_late in SQLProvider to implement it - it desserve a method #}
+{#            {% elseif la.is_late %}#}
+{#                <i class="ti ti-flag-exclamation secondary"#}
+{#                   title="{{ __('%s is late')|format(__('OLA')) }}"#}
+{#                   data-bs-toggle="tooltip"#}
+{#                   data-bs-placement="left" ></i> {{ la.due_time|formatted_datetime }}#}
             {% else %}
-                <i class="ti ti-flag"
-                   title="{{ __('%s not completed')|format(__('SLA')) }}"
+                <i class="ti ti-flag text-secondary mx-1"
+                   title="{{ __('%s not completed')|format(__('OLA')) }}"
                    data-bs-toggle="tooltip"
-                   data-bs-placement="left"
-                ></i> {{ la.due_time|formatted_datetime }}
+                   data-bs-placement="left" ></i> {{ la.due_time|formatted_datetime }}
             {% endif %}
         {% endif %}
 
