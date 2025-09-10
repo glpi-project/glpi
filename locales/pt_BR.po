@@ -45,8 +45,8 @@
 # Cédric Anne, 2024
 # Diego Nobre <diego@koruma.com.br>, 2024
 # Nathan Calheiros, 2025
-# pedroalves5770, 2025
 # Eduardo Mozart de Oliveira <eduardomozart182@gmail.com>, 2025
+# pedroalves5770, 2025
 # 
 #, fuzzy
 msgid ""
@@ -55,7 +55,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-20 10:01+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Eduardo Mozart de Oliveira <eduardomozart182@gmail.com>, 2025\n"
+"Last-Translator: pedroalves5770, 2025\n"
 "Language-Team: Portuguese (Brazil) (https://app.transifex.com/glpi/teams/1637/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3058,7 +3058,7 @@ msgstr "Este chamado me diz respeito"
 
 #: templates/components/itilobject/selfservice.html.twig
 msgid "Check your personal information"
-msgstr ""
+msgstr "Verificar suas informações pessoais"
 
 #: templates/components/itilobject/selfservice.html.twig
 #: front/item_ticket.form.php:56 src/NotificationTargetTicket.php:649
@@ -7970,6 +7970,8 @@ msgid ""
 "Replace the agent name with a customisable nickname and the group name with "
 "a generic name"
 msgstr ""
+"Substituir o nome do agente por um apelido personalizável e o nome do grupo "
+"por um nome genérico"
 
 #: src/Entity.php:3565
 msgid "Replace the agent's name with a generic name"
@@ -23293,11 +23295,11 @@ msgstr "Endereço:"
 
 #: src/Reservation.php:194
 msgid "You do not have permission to create reservations"
-msgstr ""
+msgstr "Você não tem permissão para criar reservas"
 
 #: src/Reservation.php:204
 msgid "You do not have permission to create reservations for other users"
-msgstr ""
+msgstr "Você não tem permissão para criar reservas para outros usuários"
 
 #: src/Reservation.php:262
 #, php-format
@@ -23632,6 +23634,8 @@ msgstr "Você deve selecionar um item associado"
 msgid ""
 "Predefined task templates will be added according to their creation order"
 msgstr ""
+"Os modelos de tarefas predefinidos serão adicionados de acordo com a sua "
+"ordem de criação"
 
 #: src/ITILTemplatePredefinedField.php:325
 msgid "Add a predefined field"

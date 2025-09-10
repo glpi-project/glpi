@@ -237,7 +237,7 @@ msgstr "Helpdesk-rapporteringsformulär"
 
 #: templates/anonymous_helpdesk.html.twig
 msgid "Select an urgency level"
-msgstr ""
+msgstr "Välj rapporterad prioritet..."
 
 #: templates/anonymous_helpdesk.html.twig src/CommonITILObject.php:3269
 msgctxt "urgency"
@@ -2593,7 +2593,7 @@ msgstr "Neka"
 #: src/CommonITILObject.php:7238 src/NotificationTargetChange.php:54
 #: src/NotificationTargetChange.php:344
 msgid "Validation request"
-msgstr ""
+msgstr "Godkännandebegäran"
 
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: templates/components/itilobject/actors/main.html.twig
@@ -2969,7 +2969,7 @@ msgstr "Växla panelbredd"
 
 #: templates/components/itilobject/selfservice.html.twig
 msgid "There are some tickets awaiting approval"
-msgstr ""
+msgstr "Några ärenden väntar på godkännande"
 
 #: templates/components/itilobject/selfservice.html.twig
 msgid "check it out!"
@@ -2985,7 +2985,7 @@ msgstr "Detta ärende berör mig"
 
 #: templates/components/itilobject/selfservice.html.twig
 msgid "Check your personal information"
-msgstr ""
+msgstr "Kontrollera din personliga information"
 
 #: templates/components/itilobject/selfservice.html.twig
 #: front/item_ticket.form.php:56 src/NotificationTargetTicket.php:649
@@ -3255,7 +3255,7 @@ msgstr "Ingen historik matchar dina filter"
 #: templates/pages/admin/events_list.html.twig
 #, php-format
 msgid "Show %s entries"
-msgstr ""
+msgstr "Visa %s poster"
 
 #: templates/components/user/info_card.html.twig front/stat.graph.php:264
 #: front/stat.tracking.php:106 src/NotificationTargetCommonITILObject.php:1774
@@ -3355,7 +3355,7 @@ msgstr "Stäng (Esc)"
 
 #: templates/components/photoswipe.html.twig src/RichText/RichText.php:504
 msgid "Share"
-msgstr ""
+msgstr "Dela"
 
 #: templates/components/photoswipe.html.twig src/Dashboard/Grid.php:288
 #: src/RichText/RichText.php:508
@@ -4220,7 +4220,7 @@ msgstr "Översättningar"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Translation of dropdowns"
-msgstr ""
+msgstr "Menyöversättningar"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Knowledge base translation"
@@ -4228,7 +4228,7 @@ msgstr "Kunskapsbasöversättning"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Translation of reminders"
-msgstr ""
+msgstr "Påminnelseöversättningar"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Dynamic display"
@@ -4382,6 +4382,8 @@ msgid ""
 "Unable to configure notifications: please configure at least one followup "
 "type using the above configuration."
 msgstr ""
+"Kan inte konfigurera aviseringar: konfigurera minst en uppföljningstyp med "
+"hjälp av ovanstående konfiguration."
 
 #: templates/pages/setup/authentication.html.twig src/Auth.php:1149
 #: src/Dropdown.php:1270
@@ -4664,7 +4666,7 @@ msgstr "Fjärrinventering"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "when reported by GLPI agent via native inventory"
-msgstr ""
+msgstr "När den rapporteras av GLPI-agenten via den inbyggda inventeringen."
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 msgid "Import process is complete."
@@ -5519,7 +5521,7 @@ msgstr "Garanti upphör den"
 #: front/report.infocom.conso.php:342
 #, php-format
 msgid "Total: Value=%1$s - Account net value=%2$s"
-msgstr ""
+msgstr "Totalt: Värde=%1$s - Nettovärde för konto=%2$s"
 
 #: front/report.infocom.php:291 front/report.infocom.conso.php:267
 #, php-format
@@ -6916,7 +6918,7 @@ msgstr "Lösning avfärdad"
 #: src/NotificationTargetTicket.php:142 src/CommonITILObject.php:7261
 #: src/NotificationTargetChange.php:55
 msgid "Validation request answer"
-msgstr ""
+msgstr "Svar på godkännandebegäran"
 
 #: src/NotificationTargetTicket.php:143
 msgid "Closing of the ticket"
@@ -7509,11 +7511,11 @@ msgstr "Avtal i ärendeobjektet"
 
 #: src/Entity.php:1365
 msgid "Satisfaction survey configuration"
-msgstr ""
+msgstr "Inställningar för kundenkät"
 
 #: src/Entity.php:1375
 msgid "Satisfaction survey trigger rate"
-msgstr ""
+msgstr "Frekvens för när kundenkät skickas ut"
 
 #. TRANS: software in plural
 #: src/Entity.php:1404 src/Entity.php:1907
@@ -8168,7 +8170,7 @@ msgstr "Ta bort ett avtal"
 
 #: src/Contract.php:1831
 msgid "No item."
-msgstr ""
+msgstr "Inget objekt."
 
 #: src/DeviceSensor.php:45
 msgid "Sensor"
@@ -8227,7 +8229,7 @@ msgstr "MSIN är de sista 8 eller 10 siffrorna i IMSI-numret"
 
 #: src/Profile_User.php:108
 msgid "One or more required fields are missing"
-msgstr ""
+msgstr "Ett eller flera obligatoriska fält saknas."
 
 #: src/Profile_User.php:149 src/Profile_User.php:299
 msgid "Add an authorization to a user"
@@ -9028,7 +9030,7 @@ msgstr "Status"
 
 #: src/RuleTicket.php:686
 msgid "Ticket location"
-msgstr ""
+msgstr "Ärendeplats"
 
 #: src/RuleTicket.php:692 src/RuleTicket.php:882
 #: src/NotificationTargetCommonITILObject.php:862
@@ -9104,7 +9106,7 @@ msgstr "Skapandedatum är en arbetstimme i kalendern"
 
 #: src/RuleTicket.php:866
 msgid "Ticket category from code"
-msgstr ""
+msgstr "Ärendekategori från kod"
 
 #: src/RuleTicket.php:1027 src/RuleTicket.php:1035 src/RuleTicket.php:1043
 #: src/RuleTicket.php:1051 src/CommonITILValidation.php:959
@@ -9113,12 +9115,12 @@ msgstr "Skicka en begäran om godkännande"
 
 #: src/RuleTicket.php:1036
 msgid "Responsible of the requester"
-msgstr ""
+msgstr "Ansvarig för frågeställare"
 
 #: src/RuleTicket.php:1052 src/CommonITILValidation.php:907
 #: src/CommonITILValidation.php:1186
 msgid "Minimum validation required"
-msgstr ""
+msgstr "Lägsta godkännandenivå som krävs"
 
 #: src/RuleTicket.php:1057
 msgid "Approval request to requester group manager"
@@ -9205,6 +9207,8 @@ msgid ""
 "OS or PHP is not relying on 64 bits integers, operations on IP addresses may"
 " produce unexpected results."
 msgstr ""
+"OS eller PHP är inte konfigurerat för att använda 64-bitars heltal. IP-"
+"adressoperationer kan resultera i oväntade resultat."
 
 #: src/System/Requirement/IntegerSize.php:56
 msgid "OS and PHP are relying on 64 bits integers."
@@ -9228,7 +9232,7 @@ msgstr "Åtkomsträttigheter för dokumentfiler"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:71
 msgid "Permissions for dump files"
-msgstr ""
+msgstr "Rättigheter för dumpfiler."
 
 #: src/System/Requirement/DirectoryWriteAccess.php:74
 msgid "Permissions for graphic files"
@@ -9345,7 +9349,7 @@ msgstr "SELinux-inställningarna är OK."
 
 #: src/System/Requirement/SafeDocumentRoot.php:46
 msgid "Safe configuration of web root directory"
-msgstr ""
+msgstr "Säker konfiguration av rotkatalog för web."
 
 #: src/System/Requirement/SafeDocumentRoot.php:48
 #, php-format
@@ -9387,7 +9391,7 @@ msgstr "Följande tillägg saknas\\: %s."
 
 #: src/System/Requirement/InstallationNotOverriden.php:62
 msgid "Previous GLPI version files detection"
-msgstr ""
+msgstr "Söker efter filer från tidigare version"
 
 #: src/System/Requirement/InstallationNotOverriden.php:63
 msgid ""
@@ -9397,7 +9401,7 @@ msgstr ""
 
 #: src/System/Requirement/InstallationNotOverriden.php:92
 msgid "We detected files of previous versions of GLPI."
-msgstr ""
+msgstr "vi hittade filer från en tidigare version."
 
 #: src/System/Requirement/InstallationNotOverriden.php:93
 msgid ""
@@ -9407,7 +9411,7 @@ msgstr ""
 
 #: src/System/Requirement/InstallationNotOverriden.php:135
 msgid "No files from previous GLPI version detected."
-msgstr ""
+msgstr "Hittade inga filer från tidigare version."
 
 #: src/System/Requirement/PhpSupportedVersion.php:54
 msgid "PHP maintained version"
@@ -9559,7 +9563,7 @@ msgstr "Databaskonfiguration är OK."
 
 #: src/System/Requirement/DataDirectoriesProtectedPath.php:75
 msgid "Safe path for data directories"
-msgstr ""
+msgstr "Säker sökväg till datakataloger"
 
 #: src/System/Requirement/DataDirectoriesProtectedPath.php:76
 msgid ""
@@ -9574,7 +9578,7 @@ msgstr ""
 
 #: src/System/Requirement/DataDirectoriesProtectedPath.php:126
 msgid "The following directories do not exist and cannot be tested:"
-msgstr ""
+msgstr "Fäljande kataloger finns inte och kan därför inte kontrolleras:"
 
 #: src/System/Requirement/DataDirectoriesProtectedPath.php:133
 #, php-format
@@ -9645,7 +9649,7 @@ msgstr "Tidszoner verkar vara laddade i databasen"
 
 #: src/System/Requirement/ProtectedWebAccess.php:58
 msgid "Protected access to files directory"
-msgstr ""
+msgstr "Skyddad åtkomst till filkataloger"
 
 #: src/System/Requirement/ProtectedWebAccess.php:59
 msgid ""
@@ -9671,7 +9675,7 @@ msgstr "Kontrollera .htaccess-filen och webbserverns konfiguration."
 
 #: src/System/Requirement/ProtectedWebAccess.php:122
 msgid "Web access to files directory is protected"
-msgstr ""
+msgstr "Webbåtkomst till filkatalog skyddas"
 
 #: src/System/Requirement/ProtectedWebAccess.php:126
 msgid ""
@@ -9688,7 +9692,7 @@ msgstr ""
 
 #: src/System/Requirement/ProtectedWebAccess.php:129
 msgid "error log file"
-msgstr ""
+msgstr "fellogg"
 
 #: src/System/Requirement/LogsWriteAccess.php:59
 msgid "Permissions for log files"
@@ -10148,7 +10152,7 @@ msgstr "Försenade ärenden"
 
 #: src/Dashboard/Provider.php:321
 msgid "Tickets waiting for validation"
-msgstr ""
+msgstr "Ärenden som väntar på godkännande"
 
 #: src/Dashboard/Provider.php:371
 msgid "Incoming tickets"
@@ -10567,7 +10571,7 @@ msgstr "Topplistan mest tilldelade grupper"
 
 #: src/Dashboard/Grid.php:1367
 msgid "List of reminders"
-msgstr ""
+msgstr "Lista med påminnelser"
 
 #: src/Dashboard/Grid.php:1375
 msgid "Editable markdown card"
@@ -11295,7 +11299,7 @@ msgstr "Rutnät"
 
 #: src/Rack.php:567
 msgid "Insert a rack here"
-msgstr ""
+msgstr "Infoga rack här"
 
 #: src/Rack.php:761
 msgid "Position must be set"
@@ -11714,7 +11718,7 @@ msgstr "Nätverksuttag för %s"
 
 #: src/Socket.php:1034
 msgid "Socket Model"
-msgstr ""
+msgstr "Uttagsmodell"
 
 #: src/Socket.php:1036
 msgid "NetworkPort"
@@ -11941,7 +11945,7 @@ msgstr "Virtualisering"
 
 #: src/ComputerVirtualMachine.php:193
 msgid "List of hosts"
-msgstr ""
+msgstr "Lista med värdar"
 
 #: src/ComputerVirtualMachine.php:254
 msgid "Add a virtual machine"
@@ -11974,7 +11978,7 @@ msgstr[0] "Virtuella maskiner"
 
 #: src/ComputerVirtualMachine.php:621
 msgid "Virtual machine Comment"
-msgstr ""
+msgstr "Kommentar för virtuell maskin"
 
 #: src/RuleDictionnaryPeripheralTypeCollection.php:46
 msgid "Dictionary of device types"
@@ -12410,7 +12414,7 @@ msgstr "Inga resultat funna"
 
 #: src/MapGeolocation.php:117
 msgid "Set location here"
-msgstr ""
+msgstr "Ange plats här"
 
 #: src/RuleLocation.php:44 src/RuleLocationCollection.php:44
 msgid "Location rules"
@@ -13980,7 +13984,7 @@ msgstr "Telefoni"
 #: src/AuthLDAP.php:995 src/AuthLDAP.php:1336 src/User.php:3016
 #: src/User.php:4104 src/ContentTemplates/Parameters/UserParameters.php:83
 msgid "Responsible"
-msgstr ""
+msgstr "Ansvarig"
 
 #: src/AuthLDAP.php:1000
 msgid "You can use a field name or an expression using various %{fieldname}"
@@ -14811,7 +14815,7 @@ msgstr "Path"
 
 #: src/DatabaseInstance.php:609
 msgid "No instance found"
-msgstr ""
+msgstr "Hittade inga instanser"
 
 #: src/DatabaseInstance.php:629
 #, php-format
@@ -14915,8 +14919,8 @@ msgstr ""
 #: src/KnowbaseItem_Item.php:176
 msgid "Linked item"
 msgid_plural "Linked items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Länkat objekt"
+msgstr[1] "Länkade objekt"
 
 #: src/KnowbaseItem_Item.php:206
 msgid "Update date"
@@ -14942,7 +14946,7 @@ msgstr "Kontakta din GLPI admin!"
 
 #: src/KnowbaseItem_Comment.php:181 src/KnowbaseItem_Comment.php:215
 msgid "Unable to load revision!"
-msgstr ""
+msgstr "Kunde inte ladda versionen!"
 
 #: src/KnowbaseItem_Comment.php:314
 msgid "Add an answer"
@@ -16434,7 +16438,7 @@ msgstr "Addera till alla ärenden"
 
 #: src/ITILFollowup.php:845 src/TicketTask.php:268
 msgid "See private ones"
-msgstr ""
+msgstr "Visa privata"
 
 #: src/ITILFollowup.php:849
 msgid "Add followup (associated groups)"
@@ -16466,7 +16470,7 @@ msgstr "Lägg till ärendeuppföljning (följare)"
 
 #: src/ITILFollowup.php:859 src/TicketTask.php:271
 msgid "See public ones"
-msgstr ""
+msgstr "Visa publika"
 
 #: src/ITILFollowup.php:871 src/Ticket.php:2618
 msgid "Add a new followup"
@@ -18596,20 +18600,20 @@ msgstr "lika med"
 
 #: src/SavedSearch_Alert.php:462
 msgid "not equals to"
-msgstr ""
+msgstr "ej lika med"
 
 #: src/SavedSearch_Alert.php:466
 msgid "greater or equals than"
-msgstr ""
+msgstr "större än eller lika med"
 
 #: src/SavedSearch_Alert.php:470
 msgid "greater than"
-msgstr ""
+msgstr "större än"
 
 #: src/SavedSearch_Alert.php:480
 #, php-format
 msgid "Results count for %1$s is %2$s %3$s"
-msgstr ""
+msgstr "Antal resultat för %1$s är %2$s %3$s"
 
 #: src/Printer_CartridgeInfo.php:44
 msgid "Cartridge inventoried information"
@@ -18630,8 +18634,8 @@ msgstr "%1$s återstående sidor"
 #: src/TicketTask.php:43
 msgid "Ticket task"
 msgid_plural "Ticket tasks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ärendeaktivitet"
+msgstr[1] "Ärendeaktiviteter"
 
 #: src/TicketTask.php:267
 msgid "Add to all items"
@@ -18866,7 +18870,7 @@ msgstr "%1$s återtar objektets översättning till revision %2$s"
 #: src/NotificationEvent.php:205
 #, php-format
 msgid "Unable to send notification using %1$s"
-msgstr ""
+msgstr "Kunde inte skicka avisering via %1$s"
 
 #: src/ImageResolution.php:42
 msgctxt "image"
@@ -18894,7 +18898,7 @@ msgstr "Ogiltig process"
 
 #: src/MassiveAction.php:670 src/MassiveAction.php:1071
 msgid "Select the type of the item on which applying this action"
-msgstr ""
+msgstr "Välj typ av objekt som denna åtgärd ska utföras på"
 
 #: src/MassiveAction.php:707
 msgctxt "button"
@@ -18926,7 +18930,7 @@ msgstr "Lägg till notering"
 
 #: src/MassiveAction.php:1058
 msgid "Select the common field that you want to update"
-msgstr ""
+msgstr "Välj gemensamt fält att uppdatera"
 
 #: src/MassiveAction.php:1060
 msgid "Select the field that you want to update"
@@ -18955,15 +18959,17 @@ msgstr "Ny anteckning"
 #: src/MassiveAction.php:1498
 msgid ""
 "You can't delete that item by massive actions, because it has sub-items"
-msgstr ""
+msgstr "Det går inte att ta bort objektet eftersom det innehåller underobjekt"
 
 #: src/MassiveAction.php:1499 src/MassiveAction.php:1508
 msgid "but you can do it by the form of the item"
-msgstr ""
+msgstr "men du kan göra det via objektets formulär"
 
 #: src/MassiveAction.php:1507
 msgid "You can't delete that item, because it is used for one or more items"
 msgstr ""
+"Det går inte att ta bort objektet eftersom det används av ett eller flera "
+"andra objekt"
 
 #: src/Marketplace/Controller.php:106 src/Marketplace/Controller.php:206
 msgid "Unable to download plugin archive."
@@ -19306,13 +19312,13 @@ msgstr "Ingen nätverksport funnen"
 #: src/NetworkPort.php:938
 msgid "Management port"
 msgid_plural "Management ports"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Port för administration"
+msgstr[1] "Portar för administration"
 
 #. TRANS: list of unit (bps for bytes per second)
 #: src/NetworkPort.php:1034
 msgid "bps"
-msgstr ""
+msgstr "bps"
 
 #: src/NetworkPort.php:1034
 msgid "Kbps"
@@ -19320,7 +19326,7 @@ msgstr "Kbps"
 
 #: src/NetworkPort.php:1034
 msgid "Mbps"
-msgstr ""
+msgstr "Mbps"
 
 #: src/NetworkPort.php:1034
 msgid "Gbps"
@@ -19328,7 +19334,7 @@ msgstr "Gbps"
 
 #: src/NetworkPort.php:1034
 msgid "Tbps"
-msgstr ""
+msgstr "Tbps"
 
 #: src/NetworkPort.php:1051
 msgid "Up"
@@ -19385,11 +19391,11 @@ msgstr "Dissociera ett VLAN"
 
 #: src/NetworkPort.php:1612
 msgid "Item need to be deleted first"
-msgstr ""
+msgstr "Objektet måste tas bort först"
 
 #: src/NetworkPort.php:1737
 msgid "MTU"
-msgstr ""
+msgstr "MTU"
 
 #: src/NetworkPort.php:1744 src/DeviceDrive.php:57 src/DeviceDrive.php:89
 #: src/DeviceDrive.php:131
@@ -19406,11 +19412,11 @@ msgstr "Senaste förändring"
 
 #: src/NetworkPort.php:1765
 msgid "Number of I/O bytes"
-msgstr ""
+msgstr "Antal I/O-bytes"
 
 #: src/NetworkPort.php:1772
 msgid "Number of I/O errors"
-msgstr ""
+msgstr "Antal I/O-fel"
 
 #: src/NetworkPort.php:1779
 msgid "Duplex"
@@ -19442,7 +19448,7 @@ msgstr "Ny mall"
 
 #: src/Notification_NotificationTemplate.php:180
 msgid "No template selected"
-msgstr ""
+msgstr "Ingen mall vald"
 
 #: src/Notification_NotificationTemplate.php:424
 msgid "Browser"
@@ -19461,7 +19467,7 @@ msgstr[1] "Databasinstanstyper"
 
 #: src/NetworkPortLocal.php:46
 msgid "Local loop port"
-msgstr ""
+msgstr "Lokal loop-port"
 
 #: src/DomainRecord.php:49
 msgid "Domain record"
@@ -19505,7 +19511,7 @@ msgstr "Kärnor"
 
 #: src/Item_DeviceProcessor.php:71
 msgid "Threads"
-msgstr ""
+msgstr "Trådar"
 
 #: src/Search.php:294
 msgid "Search results for localized items only"
@@ -19662,18 +19668,25 @@ msgid ""
 "Can't remove update right on this profile as it is the only remaining "
 "profile with this right."
 msgstr ""
+"Kan inte ta bort uppdateringsrättighet för denna profil eftersom det är den "
+"enda återstående profilen med denna rättighet."
 
 #: src/Profile.php:432
 msgid ""
 "Can't change the interface on this profile as it is the only remaining "
 "profile with rights to modify profiles with this interface."
 msgstr ""
+"Kan inte ändra gränssnitt för denna profil eftersom det är den enda "
+"återstående profilen med rättigheter att ändra profiler med detta "
+"gränssnitt."
 
 #: src/Profile.php:447
 msgid ""
 "This profile can't be moved to the simplified interface as it is used for "
 "locking items."
 msgstr ""
+"Denna profil kan inte flyttas till det förenklade gränssnittet eftersom den "
+"används för att låsa objekt."
 
 #: src/Profile.php:498
 msgid "This profile is the last with write rights on profiles"
@@ -19717,7 +19730,7 @@ msgstr[1] "Publika sparade sökningar"
 
 #: src/Profile.php:941 src/Profile.php:2254
 msgid "Simcard PIN/PUK"
-msgstr ""
+msgstr "SIM PIN/PUK"
 
 #: src/Profile.php:954 src/Profile.php:2357 src/Contact.php:59
 msgid "Contact"
@@ -19726,7 +19739,7 @@ msgstr[0] "Kontakter"
 
 #: src/Profile.php:981 src/Profile.php:3066
 msgid "System logs"
-msgstr ""
+msgstr "Systemloggar"
 
 #: src/Profile.php:1042 src/Profile.php:2869
 msgid "Rules for assigning a computer to an entity"
@@ -19846,7 +19859,7 @@ msgstr[0] "Externa länkar"
 
 #: src/Profile.php:3286
 msgid "Managed domain records types"
-msgstr ""
+msgstr "Typer av hanterade domänposter"
 
 #: src/Profile.php:3700
 msgid "No access"
@@ -19917,6 +19930,8 @@ msgid ""
 "The specified profile doesn't exist or is not allowed to access the central "
 "interface."
 msgstr ""
+"Den angivna profilen finns inte eller har inte behörighet att komma åt det "
+"centrala gränssnittet."
 
 #: src/Config.php:331 src/User.php:7004
 #, php-format
@@ -20772,7 +20787,7 @@ msgstr ""
 
 #: src/User.php:168
 msgid "You must define a default profile to create a new user"
-msgstr ""
+msgstr "Du måste definiera en standardprofil för att skapa en ny användare"
 
 #: src/User.php:771
 msgid "The login is not valid. Unable to add the user."
@@ -20788,11 +20803,11 @@ msgstr "Fel : de två lösenorden är inte identiska"
 
 #: src/User.php:997
 msgid "Moving temporary file failed."
-msgstr ""
+msgstr "Kunde inte flytta temporärt fält."
 
 #: src/User.php:1005
 msgid "The file is not an image file."
-msgstr ""
+msgstr "Filen är ingen bildfil."
 
 #: src/User.php:1099
 #, php-format
@@ -20803,6 +20818,8 @@ msgstr "Du får inte uppdatera dessa fält: %s"
 msgid ""
 "Can't set user as inactive as it is the only remaining super administrator."
 msgstr ""
+"Kan inte sätta användaren som inaktiv eftersom det är den enda återstående "
+"superadministratören."
 
 #: src/User.php:2497
 msgid "Add user..."
@@ -20959,7 +20976,7 @@ msgstr "Importera från andra källor"
 
 #: src/User.php:4962
 msgid "Update authentification method to"
-msgstr ""
+msgstr "Uppdatera autentiseringsmetod till"
 
 #: src/User.php:5529
 msgid "Your password has expired. You must change it to be able to login."
@@ -21009,7 +21026,7 @@ msgstr "Lägg till användaren från en extern källa"
 #. TRANS: short for : Read method for user authentication and synchronization
 #: src/User.php:6161
 msgid "Read auth"
-msgstr ""
+msgstr "Läs-auth"
 
 #: src/User.php:6162
 msgid "Read user authentication and synchronization method"
@@ -21031,11 +21048,11 @@ msgstr "Hantera policy för användares utgående lösenord"
 
 #: src/User.php:6278
 msgid "Maximum expiration notifications to send at once"
-msgstr ""
+msgstr "Maximalt antal samtidiga förfallandenotiser som kan skickas"
 
 #: src/User.php:6522
 msgid "Your password has expired."
-msgstr ""
+msgstr "Ditt lösenord har blivit ogiltig"
 
 #: src/User.php:6525
 #, php-format
@@ -21048,11 +21065,11 @@ msgstr "Helpdesk användare"
 
 #: src/User.php:6736
 msgid "This is a special user used for automated actions. "
-msgstr ""
+msgstr "Detta är en specialanvändare som används för automatiska åtgärder"
 
 #: src/User.php:6738
 msgid "You can set its name to your organisation's name. "
-msgstr ""
+msgstr "Du kan ange dess namn till din organisations namn."
 
 #: src/RuleDictionnaryMonitorTypeCollection.php:46
 msgid "Dictionary of monitor types"
@@ -21067,8 +21084,8 @@ msgstr[1] "Agenttyper"
 #: src/Item_Problem.php:53
 msgid "Problem item"
 msgid_plural "Problem items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Problempost"
+msgstr[1] "Problemposter"
 
 #: src/RegisteredID.php:54
 msgid "PCI"
@@ -21077,8 +21094,8 @@ msgstr "PCI"
 #: src/RegisteredID.php:62
 msgid "Registered ID (issued by PCI-SIG)"
 msgid_plural "Registered IDs (issued by PCI-SIG)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Registrerat ID (utfärdat av PCI-SIG)"
+msgstr[1] "Registrerade ID:n (utfärdade av PCI-SIG)"
 
 #: src/Telemetry.php:40
 msgid "Telemetry"
@@ -21188,8 +21205,8 @@ msgstr "Återkommande ärenden"
 #: src/LineType.php:40
 msgid "Line type"
 msgid_plural "Line types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Linjetyp"
+msgstr[1] "Linjetyper"
 
 #: src/RuleDictionnaryComputerModelCollection.php:46
 #: src/RuleDictionnaryMonitorModelCollection.php:46
@@ -21204,7 +21221,7 @@ msgstr "Ogiltigt datum. Uppdateringen avbröts."
 
 #: src/CommonITILObject.php:2730
 msgid "You cannot use predefined description verbatim"
-msgstr ""
+msgstr "Du kan inte använda fördefinierad beskrivning ordagrant"
 
 #: src/CommonITILObject.php:2823
 msgid "Incorrect value for date field."
@@ -21357,11 +21374,11 @@ msgstr "Åtminstone väldigt högt"
 
 #: src/CommonITILObject.php:4133
 msgid "Time to resolve + Progress"
-msgstr ""
+msgstr "Tid till lösning + Framsteg"
 
 #: src/CommonITILObject.php:4143
 msgid "Time to resolve exceeded"
-msgstr ""
+msgstr "Tid till lösning överskriden"
 
 #: src/CommonITILObject.php:4207
 msgid "Last edit by"
@@ -21373,7 +21390,7 @@ msgstr "Valfri lösningsstatus"
 
 #: src/CommonITILObject.php:4360
 msgid "Last solution status"
-msgstr ""
+msgstr "Senaste lösningsstatus"
 
 #: src/CommonITILObject.php:4417
 msgid "Resolution time"
@@ -21473,7 +21490,7 @@ msgstr "%1$s uppdaterar objektet %2$s"
 #: src/CommonITILObject.php:9546
 msgctxt "filters"
 msgid "The category of the item"
-msgstr ""
+msgstr "Objektets kategori"
 
 #: src/CommonITILObject.php:9622
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:78
@@ -21517,11 +21534,11 @@ msgstr "finns inte"
 
 #: src/RuleCriteria.php:581
 msgid "is CIDR"
-msgstr ""
+msgstr "är CIDR"
 
 #: src/RuleCriteria.php:582
 msgid "is not CIDR"
-msgstr ""
+msgstr "är inte CIDR"
 
 #: src/RuleCriteria.php:709 src/RuleCriteria.php:711
 msgid "Add a criterion"
@@ -21864,7 +21881,7 @@ msgstr "Datorer"
 
 #: src/Computer.php:629
 msgid "Computer UUID"
-msgstr ""
+msgstr "Dator-UUID"
 
 #: src/NotificationTargetDomain.php:41 src/NotificationTargetDomain.php:78
 msgid "Expired domains"
@@ -21876,7 +21893,7 @@ msgstr "Utgående domäner"
 
 #: src/NotificationTargetDomain.php:50
 msgid "Technician in charge of the domain"
-msgstr ""
+msgstr "Domänansvarig tekniker"
 
 #: src/NotificationTargetDomain.php:54
 msgid "Group in charge of the domain"
@@ -21930,7 +21947,7 @@ msgstr "kol: %1$s, rad: %2$s"
 
 #: src/SavedSearch.php:92
 msgid "Unset as default"
-msgstr ""
+msgstr "Avmarkera som standard"
 
 #: src/SavedSearch.php:94
 msgid "Change count method"
@@ -21942,7 +21959,7 @@ msgstr "Ändra visning"
 
 #: src/SavedSearch.php:99
 msgid "Change entity"
-msgstr ""
+msgstr "Ändra enhet"
 
 #: src/SavedSearch.php:110 src/SavedSearch.php:507 src/SavedSearch.php:1215
 msgid "Auto"
@@ -21954,7 +21971,7 @@ msgstr "Är privat"
 
 #: src/SavedSearch.php:327
 msgid "Last duration (ms)"
-msgstr ""
+msgstr "Senaste varaktighet (ms)"
 
 #: src/SavedSearch.php:335
 msgid "Count"
@@ -21970,7 +21987,7 @@ msgstr "Räknare"
 
 #: src/SavedSearch.php:369
 msgid "Last execution date"
-msgstr ""
+msgstr "Senaste körningsdatum"
 
 #: src/SavedSearch.php:495
 msgid "New saved search"
@@ -21994,6 +22011,8 @@ msgid ""
 "A fatal error occurred while executing this saved search. It is not able to "
 "be used."
 msgstr ""
+"Ett allvarligt fel inträffade vid körning av denna sparade sökning. Den kan "
+"inte användas."
 
 #: src/SavedSearch.php:967
 msgid "Count for this saved search has been disabled."
@@ -22012,7 +22031,7 @@ msgstr "Spara aktuellt sökkriterium"
 
 #: src/SavedSearch.php:1282
 msgid "Update all bookmarks execution time"
-msgstr ""
+msgstr "Uppdatera körningstiden för alla bokmärken"
 
 #: src/SavedSearch.php:1452
 msgid "Notification has been created!"
@@ -22082,7 +22101,7 @@ msgstr "Automatisk uppföljning är inaktiverad"
 
 #: src/PendingReason.php:182
 msgid "Every day"
-msgstr ""
+msgstr "Varje dag"
 
 #: src/PendingReason.php:183
 msgid "Every two days"
@@ -22308,7 +22327,7 @@ msgstr "Dissociera certifikat"
 
 #: src/Certificate.php:694
 msgid "Send alarms on expired certificate"
-msgstr ""
+msgstr "Skicka larm vid utgånget certifikat"
 
 #: src/Certificate.php:783
 #, php-format
@@ -22323,8 +22342,8 @@ msgstr "Det gick inte att skicka certifikatvarningar för entitet %1$s"
 #: src/PhonePowerSupply.php:44
 msgid "Phone power supply type"
 msgid_plural "Phone power supply types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Typ av strömförsörjning för telefon"
+msgstr[1] "Typer av strömförsörjning för telefoner"
 
 #: src/DeviceCaseModel.php:44
 msgid "Device case model"
@@ -22638,11 +22657,11 @@ msgstr "Adress:"
 
 #: src/Reservation.php:194
 msgid "You do not have permission to create reservations"
-msgstr ""
+msgstr "Du är inte behörig att reservera"
 
 #: src/Reservation.php:204
 msgid "You do not have permission to create reservations for other users"
-msgstr ""
+msgstr "Du har inte behörighet att skapa reservationer åt andra användare"
 
 #: src/Reservation.php:262
 #, php-format
@@ -22652,7 +22671,7 @@ msgstr "%1$s lägger till reservationen %2$s till objekt %3$s"
 #: src/Reservation.php:276
 #, php-format
 msgid "Reservation added for item %s at %s"
-msgstr ""
+msgstr "Reservation tillagd för %s klockan %s"
 
 #: src/Reservation.php:306 src/Reservation.php:428
 msgid "The required item is already reserved for this timeframe"
@@ -22682,7 +22701,7 @@ msgstr "Alla bokningsbara perioder"
 #: src/Reservation.php:737
 #, php-format
 msgid "Reserved by %s"
-msgstr ""
+msgstr "Reserverad av %s"
 
 #: src/Reservation.php:798
 #, php-format
@@ -22719,7 +22738,7 @@ msgstr "Ta bort alla upprepningar"
 
 #: src/Reservation.php:1218
 msgid "Reservations for this item"
-msgstr ""
+msgstr "Reservationer för detta objekt"
 
 #: src/Reservation.php:1305
 msgid "Current and future reservations"
@@ -22739,7 +22758,7 @@ msgstr "Påverkansanalys"
 
 #: src/Impact.php:364
 msgid "This asset doesn't have any dependencies."
-msgstr ""
+msgstr "Denna tillgång saknar beroenden"
 
 #: src/Impact.php:375
 msgid "Export to csv"
@@ -22747,7 +22766,7 @@ msgstr "Exportera till CSV"
 
 #: src/Impact.php:391 src/Impact.php:1109
 msgid "Max depth"
-msgstr ""
+msgstr "Maxdjup"
 
 #: src/Impact.php:398
 msgid "No limit"
@@ -22775,11 +22794,11 @@ msgstr "Inga resultat"
 
 #: src/Impact.php:1081
 msgid "Show impact"
-msgstr ""
+msgstr "Visa påverkan"
 
 #: src/Impact.php:1090
 msgid "Show depends"
-msgstr ""
+msgstr "Visa beroenden"
 
 #: src/Impact.php:1093
 msgid "Colors"
@@ -22795,7 +22814,7 @@ msgstr "Påverkan och beroenden"
 
 #: src/Impact.php:1121
 msgid "Undo"
-msgstr ""
+msgstr "Ångra"
 
 #: src/Impact.php:1122
 msgid "Redo"
@@ -22965,7 +22984,7 @@ msgstr[0] "Fördefinierade fält"
 #: src/ITILTemplatePredefinedField.php:81
 #: src/ITILTemplatePredefinedField.php:91
 msgid "You must select an associated item"
-msgstr ""
+msgstr "Du måste välja ett assicierat objekt"
 
 #: src/ITILTemplatePredefinedField.php:319
 msgid ""
@@ -23058,7 +23077,7 @@ msgstr "Lägg till aviseringsmall"
 #: src/Notification.php:498
 msgctxt "button"
 msgid "Remove all notification templates"
-msgstr ""
+msgstr "Ta bort alla aviseringsmallar"
 
 #: src/Notification.php:717 src/Notification.php:730
 msgid "Field itemtype is mandatory"
@@ -23079,7 +23098,7 @@ msgstr "Larm vid utgånget certifikat"
 
 #: src/NotificationTargetCertificate.php:56
 msgid "Technician in charge of the certificate"
-msgstr ""
+msgstr "Certifikatansvarig tekniker"
 
 #: src/NotificationTargetCertificate.php:60
 msgid "Group in charge of the certificate"
@@ -23148,11 +23167,11 @@ msgstr "Standard för uppföljande e-postmottagare"
 
 #: src/RequestType.php:69 src/RequestType.php:132
 msgid "Request source visible for tickets"
-msgstr ""
+msgstr "Ärendekälla synlig i ärenden"
 
 #: src/RequestType.php:73 src/RequestType.php:140
 msgid "Request source visible for followups"
-msgstr ""
+msgstr "Ärendekälla synlig i uppföljningar"
 
 #: src/RequestType.php:196 src/RequestType.php:204 src/RequestType.php:212
 #: src/RequestType.php:220
@@ -23161,7 +23180,7 @@ msgstr "Försiktigt: det finns inget standard-värde"
 
 #: src/RuleDictionnaryOperatingSystemEditionCollection.php:46
 msgid "Dictionary of operating system editions"
-msgstr ""
+msgstr "Katalog över operativsystemutgåvor"
 
 #: src/NotImportedEmail.php:63
 msgid "Refused email"
@@ -23254,7 +23273,7 @@ msgstr "LDAP kriterium"
 
 #: src/RuleDictionnaryNetworkEquipmentModelCollection.php:46
 msgid "Dictionary of networking equipment models"
-msgstr ""
+msgstr "Katalog över modeller av nätverksutrustning"
 
 #: src/Console/System/ListServicesCommand.php:50
 msgid "List system services"
@@ -25560,7 +25579,7 @@ msgstr[0] "Nätverkskort"
 
 #: src/DeviceNetworkCard.php:70 src/DeviceNetworkCard.php:104
 msgid "MAC address by default"
-msgstr ""
+msgstr "Standard MAC-adress"
 
 #: src/DeviceNetworkCard.php:74 src/DeviceNetworkCard.php:112
 #: src/DeviceNetworkCard.php:150
@@ -25849,7 +25868,7 @@ msgstr ""
 
 #: src/RuleCollection.php:523
 msgid "Rules used for"
-msgstr ""
+msgstr "Regler för"
 
 #: src/RuleCollection.php:688
 msgid "Rules will be erased and recreated from default. Are you sure?"
@@ -25861,7 +25880,7 @@ msgstr ""
 
 #: src/RuleCollection.php:691
 msgid "Reset rules"
-msgstr ""
+msgstr "Återställ regler"
 
 #: src/RuleCollection.php:1159
 msgid "Import rules from a XML file"
@@ -25924,13 +25943,13 @@ msgstr "Lägg till ett dolt fält"
 
 #: src/Plugin.php:233
 msgid "Invalid plugin directory"
-msgstr ""
+msgstr "Ogiltig katalog för tillägg"
 
 #: src/Plugin.php:643
 #, php-format
 msgid ""
 "Plugin %1$s has been replaced by %2$s and therefore has been deactivated."
-msgstr ""
+msgstr "Tillägget %1$s har ersatts av %2$s och har därför inaktiverats."
 
 #: src/Plugin.php:706
 #, php-format
@@ -25938,26 +25957,28 @@ msgid ""
 "Plugin %1$s version changed. It has been deactivated as its update process "
 "has to be launched."
 msgstr ""
+"Tillägget %1$s har ändrat version. Det har inaktiverats eftersom dess "
+"uppdateringsprocess måste startas."
 
 #: src/Plugin.php:885
 #, php-format
 msgid "Plugin %1$s has no uninstall function!"
-msgstr ""
+msgstr "Tillägget %1$s har ingen avinstallationsfunktion!"
 
 #: src/Plugin.php:902
 #, php-format
 msgid "Plugin %1$s has been uninstalled!"
-msgstr ""
+msgstr "Tillägget %1$s har avinstallerats!"
 
 #: src/Plugin.php:910
 #, php-format
 msgid "Plugin %1$s has been uninstalled by %2$s."
-msgstr ""
+msgstr "Tillägget %1$s har avinstallerats av %2$s."
 
 #: src/Plugin.php:963
 #, php-format
 msgid "Plugin %1$s has been installed!"
-msgstr ""
+msgstr "Tillägget %1$s har installerats!"
 
 #: src/Plugin.php:969 src/Plugin.php:2698 src/Plugin.php:2993
 msgctxt "button"
@@ -25971,17 +25992,17 @@ msgstr "Vill du %activate_link det?"
 #: src/Plugin.php:980
 #, php-format
 msgid "Plugin %1$s has been installed and must be configured!"
-msgstr ""
+msgstr "Tillägget %1$s har installerats och måste konfigureras!"
 
 #: src/Plugin.php:993
 #, php-format
 msgid "Plugin %1$s has been installed by %2$s."
-msgstr ""
+msgstr "Tillägget %1$s har installerats av %2$s."
 
 #: src/Plugin.php:1001
 #, php-format
 msgid "Plugin %1$s has no install function!"
-msgstr ""
+msgstr "Tillägget %1$s har ingen funktion för installation!"
 
 #: src/Plugin.php:1037
 #, php-format
@@ -25991,32 +26012,32 @@ msgstr ""
 #: src/Plugin.php:1058
 #, php-format
 msgid "Plugin %1$s prerequisites are not matching, it cannot be activated."
-msgstr ""
+msgstr "Systemkraven för tillägget %1$s upfylls inte. Det kan inte aktiveras."
 
 #: src/Plugin.php:1102
 #, php-format
 msgid "Plugin %1$s has been activated!"
-msgstr ""
+msgstr "Tillägget %1$s har aktiverats!"
 
 #: src/Plugin.php:1113
 #, php-format
 msgid "Plugin %1$s has been activated by %2$s."
-msgstr ""
+msgstr "Tillägget %1$s har aktiverats av %2$s."
 
 #: src/Plugin.php:1124
 #, php-format
 msgid "Plugin %1$s configuration must be done, it cannot be activated."
-msgstr ""
+msgstr "Tillägget %1$s måste konfigureras innan det kan aktiveras."
 
 #: src/Plugin.php:1176
 #, php-format
 msgid "Plugin %1$s has been deactivated!"
-msgstr ""
+msgstr "Tillägget %1$s har inaktiverats!"
 
 #: src/Plugin.php:1187
 #, php-format
 msgid "Plugin %1$s has been deactivated by %2$s."
-msgstr ""
+msgstr "Tillägget %1$s har inaktiverats av %2$s."
 
 #: src/Plugin.php:1243
 msgid "All plugins have been disabled."
@@ -26025,47 +26046,47 @@ msgstr ""
 #: src/Plugin.php:1258
 #, php-format
 msgid "Plugin %1$s cleaned!"
-msgstr ""
+msgstr "Tillägget %1$s rensat!"
 
 #: src/Plugin.php:2101
 #, php-format
 msgid "This plugin requires %1$s < %2$s."
-msgstr ""
+msgstr "Detta tillägg kräver %1$s < %2$s."
 
 #: src/Plugin.php:2107
 #, php-format
 msgid "This plugin requires %1$s >= %2$s."
-msgstr ""
+msgstr "Detta tillägg kräver %1$s >= %2$s."
 
 #: src/Plugin.php:2113
 #, php-format
 msgid "This plugin requires %1$s >= %2$s and < %3$s."
-msgstr ""
+msgstr "Detta tillägg kräver %1$s >= %2$s och < %3$s."
 
 #: src/Plugin.php:2140
 #, php-format
 msgid "This plugin requires PHP extension %1$s"
-msgstr ""
+msgstr "Detta tillägg kräver PHP-tillägget %1$s"
 
 #: src/Plugin.php:2146
 #, php-format
 msgid "This plugin requires %1$s plugin"
-msgstr ""
+msgstr "Detta tillägg kräver %1$s-tillägget"
 
 #: src/Plugin.php:2152
 #, php-format
 msgid "This plugin requires PHP compiled along with \"%1$s\""
-msgstr ""
+msgstr "Detta tillägg kräver att PHP kompilerats tillsammans med \"%1$s\""
 
 #: src/Plugin.php:2158
 #, php-format
 msgid "This plugin requires PHP parameter %1$s"
-msgstr ""
+msgstr "Detta tillägg kräver PHP-parametern %1$s"
 
 #: src/Plugin.php:2164
 #, php-format
 msgid "This plugin requires GLPI parameter %1$s"
-msgstr ""
+msgstr "Detta tillägg kräver GLPI-parametern %1$s"
 
 #: src/Plugin.php:2428 src/Plugin.php:2847
 msgctxt "plugin"
@@ -26094,7 +26115,7 @@ msgstr "Installerad/inte aktiverad"
 #: src/Plugin.php:2443
 msgctxt "plugin"
 msgid "Replaced"
-msgstr ""
+msgstr "Ersatt"
 
 #: src/Plugin.php:2446 src/Plugin.php:2852
 msgid "Error / to clean"
@@ -26128,15 +26149,15 @@ msgstr "Rensa"
 
 #: src/Plugin.php:2984 src/Plugin.php:2992
 msgid "This will only affect plugins already installed"
-msgstr ""
+msgstr "Detta påverkar endast tillägg som redan installerats"
 
 #: src/Plugin.php:3000
 msgid "This will only affect plugins already enabled"
-msgstr ""
+msgstr "Detta påverkar endast tillägg som redan är aktiva"
 
 #: src/Plugin.php:3008
 msgid "This will only affect plugins ready to be cleaned"
-msgstr ""
+msgstr "Detta påverkar endast tillägg som är redo att rensas"
 
 #: src/Domain.php:70
 msgid "Domain"
@@ -26185,6 +26206,7 @@ msgid ""
 "Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s"
 " - Remaining %3$d"
 msgstr ""
+"Larmnivå uppnådd för förbrukningstypen: %1$s - Referens %2$s - Återstår %3$d"
 
 #. TRANS: %s is entity name
 #: src/ConsumableItem.php:421
@@ -26215,7 +26237,7 @@ msgstr "\"deviceid\" krävs!"
 #: src/Agent.php:803
 #, php-format
 msgid "Requested at %s"
-msgstr ""
+msgstr "Begärd %s"
 
 #: src/Agent.php:804
 msgid "Y-m-d H:i:s"
@@ -26243,7 +26265,7 @@ msgstr "Lägg till ett filter"
 
 #: js/dashboard.js:438
 msgid "Saved"
-msgstr ""
+msgstr "Sparad"
 
 #: js/dashboard.js:948
 #, javascript-format
@@ -26264,7 +26286,7 @@ msgstr "Visa pågående ärenden"
 
 #: js/impact.js:1336
 msgid "Show ongoing tickets for this item"
-msgstr ""
+msgstr "Visa pågående ärenden för detta objekt"
 
 #: js/impact.js:1342
 msgid "Group properties..."
@@ -26288,7 +26310,7 @@ msgstr "Denna tillgång finns redan."
 
 #: js/impact.js:1396
 msgid "Unexpected error."
-msgstr ""
+msgstr "Oväntat fel."
 
 #: js/impact.js:2351
 msgid "Draw a line between two assets to add an impact relation"
@@ -26305,7 +26327,7 @@ msgstr "Rita en ruta som innehåller de tillgångar du vill gruppera"
 
 #: js/impact.js:2494
 msgid "Requests"
-msgstr ""
+msgstr "Begäranden"
 
 #: js/impact.js:2495
 msgid "Incidents"
@@ -26321,7 +26343,7 @@ msgstr "Du måste välja minst 1 tillgång för att kunna skapa en grupp"
 
 #: js/glpi_dialog.js:376
 msgid "Success"
-msgstr ""
+msgstr "Lyckades"
 
 #: js/common.js:1179
 msgid "just now"
@@ -26346,11 +26368,11 @@ msgstr "igår"
 
 #: js/common.js:1187
 msgid "a week ago"
-msgstr ""
+msgstr "en vecka sedan"
 
 #: js/common.js:1189
 msgid "a month ago"
-msgstr ""
+msgstr "en månad sedan"
 
 #: js/common.js:1190
 #, javascript-format
@@ -26368,7 +26390,7 @@ msgstr "%s år sedan"
 
 #: js/reservations.js:129
 msgid "Timeline Week"
-msgstr ""
+msgstr "Tidslinje vecka"
 
 #: js/reservations.js:239
 msgid "Add reservation"
@@ -26392,11 +26414,11 @@ msgstr "Ta bort hela serien av återkommande händelser"
 
 #: js/planning.js:363
 msgid "or just add an exception by deleting this instance?"
-msgstr ""
+msgstr "eller bara lägga till ett undantag genom att ta bort denna instans?"
 
 #: js/planning.js:365 js/planning.js:497 js/planning.js:540
 msgid "Serie"
-msgstr ""
+msgstr "Serie"
 
 #: js/planning.js:370 js/planning.js:502 js/planning.js:545
 msgid "Instance"
@@ -26406,17 +26428,19 @@ msgstr[1] "Instanser"
 
 #: js/planning.js:493
 msgid "Recurring event resized"
-msgstr ""
+msgstr "Återkommande händelse har ändrats i storlek"
 
 #: js/planning.js:494
 msgid ""
 "The resized event is a recurring event. Do you want to change the serie or "
 "instance ?"
 msgstr ""
+"Den ändrade händelsen är en återkommande händelse. Vill du ändra serien "
+"eller instansen?"
 
 #: js/planning.js:536
 msgid "Recurring event dragged"
-msgstr ""
+msgstr "Åtkommande händelse flyttad"
 
 #: js/planning.js:537
 msgid ""
@@ -26479,7 +26503,7 @@ msgstr "Lägg till en kolumn från befintlig status"
 
 #: js/modules/Kanban/Kanban.js:1954
 msgid "Or add a new status"
-msgstr ""
+msgstr "...eller lägg till ny status"
 
 #: js/modules/Kanban/Kanban.js:1955 js/modules/Kanban/Kanban.js:1974
 #: js/modules/Kanban/Kanban.js:1994
@@ -26488,19 +26512,22 @@ msgstr "Skapa status"
 
 #: js/modules/Kanban/Kanban.js:2112
 msgid "Toggle collapse"
-msgstr ""
+msgstr "Fäll ihop"
 
 #: js/modules/Kanban/Kanban.js:2154
 msgid ""
 "This column cannot support showing cards due to how many cards would be "
 "shown. You can still drag cards into this column."
 msgstr ""
+"Den här kolumnen kan inte visa alla kort eftersom det finns för många. Du "
+"kan dock fortfarande dra och släppa kort till kolumnen."
 
 #: js/modules/Kanban/Kanban.js:2289
 msgid ""
 "The regular expression you entered is invalid. Please check it and try "
 "again."
 msgstr ""
+"Det reguljära uttryck du angav är ogiltigt. Kontrollera det och försök igen."
 
 #: js/modules/Kanban/Kanban.js:2290
 msgid "Invalid regular expression"
@@ -26520,7 +26547,7 @@ msgstr "Utesluta"
 
 #: js/modules/Search/Table.js:53
 msgid "Submit current search before saving it"
-msgstr ""
+msgstr "Genomför aktuella sökningen innan du sparar den"
 
 #: js/fileupload.js:102
 msgid "Upload successful"

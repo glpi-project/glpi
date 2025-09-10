@@ -13,6 +13,7 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # Lukács Péter <lukacspeter1977@gmail.com>, 2025
 # Márk Klung, 2025
+# Gábor Bíró, 2025
 # 
 #, fuzzy
 msgid ""
@@ -21,7 +22,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-20 10:01+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Márk Klung, 2025\n"
+"Last-Translator: Gábor Bíró, 2025\n"
 "Language-Team: Hungarian (Hungary) (https://app.transifex.com/glpi/teams/1637/hu_HU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -92,21 +93,21 @@ msgstr "Új adatbázis létrehozása vagy létező használata :"
 
 #: templates/install/step1.html.twig
 msgid "Checking write access to configuration files"
-msgstr ""
+msgstr "Írási jogosultság ellenőrzése a konfigurációs fájlokhoz"
 
 #: templates/install/step1.html.twig
 msgid "Write access denied for configuration files"
-msgstr ""
+msgstr "Írási jogosultság megtagadva a konfigurációs fájlokhoz"
 
 #: templates/install/step1.html.twig src/Console/Application.php:564
 #, php-format
 msgid "A temporary write access to the following files is required: %s."
-msgstr ""
+msgstr "Ideiglenes írási jogosultság szükséges a következő fájlokhoz: %s."
 
 #: templates/install/step1.html.twig src/Console/Application.php:565
 msgid ""
 "Write access to these files can be removed once the operation is finished."
-msgstr ""
+msgstr "Az írási jogosultság eltávolítható, miután a művelet befejeződött."
 
 #: templates/install/step1.html.twig
 msgid ""
@@ -511,7 +512,7 @@ msgstr "Új verzió érhető el : %s."
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/page_header.html.twig
 msgid "You are bypassing a needed update"
-msgstr ""
+msgstr "Kihagysz egy szükséges frissítést"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/breadcrumbs.html.twig
@@ -541,7 +542,7 @@ msgstr[1] "Mentett keresések"
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Manage all saved searches"
-msgstr ""
+msgstr "Minden mentett keresés kezelése"
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Pin this panel for the current page"
@@ -687,7 +688,7 @@ msgstr "⌥ (option) + ⌘ (command) + E"
 #: templates/layout/parts/profile_selector.html.twig src/Html.php:6611
 #, php-format
 msgid "Tip: You can call this modal with %s keys combination"
-msgstr ""
+msgstr "Tipp: Ezt az ablakot a(z) %s billentyűkombinációval nyithatod meg"
 
 #: templates/layout/parts/profile_selector.html.twig src/Entity.php:4221
 msgid "+ sub-entities"
@@ -806,7 +807,7 @@ msgstr "%s sor / oldal"
 #: templates/components/pager.html.twig
 #, php-format
 msgid "Showing %s to %s of %s rows"
-msgstr ""
+msgstr "Sorok megjelenítése %s – %s / %s"
 
 #: templates/components/pager.html.twig
 #, php-format
@@ -889,7 +890,7 @@ msgstr "A mező nem kerül frissítésre a leltározás során"
 
 #: templates/components/form/fields_macros.html.twig
 msgid "Last inventory value was:"
-msgstr ""
+msgstr "Az utolsó leltárérték:"
 
 #: templates/components/form/item_disk.html.twig
 #: templates/pages/admin/inventory/agent.html.twig
@@ -903,7 +904,7 @@ msgstr "Fizikai útvonal"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Mount Point"
-msgstr ""
+msgstr "Csatolási pont"
 
 #: templates/components/form/item_disk.html.twig src/Item_Disk.php:255
 #: src/Item_Disk.php:372 src/Item_Disk.php:420 src/Database.php:200
@@ -922,15 +923,15 @@ msgstr "Titkosítási eszköz"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Encryption Tool"
-msgstr ""
+msgstr "Titkosítási eszköz"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Encryption Algorithm"
-msgstr ""
+msgstr "Titkosítási algoritmus"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Encryption Type"
-msgstr ""
+msgstr "Titkosítás típusa"
 
 #: templates/components/form/modals_macros.html.twig
 #: src/CommonDropdown.php:648 src/CommonDropdown.php:683 js/glpi_dialog.js:294
@@ -1058,7 +1059,7 @@ msgstr "Automatikus leltár"
 #: templates/components/form/header_content.html.twig src/CommonGLPI.php:1098
 #, php-format
 msgid "Item has been deleted on %s"
-msgstr ""
+msgstr "A tétel törölve lett: %s"
 
 #: templates/components/form/header_content.html.twig
 #: front/report.contract.list.php:219 front/report.year.list.php:190
@@ -1173,7 +1174,7 @@ msgstr "Leltár információk"
 #: src/Features/Inventoriable.php:127
 #, php-format
 msgid "Download \"%1$s\" inventory file"
-msgstr ""
+msgstr "Letöltés: \\\"%1$s\\\" leltárfájl"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:147
@@ -1184,7 +1185,7 @@ msgstr "Leltár fájl hiányzik"
 #: templates/pages/admin/inventory/agent.html.twig
 #: src/Features/Inventoriable.php:185 src/Agent.php:134 src/Agent.php:328
 msgid "Useragent"
-msgstr ""
+msgstr "Felhasználói ügynök"
 
 #: templates/components/form/inventory_info.html.twig src/RuleAsset.php:139
 #: src/RuleLocation.php:93 src/Features/Inventoriable.php:190
@@ -1196,7 +1197,7 @@ msgstr "Leltár címke"
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:167
 #: src/Agent.php:321
 msgid "Public contact address"
-msgstr ""
+msgstr "Kapcsolattartási cím"
 
 #: templates/components/form/inventory_info.html.twig
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:108
@@ -1206,7 +1207,7 @@ msgstr "Utolsó kapcsolat"
 
 #: templates/components/form/inventory_info.html.twig
 msgid "Last inventory update"
-msgstr ""
+msgstr "Utolsó leltárfrissítés"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:197
@@ -1230,17 +1231,17 @@ msgstr "Ismeretlen"
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:201
 msgid "Request inventory"
-msgstr ""
+msgstr "Leltár kérése"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:202
 msgid "Request agent to proceed an new inventory"
-msgstr ""
+msgstr "Új leltár kérése az ügynöktől"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:156
 msgid "Agent information is not available."
-msgstr ""
+msgstr "Ügynök adatai nem elérhetők"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:192
@@ -1515,11 +1516,11 @@ msgstr[1] "Felhasználók"
 
 #: templates/components/form/snmpcredential.html.twig
 msgid "Encryption protocol for authentication "
-msgstr ""
+msgstr "Titkosítási protokoll az azonosításhoz"
 
 #: templates/components/form/snmpcredential.html.twig
 msgid "Encryption protocol for data"
-msgstr ""
+msgstr "Adatok titkosítási protokollja"
 
 #: templates/components/form/support_hours.html.twig
 msgid "Support hours"
@@ -1527,11 +1528,11 @@ msgstr "Beavatkozási idő"
 
 #: templates/components/form/support_hours.html.twig
 msgid "On week"
-msgstr ""
+msgstr "Hétköznapokon"
 
 #: templates/components/form/support_hours.html.twig
 msgid "On Saturday"
-msgstr ""
+msgstr "Szombaton"
 
 #: templates/components/form/support_hours.html.twig
 msgid "Use Saturday"
@@ -1664,7 +1665,7 @@ msgstr "Törlés végleg"
 
 #: templates/components/form/buttons.html.twig
 msgid "Keep the devices while deleting this item"
-msgstr ""
+msgstr "Eszközök megtartása a tétel törlése közben"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/Transfer.php:3934
@@ -1900,7 +1901,7 @@ msgstr "Belső TTO"
 #: templates/components/itilobject/service_levels.html.twig
 #: src/RuleTicket.php:1021
 msgid "Internal Time to own"
-msgstr ""
+msgstr "Belső tulajdonba vételi idő"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "Internal TTR"
@@ -1908,7 +1909,7 @@ msgstr "Belső TTR"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "Internal Time to resolve"
-msgstr ""
+msgstr "Belső megoldási idő"
 
 #: templates/components/itilobject/service_levels.html.twig
 #, php-format
@@ -2577,7 +2578,7 @@ msgstr "Kész"
 #: templates/components/itilobject/timeline/pending_reasons_messages.html.twig
 #, php-format
 msgid "Next automatic follow-up scheduled on %s"
-msgstr ""
+msgstr "A következő automatikus válasz ütemezve: %s"
 
 #: templates/components/itilobject/timeline/pending_reasons_messages.html.twig
 #, php-format
@@ -2636,13 +2637,13 @@ msgstr "Érvényesítő felhasználó"
 #: templates/components/itilobject/timeline/form_followup.html.twig
 #, php-format
 msgid "Merged from Ticket %1$s"
-msgstr ""
+msgstr "%1$s számú jegyből egyesítve"
 
 #: templates/components/itilobject/timeline/form_task.html.twig
 #: templates/components/itilobject/timeline/form_followup.html.twig
 #, php-format
 msgid "Promoted to Ticket %1$s"
-msgstr ""
+msgstr "Előléptetve %1$s számú jegynek"
 
 #: templates/components/itilobject/timeline/form_task.html.twig
 #: src/RuleTicket.php:1088 src/TaskTemplate.php:52
@@ -2718,11 +2719,11 @@ msgstr "Tartam"
 
 #: templates/components/itilobject/timeline/form_task.html.twig
 msgid "Confirm the deletion of planning?"
-msgstr ""
+msgstr "Megerősíted a ütemezés törlését?"
 
 #: templates/components/itilobject/timeline/form_task.html.twig
 msgid "Unplan"
-msgstr ""
+msgstr "Ütemezés visszavonása"
 
 #: templates/components/itilobject/timeline/form_task.html.twig
 msgid "Plan this task"
@@ -2747,7 +2748,7 @@ msgstr "%s már elő van léptetve"
 
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig
 msgid "Promote to Ticket"
-msgstr ""
+msgstr "Előléptetés jeggyé"
 
 #: templates/components/itilobject/timeline/approbation_form.html.twig
 msgid "Approval of the solution"
@@ -2888,7 +2889,7 @@ msgstr "Létrehozva: %1$s"
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig
 #, php-format
 msgid "Last update: %1$s by %2$s"
-msgstr ""
+msgstr "Utolsó frissítés: %1$s – %2$s által"
 
 #: templates/components/itilobject/actors/assign_to_me.html.twig
 msgid "Associate myself"
@@ -2944,7 +2945,7 @@ msgstr "Közvetlen email"
 
 #: templates/components/itilobject/actors/field.html.twig
 msgid "Number of tickets already assigned"
-msgstr ""
+msgstr "Már kiosztott jegyek száma"
 
 #: templates/components/itilobject/actors/field.html.twig src/User.php:4048
 msgid "Number of tickets as requester"
@@ -2963,7 +2964,7 @@ msgstr "Minden elem megjelenítése"
 
 #: templates/components/itilobject/add_items.html.twig
 msgid "Please select an item to add"
-msgstr ""
+msgstr "Kérlek, válassz egy tételt a hozzáadáshoz"
 
 #: templates/components/itilobject/footer.html.twig
 msgid "View other actions"
@@ -2971,7 +2972,7 @@ msgstr "Egyéb műveletek megtekintése"
 
 #: templates/components/itilobject/footer.html.twig
 msgid "Toggle panels width"
-msgstr ""
+msgstr "Panelek szélességének váltás"
 
 #: templates/components/itilobject/selfservice.html.twig
 msgid "There are some tickets awaiting approval"
@@ -3255,7 +3256,7 @@ msgstr "Export"
 
 #: templates/components/logs.html.twig
 msgid "No historical matching your filters"
-msgstr ""
+msgstr "Nincs előzmény, ami megfelelne a szűrőidnek"
 
 #: templates/components/logs.html.twig
 #: templates/pages/admin/events_list.html.twig
@@ -3326,11 +3327,11 @@ msgstr "Gradiens paletta használata"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Display value labels on points/bars"
-msgstr ""
+msgstr "Értékcímkék megjelenítése pontokon/oszlopokon"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Limit number of data"
-msgstr ""
+msgstr "Adatok számának korlátozása"
 
 #. TRANS: select action 'update' (before doing it)
 #: templates/components/dashboard/widget_form.html.twig
@@ -3345,7 +3346,7 @@ msgstr "Módosít"
 #: templates/components/plugin_uninstall_modal.html.twig
 msgctxt "uninstall_plugin"
 msgid "Are you sure?"
-msgstr ""
+msgstr "Biztos vagy benne?"
 
 #: templates/components/plugin_uninstall_modal.html.twig
 #, php-format
@@ -3406,10 +3407,12 @@ msgid ""
 "Sorry for the inconvenience but we’re performing some maintenance at the "
 "moment. We’ll be back online shortly!"
 msgstr ""
+"Elnézést a kellemetlenségért, de jelenleg karbantartást végzünk. Hamarosan "
+"visszatérünk online!"
 
 #: templates/maintenance.html.twig
 msgid "Take me home"
-msgstr ""
+msgstr "Vissza a kezdőlapra"
 
 #: templates/generic_show_form.html.twig src/Auth.php:1731
 #: src/AuthLDAP.php:935 src/AuthLDAP.php:1140 src/AuthLDAP.php:4031
@@ -3469,7 +3472,7 @@ msgstr "Adatközpont helyzete"
 
 #: templates/generic_show_form.html.twig src/Domain.php:135
 msgid "Registration date"
-msgstr ""
+msgstr "Regisztráció dátuma"
 
 #: templates/generic_show_form.html.twig src/Auth.php:1750
 #: src/AuthLDAP.php:945 src/User.php:2909 src/User.php:3390 src/User.php:3950
@@ -3858,6 +3861,8 @@ msgid ""
 "When automatic computation is active, percentage is computed based on the "
 "average of all child task percent done."
 msgstr ""
+"Ha az automatikus számítás aktív, a százalék az összes alfeladat elvégzett "
+"százalékának átlagából kerül kiszámításra."
 
 #: templates/pages/tools/project_task.html.twig src/Project.php:1648
 msgid "Automatically calculate"
@@ -3931,7 +3936,7 @@ msgstr "Bejelentés időtartama"
 
 #: templates/pages/tools/project_task.html.twig
 msgid "Details"
-msgstr ""
+msgstr "Részletek"
 
 #: templates/pages/assets/unmanaged.html.twig src/NetworkName.php:192
 #: src/RuleLocation.php:102 src/Unmanaged.php:184 src/Blacklist.php:243
@@ -3967,12 +3972,12 @@ msgstr[1] "Portok"
 #: templates/pages/assets/consumableitem.html.twig
 msgctxt "quantity"
 msgid "Stock target"
-msgstr ""
+msgstr "Készletcél"
 
 #: templates/pages/assets/cable.html.twig
 #, php-format
 msgid "Endpoint %s"
-msgstr ""
+msgstr "Végpont %s"
 
 #: templates/pages/assets/cable.html.twig src/Entity.php:503
 #: src/Entity.php:1308 src/Html.php:1325 src/Dashboard/Grid.php:1207
@@ -4048,11 +4053,11 @@ msgstr "Termékazonosító"
 
 #: templates/pages/assets/operatingsystem.html.twig
 msgid "Company"
-msgstr ""
+msgstr "Cég"
 
 #: templates/pages/assets/operatingsystem.html.twig
 msgid "Owner"
-msgstr ""
+msgstr "Tulajdonos"
 
 #: templates/pages/assets/operatingsystem.html.twig src/Lock.php:543
 #: src/Item_SoftwareVersion.php:484 src/Item_SoftwareVersion.php:1138
@@ -4063,13 +4068,13 @@ msgstr "Telepítés dátuma"
 
 #: templates/pages/assets/operatingsystem.html.twig
 msgid "Host ID"
-msgstr ""
+msgstr "Hosztazonosító"
 
 #: templates/pages/assets/socket.html.twig src/Socket.php:456
 #: src/Socket.php:518 src/Socket.php:804 src/Socket.php:938 src/Socket.php:977
 #: src/Socket.php:1037
 msgid "Wiring side"
-msgstr ""
+msgstr "Bekötési oldal"
 
 #: templates/pages/assets/socket.html.twig src/Socket.php:805
 #: src/Transfer.php:3966 src/NetworkPort.php:179
@@ -4166,14 +4171,16 @@ msgstr "Hozzáférés szűrése"
 #: templates/pages/setup/apiclient.html.twig
 msgid "Leave these parameters empty to disable API access restriction"
 msgstr ""
+"Hagyd üresen ezeket a paramétereket az API-hozzáférés korlátozásának "
+"kikapcsolásához"
 
 #: templates/pages/setup/apiclient.html.twig
 msgid "IPv4 address range start"
-msgstr ""
+msgstr "IPv4 címtartomány kezdete"
 
 #: templates/pages/setup/apiclient.html.twig
 msgid "IPv4 address range end"
-msgstr ""
+msgstr "IPv4 címtartományvége"
 
 #: templates/pages/setup/apiclient.html.twig src/APIClient.php:150
 msgid "IPv6 address"
@@ -4392,7 +4399,7 @@ msgstr "Külső hitelesítés"
 
 #: templates/pages/setup/authentication.html.twig
 msgid "The LDAP extension of your PHP parser isn’t installed"
-msgstr ""
+msgstr "A PHP elemző LDAP kiterjesztése nincs telepítve"
 
 #: templates/pages/setup/authentication.html.twig
 msgid "Others authentication methods"
@@ -4452,7 +4459,7 @@ msgstr "Záró dátum"
 
 #: templates/pages/management/contract.html.twig
 msgid "Next renewal date"
-msgstr ""
+msgstr "Következő megújítás dátuma"
 
 #: templates/pages/management/contract.html.twig src/Contract_Item.php:347
 #: src/Contract_Supplier.php:185
@@ -4859,12 +4866,12 @@ msgstr "Feladat befejezve."
 
 #: install/update.php:160 src/Console/Database/UpdateCommand.php:245
 msgid "The database schema is not consistent with the current GLPI version."
-msgstr ""
+msgstr "Az adatbázis sémája nem kompatibilis a jelenlegi GLPI verzióval."
 
 #: install/update.php:163 src/Console/Database/UpdateCommand.php:247
 #, php-format
 msgid "It is recommended to run the \"%s\" command to see the differences."
-msgstr ""
+msgstr "Ajánlott futtatni a \\\"%s\\\" parancsot a különbségek megtekintéséhez."
 
 #: install/update.php:186
 msgid "Missing security key file"
@@ -5453,7 +5460,7 @@ msgstr "A szolgáltatás karbantartás alatt. Hamarosan újra elérhető lesz."
 msgid ""
 "The GLPI codebase has been updated. The update of the GLPI database is "
 "necessary."
-msgstr ""
+msgstr "A GLPI kód frissítve lett. A GLPI adatbázis frissítése szükséges."
 
 #: inc/config.php:216
 msgid "Update needed"
@@ -7350,7 +7357,7 @@ msgstr "Válasz cím"
 #: src/Entity.php:983 src/Entity.php:2043
 #: src/NotificationMailingSetting.php:158
 msgid "Email sender address"
-msgstr ""
+msgstr "E-mail feladó címe"
 
 #: src/Entity.php:992 src/Entity.php:2063
 #: src/NotificationMailingSetting.php:192
@@ -7374,7 +7381,7 @@ msgstr "Válasz név"
 #: src/Entity.php:1025 src/Entity.php:2053
 #: src/NotificationMailingSetting.php:166
 msgid "Email sender name"
-msgstr ""
+msgstr "E-mail feladó neve"
 
 #: src/Entity.php:1034 src/Entity.php:2073
 #: src/NotificationMailingSetting.php:203
@@ -7928,19 +7935,19 @@ msgstr "Rack-be szerelve"
 
 #: src/PDU_Rack.php:443 src/Features/DCBreadcrumb.php:80
 msgid "On left"
-msgstr ""
+msgstr "Balra"
 
 #: src/PDU_Rack.php:447 src/Features/DCBreadcrumb.php:83
 msgid "On right"
-msgstr ""
+msgstr "Jobbra"
 
 #: src/PDU_Rack.php:451 src/Features/DCBreadcrumb.php:86
 msgid "On top"
-msgstr ""
+msgstr "Fenn"
 
 #: src/PDU_Rack.php:455 src/Features/DCBreadcrumb.php:89
 msgid "On bottom"
-msgstr ""
+msgstr "Lent"
 
 #: src/PDU_Rack.php:488
 msgid "The pdu will be"
@@ -10613,7 +10620,7 @@ msgstr "Megtekintés listaként"
 
 #: src/Item_Rack.php:168 src/Rack.php:392 src/Impact.php:764
 msgid "View graphical representation"
-msgstr ""
+msgstr "Grafikus ábrázolás megtekintése"
 
 #: src/Item_Rack.php:174
 msgid "Racked items"
@@ -11577,7 +11584,7 @@ msgstr[1] "Külső események"
 
 #: src/PlanningExternalEvent.php:273
 msgid "Each guest will have a read-only copy of this event"
-msgstr ""
+msgstr "Minden vendégnek lesz egy csak olvasható másolata az eseményről"
 
 #: src/PlanningExternalEvent.php:310 src/Features/PlanningEvent.php:999
 #: src/PlanningExternalEventTemplate.php:73
@@ -12235,7 +12242,7 @@ msgstr "Feladataim"
 
 #: src/Project.php:637 src/Project.php:1667
 msgid "Show on global Gantt"
-msgstr ""
+msgstr "Megjelenítés a globális Gantt-diagramon"
 
 #: src/Project.php:1080
 msgid "Planned Duration"
@@ -12271,6 +12278,8 @@ msgid ""
 "When automatic computation is active, percentage is computed based on the "
 "average of all child project and task percent done."
 msgstr ""
+"Ha az automatikus számítás aktív, a százalék az összes alprojekt és feladat "
+"elvégzett százalékának átlagából kerül kiszámításra."
 
 #: src/Project.php:1719
 msgid "Sum of planned durations of tasks"
@@ -13080,7 +13089,7 @@ msgstr ""
 
 #: src/PrinterLog.php:234
 msgid "Total pages"
-msgstr ""
+msgstr "Összes oldal"
 
 #: src/PrinterLog.php:236
 msgid "Black & White pages"
@@ -13760,7 +13769,7 @@ msgstr "Active Directory"
 
 #: src/AuthLDAP.php:451
 msgid "OpenLDAP"
-msgstr ""
+msgstr "OpenLDAP"
 
 #: src/AuthLDAP.php:453 src/Config.php:2623
 msgid "Default values"
@@ -13780,7 +13789,7 @@ msgstr "Basedn"
 
 #: src/AuthLDAP.php:494
 msgid "Use bind"
-msgstr ""
+msgstr "Bind használata"
 
 #: src/AuthLDAP.php:495
 msgid ""
@@ -13788,6 +13797,9 @@ msgid ""
 "to LDAP server. Disabling this behaviour can be required when LDAPS bind is "
 "used."
 msgstr ""
+"Jelzi, hogy egyszerű bind műveletet kell-e használni az LDAP szerverhez való"
+" csatlakozáskor. Ennek a viselkedésnek a letiltása szükséges lehet LDAPS "
+"bind használata esetén."
 
 #: src/AuthLDAP.php:521
 msgid "RootDN (for non anonymous binds)"
@@ -13863,6 +13875,8 @@ msgstr "Hivatkozás törölve (nem a keresés alatt)"
 #: src/AuthLDAP.php:663
 msgid "Domain name used by inventory tool for link the user"
 msgstr ""
+"A felhasználó összekapcsolásához az inventárium eszköz által használt domain"
+" név"
 
 #: src/AuthLDAP.php:669
 msgid "TLS Certfile"
@@ -14359,7 +14373,7 @@ msgstr ""
 #: src/GLPINetwork.php:75
 #, php-format
 msgid "Register on %1$s!"
-msgstr ""
+msgstr "Regisztrálj a %1$s oldalon!"
 
 #: src/GLPINetwork.php:76
 msgid "And retrieve your key to paste it below"
@@ -14799,7 +14813,7 @@ msgstr ""
 #: src/Planning.php:1134 src/Planning.php:1552
 #, php-format
 msgid "URL \"%s\" is not allowed by your administrator."
-msgstr ""
+msgstr "A(z) \\\"%s\\\" URL-t a rendszergazdád nem engedélyezi."
 
 #: src/RSSFeed.php:682 src/Reminder.php:612
 msgid "New note"
@@ -14963,7 +14977,7 @@ msgstr "Maradék"
 #: src/NotificationTargetCartridgeItem.php:99
 #: src/NotificationTargetConsumableItem.php:99
 msgid "Stock target"
-msgstr ""
+msgstr "Készletcél"
 
 #: src/NotificationTargetCartridgeItem.php:100
 #: src/NotificationTargetConsumableItem.php:100
@@ -16437,7 +16451,7 @@ msgstr "Használja a levélben levő dátumot, a belső helyett"
 
 #: src/MailCollector.php:340
 msgid "Use Reply-To as requester (when available)"
-msgstr ""
+msgstr "A Válasz-címzett használata kérőként (ha elérhető)"
 
 #: src/MailCollector.php:348
 msgid "Add CC users as observer"
@@ -16454,7 +16468,7 @@ msgstr "Hiba történt a gyűjtőhöz csatlakozás közben."
 #: src/MailCollector.php:445
 #, php-format
 msgid "No child found for folder '%s'."
-msgstr ""
+msgstr "Nincs gyermek elem a '%s' mappához."
 
 #: src/MailCollector.php:487
 msgctxt "button"
@@ -16643,6 +16657,8 @@ msgid ""
 "The content of the notification contains sensitive information and therefore"
 " cannot be displayed."
 msgstr ""
+"Az értesítés tartalma érzékeny információt tartalmaz, ezért nem jeleníthető "
+"meg."
 
 #: src/QueuedNotification.php:569
 msgid "Send mails in queue"
@@ -17456,7 +17472,7 @@ msgstr "Kényszeríti az elem zárolásának feloldását?"
 #: src/ObjectLock.php:196
 #, php-format
 msgid "Force unlock %1s #%2s"
-msgstr ""
+msgstr "Kényszerített feloldás: %1s #%2s"
 
 #: src/ObjectLock.php:212
 msgid "Locked by you!"
@@ -18182,7 +18198,7 @@ msgstr "Opcionális válasz cím."
 
 #: src/NotificationMailingSetting.php:186
 msgid "Optionnal reply to name."
-msgstr ""
+msgstr "Opcionális válasz a névre."
 
 #: src/NotificationMailingSetting.php:186
 #: src/NotificationMailingSetting.php:204
@@ -18254,15 +18270,17 @@ msgid ""
 "Once the form has been validated, you will be redirected to your supplierʼs "
 "authentication page if necessary."
 msgstr ""
+"Miután az űrlapot érvényesítették, szükség esetén átirányítanak a beszállító"
+" hitelesítési oldalára."
 
 #: src/NotificationMailingSetting.php:307
 msgid "Oauth provider"
-msgstr ""
+msgstr "OAuth szolgáltató"
 
 #: src/NotificationMailingSetting.php:325
 msgctxt "oauth"
 msgid "Callback URL"
-msgstr ""
+msgstr "Visszahívási URL"
 
 #: src/NotificationMailingSetting.php:326
 msgctxt "oauth"
@@ -18270,21 +18288,23 @@ msgid ""
 "This is the callback URL that you will have to declare in your provider "
 "application."
 msgstr ""
+"Ez az a visszahívási URL, amelyet deklarálnod kell a szolgáltató "
+"alkalmazásában."
 
 #: src/NotificationMailingSetting.php:337
 msgctxt "oauth"
 msgid "Client ID"
-msgstr ""
+msgstr "Ügyfélazonosító"
 
 #: src/NotificationMailingSetting.php:341
 msgctxt "oauth"
 msgid "Client secret"
-msgstr ""
+msgstr "Ügyfél titok"
 
 #: src/NotificationMailingSetting.php:398
 msgctxt "oauth"
 msgid "Force OAuth authentication refresh"
-msgstr ""
+msgstr "OAuth hitelesítés frissítésének kényszerítése"
 
 #: src/NotificationMailingSetting.php:399
 msgctxt "oauth"
@@ -18292,6 +18312,8 @@ msgid ""
 "You can use this option to force redirection to the OAuth authentication "
 "process. This will trigger generation of a new OAuth token."
 msgstr ""
+"Ezzel a beállítással kényszerítheted az átirányítást az OAuth hitelesítési "
+"folyamatra. Ez új OAuth token generálást indít el."
 
 #: src/NotificationMailingSetting.php:408
 msgid "Check certificate"
@@ -19929,7 +19951,7 @@ msgstr "GLPI szerver időzónája"
 
 #: src/Config.php:745
 msgid "Use the replica for the search engine"
-msgstr ""
+msgstr "Replika használata a keresőmotorhoz"
 
 #: src/Config.php:747
 msgid "If synced (all changes)"
@@ -20065,11 +20087,11 @@ msgstr "Ugrás a létrehozott elemre létrehozás után"
 
 #: src/Config.php:1155
 msgid "Display the tree dropdown complete name in dropdown inputs"
-msgstr ""
+msgstr "A fa legördülő teljes nevének megjelenítése a legördülő mezőkben"
 
 #: src/Config.php:1159
 msgid "Display the complete name of tree dropdown in search results"
-msgstr ""
+msgstr "A fa legördülő teljes nevének megjelenítése a keresési eredményekben"
 
 #: src/Config.php:1170
 msgid "Display counters"
@@ -20109,7 +20131,7 @@ msgstr "Vízszintes (menü a fejlécben)"
 
 #: src/Config.php:1289
 msgid "Vertical (menu in sidebar)"
-msgstr ""
+msgstr "Függőleges (menü az oldalsávban)"
 
 #: src/Config.php:1319
 msgid "Rich text field layout"
@@ -20117,7 +20139,7 @@ msgstr "Rich text mező elrendezés"
 
 #: src/Config.php:1324
 msgid "Inline (no toolbars)"
-msgstr ""
+msgstr "Beágyazott (eszköztárak nélkül)"
 
 #: src/Config.php:1325
 msgid "Classic (toolbar on top)"
@@ -20133,32 +20155,32 @@ msgstr "Időzóna"
 
 #: src/Config.php:1348 src/User.php:2779 src/User.php:3267
 msgid "Use server configuration"
-msgstr ""
+msgstr "Szerver konfiguráció használata"
 
 #: src/Config.php:1352 src/User.php:2784 src/User.php:3272
 msgid "Timezone usage has not been activated."
-msgstr ""
+msgstr "Az időzóna használata nincs aktiválva."
 
 #: src/Config.php:1354 src/User.php:2786 src/User.php:3274
 #, php-format
 msgid "Run the \"%1$s\" command to activate it."
-msgstr ""
+msgstr "Futtasd a \\\"%1$s\\\" parancsot az aktiváláshoz."
 
 #: src/Config.php:1357
 msgid "Default central tab"
-msgstr ""
+msgstr "Alapértelmezett központi fül"
 
 #: src/Config.php:1363
 msgid "Timeline order"
-msgstr ""
+msgstr "Idővonal sorrend"
 
 #: src/Config.php:1366
 msgid "Natural order (old items on top, recent on bottom)"
-msgstr ""
+msgstr "Természetes sorrend (régi elemek fent, újabbak lent)"
 
 #: src/Config.php:1367
 msgid "Reverse order (old items on bottom, recent on top)"
-msgstr ""
+msgstr "Fordított sorrend (régi elemek lent, újabbak fent)"
 
 #: src/Config.php:1379
 msgid "Private followups by default"
@@ -20195,27 +20217,27 @@ msgstr "Én legyek az igénylő bejelentés létrehozásakor"
 
 #: src/Config.php:1431
 msgid "Action button layout"
-msgstr ""
+msgstr "Műveletgomb elrendezése"
 
 #: src/Config.php:1434
 msgid "Merged"
-msgstr ""
+msgstr "Összevont"
 
 #: src/Config.php:1435
 msgid "Splitted"
-msgstr ""
+msgstr "Szétválasztott"
 
 #: src/Config.php:1443
 msgid "Timeline date display"
-msgstr ""
+msgstr "Idővonal dátum megjelenítése"
 
 #: src/Config.php:1446
 msgid "Relative"
-msgstr ""
+msgstr "Relatív"
 
 #: src/Config.php:1447
 msgid "Precise"
-msgstr ""
+msgstr "Pontos"
 
 #: src/Config.php:1455
 msgid "Priority colors"
@@ -20261,7 +20283,7 @@ msgstr "Áttekintők"
 
 #: src/Config.php:1546
 msgid "Default for central"
-msgstr ""
+msgstr "Központi alapértelmezett"
 
 #: src/Config.php:1551
 msgid "Default for Assets"
@@ -20398,7 +20420,7 @@ msgstr ""
 #: src/Config.php:1884
 #, php-format
 msgid "The \"%s\" cache extension is installed"
-msgstr ""
+msgstr "A \\\"%s\\\" cache kiterjesztés telepítve van"
 
 #: src/Config.php:1886 src/Config.php:1908
 #, php-format
@@ -20472,11 +20494,11 @@ msgstr "Új verzió ellenőrzése"
 
 #: src/Config.php:2444
 msgid "Yes - Restrict to unit management"
-msgstr ""
+msgstr "Igen - Korlátozás egységkezelésre"
 
 #: src/Config.php:2445
 msgid "Yes - Restrict to global management"
-msgstr ""
+msgstr "Igen - Korlátozás globális kezelésre"
 
 #: src/Config.php:2629 src/PurgeLogs.php:42
 msgid "Logs purge"
@@ -20530,11 +20552,11 @@ msgstr "Az elemek közötti kapcsolat törlése"
 
 #: src/Config.php:3315
 msgid "Installation/uninstallation of software on items"
-msgstr ""
+msgstr "Szoftver telepítése/eltávolítása az eszközökön"
 
 #: src/Config.php:3321
 msgid "Installation/uninstallation versions on software"
-msgstr ""
+msgstr "Szoftver verziók telepítése/eltávolítása"
 
 #: src/Config.php:3330
 msgid "Add/Remove items from software versions"
@@ -20554,7 +20576,7 @@ msgstr "Csoportok hozzáadása/eltávolítása felhasználókhoz"
 
 #: src/Config.php:3358
 msgid "User authentication method changes"
-msgstr ""
+msgstr "Felhasználói hitelesítési módszer változtatások"
 
 #: src/Config.php:3361 src/User.php:3967
 msgid "Deleted user in LDAP directory"
@@ -20645,7 +20667,7 @@ msgstr "Értesítés letiltva"
 
 #: src/Config.php:3623
 msgid "Delay before account deactivation (in days)"
-msgstr ""
+msgstr "Várakozási idő a fiók deaktiválása előtt (napokban)"
 
 #: src/Config.php:3634
 msgid "Do not deactivate"
@@ -20653,7 +20675,7 @@ msgstr "Ne kapcsolja ki"
 
 #: src/Config.php:3676
 msgid "Documents setup"
-msgstr ""
+msgstr "Dokumentumok beállítása"
 
 #: src/Config.php:3681
 msgid "Document files maximum size (Mio)"
@@ -22292,7 +22314,7 @@ msgstr "Utolsó indítás"
 
 #: src/CronTask.php:746 src/CronTask.php:980
 msgid "Maintenance mode enabled, running tasks is disabled"
-msgstr ""
+msgstr "Karbantartási mód engedélyezve, a feladatok futtatása letiltva"
 
 #: src/CronTask.php:868 src/CronTask.php:1485
 msgid "Running"

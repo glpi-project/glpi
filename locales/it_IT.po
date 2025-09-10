@@ -3030,7 +3030,7 @@ msgstr "Questa chiamata riguarda me"
 
 #: templates/components/itilobject/selfservice.html.twig
 msgid "Check your personal information"
-msgstr ""
+msgstr "Verifica le tue informazioni personali"
 
 #: templates/components/itilobject/selfservice.html.twig
 #: front/item_ticket.form.php:56 src/NotificationTargetTicket.php:649

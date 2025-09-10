@@ -20,6 +20,7 @@
 # Ivan Fustero, 2025
 # Jordi Domene, 2025
 # Nuria Costa <nuria.costa@uvic.cat>, 2025
+# David Marti, 2025
 # 
 #, fuzzy
 msgid ""
@@ -28,7 +29,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-20 10:01+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Nuria Costa <nuria.costa@uvic.cat>, 2025\n"
+"Last-Translator: David Marti, 2025\n"
 "Language-Team: Catalan (Spain) (https://app.transifex.com/glpi/teams/1637/ca_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3981,7 +3982,7 @@ msgstr[1] "Ports"
 #: templates/pages/assets/consumableitem.html.twig
 msgctxt "quantity"
 msgid "Stock target"
-msgstr ""
+msgstr "Estoc objectiu"
 
 #: templates/pages/assets/cable.html.twig
 #, php-format
@@ -7205,8 +7206,8 @@ msgstr "Accions automàtiques de SLA"
 #: src/Peripheral.php:78
 msgid "Peripheral"
 msgid_plural "Peripherals"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Perifèric"
+msgstr[1] "Perifèrics"
 
 #: src/Peripheral.php:178 src/NetworkEquipment.php:254 src/Monitor.php:194
 #: src/Phone.php:200 src/SoftwareLicense.php:1033 src/Printer.php:335
@@ -14241,8 +14242,8 @@ msgstr "Encriptat"
 #: src/Unmanaged.php:52
 msgid "Unmanaged asset"
 msgid_plural "Unmanaged assets"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Actius no gestionats"
+msgstr[1] "Actius no gestionats"
 
 #: src/Unmanaged.php:209 src/Unmanaged.php:221
 msgid "Convert"
@@ -15015,7 +15016,7 @@ msgstr "Restant"
 #: src/NotificationTargetCartridgeItem.php:99
 #: src/NotificationTargetConsumableItem.php:99
 msgid "Stock target"
-msgstr ""
+msgstr "Estoc objectiu"
 
 #: src/NotificationTargetCartridgeItem.php:100
 #: src/NotificationTargetConsumableItem.php:100

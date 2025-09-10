@@ -33,6 +33,7 @@
 # Andrzej Pietryga <andrzej@tryga.pl>, 2025
 # wolvverine <wolvverinepld@gmail.com>, 2025
 # Yild, 2025
+# Legastelois François <flegastelois@teclib.com>, 2025
 # 
 #, fuzzy
 msgid ""
@@ -41,7 +42,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-20 10:01+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Yild, 2025\n"
+"Last-Translator: Legastelois François <flegastelois@teclib.com>, 2025\n"
 "Language-Team: Polish (Poland) (https://app.transifex.com/glpi/teams/1637/pl_PL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2323,7 +2324,7 @@ msgstr "Sumaryczny czas trwania"
 #: templates/components/itilobject/fields_panel.html.twig
 #: src/NotificationTargetCommonITILObject.php:1997
 msgid "Actors"
-msgstr "Ucestnicy"
+msgstr "Uczestnicy"
 
 #: templates/components/itilobject/fields_panel.html.twig
 #: templates/pages/admin/inventory/upload_result.html.twig

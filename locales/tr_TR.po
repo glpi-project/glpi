@@ -8,6 +8,7 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2022
 # DOMBRE Julien <moyo@indepnet.net>, 2023
 # Cédric Anne, 2024
+# Legastelois François <flegastelois@teclib.com>, 2025
 # Kaya Zeren <kayazeren@gmail.com>, 2025
 # 
 #, fuzzy
@@ -2326,7 +2327,7 @@ msgstr "Denetim listesi"
 
 #: templates/components/itilobject/fields_panel.html.twig src/Problem.php:487
 msgid "Analysis"
-msgstr "Çözümleme"
+msgstr "Değerlendir"
 
 #: templates/components/itilobject/fields_panel.html.twig src/Change.php:533
 #: src/NotificationTargetChange.php:276
@@ -2986,7 +2987,7 @@ msgstr "Bu destek kaydı beni ilgilendiriyor"
 
 #: templates/components/itilobject/selfservice.html.twig
 msgid "Check your personal information"
-msgstr ""
+msgstr "Kişisel bilgilerinizi denetleyin"
 
 #: templates/components/itilobject/selfservice.html.twig
 #: front/item_ticket.form.php:56 src/NotificationTargetTicket.php:649
@@ -3425,7 +3426,7 @@ msgstr "Ad"
 #: templates/generic_show_form.html.twig src/DatabaseInstance.php:232
 #: src/DatabaseInstance.php:391 src/Database.php:93 src/Database.php:460
 msgid "Is active"
-msgstr "Kullanımda mı"
+msgstr "Etkin mi"
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/setup/general/general_setup.html.twig src/Entity.php:2281
@@ -4194,7 +4195,7 @@ msgstr "Uygulama adresi"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Text in the login box"
-msgstr "Oturum açma kutusundaki metin"
+msgstr "Oturum açma kutusundaki yazı"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Simplified interface help link"
@@ -4297,7 +4298,7 @@ msgstr "Varsayılan arama sonucu sınırı (sayfa)"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Default characters limit (summary text boxes)"
-msgstr "Varsayılan karakter sınırı (özet metin kutuları)"
+msgstr "Varsayılan karakter sınırı (özet yazı kutuları)"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Default url length limit"
@@ -5176,7 +5177,7 @@ msgstr "Veri tabanı oluşturulurken sorun çıktı!"
 
 #: install/install.php:392
 msgid "You didn't select a database!"
-msgstr "Henüz bir veri tabanı seçmemişsiniz!"
+msgstr "Herhangi bir veri tabanı seçmemişsiniz!"
 
 #: install/install.php:479
 msgid "Please select a database."
@@ -5291,7 +5292,7 @@ msgstr "Ağ geçidi: %s"
 
 #: ajax/subvisibility.php:64
 msgid "No restriction"
-msgstr "Herhangi bir kısıtlama yok"
+msgstr "Sınırlama yok"
 
 #: ajax/switchdebug.php:49
 msgid "Debug mode has been enabled!"
@@ -10410,7 +10411,7 @@ msgstr "Herhangi bir veri bulunamadı"
 
 #: src/Dashboard/Widget.php:1732
 msgid "Type markdown text here"
-msgstr "Markdown metnini buraya yazın"
+msgstr "Markdown içeriği buraya yazın"
 
 #: src/Dashboard/Widget.php:1936 src/Project.php:143 src/Problem.php:1517
 #: src/Change.php:766
@@ -10588,7 +10589,7 @@ msgstr "Önde gelen destek kaydı varlıkları"
 
 #: src/Dashboard/Grid.php:1328
 msgid "Top ticket's request sources"
-msgstr "Önde gelen destek kaydı istek kaynakları"
+msgstr "Önde gelen destek kaydı isteği kaynakları"
 
 #: src/Dashboard/Grid.php:1329
 msgid "Top ticket's locations"
@@ -10735,7 +10736,7 @@ msgstr "görseller"
 
 #: src/Item_Rack.php:353
 msgid "texts"
-msgstr "metinler"
+msgstr "yazılar"
 
 #: src/Item_Rack.php:424
 msgid "Insert an item here"
@@ -12154,7 +12155,7 @@ msgstr "Çözüm için gerçekte harcanan zaman toplamı"
 
 #: src/Stat.php:940
 msgid "No statistics are available"
-msgstr "Henüz bir istatistik yok"
+msgstr "Kullanılabilecek bir istatistik yok"
 
 #: src/Stat.php:1675
 msgid "Number of tickets"
@@ -12179,7 +12180,7 @@ msgstr "Soruna göre"
 
 #: src/Stat.php:1778
 msgid "By change"
-msgstr "Değişime göre"
+msgstr "Değişikliğe göre"
 
 #: src/Stat.php:1784
 msgid "Select statistics to be displayed"
@@ -12746,11 +12747,11 @@ msgstr "Uygun değil"
 
 #: src/Rule.php:2075
 msgid "Rule is active"
-msgstr "Kural kullanımda"
+msgstr "Kural etkin"
 
 #: src/Rule.php:2075
 msgid "Rule is inactive"
-msgstr "Kural kullanım dışı"
+msgstr "Kural etkisiz"
 
 #: src/Rule.php:2221 src/RuleCollection.php:1948
 msgid "Result details"
@@ -13366,7 +13367,7 @@ msgstr "Çeviri listesi"
 #: src/DropdownTranslation.php:492 src/ReminderTranslation.php:202
 #: src/KnowbaseItemTranslation.php:269
 msgid "No translation found"
-msgstr "Henüz bir çeviri yok"
+msgstr "Herhangi bir çeviri yok"
 
 #: src/Change_Problem.php:67
 msgid "Link Problem/Change"
@@ -13821,7 +13822,7 @@ msgstr "Bir e-posta alıcısından eklenen destek kaydını atama kuralları"
 
 #: src/RuleMailCollector.php:80
 msgid "Email body"
-msgstr "E-posta metni"
+msgstr "E-posta yazısı"
 
 #: src/RuleMailCollector.php:100
 msgid "X-Auto-Response-Suppress email header"
@@ -14184,7 +14185,7 @@ msgstr "Kullanıcıları arama ölçütleri"
 
 #: src/AuthLDAP.php:4087
 msgid "No directory selected"
-msgstr "Henüz bir dizin seçilmemiş"
+msgstr "Herhangi bir dizin seçilmemiş"
 
 #: src/AuthLDAP.php:4091
 msgid "No directory associated to entity: impossible search"
@@ -15008,7 +15009,7 @@ msgstr "Bağlantılı bir öge yok"
 
 #: src/KnowbaseItem_Item.php:164 src/KnowbaseItem_KnowbaseItemCategory.php:201
 msgid "No knowledge base entries linked"
-msgstr "Henüz bir bilgi bankası kaydı bağlanmamış"
+msgstr "Herhangi bir bilgi bankası kaydı bağlanmamış"
 
 #: src/KnowbaseItem_Item.php:176
 msgid "Linked item"
@@ -15205,7 +15206,7 @@ msgstr "Veri tabanı ekle"
 
 #: src/Database.php:454
 msgid "No database"
-msgstr "Henüz bir veri tabanı yok"
+msgstr "Herhangi bir veri tabanı yok"
 
 #: src/NotificationMailing.php:94
 msgid "Sender email is not a valid email address."
@@ -16015,7 +16016,7 @@ msgstr "Kullanılabilecek etiketlerin listesini görüntüle"
 #: src/NotificationTemplateTranslation.php:587 src/QueuedNotification.php:357
 #: src/QueuedNotification.php:863
 msgid "Email text body"
-msgstr "Metin e-postasının gövdesi"
+msgstr "Yazı e-postasının içeriği"
 
 #: src/NotificationTemplateTranslation.php:159
 msgid "(leave the field empty for a generation from HTML)"
@@ -16026,7 +16027,7 @@ msgstr "(HTML tarafından oluşturulması için alanı boş bırakın)"
 #: src/NotificationTemplateTranslation.php:588 src/QueuedNotification.php:346
 #: src/QueuedNotification.php:862
 msgid "Email HTML body"
-msgstr "HTML e-postasının gövdesi"
+msgstr "HTML e-postasının içeriği"
 
 #: src/NotificationTemplateTranslation.php:423
 #: src/NotificationTemplateTranslation.php:462
@@ -17282,7 +17283,7 @@ msgstr "kötü"
 #: src/Migration.php:806
 #, php-format
 msgid "Adding fulltext indices - %s"
-msgstr "Tam metin dizinleri ekleniyor - %s"
+msgstr "Tam yazı dizinleri ekleniyor - %s"
 
 #: src/Migration.php:815
 #, php-format
@@ -17395,7 +17396,7 @@ msgstr "Fiber ağ soketi"
 
 #: src/Change.php:513
 msgid "Analysis impact"
-msgstr "İnceleme etkisi"
+msgstr "Etkiyi değerlendir"
 
 #: src/Change.php:669
 msgid "Evaluation"
@@ -17919,7 +17920,7 @@ msgstr "Memnuniyet anketinin geçerliliği sona ermiş"
 
 #: src/Ticket.php:916
 msgid "No generated survey"
-msgstr "Henüz anket oluşturulmamış"
+msgstr "Herhangi bir anket oluşturulmamış"
 
 #: src/Ticket.php:1323 src/Ticket.php:2128
 msgid "Unknown ticket"
@@ -19018,7 +19019,7 @@ msgstr "Uyarlama hatası!"
 
 #: src/MassiveAction.php:386 src/Reservation.php:218
 msgid "No selected items"
-msgstr "Henüz bir öge seçilmemiş"
+msgstr "Herhangi bir öge seçilmemiş"
 
 #: src/MassiveAction.php:400
 msgid "Invalid process"
@@ -19569,7 +19570,7 @@ msgstr "Kalıp ekle"
 
 #: src/Notification_NotificationTemplate.php:180
 msgid "No template selected"
-msgstr "Henüz bir kalıp seçilmemiş"
+msgstr "Herhangi bir kalıp seçilmemiş"
 
 #: src/Notification_NotificationTemplate.php:424
 msgid "Browser"
@@ -19763,11 +19764,11 @@ msgstr "şu olmayan"
 
 #: src/Search.php:8608 src/Search.php:8675
 msgid "before"
-msgstr "önce"
+msgstr "şundan önce"
 
 #: src/Search.php:8612 src/Search.php:8676
 msgid "after"
-msgstr "sonra"
+msgstr "şundan sonra"
 
 #: src/SsoVariable.php:50
 msgid "Field storage of the login in the HTTP request"
@@ -20346,7 +20347,7 @@ msgstr "Dikey (menü yan çubukta)"
 
 #: src/Config.php:1319
 msgid "Rich text field layout"
-msgstr "Zengin metin alanı yerleşimi"
+msgstr "Zengin yazı alanı yerleşimi"
 
 #: src/Config.php:1324
 msgid "Inline (no toolbars)"
@@ -20694,7 +20695,7 @@ msgstr "Bakım kipi"
 #. TRANS: Proxy port
 #: src/Config.php:2135
 msgid "Maintenance text"
-msgstr "Bakım metni"
+msgstr "Bakım yazısı"
 
 #: src/Config.php:2142
 msgid "Proxy configuration for upgrade check"
@@ -20948,8 +20949,7 @@ msgstr "Şu alanları güncelleme izniniz yok: %s"
 #: src/User.php:1227
 msgid ""
 "Can't set user as inactive as it is the only remaining super administrator."
-msgstr ""
-"Kalan tek süper yönetici olduğundan kullanıcı kullanımdan kaldırılamıyor."
+msgstr "Kalan tek süper yönetici olduğundan kullanıcı etkisizleştirilemiyor."
 
 #: src/User.php:2497
 msgid "Add user..."
@@ -21949,7 +21949,7 @@ msgstr "Toplam: %1$d (%2$d yeni, %3$d kullanılmış, %4$d yıpranmış)"
 #: src/Cartridge.php:425 src/Cartridge.php:427 src/Cartridge.php:474
 #: src/Cartridge.php:476
 msgid "No cartridge"
-msgstr "Kartuş yok"
+msgstr "Herhangi bir kartuş yok"
 
 #. TRANS : for display cartridges count : %1$d is the total number,
 #. %2$d the used one, %3$d the worn one
@@ -22811,11 +22811,11 @@ msgstr "Adres:"
 
 #: src/Reservation.php:194
 msgid "You do not have permission to create reservations"
-msgstr ""
+msgstr "Ayırtma oluşturma izniniz yok"
 
 #: src/Reservation.php:204
 msgid "You do not have permission to create reservations for other users"
-msgstr ""
+msgstr "Diğer kullanıcılar için ayırtma oluşturma izniniz yok"
 
 #: src/Reservation.php:262
 #, php-format
@@ -22908,7 +22908,7 @@ msgstr "Geçmiş ayırtmalar"
 
 #: src/Impact.php:68 src/Impact.php:125 src/Impact.php:761
 msgid "Impact analysis"
-msgstr "Etki analizi"
+msgstr "Etki değerlendirmesi"
 
 #: src/Impact.php:364
 msgid "This asset doesn't have any dependencies."
@@ -22996,7 +22996,7 @@ msgstr "Tam ekran"
 
 #: src/Impact.php:1805
 msgid "Impact analysis configuration"
-msgstr "Etki değerlendirme yapılandırması"
+msgstr "Etki değerlendirmesi yapılandırması"
 
 #: src/Impact.php:1817
 msgid "Enabled itemtypes"
@@ -23146,7 +23146,7 @@ msgstr "İlgili bir öge seçmelisiniz"
 #: src/ITILTemplatePredefinedField.php:319
 msgid ""
 "Predefined task templates will be added according to their creation order"
-msgstr ""
+msgstr "Hazır görev kalıpları, oluşturulma sıralarına göre eklenir"
 
 #: src/ITILTemplatePredefinedField.php:325
 msgid "Add a predefined field"
@@ -24811,7 +24811,7 @@ msgstr "Bakım kipini aç"
 
 #: src/Console/Maintenance/EnableMaintenanceModeCommand.php:60
 msgid "Text to display during maintenance"
-msgstr "Bakım kipi açıkken görüntülenecek metin"
+msgstr "Bakım kipi açıkken görüntülenecek yazı"
 
 #: src/Console/Maintenance/DisableMaintenanceModeCommand.php:52
 msgid "Disable maintenance mode"
@@ -24901,7 +24901,7 @@ msgstr "\"%1$s\" eklentisi kullanımdan kaldırıldı."
 #: src/Console/Plugin/DeactivateCommand.php:148
 #, php-format
 msgid "Plugin \"%s\" is already inactive."
-msgstr "\"%s\" eklentisi zaten kullanım dışı."
+msgstr "\"%s\" eklentisi zaten etkisiz."
 
 #: src/Console/Plugin/DeactivateCommand.php:160
 msgid "Which plugin(s) do you want to deactivate (comma separated values)?"
@@ -24989,7 +24989,7 @@ msgstr "\"%1$s\" eklentisi kullanımdan kaldırıldı."
 #: src/Console/Plugin/ActivateCommand.php:148
 #, php-format
 msgid "Plugin \"%s\" is already active."
-msgstr "\"%s\" eklentisi zaten kullanılıyor."
+msgstr "\"%s\" eklentisi zaten etkin."
 
 #: src/Console/Plugin/ActivateCommand.php:156
 #, php-format
@@ -26685,8 +26685,9 @@ msgid ""
 "This column cannot support showing cards due to how many cards would be "
 "shown. You can still drag cards into this column."
 msgstr ""
-"Bu sütun, birkaç kartı gösteremeyeceğinden kartları göstermeyi "
-"destekleyemez. Yine de kartları sürükleyip bu sütuna bırakabilirsiniz."
+"Bu sütun, kaç kartın görüntülenebileceği belirsiz olduğundan kartların "
+"görüntülenmesini destekleyemez. Yine de kartları sürükleyip bu sütuna "
+"bırakabilirsiniz."
 
 #: js/modules/Kanban/Kanban.js:2289
 msgid ""

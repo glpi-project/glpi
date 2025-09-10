@@ -451,7 +451,7 @@ msgstr[1] "Irudiak"
 
 #: templates/dropdown_form.html.twig
 msgid "Rack pictures"
-msgstr ""
+msgstr "Armairuko irudiak"
 
 #: templates/dropdown_form.html.twig
 msgid "Other pictures"
@@ -567,7 +567,7 @@ msgstr ""
 
 #: templates/layout/parts/goto_button.html.twig
 msgid "Find menu"
-msgstr ""
+msgstr "Aurkitu menua"
 
 #: templates/layout/parts/context_links.html.twig
 #: templates/components/itilobject/linked_tickets.html.twig
@@ -637,7 +637,7 @@ msgstr "Billtu..."
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "You have not recorded any saved searches yet"
-msgstr ""
+msgstr "Oraindik ez duzu gordetako bilaketarik grabatu"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "Default search"
@@ -674,7 +674,7 @@ msgstr "Aukeratu nahi den entitatea"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Ctrl + Alt + E"
-msgstr ""
+msgstr "Ctrl + Alt + E"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "⌥ (option) + ⌘ (command) + E"
@@ -747,7 +747,7 @@ msgstr "Pasahitzen segurtasun politika"
 
 #: templates/password_form.html.twig
 msgid "Save new password"
-msgstr ""
+msgstr "Gorde pasahitz berria"
 
 #: templates/password_form.html.twig
 msgid ""
@@ -15664,7 +15664,7 @@ msgstr "Ezin izan da irudi fitxategia gorde."
 #: src/Features/DCBreadcrumb.php:210 src/Features/DCBreadcrumb.php:236
 #, php-format
 msgid "(U%1$u)"
-msgstr ""
+msgstr "(U%1$u)"
 
 #: src/Features/Inventoriable.php:141
 msgid "Try a reimport from stored inventory file"
