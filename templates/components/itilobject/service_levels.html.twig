@@ -143,12 +143,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
 
             <td class="right pe-2 align-middle border-0">{{ _label }}</td>
             <td class="d-flex ms-n2 border-0 py-0">
-                {# state flag #}
-                <div class="align-middle my-2 me-2">
-                    <i class="ti ti-flag"></i>
-                </div>
-
-                {# datetime field + badge/dropdown field #}
+                {# state flag + datetime field + badge/dropdown field #}
                 {{ _self.linkedSlaField(
                     sla,
                     field_options|merge({
@@ -283,7 +278,17 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
         {% if la.due_time is defined %}
             {# flag + due time #}
             <span class="text-muted">
-                 <i class="ti ti-flag"></i> {{ la.due_time|formatted_datetime }}
+                {% if la.end_time %}
+                    <i class="ti ti-flag-filled text-primary"
+                       title="{{ __('%s completed')|format(__('OLA')) }}"
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="left" ></i> {{ la.due_time|formatted_datetime }}
+                {% else %}
+                    <i class="ti ti-flag"
+                       title="{{ __('%s not completed')|format(__('OLA')) }}"
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="left" ></i> {{ la.due_time|formatted_datetime }}
+                {% endif %}
              </span>
         {% endif %}
 
@@ -360,9 +365,18 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
 
     <div class="{{ options.new_item ? '' : 'collapsed' }} w-100 mt-1" id="dropdown_{{ assign_la_id }}">
         {% if options.display_datetime_field %}
-            <span class="text-muted">
-                      {{ la.due_time|formatted_datetime }}
-             </span>
+            {% if la.item.fields['takeintoaccount_delay_stat'] > 0 %}
+                <i class="ti ti-flag-filled text-primary"
+                   title="{{ __('%s completed')|format(__('SLA')) }}"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="left" ></i> {{ la.due_time|formatted_datetime }}
+            {% else %}
+                <i class="ti ti-flag"
+                   title="{{ __('%s not completed')|format(__('SLA')) }}"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="left"
+                ></i> {{ la.due_time|formatted_datetime }}
+            {% endif %}
         {% endif %}
 
         {% if options.display_associatedsla_field %}
