@@ -40,9 +40,9 @@ trait AbstractSingletonTrait
 
     private function __construct() {}
 
-    public static function getInstance()
+    public static function getInstance(): static
     {
-        $class = get_called_class();
+        $class = static::class;
         if (!isset(self::$_instances[$class])) {
             self::$_instances[$class] = new $class();
         }
