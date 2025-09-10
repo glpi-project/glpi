@@ -2186,6 +2186,36 @@ DIFF);
         $this->variable($this->testedInstance->canCheckIntegrity($version, $context))->isEqualTo($expected_can_check, $version);
     }
 
+    public function testHasTables()
+    {
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DBmysql();
+
+        $this->newTestedInstance($db);
+
+        $this->calling($db)->listTables = new \ArrayIterator();
+        $this->variable($this->testedInstance->hasTables('core'))->isEqualTo(false);
+
+        $this->calling($db)->listTables = new \ArrayIterator([
+            ['TABLE_NAME' => 'glpi_configs'],
+            ['TABLE_NAME' => 'glpi_entities'],
+            // ...
+        ]);
+        $this->variable($this->testedInstance->hasTables('core'))->isEqualTo(true);
+
+
+        $this->calling($db)->listTables = new \ArrayIterator();
+        $this->variable($this->testedInstance->hasTables('plugin:myplugin'))->isEqualTo(false);
+
+
+        $this->calling($db)->listTables = new \ArrayIterator([
+            ['TABLE_NAME' => 'glpi_plugin_myplugin_bars'],
+            ['TABLE_NAME' => 'glpi_plugin_myplugin_foos'],
+        ]);
+        $this->variable($this->testedInstance->hasTables('plugin:myplugin'))->isEqualTo(true);
+    }
+
+
     /**
      * Return DB mock that implements minimal required behaviour.
      *
