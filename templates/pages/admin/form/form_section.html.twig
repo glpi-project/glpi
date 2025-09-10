@@ -114,15 +114,7 @@
                                 })
                             ) }}
                         </div>
-                        <div class="d-flex align-items-start">
-                            <div class="ms-auto"></div>
-
-                            {# Visibility dropdown #}
-                            {{ include('pages/admin/form/conditional_visibility_dropdown.html.twig', {
-                                'item': section,
-                                'type': "Glpi\\Form\\Section",
-                            }, with_context = false) }}
-
+                        <div class="d-flex align-items-start w-100">
                             {# Question count #}
                             <span
                                 class="badge bg-secondary-lt"
@@ -131,6 +123,14 @@
                                 {% set count_blocks = (section ? section.getBlocks()|length : 1) %}
                                 {{ _n('%d element', '%d elements', count_blocks)|format(count_blocks) }}
                             </span>
+
+                            <div class="ms-auto"></div>
+
+                            {# Visibility dropdown #}
+                            {{ include('pages/admin/form/conditional_visibility_dropdown.html.twig', {
+                                'item': section,
+                                'type': "Glpi\\Form\\Section",
+                            }, with_context = false) }}
 
                             {# Collapse section #}
                             <i
