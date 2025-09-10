@@ -6076,7 +6076,10 @@ final class SQLProvider implements SearchProviderInterface
                             $delay_between_ticket_creation_and_ola_due_time = $ola->getActiveTimeBetween($ticket_creation_date, $due_time);
 
 
-                            if (($delay_between_ticket_creation_and_ola_due_time - $waiting_time) != 0) {
+                            if (
+                                (($delay_between_ticket_creation_and_ola_due_time - $waiting_time) != 0)
+                                && $ola_end_time == null
+                            ) {
                                 $percentage_done = round((100 * ($delay_between_ticket_creation_and_now - $waiting_time)) / ($delay_between_ticket_creation_and_ola_due_time - $waiting_time));
                             } else {
                                 // Total time is null : no active time
