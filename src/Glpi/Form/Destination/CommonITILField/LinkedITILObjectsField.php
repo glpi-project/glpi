@@ -452,6 +452,16 @@ final class LinkedITILObjectsField extends AbstractConfigField implements Destin
                     }
                     $strategy_config[LinkedITILObjectsFieldStrategyConfig::SPECIFIC_QUESTION_IDS] = $questions;
                 }
+
+                // Handle specific destinations
+                if (isset($strategy_config[LinkedITILObjectsFieldStrategyConfig::SPECIFIC_DESTINATION_IDS])) {
+                    $destinations = $strategy_config[LinkedITILObjectsFieldStrategyConfig::SPECIFIC_DESTINATION_IDS];
+                    foreach ($destinations as $i => $destination) {
+                        $id = $mapper->getItemId(FormDestination::class, $destination);
+                        $destinations[$i] = $id;
+                    }
+                    $strategy_config[LinkedITILObjectsFieldStrategyConfig::SPECIFIC_DESTINATION_IDS] = $destinations;
+                }
             }
             $config[LinkedITILObjectsFieldConfig::STRATEGY_CONFIGS] = $strategy_configs;
         }
