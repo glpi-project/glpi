@@ -1475,18 +1475,26 @@ class FormMigration extends AbstractPluginMigration
 
     private function displayWarningForNonMigratedItems(): void
     {
+        $criteria = [
+            'is_deleted' => 0,
+            'NOT' => [
+                'entities_id' => new QuerySubQuery([
+                    'SELECT' => 'id',
+                    'FROM'   => Entity::getTable(),
+                ]),
+            ],
+        ];
+
+
+        // Add specific form IDs to the additional criteria
+        if ($this->specificFormsIds !== []) {
+            $criteria['glpi_plugin_formcreator_forms.id'] = $this->specificFormsIds;
+        }
+
         // Retrieve orphan forms
         $orphan_forms = $this->db->request([
             'FROM'   => 'glpi_plugin_formcreator_forms',
-            'WHERE'  => [
-                'is_deleted' => 0,
-                'NOT' => [
-                    'entities_id' => new QuerySubQuery([
-                        'SELECT' => 'id',
-                        'FROM'   => Entity::getTable(),
-                    ]),
-                ],
-            ],
+            'WHERE'  => $criteria,
         ]);
 
         if (count($orphan_forms) > 0) {
