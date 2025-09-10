@@ -234,6 +234,7 @@ class Item_Ola extends CommonDBRelation
                 'items_id' => $tickets_id,
                 'itemtype' => Ticket::class,
                 'groups_id' => $groups_id_removed,
+                'end_time' => null,
             ],
         ]);
 
