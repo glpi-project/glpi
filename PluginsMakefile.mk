@@ -116,7 +116,7 @@ npm: ## Run a npm command, example: make npm c='install mypackage/package'
 
 ##—— Testing and static analysis ———————————————————————————————————————————————
 verify:  ## Run all our lints/tests/static analysis
-	@$(call run_always, license-headers-check)
+	@$(call run_if_exists, tools/HEADER, license-headers-check)
 	@$(call run_always, parallel-lint)
 	@$(call run_if_exists, phpstan.neon, phpstan)
 	@$(call run_if_exists, .php-cs-fixer.php, phpcsfixer-check)
