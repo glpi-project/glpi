@@ -469,18 +469,20 @@ final class FormSerializer extends AbstractFormSerializer
         FormContentSpecification $form_spec,
     ): FormContentSpecification {
         foreach ($form->getQuestions() as $question) {
-            $spec                      = new QuestionContentSpecification();
-            $spec->id                  = $question->fields['id'];
-            $spec->uuid                = $question->fields['uuid'];
-            $spec->name                = $question->fields['name'];
-            $spec->type                = $question->fields['type'];
-            $spec->is_mandatory        = $question->fields['is_mandatory'];
-            $spec->vertical_rank       = $question->fields['vertical_rank'];
-            $spec->horizontal_rank     = $question->fields['horizontal_rank'];
-            $spec->description         = $question->fields['description'];
-            $spec->section_id          = $question->fields['forms_sections_id'];
-            $spec->visibility_strategy = $question->fields['visibility_strategy'];
-            $spec->conditions = $this->prepareConditionDataForExport($question);
+            $spec                        = new QuestionContentSpecification();
+            $spec->id                    = $question->fields['id'];
+            $spec->uuid                  = $question->fields['uuid'];
+            $spec->name                  = $question->fields['name'];
+            $spec->type                  = $question->fields['type'];
+            $spec->is_mandatory          = $question->fields['is_mandatory'];
+            $spec->vertical_rank         = $question->fields['vertical_rank'];
+            $spec->horizontal_rank       = $question->fields['horizontal_rank'];
+            $spec->description           = $question->fields['description'];
+            $spec->section_id            = $question->fields['forms_sections_id'];
+            $spec->visibility_strategy   = $question->fields['visibility_strategy'];
+            $spec->validation_strategy   = $question->fields['validation_strategy'];
+            $spec->conditions            = $this->prepareConditionDataForExport($question);
+            $spec->validation_conditions = $this->prepareValidationConditionDataForExport($question);
 
             // Handle dynamic fields, we can't know the values that need to be mapped
             // here so we need to let the question object handle it itself.
@@ -513,6 +515,7 @@ final class FormSerializer extends AbstractFormSerializer
                 'default_value'       => $question_spec->default_value,
                 'extra_data'          => $question_spec->extra_data,
                 'visibility_strategy' => $question_spec->visibility_strategy,
+                'validation_strategy' => $question_spec->validation_strategy,
                 'forms_sections_id'   => $mapper->getItemId(
                     Section::class,
                     $question_spec->section_id,
@@ -581,11 +584,61 @@ final class FormSerializer extends AbstractFormSerializer
         return $specs;
     }
 
+    /** @return ConditionDataSpecification[] */
+    private function prepareValidationConditionDataForExport(
+        Question $question
+    ): array {
+        $specs = [];
+        foreach ($question->getConfiguredValidationConditionsData() as $data) {
+            $spec                 = new ConditionDataSpecification();
+            $spec->item_uuid      = $data->getItemUuid();
+            $spec->item_type      = $data->getItemType()->value;
+            $spec->value_operator = $data->getValueOperator()->value;
+            $spec->logic_operator = $data->getLogicOperator()->value;
+            $spec->value          = $data->getValue();
+
+            $specs[] = $spec;
+        }
+
+        return $specs;
+    }
+
     /**
      * @param ConditionDataSpecification[] $conditions_specs
      * @return ConditionData[]
      */
     private function prepareConditionsForImport(
+        array $conditions_specs,
+        DatabaseMapper $mapper,
+    ): array {
+        $data = [];
+        foreach ($conditions_specs as $condition_spec) {
+            $type     = Type::from($condition_spec->item_type);
+            $itemtype = $type->getItemtype();
+            $id       = $mapper->getItemId($itemtype, $condition_spec->item_uuid);
+            $item     = getItemForItemtype($itemtype);
+            if (!$item || !$item->getFromDB($id)) {
+                $message = "Failed to find item for condition: $itemtype::$id";
+                throw new RuntimeException($message);
+            }
+
+            $data[] = new ConditionData(
+                item_type     : $type->value,
+                item_uuid     : $item->fields['uuid'],
+                value_operator: $condition_spec->value_operator,
+                value         : $condition_spec->value,
+                logic_operator: $condition_spec->logic_operator
+            );
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param ConditionDataSpecification[] $conditions_specs
+     * @return ConditionData[]
+     */
+    private function prepareValidationConditionsForImport(
         array $conditions_specs,
         DatabaseMapper $mapper,
     ): array {
@@ -645,6 +698,15 @@ final class FormSerializer extends AbstractFormSerializer
                     $mapper,
                 )
             );
+
+            $this->importValidationCondition(
+                id: $mapper->getItemId(Question::class, $question_spec->id),
+                itemtype: new Question(),
+                conditions: $this->prepareValidationConditionsForImport(
+                    $question_spec->validation_conditions,
+                    $mapper,
+                )
+            );
         }
         foreach ($form_spec->comments as $comment_spec) {
             $this->importCondition(
@@ -684,6 +746,22 @@ final class FormSerializer extends AbstractFormSerializer
 
         if (!$itemtype->update($update_input)) {
             $message = "Failed to import condition: " . json_encode($update_input);
+            throw new RuntimeException($message);
+        }
+    }
+
+    private function importValidationCondition(
+        CommonDBTM $itemtype,
+        int $id,
+        array $conditions,
+    ): void {
+        $update_input = [
+            'id'                     => $id,
+            '_validation_conditions' => $conditions,
+        ];
+
+        if (!$itemtype->update($update_input)) {
+            $message = "Failed to import validation condition: " . json_encode($update_input);
             throw new RuntimeException($message);
         }
     }

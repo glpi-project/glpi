@@ -40,7 +40,9 @@
                     "extra_data": {"is_multiple_actors": true},
                     "section_id": 1,
                     "visibility_strategy": "always_visible",
-                    "conditions": []
+                    "validation_strategy": "",
+                    "conditions": [],
+                    "validation_conditions": []
                 }
             ],
             "data_requirements": [
@@ -93,7 +95,9 @@
                     "extra_data": {"is_multiple_actors": true},
                     "section_id": 2,
                     "visibility_strategy": "always_visible",
-                    "conditions": []
+                    "validation_strategy": "",
+                    "conditions": [],
+                    "validation_conditions": []
                 }
             ],
             "data_requirements": [
