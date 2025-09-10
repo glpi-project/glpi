@@ -45,6 +45,8 @@ use Glpi\Form\Condition\VisibilityStrategy;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
+use Glpi\Form\QuestionType\QuestionTypeRadio;
+use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
@@ -522,12 +524,109 @@ final class EngineTest extends DbTestCase
         ];
     }
 
+    public static function conditionsOnQuestionsWithNotVisibleQuestionAsSource(): iterable
+    {
+        $form = new FormBuilder();
+        $form->addQuestion("Question 1", QuestionTypeRadio::class, "", json_encode(new QuestionTypeSelectableExtraDataConfig([
+            1 => 'Option 1',
+            2 => 'Option to hide the question 2',
+            3 => 'Option 3',
+        ])));
+        $form->addQuestion("Question 2", QuestionTypeRadio::class, "", json_encode(new QuestionTypeSelectableExtraDataConfig([
+            1 => 'Option 1',
+            2 => 'Option to show the question 3',
+            3 => 'Option 3',
+        ])));
+        $form->addQuestion("Question 3", QuestionTypeShortText::class);
+        $form->setQuestionVisibility(
+            "Question 2",
+            VisibilityStrategy::HIDDEN_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Question 1",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "2", // Option to hide the question 2
+                ],
+            ]
+        );
+        $form->setQuestionVisibility(
+            "Question 3",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Question 2",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "2", // Option to show the question 3
+                ],
+            ]
+        );
+
+        yield 'all questions visible' => [
+            'form' => $form,
+            'input' => [
+                'answers' => [
+                    'Question 1' => "1", // Option 1
+                    'Question 2' => "1", // Option 1
+                    'Question 3' => "",
+                ],
+            ],
+            'expected_output' => [
+                'questions' => [
+                    'Question 1' => true,
+                    'Question 2' => true,
+                    'Question 3' => false,
+                ],
+            ],
+        ];
+
+        yield 'question 3 visible through question 2' => [
+            'form' => $form,
+            'input' => [
+                'answers' => [
+                    'Question 1' => "1", // Option 1
+                    'Question 2' => "2", // Option to show the question 3
+                    'Question 3' => "",
+                ],
+            ],
+            'expected_output' => [
+                'questions' => [
+                    'Question 1' => true,
+                    'Question 2' => true,
+                    'Question 3' => true,
+                ],
+            ],
+        ];
+
+        yield 'question 2 hidden so question 3 cannot be visible' => [
+            'form' => $form,
+            'input' => [
+                'answers' => [
+                    'Question 1' => "2", // Option to hide the question 2
+                    'Question 2' => "2", // Option to show the question 3 (but question 2 is not visible)
+                    'Question 3' => "",
+                ],
+            ],
+            'expected_output' => [
+                'questions' => [
+                    'Question 1' => true,
+                    'Question 2' => false,
+                    'Question 3' => false, // Question 3 is not visible because question 2 is not visible
+                ],
+            ],
+        ];
+    }
+
     #[DataProvider('conditionsOnForm')]
     #[DataProvider('conditionsOnQuestions')]
     #[DataProvider('conditionsOnComments')]
     #[DataProvider('conditionsOnSections')]
     #[DataProvider('firstSectionShouldAlwaysBeVisible')]
     #[DataProvider('conditionsOnQuestionWithNullExtraData')]
+    #[DataProvider('conditionsOnQuestionsWithNotVisibleQuestionAsSource')]
     public function testComputation(
         FormBuilder $form,
         array $input,
