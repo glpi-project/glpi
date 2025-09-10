@@ -80,7 +80,7 @@
                     <form method="post" action="{{ 'Document_Item'|itemtype_form_path }}" data-submit-once class="d-flex flex-column h-100">
 
                         <div class="d-flex flex-column align-items-center">
-                            {{ fields.dropdownField('Document', 'documents_id', null, __('Document'), {
+                            {{ fields.dropdownField('Document', 'documents_id', null, 'Document'|itemtype_name, {
                                 entity: entities,
                                 used: used,
                             }) }}
