@@ -646,7 +646,7 @@ export class GlpiFormEditorController
                         itemType,
                         global_block_indices[itemType]
                     );
-                    this.#setQuestionRank($(block), vertical_rank, is_horizontal_block ? horizontal_rank : null);
+                    this.#setQuestionRank($(block), vertical_rank, is_horizontal_block ? horizontal_rank : -1);
                     this.#setUuid($(block));
                     this.#setParentSection($(block), $(section));
 

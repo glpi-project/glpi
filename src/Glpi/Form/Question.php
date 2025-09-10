@@ -321,7 +321,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         }
 
         // Set horizontal rank to null if not set
-        if (!isset($input['horizontal_rank'])) {
+        if (isset($input['horizontal_rank']) && $input['horizontal_rank'] === "-1") {
             $input['horizontal_rank'] = 'NULL';
         }
 
