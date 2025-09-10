@@ -211,23 +211,23 @@ HTML,
         $this->login();
 
         // Create a real notification target for testing
-        $user = new \User();
+        $user = new User();
         $target = new \NotificationTargetUser(0, 'passwordexpires', $user);
 
-        $template = new \NotificationTemplate();
+        $template = new NotificationTemplate();
         $template->getFromDB(1); // Use an existing template
 
         // Test with two different users of the same type (both GLPI users)
         $user1_infos = [
             'language' => 'en_GB',
             'users_id' => 2, // TU_USER
-            'additionnaloption' => ['usertype' => \NotificationTarget::GLPI_USER],
+            'additionnaloption' => ['usertype' => NotificationTarget::GLPI_USER],
         ];
 
         $user2_infos = [
             'language' => 'en_GB', // Same language as user1
             'users_id' => 4, // tech
-            'additionnaloption' => ['usertype' => \NotificationTarget::GLPI_USER], // Same type as user1
+            'additionnaloption' => ['usertype' => NotificationTarget::GLPI_USER], // Same type as user1
         ];
 
         // Reset template cache to start fresh
@@ -257,7 +257,7 @@ HTML,
         $user3_infos = [
             'language' => 'en_GB',
             'users_id' => 6, // normal user
-            'additionnaloption' => ['usertype' => \NotificationTarget::GLPI_USER],
+            'additionnaloption' => ['usertype' => NotificationTarget::GLPI_USER],
         ];
 
         $template_id3 = $template->getTemplateByLanguage($target, $user3_infos, 'passwordexpires', []);
@@ -271,7 +271,7 @@ HTML,
         $email_user_infos = [
             'language' => 'en_GB',
             'email' => 'external@example.com',
-            'additionnaloption' => ['usertype' => \NotificationTarget::EXTERNAL_USER],
+            'additionnaloption' => ['usertype' => NotificationTarget::EXTERNAL_USER],
         ];
 
         $template_id4 = $template->getTemplateByLanguage($target, $email_user_infos, 'passwordexpires', []);
@@ -290,10 +290,10 @@ HTML,
     {
         $this->login();
 
-        $user = new \User();
+        $user = new User();
         $target = new \NotificationTargetUser(0, 'passwordexpires', $user);
 
-        $template = new \NotificationTemplate();
+        $template = new NotificationTemplate();
         $template->getFromDB(1);
         $template->resetComputedTemplates();
 
@@ -301,13 +301,13 @@ HTML,
         $email_user1 = [
             'language' => 'en_GB',
             'email' => 'user1@example.com',
-            'additionnaloption' => ['usertype' => \NotificationTarget::EXTERNAL_USER],
+            'additionnaloption' => ['usertype' => NotificationTarget::EXTERNAL_USER],
         ];
 
         $email_user2 = [
             'language' => 'en_GB',
             'email' => 'user2@example.com',
-            'additionnaloption' => ['usertype' => \NotificationTarget::EXTERNAL_USER],
+            'additionnaloption' => ['usertype' => NotificationTarget::EXTERNAL_USER],
         ];
 
         $template_id1 = $template->getTemplateByLanguage($target, $email_user1, 'passwordexpires', []);
@@ -326,23 +326,23 @@ HTML,
     {
         $this->login();
 
-        $template = new \NotificationTemplate();
+        $template = new NotificationTemplate();
         $template->getFromDB(1);
 
-        $user = new \User();
+        $user = new User();
         $target = new \NotificationTargetUser(0, 'passwordexpires', $user);
 
         // Same user info except for users_id should generate different cache keys
         $user1_infos = [
             'language' => 'en_GB',
             'users_id' => 2,
-            'additionnaloption' => ['usertype' => \NotificationTarget::GLPI_USER],
+            'additionnaloption' => ['usertype' => NotificationTarget::GLPI_USER],
         ];
 
         $user2_infos = [
             'language' => 'en_GB',
             'users_id' => 4, // Different user ID
-            'additionnaloption' => ['usertype' => \NotificationTarget::GLPI_USER],
+            'additionnaloption' => ['usertype' => NotificationTarget::GLPI_USER],
         ];
 
         $template->resetComputedTemplates();
@@ -357,13 +357,13 @@ HTML,
         $email_user1 = [
             'language' => 'en_GB',
             'email' => 'same@example.com',
-            'additionnaloption' => ['usertype' => \NotificationTarget::EXTERNAL_USER],
+            'additionnaloption' => ['usertype' => NotificationTarget::EXTERNAL_USER],
         ];
 
         $email_user2 = [
             'language' => 'en_GB',
             'email' => 'different@example.com',
-            'additionnaloption' => ['usertype' => \NotificationTarget::EXTERNAL_USER],
+            'additionnaloption' => ['usertype' => NotificationTarget::EXTERNAL_USER],
         ];
 
         $tid_email1 = $template->getTemplateByLanguage($target, $email_user1, 'passwordexpires', []);

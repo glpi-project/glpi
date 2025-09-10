@@ -226,7 +226,7 @@ class NotificationTemplate extends CommonDBTM
         } else {
             $additionnaloption =  [];
         }
-        
+
         // Create a language-based cache key (shared for same language/additional options)
         $cache_key  = $language;
         $cache_key .= serialize($additionnaloption);
@@ -656,10 +656,10 @@ class NotificationTemplate extends CommonDBTM
                 self::getDataForHtml($user_specific_data)
             );
 
-            $result['content_html'] =
-             "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"
-                'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>" .
-             "<html>
+            $result['content_html']
+             = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"
+                'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>"
+             . "<html>
                 <head>
                  <META http-equiv='Content-Type' content='text/html; charset=utf-8'>
                  <title>" . htmlentities($result['subject'], ENT_QUOTES, "UTF-8") . "</title>
@@ -667,12 +667,12 @@ class NotificationTemplate extends CommonDBTM
                    {$base_template_data['_css']}
                  </style>
                 </head>
-                <body>\n" . (!empty($base_template_data['_add_header']) ? $base_template_data['_add_header'] . "\n<br><br>" : '') .
-                $processed_html .
-             "<br><br>-- \n<br>" . $base_template_data['_signature_html'] .
-             "<br>" . $base_template_data['_footer_string'] .
-             "<br><br>\n" . (!empty($base_template_data['_add_footer']) ? $base_template_data['_add_footer'] . "\n<br><br>" : '') .
-             "\n</body></html>";
+                <body>\n" . (!empty($base_template_data['_add_header']) ? $base_template_data['_add_header'] . "\n<br><br>" : '')
+                . $processed_html
+             . "<br><br>-- \n<br>" . $base_template_data['_signature_html']
+             . "<br>" . $base_template_data['_footer_string']
+             . "<br><br>\n" . (!empty($base_template_data['_add_footer']) ? $base_template_data['_add_footer'] . "\n<br><br>" : '')
+             . "\n</body></html>";
         }
 
         $result['content_text'] = (!empty($base_template_data['_add_header']) ? $base_template_data['_add_header'] . "\n\n" : '')
