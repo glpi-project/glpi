@@ -281,8 +281,8 @@ TWIG, $twig_params);
                 'device' => $data['device'],
                 'mountpoint' => $data['mountpoint'],
                 'fsname' => $data['fsname'],
-                'totalsize' => $data['totalsize'],
-                'freesize' => $data['freesize'],
+                'totalsize' => $data['totalsize'] * 1024 * 1024, //size in MiB in DB
+                'freesize' => $data['freesize'] * 1024 * 1024, //size in MiB in DB
                 'usedpercent' => $usedpercent,
                 'encryption_status' => $encryption_label,
             ];
