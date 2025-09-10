@@ -45,11 +45,13 @@
                     <div class="d-flex flex-column align-items-center">
                         {{ fields.dropdownField('DocumentCategory', 'documentcategories_id', item.fields['documentcategories_id'] ?? '', 'DocumentCategory'|itemtype_name, {
                             entity: entities,
+                            'field_class': 'col-12 col-sm-10',
                         }) }}
 
                         {{ fields.fileField('filename', null, null, {
                             no_label: true,
-                            multiple: true
+                            multiple: true,
+                            'field_class': 'col-12 col-sm-10',
                         }) }}
 
                         <div class="text-end">
@@ -83,6 +85,9 @@
                             {{ fields.dropdownField('Document', 'documents_id', null, 'Document'|itemtype_name, {
                                 entity: entities,
                                 used: used,
+                                'field_class': 'col-12 col-sm-12',
+                                'label_class': 'col-xxl-2',
+                                'input_class': 'col-xxl-10',
                             }) }}
                         </div>
 
