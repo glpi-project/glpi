@@ -1407,6 +1407,12 @@ class NotificationTarget extends CommonDBChild
     private function removeExcludedTargets(array $target_list)
     {
         global $DB;
+        
+        // If no notifications_id is set, no exclusions can be applied
+        if (!isset($this->data['notifications_id'])) {
+            return $target_list;
+        }
+        
         $exclusions = iterator_to_array($DB->request([
             'SELECT' => ['type', 'items_id'],
             'FROM'   => self::getTable(),

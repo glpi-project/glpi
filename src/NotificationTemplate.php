@@ -218,7 +218,6 @@ class NotificationTemplate extends CommonDBTM
     ) {
         global $CFG_GLPI, $DB;
 
-        $lang     = [];
         $language = $user_infos['language'];
 
         if (isset($user_infos['additionnaloption'])) {
@@ -637,9 +636,28 @@ class NotificationTemplate extends CommonDBTM
      */
     private function applyUserSpecificData($base_template_data, $target, $user_infos, $event, $options)
     {
+        global $DB;
+
+        // Set timezone from user for data generation
+        $orig_tz = null;
+        if (isset($user_infos['additionnaloption']['timezone'])) {
+            $orig_tz = $DB->guessTimezone();
+            $DB->setTimezone($user_infos['additionnaloption']['timezone']);
+
+            if (is_a($options['item'], CommonDBTM::class, true)) {
+                // Reload item to ensure timestamps will be converted to the current user timezone
+                $options['item']->getFromDB($options['item']->fields['id']);
+            }
+        }
+
         // Get user-specific data by calling the full getForTemplate with hooks
         $options['additionnaloption'] = $user_infos['additionnaloption'] ?? [];
         $user_specific_data = &$target->getForTemplate($event, $options);
+
+        // Restore original timezone
+        if ($orig_tz !== null) {
+            $DB->setTimezone($orig_tz);
+        }
 
         // Re-process the templates with user-specific data
         $template_datas = $base_template_data['_raw_template_datas'];
