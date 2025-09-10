@@ -260,6 +260,7 @@ final class FormSerializer extends AbstractFormSerializer
         $form = $this->importQuestions($form, $form_spec, $mapper);
         $form = $this->importAccessControlPolicices($form, $form_spec, $mapper);
         $form = $this->importDestinations($form, $form_spec, $mapper);
+        $form = $this->importDestinationsConfig($form, $form_spec, $mapper);
         $form = $this->importConditions($form, $form_spec, $mapper);
         $form = $this->importTranslations($form, $form_spec, $mapper);
 
@@ -784,7 +785,6 @@ final class FormSerializer extends AbstractFormSerializer
     ): Form {
         foreach ($form_spec->destinations as $destination_spec) {
             $destination = new FormDestination();
-            $config = $destination_spec->config;
 
             // Prepare basic input
             $input = [
@@ -792,7 +792,6 @@ final class FormSerializer extends AbstractFormSerializer
                 'itemtype'                 => $destination_spec->itemtype,
                 'name'                     => $destination_spec->name,
                 'creation_strategy'        => $destination_spec->creation_strategy,
-                'config'                   => $config,
                 Form::getForeignKeyField() => $form->getID(),
             ];
 
@@ -804,16 +803,7 @@ final class FormSerializer extends AbstractFormSerializer
             }
             $destination_type = new $destination_type();
 
-            // Handle dynamic config, we can't know the values that need to be
-            // mapped here so we need to let the destination object handle it
-            // itself.
-            $input = FormDestination::prepareDynamicImportData(
-                $destination_type,
-                $input,
-                $mapper
-            );
             $id = $destination->add($input);
-
             if (!$id) {
                 $message = "Failed to create destination: " . json_encode($input);
                 throw new RuntimeException($message);
@@ -825,6 +815,51 @@ final class FormSerializer extends AbstractFormSerializer
                 $destination_spec->id,
                 $id
             );
+        }
+
+        // Reload form to clear lazy loaded data
+        $form->getFromDB($form->getID());
+        return $form;
+    }
+
+    /**
+     * Import the configuration of each destination.
+     * This is done in a separate step after the initial creation
+     * to ensure that all destinations are created before we try to
+     * import their configuration.
+     *
+     * Some configuration may reference other destinations
+     *
+     * @param Form $form
+     * @param FormContentSpecification $form_spec
+     * @param DatabaseMapper $mapper
+     * @return Form The updated form
+     * @throws RuntimeException if a destination cannot be found or updated
+     */
+    private function importDestinationsConfig(
+        Form $form,
+        FormContentSpecification $form_spec,
+        DatabaseMapper $mapper,
+    ): Form {
+        foreach ($form_spec->destinations as $destination_spec) {
+            $destination = new FormDestination();
+            $config = $destination_spec->config;
+            $id = $mapper->getItemId(FormDestination::class, $destination_spec->id);
+            if (!$destination->getFromDB($id)) {
+                $message = "Failed to find destination for fields import: " . json_encode($destination_spec);
+                throw new RuntimeException($message);
+            }
+
+            $input = FormDestination::prepareDynamicImportData(
+                $destination->getConcreteDestinationItem(),
+                ['_from_import' => true, 'id' => $id, 'config' => $config],
+                $mapper
+            );
+
+            if (!$destination->update($input)) {
+                $message = "Failed to update destination for fields import: " . json_encode($input);
+                throw new RuntimeException($message);
+            }
         }
 
         // Reload form to clear lazy loaded data

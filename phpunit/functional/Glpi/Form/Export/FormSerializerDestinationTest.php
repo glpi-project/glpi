@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Form;
 
+use CommonITILObject_CommonITILObject;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Destination\CommonITILField\AssigneeField;
 use Glpi\Form\Destination\CommonITILField\AssigneeFieldConfig;
@@ -54,6 +55,10 @@ use Glpi\Form\Destination\CommonITILField\ITILFollowupFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ITILTaskField;
 use Glpi\Form\Destination\CommonITILField\ITILTaskFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILTaskFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\LinkedITILObjectsField;
+use Glpi\Form\Destination\CommonITILField\LinkedITILObjectsFieldConfig;
+use Glpi\Form\Destination\CommonITILField\LinkedITILObjectsFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\LinkedITILObjectsFieldStrategyConfig;
 use Glpi\Form\Destination\CommonITILField\LocationField;
 use Glpi\Form\Destination\CommonITILField\LocationFieldConfig;
 use Glpi\Form\Destination\CommonITILField\LocationFieldStrategy;
@@ -87,6 +92,7 @@ use Glpi\Form\Destination\CommonITILField\ValidationField;
 use Glpi\Form\Destination\CommonITILField\ValidationFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ValidationFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ValidationFieldStrategyConfig;
+use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
@@ -521,6 +527,32 @@ final class FormSerializerDestinationTest extends \DbTestCase
                 specific_request_type: Ticket::DEMAND_TYPE
             ),
         ];
+
+        yield 'LinkedITILObjectsField' => [
+            'field_key' => LinkedITILObjectsField::getKey(),
+            'config_fn' => fn($created_items) => new LinkedITILObjectsFieldConfig(
+                strategy_configs: [
+                    new LinkedITILObjectsFieldStrategyConfig(
+                        strategy: LinkedITILObjectsFieldStrategy::SPECIFIC_VALUES,
+                        specific_itilobject: [
+                            [
+                                'itemtype' => Ticket::class,
+                                'id'      => $created_items[0]->getId(),
+                            ],
+                        ]
+                    ),
+                ]
+            ),
+            'items_to_create'  => [
+                [
+                    'itemtype' => Ticket::class,
+                    'input'    => [
+                        'name'    => 'My ticket',
+                        'content' => 'My ticket content',
+                    ],
+                ],
+            ],
+        ];
     }
 
     #[DataProvider('getFieldDestinationsWithSpecificValueProvider')]
@@ -781,6 +813,37 @@ final class FormSerializerDestinationTest extends \DbTestCase
                 ],
             ],
         ];
+
+        yield 'LinkedITILObjectsField' => [
+            'field_key' => LinkedITILObjectsField::getKey(),
+            'config_fn'    => fn($questions) => new LinkedITILObjectsFieldConfig(
+                strategy_configs: [
+                    new LinkedITILObjectsFieldStrategyConfig(
+                        strategy: LinkedITILObjectsFieldStrategy::SPECIFIC_ANSWERS,
+                        linktype: CommonITILObject_CommonITILObject::LINK_TO,
+                        specific_question_ids: [current($questions)->getId()],
+                    ),
+                ]
+            ),
+            'questions_to_create' => [
+                [
+                    'type' => QuestionTypeItem::class,
+                    'extra_data' => json_encode((new QuestionTypeItemExtraDataConfig(
+                        itemtype: Ticket::class
+                    ))->jsonSerialize()),
+                ],
+            ],
+            'question_id_key' => 'specific_question_ids',
+            'question_id_extractor' => function (array $config) {
+                // Extract question IDs from the first strategy config that has them
+                foreach ($config['strategy_configs'] as $strategy_config) {
+                    if (isset($strategy_config['specific_question_ids'])) {
+                        return $strategy_config['specific_question_ids'];
+                    }
+                }
+                return [];
+            },
+        ];
     }
 
     #[DataProvider('getFieldDestinationsWithSpecificQuestionProvider')]
@@ -845,6 +908,97 @@ final class FormSerializerDestinationTest extends \DbTestCase
         }
     }
 
+    public static function getFieldDestinationsWithSpecificDestinationProvider(): iterable
+    {
+        yield 'LinkedITILObjectsField' => [
+            'field_key' => LinkedITILObjectsField::getKey(),
+            'config_fn'    => fn($destinations) => new LinkedITILObjectsFieldConfig(
+                strategy_configs: [
+                    new LinkedITILObjectsFieldStrategyConfig(
+                        strategy: LinkedITILObjectsFieldStrategy::SPECIFIC_DESTINATIONS,
+                        linktype: CommonITILObject_CommonITILObject::LINK_TO,
+                        specific_destination_ids: [current($destinations)->getId()],
+                    ),
+                ]
+            ),
+            'destination_to_create' => [
+                [
+                    'type' => FormDestinationTicket::class,
+                    'name' => 'My ticket destination',
+                ],
+            ],
+            'destination_id_key' => 'specific_question_ids',
+            'destination_id_extractor' => function (array $config) {
+                // Extract question IDs from the first strategy config that has them
+                foreach ($config['strategy_configs'] as $strategy_config) {
+                    if (isset($strategy_config['specific_destination_ids'])) {
+                        return $strategy_config['specific_destination_ids'];
+                    }
+                }
+                return [];
+            },
+        ];
+    }
+
+    #[DataProvider('getFieldDestinationsWithSpecificDestinationProvider')]
+    public function testImportAndExportForDestinationFieldWithSpecificDestinationStrategy(
+        string $field_key,
+        ?JsonFieldInterface $config                = null,
+        ?callable           $config_fn             = null,
+        array               $destination_to_create = [],
+        string              $destination_id_key    = 'specific_destination_id',
+        ?callable           $destination_id_extractor = null
+    ) {
+        $this->login();
+
+        $form_builder = $this->getFormBuilderWithTicketDestination();
+        foreach ($destination_to_create as $destination_data) {
+            $form_builder->addDestination(
+                $destination_data['type'],
+                $destination_data['name']
+            );
+        }
+        $form = $this->createForm($form_builder);
+
+        if ($config === null) {
+            $config = $config_fn($form->getDestinations());
+        }
+
+        $imported_form = $this->checkImportAndExport(
+            $field_key,
+            $config,
+            $form,
+            2 // We expect 2 destinations after import (the original one + the one created for the test
+        );
+        $imported_destinations = $imported_form->getDestinations();
+
+        // Extract question IDs from original and imported configs using the appropriate strategy
+        if ($destination_id_extractor !== null) {
+            $original_destination_ids = $destination_id_extractor($config->jsonSerialize());
+            $imported_destination_ids = $destination_id_extractor(end($imported_destinations)->getConfig()[$field_key]);
+        } else {
+            $original_destination_ids = $config->jsonSerialize()[$destination_id_key];
+            $imported_destination_ids = end($imported_destinations)->getConfig()[$field_key][$destination_id_key];
+        }
+
+        $this->assertNotEquals($original_destination_ids, $imported_destination_ids);
+
+        if (is_array($original_destination_ids)) {
+            foreach ($original_destination_ids as $key => $destination_id) {
+                // Retrieve the destination id from the imported form
+                $this->assertEquals(
+                    $form->getDestinations()[$destination_id]->getName(),
+                    $imported_form->getDestinations()[$imported_destination_ids[$key]]->getName()
+                );
+            }
+        } else {
+            $this->assertEquals(
+                $form->getDestinations()[$original_destination_ids]->getName(),
+                $imported_form->getDestinations()[$imported_destination_ids]->getName()
+            );
+        }
+    }
+
     /**
      * Check the import and export process for a given key
      *
@@ -857,7 +1011,8 @@ final class FormSerializerDestinationTest extends \DbTestCase
     private function checkImportAndExport(
         string $key,
         JsonFieldInterface $config,
-        ?Form $form = null
+        ?Form $form = null,
+        int $destinations_count = 1
     ): Form {
         if ($form === null) {
             $form = $this->createForm($this->getFormBuilderWithTicketDestination());
@@ -877,7 +1032,7 @@ final class FormSerializerDestinationTest extends \DbTestCase
         $imported_form = $this->exportAndImportForm($form);
         $imported_destinations = $imported_form->getDestinations();
 
-        $this->assertCount(1, $imported_destinations);
+        $this->assertCount($destinations_count, $imported_destinations);
 
         return $imported_form;
     }
