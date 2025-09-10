@@ -76,6 +76,9 @@
     // Use all available parent space
     flex-grow: 1;
 
+    // Make sure we keep some padding when scrolling to an active item
+    scroll-padding: 10px;
+
     // Subtle gradient to avoid the same background color of the cards and tab content/editor
     background: linear-gradient(169deg,
             var(--tblr-bg-surface) 0%,
