@@ -137,7 +137,7 @@ class Item_Process extends CommonDBChild
 
         $processes = [];
         foreach ($filtered_data as $process) {
-            $process['virtualmemory'] *= 1024;
+            $process['virtualmemory'] *= 1024; // size in KiB in DB
             $processes[$process['id']] = $process;
         }
 
