@@ -39,6 +39,7 @@ use CommonDBChild;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\ConditionHandler\VisibilityConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
@@ -190,6 +191,18 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
         ?JsonFieldInterface $question_config
     ): array {
         return [new VisibilityConditionHandler()];
+    }
+
+    #[Override]
+    public function getSupportedValueOperators(
+        ?JsonFieldInterface $question_config
+    ): array {
+        return array_merge(
+            ...array_map(
+                fn(ConditionHandlerInterface $handler) => $handler->getSupportedValueOperators(),
+                $this->getConditionHandlers($question_config)
+            )
+        );
     }
 
     /**

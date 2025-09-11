@@ -51,4 +51,14 @@ interface UsedAsCriteriaInterface
     public function getConditionHandlers(
         ?JsonFieldInterface $question_config
     ): array;
+
+    /**
+     * Get the supported value operators for this item.
+     *
+     * @param JsonFieldInterface|null $question_config The question config
+     * @return array<ValueOperator> The supported value operators
+     */
+    public function getSupportedValueOperators(
+        ?JsonFieldInterface $question_config
+    ): array;
 }
