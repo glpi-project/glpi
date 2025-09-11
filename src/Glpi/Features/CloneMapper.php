@@ -65,4 +65,9 @@ final class CloneMapper
 
         return $this->mapped_ids[$class][$old_id];
     }
+
+    public function cleanMappedIds(): void
+    {
+        $this->mapped_ids = [];
+    }
 }

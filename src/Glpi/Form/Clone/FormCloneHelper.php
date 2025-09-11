@@ -81,9 +81,6 @@ final class FormCloneHelper
 {
     use SingletonTrait;
 
-    /** @var array<string, string> $forms_uuid_map */
-    private array $forms_uuid_map = [];
-
     /** @var array<string, string> $sections_uuid_map */
     private array $sections_uuid_map = [];
 
@@ -96,7 +93,7 @@ final class FormCloneHelper
     public function prepareFormInputForClone(array $input): array
     {
         // Generate a new UUID
-        $input['uuid'] = $this->generateFormUuid($input['uuid']);
+        unset($input['uuid']);
 
         // Reset counters
         $input['usage_count'] = 0;
@@ -132,6 +129,11 @@ final class FormCloneHelper
         foreach ($form->getDestinations() as $destination) {
             $this->updateDestinationConditions($destination);
         }
+
+        // Clear mapped items
+        $this->sections_uuid_map = [];
+        $this->questions_uuid_map = [];
+        $this->comments_uuid_map = [];
     }
 
     public function prepareSectionInputForClone(array $input): array
@@ -211,11 +213,6 @@ final class FormCloneHelper
         return $input;
     }
 
-    public function getMappedFormUuid(string $old_uuid): string
-    {
-        return $this->forms_uuid_map[$old_uuid];
-    }
-
     public function getMappedSectionUuid(string $old_uuid): string
     {
         return $this->sections_uuid_map[$old_uuid];
@@ -244,13 +241,6 @@ final class FormCloneHelper
     public function getMappedDestinationId(int $id): int
     {
         return CloneMapper::getInstance()->getMappedId(FormDestination::class, $id);
-    }
-
-    private function generateFormUuid(string $old_uuid): string
-    {
-        $new_uuid = Uuid::uuid4();
-        $this->forms_uuid_map[$old_uuid] = (string) $new_uuid;
-        return $new_uuid;
     }
 
     private function generateSectionUuid(string $old_uuid): string
