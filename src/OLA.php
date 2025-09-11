@@ -70,7 +70,7 @@ class OLA extends LevelAgreement
     {
         global $CFG_GLPI;
 
-        echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='" . __s('Warning') . "'>";
+        echo "<img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/warning.png' alt='" . __s('Warning') . "'>";
         echo __s('The internal time is recalculated when assigning the OLA');
     }
 

@@ -250,7 +250,7 @@ TWIG, $twig_params);
         }
         switch ($field) {
             case 'speed':
-                return self::getPortSpeed($values[$field]);
+                return htmlescape(self::getPortSpeed($values[$field]));
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

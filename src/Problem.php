@@ -913,8 +913,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                         $options['criteria'][1]['value']      = 'mygroups';
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/problem.php?"
-                         . Toolbox::append_params($options, '&amp;') . "\">"
+                        $main_header = "<a href=\"" . htmlescape($CFG_GLPI["root_doc"] . "/front/problem.php?" . Toolbox::append_params($options)) . "\">"
                          . Html::makeTitle(__('Problems on pending status'), $displayed_row_count, $total_row_count) . "</a>";
                         break;
 
@@ -929,8 +928,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                         $options['criteria'][1]['value']      = 'mygroups';
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/problem.php?"
-                         . Toolbox::append_params($options, '&amp;') . "\">"
+                        $main_header = "<a href=\"" . htmlescape($CFG_GLPI["root_doc"] . "/front/problem.php?" . Toolbox::append_params($options)) . "\">"
                          . Html::makeTitle(__('Problems to be processed'), $displayed_row_count, $total_row_count) . "</a>";
                         break;
 
@@ -945,8 +943,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                         $options['criteria'][1]['value']      = 'mygroups';
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/problem.php?"
-                         . Toolbox::append_params($options, '&amp;') . "\">"
+                        $main_header = "<a href=\"" . htmlescape($CFG_GLPI["root_doc"] . "/front/problem.php?" . Toolbox::append_params($options)) . "\">"
                          . Html::makeTitle(__('Your problems in progress'), $displayed_row_count, $total_row_count) . "</a>";
                 }
             } else {
@@ -962,8 +959,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                         $options['criteria'][1]['value']      = Session::getLoginUserID();
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/problem.php?"
-                         . Toolbox::append_params($options, '&amp;') . "\">"
+                        $main_header = "<a href=\"" . htmlescape($CFG_GLPI["root_doc"] . "/front/problem.php?" . Toolbox::append_params($options)) . "\">"
                          . Html::makeTitle(__('Problems on pending status'), $displayed_row_count, $total_row_count) . "</a>";
                         break;
 
@@ -978,8 +974,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                         $options['criteria'][1]['value']      = 'process';
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/problem.php?"
-                         . Toolbox::append_params($options, '&amp;') . "\">"
+                        $main_header = "<a href=\"" . htmlescape($CFG_GLPI["root_doc"] . "/front/problem.php?" . Toolbox::append_params($options)) . "\">"
                          . Html::makeTitle(__('Problems to be processed'), $displayed_row_count, $total_row_count) . "</a>";
                         break;
 
@@ -994,8 +989,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                         $options['criteria'][1]['value']      = 'notold';
                         $options['criteria'][1]['link']       = 'AND';
 
-                        $main_header = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/problem.php?"
-                        . Toolbox::append_params($options, '&amp;') . "\">"
+                        $main_header = "<a href=\"" . htmlescape($CFG_GLPI["root_doc"] . "/front/problem.php?" . Toolbox::append_params($options)) . "\">"
                         . Html::makeTitle(__('Your problems in progress'), $displayed_row_count, $total_row_count) . "</a>";
                 }
             }
@@ -1038,7 +1032,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                         $name = sprintf(__('%1$s: %2$s'), __('ID'), $problem->fields["id"]);
                         $row['values'][] = [
                             'class' => 'badge_block',
-                            'content' => "<span style='background: $bgcolor'></span>&nbsp;$name",
+                            'content' => "<span style='background: " . htmlescape($bgcolor) . "'></span>&nbsp;" . htmlescape($name),
                         ];
 
                         $requesters = [];
@@ -1053,7 +1047,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                                     $requesters[] = $name;
                                 } else {
                                     $requesters[] = '<i class="fs-4 ti ti-mail text-muted me-1"></i>'
-                                        . $d['alternative_email'];
+                                        . htmlescape($d['alternative_email']);
                                 }
                             }
                         }
@@ -1064,17 +1058,17 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                         ) {
                             foreach ($problem->groups[CommonITILActor::REQUESTER] as $d) {
                                 $requesters[] = '<i class="fs-4 ti ti-users text-muted me-1"></i>'
-                                    . Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+                                    . htmlescape(Dropdown::getDropdownName("glpi_groups", $d["groups_id"]));
                             }
                         }
                         $row['values'][] = implode('<br>', $requesters);
 
-                        $link = "<a id='problem" . $problem->fields["id"] . $rand . "' href='"
-                            . Problem::getFormURLWithID($problem->fields["id"]);
+                        $link = "<a id='problem" . $problem->getID() . $rand . "' href='"
+                            . htmlescape(Problem::getFormURLWithID($problem->fields["id"]));
                         $link .= "'>";
-                        $link .= "<span class='b'>" . $problem->fields["name"] . "</span></a>";
+                        $link .= "<span class='b'>" . htmlescape($problem->fields["name"]) . "</span></a>";
                         $link = sprintf(
-                            __('%1$s %2$s'),
+                            __s('%1$s %2$s'),
                             $link,
                             Html::showToolTip(
                                 RichText::getEnhancedHtml($problem->fields['content']),
@@ -1090,7 +1084,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                         $row['values'] = [
                             [
                                 'colspan' => 6,
-                                'content' => "<i>" . __('No problem in progress.') . "</i>",
+                                'content' => "<i>" . __s('No problem in progress.') . "</i>",
                             ],
                         ];
                     }
