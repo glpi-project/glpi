@@ -834,7 +834,7 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
                     <div class="card-title">{{ report['title'] }}</div>
                 </div>
                 <div class="card-body">
-                    {{ call('Report::showNetworkReportCriteria', [true]) }}
+                    {% do call('Report::showNetworkReportCriteria', [true]) %}
                     <br>
                     {{ include('components/datatable.html.twig', datatable_params, with_context = false) }}
                 </div>
@@ -880,8 +880,8 @@ TWIG, ['report' => $report, 'datatable_params' => $datatable_params]);
                     <div class="card-title">{{ report['title'] }}</div>
                 </div>
                 <div class="card-body">
-                    {{ call('Reservation::showReservationsAsList', [report['data']['in_progress'], current_label]) }}
-                    {{ call('Reservation::showReservationsAsList', [report['data']['old'], old_label]) }}
+                    {% do call('Reservation::showReservationsAsList', [report['data']['in_progress'], current_label]) %}
+                    {% do call('Reservation::showReservationsAsList', [report['data']['old'], old_label]) %}
                 </div>
             </div>
 TWIG, $twig_params);
@@ -1126,7 +1126,7 @@ TWIG, $twig_params);
                     <div class="card-title">{{ title }}</div>
                 </div>
                 <div class="card-body">
-                    {{ call('Report::showYearlyAssetsReportCriteria', [true]) }}
+                    {% do call('Report::showYearlyAssetsReportCriteria', [true]) %}
                     <br>
                     {% for itemtype, datatable in datatable_params %}
                         {{ include('components/datatable.html.twig', datatable, with_context = false) }}
@@ -1399,7 +1399,7 @@ TWIG, $twig_params);
                     <div class="card-title">{{ title }}</div>
                 </div>
                 <div class="card-body">
-                    {{ call('Report::showContractAssetsReportCriteria', [true]) }}
+                    {% do call('Report::showContractAssetsReportCriteria', [true]) %}
                     <br>
                     {% for itemtype, datatable in datatable_params %}
                         {{ include('components/datatable.html.twig', datatable, with_context = false) }}
@@ -1543,7 +1543,6 @@ TWIG, $twig_params);
                     'formatters' => [
                         'value' => 'number',
                         'anv' => 'number',
-                        'tco' => 'raw_html',
                     ],
                     'super_header' => $itemtype::getTypeName(Session::getPluralNumber()),
                     'entries' => [],
@@ -1717,7 +1716,7 @@ TWIG, $twig_params);
                     <div class="card-title">{{ title }}</div>
                 </div>
                 <div class="card-body">
-                    {{ call('Report::showInfocomReportCriteria', [true, true]) }}
+                    {% do call('Report::showInfocomReportCriteria', [true, true]) %}
                     <br>
                     {% for itemtype, datatable in datatable_params %}
                         {{ include('components/datatable.html.twig', datatable, with_context = false) }}
@@ -1886,7 +1885,7 @@ TWIG, $twig_params);
                     <div class="card-title">{{ title }}</div>
                 </div>
                 <div class="card-body">
-                    {{ call('Report::showInfocomReportCriteria', [true, false]) }}
+                    {% do call('Report::showInfocomReportCriteria', [true, false]) %}
                     <br>
                     {% for graph in graphs %}
                         {{ graph|raw }}

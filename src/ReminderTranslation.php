@@ -118,11 +118,11 @@ class ReminderTranslation extends CommonDBChild
                 <script>
                     function showTranslation{{ item.getID() ~ rand }}(translations_id) {
                         $.ajax({
-                            url: '{{ config('root_doc') }}/ajax/viewsubitem.php',
+                            url: CFG_GLPI.root_doc + '/ajax/viewsubitem.php',
                             method: 'POST',
                             data: {
                                 type: 'ReminderTranslation',
-                                parenttype: '{{ item.getType }}',
+                                parenttype: '{{ item.getType()|e('js') }}',
                                 reminders_id: {{ item.getID() }},
                                 id: translations_id
                             },

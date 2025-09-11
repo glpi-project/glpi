@@ -806,17 +806,17 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
             ];
             $iterator = $DB->request($criteria);
 
-            $message = "";
-            $items   = [];
+            $messages = [];
+            $items    = [];
 
             foreach ($iterator as $license) {
                 $name     = $license['softname'] . ' - ' . $license['name'] . ' - ' . $license['serial'];
                 //TRANS: %1$s the license name, %2$s is the expiration date
-                $message .= htmlescape(sprintf(
+                $messages[] = sprintf(
                     __('License %1$s expired on %2$s'),
                     Html::convDate($license["expire"]),
                     $name
-                )) . "<br>";
+                );
                 $items[$license['id']] = $license;
             }
 
@@ -829,13 +829,13 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
                     $entityname = Dropdown::getDropdownName(Entity::getTable(), $entity);
                     if ($task) {
                         //TRANS: %1$s is the entity, %2$s is the message
-                        $task->log(sprintf(__('%1$s: %2$s') . "\n", $entityname, $message));
+                        $task->log(sprintf(__('%1$s: %2$s') . "\n", $entityname, implode("\n", $messages)));
                         $task->addVolume(1);
                     } else {
                         Session::addMessageAfterRedirect(sprintf(
                             __s('%1$s: %2$s'),
                             htmlescape($entityname),
-                            $message
+                            implode('<br>', array_map('htmlescape', $messages))
                         ));
                     }
 
@@ -851,11 +851,11 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
                 } else {
                     $entityname = Dropdown::getDropdownName(Entity::getTable(), $entity);
                     //TRANS: %s is entity name
-                    $msg = htmlescape(sprintf(__('%1$s: %2$s'), $entityname, __('Send licenses alert failed')));
+                    $msg = sprintf(__('%1$s: %2$s'), $entityname, __('Send licenses alert failed'));
                     if ($task) {
                         $task->log($msg);
                     } else {
-                        Session::addMessageAfterRedirect($msg, false, ERROR);
+                        Session::addMessageAfterRedirect(htmlescape($msg), false, ERROR);
                     }
                 }
             }

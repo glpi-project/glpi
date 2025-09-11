@@ -249,12 +249,12 @@ class ProjectCost extends CommonDBChild
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __s('Name') . "</td>";
         echo "<td>";
-        echo "<input type='hidden' name='projects_id' value='" . $this->fields['projects_id'] . "'>";
+        echo "<input type='hidden' name='projects_id' value='" . ((int) $this->fields['projects_id']) . "'>";
         echo Html::input('name', ['value' => $this->fields['name']]);
         echo "</td>";
         echo "<td>" . _sn('Cost', 'Costs', 1) . "</td>";
         echo "<td>";
-        echo "<input type='text' name='cost' value='" . Html::formatNumber($this->fields["cost"], true) . "'
+        echo "<input type='text' name='cost' value='" . htmlescape(Html::formatNumber($this->fields["cost"], true)) . "'
              size='14'>";
         echo "</td></tr>";
 
@@ -265,7 +265,7 @@ class ProjectCost extends CommonDBChild
         $rowspan = 3;
         echo "<td rowspan='$rowspan'>" . __s('Comments') . "</td>";
         echo "<td rowspan='$rowspan' class='middle'>";
-        echo "<textarea class='form-control' rows='" . ($rowspan + 3) . "' name='comment' >" . $this->fields["comment"]
+        echo "<textarea class='form-control' rows='" . ($rowspan + 3) . "' name='comment' >" . htmlescape($this->fields["comment"])
            . "</textarea>";
         echo "</td></tr>";
 
@@ -379,18 +379,18 @@ class ProjectCost extends CommonDBChild
                 printf(
                     __s('%1$s %2$s'),
                     htmlescape($name),
-                    Html::showToolTip($data['comment'], ['display' => false])
+                    Html::showToolTip(htmlescape($data['comment']), ['display' => false])
                 );
                 if ($canedit) {
-                    $js = "function viewEditCost" . $project_id . "_" . $data["id"] . "_$rand() {";
+                    $js = "function viewEditCost" . $project_id . "_" . $cost_id . "_$rand() {";
                     $js .= Ajax::updateItemJsCode(
                         toupdate: "viewcost" . $ID . "_$rand",
                         url: $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
                         parameters: [
                             'type'        => self::class,
                             'parenttype'  => 'Project',
-                            'projects_id' => $data["projects_id"],
-                            'id'          => $data["id"],
+                            'projects_id' => $project_id,
+                            'id'          => $cost_id,
                             'display'     => false,
                         ],
                         display: false

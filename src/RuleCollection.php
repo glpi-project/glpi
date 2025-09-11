@@ -478,13 +478,13 @@ class RuleCollection extends CommonDBTM
 
         foreach (['inherited','childrens', 'condition'] as $param) {
             if (isset($options[$param]) && $this->isRuleRecursive()) {
-                $p[$param] = $options[$param];
+                $p[$param] = (int) $options[$param];
             }
         }
 
         foreach (['display_criterias', 'display_actions'] as $param) {
             if (isset($options[$param])) {
-                $p[$param] = $options[$param];
+                $p[$param] = (bool) $options[$param];
             }
         }
 
@@ -499,8 +499,8 @@ class RuleCollection extends CommonDBTM
         $use_conditions = false;
         if ($rule->useConditions()) {
             // First get saved option
-            $p['condition'] = Session::getSavedOption(static::class, 'condition', 0);
-            if ((int) $p['condition'] === 0) {
+            $p['condition'] = (int) Session::getSavedOption(static::class, 'condition', 0);
+            if ($p['condition'] === 0) {
                 $p['condition'] = $this->getDefaultRuleConditionForList();
             }
             $use_conditions = true;
@@ -520,7 +520,7 @@ class RuleCollection extends CommonDBTM
 TWIG, $twig_params);
         }
 
-        $nb         = $this->getCollectionSize($p['inherited'], $p['condition'], $p['childrens']);
+        $nb         = $this->getCollectionSize((bool) $p['inherited'], $p['condition'], $p['childrens']);
         $p['start'] = $options['start'] ?? 0;
 
         if ($p['start'] >= $nb) {
@@ -594,7 +594,7 @@ TWIG, $twig_params);
                 'item'          => $this,
             ],
         ]);
-        $collection_classname = static::class;
+        $collection_classname = jsescape(static::class);
         echo <<<HTML
             <script>
                 $(() => {
@@ -645,7 +645,7 @@ HTML;
                     </button>
 
                     {% set reset_btn %}
-                        <a class="btn btn-danger w-100" role="button" href="{{ rule_class|itemtype_search_path }}?reinit=true&subtype={{ rule_class }}">
+                        <a class="btn btn-danger w-100" role="button" href="{{ rule_class|itemtype_search_path }}?reinit=true&amp;subtype={{ rule_class|url_encode }}">
                             {{ reset_label }}
                         </a>
                     {% endset %}
@@ -705,7 +705,7 @@ TWIG, $twig_params);
         $iterator = $DB->request($criteria);
         if (count($iterator) === 1) {
             $result = $iterator->current();
-            $current_rank = $result['ranking'];
+            $current_rank = (int) $result['ranking'];
             // Search rules to switch
             $criteria = [
                 'SELECT' => ['id', 'ranking'],
@@ -735,9 +735,7 @@ TWIG, $twig_params);
             if (count($iterator2) === 1) {
                 $result2 = $iterator2->current();
                 $other_ID = $result2['id'];
-                $new_rank = $result2['ranking'];
-                echo $current_rank . ' ' . (int) $ID . '<br>';
-                echo $new_rank . ' ' . $other_ID . '<br>';
+                $new_rank = (int) $result2['ranking'];
 
                 $rule = $this->getRuleClass();
                 $result = false;

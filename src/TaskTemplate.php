@@ -189,10 +189,10 @@ class TaskTemplate extends AbstractITILChildTemplate
 
         switch ($field) {
             case 'state':
-                return Planning::getState($values[$field]);
+                return htmlescape(Planning::getState($values[$field]));
             case 'users_id_tech':
                 if (isset($values['use_current_user']) && $values['use_current_user'] == 1) {
-                    return __('Current logged-in user');
+                    return __s('Current logged-in user');
                 }
 
                 return getUserLink($values[$field]);

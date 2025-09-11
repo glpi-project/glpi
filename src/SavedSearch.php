@@ -890,13 +890,13 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             case 'do_count':
                 switch ($values[$field]) {
                     case SavedSearch::COUNT_NO:
-                        return __('No');
+                        return __s('No');
 
                     case SavedSearch::COUNT_YES:
-                        return __('Yes');
+                        return __s('Yes');
 
                     case SavedSearch::COUNT_AUTO:
-                        return ('Auto');
+                        return __s('Auto');
                 }
                 break;
         }

@@ -429,7 +429,7 @@ class QueuedWebhook extends CommonDBChild
         }
         // Add a button to resend the webhook via ajax
         $btn_id = "resend-webhook-{$id}";
-        $badge .= "<button id='{$btn_id}' type='button' class='btn btn-outline-secondary btn-sm ms-1' data-id='{$id}'><i class='ti ti-send'></i>" . __('Send') . "</button>";
+        $badge .= "<button id='{$btn_id}' type='button' class='btn btn-outline-secondary btn-sm ms-1' data-id='{$id}'><i class='ti ti-send'></i>" . __s('Send') . "</button>";
         $badge .= Html::scriptBlock(<<<JS
             $("#{$btn_id}").click(function() {
                 var id = $(this).data('id');
@@ -472,7 +472,7 @@ JS);
             case 'last_status_code':
                 return self::getStatusCodeBadge($values[$field], $values['id'] ?? null);
             case 'http_method':
-                return Webhook::getHttpMethod()[$values[$field]] ?? $values[$field];
+                return htmlescape(Webhook::getHttpMethod()[$values[$field]] ?? $values[$field]);
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

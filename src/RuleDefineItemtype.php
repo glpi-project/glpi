@@ -179,7 +179,7 @@ class RuleDefineItemtype extends Rule
     {
         $twig_params = [
             'entity_as_criterion' => false,
-            'fields'              => $fields,
+            'values'              => $fields,
             'type_match'          => ($this->fields['match'] ?? Rule::AND_MATCHING) === Rule::AND_MATCHING ? __('AND') : __('OR'),
         ];
         foreach ($this->criterias as $criterion) {
@@ -209,7 +209,7 @@ class RuleDefineItemtype extends Rule
                 field_class: 'col-2',
                 input_class: 'col-12'
             }) }}
-            {{ fields.dropdownField('RefusedEquipment', 'refusedequipments_id', fields['refusedequipments_id']|default(null), 'RefusedEquipment'|itemtype_name, {
+            {{ fields.dropdownField('RefusedEquipment', 'refusedequipments_id', values['refusedequipments_id']|default(null), 'RefusedEquipment'|itemtype_name, {
                 field_class: 'col-10',
                 label_class: 'col-5',
                 input_class: 'col-7'

@@ -1200,7 +1200,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
                 if (!isset($users[$item->fields['users_id']])) {
                     $user->getFromDB($item->fields['users_id']);
                     $users[$item->fields['users_id']] = sprintf(
-                        __('%1$s %2$s'),
+                        __s('%1$s %2$s'),
                         htmlescape($user->getName()),
                         Html::showToolTip(
                             $user->getInfoCard(),
@@ -1387,7 +1387,7 @@ TWIG, ['projects_id' => $ID, 'label' => __('Create a sub project from this proje
             $values = [$field => $values];
         }
         return match ($field) {
-            'priority' => CommonITILObject::getPriorityName($values[$field]),
+            'priority' => htmlescape(CommonITILObject::getPriorityName($values[$field])),
             default => parent::getSpecificValueToDisplay($field, $values, $options),
         };
     }
@@ -1871,7 +1871,7 @@ TWIG, $twig_params);
             $content .= "<div class='flex-break'></div>";
             if ($itemtype === 'ProjectTask' && $item['projecttasktypes_id'] !== 0) {
                 $typematches = array_filter($alltypes, static fn($t) => $t['id'] === $item['projecttasktypes_id']);
-                $content .= reset($typematches)['name'] . '&nbsp;';
+                $content .= htmlescape(reset($typematches)['name']) . '&nbsp;';
             }
             if (array_key_exists('is_milestone', $item) && $item['is_milestone']) {
                 $content .= "&nbsp;<i class='ti ti-directions-filled' title='" . __s('Milestone') . "'></i>&nbsp;";

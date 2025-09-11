@@ -1300,7 +1300,7 @@ TWIG, ['projects_id' => $ID, 'btn_label' => _x('button', 'Add a task')]);
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div class="mb-3">
-                    <a class="btn btn-primary" href="{{ 'ProjectTask'|itemtype_form_path }}?projecttasks_id={{ projecttasks_id }}&projects_id={{ projects_id }}">{{ btn_label }}</a>
+                    <a class="btn btn-primary" href="{{ 'ProjectTask'|itemtype_form_path }}?projecttasks_id={{ projecttasks_id }}&amp;projects_id={{ projects_id }}">{{ btn_label }}</a>
                 </div>
 TWIG, $twig_params);
         }
@@ -2036,7 +2036,7 @@ TWIG, $twig_params);
         $img      = $CFG_GLPI["root_doc"] . "/pics/rdv_private.png"; // default icon for project task
 
         if ((int) $val["users_id"] !== Session::getLoginUserID()) {
-            $users_id = "<br>" . sprintf(__('%1$s: %2$s'), __('By'), getUserName($val["users_id"]));
+            $users_id = sprintf(__('%1$s: %2$s'), __('By'), getUserName($val["users_id"]));
             $img      = $CFG_GLPI["root_doc"] . "/pics/rdv_public.png";
         }
 
@@ -2092,7 +2092,7 @@ TWIG, $twig_params);
                 {{ users_id }}
             </a>
             <div class="fw-bold">{{ percent_done }}</div>
-            <div class="event-description rich_text_container">{{ planning['content'] }}</div>
+            <div class="event-description rich_text_container">{{ planning['content']|safe_html }}</div>
             {{ get_item_link(parent) }}
             <br>
             <span>{{ parent_entity|raw }}</span>

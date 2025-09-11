@@ -422,8 +422,8 @@ class ProjectTask_Ticket extends CommonDBRelation
                 $father_name = Dropdown::getDropdownName('glpi_projecttasks', $data['projecttasks_id']);
                 $father = sprintf(
                     '<a href="%s">%s</a>',
-                    ProjectTask::getFormURLWithID($data['projecttasks_id']),
-                    $father_name ?: "(" . $data['projecttasks_id'] . ")"
+                    htmlescape(ProjectTask::getFormURLWithID($data['projecttasks_id'])),
+                    htmlescape($father_name ?: "(" . $data['projecttasks_id'] . ")")
                 );
             }
 
@@ -432,7 +432,7 @@ class ProjectTask_Ticket extends CommonDBRelation
             if (!empty($status)) {
                 $fg_color = Toolbox::getFgColor($data['color']);
                 $status_badge_style = "background-color:{$data['color']}; color:{$fg_color};";
-                $status = '<span class="badge" style="' . $status_badge_style . '">' . htmlescape($data['sname']) . '</span>';
+                $status = '<span class="badge" style="' . htmlescape($status_badge_style) . '">' . htmlescape($data['sname']) . '</span>';
             }
 
             $entries[] = [

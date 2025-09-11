@@ -2002,8 +2002,8 @@ class Stat extends CommonGLPI
             ];
         }
 
-        $height = $param['height'] . "px";
-        $width  = $param['width'] . "px";
+        $height = ((int) $param['height']) . "px";
+        $width  = ((int) $param['width']) . "px";
         $html = <<<HTML
         <div class="card mb-3 d-inline-flex">
             <div class="card-body">
