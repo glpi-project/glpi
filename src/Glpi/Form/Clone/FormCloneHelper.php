@@ -35,6 +35,7 @@
 namespace Glpi\Form\Clone;
 
 use Glpi\DBAL\PrepareForCloneInterface;
+use Glpi\Features\CloneMapper;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Comment;
 use Glpi\Form\Condition\Type;
@@ -232,41 +233,17 @@ final class FormCloneHelper
 
     public function getMappedFormId(int $id): int
     {
-        $original_uuid = Form::getById($id)->fields['uuid'];
-        $clone_uuid = $this->getMappedFormUuid($original_uuid);
-        return Form::getByUuid($clone_uuid)->getID();
+        return CloneMapper::getInstance()->getMappedId(Form::class, $id);
     }
 
     public function getMappedQuestionId(int $id): int
     {
-        $original_uuid = Question::getById($id)->fields['uuid'];
-        $clone_uuid = $this->getMappedQuestionUuid($original_uuid);
-        return Question::getByUuid($clone_uuid)->getID();
+        return CloneMapper::getInstance()->getMappedId(Question::class, $id);
     }
 
     public function getMappedDestinationId(int $id): int
     {
-        // We don't have any uuid map of destinations so we must compare the form
-        // data manually to find the correct index.
-        $original_form_id = FormDestination::getById($id)
-            ->fields[Form::getForeignKeyField()]
-        ;
-        $original_form = Form::getById($original_form_id);
-        $cloned_form = Form::getById($this->getMappedFormId($original_form_id));
-
-        $original_destinations = array_values(
-            $original_form->getDestinations()
-        );
-        $index = array_find_key(
-            $original_destinations,
-            fn(FormDestination $fd) => $fd->getId() == $id
-        );
-
-        $cloned_destinations = array_values(
-            $cloned_form->getDestinations()
-        );
-
-        return $cloned_destinations[$index]->getId();
+        return CloneMapper::getInstance()->getMappedId(FormDestination::class, $id);
     }
 
     private function generateFormUuid(string $old_uuid): string

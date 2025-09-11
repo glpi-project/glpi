@@ -238,6 +238,7 @@ trait Clonable
         }
         $new_item = new static();
 
+        $old_id = $this->getID();
         $input = array_merge($this->fields, $override_input);
 
         $template_input = $clone_as_template ? [
@@ -269,6 +270,7 @@ trait Clonable
         $newID = $new_item->add($input, [], $history);
 
         if ($newID !== false) {
+            CloneMapper::getInstance()->addMappedId(static::class, $old_id, $newID);
             $new_item->cloneRelations($this, $history);
             $new_item->post_clone($this, $history);
 
