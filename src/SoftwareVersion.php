@@ -280,7 +280,7 @@ TWIG, $twig_params);
     {
         global $DB;
 
-        $softwares_id = $soft->getField('id');
+        $softwares_id = $soft->getID();
 
         if (!$soft->can($softwares_id, READ)) {
             return;

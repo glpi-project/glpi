@@ -6028,7 +6028,7 @@ final class SQLProvider implements SearchProviderInterface
                     if (empty($data[$ID][0]['name'])) {
                         $text = __s('None');
                     } else {
-                        $text = Html::resume_text($data[$ID][0]['name']);
+                        $text = Html::resume_text(RichText::getTextFromHtml($data[$ID][0]['name']));
                     }
                     if (Session::haveRight('reservation', UPDATE)) {
                         return "<a title=\"" . __s('Modify the comment') . "\"

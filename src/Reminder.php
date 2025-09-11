@@ -446,7 +446,7 @@ class Reminder extends CommonDBVisible implements
         }
         switch ($field) {
             case 'state':
-                return Planning::getState($values[$field]);
+                return htmlescape(Planning::getState($values[$field]));
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -725,12 +725,12 @@ class Reminder extends CommonDBVisible implements
         }
 
         if ($personal) {
-            $title = '<a href="' . $CFG_GLPI["root_doc"] . '/front/reminder.php">'
+            $title = '<a href="' . htmlescape($CFG_GLPI["root_doc"]) . '/front/reminder.php">'
                 . _sn('Personal reminder', 'Personal reminders', Session::getPluralNumber())
                 . '</a>';
         } else {
             if (Session::getCurrentInterface() !== 'helpdesk') {
-                $title = '<a href="' . $CFG_GLPI["root_doc"] . '/front/reminder.php">'
+                $title = '<a href="' . htmlescape($CFG_GLPI["root_doc"]) . '/front/reminder.php">'
                     . _sn('Public reminder', 'Public reminders', Session::getPluralNumber())
                     . '</a>';
             } else {
@@ -779,13 +779,13 @@ class Reminder extends CommonDBVisible implements
                         'display' => false,
                     ]
                 );
-                $row['values'][] = sprintf(__('%1$s %2$s'), $link, $tooltip);
+                $row['values'][] = sprintf(__s('%1$s %2$s'), $link, $tooltip);
 
                 if ($data["is_planned"]) {
                     $tab      = explode(" ", $data["begin"]);
                     $date_url = $tab[0];
                     $planning_text = sprintf(
-                        __s('From %1$s to %2$s'),
+                        __('From %1$s to %2$s'),
                         Html::convDateTime($data["begin"]),
                         Html::convDateTime($data["end"])
                     );

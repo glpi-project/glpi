@@ -143,9 +143,9 @@ class Supplier extends CommonDBTM
         $actions = parent::getSpecificMassiveActions($checkitem);
         if ($isadmin) {
             $actions['Contact_Supplier' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-               = "<i class='" . Contact::getIcon() . "'></i>" . _sx('button', 'Add a contact');
+               = "<i class='" . htmlescape(Contact::getIcon()) . "'></i>" . _sx('button', 'Add a contact');
             $actions['Contract_Supplier' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-               = "<i class='" . Contract::getIcon() . "'></i>" . _sx('button', 'Add a contract');
+               = "<i class='" . htmlescape(Contract::getIcon()) . "'></i>" . _sx('button', 'Add a contract');
         }
         return $actions;
     }

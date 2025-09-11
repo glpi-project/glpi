@@ -844,9 +844,9 @@ class Rule extends CommonDBTM
 
         if ($field === 'match') {
             return match ($values[$field]) {
-                self::AND_MATCHING => __('AND'),
-                self::OR_MATCHING => __('OR'),
-                default => NOT_AVAILABLE
+                self::AND_MATCHING => __s('AND'),
+                self::OR_MATCHING => __s('OR'),
+                default => htmlescape(NOT_AVAILABLE)
             };
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -1048,6 +1048,7 @@ class Rule extends CommonDBTM
     {
         global $CFG_GLPI;
 
+        $rules_id = (int) $rules_id;
         $rand = mt_rand();
         $p['readonly'] = false;
 
@@ -1139,8 +1140,7 @@ TWIG, $twig_params);
 
         if ($canedit) {
             $rule_class = static::class;
-            echo Html::scriptBlock(
-                <<<JS
+            echo Html::scriptBlock("
                 $(() => {
                     $('#datatable_ruleaction{$rules_id}{$rand}').on('click', 'tbody tr', (e) => {
                         //ignore click in first column (the massive action checkbox)
@@ -1150,16 +1150,15 @@ TWIG, $twig_params);
                         const action_id = $(e.currentTarget).data('id');
                         if (action_id) {
                             $('#viewaction{$rules_id}{$rand}').load(CFG_GLPI.root_doc + '/ajax/viewsubitem.php',{
-                                type: "{$this->ruleactionclass}",
-                                parenttype: "{$rule_class}",
+                                type: '" . jsescape($this->ruleactionclass) . "',
+                                parenttype: '" . jsescape($rule_class) . "',
                                 rules_id: $rules_id,
                                 id: action_id
                             });
                         }
                     });
                 });
-JS
-            );
+            ");
         }
     }
 
@@ -1178,6 +1177,7 @@ JS
      **/
     public function showCriteriasList($rules_id, $options = [])
     {
+        $rules_id = (int) $rules_id;
         $rand = mt_rand();
         $p['readonly'] = false;
 
@@ -1257,8 +1257,7 @@ TWIG, $twig_params);
 
         if ($canedit) {
             $rule_class = static::class;
-            echo Html::scriptBlock(
-                <<<JS
+            echo Html::scriptBlock("
                 $(() => {
                     $('#datatable_rulecriteria{$rules_id}{$rand}').on('click', 'tbody tr', (e) => {
                         //ignore click in first column (the massive action checkbox)
@@ -1268,16 +1267,15 @@ TWIG, $twig_params);
                         const criteria_id = $(e.currentTarget).data('id');
                         if (criteria_id) {
                             $('#viewcriteria{$rules_id}{$rand}').load('/ajax/viewsubitem.php',{
-                                type: "{$this->rulecriteriaclass}",
-                                parenttype: "{$rule_class}",
+                                type: '" . jsescape($this->rulecriteriaclass) . "',
+                                parenttype: '" . jsescape($rule_class) . "',
                                 rules_id: $rules_id,
                                 id: criteria_id
                             });
                         }
                     });
                 });
-JS
-            );
+            ");
         }
     }
 
@@ -1954,7 +1952,7 @@ JS
             $active ? __s('Rule is active') : __s('Rule is inactive'),
         );
 
-        $data['rank'] = '<span class="badge">' . $this->fields["ranking"] . '</span>';
+        $data['rank'] = '<span class="badge">' . ((int) $this->fields["ranking"]) . '</span>';
 
         if ($display_entity) {
             $entname = htmlescape(Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id']));
@@ -2330,7 +2328,7 @@ JS
                             }
                         }
                         $tmp = $addentity;
-                        return (($tmp == '&nbsp;') ? NOT_AVAILABLE : $tmp);
+                        return (($tmp == '') ? NOT_AVAILABLE : $tmp);
 
                     case "dropdown_users":
                         return getUserName($pattern);

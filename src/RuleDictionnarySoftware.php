@@ -132,7 +132,7 @@ class RuleDictionnarySoftware extends Rule
 
         $twig_params = [
             'actions' => $this->actions,
-            'fields' => $fields,
+            'values' => $fields,
             'action_names' => [],
             'type_match' => ($this->fields['match'] ?? Rule::AND_MATCHING) ? __('AND') : __('OR'),
         ];
@@ -151,7 +151,7 @@ class RuleDictionnarySoftware extends Rule
                         field_class: 'col-2',
                         input_class: 'col-12'
                     }) }}
-                    {{ fields.textField('version', fields[action.fields['field']]|default(''), action_names[action.fields['field']], {
+                    {{ fields.textField('version', values[action.fields['field']]|default(''), action_names[action.fields['field']], {
                         field_class: 'col-10',
                         label_class: 'col-5',
                         input_class: 'col-7'

@@ -277,7 +277,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         }
         switch ($field) {
             case 'refresh_rate':
-                return Html::timestampToString($values[$field], false);
+                return htmlescape(Html::timestampToString($values[$field], false));
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -644,9 +644,9 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
                 ];
             }
         } else {
-            $rss_feed['error'] = htmlescape(!Toolbox::isUrlSafe($this->fields['url'])
+            $rss_feed['error'] = !Toolbox::isUrlSafe($this->fields['url'])
                 ? sprintf(__('URL "%s" is not allowed by your administrator.'), $this->fields['url'])
-                : __('Error retrieving RSS feed'));
+                : __('Error retrieving RSS feed');
             $this->setError(true);
         }
 

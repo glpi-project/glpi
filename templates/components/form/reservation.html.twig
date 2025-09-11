@@ -43,7 +43,7 @@
             ) }}
             {{ fields.htmlField(
                 '',
-                item.comment,
+                item.comment|safe_html,
                 __('Notes')
             ) }}
             {{ fields.hiddenField(
