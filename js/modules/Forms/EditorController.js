@@ -820,7 +820,7 @@ export class GlpiFormEditorController
      */
     #handleTinyMCEClick(e) {
         // The event target will either be tinymce's iframe html or body tag.
-        // We need to maek sure to target the body.
+        // We need to make sure to target the body.
         const body = $(e.target).closest('html').find('body');
 
         // The body expose its relevant textarea in a `data-id` property
