@@ -210,14 +210,22 @@ TWIG;
         }
 
         // Return the indexes of the default values
-        return array_map(fn($value) => array_search($value, $options), $default_values);
+        return array_map(fn($value) => array_search($value, $options) + 1, $default_values);
     }
 
     #[Override]
     public function convertExtraData(array $rawData): array
     {
+        $values = json_decode($rawData['values'] ?? '[]', true) ?? [];
+
+        // Convert array values to use index + 1 as keys
+        $options = [];
+        foreach ($values as $index => $value) {
+            $options[$index + 1] = $value;
+        }
+
         $config = new QuestionTypeSelectableExtraDataConfig(
-            options: json_decode($rawData['values'], true) ?? []
+            options: $options
         );
         return $config->jsonSerialize();
     }
