@@ -305,7 +305,10 @@ final class FormMigrationTest extends DbTestCase
             ],
         ];
 
-        $extra_data = new QuestionTypeSelectableExtraDataConfig(array_map(fn($i) => "Option $i", range(1, 7)));
+        $extra_data = new QuestionTypeSelectableExtraDataConfig(array_combine(
+            range(1, 7),
+            array_map(fn($i) => "Option $i", range(1, 7))
+        ));
         yield 'Checkboxes question type' => [
             [
                 Section::getForeignKeyField() => $section_id,
@@ -315,7 +318,7 @@ final class FormMigrationTest extends DbTestCase
                 'vertical_rank'               => 1,
                 'horizontal_rank'             => 0,
                 'description'                 => null,
-                'default_value'               => '1,4',
+                'default_value'               => '2,5',
                 'extra_data'                  => json_encode($extra_data),
             ],
         ];
@@ -432,7 +435,10 @@ final class FormMigrationTest extends DbTestCase
             ],
         ];
 
-        $extra_data = new QuestionTypeDropdownExtraDataConfig(array_map(fn($i) => "Option $i", range(1, 5)), true);
+        $extra_data = new QuestionTypeDropdownExtraDataConfig(array_combine(
+            range(1, 5),
+            array_map(fn($i) => "Option $i", range(1, 5))
+        ), true);
         yield 'Dropdown multiple question type' => [
             [
                 Section::getForeignKeyField() => $section_id,
@@ -442,12 +448,15 @@ final class FormMigrationTest extends DbTestCase
                 'vertical_rank'               => 12,
                 'horizontal_rank'             => null,
                 'description'                 => null,
-                'default_value'               => '2,3',
+                'default_value'               => '3,4',
                 'extra_data'                  => json_encode($extra_data),
             ],
         ];
 
-        $extra_data = new QuestionTypeSelectableExtraDataConfig(array_map(fn($i) => "Option $i", range(1, 4)));
+        $extra_data = new QuestionTypeSelectableExtraDataConfig(array_combine(
+            range(1, 4),
+            array_map(fn($i) => "Option $i", range(1, 4))
+        ));
         yield 'Radios question type' => [
             [
                 Section::getForeignKeyField() => $section_id,
@@ -457,7 +466,7 @@ final class FormMigrationTest extends DbTestCase
                 'vertical_rank'               => 13,
                 'horizontal_rank'             => null,
                 'description'                 => null,
-                'default_value'               => '1',
+                'default_value'               => '2',
                 'extra_data'                  => json_encode($extra_data),
             ],
         ];
@@ -476,7 +485,7 @@ final class FormMigrationTest extends DbTestCase
             ],
         ];
 
-        $extra_data = new QuestionTypeDropdownExtraDataConfig(['Option 1', 'Option 2'], false);
+        $extra_data = new QuestionTypeDropdownExtraDataConfig([1 => 'Option 1', 2 => 'Option 2'], false);
         yield 'Dropdown simple question type' => [
             [
                 Section::getForeignKeyField() => $section_id,
@@ -486,7 +495,7 @@ final class FormMigrationTest extends DbTestCase
                 'vertical_rank'               => 15,
                 'horizontal_rank'             => null,
                 'description'                 => null,
-                'default_value'               => '0',
+                'default_value'               => '1',
                 'extra_data'                  => json_encode($extra_data),
             ],
         ];
@@ -812,19 +821,19 @@ final class FormMigrationTest extends DbTestCase
                     [
                         'items_id' => $questions['Second question']->getID(),
                         'itemtype' => Question::class,
-                        'key'      => AbstractQuestionTypeSelectable::TRANSLATION_KEY_OPTION . '-0',
+                        'key'      => AbstractQuestionTypeSelectable::TRANSLATION_KEY_OPTION . '-1',
                         'translations' => ['one' => 'Première option'],
                     ],
                     [
                         'items_id' => $questions['Second question']->getID(),
                         'itemtype' => Question::class,
-                        'key'      => AbstractQuestionTypeSelectable::TRANSLATION_KEY_OPTION . '-1',
+                        'key'      => AbstractQuestionTypeSelectable::TRANSLATION_KEY_OPTION . '-2',
                         'translations' => ['one' => 'Deuxième option'],
                     ],
                     [
                         'items_id' => $questions['Second question']->getID(),
                         'itemtype' => Question::class,
-                        'key'      => AbstractQuestionTypeSelectable::TRANSLATION_KEY_OPTION . '-2',
+                        'key'      => AbstractQuestionTypeSelectable::TRANSLATION_KEY_OPTION . '-3',
                         'translations' => ['one' => 'Troisième option'],
                     ],
                     [
@@ -1272,17 +1281,17 @@ final class FormMigrationTest extends DbTestCase
         $this->assertEquals(
             [
                 [
-                    'uuid'    => 0,
+                    'uuid'    => 1,
                     'value'   => '1',
                     'checked' => true,
                 ],
                 [
-                    'uuid'    => 1,
+                    'uuid'    => 2,
                     'value'   => '2',
                     'checked' => false,
                 ],
                 [
-                    'uuid'    => 2,
+                    'uuid'    => 3,
                     'value'   => '3',
                     'checked' => false,
                 ],
@@ -1417,7 +1426,7 @@ final class FormMigrationTest extends DbTestCase
             'expected_conditions'          => [
                 [
                     'value_operator' => ValueOperator::EQUALS,
-                    'value'          => 1,
+                    'value'          => 2,
                     'logic_operator' => LogicOperator::AND,
                 ],
             ],
@@ -1443,12 +1452,12 @@ final class FormMigrationTest extends DbTestCase
             'expected_conditions'          => [
                 [
                     'value_operator' => ValueOperator::EQUALS,
-                    'value'          => 1,
+                    'value'          => 2,
                     'logic_operator' => LogicOperator::AND,
                 ],
                 [
                     'value_operator' => ValueOperator::EQUALS,
-                    'value'          => 2,
+                    'value'          => 3,
                     'logic_operator' => LogicOperator::OR,
                 ],
             ],
@@ -1474,12 +1483,12 @@ final class FormMigrationTest extends DbTestCase
             'expected_conditions'          => [
                 [
                     'value_operator' => ValueOperator::EQUALS,
-                    'value'          => 1,
+                    'value'          => 2,
                     'logic_operator' => LogicOperator::AND,
                 ],
                 [
                     'value_operator' => ValueOperator::EQUALS,
-                    'value'          => 2,
+                    'value'          => 3,
                     'logic_operator' => LogicOperator::OR,
                 ],
             ],
@@ -2611,7 +2620,7 @@ final class FormMigrationTest extends DbTestCase
             'expected_conditions' => [
                 [
                     'value_operator' => ValueOperator::EQUALS,
-                    'value' => 2, // Index of 'Option 3' in ['Option 1', 'Option 2', 'Option 3']
+                    'value' => 3, // Index of 'Option 3' in ['Option 1', 'Option 2', 'Option 3']
                     'logic_operator' => LogicOperator::AND,
                 ],
             ],
@@ -2628,7 +2637,7 @@ final class FormMigrationTest extends DbTestCase
             'expected_conditions' => [
                 [
                     'value_operator' => ValueOperator::EQUALS,
-                    'value' => 2, // Index of 'Option 3' in ['Option 1', 'Option 2', 'Option 3']
+                    'value' => 3, // Index of 'Option 3' in ['Option 1', 'Option 2', 'Option 3']
                     'logic_operator' => LogicOperator::AND,
                 ],
             ],
@@ -2645,7 +2654,7 @@ final class FormMigrationTest extends DbTestCase
             'expected_conditions' => [
                 [
                     'value_operator' => ValueOperator::EQUALS,
-                    'value' => 2, // Index of 'Option 3' in ['Option 1', 'Option 2', 'Option 3']
+                    'value' => 3, // Index of 'Option 3' in ['Option 1', 'Option 2', 'Option 3']
                     'logic_operator' => LogicOperator::AND,
                 ],
             ],
@@ -2666,12 +2675,12 @@ final class FormMigrationTest extends DbTestCase
             'expected_conditions' => [
                 [
                     'value_operator' => ValueOperator::EQUALS,
-                    'value' => 1, // Index of 'Option 2' in ['Option 1', 'Option 2', 'Option 3']
+                    'value' => 2, // Index of 'Option 2' in ['Option 1', 'Option 2', 'Option 3']
                     'logic_operator' => LogicOperator::AND,
                 ],
                 [
                     'value_operator' => ValueOperator::EQUALS,
-                    'value' => 2, // Index of 'Option 3' in ['Option 1', 'Option 2', 'Option 3']
+                    'value' => 3, // Index of 'Option 3' in ['Option 1', 'Option 2', 'Option 3']
                     'logic_operator' => LogicOperator::OR,
                 ],
             ],
@@ -2762,7 +2771,7 @@ final class FormMigrationTest extends DbTestCase
 
         // Verify options based on question type
         $this->assertInstanceOf(AbstractQuestionTypeSelectable::class, $question_type);
-        $this->assertEquals(['Option 1', 'Option 2', 'Option 3'], $question_type->getOptions($question));
+        $this->assertEquals([1 => 'Option 1', 2 => 'Option 2', 3 => 'Option 3'], $question_type->getOptions($question));
 
         // Verify that the condition question has been migrated correctly
         /** @var Question $condition_question */

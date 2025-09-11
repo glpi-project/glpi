@@ -66,7 +66,7 @@ final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable implemen
     #[Override]
     public function convertExtraData(array $rawData): array
     {
-        $values = json_decode($rawData['values'], true) ?? [];
+        $values = json_decode($rawData['values'] ?? '[]', true) ?? [];
 
         // Convert array values to use index + 1 as keys
         $options = [];
