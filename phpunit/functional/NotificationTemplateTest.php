@@ -137,7 +137,7 @@ HTML,
         string $expected
     ): void {
         $instance = new NotificationTemplate();
-        $result = $this->callPrivateMethod($instance, 'convertRelativeGlpiLinksToAbsolute', $content);
+        $result = $this->callPrivateMethod($instance, 'convertRelativeGlpiLinksToAbsolute', $content, true);
         $this->assertEquals($expected, $result);
     }
 

@@ -486,11 +486,11 @@ class ToolboxTest extends DbTestCase
             ],
             [
                 'path' => 'image.jpg',
-                'url'  => $CFG_GLPI['root_doc'] . '/front/document.send.php?file=_pictures/image.jpg',
+                'url'  => $CFG_GLPI['root_doc'] . '/front/document.send.php?file=_pictures%2Fimage.jpg',
             ],
             [
                 'path' => 'xss\' onclick="alert(\'PWNED\')".jpg',
-                'url'  => $CFG_GLPI['root_doc'] . '/front/document.send.php?file=_pictures/xss&#039; onclick=&quot;alert(&#039;PWNED&#039;)&quot;.jpg',
+                'url'  => $CFG_GLPI['root_doc'] . '/front/document.send.php?file=_pictures%2Fxss%27+onclick%3D%22alert%28%27PWNED%27%29%22.jpg',
             ],
         ];
     }

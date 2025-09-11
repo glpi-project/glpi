@@ -1943,10 +1943,18 @@ TWIG, $twig_params);
                 $title = $vcomp->SUMMARY instanceof FlatText ? $vcomp->SUMMARY->getValue() : '';
                 $description = $vcomp->DESCRIPTION instanceof FlatText ? $vcomp->DESCRIPTION->getValue() : '';
 
+                $tooltip_rows = [];
+                if ($title !== '') {
+                    $tooltip_rows[] = htmlescape($title);
+                }
+                if ($description !== '') {
+                    $tooltip_rows[] = htmlescape($description);
+                }
+
                 $raw_events[] = [
                     'users_id'         => Session::getLoginUserID(),
                     'name'             => $title,
-                    'tooltip'          => trim(htmlescape($title) . "<br>" . htmlescape($description)),
+                    'tooltip'          => implode('<br>', $tooltip_rows),
                     'content'          => htmlescape($description),
                     'begin'            => $begin_dt->format('Y-m-d H:i:s'),
                     'end'              => $end_dt->format('Y-m-d H:i:s'),
