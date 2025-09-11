@@ -38,6 +38,7 @@ namespace Glpi\Form\Destination;
 use CommonDBChild;
 use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\CloneWithoutNameSuffix;
 use Glpi\Form\Clone\FormCloneHelper;
 use Glpi\Form\Condition\ConditionableCreationInterface;
 use Glpi\Form\Condition\ConditionableCreationTrait;
@@ -54,6 +55,7 @@ use Session;
 use function Safe\json_decode;
 use function Safe\json_encode;
 
+#[CloneWithoutNameSuffix()]
 final class FormDestination extends CommonDBChild implements ConditionableCreationInterface
 {
     use ConditionableCreationTrait;

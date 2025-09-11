@@ -37,6 +37,7 @@ namespace Glpi\Form;
 
 use CommonDBChild;
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Features\CloneWithoutNameSuffix;
 use Glpi\Form\Clone\FormCloneHelper;
 use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
@@ -54,6 +55,7 @@ use function Safe\json_encode;
 /**
  * Section of a given helpdesk form
  */
+#[CloneWithoutNameSuffix]
 final class Section extends CommonDBChild implements ConditionableVisibilityInterface, ProvideTranslationsInterface, UsedAsCriteriaInterface
 {
     use ConditionableVisibilityTrait;

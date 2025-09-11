@@ -52,7 +52,6 @@ use RuntimeException;
 
 use function Safe\json_decode;
 use function Safe\json_encode;
-use function Safe\preg_replace;
 
 /**
  * Helper service that contains utilities methods that are required to be used
@@ -139,9 +138,6 @@ final class FormCloneHelper
         // Generate a new UUID
         $input['uuid'] = $this->generateSectionUuid($input['uuid']);
 
-        // Remove "(copy)" suffix from name, we only want it on the parent form
-        $input['name'] = $this->removeCopySuffix($input['name']);
-
         return $input;
     }
 
@@ -154,9 +150,6 @@ final class FormCloneHelper
         // automatically when empty.
         unset($input['forms_sections_uuid']);
 
-        // Remove "(copy)" suffix from name, we only want it on the parent form
-        $input['name'] = $this->removeCopySuffix($input['name']);
-
         return $input;
     }
 
@@ -168,9 +161,6 @@ final class FormCloneHelper
         // Remove outdated parent section uuid reference, it will be corrected
         // automatically when empty.
         unset($input['forms_sections_uuid']);
-
-        // Remove "(copy)" suffix from name, we only want it on the parent form
-        $input['name'] = $this->removeCopySuffix($input['name']);
 
         return $input;
     }
@@ -191,9 +181,6 @@ final class FormCloneHelper
 
     public function prepareDestinationInputForClone(array $input): array
     {
-        // Remove "(copy)" suffix from name, we only want it on the parent form
-        $input['name'] = $this->removeCopySuffix($input['name']);
-
         // Allow destination to update their config before it is cloned
         $destination_type = FormDestination::getConcreteDestinationItemForItemtype(
             $input['itemtype']
@@ -319,11 +306,6 @@ final class FormCloneHelper
             Type::QUESTION => $this->getMappedQuestionUuid($uuid),
             Type::COMMENT  => $this->getMappedCommentUuid($uuid),
         };
-    }
-
-    private function removeCopySuffix(string $name): string
-    {
-        return preg_replace('/\s\(copy.*\)$/', '', $name);
     }
 
     private function updateFormConditions(Form $form): void

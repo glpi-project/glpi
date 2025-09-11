@@ -249,7 +249,11 @@ trait Clonable
         $input = array_merge($input, $template_input);
 
         // Do not compute a clone name if a new name is specified (Like creating from template)
-        if (!$clone_as_template && !isset($override_input['name'])) {
+        if (
+            !$clone_as_template
+            && !isset($override_input['name'])
+            && $this->shouldGenerateUniqueCloneName()
+        ) {
             if (($copy_name = $this->getUniqueCloneName($input)) !== null) {
                 $input[static::getNameField()] = $copy_name;
             }
@@ -392,5 +396,10 @@ trait Clonable
         if ($this instanceof AssignableItemInterface) {
             $this->updateGroupFields();
         }
+    }
+
+    private function shouldGenerateUniqueCloneName(): bool
+    {
+        return !CloneWithoutNameSuffix::objectHasAttribute($this);
     }
 }
