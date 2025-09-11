@@ -819,8 +819,12 @@ export class GlpiFormEditorController
      * @param {Object} e Event data
      */
     #handleTinyMCEClick(e) {
-        // The event target expose its relevant textarea in a `data-id` property
-        const id = $(e.target).closest("#tinymce").data("id");
+        // The event target will either be tinymce's iframe html or body tag.
+        // We need to make sure to target the body.
+        const body = $(e.target).closest('html').find('body');
+
+        // The body expose its relevant textarea in a `data-id` property
+        const id = body.closest("#tinymce").data("id");
         const textarea = $(`#${id}`);
 
         // Handle 'set-active' action for clicks inside tinymce
@@ -989,6 +993,10 @@ export class GlpiFormEditorController
                     // Set active the horizontal container
                     horizontal_blocks.closest("section[data-glpi-form-editor-horizontal-blocks-container]")
                         .attr("data-glpi-form-editor-active-horizontal-blocks", "");
+                }
+
+                if (item_container.length > 0) {
+                    this.#scrollToItemIfNeeded(item_container);
                 }
             }
         });
@@ -2862,5 +2870,34 @@ export class GlpiFormEditorController
         // Write to clipbaord and show info toast
         navigator.clipboard.writeText(uuid);
         glpi_toast_info(__("UUID copied successfully to clipboard."));
+    }
+
+    #scrollToItemIfNeeded(item_container) {
+        const scroll_options = {
+            behavior: 'smooth',
+            block: 'nearest',
+        };
+        item_container[0].scrollIntoView(scroll_options);
+
+        // Tinymce is slow to initialize and will mess with the
+        // item container height.
+        // This mean that our item might no longer be in the
+        // scroll view once tinymce is ready and that we need to
+        // scroll again.
+        // To fight this, we trigger a new scroll a few more time
+        // at fixed intervals.
+        // We could be more precise by relying on tinymce events
+        // but it would be quite complex as there are a lot of cases
+        // to think about.
+        // Keeping something simpler seems good enough for now.
+        setTimeout(() => {
+            item_container[0].scrollIntoView(scroll_options);
+        }, 100);
+        setTimeout(() => {
+            item_container[0].scrollIntoView(scroll_options);
+        }, 200);
+        setTimeout(() => {
+            item_container[0].scrollIntoView(scroll_options);
+        }, 500);
     }
 }
