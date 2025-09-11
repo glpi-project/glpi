@@ -32,29 +32,42 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Destination\CommonITILField;
+namespace Glpi\Features;
 
-use Glpi\Form\Destination\HasFieldWithQuestionId;
-use Override;
+use Glpi\Toolbox\SingletonTrait;
+use InvalidArgumentException;
 
-#[HasFieldWithQuestionId(self::SPECIFIC_QUESTION_IDS, is_array: true)]
-final class AssigneeFieldConfig extends ITILActorFieldConfig
+final class CloneMapper
 {
-    #[Override]
-    public static function jsonDeserialize(array $data): self
+    use SingletonTrait;
+
+    /** @var array<class-string<\CommonDBTM>, array<int, int>> */
+    private array $mapped_ids = [];
+
+    /** @param class-string<\CommonDBTM> $class */
+    public function addMappedId(string $class, int $old_id, int $new_id): void
     {
-        $strategies = array_map(
-            fn(string $strategy) => ITILActorFieldStrategy::tryFrom($strategy),
-            $data[self::STRATEGIES] ?? []
-        );
-        if ($strategies === []) {
-            $strategies = [ITILActorFieldStrategy::FROM_TEMPLATE];
+        if (!isset($this->mapped_ids[$class])) {
+            $this->mapped_ids[$class] = [];
         }
 
-        return new self(
-            strategies: $strategies,
-            specific_itilactors_ids: $data[self::SPECIFIC_ITILACTORS_IDS] ?? [],
-            specific_question_ids: $data[self::SPECIFIC_QUESTION_IDS] ?? [],
-        );
+        $this->mapped_ids[$class][$old_id] = $new_id;
+    }
+
+    /** @param class-string<\CommonDBTM> $class */
+    public function getMappedId(string $class, int $old_id): int
+    {
+        $new_id = $this->mapped_ids[$class][$old_id] ?? null;
+        if (!$new_id) {
+            $target = "$class::$old_id";
+            throw new InvalidArgumentException("Item $target was never cloned");
+        }
+
+        return $this->mapped_ids[$class][$old_id];
+    }
+
+    public function cleanMappedIds(): void
+    {
+        $this->mapped_ids = [];
     }
 }

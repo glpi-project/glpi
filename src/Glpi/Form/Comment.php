@@ -38,6 +38,8 @@ namespace Glpi\Form;
 use CommonDBChild;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Features\CloneWithoutNameSuffix;
+use Glpi\Form\Clone\FormCloneHelper;
 use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
 use Glpi\Form\Condition\ConditionHandler\VisibilityConditionHandler;
@@ -53,6 +55,7 @@ use function Safe\json_encode;
 /**
  * Comment of a given helpdesk form's section
  */
+#[CloneWithoutNameSuffix]
 final class Comment extends CommonDBChild implements
     BlockInterface,
     ConditionableVisibilityInterface,
@@ -134,6 +137,14 @@ final class Comment extends CommonDBChild implements
     {
         $input = $this->prepareInput($input);
         return parent::prepareInputForUpdate($input);
+    }
+
+    #[Override]
+    public function getCloneRelations(): array
+    {
+        return [
+            FormTranslation::class,
+        ];
     }
 
     private function prepareInput($input): array
@@ -240,6 +251,13 @@ final class Comment extends CommonDBChild implements
     public function setSection(Section $section): void
     {
         $this->section = $section;
+    }
+
+    #[Override]
+    public function prepareInputForClone($input)
+    {
+        $input = parent::prepareInputForClone($input);
+        return FormCloneHelper::getInstance()->prepareCommentInputForClone($input);
     }
 
     /**

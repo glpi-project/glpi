@@ -37,7 +37,9 @@ namespace Glpi\Form\Destination;
 use CommonITILObject;
 use Exception;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\PrepareForCloneInterface;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Clone\FormCloneHelper;
 use Glpi\Form\Destination\CommonITILField\AssigneeField;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsField;
 use Glpi\Form\Destination\CommonITILField\ContentField;
@@ -63,7 +65,7 @@ use Ticket;
 
 use function Safe\json_encode;
 
-abstract class AbstractCommonITILFormDestination implements FormDestinationInterface
+abstract class AbstractCommonITILFormDestination implements FormDestinationInterface, PrepareForCloneInterface
 {
     abstract public function getTarget(): CommonITILObject;
 
@@ -218,6 +220,26 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
                 $created_items
             );
         }
+    }
+
+    #[Override]
+    public function prepareInputForClone(array $data): array
+    {
+        $fields = $this->defineConfigurableFields();
+        foreach ($fields as $field) {
+            if (!isset($data[$field::getKey()])) {
+                continue;
+            }
+
+            $data[$field::getKey()] = FormCloneHelper::getInstance()
+                ->prepareCommonItilDestinationFieldInputForClone(
+                    $field,
+                    $data[$field::getKey()]
+                )
+            ;
+        }
+
+        return $data;
     }
 
     /**

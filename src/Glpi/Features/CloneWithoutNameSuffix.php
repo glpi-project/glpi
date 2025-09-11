@@ -32,29 +32,22 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Destination\CommonITILField;
+namespace Glpi\Features;
 
-use Glpi\Form\Destination\HasFieldWithQuestionId;
-use Override;
+use Attribute;
+use CommonDBTM;
+use ReflectionClass;
 
-#[HasFieldWithQuestionId(self::SPECIFIC_QUESTION_IDS, is_array: true)]
-final class AssigneeFieldConfig extends ITILActorFieldConfig
+/**
+ * Allow an item to be cloned without the (copy %d) suffix.
+*/
+#[Attribute(Attribute::TARGET_CLASS)]
+final class CloneWithoutNameSuffix
 {
-    #[Override]
-    public static function jsonDeserialize(array $data): self
+    public static function objectHasAttribute(CommonDBTM $item): bool
     {
-        $strategies = array_map(
-            fn(string $strategy) => ITILActorFieldStrategy::tryFrom($strategy),
-            $data[self::STRATEGIES] ?? []
-        );
-        if ($strategies === []) {
-            $strategies = [ITILActorFieldStrategy::FROM_TEMPLATE];
-        }
-
-        return new self(
-            strategies: $strategies,
-            specific_itilactors_ids: $data[self::SPECIFIC_ITILACTORS_IDS] ?? [],
-            specific_question_ids: $data[self::SPECIFIC_QUESTION_IDS] ?? [],
-        );
+        $reflection = new ReflectionClass($item);
+        $attributes = $reflection->getAttributes(self::class);
+        return count($attributes) > 0;
     }
 }

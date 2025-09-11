@@ -57,6 +57,15 @@ final class AddDestinationController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
+        // If we are duplicating an item, load the full data.
+        if (isset($input['id'])) {
+            $original = FormDestination::getById($input['id']);
+            $input = $original->fields;
+            unset($input['id']); // Id must be removed to prevent a clone from triggering.
+        }
+
+        $input['_do_not_clone'] = true;
+
         // Create destination item
         $id = $destination->add($input);
         if (!$id) {

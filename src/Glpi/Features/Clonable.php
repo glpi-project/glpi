@@ -38,6 +38,7 @@ namespace Glpi\Features;
 use CommonDBConnexity;
 use CommonDBTM;
 use Infocom;
+use ReflectionMethod;
 use Session;
 
 /**
@@ -137,7 +138,27 @@ trait Clonable
                 $origin_id = $relation_item->getID();
                 $itemtype = $relation_item->getType();
                 if (method_exists($relation_item, 'clone')) {
-                    $cloned[$itemtype][$origin_id] = $relation_item->clone($override_input, $history);
+                    $method = new ReflectionMethod($relation_item, 'clone');
+
+                    // Since this code do not use a proper interface, we must
+                    // take into account that users might have defined a clone
+                    // method outside this trait with their own signature.
+                    // To prevent BC break, we must check if the "clean_mapper"
+                    // parameter exist.
+                    $args = $method->getParameters();
+                    if (isset($args[3]) && $args[3]->getName() == "clean_mapper") {
+                        $cloned[$itemtype][$origin_id] = $relation_item->clone(
+                            $override_input,
+                            $history,
+                            clean_mapper: false
+                        );
+                    } else {
+                        $cloned[$itemtype][$origin_id] = $relation_item->clone(
+                            $override_input,
+                            $history,
+                        );
+                    }
+
                     $relation_item->getFromDB($cloned[$itemtype][$origin_id]);
                     $relation_newitems[] = $relation_item;
                 } else {
@@ -213,6 +234,7 @@ trait Clonable
         } finally {
             // Make sure cache is cleaned even on exception
             $this->last_clone_index = null;
+            CloneMapper::getInstance()->cleanMappedIds();
         }
 
         return !$failure;
@@ -229,7 +251,7 @@ trait Clonable
      *
      * @return false|integer The new ID of the clone (or false if fail)
      */
-    public function clone(array $override_input = [], bool $history = true, bool $clone_as_template = false)
+    public function clone(array $override_input = [], bool $history = true, bool $clone_as_template = false, bool $clean_mapper = true)
     {
         global $DB;
 
@@ -238,6 +260,7 @@ trait Clonable
         }
         $new_item = new static();
 
+        $old_id = $this->getID();
         $input = array_merge($this->fields, $override_input);
 
         $template_input = $clone_as_template ? [
@@ -249,7 +272,11 @@ trait Clonable
         $input = array_merge($input, $template_input);
 
         // Do not compute a clone name if a new name is specified (Like creating from template)
-        if (!$clone_as_template && !isset($override_input['name'])) {
+        if (
+            !$clone_as_template
+            && !isset($override_input['name'])
+            && $this->shouldGenerateUniqueCloneName()
+        ) {
             if (($copy_name = $this->getUniqueCloneName($input)) !== null) {
                 $input[static::getNameField()] = $copy_name;
             }
@@ -265,6 +292,9 @@ trait Clonable
         $newID = $new_item->add($input, [], $history);
 
         if ($newID !== false) {
+            // Mapping the id make sure it is accessible to children clone and
+            // post clone processes.
+            CloneMapper::getInstance()->addMappedId(static::class, $old_id, $newID);
             $new_item->cloneRelations($this, $history);
             $new_item->post_clone($this, $history);
 
@@ -276,6 +306,10 @@ trait Clonable
                 //Check if we have to automatically fill dates
                 Infocom::manageDateOnStatusChange($new_item);
             }
+        }
+
+        if ($clean_mapper) {
+            CloneMapper::getInstance()->cleanMappedIds();
         }
 
         return $newID;
@@ -392,5 +426,10 @@ trait Clonable
         if ($this instanceof AssignableItemInterface) {
             $this->updateGroupFields();
         }
+    }
+
+    private function shouldGenerateUniqueCloneName(): bool
+    {
+        return !CloneWithoutNameSuffix::objectHasAttribute($this);
     }
 }

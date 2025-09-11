@@ -55,7 +55,7 @@ class ProfileRight extends CommonDBChild
      *       Therefore, we need to use update or insert DB queries rather than `CommonDBTM::add`.
      *       The $clone_as_template parameter is ignored.
      */
-    public function clone(array $override_input = [], bool $history = true, bool $clone_as_template = false)
+    public function clone(array $override_input = [], bool $history = true, bool $clone_as_template = false, bool $clean_mapper = true)
     {
         global $DB;
 

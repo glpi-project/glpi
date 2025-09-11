@@ -90,6 +90,7 @@
         "symfony/polyfill-iconv": "^1.32",
         "symfony/polyfill-mbstring": "^1.30",
         "symfony/polyfill-php83": "^1.31",
+        "symfony/polyfill-php84": "^1.33",
         "symfony/property-access": "^6.4",
         "symfony/property-info": "^6.4",
         "symfony/routing": "^6.4",

@@ -37,6 +37,8 @@ namespace Glpi\Form;
 
 use CommonDBChild;
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Features\CloneWithoutNameSuffix;
+use Glpi\Form\Clone\FormCloneHelper;
 use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
 use Glpi\Form\Condition\ConditionHandler\VisibilityConditionHandler;
@@ -53,6 +55,7 @@ use function Safe\json_encode;
 /**
  * Section of a given helpdesk form
  */
+#[CloneWithoutNameSuffix]
 final class Section extends CommonDBChild implements ConditionableVisibilityInterface, ProvideTranslationsInterface, UsedAsCriteriaInterface
 {
     use ConditionableVisibilityTrait;
@@ -319,6 +322,23 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     public function setForm(Form $form): void
     {
         $this->form = $form;
+    }
+
+    #[Override]
+    public function getCloneRelations(): array
+    {
+        return [
+            Question::class,
+            Comment::class,
+            FormTranslation::class,
+        ];
+    }
+
+    #[Override]
+    public function prepareInputForClone($input)
+    {
+        $input = parent::prepareInputForClone($input);
+        return FormCloneHelper::getInstance()->prepareSectionInputForClone($input);
     }
 
     /**

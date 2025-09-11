@@ -38,6 +38,8 @@ namespace Glpi\Form\Destination;
 use CommonDBChild;
 use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\CloneWithoutNameSuffix;
+use Glpi\Form\Clone\FormCloneHelper;
 use Glpi\Form\Condition\ConditionableCreationInterface;
 use Glpi\Form\Condition\ConditionableCreationTrait;
 use Glpi\Form\Export\Context\DatabaseMapper;
@@ -53,6 +55,7 @@ use Session;
 use function Safe\json_decode;
 use function Safe\json_encode;
 
+#[CloneWithoutNameSuffix()]
 final class FormDestination extends CommonDBChild implements ConditionableCreationInterface
 {
     use ConditionableCreationTrait;
@@ -203,6 +206,15 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
         return $this->prepareInput($input);
     }
 
+    #[Override]
+    public function prepareInputForClone($input)
+    {
+        $input = parent::prepareInputForClone($input);
+        return FormCloneHelper::getInstance()->prepareDestinationInputForClone(
+            $input,
+        );
+    }
+
     /**
      * Common "prepareInput" checks that need to be applied both on creation and
      * on update.
@@ -246,7 +258,7 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
         }
 
         // Validate extra config
-        if (isset($input['config'])) {
+        if (isset($input['config']) && is_array($input['config'])) {
             $destination_item = $this->getConcreteDestinationItem();
             if ($destination_item instanceof AbstractCommonITILFormDestination) {
                 foreach ($destination_item->getConfigurableFields() as $field) {
@@ -278,16 +290,21 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
     public function getConcreteDestinationItem(): ?FormDestinationInterface
     {
         $class = $this->fields['itemtype'] ?? $this->input['itemtype'] ?? null;
+        return self::getConcreteDestinationItemForItemtype($class);
+    }
 
-        if (!is_a($class, FormDestinationInterface::class, true)) {
+    public static function getConcreteDestinationItemForItemtype(
+        string $itemtype
+    ): ?FormDestinationInterface {
+        if (!is_a($itemtype, FormDestinationInterface::class, true)) {
             return null;
         }
 
-        if ((new ReflectionClass($class))->isAbstract()) {
+        if ((new ReflectionClass($itemtype))->isAbstract()) {
             return null;
         }
 
-        return new $class();
+        return new $itemtype();
     }
 
     public function exportDynamicData(): DynamicExportData

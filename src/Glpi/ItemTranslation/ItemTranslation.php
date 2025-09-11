@@ -68,7 +68,11 @@ abstract class ItemTranslation extends CommonDBChild
     public function prepapreInput($input): array
     {
         if (isset($input['translations'])) {
-            $input['translations'] = json_encode($input['translations']);
+            if (!is_string($input['translations'])) {
+                $input['translations'] = json_encode($input['translations']);
+            } elseif ($input['translations'] == "") {
+                $input['translations'] = "{}";
+            }
         }
 
         if (

@@ -40,6 +40,7 @@ use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
+use Glpi\Form\Clone\FormCloneHelper;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportData;
 use Glpi\Form\Form;
@@ -201,7 +202,7 @@ final class FormAccessControl extends CommonDBChild
     public function prepareInputForAdd($input)
     {
         // Config is mandatory on creation; inject default config if missing.
-        if (!isset($input['_config'])) {
+        if (!isset($input['_config']) && !isset($input['config'])) {
             $strategy_class = $this->input['strategy'];
             try {
                 $strategy = $this->createStrategy($strategy_class);
@@ -232,6 +233,13 @@ final class FormAccessControl extends CommonDBChild
         $input['_no_message_link'] = true;
 
         return $input;
+    }
+
+    #[Override]
+    public function prepareInputForClone($input)
+    {
+        $input = parent::prepareInputForClone($input);
+        return FormCloneHelper::getInstance()->prepareAccessControlInputForClone($input);
     }
 
     /**
