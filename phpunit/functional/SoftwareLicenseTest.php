@@ -65,6 +65,7 @@ class SoftwareLicenseTest extends DbTestCase
             'softwarelicenses_id' => 0,
             'level' => 1,
             'completename' => 'not_inserted_software_license',
+            'number' => 1,
         ];
         $this->assertSame($expected, $license->prepareInputForAdd($input));
 
@@ -77,6 +78,7 @@ class SoftwareLicenseTest extends DbTestCase
             'softwarelicenses_id' => 0,
             'level' => 1,
             'completename' => 'inserted_sofwarelicense',
+            'number' => 1,
         ];
         $this->assertSame($expected, $license->prepareInputForAdd($input));
 
@@ -96,6 +98,7 @@ class SoftwareLicenseTest extends DbTestCase
             'level' => 1,
             'completename' => 'other_inserted_sofwarelicense',
             '_oldID' => 1,
+            'number' => 1,
         ];
         $this->assertSame($expected, $license->prepareInputForAdd($input));
     }
