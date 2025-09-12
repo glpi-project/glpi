@@ -63,7 +63,7 @@
     [data-glpi-form-renderer-horizontal-blocks] {
         display: flex;
         flex-wrap: wrap;
-        gap: 0 0.5rem;
+        gap: 0 1.5rem;
 
         &:not(:last-of-type) {
             // Apply the margin on the items instead of the row itself, to make
