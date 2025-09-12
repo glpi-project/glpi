@@ -109,11 +109,11 @@
    {{ fields.field('softwareversions_id_buy', field, __('Purchase version')) }}
 
    {% set validity_msg = null %}
-   {% if item_type == 'SoftwareLicense' %}
+   {% if item_type == 'SoftwareLicense' and not item.isNewItem() %}
       {% set validity_msg %}
          <div class="d-flex justify-content-around pt-2">
             {{ include('pages/management/license_progressbar.html.twig', {
-               total: item.fields['number'],
+               total: item.fields['number']|number_format,
                licences_assigned: licences_assigned,
             }, with_context: false) }}
          </div>

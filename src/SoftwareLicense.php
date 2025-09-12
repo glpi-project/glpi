@@ -118,6 +118,11 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
             unset($input['expire']);
         }
 
+        if (!isset($input['number'])) {
+            //number is not defined when creating a child licence; and it cannot be 0
+            $input['number'] = 1;
+        }
+
         $input = $this->managePictures($input);
         return $input;
     }
@@ -266,6 +271,9 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
             ) {
                 $options['entities_id'] = $soft->getEntityID();
             }
+        } elseif ($this->fields['number'] == 0) {
+            //fix licenses stored with number = 0
+            $this->fields['number'] = 1;
         }
 
         $this->initForm($ID, $options);
