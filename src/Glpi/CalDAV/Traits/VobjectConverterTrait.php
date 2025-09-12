@@ -37,6 +37,7 @@ namespace Glpi\CalDAV\Traits;
 
 use CommonDBTM;
 use DateInterval;
+use DateTime;
 use DateTimeInterface;
 use DateTimeZone;
 use Glpi\Error\ErrorHandler;
@@ -51,7 +52,6 @@ use Sabre\VObject\Component\VEvent;
 use Sabre\VObject\Component\VJournal;
 use Sabre\VObject\Component\VTodo;
 use Sabre\VObject\Property\FlatText;
-use Sabre\VObject\Property\ICalendar\DateTime;
 use Sabre\VObject\Property\ICalendar\Recur;
 use Sabre\VObject\Reader;
 use Safe\DateTime as SafeDateTime;
@@ -338,27 +338,48 @@ trait VobjectConverterTrait
 
         /* @var \DateTime|\DateTimeImmutable|null $begin_datetime */
         /* @var \DateTime|\DateTimeImmutable|null $end_datetime */
-        $user_tz        = new DateTimeZone(date_default_timezone_get());
+        $user_tz = new DateTimeZone(date_default_timezone_get());
+
+        // Check if this is an all-day event by examining the DTSTART value type
+        $is_all_day = $vcomponent->DTSTART->getValueType() === 'DATE';
 
         $begin_datetime = $vcomponent->DTSTART->getDateTime();
-        $begin_datetime = $begin_datetime->setTimeZone($user_tz);
+        if (!$is_all_day) {
+            $begin_datetime = $begin_datetime->setTimeZone($user_tz);
+        }
 
-        $end_datetime   = null;
+        $end_datetime = null;
         if ($vcomponent instanceof VTodo) {
             if ($vcomponent->DUE instanceof DateTime) {
                 $end_datetime = $vcomponent->DUE->getDateTime();
-                $end_datetime = $end_datetime->setTimeZone($user_tz);
+                if (!$is_all_day) {
+                    $end_datetime = $end_datetime->setTimeZone($user_tz);
+                }
             }
         } else {
             if ($vcomponent->DTEND instanceof DateTime) {
                 $end_datetime = $vcomponent->DTEND->getDateTime();
-                $end_datetime = $end_datetime->setTimeZone($user_tz);
+                if (!$is_all_day) {
+                    $end_datetime = $end_datetime->setTimeZone($user_tz);
+                }
             }
         }
         if (!($end_datetime instanceof DateTimeInterface)) {
-            // Event/Task objects does not accept empty end date, so set it to "+1 hour" by default.
-            $end_datetime = clone $begin_datetime;
-            $end_datetime = $end_datetime->add(new DateInterval('PT1H'));
+            // For all-day events, end time should be end of day
+            if ($is_all_day) {
+                $end_datetime = clone $begin_datetime;
+                $end_datetime = $end_datetime->add(new DateInterval('P1D')); // Add one day for all-day events
+                $end_datetime = $end_datetime->setTime(23, 59, 59);
+            } else {
+                // Event/Task objects does not accept empty end date, so set it to "+1 hour" by default.
+                $end_datetime = clone $begin_datetime;
+                $end_datetime = $end_datetime->add(new DateInterval('PT1H'));
+            }
+        }
+
+        // For all-day events, set the time component properly
+        if ($is_all_day) {
+            $begin_datetime = $begin_datetime->setTime(0, 0, 0);
         }
 
         return [
