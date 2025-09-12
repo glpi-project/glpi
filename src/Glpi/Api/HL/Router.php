@@ -582,6 +582,8 @@ EOT;
 
     public function handleRequest(Request $request): Response
     {
+        global $CFG_GLPI;
+
         // Start an output buffer to capture any potential debug errors
         $current_output_buffer_level = ob_get_level();
         ob_start();
@@ -619,17 +621,20 @@ EOT;
             }
         }
 
-        try {
-            $this->handleAuth($request);
-        } catch (OAuthServerException $e) {
-            return new JSONResponse(
-                content: AbstractController::getErrorResponseBody(
-                    status: AbstractController::ERROR_INVALID_PARAMETER,
-                    title: 'Invalid OAuth token',
-                    detail: $e->getHint()
-                ),
-                status: 400
-            );
+        if ($CFG_GLPI['enable_hlapi']) {
+            // OAuth will only be used if the API is enabled
+            try {
+                $this->handleAuth($request);
+            } catch (OAuthServerException $e) {
+                return new JSONResponse(
+                    content: AbstractController::getErrorResponseBody(
+                        status: AbstractController::ERROR_INVALID_PARAMETER,
+                        title: 'Invalid OAuth token',
+                        detail: $e->getHint()
+                    ),
+                    status: 400
+                );
+            }
         }
 
         $this->original_request = clone $request;
@@ -639,11 +644,19 @@ EOT;
             $response = new Response(404);
         } else {
             $requires_auth = $matched_route->getRouteSecurityLevel() !== Route::SECURITY_NONE;
-            $unauthenticated_response = new JSONResponse([
-                'title' => _x('api', 'You are not authenticated'),
-                'detail' => _x('api', 'The Authorization header is missing or invalid'),
-                'status' => 'ERROR_UNAUTHENTICATED',
-            ], 401);
+            if ($CFG_GLPI['enable_hlapi']) {
+                $unauthenticated_response = new JSONResponse([
+                    'title' => _x('api', 'You are not authenticated'),
+                    'detail' => _x('api', 'The Authorization header is missing or invalid'),
+                    'status' => 'ERROR_UNAUTHENTICATED',
+                ], 401);
+            } else {
+                // Clear output buffers up to the level when the request was started
+                while (ob_get_level() > $current_output_buffer_level) {
+                    ob_end_clean();
+                }
+                return AbstractController::getAccessDeniedErrorResponse('The High-Level API is disabled');
+            }
             $middleware_input = new MiddlewareInput($request, $matched_route, $unauthenticated_response);
             // Do auth middlewares now even if auth isn't required so session data *could* be used like the theme for doc endpoints.
             $this->doAuthMiddleware($middleware_input);

@@ -38,20 +38,24 @@
    {{ fields.largeTitle(__('API'), 'ti ti-api-app') }}
 
     {{ fields.smallTitle(__('API')) }}
-    {% set getting_started_doc %}<a href="{{ getting_started_doc_url }}">{{ __('API Getting Started') }}</a>{% endset %}
-    {% set endpoint_doc %}<a href="{{ endpoint_doc_url }}">{{ __('API Endpoints') }}</a>{% endset %}
-    {{ fields.htmlField(
-        '',
-        getting_started_doc
-    ) }}
-    {{ fields.htmlField(
-        '',
-        endpoint_doc
-    ) }}
-    {{ fields.textField('_url_base_api', api_url, __('URL of the API'), {
-        readonly: true,
-        copyable: true
-    }) }}
+    {{ fields.sliderField('enable_hlapi', config['enable_hlapi'], __("Enable API")) }}
+    {{ fields.nullField() }}
+    {% if config['enable_hlapi'] %}
+        {% set getting_started_doc %}<a href="{{ getting_started_doc_url }}">{{ __('API Getting Started') }}</a>{% endset %}
+        {% set endpoint_doc %}<a href="{{ endpoint_doc_url }}">{{ __('API Endpoints') }}</a>{% endset %}
+        {{ fields.htmlField(
+            '',
+            getting_started_doc
+        ) }}
+        {{ fields.htmlField(
+            '',
+            endpoint_doc
+        ) }}
+        {{ fields.textField('_url_base_api', api_url, __('URL of the API'), {
+            readonly: true,
+            copyable: true
+        }) }}
+    {% endif %}
 
     {{ fields.smallTitle(__('Legacy API')) }}
     {% if config['enable_api'] %}
