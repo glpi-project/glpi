@@ -644,11 +644,19 @@ EOT;
             $response = new Response(404);
         } else {
             $requires_auth = $matched_route->getRouteSecurityLevel() !== Route::SECURITY_NONE;
-            $unauthenticated_response = new JSONResponse([
-                'title' => _x('api', 'You are not authenticated'),
-                'detail' => _x('api', 'The Authorization header is missing or invalid'),
-                'status' => 'ERROR_UNAUTHENTICATED',
-            ], 401);
+            if ($CFG_GLPI['enable_hlapi']) {
+                $unauthenticated_response = new JSONResponse([
+                    'title' => _x('api', 'You are not authenticated'),
+                    'detail' => _x('api', 'The Authorization header is missing or invalid'),
+                    'status' => 'ERROR_UNAUTHENTICATED',
+                ], 401);
+            } else {
+                // Clear output buffers up to the level when the request was started
+                while (ob_get_level() > $current_output_buffer_level) {
+                    ob_end_clean();
+                }
+                return AbstractController::getAccessDeniedErrorResponse('The High-Level API is disabled');
+            }
             $middleware_input = new MiddlewareInput($request, $matched_route, $unauthenticated_response);
             // Do auth middlewares now even if auth isn't required so session data *could* be used like the theme for doc endpoints.
             $this->doAuthMiddleware($middleware_input);

@@ -101,7 +101,14 @@ class RouterTest extends GLPITestCase
 
         $CFG_GLPI['enable_hlapi'] = 0;
         $router = TestRouter::getInstance();
-        $this->assertEquals(401, $router->handleRequest(new Request('GET', '/Computer'))->getStatusCode());
+        $response = $router->handleRequest(new Request('GET', '/Computer'));
+        $this->assertEquals(403, $response->getStatusCode());
+        $this->assertStringContainsString('The High-Level API is disabled', (string) $response->getBody());
+
+        // Requesting non-existing endpoints should have the same behavior
+        $response = $router->handleRequest(new Request('GET', '/nonexistingendpoint'));
+        $this->assertEquals(403, $response->getStatusCode());
+        $this->assertStringContainsString('The High-Level API is disabled', (string) $response->getBody());
     }
 }
 
