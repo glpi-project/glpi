@@ -219,6 +219,11 @@ class TestUpdatedDataCommand extends Command
                     continue;
                 }
 
+                // Ignore e2e LDAP
+                if ($table_name === 'glpi_authldaps' && $row_data['name'] === '_local_ldap') {
+                    continue;
+                }
+
                 foreach ($row_data as $key => $value) {
                     if (in_array($key, $excluded_fields)) {
                         continue; // Ignore fields that would be subject to legitimate changes
