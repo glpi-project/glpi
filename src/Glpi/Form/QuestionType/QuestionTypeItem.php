@@ -402,6 +402,10 @@ class QuestionTypeItem extends AbstractQuestionType implements
         $item = $itemtype::getById(
             $default_value_config->getItemsId()
         );
+        if (!$item) {
+            // Invalid item, return empty data with no requirements
+            return new DynamicExportDataField(null, []);
+        }
 
         // Replace id and register requirement
         $key = QuestionTypeItemDefaultValueConfig::KEY_ITEMS_ID;

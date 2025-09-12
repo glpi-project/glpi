@@ -65,9 +65,11 @@ use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeCheckbox;
 use Glpi\Form\QuestionType\QuestionTypeDropdown;
 use Glpi\Form\QuestionType\QuestionTypeDropdownExtraDataConfig;
+use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemDefaultValueConfig;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdownExtraDataConfig;
+use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeRequester;
 use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
@@ -1453,6 +1455,39 @@ final class FormSerializerTest extends \DbTestCase
             $child_category_1->getID(),
             $form_copy->fields[Category::getForeignKeyField()]
         );
+    }
+
+    public function testExportAndImportItemQuestionWithInvalidItemsId(): void
+    {
+        $this->login();
+
+        // Arrange: create a form with an item question
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            "My Computer question",
+            QuestionTypeItem::class,
+            -1, // Invalid item ID
+            json_encode((new QuestionTypeItemExtraDataConfig(Computer::class))),
+        );
+        $form = $this->createForm($builder);
+
+        $questions = $form->getQuestions();
+        $this->assertCount(1, $questions);
+        $question = current($questions);
+        $this->assertInstanceOf(Question::class, $question);
+        $this->assertInstanceOf(QuestionTypeItem::class, $question->getQuestionType());
+        $this->assertEquals(-1, (new QuestionTypeItem())->getDefaultValueItemId($question));
+
+        // Act: export and import the form
+        $form_copy = $this->exportAndImportForm($form);
+
+        // Assert: the question should have been imported with an empty items_id
+        $questions = $form_copy->getQuestions();
+        $this->assertCount(1, $questions);
+        $question = current($questions);
+        $this->assertInstanceOf(Question::class, $question);
+        $this->assertInstanceOf(QuestionTypeItem::class, $question->getQuestionType());
+        $this->assertEquals(0, (new QuestionTypeItem())->getDefaultValueItemId($question));
     }
 
     private function compareValuesForRelations(
