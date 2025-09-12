@@ -173,11 +173,11 @@ describe('Form preview', config, () => {
         check();
 
         // Change the question type
-        cy.findByRole('combobox', { 'name': 'Text' }).select('Emails');
+        cy.findByRole('option', {'name': 'New question'}).changeQuestionType('Short answer').changeQuestionSubType('Emails');
         check();
 
         // Change the category question type
-        cy.findByRole('combobox', { 'name': 'Short answer' }).select('Long answer');
+        cy.findByRole('option', {'name': 'New question'}).changeQuestionType('Long answer');
         check();
     });
 

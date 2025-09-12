@@ -401,7 +401,7 @@ describe('Edit form translations', () => {
         // Add a long answer question
         cy.findByRole('button', { name: 'Add a question' }).click();
         cy.findByRole('textbox', { name: 'Question name' }).type('Long answer question');
-        cy.getDropdownByLabelText('Question type').selectDropdownValue('Long answer');
+        cy.findByRole('option', {'name': 'New question'}).changeQuestionType('Long answer');
 
         // Set default value
         cy.findByRole('region', { name: 'Question details' })

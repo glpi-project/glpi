@@ -105,3 +105,17 @@ Cypress.Commands.add('addQuestionToDefaultSectionWithAPI', (
         });
     });
 });
+
+Cypress.Commands.add('changeQuestionType', {prevSubject: true}, (question, new_type) => {
+    cy.wrap(question).within(() => {
+        cy.getDropdownByLabelText('Question type').selectDropdownValue(new_type);
+        cy.findByRole('region', {'name': 'Question details'}).find('[data-glpi-loading="true"]').should('not.exist');
+    });
+});
+
+Cypress.Commands.add('changeQuestionSubType', {prevSubject: true}, (question, new_sub_type) => {
+    cy.wrap(question).within(() => {
+        cy.getDropdownByLabelText('Question sub type').selectDropdownValue(new_sub_type);
+        cy.findByRole('region', {'name': 'Question details'}).find('[data-glpi-loading="true"]').should('not.exist');
+    });
+});

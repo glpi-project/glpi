@@ -83,8 +83,8 @@ describe('Convert default value form', () => {
         // Set defaut value
         cy.findByRole('textbox', { name: 'Default value' }).type('Default value for short text');
 
-        // Change sub type to "Emails"
-        cy.findByRole('combobox', { name: 'Short answer' }).select('Long answer');
+        // Change type to "Long answer"
+        cy.findByRole('option', {'name': 'New question'}).changeQuestionType('Long answer');
 
         // Check if default value has been converted
         cy.findByRole('region', {'name': 'Question details'}).within(() => {
@@ -97,8 +97,8 @@ describe('Convert default value form', () => {
     it('test convert default value between long text and short text types', () => {
         const default_value = 'This is a much longer default value for short text. It contains multiple lines and line breaks.\nLine 1\nLine 2\nLine 3';
 
-        // Change sub type to "Emails"
-        cy.findByRole('combobox', { name: 'Short answer' }).select('Long answer');
+        // Change type to "Long answer"
+        cy.findByRole('option', {'name': 'New question'}).changeQuestionType('Long answer');
 
         // Set defaut value
         cy.findByRole('region', {'name': 'Question details'}).within(() => {
@@ -107,8 +107,8 @@ describe('Convert default value form', () => {
                 .type(default_value);
         });
 
-        // Change type to "Text"
-        cy.findByRole('combobox', { name: 'Long answer' }).select('Short answer');
+        // Change type to "Short answer"
+        cy.findByRole('option', {'name': 'New question'}).changeQuestionType('Short answer');
 
         // Check if the current sub type is "Text"
         cy.findByRole('combobox', { name: 'Text' }).should('exist');

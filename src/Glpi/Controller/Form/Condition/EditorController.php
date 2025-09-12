@@ -41,7 +41,10 @@ use Glpi\Form\Condition\FormData;
 use Glpi\Form\Condition\QuestionData;
 use Glpi\Form\Condition\Type;
 use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypeInterface;
+use Glpi\Form\QuestionType\QuestionTypesManager;
 use InvalidArgumentException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -129,5 +132,56 @@ final class EditorController extends AbstractController
             'defined_conditions' => $conditions,
             'items_values'       => $this->editor_manager->getItemsDropdownValues(),
         ]);
+    }
+
+    #[Route(
+        "/Form/Condition/Editor/SupportedValueOperators",
+        name: "glpi_form_condition_editor_supported_value_operators",
+        methods: "POST"
+    )]
+    public function supportedValueOperators(Request $request): Response
+    {
+        $data = $request->request->all();
+
+        // Validate required fields
+        if (!isset($data['type']) || empty($data['type'])) {
+            return new JsonResponse(['error' => 'Missing required field: type'], 400);
+        }
+
+        $question_type_class = $data['type'];
+
+        // Validate that the question type exists and is valid
+        if (!is_string($question_type_class)
+            || !class_exists($question_type_class)
+            || !is_a($question_type_class, QuestionTypeInterface::class, true)
+            || !QuestionTypesManager::getInstance()->isValidQuestionType($question_type_class)) {
+            return new JsonResponse(['error' => 'Invalid question type'], 400);
+        }
+
+        try {
+            // Create question type instance
+            $question_type = new $question_type_class();
+
+            // Get extra data configuration if provided
+            $extra_data_config = null;
+            if (isset($data['extra_data']) && is_array($data['extra_data']) && !empty($data['extra_data'])) {
+                $extra_data_config = $question_type->getExtraDataConfig($data['extra_data']);
+            }
+
+            // Get supported value operators
+            $supported_operators = $question_type->getSupportedValueOperators($extra_data_config);
+
+            // Convert ValueOperator enums to their string values
+            $operators = array_map(
+                fn($operator) => $operator->value,
+                $supported_operators
+            );
+
+            return new JsonResponse([
+                'operators' => $operators,
+            ]);
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => 'Failed to get supported operators: ' . $e->getMessage()], 500);
+        }
     }
 }

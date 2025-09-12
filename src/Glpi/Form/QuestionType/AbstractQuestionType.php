@@ -256,6 +256,18 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     }
 
     #[Override]
+    public function getSupportedValueOperators(
+        ?JsonFieldInterface $question_config
+    ): array {
+        return array_merge(
+            ...array_map(
+                fn(ConditionHandlerInterface $handler) => $handler->getSupportedValueOperators(),
+                $this->getConditionHandlers($question_config)
+            )
+        );
+    }
+
+    #[Override]
     public function isHiddenInput(): bool
     {
         return false;
