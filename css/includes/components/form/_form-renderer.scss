@@ -42,6 +42,13 @@
         }
     }
 
+    .block-description {
+        // Reduce default rich text paragraph margins
+        p {
+            margin-bottom: 0.3rem;
+        }
+    }
+
     .fileupload {
         margin: 0;
     }
