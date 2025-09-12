@@ -1750,6 +1750,48 @@ export class GlpiFormEditorController
     }
 
     /**
+     * Set or remove loading state for question type specific content.
+     * This makes the content appear disabled and non-interactive during condition checks.
+     * @param {jQuery} question Question element
+     * @param {boolean} isLoading Whether to set or remove loading state
+     */
+    #setQuestionTypeSpecificLoadingState(question, isLoading) {
+        const specificContent = question.find("[data-glpi-form-editor-question-type-specific]");
+
+        if (isLoading) {
+            // Create loading overlay if it doesn't exist
+            if (specificContent.find('.glpi-form-editor-loading-overlay').length === 0) {
+                const loadingOverlay = $(`
+                    <div class="glpi-form-editor-loading-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-white bg-opacity-75">
+                        <div class="spinner-border spinner-border-sm text-secondary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                `);
+                specificContent.css('position', 'relative').append(loadingOverlay);
+            }
+
+            specificContent
+                .css({
+                    'opacity': '0.7',
+                    'pointer-events': 'none'
+                })
+                .attr('data-glpi-loading', 'true');
+        } else {
+            // Remove loading overlay
+            specificContent.find('.glpi-form-editor-loading-overlay').remove();
+
+            specificContent
+                .css({
+                    'opacity': '',
+                    'pointer-events': '',
+                    'position': ''
+                })
+                .removeAttr('data-glpi-loading');
+        }
+    }
+
+    /**
      * Change the type category of the given question.
      * @param {jQuery} question  Question to update
      * @param {string} category  New category
@@ -1768,8 +1810,13 @@ export class GlpiFormEditorController
         const new_options = $(this.#templates)
             .find(`option[data-glpi-form-editor-question-type=${e_category}]`);
 
+        // Set loading state for question type specific content
+        this.#setQuestionTypeSpecificLoadingState(question, true);
+
         // Check if the change is allowed based on existing conditions
         if (!(await this.#checkItemConditionDependenciesForNewQuestionType(question, new_options.first().val()))) {
+            // Remove loading state before reverting
+            this.#setQuestionTypeSpecificLoadingState(question, false);
 
             // Revert to previous value if change is not allowed
             const previous_category = question.find('[data-glpi-form-editor-on-change="change-question-type-category"]').data('previous-value');
@@ -1779,6 +1826,9 @@ export class GlpiFormEditorController
 
             return false;
         }
+
+        // Remove loading state after successful check
+        this.#setQuestionTypeSpecificLoadingState(question, false);
 
         // Remove current types options
         const types_select = question
@@ -1820,8 +1870,13 @@ export class GlpiFormEditorController
             return;
         }
 
+        // Set loading state for question type specific content
+        this.#setQuestionTypeSpecificLoadingState(question, true);
+
         // Check if the change is allowed based on existing conditions
         if (!(await this.#checkItemConditionDependenciesForNewQuestionType(question, type))) {
+            // Remove loading state before reverting
+            this.#setQuestionTypeSpecificLoadingState(question, false);
 
             // Revert to previous value if change is not allowed
             const previous_type = question.find('[data-glpi-form-editor-on-change="change-question-type"]').data('previous-value');
@@ -1831,6 +1886,9 @@ export class GlpiFormEditorController
 
             return;
         }
+
+        // Remove loading state after successful check
+        this.#setQuestionTypeSpecificLoadingState(question, false);
 
         // Extracted default value
         const extracted_default_value = this.#options[old_type].extractDefaultValue(question);
