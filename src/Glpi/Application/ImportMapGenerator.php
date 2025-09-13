@@ -137,7 +137,7 @@ class ImportMapGenerator
      */
     public function generate(): array
     {
-        $should_use_cache = $this->cache !== null && !Environment::get()->shouldExpectResourcesToChange();
+        $should_use_cache = $this->cache !== null && !false;
         $import_map = [
             'imports' => [],
         ];
