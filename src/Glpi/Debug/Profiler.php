@@ -127,9 +127,10 @@ final class Profiler
     /**
      * Stops a section started with Profiler::start()
      * @param string $name The name of the section to stop. This name must be the same as the one used in Profiler::start()
+     * @param bool $auto_ended Whether the section was automatically ended (e.g. at the end of the request)
      * @return int The duration of the section in milliseconds
      */
-    public function stop(string $name): int
+    public function stop(string $name, bool $auto_ended = false): int
     {
         // get the last section with the given name and stop it
         $section = array_filter($this->current_sections, static fn(ProfilerSection $section) => $section->getName() === $name);
@@ -139,7 +140,7 @@ final class Profiler
             $section->end(microtime(true) * 1000);
             $duration = $section->getDuration();
             unset($this->current_sections[$k]);
-            Profile::getCurrent()->setData('profiler', $section->toArray());
+            Profile::getCurrent()->setData('profiler', $section->toArray() + ['auto_ended' => $auto_ended]);
         }
         return $duration ?? 0;
     }
@@ -166,7 +167,7 @@ final class Profiler
     public function stopAll(): void
     {
         foreach ($this->current_sections as $section) {
-            $this->stop($section->getName());
+            $this->stop($section->getName(), true);
         }
     }
 
