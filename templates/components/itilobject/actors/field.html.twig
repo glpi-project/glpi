@@ -91,8 +91,8 @@
             const element   = $(option.element);
             const itemtype  = element.data('itemtype') ?? option.itemtype;
             const items_id  = element.data('items-id') ?? option.items_id;
-            let text        = escapeMarkupText(element.data('text') ?? option.text ?? '');
-            const title     = escapeMarkupText(element.data('title') ?? option.title ?? '');
+            let text        = _.escape(element.data('text') ?? option.text ?? '');
+            const title     = _.escape(element.data('title') ?? option.title ?? '');
             const use_notif = element.data('use-notification') ?? option.use_notification ?? 1;
             const alt_email = element.data('alternative-email') ?? option.alternative_email ?? '';
 

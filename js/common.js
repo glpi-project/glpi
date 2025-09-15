@@ -822,22 +822,22 @@ function markMatch (text, term) {
 
     // If there is no match, move on
     if (match < 0) {
-        _result.append(escapeMarkupText(text));
+        _result.append(_.escape(text));
         return _result.html();
     }
 
     // Put in whatever text is before the match
-    _result.html(escapeMarkupText(text.substring(0, match)));
+    _result.html(_.escape(text.substring(0, match)));
 
     // Mark the match
     var _match = $('<span class=\'select2-rendered__match\'></span>');
-    _match.html(escapeMarkupText(text.substring(match, match + term.length)));
+    _match.html(_.escape(text.substring(match, match + term.length)));
 
     // Append the matching text
     _result.append(_match);
 
     // Put in whatever is after the match
-    _result.append(escapeMarkupText(text.substring(match + term.length)));
+    _result.append(_.escape(text.substring(match + term.length)));
 
     return _result.html();
 }
@@ -859,7 +859,7 @@ var templateResult = function(result) {
         var text = result.text;
         if (!result.id) {
             // If result has no id, then it is used as an optgroup and is not used for matches
-            _elt.html(escapeMarkupText(text));
+            _elt.html(_.escape(text));
             return _elt;
         }
 
@@ -909,7 +909,7 @@ var templateSelection = function (selection) {
         text = selection.text;
     }
     var _elt = $('<span></span>');
-    _elt.html(escapeMarkupText(text));
+    _elt.html(_.escape(text));
     return _elt;
 };
 
@@ -1035,14 +1035,13 @@ var getTextWithoutDiacriticalMarks = function (text) {
  * @return {string}
  */
 var escapeMarkupText = function (text) {
+    // TODO in GLPI 11.1: console.warn('`escapeMarkupText()` is deprecated, use `_.escape()` instead.');
+
     if (typeof(text) !== 'string') {
         return text;
     }
-    if (text.indexOf('>') !== -1 || text.indexOf('<') !== -1) {
-        // escape text, if it contains chevrons (can already be escaped prior to this point :/)
-        text = jQuery.fn.select2.defaults.defaults.escapeMarkup(text);
-    }
-    return text;
+
+    return _.escape(text);
 };
 
 /**

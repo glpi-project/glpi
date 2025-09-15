@@ -1,5 +1,6 @@
 <script setup>
     /* global tinycolor */
+    /* global _ */
     import {computed} from "vue";
 
     const props = defineProps({
@@ -77,8 +78,8 @@
 
             const data = {
                 id: section.id,
-                name: escapeMarkupText(section.name),
-                category: escapeMarkupText(section.category),
+                name: _.escape(section.name),
+                category: _.escape(section.category),
                 bg_color: cat_colors.bg_color,
                 start: section.start,
                 end: section.end,
