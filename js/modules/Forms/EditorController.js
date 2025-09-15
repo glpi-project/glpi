@@ -1764,7 +1764,7 @@ export class GlpiFormEditorController
                 const loadingOverlay = $(`
                     <div class="glpi-form-editor-loading-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-white bg-opacity-75">
                         <div class="spinner-border spinner-border-sm text-secondary" role="status">
-                            <span class="visually-hidden">Loading...</span>
+                            <span class="visually-hidden">${__('Loading...')}</span>
                         </div>
                     </div>
                 `);
