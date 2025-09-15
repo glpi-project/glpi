@@ -40,6 +40,7 @@
 /* global fuzzy */
 /* global glpi_html_dialog */
 /* global glpi_toast_info, glpi_toast_warning, glpi_toast_error */
+/* global _ */
 
 var timeoutglobalvar;
 
@@ -1884,19 +1885,23 @@ function setupAdaptDropdown(config)
                 return data;
             }
 
+            const pre_marker = '#-#-#-#-#';
+            const post_marker = '#+#+#+#+#';
+
+            const renderResults = function (text) {
+                return _.escape(text)
+                    .replaceAll(pre_marker, '<span class="select2-rendered__match">')
+                    .replaceAll(post_marker, '</span>');
+            };
+
             var searched_term = getTextWithoutDiacriticalMarks(params.term);
             var data_text = typeof (data.text) === 'string'
                 ? getTextWithoutDiacriticalMarks(data.text)
                 : '';
             var select2_fuzzy_opts = {
-                pre: '<span class="select2-rendered__match">',
-                post: '</span>',
+                pre: pre_marker,
+                post: post_marker,
             };
-
-            if (data_text.indexOf('>') !== -1 || data_text.indexOf('<') !== -1) {
-                // escape text, if it contains chevrons (can already be escaped prior to this point :/)
-                data_text = jQuery.fn.select2.defaults.defaults.escapeMarkup(data_text);
-            }
 
             // Skip if there is no 'children' property
             if (typeof data.children === 'undefined') {
@@ -1904,7 +1909,7 @@ function setupAdaptDropdown(config)
                 if (match == null) {
                     return false;
                 }
-                data.rendered_text = match.rendered_text;
+                data.rendered_text = renderResults(match.rendered);
                 data.score = match.score;
                 return data;
             }
@@ -1918,22 +1923,17 @@ function setupAdaptDropdown(config)
                     ? getTextWithoutDiacriticalMarks(child.text)
                     : '';
 
-                if (child_text.indexOf('>') !== -1 || child_text.indexOf('<') !== -1) {
-                    // escape text, if it contains chevrons (can already be escaped prior to this point :/)
-                    child_text = jQuery.fn.select2.defaults.defaults.escapeMarkup(child_text);
-                }
-
                 var match_child = fuzzy.match(searched_term, child_text, select2_fuzzy_opts);
                 var match_text = fuzzy.match(searched_term, data_text, select2_fuzzy_opts);
                 if (match_child !== null || match_text !== null) {
                     if (match_text !== null) {
                         data.score = match_text.score;
-                        data.rendered_text = match_text.rendered;
+                        data.rendered_text = renderResults(match_text.rendered);
                     }
 
                     if (match_child !== null) {
                         child.score = match_child.score;
-                        child.rendered_text = match_child.rendered;
+                        child.rendered_text = renderResults(match_child.rendered);
                     }
                     filteredChildren.push(child);
                 }
