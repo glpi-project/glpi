@@ -765,6 +765,7 @@ describe ('Conditions', () => {
         getAndFocusQuestion('My question that is always visible').within(() => {
             initVisibilityConfiguration();
             setConditionStrategy('Always visible');
+            closeConditionEditor();
         });
         getAndFocusQuestion('My question that is visible if some criteria are met').within(() => {
             initVisibilityConfiguration();
@@ -776,6 +777,7 @@ describe ('Conditions', () => {
                 'Is equal to',
                 'Expected answer 1'
             );
+            closeConditionEditor();
         });
         getAndFocusQuestion('My question that is hidden if some criteria are met').within(() => {
             initVisibilityConfiguration();
@@ -787,6 +789,7 @@ describe ('Conditions', () => {
                 'Is equal to',
                 'Expected answer 2'
             );
+            closeConditionEditor();
         });
         save();
         preview();
@@ -894,7 +897,7 @@ describe ('Conditions', () => {
             addQuestion('My question used as a criteria');
             setQuestionTypeCategory(test_case.question_type);
             getAndFocusQuestion('My question used as a criteria').within(() => {
-                cy.findByPlaceholderText('Enter an option').type('Option 1{enter}');
+                cy.findByPlaceholderText('Enter an option').type('Option 1{enter}', {force: true}); // Force because getAndFocusQuestion will click in the middle of the question, thus trigerring the default value dropdown that will be displayed over this field. There are no good solutions here.
             });
             cy.focused().type('Option 2{enter}');
             cy.focused().type('Option 3{enter}');
@@ -913,6 +916,7 @@ describe ('Conditions', () => {
                     test_case.is_array ? ['Option 3'] : 'Option 3',
                     test_case.is_array ? 'dropdown_multiple' : 'dropdown',
                 );
+                closeConditionEditor();
             });
             save();
             preview();
