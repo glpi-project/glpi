@@ -765,6 +765,7 @@ describe ('Conditions', () => {
         getAndFocusQuestion('My question that is always visible').within(() => {
             initVisibilityConfiguration();
             setConditionStrategy('Always visible');
+            closeValidationConditionEditor();
         });
         getAndFocusQuestion('My question that is visible if some criteria are met').within(() => {
             initVisibilityConfiguration();
@@ -776,6 +777,7 @@ describe ('Conditions', () => {
                 'Is equal to',
                 'Expected answer 1'
             );
+            closeValidationConditionEditor();
         });
         getAndFocusQuestion('My question that is hidden if some criteria are met').within(() => {
             initVisibilityConfiguration();
@@ -787,6 +789,7 @@ describe ('Conditions', () => {
                 'Is equal to',
                 'Expected answer 2'
             );
+            closeValidationConditionEditor();
         });
         save();
         preview();
@@ -913,6 +916,7 @@ describe ('Conditions', () => {
                     test_case.is_array ? ['Option 3'] : 'Option 3',
                     test_case.is_array ? 'dropdown_multiple' : 'dropdown',
                 );
+                closeValidationConditionEditor();
             });
             save();
             preview();
