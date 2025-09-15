@@ -93,25 +93,22 @@ final class MapSearchOutput extends HTMLSearchOutput
                 'searchtype'   => 'equals',
                 'value'        => 'CURLOCATION',
             ];
-            $globallinkto = Toolbox::append_params(
+
+            $parameters = Toolbox::append_params(
                 [
+                    'as_map'       => 0,
                     'criteria'     => $criteria,
                     'metacriteria' => $data['search']['metacriteria'],
-                ],
-                '&amp;'
+                    'sort'         => $data['search']['sort'],
+                    'order'        => $data['search']['order'],
+                ]
             );
-            $sort_params = Toolbox::append_params([
-                'sort'   => $data['search']['sort'],
-                'order'  => $data['search']['order'],
-            ], '&amp;');
-            $parameters = "as_map=0&amp;" . $sort_params . '&amp;'
-                . $globallinkto;
-
             if (!str_contains($target, '?')) {
                 $fulltarget = $target . "?" . $parameters;
             } else {
                 $fulltarget = $target . "&" . $parameters;
             }
+
             $typename = class_exists($itemtype) ? $itemtype::getTypeName($data['data']['totalcount']) : $itemtype;
 
             $twig_params = [

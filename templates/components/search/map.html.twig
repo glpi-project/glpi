@@ -36,7 +36,7 @@
       <script>
           $(function() {
               const map = initMap($('#map_container'), 'map', 'full');
-              _loadMap(map, {{ itemtype|json_encode|raw }});
+              _loadMap(map, '{{ itemtype|e('js') }}');
           });
           const _loadMap = function(map_elt, itemtype) {
               L.AwesomeMarkers.Icon.prototype.options.prefix = 'far';
@@ -72,7 +72,7 @@
               $.ajax({
                   dataType: 'json',
                   method: 'POST',
-                  url: '{{ ajax_url }}',
+                  url: '{{ ajax_url|e('js') }}',
                   data: {
                       itemtype: itemtype,
                       params: {{ params|json_encode|raw }}
@@ -84,7 +84,7 @@
                           const markers = cluster.getAllChildMarkers();
                           let n = 0;
                           for (let i = 0; i < markers.length; i++) {
-                              n += markers[i].count;
+                              n += parseInt(markers[i].count);
                           }
 
                           let c = ' marker-cluster-';
@@ -101,15 +101,15 @@
                   });
 
                   $.each(_points, (index, point) => {
-                      const target = '{{ fulltarget }}'.replace(/CURLOCATION/, point.loc_id);
-                      const count_text = "{{ __('%1$s %2$s')|format('COUNT', typename) }}".replace('COUNT', point.count);
+                      const target = '{{ fulltarget|e('js') }}'.replace(/CURLOCATION/, point.loc_id);
+                      const count_text = "{{ __('%1$s %2$s')|format('COUNT', typename)|e('js') }}".replace('COUNT', point.count);
                       let _title = `
-                          <strong>${point.title}</strong><br/>
-                          <a href='${target}'>${count_text}</a>
+                          <strong>${_.escape(point.title)}</strong><br/>
+                          <a href="${_.escape(target)}">${_.escape(count_text)}</a>
                       `;
                       if (point.types) {
                           $.each(point.types, (tindex, type) => {
-                              _title += '<br/>' + "{{ __('%1$s %2$s')|format('COUNT', 'TYPE') }}".replace('COUNT', type.count).replace('TYPE', type.name);
+                              _title += '<br/>' + _.escape("{{ __('%1$s %2$s')|format('COUNT', 'TYPE')|e('js') }}".replace('COUNT', type.count).replace('TYPE', type.name));
                           });
                       }
                       let _icon = stdMarker;
@@ -140,12 +140,12 @@
                       }
                   );
               }).fail((response) => {
-                  let _message = escapeMarkupText(__('An error occurred loading data :('));
                   const fail_info = L.control();
                   fail_info.onAdd = function (map) {
                       this._div = L.DomUtil.create('div', 'fail_info');
-                      const reload_message = escapeMarkupText(__('Reload'));
-                      this._div.innerHTML = _message + `<br/><span id='reload_data'><i class='ti ti-refresh'></i>${reload_message}</span>`;
+                      const error_message = '{{ __('An error occurred loading data :(')|e('js') }}';
+                      const reload_message = '{{ __('Reload')|e('js') }}'
+                      this._div.innerHTML = `${_.escape(error_message)}<br/><span id='reload_data'><i class='ti ti-refresh'></i>${_.escape(reload_message)}</span>`;
                       return this._div;
                   };
                   fail_info.addTo(map_elt);
