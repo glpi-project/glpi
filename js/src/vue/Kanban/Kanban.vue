@@ -1,7 +1,7 @@
 <script setup>
-    /* global escapeMarkupText */
     /* global sortable */
     /* global glpi_toast_error, glpi_confirm */
+    /* global _ */
 
     import { Rights } from "./Rights.js";
     import Column from "./Column.vue";
@@ -690,7 +690,7 @@
                 l.append(`
                     <div class="member-details">
                         ${member_item}
-                        ${escapeMarkupText(l.attr('data-name')) || `${member_itemtype} (${member_items_id})`}
+                        ${_.escape(l.attr('data-name')) || `${member_itemtype} (${member_items_id})`}
                     </div>
                     <button type="button" name="delete" class="btn btn-ghost-danger">
                         <i class="ti ti-x" title="${__('Delete')}"></i>

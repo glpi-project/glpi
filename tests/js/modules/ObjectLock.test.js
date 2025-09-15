@@ -98,10 +98,6 @@ describe('Object Lock', () => {
             return 0; // Unlocked
         }));
 
-        window.escapeMarkupText = jest.fn((text) => {
-            return text;
-        });
-
         initObjectLock({
             id: 3450,
             itemtype: 'Ticket',
