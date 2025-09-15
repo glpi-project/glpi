@@ -573,3 +573,10 @@ html {
         margin-left: 0 !important;
     }
 }
+
+// Disabled checkboxes and radio are almost invisible in tabler.
+// We increase their opacity here to make them more accessible.
+input.form-check-input[type="radio"]:disabled,
+input.form-check-input[type="checkbox"]:disabled {
+    opacity: 0.9;
+}
