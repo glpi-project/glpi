@@ -897,7 +897,7 @@ describe ('Conditions', () => {
             addQuestion('My question used as a criteria');
             setQuestionTypeCategory(test_case.question_type);
             getAndFocusQuestion('My question used as a criteria').within(() => {
-                cy.findByPlaceholderText('Enter an option').type('Option 1{enter}');
+                cy.findByPlaceholderText('Enter an option').type('Option 1{enter}', {force: true}); // Force because getAndFocusQuestion will click in the middle of the question, thus trigerring the default value dropdown that will be displayed over this field. There are no good solutions here.
             });
             cy.focused().type('Option 2{enter}');
             cy.focused().type('Option 3{enter}');
