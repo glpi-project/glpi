@@ -2689,7 +2689,7 @@ HTML;
             $impersonate_form = htmlescape(self::getFormURLWithID($ID));
             if (Session::canImpersonate($ID, $error_message)) {
                 $impersonate_lbl = __s('Impersonate');
-                $csrf_token = Session::getNewCSRFToken();
+                $csrf_token = htmlescape(Session::getNewCSRFToken());
                 $impersonate_btn = <<<HTML
                     <form method="post" action="{$impersonate_form}">
                         <input type="hidden" name="id" value="{$ID}">
@@ -3632,7 +3632,7 @@ HTML;
                 }
                 break;
             case '_virtual_2fa_status':
-                return !empty($values['2fa']) ? __('Enabled') : __('Disabled');
+                return !empty($values['2fa']) ? __s('Enabled') : __s('Disabled');
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -4281,7 +4281,7 @@ HTML;
             }
 
             if ($p['readonly']) {
-                return '<span class="form-control" readonly>' . implode(', ', $valuesnames) . '</span>';
+                return '<span class="form-control" readonly>' . htmlescape(implode(', ', $valuesnames)) . '</span>';
             }
         }
 
@@ -5749,7 +5749,7 @@ HTML;
             'on_change' => 'this.form.submit()',
         ];
 
-        $out = "<form method='post' name='switchlang' action='" . User::getFormURL() . "' autocomplete='off'>";
+        $out = "<form method='post' name='switchlang' action='" . htmlescape(User::getFormURL()) . "' autocomplete='off'>";
         $out .= Dropdown::showLanguages("language", $params);
         $out .= Html::closeForm(false);
 

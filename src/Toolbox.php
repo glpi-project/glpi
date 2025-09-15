@@ -170,9 +170,9 @@ class Toolbox
 
         $pos = self::strpos(self::strtolower($str), self::strtolower($shortcut));
         if ($pos !== false) {
-            return self::substr($str, 0, $pos)
-                . "<u>" . self::substr($str, $pos, 1) . "</u>"
-                . self::substr($str, $pos + 1);
+            return htmlescape(self::substr($str, 0, $pos))
+                . "<u>" . htmlescape(self::substr($str, $pos, 1)) . "</u>"
+                . htmlescape(self::substr($str, $pos + 1));
         }
         return $str;
     }
@@ -2516,11 +2516,12 @@ class Toolbox
                         }
                         $object_url_param = sprintf(
                             '&itemtype=%s&items_id=%s',
-                            $linked_object->getType(),
-                            $linked_object->fields['id']
+                            rawurlencode($linked_object::class),
+                            $linked_object->getID()
                         );
-                        $img = "<img alt='" . $image['tag'] . "' src='" . $base_path
-                          . "/front/document.send.php?docid=" . $id . $object_url_param . "'/>";
+                        $img = "<img alt='" . htmlescape($image['tag']) . "' src='"
+                            . htmlescape($base_path . "/front/document.send.php?docid=" . $id . $object_url_param)
+                            . "'/>";
 
                         // 1 - Replace direct tag (with prefix and suffix) by the image
                         $content_text = preg_replace(
@@ -2569,7 +2570,7 @@ class Toolbox
                                 $object_url_param
                             );
                             if (empty($new_image)) {
-                                $new_image = '#' . $image['tag'] . '#';
+                                $new_image = htmlescape('#' . $image['tag'] . '#');
                             }
                             $content_text = str_replace(
                                 $match_img,

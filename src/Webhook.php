@@ -198,20 +198,20 @@ class Webhook extends CommonDBTM implements FilterableInterface
         switch ($field) {
             case 'itemtype':
                 if (isset($values[$field]) && class_exists($values[$field])) {
-                    return $values[$field]::getTypeName(0);
+                    return htmlescape($values[$field]::getTypeName(0));
                 }
                 break;
             case 'event':
                 if (!empty($values['itemtype'])) {
                     $label = NotificationEvent::getEventName($values['itemtype'], $values[$field]);
                     if ($label === NOT_AVAILABLE) {
-                        return self::getDefaultEventsListLabel($values[$field]);
+                        return htmlescape(self::getDefaultEventsListLabel($values[$field]));
                     }
-                    return $label;
+                    return htmlescape($label);
                 }
                 break;
             case 'http_method':
-                return self::getHttpMethod()[$values[$field]];
+                return htmlescape(self::getHttpMethod()[$values[$field]]);
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -1307,8 +1307,8 @@ class Webhook extends CommonDBTM implements FilterableInterface
             $menu['links']['search'] = '/front/webhook.php';
             $menu['links']['add'] = '/front/webhook.form.php';
 
-            $mp_icon     = QueuedWebhook::getIcon();
-            $mp_title    = QueuedWebhook::getTypeName();
+            $mp_icon     = htmlescape(QueuedWebhook::getIcon());
+            $mp_title    = htmlescape(QueuedWebhook::getTypeName());
             $queuedwebhook = "<i class='$mp_icon pointer' title='$mp_title'></i><span class='d-none d-xxl-block'>$mp_title</span>";
             $menu['links'][$queuedwebhook] = '/front/queuedwebhook.php';
         }

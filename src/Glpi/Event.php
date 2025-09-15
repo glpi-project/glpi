@@ -578,7 +578,7 @@ class Event extends CommonDBTM
         } elseif ($field === 'type') {
             $value = $values['type'];
             if (empty($value)) {
-                return NOT_AVAILABLE;
+                return \htmlescape(NOT_AVAILABLE);
             }
 
             if (($itemtype = self::getItemtypeFromType($value)) !== null) {

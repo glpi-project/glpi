@@ -431,7 +431,7 @@ TWIG, $twig_params);
                 } else {
                     $mode = $mode['label'];
                 }
-                return $mode;
+                return htmlescape($mode);
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

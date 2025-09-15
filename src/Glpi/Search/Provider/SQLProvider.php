@@ -6250,7 +6250,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($data[$ID][0]['is_active']) {
                         return "<a href='reservation.php?reservationitems_id="
                             . \htmlescape($data["refID"]) . "' title=\"" . __s('See planning') . "\">"
-                            . "<i class='ti ti-calendar'></i><span class='sr-only'>" . __('See planning') . "</span></a>";
+                            . "<i class='ti ti-calendar'></i><span class='sr-only'>" . __s('See planning') . "</span></a>";
                     } else {
                         return '';
                     }
