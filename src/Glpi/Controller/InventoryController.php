@@ -152,6 +152,7 @@ final class InventoryController extends AbstractController
     #[Route("/front/inventory.conf.php", name: "glpi_inventory_configuration_legacy", methods: ['GET', 'POST'])]
     public function configure(Request $request): Response
     {
+        Session::checkRight(Conf::$rightname, Conf::IMPORTFROMFILE);
         return $this->render('pages/admin/inventory/conf/index.html.twig', [
             'conf' => new Conf(),
         ]);
@@ -160,6 +161,7 @@ final class InventoryController extends AbstractController
     #[Route("/Inventory/Configuration/Store", name: "glpi_inventory_store_configuration", methods: ['POST'])]
     public function storeConfiguration(Request $request): Response
     {
+        Session::checkRight(Conf::$rightname, Conf::IMPORTFROMFILE);
         $conf = new Conf();
         $post_data = $request->request->all();
 
@@ -179,6 +181,7 @@ final class InventoryController extends AbstractController
     #[Route("/Inventory/ImportFiles", name: "glpi_inventory_report", methods: ['POST'])]
     public function report(Request $request): Response
     {
+        Session::checkRight(Conf::$rightname, Conf::IMPORTFROMFILE);
         $conf = new Conf();
 
         $to_import = [];
