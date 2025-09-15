@@ -1,0 +1,8 @@
+{% extends "layout/page_skeleton.html.twig" %}
+
+{% set title = __('Inventory') %}
+{% set menu = ["admin", "glpi\\inventory\\inventory"] %}
+
+{% block content %}
+    {% do conf.display({'id': 1}) %}
+{% endblock content %}

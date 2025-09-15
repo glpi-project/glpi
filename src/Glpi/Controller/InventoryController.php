@@ -38,12 +38,14 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\HttpException;
 use Glpi\Http\RedirectResponse;
 use Glpi\Inventory\Conf;
+use Html;
 use RefusedEquipment;
 use Session;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Throwable;
 
 use function Safe\file_get_contents;
@@ -51,6 +53,10 @@ use function Safe\file_get_contents;
 final class InventoryController extends AbstractController
 {
     public static bool $is_running = false;
+
+    public function __construct(private readonly UrlGeneratorInterface $router) {
+        //empty constructor
+    }
 
     #[Route("/Inventory", name: "glpi_inventory", methods: ['GET', 'POST'])]
     #[Route("/front/inventory.php", name: "glpi_inventory_legacy", methods: ['GET', 'POST'])]
@@ -140,6 +146,34 @@ final class InventoryController extends AbstractController
         $redirect_url = $refused->handleInventoryRequest($inventory_request);
         $response = new RedirectResponse($redirect_url);
         return $response;
+    }
+
+    #[Route("/Inventory/Configuration", name: "glpi_inventory_configuration", methods: ['GET', 'POST'])]
+    #[Route("/front/inventory.conf.php", name: "glpi_inventory_configuration_legacy", methods: ['GET', 'POST'])]
+    public function configure(Request $request): Response
+    {
+        return $this->render('pages/admin/inventory/conf/index.html.twig', [
+            'conf' => new Conf(),
+        ]);
+    }
+
+    #[Route("/Inventory/Configuration/Store", name: "glpi_inventory_store_configuration", methods: ['POST'])]
+    public function storeConfiguration(Request $request): Response
+    {
+        $conf = new Conf();
+        $post_data = $request->request->all();
+
+        if (isset($post_data['update'])) {
+            unset($post_data['update']);
+            if ($conf->saveConf($post_data)) {
+                Session::addMessageAfterRedirect(
+                    __s('Configuration has been updated'),
+                    false,
+                    INFO
+                );
+            }
+        }
+        return new RedirectResponse($this->router->generate('glpi_inventory_configuration'));
     }
 
     #[Route("/Inventory/ImportFiles", name: "glpi_inventory_report", methods: ['POST'])]

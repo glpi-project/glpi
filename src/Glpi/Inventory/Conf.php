@@ -351,7 +351,7 @@ class Conf extends CommonGLPI
         $rand = mt_rand();
 
         if ($canedit) {
-            echo "<form name='form' action='" . htmlescape($CFG_GLPI['root_doc']) . "/front/inventory.conf.php' method='post'>";
+            echo "<form name='form' action='" . htmlescape($CFG_GLPI['root_doc']) . "/Inventory/Configuration/Store' method='post'>";
         }
 
         echo "<div class='center spaced' id='tabsbody'>";
@@ -1227,7 +1227,7 @@ class Conf extends CommonGLPI
     }
 
     /**
-     * Build inventroy file name
+     * Build inventory file name
      *
      * @param string $itemtype Item type
      * @param int    $items_id Item ID
