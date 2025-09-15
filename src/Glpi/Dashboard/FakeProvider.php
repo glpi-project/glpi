@@ -456,6 +456,11 @@ final class FakeProvider extends Provider
             }
         }
 
+        $date_labels = array_reverse($date_labels);
+        foreach ($series as $status => $serie) {
+            $series[$status]['data'] = array_reverse($serie['data']);
+        }
+
         $data = [
             'labels' => $date_labels,
             'series' => $series,
