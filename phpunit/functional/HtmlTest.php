@@ -733,7 +733,7 @@ class HtmlTest extends \DbTestCase
     public function testAddConfirmationOnAction()
     {
         $string = 'Are U\' OK?';
-        $expected = 'onclick="if (window.confirm(&quot;Are U&#039; OK?&quot;)){ ;return true;} else { return false;}"';
+        $expected = 'onclick="if (window.confirm(&quot;Are U&amp;#039; OK?&quot;)){ ;return true;} else { return false;}"';
         $this->assertSame($expected, \Html::addConfirmationOnAction($string));
 
         $strings = ['Are you', 'OK?'];
@@ -741,7 +741,7 @@ class HtmlTest extends \DbTestCase
         $this->assertSame($expected, \Html::addConfirmationOnAction($strings));
 
         $actions = '$("#mydiv").focus();';
-        $expected = 'onclick="if (window.confirm(&quot;Are U&#039; OK?&quot;)){ $(&quot;#mydiv&quot;).focus();return true;} else { return false;}"';
+        $expected = 'onclick="if (window.confirm(&quot;Are U&amp;#039; OK?&quot;)){ $(&quot;#mydiv&quot;).focus();return true;} else { return false;}"';
         $this->assertSame($expected, \Html::addConfirmationOnAction($string, $actions));
     }
 
