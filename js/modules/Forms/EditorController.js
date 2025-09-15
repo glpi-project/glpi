@@ -303,19 +303,24 @@ export class GlpiFormEditorController
             );
         });
 
+        // Store previous values for select elements to allow rollback
+        $(document).on('select2:selecting', (e) => {
+            $(e.target).data('previous-value', $(e.target).val());
+        });
+
         // Register handlers for each possible editor actions using custom
         // data attributes
         const events = ["click", "change", "input"];
         events.forEach((event) => {
             const attribute = `data-glpi-form-editor-on-${event}`;
             $(document)
-                .on(event, `${this.#target} [${attribute}]`, (e) => {
+                .on(event, `${this.#target} [${attribute}]`, async (e) => {
                     // Get action and a jQuery wrapper for the target
                     const target = $(e.currentTarget);
                     const action = target.attr(attribute);
 
                     try {
-                        this.#handleEditorAction(action, target, e);
+                        await this.#handleEditorAction(action, target, e);
                     } catch (e) {
                         glpi_toast_error(__("An unexpected error occurred"));
                         throw e;
@@ -361,7 +366,7 @@ export class GlpiFormEditorController
      * @param {jQuery} target Element that triggered the action
      * @param {Event}  event  Event
      */
-    #handleEditorAction(action, target, event) {
+    async #handleEditorAction(action, target, event) {
         /**
          * Some unsaved changes are not tracked by the native `data-track-changes`
          * attribute.
@@ -420,7 +425,7 @@ export class GlpiFormEditorController
 
             // Change the type category of the target question
             case "change-question-type-category":
-                this.#changeQuestionTypeCategory(
+                await this.#changeQuestionTypeCategory(
                     target.closest("[data-glpi-form-editor-question]"),
                     target.val()
                 );
@@ -428,7 +433,7 @@ export class GlpiFormEditorController
 
             // Change the type of the target question
             case "change-question-type":
-                this.#changeQuestionType(
+                await this.#changeQuestionType(
                     target.closest("[data-glpi-form-editor-question]"),
                     target.val()
                 );
@@ -1096,7 +1101,7 @@ export class GlpiFormEditorController
      * @param {jQuery} question
      */
     #deleteQuestion(question) {
-        if (!this.#checkItemConditionDependencies('question', question)) {
+        if (!this.#checkItemConditionDependenciesForDeletion('question', question)) {
             return;
         }
 
@@ -1134,16 +1139,19 @@ export class GlpiFormEditorController
     }
 
     /**
-     * Check if an item is used in conditions and show modal if needed
+     * Get the conditions using a specific item
      *
      * @param {string} type Type of item ('question', 'comment', 'section')
      * @param {jQuery} item The element to check
-     * @returns {boolean} True if the item can be deleted, false otherwise
+     * @returns {array} Array of condition elements using the item
      */
-    #checkItemConditionDependencies(type, item) {
+    #getItemConditionDependencies(type, item) {
         const uuid = this.#getItemInput(item, "uuid");
         if (!uuid) {
-            return true; // New item without UUID can always be deleted
+            return { // New item without UUID can always be deleted
+                conditionsUsingItem: [],
+                destinationsUsingItem: []
+            };
         }
 
         const itemIdentifier = `${type}-${uuid}`;
@@ -1161,9 +1169,90 @@ export class GlpiFormEditorController
                 )
             );
 
+        return {
+            conditionsUsingItem: conditionsUsingItem,
+            destinationsUsingItem: destinationsUsingItem
+        };
+    }
+
+    /**
+     * Check if an item is used in conditions and show delete modal if needed
+     *
+     * @param {string} type Type of item ('question', 'comment', 'section')
+     * @param {jQuery} item The element to check
+     * @returns {boolean} True if the item can be deleted, false otherwise
+     */
+    #checkItemConditionDependenciesForDeletion(type, item) {
+        const dependencies = this.#getItemConditionDependencies(type, item);
+
         // If the item is used in conditions, show modal and prevent deletion
-        if (conditionsUsingItem.length > 0 || destinationsUsingItem.length > 0) {
-            this.#showItemHasConditionsModal(type, conditionsUsingItem, destinationsUsingItem);
+        if (dependencies.conditionsUsingItem.length > 0 || dependencies.destinationsUsingItem.length > 0) {
+            this.#showItemHasConditionsModal(
+                type,
+                dependencies.conditionsUsingItem,
+                dependencies.destinationsUsingItem,
+                'deletion'
+            );
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Get supported value operators for a question type via an API call.
+     *
+     * @param {Object} questionData The complete question data
+     * @returns {Promise<Array>} Promise resolving to array of supported value operators
+     */
+    async #getSupportedValueOperators(questionData) {
+        try {
+            const response = await $.post(`${CFG_GLPI.root_doc}/Form/Condition/Editor/SupportedValueOperators`, questionData);
+            return response.operators || [];
+        } catch (error) {
+            console.error('Error fetching supported value operators:', error);
+            return [];
+        }
+    }
+
+    /**
+     * Check if an item is used in conditions and show update modal if needed
+     *
+     * @param {jQuery} item The element to check
+     * @param {string} new_question_type The new question type
+     * @returns {Promise<boolean>} Promise resolving to true if the item can be updated, false otherwise
+     */
+    async #checkItemConditionDependenciesForNewQuestionType(item, new_question_type) {
+        const dependencies = this.#getItemConditionDependencies('question', item);
+
+        // Prepare question data for the API call
+        const questionData = {
+            type: new_question_type,
+            // Add any additional question data that might be needed by the API
+            uuid: this.#getItemInput(item, "uuid"),
+            name: this.#getItemInput(item, "name") || "",
+            // Include extra data that might affect supported operators
+            extra_data: this.#getQuestionExtraData(item[0])
+        };
+
+        // Get supported operators for the new question type
+        const supported_value_operators = await this.#getSupportedValueOperators(questionData);
+
+        const unsupported_conditions = dependencies.conditionsUsingItem
+            .filter((index, element) => !supported_value_operators.includes($(element)
+                .closest('[data-glpi-conditions-editor-condition]')
+                .find('[data-glpi-conditions-editor-value-operator]').val()
+            ));
+
+        const unsupported_destinations_conditions = dependencies.destinationsUsingItem;
+
+        if (unsupported_conditions.length > 0 || unsupported_destinations_conditions.length > 0) {
+            this.#showItemHasConditionsModal(
+                'question',
+                dependencies.conditionsUsingItem,
+                dependencies.destinationsUsingItem,
+                'new_question_type'
+            );
             return false;
         }
 
@@ -1177,9 +1266,9 @@ export class GlpiFormEditorController
      * @param {jQuery} conditionsUsingItem jQuery object containing condition elements
      * @param {array} destinationsUsingItem Array of destination objects
      */
-    #showItemHasConditionsModal(type, conditionsUsingItem, destinationsUsingItem) {
+    #showItemHasConditionsModal(type, conditionsUsingItem, destinationsUsingItem, modal_name) {
         // Show only the relevant header for this item type
-        $('[data-glpi-form-editor-item-has-conditions-modal-header]')
+        $(`[data-glpi-form-editor-item-has-conditions-modal=${modal_name}] [data-glpi-form-editor-item-has-conditions-modal-header]`)
             .addClass('d-none')
             .filter(`[data-glpi-form-editor-item-has-conditions-modal-header=${type}]`)
             .removeClass('d-none');
@@ -1221,10 +1310,10 @@ export class GlpiFormEditorController
         });
 
         // Render the list of elements in the modal
-        const modalList = $('[data-glpi-form-editor-item-has-conditions-list]');
+        const modalList = $(`[data-glpi-form-editor-item-has-conditions-modal=${modal_name}] [data-glpi-form-editor-item-has-conditions-list]`);
         modalList.empty();
 
-        const template = $('[data-glpi-form-editor-item-has-conditions-item-template]').html();
+        const template = $(`[data-glpi-form-editor-item-has-conditions-modal=${modal_name}] [data-glpi-form-editor-item-has-conditions-item-template]`).html();
 
         // Add each element to the list
         elementsWithConditions.forEach(data => {
@@ -1253,7 +1342,7 @@ export class GlpiFormEditorController
             e.preventDefault();
 
             // Hide modal
-            $('[data-glpi-form-editor-item-has-conditions-modal]').modal('hide');
+            $(`[data-glpi-form-editor-item-has-conditions-modal=${modal_name}]`).modal('hide');
 
             // Get the UUID and type
             const clickedElement = $(e.currentTarget);
@@ -1265,7 +1354,7 @@ export class GlpiFormEditorController
         });
 
         // Show the modal
-        $('[data-glpi-form-editor-item-has-conditions-modal]').modal('show');
+        $(`[data-glpi-form-editor-item-has-conditions-modal=${modal_name}]`).modal('show');
     }
 
     /**
@@ -1669,11 +1758,53 @@ export class GlpiFormEditorController
     }
 
     /**
+     * Set or remove loading state for question type specific content.
+     * This makes the content appear disabled and non-interactive during condition checks.
+     * @param {jQuery} question Question element
+     * @param {boolean} isLoading Whether to set or remove loading state
+     */
+    #setQuestionTypeSpecificLoadingState(question, isLoading) {
+        const specificContent = question.find("[data-glpi-form-editor-question-type-specific]");
+
+        if (isLoading) {
+            // Create loading overlay if it doesn't exist
+            if (specificContent.find('.glpi-form-editor-loading-overlay').length === 0) {
+                const loadingOverlay = $(`
+                    <div class="glpi-form-editor-loading-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-white bg-opacity-75">
+                        <div class="spinner-border spinner-border-sm text-secondary" role="status">
+                            <span class="visually-hidden">${__('Loading...')}</span>
+                        </div>
+                    </div>
+                `);
+                specificContent.css('position', 'relative').append(loadingOverlay);
+            }
+
+            specificContent
+                .css({
+                    'opacity': '0.7',
+                    'pointer-events': 'none'
+                })
+                .attr('data-glpi-loading', 'true');
+        } else {
+            // Remove loading overlay
+            specificContent.find('.glpi-form-editor-loading-overlay').remove();
+
+            specificContent
+                .css({
+                    'opacity': '',
+                    'pointer-events': '',
+                    'position': ''
+                })
+                .removeAttr('data-glpi-loading');
+        }
+    }
+
+    /**
      * Change the type category of the given question.
      * @param {jQuery} question  Question to update
      * @param {string} category  New category
      */
-    #changeQuestionTypeCategory(question, category) {
+    async #changeQuestionTypeCategory(question, category) {
         // Get the current category
         const old_category = this.#getItemInput(question, "category");
 
@@ -1686,6 +1817,26 @@ export class GlpiFormEditorController
         const e_category = $.escapeSelector(category);
         const new_options = $(this.#templates)
             .find(`option[data-glpi-form-editor-question-type=${e_category}]`);
+
+        // Set loading state for question type specific content
+        this.#setQuestionTypeSpecificLoadingState(question, true);
+
+        // Check if the change is allowed based on existing conditions
+        if (!(await this.#checkItemConditionDependenciesForNewQuestionType(question, new_options.first().val()))) {
+            // Remove loading state before reverting
+            this.#setQuestionTypeSpecificLoadingState(question, false);
+
+            // Revert to previous value if change is not allowed
+            const previous_category = question.find('[data-glpi-form-editor-on-change="change-question-type-category"]').data('previous-value');
+            if (previous_category !== undefined) {
+                question.find('[data-glpi-form-editor-on-change="change-question-type-category"]').val(previous_category).trigger('change.select2');
+            }
+
+            return false;
+        }
+
+        // Remove loading state after successful check
+        this.#setQuestionTypeSpecificLoadingState(question, false);
 
         // Remove current types options
         const types_select = question
@@ -1718,7 +1869,7 @@ export class GlpiFormEditorController
      * @param {jQuery} question Question to update
      * @param {string} type     New type
      */
-    #changeQuestionType(question, type) {
+    async #changeQuestionType(question, type) {
         // Get the current question type
         const old_type = this.#getItemInput(question, "type");
 
@@ -1726,6 +1877,26 @@ export class GlpiFormEditorController
         if (old_type === type) {
             return;
         }
+
+        // Set loading state for question type specific content
+        this.#setQuestionTypeSpecificLoadingState(question, true);
+
+        // Check if the change is allowed based on existing conditions
+        if (!(await this.#checkItemConditionDependenciesForNewQuestionType(question, type))) {
+            // Remove loading state before reverting
+            this.#setQuestionTypeSpecificLoadingState(question, false);
+
+            // Revert to previous value if change is not allowed
+            const previous_type = question.find('[data-glpi-form-editor-on-change="change-question-type"]').data('previous-value');
+            if (previous_type !== undefined) {
+                question.find('[data-glpi-form-editor-on-change="change-question-type"]').val(previous_type).trigger('change.select2');
+            }
+
+            return;
+        }
+
+        // Remove loading state after successful check
+        this.#setQuestionTypeSpecificLoadingState(question, false);
 
         // Extracted default value
         const extracted_default_value = this.#options[old_type].extractDefaultValue(question);
@@ -1926,7 +2097,7 @@ export class GlpiFormEditorController
      * @param {jQuery} section
      */
     #deleteSection(section) {
-        if (!this.#checkItemConditionDependencies('section', section)) {
+        if (!this.#checkItemConditionDependenciesForDeletion('section', section)) {
             return;
         }
 
@@ -1995,7 +2166,7 @@ export class GlpiFormEditorController
      * @param {jQuery} comment
      */
     #deleteComment(comment) {
-        if (!this.#checkItemConditionDependencies('comment', comment)) {
+        if (!this.#checkItemConditionDependenciesForDeletion('comment', comment)) {
             return;
         }
 

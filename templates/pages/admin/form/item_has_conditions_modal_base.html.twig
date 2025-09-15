@@ -30,30 +30,21 @@
  # ---------------------------------------------------------------------
  #}
 
-{# Item has conditions modal #}
+{# Abstract base component for item has conditions modals #}
 <div
-    data-glpi-form-editor-item-has-conditions-modal
+    data-glpi-form-editor-item-has-conditions-modal="{{ modal_name }}"
     class="modal modal-blur fade"
     aria-modal="true"
     role="dialog"
-    aria-label="{{ __("Item has conditions and cannot be deleted") }}"
+    aria-label="{{ modal_aria_label }}"
 >
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header p-3">
                 <div>
-                    <div class="d-none" data-glpi-form-editor-item-has-conditions-modal-header="question">
-                        <h3 class="m-0">{{ __("This question is used in conditions of other form elements") }}</h3>
-                        <p class="m-0 text-muted">{{ __("You must delete related conditions before deleting this question") }}</p>
-                    </div>
-                    <div class="d-none" data-glpi-form-editor-item-has-conditions-modal-header="comment">
-                        <h3 class="m-0">{{ __("This comment is used in conditions of other form elements") }}</h3>
-                        <p class="m-0 text-muted">{{ __("You must delete related conditions before deleting this comment") }}</p>
-                    </div>
-                    <div class="d-none" data-glpi-form-editor-item-has-conditions-modal-header="section">
-                        <h3 class="m-0">{{ __("This section is used in conditions of other form elements") }}</h3>
-                        <p class="m-0 text-muted">{{ __("You must delete related conditions before deleting this section") }}</p>
-                    </div>
+                    {% block modal_headers %}
+                        {# Override this block to define specific headers for different item types #}
+                    {% endblock %}
                 </div>
                 <button
                     type="button"
@@ -63,7 +54,7 @@
                 ></button>
             </div>
             <div class="modal-body p-0">
-                <div class="list-group list-group-flush list-group-hoverable" data-glpi-form-editor-item-has-conditions-list></div>
+                <div class="list-group list-group-flush list-group-hoverable" data-glpi-form-editor-item-has-conditions-list>
                     {# List items will be populated dynamically by JavaScript #}
                 </div>
             </div>
