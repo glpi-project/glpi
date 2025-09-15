@@ -4026,11 +4026,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $values = [$field => $values];
         }
         return match ($field) {
-            'status' => static::getStatus($values[$field]),
-            'urgency' => static::getUrgencyName($values[$field]),
-            'impact' => static::getImpactName($values[$field]),
-            'priority' => static::getPriorityName($values[$field]),
-            'global_validation' => CommonITILValidation::getStatus($values[$field]),
+            'status' => htmlescape(static::getStatus($values[$field])),
+            'urgency' => htmlescape(static::getUrgencyName($values[$field])),
+            'impact' => htmlescape(static::getImpactName($values[$field])),
+            'priority' => htmlescape(static::getPriorityName($values[$field])),
+            'global_validation' => htmlescape(CommonITILValidation::getStatus($values[$field])),
             default => parent::getSpecificValueToDisplay($field, $values, $options),
         };
     }

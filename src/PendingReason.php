@@ -316,12 +316,12 @@ class PendingReason extends CommonDropdown
     {
         if ($field == 'followup_frequency') {
             if ($values[$field] == 0) {
-                return __("Disabled");
+                return __s("Disabled");
             }
             return htmlescape(self::getFollowupFrequencyValues()[$values[$field]]);
         } elseif ($field == 'followups_before_resolution') {
             if ($values[$field] == 0) {
-                return __("Disabled");
+                return __s("Disabled");
             }
             return htmlescape(self::getFollowupsBeforeResolutionValues()[$values[$field]]);
         }

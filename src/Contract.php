@@ -443,8 +443,8 @@ class Contract extends CommonDBTM implements StateInterface
             $values = [$field => $values];
         }
         return match ($field) {
-            'alert' => self::getAlertName($values[$field]),
-            'renewal' => self::getContractRenewalName((int) $values[$field]),
+            'alert' => htmlescape(self::getAlertName($values[$field])),
+            'renewal' => htmlescape(self::getContractRenewalName((int) $values[$field])),
             '_virtual_expiration' => Infocom::getWarrantyExpir(
                 $values['begin_date'],
                 $values['renewal'] == self::RENEWAL_EXPRESS ? $values['duration'] + $values['periodicity'] : $values['duration'],

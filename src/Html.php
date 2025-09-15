@@ -701,7 +701,7 @@ class Html
             if (is_array($tab)) {
                 $multiple      = true;
                 $out          .= "if (window.confirm(";
-                $out          .= json_encode(implode("\n", $tab));
+                $out          .= json_encode(htmlescape(implode("\n", $tab)));
                 $out          .= ")){ ";
                 $close_string .= "return true;} else { return false;}";
             }
@@ -709,7 +709,7 @@ class Html
         // manage simple confirmation
         if (!$multiple) {
             $out          .= "if (window.confirm(";
-            $out          .= json_encode(implode("\n", $string));
+            $out          .= json_encode(htmlescape(implode("\n", $string)));
             $out          .= ")){ ";
             $close_string .= "return true;} else { return false;}";
         }
