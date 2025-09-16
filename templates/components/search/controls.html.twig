@@ -115,10 +115,8 @@
                 </form>
             {% endif %}
 
-            <div class="middle-controls">
-                <div class="status-area">
-                    {% do call([itemtype, 'showSearchStatusArea']) %}
-                </div>
+            <div class="middle-controls d-flex">
+                {% do call([itemtype, 'showSearchStatusArea']) %}
 
                 {% if user_pref('search_pagination_on_top') %}
                     {% if data['display_type'] != constant('Search::GLOBAL_SEARCH') and data['search']['as_map'] == 0 %}

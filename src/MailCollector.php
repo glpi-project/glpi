@@ -1969,13 +1969,12 @@ class MailCollector extends CommonDBTM
                 static fn($v) => '<a class="btn btn-sm btn-ghost-danger align-baseline" href="' . $v['link'] . '">' . $v['name'] . '</a>',
                 $servers
             ));
-            // language=twig
-            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                <span class="alert alert-danger p-1 ps-2">
-                    <i class="ti ti-alert-triangle me-2"></i>
-                    <span>{{ receivers_error_msg|raw }}</span>
-                </span>
-TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_links)]);
+            TemplateRenderer::getInstance()->display(
+                'components/search/status_area.html.twig',
+                [
+                    'status_message' => sprintf(__s('Receivers in error: %s'), $server_links),
+                ]
+            );
         }
     }
 
