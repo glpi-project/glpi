@@ -33,7 +33,7 @@
 <div class="status-area">
     <span class="alert alert-warning p-1 m-0">
         <i class="ti ti-alert-triangle me-2"></i>
-        <span>{{ status_message }}</span>
+        <span>{{ status_message|raw }}</span>
     {% if extra_message is defined %}
         <span class="form-help" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-html="true" data-bs-content="{{ extra_message }}">
             ?
