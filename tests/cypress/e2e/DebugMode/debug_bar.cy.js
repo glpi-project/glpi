@@ -144,17 +144,14 @@ describe("Debug Bar", () => {
                     cy.get('tr[data-profiler-section-id] > td[data-prop="category"]').each(($el) => {
                         cy.wrap($el).find('.category-badge').should('exist');
                     });
-                    cy.get('tr[data-profiler-section-id] > td[data-prop="start"]').each(($el) => {
-                        expect($el.text()).to.match(/\d+/);
-                    });
-                    cy.get('tr[data-profiler-section-id] > td[data-prop="end"]').each(($el) => {
-                        expect($el.text()).to.match(/\d+/);
-                    });
                     cy.get('tr[data-profiler-section-id] > td[data-prop="duration"]').each(($el) => {
                         expect($el.text()).to.match(/\d+\sms/);
                     });
                     cy.get('tr[data-profiler-section-id] > td[data-prop="percent_of_parent"]').each(($el) => {
                         expect($el.text()).to.match(/[\d.]%/);
+                    });
+                    cy.get('tr[data-profiler-section-id] > td[data-prop="auto_ended"]').each(($el) => {
+                        expect($el.text()).to.match(/(Yes|No)/);
                     });
                 });
 
