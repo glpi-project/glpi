@@ -93,7 +93,7 @@ class GlpiCommonAjaxController
                 console.error(error);
                 this.#handleFeedbackMessages({
                     messages: {
-                        error: __("Unexpected error."),
+                        error: [__("Unexpected error.")],
                     },
                 });
             }
@@ -159,9 +159,15 @@ class GlpiCommonAjaxController
         }
 
         // Display feedback messages as a toast
-        response.messages.info.forEach(message => glpi_toast_info(message));
-        response.messages.warning.forEach(message => glpi_toast_warning(message));
-        response.messages.error.forEach(message => glpi_toast_error(message));
+        if (response.messages.info !== undefined) {
+            response.messages.info.forEach(message => glpi_toast_info(message));
+        }
+        if (response.messages.warning !== undefined) {
+            response.messages.warning.forEach(message => glpi_toast_warning(message));
+        }
+        if (response.messages.error !== undefined) {
+            response.messages.error.forEach(message => glpi_toast_error(message));
+        }
     }
 
     /**
