@@ -38,7 +38,6 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\HttpException;
 use Glpi\Http\RedirectResponse;
 use Glpi\Inventory\Conf;
-use Html;
 use RefusedEquipment;
 use Session;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -54,7 +53,8 @@ final class InventoryController extends AbstractController
 {
     public static bool $is_running = false;
 
-    public function __construct(private readonly UrlGeneratorInterface $router) {
+    public function __construct(private readonly UrlGeneratorInterface $router)
+    {
         //empty constructor
     }
 
