@@ -663,14 +663,13 @@ class NetworkPort extends CommonDBChild
             $canedit
             && (empty($withtemplate) || ($withtemplate != 2))
         ) {
+            echo "<div class='firstbloc'>";
             echo "<form method='get' action='" . htmlescape($netport::getFormURL()) . "'>";
             echo "<input type='hidden' name='items_id' value='" . $item->getID() . "'>";
             echo "<input type='hidden' name='itemtype' value='" . htmlescape($itemtype) . "'>";
-            echo "<div class='firstbloc'><table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><td class='center'>";
             echo __s('Network port type to be added');
-            echo "&nbsp;";
-
+            echo "<div class='d-flex'>";
+            echo "<div class='col-auto'>";
             $instantiations = [];
             foreach (self::getNetworkPortInstantiations() as $inst_type) {
                 if (call_user_func([$inst_type, 'canCreate'])) {
@@ -682,15 +681,22 @@ class NetworkPort extends CommonDBChild
                 $instantiations,
                 ['value' => 'NetworkPortEthernet']
             );
+            echo "</div>";
 
-            echo "</td>";
-            echo "<td class='tab_bg_2 center' width='50%'>";
-            echo __s('Add several ports');
-            echo "&nbsp;<input type='checkbox' name='several' value='1'></td>";
-            echo "<td>";
-            echo "<input type='submit' name='create' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-            echo "</td></tr></table></div>";
+            echo "<div class='col-auto m-2'>";
+            echo "<label for='several'>" . __s('Add several ports') . "</label>";
+            echo "&nbsp;<input type='checkbox' name='several' id='several' value='1'></td>";
+            echo "</div>";
+
+            echo "<div class='col-auto'>";
+            echo "<button type='submit' name='add' class='btn btn-primary ms-1'>";
+            echo "<i class='ti ti-link'></i>" . _sx('button', 'Add');
+            echo "</button>";
+            echo "</div>";
+
+            echo "</div>"; //d-flex
             Html::closeForm();
+            echo "</div>"; //firstbloc
         }
 
         Plugin::doHook(Hooks::DISPLAY_NETPORT_LIST_BEFORE, ['item' => $item]);

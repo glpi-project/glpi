@@ -325,7 +325,8 @@ class ReservationItem extends CommonDBChild
 
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-            <form id="reservation_actions" class="d-flex justify-content-center mt-3" action="{{ 'ReservationItem'|itemtype_form_path }}" method="post">
+            <div class="firstbloc">
+            <form id="reservation_actions" class="d-flex " action="{{ 'ReservationItem'|itemtype_form_path }}" method="post">
                 <input type="hidden" name="items_id" value="{{ item.getID() }}">
                 <input type="hidden" name="itemtype" value="{{ get_class(item) }}">
                 <input type="hidden" name="entities_id" value="{{ item.getEntityID() }}">
@@ -347,6 +348,7 @@ class ReservationItem extends CommonDBChild
                 </button>
                 <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
             </form>
+            </div>
 TWIG, $twig_params);
     }
 
