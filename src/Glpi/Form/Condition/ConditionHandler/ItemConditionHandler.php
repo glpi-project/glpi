@@ -95,11 +95,11 @@ final class ItemConditionHandler implements ConditionHandlerInterface, Condition
     public function convertConditionValue(string $value): int
     {
         $nameFields = [];
-        $item = new $this->itemtype();
+        $item = getItemForItemtype($this->itemtype);
         if ($item instanceof CommonTreeDropdown) {
-            $nameFields[] = $this->itemtype::getCompleteNameField();
+            $nameFields[] = $item::getCompleteNameField();
         }
-        $nameFields[] = $this->itemtype::getNameField();
+        $nameFields[] = $item::getNameField();
 
         foreach ($nameFields as $nameField) {
             // Retrieve item by name
