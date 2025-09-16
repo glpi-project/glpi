@@ -148,20 +148,21 @@ final class InventoryController extends AbstractController
         return $response;
     }
 
-    #[Route("/Inventory/Configuration", name: "glpi_inventory_configuration", methods: ['GET', 'POST'])]
-    #[Route("/front/inventory.conf.php", name: "glpi_inventory_configuration_legacy", methods: ['GET', 'POST'])]
+    #[Route("/Inventory/Configuration", name: "glpi_inventory_configuration", methods: ['GET'])]
+    #[Route("/front/inventory.conf.php", name: "glpi_inventory_configuration_legacy", methods: ['GET'])]
     public function configure(Request $request): Response
     {
-        Session::checkRight(Conf::$rightname, Conf::IMPORTFROMFILE);
+        Session::checkRight(Conf::$rightname, Conf::UPDATECONFIG);
         return $this->render('pages/admin/inventory/conf/index.html.twig', [
             'conf' => new Conf(),
         ]);
     }
 
     #[Route("/Inventory/Configuration/Store", name: "glpi_inventory_store_configuration", methods: ['POST'])]
+    #[Route("/front/inventory.conf.php", name: "glpi_inventory_store_configuration_legacy", methods: ['POST'])]
     public function storeConfiguration(Request $request): Response
     {
-        Session::checkRight(Conf::$rightname, Conf::IMPORTFROMFILE);
+        Session::checkRight(Conf::$rightname, Conf::UPDATECONFIG);
         $conf = new Conf();
         $post_data = $request->request->all();
 
