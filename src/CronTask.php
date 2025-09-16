@@ -1962,7 +1962,7 @@ TWIG, ['msg' => __('Last run list')]);
                 'status_message' => $msg,
                 'extra_message' => '<ul>' . implode('', array_map(static fn($warning) => '<li>' . htmlescape($warning) . '</li>', $warnings)) . '</ul>',
             ];
-            echo TemplateRenderer::getInstance()->display(
+            TemplateRenderer::getInstance()->display(
                 'components/search/status_area.html.twig',
                 $params
             );

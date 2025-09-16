@@ -1969,7 +1969,7 @@ class MailCollector extends CommonDBTM
                 static fn($v) => '<a class="btn btn-sm btn-ghost-danger align-baseline" href="' . $v['link'] . '">' . $v['name'] . '</a>',
                 $servers
             ));
-            echo TemplateRenderer::getInstance()->display(
+            TemplateRenderer::getInstance()->display(
                 'components/search/status_area.html.twig', [
                     'status_message' => sprintf(__s('Receivers in error: %s'), $server_links),
                 ]
