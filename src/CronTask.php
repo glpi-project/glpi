@@ -1963,7 +1963,7 @@ TWIG, ['msg' => __('Last run list')]);
                 'warnings' => '<ul>' . implode('', array_map(static fn($warning) => '<li>' . htmlescape($warning) . '</li>', $warnings)) . '</ul>',
             ];
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                <span class="alert alert-warning p-1 ps-2">
+                <span class="alert alert-warning p-1 m-0">
                     <i class="ti ti-alert-triangle me-2"></i>
                     <span>{{ msg }}</span>
                     <span class="form-help" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-html="true" data-bs-content="{{ warnings }}">
