@@ -84,7 +84,9 @@ function getSubmitButtonContainer() {
 function getAndFocusQuestion(name) {
     return cy.then(() => {
         const index = questions.indexOf(name);
-        cy.findAllByRole('region', {'name': 'Question details', 'timeout': 10000}).eq(index).click();
+        cy.findAllByRole('region', {'name': 'Question details', 'timeout': 10000}).eq(index).as('question_to_focus');
+        cy.get('@question_to_focus').click('top');
+        return cy.get('@question_to_focus');
     });
 }
 
@@ -2573,9 +2575,7 @@ describe ('Conditions', () => {
         addQuestion('My first question');
         addQuestion('My second question');
 
-        getAndFocusQuestion('My first question').within(() => {
-            cy.getDropdownByLabelText('Question type').selectDropdownValue('Urgency');
-        });
+        getAndFocusQuestion('My first question').changeQuestionType('Urgency');
 
         getAndFocusQuestion('My second question').within(() => {
             initVisibilityConfiguration();
@@ -2585,9 +2585,7 @@ describe ('Conditions', () => {
         saveAndReload();
 
         // Change the type of the first question to a type that doesn't support "Is greater than" operator
-        getAndFocusQuestion('My first question').within(() => {
-            cy.getDropdownByLabelText('Question type').selectDropdownValue('Short answer');
-        });
+        getAndFocusQuestion('My first question').changeQuestionType('Short answer');
         cy.findByRole('dialog', {'name': 'Question has conditions and its type cannot be changed'})
             .should('have.attr', 'data-cy-shown', 'true')
             .within(() => {
@@ -2610,9 +2608,7 @@ describe ('Conditions', () => {
         });
 
         // Change the type of the first question to a type that doesn't support "Is greater than" operator
-        getAndFocusQuestion('My first question').within(() => {
-            cy.getDropdownByLabelText('Question type').selectDropdownValue('Short answer');
-        });
+        getAndFocusQuestion('My first question').changeQuestionType('Short answer');
         cy.findByRole('dialog', {'name': 'Question has conditions and its type cannot be changed'})
             .should('have.attr', 'data-cy-shown', 'true')
             .within(() => {
@@ -2628,9 +2624,7 @@ describe ('Conditions', () => {
         });
 
         // Change the type of the first question to a type that doesn't support "Is greater than" operator
-        getAndFocusQuestion('My first question').within(() => {
-            cy.getDropdownByLabelText('Question type').selectDropdownValue('Short answer');
-        });
+        getAndFocusQuestion('My first question').changeQuestionType('Short answer');
         cy.findByRole('dialog', {'name': 'Question has conditions and its type cannot be changed'}).should('not.exist');
     });
 
@@ -2852,9 +2846,7 @@ describe ('Conditions', () => {
         addQuestion('My first question');
         addQuestion('My second question');
 
-        getAndFocusQuestion('My first question').within(() => {
-            cy.getDropdownByLabelText('Question type').selectDropdownValue('Urgency');
-        });
+        getAndFocusQuestion('My first question').changeQuestionType('Urgency');
 
         saveAndReload();
         goToDestinationTab();
@@ -2870,15 +2862,14 @@ describe ('Conditions', () => {
 
         // Change the type of the first question to a type that doesn't support "Is greater than" operator
         cy.findByRole('tab', {'name': 'Form'}).click();
-        getAndFocusQuestion('My first question').within(() => {
-            cy.getDropdownByLabelText('Question type').selectDropdownValue('Short answer');
-        });
+        getAndFocusQuestion('My first question').changeQuestionType('Short answer');
         cy.findByRole('dialog', {'name': 'Question has conditions and its type cannot be changed'})
             .should('have.attr', 'data-cy-shown', 'true')
             .within(() => {
                 cy.findByRole('link', {'name': 'Ticket'}).should('be.visible');
                 cy.findByRole('button', {'name': 'Close'}).click();
             });
+        cy.findByRole('dialog', {'name': 'Question has conditions and its type cannot be changed'}).should('not.exist');
 
         // Go to the destination tab and check that the conditions are still there
         goToDestinationTab();
@@ -2900,9 +2891,7 @@ describe ('Conditions', () => {
 
         // Change the type of the first question to a type that doesn't support "Is greater than" operator
         cy.findByRole('tab', {'name': 'Form'}).click();
-        getAndFocusQuestion('My first question').within(() => {
-            cy.getDropdownByLabelText('Question type').selectDropdownValue('Short answer');
-        });
+        getAndFocusQuestion('My first question').changeQuestionType('Short answer');
         cy.findByRole('dialog', {'name': 'Question has conditions and its type cannot be changed'}).should('not.exist');
     });
 
