@@ -264,7 +264,7 @@ final class IllustrationManager
             'icon_id'   => $icon_id,
             'width'     => $size,
             'height'    => $size,
-            'title'     => $icons[$icon_id]['title'] ?? "",
+            'title'     => _x("Icon", $icons[$icon_id]['title'] ?? ""),
         ]);
     }
 
