@@ -255,10 +255,13 @@ describe('Service catalog page', () => {
         findItemInServiceCatalog(kb_name_2).should('exist');
     });
 
-    it('can pick a category in the service catalog', () => {
+    it('can pick a category in the expanded service catalog', () => {
         const root_category_name = `Root category: ${(new Date()).getTime()}`;
         const child_category_name = `Child category: ${(new Date()).getTime()}`;
         const form_name = `Test form for service_catalog_page.cy.js ${(new Date()).getTime()}`;
+
+        // Enable expanded service catalog
+        cy.updateWithAPI('Entity', 1, {'expand_service_catalog': true});
 
         cy.createWithAPI('Glpi\\Form\\Category', {
             'name': root_category_name,
@@ -301,12 +304,15 @@ describe('Service catalog page', () => {
         cy.findByRole('region', {'name': form_name}).should('exist');
     });
 
-    it('can categorize knowledge base items in the service catalog', () => {
+    it('can categorize knowledge base items in the expanded service catalog', () => {
         const timestamp = (new Date()).getTime();
         const category_name = `KB Category ${timestamp}`;
         const kb_name_1 = `KB in category ${timestamp}`;
         const kb_name_2 = `KB at root ${timestamp}`;
         const kb_name_3 = `KB in a nested category ${timestamp}`;
+
+        // Enable expanded service catalog
+        cy.updateWithAPI('Entity', 1, {'expand_service_catalog': true});
 
         cy.changeProfile('Super-Admin');
 
@@ -392,7 +398,7 @@ describe('Service catalog page', () => {
         ;
     });
 
-    it('can navigate through the service catalog using the breadcrumbs', () => {
+    it('can navigate through the expanded service catalog using the breadcrumbs', () => {
         function createCategory(name, category_id = 0) {
             return cy.createWithAPI('Glpi\\Form\\Category', {
                 'name': name,
@@ -400,6 +406,9 @@ describe('Service catalog page', () => {
                 'forms_categories_id': category_id,
             });
         }
+
+        // Enable expanded service catalog
+        cy.updateWithAPI('Entity', 1, {'expand_service_catalog': true});
 
         const time = (new Date()).getTime();
 

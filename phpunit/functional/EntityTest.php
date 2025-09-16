@@ -1902,7 +1902,7 @@ class EntityTest extends DbTestCase
                 ['name' => 'entity_a', 'config' => -2],
             ],
             'entity' => 'entity_a',
-            'should_be_expanded' => true, // Inherit from root
+            'should_be_expanded' => false, // Inherit from root
         ];
 
         yield 'Inherit enabled from parent' => [
