@@ -93,11 +93,12 @@ final class ItemConditionHandler implements ConditionHandlerInterface, Condition
     #[Override]
     public function convertConditionValue(string $value): int
     {
+        $nameFields = [];
         $item = getItemForItemtype($this->itemtype);
-        $nameFields = [$item->getNameField()];
         if ($item->isField($item->getCompleteNameField())) {
             $nameFields[] = $item->getCompleteNameField();
         }
+        $nameFields[] = $item->getNameField();
 
         foreach ($nameFields as $nameField) {
             // Retrieve item by name
