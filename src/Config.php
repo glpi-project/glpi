@@ -1983,11 +1983,19 @@ class Config extends CommonDBTM
         );
         $msg = "Setup: ";
 
-        foreach (
-            ['max_execution_time', 'memory_limit', 'post_max_size', 'safe_mode',
-                'session.save_handler', 'upload_max_filesize', 'disable_functions',
-            ] as $key
-        ) {
+        $ini_keys = [
+            'disable_functions',
+            'max_execution_time',
+            'max_input_vars',
+            'memory_limit',
+            'post_max_size',
+            'session.cookie_secure',
+            'session.cookie_httponly',
+            'session.cookie_samesite',
+            'session.save_handler',
+            'upload_max_filesize',
+        ];
+        foreach ($ini_keys as $key) {
             $msg .= $key . '="' . ini_get($key) . '" ';
         }
         echo wordwrap($msg . "\n", $p['word_wrap_width'], "\n\t");
