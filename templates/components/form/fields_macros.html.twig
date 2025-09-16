@@ -596,6 +596,7 @@
     {% set options = {
         'rand': random(),
         'width': '100%',
+        'disabled': false,
     }|merge(options) %}
    {% if options.fields_template.isMandatoryField(name)|default(false) %}
       {% set options = {'required': true}|merge(options) %}
