@@ -1957,7 +1957,7 @@ TWIG, ['msg' => __('Last run list')]);
         }
 
         if (count($warnings) > 0) {
-            $msg = __('Automatic actions may not be running as expected');
+            $msg = __s('Automatic actions may not be running as expected');
             $params = [
                 'status_message' => $msg,
                 'extra_message' => '<ul>' . implode('', array_map(static fn($warning) => '<li>' . htmlescape($warning) . '</li>', $warnings)) . '</ul>',
