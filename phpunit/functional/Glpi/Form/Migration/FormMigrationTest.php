@@ -1586,6 +1586,54 @@ final class FormMigrationTest extends DbTestCase
         ];
     }
 
+    public function testFormMigrationVisibilityConditionsForQuestionsWithDuplicateLocationName(): void
+    {
+        global $DB;
+
+        // Helper function to create locations and test visibility conditions
+        $doTestWithDuplicateLocations = function (string $show_value, int $expected_location_index) use ($DB) {
+            // Create two locations with the same name but different hierarchy
+            $first_parent = $this->createItem('Location', ['name' => '_first_parent_location']);
+            $second_parent = $this->createItem('Location', ['name' => '_second_parent_location']);
+            $location_1 = $this->createItem('Location', ['name' => '_duplicate_location', 'locations_id' => $first_parent->getID()]);
+            $location_2 = $this->createItem('Location', ['name' => '_duplicate_location', 'locations_id' => $second_parent->getID()]);
+
+            $expected_location_id = $expected_location_index === 0 ? $location_1->getID() : $location_2->getID();
+
+            $this->testFormMigrationVisibilityConditionsForQuestions(
+                field_type: 'dropdown',
+                itemtype: 'Location',
+                show_rule: 2,
+                conditions: [
+                    [
+                        'show_condition' => 1,
+                        'show_value'     => $show_value,
+                        'show_logic'     => 1,
+                    ],
+                ],
+                expected_visibility_strategy: VisibilityStrategy::VISIBLE_IF,
+                expected_conditions: [
+                    [
+                        'value_operator' => ValueOperator::EQUALS,
+                        'value'          => $expected_location_id,
+                        'logic_operator' => LogicOperator::AND,
+                    ],
+                ],
+            );
+        };
+
+        // Test with first parent hierarchy
+        $doTestWithDuplicateLocations('_first_parent_location > _duplicate_location', 0);
+
+        // Rollback and reset transaction to avoid conflicts with the next test
+        // as we're creating items with the same names
+        $DB->rollback();
+        $DB->beginTransaction();
+
+        // Test with second parent hierarchy
+        $doTestWithDuplicateLocations('_second_parent_location > _duplicate_location', 1);
+    }
+
     #[DataProvider('provideFormMigrationVisibilityConditionsForQuestions')]
     public function testFormMigrationVisibilityConditionsForQuestions(
         string $field_type,

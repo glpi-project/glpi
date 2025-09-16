@@ -35,6 +35,7 @@
 namespace Glpi\Form\Condition\ConditionHandler;
 
 use CommonDBTM;
+use CommonTreeDropdown;
 use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Migration\ConditionHandlerDataConverterInterface;
@@ -93,11 +94,12 @@ final class ItemConditionHandler implements ConditionHandlerInterface, Condition
     #[Override]
     public function convertConditionValue(string $value): int
     {
+        $nameFields = [];
         $item = getItemForItemtype($this->itemtype);
-        $nameFields = [$item->getNameField()];
-        if ($item->isField($item->getCompleteNameField())) {
-            $nameFields[] = $item->getCompleteNameField();
+        if ($item instanceof CommonTreeDropdown) {
+            $nameFields[] = $item::getCompleteNameField();
         }
+        $nameFields[] = $item::getNameField();
 
         foreach ($nameFields as $nameField) {
             // Retrieve item by name
