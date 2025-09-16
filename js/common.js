@@ -966,7 +966,7 @@ var templateItilStatus = function(option) {
             break;
     }
 
-    return $(`<span><i class="itilstatus ${classes}"></i> ${option.text}</span>`);
+    return $(`<span><i class="itilstatus ${classes}"></i> ${_.escape(option.text)}</span>`);
 };
 
 var templateValidation = function(option) {
@@ -990,7 +990,7 @@ var templateValidation = function(option) {
             break;
     }
 
-    return $(`<span><i class="validationstatus ${classes}"></i> ${option.text}</span>`);
+    return $(`<span><i class="validationstatus ${classes}"></i> ${_.escape(option.text)}</span>`);
 };
 
 var templateItilPriority = function(option) {
@@ -1004,10 +1004,10 @@ var templateItilPriority = function(option) {
     var color_badge = "";
 
     if (priority_color.length > 0) {
-        color_badge += `<i class='ti ti-circle-filled' style='color: ${priority_color}'></i>`;
+        color_badge += `<i class='ti ti-circle-filled' style='color: ${_.escape(priority_color)}'></i>`;
     }
 
-    return $(`<span>${color_badge}&nbsp;${option.text}</span>`);
+    return $(`<span>${color_badge}&nbsp;${_.escape(option.text)}</span>`);
 };
 
 /**

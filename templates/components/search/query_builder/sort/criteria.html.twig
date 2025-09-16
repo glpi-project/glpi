@@ -44,14 +44,14 @@
 {% set order_dropdown_template %}
     (option) => {
         if (!option.id) {
-            return option.text;
+            return _.escape(option.text);
         }
 
         let container = document.createElement('span');
         if (option.id === 'ASC') {
-            container.innerHTML = '<i class="ti ti-sort-ascending me-1"></i>' + option.text;
+            container.innerHTML = '<i class="ti ti-sort-ascending me-1"></i>' + _.escape(option.text);
         } else if (option.id === 'DESC') {
-            container.innerHTML = '<i class="ti ti-sort-descending me-1"></i>' + option.text;
+            container.innerHTML = '<i class="ti ti-sort-descending me-1"></i>' + _.escape(option.text);
         }
 
         return container;

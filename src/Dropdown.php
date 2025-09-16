@@ -1021,8 +1021,8 @@ class Dropdown
                         if (!icon.id || icon.id == "0") {
                             return icon.text;
                         }
-                        var img = \'<span><img alt="" src="' . jsescape(htmlescape($CFG_GLPI['typedoc_icon_dir'])) . '/\'+icon.id+\'" />\';
-                        var label = \'<span>\'+icon.text+\'</span>\';
+                        var img = \'<span><img alt="" src="' . jsescape(htmlescape($CFG_GLPI['typedoc_icon_dir'])) . '/\' + _.escape(icon.id) + \'" />\';
+                        var label = \'<span>\' + _.escape(icon.text) + \'</span>\';
                         return $(img+\'&nbsp;\'+label);
                     };
                     $("#dropdown_' . jsescape($myname . $rand) . '").select2({

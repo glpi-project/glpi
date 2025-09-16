@@ -121,8 +121,8 @@
                             style="direction: ltr;">';
                         for (const code of palette_codes) {
                             html += '<span class="palette_preview_color flex-fill" \
-                            style="background-color: ' + code + '; height: 25px" \
-                            title="' + option.id + '"></span>';
+                            style="background-color: ' + _.escape(code) + '; height: 25px" \
+                            title="' + _.escape(option.id) + '"></span>';
                         }
                         html += '</span>';
 

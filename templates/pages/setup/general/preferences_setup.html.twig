@@ -186,11 +186,11 @@
 
        function formatThemes(theme) {
            if (!theme.id) {
-               return theme.text;
+               return _.escape(theme.text);
            }
 
            return $('<span></span>').html(
-               `<img src="${getThemePreviewURL(theme.id)}" /> ${theme.text}`
+               `<img src="${_.escape(getThemePreviewURL(theme.id))}" /> ${_.escape(theme.text)}`
            );
        }
        $('select[name="palette"]').on('change', function(e) {
@@ -203,17 +203,16 @@
        });
        function formatGlobalLayout(layout) {
            if (!layout.id) {
-               return layout.text;
+               return _.escape(layout.text);
            }
            return $('<span></span>').html(
-               `<img src="{{ path('/pics/layout/global_layout_') }}${layout.id.toLowerCase()}.png" /> ${layout.text}`
+               `<img src="{{ path('/pics/layout/global_layout_') }}${_.escape(layout.id.toLowerCase())}.png" /> ${_.escape(layout.text)}`
            );
        }
    </script>
     {{ fields.dropdownArrayField('palette', config['palette'], palettes, __('Color palette'), field_options|merge({
         templateResult: 'formatThemes',
         templateSelection: 'formatThemes',
-        escapeMarkup: 'function(m) { return m; }'
     })) }}
 
    {# Only display the page layout setting for central users #}

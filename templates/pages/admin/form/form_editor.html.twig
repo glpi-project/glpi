@@ -215,7 +215,7 @@
                                             function renderLayoutTemplateResult(data) {
                                                 const icons = {{ enum('Glpi\\Form\\RenderLayout').cases|map((case) => {(case.value): case.getIcon()})|reduce((carry, item) => carry|merge(item), {})|json_encode|raw }};
 
-                                                return $(`<span class="w-full d-flex align-items-center gap-2" title="${data.text}""><i class="${icons[data.id]}"></i>${data.text}</span>`);
+                                                return $(`<span class="w-full d-flex align-items-center gap-2" title="${_.escape(data.text)}""><i class="${_.escape(icons[data.id])}"></i>${_.escape(data.text)}</span>`);
                                             }
 
                                             function renderLayoutTemplateSelection(data) {
