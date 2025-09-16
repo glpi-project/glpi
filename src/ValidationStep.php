@@ -71,7 +71,7 @@ class ValidationStep extends CommonDropdown
     {
         $is_input_valid = true;
         // name is mandatory
-        if (!isset($input['name']) || strlen($input['name']) < 3) {
+        if (!isset($input['name'])) {
             $message = sprintf(
                 __s('The %s field is mandatory'),
                 htmlescape($this->getAdditionalField('name')['label'] ?? 'name')
