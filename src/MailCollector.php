@@ -1970,7 +1970,8 @@ class MailCollector extends CommonDBTM
                 $servers
             ));
             TemplateRenderer::getInstance()->display(
-                'components/search/status_area.html.twig', [
+                'components/search/status_area.html.twig',
+                [
                     'status_message' => sprintf(__s('Receivers in error: %s'), $server_links),
                 ]
             );
