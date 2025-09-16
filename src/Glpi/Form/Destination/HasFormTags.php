@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,52 +32,12 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Tag;
+namespace Glpi\Form\Destination;
 
-use Glpi\Form\AnswersSet;
-use Glpi\Form\Form;
-use Override;
+use Attribute;
 
-final class FormTagProvider implements TagProviderInterface, TagWithIdValueInterface
+#[Attribute(Attribute::TARGET_CLASS)]
+final class HasFormTags
 {
-    #[Override]
-    public function getTagColor(): string
-    {
-        return "yellow";
-    }
-
-    #[Override]
-    public function getTags(Form $form): array
-    {
-        return [$this->getTagForForm($form)];
-    }
-
-    #[Override]
-    public function getTagContentForValue(
-        string $value,
-        AnswersSet $answers_set
-    ): string {
-        $id = (int) $value;
-
-        $form = Form::getById($id);
-        if ($form === false) {
-            return '';
-        }
-        return $form->fields['name'];
-    }
-
-    #[Override]
-    public function getItemtype(): string
-    {
-        return Form::class;
-    }
-
-    public function getTagForForm(Form $form): Tag
-    {
-        return new Tag(
-            label: sprintf(__('Form name: %s'), $form->fields['name']),
-            value: $form->getId(),
-            provider: $this,
-        );
-    }
+    public function __construct() {}
 }

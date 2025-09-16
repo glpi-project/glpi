@@ -40,7 +40,7 @@ use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Override;
 
-final class QuestionTagProvider implements TagProviderInterface
+final class QuestionTagProvider implements TagProviderInterface, TagWithIdValueInterface
 {
     #[Override]
     public function getTagColor(): string
@@ -71,6 +71,12 @@ final class QuestionTagProvider implements TagProviderInterface
             return '';
         }
         return $question->fields['name'];
+    }
+
+    #[Override]
+    public function getItemtype(): string
+    {
+        return Question::class;
     }
 
     public function getTagForQuestion(Question $question): Tag
