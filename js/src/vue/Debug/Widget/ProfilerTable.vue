@@ -60,7 +60,7 @@
         };
     }
 
-    const col_count = 6 + props.nest_level;
+    const col_count = 5 + props.nest_level;
 
     function getProfilerData(parent_id) {
         const sections = props.profiler_sections.filter((section) => section.parent_id === parent_id);
@@ -86,6 +86,7 @@
                 duration: duration,
                 percent_of_parent: percent_of_parent,
                 has_children: props.profiler_sections.filter((child) => child.parent_id === section.id).length > 0,
+                auto_ended: section.auto_ended || false,
             };
             sections_data.push(data);
         }
@@ -118,10 +119,9 @@
                 <th class="nesting-spacer" v-for="i in nest_level" :key="i" aria-hidden="true"></th>
                 <th>Category</th>
                 <th>Name</th>
-                <th>Start</th>
-                <th>End</th>
                 <th>Duration</th>
                 <th>Percent of parent</th>
+                <th>Auto-ended</th>
             </tr>
         </thead>
         <tbody>
@@ -134,10 +134,9 @@
                         </span>
                     </td>
                     <td data-prop="name">{{ section.name }}</td>
-                    <td data-prop="start">{{ section.start }}</td>
-                    <td data-prop="end">{{ section.end }}</td>
                     <td data-prop="duration">{{ section.duration.toFixed(0) }} ms</td>
                     <td data-prop="percent_of_parent">{{ section.percent_of_parent }}%</td>
+                    <td data-prop="auto_ended">{{ section.auto_ended ? 'Yes' : 'No' }}</td>
                 </tr>
                 <tr v-if="section.has_children" v-show="!props.hide_instant_sections || (section.duration > instant_threshold)">
                     <td :colspan="col_count">
