@@ -68,10 +68,10 @@
                     {% set result_template_js %}
                         {# Select2 js function for templateResult that hides options already added to the table where the value matches the data-opt-id attr on the rows #}
                         (opt) => {
-                        if ($(`li[data-opt-id="${opt.id}"]`).length > 0) {
-                        return null;
-                        }
-                        return opt.text;
+                            if ($(`li[data-opt-id="${opt.id}"]`).length > 0) {
+                                return null;
+                            }
+                            return _.escape(opt.text);
                         }
                     {% endset %}
 
