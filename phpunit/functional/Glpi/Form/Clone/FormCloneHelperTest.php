@@ -55,6 +55,7 @@ use Glpi\Form\Destination\CommonITILField\AssigneeFieldConfig;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsField;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldConfig;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\EntityField;
 use Glpi\Form\Destination\CommonITILField\EntityFieldConfig;
 use Glpi\Form\Destination\CommonITILField\EntityFieldStrategy;
@@ -76,6 +77,8 @@ use Glpi\Form\Destination\CommonITILField\RequesterFieldConfig;
 use Glpi\Form\Destination\CommonITILField\RequestTypeField;
 use Glpi\Form\Destination\CommonITILField\RequestTypeFieldConfig;
 use Glpi\Form\Destination\CommonITILField\RequestTypeFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
+use Glpi\Form\Destination\CommonITILField\TitleField;
 use Glpi\Form\Destination\CommonITILField\UrgencyField;
 use Glpi\Form\Destination\CommonITILField\UrgencyFieldConfig;
 use Glpi\Form\Destination\CommonITILField\UrgencyFieldStrategy;
@@ -99,6 +102,13 @@ use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\RenderLayout;
 use Glpi\Form\Section;
+use Glpi\Form\Tag\AnswerTagProvider;
+use Glpi\Form\Tag\CommentDescriptionTagProvider;
+use Glpi\Form\Tag\CommentTitleTagProvider;
+use Glpi\Form\Tag\FormTagProvider;
+use Glpi\Form\Tag\QuestionTagProvider;
+use Glpi\Form\Tag\SectionTagProvider;
+use Glpi\Form\Tag\Tag;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use ITILCategory;
@@ -1158,6 +1168,102 @@ final class FormCloneHelperTest extends DbTestCase
         $this->assertEquals(
             [$cloned_ticket1_destination->fields['id']],
             $cloned_ticket2_destination->getConfig()[LinkedITILObjectsField::getKey()]['strategy_configs'][0]['specific_destination_ids']
+        );
+    }
+
+    public function testIdsInFormTagsAreUpdatedWhenCloning(): void
+    {
+        $form_tag_provider        = new FormTagProvider();
+        $section_tag_provider     = new SectionTagProvider();
+        $question_tag_provider    = new QuestionTagProvider();
+        $answers_tag_provider     = new AnswerTagProvider();
+        $comment_tag_provider     = new CommentTitleTagProvider();
+        $description_tag_provider = new CommentDescriptionTagProvider();
+
+        // Arrange: create a form and set up some fields using tags
+        $builder = new FormBuilder("My form");
+        $builder->addQuestion("My question", QuestionTypeShortText::class);
+        $builder->addComment("My first comment");
+        $builder->addComment("My second comment");
+        $form = $this->createForm($builder);
+
+        $destinations = $form->getDestinations();
+        $destination = array_pop($destinations);
+        $config = [
+            // Use the form name in the title
+            TitleField::getKey() => (new SimpleValueConfig(
+                $form_tag_provider->getTags($form)[0]->html
+            ))->jsonSerialize(),
+            // Use section, questions and comment data in the content
+            ContentField::getKey() => (new SimpleValueConfig(
+                $section_tag_provider->getTags($form)[0]->html
+                . $question_tag_provider->getTags($form)[0]->html
+                . $answers_tag_provider->getTags($form)[0]->html
+                . $comment_tag_provider->getTags($form)[0]->html
+                . $comment_tag_provider->getTags($form)[1]->html // Add a second one to make sure it works with more than 1 tag of the same type
+                . $description_tag_provider->getTags($form)[0]->html
+                . $description_tag_provider->getTags($form)[1]->html
+            ))->jsonSerialize(),
+        ];
+        $this->updateItem(
+            $destination::class,
+            $destination->getId(),
+            [
+                'config' => $config,
+            ],
+            ["config"],
+        );
+
+        // Act: clone form and get its content
+        $form_id = $form->clone();
+        $clone = Form::getById($form_id);
+
+        $cloned_destinations = $clone->getDestinations();
+        $cloned_destination = array_pop($cloned_destinations);
+
+        $cloned_questions = $clone->getQuestions();
+        $cloned_question = array_pop($cloned_questions);
+
+        $cloned_comments = $clone->getFormComments();
+        $cloned_comment_1 = array_pop($cloned_comments);
+        $cloned_comment_2 = array_pop($cloned_comments);
+
+        $cloned_sections = $clone->getSections();
+        $cloned_section = array_pop($cloned_sections);
+
+        // Assert: the id in the tags of the cloned title and content fields must
+        // target the cloned form, not the original form.
+        $this->assertStringContainsString(
+            "data-form-tag-value=\"{$clone->getID()}\" data-form-tag-provider=\"Glpi\Form\Tag\FormTagProvider\"",
+            $cloned_destination->getConfig()[TitleField::getKey()]['value'],
+        );
+        $this->assertStringContainsString(
+            "data-form-tag-value=\"{$cloned_section->getID()}\" data-form-tag-provider=\"Glpi\Form\Tag\SectionTagProvider\"",
+            $cloned_destination->getConfig()[ContentField::getKey()]['value'],
+        );
+        $this->assertStringContainsString(
+            "data-form-tag-value=\"{$cloned_question->getID()}\" data-form-tag-provider=\"Glpi\Form\Tag\QuestionTagProvider\"",
+            $cloned_destination->getConfig()[ContentField::getKey()]['value'],
+        );
+        $this->assertStringContainsString(
+            "data-form-tag-value=\"{$cloned_question->getID()}\" data-form-tag-provider=\"Glpi\Form\Tag\AnswerTagProvider\"",
+            $cloned_destination->getConfig()[ContentField::getKey()]['value'],
+        );
+        $this->assertStringContainsString(
+            "data-form-tag-value=\"{$cloned_comment_1->getID()}\" data-form-tag-provider=\"Glpi\Form\Tag\CommentTitleTagProvider\"",
+            $cloned_destination->getConfig()[ContentField::getKey()]['value'],
+        );
+        $this->assertStringContainsString(
+            "data-form-tag-value=\"{$cloned_comment_2->getID()}\" data-form-tag-provider=\"Glpi\Form\Tag\CommentTitleTagProvider\"",
+            $cloned_destination->getConfig()[ContentField::getKey()]['value'],
+        );
+        $this->assertStringContainsString(
+            "data-form-tag-value=\"{$cloned_comment_1->getID()}\" data-form-tag-provider=\"Glpi\Form\Tag\CommentDescriptionTagProvider\"",
+            $cloned_destination->getConfig()[ContentField::getKey()]['value'],
+        );
+        $this->assertStringContainsString(
+            "data-form-tag-value=\"{$cloned_comment_2->getID()}\" data-form-tag-provider=\"Glpi\Form\Tag\CommentDescriptionTagProvider\"",
+            $cloned_destination->getConfig()[ContentField::getKey()]['value'],
         );
     }
 

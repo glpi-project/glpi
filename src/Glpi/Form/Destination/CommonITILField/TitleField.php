@@ -39,6 +39,7 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Destination\FormDestination;
+use Glpi\Form\Destination\HasFormTags;
 use Glpi\Form\Form;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
@@ -48,6 +49,7 @@ use Glpi\Form\Tag\FormTagsManager;
 use InvalidArgumentException;
 use Override;
 
+#[HasFormTags]
 final class TitleField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     use TagConversionTrait;

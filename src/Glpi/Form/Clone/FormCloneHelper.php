@@ -43,9 +43,12 @@ use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Destination\HasFieldWithDestinationId;
 use Glpi\Form\Destination\HasFieldWithQuestionId;
+use Glpi\Form\Destination\HasFormTags;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\Section;
+use Glpi\Form\Tag\FormTagsManager;
+use Glpi\Form\Tag\TagWithIdValueInterface;
 use Glpi\Toolbox\SingletonTrait;
 use Ramsey\Uuid\Uuid;
 use ReflectionClass;
@@ -53,6 +56,8 @@ use RuntimeException;
 
 use function Safe\json_decode;
 use function Safe\json_encode;
+use function Safe\preg_replace;
+use function Safe\preg_replace_callback;
 
 /**
  * Helper service that contains utilities methods that are required to be used
@@ -209,6 +214,7 @@ final class FormCloneHelper
             $field_type,
             $input,
         );
+        $input = $this->updateIdsInFormTagsFieldInput($field_type, $input);
 
         return $input;
     }
@@ -504,6 +510,47 @@ final class FormCloneHelper
 
                 $input[$attribute->getConfigKey()] = $field_input;
             }
+        }
+
+        return $input;
+    }
+
+    public function updateIdsInFormTagsFieldInput(
+        AbstractConfigField $field_type,
+        array $input,
+    ): array {
+        $mapper = CloneMapper::getInstance();
+
+        // Watch for a specific data attribute that indicate we need to
+        // update form tags
+        $reflection = new ReflectionClass($field_type);
+        $attributes = $reflection->getAttributes(HasFormTags::class);
+        if (!count($attributes)) {
+            return $input;
+        }
+
+        $tags_provider = (new FormTagsManager())->getTagProviders();
+        foreach ($tags_provider as $tag_provider) {
+            if (!$tag_provider instanceof TagWithIdValueInterface) {
+                // This tag value do not reference and ID, we can skip it
+                continue;
+            }
+            $provider_class = preg_quote($tag_provider::class);
+            $mapped_class = $tag_provider->getItemtype();
+
+            $input['value'] = preg_replace_callback(
+                // Look for the value + provider properties
+                "/data-form-tag-value=\"(\d+)\" "
+                . "data-form-tag-provider=\"$provider_class\"/",
+                fn($match) => preg_replace(
+                    // We do another preg on a small subset to avoid having to
+                    // manually rewrite the whole string
+                    "/value=\"(\d+)/",
+                    "value=\"" . $mapper->getMappedId($mapped_class, $match[1]),
+                    $match[0]
+                ),
+                $input['value'],
+            );
         }
 
         return $input;

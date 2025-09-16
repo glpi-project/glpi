@@ -40,7 +40,7 @@ use Glpi\Form\Form;
 use Glpi\Form\Section;
 use Override;
 
-final class SectionTagProvider implements TagProviderInterface
+final class SectionTagProvider implements TagProviderInterface, TagWithIdValueInterface
 {
     #[Override]
     public function getTagColor(): string
@@ -71,6 +71,12 @@ final class SectionTagProvider implements TagProviderInterface
             return '';
         }
         return $section->fields['name'];
+    }
+
+    #[Override]
+    public function getItemtype(): string
+    {
+        return Section::class;
     }
 
     public function getTagForSection(Section $section): Tag
