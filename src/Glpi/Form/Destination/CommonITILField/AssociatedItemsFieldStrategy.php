@@ -84,7 +84,8 @@ enum AssociatedItemsFieldStrategy: string
             return false;
         }
 
-        if (!in_array($value['itemtype'], CommonITILObject::getAllTypesForHelpdesk())) {
+        $valid_itemtypes = CommonITILObject::getAllTypesForHelpdesk();
+        if (!isset($valid_itemtypes[$value['itemtype']])) {
             return false;
         }
 
