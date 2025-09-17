@@ -133,9 +133,10 @@
 </script>
 {% if cancreate %}
     {% if not add_new_inline %}
-        <div class="text-center mt-1 mb-3">
+        <div class="firstbloc">
     {% endif %}
-        <button id="addsubitem{{ rand }}" type="button" class="btn {{ add_new_btn_class|default('btn-primary') }}">
+        <button id="addsubitem{{ rand }}" type="button" class="btn {{ add_new_btn_class|default('btn-primary') }} ms-1" name="add">
+            <i class="ti ti-link"></i>
             {{ add_new_label }}
         </button>
     {% if not add_new_inline %}

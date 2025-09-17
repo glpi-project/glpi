@@ -32,11 +32,11 @@
 
 {% import 'components/alerts_macros.html.twig' as alerts %}
 
-<h3 class="text-start mt-5">{{ __('List of remote management') }}</h3>
 {% if canedit %}
-    <div class="text-center mb-3">
-        <a class="btn btn-primary" href="{{ form_url }}" role="button">
-            {{ __('Add a remote management') }}
+    <div class="firstbloc">
+        <a href="{{ form_url }}" class="btn btn-primary">
+            <i class="ti ti-link"></i>
+            <span>{{ __('Add a remote management') }}</span>
         </a>
     </div>
 {% endif %}
