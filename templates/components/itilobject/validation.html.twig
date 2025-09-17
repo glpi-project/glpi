@@ -55,7 +55,7 @@
     {% if canadd %}
         {% if item.fields['status'] not in donestatus %}
             <div class="card-body mb-3 p-0 text-center">
-                <a class='btn btn-primary' href='javascript:viewAddValidation{{ tID }}{{ rand }}()'>
+                <a class='btn btn-primary' role="button" href='javascript:viewAddValidation{{ tID }}{{ rand }}()'>
                     {{ __('Send an approval request') }}
                 </a>
             </div>

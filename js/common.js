@@ -1796,6 +1796,15 @@ function setupAjaxDropdown(config) {
                 data.page_limit = config.dropdown_max; // page size
                 data.page = params.page || 1; // page number
 
+                /** convert data false and true values to int **/
+                Object.keys(data).forEach(function(key) {
+                    if (data[key] === false) {
+                        data[key] = 0;
+                    } else if (data[key] === true) {
+                        data[key] = 1;
+                    }
+                });
+
                 return data;
             },
             processResults: function (data, params) {
