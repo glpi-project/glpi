@@ -36,6 +36,7 @@ namespace Glpi\UI;
 
 use Glpi\Application\View\TemplateRenderer;
 use RuntimeException;
+use Throwable;
 
 use function Safe\file_get_contents;
 use function Safe\json_decode;
@@ -255,16 +256,27 @@ final class IllustrationManager
 
     private function renderNativeIcon(string $icon_id, ?int $size = null): string
     {
+        global $TRANSLATE;
+
         $size = $this->computeSize($size);
 
         $icons = $this->getIconsDefinitions();
+
+        try {
+            // Cannot call `_x()` here as it results in an illegal empty translation `id` when strings are extracted.
+            // see #21049
+            $title = $TRANSLATE->translate("Icon\004" . ($icons[$icon_id]['title'] ?? ""), 'glpi');
+        } catch (Throwable $e) {
+            $title = '';
+        }
+
         $twig = TemplateRenderer::getInstance();
         return $twig->render('components/illustration/icon.svg.twig', [
             'file_path' => $this->icons_sprites_path,
             'icon_id'   => $icon_id,
             'width'     => $size,
             'height'    => $size,
-            'title'     => _x("Icon", $icons[$icon_id]['title'] ?? ""),
+            'title'     => $title,
         ]);
     }
 
