@@ -61,7 +61,7 @@ final class MFAController extends AbstractController
         }
         return new StreamedResponse(static function () {
             $totp = new TOTPManager();
-            $totp->showTOTPSetupForm((int) $_SESSION['mfa_pre_auth']['user']['id']);
+            $totp->showTOTPSetupForm((int) $_SESSION['mfa_pre_auth']['user_id']);
         });
     }
 
@@ -90,7 +90,7 @@ final class MFAController extends AbstractController
         $pre_auth_data = $_SESSION['mfa_pre_auth'] ?? null;
 
         $from_login = $pre_auth_data !== null;
-        $users_id = $from_login ? (int) $pre_auth_data['user']['id'] : (int) Session::getLoginUserID();
+        $users_id = $from_login ? (int) $pre_auth_data['user_id'] : (int) Session::getLoginUserID();
         if (!$users_id) {
             return new RedirectResponse($request->getBasePath() . '/MFA/Prompt');
         }
@@ -161,7 +161,7 @@ final class MFAController extends AbstractController
         }
         $totp = new TOTPManager();
         return new StreamedResponse(static function () use ($pre_auth_data, $totp) {
-            $totp->showBackupCodes((int) $pre_auth_data['user']['id']);
+            $totp->showBackupCodes((int) $pre_auth_data['user_id']);
         });
     }
 }

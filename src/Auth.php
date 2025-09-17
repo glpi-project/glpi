@@ -48,7 +48,6 @@ use function Safe\ldap_bind;
 use function Safe\parse_url;
 use function Safe\preg_match;
 use function Safe\session_name;
-use function Safe\session_write_close;
 
 /**
  *  Identification class used to login
@@ -1019,24 +1018,6 @@ class Auth extends CommonGLPI
         return $this->auth_succeded;
     }
 
-    private function getMFAPreAuthParameters(bool $remember_me): array
-    {
-        $user_fields = $this->user->fields;
-        // Remove LDAP connection resource if present to avoid serialization issues
-        unset($user_fields['_ldap_conn'], $user_fields['2fa']);
-        $params = [
-            'user' => $user_fields,
-            'auth_type' => $this->auth_type,
-            'extauth' => $this->extauth,
-            'remember_me' => $remember_me,
-            'user_present' => $this->user_present,
-        ];
-        if (isset($_REQUEST['redirect'])) {
-            $params['redirect'] = $_REQUEST['redirect'];
-        }
-        return $params;
-    }
-
     /**
      * Manage use authentication and initialize the session
      *
@@ -1045,60 +1026,28 @@ class Auth extends CommonGLPI
      * @param boolean $noauto          (false by default)
      * @param bool    $remember_me
      * @param string  $login_auth      Type of auth - id of the auth
-     * @param array   $mfa_params      MFA parameters
      *
      * @return boolean (success)
      */
-    public function login($login_name, $login_password, $noauto = false, $remember_me = false, $login_auth = '', array $mfa_params = [])
+    public function login($login_name, $login_password, $noauto = false, $remember_me = false, $login_auth = '')
     {
         global $CFG_GLPI, $DB;
 
-        $mfa_pre_auth = $_SESSION['mfa_pre_auth'] ?? null;
-        if ($mfa_pre_auth) {
+        if ($_SESSION['mfa_success'] ?? false) {
+            // Post MFA validation
+            $login_name     = $_SESSION['mfa_pre_auth']['username'];
+            $noauto         = $_SESSION['mfa_pre_auth']['noauto'];
+            $remember_me    = $_SESSION['mfa_pre_auth']['remember_me'];
+
             $this->user = new User();
-            $this->user->fields = $mfa_pre_auth['user'];
-            $this->user_present = $mfa_pre_auth['user_present'];
-            $this->auth_type = $mfa_pre_auth['auth_type'];
-            $this->extauth = $mfa_pre_auth['extauth'];
-            $remember_me = $mfa_pre_auth['remember_me'];
-            $this->auth_succeded = true;
-            unset($_SESSION['mfa_pre_auth']);
-        }
+            $this->auth_succeded = $this->user->getFromDB($_SESSION['mfa_pre_auth']['user_id']);
 
-        // Ok, we have gathered sufficient data, if the first return false the user
-        // is not present on the DB, so we add him.
-        // if not, we update him.
-        $mfa_success = $_SESSION['mfa_success'] ?? false;
-
-        if ($mfa_pre_auth || $this->validateLogin($login_name, $login_password, $noauto, $login_auth)) {
+            unset($_SESSION['mfa_pre_auth'], $_SESSION['mfa_success']);
+        } elseif ($this->validateLogin($login_name, $login_password, $noauto, $login_auth)) {
             if (isset($this->user->fields['_deny_login'])) {
                 $this->addToError(__('User not authorized to connect in GLPI'));
                 $this->auth_succeded = false;
                 $this->denied_by_rule = true;
-            } elseif (!$mfa_success) {
-                // Check MFA
-                $totp = new TOTPManager();
-                $web_access = !isAPI() && !isCommandLine();
-
-                // In some cases, the session is restored from a remember me cookie.
-                // This results in a redirect loop because there is no mfa_pre_auth session variable, but the login is revalidated when the username and password passed here are empty.
-                // In this case, since the user is technically still logged in, we can just say the login is valid and not process any MFA stuff.
-                if ($web_access && $this->auth_type !== self::COOKIE) {
-                    $enforcement = $totp->get2FAEnforcement($this->user->fields['id']);
-                    if ($totp->is2FAEnabled($this->user->fields['id'])) {
-                        // If MFA is mandatory the user has not already skipped MFA while in a grace period for this login, then we need to ask for it now
-                        $_SESSION['mfa_pre_auth'] = $this->getMFAPreAuthParameters($remember_me);
-                        // Manually close session here so that serialization issues are properly reported to avoid a difficult debugging situation when if silently fails when closed at the end of the request
-                        session_write_close();
-                        Html::redirect($CFG_GLPI["root_doc"] . '/MFA/Prompt');
-                    } elseif ($enforcement === TOTPManager::ENFORCEMENT_MANDATORY || ($enforcement === TOTPManager::ENFORCEMENT_MANDATORY_GRACE_PERIOD && !isset($_REQUEST['skip_mfa']))) {
-                        // If MFA is mandatory the user has not already skipped MFA while in a grace period for this login, then we need to ask for it now
-                        $_SESSION['mfa_pre_auth'] = $this->getMFAPreAuthParameters($remember_me);
-                        // Manually close session here so that serialization issues are properly reported to avoid a difficult debugging situation when if silently fails when closed at the end of the request
-                        session_write_close();
-                        Html::redirect($CFG_GLPI["root_doc"] . '/MFA/Setup');
-                    }
-                }
             }
 
             //Set user an not deleted from LDAP
@@ -1134,6 +1083,39 @@ class Auth extends CommonGLPI
                     // Auto add not enable so auth failed
                     $this->addToError(__('User not authorized to connect in GLPI'));
                     $this->auth_succeded = false;
+                }
+            }
+
+            $check_mfa = $this->auth_succeded
+                && !isAPI()
+                && !isCommandLine()
+                // In some cases, the session is restored from a remember me cookie.
+                // In this case, since the user is technically still logged in, we can just say the login is valid and not process any MFA stuff.
+                && $this->auth_type !== self::COOKIE
+            ;
+            if ($check_mfa) {
+                // Check MFA
+                $totp = new TOTPManager();
+
+                $mfa_pre_auth = [
+                    'user_id'     => $this->user->getID(),
+                    'username'    => $this->user->fields['name'],
+                    'remember_me' => $remember_me,
+                    'noauto'      => $noauto,
+                    'redirect'    => $_REQUEST['redirect'] ?? null,
+                ];
+
+                if ($this->user_present && $totp->is2FAEnabled($this->user->fields['id'])) {
+                    // If MFA is mandatory the user has not already skipped MFA while in a grace period for this login, then we need to ask for it now
+                    $_SESSION['mfa_pre_auth'] = $mfa_pre_auth;
+                    Html::redirect($CFG_GLPI["root_doc"] . '/MFA/Prompt');
+                }
+
+                $enforcement = $totp->get2FAEnforcement($this->user->fields['id']);
+                if ($enforcement === TOTPManager::ENFORCEMENT_MANDATORY || ($enforcement === TOTPManager::ENFORCEMENT_MANDATORY_GRACE_PERIOD && !isset($_REQUEST['skip_mfa']))) {
+                    // If MFA is mandatory the user has not already skipped MFA while in a grace period for this login, then we need to ask for it now
+                    $_SESSION['mfa_pre_auth'] = $mfa_pre_auth;
+                    Html::redirect($CFG_GLPI["root_doc"] . '/MFA/Setup');
                 }
             }
         }
