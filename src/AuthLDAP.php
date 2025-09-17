@@ -4845,4 +4845,41 @@ class AuthLDAP extends CommonDBTM
         );
         return $message;
     }
+
+    /**
+     * Extracts the Kerberos realm from the basedn's DC components.
+     *
+     * This makes the assuption that the Kerberos realm's name is the LDAP's fully qualified domain name, in uppercase.
+     * While this is true for a large majority of configurations (and notably Active Directories), this is _not_ a
+     * Kerberos requirement. Therefore, some realms may not be aligned on the domain's FDQN and this method will not
+     * return a correct answer.
+     *
+     * A manual override would require a new field in glpi_authldaps, though.
+     *
+     * @return string The LDAP server's Kerberos realm
+     */
+    public function getKerberosRealm()
+    {
+       return strtoupper(
+          implode(
+             ".",
+             array_map(
+                function ($c) {
+                   return $c[1];
+                },
+                array_filter(
+                   array_map(
+                      function ($c) {
+                         return explode("=", $c, 2);
+                      },
+                      explode(",", $this->fields['basedn'])),
+                   function ($c) {
+                      return $c[0] == "DC";
+                   }
+                )
+             )
+          )
+       );
+   }
+
 }
