@@ -621,7 +621,7 @@ EOT;
             }
         }
 
-        if ($CFG_GLPI['enable_hlapi']) {
+        if ($CFG_GLPI['enable_hlapi'] ?? 0) {
             // OAuth will only be used if the API is enabled
             try {
                 $this->handleAuth($request);
@@ -644,7 +644,7 @@ EOT;
             $response = new Response(404);
         } else {
             $requires_auth = $matched_route->getRouteSecurityLevel() !== Route::SECURITY_NONE;
-            if ($CFG_GLPI['enable_hlapi']) {
+            if ($CFG_GLPI['enable_hlapi']i ?? 0) {
                 $unauthenticated_response = new JSONResponse([
                     'title' => _x('api', 'You are not authenticated'),
                     'detail' => _x('api', 'The Authorization header is missing or invalid'),
