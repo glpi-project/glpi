@@ -34,14 +34,8 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
-use Computer;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
-use Glpi\Asset\Asset;
-use Glpi\Features\AssignableItemInterface;
 use Glpi\Http\Request;
-use Group_Item;
-use PHPUnit\Framework\Attributes\DataProvider;
-use Unmanaged;
 
 class DropdownControllerTest extends \HLAPITestCase
 {
