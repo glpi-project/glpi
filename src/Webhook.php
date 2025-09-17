@@ -486,7 +486,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         return $sub_item;
     }
 
-    private function getAPIResponse(string $path): ?array
+    private function getAPIResponse(string $path): array
     {
         $router = Router::getInstance();
         $router->registerAuthMiddleware(new InternalAuthMiddleware());
@@ -498,11 +498,11 @@ class Webhook extends CommonDBTM implements FilterableInterface
             try {
                 $data = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
             } catch (JsonException $e) {
-                $data = null;
+                throw new RuntimeException('Failed to decode API response from ' . $path . ': ' . $e->getMessage());
             }
             return $data;
         }
-        return null;
+        throw new RuntimeException('Failed to get API response from ' . $path . ': HTTP ' . $response->getStatusCode());
     }
 
     /**
@@ -1156,7 +1156,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             $webhook->getFromDB($webhook_data['id']);
 
             $api_data = $webhook->getAPIResponse($path);
-            $body = $webhook->getWebhookBody($event, $api_data, $item::getType(), $item->getID());
+            $body = $webhook->getWebhookBody($event, $api_data, $item::class, $item->getID());
             // Check if the item matches the webhook filters
             if (!$webhook->itemMatchFilter($item)) {
                 continue;
