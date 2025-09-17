@@ -589,6 +589,7 @@ class Config extends CommonDBTM
         $endpoint_doc = $current_version['endpoint'] . '/doc';
 
         TemplateRenderer::getInstance()->display('pages/setup/general/api_setup.html.twig', [
+            'config_object' => new Config(),
             'config' => $CFG_GLPI,
             'canedit' => static::canUpdate(),
             'getting_started_doc_url' => $getting_started_doc,
