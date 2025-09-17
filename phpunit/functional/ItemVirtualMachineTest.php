@@ -107,6 +107,8 @@ class ItemVirtualMachineTest extends DbTestCase
         //a machine exists yet
         $this->assertFalse($obj->findVirtualMachine(['itemtype' => \Computer::getType(), 'uuid' => $uuid]));
 
+        $count_before_import = countElementsInTable(\RuleMatchedLog::getTable());
+
         $this->assertGreaterThan(
             0,
             $cid = $computer->add([
@@ -117,5 +119,7 @@ class ItemVirtualMachineTest extends DbTestCase
         );
 
         $this->assertEquals($cid, $obj->findVirtualMachine(['itemtype' => \Computer::getType(),'uuid' => $uuid]));
+
+        $this->assertEquals(1, countElementsInTable(\RuleMatchedLog::getTable()) - $count_before_import);
     }
 }

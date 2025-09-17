@@ -63,6 +63,7 @@ use RuleImportEntityCollection;
 use RuleLocationCollection;
 use RuleMatchedLog;
 use stdClass;
+use Toolbox;
 use Transfer;
 
 use function Safe\json_encode;
@@ -959,6 +960,7 @@ abstract class MainAsset extends InventoryAsset
             'method'    => $this->request_query ?? Request::INVENT_QUERY,
             'input'     => json_encode($this->rulematchedlog_input),
         ];
+        //Toolbox::logDebug($inputrulelog);
         $rulesmatched->add($inputrulelog, [], false);
         $rulesmatched->cleanOlddata($items_id, $itemtype);
 

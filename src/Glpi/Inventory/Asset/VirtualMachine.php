@@ -44,6 +44,8 @@ use RuleImportAssetCollection;
 use RuntimeException;
 use stdClass;
 
+use function Safe\json_encode;
+
 class VirtualMachine extends InventoryAsset
 {
     use InventoryNetworkPort;
@@ -312,21 +314,40 @@ class VirtualMachine extends InventoryAsset
 
             if (property_exists($vm, 'uuid') && $vm->uuid != '') {
                 $computers_vm_id = $this->getExistingVMAsComputer($vm);
+                $rulesmatched = new \RuleMatchedLog();
                 $rule = new RuleImportAssetCollection();
                 $rule->getCollectionPart();
                 $input = $this->handleInput($vm, $this->item);
                 $input['itemtype'] = Computer::class;
+                $agents_id = !empty($this->agent->fields['id']) ? $this->agent->fields['id'] : 0;
+
                 if ($computers_vm_id == 0) {
                     //call rules on current collected data to find item
                     //a callback on rulepassed() will be done if one is found.
                     $input['states_id'] = $this->conf->states_id_default > 0 ? $this->conf->states_id_default : 0;
                     $input['entities_id'] = $this->main_asset->getEntityID();
-                    $datarules = $rule->processAllRules($input);
+                    // Using ['return' => true] forces the rule engine to return the found item directly or indicate that no matching rule was found.
+                    // This bypasses the default rulePassed() call for the current asset type.
+                    // This call to processAllRules() is only to check whether the asset is rejected by a rule.
+                    // Responsibility for creating the item lies with this code block.
+                    $datarules = $rule->processAllRules($input, [], ['return' => true]);
 
                     if (isset($datarules['_no_rule_matches']) && ($datarules['_no_rule_matches'] == '1') || isset($datarules['found_inventories'])) {
                         //this is a new one
                         $vm->entities_id = $this->item->fields['entities_id'];
                         $computers_vm_id = $computervm->add($input);
+
+                        $inputrulelog = [
+                            'date'      => date('Y-m-d H:i:s'),
+                            'rules_id'  => 0,
+                            'items_id'  => $computers_vm_id,
+                            'itemtype'  => $input['itemtype'],
+                            'agents_id' => $agents_id,
+                            'method'    => 'inventory',
+                            'input'     => json_encode(['uuid' => $input['uuid']]),
+                        ];
+                        $rulesmatched->add($inputrulelog, [], false);
+
                     } else {
                         //refused by rules
                         continue;
@@ -338,9 +359,28 @@ class VirtualMachine extends InventoryAsset
                     if ($this->conf->states_id_default != '-1') {
                         $input['states_id'] = $this->conf->states_id_default;
                     }
-                    $datarules = $rule->processAllRules($input);
+                    // Using ['return' => true] forces the rule engine to return the found item directly or indicate that no matching rule was found.
+                    // This bypasses the default rulePassed() call for the current asset type.
+                    // This call to processAllRules() is only to check whether the asset is rejected by a rule.
+                    // Responsibility for updating the item lies with this code block.
+                    $datarules = $rule->processAllRules($input, [], ['return' => true]);
                     if (isset($datarules['_no_rule_matches']) && ($datarules['_no_rule_matches'] == '1') || isset($datarules['found_inventories'])) {
                         $computervm->update($input);
+
+                        $inputrulelog = [
+                            'date'      => date('Y-m-d H:i:s'),
+                            'rules_id'  => 0,
+                            'items_id'  => $computers_vm_id,
+                            'itemtype'  => $input['itemtype'],
+                            'agents_id' => $agents_id,
+                            'method'    => 'inventory',
+                            'input'     => json_encode(['uuid' => $input['uuid']]),
+                        ];
+                        $rulesmatched->add($inputrulelog, [], false);
+
+                    } else {
+                        //refused by rules
+                        continue;
                     }
                 }
 
