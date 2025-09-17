@@ -41,8 +41,8 @@ declare namespace Cypress {
         validateBreadcrumbs(breadcrumbs: array): Chainable<any>
         validateMenuIsActive(name: string): Chainable<any>
         updateTestUserSettings(object: settings): Chainable<any>
-        createWithAPI(itemtype: string, values, array): Chainable<any>
-        updateWithAPI(itemtype: string, id: number, values, array): Chainable<any>
+        createWithAPI(itemtype: string, values: array): Chainable<any>
+        updateWithAPI(itemtype: string, id: number, values: array): Chainable<any>
         deleteWithAPI(itemtype): Chainable<any>
         searchWithAPI(itemtype: string, values, array): Chainable<any>
     }
