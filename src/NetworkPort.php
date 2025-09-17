@@ -689,7 +689,7 @@ class NetworkPort extends CommonDBChild
             echo "</div>";
 
             echo "<div class='col-auto'>";
-            echo "<button type='submit' name='add' class='btn btn-primary ms-1'>";
+            echo "<button type='submit' name='add' value='1' class='btn btn-primary ms-1'>";
             echo "<i class='ti ti-link'></i>" . _sx('button', 'Add');
             echo "</button>";
             echo "</div>";
