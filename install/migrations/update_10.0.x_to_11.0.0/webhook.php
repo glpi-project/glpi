@@ -79,6 +79,8 @@ if (!$DB->tableExists('glpi_webhooks')) {
       KEY `webhookcategories_id` (`webhookcategories_id`)
     ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->doQuery($query);
+} else {
+    $migration->changeField('glpi_webhooks', 'url', 'url', 'text');
 }
 
 if (!$DB->fieldExists('glpi_webhooks', 'webhookcategories_id')) {
@@ -144,6 +146,8 @@ if (!$DB->tableExists('glpi_queuedwebhooks')) {
       KEY `sent_time` (`sent_time`)
     ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->doQuery($query);
+} else {
+    $migration->changeField('glpi_queuedwebhooks', 'url', 'url', 'text');
 }
 
 // Entity, ID, Webhook, Itemtype, Items ID, URL, Creation date
