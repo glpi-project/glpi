@@ -9586,7 +9586,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ];
 
             $tables['glpi_authldaps'][] = [
-                'name'            => '_local_ldap',
+                'name'            => '_e2e_ldap',
                 'host'            => 'openldap',
                 'basedn'          => 'dc=glpi,dc=org',
                 'rootdn'          => 'cn=Manager,dc=glpi,dc=org',

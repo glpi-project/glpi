@@ -220,7 +220,7 @@ class TestUpdatedDataCommand extends Command
                 }
 
                 // Ignore e2e LDAP
-                if ($table_name === 'glpi_authldaps' && $row_data['name'] === '_local_ldap') {
+                if ($table_name === 'glpi_authldaps' && $row_data['name'] === '_e2e_ldap') {
                     continue;
                 }
 
