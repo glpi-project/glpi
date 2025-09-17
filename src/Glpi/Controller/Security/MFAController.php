@@ -140,7 +140,8 @@ final class MFAController extends AbstractController
             }
         } else {
             // 2FA is not set up yet, the user is in a grace period, and the user chose to skip it
-            $next_page = '/front/login.php?' . $query_params . '&skip_mfa=1';
+            $_SESSION['mfa_exploit_grace_period'] = true;
+            $next_page = '/front/login.php?' . $query_params;
         }
 
         return new RedirectResponse($next_page);

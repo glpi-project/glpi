@@ -1033,7 +1033,7 @@ class Auth extends CommonGLPI
     {
         global $CFG_GLPI, $DB;
 
-        if ($_SESSION['mfa_success'] ?? false) {
+        if (($_SESSION['mfa_success'] ?? false) || ($_SESSION['mfa_exploit_grace_period'] ?? false)) {
             // Post MFA validation
             $login_name     = $_SESSION['mfa_pre_auth']['username'];
             $noauto         = $_SESSION['mfa_pre_auth']['noauto'];
@@ -1042,7 +1042,7 @@ class Auth extends CommonGLPI
             $this->user = new User();
             $this->auth_succeded = $this->user->getFromDB($_SESSION['mfa_pre_auth']['user_id']);
 
-            unset($_SESSION['mfa_pre_auth'], $_SESSION['mfa_success']);
+            unset($_SESSION['mfa_pre_auth'], $_SESSION['mfa_success'], $_SESSION['mfa_exploit_grace_period']);
         } elseif ($this->validateLogin($login_name, $login_password, $noauto, $login_auth)) {
             if (isset($this->user->fields['_deny_login'])) {
                 $this->addToError(__('User not authorized to connect in GLPI'));
@@ -1106,14 +1106,11 @@ class Auth extends CommonGLPI
                 ];
 
                 if ($this->user_present && $totp->is2FAEnabled($this->user->fields['id'])) {
-                    // If MFA is mandatory the user has not already skipped MFA while in a grace period for this login, then we need to ask for it now
                     $_SESSION['mfa_pre_auth'] = $mfa_pre_auth;
                     Html::redirect($CFG_GLPI["root_doc"] . '/MFA/Prompt');
                 }
 
-                $enforcement = $totp->get2FAEnforcement($this->user->fields['id']);
-                if ($enforcement === TOTPManager::ENFORCEMENT_MANDATORY || ($enforcement === TOTPManager::ENFORCEMENT_MANDATORY_GRACE_PERIOD && !isset($_REQUEST['skip_mfa']))) {
-                    // If MFA is mandatory the user has not already skipped MFA while in a grace period for this login, then we need to ask for it now
+                if ($totp->get2FAEnforcement($this->user->fields['id']) !== TOTPManager::ENFORCEMENT_OPTIONAL) {
                     $_SESSION['mfa_pre_auth'] = $mfa_pre_auth;
                     Html::redirect($CFG_GLPI["root_doc"] . '/MFA/Setup');
                 }
