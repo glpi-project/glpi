@@ -4569,6 +4569,15 @@ JS;
         $output = '';
 
         // Escape variables for JS
+        foreach ($params as $key => $val) {
+            // Specific boolean case: cast them to integer to prevent issues when passing `"false"` strings through
+            // URL / form body.
+            // see #21025
+            if (is_bool($val)) {
+                $params[$key] = $val ? 1 : 0;
+            }
+        }
+
         $field_id            = jsescape($field_id);
         $width               = jsescape($width);
         $multiple            = jsescape($multiple);
