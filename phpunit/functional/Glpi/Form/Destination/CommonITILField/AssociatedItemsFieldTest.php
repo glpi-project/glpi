@@ -192,6 +192,74 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
         );
     }
 
+    public function testAssociatedItemsFromSpecificAnswersInFrench(): void
+    {
+        // Same as the previous test but using another language.
+        // This may trigger an error because CommonITILObject::getAllTypesForHelpdesk
+        // is language dependant
+
+        $this->login();
+        \Session::loadLanguage('fr_FR');
+
+        // Create computers and monitors
+        $computers = $this->createComputers(2);
+        $monitors = $this->createMonitors(2);
+
+        $form = $this->createAndGetFormWithMultipleItemQuestions();
+        $specific_answers = new AssociatedItemsFieldConfig(
+            strategies: [AssociatedItemsFieldStrategy::SPECIFIC_ANSWERS],
+            specific_question_ids: [
+                $this->getQuestionId($form, "Your Computer"),
+                $this->getQuestionId($form, "Your Monitors"),
+                $this->getQuestionId($form, "Computer"),
+            ]
+        );
+
+        // Test with no answers
+        $this->sendFormAndAssertAssociatedItems(
+            form: $form,
+            config: $specific_answers,
+            answers: [],
+            expected_associated_items: [
+                Form::getType() => [
+                    $form->getID() => $form->getID(),
+                ],
+            ]
+        );
+
+        // Test with answers
+        $this->sendFormAndAssertAssociatedItems(
+            form: $form,
+            config: $specific_answers,
+            answers: [
+                "Your Computer" => [
+                    'Computer_' . $computers[0]->getID(),
+                ],
+                "Your Monitors" => [
+                    'Monitor_' . $monitors[0]->getID(),
+                    'Monitor_' . $monitors[1]->getID(),
+                ],
+                "Computer" => [
+                    'itemtype' => Computer::getType(),
+                    'items_id' => $computers[1]->getID(),
+                ],
+            ],
+            expected_associated_items: [
+                Computer::getType() => [
+                    $computers[0]->getID() => $computers[0]->getID(),
+                    $computers[1]->getID() => $computers[1]->getID(),
+                ],
+                Monitor::getType() => [
+                    $monitors[0]->getID() => $monitors[0]->getID(),
+                    $monitors[1]->getID() => $monitors[1]->getID(),
+                ],
+                Form::getType() => [
+                    $form->getID() => $form->getID(),
+                ],
+            ]
+        );
+    }
+
     public function testAssociatedItemsFromLastValidAnswer(): void
     {
         $this->login();
