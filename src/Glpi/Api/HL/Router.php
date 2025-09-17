@@ -36,6 +36,7 @@
 namespace Glpi\Api\HL;
 
 use Auth;
+use Config;
 use DropdownTranslation;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Controller\AdministrationController;
@@ -621,7 +622,7 @@ EOT;
             }
         }
 
-        if ($CFG_GLPI['enable_hlapi']) {
+        if (Config::isHlApiEnabled()) {
             // OAuth will only be used if the API is enabled
             try {
                 $this->handleAuth($request);
@@ -644,7 +645,7 @@ EOT;
             $response = new Response(404);
         } else {
             $requires_auth = $matched_route->getRouteSecurityLevel() !== Route::SECURITY_NONE;
-            if ($CFG_GLPI['enable_hlapi']) {
+            if (Config::isHlApiEnabled()) {
                 $unauthenticated_response = new JSONResponse([
                     'title' => _x('api', 'You are not authenticated'),
                     'detail' => _x('api', 'The Authorization header is missing or invalid'),

@@ -38,9 +38,9 @@
    {{ fields.largeTitle(__('API'), 'ti ti-api-app') }}
 
     {{ fields.smallTitle(__('API')) }}
-    {{ fields.sliderField('enable_hlapi', config['enable_hlapi'], __("Enable API")) }}
+    {{ fields.sliderField('enable_hlapi', config.isHlApiEnabled(), __("Enable API")) }}
     {{ fields.nullField() }}
-    {% if config['enable_hlapi'] %}
+    {% if config.isHlApiEnabled() %}
         {% set getting_started_doc %}<a href="{{ getting_started_doc_url }}">{{ __('API Getting Started') }}</a>{% endset %}
         {% set endpoint_doc %}<a href="{{ endpoint_doc_url }}">{{ __('API Endpoints') }}</a>{% endset %}
         {{ fields.htmlField(

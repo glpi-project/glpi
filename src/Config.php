@@ -2045,4 +2045,10 @@ class Config extends CommonDBTM
 
         return (bool) ($CFG_GLPI['allow_unauthenticated_uploads'] ?? false);
     }
+
+    public static function isHlApiEnabled(): bool
+    {
+        global $CFG_GLPI;
+        return (bool) ($CFG_GLPI['enable_hlapi'] ?? 0);
+    }
 }
