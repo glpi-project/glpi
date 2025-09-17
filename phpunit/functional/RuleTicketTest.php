@@ -3850,4 +3850,101 @@ class RuleTicketTest extends DbTestCase
             )
         );
     }
+
+    public function testDoNotComputeStatusTaskWithRule()
+    {
+        $this->login();
+
+        $user = getItemByTypeName('User', 'tech');
+
+        $this->updateItem(Entity::class, 0, [
+            'auto_assign_mode' => Entity::AUTO_ASSIGN_CATEGORY_HARDWARE
+        ]);
+
+        $rule = $this->createItem(Rule::class, [
+            'name'         => 'test do not compute status task with rule',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleTicket',
+            'condition'    => \RuleTicket::ONADD,
+            'is_recursive' => 1,
+        ]);
+
+        $this->createItem(RuleCriteria::class, [
+            'rules_id'  => $rule->getID(),
+            'criteria'  => 'name',
+            'condition' => \Rule::PATTERN_CONTAIN,
+            'pattern'   => 'close',
+        ]);
+
+        $this->createItem(RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'assign',
+            'field'       => 'status',
+            'value'       => CommonITILObject::CLOSED,
+        ]);
+
+        $task_template = $this->createItem(TaskTemplate::class, [
+            'name' => 'Task template',
+            'content' => 'Test task template content',
+            'entities_id' => 0,
+            'is_recursive' => 1,
+        ]);
+
+        $this->createItem(RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'append',
+            'field'       => 'task_template',
+            'value'       => $task_template->getID(),
+        ]);
+
+        $group = $this->createItem(\Group::class, [
+            'name' => 'Test group',
+        ]);
+
+        $this->createItem(\ITILCategory::class, [
+            'name' => 'Test category',
+            'groups_id' => $group->getID(),
+        ]);
+
+        $this->login('tech', 'tech');
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name' => 'test ticket close',
+            'content' => 'test ticket close content',
+            'entities_id' => 0,
+            'itilcategories_id' => getItemByTypeName(ITILCategory::class, 'Test category')->getID(),
+            '_actors'     => [
+                'requester' => [
+                    [
+                        'itemtype' => \User::class,
+                        'items_id' => $user->getID(),
+                    ],
+                ],
+            ],
+        ]);
+
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                \TicketTask::getTable(),
+                ['tickets_id' => $ticket->getID()]
+            )
+        );
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                \Ticket_User::getTable(),
+                ['tickets_id' => $ticket->getID(), 'users_id' => $user->getID()]
+            )
+        );
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                \Group_Ticket::getTable(),
+                ['tickets_id' => $ticket->getID(), 'groups_id' => $group->getID()]
+            )
+        );
+        $this->assertEquals(CommonITILObject::CLOSED, $ticket->fields['status']);
+    }
 }
