@@ -547,7 +547,7 @@ final class TOTPManager
         $tfa = $this->getTwoFactorAuth();
         $name = $this->getIssuer();
         if (isset($_SESSION['mfa_pre_auth'])) {
-            $name = $_SESSION['mfa_pre_auth']['user']['name'];
+            $name = $_SESSION['mfa_pre_auth']['username'];
         } elseif (isset($_SESSION['glpiname'])) {
             $name = $_SESSION['glpiname'];
         }
@@ -567,8 +567,11 @@ final class TOTPManager
      */
     public function showBackupCodes(int $users_id): void
     {
+        $redirect = $_SESSION['mfa_pre_auth']['redirect'] ?? null;
+
         TemplateRenderer::getInstance()->display('pages/2fa/2fa_backup_codes.html.twig', [
             'backup_codes' => $this->regenerateBackupCodes($users_id),
+            'redirect'     => $redirect,
         ]);
     }
 }
