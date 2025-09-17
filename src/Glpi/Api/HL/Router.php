@@ -36,6 +36,7 @@
 namespace Glpi\Api\HL;
 
 use Auth;
+use Config;
 use DropdownTranslation;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Controller\AdministrationController;
