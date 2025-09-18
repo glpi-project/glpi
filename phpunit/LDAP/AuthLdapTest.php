@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use AuthLDAP;
 use DbTestCase;
 use GLPIKey;
 use Group;
@@ -671,6 +672,48 @@ class AuthLdapTest extends DbTestCase
         $this->assertEmpty($result['rootdn_passwd']);
     }
 
+    public static function hostProvider(): array
+    {
+        return [
+            [
+                'host' => 'ldap.example.com',
+                'port' => 389,
+                'ldapuri' => 'ldap://ldap.example.com:389',
+            ],
+            [
+                'host' => 'ldap://ldap.example.com',
+                'port' => 389,
+                'ldapuri' => 'ldap://ldap.example.com:389',
+            ],
+            [
+                'host' => 'ldaps://ldap.example.com',
+                'port' => 389,
+                'ldapuri' => 'ldaps://ldap.example.com:389',
+            ],
+            [
+                'host' => 'LDAP://ldap.example.com',
+                'port' => 389,
+                'ldapuri' => 'ldap://ldap.example.com:389',
+            ],
+            [
+                'host' => 'LDAPS://ldap.example.com',
+                'port' => 389,
+                'ldapuri' => 'ldaps://ldap.example.com:389',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider hostProvider
+     */
+    public function testBuildUri(string $host, int $port, string $ldapuri): void
+    {
+        $this->assertSame(
+            $ldapuri,
+            AuthLDAP::buildUri($host, $port)
+        );
+    }
+
     /**
      * Test LDAP connection
      *
@@ -683,18 +726,27 @@ class AuthLdapTest extends DbTestCase
         $this->assertFalse(\AuthLDAP::testLDAPConnection(-1));
 
         $ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
+        $host = $ldap->fields['host'];
         $this->assertTrue(\AuthLDAP::testLDAPConnection($ldap->getID()));
         $this->checkLdapConnection($ldap->connect());
 
         $this->assertTrue(
             $ldap->update([
                 'id' => $ldap->getID(),
-                'host' => 'ldap://' . $ldap->fields['host'],
+                'host' => 'ldap://' . $host,
             ])
         );
         $this->assertTrue(\AuthLDAP::testLDAPConnection($ldap->getID()));
         $this->checkLdapConnection($ldap->connect());
 
+        $this->assertTrue(
+            $ldap->update([
+                'id' => $ldap->getID(),
+                'host' => 'LDAP://' . $host,
+            ])
+        );
+        $this->assertTrue(\AuthLDAP::testLDAPConnection($ldap->getID()));
+        $this->checkLdapConnection($ldap->connect());
     }
 
     /**

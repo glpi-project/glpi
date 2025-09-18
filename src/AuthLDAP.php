@@ -3089,13 +3089,7 @@ class AuthLDAP extends CommonDBTM
         $timeout = 0,
         bool $silent_bind_errors = false
     ) {
-        //Use an LDAP connection string
-        $ldapuri = sprintf(
-            '%s://%s:%s',
-            parse_url($host, PHP_URL_SCHEME) ?: 'ldap',
-            preg_replace('@^ldaps?://@', '', $host),
-            (int) $port
-        );
+        $ldapuri = self::buildUri($host, (int) $port);
         $ds = @ldap_connect($ldapuri);
 
         if ($ds === false) {
@@ -4844,5 +4838,23 @@ class AuthLDAP extends CommonDBTM
             (ldap_get_option($ds, LDAP_OPT_ERROR_STRING, $err_message) ? "\nerr string: " . $err_message : '')
         );
         return $message;
+    }
+
+    /**
+     * Use an LDAP connection string
+     *
+     * @param string $host
+     * @param int $port
+     *
+     * @return string
+     */
+    final public static function buildUri(string $host, int $port): string
+    {
+        return sprintf(
+            '%s://%s:%s',
+            strtolower(parse_url($host, PHP_URL_SCHEME) ?: 'ldap'),
+            preg_replace('@^ldaps?://@i', '', $host),
+            $port
+        );
     }
 }
