@@ -3851,16 +3851,32 @@ class RuleTicketTest extends DbTestCase
         );
     }
 
-    public function testDoNotComputeStatusTaskWithRule()
+    /**
+     * Test the action of a rule that adds a closed ticket
+     * upon creation and adds a task.
+     */
+    public function testTaskTemplateDoesNotReopenAClosedTicketWithRule()
     {
         $this->login();
 
         $user = getItemByTypeName('User', 'tech');
 
+        // Set entity auto assign mode to category hardware to auto assign group to add group to ticket
         $this->updateItem(Entity::class, 0, [
             'auto_assign_mode' => Entity::AUTO_ASSIGN_CATEGORY_HARDWARE,
         ]);
 
+        $group = $this->createItem(\Group::class, [
+            'name' => 'Test group',
+        ]);
+
+        $this->createItem(\ITILCategory::class, [
+            'name' => 'Test category',
+            'groups_id' => $group->getID(),
+        ]);
+
+        // Create rule to add a task template
+        // when the title contains 'close' key word
         $rule = $this->createItem(Rule::class, [
             'name'         => 'test do not compute status task with rule',
             'match'        => 'AND',
@@ -3891,17 +3907,10 @@ class RuleTicketTest extends DbTestCase
             'value'       => $task_template->getID(),
         ]);
 
-        $group = $this->createItem(\Group::class, [
-            'name' => 'Test group',
-        ]);
-
-        $this->createItem(\ITILCategory::class, [
-            'name' => 'Test category',
-            'groups_id' => $group->getID(),
-        ]);
-
         $this->login('tech', 'tech');
 
+        //First create a ticket with the key word 'close' in title to trigger the rule without close rule action
+        // to check that the task is well added and that the ticket is in assigned status
         $ticket = $this->createItem(Ticket::class, [
             'name' => 'test ticket close',
             'content' => 'test ticket close content',
@@ -3917,6 +3926,7 @@ class RuleTicketTest extends DbTestCase
             ],
         ]);
 
+        // Check that task is added
         $this->assertEquals(
             1,
             countElementsInTable(
@@ -3924,6 +3934,8 @@ class RuleTicketTest extends DbTestCase
                 ['tickets_id' => $ticket->getID()]
             )
         );
+
+        // Check that the ticket has the right group and user assigned
         $this->assertEquals(
             1,
             countElementsInTable(
@@ -3931,6 +3943,7 @@ class RuleTicketTest extends DbTestCase
                 ['tickets_id' => $ticket->getID(), 'users_id' => $user->getID()]
             )
         );
+
         $this->assertEquals(
             1,
             countElementsInTable(
@@ -3938,8 +3951,12 @@ class RuleTicketTest extends DbTestCase
                 ['tickets_id' => $ticket->getID(), 'groups_id' => $group->getID()]
             )
         );
+
+        // Check that ticket status is assigned
         $this->assertEquals(CommonITILObject::ASSIGNED, $ticket->fields['status']);
 
+        // Now add the rule action to close the ticket
+        // when the title contains 'close' key word
         $this->createItem(RuleAction::class, [
             'rules_id'    => $rule->getID(),
             'action_type' => 'assign',
@@ -3947,6 +3964,25 @@ class RuleTicketTest extends DbTestCase
             'value'       => CommonITILObject::CLOSED,
         ]);
 
+        // Create again a ticket with the key word 'close' in title to trigger the rule with close rule action
+        // to check that the task is well added and that the ticket is in closed status
+        // and not reopened by task template
+        $ticket = $this->createItem(Ticket::class, [
+            'name' => 'test ticket close',
+            'content' => 'test ticket close content',
+            'entities_id' => 0,
+            'itilcategories_id' => getItemByTypeName(ITILCategory::class, 'Test category')->getID(),
+            '_actors'     => [
+                'requester' => [
+                    [
+                        'itemtype' => \User::class,
+                        'items_id' => $user->getID(),
+                    ],
+                ],
+            ],
+        ]);
+
+        // Check that task is added
         $this->assertEquals(
             1,
             countElementsInTable(
@@ -3954,6 +3990,8 @@ class RuleTicketTest extends DbTestCase
                 ['tickets_id' => $ticket->getID()]
             )
         );
+
+        // Check that the ticket has the right group and user assigned
         $this->assertEquals(
             1,
             countElementsInTable(
@@ -3961,6 +3999,7 @@ class RuleTicketTest extends DbTestCase
                 ['tickets_id' => $ticket->getID(), 'users_id' => $user->getID()]
             )
         );
+
         $this->assertEquals(
             1,
             countElementsInTable(
@@ -3968,6 +4007,8 @@ class RuleTicketTest extends DbTestCase
                 ['tickets_id' => $ticket->getID(), 'groups_id' => $group->getID()]
             )
         );
-        $this->assertEquals(CommonITILObject::ASSIGNED, $ticket->fields['status']);
+
+        // Check that ticket status is closed
+        $this->assertEquals(CommonITILObject::CLOSED, $ticket->fields['status']);
     }
 }
