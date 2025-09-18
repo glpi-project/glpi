@@ -249,7 +249,12 @@ class RuleDefineItemtypeTest extends DbTestCase
     {
         $instance = new \RuleDefineItemtype();
         $ruleimportinstance = new \RuleImportAsset();
-        $this->assertSame(count($ruleimportinstance->getCriterias()), count($instance->getCriterias()));
+        // remove 4 criterias not present in RuleDefineItemtype
+        //  - linked_item
+        //  - entityrestrict
+        //  - link_criteria_port
+        //  - only_these_criteria
+        $this->assertSame(count($ruleimportinstance->getCriterias()) - 4, count($instance->getCriterias()));
     }
 
     public function testGetActions()
