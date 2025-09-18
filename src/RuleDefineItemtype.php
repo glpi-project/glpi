@@ -38,10 +38,6 @@ use Glpi\Application\View\TemplateRenderer;
 
 class RuleDefineItemtype extends Rule
 {
-    public const PATTERN_ENTITY_RESTRICT       = 202;
-    public const PATTERN_NETWORK_PORT_RESTRICT = 203;
-    public const PATTERN_ONLY_CRITERIA_RULE    = 204;
-
     public $restrict_matching = Rule::AND_MATCHING;
 
     public static $rightname         = 'rule_import';
@@ -65,6 +61,11 @@ class RuleDefineItemtype extends Rule
         $criteria = $ria->getCriterias();
 
         $criteria['itemtype']['type'] = 'dropdown_defineitemtype_itemtype';
+
+        unset($criteria['linked_item']);
+        unset($criteria['entityrestrict']);
+        unset($criteria['link_criteria_port']);
+        unset($criteria['only_these_criteria']);
 
         return $criteria;
     }
@@ -100,12 +101,7 @@ class RuleDefineItemtype extends Rule
 
     public function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern)
     {
-        if (
-            $condition == self::PATTERN_IS_EMPTY
-            || $condition == self::PATTERN_ENTITY_RESTRICT
-            || $condition == self::PATTERN_NETWORK_PORT_RESTRICT
-            || $condition == self::PATTERN_ONLY_CRITERIA_RULE
-        ) {
+        if ($condition == self::PATTERN_IS_EMPTY) {
             return __('Yes');
         }
         if ($condition == self::PATTERN_IS || $condition == self::PATTERN_IS_NOT) {
@@ -128,11 +124,6 @@ class RuleDefineItemtype extends Rule
         }
 
         switch ($condition) {
-            case self::PATTERN_ENTITY_RESTRICT:
-            case self::PATTERN_NETWORK_PORT_RESTRICT:
-                return true;
-
-            case Rule::PATTERN_FIND:
             case Rule::PATTERN_IS_EMPTY:
                 Dropdown::showYesNo($name, 0, 0);
                 return true;
