@@ -190,7 +190,6 @@ rector-apply: ## Run rector
 
 cypress: ## Run cypress tests
 	@$(eval c ?=)
-	@$(CONSOLE) cache:clear --env=testing
 	@$(CONSOLE) config:set url_base http://localhost:8080 --env=testing
 	@$(PHP) bash -c 'node_modules/.bin/cypress verify || node_modules/.bin/cypress install'
 	@$(PHP) node_modules/.bin/cypress run --project tests $(c)
