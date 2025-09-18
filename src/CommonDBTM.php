@@ -917,7 +917,7 @@ class CommonDBTM extends CommonGLPI
 
             foreach ($RELATION[static::getTable()] as $tablename => $fields) {
                 if ($tablename[0] == '_') {
-                    // Relation in tables prefixed by `_` are manualy handled.
+                    // Relation in tables prefixed by `_` are manually handled.
                     continue;
                 }
 

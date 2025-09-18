@@ -539,4 +539,53 @@ class ValidatorSubstituteTest extends DbTestCase
             $this->assertCount(0, $rows);
         }
     }
+
+    public function testSubstitutesRemoval()
+    {
+        $delegator = getItemByTypeName(User::class, 'tech');
+
+        //create 2 users
+        $user_one = $this->createItem(User::class, ['name' => 'Marie']);
+        $this->createItem(
+            \ValidatorSubstitute::class,
+            [
+                'users_id' => $delegator->getID(),
+                'users_id_substitute' => $user_one->getID(),
+            ]
+        );
+
+        $user_two = $this->createItem(User::class, ['name' => 'Jean']);
+        $this->createItem(
+            \ValidatorSubstitute::class,
+            [
+                'users_id' => $delegator->getID(),
+                'users_id_substitute' => $user_two->getID(),
+            ]
+        );
+
+        //check substitutes setup
+        $this->assertCount(2, $delegator->getSubstitutes());
+
+        // Prepare a MassiveAction for deleting users
+        $massive_ids = [
+            $user_one->getID() => $user_one->getID(),
+            $user_two->getID() => $user_two->getID(),
+        ];
+        $ma = new \MassiveAction(
+            [
+                'action' => 'purge',
+                'action_name' => 'Purge',
+                'items' => [User::class => $massive_ids],
+            ],
+            [],
+            'process'
+        );
+
+        // Process the massive action
+        $this->login();
+        \MassiveAction::processMassiveActionsForOneItemtype($ma, new User(), $massive_ids);
+
+        //make sure Users are removed
+        $this->assertCount(0, $delegator->find(['name' => ['Marie', 'Jean']]));
+    }
 }

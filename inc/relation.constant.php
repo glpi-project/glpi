@@ -1667,7 +1667,7 @@ $RELATION = [
         ],
         '_glpi_useremails'              => 'users_id',
         'glpi_users'                    => 'users_id_supervisor',
-        'glpi_validatorsubstitutes'     => [
+        '_glpi_validatorsubstitutes'     => [
             'users_id',
             'users_id_substitute',
         ],
