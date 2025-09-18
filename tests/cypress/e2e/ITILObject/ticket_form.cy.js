@@ -58,7 +58,8 @@ describe("Ticket Form", () => {
             cy.createWithAPI('ITILValidationTemplate_Target', {
                 itilvalidationtemplates_id: validationtemplates_id,
                 itemtype: 'User',
-                items_id: 2
+                items_id: 2,
+                validationsteps_id: 0,
             });
         });
         cy.createWithAPI('ITILValidationTemplate', {
@@ -101,6 +102,19 @@ describe("Ticket Form", () => {
                     items_id: 2, // glpi user
                     groups_id: group_id
                 });
+            });
+        });
+
+        // create a validation step + create validation template with this step
+        cy.createWithAPI('ValidationStep', {
+            name: `User Validation step ${rand}`,
+            minimal_required_validation_percent: 100,
+        }).then((validationsteps_id) => {
+            cy.createWithAPI('ITILValidationTemplate', {
+                name: `template with validation step ${rand}`,
+                content: 'template with validation step',
+                entities_id: 1,
+                validationsteps_id: validationsteps_id
             });
         });
     });
@@ -197,6 +211,34 @@ describe("Ticket Form", () => {
         cy.get('#modal_search_knowbaseitem').should('not.exist');
         cy.get('@content').then((content) => {
             cy.get('textarea[name="content"]').awaitTinyMCE().should('contain.text', content.trim());
+        });
+    });
+
+    /**
+     * User choose a template without validation step set
+     * Selected validation step should not change
+     */
+    it('Validation step template without validation step set', () => {
+        cy.visit(`/front/ticket.form.php?id=${test_tickets_id}`);
+        cy.findByRole('button', { name: 'View other actions' }).click();
+        cy.findByText('Ask for approval').click();
+        cy.get('.ITILValidation.show').within(() => {
+            cy.getDropdownByLabelText('Template').selectDropdownValue(`test user 2 ${rand}`).waitForNetworkIdle(25);
+            cy.getDropdownByLabelText('Approval step').invoke('text').should('equal', 'Approval');
+        });
+    });
+
+    /**
+     * User choose a template with a validation step set
+     * Selected validation step should change to the template one
+     */
+    it('Validation step template with validation step set', () => {
+        cy.visit(`/front/ticket.form.php?id=${test_tickets_id}`);
+        cy.findByRole('button', { name: 'View other actions' }).click();
+        cy.findByText('Ask for approval').click();
+        cy.get('.ITILValidation.show').within(() => {
+            cy.getDropdownByLabelText('Template').selectDropdownValue(`template with validation step ${rand}`).waitForNetworkIdle(25);
+            cy.getDropdownByLabelText('Approval step').invoke('text').should('equal', `User Validation step ${rand}`);
         });
     });
 
