@@ -49,8 +49,15 @@ final readonly class LoadLanguage implements EventSubscriberInterface
         ];
     }
 
-    public function onPostBoot(): void
+    public function onPostBoot(PostBootEvent $event): void
     {
+        if ($event->isReboot()) {
+            // Since the translation service is not managed by the kernel container,
+            // a kernel reboot has no effect on it,
+            // therefore reinstantiating it is not required.
+            return;
+        }
+
         Profiler::getInstance()->start('LoadLanguage::execute', Profiler::CATEGORY_BOOT);
 
         Session::loadLanguage();

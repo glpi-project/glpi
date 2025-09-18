@@ -50,8 +50,15 @@ final readonly class InitializeCache implements EventSubscriberInterface
         ];
     }
 
-    public function onPostBoot(): void
+    public function onPostBoot(PostBootEvent $event): void
     {
+        if ($event->isReboot()) {
+            // Since the GLPI core cache service is not managed by the kernel container,
+            // a kernel reboot has no effect on it,
+            // therefore reinstantiating it is not required.
+            return;
+        }
+
         /** @var CacheInterface|null $GLPI_CACHE */
         global $GLPI_CACHE;
 

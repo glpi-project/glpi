@@ -49,8 +49,15 @@ final readonly class InitializeDbConnection implements EventSubscriberInterface
         ];
     }
 
-    public function onPostBoot(): void
+    public function onPostBoot(PostBootEvent $event): void
     {
+        if ($event->isReboot()) {
+            // Since the database service is not managed by the kernel container,
+            // a kernel reboot has no effect on it,
+            // therefore reinstantiating it is not required.
+            return;
+        }
+
         Profiler::getInstance()->start('InitializeDbConnection::execute', Profiler::CATEGORY_BOOT);
 
         if (file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {

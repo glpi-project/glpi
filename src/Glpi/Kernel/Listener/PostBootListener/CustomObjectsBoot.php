@@ -53,8 +53,15 @@ final readonly class CustomObjectsBoot implements EventSubscriberInterface
         ];
     }
 
-    public function onPostBoot(): void
+    public function onPostBoot(PostBootEvent $event): void
     {
+        if ($event->isReboot()) {
+            // Since custom objects are handled outside the services managed by the kernel container,
+            // a kernel reboot does not custom objects from configs and static properties,
+            // and (re)booting definitins again may have unexpected side effects.
+            return;
+        }
+
         if (!$this->isDatabaseUsable()) {
             // Requires the database to be available.
             return;

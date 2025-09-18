@@ -51,9 +51,15 @@ final readonly class CheckPluginsStates implements EventSubscriberInterface
         ];
     }
 
-    public function onPostBoot(): void
+    public function onPostBoot(PostBootEvent $event): void
     {
         global $DB;
+
+        if ($event->isReboot()) {
+            // The kernel reboot has no impact on plugins states, no need to check them again.
+            return;
+        }
+
         if (
             !DBConnection::isDbAvailable()
             || !Config::isLegacyConfigurationLoaded()

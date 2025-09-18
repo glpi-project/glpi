@@ -49,8 +49,13 @@ final readonly class FlushBootErrors implements EventSubscriberInterface
         ];
     }
 
-    public function onPostBoot(): void
+    public function onPostBoot(PostBootEvent $event): void
     {
+        if ($event->isReboot()) {
+            // The boot error buffer is only used during the initial boot sequence.
+            return;
+        }
+
         Profiler::getInstance()->start('FlushBootErrors::execute', Profiler::CATEGORY_BOOT);
 
         ErrorHandler::disableBufferAndFlushMessages();

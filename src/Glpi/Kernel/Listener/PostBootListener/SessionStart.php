@@ -73,8 +73,14 @@ class SessionStart implements EventSubscriberInterface
         ];
     }
 
-    public function onPostBoot(): void
+    public function onPostBoot(PostBootEvent $event): void
     {
+        if ($event->isReboot()) {
+            // Restarting the session during a kernel reboot may have unexpected side effects
+            // and it is preferable to not do it.
+            return;
+        }
+
         global $CFG_GLPI;
 
         Profiler::getInstance()->start('SessionStart::execute', Profiler::CATEGORY_BOOT);
