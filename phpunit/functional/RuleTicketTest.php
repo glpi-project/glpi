@@ -3947,7 +3947,7 @@ class RuleTicketTest extends DbTestCase
             'value'       => CommonITILObject::CLOSED,
         ]);
 
-                $this->assertEquals(
+        $this->assertEquals(
             1,
             countElementsInTable(
                 \TicketTask::getTable(),
