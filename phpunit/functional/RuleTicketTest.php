@@ -3858,7 +3858,7 @@ class RuleTicketTest extends DbTestCase
         $user = getItemByTypeName('User', 'tech');
 
         $this->updateItem(Entity::class, 0, [
-            'auto_assign_mode' => Entity::AUTO_ASSIGN_CATEGORY_HARDWARE
+            'auto_assign_mode' => Entity::AUTO_ASSIGN_CATEGORY_HARDWARE,
         ]);
 
         $rule = $this->createItem(Rule::class, [
