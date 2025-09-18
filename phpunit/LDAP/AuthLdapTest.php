@@ -726,13 +726,14 @@ class AuthLdapTest extends DbTestCase
         $this->assertFalse(\AuthLDAP::testLDAPConnection(-1));
 
         $ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
+        $host = $ldap->fields['host'];
         $this->assertTrue(\AuthLDAP::testLDAPConnection($ldap->getID()));
         $this->checkLdapConnection($ldap->connect());
 
         $this->assertTrue(
             $ldap->update([
                 'id' => $ldap->getID(),
-                'host' => 'ldap://' . $ldap->fields['host'],
+                'host' => 'ldap://' . $host,
             ])
         );
         $this->assertTrue(\AuthLDAP::testLDAPConnection($ldap->getID()));
@@ -741,7 +742,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue(
             $ldap->update([
                 'id' => $ldap->getID(),
-                'host' => 'LDAP://' . $ldap->fields['host'],
+                'host' => 'LDAP://' . $host,
             ])
         );
         $this->assertTrue(\AuthLDAP::testLDAPConnection($ldap->getID()));
