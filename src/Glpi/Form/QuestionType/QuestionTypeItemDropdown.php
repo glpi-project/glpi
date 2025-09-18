@@ -142,7 +142,8 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
             itemtype: $extra_data_config[QuestionTypeItemDropdownExtraDataConfig::ITEMTYPE] ?? null,
             categories_filter: $categories_filter,
             root_items_id: $extra_data_config[QuestionTypeItemDropdownExtraDataConfig::ROOT_ITEMS_ID] ?? null,
-            subtree_depth: $extra_data_config[QuestionTypeItemDropdownExtraDataConfig::SUBTREE_DEPTH] ?? null
+            subtree_depth: $extra_data_config[QuestionTypeItemDropdownExtraDataConfig::SUBTREE_DEPTH] ?? null,
+            selectable_tree_root: $extra_data_config[QuestionTypeItemDropdownExtraDataConfig::SELECTABLE_TREE_ROOT] ?? null,
         ))->jsonSerialize();
     }
 

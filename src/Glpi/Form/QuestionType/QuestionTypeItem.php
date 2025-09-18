@@ -537,12 +537,12 @@ class QuestionTypeItem extends AbstractQuestionType implements
             return $params;
         }
 
-        if (is_a($itemtype, CommonTreeDropdown::class, true)) {
-            if ($item->maybeActive()) {
-                // Ensure only active items are shown
-                $params[$itemtype::getTableField('is_active')] = 1;
-            }
+        if ($item->maybeActive()) {
+            // Ensure only active items are shown
+            $params[$itemtype::getTableField('is_active')] = 1;
+        }
 
+        if (is_a($itemtype, CommonTreeDropdown::class, true)) {
             // Apply specific root
             $root_items_id = $this->getRootItemsId($question);
             if ($root_items_id > 0) {
@@ -567,11 +567,9 @@ class QuestionTypeItem extends AbstractQuestionType implements
             if ($subtree_depth > 0) {
                 $params[$itemtype::getTableField('level')] = ['<=', $subtree_depth + ($root_item_level ?? 0)];
             }
-
-            return ['WHERE' => $params];
         }
 
-        return $params;
+        return ['WHERE' => $params];
     }
 
     #[Override]

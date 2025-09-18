@@ -119,7 +119,10 @@ class FormTest extends DbTestCase
                 ],
             ],
             QuestionTypeItem::class => [
-                'itemtype' => 'Computer',
+                'itemtype'             => 'Computer',
+                'root_items_id'        => 0,
+                'subtree_depth'        => 0,
+                'selectable_tree_root' => true,
             ],
             QuestionTypeItemDropdown::class => [
                 'itemtype'             => 'Location',
