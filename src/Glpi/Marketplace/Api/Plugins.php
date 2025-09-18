@@ -41,6 +41,7 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Message;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
+use Safe\Exceptions\SessionException;
 use Session;
 use Toolbox;
 
@@ -435,7 +436,11 @@ class Plugins
         }
 
         // close session to permits polling of progress by frontend
-        session_write_close();
+        try {
+            session_write_close();
+        } catch (SessionException) {
+            // there may be no session started
+        }
 
         $options = [
             'headers'  => [
