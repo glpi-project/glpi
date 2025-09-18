@@ -368,9 +368,7 @@ abstract class CommonITILValidation extends CommonDBChild
         global $CFG_GLPI;
 
         $itilobject = $this->getItem();
-        if (!($itilobject instanceof CommonITILObject)) {
-            throw new RuntimeException();
-        }
+        $this->checkIsAnItilObject($itilobject);
 
         // Handle rich-text images
         foreach (['comment_submission', 'comment_validation'] as $content_field) {
@@ -2067,7 +2065,7 @@ HTML;
         if (!$itil_validationstep->getFromDBByCrit($relation_fields)) {
             $validationstep = new ValidationStep();
             if (!$validationstep->getFromDB($input['_validationsteps_id'])) {
-                throw new RuntimeException();
+                throw new RuntimeException('Failed to get validation step with id #' . $input['_validationsteps_id']);
             };
 
             $step_input = $relation_fields + [
@@ -2075,12 +2073,11 @@ HTML;
             ];
 
             if (!$itil_validationstep->add($step_input)) {
-                throw new RuntimeException();
+                throw new RuntimeException('Failed to create approval step of type ' . get_class($itil_validationstep));
             }
         }
 
         $input['itils_validationsteps_id'] = $itil_validationstep->getID();
-
         unset($input['_validationsteps_id']);
 
         return $input;
@@ -2110,9 +2107,7 @@ HTML;
     public function recomputeItilStatus(): void
     {
         $itil_object = $this->getItem();
-        if (!($itil_object instanceof CommonITILObject)) {
-            throw new RuntimeException();
-        }
+        $this->checkIsAnItilObject($itil_object);
 
         $update = $itil_object->update([
             'id' => $itil_object->getID(),
@@ -2121,6 +2116,16 @@ HTML;
         ]);
         if (!$update) {
             throw new RuntimeException('Failed to update Itil global approval status.');
+        }
+    }
+
+    /**
+     * @throws RuntimeException
+     */
+    private function checkIsAnItilObject(false|CommonDBTM $itilobject): void
+    {
+        if (!($itilobject instanceof CommonITILObject)) {
+            throw new RuntimeException('Validation must be linked to an ITIL object. ' . get_class($itilobject) . ' given.');
         }
     }
 }
