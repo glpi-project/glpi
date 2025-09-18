@@ -56,7 +56,7 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
 
         $builder = new FormBuilder();
         $builder->addQuestion("Category", QuestionTypeItemDropdown::class, 0, json_encode(
-            ['itemtype' => ITILCategory::getType(), 'categories_filter' => [], 'root_items_id' => 0, 'subtree_depth' => 0]
+            ['itemtype' => ITILCategory::getType(), 'categories_filter' => [], 'root_items_id' => 0, 'subtree_depth' => 0, 'selectable_tree_root' => false]
         ));
         $form = $this->createForm($builder);
 
