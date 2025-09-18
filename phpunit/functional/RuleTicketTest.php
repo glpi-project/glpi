@@ -3877,13 +3877,6 @@ class RuleTicketTest extends DbTestCase
             'pattern'   => 'close',
         ]);
 
-        $this->createItem(RuleAction::class, [
-            'rules_id'    => $rule->getID(),
-            'action_type' => 'assign',
-            'field'       => 'status',
-            'value'       => CommonITILObject::CLOSED,
-        ]);
-
         $task_template = $this->createItem(TaskTemplate::class, [
             'name' => 'Task template',
             'content' => 'Test task template content',
@@ -3945,6 +3938,36 @@ class RuleTicketTest extends DbTestCase
                 ['tickets_id' => $ticket->getID(), 'groups_id' => $group->getID()]
             )
         );
-        $this->assertEquals(CommonITILObject::CLOSED, $ticket->fields['status']);
+        $this->assertEquals(CommonITILObject::ASSIGNED, $ticket->fields['status']);
+
+        $this->createItem(RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'assign',
+            'field'       => 'status',
+            'value'       => CommonITILObject::CLOSED,
+        ]);
+
+                $this->assertEquals(
+            1,
+            countElementsInTable(
+                \TicketTask::getTable(),
+                ['tickets_id' => $ticket->getID()]
+            )
+        );
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                \Ticket_User::getTable(),
+                ['tickets_id' => $ticket->getID(), 'users_id' => $user->getID()]
+            )
+        );
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                \Group_Ticket::getTable(),
+                ['tickets_id' => $ticket->getID(), 'groups_id' => $group->getID()]
+            )
+        );
+        $this->assertEquals(CommonITILObject::ASSIGNED, $ticket->fields['status']);
     }
 }
