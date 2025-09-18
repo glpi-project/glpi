@@ -278,6 +278,11 @@ class VirtualMachineTest extends AbstractInventoryAsset
             'uuid' => '420904fe-6a92-95e8-13f9-a37fc3607c14',
         ]));
 
+        //Count RuleMatchedLog for Cmputer
+        $rml = new \RuleMatchedLog();
+        $this->assertCount(1, $rml->find(['itemtype' => \Computer::class, 'items_id' => $computer_linked_first->fields['id']]));
+
+
         //get NetworkPort Computer
         $netport_computer_linked_first = new \NetworkPort();
         $this->assertTrue($netport_computer_linked_first->getFromDBByCrit([
@@ -406,6 +411,12 @@ class VirtualMachineTest extends AbstractInventoryAsset
         //same VM and Computer
         $this->assertSame($vm_second->fields['id'], $vm_first->fields['id']);
         $this->assertSame($computer_linked_second->fields['id'], $computer_linked_first->fields['id']);
+
+        // count RuleamtchedLog for Computer already linked
+        // should get two RuleMatchedLog
+        // fist one for create step on second for update step
+        $rml = new \RuleMatchedLog();
+        $this->assertCount(2, $rml->find(['itemtype' => \Computer::class, 'items_id' => $computer_linked_first->fields['id']]));
     }
 
     public function testImportVirtualMachineWithoutHistory()
