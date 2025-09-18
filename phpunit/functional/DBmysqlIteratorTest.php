@@ -450,6 +450,188 @@ class DBmysqlIteratorTest extends DbTestCase
             'SELECT * FROM `foo` LEFT JOIN (SELECT * FROM `bar`) AS `t2` ON (`t2`.`id` = `foo`.`fk`)',
             $it->getSql()
         );
+
+        // join using query expression as first criterion
+        $it = $this->it->execute(
+            [
+                'FROM' => 'foo',
+                'LEFT JOIN' => [
+                    [
+                        'TABLE'  => 'bar',
+                        'FKEY'   => [
+                            new QueryExpression("COALESCE(`bar.id`, 153)"),
+                            'foo' => 'fk',
+                        ],
+                    ],
+                ],
+            ]
+        );
+        $this->assertSame(
+            'SELECT * FROM `foo` LEFT JOIN `bar` ON (COALESCE(`bar.id`, 153) = `foo`.`fk`)',
+            $it->getSql()
+        );
+
+        // join using query expression as second criterion
+        $it = $this->it->execute(
+            [
+                'FROM' => 'foo',
+                'LEFT JOIN' => [
+                    [
+                        'TABLE'  => 'bar',
+                        'FKEY'   => [
+                            new QueryExpression("IFNULL(`bar.parent_id`, `bar.id`)"),
+                            'foo' => 'fk',
+                        ],
+                    ],
+                ],
+            ]
+        );
+        $this->assertSame(
+            'SELECT * FROM `foo` LEFT JOIN `bar` ON (IFNULL(`bar.parent_id`, `bar.id`) = `foo`.`fk`)',
+            $it->getSql()
+        );
+
+        // join using query expression for both criteria
+        $it = $this->it->execute(
+            [
+                'FROM' => 'foo',
+                'LEFT JOIN' => [
+                    [
+                        'TABLE'  => 'bar',
+                        'FKEY'   => [
+                            new QueryExpression("COALESCE(`bar.id`, 153)"),
+                            new QueryExpression("IFNULL(`bar.parent_id`, `bar.id`)"),
+                        ],
+                    ],
+                ],
+            ]
+        );
+        $this->assertSame(
+            'SELECT * FROM `foo` LEFT JOIN `bar` ON (COALESCE(`bar.id`, 153) = IFNULL(`bar.parent_id`, `bar.id`))',
+            $it->getSql()
+        );
+
+        // join using subquery as first criterion
+        $it = $this->it->execute(
+            [
+                'FROM' => 'foo',
+                'LEFT JOIN' => [
+                    [
+                        'TABLE'  => 'bar',
+                        'FKEY'   => [
+                            'foo' => 'fk',
+                            new QuerySubQuery([
+                                'SELECT' => 'last_ticket_bar.id',
+                                'FROM'   => 'bar AS last_ticket_bar',
+                                'WHERE'  => [
+                                    'last_ticket_bar.itemtype' => 'Ticket',
+                                ],
+                                'ORDER'  => 'last_ticket_bar.id DESC',
+                                'LIMIT'  => 1,
+                            ]),
+                        ],
+                    ],
+                ],
+            ]
+        );
+        $this->assertSame(
+            'SELECT * FROM `foo` LEFT JOIN `bar` ON ('
+                . '`foo`.`fk`'
+                . ' = '
+                . '(SELECT `last_ticket_bar`.`id` FROM `bar` AS `last_ticket_bar` WHERE `last_ticket_bar`.`itemtype` = \'Ticket\' ORDER BY `last_ticket_bar`.`id` DESC LIMIT 1)'
+                . ')',
+            $it->getSql()
+        );
+
+        // join using subquery as second criterion
+        $it = $this->it->execute(
+            [
+                'FROM' => 'foo',
+                'LEFT JOIN' => [
+                    [
+                        'TABLE'  => 'bar',
+                        'FKEY'   => [
+                            new QuerySubQuery([
+                                'SELECT' => 'last_ticket_bar.id',
+                                'FROM'   => 'bar AS last_ticket_bar',
+                                'WHERE'  => [
+                                    'last_ticket_bar.itemtype' => 'Ticket',
+                                ],
+                                'ORDER'  => 'last_ticket_bar.id DESC',
+                                'LIMIT'  => 1,
+                            ]),
+                            'foo' => 'fk',
+                        ],
+                    ],
+                ],
+            ]
+        );
+        $this->assertSame(
+            'SELECT * FROM `foo` LEFT JOIN `bar` ON ('
+                . '(SELECT `last_ticket_bar`.`id` FROM `bar` AS `last_ticket_bar` WHERE `last_ticket_bar`.`itemtype` = \'Ticket\' ORDER BY `last_ticket_bar`.`id` DESC LIMIT 1)'
+                . ' = '
+                . '`foo`.`fk`'
+                . ')',
+            $it->getSql()
+        );
+
+        // join using subquery for both criteria
+        $it = $this->it->execute(
+            [
+                'FROM' => 'foo',
+                'LEFT JOIN' => [
+                    [
+                        'TABLE'  => 'bar',
+                        'FKEY'   => [
+                            new QuerySubQuery([
+                                'SELECT' => 'last_ticket_bar.id',
+                                'FROM'   => 'bar AS last_ticket_bar',
+                                'WHERE'  => [
+                                    'last_ticket_bar.itemtype' => 'Ticket',
+                                ],
+                                'ORDER'  => 'last_ticket_bar.id DESC',
+                                'LIMIT'  => 1,
+                            ]),
+                            new QuerySubQuery([
+                                'SELECT' => 'first_ticket_bar.id',
+                                'FROM'   => 'bar AS first_ticket_bar',
+                                'WHERE'  => [
+                                    'last_ticket_bar.itemtype' => 'Ticket',
+                                ],
+                                'ORDER'  => 'first_ticket_bar.id ASC',
+                                'LIMIT'  => 1,
+                            ]),
+                        ],
+                    ],
+                ],
+            ]
+        );
+        $this->assertSame(
+            'SELECT * FROM `foo` LEFT JOIN `bar` ON ('
+                . '(SELECT `last_ticket_bar`.`id` FROM `bar` AS `last_ticket_bar` WHERE `last_ticket_bar`.`itemtype` = \'Ticket\' ORDER BY `last_ticket_bar`.`id` DESC LIMIT 1)'
+                . ' = '
+                . '(SELECT `first_ticket_bar`.`id` FROM `bar` AS `first_ticket_bar` WHERE `last_ticket_bar`.`itemtype` = \'Ticket\' ORDER BY `first_ticket_bar`.`id` ASC LIMIT 1)'
+                . ')',
+            $it->getSql()
+        );
+
+        // using a unique query expression as criterion
+        $it = $this->it->execute(
+            [
+                'FROM' => 'foo',
+                'LEFT JOIN' => [
+                    [
+                        'TABLE'  => 'bar',
+                        'FKEY'   => new QueryExpression("COALESCE(`bar.id`, 153) = IFNULL(`bar.parent_id`, `bar.id`)"),
+                    ],
+                ],
+            ]
+        );
+        $this->assertSame(
+            'SELECT * FROM `foo` LEFT JOIN `bar` ON (COALESCE(`bar.id`, 153) = IFNULL(`bar.parent_id`, `bar.id`))',
+            $it->getSql()
+        );
+
     }
 
     public function testBadJoin()

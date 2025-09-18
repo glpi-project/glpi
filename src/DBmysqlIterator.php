@@ -728,17 +728,17 @@ class DBmysqlIterator implements SeekableIterator, Countable
             if (count($values) == 2) {
                 $t1 = $keys[0];
                 $f1 = $values[$t1];
+                $left_value = $f1 instanceof QuerySubQuery || $f1 instanceof QueryExpression
+                    ? (string) $f1
+                    : (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1));
+
                 $t2 = $keys[1];
                 $f2 = $values[$t2];
-                if ($f2 instanceof QuerySubQuery || $f2 instanceof QueryExpression) {
-                    return (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1))
-                        . ' = '
-                        . $f2->getValue();
-                } else {
-                    return (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1))
-                        . ' = '
-                        . (is_numeric($t2) ? DBmysql::quoteName($f2) : DBmysql::quoteName($t2) . '.' . DBmysql::quoteName($f2));
-                }
+                $right_value = $f2 instanceof QuerySubQuery || $f2 instanceof QueryExpression
+                    ? (string) $f2
+                    : (is_numeric($t2) ? DBmysql::quoteName($f2) : DBmysql::quoteName($t2) . '.' . DBmysql::quoteName($f2));
+
+                return $left_value . ' = ' . $right_value;
             } elseif (count($values) == 3) {
                 $real_values = [];
                 foreach ($values as $k => $v) {
