@@ -249,8 +249,8 @@ class QuestionTypeItem extends AbstractQuestionType implements
 
         // Check if selectable_tree_root is set and is boolean (optional field)
         if (
-            isset($input['selectable_tree_root'])
-            && !(is_numeric($input['selectable_tree_root']) || is_bool($input['selectable_tree_root']))
+            !isset($input['selectable_tree_root'])
+            || !(is_numeric($input['selectable_tree_root']) || is_bool($input['selectable_tree_root']))
         ) {
             return false;
         }
