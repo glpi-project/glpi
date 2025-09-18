@@ -36,7 +36,6 @@ namespace tests\units\Glpi\Kernel\Listener\PostBootListener;
 
 use Glpi\Http\SessionManager;
 use Glpi\Kernel\Listener\PostBootListener\SessionStart;
-use Glpi\Kernel\PostBootEvent;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
 
@@ -91,7 +90,7 @@ class SessionStartTest extends \GLPITestCase
         $instance = new SessionStart($session_manager, GLPI_ROOT, php_sapi: $php_sapi);
 
         // Act
-        $instance->onPostBoot(new PostBootEvent(false));
+        $instance->onPostBoot();
 
         // Assert
         $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $_SESSION['glpi_currenttime']);

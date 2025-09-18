@@ -53,14 +53,8 @@ final readonly class CustomObjectsAutoloaderRegistration implements EventSubscri
         ];
     }
 
-    public function onPostBoot(PostBootEvent $event): void
+    public function onPostBoot(): void
     {
-        if ($event->isReboot()) {
-            // Custom objects autoloader are not unloaded on kernel reboot,
-            // they do not have to be registered again.
-            return;
-        }
-
         if (!$this->isDatabaseUsable()) {
             // Requires the database to be available.
             return;

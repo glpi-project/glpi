@@ -142,11 +142,11 @@ final class Kernel extends BaseKernel
 
         parent::boot();
 
-        if (!$already_booted) {
-            // Define synthetic logger service
-            $this->container->set('logger', $this->logger);
+        // Define synthetic logger service
+        $this->container->set('logger', $this->logger);
 
-            $this->container->get('event_dispatcher')->dispatch(new PostBootEvent($this->in_reboot));
+        if (!$already_booted && !$this->in_reboot) {
+            $this->container->get('event_dispatcher')->dispatch(new PostBootEvent());
         }
     }
 

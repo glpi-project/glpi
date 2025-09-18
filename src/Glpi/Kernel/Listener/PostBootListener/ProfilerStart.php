@@ -49,13 +49,8 @@ final readonly class ProfilerStart implements EventSubscriberInterface
         ];
     }
 
-    public function onPostBoot(PostBootEvent $event): void
+    public function onPostBoot(): void
     {
-        if ($event->isReboot()) {
-            // The profiler profile has already been started by the initial request.
-            return;
-        }
-
         if (isCommandLine()) {
             Profiler::getInstance()->disable();
         } else {

@@ -49,14 +49,9 @@ final readonly class LoadLegacyConfiguration implements EventSubscriberInterface
         ];
     }
 
-    public function onPostBoot(PostBootEvent $event): void
+    public function onPostBoot(): void
     {
-        if ($event->isReboot()) {
-            // Since the configuration service is not managed by the kernel container,
-            // a kernel reboot has no effect on it,
-            // therefore reinstantiating it is not required.
-            return;
-        }
+        global $CFG_GLPI;
 
         Profiler::getInstance()->start('LoadLegacyConfiguration::execute', Profiler::CATEGORY_BOOT);
 

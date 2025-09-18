@@ -52,16 +52,9 @@ final readonly class BootPlugins implements EventSubscriberInterface
         ];
     }
 
-    public function onPostBoot(PostBootEvent $event): void
+    public function onPostBoot(): void
     {
         global $DB;
-
-        if ($event->isReboot()) {
-            // Since plugins are handled outside the services managed by the kernel container,
-            // a kernel reboot does not unload plugins related stuffs, and (re)booting them again may have
-            // unexpected side effects.
-            return;
-        }
 
         if (
             !$this->isDatabaseUsable()

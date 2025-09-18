@@ -56,15 +56,8 @@ final readonly class InitializePlugins implements EventSubscriberInterface
         ];
     }
 
-    public function onPostBoot(PostBootEvent $event): void
+    public function onPostBoot(): void
     {
-        if ($event->isReboot()) {
-            // Since plugins are handled outside the services managed by the kernel container,
-            // a kernel reboot does not unload plugins related stuffs,
-            // and (re)initializing them again may have unexpected side effects.
-            return;
-        }
-
         if (!$this->isDatabaseUsable()) {
             // Requires the database to be available.
             return;

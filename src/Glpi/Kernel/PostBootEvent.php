@@ -34,12 +34,7 @@
 
 namespace Glpi\Kernel;
 
-class PostBootEvent
-{
-    public function __construct(private bool $is_reboot) {}
-
-    public function isReboot(): bool
-    {
-        return $this->is_reboot;
-    }
-}
+/**
+ * Event dispatched after the initial boot.
+ */
+class PostBootEvent {}
