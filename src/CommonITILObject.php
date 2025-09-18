@@ -8202,7 +8202,7 @@ abstract class CommonITILObject extends CommonDBTM
                 '_tasktemplates_id'           => $tasktemplates_id,
                 $this->getForeignKeyField()   => $this->fields['id'],
                 'date'                        => $this->fields['date'],
-                '_do_not_compute_status'      => $this->input['_do_not_compute_status'] ?? 0,
+                '_do_not_compute_status'      => $this->input['_do_not_compute_status'] ?? false,
                 '_disablenotif'               => true,
             ]);
         }
