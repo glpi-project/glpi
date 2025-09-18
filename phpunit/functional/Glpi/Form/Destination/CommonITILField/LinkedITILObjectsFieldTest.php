@@ -590,12 +590,21 @@ final class LinkedITILObjectsFieldTest extends AbstractDestinationFieldTest
         $builder = new FormBuilder();
         $builder->addQuestion("Related Ticket", QuestionTypeItem::class, 0, json_encode([
             'itemtype' => Ticket::class,
+            'root_items_id'        => 0,
+            'subtree_depth'        => 0,
+            'selectable_tree_root' => false,
         ]));
         $builder->addQuestion("Related Change", QuestionTypeItem::class, 0, json_encode([
             'itemtype' => Change::class,
+            'root_items_id'        => 0,
+            'subtree_depth'        => 0,
+            'selectable_tree_root' => false,
         ]));
         $builder->addQuestion("Related Problem", QuestionTypeItem::class, 0, json_encode([
             'itemtype' => Problem::class,
+            'root_items_id'        => 0,
+            'subtree_depth'        => 0,
+            'selectable_tree_root' => false,
         ]));
 
         return $this->createForm($builder);
