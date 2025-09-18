@@ -190,7 +190,7 @@ final class ValidatorSubstitute extends CommonDBTM
         // Get the old substitutes list
         $old_substitutes = $user->getSubstitutes();
 
-        // Store the overall sucess of the changes below
+        // Store the overall success of the changes below
         $success = true;
 
         if (isset($input['substitutes'])) {
