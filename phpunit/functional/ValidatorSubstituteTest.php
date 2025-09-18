@@ -545,17 +545,19 @@ class ValidatorSubstituteTest extends DbTestCase
         $delegator = getItemByTypeName(User::class, 'tech');
 
         //create 2 users
-        $user_one = $this->createItem(\User::class, ['name' => 'Marie']);
+        $user_one = $this->createItem(User::class, ['name' => 'Marie']);
         $this->createItem(
-            \ValidatorSubstitute::class, [
+            \ValidatorSubstitute::class,
+            [
                 'users_id' => $delegator->getID(),
                 'users_id_substitute' => $user_one->getID(),
             ]
         );
 
-        $user_two = $this->createItem(\User::class, ['name' => 'Jean']);
+        $user_two = $this->createItem(User::class, ['name' => 'Jean']);
         $this->createItem(
-            \ValidatorSubstitute::class, [
+            \ValidatorSubstitute::class,
+            [
                 'users_id' => $delegator->getID(),
                 'users_id_substitute' => $user_two->getID(),
             ]
@@ -567,13 +569,13 @@ class ValidatorSubstituteTest extends DbTestCase
         // Prepare a MassiveAction for deleting users
         $massive_ids = [
             $user_one->getID() => $user_one->getID(),
-            $user_two->getID() => $user_two->getID()
+            $user_two->getID() => $user_two->getID(),
         ];
         $ma = new \MassiveAction(
             [
                 'action' => 'purge',
                 'action_name' => 'Purge',
-                'items' => [\User::class => $massive_ids],
+                'items' => [User::class => $massive_ids],
             ],
             [],
             'process'
@@ -581,7 +583,7 @@ class ValidatorSubstituteTest extends DbTestCase
 
         // Process the massive action
         $this->login();
-        \MassiveAction::processMassiveActionsForOneItemtype($ma, new \User(), $massive_ids);
+        \MassiveAction::processMassiveActionsForOneItemtype($ma, new User(), $massive_ids);
 
         //make sure Users are removed
         $this->assertCount(0, $delegator->find(['name' => ['Marie', 'Jean']]));
