@@ -116,5 +116,6 @@ class ItemVirtualMachineTest extends DbTestCase
             ])
         );
 
-        $this->assertEquals($cid, $obj->findVirtualMachine(['itemtype' => \Computer::getType(),'uuid' => $uuid]));    }
+        $this->assertEquals($cid, $obj->findVirtualMachine(['itemtype' => \Computer::getType(),'uuid' => $uuid]));
+    }
 }
