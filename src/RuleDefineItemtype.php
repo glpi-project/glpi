@@ -204,15 +204,10 @@ class RuleDefineItemtype extends Rule
                     input_class: 'col-7'
                 }) }}
             {% endif %}
-            {{ fields.htmlField('', loop.first ? '' : type_match|e, '', {
+            {{ fields.htmlField('', '', '', {
                 no_label: true,
                 field_class: 'col-2',
                 input_class: 'col-12'
-            }) }}
-            {{ fields.dropdownField('RefusedEquipment', 'refusedequipments_id', values['refusedequipments_id']|default(null), 'RefusedEquipment'|itemtype_name, {
-                field_class: 'col-10',
-                label_class: 'col-5',
-                input_class: 'col-7'
             }) }}
 TWIG, $twig_params);
     }
