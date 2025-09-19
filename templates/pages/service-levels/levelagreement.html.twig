@@ -46,12 +46,14 @@
         _n('Comment', 'Comments', get_plural_number())
     ) }}
 
-    {# group #}
-    {{ fields.dropdownField('Group', 'groups_id', item.fields['groups_id'], _n('Group', 'Groups', get_plural_number()), {
-        'helper': __('Actions done by users of this group will trigger the TTO/TTR.'),
-        'rand': rand,
-        'condition': {'is_assign': 1}
-    }) }}
+    {# group (for ola, not sla) #}
+    {% if item.fields['groups_id'] is not null %}
+        {{ fields.dropdownField('Group', 'groups_id', item.fields['groups_id'], _n('Group', 'Groups', get_plural_number()), {
+            'helper': __('Actions done by users of this group will trigger the TTO/TTR.'),
+            'rand': rand,
+            'condition': {'is_assign': 1}
+        }) }}
+    {% endif %}
 
     {# slm link #}
     {% set slm_link %}
