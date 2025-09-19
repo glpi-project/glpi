@@ -288,10 +288,15 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         $type = $this->getQuestionType();
 
         $extra_data = $this->getExtraDataConfig();
+        if ($extra_data instanceof JsonFieldInterface) {
+            $raw_extra_data = $extra_data->jsonSerialize();
+        } else {
+            $raw_extra_data = null;
+        }
         $default_value = $this->getDefaultValue();
 
         $data = new DynamicExportData();
-        $data->addField('extra_data', $type->exportDynamicExtraData($extra_data));
+        $data->addField('extra_data', $type->exportDynamicExtraData($raw_extra_data));
         $data->addField('default_value', $type->exportDynamicDefaultValue(
             $extra_data,
             $default_value,
@@ -498,7 +503,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         parent::post_deleteFromDB();
     }
 
-    private function getExtraDataConfig(): ?JsonFieldInterface
+    public function getExtraDataConfig(): ?JsonFieldInterface
     {
         $data = $this->fields['extra_data'];
 
