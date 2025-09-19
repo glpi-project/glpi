@@ -35,9 +35,13 @@
 
 namespace Glpi\Form\QuestionType;
 
+use CommonDBTM;
 use DbUtils;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Question;
 use InvalidArgumentException;
 use ITILCategory;
@@ -329,5 +333,58 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
         }
 
         return ['WHERE' => $params];
+    }
+
+    #[Override]
+    public function exportDynamicExtraData(
+        ?array $extra_data_config,
+    ): DynamicExportDataField {
+        $fallback = parent::exportDynamicExtraData($extra_data_config);
+
+        // Stop here if value is invalid or empty
+        $itemtype = $extra_data_config[QuestionTypeItemExtraDataConfig::ITEMTYPE] ?? "";
+        $root_id = $extra_data_config[QuestionTypeItemDropdownExtraDataConfig::ROOT_ITEMS_ID] ?? 0;
+        if ($root_id == 0 || !is_a($itemtype, CommonDBTM::class, true)) {
+            return $fallback;
+        }
+
+        // Load item
+        $item = $itemtype::getById($root_id);
+
+        // Replace id and register requirement
+        $requirement = DataRequirementSpecification::fromItem($item);
+        $extra_data_config[QuestionTypeItemDropdownExtraDataConfig::ROOT_ITEMS_ID] = $requirement->name;
+
+        return new DynamicExportDataField($extra_data_config, [$requirement]);
+    }
+
+    #[Override]
+    public static function prepareDynamicExtraDataForImport(
+        ?array $extra_data,
+        DatabaseMapper $mapper,
+    ): ?array {
+        $fallback = parent::prepareDynamicExtraDataForImport(
+            $extra_data,
+            $mapper,
+        );
+        if ($extra_data == null) {
+            return $fallback;
+        }
+
+        // Validate config values
+        $itemtype = $extra_data[QuestionTypeItemExtraDataConfig::ITEMTYPE] ?? "";
+        $name = $extra_data[QuestionTypeItemDropdownExtraDataConfig::ROOT_ITEMS_ID] ?? "";
+        if (
+            !(getItemForItemtype($itemtype) instanceof CommonDBTM)
+            || empty($name)
+        ) {
+            return $fallback;
+        }
+
+        // Find item id
+        $id = $mapper->getItemId($itemtype, $name);
+        $extra_data[QuestionTypeItemDropdownExtraDataConfig::ROOT_ITEMS_ID] = $id;
+
+        return $extra_data;
     }
 }

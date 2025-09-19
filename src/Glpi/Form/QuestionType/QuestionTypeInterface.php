@@ -258,7 +258,7 @@ interface QuestionTypeInterface extends UsedAsCriteriaInterface
      *  - requirements: one requirement per database id in the original extra data
      */
     public function exportDynamicExtraData(
-        ?JsonFieldInterface $extra_data_config,
+        ?array $extra_data_config,
     ): DynamicExportDataField;
 
     /**
