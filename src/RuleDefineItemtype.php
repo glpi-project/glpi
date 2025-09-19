@@ -170,7 +170,8 @@ class RuleDefineItemtype extends Rule
     {
         $twig_params = [
             'entity_as_criterion' => false,
-            'values'              => $fields,
+            'fields'              => $fields,
+            'nb_fields'           => count($this->criterias) - count($fields),
             'type_match'          => ($this->fields['match'] ?? Rule::AND_MATCHING) === Rule::AND_MATCHING ? __('AND') : __('OR'),
         ];
         foreach ($this->criterias as $criterion) {
@@ -183,7 +184,13 @@ class RuleDefineItemtype extends Rule
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             {% import 'components/form/fields_macros.html.twig' as fields %}
+
+            {% if nb_fields % 2 == 0 %}
+                {{ fields.nullField() }}
+            {% endif %}
+
             {% if not entity_as_criterion %}
+
                 {{ fields.htmlField('', type_match|e, '', {
                     no_label: true,
                     field_class: 'col-2',
@@ -195,7 +202,7 @@ class RuleDefineItemtype extends Rule
                     input_class: 'col-7'
                 }) }}
             {% endif %}
-            {{ fields.htmlField('', loop.first ? '' : type_match|e, '', {
+            {{ fields.htmlField('', type_match|e, '', {
                 no_label: true,
                 field_class: 'col-2',
                 input_class: 'col-12'

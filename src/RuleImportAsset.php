@@ -1034,6 +1034,8 @@ class RuleImportAsset extends Rule
         $twig_params = [
             'entity_as_criterion' => false,
             'values'              => $fields,
+            'fields'              => $fields,
+            'nb_fields'           => count($this->criterias) - count($fields),
             'type_match'          => ($this->fields['match'] ?? Rule::AND_MATCHING) === Rule::AND_MATCHING ? __('AND') : __('OR'),
         ];
         foreach ($this->criterias as $criterion) {
@@ -1046,6 +1048,11 @@ class RuleImportAsset extends Rule
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             {% import 'components/form/fields_macros.html.twig' as fields %}
+
+            {% if nb_fields % 2 == 0 %}
+                {{ fields.nullField() }}
+            {% endif %}
+
             {% if not entity_as_criterion %}
                 {{ fields.htmlField('', type_match|e, '', {
                     no_label: true,
