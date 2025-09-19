@@ -1043,6 +1043,48 @@ class SearchTest extends DbTestCase
         }
     }
 
+    public function testMatchesSearchOption()
+    {
+        $classes = $this->getSearchableClasses();
+        foreach ($classes as $class) {
+            $item = new $class();
+            $name = '_test_matches_' . uniqid();
+            // Test only if the name field exists
+            if ($item->fields && array_key_exists('name', $item->fields)) {
+                $id = $item->add([
+                    'name' => $name,
+                    'entities_id' => 0,
+                    'is_recursive' => 1,
+                ]);
+                $this->assertGreaterThan(0, $id);
+
+                $search_params = [
+                    'is_deleted'   => 0,
+                    'start'        => 0,
+                    'criteria'     => [
+                        [
+                            'field'      => '1', // name
+                            'searchtype' => 'matches',
+                            'value'      => $name,
+                        ],
+                    ],
+                ];
+                $data = $this->doSearch($class, $search_params);
+
+                $found = false;
+                if (isset($data['data']['rows'])) {
+                    foreach ($data['data']['rows'] as $row) {
+                        if (isset($row['name']) && $row['name'] === $name) {
+                            $found = true;
+                            break;
+                        }
+                    }
+                }
+                $this->assertTrue($found, $class);
+            }
+        }
+    }
+
     /**
      * Get criterion params for corresponding SO.
      *
@@ -2572,6 +2614,16 @@ class SearchTest extends DbTestCase
                 'expected' => "(`glpi_users_users_id_supervisor`.`id` = '5')",
             ],
             [
+                'link' => ' ',
+                'nott' => 0,
+                'itemtype' => User::class,
+                'ID' => 99,
+                'searchtype' => 'matches',
+                'val' => 'glpi',
+                'meta' => false,
+                'expected' => "(`glpi_users_users_id_supervisor`.`name` = 'glpi')",
+            ],
+            [
                 'link' => ' AND ',
                 'nott' => 0,
                 'itemtype' => \CartridgeItem::class,
@@ -2656,6 +2708,16 @@ class SearchTest extends DbTestCase
                 'nott' => 0,
                 'itemtype' => \NetworkName::class,
                 'ID' => 13, // Search ID 13 (IPAddress name field)
+                'searchtype' => 'matches',
+                'val' => '192.168.1.10',
+                'meta' => false,
+                'expected' => "AND (`glpi_ipaddresses`.`name` = '192.168.1.10')",
+            ],
+            [
+                'link' => ' AND ',
+                'nott' => 0,
+                'itemtype' => \NetworkName::class,
+                'ID' => 13, // Search ID 13 (IPAddress name field)
                 'searchtype' => 'contains',
                 'val' => '> 192.168.1.10',
                 'meta' => false,
@@ -2670,6 +2732,16 @@ class SearchTest extends DbTestCase
                 'val' => 'null',
                 'meta' => false,
                 'expected' => "((`glpi_computers`.`name` = '') OR `glpi_computers`.`name` IS NULL)",
+            ],
+            [
+                'link' => ' ',
+                'nott' => 0,
+                'itemtype' => Computer::class,
+                'ID' => 1,
+                'searchtype' => 'matches',
+                'val' => 'My computer',
+                'meta' => false,
+                'expected' => "(`glpi_computers`.`name` = 'My computer')",
             ],
         ];
     }

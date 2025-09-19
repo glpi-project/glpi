@@ -41,6 +41,7 @@
         "available_searchtypes": [
             "contains",
             "notcontains",
+            "matches",
             "equals",
             "notequals",
             "empty"
