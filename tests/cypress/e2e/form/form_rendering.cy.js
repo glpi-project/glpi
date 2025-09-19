@@ -283,11 +283,19 @@ describe('Form rendering', () => {
             cy.visit(`/Form/Render/${id}`);
         });
 
+        // Fill and submit form.
         cy.getDropdownByLabelText('Visible question').selectDropdownValue("Very high");
         cy.findByRole('button', {name : "Submit"}).click();
+
+        // Go to created ticket
         cy.findByRole('link', {name : "Form with a hidden question"}).click();
 
+        // Urgency should be set from the visible question value
         cy.getDropdownByLabelText('Urgency').should('have.text', "Very high");
+
+        // Hidden question should not be referenced in the ticket description
+        cy.findByText('1) Visible question').should('exist');
+        cy.findByText('2) Hidden question').should('not.exist');
     });
 });
 

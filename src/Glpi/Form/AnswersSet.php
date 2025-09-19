@@ -118,6 +118,12 @@ final class AnswersSet extends CommonDBChild
         }
     }
 
+    public function hasAnswerForQuestionId(int $id): bool
+    {
+        $answer = $this->getAnswerByQuestionId($id);
+        return $answer !== null;
+    }
+
     /** @return Answer[] */
     public function getAnswersByType(string $type): array
     {
