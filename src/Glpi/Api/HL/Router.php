@@ -58,6 +58,7 @@ use Glpi\Api\HL\Middleware\CookieAuthMiddleware;
 use Glpi\Api\HL\Middleware\CRUDRequestMiddleware;
 use Glpi\Api\HL\Middleware\DebugRequestMiddleware;
 use Glpi\Api\HL\Middleware\DebugResponseMiddleware;
+use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Api\HL\Middleware\IPRestrictionRequestMiddleware;
 use Glpi\Api\HL\Middleware\MiddlewareInput;
 use Glpi\Api\HL\Middleware\OAuthRequestMiddleware;
@@ -652,11 +653,12 @@ EOT;
                     'status' => 'ERROR_UNAUTHENTICATED',
                 ], 401);
             } else {
-                // Clear output buffers up to the level when the request was started
-                while (ob_get_level() > $current_output_buffer_level) {
-                    ob_end_clean();
-                }
-                return AbstractController::getAccessDeniedErrorResponse('The High-Level API is disabled');
+                // Remove all authentication middlewares except InternalAuthMiddleware if it is present
+                // If HL API is disabled, only internal requests should be allowed as they are used for features like Webhooks rather than user-initiated requests
+                $this->auth_middlewares = array_filter($this->auth_middlewares, static fn($middleware) => get_class($middleware['middleware']) === InternalAuthMiddleware::class);
+                // The internal auth is required to succeed here even for public endpoints because the HL API is disabled
+                $requires_auth = true;
+                $unauthenticated_response = AbstractController::getAccessDeniedErrorResponse('The High-Level API is disabled');
             }
             $middleware_input = new MiddlewareInput($request, $matched_route, $unauthenticated_response);
             // Do auth middlewares now even if auth isn't required so session data *could* be used like the theme for doc endpoints.
