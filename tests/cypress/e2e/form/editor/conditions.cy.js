@@ -1922,7 +1922,7 @@ describe ('Conditions', () => {
             {
                 name: 'My item question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeItem',
-                extra_data: '{"itemtype":"Computer"}',
+                extra_data: '{"itemtype":"Computer","root_items_id":0,"subtree_depth":0,"selectable_tree_root":false}',
                 conditions: [
                     {
                         logic: 'Or',
@@ -1967,7 +1967,7 @@ describe ('Conditions', () => {
             {
                 name: 'My dropdown item question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeItemDropdown',
-                extra_data: '{"itemtype":"Location","categories_filter":[],"root_items_id":0,"subtree_depth":0}',
+                extra_data: '{"itemtype":"Location","categories_filter":[],"root_items_id":0,"subtree_depth":0,"selectable_tree_root":false}',
                 conditions: [
                     {
                         logic: 'Or',
