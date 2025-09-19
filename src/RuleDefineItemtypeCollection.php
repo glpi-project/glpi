@@ -35,6 +35,8 @@
 
 use Glpi\Inventory\Request;
 
+use function Safe\file_get_contents;
+
 class RuleDefineItemtypeCollection extends RuleCollection
 {
     // From RuleCollection
