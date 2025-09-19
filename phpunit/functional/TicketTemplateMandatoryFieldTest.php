@@ -32,41 +32,37 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\ContentTemplates\Parameters;
+namespace tests\units;
 
-use Glpi\ContentTemplates\Parameters\OLAParameters;
 use Glpi\PHPUnit\Tests\Glpi\SLMTrait;
 
-include_once __DIR__ . '/../../../../abstracts/AbstractParameters.php';
-
-class OLAParametersTest extends AbstractParameters
+final class TicketTemplateMandatoryFieldTest extends \DbTestCase
 {
     use SLMTrait;
 
-    public function testGetValues(): void
+    public function testMandatoryOLA(): void
     {
-        $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
+        // arrange
+        $ola = $this->createOLA()['ola'];
 
-        $this->createOLA([
-            'name'            => 'ola_testGetValues',
-            'type'            => 1,
-            'number_time'     => 4,
-            'definition_time' => 'hour',
-        ]);
-
-        $parameters = new OLAParameters();
-        $values = $parameters->getValues(getItemByTypeName('OLA', 'ola_testGetValues'));
-        $this->assertEquals(
+        $template = $this->createItem(\TicketTemplate::class, ['name' => 'Test Template']);
+        $this->createItem(
+            \TicketTemplateMandatoryField::class,
             [
-                'id'       => getItemByTypeName('OLA', 'ola_testGetValues', true),
-                'name'     => 'ola_testGetValues',
-                'type'     => 'Time to own',
-                'duration' => '4',
-                'unit'     => 'hours',
-            ],
-            $values
+                'tickettemplates_id' => $template->getID(),
+                'num' => 190,
+            ]
         );
 
-        $this->testGetAvailableParameters($values, $parameters->getAvailableParameters());
+        $invalid_valid_data = $this->getMinimalCreationInput(\Ticket::class);
+        $invalid_valid_data['_tickettemplate'] = $template->getID();
+        // add _tickettemplate to input fields, to allow template compliance check
+        $valid_data = $invalid_valid_data + ['_olas_id' => [$ola->getID()]];
+
+        // act & assert
+        $this->assertFalse((bool) (new \Ticket())->add($invalid_valid_data), 'Add should fail without OLA');
+        $this->hasSessionMessages(ERROR, array_fill(0, 1, 'Mandatory fields are not filled. Please correct: OLA time to own'));
+
+        $this->assertTrue((bool) (new \Ticket())->add($valid_data), 'Add should succeed with OLA');
     }
 }
