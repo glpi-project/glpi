@@ -267,7 +267,10 @@ export class GlpiFormRendererController
             // Submit form using AJAX
             const response = await $.post({
                 url: $(this.#target).prop("action"),
-                data: $(this.#target).serialize(),
+                data: this.#getSubmitPayload(),
+                // These two options are necessary when the data parameter contains a FormData object;
+                processData: false,
+                contentType: false,
             });
 
             // Show toast with link to answers set
@@ -590,5 +593,22 @@ export class GlpiFormRendererController
         $(this.#target)
             .find('[data-glpi-form-renderer-delegation-container]')
             .html(response);
+    }
+
+    #getSubmitPayload()
+    {
+        const form_data = new FormData(this.#target);
+
+        // Remove all items that are hidden by conditions
+        const hidden_questions_inputs = this.#target.querySelectorAll(
+            "[data-glpi-form-renderer-hidden-by-condition] input,"
+            + "[data-glpi-form-renderer-hidden-by-condition] textarea,"
+            + "[data-glpi-form-renderer-hidden-by-condition] select"
+        );
+        for (const hidden_input of hidden_questions_inputs) {
+            form_data.delete(hidden_input.name);
+        }
+
+        return form_data;
     }
 }

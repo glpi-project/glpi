@@ -1,0 +1,104 @@
+{
+    "version": 1,
+    "forms": [
+        {
+            "id": 6,
+            "uuid": "6b3f29ac-f1a0-4959-bd01-a43e435d2818",
+            "name": "Form with a hidden question",
+            "header": null,
+            "description": null,
+            "illustration": "",
+            "entity_name": "Root entity > E2ETestEntity",
+            "is_recursive": true,
+            "is_active": false,
+            "submit_button_visibility_strategy": "",
+            "submit_button_conditions": [],
+            "sections": [
+                {
+                    "id": 7,
+                    "uuid": "40c5e812-1f9b-4ce2-9920-8d9ed744997c",
+                    "name": "Premi\u00e8re section",
+                    "description": null,
+                    "rank": 0,
+                    "visibility_strategy": "",
+                    "conditions": []
+                }
+            ],
+            "comments": [],
+            "questions": [
+                {
+                    "id": 35,
+                    "uuid": "ee89443c-f7f9-48bf-b9d6-a6781dcf9c32",
+                    "name": "Visible question",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeUrgency",
+                    "is_mandatory": false,
+                    "vertical_rank": 0,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": 0,
+                    "extra_data": null,
+                    "section_id": 7,
+                    "visibility_strategy": "",
+                    "validation_strategy": "",
+                    "conditions": [],
+                    "validation_conditions": []
+                },
+                {
+                    "id": 36,
+                    "uuid": "347367e4-b7f5-48fc-bb74-2ab3257f8cfc",
+                    "name": "Hidden question",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeUrgency",
+                    "is_mandatory": false,
+                    "vertical_rank": 1,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": 0,
+                    "extra_data": null,
+                    "section_id": 7,
+                    "visibility_strategy": "hidden_if",
+                    "validation_strategy": "",
+                    "conditions": [
+                        {
+                            "item_uuid": "ee89443c-f7f9-48bf-b9d6-a6781dcf9c32",
+                            "item_type": "question",
+                            "value_operator": "visible",
+                            "logic_operator": "and",
+                            "value": null
+                        }
+                    ],
+                    "validation_conditions": []
+                }
+            ],
+            "policies": [
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "config": {
+                        "user_ids": [
+                            "all"
+                        ],
+                        "group_ids": [],
+                        "profile_ids": []
+                    },
+                    "is_active": true
+                }
+            ],
+            "destinations": [
+                {
+                    "id": 6,
+                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "name": "Ticket",
+                    "config": [],
+                    "creation_strategy": "",
+                    "conditions": []
+                }
+            ],
+            "translations": [],
+            "data_requirements": [
+                {
+                    "itemtype": "Entity",
+                    "name": "Root entity > E2ETestEntity"
+                }
+            ]
+        }
+    ]
+}
