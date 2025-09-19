@@ -1820,7 +1820,7 @@ final class SQLProvider implements SearchProviderInterface
                         // Condition will be handled by the subquery
                         break;
                     }
-                    if (in_array($searchtype, ['equals', 'notequals', 'under', 'notunder', 'empty'])) {
+                    if (in_array($searchtype, ['equals', 'notequals', 'under', 'notunder', 'empty', 'matches'])) {
                         if ($searchtype === 'empty' && $opt["field"] === 'name') {
                             $l = $nott ? 'AND' : 'OR';
                             $criteria = [
@@ -1831,6 +1831,10 @@ final class SQLProvider implements SearchProviderInterface
                                 ],
                             ];
                             $append_criterion_with_search($criteria[$l], $tocompute);
+                        } elseif ($searchtype === 'matches') {
+                            $field_to_use = ($opt["field"] === 'name') ? "$table.name" : "$table.$opt[field]";
+                            $criteria = [];
+                            $append_criterion_with_search($criteria, $field_to_use);
                         } else {
                             $criteria = [];
                             $append_criterion_with_search($criteria, "$table.id");
@@ -2247,7 +2251,7 @@ final class SQLProvider implements SearchProviderInterface
         }
 
         // Default case
-        if (in_array($searchtype, ['equals', 'notequals','under', 'notunder'])) {
+        if (in_array($searchtype, ['equals', 'notequals','under', 'notunder', 'matches'])) {
             $criteria = ['OR' => []];
             if (
                 (!isset($opt['searchequalsonfield'])
