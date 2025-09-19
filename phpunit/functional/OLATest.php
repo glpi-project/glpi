@@ -91,15 +91,12 @@ use User;
  *
  *          - completion :
  *              - is done when the dedicated group is assigned to the ticket : @see self::testOlaTtoIsCompleteWhenTicketIsAssignedToDedicatedGroup()
- *              - is     done when a user of the dedicated group is assigned to the ticket by a user of the ola group       : @see self::testOlaTtoIsCompleteWhenTicketIsAssignedToUserInDedicatedGroupByUserOfOlaGroup()
+ *              - is done when a user of the dedicated group is assigned to the ticket by a user of the ola group       : @see self::testOlaTtoIsCompleteWhenTicketIsAssignedToUserInDedicatedGroupByUserOfOlaGroup()
  *              - is not done when a user of the dedicated group is assigned to the ticket by foreign user of the ola group : @see self::testOlaTtoIsCompleteWhenTicketIsAssignedToUserInDedicatedGroupByUserOfAnotherGroup()
  *              - is not done when a non dedicated group is assigned to the ticket : @see self::testOlaIsNotCompleteWhenTicketIsAssignedToNonDedicatedGroup()
  *              - is not done when a user not in the dedicated group is assigned to the ticket : @see self::testOlaTtoIsNotCompleteWhenTicketIsAssignedToUserNotInDedicatedGroup()
- *              - same with group & ola assigned by rule : @see self::testOlaTtoIsNotCompleteWhenTicketIsAssignedToDedicatedGroupByRuleAndOlaIsAddedByRule()
- *              - is not done when the group is added and the ola added by rule : @see self::testOlaTtoIsNotCompleteWhenTicketIsAssignedToDedicatedGroupAndOlaAddedByRule()
  *              - is done when a group associated to ola is removed from ticket assigned group :
  *                  - @see self::testOlaTtoIsCompleteWhenGroupAssociatedToOlaIsRemovedFromTicketAssignedGroup()
- *                  - @see self::testOlaTtoIstCompleteWhenTicketIsAssignedToDedicatedGroupByRuleAndOlaIsAddedByRuleThenGroupRemoved()
  *              - is done when ticket is "taken into account" (add task, add followup) by a user of the ola group :
  *                  - @see self::testOlaTtoIsCompleteWhenUserOfGroupAssociatedToOlaTakesTicketIntoAccountWithAFollowup()
  *                  - @see self::testOlaTtoIsCompleteWhenUserOfGroupAssociatedToOlaTakesTicketIntoAccountWithATask()
@@ -574,10 +571,7 @@ class OLATest extends DbTestCase
         $this->assertEquals(0, $ola_data['waiting_time'], 'Waiting time should not be set for TTO OLA.');
     }
 
-    /**
-     *  - endtime (completion) is set when ticket is assigned to a dedicated group
-     */
-    public function testOlaTtoIsCompleteWhenTicketIsAssignedToDedicatedGroup(): void
+    public function testOlaTtoIsNotCompleteWhenTicketIsAssignedToDedicatedGroup(): void
     {
         $this->login();
         // arrange
@@ -594,8 +588,8 @@ class OLATest extends DbTestCase
         assert($ticket->haveAGroup(CommonITILActor::ASSIGN, [$ola_tto->fields['groups_id']]), 'Ticket should be assigned to the dedicated group of the OLA.');
         $ola_data = $ticket->getOlasData()[0];
 
-        // assert : end_time is set to the moment ticket is assigned to a dedicated group
-        $this->assertEquals($group_assignation_datetime->format('Y-m-d H:i:s'), $ola_data['end_time'], 'End time should be set to the moment ticket is assigned to a dedicated group.');
+        // assert : end_time is not set
+        $this->assertNull($ola_data['end_time'], 'End time should not be set to the moment ticket is assigned to a dedicated group.');
     }
 
     public function testOlaTtoIsCompleteWhenTicketIsAssignedToUserInDedicatedGroupByUserOfOlaGroup(): void
@@ -647,11 +641,16 @@ class OLATest extends DbTestCase
         $ola_data = $ticket->getOlasData()[0];
         $this->assertEquals($assignation_datetime->format('Y-m-d H:i:s'), $ola_data['end_time'], 'End time should be set to the moment ticket is assigned to a user of the dedicated group.');
     }
-    public function testOlaTtoIsCompleteWhenTicketIsAssignedToUserInDedicatedGroupByUserOfAnotherGroup(): void
+
+    public function testOlaTtoIsNotCompleteWhenTicketIsAssignedToUserInDedicatedGroupByUserOfAnotherGroup(): void
     {
         $this->login();
 
-        // --- arrange - create a group, an ola, a user and set the user in the group, assign the ola to the ticket
+        // --- arrange
+        // - create a group + a user in the group
+        // - create another user (not in the group)
+        // - create an ola tto associated to the group
+        // - assign the ola to the ticket
         $ola_group = $this->createItem(Group::class, [
             'name' => 'Ola_group', 'is_assign' => 1,
             'entities_id' => $this->getTestRootEntity(true),
@@ -664,19 +663,32 @@ class OLATest extends DbTestCase
             '_olas_id' => [$ola_tto->getID()],
         ]);
 
-        $new_user_name = $this->getUniqueString();
-        $user = $this->createItem(
+        $username_in_ola_group = $this->getUniqueString();
+        $user_in_ola_group = $this->createItem(
             User::class,
             [
-                'name' => $new_user_name,
+                'name' => $username_in_ola_group,
                 'entities_id' => $this->getTestRootEntity(true)]
         );
         $user_group = new Group_User();
-        $user_group->add(['users_id' => $user->getID(), 'groups_id' => $ola_tto->fields['groups_id']]);
-        assert(Group_User::isUserInGroup($user->getID(), $ola_tto->fields['groups_id']), 'User should be in the group of the OLA.');
+        $user_group->add(['users_id' => $user_in_ola_group->getID(), 'groups_id' => $ola_tto->fields['groups_id']]);
+        assert(Group_User::isUserInGroup($user_in_ola_group->getID(), $ola_tto->fields['groups_id']), 'User should be in the group of the OLA.');
 
         $pu = new \Profile_User();
-        $profile_user_ids = $pu->find(['users_id' => $user->getID()]);
+        $profile_user_ids = $pu->find(['users_id' => $user_in_ola_group->getID()]);
+        $profile_user_id = array_pop($profile_user_ids)['id'] ?? throw new \Exception('Profile_User not found');
+        // assign user to profile Technician, to allow ticket update
+        assert(true === $pu->update(['id' => $profile_user_id, 'profiles_id' => getItemByTypeName(\Profile::class, 'Technician', true)]));
+
+        $other_user_name = $this->getUniqueString();
+        $other_user = $this->createItem(
+            User::class,
+            [
+                'name' => $other_user_name,
+                'entities_id' => $this->getTestRootEntity(true)]
+        );
+        $pu = new \Profile_User();
+        $profile_user_ids = $pu->find(['users_id' => $other_user->getID()]);
         $profile_user_id = array_pop($profile_user_ids)['id'] ?? throw new \Exception('Profile_User not found');
         // assign user to profile Technician, to allow ticket update
         assert(true === $pu->update(['id' => $profile_user_id, 'profiles_id' => getItemByTypeName(\Profile::class, 'Technician', true)]));
@@ -685,16 +697,16 @@ class OLATest extends DbTestCase
         assert(null === $ola_data['end_time'], 'End time should not be set when OLA is assigned to ticket.');
         \Session::checkCentralAccess(); // ensure user can update ticket
 
-        // --- act - wait 10 minutes, assign ticket to a dedicated group
-        $this->login($new_user_name);
+        // --- act - login as other user, wait 10 minutes, assign ticket to a user in dedicated group
+        $this->login($other_user_name);
         $assignation_datetime = $this->setCurrentTime('2025-06-10 09:10:00');
         /** @var Ticket $ticket */
-        $ticket = $this->updateItem($ticket::class, $ticket->getID(), ['_users_id_assign' => $user->getID()]);
-        assert($ticket->isUser(CommonITILActor::ASSIGN, $user->getID()), 'Ticket should be assigned to a user of ola dedicated group.');
+        $ticket = $this->updateItem($ticket::class, $ticket->getID(), ['_users_id_assign' => $user_in_ola_group->getID()]);
+        assert($ticket->isUser(CommonITILActor::ASSIGN, $user_in_ola_group->getID()), 'Ticket should be assigned to a user of ola dedicated group.');
 
-        // --- assert : end_time is set to the moment ticket is assigned to a dedicated group
+        // --- assert : end_time is not set
         $ola_data = $ticket->getOlasData()[0];
-        $this->assertEquals($assignation_datetime->format('Y-m-d H:i:s'), $ola_data['end_time'], 'End time should be set to the moment ticket is assigned to a user of the dedicated group.');
+        $this->assertNull($ola_data['end_time'], 'End time should not be set to the moment ticket is assigned to a user of the dedicated group.');
     }
 
     public function testOlaIsNotCompleteWhenTicketIsAssignedToNonDedicatedGroup(): void
@@ -749,148 +761,19 @@ class OLATest extends DbTestCase
         $this->assertEquals(0, $ola_data['end_time'], 'End time should be set to the moment ticket is assigned to a user of the dedicated group.');
     }
 
-    /**
-     * - a ticket is added
-     * - this triggers the default OLA assignment rule: adding the G_servicedesk group + adding 2 OLAs
-     * - if needed, technician performs an escalation: assigning the ticket to the G_N1 group
-     * - this triggers the N1 OLA rule: adding 2 OLAs: OLA_N1_TTO & OLA_N1_TTR
-     * Added olas should not be complete as ticket is not assigned to G_N1 group
-     */
-    public function testOlaTtoIsNotCompleteWhenTicketIsAssignedToDedicatedGroupAndOlaAddedByRule(): void
-    {
-        $this->login();
-        $g_desk = $this->createItem(Group::class, ['name' => 'G_desk', 'is_assign' => 1]);
-        $g_n1 = $this->createItem(Group::class, ['name' => 'N1', 'is_assign' => 1]);
-        $ola_tto_n1 = $this->createOLA(ola_type: SLM::TTO, group: $g_n1)['ola'];
-
-        // rule : when ticket is assigned to group N1 -> add OLA N1 TTO to ticket
-        $rule_builder = new RuleBuilder('add ola n1 tto');
-        $rule_builder->addCriteria('_groups_id_assign', Rule::PATTERN_IS, $g_n1->getID());
-        $rule_builder->addAction('append', 'olas_id', $ola_tto_n1->getID());
-        $this->createRule($rule_builder);
-
-
-        // Ticket assigned to group g_desk
-        $ticket = $this->createTicket([
-            '_groups_id_assign' => $g_desk->getID(),
-        ]);
-
-        // update ticket : assign to group N1
-        $ticket = $this->updateItem(
-            Ticket::class,
-            $ticket->getID(),
-            [
-                '_groups_id_assign' => $g_n1->getID(),
-            ]
-        );
-        // check rule has processed : OLA TTO is added to ticket
-        $fetched_ola_data = $ticket->getOlasTTOData()[0] ?? throw new \Exception('OLA TTO should be added to ticket by rule');
-        assert($fetched_ola_data['olas_id'] === $ola_tto_n1->getID(), 'OLA TTO should be added to ticket by rule');
-
-        // assert OLA TTO is not complete
-        $this->assertNull($fetched_ola_data['end_time']);
-    }
-
-    /**
-     * Same as @see self::testOlaTtoIsNotCompleteWhenTicketIsAssignedToDedicatedGroupAndOlaAddedByRule()
-     * + ensure ola is complete when group is removed from ticket assigned groups
-     */
-    public function testOlaTtoIsNotCompleteWhenTicketIsAssignedToDedicatedGroupByRuleAndOlaIsAddedByRule(): void
-    {
-        // --- arrange
-        $this->login();
-        $root_entity_id = $this->getTestRootEntity(true);
-        // create groups + ola
-        $group_desk = $this->createItem(Group::class, ['name' => 'G_desk', 'is_assign' => 1]);
-        $group_n1 = $this->createItem(Group::class, ['name' => 'N1', 'is_assign' => 1]);
-        $ola_tto_n1 = $this->createOLA(ola_type: SLM::TTO, group: $group_n1)['ola'];
-
-        // rule to assign ticket to group N1
-
-        // rule to assign ticket to group N1 + add OLA N1 TTO to ticket
-        $rule_builder = new RuleBuilder('add ola n1 tto');
-        $rule_builder->addCriteria('entities_id', Rule::PATTERN_IS, $root_entity_id);
-        $rule_builder->addAction('assign', '_groups_id_assign', $group_n1->getID());
-        $rule_builder->addAction('append', 'olas_id', $ola_tto_n1->getID());
-        $rule_builder->setCondtion(RuleTicket::ONADD);
-
-        $this->createRule($rule_builder);
-
-        // -- act : create ticket in entity
-        $ticket = $this->createTicket([
-            'entities_id' => $root_entity_id,
-        ]);
-        // check rule has processed : ticket is assigned to group N1 + OLA TTO is added to ticket
-        assert($ticket->isGroup(CommonITILActor::ASSIGN, $group_n1->getID()), 'Ticket should be assigned to group N1 by rule');
-        $fetched_ola_data = $ticket->getOlasTTOData()[0] ?? throw new \Exception('OLA TTO should be added to ticket by rule');
-        assert($fetched_ola_data['olas_id'] === $ola_tto_n1->getID(), 'OLA TTO should be added to ticket by rule');
-
-        // --- assert OLA TTO is not complete
-        $this->assertNull($fetched_ola_data['end_time']);
-    }
-
-    /**
-     * Same code as testOlaTtoIsNotCompleteWhenTicketIsAssignedToDedicatedGroupByRuleAndOlaIsAddedByRule()
-     * + remove group associated to OLA from ticket assigned groups
-     * then assert OLA is complete
-     */
-    public function testOlaTtoIstCompleteWhenTicketIsAssignedToDedicatedGroupByRuleAndOlaIsAddedByRuleThenGroupRemoved(): void
-    {
-        // --- arrange
-        $this->login();
-        $root_entity_id = $this->getTestRootEntity(true);
-        // create groups + ola
-        $group_desk = $this->createItem(Group::class, ['name' => 'G_desk', 'is_assign' => 1]);
-        $group_n1 = $this->createItem(Group::class, ['name' => 'N1', 'is_assign' => 1]);
-        $ola_tto_n1 = $this->createOLA(ola_type: SLM::TTO, group: $group_n1)['ola'];
-
-        // onadd rule to assign ticket to group N1 + add OLA N1 TTO to ticket
-        $rule_builder = new RuleBuilder('add ola n1 tto');
-        $rule_builder->addCriteria('entities_id', Rule::PATTERN_IS, $root_entity_id);
-        $rule_builder->addAction('assign', '_groups_id_assign', $group_n1->getID());
-        $rule_builder->addAction('append', 'olas_id', $ola_tto_n1->getID());
-        $rule_builder->setCondtion(RuleTicket::ONADD);
-        $this->createRule($rule_builder);
-
-        // -- act : create ticket in entity then remove group associated to OLA from ticket assigned groups
-        $ticket = $this->createTicket([
-            'entities_id' => $root_entity_id,
-            '_groups_id_assign' => $group_desk->getID(), // to be sure the rule assign the ticket to group N1
-        ]);
-        // check rule has processed : ticket is assigned to group N1 + OLA TTO is added to ticket
-        assert($ticket->isGroup(CommonITILActor::ASSIGN, $group_n1->getID()), 'Ticket should be assigned to group N1 by rule');
-        $fetched_ola_data = $ticket->getOlasTTOData()[0] ?? throw new \Exception('OLA TTO should be added to ticket by rule');
-        assert($fetched_ola_data['olas_id'] === $ola_tto_n1->getID(), 'OLA TTO should be added to ticket by rule');
-
-        assert(null === $fetched_ola_data['end_time'], 'OLA TTO should not be complete yet - fix testOlaTtoIsNotCompleteWhenTicketIsAssignedToDedicatedGroupByRuleAndOlaIsAddedByRule() first');
-
-        // --- assert OLA TTO complete after removing group associated to OLA from ticket assigned groups
-        $gt = new \Group_Ticket();
-        assert(true === $gt->deleteByCriteria(['tickets_id' => $ticket->getID(), 'groups_id' => $group_n1->getID()]));
-        $ticket = $this->reloadItem($ticket);
-        assert(false === $ticket->haveAGroup(CommonITILActor::ASSIGN, [$group_n1->getID()]));
-        $fetched_ola_data = $ticket->getOlasTTOData()[0] ?? throw new \Exception('OLA TTO should still be associated to ticket.');
-
-        $this->assertNotNull($fetched_ola_data['end_time']);
-    }
-
     public function testOlaTtoIsCompleteWhenGroupAssociatedToOlaIsRemovedFromTicketAssignedGroup(): void
     {
-        // create ticket with OLA TTO not completed - copy from testOlaTtoIsNotCompleteWhenTicketIsAssignedToDedicatedGroupAndOlaAddedByRule
+        // create ticket with OLA TTO not completed
         $this->login();
         $g_desk = $this->createItem(Group::class, ['name' => 'G_desk', 'is_assign' => 1]);
         $g_n1 = $this->createItem(Group::class, ['name' => 'N1', 'is_assign' => 1]);
         $ola_tto_n1 = $this->createOLA(ola_type: SLM::TTO, group: $g_n1)['ola'];
 
-        // rule : when ticket is assigned to group N1 -> add OLA N1 TTO to ticket
-        $rule_builder = new RuleBuilder('add ola n1 tto');
-        $rule_builder->addCriteria('_groups_id_assign', Rule::PATTERN_IS, $g_n1->getID());
-        $rule_builder->addAction('append', 'olas_id', $ola_tto_n1->getID());
-        $this->createRule($rule_builder);
-
         // Ticket assigned to group g_desk
         $ticket = $this->createTicket([
             '_groups_id_assign' => $g_desk->getID(),
+            '_la_update' => true,
+            '_olas_id' => [$ola_tto_n1->getID()]
         ]);
 
         // update ticket : assign to group N1
@@ -901,9 +784,9 @@ class OLATest extends DbTestCase
                 '_groups_id_assign' => $g_n1->getID(),
             ]
         );
-        // check rule has processed : OLA TTO is added to ticket
-        $fetched_ola_data = $ticket->getOlasTTOData()[0] ?? throw new \Exception('OLA TTO should be added to ticket by rule');
-        assert($fetched_ola_data['olas_id'] === $ola_tto_n1->getID(), 'OLA TTO should be added to ticket by rule');
+        // check OLA TTO is added to ticket
+        $fetched_ola_data = $ticket->getOlasTTOData()[0] ?? throw new \Exception('OLA TTO should be added to ticket');
+        assert($fetched_ola_data['olas_id'] === $ola_tto_n1->getID(), 'OLA TTO should be added to ticket');
 
         // check OLA TTO is not complete
         assert(null == $fetched_ola_data['end_time']);
@@ -922,7 +805,7 @@ class OLATest extends DbTestCase
 
     public function testOlaTtoIsCompleteWhenUserOfGroupAssociatedToOlaTakesTicketIntoAccountWithAFollowup(): void
     {
-        // create ticket with OLA TTO not completed - copy from testOlaTtoIsNotCompleteWhenTicketIsAssignedToDedicatedGroupAndOlaAddedByRule
+        // create ticket with OLA TTO not completed
         $this->login();
         $desk_group = $this->createItem(Group::class, [
             'name' => 'G_desk', 'is_assign' => 1,
@@ -953,15 +836,11 @@ class OLATest extends DbTestCase
 
         $ola_tto_n1 = $this->createOLA(ola_type: SLM::TTO, group: $n1_group)['ola'];
 
-        // rule : when ticket is assigned to group N1 -> add OLA N1 TTO to ticket
-        $rule_builder = new RuleBuilder('add ola n1 tto');
-        $rule_builder->addCriteria('_groups_id_assign', Rule::PATTERN_IS, $n1_group->getID());
-        $rule_builder->addAction('append', 'olas_id', $ola_tto_n1->getID());
-        $this->createRule($rule_builder);
-
         // Ticket assigned to group g_desk
         $ticket = $this->createTicket([
             '_groups_id_assign' => $desk_group->getID(),
+            '_la_update' => true,
+            '_olas_id' => [$ola_tto_n1->getID()]
         ]);
 
         // update ticket : assign to group N1
@@ -972,9 +851,9 @@ class OLATest extends DbTestCase
                 '_groups_id_assign' => $n1_group->getID(),
             ]
         );
-        // check rule has processed : OLA TTO is added to ticket
-        $fetched_ola_data = $ticket->getOlasTTOData()[0] ?? throw new \Exception('OLA TTO should be added to ticket by rule');
-        assert($fetched_ola_data['olas_id'] === $ola_tto_n1->getID(), 'OLA TTO should be added to ticket by rule');
+        // check OLA TTO is added to ticket
+        $fetched_ola_data = $ticket->getOlasTTOData()[0] ?? throw new \Exception('OLA TTO should be added to ticket');
+        assert($fetched_ola_data['olas_id'] === $ola_tto_n1->getID(), 'OLA TTO should be added to ticket');
 
         // check OLA TTO is not complete before acting
         assert(null == $fetched_ola_data['end_time']);
@@ -996,7 +875,7 @@ class OLATest extends DbTestCase
      */
     public function testOlaTtoIsCompleteWhenUserOfGroupAssociatedToOlaTakesTicketIntoAccountWithATask(): void
     {
-        // create ticket with OLA TTO not completed - copy from testOlaTtoIsNotCompleteWhenTicketIsAssignedToDedicatedGroupAndOlaAddedByRule
+        // create ticket with OLA TTO not completed
         $this->login();
         $desk_group = $this->createItem(Group::class, [
             'name' => 'G_desk', 'is_assign' => 1,
@@ -1027,15 +906,11 @@ class OLATest extends DbTestCase
 
         $ola_tto_n1 = $this->createOLA(ola_type: SLM::TTO, group: $n1_group)['ola'];
 
-        // rule : when ticket is assigned to group N1 -> add OLA N1 TTO to ticket
-        $rule_builder = new RuleBuilder('add ola n1 tto');
-        $rule_builder->addCriteria('_groups_id_assign', Rule::PATTERN_IS, $n1_group->getID());
-        $rule_builder->addAction('append', 'olas_id', $ola_tto_n1->getID());
-        $this->createRule($rule_builder);
-
         // Ticket assigned to group g_desk
         $ticket = $this->createTicket([
             '_groups_id_assign' => $desk_group->getID(),
+            '_la_update' => true,
+            '_olas_id' => [$ola_tto_n1->getID()]
         ]);
 
         // update ticket : assign to group N1
@@ -1046,9 +921,9 @@ class OLATest extends DbTestCase
                 '_groups_id_assign' => $n1_group->getID(),
             ]
         );
-        // check rule has processed : OLA TTO is added to ticket
-        $fetched_ola_data = $ticket->getOlasTTOData()[0] ?? throw new \Exception('OLA TTO should be added to ticket by rule');
-        assert($fetched_ola_data['olas_id'] === $ola_tto_n1->getID(), 'OLA TTO should be added to ticket by rule');
+        // check OLA TTO is added to ticket
+        $fetched_ola_data = $ticket->getOlasTTOData()[0] ?? throw new \Exception('OLA TTO should be added to ticket');
+        assert($fetched_ola_data['olas_id'] === $ola_tto_n1->getID(), 'OLA TTO should be added to ticket');
 
         // check OLA TTO is not complete before acting
         assert(null == $fetched_ola_data['end_time']);
@@ -1073,7 +948,7 @@ class OLATest extends DbTestCase
 
     public function testOlaTtoIsNotCompleteWhenUserNotOfGroupAssociatedToOlaTakesTicketIntoAccount()
     {
-        // create ticket with OLA TTO not completed - copy from testOlaTtoIsNotCompleteWhenTicketIsAssignedToDedicatedGroupAndOlaAddedByRule
+        // create ticket with OLA TTO not completed
         $this->login();
         $desk_group = $this->createItem(Group::class, [
             'name' => 'G_desk',
@@ -1097,15 +972,11 @@ class OLATest extends DbTestCase
 
         $ola_tto_n1 = $this->createOLA(ola_type: SLM::TTO, group: $n1_group)['ola'];
 
-        // rule : when ticket is assigned to group N1 -> add OLA N1 TTO to ticket
-        $rule_builder = new RuleBuilder('add ola n1 tto');
-        $rule_builder->addCriteria('_groups_id_assign', Rule::PATTERN_IS, $n1_group->getID());
-        $rule_builder->addAction('append', 'olas_id', $ola_tto_n1->getID());
-        $this->createRule($rule_builder);
-
         // Ticket assigned to group g_desk
         $ticket = $this->createTicket([
             '_groups_id_assign' => $desk_group->getID(),
+            '_la_update' => true,
+            '_olas_id' => [$ola_tto_n1->getID()]
         ]);
 
         // update ticket : assign to group N1
@@ -1116,9 +987,9 @@ class OLATest extends DbTestCase
                 '_groups_id_assign' => $n1_group->getID(),
             ]
         );
-        // check rule has processed : OLA TTO is added to ticket
-        $fetched_ola_data = $ticket->getOlasTTOData()[0] ?? throw new \Exception('OLA TTO should be added to ticket by rule');
-        assert($fetched_ola_data['olas_id'] === $ola_tto_n1->getID(), 'OLA TTO should be added to ticket by rule');
+        // check OLA TTO is added to ticket
+        $fetched_ola_data = $ticket->getOlasTTOData()[0] ?? throw new \Exception('OLA TTO should be added to ticket');
+        assert($fetched_ola_data['olas_id'] === $ola_tto_n1->getID(), 'OLA TTO should be added to ticket');
 
         // check OLA TTO is not complete before acting
         assert(null == $fetched_ola_data['end_time']);
@@ -1372,21 +1243,17 @@ class OLATest extends DbTestCase
 
     public function testOlaTtrIsCompleteWhenGroupAssociatedToOlaIsRemovedFromTicketAssignedGroup()
     {
-        // create ticket with OLA TTR not completed - copy from testOlaTtrIsNotCompleteWhenTicketIsAssignedToDedicatedGroupAndOlaAddedByRule
+        // create ticket with OLA TTR not completed
         $this->login();
         $g_desk = $this->createItem(Group::class, ['name' => 'G_desk', 'is_assign' => 1]);
         $g_n1 = $this->createItem(Group::class, ['name' => 'N1', 'is_assign' => 1]);
         $ola_ttr_n1 = $this->createOLA(ola_type: SLM::TTR, group: $g_n1)['ola'];
 
-        // rule : when ticket is assigned to group N1 -> add OLA N1 TTR to ticket
-        $rule_builder = new RuleBuilder('add ola n1 ttr');
-        $rule_builder->addCriteria('_groups_id_assign', Rule::PATTERN_IS, $g_n1->getID());
-        $rule_builder->addAction('append', 'olas_id', $ola_ttr_n1->getID());
-        $this->createRule($rule_builder);
-
         // Ticket assigned to group g_desk
         $ticket = $this->createTicket([
             '_groups_id_assign' => $g_desk->getID(),
+            '_la_update' => true,
+            '_olas_id' => [$ola_ttr_n1->getID()],
         ]);
 
         // update ticket : assign to group N1
@@ -1397,9 +1264,9 @@ class OLATest extends DbTestCase
                 '_groups_id_assign' => $g_n1->getID(),
             ]
         );
-        // check rule has processed : OLA TTR is added to ticket
-        $fetched_ola_data = $ticket->getOlasTTRData()[0] ?? throw new \Exception('OLA TTR should be added to ticket by rule');
-        assert($fetched_ola_data['olas_id'] === $ola_ttr_n1->getID(), 'OLA TTR should be added to ticket by rule');
+        // check OLA TTR is added to ticket
+        $fetched_ola_data = $ticket->getOlasTTRData()[0] ?? throw new \Exception('OLA TTR should be added to ticket');
+        assert($fetched_ola_data['olas_id'] === $ola_ttr_n1->getID(), 'OLA TTR should be added to ticket');
 
         // check OLA TTR is not complete
         assert(null == $fetched_ola_data['end_time']);
@@ -1587,7 +1454,7 @@ class OLATest extends DbTestCase
     {
         // arrange
         $this->login();
-        $ola = $this->createOLA(ola_type: SLM::TTO)['ola'];
+        $ola = $this->createOLA(ola_type: SLM::TTR)['ola'];
         $now = $this->setCurrentTime('2025-02-26 10:04:00');
         $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()]]);
 

@@ -107,6 +107,8 @@ class Item_Ola extends CommonDBRelation
      * @param int $olas_id must exist in the database
      * @param array<int> $new_assigned_groups
      * @param array<int> $new_assigned_users
+     *
+     * @todo remove useless parameters at the end of implementation
      */
     public static function compute(Ticket $ticket, mixed $olas_id, array $new_assigned_groups = [], array $new_assigned_users = []): void
     {
@@ -171,9 +173,9 @@ class Item_Ola extends CommonDBRelation
         if (is_null($item_ola_data['end_time'])) {
             if ($item_ola_data['ola_type'] === SLM::TTO) {
                 if (
-                    (!isset($ticket->input['_rule_process']) || !$ticket->input['_rule_process'])
-                    // current is in the OLA group Or ticket is just assigned to a group associated with the OLA Or
-                    && (self::isCurrentUserInOlaGroup((int) $ola->fields['groups_id']) || in_array($ola->fields['groups_id'], $new_assigned_groups) || self::isCurrentUserInNewAssignedUsers($new_assigned_users))
+                    // current user is in the OLA group
+                    self::isCurrentUserInOlaGroup((int) $ola->fields['groups_id'])
+
                 ) {
                     $item_ola_data['end_time'] = Session::getCurrentTime();
                 }
