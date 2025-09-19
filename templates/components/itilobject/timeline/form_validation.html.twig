@@ -387,7 +387,7 @@
                }
 
                // Validation step field
-               if( data.validationsteps_id !== undefined ) {
+               if( data.validationsteps_id !== undefined && data.validationsteps_id !== 0) {
                   $("#dropdown__validationsteps_id{{ rand }}").trigger('setValue', data.validationsteps_id);
                }
 
