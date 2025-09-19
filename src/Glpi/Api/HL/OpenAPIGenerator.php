@@ -408,6 +408,12 @@ EOT;
                             $route['x-controller']
                         );
                     }
+                    // Replace placeholders in the description if any
+                    if (isset($temp_expanded['description'])) {
+                        foreach ($combination as $placeholder => $value) {
+                            $temp_expanded['description'] = str_replace("{{$placeholder}}", $value, $temp_expanded['description']);
+                        }
+                    }
 
                     foreach ($combination as $placeholder => $value) {
                         $new_url = str_replace("{{$placeholder}}", $value, $new_url);
