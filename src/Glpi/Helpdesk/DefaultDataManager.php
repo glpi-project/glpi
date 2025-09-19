@@ -401,10 +401,11 @@ final class DefaultDataManager
             'translation' => static fn(Translator $trans, string $lang, string $key) => $key === 'question_name' ? $trans->translatePlural('Category', 'Categories', 1, 'glpi', $lang) : null,
             'default_value' => null,
             'extra_data' => json_encode([
-                'itemtype'          => ITILCategory::class,
-                'categories_filter' => ['request', 'incident', 'change', 'problem'],
-                'root_items_id'     => 0,
-                'subtree_depth'     => 0,
+                'itemtype'             => ITILCategory::class,
+                'categories_filter'    => ['request', 'incident', 'change', 'problem'],
+                'root_items_id'        => 0,
+                'subtree_depth'        => 0,
+                'selectable_tree_root' => false,
             ]),
         ];
     }
@@ -428,10 +429,11 @@ final class DefaultDataManager
             'translation' => static fn(Translator $trans, string $lang, string $key) => $key === 'question_name' ? $trans->translatePlural('Location', 'Locations', 1, 'glpi', $lang) : null,
             'default_value' => null,
             'extra_data' => json_encode([
-                'itemtype'          => Location::class,
-                'categories_filter' => [],
-                'root_items_id'     => 0,
-                'subtree_depth'     => 0,
+                'itemtype'             => Location::class,
+                'categories_filter'    => [],
+                'root_items_id'        => 0,
+                'subtree_depth'        => 0,
+                'selectable_tree_root' => false,
             ]),
         ];
     }
