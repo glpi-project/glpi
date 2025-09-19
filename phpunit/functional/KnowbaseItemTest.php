@@ -738,6 +738,28 @@ HTML,
                 'count' => 2,
                 'sort' => ['_knowbaseitem01', '_knowbaseitem02'],
             ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => '*',
+                    // Make sure no errors are triggered when sending this specific request
+                ],
+                'type' => 'search',
+                'count' => 2,
+                'sort' => ['_knowbaseitem01', '_knowbaseitem02'],
+            ],
+            [
+                'params' => [
+                    'knowbaseitemcategories_id' => 0,
+                    'faq' => false,
+                    'contains' => '%',
+                    // Make sure no errors are triggered when sending this specific request
+                ],
+                'type' => 'search',
+                'count' => 2,
+                'sort' => ['_knowbaseitem01', '_knowbaseitem02'],
+            ],
         ];
     }
 

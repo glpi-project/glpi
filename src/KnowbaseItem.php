@@ -1145,6 +1145,10 @@ TWIG, $twig_params);
                     $search = $params["contains"];
                     $search_wilcard = self::computeBooleanFullTextSearch($search);
 
+                    if ($search_wilcard === '*') {
+                        break;
+                    }
+
                     $addscore = [];
                     if (countElementsInTable('glpi_knowbaseitemtranslations') > 0) {
                         $addscore = [
