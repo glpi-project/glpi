@@ -519,7 +519,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     {
         // Read file path
         $path = realpath(GLPI_TMP_DIR . "/$file");
-        if (!$path || !str_starts_with($path, GLPI_TMP_DIR)) {
+        if (!$path || !str_starts_with($path, realpath(GLPI_TMP_DIR))) {
             // File doest not exist or is outside upload directory
             $message = __s("An unexpected error occurred");
             Session::addMessageAfterRedirect($message);
