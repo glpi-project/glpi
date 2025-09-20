@@ -40,11 +40,17 @@ describe('LDAP Integration', () => {
         });
         cy.initApi().updateWithAPI('AuthLDAP', 1,{
             'is_default': 1,
+            'is_active': 1,
         });
     });
     beforeEach(() => {
         cy.login();
         cy.changeProfile('Super-Admin');
+    });
+    after(() => {
+        cy.initApi().updateWithAPI('AuthLDAP', 1,{
+            'is_active': 0,
+        });
     });
 
     ['Import', 'Sync'].forEach((action) => {
