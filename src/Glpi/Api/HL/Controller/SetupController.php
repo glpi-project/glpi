@@ -37,7 +37,6 @@ namespace Glpi\Api\HL\Controller;
 
 use AuthLDAP;
 use CommonDBTM;
-use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
@@ -46,12 +45,6 @@ use Glpi\Api\HL\RouteVersion;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
-use Group;
-use Profile;
-use Session;
-use Toolbox;
-use User;
-use UserEmail;
 
 #[Route(path: '/Setup', tags: ['Setup'])]
 final class SetupController extends AbstractController
@@ -189,7 +182,7 @@ final class SetupController extends AbstractController
         'itemtype' => [self::class, 'getSetupTypes'],
     ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\CreateRoute(schema_name: '{itemtype}',)]
+    #[Doc\CreateRoute(schema_name: '{itemtype}')]
     public function createItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');

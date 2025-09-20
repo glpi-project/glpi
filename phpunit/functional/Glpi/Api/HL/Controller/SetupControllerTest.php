@@ -149,7 +149,7 @@ class SetupControllerTest extends \HLAPITestCase
                             $this->api->autoTestCRUDNoRights(
                                 endpoint: $type['href'],
                                 itemtype: $type['itemtype'],
-                                items_id: (int)$new_items_id,
+                                items_id: (int) $new_items_id,
                             );
                         }
                     }
