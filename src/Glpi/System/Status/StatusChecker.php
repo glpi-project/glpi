@@ -120,10 +120,11 @@ final class StatusChecker
      * @param string|null $service The name of the service or if null/'all' all services will be checked
      * @param bool $public_only True if only public information should be available in the status check.
      *    If true, assume the data is being viewed by an anonymous user.
+     * @param bool $force True to force rechecking the status even if it has already been checked during this request.
      * @return array An array with the status information
      * @since 10.0.0
      */
-    public static function getServiceStatus(?string $service, $public_only = true)
+    public static function getServiceStatus(?string $service, $public_only = true, bool $force = false): array
     {
         $services = self::getServices();
         if ($service === 'all' || $service === null) {
@@ -133,7 +134,7 @@ final class StatusChecker
                 ],
             ];
             foreach (array_keys($services) as $name) {
-                $service_status = self::getServiceStatus($name, $public_only);
+                $service_status = self::getServiceStatus($name, $public_only, $force);
                 $status[$name] = $service_status;
             }
 
@@ -147,20 +148,21 @@ final class StatusChecker
         }
         $service_check_method = $services[$service];
         if (method_exists($service_check_method[0], $service_check_method[1])) {
-            return $service_check_method($public_only);
+            return $service_check_method($public_only, $force);
         }
         return [];
     }
 
     /**
      * @param bool $public_only True if only public status information should be given.
+     * @param bool $force True to force rechecking the status even if it has already been checked during this request.
      * @return array
      */
-    public static function getDBStatus($public_only = true): array
+    public static function getDBStatus(bool $public_only = true, bool $force = false): array
     {
         static $status = null;
 
-        if ($status === null) {
+        if ($force || $status === null) {
             $status = [
                 'status' => self::STATUS_OK,
                 'main' => [
@@ -226,25 +228,20 @@ final class StatusChecker
 
     private static function isDBAvailable(): bool
     {
-        static $db_ok = null;
-
-        if ($db_ok === null) {
-            $status = self::getDBStatus();
-            $db_ok = ($status['main']['status'] === self::STATUS_OK || $status['replicas']['status'] === self::STATUS_OK);
-        }
-
-        return $db_ok;
+        $status = self::getDBStatus();
+        return ($status['main']['status'] === self::STATUS_OK || $status['replicas']['status'] === self::STATUS_OK);
     }
 
     /**
      * @param bool $public_only True if only public status information should be given.
+     * @param bool $force True to force rechecking the status even if it has already been checked during this request.
      * @return array
      */
-    public static function getLDAPStatus($public_only = true): array
+    public static function getLDAPStatus(bool $public_only = true, bool $force = false): array
     {
         static $status = null;
 
-        if ($status === null) {
+        if ($force || $status === null) {
             $status = [
                 'status' => self::STATUS_NO_DATA,
                 'servers' => [],
@@ -307,13 +304,14 @@ final class StatusChecker
 
     /**
      * @param bool $public_only True if only public status information should be given.
+     * @param bool $force True to force rechecking the status even if it has already been checked during this request.
      * @return array
      */
-    public static function getIMAPStatus($public_only = true): array
+    public static function getIMAPStatus(bool $public_only = true, bool $force = false): array
     {
         static $status = null;
 
-        if ($status === null) {
+        if ($force || $status === null) {
             $status = [
                 'status' => self::STATUS_NO_DATA,
                 'servers' => [],
@@ -370,15 +368,16 @@ final class StatusChecker
 
     /**
      * @param bool $public_only True if only public status information should be given.
+     * @param bool $force True to force rechecking the status even if it has already been checked during this request.
      * @return array
      */
-    public static function getCASStatus($public_only = true): array
+    public static function getCASStatus(bool $public_only = true, bool $force = false): array
     {
         global $CFG_GLPI;
 
         static $status = null;
 
-        if ($status === null) {
+        if ($force || $status === null) {
             $status['status'] = self::STATUS_NO_DATA;
             if (!empty($CFG_GLPI['cas_host'])) {
                 // Rebuild CAS URL
@@ -413,13 +412,14 @@ final class StatusChecker
 
     /**
      * @param bool $public_only True if only public status information should be given.
+     * @param bool $force True to force rechecking the status even if it has already been checked during this request.
      * @return array
      */
-    public static function getMailCollectorStatus($public_only = true): array
+    public static function getMailCollectorStatus(bool $public_only = true, bool $force = false): array
     {
         static $status = null;
 
-        if ($status === null) {
+        if ($force || $status === null) {
             $status = [
                 'status' => self::STATUS_NO_DATA,
                 'servers' => [],
@@ -469,13 +469,14 @@ final class StatusChecker
 
     /**
      * @param bool $public_only True if only public status information should be given.
+     * @param bool $force True to force rechecking the status even if it has already been checked during this request.
      * @return array
      */
-    public static function getCronTaskStatus($public_only = true): array
+    public static function getCronTaskStatus(bool $public_only = true, bool $force = false): array
     {
         static $status = null;
 
-        if ($status === null) {
+        if ($force || $status === null) {
             $status = [
                 'status' => self::STATUS_NO_DATA,
                 'stuck' => [],
@@ -499,13 +500,14 @@ final class StatusChecker
 
     /**
      * @param bool $public_only True if only public status information should be given.
+     * @param bool $force True to force rechecking the status even if it has already been checked during this request.
      * @return array
      */
-    public static function getFilesystemStatus($public_only = true): array
+    public static function getFilesystemStatus(bool $public_only = true, bool $force = false): array
     {
         static $status = null;
 
-        if ($status === null) {
+        if ($force || $status === null) {
             $status = [
                 'status' => self::STATUS_OK,
                 'session_dir' => [
@@ -537,16 +539,15 @@ final class StatusChecker
     }
 
     /**
-     *
-     * @since 9.5.0
      * @param bool $public_only True if only public status information should be given.
+     * @param bool $force True to force rechecking the status even if it has already been checked during this request.
      * @return array
      */
-    public static function getPluginsStatus($public_only = true): array
+    public static function getPluginsStatus(bool $public_only = true, bool $force = false): array
     {
         static $status = null;
 
-        if ($status === null) {
+        if ($force || $status === null) {
             $plugins = Plugin::getPlugins();
             $status = [];
 
