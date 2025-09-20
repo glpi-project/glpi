@@ -73,6 +73,9 @@ class AuthLdapTest extends DbTestCase
         parent::setUp();
         $this->ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
 
+        // remove the `_e2e_ldap` server
+        $this->deleteItem(\AuthLDAP::class, getItemByTypeName(\AuthLDAP::class, '_e2e_ldap', true));
+
         //make sure bootstrapped ldap is active and is default
         $this->assertTrue(
             $this->ldap->update([

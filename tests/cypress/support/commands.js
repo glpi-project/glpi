@@ -31,6 +31,7 @@
  */
 
 let api_token = null;
+let oauth_token = null;
 
 /**
  * @memberof Cypress.Chainable.prototype
@@ -605,4 +606,52 @@ Cypress.Commands.add('getRowCells', {prevSubject: true}, (subject) => {
             return result;
         });
     });
+});
+
+Cypress.Commands.add('glpiAPIRequest', ({
+    method = 'GET',
+    endpoint = '',
+    headers = {},
+    body = null,
+    allow_failure = false,
+    username = 'e2e_tests',
+    password = 'glpi',
+}) => {
+    function getRequestOptions() {
+        return {
+            method: method,
+            url: `/api.php/${endpoint}`,
+            headers: {
+                'Authorization': `Bearer ${oauth_token}`,
+                ...headers,
+            },
+            body: body,
+            failOnStatusCode: !allow_failure,
+        };
+    }
+    if (oauth_token === null) {
+        cy.request({
+            method: 'POST',
+            url: '/api.php/token',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: {
+                'grant_type': 'password',
+                'client_id': '9246d35072ff62193330003a8106d947fafe5ac036d11a51ebc7ca11b9bc135e',
+                'client_secret': 'd2c4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1',
+                'username': username,
+                'password': password,
+                'scope': 'email user api graphql'
+            }
+        }).then((response) => {
+            if (response.status !== 200) {
+                throw new Error('Failed to get API token');
+            }
+            oauth_token = response.body.access_token;
+            return cy.request(getRequestOptions());
+        });
+    } else {
+        return cy.request(getRequestOptions());
+    }
 });
