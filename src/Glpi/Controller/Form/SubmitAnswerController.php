@@ -128,6 +128,7 @@ final class SubmitAnswerController extends AbstractController
             throw new BadRequestHttpException();
         }
 
+        $answers = $handler->removeUnusedAnswers($form, $answers);
         $answers = $handler->saveAnswers(
             $form,
             $answers,
