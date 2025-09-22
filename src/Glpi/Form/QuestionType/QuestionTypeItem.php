@@ -354,8 +354,8 @@ class QuestionTypeItem extends AbstractQuestionType implements
         }
 
         // Check if items_id is set and valid
-        if (empty($config->getItemsId())) {
-            // If items_id is not > 0, consider it empty
+        if ($config->getItemsId() < 0) {
+            // If items_id is not >= 0, consider it empty
             return '';
         }
 

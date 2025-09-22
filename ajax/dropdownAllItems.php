@@ -62,7 +62,7 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
         'value'               => 0,
         'valuename'           => Dropdown::EMPTY_VALUE,
         'itemtype'            => $_POST["idtable"],
-        'display_emptychoice' => true,
+        'display_emptychoice' => $_POST['display_emptychoice'] ?? true,
         'displaywith'         => $displaywith,
     ];
     $idor_params = [
@@ -99,6 +99,9 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
     }
     if (isset($_POST['aria_label'])) {
         $p['aria_label'] = $_POST['aria_label'];
+    }
+    if (isset($_POST['toadd']) && is_array($_POST['toadd'])) {
+        $p['toadd'] = $_POST['toadd'];
     }
     $p['_idor_token'] = Session::getNewIDORToken($_POST["idtable"], $idor_params);
 
