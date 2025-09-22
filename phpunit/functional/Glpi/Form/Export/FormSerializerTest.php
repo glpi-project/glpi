@@ -501,6 +501,46 @@ final class FormSerializerTest extends \DbTestCase
         ], $questions_data);
     }
 
+    public function testExportAndImportExtraDataFromItemDropdownQuestion(): void
+    {
+        // Arrange: create a form with an item dropdown question that reference
+        // a specific itil category
+        $category1 = $this->createItem(ITILCategory::class, [
+            'name' => "My category 1",
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $category2 = $this->createItem(ITILCategory::class, [
+            'name' => "My category 2",
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $builder = new FormBuilder();
+        $extra_data = new QuestionTypeItemDropdownExtraDataConfig(
+            itemtype: ITILCategory::class,
+            root_items_id: $category1->getId(),
+        );
+        $extra_data = json_encode($extra_data);
+        $builder->addQuestion("Category", QuestionTypeItemDropdown::class, extra_data: $extra_data);
+        $form = $this->createForm($builder);
+
+        // Act: delete the category, then import the form using another category
+        $this->login();
+        $json = $this->exportForm($form);
+        $this->deleteItem(ITILCategory::class, $category1->getID(), true);
+        $mapper = new DatabaseMapper(Session::getActiveEntities());
+        $mapper->addMappedItem(
+            ITILCategory::class,
+            "My category 1",
+            $category2->getID(),
+        );
+        $form = $this->importForm($json, $mapper);
+
+        // Assert: the imported form should reference the second category
+        $question = Question::getByID($this->getQuestionId($form, "Category"));
+        $config = $question->getExtraDataConfig();
+        /** @var QuestionTypeItemDropdownExtraDataConfig $config */
+        $this->assertEquals($category2->getID(), $config->getRootItemsId());
+    }
+
     public function testExportAndImportSubmitButtonConditions(): void
     {
         $this->login();
