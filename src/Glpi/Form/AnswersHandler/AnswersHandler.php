@@ -189,6 +189,25 @@ final class AnswersHandler
         }
     }
 
+    public function removeUnusedAnswers(Form $form, array $answers): array
+    {
+        // Do not include answers to questions that were hidden by some visibility
+        // conditions.
+        $input = new EngineInput(
+            answers: $answers,
+        );
+        $engine = new Engine($form, $input);
+        $result = $engine->computeVisibility();
+
+        foreach (array_keys($answers) as $anwer_id) {
+            if (!$result->isQuestionVisible($anwer_id)) {
+                unset($answers[$anwer_id]);
+            }
+        }
+
+        return $answers;
+    }
+
     /**
      * Saves the given answers of a given form into an AnswersSet object and
      * create destinations objects.

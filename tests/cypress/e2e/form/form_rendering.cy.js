@@ -276,6 +276,27 @@ describe('Form rendering', () => {
         cy.findByRole('heading', { name: 'Untitled question' }).should('exist');
         cy.findByRole('heading', { name: 'Untitled comment' }).should('exist');
     });
+
+    it('Items hidden by condition are ignored by destinations', () => {
+        cy.login();
+        cy.importForm('form-with-a-hidden-question-2025-09-19.json').then((id) => {
+            cy.visit(`/Form/Render/${id}`);
+        });
+
+        // Fill and submit form.
+        cy.getDropdownByLabelText('Visible question').selectDropdownValue("Very high");
+        cy.findByRole('button', {name : "Submit"}).click();
+
+        // Go to created ticket
+        cy.findByRole('link', {name : "Form with a hidden question"}).click();
+
+        // Urgency should be set from the visible question value
+        cy.getDropdownByLabelText('Urgency').should('have.text', "Very high");
+
+        // Hidden question should not be referenced in the ticket description
+        cy.findByText('1) Visible question').should('exist');
+        cy.findByText('2) Hidden question').should('not.exist');
+    });
 });
 
 function addQuestionAndGetUuuid(name, type = null, subtype = null) {

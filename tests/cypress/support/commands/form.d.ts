@@ -38,5 +38,6 @@ declare namespace Cypress {
         saveFormEditorAndReload(): Chainable<any>
         addQuestion(name: string): Chainable<any>
         addSection(name: string): Chainable<any>
+        importForm(filename: string): Chainable<any>
     }
 }
