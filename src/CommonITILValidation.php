@@ -2126,7 +2126,7 @@ HTML;
     private function checkIsAnItilObject(false|CommonDBTM $itilobject): void
     {
         if (!($itilobject instanceof CommonITILObject)) {
-            throw new RuntimeException('Validation must be linked to an ITIL object. ' . get_class($itilobject) . ' given.');
+            throw new RuntimeException('Validation must be linked to an ITIL object. ' . ($itilobject === false ? 'false' : get_class($itilobject)) . ' given.');
         }
     }
 }
