@@ -4522,6 +4522,8 @@ JS;
         $templateResult = $params['templateResult'];
         $templateSelection = $params['templateSelection'];
         $aria_label = $params['aria_label'];
+        $emptyLabel = $params['emptylabel'] ?? '';
+
         unset($params["on_change"], $params["width"]);
 
         $allowclear =  "false";
@@ -4612,14 +4614,39 @@ JS;
             $js .= "setupAjaxDropdown(window.select2_configs['{$field_id}']);";
         }
 
-        $output .= Html::scriptBlock('$(function() {' . $js . '});');
 
         // display select tag
         $options['class'] = $params['class'] ?? 'form-select';
-        if ($params['required'] === true) {
+
+        if ((bool) $params['required'] === true) {
             $options['required'] = 'required';
+
+            if (!empty($emptyLabel)) {
+                $selectVarName = "select_" . mt_rand();
+                $formVarName = "form_" . mt_rand();
+                $jsEmptyLabel = str_replace("'", "\\'", $emptyLabel);
+
+                $js .= <<<JS
+                const $selectVarName = document.getElementById('{$field_id}');
+                const $formVarName = $selectVarName.closest('form');
+                if ($formVarName) {
+                    $formVarName.addEventListener("submit", (evt) => {
+                        if ($selectVarName.options[$selectVarName.selectedIndex].text === '$jsEmptyLabel') {
+                            $selectVarName.setCustomValidity(__('This field is mandatory'));
+                            $selectVarName.reportValidity();
+                            $selectVarName.setCustomValidity('');
+
+                            // Error, we stop the form from submitting
+                            evt.preventDefault();
+                            evt.stopPropagation();
+                        }
+                    });
+                }
+JS;
+            }
         }
 
+        $output .= Html::scriptBlock('$(function() {' . $js . '});');
         $output .= self::select($name, $values, $options);
 
         return $output;
@@ -4798,6 +4825,7 @@ JS;
      */
     public static function select($name, array $values = [], $options = [])
     {
+        dump($options);
         $selected = false;
         if (isset($options['selected'])) {
             $selected = $options['selected'];
