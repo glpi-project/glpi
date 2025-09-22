@@ -1720,6 +1720,15 @@ final class FormSerializerTest extends \DbTestCase
                         $this->removeEmptyValues($default_config);
                         $this->removeEmptyValues($imported_config);
 
+                        // These fields contains tags and will be different,
+                        // they are compared in a dedicated tests.
+                        unset(
+                            $default_config['glpi-form-destination-commonitilfield-titlefield'],
+                            $default_config['glpi-form-destination-commonitilfield-contentfield'],
+                            $imported_config['glpi-form-destination-commonitilfield-titlefield'],
+                            $imported_config['glpi-form-destination-commonitilfield-contentfield']
+                        );
+
                         $this->assertEquals(
                             $default_config,
                             $imported_config
