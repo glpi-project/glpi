@@ -58,7 +58,7 @@ describe('Item form question type', () => {
             cy.findByRole("option", { name: "New question" }).should('exist').as('question');
 
             // Change question type
-            cy.findByRole("combobox", { name: "Short answer" }).should('exist').select("Item");
+            cy.findByRole('option', {'name': 'New question'}).changeQuestionType('Item');
         });
     });
 
@@ -132,5 +132,47 @@ describe('Item form question type', () => {
 
         // Check if the default values are set
         cy.findByRole("combobox", { name: "Test ITIL category" }).should('exist');
+    });
+
+    describe('Item form question type default value with root entity', () => {
+        before(() => {
+            // We need to be in the root entity to be able to select it as default value
+            // So we set the Super-Admin profile to have access to all entities
+            // (we will reset it after the test)
+            cy.updateWithAPI('Profile_User', 6, { entities_id: 0 }); // Super-Admin
+        });
+
+        after(() => {
+            // Reset the Super-Admin profile to original value
+            cy.updateWithAPI('Profile_User', 6, { entities_id: 1 }); // Super-Admin
+        });
+
+        it('can define root entity as default value', () => {
+            // Change the itemtype to Entities
+            cy.getDropdownByLabelText("Select an itemtype").selectDropdownValue("Entities");
+
+            // Wait for the items_id dropdown to be loaded
+            cy.waitForNetworkIdle(150);
+
+            // Select the root entity
+            cy.getDropdownByLabelText("Select an item").selectDropdownValue('Root entity');
+
+            // Check if the default value is set correctly
+            cy.findByRole("combobox", { name: "Root entity" }).should('exist');
+
+            // Save the form
+            cy.saveFormEditorAndReload();
+
+            // Check if the default value is still set correctly after reloading the form editor
+            cy.findByRole("combobox", { name: "Root entity" }).should('exist');
+
+            // Go to preview page (remove the target="_blank" attribute to stay in the same window)
+            cy.findByRole("link", { name: "Preview" })
+                .invoke('attr', 'target', '_self')
+                .click();
+
+            // Check if the default values are set
+            cy.findByRole("combobox", { name: "Root entity" }).should('exist');
+        });
     });
 });

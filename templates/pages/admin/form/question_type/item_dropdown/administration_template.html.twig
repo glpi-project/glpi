@@ -35,6 +35,7 @@
 {% set rand = random() %}
 
 <div class="input-group">
+    {# Define empty choice manually to handle root entity #}
     {{ fields.dropdownField(
         default_itemtype|default(itemtypes|first|first),
         'default_value',
@@ -43,13 +44,16 @@
         {
             'init'               : init,
             'no_label'           : true,
-            'display_emptychoice': true,
             'width'              : '100%',
             'mb'                 : '',
             'comments'           : false,
             'addicon'            : false,
             'aria_label'         : aria_label,
             'nochecklimit'       : true,
+            'display_emptychoice': false,
+            'toadd'              : {
+                '-1': constant('Dropdown::EMPTY_VALUE'),
+            },
         }
     ) }}
     {{ advanced_config|raw }}
@@ -58,7 +62,7 @@
 {% if question == null %}
     <script>
         import("/js/modules/Forms/QuestionItem.js").then((m) => {
-            new m.GlpiFormQuestionTypeItem({{ question_type|json_encode|raw }});
+            new m.GlpiFormQuestionTypeItem({{ question_type|json_encode|raw }}, '{{ constant('Dropdown::EMPTY_VALUE')|e('js') }}');
         });
     </script>
 {% endif %}

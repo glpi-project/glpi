@@ -46,7 +46,7 @@ export class GlpiFormQuestionTypeItem {
      *
      * @param {string} question_type The question type.
      */
-    constructor(question_type) {
+    constructor(question_type, empty_label) {
         this.#question_type = question_type;
 
         $(document).on('glpi-form-editor-question-type-changed', (event, question, type) => {
@@ -71,10 +71,16 @@ export class GlpiFormQuestionTypeItem {
             container.load(
                 `${CFG_GLPI.root_doc}/ajax/dropdownAllItems.php`,
                 {
-                    'idtable'   : sub_type,
-                    'width'     : '100%',
-                    'name'      : select.data('glpi-form-editor-original-name') || select.attr('name'),
-                    'aria_label': select.attr('aria-label'),
+                    'idtable'            : sub_type,
+                    'width'              : '100%',
+                    'name'               : select.data('glpi-form-editor-original-name') || select.attr('name'),
+                    'aria_label'         : select.attr('aria-label'),
+                    'display_emptychoice': 0,
+                    'value'              : -1,
+                    'valuename'          : empty_label,
+                    'toadd'              : {
+                        '-1': empty_label
+                    },
                 },
                 () => container.find('[data-to-remove]').remove()
             );

@@ -36,6 +36,7 @@
     question.getEndUserInputName() ~ '[itemtype]',
     itemtype
 ) }}
+{# Define empty choice manually to handle root entity #}
 {{ fields.dropdownField(
     itemtype,
     question.getEndUserInputName() ~ '[items_id]',
@@ -43,7 +44,6 @@
     '',
     {
         'no_label'           : true,
-        'display_emptychoice': true,
         'right'              : 'all',
         'aria_label'         : aria_label,
         'mb'                 : '',
@@ -51,5 +51,9 @@
         'comments'           : false,
         'condition'          : dropdown_restriction_params,
         'nochecklimit'       : true,
+        'display_emptychoice': false,
+        'toadd'              : {
+            '-1': constant('Dropdown::EMPTY_VALUE'),
+        },
     }
 ) }}
