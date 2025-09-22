@@ -370,23 +370,10 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
 
     <div class="{{ options.new_item ? '' : 'collapsed' }} w-100 mt-1 d-inline-flex" id="dropdown_{{ assign_la_id }}">
         {% if options.display_datetime_field %}
-            {% if la.item.fields['takeintoaccount_delay_stat'] > 0 %}
-                <i class="ti ti-flag-check text-primary mx-1"
-                   title="{{ __('%s completed')|format(__('OLA')) }}"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="left" ></i> {{ la.due_time|formatted_datetime }}
-              {# sla is late - see is_late in SQLProvider to implement it - it desserve a method #}
-{#            {% elseif la.is_late %}#}
-{#                <i class="ti ti-flag-exclamation secondary"#}
-{#                   title="{{ __('%s is late')|format(__('OLA')) }}"#}
-{#                   data-bs-toggle="tooltip"#}
-{#                   data-bs-placement="left" ></i> {{ la.due_time|formatted_datetime }}#}
-            {% else %}
-                <i class="ti ti-flag text-secondary mx-1"
-                   title="{{ __('%s not completed')|format(__('OLA')) }}"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="left" ></i> {{ la.due_time|formatted_datetime }}
-            {% endif %}
+            <i class="ti ti-flag text-secondary mx-1"
+               title="{{ __('OLA') }}"
+               data-bs-toggle="tooltip"
+               data-bs-placement="left"></i> {{ la.due_time|formatted_datetime }}
         {% endif %}
 
         {% if options.display_associatedsla_field %}
