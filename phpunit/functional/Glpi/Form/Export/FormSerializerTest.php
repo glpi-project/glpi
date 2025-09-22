@@ -48,6 +48,7 @@ use Glpi\Form\Condition\VisibilityStrategy;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsField;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldConfig;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryField;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldStrategy;
@@ -74,6 +75,12 @@ use Glpi\Form\QuestionType\QuestionTypeRequester;
 use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\Section;
+use Glpi\Form\Tag\AnswerTagProvider;
+use Glpi\Form\Tag\CommentDescriptionTagProvider;
+use Glpi\Form\Tag\CommentTitleTagProvider;
+use Glpi\Form\Tag\FormTagProvider;
+use Glpi\Form\Tag\QuestionTagProvider;
+use Glpi\Form\Tag\SectionTagProvider;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Glpi\UI\IllustrationManager;
@@ -1538,6 +1545,101 @@ final class FormSerializerTest extends \DbTestCase
         $this->assertNotNull($path);
         $this->assertFileExists($path);
         $this->assertEquals(md5_file($custom_icon_source), md5_file($path));
+    }
+
+    public function testTagsAreUpdatedWhenImporting(): void
+    {
+        $form_tag_provider        = new FormTagProvider();
+        $section_tag_provider     = new SectionTagProvider();
+        $question_tag_provider    = new QuestionTagProvider();
+        $answers_tag_provider     = new AnswerTagProvider();
+        $comment_tag_provider     = new CommentTitleTagProvider();
+        $description_tag_provider = new CommentDescriptionTagProvider();
+
+        // Arrange: create a form and set up some fields using tags
+        $builder = new FormBuilder("My form");
+        $builder->addQuestion("My question", QuestionTypeShortText::class);
+        $builder->addComment("My first comment");
+        $builder->addComment("My second comment");
+        $form = $this->createForm($builder);
+
+        $destinations = $form->getDestinations();
+        $destination = array_pop($destinations);
+        $config = [
+            // Use the form name in the title
+            TitleField::getKey() => (new SimpleValueConfig(
+                $form_tag_provider->getTags($form)[0]->html
+            ))->jsonSerialize(),
+            // Use section, questions and comment data in the content
+            ContentField::getKey() => (new SimpleValueConfig(
+                $section_tag_provider->getTags($form)[0]->html
+                . $question_tag_provider->getTags($form)[0]->html
+                . $answers_tag_provider->getTags($form)[0]->html
+                . $comment_tag_provider->getTags($form)[0]->html
+                . $comment_tag_provider->getTags($form)[1]->html // Add a second one to make sure it works with more than 1 tag of the same type
+                . $description_tag_provider->getTags($form)[0]->html
+                . $description_tag_provider->getTags($form)[1]->html
+            ))->jsonSerialize(),
+        ];
+        $this->updateItem(
+            $destination::class,
+            $destination->getId(),
+            [
+                'config' => $config,
+            ],
+            ["config"],
+        );
+
+        // Act: export then import the form
+        $imported_form = $this->exportAndImportForm($form);
+
+        $imported_destinations = $imported_form->getDestinations();
+        $imported_destination = array_pop($imported_destinations);
+
+        $imported_questions = $imported_form->getQuestions();
+        $imported_question = array_pop($imported_questions);
+
+        $imported_comments = $imported_form->getFormComments();
+        $imported_comment_1 = array_pop($imported_comments);
+        $imported_comment_2 = array_pop($imported_comments);
+
+        $imported_sections = $imported_form->getSections();
+        $imported_section = array_pop($imported_sections);
+
+        // Assert: the id in the tags of the cloned title and content fields must
+        // target the cloned form, not the original form.
+        $this->assertStringContainsString(
+            "data-form-tag-value=\"{$imported_form->getID()}\" data-form-tag-provider=\"Glpi\Form\Tag\FormTagProvider\"",
+            $imported_destination->getConfig()[TitleField::getKey()]['value'],
+        );
+        $this->assertStringContainsString(
+            "data-form-tag-value=\"{$imported_section->getID()}\" data-form-tag-provider=\"Glpi\Form\Tag\SectionTagProvider\"",
+            $imported_destination->getConfig()[ContentField::getKey()]['value'],
+        );
+        $this->assertStringContainsString(
+            "data-form-tag-value=\"{$imported_question->getID()}\" data-form-tag-provider=\"Glpi\Form\Tag\QuestionTagProvider\"",
+            $imported_destination->getConfig()[ContentField::getKey()]['value'],
+        );
+        $this->assertStringContainsString(
+            "data-form-tag-value=\"{$imported_question->getID()}\" data-form-tag-provider=\"Glpi\Form\Tag\AnswerTagProvider\"",
+            $imported_destination->getConfig()[ContentField::getKey()]['value'],
+        );
+        $this->assertStringContainsString(
+            "data-form-tag-value=\"{$imported_comment_1->getID()}\" data-form-tag-provider=\"Glpi\Form\Tag\CommentTitleTagProvider\"",
+            $imported_destination->getConfig()[ContentField::getKey()]['value'],
+        );
+        $this->assertStringContainsString(
+            "data-form-tag-value=\"{$imported_comment_2->getID()}\" data-form-tag-provider=\"Glpi\Form\Tag\CommentTitleTagProvider\"",
+            $imported_destination->getConfig()[ContentField::getKey()]['value'],
+        );
+        $this->assertStringContainsString(
+            "data-form-tag-value=\"{$imported_comment_1->getID()}\" data-form-tag-provider=\"Glpi\Form\Tag\CommentDescriptionTagProvider\"",
+            $imported_destination->getConfig()[ContentField::getKey()]['value'],
+        );
+        $this->assertStringContainsString(
+            "data-form-tag-value=\"{$imported_comment_2->getID()}\" data-form-tag-provider=\"Glpi\Form\Tag\CommentDescriptionTagProvider\"",
+            $imported_destination->getConfig()[ContentField::getKey()]['value'],
+        );
     }
 
     private function compareValuesForRelations(

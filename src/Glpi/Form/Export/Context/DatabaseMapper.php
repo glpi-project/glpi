@@ -41,10 +41,12 @@ use Glpi\Form\Comment;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Question;
 use Glpi\Form\Section;
+use Glpi\Toolbox\MapperInterface;
 use InvalidArgumentException;
 use LogicException;
+use Override;
 
-final class DatabaseMapper
+final class DatabaseMapper implements MapperInterface
 {
     // Store itemtype => [name => id] relations.
     /** @var array<string, array<string, int>> $values */
@@ -62,6 +64,7 @@ final class DatabaseMapper
         $this->entities_restrictions = $entities_restrictions;
     }
 
+    #[Override]
     public function addMappedItem(string $itemtype, string|int $key, int $id): void
     {
         if (!$this->isValidItemtype($itemtype)) {
@@ -75,6 +78,7 @@ final class DatabaseMapper
         $this->values[$itemtype][$key] = $id;
     }
 
+    #[Override]
     public function getItemId(string $itemtype, string|int $key): int
     {
         if (!$this->contextExist($itemtype, $key)) {

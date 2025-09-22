@@ -59,7 +59,9 @@ use Glpi\Form\Destination\CommonITILField\ValidationField;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Form;
+use Glpi\Form\Tag\FormTagsManager;
 use Override;
+use ReflectionClass;
 use Session;
 use Ticket;
 
@@ -376,6 +378,19 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
             $config[$field_key] = $field->prepareDynamicConfigDataForImport(
                 $field_config_data,
                 $destination,
+                $mapper,
+            );
+
+            // Handle form tags if needed
+            $reflection = new ReflectionClass($field);
+            $attributes = $reflection->getAttributes(HasFormTags::class);
+            if (!count($attributes)) {
+                continue;
+            }
+
+            $tags_manager = (new FormTagsManager());
+            $config[$field_key]['value'] = $tags_manager->replaceIdsInTags(
+                $config[$field_key]['value'],
                 $mapper,
             );
         }
