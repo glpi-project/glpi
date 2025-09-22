@@ -36,6 +36,7 @@ namespace Glpi\UI;
 
 use Glpi\Application\View\TemplateRenderer;
 use RuntimeException;
+use Safe\Exceptions\FilesystemException;
 use Throwable;
 
 use function Safe\file_get_contents;
@@ -217,7 +218,12 @@ final class IllustrationManager
 
     public function getCustomIllustrationFile(string $id): ?string
     {
-        $file_path = realpath(self::CUSTOM_ILLUSTRATION_DIR . "/$id");
+        try {
+            $file_path = realpath(self::CUSTOM_ILLUSTRATION_DIR . "/$id");
+        } catch (FilesystemException) {
+            // File does not exist
+            return null;
+        }
         $custom_dir_path = realpath(self::CUSTOM_ILLUSTRATION_DIR);
 
         if (

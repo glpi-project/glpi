@@ -53,6 +53,7 @@ use Glpi\Form\Export\Result\ImportResultPreview;
 use Glpi\Form\Export\Specification\AccesControlPolicyContentSpecification;
 use Glpi\Form\Export\Specification\CommentContentSpecification;
 use Glpi\Form\Export\Specification\ConditionDataSpecification;
+use Glpi\Form\Export\Specification\CustomIllustrationContentSpecification;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Export\Specification\DestinationContentSpecification;
 use Glpi\Form\Export\Specification\ExportContentSpecification;
@@ -65,14 +66,19 @@ use Glpi\Form\FormTranslation;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\Section;
+use Glpi\UI\IllustrationManager;
 use InvalidArgumentException;
 use RuntimeException;
 use Session;
 use Throwable;
 use Toolbox;
 
+use function Safe\base64_decode;
+use function Safe\file_get_contents;
+use function Safe\file_put_contents;
 use function Safe\json_decode;
 use function Safe\json_encode;
+use function Safe\md5_file;
 
 final class FormSerializer extends AbstractFormSerializer
 {
@@ -270,13 +276,16 @@ final class FormSerializer extends AbstractFormSerializer
     private function exportBasicFormProperties(
         Form $form,
     ): FormContentSpecification {
+        $illustration = $this->prepareIllustrationDataForExport(
+            $form->fields['illustration'],
+        );
         $spec                                    = new FormContentSpecification();
         $spec->id                                = $form->fields['id'];
         $spec->uuid                              = $form->fields['uuid'];
         $spec->name                              = $form->fields['name'];
         $spec->header                            = $form->fields['header'];
         $spec->description                       = $form->fields['description'];
-        $spec->illustration                      = $form->fields['illustration'];
+        $spec->illustration                      = $illustration;
         $spec->is_recursive                      = $form->fields['is_recursive'];
         $spec->is_active                         = $form->fields['is_active'];
         $spec->submit_button_visibility_strategy = $form->fields['submit_button_visibility_strategy'];
@@ -310,12 +319,15 @@ final class FormSerializer extends AbstractFormSerializer
         }
 
         $form = new Form();
+        $illustration = $this->prepareIllustrationDataForImport(
+            $spec->illustration,
+        );
         $id = $form->add([
             '_from_import'                      => true,
             'name'                              => $spec->name,
             'header'                            => $spec->header ?? null,
             'description'                       => $spec->description ?? null,
-            'illustration'                      => $spec->illustration,
+            'illustration'                      => $illustration,
             'forms_categories_id'               => $categories_id ?? 0,
             'entities_id'                       => $entities_id,
             'is_recursive'                      => $spec->is_recursive,
@@ -992,5 +1004,63 @@ final class FormSerializer extends AbstractFormSerializer
         // Reload form to clear lazy loaded data
         $form->getFromDB($form->getID());
         return $form;
+    }
+
+    private function prepareIllustrationDataForExport(
+        string $illustration,
+    ): string|CustomIllustrationContentSpecification {
+        // Stop here if this illustration is native
+        $prefix = IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX;
+        $manager = new IllustrationManager();
+        if (!str_starts_with($illustration, $prefix)) {
+            return $illustration;
+        }
+
+        // Add base64 data and md5sum
+        $specification = new CustomIllustrationContentSpecification();
+        $key = substr($illustration, strlen($prefix));
+        $file = $manager->getCustomIllustrationFile($key);
+        $specification->key = $key;
+        $specification->data = base64_encode(file_get_contents($file));
+        $specification->checksum = md5_file($file);
+
+        return $specification;
+    }
+
+    private function prepareIllustrationDataForImport(
+        string|CustomIllustrationContentSpecification $illustration,
+    ): string {
+        // Stop here if this illustration is native
+        if (is_string($illustration)) {
+            return $illustration;
+        }
+
+        $prefix = IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX;
+
+        // Check if file already exist
+        $manager = new IllustrationManager();
+        $file = $manager->getCustomIllustrationFile($illustration->key);
+        if ($file !== null) {
+            // File exist, validate checksum
+            if (md5_file($file) === $illustration->checksum) {
+                return $prefix . $illustration->key;
+            } else {
+                $message = "Checksum don't match for exisiting file: $illustration->key";
+                throw new RuntimeException($message);
+            }
+        }
+
+        // Save file
+        $data = base64_decode($illustration->data);
+        $tmp_path = GLPI_TMP_DIR . "/" . $illustration->key;
+        file_put_contents($tmp_path, $data);
+        $manager->saveCustomIllustration($illustration->key, $tmp_path);
+        $file = $manager->getCustomIllustrationFile($illustration->key);
+        if (md5_file($file) !== $illustration->checksum) {
+            $message = "Checksum don't match for new file: $illustration->key";
+            throw new RuntimeException($message);
+        }
+
+        return $prefix . $illustration->key;
     }
 }
