@@ -498,7 +498,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             try {
                 $data = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
             } catch (JsonException $e) {
-                throw new RuntimeException('Failed to decode API response from ' . $path . ': ' . $e->getMessage());
+                throw new RuntimeException('Failed to decode API response from ' . $path . ': ' . $e->getMessage(), $e->getCode(), $e);
             }
             return $data;
         }
