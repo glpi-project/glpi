@@ -62,7 +62,7 @@
 {% if question == null %}
     <script>
         import("/js/modules/Forms/QuestionItem.js").then((m) => {
-            new m.GlpiFormQuestionTypeItem({{ question_type|json_encode|raw }}, '{{ constant('Dropdown::EMPTY_VALUE') }}');
+            new m.GlpiFormQuestionTypeItem({{ question_type|json_encode|raw }}, '{{ constant('Dropdown::EMPTY_VALUE')|e('js') }}');
         });
     </script>
 {% endif %}
