@@ -76,9 +76,11 @@ use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\Section;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Glpi\UI\IllustrationManager;
 use ITILCategory;
 use Location;
 use Monitor;
+use Ramsey\Uuid\Uuid;
 use Session;
 
 final class FormSerializerTest extends \DbTestCase
@@ -1488,6 +1490,54 @@ final class FormSerializerTest extends \DbTestCase
         $this->assertInstanceOf(Question::class, $question);
         $this->assertInstanceOf(QuestionTypeItem::class, $question->getQuestionType());
         $this->assertEquals(0, (new QuestionTypeItem())->getDefaultValueItemId($question));
+    }
+
+    public function testExportAndImportWithCustomIcon(): void
+    {
+        // Arrange: create a form with a custom icon
+        $illustration_manager = new IllustrationManager();
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        $custom_icon_source = GLPI_ROOT . "/tests/fixtures/uploads/foo.png";
+        $file_name = Uuid::uuid4() . "-foo.png";
+        $tmp_file_path = GLPI_TMP_DIR . "/$file_name";
+
+        copy($custom_icon_source, $tmp_file_path);
+        $illustration_manager->saveCustomIllustration($file_name, $tmp_file_path);
+
+        $saved_icon_path = GLPI_PICTURE_DIR . "/illustrations/" . $file_name;
+        if (!file_exists($saved_icon_path)) {
+            $this->fail("Failed to save icon");
+        }
+
+        $icon_key = IllustrationManager::CUSTOM_SCENE_PREFIX . "$file_name";
+        $form = $this->createItem(Form::class, [
+            'name'         => "My form with a custom icon",
+            'illustration' => $icon_key,
+            'entities_id'  => $entity_id,
+        ]);
+
+        // Act: export the form, then delete the icon to simulate a situation
+        // where we would import the form into a GLPI where the icon doesn't exist
+        $json = $this->exportForm($form);
+        unlink($saved_icon_path);
+        if (file_exists($saved_icon_path) || file_exists($tmp_file_path)) {
+            $this->fail("Failed to delete icon files");
+        }
+        $imported_form = $this->importForm($json, new DatabaseMapper([$entity_id]));
+
+        // Assert: the icon should be created and used by the form
+        $this->assertEquals($icon_key, $imported_form->fields['illustration']);
+        $icon_key_without_prefix = substr(
+            $imported_form->fields['illustration'],
+            strlen(IllustrationManager::CUSTOM_SCENE_PREFIX),
+        );
+        $path = $illustration_manager->getCustomIllustrationFile(
+            $icon_key_without_prefix
+        );
+        $this->assertNotNull($path);
+        $this->assertFileExists($path);
+        $this->assertEquals(md5_file($custom_icon_source), md5_file($path));
     }
 
     private function compareValuesForRelations(
