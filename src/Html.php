@@ -4645,6 +4645,18 @@ JS;
                         \$('#$field_id').on('change', function (e) {
                           $selectVarName.setCustomValidity('');
                         });
+
+                        $formVarName.addEventListener('invalid', function (event) {
+                          const element = event.target;
+
+                          if (element.classList.contains('select2-hidden-accessible')) {
+                            const select2Container = element.nextElementSibling;
+
+                            element.style.setProperty("height", `\${select2Container.offsetHeight}px`, "important");
+                            element.style.setProperty("width", `\${select2Container.offsetWidth}px`, "important");
+                          }
+                        }, true); // Use capture phase because 'invalid' events do not bubble
+
                     }
 JS;
             }
