@@ -30,24 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
-<div class="dates_timelines">
-   {% if title|length > 0 %}
-      <h2 class="header">{{ title }}</h2>
-   {% endif %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
 
-   <ul>
-      {% for data in dates %}
-         {% if data['timestamp'] is not null %}
-            <li class="{{ data['class'] }}">
-               &nbsp;
-               <time title="{{ data['date']|formatted_datetime }}"
-                     data-bs-toggle="tooltip" data-bs-placement="right">
-                  {{ data['date']|relative_datetime }}
-               </time>
-               <span class="dot"></span>
-               <label>{{ data['label']|raw }}</label>
-            </li>
-         {% endif %}
-      {% endfor %}
-   </ul>
-</div>
+{% set options = options|default({}) %}
+
+{{ fields.dropdownField(itemtype, fieldname, selected_value = 0, label = '', options = options) }}

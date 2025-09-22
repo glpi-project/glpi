@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,47 +34,37 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
-use LevelAgreement;
-use OLA;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\AnswersSet;
+use InvalidArgumentException;
 use Override;
-use SLM;
 
-final class OLATTOField extends OLAField
+abstract class SLAField extends SLMField
 {
     #[Override]
-    public function getLabel(): string
-    {
-        return __("Internal TTO");
-    }
+    public function applyConfiguratedValueToInputUsingAnswers(
+        JsonFieldInterface $config,
+        array $input,
+        AnswersSet $answers_set
+    ): array {
+        if (!$config instanceof SLMFieldConfig) {
+            throw new InvalidArgumentException("Unexpected config class");
+        }
 
-    #[Override]
-    public function getWeight(): int
-    {
-        return 220;
-    }
+        // Only one strategy is allowed
+        $strategy = current($config->getStrategies());
 
-    #[Override]
-    public function getSLM(): LevelAgreement
-    {
-        return new OLA();
-    }
+        // Compute value according to strategy
+        $slm_id = $strategy->getSLMID($config);
 
-    #[Override]
-    public function getType(): int
-    {
-        return SLM::TTO;
-    }
+        // Do not edit input if invalid value was found
+        $slm = $this->getSLM();
+        if (!$slm::getById($slm_id)) {
+            return $input;
+        }
 
-    #[Override]
-    public function getConfigClass(): string
-    {
-        return OLATTOFieldConfig::class;
-    }
+        $input[$slm::getFieldNames($this->getType())[1]] = $slm_id;
 
-    #[Override]
-    protected function getFieldNameToConvertSpecificSLMID(): string
-    {
-        return 'ola_question_tto';
+        return $input;
     }
-
 }
