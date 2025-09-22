@@ -367,6 +367,7 @@ abstract class CommonITILValidation extends CommonDBChild
     {
         global $CFG_GLPI;
 
+        /** @var CommonITILObject $itilobject */
         $itilobject = $this->getItem();
         $this->checkIsAnItilObject($itilobject);
 
@@ -2106,6 +2107,7 @@ HTML;
 
     public function recomputeItilStatus(): void
     {
+        /** @var CommonITILObject $itil_object */
         $itil_object = $this->getItem();
         $this->checkIsAnItilObject($itil_object);
 
