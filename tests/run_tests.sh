@@ -315,7 +315,8 @@ run_single_test () {
       || LAST_EXIT_CODE=$?
       ;;
     "e2e")
-         docker compose exec -T app .github/actions/test_tests-e2e.sh \
+        $APPLICATION_ROOT/.github/actions/init_initialize-ldap-fixtures.sh \
+      && docker compose exec -T app .github/actions/test_tests-e2e.sh \
       || LAST_EXIT_CODE=$?
       ;;
   esac

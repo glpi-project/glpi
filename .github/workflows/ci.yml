@@ -282,6 +282,7 @@ jobs:
         if: "${{ success() || failure() }}"
         id: "e2e"
         run: |
+          .github/actions/init_initialize-ldap-fixtures.sh
           docker compose exec -T app .github/actions/test_tests-e2e.sh
       - name: "Upload Cypress screenshots"
         if: "${{ always() && (steps.e2e.conclusion == 'failure' || steps.e2e.conclusion == 'cancelled') }}"
