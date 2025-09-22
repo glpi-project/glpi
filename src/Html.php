@@ -4624,7 +4624,7 @@ JS;
             if (!empty($emptyLabel)) {
                 $selectVarName = "select_" . mt_rand();
                 $formVarName = "form_" . mt_rand();
-                $jsEmptyLabel = str_replace("'", "\\'", $emptyLabel);
+                $jsEmptyLabel = jsescape($emptyLabel);
 
                 $js .= <<<JS
                     const $selectVarName = document.getElementById('{$field_id}');
