@@ -39,7 +39,9 @@
  */
 
 
-/// Class OLALevel
+/**
+ * Main purpose of this table/object is to store temporary OLA levels for tickets while replaying them.
+ */
 class OlaLevel_Ticket extends CommonDBTM
 {
     public static function getTypeName($nb = 0)
