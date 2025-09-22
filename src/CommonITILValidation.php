@@ -2123,6 +2123,7 @@ HTML;
 
     /**
      * @throws RuntimeException
+     * @phpstan-assert CommonITILObject $itilobject
      */
     private function checkIsAnItilObject(false|CommonDBTM $itilobject): void
     {
