@@ -41,11 +41,14 @@ use Glpi\Cache\CacheManager;
 use Glpi\Dashboard\Grid;
 use Glpi\Debug\Profiler;
 use Glpi\Event;
+use Glpi\Exception\RedirectException;
+use Glpi\Exception\SessionExpiredException;
 use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\VersionParser;
 use Safe\Exceptions\FilesystemException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 use function Safe\ini_get;
 use function Safe\ob_end_clean;
@@ -452,6 +455,14 @@ class Plugin extends CommonDBTM
                     if (function_exists($init_function)) {
                         try {
                             $init_function();
+                        } catch (HttpException|RedirectException|SessionExpiredException $e) {
+                            // These exceptions should not result in deactivating the plugin when thrown from its init function.
+                            // Indeed, they should be thrown back to trigger their default behaviour.
+                            //
+                            // - `HttpException`: corresponds to a specific response, the plugin developer probably expects it to be sent;
+                            // - `RedirectException`: corresponds to redirect response, the plugin developer probably expects it to be effective;
+                            // - `SessionExpiredException`: as long as a session check fails, we should redirect to the login page.
+                            throw $e;
                         } catch (Throwable $e) {
                             global $PHPLOGGER;
                             $PHPLOGGER->error(
