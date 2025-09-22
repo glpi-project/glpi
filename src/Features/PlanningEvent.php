@@ -237,6 +237,9 @@ trait PlanningEvent
             $input['users_id_guests'] = exportArrayToDB(
                 ArrayNormalizer::normalizeValues($input['users_id_guests'], 'intval')
             );
+        } elseif (!isset($input['users_id_guests']) && !$this->isNewItem()) {
+            // If users_id_guests is not in input, it means all guests were removed
+            $input['users_id_guests'] = exportArrayToDB([]);
         }
 
         return $input;
