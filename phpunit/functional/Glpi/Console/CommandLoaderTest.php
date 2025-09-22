@@ -34,15 +34,16 @@
 
 namespace tests\units\Glpi\Console;
 
+use Error;
+use Glpi\Console\CommandLoader;
 use org\bovigo\vfs\vfsStream;
 
 /* Test for inc/console/commandloader.class.php */
 
-class CommandLoader extends \GLPITestCase
+class CommandLoaderTest extends \GLPITestCase
 {
     public function testLoader()
     {
-
         $structure = [
             'src' => [
                 // Not instanciable case
@@ -294,50 +295,42 @@ PHP,
         };
 
         // Check with plugins
-        $this->when(
-            function () use ($plugin, $all_names_to_class) {
-                $command_loader = new \Glpi\Console\CommandLoader(true, vfsStream::url('glpi'), $plugin);
-                $this->array($command_loader->getNames())->isIdenticalTo(array_keys($all_names_to_class));
-                foreach ($all_names_to_class as $name => $classname) {
-                    $this->boolean($command_loader->has($name))->isTrue();
-                    $this->object($command_loader->get($name))->isInstanceOf($classname);
-                }
-            }
-        )->error()
-            ->withType(E_USER_WARNING)
-            ->withMessage('Plugin command `awesome:misnamed` must be moved in the `plugins:awesome` namespace.')
-            ->exists()
-         ->error()
-            ->withType(E_USER_WARNING)
-            ->withMessage('Plugin command `plugins:anotherplugin:foobar` must be moved in the `plugins:awesome` namespace.')
-            ->exists();
+        $errors = [];
+        // PHPUnit won't let us expect errors so we need our own handler
+        set_error_handler(static function ($code, $message) use (&$errors) {
+            $errors[] = new Error($message, $code);
+        }, E_USER_WARNING);
+        $command_loader = new CommandLoader(true, vfsStream::url('glpi'), $plugin);
+        $this->assertEquals(array_keys($all_names_to_class), $command_loader->getNames());
+        foreach ($all_names_to_class as $name => $classname) {
+            $this->assertTrue($command_loader->has($name));
+            $this->assertInstanceOf($classname, $command_loader->get($name));
+        }
+        $this->assertCount(2, $errors);
+        $this->assertEquals('Plugin command `awesome:misnamed` must be moved in the `plugins:awesome` namespace.', $errors[0]->getMessage());
+        $this->assertEquals('Plugin command `plugins:anotherplugin:foobar` must be moved in the `plugins:awesome` namespace.', $errors[1]->getMessage());
 
         // Check without plugins
-        $command_loader = new \Glpi\Console\CommandLoader(false, vfsStream::url('glpi'), $plugin);
-        $this->array($command_loader->getNames())->isIdenticalTo(array_keys($core_names_to_class));
+        $errors = [];
+        $command_loader = new CommandLoader(false, vfsStream::url('glpi'), $plugin);
+        $this->assertEquals(array_keys($core_names_to_class), $command_loader->getNames());
         foreach ($core_names_to_class as $name => $classname) {
-            $this->boolean($command_loader->has($name))->isTrue();
-            $this->object($command_loader->get($name))->isInstanceOf($classname);
+            $this->assertTrue($command_loader->has($name));
+            $this->assertInstanceOf($classname, $command_loader->get($name));
         }
+        $this->assertCount(0, $errors);
 
         // Check async plugin registration
-        $this->when(
-            function () use ($plugin, $all_names_to_class) {
-                $command_loader = new \Glpi\Console\CommandLoader(false, vfsStream::url('glpi'), $plugin);
-                $command_loader->setIncludePlugins(true);
-                $this->array($command_loader->getNames())->isIdenticalTo(array_keys($all_names_to_class));
-                foreach ($all_names_to_class as $name => $classname) {
-                    $this->boolean($command_loader->has($name))->isTrue();
-                    $this->object($command_loader->get($name))->isInstanceOf($classname);
-                }
-            }
-        )->error()
-            ->withType(E_USER_WARNING)
-            ->withMessage('Plugin command `awesome:misnamed` must be moved in the `plugins:awesome` namespace.')
-            ->exists()
-         ->error()
-            ->withType(E_USER_WARNING)
-            ->withMessage('Plugin command `plugins:anotherplugin:foobar` must be moved in the `plugins:awesome` namespace.')
-            ->exists();
+        $command_loader = new CommandLoader(false, vfsStream::url('glpi'), $plugin);
+        $command_loader->setIncludePlugins(true);
+        $this->assertEquals(array_keys($all_names_to_class), $command_loader->getNames());
+        foreach ($all_names_to_class as $name => $classname) {
+            $this->assertTrue($command_loader->has($name));
+            $this->assertInstanceOf($classname, $command_loader->get($name));
+        }
+        $this->assertCount(2, $errors);
+        $this->assertEquals('Plugin command `awesome:misnamed` must be moved in the `plugins:awesome` namespace.', $errors[0]->getMessage());
+        $this->assertEquals('Plugin command `plugins:anotherplugin:foobar` must be moved in the `plugins:awesome` namespace.', $errors[1]->getMessage());
+        restore_error_handler();
     }
 }

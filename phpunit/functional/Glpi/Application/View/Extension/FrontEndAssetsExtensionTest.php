@@ -34,50 +34,16 @@
 
 namespace tests\units\Glpi\Application\View\Extension;
 
+use Glpi\Application\View\Extension\FrontEndAssetsExtension;
 use Glpi\Toolbox\FrontEnd;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-class FrontEndAssetsExtension extends \GLPITestCase
+class FrontEndAssetsExtensionTest extends \GLPITestCase
 {
-    protected function cssPathProvider(): iterable
+    public static function cssPathProvider(): iterable
     {
         global $CFG_GLPI;
-
-        vfsStream::setup(
-            'glpi',
-            null,
-            [
-                'css' => [
-                    'static_1.css'     => '/* Source CSS file */',
-                    'static_2.css'     => '/* Source CSS file */',
-                    'static_2.min.css' => '/* Minified CSS file */',
-                    'styles_1.scss'    => '/* SCSS file to compile */',
-                    'styles_2.scss'    => '/* SCSS file to compile */',
-                ],
-                'marketplace' => [
-                    'myplugin' => [
-                        'css' => [
-                            'styles_1.scss' => '/* SCSS file to compile */',
-                            'styles_2.scss' => '/* SCSS file to compile */',
-                        ],
-                    ],
-                ],
-                'plugins' => [
-                    'anotherplugin' => [
-                        'css' => [
-                            'static_1.css'     => '/* Source CSS file */',
-                            'static_2.css'     => '/* Source CSS file */',
-                            'static_1.min.css' => '/* Minified CSS file */',
-                        ],
-                    ],
-                ],
-                'public' => [
-                    'css_compiled' => [
-                        'css_styles_1.min.css' => '/* Compiled and minified SCSS */',
-                    ],
-                ],
-            ]
-        );
 
         $v_default = FrontEnd::getVersionCacheKey(GLPI_VERSION);
         $v_1_2_5   = FrontEnd::getVersionCacheKey('1.2.5');
@@ -222,14 +188,48 @@ class FrontEndAssetsExtension extends \GLPITestCase
         }
     }
 
-    /**
-     * @dataProvider cssPathProvider
-     */
+    #[DataProvider('cssPathProvider')]
     public function testCssPath(string $path, array $options, bool $debug_mode, string $expected): void
     {
         $_SESSION['glpi_use_mode'] = $debug_mode ? \Session::DEBUG_MODE : \Session::NORMAL_MODE;
 
-        $this->newTestedInstance(vfsStream::url('glpi'));
-        $this->string($this->testedInstance->cssPath($path, $options))->isEqualTo($expected);
+        vfsStream::setup(
+            'glpi',
+            null,
+            [
+                'css' => [
+                    'static_1.css'     => '/* Source CSS file */',
+                    'static_2.css'     => '/* Source CSS file */',
+                    'static_2.min.css' => '/* Minified CSS file */',
+                    'styles_1.scss'    => '/* SCSS file to compile */',
+                    'styles_2.scss'    => '/* SCSS file to compile */',
+                ],
+                'marketplace' => [
+                    'myplugin' => [
+                        'css' => [
+                            'styles_1.scss' => '/* SCSS file to compile */',
+                            'styles_2.scss' => '/* SCSS file to compile */',
+                        ],
+                    ],
+                ],
+                'plugins' => [
+                    'anotherplugin' => [
+                        'css' => [
+                            'static_1.css'     => '/* Source CSS file */',
+                            'static_2.css'     => '/* Source CSS file */',
+                            'static_1.min.css' => '/* Minified CSS file */',
+                        ],
+                    ],
+                ],
+                'public' => [
+                    'css_compiled' => [
+                        'css_styles_1.min.css' => '/* Compiled and minified SCSS */',
+                    ],
+                ],
+            ]
+        );
+
+        $ext = new FrontEndAssetsExtension(vfsStream::url('glpi'));
+        $this->assertEquals($expected, $ext->cssPath($path, $options));
     }
 }
