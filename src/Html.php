@@ -4625,6 +4625,7 @@ JS;
                 $selectVarName = "select_" . mt_rand();
                 $formVarName = "form_" . mt_rand();
                 $jsEmptyLabel = jsescape($emptyLabel);
+                $errorMessage = jsescape(__('This field is mandatory'));
 
                 $js .= <<<JS
                     const $selectVarName = document.getElementById('{$field_id}');
@@ -4632,14 +4633,17 @@ JS;
                     if ($formVarName) {
                         $formVarName.addEventListener("submit", (evt) => {
                             if ($selectVarName.options[$selectVarName.selectedIndex].text === '$jsEmptyLabel') {
-                                $selectVarName.setCustomValidity(__('This field is mandatory'));
+                                $selectVarName.setCustomValidity('$errorMessage');
                                 $selectVarName.reportValidity();
-                                $selectVarName.setCustomValidity('');
 
                                 // Error, we stop the form from submitting
                                 evt.preventDefault();
                                 evt.stopPropagation();
                             }
+                        });
+
+                        \$('#$field_id').on('change', function (e) {
+                          $selectVarName.setCustomValidity('');
                         });
                     }
 JS;
