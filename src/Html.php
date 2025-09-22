@@ -4627,21 +4627,21 @@ JS;
                 $jsEmptyLabel = str_replace("'", "\\'", $emptyLabel);
 
                 $js .= <<<JS
-                const $selectVarName = document.getElementById('{$field_id}');
-                const $formVarName = $selectVarName.closest('form');
-                if ($formVarName) {
-                    $formVarName.addEventListener("submit", (evt) => {
-                        if ($selectVarName.options[$selectVarName.selectedIndex].text === '$jsEmptyLabel') {
-                            $selectVarName.setCustomValidity(__('This field is mandatory'));
-                            $selectVarName.reportValidity();
-                            $selectVarName.setCustomValidity('');
+                    const $selectVarName = document.getElementById('{$field_id}');
+                    const $formVarName = $selectVarName.closest('form');
+                    if ($formVarName) {
+                        $formVarName.addEventListener("submit", (evt) => {
+                            if ($selectVarName.options[$selectVarName.selectedIndex].text === '$jsEmptyLabel') {
+                                $selectVarName.setCustomValidity(__('This field is mandatory'));
+                                $selectVarName.reportValidity();
+                                $selectVarName.setCustomValidity('');
 
-                            // Error, we stop the form from submitting
-                            evt.preventDefault();
-                            evt.stopPropagation();
-                        }
-                    });
-                }
+                                // Error, we stop the form from submitting
+                                evt.preventDefault();
+                                evt.stopPropagation();
+                            }
+                        });
+                    }
 JS;
             }
         }
@@ -4825,7 +4825,6 @@ JS;
      */
     public static function select($name, array $values = [], $options = [])
     {
-        dump($options);
         $selected = false;
         if (isset($options['selected'])) {
             $selected = $options['selected'];
