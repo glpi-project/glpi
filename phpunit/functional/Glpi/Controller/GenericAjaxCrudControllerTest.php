@@ -62,7 +62,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
 
         // First tests set: invalid inputs (general)
         yield [
-            'input' => [],
+            'content' => json_encode([]),
             'expected_status' => 400,
             'expected_body'   => [
                 'messages' => [
@@ -73,7 +73,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
             ],
         ];
         yield [
-            'input' => ['id' => $invalid_id],
+            'content' => json_encode(['id' => $invalid_id]),
             'expected_status' => 400,
             'expected_body'   => [
                 'messages' => [
@@ -84,10 +84,10 @@ class GenericAjaxCrudControllerTest extends DbTestCase
             ],
         ];
         yield [
-            'input' => [
+            'content' => json_encode([
                 'id' => $invalid_id,
                 'itemtype' => 'Computer',
-            ],
+            ]),
             'expected_status' => 403,
             'expected_body'   => [
                 'messages' => [
@@ -98,10 +98,10 @@ class GenericAjaxCrudControllerTest extends DbTestCase
             ],
         ];
         yield [
-            'input'   => [
+            'content'   => json_encode([
                 'id'       => $form_1->getID(),
                 'itemtype' => $form_1->getType(),
-            ],
+            ]),
             'expected_status' => 400,
             'expected_body'   => [
                 'messages' => [
@@ -115,12 +115,12 @@ class GenericAjaxCrudControllerTest extends DbTestCase
         // Second tests set: update request
         yield [
             'user'  => 'normal',  // Switch to another user that can't update the form
-            'input' => [
+            'content' => json_encode([
                 'id'       => $form_1->getID(),
                 'itemtype' => $form_1->getType(),
                 '_action'  => 'update',
                 'name'     => 'Form 1 name (first update)',
-            ],
+            ]),
             'expected_status' => 403,
             'expected_body'   => [
                 'messages' => [
@@ -131,12 +131,12 @@ class GenericAjaxCrudControllerTest extends DbTestCase
             ],
         ];
         yield [
-            'input' => [
+            'content' => json_encode([
                 'id'       => $invalid_id,
                 'itemtype' => $form_1->getType(),
                 '_action'  => 'update',
                 'name'     => 'Form 1 name (second update)',
-            ],
+            ]),
             'expected_status' => 404,
             'expected_body'   => [
                 'messages' => [
@@ -147,12 +147,12 @@ class GenericAjaxCrudControllerTest extends DbTestCase
             ],
         ];
         yield [
-            'input' => [
+            'content' => json_encode([
                 'id'       => $form_1->getID(),
                 'itemtype' => $form_1->getType(),
                 '_action'  => 'update',
                 'name'     => 'Form 1 name (third update)',
-            ],
+            ]),
             'expected_status' => 200,
             'expected_body'   => [
                 'friendlyname' => "Form 1 name (third update)",
@@ -171,11 +171,11 @@ class GenericAjaxCrudControllerTest extends DbTestCase
         // Third tests set: delete request
         yield [
             'user'  => 'normal',  // Switch to another user that can't delete the form
-            'input' => [
+            'content' => json_encode([
                 'id'       => $form_1->getID(),
                 'itemtype' => $form_1->getType(),
                 '_action'  => 'delete',
-            ],
+            ]),
             'expected_status' => 403,
             'expected_body'   => [
                 'messages' => [
@@ -186,11 +186,11 @@ class GenericAjaxCrudControllerTest extends DbTestCase
             ],
         ];
         yield [
-            'input' => [
+            'content' => json_encode([
                 'id'       => $invalid_id,
                 'itemtype' => $form_1->getType(),
                 '_action'  => 'delete',
-            ],
+            ]),
             'expected_status' => 404,
             'expected_body'   => [
                 'messages' => [
@@ -201,11 +201,11 @@ class GenericAjaxCrudControllerTest extends DbTestCase
             ],
         ];
         yield [
-            'input' => [
+            'content' => json_encode([
                 'id'       => $form_1->getID(),
                 'itemtype' => $form_1->getType(),
                 '_action'  => 'delete',
-            ],
+            ]),
             'expected_status' => 200,
             'expected_body'   => [
                 'is_deleted' => true,
@@ -223,11 +223,11 @@ class GenericAjaxCrudControllerTest extends DbTestCase
         // Fourth tests set: restore request
         yield [
             'user'  => 'normal',  // Switch to another user that can't restore the form
-            'input' => [
+            'content' => json_encode([
                 'id'       => $form_1->getID(),
                 'itemtype' => $form_1->getType(),
                 '_action'  => 'restore',
-            ],
+            ]),
             'expected_status' => 403,
             'expected_body'   => [
                 'messages' => [
@@ -238,11 +238,11 @@ class GenericAjaxCrudControllerTest extends DbTestCase
             ],
         ];
         yield [
-            'input' => [
+            'content' => json_encode([
                 'id'       => $invalid_id,
                 'itemtype' => $form_1->getType(),
                 '_action'  => 'restore',
-            ],
+            ]),
             'expected_status' => 404,
             'expected_body'   => [
                 'messages' => [
@@ -253,11 +253,11 @@ class GenericAjaxCrudControllerTest extends DbTestCase
             ],
         ];
         yield [
-            'input' => [
+            'content' => json_encode([
                 'id'       => $form_1->getID(),
                 'itemtype' => $form_1->getType(),
                 '_action'  => 'restore',
-            ],
+            ]),
             'expected_status' => 200,
             'expected_body'   => [
                 'is_deleted' => false,
@@ -275,11 +275,11 @@ class GenericAjaxCrudControllerTest extends DbTestCase
         // Fifth tests set: purge request
         yield [
             'user'  => 'normal',  // Switch to another user that can't purge the form
-            'input' => [
+            'content' => json_encode([
                 'id'       => $form_1->getID(),
                 'itemtype' => $form_1->getType(),
                 '_action'  => 'purge',
-            ],
+            ]),
             'expected_status' => 403,
             'expected_body'   => [
                 'messages' => [
@@ -290,11 +290,11 @@ class GenericAjaxCrudControllerTest extends DbTestCase
             ],
         ];
         yield [
-            'input' => [
+            'content' => json_encode([
                 'id'       => $invalid_id,
                 'itemtype' => $form_1->getType(),
                 '_action'  => 'purge',
-            ],
+            ]),
             'expected_status' => 404,
             'expected_body'   => [
                 'messages' => [
@@ -305,11 +305,11 @@ class GenericAjaxCrudControllerTest extends DbTestCase
             ],
         ];
         yield [
-            'input' => [
+            'content' => json_encode([
                 'id'       => $form_1->getID(),
                 'itemtype' => $form_1->getType(),
                 '_action'  => 'purge',
-            ],
+            ]),
             'expected_status' => 200,
             'expected_body'   => [
                 'redirect' => "/front/form/form.php",
@@ -328,7 +328,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
     public function testHandleRequest(): void
     {
         foreach ($this->testHandleRequestProvider() as $row) {
-            $input = $row['input'];
+            $content = $row['content'];
             $expected_status = $row['expected_status'];
             $expected_body   = $row['expected_body'];
             $user = $row['user'] ?? TU_USER;
@@ -340,7 +340,9 @@ class GenericAjaxCrudControllerTest extends DbTestCase
             }
 
             $controller = new GenericAjaxCrudController();
-            $response = $controller(new Request(request: $input));
+            $request = new Request(content: $content);
+            $request->headers->set('Content-Type', 'application/json');
+            $response = $controller($request);
 
             // Validate return code
             $this->assertEquals(
