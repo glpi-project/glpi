@@ -43,15 +43,21 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class StatusCheckerTest extends GLPITestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+        StatusChecker::resetInstance();
+    }
+
     public function testStatusFormat()
     {
-        $status = StatusChecker::getServiceStatus(service: null, force: true);
+        $status = StatusChecker::getServiceStatus(service: null);
         $this->assertIsArray($status);
     }
 
     public function testDefaultStatus()
     {
-        $status = StatusChecker::getServiceStatus(service: null, force: true);
+        $status = StatusChecker::getServiceStatus(service: null);
 
         $known_services = ['db', 'cas', 'ldap', 'imap', 'mail_collectors', 'crontasks', 'filesystem', 'glpi', 'plugins'];
 
@@ -145,12 +151,12 @@ class StatusCheckerTest extends GLPITestCase
         ]);
 
         // We have a non-existent LDAP server. Verify the status is PROBLEM.
-        $this->assertEquals(StatusChecker::STATUS_PROBLEM, StatusChecker::getLDAPStatus(force: true)['status']);
+        $this->assertEquals(StatusChecker::STATUS_PROBLEM, StatusChecker::getLDAPStatus()['status']);
         // We have a non-existent IMAP server. Verify the status is PROBLEM.
-        $this->assertEquals(StatusChecker::STATUS_PROBLEM, StatusChecker::getIMAPStatus(force: true)['status']);
+        $this->assertEquals(StatusChecker::STATUS_PROBLEM, StatusChecker::getIMAPStatus()['status']);
 
         // Make sure there are two stuck tasks
-        $crontask_status = StatusChecker::getCronTaskStatus(force: true);
+        $crontask_status = StatusChecker::getCronTaskStatus();
         $this->assertEquals(StatusChecker::STATUS_PROBLEM, $crontask_status['status']);
         $this->assertCount(2, $crontask_status['stuck']);
 
@@ -222,11 +228,11 @@ class StatusCheckerTest extends GLPITestCase
             $this->assertIsString($name);
             $this->assertIsCallable($callback);
 
-            $status = StatusChecker::getServiceStatus(service: $name, force: true);
+            $status = StatusChecker::getServiceStatus(service: $name);
             $this->assertIsArray($status);
             $this->assertArrayHasKey('status', $status);
 
-            $status = StatusChecker::getServiceStatus(service: $name, public_only: false, force: true);
+            $status = StatusChecker::getServiceStatus(service: $name, public_only: false);
             $this->assertIsArray($status);
             $this->assertArrayHasKey('status', $status);
         }
