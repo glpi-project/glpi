@@ -131,6 +131,21 @@ INSERT INTO `glpi_plugin_genericobject_foos` (`id`, `name`, `comment`, `date_mod
 (9, 'Foo 9', '', '2025-03-06 10:27:05', '2025-03-06 10:27:05'),
 (10, 'Foo 10', '', '2025-03-06 10:27:08', '2025-03-06 10:27:08');
 
+CREATE TABLE `glpi_plugin_genericobject_uaus` (
+  `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
+  `name` VARCHAR(255) NULL,
+  `comment` TEXT NULL,
+  `date_mod` TIMESTAMP NULL,
+  `date_creation` TIMESTAMP NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`),
+  KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+INSERT INTO `glpi_plugin_genericobject_uaus` (`id`, `name`, `comment`, `date_mod`, `date_creation`) VALUES
+(1, 'Uau 1', '', '2025-01-13 08:47:23', '2025-01-13 08:47:23'),
+(2, 'Uau 2', '', '2025-02-24 17:43:01', '2025-02-26 14:12:17');
+
 CREATE TABLE `glpi_plugin_genericobject_items_states` (
   `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
   `name` VARCHAR(255) NULL,
@@ -215,16 +230,17 @@ CREATE TABLE `glpi_plugin_genericobject_smartphones` (
   `plugin_genericobject_tablets_id` INT UNSIGNED NOT NULL DEFAULT 0 ,
   `plugin_genericobject_bars_id` INT UNSIGNED NOT NULL DEFAULT 0 ,
   `plugin_genericobject_foos_id` INT UNSIGNED NOT NULL DEFAULT 0 ,
+  `plugin_genericobject_uaus_id` INT UNSIGNED NOT NULL DEFAULT 0 ,
   `plugin_genericobject_items_states_id` INT UNSIGNED NOT NULL DEFAULT 0 ,
   `plugin_genericobject_test_abcs_id` INT UNSIGNED NOT NULL DEFAULT 0 ,
    PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-INSERT INTO `glpi_plugin_genericobject_smartphones` (`id`, `is_template`, `template_name`, `is_deleted`, `entities_id`, `is_recursive`, `name`, `serial`, `otherserial`, `locations_id`, `states_id`, `users_id`, `groups_id`, `manufacturers_id`, `users_id_tech`, `comment`, `is_helpdesk_visible`, `notepad`, `date_mod`, `date_creation`, `computers_id_host`, `config_str`, `contact`, `contact_num`, `creationdate`, `count`, `domains_id`, `expirationdate`, `groups_id_tech`, `is_global`, `other`, `plugin_genericobject_smartphonecategories_id`, `plugin_genericobject_smartphonemodels_id`, `plugin_genericobject_smartphonetypes_id`, `url`, `plugin_genericobject_tablets_id`, `plugin_genericobject_bars_id`, `plugin_genericobject_foos_id`, `plugin_genericobject_items_states_id`, `plugin_genericobject_test_abcs_id`) VALUES
-(1, 0, '', 0, 0, 0, 'Smartphone 1', 'SER0123', '', 1, 1, 3, 2, 3, 4, '', 1, NULL, '2025-03-06 10:08:51', '2025-03-06 10:08:51', 1, '# is_foo=0\nis_foo=1\nbar="adbizq"', '', '', '2025-02-01', 19, 4, '2025-12-31', 0, 0, 'some random value', 5, 2, 5, 'https://example.org/?id=9783', 1, 3, 2, 0, 1),
-(2, 0, '', 0, 0, 1, 'Smartphone 2', 'SER0198', '', 2, 2, 5, 1, 2, 0, '', 1, NULL, '2025-03-06 10:11:46', '2025-03-06 10:11:46', 2, '# no config', '', '', NULL, 0, 0, NULL, 4, 0, '', 4, 2, 0, '', 0, 4, 0, 3, 0),
-(3, 0, '', 0, 0, 0, 'Smartphone 3', '', 'INV123456', 0, 0, 0, 0, 0, 4, 'Some comments...', 1, NULL, '2025-03-06 10:12:59', '2025-03-06 10:12:59', 0, '', '', '', NULL, 0, 3, NULL, 0, 1, '', 0, 0, 4, '', 3, 0, 0, 1, 2);
+INSERT INTO `glpi_plugin_genericobject_smartphones` (`id`, `is_template`, `template_name`, `is_deleted`, `entities_id`, `is_recursive`, `name`, `serial`, `otherserial`, `locations_id`, `states_id`, `users_id`, `groups_id`, `manufacturers_id`, `users_id_tech`, `comment`, `is_helpdesk_visible`, `notepad`, `date_mod`, `date_creation`, `computers_id_host`, `config_str`, `contact`, `contact_num`, `creationdate`, `count`, `domains_id`, `expirationdate`, `groups_id_tech`, `is_global`, `other`, `plugin_genericobject_smartphonecategories_id`, `plugin_genericobject_smartphonemodels_id`, `plugin_genericobject_smartphonetypes_id`, `url`, `plugin_genericobject_tablets_id`, `plugin_genericobject_bars_id`, `plugin_genericobject_foos_id`, `plugin_genericobject_uaus_id`, `plugin_genericobject_items_states_id`, `plugin_genericobject_test_abcs_id`) VALUES
+(1, 0, '', 0, 0, 0, 'Smartphone 1', 'SER0123', '', 1, 1, 3, 2, 3, 4, '', 1, NULL, '2025-03-06 10:08:51', '2025-03-06 10:08:51', 1, '# is_foo=0\nis_foo=1\nbar="adbizq"', '', '', '2025-02-01', 19, 4, '2025-12-31', 0, 0, 'some random value', 5, 2, 5, 'https://example.org/?id=9783', 1, 3, 2, 0, 0, 1),
+(2, 0, '', 0, 0, 1, 'Smartphone 2', 'SER0198', '', 2, 2, 5, 1, 2, 0, '', 1, NULL, '2025-03-06 10:11:46', '2025-03-06 10:11:46', 2, '# no config', '', '', NULL, 0, 0, NULL, 4, 0, '', 4, 2, 0, '', 0, 4, 0, 1, 3, 0),
+(3, 0, '', 0, 0, 0, 'Smartphone 3', '', 'INV123456', 0, 0, 0, 0, 0, 4, 'Some comments...', 1, NULL, '2025-03-06 10:12:59', '2025-03-06 10:12:59', 0, '', '', '', NULL, 0, 3, NULL, 0, 1, '', 0, 0, 4, '', 3, 0, 0, 2, 1, 2);
 
 CREATE TABLE `glpi_plugin_genericobject_smartphonecategories` (
   `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
