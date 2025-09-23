@@ -1431,7 +1431,7 @@ class MigrationTest extends DbTestCase
         }
 
         return new class ($ver, $progress_indicator, $db) extends Migration {
-            public function __construct($ver, ?AbstractProgressIndicator $progress_indicator = null, $db)
+            public function __construct($ver, ?AbstractProgressIndicator $progress_indicator = null, $db = null)
             {
                 parent::__construct($ver, $progress_indicator);
                 $this->db = $db;
