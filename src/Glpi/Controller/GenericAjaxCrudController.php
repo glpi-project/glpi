@@ -58,7 +58,7 @@ class GenericAjaxCrudController extends AbstractController
     #[Route("/GenericAjaxCrud", name: "glpi_generic_ajax_crud")]
     public function __invoke(Request $request): Response
     {
-        $input = $request->request->all();
+        $input = $request->toArray();
 
         // Validate id as soon as possible so all sub-methods can assume
         // $input['id'] exist

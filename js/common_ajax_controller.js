@@ -65,8 +65,10 @@ class GlpiCommonAjaxController
 
         // Send AJAX request
         try {
-            const response = await $.post({
+            const response = await $.ajax({
                 url: `${CFG_GLPI.root_doc}/GenericAjaxCrud`,
+                method: 'POST',
+                contentType: 'application/json',
                 data: data,
             });
 
@@ -108,9 +110,6 @@ class GlpiCommonAjaxController
      * @returns {string}
      */
     #buildFormData(form) {
-        // Parse raw form data
-        const data = form.serializeArray();
-
         // Try to get submit button info
         const active_element = document.activeElement;
         let action = null;
@@ -134,17 +133,20 @@ class GlpiCommonAjaxController
             action = "update";
         }
 
+        const form_object = form.serializeJSON();
+
         // Add submit button info to the form data
-        data.push({'name': '_action', 'value': action});
+        form_object._action = action;
 
         // Also keep action as a "direct" parameter as some internal code will
         // look for it that way
-        data.push({'name': action, 'value': true});
+        form_object[action] = true;
 
         // Add target itemtype
-        data.push({'name': 'itemtype', 'value': form.data('ajaxSubmitItemtype')});
+        form_object.itemtype = form.data('ajaxSubmitItemtype');
 
-        return $.param(data);
+        // Use JSON format for large forms to avoid max_input_vars limitation
+        return JSON.stringify(form_object);
     }
 
     /**
