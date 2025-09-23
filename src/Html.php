@@ -4646,6 +4646,7 @@ JS;
                           $selectVarName.setCustomValidity('');
                         });
 
+                        // Make sure the hidden <select> has the same size than the select2 container, to display the error message at a correct position
                         $formVarName.addEventListener('invalid', function (event) {
                           const element = event.target;
 
