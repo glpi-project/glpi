@@ -128,8 +128,11 @@ export class BaseConditionEditorController {
 
     async #doRenderEditor(data) {
         const url = this.#editorEndpoint;
-        const content = await $.post(url, {
-            form_data: data,
+        const content = await $.ajax({
+            url: url,
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
         });
 
         // Note: must use `$().html` to make sure we trigger scripts
