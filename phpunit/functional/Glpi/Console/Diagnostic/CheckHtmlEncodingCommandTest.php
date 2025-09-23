@@ -34,11 +34,14 @@
 
 namespace tests\units\Glpi\Console\Diagnostic;
 
+use CommonDBTM;
 use DbTestCase;
+use Glpi\Console\Diagnostic\CheckHtmlEncodingCommand;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-class CheckHtmlEncodingCommand extends DbTestCase
+class CheckHtmlEncodingCommandTest extends DbTestCase
 {
-    protected function providerFixOneItem(): iterable
+    public static function providerFixOneItem(): iterable
     {
         $itemtypes = [
             \Change::class => [
@@ -143,35 +146,33 @@ class CheckHtmlEncodingCommand extends DbTestCase
     }
 
     /**
-     * @DataProvider providerFixOneItem
-     *
-     * @param string $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      * @param array $fields
      * @param array $input
      * @param array $output
      * @return void
      */
+    #[DataProvider('providerFixOneItem')]
     public function testFixOneItem(string $itemtype, array $fields, array $input, array $output): void
     {
         global $DB;
 
-        $instance = $this->newTestedInstance();
+        $checker = new CheckHtmlEncodingCommand();
 
         // Create and load item
-        $insert = $DB->insert($itemtype::getTable(), $input);
-        $this->boolean($insert)->isTrue();
+        $this->assertTrue($DB->insert($itemtype::getTable(), $input));
         $id = $DB->insertId();
-        $this->integer($id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $id);
 
         $item = new $itemtype();
-        $this->boolean($item->getFromDB($id));
+        $this->assertTrue($item->getFromDB($id));
 
         // Check updated properties
-        $this->callPrivateMethod($instance, 'fixOneItem', $item, $fields);
+        $this->callPrivateMethod($checker, 'fixOneItem', $item, $fields);
 
-        $this->boolean($item->getFromDB($item->fields[$item::getIndexName()]))->isTrue();
+        $this->assertTrue($item->getFromDB($item->fields[$item::getIndexName()]));
         foreach ($output as $field => $value) {
-            $this->string($item->fields[$field])->isEqualTo($value);
+            $this->assertEquals($value, $item->fields[$field]);
         }
     }
 }

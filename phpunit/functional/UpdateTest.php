@@ -35,81 +35,32 @@
 namespace tests\units;
 
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Update;
 
-/* Test for inc/update.class.php */
-
-class Update extends \GLPITestCase
+class UpdateTest extends \GLPITestCase
 {
     public function testCurrents()
     {
         global $DB;
-        $update = new \Update($DB);
-
-        $expected = [
+        $update = new Update($DB);
+        $this->assertEquals([
             'dbversion' => GLPI_SCHEMA_VERSION,
             'language'  => 'en_GB',
             'version'   => GLPI_VERSION,
-        ];
-        $this->array($update->getCurrents())->isEqualTo($expected);
+        ], $update->getCurrents());
     }
 
     public function testSetMigration()
     {
         global $DB;
-        $update = new \Update($DB);
-        $migration = null;
-        $this->output(
-            function () use (&$migration) {
-                $migration = new \Migration(GLPI_VERSION);
-            }
-        )->isEmpty();
-
-        $this->object($update->setMigration($migration))->isInstanceOf('Update');
+        $update = new Update($DB);
+        $migration = new \Migration(GLPI_VERSION);
+        $this->assertInstanceOf(Update::class, $update->setMigration($migration));
     }
 
-
-    protected function migrationsProvider(): iterable
+    public static function migrationsProvider(): iterable
     {
-        vfsStream::setup(
-            'install',
-            null,
-            [
-                'migrations' => [
-                    'update_0.90.x_to_9.1.0.php'  => '',
-                    'update_10.0.0_to_10.0.1.php' => '',
-                    'update_10.0.1_to_10.0.2.php' => '',
-                    'update_10.0.2_to_10.0.3.php' => '',
-                    'update_10.0.3_to_10.0.4.php' => '',
-                    'update_10.0.4_to_10.0.5.php' => '',
-                    'update_10.0.5_to_10.0.6.php' => '',
-                    'update_9.1.0_to_9.1.1.php'   => '',
-                    'update_9.1.1_to_9.1.3.php'   => '',
-                    'update_9.1.x_to_9.2.0.php'   => '',
-                    'update_9.2.0_to_9.2.1.php'   => '',
-                    'update_9.2.1_to_9.2.2.php'   => '',
-                    'update_9.2.2_to_9.2.3.php'   => '',
-                    'update_9.2.x_to_9.3.0.php'   => '',
-                    'update_9.3.0_to_9.3.1.php'   => '',
-                    'update_9.3.1_to_9.3.2.php'   => '',
-                    'update_9.3.x_to_9.4.0.php'   => '',
-                    'update_9.4.0_to_9.4.1.php'   => '',
-                    'update_9.4.1_to_9.4.2.php'   => '',
-                    'update_9.4.2_to_9.4.3.php'   => '',
-                    'update_9.4.3_to_9.4.5.php'   => '',
-                    'update_9.4.5_to_9.4.6.php'   => '',
-                    'update_9.4.6_to_9.4.7.php'   => '',
-                    'update_9.4.x_to_9.5.0.php'   => '',
-                    'update_9.5.1_to_9.5.2.php'   => '',
-                    'update_9.5.2_to_9.5.3.php'   => '',
-                    'update_9.5.3_to_9.5.4.php'   => '',
-                    'update_9.5.4_to_9.5.5.php'   => '',
-                    'update_9.5.5_to_9.5.6.php'   => '',
-                    'update_9.5.6_to_9.5.7.php'   => '',
-                    'update_9.5.x_to_10.0.0.php'  => '',
-                ],
-            ]
-        );
-
         $path = vfsStream::url('install/migrations');
 
         $migrations_910_to_921 = [
@@ -370,13 +321,50 @@ class Update extends \GLPITestCase
         ];
     }
 
-    /**
-     * @dataProvider migrationsProvider
-     */
+    #[DataProvider('migrationsProvider')]
     public function testGetMigrationsToDo(string $current_version, bool $force_latest, array $expected_migrations)
     {
         global $DB;
-        $update = new \Update($DB, vfsStream::url('install/migrations'));
-        $this->array($this->callPrivateMethod($update, 'getMigrationsToDo', $current_version, $force_latest))->isIdenticalTo($expected_migrations);
+        vfsStream::setup(
+            'install',
+            null,
+            [
+                'migrations' => [
+                    'update_0.90.x_to_9.1.0.php'  => '',
+                    'update_10.0.0_to_10.0.1.php' => '',
+                    'update_10.0.1_to_10.0.2.php' => '',
+                    'update_10.0.2_to_10.0.3.php' => '',
+                    'update_10.0.3_to_10.0.4.php' => '',
+                    'update_10.0.4_to_10.0.5.php' => '',
+                    'update_10.0.5_to_10.0.6.php' => '',
+                    'update_9.1.0_to_9.1.1.php'   => '',
+                    'update_9.1.1_to_9.1.3.php'   => '',
+                    'update_9.1.x_to_9.2.0.php'   => '',
+                    'update_9.2.0_to_9.2.1.php'   => '',
+                    'update_9.2.1_to_9.2.2.php'   => '',
+                    'update_9.2.2_to_9.2.3.php'   => '',
+                    'update_9.2.x_to_9.3.0.php'   => '',
+                    'update_9.3.0_to_9.3.1.php'   => '',
+                    'update_9.3.1_to_9.3.2.php'   => '',
+                    'update_9.3.x_to_9.4.0.php'   => '',
+                    'update_9.4.0_to_9.4.1.php'   => '',
+                    'update_9.4.1_to_9.4.2.php'   => '',
+                    'update_9.4.2_to_9.4.3.php'   => '',
+                    'update_9.4.3_to_9.4.5.php'   => '',
+                    'update_9.4.5_to_9.4.6.php'   => '',
+                    'update_9.4.6_to_9.4.7.php'   => '',
+                    'update_9.4.x_to_9.5.0.php'   => '',
+                    'update_9.5.1_to_9.5.2.php'   => '',
+                    'update_9.5.2_to_9.5.3.php'   => '',
+                    'update_9.5.3_to_9.5.4.php'   => '',
+                    'update_9.5.4_to_9.5.5.php'   => '',
+                    'update_9.5.5_to_9.5.6.php'   => '',
+                    'update_9.5.6_to_9.5.7.php'   => '',
+                    'update_9.5.x_to_10.0.0.php'  => '',
+                ],
+            ]
+        );
+        $update = new Update($DB, vfsStream::url('install/migrations'));
+        $this->assertEquals($expected_migrations, $this->callPrivateMethod($update, 'getMigrationsToDo', $current_version, $force_latest));
     }
 }
