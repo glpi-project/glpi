@@ -262,7 +262,7 @@ class MigrationTest extends DbTestCase
                 }
                 // Other calls corresponds to call made in Config::setConfigurationValues()
                 return new ArrayIterator();
-            }
+            },
         ]);
         $migration->addConfig([
             'one' => 'key',
@@ -783,12 +783,9 @@ class MigrationTest extends DbTestCase
                 return $table === 'glpi_oldtable' && $field !== 'bool_field';
             },
             '_mock_doQuery' => function ($query) {
-                if ($query === 'SHOW INDEX FROM `glpi_oldtable`') {
-                    // Make DbUtils::isIndex return false
-                    return false;
-                }
-                return true;
-            }
+                // Make DbUtils::isIndex return false
+                return $query !== 'SHOW INDEX FROM `glpi_oldtable`';
+            },
         ]);
 
         // Case 1, rename with no buffered changes
@@ -875,7 +872,7 @@ class MigrationTest extends DbTestCase
                 return $table === 'glpi_someoldtypes';
             },
             '_mock_fieldExists' => true,
-            '_mock_request' => new \ArrayIterator([
+            '_mock_request' => new ArrayIterator([
                 [
                     'TABLE_NAME' => 'glpi_item_with_fkey', 'COLUMN_NAME' => 'someoldtypes_id',
                 ],
@@ -907,7 +904,7 @@ class MigrationTest extends DbTestCase
                     && $request['WHERE']['OR'][0] === ['column_name'  => 'someoldtypes_id']
                 ) {
                     // Request used for foreign key fields
-                    return new \ArrayIterator([
+                    return new ArrayIterator([
                         ['TABLE_NAME' => 'glpi_oneitem_with_fkey',     'COLUMN_NAME' => 'someoldtypes_id'],
                         ['TABLE_NAME' => 'glpi_anotheritem_with_fkey', 'COLUMN_NAME' => 'someoldtypes_id'],
                         ['TABLE_NAME' => 'glpi_anotheritem_with_fkey', 'COLUMN_NAME' => 'someoldtypes_id_tech'],
@@ -918,7 +915,7 @@ class MigrationTest extends DbTestCase
                     && $request['WHERE']['OR'][0] === ['column_name'  => 'itemtype']
                 ) {
                     // Request used for itemtype fields
-                    return new \ArrayIterator([
+                    return new ArrayIterator([
                         ['TABLE_NAME' => 'glpi_computers', 'COLUMN_NAME' => 'itemtype'],
                         ['TABLE_NAME' => 'glpi_users',     'COLUMN_NAME' => 'itemtype'],
                         ['TABLE_NAME' => 'glpi_stuffs',    'COLUMN_NAME' => 'itemtype_source'],
@@ -990,10 +987,10 @@ class MigrationTest extends DbTestCase
                             ],
                         ];
                     }
-                    return new \ArrayIterator($result);
+                    return new ArrayIterator($result);
                 }
                 if ($request['FROM'] === \SavedSearch::getTable()) {
-                    return new \ArrayIterator([
+                    return new ArrayIterator([
                         [
                             'id'        => 1,
                             'itemtype'  => 'Computer',
@@ -1011,7 +1008,7 @@ class MigrationTest extends DbTestCase
                         ],
                     ]);
                 }
-                return new \ArrayIterator([]);
+                return new ArrayIterator([]);
             },
         ]);
 
@@ -1054,10 +1051,10 @@ class MigrationTest extends DbTestCase
                             ],
                         ];
                     }
-                    return new \ArrayIterator($result);
+                    return new ArrayIterator($result);
                 }
                 if ($request['FROM'] === \SavedSearch::getTable()) {
-                    return new \ArrayIterator([
+                    return new ArrayIterator([
                         [
                             'id'        => 1,
                             'itemtype'  => 'Computer',
@@ -1075,7 +1072,7 @@ class MigrationTest extends DbTestCase
                         ],
                     ]);
                 }
-                return new \ArrayIterator([]);
+                return new ArrayIterator([]);
             },
         ]);
 
