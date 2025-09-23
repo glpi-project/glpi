@@ -34,12 +34,16 @@
 
 namespace tests\units\Glpi\System\Diagnostic;
 
-use mock\mysqli_result;
+use ArrayIterator;
+use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
+use GLPITestCase;
+use mysqli_result;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-class DatabaseSchemaIntegrityChecker extends \GLPITestCase
+class DatabaseSchemaIntegrityCheckerTest extends GLPITestCase
 {
-    protected function schemaProvider(): iterable
+    public static function schemaProvider(): iterable
     {
         $table_increment = 0;
 
@@ -48,9 +52,7 @@ class DatabaseSchemaIntegrityChecker extends \GLPITestCase
                 'schema'               => implode(
                     "\n",
                     array_map(
-                        function ($sql) {
-                            return $sql . ';';
-                        },
+                        static fn($sql) => $sql . ';',
                         array_column($tables, 'raw_sql')
                     )
                 ),
@@ -1450,9 +1452,7 @@ DIFF,
         );
     }
 
-    /**
-     * @dataProvider schemaProvider
-     */
+    #[DataProvider('schemaProvider')]
     public function testGetNormalizedSql(
         string $schema, // ignored
         array $raw_tables,
@@ -1461,10 +1461,8 @@ DIFF,
         array $expected_differences, // ignored
         array $args
     ) {
-        $db = $this->geDbMock($args);
-
-        $this->newTestedInstance(
-            $db,
+        $checker = new DatabaseSchemaIntegrityChecker(
+            $this->getDbMock($args),
             $args['strict'],
             $args['ignore_innodb_migration'],
             $args['ignore_timestamps_migration'],
@@ -1474,13 +1472,11 @@ DIFF,
         );
 
         foreach ($raw_tables as $table_name => $raw_sql) {
-            $this->string($this->callPrivateMethod($this->testedInstance, 'getNormalizedSql', $raw_sql))->isEqualTo($normalized_tables[$table_name]);
+            $this->assertEquals($normalized_tables[$table_name], $this->callPrivateMethod($checker, 'getNormalizedSql', $raw_sql));
         }
     }
 
-    /**
-     * @dataProvider schemaProvider
-     */
+    #[DataProvider('schemaProvider')]
     public function testTableDifferences(
         string $schema, // ignored
         array $raw_tables,
@@ -1489,35 +1485,28 @@ DIFF,
         array $expected_differences,
         array $args
     ) {
-        $db = $this->geDbMock($args);
-
-        $this->newTestedInstance(
-            $db,
-            $args['strict'],
-            $args['ignore_innodb_migration'],
-            $args['ignore_timestamps_migration'],
-            $args['ignore_utf8mb4_migration'],
-            $args['ignore_dynamic_row_format_migration'],
-            $args['ignore_unsigned_keys_migration']
-        );
-
         foreach ($raw_tables as $table_name => $raw_sql) {
             $effective_sql = $effective_tables[$table_name];
             $expected_diff = $expected_differences[$table_name]['diff'] ?? '';
 
-            $this->mockGenerator->orphanize('__construct');
-            $query_result = new mysqli_result();
-            $this->calling($query_result)->fetch_assoc = ['Create Table' => $effective_sql];
-            $this->calling($db)->doQuery = $query_result;
+            $checker = new DatabaseSchemaIntegrityChecker(
+                $this->getDbMock($args + [
+                    '_mock_doQuery' => $this->getMysqliResultMock(['Create Table' => $effective_sql]),
+                ]),
+                $args['strict'],
+                $args['ignore_innodb_migration'],
+                $args['ignore_timestamps_migration'],
+                $args['ignore_utf8mb4_migration'],
+                $args['ignore_dynamic_row_format_migration'],
+                $args['ignore_unsigned_keys_migration']
+            );
 
-            $this->boolean($this->testedInstance->hasDifferences($table_name, $raw_sql))->isEqualTo(!empty($expected_diff));
-            $this->string($this->testedInstance->getDiff($table_name, $raw_sql))->isEqualTo($expected_diff);
+            $this->assertEquals(!empty($expected_diff), $checker->hasDifferences($table_name, $raw_sql));
+            $this->assertEquals($expected_diff, $checker->getDiff($table_name, $raw_sql));
         }
     }
 
-    /**
-     * @dataProvider schemaProvider
-     */
+    #[DataProvider('schemaProvider')]
     public function testExtractSchemaFromFile(
         string $schema,
         array $raw_tables,
@@ -1536,16 +1525,11 @@ DIFF,
             ]
         );
 
-        $db = $this->geDbMock($args);
-
-        $this->newTestedInstance($db);
-        $this->array($this->testedInstance->extractSchemaFromFile(vfsStream::url('glpi/install/schema.sql')))
-            ->isEqualTo($raw_tables);
+        $checker = new DatabaseSchemaIntegrityChecker($this->getDbMock($args));
+        $this->assertEquals($raw_tables, $checker->extractSchemaFromFile(vfsStream::url('glpi/install/schema.sql')));
     }
 
-    /**
-     * @dataProvider schemaProvider
-     */
+    #[DataProvider('schemaProvider')]
     public function testCheckCompleteSchema(
         string $schema,
         array $raw_tables, // ignored
@@ -1564,22 +1548,18 @@ DIFF,
             ]
         );
 
-        $db = $this->geDbMock($args);
-
-        $that = $this;
-        $this->calling($db)->doQuery = function ($query) use ($effective_tables, $that) {
-            $table_name = preg_replace('/SHOW CREATE TABLE `([^`]+)`/', '$1', $query);
-            if (array_key_exists($table_name, $effective_tables)) {
-                $that->mockGenerator->orphanize('__construct');
-                $res = new mysqli_result();
-                $that->calling($res)->fetch_assoc = ['Create Table' => $effective_tables[$table_name]];
-                return $res;
-            }
-            return false;
-        };
-
-        $this->newTestedInstance(
-            $db,
+        $checker = new DatabaseSchemaIntegrityChecker(
+            $this->getDbMock($args + [
+                '_mock_listTables' => true,
+                '_mock_listFields' => true,
+                '_mock_doQuery' => function ($query) use ($effective_tables) {
+                    $table_name = preg_replace('/SHOW CREATE TABLE `([^`]+)`/', '$1', $query);
+                    if (array_key_exists($table_name, $effective_tables)) {
+                        return $this->getMysqliResultMock(['Create Table' => $effective_tables[$table_name]]);
+                    }
+                    return false;
+                },
+            ]),
             $args['strict'],
             $args['ignore_innodb_migration'],
             $args['ignore_timestamps_migration'],
@@ -1590,8 +1570,7 @@ DIFF,
 
         $expected_differences = array_filter($expected_differences); // Do not keep entries from data provider having "null" differences
 
-        $this->array($this->testedInstance->checkCompleteSchema(vfsStream::url('glpi/install/schema.sql')))
-            ->isEqualTo($expected_differences);
+        $this->assertEquals($expected_differences, $checker->checkCompleteSchema(vfsStream::url('glpi/install/schema.sql')));
     }
 
     public function testCheckCompleteSchemaWithUnknownAndMissingTables()
@@ -1651,34 +1630,29 @@ SQL,
                 ]
             );
 
-            $db = $this->geDbMock(['use_utf8mb4' => true]);
-
-            $this->calling($db)->tableExists = function ($table_name) use ($table_prefix) {
-                return $table_name !== "glpi_{$table_prefix}missingtable";
-            };
-            $that = $this;
-            $this->calling($db)->listTables = [['TABLE_NAME' => "glpi_{$table_prefix}unknowntable"]]; // $DB->listTables() is used to list unknown tables
-            $this->calling($db)->doQuery = function ($query) use ($that, $table_prefix, $existingtable_sql, $unknowntable_sql) {
-                $table_name = preg_replace('/SHOW CREATE TABLE `([^`]+)`/', '$1', $query);
-                $result = null;
-                switch ($table_name) {
-                    case "glpi_{$table_prefix}existingtable":
-                        $result = ['Create Table' => $existingtable_sql];
-                        break;
-                    case "glpi_{$table_prefix}unknowntable":
-                        $result = ['Create Table' => $unknowntable_sql];
-                        break;
-                }
-                if ($result !== null) {
-                    $that->mockGenerator->orphanize('__construct');
-                    $res = new mysqli_result();
-                    $that->calling($res)->fetch_assoc = $result;
-                    return $res;
-                }
-                return false;
-            };
-
-            $this->newTestedInstance($db);
+            $checker = new DatabaseSchemaIntegrityChecker($this->getDbMock([
+                'use_utf8mb4' => true,
+                '_mock_tableExists' => function ($table_name) use ($table_prefix) {
+                    return $table_name !== "glpi_{$table_prefix}missingtable";
+                },
+                '_mock_listTables' => [['TABLE_NAME' => "glpi_{$table_prefix}unknowntable"]], // $DB->listTables() is used to list unknown tables
+                '_mock_doQuery' => function ($query) use ($table_prefix, $existingtable_sql, $unknowntable_sql) {
+                    $table_name = preg_replace('/SHOW CREATE TABLE `([^`]+)`/', '$1', $query);
+                    $result = null;
+                    switch ($table_name) {
+                        case "glpi_{$table_prefix}existingtable":
+                            $result = ['Create Table' => $existingtable_sql];
+                            break;
+                        case "glpi_{$table_prefix}unknowntable":
+                            $result = ['Create Table' => $unknowntable_sql];
+                            break;
+                    }
+                    if ($result !== null) {
+                        return $this->getMysqliResultMock($result);
+                    }
+                    return false;
+                },
+            ]));
 
             $expected = [
                 "glpi_{$table_prefix}missingtable" => [
@@ -1713,13 +1687,11 @@ DIFF,
                 ],
             ];
 
-            $this->array($this->testedInstance->checkCompleteSchema(vfsStream::url('glpi/install/schema.sql'), true, $context))
-                ->isEqualTo($expected);
+            $this->assertEquals($expected, $checker->checkCompleteSchema(vfsStream::url('glpi/install/schema.sql'), true, $context));
 
             // Check without unknown tables detection
             unset($expected["glpi_{$table_prefix}unknowntable"]);
-            $this->array($this->testedInstance->checkCompleteSchema(vfsStream::url('glpi/install/schema.sql'), false))
-                ->isEqualTo($expected);
+            $this->assertEquals($expected, $checker->checkCompleteSchema(vfsStream::url('glpi/install/schema.sql'), false));
         }
     }
 
@@ -1761,37 +1733,6 @@ CREATE TABLE `glpi_impactcontexts` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 SQL;
 
-        $db = $this->geDbMock();
-        $that = $this;
-
-        // Case 1: "DEFAULT ''" not returned by MySQL should not be detected as a difference for GLPI < 10.0.1
-        $this->calling($db)->doQuery = function ($query) use ($that) {
-            if (preg_match('/^SHOW CREATE TABLE/', $query) === 1) {
-                $that->mockGenerator->orphanize('__construct');
-                $res = new mysqli_result();
-                $that->calling($res)->fetch_assoc = [
-                    'Create Table' => <<<SQL
-CREATE TABLE `glpi_impactcontexts` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `positions` text CHARACTER SET utf8mb3 COLLATE utf8_unicode_ci NOT NULL,
-  `zoom` float NOT NULL DEFAULT '0',
-  `pan_x` float NOT NULL DEFAULT '0',
-  `pan_y` float NOT NULL DEFAULT '0',
-  `impact_color` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `depends_color` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `impact_and_depends_color` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `show_depends` tinyint(1) NOT NULL DEFAULT '1',
-  `show_impact` tinyint(1) NOT NULL DEFAULT '1',
-  `max_depth` int NOT NULL DEFAULT '5',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
-SQL,
-                ];
-                return $res;
-            }
-            return false;
-        };
-
         $dbversions = [
             '9.5.0',
             '9.5.1',
@@ -1812,9 +1753,32 @@ SQL,
             '10.0.0',
         ];
         foreach ($dbversions as $dbversion) {
-            $this->newTestedInstance($db);
-            $this->calling($db)->request = function ($query) use ($dbversion) {
-                return new \ArrayIterator(
+            $checker = new DatabaseSchemaIntegrityChecker($this->getDbMock([
+                // Case 1: "DEFAULT ''" not returned by MySQL should not be detected as a difference for GLPI < 10.0.1
+                '_mock_doQuery' => function ($query) {
+                    if (preg_match('/^SHOW CREATE TABLE/', $query) === 1) {
+                        return $this->getMysqliResultMock([
+                            'Create Table' => <<<SQL
+CREATE TABLE `glpi_impactcontexts` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `positions` text CHARACTER SET utf8mb3 COLLATE utf8_unicode_ci NOT NULL,
+  `zoom` float NOT NULL DEFAULT '0',
+  `pan_x` float NOT NULL DEFAULT '0',
+  `pan_y` float NOT NULL DEFAULT '0',
+  `impact_color` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `depends_color` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `impact_and_depends_color` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `show_depends` tinyint(1) NOT NULL DEFAULT '1',
+  `show_impact` tinyint(1) NOT NULL DEFAULT '1',
+  `max_depth` int NOT NULL DEFAULT '5',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
+SQL,
+                        ]);
+                    }
+                    return false;
+                },
+                '_mock_request' => new ArrayIterator(
                     [
                         [
                             'context' => 'core',
@@ -1822,19 +1786,28 @@ SQL,
                             'value'   => $dbversion,
                         ],
                     ]
-                );
-            };
-            $this->string($this->testedInstance->getDiff('glpi_impactcontexts', $schema_sql_from_950))->isEqualTo(null);
+                ),
+            ]));
+            $this->assertEmpty($checker->getDiff('glpi_impactcontexts', $schema_sql_from_950));
         }
 
-        // Case 2: "DEFAULT ''" returned by MariaDB should be detected as a difference for GLPI >= 10.0.1
-        $db->use_utf8mb4 = true;
-        $this->calling($db)->doQuery = function ($query) use ($that) {
-            if (preg_match('/^SHOW CREATE TABLE/', $query) === 1) {
-                $that->mockGenerator->orphanize('__construct');
-                $res = new mysqli_result();
-                $that->calling($res)->fetch_assoc = [
-                    'Create Table' => <<<SQL
+        $dbversions = [
+            '10.0.1',
+            '10.0.2',
+            '10.0.3',
+            '11.0.0-dev',
+            '11.0.0-beta1',
+            '11.0.0-rc2',
+            '11.0.0',
+        ];
+        foreach ($dbversions as $dbversion) {
+            $checker = new DatabaseSchemaIntegrityChecker($this->getDbMock([
+                'use_utf8mb4' => true,
+                // Case 2: "DEFAULT ''" returned by MariaDB should be detected as a difference for GLPI >= 10.0.1
+                '_mock_doQuery' => function ($query) {
+                    if (preg_match('/^SHOW CREATE TABLE/', $query) === 1) {
+                        return $this->getMysqliResultMock([
+                            'Create Table' => <<<SQL
 CREATE TABLE `glpi_impactcontexts` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `positions` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
@@ -1850,25 +1823,11 @@ CREATE TABLE `glpi_impactcontexts` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 SQL,
-                ];
-                return $res;
-            }
-            return false;
-        };
-
-        $dbversions = [
-            '10.0.1',
-            '10.0.2',
-            '10.0.3',
-            '11.0.0-dev',
-            '11.0.0-beta1',
-            '11.0.0-rc2',
-            '11.0.0',
-        ];
-        foreach ($dbversions as $dbversion) {
-            $this->newTestedInstance($db);
-            $this->calling($db)->request = function ($query) use ($dbversion) {
-                return new \ArrayIterator(
+                        ]);
+                    }
+                    return false;
+                },
+                '_mock_request' => new ArrayIterator(
                     [
                         [
                             'context' => 'core',
@@ -1876,9 +1835,9 @@ SQL,
                             'value'   => $dbversion,
                         ],
                     ]
-                );
-            };
-            $this->string($this->testedInstance->getDiff('glpi_impactcontexts', $schema_sql_from_1001))->isEqualTo(
+                ),
+            ]));
+            $this->assertEquals(
                 <<<DIFF
 --- Expected database schema
 +++ Current database schema
@@ -1891,15 +1850,14 @@ SQL,
    `pan_x` float NOT NULL DEFAULT 0,
    `pan_y` float NOT NULL DEFAULT 0,
 
-DIFF
+DIFF,
+                $checker->getDiff('glpi_impactcontexts', $schema_sql_from_1001)
             );
         }
     }
 
     public function testNotImportedEmailsCollateCheck()
     {
-        $db = $this->geDbMock();
-
         // Case 1: COLLATE is ignored if DB version is < 10.0.0
         $schema_sql_from_955 = <<<SQL
 CREATE TABLE `glpi_notimportedemails` (
@@ -1918,35 +1876,6 @@ CREATE TABLE `glpi_notimportedemails` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SQL;
 
-        $that = $this;
-        $this->calling($db)->doQuery = function ($query) use ($that) {
-            if (preg_match('/^SHOW CREATE TABLE/', $query) === 1) {
-                $that->mockGenerator->orphanize('__construct');
-                $res = new mysqli_result();
-                // Expected result for GLPI < 10.0.0
-                $that->calling($res)->fetch_assoc = [
-                    'Create Table' => <<<SQL
-CREATE TABLE `glpi_notimportedemails` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `from` varchar(255) COLLATE latin1_general_ci NOT NULL,
-  `to` varchar(255) COLLATE latin1_general_ci NOT NULL,
-  `mailcollectors_id` int NOT NULL DEFAULT '0',
-  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `subject` text CHARACTER SET latin1 COLLATE latin1_general_ci,
-  `messageid` varchar(255) COLLATE latin1_general_ci NOT NULL,
-  `reason` int NOT NULL DEFAULT '0',
-  `users_id` int NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `users_id` (`users_id`),
-  KEY `mailcollectors_id` (`mailcollectors_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=156 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-SQL,
-                ];
-                return $res;
-            }
-            return false;
-        };
-
         $dbversions = [
             '9.3.0',
             '9.5.0',
@@ -1963,9 +1892,31 @@ SQL,
             '9.5.11',
         ];
         foreach ($dbversions as $dbversion) {
-            $this->newTestedInstance($db);
-            $this->calling($db)->request = function ($query) use ($dbversion) {
-                return new \ArrayIterator(
+            $checker = new DatabaseSchemaIntegrityChecker($this->getDbMock([
+                '_mock_doQuery' => function ($query) {
+                    if (preg_match('/^SHOW CREATE TABLE/', $query) === 1) {
+                        return $this->getMysqliResultMock([
+                            'Create Table' => <<<SQL
+CREATE TABLE `glpi_notimportedemails` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `from` varchar(255) COLLATE latin1_general_ci NOT NULL,
+  `to` varchar(255) COLLATE latin1_general_ci NOT NULL,
+  `mailcollectors_id` int NOT NULL DEFAULT '0',
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `subject` text CHARACTER SET latin1 COLLATE latin1_general_ci,
+  `messageid` varchar(255) COLLATE latin1_general_ci NOT NULL,
+  `reason` int NOT NULL DEFAULT '0',
+  `users_id` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `users_id` (`users_id`),
+  KEY `mailcollectors_id` (`mailcollectors_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=156 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+SQL,
+                        ]);
+                    }
+                    return false;
+                },
+                '_mock_request' => new ArrayIterator(
                     [
                         [
                             'context' => 'core',
@@ -1973,9 +1924,9 @@ SQL,
                             'value'   => $dbversion,
                         ],
                     ]
-                );
-            };
-            $this->string($this->testedInstance->getDiff('glpi_notimportedemails', $schema_sql_from_955))->isEqualTo(null);
+                ),
+            ]));
+            $this->assertEmpty($checker->getDiff('glpi_notimportedemails', $schema_sql_from_955));
         }
 
         // Case 2: COLLATE is NOT ignored if DB version is >= 10.0.0
@@ -2012,14 +1963,27 @@ CREATE TABLE `glpi_notimportedemails` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci ROW_FORMAT=DYNAMIC;
 SQL;
 
-        $that = $this;
-        $this->calling($db)->doQuery = function ($query) use ($that) {
-            if (preg_match('/^SHOW CREATE TABLE/', $query) === 1) {
-                $that->mockGenerator->orphanize('__construct');
-                $res = new mysqli_result();
-                // Expected result for GLPI >= 10.0.0
-                $that->calling($res)->fetch_assoc = [
-                    'Create Table' => <<<SQL
+        $dbversions = [
+            '10.0.0-beta1',
+            '10.0.0-rc1',
+            '10.0.0-rc2',
+            '10.0.0-rc3',
+            '10.0.0',
+            '10.0.1',
+            '10.0.2',
+            '10.0.3',
+            '11.0.0-dev',
+            '11.0.0-beta1',
+            '11.0.0-rc2',
+            '11.0.0',
+        ];
+        foreach ($dbversions as $dbversion) {
+            $checker = new DatabaseSchemaIntegrityChecker($this->getDbMock([
+                'use_utf8mb4' => true,
+                '_mock_doQuery' => function ($query) {
+                    if (preg_match('/^SHOW CREATE TABLE/', $query) === 1) {
+                        return $this->getMysqliResultMock([
+                            'Create Table' => <<<SQL
 CREATE TABLE `glpi_notimportedemails` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `from` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -2035,31 +1999,11 @@ CREATE TABLE `glpi_notimportedemails` (
   KEY `mailcollectors_id` (`mailcollectors_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=156 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 SQL,
-                ];
-                return $res;
-            }
-            return false;
-        };
-
-        $dbversions = [
-            '10.0.0-beta1',
-            '10.0.0-rc1',
-            '10.0.0-rc2',
-            '10.0.0-rc3',
-            '10.0.0',
-            '10.0.1',
-            '10.0.2',
-            '10.0.3',
-            '11.0.0-dev',
-            '11.0.0-beta1',
-            '11.0.0-rc2',
-            '11.0.0',
-        ];
-        $db->use_utf8mb4 = true;
-        foreach ($dbversions as $dbversion) {
-            $this->newTestedInstance($db);
-            $this->calling($db)->request = function ($query) use ($dbversion) {
-                return new \ArrayIterator(
+                        ]);
+                    }
+                    return false;
+                },
+                '_mock_request' => new ArrayIterator(
                     [
                         [
                             'context' => 'core',
@@ -2067,10 +2011,11 @@ SQL,
                             'value'   => $dbversion,
                         ],
                     ]
-                );
-            };
-            $this->string($this->testedInstance->getDiff('glpi_notimportedemails', $schema_sql_from_1000_ok))->isEqualTo(null);
-            $this->string($this->testedInstance->getDiff('glpi_notimportedemails', $schema_sql_from_1000_ko))->isEqualTo(<<<DIFF
+                ),
+            ]));
+            $this->assertEmpty($checker->getDiff('glpi_notimportedemails', $schema_sql_from_1000_ok));
+            $this->assertEquals(
+                <<<DIFF
 --- Expected database schema
 +++ Current database schema
 @@ @@
@@ -2094,11 +2039,13 @@ SQL,
 -) COLLATE=latin1_general_ci DEFAULT CHARSET=latin1 ENGINE=InnoDB ROW_FORMAT=DYNAMIC
 +) COLLATE=utf8mb4_unicode_ci DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB ROW_FORMAT=DYNAMIC
 
-DIFF);
+DIFF,
+                $checker->getDiff('glpi_notimportedemails', $schema_sql_from_1000_ko)
+            );
         }
     }
 
-    protected function versionProvider(): iterable
+    public static function versionProvider(): iterable
     {
         $root = realpath(GLPI_ROOT);
 
@@ -2154,80 +2101,115 @@ DIFF);
         ];
     }
 
-    /**
-     * @dataProvider versionProvider
-     */
+    #[DataProvider('versionProvider')]
     public function testGetSchemaPath(
         ?string $version,
         string $context,
         bool $expected_can_check,
         ?string $expected_schema_path
     ) {
-
-        $db = $this->geDbMock();
-        $this->newTestedInstance($db);
-
-        $this->variable($this->callPrivateMethod($this->testedInstance, 'getSchemaPath', $version, $context))->isEqualTo($expected_schema_path);
+        $checker = new DatabaseSchemaIntegrityChecker($this->getDbMock());
+        $this->assertEquals($expected_schema_path, $this->callPrivateMethod($checker, 'getSchemaPath', $version, $context));
     }
 
-    /**
-     * @dataProvider versionProvider
-     */
+    #[DataProvider('versionProvider')]
     public function testCanCheckIntegrity(
         ?string $version,
         string $context,
         bool $expected_can_check,
         ?string $expected_schema_path
     ) {
-
-        $db = $this->geDbMock();
-        $this->newTestedInstance($db);
-
-        $this->variable($this->testedInstance->canCheckIntegrity($version, $context))->isEqualTo($expected_can_check, $version);
+        $checker = new DatabaseSchemaIntegrityChecker($this->getDbMock());
+        $this->assertEquals($expected_can_check, $checker->canCheckIntegrity($version, $context));
     }
 
     public function testHasTables()
     {
-        $this->mockGenerator->orphanize('__construct');
-        $db = new \mock\DBmysql();
+        $checker = new DatabaseSchemaIntegrityChecker($this->getDbMock([
+            '_mock_listTables' => new ArrayIterator(),
+        ]));
+        $this->assertFalse($checker->hasTables('core'));
+        $this->assertFalse($checker->hasTables('plugin:myplugin'));
 
-        $this->newTestedInstance($db);
+        $checker = new DatabaseSchemaIntegrityChecker($this->getDbMock([
+            '_mock_listTables' => new ArrayIterator([
+                ['TABLE_NAME' => 'glpi_configs'],
+                ['TABLE_NAME' => 'glpi_entities'],
+                // ...
+            ]),
+        ]));
+        $this->assertTrue($checker->hasTables('core'));
 
-        $this->calling($db)->listTables = new \ArrayIterator();
-        $this->variable($this->testedInstance->hasTables('core'))->isEqualTo(false);
-
-        $this->calling($db)->listTables = new \ArrayIterator([
-            ['TABLE_NAME' => 'glpi_configs'],
-            ['TABLE_NAME' => 'glpi_entities'],
-            // ...
-        ]);
-        $this->variable($this->testedInstance->hasTables('core'))->isEqualTo(true);
-
-
-        $this->calling($db)->listTables = new \ArrayIterator();
-        $this->variable($this->testedInstance->hasTables('plugin:myplugin'))->isEqualTo(false);
-
-
-        $this->calling($db)->listTables = new \ArrayIterator([
-            ['TABLE_NAME' => 'glpi_plugin_myplugin_bars'],
-            ['TABLE_NAME' => 'glpi_plugin_myplugin_foos'],
-        ]);
-        $this->variable($this->testedInstance->hasTables('plugin:myplugin'))->isEqualTo(true);
+        $checker = new DatabaseSchemaIntegrityChecker($this->getDbMock([
+            '_mock_listTables' => new ArrayIterator([
+                ['TABLE_NAME' => 'glpi_plugin_myplugin_bars'],
+                ['TABLE_NAME' => 'glpi_plugin_myplugin_foos'],
+            ]),
+        ]));
+        $this->assertTrue($checker->hasTables('plugin:myplugin'));
     }
-
 
     /**
      * Return DB mock that implements minimal required behaviour.
      *
      * @return \DBmysql
      */
-    private function geDbMock(array $options = []): \DBmysql
+    private function getDbMock(array $options = []): \DBmysql
     {
-        $this->mockGenerator->orphanize('__construct');
-        $db = new \mock\DBmysql();
-        $this->calling($db)->tableExists = true;
-        $this->calling($db)->fieldExists = true;
-        $this->calling($db)->request = new \ArrayIterator();
+        $db = new class ($options) extends \DBmysql {
+            private array $_mock_options;
+
+            public function __construct($options)
+            {
+                $this->_mock_options = $options;
+                parent::__construct();
+            }
+
+            public function listFields($table, $usecache = true)
+            {
+                return $this->_mock_options['_mock_listFields'] ?? parent::listFields($table, $usecache);
+            }
+
+            public function listTables($table = 'glpi\_%', array $where = [])
+            {
+                return $this->_mock_options['_mock_listTables'] ?? parent::listTables($table, $where);
+            }
+
+            public function tableExists($tablename, $usecache = true)
+            {
+                if (isset($this->_mock_options['_mock_tableExists'])) {
+                    return is_callable($this->_mock_options['_mock_tableExists'])
+                        ? ($this->_mock_options['_mock_tableExists'])($tablename)
+                        : $this->_mock_options['_mock_tableExists'];
+                }
+                return true;
+            }
+
+            public function fieldExists($table, $field, $usecache = true)
+            {
+                if (isset($this->_mock_options['_mock_fieldExists'])) {
+                    return is_callable($this->_mock_options['_mock_fieldExists'])
+                        ? ($this->_mock_options['_mock_fieldExists'])($table, $field)
+                        : $this->_mock_options['_mock_fieldExists'];
+                }
+                return true;
+            }
+
+            public function doQuery($query)
+            {
+                if (isset($this->_mock_options['_mock_doQuery'])) {
+                    return is_callable($this->_mock_options['_mock_doQuery'])
+                        ? ($this->_mock_options['_mock_doQuery'])($query)
+                        : $this->_mock_options['_mock_doQuery'];
+                }
+                return parent::doQuery($query);
+            }
+
+            public function request($criteria)
+            {
+                return $this->_mock_options['_mock_request'] ?? new ArrayIterator();
+            }
+        };
 
         foreach ($options as $property => $value) {
             if (property_exists($db, $property)) {
@@ -2236,6 +2218,23 @@ DIFF);
         }
 
         return $db;
+    }
+
+    private function getMysqliResultMock(array $fetch_assoc_return): mysqli_result
+    {
+        return new class ($fetch_assoc_return) extends mysqli_result {
+            private array $_fetch_assoc_return;
+
+            public function __construct($fetch_assoc_return)
+            {
+                $this->_fetch_assoc_return = $fetch_assoc_return;
+            }
+
+            public function fetch_assoc(): array|false|null
+            {
+                return $this->_fetch_assoc_return;
+            }
+        };
     }
 
     public function testIndexTypesAreNormalized(): void
@@ -2254,8 +2253,8 @@ SQL;
         // Act: normalize the SQL
         // TODO: the sql should be normalized by an independent service to
         // make testing easier and promote the single responsibility principle
-        $db = $this->geDbMock();
-        $integrity_checker = new \Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker(
+        $db = $this->getDbMock();
+        $integrity_checker = new DatabaseSchemaIntegrityChecker(
             $db,
         );
         $normalized_sql = $this->callPrivateMethod(
@@ -2265,7 +2264,8 @@ SQL;
         );
 
         // Assert: the index types should be removed are normalized
-        $this->string($normalized_sql)->isEqualTo(<<<SQL
+        $this->assertEquals(
+            <<<SQL
 CREATE TABLE `glpi_displaypreferences` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   UNIQUE KEY `unicity` (`users_id`,`itemtype`,`num`,`interface`),
@@ -2273,6 +2273,8 @@ CREATE TABLE `glpi_displaypreferences` (
   UNIQUE KEY `unicity3` (`users_id`,`itemtype`,`num`,`interface`),
   UNIQUE KEY `unicity4` (`users_id`,`itemtype`,`num`,`interface`)
 ) COLLATE=utf8mb4_unicode_ci DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB ROW_FORMAT=DYNAMIC
-SQL);
+SQL,
+            $normalized_sql
+        );
     }
 }
