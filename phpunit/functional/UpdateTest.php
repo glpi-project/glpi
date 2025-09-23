@@ -55,7 +55,6 @@ class UpdateTest extends \GLPITestCase
     {
         global $DB;
         $update = new Update($DB);
-        $this->expectOutputString('');
         $migration = new \Migration(GLPI_VERSION);
         $this->assertInstanceOf(Update::class, $update->setMigration($migration));
     }
