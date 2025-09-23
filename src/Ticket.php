@@ -1834,8 +1834,9 @@ class Ticket extends CommonITILObject
         // This to avoid plugins having their process broken.
         if (
             isset($input['check_delegatee'], $input['_users_id_requester'])
-            && $input['check_delegatee']
+            && $input['check_delegatee'] && !($input['nodelegate'] ?? false)
         ) {
+
             $requesters_ids = is_array($input['_users_id_requester'])
                 ? $input['_users_id_requester']
                 : [$input['_users_id_requester']];
