@@ -50,7 +50,7 @@ window.GLPI.Search.GenericView = class GenericView {
     postInit() {}
 
     getElement() {
-        return $(`#${this.element_id}`);
+        return $(`#${CSS.escape(this.element_id)}`);
     }
 
     getResultsView() {

@@ -874,8 +874,8 @@ export class GlpiFormEditorController
             .find('.ti-plus')
             .removeClass('ti-plus')
             .addClass('ti-device-floppy');
-        add_button.find('.add-label').text(__('Save'));
-        add_button.prop("title", __('Save'));
+        add_button.find('.add-label').text(_.unescape(__('Save')));
+        add_button.prop("title", _.unescape(__('Save')));
 
         // Show the delete button
         const del_button = $('#main-form button[name=delete]');
@@ -974,6 +974,8 @@ export class GlpiFormEditorController
             // Set new active item if specified
             if (item_container !== null) {
                 possible_active_items.forEach((type) => {
+                    type = CSS.escape(type);
+
                     // Can be set active from the container itself or the sub "details" container
                     if (item_container.data(`glpi-form-editor-${type}-details`) !== undefined) {
                         item_container
@@ -1268,9 +1270,9 @@ export class GlpiFormEditorController
      */
     #showItemHasConditionsModal(type, conditionsUsingItem, destinationsUsingItem, modal_name) {
         // Show only the relevant header for this item type
-        $(`[data-glpi-form-editor-item-has-conditions-modal=${modal_name}] [data-glpi-form-editor-item-has-conditions-modal-header]`)
+        $(`[data-glpi-form-editor-item-has-conditions-modal="${CSS.escape(modal_name)}"] [data-glpi-form-editor-item-has-conditions-modal-header]`)
             .addClass('d-none')
-            .filter(`[data-glpi-form-editor-item-has-conditions-modal-header=${type}]`)
+            .filter(`[data-glpi-form-editor-item-has-conditions-modal-header="${CSS.escape(type)}"]`)
             .removeClass('d-none');
 
         // Collect all elements using this item in their conditions
@@ -1310,10 +1312,10 @@ export class GlpiFormEditorController
         });
 
         // Render the list of elements in the modal
-        const modalList = $(`[data-glpi-form-editor-item-has-conditions-modal=${modal_name}] [data-glpi-form-editor-item-has-conditions-list]`);
+        const modalList = $(`[data-glpi-form-editor-item-has-conditions-modal="${CSS.escape(modal_name)}"] [data-glpi-form-editor-item-has-conditions-list]`);
         modalList.empty();
 
-        const template = $(`[data-glpi-form-editor-item-has-conditions-modal=${modal_name}] [data-glpi-form-editor-item-has-conditions-item-template]`).html();
+        const template = $(`[data-glpi-form-editor-item-has-conditions-modal="${CSS.escape(modal_name)}"] [data-glpi-form-editor-item-has-conditions-item-template]`).html();
 
         // Add each element to the list
         elementsWithConditions.forEach(data => {
@@ -1342,7 +1344,7 @@ export class GlpiFormEditorController
             e.preventDefault();
 
             // Hide modal
-            $(`[data-glpi-form-editor-item-has-conditions-modal=${modal_name}]`).modal('hide');
+            $(`[data-glpi-form-editor-item-has-conditions-modal="${CSS.escape(modal_name)}"]`).modal('hide');
 
             // Get the UUID and type
             const clickedElement = $(e.currentTarget);
@@ -1354,7 +1356,7 @@ export class GlpiFormEditorController
         });
 
         // Show the modal
-        $(`[data-glpi-form-editor-item-has-conditions-modal=${modal_name}]`).modal('show');
+        $(`[data-glpi-form-editor-item-has-conditions-modal="${CSS.escape(modal_name)}"]`).modal('show');
     }
 
     /**
@@ -1423,10 +1425,8 @@ export class GlpiFormEditorController
      * @returns {jQuery}
      */
     #getQuestionTemplate(question_type) {
-        const type = $.escapeSelector(question_type);
-
         return $(this.#templates)
-            .find(`[data-glpi-form-editor-question-template=${type}]`);
+            .find(`[data-glpi-form-editor-question-template="${CSS.escape(question_type)}"]`);
     }
 
     /**
@@ -1472,7 +1472,7 @@ export class GlpiFormEditorController
             // Push config into init queue, needed because we can't init
             // the rich text editor until the template is inserted into
             // its final DOM destination
-            config.selector = `#${id}`;
+            config.selector = `#${CSS.escape(id)}`;
             tiny_mce_to_init.push(config);
 
             // Store config with udpated ID in case we need to re render
@@ -1497,7 +1497,7 @@ export class GlpiFormEditorController
                 $(this).next(".select2-container").remove();
 
                 // Add the target select to the select2_to_init list
-                target.find(`#${$(this).attr("id")}`).each(function() {
+                target.find(`#${CSS.escape($(this).attr("id"))}`).each(function() {
                     const id = $(this).attr("data-glpi-form-editor-original-id") ?? $(this).attr("id");
                     const config = { ...window.select2_configs[id] };
 
@@ -1515,13 +1515,14 @@ export class GlpiFormEditorController
             if (id !== undefined && config !== undefined) {
                 // Rename id to ensure it is unique
                 const uid = getUUID();
-                $(this).attr("id", uid);
+                const new_id = `_config_${uid}`;
+                $(this).attr("id", new_id);
                 $(this).attr("data-glpi-form-editor-original-id", id);
 
                 // Check if label is set for this select2
-                if (copy.find(`label[for="${id}"]`).length > 0) {
+                if (copy.find(`label[for="${CSS.escape(id)}"]`).length > 0) {
                     // Update label for attribute to match the new ID
-                    copy.find(`label[for="${id}"]`).attr("for", uid);
+                    copy.find(`label[for="${CSS.escape(id)}"]`).attr("for", new_id);
                 }
 
                 // Check if a select2 isn't already initialized
@@ -1530,11 +1531,11 @@ export class GlpiFormEditorController
                     $(this).hasClass("select2-hidden-accessible") === false
                     && config !== undefined
                 ) {
-                    config.field_id = uid;
+                    config.field_id = new_id;
                     select2_to_init.push(config);
 
                     if (selected_values) {
-                        select2_values_to_restore[uid] = selected_values;
+                        select2_values_to_restore[new_id] = selected_values;
                     }
                 }
             }
@@ -1553,7 +1554,7 @@ export class GlpiFormEditorController
         // them to make sure they are unique too.
         copy.find('input[id]').each(function() {
             const id = $(this).attr('id');
-            const labels = copy.find(`label[for=${id}]`);
+            const labels = copy.find(`label[for="${CSS.escape(id)}"]`);
             if (labels.length == 0) {
                 return;
             }
@@ -1698,18 +1699,18 @@ export class GlpiFormEditorController
         }
 
         // Input name before state was computed by #formatInputsNames()
-        let input = item.find(`input[name=${field}]`);
+        let input = item.find(`input[name="${CSS.escape(field)}"]`);
         if (input.length > 0) {
             return item
-                .find(`input[name=${field}]`)
+                .find(`input[name="${CSS.escape(field)}"]`)
                 .val();
         }
 
         // Input name after computation
-        input = item.find(`input[data-glpi-form-editor-original-name=${field}]`);
+        input = item.find(`input[data-glpi-form-editor-original-name="${CSS.escape(field)}"]`);
         if (input.length > 0) {
             return item
-                .find(`input[data-glpi-form-editor-original-name=${field}]`)
+                .find(`input[data-glpi-form-editor-original-name="${CSS.escape(field)}"]`)
                 .val();
         }
 
@@ -1731,18 +1732,18 @@ export class GlpiFormEditorController
         }
 
         // Input name before state was computed by #formatInputsNames()
-        let input = item.find(`input[name=${field}]`);
+        let input = item.find(`input[name="${CSS.escape(field)}"]`);
         if (input.length > 0) {
             return item
-                .find(`input[name=${field}]`)
+                .find(`input[name="${CSS.escape(field)}"]`)
                 .val(value);
         }
 
         // Input name after computation
-        input = item.find(`input[data-glpi-form-editor-original-name=${field}]`);
+        input = item.find(`input[data-glpi-form-editor-original-name="${CSS.escape(field)}"]`);
         if (input.length > 0) {
             return item
-                .find(`input[data-glpi-form-editor-original-name=${field}]`)
+                .find(`input[data-glpi-form-editor-original-name="${CSS.escape(field)}"]`)
                 .val(value);
         }
 
@@ -1814,9 +1815,8 @@ export class GlpiFormEditorController
         }
 
         // Find types available in the new category
-        const e_category = $.escapeSelector(category);
         const new_options = $(this.#templates)
-            .find(`option[data-glpi-form-editor-question-type=${e_category}]`);
+            .find(`option[data-glpi-form-editor-question-type="${CSS.escape(category)}"]`);
 
         // Set loading state for question type specific content
         this.#setQuestionTypeSpecificLoadingState(question, true);
@@ -1965,9 +1965,9 @@ export class GlpiFormEditorController
 
             // Copy the new sub types options into the dropdown
             for (const category in new_sub_types) {
-                const optgroup = $(`<optgroup label="${category}"></optgroup>`);
+                const optgroup = $(`<optgroup label="${_.escape(category)}"></optgroup>`);
                 for (const [sub_type, label] of Object.entries(new_sub_types[category])) {
-                    const option = $(`<option value="${sub_type}">${label}</option>`);
+                    const option = $(`<option value="${_.escape(sub_type)}">${_.escape(label)}</option>`);
                     optgroup.append(option);
                 }
                 sub_types_select.append(optgroup);
@@ -2450,12 +2450,12 @@ export class GlpiFormEditorController
                     );
                 copy
                     .find("[data-glpi-form-editor-move-section-modal-item-section-key]")
-                    .attr("aria-label", __('Move section: %1$d').replace("%1$d", name));
+                    .attr("aria-label", _.unescape(__('Move section: %1$d')).replace("%1$d", name));
 
                 // Set section name
                 copy
                     .find("[data-glpi-form-editor-move-section-modal-item-section-name]")
-                    .html(name);
+                    .text(name);
 
                 // Remove template tag
                 copy.removeAttr("data-glpi-form-editor-move-section-modal-item-template");
@@ -2492,7 +2492,7 @@ export class GlpiFormEditorController
 
                 // Find section by index
                 const section = $(this.#target)
-                    .find(`[data-glpi-form-editor-move-section-modal-uuid=${section_key}]`);
+                    .find(`[data-glpi-form-editor-move-section-modal-uuid="${CSS.escape(section_key)}"]`);
 
                 // Move section at the end of the form
                 // This will naturally sort all sections as they are moved one
@@ -2723,19 +2723,19 @@ export class GlpiFormEditorController
     #updateConditionBadge(container, value) {
         // Determine which type of badge we're updating based on the container
         let badgeType = null;
-        if (container.find(`[data-glpi-editor-visibility-badge=${value}]`).length > 0) {
+        if (container.find(`[data-glpi-editor-visibility-badge="${CSS.escape(value)}"]`).length > 0) {
             badgeType = 'visibility';
-        } else if (container.find(`[data-glpi-editor-validation-badge=${value}]`).length > 0) {
+        } else if (container.find(`[data-glpi-editor-validation-badge="${CSS.escape(value)}"]`).length > 0) {
             badgeType = 'validation';
         }
 
         // Hide all badges of this type
-        container.find(`[data-glpi-editor-${badgeType}-badge]`)
+        container.find(`[data-glpi-editor-${CSS.escape(badgeType)}-badge]`)
             .removeClass('d-flex')
             .addClass('d-none');
 
         // Show only the specific badge for the current value
-        container.find(`[data-glpi-editor-${badgeType}-badge=${value}]`)
+        container.find(`[data-glpi-editor-${CSS.escape(badgeType)}-badge="${CSS.escape(value)}"]`)
             .removeClass('d-none')
             .addClass('d-flex');
     }

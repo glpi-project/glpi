@@ -50,7 +50,7 @@
         {% for tile in possible_tiles %}
             <div
                 class="d-none"
-                data-glpi-helpdesk-config-add-tile-form-for="{{ get_class(tile)|replace({"\\": "-"}) }}"
+                data-glpi-helpdesk-config-add-tile-form-for="{{ get_class(tile) }}"
             >
                 {{ include(tile.getConfigFieldsTemplate(), {tile: tile}, with_context = false) }}
             </div>

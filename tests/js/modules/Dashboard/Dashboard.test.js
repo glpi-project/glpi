@@ -646,8 +646,8 @@ describe('Dashboard', () => {
 
         dashboard.refreshCardsImpactedByFilter('filter1');
 
-        expect(dashboard.getCardsAjax).toHaveBeenNthCalledWith(1, '[gs-id=4]');
-        expect(dashboard.getCardsAjax).toHaveBeenNthCalledWith(2, '[gs-id=6]');
+        expect(dashboard.getCardsAjax).toHaveBeenNthCalledWith(1, `[gs-id="${CSS.escape(4)}"]`);
+        expect(dashboard.getCardsAjax).toHaveBeenNthCalledWith(2, `[gs-id="${CSS.escape(6)}"]`);
     });
 
     test('saveDashboard', async () => {
@@ -1644,7 +1644,7 @@ describe('Dashboard', () => {
 
         $('#dashboard-12345 .grid-stack-item[gs-id="2"] .refresh-item').trigger('click');
         expect(dashboard.getCardsAjax).toHaveBeenCalledTimes(1);
-        expect(dashboard.getCardsAjax).toHaveBeenCalledWith("[gs-id=2]");
+        expect(dashboard.getCardsAjax).toHaveBeenCalledWith(`[gs-id="${CSS.escape(2)}"]`);
     });
 
     test('Click widget edit button', () => {

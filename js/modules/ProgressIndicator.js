@@ -221,7 +221,7 @@ export class ProgressIndicator
         } catch (err) {
             this.#display_message(
                 'error',
-                __('An unexpected error occurred')
+                _.unescape(__('An unexpected error occurred'))
             );
             this.#error_callback();
             this.#show_progress_failure();
@@ -256,7 +256,7 @@ export class ProgressIndicator
         const message_element = document.createElement('div');
         message_element.innerHTML = `
             <i class="${icon_class} align-middle"></i>
-            ${text}
+            ${_.escape(text)}
         `;
 
         const messages_container = this.#container.querySelector('.progress-indicator > .messages-container');
