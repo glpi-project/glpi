@@ -228,8 +228,9 @@ class GenericobjectPluginMigrationTest extends DbTestCase
                     ['key' => 'custom_assets_assets_id_tablet', 'order' => 23, 'field_options' => []],
                     ['key' => 'custom_dropdowns_dropdowns_id_bar', 'order' => 24, 'field_options' => []],
                     ['key' => 'custom_dropdowns_dropdowns_id_foo', 'order' => 25, 'field_options' => []],
-                    ['key' => 'custom_dropdowns_dropdowns_id_item_state', 'order' => 26, 'field_options' => []],
-                    ['key' => 'custom_dropdowns_dropdowns_id_test_abc', 'order' => 27, 'field_options' => []],
+                    ['key' => 'custom_dropdowns_dropdowns_id_uaus', 'order' => 26, 'field_options' => []],
+                    ['key' => 'custom_dropdowns_dropdowns_id_item_state', 'order' => 27, 'field_options' => []],
+                    ['key' => 'custom_dropdowns_dropdowns_id_test_abc', 'order' => 28, 'field_options' => []],
                 ],
                 'date_creation'  => '2025-03-05 16:28:56',
                 // 'date_mod'       => '2025-03-06 14:19:23',
@@ -316,6 +317,16 @@ class GenericobjectPluginMigrationTest extends DbTestCase
             ],
             [
                 'label'         => 'Foo',
+                'icon'          => null,
+                'comment'       => null,
+                'is_active'     => true,
+                'profiles'      => \array_fill_keys([1, 2, 3, 4, 5, 6, 7, 8], 23),
+                'translations'  => [],
+                'date_creation' => $_SESSION['glpi_currenttime'],
+                'date_mod'      => $_SESSION['glpi_currenttime'],
+            ],
+            [
+                'label'         => 'Uaus',
                 'icon'          => null,
                 'comment'       => null,
                 'is_active'     => true,
@@ -536,6 +547,7 @@ class GenericobjectPluginMigrationTest extends DbTestCase
         // Validate created dropdowns
         $bar_definition = \getItemByTypeName(DropdownDefinition::class, 'Bar');
         $foo_definition = \getItemByTypeName(DropdownDefinition::class, 'Foo');
+        $uau_definition = \getItemByTypeName(DropdownDefinition::class, 'Uaus');
         $item_state_definition = \getItemByTypeName(DropdownDefinition::class, 'Item_State');
         $cat_definition = \getItemByTypeName(DropdownDefinition::class, 'SmartphoneCategory');
         $test_abc_definition = \getItemByTypeName(DropdownDefinition::class, 'Test_Abc');
@@ -623,6 +635,18 @@ class GenericobjectPluginMigrationTest extends DbTestCase
                 ],
                 [
                     'name'          => 'Foo 10',
+                ],
+            ]
+        );
+
+        $this->checkItems(
+            $uau_definition->getDropdownClassName(),
+            [
+                [
+                    'name'          => 'Uau 1',
+                ],
+                [
+                    'name'          => 'Uau 2',
                 ],
             ]
         );
