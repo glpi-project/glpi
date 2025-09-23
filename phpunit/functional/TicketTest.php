@@ -45,6 +45,7 @@ use Glpi\Team\Team;
 use Glpi\Toolbox\Sanitizer;
 use Group;
 use Group_Ticket;
+use Group_User;
 use ITILCategory;
 use Monolog\Logger;
 use Profile;
@@ -8323,5 +8324,131 @@ HTML,
         $this->assertCount(2, $linked_contracts);
         $this->assertContains($contract_1->getID(), array_column($linked_contracts, 'contracts_id'));
         $this->assertContains($contract_2->getID(), array_column($linked_contracts, 'contracts_id'));
+    }
+
+    public function testDelegate()
+    {
+        $this->login();
+
+        // create group to simulate delegation
+        $group = $this->createItem(Group::class, [
+            'name' => 'Groupe Test Delegate',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        // add tech to the group
+        $this->createItem(Group_User::class, [
+            'groups_id' => $group->getID(),
+            'users_id'  => getItemByTypeName(User::class, 'tech', true),
+            'is_userdelegate' => 1,
+        ]);
+
+        // add post-only to the group
+        $this->createItem(Group_User::class, [
+            'groups_id' => $group->getID(),
+            'users_id'  => getItemByTypeName(User::class, 'post-only', true),
+            'is_userdelegate' => 0,
+        ]);
+
+        // add self-service profile to tech
+        $this->createItem(Profile_User::class, [
+            'users_id'    => getItemByTypeName(User::class, 'tech', true),
+            'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+            'entities_id' => 0,
+        ]);
+
+        $this->logOut();
+        $this->login('tech', 'tech');
+
+        // check tech use self-service profile
+        $this->assertEquals($_SESSION['glpiactiveprofile']['id'], getItemByTypeName('Profile', 'Self-Service', true));
+
+        // create ticket with post_only as requester -> OK because tech can create ticket for himself
+        $ticket_for_tech = new Ticket();
+        $ticket_for_tech_id = $ticket_for_tech->add([
+            '_skip_default_actor' => 1,
+            '_tickettemplate' => 1,
+            '_from_helpdesk' => 1,
+            'nodelegate' => 1,
+            'type' => 1,
+            'itilcategories_id' => 0,
+            'urgency' => 3,
+            'my_items' => '',
+            'items_id' => 0,
+            '_actors' => [
+                'observer' => [],
+            ],
+            '_notifications_actorname' => '',
+            '_notifications_actortype' => '',
+            '_notifications_actorindex' => '',
+            '_notifications_alternative_email' => '',
+            'locations_id' => 0,
+            'name' => 'test for tech',
+            'content' => '<p>test for tech</p>',
+            'entities_id' => $this->getTestRootEntity(true),
+            'check_delegatee' => 1,
+        ]);
+        $this->hasNoSessionMessage(INFO);
+        $this->assertGreaterThan(0, $ticket_for_tech_id);
+
+        // create ticket with post_only as requester - OK because tech is delegate of post_only
+        $ticket_for_post_only = new Ticket();
+        $ticket_for_post_only_id = $ticket_for_post_only->add([
+            '_skip_default_actor' => 1,
+            '_tickettemplate' => 1,
+            '_from_helpdesk' => 1,
+            'nodelegate' => 0,
+            '_users_id_requester' => getItemByTypeName(User::class, 'post-only', true),
+            'type' => 1,
+            'itilcategories_id' => 0,
+            'urgency' => 3,
+            'my_items' => '',
+            'items_id' => 0,
+            '_actors' => [
+                'observer' => [],
+            ],
+            '_notifications_actorname' => '',
+            '_notifications_actortype' => '',
+            '_notifications_actorindex' => '',
+            '_notifications_alternative_email' => '',
+            'locations_id' => 0,
+            'name' => 'test for post-only',
+            'content' => '<p>test for post-only</p>',
+            'entities_id' => $this->getTestRootEntity(true),
+            'check_delegatee' => 1,
+            '_no_history' => '',
+        ]);
+        $this->hasNoSessionMessage(INFO);
+        $this->assertGreaterThan(0, $ticket_for_post_only_id);
+
+        // create ticket with normal as requester - KO because normal user is not in the group
+        $ticket_for_normal = new Ticket();
+        $ticket_for_normal_id = $ticket_for_normal->add([
+            '_skip_default_actor' => 1,
+            '_tickettemplate' => 1,
+            '_from_helpdesk' => 1,
+            'nodelegate' => 0,
+            '_users_id_requester' => getItemByTypeName(User::class, 'normal', true),
+            'type' => 1,
+            'itilcategories_id' => 0,
+            'urgency' => 3,
+            'my_items' => '',
+            'items_id' => 0,
+            '_actors' => [
+                'observer' => [],
+            ],
+            '_notifications_actorname' => '',
+            '_notifications_actortype' => '',
+            '_notifications_actorindex' => '',
+            '_notifications_alternative_email' => '',
+            'locations_id' => 0,
+            'name' => 'test for post-only',
+            'content' => '<p>test for post-only</p>',
+            'entities_id' => $this->getTestRootEntity(true),
+            'check_delegatee' => 1,
+            '_no_history' => '',
+        ]);
+        $this->hasSessionMessages(INFO, ["You cannot create a ticket for this user"]);
+        $this->assertEquals(0, $ticket_for_normal_id);
     }
 }
