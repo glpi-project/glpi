@@ -337,12 +337,6 @@ class GLPIDashboard {
         this.grid.on('resizestop', (event, elem) => {
             this.saveDashboard();
 
-            // resize also chart if exists
-            const chart = $(elem).find('.ct-chart');
-            if (chart.length > 0 && chart[0].__chartist__ != undefined)  {
-                chart[0].__chartist__.update();
-            }
-
             // Used after "resize.fittext" event to reset our custom width "trick"
             // See computeWidth() function for more info on the trick
             this.resetComputedWidth($('body').find('.big-number').find('.formatted-number'));
