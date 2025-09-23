@@ -53,12 +53,11 @@ use Glpi\Search\Input\QueryBuilder;
 use Glpi\Search\Input\SearchInputInterface;
 use Glpi\Search\Output\AbstractSearchOutput;
 use Glpi\Search\Output\Csv;
-use Glpi\Search\Output\GlobalSearchOutput;
+use Glpi\Search\Output\HTMLSearchOutput;
 use Glpi\Search\Output\MapSearchOutput;
 use Glpi\Search\Output\NamesListSearchOutput;
 use Glpi\Search\Output\Ods;
 use Glpi\Search\Output\Pdf;
-use Glpi\Search\Output\TableSearchOutput;
 use Glpi\Search\Output\Xlsx;
 use Glpi\Search\Provider\SearchProviderInterface;
 use Glpi\Search\Provider\SQLProvider;
@@ -93,9 +92,9 @@ final class SearchEngine
     {
         switch ($output_type) {
             case Search::GLOBAL_SEARCH:
-                return new GlobalSearchOutput();
+                return new HTMLSearchOutput();
             case Search::HTML_OUTPUT:
-                return (isset($data['as_map']) && $data['as_map']) ? new MapSearchOutput() : new TableSearchOutput();
+                return (isset($data['as_map']) && $data['as_map']) ? new MapSearchOutput() : new HTMLSearchOutput();
             case Search::PDF_OUTPUT_LANDSCAPE:
                 return new Pdf(Pdf::LANDSCAPE);
             case Search::PDF_OUTPUT_PORTRAIT:

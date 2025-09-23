@@ -64,7 +64,7 @@ use function Safe\preg_split;
  *
  * @internal Not for use outside {@link Search} class and the "Glpi\Search" namespace.
  */
-abstract class HTMLSearchOutput extends AbstractSearchOutput
+class HTMLSearchOutput extends AbstractSearchOutput
 {
     #[Override]
     public function canDisplayResultsContainerWithoutExecutingSearch(): bool
