@@ -468,7 +468,9 @@ class Stat extends CommonGLPI
 
         $request = Request::createFromGlobals();
 
-        $html_output .= $output::showHeader($end_display - $start + 1, $nbcols);
+        if ($is_html_output) {
+            $html_output .= $output::showHeader($end_display - $start + 1, $nbcols);
+        }
         $subname = match ($type) {
             'group_tree', 'groups_tree_assign' => Dropdown::getDropdownName('glpi_groups', $value2),
             'itilcategories_tree' => Dropdown::getDropdownName('glpi_itilcategories', $value2),
@@ -476,9 +478,9 @@ class Stat extends CommonGLPI
             default => '',
         };
 
+        $header_num = 1;
         if ($is_html_output) {
             $html_output .= $output::showNewLine();
-            $header_num = 1;
 
             if (str_contains($type, '_tree') && $value2) {
                 $url = $request->getBasePath() . $request->getPathInfo() . '?' . Toolbox::append_params(
@@ -518,21 +520,14 @@ class Stat extends CommonGLPI
                 num: $header_num,
                 options: "colspan='2'"
             );
-        }
+            $html_output .= $output::showNewLine();
 
-        $html_output .= $output::showNewLine();
-        $header_num    = 1;
-
-        if ($is_html_output) {
             $html_output .= $output::showHeaderItem(htmlescape($subname), $header_num);
-        } else {
-            $headers[] = $subname;
-        }
-
-        if ($is_html_output) { // HTML display
             $html_output .= $output::showHeaderItem('', $header_num);
         }
+
         if (!$is_html_output) {
+            $headers[] = $subname;
             $headers[] = __('Number of opened tickets');
             $headers[] = __('Number of solved tickets');
             $headers[] = __('Number of late tickets');
@@ -587,7 +582,9 @@ class Stat extends CommonGLPI
             $html_output .= $output::showHeaderItem(__s('Total duration'), $header_num);
         }
         // End Line for column headers
-        $html_output .= $output::showEndLine($output_type);
+        if ($is_html_output) {
+            $html_output .= $output::showEndLine($output_type);
+        }
         $row_num = 1;
 
         for ($i = $start; ($i < $numrows) && ($i < $end_display); $i++) {
@@ -595,7 +592,9 @@ class Stat extends CommonGLPI
             $current_row = [];
             $item_num = 1;
             $colnum = 0;
-            $html_output .= $output::showNewLine($i % 2 === 1);
+            if ($is_html_output) {
+                $html_output .= $output::showNewLine($i % 2 === 1);
+            }
             $value_link = $value[$i]['link']; // `link` contains a safe HTML string (built in `Stat::getItems()`)
             if (
                 $is_html_output
@@ -1646,15 +1645,18 @@ class Stat extends CommonGLPI
             if (isset($_GET['export_all'])) {
                 $end_display = $numrows;
             }
-            echo $output::showHeader($end_display - $start + 1, 2, 1);
+
             $header_num = 1;
-            echo $output::showNewLine();
-            echo $output::showHeaderItem(_sn('Associated element', 'Associated elements', $numrows), $header_num);
-            if ($view_entities) {
-                echo $output::showHeaderItem(htmlescape(Entity::getTypeName(1)), $header_num);
+            if ($is_html_output) {
+                echo $output::showHeader($end_display - $start + 1, 2, 1);
+                echo $output::showNewLine();
+                echo $output::showHeaderItem(_sn('Associated element', 'Associated elements', $numrows), $header_num);
+                if ($view_entities) {
+                    echo $output::showHeaderItem(htmlescape(Entity::getTypeName(1)), $header_num);
+                }
+                echo $output::showHeaderItem(__s('Number of tickets'), $header_num);
+                echo $output::showEndLine(false);
             }
-            echo $output::showHeaderItem(__s('Number of tickets'), $header_num);
-            echo $output::showEndLine(false);
 
             $i = $start;
             if (isset($_GET['export_all'])) {
@@ -1665,31 +1667,33 @@ class Stat extends CommonGLPI
             foreach ($assets as $data) {
                 $item_num = 1;
                 // Get data and increment loop variables
-                echo $output::showNewLine($i % 2 === 1);
-                $link = sprintf(__s('%1$s - %2$s'), htmlescape($data['itemtype']::getTypeName()), $data['link']);
-                echo $output::showItem(
-                    $link,
-                    $item_num,
-                    $i - $start + 1,
-                    "class='text-center'" . " " . ($data['is_deleted'] ? " class='deleted' "
-                    : "")
-                );
-                if ($view_entities) {
+                if ($is_html_output) {
+                    echo $output::showNewLine($i % 2 === 1);
+                    $link = sprintf(__s('%1$s - %2$s'), htmlescape($data['itemtype']::getTypeName()), $data['link']);
                     echo $output::showItem(
-                        htmlescape($data['entity_name']),
+                        $link,
                         $item_num,
                         $i - $start + 1,
                         "class='text-center'" . " " . ($data['is_deleted'] ? " class='deleted' "
-                        : "")
+                            : "")
+                    );
+                    if ($view_entities) {
+                        echo $output::showItem(
+                            htmlescape($data['entity_name']),
+                            $item_num,
+                            $i - $start + 1,
+                            "class='text-center'" . " " . ($data['is_deleted'] ? " class='deleted' "
+                                : "")
+                        );
+                    }
+                    echo $output::showItem(
+                        htmlescape($data["NB"]),
+                        $item_num,
+                        $i - $start + 1,
+                        "class='center'" . " " . ($data['is_deleted'] ? " class='deleted' "
+                            : "")
                     );
                 }
-                echo $output::showItem(
-                    htmlescape($data["NB"]),
-                    $item_num,
-                    $i - $start + 1,
-                    "class='center'" . " " . ($data['is_deleted'] ? " class='deleted' "
-                    : "")
-                );
 
                 $i++;
                 if ($i == $end_display) {
@@ -1697,7 +1701,9 @@ class Stat extends CommonGLPI
                 }
             }
 
-            echo $output::showFooter();
+            if ($is_html_output) {
+                echo $output::showFooter();
+            }
         }
     }
 
