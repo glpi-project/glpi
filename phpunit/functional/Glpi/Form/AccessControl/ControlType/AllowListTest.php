@@ -44,6 +44,7 @@ use Glpi\Form\Form;
 use Glpi\Session\SessionInfo;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Group;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class AllowListTest extends \DbTestCase
@@ -144,6 +145,9 @@ class AllowListTest extends \DbTestCase
 
     public static function canAnswerProvider(): iterable
     {
+        $test_group_1_id = getItemByTypeName(Group::class, '_test_group_1', true);
+        $test_group_2_id = getItemByTypeName(Group::class, '_test_group_2', true);
+
         yield 'Abstain if allow list is empty' => [
             'config'     => self::getEmptyAllowList(),
             'parameters' => self::getAuthenticatedUserParameters(),
@@ -188,6 +192,24 @@ class AllowListTest extends \DbTestCase
             'config'     => self::getAllUsersAllowedConfig(),
             'parameters' => self::getAuthenticatedUserParameters(),
             'expected'   => AccessVote::Grant,
+        ];
+        yield 'Grant access if user is part of a child group' => [
+            'config' => new AllowListConfig(
+                user_ids   : [],
+                group_ids  : [$test_group_1_id],
+                profile_ids: [],
+            ),
+            'parameters' => new FormAccessParameters(
+                session_info: new SessionInfo(
+                    // Child of _test_group_1
+                    group_ids: [$test_group_2_id],
+                    // These others values don't matter, they won't be used
+                    user_id: -1,
+                    profile_id: -1,
+                ),
+                url_parameters: []
+            ),
+            'expected' => AccessVote::Grant,
         ];
     }
 

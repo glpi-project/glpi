@@ -86,6 +86,17 @@ class AllowListDropdownTest extends DbTestCase
         );
     }
 
+    public function testAllowListWithUserInChildGroup(): void
+    {
+        $this->addToTestGroup2("_test_user");
+        $this->checkCountUserForCriteria(
+            criteria: [
+                'groups' => [getItemByTypeName(Group::class, '_test_group_1', true)],
+            ],
+            expected_users_count: 1,
+        );
+    }
+
     public function testAllowListWithSpecificProfiles(): void
     {
         $this->checkCountUserForCriteria(
@@ -128,6 +139,15 @@ class AllowListDropdownTest extends DbTestCase
         $this->createItem(Group_User::class, [
             'users_id'  => getItemByTypeName(User::class, $name, true),
             'groups_id' => getItemByTypeName(Group::class, '_test_group_1', true),
+        ]);
+    }
+
+    private function addToTestGroup2(string $name): void
+    {
+        // Link post-only to a group.
+        $this->createItem(Group_User::class, [
+            'users_id'  => getItemByTypeName(User::class, $name, true),
+            'groups_id' => getItemByTypeName(Group::class, '_test_group_2', true),
         ]);
     }
 
