@@ -48,7 +48,6 @@ use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\Section;
 use Glpi\Form\Tag\FormTagsManager;
-use Glpi\Form\Tag\TagWithIdValueInterface;
 use Glpi\Toolbox\SingletonTrait;
 use Ramsey\Uuid\Uuid;
 use ReflectionClass;
@@ -56,8 +55,6 @@ use RuntimeException;
 
 use function Safe\json_decode;
 use function Safe\json_encode;
-use function Safe\preg_replace;
-use function Safe\preg_replace_callback;
 
 /**
  * Helper service that contains utilities methods that are required to be used
@@ -236,17 +233,17 @@ final class FormCloneHelper
 
     public function getMappedFormId(int $id): int
     {
-        return CloneMapper::getInstance()->getMappedId(Form::class, $id);
+        return CloneMapper::getInstance()->getItemId(Form::class, $id);
     }
 
     public function getMappedQuestionId(int $id): int
     {
-        return CloneMapper::getInstance()->getMappedId(Question::class, $id);
+        return CloneMapper::getInstance()->getItemId(Question::class, $id);
     }
 
     public function getMappedDestinationId(int $id): int
     {
-        return CloneMapper::getInstance()->getMappedId(FormDestination::class, $id);
+        return CloneMapper::getInstance()->getItemId(FormDestination::class, $id);
     }
 
     private function generateSectionUuid(string $old_uuid): string
@@ -529,29 +526,11 @@ final class FormCloneHelper
             return $input;
         }
 
-        $tags_provider = (new FormTagsManager())->getTagProviders();
-        foreach ($tags_provider as $tag_provider) {
-            if (!$tag_provider instanceof TagWithIdValueInterface) {
-                // This tag value do not reference and ID, we can skip it
-                continue;
-            }
-            $provider_class = preg_quote($tag_provider::class);
-            $mapped_class = $tag_provider->getItemtype();
-
-            $input['value'] = preg_replace_callback(
-                // Look for the value + provider properties
-                "/data-form-tag-value=\"(\d+)\" "
-                . "data-form-tag-provider=\"$provider_class\"/",
-                fn($match) => preg_replace(
-                    // We do another preg on a small subset to avoid having to
-                    // manually rewrite the whole string
-                    "/value=\"(\d+)/",
-                    "value=\"" . $mapper->getMappedId($mapped_class, $match[1]),
-                    $match[0]
-                ),
-                $input['value'],
-            );
-        }
+        $tags_manager = (new FormTagsManager());
+        $input['value'] = $tags_manager->replaceIdsInTags(
+            $input['value'],
+            $mapper,
+        );
 
         return $input;
     }

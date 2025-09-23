@@ -294,7 +294,7 @@ trait Clonable
         if ($newID !== false) {
             // Mapping the id make sure it is accessible to children clone and
             // post clone processes.
-            CloneMapper::getInstance()->addMappedId(static::class, $old_id, $newID);
+            CloneMapper::getInstance()->addMappedItem(static::class, $old_id, $newID);
             $new_item->cloneRelations($this, $history);
             $new_item->post_clone($this, $history);
 
