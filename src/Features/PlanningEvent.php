@@ -237,6 +237,9 @@ trait PlanningEvent
             $input['users_id_guests'] = exportArrayToDB(
                 ArrayNormalizer::normalizeValues($input['users_id_guests'], 'intval')
             );
+        } elseif (isset($input['users_id_guests']) && $input['users_id_guests'] === '') {
+            // If users_id_guests is present but empty, it means all guests were removed
+            $input['users_id_guests'] = exportArrayToDB([]);
         }
 
         return $input;

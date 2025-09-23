@@ -263,6 +263,8 @@ JAVASCRIPT;
 
         echo "<tr class='tab_bg_2'><td colspan='2'>" . __('Guests') . "</td>";
         echo "<td colspan='2'>";
+        // Hidden input to ensure users_id_guests is submitted even when empty
+        echo Html::hidden('users_id_guests', ['value' => '']);
         User::dropdown([
             'name'          => 'users_id_guests[]',
             'right'         => 'all',
