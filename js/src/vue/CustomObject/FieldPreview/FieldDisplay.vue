@@ -153,7 +153,13 @@
                 });
                 const sortable_field = sortable_fields.get(field_key);
                 for (const [name, value] of Object.entries(sortable_field.field_options)) {
-                    url_params.append(`field_options[${name}]`, value);
+                    if (Array.isArray(value)) {
+                        value.forEach((item) => {
+                            url_params.append(`field_options[${name}][]`, item);
+                        })
+                    } else {
+                        url_params.append(`field_options[${name}]`, value);
+                    }
                 }
                 const url = `${CFG_GLPI.root_doc}/ajax/asset/assetdefinition.php?${url_params}`;
                 window.glpi_ajax_dialog({
