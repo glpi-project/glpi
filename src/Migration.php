@@ -1971,7 +1971,7 @@ class Migration
      * @see DBConnection::getDefaultPrimaryKeySignOption()
      * @note Could be removed when using dependency injection or some other refactoring
      */
-    public function getDefaultPrimaryKeySignOption(): string
+    protected function getDefaultPrimaryKeySignOption(): string
     {
         return DBConnection::getDefaultPrimaryKeySignOption();
     }

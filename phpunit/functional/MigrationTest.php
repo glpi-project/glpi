@@ -1474,7 +1474,7 @@ class MigrationTest extends DbTestCase
                 return $this->getMockedDb()->use_utf8mb4 ? 'utf8mb4' : 'utf8';
             }
 
-            public function getDefaultPrimaryKeySignOption(): string
+            protected function getDefaultPrimaryKeySignOption(): string
             {
                 return $this->getMockedDb()->allow_signed_keys ? '' : 'unsigned';
             }
