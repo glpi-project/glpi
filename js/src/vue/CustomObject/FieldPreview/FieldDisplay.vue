@@ -63,19 +63,11 @@
         });
         preview_data.forEach(({key, selected_field}) => {
             if (!sortable_fields.has(key)) {
-                let fieldOptions = fields_display.find((field) => field.key === key)?.field_options ?? {};
-                if (fieldOptions.readonly) {
-                    fieldOptions.readonly = fieldOptions.readonly.split(',');
-                }
-                if (fieldOptions.hidden) {
-                    fieldOptions.hidden = fieldOptions.hidden.split(',');
-                }
-
                 const next_order_position = sortable_fields.size;
                 sortable_fields.set(key, {
                     key: key,
                     label: selected_field.text ?? selected_field,
-                    field_options: fieldOptions,
+                    field_options: fields_display.find((field) => field.key === key)?.field_options ?? {},
                     customfields_id: selected_field.customfields_id ?? -1,
                     is_active: selected_field.is_active ?? true,
                     order: fields_display.find((field) => field.key === key)?.order ?? next_order_position,
@@ -319,7 +311,19 @@
                             </template>
                             <template v-slot:field_options>
                                 <template v-for="(field_option_value, field_option_name) in sortable_field.field_options" :key="field_option_name">
-                                    <input type="hidden" :name="`field_options[${sortable_field.key}][${field_option_name}]`" :value="field_option_value" />
+                                    <input
+                                        v-if="Array.isArray(field_option_value)"
+                                        v-for="value in field_option_value"
+                                        type="hidden"
+                                        :name="`field_options[${sortable_field.key}][${field_option_name}][]`"
+                                        :value="value"
+                                    />
+                                    <input
+                                        v-else
+                                        type="hidden"
+                                        :name="`field_options[${sortable_field.key}][${field_option_name}]`"
+                                        :value="field_option_value"
+                                    />
                                 </template>
                             </template>
                         </Field>

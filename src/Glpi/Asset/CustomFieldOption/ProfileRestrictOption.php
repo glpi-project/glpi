@@ -42,7 +42,7 @@ class ProfileRestrictOption extends AbstractOption
     {
         $value = parent::getValue();
         if (!is_array($value)) {
-            $value = explode(',', $value ?? '');
+            $value = [$value];
         }
         $twig_params = [
             'item' => $this->custom_field,
@@ -71,7 +71,7 @@ class ProfileRestrictOption extends AbstractOption
         $value = parent::getValue() ?? [];
 
         if (!is_array($value)) {
-            $value = explode(',', $value ?? '');
+            $value = [$value];
         }
 
         // Handle special 'All' value
