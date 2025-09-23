@@ -182,21 +182,14 @@ class PlanningExternalEventTest extends \AbstractPlanningEvent
 
         $event = new \PlanningExternalEvent();
 
-        // Use reflection to access private method
-        $reflection = new \ReflectionClass($event);
-        $method = $reflection->getMethod('prepareGuestsInput');
-        $method->setAccessible(true);
-
         // Test with empty string (simulates hidden input from form)
+        // Should convert empty string to JSON empty array
         $input = [
             'id' => 1,
             'name' => 'Test',
             'users_id_guests' => '', // Empty string from hidden input
         ];
-
-        $result = $method->invoke($event, $input);
-
-        // Should convert empty string to JSON empty array
+        $result = $this->callPrivateMethod($event, 'prepareGuestsInput', $input);
         $this->assertEquals(
             '[]',
             $result['users_id_guests'],
@@ -205,12 +198,12 @@ class PlanningExternalEventTest extends \AbstractPlanningEvent
 
         // Test with array (normal case)
         $input['users_id_guests'] = [2, 3];
-        $result = $method->invoke($event, $input);
+        $result = $this->callPrivateMethod($event, 'prepareGuestsInput', $input);
         $this->assertEquals('[2,3]', $result['users_id_guests']);
 
         // Test when field is not present (should remain unchanged)
         unset($input['users_id_guests']);
-        $result = $method->invoke($event, $input);
+        $result = $this->callPrivateMethod($event, 'prepareGuestsInput', $input);
         $this->assertFalse(isset($result['users_id_guests']));
     }
 
