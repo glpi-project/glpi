@@ -312,6 +312,16 @@ class Plugin extends CommonDBTM
     }
 
     /**
+     * Mockable method to get the plugin directories.
+     * @return string[]
+     * @see GLPI_PLUGINS_DIRECTORIES
+     */
+    protected static function getPluginDirectories(): array
+    {
+        return GLPI_PLUGINS_DIRECTORIES;
+    }
+
+    /**
      * Boot active plugins.
      */
     public function bootPlugins(): void
@@ -337,7 +347,7 @@ class Plugin extends CommonDBTM
                 continue;
             }
 
-            foreach (GLPI_PLUGINS_DIRECTORIES as $base_dir) {
+            foreach (static::getPluginDirectories() as $base_dir) {
                 $plugin_directory = "$base_dir/$plugin_key";
 
                 if (!is_dir($plugin_directory)) {
@@ -433,7 +443,7 @@ class Plugin extends CommonDBTM
         }
 
         $loaded = false;
-        foreach (GLPI_PLUGINS_DIRECTORIES as $base_dir) {
+        foreach (static::getPluginDirectories() as $base_dir) {
             if (!is_dir($base_dir)) {
                 continue;
             }
@@ -560,7 +570,7 @@ class Plugin extends CommonDBTM
 
         // New localisation system
         $mofile = false;
-        foreach (GLPI_PLUGINS_DIRECTORIES as $base_dir) {
+        foreach (static::getPluginDirectories() as $base_dir) {
             if (!is_dir($base_dir)) {
                 continue;
             }
@@ -705,13 +715,13 @@ class Plugin extends CommonDBTM
     /**
      * Return plugin keys corresponding to directories found in filesystem.
      */
-    private function getFilesystemPluginKeys(): array
+    protected function getFilesystemPluginKeys(): array
     {
         if ($this->filesystem_plugin_keys === null) {
             $this->filesystem_plugin_keys = [];
 
             $plugins_directories = new AppendIterator();
-            foreach (GLPI_PLUGINS_DIRECTORIES as $base_dir) {
+            foreach (static::getPluginDirectories() as $base_dir) {
                 if (!is_dir($base_dir)) {
                     continue;
                 }
@@ -1494,7 +1504,7 @@ class Plugin extends CommonDBTM
      */
     public function isLoadable($directory)
     {
-        $plugin_dir = Plugin::getPhpDir($directory);
+        $plugin_dir = static::getPhpDir($directory);
 
         if ($plugin_dir === false) {
             return false;
@@ -1951,7 +1961,7 @@ class Plugin extends CommonDBTM
             return false;
         }
 
-        foreach (GLPI_PLUGINS_DIRECTORIES as $base_dir) {
+        foreach (static::getPluginDirectories() as $base_dir) {
             if (!is_dir($base_dir)) {
                 continue;
             }
@@ -2043,7 +2053,7 @@ class Plugin extends CommonDBTM
             return;
         }
 
-        foreach (GLPI_PLUGINS_DIRECTORIES as $base_dir) {
+        foreach (static::getPluginDirectories() as $base_dir) {
             /**
              * Plugin hook file is safe for inclusion.
              * @psalm-taint-escape include
@@ -2993,7 +3003,7 @@ class Plugin extends CommonDBTM
     public static function getPhpDir(string $plugin_key = "", $full = true)
     {
         $directory = false;
-        foreach (GLPI_PLUGINS_DIRECTORIES as $plugins_directory) {
+        foreach (static::getPluginDirectories() as $plugins_directory) {
             if (is_dir("$plugins_directory/$plugin_key")) {
                 $directory = "$plugins_directory/$plugin_key";
                 break;
@@ -3039,7 +3049,7 @@ class Plugin extends CommonDBTM
 
         $found       = false;
         $marketplace = false;
-        foreach (GLPI_PLUGINS_DIRECTORIES as $plugins_directory) {
+        foreach (static::getPluginDirectories() as $plugins_directory) {
             if (is_dir("$plugins_directory/$plugin_key")) {
                 $found       = true;
                 $marketplace = realpath($plugins_directory) === $marketplace_dir;
