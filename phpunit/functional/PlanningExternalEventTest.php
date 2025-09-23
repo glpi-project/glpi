@@ -197,8 +197,11 @@ class PlanningExternalEventTest extends \AbstractPlanningEvent
         $result = $method->invoke($event, $input);
 
         // Should convert empty string to JSON empty array
-        $this->assertEquals('[]', $result['users_id_guests'],
-            'prepareGuestsInput should convert empty string to JSON empty array');
+        $this->assertEquals(
+            '[]',
+            $result['users_id_guests'],
+            'prepareGuestsInput should convert empty string to JSON empty array'
+        );
 
         // Test with array (normal case)
         $input['users_id_guests'] = [2, 3];
