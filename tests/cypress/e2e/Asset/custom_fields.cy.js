@@ -218,11 +218,15 @@ describe("Custom Assets - Custom Fields", () => {
         cy.get('#core_field_options_editor').within(() => {
             cy.findByLabelText('Full width').should('be.visible').check();
             cy.getDropdownByLabelText('Readonly').selectDropdownValue('Super-Admin');
+            cy.getDropdownByLabelText('Readonly').selectDropdownValue('Technician');
+
             cy.findByLabelText('Mandatory').should('be.visible').check();
             cy.findByRole('button', {name: 'Save'}).click();
         });
         cy.get('input[name="field_options[name][full_width]"]').should('have.value', '1');
-        cy.get('input[name="field_options[name][readonly][]"]').should('have.value', '4');
+        cy.get('input[name="field_options[name][readonly][]"]').should('have.length', 2);
+        cy.get('input[name="field_options[name][readonly][]"]').eq(0).should('have.value', '4');
+        cy.get('input[name="field_options[name][readonly][]"]').eq(1).should('have.value', '6');
         cy.get('input[name="field_options[name][required]"]').should('have.value', '1');
     });
 });
