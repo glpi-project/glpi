@@ -63,11 +63,19 @@
         });
         preview_data.forEach(({key, selected_field}) => {
             if (!sortable_fields.has(key)) {
+                let fieldOptions = fields_display.find((field) => field.key === key)?.field_options ?? {};
+                if (fieldOptions.readonly) {
+                    fieldOptions.readonly = fieldOptions.readonly.split(',');
+                }
+                if (fieldOptions.hidden) {
+                    fieldOptions.hidden = fieldOptions.hidden.split(',');
+                }
+
                 const next_order_position = sortable_fields.size;
                 sortable_fields.set(key, {
                     key: key,
                     label: selected_field.text ?? selected_field,
-                    field_options: fields_display.find((field) => field.key === key)?.field_options ?? {},
+                    field_options: fieldOptions,
                     customfields_id: selected_field.customfields_id ?? -1,
                     is_active: selected_field.is_active ?? true,
                     order: fields_display.find((field) => field.key === key)?.order ?? next_order_position,
@@ -214,10 +222,18 @@
 
             sortable_field.field_options = {};
             field_options.forEach((option) => {
-                const name = option.name.replace('field_options[', '').slice(0, -1);
-                sortable_field.field_options[name] = option.value;
+                let name = option.name.replace('field_options[', '');
+                if (name.endsWith('[]')) { // We are in array, we store the key as the value
+                    name = name.slice(0, -3);
+                    if (!Array.isArray(sortable_field.field_options[name])) {
+                        sortable_field.field_options[name] = [];
+                    }
+                    sortable_field.field_options[name].push(option.value);
+                } else { // OG code, remove the ]
+                    name = name.slice(0, -1);
+                    sortable_field.field_options[name] = option.value;
+                }
             });
-
             // Reload preview
             appendField([field_key]);
 
