@@ -239,7 +239,7 @@ export class GlpiIllustrationPickerController
 
         // Apply loading indicator to the new active button
         const button = this.#container
-            .querySelector(`[data-glpi-icon-picker-go-to-page="${page}"]`)
+            .querySelector(`[data-glpi-icon-picker-go-to-page="${CSS.escape(page)}"]`)
         ;
 
         button.classList.add('active');

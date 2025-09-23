@@ -190,25 +190,25 @@ export class GlpiHelpdeskConfigController
 
     #getTilesContainerDiv()
     {
-        return this.#container.querySelector("[data-glpi-helpdesk-config-tiles");
+        return this.#container.querySelector("[data-glpi-helpdesk-config-tiles]");
     }
 
     #getFormTileDiv()
     {
-        return this.#container.querySelector('[data-glpi-helpdesk-config-tile-form');
+        return this.#container.querySelector('[data-glpi-helpdesk-config-tile-form]');
     }
 
     #getFormTileLoadingIndicatorDiv()
     {
         return this.#container.querySelector(
-            '[data-glpi-helpdesk-config-tile-form-loading'
+            '[data-glpi-helpdesk-config-tile-form-loading]'
         );
     }
 
     #getFormTileHeader()
     {
         return this.#container.querySelector(
-            '[data-glpi-helpdesk-config-tile-form-title'
+            '[data-glpi-helpdesk-config-tile-form-title]'
         );
     }
 
@@ -427,9 +427,6 @@ export class GlpiHelpdeskConfigController
 
     #triggerTypeChange(type)
     {
-        // Use '-' instead of '\' to avoid escaping issues in selector
-        type = type.replaceAll('\\', '-');
-
         const submit_button = this.#container.querySelector('[data-glpi-helpdesk-config-add-tile-submit]');
 
         // Enabled submit button if a type is selected
@@ -452,7 +449,7 @@ export class GlpiHelpdeskConfigController
             })
         ;
         this.#container
-            .querySelectorAll(`[data-glpi-helpdesk-config-add-tile-form-for="${type}"]`)
+            .querySelectorAll(`[data-glpi-helpdesk-config-add-tile-form-for="${CSS.escape(type)}"]`)
             .forEach((node) => {
                 node.classList.remove('d-none');
                 node.querySelectorAll('input, select, textarea').forEach((input) => {

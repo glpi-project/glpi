@@ -132,7 +132,7 @@ export class GlpiFormItemDropdownAdvancedConfig {
                 );
 
                 // Update old reference to the new select element
-                question.find(`[for="${select.attr('id')}"]`).attr('for', new_select.attr('id'));
+                question.find(`[for="${CSS.escape(select.attr('id'))}"]`).attr('for', new_select.attr('id'));
 
                 // Remove elements marked for removal
                 container.find('[data-to-remove]').remove();

@@ -32,6 +32,8 @@
  */
 
 /* global glpi_alert, glpi_html_dialog */
+/* global _ */
+
 class Knowbase {
     constructor() {
         this.#registerListeners();
@@ -60,7 +62,7 @@ class Knowbase {
                         body: `
                             <div>
                                 <h2>${__('Subject')}</h2>
-                                <div>${data.name}</div>
+                                <div>${_.escape(data.name)}</div>
                                 <h2>${__('Content')}</h2>
                                 <div>${data.answer}</div>
                             </div>
@@ -134,8 +136,8 @@ class Knowbase {
                             </tr>
                             <tr>
                                 <th>${__('Subject')}</th>
-                                <td class="original">${data['old']['name']}</td>
-                                <td class="changed">${data['diff']['name']}</td>
+                                <td class="original">${_.escape(data['old']['name'])}</td>
+                                <td class="changed">${_.escape(data['diff']['name'])}</td>
                                 <td class="diff"></td>
                             </tr>
                             <tr>

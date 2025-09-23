@@ -83,7 +83,7 @@ class ObjectLock {
 
         $('button.ask-unlock-item').on('click', () => {
             glpi_confirm({
-                title: `${this.lock.itemtype_name} #${this.lock.items_id}`,
+                title: `${_.escape(this.lock.itemtype_name)} #${_.escape(this.lock.items_id)}`,
                 message: __('Ask for unlock this item?'),
                 confirm_callback: () => {
                     $.post({

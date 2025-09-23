@@ -94,7 +94,7 @@ export class GlpiFormQuestionTypeSelectable {
 
         this._container.children().each((index, option) => {
             const input = $(option).find('input[type="text"]');
-            const selectable = $(option).find(`input[type="${this._inputType}"]`);
+            const selectable = $(option).find(`input[type="${CSS.escape(this._inputType)}"]`);
 
             options[index] = {
                 value: input.val(),
@@ -122,7 +122,7 @@ export class GlpiFormQuestionTypeSelectable {
             $(clone).find('input[type="text"]')
                 .val(value.value)
                 .attr('name', `options[${uuid}]`);
-            $(clone).find(`input[type="${this._inputType}"]`)
+            $(clone).find(`input[type="${CSS.escape(this._inputType)}"]`)
                 .val(uuid)
                 .prop('checked', value.checked);
 

@@ -162,13 +162,13 @@ export class GlpiFormRendererController
         }
 
         // Get the UUID of the current section
-        const currentSectionElement = $(this.#target).find(`[data-glpi-form-renderer-section="${this.#section_index}"]`);
+        const currentSectionElement = $(this.#target).find(`[data-glpi-form-renderer-section="${CSS.escape(this.#section_index)}"]`);
         const currentSectionUuid = currentSectionElement.data('glpi-form-renderer-uuid');
 
         const response = await $.ajax({
             url: `${CFG_GLPI.root_doc}/Form/ValidateAnswers`,
             type: 'POST',
-            data: `${$(this.#target).serialize()  }&section_uuid=${currentSectionUuid}`,
+            data: `${$(this.#target).serialize()}&section_uuid=${currentSectionUuid}`,
             dataType: 'json',
         });
 
@@ -200,7 +200,7 @@ export class GlpiFormRendererController
         if (response.success === false) {
             Object.values(response.errors).forEach(error => {
                 // Highlight the field with error
-                const question = $(`[data-glpi-form-renderer-id="${error.question_id}"][data-glpi-form-renderer-question]`);
+                const question = $(`[data-glpi-form-renderer-id="${CSS.escape(error.question_id)}"][data-glpi-form-renderer-question]`);
                 if (!question.length) {
                     return;
                 }
@@ -233,7 +233,7 @@ export class GlpiFormRendererController
                 }
 
                 targetElement.append(
-                    `<span id="${errorId}" class="invalid-tooltip">${error.message}</span>`
+                    `<span id="${_.escape(errorId)}" class="invalid-tooltip">${_.escape(error.message)}</span>`
                 );
             });
 
@@ -296,8 +296,8 @@ export class GlpiFormRendererController
             } else {
                 // In step-by-step mode, hide only current section
                 hideSelector += `,
-                    [data-glpi-form-renderer-section=${this.#section_index}],
-                    [data-glpi-form-renderer-parent-section=${this.#section_index}]
+                    [data-glpi-form-renderer-section="${CSS.escape(this.#section_index)}"],
+                    [data-glpi-form-renderer-parent-section="${CSS.escape(this.#section_index)}"]
                 `;
             }
 
@@ -332,8 +332,8 @@ export class GlpiFormRendererController
         // Hide current section and its questions
         $(this.#target)
             .find(`
-                [data-glpi-form-renderer-section=${this.#section_index}],
-                [data-glpi-form-renderer-parent-section=${this.#section_index}]
+                [data-glpi-form-renderer-section="${CSS.escape(this.#section_index)}"],
+                [data-glpi-form-renderer-parent-section="${CSS.escape(this.#section_index)}"]
             `)
             .addClass("d-none");
 
@@ -346,8 +346,8 @@ export class GlpiFormRendererController
         this.#section_index = next_section_index;
         $(this.#target)
             .find(`
-                [data-glpi-form-renderer-section=${this.#section_index}],
-                [data-glpi-form-renderer-parent-section=${this.#section_index}]
+                [data-glpi-form-renderer-section="${CSS.escape(this.#section_index)}"],
+                [data-glpi-form-renderer-parent-section="${CSS.escape(this.#section_index)}"]
             `)
             .removeClass("d-none");
 
@@ -367,8 +367,8 @@ export class GlpiFormRendererController
         // Hide current section and its questions
         $(this.#target)
             .find(`
-                [data-glpi-form-renderer-section=${this.#section_index}],
-                [data-glpi-form-renderer-parent-section=${this.#section_index}]
+                [data-glpi-form-renderer-section="${CSS.escape(this.#section_index)}"],
+                [data-glpi-form-renderer-parent-section="${CSS.escape(this.#section_index)}"]
             `)
             .addClass("d-none");
 
@@ -381,8 +381,8 @@ export class GlpiFormRendererController
         this.#section_index = previous_section_index;
         $(this.#target)
             .find(`
-                [data-glpi-form-renderer-section=${this.#section_index}],
-                [data-glpi-form-renderer-parent-section=${this.#section_index}]
+                [data-glpi-form-renderer-section="${CSS.escape(this.#section_index)}"],
+                [data-glpi-form-renderer-parent-section="${CSS.escape(this.#section_index)}"]
             `)
             .removeClass("d-none");
 
@@ -404,29 +404,29 @@ export class GlpiFormRendererController
         if (this.#hasOneVisibleSectionAfterCurrentIndex()) {
             // Show "next" button if at least one other following section is visible
             $(this.#target)
-                .find("[data-glpi-form-renderer-action=submit]")
+                .find('[data-glpi-form-renderer-action="submit"]')
                 .addClass("d-none");
             $(this.#target)
-                .find("[data-glpi-form-renderer-action=next-section]")
+                .find('[data-glpi-form-renderer-action="next-section"]')
                 .removeClass("d-none");
         } else {
             // Show "submit" button instead
             $(this.#target)
-                .find("[data-glpi-form-renderer-action=submit]")
+                .find('[data-glpi-form-renderer-action="submit"]')
                 .removeClass("d-none");
             $(this.#target)
-                .find("[data-glpi-form-renderer-action=next-section]")
+                .find('[data-glpi-form-renderer-action="next-section"]')
                 .addClass("d-none");
         }
 
         if (this.#hasOneVisibleSectionBeforeCurrentIndex()) {
             // Show "back" button if at least one previous section is visible
             $(this.#target)
-                .find("[data-glpi-form-renderer-action=previous-section]")
+                .find('[data-glpi-form-renderer-action="previous-section"]')
                 .removeClass("d-none");
         } else {
             $(this.#target)
-                .find("[data-glpi-form-renderer-action=previous-section]")
+                .find('[data-glpi-form-renderer-action="previous-section"]')
                 .addClass("d-none");
         }
     }
@@ -443,7 +443,7 @@ export class GlpiFormRendererController
 
         // Apply submit button visibility
         const submit_button = container.querySelector(
-            '[data-glpi-form-renderer-action=submit]'
+            '[data-glpi-form-renderer-action="submit"]'
         );
         if (submit_button !== null) {
             this.#applyVisibilityToItem(submit_button, results.form_visibility);
@@ -454,7 +454,7 @@ export class GlpiFormRendererController
             results.sections_visibility
         )) {
             const section = container.querySelector(
-                `[data-glpi-form-renderer-section][data-glpi-form-renderer-id="${id}"]`
+                `[data-glpi-form-renderer-section][data-glpi-form-renderer-id="${CSS.escape(id)}"]`
             );
             if (section === null) {
                 continue;
@@ -473,7 +473,7 @@ export class GlpiFormRendererController
             results.questions_visibility
         )) {
             const question = container.querySelector(
-                `[data-glpi-form-renderer-question][data-glpi-form-renderer-id="${id}"]`
+                `[data-glpi-form-renderer-question][data-glpi-form-renderer-id="${CSS.escape(id)}"]`
             );
             if (question === null) {
                 continue;
@@ -486,7 +486,7 @@ export class GlpiFormRendererController
             results.comments_visibility
         )) {
             const comment = container.querySelector(
-                `[data-glpi-form-renderer-comment][data-glpi-form-renderer-id="${id}"]`
+                `[data-glpi-form-renderer-comment][data-glpi-form-renderer-id="${CSS.escape(id)}"]`
             );
             if (comment === null) {
                 continue;

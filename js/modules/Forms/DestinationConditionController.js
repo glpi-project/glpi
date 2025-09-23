@@ -91,7 +91,7 @@ export class GlpiFormDestinationConditionController {
             .removeClass('d-flex')
             .addClass('d-none')
         ;
-        container.find(`[data-glpi-editor-condition-badge=${value}]`)
+        container.find(`[data-glpi-editor-condition-badge="${CSS.escape(value)}"]`)
             .removeClass('d-none')
             .addClass('d-flex')
         ;

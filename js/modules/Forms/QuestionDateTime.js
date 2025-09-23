@@ -57,7 +57,7 @@ export class GlpiFormQuestionTypeDateTime {
             const isChecked = $(input).is(':checked');
             const questionSection = $(input).closest('section[data-glpi-form-editor-question]');
             const otherInput = questionSection.find('input[id^="is_date_enabled_"], input[id^="is_time_enabled_"]')
-                .not(`[name="${input.name}"]`);
+                .not(`[name="${CSS.escape(input.name)}"]`);
 
             // Ensure at least one option is checked
             if (!isChecked && otherInput.not(':checked').length) {
