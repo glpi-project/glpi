@@ -424,7 +424,12 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
 
     protected function handleReadonlyFieldUpdate($input): array
     {
-        $profileId = Session::getCurrentProfile()->getId();
+        try {
+            $profileId = Session::getCurrentProfile()->getId();
+        } catch (\Exception) {
+            return $input;
+        }
+
         foreach (static::getDefinition()->getDecodedFieldsField() as $fieldDefinition) {
             if (empty($fieldDefinition['field_options']) || !array_key_exists('readonly', $fieldDefinition['field_options'])) {
                 continue;
