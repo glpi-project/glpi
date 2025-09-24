@@ -1079,6 +1079,14 @@ PLAINTEXT,
                 'users_id' => $tuid,
                 'content'  => 'This is a reply that references Ticket 100 in References header (new format).' . "\r\n" . 'It should be added as followup.',
             ],
+            [
+                'items_id' => 100,
+                'users_id' => $tuid,
+                'content'  => '<p dir="ltr">Reply from Proton Android client</p>
+<p dir="ltr">Sent from Proton Mail for Android</p>
+<div class="protonmail_quote"><br><br>-------- Original message --------<br> 08/09/2025 16:42, TECH <tech@glpi-project.org> has written :<br><blockquote class="protonmail_quote">
+<br><br></blockquote></div>',
+            ],
         ];
 
         foreach ($expected_followups as $expected_followup) {
