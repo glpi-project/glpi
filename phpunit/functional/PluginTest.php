@@ -59,7 +59,7 @@ namespace tests\units {
             self::$plugin_test_check_prerequisites = true;
 
             vfsStream::setup('glpi', null, [
-                'plugins' => []
+                'plugins' => [],
             ]);
         }
 
@@ -78,10 +78,6 @@ namespace tests\units {
         private function getTestPluginPath($directory)
         {
             return vfsStream::url('glpi/plugins/' . $directory);
-//            return implode(
-//                DIRECTORY_SEPARATOR,
-//                [GLPI_ROOT, 'tests', 'fixtures', 'plugins', $directory]
-//            );
         }
 
         public function testGetWebDir(): void
@@ -459,7 +455,7 @@ namespace tests\units {
                 'state' => Plugin::ACTIVATED,
             ];
             $plugin_id = $plugin->add($initial_data);
-            $this->assertGreaterThan(0, (int)$plugin_id);
+            $this->assertGreaterThan(0, (int) $plugin_id);
 
             // Create files for original plugin
             $old_information = [
@@ -487,7 +483,7 @@ namespace tests\units {
             $this->assertEquals($old_directory, $plugin->fields['directory']);
             $this->assertEquals($old_information['name'], $plugin->fields['name']);
             $this->assertEquals($old_information['version'], $plugin->fields['version']);
-            $this->assertEquals(Plugin::ACTIVATED, (int)$plugin->fields['state']);
+            $this->assertEquals(Plugin::ACTIVATED, (int) $plugin->fields['state']);
 
             // Check state and check if there is a replacement plugin
             $plugin->checkPluginState($old_directory, true);
@@ -504,7 +500,7 @@ namespace tests\units {
             $this->assertEquals($old_directory, $plugin->fields['directory']);
             $this->assertEquals($old_information['name'], $plugin->fields['name']);
             $this->assertEquals($old_information['version'], $plugin->fields['version']);
-            $this->assertEquals(Plugin::REPLACED, (int)$plugin->fields['state']);
+            $this->assertEquals(Plugin::REPLACED, (int) $plugin->fields['state']);
         }
 
         /**
@@ -517,7 +513,7 @@ namespace tests\units {
                 'directory' => $this->test_plugin_directory,
                 'name' => 'Test plugin',
                 'version' => '1.0',
-                'state' => \Plugin::NOTACTIVATED,
+                'state' => Plugin::NOTACTIVATED,
             ];
             $setup_informations = [
                 'name' => 'Test plugin',
@@ -543,7 +539,7 @@ namespace tests\units {
                 'directory' => $this->test_plugin_directory,
                 'name' => 'Test plugin',
                 'version' => '1.0',
-                'state' => \Plugin::NOTACTIVATED,
+                'state' => Plugin::NOTACTIVATED,
             ];
             $setup_informations = [
                 'name' => 'Test plugin',
@@ -552,7 +548,7 @@ namespace tests\units {
             $expected_data = array_merge(
                 $initial_data,
                 [
-                    'state' => \Plugin::TOBECONFIGURED,
+                    'state' => Plugin::TOBECONFIGURED,
                 ]
             );
 
@@ -577,7 +573,7 @@ namespace tests\units {
                 'directory' => $this->test_plugin_directory,
                 'name' => 'Test plugin',
                 'version' => '1.0',
-                'state' => \Plugin::ACTIVATED,
+                'state' => Plugin::ACTIVATED,
             ];
             $setup_informations = [
                 'name' => 'Test plugin',
@@ -591,7 +587,7 @@ namespace tests\units {
             $expected_data = array_merge(
                 $initial_data,
                 [
-                    'state' => \Plugin::NOTACTIVATED,
+                    'state' => Plugin::NOTACTIVATED,
                 ]
             );
 
@@ -618,7 +614,7 @@ namespace tests\units {
                 'directory' => $this->test_plugin_directory,
                 'name' => 'Test plugin',
                 'version' => '1.0',
-                'state' => \Plugin::ACTIVATED,
+                'state' => Plugin::ACTIVATED,
             ];
             $setup_informations = [
                 'name' => 'Test plugin',
@@ -627,7 +623,7 @@ namespace tests\units {
             $expected_data = array_merge(
                 $initial_data,
                 [
-                    'state' => \Plugin::NOTACTIVATED,
+                    'state' => Plugin::NOTACTIVATED,
                 ]
             );
 
@@ -652,7 +648,7 @@ namespace tests\units {
                 'directory' => $this->test_plugin_directory,
                 'name' => 'Test plugin',
                 'version' => '1.0',
-                'state' => \Plugin::ACTIVATED,
+                'state' => Plugin::ACTIVATED,
             ];
             $setup_informations = [
                 'name' => 'Test plugin',
@@ -661,7 +657,7 @@ namespace tests\units {
             $expected_data = array_merge(
                 $initial_data,
                 [
-                    'state' => \Plugin::TOBECONFIGURED,
+                    'state' => Plugin::TOBECONFIGURED,
                 ]
             );
 
@@ -686,7 +682,7 @@ namespace tests\units {
                 'directory' => $this->test_plugin_directory,
                 'name' => 'Test plugin',
                 'version' => '1.0',
-                'state' => \Plugin::ACTIVATED,
+                'state' => Plugin::ACTIVATED,
             ];
             $setup_informations = [
                 'name' => 'Test plugin',
@@ -715,7 +711,7 @@ namespace tests\units {
                 'directory' => $this->test_plugin_directory,
                 'name' => 'Test plugin',
                 'version' => '1.0',
-                'state' => \Plugin::ACTIVATED,
+                'state' => Plugin::ACTIVATED,
             ];
             $setup_informations = [
                 'name' => 'Test plugin',
@@ -768,10 +764,10 @@ PHP
                     'directory' => $key,
                     'name' => 'Test plugin',
                     'version' => '1.0',
-                    'state' => \Plugin::ACTIVATED,
+                    'state' => Plugin::ACTIVATED,
                 ]
             );
-            $this->assertGreaterThan(0, (int)$plugin_id);
+            $this->assertGreaterThan(0, (int) $plugin_id);
 
             $this->assertEquals(
                 [
@@ -803,16 +799,16 @@ PHP
                 )
             );
 
-            $plugin = new \Plugin();
+            $plugin = new Plugin();
             $plugin_id = $plugin->add(
                 [
                     'directory' => $key,
                     'name' => 'Test plugin',
                     'version' => '1.0',
-                    'state' => \Plugin::ACTIVATED,
+                    'state' => Plugin::ACTIVATED,
                 ]
             );
-            $this->assertGreaterThan(0, (int)$plugin_id);
+            $this->assertGreaterThan(0, (int) $plugin_id);
             $this->assertEmpty($plugin->getPluginOptions($key));
         }
 
@@ -846,10 +842,10 @@ PHP
                     'directory' => $key,
                     'name' => 'Test plugin',
                     'version' => '1.0',
-                    'state' => \Plugin::ACTIVATED,
+                    'state' => Plugin::ACTIVATED,
                 ]
             );
-            $this->assertGreaterThan(0, (int)$plugin_id);
+            $this->assertGreaterThan(0, (int) $plugin_id);
 
             $result = null;
             $errors = [];
@@ -871,7 +867,7 @@ PHP
 
         public function testGetPluginOptionsOnUnexistingPlugin()
         {
-            $plugin = new \Plugin();
+            $plugin = new Plugin();
             $this->assertEmpty($plugin->getPluginOptions('thisplugindoesnotexists'));
         }
 
@@ -990,7 +986,7 @@ PHP
             // Create initial state of plugin
             if (null !== $initial_data) {
                 $plugin_id = $plugin->add($initial_data);
-                $this->assertGreaterThan(0, (int)$plugin_id);
+                $this->assertGreaterThan(0, (int) $plugin_id);
             }
 
             // Create test plugin files
@@ -1022,7 +1018,7 @@ PHP
                 $this->assertEquals($expected_data['directory'], $plugin->fields['directory']);
                 $this->assertEquals($expected_data['name'], $plugin->fields['name']);
                 $this->assertEquals($expected_data['version'], $plugin->fields['version']);
-                $this->assertEquals($expected_data['state'], (int)$plugin->fields['state']);
+                $this->assertEquals($expected_data['state'], (int) $plugin->fields['state']);
             } else {
                 $this->assertFalse($plugin->getFromDBByCrit(['directory' => $plugin_directory]));
             }

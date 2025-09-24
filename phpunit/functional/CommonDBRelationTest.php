@@ -163,7 +163,7 @@ class CommonDBRelationTest extends DbTestCase
             $instance->check(-1, CREATE);
         } catch (\RuntimeException $e) {
             // CommonDBTM::getTable() will fail because we're using a fake object
-            $this->assertStringContainsString('SHOW COLUMNS FROM `glpi_commondbrelation@anonymous', $e->getMessage());
+            $this->assertStringContainsString('SHOW COLUMNS FROM `glpi_commondbrelation', $e->getMessage());
         }
 
         //both in input is OK
@@ -172,7 +172,7 @@ class CommonDBRelationTest extends DbTestCase
             $instance->check(-1, CREATE, $input);
         } catch (\RuntimeException $e) {
             // CommonDBTM::getTable() will fail because we're using a fake object
-            $this->assertStringContainsString('SHOW COLUMNS FROM `glpi_commondbrelation@anonymous', $e->getMessage());
+            $this->assertStringContainsString('SHOW COLUMNS FROM `glpi_commondbrelation', $e->getMessage());
         }
 
         //both in input is OK - try with a real object
@@ -276,7 +276,7 @@ class CommonDBRelationTest extends DbTestCase
             $instance->check(-1, CREATE, $input);
         } catch (\RuntimeException $e) {
             // CommonDBTM::getTable() will fail because we're using a fake object
-            $this->assertStringContainsString('SHOW COLUMNS FROM `glpi_commondbrelation@anonymous', $e->getMessage());
+            $this->assertStringContainsString('SHOW COLUMNS FROM `glpi_commondbrelation', $e->getMessage());
         }
 
         //both in input is OK
@@ -285,7 +285,7 @@ class CommonDBRelationTest extends DbTestCase
             $instance->check(-1, CREATE, $input);
         } catch (\RuntimeException $e) {
             // CommonDBTM::getTable() will fail because we're using a fake object
-            $this->assertStringContainsString('SHOW COLUMNS FROM `glpi_commondbrelation@anonymous', $e->getMessage());
+            $this->assertStringContainsString('SHOW COLUMNS FROM `glpi_commondbrelation', $e->getMessage());
         }
         /** /both specific, none attached */
 
