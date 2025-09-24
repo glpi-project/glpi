@@ -210,6 +210,7 @@ class AssetTest extends DbTestCase
         ]);
         $this->assertEquals(json_encode([$string_field->getID() => 'test']), $input['custom_fields']);
         $this->assertEquals('test', $input['custom_test_string']);
+        $this->assertEquals(json_encode([$string_field->getID() => 'test']), $input['custom_fields']);
 
 
         // We test it with the user having the readonly apply to his profile
