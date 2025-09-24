@@ -953,7 +953,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         $subtype_labels = [];
         if (isset($parent_schema['x-subtypes'])) {
             foreach ($parent_schema['x-subtypes'] as $subtype) {
-                $subtype_labels[$subtype] = $subtype['itemtype']::getTypeName(1);
+                $subtype_labels[$subtype['schema_name']] = $subtype['itemtype']::getTypeName(1);
             }
         }
         foreach ($props as $prop_name => $prop_data) {
