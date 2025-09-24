@@ -169,7 +169,7 @@
 
                      {{ fields.numberField(
                         'value',
-                        infocom.fields['value']|formatted_number,
+                        infocom.fields['value'],
                         _x('price', 'Value'),
                         {
                             'disabled': disabled,
@@ -179,7 +179,7 @@
 
                      {{ fields.numberField(
                         'warranty_value',
-                        infocom.fields['warranty_value']|formatted_number,
+                        infocom.fields['warranty_value'],
                         __('Warranty extension value'),
                         {
                             'disabled': disabled,
