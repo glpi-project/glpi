@@ -4522,6 +4522,8 @@ JS;
         $templateResult = $params['templateResult'];
         $templateSelection = $params['templateSelection'];
         $aria_label = $params['aria_label'];
+        $emptyLabel = $params['emptylabel'] ?? '';
+
         unset($params["on_change"], $params["width"]);
 
         $allowclear =  "false";
@@ -4612,14 +4614,56 @@ JS;
             $js .= "setupAjaxDropdown(window.select2_configs['{$field_id}']);";
         }
 
-        $output .= Html::scriptBlock('$(function() {' . $js . '});');
 
         // display select tag
         $options['class'] = $params['class'] ?? 'form-select';
-        if ($params['required'] === true) {
+
+        if ((bool) $params['required'] === true) {
             $options['required'] = 'required';
+
+            if (!empty($emptyLabel)) {
+                $selectVarName = "select_" . mt_rand();
+                $formVarName = "form_" . mt_rand();
+                $jsEmptyLabel = jsescape($emptyLabel);
+                $errorMessage = jsescape(__('This field is mandatory'));
+
+                $js .= <<<JS
+                    const $selectVarName = document.getElementById('{$field_id}');
+                    const $formVarName = $selectVarName.closest('form');
+                    if ($formVarName) {
+                        $formVarName.addEventListener("submit", (evt) => {
+                            if ($selectVarName.options[$selectVarName.selectedIndex].text === '$jsEmptyLabel') {
+                                $selectVarName.setCustomValidity('$errorMessage');
+                                $selectVarName.reportValidity();
+
+                                // Error, we stop the form from submitting
+                                evt.preventDefault();
+                                evt.stopPropagation();
+                            }
+                        });
+
+                        \$('#$field_id').on('change', function (e) {
+                          $selectVarName.setCustomValidity('');
+                        });
+
+                        // Make sure the hidden <select> has the same size than the select2 container, to display the error message at a correct position
+                        $formVarName.addEventListener('invalid', function (event) {
+                          const element = event.target;
+
+                          if (element.classList.contains('select2-hidden-accessible')) {
+                            const select2Container = element.nextElementSibling;
+
+                            element.style.setProperty("height", `\${select2Container.offsetHeight}px`, "important");
+                            element.style.setProperty("width", `\${select2Container.offsetWidth}px`, "important");
+                          }
+                        }, true); // Use capture phase because 'invalid' events do not bubble
+
+                    }
+JS;
+            }
         }
 
+        $output .= Html::scriptBlock('$(function() {' . $js . '});');
         $output .= self::select($name, $values, $options);
 
         return $output;
