@@ -422,60 +422,73 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
         return $this->prepareDefinitionInput($input);
     }
 
-    protected function handleReadonlyFieldUpdate($input): array
+    protected function handleReadonlyFieldUpdate(array $input): array
     {
-        try {
-            $profileId = Session::getCurrentProfile()->getId();
-        } catch (\Exception) {
-            return $input;
+        foreach (static::getDefinition()->getDecodedFieldsField() as $field_definition) {
+            $field_options = $field_definition['field_options'] ?? null;
+            if (!$this->isReadonlyForCurrentProfile($field_options)) {
+                continue;
+            }
+
+            $field_name = $field_definition['key'];
+            $input = $this->applyPersistedReadonlyValue($input, $field_name);
         }
 
-        foreach (static::getDefinition()->getDecodedFieldsField() as $fieldDefinition) {
-            if (empty($fieldDefinition['field_options']) || !array_key_exists('readonly', $fieldDefinition['field_options'])) {
-                continue;
-            }
-
-            // Readonly can be an array or string....
-            if (is_array($fieldDefinition['field_options']['readonly']) && !in_array($profileId, $fieldDefinition['field_options']['readonly'])) {
-                continue;
-            }
-
-            if (is_string($fieldDefinition['field_options']['readonly']) && $profileId !== $fieldDefinition['field_options']['readonly']) {
-                continue;
-            }
-
-            // We set the value as the og one
-            $fieldName = $fieldDefinition['key'];
-            if (array_key_exists($fieldName, $this->fields)) {
-                $input[$fieldName] = $this->fields[$fieldName];
-            } else {
-                unset($input[$fieldName]);
-            }
-        }
-
-        // We verify the custom definition
+        // Custom fields
         foreach (static::getDefinition()->getCustomFieldDefinitions() as $custom_field) {
-            $fieldOptions = $custom_field->fields['field_options'] ?? [];
-            if (empty($fieldOptions) || !array_key_exists('readonly', $fieldOptions)) {
+            $field_options = $custom_field->fields['field_options'] ?? null;
+            if (!$this->isReadonlyForCurrentProfile($field_options)) {
                 continue;
             }
 
-            if (is_array($fieldOptions['readonly']) && !in_array($profileId, $fieldOptions['readonly'])) {
-                continue;
-            }
-
-            if (is_string($fieldOptions['readonly']) && $profileId !== $fieldOptions['readonly']) {
-                continue;
-            }
-
-            $fieldName = "custom_" . $custom_field->fields['system_name'];
-            if (array_key_exists($fieldName, $this->fields)) {
-                $input[$fieldName] = $this->fields[$fieldName];
-            } else {
-                unset($input[$fieldName]);
-            }
+            $field_name = 'custom_' . $custom_field->fields['system_name'];
+            $input = $this->applyPersistedReadonlyValue($input, $field_name);
         }
 
+        return $input;
+    }
+
+    /**
+     * Determine if a field is readonly for the current active profile.
+     *
+     * @param array|string $field_options
+     * @return bool
+     */
+    private function isReadonlyForCurrentProfile(mixed $field_options): bool
+    {
+        $profile_id = $_SESSION['glpiactiveprofile']['id'] ?? null;
+        if ($profile_id === null) {
+            return false;
+        }
+
+        if (empty($field_options) || !array_key_exists('readonly', (array) $field_options)) {
+            return false;
+        }
+
+        $readonly_profile_ids = $field_options['readonly'];
+
+        if (is_array($readonly_profile_ids)) {
+            return in_array($profile_id, $readonly_profile_ids, true);
+        }
+
+        if (is_string($readonly_profile_ids) || is_int($readonly_profile_ids)) {
+            // accept int or string profile identifiers
+            return (string) $profile_id === (string) $readonly_profile_ids;
+        }
+
+        return false;
+    }
+
+    /**
+     * Ensure the input value for a readonly field is the persisted value.
+     */
+    private function applyPersistedReadonlyValue(array $input, string $field_name): array
+    {
+        if (array_key_exists($field_name, $this->fields)) {
+            $input[$field_name] = $this->fields[$field_name];
+        } else {
+            unset($input[$field_name]);
+        }
         return $input;
     }
 

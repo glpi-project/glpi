@@ -187,7 +187,7 @@ class AssetTest extends DbTestCase
     public function testPrepareInputForAddWithReadOnlyField(): void
     {
         $this->login();
-        $userProfile = \Session::getCurrentProfile();
+        $user_profile = \Session::getCurrentProfile();
 
         $asset_definition = $this->initAssetDefinition();
         $asset_settings = [
@@ -214,7 +214,7 @@ class AssetTest extends DbTestCase
 
         // We test it with the user having the readonly apply to his profile
         $asset_settings['system_name'] = 'test2_string';
-        $asset_settings['field_options']['readonly'][] = $userProfile->getID();
+        $asset_settings['field_options']['readonly'][] = $user_profile->getID();
         $this->createItem(CustomFieldDefinition::class, $asset_settings);
 
         $asset_definition->getFromDB($asset_definition->getID());
@@ -252,7 +252,7 @@ class AssetTest extends DbTestCase
     public function testPrepareInputForUpdateWithReadOnlyField(): void
     {
         $this->login();
-        $userProfile = \Session::getCurrentProfile();
+        $user_profile = \Session::getCurrentProfile();
 
         $asset_definition = $this->initAssetDefinition();
         $asset_settings = [
@@ -279,7 +279,7 @@ class AssetTest extends DbTestCase
 
         // We test it with the user having the readonly apply to his profile
         $asset_settings['system_name'] = 'test2_string';
-        $asset_settings['field_options']['readonly'][] = $userProfile->getID();
+        $asset_settings['field_options']['readonly'][] = $user_profile->getID();
         $this->createItem(CustomFieldDefinition::class, $asset_settings);
 
         $asset_definition->getFromDB($asset_definition->getID());
