@@ -513,13 +513,13 @@ export class GlpiFormRendererController
         const sections = $(this.#target).find('[data-glpi-form-renderer-section]');
         sections.each((_i, section) => {
             // Ignore previous and current section
-            if (section.dataset.glpiFormRendererSection <= this.#section_index) {
+            if (parseInt(section.dataset.glpiFormRendererSection) <= this.#section_index) {
                 return;
             }
 
             // A visible section won't have the following data property
             if (section.dataset.glpiFormRendererHiddenByCondition === undefined) {
-                index = section.dataset.glpiFormRendererSection;
+                index = parseInt(section.dataset.glpiFormRendererSection);
                 return false; // Break
             }
         });
