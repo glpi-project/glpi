@@ -458,7 +458,7 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
             return false;
         }
 
-        if (empty($field_options) || !array_key_exists('readonly', (array) $field_options)) {
+        if (!is_array($field_options) || !array_key_exists('readonly', $field_options)) {
             return false;
         }
 
