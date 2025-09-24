@@ -41,10 +41,10 @@
 <div id="webhook-payload-editor-container" data-webhook-id="{{ item.fields['id'] }}">
    <div id="webhook-payload-editor-toolbar" class="mx-1" style="font-size: 1.25em">
       <button name="editor_save" class="btn btn-icon btn-ghost-secondary">
-         <i class="ti ti-device-floppy" title="{{ _x('button', 'Save') }}"></i>
+         <i class="ti ti-device-floppy" title="{{ _x('button', 'Save') }}" aria-label="{{ _x('button', 'Save') }}"></i>
       </button>
       <button name="editor_find" class="btn btn-icon btn-ghost-secondary">
-         <i class="ti ti-search" title="{{ __('Search') }}"></i>
+         <i class="ti ti-search" title="{{ __('Search') }}" aria-label="{{ __('Search') }}"></i>
       </button>
    </div>
    <div id="payload" class="webhook-payload-editor" style="height: 600px"></div>
