@@ -450,9 +450,6 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
 
     /**
      * Determine if a field is readonly for the current active profile.
-     *
-     * @param array|string $field_options
-     * @return bool
      */
     private function isReadonlyForCurrentProfile(mixed $field_options): bool
     {
