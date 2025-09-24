@@ -208,7 +208,6 @@ class AssetTest extends DbTestCase
         $input = $asset->prepareInputForAdd([
             'custom_test_string' => 'test',
         ]);
-        $this->assertEquals(json_encode([$string_field->getID() => 'test']), $input['custom_fields']);
         $this->assertEquals('test', $input['custom_test_string']);
         $this->assertEquals(json_encode([$string_field->getID() => 'test']), $input['custom_fields']);
 
