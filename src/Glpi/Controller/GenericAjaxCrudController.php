@@ -63,16 +63,16 @@ class GenericAjaxCrudController extends AbstractController
         // Validate id as soon as possible so all sub-methods can assume
         // $input['id'] exist
         if (!isset($input['id'])) {
-            return $this->errorReponse(400, __("Invalid id"));
+            return $this->errorReponse(400, __s("Invalid id")); // response string will not be escaped when inserted to the DOM
         }
 
         // Validate and instanciate item from supplied itemtype
         $itemtype = $input['itemtype'] ?? "";
         if (!\is_string($itemtype) || !\is_a($itemtype, CommonDBTM::class, true)) {
-            return $this->errorReponse(400, __("Invalid itemtype"));
+            return $this->errorReponse(400, __s("Invalid itemtype")); // response string will not be escaped when inserted to the DOM
         }
         if (!$this->isClassAllowed($itemtype)) {
-            return $this->errorReponse(403, __("Forbidden itemtype"));
+            return $this->errorReponse(403, __s("Forbidden itemtype")); // response string will not be escaped when inserted to the DOM
         }
         $this->item = new $itemtype();
 
@@ -83,7 +83,7 @@ class GenericAjaxCrudController extends AbstractController
 
             return $this->handleAction($input);
         } catch (HttpException $e) {
-            return $this->errorReponse($e->getStatusCode(), $e->getMessage());
+            return $this->errorReponse($e->getStatusCode(), \htmlescape($e->getMessage())); // response string will not be escaped when inserted to the DOM
         }
     }
 
@@ -99,7 +99,7 @@ class GenericAjaxCrudController extends AbstractController
     {
         switch ($input['_action'] ?? "") {
             default:
-                return $this->errorReponse(400, __("Invalid action"));
+                return $this->errorReponse(400, __s("Invalid action")); // response string will not be escaped when inserted to the DOM
 
             case "update":
                 return $this->handleUpdateAction($input);
@@ -123,6 +123,9 @@ class GenericAjaxCrudController extends AbstractController
      * @param string $message Error message
      *
      * @return Response
+     *
+     * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
+     * @psalm-taint-sink html $message (string will be added to HTML source)
      */
     final protected function errorReponse(int $code, string $message): Response
     {

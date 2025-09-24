@@ -34,6 +34,7 @@
 /* eslint no-var: 0 */
 /* global FullCalendar, FullCalendarLocales */
 /* global glpi_ajax_dialog */
+/* global _ */
 
 var Reservations = function() {
     this.is_all      = true;
@@ -167,7 +168,7 @@ var Reservations = function() {
                     }
 
                     element.find(".fc-title, .fc-list-item-title")
-                        .append(`&nbsp;<i class='${extProps.icon}' title='${icon_alt}'></i>`);
+                        .append(`&nbsp;<i class='${_.escape(extProps.icon)}' title='${_.escape(icon_alt)}'></i>`);
                 }
 
                 // detect ideal position
