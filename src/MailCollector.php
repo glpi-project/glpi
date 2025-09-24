@@ -1859,10 +1859,18 @@ class MailCollector extends CommonDBTM
                 $this->body_is_html = true;
                 $content = $this->getDecodedContent($part);
 
-                // Keep only HTML body content
-                $body_matches = [];
-                if (preg_match('/<body[^>]*>\s*(?<body>.+?)\s*<\/body>/is', $content, $body_matches) === 1) {
-                    $content = $body_matches['body'];
+                // Try to extract reply content before body tag (for email clients like Proton)
+                // This handles cases where the actual reply content is placed before the quoted original message
+                $reply_content = $this->extractReplyContent($content);
+
+                if ($reply_content !== null) {
+                    $content = $reply_content;
+                } else {
+                    // Fallback: Keep only HTML body content
+                    $body_matches = [];
+                    if (preg_match('/<body[^>]*>\s*(?<body>.+?)\s*<\/body>/is', $content, $body_matches) === 1) {
+                        $content = $body_matches['body'];
+                    }
                 }
 
                 // Strip <style> and <script> tags located in HTML body.
@@ -2570,6 +2578,55 @@ class MailCollector extends CommonDBTM
         return $contents;
     }
 
+    /**
+     * Extract reply content from HTML email, handling cases where reply content
+     * is placed before the original quoted message (e.g., Proton Mail and other clients)
+     *
+     * @param string $html_content Full HTML content of the email
+     * @return string|null Reply content if found, null otherwise
+     */
+    private function extractReplyContent(string $html_content): ?string
+    {
+        // Remove HTML doctype and html/head tags to focus on content
+        $content = preg_replace('/<!DOCTYPE[^>]*>/i', '', $html_content);
+        $content = preg_replace('/<html[^>]*>/i', '', $content);
+        $content = preg_replace('/<\/html>/i', '', $content);
+        $content = preg_replace('/<head[^>]*>.*?<\/head>/is', '', $content);
+
+        // Look for content before body tag or quoted content indicators
+        $patterns = [
+            // Content before <body> tag
+            '/^(.*?)<body[^>]*>/is',
+            // Content before common quote indicators
+            '/^(.*?)(?:<div[^>]*class="[^"]*(?:quote|quoted|protonmail_quote)[^"]*"[^>]*>|<blockquote[^>]*>|<div[^>]*>-+\s*(?:Message d.origine|Original Message|Forwarded message))/is',
+            // Content before "From:" or "De:" lines that indicate forwarded/replied content
+            '/^(.*?)(?:<br\s*\/?>\s*)?(?:From:|De\s*:|Le\s+\d|On\s+\d).*?<[^>]+@[^>]+>/is',
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $content, $matches)) {
+                $reply_content = trim($matches[1]);
+
+                // Clean up and validate the extracted content
+                if (!empty($reply_content)) {
+                    // Remove empty paragraphs and break tags at the beginning/end
+                    $reply_content = preg_replace('/^(\s*<(?:p|br)[^>]*>\s*<\/p>\s*|\s*<br\s*\/?>\s*)+/is', '', $reply_content);
+                    $reply_content = preg_replace('/(\s*<(?:p|br)[^>]*>\s*<\/p>\s*|\s*<br\s*\/?>\s*)+$/is', '', $reply_content);
+
+                    // Check if we have meaningful content (not just whitespace and HTML tags)
+                    $text_content = strip_tags($reply_content);
+                    $text_content = html_entity_decode($text_content, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                    $text_content = trim($text_content);
+
+                    if (!empty($text_content)) {
+                        return $reply_content;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
 
     public static function getIcon()
     {
