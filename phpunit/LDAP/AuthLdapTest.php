@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use AuthLDAP;
 use DbTestCase;
 use Glpi\DBAL\QueryExpression;
 use GLPIKey;
@@ -53,7 +54,7 @@ use UserTitle;
 class AuthLdapTest extends DbTestCase
 {
     /**
-     * @var \AuthLDAP
+     * @var AuthLDAP
      */
     private $ldap;
 
@@ -74,7 +75,7 @@ class AuthLdapTest extends DbTestCase
         $this->ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
 
         // remove the `_e2e_ldap` server
-        $this->deleteItem(\AuthLDAP::class, getItemByTypeName(\AuthLDAP::class, '_e2e_ldap', true));
+        $this->deleteItem(AuthLDAP::class, getItemByTypeName(AuthLDAP::class, '_e2e_ldap', true));
 
         //make sure bootstrapped ldap is active and is default
         $this->assertTrue(
@@ -103,7 +104,7 @@ class AuthLdapTest extends DbTestCase
 
     private function addLdapServers()
     {
-        $ldap = new \AuthLDAP();
+        $ldap = new AuthLDAP();
         $this->assertGreaterThan(
             0,
             (int) $ldap->add([
@@ -143,14 +144,14 @@ class AuthLdapTest extends DbTestCase
 
     public function testGetTypeName()
     {
-        $this->assertSame('LDAP directory', \AuthLDAP::getTypeName(1));
-        $this->assertSame('LDAP directories', \AuthLDAP::getTypeName(0));
-        $this->assertSame('LDAP directories', \AuthLDAP::getTypeName(\Session::getPluralNumber()));
+        $this->assertSame('LDAP directory', AuthLDAP::getTypeName(1));
+        $this->assertSame('LDAP directories', AuthLDAP::getTypeName(0));
+        $this->assertSame('LDAP directories', AuthLDAP::getTypeName(\Session::getPluralNumber()));
     }
 
     public function testPost_getEmpty()
     {
-        $ldap = new \AuthLDAP();
+        $ldap = new AuthLDAP();
         $ldap->post_getEmpty();
         $this->assertCount(30, $ldap->fields);
     }
@@ -158,13 +159,13 @@ class AuthLdapTest extends DbTestCase
     public function testUnsetUndisclosedFields()
     {
         $fields = ['login_field' => 'test', 'rootdn_passwd' => 'mypassword'];
-        \AuthLDAP::unsetUndisclosedFields($fields);
+        AuthLDAP::unsetUndisclosedFields($fields);
         $this->assertArrayNotHasKey('rootdn_passwd', $fields);
     }
 
     public function testPreconfig()
     {
-        $ldap = new \AuthLDAP();
+        $ldap = new AuthLDAP();
         //Use Active directory preconfiguration :
         //login_field and sync_field must be filled
         $ldap->preconfig('AD');
@@ -186,7 +187,7 @@ class AuthLdapTest extends DbTestCase
 
     public function testPrepareInputForUpdate()
     {
-        $ldap = $this->getMockBuilder(\AuthLDAP::class)
+        $ldap = $this->getMockBuilder(AuthLDAP::class)
             ->onlyMethods(['isSyncFieldUsed'])
             ->getMock();
         $ldap->method('isSyncFieldUsed')->willReturn(true);
@@ -221,7 +222,7 @@ class AuthLdapTest extends DbTestCase
         $this->assertFalse($result);
         $this->hasSessionMessages(ERROR, ['Synchronization field cannot be changed once in use.']);
 
-        $ldap = $this->getMockBuilder(\AuthLDAP::class)
+        $ldap = $this->getMockBuilder(AuthLDAP::class)
             ->onlyMethods(['isSyncFieldUsed'])
             ->getMock();
         $ldap->method('isSyncFieldUsed')->willReturn(false);
@@ -232,31 +233,31 @@ class AuthLdapTest extends DbTestCase
     public function testgetGroupSearchTypeName()
     {
         //Get all group search type values
-        $search_type = \AuthLDAP::getGroupSearchTypeName();
+        $search_type = AuthLDAP::getGroupSearchTypeName();
         $this->assertCount(3, $search_type);
 
         //Give a wrong number value
-        $search_type = \AuthLDAP::getGroupSearchTypeName(4);
+        $search_type = AuthLDAP::getGroupSearchTypeName(4);
         $this->assertSame(NOT_AVAILABLE, $search_type);
 
         //Give a wrong string value
-        $search_type = \AuthLDAP::getGroupSearchTypeName('toto');
+        $search_type = AuthLDAP::getGroupSearchTypeName('toto');
         $this->assertSame(NOT_AVAILABLE, $search_type);
 
         //Give a existing values
-        $search_type = \AuthLDAP::getGroupSearchTypeName(0);
+        $search_type = AuthLDAP::getGroupSearchTypeName(0);
         $this->assertSame('In users', $search_type);
 
-        $search_type = \AuthLDAP::getGroupSearchTypeName(1);
+        $search_type = AuthLDAP::getGroupSearchTypeName(1);
         $this->assertSame('In groups', $search_type);
 
-        $search_type = \AuthLDAP::getGroupSearchTypeName(2);
+        $search_type = AuthLDAP::getGroupSearchTypeName(2);
         $this->assertSame('In users and groups', $search_type);
     }
 
     public function testGetSpecificValueToDisplay()
     {
-        $ldap = new \AuthLDAP();
+        $ldap = new AuthLDAP();
 
         //Value as an array
         $values = ['group_search_type' => 0];
@@ -276,7 +277,7 @@ class AuthLdapTest extends DbTestCase
 
     public function testDefineTabs()
     {
-        $ldap     = new \AuthLDAP();
+        $ldap     = new AuthLDAP();
         $tabs     = $ldap->defineTabs();
         $expected = [
             'AuthLDAP$main' => "LDAP directory",
@@ -287,14 +288,14 @@ class AuthLdapTest extends DbTestCase
 
     public function testGetSearchOptionsNew()
     {
-        $ldap     = new \AuthLDAP();
+        $ldap     = new AuthLDAP();
         $options  = $ldap->rawSearchOptions();
         $this->assertCount(36, $options);
     }
 
     public function testGetSyncFields()
     {
-        $ldap     = new \AuthLDAP();
+        $ldap     = new AuthLDAP();
         $values   = ['login_field' => 'value'];
         $result   = $ldap->getSyncFields($values);
         $this->assertSame(['name' => 'value'], $result);
@@ -306,25 +307,25 @@ class AuthLdapTest extends DbTestCase
     public function testLdapStamp2UnixStamp()
     {
         //Good timestamp
-        $result = \AuthLDAP::ldapStamp2UnixStamp('20161114100339Z');
+        $result = AuthLDAP::ldapStamp2UnixStamp('20161114100339Z');
         $this->assertSame(1479117819, $result);
 
         //Bad timestamp format
-        $result = \AuthLDAP::ldapStamp2UnixStamp(20161114100339);
+        $result = AuthLDAP::ldapStamp2UnixStamp(20161114100339);
         $this->assertEmpty($result);
 
         //Bad timestamp format
-        $result = \AuthLDAP::ldapStamp2UnixStamp("201611141003");
+        $result = AuthLDAP::ldapStamp2UnixStamp("201611141003");
         $this->assertEmpty($result);
     }
 
     public function testDate2ldapTimeStamp()
     {
-        $result = \AuthLDAP::date2ldapTimeStamp("2017-01-01 22:35:00");
+        $result = AuthLDAP::date2ldapTimeStamp("2017-01-01 22:35:00");
         $this->assertSame("20170101223500.0Z", $result);
 
         //Bad date => 01/01/1970
-        $result = \AuthLDAP::date2ldapTimeStamp("2017-25-25 22:35:00");
+        $result = AuthLDAP::date2ldapTimeStamp("2017-25-25 22:35:00");
         $this->assertSame("19700101000000.0Z", $result);
     }
 
@@ -342,14 +343,14 @@ class AuthLdapTest extends DbTestCase
 
         //Ask for a non-existing user_dn : result is false
         $this->assertFalse(
-            \AuthLDAP::dnExistsInLdap(
+            AuthLDAP::dnExistsInLdap(
                 $ldap_infos,
                 'uid=jdupont, ou=people, dc=mycompany'
             )
         );
 
         //Ask for a dn that exists : result is the user's infos as an array
-        $result = \AuthLDAP::dnExistsInLdap(
+        $result = AuthLDAP::dnExistsInLdap(
             $ldap_infos,
             'uid=jdoe, ou=people, dc=mycompany'
         );
@@ -361,7 +362,7 @@ class AuthLdapTest extends DbTestCase
         $this->addLdapServers();
 
         //The list of ldap server show the default server in first position
-        $result = \AuthLDAP::getLdapServers();
+        $result = AuthLDAP::getLdapServers();
         $this->assertCount(4, $result);
         $this->assertSame('LDAP3', current($result)['name']);
     }
@@ -371,9 +372,9 @@ class AuthLdapTest extends DbTestCase
         global $DB;
         $this->addLdapServers();
 
-        $this->assertTrue(\AuthLDAP::useAuthLdap());
+        $this->assertTrue(AuthLDAP::useAuthLdap());
         $DB->update('glpi_authldaps', ['is_active' => 0], [new QueryExpression('true')]);
-        $this->assertFalse(\AuthLDAP::useAuthLdap());
+        $this->assertFalse(AuthLDAP::useAuthLdap());
     }
 
     public function testGetNumberOfServers()
@@ -381,49 +382,49 @@ class AuthLdapTest extends DbTestCase
         global $DB;
         $this->addLdapServers();
 
-        $this->assertSame(3, (int) \AuthLDAP::getNumberOfServers());
+        $this->assertSame(3, (int) AuthLDAP::getNumberOfServers());
         $DB->update('glpi_authldaps', ['is_active' => 0], [new QueryExpression('true')]);
-        $this->assertSame(0, (int) \AuthLDAP::getNumberOfServers());
+        $this->assertSame(0, (int) AuthLDAP::getNumberOfServers());
     }
 
     public function testBuildLdapFilter()
     {
         $this->addLdapServers();
 
-        /** @var \AuthLDAP $ldap */
+        /** @var AuthLDAP $ldap */
         $ldap = getItemByTypeName('AuthLDAP', 'LDAP3');
-        $result = \AuthLDAP::buildLdapFilter($ldap);
+        $result = AuthLDAP::buildLdapFilter($ldap);
         $this->assertSame("(& (email=*) )", $result);
 
-        $_REQUEST['interface'] = \AuthLDAP::SIMPLE_INTERFACE;
+        $_REQUEST['interface'] = AuthLDAP::SIMPLE_INTERFACE;
         $_REQUEST['criterias'] = ['name'        => 'foo',
             'phone_field' => '+33454968584',
         ];
-        $result = \AuthLDAP::buildLdapFilter($ldap);
+        $result = AuthLDAP::buildLdapFilter($ldap);
         $this->assertSame('(& (LDAP3=*foo*)(phonenumber=*+33454968584*) )', $result);
 
         $_REQUEST['criterias']['name'] = '^foo';
-        $result = \AuthLDAP::buildLdapFilter($ldap);
+        $result = AuthLDAP::buildLdapFilter($ldap);
         $this->assertSame('(& (LDAP3=foo*)(phonenumber=*+33454968584*) )', $result);
 
         $_REQUEST['criterias']['name'] = 'foo$';
-        $result = \AuthLDAP::buildLdapFilter($ldap);
+        $result = AuthLDAP::buildLdapFilter($ldap);
         $this->assertSame('(& (LDAP3=*foo)(phonenumber=*+33454968584*) )', $result);
 
         $_REQUEST['criterias']['name'] = '^foo$';
-        $result = \AuthLDAP::buildLdapFilter($ldap);
+        $result = AuthLDAP::buildLdapFilter($ldap);
         $this->assertSame('(& (LDAP3=foo)(phonenumber=*+33454968584*) )', $result);
 
         $_REQUEST['criterias'] = ['name' => '^foo$'];
         $ldap->fields['condition'] = '(objectclass=inetOrgPerson)';
-        $result = \AuthLDAP::buildLdapFilter($ldap);
+        $result = AuthLDAP::buildLdapFilter($ldap);
         $ldap->fields['condition'] = '';
         $this->assertSame('(& (LDAP3=foo) (objectclass=inetOrgPerson))', $result);
 
         $_REQUEST['begin_date']        = '2017-04-20 00:00:00';
         $_REQUEST['end_date']          = '2017-04-22 00:00:00';
         $_REQUEST['criterias']['name'] = '^foo$';
-        $result = \AuthLDAP::buildLdapFilter($ldap);
+        $result = AuthLDAP::buildLdapFilter($ldap);
         $this->assertSame(
             '(& (LDAP3=foo)(modifyTimestamp>=20170420000000.0Z)(modifyTimestamp<=20170422000000.0Z) )',
             $result
@@ -432,22 +433,22 @@ class AuthLdapTest extends DbTestCase
 
     public function testAddTimestampRestrictions()
     {
-        $result = \AuthLDAP::addTimestampRestrictions(
+        $result = AuthLDAP::addTimestampRestrictions(
             '',
             '2017-04-22 00:00:00'
         );
         $this->assertSame("(modifyTimestamp<=20170422000000.0Z)", $result);
 
-        $result = \AuthLDAP::addTimestampRestrictions(
+        $result = AuthLDAP::addTimestampRestrictions(
             '2017-04-20 00:00:00',
             ''
         );
         $this->assertSame("(modifyTimestamp>=20170420000000.0Z)", $result);
 
-        $result = \AuthLDAP::addTimestampRestrictions('', '');
+        $result = AuthLDAP::addTimestampRestrictions('', '');
         $this->assertEmpty($result);
 
-        $result = \AuthLDAP::addTimestampRestrictions(
+        $result = AuthLDAP::addTimestampRestrictions(
             '2017-04-20 00:00:00',
             '2017-04-22 00:00:00'
         );
@@ -482,7 +483,7 @@ class AuthLdapTest extends DbTestCase
         //Load ldap servers
         $this->addLdapServers();
 
-        $ldap     = new \AuthLDAP();
+        $ldap     = new AuthLDAP();
         $ldaps_id = $ldap->add([
             'name'        => 'LDAP4',
             'is_active'   => 1,
@@ -503,7 +504,7 @@ class AuthLdapTest extends DbTestCase
 
     public function testPrepareInputForAdd()
     {
-        $ldap     = new \AuthLDAP();
+        $ldap     = new AuthLDAP();
 
         $ldaps_id = $ldap->add([
             'name'        => 'LDAP1',
@@ -520,13 +521,13 @@ class AuthLdapTest extends DbTestCase
 
     public function testGetServersWithImportByEmailActive()
     {
-        $result = \AuthLDAP::getServersWithImportByEmailActive();
+        $result = AuthLDAP::getServersWithImportByEmailActive();
         $this->assertCount(1, $result);
 
         $this->addLdapServers();
 
         //Return two ldap server: because LDAP2 is disabled
-        $result = \AuthLDAP::getServersWithImportByEmailActive();
+        $result = AuthLDAP::getServersWithImportByEmailActive();
         $this->assertCount(2, $result);
 
         //Enable LDAP2
@@ -539,7 +540,7 @@ class AuthLdapTest extends DbTestCase
         );
 
         //Now there should be 2 enabled servers
-        $result = \AuthLDAP::getServersWithImportByEmailActive();
+        $result = AuthLDAP::getServersWithImportByEmailActive();
         $this->assertCount(3, $result);
     }
 
@@ -566,7 +567,7 @@ class AuthLdapTest extends DbTestCase
 
     public function testGetAllReplicateForAMaster()
     {
-        $ldap      = new \AuthLDAP();
+        $ldap      = new AuthLDAP();
         $replicate = new \AuthLdapReplicate();
 
         $ldaps_id = $ldap->add([
@@ -618,31 +619,31 @@ class AuthLdapTest extends DbTestCase
 
     public function testIsValidGuid()
     {
-        $this->assertFalse(\AuthLDAP::isValidGuid(''));
-        $this->assertTrue(\AuthLDAP::isValidGuid('00000000-0000-0000-0000-000000000000'));
-        $this->assertTrue(\AuthLDAP::isValidGuid('AB52DFB8-A352-BA53-CC58-ABFD5E9D200E'));
-        $this->assertFalse(\AuthLDAP::isValidGuid('ZB52DFH8-AH52-BH53-CH58-ABFD5E9D200E'));
+        $this->assertFalse(AuthLDAP::isValidGuid(''));
+        $this->assertTrue(AuthLDAP::isValidGuid('00000000-0000-0000-0000-000000000000'));
+        $this->assertTrue(AuthLDAP::isValidGuid('AB52DFB8-A352-BA53-CC58-ABFD5E9D200E'));
+        $this->assertFalse(AuthLDAP::isValidGuid('ZB52DFH8-AH52-BH53-CH58-ABFD5E9D200E'));
     }
 
     public function testGuidToHex()
     {
         $guid       = '891b903c-9982-4e64-9c2a-a6caff69f5b0';
         $expected   = '\3c\90\1b\89\82\99\64\4e\9c\2a\a6\ca\ff\69\f5\b0';
-        $this->assertSame($expected, \AuthLDAP::guidToHex($guid));
+        $this->assertSame($expected, AuthLDAP::guidToHex($guid));
     }
 
     public function testGetFieldValue()
     {
         $infos = ['field' => 'value'];
-        $this->assertSame('value', \AuthLDAP::getFieldValue($infos, 'field'));
+        $this->assertSame('value', AuthLDAP::getFieldValue($infos, 'field'));
 
         $infos = ['objectguid' => 'value'];
-        $this->assertSame('value', \AuthLDAP::getFieldValue($infos, 'objectguid'));
+        $this->assertSame('value', AuthLDAP::getFieldValue($infos, 'objectguid'));
     }
 
     public function testPassword()
     {
-        $ldap = new \AuthLDAP();
+        $ldap = new AuthLDAP();
         $id = (int) $ldap->add([
             'name'        => 'LDAPcrypted',
             'is_active'   => 1,
@@ -676,6 +677,46 @@ class AuthLdapTest extends DbTestCase
         $this->assertEmpty($result['rootdn_passwd']);
     }
 
+    public static function hostProvider(): array
+    {
+        return [
+            [
+                'host' => 'ldap.example.com',
+                'port' => 389,
+                'ldapuri' => 'ldap://ldap.example.com:389',
+            ],
+            [
+                'host' => 'ldap://ldap.example.com',
+                'port' => 389,
+                'ldapuri' => 'ldap://ldap.example.com:389',
+            ],
+            [
+                'host' => 'ldaps://ldap.example.com',
+                'port' => 389,
+                'ldapuri' => 'ldaps://ldap.example.com:389',
+            ],
+            [
+                'host' => 'LDAP://ldap.example.com',
+                'port' => 389,
+                'ldapuri' => 'ldap://ldap.example.com:389',
+            ],
+            [
+                'host' => 'LDAPS://ldap.example.com',
+                'port' => 389,
+                'ldapuri' => 'ldaps://ldap.example.com:389',
+            ],
+        ];
+    }
+
+    #[DataProvider('hostProvider')]
+    public function testBuildUri(string $host, int $port, string $ldapuri): void
+    {
+        $this->assertSame(
+            $ldapuri,
+            AuthLDAP::buildUri($host, $port)
+        );
+    }
+
     /**
      * Test LDAP connection
      *
@@ -684,21 +725,30 @@ class AuthLdapTest extends DbTestCase
     #[RequiresPhpExtension('ldap')]
     public function testTestLDAPConnection()
     {
-        $this->assertFalse(\AuthLDAP::testLDAPConnection(-1));
+        $this->assertFalse(AuthLDAP::testLDAPConnection(-1));
 
         $ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
-        $this->assertTrue(\AuthLDAP::testLDAPConnection($ldap->getID()));
+        $host = $ldap->fields['host'];
+        $this->assertTrue(AuthLDAP::testLDAPConnection($ldap->getID()));
         $this->checkLdapConnection($ldap->connect());
 
         $this->assertTrue(
             $ldap->update([
                 'id' => $ldap->getID(),
-                'host' => 'ldap://' . $ldap->fields['host'],
+                'host' => 'ldap://' . $host,
             ])
         );
-        $this->assertTrue(\AuthLDAP::testLDAPConnection($ldap->getID()));
+        $this->assertTrue(AuthLDAP::testLDAPConnection($ldap->getID()));
         $this->checkLdapConnection($ldap->connect());
 
+        $this->assertTrue(
+            $ldap->update([
+                'id' => $ldap->getID(),
+                'host' => 'LDAP://' . $host,
+            ])
+        );
+        $this->assertTrue(AuthLDAP::testLDAPConnection($ldap->getID()));
+        $this->checkLdapConnection($ldap->connect());
     }
 
     /**
@@ -713,11 +763,11 @@ class AuthLdapTest extends DbTestCase
         $results = [];
         $limit = false;
 
-        $users = \AuthLDAP::getAllUsers(
+        $users = AuthLDAP::getAllUsers(
             [
                 'authldaps_id' => $ldap->getID(),
-                'ldap_filter'  => \AuthLDAP::buildLdapFilter($ldap),
-                'mode'         => \AuthLDAP::ACTION_IMPORT,
+                'ldap_filter'  => AuthLDAP::buildLdapFilter($ldap),
+                'mode'         => AuthLDAP::ACTION_IMPORT,
             ],
             $results,
             $limit
@@ -726,14 +776,14 @@ class AuthLdapTest extends DbTestCase
         $this->assertCount(912, $users);
         $this->assertCount(0, $results);
 
-        $_REQUEST['interface'] = \AuthLDAP::SIMPLE_INTERFACE;
+        $_REQUEST['interface'] = AuthLDAP::SIMPLE_INTERFACE;
         $_REQUEST['criterias'] = ['login_field' => 'brazil2'];
 
-        $users = \AuthLDAP::getAllUsers(
+        $users = AuthLDAP::getAllUsers(
             [
                 'authldaps_id' => $ldap->getID(),
-                'ldap_filter'  => \AuthLDAP::buildLdapFilter($ldap),
-                'mode'         => \AuthLDAP::ACTION_IMPORT,
+                'ldap_filter'  => AuthLDAP::buildLdapFilter($ldap),
+                'mode'         => AuthLDAP::ACTION_IMPORT,
             ],
             $results,
             $limit
@@ -744,11 +794,11 @@ class AuthLdapTest extends DbTestCase
 
         $_REQUEST['criterias'] = ['login_field' => 'remi'];
 
-        $users = \AuthLDAP::getAllUsers(
+        $users = AuthLDAP::getAllUsers(
             [
                 'authldaps_id' => $ldap->getID(),
-                'ldap_filter'  => \AuthLDAP::buildLdapFilter($ldap),
-                'mode'         => \AuthLDAP::ACTION_IMPORT,
+                'ldap_filter'  => AuthLDAP::buildLdapFilter($ldap),
+                'mode'         => AuthLDAP::ACTION_IMPORT,
             ],
             $results,
             $limit
@@ -769,9 +819,9 @@ class AuthLdapTest extends DbTestCase
         $ldap = $this->ldap;
         $limit = false;
 
-        $groups = \AuthLDAP::getAllGroups(
+        $groups = AuthLDAP::getAllGroups(
             $ldap->getID(),
-            \AuthLDAP::buildLdapFilter($ldap),
+            AuthLDAP::buildLdapFilter($ldap),
             '',
             0,
             $limit
@@ -795,14 +845,14 @@ class AuthLdapTest extends DbTestCase
         $limit = false;
 
         //get user to import
-        $_REQUEST['interface'] = \AuthLDAP::SIMPLE_INTERFACE;
+        $_REQUEST['interface'] = AuthLDAP::SIMPLE_INTERFACE;
         $_REQUEST['criterias'] = ['login_field' => 'ecuador0'];
 
-        $users = \AuthLDAP::getAllUsers(
+        $users = AuthLDAP::getAllUsers(
             [
                 'authldaps_id' => $ldap->getID(),
-                'ldap_filter'  => \AuthLDAP::buildLdapFilter($ldap),
-                'mode'         => \AuthLDAP::ACTION_IMPORT,
+                'ldap_filter'  => AuthLDAP::buildLdapFilter($ldap),
+                'mode'         => AuthLDAP::ACTION_IMPORT,
             ],
             $results,
             $limit
@@ -811,17 +861,17 @@ class AuthLdapTest extends DbTestCase
         $this->assertCount(1, $users);
         $this->assertCount(0, $results);
 
-        $import = \AuthLDAP::ldapImportUserByServerId(
+        $import = AuthLDAP::ldapImportUserByServerId(
             [
-                'method' => \AuthLDAP::IDENTIFIER_LOGIN,
+                'method' => AuthLDAP::IDENTIFIER_LOGIN,
                 'value'  => 'ecuador0',
             ],
-            \AuthLDAP::ACTION_IMPORT,
+            AuthLDAP::ACTION_IMPORT,
             $ldap->getID(),
             true
         );
         $this->assertCount(2, $import);
-        $this->assertSame(\AuthLDAP::USER_IMPORTED, $import['action']);
+        $this->assertSame(AuthLDAP::USER_IMPORTED, $import['action']);
         $this->assertGreaterThan(0, $import['id']);
 
         //check created user
@@ -856,19 +906,19 @@ class AuthLdapTest extends DbTestCase
         $this->checkLdapConnection($connection);
 
         // Invalid group
-        $cn = \AuthLDAP::getGroupCNByDn($connection, 'ou=not,ou=exists,dc=glpi,dc=org');
+        $cn = AuthLDAP::getGroupCNByDn($connection, 'ou=not,ou=exists,dc=glpi,dc=org');
         $this->assertFalse($cn);
 
         // Valid group with no special chars
-        $cn = \AuthLDAP::getGroupCNByDn($connection, 'cn=glpi2-group1,ou=groups,ou=usa,ou=ldap2,dc=glpi,dc=org');
+        $cn = AuthLDAP::getGroupCNByDn($connection, 'cn=glpi2-group1,ou=groups,ou=usa,ou=ldap2,dc=glpi,dc=org');
         $this->assertSame('glpi2-group1', $cn);
 
         // OU with special `#` char protected by a `\`
-        $cn = \AuthLDAP::getGroupCNByDn($connection, 'cn=glpi2-group2,ou=groups,ou=\#1-test,ou=ldap2,dc=glpi,dc=org');
+        $cn = AuthLDAP::getGroupCNByDn($connection, 'cn=glpi2-group2,ou=groups,ou=\#1-test,ou=ldap2,dc=glpi,dc=org');
         $this->assertSame('glpi2-group2', $cn);
 
         // OU with special `#` char escaped to `\23`
-        $cn = \AuthLDAP::getGroupCNByDn($connection, 'cn=glpi2-group2,ou=groups,ou=\231-test,ou=ldap2,dc=glpi,dc=org');
+        $cn = AuthLDAP::getGroupCNByDn($connection, 'cn=glpi2-group2,ou=groups,ou=\231-test,ou=ldap2,dc=glpi,dc=org');
         $this->assertSame('glpi2-group2', $cn);
     }
 
@@ -882,7 +932,7 @@ class AuthLdapTest extends DbTestCase
     {
         $ldap = $this->ldap;
 
-        $user = \AuthLDAP::getUserByDn(
+        $user = AuthLDAP::getUserByDn(
             $ldap->connect(),
             'uid=walid,ou=people,ou=france,ou=europe,ou=ldap1, dc=glpi,dc=org',
             []
@@ -933,7 +983,7 @@ class AuthLdapTest extends DbTestCase
     {
         $ldap = $this->ldap;
 
-        $group = \AuthLDAP::getGroupByDn(
+        $group = AuthLDAP::getGroupByDn(
             $ldap->connect(),
             $group_dn
         );
@@ -964,7 +1014,7 @@ class AuthLdapTest extends DbTestCase
         $ldap = $this->ldap;
 
         // Valid group with no special chars
-        $import = \AuthLDAP::ldapImportGroup(
+        $import = AuthLDAP::ldapImportGroup(
             $group_dn,
             [
                 'authldaps_id' => $ldap->getID(),
@@ -999,7 +1049,7 @@ class AuthLdapTest extends DbTestCase
         // Import group, unless it exists
         $group = new Group();
         if (!$group->getFromDBByCrit(['name' => $expected_group_name])) {
-            $import = \AuthLDAP::ldapImportGroup(
+            $import = AuthLDAP::ldapImportGroup(
                 $group_dn,
                 [
                     'authldaps_id' => $ldap->getID(),
@@ -1013,17 +1063,17 @@ class AuthLdapTest extends DbTestCase
             $this->assertTrue($group->getFromDB($import));
         }
 
-        $import = \AuthLDAP::ldapImportUserByServerId(
+        $import = AuthLDAP::ldapImportUserByServerId(
             [
-                'method' => \AuthLDAP::IDENTIFIER_LOGIN,
+                'method' => AuthLDAP::IDENTIFIER_LOGIN,
                 'value'  => $user_uid,
             ],
-            \AuthLDAP::ACTION_IMPORT,
+            AuthLDAP::ACTION_IMPORT,
             $ldap->getID(),
             true
         );
         $this->assertCount(2, $import);
-        $this->assertSame(\AuthLDAP::USER_IMPORTED, $import['action']);
+        $this->assertSame(AuthLDAP::USER_IMPORTED, $import['action']);
         $this->assertGreaterThan(0, (int) $import['id']);
 
         //check created user
@@ -1047,17 +1097,17 @@ class AuthLdapTest extends DbTestCase
         $ldap = $this->ldap;
         $this->assertFalse($ldap->isSyncFieldEnabled());
 
-        $import = \AuthLDAP::ldapImportUserByServerId(
+        $import = AuthLDAP::ldapImportUserByServerId(
             [
-                'method' => \AuthLDAP::IDENTIFIER_LOGIN,
+                'method' => AuthLDAP::IDENTIFIER_LOGIN,
                 'value'  => 'ecuador0',
             ],
-            \AuthLDAP::ACTION_IMPORT,
+            AuthLDAP::ACTION_IMPORT,
             $ldap->getID(),
             true
         );
         $this->assertCount(2, $import);
-        $this->assertSame(\AuthLDAP::USER_IMPORTED, $import['action']);
+        $this->assertSame(AuthLDAP::USER_IMPORTED, $import['action']);
         $this->assertGreaterThan(0, $import['id']);
 
         //check created user
@@ -1088,7 +1138,7 @@ class AuthLdapTest extends DbTestCase
         );
 
         $this->assertCount(2, $synchro);
-        $this->assertSame(\AuthLDAP::USER_SYNCHRONIZED, $synchro['action']);
+        $this->assertSame(AuthLDAP::USER_SYNCHRONIZED, $synchro['action']);
         $this->assertSame($user->getID(), $synchro['id']);
 
         // check phone number has been synced
@@ -1120,7 +1170,7 @@ class AuthLdapTest extends DbTestCase
 
         $this->assertTrue($user->getFromDB($user->getID()));
         $this->assertCount(2, $synchro);
-        $this->assertSame(\AuthLDAP::USER_SYNCHRONIZED, $synchro['action']);
+        $this->assertSame(AuthLDAP::USER_SYNCHRONIZED, $synchro['action']);
         $this->assertEquals($user->getID(), $synchro['id']);
 
         $this->assertEquals(42, $user->fields['sync_field']);
@@ -1160,7 +1210,7 @@ class AuthLdapTest extends DbTestCase
         // check the `name` field (corresponding to the uid) has been updated for the user
         $this->assertTrue($user->getFromDB($user->getID()));
         $this->assertCount(2, $synchro);
-        $this->assertSame(\AuthLDAP::USER_SYNCHRONIZED, $synchro['action']);
+        $this->assertSame(AuthLDAP::USER_SYNCHRONIZED, $synchro['action']);
         $this->assertEquals($user->getID(), $synchro['id']);
 
         $this->assertEquals(42, $user->fields['sync_field']);
@@ -1179,7 +1229,7 @@ class AuthLdapTest extends DbTestCase
 
         $this->assertTrue($user->getFromDB($user->getID()));
         $this->assertCount(2, $synchro);
-        $this->assertSame(\AuthLDAP::USER_SYNCHRONIZED, $synchro['action']);
+        $this->assertSame(AuthLDAP::USER_SYNCHRONIZED, $synchro['action']);
         $this->assertEquals($user->getID(), $synchro['id']);
 
         $this->assertEquals(42, $user->fields['sync_field']);
@@ -1200,7 +1250,7 @@ class AuthLdapTest extends DbTestCase
         // but the user should now be in non synchronized state
         $this->assertEquals(42, $user->fields['sync_field']);
         $this->assertCount(2, $synchro);
-        $this->assertSame(\AuthLDAP::USER_DELETED_LDAP, $synchro['action']);
+        $this->assertSame(AuthLDAP::USER_DELETED_LDAP, $synchro['action']);
         $this->assertEquals($user->getID(), $synchro['id']);
 
         // sync after emptying the sync field
@@ -1211,7 +1261,7 @@ class AuthLdapTest extends DbTestCase
         // and the user is now synchronized again
         $this->assertEquals(43, $user->fields['sync_field']);
         $this->assertCount(2, $synchro2);
-        $this->assertSame(\AuthLDAP::USER_SYNCHRONIZED, $synchro2['action']);
+        $this->assertSame(AuthLDAP::USER_SYNCHRONIZED, $synchro2['action']);
         $this->assertEquals($user->getID(), $synchro2['id']);
 
         // reset attribute
@@ -1261,17 +1311,17 @@ class AuthLdapTest extends DbTestCase
         $this->assertTrue($ldap->isSyncFieldEnabled());
 
         //try to import a user from its sync_field
-        $import = \AuthLDAP::ldapImportUserByServerId(
+        $import = AuthLDAP::ldapImportUserByServerId(
             [
-                'method' => \AuthLDAP::IDENTIFIER_LOGIN,
+                'method' => AuthLDAP::IDENTIFIER_LOGIN,
                 'value'  => '10',
             ],
-            \AuthLDAP::ACTION_IMPORT,
+            AuthLDAP::ACTION_IMPORT,
             $ldap->getID(),
             true
         );
         $this->assertCount(2, $import);
-        $this->assertSame(\AuthLDAP::USER_IMPORTED, $import['action']);
+        $this->assertSame(AuthLDAP::USER_IMPORTED, $import['action']);
         $this->assertGreaterThan(0, $import['id']);
 
         //check created user
@@ -1409,11 +1459,11 @@ class AuthLdapTest extends DbTestCase
         $results = [];
         $limit = false;
 
-        $users = \AuthLDAP::getUsers(
+        $users = AuthLDAP::getUsers(
             [
                 'authldaps_id' => $ldap->getID(),
-                'ldap_filter'  => \AuthLDAP::buildLdapFilter($ldap),
-                'mode'         => \AuthLDAP::ACTION_IMPORT,
+                'ldap_filter'  => AuthLDAP::buildLdapFilter($ldap),
+                'mode'         => AuthLDAP::ACTION_IMPORT,
             ],
             $results,
             $limit
@@ -1422,15 +1472,15 @@ class AuthLdapTest extends DbTestCase
         $this->assertCount(912, $users);
         $this->assertCount(0, $results);
 
-        $_REQUEST['interface'] = \AuthLDAP::SIMPLE_INTERFACE;
+        $_REQUEST['interface'] = AuthLDAP::SIMPLE_INTERFACE;
         $_REQUEST['criterias'] = ['login_field' => 'brazil2'];
         $_REQUEST['mode'] = 0;
 
-        $users = \AuthLDAP::getUsers(
+        $users = AuthLDAP::getUsers(
             [
                 'authldaps_id' => $ldap->getID(),
-                'ldap_filter'  => \AuthLDAP::buildLdapFilter($ldap),
-                'mode'         => \AuthLDAP::ACTION_IMPORT,
+                'ldap_filter'  => AuthLDAP::buildLdapFilter($ldap),
+                'mode'         => AuthLDAP::ACTION_IMPORT,
             ],
             $results,
             $limit
@@ -1441,11 +1491,11 @@ class AuthLdapTest extends DbTestCase
 
         $_REQUEST['criterias'] = ['login_field' => 'remi'];
 
-        $users = \AuthLDAP::getUsers(
+        $users = AuthLDAP::getUsers(
             [
                 'authldaps_id' => $ldap->getID(),
-                'ldap_filter'  => \AuthLDAP::buildLdapFilter($ldap),
-                'mode'         => \AuthLDAP::ACTION_IMPORT,
+                'ldap_filter'  => AuthLDAP::buildLdapFilter($ldap),
+                'mode'         => AuthLDAP::ACTION_IMPORT,
             ],
             $results,
             $limit
@@ -1476,21 +1526,21 @@ class AuthLdapTest extends DbTestCase
     public static function removedUserProvider(): iterable
     {
         $user_options = [
-            \AuthLDAP::DELETED_USER_ACTION_USER_DO_NOTHING,
-            \AuthLDAP::DELETED_USER_ACTION_USER_DISABLE,
-            \AuthLDAP::DELETED_USER_ACTION_USER_MOVE_TO_TRASHBIN,
+            AuthLDAP::DELETED_USER_ACTION_USER_DO_NOTHING,
+            AuthLDAP::DELETED_USER_ACTION_USER_DISABLE,
+            AuthLDAP::DELETED_USER_ACTION_USER_MOVE_TO_TRASHBIN,
         ];
 
         $groups_options = [
-            \AuthLDAP::DELETED_USER_ACTION_GROUPS_DO_NOTHING,
-            \AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_DYNAMIC,
-            \AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_ALL,
+            AuthLDAP::DELETED_USER_ACTION_GROUPS_DO_NOTHING,
+            AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_DYNAMIC,
+            AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_ALL,
         ];
 
         $authorizations_options = [
-            \AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DO_NOTHING,
-            \AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_DYNAMIC,
-            \AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_ALL,
+            AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DO_NOTHING,
+            AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_DYNAMIC,
+            AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_ALL,
         ];
 
         // Yield all possible combinations
@@ -1551,17 +1601,17 @@ class AuthLdapTest extends DbTestCase
         );
 
         // Import the user
-        $import = \AuthLDAP::ldapImportUserByServerId(
+        $import = AuthLDAP::ldapImportUserByServerId(
             [
-                'method' => \AuthLDAP::IDENTIFIER_LOGIN,
+                'method' => AuthLDAP::IDENTIFIER_LOGIN,
                 'value'  => $uid,
             ],
-            \AuthLDAP::ACTION_IMPORT,
+            AuthLDAP::ACTION_IMPORT,
             $ldap->getID(),
             true
         );
         $this->assertCount(2, $import);
-        $this->assertSame(\AuthLDAP::USER_IMPORTED, $import['action']);
+        $this->assertSame(AuthLDAP::USER_IMPORTED, $import['action']);
         $this->assertGreaterThan(0, $import['id']);
 
         // Check created user
@@ -1627,7 +1677,7 @@ class AuthLdapTest extends DbTestCase
 
         $synchro = $ldap->forceOneUserSynchronization($user);
         $this->assertCount(2, $synchro);
-        $this->assertSame(\AuthLDAP::USER_DELETED_LDAP, $synchro['action']);
+        $this->assertSame(AuthLDAP::USER_DELETED_LDAP, $synchro['action']);
         $this->assertEquals($import['id'], $synchro['id']);
 
         // Refresh user
@@ -1636,17 +1686,17 @@ class AuthLdapTest extends DbTestCase
 
         // Check expected behavior according to user config
         switch ($user_option_value) {
-            case \AuthLDAP::DELETED_USER_ACTION_USER_DO_NOTHING:
+            case AuthLDAP::DELETED_USER_ACTION_USER_DO_NOTHING:
                 $this->assertTrue((bool) $user->fields['is_active']);
                 $this->assertFalse((bool) $user->fields['is_deleted']);
                 break;
 
-            case \AuthLDAP::DELETED_USER_ACTION_USER_DISABLE:
+            case AuthLDAP::DELETED_USER_ACTION_USER_DISABLE:
                 $this->assertFalse((bool) $user->fields['is_active']);
                 $this->assertFalse((bool) $user->fields['is_deleted']);
                 break;
 
-            case \AuthLDAP::DELETED_USER_ACTION_USER_MOVE_TO_TRASHBIN:
+            case AuthLDAP::DELETED_USER_ACTION_USER_MOVE_TO_TRASHBIN:
                 $this->assertTrue((bool) $user->fields['is_active']);
                 $this->assertTrue((bool) $user->fields['is_deleted']);
                 break;
@@ -1654,38 +1704,38 @@ class AuthLdapTest extends DbTestCase
 
         // Check expected behavior according to groups config
         switch ($groups_option_value) {
-            case \AuthLDAP::DELETED_USER_ACTION_GROUPS_DO_NOTHING:
+            case AuthLDAP::DELETED_USER_ACTION_GROUPS_DO_NOTHING:
                 $this->assertCount(5, $gu->find(['users_id' => $import['id']]));
                 $this->assertCount(2, $gu->find(['users_id' => $import['id'], "is_dynamic" => true]));
                 $this->assertCount(3, $gu->find(['users_id' => $import['id'], "is_dynamic" => false]));
                 break;
 
-            case \AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_DYNAMIC:
+            case AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_DYNAMIC:
                 $this->assertCount(3, $gu->find(['users_id' => $import['id']]));
                 $this->assertCount(0, $gu->find(['users_id' => $import['id'], "is_dynamic" => true]));
                 $this->assertCount(3, $gu->find(['users_id' => $import['id'], "is_dynamic" => false]));
                 break;
 
-            case \AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_ALL:
+            case AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_ALL:
                 $this->assertCount(0, $gu->find(['users_id' => $import['id']]));
                 break;
         }
 
         // Check expected behavior according to authorizations config
         switch ($authorizations_option_value) {
-            case \AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DO_NOTHING:
+            case AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DO_NOTHING:
                 $this->assertCount(4, $pu->find(['users_id' => $import['id']]));
                 $this->assertCount(2, $pu->find(['users_id' => $import['id'], "is_dynamic" => true]));
                 $this->assertCount(2, $pu->find(['users_id' => $import['id'], "is_dynamic" => false]));
                 break;
 
-            case \AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_DYNAMIC:
+            case AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_DYNAMIC:
                 $this->assertCount(2, $pu->find(['users_id' => $import['id']]));
                 $this->assertCount(0, $pu->find(['users_id' => $import['id'], "is_dynamic" => true]));
                 $this->assertCount(2, $pu->find(['users_id' => $import['id'], "is_dynamic" => false]));
                 break;
 
-            case \AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_ALL:
+            case AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_ALL:
                 $this->assertCount(0, $pu->find(['users_id' => $import['id']]));
                 break;
         }
@@ -1712,17 +1762,17 @@ class AuthLdapTest extends DbTestCase
             )
         );
 
-        $import = \AuthLDAP::ldapImportUserByServerId(
+        $import = AuthLDAP::ldapImportUserByServerId(
             [
-                'method' => \AuthLDAP::IDENTIFIER_LOGIN,
+                'method' => AuthLDAP::IDENTIFIER_LOGIN,
                 'value'  => 'testunreachable',
             ],
-            \AuthLDAP::ACTION_IMPORT,
+            AuthLDAP::ACTION_IMPORT,
             $ldap->getID(),
             true
         );
         $this->assertCount(2, $import);
-        $this->assertSame(\AuthLDAP::USER_IMPORTED, $import['action']);
+        $this->assertSame(AuthLDAP::USER_IMPORTED, $import['action']);
         $this->assertGreaterThan(0, $import['id']);
 
         // Check created user
@@ -1785,17 +1835,17 @@ class AuthLdapTest extends DbTestCase
         );
 
         // import the user
-        $import = \AuthLDAP::ldapImportUserByServerId(
+        $import = AuthLDAP::ldapImportUserByServerId(
             [
-                'method' => \AuthLDAP::IDENTIFIER_LOGIN,
+                'method' => AuthLDAP::IDENTIFIER_LOGIN,
                 'value'  => 'torestoretest',
             ],
-            \AuthLDAP::ACTION_IMPORT,
+            AuthLDAP::ACTION_IMPORT,
             $ldap->getID(),
             true
         );
         $this->assertCount(2, $import);
-        $this->assertSame(\AuthLDAP::USER_IMPORTED, $import['action']);
+        $this->assertSame(AuthLDAP::USER_IMPORTED, $import['action']);
         $this->assertGreaterThan(0, $import['id']);
 
         // check created user
@@ -1812,13 +1862,13 @@ class AuthLdapTest extends DbTestCase
             )
         );
 
-        $user_deleted_ldap_original = $CFG_GLPI['user_deleted_ldap_user'] ?? \AuthLDAP::DELETED_USER_ACTION_USER_DO_NOTHING;
+        $user_deleted_ldap_original = $CFG_GLPI['user_deleted_ldap_user'] ?? AuthLDAP::DELETED_USER_ACTION_USER_DO_NOTHING;
         // put deleted LDAP users in trashbin
-        $CFG_GLPI['user_deleted_ldap_user'] = \AuthLDAP::DELETED_USER_ACTION_USER_MOVE_TO_TRASHBIN;
+        $CFG_GLPI['user_deleted_ldap_user'] = AuthLDAP::DELETED_USER_ACTION_USER_MOVE_TO_TRASHBIN;
         $synchro = $ldap->forceOneUserSynchronization($user);
         $CFG_GLPI['user_deleted_ldap_user'] = $user_deleted_ldap_original;
         $this->assertCount(2, $synchro);
-        $this->assertSame(\AuthLDAP::USER_DELETED_LDAP, $synchro['action']);
+        $this->assertSame(AuthLDAP::USER_DELETED_LDAP, $synchro['action']);
         $this->assertSame($import['id'], $synchro['id']);
 
         // reload user from DB
@@ -1849,7 +1899,7 @@ class AuthLdapTest extends DbTestCase
         $synchro = $ldap->forceOneUserSynchronization($user);
         $CFG_GLPI['user_restored_ldap'] = $user_restored_ldap_original;
         $this->assertCount(2, $synchro);
-        $this->assertSame(\AuthLDAP::USER_RESTORED_LDAP, $synchro['action']);
+        $this->assertSame(AuthLDAP::USER_RESTORED_LDAP, $synchro['action']);
         $this->assertEquals($import['id'], $synchro['id']);
 
         // reload user from DB
@@ -1975,17 +2025,17 @@ class AuthLdapTest extends DbTestCase
             ldap_error($ldap_con)
         );
 
-        $import = \AuthLDAP::ldapImportUserByServerId(
+        $import = AuthLDAP::ldapImportUserByServerId(
             [
-                'method' => \AuthLDAP::IDENTIFIER_LOGIN,
+                'method' => AuthLDAP::IDENTIFIER_LOGIN,
                 'value'  => 'verylongdn',
             ],
-            \AuthLDAP::ACTION_IMPORT,
+            AuthLDAP::ACTION_IMPORT,
             $ldap->getID(),
             true
         );
         $this->assertCount(2, $import);
-        $this->assertSame(\AuthLDAP::USER_IMPORTED, $import['action']);
+        $this->assertSame(AuthLDAP::USER_IMPORTED, $import['action']);
         $this->assertGreaterThan(0, $import['id']);
 
         //check created user
@@ -2008,7 +2058,7 @@ class AuthLdapTest extends DbTestCase
 
         $synchro = $ldap->forceOneUserSynchronization($user);
         $this->assertCount(2, $synchro);
-        $this->assertSame(\AuthLDAP::USER_SYNCHRONIZED, $synchro['action']);
+        $this->assertSame(AuthLDAP::USER_SYNCHRONIZED, $synchro['action']);
         $this->assertSame($user->getID(), $synchro['id']);
 
         $this->assertTrue($user->getFromDB($user->getID()));
@@ -2082,17 +2132,17 @@ class AuthLdapTest extends DbTestCase
             ldap_error($ldap_con)
         );
 
-        $import = \AuthLDAP::ldapImportUserByServerId(
+        $import = AuthLDAP::ldapImportUserByServerId(
             [
-                'method' => \AuthLDAP::IDENTIFIER_LOGIN,
+                'method' => AuthLDAP::IDENTIFIER_LOGIN,
                 'value'  => 'Тестов Тест Тестович',
             ],
-            \AuthLDAP::ACTION_IMPORT,
+            AuthLDAP::ACTION_IMPORT,
             $ldap->getID(),
             true
         );
         $this->assertCount(2, $import);
-        $this->assertSame(\AuthLDAP::USER_IMPORTED, $import['action']);
+        $this->assertSame(AuthLDAP::USER_IMPORTED, $import['action']);
         $this->assertGreaterThan(0, $import['id']);
 
         //check created user
@@ -2115,7 +2165,7 @@ class AuthLdapTest extends DbTestCase
 
         $synchro = $ldap->forceOneUserSynchronization($user);
         $this->assertCount(2, $synchro);
-        $this->assertSame(\AuthLDAP::USER_SYNCHRONIZED, $synchro['action']);
+        $this->assertSame(AuthLDAP::USER_SYNCHRONIZED, $synchro['action']);
         $this->assertSame($user->getID(), $synchro['id']);
 
         $this->assertTrue($user->getFromDB($user->getID()));
@@ -2204,31 +2254,31 @@ class AuthLdapTest extends DbTestCase
         );
 
         // Import manager
-        $import_manager = \AuthLdap::ldapImportUserByServerId(
+        $import_manager = AuthLDAP::ldapImportUserByServerId(
             [
-                'method' => \AuthLDAP::IDENTIFIER_LOGIN,
+                'method' => AuthLDAP::IDENTIFIER_LOGIN,
                 'value'  => $manager_entry['uid'],
             ],
-            \AuthLDAP::ACTION_IMPORT,
+            AuthLDAP::ACTION_IMPORT,
             $ldap->getID(),
             true
         );
         $this->assertCount(2, $import_manager);
-        $this->assertSame(\AuthLDAP::USER_IMPORTED, $import_manager['action']);
+        $this->assertSame(AuthLDAP::USER_IMPORTED, $import_manager['action']);
         $this->assertGreaterThan(0, $import_manager['id']);
 
         // Import user
-        $import_user = \AuthLdap::ldapImportUserByServerId(
+        $import_user = AuthLDAP::ldapImportUserByServerId(
             [
-                'method' => \AuthLDAP::IDENTIFIER_LOGIN,
+                'method' => AuthLDAP::IDENTIFIER_LOGIN,
                 'value'  => $user_entry['uid'],
             ],
-            \AuthLDAP::ACTION_IMPORT,
+            AuthLDAP::ACTION_IMPORT,
             $ldap->getID(),
             true
         );
         $this->assertCount(2, $import_user);
-        $this->assertSame(\AuthLDAP::USER_IMPORTED, $import_user['action']);
+        $this->assertSame(AuthLDAP::USER_IMPORTED, $import_user['action']);
         $this->assertGreaterThan(0, $import_user['id']);
 
         // Check created manager
@@ -2355,10 +2405,10 @@ class AuthLdapTest extends DbTestCase
     public function testGroupRuleRight()
     {
         $this->updateItem(
-            \AuthLDAP::class,
-            getItemByTypeName(\AuthLDAP::class, '_local_ldap', true),
+            AuthLDAP::class,
+            getItemByTypeName(AuthLDAP::class, '_local_ldap', true),
             [
-                'group_search_type' => \AuthLDAP::GROUP_SEARCH_BOTH,
+                'group_search_type' => AuthLDAP::GROUP_SEARCH_BOTH,
             ]
         );
 
@@ -2566,7 +2616,7 @@ class AuthLdapTest extends DbTestCase
         unset($input['id']);
         $input['rootdn_passwd'] = 'insecure'; // cannot reuse encrypted password from `$this->ldap->fields`
         $input['basedn'] = 'dc=notglpi'; // use a non-matching base DN to ensure user cannot login on it
-        $ldap = new \AuthLDAP();
+        $ldap = new AuthLDAP();
         $this->assertGreaterThan(0, $ldap->add($input));
 
         // Update first LDAP server to make it inaccessible.
@@ -2629,7 +2679,7 @@ class AuthLdapTest extends DbTestCase
         unset($input['id']);
         $input['rootdn_passwd'] = 'insecure'; // cannot reuse encrypted password from `$this->ldap->fields`
         $input['basedn'] = 'dc=notglpi'; // use a non-matching base DN to ensure user cannot login on it
-        $ldap = new \AuthLDAP();
+        $ldap = new AuthLDAP();
         $this->assertGreaterThan(0, $ldap->add($input));
 
         // Delete the user
@@ -2703,7 +2753,7 @@ class AuthLdapTest extends DbTestCase
 
     public function testGetLdapDateValue()
     {
-        $auth = new \AuthLDAP();
+        $auth = new AuthLDAP();
         $this->assertSame('2023-02-24 15:08:00', $auth->getLdapDateValue('20230224150800.0Z'));
         $this->assertSame('2023-02-24 14:14:02', $auth->getLdapDateValue('133217216420000000'));
     }
@@ -2778,7 +2828,7 @@ class AuthLdapTest extends DbTestCase
         string $password,
         string $error
     ) {
-        \AuthLDAP::connectToServer($host, $port, $login, $password);
+        AuthLDAP::connectToServer($host, $port, $login, $password);
         $this->hasPhpLogRecordThatContains(
             $error,
             LogLevel::WARNING
@@ -2798,7 +2848,7 @@ class AuthLdapTest extends DbTestCase
             ]
         );
 
-        \AuthLDAP::connectToServer(
+        AuthLDAP::connectToServer(
             'openldap',
             '3890',
             'cn=Manager,dc=glpi,dc=org',
@@ -2829,7 +2879,7 @@ class AuthLdapTest extends DbTestCase
             ]
         );
 
-        \AuthLDAP::getGroupCNByDn($connection, 'notavaliddn');
+        AuthLDAP::getGroupCNByDn($connection, 'notavaliddn');
         $this->hasPhpLogRecordThatContains(
             $error,
             LogLevel::WARNING
@@ -2879,7 +2929,7 @@ class AuthLdapTest extends DbTestCase
         $connection = $ldap->connect();
         $this->checkLdapConnection($connection);
 
-        \AuthLDAP::getObjectByDn($connection, $filter, $basedn, ['dn']);
+        AuthLDAP::getObjectByDn($connection, $filter, $basedn, ['dn']);
         $this->hasPhpLogRecordThatContains(
             $error,
             LogLevel::WARNING
@@ -2962,7 +3012,7 @@ class AuthLdapTest extends DbTestCase
         $connection = $ldap->connect();
         $this->checkLdapConnection($connection);
 
-        \AuthLDAP::searchForUsers(
+        AuthLDAP::searchForUsers(
             $connection,
             ['basedn' => $basedn],
             $filter,
@@ -3022,7 +3072,7 @@ class AuthLdapTest extends DbTestCase
         $connection = $ldap->connect();
         $this->checkLdapConnection($connection);
 
-        \AuthLDAP::searchUserDn(
+        AuthLDAP::searchUserDn(
             $connection,
             $options + [
                 'login_field'       => 'uid',
@@ -3110,7 +3160,7 @@ class AuthLdapTest extends DbTestCase
 
         $limitexceeded = null;
 
-        \AuthLDAP::getGroupsFromLDAP(
+        AuthLDAP::getGroupsFromLDAP(
             $connection,
             $ldap,
             $filter,

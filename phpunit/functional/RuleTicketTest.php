@@ -37,12 +37,17 @@ namespace tests\units;
 use CommonITILObject;
 use Contract;
 use ContractType;
+use Entity;
+use ITILCategory;
 use ITILFollowup;
 use ITILFollowupTemplate;
 use Location;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rule;
 use RuleAction;
+use RuleCriteria;
+use TaskTemplate;
+use Ticket;
 use Ticket_Contract;
 
 // Force import because of autoloader not working
@@ -104,7 +109,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
 
         // Create rule for create regex action
         $ruleticket = new \RuleTicket();
-        $rulecrit   = new \RuleCriteria();
+        $rulecrit   = new RuleCriteria();
         $ruleaction = new RuleAction();
 
         $ruletid = $ruleticket->add($ruletinput = [
@@ -136,14 +141,14 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->checkInput($ruleaction, $action_id1, $action_input);
 
         // Create category for ticket
-        $category = new \ITILCategory();
+        $category = new ITILCategory();
         $category_id = $category->add($category_input = [
             "name" => "zabbix",
         ]);
         $this->checkInput($category, $category_id, $category_input);
 
         // Create ticket to match rule on create
-        $ticketCreate = new \Ticket();
+        $ticketCreate = new Ticket();
         $ticketsCreate_id = $ticketCreate->add($ticketCreate_input = [
             'name'              => 'test zabbix',
             'content'           => 'test zabbix',
@@ -207,7 +212,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->login();
 
         $ruleticket = $this->getRuleInstance();
-        $rulecrit   = new \RuleCriteria();
+        $rulecrit   = new RuleCriteria();
         $ruleaction = new RuleAction();
 
         $ruletid = $ruleticket->add($ruletinput = [
@@ -282,7 +287,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
 
         // Create rule
         $ruleticket = new \RuleTicket();
-        $rulecrit   = new \RuleCriteria();
+        $rulecrit   = new RuleCriteria();
         $ruleaction = new RuleAction();
 
         $ruletid = $ruleticket->add($ruletinput = [
@@ -315,7 +320,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->checkInput($ruleaction, $action_id, $action_input);
 
         // Create new group
-        $category = new \ITILCategory();
+        $category = new ITILCategory();
         $category_id = $category->add($category_input = [
             "name" => "group1",
             "code" => "R",
@@ -323,7 +328,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->checkInput($category, $category_id, $category_input);
 
         // Create a ticket
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $tickets_id = $ticket->add($ticket_input = [
             'name'              => 'test category code',
             'content'           => 'test category code',
@@ -377,7 +382,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->assertEquals($rule_value, $ticket->fields['impact']);
 
         // Create a second ticket with the contract linked
-        $ticket_2 = new \Ticket();
+        $ticket_2 = new Ticket();
         $tickets_id_2 = $ticket->add($ticket_input_2 = [
             'name'              => 'test category code',
             'content'           => 'test category code',
@@ -398,7 +403,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
 
         // Create rule
         $rule_itil = $this->getRuleInstance();
-        $rulecrit   = new \RuleCriteria();
+        $rulecrit   = new RuleCriteria();
         $ruleaction = new RuleAction();
 
         $ruletid = $rule_itil->add($ruletinput = [
@@ -541,7 +546,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
 
         // Create rule
         $ruleticket = new \RuleTicket();
-        $rulecrit   = new \RuleCriteria();
+        $rulecrit   = new RuleCriteria();
         $ruleaction = new RuleAction();
 
         $ruletid = $ruleticket->add($ruletinput = [
@@ -618,7 +623,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         foreach (['User', 'Group'] as $actoritemtype) {
             $items_id = ($actoritemtype == "User") ? $tech_id : $groups_id;
             foreach (['requester', 'observer', 'assign'] as $actortype) {
-                $ticket = new \Ticket();
+                $ticket = new Ticket();
                 $tickets_id = $ticket->add([
                     'name'    => 'test actors',
                     'content' => 'test actors',
@@ -637,7 +642,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         }
 
         // test also suppliers for assign
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $tickets_id = $ticket->add([
             'name'    => 'test actors supplier',
             'content' => 'test actors supplier',
@@ -676,7 +681,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
 
         // create rule
         $ruleticket = new \RuleTicket();
-        $rulecrit   = new \RuleCriteria();
+        $rulecrit   = new RuleCriteria();
         $ruleaction = new RuleAction();
 
         $ruletid = $ruleticket->add($ruletinput = [
@@ -708,7 +713,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->checkInput($ruleaction, $action_id, $action_input);
 
         // create ticket
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $tickets_id = $ticket->add([
             'name'    => 'test manager',
             'content' => 'test manager',
@@ -740,7 +745,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
 
         // Add rule for create / update trigger (and assign action)
         $ruleticket = new \RuleTicket();
-        $rulecrit   = new \RuleCriteria();
+        $rulecrit   = new RuleCriteria();
         $ruleaction = new RuleAction();
 
         $ruletid = $ruleticket->add($ruletinput = [
@@ -772,7 +777,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->checkInput($ruleaction, $action_id, $action_input);
 
         //create ticket to match rule on create
-        $ticketCreate = new \Ticket();
+        $ticketCreate = new Ticket();
         $ticketsCreate_id = $ticketCreate->add($ticketCreate_input = [
             'name'              => 'test project',
             'content'           => 'test project',
@@ -784,7 +789,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
             1,
             countElementsInTable(
                 \Itil_Project::getTable(),
-                ['itemtype'  =>  \Ticket::getType(),
+                ['itemtype'  =>  Ticket::getType(),
                     'projects_id'   => $projecttest1_id,
                     'items_id' => $ticketsCreate_id,
                 ]
@@ -792,7 +797,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         );
 
         //create ticket to match rule on update
-        $ticketUpdate = new \Ticket();
+        $ticketUpdate = new Ticket();
         $ticketsUpdate_id = $ticketUpdate->add($ticketUpdate_input = [
             'name'              => 'test',
             'content'           => 'test',
@@ -804,7 +809,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
             0,
             countElementsInTable(
                 \Itil_Project::getTable(),
-                ['itemtype'  =>  \Ticket::getType(),
+                ['itemtype'  =>  Ticket::getType(),
                     'projects_id'   => $projecttest1_id,
                     'items_id' => $ticketsUpdate_id,
                 ]
@@ -825,7 +830,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
             1,
             countElementsInTable(
                 \Itil_Project::getTable(),
-                ['itemtype'  =>  \Ticket::getType(),
+                ['itemtype'  =>  Ticket::getType(),
                     'projects_id'   => $projecttest1_id,
                     'items_id' => $ticketsUpdate_id,
                 ]
@@ -865,7 +870,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->checkInput($group, $group_id2, $group_input);
 
         // Create criteria to check if requester group is group1
-        $rule_criteria = new \RuleCriteria();
+        $rule_criteria = new RuleCriteria();
         $rule_criteria_id = $rule_criteria->add([
             'rules_id'  => $rule_ticket_id,
             'criteria'  => '_groups_id_requester',
@@ -892,7 +897,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->assertGreaterThan(0, $rule_action_id);
 
         // Create ticket
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $ticket_id = $ticket->add([
             'name'              => 'test',
             'content'           => 'test',
@@ -915,7 +920,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
             1,
             countElementsInTable(
                 ITILFollowup::getTable(),
-                ['itemtype' => \Ticket::getType(), 'items_id' => $ticket_id]
+                ['itemtype' => Ticket::getType(), 'items_id' => $ticket_id]
             )
         );
 
@@ -939,7 +944,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
             2,
             countElementsInTable(
                 ITILFollowup::getTable(),
-                ['itemtype' => \Ticket::getType(), 'items_id' => $ticket_id]
+                ['itemtype' => Ticket::getType(), 'items_id' => $ticket_id]
             )
         );
 
@@ -970,7 +975,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
             2,
             countElementsInTable(
                 ITILFollowup::getTable(),
-                ['itemtype' => \Ticket::getType(), 'items_id' => $ticket_id]
+                ['itemtype' => Ticket::getType(), 'items_id' => $ticket_id]
             )
         );
     }
@@ -980,7 +985,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->login('glpi', 'glpi');
 
         $ruleticket = new \RuleTicket();
-        $rulecrit   = new \RuleCriteria();
+        $rulecrit   = new RuleCriteria();
         $ruleaction = new RuleAction();
 
         $ruletid = $ruleticket->add($ruletinput = [
@@ -1049,7 +1054,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->checkInput($ruleaction, $act_id, $act_input);
 
         //create ticket to match rule
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $ticket_id = $ticket->add($ticket_input = [
             'name'              => 'test SLA',
             'content'           => 'test SLA',
@@ -1061,7 +1066,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->assertSame($location_id, $ticket->fields['locations_id']);
 
         //create ticket to not match rule
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $ticket_id = $ticket->add($ticket_input = [
             'name'              => 'test SLA',
             'content'           => 'test SLA',
@@ -1208,7 +1213,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
 
         // Create rule
         $ruleticket = new \RuleTicket();
-        $rulecrit   = new \RuleCriteria();
+        $rulecrit   = new RuleCriteria();
         $ruleaction = new RuleAction();
 
         $ruletid = $ruleticket->add($ruletinput = [
@@ -1238,7 +1243,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->checkInput($ruleaction, $act_id, $act_input);
 
         // Check ticket that trigger rule on creation
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $tickets_id = $ticket->add($ticket_input = [
             'name'             => __METHOD__,
             'content'          => __METHOD__,
@@ -1261,7 +1266,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
 
         // Create the rule to change status and add a followup template
         $ruleticket = new \RuleTicket();
-        $rulecrit   = new \RuleCriteria();
+        $rulecrit   = new RuleCriteria();
         $ruleaction = new RuleAction();
 
         $ruletid = $ruleticket->add($ruletinput = [
@@ -1306,7 +1311,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $user2->getFromDBbyName('tech');
         $this->assertGreaterThan(0, $user2->getID());
 
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         // Create ticket with two actors (requester and technician)
         $tickets_id = $ticket->add([
             'name' => 'test ticket ' . __FUNCTION__,
@@ -1328,7 +1333,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         ]);
         $this->assertGreaterThan(0, $tickets_id);
 
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $ticket->getFromDB($tickets_id);
 
         $this->assertEquals(CommonITILObject::WAITING, $ticket->fields['status']);
@@ -1341,7 +1346,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
             'date'                   => '2015-01-01 00:00:00',
         ]);
 
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $ticket->getFromDB($tickets_id);
 
         $this->assertEquals(CommonITILObject::ASSIGNED, $ticket->fields['status']);
@@ -1366,7 +1371,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
 
         // Create the rule to add a followup template and to not compute takeintoaccount delay
         $ruleticket = new \RuleTicket();
-        $rulecrit   = new \RuleCriteria();
+        $rulecrit   = new RuleCriteria();
         $ruleaction = new RuleAction();
 
         // create rule
@@ -1413,7 +1418,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->assertGreaterThan(0, $user1->getID());
 
         // Create ticket
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $tickets_id = $ticket->add([
             'name' => 'test ticket ' . __FUNCTION__,
             'content' => __FUNCTION__,
@@ -1429,7 +1434,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->assertGreaterThan(0, $tickets_id);
 
         // reload ticket
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $ticket->getFromDB($tickets_id);
 
         // check that ticket status is always new
@@ -1441,8 +1446,169 @@ class RuleTicketTest extends RuleCommonITILObjectTest
             1,
             countElementsInTable(
                 ITILFollowup::getTable(),
-                ['itemtype' => \Ticket::getType(), 'items_id' => $tickets_id]
+                ['itemtype' => Ticket::getType(), 'items_id' => $tickets_id]
             )
         );
+    }
+
+    /**
+     * Test the action of a rule that adds a closed ticket
+     * upon creation and adds a task.
+     */
+    public function testTaskTemplateDoesNotReopenAClosedTicketWithRule()
+    {
+        $this->login();
+
+        $user = getItemByTypeName('User', 'tech');
+
+        // Set entity auto assign mode to category hardware to auto assign group to add group to ticket
+        $this->updateItem(Entity::class, 0, [
+            'auto_assign_mode' => Entity::AUTO_ASSIGN_CATEGORY_HARDWARE,
+        ]);
+
+        $group = $this->createItem(\Group::class, [
+            'name' => 'Test group',
+        ]);
+
+        $this->createItem(ITILCategory::class, [
+            'name' => 'Test category',
+            'groups_id' => $group->getID(),
+        ]);
+
+        // Create rule to add a task template
+        // when the title contains 'close' key word
+        $rule = $this->createItem(Rule::class, [
+            'name'         => 'test do not compute status task with rule',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleTicket',
+            'condition'    => \RuleTicket::ONADD,
+            'is_recursive' => 1,
+        ]);
+
+        $this->createItem(RuleCriteria::class, [
+            'rules_id'  => $rule->getID(),
+            'criteria'  => 'name',
+            'condition' => Rule::PATTERN_CONTAIN,
+            'pattern'   => 'close',
+        ]);
+
+        $task_template = $this->createItem(TaskTemplate::class, [
+            'name' => 'Task template',
+            'content' => 'Test task template content',
+            'entities_id' => 0,
+            'is_recursive' => 1,
+        ]);
+
+        $this->createItem(RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'append',
+            'field'       => 'task_template',
+            'value'       => $task_template->getID(),
+        ]);
+
+        $this->login('tech', 'tech');
+
+        //First create a ticket with the key word 'close' in title to trigger the rule without close rule action
+        // to check that the task is well added and that the ticket is in assigned status
+        $ticket = $this->createItem(Ticket::class, [
+            'name' => 'test ticket close',
+            'content' => 'test ticket close content',
+            'entities_id' => 0,
+            'itilcategories_id' => getItemByTypeName(ITILCategory::class, 'Test category')->getID(),
+            '_actors'     => [
+                'requester' => [
+                    [
+                        'itemtype' => \User::class,
+                        'items_id' => $user->getID(),
+                    ],
+                ],
+            ],
+        ]);
+
+        // Check that task is added
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                \TicketTask::getTable(),
+                ['tickets_id' => $ticket->getID()]
+            )
+        );
+
+        // Check that the ticket has the right group and user assigned
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                \Ticket_User::getTable(),
+                ['tickets_id' => $ticket->getID(), 'users_id' => $user->getID()]
+            )
+        );
+
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                \Group_Ticket::getTable(),
+                ['tickets_id' => $ticket->getID(), 'groups_id' => $group->getID()]
+            )
+        );
+
+        // Check that ticket status is assigned
+        $this->assertEquals(CommonITILObject::ASSIGNED, $ticket->fields['status']);
+
+        // Now add the rule action to close the ticket
+        // when the title contains 'close' key word
+        $this->createItem(RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'assign',
+            'field'       => 'status',
+            'value'       => CommonITILObject::CLOSED,
+        ]);
+
+        // Create again a ticket with the key word 'close' in title to trigger the rule with close rule action
+        // to check that the task is well added and that the ticket is in closed status
+        // and not reopened by task template
+        $ticket = $this->createItem(Ticket::class, [
+            'name' => 'test ticket close',
+            'content' => 'test ticket close content',
+            'entities_id' => 0,
+            'itilcategories_id' => getItemByTypeName(ITILCategory::class, 'Test category')->getID(),
+            '_actors'     => [
+                'requester' => [
+                    [
+                        'itemtype' => \User::class,
+                        'items_id' => $user->getID(),
+                    ],
+                ],
+            ],
+        ]);
+
+        // Check that task is added
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                \TicketTask::getTable(),
+                ['tickets_id' => $ticket->getID()]
+            )
+        );
+
+        // Check that the ticket has the right group and user assigned
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                \Ticket_User::getTable(),
+                ['tickets_id' => $ticket->getID(), 'users_id' => $user->getID()]
+            )
+        );
+
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                \Group_Ticket::getTable(),
+                ['tickets_id' => $ticket->getID(), 'groups_id' => $group->getID()]
+            )
+        );
+
+        // Check that ticket status is closed
+        $this->assertEquals(CommonITILObject::CLOSED, $ticket->fields['status']);
     }
 }

@@ -2866,7 +2866,7 @@ TWIG, $twig_params);
         self::$last_errno = null;
         self::$last_error = null;
 
-        if (!is_string($host) || empty($host) || $host === NOT_AVAILABLE) {
+        if (!is_string($host) || empty($host)) {
             throw new RuntimeException(
                 'No host provided for connection!'
             );
@@ -2877,13 +2877,7 @@ TWIG, $twig_params);
             );
         }
 
-        //Use an LDAP connection string
-        $ldapuri = sprintf(
-            '%s://%s:%s',
-            parse_url($host, PHP_URL_SCHEME) ?: 'ldap',
-            preg_replace('@^ldaps?://@', '', $host),
-            (int) $port
-        );
+        $ldapuri = self::buildUri($host, (int) $port);
         $ds = @ldap_connect($ldapuri);
 
         if ($ds === false) {
@@ -4425,6 +4419,24 @@ TWIG, $twig_params);
             (ldap_get_option($ds, LDAP_OPT_ERROR_STRING, $err_message) ? "\nerr string: " . $err_message : '') // @phpstan-ignore theCodingMachineSafe.function
         );
         return $message;
+    }
+
+    /**
+     * Use an LDAP connection string
+     *
+     * @param string $host
+     * @param int $port
+     *
+     * @return string
+     */
+    final public static function buildUri(string $host, int $port): string
+    {
+        return sprintf(
+            '%s://%s:%s',
+            strtolower(parse_url($host, PHP_URL_SCHEME) ?: 'ldap'),
+            preg_replace('@^ldaps?://@i', '', $host),
+            $port
+        );
     }
 
     /**
