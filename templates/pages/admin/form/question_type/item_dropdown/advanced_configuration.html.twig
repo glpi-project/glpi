@@ -70,10 +70,13 @@
             root_items_id|default(0),
             __('Subtree root'),
             {
-                'display_emptychoice': true,
-                'full_width'       : true,
-                'is_horizontal'    : false,
-                'init': question is not null ? true : false,
+                'full_width'         : true,
+                'is_horizontal'      : false,
+                'init'               : question is not null ? true: false,
+                'display_emptychoice': false,
+                'toadd'              : {
+                    '-1': constant('Dropdown::EMPTY_VALUE')
+                }
             }
         ) }}
         {{ fields.numberField(
