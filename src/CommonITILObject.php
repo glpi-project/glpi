@@ -751,13 +751,13 @@ abstract class CommonITILObject extends CommonDBTM
         if ($this->isNewItem()) {
             if (isset($tt->predefined) && count($tt->predefined)) {
                 foreach ($tt->predefined as $predeffield => $predefvalue) {
-                    
+
                     // Force predefined hidden fields to be added to _hidden_fields and continue
                     if ($tt->isFieldHidden($predeffield)) {
 						$options['_hidden_fields'][$predeffield] = $predefvalue;
 						continue;
 					}
-                    
+
                     if (isset($options[$predeffield]) && isset($default_values[$predeffield])) {
                         // Is always default value : not set
                         // Set if already predefined field
