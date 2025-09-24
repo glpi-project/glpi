@@ -273,8 +273,8 @@ class AssetTest extends DbTestCase
         $input = $asset->prepareInputForUpdate([
             'custom_test_string' => 'test',
         ]);
-        $this->assertEquals(json_encode([$string_field->getID() => 'test']), $input['custom_fields']);
         $this->assertEquals('test', $input['custom_test_string']);
+        $this->assertEquals(json_encode([$string_field->getID() => 'test']), $input['custom_fields']);
 
 
         // We test it with the user having the readonly apply to his profile
@@ -288,6 +288,7 @@ class AssetTest extends DbTestCase
         $input = $asset->prepareInputForUpdate([
             'custom_test2_string' => 'test',
         ]);
+        $this->assertArrayNotHasKey('custom_test2_string', $input);
         $this->assertEquals('[]', $input['custom_fields']);
     }
 
