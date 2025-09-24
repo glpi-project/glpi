@@ -36,14 +36,10 @@
 
 {% set rand = random() %}
 
-{% if question is not null %}
-    {% set itemtype = question.getQuestionType().getDefaultValueItemtype(question) %}
-{% endif %}
-
 {% block dropdown_content %}
     <div data-glpi-form-editor-item-dropdown-advanced-configuration="{{ rand }}">
         {{ fields.dropdownField(
-            itemtype|default('ITILCategory'),
+            itemtype,
             'extra_data[root_items_id]',
             root_items_id|default(0),
             __('Subtree root'),
@@ -86,7 +82,7 @@
             import("/js/modules/Forms/ItemAdvancedConfig.js").then((m) => {
                 new m.GlpiFormItemAdvancedConfig().updateAdvancedConfigVisibility(
                     $('[data-glpi-form-editor-item-dropdown-advanced-configuration="{{ rand }}"]'),
-                    '{{ itemtype|default('ITILCategory') }}'
+                    '{{ itemtype }}'
                 );
             });
         </script>

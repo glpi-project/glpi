@@ -36,10 +36,6 @@
 
 {% set rand = random() %}
 
-{% if question is not null %}
-    {% set itemtype = question.getQuestionType().getDefaultValueItemtype(question) %}
-{% endif %}
-
 {% block dropdown_content %}
     <div data-glpi-form-editor-item-dropdown-advanced-configuration>
         {{ fields.dropdownArrayField(
@@ -69,7 +65,7 @@
             }
         ) }}
         {{ fields.dropdownField(
-            itemtype|default('ITILCategory'),
+            itemtype,
             'extra_data[root_items_id]',
             root_items_id|default(0),
             __('Subtree root'),

@@ -304,11 +304,18 @@ class QuestionTypeItem extends AbstractQuestionType implements
 
     public function renderAdvancedConfigurationTemplate(?Question $question): string
     {
+        $itemtype = $this->getDefaultValueItemtype($question);
+        if ($itemtype === null) {
+            // Retrieve first allowed itemtype if none is set
+            $itemtype = array_values($this->getAllowedItemtypes())[0][0];
+        }
+
         $twig = TemplateRenderer::getInstance();
         return $twig->render(
             'pages/admin/form/question_type/item/advanced_configuration.html.twig',
             [
                 'question'             => $question,
+                'itemtype'             => $itemtype,
                 'root_items_id'        => $this->getRootItemsId($question),
                 'subtree_depth'        => $this->getSubtreeDepth($question),
                 'selectable_tree_root' => $this->isSelectableTreeRoot($question),
@@ -645,4 +652,56 @@ class QuestionTypeItem extends AbstractQuestionType implements
         return $config->isSelectableTreeRoot();
     }
 
+    #[Override]
+    public function exportDynamicExtraData(
+        ?array $extra_data_config,
+    ): DynamicExportDataField {
+        $fallback = parent::exportDynamicExtraData($extra_data_config);
+
+        // Stop here if value is invalid or empty
+        $itemtype = $extra_data_config[QuestionTypeItemExtraDataConfig::ITEMTYPE] ?? "";
+        $root_id = $extra_data_config[QuestionTypeItemDropdownExtraDataConfig::ROOT_ITEMS_ID] ?? 0;
+        if ($root_id == 0 || !is_a($itemtype, CommonDBTM::class, true)) {
+            return $fallback;
+        }
+
+        // Load item
+        $item = $itemtype::getById($root_id);
+
+        // Replace id and register requirement
+        $requirement = DataRequirementSpecification::fromItem($item);
+        $extra_data_config[QuestionTypeItemDropdownExtraDataConfig::ROOT_ITEMS_ID] = $requirement->name;
+
+        return new DynamicExportDataField($extra_data_config, [$requirement]);
+    }
+
+    #[Override]
+    public static function prepareDynamicExtraDataForImport(
+        ?array $extra_data,
+        DatabaseMapper $mapper,
+    ): ?array {
+        $fallback = parent::prepareDynamicExtraDataForImport(
+            $extra_data,
+            $mapper,
+        );
+        if ($extra_data == null) {
+            return $fallback;
+        }
+
+        // Validate config values
+        $itemtype = $extra_data[QuestionTypeItemExtraDataConfig::ITEMTYPE] ?? "";
+        $name = $extra_data[QuestionTypeItemDropdownExtraDataConfig::ROOT_ITEMS_ID] ?? "";
+        if (
+            !(getItemForItemtype($itemtype) instanceof CommonDBTM)
+            || empty($name)
+        ) {
+            return $fallback;
+        }
+
+        // Find item id
+        $id = $mapper->getItemId($itemtype, $name);
+        $extra_data[QuestionTypeItemDropdownExtraDataConfig::ROOT_ITEMS_ID] = $id;
+
+        return $extra_data;
+    }
 }
