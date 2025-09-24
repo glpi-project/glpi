@@ -98,7 +98,6 @@ define("MANAGEMENT_GLOBAL", 1);
 //Mail send methods
 define("MAIL_MAIL", 0);
 define("MAIL_SMTP", 1);
-define("MAIL_SMTPS", 2);
 define("MAIL_SMTPSSL", 2);
 define("MAIL_SMTPTLS", 3);
 define("MAIL_SMTPOAUTH", 4);

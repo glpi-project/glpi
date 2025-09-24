@@ -1888,13 +1888,12 @@ class MailCollector extends CommonDBTM
                 break;
 
             case MAIL_SMTP:
+            case MAIL_SMTPSSL:
                 $content .= 'SMTP';
                 break;
 
-            case MAIL_SMTPS:
-            case MAIL_SMTPSSL:
             case MAIL_SMTPTLS:
-                $content .= 'SMTPS';
+                $content .= 'SMTP+TLS';
                 break;
 
             case MAIL_SMTPOAUTH:
