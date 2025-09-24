@@ -223,6 +223,7 @@ class AssetTest extends DbTestCase
         $input = $asset->prepareInputForAdd([
             'custom_test2_string' => 'test',
         ]);
+        $this->assertArrayNotHasKey('custom_test2_string', $input);
         $this->assertEquals('[]', $input['custom_fields']);
     }
 
