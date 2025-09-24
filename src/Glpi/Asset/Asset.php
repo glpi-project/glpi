@@ -407,7 +407,7 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
     public function prepareInputForAdd($input)
     {
         $input = $this->prepareGroupFields($input);
-
+        $input = $this->handleReadonlyFieldUpdate($input);
         $input = $this->handleCustomFieldsUpdate($input);
 
         return $this->prepareDefinitionInput($input);
@@ -416,10 +416,62 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
     public function prepareInputForUpdate($input)
     {
         $input = $this->prepareGroupFields($input);
-
+        $input = $this->handleReadonlyFieldUpdate($input);
         $input = $this->handleCustomFieldsUpdate($input);
 
         return $this->prepareDefinitionInput($input);
+    }
+
+    protected function handleReadonlyFieldUpdate($input): array
+    {
+        $profileId = Session::getCurrentProfile()->getId();
+        foreach (static::getDefinition()->getDecodedFieldsField() as $fieldDefinition) {
+            if (empty($fieldDefinition['field_options']) || !array_key_exists('readonly', $fieldDefinition['field_options'])) {
+                continue;
+            }
+
+            // Readonly can be an array or string....
+            if (is_array($fieldDefinition['field_options']['readonly']) && !in_array($profileId, $fieldDefinition['field_options']['readonly'])) {
+                continue;
+            }
+
+            if (is_string($fieldDefinition['field_options']['readonly']) && $profileId !== $fieldDefinition['field_options']['readonly']) {
+                continue;
+            }
+
+            // We set the value as the og one
+            $fieldName = $fieldDefinition['key'];
+            if (array_key_exists($fieldName, $this->fields)) {
+                $input[$fieldName] = $this->fields[$fieldName];
+            } else {
+                unset($input[$fieldName]);
+            }
+        }
+
+        // We verify the custom definition
+        foreach (static::getDefinition()->getCustomFieldDefinitions() as $custom_field) {
+            $fieldOptions = $custom_field->fields['field_options'] ?? [];
+            if (empty($fieldOptions) || !array_key_exists('readonly', $fieldOptions)) {
+                continue;
+            }
+
+            if (is_array($fieldOptions['readonly']) && !in_array($profileId, $fieldOptions['readonly'])) {
+                continue;
+            }
+
+            if (is_string($fieldOptions['readonly']) && $profileId !== $fieldOptions['readonly']) {
+                continue;
+            }
+
+            $fieldName = "custom_" . $custom_field->fields['system_name'];
+            if (array_key_exists($fieldName, $this->fields)) {
+                $input[$fieldName] = $this->fields[$fieldName];
+            } else {
+                unset($input[$fieldName]);
+            }
+        }
+
+        return $input;
     }
 
     protected function handleCustomFieldsUpdate(array $input): array
