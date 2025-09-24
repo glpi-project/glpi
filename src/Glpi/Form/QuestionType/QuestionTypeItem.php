@@ -307,7 +307,7 @@ class QuestionTypeItem extends AbstractQuestionType implements
         $itemtype = $this->getDefaultValueItemtype($question);
         if ($itemtype === null) {
             // Retrieve first allowed itemtype if none is set
-            $itemtype = array_values($this->getAllowedItemtypes())[0][0];
+            $itemtype = current(current($this->getAllowedItemtypes()));
         }
 
         $twig = TemplateRenderer::getInstance();
