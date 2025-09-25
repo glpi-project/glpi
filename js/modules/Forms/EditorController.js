@@ -1755,7 +1755,7 @@ export class GlpiFormEditorController
      * @param {HTMLElement} input
      */
     #computeDynamicInputSize(input) {
-        $(input).css("width", getRealInputWidth(input, "1.2rem"));
+        $(input).css("width", Math.max(input.value.length + 1, 15) + "ch");
     }
 
     /**
