@@ -297,4 +297,16 @@ JSON;
         // The main purpose is to test the internal authentication middleware.
         $this->assertNotNull($webhook->getResultForPath('/Administration/User/' . $users_id, 'new', 'User', $users_id));
     }
+
+    public function testGetMonacoSuggestions()
+    {
+        $itemtypes = \Webhook::getItemtypesDropdownValues();
+        foreach ($itemtypes as $types) {
+            $this->assertIsArray($types);
+            foreach ($types as $itemtype => $label) {
+                $suggestions = \Webhook::getMonacoSuggestions($itemtype);
+                $this->assertNotEmpty($suggestions, "Missing suggestions for $itemtype");
+            }
+        }
+    }
 }

@@ -440,7 +440,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
     /**
     * Return a list of GLPI itemtypes availabel through HL API.
     *
-    * @return array
+    * @return array<array>
     */
     public static function getItemtypesDropdownValues(): array
     {
@@ -917,7 +917,12 @@ class Webhook extends CommonDBTM implements FilterableInterface
                 $controller_class = $controller;
                 break;
             }
-            if (isset($categories['subtypes']) && array_key_exists($itemtype, $categories['subtypes'])) {
+            if (
+                isset($categories['subtypes'][$itemtype]['name'])
+                && isset($categories['subtypes'][$itemtype]['parent'])
+                && array_key_exists($itemtype, $categories['subtypes'])
+                && isset($categories['main'][$categories['subtypes'][$itemtype]['parent']]['name'])
+            ) {
                 $schema_name = $categories['subtypes'][$itemtype]['name'];
                 $schema_name = $categories['main'][$categories['subtypes'][$itemtype]['parent']]['name'] . $schema_name;
                 $controller_class = $controller;
@@ -939,6 +944,9 @@ class Webhook extends CommonDBTM implements FilterableInterface
             return [];
         }
         $schema = self::getAPISchemaBySupportedItemtype($itemtype);
+        if (is_null($schema)) {
+            return [];
+        }
         $props = Doc\Schema::flattenProperties($schema['properties'], 'item.');
         $parent_schema = self::getParentItemSchema($itemtype);
         $parent_props = $parent_schema !== [] ? Doc\Schema::flattenProperties($parent_schema['properties'], 'parent_item.') : [];
