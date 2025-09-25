@@ -185,7 +185,7 @@ class SessionTest extends DbTestCase
         $groups = $_SESSION['glpigroups'];
         $_SESSION = $session_backup;
         $expected_groups = array_map(
-            static fn ($group) => (string) $group['id'],
+            static fn($group) => (string) $group['id'],
             $user_groups
         );
         $this->assertEquals($expected_groups, $groups);
