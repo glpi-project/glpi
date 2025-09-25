@@ -3140,6 +3140,57 @@ final class FormMigrationTest extends DbTestCase
         );
     }
 
+    public function testFormMigrationWithSpecificFormCategory(): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        // Arrange: insert two form categories
+        $DB->insert('glpi_plugin_formcreator_categories', [
+            'name' => 'Category to be imported',
+        ]);
+        $categoryToImportId = $DB->insertId();
+        $DB->insert('glpi_plugin_formcreator_categories', [
+            'name' => 'Category NOT to be imported',
+        ]);
+        $categoryNotToImportId = $DB->insertId();
+
+        // Insert a form in each category
+        $DB->insert('glpi_plugin_formcreator_forms', [
+            'name'                             => 'Form in category to be imported',
+            'plugin_formcreator_categories_id' => $categoryToImportId,
+        ]);
+        $formInCategoryToBeImportedId = $DB->insertId();
+        $DB->insert('glpi_plugin_formcreator_forms', [
+            'name'                             => 'Form in category NOT to be imported',
+            'plugin_formcreator_categories_id' => $categoryNotToImportId,
+        ]);
+        $formInCategoryNotToBeImportedId = $DB->insertId();
+
+        // Act: execute migration only for the first category
+        $migration = new FormMigration(
+            db: $DB,
+            formAccessControlManager: FormAccessControlManager::getInstance(),
+            specificFormsIds: [$formInCategoryToBeImportedId]
+        );
+        $result = $migration->execute();
+
+        // Assert: make sure the migration was completed
+        $this->assertTrue($result->isFullyProcessed());
+
+        // Assert: verify that only the form in the specified category was imported
+        $form = new Form();
+        $this->assertNotFalse($form->getFromDBByCrit(['name' => 'Form in category to be imported']));
+        $this->assertFalse($form->getFromDBByCrit(['name' => 'Form in category NOT to be imported']));
+
+        // Assert: verify that the category was imported
+        $category = new Category();
+        $this->assertNotFalse($category->getFromDBByCrit(['name' => 'Category to be imported']));
+        $this->assertFalse($category->getFromDBByCrit(['name' => 'Category NOT to be imported']));
+    }
+
     public function testPluginIntegration(): void
     {
         /** @var \DBmysql $DB */
