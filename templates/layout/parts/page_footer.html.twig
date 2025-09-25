@@ -49,7 +49,7 @@
 
    {% if config('maintenance_mode') %}
       <div id="maintenance-float">
-         <a href="{{ path('front/config.form.php?forcetab=Config$5') }}">GLPI MAINTENANCE MODE</a>
+         <a href="{{ path('front/config.form.php?forcetab=Config$5') }}">{{ __('GLPI MAINTENANCE MODE') }}</a>
       </div>
    {% endif %}
 
