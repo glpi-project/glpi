@@ -38,7 +38,6 @@ use DbTestCase;
 
 class StatTest extends DbTestCase
 {
-
     /**
      * Data provider for testConstructEntryValues
      * @return array
@@ -68,7 +67,7 @@ class StatTest extends DbTestCase
             'locations_id',
             'solutiontypes_id',
             'device',
-            'comp_champ'
+            'comp_champ',
         ];
 
         $types = [
@@ -98,8 +97,8 @@ class StatTest extends DbTestCase
                         '2023-09' => 0,
                         '2023-10' => 0,
                         '2023-11' => 0,
-                        '2023-12' => 0
-                    ]
+                        '2023-12' => 0,
+                    ],
                 ];
             }
         }
@@ -108,7 +107,7 @@ class StatTest extends DbTestCase
             'inter_avgsolvedtime',
             'inter_avgclosedtime',
             'inter_avgactiontime',
-            'inter_avgtakeaccount'
+            'inter_avgtakeaccount',
         ];
 
         foreach ($params as $param) {
@@ -128,8 +127,8 @@ class StatTest extends DbTestCase
                         '2023-09' => 0,
                         '2023-10' => 0,
                         '2023-11' => 0,
-                        '2023-12' => 0
-                    ]
+                        '2023-12' => 0,
+                    ],
                 ];
             }
         }
@@ -150,8 +149,8 @@ class StatTest extends DbTestCase
                     '2023-09' => 0,
                     '2023-10' => 0,
                     '2023-11' => 0,
-                    '2023-12' => 0
-                ]
+                    '2023-12' => 0,
+                ],
             ];
         }
     }
@@ -187,7 +186,7 @@ class StatTest extends DbTestCase
             case 'usertitles_id':
                 // Create a user title
                 $title = $this->createItem(\UserTitle::class, [
-                    'name' => 'Test Title ' . uniqid()
+                    'name' => 'Test Title ' . uniqid(),
                 ]);
                 $value = $title->getID(); // Use the title ID, not the user ID
                 break;
@@ -195,7 +194,7 @@ class StatTest extends DbTestCase
             case 'usercategories_id':
                 // Create a user category
                 $usercat = $this->createItem(\UserCategory::class, [
-                    'name' => 'Test User Category ' . uniqid()
+                    'name' => 'Test User Category ' . uniqid(),
                 ]);
                 $value = $usercat->getID(); // Use the category ID, not the user ID
                 break;
@@ -204,7 +203,7 @@ class StatTest extends DbTestCase
                 // Create a location
                 $location = $this->createItem(\Location::class, [
                     'name' => 'Test Location ' . uniqid(),
-                    'entities_id' => $_SESSION['glpiactive_entity'] ?? 0
+                    'entities_id' => $_SESSION['glpiactive_entity'] ?? 0,
                 ]);
                 $value = $location->getID(); // Use the location ID
                 break;
@@ -214,7 +213,7 @@ class StatTest extends DbTestCase
                 // Create a group
                 $group = $this->createItem(\Group::class, [
                     'name' => 'Test Group ' . uniqid(),
-                    'entities_id' => $_SESSION['glpiactive_entity'] ?? 0
+                    'entities_id' => $_SESSION['glpiactive_entity'] ?? 0,
                 ]);
                 $value = $group->getID(); // Use the group ID
                 break;
@@ -223,7 +222,7 @@ class StatTest extends DbTestCase
                 // Create a supplier
                 $supplier = $this->createItem(\Supplier::class, [
                     'name' => 'Test Supplier ' . uniqid(),
-                    'entities_id' => $_SESSION['glpiactive_entity'] ?? 0
+                    'entities_id' => $_SESSION['glpiactive_entity'] ?? 0,
                 ]);
                 $value = $supplier->getID(); // Use the supplier ID
                 break;
@@ -243,7 +242,7 @@ class StatTest extends DbTestCase
             case 'solutiontypes_id':
                 // Create a solution type
                 $soltype = $this->createItem(\SolutionType::class, [
-                    'name' => 'Test Solution Type'
+                    'name' => 'Test Solution Type',
                 ]);
                 $value = $soltype->getID(); // Use the solution type ID
                 break;
@@ -309,7 +308,7 @@ class StatTest extends DbTestCase
                     'inquest_config' => 1, // Enable satisfaction surveys
                     'inquest_rate' => 100, // 100% rate
                     'inquest_delay' => 0, // Immediate
-                    'inquest_duration' => 30 // 30 days duration
+                    'inquest_duration' => 30, // 30 days duration
                 ]);
 
                 // Satisfaction surveys need CLOSED tickets (not just solved)
@@ -339,7 +338,7 @@ class StatTest extends DbTestCase
             $computer = $this->createItem(\Computer::class, [
                 'name' => 'Test computer',
                 'entities_id' => 0,
-                'is_template' => 0
+                'is_template' => 0,
             ]);
             $computers_id = $computer->getId();
 
@@ -347,21 +346,21 @@ class StatTest extends DbTestCase
             $this->createItem(\Item_Ticket::class, [
                 'itemtype' => 'Computer',
                 'items_id' => $computers_id,
-                'tickets_id' => $ticket->getID()
+                'tickets_id' => $ticket->getID(),
             ]);
 
             // For device test, create a sound card device and link it
             if ($param === 'device') {
                 $soundcard = $this->createItem(\DeviceSoundCard::class, [
                     'designation' => 'Test SoundCard',
-                    'entities_id' => 0
+                    'entities_id' => 0,
                 ]);
                 $soundcard_id = $soundcard->getId();
 
                 $this->createItem(\Item_DeviceSoundCard::class, [
                     'itemtype' => 'Computer',
                     'items_id' => $computers_id,
-                    'devicesoundcards_id' => $soundcard_id
+                    'devicesoundcards_id' => $soundcard_id,
                 ]);
 
                 // Update value to match the created device
@@ -371,14 +370,14 @@ class StatTest extends DbTestCase
             // For comp_champ test, create an operating system and link it
             if ($param === 'comp_champ') {
                 $os = $this->createItem(\OperatingSystem::class, [
-                    'name' => 'Test OS'
+                    'name' => 'Test OS',
                 ]);
                 $os_id = $os->getId();
 
                 $this->createItem(\Item_OperatingSystem::class, [
                     'itemtype' => 'Computer',
                     'items_id' => $computers_id,
-                    'operatingsystems_id' => $os_id
+                    'operatingsystems_id' => $os_id,
                 ]);
 
                 // Update value to match the created OS
@@ -401,7 +400,7 @@ class StatTest extends DbTestCase
             $value = $this->updateTicketCategory($ticket->getID());
             // Assign category to a ticket
             $this->updateItem(\Ticket::class, $ticket->getID(), [
-                'itilcategories_id' => $value
+                'itilcategories_id' => $value,
             ]);
         }
 
@@ -410,7 +409,7 @@ class StatTest extends DbTestCase
             $value = $this->addTicketLocation($ticket->getID());
             // Assign location to a ticket
             $this->updateItem(\Ticket::class, $ticket->getID(), [
-                'locations_id' => $value
+                'locations_id' => $value,
             ]);
         }
 
@@ -501,7 +500,7 @@ class StatTest extends DbTestCase
                 $titled_user = $this->createItem(\User::class, [
                     'name' => 'test_titled_user',
                     'usertitles_id' => $value, // $value is the title ID
-                    'entities_id' => $_SESSION['glpiactive_entity']
+                    'entities_id' => $_SESSION['glpiactive_entity'],
                 ]);
                 $this->assignExistingUserToTicket($tickets_id, 'user', $titled_user->getID());
                 break;
@@ -511,7 +510,7 @@ class StatTest extends DbTestCase
                 $cat_user = $this->createItem(\User::class, [
                     'name' => 'test_cat_user',
                     'usercategories_id' => $value, // $value is the category ID
-                    'entities_id' => $_SESSION['glpiactive_entity']
+                    'entities_id' => $_SESSION['glpiactive_entity'],
                 ]);
                 $this->assignExistingUserToTicket($tickets_id, 'user', $cat_user->getID());
                 break;
@@ -533,7 +532,7 @@ class StatTest extends DbTestCase
                 $this->createItem(\Group_Ticket::class, [
                     'tickets_id' => $tickets_id,
                     'groups_id' => $value, // $value is the group ID
-                    'type' => $type
+                    'type' => $type,
                 ]);
                 break;
 
@@ -550,7 +549,7 @@ class StatTest extends DbTestCase
             case 'locations_tree':
                 // The $value here is already the location ID, so just assign it to the ticket
                 $this->updateItem(\Ticket::class, $tickets_id, [
-                    'locations_id' => $value
+                    'locations_id' => $value,
                 ]);
                 break;
 
@@ -583,7 +582,7 @@ class StatTest extends DbTestCase
         // Handle users_id_recipient separately as it's a direct field update
         if ($param === 'users_id_recipient') {
             $this->updateItem(\Ticket::class, $tickets_id, [
-                'users_id_recipient' => $users_id
+                'users_id_recipient' => $users_id,
             ]);
             return;
         }
@@ -598,7 +597,7 @@ class StatTest extends DbTestCase
         $this->createItem(\Ticket_User::class, [
             'tickets_id' => $tickets_id,
             'users_id' => $users_id,
-            'type' => $type
+            'type' => $type,
         ]);
 
         // For technicien_followup, create a task
@@ -608,7 +607,7 @@ class StatTest extends DbTestCase
                 'users_id' => $users_id,
                 'users_id_tech' => $users_id,
                 'content' => 'Test task',
-                'actiontime' => 18000 // 5 hours
+                'actiontime' => 18000, // 5 hours
             ]);
         }
     }
@@ -639,7 +638,7 @@ class StatTest extends DbTestCase
         $this->createItem(\Group_Ticket::class, [
             'tickets_id' => $tickets_id,
             'groups_id' => $groups_id,
-            'type' => $type
+            'type' => $type,
         ]);
 
         return $groups_id;
@@ -653,7 +652,7 @@ class StatTest extends DbTestCase
     {
         $supplier = $this->createItem(\Supplier::class, [
             'name' => 'testsupplier',
-            'entities_id' => $_SESSION['glpiactive_entity'] ?? 0
+            'entities_id' => $_SESSION['glpiactive_entity'] ?? 0,
         ]);
 
         if (!$supplier || !$supplier->getID()) {
@@ -665,7 +664,7 @@ class StatTest extends DbTestCase
         $this->createItem(\Supplier_Ticket::class, [
             'tickets_id' => $tickets_id,
             'suppliers_id' => $suppliers_id,
-            'type' => \CommonITILActor::ASSIGN
+            'type' => \CommonITILActor::ASSIGN,
         ]);
 
         return $suppliers_id;
@@ -679,7 +678,7 @@ class StatTest extends DbTestCase
     {
         $category = $this->createItem(\ITILCategory::class, [
             'name' => 'Test category',
-            'entities_id' => $_SESSION['glpiactive_entity']
+            'entities_id' => $_SESSION['glpiactive_entity'],
         ]);
 
         if (!$category || !$category->getID()) {
@@ -689,7 +688,7 @@ class StatTest extends DbTestCase
         $categories_id = $category->getID();
 
         $this->updateItem(\Ticket::class, $tickets_id, [
-            'itilcategories_id' => $categories_id
+            'itilcategories_id' => $categories_id,
         ]);
 
         return $categories_id;
@@ -703,17 +702,17 @@ class StatTest extends DbTestCase
     {
         $location = $this->createItem(\Location::class, [
             'name' => 'Test location',
-            'entities_id' => $_SESSION['glpiactive_entity'] ?? 0
+            'entities_id' => $_SESSION['glpiactive_entity'] ?? 0,
         ]);
-        
+
         if (!$location || !$location->getID()) {
             return false;
         }
-        
+
         $locations_id = $location->getID();
 
         $this->updateItem(\Ticket::class, $tickets_id, [
-            'locations_id' => $locations_id
+            'locations_id' => $locations_id,
         ]);
 
         return $locations_id;
