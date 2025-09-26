@@ -117,6 +117,9 @@ final class ConditionData implements JsonSerializable
 
         // Retrieve supported value operators
         $item = $this->getItem();
+        if ($item === null) {
+            return false;
+        }
         $supported_value_operators = array_filter(
             $item->getConditionHandlers($this->getItemConfig()),
             fn(ConditionHandlerInterface $handler): bool => in_array(
@@ -133,10 +136,10 @@ final class ConditionData implements JsonSerializable
         return true;
     }
 
-    private function getItem(): UsedAsCriteriaInterface
+    private function getItem(): ?UsedAsCriteriaInterface
     {
         return match ($this->getItemType()) {
-            Type::QUESTION => Question::getByUuid($this->getItemUuid())->getQuestionType(),
+            Type::QUESTION => Question::getByUuid($this->getItemUuid())?->getQuestionType(),
             Type::SECTION  => Section::getByUuid($this->getItemUuid()),
             Type::COMMENT  => Comment::getByUuid($this->getItemUuid())
         };
