@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _, tinymce_editor_configs, getUUID, getRealInputWidth, sortable, tinymce, glpi_toast_info, glpi_toast_error, bootstrap, setupAjaxDropdown, setupAdaptDropdown, setHasUnsavedChanges, hasUnsavedChanges */
+/* global _, tinymce_editor_configs, getUUID, sortable, tinymce, glpi_toast_info, glpi_toast_error, bootstrap, setupAjaxDropdown, setupAdaptDropdown, setHasUnsavedChanges, hasUnsavedChanges */
 
 import { GlpiFormConditionVisibilityEditorController } from '/js/modules/Forms/ConditionVisibilityEditorController.js';
 import { GlpiFormConditionValidationEditorController } from '/js/modules/Forms/ConditionValidationEditorController.js';
@@ -129,13 +129,6 @@ export class GlpiFormEditorController
         this.#adjustContainerHeight();
         this.#initEventHandlers();
         this.#refreshUX();
-
-        // Adjust dynamics inputs size
-        $(this.#target)
-            .find("[data-glpi-form-editor-dynamic-input]")
-            .each((index, input) => {
-                this.#computeDynamicInputSize(input);
-            });
 
         // These computations are only needed if the form will be edited.
         if (!this.#is_readonly) {
@@ -416,11 +409,6 @@ export class GlpiFormEditorController
                     target.closest("[data-glpi-form-editor-question]"),
                     target.prop("checked")
                 );
-                break;
-
-            // Compute the ideal width of the given input based on its content
-            case "compute-dynamic-input":
-                this.#computeDynamicInputSize(target[0]);
                 break;
 
             // Change the type category of the target question
@@ -1089,11 +1077,6 @@ export class GlpiFormEditorController
             .find("[data-glpi-form-editor-question-details-name]")[0]
             .focus();
 
-        // Compute dynamic inputs size
-        new_question.find("[data-glpi-form-editor-dynamic-input]").each((index, input) => {
-            this.#computeDynamicInputSize(input);
-        });
-
         // Enable sortable on the new question
         this.#enableSortable(new_question);
     }
@@ -1751,14 +1734,6 @@ export class GlpiFormEditorController
     }
 
     /**
-     * Compute the ideal width of the given input based on its content.
-     * @param {HTMLElement} input
-     */
-    #computeDynamicInputSize(input) {
-        $(input).css("width", Math.max(input.value.length + 1, 15) + "ch");
-    }
-
-    /**
      * Set or remove loading state for question type specific content.
      * This makes the content appear disabled and non-interactive during condition checks.
      * @param {jQuery} question Question element
@@ -2150,11 +2125,6 @@ export class GlpiFormEditorController
         new_comment
             .find("[data-glpi-form-editor-comment-details-name]")[0]
             .focus();
-
-        // Compute dynamic inputs size
-        new_comment.find("[data-glpi-form-editor-dynamic-input]").each((index, input) => {
-            this.#computeDynamicInputSize(input);
-        });
 
         // Enable sortable on the new comment
         this.#enableSortable(new_comment);
