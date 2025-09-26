@@ -968,6 +968,14 @@ class Stat extends CommonGLPI
     ) {
         $DB = \DBConnection::getReadConnection();
 
+        // Handle empty dates by setting reasonable defaults
+        if (empty($begin)) {
+            $begin = date('Y-01-01'); // Start of current year
+        }
+        if (empty($end)) {
+            $end = date('Y-12-31'); // End of current year
+        }
+
         if (!$item = getItemForItemtype($itemtype)) {
             return;
         }
