@@ -70,8 +70,6 @@ abstract class Device extends InventoryAsset
 
     public function handle()
     {
-        global $DB;
-
         $devicetypes = Item_Devices::getItemAffinities($this->item->getType());
 
         $itemdevicetype = $this->getItemtype();
@@ -93,6 +91,7 @@ abstract class Device extends InventoryAsset
                     //cannot be empty
                     $val->designation = $itemdevice->getTypeName(1);
                 }
+                $val->designation = strip_tags($val->designation);
 
                 //force conversion if needed for date format as 2015-04-16T00:00:00Z
                 // TODO : need to straighten up date format globally (especially for JSON inventory) which does not use the converter

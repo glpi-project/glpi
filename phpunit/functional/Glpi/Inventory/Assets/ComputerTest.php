@@ -1815,4 +1815,71 @@ class ComputerTest extends AbstractInventoryAsset
         $this->assertTrue($computer->getFromDB($computers_id));
         $this->assertSame($locations_id, $computer->fields['locations_id']);
     }
+
+    public function testControllersCaptions(): void
+    {
+        $json_source = '{
+            "action": "inventory",
+            "content": {
+                "hardware": {
+                    "chassis_type": "Desktop",
+                    "datelastloggeduser": "Thu Jan 26 14:16",
+                    "dns": "127.0.0.53",
+                    "lastloggeduser": "stanisla",
+                    "memory": 32042,
+                    "name": "pc_test",
+                    "swap": 2047,
+                    "uuid": "3a82e620-d7da-11dd-ad0f-bcee7b8c72b2",
+                    "vmsystem": "Physical"
+                },
+                "bios": {
+                    "assettag": "SYS_CHASSIS_ASSET_TAG_NUM_1",
+                    "bdate": "2021-07-02",
+                    "bmanufacturer": "Intel Corp.<img src=x onerror=prompt() />",
+                    "bversion": "EBTGL357.0061.2021.0702.1707",
+                    "mmanufacturer": "Intel Corporation",
+                    "mmodel": "flghfgh5fgh",
+                    "msn": "sdf15sd5f1sd65fsLV",
+                    "smanufacturer": "Intel(R) Client Systems",
+                    "smodel": "flghfgh5fgh",
+                    "ssn": "df56dfg-dfg41f5g1f-df4fdg"
+                },
+                "controllers": [
+                    {
+                        "caption": "WD Black SN770 / <img src=x onerror=prompt() />PC SN740 256GB / PC SN560 (DRAM-less) NVMe SSD",
+                        "manufacturer": "Sandisk Corp",
+                        "name": "WD Black SN770 / PC SN74<img src=x onerror=prompt() />0 256GB / PC SN560 (DRAM-less) NVMe SSD",
+                        "pcisubsystemid": "15b7:5017",
+                        "productid": "5017",
+                        "type": "Standard NVM <s>Express Controller<s>",
+                        "vendorid": "15b7"
+                    }
+                ],
+                "versionclient": "GLPI-Agent_v1.9"
+            },
+            "deviceid": "ARN2032",
+            "itemtype": "Computer"
+        }';
+
+        $computer = new \Computer();
+        $inventory = $this->doInventory(json_decode($json_source));
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $computers_id);
+        //load / test computer entities_id root
+        $this->assertTrue($computer->getFromDB($computers_id));
+
+        //get firmware
+        $item_fw = new \Item_DeviceFirmware();
+        $this->assertTrue($item_fw->getFromDBByCrit(['itemtype' => \Computer::class, 'items_id' => $computers_id]));
+        $fw = new \DeviceFirmware();
+        $this->assertTrue($fw->getFromDB($item_fw->fields['devicefirmwares_id']));
+        $this->assertSame('Intel Corp. BIOS', $fw->fields['designation']);
+
+        //get controller
+        $item_ctrl = new \Item_DeviceControl();
+        $this->assertTrue($item_ctrl->getFromDBByCrit(['itemtype' => \Computer::class, 'items_id' => $computers_id]));
+        $ctrl = new \DeviceControl();
+        $this->assertTrue($ctrl->getFromDB($item_ctrl->fields['devicecontrols_id']));
+        $this->assertSame('WD Black SN770 / PC SN740 256GB / PC SN560 (DRAM-less) NVMe SSD', $ctrl->fields['designation']);
+    }
 }
