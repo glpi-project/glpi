@@ -92,7 +92,7 @@ final class AdministrationController extends AbstractController
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                         'description' => 'ID',
-                        'x-readonly' => true,
+                        'readOnly' => true,
                     ],
                     'username' => [
                         'x-field' => 'name',
@@ -168,13 +168,13 @@ final class AdministrationController extends AbstractController
                         'type' => Doc\Schema::TYPE_STRING,
                         'format' => Doc\Schema::FORMAT_STRING_PASSWORD,
                         'description' => 'Password',
-                        'x-writeonly' => true,
+                        'writeOnly' => true,
                     ],
                     'password2' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'format' => Doc\Schema::FORMAT_STRING_PASSWORD,
                         'description' => 'Password confirmation',
-                        'x-writeonly' => true,
+                        'writeOnly' => true,
                     ],
                     'picture' => [
                         'type' => Doc\Schema::TYPE_STRING,
@@ -199,7 +199,7 @@ final class AdministrationController extends AbstractController
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                         'description' => 'ID',
-                        'x-readonly' => true,
+                        'readOnly' => true,
                     ],
                     'name' => [
                         'type' => Doc\Schema::TYPE_STRING,
@@ -251,7 +251,7 @@ final class AdministrationController extends AbstractController
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                         'description' => 'ID',
-                        'x-readonly' => true,
+                        'readOnly' => true,
                     ],
                     'name' => [
                         'type' => Doc\Schema::TYPE_STRING,
@@ -302,7 +302,7 @@ final class AdministrationController extends AbstractController
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                         'description' => 'ID',
-                        'x-readonly' => true,
+                        'readOnly' => true,
                     ],
                     'name' => [
                         'type' => Doc\Schema::TYPE_STRING,

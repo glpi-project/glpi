@@ -60,7 +60,7 @@ final class SetupController extends AbstractController
                     'id' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                        'x-readonly' => true,
+                        'readOnly' => true,
                     ],
                     'name' => ['type' => Doc\Schema::TYPE_STRING],
                     'host' => ['type' => Doc\Schema::TYPE_STRING],
@@ -91,7 +91,7 @@ final class SetupController extends AbstractController
                     ],
                     'rootdn_password' => [
                         'type' => Doc\Schema::TYPE_STRING,
-                        'x-writeonly' => true,
+                        'writeOnly' => true,
                         'description' => 'The password of the user to bind to the directory',
                     ],
                     'login_field' => [

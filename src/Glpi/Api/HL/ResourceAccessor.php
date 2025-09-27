@@ -128,7 +128,7 @@ final class ResourceAccessor
                 $prop_name = strstr($prop_name, '.', true);
                 $prop = $schema['properties'][$prop_name];
             } else {
-                if ($prop['x-readonly'] ?? false) {
+                if ($prop['readOnly'] ?? false) {
                     // Ignore properties marked as read-only
                     continue;
                 }

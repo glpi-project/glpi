@@ -115,7 +115,7 @@ final class ITILController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'completename' => ['type' => Doc\Schema::TYPE_STRING],
@@ -132,7 +132,7 @@ final class ITILController extends AbstractController
             'id' => [
                 'type' => Doc\Schema::TYPE_INTEGER,
                 'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                'x-readonly' => true,
+                'readOnly' => true,
             ],
             'name' => ['type' => Doc\Schema::TYPE_STRING],
             'completename' => ['type' => Doc\Schema::TYPE_STRING],
@@ -174,7 +174,7 @@ final class ITILController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'content' => ['type' => Doc\Schema::TYPE_STRING],
@@ -198,7 +198,7 @@ final class ITILController extends AbstractController
                 ],
                 'actiontime' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -214,7 +214,7 @@ final class ITILController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'type' => ['type' => Doc\Schema::TYPE_STRING],
@@ -442,7 +442,7 @@ final class ITILController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'content' => ['type' => Doc\Schema::TYPE_STRING],
                 'is_private' => ['type' => Doc\Schema::TYPE_BOOLEAN],
@@ -490,7 +490,7 @@ final class ITILController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN],
@@ -505,7 +505,7 @@ final class ITILController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -550,7 +550,7 @@ final class ITILController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'itemtype' => ['type' => Doc\Schema::TYPE_STRING,],
                 'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
@@ -572,7 +572,7 @@ final class ITILController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
                 'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
@@ -588,7 +588,7 @@ final class ITILController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'requester' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
                 'approver' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_validate', full_schema: 'User'),
@@ -667,7 +667,7 @@ final class ITILController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -705,7 +705,7 @@ final class ITILController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -743,7 +743,7 @@ final class ITILController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'text' => ['type' => Doc\Schema::TYPE_STRING],
@@ -777,7 +777,7 @@ final class ITILController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -796,7 +796,7 @@ final class ITILController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'uuid' => ['type' => Doc\Schema::TYPE_STRING, 'pattern' => Doc\Schema::PATTERN_UUIDV4],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],

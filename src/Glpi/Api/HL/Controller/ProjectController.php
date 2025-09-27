@@ -112,7 +112,7 @@ final class ProjectController extends AbstractController
                     'id' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                        'x-readonly' => true,
+                        'readOnly' => true,
                     ],
                     'name' => ['type' => Doc\Schema::TYPE_STRING],
                     'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -146,7 +146,7 @@ final class ProjectController extends AbstractController
                                 'id' => [
                                     'type' => Doc\Schema::TYPE_INTEGER,
                                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                    'x-readonly' => true,
+                                    'readOnly' => true,
                                 ],
                                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -230,7 +230,7 @@ final class ProjectController extends AbstractController
                     'id' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                        'x-readonly' => true,
+                        'readOnly' => true,
                     ],
                     'name' => ['type' => Doc\Schema::TYPE_STRING],
                     'comment' => ['type' => Doc\Schema::TYPE_STRING],
