@@ -41,14 +41,13 @@ namespace tests\units {
     use Glpi\Toolbox\VersionParser;
     use org\bovigo\vfs\vfsStream;
     use PHPUnit\Framework\Attributes\DataProvider;
-    use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+    use PHPUnit\Framework\Attributes\RunInSeparateProcess;
     use Plugin;
+    use Random\RandomException;
 
-    #[RunTestsInSeparateProcesses]
     class PluginTest extends DbTestCase
     {
         private $test_plugin_directory = 'test';
-        private $anothertest_plugin_directory = 'anothertest';
         public static bool $plugin_test_check_config = true;
         public static bool $plugin_test_check_prerequisites = true;
 
@@ -66,6 +65,19 @@ namespace tests\units {
         public function tearDown(): void
         {
             parent::tearDown();
+        }
+
+        /**
+         * @return string a randomized plugin directory name composed only of lowercase letters
+         * @throws RandomException
+         */
+        private function getRandomPluginName()
+        {
+            $name = '';
+            for ($i = 0; $i < 15; $i++) {
+                $name .= chr(random_int(97, 122));
+            }
+            return $name;
         }
 
         /**
@@ -237,8 +249,9 @@ namespace tests\units {
          */
         public function testCheckPluginStateForInvalidKnownPlugin()
         {
+            $directory = $this->getRandomPluginName();
             $initial_data = [
-                'directory' => $this->test_plugin_directory,
+                'directory' => $directory,
                 'name' => 'Test plugin',
                 'version' => '1.0',
                 'state' => Plugin::ACTIVATED,
@@ -249,12 +262,13 @@ namespace tests\units {
                 $initial_data,
                 null,
                 $expected_data,
-                'Unable to load plugin "' . $this->test_plugin_directory . '" information.'
+                'Unable to load plugin "' . $directory . '" information.',
+                $directory
             );
 
             // check also Plugin::isActivated method
             $plugin_inst = new Plugin();
-            $this->assertFalse($plugin_inst->isActivated($this->test_plugin_directory));
+            $this->assertFalse($plugin_inst->isActivated($directory));
         }
 
         /**
@@ -263,7 +277,7 @@ namespace tests\units {
          */
         public function testCheckPluginStateForNewPlugin()
         {
-
+            $directory = $this->getRandomPluginName();
             $setup_informations = [
                 'name' => 'Test plugin',
                 'version' => '1.0',
@@ -271,15 +285,16 @@ namespace tests\units {
             $expected_data = array_merge(
                 $setup_informations,
                 [
-                    'directory' => $this->test_plugin_directory,
+                    'directory' => $directory,
                     'state' => Plugin::NOTINSTALLED,
                 ]
             );
 
             $this->doTestCheckPluginState(
-                null,
-                $setup_informations,
-                $expected_data
+                initial_data: null,
+                setup_informations: $setup_informations,
+                expected_data: $expected_data,
+                plugin_directory: $directory
             );
         }
 
@@ -289,13 +304,14 @@ namespace tests\units {
          */
         public function testCheckPluginStateForNewPluginThatHasBeenReplaced()
         {
+            $old_directory = $this->getRandomPluginName();
+            $new_directory = $this->getRandomPluginName();
             // Create files for replacement plugin
             $new_informations = [
                 'name' => 'Test plugin revamped',
-                'oldname' => $this->test_plugin_directory,
+                'oldname' => $old_directory,
                 'version' => '2.0',
             ];
-            $new_directory = $this->anothertest_plugin_directory;
             $this->createTestPluginFiles(
                 true,
                 $new_informations,
@@ -310,15 +326,16 @@ namespace tests\units {
             $expected_data = array_merge(
                 $setup_informations,
                 [
-                    'directory' => $this->test_plugin_directory,
+                    'directory' => $old_directory,
                     'state' => Plugin::REPLACED,
                 ]
             );
 
             $this->doTestCheckPluginState(
-                null,
-                $setup_informations,
-                $expected_data
+                initial_data: null,
+                setup_informations: $setup_informations,
+                expected_data: $expected_data,
+                plugin_directory: $old_directory
             );
         }
 
@@ -329,8 +346,9 @@ namespace tests\units {
          */
         public function testCheckPluginStateForInstalledAndUpdatablePlugin()
         {
+            $directory = $this->getRandomPluginName();
             $initial_data = [
-                'directory' => $this->test_plugin_directory,
+                'directory' => $directory,
                 'name' => 'Test plugin',
                 'version' => '1.0',
                 'state' => Plugin::ACTIVATED,
@@ -351,12 +369,13 @@ namespace tests\units {
                 $initial_data,
                 $setup_informations,
                 $expected_data,
-                'Plugin "' . $this->test_plugin_directory . '" version changed. It has been deactivated as its update process has to be launched.'
+                'Plugin "' . $directory . '" version changed. It has been deactivated as its update process has to be launched.',
+                $directory
             );
 
             // check also Plugin::isUpdatable method
             $plugin_inst = $this->getPluginMock();
-            $this->assertTrue($plugin_inst->isUpdatable($this->test_plugin_directory));
+            $this->assertTrue($plugin_inst->isUpdatable($directory));
         }
 
         /**
@@ -366,9 +385,9 @@ namespace tests\units {
          */
         public function testCheckPluginStateForNotInstalledAndUpdatablePlugin()
         {
-
+            $directory = $this->getRandomPluginName();
             $initial_data = [
-                'directory' => $this->test_plugin_directory,
+                'directory' => $directory,
                 'name' => 'Test plugin',
                 'version' => '1.0',
                 'state' => Plugin::NOTINSTALLED,
@@ -386,9 +405,10 @@ namespace tests\units {
             );
 
             $this->doTestCheckPluginState(
-                $initial_data,
-                $setup_informations,
-                $expected_data
+                initial_data: $initial_data,
+                setup_informations: $setup_informations,
+                expected_data: $expected_data,
+                plugin_directory: $directory
             );
         }
 
@@ -399,9 +419,9 @@ namespace tests\units {
          */
         public function testCheckPluginStateForNotUpdatededAndUpdatablePlugin()
         {
-
+            $directory = $this->getRandomPluginName();
             $initial_data = [
-                'directory' => $this->test_plugin_directory,
+                'directory' => $directory,
                 'name' => 'Test plugin',
                 'version' => '1.0',
                 'state' => Plugin::NOTUPDATED,
@@ -419,9 +439,10 @@ namespace tests\units {
             );
 
             $this->doTestCheckPluginState(
-                $initial_data,
-                $setup_informations,
-                $expected_data
+                initial_data: $initial_data,
+                setup_informations: $setup_informations,
+                expected_data: $expected_data,
+                plugin_directory: $directory
             );
         }
 
@@ -432,14 +453,15 @@ namespace tests\units {
         public function testCheckPluginStateForKnownPluginThatHasBeenReplaced()
         {
             $plugin = $this->getPluginMock();
+            $old_directory = $this->getRandomPluginName();
+            $new_directory = $this->getRandomPluginName();
 
             // Create files for replacement plugin
             $new_informations = [
                 'name' => 'Test plugin revamped',
-                'oldname' => $this->test_plugin_directory,
+                'oldname' => $old_directory,
                 'version' => '2.0',
             ];
-            $new_directory = $this->anothertest_plugin_directory;
             $this->createTestPluginFiles(
                 true,
                 $new_informations,
@@ -447,9 +469,8 @@ namespace tests\units {
             );
 
             // Create initial data in DB
-            $old_directory = $this->test_plugin_directory;
             $initial_data = [
-                'directory' => $this->test_plugin_directory,
+                'directory' => $old_directory,
                 'name' => 'Old plugin',
                 'version' => '1.0',
                 'state' => Plugin::ACTIVATED,
@@ -509,8 +530,9 @@ namespace tests\units {
          */
         public function testCheckPluginStateForInactiveAndNotUpdatedPlugin()
         {
+            $directory = $this->getRandomPluginName();
             $initial_data = [
-                'directory' => $this->test_plugin_directory,
+                'directory' => $directory,
                 'name' => 'Test plugin',
                 'version' => '1.0',
                 'state' => Plugin::NOTACTIVATED,
@@ -522,9 +544,10 @@ namespace tests\units {
             $expected_data = $initial_data;
 
             $this->doTestCheckPluginState(
-                $initial_data,
-                $setup_informations,
-                $expected_data
+                initial_data: $initial_data,
+                setup_informations: $setup_informations,
+                expected_data: $expected_data,
+                plugin_directory: $directory
             );
         }
 
@@ -533,6 +556,7 @@ namespace tests\units {
          * but not validating config.
          * Should results in changing plugin state to "TOBECONFIGURED".
          */
+        #[RunInSeparateProcess]
         public function testCheckPluginStateForInactiveAndNotUpdatedPluginNotValidatingConfig()
         {
             $initial_data = [
@@ -569,8 +593,9 @@ namespace tests\units {
          */
         public function testCheckPluginStateForActiveAndNotUpdatedPluginNotMatchingVersions()
         {
+            $directory = $this->getRandomPluginName();
             $initial_data = [
-                'directory' => $this->test_plugin_directory,
+                'directory' => $directory,
                 'name' => 'Test plugin',
                 'version' => '1.0',
                 'state' => Plugin::ACTIVATED,
@@ -592,15 +617,16 @@ namespace tests\units {
             );
 
             $this->doTestCheckPluginState(
-                $initial_data,
-                $setup_informations,
-                $expected_data,
-                'Plugin "' . $this->test_plugin_directory . '" prerequisites are not matched. It has been deactivated.'
+                initial_data: $initial_data,
+                setup_informations: $setup_informations,
+                expected_data: $expected_data,
+                expected_warning: 'Plugin "' . $directory . '" prerequisites are not matched. It has been deactivated.',
+                plugin_directory: $directory
             );
 
             // check also Plugin::isUpdatable method
             $plugin_inst = $this->getPluginMock();
-            $this->assertFalse($plugin_inst->isUpdatable($this->test_plugin_directory));
+            $this->assertFalse($plugin_inst->isUpdatable($directory));
         }
 
         /**
@@ -608,6 +634,7 @@ namespace tests\units {
          * but not matching prerequisites.
          * Should results in changing plugin state to "NOTACTIVATED".
          */
+        #[RunInSeparateProcess]
         public function testCheckPluginStateForActiveAndNotUpdatedPluginNotMatchingPrerequisites()
         {
             $initial_data = [
@@ -642,6 +669,7 @@ namespace tests\units {
          * but not validating config.
          * Should results in changing plugin state to "TOBECONFIGURED".
          */
+        #[RunInSeparateProcess]
         public function testCheckPluginStateForActiveAndNotUpdatedPluginNotValidatingConfig()
         {
             $initial_data = [
@@ -676,6 +704,7 @@ namespace tests\units {
          * matching prerequisites and validating config.
          * Should results in no changes.
          */
+        #[RunInSeparateProcess]
         public function testCheckPluginStateForActiveAndNotUpdatedPluginMatchingPrerequisitesAndConfig()
         {
             $initial_data = [
@@ -707,8 +736,9 @@ namespace tests\units {
          */
         public function testCheckPluginStateForActiveAndNotUpdatedPluginHavingNoCheckFunctions()
         {
+            $directory = $this->getRandomPluginName();
             $initial_data = [
-                'directory' => $this->test_plugin_directory,
+                'directory' => $directory,
                 'name' => 'Test plugin',
                 'version' => '1.0',
                 'state' => Plugin::ACTIVATED,
@@ -720,15 +750,16 @@ namespace tests\units {
             $expected_data = $initial_data;
 
             $this->doTestCheckPluginState(
-                $initial_data,
-                $setup_informations,
-                $expected_data
+                initial_data: $initial_data,
+                setup_informations: $setup_informations,
+                expected_data: $expected_data,
+                plugin_directory: $directory
             );
 
             // check also Plugin::isActivated method
             // Plugins are not initialized, so the setup file is tried to be loaded which doesn't exist. Therefore, the plugin is not considered as activated.
             $plugin_inst = $this->getPluginMock();
-            $this->assertFalse($plugin_inst->isActivated($this->test_plugin_directory));
+            $this->assertFalse($plugin_inst->isActivated($directory));
         }
 
         public function testGetPluginOptionsWithExpectedResult()
@@ -814,8 +845,8 @@ PHP
 
         public function testGetPluginOptionsWithUnexpectedResult()
         {
-            $key = $this->test_plugin_directory;
-            $plugin_path = $this->getTestPluginPath($key);
+            $directory = $this->getRandomPluginName();
+            $plugin_path = $this->getTestPluginPath($directory);
 
             $this->assertTrue(mkdir($plugin_path, 0o700, true));
             $this->assertNotFalse(
@@ -823,13 +854,13 @@ PHP
                     implode(DIRECTORY_SEPARATOR, [$plugin_path, 'setup.php']),
                     <<<PHP
 <?php
-function plugin_version_{$key}() {
+function plugin_version_{$directory}() {
     return [
         'name'    => 'Test plugin',
         'version' => '1.0',
     ];
 }
-function plugin_{$key}_options() {
+function plugin_{$directory}_options() {
     return 'malformed result';
 }
 PHP
@@ -839,7 +870,7 @@ PHP
             $plugin = $this->getPluginMock();
             $plugin_id = $plugin->add(
                 [
-                    'directory' => $key,
+                    'directory' => $directory,
                     'name' => 'Test plugin',
                     'version' => '1.0',
                     'state' => Plugin::ACTIVATED,
@@ -853,12 +884,12 @@ PHP
             set_error_handler(static function ($code, $message) use (&$errors) {
                 $errors[] = new Error($message, $code);
             }, E_USER_WARNING);
-            $result = $plugin->getPluginOptions($key);
+            $result = $plugin->getPluginOptions($directory);
             restore_error_handler();
             $this->assertCount(1, $errors);
             $this->assertEquals(E_USER_WARNING, $errors[0]->getCode());
             $this->assertEquals(
-                sprintf('Invalid "options" key provided by plugin `plugin_%s_options()` method.', $key),
+                sprintf('Invalid "options" key provided by plugin `plugin_%s_options()` method.', $directory),
                 $errors[0]->getMessage()
             );
 
@@ -973,10 +1004,10 @@ PHP
          *
          * @return void
          */
-        private function doTestCheckPluginState($initial_data, $setup_informations, $expected_data, $expected_warning = null)
+        private function doTestCheckPluginState($initial_data, $setup_informations, $expected_data, $expected_warning = null, $plugin_directory = null)
         {
-            $plugin_directory = $this->test_plugin_directory;
-            $test_plugin_path = $this->getTestPluginPath($this->test_plugin_directory);
+            $plugin_directory ??= $this->test_plugin_directory;
+            $test_plugin_path = $this->getTestPluginPath($plugin_directory);
             $plugin = $this->getPluginMock();
 
             // Fail if plugin already exists in DB or filesystem, as this is not expected
@@ -991,22 +1022,23 @@ PHP
 
             // Create test plugin files
             $this->createTestPluginFiles(
-                null !== $setup_informations,
-                $setup_informations ?? []
+                withsetup: null !== $setup_informations,
+                informations: $setup_informations ?? [],
+                directory: $plugin_directory
             );
 
             // Check state
             if (null !== $expected_warning) {
                 $errors = [];
                 // PHPUnit won't let us expect errors so we need our own handler
-                set_error_handler(static function ($code, $message) use (&$errors) {
-                    $errors[] = new Error($message, $code);
+                set_error_handler(static function ($errno, $errstr) use (&$errors) {
+                    $errors[] = $errstr;
                 }, E_USER_WARNING);
 
                 $plugin->checkPluginState($plugin_directory);
                 restore_error_handler();
                 $this->assertCount(1, $errors);
-                $this->assertEquals($expected_warning, $errors[0]->getMessage());
+                $this->assertEquals($expected_warning, $errors[0]);
             } else {
                 $plugin->checkPluginState($plugin_directory, true);
             }
@@ -1035,9 +1067,7 @@ PHP
          */
         private function createTestPluginFiles($withsetup = true, array $informations = [], $directory = null)
         {
-            if (null === $directory) {
-                $directory = $this->test_plugin_directory;
-            }
+            $directory ??= $this->test_plugin_directory;
             $plugin_path = $this->getTestPluginPath($directory);
 
             $this->assertTrue(mkdir($plugin_path, 0o700, true));
