@@ -1068,6 +1068,7 @@ TWIG, $twig_params);
                                     field_class: 'col-4',
                                 }) }}
                                 {% set btn_install %}
+                                    <input type="hidden" name="printers_id" value="{{ printer.getID() }}">
                                     <input type="submit" name="install" value="{{ install_label }}" class="btn btn-primary">
                                     <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                                 {% endset %}
