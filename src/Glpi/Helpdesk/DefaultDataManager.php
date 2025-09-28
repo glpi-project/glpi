@@ -174,7 +174,9 @@ final class DefaultDataManager
                 $form_stmt->execute([Form::TRANSLATION_KEY_DESCRIPTION, $lang, json_encode(['one' => $translated_description]), $description_hash]);
             }
             $translated_section_name = $TRANSLATE->translate($first_section->fields['name'], 'glpi', $lang);
-            $section_stmt->execute([$first_section->getID(), Section::TRANSLATION_KEY_NAME, $lang, json_encode(['one' => $translated_section_name]), $section_name_hash]);
+            if ($translated_section_name !== $first_section->fields['name']) {
+                $section_stmt->execute([$first_section->getID(), Section::TRANSLATION_KEY_NAME, $lang, json_encode(['one' => $translated_section_name]), $section_name_hash]);
+            }
         }
     }
 
