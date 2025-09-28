@@ -155,7 +155,7 @@ TWIG, $twig_params);
             $opt['joinparams']['condition'] = [
                 QueryFunction::jsonContains([
                     'glpi_assets_assets.custom_fields',
-                    QueryFunction::cast('NEWTABLE.id', 'JSON'),
+                    'NEWTABLE.id',
                     new QueryExpression($DB::quoteValue('$."' . $this->custom_field->fields['id'] . '"')),
                 ]),
             ];
