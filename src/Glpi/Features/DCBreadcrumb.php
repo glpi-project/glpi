@@ -71,6 +71,7 @@ trait DCBreadcrumb
                     $pdu_rack->getFromDBByCrit(['pdus_id'  => $item->getID()])
                     && $rack->getFromDB($pdu_rack->fields['racks_id'])
                 ) {
+                    $location = Location::getFromItem($rack) ?: null;
                     $breadcrumb[Rack::getType()] = [
                         'link'     => $rack->getLink(
                             [
@@ -80,6 +81,7 @@ trait DCBreadcrumb
                         ),
                         'position' => $pdu_rack->fields['position'],
                         'side'     => $pdu_rack->fields['side'],
+                        'location' => $location?->fields,
                     ];
 
                     $item = $rack;
