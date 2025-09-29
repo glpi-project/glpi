@@ -229,8 +229,8 @@ class AssetTest extends DbTestCase
                     'required' => '0',
                     '_readonly' => '1',
                     'readonly' => [$user_profile->getID()],
-                ]
-            ]
+                ],
+            ],
         ];
         $this->updateItem(AssetDefinition::class, $asset_definition->getID(), $update, ['fields_display', 'field_options']);
 
@@ -314,8 +314,8 @@ class AssetTest extends DbTestCase
                     'required' => '0',
                     '_readonly' => '1',
                     'readonly' => [$user_profile->getID()],
-                ]
-            ]
+                ],
+            ],
         ];
         $this->updateItem(AssetDefinition::class, $asset_definition->getID(), $update, ['fields_display', 'field_options']);
 
