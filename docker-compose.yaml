@@ -56,6 +56,27 @@ services:
       PORT_glpi: 3306
       ENGINE_glpi: "mysql@dbgate-plugin-mysql"
 
+  # To use as a LDAP connection inside GLPI, you'll need to set the following values:
+  # server: openldap
+  # port: 1389
+  # connection filter: (objectClass=inetOrgPerson)
+  # base dn: dc=example,dc=org
+  # Use bind: yes
+  # Root DN: cn=admin,dc=example,dc=org
+  # Password: adminpassword
+  # Login field: uid
+  # Synchronization field: entryuuid
+  # TODO: create a bin/console dev command that create a LDAP server object with
+  # the information above to make things even easier ;)
+  openldap:
+    image: bitnami/openldap:latest
+    environment:
+      - LDAP_ADMIN_USERNAME=admin
+      - LDAP_ADMIN_PASSWORD=adminpassword
+      - LDAP_USERS=user01,user02
+      - LDAP_PASSWORDS=password1,password2
+      - LDAP_ROOT=dc=example,dc=org
+
 volumes:
   db:
   custom_php_ini:
