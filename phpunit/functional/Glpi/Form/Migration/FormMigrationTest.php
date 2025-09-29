@@ -238,6 +238,9 @@ final class FormMigrationTest extends DbTestCase
                 $data
             )
         );
+
+        // migrated forms should always have single_page render_layout
+        $this->assertEquals('single_page', $form->fields['render_layout']);
     }
 
     public static function provideFormMigrationSections(): iterable
