@@ -64,7 +64,6 @@
     data-ajax-submit-itemtype="Glpi\Form\Form" {# Target itemtype #}
     data-track-changes="true"
 >
-    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}
 
     {# Form editor page #}
     {# UX and items placement are a work in progress #}
@@ -222,6 +221,8 @@
                                                 return renderLayoutTemplateResult(data).addClass('flex-row-reverse');
                                             }
                                         </script>
+
+                                        {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}
 
                                         {{ fields.dropdownArrayField(
                                             'render_layout',
