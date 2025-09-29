@@ -34,6 +34,8 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% block more_fields %}
-    {{ fields.dropdownField('Profile', 'profiles_id', 0, 'Profile'|itemtype_name) }}
-    {{ fields.dropdownYesNo('is_recursive', 0, __('Recursive')) }}
+    {% if short|default(false) %}
+        {{ fields.dropdownField('Profile', 'profiles_id', 0, 'Profile'|itemtype_name) }}
+        {{ fields.dropdownYesNo('is_recursive', 0, __('Recursive')) }}
+    {% endif %}
 {% endblock %}
