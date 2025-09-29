@@ -85,7 +85,7 @@ final class DropdownController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'completename' => ['type' => Doc\Schema::TYPE_STRING],
@@ -120,7 +120,7 @@ final class DropdownController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'completename' => ['type' => Doc\Schema::TYPE_STRING],
@@ -163,7 +163,7 @@ final class DropdownController extends AbstractController
             $schemas['State_Visibilities']['properties'][$visiblity] = [
                 'type' => Doc\Schema::TYPE_BOOLEAN,
                 'x-field' => 'is_visible',
-                'x-readonly' => true,
+                'readOnly' => true,
                 'x-join' => [
                     'table' => DropdownVisibility::getTable(),
                     'fkey' => 'id',
@@ -186,7 +186,7 @@ final class DropdownController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -204,7 +204,7 @@ final class DropdownController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],

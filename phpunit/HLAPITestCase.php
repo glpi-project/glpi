@@ -358,7 +358,7 @@ final class HLAPIHelper
         }
         // remove writeonly properties from $create_params so checks below don't fail
         foreach ($flattened_props as $key => $value) {
-            if (isset($value['x-writeonly']) && $value['x-writeonly'] === true) {
+            if (isset($value['writeOnly']) && $value['writeOnly'] === true) {
                 unset($create_params[$key]);
             }
         }

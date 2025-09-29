@@ -135,7 +135,7 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -152,7 +152,7 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -170,7 +170,7 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'completename' => ['type' => Doc\Schema::TYPE_STRING],
@@ -188,7 +188,7 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -205,7 +205,7 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -223,7 +223,7 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -242,7 +242,7 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -267,7 +267,7 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -286,7 +286,7 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -311,7 +311,7 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -328,7 +328,7 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -345,7 +345,7 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -382,7 +382,7 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
@@ -549,7 +549,7 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'entities_id' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'cartridgeitems_id' => self::getDropdownTypeSchema(class: CartridgeItem::class, full_schema: 'CartridgeItem'),
@@ -557,27 +557,27 @@ final class AssetController extends AbstractController
                 'date_in' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'date_use' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'date_out' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'date_creation' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'date_mod' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
             ],
         ];
@@ -591,7 +591,7 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -619,7 +619,7 @@ final class AssetController extends AbstractController
                             'id' => [
                                 'type' => Doc\Schema::TYPE_INTEGER,
                                 'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                'x-readonly' => true,
+                                'readOnly' => true,
                             ],
                             'name' => ['type' => Doc\Schema::TYPE_STRING],
                             'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -641,7 +641,7 @@ final class AssetController extends AbstractController
                             'id' => [
                                 'type' => Doc\Schema::TYPE_INTEGER,
                                 'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                'x-readonly' => true,
+                                'readOnly' => true,
                             ],
                             'pages' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                             'date_in' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -663,29 +663,29 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'entities_id' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'consumableitems_id' => self::getDropdownTypeSchema(class: ConsumableItem::class, full_schema: 'ConsumableItem'),
                 'date_in' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'date_out' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'date_creation' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'date_mod' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
                 'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
@@ -701,7 +701,7 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -724,7 +724,7 @@ final class AssetController extends AbstractController
                             'id' => [
                                 'type' => Doc\Schema::TYPE_INTEGER,
                                 'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                'x-readonly' => true,
+                                'readOnly' => true,
                             ],
                             'date_in' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                             'date_out' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -747,7 +747,7 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -834,7 +834,7 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'arch' => ['type' => Doc\Schema::TYPE_STRING],
@@ -858,7 +858,7 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -963,7 +963,7 @@ final class AssetController extends AbstractController
                             'id' => [
                                 'type' => Doc\Schema::TYPE_INTEGER,
                                 'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                'x-readonly' => true,
+                                'readOnly' => true,
                             ],
                             'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
                             'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
@@ -983,7 +983,7 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'rack' => self::getDropdownTypeSchema(class: Rack::class, full_schema: 'Rack'),
                 'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
@@ -1018,7 +1018,7 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -1107,7 +1107,7 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -1195,7 +1195,7 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -1283,7 +1283,7 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -1381,7 +1381,7 @@ final class AssetController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],

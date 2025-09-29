@@ -154,7 +154,7 @@ abstract class AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => $class !== Entity::class,
+                    'readOnly' => $class !== Entity::class,
                 ],
                 $name_field => ['type' => Doc\Schema::TYPE_STRING],
             ],

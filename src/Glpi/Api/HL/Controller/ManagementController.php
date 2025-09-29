@@ -172,7 +172,7 @@ final class ManagementController extends AbstractController
                     'id' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                        'x-readonly' => true,
+                        'readOnly' => true,
                     ],
                     'name' => ['type' => Doc\Schema::TYPE_STRING],
                 ],
@@ -345,21 +345,21 @@ final class ManagementController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'itemtype' => [
                     'type' => Doc\Schema::TYPE_STRING,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'items_id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'documents_id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'filepath' => [
                     'type' => Doc\Schema::TYPE_STRING,
@@ -377,16 +377,16 @@ final class ManagementController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'itemtype' => [
                     'type' => Doc\Schema::TYPE_STRING,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'items_id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(Entity::class, full_schema: 'Entity'),

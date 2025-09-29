@@ -87,7 +87,7 @@ final class OpenAPIGenerator
 
     private function getPublicVendorExtensions(): array
     {
-        return ['x-writeonly', 'x-readonly', 'x-full-schema', 'x-introduced', 'x-deprecated', 'x-removed'];
+        return ['writeOnly', 'readOnly', 'x-full-schema', 'x-introduced', 'x-deprecated', 'x-removed'];
     }
 
     private function cleanVendorExtensions(array $schema, ?string $parent_key = null): array
@@ -105,7 +105,7 @@ final class OpenAPIGenerator
             if ($parent_key === 'properties') {
                 if ($key === 'id') {
                     //Implicitly set the id property as read-only
-                    $value['x-readonly'] = true;
+                    $value['readOnly'] = true;
                 }
             }
             // If the value is an array

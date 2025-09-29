@@ -453,9 +453,9 @@ class Schema implements ArrayAccess
             // Get value from original content by the array path $sk
             $cv = ArrayPathAccessor::getElementByArrayPath($content, $sk);
             if ($cv === null) {
-                if ($operation === 'read' && ($sv['x-writeonly'] ?? false)) {
+                if ($operation === 'read' && ($sv['writeOnly'] ?? false)) {
                     $ignored = true;
-                } elseif ($operation === 'write' && ($sv['x-readonly'] ?? false)) {
+                } elseif ($operation === 'write' && ($sv['readOnly'] ?? false)) {
                     $ignored = true;
                 }
             }
