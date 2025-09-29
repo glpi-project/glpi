@@ -122,7 +122,7 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType imple
                             const container = question.find('div[data-glpi-form-editor-selectable-question-options]');
                             container.data(
                                 'manager',
-                                new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container)
+                                new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container, true)
                             );
                         }
                     });
@@ -133,7 +133,7 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType imple
                             const container = new_question.find('div[data-glpi-form-editor-selectable-question-options]');
                             container.data(
                                 'manager',
-                                new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container)
+                                new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container, true)
                             );
                         }
                     });

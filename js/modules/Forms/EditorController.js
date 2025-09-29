@@ -601,6 +601,8 @@ export class GlpiFormEditorController
     computeState() {
         const global_block_indices = { 'question': 0, 'comment': 0 };
 
+        console.log("compute state");
+
         // Find all sections
         const sections = $(this.#target).find("[data-glpi-form-editor-section]");
         sections.each((s_index, section) => {

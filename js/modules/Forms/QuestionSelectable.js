@@ -54,7 +54,7 @@ export class GlpiFormQuestionTypeSelectable {
      *
      * @param {JQuery<HTMLElement>} container
      */
-    constructor(inputType = null, container = null) {
+    constructor(inputType = null, container = null, is_from_template = false) {
         this._inputType = inputType;
         this._container = $(container);
 
@@ -67,7 +67,12 @@ export class GlpiFormQuestionTypeSelectable {
                 .siblings('div[data-glpi-form-editor-question-extra-details]')
                 .each((index, option) => this._registerOptionListeners($(option)));
 
-            this.#getFormController().computeState();
+            if (is_from_template) {
+                // From template = new question added after the initial rendering.
+                // We only compute the state in this case as it would be useful
+                // during the initial rendering as nothing was changed yet.
+                this.#getFormController().computeState();
+            }
 
             // Restore the checked state
             if (this._inputType === 'radio') {
