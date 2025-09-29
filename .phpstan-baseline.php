@@ -1436,12 +1436,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Api/APIRest.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between false and array will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Api/APIRest.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$method of function xmlrpc_encode_request expects string, null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -1548,12 +1542,6 @@ $ignoreErrors[] = [
 	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Application/View/TemplateRenderer.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Auth\\:\\:connection_ldap\\(\\) never assigns null to &\\$error so it can be removed from the by\\-ref type\\.$#',
-	'identifier' => 'parameterByRef.unusedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Auth.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always true\\.$#',
@@ -3908,7 +3896,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$url of static method Html\\:\\:getPrefixedUrl\\(\\) expects string, array given\\.$#',
+	'message' => '#^Parameter \\#1 \\$url of static method Html\\:\\:getPrefixedUrl\\(\\) expects string, array\\<string\\> given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Html.php',
@@ -4192,6 +4180,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Glpi\\\\Inventory\\\\Asset\\\\NetworkPort\\) and \'handleAggregations\' will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Inventory/Asset/NetworkPort.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Comparison operation "\\=\\=" between \\*NEVER\\* and 1 results in an error\\.$#',
+	'identifier' => 'equal.invalid',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Inventory/Asset/NetworkPort.php',
 ];
@@ -5384,7 +5378,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$ID of method CommonDBTM\\:\\:getFromDB\\(\\) expects int, \\(list\\<string\\>\\|string\\) given\\.$#',
+	'message' => '#^Parameter \\#1 \\$ID of method CommonDBTM\\:\\:getFromDB\\(\\) expects int, \\(array\\<string\\>\\|string\\) given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationTargetSavedSearch_Alert.php',
@@ -6890,7 +6884,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'function\' on array\\{function\\: string, line\\?\\: int, file\\?\\: string, class\\?\\: class\\-string, type\\?\\: \'\\-\\>\'\\|\'\\:\\:\', args\\?\\: array\\<mixed\\>, object\\?\\: object\\} in isset\\(\\) always exists and is not nullable\\.$#',
+	'message' => '#^Offset \'function\' on array\\{function\\: string, line\\?\\: int, file\\?\\: string, class\\?\\: class\\-string, type\\?\\: \'\\-\\>\'\\|\'\\:\\:\', args\\?\\: list\\<mixed\\>, object\\?\\: object\\} in isset\\(\\) always exists and is not nullable\\.$#',
 	'identifier' => 'isset.offset',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',
@@ -6944,7 +6938,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter &\\$curl_info by\\-ref type of method Toolbox\\:\\:callCurl\\(\\) expects array\\|null, \\(array\\<string, array\\<int, array\\<string, string\\>\\>\\|float\\|int\\|string\\|null\\>\\|false\\) given\\.$#',
+	'message' => '#^Parameter &\\$curl_info by\\-ref type of method Toolbox\\:\\:callCurl\\(\\) expects array\\|null, \\(array\\<string, float\\|int\\|list\\<array\\<string, string\\>\\>\\|string\\|null\\>\\|false\\) given\\.$#',
 	'identifier' => 'parameterByRef.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',
@@ -6960,12 +6954,6 @@ $ignoreErrors[] = [
 	'identifier' => 'notIdentical.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$value of static method Toolbox\\:\\:addslashes_deep\\(\\) expects array\\<string\\>\\|string, array\\<string, int\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Transfer.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$value of static method Toolbox\\:\\:addslashes_deep\\(\\) expects array\\<string\\>\\|string, array\\<string, mixed\\> given\\.$#',

@@ -244,7 +244,7 @@ function display_infocoms_report($itemtype, $begin, $end)
                 }
             }
 
-            $valeurnette = str_replace([" ", "-"], ["", ""], $valeurnette);
+            $valeurnette = (float) str_replace([" ", "-"], ["", ""], $valeurnette);
             if (!empty($valeurnette)) {
                 $valeurnettesoustot += $valeurnette;
             }

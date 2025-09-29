@@ -787,6 +787,18 @@ $ignoreErrors[] = [
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
+$ignoreErrors[] = [
+	'message' => '#Call to deprecated function finfo_close\\(\\)\\.$#',
+	'identifier' => 'function.deprecated',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#Call to deprecated function curl_close\\(\\)\\.$#',
+	'identifier' => 'function.deprecated',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
 
 // Reported in PHP 7.4
 $ignoreErrors[] = [
@@ -825,6 +837,12 @@ $ignoreErrors[] = [
 	'message' => '#^Right side of && is always true\\.$#',
 	'identifier' => 'booleanAnd.rightAlwaysTrue',
 	'count' => 1,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#Call to deprecated function imagedestroy\\(\\)\\.$#',
+	'identifier' => 'function.deprecated',
+	'count' => 3,
 	'path' => __DIR__ . '/src/UploadHandler.php',
 ];
 
