@@ -463,16 +463,11 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
         }
 
         $readonly_profile_ids = $field_options['readonly'];
-
         if (is_array($readonly_profile_ids)) {
             return in_array($profile_id, $readonly_profile_ids, true);
         }
 
-        if (is_string($readonly_profile_ids) || is_int($readonly_profile_ids)) {
-            // accept int or string profile identifiers
-            return (string) $profile_id === (string) $readonly_profile_ids;
-        }
-
+        // The normalization can return an empty string instead of an array when no profiles are set
         return false;
     }
 
