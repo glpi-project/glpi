@@ -149,7 +149,6 @@
                 {# Mark as secondary if empty #}
                 {{ comment is null or comment.fields.description|length == 0 ? "data-glpi-form-editor-active-comment-extra-details" : "" }}
             >
-                {% set load_editor = comment is not null and comment.fields.description|length > 0 %}
                 {{ fields.textareaField(
                     'description',
                     comment is not null ? comment.fields.description : '',
@@ -162,11 +161,9 @@
                         'editor_height': "0",
                         'rows' : 1,
                         'toolbar_location': 'bottom',
-                        'init': load_editor,
+                        'init': false,
+                        'init_on_demand': true,
                         'mb': 'mb-0',
-                        'additional_attributes': {
-                            'data-glpi-loaded': load_editor ? "true" : "false"
-                        }
                     })
                 ) }}
             </div>

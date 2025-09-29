@@ -580,3 +580,30 @@ div:has(> [data-glpi-form-editor-section-details].d-none) {
         pointer-events: none;
     }
 }
+
+[data-glpi-form-editor-question-details] {
+    div[data-glpi-tinymce-init-on-demand-render] {
+        margin-left: 5px;
+    }
+
+    // Specific style for long text question type
+    &:has(input[value="Glpi\\\\Form\\\\QuestionType\\\\QuestionTypeLongText"]) {
+        [data-glpi-form-editor-question-type-specific] {
+            div[data-glpi-tinymce-init-on-demand-render] {
+                margin-left: 0;
+
+                // Draw a border around the div to mimic the textarea style
+                height: 100px;
+                padding: 10px;
+                border: var(--tblr-border-width) solid var(--tblr-border-color) !important;
+                border-radius: var(--tblr-border-radius);
+                box-shadow: var(--tblr-box-shadow-input) !important;
+
+                // Hide the div when the editor is loading
+                &:has(.glpi-form-editor-loading-overlay) {
+                    display: none !important;
+                }
+            }
+        }
+    }
+}

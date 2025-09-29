@@ -326,6 +326,7 @@
         'toolbar': true,
         'toolbar_location': 'top',
         'init': true,
+        'init_on_demand': false,
         'placeholder': "",
         'enable_form_tags': false,
         'form_tags_form_id': null,
@@ -353,6 +354,9 @@
             {% if not options.aria_label is empty %}
                 aria-label="{{ options.aria_label }}"
             {% endif %}
+            {% if not options.placeholder is empty %}
+                placeholder="{{ options.placeholder }}"
+            {% endif %}
             {{ options.disabled ? 'disabled' : '' }}
             {{ options.readonly ? 'readonly' : '' }}
             {{ options.required ? 'required' : '' }}>{{ options.enable_richtext ? value|safe_html|escape : value }}</textarea>
@@ -368,6 +372,7 @@
             options.add_body_classes,
             options.toolbar_location,
             options.init,
+            options.init_on_demand,
             options.placeholder,
             options.toolbar,
             options.statusbar,

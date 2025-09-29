@@ -3472,6 +3472,7 @@ JS;
         array $add_body_classes = [],
         string $toolbar_location = 'top',
         bool $init = true,
+        bool $init_on_demand = false,
         string $placeholder = '',
         bool $toolbar = true,
         bool $statusbar = true,
@@ -3554,6 +3555,9 @@ JS;
 
         // Compute init option as "string boolean" so it can be inserted directly into the js output
         $init = $init ? 'true' : 'false';
+
+        // Compute init_on_demand option as "string boolean" so it can be inserted directly into the js output
+        $init_on_demand = $init_on_demand ? 'true' : 'false';
 
         // Compute toolbar option as "string boolean" so it can be inserted directly into the js output
         $toolbar = $toolbar ? 'true' : 'false';
@@ -3734,10 +3738,12 @@ JS;
 
                 // Init tinymce
                 if ({$init}) {
-                    // tinyMCE.init(tinymce_editor_configs['{$id}']);
+                    tinyMCE.init(tinymce_editor_configs['{$id}']);
+                }
 
+                if ({$init_on_demand}) {
                     const textarea = $('#' + $.escapeSelector('{$id}'));
-                    const div = $(`<div class="text-muted" style="margin-left: 6px">\${textarea.val()}</div>`);
+                    const div = $(`<div class="text-muted" data-glpi-tinymce-init-on-demand-render>\${textarea.val() || textarea.attr('placeholder') || ''}</div>`);
                     textarea.after(div).hide();
 
                     const loadingOverlay = $(`
@@ -3748,7 +3754,7 @@ JS;
                         </div>
                     `);
 
-                    div.on('click', function() {
+                    div.one('click', function() {
                         textarea.show();
                         div.css('position', 'relative').append(loadingOverlay);
                         tinyMCE.init(tinymce_editor_configs['{$id}']).then((editors) => {

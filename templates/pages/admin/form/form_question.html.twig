@@ -195,7 +195,6 @@
                 {# Mark as secondary if empty #}
                 {{ question is null or question.fields.description|length == 0 ? "data-glpi-form-editor-question-extra-details" : "" }}
             >
-                {% set load_editor = question is not null and question.fields.description|length > 0 %}
                 {{ fields.textareaField(
                     'description',
                     question is not null ? question.fields.description : '',
@@ -208,11 +207,9 @@
                         'editor_height': "0",
                         'rows' : 1,
                         'toolbar_location': 'bottom',
-                        'init': load_editor,
+                        'init': false,
+                        'init_on_demand': true,
                         'mb': 'mb-0',
-                        'additional_attributes': {
-                            'data-glpi-loaded': load_editor ? "true" : "false"
-                        }
                     })
                 ) }}
             </div>
