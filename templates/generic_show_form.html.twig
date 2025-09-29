@@ -182,7 +182,7 @@
 
                      {% set type_itemtype = item.getTypeClass() %}
                      {% set type_fk = item.getTypeForeignKeyField() %}
-                     {% if item.isField(type_fk) %}
+                     {% if type_fk is not null and item.isField(type_fk) %}
                         {{ fields.dropdownField(
                            type_itemtype,
                            type_fk,
@@ -406,7 +406,7 @@
 
                      {% set model_itemtype = item.getModelClass() %}
                      {% set model_fk = item.getModelForeignKeyField() %}
-                     {% if item.isField(model_fk) %}
+                     {% if model_fk is not null and item.isField(model_fk) %}
                         {{ fields.dropdownField(
                            model_itemtype,
                            model_fk,

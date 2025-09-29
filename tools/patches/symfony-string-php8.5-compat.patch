@@ -1,0 +1,15 @@
+diff --git a/Slugger/AsciiSlugger.php b/Slugger/AsciiSlugger.php
+index 5eb7fc1..f61e1d2 100644
+--- a/Slugger/AsciiSlugger.php
++++ b/Slugger/AsciiSlugger.php
+@@ -123,8 +123,8 @@ class AsciiSlugger implements SluggerInterface, LocaleAwareInterface
+ 
+         if (\is_array($this->symbolsMap)) {
+             $map = null;
+-            if (isset($this->symbolsMap[$locale])) {
+-                $map = $this->symbolsMap[$locale];
++            if (isset($this->symbolsMap[$locale ?? ''])) {
++                $map = $this->symbolsMap[$locale ?? ''];
+             } else {
+                 $parent = self::getParentLocale($locale);
+                 if ($parent && isset($this->symbolsMap[$parent])) {
