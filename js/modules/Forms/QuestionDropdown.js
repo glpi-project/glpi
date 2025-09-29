@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global sortable */
+/* global sortable, hasUnsavedChanges, setHasUnsavedChanges */
 
 import { GlpiFormQuestionTypeSelectable } from '/js/modules/Forms/QuestionSelectable.js';
 
@@ -116,6 +116,8 @@ export class GlpiFormQuestionTypeDropdown extends GlpiFormQuestionTypeSelectable
         const dropdown = this._container.closest('[data-glpi-form-editor-question-type-specific]')
             .find('[data-glpi-form-editor-preview-dropdown] select');
 
+        const has_changes = window.hasUnsavedChanges();
+
         // Remove all options, keep the empty choice (value=0)
         dropdown.find('option[value!=0]').remove();
 
@@ -130,6 +132,12 @@ export class GlpiFormQuestionTypeDropdown extends GlpiFormQuestionTypeSelectable
                 selected: is_checked,
             })).trigger('change', { skip_update: true });
         });
+
+        // The code above will trigger some changes event but we don't want the
+        // form to be set as unsaved if it was not yet modified
+        if (!has_changes) {
+            window.setHasUnsavedChanges(false);
+        }
     }
 
     _registerOptionListeners(option) {
