@@ -422,7 +422,7 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
         return $this->prepareDefinitionInput($input);
     }
 
-    protected function handleReadonlyFieldUpdate(array $input): array
+    private function handleReadonlyFieldUpdate(array $input): array
     {
         foreach (static::getDefinition()->getDecodedFieldsField() as $field_definition) {
             $field_options = $field_definition['field_options'] ?? null;
