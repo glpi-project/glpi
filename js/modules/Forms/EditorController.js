@@ -403,14 +403,6 @@ export class GlpiFormEditorController
                 );
                 break;
 
-            // Toggle mandatory class on the target question
-            case "toggle-mandatory-question":
-                this.#toggleMandatoryClass(
-                    target.closest("[data-glpi-form-editor-question]"),
-                    target.prop("checked")
-                );
-                break;
-
             // Change the type category of the target question
             case "change-question-type-category":
                 await this.#changeQuestionTypeCategory(
@@ -600,8 +592,6 @@ export class GlpiFormEditorController
      */
     computeState() {
         const global_block_indices = { 'question': 0, 'comment': 0 };
-
-        console.log("compute state");
 
         // Find all sections
         const sections = $(this.#target).find("[data-glpi-form-editor-section]");
@@ -1388,19 +1378,6 @@ export class GlpiFormEditorController
                 block: 'center',
                 inline: 'nearest'
             });
-        }
-    }
-
-    /**
-     * Toggle the mandatory class for the given question.
-     * @param {jQuery} question
-     * @param {boolean} is_mandatory
-     */
-    #toggleMandatoryClass(question, is_mandatory) {
-        if (is_mandatory) {
-            question.addClass("mandatory-question");
-        } else {
-            question.removeClass("mandatory-question");
         }
     }
 

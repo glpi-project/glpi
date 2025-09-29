@@ -132,12 +132,6 @@
 }
 
 // Show required mark on mandatory question
-.mandatory-question {
-    [data-glpi-form-editor-required-mark] {
-        display: inline !important;
-    }
-}
-
 [data-glpi-form-editor-form] {
     height: fit-content;
 

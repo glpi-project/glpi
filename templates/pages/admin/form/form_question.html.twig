@@ -59,7 +59,7 @@
         data-glpi-form-editor-on-click="set-active"
         data-glpi-form-editor-question-details
         data-glpi-form-editor-allow-anonymous="{{ not allow_unauthenticated_access or question_type.isAllowedForUnauthenticatedAccess() ? 1 : 0 }}"
-        class="card flex-grow-1 {{ question is not null and question.fields.is_mandatory ? 'mandatory-question' : '' }}"
+        class="card flex-grow-1"
         aria-label="{{ __("Question details") }}"
     >
         <div
@@ -97,7 +97,6 @@
                     data-glpi-form-editor-on-input="compute-dynamic-input"
                     data-glpi-form-editor-question-details-name
                 />
-                <span data-glpi-form-editor-required-mark class="text-danger d-none">*</span>
 
                 {% if question is null %}
                     {% set question_strategy = enum('Glpi\\Form\\Condition\\VisibilityStrategy').ALWAYS_VISIBLE %}
@@ -319,7 +318,6 @@
                         type="checkbox"
                         value="1"
                         {{ question is not null and question.fields.is_mandatory ? 'checked' : '' }}
-                        data-glpi-form-editor-on-change="toggle-mandatory-question"
                     >
                     <span class="form-check-label">{{ __("Mandatory") }}</span>
                 </label>
