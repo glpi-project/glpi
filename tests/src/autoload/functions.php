@@ -721,6 +721,25 @@ function loadDataset()
                 'profiles' => ['4' => ALLSTANDARDRIGHT | READ_ASSIGNED | UPDATE_ASSIGNED | READ_OWNED | UPDATE_OWNED],
             ],
         ],
+        'Glpi\\Dropdown\\DropdownDefinition' => [
+            [
+                'system_name' => 'CustomTag',
+                'icon' => 'ti ti-tag',
+                'name' => 'Custom Tag',
+                'is_active' => 1,
+                'profiles' => ['4' => ALLSTANDARDRIGHT],
+            ]
+        ],
+        'Glpi\\CustomDropdown\\CustomTagDropdown' => [
+            [
+                'name' => 'Tag01',
+                'entities_id' => '_test_root_entity',
+            ],
+            [
+                'name' => 'Tag02',
+                'entities_id' => '_test_root_entity',
+            ],
+        ],
         'Glpi\\CustomAsset\\Test02AssetType' => [
             [
                 'name' => 'Test02Type01',
@@ -749,17 +768,35 @@ function loadDataset()
                 'type' => 'Glpi\\Asset\\CustomFieldType\\StringType',
                 'field_options' => '{"full_width":"0","readonly":"0","required":"0"}',
             ],
+            [
+                'system_name' => 'customtagsingle',
+                'assets_assetdefinitions_id' => 'Test01',
+                'label' => 'Single Custom Tag',
+                'type' => 'Glpi\\Asset\\CustomFieldType\\DropdownType',
+                'itemtype' => 'Glpi\\CustomDropdown\\CustomTagDropdown',
+                'field_options' => '{"full_width":"0","readonly":"0","required":"0"}',
+            ],
+            [
+                'system_name' => 'customtagmulti',
+                'assets_assetdefinitions_id' => 'Test01',
+                'label' => 'Multi Custom Tag',
+                'type' => 'Glpi\\Asset\\CustomFieldType\\DropdownType',
+                'itemtype' => 'Glpi\\CustomDropdown\\CustomTagDropdown',
+                'field_options' => '{"full_width":"0","readonly":"0","required":"0","multiple":"1"}',
+            ]
         ],
         'Glpi\\CustomAsset\\Test01Asset' => [
             [
                 'name' => 'TestA',
                 'entities_id' => '_test_root_entity',
                 'custom_teststring' => 'Test String A',
+                'custom_customtagsingle' => 'Tag01',
             ],
             [
                 'name' => 'TestB',
                 'entities_id' => '_test_root_entity',
                 'custom_teststring' => 'Test String B',
+                'custom_customtagmulti' => ['Tag01', 'Tag02'],
             ],
         ],
         'Glpi\\CustomAsset\\Test02Asset' => [
