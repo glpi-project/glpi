@@ -147,6 +147,9 @@ final class EditorManager
     public function getValueOperatorDropdownValues(string $uuid): array
     {
         $itemData = $this->findItemDataByUuid($uuid);
+        if ($itemData === null) {
+            return [];
+        }
 
         switch ($itemData::class) {
             case QuestionData::class:
