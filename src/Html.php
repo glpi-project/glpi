@@ -3743,7 +3743,7 @@ JS;
 
                 if ({$init_on_demand}) {
                     const textarea = $('#' + $.escapeSelector('{$id}'));
-                    const div = $(`<div class="text-muted" data-glpi-tinymce-init-on-demand-render>\${textarea.val() || textarea.attr('placeholder') || ''}</div>`);
+                    const div = $(`<div role="textbox" tabindex="0" class="text-muted" data-glpi-tinymce-init-on-demand-render>\${textarea.val() || textarea.attr('placeholder') || ''}</div>`);
                     textarea.after(div).hide();
 
                     const loadingOverlay = $(`
@@ -3754,7 +3754,7 @@ JS;
                         </div>
                     `);
 
-                    div.one('click', function() {
+                    div.one('focus', function() {
                         textarea.show();
                         div.css('position', 'relative').append(loadingOverlay);
                         tinyMCE.init(tinymce_editor_configs['{$id}']).then((editors) => {
