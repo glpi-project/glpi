@@ -96,7 +96,7 @@
    {% if not as_map %}
       <script>
           window.initFluidSearch{{ rand }}  = () => {
-             const allowed_forced_params = ['hide_controls', 'usesession', 'forcetoview', 'criteria'];
+             const allowed_forced_params = ['hide_controls', 'usesession', 'forcetoview', 'criteria', 'showmassiveactions'];
              let forced_params = {};
              let all_params = {{ data['search']|default({})|json_encode|raw }};
 
