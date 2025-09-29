@@ -101,9 +101,11 @@ class CustomAssetControllerTest extends HLAPITestCase
     public function testCRUD(): void
     {
         $this->api->autoTestCRUD('/Assets/Custom/Test01', [
-            'custom_fields' => ['teststring' => 'Test String A'],
-        ], [
-            'custom_fields' => ['teststring' => 'Test String A'],
+            'custom_fields' => [
+                'teststring' => 'Test String A',
+                'customtagmulti' => null,
+                'customtagsingle' => null,
+            ],
         ]);
     }
 

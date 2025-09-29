@@ -728,7 +728,7 @@ function loadDataset()
                 'name' => 'Custom Tag',
                 'is_active' => 1,
                 'profiles' => ['4' => ALLSTANDARDRIGHT],
-            ]
+            ],
         ],
         'Glpi\\CustomDropdown\\CustomTagDropdown' => [
             [
@@ -783,7 +783,7 @@ function loadDataset()
                 'type' => 'Glpi\\Asset\\CustomFieldType\\DropdownType',
                 'itemtype' => 'Glpi\\CustomDropdown\\CustomTagDropdown',
                 'field_options' => '{"full_width":"0","readonly":"0","required":"0","multiple":"1"}',
-            ]
+            ],
         ],
         'Glpi\\CustomAsset\\Test01Asset' => [
             [

@@ -93,6 +93,7 @@ class GenericobjectPluginMigrationTest extends DbTestCase
         parent::setUp();
 
         $DB->delete(AssetDefinition::getTable(), [new QueryExpression('true')]);
+        $DB->delete(DropdownDefinition::getTable(), [new QueryExpression('true')]);
 
         // Load it inside the test DB transaction to not have to clean it manually
         $queries = $DB->getQueriesFromFile(sprintf('%s/tests/fixtures/genericobject-migration/glpi-data.sql', GLPI_ROOT));
