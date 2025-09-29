@@ -56,7 +56,6 @@ use function Safe\getimagesize;
 use function Safe\imagealphablending;
 use function Safe\imagecopyresampled;
 use function Safe\imagecreatetruecolor;
-use function Safe\imagedestroy;
 use function Safe\imageflip;
 use function Safe\imagerotate;
 use function Safe\imagesavealpha;
@@ -757,12 +756,7 @@ class UploadHandler
     {
         $image = $this->image_objects[$file_path] ?? null ;
         if ($image) {
-            try {
-                imagedestroy($image);
-                return true;
-            } catch (ImageException $e) {
-                return false;
-            }
+            return true;
         }
         return false;
     }
@@ -850,7 +844,6 @@ class UploadHandler
                     defined('IMG_FLIP_HORIZONTAL') ? IMG_FLIP_HORIZONTAL : 1
                 );
                 $new_img = imagerotate($tmp_img, 270, 0);
-                imagedestroy($tmp_img);
                 break;
             case 6:
                 $new_img = imagerotate($src_img, 270, 0);
@@ -861,7 +854,6 @@ class UploadHandler
                     defined('IMG_FLIP_VERTICAL') ? IMG_FLIP_VERTICAL : 2
                 );
                 $new_img = imagerotate($tmp_img, 270, 0);
-                imagedestroy($tmp_img);
                 break;
             case 8:
                 $new_img = imagerotate($src_img, 90, 0);
