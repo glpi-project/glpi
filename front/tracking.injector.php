@@ -84,7 +84,11 @@ if (isset($_POST['add'])) {
     $_POST['check_delegatee'] = true;
     if (isset($_POST['_actors'])) {
         // with self-service, we only have observers
-        unset($_POST['_actors']['requester'], $_POST['_actors']['assign']);
+        unset($_POST['_actors']['assign']);
+        if (!($_POST['nodelegate'] ?? false)) {
+            // remove requester, only for delegation
+            unset($_POST['_actors']['requester']);
+        }
     }
     if ($track->add($_POST)) {
         if ($_SESSION['glpibackcreated'] && Ticket::canView()) {
