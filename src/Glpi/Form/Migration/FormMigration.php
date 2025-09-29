@@ -441,6 +441,7 @@ class FormMigration extends AbstractPluginMigration
                     'is_recursive'          => $raw_form['is_recursive'],
                     'is_active'             => $raw_form['is_active'],
                     'is_deleted'            => $raw_form['is_deleted'],
+                    'render_layout'         => 'single_page',
                     '_from_migration'       =>  true,
                 ],
                 [
