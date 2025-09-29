@@ -65,6 +65,7 @@ use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
 use Glpi\Helpdesk\Tile\FormTile;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Glpi\ItemTranslation\Context\TranslationHandler;
+use Glpi\Toolbox\UuidStore;
 use Glpi\UI\IllustrationManager;
 use Html;
 use InvalidArgumentException;
@@ -178,6 +179,19 @@ final class Form extends CommonDBTM implements
 
         $types_manager = QuestionTypesManager::getInstance();
 
+        // Use the uuid store to prevent condition data from fetching the same
+        // questions over and over
+        $store = UuidStore::getInstance();
+        foreach ($this->getSections() as $section) {
+            $store->addToStore($section->fields['uuid'], $section);
+        }
+        foreach ($this->getQuestions() as $question) {
+            $store->addToStore($question->fields['uuid'], $question);
+        }
+        foreach ($this->getFormComments() as $comment) {
+            $store->addToStore($comment->fields['uuid'], $comment);
+        }
+
         // Render twig template
         $twig = TemplateRenderer::getInstance();
         $twig->display('pages/admin/form/form_editor.html.twig', [
@@ -188,6 +202,7 @@ final class Form extends CommonDBTM implements
             'invalid_questions'            => $this->getInvalidQuestions(),
             'allow_unauthenticated_access' => FormAccessControlManager::getInstance()->allowUnauthenticatedAccess($this),
         ]);
+        $store->purge();
         return true;
     }
 
