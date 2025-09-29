@@ -5607,12 +5607,9 @@ final class SQLProvider implements SearchProviderInterface
                                 )
                             ) {
                                 $text = sprintf(
-                                    __('%1$s - %2$s'),
+                                    __s('%1$s - %2$s'),
                                     Entity::badgeCompletename($data[$ID][$k]['name']),
-                                    Dropdown::getDropdownName(
-                                        'glpi_profiles',
-                                        $data[$ID][$k]['profiles_id']
-                                    )
+                                    htmlescape(Dropdown::getDropdownName('glpi_profiles', $data[$ID][$k]['profiles_id']))
                                 );
                                 $comp = '';
                                 if ($data[$ID][$k]['is_recursive']) {
@@ -5625,13 +5622,13 @@ final class SQLProvider implements SearchProviderInterface
                                     $comp = sprintf(__('%1$s%2$s'), $comp, __('D'));
                                 }
                                 if (!empty($comp)) {
-                                    $text = sprintf(__('%1$s %2$s'), $text, "(" . $comp . ")");
+                                    $text = sprintf(__s('%1$s %2$s'), $text, htmlescape("(" . $comp . ")"));
                                 }
                                 if ($count_display) {
                                     $out .= Search::LBBR;
                                 }
                                 $count_display++;
-                                $out    .= htmlescape($text);
+                                $out    .= $text;
                                 $added[] = $data[$ID][$k]['name'] . "-" . $data[$ID][$k]['profiles_id'];
                             }
                         }
