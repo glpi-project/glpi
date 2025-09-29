@@ -919,7 +919,9 @@ class Webhook extends CommonDBTM implements FilterableInterface
             }
             if (isset($categories['subtypes']) && array_key_exists($itemtype, $categories['subtypes'])) {
                 $schema_name = $categories['subtypes'][$itemtype]['name'];
-                $schema_name = $categories['main'][$categories['subtypes'][$itemtype]['parent']]['name'] . $schema_name;
+                if (array_key_exists('parent', $categories['subtypes'][$itemtype])) {
+                    $schema_name = $categories['main'][$categories['subtypes'][$itemtype]['parent']]['name'] . $schema_name;
+                }
                 $controller_class = $controller;
                 break;
             }
@@ -953,7 +955,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         $subtype_labels = [];
         if (isset($parent_schema['x-subtypes'])) {
             foreach ($parent_schema['x-subtypes'] as $subtype) {
-                $subtype_labels[$subtype] = $subtype['itemtype']::getTypeName(1);
+                $subtype_labels[$subtype['itemtype']] = $subtype['itemtype']::getTypeName(1);
             }
         }
         foreach ($props as $prop_name => $prop_data) {
