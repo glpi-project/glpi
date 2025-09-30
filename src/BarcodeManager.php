@@ -54,7 +54,8 @@ class BarcodeManager
             -2,
             'black',
             [-2, -2, -2, -2]
-        )->setBackgroundColor('white');
+        )->setBackgroundColor('white')
+        ->setSize(200, 200, [10, 10, 10, 10]);
         return $qrcode;
     }
 
@@ -63,7 +64,7 @@ class BarcodeManager
         $barcode_manager = new self();
         $qrcode = $barcode_manager->generateQRCode($item);
         if ($qrcode) {
-            return $qrcode->getHtmlDiv();
+            return "<img src=\"data:image/png;base64," . base64_encode($qrcode->getPngData()) . "\" />";
         }
         return false;
     }
