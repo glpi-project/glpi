@@ -374,7 +374,6 @@ class Webhook extends CommonDBTM implements FilterableInterface
                         ChangeTask::class => ['parent' => Change::class],
                         ProblemTask::class => ['parent' => Problem::class],
                         ITILFollowup::class => [], // All main types can be the parent
-                        Document_Item::class => [],
                         ITILSolution::class => [],
                         TicketValidation::class => ['parent' => Ticket::class],
                     ],
@@ -384,6 +383,9 @@ class Webhook extends CommonDBTM implements FilterableInterface
                         Appliance::class, Budget::class, Certificate::class, Cluster::class, Contact::class,
                         Contract::class, Database::class, Datacenter::class, Document::class, Domain::class,
                         SoftwareLicense::class, Line::class, Supplier::class,
+                    ],
+                    'subtypes' => [
+                        Document_Item::class => ['parent' => Document::class],
                     ],
                 ],
             ];
@@ -438,9 +440,9 @@ class Webhook extends CommonDBTM implements FilterableInterface
     }
 
     /**
-    * Return a list of GLPI itemtypes availabel through HL API.
+    * Return a list of GLPI itemtypes available through HL API.
     *
-    * @return array
+    * @return array<array>
     */
     public static function getItemtypesDropdownValues(): array
     {
@@ -917,10 +919,19 @@ class Webhook extends CommonDBTM implements FilterableInterface
                 $controller_class = $controller;
                 break;
             }
+
             if (isset($categories['subtypes']) && array_key_exists($itemtype, $categories['subtypes'])) {
-                $schema_name = $categories['subtypes'][$itemtype]['name'];
-                $schema_name = $categories['main'][$categories['subtypes'][$itemtype]['parent']]['name'] . $schema_name;
                 $controller_class = $controller;
+                $schema_name = $categories['subtypes'][$itemtype]['name'];
+
+                if (
+                    array_key_exists('parent', $categories['subtypes'][$itemtype])
+                    && array_key_exists($categories['subtypes'][$itemtype]['parent'], $categories['main'])
+                    && array_key_exists('name', $categories['main'][$categories['subtypes'][$itemtype]['parent']])
+                ) {
+                    $schema_name = $categories['main'][$categories['subtypes'][$itemtype]['parent']]['name'] . $schema_name;
+                }
+
                 break;
             }
         }
@@ -939,6 +950,9 @@ class Webhook extends CommonDBTM implements FilterableInterface
             return [];
         }
         $schema = self::getAPISchemaBySupportedItemtype($itemtype);
+        if (is_null($schema)) {
+            return [];
+        }
         $props = Doc\Schema::flattenProperties($schema['properties'], 'item.');
         $parent_schema = self::getParentItemSchema($itemtype);
         $parent_props = $parent_schema !== [] ? Doc\Schema::flattenProperties($parent_schema['properties'], 'parent_item.') : [];
@@ -953,7 +967,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         $subtype_labels = [];
         if (isset($parent_schema['x-subtypes'])) {
             foreach ($parent_schema['x-subtypes'] as $subtype) {
-                $subtype_labels[$subtype] = $subtype['itemtype']::getTypeName(1);
+                $subtype_labels[$subtype['itemtype']] = $subtype['itemtype']::getTypeName(1);
             }
         }
         foreach ($props as $prop_name => $prop_data) {
