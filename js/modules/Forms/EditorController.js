@@ -1438,7 +1438,7 @@ export class GlpiFormEditorController
             if (div.length > 0) {
                 div.attr(
                     'data-glpi-tinymce-init-on-demand-render',
-                    CSS.escape(id),
+                    id,
                 );
             } else {
                 tiny_mce_to_init.push(config);
