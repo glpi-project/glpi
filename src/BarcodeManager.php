@@ -50,12 +50,11 @@ class BarcodeManager
         $qrcode = $barcode->getBarcodeObj(
             'QRCODE,H',
             $CFG_GLPI["url_base"] . $item->getLinkURL(),
-            -2,
-            -2,
+            200,
+            200,
             'black',
-            [-2, -2, -2, -2]
-        )->setBackgroundColor('white')
-        ->setSize(200, 200, [10, 10, 10, 10]);
+            [10, 10, 10, 10]
+        )->setBackgroundColor('white');
         return $qrcode;
     }
 
