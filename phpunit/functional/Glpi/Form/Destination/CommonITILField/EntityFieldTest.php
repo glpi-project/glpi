@@ -383,9 +383,15 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
         $builder = new FormBuilder();
         $builder->addQuestion("Entity 1", QuestionTypeItem::class, 0, json_encode([
             'itemtype' => Entity::getType(),
+            'root_items_id'        => 0,
+            'subtree_depth'        => 0,
+            'selectable_tree_root' => false,
         ]));
         $builder->addQuestion("Entity 2", QuestionTypeItem::class, 0, json_encode([
             'itemtype' => Entity::getType(),
+            'root_items_id'        => 0,
+            'subtree_depth'        => 0,
+            'selectable_tree_root' => false,
         ]));
         return $this->createForm($builder);
     }

@@ -37,33 +37,7 @@
 {% set rand = random() %}
 
 {% block dropdown_content %}
-    <div data-glpi-form-editor-item-dropdown-advanced-configuration>
-        {{ fields.dropdownArrayField(
-            'extra_data[categories_filter]',
-            '',
-            {
-                'request' : __('Request categories'),
-                'incident': __('Incident categories'),
-                'change'  : __('Change categories'),
-                'problem' : __('Problem categories'),
-            },
-            __('Filter ticket categories'),
-            {
-                'full_width'   : true,
-                'is_horizontal': false,
-                'multiple'     : true,
-                'values'       : categories_filter|default({
-                    'request' : true,
-                    'incident': true,
-                    'change'  : true,
-                    'problem' : true,
-                }),
-                'init': question is not null ? true : false,
-                'add_data_attributes': {
-                    'glpi-form-editor-item-dropdown-advanced-configuration-visible-for-itemtype': 'ITILCategory'
-                }
-            }
-        ) }}
+    <div data-glpi-form-editor-item-dropdown-advanced-configuration="{{ rand }}">
         {{ fields.dropdownField(
             itemtype,
             'extra_data[root_items_id]',
@@ -107,12 +81,13 @@
             }
         ) }}
 
-        {% if question is null %}
-            <script>
-                import("/js/modules/Forms/ItemDropdownAdvancedConfig.js").then((m) => {
-                    new m.GlpiFormItemDropdownAdvancedConfig();
-                });
-            </script>
-        {% endif %}
+        <script>
+            import("/js/modules/Forms/ItemAdvancedConfig.js").then((m) => {
+                new m.GlpiFormItemAdvancedConfig().updateAdvancedConfigVisibility(
+                    $('[data-glpi-form-editor-item-dropdown-advanced-configuration="{{ rand }}"]'),
+                    '{{ itemtype }}'
+                );
+            });
+        </script>
     </div>
 {% endblock %}

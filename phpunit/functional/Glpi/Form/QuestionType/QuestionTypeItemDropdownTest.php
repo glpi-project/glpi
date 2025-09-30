@@ -56,7 +56,7 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
 
         $builder = new FormBuilder();
         $builder->addQuestion("Category", QuestionTypeItemDropdown::class, 0, json_encode(
-            ['itemtype' => ITILCategory::getType(), 'categories_filter' => [], 'root_items_id' => 0, 'subtree_depth' => 0]
+            ['itemtype' => ITILCategory::getType(), 'categories_filter' => [], 'root_items_id' => 0, 'subtree_depth' => 0, 'selectable_tree_root' => false]
         ));
         $form = $this->createForm($builder);
 
@@ -84,7 +84,8 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
                     itemtype: \RequestType::class,
                     categories_filter: [],
                     root_items_id: 0,
-                    subtree_depth: 0
+                    subtree_depth: 0,
+                    selectable_tree_root: false,
                 ),
                 ['WHERE' => ['glpi_requesttypes.is_active' => 1]],
             ],
@@ -93,7 +94,8 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
                     itemtype: ITILCategory::class,
                     categories_filter: ['request'],
                     root_items_id: 0,
-                    subtree_depth: 0
+                    subtree_depth: 0,
+                    selectable_tree_root: false,
                 ),
                 ['WHERE' => [
                     ['OR' => ['glpi_itilcategories.is_request' => 1]],
@@ -104,7 +106,8 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
                     itemtype: ITILCategory::class,
                     categories_filter: ['incident'],
                     root_items_id: 0,
-                    subtree_depth: 0
+                    subtree_depth: 0,
+                    selectable_tree_root: false,
                 ),
                 ['WHERE' => [
                     ['OR' => ['glpi_itilcategories.is_incident' => 1]],
@@ -115,7 +118,8 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
                     itemtype: ITILCategory::class,
                     categories_filter: ['request', 'incident'],
                     root_items_id: 0,
-                    subtree_depth: 0
+                    subtree_depth: 0,
+                    selectable_tree_root: false,
                 ),
                 ['WHERE' => [
                     ['OR' => [
@@ -129,7 +133,8 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
                     itemtype: ITILCategory::class,
                     categories_filter: ['change'],
                     root_items_id: 0,
-                    subtree_depth: 0
+                    subtree_depth: 0,
+                    selectable_tree_root: false,
                 ),
                 ['WHERE' => [
                     ['OR' => ['glpi_itilcategories.is_change' => 1]],
@@ -140,7 +145,8 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
                     itemtype: ITILCategory::class,
                     categories_filter: ['problem'],
                     root_items_id: 0,
-                    subtree_depth: 0
+                    subtree_depth: 0,
+                    selectable_tree_root: false,
                 ),
                 ['WHERE' => [
                     ['OR' => ['glpi_itilcategories.is_problem' => 1]],
@@ -151,7 +157,8 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
                     itemtype: ITILCategory::class,
                     categories_filter: ['request', 'incident', 'change', 'problem'],
                     root_items_id: 0,
-                    subtree_depth: 0
+                    subtree_depth: 0,
+                    selectable_tree_root: false,
                 ),
                 'expected' => ['WHERE' => [
                     ['OR' => [
@@ -233,7 +240,8 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
                     itemtype: ITILCategory::class,
                     categories_filter: ['request'],
                     root_items_id: 0,
-                    subtree_depth: 0
+                    subtree_depth: 0,
+                    selectable_tree_root: false,
                 ),
                 'expected' => fn() => [
                     'WHERE' => [
@@ -247,7 +255,8 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
                     itemtype: ITILCategory::class,
                     categories_filter: ['request'],
                     root_items_id: getItemByTypeName(ITILCategory::class, 'Root Item', true),
-                    subtree_depth: 0
+                    subtree_depth: 0,
+                    selectable_tree_root: true,
                 ),
                 'expected' => fn() => [
                     'WHERE' => [
@@ -266,7 +275,8 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
                     itemtype: ITILCategory::class,
                     categories_filter: ['request'],
                     root_items_id: getItemByTypeName(ITILCategory::class, 'Root Item', true),
-                    subtree_depth: 1
+                    subtree_depth: 1,
+                    selectable_tree_root: true,
                 ),
                 'expected' => fn() => [
                     'WHERE' => [
@@ -286,13 +296,33 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
                     itemtype: ITILCategory::class,
                     categories_filter: ['request'],
                     root_items_id: getItemByTypeName(ITILCategory::class, 'Child Item', true),
-                    subtree_depth: 1
+                    subtree_depth: 1,
+                    selectable_tree_root: true,
                 ),
                 'expected' => fn() => [
                     'WHERE' => [
                         ['OR' => ['glpi_itilcategories.is_request' => 1]],
                         'glpi_itilcategories.id' => [
                             getItemByTypeName(ITILCategory::class, 'Child Item', true) => getItemByTypeName(ITILCategory::class, 'Child Item', true),
+                            getItemByTypeName(ITILCategory::class, 'Deep Child Item', true) => getItemByTypeName(ITILCategory::class, 'Deep Child Item', true),
+                        ],
+                        'glpi_itilcategories.level' => ['<=', 3],
+                    ],
+                ],
+            ],
+            'ITILCategory with request filter, dropdown tree, depth, child item as root and disabled selectable_tree_root' => [
+                'itemtype' => ITILCategory::class,
+                'config' => fn() => new QuestionTypeItemDropdownExtraDataConfig(
+                    itemtype: ITILCategory::class,
+                    categories_filter: ['request'],
+                    root_items_id: getItemByTypeName(ITILCategory::class, 'Child Item', true),
+                    subtree_depth: 1,
+                    selectable_tree_root: false,
+                ),
+                'expected' => fn() => [
+                    'WHERE' => [
+                        ['OR' => ['glpi_itilcategories.is_request' => 1]],
+                        'glpi_itilcategories.id' => [
                             getItemByTypeName(ITILCategory::class, 'Deep Child Item', true) => getItemByTypeName(ITILCategory::class, 'Deep Child Item', true),
                         ],
                         'glpi_itilcategories.level' => ['<=', 3],

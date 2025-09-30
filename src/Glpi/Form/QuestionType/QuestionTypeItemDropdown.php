@@ -35,13 +35,8 @@
 
 namespace Glpi\Form\QuestionType;
 
-use CommonDBTM;
-use DbUtils;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Form\Export\Context\DatabaseMapper;
-use Glpi\Form\Export\Serializer\DynamicExportDataField;
-use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Question;
 use InvalidArgumentException;
 use ITILCategory;
@@ -62,11 +57,18 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
 
     public function renderAdvancedConfigurationTemplate(?Question $question): string
     {
+        $itemtype = $this->getDefaultValueItemtype($question);
+        if ($itemtype === null) {
+            // Retrieve first allowed itemtype if none is set
+            $itemtype = current(current($this->getAllowedItemtypes()));
+        }
+
         $twig = TemplateRenderer::getInstance();
         return $twig->render(
             'pages/admin/form/question_type/item_dropdown/advanced_configuration.html.twig',
             [
                 'question'          => $question,
+                'itemtype'          => $itemtype,
                 'categories_filter' => $this->getCategoriesFilter($question),
                 'root_items_id'     => $this->getRootItemsId($question),
                 'subtree_depth'     => $this->getSubtreeDepth($question),
@@ -137,25 +139,14 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
             };
         }
 
-        $root_items_id = 0;
-        if (isset($values['show_tree_root']) && is_numeric($values['show_tree_root'])) {
-            $root_items_id = (int) $values['show_tree_root'];
-        }
-
-        $subtree_depth = 0;
-        if (
-            isset($values['show_tree_depth'])
-            && is_numeric($values['show_tree_depth'])
-            && $values['show_tree_depth'] > 0
-        ) {
-            $subtree_depth = (int) $values['show_tree_depth'];
-        }
+        $extra_data_config = parent::convertExtraData($rawData);
 
         return (new QuestionTypeItemDropdownExtraDataConfig(
-            itemtype: $rawData['itemtype'] ?? null,
+            itemtype: $extra_data_config[QuestionTypeItemDropdownExtraDataConfig::ITEMTYPE] ?? null,
             categories_filter: $categories_filter,
-            root_items_id: $root_items_id,
-            subtree_depth: $subtree_depth
+            root_items_id: $extra_data_config[QuestionTypeItemDropdownExtraDataConfig::ROOT_ITEMS_ID] ?? null,
+            subtree_depth: $extra_data_config[QuestionTypeItemDropdownExtraDataConfig::SUBTREE_DEPTH] ?? null,
+            selectable_tree_root: $extra_data_config[QuestionTypeItemDropdownExtraDataConfig::SELECTABLE_TREE_ROOT] ?? null,
         ))->jsonSerialize();
     }
 
@@ -179,22 +170,6 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
         if (
             !isset($input['categories_filter'])
             || (!is_array($input['categories_filter']) && !empty($input['categories_filter']))
-        ) {
-            return false;
-        }
-
-        // Check if root_items_id is set and is numeric
-        if (
-            !isset($input['root_items_id'])
-            || !is_numeric($input['root_items_id'])
-        ) {
-            return false;
-        }
-
-        // Check if subtree_depth is set and is numeric
-        if (
-            !isset($input['subtree_depth'])
-            || !is_numeric($input['subtree_depth'])
         ) {
             return false;
         }
@@ -227,53 +202,10 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
         return $config->getCategoriesFilter();
     }
 
-    /**
-     * Retrieve root items ID for the item question type
-     *
-     * @param Question|null $question The question to retrieve the root items ID for
-     * @return int
-     */
-    public function getRootItemsId(?Question $question): int
-    {
-        if ($question === null) {
-            return 0;
-        }
-
-        /** @var ?QuestionTypeItemDropdownExtraDataConfig $config */
-        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
-        if ($config === null) {
-            return 0;
-        }
-
-        return $config->getRootItemsId();
-    }
-
-    /**
-     * Retrieve subtree depth for the item question type
-     *
-     * @param Question|null $question The question to retrieve the subtree depth for
-     * @return int
-     */
-    public function getSubtreeDepth(?Question $question): int
-    {
-        if ($question === null) {
-            return 0;
-        }
-
-        /** @var ?QuestionTypeItemDropdownExtraDataConfig $config */
-        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
-        if ($config === null) {
-            return 0;
-        }
-
-        return $config->getSubtreeDepth();
-    }
-
     public function getDropdownRestrictionParams(?Question $question): array
     {
         $params   = [];
         $itemtype = $this->getDefaultValueItemtype($question);
-        $item     = getItemForItemtype($itemtype);
         if ($question === null || $itemtype === null) {
             return $params;
         }
@@ -306,85 +238,6 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
             }
         }
 
-        if ($item->maybeActive()) {
-            // Ensure only active items are shown
-            $params[$itemtype::getTableField('is_active')] = 1;
-        }
-
-        // Apply specific root
-        $root_items_id = $this->getRootItemsId($question);
-        if ($root_items_id > 0) {
-            $sons = (new DbUtils())->getSonsOf(
-                $itemtype::getTable(),
-                $root_items_id
-            );
-
-            $params[$itemtype::getTableField('id')] = $sons;
-            $root_item = $item;
-            if ($root_item->getFromDB($root_items_id)) {
-                $root_item_level = $root_item->fields['level'];
-            }
-        }
-
-        // Apply max level restriction if subtree depth is set
-        $subtree_depth = $this->getSubtreeDepth($question);
-        if ($subtree_depth > 0) {
-            $params[$itemtype::getTableField('level')] = ['<=', $subtree_depth + ($root_item_level ?? 0)];
-        }
-
-        return ['WHERE' => $params];
-    }
-
-    #[Override]
-    public function exportDynamicExtraData(
-        ?array $extra_data_config,
-    ): DynamicExportDataField {
-        $fallback = parent::exportDynamicExtraData($extra_data_config);
-
-        // Stop here if value is invalid or empty
-        $itemtype = $extra_data_config[QuestionTypeItemExtraDataConfig::ITEMTYPE] ?? "";
-        $root_id = $extra_data_config[QuestionTypeItemDropdownExtraDataConfig::ROOT_ITEMS_ID] ?? 0;
-        if ($root_id == 0 || !is_a($itemtype, CommonDBTM::class, true)) {
-            return $fallback;
-        }
-
-        // Load item
-        $item = $itemtype::getById($root_id);
-
-        // Replace id and register requirement
-        $requirement = DataRequirementSpecification::fromItem($item);
-        $extra_data_config[QuestionTypeItemDropdownExtraDataConfig::ROOT_ITEMS_ID] = $requirement->name;
-
-        return new DynamicExportDataField($extra_data_config, [$requirement]);
-    }
-
-    #[Override]
-    public static function prepareDynamicExtraDataForImport(
-        ?array $extra_data,
-        DatabaseMapper $mapper,
-    ): ?array {
-        $fallback = parent::prepareDynamicExtraDataForImport(
-            $extra_data,
-            $mapper,
-        );
-        if ($extra_data == null) {
-            return $fallback;
-        }
-
-        // Validate config values
-        $itemtype = $extra_data[QuestionTypeItemExtraDataConfig::ITEMTYPE] ?? "";
-        $name = $extra_data[QuestionTypeItemDropdownExtraDataConfig::ROOT_ITEMS_ID] ?? "";
-        if (
-            !(getItemForItemtype($itemtype) instanceof CommonDBTM)
-            || empty($name)
-        ) {
-            return $fallback;
-        }
-
-        // Find item id
-        $id = $mapper->getItemId($itemtype, $name);
-        $extra_data[QuestionTypeItemDropdownExtraDataConfig::ROOT_ITEMS_ID] = $id;
-
-        return $extra_data;
+        return array_merge_recursive(parent::getDropdownRestrictionParams($question), ['WHERE' => $params]);
     }
 }

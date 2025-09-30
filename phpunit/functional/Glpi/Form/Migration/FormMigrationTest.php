@@ -2602,7 +2602,7 @@ final class FormMigrationTest extends DbTestCase
                     'show_ticket_categories' => 'request',
                     'show_tree_depth'        => '-1', // All levels
                     'show_tree_root'         => $itilcategory->getId(),
-                    'selectable_tree_root'   => '0',
+                    'selectable_tree_root'   => '1',
                     'entity_restrict'        => '3', // Entity restriction
                 ]),
             ]
@@ -2623,6 +2623,7 @@ final class FormMigrationTest extends DbTestCase
         $this->assertEquals(['request'], $question_type->getCategoriesFilter($question));
         $this->assertEquals($itilcategory->getId(), $question_type->getRootItemsId($question));
         $this->assertEquals(0, $question_type->getSubtreeDepth($question));
+        $this->assertTrue($question_type->isSelectableTreeRoot($question));
     }
 
     public function testFormMigrationWithEntityThatDoesNotExist(): void

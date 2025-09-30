@@ -725,7 +725,10 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
             'is_multiple_devices' => true,
         ]));
         $builder->addQuestion("Computer", QuestionTypeItem::class, $computer->getID(), json_encode([
-            'itemtype' => Computer::getType(),
+            'itemtype'             => Computer::getType(),
+            'root_items_id'        => 0,
+            'subtree_depth'        => 0,
+            'selectable_tree_root' => false,
         ]));
 
         return $this->createForm($builder);
