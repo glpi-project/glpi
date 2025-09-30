@@ -92,7 +92,6 @@ dev_nodes=(
     "package-lock.json"
     "phpstan.neon"
     "phpstan.neon.dist"
-    "phpunit"
     "phpunit.xml.dist"
     "PluginsMakefile.mk"
     "psalm.xml"

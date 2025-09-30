@@ -125,7 +125,7 @@ test:  ## Run all our lints/tests/static analysis
 	@$(call run_if_exists, phpunit.xml, phpunit)
 .PHONY: test
 
-phpunit: ## Run phpunits tests, example: make phpunit c='phpunit/functional/Glpi/MySpecificTest.php'
+phpunit: ## Run phpunits tests, example: make phpunit c='tests/functional/Glpi/MySpecificTest.php'
 	@$(eval c ?=)
 	@$(PLUGIN) php $(PHPUNIT_BIN) $(c)
 .PHONY: phpunit

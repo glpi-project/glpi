@@ -107,7 +107,6 @@
     },
     "require-dev": {
         "ext-xml": "*",
-        "atoum/atoum": "^4.3",
         "friendsofphp/php-cs-fixer": "^3.86",
         "friendsoftwig/twigcs": "^6.5",
         "glpi-project/phpstan-glpi": "^1.1",
@@ -177,8 +176,7 @@
     "autoload-dev": {
         "psr-4": {
             "Glpi\\Tools\\": "tools/src/",
-            "Glpi\\Tests\\": "tests/src/",
-            "Glpi\\PHPUnit\\Tests\\": "phpunit/src/"
+            "Glpi\\Tests\\": "tests/src/"
         },
         "files": ["tests/src/autoload/functions.php"]
     },
@@ -203,7 +201,6 @@
             "patch -f -p1 -d vendor/guzzlehttp/guzzle/ < tools/patches/guzzlehttp-guzzle-restrict-http-methods.patch || true",
             "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-laminas-mail-address-no-length-check.patch || true",
             "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-laminas-mail-invalid-header-ignore.patch || true",
-            "patch -f -p1 -d vendor/atoum/atoum/ < tools/patches/atoum-atoum-php-8.5-compat.patch || true",
             "patch -f -p1 -d vendor/scssphp/scssphp/ < tools/patches/scssphp-scssphp-php-8.5-compat.patch || true",
             "patch -f -p1 -d vendor/wapmorgan/unified-archive/ < tools/patches/wapmorgan-unified-archive-php-8.5-compat.patch || true"
         ]

@@ -47,7 +47,6 @@ TESTS_SUITES=(
   "security_scan"
   "install"
   "update"
-  "phpunit"
   "functional"
   "cache"
   "ldap"
@@ -153,7 +152,6 @@ Available tests suites:
  - security_scan
  - install
  - update
- - phpunit
  - functional
  - cache
  - ldap
@@ -282,10 +280,6 @@ run_single_test () {
       && $APPLICATION_ROOT/.github/actions/init_initialize-9.5-db.sh \
       && docker compose exec -T app .github/actions/test_update-from-older-version.sh \
       && docker compose exec -T app .github/actions/test_update-from-9.5.sh \
-      || LAST_EXIT_CODE=$?
-      ;;
-    "phpunit")
-         docker compose exec -T app .github/actions/test_tests-phpunit.sh $TEST_ARGS \
       || LAST_EXIT_CODE=$?
       ;;
     "functional")

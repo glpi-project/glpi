@@ -206,10 +206,6 @@ jobs:
         run: |
           .github/actions/init_initialize-9.5-db.sh
           docker compose exec -T app .github/actions/test_update-from-9.5.sh
-      - name: "PHPUnit tests"
-        if: "${{ success() || failure() }}"
-        run: |
-          docker compose exec -T app .github/actions/test_tests-phpunit.sh
       - name: "Functional tests"
         if: "${{ success() || failure() }}"
         run: |
