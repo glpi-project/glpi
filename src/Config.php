@@ -39,6 +39,7 @@ use Glpi\Dashboard\Grid;
 use Glpi\Event;
 use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\Plugin\Hooks;
+use Glpi\System\Diagnostic\SourceCodeIntegrityChecker;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\ArrayNormalizer;
 use Glpi\UI\ThemeManager;
@@ -770,6 +771,8 @@ class Config extends CommonDBTM
 
         // No need to translate, this part always display in english (for copy/paste to forum)
 
+        $code_integrity = null;
+
         // Try to compute a better version for .git
         $ver = GLPI_VERSION;
         if (is_dir(GLPI_ROOT . "/.git")) {
@@ -785,6 +788,12 @@ class Config extends CommonDBTM
             chdir($dir);
             if (!$returnCode) {
                 $ver .= '-git-' . $gitbranch . '-' . $gitrev;
+            }
+        } else {
+            $integrity_summary = (new SourceCodeIntegrityChecker)->getSummary();
+            $code_integrity = [];
+            foreach ($integrity_summary as $status) {
+                $code_integrity[$status] = ($code_integrity[$status] ?? 0) + 1;
             }
         }
 
@@ -826,6 +835,7 @@ class Config extends CommonDBTM
             'core_requirements' => $requirements,
             'system_info_objs' => $system_info_objs,
             'locales_overrides' => $files,
+            'code_integrity' => $code_integrity,
         ]);
     }
 
