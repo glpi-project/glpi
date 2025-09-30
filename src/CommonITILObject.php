@@ -9501,6 +9501,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         // Process deleted actors
         foreach ($actor_types as $actor_type) {
+            $actor_type_value = constant(CommonITILActor::class . '::' . strtoupper($actor_type));
             foreach ($actor_itemtypes as $actor_itemtype) {
                 $actor_fkey = getForeignKeyFieldForItemType($actor_itemtype);
                 $actors_deleted_input_key = sprintf('_%s_%s_deleted', $actor_fkey, $actor_type);
@@ -9510,7 +9511,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     : [];
                 foreach ($deleted as $actor) {
                     $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
-                    $actor_obj->delete(['id' => $actor['id']]);
+                    $actor_obj->delete(['id' => $actor['id'], 'type' => $actor_type_value]);
                 }
             }
         }

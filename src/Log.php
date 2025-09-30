@@ -589,66 +589,59 @@ class Log extends CommonDBTM
                         if ($item2 = getItemForItemtype($data["itemtype_link"])) {
                             $tmp['field'] = $item2->getTypeName(1);
                         }
-                        $tmp['change'] = sprintf(
-                            __s('%1$s: %2$s'),
-                            htmlescape($action_label),
-                            htmlescape($data["new_value"])
-                        );
 
-                        if ($data['itemtype'] == 'Ticket') {
-                            /** @var CommonITILObject $item */
-                            if ($data['id_search_option']) { // Recent record - see CommonITILObject::getSearchOptionsActors()
-                                $as = $SEARCHOPTION[$data['id_search_option']]['name'];
-                            } else { // Old record
-                                $is = $isr = $isa = $iso = false;
-                                switch ($data['itemtype_link']) {
-                                    case 'Group':
-                                        $is = 'isGroup';
-                                        break;
+                        /** @var CommonITILObject $item */
+                        if ($data['id_search_option']) { // Recent record - see CommonITILObject::getSearchOptionsActors()
+                            $as = $SEARCHOPTION[$data['id_search_option']]['name'];
+                        } else { // Old record
+                            $is = $isr = $isa = $iso = false;
+                            switch ($data['itemtype_link']) {
+                                case Group::class:
+                                    $is = 'isGroup';
+                                    break;
 
-                                    case 'User':
-                                        $is = 'isUser';
-                                        break;
+                                case User::class:
+                                    $is = 'isUser';
+                                    break;
 
-                                    case 'Supplier':
-                                        $is = 'isSupplier';
-                                        break;
-                                }
-                                if ($is) {
-                                    $iditem = intval(substr($data['new_value'], strrpos($data['new_value'], '(') + 1)); // This is terrible idea
-                                    $isr = $item->$is(CommonITILActor::REQUESTER, $iditem);
-                                    $isa = $item->$is(CommonITILActor::ASSIGN, $iditem);
-                                    $iso = $item->$is(CommonITILActor::OBSERVER, $iditem);
-                                }
-                                // Simple Heuristic, of course not enough
-                                if ($isr && !$isa && !$iso) {
-                                    $as = _n('Requester', 'Requesters', 1);
-                                } elseif (!$isr && $isa && !$iso) {
-                                    $as = __('Assigned to');
-                                } elseif (!$isr && !$isa && $iso) {
-                                    $as = _n('Observer', 'Observers', 1);
-                                } else {
-                                    // Deleted or Ambiguous
-                                    $as = false;
-                                }
+                                case Supplier::class:
+                                    $is = 'isSupplier';
+                                    break;
                             }
-                            if ($as) {
-                                $tmp['change'] = sprintf(
-                                    __s('%1$s: %2$s'),
-                                    htmlescape($action_label),
-                                    sprintf(
-                                        __s('%1$s (%2$s)'),
-                                        htmlescape($data["new_value"]),
-                                        htmlescape($as)
-                                    )
-                                );
+                            if ($is) {
+                                $iditem = intval(substr($data['new_value'], strrpos($data['new_value'], '(') + 1)); // This is terrible idea
+                                $isr = $item->$is(CommonITILActor::REQUESTER, $iditem);
+                                $isa = $item->$is(CommonITILActor::ASSIGN, $iditem);
+                                $iso = $item->$is(CommonITILActor::OBSERVER, $iditem);
+                            }
+                            // Simple Heuristic, of course not enough
+                            if ($isr && !$isa && !$iso) {
+                                $as = _n('Requester', 'Requesters', 1);
+                            } elseif (!$isr && $isa && !$iso) {
+                                $as = __('Assigned to');
+                            } elseif (!$isr && !$isa && $iso) {
+                                $as = _n('Observer', 'Observers', 1);
                             } else {
-                                $tmp['change'] = sprintf(
-                                    __s('%1$s: %2$s'),
-                                    htmlescape($action_label),
-                                    htmlescape($data["new_value"])
-                                );
+                                // Deleted or Ambiguous
+                                $as = false;
                             }
+                        }
+                        if ($as) {
+                            $tmp['change'] = sprintf(
+                                __s('%1$s: %2$s'),
+                                htmlescape($action_label),
+                                sprintf(
+                                    __s('%1$s (%2$s)'),
+                                    htmlescape($data["new_value"]),
+                                    htmlescape($as)
+                                )
+                            );
+                        } else {
+                            $tmp['change'] = sprintf(
+                                __s('%1$s: %2$s'),
+                                htmlescape($action_label),
+                                htmlescape($data["new_value"])
+                            );
                         }
                         break;
 
@@ -669,14 +662,28 @@ class Log extends CommonDBTM
 
                     case self::HISTORY_DEL_RELATION:
                         $tmp['field'] = NOT_AVAILABLE;
+                        $as = false; //Old record were id_search_option is 0
+                        if ($data['id_search_option']) { // Recent record - see CommonITILObject::getSearchOptionsActors()
+                            $as = $SEARCHOPTION[$data['id_search_option']]['name'];
+                        }
+
                         if ($item2 = getItemForItemtype($data["itemtype_link"])) {
                             $tmp['field'] = $item2->getTypeName(1);
                         }
-                        $tmp['change'] = sprintf(
-                            __s('%1$s: %2$s'),
-                            htmlescape($action_label),
-                            htmlescape($data["old_value"])
-                        );
+                        if ($as) {
+                            $tmp['change'] = sprintf(
+                                __s('%1$s: %2$s (%3$s)'),
+                                htmlescape($action_label),
+                                htmlescape($data["old_value"]),
+                                htmlescape($as)
+                            );
+                        } else {
+                            $tmp['change'] = sprintf(
+                                __s('%1$s: %2$s'),
+                                htmlescape($action_label),
+                                htmlescape($data["old_value"])
+                            );
+                        }
                         break;
 
                     case self::HISTORY_LOCK_RELATION:

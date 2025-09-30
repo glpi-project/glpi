@@ -106,6 +106,47 @@ abstract class CommonITILActor extends CommonDBRelation
         return $users;
     }
 
+    protected function get_force_log_option()
+    {
+        if ($this->_force_log_option !== 0) {
+            // if _force_log_option is already set by other code
+            // parts just return it to not change existing behavior
+            return $this->_force_log_option;
+        }
+
+        if (!isset($this->input['type'])) {
+            // keep existing behavior if type is not explicitly set
+            return $this->_force_log_option;
+        }
+
+        // Values from CommonITILObject::getSearchOptionsActors()
+        if (static::$itemtype_2 === User::class) {
+            switch ($this->input['type']) {
+                case CommonITILActor::REQUESTER:
+                    return 4;
+                case CommonITILActor::OBSERVER:
+                    return 66;
+                case CommonITILActor::ASSIGN:
+                    return 5;
+            }
+        } elseif (static::$itemtype_2 === Group::class) {
+            switch ($this->input['type']) {
+                case CommonITILActor::REQUESTER:
+                    return 71;
+                case CommonITILActor::OBSERVER:
+                    return 65;
+                case CommonITILActor::ASSIGN:
+                    return 8;
+            }
+        } elseif (static::$itemtype_2 === Supplier::class) {
+            // Suppliers are special the can only be assigned, not observe or request
+            switch ($this->input['type']) {
+                case CommonITILActor::ASSIGN:
+                    return 6;
+            }
+        }
+        return $this->_force_log_option; // again just return default
+    }
     /**
      * @param int $items_id
      * @param string $email
@@ -178,7 +219,10 @@ abstract class CommonITILActor extends CommonDBRelation
                 }
             }
         }
+        $current_log_option = $this->_force_log_option;
+        $this->_force_log_option = $this->get_force_log_option();
         parent::post_deleteFromDB();
+        $this->_force_log_option = $current_log_option;
     }
 
     public function prepareInputForAdd($input)
@@ -296,7 +340,9 @@ abstract class CommonITILActor extends CommonDBRelation
                 NotificationEvent::raiseEvent($event, $item);
             }
         }
-
+        $current_log_option = $this -> _force_log_option;
+        $this->_force_log_option = $this->get_force_log_option();
         parent::post_addItem();
+        $this->_force_log_option = $current_log_option;
     }
 }
