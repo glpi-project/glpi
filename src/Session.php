@@ -1921,7 +1921,7 @@ class Session
      **/
     public static function haveTranslations($itemtype, $field)
     {
-        if (!is_a($itemtype, Dropdown::class, true)) {
+        if (!is_a($itemtype, CommonDropdown::class, true)) {
             return false;
         }
 
