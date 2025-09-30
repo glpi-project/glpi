@@ -7926,7 +7926,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 'tu.type AS type',
             ],
             'FROM'      => "$users_table AS tu",
-            'LEFT JOIN' => [
+            'INNER JOIN' => [
                 User::getTable() . ' AS usr' => [
                     'ON' => [
                         'tu'  => 'users_id',
@@ -7945,7 +7945,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 'gt.type AS type',
             ],
             'FROM'      => "$groups_table AS gt",
-            'LEFT JOIN' => [
+            'INNER JOIN' => [
                 Group_User::getTable() . ' AS gu'   => [
                     'ON' => [
                         'gu'  => 'groups_id',

@@ -201,7 +201,7 @@ class Dropdown
         }
 
         $names = [];
-        if (!$params['multiple'] && isset($params['toadd'][$params['value']])) {
+        if (!$params['multiple'] && $params['value'] !== null && isset($params['toadd'][$params['value']])) {
             $name = $params['toadd'][$params['value']];
         } elseif (
             !$params['multiple']

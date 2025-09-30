@@ -5175,7 +5175,7 @@ final class SQLProvider implements SearchProviderInterface
                         } else {
                             $newrow[$key] = $val;
                             // Add id to items list
-                            if ($key == 'id') {
+                            if ($key == 'id' && $val !== null) {
                                 $data['data']['items'][$val] = $i;
                             }
                         }
@@ -6662,7 +6662,7 @@ final class SQLProvider implements SearchProviderInterface
                     return \htmlescape($out);
 
                 case "language":
-                    if (isset($CFG_GLPI['languages'][$data[$ID][0]['name']])) {
+                    if (isset($data[$ID][0]['name'], $CFG_GLPI['languages'][$data[$ID][0]['name']])) {
                         return $CFG_GLPI['languages'][$data[$ID][0]['name']][0];
                     }
                     return __('Default value');
