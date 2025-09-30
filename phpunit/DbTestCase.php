@@ -171,14 +171,18 @@ class DbTestCase extends GLPITestCase
                     "Object not created as expected, field '$k' not found in object " . get_class($object),
                 );
 
-                $this->assertEquals(
-                    $v,
-                    $object->fields[$k],
-                    "
+                if (is_array($v)) {
+                    $this->assertArraysEqualRecursive($v, $object->fields[$k]);
+                } else {
+                    $this->assertEquals(
+                        $v,
+                        $object->fields[$k],
+                        "
                     Object not created as expected
                     field '$k' value is '{$object->fields[$k]}' (" . gettype($object->fields[$k]) . ")
                     but was expected to be '$v' (" . gettype($v) . ")"
-                );
+                    );
+                }
             }
         }
     }

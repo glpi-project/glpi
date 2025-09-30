@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Asset;
 
 use DbTestCase;
 use Glpi\Asset\Asset;
+use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\CapacityInterface;
@@ -184,6 +185,68 @@ class AssetTest extends DbTestCase
         );
     }
 
+    public function testPrepareInputForAddWithReadOnlyField(): void
+    {
+        $this->login();
+        $user_profile = \Session::getCurrentProfile();
+
+        $asset_definition = $this->initAssetDefinition();
+        $asset_settings = [
+            'assets_assetdefinitions_id' => $asset_definition->getID(),
+            'system_name' => 'test_string',
+            'label' => 'Test string',
+            'type' => StringType::class,
+            'default_value' => 'default',
+            'field_options' => ['readonly' => [3, 5, 6]],
+        ];
+
+        // We test it with the user having the readonly not applied to his profile
+        $string_field = $this->createItem(CustomFieldDefinition::class, $asset_settings);
+
+        $asset_definition->getFromDB($asset_definition->getID());
+
+        $asset = new ($asset_definition->getAssetClassName());
+        $input = $asset->prepareInputForAdd([
+            'name' => 'custom name',
+            'custom_test_string' => 'test',
+        ]);
+        $this->assertEquals('custom name', $input['name']);
+        $this->assertEquals('test', $input['custom_test_string']);
+        $this->assertEquals(json_encode([$string_field->getID() => 'test']), $input['custom_fields']);
+
+
+        // We test it with the user having the readonly apply to his profile
+        $asset_settings['system_name'] = 'test2_string';
+        $asset_settings['field_options']['readonly'][] = $user_profile->getID();
+        $this->createItem(CustomFieldDefinition::class, $asset_settings);
+
+        $asset_definition->getFromDB($asset_definition->getID());
+        $update = [
+            'fields_display' => ['name'],
+            'field_options' => [
+                'name' => [
+                    'full_width' => '0',
+                    'required' => '0',
+                    '_readonly' => '1',
+                    'readonly' => [$user_profile->getID()],
+                ],
+            ],
+        ];
+        $this->updateItem(AssetDefinition::class, $asset_definition->getID(), $update, ['fields_display', 'field_options']);
+
+        $asset = new ($asset_definition->getAssetClassName());
+        // We trigger the entities add, so default values are applied
+        $asset->add(['add' => true, 'entities_id' => 0]);
+
+        $input = $asset->prepareInputForAdd([
+            'name' => 'custom name',
+            'custom_test2_string' => 'test',
+        ]);
+        $this->assertNotEquals('custom name', $input['name']);
+        $this->assertEquals($asset->fields['name'], $input['name']);
+        $this->assertEquals('default', $input['custom_test2_string']);
+    }
+
     public function testPrepareInputForUpdate()
     {
         $asset_definition = $this->initAssetDefinition();
@@ -205,6 +268,65 @@ class AssetTest extends DbTestCase
             json_encode([$string_field->getID() => 'test']),
             $input['custom_fields']
         );
+    }
+
+    public function testPrepareInputForUpdateWithReadOnlyField(): void
+    {
+        $this->login();
+        $user_profile = \Session::getCurrentProfile();
+
+        $asset_definition = $this->initAssetDefinition();
+        $asset_settings = [
+            'assets_assetdefinitions_id' => $asset_definition->getID(),
+            'system_name' => 'test_string',
+            'label' => 'Test string',
+            'type' => StringType::class,
+            'default_value' => 'default',
+            'field_options' => ['readonly' => [3, 5, 6]],
+        ];
+
+        // We test it with the user having the readonly not applied to his profile
+        $string_field = $this->createItem(CustomFieldDefinition::class, $asset_settings);
+
+        $asset_definition->getFromDB($asset_definition->getID());
+
+        $asset = new ($asset_definition->getAssetClassName());
+        $input = $asset->prepareInputForUpdate([
+            'name' => 'custom name',
+            'custom_test_string' => 'test',
+        ]);
+        $this->assertEquals('custom name', $input['name']);
+        $this->assertEquals('test', $input['custom_test_string']);
+        $this->assertEquals(json_encode([$string_field->getID() => 'test']), $input['custom_fields']);
+
+
+        // We test it with the user having the readonly apply to his profile
+        $asset_settings['system_name'] = 'test2_string';
+        $asset_settings['field_options']['readonly'][] = $user_profile->getID();
+        $this->createItem(CustomFieldDefinition::class, $asset_settings);
+
+        $asset_definition->getFromDB($asset_definition->getID());
+        $update = [
+            'fields_display' => ['name'],
+            'field_options' => [
+                'name' => [
+                    'full_width' => '0',
+                    'required' => '0',
+                    '_readonly' => '1',
+                    'readonly' => [$user_profile->getID()],
+                ],
+            ],
+        ];
+        $this->updateItem(AssetDefinition::class, $asset_definition->getID(), $update, ['fields_display', 'field_options']);
+
+        $asset = new ($asset_definition->getAssetClassName());
+        $input = $asset->prepareInputForUpdate([
+            'name' => 'custom name',
+            'custom_test2_string' => 'test',
+        ]);
+        $this->assertArrayNotHasKey('name', $input);
+        $this->assertArrayNotHasKey('custom_test2_string', $input);
+        $this->assertEquals('[]', $input['custom_fields']);
     }
 
     public function testGetEmpty()
