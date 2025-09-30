@@ -62,7 +62,7 @@
 
 {% set glpi_info %}
 GLPI: {{ ver }} ({{ config('root_doc') }} => {{ constant('GLPI_ROOT') }})
-Source Integrity (Altered/Missing/Added): {{ code_integrity == null ? 'N/A' : (sci_altered ~ '/' ~ sci_missing ~ '/' ~ sci_added) }}
+Source Integrity (Altered/Missing/Added): {{ code_integrity is null ? 'N/A' : (sci_altered ~ '/' ~ sci_missing ~ '/' ~ sci_added) }}
 Installation mode: {{ constant('GLPI_INSTALL_MODE') }}
 Current language: {{ language }}
 {% endset %}
