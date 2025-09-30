@@ -131,7 +131,7 @@ final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable implemen
                             const container = question.find('div[data-glpi-form-editor-selectable-question-options]');
                             container.data(
                                 'manager',
-                                new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container)
+                                new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container, true)
                             );
                         }
                     });
@@ -142,7 +142,7 @@ final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable implemen
                             const container = new_question.find('div[data-glpi-form-editor-selectable-question-options]');
                             container.data(
                                 'manager',
-                                new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container)
+                                new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container, true)
                             );
                         }
                     });
