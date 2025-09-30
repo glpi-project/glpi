@@ -732,10 +732,12 @@ function loadDataset()
         ],
         'Glpi\\CustomDropdown\\CustomTagDropdown' => [
             [
+                'id' => 1,
                 'name' => 'Tag01',
                 'entities_id' => '_test_root_entity',
             ],
             [
+                'id' => 2,
                 'name' => 'Tag02',
                 'entities_id' => '_test_root_entity',
             ],
@@ -766,7 +768,7 @@ function loadDataset()
                 'assets_assetdefinitions_id' => 'Test01',
                 'label' => 'Test String',
                 'type' => 'Glpi\\Asset\\CustomFieldType\\StringType',
-                'field_options' => '{"full_width":"0","readonly":"0","required":"0"}',
+                'field_options' => ["full_width" => "0", "readonly" => "0", "required" => "0"],
             ],
             [
                 'system_name' => 'customtagsingle',
@@ -774,7 +776,7 @@ function loadDataset()
                 'label' => 'Single Custom Tag',
                 'type' => 'Glpi\\Asset\\CustomFieldType\\DropdownType',
                 'itemtype' => 'Glpi\\CustomDropdown\\CustomTagDropdown',
-                'field_options' => '{"full_width":"0","readonly":"0","required":"0"}',
+                'field_options' => ["full_width" => "0", "readonly" => "0", "required" => "0"],
             ],
             [
                 'system_name' => 'customtagmulti',
@@ -782,7 +784,7 @@ function loadDataset()
                 'label' => 'Multi Custom Tag',
                 'type' => 'Glpi\\Asset\\CustomFieldType\\DropdownType',
                 'itemtype' => 'Glpi\\CustomDropdown\\CustomTagDropdown',
-                'field_options' => '{"full_width":"0","readonly":"0","required":"0","multiple":"1"}',
+                'field_options' => ["full_width" => "0", "readonly" => "0", "required" => "0", "multiple" => "1"],
             ],
         ],
         'Glpi\\CustomAsset\\Test01Asset' => [
@@ -790,13 +792,13 @@ function loadDataset()
                 'name' => 'TestA',
                 'entities_id' => '_test_root_entity',
                 'custom_teststring' => 'Test String A',
-                'custom_customtagsingle' => 'Tag01',
+                'custom_customtagsingle' => "1"
             ],
             [
                 'name' => 'TestB',
                 'entities_id' => '_test_root_entity',
                 'custom_teststring' => 'Test String B',
-                'custom_customtagmulti' => ['Tag01', 'Tag02'],
+                'custom_customtagmulti' => [0 => "1", 1 => "2"],
             ],
         ],
         'Glpi\\CustomAsset\\Test02Asset' => [

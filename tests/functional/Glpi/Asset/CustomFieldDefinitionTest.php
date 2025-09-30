@@ -49,6 +49,8 @@ use Glpi\Asset\CustomFieldType\TextType;
 use Glpi\Asset\CustomFieldType\URLType;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Search\SearchEngine;
+use Glpi\Search\SearchOption;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class CustomFieldDefinitionTest extends DbTestCase
@@ -630,5 +632,71 @@ class CustomFieldDefinitionTest extends DbTestCase
         ]);
         $this->assertFalse($updated);
         $this->hasSessionMessages(ERROR, ['The field type cannot be changed.']);
+    }
+
+    public function testSearchDropdownField(): void
+    {
+        $this->login();
+
+        $opts = SearchOption::getOptionsForItemtype('Glpi\\CustomAsset\\Test01Asset');
+        $single_dropdown_opt = null;
+        $multiple_dropdown_opt = null;
+
+        foreach ($opts as $num => $opt) {
+            if (!is_array($opt)) {
+                continue;
+            }
+            if ($opt['name'] === 'Single Custom Tag') {
+                $single_dropdown_opt = $num;
+            } elseif ($opt['name'] === 'Multi Custom Tag') {
+                $multiple_dropdown_opt = $num;
+            }
+        }
+        $this->assertNotNull($single_dropdown_opt);
+        $this->assertNotNull($multiple_dropdown_opt);
+
+        $this->createItem('Glpi\\CustomAsset\\Test01Asset', [
+            'entities_id' => $this->getTestRootEntity(true),
+            'name' => __FUNCTION__,
+            'custom_customtagsingle' => getItemByTypeName('Glpi\\CustomDropdown\\CustomTagDropdown', 'Tag01', true),
+            'custom_customtagmulti' => [
+                getItemByTypeName('Glpi\\CustomDropdown\\CustomTagDropdown', 'Tag01', true),
+                getItemByTypeName('Glpi\\CustomDropdown\\CustomTagDropdown', 'Tag02', true)
+            ],
+        ], ['custom_customtagsingle', 'custom_customtagmulti']);
+
+        $data = SearchEngine::getData('Glpi\\CustomAsset\\Test01Asset', [
+            'criteria' => [
+                [
+                    'link' => 'AND',
+                    'field' => 'name',
+                    'searchtype' => 'equals',
+                    'value' => __FUNCTION__,
+                ],
+                [
+                    'link' => 'OR',
+                    'field' => $single_dropdown_opt,
+                    'searchtype' => 'contains',
+                    'value' => 'Tag',
+                ],
+                [
+                    'link' => 'OR',
+                    'field' => $multiple_dropdown_opt,
+                    'searchtype' => 'contains',
+                    'value' => 'Tag',
+                ]
+            ]
+        ], [$single_dropdown_opt, $multiple_dropdown_opt]);
+
+        $this->assertCount(1, $data['data']['rows']);
+        $row = reset($data['data']['rows'])['raw'];
+        $this->assertEquals(
+            'Tag01',
+            $row['ITEM_Glpi\\CustomAsset\\Test01Asset_' . $single_dropdown_opt]
+        );
+        $this->assertEquals(
+            'Tag01$#$1$$##$$Tag02$#$2',
+            $row['ITEM_Glpi\\CustomAsset\\Test01Asset_' . $multiple_dropdown_opt]
+        );
     }
 }
