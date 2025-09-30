@@ -571,6 +571,10 @@ export class GlpiFormEditorController
                 this.#do_preview_after_save = true;
                 break;
 
+            case "stop-propagation":
+                // Dummy event, do nothing.
+                break;
+
             // Unknown action
             default:
                 throw new Error(`Unknown action: ${action}`);
