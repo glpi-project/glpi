@@ -100,15 +100,16 @@ abstract class CommonITILActor extends CommonDBRelation
         return $users;
     }
 
-    protected function get_force_log_option(){
-        if ( $this->_force_log_option !== 0 ){
+    protected function get_force_log_option()
+    {
+        if ($this->_force_log_option !== 0) {
             // if _force_log_option is already set by other code
             // parts just return it to not change existing behavior
             return $this->_force_log_option;
         }
         // Values from CommonITILObject::getSearchOptionsActors()
-        if (static::$itemtype_2 === 'User'){
-            switch ($this->input['type']) { 
+        if (static::$itemtype_2 === 'User') {
+            switch ($this->input['type']) {
                 case CommonITILActor::REQUESTER:
                     return 4;
                 case CommonITILActor::OBSERVER:
@@ -125,7 +126,7 @@ abstract class CommonITILActor extends CommonDBRelation
                 case CommonITILActor::ASSIGN:
                     return 8;
             }
-        } elseif ( static::$itemtype_2 === 'Supplier') {
+        } elseif (static::$itemtype_2 === 'Supplier') {
             // Suppliers are special the can only be assigned, not observe or request
             switch ($this->input['type']) {
                 case CommonITILActor::ASSIGN:

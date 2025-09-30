@@ -677,14 +677,13 @@ class Log extends CommonDBTM
                                 htmlescape($data["old_value"]),
                                 htmlescape($as)
                             );
-                        }else {
+                        } else {
                             $tmp['change'] = sprintf(
-                            __s('%1$s: %2$s'),
-                            htmlescape($action_label),
-                            htmlescape($data["old_value"])
-                        );
+                                __s('%1$s: %2$s'),
+                                htmlescape($action_label),
+                                htmlescape($data["old_value"])
+                            );
                         }
-                        
                         break;
 
                     case self::HISTORY_LOCK_RELATION:
