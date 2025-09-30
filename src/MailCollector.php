@@ -1864,7 +1864,7 @@ class MailCollector extends CommonDBTM
                 // Extract everything located prior to doctype/html declaration
                 $pre_content_matches = [];
                 if (preg_match('/^(?<pre_content>.*?)(?:<!doctype|<html)/is', $raw_content, $pre_content_matches)) {
-                    $extracted_content .= $pre_content_matches['pre_content'];
+                    $extracted_content .= trim($pre_content_matches['pre_content']);
                 }
 
                 // Extract everything located inside the body
@@ -1876,13 +1876,11 @@ class MailCollector extends CommonDBTM
                 // Extract everything located after the html closing tag
                 $post_content_matches = [];
                 if (preg_match('/(?:<\/html>)(?<post_content>.*?)$/is', $raw_content, $post_content_matches)) {
-                    $extracted_content .= $post_content_matches['post_content'];
+                    $extracted_content .= trim($post_content_matches['post_content']);
                 }
 
                 // If we have extracted content, use it, otherwise fallback to original
                 $content = !empty($extracted_content) ? $extracted_content : $raw_content;
-
-                // Strip <style> and <script> tags located in HTML body.
                 // They could be neutralized by RichText::getSafeHtml(), but their content would be displayed,
                 // and end-user would probably prefer having them completely removed.
                 $content = preg_replace(
