@@ -107,6 +107,12 @@ abstract class CommonITILActor extends CommonDBRelation
             // parts just return it to not change existing behavior
             return $this->_force_log_option;
         }
+
+        if (!isset($this->input['type'])) {
+            // keep existing behavior if type is not explicitly set
+            return $this->_force_log_option;
+        }
+
         // Values from CommonITILObject::getSearchOptionsActors()
         if (static::$itemtype_2 === 'User') {
             switch ($this->input['type']) {
