@@ -40,7 +40,7 @@ import { GlpiFormEditorConvertedExtractedDefaultValue, DATATYPE } from "/js/modu
 export class GlpiFormEditorConvertedExtractedSelectableDefaultValue extends GlpiFormEditorConvertedExtractedDefaultValue {
     /**
      * The selectable options with their values and states
-     * @type {Object<string, {value: string, checked: boolean, uuid: string}>}
+     * @type {Object<string, {value: string, checked: boolean, uuid: string, order: number}>}
      * @private
      */
     #options;
@@ -48,7 +48,7 @@ export class GlpiFormEditorConvertedExtractedSelectableDefaultValue extends Glpi
     /**
      * Creates a new selectable default value instance
      *
-     * @param {Object<string, {value: string, checked: boolean, uuid: string}>} options - The selectable options
+     * @param {Object<string, {value: string, checked: boolean, uuid: string, order: number}>} options - The selectable options
      */
     constructor(options) {
         super(DATATYPE.ARRAY_OF_STRINGS, Object.entries(options).map((values) => values[1].value));

@@ -172,6 +172,16 @@ TWIG;
     #[Override]
     public function prepareExtraData(array $input): array
     {
+        // Sort options by order
+        if (isset($input['options_order']) && is_array($input['options_order'])) {
+            uksort($input['options'], function ($a, $b) use ($input) {
+                $orderA = $input['options_order'][$a] ?? 0;
+                $orderB = $input['options_order'][$b] ?? 0;
+                return $orderA <=> $orderB;
+            });
+            unset($input['options_order']);
+        }
+
         // The last option can be empty, so we need to remove it
         if (isset($input['options']) && end($input['options']) === '') {
             array_pop($input['options']);
@@ -325,7 +335,7 @@ TWIG;
         $template = <<<TWIG
         {% set rand = random() %}
 
-        {% macro addOption(input_type, checked, value, translations, uuid = null, extra_details = false, disabled = false, hide_default_value_input = false) %}
+        {% macro addOption(input_type, checked, value, translations, uuid = null, order, extra_details = false, disabled = false, hide_default_value_input = false) %}
             {% if uuid is null %}
                 {% set uuid = random() %}
             {% endif %}
@@ -363,6 +373,13 @@ TWIG;
                     placeholder="{{ translations.enter_option }}"
                     aria-label="{{ translations.selectable_option }}"
                 >
+                <input
+                    type="hidden"
+                    name="options_order[{{ uuid }}]"
+                    value="{{ order }}"
+                    data-glpi-form-editor-specific-question-extra-data
+                    data-glpi-form-editor-question-option-order
+                >
                 <button
                     class="btn btn-sm btn-icon btn-ghost-secondary {{ value ? '' : 'd-none' }}"
                     aria-label="{{ translations.remove_option }}"
@@ -375,7 +392,7 @@ TWIG;
         {% endmacro %}
 
         <template>
-            {{ _self.addOption(input_type, false, '', translations, null, true, true, hide_default_value_input) }}
+            {{ _self.addOption(input_type, false, '', translations, null, null, true, true, hide_default_value_input) }}
         </template>
 
         <div class="{{ selectable_question_options_class|default('') }}">
@@ -384,11 +401,11 @@ TWIG;
                 {{ hide_container_when_unfocused ? 'data-glpi-form-editor-question-extra-details' : '' }}
             >
                 {% for value in values %}
-                    {{ _self.addOption(input_type, value.checked, value.value, translations, value.uuid, false, false, hide_default_value_input) }}
+                    {{ _self.addOption(input_type, value.checked, value.value, translations, value.uuid, loop.index0, false, false, hide_default_value_input) }}
                 {% endfor %}
             </div>
 
-            {{ _self.addOption(input_type, false, '', translations, null, true, true, hide_default_value_input) }}
+            {{ _self.addOption(input_type, false, '', translations, null, values|length, true, true, hide_default_value_input) }}
         </div>
 
         <script>
