@@ -373,10 +373,22 @@ class FormMigration extends AbstractPluginMigration
     {
         $this->updateProgressWithMessage(__('Importing form categories...'));
 
+        $additional_criteria = [];
+        if ($this->specificFormsIds !== []) {
+            $additional_criteria[] = [
+                'glpi_plugin_formcreator_categories.id' => new QuerySubQuery([
+                    'SELECT' => 'glpi_plugin_formcreator_forms.plugin_formcreator_categories_id',
+                    'FROM'   => 'glpi_plugin_formcreator_forms',
+                    'WHERE'  => ['glpi_plugin_formcreator_forms.id' => $this->specificFormsIds],
+                ]),
+            ];
+        }
+
         // Retrieve data from glpi_plugin_formcreator_categories table
         $raw_form_categories = $this->db->request([
             'SELECT' => ['id', 'name', 'plugin_formcreator_categories_id'],
             'FROM'   => 'glpi_plugin_formcreator_categories',
+            'WHERE'   => $additional_criteria,
             'ORDER'  => ['level ASC'],
         ]);
 
@@ -1172,9 +1184,18 @@ class FormMigration extends AbstractPluginMigration
         $raw_languages = $this->db->request([
             'SELECT' => [
                 'plugin_formcreator_forms_id',
-                'name',
+                'glpi_plugin_formcreator_forms_languages.name',
             ],
             'FROM'   => 'glpi_plugin_formcreator_forms_languages',
+            'LEFT JOIN'   => [
+                'glpi_plugin_formcreator_forms' => [
+                    'ON' => [
+                        'glpi_plugin_formcreator_forms_languages' => 'plugin_formcreator_forms_id',
+                        'glpi_plugin_formcreator_forms'           => 'id',
+                    ],
+                ],
+            ],
+            'WHERE'  => $this->getFormWhereCriteria(),
         ]);
 
         foreach ($raw_languages as $raw_language) {
