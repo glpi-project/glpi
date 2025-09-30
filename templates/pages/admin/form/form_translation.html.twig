@@ -68,6 +68,8 @@
                     'enable_richtext': true,
                     'statusbar'      : false,
                     'editor_height'  : 0,
+                    'init'           : false,
+                    'init_on_demand' : true,
                 }
             ) }}
         {% else %}
@@ -84,9 +86,9 @@
 {% endmacro %}
 
 {% set entries = [] %}
-{% for category, handlers in form.listTranslationsHandlers() %}
+{% for handlers in form.listTranslationsHandlers() %}
     {% set entries = entries|merge([{
-        'type': '<span data-glpi-form-translations-subtitle-row>' ~ category ~ '</span>',
+        'type': '<span data-glpi-form-translations-subtitle-row>' ~ handlers|first.getCategory() ~ '</span>',
         'type_colspan': 3,
         'type_aria_label': _n('Category', 'Categories', 1)
     }]) %}

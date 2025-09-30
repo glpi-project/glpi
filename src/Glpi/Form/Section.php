@@ -156,7 +156,8 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
         }
 
         $handlers = [];
-        $key = sprintf('%s: %s', self::getTypeName(), $this->getName());
+        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $category_name = sprintf('%s: %s', self::getTypeName(), $this->getName());
         if (count($form->getSections()) > 1) {
             if (!empty($this->fields['name'])) {
                 $handlers[$key][] = new TranslationHandler(
@@ -164,6 +165,8 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
                     key: self::TRANSLATION_KEY_NAME,
                     name: __('Section title'),
                     value: $this->fields['name'],
+                    is_rich_text: false,
+                    category: $category_name
                 );
             }
 
@@ -174,6 +177,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
                     name: __('Section description'),
                     value: $this->fields['description'],
                     is_rich_text: true,
+                    category: $category_name
                 );
             }
         }

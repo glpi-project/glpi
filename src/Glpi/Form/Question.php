@@ -132,7 +132,8 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     #[Override]
     public function listTranslationsHandlers(): array
     {
-        $key = sprintf('%s: %s', self::getTypeName(), $this->getName());
+        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $category_name = sprintf('%s: %s', self::getTypeName(), $this->getName());
         $handlers = [];
         if (!empty($this->fields['name'])) {
             $handlers[$key][] = new TranslationHandler(
@@ -140,6 +141,8 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
                 key: self::TRANSLATION_KEY_NAME,
                 name: __('Question name'),
                 value: $this->fields['name'],
+                is_rich_text: false,
+                category: $category_name
             );
         }
 
@@ -150,6 +153,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
                 name: __('Question description'),
                 value: $this->fields['description'],
                 is_rich_text: true,
+                category: $category_name
             );
         }
 

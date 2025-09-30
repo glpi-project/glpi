@@ -175,7 +175,8 @@ final class Comment extends CommonDBChild implements
     #[Override]
     public function listTranslationsHandlers(): array
     {
-        $key = sprintf('%s: %s', self::getTypeName(), $this->getName());
+        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $category_name = sprintf('%s: %s', self::getTypeName(), $this->getName());
         $handlers = [];
 
         if (!empty($this->fields['name'])) {
@@ -184,6 +185,8 @@ final class Comment extends CommonDBChild implements
                 key: self::TRANSLATION_KEY_NAME,
                 name: __('Comment title'),
                 value: $this->fields['name'],
+                is_rich_text: false,
+                category: $category_name
             );
         }
 
@@ -194,6 +197,7 @@ final class Comment extends CommonDBChild implements
                 name: __('Comment description'),
                 value: $this->fields['description'],
                 is_rich_text: true,
+                category: $category_name
             );
         }
 
