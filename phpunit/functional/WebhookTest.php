@@ -301,17 +301,12 @@ JSON;
     public function testGetMonacoSuggestions()
     {
         $itemtypes = \Webhook::getItemtypesDropdownValues();
-        $noSuggestions = ['Document_Item'];
 
         foreach ($itemtypes as $types) {
             $this->assertIsArray($types);
             foreach ($types as $itemtype => $label) {
                 $suggestions = \Webhook::getMonacoSuggestions($itemtype);
-                if (in_array($itemtype, $noSuggestions)) {
-                    $this->assertEmpty($suggestions, "Suggestions for $itemtype should be empty");
-                } else {
-                    $this->assertNotEmpty($suggestions, "Missing suggestions for $itemtype");
-                }
+                $this->assertNotEmpty($suggestions, "Missing suggestions for $itemtype");
             }
         }
     }

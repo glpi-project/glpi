@@ -374,7 +374,6 @@ class Webhook extends CommonDBTM implements FilterableInterface
                         ChangeTask::class => ['parent' => Change::class],
                         ProblemTask::class => ['parent' => Problem::class],
                         ITILFollowup::class => [], // All main types can be the parent
-                        Document_Item::class => [],
                         ITILSolution::class => [],
                         TicketValidation::class => ['parent' => Ticket::class],
                     ],
@@ -384,6 +383,9 @@ class Webhook extends CommonDBTM implements FilterableInterface
                         Appliance::class, Budget::class, Certificate::class, Cluster::class, Contact::class,
                         Contract::class, Database::class, Datacenter::class, Document::class, Domain::class,
                         SoftwareLicense::class, Line::class, Supplier::class,
+                    ],
+                    'subtypes' => [
+                        Document_Item::class => ['parent' => Document::class],
                     ],
                 ],
             ];
