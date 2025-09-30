@@ -36,6 +36,7 @@
 namespace Glpi\Form\ServiceCatalog\Provider;
 
 use Glpi\Form\Category;
+use Glpi\Form\Form;
 use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\FuzzyMatcher\FuzzyMatcher;
 use Glpi\FuzzyMatcher\PartialMatchStrategy;
@@ -83,6 +84,51 @@ final class CategoryProvider implements CompositeProviderInterface
             }
 
             $categories[] = $category;
+        }
+
+        return $categories;
+    }
+
+    /**
+     * @param ItemRequest $item_request
+     * @return array<array{id: int, name: string}>
+     */
+    public function getAncestors(ItemRequest $item_request): array
+    {
+        $category_id = $item_request->getCategoryID();
+        $category = Category::getById($category_id);
+        if (!$category) {
+            return [];
+        }
+
+        $categories = [];
+        $current_category = [
+            'id' => $category->getID(),
+            'name' => $category->fields['name'],
+        ];
+
+        $ancestors_iterator = $category->getAncestors();
+        if (!$ancestors_iterator) {
+            return [$current_category];
+        }
+
+        /** @var Category[] $ancestors */
+        $ancestors = iterator_to_array($category->getAncestors());
+        foreach ($ancestors as $ancestor) {
+            // We check the ancestor has form linked to it
+            $count = countElementsInTable(Form::getTable(), ['forms_categories_id' => $ancestor->getID()]);
+            if ($count === 0) {
+                continue;
+            }
+
+            $categories[] = [
+                'id' => $ancestor->getID(),
+                'name' => $ancestor->fields['name'],
+            ];
+        }
+
+        if (!in_array($current_category['id'], array_column($categories, 'id'), true)) {
+            $categories[] = $current_category;
         }
 
         return $categories;

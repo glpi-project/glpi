@@ -30,6 +30,10 @@
  # ---------------------------------------------------------------------
  #}
 
+{% if ancestors is defined %}
+    <span id="category-ancestors" data-ancestors="{{ ancestors|json_encode }}" style="display: none;"></span>
+{% endif %}
+
 {% for item in items %}
     {% if item is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogLeafInterface") %}
         {{ include(
