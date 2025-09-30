@@ -6802,7 +6802,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
 
             // Finish Line
-            echo $output::showEndLine(false);
+            echo $output::showEndLine();
         } else {
             echo "<tr class='tab_bg_2'>";
             echo "<td colspan='6' ><i>" . __s('No item in progress.') . "</i></td></tr>";
@@ -6865,7 +6865,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         // End Line for column headers
-        echo $output::showEndLine(false);
+        echo $output::showEndLine();
     }
 
     /**

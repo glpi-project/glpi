@@ -115,13 +115,13 @@ final class NamesListSearchOutput extends ExportSearchOutput
                 );
             }
             // End Line
-            echo static::showEndLine(false);
+            echo static::showEndLine();
         }
     }
 
-    public static function showEndLine(bool $is_header_line): string
+    public static function showEndLine(): string
     {
-        return $is_header_line ? '' : "\n";
+        return "\n";
     }
 
     public static function showHeader($rows, $cols, $fixed = 0): string

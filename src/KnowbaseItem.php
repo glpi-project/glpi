@@ -1589,7 +1589,7 @@ TWIG, $twig_params);
                 }
 
                 // End Line
-                echo $output::showEndLine(false);
+                echo $output::showEndLine();
             }
 
             // Display footer

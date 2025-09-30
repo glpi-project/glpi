@@ -1095,7 +1095,7 @@ class Search
         Toolbox::deprecated();
         $output = SearchEngine::getOutputForLegacyKey($type);
         if ($output instanceof HTMLSearchOutput) {
-            return $output::showEndLine($is_header_line);
+            return $output::showEndLine();
         }
         return '';
     }

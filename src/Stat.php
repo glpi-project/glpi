@@ -583,7 +583,7 @@ class Stat extends CommonGLPI
         }
         // End Line for column headers
         if ($is_html_output) {
-            $html_output .= $output::showEndLine($output_type); //@phpstan-ignore staticMethod.notFound (see $is_html_output condition)
+            $html_output .= $output::showEndLine(); //@phpstan-ignore staticMethod.notFound (see $is_html_output condition)
         }
         $row_num = 1;
 
@@ -876,7 +876,7 @@ class Stat extends CommonGLPI
 
             $rows[$row_num] = $current_row;
             if ($is_html_output) {
-                $html_output .= $output::showEndLine(false); //@phpstan-ignore staticMethod.notFound (see $is_html_output condition)
+                $html_output .= $output::showEndLine(); //@phpstan-ignore staticMethod.notFound (see $is_html_output condition)
             }
         }
         if ($is_html_output) {
@@ -1657,7 +1657,7 @@ class Stat extends CommonGLPI
                     echo $output::showHeaderItem(htmlescape(Entity::getTypeName(1)), $header_num);
                 }
                 echo $output::showHeaderItem(__s('Number of tickets'), $header_num);
-                echo $output::showEndLine(false);
+                echo $output::showEndLine();
             }
 
             $i = $start;

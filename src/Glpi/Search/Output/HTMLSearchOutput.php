@@ -280,7 +280,7 @@ class HTMLSearchOutput extends AbstractSearchOutput
         return "<tr $class>";
     }
 
-    public static function showEndLine(bool $is_header_line): string
+    public static function showEndLine(): string
     {
         return '</tr>';
     }
