@@ -1004,7 +1004,8 @@ SCSS,
 
     public function testCompileScssForPlugin()
     {
-        $compiled_scss = \Html::compileScss(['file' => '/plugins/tester/css/styles.scss']);
+        // FIXME remove the `@` operator once `scssphp/scssphp` and `league/uri` PHP 8.5 deprecation fixes will be released
+        $compiled_scss = @\Html::compileScss(['file' => '/plugins/tester/css/styles.scss']);
 
         // Strip comments to ease comparison.
         $compiled_scss = \preg_replace('~/\*.*\*/~s', '', $compiled_scss);

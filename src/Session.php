@@ -1921,6 +1921,9 @@ class Session
      **/
     public static function haveTranslations($itemtype, $field)
     {
+        if (!is_a($itemtype, CommonDropdown::class, true)) {
+            return false;
+        }
 
         return (isset($_SESSION['glpi_dropdowntranslations'][$itemtype])
               && isset($_SESSION['glpi_dropdowntranslations'][$itemtype][$field]));
