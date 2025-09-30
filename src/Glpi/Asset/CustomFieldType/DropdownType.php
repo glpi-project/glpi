@@ -155,7 +155,7 @@ TWIG, $twig_params);
             $opt['joinparams']['condition'] = [
                 QueryFunction::jsonContains([
                     'REFTABLE.custom_fields',
-                    'NEWTABLE.id',
+                    QueryFunction::cast('NEWTABLE.id', 'JSON'),
                     new QueryExpression($DB::quoteValue('$."' . $this->custom_field->fields['id'] . '"')),
                 ]),
             ];

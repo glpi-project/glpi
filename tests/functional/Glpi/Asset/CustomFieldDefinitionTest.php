@@ -661,7 +661,7 @@ class CustomFieldDefinitionTest extends DbTestCase
             'custom_customtagsingle' => getItemByTypeName('Glpi\\CustomDropdown\\CustomTagDropdown', 'Tag01', true),
             'custom_customtagmulti' => [
                 getItemByTypeName('Glpi\\CustomDropdown\\CustomTagDropdown', 'Tag01', true),
-                getItemByTypeName('Glpi\\CustomDropdown\\CustomTagDropdown', 'Tag02', true)
+                getItemByTypeName('Glpi\\CustomDropdown\\CustomTagDropdown', 'Tag02', true),
             ],
         ], ['custom_customtagsingle', 'custom_customtagmulti']);
 
@@ -684,8 +684,8 @@ class CustomFieldDefinitionTest extends DbTestCase
                     'field' => $multiple_dropdown_opt,
                     'searchtype' => 'contains',
                     'value' => 'Tag',
-                ]
-            ]
+                ],
+            ],
         ], [$single_dropdown_opt, $multiple_dropdown_opt]);
 
         $this->assertCount(1, $data['data']['rows']);

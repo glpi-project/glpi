@@ -792,7 +792,7 @@ function loadDataset()
                 'name' => 'TestA',
                 'entities_id' => '_test_root_entity',
                 'custom_teststring' => 'Test String A',
-                'custom_customtagsingle' => "1"
+                'custom_customtagsingle' => "1",
             ],
             [
                 'name' => 'TestB',
