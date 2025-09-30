@@ -147,7 +147,7 @@ npm: ## Run a npm command, example: make npm c='install mypackage/package'
 .PHONY: npm
 
 ## —— Testing and static analysis ——————————————————————————————————————————————
-phpunit: ## Run phpunits tests, example: make phpunit c='phpunit/functional/Glpi/MySpecificTest.php'
+phpunit: ## Run phpunits tests, example: make phpunit c='tests/functional/Glpi/MySpecificTest.php'
 	@$(eval c ?=)
 	@$(PHP) php vendor/bin/phpunit $(c)
 .PHONY: phpunit

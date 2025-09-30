@@ -16,11 +16,12 @@
 /vendor/*
 !/vendor/.htaccess
 phpunit.xml
+/tests/config/
+/tests/coverage/
 /tests/cypress/screenshots/
 /tests/cypress/downloads/
 /tests/cypress/videos/
 /tests/files/
-/tests/code-coverage/
 /tests/.env
 /nbproject
 .composer.hash
@@ -41,9 +42,6 @@ phpunit.xml
 /.devcontainer/docker-compose.override.yaml
 phpstan.neon
 /.phpunit.result.cache
-/phpunit/files/
-/phpunit/config
-/phpunit/coverage/
 *.phar
 .env
 /resources/.illustrations_translations.php
