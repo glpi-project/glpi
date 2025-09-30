@@ -161,7 +161,7 @@
                         'rows' : 1,
                         'toolbar_location': 'bottom',
                         'init': false,
-                        'init_on_demand': true,
+                        'init_on_demand': section is not null ? true : false,
                         'mb': 'mb-0',
                     })
                 ) }}

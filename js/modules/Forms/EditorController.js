@@ -1426,11 +1426,23 @@ export class GlpiFormEditorController
             // the rich text editor until the template is inserted into
             // its final DOM destination
             config.selector = `#${CSS.escape(id)}`;
-            tiny_mce_to_init.push(config);
 
             // Store config with udpated ID in case we need to re render
             // this question
             window.tinymce_editor_configs[id] = config;
+
+            // Update on demand id if needed
+            const div = $(this).parent().find(
+                'div[data-glpi-tinymce-init-on-demand-render]'
+            );
+            if (div.length > 0) {
+                div.attr(
+                    'data-glpi-tinymce-init-on-demand-render',
+                    CSS.escape(id),
+                );
+            } else {
+                tiny_mce_to_init.push(config);
+            }
         });
 
         // Look for select2 to init

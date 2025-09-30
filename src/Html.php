@@ -3743,25 +3743,9 @@ JS;
 
                 if ({$init_on_demand}) {
                     const textarea = $('#' + $.escapeSelector('{$id}'));
-                    const div = $(`<div role="textbox" tabindex="0" class="text-muted" data-glpi-tinymce-init-on-demand-render>\${textarea.val() || textarea.attr('placeholder') || ''}</div>`);
+                    const textarea_id = $.escapeSelector('{$id}');
+                    const div = $(`<div role="textbox" tabindex="0" class="text-muted" data-glpi-tinymce-init-on-demand-render="\${textarea_id}">\${textarea.val() || textarea.attr('placeholder') || ''}</div>`);
                     textarea.after(div).hide();
-
-                    const loadingOverlay = $(`
-                        <div class="glpi-form-editor-loading-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-white bg-opacity-75">
-                            <div class="spinner-border spinner-border-sm text-secondary" role="status">
-                                <span class="visually-hidden">\${__('Loading...')}</span>
-                            </div>
-                        </div>
-                    `);
-
-                    div.one('focus', function() {
-                        textarea.show();
-                        div.css('position', 'relative').append(loadingOverlay);
-                        tinyMCE.init(tinymce_editor_configs['{$id}']).then((editors) => {
-                            editors[0].focus();
-                            div.remove();
-                        });
-                    });
                 }
             });
 JS;
