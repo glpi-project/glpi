@@ -83,8 +83,6 @@
 
         &:has(> :nth-child(2)) {
             &> section {
-                margin-bottom: 0 !important;
-
                 .col-12.col-sm-6 {
                     width: 100%;
                 }
