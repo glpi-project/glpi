@@ -611,7 +611,7 @@ final class SearchEngine
         echo "<div class='col search-container' data-glpi-search-container>";
 
         $output = self::getOutputForLegacyKey($params['display_type'], $params);
-        if (method_exists($output, 'showPreSearchDisplay')) {
+        if ($output instanceof HTMLSearchOutput) {
             $output::showPreSearchDisplay($itemtype);
         }
 
