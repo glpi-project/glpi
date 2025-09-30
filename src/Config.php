@@ -790,7 +790,7 @@ class Config extends CommonDBTM
                 $ver .= '-git-' . $gitbranch . '-' . $gitrev;
             }
         } else {
-            $integrity_summary = (new SourceCodeIntegrityChecker)->getSummary();
+            $integrity_summary = (new SourceCodeIntegrityChecker())->getSummary();
             $code_integrity = [];
             foreach ($integrity_summary as $status) {
                 $code_integrity[$status] = ($code_integrity[$status] ?? 0) + 1;
