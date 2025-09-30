@@ -205,7 +205,10 @@ abstract class CommonITILActor extends CommonDBRelation
                 }
             }
         }
+        $current_log_option = $this -> _force_log_option;
+        $this -> _force_log_option = $this -> get_force_log_option();
         parent::post_deleteFromDB();
+        $this -> _force_log_option = $current_log_option;
     }
 
     public function prepareInputForAdd($input)
