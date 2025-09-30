@@ -40,6 +40,8 @@ use Glpi\Asset\CustomFieldOption\BooleanOption;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
+use function Safe\preg_match;
+
 class DropdownType extends AbstractType
 {
     public static function getName(): string
@@ -155,7 +157,7 @@ TWIG, $twig_params);
             $opt['joinparams']['condition'] = [
                 QueryFunction::jsonContains([
                     'REFTABLE.custom_fields',
-                    QueryFunction::cast('NEWTABLE.id', 'JSON'),
+                    preg_match('/-MariaDB/', $DB->getVersion()) ? 'NEWTABLE.id' : QueryFunction::cast('NEWTABLE.id', 'JSON'),
                     new QueryExpression($DB::quoteValue('$."' . $this->custom_field->fields['id'] . '"')),
                 ]),
             ];
