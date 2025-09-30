@@ -19,3 +19,20 @@ To run a specific tests, use the `c` parameter:
 ```sh
 make cypress c="--spec tests/cypress/e2e/ajax_controller.cy.js"
 ```
+
+To open cypress UI, you'll need to add the following configuration in your compose override file:
+
+```yml
+services:
+  app:
+    environment:
+      DISPLAY: :0
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+```
+
+Then, open cypress with this command:
+
+```sh
+make cypress-open
+```
