@@ -36,7 +36,6 @@
 namespace Glpi\Application\View\Extension;
 
 use Glpi\Search\Output\HTMLSearchOutput;
-use Search;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
