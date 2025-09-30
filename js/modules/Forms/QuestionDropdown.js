@@ -43,8 +43,8 @@ export class GlpiFormQuestionTypeDropdown extends GlpiFormQuestionTypeSelectable
      * @param {string} inputType
      * @param {JQuery<HTMLElement>} container
      */
-    constructor(inputType = null, container = null) {
-        super(inputType, container);
+    constructor(inputType = null, container = null, is_from_template = false) {
+        super(inputType, container, is_from_template);
 
         this._container.on('sortupdate', () => this.#handleSortableUpdate());
 
