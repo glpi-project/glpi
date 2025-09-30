@@ -70,7 +70,6 @@
             placeholder="{{ __("New section") }}"
             data-glpi-form-editor-section-details-name
             data-glpi-form-editor-dynamic-input
-            data-glpi-form-editor-on-input="compute-dynamic-input"
         />
     </div>
 
@@ -109,7 +108,8 @@
                                     'editor_height': "0",
                                     'rows' : 1,
                                     'toolbar_location': 'bottom',
-                                    'init': section is not null ? true : false,
+                                    'init': false,
+                                    'init_on_demand': section is not null ? true : false,
                                     'mb': 'mb-0',
                                 })
                             ) }}

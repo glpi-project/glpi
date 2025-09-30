@@ -57,25 +57,31 @@ final class TranslationHandler
     /** @var bool Whether this field contains rich text that should be edited in a rich text editor */
     private bool $is_rich_text;
 
+    /** @var string|null The category name for grouping translations */
+    private ?string $category;
+
     /**
      * @param CommonDBTM $item The item to translate
      * @param string $key The key of the field to translate
      * @param string $name The human-readable name of the field
      * @param string $value The default value (in the default language)
      * @param bool $is_rich_text Whether this field contains rich text
+     * @param string|null $category The category name for grouping translations
      */
     public function __construct(
         CommonDBTM $item,
         string $key,
         string $name,
         string $value,
-        bool $is_rich_text = false
+        bool $is_rich_text = false,
+        ?string $category = null
     ) {
         $this->item = $item;
         $this->key = $key;
         $this->name = $name;
         $this->value = $value;
         $this->is_rich_text = $is_rich_text;
+        $this->category = $category;
     }
 
     /**
@@ -126,5 +132,15 @@ final class TranslationHandler
     public function isRichText(): bool
     {
         return $this->is_rich_text;
+    }
+
+    /**
+     * Get the category name for grouping translations
+     *
+     * @return string|null
+     */
+    public function getCategory(): ?string
+    {
+        return $this->category;
     }
 }

@@ -3475,7 +3475,8 @@ JS;
         string $placeholder = '',
         bool $toolbar = true,
         bool $statusbar = true,
-        string $content_style = ''
+        string $content_style = '',
+        bool $init_on_demand = false
     ) {
         global $CFG_GLPI, $DB;
 
@@ -3554,6 +3555,9 @@ JS;
 
         // Compute init option as "string boolean" so it can be inserted directly into the js output
         $init = $init ? 'true' : 'false';
+
+        // Compute init_on_demand option as "string boolean" so it can be inserted directly into the js output
+        $init_on_demand = $init_on_demand ? 'true' : 'false';
 
         // Compute toolbar option as "string boolean" so it can be inserted directly into the js output
         $toolbar = $toolbar ? 'true' : 'false';
@@ -3735,6 +3739,12 @@ JS;
                 // Init tinymce
                 if ({$init}) {
                     tinyMCE.init(tinymce_editor_configs['{$id}']);
+                }
+
+                if ({$init_on_demand}) {
+                    const textarea = $('#{$id}');
+                    const div = $(`<div role="textbox" tabindex="0" class="text-muted" data-glpi-tinymce-init-on-demand-render="{$id}">\${textarea.val() || textarea.attr('placeholder') || ''}</div>`);
+                    textarea.after(div).hide();
                 }
             });
 JS;

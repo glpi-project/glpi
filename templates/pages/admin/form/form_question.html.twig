@@ -59,7 +59,7 @@
         data-glpi-form-editor-on-click="set-active"
         data-glpi-form-editor-question-details
         data-glpi-form-editor-allow-anonymous="{{ not allow_unauthenticated_access or question_type.isAllowedForUnauthenticatedAccess() ? 1 : 0 }}"
-        class="card flex-grow-1 {{ question is not null and question.fields.is_mandatory ? 'mandatory-question' : '' }}"
+        class="card flex-grow-1"
         aria-label="{{ __("Question details") }}"
     >
         <div
@@ -94,10 +94,8 @@
                     value="{{ question is not null ? question.fields.name : '' }}"
                     placeholder="{{ __("New question") }}"
                     data-glpi-form-editor-dynamic-input
-                    data-glpi-form-editor-on-input="compute-dynamic-input"
                     data-glpi-form-editor-question-details-name
                 />
-                <span data-glpi-form-editor-required-mark class="text-danger d-none">*</span>
 
                 {% if question is null %}
                     {% set question_strategy = enum('Glpi\\Form\\Condition\\VisibilityStrategy').ALWAYS_VISIBLE %}
@@ -196,7 +194,6 @@
                 {# Mark as secondary if empty #}
                 {{ question is null or question.fields.description|length == 0 ? "data-glpi-form-editor-question-extra-details" : "" }}
             >
-                {% set load_editor = question is not null and question.fields.description|length > 0 %}
                 {{ fields.textareaField(
                     'description',
                     question is not null ? question.fields.description : '',
@@ -209,11 +206,9 @@
                         'editor_height': "0",
                         'rows' : 1,
                         'toolbar_location': 'bottom',
-                        'init': load_editor,
+                        'init': false,
+                        'init_on_demand': question is not null ? true : false,
                         'mb': 'mb-0',
-                        'additional_attributes': {
-                            'data-glpi-loaded': load_editor ? "true" : "false"
-                        }
                     })
                 ) }}
             </div>
@@ -319,7 +314,6 @@
                         type="checkbox"
                         value="1"
                         {{ question is not null and question.fields.is_mandatory ? 'checked' : '' }}
-                        data-glpi-form-editor-on-change="toggle-mandatory-question"
                     >
                     <span class="form-check-label">{{ __("Mandatory") }}</span>
                 </label>

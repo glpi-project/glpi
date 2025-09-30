@@ -725,6 +725,10 @@ describe ('Form editor', () => {
         // Change question type
         cy.getDropdownByLabelText("Question type").selectDropdownValue('Date and time');
 
+        // TODO: find something better than wait here
+        // eslint-disable-next-line
+        cy.wait(500);
+
         // Save and reload
         cy.saveFormEditorAndReload();
 
@@ -855,6 +859,10 @@ describe ('Form editor', () => {
             });
         });
         cy.getDropdownByLabelText("Question type").selectDropdownValue('Long answer');
+
+        // TODO: find something better than wait here
+        // eslint-disable-next-line
+        cy.wait(500);
 
         // Save and reload
         cy.saveFormEditorAndReload();

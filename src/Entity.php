@@ -3383,7 +3383,8 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     public function listTranslationsHandlers(): array
     {
         $handlers = [];
-        $key = sprintf('%s: %s', self::getTypeName(), $this->getName());
+        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $category_name = sprintf('%s: %s', self::getTypeName(), $this->getName());
         if (
             !empty($this->fields['custom_helpdesk_home_title'])
             && $this->fields['custom_helpdesk_home_title'] != self::CONFIG_PARENT
@@ -3393,6 +3394,8 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
                 key: self::TRANSLATION_KEY_CUSTOM_HELPDESK_HOME_TITLE,
                 name: __('Custom main title'),
                 value: $this->fields['custom_helpdesk_home_title'],
+                is_rich_text: false,
+                category: $category_name
             );
         }
 

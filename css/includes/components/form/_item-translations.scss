@@ -63,4 +63,15 @@
         padding-bottom: 0.5rem;
         white-space: nowrap;
     }
+
+    div[data-glpi-tinymce-init-on-demand-render] {
+        cursor: text;
+
+        // Draw a border around the div to mimic the textarea style
+        min-height: 100px;
+        padding: 10px;
+        border: var(--tblr-border-width) solid var(--tblr-border-color) !important;
+        border-radius: var(--tblr-border-radius);
+        box-shadow: var(--tblr-box-shadow-input) !important;
+    }
 }

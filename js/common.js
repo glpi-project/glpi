@@ -1677,72 +1677,6 @@ function waitForElement(selector) {
 }
 
 /**
- * Get the ideal width of an input element based on its content.
- * This allow to make dynamic inputs that grow and shrink based on their content.
- *
- * Inspired by: https://phuoc.ng/collection/html-dom/resize-the-width-of-a-text-box-to-fit-its-content-automatically/
- *
- * @param {HTMLElement} input
- * @param {String} real_font_size It seems the font size computed by styles.fontSize
- *                                 is not really accurate when using rem units.
- *                                 This parameter allows to directly provide the
- *                                 accurate font size if it's known.
- *
- * @return {String} The ideal width of the input element
- */
-function getRealInputWidth(input, real_font_size = null)
-{
-    let fakeEle = $("#fake_dom_getRealInputWidth");
-
-    // Initialize our fake element only once to prevent useless computations
-    if (fakeEle.length === 0) {
-        // Create a div element
-        fakeEle = document.createElement('div');
-        fakeEle.id = "fake_dom_getRealInputWidth";
-
-        // Hide it completely
-        fakeEle.style.position = 'absolute';
-        fakeEle.style.top = '0';
-        fakeEle.style.left = '0';
-        fakeEle.style.left = '-9999px';
-        fakeEle.style.overflow = 'hidden';
-        fakeEle.style.visibility = 'hidden';
-        fakeEle.style.whiteSpace = 'nowrap';
-        fakeEle.style.height = '0';
-
-        // Append the fake element to `body`
-        document.body.appendChild(fakeEle);
-    } else {
-        fakeEle = fakeEle[0];
-    }
-
-    // We copy some styles from the textbox that effect the width
-    const styles = window.getComputedStyle(input);
-
-    // Copy font styles from the textbox
-    fakeEle.style.fontFamily = styles.fontFamily;
-    fakeEle.style.fontSize = real_font_size ?? styles.fontSize;
-    fakeEle.style.fontStyle = styles.fontStyle;
-    fakeEle.style.fontWeight = styles.fontWeight;
-    fakeEle.style.letterSpacing = styles.letterSpacing;
-    fakeEle.style.textTransform = styles.textTransform;
-
-    fakeEle.style.borderLeftWidth = styles.borderLeftWidth;
-    fakeEle.style.borderRightWidth = styles.borderRightWidth;
-    fakeEle.style.paddingLeft = styles.paddingLeft;
-    fakeEle.style.paddingRight = styles.paddingRight;
-
-    // Compute width
-    const string = input.value || input.getAttribute('placeholder') || '';
-    fakeEle.innerHTML = string.replace(/\s/g, '&' + 'nbsp;');
-
-    const fakeEleStyles = window.getComputedStyle(fakeEle);
-    const width = fakeEleStyles.width;
-
-    return width;
-}
-
-/**
  * Get UUID using crypto.randomUUID() if possible
  * Else fallback to uniqid()
  */
@@ -2027,3 +1961,27 @@ document.addEventListener('hidden.bs.modal', (e) => {
         modal.setAttribute('data-cy-shown', 'false');
     }
 });
+
+// Tinymce on click loading
+$(document).on('click', 'div[data-glpi-tinymce-init-on-demand-render]', function() {
+    const div = $(this);
+    const textarea_id = div.attr('data-glpi-tinymce-init-on-demand-render');
+    div.removeAttr('data-glpi-tinymce-init-on-demand-render');
+    const textarea = $("#" + textarea_id);
+
+    const loadingOverlay = $(`
+        <div class="glpi-form-editor-loading-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-white bg-opacity-75">
+            <div class="spinner-border spinner-border-sm text-secondary" role="status">
+                <span class="visually-hidden">${__('Loading...')}</span>
+            </div>
+        </div>
+    `);
+
+    textarea.show();
+    div.css('position', 'relative').append(loadingOverlay);
+    tinyMCE.init(tinymce_editor_configs[textarea_id]).then((editors) => {
+        editors[0].focus();
+        div.remove();
+    });
+});
+

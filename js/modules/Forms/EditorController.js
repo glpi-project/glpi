@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _, tinymce_editor_configs, getUUID, getRealInputWidth, sortable, tinymce, glpi_toast_info, glpi_toast_error, bootstrap, setupAjaxDropdown, setupAdaptDropdown, setHasUnsavedChanges, hasUnsavedChanges */
+/* global _, tinymce_editor_configs, getUUID, sortable, tinymce, glpi_toast_info, glpi_toast_error, bootstrap, setupAjaxDropdown, setupAdaptDropdown, setHasUnsavedChanges, hasUnsavedChanges */
 
 import { GlpiFormConditionVisibilityEditorController } from '/js/modules/Forms/ConditionVisibilityEditorController.js';
 import { GlpiFormConditionValidationEditorController } from '/js/modules/Forms/ConditionValidationEditorController.js';
@@ -129,13 +129,6 @@ export class GlpiFormEditorController
         this.#adjustContainerHeight();
         this.#initEventHandlers();
         this.#refreshUX();
-
-        // Adjust dynamics inputs size
-        $(this.#target)
-            .find("[data-glpi-form-editor-dynamic-input]")
-            .each((index, input) => {
-                this.#computeDynamicInputSize(input);
-            });
 
         // These computations are only needed if the form will be edited.
         if (!this.#is_readonly) {
@@ -408,19 +401,6 @@ export class GlpiFormEditorController
                 this.#deleteQuestion(
                     target.closest("[data-glpi-form-editor-question]")
                 );
-                break;
-
-            // Toggle mandatory class on the target question
-            case "toggle-mandatory-question":
-                this.#toggleMandatoryClass(
-                    target.closest("[data-glpi-form-editor-question]"),
-                    target.prop("checked")
-                );
-                break;
-
-            // Compute the ideal width of the given input based on its content
-            case "compute-dynamic-input":
-                this.#computeDynamicInputSize(target[0]);
                 break;
 
             // Change the type category of the target question
@@ -943,15 +923,6 @@ export class GlpiFormEditorController
             return;
         }
 
-        // Lazy load descriptions
-        item_container.find('textarea[data-glpi-loaded=false]').each(function() {
-            // Get editor config for this field
-            const id = $(this).attr("id");
-            const config = window.tinymce_editor_configs[id];
-            tinyMCE.init(config);
-            $(this).attr('data-glpi-loaded', "true");
-        });
-
         // Lazy load dropdowns
         item_container.find('select[data-glpi-loaded=false]').each(function() {
             // Get editor config for this field
@@ -1088,11 +1059,6 @@ export class GlpiFormEditorController
         new_question
             .find("[data-glpi-form-editor-question-details-name]")[0]
             .focus();
-
-        // Compute dynamic inputs size
-        new_question.find("[data-glpi-form-editor-dynamic-input]").each((index, input) => {
-            this.#computeDynamicInputSize(input);
-        });
 
         // Enable sortable on the new question
         this.#enableSortable(new_question);
@@ -1407,19 +1373,6 @@ export class GlpiFormEditorController
     }
 
     /**
-     * Toggle the mandatory class for the given question.
-     * @param {jQuery} question
-     * @param {boolean} is_mandatory
-     */
-    #toggleMandatoryClass(question, is_mandatory) {
-        if (is_mandatory) {
-            question.addClass("mandatory-question");
-        } else {
-            question.removeClass("mandatory-question");
-        }
-    }
-
-    /**
      * Get the template for the given question type.
      * @param {string} question_type
      * @returns {jQuery}
@@ -1473,11 +1426,23 @@ export class GlpiFormEditorController
             // the rich text editor until the template is inserted into
             // its final DOM destination
             config.selector = `#${CSS.escape(id)}`;
-            tiny_mce_to_init.push(config);
 
             // Store config with udpated ID in case we need to re render
             // this question
             window.tinymce_editor_configs[id] = config;
+
+            // Update on demand id if needed
+            const div = $(this).parent().find(
+                'div[data-glpi-tinymce-init-on-demand-render]'
+            );
+            if (div.length > 0) {
+                div.attr(
+                    'data-glpi-tinymce-init-on-demand-render',
+                    id,
+                );
+            } else {
+                tiny_mce_to_init.push(config);
+            }
         });
 
         // Look for select2 to init
@@ -1748,14 +1713,6 @@ export class GlpiFormEditorController
         }
 
         throw new Error(`Field not found: ${field}`);
-    }
-
-    /**
-     * Compute the ideal width of the given input based on its content.
-     * @param {HTMLElement} input
-     */
-    #computeDynamicInputSize(input) {
-        $(input).css("width", getRealInputWidth(input, "1.2rem"));
     }
 
     /**
@@ -2150,11 +2107,6 @@ export class GlpiFormEditorController
         new_comment
             .find("[data-glpi-form-editor-comment-details-name]")[0]
             .focus();
-
-        // Compute dynamic inputs size
-        new_comment.find("[data-glpi-form-editor-dynamic-input]").each((index, input) => {
-            this.#computeDynamicInputSize(input);
-        });
 
         // Enable sortable on the new comment
         this.#enableSortable(new_comment);
