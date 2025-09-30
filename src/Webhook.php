@@ -917,8 +917,11 @@ class Webhook extends CommonDBTM implements FilterableInterface
                 $controller_class = $controller;
                 break;
             }
+
             if (isset($categories['subtypes']) && array_key_exists($itemtype, $categories['subtypes'])) {
+                $controller_class = $controller;
                 $schema_name = $categories['subtypes'][$itemtype]['name'];
+
                 if (
                     array_key_exists('parent', $categories['subtypes'][$itemtype])
                     && array_key_exists($categories['subtypes'][$itemtype]['parent'], $categories['main'])
@@ -926,7 +929,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
                 ) {
                     $schema_name = $categories['main'][$categories['subtypes'][$itemtype]['parent']]['name'] . $schema_name;
                 }
-                $controller_class = $controller;
+
                 break;
             }
         }
