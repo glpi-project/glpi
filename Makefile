@@ -195,6 +195,13 @@ cypress: ## Run cypress tests
 	@$(PHP) node_modules/.bin/cypress run --project tests $(c)
 .PHONY: cypress
 
+cypress-open: ## Open cypress UI
+	@$(eval c ?=)
+	@$(CONSOLE) config:set url_base http://localhost:8080 --env=testing
+	@$(PHP) bash -c 'node_modules/.bin/cypress verify || node_modules/.bin/cypress install'
+	@$(PHP) node_modules/.bin/cypress open --e2e --browser electron --project tests $(c)
+.PHONY: cypress-open
+
 ## —— Coding standards —————————————————————————————————————————————————————————
 phpcsfixer-check: ## Check for php coding standards issues
 	@$(PHP) vendor/bin/php-cs-fixer check --diff -vvv
