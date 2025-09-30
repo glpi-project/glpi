@@ -3472,11 +3472,11 @@ JS;
         array $add_body_classes = [],
         string $toolbar_location = 'top',
         bool $init = true,
-        bool $init_on_demand = false,
         string $placeholder = '',
         bool $toolbar = true,
         bool $statusbar = true,
-        string $content_style = ''
+        string $content_style = '',
+        bool $init_on_demand = false
     ) {
         global $CFG_GLPI, $DB;
 
