@@ -568,22 +568,22 @@ class Stat extends CommonGLPI
             $headers[] = __('Average time to closure');
         } else {
             if ($itemtype === Ticket::class) {
-                $html_output .= $output::showHeaderItem(__s('Take into account'), $header_num);
+                $html_output .= $output::showHeaderItem(__s('Take into account'), $header_num); //@phpstan-ignore staticMethod.notFound (see $is_html_output condition)
             }
-            $html_output .= $output::showHeaderItem(__s('Resolution'), $header_num);
-            $html_output .= $output::showHeaderItem(__s('Closure'), $header_num);
+            $html_output .= $output::showHeaderItem(__s('Resolution'), $header_num); //@phpstan-ignore staticMethod.notFound (see $is_html_output condition)
+            $html_output .= $output::showHeaderItem(__s('Closure'), $header_num); //@phpstan-ignore staticMethod.notFound (see $is_html_output condition)
         }
 
         if (!$is_html_output) {
             $headers[] = __('Average real duration of treatment of the ticket');
             $headers[] = __('Total real duration of treatment of the ticket');
         } else {
-            $html_output .= $output::showHeaderItem(__s('Average'), $header_num);
-            $html_output .= $output::showHeaderItem(__s('Total duration'), $header_num);
+            $html_output .= $output::showHeaderItem(__s('Average'), $header_num); //@phpstan-ignore staticMethod.notFound (see $is_html_output condition)
+            $html_output .= $output::showHeaderItem(__s('Total duration'), $header_num); //@phpstan-ignore staticMethod.notFound (see $is_html_output condition)
         }
         // End Line for column headers
         if ($is_html_output) {
-            $html_output .= $output::showEndLine($output_type);
+            $html_output .= $output::showEndLine($output_type); //@phpstan-ignore staticMethod.notFound (see $is_html_output condition)
         }
         $row_num = 1;
 
@@ -593,7 +593,7 @@ class Stat extends CommonGLPI
             $item_num = 1;
             $colnum = 0;
             if ($is_html_output) {
-                $html_output .= $output::showNewLine($i % 2 === 1);
+                $html_output .= $output::showNewLine($i % 2 === 1); //@phpstan-ignore staticMethod.notFound (see $is_html_output condition)
             }
             $value_link = $value[$i]['link']; // `link` contains a safe HTML string (built in `Stat::getItems()`)
             if (
@@ -611,10 +611,10 @@ class Stat extends CommonGLPI
                         'value2'  => $value[$i]['id'],
                     ]
                 );
-                $html_output .= $output::showItem("<a href='" . htmlescape($url) . "'>" . $value_link . "</a>", $item_num, $row_num);
+                $html_output .= $output::showItem("<a href='" . htmlescape($url) . "'>" . $value_link . "</a>", $item_num, $row_num); //@phpstan-ignore staticMethod.notFound (see $is_html_output condition)
             } else {
                 if ($is_html_output) {
-                    $html_output .= $output::showItem($value_link, $item_num, $row_num);
+                    $html_output .= $output::showItem($value_link, $item_num, $row_num); //@phpstan-ignore staticMethod.notFound (see $is_html_output condition)
                 } else {
                     $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $value[$i]['link']];
                 }
@@ -637,7 +637,7 @@ class Stat extends CommonGLPI
                       . "<i class='ti ti-graph fs-1'></i>"
                       . "</a>";
                 }
-                $html_output .= $output::showItem($link, $item_num, $row_num);
+                $html_output .= $output::showItem($link, $item_num, $row_num); //@phpstan-ignore staticMethod.notFound (see $is_html_output condition)
             }
 
             $fn_show_entry_values = static function (int $i, string $data_type) use ($itemtype, $date1, $date2, $type, $value, $value2, &$item_num, $row_num, $output, &$html_output, $is_html_output, &$current_row, &$colnum) {
@@ -652,7 +652,7 @@ class Stat extends CommonGLPI
                 );
                 $sum = array_sum($values);
                 if ($is_html_output) {
-                    $html_output .= $output::showItem((string) $sum, $item_num, $row_num);
+                    $html_output .= $output::showItem((string) $sum, $item_num, $row_num); //@phpstan-ignore staticMethod.notFound (see $is_html_output condition)
                 } else {
                     $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $sum];
                 }
@@ -710,7 +710,7 @@ class Stat extends CommonGLPI
                     $avgsatisfaction = '&nbsp;';
                 }
                 if ($is_html_output) {
-                    $html_output .= $output::showItem($avgsatisfaction, $item_num, $row_num);
+                    $html_output .= $output::showItem($avgsatisfaction, $item_num, $row_num); //@phpstan-ignore staticMethod.notFound (see $is_html_output condition)
                 } else {
                     $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $avgsatisfaction];
                 }
@@ -739,7 +739,7 @@ class Stat extends CommonGLPI
                 $timedisplay = htmlescape($timedisplay);
 
                 if ($is_html_output) {
-                    $html_output .= $output::showItem($timedisplay, $item_num, $row_num);
+                    $html_output .= $output::showItem($timedisplay, $item_num, $row_num); //@phpstan-ignore staticMethod.notFound (see $is_html_output condition)
                 } else {
                     $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $timedisplay];
                 }
@@ -772,7 +772,7 @@ class Stat extends CommonGLPI
             $timedisplay = htmlescape($timedisplay);
 
             if ($is_html_output) {
-                $html_output .= $output::showItem($timedisplay, $item_num, $row_num);
+                $html_output .= $output::showItem($timedisplay, $item_num, $row_num); //@phpstan-ignore staticMethod.notFound (see $is_html_output condition)
             } else {
                 $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $timedisplay];
             }
@@ -804,7 +804,7 @@ class Stat extends CommonGLPI
             $timedisplay = htmlescape($timedisplay);
 
             if ($is_html_output) {
-                $html_output .= $output::showItem($timedisplay, $item_num, $row_num);
+                $html_output .= $output::showItem($timedisplay, $item_num, $row_num); //@phpstan-ignore staticMethod.notFound (see $is_html_output condition)
             } else {
                 $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $timedisplay];
             }
@@ -854,7 +854,7 @@ class Stat extends CommonGLPI
             $timedisplay = htmlescape($timedisplay);
 
             if ($is_html_output) {
-                $html_output .= $output::showItem($timedisplay, $item_num, $row_num);
+                $html_output .= $output::showItem($timedisplay, $item_num, $row_num); //@phpstan-ignore staticMethod.notFound (see $is_html_output condition)
             } else {
                 $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $timedisplay];
             }
@@ -869,16 +869,18 @@ class Stat extends CommonGLPI
             $timedisplay = htmlescape($timedisplay);
 
             if ($is_html_output) {
-                $html_output .= $output::showItem($timedisplay, $item_num, $row_num);
+                $html_output .= $output::showItem($timedisplay, $item_num, $row_num); //@phpstan-ignore staticMethod.notFound (see $is_html_output condition)
             } else {
                 $current_row[$itemtype . '_' . (++$colnum)] = ['displayname' => $timedisplay];
             }
 
             $rows[$row_num] = $current_row;
-            $html_output .= $output::showEndLine(false);
+            if ($is_html_output) {
+                $html_output .= $output::showEndLine(false); //@phpstan-ignore staticMethod.notFound (see $is_html_output condition)
+            }
         }
         if ($is_html_output) {
-            $output::showFooter('', $numrows);
+            $html_output .= $output::showFooter('', $numrows); //@phpstan-ignore staticMethod.notFound (see $is_html_output condition)
         }
 
         if ($is_html_output) {
