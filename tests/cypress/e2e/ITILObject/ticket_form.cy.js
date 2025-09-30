@@ -187,7 +187,7 @@ describe("Ticket Form", () => {
         });
         cy.get('#modal_search_knowbaseitem').should('not.exist');
         cy.get('@content').then((content) => {
-            cy.get('textarea[name="content"]').awaitTinyMCE().should('contain.text', content.trim());
+            cy.get('textarea[name="content"]').eq(2).awaitTinyMCE().should('contain.text', content.trim());
         });
 
         cy.visit(`/front/ticket.form.php?id=${search_sol_ticket_id}`);
@@ -210,7 +210,7 @@ describe("Ticket Form", () => {
         });
         cy.get('#modal_search_knowbaseitem').should('not.exist');
         cy.get('@content').then((content) => {
-            cy.get('textarea[name="content"]').awaitTinyMCE().should('contain.text', content.trim());
+            cy.get('textarea[name="content"]').eq(0).awaitTinyMCE().should('contain.text', content.trim());
         });
     });
 
