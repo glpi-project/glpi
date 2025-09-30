@@ -87,4 +87,37 @@ final class CategoryProvider implements CompositeProviderInterface
 
         return $categories;
     }
+
+    /**
+     * @param ItemRequest $item_request
+     * @return array<array{id: int, name: string}>
+     */
+    public function getAncestors(ItemRequest $item_request): array
+    {
+        $category_id = $item_request->getCategoryID();
+        $category = Category::getById($category_id);
+        if (!$category) {
+            return [];
+        }
+
+        $categories = [];
+        $current_category = [
+            'id' => $category->getID(),
+            'name' => $category->fields['name'],
+        ];
+
+        /** @var Category $ancestor */
+        foreach ($category->getAncestors() as $ancestor) {
+            $categories[] = [
+                'id' => $ancestor->getID(),
+                'name' => $ancestor->fields['name'],
+            ];
+        }
+
+        if (!in_array($current_category['id'], array_column($categories, 'id'), true)) {
+            $categories[] = $current_category;
+        }
+
+        return $categories;
+    }
 }

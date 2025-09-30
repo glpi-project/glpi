@@ -394,4 +394,95 @@ class CategoryProviderTest extends DbTestCase
         $this->assertContains($category1->getID(), $category_ids);
         $this->assertContains($category2->getID(), $category_ids);
     }
+
+    public function testCategoriesAncestor()
+    {
+        $this->login();
+
+        $category1 = $this->createItem(Category::class, [
+            'name' => 'Category 1',
+        ]);
+
+        // Child of category1
+        $category1_1 = $this->createItem(Category::class, [
+            'name' => 'Category 1.1',
+            'forms_categories_id' => $category1->getID(),
+        ]);
+        // Child of category1_1
+        $category1_1_1 = $this->createItem(Category::class, [
+            'name' => 'Category 1.1.1',
+            'forms_categories_id' => $category1_1->getID(),
+        ]);
+        $category1_1_2 = $this->createItem(Category::class, [
+            'name' => 'Category 1.1.2',
+            'forms_categories_id' => $category1_1->getID(),
+        ]);
+        // Child of category1_1_1
+        $category1_1_1_1 = $this->createItem(Category::class, [
+            'name' => 'Category 1.1.1.1',
+            'forms_categories_id' => $category1_1_1->getID(),
+        ]);
+
+        $category2 = $this->createItem(Category::class, [
+            'name' => 'Category 2',
+        ]);
+        $category2_1 = $this->createItem(Category::class, [
+            'name' => 'Category 2.1',
+            'forms_categories_id' => $category2->getID(),
+        ]);
+
+        // We verify the category provider return the correcte ancestors (used for breadcrumbs)
+
+        $item_request = new ItemRequest(
+            access_parameters: new FormAccessParameters(),
+            category_id: 0,
+        );
+
+        // Root has no ancestors
+        $ancestors = $this->provider->getAncestors($item_request);
+        $this->assertCount(0, $ancestors);
+
+        // Category 1
+        $item_request->category_id = $category1->getID();
+        $ancestors = $this->provider->getAncestors($item_request);
+        $this->assertCount(1, $ancestors);
+        $this->assertEquals($category1->getID(), $ancestors[0]['id']);
+
+        // Category 1.1
+        $item_request->category_id = $category1_1->getID();
+        $ancestors = $this->provider->getAncestors($item_request);
+        $this->assertCount(2, $ancestors);
+        $this->assertEquals($category1->getID(), $ancestors[0]['id']);
+        $this->assertEquals($category1_1->getID(), $ancestors[1]['id']);
+
+        // Category 1.1.2
+        $item_request->category_id = $category1_1_2->getID();
+        $ancestors = $this->provider->getAncestors($item_request);
+        $this->assertCount(3, $ancestors);
+        $this->assertEquals($category1->getID(), $ancestors[0]['id']);
+        $this->assertEquals($category1_1->getID(), $ancestors[1]['id']);
+        $this->assertEquals($category1_1_2->getID(), $ancestors[2]['id']);
+
+        // Category 1.1.1.1
+        $item_request->category_id = $category1_1_1_1->getID();
+        $ancestors = $this->provider->getAncestors($item_request);
+        $this->assertCount(4, $ancestors);
+        $this->assertEquals($category1->getID(), $ancestors[0]['id']);
+        $this->assertEquals($category1_1->getID(), $ancestors[1]['id']);
+        $this->assertEquals($category1_1_1->getID(), $ancestors[2]['id']);
+        $this->assertEquals($category1_1_1_1->getID(), $ancestors[3]['id']);
+
+        // Category 2
+        $item_request->category_id = $category2->getID();
+        $ancestors = $this->provider->getAncestors($item_request);
+        $this->assertCount(1, $ancestors);
+        $this->assertEquals($category2->getID(), $ancestors[0]['id']);
+
+        // Category 2.1
+        $item_request->category_id = $category2_1->getID();
+        $ancestors = $this->provider->getAncestors($item_request);
+        $this->assertCount(2, $ancestors);
+        $this->assertEquals($category2->getID(), $ancestors[0]['id']);
+        $this->assertEquals($category2_1->getID(), $ancestors[1]['id']);
+    }
 }
