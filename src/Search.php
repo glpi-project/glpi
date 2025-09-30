@@ -923,8 +923,12 @@ class Search
         $order = "",
         $options = ""
     ) {
+        Toolbox::deprecated();
         $output = SearchEngine::getOutputForLegacyKey($type);
-        return $output::showHeaderItem($value, $num, $linkto, $issort, $order, $options);
+        if ($output instanceof HTMLSearchOutput) {
+            return $output::showHeaderItem($value, $num, $linkto, $issort, $order, $options);
+        }
+        return '';
     }
 
 
@@ -941,14 +945,17 @@ class Search
      **/
     public static function showItem($type, $value, &$num, $row, $extraparam = '')
     {
-
+        Toolbox::deprecated();
         // Handle null values
         if ($value === null) {
             $value = '';
         }
 
         $output = SearchEngine::getOutputForLegacyKey($type);
-        return $output::showItem($value, $num, $row, $extraparam);
+        if ($output instanceof HTMLSearchOutput) {
+            return $output::showItem($value, $num, $row, $extraparam);
+        }
+        return '';
     }
 
 
@@ -962,12 +969,16 @@ class Search
      **/
     public static function showError($type, $message = "")
     {
+        Toolbox::deprecated();
         if (strlen($message) == 0) {
             $message = __('No results found');
         }
 
         $output = SearchEngine::getOutputForLegacyKey($type);
-        return $output::showError($message);
+        if ($output instanceof HTMLSearchOutput) {
+            return $output::showError($message);
+        }
+        return '';
     }
 
 
@@ -982,8 +993,12 @@ class Search
      **/
     public static function showFooter($type, $title = "", $count = null)
     {
+        Toolbox::deprecated();
         $output = SearchEngine::getOutputForLegacyKey($type);
-        return $output::showFooter($title, $count);
+        if ($output instanceof HTMLSearchOutput) {
+            return $output::showFooter($title, $count);
+        }
+        return '';
     }
 
 
@@ -999,12 +1014,12 @@ class Search
      **/
     public static function showHeader($type, $rows, $cols, $fixed = 0)
     {
+        Toolbox::deprecated();
         $output = SearchEngine::getOutputForLegacyKey($type);
-        if (!defined('TU_USER')) {
+        if ($output instanceof HTMLSearchOutput && !defined('TU_USER')) {
             return $output::showHeader($rows, $cols, $fixed);
-        } else {
-            return '';
         }
+        return '';
     }
 
 
@@ -1019,8 +1034,12 @@ class Search
      **/
     public static function showBeginHeader($type)
     {
+        Toolbox::deprecated();
         $output = SearchEngine::getOutputForLegacyKey($type);
-        return $output::showBeginHeader();
+        if ($output instanceof HTMLSearchOutput) {
+            return $output::showBeginHeader();
+        }
+        return '';
     }
 
 
@@ -1035,8 +1054,12 @@ class Search
      **/
     public static function showEndHeader($type)
     {
+        Toolbox::deprecated();
         $output = SearchEngine::getOutputForLegacyKey($type);
-        return $output::showEndHeader();
+        if ($output instanceof HTMLSearchOutput) {
+            return $output::showEndHeader();
+        }
+        return '';
     }
 
 
@@ -1051,8 +1074,12 @@ class Search
      **/
     public static function showNewLine($type, $odd = false, $is_deleted = false)
     {
+        Toolbox::deprecated();
         $output = SearchEngine::getOutputForLegacyKey($type);
-        return $output::showNewLine($odd, $is_deleted);
+        if ($output instanceof HTMLSearchOutput) {
+            return $output::showNewLine($odd, $is_deleted);
+        }
+        return '';
     }
 
 
@@ -1065,8 +1092,12 @@ class Search
      **/
     public static function showEndLine($type, bool $is_header_line = false)
     {
+        Toolbox::deprecated();
         $output = SearchEngine::getOutputForLegacyKey($type);
-        return $output::showEndLine($is_header_line);
+        if ($output instanceof HTMLSearchOutput) {
+            return $output::showEndLine($is_header_line);
+        }
+        return '';
     }
 
     /**
