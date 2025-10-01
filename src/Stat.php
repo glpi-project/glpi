@@ -1035,7 +1035,7 @@ class Stat extends CommonGLPI
                 break;
 
             case "technicien_followup":
-                $WHERE["$tasktable.users_id"] = $value;
+                $WHERE["$tasktable.users_id_tech"] = $value;
                 $LEFTJOIN = [
                     $tasktable => [
                         'ON' => [
@@ -1334,10 +1334,6 @@ class Stat extends CommonGLPI
                 break;
 
             case "inter_solved_with_actiontime":
-                if ($param == "technicien_followup") {
-                    $WHERE["$tasktable.users_id_tech"] = $value;
-                    unset($WHERE["$tasktable.users_id"]);
-                }
                 $WHERE["$table.status"] = $solved_status;
                 $WHERE["$table.actiontime"] = ['>', 0];
                 $WHERE[] = ['NOT' => ["$table.solvedate" => null]];
@@ -1404,8 +1400,6 @@ class Stat extends CommonGLPI
             case "inter_avgactiontime":
                 if ($param == "technicien_followup") {
                     $actiontime_table = $tasktable;
-                    unset($WHERE["$tasktable.users_id"]);
-                    $WHERE["$tasktable.users_id_tech"] = $value;
                 } else {
                     $actiontime_table = $table;
                 }
