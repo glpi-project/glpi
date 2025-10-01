@@ -143,9 +143,9 @@ TWIG, $twig_params);
         if (!$multiple) {
             $opt['joinparams']['condition'] = [
                 new QueryExpression(
-                    'NEWTABLE.' . $DB->quoteName('id') . ' = ' . QueryFunction::jsonUnquote(
+                    'NEWTABLE.' . $DB::quoteName('id') . ' = ' . QueryFunction::jsonUnquote(
                         expression: QueryFunction::jsonExtract([
-                            'glpi_assets_assets.custom_fields',
+                            'REFTABLE.custom_fields',
                             new QueryExpression($DB::quoteValue('$."' . $this->custom_field->fields['id'] . '"')),
                         ])
                     )
@@ -153,11 +153,11 @@ TWIG, $twig_params);
             ];
         } else {
             $opt['joinparams']['condition'] = [
-                QueryFunction::jsonContains([
-                    'glpi_assets_assets.custom_fields',
-                    QueryFunction::cast('NEWTABLE.id', 'JSON'),
-                    new QueryExpression($DB::quoteValue('$."' . $this->custom_field->fields['id'] . '"')),
-                ]),
+                QueryFunction::jsonContains(
+                    'REFTABLE.custom_fields',
+                    'NEWTABLE.id',
+                    '$."' . $this->custom_field->fields['id'] . '"'
+                ),
             ];
             $opt['forcegroupby'] = true;
             $opt['usehaving'] = true;
