@@ -107,7 +107,7 @@
     },
     "require-dev": {
         "ext-xml": "*",
-        "friendsofphp/php-cs-fixer": "^3.86",
+        "friendsofphp/php-cs-fixer": "^3.88",
         "friendsoftwig/twigcs": "^6.5",
         "glpi-project/phpstan-glpi": "^1.1",
         "glpi-project/tools": "^0.8.1",
