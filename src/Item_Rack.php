@@ -418,7 +418,7 @@ class Item_Rack extends CommonDBRelation
         self::showItemsGraph($rack, $items);
         echo "</div>"; // #viewgraph
 
-        $rack_add_tip = __s('Insert an item here');
+        $rack_add_tip = __('Insert an item here');
         $ajax_url     = $CFG_GLPI['root_doc'] . "/ajax/rack.php";
 
         $js = '

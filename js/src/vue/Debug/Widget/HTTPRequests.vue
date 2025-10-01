@@ -148,7 +148,7 @@
                 seen_request_ids.push(request.id);
                 setTimeout(() => {
                     // Need this timeout because this watcher is called before the DOM is updated
-                    const row = $(`tr[data-request-id="${request.id}"]`);
+                    const row = $(`tr[data-request-id="${CSS.escape(request.id)}"]`);
                     row.css('background-color', '#FFFF7B80');
                     setTimeout(() => {
                         row.css('background-color', 'transparent');

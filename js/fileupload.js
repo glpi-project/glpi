@@ -43,7 +43,7 @@ function uploadFile(file, editor) {
 
     // Search for fileupload container.
     // First try to find an uplaoder having same name as editor element.
-    var uploader = $(`[data-uploader-name="${editor.getElement().name}"]`);
+    var uploader = $(`[data-uploader-name="${CSS.escape(editor.getElement().name)}"]`);
     if (uploader.length === 0) {
         // Fallback to uploader using default name
         uploader = $(editor.getElement()).closest('form').find('[data-uploader-name="filename"]');
@@ -81,7 +81,7 @@ var handleUploadedFile = function (files, files_data, input_name, container, edi
                             editor = tinyMCE.get(editor_id);
                             const uploaded_image = uploaded_images.find((entry) => entry.filename === file.name);
                             const matching_image = uploaded_image !== undefined
-                                ? editor.dom.select(`img[data-upload_id="${uploaded_image.upload_id}"]`)
+                                ? editor.dom.select(`img[data-upload_id="${CSS.escape(uploaded_image.upload_id)}"]`)
                                 : [];
                             if (matching_image.length > 0) {
                                 editor.dom.setAttrib(matching_image, 'id', tag_data.tag.replace(/#/g, ''));
@@ -123,7 +123,7 @@ var handleUploadedFile = function (files, files_data, input_name, container, edi
  * @param      {Object}  container     The fileinfo container
  */
 var displayUploadedFile = function(file, tag, editor, input_name, filecontainer) {
-    var fileindex = $(`input[name^="_${input_name}["]`).length;
+    var fileindex = $(`input[name^="_${CSS.escape(input_name)}["]`).length;
     var ext = file.name.split('.').pop();
 
     var p = $('<p></p>')
@@ -173,7 +173,7 @@ var displayUploadedFile = function(file, tag, editor, input_name, filecontainer)
 var deleteImagePasted = function(elementsIdToRemove, tagToRemove, editor) {
     // Remove file display lines
     $.each(elementsIdToRemove, (index, element) => {
-        $(`#${element}`).remove();
+        $(`#${CSS.escape(element)}`).remove();
     });
 
     if (typeof editor !== "undefined" && editor !== null

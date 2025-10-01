@@ -128,9 +128,9 @@
                             // Compute current position based on list of sortable elements without current card.
                             // Indeed, current card is still in DOM (but invisible), making placeholder index in DOM
                             // not always corresponding to its position inside list of visible elements.
-                            const sortable_elements = $('#' + current_column + ' ul.kanban-body > li:not([id="' + sort_data.card_id + '"])');
+                            const sortable_elements = $('#' + CSS.escape(current_column) + ' ul.kanban-body > li:not([id="' + CSS.escape(sort_data.card_id) + '"])');
                             const current_position = sortable_elements.index(placeholder.get(0));
-                            const card = $('#' + sort_data.card_id);
+                            const card = $('#' + CSS.escape(sort_data.card_id));
                             card.data('current-pos', current_position);
 
                             if (!rights.canOrderCard()) {
@@ -153,7 +153,7 @@
                 }
             });
         });
-        mutation_observer.observe($(`#${props.element_id}`).get(0), {
+        mutation_observer.observe($(`#${CSS.escape(props.element_id)}`).get(0), {
             subtree: true,
             childList: true
         });
@@ -164,9 +164,9 @@
      * This should be called every time a new column or item is added to the board.
      */
     function refreshSortables() {
-        $(`#${props.element_id}`).trigger('kanban:refresh_sortables');
+        $(`#${CSS.escape(props.element_id)}`).trigger('kanban:refresh_sortables');
         // Make sure all items in the columns can be sorted
-        const bodies = $(`#${props.element_id} .kanban-body`);
+        const bodies = $(`#${CSS.escape(props.element_id)} .kanban-body`);
         $.each(bodies, function(b) {
             const body = $(b);
             if (body.data('sortable')) {
@@ -209,15 +209,15 @@
 
         if (rights.canModifyView()) {
             // Enable column sorting
-            sortable(`#${props.element_id} .kanban-columns`, {
-                acceptFrom: `#${props.element_id} .kanban-columns`,
+            sortable(`#${CSS.escape(props.element_id)} .kanban-columns`, {
+                acceptFrom: `#${CSS.escape(props.element_id)} .kanban-columns`,
                 appendTo: '.kanban-container',
                 items: '.kanban-column:not(.kanban-protected)',
                 handle: '.kanban-column-header',
                 orientation: 'horizontal',
                 forcePlaceholderSize: true
             });
-            $(`#${props.element_id} .kanban-columns .kanban-column:not(.kanban-protected) .kanban-column-header`).addClass('grab');
+            $(`#${CSS.escape(props.element_id)} .kanban-columns .kanban-column:not(.kanban-protected) .kanban-column-header`).addClass('grab');
         }
 
         $(`#${props.element_id} .kanban-columns`).off('sortstop').on('sortstop', (e) => {
@@ -232,7 +232,7 @@
         filter_input.tokenizer.clearAutocomplete();
 
         // Refresh core tags autocomplete
-        filter_input.tokenizer.setAutocomplete('type', Object.keys(props.supported_itemtypes).map(k => `<i class="${props.supported_itemtypes[k].icon} me-1"></i>` + k));
+        filter_input.tokenizer.setAutocomplete('type', Object.keys(props.supported_itemtypes).map(k => `<i class="${_.escape(props.supported_itemtypes[k].icon)} me-1"></i>` + _.escape(k)));
         filter_input.tokenizer.setAutocomplete('milestone', ["true", "false"]);
         filter_input.tokenizer.setAutocomplete('deleted', ["true", "false"]);
 
@@ -295,8 +295,8 @@
             // Sort cards based on their index in the column
             new_state[i].cards.sort((a, b) => {
                 // Handle the case where the card is not in the column
-                const card_a = $(`#${a}`);
-                const card_b = $(`#${b}`);
+                const card_a = $(`#${CSS.escape(a)}`);
+                const card_b = $(`#${CSS.escape(b)}`);
                 if (card_a.length === 0) {
                     return -1;
                 }
@@ -362,14 +362,14 @@
             const indices = Object.keys(state['state']);
             const promises = [];
             for (let i = 0; i < indices.length; i++) {
-                const index = indices[i];
+                const index = parseInt(indices[i]);
                 const entry = state['state'][index];
                 entry.folded = entry.folded === 'true' || entry.folded === true;
-                const element = $(`#column-${props.column_field.id}-${entry.column}`);
+                const element = $(`#column-${CSS.escape(props.column_field.id)}-${CSS.escape(entry.column)}`);
                 if (element.length === 0) {
                     promises.push(loadColumn(entry.column, true, false));
                 }
-                $(`#${props.element_id} .kanban-columns .kanban-column:nth-child(${index})`).after(element);
+                $(`#${CSS.escape(props.element_id)} .kanban-columns .kanban-column:nth-child(${index})`).after(element);
                 if (entry.folded) {
                     element.addClass('collapsed');
                 }
@@ -661,13 +661,13 @@
                 action: 'load_item_panel'
             }
         }).done((result) => {
-            $(`#${props.element_id} .offcanvas`).remove();
-            $(`#${props.element_id}`).append(`
+            $(`#${CSS.escape(props.element_id)} .offcanvas`).remove();
+            $(`#${CSS.escape(props.element_id)}`).append(`
                 <div class="offcanvas offcanvas-end show position-absolute h-100" tabindex="-1">
                     <div class="offcanvas-body p-0"></div>
                 </div>
             `);
-            const offcanvas_body = $(`#${props.element_id} .offcanvas .offcanvas-body`);
+            const offcanvas_body = $(`#${CSS.escape(props.element_id)} .offcanvas .offcanvas-body`);
             offcanvas_body.append(result);
             offcanvas_body.find(`.card-title button`).on('click', () => {
                 closeCardDetailsPanel();
@@ -690,7 +690,7 @@
                 l.append(`
                     <div class="member-details">
                         ${member_item}
-                        ${_.escape(l.attr('data-name')) || `${member_itemtype} (${member_items_id})`}
+                        ${_.escape(l.attr('data-name')) || `${_.escape(member_itemtype)} (${_.escape(member_items_id)})`}
                     </div>
                     <button type="button" name="delete" class="btn btn-ghost-danger">
                         <i class="ti ti-x" title="${__('Delete')}"></i>
@@ -749,7 +749,7 @@
                 action: 'load_teammember_form'
             }
         }).done((result) => {
-            const teammember_types_dropdown = $(`#kanban-teammember-item-dropdown-${card_itemtype}`).html();
+            const teammember_types_dropdown = $(`#kanban-teammember-item-dropdown-${CSS.escape(card_itemtype)}`).html();
             const content = `
                 ${teammember_types_dropdown}
                 ${result}
@@ -1009,7 +1009,7 @@
 
         emit('kanban:filter', {
             filters: new_filters,
-            kanban_element: $(`#${props.element_id}`),
+            kanban_element: $(`#${CSS.escape(props.element_id)}`),
             columns: columns.value
         });
         emit('kanban:post_filter', new_filters);
@@ -1301,7 +1301,7 @@
     backgroundRefresh();
     onMounted(() => {
         initMutationObserver();
-        filter_input = new SearchInput($(`#${props.element_id} input[name="filter"]`), {
+        filter_input = new SearchInput($(`#${CSS.escape(props.element_id)} input[name="filter"]`), {
             allowed_tags: props.supported_filters,
             on_result_change: (e, result) => {
                 filters.value = {
