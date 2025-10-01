@@ -7951,10 +7951,18 @@ abstract class CommonITILObject extends CommonDBTM
     /**
      * Returns criteria that can be used to get documents related to current instance.
      *
+     * @param bool      $bypass_rights  Whether to bypass rights checks (default: false)
+     * @param int|null  $user_id        ID of the user for rights checking (default: null = current session rights)
+     *
      * @return array
      */
-    public function getAssociatedDocumentsCriteria($bypass_rights = false): array
+    public function getAssociatedDocumentsCriteria($bypass_rights = false, ?int $user_id = null): array
     {
+        $user = new User();
+        if ($user_id > 0) {
+            $user = $user->getFromDB($user_id);
+        }
+
         $task_class = $this->getType() . 'Task';
         /** @var DBmysql $DB */
         global $DB; // Used to get subquery results - better performance
@@ -7973,7 +7981,7 @@ abstract class CommonITILObject extends CommonDBTM
                 ITILFollowup::getTableField('itemtype') => $this->getType(),
                 ITILFollowup::getTableField('items_id') => $this->getID(),
             ];
-            if (!$bypass_rights && !Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)) {
+            if (!$bypass_rights && !$user->hasRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)) {
                 $fup_crits[] = [
                     'OR' => ['is_private' => 0, 'users_id' => Session::getLoginUserID()],
                 ];
@@ -8038,7 +8046,7 @@ abstract class CommonITILObject extends CommonDBTM
             $tasks_crit = [
                 $this->getForeignKeyField() => $this->getID(),
             ];
-            if (!$bypass_rights && !Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATE)) {
+            if (!$bypass_rights && !$user->hasRight($task_class::$rightname, CommonITILTask::SEEPRIVATE)) {
                 $tasks_crit[] = [
                     'OR' => ['is_private' => 0, 'users_id' => Session::getLoginUserID()],
                 ];
