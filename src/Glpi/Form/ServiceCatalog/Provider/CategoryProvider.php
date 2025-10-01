@@ -115,12 +115,6 @@ final class CategoryProvider implements CompositeProviderInterface
         /** @var Category[] $ancestors */
         $ancestors = iterator_to_array($category->getAncestors());
         foreach ($ancestors as $ancestor) {
-            // We check the ancestor has form linked to it
-            $count = countElementsInTable(Form::getTable(), ['forms_categories_id' => $ancestor->getID()]);
-            if ($count === 0) {
-                continue;
-            }
-
             $categories[] = [
                 'id' => $ancestor->getID(),
                 'name' => $ancestor->fields['name'],
