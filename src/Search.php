@@ -923,13 +923,12 @@ class Search
         $order = "",
         $options = ""
     ) {
+        Toolbox::deprecated();
         $output = SearchEngine::getOutputForLegacyKey($type);
-        if (!($output instanceof HTMLSearchOutput)) {
-            Toolbox::deprecated();
-            return '';
+        if ($output instanceof HTMLSearchOutput) {
+            return $output::showHeaderItem($value, $num, $linkto, $issort, $order, $options);
         }
-
-        return $output::showHeaderItem($value, $num, $linkto, $issort, $order, $options);
+        return '';
     }
 
 
@@ -946,18 +945,17 @@ class Search
      **/
     public static function showItem($type, $value, &$num, $row, $extraparam = '')
     {
-        $output = SearchEngine::getOutputForLegacyKey($type);
-        if (!($output instanceof HTMLSearchOutput)) {
-            Toolbox::deprecated();
-            return '';
-        }
-
+        Toolbox::deprecated();
         // Handle null values
         if ($value === null) {
             $value = '';
         }
 
-        return $output::showItem($value, $num, $row, $extraparam);
+        $output = SearchEngine::getOutputForLegacyKey($type);
+        if ($output instanceof HTMLSearchOutput) {
+            return $output::showItem($value, $num, $row, $extraparam);
+        }
+        return '';
     }
 
 
@@ -971,17 +969,16 @@ class Search
      **/
     public static function showError($type, $message = "")
     {
-        $output = SearchEngine::getOutputForLegacyKey($type);
-        if (!($output instanceof HTMLSearchOutput)) {
-            Toolbox::deprecated();
-            return '';
-        }
-
+        Toolbox::deprecated();
         if (strlen($message) == 0) {
             $message = __('No results found');
         }
 
-        return $output::showError($message);
+        $output = SearchEngine::getOutputForLegacyKey($type);
+        if ($output instanceof HTMLSearchOutput) {
+            return $output::showError($message);
+        }
+        return '';
     }
 
 
@@ -996,13 +993,12 @@ class Search
      **/
     public static function showFooter($type, $title = "", $count = null)
     {
+        Toolbox::deprecated();
         $output = SearchEngine::getOutputForLegacyKey($type);
-        if (!($output instanceof HTMLSearchOutput)) {
-            Toolbox::deprecated();
-            return '';
+        if ($output instanceof HTMLSearchOutput) {
+            return $output::showFooter($title, $count);
         }
-
-        return $output::showFooter($title, $count);
+        return '';
     }
 
 
@@ -1018,13 +1014,12 @@ class Search
      **/
     public static function showHeader($type, $rows, $cols, $fixed = 0)
     {
+        Toolbox::deprecated();
         $output = SearchEngine::getOutputForLegacyKey($type);
-        if (!($output instanceof HTMLSearchOutput)) {
-            Toolbox::deprecated();
-            return '';
+        if ($output instanceof HTMLSearchOutput && !defined('TU_USER')) {
+            return $output::showHeader($rows, $cols, $fixed);
         }
-
-        return $output::showHeader($rows, $cols, $fixed);
+        return '';
     }
 
 
@@ -1039,13 +1034,12 @@ class Search
      **/
     public static function showBeginHeader($type)
     {
+        Toolbox::deprecated();
         $output = SearchEngine::getOutputForLegacyKey($type);
-        if (!($output instanceof HTMLSearchOutput)) {
-            Toolbox::deprecated();
-            return '';
+        if ($output instanceof HTMLSearchOutput) {
+            return $output::showBeginHeader();
         }
-
-        return $output::showBeginHeader();
+        return '';
     }
 
 
@@ -1060,13 +1054,12 @@ class Search
      **/
     public static function showEndHeader($type)
     {
+        Toolbox::deprecated();
         $output = SearchEngine::getOutputForLegacyKey($type);
-        if (!($output instanceof HTMLSearchOutput)) {
-            Toolbox::deprecated();
-            return '';
+        if ($output instanceof HTMLSearchOutput) {
+            return $output::showEndHeader();
         }
-
-        return $output::showEndHeader();
+        return '';
     }
 
 
@@ -1081,13 +1074,12 @@ class Search
      **/
     public static function showNewLine($type, $odd = false, $is_deleted = false)
     {
+        Toolbox::deprecated();
         $output = SearchEngine::getOutputForLegacyKey($type);
-        if (!($output instanceof HTMLSearchOutput)) {
-            Toolbox::deprecated();
-            return '';
+        if ($output instanceof HTMLSearchOutput) {
+            return $output::showNewLine($odd, $is_deleted);
         }
-
-        return $output::showNewLine($odd, $is_deleted);
+        return '';
     }
 
 
@@ -1100,13 +1092,12 @@ class Search
      **/
     public static function showEndLine($type, bool $is_header_line = false)
     {
+        Toolbox::deprecated();
         $output = SearchEngine::getOutputForLegacyKey($type);
-        if (!($output instanceof HTMLSearchOutput)) {
-            Toolbox::deprecated();
-            return '';
+        if ($output instanceof HTMLSearchOutput) {
+            return $output::showEndLine();
         }
-
-        return $output::showEndLine();
+        return '';
     }
 
     /**
