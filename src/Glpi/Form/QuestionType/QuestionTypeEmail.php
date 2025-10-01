@@ -38,10 +38,13 @@ namespace Glpi\Form\QuestionType;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionHandler\StringConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
+use Glpi\Form\Question;
+use Glpi\Form\ValidationResult;
 use Override;
 use Session;
+use Toolbox;
 
-final class QuestionTypeEmail extends AbstractQuestionTypeShortAnswer implements UsedAsCriteriaInterface
+final class QuestionTypeEmail extends AbstractQuestionTypeShortAnswer implements UsedAsCriteriaInterface, QuestionTypeValidationInterface
 {
     #[Override]
     public function getInputType(): string
@@ -72,5 +75,25 @@ final class QuestionTypeEmail extends AbstractQuestionTypeShortAnswer implements
         ?JsonFieldInterface $question_config
     ): array {
         return array_merge(parent::getConditionHandlers($question_config), [new StringConditionHandler()]);
+    }
+
+    #[Override]
+    public function validateAnswer(
+        Question $question,
+        mixed $answer
+    ): ValidationResult {
+        $result = new ValidationResult(true);
+        if (!is_string($answer)) {
+            // Should never happen
+            $result->addError($question, __("Unexpected value"));
+            return $result;
+        }
+
+        if (!Toolbox::validateEmail($answer)) {
+            $result->addError($question, __("Please enter a valid email"));
+            return $result;
+        }
+
+        return $result;
     }
 }

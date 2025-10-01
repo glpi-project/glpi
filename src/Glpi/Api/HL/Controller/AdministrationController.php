@@ -456,7 +456,7 @@ final class AdministrationController extends AbstractController
             ]);
         }
         $new_email = $request->getParameter('email');
-        if (!filter_var($new_email, FILTER_VALIDATE_EMAIL)) {
+        if (!Toolbox::validateEmail($new_email)) {
             return self::getInvalidParametersErrorResponse([
                 'invalid' => [
                     ['name' => 'email', 'reason' => 'The provided email address does not appear to be formatted as an email address'],

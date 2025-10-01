@@ -3455,4 +3455,13 @@ class Toolbox
     {
         return ErrorUtils::cleanPaths($message);
     }
+
+    /**
+     * Centralize email validation logic in a method so we can update it
+     * easily if needed.
+     */
+    public static function validateEmail(string $email): bool
+    {
+        return filter_var($email, FILTER_VALIDATE_EMAIL);
+    }
 }

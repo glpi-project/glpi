@@ -47,8 +47,10 @@ use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\CustomMandatoryMessageInterface;
+use Glpi\Form\QuestionType\QuestionTypeValidationInterface;
 use Glpi\Form\Section;
 use Glpi\Form\ValidationResult;
+use LogicException;
 use Throwable;
 
 use function Safe\json_encode;
@@ -125,11 +127,6 @@ final class AnswersHandler
 
         // Validate answers for each question if validation conditions are defined
         foreach ($questions_container->getQuestions() as $question) {
-            if ($question->getConfiguredValidationStrategy() === ValidationStrategy::NO_VALIDATION) {
-                // Skip validation if the question is always validated
-                continue;
-            }
-
             // Check if the question is visible
             if (!$visibility->isQuestionVisible($question->getID())) {
                 continue;
@@ -140,17 +137,34 @@ final class AnswersHandler
                 continue;
             }
 
-            // Validate the answer
-            if (!$validation->isQuestionValid($question->getID())) {
-                // Add error for each condition that is not met
-                foreach ($validation->getQuestionValidation($question->getID()) as $condition) {
-                    $result->addError(
-                        $question,
-                        $condition->getValueOperator()?->getErrorMessageForValidation(
-                            $question->getConfiguredValidationStrategy(),
-                            $condition
-                        )
-                    );
+            if ($question->getConfiguredValidationStrategy() !== ValidationStrategy::NO_VALIDATION) {
+                // Validate the answer
+                if (!$validation->isQuestionValid($question->getID())) {
+                    // Add error for each condition that is not met
+                    foreach ($validation->getQuestionValidation($question->getID()) as $condition) {
+                        $result->addError(
+                            $question,
+                            $condition->getValueOperator()?->getErrorMessageForValidation(
+                                $question->getConfiguredValidationStrategy(),
+                                $condition
+                            )
+                        );
+                    }
+                }
+            }
+
+            // Validate specific question type requirements
+            $type = $question->getQuestionType();
+            if ($type === null) {
+                throw new LogicException(); // Can never happen
+            }
+            if ($type instanceof QuestionTypeValidationInterface) {
+                $type_result = $type->validateAnswer(
+                    $question,
+                    $answers[$question->getID()]
+                );
+                foreach ($type_result->getErrors() as $error) {
+                    $result->addFormattedError($error);
                 }
             }
         }

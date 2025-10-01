@@ -41,6 +41,7 @@ use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Group;
 use Session;
 use Ticket;
+use Toolbox;
 use User;
 
 enum ITILActorFieldStrategy: string
@@ -251,7 +252,7 @@ enum ITILActorFieldStrategy: string
             }, []);
         } elseif ($answer->getType() instanceof QuestionTypeEmail) {
             $value = $answer->getRawAnswer();
-            if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
+            if (Toolbox::validateEmail($value)) {
                 return [
                     [
                         'itemtype' => User::class,
