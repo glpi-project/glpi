@@ -143,7 +143,7 @@ class ImportMapGenerator
         ];
 
         // Try to get GLPI core modules from cache first
-        $core_cache_key = 'js_import_map_core';
+        $core_cache_key = 'js_import_map_core_' . \sha1($this->root_doc);
         $core_modules = [];
 
         if ($should_use_cache) {
@@ -175,7 +175,7 @@ class ImportMapGenerator
                 isset($this->registered_plugin_modules[$plugin_key])
                 && !empty($this->registered_plugin_modules[$plugin_key])
             ) {
-                $plugin_cache_key = 'js_import_map_plugin_' . $plugin_key;
+                $plugin_cache_key = 'js_import_map_plugin_' . $plugin_key . '_' . \sha1($this->root_doc);
                 $plugin_modules = null;
 
                 // Try to get plugin modules from cache
