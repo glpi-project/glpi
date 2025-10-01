@@ -37,7 +37,7 @@
 {% set rand = random() %}
 
 {% block dropdown_content %}
-    <div data-glpi-form-editor-item-dropdown-advanced-configuration>
+    <div data-glpi-form-editor-item-dropdown-advanced-configuration data-glpi-form-editor-advanced-question-configuration-visible>
         {{ fields.dropdownArrayField(
             'extra_data[categories_filter]',
             '',
