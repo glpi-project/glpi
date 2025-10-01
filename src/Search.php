@@ -38,6 +38,7 @@ use Glpi\Search\Input\QueryBuilder;
 use Glpi\Search\Output\ExportSearchOutput;
 use Glpi\Search\Output\HTMLSearchOutput;
 use Glpi\Search\Output\MapSearchOutput;
+use Glpi\Search\Output\NamesListSearchOutput;
 use Glpi\Search\Provider\SQLProvider;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
@@ -950,7 +951,7 @@ class Search
         }
 
         $output = SearchEngine::getOutputForLegacyKey($type);
-        if ($output instanceof HTMLSearchOutput) {
+        if ($output instanceof HTMLSearchOutput || $output instanceof NamesListSearchOutput) {
             return $output::showItem($value, $num, $row, $extraparam);
         }
         return '';
@@ -1011,7 +1012,7 @@ class Search
     public static function showHeader($type, $rows, $cols, $fixed = 0)
     {
         $output = SearchEngine::getOutputForLegacyKey($type);
-        if ($output instanceof HTMLSearchOutput && !defined('TU_USER')) {
+        if (($output instanceof HTMLSearchOutput || $output instanceof NamesListSearchOutput) && !defined('TU_USER')) {
             return $output::showHeader($rows, $cols, $fixed);
         }
         return '';
@@ -1085,7 +1086,7 @@ class Search
     public static function showEndLine($type, bool $is_header_line = false)
     {
         $output = SearchEngine::getOutputForLegacyKey($type);
-        if ($output instanceof HTMLSearchOutput) {
+        if ($output instanceof HTMLSearchOutput || $output instanceof NamesListSearchOutput) {
             return $output::showEndLine();
         }
         return '';
