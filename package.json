@@ -116,7 +116,7 @@
         "mini-css-extract-plugin": "^2.9.4",
         "monaco-editor-webpack-plugin": "^7.0.1",
         "null-loader": "^4.0.1",
-        "patch-package": "^8.0.0",
+        "patch-package": "^8.0.1",
         "sass": "^1.89.2",
         "sass-loader": "^16.0.5",
         "script-loader": "^0.7.2",
@@ -130,8 +130,5 @@
         "webpack": "^5.100.2",
         "webpack-cli": "^6.0.1",
         "webpack-dev-server": "^5.2.2"
-    },
-    "overrides": {
-        "tmp": "0.2.5"
     }
 }
