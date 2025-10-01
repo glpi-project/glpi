@@ -42,8 +42,8 @@ function refreshAssetBreadcrumb(itemtype, items_id, dom_to_update) {
             itemtype: itemtype,
         }
     }).done((html_breadcrum) => {
-        $(`#${dom_to_update}`).empty();
-        $(`#${dom_to_update}`).append(html_breadcrum);
+        $(`#${CSS.escape(dom_to_update)}`).empty();
+        $(`#${CSS.escape(dom_to_update)}`).append(html_breadcrum);
     });
 
 }
@@ -59,8 +59,8 @@ function refreshNetworkPortDropdown(itemtype, items_id, dom_to_update) {
             itemtype: itemtype,
         }
     }).done((html_data) => {
-        $(`#${dom_to_update}`).empty();
-        $(`#${dom_to_update}`).append(html_data);
+        $(`#${CSS.escape(dom_to_update)}`).empty();
+        $(`#${CSS.escape(dom_to_update)}`).append(html_data);
     });
 }
 
@@ -77,7 +77,7 @@ function refreshSocketDropdown(itemtype, items_id, socketmodels_id, dom_name) {
             dom_name: dom_name
         }
     }).done((html_data) => {
-        const parent_dom = $(`select[name="${dom_name}"]`).parent().parent();
+        const parent_dom = $(`select[name="${CSS.escape(dom_name)}"]`).parent().parent();
         parent_dom.empty();
         parent_dom.append(html_data);
     });

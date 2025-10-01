@@ -169,7 +169,7 @@ export default class SearchInput {
             e.preventDefault();
             e.stopPropagation();
             const tag = $(e.target).closest('li').attr('data-tag');
-            const node = $(`<span class="search-input-tag-input">${tag.trim()}:</span>`).insertBefore($('.search-input-tag-input:last-of-type'));
+            const node = $(`<span class="search-input-tag-input">${_.escape(tag.trim())}:</span>`).insertBefore($('.search-input-tag-input:last-of-type'));
             //Clear selected node's text
             const selected_node = this.getSelectedNode();
             $(selected_node).text('');
@@ -183,7 +183,7 @@ export default class SearchInput {
             e.stopPropagation();
             const prefix = $(e.target).closest('button.tag-prefix').attr('data-prefix');
             const tag = $(e.target).closest('li').attr('data-tag');
-            const node = $(`<span class="search-input-tag-input">${prefix || ''}${tag.trim()}:</span>`).insertBefore($('.search-input-tag-input:last-of-type'));
+            const node = $(`<span class="search-input-tag-input">${_.escape(prefix || '')}${_.escape(tag.trim())}:</span>`).insertBefore($('.search-input-tag-input:last-of-type'));
             //Clear selected node's text
             const selected_node = this.getSelectedNode();
             $(selected_node).text('');
@@ -197,7 +197,7 @@ export default class SearchInput {
             const li = $(e.target).closest('li');
             const tag = li.closest('ul').attr('data-tag');
             const selected_term = li.text().trim();
-            const editing_node = input.find(`.search-input-tag-input[data-tag="${tag}"]`);
+            const editing_node = input.find(`.search-input-tag-input[data-tag="${CSS.escape(tag)}"]`);
             editing_node.text(`${tag}:${selected_term}`);
             this.tagifyInputNode(editing_node);
             this.placeCaretInDefaultInput();
@@ -388,7 +388,7 @@ export default class SearchInput {
     * @param {SearchToken} token
     */
     tokenToTagHtml(token) {
-        const tag_display = token.tag ? `<b>${token.exclusion ? this.tokenizer.EXCLUSION_PREFIX : ''}${token.prefix ? token.prefix : ''}${token.tag}</b>:` : '';
+        const tag_display = token.tag ? `<b>${_.escape(token.exclusion ? this.tokenizer.EXCLUSION_PREFIX : '')}${_.escape(token.prefix ? token.prefix : '')}${_.escape(token.tag)}</b>:` : '';
         let tag_color_override = null;
         if (this.tokenizer.options.custom_prefixes[token.prefix]) {
             tag_color_override = this.tokenizer.options.custom_prefixes[token.prefix].token_color || null;
@@ -407,12 +407,12 @@ export default class SearchInput {
             if (tag_color_override.indexOf('#') === 0) {
                 tag_color_override = tag_color_override.replace(/[^#]*#([0-9a-f]{6})([0-9a-f]{2})?/i, '#$1');
             }
-            style_overrides = tag_color_override ? `style="border-color: ${tag_color_override} !important; background-color: unset !important;"` : '';
+            style_overrides = tag_color_override ? `border-color: ${tag_color_override} !important; background-color: unset !important;` : '';
         } else {
-            style_overrides = tag_color_override ? `style="background-color: ${tag_color_override} !important"` : '';
+            style_overrides = tag_color_override ? `background-color: ${tag_color_override} !important` : '';
         }
-        return `<span class="search-input-tag badge bg-secondary text-secondary-fg me-1" contenteditable="false" data-tag="${token.tag}" ${style_overrides}>
-                  <span class="search-input-tag-value" contenteditable="false">${tag_display}${_.escape(token.term) || ''}</span>
+        return `<span class="search-input-tag badge bg-secondary text-secondary-fg me-1" contenteditable="false" data-tag="${token.tag}" style="${_.escape(style_overrides)}">
+                  <span class="search-input-tag-value" contenteditable="false">${tag_display}${_.escape(token.term || '')}</span>
                   <i class="ti ti-x cursor-pointer ms-1" title="${__('Delete')}" contenteditable="false"></i>
                </span>`;
     }
@@ -650,15 +650,15 @@ export default class SearchInput {
                 if (prefix === this.tokenizer.EXCLUSION_PREFIX) {
                     label = __('Exclude');
                 }
-                prefix_content += `<button type="button" class="btn btn-outline-secondary btn-sm ${prefix_count > 1 ? 'ms-1' : ''} tag-prefix" title="${label}" data-prefix="${prefix}">${prefix}</button>`;
+                prefix_content += `<button type="button" class="btn btn-outline-secondary btn-sm ${prefix_count > 1 ? 'ms-1' : ''} tag-prefix" title="${label}" data-prefix="${_.escape(prefix)}">${_.escape(prefix)}</button>`;
             });
             helper += `
-            <li class="list-group-item list-group-item-action" style="cursor: pointer" data-tag="${name}">
+            <li class="list-group-item list-group-item-action" style="cursor: pointer" data-tag="${_.escape(name)}">
                 <div class="d-flex flex-grow-1 justify-content-between">
-                   <b>${name}</b>
+                   <b>${_.escape(name)}</b>
                    <span>${prefix_content}</span>
                 </div>
-                <div class="text-muted fst-italic">${description}</div>
+                <div class="text-muted fst-italic">${_.escape(description)}</div>
             </li>
          `;
         });
@@ -682,15 +682,15 @@ export default class SearchInput {
         let helper = '';
         const autocomplete_values = this.tokenizer.getAutocomplete(tag_name);
         if (autocomplete_values.length > 0) {
-            helper += `<ul class="list-group term-suggestions-list" data-tag="${tag_name}">`;
+            helper += `<ul class="list-group term-suggestions-list" data-tag="${_.escape(tag_name)}">`;
         } else {
-            helper = `${tag_name.toLowerCase()}: ${tag.description}`;
+            helper = `${_.escape(tag_name.toLowerCase())}: ${_.escape(tag.description)}`;
         }
         $.each(autocomplete_values, (i, v) => {
             if ((this.options.filter_on_type && selected_text.length > 0) && !v.toLowerCase().startsWith(current_term.toLowerCase())) {
                 return; // continue
             }
-            helper += `<li class="list-group-item list-group-item-action" style="cursor: pointer">${v}</li>`;
+            helper += `<li class="list-group-item list-group-item-action" style="cursor: pointer">${_.escape(v)}</li>`;
         });
         if (autocomplete_values.length > 0) {
             helper += '</ul>';

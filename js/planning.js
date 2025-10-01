@@ -35,6 +35,8 @@
 /* eslint no-var: 0 */
 /* global FullCalendar, FullCalendarLocales, FullCalendarInteraction */
 /* global glpi_ajax_dialog, glpi_html_dialog */
+/* global _ */
+
 var GLPIPlanning  = {
     calendar:      null,
     dom_id:        "",
@@ -173,7 +175,7 @@ var GLPIPlanning  = {
                 // append event data to dom (to re-use they in clone behavior)
                 element.data('myevent', event);
 
-                var eventtype_marker = `<span class="event_type" style="background-color: ${extProps.typeColor}"></span>`;
+                var eventtype_marker = `<span class="event_type" style="background-color: ${_.escape(extProps.typeColor)}"></span>`;
                 element.append(eventtype_marker);
 
                 var content = extProps.content;
@@ -193,7 +195,7 @@ var GLPIPlanning  = {
                     }
 
                     element.find(".fc-title, .fc-list-item-title")
-                        .append(`&nbsp;<i class='${extProps.icon}' title='${icon_alt}'></i>`);
+                        .append(`&nbsp;<i class='${_.escape(extProps.icon)}' title='${_.escape(icon_alt)}'></i>`);
                 }
 
                 // add classes to current event
@@ -390,7 +392,7 @@ var GLPIPlanning  = {
                 }
 
                 // attach button (planning and refresh) in planning header
-                $(`#${GLPIPlanning.dom_id} .fc-toolbar .fc-center h2`)
+                $(`#${CSS.escape(GLPIPlanning.dom_id)} .fc-toolbar .fc-center h2`)
                     .after(
                         $('<i id="refresh_planning" class="ti ti-refresh pointer"></i>')
                     ).after(

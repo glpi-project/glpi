@@ -71,7 +71,8 @@
                             if ($(`li[data-opt-id="${opt.id}"]`).length > 0) {
                                 return null;
                             }
-                            return _.escape(opt.text);
+                            {# select2 will escape the text #}
+                            return opt.text;
                         }
                     {% endset %}
 

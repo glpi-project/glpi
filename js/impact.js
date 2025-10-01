@@ -1430,7 +1430,7 @@ var GLPIImpact = {
         var nodeID = GLPIImpact.makeID(GLPIImpact.NODE, node.itemtype, node.items_id);
 
         // Check if the node is already on the graph
-        if (GLPIImpact.cy.filter('node[id="' + nodeID + '"]').length > 0) {
+        if (GLPIImpact.cy.filter('node[id="' + CSS.escape(nodeID) + '"]').length > 0) {
             alert(__('This asset already exists.'));
             return;
         }
@@ -2079,7 +2079,7 @@ var GLPIImpact = {
         for (i=0; i<graph.length; i++) {
             var id = graph[i].data.id;
             // Check that the element is not already on the graph,
-            if (this.cy.filter('[id="' + id + '"]').length > 0) {
+            if (this.cy.filter('[id="' + CSS.escape(id) + '"]').length > 0) {
                 continue;
             }
             // Store node to add them at once with a layout
@@ -2090,7 +2090,7 @@ var GLPIImpact = {
                 var node_info = graph[i].data.id.split(GLPIImpact.NODE_ID_SEPERATOR);
                 var itemtype = node_info[0];
                 var items_id = node_info[1];
-                $("p[data-id=" + items_id + "][data-type='" + itemtype + "']").remove();
+                $("p[data-id=" + CSS.escape(items_id) + "][data-type='" + CSS.escape(itemtype) + "']").remove();
             }
         }
 
@@ -2611,10 +2611,10 @@ var GLPIImpact = {
     * @returns {string}
     */
     buildOngoingDialogContent: function(ITILObjects) {
-        return this.listElements(__("Requests"), ITILObjects.requests, "ticket")
-         + this.listElements(__("Incidents"), ITILObjects.incidents, "ticket")
-         + this.listElements(__("Changes"), ITILObjects.changes , "change")
-         + this.listElements(__("Problems"), ITILObjects.problems, "problem");
+        return this.listElements(_.unescape(__("Requests")), ITILObjects.requests, "ticket")
+         + this.listElements(_.unescape(__("Incidents")), ITILObjects.incidents, "ticket")
+         + this.listElements(_.unescape(__("Changes")), ITILObjects.changes , "change")
+         + this.listElements(_.unescape(__("Problems")), ITILObjects.problems, "problem");
     },
 
     /**
@@ -2630,12 +2630,12 @@ var GLPIImpact = {
         var html = "";
 
         if (elements.length > 0) {
-            html += "<h3>" + title + "</h3>";
+            html += "<h3>" + _.escape(title) + "</h3>";
             html += "<ul>";
 
             elements.forEach(function(element) {
                 var link = CFG_GLPI.root_doc + "/front/" + url + ".form.php?id=" + element.id;
-                html += '<li><a target="_blank" href="' + link + '">' + element.name
+                html += '<li><a target="_blank" href="' + _.escape(link) + '">' + _.escape(element.name)
                + '</a></li>';
             });
             html += "</ul>";
@@ -3569,8 +3569,8 @@ var GLPIImpact = {
                 event.target.select();
 
                 if (event.target.isNode()){
-                    var sourceFilter = "edge[source='" + id + "']";
-                    var targetFilter = "edge[target='" + id + "']";
+                    var sourceFilter = "edge[source='" + CSS.escape(id) + "']";
+                    var targetFilter = "edge[target='" + CSS.escape(id) + "']";
                     event.cy.filter(sourceFilter + ", " + targetFilter)
                         .data('todelete', 1)
                         .select();
@@ -3734,9 +3734,9 @@ var GLPIImpact = {
                         cssClass = "impact-res-disabled";
                     }
 
-                    var str = '<p class="' + cssClass + '" data-id="' + value['id'] + '" data-type="' + itemtype + '">';
+                    var str = '<p class="' + cssClass + '" data-id="' + _.escape(value['id']) + '" data-type="' + _.escape(itemtype) + '">';
                     str += `<img src='${_.escape(value['image'])}'></img>`;
-                    str += value["name"];
+                    str += _.escape(value["name"]);
 
                     if (isHidden) {
                         str += '<i class="ti ti-eye-off impact-res-hidden"></i>';
@@ -3985,7 +3985,7 @@ var GLPIImpact = {
             $(GLPIImpact.selectors.sideSearch).show();
             $(GLPIImpact.selectors.sideSearch + " img").attr('title', $(img).attr('title'));
             $(GLPIImpact.selectors.sideSearch + " img").attr('src', $(img).attr('src'));
-            $(GLPIImpact.selectors.sideSearch + " > h4 > span").html($(img).attr('title'));
+            $(GLPIImpact.selectors.sideSearch + " > h4 > span").html(_.escape($(img).attr('title')));
             $(GLPIImpact.selectors.sideSearchSelectItemtype).hide();
 
             // Empty search

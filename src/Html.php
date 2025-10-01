@@ -5002,9 +5002,9 @@ JS;
         $html = <<<HTML
          <div class="progress" style="height: 12px"
               id="progress{$rand}"
-              data-progressid="{$rand}"
+              data-progressid="progress{$rand}"
               data-append-percent="{$append_percent}"
-              onchange="updateProgress('{$rand}')"
+              onchange="updateProgress('progress{$rand}')"
               max="{$max}"
               value="{$value}"
               title="{$tooltip}" data-bs-toggle="tooltip">

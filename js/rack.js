@@ -35,6 +35,7 @@
 /* global grid_link_url, grid_rack_add_tip, grid_rack_id, grid_rack_units, GridStack */
 /* global glpi_ajax_dialog, displayAjaxMessageAfterRedirect */
 /* global grid_item_ajax_url */
+/* global _ */
 
 let pos_before_drag = {x: 0, y: 0};
 var dirty = false;
@@ -178,7 +179,7 @@ var initRack = function() {
                             var other_side_cls = j_item.hasClass('item_rear')
                                 ? "item_front"
                                 : "item_rear";
-                            var other_side_el = $(`.grid-stack-item.${other_side_cls}[gs-id=${j_item.attr('gs-id')}]`);
+                            var other_side_el = $(`.grid-stack-item.${CSS.escape(other_side_cls)}[gs-id=${CSS.escape(j_item.attr('gs-id'))}]`);
 
                             if (other_side_el.length) {
                                 //retrieve other side gridstack instance
@@ -241,7 +242,7 @@ var initRack = function() {
 
         // append cells for adding new items
         $('.racks_add').append(
-            `<div class="cell_add"><span class="tipcontent">${grid_rack_add_tip}</span></div>`
+            `<div class="cell_add"><span class="tipcontent">${_.escape(grid_rack_add_tip)}</span></div>`
         );
     }
 };
