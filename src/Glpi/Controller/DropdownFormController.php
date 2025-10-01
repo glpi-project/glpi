@@ -49,7 +49,7 @@ use Toolbox;
 use function Safe\ob_get_clean;
 use function Safe\ob_start;
 
-final class DropdownFormController extends AbstractController
+class DropdownFormController extends AbstractController
 {
     public function __invoke(Request $request): Response
     {
@@ -176,6 +176,7 @@ final class DropdownFormController extends AbstractController
         if (isset($input['execute']) && isset($input['_method'])) {
             $method = 'execute' . $input['_method'];
             if (method_exists($dropdown, $method)) {
+                Toolbox::deprecated('Defining method to execute throught `execute` and `_method` inputs is deprecated for security reasons. Please use a dedicated controller action instead.');
                 \call_user_func([&$dropdown, $method], $input);
 
                 return new RedirectResponse(Html::getBackUrl());
