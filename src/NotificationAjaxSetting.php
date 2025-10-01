@@ -76,7 +76,7 @@ class NotificationAjaxSetting extends NotificationSetting
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div class="alert alert-warning">
-                    <a href="{{ path('front/setup.notification.php') }}">{{ message|raw }}</a>
+                    <a href="{{ path('front/setup.notification.php') }}">{{ message }}</a>
                 </div>
 TWIG, $twig_params);
         }

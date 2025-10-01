@@ -224,7 +224,7 @@
 
    {% if options.id is not defined %}
        {# `id` is mandatory at this point to correctly handle file uploads #}
-       {% set options = {id: name ~ '_' ~ options.rand}|merge(options) %}
+       {% set options = {id: name|safe_dom_id ~ '_' ~ options.rand}|merge(options) %}
    {% endif %}
 
    {% set field %}
@@ -415,7 +415,7 @@
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
-   {% set id = (options.id is defined and options.id|length > 0) ? options.id : (name ~ '_' ~ (options.rand ?? "")) %}
+   {% set id = (options.id is defined and options.id|length > 0) ? options.id : (name|safe_dom_id ~ '_' ~ (options.rand ?? "")) %}
    {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
    {{ _inputs.label(label, id, options) }}
    {{ _self.field(name, field, label, options|merge({
@@ -424,7 +424,16 @@
    })) }}
 {% endmacro %}
 
-{% macro hiddenField(name, value, label = '', options = {}) %}
+{% macro hiddenField(name, value, options = {}) %}
+    {% if options is not iterable %}
+        {#
+            If `options` is not iterable, it means that this macro was used
+            with its previous signature (name, value, label, options = {}).
+            We get the `options` value from the extra positional arguments (available in `varargs`).
+            @TODO Add a deprecation in GLPI 11.1.
+         #}
+        {% set options = varargs[0]|default({}) %}
+    {% endif %}
     {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
     {{ _inputs.hidden(name, value, options) }}
 {% endmacro %}
@@ -587,6 +596,7 @@
     {% set options = {
         'rand': random(),
         'width': '100%',
+        'disabled': false,
     }|merge(options) %}
    {% if options.fields_template.isMandatoryField(name)|default(false) %}
       {% set options = {'required': true}|merge(options) %}
@@ -798,7 +808,7 @@
    {% if not options.include_field %}
       {{ field }}
    {% else %}
-      {% set id    = (options.id ?? '')|length > 0 and options.id != '%id%' ? options.id : (name|slug ~ '_' ~ options.rand) %}
+      {% set id    = (options.id ?? '')|length > 0 and options.id != '%id%' ? options.id : (name|safe_dom_id ~ '_' ~ options.rand) %}
       {% set field = field|replace({'%id%': id}) %}
       {% set add_field_html = options.add_field_html|length > 0 ? options.add_field_html : '' %}
 

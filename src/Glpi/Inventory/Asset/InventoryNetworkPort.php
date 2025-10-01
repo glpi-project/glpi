@@ -36,6 +36,7 @@
 
 namespace Glpi\Inventory\Asset;
 
+use Blacklist;
 use DBmysqlIterator;
 use FQDNLabel;
 use Glpi\DBAL\QueryParam;
@@ -333,14 +334,17 @@ trait InventoryNetworkPort
     private function addIPAddresses(array $ips, $items_id)
     {
         $ipaddress = new IPAddress();
+        $blacklist = new Blacklist();
         foreach ($ips as $ip) {
-            $input = [
-                'items_id'     => $items_id,
-                'itemtype'     => 'NetworkName',
-                'name'         => $ip,
-                'is_dynamic'   => 1,
-            ];
-            $ipaddress->add($input);
+            if ('' != $blacklist->process(Blacklist::IP, $ip)) {
+                $input = [
+                    'items_id'     => $items_id,
+                    'itemtype'     => 'NetworkName',
+                    'name'         => $ip,
+                    'is_dynamic'   => 1,
+                ];
+                $ipaddress->add($input);
+            }
         }
     }
 

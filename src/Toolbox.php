@@ -78,7 +78,6 @@ use function Safe\error_log;
 use function Safe\fclose;
 use function Safe\file_get_contents;
 use function Safe\filemtime;
-use function Safe\finfo_close;
 use function Safe\finfo_open;
 use function Safe\fopen;
 use function Safe\fwrite;
@@ -171,9 +170,9 @@ class Toolbox
 
         $pos = self::strpos(self::strtolower($str), self::strtolower($shortcut));
         if ($pos !== false) {
-            return self::substr($str, 0, $pos)
-                . "<u>" . self::substr($str, $pos, 1) . "</u>"
-                . self::substr($str, $pos + 1);
+            return htmlescape(self::substr($str, 0, $pos))
+                . "<u>" . htmlescape(self::substr($str, $pos, 1)) . "</u>"
+                . htmlescape(self::substr($str, $pos + 1));
         }
         return $str;
     }
@@ -594,7 +593,7 @@ class Toolbox
         if ($mime === null && preg_match('/\.(...)$/', $path)) {
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
             $mime = finfo_file($finfo, $path);
-            finfo_close($finfo);
+            unset($finfo);
         }
 
         $can_be_inlined = false;
@@ -2233,6 +2232,7 @@ class Toolbox
         $progress_indicator?->addMessage(MessageType::Success, __('Default data imported.'));
 
         $progress_indicator?->setProgressBarMessage(__('Creating default forms…'));
+        Session::loadAllCoreLocales();
         $default_forms_manager = new DefaultDataManager();
         $default_forms_manager->initializeData();
         $progress_indicator?->advance($init_form_weight);
@@ -2517,11 +2517,12 @@ class Toolbox
                         }
                         $object_url_param = sprintf(
                             '&itemtype=%s&items_id=%s',
-                            $linked_object->getType(),
-                            $linked_object->fields['id']
+                            rawurlencode($linked_object::class),
+                            $linked_object->getID()
                         );
-                        $img = "<img alt='" . $image['tag'] . "' src='" . $base_path
-                          . "/front/document.send.php?docid=" . $id . $object_url_param . "'/>";
+                        $img = "<img alt='" . htmlescape($image['tag']) . "' src='"
+                            . htmlescape($base_path . "/front/document.send.php?docid=" . $id . $object_url_param)
+                            . "'/>";
 
                         // 1 - Replace direct tag (with prefix and suffix) by the image
                         $content_text = preg_replace(
@@ -2570,7 +2571,7 @@ class Toolbox
                                 $object_url_param
                             );
                             if (empty($new_image)) {
-                                $new_image = '#' . $image['tag'] . '#';
+                                $new_image = htmlescape('#' . $image['tag'] . '#');
                             }
                             $content_text = str_replace(
                                 $match_img,
@@ -2989,7 +2990,7 @@ class Toolbox
             return null;
         }
 
-        return ($full ? $CFG_GLPI["root_doc"] : "") . '/front/document.send.php?file=_pictures/' . htmlescape($path);
+        return ($full ? $CFG_GLPI["root_doc"] : "") . '/front/document.send.php?file=' . urlencode('_pictures/' . $path);
     }
 
     /**

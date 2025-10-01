@@ -41,26 +41,31 @@ final class QuestionTypeItemDropdownExtraDataConfig extends QuestionTypeItemExtr
 {
     // Unique reference to hardcoded name used for serialization
     public const CATEGORIES_FILTER = "categories_filter";
-    public const ROOT_ITEMS_ID     = "root_items_id";
-    public const SUBTREE_DEPTH     = "subtree_depth";
 
     public function __construct(
-        private ?string $itemtype        = null,
-        private array $categories_filter = [],
-        private int $root_items_id       = 0,
-        private int $subtree_depth       = 0,
+        private ?string $itemtype          = null,
+        private array $categories_filter   = [],
+        private int $root_items_id         = 0,
+        private int $subtree_depth         = 0,
+        private bool $selectable_tree_root = false,
     ) {
-        parent::__construct(itemtype: $itemtype);
+        parent::__construct(
+            itemtype            : $itemtype,
+            root_items_id       : $root_items_id,
+            subtree_depth       : $subtree_depth,
+            selectable_tree_root: $selectable_tree_root,
+        );
     }
 
     #[Override]
     public static function jsonDeserialize(array $data): self
     {
         return new self(
-            itemtype         : $data[self::ITEMTYPE] ?? null,
-            categories_filter: $data[self::CATEGORIES_FILTER] ?? [],
-            root_items_id    : $data[self::ROOT_ITEMS_ID] ?? 0,
-            subtree_depth    : $data[self::SUBTREE_DEPTH] ?? 0,
+            itemtype            : $data[self::ITEMTYPE] ?? null,
+            categories_filter   : $data[self::CATEGORIES_FILTER] ?? [],
+            root_items_id       : $data[self::ROOT_ITEMS_ID] ?? 0,
+            subtree_depth       : $data[self::SUBTREE_DEPTH] ?? 0,
+            selectable_tree_root: $data[self::SELECTABLE_TREE_ROOT] ?? false,
         );
     }
 
@@ -68,25 +73,16 @@ final class QuestionTypeItemDropdownExtraDataConfig extends QuestionTypeItemExtr
     public function jsonSerialize(): array
     {
         return [
-            self::ITEMTYPE          => $this->itemtype,
-            self::CATEGORIES_FILTER => $this->categories_filter,
-            self::ROOT_ITEMS_ID     => $this->root_items_id,
-            self::SUBTREE_DEPTH     => $this->subtree_depth,
+            self::ITEMTYPE             => $this->itemtype,
+            self::CATEGORIES_FILTER    => $this->categories_filter,
+            self::ROOT_ITEMS_ID        => $this->root_items_id,
+            self::SUBTREE_DEPTH        => $this->subtree_depth,
+            self::SELECTABLE_TREE_ROOT => $this->selectable_tree_root,
         ];
     }
 
     public function getCategoriesFilter(): array
     {
         return $this->categories_filter;
-    }
-
-    public function getRootItemsId(): int
-    {
-        return $this->root_items_id;
-    }
-
-    public function getSubtreeDepth(): int
-    {
-        return $this->subtree_depth;
     }
 }

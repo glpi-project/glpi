@@ -482,8 +482,14 @@ class GLPIKey
         for ($i = 0; $i < strlen($string); $i++) {
             $char    = substr($string, $i, 1);
             $keychar = substr($key, ($i % strlen($key)) - 1, 1);
-            $char    = chr(ord($char) - ord($keychar));
-            $result .= $char;
+
+            $bytevalue = ord($char) - ord($keychar);
+            while ($bytevalue < 0) {
+                $bytevalue += 256;
+            }
+            $bytevalue %= 256;
+
+            $result .= chr($bytevalue);
         }
 
         // In legacy password encrytion logic, an HTML encoded value of password was sometimes stored

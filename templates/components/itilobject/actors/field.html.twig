@@ -84,15 +84,15 @@
     #}
     {% set safe_item_fields = item.fields|filter((value, key) => key != 'content') %}
     <script type="module" defer>
-        const actorytype = '{{ actortype }}';
+        const actorytype = '{{ actortype|e('js') }}';
 
         // function to display an option in the list or the selected input
         function genericTemplate(option = {}, is_selection = false) {
             const element   = $(option.element);
             const itemtype  = element.data('itemtype') ?? option.itemtype;
             const items_id  = element.data('items-id') ?? option.items_id;
-            let text        = escapeMarkupText(element.data('text') ?? option.text ?? '');
-            const title     = escapeMarkupText(element.data('title') ?? option.title ?? '');
+            let text        = _.escape(element.data('text') ?? option.text ?? '');
+            const title     = _.escape(element.data('title') ?? option.title ?? '');
             const use_notif = element.data('use-notification') ?? option.use_notification ?? 1;
             const alt_email = element.data('alternative-email') ?? option.alternative_email ?? '';
 
@@ -102,30 +102,30 @@
                 case "User":
                     if (items_id == 0) {
                         text = alt_email;
-                        icon = `<i class="ti ti-mail mx-1" title="{{ __('Direct email') }}"></i>`;
+                        icon = `<i class="ti ti-mail mx-1" title="{{ __('Direct email')|e('html')|e('js') }}"></i>`;
                     } else {
-                        icon = `<i class="ti ti-user mx-1" title="{{ 'User'|itemtype_name }}"></i>`;
+                        icon = `<i class="ti ti-user mx-1" title="{{ 'User'|itemtype_name|e('html')|e('js') }}"></i>`;
                     }
-                    if ("{{ actortype }}" == "assign") {
+                    if ("{{ actortype|e('js') }}" == "assign") {
                         fk = "users_id_assign";
-                    } else if ("{{ actortype }}" == "requester") {
+                    } else if ("{{ actortype|e('js') }}" == "requester") {
                         fk = "users_id_requester";
-                    } else if ("{{ actortype }}" == "observer") {
+                    } else if ("{{ actortype|e('js') }}" == "observer") {
                         fk = "users_id_observer";
                     }
                     break;
                 case "Group":
-                    icon = `<i class="ti ti-users mx-1" title="{{ 'Group'|itemtype_name }}"></i>`;
-                    if ("{{ actortype }}" == "assign") {
+                    icon = `<i class="ti ti-users mx-1" title="{{ 'Group'|itemtype_name|e('html')|e('js') }}"></i>`;
+                    if ("{{ actortype|e('js') }}" == "assign") {
                         fk = "groups_id_assign";
-                    } else if ("{{ actortype }}" == "requester") {
+                    } else if ("{{ actortype|e('js') }}" == "requester") {
                         fk = "groups_id_requester";
-                    } else if ("{{ actortype }}" == "observer") {
+                    } else if ("{{ actortype|e('js') }}" == "observer") {
                         fk = "groups_id_observer";
                     }
                     break;
                 case "Supplier":
-                    icon = `<i class="ti ti-package mx-1" title="{{ 'Supplier'|itemtype_name }}"></i>`;
+                    icon = `<i class="ti ti-package mx-1" title="{{ 'Supplier'|itemtype_name|e('html')|e('js') }}"></i>`;
                     fk   = "suppliers_id_assign";
                     break;
             }
@@ -138,7 +138,7 @@
                 actions = `
                     <button class="btn btn-sm btn-ghost-secondary edit-notify-user"
                               data-bs-toggle="tooltip" data-bs-placement="top"
-                              title="{{ __('Email followup') }}"
+                              title="{{ __('Email followup')|e('html')|e('js') }}"
                               type="button">
                         <i class="ti ${icon_class} notify-icon"></i>
                     </button>`;
@@ -157,7 +157,7 @@
             // prepare html for option element
             text = (is_selection && itemtype == "Group") ? title : text;
             const option_text    = `<span class="actor_text">${text}</span>`;
-            const option_element = $(`<span class="actor_entry" data-itemtype="${itemtype}" data-items-id="${items_id}" data-actortype="${actorytype}">${indent}${icon}${option_text}${actions}</span>`);
+            const option_element = $(`<span class="actor_entry" data-itemtype="${_.escape(itemtype)}" data-items-id="${_.escape(items_id)}" data-actortype="${_.escape(actorytype)}">${indent}${icon}${option_text}${actions}</span>`);
 
             if (is_selection && itemtype == "User") {
                 const unique_id = "user_opt_" + actor_select.attr('data-actor-type') + "User" + items_id;
@@ -169,8 +169,9 @@
                         'value': items_id,
                     }
                 }).then((result) => {
+                    {# `result` is a safe HTML string #}
                     if (result) {
-                        actor_select.parent().append('<' + `div id="content${unique_id}" style="display: none;">` + result + '<' + '/div>');
+                        actor_select.parent().append('<' + `div id="content${_.escape(unique_id)}" style="display: none;">` + result + '<' + '/div>');
                         option_element.attr('data-glpi-popover-source', `content${unique_id}`);
                     }
                 });
@@ -186,8 +187,9 @@
                         'value': items_id,
                     }
                 }).then((result) => {
+                    {# `result` is a safe HTML string #}
                     if (result) {
-                        actor_select.parent().append('<' + `div id="content${unique_id}" style="display: none;">` + result + '<' + '/div>');
+                        actor_select.parent().append('<' + `div id="content${_.escape(unique_id)}" style="display: none;">` + result + '<' + '/div>');
                         option_element.attr('data-glpi-popover-source', `content${unique_id}`);
                     }
                 });
@@ -203,8 +205,9 @@
                         'value': items_id,
                     }
                 }).then((result) => {
+                    {# `result` is a safe HTML string #}
                     if (result) {
-                        actor_select.parent().append('<' + `div id="content${unique_id}" style="display: none;">` + result + '<' + '/div>');
+                        actor_select.parent().append('<' + `div id="content${_.escape(unique_id)}" style="display: none;">` + result + '<' + '/div>');
                         option_element.attr('data-glpi-popover-source', `content${unique_id}`);
                     }
                 });
@@ -213,15 +216,15 @@
             // manage ticket information (number of assigned ticket for an actor)
             if (is_selection && itemtype != "Email") {
                 let label = '';
-                if ("{{ actortype }}" == "assign") {
-                    label = "{{ __('Number of tickets already assigned') }}";
-                } else if ("{{ actortype }}" == "requester") {
-                    label = "{{ __('Number of tickets as requester') }}";
+                if ("{{ actortype|e('js') }}" == "assign") {
+                    label = "{{ __('Number of tickets already assigned')|e('js') }}";
+                } else if ("{{ actortype|e('js') }}" == "requester") {
+                    label = "{{ __('Number of tickets as requester')|e('js') }}";
                 }
                 const existing_element = $(`
-                    <span class="assign_infos ms-1" title="${label}"
+                    <span class="assign_infos ms-1" title="${_.escape(label)}"
                         data-bs-toggle="tooltip" data-bs-placement="top"
-                        data-id="${items_id}" data-fk="${fk}">
+                        data-id="${_.escape(items_id)}" data-fk="${_.escape(fk)}">
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                     </span>
                 `);
@@ -231,6 +234,7 @@
                     [fk]: items_id,
                     only_number: true,
                 }).done((number) => {
+                    {# `number` is a safe HTML string #}
                     const badge = number.length > 0 ? `<span class="badge bg-secondary-lt">${number}</span>` : '';
                     existing_element.html(badge);
                 });

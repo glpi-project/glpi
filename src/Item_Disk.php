@@ -230,9 +230,9 @@ class Item_Disk extends CommonDBChild
             $canedit
             && !(!empty($withtemplate) && ($withtemplate == 2))
         ) {
+            $link = self::getFormURL() . '?itemtype=' . $item::class . '&items_id=' . $ID . '&withtemplate=' . (int) $withtemplate;
             echo "<div class='mt-1 mb-3 text-center'>"
-               . "<a class='btn btn-primary' href='" . htmlescape(self::getFormURL()) . "?itemtype=" . htmlescape($item::class) . "&items_id=$ID&amp;withtemplate="
-                  . (int) $withtemplate . "'>";
+               . "<a class='btn btn-primary' href='" . htmlescape($link) . "'>";
             echo __s('Add a volume');
             echo "</a></div>\n";
         }
@@ -281,8 +281,8 @@ TWIG, $twig_params);
                 'device' => $data['device'],
                 'mountpoint' => $data['mountpoint'],
                 'fsname' => $data['fsname'],
-                'totalsize' => $data['totalsize'],
-                'freesize' => $data['freesize'],
+                'totalsize' => $data['totalsize'] * 1024 * 1024, //size in MiB in DB
+                'freesize' => $data['freesize'] * 1024 * 1024, //size in MiB in DB
                 'usedpercent' => $usedpercent,
                 'encryption_status' => $encryption_label,
             ];
@@ -671,7 +671,7 @@ TWIG, $twig_params);
 
         switch ($field) {
             case 'encryption_status':
-                return self::getEncryptionStatus($values[$field]);
+                return htmlescape(self::getEncryptionStatus($values[$field]));
         }
 
         return parent::getSpecificValueToDisplay($field, $values, $options);

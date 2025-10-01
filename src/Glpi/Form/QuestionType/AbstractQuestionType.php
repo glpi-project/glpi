@@ -203,12 +203,8 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
 
     #[Override]
     public function exportDynamicExtraData(
-        ?JsonFieldInterface $extra_data_config,
+        ?array $extra_data_config,
     ): DynamicExportDataField {
-        if ($extra_data_config !== null) {
-            $extra_data_config = $extra_data_config->jsonSerialize();
-        }
-
         return new DynamicExportDataField($extra_data_config, []);
     }
 
@@ -253,5 +249,23 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
             new RegexConditionHandler($this, $question_config),
             new EmptyConditionHandler($this, $question_config),
         ];
+    }
+
+    #[Override]
+    public function getSupportedValueOperators(
+        ?JsonFieldInterface $question_config
+    ): array {
+        return array_merge(
+            ...array_map(
+                fn(ConditionHandlerInterface $handler) => $handler->getSupportedValueOperators(),
+                $this->getConditionHandlers($question_config)
+            )
+        );
+    }
+
+    #[Override]
+    public function isHiddenInput(): bool
+    {
+        return false;
     }
 }

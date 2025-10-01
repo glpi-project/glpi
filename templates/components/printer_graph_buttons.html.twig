@@ -189,7 +189,7 @@
         reloadTab_{{ options['rand'] }}();
     }
     function update_custom_date_range_{{ options['rand'] }}() {
-        let range_date = $('#range-date_{{ options['rand'] }}')[0];
+        let range_date = $('#range_date_{{ options['rand'] }}')[0];
         let start_date = range_date._flatpickr.selectedDates[0];
         let end_date = range_date._flatpickr.selectedDates[1];
 
@@ -217,7 +217,7 @@
     }
 
     $(document).ready(function () {
-        let range_date = $('#range-date_{{ options['rand'] }}')[0];
+        let range_date = $('#range_date_{{ options['rand'] }}')[0];
         let dropdownInst = new bootstrap.Dropdown($('#select_range_dropdown button.dropdown-toggle'));
 
         $('#show_custom_range').click(function () {

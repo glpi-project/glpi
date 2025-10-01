@@ -407,7 +407,7 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
     public function prepareInputForAdd($input)
     {
         $input = $this->prepareGroupFields($input);
-
+        $input = $this->handleReadonlyFieldUpdate($input);
         $input = $this->handleCustomFieldsUpdate($input);
 
         return $this->prepareDefinitionInput($input);
@@ -416,10 +416,72 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
     public function prepareInputForUpdate($input)
     {
         $input = $this->prepareGroupFields($input);
-
+        $input = $this->handleReadonlyFieldUpdate($input);
         $input = $this->handleCustomFieldsUpdate($input);
 
         return $this->prepareDefinitionInput($input);
+    }
+
+    private function handleReadonlyFieldUpdate(array $input): array
+    {
+        foreach (static::getDefinition()->getDecodedFieldsField() as $field_definition) {
+            $field_options = $field_definition['field_options'] ?? null;
+            if (!$this->isReadonlyForCurrentProfile($field_options)) {
+                continue;
+            }
+
+            $field_name = $field_definition['key'];
+            $input = $this->applyPersistedReadonlyValue($input, $field_name);
+        }
+
+        // Custom fields
+        foreach (static::getDefinition()->getCustomFieldDefinitions() as $custom_field) {
+            $field_options = $custom_field->fields['field_options'] ?? null;
+            if (!$this->isReadonlyForCurrentProfile($field_options)) {
+                continue;
+            }
+
+            $field_name = 'custom_' . $custom_field->fields['system_name'];
+            $input = $this->applyPersistedReadonlyValue($input, $field_name);
+        }
+
+        return $input;
+    }
+
+    /**
+     * Determine if a field is readonly for the current active profile.
+     */
+    private function isReadonlyForCurrentProfile(mixed $field_options): bool
+    {
+        $profile_id = $_SESSION['glpiactiveprofile']['id'] ?? null;
+        if ($profile_id === null) {
+            return false;
+        }
+
+        if (!is_array($field_options) || !array_key_exists('readonly', $field_options)) {
+            return false;
+        }
+
+        $readonly_profile_ids = $field_options['readonly'];
+        if (is_array($readonly_profile_ids)) {
+            return in_array($profile_id, $readonly_profile_ids, true);
+        }
+
+        // The normalization can return an empty string instead of an array when no profiles are set
+        return false;
+    }
+
+    /**
+     * Ensure the input value for a readonly field is the persisted value.
+     */
+    private function applyPersistedReadonlyValue(array $input, string $field_name): array
+    {
+        if (array_key_exists($field_name, $this->fields)) {
+            $input[$field_name] = $this->fields[$field_name];
+        } else {
+            unset($input[$field_name]);
+        }
+        return $input;
     }
 
     protected function handleCustomFieldsUpdate(array $input): array

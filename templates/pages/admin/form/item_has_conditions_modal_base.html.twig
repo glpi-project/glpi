@@ -1,0 +1,74 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{# Abstract base component for item has conditions modals #}
+<div
+    data-glpi-form-editor-item-has-conditions-modal="{{ modal_name }}"
+    class="modal modal-blur fade"
+    aria-modal="true"
+    role="dialog"
+    aria-label="{{ modal_aria_label }}"
+>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header p-3">
+                <div>
+                    {% block modal_headers %}
+                        {# Override this block to define specific headers for different item types #}
+                    {% endblock %}
+                </div>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="{{ __("Close") }}"
+                ></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="list-group list-group-flush list-group-hoverable" data-glpi-form-editor-item-has-conditions-list>
+                    {# List items will be populated dynamically by JavaScript #}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Item template for conditions list #}
+    <div class="d-none" data-glpi-form-editor-item-has-conditions-item-template>
+        <div class="list-group-item d-flex align-items-center space-x-2 p-3">
+            <i class="ti ti-circle-x fa-lg text-danger"></i>
+            <a href="#" class="m-0" style="font-weight: var(--tblr-font-weight-medium)"
+               data-glpi-form-editor-item-has-conditions-item-name
+               data-glpi-form-editor-item-has-conditions-item-selector
+               data-glpi-form-editor-item-has-conditions-item-uuid></a>
+        </div>
+    </div>
+</div>

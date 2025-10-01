@@ -276,6 +276,181 @@ describe('Form rendering', () => {
         cy.findByRole('heading', { name: 'Untitled question' }).should('exist');
         cy.findByRole('heading', { name: 'Untitled comment' }).should('exist');
     });
+
+    it('Items hidden by condition are ignored by destinations', () => {
+        cy.login();
+        cy.importForm('form-with-a-hidden-question-2025-09-19.json').then((id) => {
+            cy.visit(`/Form/Render/${id}`);
+        });
+
+        // Fill and submit form.
+        cy.getDropdownByLabelText('Visible question').selectDropdownValue("Very high");
+        cy.findByRole('button', {name : "Submit"}).click();
+
+        // Go to created ticket
+        cy.findByRole('link', {name : "Form with a hidden question"}).click();
+
+        // Urgency should be set from the visible question value
+        cy.getDropdownByLabelText('Urgency').should('have.text', "Very high");
+
+        // Hidden question should not be referenced in the ticket description
+        cy.findByText('1) Visible question').should('exist');
+        cy.findByText('2) Hidden question').should('not.exist');
+    });
+
+    it('test item question rendering with advanced configuration', () => {
+        cy.login();
+
+        const uid = Date.now();
+
+        // Create entities
+        cy.createWithAPI('Entity', {
+            'name': `Test entity root ${uid}`,
+            'is_recursive': true,
+        }).as('entity_root_id').then((entity_root_id) => {
+            cy.createWithAPI('Entity', {
+                'name': `Test entity child ${uid}`,
+                'entities_id': entity_root_id,
+            }).as('entity_child_id').then((entity_child_id) => {
+                cy.createWithAPI('Entity', {
+                    'name': `Test entity grandchild ${uid}`,
+                    'entities_id': entity_child_id,
+                }).as('entity_grandchild_id');
+            });
+        });
+
+        // Create a form with an item question with advanced configuration
+        cy.createFormWithAPI({
+            'name': 'Test form with item question',
+        }).as('form_id').get('@form_id').then((form_id) => {
+            cy.get('@entity_root_id').then((entity_root_id) => {
+                // Add an item question with advanced configuration
+                cy.addQuestionToDefaultSectionWithAPI(
+                    form_id,
+                    'Item question with advanced configuration',
+                    'Glpi\\Form\\QuestionType\\QuestionTypeItem',
+                    0,
+                    0,
+                    null,
+                    {
+                        "root_items_id"       : entity_root_id,
+                        "subtree_depth"       : "0",
+                        "selectable_tree_root": "0",
+                        "itemtype"            : "Entity"
+                    }
+                ).then((question_id) => {
+                    // Visit form rendering page
+                    cy.visit(`/Form/Render/${form_id}`);
+
+                    // Check that the entity dropdown contains the correct options
+                    cy.getDropdownByLabelText('Item question with advanced configuration').click();
+                    cy.findByRole('option', { name: '-----' }).should('not.be.disabled');
+                    cy.findByRole('option', { name: 'Root entity' }).should('have.attr', 'aria-disabled', 'true');
+                    cy.findByRole('option', { name: '»E2ETestEntity' }).should('have.attr', 'aria-disabled', 'true');
+                    cy.findByRole('option', { name: `»Test entity root ${uid}` }).should('have.attr', 'aria-disabled', 'true');
+                    cy.findByRole('option', { name: `»Test entity child ${uid}` }).should('not.have.attr', 'aria-disabled');
+                    cy.findByRole('option', { name: `»Test entity grandchild ${uid}` }).should('not.have.attr', 'aria-disabled');
+
+                    // Update subtree depth to 1 and allow selection of the root
+                    cy.updateWithAPI('Glpi\\Form\\Question', question_id, {
+                        'extra_data': {
+                            "root_items_id"       : entity_root_id,
+                            "subtree_depth"       : "1",
+                            "selectable_tree_root": "1",
+                            "itemtype"            : "Entity"
+                        }
+                    });
+
+                    cy.reload();
+
+                    // Check that the entity dropdown contains the correct options
+                    cy.getDropdownByLabelText('Item question with advanced configuration').click();
+                    cy.findByRole('option', { name: '-----' }).should('not.be.disabled');
+                    cy.findByRole('option', { name: 'Root entity' }).should('have.attr', 'aria-disabled', 'true');
+                    cy.findByRole('option', { name: '»E2ETestEntity' }).should('have.attr', 'aria-disabled', 'true');
+                    cy.findByRole('option', { name: `»Test entity root ${uid}` }).should('not.have.attr', 'aria-disabled');
+                    cy.findByRole('option', { name: `»Test entity child ${uid}` }).should('not.have.attr', 'aria-disabled');
+                    cy.findByRole('option', { name: `»Test entity grandchild ${uid}` }).should('not.exist');
+                });
+            });
+        });
+    });
+
+    it('test item question rendering with advanced configuration', () => {
+        cy.login();
+
+        const uid = Date.now();
+
+        // Create locations
+        cy.createWithAPI('Location', {
+            'name': `Test location root ${uid}`,
+            'is_recursive': true,
+        }).as('location_root_id').then((location_root_id) => {
+            cy.createWithAPI('Location', {
+                'name': `Test location child ${uid}`,
+                'locations_id': location_root_id,
+            }).as('location_child_id').then((location_child_id) => {
+                cy.createWithAPI('Location', {
+                    'name': `Test location grandchild ${uid}`,
+                    'locations_id': location_child_id,
+                }).as('location_grandchild_id');
+            });
+        });
+
+        // Create a form with an item dropdown question with advanced configuration
+        cy.createFormWithAPI({
+            'name': 'Test form with item question',
+        }).as('form_id').get('@form_id').then((form_id) => {
+            cy.get('@location_root_id').then((location_root_id) => {
+                // Add an item question with advanced configuration
+                cy.addQuestionToDefaultSectionWithAPI(
+                    form_id,
+                    'Item dropdown question with advanced configuration',
+                    'Glpi\\Form\\QuestionType\\QuestionTypeItemDropdown',
+                    0,
+                    0,
+                    null,
+                    {
+                        "categories_filter"   : [],
+                        "root_items_id"       : location_root_id,
+                        "subtree_depth"       : "0",
+                        "selectable_tree_root": "0",
+                        "itemtype"            : "Location"
+                    }
+                ).then((question_id) => {
+                    // Visit form rendering page
+                    cy.visit(`/Form/Render/${form_id}`);
+
+                    // Check that the location dropdown contains the correct options
+                    cy.getDropdownByLabelText('Item dropdown question with advanced configuration').click();
+                    cy.findByRole('option', { name: '-----' }).should('not.be.disabled');
+                    cy.findByRole('option', { name: `»Test location root ${uid}` }).should('have.attr', 'aria-disabled', 'true');
+                    cy.findByRole('option', { name: `»Test location child ${uid}` }).should('not.have.attr', 'aria-disabled');
+                    cy.findByRole('option', { name: `»Test location grandchild ${uid}` }).should('not.have.attr', 'aria-disabled');
+
+                    // Update subtree depth to 1 and allow selection of the root
+                    cy.updateWithAPI('Glpi\\Form\\Question', question_id, {
+                        'extra_data': {
+                            "categories_filter"   : [],
+                            "root_items_id"       : location_root_id,
+                            "subtree_depth"       : "1",
+                            "selectable_tree_root": "1",
+                            "itemtype"            : "Location"
+                        }
+                    });
+
+                    cy.reload();
+
+                    // Check that the location dropdown contains the correct options
+                    cy.getDropdownByLabelText('Item dropdown question with advanced configuration').click();
+                    cy.findByRole('option', { name: '-----' }).should('not.be.disabled');
+                    cy.findByRole('option', { name: `»Test location root ${uid}` }).should('not.have.attr', 'aria-disabled');
+                    cy.findByRole('option', { name: `»Test location child ${uid}` }).should('not.have.attr', 'aria-disabled');
+                    cy.findByRole('option', { name: `»Test location grandchild ${uid}` }).should('not.exist');
+                });
+            });
+        });
+    });
 });
 
 function addQuestionAndGetUuuid(name, type = null, subtype = null) {

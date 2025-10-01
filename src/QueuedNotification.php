@@ -428,9 +428,9 @@ class QueuedNotification extends CommonDBTM
                 $value     = $values[$field];
                 $plaintext = '';
                 if ($field === 'body_html') {
-                    $plaintext = RichText::getTextFromHtml($value, false, true, true);
+                    $plaintext = RichText::getTextFromHtml($value, false, true);
                 } else {
-                    $plaintext = nl2br($value);
+                    $plaintext = $value;
                 }
 
                 if (Toolbox::strlen($plaintext) > $CFG_GLPI['cut']) {
@@ -442,7 +442,7 @@ class QueuedNotification extends CommonDBTM
                         'onclick'       => true,
                     ];
                     $out = sprintf(
-                        __('%1$s %2$s'),
+                        __s('%1$s %2$s'),
                         "<span id='text$rand'>" . Html::resume_text($plaintext, $CFG_GLPI['cut']) . '</span>',
                         Html::showToolTip(
                             '<div class="fup-popup">' . RichText::getEnhancedHtml($value) . '</div>',
@@ -450,7 +450,7 @@ class QueuedNotification extends CommonDBTM
                         )
                     );
                 } else {
-                    $out = $plaintext;
+                    $out = htmlescape($plaintext);
                 }
                 return $out;
             case 'headers':
@@ -458,16 +458,16 @@ class QueuedNotification extends CommonDBTM
                 $out = '';
                 if (is_array($values[$field]) && count($values[$field])) {
                     foreach ($values[$field] as $key => $val) {
-                        $out .= $key . ': ' . $val . '<br>';
+                        $out .= htmlescape($key . ': ' . $val) . '<br>';
                     }
                 }
                 return $out;
             case 'mode':
                 $mode = Notification_NotificationTemplate::getMode($values[$field]);
                 if (is_array($mode) && !empty($mode['label'])) {
-                    return $mode['label'];
+                    return htmlescape($mode['label']);
                 }
-                return sprintf('%s (%s)', NOT_AVAILABLE, $values[$field]);
+                return htmlescape(sprintf(__('%s (%s)'), NOT_AVAILABLE, $values[$field]));
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

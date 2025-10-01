@@ -2866,7 +2866,7 @@ TWIG, $twig_params);
         self::$last_errno = null;
         self::$last_error = null;
 
-        if (!is_string($host) || empty($host) || $host === NOT_AVAILABLE) {
+        if (!is_string($host) || empty($host)) {
             throw new RuntimeException(
                 'No host provided for connection!'
             );
@@ -2877,13 +2877,7 @@ TWIG, $twig_params);
             );
         }
 
-        //Use an LDAP connection string
-        $ldapuri = sprintf(
-            '%s://%s:%s',
-            parse_url($host, PHP_URL_SCHEME) ?: 'ldap',
-            preg_replace('@^ldaps?://@', '', $host),
-            (int) $port
-        );
+        $ldapuri = self::buildUri($host, (int) $port);
         $ds = @ldap_connect($ldapuri);
 
         if ($ds === false) {
@@ -3128,9 +3122,15 @@ TWIG, $twig_params);
      *
      * @return array
      */
-    public static function getLdapServers()
+    public static function getLdapServers(bool $active_only = false)
     {
-        return getAllDataFromTable('glpi_authldaps', ['ORDER' => 'is_default DESC']);
+        $criteria = [
+            'ORDER' => 'is_default DESC',
+        ];
+        if ($active_only) {
+            $criteria['is_active'] = 1;
+        }
+        return getAllDataFromTable('glpi_authldaps', $criteria);
     }
 
     /**
@@ -3561,6 +3561,14 @@ TWIG, $twig_params);
                         $_REQUEST['authldaps_id'] = $defaultAuth->getID();
                     }
                 }
+                // If there is still no LDAP selected, use the first active one
+                $servers = array_values(self::getLdapServers(true));
+                if (
+                    $_REQUEST['authldaps_id'] <= 0
+                    && count($servers) > 0
+                ) {
+                    $_REQUEST['authldaps_id'] = $servers[0]['id'];
+                }
             }
             $_REQUEST['authldaps_id'] = (int) $_REQUEST['authldaps_id'];
             $_REQUEST['mode'] = self::ACTION_IMPORT;
@@ -3592,7 +3600,7 @@ TWIG, $twig_params);
             $_REQUEST['ldap_filter'] = '';
         }
 
-        $_REQUEST['authldaps_id'] ??= NOT_AVAILABLE;
+        $_REQUEST['authldaps_id'] ??= 0;
 
         if (
             (!Config::canUpdate()
@@ -3627,7 +3635,7 @@ TWIG, $twig_params);
             ) {
                 $authldap->getFromDB($_REQUEST['authldaps_id']);
 
-                if ($_REQUEST['authldaps_id'] === NOT_AVAILABLE) {
+                if ($_REQUEST['authldaps_id'] === 0) {
                     // authldaps_id wasn't submitted by the user -> take entity config
                     $_REQUEST['authldaps_id'] = $entity->getField('authldaps_id');
                 }
@@ -3637,12 +3645,12 @@ TWIG, $twig_params);
                 // No dn specified in entity : use standard one
                 $_REQUEST['basedn'] ??= $authldap->getField('basedn');
 
-                if ($entity->getField('entity_ldapfilter') !== NOT_AVAILABLE) {
+                if ($entity->getField('entity_ldapfilter') !== 0) {
                     $_REQUEST['entity_filter'] = $entity->getField('entity_ldapfilter');
                 }
             } else {
                 if (
-                    $_REQUEST['authldaps_id'] === NOT_AVAILABLE
+                    $_REQUEST['authldaps_id'] === 0
                     || !$_REQUEST['authldaps_id']
                 ) {
                     $defaultAuth = Auth::getDefaultAuth();
@@ -3664,7 +3672,7 @@ TWIG, $twig_params);
             }
         } else {
             if (
-                $_REQUEST['authldaps_id'] === NOT_AVAILABLE
+                $_REQUEST['authldaps_id'] === 0
                 || !$_REQUEST['authldaps_id']
             ) {
                 $defaultAuth = Auth::getDefaultAuth();
@@ -3683,6 +3691,20 @@ TWIG, $twig_params);
             ) {
                 $authldap->getFromDB($_REQUEST['authldaps_id']);
                 $_REQUEST['basedn']      = $authldap->getField('basedn');
+                $_REQUEST['ldap_filter'] = self::buildLdapFilter($authldap);
+            }
+        }
+
+        // If there is still no LDAP selected, use the first active one
+        $servers = array_values(self::getLdapServers(true));
+        if (
+            $_REQUEST['authldaps_id'] <= 0
+            && count($servers) > 0
+        ) {
+            $_REQUEST['authldaps_id'] = $servers[0]['id'];
+            $authldap->getFromDB($_REQUEST['authldaps_id']);
+            $_REQUEST['basedn']      = $authldap->getField('basedn');
+            if (($_REQUEST['ldap_filter'] ?? '') === '') {
                 $_REQUEST['ldap_filter'] = self::buildLdapFilter($authldap);
             }
         }
@@ -4397,6 +4419,24 @@ TWIG, $twig_params);
             (ldap_get_option($ds, LDAP_OPT_ERROR_STRING, $err_message) ? "\nerr string: " . $err_message : '') // @phpstan-ignore theCodingMachineSafe.function
         );
         return $message;
+    }
+
+    /**
+     * Use an LDAP connection string
+     *
+     * @param string $host
+     * @param int $port
+     *
+     * @return string
+     */
+    final public static function buildUri(string $host, int $port): string
+    {
+        return sprintf(
+            '%s://%s:%s',
+            strtolower(parse_url($host, PHP_URL_SCHEME) ?: 'ldap'),
+            preg_replace('@^ldaps?://@i', '', $host),
+            $port
+        );
     }
 
     /**

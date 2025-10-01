@@ -185,17 +185,17 @@ class Profile_User extends CommonDBRelation
             }
 
             if ($data['is_dynamic'] || $data['is_recursive']) {
-                $profile_name = sprintf(__('%1$s %2$s'), $profile_name, "<span class='b'>(");
+                $profile_name = sprintf(__s('%1$s %2$s'), $profile_name, "<span class='b'>(");
                 if ($data['is_dynamic']) {
-                    $profile_name = sprintf(__('%1$s%2$s'), $profile_name, __('D'));
+                    $profile_name = sprintf(__s('%1$s%2$s'), $profile_name, __s('D'));
                 }
                 if ($data['is_dynamic'] && $data['is_recursive']) {
-                    $profile_name = sprintf(__('%1$s%2$s'), $profile_name, ", ");
+                    $profile_name = sprintf(__s('%1$s%2$s'), $profile_name, ", ");
                 }
                 if ($data['is_recursive']) {
-                    $profile_name = sprintf(__('%1$s%2$s'), $profile_name, __('R'));
+                    $profile_name = sprintf(__s('%1$s%2$s'), $profile_name, __s('R'));
                 }
-                $profile_name = sprintf(__('%1$s%2$s'), $profile_name, ")</span>");
+                $profile_name = sprintf(__s('%1$s%2$s'), $profile_name, ")</span>");
             }
             $entry['profile'] = $profile_name;
             $entries[] = $entry;
@@ -356,17 +356,17 @@ class Profile_User extends CommonDBRelation
                 $data["firstname"],
             );
             if ($data["is_dynamic"] || $data["is_recursive"]) {
-                $username = sprintf(__('%1$s %2$s'), $username, "<span class='b'>(");
+                $username = sprintf(__s('%1$s %2$s'), $username, "<span class='b'>(");
                 if ($data["is_dynamic"]) {
-                    $username = sprintf(__('%1$s%2$s'), $username, __('D'));
+                    $username = sprintf(__s('%1$s%2$s'), $username, __s('D'));
                 }
                 if ($data["is_dynamic"] && $data["is_recursive"]) {
-                    $username = sprintf(__('%1$s%2$s'), $username, ", ");
+                    $username = sprintf(__s('%1$s%2$s'), $username, ", ");
                 }
                 if ($data["is_recursive"]) {
-                    $username = sprintf(__('%1$s%2$s'), $username, __('R'));
+                    $username = sprintf(__s('%1$s%2$s'), $username, __s('R'));
                 }
-                $username = sprintf(__('%1$s%2$s'), $username, ")</span>");
+                $username = sprintf(__s('%1$s%2$s'), $username, ")</span>");
             }
             $initials = User::getInitialsForUserName($data['name'], $data['firstname'] ?? '', $data['realname'] ?? '');
             $avatar_params = [
@@ -541,17 +541,17 @@ TWIG, $avatar_params) . $username;
                 $data["firstname"],
             );
             if ($data["is_dynamic"] || $data["is_recursive"]) {
-                $username = sprintf(__('%1$s %2$s'), $username, "<span class='b'>(");
+                $username = sprintf(__s('%1$s %2$s'), $username, "<span class='b'>(");
                 if ($data["is_dynamic"]) {
-                    $username = sprintf(__('%1$s%2$s'), $username, __('D'));
+                    $username = sprintf(__s('%1$s%2$s'), $username, __s('D'));
                 }
                 if ($data["is_dynamic"] && $data["is_recursive"]) {
-                    $username = sprintf(__('%1$s%2$s'), $username, ", ");
+                    $username = sprintf(__s('%1$s%2$s'), $username, ", ");
                 }
                 if ($data["is_recursive"]) {
-                    $username = sprintf(__('%1$s%2$s'), $username, __('R'));
+                    $username = sprintf(__s('%1$s%2$s'), $username, __s('R'));
                 }
-                $username = sprintf(__('%1$s%2$s'), $username, ")</span>");
+                $username = sprintf(__s('%1$s%2$s'), $username, ")</span>");
             }
             $initials = User::getInitialsForUserName($data['name'], $data['firstname'] ?? '', $data['realname'] ?? '');
             $avatar_params = [

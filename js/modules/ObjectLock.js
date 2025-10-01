@@ -31,7 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_confirm, glpi_alert, escapeMarkupText, getAjaxCsrfToken */
+/* global glpi_confirm, glpi_alert, getAjaxCsrfToken */
+/* global _ */
 
 /**
  * @todo Candidate for a websocket-based feature (or a mix of Ajax + Server-Sent Events)
@@ -82,7 +83,7 @@ class ObjectLock {
 
         $('button.ask-unlock-item').on('click', () => {
             glpi_confirm({
-                title: `${this.lock.itemtype_name} #${this.lock.items_id}`,
+                title: `${_.escape(this.lock.itemtype_name)} #${_.escape(this.lock.items_id)}`,
                 message: __('Ask for unlock this item?'),
                 confirm_callback: () => {
                     $.post({
@@ -96,7 +97,7 @@ class ObjectLock {
                     }).then(() => {
                         glpi_alert({
                             title: __('Unlock request sent!'),
-                            message: escapeMarkupText(__('Request sent to %s').replace('%s', this.user_data['name'])),
+                            message: __('Request sent to %s').replace('%s', _.escape(this.user_data['name'])),
                         });
                     }, () => {
                         glpi_alert({

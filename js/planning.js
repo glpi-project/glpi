@@ -611,12 +611,12 @@ var GLPIPlanning  = {
                 disable_qtip = false;
             });
 
-        window.onblur = function() {
+        $(window).on('blur', () => {
             window_focused = false;
-        };
-        window.onfocus = function() {
+        });
+        $(window).on('focus', () => {
             window_focused = true;
-        };
+        });
 
         //window.calendar = calendar; // Required as object is not accessible by forms callback
         GLPIPlanning.calendar.render();

@@ -37,8 +37,11 @@ namespace Glpi\Form;
 
 use CommonDBChild;
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Features\CloneWithoutNameSuffix;
+use Glpi\Form\Clone\FormCloneHelper;
 use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\ConditionHandler\VisibilityConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
@@ -53,6 +56,7 @@ use function Safe\json_encode;
 /**
  * Section of a given helpdesk form
  */
+#[CloneWithoutNameSuffix]
 final class Section extends CommonDBChild implements ConditionableVisibilityInterface, ProvideTranslationsInterface, UsedAsCriteriaInterface
 {
     use ConditionableVisibilityTrait;
@@ -82,7 +86,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     #[Override]
     public static function getTypeName($nb = 0)
     {
-        return _n('Step', 'Steps', $nb);
+        return _n('Section', 'Sections', $nb);
     }
 
     #[Override]
@@ -152,7 +156,8 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
         }
 
         $handlers = [];
-        $key = sprintf('%s: %s', self::getTypeName(), $this->getName());
+        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $category_name = sprintf('%s: %s', self::getTypeName(), $this->getName());
         if (count($form->getSections()) > 1) {
             if (!empty($this->fields['name'])) {
                 $handlers[$key][] = new TranslationHandler(
@@ -160,6 +165,8 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
                     key: self::TRANSLATION_KEY_NAME,
                     name: __('Section title'),
                     value: $this->fields['name'],
+                    is_rich_text: false,
+                    category: $category_name
                 );
             }
 
@@ -170,6 +177,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
                     name: __('Section description'),
                     value: $this->fields['description'],
                     is_rich_text: true,
+                    category: $category_name
                 );
             }
         }
@@ -190,6 +198,18 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
         ?JsonFieldInterface $question_config
     ): array {
         return [new VisibilityConditionHandler()];
+    }
+
+    #[Override]
+    public function getSupportedValueOperators(
+        ?JsonFieldInterface $question_config
+    ): array {
+        return array_merge(
+            ...array_map(
+                fn(ConditionHandlerInterface $handler) => $handler->getSupportedValueOperators(),
+                $this->getConditionHandlers($question_config)
+            )
+        );
     }
 
     /**
@@ -319,6 +339,23 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     public function setForm(Form $form): void
     {
         $this->form = $form;
+    }
+
+    #[Override]
+    public function getCloneRelations(): array
+    {
+        return [
+            Question::class,
+            Comment::class,
+            FormTranslation::class,
+        ];
+    }
+
+    #[Override]
+    public function prepareInputForClone($input)
+    {
+        $input = parent::prepareInputForClone($input);
+        return FormCloneHelper::getInstance()->prepareSectionInputForClone($input);
     }
 
     /**

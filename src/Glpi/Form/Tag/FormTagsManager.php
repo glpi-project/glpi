@@ -37,8 +37,10 @@ namespace Glpi\Form\Tag;
 
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
+use Glpi\Toolbox\MapperInterface;
 
 use function Safe\preg_match;
+use function Safe\preg_replace;
 use function Safe\preg_replace_callback;
 
 final class FormTagsManager
@@ -101,6 +103,36 @@ final class FormTagsManager
             new CommentTitleTagProvider(),
             new CommentDescriptionTagProvider(),
         ]);
+    }
+
+    public function replaceIdsInTags(
+        string $subject,
+        MapperInterface $mapper
+    ): string {
+        foreach ($this->getTagProviders() as $tag_provider) {
+            if (!$tag_provider instanceof TagWithIdValueInterface) {
+                // This tag value do not reference and ID, we can skip it
+                continue;
+            }
+            $provider_class = preg_quote($tag_provider::class);
+            $mapped_class = $tag_provider->getItemtype();
+
+            $subject = preg_replace_callback(
+                // Look for the value + provider properties
+                "/data-form-tag-value=\"(\d+)\" "
+                . "data-form-tag-provider=\"$provider_class\"/",
+                fn($match) => preg_replace(
+                    // We do another preg on a small subset to avoid having to
+                    // manually rewrite the whole string
+                    "/value=\"(\d+)/",
+                    "value=\"" . $mapper->getItemId($mapped_class, $match[1]),
+                    $match[0]
+                ),
+                $subject,
+            );
+        }
+
+        return $subject;
     }
 
     private function removeInvalidProviders(array $providers): array

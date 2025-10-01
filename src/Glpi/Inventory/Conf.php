@@ -281,30 +281,6 @@ class Conf extends CommonGLPI
     }
 
     /**
-     * Import inventory files and display result.
-     *
-     * @param array $files $_FILES
-     *
-     * @return void
-     */
-    public function displayImportFiles($files)
-    {
-        $to_import = [];
-
-        foreach ($files['inventory_files']['name'] as $filekey => $filename) {
-            if ($files['inventory_files']['error'][$filekey] == 0) {
-                $to_import[$filename] = $files['inventory_files']['tmp_name'][$filekey];
-            }
-        }
-
-        TemplateRenderer::getInstance()->display('pages/admin/inventory/upload_result.html.twig', [
-            'imported_files' => $this->importFiles($to_import),
-        ]);
-
-        Html::displayMessageAfterRedirect(true);
-    }
-
-    /**
      * Get possible actions for stale agents
      *
      * @return array
@@ -375,7 +351,7 @@ class Conf extends CommonGLPI
         $rand = mt_rand();
 
         if ($canedit) {
-            echo "<form name='form' action='" . htmlescape($CFG_GLPI['root_doc']) . "/front/inventory.conf.php' method='post'>";
+            echo "<form name='form' action='" . htmlescape($CFG_GLPI['root_doc']) . "/Inventory/Configuration/Store' method='post'>";
         }
 
         echo "<div class='center spaced' id='tabsbody'>";
@@ -1251,7 +1227,7 @@ class Conf extends CommonGLPI
     }
 
     /**
-     * Build inventroy file name
+     * Build inventory file name
      *
      * @param string $itemtype Item type
      * @param int    $items_id Item ID

@@ -86,18 +86,18 @@ class Printer_CartridgeInfo extends CommonDBChild
             if (str_contains($value, 'pages')) {
                 $pages = str_replace('pages', '', $value);
                 $value = sprintf(
-                    _sx('%1$s remaining page', '%1$s remaining pages', $pages),
+                    _x('%1$s remaining page', '%1$s remaining pages', $pages),
                     $pages
                 );
             } elseif ($value === 'OK') {
-                $value = __s('OK');
+                $value = __('OK');
             }
 
             if (is_numeric($value)) {
                 $progressbar_data = [
                     'percent'           => $value,
                     'percent_text'      => $value,
-                    'background-color'  => $bar_color,
+                    'background-color'  => htmlescape($bar_color),
                     'text-color'        => $text_color,
                     'text'              => '',
                 ];
@@ -119,7 +119,7 @@ class Printer_CartridgeInfo extends CommonDBChild
                     </div>
 HTML;
             } else {
-                $out = $value;
+                $out = htmlescape($value);
             }
             $entries[] = [
                 'property' => $tags[$property]['name'] ?? $property,

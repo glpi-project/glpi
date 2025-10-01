@@ -172,7 +172,19 @@ final class AllowList implements ControlTypeInterface
         SessionInfo $session_info
     ): bool {
         foreach ($session_info->getGroupIds() as $group_id) {
+            // Check if the user is directly part of the allowed group
             if (in_array($group_id, $config->getGroupIds())) {
+                return true;
+            }
+
+            // If at least one parent group of the user is part of the allowlist
+            // then he should be able to see the form
+            $children_groups = getAncestorsOf(Group::getTable(), $group_id);
+            $membership = array_intersect(
+                $config->getGroupIds(),
+                $children_groups
+            );
+            if (count($membership) > 0) {
                 return true;
             }
         }

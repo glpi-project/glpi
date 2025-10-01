@@ -59,10 +59,6 @@ if (isset($_GET["display_type"])) {
     }
 
     switch ($itemtype) {
-        case 'KnowbaseItem':
-            KnowbaseItem::showList($_GET, $_GET["type"]);
-            break;
-
         case 'Stat':
             if (isset($_GET["item_type_param"])) {
                 $params = Toolbox::decodeArrayFromInput($_GET["item_type_param"]);

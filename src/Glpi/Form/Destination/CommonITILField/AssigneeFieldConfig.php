@@ -34,8 +34,10 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
+use Glpi\Form\Destination\HasFieldWithQuestionId;
 use Override;
 
+#[HasFieldWithQuestionId(self::SPECIFIC_QUESTION_IDS, is_array: true)]
 final class AssigneeFieldConfig extends ITILActorFieldConfig
 {
     #[Override]

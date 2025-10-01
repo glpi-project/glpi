@@ -783,6 +783,29 @@ class DatabaseSchemaIntegrityChecker
     }
 
     /**
+     * Check if database contains at least one table for the given context.
+     *
+     * @param string $context Context used for tables detection (could be 'core' or 'plugin:plugin_key')
+     *
+     * @return bool
+     */
+    final public function hasTables(string $context = 'core'): bool
+    {
+        if (preg_match('/^plugin:(?<plugin_key>\w+)$/', $context, $plugin_matches) === 1) {
+            $tables_pattern = 'glpi\_plugin\_' . $plugin_matches['plugin_key'] . '\_%';
+            $condition      = [];
+        } else {
+            $tables_pattern = 'glpi\_%';
+            $condition = [
+                'NOT' => [
+                    'table_name' => ['LIKE', 'glpi\_plugin\_%'],
+                ],
+            ];
+        }
+        return $this->db->listTables($tables_pattern, $condition)->count() > 0;
+    }
+
+    /**
      * Check if schema integrity can be checked for given version/context.
      *
      * @param string|null $schema_version   Installed schema version

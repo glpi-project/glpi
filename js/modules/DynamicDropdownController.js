@@ -56,7 +56,7 @@ export class DynamicDropdownController
 
     #updateItemsVisiblity(select) {
         const name = $.escapeSelector(select.prop("name"));
-        const items = $(`[data-glpi-parent-dropdown='${name}']`);
+        const items = $(`[data-glpi-parent-dropdown="${CSS.escape(name)}"]`);
         const value = select.val();
 
         items.each((i, dropdown) => {

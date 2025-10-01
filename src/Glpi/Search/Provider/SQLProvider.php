@@ -5175,7 +5175,7 @@ final class SQLProvider implements SearchProviderInterface
                         } else {
                             $newrow[$key] = $val;
                             // Add id to items list
-                            if ($key == 'id') {
+                            if ($key == 'id' && $val !== null) {
                                 $data['data']['items'][$val] = $i;
                             }
                         }
@@ -5607,12 +5607,9 @@ final class SQLProvider implements SearchProviderInterface
                                 )
                             ) {
                                 $text = sprintf(
-                                    __('%1$s - %2$s'),
+                                    __s('%1$s - %2$s'),
                                     Entity::badgeCompletename($data[$ID][$k]['name']),
-                                    Dropdown::getDropdownName(
-                                        'glpi_profiles',
-                                        $data[$ID][$k]['profiles_id']
-                                    )
+                                    htmlescape(Dropdown::getDropdownName('glpi_profiles', $data[$ID][$k]['profiles_id']))
                                 );
                                 $comp = '';
                                 if ($data[$ID][$k]['is_recursive']) {
@@ -5625,13 +5622,13 @@ final class SQLProvider implements SearchProviderInterface
                                     $comp = sprintf(__('%1$s%2$s'), $comp, __('D'));
                                 }
                                 if (!empty($comp)) {
-                                    $text = sprintf(__('%1$s %2$s'), $text, "(" . $comp . ")");
+                                    $text = sprintf(__s('%1$s %2$s'), $text, htmlescape("(" . $comp . ")"));
                                 }
                                 if ($count_display) {
                                     $out .= Search::LBBR;
                                 }
                                 $count_display++;
-                                $out    .= htmlescape($text);
+                                $out    .= $text;
                                 $added[] = $data[$ID][$k]['name'] . "-" . $data[$ID][$k]['profiles_id'];
                             }
                         }
@@ -6028,7 +6025,7 @@ final class SQLProvider implements SearchProviderInterface
                     if (empty($data[$ID][0]['name'])) {
                         $text = __s('None');
                     } else {
-                        $text = Html::resume_text($data[$ID][0]['name']);
+                        $text = Html::resume_text(RichText::getTextFromHtml($data[$ID][0]['name']));
                     }
                     if (Session::haveRight('reservation', UPDATE)) {
                         return "<a title=\"" . __s('Modify the comment') . "\"
@@ -6250,7 +6247,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($data[$ID][0]['is_active']) {
                         return "<a href='reservation.php?reservationitems_id="
                             . \htmlescape($data["refID"]) . "' title=\"" . __s('See planning') . "\">"
-                            . "<i class='ti ti-calendar'></i><span class='sr-only'>" . __('See planning') . "</span></a>";
+                            . "<i class='ti ti-calendar'></i><span class='sr-only'>" . __s('See planning') . "</span></a>";
                     } else {
                         return '';
                     }
@@ -6665,7 +6662,7 @@ final class SQLProvider implements SearchProviderInterface
                     return \htmlescape($out);
 
                 case "language":
-                    if (isset($CFG_GLPI['languages'][$data[$ID][0]['name']])) {
+                    if (isset($data[$ID][0]['name'], $CFG_GLPI['languages'][$data[$ID][0]['name']])) {
                         return $CFG_GLPI['languages'][$data[$ID][0]['name']][0];
                     }
                     return __('Default value');

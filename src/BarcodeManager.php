@@ -50,10 +50,10 @@ class BarcodeManager
         $qrcode = $barcode->getBarcodeObj(
             'QRCODE,H',
             $CFG_GLPI["url_base"] . $item->getLinkURL(),
-            -2,
-            -2,
+            200,
+            200,
             'black',
-            [-2, -2, -2, -2]
+            [10, 10, 10, 10]
         )->setBackgroundColor('white');
         return $qrcode;
     }
@@ -63,7 +63,7 @@ class BarcodeManager
         $barcode_manager = new self();
         $qrcode = $barcode_manager->generateQRCode($item);
         if ($qrcode) {
-            return $qrcode->getHtmlDiv();
+            return "<img src=\"data:image/png;base64," . base64_encode($qrcode->getPngData()) . "\" />";
         }
         return false;
     }

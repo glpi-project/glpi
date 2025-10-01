@@ -35,6 +35,8 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
+use function Safe\preg_match;
+
 class PDU_Rack extends CommonDBRelation
 {
     public static $itemtype_1 = 'Rack';
@@ -472,8 +474,8 @@ class PDU_Rack extends CommonDBRelation
             'rand'                => $rand,
         ]);
 
-        $pra_url = PDU_Rack::getFormURL() . "?racks_id=$racks_id&ajax=true";
-        $ira_url = Item_Rack::getFormURL() . "?_onlypdu=true&orientation=0&position=1&racks_id=$racks_id&ajax=true";
+        $pra_url = jsescape(PDU_Rack::getFormURL() . "?racks_id=$racks_id&ajax=true");
+        $ira_url = jsescape(Item_Rack::getFormURL() . "?_onlypdu=true&orientation=0&position=1&racks_id=$racks_id&ajax=true");
 
         $js = <<<JAVASCRIPT
       var showAddPduSubForm = function() {
@@ -526,11 +528,14 @@ JAVASCRIPT;
                 echo "<div class='side_pdus_graph grid-stack grid-stack-1'
                        id='side_pdus_$rand'
                        gs-column='1'
-                       gs-max-row='" . ($rack->fields['number_units'] + 1) . "'>";
+                       gs-max-row='" . ($num_u + 1) . "'>";
             }
 
             foreach ($found_pdus_side as $current) {
                 $bg_color   = $current['bgcolor'];
+                if (preg_match('/^#?[a-f0-9]+$/', $bg_color) !== 1) {
+                    $bg_color = '';
+                }
                 $fg_color   = !empty($current['bgcolor'])
                              ? Html::getInvertedColor($current['bgcolor'])
                              : "";
@@ -588,14 +593,14 @@ JAVASCRIPT;
                         echo "<style>
                      #item_$item_rand:after {
                         width: " . ($height * 21 - 9) . "px;
-                        background: $bg_color url($picture_url) 0 0/100% no-repeat;
+                        background: $bg_color url(\"$picture_url\") 0 0/100% no-repeat;
                      }
                   </style>";
                     }
 
                     echo "<div class='grid-stack-item $picture_c'
                        id='item_$item_rand'
-                       gs-id='" . (int) $current['id'] . "'
+                       gs-id='" . ((int) $current['id']) . "'
                        gs-h='$height' gs-w='1'
                        gs-x='0' gs-y='$y'
                        style='background-color: " . htmlescape($bg_color) . "; color: " . htmlescape($fg_color) . ";'>

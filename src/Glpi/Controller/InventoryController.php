@@ -40,9 +40,11 @@ use Glpi\Http\RedirectResponse;
 use Glpi\Inventory\Conf;
 use RefusedEquipment;
 use Session;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Throwable;
 
 use function Safe\file_get_contents;
@@ -50,6 +52,11 @@ use function Safe\file_get_contents;
 final class InventoryController extends AbstractController
 {
     public static bool $is_running = false;
+
+    public function __construct(private readonly UrlGeneratorInterface $router)
+    {
+        //empty constructor
+    }
 
     #[Route("/Inventory", name: "glpi_inventory", methods: ['GET', 'POST'])]
     #[Route("/front/inventory.php", name: "glpi_inventory_legacy", methods: ['GET', 'POST'])]
@@ -139,5 +146,59 @@ final class InventoryController extends AbstractController
         $redirect_url = $refused->handleInventoryRequest($inventory_request);
         $response = new RedirectResponse($redirect_url);
         return $response;
+    }
+
+    #[Route("/Inventory/Configuration", name: "glpi_inventory_configuration", methods: ['GET'])]
+    #[Route("/front/inventory.conf.php", name: "glpi_inventory_configuration_legacy", methods: ['GET'])]
+    public function configure(Request $request): Response
+    {
+        Session::checkRight(Conf::$rightname, Conf::UPDATECONFIG);
+        return $this->render('pages/admin/inventory/conf/index.html.twig', [
+            'conf' => new Conf(),
+        ]);
+    }
+
+    #[Route("/Inventory/Configuration/Store", name: "glpi_inventory_store_configuration", methods: ['POST'])]
+    #[Route("/front/inventory.conf.php", name: "glpi_inventory_store_configuration_legacy", methods: ['POST'])]
+    public function storeConfiguration(Request $request): Response
+    {
+        Session::checkRight(Conf::$rightname, Conf::UPDATECONFIG);
+        $conf = new Conf();
+        $post_data = $request->request->all();
+
+        if (isset($post_data['update'])) {
+            unset($post_data['update']);
+            if ($conf->saveConf($post_data)) {
+                Session::addMessageAfterRedirect(
+                    __s('Configuration has been updated'),
+                    false,
+                    INFO
+                );
+            }
+        }
+        return new RedirectResponse($this->router->generate('glpi_inventory_configuration'));
+    }
+
+    #[Route("/Inventory/ImportFiles", name: "glpi_inventory_report", methods: ['POST'])]
+    public function report(Request $request): Response
+    {
+        Session::checkRight(Conf::$rightname, Conf::IMPORTFROMFILE);
+        $conf = new Conf();
+
+        $to_import = [];
+        foreach ($request->files->get('inventory_files') as $file) {
+            if ($file instanceof UploadedFile && $file->isValid()) {
+                $to_import[$file->getClientOriginalName()] = $file->getPathname();
+            }
+        }
+
+        $imported_files = $conf->importFiles($to_import);
+
+        return $this->render(
+            'pages/admin/inventory/upload_result.html.twig',
+            [
+                'imported_files' => $imported_files,
+            ]
+        );
     }
 }

@@ -43,11 +43,13 @@ use CronTask;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Features\Clonable;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\Clone\FormCloneHelper;
 use Glpi\Form\Condition\CommentData;
 use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
@@ -63,6 +65,7 @@ use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
 use Glpi\Helpdesk\Tile\FormTile;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Glpi\ItemTranslation\Context\TranslationHandler;
+use Glpi\Toolbox\UuidStore;
 use Glpi\UI\IllustrationManager;
 use Html;
 use InvalidArgumentException;
@@ -91,6 +94,10 @@ final class Form extends CommonDBTM implements
     ConditionableVisibilityInterface
 {
     use ConditionableVisibilityTrait;
+    use Clonable {
+        Clonable::prepareInputForClone as parentPrepareInputForClone;
+        Clonable::post_clone as parentPostClone;
+    }
 
     public const TRANSLATION_KEY_NAME = 'form_name';
     public const TRANSLATION_KEY_HEADER = 'form_header';
@@ -172,6 +179,19 @@ final class Form extends CommonDBTM implements
 
         $types_manager = QuestionTypesManager::getInstance();
 
+        // Use the uuid store to prevent condition data from fetching the same
+        // questions over and over
+        $store = UuidStore::getInstance();
+        foreach ($this->getSections() as $section) {
+            $store->addToStore($section->fields['uuid'], $section);
+        }
+        foreach ($this->getQuestions() as $question) {
+            $store->addToStore($question->fields['uuid'], $question);
+        }
+        foreach ($this->getFormComments() as $comment) {
+            $store->addToStore($comment->fields['uuid'], $comment);
+        }
+
         // Render twig template
         $twig = TemplateRenderer::getInstance();
         $twig->display('pages/admin/form/form_editor.html.twig', [
@@ -179,8 +199,10 @@ final class Form extends CommonDBTM implements
             'can_update'                   => $this->canUpdate(),
             'params'                       => $options,
             'question_types_manager'       => $types_manager,
+            'invalid_questions'            => $this->getInvalidQuestions(),
             'allow_unauthenticated_access' => FormAccessControlManager::getInstance()->allowUnauthenticatedAccess($this),
         ]);
+        $store->purge();
         return true;
     }
 
@@ -426,7 +448,8 @@ final class Form extends CommonDBTM implements
     #[Override]
     public function listTranslationsHandlers(): array
     {
-        $key = __('Form properties');
+        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $category_name = __('Form properties');
         $handlers = [];
         if (!empty($this->fields['name'])) {
             $handlers[$key][] = new TranslationHandler(
@@ -434,6 +457,8 @@ final class Form extends CommonDBTM implements
                 key: self::TRANSLATION_KEY_NAME,
                 name: __('Form title'),
                 value: $this->fields['name'],
+                is_rich_text: false,
+                category: $category_name
             );
         }
 
@@ -443,7 +468,8 @@ final class Form extends CommonDBTM implements
                 key: self::TRANSLATION_KEY_HEADER,
                 name: __('Form description'),
                 value: $this->fields['header'],
-                is_rich_text: true
+                is_rich_text: true,
+                category: $category_name
             );
         }
 
@@ -453,7 +479,8 @@ final class Form extends CommonDBTM implements
                 key: self::TRANSLATION_KEY_DESCRIPTION,
                 name: __('Service catalog description'),
                 value: $this->fields['description'],
-                is_rich_text: true
+                is_rich_text: true,
+                category: $category_name
             );
         }
 
@@ -565,6 +592,29 @@ final class Form extends CommonDBTM implements
             $questions += $section->getQuestions();
         }
         return $questions;
+    }
+
+    /**  @return Question[] */
+    public function getInvalidQuestions(): array
+    {
+        $invalid_questions = [];
+        foreach ($this->getSections() as $section) {
+            // Its important to use the "+" operator here and not array_merge
+            // because the keys must be preserved
+            $questions_data = (new Question())->find(
+                [$section::getForeignKeyField() => $section->fields['id']],
+                'vertical_rank ASC, horizontal_rank ASC',
+            );
+            foreach ($questions_data as $row) {
+                $question = new Question();
+                $question->getFromResultSet($row);
+                $question->post_getFromDB();
+                if ($question->getQuestionType() === null) {
+                    $invalid_questions[] = $question;
+                }
+            }
+        }
+        return $invalid_questions;
     }
 
     /**
@@ -686,6 +736,26 @@ final class Form extends CommonDBTM implements
     public function getCommentsStateForConditionEditor(): array
     {
         return FormData::createFromForm($this)->getCommentsData();
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [
+            Section::class,
+            FormAccessControl::class,
+            FormDestination::class,
+            FormTranslation::class,
+        ];
+    }
+    public function prepareInputForClone($input): array
+    {
+        $input = $this->parentPrepareInputForClone($input);
+        return FormCloneHelper::getInstance()->prepareFormInputForClone($input);
+    }
+
+    public function post_clone($source, $history): void
+    {
+        FormCloneHelper::getInstance()->postFormClone($this);
     }
 
     /**

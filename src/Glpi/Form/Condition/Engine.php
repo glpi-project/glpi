@@ -276,6 +276,16 @@ final class Engine
                     $config = null;
                 }
                 $answer = $this->input->getAnswers()[$question->getID()] ?? null;
+
+                // If the condition is not about visibility operators and the source question is not visible,
+                // we cannot evaluate the condition based on its answer
+                if (
+                    $condition->getValueOperator() !== ValueOperator::VISIBLE
+                    && $condition->getValueOperator() !== ValueOperator::NOT_VISIBLE
+                    && !$this->computeItemVisibility($question)
+                ) {
+                    return false;
+                }
                 break;
             case Type::SECTION:
                 $item = Section::getByUuid($condition->getItemUuid());

@@ -99,7 +99,7 @@ final class CustomAssetController extends AbstractController
                     'id' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                        'x-readonly' => true,
+                        'readOnly' => true,
                     ],
                     'name' => ['type' => Doc\Schema::TYPE_STRING],
                     'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -177,7 +177,7 @@ final class CustomAssetController extends AbstractController
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'custom_fields' => [
                         'type' => Doc\Schema::TYPE_OBJECT,
-                        'x-readonly' => true,
+                        'readOnly' => true,
                         'properties' => [],
                     ],
                 ],
@@ -212,7 +212,7 @@ final class CustomAssetController extends AbstractController
                     'id' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                        'x-readonly' => true,
+                        'readOnly' => true,
                     ],
                     'name' => ['type' => Doc\Schema::TYPE_STRING],
                     'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -237,7 +237,7 @@ final class CustomAssetController extends AbstractController
                     'id' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                        'x-readonly' => true,
+                        'readOnly' => true,
                     ],
                     'name' => ['type' => Doc\Schema::TYPE_STRING],
                 ],
@@ -253,7 +253,7 @@ final class CustomAssetController extends AbstractController
                     'id' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                        'x-readonly' => true,
+                        'readOnly' => true,
                     ],
                     'name' => ['type' => Doc\Schema::TYPE_STRING],
                     'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -306,7 +306,7 @@ final class CustomAssetController extends AbstractController
                     'id' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                        'x-readonly' => true,
+                        'readOnly' => true,
                     ],
                     'name' => ['type' => Doc\Schema::TYPE_STRING],
                 ],

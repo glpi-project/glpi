@@ -112,11 +112,19 @@ final class AllowListDropdown extends AbstractRightsDropdown
 
             // Filter by group
             if ($groups !== []) {
+                $groups_with_parents = [];
+                foreach ($groups as $group) {
+                    $groups_with_parents[] = $group;
+                    $parents = getSonsOf(Group::getTable(), $group);
+                    array_push($groups_with_parents, ...$parents);
+                }
+
+                $groups_with_parents = array_unique($groups_with_parents);
                 $condition['OR'][] = [
                     'id' => new QuerySubQuery([
                         'SELECT' => 'users_id',
                         'FROM'   => Group_User::getTable(),
-                        'WHERE'  => ['groups_id' => array_values($groups)],
+                        'WHERE'  => ['groups_id' => array_values($groups_with_parents)],
                     ]),
                 ];
             }
@@ -166,7 +174,7 @@ final class AllowListDropdown extends AbstractRightsDropdown
             foreach ($groups as $group_id) {
                 $user_filters[] = [
                     'link'       => 'OR',
-                    'searchtype' => 'equals',
+                    'searchtype' => 'under',
                     'field'      => 13, // Linked group,
                     'value'      => $group_id,
                 ];

@@ -138,7 +138,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div class="text-center mb-3">
                     <a class="btn btn-primary" role="button"
-                       href="{{ 'Notification_NotificationTemplate'|itemtype_form_path }}?notifications_id={{ id }}&withtemplate={{ withtemplate}}">
+                       href="{{ 'Notification_NotificationTemplate'|itemtype_form_path }}?notifications_id={{ id }}&amp;withtemplate={{ withtemplate }}">
                         {{ add_msg }}
                     </a>
                 </div>
@@ -431,7 +431,7 @@ TWIG, $twig_params);
                 } else {
                     $mode = $mode['label'];
                 }
-                return $mode;
+                return htmlescape($mode);
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

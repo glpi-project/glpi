@@ -100,7 +100,7 @@ final class RecordSet
         }
         $criteria['WHERE'] = [$id_field => $ids_to_fetch];
         foreach ($props_to_use as $prop_name => $prop) {
-            if ($prop['x-writeonly'] ?? false) {
+            if ($prop['writeOnly'] ?? false) {
                 // Property can only be written to, not read. We shouldn't be getting it here.
                 continue;
             }

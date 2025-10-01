@@ -84,7 +84,9 @@ function getSubmitButtonContainer() {
 function getAndFocusQuestion(name) {
     return cy.then(() => {
         const index = questions.indexOf(name);
-        cy.findAllByRole('region', {'name': 'Question details', 'timeout': 10000}).eq(index).click();
+        cy.findAllByRole('region', {'name': 'Question details', 'timeout': 10000}).eq(index).as('question_to_focus');
+        cy.get('@question_to_focus').click('top');
+        return cy.get('@question_to_focus');
     });
 }
 
@@ -198,7 +200,7 @@ function addNewEmptyCondition() {
     cy.findByRole('button', {'name': 'Add another criteria'}).click();
 }
 
-function deleteConditon(index) {
+function deleteCondition(index) {
     cy.get("[data-glpi-conditions-editor-condition]").eq(index).as('condition');
     cy.get('@condition').findByRole('button', {'name': 'Delete criteria'}).click();
 }
@@ -478,7 +480,7 @@ describe ('Conditions', () => {
                 'Contains',
                 'GLPI is great',
             );
-            deleteConditon(0);
+            deleteCondition(0);
             checkThatConditionExist(
                 0,
                 null,
@@ -534,7 +536,7 @@ describe ('Conditions', () => {
                 'Contains',
                 'GLPI is great',
             );
-            deleteConditon(0);
+            deleteCondition(0);
             checkThatConditionExist(
                 0,
                 null,
@@ -589,7 +591,7 @@ describe ('Conditions', () => {
                 'Contains',
                 'GLPI is great',
             );
-            deleteConditon(0);
+            deleteCondition(0);
             checkThatConditionExist(
                 0,
                 null,
@@ -644,7 +646,7 @@ describe ('Conditions', () => {
                 'Contains',
                 'GLPI is great',
             );
-            deleteConditon(0);
+            deleteCondition(0);
             checkThatConditionExist(
                 0,
                 null,
@@ -702,7 +704,7 @@ describe ('Conditions', () => {
         );
 
         // Delete the first condition and check that the second one is still there
-        deleteConditon(0);
+        deleteCondition(0);
         checkThatConditionExist(
             0,
             null,
@@ -765,6 +767,7 @@ describe ('Conditions', () => {
         getAndFocusQuestion('My question that is always visible').within(() => {
             initVisibilityConfiguration();
             setConditionStrategy('Always visible');
+            closeConditionEditor();
         });
         getAndFocusQuestion('My question that is visible if some criteria are met').within(() => {
             initVisibilityConfiguration();
@@ -776,6 +779,7 @@ describe ('Conditions', () => {
                 'Is equal to',
                 'Expected answer 1'
             );
+            closeConditionEditor();
         });
         getAndFocusQuestion('My question that is hidden if some criteria are met').within(() => {
             initVisibilityConfiguration();
@@ -787,6 +791,7 @@ describe ('Conditions', () => {
                 'Is equal to',
                 'Expected answer 2'
             );
+            closeConditionEditor();
         });
         save();
         preview();
@@ -894,7 +899,7 @@ describe ('Conditions', () => {
             addQuestion('My question used as a criteria');
             setQuestionTypeCategory(test_case.question_type);
             getAndFocusQuestion('My question used as a criteria').within(() => {
-                cy.findByPlaceholderText('Enter an option').type('Option 1{enter}');
+                cy.findByPlaceholderText('Enter an option').type('Option 1{enter}', {force: true}); // Force because getAndFocusQuestion will click in the middle of the question, thus trigerring the default value dropdown that will be displayed over this field. There are no good solutions here.
             });
             cy.focused().type('Option 2{enter}');
             cy.focused().type('Option 3{enter}');
@@ -913,6 +918,7 @@ describe ('Conditions', () => {
                     test_case.is_array ? ['Option 3'] : 'Option 3',
                     test_case.is_array ? 'dropdown_multiple' : 'dropdown',
                 );
+                closeConditionEditor();
             });
             save();
             preview();
@@ -1916,7 +1922,7 @@ describe ('Conditions', () => {
             {
                 name: 'My item question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeItem',
-                extra_data: '{"itemtype":"Computer"}',
+                extra_data: '{"itemtype":"Computer","root_items_id":0,"subtree_depth":0,"selectable_tree_root":false}',
                 conditions: [
                     {
                         logic: 'Or',
@@ -1961,7 +1967,7 @@ describe ('Conditions', () => {
             {
                 name: 'My dropdown item question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeItemDropdown',
-                extra_data: '{"itemtype":"Location","categories_filter":[],"root_items_id":0,"subtree_depth":0}',
+                extra_data: '{"itemtype":"Location","categories_filter":[],"root_items_id":0,"subtree_depth":0,"selectable_tree_root":false}',
                 conditions: [
                     {
                         logic: 'Or',
@@ -2523,6 +2529,7 @@ describe ('Conditions', () => {
             .should('have.attr', 'data-cy-shown', 'true')
             .within(() => {
                 cy.findByRole('link', {'name': 'My second question'}).should('be.visible');
+                cy.findByRole('link', {'name': 'First section'}).should('not.exist');
                 cy.findByRole('button', {'name': 'Close'}).click();
             });
         saveAndReload();
@@ -2546,13 +2553,14 @@ describe ('Conditions', () => {
             .should('have.attr', 'data-cy-shown', 'true')
             .within(() => {
                 cy.findByRole('link', {'name': 'My second question'}).should('be.visible');
+                cy.findByRole('link', {'name': 'First section'}).should('not.exist');
                 cy.findByRole('button', {'name': 'Close'}).click();
             });
 
         // Delete conditions
         getAndFocusQuestion('My second question').within(() => {
             openConditionEditor();
-            deleteConditon(0);
+            deleteCondition(0);
         });
 
         // Delete the first question
@@ -2560,6 +2568,64 @@ describe ('Conditions', () => {
             cy.findByRole('button', {'name': 'Delete'}).click();
         });
         cy.findByRole('dialog', {'name': 'Item has conditions and cannot be deleted'}).should('not.exist');
+    });
+
+    it("can't change the type of a question used in conditions with unsupported value operators", () => {
+        createForm();
+        addQuestion('My first question');
+        addQuestion('My second question');
+
+        getAndFocusQuestion('My first question').changeQuestionType('Urgency');
+
+        getAndFocusQuestion('My second question').within(() => {
+            initVisibilityConfiguration();
+            setConditionStrategy('Visible if...');
+            fillCondition(0, null, 'My first question', 'Is greater than', 'High', 'dropdown');
+        });
+        saveAndReload();
+
+        // Change the type of the first question to a type that doesn't support "Is greater than" operator
+        getAndFocusQuestion('My first question').changeQuestionType('Short answer');
+        cy.findByRole('dialog', {'name': 'Question has conditions and its type cannot be changed'})
+            .should('have.attr', 'data-cy-shown', 'true')
+            .within(() => {
+                cy.findByRole('link', {'name': 'My second question'}).should('be.visible');
+                cy.findByRole('link', {'name': 'First section'}).should('not.exist');
+                cy.findByRole('button', {'name': 'Close'}).click();
+            });
+        saveAndReload();
+
+        getAndFocusQuestion('My second question').within(() => {
+            openConditionEditor();
+            checkThatConditionExist(
+                0,
+                null,
+                'Questions - My first question',
+                'Is greater than',
+                'High',
+                'dropdown'
+            );
+        });
+
+        // Change the type of the first question to a type that doesn't support "Is greater than" operator
+        getAndFocusQuestion('My first question').changeQuestionType('Short answer');
+        cy.findByRole('dialog', {'name': 'Question has conditions and its type cannot be changed'})
+            .should('have.attr', 'data-cy-shown', 'true')
+            .within(() => {
+                cy.findByRole('link', {'name': 'My second question'}).should('be.visible');
+                cy.findByRole('link', {'name': 'First section'}).should('not.exist');
+                cy.findByRole('button', {'name': 'Close'}).click();
+            });
+
+        // Delete conditions
+        getAndFocusQuestion('My second question').within(() => {
+            openConditionEditor();
+            deleteCondition(0);
+        });
+
+        // Change the type of the first question to a type that doesn't support "Is greater than" operator
+        getAndFocusQuestion('My first question').changeQuestionType('Short answer');
+        cy.findByRole('dialog', {'name': 'Question has conditions and its type cannot be changed'}).should('not.exist');
     });
 
     it("can't delete a comment used in conditions", () => {
@@ -2582,6 +2648,7 @@ describe ('Conditions', () => {
             .should('have.attr', 'data-cy-shown', 'true')
             .within(() => {
                 cy.findByRole('link', {'name': 'My question'}).should('be.visible');
+                cy.findByRole('link', {'name': 'First section'}).should('not.exist');
                 cy.findByRole('button', {'name': 'Close'}).click();
             });
         saveAndReload();
@@ -2606,13 +2673,14 @@ describe ('Conditions', () => {
             .should('have.attr', 'data-cy-shown', 'true')
             .within(() => {
                 cy.findByRole('link', {'name': 'My question'}).should('be.visible');
+                cy.findByRole('link', {'name': 'First section'}).should('not.exist');
                 cy.findByRole('button', {'name': 'Close'}).click();
             });
 
         // Delete conditions
         getAndFocusQuestion('My question').within(() => {
             openConditionEditor();
-            deleteConditon(0);
+            deleteCondition(0);
         });
 
         // Delete the commeny
@@ -2653,7 +2721,7 @@ describe ('Conditions', () => {
             checkThatConditionExist(
                 0,
                 null,
-                'Steps - First section',
+                'Sections - First section',
                 'Is visible',
                 null,
                 null,
@@ -2675,7 +2743,7 @@ describe ('Conditions', () => {
         // Delete conditions
         getAndFocusSection('Second section').within(() => {
             openConditionEditor();
-            deleteConditon(0);
+            deleteCondition(0);
         });
 
         // Delete the section
@@ -2721,7 +2789,7 @@ describe ('Conditions', () => {
         checkThatConditionExist(
             1,
             null,
-            'Steps - My section',
+            'Sections - My section',
             'Is visible',
             null,
             null
@@ -2773,6 +2841,60 @@ describe ('Conditions', () => {
             });
     });
 
+    it("can't change the type of a question used in destination conditions with unsupported value operators", () => {
+        createForm();
+        addQuestion('My first question');
+        addQuestion('My second question');
+
+        getAndFocusQuestion('My first question').changeQuestionType('Urgency');
+
+        saveAndReload();
+        goToDestinationTab();
+
+        // Define destination conditions
+        checkThatConditionEditorIsNotDisplayed();
+        openConditionEditor();
+        setConditionStrategy('Created if...');
+        checkThatConditionEditorIsDisplayed();
+        fillCondition(0, null, 'My first question', 'Is greater than', 'High', 'dropdown');
+
+        saveDestination();
+
+        // Change the type of the first question to a type that doesn't support "Is greater than" operator
+        cy.findByRole('tab', {'name': 'Form'}).click();
+        getAndFocusQuestion('My first question').changeQuestionType('Short answer');
+        cy.findByRole('dialog', {'name': 'Question has conditions and its type cannot be changed'})
+            .should('have.attr', 'data-cy-shown', 'true')
+            .within(() => {
+                cy.findByRole('link', {'name': 'Ticket'}).should('be.visible');
+                cy.findByRole('button', {'name': 'Close'}).click();
+            });
+        cy.findByRole('dialog', {'name': 'Question has conditions and its type cannot be changed'}).should('not.exist');
+
+        // Go to the destination tab and check that the conditions are still there
+        goToDestinationTab();
+        openConditionEditor();
+        checkThatConditionExist(
+            0,
+            null,
+            'Questions - My first question',
+            'Is greater than',
+            'High',
+            'dropdown'
+        );
+
+        // Delete conditions
+        goToDestinationTab();
+        openConditionEditor();
+        deleteCondition(0);
+        saveDestination();
+
+        // Change the type of the first question to a type that doesn't support "Is greater than" operator
+        cy.findByRole('tab', {'name': 'Form'}).click();
+        getAndFocusQuestion('My first question').changeQuestionType('Short answer');
+        cy.findByRole('dialog', {'name': 'Question has conditions and its type cannot be changed'}).should('not.exist');
+    });
+
     it('conditions count badge is updated when conditions are added or removed', () => {
         createForm();
         // Add two questions to the form
@@ -2811,7 +2933,7 @@ describe ('Conditions', () => {
 
             // Delete first condition
             openConditionEditor();
-            deleteConditon(0);
+            deleteCondition(0);
             closeVisibilityConfiguration();
             checkConditionsCount('1');
         });
@@ -2824,7 +2946,7 @@ describe ('Conditions', () => {
             checkConditionsCount('1');
 
             openConditionEditor();
-            deleteConditon(0);
+            deleteCondition(0);
             closeVisibilityConfiguration();
             checkConditionsCount('0');
         });
@@ -2869,7 +2991,7 @@ describe ('Conditions', () => {
 
         // Delete first condition
         openConditionEditor();
-        deleteConditon(0);
+        deleteCondition(0);
         closeConditionEditor();
         checkConditionsCount('1');
 
@@ -2884,7 +3006,7 @@ describe ('Conditions', () => {
 
         // Delete the remaining condition
         openConditionEditor();
-        deleteConditon(0);
+        deleteCondition(0);
         closeConditionEditor();
         checkConditionsCount('0');
     });

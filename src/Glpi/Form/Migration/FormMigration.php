@@ -67,20 +67,10 @@ use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
 use Glpi\Form\Question;
-use Glpi\Form\QuestionType\QuestionTypeCheckbox;
-use Glpi\Form\QuestionType\QuestionTypeDateTime;
-use Glpi\Form\QuestionType\QuestionTypeDropdown;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
-use Glpi\Form\QuestionType\QuestionTypeFile;
-use Glpi\Form\QuestionType\QuestionTypeItem;
-use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
+use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
-use Glpi\Form\QuestionType\QuestionTypeNumber;
-use Glpi\Form\QuestionType\QuestionTypeRadio;
-use Glpi\Form\QuestionType\QuestionTypeRequester;
-use Glpi\Form\QuestionType\QuestionTypeRequestType;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
-use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\Section;
 use Glpi\Message\MessageType;
 use Glpi\Migration\AbstractPluginMigration;
@@ -129,44 +119,7 @@ class FormMigration extends AbstractPluginMigration
      */
     public function getTypesConvertMap(): array
     {
-        return [
-            // TODO: We do not have a question of type "Actor",
-            // we have more specific types: "Assignee", "Requester" and "Observer"
-            'actor'       => QuestionTypeRequester::class,
-
-            'checkboxes'  => QuestionTypeCheckbox::class,
-            'date'        => QuestionTypeDateTime::class,
-            'datetime'    => QuestionTypeDateTime::class,
-            'dropdown'    => QuestionTypeItemDropdown::class,
-            'email'       => QuestionTypeEmail::class,
-            'file'        => QuestionTypeFile::class,
-            'float'       => QuestionTypeNumber::class,
-            'glpiselect'  => QuestionTypeItem::class,
-            'integer'     => QuestionTypeNumber::class,
-            'multiselect' => QuestionTypeDropdown::class,
-            'radios'      => QuestionTypeRadio::class,
-            'requesttype' => QuestionTypeRequestType::class,
-            'select'      => QuestionTypeDropdown::class,
-            'textarea'    => QuestionTypeLongText::class,
-            'text'        => QuestionTypeShortText::class,
-            'time'        => QuestionTypeDateTime::class,
-            'urgency'     => QuestionTypeUrgency::class,
-
-            // Description is replaced by a new block : Comment
-            'description' => null,
-
-            // TODO: Must be implemented
-            'fields'      => null,
-            'tag'         => null,
-
-            // TODO: This types are not supported by the new form system
-            // we need to define alternative ways to handle them
-            'hidden'      => null,
-            'hostname'    => null,
-            'ip'          => null,
-            'ldapselect'  => null,
-            'undefined'   => null,
-        ];
+        return TypesConversionMapper::getInstance()->getQuestionTypesConversionMap();
     }
 
     private const PUBLIC_ACCESS_TYPE = 0;
@@ -224,17 +177,23 @@ class FormMigration extends AbstractPluginMigration
      *
      * @param int $value_operator The legacy value operator
      * @param mixed $value The value to compare against
+     * @param QuestionTypeInterface $question_type The question type interface
      * @return ValueOperator|null The corresponding value operator or null if not found
      */
-    private function getValueOperatorFromLegacy(int $value_operator, mixed $value): ?ValueOperator
+    private function getValueOperatorFromLegacy(int $value_operator, mixed $value, QuestionTypeInterface $question_type): ?ValueOperator
     {
+        // String condition handler support length comparison but with a different operator
+        $has_string_condition_handler = in_array($question_type::class, [
+            QuestionTypeShortText::class, QuestionTypeEmail::class, QuestionTypeLongText::class,
+        ]);
+
         return match ($value_operator) {
             1 => $value === "" ? ValueOperator::EMPTY : ValueOperator::EQUALS,
             2 => $value === "" ? ValueOperator::NOT_EMPTY : ValueOperator::NOT_EQUALS,
-            3 => ValueOperator::LESS_THAN,
-            4 => ValueOperator::GREATER_THAN,
-            5 => ValueOperator::LESS_THAN_OR_EQUALS,
-            6 => ValueOperator::GREATER_THAN_OR_EQUALS,
+            3 => $has_string_condition_handler ? ValueOperator::LENGTH_LESS_THAN : ValueOperator::LESS_THAN,
+            4 => $has_string_condition_handler ? ValueOperator::LENGTH_GREATER_THAN : ValueOperator::GREATER_THAN,
+            5 => $has_string_condition_handler ? ValueOperator::LENGTH_LESS_THAN_OR_EQUALS : ValueOperator::LESS_THAN_OR_EQUALS,
+            6 => $has_string_condition_handler ? ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS : ValueOperator::GREATER_THAN_OR_EQUALS,
             7 => ValueOperator::VISIBLE,
             8 => ValueOperator::NOT_VISIBLE,
             9 => ValueOperator::MATCH_REGEX,
@@ -414,10 +373,22 @@ class FormMigration extends AbstractPluginMigration
     {
         $this->updateProgressWithMessage(__('Importing form categories...'));
 
+        $additional_criteria = [];
+        if ($this->specificFormsIds !== []) {
+            $additional_criteria[] = [
+                'glpi_plugin_formcreator_categories.id' => new QuerySubQuery([
+                    'SELECT' => 'glpi_plugin_formcreator_forms.plugin_formcreator_categories_id',
+                    'FROM'   => 'glpi_plugin_formcreator_forms',
+                    'WHERE'  => ['glpi_plugin_formcreator_forms.id' => $this->specificFormsIds],
+                ]),
+            ];
+        }
+
         // Retrieve data from glpi_plugin_formcreator_categories table
         $raw_form_categories = $this->db->request([
             'SELECT' => ['id', 'name', 'plugin_formcreator_categories_id'],
             'FROM'   => 'glpi_plugin_formcreator_categories',
+            'WHERE'   => $additional_criteria,
             'ORDER'  => ['level ASC'],
         ]);
 
@@ -482,6 +453,7 @@ class FormMigration extends AbstractPluginMigration
                     'is_recursive'          => $raw_form['is_recursive'],
                     'is_active'             => $raw_form['is_active'],
                     'is_deleted'            => $raw_form['is_deleted'],
+                    'render_layout'         => 'single_page',
                     '_from_migration'       =>  true,
                 ],
                 [
@@ -592,9 +564,12 @@ class FormMigration extends AbstractPluginMigration
             }
 
             $fieldtype = $raw_question['fieldtype'];
-            $type_class = $this->getTypesConvertMap()[$fieldtype] ?? null;
+            $converter = $this->getTypesConvertMap()[$fieldtype] ?? null;
 
-            if ($type_class === null) {
+            if (
+                $converter === null
+                || !$converter instanceof FormQuestionDataConverterInterface
+            ) {
                 // Retrieve the form to provide context in the error message
                 $section = Section::getById($section_id);
                 $form = $section->getForm();
@@ -613,11 +588,11 @@ class FormMigration extends AbstractPluginMigration
 
             $default_value = null;
             $extra_data = null;
-            if (is_a($type_class, FormQuestionDataConverterInterface::class, true)) {
-                $converter     = new $type_class();
-                $default_value = $converter->convertDefaultValue($raw_question);
-                $extra_data    = $converter->convertExtraData($raw_question);
-            }
+
+            $converter->beforeConversion($raw_question);
+            $default_value = $converter->convertDefaultValue($raw_question);
+            $extra_data    = $converter->convertExtraData($raw_question);
+            $type_class    = $converter->getTargetQuestionType($raw_question);
 
             $question = new Question();
             $data = array_filter([
@@ -1209,9 +1184,18 @@ class FormMigration extends AbstractPluginMigration
         $raw_languages = $this->db->request([
             'SELECT' => [
                 'plugin_formcreator_forms_id',
-                'name',
+                'glpi_plugin_formcreator_forms_languages.name',
             ],
             'FROM'   => 'glpi_plugin_formcreator_forms_languages',
+            'LEFT JOIN'   => [
+                'glpi_plugin_formcreator_forms' => [
+                    'ON' => [
+                        'glpi_plugin_formcreator_forms_languages' => 'plugin_formcreator_forms_id',
+                        'glpi_plugin_formcreator_forms'           => 'id',
+                    ],
+                ],
+            ],
+            'WHERE'  => $this->getFormWhereCriteria(),
         ]);
 
         foreach ($raw_languages as $raw_language) {
@@ -1371,19 +1355,20 @@ class FormMigration extends AbstractPluginMigration
                 continue;
             }
 
+            $question_type = $question->getQuestionType();
+            if ($question_type === null) {
+                continue;
+            }
+
             $value = $raw_condition['show_value'];
             if (isset($question->fields['extra_data'])) {
-                $question_type = $question->getQuestionType();
-                if ($question_type === null) {
-                    continue;
-                }
                 $config = $question_type->getExtraDataConfig(
                     json_decode($question->fields['extra_data'], true)
                 );
                 $condition_handlers = $question_type->getConditionHandlers($config);
 
                 // Get the value operator before trying to find a compatible handler
-                $value_operator = $this->getValueOperatorFromLegacy($raw_condition['show_condition'], $value);
+                $value_operator = $this->getValueOperatorFromLegacy($raw_condition['show_condition'], $value, $question_type);
 
                 // If the value operator is null, we skip this condition
                 if ($value_operator === null) {
@@ -1437,7 +1422,7 @@ class FormMigration extends AbstractPluginMigration
                         'value'          => $value,
                         'item_type'      => 'question',
                         'item_uuid'      => $question->getUUID(),
-                        'value_operator' => $this->getValueOperatorFromLegacy($raw_condition['show_condition'], $value),
+                        'value_operator' => $this->getValueOperatorFromLegacy($raw_condition['show_condition'], $value, $question_type),
                         'logic_operator' => $this->getLogicOperatorFromLegacy($raw_condition['show_logic']),
                     ];
                 }
@@ -1450,7 +1435,7 @@ class FormMigration extends AbstractPluginMigration
                         'value'          => $value,
                         'item_type'      => 'question',
                         'item_uuid'      => $question->getUUID(),
-                        'value_operator' => $this->getValueOperatorFromLegacy($raw_condition['show_condition'], $value),
+                        'value_operator' => $this->getValueOperatorFromLegacy($raw_condition['show_condition'], $value, $question_type),
                         'logic_operator' => $this->getLogicOperatorFromLegacy($raw_condition['show_logic']),
                     ];
                 }
@@ -1512,18 +1497,26 @@ class FormMigration extends AbstractPluginMigration
 
     private function displayWarningForNonMigratedItems(): void
     {
+        $criteria = [
+            'is_deleted' => 0,
+            'NOT' => [
+                'entities_id' => new QuerySubQuery([
+                    'SELECT' => 'id',
+                    'FROM'   => Entity::getTable(),
+                ]),
+            ],
+        ];
+
+
+        // Add specific form IDs to the additional criteria
+        if ($this->specificFormsIds !== []) {
+            $criteria['glpi_plugin_formcreator_forms.id'] = $this->specificFormsIds;
+        }
+
         // Retrieve orphan forms
         $orphan_forms = $this->db->request([
             'FROM'   => 'glpi_plugin_formcreator_forms',
-            'WHERE'  => [
-                'is_deleted' => 0,
-                'NOT' => [
-                    'entities_id' => new QuerySubQuery([
-                        'SELECT' => 'id',
-                        'FROM'   => Entity::getTable(),
-                    ]),
-                ],
-            ],
+            'WHERE'  => $criteria,
         ]);
 
         if (count($orphan_forms) > 0) {

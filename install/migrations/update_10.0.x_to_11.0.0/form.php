@@ -333,8 +333,12 @@ foreach ($fields as $field) {
     }
 }
 
-$fields = ['enable_helpdesk_home_search_bar', 'enable_helpdesk_service_catalog', 'expand_service_catalog'];
-foreach ($fields as $field) {
+$fields = [
+    'enable_helpdesk_home_search_bar' => 1,
+    'enable_helpdesk_service_catalog' => 1,
+    'expand_service_catalog'          => 0,
+];
+foreach ($fields as $field => $default_value) {
     if (!$DB->fieldExists("glpi_entities", $field)) {
         $migration->addField(
             'glpi_entities',
@@ -344,7 +348,7 @@ foreach ($fields as $field) {
         $migration->addPostQuery(
             $DB->buildUpdate(
                 'glpi_entities',
-                [$field => 1],
+                [$field => $default_value],
                 ['id' => 0]
             )
         );

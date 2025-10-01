@@ -694,7 +694,7 @@ TWIG, $twig_params);
         if (method_exists(static::$itemtype_1, 'getCriteriaFromProfile')) {
             $profile_criteria = static::$itemtype_1::getCriteriaFromProfile();
             $criteria['WHERE'] = array_merge($criteria['WHERE'], $profile_criteria['WHERE'] ?? []);
-            $criteria['LEFT JOIN'] = array_merge($criteria['LEFT JOIN'], $profile_criteria['LEFT JOIN'] ?? []); // @phpstan-ignore offsetAccess.notFound
+            $criteria['LEFT JOIN'] = array_merge($criteria['LEFT JOIN'], $profile_criteria['LEFT JOIN'] ?? []);
         }
         $criteria['WHERE'][static::$itemtype_1::getTable() . ".is_deleted"] = 0;
         $criteria['LIMIT'] = (int) $_SESSION['glpilist_limit'];

@@ -1,0 +1,68 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set rand = random() %}
+
+<div class="input-group">
+    {# Define empty choice manually to handle root entity #}
+    {{ fields.dropdownField(
+        default_itemtype|default(itemtypes|first|first),
+        'default_value',
+        default_items_id,
+        '',
+        {
+            'init'               : init,
+            'no_label'           : true,
+            'width'              : '100%',
+            'mb'                 : '',
+            'comments'           : false,
+            'addicon'            : false,
+            'aria_label'         : aria_label,
+            'nochecklimit'       : true,
+            'display_emptychoice': false,
+            'toadd'              : {
+                '-1': constant('Dropdown::EMPTY_VALUE'),
+            },
+        }
+    ) }}
+    {{ advanced_config|raw }}
+</div>
+
+{% if question == null %}
+    <script>
+        import("/js/modules/Forms/QuestionItem.js").then((m) => {
+            new m.GlpiFormQuestionTypeItem({{ question_type|json_encode|raw }}, '{{ constant('Dropdown::EMPTY_VALUE')|e('js') }}');
+        });
+    </script>
+{% endif %}

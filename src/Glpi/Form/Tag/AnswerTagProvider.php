@@ -41,7 +41,7 @@ use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Override;
 
-final class AnswerTagProvider implements TagProviderInterface
+final class AnswerTagProvider implements TagProviderInterface, TagWithIdValueInterface
 {
     #[Override]
     public function getTagColor(): string
@@ -78,6 +78,12 @@ final class AnswerTagProvider implements TagProviderInterface
 
         $answer = array_pop($answers);
         return $answer->getFormattedAnswer();
+    }
+
+    #[Override]
+    public function getItemtype(): string
+    {
+        return Question::class;
     }
 
     public function getTagForQuestion(Question $question): Tag

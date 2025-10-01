@@ -377,7 +377,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                                 // Symfony/Mime will then replace it by an auto-generated value
                                 // see Symfony\Mime\Email::prepareParts()
                                 'src="cid:' . $filename . '"',
-                                'href="' . $CFG_GLPI['url_base'] . '/front/document.send.php?docid=' . $docID . '$1"',
+                                'href="' . htmlescape($CFG_GLPI['url_base'] . '/front/document.send.php?docid=' . $docID) . '$1"',
                             ],
                             $current->fields['body_html']
                         );
@@ -398,7 +398,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                     $text = sprintf(__('Original email address was %1$s'), $current->getField('recipient'));
                     $mail->text($mail->getTextBody() . "\n" . $text);
                     if ($is_html) {
-                        $mail->html($mail->getHtmlBody() . "<br/>" . $text);
+                        $mail->html($mail->getHtmlBody() . "<br/>" . htmlescape($text));
                     }
                 }
 

@@ -60,6 +60,8 @@ final class Kernel extends BaseKernel
 
     private LoggerInterface $logger;
 
+    private bool $in_reboot = false;
+
     public function __construct(?string $env = null)
     {
         // Initialize system configuration.
@@ -136,16 +138,26 @@ final class Kernel extends BaseKernel
     #[Override()]
     public function boot(): void
     {
-        $dispatch_postboot = !$this->booted;
+        $already_booted = $this->booted;
 
         parent::boot();
 
         // Define synthetic logger service
         $this->container->set('logger', $this->logger);
 
-        if ($dispatch_postboot) {
+        if (!$already_booted && !$this->in_reboot) {
             $this->container->get('event_dispatcher')->dispatch(new PostBootEvent());
         }
+    }
+
+    #[Override()]
+    public function reboot(?string $warmupDir)
+    {
+        $this->in_reboot = true;
+
+        parent::reboot($warmupDir);
+
+        $this->in_reboot = false;
     }
 
     #[Override()]

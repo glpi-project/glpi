@@ -270,7 +270,7 @@ class Notification extends CommonDBTM implements FilterableInterface
         switch ($field) {
             case 'event':
                 if (isset($values['itemtype']) && !empty($values['itemtype'])) {
-                    return NotificationEvent::getEventName($values['itemtype'], $values[$field]);
+                    return htmlescape(NotificationEvent::getEventName($values['itemtype'], $values[$field]));
                 }
                 break;
         }

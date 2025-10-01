@@ -37,7 +37,9 @@ namespace Glpi\Form\Destination;
 use CommonITILObject;
 use Exception;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\PrepareForCloneInterface;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Clone\FormCloneHelper;
 use Glpi\Form\Destination\CommonITILField\AssigneeField;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsField;
 use Glpi\Form\Destination\CommonITILField\ContentField;
@@ -57,13 +59,15 @@ use Glpi\Form\Destination\CommonITILField\ValidationField;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Form;
+use Glpi\Form\Tag\FormTagsManager;
 use Override;
+use ReflectionClass;
 use Session;
 use Ticket;
 
 use function Safe\json_encode;
 
-abstract class AbstractCommonITILFormDestination implements FormDestinationInterface
+abstract class AbstractCommonITILFormDestination implements FormDestinationInterface, PrepareForCloneInterface
 {
     abstract public function getTarget(): CommonITILObject;
 
@@ -165,7 +169,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
         // Compute input from fields configuration
         foreach ($fields_to_apply as $field) {
             $input = $field->applyConfiguratedValueToInputUsingAnswers(
-                $field->getConfig($form, $config),
+                $field->getConfig($form, $config, $answers_set),
                 $input,
                 $answers_set
             );
@@ -218,6 +222,26 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
                 $created_items
             );
         }
+    }
+
+    #[Override]
+    public function prepareInputForClone(array $data): array
+    {
+        $fields = $this->defineConfigurableFields();
+        foreach ($fields as $field) {
+            if (!isset($data[$field::getKey()])) {
+                continue;
+            }
+
+            $data[$field::getKey()] = FormCloneHelper::getInstance()
+                ->prepareCommonItilDestinationFieldInputForClone(
+                    $field,
+                    $data[$field::getKey()]
+                )
+            ;
+        }
+
+        return $data;
     }
 
     /**
@@ -354,6 +378,19 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
             $config[$field_key] = $field->prepareDynamicConfigDataForImport(
                 $field_config_data,
                 $destination,
+                $mapper,
+            );
+
+            // Handle form tags if needed
+            $reflection = new ReflectionClass($field);
+            $attributes = $reflection->getAttributes(HasFormTags::class);
+            if (!count($attributes)) {
+                continue;
+            }
+
+            $tags_manager = (new FormTagsManager());
+            $config[$field_key]['value'] = $tags_manager->replaceIdsInTags(
+                $config[$field_key]['value'],
                 $mapper,
             );
         }

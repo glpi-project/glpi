@@ -64,7 +64,6 @@
     data-ajax-submit-itemtype="Glpi\Form\Form" {# Target itemtype #}
     data-track-changes="true"
 >
-    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}
 
     {# Form editor page #}
     {# UX and items placement are a work in progress #}
@@ -85,6 +84,24 @@
                                 data-glpi-form-editor-on-click="set-active"
                                 aria-label="{{ __("Form details") }}"
                             >
+                                {% if invalid_questions|length %}
+                                    <div class="alert alert-danger" role="alert">
+                                        <div class="alert-icon">
+                                            <i class="ti ti-exclamation-circle"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="alert-heading">{{ __("These questions have an unknown type and will be deleted the next time this form is saved:") }}</h4>
+                                            <div class="alert-description">
+                                                <ul class="alert-list">
+                                                    {% for invalid_question in invalid_questions %}
+                                                        <li>{{ invalid_question.fields['name'] }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
                                 {# Card containing the main form data: title, header and status #}
                                 <div class="card form-details">
                                     <div
@@ -134,6 +151,8 @@
                                                     'mb': 'mb-0',
                                                     'aria_label': __("Form description"),
                                                     'placeholder': __("Add a description to your form..."),
+                                                    'init': false,
+                                                    'init_on_demand': true,
                                                 })
                                             ) }}
                                         </div>
@@ -188,7 +207,7 @@
                                         aria-label="Properties"
                                     >
                                         <i class="ti ti-alert-circle item-icon"></i>
-                                        <span class="item-title">Form properties</span>
+                                        <span class="item-title">{{ __('Form properties') }}</span>
                                     </button>
                                 </div>
                                 <section id="item-properties" class="accordion-collapse collapse show" aria-labelledby="heading-item-properties" data-bs-parent="#glpi-form-properties-accordion">
@@ -197,13 +216,15 @@
                                             function renderLayoutTemplateResult(data) {
                                                 const icons = {{ enum('Glpi\\Form\\RenderLayout').cases|map((case) => {(case.value): case.getIcon()})|reduce((carry, item) => carry|merge(item), {})|json_encode|raw }};
 
-                                                return $(`<span class="w-full d-flex align-items-center gap-2" title="${data.text}""><i class="${icons[data.id]}"></i>${data.text}</span>`);
+                                                return $(`<span class="w-full d-flex align-items-center gap-2" title="${_.escape(data.text)}""><i class="${_.escape(icons[data.id])}"></i>${_.escape(data.text)}</span>`);
                                             }
 
                                             function renderLayoutTemplateSelection(data) {
                                                 return renderLayoutTemplateResult(data).addClass('flex-row-reverse');
                                             }
                                         </script>
+
+                                        {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}
 
                                         {{ fields.dropdownArrayField(
                                             'render_layout',
@@ -234,6 +255,9 @@
                                                 'full_width'    : true,
                                             }
                                         ) }}
+
+                                        {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
+
                                     </div>
                                 </section>
                             </section>
@@ -379,13 +403,12 @@
 
     {# TODO: add bootstrap tooltips on each buttons #}
 
-    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
-
     {# Move section modal #}
     {{ include('pages/admin/form/move_section_modal.html.twig') }}
 
     {# Block has conditions modal #}
-    {{ include('pages/admin/form/item_has_conditions_modal.html.twig') }}
+    {{ include('pages/admin/form/item_has_conditions_for_deletion_modal.html.twig') }}
+    {{ include('pages/admin/form/item_has_conditions_for_new_question_type_modal.html.twig') }}
 </form>
 
 {% if can_update %}

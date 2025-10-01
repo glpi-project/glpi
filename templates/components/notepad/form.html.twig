@@ -37,12 +37,14 @@
     is_horizontal: false,
 } %}
 
-<div class="my-3">
+<div class="firstbloc">
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#new-note-form">
-        <i class="ti ti-plus"></i>
-        <span>{{ __('Add a note') }}</span>
+        <i class="ti ti-link"></i>
+        <span>{{ _x('button', 'Add a note') }}</span>
     </button>
+</div>
 
+<div class="my-3">
     <div id="new-note-form" class="modal fade">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">

@@ -126,7 +126,7 @@ class GLPIDashboard {
         };
         options = Object.assign({}, default_options, options);
 
-        this.rand         = options.rand;
+        this.rand         = CSS.escape(options.rand);
         this.elem_id      = "#dashboard-" + options.rand;
         this.element      = $(this.elem_id);
         this.elem_dom     = this.element[0];
@@ -238,7 +238,7 @@ class GLPIDashboard {
         });
 
         // filter mode toggle
-        $("#dashboard-"+options.rand+" .toolbar .filter-dashboard").on('click', (e) => {
+        $(`${this.elem_id} .toolbar .filter-dashboard`).on('click', (e) => {
             const activate = !$(e.currentTarget).hasClass('active');
 
             this.setFilterMode(activate);
@@ -337,12 +337,6 @@ class GLPIDashboard {
         this.grid.on('resizestop', (event, elem) => {
             this.saveDashboard();
 
-            // resize also chart if exists
-            const chart = $(elem).find('.ct-chart');
-            if (chart.length > 0 && chart[0].__chartist__ != undefined)  {
-                chart[0].__chartist__.update();
-            }
-
             // Used after "resize.fittext" event to reset our custom width "trick"
             // See computeWidth() function for more info on the trick
             this.resetComputedWidth($('body').find('.big-number').find('.formatted-number'));
@@ -365,7 +359,7 @@ class GLPIDashboard {
             const item = refresh_ctrl.closest('.grid-stack-item');
             const id = item.attr('gs-id');
 
-            this.getCardsAjax("[gs-id="+id+"]");
+            this.getCardsAjax(`[gs-id="${CSS.escape(id)}"]`);
         }).on('click', '.edit-item', (e) => {
             // edit item
             const edit_ctrl = $(e.target);
@@ -454,13 +448,13 @@ class GLPIDashboard {
         $(document).on('click', '.save-dashboard-name ', (event) => {
             event.preventDefault();
             // change in selector
-            $('.dashboard_select option[value='+this.current_name+']')
+            $('.dashboard_select option[value="' + CSS.escape(this.current_name) + '"]')
                 .text($(".dashboard-name").val());
             this.saveDashboard();
 
             $('.display-message')
                 .addClass('success')
-                .text(__("Saved"))
+                .text(_.unescape(__("Saved")))
                 .show('fade').delay(2000).hide('fade');
         });
 
@@ -476,7 +470,7 @@ class GLPIDashboard {
                 .show()
                 .find('input[type=radio]')
                 .next('label').css('display', 'none').end()
-                .filter("[value='"+available_widgets.join("'],[value='")+"']")
+                .filter(available_widgets.map((value) => `[value="${CSS.escape(value)}"]`).join(','))
                 .prop("checked", force_checked)
                 .trigger('change')
                 .next('label').css('display', 'inline-block');
@@ -523,7 +517,7 @@ class GLPIDashboard {
         });
 
         // Keep track of instance
-        window.GLPI.Dashboard.dashboards[options.rand] = this;
+        window.GLPI.Dashboard.dashboards[this.rand] = this;
     }
 
     /**
@@ -585,7 +579,7 @@ class GLPIDashboard {
             if (form_data.old_id === "0") {
                 return false;
             }
-            const item = $('.grid-stack-item[gs-id='+form_data.old_id+']')[0];
+            const item = $('.grid-stack-item[gs-id="' + CSS.escape(form_data.old_id) + '"]')[0];
             this.grid.removeWidget(item);
         }
 
@@ -743,7 +737,7 @@ class GLPIDashboard {
         $('.dashboard .card.filter-'+filter_id).each((i, elem) => {
             const gridstack_item = $(elem).closest(".grid-stack-item");
             const card_id = gridstack_item.attr('gs-id');
-            this.getCardsAjax("[gs-id="+card_id+"]");
+            this.getCardsAjax(`[gs-id="${CSS.escape(card_id)}"]`);
         });
     }
 
@@ -996,8 +990,8 @@ class GLPIDashboard {
                     dashboard: this.current_name,
                 }
             }).then(() => {
-                $("#dashboard-"+this.rand+" .toolbar .dashboard_select")
-                    .find("option[value='"+this.current_name+"']").remove()
+                $(this.elem_id + " .toolbar .dashboard_select")
+                    .find(`option[value="${CSS.escape(this.current_name)}"]`).remove()
                     .end() // reset find filtering
                     .prop("selectedIndex", 0)
                     .trigger('change');
@@ -1037,7 +1031,7 @@ class GLPIDashboard {
      */
     addNewDashbardInSelect(label, value) {
         const newOption = new Option(label, value, false, true);
-        $("#dashboard-"+this.rand+" .toolbar .dashboard_select")
+        $(this.elem_id + " .toolbar .dashboard_select")
             .append(newOption)
             .trigger('change');
     }

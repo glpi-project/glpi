@@ -36,9 +36,7 @@
 <div class="firstbloc">
    <form id="{{ link_itemtype|lower ~ "_form" ~ rand }}" name="{{ link_itemtype|lower ~ "_form" ~ rand }}" method="post" action="{{ link_itemtype|itemtype_form_path }}">
       {{ form_label }}
-      {{ fields.hiddenField(source_itemtype|itemtype_foreign_key, source_items_id, '', {
-         no_label: true,
-      }) }}
+      {{ fields.hiddenField(source_itemtype|itemtype_foreign_key, source_items_id) }}
       {% set primary_dropdown_itemtype = dropdown_options['itemtype']|default(target_itemtype) %}
       <div class="d-flex">
          {% if link_types is defined and link_types is not empty %}

@@ -144,6 +144,12 @@ class SessionManager
             return true;
         }
 
+        if (\str_starts_with($path, '/front/smtp_oauth2_callback.php') && !$request->query->has('cookie_refresh')) {
+            // The SMTP Oauth2 callback endpoint should try to reload/init the session before the `cookie_refresh` hack
+            // has been used.
+            return true;
+        }
+
         if (\str_starts_with($path, '/front/planning.php') && $request->query->has('genical')) {
             // The `genical` endpoint must not use cookies, as the authentication is expected to be passed in the query parameters.
             return true;

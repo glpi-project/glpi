@@ -50,6 +50,7 @@ use Glpi\RichText\UserMention;
 use Glpi\Search\FilterableInterface;
 use Glpi\Search\SearchOption;
 use Glpi\Socket;
+use Glpi\Toolbox\UuidStore;
 
 use function Safe\getimagesize;
 use function Safe\preg_grep;
@@ -917,7 +918,7 @@ class CommonDBTM extends CommonGLPI
 
             foreach ($RELATION[static::getTable()] as $tablename => $fields) {
                 if ($tablename[0] == '_') {
-                    // Relation in tables prefixed by `_` are manualy handled.
+                    // Relation in tables prefixed by `_` are manually handled.
                     continue;
                 }
 
@@ -6685,6 +6686,12 @@ class CommonDBTM extends CommonGLPI
 
     public static function getByUuid(string $uuid): ?static
     {
+        $store = UuidStore::getInstance();
+        $content = $store->get($uuid);
+        if ($content instanceof static) {
+            return $content;
+        }
+
         $item = new static();
         if ($item->getFromDBByCrit(['uuid' => $uuid])) {
             return $item;

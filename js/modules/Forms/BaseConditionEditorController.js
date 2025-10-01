@@ -179,7 +179,7 @@ export class BaseConditionEditorController {
             strategy_input.addEventListener('change', (e) => {
                 const value = e.target.value;
                 const should_displayed_editor = (this.#container
-                    .querySelector(`[data-glpi-conditions-editor-display-for-${value}]`)
+                    .querySelector(`[data-glpi-conditions-editor-display-for-${CSS.escape(value)}]`)
                 ) !== null;
                 this.#container
                     .querySelector(`[data-glpi-conditions-editor]`)

@@ -37,6 +37,7 @@ namespace Glpi\Controller;
 use Glpi\DependencyInjection\PublicService;
 use Glpi\Http\HeaderlessStreamedResponse;
 use RuntimeException;
+use Safe\Exceptions\OutcontrolException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -61,7 +62,15 @@ final class LegacyFileLoadController implements PublicService
 
         ob_start();
         $response = require($target_file);
-        $content = ob_get_clean();
+        try {
+            $content = ob_get_clean();
+        } catch (OutcontrolException) {
+            \trigger_error(
+                sprintf('The output buffer has been unexpectedly closed in `%s`.', $target_file),
+                E_USER_WARNING
+            );
+            $content = '';
+        }
 
         if ($response instanceof Response) {
             // The legacy file contains a return value that corresponds to a valid Symfony response.

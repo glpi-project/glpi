@@ -1028,16 +1028,21 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
         $expected_table = \getTableForItemType($classname);
 
         if (!$this->db->tableExists($expected_table)) {
-            // Try to match with an existing table.
-            //
+            // Try to match with an existing table if the expected table does not exists.
+
             // Sometimes, the plugin table name has only its last chunk pluralized
             // (e.g. `glpi_plugin_genericobject_item_states` instead of `glpi_plugin_genericobject_items_states`).
             // It means that `\getTableForItemType(\getItemTypeForTable($table)))` result differs
             // from the original `$table` value.
-            //
-            // If the expected table does not exists, but a table exists with only its last chunk pluralized,
-            // then we fallback to this last one.
             $fallback_table = 'glpi_plugin_genericobject_' . \strtolower(\getPlural($classname_matches['itemtype_chunk']));
+
+            if ($this->db->tableExists($fallback_table)) {
+                return $fallback_table;
+            }
+
+            // Sometimes, multiple tranformations from singular to plural or from plural to singular produces unexpected
+            // results, e.g. `getPlural('uau')` -> `uaus`, then `getSingular('uaus')` -> `uaus`.
+            $fallback_table = 'glpi_plugin_genericobject_' . \strtolower(\getSingular($classname_matches['itemtype_chunk']));
 
             if ($this->db->tableExists($fallback_table)) {
                 return $fallback_table;

@@ -75,6 +75,8 @@ final class StatusChecker
      */
     public const STATUS_NO_DATA = 'NO_DATA';
 
+    private static array $cached_status = [];
+
     /**
      * Get all registered services
      * @return array Array of services keyed by name.
@@ -123,7 +125,7 @@ final class StatusChecker
      * @return array An array with the status information
      * @since 10.0.0
      */
-    public static function getServiceStatus(?string $service, $public_only = true)
+    public static function getServiceStatus(?string $service, $public_only = true): array
     {
         $services = self::getServices();
         if ($service === 'all' || $service === null) {
@@ -156,11 +158,9 @@ final class StatusChecker
      * @param bool $public_only True if only public status information should be given.
      * @return array
      */
-    public static function getDBStatus($public_only = true): array
+    public static function getDBStatus(bool $public_only = true): array
     {
-        static $status = null;
-
-        if ($status === null) {
+        if (!isset(self::$cached_status['db'])) {
             $status = [
                 'status' => self::STATUS_OK,
                 'main' => [
@@ -219,32 +219,25 @@ final class StatusChecker
                 ];
                 $status['status'] = self::STATUS_PROBLEM;
             }
+            self::$cached_status['db'] = $status;
         }
 
-        return $status;
+        return self::$cached_status['db'];
     }
 
     private static function isDBAvailable(): bool
     {
-        static $db_ok = null;
-
-        if ($db_ok === null) {
-            $status = self::getDBStatus();
-            $db_ok = ($status['main']['status'] === self::STATUS_OK || $status['replicas']['status'] === self::STATUS_OK);
-        }
-
-        return $db_ok;
+        $status = self::getDBStatus();
+        return ($status['main']['status'] === self::STATUS_OK || $status['replicas']['status'] === self::STATUS_OK);
     }
 
     /**
      * @param bool $public_only True if only public status information should be given.
      * @return array
      */
-    public static function getLDAPStatus($public_only = true): array
+    public static function getLDAPStatus(bool $public_only = true): array
     {
-        static $status = null;
-
-        if ($status === null) {
+        if (!isset(self::$cached_status['ldap'])) {
             $status = [
                 'status' => self::STATUS_NO_DATA,
                 'servers' => [],
@@ -300,20 +293,19 @@ final class StatusChecker
                     $status['status_msg'] = $message;
                 }
             }
+            self::$cached_status['ldap'] = $status;
         }
 
-        return $status;
+        return self::$cached_status['ldap'];
     }
 
     /**
      * @param bool $public_only True if only public status information should be given.
      * @return array
      */
-    public static function getIMAPStatus($public_only = true): array
+    public static function getIMAPStatus(bool $public_only = true): array
     {
-        static $status = null;
-
-        if ($status === null) {
+        if (!isset(self::$cached_status['imap'])) {
             $status = [
                 'status' => self::STATUS_NO_DATA,
                 'servers' => [],
@@ -363,23 +355,22 @@ final class StatusChecker
                     $status['status_msg'] = $message;
                 }
             }
+            self::$cached_status['imap'] = $status;
         }
 
-        return $status;
+        return self::$cached_status['imap'];
     }
 
     /**
      * @param bool $public_only True if only public status information should be given.
      * @return array
      */
-    public static function getCASStatus($public_only = true): array
+    public static function getCASStatus(bool $public_only = true): array
     {
         global $CFG_GLPI;
 
-        static $status = null;
-
-        if ($status === null) {
-            $status['status'] = self::STATUS_NO_DATA;
+        if (!isset(self::$cached_status['cas'])) {
+            $status = ['status' => self::STATUS_NO_DATA];
             if (!empty($CFG_GLPI['cas_host'])) {
                 // Rebuild CAS URL
                 // see `CAS_Client::_getServerBaseURL()`
@@ -406,20 +397,19 @@ final class StatusChecker
                     }
                 }
             }
+            self::$cached_status['cas'] = $status;
         }
 
-        return $status;
+        return self::$cached_status['cas'];
     }
 
     /**
      * @param bool $public_only True if only public status information should be given.
      * @return array
      */
-    public static function getMailCollectorStatus($public_only = true): array
+    public static function getMailCollectorStatus(bool $public_only = true): array
     {
-        static $status = null;
-
-        if ($status === null) {
+        if (!isset(self::$cached_status['mail_collectors'])) {
             $status = [
                 'status' => self::STATUS_NO_DATA,
                 'servers' => [],
@@ -462,20 +452,19 @@ final class StatusChecker
                     $status['status_msg'] = $message;
                 }
             }
+            self::$cached_status['mail_collectors'] = $status;
         }
 
-        return $status;
+        return self::$cached_status['mail_collectors'];
     }
 
     /**
      * @param bool $public_only True if only public status information should be given.
      * @return array
      */
-    public static function getCronTaskStatus($public_only = true): array
+    public static function getCronTaskStatus(bool $public_only = true): array
     {
-        static $status = null;
-
-        if ($status === null) {
+        if (!isset(self::$cached_status['crontasks'])) {
             $status = [
                 'status' => self::STATUS_NO_DATA,
                 'stuck' => [],
@@ -492,20 +481,19 @@ final class StatusChecker
                 $status['status'] = count($status['stuck']) ? self::STATUS_PROBLEM : self::STATUS_OK;
                 $status['status_msg'] = sprintf(_x('glpi_status', 'RUNNING: %d, STUCK: %d, TOTAL: %d'), $running, count($stuck_crontasks), count($crontasks));
             }
+            self::$cached_status['crontasks'] = $status;
         }
 
-        return $status;
+        return self::$cached_status['crontasks'];
     }
 
     /**
      * @param bool $public_only True if only public status information should be given.
      * @return array
      */
-    public static function getFilesystemStatus($public_only = true): array
+    public static function getFilesystemStatus(bool $public_only = true): array
     {
-        static $status = null;
-
-        if ($status === null) {
+        if (!isset(self::$cached_status['filesystem'])) {
             $status = [
                 'status' => self::STATUS_OK,
                 'session_dir' => [
@@ -531,22 +519,19 @@ final class StatusChecker
             } else {
                 $status['session_dir']['status_msg'] = _x('glpi_status', 'PHP is not configured to use the "files" session save handler');
             }
+            self::$cached_status['filesystem'] = $status;
         }
 
-        return $status;
+        return self::$cached_status['filesystem'];
     }
 
     /**
-     *
-     * @since 9.5.0
      * @param bool $public_only True if only public status information should be given.
      * @return array
      */
-    public static function getPluginsStatus($public_only = true): array
+    public static function getPluginsStatus(bool $public_only = true): array
     {
-        static $status = null;
-
-        if ($status === null) {
+        if (!isset(self::$cached_status['plugins'])) {
             $plugins = Plugin::getPlugins();
             $status = [];
 
@@ -570,20 +555,26 @@ final class StatusChecker
                     $status[$plugin] = $plugin_status;
                 }
             }
+            self::$cached_status['plugins'] = $status;
         }
 
-        if (count($status) === 0) {
-            $status['status'] = self::STATUS_NO_DATA;
+        if (count(self::$cached_status['plugins']) === 0) {
+            self::$cached_status['plugins']['status'] = self::STATUS_NO_DATA;
         } else {
             if ($public_only) {
                 // Only show overall plugin status
                 // Giving out plugin names and versions to anonymous users could make it easier to target insecure plugins and versions
-                $statuses = array_column($status, 'status');
+                $statuses = array_column(self::$cached_status['plugins'], 'status');
                 $all_ok = !in_array(self::STATUS_PROBLEM, $statuses, true);
                 return ['status' => $all_ok ? self::STATUS_OK : self::STATUS_PROBLEM];
             }
         }
 
-        return $status;
+        return self::$cached_status['plugins'];
+    }
+
+    public static function resetInstance(): void
+    {
+        self::$cached_status = [];
     }
 }

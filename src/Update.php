@@ -291,6 +291,7 @@ class Update
 
         // Create default forms
         $progress_indicator?->setProgressBarMessage(__('Creating default forms…'));
+        Session::loadAllCoreLocales();
         $helpdesk_data_manager = new DefaultDataManager();
         $helpdesk_data_manager->initializeDataIfNeeded();
         $progress_indicator?->advance($init_form_weight);

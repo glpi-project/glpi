@@ -39,7 +39,7 @@ use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
 use Override;
 
-final class FormTagProvider implements TagProviderInterface
+final class FormTagProvider implements TagProviderInterface, TagWithIdValueInterface
 {
     #[Override]
     public function getTagColor(): string
@@ -65,6 +65,12 @@ final class FormTagProvider implements TagProviderInterface
             return '';
         }
         return $form->fields['name'];
+    }
+
+    #[Override]
+    public function getItemtype(): string
+    {
+        return Form::class;
     }
 
     public function getTagForForm(Form $form): Tag

@@ -62,3 +62,7 @@ $migration->addConfig([
     'impact_assets_list' => '[]',
     'timezone' => null,
 ]);
+
+$migration->addConfig([
+    'enable_hlapi' => '0',
+]);

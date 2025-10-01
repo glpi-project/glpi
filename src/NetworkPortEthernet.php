@@ -265,8 +265,8 @@ TWIG, $twig_params);
             $values = [$field => $values];
         }
         return match ($field) {
-            'type' => self::getPortTypeName($values[$field]),
-            'speed' => self::getPortSpeed($values[$field]),
+            'type' => htmlescape(self::getPortTypeName($values[$field])),
+            'speed' => htmlescape(self::getPortSpeed($values[$field])),
             default => parent::getSpecificValueToDisplay($field, $values, $options),
         };
     }

@@ -497,7 +497,7 @@ HTML;
                     var element = option.element;
                     var icon = $(element).data('icon');
 
-                    return $("<span><i class='"+icon+"'></i>&nbsp;" + _.escape(option.text) + "</span>");
+                    return $("<span><i class='" + _.escape(icon) + "'></i>&nbsp;" + _.escape(option.text) + "</span>");
                 };
 
                 $('.sort-control').select2({

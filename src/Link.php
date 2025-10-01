@@ -556,16 +556,16 @@ class Link extends CommonDBTM
 
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                <div class="text-center my-3">
+                <div class="firstbloc">
                     {% if show_add %}
-                        <a class="btn btn-primary" href="{{ 'ManualLink'|itemtype_form_path ~ '?itemtype=' ~ item.getType() ~ '&items_id=' ~ item.fields[item.getIndexName()] }}">
-                            <i class="ti ti-plus me-2"></i>
+                        <a class="btn btn-primary ms-1" href="{{ 'ManualLink'|itemtype_form_path ~ '?itemtype=' ~ item.getType() ~ '&items_id=' ~ item.fields[item.getIndexName()] }}">
+                            <i class="ti ti-link"></i>
                             {{ add_msg }}
                         </a>
                     {% endif %}
                     {% if show_configure %}
-                        <a class="btn btn-primary" href="{{ 'Link'|itemtype_search_path }}">
-                            <i class="ti ti-settings me-2"></i>
+                        <a class="btn btn-primary ms-1" href="{{ 'Link'|itemtype_search_path }}">
+                            <i class="ti ti-settings"></i>
                             {{ configure_msg }}
                         </a>
                     {% endif %}
@@ -595,7 +595,7 @@ TWIG, $buttons_params);
                 if ($manuallink->canUpdateItem()) {
                     $actions .= '<a href="' . htmlescape(ManualLink::getFormURLWithID($row[$item->getIndexName()])) . '" title="' . _sx('button', 'Update') . '">';
                     $actions .= '<i class="ti ti-edit"></i>';
-                    $actions .= '<span class="sr-only">' . _x('button', 'Update') . '</span>';
+                    $actions .= '<span class="sr-only">' . _sx('button', 'Update') . '</span>';
                     $actions .= '</a>';
                 }
                 $entry['actions'] = $actions;

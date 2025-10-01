@@ -36,10 +36,17 @@
 namespace Glpi\Api\HL\Controller;
 
 use Calendar;
+use CommonDBTM;
 use DropdownVisibility;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
+use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
+use Glpi\Api\HL\RouteVersion;
+use Glpi\Http\JSONResponse;
+use Glpi\Http\Request;
+use Glpi\Http\Response;
 use Location;
 use Manufacturer;
 use State;
@@ -67,8 +74,6 @@ final class DropdownController extends AbstractController
 
     protected static function getRawKnownSchemas(): array
     {
-        global $CFG_GLPI;
-
         $schemas = [];
 
         $schemas['Location'] = [
@@ -80,12 +85,12 @@ final class DropdownController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'completename' => ['type' => Doc\Schema::TYPE_STRING],
                 'code' => ['type' => Doc\Schema::TYPE_STRING],
-                'aliases' => ['type' => Doc\Schema::TYPE_STRING],
+                'alias' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
@@ -115,7 +120,7 @@ final class DropdownController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'completename' => ['type' => Doc\Schema::TYPE_STRING],
@@ -158,7 +163,7 @@ final class DropdownController extends AbstractController
             $schemas['State_Visibilities']['properties'][$visiblity] = [
                 'type' => Doc\Schema::TYPE_BOOLEAN,
                 'x-field' => 'is_visible',
-                'x-readonly' => true,
+                'readOnly' => true,
                 'x-join' => [
                     'table' => DropdownVisibility::getTable(),
                     'fkey' => 'id',
@@ -181,7 +186,7 @@ final class DropdownController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -199,7 +204,7 @@ final class DropdownController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
@@ -211,5 +216,129 @@ final class DropdownController extends AbstractController
         ];
 
         return $schemas;
+    }
+
+    /**
+     * @param bool $types_only If true, only the type names are returned. If false, the type name => localized name pairs are returned.
+     * @return array<class-string<CommonDBTM>, string>
+     */
+    public static function getDropdownTypes(bool $types_only = true): array
+    {
+        static $dropdowns = null;
+
+        if ($dropdowns === null) {
+            $dropdowns = [
+                'Location' => Location::getTypeName(1),
+                'State' => State::getTypeName(1),
+                'Manufacturer' => Manufacturer::getTypeName(1),
+                'Calendar' => Calendar::getTypeName(1),
+            ];
+        }
+        return $types_only ? array_keys($dropdowns) : $dropdowns;
+    }
+
+    #[Route(path: '/', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
+    #[Doc\Route(
+        description: 'Get all available dropdown types',
+        responses: [
+            new Doc\Response(new Doc\Schema(
+                type: Doc\Schema::TYPE_ARRAY,
+                items: new Doc\Schema(
+                    type: Doc\Schema::TYPE_OBJECT,
+                    properties: [
+                        'itemtype' => new Doc\Schema(Doc\Schema::TYPE_STRING),
+                        'name' => new Doc\Schema(Doc\Schema::TYPE_STRING),
+                        'href' => new Doc\Schema(Doc\Schema::TYPE_STRING),
+                    ]
+                )
+            )),
+        ]
+    )]
+    public function index(Request $request): Response
+    {
+        $asset_types = self::getDropdownTypes(false);
+        $asset_paths = [];
+        foreach ($asset_types as $asset_type => $asset_name) {
+            $asset_paths[] = [
+                'itemtype'  => $asset_type,
+                'name'      => $asset_name,
+                'href'      => self::getAPIPathForRouteFunction(self::class, 'search', ['itemtype' => $asset_type]),
+            ];
+        }
+        return new JSONResponse($asset_paths);
+    }
+
+    #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
+        'itemtype' => [self::class, 'getDropdownTypes'],
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
+    #[Doc\SearchRoute(
+        schema_name: '{itemtype}',
+        description: 'List or search dropdowns of a specific type'
+    )]
+    public function search(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::searchBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
+        'itemtype' => [self::class, 'getDropdownTypes'],
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
+    #[Doc\GetRoute(
+        schema_name: '{itemtype}',
+        description: 'Get an existing dropdown of a specific type'
+    )]
+    public function getItem(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
+        'itemtype' => [self::class, 'getDropdownTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.0')]
+    #[Doc\CreateRoute(
+        schema_name: '{itemtype}',
+        description: 'Create a dropdown of a specific type'
+    )]
+    public function createItem(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::createBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
+        'itemtype' => [self::class, 'getDropdownTypes'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.0')]
+    #[Doc\UpdateRoute(
+        schema_name: '{itemtype}',
+        description: 'Update an existing dropdown of a specific type'
+    )]
+    public function updateItem(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::updateBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
+        'itemtype' => [self::class, 'getDropdownTypes'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.0')]
+    #[Doc\DeleteRoute(
+        schema_name: '{itemtype}',
+        description: 'Delete a dropdown of a specific type',
+    )]
+    public function deleteItem(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 }

@@ -36,6 +36,7 @@ jobs:
         include:
           - {php-version: "8.2"} # Lint on lower PHP version to detected too early usage of new syntaxes
           - {php-version: "8.4"} # Lint on higher PHP version to detected deprecated elements usage
+          - {php-version: "8.5"} # next PHP release
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
@@ -61,13 +62,23 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            ${{ env.APP_CONTAINER_HOME }}/phpcs.cache
-            /tmp/phpstan
-            /tmp/rector
-          key: "app_home_lint-${{ matrix.php-version }}-${{ github.base_ref || github.ref }}"
+            files/_cache/php-cs-fixer
+            files/_cache/phpstan
+            files/_cache/rector
+          # If we are on a commit, the prefix should be like this:
+          # {version}-{branch name}-{workflow id}
+          # And we shoud fallback to:
+          # {version}-{branch name}
+          #
+          # If we are on a pull request, the prefix should be like this:
+          # {version}-{merge target branch name}-{merge source branch name}-{workflow id}
+          # And we shoud fallback to:
+          # {version}-{merge target branch name}-{merge source branch name}
+          # {version}-{merge target branch name}
+          key: ${{ github.base_ref == '' && format('app_home_lint-{0}-{1}-{2}', matrix.php-version, github.ref_name, github.run_id) || format('app_home_lint-{0}-{1}-{2}-{3}', matrix.php-version, github.base_ref, github.ref_name, github.run_id) }}
           restore-keys: |
-            app_home_lint-${{ matrix.php-version }}
-            app_home_lint-
+            ${{ github.base_ref == '' && format('app_home_lint-{0}-{1}', matrix.php-version, github.ref_name) || format('app_home_lint-{0}-{1}-{2}', matrix.php-version, github.base_ref, github.ref_name) }}
+            ${{ github.base_ref != '' && format('app_home_lint-{0}-{1}', matrix.php-version, github.base_ref) }}
       - name: "Initialize containers"
         run: |
           .github/actions/init_containers-start.sh
@@ -117,6 +128,7 @@ jobs:
             MATRIX='
               {
                 "include": [
+                  {"php-version": "8.5", "db-image": "mariadb:11.8"},
                   {"php-version": "8.4", "db-image": "mariadb:11.8"},
                   {"php-version": "8.4", "db-image": "mysql:8.4"},
                   {"php-version": "8.2", "db-image": "mariadb:11.8"},
@@ -131,6 +143,7 @@ jobs:
             MATRIX='
               {
                 "include": [
+                  {"php-version": "8.5", "db-image": "mariadb:11.8"},
                   {"php-version": "8.4", "db-image": "mariadb:11.8"},
                   {"php-version": "8.4", "db-image": "mysql:8.4"}
                 ]
@@ -193,10 +206,6 @@ jobs:
         run: |
           .github/actions/init_initialize-9.5-db.sh
           docker compose exec -T app .github/actions/test_update-from-9.5.sh
-      - name: "PHPUnit tests"
-        if: "${{ success() || failure() }}"
-        run: |
-          docker compose exec -T app .github/actions/test_tests-phpunit.sh
       - name: "Functional tests"
         if: "${{ success() || failure() }}"
         run: |
@@ -269,6 +278,7 @@ jobs:
         if: "${{ success() || failure() }}"
         id: "e2e"
         run: |
+          .github/actions/init_initialize-ldap-fixtures.sh
           docker compose exec -T app .github/actions/test_tests-e2e.sh
       - name: "Upload Cypress screenshots"
         if: "${{ always() && (steps.e2e.conclusion == 'failure' || steps.e2e.conclusion == 'cancelled') }}"

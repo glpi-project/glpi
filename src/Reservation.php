@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
+use Glpi\RichText\RichText;
 
 use function Safe\strtotime;
 
@@ -662,9 +663,10 @@ class Reservation extends CommonDBChild
 
             $my_item = $data['users_id'] === Session::getLoginUserID();
 
+            $data['comment'] = RichText::getSafeHtml($data['comment']);
             if ($can_read || $my_item) {
                 $user->getFromDB($data['users_id']);
-                $data['comment'] .= '<br />' . sprintf(__s("Reserved by %s"), $user->getFriendlyName());
+                $data['comment'] .= '<br />' . htmlescape(sprintf(__("Reserved by %s"), $user->getFriendlyName()));
             }
 
             $name = $item->getName([
@@ -1006,7 +1008,7 @@ class Reservation extends CommonDBChild
 
         // js vars
         $rand   = mt_rand();
-        $ID     = (int) $ri->fields['id'];
+        $ID     = $ri->getID();
 
         echo "<br>";
         echo "<h1>" . __s('Reservations for this item') . "</h1>";
@@ -1145,7 +1147,7 @@ JAVASCRIPT;
                 'item' => '',
                 'entity' => '',
                 'by' => getUserName($data["by"]),
-                'comments' => nl2br(htmlescape($data["comments"])),
+                'comments' => RichText::getSafeHtml($data["comments"]),
             ];
 
             $item = null;
@@ -1165,13 +1167,13 @@ JAVASCRIPT;
                 [$annee, $mois] = explode("-", $data["start_date"]);
                 $href = htmlescape($CFG_GLPI["root_doc"]) . "/front/reservation.php?reservationitems_id={$data['id']}&month=$mois&year=$annee";
                 $entry['planning'] = "<a href='$href' title='" . __s('See planning') . "'>";
-                $entry['planning'] .= "<i class='" . Planning::getIcon() . "'></i>";
+                $entry['planning'] .= "<i class='" . htmlescape(Planning::getIcon()) . "'></i>";
                 $entry['planning'] .= "<span class='sr-only'>" . __s('See planning') . "</span>";
                 $entry['planning'] .= "</a>";
             } elseif ($item instanceof CommonDBTM) {
                 $href = htmlescape($item::getFormURLWithID($item->getID()) . "&forcetab=Reservation$1&tab_params[defaultDate]={$data['start_date']}");
                 $entry['planning'] = "<a href='$href' title=\"" . __s('See planning') . "\">";
-                $entry['planning'] .= "<i class='" . Planning::getIcon() . "'></i>";
+                $entry['planning'] .= "<i class='" . htmlescape(Planning::getIcon()) . "'></i>";
                 $entry['planning'] .= "<span class='sr-only'>" . __s('See planning') . "</span>";
             }
             return $entry;
@@ -1196,7 +1198,7 @@ JAVASCRIPT;
             'end_date'   => 'datetime',
             'item' => 'raw_html',
             'planning' => 'raw_html',
-            'comments' => 'raw_html', // To preserve <br>. Text was already sanitized.
+            'comments' => 'raw_html',
         ];
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,

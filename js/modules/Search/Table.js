@@ -32,6 +32,7 @@
  */
 
 /* global bootstrap, validateFormWithBootstrap, displaySessionMessages */
+/* global _ */
 
 import GenericView from '/js/modules/Search/GenericView.js';
 
@@ -47,7 +48,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
     };
 
     constructor(result_view_element_id, push_history = true, forced_params = {}) {
-        const element_id = $(`#${result_view_element_id}`).parent().find('table.search-results').attr('id');
+        const element_id = $(`#${CSS.escape(result_view_element_id)}`).parent().find('table.search-results').attr('id');
         super(element_id);
 
         this.push_history = push_history;
@@ -68,17 +69,17 @@ window.GLPI.Search.Table = class Table extends GenericView {
     toggleSavedSearch(isDisable) {
         if (isDisable) {
             $('.bookmark_record')
-                .attr('title', __('Submit current search before saving it'))
+                .attr('title', _.unescape(__('Submit current search before saving it')))
                 .prop('disabled', true);
         } else {
             $('.bookmark_record')
-                .attr('title', __('Save current search'))
+                .attr('title', _.unescape(__('Save current search')))
                 .prop('disabled', false);
         }
     }
 
     getElement() {
-        return $(`#${this.element_id}`);
+        return $(`#${CSS.escape(this.element_id)}`);
     }
 
     /**

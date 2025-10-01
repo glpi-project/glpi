@@ -40,6 +40,7 @@
 /* global fuzzy */
 /* global glpi_html_dialog */
 /* global glpi_toast_info, glpi_toast_warning, glpi_toast_error */
+/* global _ */
 
 var timeoutglobalvar;
 
@@ -821,22 +822,22 @@ function markMatch (text, term) {
 
     // If there is no match, move on
     if (match < 0) {
-        _result.append(escapeMarkupText(text));
+        _result.append(_.escape(text));
         return _result.html();
     }
 
     // Put in whatever text is before the match
-    _result.html(escapeMarkupText(text.substring(0, match)));
+    _result.html(_.escape(text.substring(0, match)));
 
     // Mark the match
     var _match = $('<span class=\'select2-rendered__match\'></span>');
-    _match.html(escapeMarkupText(text.substring(match, match + term.length)));
+    _match.html(_.escape(text.substring(match, match + term.length)));
 
     // Append the matching text
     _result.append(_match);
 
     // Put in whatever is after the match
-    _result.append(escapeMarkupText(text.substring(match + term.length)));
+    _result.append(_.escape(text.substring(match + term.length)));
 
     return _result.html();
 }
@@ -858,7 +859,7 @@ var templateResult = function(result) {
         var text = result.text;
         if (!result.id) {
             // If result has no id, then it is used as an optgroup and is not used for matches
-            _elt.html(escapeMarkupText(text));
+            _elt.html(_.escape(text));
             return _elt;
         }
 
@@ -908,7 +909,7 @@ var templateSelection = function (selection) {
         text = selection.text;
     }
     var _elt = $('<span></span>');
-    _elt.html(escapeMarkupText(text));
+    _elt.html(_.escape(text));
     return _elt;
 };
 
@@ -965,7 +966,7 @@ var templateItilStatus = function(option) {
             break;
     }
 
-    return $(`<span><i class="itilstatus ${classes}"></i> ${option.text}</span>`);
+    return $(`<span><i class="itilstatus ${classes}"></i> ${_.escape(option.text)}</span>`);
 };
 
 var templateValidation = function(option) {
@@ -989,7 +990,7 @@ var templateValidation = function(option) {
             break;
     }
 
-    return $(`<span><i class="validationstatus ${classes}"></i> ${option.text}</span>`);
+    return $(`<span><i class="validationstatus ${classes}"></i> ${_.escape(option.text)}</span>`);
 };
 
 var templateItilPriority = function(option) {
@@ -1003,10 +1004,10 @@ var templateItilPriority = function(option) {
     var color_badge = "";
 
     if (priority_color.length > 0) {
-        color_badge += `<i class='ti ti-circle-filled' style='color: ${priority_color}'></i>`;
+        color_badge += `<i class='ti ti-circle-filled' style='color: ${_.escape(priority_color)}'></i>`;
     }
 
-    return $(`<span>${color_badge}&nbsp;${option.text}</span>`);
+    return $(`<span>${color_badge}&nbsp;${_.escape(option.text)}</span>`);
 };
 
 /**
@@ -1034,14 +1035,13 @@ var getTextWithoutDiacriticalMarks = function (text) {
  * @return {string}
  */
 var escapeMarkupText = function (text) {
+    // TODO in GLPI 11.1: console.warn('`escapeMarkupText()` is deprecated, use `_.escape()` instead.');
+
     if (typeof(text) !== 'string') {
         return text;
     }
-    if (text.indexOf('>') !== -1 || text.indexOf('<') !== -1) {
-        // escape text, if it contains chevrons (can already be escaped prior to this point :/)
-        text = jQuery.fn.select2.defaults.defaults.escapeMarkup(text);
-    }
-    return text;
+
+    return _.escape(text);
 };
 
 /**
@@ -1677,72 +1677,6 @@ function waitForElement(selector) {
 }
 
 /**
- * Get the ideal width of an input element based on its content.
- * This allow to make dynamic inputs that grow and shrink based on their content.
- *
- * Inspired by: https://phuoc.ng/collection/html-dom/resize-the-width-of-a-text-box-to-fit-its-content-automatically/
- *
- * @param {HTMLElement} input
- * @param {String} real_font_size It seems the font size computed by styles.fontSize
- *                                 is not really accurate when using rem units.
- *                                 This parameter allows to directly provide the
- *                                 accurate font size if it's known.
- *
- * @return {String} The ideal width of the input element
- */
-function getRealInputWidth(input, real_font_size = null)
-{
-    let fakeEle = $("#fake_dom_getRealInputWidth");
-
-    // Initialize our fake element only once to prevent useless computations
-    if (fakeEle.length === 0) {
-        // Create a div element
-        fakeEle = document.createElement('div');
-        fakeEle.id = "fake_dom_getRealInputWidth";
-
-        // Hide it completely
-        fakeEle.style.position = 'absolute';
-        fakeEle.style.top = '0';
-        fakeEle.style.left = '0';
-        fakeEle.style.left = '-9999px';
-        fakeEle.style.overflow = 'hidden';
-        fakeEle.style.visibility = 'hidden';
-        fakeEle.style.whiteSpace = 'nowrap';
-        fakeEle.style.height = '0';
-
-        // Append the fake element to `body`
-        document.body.appendChild(fakeEle);
-    } else {
-        fakeEle = fakeEle[0];
-    }
-
-    // We copy some styles from the textbox that effect the width
-    const styles = window.getComputedStyle(input);
-
-    // Copy font styles from the textbox
-    fakeEle.style.fontFamily = styles.fontFamily;
-    fakeEle.style.fontSize = real_font_size ?? styles.fontSize;
-    fakeEle.style.fontStyle = styles.fontStyle;
-    fakeEle.style.fontWeight = styles.fontWeight;
-    fakeEle.style.letterSpacing = styles.letterSpacing;
-    fakeEle.style.textTransform = styles.textTransform;
-
-    fakeEle.style.borderLeftWidth = styles.borderLeftWidth;
-    fakeEle.style.borderRightWidth = styles.borderRightWidth;
-    fakeEle.style.paddingLeft = styles.paddingLeft;
-    fakeEle.style.paddingRight = styles.paddingRight;
-
-    // Compute width
-    const string = input.value || input.getAttribute('placeholder') || '';
-    fakeEle.innerHTML = string.replace(/\s/g, '&' + 'nbsp;');
-
-    const fakeEleStyles = window.getComputedStyle(fakeEle);
-    const width = fakeEleStyles.width;
-
-    return width;
-}
-
-/**
  * Get UUID using crypto.randomUUID() if possible
  * Else fallback to uniqid()
  */
@@ -1795,6 +1729,15 @@ function setupAjaxDropdown(config) {
 
                 data.page_limit = config.dropdown_max; // page size
                 data.page = params.page || 1; // page number
+
+                /** convert data false and true values to int **/
+                Object.keys(data).forEach(function(key) {
+                    if (data[key] === false) {
+                        data[key] = 0;
+                    } else if (data[key] === true) {
+                        data[key] = 1;
+                    }
+                });
 
                 return data;
             },
@@ -1884,19 +1827,23 @@ function setupAdaptDropdown(config)
                 return data;
             }
 
+            const pre_marker = '#-#-#-#-#';
+            const post_marker = '#+#+#+#+#';
+
+            const renderResults = function (text) {
+                return _.escape(text)
+                    .replaceAll(pre_marker, '<span class="select2-rendered__match">')
+                    .replaceAll(post_marker, '</span>');
+            };
+
             var searched_term = getTextWithoutDiacriticalMarks(params.term);
             var data_text = typeof (data.text) === 'string'
                 ? getTextWithoutDiacriticalMarks(data.text)
                 : '';
             var select2_fuzzy_opts = {
-                pre: '<span class="select2-rendered__match">',
-                post: '</span>',
+                pre: pre_marker,
+                post: post_marker,
             };
-
-            if (data_text.indexOf('>') !== -1 || data_text.indexOf('<') !== -1) {
-                // escape text, if it contains chevrons (can already be escaped prior to this point :/)
-                data_text = jQuery.fn.select2.defaults.defaults.escapeMarkup(data_text);
-            }
 
             // Skip if there is no 'children' property
             if (typeof data.children === 'undefined') {
@@ -1904,7 +1851,7 @@ function setupAdaptDropdown(config)
                 if (match == null) {
                     return false;
                 }
-                data.rendered_text = match.rendered_text;
+                data.rendered_text = renderResults(match.rendered);
                 data.score = match.score;
                 return data;
             }
@@ -1918,22 +1865,17 @@ function setupAdaptDropdown(config)
                     ? getTextWithoutDiacriticalMarks(child.text)
                     : '';
 
-                if (child_text.indexOf('>') !== -1 || child_text.indexOf('<') !== -1) {
-                    // escape text, if it contains chevrons (can already be escaped prior to this point :/)
-                    child_text = jQuery.fn.select2.defaults.defaults.escapeMarkup(child_text);
-                }
-
                 var match_child = fuzzy.match(searched_term, child_text, select2_fuzzy_opts);
                 var match_text = fuzzy.match(searched_term, data_text, select2_fuzzy_opts);
                 if (match_child !== null || match_text !== null) {
                     if (match_text !== null) {
                         data.score = match_text.score;
-                        data.rendered_text = match_text.rendered;
+                        data.rendered_text = renderResults(match_text.rendered);
                     }
 
                     if (match_child !== null) {
                         child.score = match_child.score;
-                        child.rendered_text = match_child.rendered;
+                        child.rendered_text = renderResults(match_child.rendered);
                     }
                     filteredChildren.push(child);
                 }
@@ -2019,3 +1961,27 @@ document.addEventListener('hidden.bs.modal', (e) => {
         modal.setAttribute('data-cy-shown', 'false');
     }
 });
+
+// Tinymce on click loading
+$(document).on('click', 'div[data-glpi-tinymce-init-on-demand-render]', function() {
+    const div = $(this);
+    const textarea_id = div.attr('data-glpi-tinymce-init-on-demand-render');
+    div.removeAttr('data-glpi-tinymce-init-on-demand-render');
+    const textarea = $("#" + textarea_id);
+
+    const loadingOverlay = $(`
+        <div class="glpi-form-editor-loading-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-white bg-opacity-75">
+            <div class="spinner-border spinner-border-sm text-secondary" role="status">
+                <span class="visually-hidden">${__('Loading...')}</span>
+            </div>
+        </div>
+    `);
+
+    textarea.show();
+    div.css('position', 'relative').append(loadingOverlay);
+    tinyMCE.init(tinymce_editor_configs[textarea_id]).then((editors) => {
+        editors[0].focus();
+        div.remove();
+    });
+});
+

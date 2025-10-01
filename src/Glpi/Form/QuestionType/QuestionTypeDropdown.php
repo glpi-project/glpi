@@ -66,8 +66,16 @@ final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable implemen
     #[Override]
     public function convertExtraData(array $rawData): array
     {
+        $values = json_decode($rawData['values'] ?? '[]', true) ?? [];
+
+        // Convert array values to use index + 1 as keys
+        $options = [];
+        foreach ($values as $index => $value) {
+            $options[$index + 1] = $value;
+        }
+
         $config = new QuestionTypeDropdownExtraDataConfig(
-            options: json_decode($rawData['values'] ?? '[]', true) ?? [],
+            options: $options,
             is_multiple_dropdown: $rawData['fieldtype'] === 'multiselect'
         );
         return $config->jsonSerialize();
@@ -123,7 +131,7 @@ final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable implemen
                             const container = question.find('div[data-glpi-form-editor-selectable-question-options]');
                             container.data(
                                 'manager',
-                                new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container)
+                                new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container, true)
                             );
                         }
                     });
@@ -134,7 +142,7 @@ final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable implemen
                             const container = new_question.find('div[data-glpi-form-editor-selectable-question-options]');
                             container.data(
                                 'manager',
-                                new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container)
+                                new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container, true)
                             );
                         }
                     });

@@ -56,7 +56,6 @@ if (!isset($_GET["modify"])) {
 $kb = new KnowbaseItem();
 
 if (isset($_POST["add"])) {
-    // ajoute un item dans la base de connaisssances
     $kb->check(-1, CREATE, $_POST);
     $newID = $kb->add($_POST);
     Event::log(

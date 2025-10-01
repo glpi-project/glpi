@@ -151,8 +151,7 @@ Html::printPager(
             'date2'    => $_GET['date2'],
             'itemtype' => $_GET['itemtype'],
             'dropdown' => $_GET['dropdown'],
-        ],
-        '&amp;'
+        ]
     ),
     'Stat',
     $params

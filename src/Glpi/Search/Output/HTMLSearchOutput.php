@@ -64,7 +64,7 @@ use function Safe\preg_split;
  *
  * @internal Not for use outside {@link Search} class and the "Glpi\Search" namespace.
  */
-abstract class HTMLSearchOutput extends AbstractSearchOutput
+class HTMLSearchOutput extends AbstractSearchOutput
 {
     #[Override]
     public function canDisplayResultsContainerWithoutExecutingSearch(): bool
@@ -280,7 +280,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
         return "<tr $class>";
     }
 
-    public static function showEndLine(bool $is_header_line): string
+    public static function showEndLine(): string
     {
         return '</tr>';
     }

@@ -155,16 +155,16 @@
 
                         // show/hide elements not related to Oauth
                         $('#dropdown_smtp_check_certificate{{ rand }}').closest('.form-field').toggle(!is_oauth);
-                        $('#smtp-passwd_{{ rand }}').closest('.form-field').toggle(!is_oauth);
-                        $('#smtp-username_{{ rand }}').closest('.form-field').toggle(!is_oauth);
+                        $('#smtp_passwd_{{ rand }}').closest('.form-field').toggle(!is_oauth);
+                        $('#smtp_username_{{ rand }}').closest('.form-field').toggle(!is_oauth);
 
                         // show/hide elements related to Oauth
                         $('#oauth_redirect_alert_{{ rand }}').toggleClass('d-none', !is_oauth);
-                        $('#smtp-oauth-callback-url_{{ rand }}').closest('.form-field').toggle(is_oauth);
+                        $('#_smtp_oauth_callback_url_{{ rand }}').closest('.form-field').toggle(is_oauth);
                         $('#dropdown_smtp_oauth_provider{{ rand }}').closest('.form-field').toggle(is_oauth);
-                        $('#smtp-oauth-client-id_{{ rand }}').closest('.form-field').toggle(is_oauth);
-                        $('#smtp-oauth-client-secret_{{ rand }}').closest('.form-field').toggle(is_oauth);
-                        $('#force-redirect-to-smtp-oauth_{{ rand }}').closest('.form-field').toggle(is_oauth);
+                        $('#smtp_oauth_client_id_{{ rand }}').closest('.form-field').toggle(is_oauth);
+                        $('#smtp_oauth_client_secret_{{ rand }}').closest('.form-field').toggle(is_oauth);
+                        $('#_force_redirect_to_smtp_oauth_{{ rand }}').closest('.form-field').toggle(is_oauth);
                         $('[name=smtp_oauth_provider]').trigger('change'); // refresh additional params using dedicated method
                     });
                     $('[name=smtp_mode]').trigger('change');

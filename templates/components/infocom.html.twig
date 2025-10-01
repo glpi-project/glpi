@@ -39,7 +39,7 @@
 
    {% if infocom.fields['id'] <= 0 %}
       {% if can_create and withtemplate != 2 %}
-         <div class="mx-auto my-4" style="width: 400px;">
+         <div class="firstbloc">
                <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
                <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
                <button type="submit" class="btn btn-primary" name="add" value="1">

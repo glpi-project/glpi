@@ -105,3 +105,48 @@ Cypress.Commands.add('addQuestionToDefaultSectionWithAPI', (
         });
     });
 });
+
+Cypress.Commands.add('changeQuestionType', {prevSubject: true}, (question, new_type) => {
+    cy.wrap(question).within(() => {
+        cy.getDropdownByLabelText('Question type').selectDropdownValue(new_type);
+        cy.wrap(question).find('[data-glpi-loading="true"]').should('not.exist');
+    });
+});
+
+Cypress.Commands.add('changeQuestionSubType', {prevSubject: true}, (question, new_sub_type) => {
+    cy.wrap(question).within(() => {
+        cy.getDropdownByLabelText('Question sub type').selectDropdownValue(new_sub_type);
+        cy.wrap(question).find('[data-glpi-loading="true"]').should('not.exist');
+    });
+});
+
+/**
+ * Helper method to quickly import a given form from the fixtures directory.
+ * This avoid having to build complex forms with the API or the UI, both of which
+ * are not very convenient.
+ */
+Cypress.Commands.add('importForm', (filename) => {
+    // TODO: maybe create an API command so we can bypass the UI for this and make it even faster
+    cy.visit('/Form/Import');
+    cy.findByLabelText("Select your file").selectFile(`fixtures/forms/${filename}`);
+
+    // Preview
+    cy.findByRole('button', {'name': "Preview import"}).click();
+    cy.findAllByRole('row')
+        .eq(1)
+        .findByText("Ready to be imported")
+        .should('exist')
+    ;
+
+    // Import and return id
+    cy.findByRole('button', {'name': "Import"}).click();
+    cy.findAllByRole('row')
+        .eq(1)
+        .findByRole("link")
+        .invoke('attr', 'href')
+        .then(href => {
+            const url = new URL(href, "http://localhost");
+            return url.searchParams.get("id");
+        })
+    ;
+});

@@ -159,7 +159,8 @@ export class GlpiFormFieldDestinationMultipleConfig {
             if (id !== undefined && config !== undefined) {
                 // Rename id to ensure it is unique
                 const uid = getUUID();
-                $(this).attr("id", uid);
+                const new_id = `_config_${uid}`;
+                $(this).attr("id", new_id);
 
                 // Check if a select2 isn't already initialized
                 // and if a configuration is available
@@ -167,7 +168,7 @@ export class GlpiFormFieldDestinationMultipleConfig {
                     $(this).hasClass("select2-hidden-accessible") === false
                     && config !== undefined
                 ) {
-                    config.field_id = uid;
+                    config.field_id = new_id;
                     if (config.type === "ajax") {
                         setupAjaxDropdown(config);
                     } else if (config.type === "adapt") {
@@ -192,13 +193,13 @@ export class GlpiFormFieldDestinationMultipleConfig {
                 // Replace the old itemtype select id by the new one
                 script.text = script.text.replace(
                     /\$\(['"]#dropdown_[^)]+['"]\)/g,
-                    `$("#${itemtype_select.attr('id')}")`
+                    `$("#${CSS.escape(itemtype_select.attr('id'))}")`
                 );
 
                 // Replace the old id by the new one
                 script.text = script.text.replace(
                     /\$\(['"]#show_[^)]+['"]\)/g,
-                    `$("#${items_id_name}${id}")`
+                    `$("#${CSS.escape(items_id_name)}${id}")`
                 );
 
                 script.text = script.text.replace(/rand:[0-9]+/g, `rand:'${id}'`);
@@ -252,7 +253,7 @@ export class GlpiFormFieldDestinationMultipleConfig {
             $(event.target).closest('[data-glpi-itildestination-field-config]')
                 .find(`[data-glpi-itildestination-field-config-display-condition]`)
                 .toggleClass('d-none', true)
-                .filter(`[data-glpi-itildestination-field-config-display-condition="${selected_value}"]`)
+                .filter(`[data-glpi-itildestination-field-config-display-condition="${CSS.escape(selected_value)}"]`)
                 .toggleClass('d-none', false);
 
             // Compute disabled state of the fields

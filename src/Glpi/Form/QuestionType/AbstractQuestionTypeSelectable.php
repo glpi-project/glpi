@@ -54,7 +54,6 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType imple
 {
     public const TRANSLATION_KEY_OPTION = 'option';
 
-    #[Override]
     public function __construct() {}
 
     #[Override]
@@ -123,7 +122,7 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType imple
                             const container = question.find('div[data-glpi-form-editor-selectable-question-options]');
                             container.data(
                                 'manager',
-                                new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container)
+                                new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container, true)
                             );
                         }
                     });
@@ -134,7 +133,7 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType imple
                             const container = new_question.find('div[data-glpi-form-editor-selectable-question-options]');
                             container.data(
                                 'manager',
-                                new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container)
+                                new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container, true)
                             );
                         }
                     });
@@ -211,14 +210,22 @@ TWIG;
         }
 
         // Return the indexes of the default values
-        return array_map(fn($value) => array_search($value, $options), $default_values);
+        return array_map(fn($value) => array_search($value, $options) + 1, $default_values);
     }
 
     #[Override]
     public function convertExtraData(array $rawData): array
     {
+        $values = json_decode($rawData['values'] ?? '[]', true) ?? [];
+
+        // Convert array values to use index + 1 as keys
+        $options = [];
+        foreach ($values as $index => $value) {
+            $options[$index + 1] = $value;
+        }
+
         $config = new QuestionTypeSelectableExtraDataConfig(
-            options: json_decode($rawData['values'], true) ?? []
+            options: $options
         );
         return $config->jsonSerialize();
     }
@@ -494,4 +501,14 @@ TWIG;
 
         return array_filter(array_map(fn($item) => $question_config->getOptions()[$item] ?? null, $value));
     }
+
+    #[Override]
+    public function getTargetQuestionType(array $rawData): string
+    {
+        return static::class;
+    }
+
+
+    #[Override]
+    public function beforeConversion(array $rawData): void {}
 }

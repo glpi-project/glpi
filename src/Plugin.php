@@ -41,11 +41,14 @@ use Glpi\Cache\CacheManager;
 use Glpi\Dashboard\Grid;
 use Glpi\Debug\Profiler;
 use Glpi\Event;
+use Glpi\Exception\RedirectException;
+use Glpi\Exception\SessionExpiredException;
 use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\VersionParser;
 use Safe\Exceptions\FilesystemException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 use function Safe\ini_get;
 use function Safe\ob_end_clean;
@@ -133,7 +136,7 @@ class Plugin extends CommonDBTM
      *      `plugin_key`: the plugin key;
      *      `plugin_resource`: the resource path relative to the plugin.
      */
-    public const PLUGIN_RESOURCE_PATTERN = '#^/plugins/(?<plugin_key>[^/]+)(?<plugin_resource>/.*)$#';
+    public const PLUGIN_RESOURCE_PATTERN = '#^/(?:plugins|marketplace)/(?<plugin_key>[^/]+)(?<plugin_resource>/.*)$#';
 
     /**
      * Plugin key validation pattern.
@@ -232,12 +235,12 @@ class Plugin extends CommonDBTM
         if (!static::canView()) {
             return false;
         }
-        $mp_icon     = MarketplaceView::getIcon();
-        $mp_title    = MarketplaceView::getTypeName();
+        $mp_icon     = htmlescape(MarketplaceView::getIcon());
+        $mp_title    = htmlescape(MarketplaceView::getTypeName());
         $marketplace = "<i class='$mp_icon pointer' title='$mp_title'></i><span class='d-none d-xxl-block'>$mp_title</span>";
 
-        $cl_icon     = Plugin::getIcon();
-        $cl_title    = Plugin::getTypeName(Session::getPluralNumber());
+        $cl_icon     = htmlescape(Plugin::getIcon());
+        $cl_title    = htmlescape(Plugin::getTypeName(Session::getPluralNumber()));
         $classic     = "<i class='$cl_icon pointer' title='$cl_title'></i><span class='d-none d-xxl-block'>$cl_title</span>";
 
         $links = [
@@ -309,6 +312,16 @@ class Plugin extends CommonDBTM
     }
 
     /**
+     * Mockable method to get the plugin directories.
+     * @return string[]
+     * @see GLPI_PLUGINS_DIRECTORIES
+     */
+    protected static function getPluginDirectories(): array
+    {
+        return GLPI_PLUGINS_DIRECTORIES;
+    }
+
+    /**
      * Boot active plugins.
      */
     public function bootPlugins(): void
@@ -334,7 +347,7 @@ class Plugin extends CommonDBTM
                 continue;
             }
 
-            foreach (GLPI_PLUGINS_DIRECTORIES as $base_dir) {
+            foreach (static::getPluginDirectories() as $base_dir) {
                 $plugin_directory = "$base_dir/$plugin_key";
 
                 if (!is_dir($plugin_directory)) {
@@ -430,7 +443,7 @@ class Plugin extends CommonDBTM
         }
 
         $loaded = false;
-        foreach (GLPI_PLUGINS_DIRECTORIES as $base_dir) {
+        foreach (static::getPluginDirectories() as $base_dir) {
             if (!is_dir($base_dir)) {
                 continue;
             }
@@ -452,6 +465,14 @@ class Plugin extends CommonDBTM
                     if (function_exists($init_function)) {
                         try {
                             $init_function();
+                        } catch (HttpException|RedirectException|SessionExpiredException $e) {
+                            // These exceptions should not result in deactivating the plugin when thrown from its init function.
+                            // Indeed, they should be thrown back to trigger their default behaviour.
+                            //
+                            // - `HttpException`: corresponds to a specific response, the plugin developer probably expects it to be sent;
+                            // - `RedirectException`: corresponds to redirect response, the plugin developer probably expects it to be effective;
+                            // - `SessionExpiredException`: as long as a session check fails, we should redirect to the login page.
+                            throw $e;
                         } catch (Throwable $e) {
                             global $PHPLOGGER;
                             $PHPLOGGER->error(
@@ -549,7 +570,7 @@ class Plugin extends CommonDBTM
 
         // New localisation system
         $mofile = false;
-        foreach (GLPI_PLUGINS_DIRECTORIES as $base_dir) {
+        foreach (static::getPluginDirectories() as $base_dir) {
             if (!is_dir($base_dir)) {
                 continue;
             }
@@ -694,13 +715,13 @@ class Plugin extends CommonDBTM
     /**
      * Return plugin keys corresponding to directories found in filesystem.
      */
-    private function getFilesystemPluginKeys(): array
+    protected function getFilesystemPluginKeys(): array
     {
         if ($this->filesystem_plugin_keys === null) {
             $this->filesystem_plugin_keys = [];
 
             $plugins_directories = new AppendIterator();
-            foreach (GLPI_PLUGINS_DIRECTORIES as $base_dir) {
+            foreach (static::getPluginDirectories() as $base_dir) {
                 if (!is_dir($base_dir)) {
                     continue;
                 }
@@ -1483,7 +1504,7 @@ class Plugin extends CommonDBTM
      */
     public function isLoadable($directory)
     {
-        $plugin_dir = Plugin::getPhpDir($directory);
+        $plugin_dir = static::getPhpDir($directory);
 
         if ($plugin_dir === false) {
             return false;
@@ -1940,7 +1961,7 @@ class Plugin extends CommonDBTM
             return false;
         }
 
-        foreach (GLPI_PLUGINS_DIRECTORIES as $base_dir) {
+        foreach (static::getPluginDirectories() as $base_dir) {
             if (!is_dir($base_dir)) {
                 continue;
             }
@@ -2032,7 +2053,7 @@ class Plugin extends CommonDBTM
             return;
         }
 
-        foreach (GLPI_PLUGINS_DIRECTORIES as $base_dir) {
+        foreach (static::getPluginDirectories() as $base_dir) {
             /**
              * Plugin hook file is safe for inclusion.
              * @psalm-taint-escape include
@@ -2733,7 +2754,7 @@ class Plugin extends CommonDBTM
                     && isset($PLUGIN_HOOKS[Hooks::CONFIG_PAGE][$directory])
                 ) {
                     // Configuration button for activated or configurable plugins
-                    $config_url = "{$CFG_GLPI['root_doc']}/plugins/{$directory}/{$PLUGIN_HOOKS[Hooks::CONFIG_PAGE][$directory]}";
+                    $config_url = htmlescape("{$CFG_GLPI['root_doc']}/plugins/{$directory}/{$PLUGIN_HOOKS[Hooks::CONFIG_PAGE][$directory]}");
                     $output .= '<a href="' . $config_url . '" title="' . __s('Configure') . '">'
                     . '<i class="ti ti-tool fs-2x"></i>'
                     . '<span class="sr-only">' . __s('Configure') . '</span>'
@@ -2808,7 +2829,7 @@ class Plugin extends CommonDBTM
                                 'modal_id' => 'updateModal' . $plugin->getField('directory'),
                                 'open_btn' => '<a class="pointer"><span class="ti ti-caret-up fs-2x me-1"
                                                           data-bs-toggle="modal"
-                                                          data-bs-target="#updateModal' . $plugin->getField('directory') . '"
+                                                          data-bs-target="#updateModal' . htmlescape($plugin->getField('directory')) . '"
                                                           title="' . __s("Update") . '">
                                                           <span class="sr-only">' . __s("Update") . '</span>
                                                       </span></a>',
@@ -2834,14 +2855,11 @@ class Plugin extends CommonDBTM
                             }
                         }
                     } else {
-                        $missing = '';
-                        $missing .= "plugin_" . $directory . "_install";
-
                         //TRANS: %s is the list of missing functions
                         $output .= sprintf(
-                            __('%1$s: %2$s'),
-                            __('Non-existent function'),
-                            $missing
+                            __s('%1$s: %2$s'),
+                            __s('Non-existent function'),
+                            htmlescape("plugin_" . $directory . "_install")
                         );
                     }
                 }
@@ -2849,14 +2867,14 @@ class Plugin extends CommonDBTM
                     // Uninstall button for installed plugins
                     if (function_exists("plugin_" . $directory . "_uninstall")) {
                         $uninstall_label = __s("Uninstall");
-                        $output .= <<<TWIG
+                        $output .= '
                             <a class="pointer"><span class="ti ti-folder-minus fs-2x me-1"
                                 data-bs-toggle="modal"
-                                data-bs-target="#uninstallModal{$plugin->getField('directory')}"
-                                title="{$uninstall_label}">
-                                <span class="sr-only">{$uninstall_label}</span>
+                                data-bs-target="#uninstallModal' . htmlescape($plugin->getField('directory')) . '"
+                                title="' . $uninstall_label . '">
+                                <span class="sr-only">' . $uninstall_label . '</span>
                             </span></a>
-TWIG;
+                        ';
 
                         $output .= TemplateRenderer::getInstance()->render('components/danger_modal.html.twig', [
                             'modal_id' => 'uninstallModal' . $plugin->getField('directory'),
@@ -2876,9 +2894,9 @@ TWIG;
                     } else {
                         //TRANS: %s is the list of missing functions
                         $output .= sprintf(
-                            __('%1$s: %2$s'),
-                            __('Non-existent function'),
-                            "plugin_" . $directory . "_uninstall"
+                            __s('%1$s: %2$s'),
+                            __s('Non-existent function'),
+                            htmlescape("plugin_" . $directory . "_uninstall")
                         );
                     }
                 } elseif ($state === self::TOBECLEANED) {
@@ -2895,7 +2913,7 @@ TWIG;
             case 'state':
                 $plugin = new self();
                 $state = $plugin->isLoadable($values['directory']) ? $values[$field] : self::TOBECLEANED;
-                return self::getState($state);
+                return htmlescape(self::getState($state));
             case 'homepage':
                 $value = Toolbox::formatOutputWebLink($values[$field]);
                 if (!empty($value)) {
@@ -2906,7 +2924,7 @@ TWIG;
                 }
                 return "&nbsp;";
             case 'name':
-                $value = Toolbox::stripTags($values[$field]);
+                $value = htmlescape(Toolbox::stripTags($values[$field]));
                 $state = $values['state'];
                 $directory = $values['directory'];
 
@@ -2920,7 +2938,7 @@ TWIG;
                     in_array($state, [self::ACTIVATED, self::TOBECONFIGURED])
                     && isset($PLUGIN_HOOKS[Hooks::CONFIG_PAGE][$directory])
                 ) {
-                    $config_url = "{$CFG_GLPI['root_doc']}/plugins/{$directory}/{$PLUGIN_HOOKS[Hooks::CONFIG_PAGE][$directory]}";
+                    $config_url = htmlescape("{$CFG_GLPI['root_doc']}/plugins/{$directory}/{$PLUGIN_HOOKS[Hooks::CONFIG_PAGE][$directory]}");
                     return "<a href='$config_url'><span class='b'>$value</span></a>";
                 } else {
                     return $value;
@@ -2929,7 +2947,7 @@ TWIG;
             case 'author':
             case 'license':
             case 'version':
-                return $value = Toolbox::stripTags($values[$field]);
+                return $value = htmlescape(Toolbox::stripTags($values[$field]));
         }
 
         return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -2985,7 +3003,7 @@ TWIG;
     public static function getPhpDir(string $plugin_key = "", $full = true)
     {
         $directory = false;
-        foreach (GLPI_PLUGINS_DIRECTORIES as $plugins_directory) {
+        foreach (static::getPluginDirectories() as $plugins_directory) {
             if (is_dir("$plugins_directory/$plugin_key")) {
                 $directory = "$plugins_directory/$plugin_key";
                 break;
@@ -3031,7 +3049,7 @@ TWIG;
 
         $found       = false;
         $marketplace = false;
-        foreach (GLPI_PLUGINS_DIRECTORIES as $plugins_directory) {
+        foreach (static::getPluginDirectories() as $plugins_directory) {
             if (is_dir("$plugins_directory/$plugin_key")) {
                 $found       = true;
                 $marketplace = realpath($plugins_directory) === $marketplace_dir;

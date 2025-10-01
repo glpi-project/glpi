@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\RichText\RichText;
 
 /**
  * ReservationItem Class
@@ -134,6 +135,7 @@ class ReservationItem extends CommonDBChild
             'field'              => 'comment',
             'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
             'datatype'           => 'text',
+            'htmltext'           => true,
         ];
 
         $tab[] = [
@@ -323,7 +325,8 @@ class ReservationItem extends CommonDBChild
 
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-            <form id="reservation_actions" class="d-flex justify-content-center mt-3" action="{{ 'ReservationItem'|itemtype_form_path }}" method="post">
+            <div class="firstbloc">
+            <form id="reservation_actions" class="d-flex " action="{{ 'ReservationItem'|itemtype_form_path }}" method="post">
                 <input type="hidden" name="items_id" value="{{ item.getID() }}">
                 <input type="hidden" name="itemtype" value="{{ get_class(item) }}">
                 <input type="hidden" name="entities_id" value="{{ item.getEntityID() }}">
@@ -345,6 +348,7 @@ class ReservationItem extends CommonDBChild
                 </button>
                 <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
             </form>
+            </div>
 TWIG, $twig_params);
     }
 
@@ -481,7 +485,7 @@ TWIG, $twig_params);
 
         // GET method passed to form creation
         echo "<div id='nosearch' class='card'>";
-        echo "<form name='form' method='GET' action='" . Reservation::getFormURL() . "'>";
+        echo "<form name='form' method='GET' action='" . htmlescape(Reservation::getFormURL()) . "'>";
 
         $entries = [];
         $location_cache = [];
@@ -617,7 +621,7 @@ TWIG, $twig_params);
                 }
                 $entry['location'] = $location_cache[$row["location"]];
 
-                $entry['comment'] = nl2br(htmlescape($row["comment"]));
+                $entry['comment'] = RichText::getSafeHtml($row["comment"]);
 
                 if ($showentity) {
                     if (!isset($entity_cache[$row["entities_id"]])) {
@@ -627,7 +631,7 @@ TWIG, $twig_params);
                 }
                 $cal_href = htmlescape(Reservation::getSearchURL() . "?reservationitems_id=" . $row['id']);
                 $entry['calendar'] = "<a href='$cal_href'>";
-                $entry['calendar'] .= "<i class='" . Planning::getIcon() . " fa-2x cursor-pointer' title=\"" . __s("Reserve this item") . "\"></i>";
+                $entry['calendar'] .= "<i class='" . htmlescape(Planning::getIcon()) . " fa-2x cursor-pointer' title=\"" . __s("Reserve this item") . "\"></i>";
 
                 $ok = true;
                 $entries[] = $entry;
@@ -655,7 +659,7 @@ TWIG, $twig_params);
             'formatters' => [
                 'checkbox' => 'raw_html',
                 'item' => 'raw_html',
-                'comment' => 'raw_html', // To preserve <br>. Text was already sanitized.
+                'comment' => 'raw_html',
                 'calendar' => 'raw_html',
             ],
             'entries' => $entries,
@@ -763,13 +767,13 @@ TWIG, $twig_params);
                         $items_infos[$entity][$data['resaid']] = $data;
 
                         if (!isset($items_messages[$entity])) {
-                            $items_messages[$entity] = __('Device reservations expiring today') . "<br>";
+                            $items_messages[$entity] = [__('Device reservations expiring today')];
                         }
-                        $items_messages[$entity] .= sprintf(
+                        $items_messages[$entity][] = sprintf(
                             __('%1$s - %2$s'),
                             $item_resa::getTypeName(),
                             $item_resa->getName()
-                        ) . "<br>";
+                        );
                     }
                 }
             }
@@ -786,25 +790,22 @@ TWIG, $twig_params);
                     ]
                 )
             ) {
-                $message     = $items_messages[$entity];
+                $messages    = $items_messages[$entity];
                 $cron_status = 1;
                 if ($task) {
                     $task->addVolume(1);
                     $task->log(sprintf(
                         __('%1$s: %2$s') . "\n",
                         Dropdown::getDropdownName("glpi_entities", $entity),
-                        $message
+                        implode("\n", $messages)
                     ));
                 } else {
                     //TRANS: %1$s is a name, %2$s is text of message
-                    Session::addMessageAfterRedirect(htmlescape(sprintf(
-                        __('%1$s: %2$s'),
-                        Dropdown::getDropdownName(
-                            "glpi_entities",
-                            $entity
-                        ),
-                        $message
-                    )));
+                    Session::addMessageAfterRedirect(sprintf(
+                        __s('%1$s: %2$s'),
+                        htmlescape(Dropdown::getDropdownName("glpi_entities", $entity)),
+                        implode('<br>', array_map('htmlescape', $messages))
+                    ));
                 }
 
                 $alert             = new Alert();

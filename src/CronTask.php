@@ -1957,20 +1957,15 @@ TWIG, ['msg' => __('Last run list')]);
         }
 
         if (count($warnings) > 0) {
-            $msg = __('Automatic actions may not be running as expected');
+            $msg = __s('Automatic actions may not be running as expected');
             $params = [
-                'msg' => $msg,
-                'warnings' => '<ul>' . implode('', array_map(static fn($warning) => '<li>' . htmlescape($warning) . '</li>', $warnings)) . '</ul>',
+                'status_message' => $msg,
+                'extra_message' => '<ul>' . implode('', array_map(static fn($warning) => '<li>' . htmlescape($warning) . '</li>', $warnings)) . '</ul>',
             ];
-            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                <span class="alert alert-warning p-1 ps-2">
-                    <i class="ti ti-alert-triangle me-2"></i>
-                    <span>{{ msg }}</span>
-                    <span class="form-help" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-html="true" data-bs-content="{{ warnings }}">
-                        ?
-                    </span>
-                </span>
-TWIG, $params);
+            TemplateRenderer::getInstance()->display(
+                'components/search/status_area.html.twig',
+                $params
+            );
         }
     }
 }

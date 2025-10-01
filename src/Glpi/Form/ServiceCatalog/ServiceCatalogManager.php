@@ -58,7 +58,7 @@ final class ServiceCatalogManager
     public function __construct()
     {
         $this->providers = [
-            new FormProvider(),
+            FormProvider::getInstance(),
             new CategoryProvider(),
             new KnowbaseItemProvider(),
         ];

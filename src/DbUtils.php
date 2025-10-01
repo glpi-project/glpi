@@ -224,6 +224,9 @@ final class DbUtils
     {
         $dbu = new DbUtils();
 
+        // Handle anonymous classes used for mocks (ex: \Foo\Bar\Baz@anonymous)
+        $classname = explode('@', $classname)[0];
+
         // Force singular for itemtype : States case
         $singular = $dbu->getSingular($classname);
 

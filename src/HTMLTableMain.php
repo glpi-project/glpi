@@ -214,7 +214,7 @@ class HTMLTableMain extends HTMLTableBase
         }
 
         if (!empty($this->title)) {
-            echo "\t\t<tr class='noHover'><th colspan='$totalNumberOfColumn'>" . htmlescape($this->title)
+            echo "\t\t<tr class='noHover'><th colspan='" . ((int) $totalNumberOfColumn) . "'>" . htmlescape($this->title)
               . "</th></tr>\n";
         }
 
@@ -224,7 +224,7 @@ class HTMLTableMain extends HTMLTableBase
             }
 
             echo "\t\t<tr class='tab_bg_1'>"
-              . "<td class='center' colspan='$totalNumberOfColumn'>" . __s('None') . "</td></tr>\n";
+              . "<td class='center' colspan='" . ((int) $totalNumberOfColumn) . "'>" . __s('None') . "</td></tr>\n";
         } else {
             if ($p['display_thead']) {
                 $this->displaySuperHeader();

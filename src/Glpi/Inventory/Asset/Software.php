@@ -310,7 +310,7 @@ class Software extends InventoryAsset
             // This check is necessary because some unit tests call the handle function
             // directly on the Software class, bypassing the main asset initialization.
             // For more details, see the functional test case:
-            // phpunit/functional/Glpi/Inventory/Assets/SoftwareTest.php -> testHandle()
+            // tests/functional/Glpi/Inventory/Assets/SoftwareTest.php -> testHandle()
             if (isset($this->main_asset)) {
                 // When $this->extra_data['\Glpi\Inventory\Asset\OperatingSystem'] is not set,
                 // it indicates that the inventory is running in partial mode (or without operating system data).

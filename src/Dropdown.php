@@ -201,7 +201,7 @@ class Dropdown
         }
 
         $names = [];
-        if (!$params['multiple'] && isset($params['toadd'][$params['value']])) {
+        if (!$params['multiple'] && $params['value'] !== null && isset($params['toadd'][$params['value']])) {
             $name = $params['toadd'][$params['value']];
         } elseif (
             !$params['multiple']
@@ -1021,8 +1021,8 @@ class Dropdown
                         if (!icon.id || icon.id == "0") {
                             return icon.text;
                         }
-                        var img = \'<span><img alt="" src="' . jsescape(htmlescape($CFG_GLPI['typedoc_icon_dir'])) . '/\'+icon.id+\'" />\';
-                        var label = \'<span>\'+icon.text+\'</span>\';
+                        var img = \'<span><img alt="" src="' . jsescape(htmlescape($CFG_GLPI['typedoc_icon_dir'])) . '/\' + _.escape(icon.id) + \'" />\';
+                        var label = \'<span>\' + _.escape(icon.text) + \'</span>\';
                         return $(img+\'&nbsp;\'+label);
                     };
                     $("#dropdown_' . jsescape($myname . $rand) . '").select2({
@@ -1900,14 +1900,11 @@ HTML;
         // We check $options as the caller will set $options['default_itemtype'] only if it needs a
         // default itemtype and the default value can be '' thus empty won't be valid !
         if (array_key_exists('default_itemtype', $options)) {
-            $out .= "<script type='text/javascript' >\n";
-            $out .= "$(function() {";
-            $out .= sprintf(
-                '$("#%s").trigger("setValue", "%s");',
-                htmlescape($field_id),
-                htmlescape($params['default_itemtype'])
-            );
-            $out .= "});</script>\n";
+            $out .= Html::scriptBlock("
+                $(function() {
+                    $('#" . jsescape($field_id) . "').trigger('setValue', '" . jsescape($params['default_itemtype']) . "');
+                });
+            ");
 
             $p_ajax["idtable"] = $params['default_itemtype'];
             $ajax2 = Ajax::updateItem(
@@ -2422,12 +2419,12 @@ HTML;
             foreach ($elements as $key => $val) {
                 // optgroup management
                 if (is_array($val)) {
-                    $opt_goup = htmlescape($key);
+                    $opt_goup = $key;
                     if ($max_option_size < strlen($opt_goup)) {
                         $max_option_size = strlen($opt_goup);
                     }
 
-                    $output .= "<optgroup label=\"$opt_goup\"";
+                    $output .= "<optgroup label=\"" . htmlescape($opt_goup) . "\"";
                     $optgroup_tooltips = false;
                     if (isset($param['option_tooltips'][$key])) {
                         if (is_array($param['option_tooltips'][$key])) {

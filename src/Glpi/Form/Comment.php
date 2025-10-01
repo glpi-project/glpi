@@ -38,8 +38,11 @@ namespace Glpi\Form;
 use CommonDBChild;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Features\CloneWithoutNameSuffix;
+use Glpi\Form\Clone\FormCloneHelper;
 use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\ConditionHandler\VisibilityConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\ItemTranslation\Context\TranslationHandler;
@@ -53,6 +56,7 @@ use function Safe\json_encode;
 /**
  * Comment of a given helpdesk form's section
  */
+#[CloneWithoutNameSuffix]
 final class Comment extends CommonDBChild implements
     BlockInterface,
     ConditionableVisibilityInterface,
@@ -136,6 +140,14 @@ final class Comment extends CommonDBChild implements
         return parent::prepareInputForUpdate($input);
     }
 
+    #[Override]
+    public function getCloneRelations(): array
+    {
+        return [
+            FormTranslation::class,
+        ];
+    }
+
     private function prepareInput($input): array
     {
         // Set parent UUID
@@ -145,6 +157,11 @@ final class Comment extends CommonDBChild implements
         ) {
             $section = Section::getById($input['forms_sections_id']);
             $input['forms_sections_uuid'] = $section->fields['uuid'];
+        }
+
+        // Set horizontal rank to null if not set
+        if (isset($input['horizontal_rank']) && $input['horizontal_rank'] === "-1") {
+            $input['horizontal_rank'] = 'NULL';
         }
 
         if (isset($input['_conditions'])) {
@@ -158,7 +175,8 @@ final class Comment extends CommonDBChild implements
     #[Override]
     public function listTranslationsHandlers(): array
     {
-        $key = sprintf('%s: %s', self::getTypeName(), $this->getName());
+        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $category_name = sprintf('%s: %s', self::getTypeName(), $this->getName());
         $handlers = [];
 
         if (!empty($this->fields['name'])) {
@@ -167,6 +185,8 @@ final class Comment extends CommonDBChild implements
                 key: self::TRANSLATION_KEY_NAME,
                 name: __('Comment title'),
                 value: $this->fields['name'],
+                is_rich_text: false,
+                category: $category_name
             );
         }
 
@@ -177,6 +197,7 @@ final class Comment extends CommonDBChild implements
                 name: __('Comment description'),
                 value: $this->fields['description'],
                 is_rich_text: true,
+                category: $category_name
             );
         }
 
@@ -188,6 +209,18 @@ final class Comment extends CommonDBChild implements
         ?JsonFieldInterface $question_config
     ): array {
         return [new VisibilityConditionHandler()];
+    }
+
+    #[Override]
+    public function getSupportedValueOperators(
+        ?JsonFieldInterface $question_config
+    ): array {
+        return array_merge(
+            ...array_map(
+                fn(ConditionHandlerInterface $handler) => $handler->getSupportedValueOperators(),
+                $this->getConditionHandlers($question_config)
+            )
+        );
     }
 
     #[Override]
@@ -235,6 +268,13 @@ final class Comment extends CommonDBChild implements
     public function setSection(Section $section): void
     {
         $this->section = $section;
+    }
+
+    #[Override]
+    public function prepareInputForClone($input)
+    {
+        $input = parent::prepareInputForClone($input);
+        return FormCloneHelper::getInstance()->prepareCommentInputForClone($input);
     }
 
     /**

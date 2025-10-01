@@ -410,6 +410,7 @@ describe ('Validations', () => {
         getAndFocusQuestion('My question that has no validation').within(() => {
             initValidationConfiguration();
             setConditionStrategy('No validation');
+            closeValidationConditionEditor();
         });
         getAndFocusQuestion('My question that is valid if some criteria are met').within(() => {
             initValidationConfiguration();
@@ -420,6 +421,7 @@ describe ('Validations', () => {
                 'Match regular expression',
                 '/^I love GLPI$/'
             );
+            closeValidationConditionEditor();
         });
         getAndFocusQuestion('My question that is invalid if some criteria are met').within(() => {
             initValidationConfiguration();
@@ -430,6 +432,7 @@ describe ('Validations', () => {
                 'Match regular expression',
                 '/^I love GLPI$/'
             );
+            closeValidationConditionEditor();
         });
         save();
         preview();

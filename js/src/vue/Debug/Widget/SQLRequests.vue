@@ -1,5 +1,6 @@
 <script setup>
     /* global copyTextToClipboard */
+    /* global _ */
     import {computed, reactive, ref, watch} from "vue";
 
     const props = defineProps({
@@ -62,8 +63,8 @@
                     time: query['time'],
                     query: query['query'],
                     rows: query['rows'],
-                    warnings: escapeMarkupText(query['warnings']),
-                    errors: escapeMarkupText(query['errors']),
+                    warnings: _.escape(query['warnings']),
+                    errors: _.escape(query['errors']),
                 });
             });
         });

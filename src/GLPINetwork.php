@@ -230,6 +230,8 @@ class GLPINetwork extends CommonGLPI
 
     public static function showInstallMessage(): string
     {
+        $url = htmlescape(GLPI_NETWORK_SERVICES);
+
         return nl2br(
             sprintf(
                 __s(
@@ -238,17 +240,19 @@ class GLPINetwork extends CommonGLPI
                     . "GLPI-Network is a commercial service that includes a subscription for tier 3 support, ensuring the correction of bugs encountered with a commitment time.\n\n"
                     . "In this same space, you will be able to contact an official partner to help you with your GLPI integration."
                 ),
-                "<a href='" . GLPI_NETWORK_SERVICES . "' target='_blank'>" . GLPI_NETWORK_SERVICES . "</a>"
+                "<a href='" . $url . "' target='_blank'>" . $url . "</a>"
             )
         );
     }
 
     public static function getSupportPromoteMessage(): string
     {
+        $url = htmlescape(GLPI_NETWORK_SERVICES);
+
         return nl2br(sprintf(
             __s("Having troubles setting up an advanced GLPI module?\n"
             . "We can help you solve them. Sign up for support on %s."),
-            "<a href='" . GLPI_NETWORK_SERVICES . "' target='_blank'>" . GLPI_NETWORK_SERVICES . "</a>"
+            "<a href='" . $url . "' target='_blank'>" . $url . "</a>"
         ));
     }
 

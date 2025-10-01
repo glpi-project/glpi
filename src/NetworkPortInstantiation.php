@@ -576,8 +576,8 @@ TWIG, $twig_params);
      **/
     public static function showConnection($netport, $edit = false)
     {
-        $ID = $netport->fields["id"];
-        if (empty($ID)) {
+        $ID = $netport->getID();
+        if (static::isNewID($ID)) {
             return false;
         }
 
@@ -695,7 +695,7 @@ TWIG, $twig_params);
             }
         }
 
-        echo "<input type='hidden' name='NetworkPortConnect_networkports_id_1'value='$ID'>";
+        echo "<input type='hidden' name='NetworkPortConnect_networkports_id_1'value='" . htmlescape($ID) . "'>";
         $rand = Dropdown::showItemTypes('NetworkPortConnect_itemtype', $CFG_GLPI["networkport_types"]);
 
         $params = ['itemtype'           => '__VALUE__',

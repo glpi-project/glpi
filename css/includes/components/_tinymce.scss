@@ -51,3 +51,9 @@ html[data-glpi-theme-dark="1"] {
     content: attr(data-mce-placeholder);
     position: absolute;
 }
+
+/* Tinymce duplicate some tags on selection, unsure why but it does not fit our
+expectations for forms tags and user mentions  */
+.mce-offscreen-selection {
+    display: none;
+}

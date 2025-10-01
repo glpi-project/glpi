@@ -53,7 +53,8 @@ if (($_REQUEST['action'] ?? 'show') === 'show') {
 
     if (
         isset($_REQUEST['authldaps_id'])
-        && ($_REQUEST['authldaps_id'] !== NOT_AVAILABLE)
+        && $_REQUEST['authldaps_id'] !== NOT_AVAILABLE
+        && (int) $_REQUEST['authldaps_id'] !== 0
         && (isset($_REQUEST['search']) || isset($_REQUEST['start']) || isset($_REQUEST['glpilist_limit']))
     ) {
         echo "<br />";

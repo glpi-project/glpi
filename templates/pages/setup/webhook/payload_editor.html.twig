@@ -41,10 +41,10 @@
 <div id="webhook-payload-editor-container" data-webhook-id="{{ item.fields['id'] }}">
    <div id="webhook-payload-editor-toolbar" class="mx-1" style="font-size: 1.25em">
       <button name="editor_save" class="btn btn-icon btn-ghost-secondary">
-         <i class="ti ti-device-floppy" title="{{ _x('button', 'Save') }}"></i>
+         <i class="ti ti-device-floppy" title="{{ _x('button', 'Save') }}" aria-label="{{ _x('button', 'Save') }}"></i>
       </button>
       <button name="editor_find" class="btn btn-icon btn-ghost-secondary">
-         <i class="ti ti-search" title="{{ __('Search') }}"></i>
+         <i class="ti ti-search" title="{{ __('Search') }}" aria-label="{{ __('Search') }}"></i>
       </button>
    </div>
    <div id="payload" class="webhook-payload-editor" style="height: 600px"></div>
@@ -57,54 +57,51 @@
       }) }}
    </div>
 </div>
-<script>
-    $(() => {
-        {% set payload = item.fields['payload']|default(default_payload) %}
-        window.GLPI.Monaco.createEditor('payload', 'twig', {{ payload|json_encode|raw }}, {{ response_schema|json_encode|raw }}).then((monaco) => {
-            $("#webhook-payload-editor-container button[name='editor_find']").on('click', function() {
-                monaco.editor.getAction('actions.find').run();
-            });
-            $("#webhook-payload-editor-container button[name='editor_save']").on('click', function() {
-                let payload_template = '';
-                let reload_page = false;
-                if (!$('#payload').hasClass('d-none')) {
-                    payload_template = monaco.editor.getValue();
+<script type="module">
+    {% set payload = item.fields['payload']|default(default_payload) %}
+    window.GLPI.Monaco.createEditor('payload', 'twig', {{ payload|json_encode|raw }}, {{ response_schema|json_encode|raw }}).then((monaco) => {
+        $("#webhook-payload-editor-container button[name='editor_find']").on('click', function() {
+            monaco.editor.getAction('actions.find').run();
+        });
+        $("#webhook-payload-editor-container button[name='editor_save']").on('click', function() {
+            let payload_template = '';
+            let reload_page = false;
+            if (!$('#payload').hasClass('d-none')) {
+                payload_template = monaco.editor.getValue();
+            }
+            $.ajax({
+                url: CFG_GLPI['root_doc'] + '/ajax/webhook.php',
+                type: 'POST',
+                data: {
+                    action: 'update_payload_template',
+                    webhook_id: $("#webhook-payload-editor-container").data('webhook-id'),
+                    payload_template: payload_template,
+                    use_default_payload: $('input[name="use_default_payload"]').is(':checked'),
                 }
-                $.ajax({
-                    url: CFG_GLPI['root_doc'] + '/ajax/webhook.php',
-                    type: 'POST',
-                    data: {
-                        action: 'update_payload_template',
-                        webhook_id: $("#webhook-payload-editor-container").data('webhook-id'),
-                        payload_template: payload_template,
-                        use_default_payload: $('input[name="use_default_payload"]').is(':checked'),
-                    }
-                }).done(function() {
-                    if (reload_page) {
-                        window.location.reload();
-                    } else {
-                        glpi_toast_info(__('Saved'));
-                    }
-                });
+            }).done(function() {
+                if (reload_page) {
+                    window.location.reload();
+                } else {
+                    glpi_toast_info(__('Saved'));
+                }
             });
         });
-
         $('input[name="use_default_payload"]').on('change', () => {
-           const is_default_payload = $('input[name="use_default_payload"]').is(':checked');
-           if (is_default_payload) {
-               $('#webhook-payload-editor-toolbar button').addClass('d-none');
-               $('#payload').addClass('d-none');
-               $('#default_payload').removeClass('d-none');
-           } else {
-               $('#webhook-payload-editor-toolbar button').removeClass('d-none');
-               $('#payload').removeClass('d-none');
-               $('#default_payload').addClass('d-none');
-           }
-           // Force save button to be visible
-           $('#webhook-payload-editor-toolbar button:first').removeClass('d-none');
+            const is_default_payload = $('input[name="use_default_payload"]').is(':checked');
+            if (is_default_payload) {
+                $('#webhook-payload-editor-toolbar button').addClass('d-none');
+                $('#payload').addClass('d-none');
+                $('#default_payload').removeClass('d-none');
+            } else {
+                $('#webhook-payload-editor-toolbar button').removeClass('d-none');
+                $('#payload').removeClass('d-none');
+                $('#default_payload').addClass('d-none');
+                // Force Monaco layout
+                monaco.editor.layout();
+            }
+            // Force save button to be visible
+            $('#webhook-payload-editor-toolbar button:first').removeClass('d-none');
         });
-        $(() => {
-           $('input[name="use_default_payload"]').trigger('change');
-        });
+        $('input[name="use_default_payload"]').trigger('change');
     });
 </script>

@@ -250,27 +250,27 @@ class Appliance_Item extends CommonDBRelation
             $used[$data['id']]      = $data['id'];
         }
         if ($canedit && ($withtemplate != 2)) {
-            echo "<div class='mt-1 mb-3 text-center'>";
+            echo "<div class='firstbloc'>";
             echo "<form name='applianceitem_form$rand' id='applianceitem_form$rand' method='post'
                 action='" . htmlescape(Toolbox::getItemTypeFormURL(self::class)) . "'>";
+            echo __s('Add to an appliance');
+            echo "<div class='d-flex'>";
             echo "<input type='hidden' name='items_id' value='$ID'>";
             echo "<input type='hidden' name='itemtype' value='" . htmlescape($item::class) . "'>";
-
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='2'>" . __s('Add to an appliance') . "</th></tr>";
-
-            echo "<tr class='tab_bg_1'><td>";
+            echo "<div class='auto'>";
             Appliance::dropdown([
                 'entity'  => $item->getEntityID(),
                 'used'    => $used,
             ]);
-
-            echo "</td><td class='center'>";
-            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-            echo "</td></tr>";
-            echo "</table>";
-            Html::closeForm();
             echo "</div>";
+            echo "<div class='auto'>";
+            echo "<button type='submit' name='add' value='1' class='btn btn-primary ms-1'>";
+            echo "<i class='ti ti-link'></i>" . _sx('button', 'Add');
+            echo "</button>";
+            echo "</div>";
+            echo "</div>"; //d-flex
+            Html::closeForm();
+            echo "</div>"; //firstbloc
         }
 
         $entries = [];

@@ -73,20 +73,24 @@ which broke styles of btn-group > .btn-check
 }
 
 // Reverse border radius for flex-row-reverse
-.btn-group.flex-row-reverse > .btn:not(:last-child, .dropdown-toggle),
-.btn-group.flex-row-reverse > .btn.dropdown-toggle-split:first-child,
-.btn-group.flex-row-reverse > .btn-group:not(:last-child) > .btn {
-    border-top-right-radius: inherit;
-    border-bottom-right-radius: inherit;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-}
+.btn-group.flex-row-reverse {
+    // !important are set for buttons in the middle (not first, not last) to have both radius neutralized
+    // (and avoid the inheritance)
+    .btn:not(:last-child, .dropdown-toggle),
+    .btn.dropdown-toggle-split:first-child,
+    .btn-group:not(:last-child) > .btn {
+        border-top-right-radius: inherit;
+        border-bottom-right-radius: inherit;
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+    }
 
-.btn-group.flex-row-reverse > .btn:nth-child(n+3),
-.btn-group.flex-row-reverse > :not(.btn-check) + .btn,
-.btn-group.flex-row-reverse > .btn-group:not(:first-child) > .btn {
-    border-top-left-radius: inherit;
-    border-bottom-left-radius: inherit;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+    .btn:nth-child(n+3),
+    :not(.btn-check) + .btn,
+    .btn-group:not(:first-child) > .btn {
+        border-top-left-radius: inherit;
+        border-bottom-left-radius: inherit;
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+    }
 }

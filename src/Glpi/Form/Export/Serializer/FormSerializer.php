@@ -53,6 +53,7 @@ use Glpi\Form\Export\Result\ImportResultPreview;
 use Glpi\Form\Export\Specification\AccesControlPolicyContentSpecification;
 use Glpi\Form\Export\Specification\CommentContentSpecification;
 use Glpi\Form\Export\Specification\ConditionDataSpecification;
+use Glpi\Form\Export\Specification\CustomIllustrationContentSpecification;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Export\Specification\DestinationContentSpecification;
 use Glpi\Form\Export\Specification\ExportContentSpecification;
@@ -65,14 +66,19 @@ use Glpi\Form\FormTranslation;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\Section;
+use Glpi\UI\IllustrationManager;
 use InvalidArgumentException;
 use RuntimeException;
 use Session;
 use Throwable;
 use Toolbox;
 
+use function Safe\base64_decode;
+use function Safe\file_get_contents;
+use function Safe\file_put_contents;
 use function Safe\json_decode;
 use function Safe\json_encode;
+use function Safe\md5_file;
 
 final class FormSerializer extends AbstractFormSerializer
 {
@@ -260,6 +266,7 @@ final class FormSerializer extends AbstractFormSerializer
         $form = $this->importQuestions($form, $form_spec, $mapper);
         $form = $this->importAccessControlPolicices($form, $form_spec, $mapper);
         $form = $this->importDestinations($form, $form_spec, $mapper);
+        $form = $this->importDestinationsConfig($form, $form_spec, $mapper);
         $form = $this->importConditions($form, $form_spec, $mapper);
         $form = $this->importTranslations($form, $form_spec, $mapper);
 
@@ -269,13 +276,16 @@ final class FormSerializer extends AbstractFormSerializer
     private function exportBasicFormProperties(
         Form $form,
     ): FormContentSpecification {
+        $illustration = $this->prepareIllustrationDataForExport(
+            $form->fields['illustration'],
+        );
         $spec                                    = new FormContentSpecification();
         $spec->id                                = $form->fields['id'];
         $spec->uuid                              = $form->fields['uuid'];
         $spec->name                              = $form->fields['name'];
         $spec->header                            = $form->fields['header'];
         $spec->description                       = $form->fields['description'];
-        $spec->illustration                      = $form->fields['illustration'];
+        $spec->illustration                      = $illustration;
         $spec->is_recursive                      = $form->fields['is_recursive'];
         $spec->is_active                         = $form->fields['is_active'];
         $spec->submit_button_visibility_strategy = $form->fields['submit_button_visibility_strategy'];
@@ -309,12 +319,15 @@ final class FormSerializer extends AbstractFormSerializer
         }
 
         $form = new Form();
+        $illustration = $this->prepareIllustrationDataForImport(
+            $spec->illustration,
+        );
         $id = $form->add([
             '_from_import'                      => true,
             'name'                              => $spec->name,
             'header'                            => $spec->header ?? null,
             'description'                       => $spec->description ?? null,
-            'illustration'                      => $spec->illustration,
+            'illustration'                      => $illustration,
             'forms_categories_id'               => $categories_id ?? 0,
             'entities_id'                       => $entities_id,
             'is_recursive'                      => $spec->is_recursive,
@@ -469,18 +482,20 @@ final class FormSerializer extends AbstractFormSerializer
         FormContentSpecification $form_spec,
     ): FormContentSpecification {
         foreach ($form->getQuestions() as $question) {
-            $spec                      = new QuestionContentSpecification();
-            $spec->id                  = $question->fields['id'];
-            $spec->uuid                = $question->fields['uuid'];
-            $spec->name                = $question->fields['name'];
-            $spec->type                = $question->fields['type'];
-            $spec->is_mandatory        = $question->fields['is_mandatory'];
-            $spec->vertical_rank       = $question->fields['vertical_rank'];
-            $spec->horizontal_rank     = $question->fields['horizontal_rank'];
-            $spec->description         = $question->fields['description'];
-            $spec->section_id          = $question->fields['forms_sections_id'];
-            $spec->visibility_strategy = $question->fields['visibility_strategy'];
-            $spec->conditions = $this->prepareConditionDataForExport($question);
+            $spec                        = new QuestionContentSpecification();
+            $spec->id                    = $question->fields['id'];
+            $spec->uuid                  = $question->fields['uuid'];
+            $spec->name                  = $question->fields['name'];
+            $spec->type                  = $question->fields['type'];
+            $spec->is_mandatory          = $question->fields['is_mandatory'];
+            $spec->vertical_rank         = $question->fields['vertical_rank'];
+            $spec->horizontal_rank       = $question->fields['horizontal_rank'];
+            $spec->description           = $question->fields['description'];
+            $spec->section_id            = $question->fields['forms_sections_id'];
+            $spec->visibility_strategy   = $question->fields['visibility_strategy'];
+            $spec->validation_strategy   = $question->fields['validation_strategy'];
+            $spec->conditions            = $this->prepareConditionDataForExport($question);
+            $spec->validation_conditions = $this->prepareValidationConditionDataForExport($question);
 
             // Handle dynamic fields, we can't know the values that need to be mapped
             // here so we need to let the question object handle it itself.
@@ -513,6 +528,7 @@ final class FormSerializer extends AbstractFormSerializer
                 'default_value'       => $question_spec->default_value,
                 'extra_data'          => $question_spec->extra_data,
                 'visibility_strategy' => $question_spec->visibility_strategy,
+                'validation_strategy' => $question_spec->validation_strategy,
                 'forms_sections_id'   => $mapper->getItemId(
                     Section::class,
                     $question_spec->section_id,
@@ -581,11 +597,61 @@ final class FormSerializer extends AbstractFormSerializer
         return $specs;
     }
 
+    /** @return ConditionDataSpecification[] */
+    private function prepareValidationConditionDataForExport(
+        Question $question
+    ): array {
+        $specs = [];
+        foreach ($question->getConfiguredValidationConditionsData() as $data) {
+            $spec                 = new ConditionDataSpecification();
+            $spec->item_uuid      = $data->getItemUuid();
+            $spec->item_type      = $data->getItemType()->value;
+            $spec->value_operator = $data->getValueOperator()->value;
+            $spec->logic_operator = $data->getLogicOperator()->value;
+            $spec->value          = $data->getValue();
+
+            $specs[] = $spec;
+        }
+
+        return $specs;
+    }
+
     /**
      * @param ConditionDataSpecification[] $conditions_specs
      * @return ConditionData[]
      */
     private function prepareConditionsForImport(
+        array $conditions_specs,
+        DatabaseMapper $mapper,
+    ): array {
+        $data = [];
+        foreach ($conditions_specs as $condition_spec) {
+            $type     = Type::from($condition_spec->item_type);
+            $itemtype = $type->getItemtype();
+            $id       = $mapper->getItemId($itemtype, $condition_spec->item_uuid);
+            $item     = getItemForItemtype($itemtype);
+            if (!$item || !$item->getFromDB($id)) {
+                $message = "Failed to find item for condition: $itemtype::$id";
+                throw new RuntimeException($message);
+            }
+
+            $data[] = new ConditionData(
+                item_type     : $type->value,
+                item_uuid     : $item->fields['uuid'],
+                value_operator: $condition_spec->value_operator,
+                value         : $condition_spec->value,
+                logic_operator: $condition_spec->logic_operator
+            );
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param ConditionDataSpecification[] $conditions_specs
+     * @return ConditionData[]
+     */
+    private function prepareValidationConditionsForImport(
         array $conditions_specs,
         DatabaseMapper $mapper,
     ): array {
@@ -645,6 +711,15 @@ final class FormSerializer extends AbstractFormSerializer
                     $mapper,
                 )
             );
+
+            $this->importValidationCondition(
+                id: $mapper->getItemId(Question::class, $question_spec->id),
+                itemtype: new Question(),
+                conditions: $this->prepareValidationConditionsForImport(
+                    $question_spec->validation_conditions,
+                    $mapper,
+                )
+            );
         }
         foreach ($form_spec->comments as $comment_spec) {
             $this->importCondition(
@@ -684,6 +759,22 @@ final class FormSerializer extends AbstractFormSerializer
 
         if (!$itemtype->update($update_input)) {
             $message = "Failed to import condition: " . json_encode($update_input);
+            throw new RuntimeException($message);
+        }
+    }
+
+    private function importValidationCondition(
+        CommonDBTM $itemtype,
+        int $id,
+        array $conditions,
+    ): void {
+        $update_input = [
+            'id'                     => $id,
+            '_validation_conditions' => $conditions,
+        ];
+
+        if (!$itemtype->update($update_input)) {
+            $message = "Failed to import validation condition: " . json_encode($update_input);
             throw new RuntimeException($message);
         }
     }
@@ -784,7 +875,6 @@ final class FormSerializer extends AbstractFormSerializer
     ): Form {
         foreach ($form_spec->destinations as $destination_spec) {
             $destination = new FormDestination();
-            $config = $destination_spec->config;
 
             // Prepare basic input
             $input = [
@@ -792,7 +882,6 @@ final class FormSerializer extends AbstractFormSerializer
                 'itemtype'                 => $destination_spec->itemtype,
                 'name'                     => $destination_spec->name,
                 'creation_strategy'        => $destination_spec->creation_strategy,
-                'config'                   => $config,
                 Form::getForeignKeyField() => $form->getID(),
             ];
 
@@ -804,16 +893,7 @@ final class FormSerializer extends AbstractFormSerializer
             }
             $destination_type = new $destination_type();
 
-            // Handle dynamic config, we can't know the values that need to be
-            // mapped here so we need to let the destination object handle it
-            // itself.
-            $input = FormDestination::prepareDynamicImportData(
-                $destination_type,
-                $input,
-                $mapper
-            );
             $id = $destination->add($input);
-
             if (!$id) {
                 $message = "Failed to create destination: " . json_encode($input);
                 throw new RuntimeException($message);
@@ -825,6 +905,51 @@ final class FormSerializer extends AbstractFormSerializer
                 $destination_spec->id,
                 $id
             );
+        }
+
+        // Reload form to clear lazy loaded data
+        $form->getFromDB($form->getID());
+        return $form;
+    }
+
+    /**
+     * Import the configuration of each destination.
+     * This is done in a separate step after the initial creation
+     * to ensure that all destinations are created before we try to
+     * import their configuration.
+     *
+     * Some configuration may reference other destinations
+     *
+     * @param Form $form
+     * @param FormContentSpecification $form_spec
+     * @param DatabaseMapper $mapper
+     * @return Form The updated form
+     * @throws RuntimeException if a destination cannot be found or updated
+     */
+    private function importDestinationsConfig(
+        Form $form,
+        FormContentSpecification $form_spec,
+        DatabaseMapper $mapper,
+    ): Form {
+        foreach ($form_spec->destinations as $destination_spec) {
+            $destination = new FormDestination();
+            $config = $destination_spec->config;
+            $id = $mapper->getItemId(FormDestination::class, $destination_spec->id);
+            if (!$destination->getFromDB($id)) {
+                $message = "Failed to find destination for fields import: " . json_encode($destination_spec);
+                throw new RuntimeException($message);
+            }
+
+            $input = FormDestination::prepareDynamicImportData(
+                $destination->getConcreteDestinationItem(),
+                ['_from_import' => true, 'id' => $id, 'config' => $config],
+                $mapper
+            );
+
+            if (!$destination->update($input)) {
+                $message = "Failed to update destination for fields import: " . json_encode($input);
+                throw new RuntimeException($message);
+            }
         }
 
         // Reload form to clear lazy loaded data
@@ -879,5 +1004,63 @@ final class FormSerializer extends AbstractFormSerializer
         // Reload form to clear lazy loaded data
         $form->getFromDB($form->getID());
         return $form;
+    }
+
+    private function prepareIllustrationDataForExport(
+        string $illustration,
+    ): string|CustomIllustrationContentSpecification {
+        // Stop here if this illustration is native
+        $prefix = IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX;
+        $manager = new IllustrationManager();
+        if (!str_starts_with($illustration, $prefix)) {
+            return $illustration;
+        }
+
+        // Add base64 data and md5sum
+        $specification = new CustomIllustrationContentSpecification();
+        $key = substr($illustration, strlen($prefix));
+        $file = $manager->getCustomIllustrationFile($key);
+        $specification->key = $key;
+        $specification->data = base64_encode(file_get_contents($file));
+        $specification->checksum = md5_file($file);
+
+        return $specification;
+    }
+
+    private function prepareIllustrationDataForImport(
+        string|CustomIllustrationContentSpecification $illustration,
+    ): string {
+        // Stop here if this illustration is native
+        if (is_string($illustration)) {
+            return $illustration;
+        }
+
+        $prefix = IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX;
+
+        // Check if file already exist
+        $manager = new IllustrationManager();
+        $file = $manager->getCustomIllustrationFile($illustration->key);
+        if ($file !== null) {
+            // File exist, validate checksum
+            if (md5_file($file) === $illustration->checksum) {
+                return $prefix . $illustration->key;
+            } else {
+                $message = "Checksum don't match for exisiting file: $illustration->key";
+                throw new RuntimeException($message);
+            }
+        }
+
+        // Save file
+        $data = base64_decode($illustration->data);
+        $tmp_path = GLPI_TMP_DIR . "/" . $illustration->key;
+        file_put_contents($tmp_path, $data);
+        $manager->saveCustomIllustration($illustration->key, $tmp_path);
+        $file = $manager->getCustomIllustrationFile($illustration->key);
+        if (md5_file($file) !== $illustration->checksum) {
+            $message = "Checksum don't match for new file: $illustration->key";
+            throw new RuntimeException($message);
+        }
+
+        return $prefix . $illustration->key;
     }
 }

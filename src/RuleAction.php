@@ -194,13 +194,13 @@ class RuleAction extends CommonDBChild
                 ) {
                     $rule = getItemForItemtype($generic_rule->fields["sub_type"]);
                     if ($rule instanceof Rule) {
-                        return $rule->getActionName($values[$field]);
+                        return htmlescape($rule->getActionName($values[$field]));
                     }
                 }
                 break;
 
             case 'action_type':
-                return self::getActionByID($values[$field]);
+                return htmlescape(self::getActionByID($values[$field]));
 
             case 'value':
                 if (!isset($values["field"]) || !isset($values["action_type"])) {
@@ -214,11 +214,11 @@ class RuleAction extends CommonDBChild
                 ) {
                     $rule = getItemForItemtype($generic_rule->fields["sub_type"]);
                     if ($rule instanceof Rule) {
-                        return $rule->getCriteriaDisplayPattern(
+                        return htmlescape($rule->getCriteriaDisplayPattern(
                             $values["criteria"],
                             $values["condition"],
                             $values[$field]
-                        );
+                        ));
                     }
                 }
                 break;

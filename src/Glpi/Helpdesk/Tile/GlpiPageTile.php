@@ -181,13 +181,16 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface, ProvideTra
     public function listTranslationsHandlers(): array
     {
         $handlers = [];
-        $key = sprintf('%s: %s', $this->getLabel(), $this->fields['title'] ?? NOT_AVAILABLE);
+        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $category_name = sprintf('%s: %s', $this->getLabel(), $this->fields['title'] ?? NOT_AVAILABLE);
         if (!empty($this->getTitle())) {
             $handlers[$key][] = new TranslationHandler(
                 item: $this,
                 key: self::TRANSLATION_KEY_TITLE,
                 name: __('Title'),
                 value: $this->getTitle(),
+                is_rich_text: false,
+                category: $category_name
             );
         }
         if (!empty($this->getDescription())) {
@@ -197,6 +200,7 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface, ProvideTra
                 name: __('Description'),
                 value: $this->getDescription(),
                 is_rich_text: true,
+                category: $category_name
             );
         }
 

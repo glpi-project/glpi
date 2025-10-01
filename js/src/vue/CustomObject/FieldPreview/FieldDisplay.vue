@@ -153,7 +153,13 @@
                 });
                 const sortable_field = sortable_fields.get(field_key);
                 for (const [name, value] of Object.entries(sortable_field.field_options)) {
-                    url_params.append(`field_options[${name}]`, value);
+                    if (Array.isArray(value)) {
+                        value.forEach((item) => {
+                            url_params.append(`field_options[${name}][]`, item);
+                        })
+                    } else {
+                        url_params.append(`field_options[${name}]`, value);
+                    }
                 }
                 const url = `${CFG_GLPI.root_doc}/ajax/asset/assetdefinition.php?${url_params}`;
                 window.glpi_ajax_dialog({
@@ -214,10 +220,18 @@
 
             sortable_field.field_options = {};
             field_options.forEach((option) => {
-                const name = option.name.replace('field_options[', '').slice(0, -1);
-                sortable_field.field_options[name] = option.value;
+                let name = option.name.replace('field_options[', '');
+                if (name.endsWith('[]')) { // We are in array, we store the key as the value
+                    name = name.slice(0, -3);
+                    if (!Array.isArray(sortable_field.field_options[name])) {
+                        sortable_field.field_options[name] = [];
+                    }
+                    sortable_field.field_options[name].push(option.value);
+                } else { // OG code, remove the ]
+                    name = name.slice(0, -1);
+                    sortable_field.field_options[name] = option.value;
+                }
             });
-
             // Reload preview
             appendField([field_key]);
 
@@ -303,7 +317,19 @@
                             </template>
                             <template v-slot:field_options>
                                 <template v-for="(field_option_value, field_option_name) in sortable_field.field_options" :key="field_option_name">
-                                    <input type="hidden" :name="`field_options[${sortable_field.key}][${field_option_name}]`" :value="field_option_value" />
+                                    <input
+                                        v-if="Array.isArray(field_option_value)"
+                                        v-for="value in field_option_value"
+                                        type="hidden"
+                                        :name="`field_options[${sortable_field.key}][${field_option_name}][]`"
+                                        :value="value"
+                                    />
+                                    <input
+                                        v-else
+                                        type="hidden"
+                                        :name="`field_options[${sortable_field.key}][${field_option_name}]`"
+                                        :value="field_option_value"
+                                    />
                                 </template>
                             </template>
                         </Field>

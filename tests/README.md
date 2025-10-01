@@ -2,20 +2,15 @@
 
 To run the GLPI test suite you need
 
-* [atoum](http://atoum.org/)
+* [phpunit](https://phpunit.de)
 
-Installing composer development dependencies
-----------------------
+Installing dependencies
+-----------------------
 
-Run the **composer install** command without --no-dev option in the top of GLPI tree:
+Run the following command in the top of GLPI tree:
 
 ```bash
-$ composer install -o
-
-Loading composer repositories with package information
-Installing dependencies (including require-dev) from lock file
-[...]
-Generating optimized autoload files
+$ php bin/console dependencies install
 ```
 
 Creating a dedicated database
@@ -49,35 +44,22 @@ Running the test suite on developpement machine
 -----------------------------------------------
 
 There are multiple directories for tests:
-- `tests/functional` and `phpunit/functional` for unit and functional tests;
-- `phpunit/imap` for Mail collector tests;
+- `tests/functional` for unit and functional tests;
+- `tests/imap` for Mail collector tests;
 - `tests/LDAP` for LDAP connection tests;
 - `tests/web` for API tests.
 
-You can choose to run tests on a whole directory, on any file, or on any \<class::method>. You have to specify a bootstrap file each time:
+You can choose to run tests on a whole directory, on any file, or on any \<class::method>:
 
 ```bash
-$ atoum -bf tests/bootstrap.php -mcn 1 -d tests/functional/
+$ ./vendor/bin/phpunit tests/functional/
 [...]
-$ atoum -bf tests/bootstrap.php -f tests/functional/Html.php
+$ ./vendor/bin/phpunit tests/functional/Html.php
 [...]
-$ atoum -bf tests/bootstrap.php -f tests/functional/Html.php -m tests\units\Html::testConvDateTime
+$ ./vendor/bin/phpunit tests/functional/Html.php --filter testConvDateTime
 ```
-In `tests\units\Html::testConvDateTime`, you may need to double the backslashes (depending on the shell you use);
 
-
-Running `atoum` without any arguments will show you the possible options. Most important are:
-- `-bf` to set bootstrap file,
-- `-d` to run tests located in a whole directory,
-- `-f` to run tests on a standalone file,
-- `-m` to run tests on all \<class::method>, * may be used as wildcard for class name or method name,
-- `--debug` to get extra information when something goes wrong,
-- `-mcn` limit number of concurrent runs. This is unfortunately mandatory running the whole test suite right now :/,
-- `-ncc` do not generate code coverage,
-- `--php` to change PHP executable to use,
-- `-l` loop mode.
-
-Note that if you do not use the `-ncc` switch; coverage will be generated in the `tests/code-coverage/` directory.
+If you want to run the API tests suite, you need to run a development instance on testing environment (ie. an Apache virtual host with the `SetEnv GLPI_ENVIRONMENT_TYPE "testing"` directive):
 
 On first run, additional data are loaded into the test database. On following run, this step is skipped. Note that if the test dataset version changes; you'll have to reset your database using the **CliInstall** script again.
 

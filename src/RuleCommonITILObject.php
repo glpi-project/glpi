@@ -194,7 +194,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
             }
         }
         if (!$entity_as_criteria) {
-            echo "<input type='hidden' name='entities_id' value='" . $_SESSION["glpiactive_entity"] . "'>";
+            echo "<input type='hidden' name='entities_id' value='" . ((int) $_SESSION["glpiactive_entity"]) . "'>";
         }
     }
 

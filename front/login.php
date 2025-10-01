@@ -66,13 +66,7 @@ if (isset($_REQUEST['totp_cancel'])) {
     session_destroy();
     Html::redirect($CFG_GLPI['root_doc'] . '/index.php');
 }
-$mfa_params = [];
-if (!empty($_POST['totp_code'])) {
-    $mfa_params['totp_code'] = $_POST['totp_code'];
-} elseif (!empty($_POST['backup_code'])) {
-    $mfa_params['backup_code'] = $_POST['backup_code'];
-}
-if ($auth->login($_POST['login_name'] ?? '', $_POST['login_password'] ?? '', ($_REQUEST["noAUTO"] ?? false), $remember, $_POST['auth'] ?? '', $mfa_params)) {
+if ($auth->login($_POST['login_name'] ?? '', $_POST['login_password'] ?? '', ($_REQUEST["noAUTO"] ?? false), $remember, $_POST['auth'] ?? '')) {
     Auth::redirectIfAuthenticated();
 } else {
     throw new AuthenticationFailedException(authentication_errors: $auth->getErrors());

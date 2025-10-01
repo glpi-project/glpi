@@ -36,10 +36,6 @@
 
 {% set rand = random() %}
 
-{% if question is not null %}
-    {% set itemtype = question.getQuestionType().getDefaultValueItemtype(question) %}
-{% endif %}
-
 {% block dropdown_content %}
     <div data-glpi-form-editor-item-dropdown-advanced-configuration>
         {{ fields.dropdownArrayField(
@@ -69,15 +65,18 @@
             }
         ) }}
         {{ fields.dropdownField(
-            'ITILCategory',
+            itemtype,
             'extra_data[root_items_id]',
             root_items_id|default(0),
             __('Subtree root'),
             {
-                'display_emptychoice': true,
-                'full_width'       : true,
-                'is_horizontal'    : false,
-                'init': question is not null ? true : false,
+                'full_width'         : true,
+                'is_horizontal'      : false,
+                'init'               : question is not null ? true : false,
+                'display_emptychoice': false,
+                'toadd'              : {
+                    '-1': constant('Dropdown::EMPTY_VALUE')
+                }
             }
         ) }}
         {{ fields.numberField(
@@ -90,6 +89,21 @@
                 'min'          : 0,
                 'max'          : 16,
                 'step'         : 1,
+            }
+        ) }}
+        {{ fields.sliderField(
+            'extra_data[selectable_tree_root]',
+            selectable_tree_root|default(false) ? 1 : 0,
+            __('Make tree root selectable'),
+            {
+                'full_width'           : false,
+                'is_horizontal'        : true,
+                'align_label_right'    : false,
+                'inline_add_field_html': true,
+                'field_class'          : 'col-12 ms-0 me-0',
+                'label_class'          : 'col-10 p-0',
+                'input_class'          : 'col-2 p-0 justify-content-end',
+                'mb'                   : 'mb-0',
             }
         ) }}
 

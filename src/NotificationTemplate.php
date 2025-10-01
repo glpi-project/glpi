@@ -269,7 +269,7 @@ class NotificationTemplate extends CommonDBTM
                 //Template processing
 
                 $lang['subject']      = $target->getSubjectPrefix($event)
-                . self::process($template_datas['subject'], self::getDataForPlainText($data));
+                    . self::process($template_datas['subject'], self::getDataForPlainText($data), html_context: false);
                 $lang['content_html'] = '';
 
                 //If no html content, then send only in text
@@ -278,10 +278,11 @@ class NotificationTemplate extends CommonDBTM
 
                     $template_datas['content_html'] = self::process(
                         $template_datas['content_html'],
-                        self::getDataForHtml($data)
+                        self::getDataForHtml($data),
+                        html_context: true
                     );
 
-                    $css = $this->fields['css'] ?? '';
+                    $css = $this->fields['css'] ?? ''; // assume that CSS is safe
 
                     $lang['content_html']
 
@@ -295,17 +296,17 @@ class NotificationTemplate extends CommonDBTM
                            {$css}
                          </style>
                         </head>
-                        <body>\n" . (!empty($add_header) ? $add_header . "\n<br><br>" : '')
+                        <body>\n" . (!empty($add_header) ? htmlescape($add_header) . "\n<br><br>" : '')
                         . $template_datas['content_html']
                      . "<br><br>-- \n<br>" . $signature_html
-                     . "<br>$footer_string"
-                     . "<br><br>\n" . (!empty($add_footer) ? $add_footer . "\n<br><br>" : '')
+                     . "<br>" . htmlescape($footer_string)
+                     . "<br><br>\n" . (!empty($add_footer) ? htmlescape($add_footer) . "\n<br><br>" : '')
                      . "\n</body></html>";
                 }
 
                 $signature_text = RichText::getTextFromHtml($this->signature, false, false);
                 $lang['content_text'] = (!empty($add_header) ? $add_header . "\n\n" : '')
-                . self::process($template_datas['content_text'], self::getDataForPlainText($data))
+                . self::process($template_datas['content_text'], self::getDataForPlainText($data), html_context: false)
                 . "\n\n-- \n" . $signature_text
                 . "\n" . $footer_string
                 . "\n\n" . $add_footer;
@@ -340,7 +341,7 @@ class NotificationTemplate extends CommonDBTM
      * @param $string
      * @param $data
      **/
-    public static function process($string, $data)
+    public static function process($string, $data, bool $html_context = false)
     {
 
         $cleandata = [];
@@ -407,7 +408,7 @@ class NotificationTemplate extends CommonDBTM
         $string = self::processIf($string, $cleandata);
         $string = strtr($string, $cleandata);
 
-        $string = self::convertRelativeGlpiLinksToAbsolute($string);
+        $string = self::convertRelativeGlpiLinksToAbsolute($string, $html_context);
 
         return $string;
     }
@@ -418,14 +419,19 @@ class NotificationTemplate extends CommonDBTM
      * @param string $string
      * @return string
      */
-    private static function convertRelativeGlpiLinksToAbsolute(string $string): string
+    private static function convertRelativeGlpiLinksToAbsolute(string $string, bool $html_context): string
     {
         global $CFG_GLPI;
+
+        $base_url = $CFG_GLPI['url_base'];
+        if ($html_context) {
+            $base_url = htmlescape($base_url);
+        }
 
         // Convert domain relative links to absolute links
         $string = preg_replace(
             '/((?:href)=[\'"])(\/(?:[^\/][^\'"]*)?)([\'"])/',
-            '$1' . $CFG_GLPI['url_base'] . '$2$3',
+            '$1' . $base_url . '$2$3',
             $string
         );
 

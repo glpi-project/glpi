@@ -47,7 +47,6 @@ TESTS_SUITES=(
   "security_scan"
   "install"
   "update"
-  "phpunit"
   "functional"
   "cache"
   "ldap"
@@ -153,7 +152,6 @@ Available tests suites:
  - security_scan
  - install
  - update
- - phpunit
  - functional
  - cache
  - ldap
@@ -284,10 +282,6 @@ run_single_test () {
       && docker compose exec -T app .github/actions/test_update-from-9.5.sh \
       || LAST_EXIT_CODE=$?
       ;;
-    "phpunit")
-         docker compose exec -T app .github/actions/test_tests-phpunit.sh $TEST_ARGS \
-      || LAST_EXIT_CODE=$?
-      ;;
     "functional")
          docker compose exec -T app .github/actions/test_tests-functional.sh $TEST_ARGS \
       || LAST_EXIT_CODE=$?
@@ -315,7 +309,8 @@ run_single_test () {
       || LAST_EXIT_CODE=$?
       ;;
     "e2e")
-         docker compose exec -T app .github/actions/test_tests-e2e.sh \
+        $APPLICATION_ROOT/.github/actions/init_initialize-ldap-fixtures.sh \
+      && docker compose exec -T app .github/actions/test_tests-e2e.sh \
       || LAST_EXIT_CODE=$?
       ;;
   esac

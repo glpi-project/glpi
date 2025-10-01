@@ -55,7 +55,7 @@ define(
 );
 
 define('GLPI_MIN_PHP', '8.2'); // Must also be changed in top of public/index.php
-define('GLPI_MAX_PHP', '8.4'); // Must also be changed in top of public/index.php
+define('GLPI_MAX_PHP', '8.5'); // Must also be changed in top of public/index.php
 define('GLPI_YEAR', '2025');
 
 // namespaces
@@ -98,7 +98,6 @@ define("MANAGEMENT_GLOBAL", 1);
 //Mail send methods
 define("MAIL_MAIL", 0);
 define("MAIL_SMTP", 1);
-define("MAIL_SMTPS", 2);
 define("MAIL_SMTPSSL", 2);
 define("MAIL_SMTPTLS", 3);
 define("MAIL_SMTPOAUTH", 4);

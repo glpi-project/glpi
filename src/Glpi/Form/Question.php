@@ -38,6 +38,8 @@ namespace Glpi\Form;
 use CommonDBChild;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Features\CloneWithoutNameSuffix;
+use Glpi\Form\Clone\FormCloneHelper;
 use Glpi\Form\Condition\ConditionableValidationTrait;
 use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
@@ -61,6 +63,7 @@ use function Safe\json_encode;
 /**
  * Question of a given helpdesk form's section
  */
+#[CloneWithoutNameSuffix]
 final class Question extends CommonDBChild implements BlockInterface, ConditionableVisibilityInterface
 {
     use ConditionableVisibilityTrait;
@@ -129,7 +132,8 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     #[Override]
     public function listTranslationsHandlers(): array
     {
-        $key = sprintf('%s: %s', self::getTypeName(), $this->getName());
+        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $category_name = sprintf('%s: %s', self::getTypeName(), $this->getName());
         $handlers = [];
         if (!empty($this->fields['name'])) {
             $handlers[$key][] = new TranslationHandler(
@@ -137,6 +141,8 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
                 key: self::TRANSLATION_KEY_NAME,
                 name: __('Question name'),
                 value: $this->fields['name'],
+                is_rich_text: false,
+                category: $category_name
             );
         }
 
@@ -147,6 +153,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
                 name: __('Question description'),
                 value: $this->fields['description'],
                 is_rich_text: true,
+                category: $category_name
             );
         }
 
@@ -181,6 +188,14 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         return __('Untitled question');
     }
 
+    #[Override]
+    public function getCloneRelations(): array
+    {
+        return [
+            FormTranslation::class,
+        ];
+    }
+
     /**
      * Get type object for the current object.
      *
@@ -189,10 +204,10 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     public function getQuestionType(): ?QuestionTypeInterface
     {
         $type = $this->fields['type'] ?? "";
-
         if (
             !is_a($type, QuestionTypeInterface::class, true)
             || (new ReflectionClass($type))->isAbstract()
+            || !QuestionTypesManager::getInstance()->isValidQuestionType($type)
         ) {
             return null;
         }
@@ -277,10 +292,15 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         $type = $this->getQuestionType();
 
         $extra_data = $this->getExtraDataConfig();
+        if ($extra_data instanceof JsonFieldInterface) {
+            $raw_extra_data = $extra_data->jsonSerialize();
+        } else {
+            $raw_extra_data = null;
+        }
         $default_value = $this->getDefaultValue();
 
         $data = new DynamicExportData();
-        $data->addField('extra_data', $type->exportDynamicExtraData($extra_data));
+        $data->addField('extra_data', $type->exportDynamicExtraData($raw_extra_data));
         $data->addField('default_value', $type->exportDynamicDefaultValue(
             $extra_data,
             $default_value,
@@ -307,6 +327,13 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         return $input;
     }
 
+    #[Override]
+    public function prepareInputForClone($input)
+    {
+        $input = parent::prepareInputForClone($input);
+        return FormCloneHelper::getInstance()->prepareQuestionInputForClone($input);
+    }
+
     private function prepareInput($input): array
     {
         $is_creating = ($input['id'] ?? 0) === 0;
@@ -321,7 +348,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         }
 
         // Set horizontal rank to null if not set
-        if (!isset($input['horizontal_rank'])) {
+        if (isset($input['horizontal_rank']) && $input['horizontal_rank'] === "-1") {
             $input['horizontal_rank'] = 'NULL';
         }
 
@@ -480,7 +507,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         parent::post_deleteFromDB();
     }
 
-    private function getExtraDataConfig(): ?JsonFieldInterface
+    public function getExtraDataConfig(): ?JsonFieldInterface
     {
         $data = $this->fields['extra_data'];
 

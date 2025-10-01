@@ -53,7 +53,7 @@ if (!$DB->tableExists('glpi_webhooks')) {
       `payload` longtext,
       `use_default_payload` tinyint NOT NULL DEFAULT '1',
       `custom_headers` text,
-      `url` varchar(255) DEFAULT NULL,
+      `url` text DEFAULT NULL,
       `secret` text,
       `use_cra_challenge` tinyint NOT NULL DEFAULT '0',
       `http_method` varchar(255) DEFAULT 'POST',
@@ -79,6 +79,8 @@ if (!$DB->tableExists('glpi_webhooks')) {
       KEY `webhookcategories_id` (`webhookcategories_id`)
     ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->doQuery($query);
+} else {
+    $migration->changeField('glpi_webhooks', 'url', 'url', 'text');
 }
 
 if (!$DB->fieldExists('glpi_webhooks', 'webhookcategories_id')) {
@@ -122,7 +124,7 @@ if (!$DB->tableExists('glpi_queuedwebhooks')) {
       `is_deleted` tinyint NOT NULL DEFAULT '0',
       `sent_try` int NOT NULL DEFAULT '0',
       `webhooks_id` int unsigned NOT NULL DEFAULT '0',
-      `url` varchar(255) DEFAULT NULL,
+      `url` text DEFAULT NULL,
       `create_time` timestamp NULL DEFAULT NULL,
       `send_time` timestamp NULL DEFAULT NULL,
       `sent_time` timestamp NULL DEFAULT NULL,
@@ -144,6 +146,8 @@ if (!$DB->tableExists('glpi_queuedwebhooks')) {
       KEY `sent_time` (`sent_time`)
     ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->doQuery($query);
+} else {
+    $migration->changeField('glpi_queuedwebhooks', 'url', 'url', 'text');
 }
 
 // Entity, ID, Webhook, Itemtype, Items ID, URL, Creation date

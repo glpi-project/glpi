@@ -1,0 +1,109 @@
+diff --git a/src/Extend/ConcreteExtensionStore.php b/src/Extend/ConcreteExtensionStore.php
+index 5d267fde..0825bab8 100644
+--- a/src/Extend/ConcreteExtensionStore.php
++++ b/src/Extend/ConcreteExtensionStore.php
+@@ -106,7 +106,7 @@ private static function extendOrReplace(SelectorList $selector, SelectorList $so
+ 
+         if (!$selector->isInvisible()) {
+             foreach ($selector->getComponents() as $component) {
+-                $extender->originals->attach($component);
++                $extender->originals->offsetSet($component);
+             }
+         }
+ 
+@@ -224,7 +224,7 @@ public function addSelector(SelectorList $selector, ?array $mediaContext): Box
+ 
+         if (!$originalSelector->isInvisible()) {
+             foreach ($originalSelector->getComponents() as $component) {
+-                $this->originals->attach($component);
++                $this->originals->offsetSet($component);
+             }
+         }
+ 
+@@ -239,7 +239,7 @@ public function addSelector(SelectorList $selector, ?array $mediaContext): Box
+         $modifiableSelector = new ModifiableBox($selector);
+ 
+         if ($mediaContext !== null) {
+-            $this->mediaContexts->attach($modifiableSelector, $mediaContext);
++            $this->mediaContexts->offsetSet($modifiableSelector, $mediaContext);
+         }
+ 
+         $this->registerSelector($selector, $modifiableSelector);
+@@ -261,7 +261,7 @@ private function registerSelector(SelectorList $list, ModifiableBox $selector):
+                     if (!isset($this->selectors[$simple])) {
+                         /** @var ObjectSet<ModifiableBox<SelectorList>> $set */
+                         $set = new ObjectSet();
+-                        $this->selectors->attach($simple, $set);
++                        $this->selectors->offsetSet($simple, $set);
+                     }
+                     $this->selectors[$simple]->add($selector);
+ 
+@@ -422,7 +422,7 @@ private function extendExistingExtensions(array $extensions, SimpleSelectorMap $
+                         }
+                     }
+ 
+-                    if ($newExtensions->contains($extension->target)) {
++                    if ($newExtensions->offsetExists($extension->target)) {
+                         /** @var SimpleSelectorMap<ComplexSelectorMap<Extension>> $additionalExtensions */
+                         $additionalExtensions ??= new SimpleSelectorMap();
+ 
+@@ -585,7 +585,7 @@ private function extendList(SelectorList $list, SimpleSelectorMap $extensions, ?
+             return $list;
+         }
+ 
+-        return new SelectorList($this->trim($extended, $this->originals->contains(...)), $list->getSpan());
++        return new SelectorList($this->trim($extended, $this->originals->offsetExists(...)), $list->getSpan());
+     }
+ 
+     /**
+@@ -618,7 +618,7 @@ private function extendComplex(ComplexSelector $complex, SimpleSelectorMap $exte
+         //     ]
+         //
+         $extendedNotExpanded = null;
+-        $isOriginal = $this->originals->contains($complex);
++        $isOriginal = $this->originals->offsetExists($complex);
+ 
+         foreach ($complex->getComponents() as $i => $component) {
+             $extended = $this->extendCompound($component, $extensions, $mediaQueryContext, $isOriginal);
+@@ -684,8 +684,8 @@ private function extendComplex(ComplexSelector $complex, SimpleSelectorMap $exte
+                 // Make sure that copies of $complex retain their status as "original"
+                 // selectors. This includes selectors that are modified because a :not()
+                 // was extended into.
+-                if ($first && $this->originals->contains($complex)) {
+-                    $this->originals->attach($outputComplex);
++                if ($first && $this->originals->offsetExists($complex)) {
++                    $this->originals->offsetSet($outputComplex);
+                 }
+ 
+                 $first = false;
+@@ -917,7 +917,7 @@ private function extendSimple(SimpleSelector $simple, SimpleSelectorMap $extensi
+             if ($extensionsForSimple === null) {
+                 return null;
+             }
+-            $targetsUsed?->attach($simple);
++            $targetsUsed?->offsetSet($simple);
+ 
+             $result = [];
+ 
+diff --git a/src/Extend/ObjectSet.php b/src/Extend/ObjectSet.php
+index 2a122b60..fc18a6f5 100644
+--- a/src/Extend/ObjectSet.php
++++ b/src/Extend/ObjectSet.php
+@@ -33,7 +33,7 @@ public function __construct()
+      */
+     public function contains(object $value): bool
+     {
+-        return $this->storage->contains($value);
++        return $this->storage->offsetExists($value);
+     }
+ 
+     /**
+@@ -41,7 +41,7 @@ public function contains(object $value): bool
+      */
+     public function add(object $value): void
+     {
+-        $this->storage->attach($value);
++        $this->storage->offsetSet($value);
+     }
+ 
+     /**

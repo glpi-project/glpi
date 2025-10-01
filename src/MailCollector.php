@@ -1056,9 +1056,12 @@ class MailCollector extends CommonDBTM
                  )))
             ) {
                 if ($tkt['_supplier_email']) {
-                    $tkt['content'] = sprintf(__('From %s'), $requester)
-                    . ($this->body_is_html ? '<br /><br />' : "\n\n")
-                    . $tkt['content'];
+                    $tkt['content'] = (
+                        $this->body_is_html
+                            ? htmlescape(sprintf(__('From %s'), $requester)) . '<br /><br />'
+                            : sprintf(__('From %s'), $requester) . "\n\n"
+                    )
+                        . $tkt['content'];
                 }
 
                 $header_tag      = NotificationTargetTicket::HEADERTAG;
@@ -1112,7 +1115,10 @@ class MailCollector extends CommonDBTM
 
         // Add message from getAttached
         if ($this->addtobody) {
-            $tkt['content'] .= $this->addtobody;
+            $tkt['content'] .= $this->body_is_html
+                ? nl2br(htmlescape($this->addtobody))
+                : $this->addtobody
+            ;
         }
 
         //If files are present and content is html
@@ -1882,13 +1888,12 @@ class MailCollector extends CommonDBTM
                 break;
 
             case MAIL_SMTP:
+            case MAIL_SMTPSSL:
                 $content .= 'SMTP';
                 break;
 
-            case MAIL_SMTPS:
-            case MAIL_SMTPSSL:
             case MAIL_SMTPTLS:
-                $content .= 'SMTPS';
+                $content .= 'SMTP+TLS';
                 break;
 
             case MAIL_SMTPOAUTH:
@@ -1963,13 +1968,12 @@ class MailCollector extends CommonDBTM
                 static fn($v) => '<a class="btn btn-sm btn-ghost-danger align-baseline" href="' . $v['link'] . '">' . $v['name'] . '</a>',
                 $servers
             ));
-            // language=twig
-            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                <span class="alert alert-danger p-1 ps-2">
-                    <i class="ti ti-alert-triangle me-2"></i>
-                    <span>{{ receivers_error_msg|raw }}</span>
-                </span>
-TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_links)]);
+            TemplateRenderer::getInstance()->display(
+                'components/search/status_area.html.twig',
+                [
+                    'status_message' => sprintf(__s('Receivers in error: %s'), $server_links),
+                ]
+            );
         }
     }
 

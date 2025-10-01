@@ -713,7 +713,7 @@ abstract class AbstractDefinition extends CommonDBTM
 
         $translations = $this->getDecodedTranslationsField();
         $language = Session::getLanguage();
-        $current_translation = $translations[$language] ?? null;
+        $current_translation = $language !== null ? ($translations[$language] ?? null) : null;
         if ($current_translation === null) {
             return $this->fields['label'];
         }

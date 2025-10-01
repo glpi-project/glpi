@@ -40,7 +40,7 @@
  */
 class GeolocationField {
     constructor(element_id) {
-        this.element_id = element_id;
+        this.element_id = CSS.escape(element_id);
         this.rand = Math.floor(Math.random() * 10000);
         this.marker = null;
         this.#init();

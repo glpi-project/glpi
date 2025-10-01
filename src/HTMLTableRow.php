@@ -181,12 +181,12 @@ class HTMLTableRow extends HTMLTableEntity
                         $display |= $cell->displayCell($i, $options);
                     }
                     if (!$display) {
-                        echo "\t\t\t<td colspan='" . $header->getColSpan() . "'";
+                        echo "\t\t\t<td colspan='" . ((int) $header->getColSpan()) . "'";
                         $header->displayEntityAttributs($options);
                         echo "></td>\n";
                     }
                 } else {
-                    echo "\t\t\t<td colspan='" . $header->getColSpan() . "'";
+                    echo "\t\t\t<td colspan='" . ((int) $header->getColSpan()) . "'";
                     $header->displayEntityAttributs($options);
                     echo "></td>\n";
                 }

@@ -519,7 +519,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     {
         // Read file path
         $path = realpath(GLPI_TMP_DIR . "/$file");
-        if (!$path || !str_starts_with($path, GLPI_TMP_DIR)) {
+        if (!$path || !str_starts_with($path, realpath(GLPI_TMP_DIR))) {
             // File doest not exist or is outside upload directory
             $message = __s("An unexpected error occurred");
             Session::addMessageAfterRedirect($message);
@@ -2884,6 +2884,10 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         }
     }
 
+    /**
+     * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
+     * @psalm-taint-sink html $value (string will be added to HTML source)
+     */
     public static function inheritedValue($value = "", bool $inline = false, bool $display = true): string
     {
         if (trim($value) === '') {
@@ -3379,7 +3383,8 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     public function listTranslationsHandlers(): array
     {
         $handlers = [];
-        $key = sprintf('%s: %s', self::getTypeName(), $this->getName());
+        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $category_name = sprintf('%s: %s', self::getTypeName(), $this->getName());
         if (
             !empty($this->fields['custom_helpdesk_home_title'])
             && $this->fields['custom_helpdesk_home_title'] != self::CONFIG_PARENT
@@ -3389,6 +3394,8 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
                 key: self::TRANSLATION_KEY_CUSTOM_HELPDESK_HOME_TITLE,
                 name: __('Custom main title'),
                 value: $this->fields['custom_helpdesk_home_title'],
+                is_rich_text: false,
+                category: $category_name
             );
         }
 

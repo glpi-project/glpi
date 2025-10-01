@@ -34,8 +34,16 @@
 
 namespace Glpi\Form\Condition;
 
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Comment;
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Glpi\Form\Question;
+use Glpi\Form\Section;
+use JsonException;
 use JsonSerializable;
 use Override;
+
+use function Safe\json_decode;
 
 final class ConditionData implements JsonSerializable
 {
@@ -107,7 +115,56 @@ final class ConditionData implements JsonSerializable
             return false;
         }
 
+        // Retrieve supported value operators
+        $item = $this->getItem();
+        if ($item === null) {
+            return false;
+        }
+        $supported_value_operators = array_filter(
+            $item->getConditionHandlers($this->getItemConfig()),
+            fn(ConditionHandlerInterface $handler): bool => in_array(
+                $value_operator,
+                $handler->getSupportedValueOperators(),
+            ),
+        );
+
+        // Check if value operator is supported by item
+        if ($supported_value_operators === []) {
+            return false;
+        }
+
         return true;
+    }
+
+    private function getItem(): ?UsedAsCriteriaInterface
+    {
+        return match ($this->getItemType()) {
+            Type::QUESTION => Question::getByUuid($this->getItemUuid())?->getQuestionType(),
+            Type::SECTION  => Section::getByUuid($this->getItemUuid()),
+            Type::COMMENT  => Comment::getByUuid($this->getItemUuid())
+        };
+    }
+
+    private function getItemConfig(): ?JsonFieldInterface
+    {
+        if ($this->getItemType() !== Type::QUESTION) {
+            return null;
+        }
+
+        $question = Question::getByUuid($this->getItemUuid());
+        $item     = $question->getQuestionType();
+        if (!$question) {
+            return null;
+        }
+
+        try {
+            $raw_config = json_decode($question->fields['extra_data'] ?? '', true);
+            $config = $item->getExtraDataConfig($raw_config);
+        } catch (JsonException $e) {
+            $config = null;
+        }
+
+        return $config;
     }
 
     #[Override]

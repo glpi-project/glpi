@@ -142,7 +142,7 @@
                                         {% if not skip_question %}
                                             <section
                                                 aria-label="{{ form_block.fields.name }}"
-                                                class="{{ (is_single_page_layout or is_first_section) ? "" : "d-none" }}"
+                                                class="{{ (is_single_page_layout or is_first_section) ? "" : "d-none" }} mb-3"
                                                 style="flex: 1;"
                                                 data-glpi-form-renderer-parent-section="{{ section_index }}"
                                                 data-glpi-form-renderer-id="{{ form_block.fields.id }}"
@@ -150,6 +150,10 @@
 
                                                 {% if form_block is instanceof('Glpi\\Form\\Question') %}
                                                     data-glpi-form-renderer-question
+
+                                                    {% if form_block.getQuestionType().isHiddenInput() %}
+                                                        data-glpi-form-renderer-hidden-input
+                                                    {% endif %}
                                                 {% elseif form_block is instanceof('Glpi\\Form\\Comment') %}
                                                     data-glpi-form-renderer-comment
                                                 {% endif %}
@@ -171,15 +175,13 @@
                                                     {% endif %}
                                                 </h3>
 
-                                                {% if form_block is instanceof('Glpi\\Form\\Question') %}
-                                                    <div class="mb-2">
-                                                        {{ question_type.renderEndUserTemplate(form_block)|raw }}
-                                                    </div>
-                                                {% endif %}
-
-                                                <div class="text-muted block-description" role="note" aria-label="{{ __('%s description')|format(form_block.getTypeName(1)) }}">
+                                                <div class="text-muted block-description mb-2" role="note" aria-label="{{ __('%s description')|format(form_block.getTypeName(1)) }}">
                                                     {{ translate_form_item_key(form_block, constant('TRANSLATION_KEY_DESCRIPTION', form_block))|safe_html }}
                                                 </div>
+
+                                                {% if form_block is instanceof('Glpi\\Form\\Question') %}
+                                                    {{ question_type.renderEndUserTemplate(form_block)|raw }}
+                                                {% endif %}
                                             </section>
                                         {% endif %}
                                     {% endfor %}

@@ -117,7 +117,7 @@
          </button>
          {% if mainform %}
             {% set action_count = showaction + p['showbookmark'] + p['showreset'] %}
-            <span class="ms-auto {{ action_count > 1 ? 'btn-group' : '' }}">
+            <span class="ms-3 {{ action_count > 1 ? 'btn-group' : '' }}">
                 {% if (showaction) %}
                 {# Display submit button #}
                 <button class="btn {{ p['is_criteria_filter'] ? 'btn-ghost-secondary' : 'btn-sm btn-primary' }}" type="button" name="{{ p['actionname'] }}">
@@ -133,7 +133,7 @@
                 }) }}
                 {% endif %}
                 {% if p['showreset'] %}
-                <a class="btn btn-sm btn-icon px-2 search-reset"
+                <a class="btn btn-sm btn-outline-secondary btn-icon px-2 search-reset"
                    data-bs-toggle="tooltip" data-bs-placement="bottom"
                    href="{{ p['target'] ~ ('?' in p['target'] ? '&' : '?') ~ "reset=reset" }}" title="{{ __('Blank') }}">
                     <i class="ti ti-square-x"></i>

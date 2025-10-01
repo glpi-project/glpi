@@ -55,6 +55,7 @@ use Glpi\Toolbox\FrontEnd;
 use Glpi\Toolbox\URL;
 use Glpi\UI\ThemeManager;
 use Safe\DateTime;
+use Safe\Exceptions\FilesystemException;
 use ScssPhp\ScssPhp\Compiler;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -700,7 +701,7 @@ class Html
             if (is_array($tab)) {
                 $multiple      = true;
                 $out          .= "if (window.confirm(";
-                $out          .= json_encode(implode("\n", $tab));
+                $out          .= json_encode(htmlescape(implode("\n", $tab)));
                 $out          .= ")){ ";
                 $close_string .= "return true;} else { return false;}";
             }
@@ -708,7 +709,7 @@ class Html
         // manage simple confirmation
         if (!$multiple) {
             $out          .= "if (window.confirm(";
-            $out          .= json_encode(implode("\n", $string));
+            $out          .= json_encode(htmlescape(implode("\n", $string)));
             $out          .= ")){ ";
             $close_string .= "return true;} else { return false;}";
         }
@@ -788,24 +789,24 @@ class Html
                     $inner_style .= 'color: ' . $params['colors']['text'] . ';';
                 }
             }
-            $out = <<<HTML
-            <div class="progress bg-primary-emphasis bg-light" style="$outer_style" id="{$id}">
-               <div class="$inner_class" role="progressbar"
-                     style="$inner_style"
-                     aria-valuenow="0"
-                     aria-valuemin="0" aria-valuemax="100"
-                     id="{$id}_text">
-               </div>
-            </div>
-HTML;
+            $out = '
+                <div class="progress bg-primary-emphasis bg-light" style="' . htmlescape($outer_style) . '" id="' . htmlescape($id) . '">
+                   <div class="' . htmlescape($inner_class) . '" role="progressbar"
+                         style="' . htmlescape($inner_style) . '"
+                         aria-valuenow="0"
+                         aria-valuemin="0" aria-valuemax="100"
+                         id="' . htmlescape($id) . '_text">
+                   </div>
+                </div>
+            ';
         }
 
         if ($params['message'] !== null) {
             $out .= Html::scriptBlock(
                 sprintf(
                     '$("#%s_text").html("%s");',
-                    htmlescape($id),
-                    htmlescape($params['message'])
+                    jsescape($id),
+                    jsescape($params['message'])
                 )
             );
         }
@@ -817,7 +818,7 @@ HTML;
             $out .= Html::scriptBlock(
                 sprintf(
                     '$("#%s_text").css("width", "%d%%");',
-                    htmlescape($id),
+                    jsescape($id),
                     (int) $params['percent']
                 )
             );
@@ -2345,8 +2346,11 @@ TWIG,
         if (empty($name)) {
             $name = 'massaction_' . mt_rand();
         }
+
+        $name = htmlescape($name);
+
         return  "<form name='$name' id='$name' method='post'
-               action='" . $CFG_GLPI["root_doc"] . "/front/massiveaction.php'
+               action='" . htmlescape($CFG_GLPI["root_doc"]) . "/front/massiveaction.php'
                enctype='multipart/form-data'>";
     }
 
@@ -2832,7 +2836,7 @@ HTML;
         $locale_region   = jsescape($locale['region']);
         $js = <<<JS
       $(function() {
-         $("#showdate{$p['rand']}").flatpickr({
+         $("#showdate{$rand}").flatpickr({
             altInput: true, // Show the user a readable date (as per altFormat), but return something totally different to the server.
             altFormat: "{$date_format}",
             dateFormat: 'Y-m-d H:i:S',
@@ -3307,6 +3311,7 @@ JS;
      *    string if option display=false (HTML code)
      *
      * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
+     * @psalm-taint-sink html $content (string will be added to HTML source)
      */
     public static function showToolTip($content, $options = [])
     {
@@ -3470,7 +3475,8 @@ JS;
         string $placeholder = '',
         bool $toolbar = true,
         bool $statusbar = true,
-        string $content_style = ''
+        string $content_style = '',
+        bool $init_on_demand = false
     ) {
         global $CFG_GLPI, $DB;
 
@@ -3539,7 +3545,7 @@ JS;
             ]);
         }
 
-        $mandatory_field_msg = json_encode(__('The %s field is mandatory'));
+        $mandatory_field_msg = jsescape(__('The %s field is mandatory'));
 
         // Add custom classes to tinymce body
         $body_class = "rich_text_container";
@@ -3550,11 +3556,24 @@ JS;
         // Compute init option as "string boolean" so it can be inserted directly into the js output
         $init = $init ? 'true' : 'false';
 
+        // Compute init_on_demand option as "string boolean" so it can be inserted directly into the js output
+        $init_on_demand = $init_on_demand ? 'true' : 'false';
+
         // Compute toolbar option as "string boolean" so it can be inserted directly into the js output
         $toolbar = $toolbar ? 'true' : 'false';
 
         // Compute statusbar option as "string boolean" so it can be inserted directly into the js output
         $statusbar = $statusbar ? 'true' : 'false';
+
+        // Sanitize/escape values
+        $id = self::sanitizeDomId($id);
+        $skin_url = jsescape($skin_url);
+        $body_class = jsescape($body_class);
+        $content_css = jsescape($content_css);
+        $content_style = jsescape($content_style);
+        $placeholder = jsescape($placeholder);
+        $toolbar_location = jsescape($toolbar_location);
+        $cache_suffix = jsescape($cache_suffix);
 
         $js = <<<JS
             $(function() {
@@ -3644,7 +3663,7 @@ JS;
                             editor.on('submit', function (e) {
                                 if ($('#$id').val() == '') {
                                     const field = $('#$id').closest('.form-field').find('label').text().replace('*', '').trim();
-                                    alert({$mandatory_field_msg}.replace('%s', field));
+                                    alert('{$mandatory_field_msg}'.replace('%s', field));
                                     e.preventDefault();
 
                                     // Prevent other events to run
@@ -3721,6 +3740,12 @@ JS;
                 if ({$init}) {
                     tinyMCE.init(tinymce_editor_configs['{$id}']);
                 }
+
+                if ({$init_on_demand}) {
+                    const textarea = $('#{$id}');
+                    const div = $(`<div role="textbox" tabindex="0" class="text-muted" data-glpi-tinymce-init-on-demand-render="{$id}">\${textarea.val() || textarea.attr('placeholder') || ''}</div>`);
+                    textarea.after(div).hide();
+                }
             });
 JS;
 
@@ -3743,7 +3768,8 @@ JS;
      */
     public static function activateUserTemplateAutocompletion(string $selector, array $values): void
     {
-        $values = json_encode($values);
+        $selector = jsescape($selector);
+        $values   = json_encode($values);
 
         echo Html::scriptBlock(
             <<<JAVASCRIPT
@@ -3775,18 +3801,13 @@ JAVASCRIPT
 
         $url = "/front/contenttemplates/documentation.php?preset=$preset_target";
         $link =  $CFG_GLPI['root_doc'] . $url;
-        $params = [
-            'target' => '_blank',
-            'style'  => 'margin-top:6px; display: block',
-        ];
 
-        if (!is_null($link_id)) {
-            $params['id'] = $link_id;
-        }
-
-        $text = __s('Available variables') . ' <i class="ti ti-help"></i>';
-
-        echo Html::link($text, $link, $params);
+        echo sprintf(
+            '<a href="%1$s" %2$s target="_blank" style="margin-top:6px; display: block">%3$s <i class="ti ti-help"></i></a>',
+            htmlescape($link),
+            !is_null($link_id) ? sprintf('id="%s"', htmlescape($link_id)) : '',
+            __s('Available variables')
+        );
     }
 
     /**
@@ -3803,6 +3824,8 @@ JAVASCRIPT
     ) {
         $link_id = "template_documentation_" . mt_rand();
         self::addTemplateDocumentationLink($preset_target, $link_id);
+
+        $selector = jsescape($selector);
 
         // Move link before the given textarea
         echo Html::scriptBlock(
@@ -3828,6 +3851,11 @@ JAVASCRIPT
      * @param string  $additional_params  Additional parameters to pass to tab reload request (default '')
      *
      * @return void|string
+     *
+     * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
+     * @psalm-taint-sink html $additional_info (string will be added to HTML source)
+     *
+     * @TODO Deprecate $additional_info, $display and $additional_params params in GLPI 11.1, they are not used.
      **/
     public static function printAjaxPager($title, $start, $numrows, $additional_info = '', $display = true, $additional_params = '')
     {
@@ -3930,14 +3958,13 @@ JAVASCRIPT
             echo "<tr><th>KEY</th><th>=></th><th>VALUE</th></tr>";
 
             foreach ($tab as $key => $val) {
-                $key = htmlescape($key);
                 echo "<tr><td>";
-                echo $key;
+                echo htmlescape($key);
                 echo "</td><td>";
                 $is_array = is_array($val);
                 $rand     = mt_rand();
                 if ($jsexpand && $is_array) {
-                    echo "<a href=\"javascript:showHideDiv('content$key$rand','','','')\">";
+                    echo "<a href=\"javascript:showHideDiv('content" . htmlescape(jsescape($key . $rand)) . "','','','')\">";
                     echo "=></a>";
                 } else {
                     echo "=>";
@@ -3945,7 +3972,7 @@ JAVASCRIPT
                 echo "</td><td>";
 
                 if ($is_array) {
-                    echo "<div id='content$key$rand' " . ($jsexpand ? "style=\"display:none;\"" : '') . ">";
+                    echo "<div id='content" . htmlescape($key . $rand) . "' " . ($jsexpand ? "style=\"display:none;\"" : '') . ">";
                     self::printCleanArray($val, $pad + 1);
                     echo "</div>";
                 } else {
@@ -3958,9 +3985,9 @@ JAVASCRIPT
                     } else {
                         if (is_object($val)) {
                             if (method_exists($val, '__toString')) {
-                                echo (string) $val;
+                                echo htmlescape((string) $val);
                             } else {
-                                echo "(object) " . get_class($val);
+                                echo htmlescape("(object) " . get_class($val));
                             }
                         } else {
                             echo htmlescape($val);
@@ -3990,7 +4017,12 @@ JAVASCRIPT
      *
      * @return void
      *
-     **/
+     * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
+     * @psalm-taint-sink html $additional_info (string will be added to HTML source)
+     *
+     * @TODO Deprecate $additional_info param in GLPI 11.1, it is not used.
+     * @TODO Accept an array of key/values in the $parameters param to ease its usage/escaping.
+     */
     public static function printPager(
         $start,
         $numrows,
@@ -4002,7 +4034,10 @@ JAVASCRIPT
     ) {
         global $CFG_GLPI;
 
-        $list_limit = $_SESSION['glpilist_limit'];
+        $start      = (int) $start;
+        $numrows    = (int) $numrows;
+        $list_limit = (int) $_SESSION['glpilist_limit'];
+
         // Forward is the next step forward
         $forward = $start + $list_limit;
 
@@ -4071,7 +4106,7 @@ JAVASCRIPT
             && $numrows > 0
         ) {
             echo "<td class='tab_bg_2 responsive_hidden' width='30%'>";
-            echo "<form method='GET' action='" . $CFG_GLPI["root_doc"] . "/front/report.dynamic.php'>";
+            echo "<form method='GET' action='" . htmlescape($CFG_GLPI["root_doc"]) . "/front/report.dynamic.php'>";
             echo Html::hidden('item_type', ['value' => $item_type_output]);
 
             if (is_array($item_type_output_param)) {
@@ -4081,12 +4116,12 @@ JAVASCRIPT
                 );
             }
 
-            $parameters = trim($parameters, '&amp;');
+            $parameters = trim($parameters, '&');
             if (!str_contains($parameters, 'start')) {
-                $parameters .= "&amp;start=$start";
+                $parameters .= "&start=$start";
             }
 
-            $split = explode("&amp;", $parameters);
+            $split = explode("&", $parameters);
 
             $count_split = count($split);
             for ($i = 0; $i < $count_split; $i++) {
@@ -4340,6 +4375,8 @@ JAVASCRIPT
     {
         Toolbox::deprecated();
 
+        $id = jsescape($id);
+
         return "$('#$id')";
     }
 
@@ -4358,6 +4395,8 @@ JAVASCRIPT
     public static function jsSetDropdownValue($id, $value)
     {
         Toolbox::deprecated();
+
+        $value = jsescape($value);
 
         return self::jsGetElementbyID($id) . ".trigger('setValue', '$value');";
     }
@@ -4390,7 +4429,10 @@ JAVASCRIPT
      * @since 0.85.
      *
      * @return string
-     **/
+     *
+     * @TODO In GLPI 12.0 (BC-break), allow only values that matches the `^\w+$` pattern (i.e. a function name) for the following parameters:
+     *       `templateResult`, `templateSelection`.
+     */
     public static function jsAdaptDropdown($id, $params = [])
     {
         global $CFG_GLPI;
@@ -4401,21 +4443,26 @@ JAVASCRIPT
             unset($params["width"]);
         }
 
-        $dropdownCssClass = $params["dropdownCssClass"] ?? '';
+        $dropdown_css_class  = $params["dropdownCssClass"] ?? '';
+        $placeholder         = $params["placeholder"] ?? '';
+        $ajax_limit_count    = (int) $CFG_GLPI['ajax_limit_count'];
+        $templateresult      = $params["templateResult"] ?? "templateResult";
+        $templateselection   = $params["templateSelection"] ?? "templateSelection";
 
-        $placeholder = json_encode($params["placeholder"] ?? '');
-
-        $templateresult    = $params["templateResult"] ?? "templateResult";
-        $templateselection = $params["templateSelection"] ?? "templateSelection";
+        // escape values for JS
+        $id = jsescape($id);
+        $width = jsescape($width);
+        $dropdown_css_class = jsescape($dropdown_css_class);
+        $placeholder = jsescape($placeholder);
 
         $js = <<<JS
             select2_configs['{$id}'] = {
                 type: 'adapt',
                 field_id: '{$id}',
                 width: '{$width}',
-                dropdown_css_class: '{$dropdownCssClass}',
-                placeholder: {$placeholder},
-                ajax_limit_count: {$CFG_GLPI['ajax_limit_count']},
+                dropdown_css_class: '{$dropdown_css_class}',
+                placeholder: '{$placeholder}',
+                ajax_limit_count: {$ajax_limit_count},
                 templateresult: {$templateresult},
                 templateselection: {$templateselection},
             };
@@ -4447,6 +4494,9 @@ JS;
      * @since 0.85.
      *
      * @return string
+     *
+     * @TODO In GLPI 12.0 (BC-break), allow only values that matches the `^\w+$` pattern (i.e. a function name) for the following parameters:
+     *        `on_change`, `templateResult`, `templateSelection`.
      **/
     public static function jsAjaxDropdown($name, $field_id, $url, $params = [])
     {
@@ -4482,6 +4532,8 @@ JS;
         $templateResult = $params['templateResult'];
         $templateSelection = $params['templateSelection'];
         $aria_label = $params['aria_label'];
+        $emptyLabel = $params['emptylabel'] ?? '';
+
         unset($params["on_change"], $params["width"]);
 
         $allowclear =  "false";
@@ -4523,21 +4575,30 @@ JS;
             $options[$tag] = $val;
         }
 
+        $ajax_limit_count = (int) $CFG_GLPI['ajax_limit_count'];
+        $dropdown_max     = (int) $CFG_GLPI['dropdown_max'];
+
         $output = '';
 
-        $js_params = "";
+        // Escape variables for JS
         foreach ($params as $key => $val) {
-            // Specific boolean case
+            // Specific boolean case: cast them to integer to prevent issues when passing `"false"` strings through
+            // URL / form body.
+            // see #21025
             if (is_bool($val)) {
-                $js_params .= "$key: " . ($val ? 1 : 0) . ",\n";
-            } else {
-                $js_params .= "$key: " . json_encode($val) . ",\n";
+                $params[$key] = $val ? 1 : 0;
             }
         }
 
-        // Some variables need to be json encoded
-        $on_change = json_encode($on_change);
-        $placeholder = json_encode($placeholder);
+        $field_id            = jsescape($field_id);
+        $width               = jsescape($width);
+        $multiple            = jsescape($multiple);
+        $placeholder         = jsescape($placeholder);
+        $url                 = jsescape($url);
+        $parent_id_field     = jsescape($parent_id_field);
+        $on_change           = json_encode($on_change); // will be executed with `eval()`, do not use jsescape to not alter JS tokens
+        $container_css_class = jsescape($params['container_css_class']);
+        $js_params           = json_encode($params);
 
         $js = <<<JS
             select2_configs['{$field_id}'] = {
@@ -4545,19 +4606,17 @@ JS;
                 field_id: '{$field_id}',
                 width: '{$width}',
                 multiple: '{$multiple}',
-                placeholder: {$placeholder},
+                placeholder: '{$placeholder}',
                 allowclear: {$allowclear},
-                ajax_limit_count: {$CFG_GLPI['ajax_limit_count']},
-                dropdown_max: {$CFG_GLPI['dropdown_max']},
+                ajax_limit_count: {$ajax_limit_count},
+                dropdown_max: {$dropdown_max},
                 url: '{$url}',
                 parent_id_field: '{$parent_id_field}',
                 on_change: {$on_change},
                 templateResult: {$templateResult},
                 templateSelection: {$templateSelection},
-                container_css_class: '{$params['container_css_class']}',
-                params: {
-                    {$js_params}
-                }
+                container_css_class: '{$container_css_class}',
+                params: {$js_params}
             };
 JS;
 
@@ -4565,14 +4624,56 @@ JS;
             $js .= "setupAjaxDropdown(window.select2_configs['{$field_id}']);";
         }
 
-        $output .= Html::scriptBlock('$(function() {' . $js . '});');
 
         // display select tag
         $options['class'] = $params['class'] ?? 'form-select';
-        if ($params['required'] === true) {
+
+        if ((bool) $params['required'] === true) {
             $options['required'] = 'required';
+
+            if (!empty($emptyLabel)) {
+                $selectVarName = "select_" . mt_rand();
+                $formVarName = "form_" . mt_rand();
+                $jsEmptyLabel = jsescape($emptyLabel);
+                $errorMessage = jsescape(__('This field is mandatory'));
+
+                $js .= <<<JS
+                    const $selectVarName = document.getElementById('{$field_id}');
+                    const $formVarName = $selectVarName.closest('form');
+                    if ($formVarName) {
+                        $formVarName.addEventListener("submit", (evt) => {
+                            if ($selectVarName.options[$selectVarName.selectedIndex].text === '$jsEmptyLabel') {
+                                $selectVarName.setCustomValidity('$errorMessage');
+                                $selectVarName.reportValidity();
+
+                                // Error, we stop the form from submitting
+                                evt.preventDefault();
+                                evt.stopPropagation();
+                            }
+                        });
+
+                        \$('#$field_id').on('change', function (e) {
+                          $selectVarName.setCustomValidity('');
+                        });
+
+                        // Make sure the hidden <select> has the same size than the select2 container, to display the error message at a correct position
+                        $formVarName.addEventListener('invalid', function (event) {
+                          const element = event.target;
+
+                          if (element.classList.contains('select2-hidden-accessible')) {
+                            const select2Container = element.nextElementSibling;
+
+                            element.style.setProperty("height", `\${select2Container.offsetHeight}px`, "important");
+                            element.style.setProperty("width", `\${select2Container.offsetWidth}px`, "important");
+                          }
+                        }, true); // Use capture phase because 'invalid' events do not bubble
+
+                    }
+JS;
+            }
         }
 
+        $output .= Html::scriptBlock('$(function() {' . $js . '});');
         $output .= self::select($name, $values, $options);
 
         return $output;
@@ -4622,7 +4723,11 @@ JS;
 
         $image = sprintf('<img src="%1$s" %2$s />', htmlescape($path), Html::parseAttributes($options));
         if ($url) {
-            return Html::link($image, $url);
+            return sprintf(
+                '<a href="%1$s">%2$s</a>',
+                htmlescape($url),
+                $image
+            );
         }
         return $image;
     }
@@ -4639,6 +4744,8 @@ JS;
      *     - `confirm` JavaScript confirmation message.
      *     - `confirmaction` optional action to do on confirmation
      * @return string an `a` element.
+     *
+     * @TODO Deprecate this method in GLPI 11.1, it is not used anymore in GLPI itself.
      **/
     public static function link($text, $url, $options = [])
     {
@@ -4659,10 +4766,8 @@ JS;
             }
             unset($options['confirm']);
         }
-        // Do not escape title if it is an image or a i tag (fontawesome)
-        if (!preg_match('/<i(mg)?.*/', $text)) {
-            $text = htmlescape($text);
-        }
+
+        $text = htmlescape($text);
 
         return sprintf(
             '<a href="%1$s" %2$s>%3$s</a>',
@@ -4760,11 +4865,10 @@ JS;
             }
 
             $original_field_name = str_ends_with($name, '[]') ? substr($name, 0, -2) : $name;
-            $original_field_name = htmlescape($original_field_name);
 
             $select .= sprintf(
                 '<input type="hidden" name="%1$s" value="" %2$s>',
-                $original_field_name,
+                htmlescape($original_field_name),
                 self::parseAttributes($input_options)
             );
         }
@@ -4777,12 +4881,9 @@ JS;
             $select .= sprintf(
                 '<option value="%1$s"%2$s>%3$s</option>',
                 htmlescape($key),
-                (
-                    $selected != false && (
-                        $key == $selected
-                || is_array($selected) && in_array($key, $selected)
-                    )
-                ) ? ' selected="selected"' : '',
+                $selected != false && ($key == $selected || (is_array($selected) && in_array($key, $selected)))
+                    ? ' selected="selected"'
+                    : '',
                 htmlescape($value)
             );
         }
@@ -4880,6 +4981,9 @@ JS;
      */
     public static function progress($max, $value, $params = [])
     {
+        $max   = (int) $max;
+        $value = (int) $value;
+
         $p = [
             'rand'            => mt_rand(),
             'tooltip'         => '',
@@ -4890,12 +4994,17 @@ JS;
         $tooltip = trim($p['tooltip'] . ($p['append_percent'] ? " {$value}%" : ''));
         $calcWidth = ($value / $max) * 100;
 
+        // escape variables for HTML
+        $rand           = (int) $p['rand'];
+        $append_percent = htmlescape($p['append_percent']);
+        $tooltip        = htmlescape($tooltip);
+
         $html = <<<HTML
          <div class="progress" style="height: 12px"
-              id="{progress{$p['rand']}}"
-              data-progressid="{$p['rand']}"
-              data-append-percent="{$p['append_percent']}"
-              onchange="updateProgress('{$p['rand']}')"
+              id="progress{$rand}"
+              data-progressid="{$rand}"
+              data-append-percent="{$append_percent}"
+              onchange="updateProgress('{$rand}')"
               max="{$max}"
               value="{$value}"
               title="{$tooltip}" data-bs-toggle="tooltip">
@@ -5011,7 +5120,7 @@ HTML;
         // Convert filesystem path to URL path (fix issues with Windows directory separator)
         $url = str_replace(DIRECTORY_SEPARATOR, '/', $url);
 
-        return sprintf('<script type="%s" src="%s"></script>', $type, $url);
+        return sprintf('<script type="%s" src="%s"></script>', htmlescape($type), htmlescape($url));
     }
 
 
@@ -5199,8 +5308,8 @@ HTML;
         }
 
         // sanitize name and random id
-        $name    = preg_replace('/[^a-z0-9_\[\]]/', '', $p['name']);
-        $rand_id = (int) $p['rand'];
+        $name    = self::sanitizeInputName($p['name']);
+        $rand_id = self::sanitizeDomId($p['rand']);
 
         if (!$p['only_uploaded_files']) {
             // manage file upload without tinymce editor
@@ -5357,9 +5466,9 @@ HTML;
 
         $required = $p['required'] ? 'required="required"' : '';
         $display = '';
-        $display .= "<textarea class='form-control' name='" . $p['name'] . "' id='" . $p['editor_id'] . "'
-                             rows='" . $p['rows'] . "' cols='" . $p['cols'] . "' $required>"
-                  . $p['value'] . "</textarea>";
+        $display .= "<textarea class='form-control' name='" . htmlescape($p['name']) . "' id='" . htmlescape($p['editor_id']) . "'
+                             rows='" . ((int) $p['rows']) . "' cols='" . ((int) $p['cols']) . "' $required>"
+                  . htmlescape($p['value']) . "</textarea>";
 
         if ($p['enable_richtext']) {
             $display .= Html::initEditorSystem($p['editor_id'], $p['rand'], false, false, $p['enable_images']);
@@ -5459,7 +5568,7 @@ HTML;
                 // show button to delete the upload
                 $getEditor = 'null';
                 if ($p['editor_id'] != '') {
-                    $getEditor = "tinymce.get('" . json_encode($p['editor_id']) . "')";
+                    $getEditor = "tinymce.get('" . jsescape($p['editor_id']) . "')";
                 }
                 $textTag = json_encode($tag['tag']);
                 $domItems = json_encode([
@@ -5592,6 +5701,8 @@ HTML;
      **/
     public static function ajaxForm($selector, $success = "console.log(html);", $error = "console.error(html)", $complete = '')
     {
+        $selector = jsescape($selector);
+
         echo Html::scriptBlock(<<<JS
       $(function() {
          var lastClicked = null;
@@ -5645,7 +5756,7 @@ JS);
          if(typeof message == 'string') {
             message = message.replace('\\n', '<br>');
          }
-         caption = caption || '" . _sn('Information', 'Information', 1) . "';
+         caption = caption || '" . jsescape(_sn('Information', 'Information', 1)) . "';
 
          glpi_alert({
             title: caption,
@@ -5731,8 +5842,8 @@ JS);
     public static function jsAlertCallback($msg, $title, $okCallback = null)
     {
         return "glpi_alert({
-         title: " . json_encode($title) . ",
-         message: " . json_encode($msg) . ",
+         title: '" . jsescape($title) . "',
+         message: '" . jsescape($msg) . "',
          ok_callback: function() {
             " . ($okCallback !== null ? '(' . $okCallback . ')()' : '') . "
          },
@@ -5783,16 +5894,16 @@ JS);
         $out = '';
         if ($addLink) {
             $out .= '<a '
-                 . 'href="' . $base_path . '/front/document.send.php?docid=' . $document_id . $more_link . '" '
+                 . 'href="' . htmlescape($base_path . '/front/document.send.php?docid=' . $document_id . $more_link) . '" '
                  . 'target="_blank" '
                  . '>';
         }
         $out .= '<img ';
         if (isset($document->fields['tag'])) {
-            $out .= 'alt="' . $document->fields['tag'] . '" ';
+            $out .= 'alt="' . htmlescape($document->fields['tag']) . '" ';
         }
-        $out .= 'width="' . $width . '" '
-              . 'src="' . $base_path . '/front/document.send.php?docid=' . $document_id . $more_link . '" '
+        $out .= 'width="' . ((int) $width) . '" '
+              . 'src="' . htmlescape($base_path . '/front/document.send.php?docid=' . $document_id . $more_link) . '" '
               . '/>';
         if ($addLink) {
             $out .= '</a>';
@@ -5813,9 +5924,9 @@ JS);
         $message .= "GLPI ";
         // if required, add GLPI version (eg not for login page)
         if ($withVersion) {
-            $message .= GLPI_VERSION . " ";
+            $message .= htmlescape(GLPI_VERSION) . " ";
         }
-        $message .= "Copyright (C) 2015-" . GLPI_YEAR . " Teclib' and contributors"
+        $message .= "Copyright (C) 2015-" . htmlescape(GLPI_YEAR) . " Teclib' and contributors"
          . "</a>";
         return $message;
     }
@@ -6055,8 +6166,8 @@ JS);
         $full = $full && (Session::getLoginUserID(true) !== false);
 
         $cfg_glpi = "var CFG_GLPI  = {
-            'url_base': '" . (isset($CFG_GLPI['url_base']) ? $CFG_GLPI["url_base"] : '') . "',
-            'root_doc': '" . $CFG_GLPI["root_doc"] . "',
+            'url_base': '" . jsescape((isset($CFG_GLPI['url_base']) ? $CFG_GLPI["url_base"] : '')) . "',
+            'root_doc': '" . jsescape($CFG_GLPI["root_doc"]) . "',
         };";
 
         if ($full) {
@@ -6131,6 +6242,7 @@ JS);
         if (!$timer) {
             $timer = $_SESSION['glpirefresh_views'] ?? 0;
         }
+        $timer = (int) $timer;
 
         if ($callback === null) {
             $callback = 'window.location.reload()';
@@ -6306,30 +6418,58 @@ JS);
         }
 
         // Requested file path
-        $path = GLPI_ROOT . '/' . $file;
+        if (preg_match(Plugin::PLUGIN_RESOURCE_PATTERN, $file, $path_matches) === 1) {
+            $plugin_key  = $path_matches['plugin_key'];
+            $plugin_dir  = Plugin::getPhpDir($plugin_key) . '/public/'; // only expose public files
+            $plugin_file = $path_matches['plugin_resource'];
 
-        // Alternate file path (prefixed by a "_", i.e. "_highcontrast.scss").
-        $pathargs = explode('/', $file);
-        $pathargs[] = '_' . array_pop($pathargs);
-        $pathalt = GLPI_ROOT . '/' . implode('/', $pathargs);
+            try {
+                $path = realpath($plugin_dir . $plugin_file);
+            } catch (FilesystemException $e) {
+                global $PHPLOGGER;
+                $PHPLOGGER->error(
+                    sprintf('Cannot access the requested SCSS file `%s`, error was: `%s`.', $file, $e->getMessage()),
+                    ['exception' => $e]
+                );
+                return '';
+            }
 
-        if (!file_exists($path) && !file_exists($pathalt)) {
-            trigger_error('Requested file ' . $path . ' does not exists.', E_USER_WARNING);
-            return '';
-        }
-        if (!file_exists($path)) {
-            $path = $pathalt;
-        }
+            if (!str_starts_with($path, realpath($plugin_dir))) {
+                trigger_error(
+                    sprintf(
+                        'Requested SCSS file `%s` is outside the plugin public directory tree.',
+                        $file
+                    ),
+                    E_USER_WARNING
+                );
+                return '';
+            }
+        } else {
+            $path = GLPI_ROOT . '/' . $file;
 
-        // Prevent import of a file from ouside GLPI dir
-        $path = realpath($path);
-        if (
-            !str_starts_with($path, realpath(GLPI_ROOT))
-            && !str_starts_with($path, realpath(GLPI_PLUGIN_DOC_DIR)) // Allow files generated by plugins
-            && !str_starts_with($path, realpath(GLPI_THEMES_DIR)) // Allow files in THEMES dir
-        ) {
-            trigger_error('Requested file ' . $path . ' is outside GLPI file tree.', E_USER_WARNING);
-            return '';
+            // Alternate file path (prefixed by a "_", i.e. "_highcontrast.scss").
+            $pathargs = explode('/', $file);
+            $pathargs[] = '_' . array_pop($pathargs);
+            $pathalt = GLPI_ROOT . '/' . implode('/', $pathargs);
+
+            if (!file_exists($path) && !file_exists($pathalt)) {
+                trigger_error('Requested file ' . $path . ' does not exists.', E_USER_WARNING);
+                return '';
+            }
+            if (!file_exists($path)) {
+                $path = $pathalt;
+            }
+
+            // Prevent import of a file from ouside GLPI dir
+            $path = realpath($path);
+            if (
+                !str_starts_with($path, realpath(GLPI_ROOT))
+                && !str_starts_with($path, realpath(GLPI_PLUGIN_DOC_DIR)) // Allow files generated by plugins
+                && !str_starts_with($path, realpath(GLPI_THEMES_DIR)) // Allow files in THEMES dir
+            ) {
+                trigger_error('Requested file ' . $path . ' is outside GLPI file tree.', E_USER_WARNING);
+                return '';
+            }
         }
 
         // Fix issue with Windows directory separator
@@ -6391,7 +6531,6 @@ JS);
                 $GLPI_CACHE->set($ckey, $css);
                 $GLPI_CACHE->set($fckey, $file_hash);
             }
-            Toolbox::logDebug(sprintf('Compiling the file `%s` took %s seconds.', $file, round(microtime(true) - $start, 2)));
         } catch (Throwable $e) {
             ErrorHandler::logCaughtException($e);
             if (isset($args['debug'])) {
@@ -6593,17 +6732,17 @@ CSS;
      */
     public static function sanitizeInputName(string $name): string
     {
-        return preg_replace('/[^a-z0-9_\[\]\-]/i', '', $name);
+        return preg_replace('/[^a-z0-9_\[\]\-]+/i', '_', $name);
     }
 
     /**
      * Sanitize a DOM ID to prevent XSS.
      *
-     * @param string $name
+     * @param string $id
      * @return string
      */
-    public static function sanitizeDomId(string $name): string
+    public static function sanitizeDomId(string $id): string
     {
-        return preg_replace('/[^a-z0-9_-]/i', '', $name);
+        return preg_replace('/[^a-z0-9_-]+/i', '_', $id);
     }
 }

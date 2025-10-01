@@ -72,16 +72,13 @@
                                     position: relative;
 
                                     [data-glpi-form-editor-dynamic-input] {
-                                        transform: rotate(90deg);
+                                        transform: rotate(90deg) translateX(-0.5rem);
                                         transform-origin: left;
+                                        width: 100cqh;
                                         font-size: 1rem;
                                         left: 0.5rem;
                                         top: 0;
                                     }
-                                }
-
-                                [data-glpi-form-editor-required-mark] {
-                                    display: none !important;
                                 }
                             }
 

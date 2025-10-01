@@ -146,11 +146,11 @@ class NetworkPortWifi extends NetworkPortInstantiation
         switch ($field) {
             case 'mode':
                 $tab = WifiNetwork::getWifiCardModes();
-                return $tab[$values[$field]] ?? NOT_AVAILABLE;
+                return htmlescape($tab[$values[$field]] ?? NOT_AVAILABLE);
 
             case 'version':
                 $tab = WifiNetwork::getWifiCardVersion();
-                return $tab[$values[$field]] ?? NOT_AVAILABLE;
+                return htmlescape($tab[$values[$field]] ?? NOT_AVAILABLE);
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

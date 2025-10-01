@@ -43,16 +43,12 @@
             ) }}
             {{ fields.htmlField(
                 '',
-                item.comment,
+                item.comment|safe_html,
                 __('Notes')
             ) }}
             {{ fields.hiddenField(
                 'items[' ~ item.id ~ ']',
-                item.id,
-                '',
-                {
-                    add_field_class: 'd-none'
-                }
+                item.id
             ) }}
         {% endfor %}
     {% else %}

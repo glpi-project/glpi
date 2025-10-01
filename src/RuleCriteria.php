@@ -191,7 +191,7 @@ class RuleCriteria extends CommonDBChild
                 ) {
                     $rule = getItemForItemtype($generic_rule->fields["sub_type"]);
                     if ($rule instanceof Rule) {
-                        return $rule->getCriteriaName($values[$field]);
+                        return htmlescape($rule->getCriteriaName($values[$field]));
                     }
                 }
                 break;
@@ -206,13 +206,13 @@ class RuleCriteria extends CommonDBChild
                     if (isset($values['criteria']) && !empty($values['criteria'])) {
                         $criterion = $values['criteria'];
                     }
-                    return self::getConditionByID($values[$field], $generic_rule->fields["sub_type"], $criterion);
+                    return htmlescape(self::getConditionByID($values[$field], $generic_rule->fields["sub_type"], $criterion));
                 }
                 break;
 
             case 'pattern':
                 if (!isset($values["criteria"]) || !isset($values["condition"])) {
-                    return NOT_AVAILABLE;
+                    return htmlescape(NOT_AVAILABLE);
                 }
                 $generic_rule = new Rule();
                 if (
@@ -222,11 +222,11 @@ class RuleCriteria extends CommonDBChild
                 ) {
                     $rule = getItemForItemtype($generic_rule->fields["sub_type"]);
                     if ($rule instanceof Rule) {
-                        return $rule->getCriteriaDisplayPattern(
+                        return htmlescape($rule->getCriteriaDisplayPattern(
                             $values["criteria"],
                             $values["condition"],
                             $values[$field]
-                        );
+                        ));
                     }
                 }
                 break;

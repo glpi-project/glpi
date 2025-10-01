@@ -124,7 +124,8 @@ final class QuestionTypeLongText extends AbstractQuestionType implements
                     'enable_richtext': true,
                     'editor_height'  : "100",
                     'rows'           : 1,
-                    'init'           : question is not null ? true: false,
+                    'init'           : false,
+                    'init_on_demand' : true,
                     'is_horizontal'  : false,
                     'full_width'     : true,
                     'no_label'       : true,
@@ -238,4 +239,14 @@ TWIG;
 
         return $handlers;
     }
+
+    #[Override]
+    public function getTargetQuestionType(array $rawData): string
+    {
+        return self::class;
+    }
+
+
+    #[Override]
+    public function beforeConversion(array $rawData): void {}
 }

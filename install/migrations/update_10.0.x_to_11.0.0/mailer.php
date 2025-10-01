@@ -39,12 +39,12 @@ $migration->addPostQuery(
     $DB->buildUpdate(
         Config::getTable(),
         [
-            'value' => 2, // MAIL_SMTPS
+            'value' => 1, // MAIL_SMTP
         ],
         [
             'context' => 'core',
             'name' => 'smtp_mode',
-            'value' => 3, // old MAIL_SMTP+SSLTLS
+            'value' => 2, // deprecated MAIL_SMTPSSL
         ]
     )
 );

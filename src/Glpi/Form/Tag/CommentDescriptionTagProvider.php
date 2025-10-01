@@ -40,7 +40,7 @@ use Glpi\Form\Comment;
 use Glpi\Form\Form;
 use Override;
 
-final class CommentDescriptionTagProvider implements TagProviderInterface
+final class CommentDescriptionTagProvider implements TagProviderInterface, TagWithIdValueInterface
 {
     #[Override]
     public function getTagColor(): string
@@ -71,6 +71,12 @@ final class CommentDescriptionTagProvider implements TagProviderInterface
             return '';
         }
         return $comment->fields['description'];
+    }
+
+    #[Override]
+    public function getItemtype(): string
+    {
+        return Comment::class;
     }
 
     public function getDescriptionTagForComment(Comment $comment): Tag
