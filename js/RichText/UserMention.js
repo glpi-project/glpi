@@ -32,6 +32,7 @@
  */
 
 /* global tinymce */
+/* global _ */
 
 window.GLPI = window.GLPI || {};
 window.GLPI.RichText = window.GLPI.RichText || {};
@@ -157,6 +158,6 @@ window.GLPI.RichText.UserMention = class {
     generateUserMentionHtml(user) {
         return `<span contenteditable="false"
                     data-user-mention="true"
-                    data-user-id="${user.id}">@${user.name}</span>&nbsp;`;
+                    data-user-id="${_.escape(user.id)}">@${_.escape(user.name)}</span>&nbsp;`;
     }
 };

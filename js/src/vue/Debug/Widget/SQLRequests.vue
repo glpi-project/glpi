@@ -130,8 +130,8 @@
 
         return Promise.resolve(window.GLPI.Monaco.colorizeText(query, 'sql')).then((html) => {
             // get all 'span' elements with mtk6 class (keywords) and insert the needed line breaks
-            const newline_before_selector = newline_keywords.map((keyword) => `span.mtk6:contains(${keyword})`).join(',');
-            const post_newline_selector = post_newline_keywords.map((keyword) => `span.mtk6:contains(${keyword})`).join(',');
+            const newline_before_selector = newline_keywords.map((keyword) => `span.mtk6:contains(${CSS.escape(keyword)})`).join(',');
+            const post_newline_selector = post_newline_keywords.map((keyword) => `span.mtk6:contains(${CSS.escape(keyword)})`).join(',');
             return $($.parseHTML(html)).find(newline_before_selector).before('</br>').end().find(post_newline_selector).after('</br>').end().html();
         });
     }

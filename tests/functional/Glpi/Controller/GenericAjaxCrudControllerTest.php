@@ -126,7 +126,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
                 'messages' => [
                     'info'    => [],
                     'warning' => [],
-                    'error'   => ["You don't have permission to perform this action."],
+                    'error'   => ["You don&#039;t have permission to perform this action."],
                 ],
             ],
         ];
@@ -181,7 +181,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
                 'messages' => [
                     'info'    => [],
                     'warning' => [],
-                    'error'   => ["You don't have permission to perform this action."],
+                    'error'   => ["You don&#039;t have permission to perform this action."],
                 ],
             ],
         ];
@@ -233,7 +233,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
                 'messages' => [
                     'info'    => [],
                     'warning' => [],
-                    'error'   => ["You don't have permission to perform this action."],
+                    'error'   => ["You don&#039;t have permission to perform this action."],
                 ],
             ],
         ];
@@ -285,7 +285,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
                 'messages' => [
                     'info'    => [],
                     'warning' => [],
-                    'error'   => ["You don't have permission to perform this action."],
+                    'error'   => ["You don&#039;t have permission to perform this action."],
                 ],
             ],
         ];

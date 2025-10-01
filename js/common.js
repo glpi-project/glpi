@@ -174,7 +174,7 @@ function displayOtherSelectOptions(select_object, other_option_name) {
 **/
 function checkAsCheckboxes(reference, container_id, checkboxes_selector = 'input[type="checkbox"]') {
     reference = typeof(reference) === 'string' ? document.getElementById(reference) : reference;
-    $('#' + container_id + ' ' + checkboxes_selector + ':enabled')
+    $('#' + CSS.escape(container_id) + ' ' + checkboxes_selector + ':enabled')
         .prop('checked', $(reference).is(':checked'));
 
     return true;
@@ -236,14 +236,14 @@ function showHideDiv(id, img_name = '', img_src_close = '', img_src_open = '') {
         var _deco;
         var _img;
         if (!_awesome) {
-            _img = $('img[name=' + img_name + ']');
+            _img = $('img[name=' + CSS.escape(img_name) + ']');
             if (_elt.is(':visible')) {
                 _img.attr('src', img_src_close);
             } else {
                 _img.attr('src', img_src_open);
             }
         } else {
-            _deco = $('#'+img_name);
+            _deco = $('#' + CSS.escape(img_name));
             if (_elt.is(':visible')) {
                 _deco
                     .removeClass(img_src_open)
@@ -361,7 +361,8 @@ function submitGetLink(target, fields) {
  * @param id
 **/
 function selectAll(id) {
-    var element =$('#'+id);var selected = [];
+    var element = $('#'+CSS.escape(id));
+    var selected = [];
     element.find('option').each(function(i,e){
         selected[selected.length]=$(e).attr('value');
     });
@@ -375,7 +376,7 @@ function selectAll(id) {
  * @param id
 **/
 function deselectAll(id) {
-    $('#'+id).val('').trigger('change');
+    $('#' + CSS.escape(id)).val('').trigger('change');
 }
 
 
@@ -393,7 +394,7 @@ function massiveUpdateCheckbox(criterion, reference) {
     if (typeof(reference) == 'boolean') {
         value = reference;
     } else if (typeof(reference) == 'string') {
-        value = $('#' + reference).prop('checked');
+        value = $('#' + CSS.escape(reference)).prop('checked');
     } else if (typeof(reference) == 'object') {
         value = $(reference).prop('checked');
     }
@@ -612,7 +613,7 @@ var getExtIcon = function(ext) {
         url = CFG_GLPI.root_doc+'/pics/icones/defaut-dist.png';
     }
 
-    return '<img src="'+url+'" title="'+ext+'">';
+    return '<img src="' + _.escape(url) + '" title="' + _.escape(ext) + '">';
 };
 
 /**
@@ -752,7 +753,7 @@ var initMap = function(parent_elt, map_id, height, initial_view = {position: [0,
     }
 
     //add map, set a default arbitrary location
-    parent_elt.append($('<div id="'+map_id+'" style="height: ' + height + '"></div>'));
+    parent_elt.append($('<div id="'+_.escape(map_id)+'" style="height: ' + _.escape(height) + '"></div>'));
     var map = L.map(map_id, {fullscreenControl: true, minZoom: 2}).setView(initial_view.position, initial_view.zoom);
 
     //setup tiles and © messages
@@ -764,7 +765,7 @@ var initMap = function(parent_elt, map_id, height, initial_view = {position: [0,
 
 var showMapForLocation = function(elt) {
     var _id = $(elt).data('fid');
-    var _items_id = $('#' + _id).val();
+    var _items_id = $('#' + CSS.escape(_id)).val();
 
     if (_items_id == 0) {
         return;
@@ -785,7 +786,7 @@ var showMapForLocation = function(elt) {
                 url: CFG_GLPI.root_doc + '/ajax/getMapPoint.php',
                 data: {
                     itemtype: 'Location',
-                    items_id: $('#' + _id).val()
+                    items_id: $('#' + CSS.escape(_id)).val()
                 }
             }).done(function(data) {
                 if (data.success === false) {
@@ -850,7 +851,7 @@ var templateResult = function(result) {
     _elt.attr('title', result.title);
 
     if (typeof query.term !== 'undefined' && typeof result.rendered_text !== 'undefined') {
-        _elt.html(result.rendered_text);
+        _elt.html(result.rendered_text); // rendered_text is expected to be a safe HTML string
     } else {
         if (!result.text) {
             return null;
@@ -1051,8 +1052,8 @@ var escapeMarkupText = function (text) {
  * @return void
  */
 function updateProgress(progressid) {
-    var progress = $("progress#progress"+progressid).first();
-    $("div[data-progressid='"+progressid+"']").each(function(i, item) {
+    var progress = $("#"+CSS.escape(progressid)).first();
+    $("div[data-progressid='"+CSS.escape(progressid)+"']").each(function(i, item) {
         var j_item = $(item);
         var fg = j_item.find(".progress-fg").first();
         var calcWidth = (progress.attr('value') / progress.attr('max')) * 100;
@@ -1219,7 +1220,7 @@ function updateItemOnEvent(dropdown_ids, target, url, params = {}, events = ['ch
             //TODO Manage buffer time
 
             const cleaned_zone_id = zone.replace('[', '_').replace(']', '_');
-            const zone_obj = $(`#${cleaned_zone_id}`);
+            const zone_obj = $(`#${CSS.escape(cleaned_zone_id)}`);
 
             zone_obj.on(event, () => {
                 const conditional = (min_size >= 0 || force_load_for.length > 0);
@@ -1233,9 +1234,9 @@ function updateItemOnEvent(dropdown_ids, target, url, params = {}, events = ['ch
                         if (typeof v === "string") {
                             const reqs = v.match(/^__VALUE(\d+)__$/);
                             if (reqs !== null) {
-                                resolved_params[k] = $('#'+dropdown_ids[reqs[0]]).val();
+                                resolved_params[k] = $('#'+CSS.escape(dropdown_ids[reqs[0]])).val();
                             } else if (v === '__VALUE__') {
-                                resolved_params[k] = $('#'+dropdown_ids[0]).val();
+                                resolved_params[k] = $('#'+CSS.escape(dropdown_ids[0])).val();
                             } else {
                                 resolved_params[k] = v;
                             }
@@ -1354,11 +1355,11 @@ function tableToDetails(table) {
             if (in_details) {
                 details += '</pre></details>';
             }
-            details += `<details><summary>${e.innerText}</summary><pre>`;
+            details += `<details><summary>${_.escape(e.innerText)}</summary><pre>`;
             in_details = true;
         } else {
             if (in_details) {
-                details += e.innerText;
+                details += _.escape(e.innerText);
             }
         }
     });
@@ -1555,7 +1556,7 @@ $(document.body).on('shown.bs.tab', 'a[data-bs-toggle="tab"]', (e) => {
  * @param {string} item The ID of the field to be shown
  */
 function showDisclosablePasswordField(item) {
-    $("#" + item).prop("type", "text");
+    $("#" + CSS.escape(item)).prop("type", "text");
 }
 
 /**
@@ -1563,7 +1564,7 @@ function showDisclosablePasswordField(item) {
  * @param {string} item The ID of the field to be hidden
  */
 function hideDisclosablePasswordField(item) {
-    $("#" + item).prop("type", "password");
+    $("#" + CSS.escape(item)).prop("type", "password");
 }
 
 /**
@@ -1571,11 +1572,11 @@ function hideDisclosablePasswordField(item) {
  * @param {string} item The ID of the field to be copied
  */
 function copyDisclosablePasswordFieldToClipboard(item) {
-    const is_password_input = $("#" + item).prop("type") === "password";
+    const is_password_input = $("#" + CSS.escape(item)).prop("type") === "password";
     if (is_password_input) {
         showDisclosablePasswordField(item);
     }
-    $("#" + item).select();
+    $("#" + CSS.escape(item)).select();
     try {
         document.execCommand("copy");
     } catch {
@@ -1591,7 +1592,7 @@ function copyDisclosablePasswordFieldToClipboard(item) {
  * @param element_id The ID of the table to be converted
  */
 function initSortableTable(element_id) {
-    const element = $(`#${element_id}`);
+    const element = $(`#${CSS.escape(element_id)}`);
     const sort_table = (column_index) => {
         const current_sort = element.data('sort');
         element.data('sort', column_index);
@@ -1700,7 +1701,7 @@ if (typeof GlpiCommonAjaxController == "function") {
 function setupAjaxDropdown(config) {
     // Field ID is used as a selector, so we need to escape special characters
     // to avoid issues with jQuery.
-    const field_id = $.escapeSelector(config.field_id);
+    const field_id = CSS.escape(config.field_id);
 
     const select2_el = $('#' + field_id).select2({
         containerCssClass: config.container_css_class,
@@ -1796,7 +1797,7 @@ function setupAjaxDropdown(config) {
 
     $('label[for=' + field_id + ']').on('click', function () { $('#' + field_id).select2('open'); });
     $('#' + field_id).on('select2:open', function (e) {
-        const search_input = document.querySelector(`.select2-search__field[aria-controls='select2-${e.target.id}-results']`);
+        const search_input = document.querySelector(`.select2-search__field[aria-controls='select2-${CSS.escape(e.target.id)}-results']`);
         if (search_input) {
             search_input.focus();
         }
@@ -1809,7 +1810,7 @@ function setupAdaptDropdown(config)
 {
     // Field ID is used as a selector, so we need to escape special characters
     // to avoid issues with jQuery.
-    const field_id = $.escapeSelector(config.field_id);
+    const field_id = CSS.escape(config.field_id);
 
     const options = {
         width: config.width,
@@ -1909,8 +1910,8 @@ function setupAdaptDropdown(config)
     $('label[for=' + field_id + ']').on('click', function () {
         $('#' + field_id).select2('open');
     });
-    $('#' + field_id).on('select2:open', function () {
-        const search_input = document.querySelector(`.select2-search__field[aria-controls='select2-\${e.target.id}-results']`);
+    $('#' + field_id).on('select2:open', function (e) {
+        const search_input = document.querySelector(`.select2-search__field[aria-controls='select2-${CSS.escape(e.target.id)}-results']`);
         if (search_input) {
             search_input.focus();
         }

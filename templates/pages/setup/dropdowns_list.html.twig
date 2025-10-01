@@ -112,8 +112,8 @@ $(function () {
 
       if (input_value.length > 0) {
          timerid = setTimeout(function() {
-            $('.dropdowns-list .list-group-item:not(:icontains('+input_value+'))').hide();
-            $('.dropdowns-list .list-group-item:icontains('+input_value+')')
+            $('.dropdowns-list .list-group-item:not(:icontains('+CSS.escape(input_value)+'))').hide();
+            $('.dropdowns-list .list-group-item:icontains('+CSS.escape(input_value)+')')
                .closest('.accordion-collapse').addClass('show')
                .siblings('.accordion-header')
                   .children('.accordion-button').removeClass('collapsed');

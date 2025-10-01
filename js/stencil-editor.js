@@ -40,11 +40,13 @@
  *
  * @constructor
  * @param {HTMLElement} container - The container element for the editor.
- * @param {string} rand - A random string used for generating unique IDs.
+ * @param {integer} rand - A random string used for generating unique IDs.
  * @param {Object} zones_definition - The initial definition of zones.
  * @returns {StencilEditor} A new StencilEditor instance.
  */
 const StencilEditor = function (container, rand, zones_definition) {
+    rand = parseInt(rand);
+
     const zones = zones_definition;
 
     const croppers = [];
@@ -115,7 +117,7 @@ const StencilEditor = function (container, rand, zones_definition) {
                     const originalText = submitButton.text();
 
                     submitButton.data('delete', '1');
-                    submitButton.text(_x('button', 'Are you sure?'));
+                    submitButton.text(_.unescape(_x('button', 'Are you sure?')));
                     setInterval(() => {
                         submitButton.data('delete', '0');
                         submitButton.text(originalText);
@@ -180,7 +182,7 @@ const StencilEditor = function (container, rand, zones_definition) {
 
         $(container).find('.set-zone-data').removeClass('btn-warning'); // remove old active definition
         $(container).find(".defined-zone").remove();
-        $(container).find(`.set-zone-data[data-zone-index=${  current_zone  }]`).addClass('btn-warning');
+        $(container).find(`.set-zone-data[data-zone-index=${ CSS.escape(current_zone) }]`).addClass('btn-warning');
         $(container).find(`#general-submit-${rand}`).addClass('d-none');
         $(container).find(`#zone-data-${rand}`).removeClass('d-none');
         $(container).find(`#zone_label-${rand}`).val(zone['label'] ?? current_zone);
@@ -334,13 +336,13 @@ const StencilEditor = function (container, rand, zones_definition) {
 
         for (const [zone_number, zone] of Object.entries(zones)) {
             $(container).find(`.stencil-image[data-side=${zone['side']}]`).parent().append(`
-                <a href="#zone_number_-${rand}${zone_number}"
+                <a href="#zone_number_-${rand}${_.escape(zone_number)}"
                 class="defined-zone set-zone-data d-inline-flex align-items-center justify-content-center"
-                data-zone-index="${zone_number}"
+                data-zone-index="${_.escape(zone_number)}"
                 data-bs-toggle="tooltip"
                 data-bs-title="${_.escape(zone['label'])}"
                 data-bs-placement="auto"
-                style="left: ${zone['x_percent']}%; top: ${zone['y_percent']}%; width: ${zone['width_percent']}%; height: ${zone['height_percent']}%;">
+                style="left: ${_.escape(zone['x_percent'])}%; top: ${_.escape(zone['y_percent'])}%; width: ${_.escape(zone['width_percent'])}%; height: ${_.escape(zone['height_percent'])}%;">
                     <span class="zone-number" style="max-height: 90%;
                         max-width: 90%;
                         overflow: hidden;
@@ -420,7 +422,7 @@ const StencilEditor = function (container, rand, zones_definition) {
                 $(`form#stencil-editor-form-${rand} button[name="reset-zone-data"][data-bs-toggle="tooltip"]`).tooltip('hide');
 
                 // Reset zone data
-                var zoneData = $(`.set-zone-data[data-zone-index="${zoneId}"]`);
+                var zoneData = $(`.set-zone-data[data-zone-index="${CSS.escape(zoneId)}"]`);
                 zoneData.removeClass('btn-success').removeClass('btn-warning').addClass('btn-outline-secondary');
                 zoneData.find('span').text(zoneId);
                 zoneData.find('i').removeClass('ti-check').addClass('ti-file-unknown');

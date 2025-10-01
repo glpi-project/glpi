@@ -134,7 +134,7 @@
                 sortable_field.is_active = true;
                 // Recalculate the order of the fields to match the index in the displayed list
                 sortable_fields.forEach((field) => {
-                    field.order = $(component_root.value).find('.sortable-field').index($(`.sortable-field[data-key="${field.key}"]`));
+                    field.order = $(component_root.value).find('.sortable-field').index($(`.sortable-field[data-key="${CSS.escape(field.key)}"]`));
                 });
             } else {
                 removeField(moved_field.attr('data-key'));
@@ -165,8 +165,8 @@
                 window.glpi_ajax_dialog({
                     id: 'core_field_options_editor',
                     modalclass: 'modal-xl',
-                    appendTo: `#${$(sortable_fields_container.value).attr('id')}`,
-                    title: field_el.text(),
+                    appendTo: `#${CSS.escape($(sortable_fields_container.value).attr('id'))}`,
+                    title: _.escape(field_el.text()),
                     url: url,
                     buttons: [
                         {

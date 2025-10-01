@@ -35,7 +35,7 @@
 
 namespace Glpi\Application\View\Extension;
 
-use Search;
+use Glpi\Search\Output\HTMLSearchOutput;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -58,7 +58,8 @@ class SearchExtension extends AbstractExtension
         int $row = 0,
         string $extraparams = ""
     ): string {
-        // This is mandatory as Search::showItem expected third param to be passed by reference...
-        return Search::showItem($displaytype, $value, $num, $row, $extraparams);
+        // This is mandatory as HTMLSearchOutput::showItem expected second param to be passed by reference...
+        $output = new HTMLSearchOutput();
+        return $output->showItem($value, $num, $row, $extraparams);
     }
 }

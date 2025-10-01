@@ -58,42 +58,6 @@ abstract class Spreadsheet extends ExportSearchOutput
         $this->spread = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
     }
 
-    public static function showEndLine(bool $is_header_line): string
-    {
-        //only to satisfy inheritance
-        return "\n";
-    }
-
-    public static function showBeginHeader(): string
-    {
-        //only to satisfy inheritance
-        return '';
-    }
-
-    public static function showHeader($rows, $cols, $fixed = 0): string
-    {
-        //only to satisfy inheritance
-        return '';
-    }
-
-    public static function showHeaderItem($value, &$num, $linkto = "", $issort = 0, $order = "", $options = ""): string
-    {
-        //only to satisfy inheritance
-        return '';
-    }
-
-    public static function showItem($value, &$num, $row, $extraparam = ''): string
-    {
-        //only to satisfy inheritance
-        return '';
-    }
-
-    public static function showFooter($title = "", $count = null): string
-    {
-        //only to satisfy inheritance
-        return '';
-    }
-
     public function displayData(array $data, array $params = [])
     {
         global $CFG_GLPI;
