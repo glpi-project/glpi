@@ -9,6 +9,7 @@
  *
  * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2025 Kyndryl Inc.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -1336,6 +1337,10 @@ final class SQLProvider implements SearchProviderInterface
                     $SEARCH = null;
                 }
                 break;
+
+            case "matches":
+                $SEARCH = [$nott ? "<>" : "=", $val];
+                break;
         }
 
         //Check in current item if a specific where is defined
@@ -1421,8 +1426,12 @@ final class SQLProvider implements SearchProviderInterface
                     $criteria = [
                         'OR' => [],
                     ];
-                    if (in_array($searchtype, ['equals', 'notequals'])) {
-                        $append_criterion_with_search($criteria['OR'], "$table.id");
+                    if (in_array($searchtype, ['equals', 'notequals', 'matches'])) {
+                        if ($searchtype === 'matches') {
+                            $append_criterion_with_search($criteria['OR'], "$table.name");
+                        } else {
+                            $append_criterion_with_search($criteria['OR'], "$table.id");
+                        }
 
                         if ($searchtype === 'notequals') {
                             $nott = !$nott;
@@ -1821,7 +1830,7 @@ final class SQLProvider implements SearchProviderInterface
                         // Condition will be handled by the subquery
                         break;
                     }
-                    if (in_array($searchtype, ['equals', 'notequals', 'under', 'notunder', 'empty'])) {
+                    if (in_array($searchtype, ['equals', 'notequals', 'under', 'notunder', 'empty', 'matches'])) {
                         if ($searchtype === 'empty' && $opt["field"] === 'name') {
                             $l = $nott ? 'AND' : 'OR';
                             $criteria = [
@@ -1832,6 +1841,9 @@ final class SQLProvider implements SearchProviderInterface
                                 ],
                             ];
                             $append_criterion_with_search($criteria[$l], $tocompute);
+                        } elseif ($searchtype === 'matches' && in_array($field, ['name', 'completename'])) {
+                            $criteria = [];
+                            $append_criterion_with_search($criteria, "$table.name");
                         } else {
                             $criteria = [];
                             $append_criterion_with_search($criteria, "$table.id");
@@ -2248,7 +2260,7 @@ final class SQLProvider implements SearchProviderInterface
         }
 
         // Default case
-        if (in_array($searchtype, ['equals', 'notequals','under', 'notunder'])) {
+        if (in_array($searchtype, ['equals', 'notequals','under', 'notunder', 'matches'])) {
             $criteria = ['OR' => []];
             if (
                 (!isset($opt['searchequalsonfield'])
