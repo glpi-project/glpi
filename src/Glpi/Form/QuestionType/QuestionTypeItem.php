@@ -310,15 +310,25 @@ class QuestionTypeItem extends AbstractQuestionType implements
             $itemtype = current(current($this->getAllowedItemtypes()));
         }
 
+        $common_tree_dropdowns = [];
+        foreach ($this->getAllowedItemtypes() as $types) {
+            foreach ($types as $type) {
+                if (is_a($type, CommonTreeDropdown::class, true)) {
+                    $common_tree_dropdowns[$type] = $type;
+                }
+            }
+        }
+
         $twig = TemplateRenderer::getInstance();
         return $twig->render(
             'pages/admin/form/question_type/item/advanced_configuration.html.twig',
             [
-                'question'             => $question,
-                'itemtype'             => $itemtype,
-                'root_items_id'        => $this->getRootItemsId($question),
-                'subtree_depth'        => $this->getSubtreeDepth($question),
-                'selectable_tree_root' => $this->isSelectableTreeRoot($question),
+                'question'              => $question,
+                'itemtype'              => $itemtype,
+                'root_items_id'         => $this->getRootItemsId($question),
+                'subtree_depth'         => $this->getSubtreeDepth($question),
+                'selectable_tree_root'  => $this->isSelectableTreeRoot($question),
+                'common_tree_dropdowns' => $common_tree_dropdowns,
             ]
         );
     }
@@ -393,6 +403,10 @@ class QuestionTypeItem extends AbstractQuestionType implements
     ): array {
         if (!$question_config instanceof QuestionTypeItemExtraDataConfig) {
             throw new InvalidArgumentException();
+        }
+
+        if (!$question_config->getItemtype()) {
+            return parent::getConditionHandlers($question_config);
         }
 
         return array_merge(

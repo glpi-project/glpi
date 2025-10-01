@@ -2851,6 +2851,7 @@ CREATE TABLE `glpi_entities` (
   `custom_helpdesk_home_title` varchar(255) NOT NULL DEFAULT '-2',
   `enable_helpdesk_home_search_bar` tinyint NOT NULL DEFAULT '-2',
   `enable_helpdesk_service_catalog` tinyint NOT NULL DEFAULT '-2',
+  `expand_service_catalog` tinyint NOT NULL DEFAULT '-2',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`entities_id`,`name`),
   KEY `name` (`name`),
@@ -3201,7 +3202,7 @@ DROP TABLE IF EXISTS `glpi_helpdesks_tiles_glpipagetiles`;
 CREATE TABLE `glpi_helpdesks_tiles_glpipagetiles` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(255) DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
+  `description` text DEFAULT null,
   `illustration` varchar(255) DEFAULT NULL,
   `page` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -3213,7 +3214,7 @@ DROP TABLE IF EXISTS `glpi_helpdesks_tiles_externalpagetiles`;
 CREATE TABLE `glpi_helpdesks_tiles_externalpagetiles` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(255) DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
+  `description` text DEFAULT null,
   `illustration` varchar(255) DEFAULT NULL,
   `url` text DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -6320,7 +6321,7 @@ DROP TABLE IF EXISTS `glpi_remindertranslations`;
 CREATE TABLE `glpi_remindertranslations` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `reminders_id` int unsigned NOT NULL DEFAULT '0',
-  `language` varchar(5) DEFAULT NULL,
+  `language` varchar(10) DEFAULT NULL,
   `name` text,
   `text` longtext,
   `users_id` int unsigned NOT NULL DEFAULT '0',
@@ -9886,7 +9887,7 @@ CREATE TABLE `glpi_webhooks` (
   `payload` longtext,
   `use_default_payload` tinyint NOT NULL DEFAULT '1',
   `custom_headers` text,
-  `url` varchar(255) DEFAULT NULL,
+  `url` text DEFAULT NULL,
   `secret` text,
   `use_cra_challenge` tinyint NOT NULL DEFAULT '0',
   `http_method` varchar(255) DEFAULT 'POST',
@@ -9941,7 +9942,7 @@ CREATE TABLE `glpi_queuedwebhooks` (
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `sent_try` int NOT NULL DEFAULT '0',
   `webhooks_id` int unsigned NOT NULL DEFAULT '0',
-  `url` varchar(255) DEFAULT NULL,
+  `url` text DEFAULT NULL,
   `create_time` timestamp NULL DEFAULT NULL,
   `send_time` timestamp NULL DEFAULT NULL,
   `sent_time` timestamp NULL DEFAULT NULL,
@@ -10198,7 +10199,7 @@ CREATE TABLE `glpi_itemtranslations_itemtranslations` (
   `items_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype` varchar(100) NOT NULL,
   `key` varchar(255) NOT NULL,
-  `language` varchar(5) NOT NULL,
+  `language` varchar(10) NOT NULL,
   `translations` JSON NOT NULL,
   `hash` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`id`),

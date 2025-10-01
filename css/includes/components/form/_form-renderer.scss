@@ -151,4 +151,8 @@
             top: unset;
         }
     }
+
+    [data-glpi-form-renderer-section] {
+        scroll-margin-top: 72px; // Height of sticky header + 16px
+    }
 }

@@ -34,10 +34,14 @@ export class GlpiFormItemAdvancedConfig {
     // Static instance for singleton pattern
     static instance = null;
 
+    #common_tree_dropdown_itemtypes = [];
+
     /**
      * Constructor for the Item Advanced Configuration
+     *
+     * @param {Array} common_tree_dropdown_itemtypes - List of itemtypes that are CommonTreeDropdown
      */
-    constructor() {
+    constructor(common_tree_dropdown_itemtypes = []) {
         // Prevent multiple initializations
         if (GlpiFormItemAdvancedConfig.instance !== null) {
             return GlpiFormItemAdvancedConfig.instance;
@@ -48,6 +52,9 @@ export class GlpiFormItemAdvancedConfig {
 
         // Store instance
         GlpiFormItemAdvancedConfig.instance = this;
+
+        // Store the itemtypes that are CommonTreeDropdown
+        this.#common_tree_dropdown_itemtypes = common_tree_dropdown_itemtypes;
     }
 
     /**
@@ -92,11 +99,13 @@ export class GlpiFormItemAdvancedConfig {
         const dropdown_container = container.closest('[data-glpi-form-editor-advanced-question-configuration]')
             .parents('[data-glpi-form-editor-question-extra-details]');
 
-        // Show button only for 'Entity' sub-type
-        if (new_sub_type === 'Entity') {
+        // Show button only for sub-type that are CommonTreeDropdown
+        if (this.#common_tree_dropdown_itemtypes.includes(new_sub_type)) {
             dropdown_container.show();
+            dropdown_container.attr('data-glpi-form-editor-advanced-question-configuration-visible', 'true');
         } else {
             dropdown_container.hide();
+            dropdown_container.removeAttr('data-glpi-form-editor-advanced-question-configuration-visible');
         }
     }
 }

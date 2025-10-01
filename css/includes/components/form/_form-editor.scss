@@ -545,7 +545,7 @@ html {
     }
 }
 
-[data-glpi-form-editor-active-question]:has([data-glpi-form-editor-advanced-question-configuration]) {
+[data-glpi-form-editor-active-question]:has([data-glpi-form-editor-advanced-question-configuration-visible]) {
     .input-group > * {
         &:first-child:has(.select2-selection) {
             .select2-selection {

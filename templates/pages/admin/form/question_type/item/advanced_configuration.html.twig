@@ -83,7 +83,7 @@
 
         <script>
             import("/js/modules/Forms/ItemAdvancedConfig.js").then((m) => {
-                new m.GlpiFormItemAdvancedConfig().updateAdvancedConfigVisibility(
+                new m.GlpiFormItemAdvancedConfig({{ common_tree_dropdowns|keys|json_encode|raw }}).updateAdvancedConfigVisibility(
                     $('[data-glpi-form-editor-item-dropdown-advanced-configuration="{{ rand }}"]'),
                     '{{ itemtype }}'
                 );
