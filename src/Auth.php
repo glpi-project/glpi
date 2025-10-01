@@ -1609,7 +1609,7 @@ class Auth extends CommonGLPI
     {
         return $login !== null && (
             preg_match("/^[[:alnum:]'@.\-_ ]+$/iu", $login)
-            || Toolbox::validateEmail($login) !== false
+            || GLPIMailer::validateAddress($login) !== false
         );
     }
 

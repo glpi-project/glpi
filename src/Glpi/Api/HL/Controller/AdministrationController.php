@@ -45,6 +45,7 @@ use Glpi\Api\HL\RouteVersion;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use GLPIMailer;
 use Group;
 use Profile;
 use Session;
@@ -456,7 +457,7 @@ final class AdministrationController extends AbstractController
             ]);
         }
         $new_email = $request->getParameter('email');
-        if (!Toolbox::validateEmail($new_email)) {
+        if (!GLPIMailer::validateAddress($new_email)) {
             return self::getInvalidParametersErrorResponse([
                 'invalid' => [
                     ['name' => 'email', 'reason' => 'The provided email address does not appear to be formatted as an email address'],

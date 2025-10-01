@@ -38,10 +38,10 @@ namespace Glpi\Form\Destination\CommonITILField;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\QuestionType\AbstractQuestionTypeActors;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
+use GLPIMailer;
 use Group;
 use Session;
 use Ticket;
-use Toolbox;
 use User;
 
 enum ITILActorFieldStrategy: string
@@ -252,7 +252,7 @@ enum ITILActorFieldStrategy: string
             }, []);
         } elseif ($answer->getType() instanceof QuestionTypeEmail) {
             $value = $answer->getRawAnswer();
-            if (Toolbox::validateEmail($value)) {
+            if (GLPIMailer::validateAddress($value)) {
                 return [
                     [
                         'itemtype' => User::class,

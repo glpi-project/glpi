@@ -40,9 +40,9 @@ use Glpi\Form\Condition\ConditionHandler\StringConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
 use Glpi\Form\ValidationResult;
+use GLPIMailer;
 use Override;
 use Session;
-use Toolbox;
 
 final class QuestionTypeEmail extends AbstractQuestionTypeShortAnswer implements UsedAsCriteriaInterface, QuestionTypeValidationInterface
 {
@@ -89,7 +89,7 @@ final class QuestionTypeEmail extends AbstractQuestionTypeShortAnswer implements
             return $result;
         }
 
-        if (!Toolbox::validateEmail($answer)) {
+        if (!GLPIMailer::validateAddress($answer)) {
             $result->addError($question, __("Please enter a valid email"));
             return $result;
         }
