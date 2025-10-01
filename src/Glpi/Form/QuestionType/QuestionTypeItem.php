@@ -405,6 +405,10 @@ class QuestionTypeItem extends AbstractQuestionType implements
             throw new InvalidArgumentException();
         }
 
+        if (!$question_config->getItemtype()) {
+            return parent::getConditionHandlers($question_config);
+        }
+
         return array_merge(
             parent::getConditionHandlers($question_config),
             [
