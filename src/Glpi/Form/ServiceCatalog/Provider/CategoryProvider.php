@@ -106,11 +106,6 @@ final class CategoryProvider implements CompositeProviderInterface
             'name' => $category->fields['name'],
         ];
 
-        $ancestors_iterator = $category->getAncestors();
-        if (!$ancestors_iterator) {
-            return [$current_category];
-        }
-
         /** @var Category[] $ancestors */
         $ancestors = iterator_to_array($category->getAncestors());
         foreach ($ancestors as $ancestor) {
