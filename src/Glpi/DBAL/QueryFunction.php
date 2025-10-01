@@ -55,7 +55,6 @@ use function Safe\preg_replace;
  * @method static QueryExpression concat(array $params, ?string $alias = null) Build a 'CONCAT' SQL function call
  * @method static QueryExpression floor(string|QueryExpression $expression, ?string $alias = null) Build a 'FLOOR' function call
  * @method static QueryExpression greatest(array $params, ?string $alias = null) Build a 'GREATEST' function call
- * @method static QueryExpression jsonContains(array $params, ?string $alias = null) Build a 'JSON_CONTAINS' function call
  * @method static QueryExpression jsonExtract(array $params, ?string $alias = null) Build a 'JSON_EXTRACT' function call
  * @method static QueryExpression jsonUnquote(string|QueryExpression $expression, ?string $alias = null) Build a 'JSON_UNQUOTE' function call
  * @method static QueryExpression jsonRemove(array $params, ?string $alias = null) Build a 'JSON_REMOVE' function call
@@ -453,5 +452,25 @@ class QueryFunction
         $params = array_map(static fn($p) => $p instanceof QueryExpression || $p === null ? $p : $DB::quoteName($p), $params);
         $separator = $separator instanceof QueryExpression ? $separator : $DB::quoteName($separator);
         return new QueryExpression('CONCAT_WS(' . $separator . ', ' . implode(', ', $params) . ')', $alias);
+    }
+
+    public static function jsonContains(string|QueryExpression $target, string|QueryExpression $candidate, string $path, ?string $alias = null): QueryExpression
+    {
+        global $DB;
+
+        if (is_string($target)) {
+            $target = new QueryExpression($DB::quoteName($target));
+        }
+
+        if (is_string($candidate)) {
+            $candidate = preg_match('/-MariaDB/', $DB->getVersion())
+                ? new QueryExpression($DB::quoteName($candidate))
+                : QueryFunction::cast($candidate, 'JSON')
+            ;
+        }
+
+        $path = new QueryExpression($DB::quoteValue($path));
+
+        return self::getExpression('JSON_CONTAINS', [$target, $candidate, $path], $alias);
     }
 }
