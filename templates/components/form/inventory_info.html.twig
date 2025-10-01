@@ -120,12 +120,12 @@
             icon.addClass('icon-rotate');
             $.ajax({
                type: 'POST',
-               url: '{{ path('/ajax/agent.php') }}',
+               url: `${CFG_GLPI.root_doc}/ajax/agent.php`,
                timeout: 30000, // 30 seconds timeout
                dataType: 'json',
                data: {
-                  action: '{{ constant('Agent::ACTION_STATUS') }}',
-                  id: '{{ agent.fields['id'] }}'
+                  action: '{{ constant('Agent::ACTION_STATUS')|e('js') }}',
+                  id: {{ agent.getID() }}
                },
                success: function(json) {
                   $('#agent_status').text(json.answer);
@@ -141,12 +141,12 @@
             icon.addClass('icon-rotate');
             $.ajax({
                type: 'POST',
-               url: '{{ path('/ajax/agent.php') }}',
+               url: `${CFG_GLPI.root_doc}/ajax/agent.php`,
                timeout: 30000, // 30 seconds timeout
                dataType: 'json',
                data: {
-                  action: '{{ constant('Agent::ACTION_INVENTORY') }}',
-                  id: '{{ agent.fields['id'] }}'
+                  action: '{{ constant('Agent::ACTION_INVENTORY')|e('js') }}',
+                  id: {{ agent.getID() }}
                },
                success: function(json) {
                   $('#inventory_status').text(json.answer);

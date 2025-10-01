@@ -79,13 +79,13 @@ $(function () {
       var current_action = $(this).data('action');
 
       glpi_ajax_dialog({
-         url: '{{ path('/ajax/dropdownMassiveAction.php') }}',
+         url: `${CFG_GLPI.root_doc}/ajax/dropdownMassiveAction.php`,
          title: ma.actions[current_action],
          params: Object.assign(
             { action: current_action },
             ma
          ),
-         appendTo: '#massive_container_{{ rand }}',
+         appendTo: '#massive_container_{{ rand|e('css')|e('js') }}',
       });
    });
 });

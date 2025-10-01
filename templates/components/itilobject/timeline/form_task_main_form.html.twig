@@ -39,7 +39,7 @@
 ) %}
 {% set can_update_kb = can_update_kb|default(has_profile_right('knowbase', constant('UPDATE'))) %}
 {% set nokb = nokb|default(params['nokb'] is defined or (params['nokb'] ?? false) == true) %}
-{% set rand = rand|default(random()) %}
+{% set rand = rand|default(random())|safe_dom_id %}
 {% set formoptions = formoptions|default(params['formoptions'] ?? '') %}
 
 {# In some cases, we may already have an HTML form (massive actions) #}
@@ -253,20 +253,20 @@
                 <script type="text/javascript">
                     function showPlanUpdate{{ rand }}(e) {
                         $('#plan{{ rand }}').hide();
-                        $('#dropdown_state{{ rand }}').trigger('setValue', {{ session('glpiplanned_task_state') }});
-                        $('#viewplan{{ rand }}').load('{{ path('/ajax/planning.php') }}', {
+                        $('#dropdown_state{{ rand }}').trigger('setValue', {{ session('glpiplanned_task_state')|json_encode|raw }});
+                        $('#viewplan{{ rand }}').load(`${CFG_GLPI.root_doc}/ajax/planning.php`, {
                             action: "add_event_classic_form",
                             form: "followups", // Was followups for tasks before. Can't find where this is used.
-                            entity: {{ item.fields.entities_id }},
+                            entity: {{ item.fields.entities_id|json_encode|raw }},
                             rand_user: {{ random() }},
                             rand_group: {{ random() }},
-                            itemtype: "{{ subitem.type }}",
-                            items_id: {{ subitem.fields.id|default(-1) }},
-                            parent_itemtype: "{{ item.getType() }}",
-                            parent_items_id: {{ item.fields.id is empty ? 0 : item.fields.id }},
-                            parent_fk_field: "{{ item.getForeignKeyField() }}",
-                            begin: "{{ subitem.fields['begin'] }}",
-                            end: "{{ subitem.fields['end'] }}",
+                            itemtype: "{{ subitem.type|e('js') }}",
+                            items_id: {{ subitem.fields.id|default(-1)|json_encode|raw }},
+                            parent_itemtype: "{{ item.getType()|e('js') }}",
+                            parent_items_id: {{ (item.fields.id is empty ? 0 : item.fields.id)|json_encode|raw }},
+                            parent_fk_field: "{{ item.getForeignKeyField()|e('js') }}",
+                            begin: "{{ subitem.fields['begin']|e('js') }}",
+                            end: "{{ subitem.fields['end']|e('js') }}",
                         });
                     }
                 </script>
@@ -276,7 +276,7 @@
                         showPlanUpdate{{ rand }}();
                     </script>
                     <button id="unplan{{ rand }}" class="btn btn-outline-warning" type="submit" name="unplan"
-                            onclick="return confirm('{{ __('Confirm the deletion of planning?') }}');">
+                            onclick="return confirm('{{ __('Confirm the deletion of planning?')|e('js') }}');">
                         <i class="fas ti ti-calendar-off"></i>
                         <span>{{ __('Unplan') }}</span>
                     </button>
@@ -361,7 +361,7 @@
 
             {% if subitem.can(subitem.fields['id'], constant('PURGE')) %}
                 <button class="btn btn-outline-danger me-2" type="submit" name="purge"
-                        onclick="return confirm('{{ __('Confirm the final deletion?') }}');">
+                        onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');">
                 <i class="ti ti-trash"></i>
                 <span>{{ _x('button', 'Delete permanently') }}</span>
                 </button>

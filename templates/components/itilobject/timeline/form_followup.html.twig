@@ -256,7 +256,7 @@
 
                   {% if subitem.can(subitem.fields['id'], constant('PURGE')) %}
                      <button class="btn btn-outline-danger me-2" type="submit" name="purge"
-                             onclick="return confirm('{{ __('Confirm the final deletion?') }}');">
+                             onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');">
                         <i class="ti ti-trash"></i>
                         <span>{{ _x('button', 'Delete permanently') }}</span>
                      </button>
@@ -272,12 +272,12 @@
       <script type="text/javascript">
          function itilfollowuptemplate_update{{ rand }}(value) {
             $.ajax({
-               url: '{{ path('/ajax/itilfollowup.php') }}',
+               url: `${CFG_GLPI.root_doc}/ajax/itilfollowup.php`,
                type: 'POST',
                data: {
                   itilfollowuptemplates_id: value,
-                  items_id: '{{ item.fields['id'] }}',
-                  itemtype: '{{ item.getType() }}'
+                  items_id: '{{ item.fields['id']|e('js') }}',
+                  itemtype: '{{ item.getType()|e('js') }}'
                }
             }).done(function (data) {
                var requesttypes_id = isNaN(parseInt(data.requesttypes_id))
