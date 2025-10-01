@@ -166,7 +166,6 @@ class CleanSoftwareCron extends CommonDBTM
             'SELECT' => 'id',
             'FROM'   => Software::getTable(),
             'WHERE'  => [
-                'is_deleted' => 0,
                 'NOT' => [
                     'id' => new QuerySubQuery([
                         'SELECT' => 'softwares_id',
