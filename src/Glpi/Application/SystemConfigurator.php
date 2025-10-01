@@ -41,9 +41,11 @@ use Glpi\Log\ErrorLogHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use Safe\Exceptions\InfoException;
 use Safe\Exceptions\PcreException;
 
 use function Safe\define;
+use function Safe\ini_get;
 use function Safe\ini_set;
 use function Safe\mkdir;
 use function Safe\preg_grep;
@@ -58,9 +60,10 @@ final class SystemConfigurator
     public function __construct(private string $root_dir, private ?string $env)
     {
         $this->computeConstants();
-        $this->setSessionConfiguration();
         $this->initLogger();
         $this->registerErrorHandler();
+
+        $this->setSessionConfiguration();
 
         // Keep it after `registerErrorHandler()` call to be sure that messages are correctly handled.
         $this->checkForObsoleteConstants();
@@ -271,12 +274,31 @@ final class SystemConfigurator
 
     private function setSessionConfiguration(): void
     {
-        // Force session to use cookies.
-        ini_set('session.use_trans_sid', '0');
-        ini_set('session.use_only_cookies', '1');
+        // Set secure cookie config
+        $target_configs = [
+            'session.use_trans_sid'     => false,
+            'session.use_only_cookies'  => true,
+            'session.cookie_httponly'   => true,
+        ];
 
-        // Force session cookie security.
-        ini_set('session.cookie_httponly', '1');
+        foreach ($target_configs as $name => $target_value) {
+            $current_value = filter_var(ini_get($name), FILTER_VALIDATE_BOOLEAN);
+            if ($current_value !== $target_value) {
+                try {
+                    ini_set($name, $target_value ? '1' : '0');
+                } catch (InfoException $e) {
+                    $this->logger->error(
+                        sprintf(
+                            'Unable to set `%s` to `%s`. You should enforce the value in your PHP configuration. Error is: %s',
+                            $name,
+                            $target_value ? '1' : '0',
+                            $e->getMessage()
+                        ),
+                        ['exception' => $e]
+                    );
+                }
+            }
+        }
 
         // Force session cookie name.
         // The cookie name contains the root dir + HTTP host + HTTP port to ensure that it is unique
