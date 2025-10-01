@@ -194,7 +194,7 @@ const filesToCopy = [
     },
     {
         package: 'swagger-ui-dist',
-        from: 'oauth2-redirect.html'
+        from: 'oauth2-redirect.js'
     },
     // SVG files
     {

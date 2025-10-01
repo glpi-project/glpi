@@ -466,7 +466,16 @@ HTML;
     #[RouteVersion(introduced: '2.0')]
     public function swaggerOAuthRedirect(Request $request): Response
     {
-        $content = file_get_contents(GLPI_ROOT . '/public/lib/swagger-ui-dist/oauth2-redirect.html');
+        $js_path = \htmlescape(Html::getPrefixedUrl('/lib/swagger-ui-dist/oauth2-redirect.js'));
+        $content = <<<HTML
+<html lang="en-US">
+<head>
+<script src="$js_path"></script>
+</head>
+<body>
+</body>
+</html>
+HTML;
         return new Response(200, ['Content-Type' => 'text/html'], $content);
     }
 
