@@ -353,6 +353,9 @@ export class GlpiFormRendererController
 
         // Update actions visibility
         this.#updateActionsVisiblity();
+
+        // Scroll to the top of the section
+        $('[data-glpi-form-renderer-section]:visible')[0].scrollIntoView();
     }
 
     /**
@@ -388,6 +391,9 @@ export class GlpiFormRendererController
 
         // Update actions visibility
         this.#updateActionsVisiblity();
+
+        // Scroll to the top of the section
+        $('[data-glpi-form-renderer-section]:visible')[0].scrollIntoView();
     }
 
     /**
