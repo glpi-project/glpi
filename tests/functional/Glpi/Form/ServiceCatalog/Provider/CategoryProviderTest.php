@@ -438,9 +438,6 @@ class CategoryProviderTest extends DbTestCase
             category_id: 0,
         );
 
-        $ancestors = $this->provider->getAncestors($item_request);
-        $this->assertCount(0, $ancestors);
-
         // Root has no ancestors
         $ancestors = $this->provider->getAncestors($item_request);
         $this->assertCount(0, $ancestors);
