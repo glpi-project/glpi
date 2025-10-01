@@ -40,7 +40,7 @@ use function Safe\sha1_file;
 define('GLPI_ROOT', dirname(__DIR__, 2));
 
 // Current version of GLPI
-define('GLPI_VERSION', '11.0.0-rc5');
+define('GLPI_VERSION', '11.0.0');
 
 $schema_file = sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT);
 define(
