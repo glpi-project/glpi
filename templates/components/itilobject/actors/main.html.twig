@@ -226,11 +226,11 @@
          {{ actortype }}: [
             {% for actor in item.getActorsForType(actortypeint, params) %}
             {
-               itemtype: "{{ actor['itemtype'] }}",
-               items_id: "{{ actor['items_id'] }}",
+               itemtype: "{{ actor['itemtype']|e('js') }}",
+               items_id: "{{ actor['items_id']|e('js') }}",
                use_notification: {{ (actor['use_notification'] ?? false) ? "1" : "0" }},
-               alternative_email: "{{ actor['alternative_email'] ?? '' }}",
-               default_email: "{{ actor['default_email'] ?? '' }}",
+               alternative_email: "{{ (actor['alternative_email'] ?? '')|e('js') }}",
+               default_email: "{{ (actor['default_email'] ?? '')|e('js') }}",
             },
             {% endfor %}
          ],
@@ -298,7 +298,7 @@
          fa_class = "fas";
       }
 
-      var actor_entry = $('.actor_entry[data-itemtype='+actor.itemtype+'][data-items-id='+actor.items_id+'][data-actortype='+actortype+']')
+      var actor_entry = $('.actor_entry[data-itemtype='+CSS.escape(actor.itemtype)+'][data-items-id='+parseInt(actor.items_id)+'][data-actortype='+CSS.escape(actortype)+']')
          .filter(function() {
             if(actor.items_id == 0 && actor.itemtype == "User") {
                return $(this).text().trim() === actor.alternative_email;

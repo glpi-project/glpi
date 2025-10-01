@@ -81,15 +81,15 @@
     {% set more_html %}
         {% if options.is_disclosable %}
             <div class="btn btn-outline-secondary"
-                 onmousedown="showDisclosablePasswordField('{{ options.id }}')"
-                 onmouseup="hideDisclosablePasswordField('{{ options.id }}')"
-                 onmouseout="hideDisclosablePasswordField('{{ options.id }}')">
+                 onmousedown="showDisclosablePasswordField('{{ options.id|e('js') }}')"
+                 onmouseup="hideDisclosablePasswordField('{{ options.id|e('js') }}')"
+                 onmouseout="hideDisclosablePasswordField('{{ options.id|e('js') }}')">
                 <i class="ti ti-eye disclose"></i>
             </div>
         {% endif %}
 
         {% if options.is_copyable %}
-            <div class="btn btn-outline-secondary" onclick="copyDisclosablePasswordFieldToClipboard('{{ options.id }}')">
+            <div class="btn btn-outline-secondary" onclick="copyDisclosablePasswordFieldToClipboard('{{ options.id|e('js') }}')">
                 <i class="ti ti-clipboard-copy disclose"></i>
             </div>
         {% endif %}
@@ -161,12 +161,12 @@
     })) }}
     <script>
         $(function () {
-            $("#{{ options.id }}").spectrum({
+            $("#{{ options.id|e('css')|e('js') }}").spectrum({
                 showInput: true,
                 preferredFormat: "hex",
                 type: "text",
-                cancelText: "{{ __('Cancel') }}",
-                chooseText: "{{ __('Validate') }}",
+                cancelText: "{{ __('Cancel')|e('js') }}",
+                chooseText: "{{ __('Validate')|e('js') }}",
                 change: function (color) {
                     if (color !== null && color.getAlpha() !== 1) {
                         let hex = color.toHexString();
@@ -277,18 +277,18 @@
     {% set alt_format = call('Toolbox::getDateFormat', ['js']) ~ (options.enableTime ? ' H:i:S' : '') %}
     <script>
         $(function() {
-            $("#{{ options.id }}").flatpickr({
+            $("#{{ options.id|e('css')|e('js') }}").flatpickr({
                 wrap: true,
                 altInput: true,
-                dateFormat: '{{ date_format }}',
-                altFormat: '{{ alt_format }}',
+                dateFormat: '{{ date_format|e('js') }}',
+                altFormat: '{{ alt_format|e('js') }}',
                 enableTime: {{ options.enableTime ? "true" : "false" }},
                 enableSeconds: {{ options.enableTime ? "true" : "false" }},
                 weekNumbers: true,
                 time_24hr: true,
                 allowInput: {{ options.readonly ? 'false' : 'true' }},
                 clickOpens: {{ options.readonly ? 'false' : 'true' }},
-                locale: getFlatPickerLocale("{{ locale['language'] }}", "{{ locale['region'] }}"),
+                locale: getFlatPickerLocale("{{ locale['language']|e('js') }}", "{{ locale['region']|e('js') }}"),
                 onClose(dates, currentdatestring, picker) {
                     picker.setDate(picker.altInput.value, true, picker.config.altFormat)
                 },
@@ -385,8 +385,8 @@
         <script>
             $(function() {
                 const form_tags = new GLPI.RichText.FormTags(
-                    tinymce.get('{{ options.id }}'),
-                    {{ options.form_tags_form_id }},
+                    tinymce.get('{{ options.id|e('js') }}'),
+                    {{ options.form_tags_form_id|json_encode|raw }},
                 );
                 form_tags.register();
             });
@@ -397,9 +397,9 @@
         <script>
             $(function() {
                 const user_mention = new GLPI.RichText.UserMention(
-                    tinymce.get('{{ options.id }}'),
-                    {{ options.entities_id }},
-                    '{{ idor_token('User', {'right': 'all', 'entity_restrict': options.entities_id}) }}',
+                    tinymce.get('{{ options.id|e('js') }}'),
+                    {{ options.entities_id|json_encode|raw }},
+                    '{{ idor_token('User', {'right': 'all', 'entity_restrict': options.entities_id|json_encode|raw}) }}',
                     {{ options.mention_options|json_encode|raw }}
                 );
                 user_mention.register();

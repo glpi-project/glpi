@@ -30,6 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% set rand = rand|default(random())|safe_dom_id %}
+
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% set validation = item.getValidationClassInstance() %}

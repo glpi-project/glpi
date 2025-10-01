@@ -30,7 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set rand = rand|default(random()) %}
+{% set rand = rand|default(random())|safe_dom_id %}
 {% set subitem_container_id = subitem_container_id|default('viewsubitem' ~ rand) %}
 {% set ajax_form_submit = ajax_form_submit|default(false) %}
 {% set reload_tab = reload_tab|default(false) %}
@@ -58,7 +58,7 @@
 
 <script>
     function viewAddEditSubItem{{ rand }}(id) {
-        const modal_el = $('#{{ subitem_container_id ~ '_modal' }}');
+        const modal_el = $('#{{ (subitem_container_id ~ '_modal')|e('css')|e('js') }}');
         if (modal_el.length) {
             modal_el[0].addEventListener('shown.bs.modal', (event) => {
                 event.target.setAttribute('data-cy-ready', 'true');
@@ -70,19 +70,19 @@
         $('#{{ subitem_container_id }}').load('{{ path('/ajax/viewsubitem.php')|e('js') }}',{
             type: "{{ type|e('js') }}",
             parenttype: "{{ parenttype|e('js') }}",
-        {{ items_id }}: {{ id }},
-        id: id
-    }, () => {
+            '{{ items_id|e('js') }}': {{ id|json_encode|raw }},
+            id: id
+        }, () => {
             if (modal_el.length) {
                 modal_el.modal('show');
             }
         });
     }
     $(() => {
-        const modal_el = $('#{{ subitem_container_id ~ '_modal' }}');
+        const modal_el = $('#{{ (subitem_container_id ~ '_modal')|e('css')|e('js') }}');
 
         {% if datatable_id is defined %}
-            $('#{{ datatable_id }}').on('click', 'tbody tr', (e) => {
+            $('#{{ datatable_id|e('css')|e('js') }}').on('click', 'tbody tr', (e) => {
                 if ($(e.target).closest('td').find('.massive_action_checkbox').length > 0) {
                     return;
                 }
@@ -96,7 +96,7 @@
         $('#addsubitem{{ rand }}').on('click', (e) => {
             viewAddEditSubItem{{ rand }}(-1);
         });
-        const subitem_container = $('#{{ subitem_container_id }}');
+        const subitem_container = $('#{{ subitem_container_id|e('css')|e('js') }}');
         subitem_container.on('submit', 'form', (e) => {
             {% if ajax_form_submit %}
                 e.preventDefault();
