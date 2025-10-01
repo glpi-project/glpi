@@ -36,7 +36,6 @@
 namespace Glpi\Form\ServiceCatalog\Provider;
 
 use Glpi\Form\Category;
-use Glpi\Form\Form;
 use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\FuzzyMatcher\FuzzyMatcher;
 use Glpi\FuzzyMatcher\PartialMatchStrategy;
