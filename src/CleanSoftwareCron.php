@@ -202,7 +202,7 @@ class CleanSoftwareCron extends CommonDBTM
             $total += $count;
 
             foreach ($items as $item) {
-                $em->delete($item);
+                $em->delete($item, true);
             }
 
             // Stop if no items found
