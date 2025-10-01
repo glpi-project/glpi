@@ -47,7 +47,7 @@
         "jquery.fancytree": "^2.38.5",
         "jquery.rateit": "^1.1.6",
         "leaflet": "^1.9.4",
-        "leaflet-control-geocoder": "^3.3.0",
+        "leaflet-control-geocoder": "^3.3.1",
         "leaflet-fullscreen": "^1.0.2",
         "leaflet-spin": "^1.1.0",
         "leaflet.awesome-markers": "^2.0.5",
