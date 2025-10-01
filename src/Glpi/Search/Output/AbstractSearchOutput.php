@@ -58,13 +58,6 @@ abstract class AbstractSearchOutput
     }
 
     /**
-     * Display some content before the search input form and results
-     * @param class-string<CommonGLPI> $itemtype
-     * @return void
-     */
-    public static function showPreSearchDisplay(string $itemtype): void {}
-
-    /**
      * Display the search results
      *
      * @param array $data Array of search data prepared to get data
@@ -73,103 +66,6 @@ abstract class AbstractSearchOutput
      * @return void|false
      **/
     abstract public function displayData(array $data, array $params = []);
-
-    /**
-     * Print generic normal Item Cell
-     *
-     * @param string|null   $value       Value to display
-     * @param integer       &$num        Column number
-     * @param integer       $row         Row number
-     * @param string        $extraparam  Extra parameters for display (default '')
-     *
-     * @return string HTML to display
-     *
-     * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
-     * @psalm-taint-sink html $value (string will be added to HTML source)
-     */
-    abstract public static function showItem($value, &$num, $row, $extraparam = ''): string;
-
-
-    /**
-     * Print generic error
-     *
-     * @param string  $message  Message to display, if empty "no item found" will be displayed
-     *
-     * @return string HTML to display
-     **/
-    abstract public static function showError($message = ''): string;
-
-
-    /**
-     * Print generic footer
-     *
-     * @param string  $title title of file : used for PDF (default '')
-     * @param integer $count Total number of results
-     *
-     * @return string HTML to display
-     **/
-    abstract public static function showFooter($title = "", $count = null): string;
-
-
-    /**
-     * Print generic footer
-     *
-     * @param integer         $rows   Number of rows
-     * @param integer         $cols   Number of columns
-     * @param boolean|integer $fixed  Used tab_cadre_fixe table for HTML export ? (default 0)
-     *
-     * @return string HTML to display
-     **/
-    abstract public static function showHeader($rows, $cols, $fixed = 0): string;
-
-    /**
-     * Print generic Header Column
-     *
-     * @param string           $value    Value to display. This value may contain HTML data. Non-HTML content should be escaped before calling this function.
-     * @param integer          &$num     Column number
-     * @param string           $linkto   Link display element (HTML specific) (default '')
-     * @param boolean|integer  $issort   Is the sort column ? (default 0)
-     * @param string           $order    Order type ASC or DESC (defaut '')
-     * @param string           $options  Options to add (default '')
-     *
-     * @return string HTML to display
-     *
-     * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
-     * @psalm-taint-sink html $value (string will be added to HTML source)
-     */
-    abstract public static function showHeaderItem($value, &$num, $linkto = "", $issort = 0, $order = "", $options = ""): string;
-
-    /**
-     * Print begin of header part
-     *
-     * @return string HTML to display
-     **/
-    abstract public static function showBeginHeader(): string;
-
-
-    /**
-     * Print end of header part
-     *
-     * @return string to display
-     **/
-    abstract public static function showEndHeader(): string;
-
-    /**
-     * Print generic new line
-     *
-     * @param boolean $odd         Is it a new odd line ? (false by default)
-     * @param boolean $is_deleted  Is it a deleted search ? (false by default)
-     *
-     * @return string HTML to display
-     **/
-    abstract public static function showNewLine($odd = false, $is_deleted = false): string;
-
-    /**
-     * Print generic end line
-     * @param bool $is_header_line
-     * @return string HTML to display
-     */
-    abstract public static function showEndLine(bool $is_header_line): string;
 
     public function canDisplayResultsContainerWithoutExecutingSearch(): bool
     {

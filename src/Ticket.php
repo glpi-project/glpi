@@ -4786,7 +4786,7 @@ JAVASCRIPT;
             echo "<a href='" . htmlescape(Ticket::getSearchURL() . "?" . Toolbox::append_params($options)) . "'>" . __s('Show all') . "</a>";
             echo "</th></tr>";
 
-            self::commonListHeader(Search::HTML_OUTPUT);
+            self::commonListHeader();
 
             foreach ($iterator as $data) {
                 Session::addToNavigateListItems('Ticket', $data["id"]);

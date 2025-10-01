@@ -42,6 +42,7 @@ use Glpi\Features\TreeBrowseInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
 use Glpi\RichText\RichText;
+use Glpi\Search\Output\HTMLSearchOutput;
 
 use function Safe\preg_match;
 use function Safe\preg_replace;
@@ -1427,12 +1428,7 @@ TWIG, $twig_params);
         }
 
         if ($numrows > 0) {
-            // Set display type for export if define
-            $output_type = Search::HTML_OUTPUT;
-
-            if (isset($_GET["display_type"])) {
-                $output_type = $_GET["display_type"];
-            }
+            $output = new HTMLSearchOutput();
 
             // Pager
             $parameters = [
@@ -1450,44 +1446,35 @@ TWIG, $twig_params);
                 ];
             }
 
-            $pager_url = "";
-            if ($output_type === Search::HTML_OUTPUT) {
-                $pager_url = Toolbox::getItemTypeSearchURL('KnowbaseItem');
-                if (!Session::getLoginUserID()) {
-                    $pager_url = $CFG_GLPI['root_doc'] . "/front/helpdesk.faq.php";
-                }
-                Html::printPager(
-                    $params['start'],
-                    $rows,
-                    $pager_url,
-                    Toolbox::append_params($parameters),
-                    'KnowbaseItem'
-                );
+            $pager_url = Toolbox::getItemTypeSearchURL('KnowbaseItem');
+            if (!Session::getLoginUserID()) {
+                $pager_url = $CFG_GLPI['root_doc'] . "/front/helpdesk.faq.php";
             }
+            Html::printPager(
+                $params['start'],
+                $rows,
+                $pager_url,
+                Toolbox::append_params($parameters),
+                'KnowbaseItem'
+            );
 
             $nbcols = 1;
             // Display List Header
-            echo Search::showHeader($output_type, $numrows + 1, $nbcols);
+            echo $output::showHeader($numrows + 1, $nbcols);
 
-            echo Search::showNewLine($output_type);
+            echo $output::showNewLine();
             $header_num = 1;
-            echo Search::showHeaderItem($output_type, __s('Subject'), $header_num);
-
-            if ($output_type !== Search::HTML_OUTPUT) {
-                echo Search::showHeaderItem($output_type, __s('Content'), $header_num);
-            }
+            echo $output::showHeaderItem(__s('Subject'), $header_num);
 
             if ($showwriter) {
-                echo Search::showHeaderItem($output_type, __s('Writer'), $header_num);
+                echo $output::showHeaderItem(__s('Writer'), $header_num);
             }
-            echo Search::showHeaderItem($output_type, _sn('Category', 'Categories', 1), $header_num);
+            echo $output::showHeaderItem(_sn('Category', 'Categories', 1), $header_num);
 
-            if ($output_type === Search::HTML_OUTPUT) {
-                echo Search::showHeaderItem($output_type, _sn('Associated element', 'Associated elements', Session::getPluralNumber()), $header_num);
-            }
+            echo $output::showHeaderItem(_sn('Associated element', 'Associated elements', Session::getPluralNumber()), $header_num);
 
-            if (isset($options['item_itemtype'], $options['item_items_id']) && ($output_type === Search::HTML_OUTPUT)) {
-                echo Search::showHeaderItem($output_type, '&nbsp;', $header_num);
+            if (isset($options['item_itemtype'], $options['item_items_id'])) {
+                echo $output::showHeaderItem('&nbsp;', $header_num);
             }
 
             // Num of the row (1=header_line)
@@ -1496,7 +1483,7 @@ TWIG, $twig_params);
                 Session::addToNavigateListItems('KnowbaseItem', $data["id"]);
                 // Column num
                 $item_num = 1;
-                echo Search::showNewLine($output_type, ($row_num - 1) % 2 === 1);
+                echo $output::showNewLine(($row_num - 1) % 2 === 1);
                 $row_num++;
 
                 $item = new self();
@@ -1511,51 +1498,45 @@ TWIG, $twig_params);
                     $answer = $data["transanswer"];
                 }
 
-                if ($output_type === Search::HTML_OUTPUT) {
-                    $toadd = '';
-                    if (isset($options['item_itemtype'], $options['item_items_id'])) {
-                        $href  = " href='#' data-bs-toggle='modal' data-bs-target='#kbshow" . htmlescape($data['id']) . "'";
-                        $toadd = Ajax::createIframeModalWindow(
-                            'kbshow' . $data["id"],
-                            self::getFormURLWithID($data["id"]),
-                            ['display' => false]
-                        );
-                    } else {
-                        $href = " href=\"" . htmlescape(self::getFormURLWithID($data["id"])) . "\" ";
-                    }
-
-                    $icon_class = "";
-                    $fa_title = "";
-                    if (
-                        $data['is_faq']
-                        && (!Session::isMultiEntitiesMode()
-                            || (isset($data['visibility_count'])
-                                && $data['visibility_count'] > 0))
-                    ) {
-                        $icon_class = "ti-help faq";
-                        $fa_title = __s("This item is part of the FAQ");
-                    } elseif (
-                        isset($data['visibility_count'])
-                        && $data['visibility_count'] <= 0
-                    ) {
-                        $icon_class = "ti-eye-off not-published";
-                        $fa_title = __s("This item is not published yet");
-                    }
-                    echo Search::showItem(
-                        $output_type,
-                        "<div class='kb'>$toadd <i class='ti $icon_class' title='$fa_title'></i> <a $href>" . Html::resume_text($name, 80) . "</a></div>
-                                       <div class='kb_resume'>" . Html::resume_text(RichText::getTextFromHtml($answer, false, false), 600) . "</div>",
-                        $item_num,
-                        $row_num
+                $toadd = '';
+                if (isset($options['item_itemtype'], $options['item_items_id'])) {
+                    $href  = " href='#' data-bs-toggle='modal' data-bs-target='#kbshow" . htmlescape($data['id']) . "'";
+                    $toadd = Ajax::createIframeModalWindow(
+                        'kbshow' . $data["id"],
+                        self::getFormURLWithID($data["id"]),
+                        ['display' => false]
                     );
                 } else {
-                    echo Search::showItem($output_type, htmlescape($name), $item_num, $row_num);
-                    echo Search::showItem($output_type, htmlescape(RichText::getTextFromHtml($answer, true, false, true)), $item_num, $row_num);
+                    $href = " href=\"" . htmlescape(self::getFormURLWithID($data["id"])) . "\" ";
                 }
 
+                $icon_class = "";
+                $fa_title = "";
+                if (
+                    $data['is_faq']
+                    && (!Session::isMultiEntitiesMode()
+                        || (isset($data['visibility_count'])
+                            && $data['visibility_count'] > 0))
+                ) {
+                    $icon_class = "ti-help faq";
+                    $fa_title = __s("This item is part of the FAQ");
+                } elseif (
+                    isset($data['visibility_count'])
+                    && $data['visibility_count'] <= 0
+                ) {
+                    $icon_class = "ti-eye-off not-published";
+                    $fa_title = __s("This item is not published yet");
+                }
+                echo $output::showItem(
+                    "<div class='kb'>$toadd <i class='ti $icon_class' title='$fa_title'></i> <a $href>" . Html::resume_text($name, 80) . "</a></div>
+                                   <div class='kb_resume'>" . Html::resume_text(RichText::getTextFromHtml($answer, false, false), 600) . "</div>",
+                    $item_num,
+                    $row_num
+                );
+
+
                 if ($showwriter) {
-                    echo Search::showItem(
-                        $output_type,
+                    echo $output::showItem(
                         getUserLink($data["users_id"]),
                         $item_num,
                         $row_num
@@ -1571,78 +1552,56 @@ TWIG, $twig_params);
                         "glpi_knowbaseitemcategories",
                         $knowbaseitemcategories_id
                     );
-                    if ($output_type === Search::HTML_OUTPUT) {
-                        $cathref = self::getSearchURL() . "?knowbaseitemcategories_id="
-                            . $knowbaseitemcategories_id . '&amp;forcetab=Knowbase$2';
-                        $categories_names[] = "<a class='kb-category'"
-                            . " href='" . htmlescape($cathref) . "'"
-                            . " data-category-id='" . htmlescape($knowbaseitemcategories_id) . "'"
-                            . ">" . htmlescape($fullcategoryname) . '</a>';
-                    } else {
-                        $categories_names[] = htmlescape($fullcategoryname);
+                    $cathref = self::getSearchURL() . "?knowbaseitemcategories_id="
+                        . $knowbaseitemcategories_id . '&amp;forcetab=Knowbase$2';
+                    $categories_names[] = "<a class='kb-category'"
+                        . " href='" . htmlescape($cathref) . "'"
+                        . " data-category-id='" . htmlescape($knowbaseitemcategories_id) . "'"
+                        . ">" . htmlescape($fullcategoryname) . '</a>';
+                }
+                echo $output::showItem(implode(', ', $categories_names), $item_num, $row_num);
+
+                echo "<td class='center'>";
+                $j = 0;
+                $iterator = $DBread->request([
+                    'FIELDS' => 'documents_id',
+                    'FROM'   => 'glpi_documents_items',
+                    'WHERE'  => [
+                        'items_id'  => $data["id"],
+                        'itemtype'  => 'KnowbaseItem',
+                    ] + getEntitiesRestrictCriteria('', '', '', true),
+                ]);
+                foreach ($iterator as $docs) {
+                    $doc = new Document();
+                    $doc->getFromDB($docs["documents_id"]);
+                    echo $doc->getDownloadLink();
+                    $j++;
+                    if ($j > 1) {
+                        echo "<br>";
                     }
                 }
-                echo Search::showItem($output_type, implode(', ', $categories_names), $item_num, $row_num);
+                echo "</td>";
 
-                if ($output_type === Search::HTML_OUTPUT) {
-                    echo "<td class='center'>";
-                    $j = 0;
-                    $iterator = $DBread->request([
-                        'FIELDS' => 'documents_id',
-                        'FROM'   => 'glpi_documents_items',
-                        'WHERE'  => [
-                            'items_id'  => $data["id"],
-                            'itemtype'  => 'KnowbaseItem',
-                        ] + getEntitiesRestrictCriteria('', '', '', true),
-                    ]);
-                    foreach ($iterator as $docs) {
-                        $doc = new Document();
-                        $doc->getFromDB($docs["documents_id"]);
-                        echo $doc->getDownloadLink();
-                        $j++;
-                        if ($j > 1) {
-                            echo "<br>";
-                        }
-                    }
-                    echo "</td>";
-                }
-
-                if (isset($options['item_itemtype'], $options['item_items_id']) && ($output_type === Search::HTML_OUTPUT)) {
+                if (isset($options['item_itemtype'], $options['item_items_id'])) {
                     $content = "<button type='button' class='btn btn-link use_solution' data-solution-id='" . htmlescape($data['id']) . "'>"
                         . __s('Use as a solution') . "</button>";
-                    echo Search::showItem($output_type, $content, $item_num, $row_num);
+                    echo $output::showItem($content, $item_num, $row_num);
                 }
 
                 // End Line
-                echo Search::showEndLine($output_type);
+                echo $output::showEndLine();
             }
 
             // Display footer
-            if (
-                ($output_type === Search::PDF_OUTPUT_LANDSCAPE)
-                || ($output_type === Search::PDF_OUTPUT_PORTRAIT)
-            ) {
-                echo Search::showFooter(
-                    $output_type,
-                    Dropdown::getDropdownName(
-                        "glpi_knowbaseitemcategories",
-                        $params['knowbaseitemcategories_id']
-                    ),
-                    $numrows
-                );
-            } else {
-                echo Search::showFooter($output_type, '', $numrows);
-            }
+            echo $output::showFooter('', $numrows);
             echo "<br>";
-            if ($output_type === Search::HTML_OUTPUT) {
-                Html::printPager(
-                    $params['start'],
-                    $rows,
-                    $pager_url,
-                    Toolbox::append_params($parameters),
-                    'KnowbaseItem'
-                );
-            }
+            Html::printPager(
+                $params['start'],
+                $rows,
+                $pager_url,
+                Toolbox::append_params($parameters),
+                KnowbaseItem::class
+            );
         } else {
             echo "<div class='center b'>" . __s('No results found') . "</div>";
         }
