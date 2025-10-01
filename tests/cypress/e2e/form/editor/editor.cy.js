@@ -148,6 +148,42 @@ describe ('Form editor', () => {
         });
     });
 
+    it('can create an item question', () => {
+        cy.createFormWithAPI().visitFormTab('Form');
+
+        describe('create question', () => {
+            cy.addQuestion("My question");
+            cy.findByRole('region', {'name': 'Question details'}).within(() => {
+                cy.findByRole('checkbox', {'name': 'Mandatory'})
+                    .should('not.be.checked')
+                    .check()
+                ;
+                cy.findByLabelText("Question description")
+                    .awaitTinyMCE()
+                    .type("My question description")
+                ;
+            });
+
+            // We catch the ajax request when Item question type is selected
+            cy.intercept(
+                {
+                    method: 'POST',
+                    url: '/Form/Condition/Editor/SupportedValueOperators',
+                }
+            ).as('itemQuestionQuery');
+
+            cy.getDropdownByLabelText("Question type")
+                .selectDropdownValue("Item");
+
+            cy.wait('@itemQuestionQuery').then((interception) => {
+                assert.equal(interception.response.statusCode, 200);
+            });
+
+            // Save form and reload page to force new data to be displayed.
+            cy.saveFormEditorAndReload();
+        });
+    });
+
     it('can duplicate a question', () => {
         cy.createFormWithAPI().visitFormTab('Form');
 
