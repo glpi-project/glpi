@@ -60,27 +60,21 @@ services:
       PORT_glpi: 3306
       ENGINE_glpi: "mysql@dbgate-plugin-mysql"
 
-  # To use as a LDAP connection inside GLPI, you'll need to set the following values:
-  # server: openldap
-  # port: 1389
-  # connection filter: (objectClass=inetOrgPerson)
-  # base dn: dc=example,dc=org
-  # Use bind: yes
-  # Root DN: cn=admin,dc=example,dc=org
-  # Password: adminpassword
-  # Login field: uid
-  # Synchronization field: entryuuid
-  # TODO: create a bin/console dev command that create a LDAP server object with
-  # the information above to make things even easier ;)
+  # To create a preconfigured LDAP object in GLPI, run make console c='tools:generate_dev_ldap'
   openldap:
-    image: bitnami/openldap:latest
+    image: osixia/openldap:latest
+    restart: "unless-stopped"
     environment:
-      - LDAP_ADMIN_USERNAME=admin
-      - LDAP_ADMIN_PASSWORD=adminpassword
-      - LDAP_USERS=user01,user02
-      - LDAP_PASSWORDS=password1,password2
-      - LDAP_ROOT=dc=example,dc=org
-
+      LDAP_ORGANISATION: GLPI
+      LDAP_DOMAIN: glpi.org
+      LDAP_ADMIN_PASSWORD: admin
+    command: --copy-service
+    volumes:
+      - "./.docker/initldap.ldif:/container/service/slapd/assets/config/bootstrap/ldif/50-bootstrap.ldif:rw"
+      - "ldap_files:/var/lib/ldap:rw"
+      - "ldap_config:/etc/ldap/slapd.d/:rw"
 volumes:
   db:
   custom_php_ini:
+  ldap_files:
+  ldap_config:
