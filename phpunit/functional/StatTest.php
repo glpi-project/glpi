@@ -249,7 +249,7 @@ class StatTest extends DbTestCase
         }
 
         // Create test data based on expected values
-        $ticket = $this->createTestDataForStatistics($type, $param, $expected, $value, $value2);
+        $ticket = $this->createTestDataForStatistics($param, $value);
 
         // Handle different statistic types - tickets need different statuses and dates
         switch ($type) {
@@ -437,7 +437,7 @@ class StatTest extends DbTestCase
      * @param mixed $value2 Secondary parameter value
      * @return \Ticket $ticket
      */
-    private function createTestDataForStatistics($type, $param, $expected, $value, $value2)
+    private function createTestDataForStatistics($param, $value)
     {
         $ticketData = [
             'name' => "Test ticket",
