@@ -198,7 +198,7 @@ describe('Edit helpdesk translations', () => {
         cy.visit('/');
 
         // Check the translations with GLPI default language
-        cy.findByRole('region', { name: 'Quick Access' }).contains(tile_title);
+        cy.findByTestId('quick-access').contains(tile_title);
     });
 
     it('can view translations on helpdesk in French', () => {
@@ -226,7 +226,7 @@ describe('Edit helpdesk translations', () => {
         cy.visit('/');
 
         // Check that default translations are used (no Spanish translation)
-        cy.findByRole('region', { name: 'Quick Access' }).contains(tile_title);
+        cy.findByTestId('quick-access').contains(tile_title);
     });
 
     it('can delete a helpdesk translation', () => {

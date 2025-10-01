@@ -79,7 +79,7 @@
                 {{ render_scene(scene_right) }}
             </div>
         </div>
-        <section class="tiles-banner" aria-label="{{ __("Quick Access") }}">
+        <section class="tiles-banner" aria-label="{{ __("Quick Access") }}" data-testid="quick-access">
             <div class="container-xl">
                 {# Display password alerts #}
                 {% if password_alert|length %}
