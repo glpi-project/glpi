@@ -53,7 +53,7 @@
         "league/oauth2-server": "^9.2",
         "mexitek/phpcolors": "^1.0",
         "monolog/monolog": "^3.9",
-        "paragonie/sodium_compat": "^2.2",
+        "paragonie/sodium_compat": "^2.3",
         "phpdocumentor/reflection-docblock": "^5.6",
         "phpoffice/phpspreadsheet": "^5.1",
         "psr/cache": "^3.0",
