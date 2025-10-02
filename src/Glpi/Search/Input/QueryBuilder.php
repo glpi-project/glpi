@@ -744,7 +744,9 @@ final class QueryBuilder implements SearchInputInterface
                 && !isset($params["reset"])
                 && !isset($_SESSION['glpisearch'][$itemtype]))
         ) {
-            $user_default_values = SavedSearch_User::getDefault(Session::getLoginUserID(), $itemtype);
+            if (!isset($user_default_values)) {
+                $user_default_values = SavedSearch_User::getDefault(Session::getLoginUserID(), $itemtype);
+            }
             if ($user_default_values) {
                 $_SESSION['glpisearch'][$itemtype] = [];
                 // Only get data for bookmarks
