@@ -38,6 +38,7 @@ use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Debug\Profile;
 use Glpi\System\Requirement\DbTimezones;
+use Glpi\Toolbox\SanitizedStringsDecoder;
 use Safe\DateTime;
 
 use function Safe\filesize;
@@ -53,17 +54,6 @@ use function Safe\preg_split;
  **/
 class DBmysql
 {
-    private const CHARS_MAPPING = [
-        '&'  => '&#38;',
-        '<'  => '&#60;',
-        '>'  => '&#62;',
-    ];
-
-    private const LEGACY_CHARS_MAPPING = [
-        '<'  => '&lt;',
-        '>'  => '&gt;',
-    ];
-
     //! Database Host - string or Array of string (round-robin)
     public $dbhost             = "";
     //! Database User
@@ -2189,68 +2179,6 @@ class DBmysql
     }
 
     /**
-     * Check if special chars are encoded.
-     *
-     * @param string $value
-     *
-     * @return bool
-     */
-    private function isHtmlEncoded(string $value): bool
-    {
-        // A value is Html Encoded if it does not contains
-        // - `<`;
-        // - `>`;
-        // - `&` not followed by an HTML entity identifier;
-        // and if it contains any entity used to encode HTML special chars during sanitization process.
-        $special_chars_pattern   = '/(<|>|(&(?!#?[a-z0-9]+;)))/i';
-        $sanitized_chars = array_merge(
-            array_values(self::CHARS_MAPPING),
-            array_values(self::LEGACY_CHARS_MAPPING)
-        );
-        $sanitized_chars_pattern = '/(' . implode('|', $sanitized_chars) . ')/';
-
-        return preg_match($special_chars_pattern, $value) === 0
-            && preg_match($sanitized_chars_pattern, $value) === 1;
-    }
-
-    /**
-     * Decode HTML special chars.
-     *
-     * @param string $value
-     *
-     * @return string
-     */
-    private function decodeHtmlSpecialChars(string $value): string
-    {
-        if (!$this->isHtmlEncoded($value)) {
-            return $value;
-        }
-
-        $mapping = null;
-        foreach (self::CHARS_MAPPING as $htmlentity) {
-            if (str_contains($value, $htmlentity)) {
-                // Value was cleaned using new char mapping, so it must be uncleaned with same mapping
-                $mapping = self::CHARS_MAPPING;
-                break;
-            }
-        }
-        if ($mapping === null) {
-            $mapping = self::LEGACY_CHARS_MAPPING; // Fallback to legacy chars mapping
-
-            if (preg_match('/&lt;img\s+(alt|src|width)=&quot;/', $value)) {
-                // In some cases (at least on some ITIL followups, quotes have been converted too,
-                // probably due to a misusage of encoding process.
-                // Result is that quotes were encoded too (i.e. `&lt:img src=&quot;/front/document.send.php`)
-                // and should be decoded too.
-                $mapping['"'] = '&quot;';
-            }
-        }
-
-        $mapping = array_reverse($mapping);
-        return str_replace(array_values($mapping), array_keys($mapping), $value);
-    }
-
-    /**
      * Decode HTML special chars on fetch operation result.
      */
     private function decodeFetchResult(array|object|false|null $values): array|object|false|null
@@ -2265,7 +2193,13 @@ class DBmysql
                 continue;
             }
 
-            $value = $this->decodeHtmlSpecialChars($value);
+            $decoder = new SanitizedStringsDecoder();
+
+            if ($key === 'completename') {
+                $value = $decoder->decodeHtmlSpecialCharsInCompletename($value);
+            } else {
+                $value = $decoder->decodeHtmlSpecialChars($value);
+            }
 
             if (is_object($values)) {
                 $values->{$key} = $value;

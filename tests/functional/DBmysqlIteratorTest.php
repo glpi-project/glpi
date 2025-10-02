@@ -1641,6 +1641,7 @@ class DBmysqlIteratorTest extends DbTestCase
     public static function resultProvider(): iterable
     {
         // Data from GLPI 9.5- (autosanitized)
+        // `&` was not encoded, `<` and `>` were encoded to `&lt;` and `&gt;`
         yield [
             'db_data' => [
                 'id'      => 1,
@@ -1653,8 +1654,21 @@ class DBmysqlIteratorTest extends DbTestCase
                 'content' => '<p>Test</p>',
             ],
         ];
+        yield [
+            'db_data' => [
+                'id'           => 1,
+                'name'         => '&foo',
+                'completename' => 'A&B > &foo',
+            ],
+            'result'  => [
+                'id'           => 1,
+                'name'         => '&foo',
+                'completename' => 'A&B > &foo',
+            ],
+        ];
 
         // Data from GLPI 10.0.x (autosanitized)
+        // `&`, `<` and `>` were encoded to `&#38;`, `&#60;` and `&#62;`
         yield [
             'db_data' => [
                 'id'      => 1,
@@ -1665,6 +1679,18 @@ class DBmysqlIteratorTest extends DbTestCase
                 'id'      => 1,
                 'name'    => 'A&B',
                 'content' => '<p>Test</p>',
+            ],
+        ];
+        yield [
+            'db_data' => [
+                'id'           => 1,
+                'name'         => '&#38;foo',
+                'completename' => 'A&#38;B > &#38;foo',
+            ],
+            'result'  => [
+                'id'           => 1,
+                'name'         => '&foo',
+                'completename' => 'A&B > &foo',
             ],
         ];
 
@@ -1679,6 +1705,18 @@ class DBmysqlIteratorTest extends DbTestCase
                 'id'      => 1,
                 'name'    => 'A&B',
                 'content' => '<p>Test</p>',
+            ],
+        ];
+        yield [
+            'db_data' => [
+                'id'           => 1,
+                'name'         => '&foo',
+                'completename' => 'A&B > &foo',
+            ],
+            'result'  => [
+                'id'           => 1,
+                'name'         => '&foo',
+                'completename' => 'A&B > &foo',
             ],
         ];
     }
