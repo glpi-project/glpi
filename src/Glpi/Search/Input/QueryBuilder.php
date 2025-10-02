@@ -50,7 +50,6 @@ use Html;
 use Override;
 use Plugin;
 use RuntimeException;
-use SavedSearch;
 use SavedSearch_User;
 use Search;
 use Session;
@@ -752,6 +751,10 @@ final class QueryBuilder implements SearchInputInterface
                 // Only get data for bookmarks
                 if ($forcebookmark) {
                     $params = $user_default_values;
+                } else {
+                    // remember the loaded saved search on first load
+                    // this is usefull to adapt the search button control label
+                    $_SESSION['glpi_loaded_savedsearch'] = $user_default_values['savedsearches_id'];
                 }
             }
         }
