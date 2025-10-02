@@ -236,7 +236,7 @@ EOL,
         try {
             $checker->getSummary();
         } finally {
-            $this->hasPhpLogRecordThatContains('file_get_contents(vfs://root/version/11.0.0): Failed to open stream', LogLevel::WARNING);
+            $this->hasPhpLogRecordThatContains('file_get_contents(vfs://root/version/' . str_replace('-dev', '', GLPI_VERSION) . '): Failed to open stream', LogLevel::WARNING);
         }
     }
 
