@@ -350,6 +350,7 @@
                   // set validator type
                   $("#dropdown__validatortype_{{ rand }}").trigger('setValue', data.validatortype);
 
+                    // Approver is a group or multiple users of a group
                   if (data.groups_id !== undefined && data.groups_id !== null) {
                      waitForElement("#dropdown_groups_id{{ rand }}").then((elm) => {
                         // set groups_id
@@ -360,11 +361,19 @@
                         waitForElement("#dropdown_items_id_target{{ rand }}").then((elm) => {
                            // set items_id_target
                            $("#dropdown_items_id_target{{ rand }}").ready(function() {
-                              $("#dropdown_items_id_target{{ rand }}").trigger('setValue', data.items_id_target);
+                               if (Array.isArray(data.items_id_target)) {
+                                   $("#dropdown_items_id_target{{ rand }}").val(data.items_id_target);
+                                   $("#dropdown_items_id_target{{ rand }}").trigger('change');
+                               } else {
+                                   $("#dropdown_items_id_target{{ rand }}").trigger('setValue', data.items_id_target);
+                               }
                            });
                         });
                      });
-                  } else if (data.items_id_target !== undefined) {
+                  }
+                  // Approver is a single user
+                  else if (data.items_id_target !== undefined)
+                  {
                      new Promise((resolve) => {
                         // if dropdown_items_id_target exists, wait for it to be removed
                         // is required because the dropdown is removed and recreated when the setValue is triggered
