@@ -69,6 +69,13 @@ class Item extends CommonDBChild
         foreach ($di_iterator as $item) {
             unset($item['id']);
             $item['card_options'] = importArrayFromDB($item['card_options']);
+
+            // [x,y, width, height] may have been nulled in DB
+            $item['x']      = (int) ($item['x'] ?? 0);
+            $item['y']      = (int) ($item['y'] ?? 0);
+            $item['width']  = (int) ($item['width'] ?? 0);
+            $item['height'] = (int) ($item['height'] ?? 0);
+
             $items[] = $item;
         }
 
