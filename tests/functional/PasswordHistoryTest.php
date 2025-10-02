@@ -288,7 +288,7 @@ final class PasswordHistoryTest extends DbTestCase
             'WHERE' => [
                 'name' => [__FUNCTION__ . '1', __FUNCTION__ . '2'],
                 'password' => null
-            ]
+            ],
         ]);
         $this->assertEquals(0, $it->current()['cpt']);
     }
