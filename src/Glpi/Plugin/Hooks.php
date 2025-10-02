@@ -835,6 +835,32 @@ class Hooks
     public const INVENTORY_GET_PARAMS = 'inventory_get_params';
 
     /**
+     * Register a function to provide an agent with additional requested configuration parameters.
+     * Like an deployement plugin need to provide its endpoint for contunuing the dialog
+     *
+     * The function is called with the following parameters:
+     * - 'machineid' => The ID of the machine for which configuration is requested.
+     * - 'task' => "Taskname[version]", the task name request
+     *
+     * The hooks must return an array that will be send as a json answer to the request.
+     * This array should have an "response" key to be considered valid.
+     * If any 'errors' key is provided, we will return an HTTP answer with a 400 error code
+     * An example from the deploy plugin
+     * [
+     *   "response" => [
+     *     "configValidityPeriod" => 600,
+     *     "schedule" => [
+     *       {
+     *         "task": "Deploy",
+     *         "remote": "https:\/\/server\/plugins\/deploy\/"
+     *      }
+     *    ]
+     *   ]
+     * ]
+     */
+    public const INVENTORY_GET_CONFIGURATION = 'inventory_get_configuration';
+
+    /**
      * Register a function to be called before the inventory submission is handled.
      * The function is called with the following parameters:
      * - 'data' => An object containing the inventory data submitted by the agent.
