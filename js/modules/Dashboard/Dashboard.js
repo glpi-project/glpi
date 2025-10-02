@@ -374,9 +374,9 @@ class GLPIDashboard {
                     dashboard:    this.current_name,
                     gridstack_id: item.attr('gs-id'),
                     card_id:      card_opt.card_id,
-                    x:            item.attr('gs-x'),
-                    y:            item.attr('gs-y'),
-                    width:        item.attr('gs-w'),
+                    x:            item.attr('gs-x') ?? 0,
+                    y:            item.attr('gs-y') ?? 0,
+                    width:        item.attr('gs-w') ?? 1,
                     height:       item.attr('gs-h') ?? 1,
                     card_options: card_opt,
                 },
@@ -759,8 +759,8 @@ class GLPIDashboard {
             return gs_id ? {
                 gridstack_id: $(v).attr('gs-id'),
                 card_id: options.card_id,
-                x: $(v).attr('gs-x'),
-                y: $(v).attr('gs-y'),
+                x: $(v).attr('gs-x') ?? 0,
+                y: $(v).attr('gs-y') ?? 0,
                 width: $(v).attr('gs-w'),
                 height: $(v).attr('gs-h') ?? 1,
                 card_options: options
