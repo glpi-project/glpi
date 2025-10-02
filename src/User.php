@@ -889,7 +889,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             } else {
                 if ($input["password"] == $input["password2"]) {
                     $password_errors = [];
-                    if ($this->validatePassword($input["password"] ?? '', $password_errors)) {
+                    if ($this->validatePassword($input["password"] ?? '', $password_errors, false)) {
                         $input["password"]
                         = Auth::getPasswordHash($input["password"]);
 
@@ -6616,10 +6616,12 @@ HTML;
      * Validate password based on security rules
      *
      * @param string $password password to validate
+     * @param array  $errors   array of error messages
+     * @param bool   $check_history true to check password history, false to skip it. When adding a new user, you should skip this check.
      *
      * @return bool
      */
-    public function validatePassword(string $password, array &$errors = []): bool
+    public function validatePassword(string $password, array &$errors = [], bool $check_history = true): bool
     {
         global $CFG_GLPI;
 
@@ -6646,7 +6648,7 @@ HTML;
         }
 
         // Validate password history
-        if (!PasswordHistory::getInstance()->validatePassword($this, $password)) {
+        if ($check_history && !PasswordHistory::getInstance()->validatePassword($this, $password)) {
             $errors[] = __('Password was used too recently.');
         }
 

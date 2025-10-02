@@ -251,4 +251,45 @@ final class PasswordHistoryTest extends DbTestCase
             $this->assertLessThanOrEqual(\PasswordHistory::MAX_HISTORY_SIZE, count($passwords));
         }
     }
+
+    /**
+     * Regression test for https://github.com/glpi-project/glpi/issues/21242
+     * Reusing a user instance to create new users was calling the password history check before the fields got reset in CommonDBTM::add.
+     * This meant it was seeing the password of the previous user and blocking the creation of the new user if it was the same.
+     * @return void
+     */
+    public function testCreateNewUsers()
+    {
+        global $DB;
+
+        $this->login();
+
+        $user = new User();
+        $user->add([
+            'name' => __FUNCTION__ . '1',
+            '_entities_id' => 0,
+            '_profiles_id' => 1,
+            'is_active' => 1,
+            'password' => 'glpi',
+            'password2' => 'glpi',
+        ]);
+        $user->add([
+            'name' => __FUNCTION__ . '2',
+            '_entities_id' => 0,
+            '_profiles_id' => 1,
+            'is_active' => 1,
+            'password' => 'glpi',
+            'password2' => 'glpi',
+        ]);
+
+        $it = $DB->request([
+            'COUNT' => 'cpt',
+            'FROM'  => 'glpi_users',
+            'WHERE' => [
+                'name' => [__FUNCTION__ . '1', __FUNCTION__ . '2'],
+                'password' => null
+            ]
+        ]);
+        $this->assertEquals(0, $it->current()['cpt']);
+    }
 }
