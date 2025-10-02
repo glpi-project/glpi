@@ -230,13 +230,15 @@ EOL,
         vfsStream::setup('root', null, []);
         $root_dir = vfsStream::url('root');
 
+        $version = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
+
         $checker = new SourceCodeIntegrityChecker($root_dir);
 
         $this->expectExceptionMessage('Error while trying to read the source code file manifest.');
         try {
             $checker->getSummary();
         } finally {
-            $this->hasPhpLogRecordThatContains('file_get_contents(vfs://root/version/' . str_replace('-dev', '', GLPI_VERSION) . '): Failed to open stream', LogLevel::WARNING);
+            $this->hasPhpLogRecordThatContains('file_get_contents(vfs://root/version/' . $version . '): Failed to open stream', LogLevel::WARNING);
         }
     }
 
