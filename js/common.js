@@ -1904,7 +1904,7 @@ function setupAdaptDropdown(config)
     }
     const select2_el = $('#' + field_id).select2(options);
 
-    select2_el.bind('setValue', (e, value) => {
+    select2_el.bind('setValue', (e, ...value) => {
         $('#' + field_id).val(value).trigger('change');
     });
     $('label[for=' + field_id + ']').on('click', function () {
