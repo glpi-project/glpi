@@ -53,6 +53,7 @@ use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Form\ValidationResult;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -551,5 +552,35 @@ class AnswersHandlerTest extends DbTestCase
 
         // Assert: the ticket should not have been created
         $this->assertCount(1, $created_items);
+    }
+
+    public function testCustomMandatoryMessage(): void
+    {
+        // Arrange: create a form with a  mandatory number question
+        $builder = new FormBuilder("My form");
+        $builder->addQuestion(
+            name: "Your phone number",
+            type: QuestionTypeNumber::class,
+            is_mandatory: true,
+        );
+        $form = $this->createForm($builder);
+        $number_question_id = $this->getQuestionId($form, "Your phone number");
+        $number_question = Question::getById($number_question_id);
+
+        // Act: try to validate the form
+        $handler = AnswersHandler::getInstance();
+        $result = $handler->validateAnswers($form, []);
+
+        // Assert: check error message
+        $this->assertEquals(false, $result->isValid());
+
+        // Insert errors into a result object to make sure we compare with
+        // the expected format
+        $expected_errors = new ValidationResult();
+        $expected_errors->addError($number_question, "Please enter a valid number");
+        $this->assertEquals(
+            $expected_errors->getErrors(),
+            $result->getErrors()
+        );
     }
 }

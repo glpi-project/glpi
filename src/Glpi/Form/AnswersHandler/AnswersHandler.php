@@ -46,6 +46,7 @@ use Glpi\Form\DelegationData;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Form;
+use Glpi\Form\QuestionType\CustomMandatoryMessageInterface;
 use Glpi\Form\Section;
 use Glpi\Form\ValidationResult;
 use Throwable;
@@ -113,7 +114,12 @@ final class AnswersHandler
                 || (is_string($answers[$question->getID()]) && empty(strip_tags($answers[$question->getID()])))
                 || (isset($answers[$question->getID()]['items_id']) && empty($answers[$question->getID()]['items_id']))
             ) {
-                $result->addError($question, __('This field is mandatory'));
+                $message = __('This field is mandatory');
+                $type = $question->getQuestionType();
+                if ($type instanceof CustomMandatoryMessageInterface) {
+                    $message = $type->getCustomMandatoryErrorMessage();
+                }
+                $result->addError($question, $message);
             }
         }
 
