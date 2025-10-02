@@ -117,4 +117,23 @@ describe('Form plugins', () => {
             "My computer name"
         );
     });
+
+    it('can configure destination config field from plugins', () => {
+        // Create and go to form
+        cy.createFormWithAPI().visitFormTab('Destinations');
+
+        // Add external ID field
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
+        cy.findByRole('region', { 'name': 'External ID configuration' }).as("config");
+        cy.get('@config').getDropdownByLabelText('External ID').selectDropdownValue('Specific external ID');
+        cy.get('@config').findAllByRole('textbox', {name: 'Specific external ID'}).eq(-1).type("MY-EXTERNAL-ID");
+
+        // Save
+        cy.findByRole('button', {name: 'Update item'}).click();
+
+        // Validate value was saved
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
+        cy.get('@config').getDropdownByLabelText('External ID').should('have.text', 'Specific external ID');
+        cy.get('@config').findAllByRole('textbox', {name: 'Specific external ID'}).eq(-1).should('have.value', "MY-EXTERNAL-ID");
+    });
 });

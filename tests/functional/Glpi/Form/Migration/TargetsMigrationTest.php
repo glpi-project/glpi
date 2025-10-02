@@ -101,6 +101,9 @@ use Glpi\Form\Form;
 use Glpi\Form\Migration\FormMigration;
 use Glpi\Migration\PluginMigrationResult;
 use Glpi\Tests\FormTesterTrait;
+use GlpiPlugin\Tester\Form\ExternalIDField;
+use GlpiPlugin\Tester\Form\ExternalIDFieldConfig;
+use GlpiPlugin\Tester\Form\ExternalIDFieldStrategy;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Ticket;
 
@@ -210,6 +213,11 @@ final class TargetsMigrationTest extends DbTestCase
                                 strategy: null, // No specific strategy for linked ITIL objects
                             ),
                         ]),
+
+                        // Tester plugin fields
+                        ExternalIDField::getKey() => new ExternalIDFieldConfig(
+                            strategy: ExternalIDFieldStrategy::NO_EXTERNAL_ID
+                        ),
                     ],
                 ],
                 [

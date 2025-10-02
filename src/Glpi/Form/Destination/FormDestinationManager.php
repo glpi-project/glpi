@@ -49,6 +49,12 @@ final class FormDestinationManager
     private array $plugins_destinations_types = [];
 
     /**
+     * @var array<class-string<FormDestinationInterface>, AbstractConfigField[]>
+     * Mapping of destination types to their additional config fields
+     */
+    private array $plugins_config_fields = [];
+
+    /**
      * Private constructor (singleton)
      */
     private function __construct() {}
@@ -144,5 +150,43 @@ final class FormDestinationManager
         FormDestinationInterface $type
     ): void {
         $this->plugins_destinations_types[] = $type;
+    }
+
+    /**
+     * Register a config field from a plugin for a specific destination type
+     *
+     * @param class-string<FormDestinationInterface> $destination_class The destination class
+     * @param AbstractConfigField $field The config field to register
+     * @return void
+     */
+    public function registerPluginConfigField(
+        string $destination_class,
+        AbstractConfigField $field
+    ): void {
+        if (!isset($this->plugins_config_fields[$destination_class])) {
+            $this->plugins_config_fields[$destination_class] = [];
+        }
+        $this->plugins_config_fields[$destination_class][] = $field;
+    }
+
+    /**
+     * Get all registered plugin config fields for a specific destination type
+     *
+     * @param class-string<FormDestinationInterface> $destination_class The destination class
+     * @return AbstractConfigField[]
+     */
+    public function getPluginConfigFieldsForDestination(string $destination_class): array
+    {
+        $config_fields = [];
+        foreach (array_keys($this->plugins_config_fields) as $dest_class) {
+            if (is_a($destination_class, $dest_class, true)) {
+                $config_fields = array_merge(
+                    $config_fields,
+                    $this->plugins_config_fields[$dest_class]
+                );
+            }
+        }
+
+        return $config_fields;
     }
 }
