@@ -515,12 +515,19 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      * Load a saved search
      *
      * @param integer $ID ID of the saved search
+     * @param boolean  $redirect Whether redirect to the search page or not
      *
      * @return void
      **/
-    public function load($ID)
+    public function load($ID, bool $redirect = true)
     {
         if (($params = $this->getParameters($ID)) === false) {
+            return;
+        }
+        // keep last loaded to set an active state on saved search panel
+        $_SESSION['glpi_loaded_savedsearch'] = $ID;
+
+        if (!$redirect) {
             return;
         }
 
@@ -536,8 +543,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         }
         $url .= "?" . Toolbox::append_params($params);
 
-        // keep last loaded to set an active state on saved search panel
-        $_SESSION['glpi_loaded_savedsearch'] = $ID;
 
         Html::redirect($url);
     }

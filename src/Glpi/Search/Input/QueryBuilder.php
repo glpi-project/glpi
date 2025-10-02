@@ -752,7 +752,7 @@ final class QueryBuilder implements SearchInputInterface
                     $params = $user_default_values;
                 } else {
                     $bookmark = new SavedSearch();
-                    $bookmark->load($user_default_values['savedsearches_id']);
+                    $bookmark->load($user_default_values['savedsearches_id'], false);
                 }
             }
         }
