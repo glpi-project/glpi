@@ -35,11 +35,13 @@
 namespace tests\units\Glpi\Form;
 
 use DbTestCase;
+use DropdownTranslation;
 use Glpi\Form\Category;
 use Glpi\Form\Form;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
+use User;
 
 class CategoryTest extends DbTestCase
 {
@@ -120,5 +122,99 @@ class CategoryTest extends DbTestCase
         $this->assertStringContainsString("My form 2", $html);
         $this->assertStringNotContainsString("My form 3", $html);
         $this->assertStringNotContainsString("My form 4", $html);
+    }
+
+    public function testServiceCatalogContentIsTranslated(): void
+    {
+        // Arrange: create a category with a translation
+        $category = $this->createItem(Category::class, [
+            'name' => 'My category',
+            'description' => 'My description',
+        ]);
+        $this->translateCategory($category, 'fr_FR', 'Ma catégorie', 'Ma description');
+        $this->translateCategory($category, 'es_ES', 'Mi categoría', 'Mi descripción');
+        $this->createUserWithLang('en_GB');
+        $this->createUserWithLang('fr_FR');
+        $this->createUserWithLang('es_ES');
+        $this->createUserWithLang('it_IT');
+
+        // Act: fetch the category name in diffent languages
+        $this->login('en_GB');
+        $default = [
+            'name' => $category->getServiceCatalogItemTitle(),
+            'description' => $category->getServiceCatalogItemDescription(),
+        ];
+
+        $this->login('fr_FR');
+        $fr_FR = [
+            'name' => $category->getServiceCatalogItemTitle(),
+            'description' => $category->getServiceCatalogItemDescription(),
+        ];
+
+        $this->login('es_ES');
+        $es_ES = [
+            'name' => $category->getServiceCatalogItemTitle(),
+            'description' => $category->getServiceCatalogItemDescription(),
+        ];
+
+        $this->login('it_IT');
+        $it_IT = [
+            'name' => $category->getServiceCatalogItemTitle(),
+            'description' => $category->getServiceCatalogItemDescription(),
+        ];
+
+        // Assert: validate the translations
+        $this->assertEquals([
+            'name' => 'My category',
+            'description' => 'My description',
+        ], $default);
+
+        $this->assertEquals([
+            'name' => 'Ma catégorie',
+            'description' => 'Ma description',
+        ], $fr_FR);
+
+        $this->assertEquals([
+            'name' => 'Mi categoría',
+            'description' => 'Mi descripción',
+        ], $es_ES);
+
+        // No translation for italian
+        $this->assertEquals([
+            'name' => 'My category',
+            'description' => 'My description',
+        ], $it_IT);
+    }
+
+    private function translateCategory(
+        Category $category,
+        string $lang,
+        string $title,
+        string $description,
+    ): void {
+        $this->createItem(DropdownTranslation::class, [
+            'items_id' => $category->getID(),
+            'itemtype' => Category::class,
+            'language' => $lang,
+            'field'    => 'name',
+            'value'    => $title,
+        ]);
+        $this->createItem(DropdownTranslation::class, [
+            'items_id' => $category->getID(),
+            'itemtype' => Category::class,
+            'language' => $lang,
+            'field'    => 'description',
+            'value'    => $description,
+        ]);
+    }
+
+    private function createUserWithLang(string $lang): void
+    {
+        $this->createItem(User::class, [
+            'name'     => $lang,
+            'language' => $lang,
+            '_entities_id' => $this->getTestRootEntity(only_id: true),
+            '_profiles_id' => 1,
+        ]);
     }
 }

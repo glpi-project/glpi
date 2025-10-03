@@ -309,6 +309,7 @@
 
 {% macro textarea(name, value, options = {}) %}
     {% set options = {
+        'id': null,
         'rand': random(),
         'rows': 3,
         'enable_richtext': false,
