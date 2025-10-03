@@ -97,6 +97,15 @@ final class ValidationResult
         ];
 
         $this->valid = false;
-        $this->errors[] = $error;
+        $this->addFormattedError($error);
+    }
+
+    /**
+     * Add an error to the list (already formatted)
+     */
+    public function addFormattedError(array $formatted_error): void
+    {
+        $this->valid = false;
+        $this->errors[] = $formatted_error;
     }
 }

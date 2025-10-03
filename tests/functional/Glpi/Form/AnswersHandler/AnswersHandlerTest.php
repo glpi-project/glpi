@@ -583,4 +583,51 @@ class AnswersHandlerTest extends DbTestCase
             $result->getErrors()
         );
     }
+
+    public static function validateEmailsProvider(): iterable
+    {
+        yield [
+            'email'    => "notanemail",
+            'expected' => false,
+            'errors'   => ["Please enter a valid email"],
+        ];
+        yield [
+            'email'    => "email@teclib.com",
+            'expected' => true,
+        ];
+    }
+
+    #[DataProvider('validateEmailsProvider')]
+    public function testValidateEmails(
+        string $email,
+        bool $expected,
+        array $errors = [],
+    ): void {
+        // Arrange: create a form with an email question
+        $builder = new FormBuilder("My form with an email question");
+        $builder->addQuestion("Your email", QuestionTypeEmail::class);
+        $form = $this->createForm($builder);
+        $email_question_id = $this->getQuestionId($form, "Your email");
+        $email_question = Question::getById($email_question_id);
+
+        // Act: try to validate the form
+        $handler = AnswersHandler::getInstance();
+        $result = $handler->validateAnswers($form, [
+            $email_question_id => $email,
+        ]);
+
+        // Assert: check validity
+        $this->assertEquals($expected, $result->isValid());
+
+        // Insert errors into a result object to make sure we compare with
+        // the expected format
+        $formatted_errors = new ValidationResult();
+        foreach ($errors as $error) {
+            $formatted_errors->addError($email_question, $error);
+        }
+        $this->assertEquals(
+            $formatted_errors->getErrors(),
+            $result->getErrors()
+        );
+    }
 }
