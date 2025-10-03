@@ -7952,15 +7952,18 @@ abstract class CommonITILObject extends CommonDBTM
      * Returns criteria that can be used to get documents related to current instance.
      *
      * @param bool      $bypass_rights  Whether to bypass rights checks (default: false)
-     * @param int|null  $user_id        ID of the user for rights checking (default: null = current session rights)
+     * @param User|null $user           User for rights checking (default: null = current session rights)
      *
      * @return array
      */
-    public function getAssociatedDocumentsCriteria($bypass_rights = false, ?int $user_id = null): array
+    public function getAssociatedDocumentsCriteria($bypass_rights = false, ?User $user = null): array
     {
-        $user_id ??= Session::getLoginUserID();
-        $user = new User();
-        $user->getFromDB($user_id);
+        $user_id = $user ? $user->getID() : Session::getLoginUserID();
+
+        if ($user === null) {
+            $user = new User();
+            $user->getFromDB(Session::getLoginUserID());
+        }
 
         $task_class = $this->getType() . 'Task';
         /** @var DBmysql $DB */

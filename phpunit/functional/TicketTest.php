@@ -8458,13 +8458,13 @@ HTML,
 
         $this->login();
 
-        $postonly_user_id = getItemByTypeName(User::class, 'post-only', true);
+        $postonly_user = getItemByTypeName(User::class, 'post-only', false);
 
         $ticket = $this->createItem(Ticket::class, [
             'name' => 'Ticket with documents',
             'content' => 'test',
             'entities_id' => $this->getTestRootEntity(true),
-            '_users_id_requester' => ["$postonly_user_id"],
+            '_users_id_requester' => [$postonly_user->getID()],
         ]);
 
         // Create a document linked to the ticket
@@ -8532,7 +8532,7 @@ HTML,
         $this->assertContains($doc3->getID(), $found_docs);
 
         // Post-only user can't see document linked to private followup
-        $doc_crit = $ticket->getAssociatedDocumentsCriteria(false, $postonly_user_id);
+        $doc_crit = $ticket->getAssociatedDocumentsCriteria(false, $postonly_user);
         $doc_crit[] = [
             'timeline_position' => ['>', CommonITILObject::NO_TIMELINE],
         ];

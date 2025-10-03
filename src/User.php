@@ -7027,7 +7027,7 @@ HTML;
         /** @var \DBmysql $DB */
         global $DB;
         if ($this->isNewItem()) {
-            return Session::haveRight($module, $right);
+            throw new \LogicException('Cannot check rights for a user not yet saved');
         } else {
             $iterator = $DB->request([
                 'SELECT' => 'rights',
