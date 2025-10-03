@@ -7024,6 +7024,7 @@ HTML;
      **/
     public function hasRight($module, $right)
     {
+        /** @var \DBmysql $DB */
         global $DB;
         if ($this->isNewItem()) {
             return Session::haveRight($module, $right);
