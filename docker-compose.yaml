@@ -70,7 +70,7 @@ services:
       LDAP_ADMIN_PASSWORD: admin
     command: --copy-service
     volumes:
-      - "./.docker/initldap.ldif:/container/service/slapd/assets/config/bootstrap/ldif/50-bootstrap.ldif:rw"
+      - "./tests/LDAP/ldif/10-users.ldif:/container/service/slapd/assets/config/bootstrap/ldif/50-bootstrap.ldif:rw"
       - "ldap_files:/var/lib/ldap:rw"
       - "ldap_config:/etc/ldap/slapd.d/:rw"
 volumes:
