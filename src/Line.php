@@ -57,7 +57,7 @@ class Line extends CommonDBTM implements AssignableItemInterface, StateInterface
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Line', 'Lines', $nb);
+        return _n('Phone line', 'Phone lines', $nb);
     }
 
     public static function getSectorizedDetails(): array
@@ -257,8 +257,8 @@ class Line extends CommonDBTM implements AssignableItemInterface, StateInterface
         $action_prefix = 'Item_Line' . MassiveAction::CLASS_ACTION_SEPARATOR;
         if (in_array($itemtype, $CFG_GLPI['line_types'], true)) {
             $actions[$action_prefix . 'add']    = "<i class='" . htmlescape(self::getIcon()) . "'></i>"
-                . _sx('button', 'Add a line');
-            $actions[$action_prefix . 'remove'] = _sx('button', 'Remove a line');
+                . _sx('button', 'Add a phone line');
+            $actions[$action_prefix . 'remove'] = _sx('button', 'Remove a phone line');
         }
         if ((is_a($itemtype, self::class, true)) && (static::canUpdate())) {
             $actions[$action_prefix . 'add_item']    = _sx('button', 'Add an item');
