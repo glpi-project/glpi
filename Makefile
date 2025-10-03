@@ -221,3 +221,8 @@ xdebug-profile: ## Enable xdebug performance profiling
 	@$(PHP_ROOT) bash -c 'echo "xdebug.start_with_request=1" >> $(INI_DIR)/$(XDEBUG_FILE)'
 	@$(PHP_ROOT) service apache2 reload
 .PHONY: xdebug-profile
+
+xdebug-reset: ## Reset xdebug config by deleting custom ini file
+	@$(PHP_ROOT) bash -c 'test -e $(INI_DIR)/$(XDEBUG_FILE) && rm $(INI_DIR)/$(XDEBUG_FILE) || true'
+	@$(PHP_ROOT) service apache2 reload
+.PHONY: xdebug-reset
