@@ -2078,4 +2078,11 @@ class DropdownTest extends DbTestCase
             return $result['id'] === \Supplier::class . '_' . $inactive_supplier->getID();
         }));
     }
+
+    public function testGetLanguages()
+    {
+        global $CFG_GLPI;
+
+        $this->assertCount(count($CFG_GLPI['languages']), \Dropdown::getLanguages());
+    }
 }
