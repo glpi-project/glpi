@@ -1964,6 +1964,72 @@ HTML;
         );
     }
 
+    public function testDropdownAncestors()
+    {
+        // Create tree
+        $state = new State();
+        $state_1_id = $state->add(
+            [
+                'name'      => 'State 1',
+                'states_id' => 0,
+            ]
+        );
+        $this->assertEmpty($state->getAncestors());
+
+        $state = new State();
+        $state_1_1_id = $state->add(
+            [
+                'name'      => 'State 1.1',
+                'states_id' => $state_1_id,
+            ]
+        );
+        $ancestors = iterator_to_array($state->getAncestors());
+        $this->assertCount(1, $ancestors);
+        $this->assertEquals('State 1', $ancestors[0]->fields['name']);
+
+        $state = new State();
+        $state->add(
+            [
+                'name'      => 'State 1.1.1',
+                'states_id' => $state_1_1_id,
+            ]
+        );
+        $ancestors = iterator_to_array($state->getAncestors());
+        $this->assertCount(2, $ancestors);
+        $this->assertEquals('State 1', $ancestors[0]->fields['name']);
+        $this->assertEquals('State 1.1', $ancestors[1]->fields['name']);
+
+        $state = new State();
+        $state->add(
+            [
+                'name'      => 'State 1.2',
+                'states_id' => $state_1_id,
+            ]
+        );
+        $ancestors = iterator_to_array($state->getAncestors());
+        $this->assertCount(1, $ancestors);
+        $this->assertEquals('State 1', $ancestors[0]->fields['name']);
+
+
+        $state_2_id = $state->add(
+            [
+                'name'      => 'State 2',
+                'states_id' => 0,
+            ]
+        );
+        $this->assertEmpty($state->getAncestors());
+
+        $state->add(
+            [
+                'name'      => 'State 2.1',
+                'states_id' => $state_2_id,
+            ]
+        );
+        $ancestors = iterator_to_array($state->getAncestors());
+        $this->assertCount(1, $ancestors);
+        $this->assertEquals('State 2', $ancestors[0]->fields['name']);
+    }
+
     /**
      * Data provider for testDropdownNumber
      *

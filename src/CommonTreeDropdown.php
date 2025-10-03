@@ -872,6 +872,15 @@ TWIG, $twig_params);
         return (countElementsInTable($this->getTable(), [$fk => $id]) > 0);
     }
 
+    /** @return iterable<static> */
+    public function getAncestors(): iterable
+    {
+        $ancestor_ids = getAncestorsOf($this->getTable(), $this->getID());
+        if (empty($ancestor_ids)) {
+            return [];
+        }
+        return static::getSeveralFromDBByCrit(['id' => $ancestor_ids]);
+    }
 
     /**
      * reformat text field describing a tree (such as completename)

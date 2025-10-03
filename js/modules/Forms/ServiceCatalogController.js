@@ -40,6 +40,7 @@ export class GlpiFormServiceCatalogController
      */
     constructor(sort_icons)
     {
+        this.breadcrumb = [];
         this.sort_icons = sort_icons;
 
         const input = this.#getFilterInput();
@@ -49,12 +50,11 @@ export class GlpiFormServiceCatalogController
             false
         );
         input.addEventListener('input', filterFormsDebounced);
-
-        // Initialize breadcrumb with root level
-        this.breadcrumb = [{
-            title: __('Service catalog'),
-            params: 'category=0'
-        }];
+        // Handle page load with URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.size > 0) {
+            this.#loadItems(urlParams.toString());
+        }
 
         // Handle back/forward navigation
         window.addEventListener('popstate', (event) => {
@@ -62,20 +62,9 @@ export class GlpiFormServiceCatalogController
                 this.#loadItems(event.state.url_params);
                 if (event.state.breadcrumb) {
                     this.breadcrumb = event.state.breadcrumb;
-                    this.#updateBreadcrumb();
                 }
             }
         });
-
-        // Push initial state to history
-        history.replaceState(
-            {
-                url_params: 'category=0',
-                breadcrumb: this.breadcrumb
-            },
-            '',
-            window.location.pathname
-        );
 
         // Handle composite, breadcrumb and pagination clicks
         document.addEventListener('click', (e) => {
@@ -94,16 +83,8 @@ export class GlpiFormServiceCatalogController
 
                 const index = this.breadcrumb.findIndex(item => item.params === breadcrumbItem.data('childrenUrlParameters'));
                 this.breadcrumb = this.breadcrumb.slice(0, index + 1);
-                this.#updateBreadcrumb();
                 this.#loadItems(breadcrumbItem.data('childrenUrlParameters'));
-                history.pushState(
-                    {
-                        url_params: breadcrumbItem.data('childrenUrlParameters'),
-                        breadcrumb: this.breadcrumb
-                    },
-                    '',
-                    window.location.pathname
-                );
+                this.#updateHistory(breadcrumbItem.data('childrenUrlParameters'));
             }
 
             const pageLink = $(e.target).closest('[data-pagination-item]');
@@ -142,37 +123,24 @@ export class GlpiFormServiceCatalogController
         const search_input = this.#getFilterInput();
         search_input.value = '';
 
-        const title = element.querySelector('.card-title') ? element.querySelector('.card-title').textContent : '';
         const url_params = element.dataset['childrenUrlParameters'];
-
-        // Update breadcrumb if it doesn't already contain the current item
-        if (!this.breadcrumb.some(item => item.params === url_params)) {
-            this.breadcrumb.push({
-                title: title,
-                params: url_params
-            });
-            this.#updateBreadcrumb();
-        }
 
         // Get children items from backend
         this.#loadItems(url_params);
-
-        // Push state to history with breadcrumb
-        history.pushState(
-            {
-                url_params,
-                breadcrumb: this.breadcrumb
-            },
-            '',
-            window.location.pathname
-        );
+        this.#updateHistory(url_params);
     }
 
     async #loadItems(url_params)
     {
         const url = `${CFG_GLPI.root_doc}/ServiceCatalog/Items`;
-        const response = await fetch(`${url}?${url_params}`);
+        let response = await fetch(`${url}?${url_params}`);
+        if (!response.ok) { // We fallback the response to the root page
+            response = await fetch(`${url}`);
+            this.#updateHistory('');
+        }
+
         this.#getFormsArea().innerHTML = await response.text();
+        this.#updateBreadcrumb();
     }
 
     async #loadPage(element) {
@@ -182,14 +150,7 @@ export class GlpiFormServiceCatalogController
         this.#loadItems(url_params);
 
         // Push state to history with breadcrumb
-        history.pushState(
-            {
-                url_params: url_params,
-                breadcrumb: this.breadcrumb
-            },
-            '',
-            window.location.pathname
-        );
+        this.#updateHistory(url_params);
     }
 
     async #applySortStrategy(sort_strategy) {
@@ -201,6 +162,22 @@ export class GlpiFormServiceCatalogController
     }
 
     #updateBreadcrumb() {
+        const categoryAncestors = document.querySelector('#category-ancestors');
+        if (categoryAncestors) {
+            this.breadcrumb = [{
+                title: __('Service catalog'),
+                params: 'category=0'
+            }];
+
+            const ancestors = JSON.parse(categoryAncestors.dataset.ancestors);
+            ancestors.forEach(ancestor => {
+                this.breadcrumb.push({
+                    title: ancestor.name,
+                    params: `category=${ancestor.id}`
+                });
+            });
+        }
+
         const breadcrumbContainer = document.querySelector('.breadcrumb');
         breadcrumbContainer.innerHTML = '';
 
@@ -222,6 +199,30 @@ export class GlpiFormServiceCatalogController
             li.appendChild(a);
             breadcrumbContainer.appendChild(li);
         });
+    }
+
+    #updateHistory(url_params)
+    {
+        const location = new URL(window.location.href);
+        location.search = '';
+
+        const params = new URLSearchParams(url_params);
+        params.forEach((value, key) => {
+            if (key === 'category' && value === '0') {
+                return;
+            }
+
+            location.searchParams.set(key, value);
+        });
+        // Push state to history with breadcrumb
+        history.pushState(
+            {
+                url_params,
+                breadcrumb: this.breadcrumb
+            },
+            '',
+            location
+        );
     }
 
     #getFilterInput()
