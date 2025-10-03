@@ -1857,15 +1857,30 @@ class MailCollector extends CommonDBTM
             }
             if ($content_type === 'text/html') {
                 $this->body_is_html = true;
-                $content = $this->getDecodedContent($part);
+                $raw_content = $this->getDecodedContent($part);
 
-                // Keep only HTML body content
-                $body_matches = [];
-                if (preg_match('/<body[^>]*>\s*(?<body>.+?)\s*<\/body>/is', $content, $body_matches) === 1) {
-                    $content = $body_matches['body'];
+                $extracted_content = '';
+
+                // Extract everything located prior to doctype/html declaration
+                $pre_content_matches = [];
+                if (preg_match('/^(?<pre_content>.*?)(?:<!doctype|<html)/is', $raw_content, $pre_content_matches)) {
+                    $extracted_content .= trim($pre_content_matches['pre_content']);
                 }
 
-                // Strip <style> and <script> tags located in HTML body.
+                // Extract everything located inside the body
+                $body_matches = [];
+                if (preg_match('/<body[^>]*>\s*(?<body>.+?)\s*<\/body>/is', $raw_content, $body_matches)) {
+                    $extracted_content .= $body_matches['body'];
+                }
+
+                // Extract everything located after the html closing tag
+                $post_content_matches = [];
+                if (preg_match('/(?:<\/html>)(?<post_content>.*?)$/is', $raw_content, $post_content_matches)) {
+                    $extracted_content .= trim($post_content_matches['post_content']);
+                }
+
+                // If we have extracted content, use it, otherwise fallback to original
+                $content = !empty($extracted_content) ? $extracted_content : $raw_content;
                 // They could be neutralized by RichText::getSafeHtml(), but their content would be displayed,
                 // and end-user would probably prefer having them completely removed.
                 $content = preg_replace(
@@ -2569,7 +2584,6 @@ class MailCollector extends CommonDBTM
 
         return $contents;
     }
-
 
     public static function getIcon()
     {
