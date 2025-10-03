@@ -7951,10 +7951,20 @@ abstract class CommonITILObject extends CommonDBTM
     /**
      * Returns criteria that can be used to get documents related to current instance.
      *
+     * @param bool      $bypass_rights  Whether to bypass rights checks (default: false)
+     * @param User|null $user           User for rights checking (default: null = current session rights)
+     *
      * @return array
      */
-    public function getAssociatedDocumentsCriteria($bypass_rights = false): array
+    public function getAssociatedDocumentsCriteria($bypass_rights = false, ?User $user = null): array
     {
+        $user_id = $user ? $user->getID() : Session::getLoginUserID();
+
+        if ($user === null) {
+            $user = new User();
+            $user->getFromDB(Session::getLoginUserID());
+        }
+
         $task_class = $this->getType() . 'Task';
         /** @var DBmysql $DB */
         global $DB; // Used to get subquery results - better performance
@@ -7973,9 +7983,9 @@ abstract class CommonITILObject extends CommonDBTM
                 ITILFollowup::getTableField('itemtype') => $this->getType(),
                 ITILFollowup::getTableField('items_id') => $this->getID(),
             ];
-            if (!$bypass_rights && !Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)) {
+            if (!$bypass_rights && !$user->hasRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)) {
                 $fup_crits[] = [
-                    'OR' => ['is_private' => 0, 'users_id' => Session::getLoginUserID()],
+                    'OR' => ['is_private' => 0, 'users_id' => $user_id],
                 ];
             }
             // Run the subquery separately. It's better for huge databases
@@ -8038,9 +8048,9 @@ abstract class CommonITILObject extends CommonDBTM
             $tasks_crit = [
                 $this->getForeignKeyField() => $this->getID(),
             ];
-            if (!$bypass_rights && !Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATE)) {
+            if (!$bypass_rights && !$user->hasRight($task_class::$rightname, CommonITILTask::SEEPRIVATE)) {
                 $tasks_crit[] = [
-                    'OR' => ['is_private' => 0, 'users_id' => Session::getLoginUserID()],
+                    'OR' => ['is_private' => 0, 'users_id' => $user_id],
                 ];
             }
             // Run the subquery separately. It's better for huge databases

@@ -7013,4 +7013,44 @@ HTML;
 
         return $input;
     }
+
+    /**
+     * User has right for given module and right.
+     *
+     * @param string  $module Module to check
+     * @param integer $right  Right to check
+     *
+     * @return boolean|int
+     **/
+    public function hasRight($module, $right)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+        if ($this->isNewItem()) {
+            throw new \LogicException('Cannot check rights for a user not yet saved');
+        } else {
+            $iterator = $DB->request([
+                'SELECT' => 'rights',
+                'FROM'   => 'glpi_profilerights',
+                'JOIN'   => [
+                    'glpi_profiles_users' => [
+                        'ON' => [
+                            'glpi_profilerights'    => 'profiles_id',
+                            'glpi_profiles_users'   => 'profiles_id',
+                        ],
+                    ],
+                ],
+                'WHERE'  => [
+                    'glpi_profilerights.name'       => $module,
+                    'glpi_profilerights.rights'     => ['&', $right],
+                    'glpi_profiles_users.users_id'  => $this->getID(),
+                ],
+            ]);
+
+            if (count($iterator) > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
