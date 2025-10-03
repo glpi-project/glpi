@@ -2609,8 +2609,9 @@ TWIG,
          ? " disabled='disabled'"
          : "";
 
+        $calendar_tooltip = __s('Enter or select a date');
         $calendar_btn = $p['calendar_btn']
-         ? "<button type='button' class='btn btn-outline-secondary btn-sm' data-toggle title='" . __s('Show date picker') . "'>
+         ? "<button type='button' class='btn btn-outline-secondary btn-sm' data-toggle>
                 <i class='ti ti-calendar'></i>
             </button>"
          : "";
@@ -2630,7 +2631,7 @@ TWIG,
         $placeholder = htmlescape($p['placeholder']);
 
         $output = <<<HTML
-      <div class="button-group flex-grow-1 flatpickr d-flex align-items-center" id="showdate{$rand}">
+      <div class="button-group flex-grow-1 flatpickr d-flex align-items-center" id="showdate{$rand}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{$calendar_tooltip}">
          <input type="text" name="{$name}" size="{$size}"
                 {$required} {$disabled} data-input placeholder="{$placeholder}" class="form-control rounded-start ps-2">
          $calendar_btn
@@ -2815,10 +2816,10 @@ JS;
         $show_datepicker_label = __s('Show date picker');
         $rand = (int) $p['rand'];
         $output = <<<HTML
-         <div class="btn-group flex-grow-1 flatpickr" id="showdate{$rand}">
+         <div class="btn-group flex-grow-1 flatpickr" id="showdate{$rand}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{$show_datepicker_label}">
             <input type="text" name="{$name}" value="{$value}"
                    {$required} {$disabled} data-input class="form-control rounded-start ps-2">
-            <button type='button' class='btn btn-outline-secondary btn-sm' data-toggle title='{$show_datepicker_label}'>
+            <button type='button' class='btn btn-outline-secondary btn-sm' data-toggle>
                 <i class='ti ti-calendar-time'></i>
             </button>
             $clear
