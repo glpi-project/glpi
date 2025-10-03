@@ -7958,10 +7958,9 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public function getAssociatedDocumentsCriteria($bypass_rights = false, ?int $user_id = null): array
     {
+        $user_id ??= Session::getLoginUserID();
         $user = new User();
-        if ($user_id > 0) {
-            $user = $user->getFromDB($user_id);
-        }
+        $user->getFromDB($user_id);
 
         $task_class = $this->getType() . 'Task';
         /** @var DBmysql $DB */
@@ -7983,7 +7982,7 @@ abstract class CommonITILObject extends CommonDBTM
             ];
             if (!$bypass_rights && !$user->hasRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)) {
                 $fup_crits[] = [
-                    'OR' => ['is_private' => 0, 'users_id' => Session::getLoginUserID()],
+                    'OR' => ['is_private' => 0, 'users_id' => $user_id],
                 ];
             }
             // Run the subquery separately. It's better for huge databases
@@ -8048,7 +8047,7 @@ abstract class CommonITILObject extends CommonDBTM
             ];
             if (!$bypass_rights && !$user->hasRight($task_class::$rightname, CommonITILTask::SEEPRIVATE)) {
                 $tasks_crit[] = [
-                    'OR' => ['is_private' => 0, 'users_id' => Session::getLoginUserID()],
+                    'OR' => ['is_private' => 0, 'users_id' => $user_id],
                 ];
             }
             // Run the subquery separately. It's better for huge databases
