@@ -340,6 +340,10 @@ class Dropdown
             $add_item_icon .= '</div>';
         }
 
+        if ($params['display_dc_position'] && method_exists($item, 'getParentRack')) {
+            $rack = $item->getParentRack();
+        }
+
         // Display comment
         $icon_array = [];
         if ($params['comments']) {
@@ -383,6 +387,10 @@ class Dropdown
                     $paramscomment['withlink'] = $link_id;
                 }
 
+                if ($rack ?? false) {
+                    $paramscomment['with_dc_position'] = $breadcrumb_id;
+                }
+
                 // Comment icon
                 $comment_icon = Ajax::updateItemOnSelectEvent(
                     $field_id,
@@ -414,22 +422,16 @@ class Dropdown
             // Location icon
             if ($itemtype === 'Location' && Location::canView()) {
                 $location_icon = "<div role='button' class='btn btn-outline-secondary' onclick='showMapForLocation(this)'
-                                       data-fid='" . htmlescape($field_id) . "' title='" . __s('Display on map') . "' data-bs-toggle='tooltip'>";
+                                       data-fid='" . htmlescape($field_id) . "' title='" . __s('Display on map') . "' data-bs-toggle='tooltip' data-bs-placement='bottom'>";
                 $location_icon .= "<i class='ti ti-map'></i></div>";
                 $icon_array[] = $location_icon;
             }
 
-            if ($params['display_dc_position']) {
-                if (
-                    method_exists($item, 'getParentRack')
-                    && ($rack = $item->getParentRack())
-                ) {
-                    $dc_icon = "<span id='" . htmlescape($breadcrumb_id) . "' title='" . __s('Display on datacenter') . "'>";
-                    $dc_icon .= "&nbsp;<a class='ti ti-current-location' href='" . htmlescape($rack->getLinkURL()) . "'></a>";
-                    $dc_icon .= "</span>";
-                    $paramscomment['with_dc_position'] = $breadcrumb_id;
-                    $icon_array[] = $dc_icon;
-                }
+            if ($rack ?? false) {
+                $dc_icon = "<span id='" . htmlescape($breadcrumb_id) . "' data-bs-toggle='tooltip' data-bs-placement='bottom' title='" . __s('Display on datacenter') . "'>";
+                $dc_icon .= "&nbsp;<a class='ti ti-current-location' href='" . htmlescape($rack->getLinkURL()) . "'></a>";
+                $dc_icon .= "</span>";
+                $icon_array[] = $dc_icon;
             }
 
             // KB links
