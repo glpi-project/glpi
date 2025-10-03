@@ -3234,6 +3234,7 @@ JS;
      *         * timestamp
      *         * class, supported: passed, checked, now
      *         * label
+     *         The key should contain a string starting with the timestamp, it is used to order the displayed events
      *      - display, boolean to precise if we need to display (true) or return (false) the html
      *      - add_now, boolean to precise if we need to add to dates array, an entry for now time
      *        (with now class)
@@ -3294,19 +3295,21 @@ JS;
      * Show a tooltip on an item
      *
      * @param string $content  data to put in the tooltip
-     * @param array $options   Array of possible options:
-     *   - applyto : string / id of the item to apply tooltip (default empty).
-     *                  If not set display an icon
-     *   - title : string / title to display (default empty)
-     *   - contentid : string / id for the content html container (default auto generated) (used for ajax)
-     *   - link : string / link to put on displayed image if contentid is empty
-     *   - linkid : string / html id to put to the link link (used for ajax)
-     *   - linktarget : string / target for the link
-     *   - popup : string / popup action : link not needed to use it
-     *   - img : string / url of a specific img to use
-     *   - display : boolean / display the item : false return the datas
-     *   - autoclose : boolean / autoclose the item : default true (false permit to scroll)
-     *   - url: ?string If defined, load tooltip using an AJAX request on the supplied URL
+     * @param array{
+     *   applyto?: string,       // id of the target element
+     *   title?: string,         // title to display
+     *   contentid?: string,     // id of the HTML container for the content
+     *   link?: string,          // link on the displayed icon if contentid is empty
+     *   linkid?: string,        // HTML id of the link
+     *   linktarget?: string,    // link target
+     *   awesome-class?: string, // class of the icon to display (default 'fa-info')
+     *   popup?: string,         // popup action
+     *   img?: string,           // URL of a specific image
+     *   display?: bool,         // display or return the data, default true
+     *   autoclose?: bool,       // auto close (default true)
+     *   onclick?: bool,         // false (default) to show on hover, true to show on click
+     *   url?: string|null       // AJAX URL to load the tooltip
+     * } $options  Options possibles pour le tooltip
      *
      * @return void|string
      *    void if option display=true
