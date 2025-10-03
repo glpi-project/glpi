@@ -36,6 +36,7 @@ use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Search\SearchOption;
 use Glpi\Tests\Log\TestHandler;
+use Laminas\I18n\Translator\Translator;
 use Monolog\Level;
 use Monolog\Logger;
 use Monolog\LogRecord;
@@ -62,7 +63,7 @@ class GLPITestCase extends TestCase
 
     public function setUp(): void
     {
-        /** @var \Laminas\I18n\Translator\Translator $TRANSLATE */
+        /** @var Translator $TRANSLATE */
         global $TRANSLATE;
 
         $this->storeGlobals();
