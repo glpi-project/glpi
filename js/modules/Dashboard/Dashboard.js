@@ -126,8 +126,8 @@ class GLPIDashboard {
         };
         options = Object.assign({}, default_options, options);
 
-        this.rand         = CSS.escape(options.rand);
-        this.elem_id      = "#dashboard-" + options.rand;
+        this.rand         = parseInt(options.rand);
+        this.elem_id      = "#dashboard-" + this.rand;
         this.element      = $(this.elem_id);
         this.elem_dom     = this.element[0];
         this.current_name = $(`${this.elem_id} .dashboard-select`).val() || options.current;

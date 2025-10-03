@@ -123,11 +123,11 @@
 
       <script type="text/javascript">
          function change_task_state(tasks_id, target) {
-            $.post('{{ path('/ajax/timeline.php') }}',
+            $.post(`${CFG_GLPI.root_doc}/ajax/timeline.php`,
                {'action':     'change_task_state',
                   'tasks_id':   tasks_id,
-                  'parenttype': '{{ item.getType() }}',
-                  '{{ item.getForeignKeyField() }}': {{ item.fields.id }}
+                  'parenttype': '{{ item.getType()|e('js') }}',
+                  '{{ item.getForeignKeyField()|e('js') }}': {{ item.fields.id|json_encode|raw }}
                })
                .done(function(response) {
                   $(target).closest('.timeline-item').find('.state')
@@ -156,12 +156,12 @@
       <script type="text/javascript">
          function itiltasktemplate_update{{ rand }}(value) {
             $.ajax({
-               url: '{{ path('/ajax/task.php') }}',
+               url: `${CFG_GLPI.root_doc}/ajax/task.php`,
                type: 'POST',
                data: {
                   tasktemplates_id: value,
-                  items_id: '{{ item.fields['id'] }}',
-                  itemtype: '{{ item.getType() }}'
+                  items_id: '{{ item.fields['id']|e('js') }}',
+                  itemtype: '{{ item.getType()|e('js') }}'
                }
             }).done(function (data) {
                 if (data.content !== undefined) {
