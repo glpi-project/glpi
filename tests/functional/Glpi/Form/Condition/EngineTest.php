@@ -1009,6 +1009,48 @@ final class EngineTest extends DbTestCase
         }
     }
 
+    public function testSectionsWithoutVisibleChildrenAreHidden(): void
+    {
+        // Arrange: create a form with two sections
+        // The second section will contain a single question that can be hidden.
+        $builder = new FormBuilder("My form");
+        $builder->addSection("Section 1");
+        $builder->addQuestion("Question 1", QuestionTypeShortText::class);
+        $builder->addSection("Section 2");
+        $builder->addQuestion("Question 2", QuestionTypeShortText::class);
+        $builder->setQuestionVisibility(
+            "Question 2",
+            VisibilityStrategy::HIDDEN_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Question 1",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "hide question 2",
+                ],
+            ]
+        );
+        $form = $this->createForm($builder);
+
+        // Act: compute visiblity
+        $input = $this->mapInput($form, [
+            'answers' => [
+                'Question 1' => 'hide question 2',
+            ],
+        ]);
+        $engine = new Engine($form, $input);
+        $output = $engine->computeVisibility();
+
+        // Assert: since question 2 is hidden, section 2 should be hidden too
+        $this->assertFalse($output->isQuestionVisible(
+            $this->getQuestionId($form, "Question 2"),
+        ));
+        $this->assertFalse($output->isSectionVisible(
+            $this->getSectionId($form, "Section 2"),
+        ));
+    }
+
     /**
      * Transform a simplified raw input that uses questions names by a real
      * EngineInput object with the correct ids.
