@@ -7043,7 +7043,7 @@ HTML;
                     'glpi_profilerights.name'       => $module,
                     'glpi_profilerights.rights'     => ['&', $right],
                     'glpi_profiles_users.users_id'  => $this->getID(),
-                ]
+                ],
             ]);
 
             if (count($iterator) > 0) {
