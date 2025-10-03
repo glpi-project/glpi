@@ -37,11 +37,21 @@
 namespace Glpi\Inventory\MainAsset;
 
 use Blacklist;
+use Glpi\Inventory\Asset\NetworkCard;
 use RuleDefineItemtypeCollection;
 use stdClass;
 
 class Itemtype extends MainAsset
 {
+    protected $extra_data = [
+        'hardware' => null,
+        'bios' => null,
+        'users' => null,
+        NetworkCard::class => null,
+        'network_device' => null,
+        'network_components' => null,
+    ];
+
     /**
      * @param stdClass $data
      */
@@ -70,6 +80,11 @@ class Itemtype extends MainAsset
         $data = $this->data[0] ?? null; //there is only one data entry for MainAsset
         if (!$data) {
             return [];
+        }
+
+        //netrwok equipments information are store in extra node network_device
+        if (isset($this->extra_data['network_device'])) {
+            $data = (object) array_merge((array) $data, (array) $this->extra_data['network_device']);
         }
 
         $blacklist->processBlackList($data);
