@@ -1,4 +1,4 @@
-tests/LDAP/ldif/glpi-ldap.ldif provides :
+tests/LDAP/ldif provides :
 - 3 branches, to simulate 3 different directories
 - users stored in using 2 different objectclasses : person & inetOrgPerson
 - groups : groupOfNames & posixGroup
@@ -54,13 +54,13 @@ Create entities in GLPI :
    * DN : none
    * Attribute representing the entity : (o=Ecuador)
    * TAG : Ecuador
-   
+
 =================================================
 Right rules:
 1 - Entity by LDAP field (for directories GLPI1 & GLPI2)
    * Criteria : (LDAP)DistinguishedName regex checks /ou=people,(.*)/
    * Action : Entity by LDAP assign regex result #0
-   
+
 2 - Entity by LDAP field (for directories GLPI1 & GLPI2)
    * Criteria : (LDAP)Organizationregex checks /(.*)/
    * Action : Entity by TAG assign regex result #0
