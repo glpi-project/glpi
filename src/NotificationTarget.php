@@ -1582,7 +1582,8 @@ class NotificationTarget extends CommonDBChild
 
 
     /**
-     * @param $options   array
+     * @param $options array{tag: string|false, value: bool, label: string|false, events: array<string>|self::TAG_FOR_ALL_EVENTS, foreach: bool, lang: bool, allowed_values: array<string>}
+     * @todoseb typage vérifié rapidement
      **/
     public function addTagToList($options = [])
     {
