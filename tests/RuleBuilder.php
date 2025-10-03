@@ -106,7 +106,7 @@ class RuleBuilder
     /**
      * Set condition
      *
-     * @param string $operator RuleTicket::ONADD and/or RuleTicket::ONUPDATE
+     * @param int $condition RuleTicket::ONADD and/or RuleTicket::ONUPDATE
      *
      * @return self
      */

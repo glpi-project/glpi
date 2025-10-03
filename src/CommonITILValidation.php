@@ -1779,6 +1779,8 @@ HTML;
     /**
      * Dropdown of validator
      *
+     * Display (or return) html fragment with a select element plus the javascript that will trigger an ajax request to populate the options.
+     *
      * @param $options   array of options
      *  - prefix                  : inputs prefix
      *                              - an empty prefix will result in having `itemtype` and `items_id` inputs
