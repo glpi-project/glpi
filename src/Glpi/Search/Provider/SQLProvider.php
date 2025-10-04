@@ -68,6 +68,7 @@ use Glpi\RichText\RichText;
 use Glpi\Search\Input\QueryBuilder;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
+use Glpi\Toolbox\SanitizedStringsDecoder;
 use Group;
 use Group_Item;
 use Group_KnowbaseItem;
@@ -5598,9 +5599,11 @@ final class SQLProvider implements SearchProviderInterface
                         $added         = [];
                         $count_display = 0;
                         for ($k = 0; $k < $data[$ID]['count']; $k++) {
+                            $completename = isset($data[$ID][$k]['name']) && (strlen(trim($data[$ID][$k]['name'])) > 0)
+                                ? (new SanitizedStringsDecoder())->decodeHtmlSpecialCharsInCompletename($data[$ID][$k]['name'])
+                                : null;
                             if (
-                                isset($data[$ID][$k]['name'])
-                                && (strlen(trim($data[$ID][$k]['name'])) > 0)
+                                $completename !== null
                                 && !in_array(
                                     $data[$ID][$k]['name'] . "-" . $data[$ID][$k]['profiles_id'],
                                     $added
@@ -5634,7 +5637,7 @@ final class SQLProvider implements SearchProviderInterface
                         }
                         return $out;
                     } elseif (($so["datatype"] ?? "") != "itemlink" && !empty($data[$ID][0]['name'])) {
-                        $completename = $data[$ID][0]['name'];
+                        $completename = (new SanitizedStringsDecoder())->decodeHtmlSpecialCharsInCompletename($data[$ID][0]['name']);
                         if ($html_output) {
                             if (!$_SESSION['glpiuse_flat_dropdowntree_on_search_result']) {
                                 $split_name = explode(">", $completename);
@@ -5658,7 +5661,8 @@ final class SQLProvider implements SearchProviderInterface
                         && $data[$ID][0]['name'] != null //column have value in DB
                         && !$_SESSION['glpiuse_flat_dropdowntree_on_search_result'] //user doesn't want the completename
                     ) {
-                        $split_name = explode(">", $data[$ID][0]['name']);
+                        $completename = (new SanitizedStringsDecoder())->decodeHtmlSpecialCharsInCompletename($data[$ID][0]['name']);
+                        $split_name = explode(">", $completename);
                         return htmlescape(trim(end($split_name)));
                     }
                     break;
@@ -6427,6 +6431,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $name = sprintf(__('%1$s (%2$s)'), $name, $data[$ID][$k]['id']);
                             }
                             if (isset($field) && $field === 'completename') {
+                                $name = (new SanitizedStringsDecoder())->decodeHtmlSpecialCharsInCompletename($data[$ID][0]['name']);
                                 $chunks = \explode(' > ', $name);
                                 $completename = '';
                                 foreach ($chunks as $key => $element_name) {
@@ -6723,7 +6728,8 @@ final class SQLProvider implements SearchProviderInterface
                     if (isset($field_data['trans']) && !empty($field_data['trans'])) {
                         $out .= \htmlescape($field_data['trans']);
                     } elseif (isset($field_data['trans_completename']) && !empty($field_data['trans_completename'])) {
-                        $out .= \htmlescape($field_data['trans_completename']);
+                        $value = (new SanitizedStringsDecoder())->decodeHtmlSpecialCharsInCompletename($field_data['trans_completename']);
+                        $out .= \htmlescape($value);
                     } elseif (isset($field_data['trans_name']) && !empty($field_data['trans_name'])) {
                         $out .= \htmlescape($field_data['trans_name']);
                     } else {
