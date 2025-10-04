@@ -43,6 +43,11 @@ class CookieAuthMiddleware extends AbstractMiddleware implements AuthMiddlewareI
 {
     public function process(MiddlewareInput $input, callable $next): void
     {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            // session already started
+            $next($input);
+            return;
+        }
         // User could be authenticated by a cookie
         // Need to use cookies for session and start it manually
         ini_set('session.use_cookies', '1');
