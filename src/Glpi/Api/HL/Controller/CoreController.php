@@ -41,6 +41,7 @@ use Glpi\Api\HL\OpenAPIGenerator;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Router;
 use Glpi\Api\HL\RouteVersion;
+use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Error\ErrorHandler;
 use Glpi\Http\JSONResponse;
@@ -309,8 +310,13 @@ HTML;
         }
         if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
             $response_headers['Access-Control-Allow-Headers'] = [
-                'Content-Type', 'Authorization', 'Origin', 'Accept', 'Glpi-Session-Token', 'Glpi-User-Token',
+                'Content-Type', 'Authorization', 'Origin', 'Accept',
+                'GLPI-API-Version', 'GLPI-Profile', 'GLPI-Entity', 'GLPI-Entity-Recursive',
+                'X-Debug-Mode'
             ];
+            if (Environment::get() === Environment::DEVELOPMENT) {
+                $response_headers['Access-Control-Allow-Headers'][] = 'XDEBUG_TRIGGER';
+            }
         }
         return new JSONResponse(null, 204, $response_headers);
     }
