@@ -173,12 +173,15 @@ final class FormActorsDropdown extends AbstractRightsDropdown
                     'selection_text' => "$itemtype - $text",
                 ];
             }
-            $results[] = [
-                'itemtype' => $itemtype,
-                'text' => $itemtype::getTypeName(1),
-                'title' => $itemtype::getTypeName(1),
-                'children' => $new_group,
-            ];
+
+            if (count($new_group)) {
+                $results[] = [
+                    'itemtype' => $itemtype,
+                    'text' => $itemtype::getTypeName(1),
+                    'title' => $itemtype::getTypeName(1),
+                    'children' => $new_group,
+                ];
+            }
         }
 
         $ret = [
