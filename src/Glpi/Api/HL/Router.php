@@ -643,6 +643,7 @@ EOT;
 
         $this->original_request = clone $request;
         $matched_route = $this->match($request);
+        $routes_allowed_when_disabled = ['/token'];
 
         if ($matched_route === null) {
             $response = new Response(404);
@@ -659,7 +660,7 @@ EOT;
                 // If HL API is disabled, only internal requests should be allowed as they are used for features like Webhooks rather than user-initiated requests
                 $this->auth_middlewares = array_filter($this->auth_middlewares, static fn($middleware) => get_class($middleware['middleware']) === InternalAuthMiddleware::class);
                 // The internal auth is required to succeed here even for public endpoints because the HL API is disabled
-                $requires_auth = true;
+                $requires_auth = !in_array(strtolower($matched_route->getCompiledPath()), $routes_allowed_when_disabled, true);
                 $unauthenticated_response = AbstractController::getAccessDeniedErrorResponse('The High-Level API is disabled');
             }
             $middleware_input = new MiddlewareInput($request, $matched_route, $unauthenticated_response);
