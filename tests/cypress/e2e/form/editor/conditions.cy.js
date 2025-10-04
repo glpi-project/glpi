@@ -620,6 +620,7 @@ describe ('Conditions', () => {
         addQuestion('My first question');
         addQuestion('My second question');
         addSection('My second section');
+        addQuestion('Just a question to avoid empty sections');
         saveAndReload();
 
         getAndFocusSection('My second section').within(() => {
@@ -1018,8 +1019,11 @@ describe ('Conditions', () => {
         createForm();
         addQuestion('My question used as a criteria');
         addSection('My section that is always visible');
+        addQuestion('Just a question to avoid empty sections');
         addSection('My section that is visible if some criteria are met');
+        addQuestion('Just a question to avoid empty sections');
         addSection('My section that is hidden if some criteria are met');
+        addQuestion('Just a question to avoid empty sections');
 
         getAndFocusSection('My section that is always visible').within(() => {
             initVisibilityConfiguration();
@@ -2451,7 +2455,9 @@ describe ('Conditions', () => {
         createForm();
         addQuestion('My question used as a criteria');
         addSection('My section that is visible if some criteria are met');
+        addQuestion('Just a question to avoid empty sections');
         addSection('My section that is visible if previous section is visible');
+        addQuestion('Just a question to avoid empty sections');
 
         getAndFocusSection('My section that is visible if some criteria are met').within(() => {
             initVisibilityConfiguration();

@@ -90,11 +90,21 @@ final class Engine
         // Compute section visiblity
         $first = true;
         foreach ($this->form->getSections() as $section) {
-            $output->setSectionVisibility(
-                $section->getID(),
-                $first ? true : $this->computeItemVisibility($section),
-            );
-            $first = false;
+            if ($first) {
+                // First section must always be visible
+                $output->setSectionVisibility($section->getID(), true);
+                $first = false;
+                continue;
+            }
+
+            $is_visible = $this->computeItemVisibility($section);
+
+            // Set visiblity to false if the section does not have at least
+            // one visible child
+            if ($is_visible) {
+                $is_visible = $this->sectionHasVisibleChildren($output, $section);
+            }
+            $output->setSectionVisibility($section->getID(), $is_visible);
         }
 
         return $output;
@@ -333,5 +343,24 @@ final class Engine
             $condition->getValueOperator(),
             $condition->getValue(),
         );
+    }
+
+    private function sectionHasVisibleChildren(
+        EngineVisibilityOutput $output,
+        Section $section,
+    ): bool {
+        foreach ($section->getFormComments() as $comment) {
+            if ($output->isCommentVisible($comment->getId())) {
+                return true;
+            }
+        }
+
+        foreach ($section->getQuestions() as $question) {
+            if ($output->isQuestionVisible($question->getId())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
