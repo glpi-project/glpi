@@ -37,7 +37,7 @@
     <a
         class="card mx-1 my-2 flex-grow-1 {{ is_pinned ? "border-menu" : "" }}"
         {% if item is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogLeafInterface") %}
-            href="{{ path(item.getServiceCatalogLink()) }}"
+            href="{{ item.getServiceCatalogLink() }}"
         {% elseif item is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogCompositeInterface") %}
             href="?{{ item.getChildrenUrlParameters() }}"
             data-children-url-parameters="{{ item.getChildrenUrlParameters() }}"

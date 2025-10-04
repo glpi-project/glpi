@@ -36,7 +36,7 @@
     <a
         class="card mx-2 my-2 flex-grow-1 border-0 rounded-4 hover-no-shadow hover-bg"
         {% if child is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogLeafInterface") %}
-            href="{{ path(child.getServiceCatalogLink()) }}"
+            href="{{ child.getServiceCatalogLink() }}"
         {% elseif child is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogCompositeInterface") %}
             href="?{{ child.getChildrenUrlParameters() }}"
             data-children-url-parameters="{{ child.getChildrenUrlParameters() }}"
