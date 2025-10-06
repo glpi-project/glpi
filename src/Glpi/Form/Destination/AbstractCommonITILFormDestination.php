@@ -314,9 +314,9 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
             new LinkedITILObjectsField(),
         ];
 
-        // Add plugin config fields specific to this destination type
+        // Add plugin config fields specific to this common ITIL destination type
         $plugin_fields = FormDestinationManager::getInstance()
-            ->getPluginConfigFieldsForDestination(static::class);
+            ->getPluginCommonITILConfigFields(static::class);
 
         return array_merge($core_fields, $plugin_fields);
     }

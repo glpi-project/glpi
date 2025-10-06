@@ -107,7 +107,7 @@ function plugin_init_tester(): void
     $destination_manager->registerPluginDestinationType(new ComputerDestination());
 
     // Register destination config field
-    $destination_manager->registerPluginConfigField(
+    $destination_manager->registerPluginCommonITILConfigField(
         FormDestinationTicket::class,
         new ExternalIDField()
     );
