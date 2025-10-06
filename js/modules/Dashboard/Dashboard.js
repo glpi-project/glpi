@@ -1221,14 +1221,22 @@ class GLPIDashboard {
      */
     getFiltersFromDB() {
         let filters;
+        const data = {
+            dashboard: this.current_name,
+            action: 'get_filter_data',
+        };
+        if (this.embed) {
+            data.embed        = 1;
+            data.token        = this.token;
+            data.entities_id  = this.entities_id;
+            data.is_recursive = this.is_recursive;
+        }
+
         $.ajax({
             method: 'GET',
             url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
             async: false,
-            data: {
-                action:    'get_filter_data',
-                dashboard: this.current_name,
-            },
+            data: data,
             success: function(response) {
                 filters = response;
             }

@@ -49,7 +49,7 @@ if (!isset($_REQUEST["action"])) {
 $request_data = array_merge($_REQUEST, json_decode($_REQUEST['data'] ?? '{}', true));
 unset($request_data['data']);
 
-// Session check is disabled for this script (see `\Glpi\Http\Firewall::computeStrategyForCoreLegacyScript()`)
+// Session check is disabled for this script (see `\Glpi\Http\SessionManager::isResourceStateless()`)
 // to be able to adapt the checks depending on the request.
 $embed = false;
 if (
@@ -57,6 +57,8 @@ if (
     && array_key_exists('embed', $request_data)
     && (bool) $request_data['embed']
 ) {
+    $grid = new Grid($request_data['dashboard']);
+    $grid->initEmbed($_REQUEST);
     if (Grid::checkToken($request_data) === false) {
         throw new AccessDeniedHttpException();
     }
