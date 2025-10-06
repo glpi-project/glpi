@@ -1063,22 +1063,22 @@ TWIG,
 
         $tpl_vars['css_files'][] = ['path' => 'lib/base.css'];
 
-        Html::requireJs('tinymce', $tpl_vars);
+        Html::requireJs('tinymce');
 
         if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax']) {
-            Html::requireJs('notifications_ajax', $tpl_vars);
+            Html::requireJs('notifications_ajax');
         }
 
         $tpl_vars['css_files'][] = ['path' => 'lib/leaflet.css'];
-        Html::requireJs('leaflet', $tpl_vars);
+        Html::requireJs('leaflet');
 
         $tpl_vars['css_files'][] = ['path' => 'lib/flatpickr.css'];
         // Include dark theme as base (may be cleaner look than light; colors overriden by GLPI's stylesheet)
         $tpl_vars['css_files'][] = ['path' => 'lib/flatpickr/themes/dark.css'];
-        Html::requireJs('flatpickr', $tpl_vars);
+        Html::requireJs('flatpickr');
 
         $tpl_vars['css_files'][] = ['path' => 'lib/photoswipe.css'];
-        Html::requireJs('photoswipe', $tpl_vars);
+        Html::requireJs('photoswipe');
 
         $is_monaco_added = false;
         if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
@@ -1086,7 +1086,7 @@ TWIG,
             $tpl_vars['css_files'][] = ['path' => 'lib/monaco.css'];
             $is_monaco_added = true;
 
-            Html::requireJs('clipboard', $tpl_vars);
+            Html::requireJs('clipboard');
         }
 
         //on demand JS.
@@ -1114,22 +1114,22 @@ TWIG,
             }
 
             if (in_array('planning', $jslibs)) {
-                Html::requireJs('planning', $tpl_vars);
+                Html::requireJs('planning');
             }
 
             if (in_array('fullcalendar', $jslibs)) {
                 $tpl_vars['css_files'][] = ['path' => 'lib/fullcalendar.css'];
-                Html::requireJs('fullcalendar', $tpl_vars);
+                Html::requireJs('fullcalendar');
             }
 
             if (in_array('reservations', $jslibs)) {
                 $tpl_vars['css_files'][] = ['path' => 'css/standalone/reservations.scss'];
-                Html::requireJs('reservations', $tpl_vars);
+                Html::requireJs('reservations');
             }
 
             if (in_array('rateit', $jslibs)) {
                 $tpl_vars['css_files'][] = ['path' => 'lib/jquery.rateit.css'];
-                Html::requireJs('rateit', $tpl_vars);
+                Html::requireJs('rateit');
             }
 
             if (in_array('dashboard', $jslibs)) {
@@ -1138,7 +1138,7 @@ TWIG,
 
             if (in_array('marketplace', $jslibs)) {
                 $tpl_vars['css_files'][] = ['path' => 'css/standalone/marketplace.scss'];
-                Html::requireJs('marketplace', $tpl_vars);
+                Html::requireJs('marketplace');
             }
 
             if (in_array('kb', $jslibs)) {
@@ -1146,28 +1146,28 @@ TWIG,
             }
 
             if (in_array('rack', $jslibs)) {
-                Html::requireJs('rack', $tpl_vars);
+                Html::requireJs('rack');
             }
 
             if (in_array('gridstack', $jslibs)) {
                 $tpl_vars['css_files'][] = ['path' => 'lib/gridstack.css'];
-                Html::requireJs('gridstack', $tpl_vars);
+                Html::requireJs('gridstack');
             }
 
             if (in_array('masonry', $jslibs)) {
-                Html::requireJs('masonry', $tpl_vars);
+                Html::requireJs('masonry');
             }
 
             if (in_array('clipboard', $jslibs)) {
-                Html::requireJs('clipboard', $tpl_vars);
+                Html::requireJs('clipboard');
             }
 
             if (in_array('charts', $jslibs)) {
-                Html::requireJs('charts', $tpl_vars);
+                Html::requireJs('charts');
             }
 
             if (in_array('cable', $jslibs)) {
-                Html::requireJs('cable', $tpl_vars);
+                Html::requireJs('cable');
             }
 
             if (in_array('monaco', $jslibs) && !$is_monaco_added) {
@@ -1182,23 +1182,23 @@ TWIG,
 
         if (Session::getCurrentInterface() == "helpdesk") {
             $tpl_vars['css_files'][] = ['path' => 'lib/jquery.rateit.css'];
-            Html::requireJs('rateit', $tpl_vars);
+            Html::requireJs('rateit');
         }
 
         // Sortable required for drag and drop of display preferences and some other things like dashboards, kanban, etc
-        Html::requireJs('sortable', $tpl_vars);
+        Html::requireJs('sortable');
 
         //file upload is required... almost everywhere.
-        Html::requireJs('fileupload', $tpl_vars);
+        Html::requireJs('fileupload');
 
         // load fuzzy search everywhere
-        Html::requireJs('fuzzy', $tpl_vars);
+        Html::requireJs('fuzzy');
 
         // load glpi dailog everywhere
-        Html::requireJs('glpi_dialog', $tpl_vars);
+        Html::requireJs('glpi_dialog');
 
         // load log filters everywhere
-        Html::requireJs('log_filters', $tpl_vars);
+        Html::requireJs('log_filters');
 
         $tpl_vars['css_files'][] = ['path' => 'lib/tabler.css'];
         $tpl_vars['css_files'][] = ['path' => 'css/glpi.scss'];
@@ -5938,7 +5938,7 @@ JS);
      *
      * @return void
      */
-    public static function requireJs($name, &$tpl_vars)
+    public static function requireJs($name)
     {
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
@@ -5948,23 +5948,23 @@ JS);
         }
         switch ($name) {
             case 'glpi_dialog':
-                $tpl_vars['js_files'][] = ['path' => 'js/glpi_dialog.js'];
+                $_SESSION['glpi_js_toload'][$name][] = 'js/glpi_dialog.js';
                 break;
             case 'clipboard':
-                $tpl_vars['js_files'][] = ['path' => 'js/clipboard.js'];
+                $_SESSION['glpi_js_toload'][$name][] = 'js/clipboard.js';
                 break;
             case 'tinymce':
-                $tpl_vars['js_files'][] = ['path' => 'lib/tinymce.js'];
-                $tpl_vars['js_files'][] = ['path' => 'js/RichText/FormTags.js'];
-                $tpl_vars['js_files'][] = ['path' => 'js/RichText/UserMention.js'];
-                $tpl_vars['js_files'][] = ['path' => 'js/RichText/ContentTemplatesParameters.js'];
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/tinymce.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/FormTags.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/UserMention.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/ContentTemplatesParameters.js';
                 break;
             case 'planning':
-                $tpl_vars['js_files'][] = ['path' => 'js/planning.js'];
+                $_SESSION['glpi_js_toload'][$name][] = 'js/planning.js';
                 break;
             case 'flatpickr':
-                $tpl_vars['js_files'][] = ['path' => 'lib/flatpickr.js'];
-                $tpl_vars['js_files'][] = ['path' => 'js/flatpickr_buttons_plugin.js'];
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/flatpickr.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'js/flatpickr_buttons_plugin.js';
                 if (isset($_SESSION['glpilanguage'])) {
                     $filename = "lib/flatpickr/l10n/"
                     . strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]) . ".js";
@@ -5975,7 +5975,7 @@ JS);
                 }
                 break;
             case 'fullcalendar':
-                $tpl_vars['js_files'][] = ['path' => 'lib/fullcalendar.js'];
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/fullcalendar.js';
                 if (isset($_SESSION['glpilanguage'])) {
                     foreach ([2, 3] as $loc) {
                         $filename = "lib/fullcalendar/core/locales/"
@@ -5988,11 +5988,11 @@ JS);
                 }
                 break;
             case 'rateit':
-                $tpl_vars['js_files'][] = ['path' => 'lib/jquery.rateit.js'];
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/jquery.rateit.js';
                 break;
             case 'fileupload':
-                $tpl_vars['js_files'][] = ['path' => 'lib/jquery-file-upload.js'];
-                $tpl_vars['js_files'][] = ['path' => 'js/fileupload.js'];
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/jquery-file-upload.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'js/fileupload.js';
                 break;
             case 'charts':
                 $_SESSION['glpi_js_toload']['charts'][] = 'lib/echarts.js';
@@ -6001,40 +6001,40 @@ JS);
                 $_SESSION['glpi_js_toload']['notifications_ajax'][] = 'js/notifications_ajax.js';
                 break;
             case 'fuzzy':
-                $tpl_vars['js_files'][] = ['path' => 'lib/fuzzy.js'];
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/fuzzy.js';
                 break;
             case 'marketplace':
-                $tpl_vars['js_files'][] = ['path' => 'js/marketplace.js'];
+                $_SESSION['glpi_js_toload'][$name][] = 'js/marketplace.js';
                 break;
             case 'gridstack':
-                $tpl_vars['js_files'][] = ['path' => 'lib/gridstack.js'];
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/gridstack.js';
                 break;
             case 'masonry':
-                $tpl_vars['js_files'][] = ['path' => 'lib/masonry.js'];
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/masonry.js';
                 break;
             case 'sortable':
-                $tpl_vars['js_files'][] = ['path' => 'lib/sortable.js'];
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/sortable.js';
                 break;
             case 'rack':
-                $tpl_vars['js_files'][] = ['path' => 'js/rack.js'];
+                $_SESSION['glpi_js_toload'][$name][] = 'js/rack.js';
                 break;
             case 'leaflet':
-                $tpl_vars['js_files'][] = ['path' => 'lib/leaflet.js'];
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/leaflet.js';
                 break;
             case 'log_filters':
-                $tpl_vars['js_files'][] = ['path' => 'js/log_filters.js'];
+                $_SESSION['glpi_js_toload'][$name][] = 'js/log_filters.js';
                 break;
             case 'photoswipe':
-                $tpl_vars['js_files'][] = ['path' => 'lib/photoswipe.js'];
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/photoswipe.js';
                 break;
             case 'reservations':
-                $tpl_vars['js_files'][] = ['path' => 'js/reservations.js'];
+                $_SESSION['glpi_js_toload'][$name][] = 'js/reservations.js';
                 break;
             case 'cable':
-                $tpl_vars['js_files'][] = ['path' => 'js/cable.js'];
+                $_SESSION['glpi_js_toload'][$name][] = 'js/cable.js';
                 break;
             case 'altcha':
-                $tpl_vars['js_files'][] = ['path' => 'lib/altcha.js'];
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/altcha.js';
                 break;
             default:
                 $found = false;
