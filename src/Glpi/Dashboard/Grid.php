@@ -516,6 +516,36 @@ TWIG, $twig_params);
         $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
     }
 
+    /**
+     * Show an embeded dashboard.
+     * We must check token validity to avoid displaying dashboard to invalid users
+     *
+     * @param array $params contains theses keys:
+     * - dashboard: the dashboard system name
+     * - entities_id: entity to init in session
+     * - is_recursive: do we need to display sub entities
+     * - token: the token to check
+     *
+     * @return void (display)
+     */
+    public function initEmbed(array $params = [])
+    {
+        $defaults = [
+            'dashboard'    => '',
+            'entities_id'  => 0,
+            'is_recursive' => 0,
+            'token'        => '',
+        ];
+        $params = array_merge($defaults, $params);
+
+        if (!self::checkToken($params)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        self::$embed = true;
+        $this->initEmbedSession($params);
+    }
+
 
     /**
      * Show an embeded dashboard.
