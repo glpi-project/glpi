@@ -242,8 +242,6 @@ HTML;
      */
     public function show(bool $mini = false, ?string $token = null)
     {
-        global $GLPI_CACHE;
-
         $rand = mt_rand();
 
         if (!self::$embed && !$this->dashboard->canViewCurrent()) {
@@ -520,7 +518,7 @@ TWIG, $twig_params);
      * Show an embeded dashboard.
      * We must check token validity to avoid displaying dashboard to invalid users
      *
-     * @param array $params contains theses keys:
+     * @param array $params contains those keys:
      * - dashboard: the dashboard system name
      * - entities_id: entity to init in session
      * - is_recursive: do we need to display sub entities
@@ -548,36 +546,17 @@ TWIG, $twig_params);
 
 
     /**
-     * Show an embeded dashboard.
+     * Show an embedded dashboard.
      * We must check token validity to avoid displaying dashboard to invalid users
      *
-     * @param array $params contains theses keys:
-     * - dashboard: the dashboard system name
-     * - entities_id: entity to init in session
-     * - is_recursive: do we need to display sub entities
-     * - token: the token to check
+     * @param array $params must contain "token" key
      *
      * @return void (display)
      */
-    public function embed(array $params = [])
+    public function embed(array $params)
     {
-        $defaults = [
-            'dashboard'    => '',
-            'entities_id'  => 0,
-            'is_recursive' => 0,
-            'token'        => '',
-        ];
-        $params = array_merge($defaults, $params);
-
-        if (!self::checkToken($params)) {
-            throw new AccessDeniedHttpException();
-        }
-
-        self::$embed = true;
-        $this->initEmbedSession($params);
-
-        // show embeded dashboard
-        $this->show(true, $params['token']);
+        // show embedded dashboard
+        $this->show(true, $params['token'] ?? '');
     }
 
     public static function getToken(string $dasboard = "", int $entities_id = 0, int $is_recursive = 0): string
