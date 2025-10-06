@@ -242,6 +242,8 @@ HTML;
      */
     public function show(bool $mini = false, ?string $token = null)
     {
+        global $GLPI_CACHE;
+
         $rand = mt_rand();
 
         if (!self::$embed && !$this->dashboard->canViewCurrent()) {
@@ -515,8 +517,9 @@ TWIG, $twig_params);
     }
 
     /**
-     * Show an embeded dashboard.
-     * We must check token validity to avoid displaying dashboard to invalid users
+     * Init embeded dashboard context.
+     * This checks token validity to avoid displaying dashboard to invalid users
+     * and initialize related session variables.
      *
      * @param array $params contains those keys:
      * - dashboard: the dashboard system name
@@ -555,7 +558,10 @@ TWIG, $twig_params);
      */
     public function embed(array $params)
     {
+        Toolbox::deprecated(version: '11.1.0');
+
         // show embedded dashboard
+        $this->initEmbed($params);
         $this->show(true, $params['token'] ?? '');
     }
 

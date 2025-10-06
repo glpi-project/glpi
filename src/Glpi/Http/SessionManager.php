@@ -131,7 +131,7 @@ class SessionManager
                 )
                 || (
                     \str_starts_with($path, '/ajax/dashboard.php')
-                    && \in_array($request->get('action'), ['get_dashboard_items', 'get_card', 'get_cards', 'get_filter_data'], true)
+                    && \in_array($request->get('action'), ['get_dashboard_items', 'get_card', 'get_cards'], true)
                 )
             )
         ) {

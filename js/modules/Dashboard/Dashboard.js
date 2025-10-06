@@ -1220,23 +1220,21 @@ class GLPIDashboard {
      * Return saved filter from server side database
      */
     getFiltersFromDB() {
-        let filters;
-        const data = {
-            dashboard: this.current_name,
-            action: 'get_filter_data',
-        };
         if (this.embed) {
-            data.embed        = 1;
-            data.token        = this.token;
-            data.entities_id  = this.entities_id;
-            data.is_recursive = this.is_recursive;
+            // Embed dashboards are displayed inside an anonymous context,
+            // there is actually no stored filter data to fetch.
+            return [];
         }
 
+        let filters;
         $.ajax({
             method: 'GET',
             url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
             async: false,
-            data: data,
+            data: {
+                action:    'get_filter_data',
+                dashboard: this.current_name,
+            },
             success: function(response) {
                 filters = response;
             }

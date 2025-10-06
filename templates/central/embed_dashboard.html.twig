@@ -32,6 +32,6 @@
 
 {{ call('Html::zeroSecurityIframedHeader', [grid.getDashboard().title, 'central', 'central']) }}
 
-{% do grid.embed(params) %}
+{% do grid.show(true, token) %}
 
 {{ call('Html::popFooter') }}
