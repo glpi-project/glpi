@@ -35,6 +35,7 @@
 namespace Glpi\Form;
 
 use CommonTreeDropdown;
+use DropdownTranslation;
 use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\Form\ServiceCatalog\ServiceCatalogCompositeInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalogItemInterface;
@@ -93,15 +94,40 @@ final class Category extends CommonTreeDropdown implements ServiceCatalogComposi
     }
 
     #[Override]
+    public function rawSearchOptions(): array
+    {
+        $options = parent::rawSearchOptions();
+        $options[] = [
+            'id'                => '3',
+            'table'             => $this->getTable(),
+            'field'             => 'description',
+            'name'              => __('Description'),
+            'datatype'          => 'text',
+        ];
+
+        return $options;
+    }
+
+    #[Override]
     public function getServiceCatalogItemTitle(): string
     {
-        return $this->fields['name'];
+        return DropdownTranslation::getTranslatedValue(
+            $this->fields['id'],
+            self::class,
+            'name',
+            value: $this->fields['name'],
+        );
     }
 
     #[Override]
     public function getServiceCatalogItemDescription(): string
     {
-        return $this->fields['description'] ?? '';
+        return DropdownTranslation::getTranslatedValue(
+            $this->fields['id'],
+            self::class,
+            'description',
+            value: $this->fields['description'] ?? ''
+        );
     }
 
     #[Override]
