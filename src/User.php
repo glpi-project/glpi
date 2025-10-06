@@ -7024,31 +7024,18 @@ HTML;
      **/
     public function hasRight($module, $right)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
         if ($this->isNewItem()) {
             throw new \LogicException('Cannot check rights for a user not yet saved');
         } else {
-            $iterator = $DB->request([
-                'SELECT' => 'rights',
-                'FROM'   => 'glpi_profilerights',
-                'JOIN'   => [
-                    'glpi_profiles_users' => [
-                        'ON' => [
-                            'glpi_profilerights'    => 'profiles_id',
-                            'glpi_profiles_users'   => 'profiles_id',
-                        ],
-                    ],
-                ],
-                'WHERE'  => [
-                    'glpi_profilerights.name'       => $module,
-                    'glpi_profilerights.rights'     => ['&', $right],
-                    'glpi_profiles_users.users_id'  => $this->getID(),
-                ],
-            ]);
-
-            if (count($iterator) > 0) {
-                return true;
+            $user_id = $this->getID();
+            $profiles = Profile_User::getUserProfiles($user_id);
+            foreach ($profiles as $profile_id) {
+                $profile = new Profile();
+                $profile->getFromDB($profile_id);
+                $profile->cleanProfile();
+                if ($profile->haveUserRight($user_id, $module, $right, 0)) {
+                    return true;
+                }
             }
         }
         return false;
