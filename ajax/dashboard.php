@@ -53,7 +53,7 @@ unset($request_data['data']);
 // to be able to adapt the checks depending on the request.
 $embed = false;
 if (
-    in_array($_REQUEST['action'], ['get_dashboard_items', 'get_card', 'get_cards'])
+    in_array($_REQUEST['action'], ['get_dashboard_items', 'get_card', 'get_cards', 'get_filter_data'])
     && array_key_exists('embed', $request_data)
     && (bool) $request_data['embed']
 ) {
