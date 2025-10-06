@@ -295,7 +295,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
     {
         $template_class = $this->getTarget()->getTemplateClass();
 
-        return [
+        $core_fields = [
             new TitleField(),
             new ContentField(),
             new TemplateField($template_class),
@@ -313,6 +313,12 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
             new AssigneeField(),
             new LinkedITILObjectsField(),
         ];
+
+        // Add plugin config fields specific to this common ITIL destination type
+        $plugin_fields = FormDestinationManager::getInstance()
+            ->getPluginCommonITILConfigFields(static::class);
+
+        return array_merge($core_fields, $plugin_fields);
     }
 
     /**
