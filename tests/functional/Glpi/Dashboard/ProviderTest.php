@@ -35,6 +35,8 @@
 namespace tests\units\Glpi\Dashboard;
 
 use DbTestCase;
+use Glpi\CustomAsset\Test01Asset;
+use Glpi\CustomAsset\Test01AssetType;
 use Glpi\Dashboard\Provider;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Reminder;
@@ -730,6 +732,7 @@ class ProviderTest extends DbTestCase
         return [
             ['item' => new \Computer(), 'fk_item' => new \Entity()],
             ['item' => new \Software(), 'fk_item' => new \Entity()],
+            ['item' => new Test01Asset(), 'fk_item' => new Test01AssetType()],
         ];
     }
 
