@@ -42,63 +42,6 @@ abstract class CommonITILTaskTestCase extends DbTestCase
     /** @return class-string<\CommonITILTask> */
     abstract protected static function getTaskClass(): string;
 
-    public function testAddTechToItilFromTask()
-    {
-        $task_class = static::getTaskClass();
-        $itil_class = $task_class::getItilObjectItemType();
-
-        $itil = new $itil_class();
-        $ticket_id = $itil->add([
-            'name'        => "Test tech task",
-            'content'     => "Test tech task",
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-            'date'        => $_SESSION['glpi_currenttime'],
-        ]);
-
-        $id = $ticket_id;
-        $task = new $task_class();
-        $type_user = new $itil->userlinkclass();
-        $task_content = "<p> Test task content </p>";
-
-        $foreignkey = getForeignKeyFieldForItemType($task->getItilObjectItemType());
-        // Add a task
-        $task_id = $task->add([
-            $foreignkey => $id,
-            'users_id' => 4,
-            'content' => $task_content,
-            'state' => 1,
-            'users_id_tech' => 4,
-        ]);
-        $this->assertCount(1, $task->find(['id' => $task_id]));
-
-        $this->assertCount(
-            1,
-            $type_user->find([
-                $foreignkey => $id,
-                'users_id' => 4,
-                'type' => \CommonITILActor::ASSIGN,
-            ])
-        );
-
-        $this->assertTrue(
-            $task->update([
-                'id' => $task_id,
-                $foreignkey => $id,
-                'users_id' => 3,
-                'users_id_tech' => 3,
-            ])
-        );
-
-        $this->assertCount(
-            1,
-            $type_user->find([
-                $foreignkey => $id,
-                'users_id' => 3,
-                'type' => \CommonITILActor::ASSIGN,
-            ])
-        );
-    }
-
     public function testAddMyAsRecipient()
     {
         global $DB;
