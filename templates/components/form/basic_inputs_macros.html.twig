@@ -248,7 +248,7 @@
         {% endif %}
     {% endif %}
 
-    <div class="btn-group flex-grow-1 flatpickr d-flex" id="{{ options.id }}">
+    <div class="btn-group flex-grow-1 flatpickr d-flex" id="{{ options.id }}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Enter or select a date') }}">
         {{ _self.input(name, value, options|merge({
             'type': 'text',
             'id': options.id ~ '_input',
@@ -259,8 +259,9 @@
 
         {% if not options.readonly %}
             {% set calendar_icon = options.enableTime ? 'ti ti-calendar-time' : 'ti ti-calendar' %}
-            <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle title="{{ __('Show date picker') }}">
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle>
                 <i class="{{ calendar_icon }}"></i>
+                <span class="sr-only">{{ __('Enter or select a date') }}</span>
             </button>
             {# maybeempty has no distinct purpose, but it was here first #}
             {% if options.clearable or options.maybeempty %}
