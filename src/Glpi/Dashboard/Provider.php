@@ -832,7 +832,7 @@ class Provider
         $params = array_merge($default_params, $params);
 
         Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
-        $where = $item->getSystemSQLCriteria();
+        $where = $item->getSystemSQLCriteria($c_table);
 
         if ($item->maybeDeleted()) {
             $where["$c_table.is_deleted"] = 0;
