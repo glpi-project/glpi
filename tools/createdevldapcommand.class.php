@@ -44,7 +44,7 @@ final class CreateDevLdapCommand extends AbstractCommand
         parent::configure();
 
         $this->setName('tools:generate_dev_ldap');
-        $this->setDescription(__('Create a ready to use AuthLDAP object.'));
+        $this->setDescription('Create a ready to use AuthLDAP object.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

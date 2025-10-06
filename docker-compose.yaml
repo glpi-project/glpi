@@ -60,19 +60,22 @@ services:
       PORT_glpi: 3306
       ENGINE_glpi: "mysql@dbgate-plugin-mysql"
 
-  # To create a preconfigured LDAP object in GLPI, run make console c='tools:generate_dev_ldap'
+  # To create a preconfigured LDAP object in GLPI, run `make console c='tools:generate_dev_ldap'`
   openldap:
-    image: osixia/openldap:latest
+    container_name: "glpi-openldap"
+    image: "osixia/openldap:latest"
     restart: "unless-stopped"
     environment:
-      LDAP_ORGANISATION: GLPI
-      LDAP_DOMAIN: glpi.org
-      LDAP_ADMIN_PASSWORD: admin
-    command: --copy-service
+      LDAP_ORGANISATION: "GLPI"
+      LDAP_DOMAIN: "glpi.org"
+      LDAP_ADMIN_USERNAME: "admin"
+      LDAP_ADMIN_PASSWORD: "admin"
+    command: "--copy-service"
     volumes:
       - "./tests/LDAP/ldif/10-users.ldif:/container/service/slapd/assets/config/bootstrap/ldif/50-bootstrap.ldif:rw"
       - "ldap_files:/var/lib/ldap:rw"
       - "ldap_config:/etc/ldap/slapd.d/:rw"
+
 volumes:
   db:
   custom_php_ini:
