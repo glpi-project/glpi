@@ -108,7 +108,11 @@ class Session
     public static function writeClose()
     {
         if ($_SESSION['glpi_use_mode'] !== self::DEBUG_MODE) {
-            session_write_close();
+            try {
+                session_write_close();
+            } catch (SessionException $e) {
+                //empty catch; session may already be closed
+            }
         }
     }
 
