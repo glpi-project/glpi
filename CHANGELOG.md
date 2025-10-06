@@ -107,6 +107,7 @@ The present file will list all changes made to the project; according to the
 - Single item actions (Actions menu in item form) are now filtered by certain attributes of the item. For example, a Computer which has reservations enabled will not show the `Authorize reservations` action.
 - Improved labels in component link dropdown to only include textual information and hide normally hidden data.
 - Component types list is now categorized similar to the dropdown types list.
+- Dashboards can now be reset to the state it would have after a clean install. This is only available for dashboards added by GLPI itself.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
