@@ -1511,9 +1511,13 @@ HTML;
      */
     public static function showItemTypeList($optgroup)
     {
-        $tpl_vars = ['optgroup' => $optgroup];
-        Html::requireJs('masonry', $tpl_vars);
-        echo TemplateRenderer::getInstance()->render('pages/setup/dropdowns_list.html.twig', $tpl_vars);
+        Html::requireJs('masonry');
+        echo TemplateRenderer::getInstance()->render(
+            'pages/setup/dropdowns_list.html.twig',
+            [
+                'optgroup' => $optgroup,
+            ]
+        );
     }
 
 
