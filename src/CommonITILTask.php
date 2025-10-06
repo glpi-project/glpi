@@ -435,6 +435,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
     public function assignTechFromtask(array $input): void
     {
+        Toolbox::deprecated(version: '11.1.0');
+
         //if user or group assigned to CommonITIL task, add it to the main item
         $item = static::getItilObjectItemInstance();
         $itemData = [
@@ -643,9 +645,6 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             );
         }
 
-        // Assign technician to main item  from task
-        self::assignTechFromtask($this->input);
-
         parent::post_updateItem($history);
     }
 
@@ -840,9 +839,6 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             $this->getType(),
             Log::HISTORY_ADD_SUBITEM
         );
-
-        // Assign technician to main item  from task
-        self::assignTechFromtask($this->input);
 
         if ($this->input["_job"]->getType() == 'Ticket') {
             self::addToMergedTickets();
