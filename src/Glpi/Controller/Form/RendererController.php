@@ -98,12 +98,7 @@ final class RendererController extends AbstractController
         $engine = new Engine($form, EngineInput::fromForm($form));
         $visibility_engine_output = $engine->computeVisibility();
 
-        // Insert altcha for public forms
-        if ($is_unauthenticated_user) {
-            Html::requireJs('altcha');
-        }
-
-        return $this->render('pages/form_renderer.html.twig', [
+        $tpl_vars = [
             'title' => $form->fields['name'],
             'menu' => ['helpdesk', ServiceCatalog::getType()],
             'form' => $form,
@@ -111,7 +106,14 @@ final class RendererController extends AbstractController
             'my_tickets_url_param' => http_build_query($my_tickets_criteria),
             'visibility_engine_output' => $visibility_engine_output,
             'params' => $request->query->all(),
-        ]);
+        ];
+
+        // Insert altcha for public forms
+        if ($is_unauthenticated_user) {
+            Html::requireJs('altcha', $tpl_vars);
+        }
+
+        return $this->render('pages/form_renderer.html.twig', $tpl_vars);
     }
 
     private function loadTargetForm(Request $request): Form
