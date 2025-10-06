@@ -516,12 +516,12 @@ TWIG, $twig_params);
         $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
     }
 
-
     /**
-     * Show an embeded dashboard.
-     * We must check token validity to avoid displaying dashboard to invalid users
+     * Init embeded dashboard context.
+     * This checks token validity to avoid displaying dashboard to invalid users
+     * and initialize related session variables.
      *
-     * @param array $params contains theses keys:
+     * @param array $params contains those keys:
      * - dashboard: the dashboard system name
      * - entities_id: entity to init in session
      * - is_recursive: do we need to display sub entities
@@ -529,7 +529,7 @@ TWIG, $twig_params);
      *
      * @return void (display)
      */
-    public function embed(array $params = [])
+    public function initEmbed(array $params = [])
     {
         $defaults = [
             'dashboard'    => '',
@@ -545,9 +545,24 @@ TWIG, $twig_params);
 
         self::$embed = true;
         $this->initEmbedSession($params);
+    }
 
-        // show embeded dashboard
-        $this->show(true, $params['token']);
+
+    /**
+     * Show an embedded dashboard.
+     * We must check token validity to avoid displaying dashboard to invalid users
+     *
+     * @param array $params must contain "token" key
+     *
+     * @return void (display)
+     */
+    public function embed(array $params)
+    {
+        Toolbox::deprecated(version: '11.1.0');
+
+        // show embedded dashboard
+        $this->initEmbed($params);
+        $this->show(true, $params['token'] ?? '');
     }
 
     public static function getToken(string $dasboard = "", int $entities_id = 0, int $is_recursive = 0): string

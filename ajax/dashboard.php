@@ -49,20 +49,19 @@ if (!isset($_REQUEST["action"])) {
 $request_data = array_merge($_REQUEST, json_decode($_REQUEST['data'] ?? '{}', true));
 unset($request_data['data']);
 
-// Session check is disabled for this script (see `\Glpi\Http\Firewall::computeStrategyForCoreLegacyScript()`)
-// to be able to adapt the checks depending on the request.
 $embed = false;
 if (
     in_array($_REQUEST['action'], ['get_dashboard_items', 'get_card', 'get_cards'])
     && array_key_exists('embed', $request_data)
     && (bool) $request_data['embed']
 ) {
+    // Session check is disabled for this script when "embed" mode is used.
+    // Indeed, it is declared as stateless by `\Glpi\Http\SessionManager::isResourceStateless()`,
+    // to prevent using the session cookie for embed dashboards.
     if (Grid::checkToken($request_data) === false) {
         throw new AccessDeniedHttpException();
     }
     $embed = true;
-} else {
-    Session::checkLoginUser();
 }
 
 $dashboard = new Dashboard($_REQUEST['dashboard'] ?? "");
@@ -165,6 +164,9 @@ switch ($_GET['action'] ?? null) {
 
 Profiler::getInstance()->start('Grid::construct');
 $grid = new Grid($_REQUEST['dashboard'] ?? "");
+if ($embed) {
+    $grid->initEmbedSession($_REQUEST);
+}
 Profiler::getInstance()->stop('Grid::construct');
 
 header("Content-Type: text/html; charset=UTF-8");
@@ -210,9 +212,6 @@ switch ($_REQUEST['action']) {
 
         Session::writeClose();
         Profiler::getInstance()->start('Get card HTML');
-        if ($embed) {
-            $grid->initEmbedSession($_REQUEST);
-        }
         echo $grid->getCardHtml($_REQUEST['card_id'], $_REQUEST);
         Profiler::getInstance()->stop('Get card HTML');
         break;

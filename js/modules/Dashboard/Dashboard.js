@@ -1220,6 +1220,12 @@ class GLPIDashboard {
      * Return saved filter from server side database
      */
     getFiltersFromDB() {
+        if (this.embed) {
+            // Embed dashboards are displayed inside an anonymous context,
+            // there is actually no stored filter data to fetch.
+            return [];
+        }
+
         let filters;
         $.ajax({
             method: 'GET',
