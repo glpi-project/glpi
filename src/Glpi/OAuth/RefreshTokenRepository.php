@@ -73,7 +73,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
         global $DB;
 
         $iterator = $DB->request([
-            'SELECT' => 'id',
+            'SELECT' => 'identifier',
             'FROM' => 'glpi_oauth_refresh_tokens',
             'WHERE' => [
                 'identifier' => $tokenId,
