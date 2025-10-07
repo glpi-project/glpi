@@ -46,7 +46,7 @@ class InternalAuthMiddleware extends AbstractMiddleware implements AuthMiddlewar
 {
     public function process(MiddlewareInput $input, callable $next): void
     {
-        if (Session::getLoginUserID()) {
+        if (Session::getLoginUserID(false)) {
             $input->client = [
                 'client_id' => 'internal', // Internal just means the user was authenticated internally either by cookie or an already existing session.
                 'users_id'  => Session::getLoginUserID(),
