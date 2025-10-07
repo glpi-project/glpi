@@ -120,6 +120,7 @@
                                                 name="name"
                                                 value="{{ item.fields.name }}"
                                                 data-glpi-form-editor-form-details-name
+                                                maxlength="255"
                                             >
 
                                             {# Form's status #}
@@ -136,7 +137,7 @@
                                             </label>
                                         </div>
 
-                                        {# Form's hader #}
+                                        {# Form's header #}
                                         <div class="content-editable-tinymce" data-glpi-form-editor-header-description>
                                             {{ fields.textareaField(
                                                 'header',
