@@ -444,7 +444,7 @@ abstract class AbstractPluginMigration
                             $itemtype::getTypeName(1),
                             $related_item_data[$itemtype::getNameField()] ?? NOT_AVAILABLE,
                         ),
-                        'Copy operation failed.'
+                        sprintf('Copy operation failed for itemtype `%s`.', $itemtype)
                     );
                 }
             }
