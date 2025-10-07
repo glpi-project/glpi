@@ -57,7 +57,7 @@ final class QuestionActorsDropdownController extends AbstractController
         name: "glpi_form_question_actors_dropdown_value",
         methods: "POST"
     )]
-    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
+    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
     public function __invoke(Request $request): Response
     {
         $this->checkFormAccessPolicies($request);
@@ -66,9 +66,16 @@ final class QuestionActorsDropdownController extends AbstractController
             'allowed_types'    => $request->request->all('allowed_types'),
             'right_for_users'  => $request->request->getString('right_for_users', 'all'),
             'group_conditions' => $request->request->all('group_conditions'),
+            'page'             => $request->request->getInt('page', 1),
+            'page_size'        => $request->request->getInt('page_limit', -1),
         ];
 
-        return new JsonResponse(FormActorsDropdown::fetchValues('', $options));
+        return new JsonResponse(
+            FormActorsDropdown::fetchValues(
+                $request->request->getString('searchText'),
+                $options
+            )
+        );
     }
 
     private function loadTargetForm(Request $request): Form
