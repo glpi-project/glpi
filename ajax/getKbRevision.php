@@ -46,11 +46,10 @@ Html::header_nocache();
 
 Session::checkCentralAccess();
 
-if (!isset($_POST['revid'])) {
+$revid = $_POST['revid'] ?? $_GET['revid'] ?? null;
+if (empty($revid)) {
     throw new RuntimeException('Required argument missing!');
 }
-
-$revid = $_POST['revid'];
 
 $revision = new KnowbaseItem_Revision();
 $revision->getFromDB($revid);
