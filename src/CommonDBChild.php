@@ -440,6 +440,11 @@ abstract class CommonDBChild extends CommonDBConnexity
             static::$mustBeAttached
             && !$this->getItemFromArray(static::$itemtype, static::$items_id, $input)
         ) {
+            Session::addMessageAfterRedirect(
+                __s('Invalid parent item.'),
+                false,
+                ERROR
+            );
             return false;
         }
 
