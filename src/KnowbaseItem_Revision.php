@@ -195,7 +195,7 @@ class KnowbaseItem_Revision extends CommonDBTM
                    class="show_rev">
                     ' . $show_msg . '
                 </a>
-                - <a href="' . htmlescape("{$form}&to_rev={$revision['id']}") . ' class="restore_rev">
+                - <a href="' . htmlescape("{$form}&to_rev={$revision['id']}") . '" class="restore_rev">
                     ' . $restore_msg . '
                 </a>
             ';
