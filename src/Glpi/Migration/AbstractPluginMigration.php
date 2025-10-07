@@ -418,6 +418,8 @@ abstract class AbstractPluginMigration
             ]);
 
             foreach ($iterator as $related_item_data) {
+                $origin_id = $related_item_data[$itemtype::getIndexName()] ?? '?';
+
                 unset($related_item_data[$itemtype::getIndexName()]);
 
                 foreach ($replacements as $replacement) {
@@ -444,7 +446,7 @@ abstract class AbstractPluginMigration
                             $itemtype::getTypeName(1),
                             $related_item_data[$itemtype::getNameField()] ?? NOT_AVAILABLE,
                         ),
-                        'Copy operation failed.'
+                        sprintf('Copy operation failed for itemtype `%s` (%s).', $itemtype, $origin_id)
                     );
                 }
             }
