@@ -203,7 +203,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                         if ($item instanceof CommonITILObject) {
                             $user = new User();
                             $user->getFromDBbyEmail($current->fields['recipient']);
-                            $doc_crit = $item->getAssociatedDocumentsCriteria(true, $user);
+                            $doc_crit = $item->getAssociatedDocumentsCriteria(false, $user);
                             if ($is_html) {
                                 // Remove documents having "NO_TIMELINE" position if mail is HTML, as
                                 // these documents corresponds to inlined images.
