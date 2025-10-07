@@ -8,6 +8,7 @@ The present file will list all changes made to the project; according to the
 ### Added
 
 ### Changed
+- It is again possible to "Merge as Followup" into resolved/closed tickets.
 
 ### Deprecated
 
