@@ -3195,6 +3195,59 @@ final class FormMigrationTest extends DbTestCase
         $this->assertFalse($category->getFromDBByCrit(['name' => 'Category NOT to be imported']));
     }
 
+    public static function pluginHintsProvider(): iterable
+    {
+        yield [
+            'type' => 'hidden',
+            'expected_message' => 'The "hidden" question type is available in the "advancedforms" plugin: https://plugins.glpi-project.org/#/plugin/advancedforms',
+        ];
+        yield [
+            'type' => 'ip',
+            'expected_message' => 'The "ip" question type is available in the "advancedforms" plugin: https://plugins.glpi-project.org/#/plugin/advancedforms',
+        ];
+        yield [
+            'type' => 'hostname',
+            'expected_message' => 'The "hostname" question type is available in the "advancedforms" plugin: https://plugins.glpi-project.org/#/plugin/advancedforms',
+        ];
+        yield [
+            'type' => 'ldapselect',
+            'expected_message' => 'The "ldapselect" question type is available in the "advancedforms" plugin: https://plugins.glpi-project.org/#/plugin/advancedforms',
+        ];
+        yield [
+            'type' => 'tag',
+            'expected_message' => 'The "tag" question type is available in the "tag" plugin: https://plugins.glpi-project.org/#/plugin/tag',
+        ];
+    }
+
+    #[DataProvider('pluginHintsProvider')]
+    public function testPluginHints(
+        string $type,
+        string $expected_message,
+    ): void {
+        global $DB;
+
+        $this->createSimpleFormcreatorForm("My form", [
+            ['name' => 'my question', 'fieldtype' => $type],
+        ]);
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $result = $migration->execute();
+
+        // Assert: make sure an info message was added to indicate the question
+        // type is avaiable with a plugin
+        $this->assertTrue($result->isFullyProcessed());
+        $notices = array_filter(
+            $result->getMessages(),
+            fn($m) => $m['type'] == MessageType::Notice
+        );
+        $notices = array_column($notices, "message");
+        $this->assertContains(
+            $expected_message,
+            $notices,
+        );
+    }
+
     public function testPluginIntegration(): void
     {
         /** @var \DBmysql $DB */
@@ -3231,5 +3284,31 @@ final class FormMigrationTest extends DbTestCase
             QuestionTypeShortText::class,
             $ip_question->getQuestionType()
         );
+    }
+
+    protected function createSimpleFormcreatorForm(
+        string $name,
+        array $questions,
+    ): void {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Add form
+        $DB->insert('glpi_plugin_formcreator_forms', [
+            'name' => $name,
+        ]);
+        $form_id = $DB->insertId();
+
+        // Add a section
+        $DB->insert('glpi_plugin_formcreator_sections', [
+            'plugin_formcreator_forms_id' => $form_id,
+        ]);
+        $section_id = $DB->insertId();
+
+        // Add questions
+        foreach ($questions as $data) {
+            $data['plugin_formcreator_sections_id'] = $section_id;
+            $DB->insert('glpi_plugin_formcreator_questions', $data);
+        }
     }
 }
