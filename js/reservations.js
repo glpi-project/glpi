@@ -237,7 +237,7 @@ var Reservations = function() {
                             begin:  info.start.toISOString(),
                             end:    info.end.toISOString(),
                         },
-                        dialogclass: 'modal-lg',
+                        dialogclass: 'modal-xl',
                     });
                 }
 
@@ -258,7 +258,7 @@ var Reservations = function() {
                 glpi_ajax_dialog({
                     title: __("Edit reservation"),
                     url: `${ajaxurl}`,
-                    dialogclass: 'modal-lg',
+                    dialogclass: 'modal-xl',
                 });
             }
         });

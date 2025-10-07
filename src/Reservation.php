@@ -817,7 +817,7 @@ class Reservation extends CommonDBChild
                 $item = null;
 
                 if ($item = getItemForItemtype($r->fields["itemtype"])) {
-                    $type = $item::class;
+                    $type = $item::getTypeName(1);
 
                     if ($item->getFromDB($r->fields["items_id"])) {
                         $name = $item->getName();
