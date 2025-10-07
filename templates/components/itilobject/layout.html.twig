@@ -116,6 +116,31 @@
    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
 </form>
 
+{% if is_helpdesk and helpdesk_satisfaction is defined and helpdesk_satisfaction|trim is not empty %}
+   {% set satisfaction_panel_id = 'helpdesk-satisfaction-' ~ rand %}
+   <button
+      class="btn btn-primary position-fixed bottom-0 end-0 mb-3 me-3 z-3 helpdesk-satisfaction-trigger"
+      type="button"
+      data-bs-toggle="offcanvas"
+      data-bs-target="#{{ satisfaction_panel_id }}"
+      aria-controls="{{ satisfaction_panel_id }}"
+      title="{{ __('Satisfaction survey') }}"
+   >
+      <i class="ti ti-star me-1"></i>
+      <span class="d-none d-sm-inline">{{ __('Satisfaction survey') }}</span>
+   </button>
+
+   <div class="offcanvas offcanvas-end helpdesk-satisfaction-panel" tabindex="-1" id="{{ satisfaction_panel_id }}" aria-labelledby="{{ satisfaction_panel_id }}-label" data-bs-scroll="true">
+      <div class="offcanvas-header">
+         <h5 class="offcanvas-title" id="{{ satisfaction_panel_id }}-label">{{ __('Satisfaction survey') }}</h5>
+         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="{{ __('Close') }}"></button>
+      </div>
+      <div class="offcanvas-body overflow-auto">
+         {{ helpdesk_satisfaction|raw }}
+      </div>
+   </div>
+{% endif %}
+
 <script type="text/javascript">
 $(function() {
    $(document).on("click", ".switch-panel-width", function() {

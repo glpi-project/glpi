@@ -3794,6 +3794,7 @@ JAVASCRIPT;
                 'show_tickets_properties_on_helpdesk',
                 Session::getActiveEntity(),
             ),
+            'helpdesk_satisfaction'     => $this->getHelpdeskSatisfactionHtml(),
         ]);
 
         return true;

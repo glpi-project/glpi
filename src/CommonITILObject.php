@@ -671,6 +671,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'canassign'               => $canupdate,
             'can_requester'           => $this->canRequesterUpdateItem(),
             'has_pending_reason'      => PendingReason_Item::getForItem($this) !== false,
+            'helpdesk_satisfaction'   => $this->getHelpdeskSatisfactionHtml(),
         ]);
 
         return true;
@@ -10706,6 +10707,37 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         } else {
             echo "<p class='center b'>" . __s('No generated survey') . "</p>";
         }
+    }
+
+    /**
+     * Render the satisfaction form for helpdesk interface when available.
+     */
+    protected function getHelpdeskSatisfactionHtml(): string
+    {
+        if (Session::getCurrentInterface() !== 'helpdesk') {
+            return '';
+        }
+
+        if ($this->isNewItem()) {
+            return '';
+        }
+
+        if (!in_array($this->fields['status'], static::getClosedStatusArray(), true)) {
+            return '';
+        }
+
+        $satisfaction = static::getSatisfactionClassInstance();
+        if ($satisfaction === null) {
+            return '';
+        }
+
+        if (!$satisfaction->getFromDB($this->getID())) {
+            return '';
+        }
+
+        ob_start();
+        $satisfaction->showSatisactionForm($this);
+        return trim((string) ob_get_clean());
     }
 
     /**

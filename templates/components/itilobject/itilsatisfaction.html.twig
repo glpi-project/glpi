@@ -33,15 +33,19 @@
 {% import "components/alerts_macros.html.twig" as alerts %}
 {% import "components/form/fields_macros.html.twig" as fields %}
 
+{% set is_helpdesk = (get_current_interface() == 'helpdesk') %}
+{% set field_orientation_opts = {
+    'full_width': true,
+    'is_horizontal': not is_helpdesk
+} %}
+
 {% block more_fields %}
     {% if url is defined %}
         {{ fields.htmlField(
             '',
             '<a href="' ~ url|escape ~ '">' ~ url|escape ~ '</a>',
             __('External survey'),
-            {
-                full_width: true
-            }
+            field_orientation_opts
         ) }}
 
     {% else %}
@@ -56,9 +60,7 @@
                 '',
                 '',
                 __('No response given'),
-                {
-                    full_width: true
-                }
+                field_orientation_opts
             ) }}
         {% else %}
             {{ fields.hiddenField(
@@ -83,20 +85,18 @@
                 'satisfaction',
                 select_dom,
                 __('Satisfaction with the resolution of the %s')|format(parent_item.getTypeName(1)),
-                {
-                    'full_width': true,
-                    'input_class': 'col-xxl-7 text-start',
-                }
+                field_orientation_opts|merge({
+                    'input_class': is_helpdesk ? '' : 'col-xxl-7 text-start'
+                })
             ) }}
 
             {{ fields.textareaField(
                 'comment',
                 item.fields['comment'],
                 _n('Comment', 'Comments', get_plural_number()),
-                {
-                    'full_width': true,
+                field_orientation_opts|merge({
                     'readonly': expired,
-                }
+                })
             ) }}
 
             {% if item.fields['date_answered'] > 0 %}
@@ -105,10 +105,9 @@
                     'date_answered',
                     item.fields['date_answered'],
                     __('Response date to the satisfaction survey.'),
-                    {
-                        'full_width': true,
+                    field_orientation_opts|merge({
                         'readonly' : true
-                    }
+                    })
                 ) }}
 
             {% endif %}
