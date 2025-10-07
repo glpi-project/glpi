@@ -2703,12 +2703,7 @@ class Ticket extends CommonITILObject
                     'name'         => "_mergeticket",
                     'used'         => $ma->getItems()['Ticket'],
                     'displaywith'  => ['id'],
-                    'rand'         => $rand,
-                    'condition'    => [
-                        'NOT' => [
-                            'status' => array_merge(self::getSolvedStatusArray(), self::getClosedStatusArray()),
-                        ],
-                    ],
+                    'rand'         => $rand
                 ];
                 echo "<table class='mx-auto'><tr>";
                 echo "<td><label for='dropdown__mergeticket$rand'>" . Ticket::getTypeName(1) . "</label></td><td colspan='3'>";
