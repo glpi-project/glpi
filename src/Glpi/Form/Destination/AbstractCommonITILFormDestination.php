@@ -35,6 +35,7 @@
 namespace Glpi\Form\Destination;
 
 use CommonITILObject;
+use DBmysql;
 use Exception;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\PrepareForCloneInterface;
@@ -406,10 +407,11 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
 
     private function applyPredefinedTemplateFields(array $input): array
     {
-        $itemtype = $this->getTarget();
+        /** @var DBmysql $DB */
+        global $DB;
 
-        /** @var CommonITILObject $itil */
-        $itil = new $itemtype();
+        $itil = $this->getTarget();
+        $fields_definition = $DB->listFields($itil::getTable());
         $template = $itil->getITILTemplateToUse(
             entities_id: $input['entities_id'],
             itilcategories_id: $input['itilcategories_id'] ?? 0,
@@ -428,10 +430,32 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
             $input[$template_foreign_key] = $template->getID();
         }
 
-        $predefined_fields = $itemtype->getTemplateClass()::getPredefinedFields();
+        $predefined_fields = $itil->getTemplateClass()::getPredefinedFields();
+
         $fields = $predefined_fields->getPredefinedFields($template->fields['id']);
         foreach ($fields as $field => $value) {
-            $input[$field] = $value;
+            $field_definition = $fields_definition[$field] ?? null;
+            if (
+                $field_definition
+                && $value === "NOW"
+                && (
+                    $field_definition['Type'] == "timestamp"
+                    || $field_definition['Type'] == "date"
+                    || $field_definition['Type'] == "datetime"
+                )
+            ) {
+                // Handle specific "NOW" value
+                // Note: this should probably be handled directly by
+                // getPredefinedFields, but the change should not be done in a
+                // bugfixe releases as it might impact other features
+                if ($field_definition['Type'] == "date") {
+                    $input[$field] = Session::getCurrentDate();
+                } else {
+                    $input[$field] = Session::getCurrentTime();
+                }
+            } else {
+                $input[$field] = $value;
+            }
         }
 
         return $input;
