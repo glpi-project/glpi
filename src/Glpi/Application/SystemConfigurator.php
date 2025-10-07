@@ -274,6 +274,11 @@ final class SystemConfigurator
 
     private function setSessionConfiguration(): void
     {
+        if (PHP_SAPI === 'cli') {
+            // Adapting session cookie params is useless in CLI mode.
+            return;
+        }
+
         // Set secure cookie config
         $target_configs = [
             'session.use_trans_sid'     => false,
