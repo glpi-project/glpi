@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Form\AnswersHandler;
 
 use CommonITILObject;
 use DbTestCase;
+use Entity;
 use Glpi\Form\Answer;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Condition\CreationStrategy;
@@ -50,12 +51,17 @@ use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
+use Glpi\Form\QuestionType\QuestionTypeItem;
+use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
+use Glpi\Form\QuestionType\QuestionTypeItemDropdownExtraDataConfig;
+use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\ValidationResult;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Location;
 use PHPUnit\Framework\Attributes\DataProvider;
 use User;
 
@@ -231,6 +237,78 @@ class AnswersHandlerTest extends DbTestCase
             'expectedErrors' => [
                 'Mandatory Name' => 'This field is mandatory',
             ],
+        ];
+
+        $mandatory_entity_question_form_buidler = (new FormBuilder("Mandatory Item Question Type Test Form"))
+            ->addQuestion(
+                "Mandatory Entity Question",
+                QuestionTypeItem::class,
+                extra_data: json_encode(
+                    new QuestionTypeItemExtraDataConfig(itemtype: Entity::class)
+                ),
+                is_mandatory: true
+            );
+
+        yield 'Empty entity question - should be invalid with empty choice selected' => [
+            'builder' => $mandatory_entity_question_form_buidler,
+            'answers' => [
+                'Mandatory Entity Question' => [
+                    'itemtype' => Entity::class,
+                    'items_id' => -1, // Empty choice
+                ],
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Mandatory Entity Question' => 'This field is mandatory',
+            ],
+        ];
+
+        yield 'Filled entity question - should be valid' => [
+            'builder' => $mandatory_entity_question_form_buidler,
+            'answers' => [
+                'Mandatory Entity Question' => [
+                    'itemtype' => Entity::class,
+                    'items_id' => 0, // Root entity
+                ],
+            ],
+            'expectedIsValid' => true,
+            'expectedErrors' => [],
+        ];
+
+        $mandatory_location_question_form_builder = (new FormBuilder("Mandatory Dropdown Item Question Type Test Form"))
+            ->addQuestion(
+                "Mandatory Location Question",
+                QuestionTypeItemDropdown::class,
+                extra_data: json_encode(
+                    new QuestionTypeItemDropdownExtraDataConfig(itemtype: Location::class)
+                ),
+                is_mandatory: true
+            );
+
+        yield 'Empty location dropdown question - should be invalid with empty choice selected' => [
+            'builder' => $mandatory_location_question_form_builder,
+            'answers' => [
+                'Mandatory Location Question' => [
+                    'itemtype' => Location::class,
+                    'items_id' => -1, // Empty choice
+                ],
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Mandatory Location Question' => 'This field is mandatory',
+            ],
+        ];
+
+        yield 'Filled location dropdown question - should be valid' => [
+            'builder' => $mandatory_location_question_form_builder,
+            'answers' => [
+                'Mandatory Location Question' => [
+                    'itemtype' => Location::class,
+                    'items_id' => 1,
+                ],
+            ],
+            'expectedIsValid' => true,
+            'expectedErrors' => [],
         ];
 
         // Conditonnal validation form builder
