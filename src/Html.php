@@ -3745,7 +3745,7 @@ JS;
 
                 if ({$init_on_demand}) {
                     const textarea = $('#{$id}');
-                    const div = $(`<div role="textbox" tabindex="0" class="text-muted" data-glpi-tinymce-init-on-demand-render="{$id}">\${textarea.val() || textarea.attr('placeholder') || ''}</div>`);
+                    const div = $(`<div role="textbox" tabindex="0" class="text-muted text-break" data-glpi-tinymce-init-on-demand-render="{$id}">\${textarea.val() || textarea.attr('placeholder') || ''}</div>`);
                     textarea.after(div).hide();
                 }
             });
