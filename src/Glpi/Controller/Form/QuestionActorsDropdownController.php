@@ -66,8 +66,8 @@ final class QuestionActorsDropdownController extends AbstractController
             'allowed_types'    => $request->request->all('allowed_types'),
             'right_for_users'  => $request->request->getString('right_for_users', 'all'),
             'group_conditions' => $request->request->all('group_conditions'),
-            'page'             => $request->request->getInt('page'),
-            'page_size'        => $request->request->getInt('page_limit'),
+            'page'             => $request->request->getInt('page', 1),
+            'page_size'        => $request->request->getInt('page_limit', -1),
         ];
 
         return new JsonResponse(
