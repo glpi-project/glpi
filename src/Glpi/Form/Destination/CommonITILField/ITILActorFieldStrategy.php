@@ -125,7 +125,11 @@ enum ITILActorFieldStrategy: string
         }
 
         $delegation = $answers_set->getDelegation();
-        if (Ticket::canDelegateeCreateTicket($delegation->users_id ?? $user_id)) {
+
+        if (
+            $delegation->users_id !== null
+            && Ticket::canDelegateeCreateTicket($delegation->users_id)
+        ) {
             return [
                 [
                     'itemtype' => User::class,

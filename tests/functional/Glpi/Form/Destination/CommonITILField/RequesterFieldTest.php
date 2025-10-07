@@ -129,7 +129,14 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             form: $form,
             config: $form_filler_config,
             answers: [],
-            expected_actors: [['items_id' => $auth->getUser()->getID()]]
+            expected_actors: [
+                [
+                    'items_id' => $auth->getUser()->getID(),
+                    'itemtype' => User::class,
+                    // Make sure notifications are enabled
+                    'use_notification' => 1,
+                ],
+            ]
         );
     }
 
