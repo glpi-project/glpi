@@ -35,6 +35,8 @@
 namespace tests\units\Glpi\Migration;
 
 use Computer;
+use Contract;
+use Contract_Item;
 use DBmysql;
 use DbTestCase;
 use DropdownTranslation;
@@ -758,6 +760,8 @@ class AbstractPluginMigrationTest extends DbTestCase
 
     public function testCopyPolymorphicConnexityItems(): void
     {
+        global $DB;
+
         // Arrange
         $definition = $this->initAssetDefinition(
             'MyCustomAsset',
@@ -766,86 +770,74 @@ class AbstractPluginMigrationTest extends DbTestCase
             ]
         );
 
-        $db = $this->createMock(DBmysql::class);
-        $db->method('request')->willReturnCallback(function ($criteria) {
-            if (($criteria['FROM'] ?? null) === 'information_schema.columns') {
-                return new \ArrayIterator([
-                    [
-                        'TABLE_NAME'  => 'glpi_infocoms',
-                        'COLUMN_NAME' => 'items_id',
-                    ],
-                    [
-                        'TABLE_NAME'  => 'glpi_contracts_items',
-                        'COLUMN_NAME' => 'items_id',
-                    ],
-                ]);
-            }
+        $computer_1_id = \getItemByTypeName(Computer::class, '_test_pc01', true);
+        $computer_2_id = \getItemByTypeName(Computer::class, '_test_pc02', true);
 
-            if (($criteria['OFFSET'] ?? 0) > 0) {
-                return new \ArrayIterator([]);
-            }
+        $this->createItems(
+            Infocom::class,
+            [
+                [
+                    'itemtype'          => Computer::class,
+                    'items_id'          => $computer_1_id,
+                    'warranty_date'     => '2024-12-04',
+                    'warranty_duration' => 3,
+                ],
+                [
+                    'itemtype'          => Computer::class,
+                    'items_id'          => $computer_2_id,
+                    'warranty_date'     => '2025-01-17',
+                    'warranty_duration' => 12,
+                ],
+            ]
+        );
+        $contract_1 = $this->createItem(
+            Contract::class,
+            [
+                'name'          => 'Contract 1',
+                'entities_id'   => 0,
+            ],
+        );
+        $contract_2 = $this->createItem(
+            Contract::class,
+            [
+                'name'          => 'Contract 2',
+                'entities_id'   => 0,
+            ],
+        );
+        $contract_3 = $this->createItem(
+            Contract::class,
+            [
+                'name'          => 'Contract 3',
+                'entities_id'   => 0,
+            ],
+        );
+        $this->createItems(
+            Contract_Item::class,
+            [
+                [
+                    'itemtype'     => Computer::class,
+                    'items_id'     => $computer_1_id,
+                    'contracts_id' => $contract_1->getID(),
+                ],
+                [
+                    'itemtype'     => Computer::class,
+                    'items_id'     => $computer_1_id,
+                    'contracts_id' => $contract_2->getID(),
+                ],
+                [
+                    'itemtype'     => Computer::class,
+                    'items_id'     => $computer_1_id,
+                    'contracts_id' => 999999999, // orphaned relation, should not be imported
+                ],
+                [
+                    'itemtype'     => Computer::class,
+                    'items_id'     => $computer_2_id,
+                    'contracts_id' => $contract_3->getID(),
+                ],
+            ]
+        );
 
-            $computer_1_id = \getItemByTypeName(Computer::class, '_test_pc01', true);
-            $computer_2_id = \getItemByTypeName(Computer::class, '_test_pc02', true);
-
-            if (($criteria['FROM'] ?? null) === 'glpi_infocoms') {
-                if ($criteria['WHERE']['items_id'] === $computer_1_id) {
-                    return new \ArrayIterator([
-                        [
-                            'itemtype'          => Computer::class,
-                            'items_id'          => $computer_1_id,
-                            'warranty_date'     => '2024-12-04',
-                            'warranty_duration' => 3,
-                        ],
-                    ]);
-                } else {
-                    return new \ArrayIterator([
-                        [
-                            'itemtype'          => Computer::class,
-                            'items_id'          => $computer_2_id,
-                            'warranty_date'     => '2025-01-17',
-                            'warranty_duration' => 12,
-                        ],
-                    ]);
-                }
-            }
-
-            if (($criteria['FROM'] ?? null) === 'glpi_contracts_items') {
-                if ($criteria['WHERE']['items_id'] === $computer_1_id) {
-                    return new \ArrayIterator([
-                        [
-                            'itemtype'     => Computer::class,
-                            'items_id'     => $computer_1_id,
-                            'contracts_id' => 3,
-                        ],
-                        [
-                            'itemtype'     => Computer::class,
-                            'items_id'     => $computer_1_id,
-                            'contracts_id' => 9,
-                        ],
-                    ]);
-                } else {
-                    return new \ArrayIterator([
-                        [
-                            'itemtype'     => Computer::class,
-                            'items_id'     => $computer_2_id,
-                            'contracts_id' => 5,
-                        ],
-                    ]);
-                }
-            }
-
-            return new \ArrayIterator([]);
-        });
-        $db->method('fieldExists')->willReturnCallback(function ($table, $field) {
-            return match ($table . '.' . $field) {
-                'glpi_infocoms.itemtype' => true,
-                'glpi_contracts_items.itemtype' => true,
-                default => false,
-            };
-        });
-
-        $instance = new class ($db) extends AbstractPluginMigration {
+        $instance = new class ($DB) extends AbstractPluginMigration {
             protected function validatePrerequisites(): bool
             {
                 return true;
@@ -892,7 +884,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         // Act
         global $PHPLOGGER;
         $instance->setLogger($PHPLOGGER);
-        $result = $instance->execute(simulate: true);
+        $result = $instance->execute();
 
         // Assert
         $my_asset_1 = \getItemByTypeName($definition->getAssetClassName(), 'Test asset 1');
@@ -951,7 +943,7 @@ class AbstractPluginMigrationTest extends DbTestCase
                 return $entry;
             },
             \getAllDataFromTable(
-                \Contract_Item::getTable(),
+                Contract_Item::getTable(),
                 ['itemtype' => $definition->getAssetClassName()]
             )
         );
@@ -961,17 +953,17 @@ class AbstractPluginMigrationTest extends DbTestCase
                 [
                     'itemtype'     => $my_asset_1::class,
                     'items_id'     => $my_asset_1->getID(),
-                    'contracts_id' => 3,
+                    'contracts_id' => $contract_1->getID(),
                 ],
                 [
                     'itemtype'     => $my_asset_1::class,
                     'items_id'     => $my_asset_1->getID(),
-                    'contracts_id' => 9,
+                    'contracts_id' => $contract_2->getID(),
                 ],
                 [
                     'itemtype'     => $my_asset_2::class,
                     'items_id'     => $my_asset_2->getID(),
-                    'contracts_id' => 5,
+                    'contracts_id' => $contract_3->getID(),
                 ],
             ],
             \array_values($copied_contract_relations)
