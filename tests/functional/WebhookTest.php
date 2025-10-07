@@ -36,6 +36,7 @@ namespace tests\units;
 
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Search\SearchOption;
+use Psr\Log\LogLevel;
 
 class WebhookTest extends \DbTestCase
 {
@@ -309,5 +310,54 @@ JSON;
                 $this->assertNotEmpty($suggestions, "Missing suggestions for $itemtype");
             }
         }
+    }
+
+    public function testWebhookNotBlocker(): void
+    {
+        global $DB;
+
+        $this->createItem(\Webhook::class, [
+            'name' => 'Test webhook',
+            'entities_id' => $_SESSION['glpiactive_entity'],
+            'url' => 'http://localhost',
+            'itemtype' => \Agent::class,
+            'event' => 'new',
+            'is_active' => 1,
+            'use_default_payload' => 1,
+        ]);
+
+        $orig_db = clone $DB;
+        $DB = $this->getMockBuilder(\DB::class)
+            ->onlyMethods(['tableExists'])
+            ->getMock();
+        $DB->beginTransaction();
+        $DB->method('tableExists')->willReturnCallback(function ($table) {
+            if ($table === 'glpi_webhooks') {
+                throw new \Exception("Simulated failure");
+            }
+            return true;
+        });
+
+        $agent = $this->createItem(
+            \Agent::class,
+            [
+                'deviceid' => 'any',
+                'agenttypes_id' => 0,
+                'itemtype' => '',
+                'items_id' => 0,
+            ]
+        );
+
+        $DB = $orig_db;
+        $this->hasPhpLogRecordThatContains('Caught Exception: Simulated failure', LogLevel::ERROR);
+        $this->hasSessionMessages(
+            ERROR,
+            [
+                sprintf(
+                    'An error occurred raising &quot;New&quot; webhook for item Agent (ID %1$s)',
+                    $agent->getID()
+                ),
+            ]
+        );
     }
 }
