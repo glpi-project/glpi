@@ -55,6 +55,15 @@ class RequestTest extends TestCase
         parent::setUp();
     }
 
+    public static function tearDownAfterClass(): void
+    {
+        // Re-enable HLAPI as it is disabled in some tests
+        Config::setConfigurationValues('core', [
+            'enable_hlapi' => true,
+        ]);
+        parent::tearDownAfterClass();
+    }
+
     /**
      * Check a XML response
      *
