@@ -39,6 +39,7 @@ use Exception;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Form\Answer;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Condition\ConditionValueTransformerInterface;
 use Glpi\Form\Condition\Engine;
 use Glpi\Form\Condition\EngineInput;
 use Glpi\Form\Condition\ValidationStrategy;
@@ -110,12 +111,14 @@ final class AnswersHandler
         );
 
         foreach ($mandatory_questions as $question) {
+            $answer = $answers[$question->getID()] ?? null;
+            $question_type = $question->getQuestionType();
+            if ($question_type instanceof ConditionValueTransformerInterface) {
+                $answer = $question_type->transformConditionValueForComparisons($answer, $question->getExtraDataConfig());
+            }
+
             // Check if the question is not answered (empty or not set)
-            if (
-                empty($answers[$question->getID()])
-                || (is_string($answers[$question->getID()]) && empty(strip_tags($answers[$question->getID()])))
-                || (isset($answers[$question->getID()]['items_id']) && empty($answers[$question->getID()]['items_id']))
-            ) {
+            if (empty($answer) || (is_string($answer) && empty(strip_tags($answer)))) {
                 $message = __('This field is mandatory');
                 $type = $question->getQuestionType();
                 if ($type instanceof CustomMandatoryMessageInterface) {
