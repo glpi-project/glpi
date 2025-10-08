@@ -1139,7 +1139,7 @@ export class GlpiFormEditorController
                 let parent_item;
                 if (type === "section") {
                     parent_item = $(element).closest(
-                        '[data-glpi-form-editor-block]'
+                        '[data-glpi-form-editor-section]'
                     );
                 } else {
                     parent_item = $(element).closest(
