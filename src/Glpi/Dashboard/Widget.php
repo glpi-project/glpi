@@ -349,8 +349,16 @@ class Widget
             : "";
 
         $label = \htmlescape($p['label']);
-        $alt = \htmlescape($p['alt']);
         $icon = \htmlescape($p['icon']);
+
+        if (empty($p['alt'])) {
+            $p['alt'] = sprintf(
+                __('%1$s %2$s'),
+                $p['number'],
+                $p['label'],
+            );
+        }
+        $alt = \htmlescape($p['alt']);
 
         $id = Toolbox::slugify($p['id']);
 
@@ -380,9 +388,9 @@ class Widget
             <a {$href}
                id="{$id}"
                class="card big-number $class"
-               title="{$alt}">
+               data-bs-toggle="tooltip" data-bs-placement="top" title="{$alt}">
                 <span class="content">$formatted_number</span>
-                <div class="label" title="{$label}">{$label}</div>
+                <div class="label">{$label}</div>
                 <i class="main-icon {$icon}"></i>
             </a>
 HTML;
@@ -705,10 +713,24 @@ HTML;
                         'show'     => true,
                         'readOnly' => true,
                         'title'    => __('View data'),
+                        'emphasis' => [
+                            'iconStyle' => [
+                                'color' => $dark_fg_color,
+                                'textBackgroundColor' => $dark_bg_color,
+                                'textPadding' => 5,
+                            ],
+                        ],
                     ],
                     'saveAsImage' => [
                         'show'  => true,
                         'title' => __('Save as image'),
+                        'emphasis' => [
+                            'iconStyle' => [
+                                'color' => $dark_fg_color,
+                                'textBackgroundColor' => $dark_bg_color,
+                                'textPadding' => 5,
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -1190,10 +1212,24 @@ HTML;
                         'show'     => true,
                         'readOnly' => true,
                         'title'    => __('View data'),
+                        'emphasis' => [
+                            'iconStyle' => [
+                                'color' => $dark_fg_color,
+                                'textBackgroundColor' => $dark_bg_color,
+                                'textPadding' => 5,
+                            ],
+                        ],
                     ],
                     'saveAsImage' => [
                         'show'  => true,
                         'title' => __('Save as image'),
+                        'emphasis' => [
+                            'iconStyle' => [
+                                'color' => $dark_fg_color,
+                                'textBackgroundColor' => $dark_bg_color,
+                                'textPadding' => 5,
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -1533,7 +1569,7 @@ TWIG, $twig_params);
                     background-color: {$bg_color};
                     color: {$fg_color}
                 }
-    
+
                 .theme-dark #{$chart_id} {
                     background-color: {$dark_bg_color};
                     color: {$dark_fg_color};
@@ -1566,10 +1602,24 @@ HTML;
                         'show'     => true,
                         'readOnly' => true,
                         'title' => __('View data'),
+                        'emphasis' => [
+                            'iconStyle' => [
+                                'color' => $dark_fg_color,
+                                'textBackgroundColor' => $dark_bg_color,
+                                'textPadding' => 5,
+                            ],
+                        ],
                     ],
                     'saveAsImage' => [
                         'show'  => true,
                         'title' => __('Save as image'),
+                        'emphasis' => [
+                            'iconStyle' => [
+                                'color' => $dark_fg_color,
+                                'textBackgroundColor' => $dark_bg_color,
+                                'textPadding' => 5,
+                            ],
+                        ],
                     ],
                 ],
             ],

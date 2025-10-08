@@ -49,8 +49,7 @@
       {% endfor %}
    {% endif %}
    {% if has_subitems %}
-   <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}"
-       title="{{ firstlevel['title'] }}">
+   <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}" aria-label="{{ firstlevel['title'] }}">
       <a class="nav-link dropdown-toggle {{ firstlevel_active ? 'active' : '' }} {{ firstlevel_shown ? 'show' : '' }}"
          data-bs-toggle="dropdown" role="button"
          aria-expanded="{{ firstlevel_shown ? 'true' : 'false' }}">
@@ -73,7 +72,8 @@
                {% if sublevel['page'] is defined %}
                <a class="dropdown-item {{ menu_active == sublevel['title'] ? 'active' : '' }}"
                   href="{{ path(sublevel['page']) }}"
-                  accesskey="{{ sublevel['shortcut'] ?? '' }}" title="{{ sublevel['title'] }}">
+                  aria-label="{{ sublevel['title'] }}"
+                  accesskey="{{ sublevel['shortcut'] ?? '' }}">
                   <i class="{{ sublevel['icon'] ?? '' }}"></i>
                   <span class='text-wrap'>
                      {{ sublevel['title']|shortcut(sublevel['shortcut'] ?? '') }}

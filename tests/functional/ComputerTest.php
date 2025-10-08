@@ -943,12 +943,12 @@ class ComputerTest extends DbTestCase
         yield [
             "C1",
             "Test",
-            'Test: <a href="/front/computer.form.php?id=CID" title="Computer 1">Computer 1</a>',
+            'Test: <a href="/front/computer.form.php?id=CID" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Computer 1">Computer 1</a>',
         ];
         yield [
             "C2",
             "Test",
-            'Test: <a href="/front/computer.form.php?id=CID" title="Computer 2">Computer 2</a>',
+            'Test: <a href="/front/computer.form.php?id=CID" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Computer 2">Computer 2</a>',
         ];
 
         // Test message without link
