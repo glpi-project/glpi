@@ -232,6 +232,11 @@ class Planning extends CommonGLPI
      */
     public static function getStatusIcon($status): string
     {
+        if (!is_numeric($status)) {
+            return '';
+        }
+
+        $status = intval($status);
         $label = htmlescape(self::getState($status));
         if (empty($label)) {
             return '';
