@@ -151,10 +151,15 @@ class GlpiCommonAjaxController
 
             if (key.endsWith('[]')) {
                 const baseKey = key.slice(0, -2);
-                const next_index = _.get(form_object, baseKey, []).length;
-                key = `${baseKey}[${next_index}]`;
+                // Initialize as array if not an array
+                if (_.get(form_object, baseKey) === undefined || !Array.isArray(_.get(form_object, baseKey))) {
+                    _.set(form_object, baseKey, []);
+                }
+                // Push value to array directly instead of using indexed key
+                _.get(form_object, baseKey).push(value);
+            } else {
+                _.setWith(form_object, key, value, Object);
             }
-            _.setWith(form_object, key, value, Object);
         }
 
         // Add submit button info to the form data
