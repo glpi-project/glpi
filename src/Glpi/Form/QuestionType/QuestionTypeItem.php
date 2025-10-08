@@ -675,7 +675,7 @@ class QuestionTypeItem extends AbstractQuestionType implements
         // Stop here if value is invalid or empty
         $itemtype = $extra_data_config[QuestionTypeItemExtraDataConfig::ITEMTYPE] ?? "";
         $root_id = $extra_data_config[QuestionTypeItemDropdownExtraDataConfig::ROOT_ITEMS_ID] ?? 0;
-        if ($root_id == 0 || !is_a($itemtype, CommonDBTM::class, true)) {
+        if ($root_id <= 0 || !is_a($itemtype, CommonDBTM::class, true)) {
             return $fallback;
         }
 
@@ -708,6 +708,9 @@ class QuestionTypeItem extends AbstractQuestionType implements
         if (
             !(getItemForItemtype($itemtype) instanceof CommonDBTM)
             || empty($name)
+            // Both these values represent the root entity, no need to map it
+            || $name == 0
+            || $name == -1
         ) {
             return $fallback;
         }

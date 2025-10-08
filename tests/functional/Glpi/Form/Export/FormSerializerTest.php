@@ -89,6 +89,7 @@ use Location;
 use Monitor;
 use Ramsey\Uuid\Uuid;
 use Session;
+use function Safe\json_encode;
 
 final class FormSerializerTest extends \DbTestCase
 {
@@ -1680,6 +1681,25 @@ final class FormSerializerTest extends \DbTestCase
             "data-form-tag-value=\"{$imported_comment_2->getID()}\" data-form-tag-provider=\"Glpi\Form\Tag\CommentDescriptionTagProvider\"",
             $imported_destination->getConfig()[ContentField::getKey()]['value'],
         );
+    }
+
+    public function testWithFormWithSpecialNegativeIdForRootEntity(): void
+    {
+        // Arrange: create a form with a -1 value for root_items_id
+        $builder = new FormBuilder("My form");
+        $extra_data = new QuestionTypeItemExtraDataConfig(
+            itemtype: Entity::class,
+            root_items_id: -1,
+        );
+        $builder->addQuestion(
+            name: "Entity",
+            type: QuestionTypeItem::class,
+            extra_data: json_encode($extra_data)
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export the form, no error should happen
+        $this->exportAndImportForm($form);
     }
 
     private function compareValuesForRelations(
