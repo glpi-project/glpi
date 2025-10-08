@@ -34,7 +34,7 @@
 /* ################--------------- GLPI CSS style   ---------------#################### */
 
 .qtip {
-   max-width: none;
+    max-width: none;
 
     .qtip-titlebar {
         background-color: var(--tblr-bg-surface);
@@ -52,6 +52,10 @@
       max-height: 250px;
       max-width: 400px;
       overflow: auto;
+   }
+
+   p {
+      margin-bottom: 0;
    }
 }
 
