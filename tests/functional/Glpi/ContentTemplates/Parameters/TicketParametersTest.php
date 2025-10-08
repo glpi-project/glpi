@@ -131,7 +131,7 @@ class TicketParametersTest extends AbstractParameters
             [
                 'id'        => $tickets_id,
                 'ref'       => "#$tickets_id",
-                'link'      => "<a href=\"/front/ticket.form.php?id=$tickets_id\" title=\"ticket_testGetValues\">ticket_testGetValues</a>",
+                'link'      => "<a href=\"/front/ticket.form.php?id=$tickets_id\" data-bs-toggle=\"tooltip\" data-bs-placement=\"bottom\" title=\"ticket_testGetValues\">ticket_testGetValues</a>",
                 'name'      => 'ticket_testGetValues',
                 'content'   => '<p>ticket_testGetValues content</p>',
                 'date'      => $now,

@@ -73,7 +73,7 @@ class ProblemParametersTest extends AbstractParameters
             [
                 'id'        => $problems_id,
                 'ref'       => "#$problems_id",
-                'link'      => "<a href=\"/front/problem.form.php?id=$problems_id\" title=\"problem_testGetValues\">problem_testGetValues</a>",
+                'link'      => "<a href=\"/front/problem.form.php?id=$problems_id\" data-bs-toggle=\"tooltip\" data-bs-placement=\"bottom\" title=\"problem_testGetValues\">problem_testGetValues</a>",
                 'name'      => 'problem_testGetValues',
                 'content'   => '<p>problem_testGetValues content</p>',
                 'date'      => '2021-07-19 17:11:28',

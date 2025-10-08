@@ -70,7 +70,7 @@ class ChangeParametersTest extends AbstractParameters
             [
                 'id'        => $changes_id,
                 'ref'       => "#$changes_id",
-                'link'      => '<a href="/front/change.form.php?id=' . $changes_id . '" title="change_testGetValues">change_testGetValues</a>',
+                'link'      => '<a href="/front/change.form.php?id=' . $changes_id . '" data-bs-toggle="tooltip" data-bs-placement="bottom" title="change_testGetValues">change_testGetValues</a>',
                 'name'      => 'change_testGetValues',
                 'content'   => '<p>change_testGetValues content</p>',
                 'date'      => '2021-07-19 17:11:28',
