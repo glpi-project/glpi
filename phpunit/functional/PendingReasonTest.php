@@ -45,6 +45,7 @@ use ProblemTask;
 use Ticket;
 use TicketTask;
 use ITILFollowupTemplate;
+use PendingReason;
 use SolutionTemplate;
 
 class PendingReasonTest extends DbTestCase
