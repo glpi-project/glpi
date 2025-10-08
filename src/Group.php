@@ -587,6 +587,10 @@ class Group extends CommonTreeDropdown
             if (!($item = getItemForItemtype($itemtype))) {
                 continue;
             }
+            if (!$item->isField($ufield)) {
+                // Skip items that don't have the required user field (plugins may have different field structures)
+                continue;
+            }
             if (!$item::canView()) {
                 continue;
             }

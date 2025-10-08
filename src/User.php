@@ -4642,6 +4642,10 @@ HTML;
             if (!($item = getItemForItemtype($itemtype))) {
                 continue;
             }
+            if (!$item->isField($field_user)) {
+                // Skip items that don't have the required user field (plugins may have different field structures)
+                continue;
+            }
             if ($item::canView()) {
                 $itemtable = getTableForItemType($itemtype);
                 $relation_table = Group_Item::getTable();
