@@ -89,6 +89,7 @@ use Location;
 use Monitor;
 use Ramsey\Uuid\Uuid;
 use Session;
+
 use function Safe\json_encode;
 
 final class FormSerializerTest extends \DbTestCase
