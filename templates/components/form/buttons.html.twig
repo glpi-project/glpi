@@ -36,9 +36,9 @@
 {% set id           = item.fields['id'] ?? -1 %}
 
 {% if item is defined %}
-         <div class="row">
-         {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
-         </div>
+
+     {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
+
 
     {% if canedit or item.canEdit(item.fields['id']) %}
       <div class="card-body mx-n2 border-top d-flex flex-row-reverse align-items-start flex-wrap">
