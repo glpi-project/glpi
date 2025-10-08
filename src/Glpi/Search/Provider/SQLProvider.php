@@ -5093,7 +5093,7 @@ final class SQLProvider implements SearchProviderInterface
                 // Parse data
                 foreach ($newrow['raw'] as $key => $val) {
                     $matches = [];
-                    if (preg_match('/^ITEM(_(?<itemtype>[a-z][\w\\\]*))?_(?<num>\d+)(_(?<fieldname>.+))?$/i', $key, $matches)) {
+                    if (preg_match('/^ITEM(_(?<itemtype>[a-z][\w\\\]*?))?_(?<num>\d+)(_(?<fieldname>.+))?$/i', $key, $matches)) {
                         $j = (!empty($matches['itemtype']) ? $matches['itemtype'] . '_' : '') . $matches['num'];
                         $fieldname = $matches['fieldname'] ?? 'name';
 
