@@ -59,6 +59,7 @@ export class GlpiFormQuestionTypeSelectable {
         this._container = $(container);
 
         if (this._container !== null) {
+            // Register listeners for existing options
             this._container.children()
                 .each((index, option) => this._registerOptionListeners($(option)));
 
@@ -73,6 +74,9 @@ export class GlpiFormQuestionTypeSelectable {
                 // during the initial rendering as nothing was changed yet.
                 this.#getFormController().computeState();
             }
+
+            // Register sortable event
+            this._container.on('sortupdate', () => this._handleSortableUpdate());
 
             // Restore the checked state
             if (this._inputType === 'radio') {
@@ -92,19 +96,21 @@ export class GlpiFormQuestionTypeSelectable {
     /**
      * Get the options from the container.
      *
-     * @returns {Array<{value: string, checked: boolean, uuid: string}>}
+     * @returns {Array<{value: string, checked: boolean, uuid: string, order: number}>}
      */
     getOptions() {
         const options = [];
 
         this._container.children().each((index, option) => {
-            const input = $(option).find('input[type="text"]');
+            const input      = $(option).find('input[type="text"]');
             const selectable = $(option).find(`input[type="${CSS.escape(this._inputType)}"]`);
+            const order      = $(option).find('input[data-glpi-form-editor-question-option-order]');
 
             options[index] = {
                 value: input.val(),
                 checked: selectable.is(':checked'),
                 uuid: selectable.val(),
+                order: parseInt(order.val()),
             };
         });
 
@@ -114,7 +120,7 @@ export class GlpiFormQuestionTypeSelectable {
     /**
      * Set the options.
      *
-     * @param {Array<{value: string, checked: boolean, uuid: string}>} options
+     * @param {Array<{value: string, checked: boolean, uuid: string, order: number}>} options
      */
     setOptions(options) {
         this._container.empty();
@@ -130,6 +136,9 @@ export class GlpiFormQuestionTypeSelectable {
             $(clone).find(`input[type="${CSS.escape(this._inputType)}"]`)
                 .val(uuid)
                 .prop('checked', value.checked);
+            $(clone).find('input[data-glpi-form-editor-question-option-order]')
+                .val(value.order)
+                .attr('name', `options_order[${uuid}]`);
 
             const insertedElement = $(clone).children().appendTo(this._container);
 
@@ -143,6 +152,7 @@ export class GlpiFormQuestionTypeSelectable {
             this.onAddOption($(insertedElement));
         }
 
+        this.#reindexOptions();
         this.#getFormController().computeState();
         this.#enableOptionsSortable();
     }
@@ -229,6 +239,8 @@ export class GlpiFormQuestionTypeSelectable {
         const uuid = getUUID();
         $(input).parent().next().find('input[type="radio"], input[type="checkbox"]').val(uuid);
         $(input).parent().next().find('input[type="text"]').attr('name', `options[${uuid}]`);
+        $(input).parent().next().find('input[data-glpi-form-editor-question-option-order]').attr('name', `options_order[${uuid}]`);
+        $(input).parent().next().find('input[data-glpi-form-editor-question-option-order]').val(this._container.children().length + 1);
 
         /**
          * Compute the state to update the input names
@@ -377,6 +389,22 @@ export class GlpiFormQuestionTypeSelectable {
     }
 
     /**
+     * Reindex the order of the options.
+     */
+    #reindexOptions() {
+        // Reindex the order of the options
+        this._container.children().each((index, option) => {
+            $(option).find('input[data-glpi-form-editor-question-option-order]').val(index);
+        });
+
+        // Reindex the order of the empty option
+        this._container.closest('div[data-glpi-form-editor-question-type-specific]')
+            .find('div[data-glpi-form-editor-question-extra-details]')
+            .find('input[data-glpi-form-editor-question-option-order]')
+            .val(this._container.children().length);
+    }
+
+    /**
      * Handle the input event.
      *
      * @param {InputEvent} event - The input event.
@@ -401,6 +429,13 @@ export class GlpiFormQuestionTypeSelectable {
 
         // Reload sortable
         sortable(container);
+    }
+
+    /**
+     * Handle the sortable update event.
+     */
+    _handleSortableUpdate() {
+        this.#reindexOptions();
     }
 
     /**

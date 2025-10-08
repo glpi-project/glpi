@@ -76,6 +76,12 @@ Cypress.Commands.add('addSection', (name) => {
     cy.focused().type(name); // Section name is focused by default
 });
 
+Cypress.Commands.add('getFormSections', (form_id) => {
+    return cy.initApi().doApiRequest('GET', `Glpi\\Form\\Form/${form_id}/Glpi\\Form\\Section`).then((response) => {
+        return response.body;
+    });
+});
+
 // TODO: refactor on playwright; too many args
 Cypress.Commands.add('addQuestionToDefaultSectionWithAPI', (
     form_id,
@@ -87,8 +93,8 @@ Cypress.Commands.add('addQuestionToDefaultSectionWithAPI', (
     extra_data = null,
     is_mandatory = false,
 ) => {
-    cy.initApi().doApiRequest('GET', `Glpi\\Form\\Form/${form_id}/Glpi\\Form\\Section`).then((response) => {
-        const section_id = response.body[0].id;
+    cy.getFormSections(form_id).then((sections) => {
+        const section_id = sections[0].id;
         const question = {
             forms_sections_id: section_id,
             name             : name,

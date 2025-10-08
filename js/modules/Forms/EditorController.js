@@ -1204,7 +1204,12 @@ export class GlpiFormEditorController
      */
     async #getSupportedValueOperators(questionData) {
         try {
-            const response = await $.post(`${CFG_GLPI.root_doc}/Form/Condition/Editor/SupportedValueOperators`, questionData);
+            const response = await $.ajax({
+                url: `${CFG_GLPI.root_doc}/Form/Condition/Editor/SupportedValueOperators`,
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(questionData),
+            });
             return response.operators || [];
         } catch (error) {
             console.error('Error fetching supported value operators:', error);
