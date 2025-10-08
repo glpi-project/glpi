@@ -131,11 +131,20 @@ abstract class CommonITILSatisfaction extends CommonDBTM
     }
 
     /**
+     * @deprecated 11.1.0
+     */
+    public function showSatisactionForm($item)
+    {
+        Toolbox::deprecated();
+        $this->showSatisfactionForm($item);
+    }
+
+    /**
      * form for satisfaction
      *
      * @param CommonITILObject $item The item this satisfaction is for
      **/
-    public function showSatisactionForm($item)
+    public function showSatisfactionForm($item)
     {
         $options             = [];
         $options['colspan']  = 1;

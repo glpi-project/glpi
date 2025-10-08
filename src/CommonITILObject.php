@@ -10702,7 +10702,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             in_array($item->fields['status'], static::getClosedStatusArray())
             && $satisfaction->getFromDB($item->getID())
         ) {
-            $satisfaction->showSatisactionForm($item);
+            $satisfaction->showSatisfactionForm($item);
         } else {
             echo "<p class='center b'>" . __s('No generated survey') . "</p>";
         }
