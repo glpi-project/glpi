@@ -117,6 +117,9 @@ class SourceCodeIntegrityChecker
 
         try {
             $manifest = file_get_contents($manifest_path);
+            if (trim($manifest) === '') {
+                throw new RuntimeException('The source code file manifest is empty. If you are using a development build, this is normal as it is generated during the release build process.');
+            }
             $content = json_decode($manifest, associative: true, flags: JSON_THROW_ON_ERROR);
         } catch (FilesystemException $e) {
             throw new RuntimeException('Error while trying to read the source code file manifest.', $e->getCode(), $e);
