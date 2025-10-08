@@ -90,6 +90,7 @@ class RouterTest extends GLPITestCase
     public function testNormalizeAPIVersion()
     {
         $this->assertEquals('50.2.0', TestRouter::normalizeAPIVersion('50'));
+        $this->assertEquals('50.0.0', TestRouter::normalizeAPIVersion('50.0'));
         $this->assertEquals('50.1.1', TestRouter::normalizeAPIVersion('50.1.1'));
         $this->assertEquals('50.1.2', TestRouter::normalizeAPIVersion('50.1'));
         $this->assertEquals('50.2.0', TestRouter::normalizeAPIVersion('50.2'));
