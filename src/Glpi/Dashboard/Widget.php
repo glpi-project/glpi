@@ -713,10 +713,24 @@ HTML;
                         'show'     => true,
                         'readOnly' => true,
                         'title'    => __('View data'),
+                        'emphasis' => [
+                            'iconStyle' => [
+                                'color' => $dark_fg_color,
+                                'textBackgroundColor' => $dark_bg_color,
+                                'textPadding' => 5,
+                            ],
+                        ],
                     ],
                     'saveAsImage' => [
                         'show'  => true,
                         'title' => __('Save as image'),
+                        'emphasis' => [
+                            'iconStyle' => [
+                                'color' => $dark_fg_color,
+                                'textBackgroundColor' => $dark_bg_color,
+                                'textPadding' => 5,
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -1198,10 +1212,24 @@ HTML;
                         'show'     => true,
                         'readOnly' => true,
                         'title'    => __('View data'),
+                        'emphasis' => [
+                            'iconStyle' => [
+                                'color' => $dark_fg_color,
+                                'textBackgroundColor' => $dark_bg_color,
+                                'textPadding' => 5,
+                            ],
+                        ],
                     ],
                     'saveAsImage' => [
                         'show'  => true,
                         'title' => __('Save as image'),
+                        'emphasis' => [
+                            'iconStyle' => [
+                                'color' => $dark_fg_color,
+                                'textBackgroundColor' => $dark_bg_color,
+                                'textPadding' => 5,
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -1541,7 +1569,7 @@ TWIG, $twig_params);
                     background-color: {$bg_color};
                     color: {$fg_color}
                 }
-    
+
                 .theme-dark #{$chart_id} {
                     background-color: {$dark_bg_color};
                     color: {$dark_fg_color};
@@ -1574,10 +1602,24 @@ HTML;
                         'show'     => true,
                         'readOnly' => true,
                         'title' => __('View data'),
+                        'emphasis' => [
+                            'iconStyle' => [
+                                'color' => $dark_fg_color,
+                                'textBackgroundColor' => $dark_bg_color,
+                                'textPadding' => 5,
+                            ],
+                        ],
                     ],
                     'saveAsImage' => [
                         'show'  => true,
                         'title' => __('Save as image'),
+                        'emphasis' => [
+                            'iconStyle' => [
+                                'color' => $dark_fg_color,
+                                'textBackgroundColor' => $dark_bg_color,
+                                'textPadding' => 5,
+                            ],
+                        ],
                     ],
                 ],
             ],
