@@ -982,4 +982,21 @@ describe ('Form editor', () => {
             cy.findByRole('button', {'name': 'Submit'}).should('exist');
         });
     });
+
+    it('can delete a question that has a validation constraint', () => {
+        cy.login();
+        cy.importForm('form-with-validation-2025-10-08.json').visitFormTab('Form');
+
+        // Focus question to display hiden actions
+        cy.findByRole('region', {'name': 'Question details'})
+            .as("question_details")
+        ;
+        cy.get("@question_details").click();
+
+        // Delete question
+        cy.get("@question_details").within(() => {
+            cy.findByRole('button', {'name': 'Delete'}).click();
+        });
+        cy.get("@question_details").should('not.exist');
+    });
 });

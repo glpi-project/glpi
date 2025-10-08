@@ -1130,7 +1130,32 @@ export class GlpiFormEditorController
 
         // Find elements using this item in their conditions
         const conditionsUsingItem = $('[data-glpi-conditions-editor-item]')
-            .filter((_index, element) => element.value === itemIdentifier);
+            .filter((_index, element) => {
+                if (element.value !== itemIdentifier) {
+                    return false;
+                }
+
+                // Do not report dependencies on itself
+                let parent_item;
+                if (type === "section") {
+                    parent_item = $(element).closest(
+                        '[data-glpi-form-editor-section]'
+                    );
+                } else {
+                    parent_item = $(element).closest(
+                        '[data-glpi-form-editor-block]'
+                    );
+                }
+                if (parent_item.length !== 1) {
+                    return false; // Unexpected
+                }
+                if (this.#getItemInput(parent_item, "uuid") === uuid) {
+                    return false;
+                }
+
+                return true;
+            })
+        ;
 
         // Find destinations using this item in their conditions
         const destinationsUsingItem = Object.values(this.#destination_conditions)
