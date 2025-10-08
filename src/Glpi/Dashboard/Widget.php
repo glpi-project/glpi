@@ -349,8 +349,16 @@ class Widget
             : "";
 
         $label = \htmlescape($p['label']);
-        $alt = \htmlescape($p['alt']);
         $icon = \htmlescape($p['icon']);
+
+        if (empty($p['alt'])) {
+            $p['alt'] = sprintf(
+                __('%1$s %2$s'),
+                $p['number'],
+                $label,
+            );
+        }
+        $alt = \htmlescape($p['alt']);
 
         $id = Toolbox::slugify($p['id']);
 
@@ -380,9 +388,9 @@ class Widget
             <a {$href}
                id="{$id}"
                class="card big-number $class"
-               title="{$alt}">
+               data-bs-toggle="tooltip" data-bs-placement="top" title="{$alt}">
                 <span class="content">$formatted_number</span>
-                <div class="label" title="{$label}">{$label}</div>
+                <div class="label">{$label}</div>
                 <i class="main-icon {$icon}"></i>
             </a>
 HTML;
