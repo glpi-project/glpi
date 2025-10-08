@@ -9281,6 +9281,7 @@ HTML,
         ]);
 
         // Create a ticket
+        $this->setCurrentTime('2025-10-06 11:26:34'); // be sure to be on monday
         $ticket = $this->createItem(
             Ticket::class,
             [
@@ -9291,6 +9292,7 @@ HTML,
         );
 
         // Add a solution
+        $this->setCurrentTime('2025-10-07 09:12:48'); // add some time to consistent stats
         $solution = $this->createItem(
             ITILSolution::class,
             [
@@ -9302,10 +9304,13 @@ HTML,
 
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
         $this->assertEquals(Ticket::SOLVED, $ticket->fields['status']);
+        $this->assertEquals(27974, $ticket->fields['solve_delay_stat']);
+        $this->assertEquals(0, $ticket->fields['close_delay_stat']);
         $this->assertTrue($solution->getFromDB($solution->getID()));
         $this->assertSame(CommonITILValidation::WAITING, $solution->fields['status']);
 
         // Refuse the solution
+        $this->setCurrentTime('2025-10-07 10:47:10'); // add some time to consistent stats
         $this->createItem(
             ITILFollowup::class,
             [
@@ -9319,13 +9324,22 @@ HTML,
 
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
         $this->assertEquals(Ticket::INCOMING, $ticket->fields['status']);
+        $this->assertEquals(0, $ticket->fields['solve_delay_stat']);
+        $this->assertEquals(0, $ticket->fields['close_delay_stat']);
         $this->assertTrue($solution->getFromDB($solution->getID()));
         $this->assertSame(CommonITILValidation::REFUSED, $solution->fields['status']);
 
         // Close the ticket
+        $this->setCurrentTime('2025-10-08 14:17:31'); // add some time to consistent stats
         $this->updateItem(Ticket::class, $ticket->getID(), ['status' => Ticket::CLOSED]);
 
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertEquals(Ticket::CLOSED, $ticket->fields['status']);
+        $this->assertEquals(76595, $ticket->fields['solve_delay_stat']);
+        $this->assertEquals(76595, $ticket->fields['close_delay_stat']);
+
         // Reopen the ticket
+        $this->setCurrentTime('2025-10-08 14:24:05'); // add some time to consistent stats
         $this->createItem(
             ITILFollowup::class,
             [
@@ -9339,5 +9353,7 @@ HTML,
 
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
         $this->assertEquals(Ticket::INCOMING, $ticket->fields['status']);
+        $this->assertEquals(0, $ticket->fields['solve_delay_stat']);
+        $this->assertEquals(0, $ticket->fields['close_delay_stat']);
     }
 }
