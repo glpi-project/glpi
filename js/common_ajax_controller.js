@@ -140,7 +140,7 @@ class GlpiCommonAjaxController
         let key;
         let value;
         for ([key, value] of form_data.entries()) {
-            if (value === '' && form.get(0).querySelector(`[name="${CSS.escape(key)}[]"]`)) {
+            if (value === '' && form.get(0).querySelector(`[name="${CSS.escape(key)}[]"]:not([disabled])`)) {
                 // Empty hidden field placed before each multiple select dropdown
                 // to be sure to send an empty value if no option is selected.
                 if (_.get(form_object, key) === undefined) {
