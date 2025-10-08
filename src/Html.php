@@ -3309,7 +3309,7 @@ JS;
      *   autoclose?: bool,       // auto close (default true)
      *   onclick?: bool,         // false (default) to show on hover, true to show on click
      *   url?: string|null       // AJAX URL to load the tooltip
-     * } $options  Options possibles pour le tooltip
+     * } $options
      *
      * @return void|string
      *    void if option display=true
