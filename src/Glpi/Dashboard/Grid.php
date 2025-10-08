@@ -319,30 +319,30 @@ HTML;
 
         if (!self::$embed) {
             if (!$mini && $can_create) {
-                $l_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-plus fs-toggle add-dashboard' title='$add_dash_label'></i>";
+                $l_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-plus fs-toggle add-dashboard' data-bs-toggle='tooltip' title='$add_dash_label'></i>";
             }
             if (!$mini && $can_clone) {
-                $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-copy fs-toggle clone-dashboard' title='$clone_label'></i>";
+                $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-copy fs-toggle clone-dashboard' data-bs-toggle='tooltip' data-bs-placement='bottom' title='$clone_label'></i>";
             }
             if (!$mini && $can_edit) {
-                $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-share fs-toggle open-embed' title='$embed_label'></i>";
+                $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-share fs-toggle open-embed' data-bs-toggle='tooltip' data-bs-placement='bottom' title='$embed_label'></i>";
                 $rename = "<div class='edit-dashboard-properties'>
                <input type='text' class='dashboard-name form-control' value='{$dashboard_title}' size='1'>
-               <i class='btn btn-ghost-secondary ti ti-device-floppy ms-1 save-dashboard-name' title='{$save_label}'></i>
+               <i class='btn btn-ghost-secondary ti ti-device-floppy ms-1 save-dashboard-name' data-bs-toggle='tooltip' data-bs-placement='bottom' title='{$save_label}'></i>
                <span class='display-message'></span>
             </div>";
             }
             if (!$mini && $can_purge) {
-                $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-trash fs-toggle delete-dashboard' title='$delete_label'></i>";
+                $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-trash fs-toggle delete-dashboard' data-bs-toggle='tooltip' data-bs-placement='bottom' title='$delete_label'></i>";
             }
             if ($can_edit) {
-                $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-edit fs-toggle edit-dashboard' title='$edit_label'></i>";
+                $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-edit fs-toggle edit-dashboard' data-bs-toggle='tooltip' data-bs-placement='bottom' title='$edit_label'></i>";
             } elseif (!$mini) {
-                $r_tb_icons .= "<i class='btn btn-outline-secondary ti ti-filter fs-toggle filter-dashboard' title='$filter_label'></i>";
+                $r_tb_icons .= "<i class='btn btn-outline-secondary ti ti-filter fs-toggle filter-dashboard' data-bs-toggle='tooltip' data-bs-placement='bottom' title='$filter_label'></i>";
             }
 
             if (!$mini) {
-                $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-maximize toggle-fullscreen' title='$fs_label'></i>";
+                $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-maximize toggle-fullscreen' data-bs-toggle='tooltip' data-bs-placement='bottom' title='$fs_label'></i>";
             }
 
             if (!$mini) {
@@ -367,8 +367,8 @@ HTML;
         $toolbars = <<<HTML
          $left_toolbar
          <span class="toolbar">
-            <i class="btn btn-sm btn-icon btn-ghost-secondary ti ti-refresh auto-refresh" title="$history_label"></i>
-            <i class="btn btn-sm btn-icon btn-ghost-secondary ti ti-moon night-mode" title="$night_label"></i>
+            <i class="btn btn-sm btn-icon btn-ghost-secondary ti ti-refresh auto-refresh" data-bs-toggle='tooltip' data-bs-placement='bottom' title="$history_label"></i>
+            <i class="btn btn-sm btn-icon btn-ghost-secondary ti ti-moon night-mode" data-bs-toggle='tooltip' data-bs-placement='bottom' title="$night_label"></i>
             $r_tb_icons
          </span>
 HTML;
