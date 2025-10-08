@@ -1022,7 +1022,13 @@ describe ('Form editor', () => {
                         'type': 'Glpi\\Form\\QuestionType\\QuestionTypeItemDropdown',
                         'vertical_rank': i,
                         'forms_sections_id': section_id,
-                        'extra_data': {'itemtype': 'ITILCategory', 'categories_filter': [], 'root_items_id': 0, 'subtree_depth': 0}
+                        'extra_data': {
+                            'itemtype': 'ITILCategory',
+                            'categories_filter': [],
+                            'root_items_id': 0,
+                            'subtree_depth': 0,
+                            'selectable_tree_root': true
+                        }
                     });
                 }
 
