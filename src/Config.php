@@ -33,12 +33,14 @@
  * ---------------------------------------------------------------------
  */
 use Glpi\Api\HL\Router;
+use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Dashboard\Grid;
 use Glpi\Event;
 use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\Plugin\Hooks;
+use Glpi\System\Diagnostic\SourceCodeIntegrityChecker;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\ArrayNormalizer;
 use Glpi\UI\ThemeManager;
@@ -818,6 +820,23 @@ class Config extends CommonDBTM
         );
         sort($files);
 
+        // Compute code integrity summary
+        $code_integrity = null;
+        if (Environment::get()->shouldExpectResourcesToChange() === false) {
+            try {
+                $code_integrity = [];
+                foreach ((new SourceCodeIntegrityChecker())->getSummary() as $status) {
+                    $code_integrity[$status] = ($code_integrity[$status] ?? 0) + 1;
+                }
+            } catch (Throwable $e) {
+                global $PHPLOGGER;
+                $PHPLOGGER->error(
+                    'Unable to get code integrity check summary.',
+                    ['exception' => $e]
+                );
+            }
+        }
+
         TemplateRenderer::getInstance()->display('pages/setup/general/systeminfo_table.html.twig', [
             'ver' => $ver,
             'language' => $oldlang,
@@ -826,6 +845,7 @@ class Config extends CommonDBTM
             'core_requirements' => $requirements,
             'system_info_objs' => $system_info_objs,
             'locales_overrides' => $files,
+            'code_integrity' => $code_integrity,
         ]);
     }
 
