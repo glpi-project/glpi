@@ -355,7 +355,7 @@ class Widget
             $p['alt'] = sprintf(
                 __('%1$s %2$s'),
                 $p['number'],
-                $label,
+                $p['label'],
             );
         }
         $alt = \htmlescape($p['alt']);
