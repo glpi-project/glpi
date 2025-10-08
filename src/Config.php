@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 use Glpi\Api\HL\Router;
+use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Dashboard\Grid;
@@ -771,8 +772,6 @@ class Config extends CommonDBTM
 
         // No need to translate, this part always display in english (for copy/paste to forum)
 
-        $code_integrity = null;
-
         // Try to compute a better version for .git
         $ver = GLPI_VERSION;
         if (is_dir(GLPI_ROOT . "/.git")) {
@@ -788,12 +787,6 @@ class Config extends CommonDBTM
             chdir($dir);
             if (!$returnCode) {
                 $ver .= '-git-' . $gitbranch . '-' . $gitrev;
-            }
-        } else {
-            $integrity_summary = (new SourceCodeIntegrityChecker())->getSummary();
-            $code_integrity = [];
-            foreach ($integrity_summary as $status) {
-                $code_integrity[$status] = ($code_integrity[$status] ?? 0) + 1;
             }
         }
 
@@ -826,6 +819,23 @@ class Config extends CommonDBTM
             glob(GLPI_LOCAL_I18N_DIR . "/**/*.mo")
         );
         sort($files);
+
+        // Compute code integrity summary
+        $code_integrity = null;
+        if (Environment::get()->shouldExpectResourcesToChange() === false) {
+            try {
+                $code_integrity = [];
+                foreach ((new SourceCodeIntegrityChecker())->getSummary() as $status) {
+                    $code_integrity[$status] = ($code_integrity[$status] ?? 0) + 1;
+                }
+            } catch (Throwable $e) {
+                global $PHPLOGGER;
+                $PHPLOGGER->error(
+                    'Unable to get code integrity check summary.',
+                    ['exception' => $e]
+                );
+            }
+        }
 
         TemplateRenderer::getInstance()->display('pages/setup/general/systeminfo_table.html.twig', [
             'ver' => $ver,
