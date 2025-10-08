@@ -135,7 +135,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
      *
      * @param CommonITILObject $item The item this satisfaction is for
      **/
-    public function showSatisactionForm($item)
+    public function showSatisactionForm($item, bool $add_form_header = true)
     {
         $options             = [];
         $options['colspan']  = 1;
@@ -150,7 +150,9 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         } else { // for internal inquest => form
             $config_suffix = $item->getType() === 'Ticket' ? '' : ('_' . strtolower($item->getType()));
 
-            $this->showFormHeader($options);
+            if ($add_form_header) {
+                $this->showFormHeader($options);
+            }
             // Set default satisfaction to 3 if not set
             if (is_null($this->fields["satisfaction"])) {
                 $default_rate = Entity::getUsedConfig('inquest_config' . $config_suffix, $item->fields['entities_id'], 'inquest_default_rate' . $config_suffix);

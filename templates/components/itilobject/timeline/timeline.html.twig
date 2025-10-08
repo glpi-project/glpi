@@ -228,6 +228,17 @@
         {{ include('components/itilobject/answer.html.twig') }}
     {% endif %}
 
+   {% if survey %}
+      <form
+         data-testid="survey"
+         class="mt-5 w-100 hide-form-button-separator"
+         method="POST"
+         action="{{ "TicketSatisfaction"|itemtype_form_path }}"
+      >
+         <div>
+            {{ survey.showSatisactionForm(item, false) }}
+      {# showSatisactionForm closes the extra div and form tag by itself... #}
+   {% endif %}
 </div>
 
 <script type="text/javascript">

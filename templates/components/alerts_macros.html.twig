@@ -33,7 +33,7 @@
 {% macro alert(alert_type = "", title = "", messages = [], icon = "", important = false) %}
    <div class="alert alert-{{ alert_type }} {{ important ? "alert-important" : "" }}" role="alert">
       <div class="d-flex">
-         <div>
+         <div class="me-2">
             <i class="{{ icon }} fs-2x alert-icon"></i>
          </div>
          <div>
