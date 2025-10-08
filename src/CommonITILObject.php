@@ -5479,6 +5479,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             isset($this->fields['id'])
             && !empty($this->fields['date'])
             && !empty($this->fields['solvedate'])
+            && $this->fields['solvedate'] !== 'NULL'
         ) {
             $calendars_id = $this->getCalendar();
             $calendar     = new Calendar();
@@ -5521,6 +5522,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             isset($this->fields['id'])
             && !empty($this->fields['date'])
             && !empty($this->fields['closedate'])
+            && $this->fields['closedate'] !== 'NULL'
         ) {
             $calendars_id = $this->getCalendar();
             $calendar     = new Calendar();
