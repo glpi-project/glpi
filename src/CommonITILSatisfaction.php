@@ -135,7 +135,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
      *
      * @param CommonITILObject $item The item this satisfaction is for
      **/
-    public function showSatisactionForm($item)
+    public function showSatisfactionForm($item)
     {
         $options             = [];
         $options['colspan']  = 1;
