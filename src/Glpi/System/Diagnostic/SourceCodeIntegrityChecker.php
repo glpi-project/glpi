@@ -164,7 +164,7 @@ class SourceCodeIntegrityChecker
                 $files_to_check[] = $path;
             }
         }
-        sort($files_to_check);
+        sort($files_to_check, SORT_NATURAL);
         foreach ($files_to_check as $file) {
             $key = preg_replace('/^' . preg_quote($this->root_dir . '/', '/') . '/', '', $file);
             $hashes[$key] = hash_file($algorithm, $file);
@@ -207,6 +207,8 @@ class SourceCodeIntegrityChecker
         foreach (array_keys($missing) as $file) {
             $summary[$file] = self::STATUS_MISSING;
         }
+
+        \ksort($summary, SORT_NATURAL);
 
         return $summary;
     }

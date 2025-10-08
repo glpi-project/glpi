@@ -824,10 +824,7 @@ class Config extends CommonDBTM
         $code_integrity = null;
         if (Environment::get()->shouldExpectResourcesToChange() === false) {
             try {
-                $code_integrity = [];
-                foreach ((new SourceCodeIntegrityChecker())->getSummary() as $status) {
-                    $code_integrity[$status] = ($code_integrity[$status] ?? 0) + 1;
-                }
+                $code_integrity = (new SourceCodeIntegrityChecker())->getSummary();
             } catch (Throwable $e) {
                 global $PHPLOGGER;
                 $PHPLOGGER->error(
