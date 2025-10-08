@@ -166,10 +166,11 @@ class Problem_Ticket extends CommonDBRelation
                 return true;
 
             case "solveticket":
+                $ticket  = new Ticket();
                 $problem = new Problem();
                 $input = $ma->getInput();
                 if (isset($input['problems_id']) && $problem->getFromDB($input['problems_id'])) {
-                    $problem->showMassiveSolutionForm($problem);
+                    CommonITILObject::showMassiveSolutionForm($ticket);
                     echo "<br>";
                     echo Html::submit(_x('button', 'Post'), [
                         'name'  => 'massiveaction',

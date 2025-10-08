@@ -125,10 +125,11 @@ class Change_Ticket extends CommonDBRelation
                 return false;
 
             case "solveticket":
+                $ticket  = new Ticket();
                 $change = new Change();
                 $input = $ma->getInput();
                 if (isset($input['changes_id']) && $change->getFromDB($input['changes_id'])) {
-                    $change->showMassiveSolutionForm($change);
+                    $change->showMassiveSolutionForm($ticket);
                     echo "<br>";
                     echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                     return true;
