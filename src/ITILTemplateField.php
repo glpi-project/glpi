@@ -141,7 +141,7 @@ abstract class ITILTemplateField extends CommonDBChild
             return false;
         }
         $canedit = $tt->canEdit($ID);
-        $fields  = $tt->getAllowedFieldsNames(false);
+        $fields  = $tt->getAllowedFieldsNames(true);
         $fields  = array_diff_key($fields, static::getExcludedFields());
         $display_options = [
             'relative_dates' => true,
