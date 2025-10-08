@@ -319,7 +319,7 @@ HTML;
 
         if (!self::$embed) {
             if (!$mini && $can_create) {
-                $l_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-plus fs-toggle add-dashboard' data-bs-toggle='tooltip' title='$add_dash_label'></i>";
+                $l_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-plus fs-toggle add-dashboard' data-bs-toggle='tooltip' data-bs-placement='bottom' title='$add_dash_label'></i>";
             }
             if (!$mini && $can_clone) {
                 $r_tb_icons .= "<i class='btn btn-sm btn-icon btn-ghost-secondary ti ti-copy fs-toggle clone-dashboard' data-bs-toggle='tooltip' data-bs-placement='bottom' title='$clone_label'></i>";
