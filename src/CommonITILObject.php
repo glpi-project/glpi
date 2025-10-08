@@ -2125,8 +2125,13 @@ abstract class CommonITILObject extends CommonDBTM
 
         // If status changed from pending to anything else, remove pending reason
         if (
-            isset($this->input["status"])
-            && $this->input["status"] != self::WAITING
+            (
+                isset($this->input["status"])
+                && $this->input["status"] != self::WAITING
+            ) || (
+                isset($input["status"])
+                && $input["status"] != self::WAITING
+            )
         ) {
             PendingReason_Item::deleteForItem($this);
         }
