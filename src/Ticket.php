@@ -3794,11 +3794,11 @@ JAVASCRIPT;
                 'show_tickets_properties_on_helpdesk',
                 Session::getActiveEntity(),
             ),
+            'survey'                    => $this->getSatisfactionSurveyForHelpdesk(),
         ]);
 
         return true;
     }
-
 
     /**
      * @param integer $start
@@ -6305,5 +6305,25 @@ JAVASCRIPT;
         }
 
         return $restrict;
+    }
+
+    private function getSatisfactionSurveyForHelpdesk(): ?TicketSatisfaction
+    {
+        // On the "central" interface, the survey will be available in a
+        // dedicated tab
+        if (Session::getCurrentInterface() !== "helpdesk") {
+            return null;
+        }
+
+        // Try to find a satisfaction survey for this ticket
+        $satisfaction = static::getSatisfactionClassInstance();
+        if (!$satisfaction instanceof TicketSatisfaction) {
+            return null; // Can't happen
+        }
+        $survey_exist = $satisfaction->getFromDBByCrit([
+            self::getForeignKeyField() => $this->getID(),
+        ]);
+
+        return $survey_exist ? $satisfaction : null;
     }
 }

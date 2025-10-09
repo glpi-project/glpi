@@ -38,6 +38,7 @@ use Calendar;
 use CalendarSegment;
 use CommonITILActor;
 use CommonITILObject;
+use CommonITILSatisfaction;
 use CommonITILValidation;
 use Computer;
 use Contract;
@@ -70,6 +71,7 @@ use Symfony\Component\DomCrawler\Crawler;
 use Ticket;
 use Ticket_Contract;
 use Ticket_User;
+use TicketSatisfaction;
 use TicketValidation;
 use User;
 
@@ -3884,7 +3886,7 @@ class TicketTest extends DbTestCase
             ])
         );
         // Verify survey created
-        $satisfaction = new \TicketSatisfaction();
+        $satisfaction = new TicketSatisfaction();
         $this->assertTrue($satisfaction->getFromDBByCrit(['tickets_id' => $tickets_id_3]));
 
 
@@ -5410,12 +5412,12 @@ HTML,
         ]);
         $this->assertTrue($result);
 
-        $inquest = new \TicketSatisfaction();
+        $inquest = new TicketSatisfaction();
 
         // Verify no existing survey for ticket
         $it = $DB->request([
             'SELECT' => ['id'],
-            'FROM' => \TicketSatisfaction::getTable(),
+            'FROM' => TicketSatisfaction::getTable(),
             'WHERE' => [
                 'tickets_id' => $tickets_id,
             ],
@@ -5431,7 +5433,7 @@ HTML,
         // Verify survey created
         $it = $DB->request([
             'SELECT' => ['id'],
-            'FROM' => \TicketSatisfaction::getTable(),
+            'FROM' => TicketSatisfaction::getTable(),
             'WHERE' => [
                 'tickets_id' => $tickets_id,
             ],
@@ -5463,12 +5465,12 @@ HTML,
         ]);
         $this->assertTrue($result);
 
-        $inquest = new \TicketSatisfaction();
+        $inquest = new TicketSatisfaction();
 
         // Verify no existing survey for ticket
         $it = $DB->request([
             'SELECT' => ['id'],
-            'FROM' => \TicketSatisfaction::getTable(),
+            'FROM' => TicketSatisfaction::getTable(),
             'WHERE' => [
                 'tickets_id' => $tickets_id,
             ],
@@ -5504,7 +5506,7 @@ HTML,
         // Verify survey created and only one exists
         $it = $DB->request([
             'SELECT' => ['id'],
-            'FROM' => \TicketSatisfaction::getTable(),
+            'FROM' => TicketSatisfaction::getTable(),
             'WHERE' => [
                 'tickets_id' => $tickets_id,
             ],
@@ -5607,7 +5609,7 @@ HTML,
         );
 
         // Ensure no survey has been created yet
-        $ticket_satisfaction = new \TicketSatisfaction();
+        $ticket_satisfaction = new TicketSatisfaction();
         $this->assertEquals(0, count($ticket_satisfaction->find(['tickets_id' => $root_ticket->getID()])));
         $this->assertEquals(0, count($ticket_satisfaction->find(['tickets_id' => $child_1_ticket->getID()])));
 
@@ -5619,7 +5621,7 @@ HTML,
         );
 
         // Ensure survey has been created
-        $ticket_satisfaction = new \TicketSatisfaction();
+        $ticket_satisfaction = new TicketSatisfaction();
         $this->assertEquals(1, count($ticket_satisfaction->find(['tickets_id' => $root_ticket->getID()])));
         $this->assertEquals(1, count($ticket_satisfaction->find(['tickets_id' => $child_1_ticket->getID()])));
 
@@ -9355,5 +9357,30 @@ HTML,
         $this->assertEquals(Ticket::INCOMING, $ticket->fields['status']);
         $this->assertEquals(0, $ticket->fields['solve_delay_stat']);
         $this->assertEquals(0, $ticket->fields['close_delay_stat']);
+    }
+
+    public function testSatisfactionSurveyIsDisplayedOnHelpdesk(): void
+    {
+        // Arrange: create a ticket with a satisfaction survey
+        $this->login('post-only');
+        $ticket = $this->createItem(Ticket::class, [
+            'name'    => "My ticket",
+            'content' => "My ticket content",
+            'status'  => 6,
+        ]);
+        $this->createItem(TicketSatisfaction::class, [
+            'tickets_id' => $ticket->getID(),
+            'type' => CommonITILSatisfaction::TYPE_INTERNAL,
+        ]);
+
+        // Act: render ticket form
+        ob_start();
+        $ticket->showForm($ticket->getID());
+        $html = ob_get_clean();
+
+        // Assert: make sure the satisfaction form was rendered
+        $crawler = new Crawler($html);
+        $survey = $crawler->filter('[data-testid="survey"]');
+        $this->assertNotEmpty($survey);
     }
 }
