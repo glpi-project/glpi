@@ -32,6 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\Inventoriable;
 use Glpi\Inventory\Inventory;
 use Glpi\Inventory\Request;
