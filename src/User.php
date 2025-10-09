@@ -7019,10 +7019,11 @@ HTML;
      *
      * @param string  $module Module to check
      * @param integer $right  Right to check
+     * @param integer $entities_id Entity to check
      *
      * @return boolean|int
      **/
-    public function hasRight($module, $right)
+    public function hasRight($module, $right, $entities_id)
     {
         if ($this->isNewItem()) {
             throw new \LogicException('Cannot check rights for a user not yet saved');
@@ -7033,7 +7034,7 @@ HTML;
                 $profile = new Profile();
                 $profile->getFromDB($profile_id);
                 $profile->cleanProfile();
-                if ($profile->haveUserRight($user_id, $module, $right, 0)) {
+                if ($profile->haveUserRight($user_id, $module, $right, $entities_id)) {
                     return true;
                 }
             }

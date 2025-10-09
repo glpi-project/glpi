@@ -7960,11 +7960,6 @@ abstract class CommonITILObject extends CommonDBTM
     {
         $user_id = $user ? $user->getID() : Session::getLoginUserID();
 
-        if ($user === null) {
-            $user = new User();
-            $user->getFromDB(Session::getLoginUserID());
-        }
-
         $task_class = $this->getType() . 'Task';
         /** @var DBmysql $DB */
         global $DB; // Used to get subquery results - better performance
@@ -7983,11 +7978,18 @@ abstract class CommonITILObject extends CommonDBTM
                 ITILFollowup::getTableField('itemtype') => $this->getType(),
                 ITILFollowup::getTableField('items_id') => $this->getID(),
             ];
-            if (!$bypass_rights && !$user->hasRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)) {
-                $fup_crits[] = [
-                    'OR' => ['is_private' => 0, 'users_id' => $user_id],
-                ];
+            if (!$bypass_rights) {
+                $can_seeprivate = ($user === null)
+                    ? Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)
+                    : $user->hasRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE, $this->fields['entities_id']);
+
+                if (!$can_seeprivate) {
+                    $fup_crits[] = [
+                        'OR' => ['is_private' => 0, 'users_id' => $user_id],
+                    ];
+                }
             }
+
             // Run the subquery separately. It's better for huge databases
             $iterator_tmp = $DB->request([
                 'SELECT' => 'id',
@@ -8048,10 +8050,16 @@ abstract class CommonITILObject extends CommonDBTM
             $tasks_crit = [
                 $this->getForeignKeyField() => $this->getID(),
             ];
-            if (!$bypass_rights && !$user->hasRight($task_class::$rightname, CommonITILTask::SEEPRIVATE)) {
-                $tasks_crit[] = [
-                    'OR' => ['is_private' => 0, 'users_id' => $user_id],
-                ];
+            if (!$bypass_rights) {
+                $can_seeprivate = ($user === null)
+                    ? Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATE)
+                    : $user->hasRight($task_class::$rightname, CommonITILTask::SEEPRIVATE, $this->fields['entities_id']);
+
+                if (!$can_seeprivate) {
+                    $fup_crits[] = [
+                        'OR' => ['is_private' => 0, 'users_id' => $user_id],
+                    ];
+                }
             }
             // Run the subquery separately. It's better for huge databases
             $iterator_tmp = $DB->request([
