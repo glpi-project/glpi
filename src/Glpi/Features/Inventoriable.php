@@ -108,6 +108,9 @@ trait Inventoriable
     {
         global $CFG_GLPI, $DB;
 
+        //TODO: GLPI 11.1
+        //Toolbox::deprecated();
+
         if (!$this->isDynamic()) {
             return;
         }
@@ -183,6 +186,9 @@ HTML;
     protected function displayAgentInformation()
     {
         global $CFG_GLPI;
+
+        //TODO: GLPI 11.1
+        //Toolbox::deprecated();
 
         echo '<tr class="tab_bg_1">';
         echo '<td>' . htmlescape(Agent::getTypeName(1)) . '</td>';
