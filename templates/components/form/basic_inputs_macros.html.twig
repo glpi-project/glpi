@@ -265,7 +265,7 @@
             </button>
             {# maybeempty has no distinct purpose, but it was here first #}
             {% if options.clearable or options.maybeempty %}
-                <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle data-clear title="{{ __('Clear') }}">
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom" data-clear title="{{ __('Clear') }}">
                     <i class="ti ti-circle-x"></i>
                 </button>
             {% endif %}

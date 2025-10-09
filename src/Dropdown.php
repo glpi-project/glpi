@@ -330,14 +330,15 @@ class Dropdown
             && !isset($_REQUEST['_in_modal'])
             && $params['addicon']
         ) {
-            $add_item_icon .= '<div class="btn btn-outline-secondary"
+            $add_item_icon .= '<div class="btn btn-outline-secondary" id="btn_add_' . htmlescape($field_id) . '"
                            title="' . __s('Add') . '" data-bs-toggle="modal" data-bs-target="#add_' . htmlescape($field_id) . '">';
             $add_item_icon .= Ajax::createIframeModalWindow('add_' . $field_id, $item->getFormURL(), ['display' => false]);
-            $add_item_icon .= "<span data-bs-toggle='tooltip'>
+            $add_item_icon .= "
               <i class='ti ti-plus'></i>
               <span class='sr-only'>" . __s('Add') . "</span>
-                </span>";
+                ";
             $add_item_icon .= '</div>';
+            $add_item_icon .= Html::scriptBlock("new bootstrap.Tooltip(document.getElementById('btn_add_" . htmlescape($field_id) . "'), {placement: 'bottom'});");
         }
 
         if ($params['display_dc_position'] && method_exists($item, 'getParentRack')) {

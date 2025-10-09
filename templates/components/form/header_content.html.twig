@@ -128,7 +128,7 @@
    {% set single_actions_ms_auto = true %}
    {% if item.isEntityAssign() and is_multi_entities_mode() and item is not instanceof('Entity') %}
       {% set single_actions_ms_auto = false %}
-       <div class="badge entity-name mx-1 px-2 ms-auto align-items-center col" title="{{ entity_name }}" style="min-width: 100px; max-width: fit-content;">
+       <div class="badge entity-name mx-1 px-2 ms-auto align-items-center col" style="min-width: 100px; max-width: fit-content;">
            <i class="ti ti-stack me-2"></i>
            <div class="overflow-hidden text-truncate text-nowrap">
                <span class="float-end ps-1">{{ entity_name }}</span>
@@ -162,7 +162,7 @@
                {% endif %}
                <span class="form-check-label mb-0 mx-2">
                   {{ __('Child entities') }}
-                  <i class="ti ti-info-circle ms-1" title="{{ comment }}"></i>
+                  <i class="ti ti-info-circle ms-1" data-bs-toggle="tooltip" title="{{ comment }}"></i>
                </span>
             </label>
          </span>
