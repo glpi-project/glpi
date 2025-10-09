@@ -216,6 +216,9 @@ JS;
 
         return <<<JS
             function(item) {
+                if (item == false) {
+                    return "";
+                }
                 const icons = {$js_icons};
                 return $('<span class="d-flex align-items-center gap-2">'
                     + '<i class="' + _.escape(icons[item.id]) + '"></i>'
