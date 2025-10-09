@@ -10809,7 +10809,7 @@ msgid ""
 "have a known extension (%1$s).\n"
 msgstr ""
 "אתם יכולים להשתמש בתפריט הזה לעלא מספרי ציוד.  הקבצים חייבים להיות עם סיומת "
-"ידועה (%1$s)."
+"ידועה (%1$s).\n"
 
 #: templates/pages/admin/inventory/upload_form.html.twig
 msgid ""
