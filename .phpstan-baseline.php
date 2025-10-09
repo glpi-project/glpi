@@ -4640,12 +4640,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_SoftwareVersion.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Loose comparison using \\!\\= between \'Monitor\'\\|\'Peripheral\'\\|\'Phone\'\\|\'Printer\' and \'Software\' will always evaluate to true\\.$#',
-	'identifier' => 'notEqual.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Ticket.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Item_Ticket\\:\\:dropdown\\(\\) should return int\\|string\\|false but empty return statement found\\.$#',
 	'identifier' => 'return.empty',
 	'count' => 1,
@@ -4659,12 +4653,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$ticket of static method Item_Ticket\\:\\:showForTicket\\(\\) expects Ticket, CommonGLPI given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Ticket.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$right of static method Session\\:\\:haveRight\\(\\) expects int, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Item_Ticket.php',
