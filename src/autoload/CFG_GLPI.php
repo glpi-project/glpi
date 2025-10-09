@@ -109,7 +109,7 @@ $CFG_GLPI['languages'] = [
     'be_BY'  => ['Belarussian',               'be_BY.mo',    'be',    'be', 'belarussian',          3],
     'is_IS'  => ['íslenska',                  'is_IS.mo',    'is',    'en', 'icelandic',            2],
     'eo'     => ['Esperanto',                 'eo.mo',       'eo',    'en', 'esperanto',            2],
-    'es_CL'  => ['Español chileno',           'es_CL',       'es',    'es', 'spanish chilean',      2],
+    'es_CL'  => ['Español chileno',           'es_CL.mo',    'es',    'es', 'spanish chilean',      2],
 ];
 
 // Init to store glpi itemtype / tables link
