@@ -228,7 +228,7 @@
         {{ include('components/itilobject/answer.html.twig') }}
     {% endif %}
 
-   {% if survey is defined %}
+   {% if survey is defined and survey %}
       <form
          data-testid="survey"
          class="mt-5 w-100 hide-form-button-separator"
