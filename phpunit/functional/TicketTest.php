@@ -8464,7 +8464,12 @@ HTML,
             'name' => 'Ticket with documents',
             'content' => 'test',
             'entities_id' => $this->getTestRootEntity(true),
-            '_users_id_requester' => [$postonly_user->getID()],
+            '_users_id_requester'       => '0',     // anonymous requester
+            '_users_id_requester_notif' => [
+                'use_notification'   => '1',
+                'alternative_email'  => 'unknownuser@localhost.local',
+            ],
+            '_users_id_observer' => [$postonly_user->getID()], // post-only observer
         ]);
 
         // Create a document linked to the ticket
@@ -8484,7 +8489,6 @@ HTML,
             'items_id' => $ticket->getID(),
             'content' => 'Followup content',
         ]);
-
         $doc2 = $this->createItem(\Document::class, [
             'name' => 'Doc 2: linked to followup',
         ]);
@@ -8515,7 +8519,6 @@ HTML,
         $doc_crit[] = [
             'timeline_position' => ['>', CommonITILObject::NO_TIMELINE],
         ];
-
         $doc_items_iterator = $DB->request(
             [
                 'SELECT' => ['documents_id'],
@@ -8536,7 +8539,26 @@ HTML,
         $doc_crit[] = [
             'timeline_position' => ['>', CommonITILObject::NO_TIMELINE],
         ];
+        $doc_items_iterator = $DB->request(
+            [
+                'SELECT' => ['documents_id'],
+                'FROM' => \Document_Item::getTable(),
+                'WHERE' => $doc_crit,
+            ]
+        );
+        $found_docs = [];
+        foreach ($doc_items_iterator as $doc_item) {
+            $found_docs[] = $doc_item['documents_id'];
+        }
+        $this->assertContains($doc1->getID(), $found_docs);
+        $this->assertContains($doc2->getID(), $found_docs);
+        $this->assertNotContains($doc3->getID(), $found_docs);
 
+        // Anonymous user can't see documents linked to private followups
+        $doc_crit = $ticket->getAssociatedDocumentsCriteria(false, new User());
+        $doc_crit[] = [
+            'timeline_position' => ['>', CommonITILObject::NO_TIMELINE],
+        ];
         $doc_items_iterator = $DB->request(
             [
                 'SELECT' => ['documents_id'],

@@ -7025,9 +7025,7 @@ HTML;
      **/
     public function hasRight($module, $right, $entities_id)
     {
-        if ($this->isNewItem()) {
-            throw new \LogicException('Cannot check rights for a user not yet saved');
-        } else {
+        if (!$this->isNewItem()) {
             $user_id = $this->getID();
             $profiles = Profile_User::getUserProfiles($user_id);
             foreach ($profiles as $profile_id) {
