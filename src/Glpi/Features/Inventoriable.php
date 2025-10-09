@@ -38,9 +38,12 @@ namespace Glpi\Features;
 use Agent;
 use Computer;
 use DatabaseInstance;
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
+use Glpi\Plugin\Hooks;
+use Html;
+use Plugin;
+use RefusedEquipment;
 use Safe\Exceptions\FilesystemException;
 
 use function Safe\unlink;
@@ -103,13 +106,140 @@ trait Inventoriable
      */
     protected function showInventoryInfo()
     {
+        global $CFG_GLPI, $DB;
+
         if (!$this->isDynamic()) {
             return;
         }
 
-        echo '<tr><td colspan="4">';
-        echo TemplateRenderer::getInstance()->render('components/form/inventory_info.html.twig', ['item' => $this]);
-        echo "</td></tr>";
+        echo '<tr>';
+        echo '<th colspan="4">' . __s('Inventory information');
+
+        $agent = $this->getInventoryAgent();
+
+        $download_file = $this->getInventoryFileName(false);
+        if ($download_file !== null) {
+            $href = sprintf(
+                "%s/front/document.send.php?file=_inventory/%s",
+                $CFG_GLPI["root_doc"],
+                $download_file
+            );
+
+            echo sprintf(
+                "<a href='%s' style='float: right;' target='_blank'><i class='ti ti-download' title='%s'></i></a>",
+                \htmlescape($href),
+                sprintf(
+                    //TRANS: parameter is the name of the asset
+                    __s('Download "%1$s" inventory file'),
+                    htmlescape($this->getName())
+                )
+            );
+
+            if (static::class === RefusedEquipment::class) { //@phpstan-ignore-line - phpstan bug with traits
+                $url = \htmlescape($CFG_GLPI['root_doc'] . '/Inventory/RefusedEquipment');
+                $title = __s('Try a reimport from stored inventory file');
+                echo <<<HTML
+                        <button type="submit" class="btn btn-sm btn-ghost-secondary" name="redo_inventory"
+                                title="{$title}"
+                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                style="float: right;margin-right: .5em;"
+                                formaction="{$url}">
+                           <i class="ti ti-reload"></i>
+                        </button>
+HTML;
+            }
+        } else {
+            echo sprintf(
+                "<span style='float: right;'><i class='ti ti-ban'></i> <span class='sr-only'>%s</span></span>",
+                __s('Inventory file missing')
+            );
+        }
+
+        echo '</th>';
+        echo '</tr>';
+
+        if ($agent === null) {
+            echo '<tr class="tab_bg_1">';
+            echo '<td colspan="4">' . __s('Agent information is not available.') . '</td>';
+            echo "</tr>";
+        } else {
+            $this->displayAgentInformation();
+        }
+
+        // Display auto inventory information
+        if (
+            !empty($this->fields['id'])
+            && $this->maybeDynamic() && $this->fields["is_dynamic"]
+        ) {
+            echo "<tr class='tab_bg_1'><td colspan='4'>";
+            Plugin::doHook(Hooks::AUTOINVENTORY_INFORMATION, $this);
+            echo "</td></tr>";
+        }
+    }
+
+    /**
+     * Display agent information
+     */
+    protected function displayAgentInformation()
+    {
+        global $CFG_GLPI;
+
+        echo '<tr class="tab_bg_1">';
+        echo '<td>' . htmlescape(Agent::getTypeName(1)) . '</td>';
+        echo '<td>' . $this->agent->getLink() . '</td>';
+
+        echo '<td>' . __s('Useragent') . '</td>';
+        echo '<td>' . htmlescape($this->agent->fields['useragent']) . '</td>';
+        echo '</tr>';
+
+        echo '<tr class="tab_bg_1">';
+        echo '<td>' . __s('Inventory tag') . '</td>';
+        echo '<td>' . htmlescape($this->agent->fields['tag']) . '</td>';
+        echo '<td>' . __s('Last inventory') . '</td>';
+        echo '<td>' . htmlescape(Html::convDateTime($this->agent->fields['last_contact'])) . '</td>';
+        echo '</tr>';
+
+        echo '<tr class="tab_bg_1">';
+        echo '<td>' . __s('Agent status');
+        echo "<i id='update-status' class='ti ti-refresh' style='float: right;cursor: pointer;' title='" . __s('Ask agent about its current status') . "'></i>";
+        echo '</td>';
+        echo '<td id="agent_status">' . __s('Unknown') . '</td>';
+        echo '<td>' . __s('Request inventory');
+        echo "<i id='update-inventory' class='ti ti-refresh' style='float: right;cursor: pointer;' title='" . __s('Request agent to proceed an new inventory') . "'></i>";
+        echo '</td>';
+        echo '<td id="inventory_status">' . __s('None') . '</td>';
+        echo '</tr>';
+
+        $status = Agent::ACTION_STATUS;
+        $inventory = Agent::ACTION_INVENTORY;
+        $agents_id = (int) $this->agent->fields['id'];
+        $root_doc = \jsescape($CFG_GLPI['root_doc']);
+        $js = <<<JAVASCRIPT
+            $(function() {
+                $('#update-status').on('click', function() {
+                    $.post({
+                        url: '{$root_doc}/ajax/agent.php',
+                        timeout: 3000, //3 seconds timeout
+                        data: {'action': '{$status}', 'id': '{$agents_id}'},
+                        success: function(json) {
+                            $('#agent_status').html(json.answer);
+                        }
+                    });
+                });
+
+                $('#update-inventory').on('click', function() {
+                    $.post({
+                        url: '{$root_doc}/ajax/agent.php',
+                        timeout: 3000, //3 seconds timeout
+                        data: {'action': '{$inventory}', 'id': '{$agents_id}'},
+                        success: function(json) {
+                            $('#inventory_status').html(json.answer);
+                        }
+                    });
+                });
+            });
+JAVASCRIPT;
+        echo Html::scriptBlock($js);
     }
 
     public function getInventoryAgent(): ?Agent
