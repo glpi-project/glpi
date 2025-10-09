@@ -490,6 +490,9 @@ final class SQLProvider implements SearchProviderInterface
             case "glpi_itilfollowups.content":
             case "glpi_tickettasks.content":
             case "glpi_changetasks.content":
+            case "glpi_tickettasks.state":
+            case "glpi_changetasks.state":
+            case "glpi_problemtasks.state":
                 if (is_subclass_of($itemtype, CommonITILObject::class)) {
                     // force ordering by date desc
                     $SELECT = [
