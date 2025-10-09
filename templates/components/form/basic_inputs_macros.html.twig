@@ -480,10 +480,10 @@
         {% set helper_safe_text = options.helper|escape|nl2br %}
         {% set helper %}
         <span class="form-help"
-              data-bs-toggle="popover"
+              data-bs-toggle="tooltip"
               data-bs-placement="top"
               data-bs-html="true"
-              data-bs-content="{{ helper_safe_text|raw }}">
+              data-bs-title="{{ helper_safe_text|raw }}">
             ?
         </span>
         {% endset %}

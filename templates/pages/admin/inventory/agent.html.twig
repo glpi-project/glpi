@@ -188,8 +188,8 @@
                         <div class="hr-text">
                             <i class="ti ti-list"></i>
                             <span>{{ __('Supported tasks') }} </span>
-                            <span class="form-help" data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true"
-                                  data-bs-content="{{ __('When reported by GLPI agent via native inventory') }}">?</span>
+                            <span class="form-help" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true"
+                                  data-bs-title="{{ __('When reported by GLPI agent via native inventory') }}">?</span>
                         </div>
 
                         {% for modulefield, modulelabel in {
