@@ -22,6 +22,7 @@ The present file will list all changes made to the project; according to the
 
 #### Deprecated
 - `CommonITILSatisfaction::showSatisactionForm()`, use `CommonITILSatisfaction::showSatisfactionForm()` instead.
+- `User::loadMinimalSession()`
 
 #### Removed
 

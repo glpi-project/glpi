@@ -329,9 +329,13 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * @return void
      *
      * @since 0.83.7
+     *
+     * @deprecated 11.1.0
      */
     public function loadMinimalSession($entities_id, $is_recursive)
     {
+        Toolbox::deprecated();
+
         if (isset($this->fields['id']) && !isset($_SESSION["glpiID"])) {
             Session::destroy();
             Session::start();
