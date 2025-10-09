@@ -1035,7 +1035,7 @@ class Stat extends CommonGLPI
                 break;
 
             case "technicien_followup":
-                $WHERE["$tasktable.users_id"] = $value;
+                $WHERE["$tasktable.users_id_tech"] = $value;
                 $LEFTJOIN = [
                     $tasktable => [
                         'ON' => [
