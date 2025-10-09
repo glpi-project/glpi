@@ -4028,7 +4028,7 @@ JAVASCRIPT;
         }
 
         // My group items
-        if (Session::haveRight("show_group_hardware", "1")) {
+        if (Session::haveRight("show_group_hardware", 1)) {
             $iterator = $DB->request([
                 'SELECT'    => [
                     'glpi_groups_users.groups_id',
@@ -4357,13 +4357,11 @@ JAVASCRIPT;
                                     $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
                                 }
 
-                                if ($itemtype != 'Software') {
-                                    if (!empty($data['serial'])) {
-                                        $output = sprintf(__('%1$s - %2$s'), $output, $data['serial']);
-                                    }
-                                    if (!empty($data['otherserial'])) {
-                                        $output = sprintf(__('%1$s - %2$s'), $output, $data['otherserial']);
-                                    }
+                                if (!empty($data['serial'])) {
+                                    $output = sprintf(__('%1$s - %2$s'), $output, $data['serial']);
+                                }
+                                if (!empty($data['otherserial'])) {
+                                    $output = sprintf(__('%1$s - %2$s'), $output, $data['otherserial']);
                                 }
 
                                 if (!isset($all_devices[$itemtype])) {
@@ -4390,7 +4388,7 @@ JAVASCRIPT;
         // Flatten all items with their group information for pagination
         $all_items_flat = [];
         foreach ($all_devices as $itemtype => $group) {
-            if (isset($group['children']) && count($group['children']) > 0) {
+            if (count($group['children']) > 0) {
                 foreach ($group['children'] as $child) {
                     $all_items_flat[] = [
                         'item' => $child,
