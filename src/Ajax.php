@@ -347,7 +347,6 @@ class Ajax
                 $tab_content_url = $val['url'] . (isset($val['params']) ? '?' . $val['params'] : '');
                 $selected = $active_id == $target ? 'selected' : '';
                 $title = $val['title'];
-                $title_clean = strip_tags($title);
 
                 // Compute direct link that user can reach in a new tab using
                 // middle mouse click.
@@ -368,7 +367,6 @@ class Ajax
                             <a
                                 class='nav-link justify-content-between $navlinkp $display_class'
                                 data-bs-toggle='tab'
-                                title='" . $title_clean . "'
                                 data-glpi-ajax-content='" . htmlescape($tab_content_url) . "'
                                 href='" . htmlescape($direct_link_url) . "'
                                 data-bs-target='#" . htmlescape($target) . "'
@@ -381,7 +379,7 @@ class Ajax
                     $html_tabs .= <<<HTML
                         <li class='nav-item $navitemml'>
                             <a class='nav-link justify-content-between $navlinkp $display_class' data-bs-toggle='tab'
-                                title='" . $title_clean . "' href='#' data-show-all-tabs="true">{$title}</a>
+                                href='#' data-show-all-tabs="true">{$title}</a>
                         </li>
 HTML;
                     $html_sele .= "<option value='$i' {$selected}>{$title}</option>";

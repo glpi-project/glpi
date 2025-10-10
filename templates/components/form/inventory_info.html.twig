@@ -48,7 +48,7 @@
             <i class="ti ti-download"></i>
          </a>
       {% else %}
-         <span class="ms-auto" title="{{ __('Inventory file missing') }}">
+         <span class="ms-auto" data-bs-toggle="tooltip" data-bs-placement="right" title="{{ __('Inventory file missing') }}">
             <i class="ti ti-ban"></i>
             <span class="visually-hidden">{{ __('Inventory file missing') }}</span>
          </span>
@@ -99,7 +99,7 @@
          <div class="mb-3 col-12 col-sm-4">
             <label class="form-label" >
                {{ __('Agent status') }}
-               <i id="update-status" class="ti ti-refresh d-inline-block" role="button" title="{{ __('Ask agent about its current status') }}"></i>
+               <i id="update-status" class="ti ti-refresh d-inline-block" role="button" data-bs-toggle="tooltip" title="{{ __('Ask agent about its current status') }}"></i>
             </label>
             <span id='agent_status'>{{ __('Unknown') }}</span>
          </div>
@@ -107,7 +107,7 @@
          <div class="mb-3 col-12 col-sm-4">
             <label class="form-label" >
                {{ __('Request inventory') }}
-               <i id="update-inventory" class="ti ti-refresh d-inline-block" role="button" title="{{ __('Request agent to proceed an new inventory') }}"></i>
+               <i id="update-inventory" class="ti ti-refresh d-inline-block" role="button" data-bs-toggle="tooltip" title="{{ __('Request agent to proceed an new inventory') }}"></i>
             </label>
             <span id='inventory_status'>{{ __('Unknown') }}</span>
          </div>
