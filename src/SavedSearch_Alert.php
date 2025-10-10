@@ -234,7 +234,6 @@ class SavedSearch_Alert extends CommonDBChild
             ],
             'entries' => $entries,
             'total_number' => $total_count,
-            'filtered_number' => $total_count,
             'showmassiveactions' => false,
         ]);
     }

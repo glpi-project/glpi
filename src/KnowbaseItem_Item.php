@@ -176,7 +176,6 @@ class KnowbaseItem_Item extends CommonDBRelation
             ],
             'entries' => $entries,
             'total_number' => $number,
-            'filtered_number' => $number,
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
