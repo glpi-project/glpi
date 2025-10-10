@@ -1346,7 +1346,6 @@ TWIG, ['projects_id' => $ID, 'label' => __('Create a sub project from this proje
             'formatters' => $header['formatters'],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -1481,7 +1480,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),

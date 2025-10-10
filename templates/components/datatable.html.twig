@@ -42,7 +42,11 @@
 {% set footers = footers|default([]) %}
 {% set showmassiveactions = showmassiveactions|default(false) %}
 
-{% set use_pager = use_pager|default(start is defined and limit is defined and filtered_number is defined) %}
+{% if filtered_number is not defined %}
+    {% set filtered_number = total_number %}
+{% endif %}
+
+{% set use_pager = use_pager|default(start is defined and limit is defined) %}
 
 {# nopager is deprecated, use "use_pager" instead #}
 {% set use_pager = nopager is defined ? not nopager : use_pager %}

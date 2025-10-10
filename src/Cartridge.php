@@ -921,7 +921,6 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
             'footers' => $footers,
             'footer_class' => 'fw-bold',
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -1212,7 +1211,6 @@ TWIG, ['printer_id' => $printer->getID()]);
             'footers' => $footers,
             'footer_class' => 'fw-bold',
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
