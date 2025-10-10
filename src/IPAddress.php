@@ -295,6 +295,8 @@ class IPAddress extends CommonDBChild
             ];
         }
 
+        $total_number = self::countForItem($item);
+
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
             'nofilter' => true,
@@ -316,7 +318,7 @@ class IPAddress extends CommonDBChild
                 'name_id' => 'raw_html',
             ],
             'entries' => $entries,
-            'total_number' => count($entries),
+            'total_number' => $total_number,
             'showmassiveactions' => false,
         ]);
     }
