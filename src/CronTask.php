@@ -1174,6 +1174,8 @@ class CronTask extends CommonDBTM
         }
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'start' => $start,
+            'limit' => $_SESSION['glpilist_limit'],
             'is_tab' => true,
             'nofilter' => true,
             'columns' => [
