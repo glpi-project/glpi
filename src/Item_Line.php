@@ -219,7 +219,6 @@ class Item_Line extends CommonDBRelation
             ],
             'entries' => $simcard_entries,
             'total_number' => count($simcard_entries),
-            'filtered_number' => count($simcard_entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($simcard_entries),
@@ -277,7 +276,6 @@ class Item_Line extends CommonDBRelation
             ],
             'entries' => $item_entries,
             'total_number' => count($item_entries),
-            'filtered_number' => count($item_entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($item_entries),
@@ -356,7 +354,6 @@ class Item_Line extends CommonDBRelation
             ],
             'entries' => $simcard_entries,
             'total_number' => count($simcard_entries),
-            'filtered_number' => count($simcard_entries),
             'showmassiveactions' => $simcard_entries,
             'massiveactionparams' => [
                 'num_displayed' => count($simcard_entries),
@@ -413,7 +410,6 @@ class Item_Line extends CommonDBRelation
             ],
             'entries' => $line_entries,
             'total_number' => count($line_entries),
-            'filtered_number' => count($line_entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($line_entries),

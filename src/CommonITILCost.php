@@ -643,7 +643,6 @@ TWIG, $twig_params);
             'entries' => $entries,
             'row_class' => $canedit ? 'cursor-pointer' : '',
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => false,
         ]);
         if ($canedit) {
