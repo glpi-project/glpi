@@ -127,9 +127,7 @@ if (!$DB->fieldExists('glpi_entities', 'inquest_duration_change')) {
 }
 
 $migration->addRight('change', CommonITILObject::SURVEY, [
-    'change' => [
-        Change::READMY,
-    ],
+    'change' => Change::READMY,
 ]);
 
 // Replace old TICKETCATEGORY tags in Entity inquest_URL field with ITILCATEGORY
