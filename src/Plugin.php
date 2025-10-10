@@ -766,8 +766,8 @@ class Plugin extends CommonDBTM
         $new_specs        = $check_for_replacement ? $this->getNewInfoAndDirBasedOnOldName($plugin_key) : null;
         $is_replaced      = $new_specs !== null;
 
-        if (!$is_already_known && !$is_loadable) {
-            // Plugin is not known and we are unable to load information, we ignore it.
+        if (!$is_already_known || !$is_loadable) {
+            // Plugin is not known or we are unable to load information, we ignore it.
             return;
         }
 
