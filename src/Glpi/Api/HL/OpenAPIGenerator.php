@@ -131,7 +131,7 @@ EOT;
         return [
             'title' => 'GLPI High-Level REST API',
             'description' => $description,
-            'version' => Router::API_VERSION,
+            'version' => $this->api_version,
             'license' => [
                 'name' => 'GNU General Public License v3 or later',
                 'url' => 'https://www.gnu.org/licenses/gpl-3.0.html',
@@ -141,40 +141,36 @@ EOT;
 
     public static function getComponentSchemas(string $api_version): array
     {
-        static $schemas = null;
+        $schemas = [];
 
-        if ($schemas === null) {
-            $schemas = [];
-
-            $controllers = Router::getInstance()->getControllers();
-            foreach ($controllers as $controller) {
-                $known_schemas = $controller::getKnownSchemas($api_version);
-                $short_name = (new ReflectionClass($controller))->getShortName();
-                $controller_name = str_replace('Controller', '', $short_name);
-                foreach ($known_schemas as $schema_name => $known_schema) {
-                    // Ignore schemas starting with an underscore. They are only used internally.
-                    if (str_starts_with($schema_name, '_')) {
-                        continue;
-                    }
-                    $calculated_name = $schema_name;
-                    if (isset($schemas[$schema_name])) {
-                        // For now, set the new calculated name to the short name of the controller + the schema name
-                        $calculated_name = $controller_name . ' - ' . $schema_name;
-                        // Change the existing schema name to its own calculated name
-                        $other_short_name = (new ReflectionClass($schemas[$schema_name]['x-controller']))->getShortName();
-                        $other_calculated_name = str_replace('Controller', '', $other_short_name) . ' - ' . $schema_name;
-                        $schemas[$other_calculated_name] = $schemas[$schema_name];
-                        unset($schemas[$schema_name]);
-                    }
-                    if (!isset($known_schema['description']) && isset($known_schema['x-itemtype'])) {
-                        /** @var class-string<CommonGLPI> $itemtype */
-                        $itemtype = $known_schema['x-itemtype'];
-                        $known_schema['description'] = $itemtype::getTypeName(1);
-                    }
-                    $schemas[$calculated_name] = $known_schema;
-                    $schemas[$calculated_name]['x-controller'] = $controller::class;
-                    $schemas[$calculated_name]['x-schemaname'] = $schema_name;
+        $controllers = Router::getInstance()->getControllers();
+        foreach ($controllers as $controller) {
+            $known_schemas = $controller::getKnownSchemas($api_version);
+            $short_name = (new ReflectionClass($controller))->getShortName();
+            $controller_name = str_replace('Controller', '', $short_name);
+            foreach ($known_schemas as $schema_name => $known_schema) {
+                // Ignore schemas starting with an underscore. They are only used internally.
+                if (str_starts_with($schema_name, '_')) {
+                    continue;
                 }
+                $calculated_name = $schema_name;
+                if (isset($schemas[$schema_name])) {
+                    // For now, set the new calculated name to the short name of the controller + the schema name
+                    $calculated_name = $controller_name . ' - ' . $schema_name;
+                    // Change the existing schema name to its own calculated name
+                    $other_short_name = (new ReflectionClass($schemas[$schema_name]['x-controller']))->getShortName();
+                    $other_calculated_name = str_replace('Controller', '', $other_short_name) . ' - ' . $schema_name;
+                    $schemas[$other_calculated_name] = $schemas[$schema_name];
+                    unset($schemas[$schema_name]);
+                }
+                if (!isset($known_schema['description']) && isset($known_schema['x-itemtype'])) {
+                    /** @var class-string<CommonGLPI> $itemtype */
+                    $itemtype = $known_schema['x-itemtype'];
+                    $known_schema['description'] = $itemtype::getTypeName(1);
+                }
+                $schemas[$calculated_name] = $known_schema;
+                $schemas[$calculated_name]['x-controller'] = $controller::class;
+                $schemas[$calculated_name]['x-schemaname'] = $schema_name;
             }
         }
 
@@ -255,6 +251,9 @@ EOT;
         $paths = [];
 
         foreach ($routes as $route_path) {
+            if (!$route_path->matchesAPIVersion($this->api_version)) {
+                continue;
+            }
             /** @noinspection SlowArrayOperationsInLoopInspection */
             $paths = array_merge_recursive($paths, $this->getPathSchemas($route_path));
         }

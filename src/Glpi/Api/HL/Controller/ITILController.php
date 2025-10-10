@@ -421,6 +421,24 @@ final class ITILController extends AbstractController
             ];
         }
 
+        $timeline_position_enum = [
+            CommonITILObject::NO_TIMELINE,
+            CommonITILObject::TIMELINE_NOTSET,
+            CommonITILObject::TIMELINE_LEFT,
+            CommonITILObject::TIMELINE_MIDLEFT,
+            CommonITILObject::TIMELINE_MIDRIGHT,
+            CommonITILObject::TIMELINE_RIGHT,
+        ];
+        $timeline_position_description = <<<EOT
+            The position in the timeline.
+            - 0: No timeline
+            - 1: Not set
+            - 2: Left
+            - 3: Mid left
+            - 4: Mid right
+            - 5: Right
+            EOT;
+
         $base_task_schema = [
             'type' => Doc\Schema::TYPE_OBJECT,
             'x-rights-conditions' => [ // Object-level extra permissions
@@ -464,6 +482,12 @@ final class ITILController extends AbstractController
                         EOT,
                 ],
                 'category' => self::getDropdownTypeSchema(class: TaskCategory::class, full_schema: 'TaskCategory'),
+                'timeline_position' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'enum' => $timeline_position_enum,
+                    'description' => $timeline_position_description,
+                ],
             ],
         ];
 
@@ -471,6 +495,18 @@ final class ITILController extends AbstractController
         $schemas['TicketTask']['x-version-introduced'] = '2.0';
         $schemas['TicketTask']['x-itemtype'] = TicketTask::class;
         $schemas['TicketTask']['properties'][Ticket::getForeignKeyField()] = ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64];
+        $schemas['TicketTask']['properties']['source_item_id'] = [
+            'x-version-introduced' => '2.1.0',
+            'type' => Doc\Schema::TYPE_INTEGER,
+            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+            'x-field' => 'sourceitems_id',
+        ];
+        $schemas['TicketTask']['properties']['source_of_item_id'] = [
+            'x-version-introduced' => '2.1.0',
+            'type' => Doc\Schema::TYPE_INTEGER,
+            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+            'x-field' => 'sourceof_items_id',
+        ];
 
         $schemas['ChangeTask'] = $base_task_schema;
         $schemas['ChangeTask']['x-version-introduced'] = '2.0';
@@ -561,6 +597,24 @@ final class ITILController extends AbstractController
                 'request_type' => self::getDropdownTypeSchema(RequestType::class, full_schema: 'RequestType'),
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'timeline_position' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'enum' => $timeline_position_enum,
+                    'description' => $timeline_position_description,
+                ],
+                'source_item_id' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'x-field' => 'sourceitems_id',
+                ],
+                'source_of_item_id' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'x-field' => 'sourceof_items_id',
+                ],
             ],
         ];
 
@@ -625,6 +679,12 @@ final class ITILController extends AbstractController
                 ],
                 'submission_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'approval_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-field' => 'validation_date'],
+                'timeline_position' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'enum' => $timeline_position_enum,
+                    'description' => $timeline_position_description,
+                ],
             ],
         ];
 
