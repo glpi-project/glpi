@@ -41,8 +41,9 @@
 {% set csv_url = csv_url|default('') %}
 {% set footers = footers|default([]) %}
 {% set showmassiveactions = showmassiveactions|default(false) %}
+{% set filtered_number = filtered_number|default(total_number) %}
 
-{% set use_pager = use_pager|default(start is defined and limit is defined and filtered_number is defined) %}
+{% set use_pager = use_pager|default(start is defined and limit is defined) %}
 
 {# nopager is deprecated, use "use_pager" instead #}
 {% set use_pager = nopager is defined ? not nopager : use_pager %}
