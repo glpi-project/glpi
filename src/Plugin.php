@@ -765,16 +765,9 @@ class Plugin extends CommonDBTM
         $is_already_known = $plugin->getFromDBByCrit(['directory' => $plugin_key]);
         $new_specs        = $check_for_replacement ? $this->getNewInfoAndDirBasedOnOldName($plugin_key) : null;
         $is_replaced      = $new_specs !== null;
-        $dir_exists       = false;
-        foreach (GLPI_PLUGINS_DIRECTORIES as $dir) {
-            if (file_exists($dir . PATH_SEPARATOR . $plugin_key)) {
-                $dir_exists = true;
-                break;
-            }
-        }
 
-        if (!$is_already_known && !$is_loadable || !$dir_exists) {
-            // Plugin is not known and we are unable to load information - or its directory does not exist, we ignore it.
+        if (!$is_already_known || !$is_loadable) {
+            // Plugin is not known or we are unable to load information, we ignore it.
             return;
         }
 
