@@ -88,6 +88,7 @@ use Glpi\Message\MessageType;
 use Glpi\Migration\PluginMigrationResult;
 use Glpi\Tests\FormTesterTrait;
 use GlpiPlugin\Tester\Form\QuestionTypeIpConverter;
+use Group;
 use Location;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -101,7 +102,10 @@ final class FormMigrationTest extends DbTestCase
         global $DB;
 
         parent::setUpBeforeClass();
-
+        $tables = $DB->listTables('glpi\_plugin\_formcreator\_%');
+        foreach ($tables as $table) {
+            $DB->dropTable($table['TABLE_NAME']);
+        }
         $queries = $DB->getQueriesFromFile(sprintf('%s/tests/glpi-formcreator-migration-data.sql', GLPI_ROOT));
         foreach ($queries as $query) {
             $DB->doQuery($query);
@@ -3286,6 +3290,66 @@ final class FormMigrationTest extends DbTestCase
         );
     }
 
+    public function testFormWithDuplicatedNames(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Arrange: create a form with multiple groups that share the same name
+        $entity_id = $this->getTestRootEntity(only_id: true);
+        $group_1 = $this->createItem(Group::class, [
+            'name'        => "Group",
+            'entities_id' => $entity_id,
+        ]);
+        $group_2 = $this->createItem(Group::class, [
+            'name'        => "Group",
+            'entities_id' => $entity_id,
+        ]);
+        $this->createSimpleFormcreatorForm("My form with duplicated names", [
+            [
+                'name'           => 'Group question',
+                'fieldtype'      => 'glpiselect',
+                'itemtype'       => Group::class,
+            ],
+            [
+                'name'           => 'Another question',
+                'fieldtype'      => 'integer',
+                'show_rule'      => 2,
+                '_conditions'    => [
+                    [
+                        'plugin_formcreator_questions_id' => 'Group question',
+                        'show_condition'                  => 1,
+                        'show_value'                      => 'Group',
+                        'show_logic'                      => 1,
+                        'order'                           => 1,
+                    ],
+                ],
+            ],
+        ]);
+
+        // Act: try to import the form
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $result = $migration->execute();
+
+        // Assert: the condition should fallback to using "contains" as the group
+        // name is not unique
+        $this->assertTrue($result->isFullyProcessed());
+
+        $form = getItemByTypeName(Form::class, "My form with duplicated names");
+        $question_id = $this->getQuestionId($form, "Another question");
+        $question = Question::getById($question_id);
+
+        $conditions = $question->getConfiguredConditionsData();
+        $this->assertCount(1, $conditions);
+
+        $condition = array_pop($conditions);
+        $this->assertEquals(
+            ValueOperator::CONTAINS,
+            $condition->getValueOperator(),
+        );
+        $this->assertEquals("Group", $condition->getValue());
+    }
+
     protected function createSimpleFormcreatorForm(
         string $name,
         array $questions,
@@ -3306,9 +3370,34 @@ final class FormMigrationTest extends DbTestCase
         $section_id = $DB->insertId();
 
         // Add questions
+        $questions_names_map = [];
         foreach ($questions as $data) {
+            $conditions = null;
+            if (isset($data['_conditions'])) {
+                $conditions = $data['_conditions'];
+                unset($data['_conditions']);
+            }
+
             $data['plugin_formcreator_sections_id'] = $section_id;
             $DB->insert('glpi_plugin_formcreator_questions', $data);
+            $question_id = $DB->insertId();
+
+            // Keep track of name => id map
+            $questions_names_map[$data['name']] = $question_id;
+
+            if ($conditions) {
+                foreach ($conditions as $condition) {
+                    // Replace target question name by id
+                    $target_q_name = $condition['plugin_formcreator_questions_id'];
+                    $target_q_id = $questions_names_map[$target_q_name];
+                    $condition['plugin_formcreator_questions_id'] = $target_q_id;
+
+                    $condition['itemtype'] = 'PluginFormcreatorQuestion';
+                    $condition['items_id'] = $question_id;
+
+                    $DB->insert('glpi_plugin_formcreator_conditions', $condition);
+                }
+            }
         }
     }
 }
