@@ -47,6 +47,8 @@ use Glpi\Form\Form;
 use InvalidArgumentException;
 use Override;
 
+use function Safe\parse_url;
+
 final class DirectAccess implements ControlTypeInterface
 {
     #[Override]
@@ -168,22 +170,33 @@ final class DirectAccess implements ControlTypeInterface
         DirectAccessConfig $config,
         FormAccessParameters $parameters,
     ): bool {
-        // Note: it is easy to validate the token when an user is accesing the
-        // form for the first time through the /Form/Render/{id} page as the
-        // link will contain the token as a GET parameter.
-        // However, for any subsequent AJAX requests, the token is not present
-        // in the URL. Therefore, we must rely on the session to store the token
-        // and validate it on each request.
+        // Try to read the token from the query parameters
         $token = $parameters->getUrlParameters()['token'] ?? null;
+        $has_supplied_token = $token !== null;
+
+        // Read context about current and previous pages
+        $current_route_path = $_SERVER['REQUEST_URI'] ?? "";
+        $referer = $_SERVER['HTTP_REFERER'] ?? "";
+
+        // We'll also look for the token in the previous URL using the referer.
+        // This make it more convenient for AJAX calls from the form renderer
+        // as they don't need to manually include the token.
+        if (
+            !$has_supplied_token
+            && str_contains($referer, "Form/Render/{$form->getId()}")
+            // Disable this fallback for the service catalog, this prevent the
+            // edge cases of users going straight to the service catalog after
+            // being on the form itself.
+            && !str_contains($current_route_path, "ServiceCatalog")
+        ) {
+            $parsed_referer = parse_url($referer);
+            $query = $parsed_referer['query'] ?? "";
+            parse_str($query, $parsed_query);
+            $token = $parsed_query['token'] ?? null;
+        }
+
         if ($token === null) {
-            $session_token = $_SESSION['helpdesk_form_access_control'][$form->getId()] ?? null;
-            if ($session_token === null) {
-                return false;
-            } else {
-                $token = $session_token;
-            }
-        } else {
-            $_SESSION['helpdesk_form_access_control'][$form->getId()] = $token;
+            return false;
         }
 
         return hash_equals($config->getToken(), $token);
