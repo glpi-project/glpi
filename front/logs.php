@@ -37,7 +37,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\System\Log\LogViewer;
 
-Session::checkRight("logs", READ);
+Session::checkRight("system_logs", READ);
 
 Html::header(
     LogViewer::getTypeName(Session::getPluralNumber()),
