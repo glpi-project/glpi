@@ -58,7 +58,27 @@ $(function() {
 
    $(document).on('masonry_grid:layout', function() {
        window.msnry_grid_{{ rand }}.layout();
-   })
+   });
 
+   // Use MutationObserver to detect content changes
+   const observer = new MutationObserver(function(mutations) {
+       requestAnimationFrame(function() {
+           window.msnry_grid_{{ rand }}.layout();
+       });
+   });
+
+   observer.observe(document.getElementById('grid_{{ rand }}'), {
+       childList: true,
+       subtree: true,
+       attributes: true,
+       characterData: true
+   });
+
+   // Also handle window resize
+   $(window).on('resize', function() {
+       requestAnimationFrame(function() {
+           window.msnry_grid_{{ rand }}.layout();
+       });
+   });
 });
 </script>
