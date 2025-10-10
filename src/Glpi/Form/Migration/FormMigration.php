@@ -41,6 +41,7 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
+use Glpi\Exception\FallbackToAnotherOperatorException;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\ControlType\DirectAccess;
@@ -1378,14 +1379,17 @@ class FormMigration extends AbstractPluginMigration
             }
 
             $value = $raw_condition['show_value'];
+            $value_operator = $this->getValueOperatorFromLegacy(
+                $raw_condition['show_condition'],
+                $value,
+                $question_type
+            );
+
             if (isset($question->fields['extra_data'])) {
                 $config = $question_type->getExtraDataConfig(
                     json_decode($question->fields['extra_data'], true)
                 );
                 $condition_handlers = $question_type->getConditionHandlers($config);
-
-                // Get the value operator before trying to find a compatible handler
-                $value_operator = $this->getValueOperatorFromLegacy($raw_condition['show_condition'], $value, $question_type);
 
                 // If the value operator is null, we skip this condition
                 if ($value_operator === null) {
@@ -1426,7 +1430,15 @@ class FormMigration extends AbstractPluginMigration
 
                 // Convert the condition value if a data converter is available
                 if ($condition_handler instanceof ConditionHandlerDataConverterInterface) {
-                    $value = $condition_handler->convertConditionValue($value);
+                    try {
+                        $value = $condition_handler->convertConditionValue($value);
+                    } catch (FallbackToAnotherOperatorException $e) {
+                        // Sometimes, the original operator cant be used because
+                        // of imprecise formcreator data (e.g. non unique item
+                        // names)
+                        $value_operator = $e->getOperator();
+                        $value = $e->getValue();
+                    }
                 }
             }
 
@@ -1439,7 +1451,7 @@ class FormMigration extends AbstractPluginMigration
                         'value'          => $value,
                         'item_type'      => 'question',
                         'item_uuid'      => $question->getUUID(),
-                        'value_operator' => $this->getValueOperatorFromLegacy($raw_condition['show_condition'], $value, $question_type),
+                        'value_operator' => $value_operator,
                         'logic_operator' => $this->getLogicOperatorFromLegacy($raw_condition['show_logic']),
                     ];
                 }
@@ -1452,7 +1464,7 @@ class FormMigration extends AbstractPluginMigration
                         'value'          => $value,
                         'item_type'      => 'question',
                         'item_uuid'      => $question->getUUID(),
-                        'value_operator' => $this->getValueOperatorFromLegacy($raw_condition['show_condition'], $value, $question_type),
+                        'value_operator' => $value_operator,
                         'logic_operator' => $this->getLogicOperatorFromLegacy($raw_condition['show_logic']),
                     ];
                 }
