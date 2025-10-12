@@ -6229,7 +6229,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         foreach ($iterator as $line) {
             $tab[] = [
                 'id'   => $line['users_id'],
-                'link' => $line['users_id'] !== null ? formatUserLink($line['users_id'], $line['name'], $line['realname'], $line['firstname']) : ''
+                'link' => $line['users_id'] !== null ? formatUserLink($line['users_id'], $line['name'], $line['realname'], $line['firstname']) : '',
             ];
         }
         return $tab;
