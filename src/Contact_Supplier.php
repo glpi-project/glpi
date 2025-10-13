@@ -200,6 +200,7 @@ class Contact_Supplier extends CommonDBRelation
             ],
             'entries' => $entries,
             'total_number' => count($entries),
+            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -299,6 +300,7 @@ class Contact_Supplier extends CommonDBRelation
             ],
             'entries' => $entries,
             'total_number' => count($entries),
+            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),

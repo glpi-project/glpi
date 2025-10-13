@@ -198,6 +198,7 @@ class ProjectTask_Ticket extends CommonDBRelation
             'formatters' => $formatters,
             'entries' => $entries,
             'total_number' => count($entries),
+            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -466,6 +467,7 @@ class ProjectTask_Ticket extends CommonDBRelation
             ],
             'entries' => $entries,
             'total_number' => count($entries),
+            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),

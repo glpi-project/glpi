@@ -804,6 +804,7 @@ class Consumable extends CommonDBChild
             'footers' => [$footer],
             'footer_class' => 'fw-bold',
             'total_number' => count($entries),
+            'filtered_number' => count($entries),
             'showmassiveactions' => false,
         ]);
     }

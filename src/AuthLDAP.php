@@ -639,6 +639,7 @@ TWIG, ['authldaps_id' => $ID]);
                 ],
                 'entries' => $entries,
                 'total_number' => count($entries),
+                'filtered_number' => count($entries),
                 'showmassiveactions' => true,
                 'massiveactionparams' => [
                     'num_displayed' => count($entries),
@@ -1699,6 +1700,7 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => $total_results,
+            'filtered_number' => $total_results,
             'showmassiveactions' => true,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -2211,6 +2213,7 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => $total_results,
+            'filtered_number' => $total_results,
             'showmassiveactions' => true,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),

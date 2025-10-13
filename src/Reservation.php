@@ -1210,6 +1210,7 @@ JAVASCRIPT;
             'formatters' => $formatters,
             'entries' => $entries,
             'total_number' => count($entries),
+            'filtered_number' => count($entries),
             'showmassiveactions' => false,
         ]);
     }

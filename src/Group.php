@@ -796,6 +796,7 @@ class Group extends CommonTreeDropdown
             ],
             'entries' => $entries,
             'total_number' => $nb,
+            'filtered_number' => $nb,
             'showmassiveactions' => self::canUpdate() && $show_massive_actions,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),

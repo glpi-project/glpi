@@ -138,6 +138,7 @@ class Item_Enclosure extends CommonDBRelation
             ],
             'entries' => $entries,
             'total_number' => count($entries),
+            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),

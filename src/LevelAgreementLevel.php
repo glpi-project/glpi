@@ -530,6 +530,7 @@ TWIG, ['la_level' => $la_level]);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
+            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),

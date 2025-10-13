@@ -287,6 +287,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
             'formatters' => $formatters,
             'entries' => $entries,
             'total_number' => count($entries),
+            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -388,6 +389,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
             'formatters' => $formatters,
             'entries' => $entries,
             'total_number' => count($entries),
+            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),

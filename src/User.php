@@ -4735,6 +4735,7 @@ HTML;
             ],
             'entries'               => $entries,
             'total_number'          => $number,
+            'filtered_number'       => $number,
             'showmassiveactions'    => true,
             'massiveactionparams'   => [
                 'num_displayed'    => min($_SESSION['glpilist_limit'], $number),
