@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -40,7 +39,7 @@ export class GlpiFormDestinationAccordionController
     #watchForAccordionToggle() {
         const accordionWrapper = document.querySelector('#glpi-destinations-accordion');
 
-        accordionWrapper.addEventListener('shown.bs.collapse', async (e) => {
+        accordionWrapper.addEventListener('show.bs.collapse', async (e) => {
             const accordionItem = e.target;
             const accordionItemContent = accordionItem.querySelector('.accordion-body');
             if (accordionItemContent.innerHTML.trim() !== '') {
@@ -57,6 +56,5 @@ export class GlpiFormDestinationAccordionController
             // Note: must use `$().html` to make sure we trigger scripts
             $(accordionItemContent).html(content);
         });
-
     }
 }

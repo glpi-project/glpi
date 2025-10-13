@@ -86,21 +86,23 @@
     {% else %}
         <section class="accordion mt-4" id="glpi-destinations-accordion" aria-label="{{ __("Form destinations") }}">
             {% for destination in destinations %}
-                {% set is_expanded = active_destination == destination.getID() or destinations|length == 1 %}
+                {% if destinations|length == 1 %}
+                    {% set active_destination = destination.getID() %}
+                {% endif %}
                 {% set concrete_destination = destination.getConcreteDestinationItem() %}
                 {% set rand = random() %}
                 <section
-                    class="accordion-item"
+                    class="accordion-item destination-{{ destination.getID() }}"
                     aria-label="{{ destination.getName() }}"
                 >
                     <div class="accordion-header">
                         <div
-                            class="accordion-button {{ is_expanded ? '' : 'collapsed' }}"
+                            class="accordion-button collapsed"
                             role="button"
                             tabindex="0"
                             data-bs-toggle="collapse"
                             data-bs-target="#glpi-destinations-accordion-collapse-{{ rand }}-{{ loop.index }}"
-                            aria-expanded="{{ is_expanded ? 'true' : 'false' }}"
+                            aria-expanded="false"
                             data-glpi-destination-click-on-space {# Simulate how space would behave in a button instead of a div #}
                         >
                             <i class="{{ concrete_destination.getIcon() }}"></i>
@@ -139,7 +141,7 @@
                     </div>
                     <div
                         id="glpi-destinations-accordion-collapse-{{ rand }}-{{ loop.index }}"
-                        class="accordion-collapse collapse {{ is_expanded ? 'show' : '' }}"
+                        class="accordion-collapse collapse"
                         data-bs-parent="#glpi-destinations-accordion"
                         data-form="{{ form.getID() }}"
                         data-form-destination="{{ destination.getID() }}"
@@ -154,15 +156,19 @@
 </div>
 
 <script>
-    import("/js/modules/Forms/DestinationAccordionController.js").then((m) => {
-        new m.GlpiFormDestinationAccordionController();
-    });
+    async function main() {
+        const accordionController = await import("/js/modules/Forms/DestinationAccordionController.js");
+        const autoConfigController = await import("/js/modules/Forms/DestinationAutoConfigController.js");
+        const conditionController = await import("/js/modules/Forms/DestinationConditionController.js");
 
-    import("/js/modules/Forms/DestinationAutoConfigController.js").then((m) => {
-        new m.GlpiFormDestinationAutoConfigController();
-    });
+        new accordionController.GlpiFormDestinationAccordionController();
+        new autoConfigController.GlpiFormDestinationAutoConfigController();
+        new conditionController.GlpiFormDestinationConditionController();
 
-    import("/js/modules/Forms/DestinationConditionController.js").then((m) => {
-        new m.GlpiFormDestinationConditionController();
-    });
+        {% if active_destination %}
+            document.querySelector('.destination-{{ active_destination }} .accordion-button').click();
+        {% endif %}
+    }
+
+    main();
 </script>
