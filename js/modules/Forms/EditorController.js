@@ -2330,17 +2330,17 @@ export class GlpiFormEditorController
                     // class that takes over. Manually adding "d-none" get us the
                     // desired effect.
                     $(e.detail.item).addClass('d-none');
+
+                    // If dragged item is active, store it to restore it later
+                    if ($(e.detail.item).is('[data-glpi-form-editor-active-question],[data-glpi-form-editor-active-comment]')) {
+                        $(e.detail.item).attr('data-glpi-form-editor-restore-active-state', '');
+                    }
+
+                    // Remove active states
+                    this.#setActiveItem(null);
                 }, 0);
 
                 $(this.#target).addClass("disable-focus").attr('data-glpi-form-editor-sorting', '');
-
-                // If dragged item is active, store it to restore it later
-                if ($(e.detail.item).is('[data-glpi-form-editor-active-question],[data-glpi-form-editor-active-comment]')) {
-                    $(e.detail.item).attr('data-glpi-form-editor-restore-active-state', '');
-                }
-
-                // Remove active states
-                this.#setActiveItem(null);
             });
 
         // Run the post move process if any item was dragged, even if it was not
