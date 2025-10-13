@@ -69,7 +69,7 @@ export class TeamBadgeProvider {
         const itemtype = team_member["itemtype"];
         const items_id = team_member["id"];
         const content = this.getTeamBadge(team_member);
-        return btoa(itemtype + items_id + content).slice(0, 8);
+        return btoa(encodeURI(itemtype + items_id + content)).slice(0, 8);
     }
 
     /**
