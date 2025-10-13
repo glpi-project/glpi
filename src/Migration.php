@@ -1185,7 +1185,7 @@ class Migration
      *
      * @param string  $name   Right name
      * @param integer $rights Right to set (defaults to ALLSTANDARDRIGHT)
-     * @param array   $requiredrights Array of right name => value
+     * @param array<string, int>   $requiredrights Array of right name => value
      *                   A profile must have these rights in order to get the new right.
      *                   This array can be empty to add the right to every profile.
      *                   Default is ['config' => READ | UPDATE].
@@ -1332,7 +1332,7 @@ class Migration
      *
      * @param string  $name   Right name
      * @param integer $rights Right to set
-     * @param array   $requiredrights Array of right name => value
+     * @param array<string, int>   $requiredrights Array of right name => value
      *                   A profile must have these rights in order to get its rights updated.
      *                   This array can be empty to add the right to every profile.
      *                   Default is ['config' => READ | UPDATE].
@@ -1397,7 +1397,7 @@ class Migration
      *
      * @param string  $name   Right name
      * @param integer $rights Right to set
-     * @param array   $requiredrights Array of right name => value
+     * @param array<string, int>   $requiredrights Array of right name => value
      *                   A profile must have these rights in order to get its rights added.
      *                   This array can be empty to add the right to every profile.
      *                   Default is ['config' => READ | UPDATE].
