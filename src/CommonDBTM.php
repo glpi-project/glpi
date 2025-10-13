@@ -40,6 +40,7 @@ use Glpi\Debug\Profiler;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Exception\TooManyResultsException;
 use Glpi\Features\AssignableItem;
 use Glpi\Features\CacheableListInterface;
 use Glpi\Features\Clonable;
@@ -352,7 +353,7 @@ class CommonDBTM extends CommonGLPI
             $this->post_getFromDB();
             return true;
         } elseif (count($iterator) > 1) {
-            throw new RuntimeException(
+            throw new TooManyResultsException(
                 sprintf(
                     '`%1$s::getFromDB()` expects to get one result, %2$s found in query "%3$s".',
                     static::class,
@@ -428,7 +429,7 @@ class CommonDBTM extends CommonGLPI
             $row = $iter->current();
             return $this->getFromDB($row[static::getIndexName()]);
         } elseif (count($iter) > 1) {
-            throw new RuntimeException(
+            throw new TooManyResultsException(
                 sprintf(
                     '`%1$s::getFromDBByCrit()` expects to get one result, %2$s found in query "%3$s".',
                     static::class,
@@ -472,7 +473,7 @@ class CommonDBTM extends CommonGLPI
             $this->post_getFromDB();
             return true;
         } elseif (count($iterator) > 1) {
-            throw new RuntimeException(
+            throw new TooManyResultsException(
                 sprintf(
                     '`%1$s::getFromDBByRequest()` expects to get one result, %2$s found in query "%3$s".',
                     static::class,
