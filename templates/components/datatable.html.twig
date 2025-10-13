@@ -105,7 +105,7 @@
                                 <div>
                                     <input class="form-check-input massive_action_checkbox" type="checkbox" id="checkall_{{ massiveactionparams['container'] }}"
                                         value="" aria-label="{{ __('Check all') }}"
-                                        onclick="checkAsCheckboxes(this, '{{ massiveactionparams['container'] }}', '.massive_action_checkbox');" />
+                                        onclick="checkAsCheckboxes(this, '{{ massiveactionparams['container']|e('js') }}', '.massive_action_checkbox');" />
                                 </div>
                             </th>
                         {% endif %}

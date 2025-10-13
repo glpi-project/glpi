@@ -116,7 +116,7 @@
 $(function() {
    $('#dropdown_urgency{{ rand }}, #dropdown_impact{{ rand }}').on('change.select2', function (e) {
       $.ajax({
-         url: "{{ path('/ajax/priority.php') }}",
+         url: `${CFG_GLPI.root_doc}/ajax/priority.php`,
          datatype: 'json',
          data: {
             'urgency': $('#dropdown_urgency{{ rand }}').select2('data') ? $('#dropdown_urgency{{ rand }}').select2('data')[0].id : 0,

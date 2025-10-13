@@ -39,6 +39,7 @@ use Exception;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Form\Answer;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Condition\ConditionValueTransformerInterface;
 use Glpi\Form\Condition\Engine;
 use Glpi\Form\Condition\EngineInput;
 use Glpi\Form\Condition\ValidationStrategy;
@@ -46,8 +47,11 @@ use Glpi\Form\DelegationData;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Form;
+use Glpi\Form\QuestionType\CustomMandatoryMessageInterface;
+use Glpi\Form\QuestionType\QuestionTypeValidationInterface;
 use Glpi\Form\Section;
 use Glpi\Form\ValidationResult;
+use LogicException;
 use Throwable;
 
 use function Safe\json_encode;
@@ -107,23 +111,25 @@ final class AnswersHandler
         );
 
         foreach ($mandatory_questions as $question) {
+            $answer = $answers[$question->getID()] ?? null;
+            $question_type = $question->getQuestionType();
+            if ($question_type instanceof ConditionValueTransformerInterface) {
+                $answer = $question_type->transformConditionValueForComparisons($answer, $question->getExtraDataConfig());
+            }
+
             // Check if the question is not answered (empty or not set)
-            if (
-                empty($answers[$question->getID()])
-                || (is_string($answers[$question->getID()]) && empty(strip_tags($answers[$question->getID()])))
-                || (isset($answers[$question->getID()]['items_id']) && empty($answers[$question->getID()]['items_id']))
-            ) {
-                $result->addError($question, __('This field is mandatory'));
+            if (empty($answer) || (is_string($answer) && empty(strip_tags($answer)))) {
+                $message = __('This field is mandatory');
+                $type = $question->getQuestionType();
+                if ($type instanceof CustomMandatoryMessageInterface) {
+                    $message = $type->getCustomMandatoryErrorMessage();
+                }
+                $result->addError($question, $message);
             }
         }
 
         // Validate answers for each question if validation conditions are defined
         foreach ($questions_container->getQuestions() as $question) {
-            if ($question->getConfiguredValidationStrategy() === ValidationStrategy::NO_VALIDATION) {
-                // Skip validation if the question is always validated
-                continue;
-            }
-
             // Check if the question is visible
             if (!$visibility->isQuestionVisible($question->getID())) {
                 continue;
@@ -134,17 +140,34 @@ final class AnswersHandler
                 continue;
             }
 
-            // Validate the answer
-            if (!$validation->isQuestionValid($question->getID())) {
-                // Add error for each condition that is not met
-                foreach ($validation->getQuestionValidation($question->getID()) as $condition) {
-                    $result->addError(
-                        $question,
-                        $condition->getValueOperator()?->getErrorMessageForValidation(
-                            $question->getConfiguredValidationStrategy(),
-                            $condition
-                        )
-                    );
+            if ($question->getConfiguredValidationStrategy() !== ValidationStrategy::NO_VALIDATION) {
+                // Validate the answer
+                if (!$validation->isQuestionValid($question->getID())) {
+                    // Add error for each condition that is not met
+                    foreach ($validation->getQuestionValidation($question->getID()) as $condition) {
+                        $result->addError(
+                            $question,
+                            $condition->getValueOperator()?->getErrorMessageForValidation(
+                                $question->getConfiguredValidationStrategy(),
+                                $condition
+                            )
+                        );
+                    }
+                }
+            }
+
+            // Validate specific question type requirements
+            $type = $question->getQuestionType();
+            if ($type === null) {
+                throw new LogicException(); // Can never happen
+            }
+            if ($type instanceof QuestionTypeValidationInterface) {
+                $type_result = $type->validateAnswer(
+                    $question,
+                    $answers[$question->getID()]
+                );
+                foreach ($type_result->getErrors() as $error) {
+                    $result->addFormattedError($error);
                 }
             }
         }

@@ -30,6 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% set rand = rand|default(random())|safe_dom_id %}
+
 {% extends "generic_show_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}

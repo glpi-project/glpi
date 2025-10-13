@@ -48,7 +48,7 @@
                <div>
                   <input class="form-check-input massive_action_checkbox" type="checkbox" id="checkall_{{ rand }}"
                         value="" aria-label="{{ __('Check all as') }}"
-                        onclick="checkAsCheckboxes(this, '{{ searchform_id }}', '.massive_action_checkbox');"
+                        onclick="checkAsCheckboxes(this, '{{ searchform_id|e('js') }}', '.massive_action_checkbox');"
                         form="{{ massive_action_form_id }}" />
                </div>
             </th>

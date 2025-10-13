@@ -543,7 +543,7 @@ describe('Edit form translations', () => {
         // Add translations for the question description
         cy.findByRole('table', { name: 'Form translations' }).as('formTranslationsTable');
         cy.get('@formTranslationsTable').findAllByRole('row').as('formTranslationsRows');
-        cy.get('@formTranslationsRows').eq(-2).within(() => {
+        cy.get('@formTranslationsRows').eq(-1).within(() => {
             cy.findByRole('cell', { name: 'Translation name' }).contains('Question description');
             cy.findByRole('cell', { name: 'Default value' }).contains('This is a question with description');
             cy.findByRole('cell', { name: 'Translated value' })

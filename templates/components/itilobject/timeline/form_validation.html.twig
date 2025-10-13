@@ -33,6 +33,7 @@
 {% extends 'components/itilobject/timeline/form_timeline_item.html.twig' %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
+{% set rand = rand|default(random())|safe_dom_id %}
 {% set params = params|default({}) %}
 
 {% block timeline_card %}
@@ -311,7 +312,7 @@
 
                     {% if subitem.can(subitem.fields['id'], constant('PURGE')) %}
                         <button class="btn btn-outline-danger me-2" type="submit" name="purge"
-                                onclick="return confirm('{{ __('Confirm the final deletion?') }}');">
+                                onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');">
                             <i class="ti ti-trash"></i>
                             <span>{{ _x('button', 'Delete permanently') }}</span>
                         </button>
@@ -332,12 +333,12 @@
          // --- fill form with template data
          function itilvalidationtemplate_update{{ rand }}(value) {
             $.ajax({
-               url: '{{ path('/ajax/itilvalidation.php') }}',
+               url: `${CFG_GLPI.root_doc}/ajax/itilvalidation.php`,
                type: 'POST',
                data: {
                   validationtemplates_id: value,
-                  items_id: '{{ item.fields['id'] }}',
-                  itemtype: '{{ item.getType() }}'
+                  items_id: '{{ item.fields['id']|e('js') }}',
+                  itemtype: '{{ item.getType()|e('js') }}'
                }
             }).done(function (data) {
                if (data.content !== undefined) {

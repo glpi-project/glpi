@@ -200,7 +200,10 @@ class Application extends BaseApplication
             ),
         ];
 
-        if (\function_exists('posix_geteuid') && \posix_geteuid() === 0) {
+        if (
+            in_array('--allow-superuser', $_SERVER['argv'], true)
+            || (\function_exists('posix_geteuid') && \posix_geteuid() === 0)
+        ) {
             // Prevent the `The "--allow-superuser" option does not exist.` error when executing the console as a superuser.
             $definition[] = new InputOption(
                 name: '--allow-superuser',

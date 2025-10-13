@@ -122,7 +122,8 @@ class CronTask extends CommonDBTM
 
     public function cleanDBonPurge()
     {
-        // CronTaskLog does not extend CommonDBConnexity
+        // Delete related CronTaskLog.
+        // It cannot be done with `deleteChildrenAndRelationsFromDb` because `CronTaskLog` does not extend CommonDBConnexity.
         $ctl = new CronTaskLog();
         $ctl->deleteByCriteria(['crontasks_id' => $this->fields['id']]);
     }
@@ -1173,6 +1174,8 @@ class CronTask extends CommonDBTM
         }
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'start' => $start,
+            'limit' => $_SESSION['glpilist_limit'],
             'is_tab' => true,
             'nofilter' => true,
             'columns' => [

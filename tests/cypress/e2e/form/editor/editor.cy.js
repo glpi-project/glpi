@@ -982,4 +982,77 @@ describe ('Form editor', () => {
             cy.findByRole('button', {'name': 'Submit'}).should('exist');
         });
     });
+
+    it('can delete a question that has a validation constraint', () => {
+        cy.login();
+        cy.importForm('form-with-validation-2025-10-08.json').visitFormTab('Form');
+
+        // Focus question to display hiden actions
+        cy.findByRole('region', {'name': 'Question details'})
+            .as("question_details")
+        ;
+        cy.get("@question_details").click();
+
+        // Delete question
+        cy.get("@question_details").within(() => {
+            cy.findByRole('button', {'name': 'Delete'}).click();
+        });
+        cy.get("@question_details").should('not.exist');
+    });
+
+    /**
+     * This test aims to ensure that the form can be saved
+     * even if it contains a large number of elements.
+     * Issues have been encountered in the past due to PHP configuration
+     * (max_input_vars) and HTTP request size.
+     *
+     * The test does not go as far as verifying that all elements are properly saved
+     * as this would be too long and complicated to implement.
+     * Its sole objective is to ensure that the save operation succeeds.
+     */
+    it('can save a form with many inputs', () => {
+        cy.createFormWithAPI().then((form_id) => {
+            cy.getFormSections(form_id).then((sections) => {
+                const section_id = sections[0].id;
+                const questions = [];
+
+                for (let i = 0; i < 60; i++) {
+                    questions.push({
+                        'name': `Question ${i}`,
+                        'type': 'Glpi\\Form\\QuestionType\\QuestionTypeItemDropdown',
+                        'vertical_rank': i,
+                        'forms_sections_id': section_id,
+                        'extra_data': {
+                            'itemtype': 'ITILCategory',
+                            'categories_filter': [],
+                            'root_items_id': 0,
+                            'subtree_depth': 0,
+                            'selectable_tree_root': true
+                        }
+                    });
+                }
+
+                cy.createWithAPI('Glpi\\Form\\Question', questions);
+            });
+
+            cy.wrap(form_id).visitFormTab('Form');
+        });
+
+        // Wait to find "Save" button to ensure that all question are loaded
+        cy.findByRole('button', {'name': 'Save', timeout: 30000}).should('exist').then(() => {
+            // There should be more than 1000 inputs in the form
+            cy.get('form').then(($form) => {
+                const formArray = $form.serializeArray();
+                // There should be more than 1000 inputs
+                expect(formArray.length).to.be.greaterThan(1000);
+            });
+
+            // Wait for pointer-events to be removed before checking for success
+            cy.get('form[data-glpi-form-editor-container]').should('not.have.css', 'pointer-events', 'none');
+
+            // Save form
+            cy.findByRole('button', {'name': 'Save'}).click();
+            cy.checkAndCloseAlert('Item successfully updated');
+        });
+    });
 });

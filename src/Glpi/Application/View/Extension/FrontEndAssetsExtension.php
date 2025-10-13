@@ -293,7 +293,10 @@ class FrontEndAssetsExtension extends AbstractExtension
             $cfg_glpi += Config::getSafeConfig(true);
         }
 
-        $plugins_path = \array_map(fn(string $plugin_key) => "/plugins/{$plugin_key}", Plugin::getPlugins());
+        $plugins_path = \array_combine(
+            Plugin::getPlugins(),
+            \array_map(fn(string $plugin_key) => "/plugins/{$plugin_key}", Plugin::getPlugins())
+        );
 
         $script = sprintf('window.CFG_GLPI = %s;', json_encode($cfg_glpi, JSON_PRETTY_PRINT))
             . "\n"

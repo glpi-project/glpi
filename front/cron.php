@@ -45,13 +45,12 @@ if (PHP_SAPI === 'cli') {
 
     // Try detecting if we are running with the root user (Not available on Windows)
     // /!\ Keep it before the Kernel boot.
-    if (function_exists('posix_geteuid') && posix_geteuid() === 0) {
+    $is_superuser = function_exists('posix_geteuid') && posix_geteuid() === 0;
+    if (!in_array('--allow-superuser', $_SERVER['argv'], true) && $is_superuser) {
         echo "\t" . 'WARNING: running as root is discouraged.' . "\n";
         echo "\t" . 'You should run the script as the same user that your web server runs as to avoid file permissions being ruined.' . "\n";
-        if (!in_array('--allow-superuser', $_SERVER['argv'], true)) {
-            echo "\t" . 'Use --allow-superuser option to bypass this limitation.' . "\n";
-            exit(1); // @phpstan-ignore glpi.forbidExit (CLI context)
-        }
+        echo "\t" . 'Use --allow-superuser option to bypass this limitation.' . "\n";
+        exit(1); // @phpstan-ignore glpi.forbidExit (CLI context)
     }
 
     // Check the resources state before trying to instanciate the Kernel.
@@ -72,6 +71,12 @@ if (PHP_SAPI === 'cli') {
         unset($_SERVER['argv'][$debug]);
         $_SERVER['argv'] = array_values($_SERVER['argv']);
         $_SERVER['argc']--;
+    }
+
+    if ($is_superuser) {
+        // Keep this warning after the GLPI Kernel boot to prevent issues with session path definition
+        echo "\t" . 'WARNING: running as root is discouraged.' . "\n";
+        echo "\t" . 'You should run the script as the same user that your web server runs as to avoid file permissions being ruined.' . "\n";
     }
 
     if ($CFG_GLPI['maintenance_mode'] ?? false) {

@@ -84,6 +84,18 @@ final class TypesConversionMapper
         $this->questions_types_conversion_map[$formcreator_type] = $converter;
     }
 
+    public function getPluginHintForType(string $type): ?string
+    {
+        return match ($type) {
+            default      => null,
+            "hidden"     => "advancedforms",
+            "ldapselect" => "advancedforms",
+            "ip"         => "advancedforms",
+            "hostname"   => "advancedforms",
+            "tag"        => "tag",
+        };
+    }
+
     /** @return array<string, ?FormQuestionDataConverterInterface> */
     private function getDefaultQuestionTypesConverter(): array
     {

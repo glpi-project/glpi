@@ -6107,6 +6107,62 @@ class SearchTest extends DbTestCase
             "Search query failed. Raw SQL WHERE clause: " . ($data['sql']['raw']['WHERE'] ?? 'N/A')
         );
     }
+
+    /**
+     * Regression test to validate that external users requesters email are correctly rendered.
+     *
+     * @see https://github.com/glpi-project/glpi/pull/21348
+     */
+    public function testExternalRequesterColumnRenderingInSearchResults(): void
+    {
+        $this->login();
+
+        $this->createItem(
+            Ticket::class,
+            [
+                'name'          => __FUNCTION__,
+                'content'       => __FUNCTION__,
+                'entities_id'   => $this->getTestRootEntity(true),
+                '_actors'       => [
+                    'requester' => [
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => 0,
+                            'use_notification'  => 1,
+                            'alternative_email' => 'external-requester1@example.com',
+                        ],
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => 0,
+                            'use_notification'  => 1,
+                            'alternative_email' => 'external-requester2@example.com',
+                        ],
+                    ],
+                ],
+            ]
+        );
+
+        $result = \Search::getDatas(
+            Ticket::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => '1',
+                        'searchtype' => 'contains',
+                        'value'      => __FUNCTION__,
+                    ],
+                ],
+            ]
+        );
+
+        $this->assertTrue(isset($result['data']['rows'][0]['Ticket_4']['displayname']));
+        $this->assertEquals(
+            '<a href=\'mailto:external-requester1@example.com\'>external-requester1@example.com</a>'
+                . '#LBBR##LBBR#'
+                . '<a href=\'mailto:external-requester2@example.com\'>external-requester2@example.com</a>',
+            $result['data']['rows'][0]['Ticket_4']['displayname']
+        );
+    }
 }
 
 // @codingStandardsIgnoreStart

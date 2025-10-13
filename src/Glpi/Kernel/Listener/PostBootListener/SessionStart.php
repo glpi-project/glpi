@@ -79,15 +79,18 @@ class SessionStart implements EventSubscriberInterface
 
         Profiler::getInstance()->start('SessionStart::execute', Profiler::CATEGORY_BOOT);
 
-        // Always set the session files path, even when session is not started automatically here.
-        // It can indeed be started later manually and the path must be correctly set when it is done.
-        if (Session::canWriteSessionFiles()) {
-            Session::setPath();
-        } else {
-            \trigger_error(
-                sprintf('Unable to write session files on `%s`.', GLPI_SESSION_DIR),
-                E_USER_WARNING
-            );
+        if ($this->php_sapi !== 'cli') {
+            // Always set the session files path, even when session is not started automatically here.
+            // It can indeed be started later manually and the path must be correctly set when it is done,
+            // sessions will not be recoverable accross requests.
+            if (Session::canWriteSessionFiles()) {
+                Session::setPath();
+            } else {
+                \trigger_error(
+                    sprintf('Unable to write session files on `%s`.', GLPI_SESSION_DIR),
+                    E_USER_WARNING
+                );
+            }
         }
 
         if ($this->php_sapi === 'cli') {

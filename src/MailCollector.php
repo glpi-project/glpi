@@ -1673,12 +1673,31 @@ class MailCollector extends CommonDBTM
             }
             if ($content_type === 'text/html') {
                 $this->body_is_html = true;
-                $content = $this->getDecodedContent($part);
+                $raw_content = $this->getDecodedContent($part);
 
-                // Keep only HTML body content
+                $content = '';
+
+                // Extract everything located prior to doctype/html declaration
+                $pre_content_matches = [];
+                if (preg_match('/^(?<pre_content>.*?)(?:<!doctype|<html)/is', $raw_content, $pre_content_matches)) {
+                    $content .= trim($pre_content_matches['pre_content']);
+                }
+
+                // Extract everything located inside the body
                 $body_matches = [];
-                if (preg_match('/<body[^>]*>\s*(?<body>.+?)\s*<\/body>/is', $content, $body_matches) === 1) {
-                    $content = $body_matches['body'];
+                if (preg_match('/<body[^>]*>\s*(?<body>.+?)\s*<\/body>/is', $raw_content, $body_matches)) {
+                    $content .= $body_matches['body'];
+                }
+
+                // Extract everything located after the html closing tag
+                $post_content_matches = [];
+                if (preg_match('/(?:<\/html>)(?<post_content>.*?)$/is', $raw_content, $post_content_matches)) {
+                    $content .= trim($post_content_matches['post_content']);
+                }
+
+                // If we have extracted content, use it, otherwise fallback to original
+                if ($content === '') {
+                    $content = $raw_content;
                 }
 
                 // Strip <style> and <script> tags located in HTML body.

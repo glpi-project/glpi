@@ -182,6 +182,35 @@ final class TemplateFieldTest extends AbstractDestinationFieldTest
         ];
     }
 
+    /**
+     * This test validate that a template using the special "NOW" value for
+     * date do not trigger an error.
+     */
+    public function testDefaultTemplateWithPredefinedOpeningDateField(): void
+    {
+        // Arrange: create a template using the "NOW" value
+        $default_template = (new Ticket())->getITILTemplateToUse(
+            entities_id: $_SESSION["glpiactive_entity"]
+        );
+        $this->createItem(
+            TicketTemplatePredefinedField::class,
+            [
+                'tickettemplates_id' => $default_template->getID(),
+                'num'                => 15, // Opening date
+                'value'              => "NOW",
+            ]
+        );
+
+        // Act: create a ticket, no errors should happen
+        $this->checkTemplateFieldConfiguration(
+            form: $this->createAndGetFormWithTicketDestination(),
+            config: new TemplateFieldConfig(
+                strategy: TemplateFieldStrategy::DEFAULT_TEMPLATE,
+            ),
+            expected_tickettemplates_id: $default_template->getID()
+        );
+    }
+
     private function checkTemplateFieldConfiguration(
         Form $form,
         TemplateFieldConfig $config,

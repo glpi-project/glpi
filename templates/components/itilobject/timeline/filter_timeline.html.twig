@@ -87,7 +87,7 @@
 {% endif %}
 
 <div class="filter-timeline position-relative">
-   <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Timeline filter') }}">
+   <div class="d-inline-block" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Timeline filter') }}">
       <button type="button"
             class="btn btn-icon btn-ghost-secondary open-timeline-filter-popover me-2"
             data-bs-toggle="collapse"
@@ -95,7 +95,7 @@
             data-bs-trigger="click">
          <i class="ti ti-filter"></i>
       </button>
-   </span>
+   </div>
 
    <div class="filter-timeline-popover collapse position-absolute bottom-100 end-0 text-nowrap"
         id="filter-timeline-popover">
@@ -120,12 +120,12 @@
    </div>
 
    {% if get_current_interface() == 'central' %}
-      <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('View TODO list') }}">
+      <div class="d-inline-block" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('View TODO list') }}">
          <button type="button"
                class="btn btn-icon btn-ghost-secondary view-timeline-todo-list me-1">
             <i class="ti ti-list-check"></i>
          </button>
-      </span>
+      </div>
    {% endif %}
 </div>
 

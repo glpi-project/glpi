@@ -159,7 +159,11 @@ class NotificationEvent extends CommonDBTM
                 $notify_me = false;
                 $emitter = null;
 
-                if (Session::isCron()) {
+                if (
+                    Session::isCron() // Ticket has been created by a crontask
+                    || isCommandLine() // Ticket has been created by a CLI command
+                    || isset($_SESSION['mailcollector_user']) // Ticket has been created by the mail collector (even manually)
+                ) {
                     // Cron notify me
                     $notify_me = true;
 

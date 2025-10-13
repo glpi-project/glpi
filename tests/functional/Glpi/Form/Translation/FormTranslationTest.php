@@ -38,12 +38,21 @@ namespace tests\units\Glpi\Form;
 use Dropdown;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
+use Glpi\Form\Question;
+use Glpi\Form\QuestionType\AbstractQuestionTypeSelectable;
 use Glpi\Form\QuestionType\QuestionTypeDropdown;
 use Glpi\Form\QuestionType\QuestionTypeDropdownExtraDataConfig;
+use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Form\QuestionType\QuestionTypesManager;
+use Glpi\Form\QuestionType\TranslationAwareQuestionType;
+use Glpi\ItemTranslation\Context\TranslationHandler;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
+
+use function Safe\json_encode;
 
 class FormTranslationTest extends \DbTestCase
 {
@@ -247,5 +256,48 @@ class FormTranslationTest extends \DbTestCase
                 "Database still contains {$translation_count} translations for deleted {$item_type} {$item_id}"
             );
         }
+    }
+
+    public static function emptyDefaultValuesAreNotListedProvider(): iterable
+    {
+        $types = QuestionTypesManager::getInstance()->getQuestionTypes();
+        foreach ($types as $type) {
+            if ($type instanceof TranslationAwareQuestionType) {
+                // Manually set specific extra data, we can't compute it
+                // automatically
+                $extra_data = match (true) {
+                    default => null,
+                    $type instanceof AbstractQuestionTypeSelectable => new QuestionTypeSelectableExtraDataConfig(options: []),
+                };
+
+                yield [
+                    'type' => $type,
+                    'extra_data' => $extra_data !== null ? json_encode($extra_data) : $extra_data,
+                ];
+            }
+        }
+    }
+
+    #[DataProvider('emptyDefaultValuesAreNotListedProvider')]
+    public function testEmptyDefaultValuesAreNotListed(
+        TranslationAwareQuestionType $type,
+        ?string $extra_data,
+    ): void {
+        // Arrange: create a form with a question without default value
+        $builder = new FormBuilder("My form");
+        $builder->addQuestion("My question", $type::class, "", $extra_data);
+        $form = $this->createForm($builder);
+
+        // Act: get translations handler for the question
+        $question = Question::getById($this->getQuestionId($form, "My question"));
+        $handlers = $type->listTranslationsHandlers($question);
+
+        // Assert: no default value handlers should exist for the empty question
+        $key = Question::TRANSLATION_KEY_DEFAULT_VALUE;
+        $handlers = array_filter(
+            $handlers,
+            fn(TranslationHandler $h) => $h->getKey() == $key
+        );
+        $this->assertEmpty($handlers);
     }
 }

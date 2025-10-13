@@ -30,6 +30,10 @@
  # ---------------------------------------------------------------------
  #}
 
+{% set rand = random() %}
+{% set upload_an_icon_pane_id = 'upload-an-icon-pane-' ~ rand %}
+{% set pick_an_icon_pane_id = 'pick-an-icon-pane-' ~ rand %}
+
 <div
     id="{{ id }}"
     class="modal modal-lg modal-blur fade"
@@ -48,10 +52,10 @@
                         <a
                             class="nav-link pointer active"
                             role="tab"
-                            id="pick-an-icon"
+                            id="pick-an-icon-{{ rand }}"
                             data-bs-toggle="tab"
-                            data-bs-target="#pick-an-icon-pane"
-                            aria-controls="pick-an-icon-pane"
+                            data-bs-target="#{{ pick_an_icon_pane_id }}"
+                            aria-controls="{{ pick_an_icon_pane_id }}"
                             aria-selected="true"
                         >
                             <div class="d-flex align-items-center">
@@ -64,10 +68,10 @@
                         <a
                             class="nav-link pointer"
                             role="tab"
-                            id="upload-an-icon"
+                            id="upload-an-icon-{{ rand }}"
                             data-bs-toggle="tab"
-                            data-bs-target="#upload-an-icon-pane"
-                            aria-controls="upload-an-icon-pane"
+                            data-bs-target="#{{ upload_an_icon_pane_id }}"
+                            aria-controls="{{ upload_an_icon_pane_id }}"
                             aria-selected="false"
                         >
                             <div class="d-flex align-items-center">
@@ -76,10 +80,16 @@
                             </div>
                         </a>
                     </div>
+                    <button
+                        type="button"
+                        class="btn-close ms-auto align-self-center"
+                        data-bs-dismiss="modal"
+                        aria-label="{{ __("Close") }}"
+                    ></button>
                 </div>
             </div>
             <div class="modal-body tab-content">
-                <div id="pick-an-icon-pane" class="tab-pane fade active show" role="tabpanel">
+                <div id="{{ pick_an_icon_pane_id }}" class="tab-pane fade active show" role="tabpanel">
                     <div class="input-icon mb-3">
                         <span class="input-icon-addon">
                             <i
@@ -105,7 +115,7 @@
                         'page_size': 30,
                     }, with_context: false) }}
                 </div>
-                <div id="upload-an-icon-pane" class="tab-pane fade" role="tabpanel">
+                <div id="{{ upload_an_icon_pane_id }}" class="tab-pane fade" role="tabpanel">
                     {% do call('Html::file', [
                         {
                             'name': 'custom_icon',

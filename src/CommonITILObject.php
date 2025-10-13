@@ -2327,8 +2327,13 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         // If status changed from pending to anything else, remove pending reason
         if (
-            isset($this->input["status"])
-            && $this->input["status"] != self::WAITING
+            (
+                isset($this->input["status"])
+                && $this->input["status"] != self::WAITING
+            ) || (
+                isset($input["status"])
+                && $input["status"] != self::WAITING
+            )
         ) {
             PendingReason_Item::deleteForItem($this);
         }
@@ -5479,6 +5484,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             isset($this->fields['id'])
             && !empty($this->fields['date'])
             && !empty($this->fields['solvedate'])
+            && $this->fields['solvedate'] !== 'NULL'
         ) {
             $calendars_id = $this->getCalendar();
             $calendar     = new Calendar();
@@ -5521,6 +5527,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             isset($this->fields['id'])
             && !empty($this->fields['date'])
             && !empty($this->fields['closedate'])
+            && $this->fields['closedate'] !== 'NULL'
         ) {
             $calendars_id = $this->getCalendar();
             $calendar     = new Calendar();
@@ -6227,7 +6234,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         foreach ($iterator as $line) {
             $tab[] = [
                 'id'   => $line['users_id'],
-                'link' => formatUserLink($line['users_id'], $line['name'], $line['realname'], $line['firstname']),
+                'link' => $line['users_id'] !== null ? formatUserLink($line['users_id'], $line['name'], $line['realname'], $line['firstname']) : '',
             ];
         }
         return $tab;

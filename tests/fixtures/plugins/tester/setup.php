@@ -34,6 +34,7 @@
 
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\Destination\FormDestinationManager;
+use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\ServiceCatalog\HomeSearchManager;
 use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
@@ -44,6 +45,7 @@ use GlpiPlugin\Tester\Form\CustomTile;
 use GlpiPlugin\Tester\Form\DayOfTheWeekPolicy;
 use GlpiPlugin\Tester\Form\QuestionTypeRange;
 use GlpiPlugin\Tester\Form\QuestionTypeColor;
+use GlpiPlugin\Tester\Form\ExternalIDField;
 use GlpiPlugin\Tester\Form\TesterCategory;
 use GlpiPlugin\Tester\MyPsr4Class;
 
@@ -103,6 +105,12 @@ function plugin_init_tester(): void
     // Register destination type
     $destination_manager = FormDestinationManager::getInstance();
     $destination_manager->registerPluginDestinationType(new ComputerDestination());
+
+    // Register destination config field
+    $destination_manager->registerPluginCommonITILConfigField(
+        FormDestinationTicket::class,
+        new ExternalIDField()
+    );
 
     // Register custom tiles types
     $tiles_manager = TilesManager::getInstance();

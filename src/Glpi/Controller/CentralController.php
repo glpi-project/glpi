@@ -54,9 +54,12 @@ class CentralController extends AbstractController
     {
         if ($request->query->has('embed') && $request->query->has('dashboard')) {
             // embed (anonymous) dashboard
+            $grid = new Grid($request->query->get('dashboard'));
+            $grid->initEmbed($request->query->all());
+
             return $this->render('central/embed_dashboard.html.twig', [
-                'grid'   => new Grid($request->query->get('dashboard')),
-                'params' => $request->query->all(),
+                'grid'  => $grid,
+                'token' => $request->query->get('token'),
             ]);
         }
 

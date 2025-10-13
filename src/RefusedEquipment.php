@@ -32,6 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\Inventoriable;
 use Glpi\Inventory\Inventory;
 use Glpi\Inventory\Request;
@@ -234,7 +236,10 @@ class RefusedEquipment extends CommonDBTM implements DefaultSearchRequestInterfa
         echo "<td>" . htmlescape(implode(', ', importArrayFromDB($this->fields['mac']))) . "</td>";
 
         echo "</tr>";
-        $this->showInventoryInfo();
+
+        echo '<tr><td colspan="4">';
+        echo TemplateRenderer::getInstance()->render('components/form/inventory_info.html.twig', ['item' => $this]);
+        echo "</td></tr>";
 
         $this->showFormButtons($options);
 

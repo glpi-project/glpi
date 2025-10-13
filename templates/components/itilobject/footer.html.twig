@@ -152,7 +152,7 @@
 
                   {% if display_save_btn %}
                      <button class="btn btn-primary btn-square" type="submit" name="update" form="itil-form"
-                           title="{{ _x('button', 'Save') }}">
+                           data-bs-toggle="tooltip" data-bs-placement="top" title="{{ _x('button', 'Save') }}">
                         <i class="ti ti-device-floppy"></i>
                         <span class="d-none d-xl-block">{{ _x('button', 'Save') }}</span>
                      </button>
@@ -174,7 +174,7 @@
 
                         <button class="btn btn-outline-danger btn-square" type="submit" name="purge" form="itil-form"
                               title="{{ _x('button', 'Delete permanently') }}"
-                              onclick="return confirm('{{ __('Confirm the final deletion?') }}');">
+                              onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');">
                            <i class="ti ti-trash"></i>
                            <span class="d-none d-lg-block">{{ _x('button', 'Delete permanently') }}</span>
                         </button>

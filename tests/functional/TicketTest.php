@@ -34,8 +34,12 @@
 
 namespace tests\units;
 
+use Calendar;
+use CalendarSegment;
 use CommonITILActor;
 use CommonITILObject;
+use CommonITILSatisfaction;
+use CommonITILValidation;
 use Computer;
 use Contract;
 use CronTask;
@@ -49,19 +53,25 @@ use Group;
 use Group_Ticket;
 use Group_User;
 use ITILCategory;
+use ITILFollowup;
+use ITILSolution;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
 use Profile_User;
 use ProfileRight;
 use Psr\Log\LogLevel;
+use Rule;
 use Search;
 use Session;
+use SLA;
+use SLM;
 use Supplier;
 use Supplier_Ticket;
 use Symfony\Component\DomCrawler\Crawler;
 use Ticket;
 use Ticket_Contract;
 use Ticket_User;
+use TicketSatisfaction;
 use TicketValidation;
 use User;
 
@@ -567,7 +577,7 @@ class TicketTest extends DbTestCase
             ]
         );
 
-        $followup = new \ITILFollowup();
+        $followup = new ITILFollowup();
         $followup->add([
             'itemtype'  => $ticket::getType(),
             'items_id' => $ticket_id,
@@ -610,7 +620,7 @@ class TicketTest extends DbTestCase
             ])
         );
 
-        $solution = new \ITILSolution();
+        $solution = new ITILSolution();
         $this->assertGreaterThan(
             0,
             (int) $solution->add([
@@ -1234,7 +1244,7 @@ class TicketTest extends DbTestCase
 
         $uid = getItemByTypeName('User', TU_USER, true);
         //add a followup to the ticket
-        $fup = new \ITILFollowup();
+        $fup = new ITILFollowup();
         $this->assertGreaterThan(
             0,
             (int) $fup->add([
@@ -1335,7 +1345,7 @@ class TicketTest extends DbTestCase
 
         $uid = getItemByTypeName('User', TU_USER, true);
         //add a followup to the ticket
-        $fup = new \ITILFollowup();
+        $fup = new ITILFollowup();
         $this->assertGreaterThan(
             0,
             (int) $fup->add([
@@ -1738,7 +1748,7 @@ class TicketTest extends DbTestCase
 
         $uid = getItemByTypeName('User', TU_USER, true);
         //add a followup to the ticket
-        $fup = new \ITILFollowup();
+        $fup = new ITILFollowup();
         $this->assertGreaterThan(
             0,
             (int) $fup->add([
@@ -1959,7 +1969,7 @@ class TicketTest extends DbTestCase
 
         $uid = getItemByTypeName('User', TU_USER, true);
         //add a followup to the ticket
-        $fup = new \ITILFollowup();
+        $fup = new ITILFollowup();
         $this->assertGreaterThan(
             0,
             (int) $fup->add([
@@ -2320,7 +2330,7 @@ class TicketTest extends DbTestCase
         );
 
         //add a followup to the ticket
-        $fup = new \ITILFollowup();
+        $fup = new ITILFollowup();
         $this->assertGreaterThan(
             0,
             (int) $fup->add([
@@ -2583,7 +2593,7 @@ class TicketTest extends DbTestCase
             $uid = getItemByTypeName('User', $users_name, true);
 
             // ITILFollowup
-            $fup = new \ITILFollowup();
+            $fup = new ITILFollowup();
             $this->assertGreaterThan(
                 0,
                 (int) $fup->add([
@@ -3166,7 +3176,7 @@ class TicketTest extends DbTestCase
                     'password' => 'tech',
                     'rights'   => [
                         'task' => \READ,
-                        'followup' => \READ + \ITILFollowup::ADDALLITEM,
+                        'followup' => \READ + ITILFollowup::ADDALLITEM,
                     ],
                 ],
                 'expected' => true, // has enough rights so can take into account
@@ -3180,7 +3190,7 @@ class TicketTest extends DbTestCase
                     'password' => 'tech',
                     'rights'   => [
                         'task' => \READ,
-                        'followup' => \READ + \ITILFollowup::ADDMY,
+                        'followup' => \READ + ITILFollowup::ADDMY,
                     ],
                 ],
                 'expected' => true, // has enough rights so can take into account
@@ -3194,7 +3204,7 @@ class TicketTest extends DbTestCase
                     'password' => 'tech',
                     'rights'   => [
                         'task' => \READ,
-                        'followup' => \READ + \ITILFollowup::ADD_AS_GROUP,
+                        'followup' => \READ + ITILFollowup::ADD_AS_GROUP,
                     ],
                 ],
                 'expected' => true, // has enough rights so can take into account
@@ -3715,7 +3725,7 @@ class TicketTest extends DbTestCase
 
     public function testLocationAssignment()
     {
-        $rule = new \Rule();
+        $rule = new Rule();
         $rule->getFromDBByCrit([
             'sub_type' => 'RuleTicket',
             'name' => 'Ticket location from user',
@@ -3876,7 +3886,7 @@ class TicketTest extends DbTestCase
             ])
         );
         // Verify survey created
-        $satisfaction = new \TicketSatisfaction();
+        $satisfaction = new TicketSatisfaction();
         $this->assertTrue($satisfaction->getFromDBByCrit(['tickets_id' => $tickets_id_3]));
 
 
@@ -3926,7 +3936,7 @@ class TicketTest extends DbTestCase
         ]);
 
         $task = new \TicketTask();
-        $fup = new \ITILFollowup();
+        $fup = new ITILFollowup();
         $task->add([
             'tickets_id'   => $ticket2,
             'content'      => 'ticket 2 task 1',
@@ -4193,7 +4203,7 @@ class TicketTest extends DbTestCase
         $this->assertEquals(0, (int) $failure_count);
 
         // Add a followup to the child ticket
-        $followup = new \ITILFollowup();
+        $followup = new ITILFollowup();
         $this->assertGreaterThan(
             0,
             $followup->add([
@@ -4444,7 +4454,7 @@ HTML,
             ],
             [
                 'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-                'name'        => \ITILFollowup::$rightname,
+                'name'        => ITILFollowup::$rightname,
             ]
         );
 
@@ -4458,11 +4468,11 @@ HTML,
         $DB->update(
             'glpi_profilerights',
             [
-                'rights' => \ITILFollowup::ADDMY,
+                'rights' => ITILFollowup::ADDMY,
             ],
             [
                 'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-                'name'        => \ITILFollowup::$rightname,
+                'name'        => ITILFollowup::$rightname,
             ]
         );
 
@@ -4498,7 +4508,7 @@ HTML,
             ],
             [
                 'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-                'name'        => \ITILFollowup::$rightname,
+                'name'        => ITILFollowup::$rightname,
             ]
         );
 
@@ -4529,11 +4539,11 @@ HTML,
         $DB->update(
             'glpi_profilerights',
             [
-                'rights' => \ITILFollowup::ADDMY,
+                'rights' => ITILFollowup::ADDMY,
             ],
             [
                 'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-                'name'        => \ITILFollowup::$rightname,
+                'name'        => ITILFollowup::$rightname,
             ]
         );
 
@@ -4569,7 +4579,7 @@ HTML,
             ],
             [
                 'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-                'name'        => \ITILFollowup::$rightname,
+                'name'        => ITILFollowup::$rightname,
             ]
         );
 
@@ -4612,11 +4622,11 @@ HTML,
         $DB->update(
             'glpi_profilerights',
             [
-                'rights' => \ITILFollowup::ADD_AS_GROUP,
+                'rights' => ITILFollowup::ADD_AS_GROUP,
             ],
             [
                 'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-                'name'        => \ITILFollowup::$rightname,
+                'name'        => ITILFollowup::$rightname,
             ]
         );
 
@@ -4630,11 +4640,11 @@ HTML,
         $DB->update(
             'glpi_profilerights',
             [
-                'rights' => \ITILFollowup::ADD_AS_GROUP | \ITILFollowup::ADDMY,
+                'rights' => ITILFollowup::ADD_AS_GROUP | ITILFollowup::ADDMY,
             ],
             [
                 'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-                'name'        => \ITILFollowup::$rightname,
+                'name'        => ITILFollowup::$rightname,
             ]
         );
 
@@ -4670,7 +4680,7 @@ HTML,
             ],
             [
                 'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-                'name'        => \ITILFollowup::$rightname,
+                'name'        => ITILFollowup::$rightname,
             ]
         );
 
@@ -4701,11 +4711,11 @@ HTML,
         $DB->update(
             'glpi_profilerights',
             [
-                'rights' => \ITILFollowup::ADD_AS_TECHNICIAN,
+                'rights' => ITILFollowup::ADD_AS_TECHNICIAN,
             ],
             [
                 'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-                'name'        => \ITILFollowup::$rightname,
+                'name'        => ITILFollowup::$rightname,
             ]
         );
 
@@ -4741,7 +4751,7 @@ HTML,
             ],
             [
                 'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-                'name'        => \ITILFollowup::$rightname,
+                'name'        => ITILFollowup::$rightname,
             ]
         );
 
@@ -4784,11 +4794,11 @@ HTML,
         $DB->update(
             'glpi_profilerights',
             [
-                'rights' => \ITILFollowup::ADD_AS_TECHNICIAN,
+                'rights' => ITILFollowup::ADD_AS_TECHNICIAN,
             ],
             [
                 'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-                'name'        => \ITILFollowup::$rightname,
+                'name'        => ITILFollowup::$rightname,
             ]
         );
 
@@ -4843,11 +4853,11 @@ HTML,
         $DB->update(
             'glpi_profilerights',
             [
-                'rights' => \ITILFollowup::ADD_AS_OBSERVER,
+                'rights' => ITILFollowup::ADD_AS_OBSERVER,
             ],
             [
                 'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-                'name'        => \ITILFollowup::$rightname,
+                'name'        => ITILFollowup::$rightname,
             ]
         );
 
@@ -4898,11 +4908,11 @@ HTML,
         $DB->update(
             'glpi_profilerights',
             [
-                'rights' => \ITILFollowup::ADD_AS_OBSERVER | \ITILFollowup::ADD_AS_GROUP,
+                'rights' => ITILFollowup::ADD_AS_OBSERVER | ITILFollowup::ADD_AS_GROUP,
             ],
             [
                 'profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
-                'name'        => \ITILFollowup::$rightname,
+                'name'        => ITILFollowup::$rightname,
             ]
         );
 
@@ -5402,12 +5412,12 @@ HTML,
         ]);
         $this->assertTrue($result);
 
-        $inquest = new \TicketSatisfaction();
+        $inquest = new TicketSatisfaction();
 
         // Verify no existing survey for ticket
         $it = $DB->request([
             'SELECT' => ['id'],
-            'FROM' => \TicketSatisfaction::getTable(),
+            'FROM' => TicketSatisfaction::getTable(),
             'WHERE' => [
                 'tickets_id' => $tickets_id,
             ],
@@ -5423,7 +5433,7 @@ HTML,
         // Verify survey created
         $it = $DB->request([
             'SELECT' => ['id'],
-            'FROM' => \TicketSatisfaction::getTable(),
+            'FROM' => TicketSatisfaction::getTable(),
             'WHERE' => [
                 'tickets_id' => $tickets_id,
             ],
@@ -5455,12 +5465,12 @@ HTML,
         ]);
         $this->assertTrue($result);
 
-        $inquest = new \TicketSatisfaction();
+        $inquest = new TicketSatisfaction();
 
         // Verify no existing survey for ticket
         $it = $DB->request([
             'SELECT' => ['id'],
-            'FROM' => \TicketSatisfaction::getTable(),
+            'FROM' => TicketSatisfaction::getTable(),
             'WHERE' => [
                 'tickets_id' => $tickets_id,
             ],
@@ -5496,7 +5506,7 @@ HTML,
         // Verify survey created and only one exists
         $it = $DB->request([
             'SELECT' => ['id'],
-            'FROM' => \TicketSatisfaction::getTable(),
+            'FROM' => TicketSatisfaction::getTable(),
             'WHERE' => [
                 'tickets_id' => $tickets_id,
             ],
@@ -5599,7 +5609,7 @@ HTML,
         );
 
         // Ensure no survey has been created yet
-        $ticket_satisfaction = new \TicketSatisfaction();
+        $ticket_satisfaction = new TicketSatisfaction();
         $this->assertEquals(0, count($ticket_satisfaction->find(['tickets_id' => $root_ticket->getID()])));
         $this->assertEquals(0, count($ticket_satisfaction->find(['tickets_id' => $child_1_ticket->getID()])));
 
@@ -5611,7 +5621,7 @@ HTML,
         );
 
         // Ensure survey has been created
-        $ticket_satisfaction = new \TicketSatisfaction();
+        $ticket_satisfaction = new TicketSatisfaction();
         $this->assertEquals(1, count($ticket_satisfaction->find(['tickets_id' => $root_ticket->getID()])));
         $this->assertEquals(1, count($ticket_satisfaction->find(['tickets_id' => $child_1_ticket->getID()])));
 
@@ -6024,7 +6034,7 @@ HTML,
         $this->assertTrue((bool) $ticket->needReopen());
 
         // force a reopen
-        $followup = new \ITILFollowup();
+        $followup = new ITILFollowup();
         $followup->add([
             'itemtype'   => 'Ticket',
             'items_id'   => $tickets_id,
@@ -6906,8 +6916,8 @@ HTML,
         $entity_id = 0;
 
         $ticket = new Ticket();
-        $fup = new \ITILFollowup();
-        $sol = new \ITILSolution();
+        $fup = new ITILFollowup();
+        $sol = new ITILSolution();
 
         //create a ticket
         $ticket_id = $ticket->add([
@@ -7296,7 +7306,7 @@ HTML,
         );
 
         $this->createItem(
-            \ITILFollowup::class,
+            ITILFollowup::class,
             [
                 'itemtype'      => Ticket::class,
                 'items_id'      => $ticket->getID(),
@@ -7306,7 +7316,7 @@ HTML,
         );
 
         $this->createItem(
-            \ITILFollowup::class,
+            ITILFollowup::class,
             [
                 'itemtype'      => Ticket::class,
                 'items_id'      => $ticket->getID(),
@@ -7318,7 +7328,7 @@ HTML,
         );
 
         $this->createItem(
-            \ITILFollowup::class,
+            ITILFollowup::class,
             [
                 'itemtype'   => Ticket::class,
                 'items_id'   => $ticket->getID(),
@@ -7586,7 +7596,7 @@ HTML,
                 array_values(
                     array_filter(
                         $timeline,
-                        fn($entry) => $entry['type'] === \ITILFollowup::class
+                        fn($entry) => $entry['type'] === ITILFollowup::class
                     )
                 ),
             );
@@ -8042,13 +8052,13 @@ HTML,
         );
 
         $calendar = $this->createItem(
-            \Calendar::class,
+            Calendar::class,
             [
                 'name' => __FUNCTION__,
             ]
         );
 
-        $segments = $this->createItems(\CalendarSegment::class, [
+        $segments = $this->createItems(CalendarSegment::class, [
             ['calendars_id' => $calendar->getID(), 'day' => 0, 'begin' => '00:00:00', 'end' => '24:00:00'],
             ['calendars_id' => $calendar->getID(), 'day' => 1, 'begin' => '00:00:00', 'end' => '24:00:00'],
             ['calendars_id' => $calendar->getID(), 'day' => 2, 'begin' => '00:00:00', 'end' => '24:00:00'],
@@ -8059,13 +8069,13 @@ HTML,
         ]);
 
         $calendar2 = $this->createItem(
-            \Calendar::class,
+            Calendar::class,
             [
                 'name' => __FUNCTION__,
             ]
         );
 
-        $segments2 = $this->createItems(\CalendarSegment::class, [
+        $segments2 = $this->createItems(CalendarSegment::class, [
             ['calendars_id' => $calendar2->getID(), 'day' => 0, 'begin' => '08:00:00', 'end' => '17:00:00'],
             ['calendars_id' => $calendar2->getID(), 'day' => 1, 'begin' => '08:00:00', 'end' => '17:00:00'],
             ['calendars_id' => $calendar2->getID(), 'day' => 2, 'begin' => '08:00:00', 'end' => '17:00:00'],
@@ -8076,20 +8086,20 @@ HTML,
         ]);
 
         $calendar3 = $this->createItem(
-            \Calendar::class,
+            Calendar::class,
             [
                 'name' => __FUNCTION__,
             ]
         );
 
         $calendar4 = $this->createItem(
-            \Calendar::class,
+            Calendar::class,
             [
                 'name' => __FUNCTION__,
             ]
         );
 
-        $segmetns4 = $this->createItems(\CalendarSegment::class, [
+        $segmetns4 = $this->createItems(CalendarSegment::class, [
             ['calendars_id' => $calendar4->getID(), 'day' => 1, 'begin' => '08:00:00', 'end' => '17:00:00'],
             ['calendars_id' => $calendar4->getID(), 'day' => 2, 'begin' => '08:00:00', 'end' => '17:00:00'],
             ['calendars_id' => $calendar4->getID(), 'day' => 4, 'begin' => '08:00:00', 'end' => '17:00:00'],
@@ -8790,7 +8800,7 @@ HTML,
 
         yield [
             'profilerights' => [
-                'followup' => \ITILFollowup::ADDMYTICKET,
+                'followup' => ITILFollowup::ADDMYTICKET,
                 'ticket'   => 0,
                 'document' => 0,
             ],
@@ -8817,7 +8827,7 @@ HTML,
 
         yield [
             'profilerights' => [
-                'followup' => \ITILFollowup::ADDMYTICKET,
+                'followup' => ITILFollowup::ADDMYTICKET,
                 'ticket'   => UPDATE,
                 'document' => 0,
             ],
@@ -8826,7 +8836,7 @@ HTML,
 
         yield [
             'profilerights' => [
-                'followup' => \ITILFollowup::ADDMYTICKET,
+                'followup' => ITILFollowup::ADDMYTICKET,
                 'ticket'   => 0,
                 'document' => CREATE,
             ],
@@ -8924,7 +8934,7 @@ HTML,
         );
 
         $rule = $this->createItem(
-            \Rule::class,
+            Rule::class,
             [
                 'entities_id' => 0,
                 'name' => 'Rule name',
@@ -8945,7 +8955,7 @@ HTML,
         $this->createItem(\RuleCriteria::class, [
             'rules_id' => $rule->getID(),
             'criteria' => 'name',
-            'condition' => \Rule::PATTERN_CONTAIN,
+            'condition' => Rule::PATTERN_CONTAIN,
             'pattern' => 'ITILsolution',
         ]);
 
@@ -8981,7 +8991,7 @@ HTML,
 
         $this->assertTrue($queue->delete(['id' => $queue->getID()], true));
 
-        $solution = new \ITILSolution();
+        $solution = new ITILSolution();
         $this->assertTrue($solution->getFromDBByCrit([
             'items_id' => $ticket->getID(),
             'itemtype' => Ticket::class,
@@ -8990,7 +9000,7 @@ HTML,
 
         // Test Notification for solved ticket with solution template rule at update
         $this->updateItem(
-            \ITILSolution::class,
+            ITILSolution::class,
             $solution->getID(),
             [
                 'status' => 3,
@@ -9025,9 +9035,9 @@ HTML,
             ],
             ['status']
         );
-        $solution = new \ITILSolution();
+        $solution = new ITILSolution();
         $this->createItem(
-            \ITILSolution::class,
+            ITILSolution::class,
             [
                 'items_id' => $ticket->getID(),
                 'itemtype' => Ticket::class,
@@ -9228,5 +9238,149 @@ HTML,
         $this->assertCount(2, $linked_contracts);
         $this->assertContains($contract_1->getID(), array_column($linked_contracts, 'contracts_id'));
         $this->assertContains($contract_2->getID(), array_column($linked_contracts, 'contracts_id'));
+    }
+
+    /**
+     * Ensure that there is no error triggered when refusing solutions or reopening tickets
+     * with a SLA assigned on a specific calendar.
+     * @see https://github.com/glpi-project/glpi/pull/21337
+     */
+    public function testTicketUnsolveWithSLA()
+    {
+        $this->login();
+
+        $entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        // Create a calendar with working hours from 8 a.m. to 7 p.m. Monday to Friday
+        $calendar = $this->createItem(Calendar::class, ['name' => 'Calendar']);
+        $this->createItems(CalendarSegment::class, [
+            ['calendars_id' => $calendar->getID(), 'day' => 1, 'begin' => '08:00:00', 'end' => '18:00:00'],
+            ['calendars_id' => $calendar->getID(), 'day' => 2, 'begin' => '08:00:00', 'end' => '18:00:00'],
+            ['calendars_id' => $calendar->getID(), 'day' => 3, 'begin' => '08:00:00', 'end' => '18:00:00'],
+            ['calendars_id' => $calendar->getID(), 'day' => 4, 'begin' => '08:00:00', 'end' => '18:00:00'],
+            ['calendars_id' => $calendar->getID(), 'day' => 5, 'begin' => '08:00:00', 'end' => '18:00:00'],
+        ]);
+
+        // Create SLM/SLA
+        $slm = $this->createItem(SLM::class, [
+            'name'                => 'SLM',
+            'entities_id'         => $entity_id,
+            'is_recursive'        => true,
+            'use_ticket_calendar' => false,
+            'calendars_id'        => $calendar->getID(),
+        ]);
+        $sla = $this->createItem(SLA::class, [
+            'name'                => 'SLA TTR',
+            'entities_id'         => $entity_id,
+            'is_recursive'        => true,
+            'type'                => SLM::TTR,
+            'number_time'         => 4,
+            'calendars_id'        => $calendar->getID(),
+            'definition_time'     => 'hour',
+            'end_of_working_day'  => false,
+            'slms_id'             => $slm->getID(),
+            'use_ticket_calendar' => false,
+        ]);
+
+        // Create a ticket
+        $this->setCurrentTime('2025-10-06 11:26:34'); // be sure to be on monday
+        $ticket = $this->createItem(
+            Ticket::class,
+            [
+                'name'          => __FUNCTION__,
+                'content'       => __FUNCTION__,
+                'slas_id_ttr'   => $sla->getID(),
+            ]
+        );
+
+        // Add a solution
+        $this->setCurrentTime('2025-10-07 09:12:48'); // add some time to consistent stats
+        $solution = $this->createItem(
+            ITILSolution::class,
+            [
+                'itemtype'  => Ticket::class,
+                'items_id'  => $ticket->getID(),
+                'content'   => __FUNCTION__,
+            ]
+        );
+
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertEquals(Ticket::SOLVED, $ticket->fields['status']);
+        $this->assertEquals(27974, $ticket->fields['solve_delay_stat']);
+        $this->assertEquals(0, $ticket->fields['close_delay_stat']);
+        $this->assertTrue($solution->getFromDB($solution->getID()));
+        $this->assertSame(CommonITILValidation::WAITING, $solution->fields['status']);
+
+        // Refuse the solution
+        $this->setCurrentTime('2025-10-07 10:47:10'); // add some time to consistent stats
+        $this->createItem(
+            ITILFollowup::class,
+            [
+                'itemtype'      => Ticket::class,
+                'items_id'      => $ticket->getID(),
+                'add_reopen'    => '1',
+                'content'       => __FUNCTION__,
+            ],
+            ['add_reopen']
+        );
+
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertEquals(Ticket::INCOMING, $ticket->fields['status']);
+        $this->assertEquals(0, $ticket->fields['solve_delay_stat']);
+        $this->assertEquals(0, $ticket->fields['close_delay_stat']);
+        $this->assertTrue($solution->getFromDB($solution->getID()));
+        $this->assertSame(CommonITILValidation::REFUSED, $solution->fields['status']);
+
+        // Close the ticket
+        $this->setCurrentTime('2025-10-08 14:17:31'); // add some time to consistent stats
+        $this->updateItem(Ticket::class, $ticket->getID(), ['status' => Ticket::CLOSED]);
+
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertEquals(Ticket::CLOSED, $ticket->fields['status']);
+        $this->assertEquals(76595, $ticket->fields['solve_delay_stat']);
+        $this->assertEquals(76595, $ticket->fields['close_delay_stat']);
+
+        // Reopen the ticket
+        $this->setCurrentTime('2025-10-08 14:24:05'); // add some time to consistent stats
+        $this->createItem(
+            ITILFollowup::class,
+            [
+                'itemtype'      => Ticket::class,
+                'items_id'      => $ticket->getID(),
+                'add_reopen'    => '1',
+                'content'       => __FUNCTION__,
+            ],
+            ['add_reopen']
+        );
+
+        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        $this->assertEquals(Ticket::INCOMING, $ticket->fields['status']);
+        $this->assertEquals(0, $ticket->fields['solve_delay_stat']);
+        $this->assertEquals(0, $ticket->fields['close_delay_stat']);
+    }
+
+    public function testSatisfactionSurveyIsDisplayedOnHelpdesk(): void
+    {
+        // Arrange: create a ticket with a satisfaction survey
+        $this->login('post-only');
+        $ticket = $this->createItem(Ticket::class, [
+            'name'    => "My ticket",
+            'content' => "My ticket content",
+            'status'  => 6,
+        ]);
+        $this->createItem(TicketSatisfaction::class, [
+            'tickets_id' => $ticket->getID(),
+            'type' => CommonITILSatisfaction::TYPE_INTERNAL,
+        ]);
+
+        // Act: render ticket form
+        ob_start();
+        $ticket->showForm($ticket->getID());
+        $html = ob_get_clean();
+
+        // Assert: make sure the satisfaction form was rendered
+        $crawler = new Crawler($html);
+        $survey = $crawler->filter('[data-testid="survey"]');
+        $this->assertNotEmpty($survey);
     }
 }

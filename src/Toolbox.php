@@ -3037,7 +3037,7 @@ class Toolbox
 
         if ($html) {
             $formatted = '
-                <span title="' . htmlescape($number) . '"
+                <span "
                       class="formatted-number"
                       data-precision="' . htmlescape($precision) . '">
                     <span class="number">' . htmlescape($formatted) . '</span>

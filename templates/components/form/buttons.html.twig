@@ -36,12 +36,12 @@
 {% set id           = item.fields['id'] ?? -1 %}
 
 {% if item is defined %}
-         <div class="row">
-         {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
-         </div>
+
+     {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
+
 
     {% if canedit or item.canEdit(item.fields['id']) %}
-      <div class="card-body mx-n2 border-top d-flex flex-row-reverse align-items-start flex-wrap">
+      <div class="form-button-separator card-body mx-n2 border-top d-flex flex-row-reverse align-items-start flex-wrap">
          {% if withtemplate > 0 or item.isNewID(id) %}
             {% if id <= 0 or withtemplate == 2 %}
                <button class="btn btn-primary me-2" type="submit" name="add" value="1">
@@ -88,7 +88,7 @@
                      <span class="{{ span_cls }}">
                         <button class="btn btn-danger me-2" type="submit" name="purge"
                               value="1"
-                              onclick="return confirm('{{ __('Confirm the final deletion?') }}');">
+                              onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');">
                            <i class="ti ti-trash"></i>
                            <span>{{ _x('button', 'Delete permanently') }}</span>
                         </button>
@@ -108,7 +108,7 @@
                   {% if (not item.maybeDeleted() or item.useDeletedToLockIfDynamic()) %}
                      {% if item.can(id, constant('PURGE')) %}
                         <button class="btn btn-outline-danger me-2" type="submit" name="purge"
-                                onclick="return confirm('{{ __('Confirm the final deletion?') }}');"
+                                onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');"
                                 value="1">
                            <i class="ti ti-trash"></i>
                            <span>{{ _x('button', 'Delete permanently') }}</span>

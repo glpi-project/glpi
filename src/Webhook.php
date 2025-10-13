@@ -45,6 +45,7 @@ use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinition;
 use Glpi\ContentTemplates\TemplateManager;
+use Glpi\Error\ErrorHandler;
 use Glpi\Features\Clonable;
 use Glpi\Http\Request;
 use Glpi\Search\FilterableInterface;
@@ -308,11 +309,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
      */
     public static function getDefaultEventsListLabel($event_name): string
     {
-        $events = [
-            'new' => __("New"),
-            'update' => __('Update'),
-            'delete' => __("Delete"),
-        ];
+        $events = static::getDefaultEventsList();
         return $events[$event_name] ?? NOT_AVAILABLE;
     }
 
@@ -1114,96 +1111,114 @@ class Webhook extends CommonDBTM implements FilterableInterface
     {
         global $DB;
 
-        // Ignore raising if the table doesn't exist (happens during install/update)
-        if (!$DB->tableExists(self::getTable())) {
-            return;
-        }
-
-        $supported = self::getAPIItemtypeData();
-        $supported_types = [];
-        foreach ($supported as $categories) {
-            foreach ($categories as $types) {
-                $supported_types = array_merge($supported_types, array_keys($types));
+        try {
+            // Ignore raising if the table doesn't exist (happens during install/update)
+            if (!$DB->tableExists(self::getTable())) {
+                return;
             }
-        }
 
-        // Ignore raising if the item type is not supported
-        if (!in_array($item->getType(), $supported_types, true)) {
-            return;
-        }
+            $supported = self::getAPIItemtypeData();
+            $supported_types = [];
+            foreach ($supported as $categories) {
+                foreach ($categories as $types) {
+                    $supported_types = array_merge($supported_types, array_keys($types));
+                }
+            }
 
-        $it = $DB->request([
-            'SELECT' => ['id', 'entities_id', 'is_recursive'],
-            'FROM' => self::getTable(),
-            'WHERE' => [
-                'event' => $event,
-                'itemtype' => $item->getType(),
-                'is_active' => 1,
-            ],
-        ]);
-        if ($it->count() === 0) {
-            return;
-        }
+            // Ignore raising if the item type is not supported
+            if (!in_array($item->getType(), $supported_types, true)) {
+                return;
+            }
 
-        // Get data from the API once for all the webhooks
-        $webhook = new self();
-        $path = $webhook->getApiPath($item);
+            $it = $DB->request([
+                'SELECT' => ['id', 'entities_id', 'is_recursive'],
+                'FROM' => self::getTable(),
+                'WHERE' => [
+                    'event' => $event,
+                    'itemtype' => $item->getType(),
+                    'is_active' => 1,
+                ],
+            ]);
+            if ($it->count() === 0) {
+                return;
+            }
 
-        foreach ($it as $webhook_data) {
-            $match_entity = false;
-            if ($item->isEntityAssign()) {
-                if ($webhook_data['is_recursive']) {
-                    $parent_entities = getAncestorsOf(Entity::getTable(), $item->getEntityID());
-                    if (in_array($webhook_data['entities_id'], $parent_entities, true)) {
+            // Get data from the API once for all the webhooks
+            $webhook = new self();
+            $path = $webhook->getApiPath($item);
+
+            foreach ($it as $webhook_data) {
+                $match_entity = false;
+                if ($item->isEntityAssign()) {
+                    if ($webhook_data['is_recursive']) {
+                        $parent_entities = getAncestorsOf(Entity::getTable(), $item->getEntityID());
+                        if (in_array($webhook_data['entities_id'], $parent_entities, true)) {
+                            $match_entity = true;
+                        }
+                    }
+                    if ($item->getEntityID() === $webhook_data['entities_id']) {
                         $match_entity = true;
                     }
-                }
-                if ($item->getEntityID() === $webhook_data['entities_id']) {
+                } elseif ($webhook_data['entities_id'] === 0) {
                     $match_entity = true;
                 }
-            } elseif ($webhook_data['entities_id'] === 0) {
-                $match_entity = true;
-            }
-            if (!$match_entity) {
-                continue;
-            }
-            $webhook->getFromDB($webhook_data['id']);
-
-            $api_data = $webhook->getAPIResponse($path);
-            $body = $webhook->getWebhookBody($event, $api_data, $item::class, $item->getID());
-            // Check if the item matches the webhook filters
-            if (!$webhook->itemMatchFilter($item)) {
-                continue;
-            }
-            $timestamp = time();
-            $headers = [
-                'X-GLPI-signature' => self::getSignature($body . $timestamp, $webhook->fields['secret']),
-                'X-GLPI-timestamp' => $timestamp,
-            ];
-
-            $api_data = [
-                'event' => $event,
-                'item' => $api_data,
-            ];
-            $webhook->addParentItemData($api_data, $item::getType(), $item->getID());
-
-            $custom_headers = $webhook->fields['custom_headers'];
-            foreach ($custom_headers as $key => $value) {
-                try {
-                    $custom_headers[$key] = TemplateManager::render($value, $api_data, false);
-                } catch (Exception $e) {
-                    // Header will not be sent
+                if (!$match_entity) {
+                    continue;
                 }
+                $webhook->getFromDB($webhook_data['id']);
+
+                $api_data = $webhook->getAPIResponse($path);
+                $body = $webhook->getWebhookBody($event, $api_data, $item::class, $item->getID());
+                // Check if the item matches the webhook filters
+                if (!$webhook->itemMatchFilter($item)) {
+                    continue;
+                }
+                $timestamp = time();
+                $headers = [
+                    'X-GLPI-signature' => self::getSignature($body . $timestamp, $webhook->fields['secret']),
+                    'X-GLPI-timestamp' => $timestamp,
+                ];
+
+                $api_data = [
+                    'event' => $event,
+                    'item' => $api_data,
+                ];
+                $webhook->addParentItemData($api_data, $item::getType(), $item->getID());
+
+                $custom_headers = $webhook->fields['custom_headers'];
+                foreach ($custom_headers as $key => $value) {
+                    try {
+                        $custom_headers[$key] = TemplateManager::render($value, $api_data, false);
+                    } catch (Exception $e) {
+                        // Header will not be sent
+                    }
+                }
+                $headers = array_merge($headers, $custom_headers);
+
+                $webhook->fields['url'] = TemplateManager::render($webhook->fields['url'], $api_data, false);
+
+                $data = $webhook->fields;
+                $data['items_id'] = $item->getID();
+                $data['body'] = $body;
+                $data['headers'] = json_encode($headers);
+                self::send($data);
             }
-            $headers = array_merge($headers, $custom_headers);
 
-            $webhook->fields['url'] = TemplateManager::render($webhook->fields['url'], $api_data, false);
-
-            $data = $webhook->fields;
-            $data['items_id'] = $item->getID();
-            $data['body'] = $body;
-            $data['headers'] = json_encode($headers);
-            self::send($data);
+        } catch (Throwable $e) {
+            //webhooks errors must not be blockers
+            ErrorHandler::logCaughtException($e);
+            Session::addMessageAfterRedirect(
+                htmlescape(
+                    sprintf(
+                        __('An error occurred raising "%1$s" webhook for item %2$s (ID %3$s)'),
+                        static::getDefaultEventsListLabel($event),
+                        $item->getTypeName(1),
+                        $item->getID()
+                    )
+                ),
+                true,
+                ERROR
+            );
         }
     }
 

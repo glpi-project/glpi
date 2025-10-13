@@ -1449,4 +1449,91 @@ class PendingReasonTest extends DbTestCase
         $badges_text = $crawler->filter('.timeline-item.ITILTask:not(#new-TicketTask-block) .bg-transparent')->innerText();
         $this->assertStringContainsString('Done:', $badges_text);
     }
+
+    /**
+     * Test that PendingReason_Item is deleted when the status is changed by a rule
+     * This test verifies that business rules can properly remove pending reasons
+     */
+    public function testPendingReasonDeletedWhenStatusChangedByRule(): void
+    {
+        $this->login();
+
+        // Clean rule singleton to avoid interference from other tests
+        \SingletonRuleList::getInstance("RuleTicket", 0)->load = 0;
+        \SingletonRuleList::getInstance("RuleTicket", 0)->list = [];
+
+        // Create a business rule that changes status when priority is set to 5
+        $ruleticket = new \RuleTicket();
+        $rulecrit   = new \RuleCriteria();
+        $ruleaction = new \RuleAction();
+
+        $ruletid = $ruleticket->add([
+            'name'         => 'Test rule to change status from waiting to assigned',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleTicket',
+            'condition'    => \RuleTicket::ONUPDATE,
+            'is_recursive' => 1,
+        ]);
+        $this->assertGreaterThan(0, $ruletid);
+
+        // Add criterion: priority is 5 (very high)
+        $crit_id = $rulecrit->add([
+            'rules_id'  => $ruletid,
+            'criteria'  => 'priority',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => 5,
+        ]);
+        $this->assertGreaterThan(0, $crit_id);
+
+        // Add action: change status to ASSIGNED
+        $action_id = $ruleaction->add([
+            'rules_id'    => $ruletid,
+            'action_type' => 'assign',
+            'field'       => 'status',
+            'value'       => CommonITILObject::ASSIGNED,
+        ]);
+        $this->assertGreaterThan(0, $action_id);
+
+        // Create a ticket with WAITING status
+        $ticket = new Ticket();
+        $tickets_id = $ticket->add([
+            'name'    => 'Test ticket for rule-based status change',
+            'content' => 'This ticket will have its status changed by a rule',
+            'status'  => CommonITILObject::WAITING,
+        ]);
+        $this->assertGreaterThan(0, $tickets_id);
+        $this->assertTrue($ticket->getFromDB($tickets_id));
+
+        // Attach a pending reason to the ticket
+        $this->assertTrue(PendingReason_Item::createForItem($ticket, [
+            'pendingreasons_id'           => getItemByTypeName(PendingReason::class, 'needupdate_pendingreason', true),
+            'followup_frequency'          => DAY_TIMESTAMP,
+            'followups_before_resolution' => 3,
+        ]));
+
+        // Verify that pending reason exists
+        $pending_item = PendingReason_Item::getForItem($ticket);
+        $this->assertNotFalse($pending_item);
+        $this->assertEquals(CommonITILObject::WAITING, $ticket->fields['status']);
+
+        // Update the ticket priority to trigger the rule
+        // The rule should change status from WAITING to ASSIGNED
+        $this->assertTrue(
+            $ticket->update([
+                'id'       => $tickets_id,
+                'priority' => 5,
+            ])
+        );
+
+        // Reload ticket to get updated data
+        $this->assertTrue($ticket->getFromDB($tickets_id));
+
+        // Verify that the status was changed by the rule
+        $this->assertEquals(CommonITILObject::ASSIGNED, $ticket->fields['status']);
+
+        // Verify that the pending reason was deleted
+        $pending_item = PendingReason_Item::getForItem($ticket);
+        $this->assertFalse($pending_item, 'PendingReason_Item should be deleted when status is changed by a rule');
+    }
 }

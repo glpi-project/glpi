@@ -43,7 +43,9 @@ interface ServiceCatalogLeafInterface extends ServiceCatalogItemInterface
 {
     /**
      * Get the URL to the target page represented by this leaf.
-     * @return string
+     * The url must be prefixed by the root doc.
+     *
+     * @used-by templates/pages/helpdesk/search.html.twig
      */
     public function getServiceCatalogLink(): string;
 }

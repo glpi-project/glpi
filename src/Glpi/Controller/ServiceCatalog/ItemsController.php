@@ -40,6 +40,7 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Category;
 use Glpi\Form\ServiceCatalog\ItemRequest;
+use Glpi\Form\ServiceCatalog\Provider\CategoryProvider;
 use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
 use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyEnum;
 use Glpi\Http\Firewall;
@@ -69,7 +70,13 @@ final class ItemsController extends AbstractController
     public function __invoke(Request $request): Response
     {
         // Read category
-        $category_id = $request->query->getInt('category', 0);
+        $category_id = $request->query->get('category', 0);
+
+        if (!is_numeric($category_id)) {
+            // Invalid input
+            throw new NotFoundHttpException();
+        }
+
         if ($category_id > 0) {
             if (Category::getById($category_id) === false) {
                 throw new NotFoundHttpException();
@@ -119,11 +126,15 @@ final class ItemsController extends AbstractController
         );
         $result = $this->service_catalog_manager->getItems($item_request);
 
+        $category_provider = new CategoryProvider();
+        $ancestors = $category_provider->getAncestors($item_request);
+
         return $this->render(
             'components/helpdesk_forms/service_catalog_items.html.twig',
             [
                 'category_id'       => $category_id,
                 'filter'            => $filter,
+                'ancestors'         => $ancestors,
                 'items'             => $result['items'],
                 'total'             => $result['total'],
                 'current_page'      => $page,

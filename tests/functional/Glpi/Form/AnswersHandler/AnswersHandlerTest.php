@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Form\AnswersHandler;
 
 use CommonITILObject;
 use DbTestCase;
+use Entity;
 use Glpi\Form\Answer;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Condition\CreationStrategy;
@@ -50,11 +51,17 @@ use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
+use Glpi\Form\QuestionType\QuestionTypeItem;
+use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
+use Glpi\Form\QuestionType\QuestionTypeItemDropdownExtraDataConfig;
+use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Form\ValidationResult;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Location;
 use PHPUnit\Framework\Attributes\DataProvider;
 use User;
 
@@ -230,6 +237,78 @@ class AnswersHandlerTest extends DbTestCase
             'expectedErrors' => [
                 'Mandatory Name' => 'This field is mandatory',
             ],
+        ];
+
+        $mandatory_entity_question_form_buidler = (new FormBuilder("Mandatory Item Question Type Test Form"))
+            ->addQuestion(
+                "Mandatory Entity Question",
+                QuestionTypeItem::class,
+                extra_data: json_encode(
+                    new QuestionTypeItemExtraDataConfig(itemtype: Entity::class)
+                ),
+                is_mandatory: true
+            );
+
+        yield 'Empty entity question - should be invalid with empty choice selected' => [
+            'builder' => $mandatory_entity_question_form_buidler,
+            'answers' => [
+                'Mandatory Entity Question' => [
+                    'itemtype' => Entity::class,
+                    'items_id' => -1, // Empty choice
+                ],
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Mandatory Entity Question' => 'This field is mandatory',
+            ],
+        ];
+
+        yield 'Filled entity question - should be valid' => [
+            'builder' => $mandatory_entity_question_form_buidler,
+            'answers' => [
+                'Mandatory Entity Question' => [
+                    'itemtype' => Entity::class,
+                    'items_id' => 0, // Root entity
+                ],
+            ],
+            'expectedIsValid' => true,
+            'expectedErrors' => [],
+        ];
+
+        $mandatory_location_question_form_builder = (new FormBuilder("Mandatory Dropdown Item Question Type Test Form"))
+            ->addQuestion(
+                "Mandatory Location Question",
+                QuestionTypeItemDropdown::class,
+                extra_data: json_encode(
+                    new QuestionTypeItemDropdownExtraDataConfig(itemtype: Location::class)
+                ),
+                is_mandatory: true
+            );
+
+        yield 'Empty location dropdown question - should be invalid with empty choice selected' => [
+            'builder' => $mandatory_location_question_form_builder,
+            'answers' => [
+                'Mandatory Location Question' => [
+                    'itemtype' => Location::class,
+                    'items_id' => -1, // Empty choice
+                ],
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Mandatory Location Question' => 'This field is mandatory',
+            ],
+        ];
+
+        yield 'Filled location dropdown question - should be valid' => [
+            'builder' => $mandatory_location_question_form_builder,
+            'answers' => [
+                'Mandatory Location Question' => [
+                    'itemtype' => Location::class,
+                    'items_id' => 1,
+                ],
+            ],
+            'expectedIsValid' => true,
+            'expectedErrors' => [],
         ];
 
         // Conditonnal validation form builder
@@ -551,5 +630,82 @@ class AnswersHandlerTest extends DbTestCase
 
         // Assert: the ticket should not have been created
         $this->assertCount(1, $created_items);
+    }
+
+    public function testCustomMandatoryMessage(): void
+    {
+        // Arrange: create a form with a  mandatory number question
+        $builder = new FormBuilder("My form");
+        $builder->addQuestion(
+            name: "Your phone number",
+            type: QuestionTypeNumber::class,
+            is_mandatory: true,
+        );
+        $form = $this->createForm($builder);
+        $number_question_id = $this->getQuestionId($form, "Your phone number");
+        $number_question = Question::getById($number_question_id);
+
+        // Act: try to validate the form
+        $handler = AnswersHandler::getInstance();
+        $result = $handler->validateAnswers($form, []);
+
+        // Assert: check error message
+        $this->assertEquals(false, $result->isValid());
+
+        // Insert errors into a result object to make sure we compare with
+        // the expected format
+        $expected_errors = new ValidationResult();
+        $expected_errors->addError($number_question, "Please enter a valid number");
+        $this->assertEquals(
+            $expected_errors->getErrors(),
+            $result->getErrors()
+        );
+    }
+
+    public static function validateEmailsProvider(): iterable
+    {
+        yield [
+            'email'    => "notanemail",
+            'expected' => false,
+            'errors'   => ["Please enter a valid email"],
+        ];
+        yield [
+            'email'    => "email@teclib.com",
+            'expected' => true,
+        ];
+    }
+
+    #[DataProvider('validateEmailsProvider')]
+    public function testValidateEmails(
+        string $email,
+        bool $expected,
+        array $errors = [],
+    ): void {
+        // Arrange: create a form with an email question
+        $builder = new FormBuilder("My form with an email question");
+        $builder->addQuestion("Your email", QuestionTypeEmail::class);
+        $form = $this->createForm($builder);
+        $email_question_id = $this->getQuestionId($form, "Your email");
+        $email_question = Question::getById($email_question_id);
+
+        // Act: try to validate the form
+        $handler = AnswersHandler::getInstance();
+        $result = $handler->validateAnswers($form, [
+            $email_question_id => $email,
+        ]);
+
+        // Assert: check validity
+        $this->assertEquals($expected, $result->isValid());
+
+        // Insert errors into a result object to make sure we compare with
+        // the expected format
+        $formatted_errors = new ValidationResult();
+        foreach ($errors as $error) {
+            $formatted_errors->addError($email_question, $error);
+        }
+        $this->assertEquals(
+            $formatted_errors->getErrors(),
+            $result->getErrors()
+        );
     }
 }

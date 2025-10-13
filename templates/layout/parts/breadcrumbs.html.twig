@@ -32,7 +32,7 @@
 
 <ol class="breadcrumb breadcrumb-alternate pe-1 pe-sm-3" aria-label="breadcrumbs">
    <li class="breadcrumb-item text-truncate">
-      <a href="{{ index_path() }}" title="{{ __('Home') }}">
+      <a href="{{ index_path() }}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Home') }}">
          <i class="ti ti-home-2"></i>
          {{ __('Home') }}
       </a>
@@ -40,7 +40,7 @@
 
    {% if menu[sector] is defined %}
    <li class="breadcrumb-item text-truncate">
-      <a href="{{ path(menu[sector]['default'] ?? '/front/central.php') }}" title="{{ menu[sector]['title'] }}">
+      <a href="{{ path(menu[sector]['default'] ?? '/front/central.php') }}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ menu[sector]['title'] }}">
          <i class="{{ menu[sector]['icon'] ?? '' }}"></i>
          {{ menu[sector]['title'] }}
       </a>
@@ -54,6 +54,7 @@
       <li class="breadcrumb-item text-truncate">
          <a href="{{ path(menu[sector]['content'][item]['page']) }}"
             class="{{ with_option ? '' : 'here' }}"
+            data-bs-toggle="tooltip" data-bs-placement="bottom"
             title="{{ menu[sector]['content'][item]['title'] }}" >
             <i class="{{ menu[sector]['content'][item]['icon'] ?? '' }}"></i>
             {{ menu[sector]['content'][item]['title'] }}
@@ -65,6 +66,7 @@
       <li class="breadcrumb-item text-truncate">
          <a href="{{ path(menu[sector]['content'][item]['options'][option]['page']) }}"
             class="here"
+            data-bs-toggle="tooltip" data-bs-placement="bottom"
             title="{{ menu[sector]['content'][item]['options'][option]['title'] }}" >
             <i class="{{ menu[sector]['content'][item]['options'][option]['icon'] ?? '' }}"></i>
             {{ menu[sector]['content'][item]['options'][option]['title']|u.truncate(17, '...') }}

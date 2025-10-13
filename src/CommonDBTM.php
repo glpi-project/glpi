@@ -1498,7 +1498,7 @@ class CommonDBTM extends CommonGLPI
         $html = '';
         if ($link_url !== '') {
             $html .= sprintf(
-                '<a href="%s" title="%s"%s>',
+                '<a href="%s" data-bs-toggle="tooltip" data-bs-placement="bottom" title="%s"%s>',
                 htmlescape($link_url),
                 htmlescape($link_title),
                 $p['class'] !== '' ? sprintf(' class="%s"', htmlescape($p['class'])) : '',

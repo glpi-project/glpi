@@ -2609,9 +2609,11 @@ TWIG,
          ? " disabled='disabled'"
          : "";
 
+        $calendar_tooltip = __s('Enter or select a date');
         $calendar_btn = $p['calendar_btn']
-         ? "<button type='button' class='btn btn-outline-secondary btn-sm' data-toggle title='" . __s('Show date picker') . "'>
+         ? "<button type='button' class='btn btn-outline-secondary btn-sm' data-toggle>
                 <i class='ti ti-calendar'></i>
+                <span class='sr-only'>" . $calendar_tooltip . "</span>
             </button>"
          : "";
         $clear_btn = $p['clear_btn'] && $p['maybeempty'] && $p['canedit']
@@ -2630,7 +2632,7 @@ TWIG,
         $placeholder = htmlescape($p['placeholder']);
 
         $output = <<<HTML
-      <div class="button-group flex-grow-1 flatpickr d-flex align-items-center" id="showdate{$rand}">
+      <div class="button-group flex-grow-1 flatpickr d-flex align-items-center" id="showdate{$rand}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{$calendar_tooltip}">
          <input type="text" name="{$name}" size="{$size}"
                 {$required} {$disabled} data-input placeholder="{$placeholder}" class="form-control rounded-start ps-2">
          $calendar_btn
@@ -2815,10 +2817,10 @@ JS;
         $show_datepicker_label = __s('Show date picker');
         $rand = (int) $p['rand'];
         $output = <<<HTML
-         <div class="btn-group flex-grow-1 flatpickr" id="showdate{$rand}">
+         <div class="btn-group flex-grow-1 flatpickr" id="showdate{$rand}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{$show_datepicker_label}">
             <input type="text" name="{$name}" value="{$value}"
                    {$required} {$disabled} data-input class="form-control rounded-start ps-2">
-            <button type='button' class='btn btn-outline-secondary btn-sm' data-toggle title='{$show_datepicker_label}'>
+            <button type='button' class='btn btn-outline-secondary btn-sm' data-toggle>
                 <i class='ti ti-calendar-time'></i>
             </button>
             $clear
@@ -3232,6 +3234,7 @@ JS;
      *         * timestamp
      *         * class, supported: passed, checked, now
      *         * label
+     *         The key should contain a string starting with the timestamp, it is used to order the displayed events
      *      - display, boolean to precise if we need to display (true) or return (false) the html
      *      - add_now, boolean to precise if we need to add to dates array, an entry for now time
      *        (with now class)
@@ -3292,19 +3295,21 @@ JS;
      * Show a tooltip on an item
      *
      * @param string $content  data to put in the tooltip
-     * @param array $options   Array of possible options:
-     *   - applyto : string / id of the item to apply tooltip (default empty).
-     *                  If not set display an icon
-     *   - title : string / title to display (default empty)
-     *   - contentid : string / id for the content html container (default auto generated) (used for ajax)
-     *   - link : string / link to put on displayed image if contentid is empty
-     *   - linkid : string / html id to put to the link link (used for ajax)
-     *   - linktarget : string / target for the link
-     *   - popup : string / popup action : link not needed to use it
-     *   - img : string / url of a specific img to use
-     *   - display : boolean / display the item : false return the datas
-     *   - autoclose : boolean / autoclose the item : default true (false permit to scroll)
-     *   - url: ?string If defined, load tooltip using an AJAX request on the supplied URL
+     * @param array{
+     *   applyto?: string,       // id of the target element
+     *   title?: string,         // title to display
+     *   contentid?: string,     // id of the HTML container for the content
+     *   link?: string,          // link on the displayed icon if contentid is empty
+     *   linkid?: string,        // HTML id of the link
+     *   linktarget?: string,    // link target
+     *   awesome-class?: string, // class of the icon to display (default 'fa-info')
+     *   popup?: string,         // popup action
+     *   img?: string,           // URL of a specific image
+     *   display?: bool,         // display or return the data, default true
+     *   autoclose?: bool,       // auto close (default true)
+     *   onclick?: bool,         // false (default) to show on hover, true to show on click
+     *   url?: string|null       // AJAX URL to load the tooltip
+     * } $options
      *
      * @return void|string
      *    void if option display=true
@@ -3743,7 +3748,7 @@ JS;
 
                 if ({$init_on_demand}) {
                     const textarea = $('#{$id}');
-                    const div = $(`<div role="textbox" tabindex="0" class="text-muted" data-glpi-tinymce-init-on-demand-render="{$id}">\${textarea.val() || textarea.attr('placeholder') || ''}</div>`);
+                    const div = $(`<div role="textbox" tabindex="0" class="text-muted text-break" data-glpi-tinymce-init-on-demand-render="{$id}">\${textarea.val() || textarea.attr('placeholder') || ''}</div>`);
                     textarea.after(div).hide();
                 }
             });
@@ -3900,9 +3905,9 @@ JAVASCRIPT
         // Back and fast backward button
         if (!$start == 0) {
             $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=0" . htmlescape(jsescape($additional_params)) . "\");'>
-                     <i class='ti ti-chevrons-left' title=\"" . __s('Start') . "\"></i></a></th>";
+                     <i class='ti ti-chevrons-left' data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Start') . "\"></i></a></th>";
             $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$back" . htmlescape(jsescape($additional_params)) . "\");'>
-                     <i class='ti ti-chevron-left' title=\"" . __s('Previous') . "\"></i></a></th>";
+                     <i class='ti ti-chevron-left' data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Previous') . "\"></i></a></th>";
         }
 
         $out .= "<td width='50%' class='tab_bg_2'>";
@@ -3922,9 +3927,9 @@ JAVASCRIPT
         // Forward and fast forward button
         if ($forward < $numrows) {
             $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$forward" . htmlescape(jsescape($additional_params)) . "\");'>
-                     <i class='ti ti-chevron-right' title=\"" . __s('Next') . "\"></i></a></th>";
+                     <i class='ti ti-chevron-right' data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Next') . "\"></i></a></th>";
             $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$end" . htmlescape(jsescape($additional_params)) . "\");'>
-                     <i class='ti ti-chevrons-right' title=\"" . __s('End') . "\"></i></a></th>";
+                     <i class='ti ti-chevrons-right' data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('End') . "\"></i></a></th>";
         }
 
         // End pager

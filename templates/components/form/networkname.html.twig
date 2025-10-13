@@ -71,7 +71,7 @@
                   {% if display_dissociate_btn %}
                      {% set unaffect_btn %}
                         <a class="btn btn-sm btn-outline-danger"
-                        onclick=" submitGetLink('{{ item.getFormURL }}', {'unaffect': 'unaffect', 'id': '{{ ID }}', '_glpi_csrf_token': '{{ csrf_token() }}', '_glpi_simple_form': '1'});">
+                        onclick=" submitGetLink('{{ item.getFormURL()|e('js')|e }}', {'unaffect': 'unaffect', 'id': '{{ ID|e('js')|e }}', '_glpi_csrf_token': '{{ csrf_token()|e('js')|e }}', '_glpi_simple_form': '1'});">
                            <span class="ti ti-unlink " title={{ _x('button', 'Dissociate') }}>
                               <span class="sr-only">{{ _x('button', 'Dissociate') }}</span>
                            </span>

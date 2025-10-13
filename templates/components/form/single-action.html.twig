@@ -38,7 +38,7 @@
    {% set input = item.getMassiveActionsForItem().getInput() %}
    {% if input['actions']|length > 0 %}
    {% set ms_auto = (single_actions_ms_auto ?? false) ? 'ms-auto' : '' %}
-<div class="d-none d-sm-block btn-group {{ ms_auto }}" title="{{ _n('Action', 'Actions', get_plural_number()) }}"
+<div class="d-none d-sm-block btn-group {{ ms_auto }}" aria-labelledby="single-action"
      {% if onlyicon %}data-bs-toggle="tooltip" data-bs-placement="top"{% endif %}>
    <button class="btn {{ onlyicon ? 'btn-icon' : 'dropdown-toggle' }} btn-outline-secondary" type="button"
            id="single-action" data-bs-toggle="dropdown" aria-haspopup="true"
@@ -49,7 +49,7 @@
       {% endif %}
    </button>
 
-   <div id="single-ma-action-menu" class="dropdown-menu dropdown-menu-end dropdown-menu-arrow mt-2" aria-labelledby="single-action">
+   <div id="single-ma-action-menu" class="dropdown-menu dropdown-menu-end dropdown-menu-arrow mt-2">
       {% for key, action in input['actions'] %}
          <a class="dropdown-item" data-action="{{ key }}" role="button" href="#">{{ action|raw }}</a>
       {% endfor %}
@@ -79,13 +79,13 @@ $(function () {
       var current_action = $(this).data('action');
 
       glpi_ajax_dialog({
-         url: '{{ path('/ajax/dropdownMassiveAction.php') }}',
+         url: `${CFG_GLPI.root_doc}/ajax/dropdownMassiveAction.php`,
          title: ma.actions[current_action],
          params: Object.assign(
             { action: current_action },
             ma
          ),
-         appendTo: '#massive_container_{{ rand }}',
+         appendTo: '#massive_container_{{ rand|e('css')|e('js') }}',
       });
    });
 });

@@ -234,7 +234,7 @@ class AuthTest extends DbTestCase
 
         $this->assertSame(
             sprintf(
-                'LDAP directory: <a href="/front/authldap.form.php?id=%d" title="_local_ldap">_local_ldap</a>',
+                'LDAP directory: <a href="/front/authldap.form.php?id=%d" data-bs-toggle="tooltip" data-bs-placement="bottom" title="_local_ldap">_local_ldap</a>',
                 $local_ldap_id
             ),
             Auth::getMethodLink(Auth::LDAP, $local_ldap_id)
@@ -242,7 +242,7 @@ class AuthTest extends DbTestCase
 
         $this->assertSame(
             sprintf(
-                'Email server: <a href="/front/authmail.form.php?id=%d" title="mail.example.org">mail.example.org</a>',
+                'Email server: <a href="/front/authmail.form.php?id=%d" data-bs-toggle="tooltip" data-bs-placement="bottom" title="mail.example.org">mail.example.org</a>',
                 $autmail->getID()
             ),
             Auth::getMethodLink(Auth::MAIL, $autmail->getID())
@@ -250,21 +250,21 @@ class AuthTest extends DbTestCase
 
         $this->assertSame(
             sprintf(
-                'CAS + LDAP directory: <a href="/front/authldap.form.php?id=%d" title="_local_ldap">_local_ldap</a>',
+                'CAS + LDAP directory: <a href="/front/authldap.form.php?id=%d" data-bs-toggle="tooltip" data-bs-placement="bottom" title="_local_ldap">_local_ldap</a>',
                 $local_ldap_id
             ),
             Auth::getMethodLink(Auth::CAS, $local_ldap_id)
         );
         $this->assertSame(
             sprintf(
-                'x509 certificate authentication + LDAP directory: <a href="/front/authldap.form.php?id=%d" title="_local_ldap">_local_ldap</a>',
+                'x509 certificate authentication + LDAP directory: <a href="/front/authldap.form.php?id=%d" data-bs-toggle="tooltip" data-bs-placement="bottom" title="_local_ldap">_local_ldap</a>',
                 $local_ldap_id
             ),
             Auth::getMethodLink(Auth::X509, $local_ldap_id)
         );
         $this->assertSame(
             sprintf(
-                'Other + LDAP directory: <a href="/front/authldap.form.php?id=%d" title="_local_ldap">_local_ldap</a>',
+                'Other + LDAP directory: <a href="/front/authldap.form.php?id=%d" data-bs-toggle="tooltip" data-bs-placement="bottom" title="_local_ldap">_local_ldap</a>',
                 $local_ldap_id
             ),
             Auth::getMethodLink(Auth::EXTERNAL, $local_ldap_id)

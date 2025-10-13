@@ -193,7 +193,7 @@
             "@php -f vendor/bin/build_hw_jsons"
         ],
         "build": [
-            "bin/console dependencies install"
+            "bin/console dependencies install --allow-superuser"
         ],
         "patch": [
             "patch -f -p1 -d vendor/apereo/phpcas/ < tools/patches/apereo-phpcas-php-8.4-compat.patch || true",

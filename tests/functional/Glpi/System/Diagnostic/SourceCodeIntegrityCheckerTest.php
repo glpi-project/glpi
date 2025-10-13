@@ -178,6 +178,14 @@ EOL
         $this->assertEmpty($errors);
         $this->assertEquals(
             <<<EOL
+diff --git a/src/test.php b/src/test.php
+deleted file mode 100644
+--- a/src/test.php
++++ /dev/null
+@@ -1 +1,0 @@
+-test1
+\ No newline at end of file
+
 diff --git a/src/test2.php b/src/test2.php
 --- a/src/test2.php
 +++ b/src/test2.php
@@ -201,14 +209,6 @@ new file mode 100666
 +++ b/src/test4.php
 @@ -1,0 +1 @@
 +added (with EOL)
-
-diff --git a/src/test.php b/src/test.php
-deleted file mode 100644
---- a/src/test.php
-+++ /dev/null
-@@ -1 +1,0 @@
--test1
-\ No newline at end of file
 EOL,
             trim($diff)
         );
@@ -230,13 +230,14 @@ EOL,
         vfsStream::setup('root', null, []);
         $root_dir = vfsStream::url('root');
 
+        $version = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
+
         $checker = new SourceCodeIntegrityChecker($root_dir);
 
         $this->expectExceptionMessage('Error while trying to read the source code file manifest.');
         try {
             $checker->getSummary();
         } finally {
-            $version = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
             $this->hasPhpLogRecordThatContains('file_get_contents(vfs://root/version/' . $version . '): Failed to open stream', LogLevel::WARNING);
         }
     }

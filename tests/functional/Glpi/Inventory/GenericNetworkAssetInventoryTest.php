@@ -43,6 +43,7 @@ use Glpi\Asset\CapacityConfig;
 use Glpi\Inventory\MainAsset\GenericNetworkAsset;
 use Glpi\Inventory\Request;
 use InventoryTestCase;
+use NetworkEquipment;
 
 class GenericNetworkAssetInventoryTest extends InventoryTestCase
 {
@@ -588,7 +589,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'WHERE' => [
                 'sub_type' => \RuleImportAsset::class,
                 'criteria' => 'itemtype',
-                'pattern' => \NetworkEquipment::class,
+                'pattern' => NetworkEquipment::class,
             ],
         ];
         $iterator = $DB->request($criteria);
@@ -620,5 +621,87 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         $iterator = $DB->request($criteria);
         $this->assertSame(0, $iterator->current()['cnt']);
+    }
+
+    public function testRuleDefineItemtype(): void
+    {
+        //create Network Equipment generic asset
+        $definition = $this->initAssetDefinition(
+            system_name: 'SpecificNetworkEquipment' . $this->getUniqueString(),
+            capacities: [
+                new Capacity(
+                    name: IsInventoriableCapacity::class,
+                    config: new CapacityConfig([
+                        'inventory_mainasset' => GenericNetworkAsset::class,
+                    ])
+                ),
+            ]
+        );
+        $classname  = $definition->getAssetClassName();
+
+        //create itemtype definition rule
+        $this->addRule(
+            \RuleDefineItemtype::class,
+            'Change itemtype from name',
+            [
+                [
+                    'condition' => \RuleDefineItemtype::PATTERN_BEGIN,
+                    'criteria'  => 'name',
+                    'pattern'   => 'ucs',
+                ],
+            ],
+            [
+                'action_type' => 'assign',
+                'field'       => '_assign',
+                'value'       => $classname,
+            ]
+        );
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <INFO>
+        <COMMENTS>Cisco NX-OS(tm) ucs, Software (ucs-6100-k9-system), Version 5.0(3)N2(4.02b), RELEASE SOFTWARE Copyright (c) 2002-2013 by Cisco Systems, Inc.   Compiled 1/16/2019 18:00:00</COMMENTS>
+        <CONTACT>noc@glpi-project.org</CONTACT>
+        <NAME>ucs6248up-cluster-pa3-B</NAME>
+        <SERIAL>SSI1912014B</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+      </INFO>
+    </DEVICE>
+    <MODULEVERSION>4.1</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>";
+
+        $inventory = $this->doInventory($xml_source, true);
+        $item = $inventory->getItem();
+        $this->assertInstanceOf($classname, $item);
+
+        //another test, with a name that does not match Rule criterion
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <INFO>
+        <COMMENTS>Cisco NX-OS(tm) ucs, Software (ucs-6100-k9-system), Version 5.0(3)N2(4.02b), RELEASE SOFTWARE Copyright (c) 2002-2013 by Cisco Systems, Inc.   Compiled 1/16/2019 18:00:00</COMMENTS>
+        <CONTACT>noc@glpi-project.org</CONTACT>
+        <NAME>abc6248up-cluster-pa3-B</NAME>
+        <SERIAL>SSI1912014B</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+      </INFO>
+    </DEVICE>
+    <MODULEVERSION>4.1</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>";
+
+        $inventory = $this->doInventory($xml_source, true);
+        $item = $inventory->getItem();
+        $this->assertInstanceOf(NetworkEquipment::class, $item);
     }
 }

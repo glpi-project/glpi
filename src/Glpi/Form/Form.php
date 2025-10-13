@@ -1193,7 +1193,7 @@ final class Form extends CommonDBTM implements
     #[Override]
     public function getServiceCatalogLink(): string
     {
-        return "/Form/Render/" . $this->getID();
+        return Html::getPrefixedUrl("/Form/Render/" . $this->getID());
     }
 
     /**

@@ -157,7 +157,7 @@ abstract class AbstractRightsDropdown
 
         // Add suppliers if enabled
         if (self::isTypeEnabled(Supplier::getType())) {
-            $possible_rights[Supplier::getType()] = self::getSuppliers($text);
+            $possible_rights[Supplier::getType()] = self::getSuppliers($text, $options);
         }
 
         $results = [];
@@ -267,7 +267,11 @@ abstract class AbstractRightsDropdown
      */
     protected static function getUsers(string $text, array $options): array
     {
-        $users = User::getSqlSearchResult(false, "all", -1, 0, [], $text, 0, self::LIMIT);
+        $page = $options['page'] ?? 1;
+        $page_size = $options['page_size'] ?? self::LIMIT;
+        $start = ($page - 1) * $page_size;
+
+        $users = User::getSqlSearchResult(false, "all", -1, 0, [], $text, $start, $page_size);
         $users_items = [];
 
         if (static::addAllUsersOption()) {
@@ -293,19 +297,26 @@ abstract class AbstractRightsDropdown
      */
     protected static function getGroups(string $text, array $options): array
     {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $page = $options['page'] ?? 1;
+        $page_size = $options['page_size'] ?? self::LIMIT;
+        $start = ($page - 1) * $page_size;
+
         $additional_conditions = [];
         if (isset($options['group_conditions'])) {
             $additional_conditions = $options['group_conditions'];
         }
 
-        $group_item = new Group();
-        $groups = $group_item->find(
-            [
+        $groups = $DB->request([
+            'FROM' => Group::getTable(),
+            'WHERE' => [
                 'name' => ["LIKE", "%$text%"],
             ] + getEntitiesRestrictCriteria(Group::getTable()) + $additional_conditions,
-            [],
-            self::LIMIT
-        );
+            'START' => $start,
+            'LIMIT' => $page_size,
+        ]);
         $groups_items = [];
         foreach ($groups as $group) {
             $new_key = 'groups_id-' . $group['id'];
@@ -348,16 +359,24 @@ abstract class AbstractRightsDropdown
      *
      * @return array
      */
-    protected static function getSuppliers(string $text): array
+    protected static function getSuppliers(string $text, array $options = []): array
     {
-        $supplier_item = new Supplier();
-        $suppliers = $supplier_item->find(
-            [
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $page = $options['page'] ?? 1;
+        $page_size = $options['page_size'] ?? self::LIMIT;
+        $start = ($page - 1) * $page_size;
+
+        $suppliers = $DB->request([
+            'FROM' => Supplier::getTable(),
+            'WHERE' => [
                 'name' => ["LIKE", "%$text%"],
             ] + getEntitiesRestrictCriteria(Supplier::getTable()),
-            [],
-            self::LIMIT
-        );
+            'START' => $start,
+            'LIMIT' => $page_size,
+        ]);
+
         $suppliers_item = [];
         foreach ($suppliers as $supplier) {
             $new_key = 'suppliers_id-' . $supplier['id'];

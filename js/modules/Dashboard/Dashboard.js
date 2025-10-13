@@ -126,8 +126,8 @@ class GLPIDashboard {
         };
         options = Object.assign({}, default_options, options);
 
-        this.rand         = CSS.escape(options.rand);
-        this.elem_id      = "#dashboard-" + options.rand;
+        this.rand         = parseInt(options.rand);
+        this.elem_id      = "#dashboard-" + this.rand;
         this.element      = $(this.elem_id);
         this.elem_dom     = this.element[0];
         this.current_name = $(`${this.elem_id} .dashboard-select`).val() || options.current;
@@ -374,9 +374,9 @@ class GLPIDashboard {
                     dashboard:    this.current_name,
                     gridstack_id: item.attr('gs-id'),
                     card_id:      card_opt.card_id,
-                    x:            item.attr('gs-x'),
-                    y:            item.attr('gs-y'),
-                    width:        item.attr('gs-w'),
+                    x:            item.attr('gs-x') ?? 0,
+                    y:            item.attr('gs-y') ?? 0,
+                    width:        item.attr('gs-w') ?? 1,
                     height:       item.attr('gs-h') ?? 1,
                     card_options: card_opt,
                 },
@@ -759,8 +759,8 @@ class GLPIDashboard {
             return gs_id ? {
                 gridstack_id: $(v).attr('gs-id'),
                 card_id: options.card_id,
-                x: $(v).attr('gs-x'),
-                y: $(v).attr('gs-y'),
+                x: $(v).attr('gs-x') ?? 0,
+                y: $(v).attr('gs-y') ?? 0,
                 width: $(v).attr('gs-w'),
                 height: $(v).attr('gs-h') ?? 1,
                 card_options: options
@@ -1220,6 +1220,12 @@ class GLPIDashboard {
      * Return saved filter from server side database
      */
     getFiltersFromDB() {
+        if (this.embed) {
+            // Embed dashboards are displayed inside an anonymous context,
+            // there is actually no stored filter data to fetch.
+            return [];
+        }
+
         let filters;
         $.ajax({
             method: 'GET',

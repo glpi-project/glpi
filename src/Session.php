@@ -2312,7 +2312,7 @@ class Session
     /**
      * Get the current language
      *
-     * @return null|string
+     * @return null|string language corresponding to a key of `$CFG_GLPI['languages']` or null if not set
      */
     public static function getLanguage(): ?string
     {
@@ -2322,7 +2322,7 @@ class Session
     /**
      * Helper function to get the date + time stored in $_SESSION['glpi_currenttime']
      *
-     * @return null|string
+     * @return null|string timestamp formated as 'Y-m-d H:i:s' or null if not set
      */
     public static function getCurrentTime(): ?string
     {

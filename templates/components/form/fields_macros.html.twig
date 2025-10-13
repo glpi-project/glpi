@@ -46,8 +46,8 @@
             {% endif %}
             {{ label }}
             {% if helper is not empty %}
-               <span class="form-help" data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true"
-                     data-bs-content="{{ helper }}">?</span>
+               <span class="form-help" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true"
+                     data-bs-title="{{ helper }}">?</span>
             {% endif %}
          </h4>
       </div>
@@ -68,8 +68,8 @@
             {% endif %}
              <span class="ms-2">{{ label }}</span>
             {% if helper is not empty %}
-               <span class="form-help" data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true"
-                     data-bs-content="{{ helper }}">?</span>
+               <span class="form-help" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true"
+                     data-bs-title="{{ helper }}">?</span>
             {% endif %}
          </h4>
       </div>
@@ -366,7 +366,7 @@
          {% if clearable %}
             <input type="hidden" name="_blank_{{ name }}" />
              {%- set clear_js -%}
-                 const blank_input = $('input[name=\'_blank_{{ name }}\']');
+                 const blank_input = $('input[name="_blank_{{ name|e('css')|e('js') }}"]');
                  blank_input.val(blank_input.val() ? '' : true);
                  if ($(this).closest('.picture_gallery_item').length) {
                     $(this).closest('.picture_gallery_item').hide();
@@ -629,7 +629,7 @@
     {{ _self.dropdownArrayField(name, value, {(value): value}, label, options) }}
     <script type="module">
         import('/js/modules/Form/WebIconSelector.js').then((m) => {
-            const dropdown_id = '{{ ('dropdown_' ~ name ~ options.rand)|replace({'[': '_', ']': '_'}) }}';
+            const dropdown_id = '{{ ('dropdown_' ~ name ~ options.rand)|replace({'[': '_', ']': '_'})|e('js') }}';
             const selector = new m.default(document.getElementById(dropdown_id));
             selector.init();
         });
@@ -1005,14 +1005,14 @@
     <script>
         $(() => {
             const editor_options = {{ options.single_line ? 'true' : 'false' }} ? window.GLPI.Monaco.getSingleLineEditorOptions() : {};
-            window.GLPI.Monaco.createEditor('{{ code_container_id }}', '{{ options.language }}', "{{ value|e('js') }}", {{ options.completions|json_encode|raw }}, editor_options).then(() => {
-                $('#{{ code_container_id }}').closest('form').on('formdata', (e) => {
+            window.GLPI.Monaco.createEditor('{{ code_container_id|e('js') }}', '{{ options.language|e('js') }}', "{{ value|e('js') }}", {{ options.completions|json_encode|raw }}, editor_options).then(() => {
+                $('#{{ code_container_id|e('css')|e('js') }}').closest('form').on('formdata', (e) => {
                     const editors = window.monaco.editor.getEditors().filter((editor) => {
-                        return editor._domElement.id === '{{ code_container_id }}';
+                        return editor._domElement.id === '{{ code_container_id|e('js') }}';
                     });
                     if (editors.length) {
-                        e.originalEvent.formData.delete('{{ name }}');
-                        e.originalEvent.formData.append('{{ name }}', editors[0].getValue());
+                        e.originalEvent.formData.delete('{{ name|e('js') }}');
+                        e.originalEvent.formData.append('{{ name|e('js') }}', editors[0].getValue());
                     }
                 });
             });
@@ -1095,9 +1095,9 @@
                         "/js/modules/IllustrationPicker/Controller.js"
                     );
                     new module.GlpiIllustrationPickerController(
-                        document.getElementById('{{ container_id }}'),
-                        document.getElementById('{{ modal_id }}'),
-                        "{{ custom_icon_prefix }}",
+                        document.getElementById('{{ container_id|e('js') }}'),
+                        document.getElementById('{{ modal_id|e('js') }}'),
+                        "{{ custom_icon_prefix|e('js') }}",
                     );
                 })();
             </script>

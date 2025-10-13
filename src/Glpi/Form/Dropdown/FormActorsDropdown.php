@@ -125,7 +125,11 @@ final class FormActorsDropdown extends AbstractRightsDropdown
             $right = $options['right_for_users'];
         }
 
-        $users = User::getSqlSearchResult(false, $right, -1, 0, [], $text, 0, self::LIMIT);
+        $page = $options['page'] ?? 1;
+        $page_size = $options['page_size'] ?? self::LIMIT;
+        $start = ($page - 1) * $page_size;
+
+        $users = User::getSqlSearchResult(false, $right, -1, 0, [], $text, $start, $page_size);
         $users_items = [];
         foreach ($users as $user) {
             $new_key = 'users_id-' . $user['id'];
@@ -155,11 +159,12 @@ final class FormActorsDropdown extends AbstractRightsDropdown
         }
 
         // Add suppliers if enabled
-        if (self::isTypeEnabled(Supplier::getType())) {
-            $possible_rights[Supplier::getType()] = self::getSuppliers($text);
+        if (self::isTypeEnabled(Supplier::getType(), $options)) {
+            $possible_rights[Supplier::getType()] = self::getSuppliers($text, $options);
         }
 
         $results = [];
+        $count = 0;
         foreach ($possible_rights as $itemtype => $ids) {
             $new_group = [];
             foreach ($ids as $id => $labels) {
@@ -173,17 +178,21 @@ final class FormActorsDropdown extends AbstractRightsDropdown
                     'selection_text' => "$itemtype - $text",
                 ];
             }
-            $results[] = [
-                'itemtype' => $itemtype,
-                'text' => $itemtype::getTypeName(1),
-                'title' => $itemtype::getTypeName(1),
-                'children' => $new_group,
-            ];
+
+            if (count($new_group)) {
+                $results[] = [
+                    'itemtype' => $itemtype,
+                    'text' => $itemtype::getTypeName(1),
+                    'title' => $itemtype::getTypeName(1),
+                    'children' => $new_group,
+                ];
+                $count += count($new_group);
+            }
         }
 
         $ret = [
             'results' => $results,
-            'count' =>  count($results),
+            'count' => $count,
         ];
 
         return $ret;

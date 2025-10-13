@@ -201,6 +201,10 @@
         .select2-results {
             .select2-results__options {
                 .select2-results__option {
+                    &:empty {
+                        display: none;
+                    }
+
                     &[aria-selected="true"]:not(.select2-results__option--highlighted) {
                         background-color: color-mix(in srgb, var(--tblr-bg-surface), black 5%);
                     }

@@ -56,10 +56,26 @@
    </div>
 {% endmacro %}
 
+{% set status_mapping = {
+    (constant('Glpi\\System\\Diagnostic\\SourceCodeIntegrityChecker::STATUS_ALTERED')): 'M',
+    (constant('Glpi\\System\\Diagnostic\\SourceCodeIntegrityChecker::STATUS_MISSING')): 'D',
+    (constant('Glpi\\System\\Diagnostic\\SourceCodeIntegrityChecker::STATUS_ADDED')): 'A',
+} %}
+
 {% set glpi_info %}
 GLPI: {{ ver }} ({{ config('root_doc') }} => {{ constant('GLPI_ROOT') }})
 Installation mode: {{ constant('GLPI_INSTALL_MODE') }}
 Current language: {{ language }}
+Source Integrity: {% if code_integrity is null %}N/A{% elseif code_integrity is empty %}OK{% else %}{{ code_integrity|length }} files changed{% endif %}
+{%- if code_integrity is not empty -%}
+    {{- "\n" -}}
+    {%- for file, state in code_integrity[:25] -%}
+        {{ '  ' ~ status_mapping[state] ~ ': ' ~ file ~ "\n" -}}
+    {%- endfor -%}
+    {%- if code_integrity|length > 25 %}
+        {{- "  ...\n" -}}
+    {% endif -%}
+{%- endif -%}
 {% endset %}
 
 {% set setup_init_keys = [

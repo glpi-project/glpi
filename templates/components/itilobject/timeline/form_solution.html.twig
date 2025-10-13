@@ -41,7 +41,7 @@
 {% set nokb = params['nokb'] is defined or (params['nokb'] ?? false) == true %}
 {% set noform = params['noform'] is defined or (params['noform'] ?? false) == true %}
 {% set disabled = (candedit == false) %}
-{% set rand = rand|default(random()) %}
+{% set rand = rand|default(random())|safe_dom_id %}
 
 {% set content_field_id = 'solution_content_' ~ rand %}
 
@@ -243,12 +243,12 @@
       <script type="text/javascript">
          function solutiontemplate_update{{ rand }}(value) {
             $.ajax({
-               url: '{{ path('/ajax/solution.php') }}',
+               url: `${CFG_GLPI.root_doc}/ajax/solution.php`,
                type: 'POST',
                data: {
                   solutiontemplates_id: value,
-                  items_id: '{{ item.fields['id'] }}',
-                  itemtype: '{{ item.getType() }}'
+                  items_id: '{{ item.fields['id']|e('js') }}',
+                  itemtype: '{{ item.getType()|e('js') }}'
                }
             }).done(function (data) {
                // set textarea content

@@ -62,7 +62,7 @@ final class EditorController extends AbstractController
     )]
     public function visibilityEditor(Request $request): Response
     {
-        $form_data = $request->request->all()['form_data'];
+        $form_data = $request->toArray();
         $this->editor_manager->setFormData(new FormData($form_data));
 
         return $this->render('pages/admin/form/conditional_visibility_editor.html.twig', [
@@ -79,7 +79,7 @@ final class EditorController extends AbstractController
     )]
     public function validationEditor(Request $request): Response
     {
-        $form_data = $request->request->all()['form_data'];
+        $form_data = $request->toArray();
         $form_data = new FormData($form_data);
         $this->editor_manager->setFormData($form_data);
 
@@ -141,7 +141,7 @@ final class EditorController extends AbstractController
     )]
     public function supportedValueOperators(Request $request): Response
     {
-        $data = $request->request->all();
+        $data = $request->toArray();
 
         // Validate required fields
         if (!isset($data['type']) || empty($data['type'])) {

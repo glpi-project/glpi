@@ -118,13 +118,13 @@
             <div class="col-auto todo-list-state {{ 'left' in item_position ? 'ms-auto order-sm-last' : '' }}">
                {% if entry_state is constant('Planning::TODO') %}
                   {% if can_edit_i %}
-                     <span class="state state_1" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('To do') }}"></span>
+                     <span class="state state_1" onclick="change_task_state({{ entry_i['id']|json_encode|raw }}, this)" title="{{ __('To do') }}"></span>
                   {% else %}
                      <span class="state state_1" title="{{ __('To do') }}" style="cursor: not-allowed;"></span>
                   {% endif %}
                {% elseif entry_state is constant('Planning::DONE') %}
                   {% if can_edit_i %}
-                     <span class="state state_2" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('Done') }}"></span>
+                     <span class="state state_2" onclick="change_task_state({{ entry_i['id']|json_encode|raw }}, this)" title="{{ __('Done') }}"></span>
                   {% else %}
                      <span class="state state_2" title="{{ __('Done') }}" style="cursor: not-allowed;"></span>
                   {% endif %}
@@ -228,6 +228,17 @@
         {{ include('components/itilobject/answer.html.twig') }}
     {% endif %}
 
+   {% if survey is defined and survey %}
+      <form
+         data-testid="survey"
+         class="mt-5 w-100 hide-form-button-separator"
+         method="POST"
+         action="{{ "TicketSatisfaction"|itemtype_form_path }}"
+      >
+         <div>
+            {{ survey.showSatisfactionForm(item, false) }}
+      {# showSatisfactionForm closes the extra div and form tag by itself... #}
+   {% endif %}
 </div>
 
 <script type="text/javascript">

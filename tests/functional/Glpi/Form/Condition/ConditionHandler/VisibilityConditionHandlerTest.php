@@ -452,6 +452,7 @@ final class VisibilityConditionHandlerTest extends AbstractConditionHandler
 
         // Second section: visible if Question 1 value equals "show"
         $form->addSection("Section 2");
+        $form->addQuestion("Just a question to avoid empty sections", QuestionTypeShortText::class);
         $form->setSectionVisibility("Section 2", VisibilityStrategy::VISIBLE_IF, [
             [
                 'logic_operator' => LogicOperator::AND,
@@ -464,6 +465,7 @@ final class VisibilityConditionHandlerTest extends AbstractConditionHandler
 
         // Third section: visible if Section 2 is visible
         $form->addSection("Section 3");
+        $form->addQuestion("Just a question to avoid empty sections", QuestionTypeShortText::class);
         $form->setSectionVisibility("Section 3", VisibilityStrategy::VISIBLE_IF, [
             [
                 'logic_operator' => LogicOperator::AND,
@@ -476,6 +478,7 @@ final class VisibilityConditionHandlerTest extends AbstractConditionHandler
 
         // Fourth section: visible if Section 2 is NOT visible
         $form->addSection("Section 4");
+        $form->addQuestion("Just a question to avoid empty sections", QuestionTypeShortText::class);
         $form->setSectionVisibility("Section 4", VisibilityStrategy::VISIBLE_IF, [
             [
                 'logic_operator' => LogicOperator::AND,

@@ -55,6 +55,15 @@ class RequestTest extends TestCase
         parent::setUp();
     }
 
+    public static function tearDownAfterClass(): void
+    {
+        // Re-enable HLAPI as it is disabled in some tests
+        Config::setConfigurationValues('core', [
+            'enable_hlapi' => true,
+        ]);
+        parent::tearDownAfterClass();
+    }
+
     /**
      * Check a XML response
      *
@@ -479,6 +488,10 @@ class RequestTest extends TestCase
             'enabled_inventory' => true,
             'auth_required' => Conf::CLIENT_CREDENTIALS,
         ]);
+        // Disable HLAPI as the inventory process should not be impacted by the API status
+        Config::setConfigurationValues('core', [
+            'enable_hlapi' => false,
+        ]);
 
         // create an OAuth client
         $client = new \OAuthClient();
@@ -588,6 +601,10 @@ class RequestTest extends TestCase
         Config::setConfigurationValues('inventory', [
             'enabled_inventory' => true,
             'auth_required' => Conf::CLIENT_CREDENTIALS,
+        ]);
+        // Disable HLAPI as the inventory process should not be impacted by the API status
+        Config::setConfigurationValues('core', [
+            'enable_hlapi' => false,
         ]);
 
         // first call to inventory should be unauthorized and return 401

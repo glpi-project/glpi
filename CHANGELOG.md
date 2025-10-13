@@ -22,12 +22,34 @@ The present file will list all changes made to the project; according to the
 
 #### Deprecated
 - `CommonITILSatisfaction::showSatisactionForm()`, use `CommonITILSatisfaction::showSatisfactionForm()` instead.
+- `Glpi\Features\Inventoriable::showInventoryInfo()`
+- `Glpi\Features\Inventoriable::displayAgentInformation()`
 - `User::loadMinimalSession()`
 
 #### Removed
 
+## [11.0.2] unreleased
 
-## [11.0.1] unreleased
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [11.0.1] 2025-10-09
 
 ### Added
 
@@ -698,6 +720,7 @@ The present file will list all changes made to the project; according to the
 ### Added
 
 ### Changed
+- It is again possible to "Merge as Followup" into resolved/closed tickets.
 
 ### Deprecated
 

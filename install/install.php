@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/../front/_check_webserver_config.php');
+
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\System\Requirement\DbConfiguration;
 use Glpi\System\Requirement\DbEngine;

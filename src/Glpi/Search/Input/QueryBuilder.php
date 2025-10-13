@@ -50,7 +50,6 @@ use Html;
 use Override;
 use Plugin;
 use RuntimeException;
-use SavedSearch;
 use SavedSearch_User;
 use Search;
 use Session;
@@ -744,15 +743,18 @@ final class QueryBuilder implements SearchInputInterface
                 && !isset($params["reset"])
                 && !isset($_SESSION['glpisearch'][$itemtype]))
         ) {
-            $user_default_values = SavedSearch_User::getDefault(Session::getLoginUserID(), $itemtype);
+            if (!isset($user_default_values)) {
+                $user_default_values = SavedSearch_User::getDefault(Session::getLoginUserID(), $itemtype);
+            }
             if ($user_default_values) {
                 $_SESSION['glpisearch'][$itemtype] = [];
                 // Only get data for bookmarks
                 if ($forcebookmark) {
                     $params = $user_default_values;
                 } else {
-                    $bookmark = new SavedSearch();
-                    $bookmark->load($user_default_values['savedsearches_id']);
+                    // remember the loaded saved search on first load
+                    // this is usefull to adapt the search button control label
+                    $_SESSION['glpi_loaded_savedsearch'] = $user_default_values['savedsearches_id'];
                 }
             }
         }

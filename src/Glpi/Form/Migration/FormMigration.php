@@ -529,6 +529,7 @@ class FormMigration extends AbstractPluginMigration
     private function processMigrationOfQuestions(): void
     {
         $this->updateProgressWithMessage(__('Importing questions...'));
+        $hinted_types = [];
 
         // Process questions
         $raw_questions = array_values(iterator_to_array($this->db->request([
@@ -583,6 +584,22 @@ class FormMigration extends AbstractPluginMigration
                         $form->getName()
                     )
                 );
+
+                // If the field is supported by a known plugin, add a hint.
+                $mapper = TypesConversionMapper::getInstance();
+                $plugin_hint = $mapper->getPluginHintForType($fieldtype);
+                if ($plugin_hint !== null && !isset($hinted_types[$fieldtype])) {
+                    $message = __('The "%1$s" question type is available in the "%2$s" plugin: %3$s');
+                    $url = "https://plugins.glpi-project.org/#/plugin/$plugin_hint";
+                    $this->result->addMessage(
+                        MessageType::Notice,
+                        sprintf($message, $fieldtype, $plugin_hint, $url),
+                    );
+
+                    // Only hint each types once
+                    $hinted_types[$fieldtype] = true;
+                }
+
                 continue;
             }
 

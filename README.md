@@ -146,7 +146,7 @@ See :
 
 * [Official website](http://glpi-project.org)
 * [Demo](https://www.glpi-network.cloud)
-* [Translations on transifex service](https://www.transifex.com/glpi/public/)
+* [Translations on transifex service](https://app.transifex.com/glpi/GLPI/dashboard/)
 * [Issues](https://github.com/glpi-project/glpi/issues)
 * [Suggestions](http://suggest.glpi-project.org)
 * [Forum](http://forum.glpi-project.org)
