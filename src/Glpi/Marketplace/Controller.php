@@ -208,8 +208,8 @@ class Controller extends CommonGLPI
         }
 
         // extract the archive
+        $type = Formats::detectArchiveFormat($dest);
         if (!UnifiedArchive::canOpen($dest)) {
-            $type = Formats::detectArchiveFormat($dest);
             Session::addMessageAfterRedirect(
                 htmlescape(sprintf(__('Plugin archive format is not supported by your system : %s.'), $type)),
                 false,
@@ -225,18 +225,16 @@ class Controller extends CommonGLPI
             ini_set('memory_limit', '512M');
         }
 
-        $archive = UnifiedArchive::open($dest);
-        $error = $archive === null;
-        if (!$error) {
-            // clean dir in case of update
-            Toolbox::deleteDir(GLPI_MARKETPLACE_DIR . "/{$this->plugin_key}");
+        $driver = Formats::getFormatDriver($type);
+        $archive = new $driver($dest, $type);
 
-            try {
-                // copy files
-                $archive->extract(GLPI_MARKETPLACE_DIR) !== false;
-            } catch (ArchiveExtractionException $e) {
-                $error = true;
-            }
+        // clean dir in case of update
+        Toolbox::deleteDir(GLPI_MARKETPLACE_DIR . "/{$this->plugin_key}");
+        $error = false;
+        try {
+            $archive->extractArchive(GLPI_MARKETPLACE_DIR);
+        } catch (ArchiveExtractionException $e) {
+            $error = true;
         }
 
         if ($error) {
