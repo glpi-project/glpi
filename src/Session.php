@@ -32,6 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
+
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\I18nCache;
 use Glpi\Controller\InventoryController;
@@ -125,7 +126,11 @@ class Session
 
         if ($auth->auth_succeded) {
             // Restart GLPI session : complete destroy to prevent lost datas
-            $tosave = ['glpi_plugins', 'glpicookietest', 'phpCAS', 'glpicsrftokens',
+            $tosave = [
+                'glpi_plugins',
+                'glpicookietest',
+                'phpCAS',
+                'glpicsrftokens',
                 'glpiskipMaintenance',
             ];
             $save   = [];
@@ -154,10 +159,10 @@ class Session
                 if (
                     !$auth->user->fields['is_deleted']
                     && ($auth->user->fields['is_active']
-                    && (($auth->user->fields['begin_date'] < $_SESSION["glpi_currenttime"])
-                        || is_null($auth->user->fields['begin_date']))
-                    && (($auth->user->fields['end_date'] > $_SESSION["glpi_currenttime"])
-                        || is_null($auth->user->fields['end_date'])))
+                        && (($auth->user->fields['begin_date'] < $_SESSION["glpi_currenttime"])
+                            || is_null($auth->user->fields['begin_date']))
+                        && (($auth->user->fields['end_date'] > $_SESSION["glpi_currenttime"])
+                            || is_null($auth->user->fields['end_date'])))
                 ) {
                     $_SESSION["glpiID"]              = $auth->user->fields['id'];
                     $_SESSION["glpifriendlyname"]    = $auth->user->getFriendlyName();
@@ -247,6 +252,10 @@ class Session
      **/
     public static function setPath()
     {
+        // Ignora sessão quando executando via CLI
+        if (php_sapi_name() === 'cli') {
+            return;
+        }
 
         if (
             ini_get("session.save_handler") == "files"
@@ -351,7 +360,7 @@ class Session
     {
         // Command line can see all entities
         return (isCommandLine()
-              || ((countElementsInTable("glpi_entities")) == count($_SESSION["glpiactiveentities"] ?? [])));
+            || ((countElementsInTable("glpi_entities")) == count($_SESSION["glpiactiveentities"] ?? [])));
     }
 
 
@@ -694,7 +703,7 @@ class Session
                     // Do not override existing entity if define as recursive
                     if (
                         !isset($_SESSION['glpiprofiles'][$key]['entities'][$data['eID']])
-                         || $data['is_recursive']
+                        || $data['is_recursive']
                     ) {
                         $_SESSION['glpiprofiles'][$key]['entities'][$data['eID']] = [
                             'id'           => $data['eID'],
@@ -839,7 +848,7 @@ class Session
 
         // Redefine Translator caching logic to be able to drop laminas/laminas-cache dependency.
         $i18n_cache = !defined('TU_USER') ? new I18nCache((new CacheManager())->getTranslationsCacheInstance()) : null;
-        $TRANSLATE = new class ($i18n_cache) extends Translator { // @phpstan-ignore class.extendsFinalByPhpDoc
+        $TRANSLATE = new class($i18n_cache) extends Translator { // @phpstan-ignore class.extendsFinalByPhpDoc
             public function __construct(?I18nCache $cache)
             {
                 $this->cache = $cache; // @phpstan-ignore assign.propertyType (laminas...)
@@ -1018,10 +1027,10 @@ class Session
     {
 
         return (isset($_SESSION["glpiinventoryuserrunning"])
-              && (
-                  InventoryController::$is_running === true
-                  || defined('TU_USER')
-              )
+            && (
+                InventoryController::$is_running === true
+                || defined('TU_USER')
+            )
         );
     }
 
@@ -1926,7 +1935,7 @@ class Session
         }
 
         return (isset($_SESSION['glpi_dropdowntranslations'][$itemtype])
-              && isset($_SESSION['glpi_dropdowntranslations'][$itemtype][$field]));
+            && isset($_SESSION['glpi_dropdowntranslations'][$itemtype][$field]));
     }
 
     /**
@@ -2031,8 +2040,8 @@ class Session
 
         // Store current user values
         $impersonator_id  = self::isImpersonateActive()
-         ? $_SESSION['impersonator_id']
-         : self::getLoginUserID();
+            ? $_SESSION['impersonator_id']
+            : self::getLoginUserID();
         $lang             = $_SESSION['glpilanguage'];
         $session_use_mode = $_SESSION['glpi_use_mode'];
 
@@ -2175,7 +2184,7 @@ class Session
      *
      * @return int|int[]
      */
-    public static function getMatchingActiveEntities(/*int|array*/ $entities_ids)/*: int|array*/
+    public static function getMatchingActiveEntities(/*int|array*/$entities_ids)/*: int|array*/
     {
         if (
             (int) $entities_ids === -1
@@ -2296,12 +2305,12 @@ class Session
     }
 
     /**
-    * clean what needs to be cleaned on logout
-    *
-    * @since 10.0.4
-    *
-    * @return void
-    */
+     * clean what needs to be cleaned on logout
+     *
+     * @since 10.0.4
+     *
+     * @return void
+     */
     public static function cleanOnLogout()
     {
         Session::destroy();
@@ -2392,8 +2401,8 @@ class Session
         }
 
         return new SessionInfo(
-            user_id   : self::getLoginUserID(),
-            group_ids : $_SESSION['glpigroups'] ?? [],
+            user_id: self::getLoginUserID(),
+            group_ids: $_SESSION['glpigroups'] ?? [],
             profile_id: $_SESSION['glpiactiveprofile']['id'],
             active_entities_ids: $_SESSION['glpiactiveentities'],
             current_entity_id: self::getActiveEntity(),
