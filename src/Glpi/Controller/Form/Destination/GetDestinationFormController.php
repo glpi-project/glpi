@@ -39,7 +39,6 @@ use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Form\Destination\FormDestination;
-use Glpi\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -51,7 +50,7 @@ final class GetDestinationFormController extends AbstractController
     {
         $destination = new FormDestination();
         $loaded = $destination->getFromDB($destination_id);
-        if(!$loaded) {
+        if (!$loaded) {
             throw new BadRequestHttpException();
         }
 
@@ -63,12 +62,12 @@ final class GetDestinationFormController extends AbstractController
         $twig_params = [
             'destination' => $destination,
             'form' => $destination->getForm(),
-            'concrete_destination' => $destination->getConcreteDestinationItem()
+            'concrete_destination' => $destination->getConcreteDestinationItem(),
         ];
 
         // language=Twig
         $twig = TemplateRenderer::getInstance()->renderFromStringTemplate(
-        <<<TWIG
+            <<<TWIG
             <form id="form-destination-{{ destination.getID() }}">
                 <div class="overflow-x-hidden px-4">
                     {{ concrete_destination.renderConfigForm(
@@ -90,7 +89,9 @@ final class GetDestinationFormController extends AbstractController
                 <input type="hidden" name="id" value="{{ destination.getID() }}"/>
                 <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
             </form>
-        TWIG, $twig_params);
+        TWIG,
+            $twig_params
+        );
 
         return new Response($twig);
     }
