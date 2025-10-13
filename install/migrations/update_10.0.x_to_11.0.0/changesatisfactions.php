@@ -126,7 +126,7 @@ if (!$DB->fieldExists('glpi_entities', 'inquest_duration_change')) {
     ]);
 }
 
-$migration->addRight('change', CommonITILObject::SURVEY, [
+$migration->giveRight('change', CommonITILObject::SURVEY, [
     'change' => Change::READMY,
 ]);
 
