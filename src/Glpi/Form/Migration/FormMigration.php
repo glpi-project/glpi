@@ -71,7 +71,6 @@ use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
-use Glpi\Form\Migration\FallbackToAnotherOperatorException;
 use Glpi\Form\Section;
 use Glpi\Message\MessageType;
 use Glpi\Migration\AbstractPluginMigration;
