@@ -1429,6 +1429,20 @@ abstract class API
         }
 
         $cleaned_soptions = [];
+        $uid_map = []; // Track UIDs to detect collisions
+
+        // First pass: generate all UIDs and detect collisions
+        foreach ($soptions as $sID => $option) {
+            if (is_int($sID)) {
+                $uid = $this->getSearchOptionUniqID($itemtype, $option);
+                if (!isset($uid_map[$uid])) {
+                    $uid_map[$uid] = [];
+                }
+                $uid_map[$uid][] = $sID;
+            }
+        }
+
+        // Second pass: create cleaned options with unique UIDs
         foreach ($soptions as $sID => $option) {
             if (is_int($sID)) {
                 $available_searchtypes = Search::getActionsFor($itemtype, $sID);
@@ -1446,10 +1460,13 @@ abstract class API
                                                                        ?? false,
                     'available_searchtypes' => $available_searchtypes,
                 ];
-                $cleaned_soptions[$sID]['uid'] = $this->getSearchOptionUniqID(
-                    $itemtype,
-                    $option
-                );
+
+                $uid = $this->getSearchOptionUniqID($itemtype, $option);
+                // If collision detected, append sID to make it unique
+                if (count($uid_map[$uid]) > 1) {
+                    $uid .= '.' . $sID;
+                }
+                $cleaned_soptions[$sID]['uid'] = $uid;
             } else {
                 if (is_string($option)) {
                     $option = ['name' => $option];
