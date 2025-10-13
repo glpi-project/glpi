@@ -1504,7 +1504,8 @@ abstract class API
         $sub_itemtype = getItemTypeForTable($option['table']);
 
         if (
-            (isset($option['joinparams']['beforejoin']['table'])
+            $sub_itemtype !== null
+            && (isset($option['joinparams']['beforejoin']['table'])
             || empty($option['joinparams']))
             && $option['linkfield'] != getForeignKeyFieldForItemType($sub_itemtype)
             && $option['linkfield'] != $option['field']
