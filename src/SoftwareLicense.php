@@ -1157,7 +1157,6 @@ TWIG, $twig_params);
             'footer_class' => 'fw-bold',
             'entries' => $entries,
             'total_number' => $number,
-            'filtered_number' => $number,
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
