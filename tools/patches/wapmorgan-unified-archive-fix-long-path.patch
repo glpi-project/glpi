@@ -1,0 +1,54 @@
+diff --git a/src/Drivers/TarByPhar.php b/src/Drivers/TarByPhar.php
+index 47f5304..2fa43bf 100644
+--- a/src/Drivers/TarByPhar.php
++++ b/src/Drivers/TarByPhar.php
+@@ -6,6 +6,7 @@ use FilesystemIterator;
+ use Phar;
+ use PharData;
+ use PharFileInfo;
++use RecursiveDirectoryIterator;
+ use RecursiveIteratorIterator;
+ use wapmorgan\UnifiedArchive\Abilities;
+ use wapmorgan\UnifiedArchive\ArchiveEntry;
+@@ -126,21 +127,34 @@ class TarByPhar extends BasicExtensionDriver
+      */
+     public function getArchiveInformation()
+     {
++        // Create a new ArchiveInformation object to hold metadata
+         $information = new ArchiveInformation();
+-        $stream_path_length = strlen('phar://'.$this->fileName.'/');
++
++        // Store the compressed archive size
+         $information->compressedFilesSize = filesize($this->fileName);
+-        /**
+-         * @var string $i
+-         * @var PharFileInfo $file
+-         */
+-        foreach (new RecursiveIteratorIterator($this->tar) as $i => $file) {
+-            $information->files[] = substr($file->getPathname(), $stream_path_length);
++
++        // Create a temporary folder to extract the TAR archive
++        // Use a shorter prefix to avoid exceeding OS path limits
++        // And extract the TAR archive to the temporary folder
++        $extractPath = GLPI_TMP_DIR . '/' . uniqid('tmp_tar_');
++        $this->tar->extractTo($extractPath);
++
++        // Iterate through all extracted files recursively
++        $iterator = new RecursiveIteratorIterator(
++            new RecursiveDirectoryIterator($extractPath, RecursiveDirectoryIterator::SKIP_DOTS)
++        );
++
++        foreach ($iterator as $file) {
++            /** @var SplFileInfo $file */
++            $relativePath = substr($file->getPathname(), strlen($extractPath) + 1);
++            $information->files[] = $relativePath;
+             $information->uncompressedFilesSize += $file->getSize();
+         }
+         $this->compressRatio = $information->compressedFilesSize > 0
+             ? $information->uncompressedFilesSize / $information->compressedFilesSize
+             : 0;
+         $this->pureFilesNumber = count($information->files);
++
+         return $information;
+     }
+
