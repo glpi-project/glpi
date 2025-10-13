@@ -58,7 +58,25 @@ $(function() {
 
    $(document).on('masonry_grid:layout', function() {
        window.msnry_grid_{{ rand }}.layout();
-   })
+   });
 
+   // Use MutationObserver with debouncing to detect content changes
+   const observer = new MutationObserver(window._.debounce(function(mutations) {
+       requestAnimationFrame(function() {
+           window.msnry_grid_{{ rand }}.layout();
+       });
+   }, 150));
+
+   observer.observe(document.getElementById('grid_{{ rand }}'), {
+       childList: true,
+       subtree: true
+   });
+
+   // Also handle window resize with debouncing
+   $(window).on('resize', window._.debounce(function() {
+       requestAnimationFrame(function() {
+           window.msnry_grid_{{ rand }}.layout();
+       });
+   }, 150));
 });
 </script>
