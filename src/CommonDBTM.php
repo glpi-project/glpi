@@ -353,7 +353,7 @@ class CommonDBTM extends CommonGLPI
             $this->post_getFromDB();
             return true;
         } elseif (count($iterator) > 1) {
-            throw new RuntimeException(
+            throw new TooManyResultsException(
                 sprintf(
                     '`%1$s::getFromDB()` expects to get one result, %2$s found in query "%3$s".',
                     static::class,
@@ -473,7 +473,7 @@ class CommonDBTM extends CommonGLPI
             $this->post_getFromDB();
             return true;
         } elseif (count($iterator) > 1) {
-            throw new RuntimeException(
+            throw new TooManyResultsException(
                 sprintf(
                     '`%1$s::getFromDBByRequest()` expects to get one result, %2$s found in query "%3$s".',
                     static::class,
