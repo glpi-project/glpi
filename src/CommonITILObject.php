@@ -4139,7 +4139,7 @@ abstract class CommonITILObject extends CommonDBTM
         $tab[] = [
             'id'                 => '82',
             'table'              => $this->getTable(),
-            'field'              => 'is_late',
+            'field'              => 'sla_ttr_is_late',
             'name'               => __('Time to resolve exceeded'),
             'datatype'           => 'bool',
             'massiveaction'      => false,
