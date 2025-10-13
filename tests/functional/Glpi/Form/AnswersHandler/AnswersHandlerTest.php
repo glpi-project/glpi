@@ -708,4 +708,51 @@ class AnswersHandlerTest extends DbTestCase
             $result->getErrors()
         );
     }
+
+    public function testMandatoryQuestionsInsideHiddenSectionsAreIgnored(): void
+    {
+        // Arrange: create a form with two sections, one being hidden with a
+        // mandatory question
+        $builder = new FormBuilder("My form");
+        $builder->addSection("Section 1");
+        $builder->addQuestion("Question 1", QuestionTypeShortText::class);
+        $builder->addSection("Section 2");
+        $builder->addQuestion(
+            name: "Question 2",
+            type: QuestionTypeShortText::class,
+            is_mandatory: true,
+        );
+        $builder->setSectionVisibility(
+            "Section 2",
+            VisibilityStrategy::HIDDEN_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Question 1",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "hide section 2",
+                ],
+            ]
+        );
+        $form = $this->createForm($builder);
+        $question_1_id = $this->getQuestionId($form, "Question 1");
+
+        // Act: try to validate the form
+        $handler = AnswersHandler::getInstance();
+        $valid_result = $handler->validateAnswers($form, [
+            $question_1_id => 'hide section 2',
+            // Answer to question 2 doesn't need be submitted here as its parent
+            // section is hidden.
+        ]);
+        $invalid_result = $handler->validateAnswers($form, [
+            $question_1_id => 'do not hide section 2',
+            // Answer to question 2 should be submitted here as its parent
+            // section will be displayed.
+        ]);
+
+        // Assert: check validity
+        $this->assertEquals(true, $valid_result->isValid());
+        $this->assertEquals(false, $invalid_result->isValid());
+    }
 }

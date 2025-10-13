@@ -36,9 +36,11 @@ namespace Glpi\Form\Condition\ConditionHandler;
 
 use CommonDBTM;
 use CommonTreeDropdown;
+use Glpi\Exception\TooManyResultsException;
 use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Migration\ConditionHandlerDataConverterInterface;
+use Glpi\Form\Migration\FallbackToAnotherOperatorException;
 use Override;
 
 use function Safe\json_decode;
@@ -101,11 +103,28 @@ final class ItemConditionHandler implements ConditionHandlerInterface, Condition
         }
         $nameFields[] = $item::getNameField();
 
-        foreach ($nameFields as $nameField) {
-            // Retrieve item by name
-            if ($item->getFromDBByCrit([$nameField => $value])) {
-                return $item->getID();
+        try {
+            foreach ($nameFields as $nameField) {
+                // Retrieve item by name
+                if ($item->getFromDBByCrit([$nameField => $value])) {
+                    return $item->getID();
+                }
             }
+        } catch (TooManyResultsException $e) {
+            // We failed to find a single item for the given name.
+            // This can happen because formcreator use raw strings, which do
+            // not garantee that we will get a single result while checking by
+            // name.
+            // We can bypass this by falling back to a the contains operator,
+            // which use raw text.
+            $fallback = new FallbackToAnotherOperatorException(
+                $e->getMessage(),
+                $e->getCode(),
+                $e,
+            );
+            $fallback->setOperator(ValueOperator::CONTAINS);
+            $fallback->setValue($value);
+            throw $fallback;
         }
 
         return 0;

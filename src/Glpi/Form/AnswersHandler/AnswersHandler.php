@@ -108,6 +108,7 @@ final class AnswersHandler
             $questions_container->getQuestions(),
             fn($question) => $question->fields['is_mandatory']
                 && $visibility->isQuestionVisible($question->getID())
+                && $visibility->isSectionVisible($question->getSection()->getID())
         );
 
         foreach ($mandatory_questions as $question) {
