@@ -47,8 +47,6 @@ use Glpi\Form\Form;
 use InvalidArgumentException;
 use Override;
 
-use function Safe\parse_url;
-
 final class DirectAccess implements ControlTypeInterface
 {
     #[Override]
@@ -176,28 +174,24 @@ final class DirectAccess implements ControlTypeInterface
 
         // Read context about current and previous pages
         $current_route_path = $_SERVER['REQUEST_URI'] ?? "";
-        $referer = $_SERVER['HTTP_REFERER'] ?? "";
 
-        // We'll also look for the token in the previous URL using the referer.
+        // If the token is missing, we'll also look for the token in the session.
         // This make it more convenient for AJAX calls from the form renderer
         // as they don't need to manually include the token.
         if (
             !$has_supplied_token
-            && str_contains($referer, "Form/Render/{$form->getId()}")
-            // Disable this fallback for the service catalog, this prevent the
-            // edge cases of users going straight to the service catalog after
-            // being on the form itself.
+            // Disable this fallback for the service catalog, as it is out of scope
             && !str_contains($current_route_path, "ServiceCatalog")
         ) {
-            $parsed_referer = parse_url($referer);
-            $query = $parsed_referer['query'] ?? "";
-            parse_str($query, $parsed_query);
-            $token = $parsed_query['token'] ?? null;
+            $token = $_SESSION['helpdesk_form_access_control'][$form->getId()] ?? null;
         }
 
         if ($token === null) {
             return false;
         }
+
+        // Store token in the session so it can be reused for AJAX requests
+        $_SESSION['helpdesk_form_access_control'][$form->getId()] = $token;
 
         return hash_equals($config->getToken(), $token);
     }
