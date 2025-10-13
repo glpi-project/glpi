@@ -51,6 +51,7 @@ use Glpi\Form\Question;
 use Glpi\Form\QuestionType\AbstractQuestionType;
 use Glpi\Form\QuestionType\AbstractQuestionTypeActors;
 use Glpi\Form\QuestionType\QuestionTypeItem;
+use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Group;
 use InvalidArgumentException;
 use Override;
@@ -63,6 +64,10 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
 {
     /** @return AbstractQuestionType[] */
     abstract public function getAllowedQuestionType(): array;
+
+    /** @return class-string<\CommonDBTM>[] */
+    abstract public function getAllowedQuestionItemTypes(): array;
+
     abstract public function getActorType(): string;
 
     public function getAllowedActorTypes(): array
@@ -325,14 +330,29 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
 
     private function getITILActorQuestionsValuesForDropdown(Form $form): array
     {
-        return array_reduce(
-            $form->getQuestionsByTypes(array_map('get_class', $this->getAllowedQuestionType())),
-            function ($carry, $question) {
-                $carry[$question->getId()] = $question->fields['name'];
-                return $carry;
-            },
-            []
-        );
+        $values = [];
+
+        $types = array_map('get_class', $this->getAllowedQuestionType());
+        $types[] = QuestionTypeItem::class;
+
+        foreach ($form->getQuestionsByTypes($types) as $question) {
+            // Additional filter for items questions
+            if ($question->getQuestionType() instanceof QuestionTypeItem) {
+                $data = $question->getExtraDataConfig();
+                if (!$data instanceof QuestionTypeItemExtraDataConfig) {
+                    continue; // Can't happen
+                }
+
+                $allowed_itemtypes = $this->getAllowedQuestionItemTypes();
+                if (!in_array($data->getItemtype(), $allowed_itemtypes)) {
+                    continue; // Not our target type, ignore
+                }
+            }
+
+            $values[$question->getId()] = $question->fields['name'];
+        }
+
+        return $values;
     }
 
     private function getItemWithAssignableItemtypeQuestionsValuesForDropdown(Form $form): array
