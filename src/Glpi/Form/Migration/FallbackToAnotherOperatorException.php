@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Exception;
+namespace Glpi\Form\Migration;
 
 use Exception;
 use Glpi\Form\Condition\ValueOperator;

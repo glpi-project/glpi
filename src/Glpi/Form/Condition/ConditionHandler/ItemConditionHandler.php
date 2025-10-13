@@ -36,11 +36,11 @@ namespace Glpi\Form\Condition\ConditionHandler;
 
 use CommonDBTM;
 use CommonTreeDropdown;
-use Glpi\Exception\FallbackToAnotherOperatorException;
 use Glpi\Exception\TooManyResultsException;
 use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Migration\ConditionHandlerDataConverterInterface;
+use Glpi\Form\Migration\FallbackToAnotherOperatorException;
 use Override;
 
 use function Safe\json_decode;
