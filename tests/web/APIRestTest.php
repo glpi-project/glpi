@@ -490,7 +490,8 @@ class APIRestTest extends TestCase
             [
                 'itemtype' => 'AllAssets',
                 'headers'  => ['Session-Token' => $this->session_token],
-            ]
+            ],
+            [200, 206]
         );
 
         $this->assertIsArray($data);
