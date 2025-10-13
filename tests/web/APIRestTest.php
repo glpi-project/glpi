@@ -482,6 +482,23 @@ class APIRestTest extends TestCase
         $this->checkEmptyContentRange($data, $data['headers']);
     }
 
+    public function testSearchAllAssets()
+    {
+        // Test that searching AllAssets (itemtype without database table) doesn't crash
+        $data = $this->query(
+            'search',
+            [
+                'itemtype' => 'AllAssets',
+                'headers'  => ['Session-Token' => $this->session_token],
+            ]
+        );
+
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('totalcount', $data);
+        $this->assertArrayHasKey('count', $data);
+        $this->assertArrayHasKey('data', $data);
+    }
+
     public function testSearchWithBadCriteria()
     {
         // test retrieve all users
