@@ -2036,11 +2036,9 @@ TWIG, $twig_params);
                             // If user is marked as coming from LDAP, but is not present in it anymore
                             User::manageDeletedUserInLdap($user['id']);
                             $results[self::USER_DELETED_LDAP]++;
-                        } elseif ((int) $user['is_deleted_ldap'] === 1) {
-                            // User is marked as coming from LDAP, but was previously deleted
-                            User::manageRestoredUserInLdap($user['id']);
-                            $results[self::USER_RESTORED_LDAP]++;
                         }
+                        // Note: Users with is_deleted_ldap=1 stay deleted until they are found again in LDAP.
+                        // Restoration is handled in ldapImportUserByServerId() when user is found in LDAP.
                     }
                 }
             }
