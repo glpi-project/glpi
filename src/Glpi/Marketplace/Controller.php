@@ -226,7 +226,6 @@ class Controller extends CommonGLPI
             ini_set('memory_limit', '512M');
         }
 
-        $driver = Formats::getFormatDriver($type);
         $archive = new $driver($dest, $type);
 
         // clean dir in case of update
