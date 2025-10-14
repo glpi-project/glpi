@@ -48,10 +48,8 @@ use Session;
 use Symfony\Component\HttpFoundation\Response;
 use Toolbox;
 use wapmorgan\UnifiedArchive\Abilities;
-use wapmorgan\UnifiedArchive\Drivers\Basic\BasicDriver;
 use wapmorgan\UnifiedArchive\Exceptions\ArchiveExtractionException;
 use wapmorgan\UnifiedArchive\Formats;
-use wapmorgan\UnifiedArchive\UnifiedArchive;
 
 use function Safe\ini_set;
 use function Safe\ob_end_clean;
@@ -210,11 +208,11 @@ class Controller extends CommonGLPI
         }
 
         // extract the archive
-        $type = Formats::detectArchiveFormat($dest);
-        $driver = $type ? Formats::getFormatDriver($type, [Abilities::OPEN, Abilities::EXTRACT_CONTENT]) : null;
+        $format = Formats::detectArchiveFormat($dest);
+        $driver = $format ? Formats::getFormatDriver($format, [Abilities::OPEN, Abilities::EXTRACT_CONTENT]) : null;
         if ($driver === null) {
             Session::addMessageAfterRedirect(
-                htmlescape(sprintf(__('Plugin archive format is not supported by your system : %s.'), $type)),
+                htmlescape(sprintf(__('Plugin archive format is not supported by your system : %s.'), $format)),
                 false,
                 ERROR
             );
@@ -228,18 +226,13 @@ class Controller extends CommonGLPI
             ini_set('memory_limit', '512M');
         }
 
-        $archive = new $driver($dest, $type);
-
         // clean dir in case of update
         Toolbox::deleteDir(GLPI_MARKETPLACE_DIR . "/{$this->plugin_key}");
-        $error = false;
+
+        $archive = new $driver($dest, $format);
         try {
             $archive->extractArchive(GLPI_MARKETPLACE_DIR);
         } catch (ArchiveExtractionException $e) {
-            $error = true;
-        }
-
-        if ($error) {
             Session::addMessageAfterRedirect(
                 __s('Unable to extract plugin archive.'),
                 false,
