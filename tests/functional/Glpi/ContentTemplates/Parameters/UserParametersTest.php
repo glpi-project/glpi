@@ -65,6 +65,7 @@ class UserParametersTest extends AbstractParameters
             'usertitles_id'       => $test_usertitle,
             'usercategories_id'   => $test_usercategory,
             'locations_id'        => $test_location,
+            'registration_number' => 'EMP001234',
         ]);
 
         $parameters = new UserParameters();
@@ -72,16 +73,17 @@ class UserParametersTest extends AbstractParameters
 
         $this->assertEquals(
             [
-                'id'          => getItemByTypeName('User', 'user_testGetValues', true),
-                'login'       => 'user_testGetValues',
-                'fullname'    => 'lastname firstname',
-                'email'       => 'test@email.com',
-                'phone'       => '0101010101',
-                'phone2'      => '0202020202',
-                'mobile'      => '0303030303',
-                'firstname'   => 'firstname',
-                'realname'    => 'lastname',
-                'responsible' => TU_USER,
+                'id'                  => getItemByTypeName('User', 'user_testGetValues', true),
+                'login'               => 'user_testGetValues',
+                'fullname'            => 'lastname firstname',
+                'email'               => 'test@email.com',
+                'phone'               => '0101010101',
+                'phone2'              => '0202020202',
+                'mobile'              => '0303030303',
+                'firstname'           => 'firstname',
+                'realname'            => 'lastname',
+                'registration_number' => 'EMP001234',
+                'responsible'         => TU_USER,
                 'location' => [
                     'id'           => $test_location,
                     'name'         => 'test location',
