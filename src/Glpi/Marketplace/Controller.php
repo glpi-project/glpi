@@ -211,7 +211,7 @@ class Controller extends CommonGLPI
 
         // extract the archive
         $type = Formats::detectArchiveFormat($dest);
-        $driver = $type ? Formats::getFormatDriver($type, [Abilities::OPEN]) : null;
+        $driver = $type ? Formats::getFormatDriver($type, [Abilities::OPEN, Abilities::EXTRACT_CONTENT]) : null;
         if ($driver === null) {
             Session::addMessageAfterRedirect(
                 htmlescape(sprintf(__('Plugin archive format is not supported by your system : %s.'), $type)),
