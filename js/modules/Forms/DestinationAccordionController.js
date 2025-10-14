@@ -48,7 +48,7 @@ export class GlpiFormDestinationAccordionController
                 return;
             }
 
-            accordionItemContent.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"></div></div>';
+            accordionItemContent.innerHTML = '<div class="text-center"><div class="spinner-border text-primary mb-3" role="status"></div></div>';
 
             const content = await $.ajax({
                 url: `${CFG_GLPI.root_doc}/Form/${accordionItem.dataset.form}/Destinations/${accordionItem.dataset.formDestination}`,
