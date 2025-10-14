@@ -38,7 +38,7 @@ use function Safe\strtotime;
 
 /**
  * @phpstan-type ItemOlaData array{
- *     items_olas_id: int,
+ *     items_olas_id?: int,
  *     name: string,
  *     entities_id: int,
  *     is_recursive: bool,
@@ -56,7 +56,7 @@ use function Safe\strtotime;
  *     ola_type: SLM::TTR|SLM::TTO,
  *     start_time: string,
  *     due_time: string,
- *     end_time: string,
+ *     end_time: ?string,
  *     waiting_time: string,
  *     is_late: string,
  *     class: string,
@@ -72,6 +72,52 @@ class Item_Ola extends CommonDBRelation
 
     public static $itemtype_2 = OLA::class;
     public static $items_id_2 = 'olas_id';
+
+    /**
+     * @param string $itemtype class-string<Ticket>
+     * @param int $items_id
+     * @param int[] $request_olas_ids
+     * @return int[]
+     */
+    public static function filterInputOlas(string $itemtype, int $items_id, array $request_olas_ids): array
+    {
+        if ($itemtype !== Ticket::class) {
+            throw new RuntimeException('Item_Ola only works for Ticket at the moment.');
+        }
+
+        /** @var Ticket $item */
+        $item = getItemForItemtype($itemtype);
+        if ($item === false || !$item->getFromDB($items_id)) {
+            throw new RuntimeException($itemtype . ' not found #' . $items_id);
+        }
+
+        $ola_data = $item->getOlasData();
+        $current_not_completed_olas_ids = array_column(
+            array_filter($ola_data, fn($ola_data) => $ola_data['end_time'] === null),
+            'olas_id'
+        );
+        $request_olas_ids = array_filter(
+            $request_olas_ids,
+            static fn($tested_olas_id) => !in_array($tested_olas_id, $current_not_completed_olas_ids)
+        );
+        // remove ola currently assigned, remove ola one by one because array_diff doesn't take into account the duplicates in $request_olas_ids
+        $current_olas_ids = array_column($item->getOlasData(), 'olas_id');
+        $toadd_olas_ids = [];
+        foreach ($request_olas_ids as $requested_olas_id) {
+            // check if already in current olas
+            if (!in_array($requested_olas_id, $current_olas_ids)) {
+                $toadd_olas_ids[] = $requested_olas_id;
+            } else {
+                // remove first occurrence of $requested_olas_id in $_current_olas_ids
+                $key = array_search($requested_olas_id, $current_olas_ids);
+                if ($key !== false) {
+                    unset($current_olas_ids[$key]);
+                }
+            }
+        }
+
+        return $toadd_olas_ids;
+    }
 
     /**
      * Prepare the input for add
@@ -105,16 +151,18 @@ class Item_Ola extends CommonDBRelation
      *
      * @param Ticket $ticket
      * @param int $olas_id must exist in the database
-     * @param array<int> $new_assigned_groups
-     * @param array<int> $new_assigned_users
-     *
-     * @todo remove useless parameters at the end of implementation
+     * @param int $items_olas_id id of Item_Ola to compute
      */
-    public static function compute(Ticket $ticket, mixed $olas_id, array $new_assigned_groups = [], array $new_assigned_users = []): void
+    public static function compute(Ticket $ticket, int $olas_id, int $items_olas_id): void
     {
         $item_ola = new self();
-        if (!$item_ola->getFromDBByCrit(['items_id' => $ticket->getID(), 'itemtype' => $ticket::class, 'olas_id' => $olas_id])) {
-            throw new RuntimeException('Item_Ola not found for ticket #' . $ticket->getID() . ' and OLA #' . $olas_id);
+        if (!$item_ola->getFromDBByCrit([
+            'items_id' => $ticket->getID(),
+            'itemtype' => $ticket::class,
+            'olas_id' => $olas_id,
+            'id' => $items_olas_id,
+        ])) {
+            throw new RuntimeException('Item_Ola not found for ticket #' . $ticket->getID() . ', OLA #' . $olas_id . ', items_olas_id #' . $items_olas_id);
         };
 
         $calendars_id = $ticket->getCalendar();
@@ -256,7 +304,7 @@ class Item_Ola extends CommonDBRelation
                 throw new Exception('Failed to update end_time on Item_Ola #' . $item_ola_row['id']);
             }
 
-            Item_Ola::compute($ticket, (int) $item_ola_row['olas_id']);
+            Item_Ola::compute($ticket, (int) $item_ola_row['olas_id'], (int) $item_ola_row['id']);
         }
     }
 
@@ -282,7 +330,7 @@ class Item_Ola extends CommonDBRelation
         /** array ola + item_ola datas */
         $merged_data = [];
         // each $item_ola_data row contains linked OLA fields + items_olas_id in 'linkid' field
-        $olas_data = iterator_to_array(self::getListForItem($ticket));
+        $olas_data = iterator_to_array(self::getListForItem($ticket), false);
 
         // merge data from ola dans items_ola
         foreach ($olas_data as $ola_data) {
@@ -304,7 +352,7 @@ class Item_Ola extends CommonDBRelation
         $ola = new OLA();
 
         // get ola data from DB - each $item_ola_data row contains linked OLA fields + items_olas_id in 'linkid' field
-        $olas_in_db_data = array_values(iterator_to_array(self::getListForItem($ticket)));
+        $olas_in_db_data = array_values(iterator_to_array(self::getListForItem($ticket), false));
 
         // complete with olas not associated to ticket - not yet in items_ola
         $fetched_olas_ids = array_column($olas_in_db_data, 'id');
@@ -426,7 +474,7 @@ class Item_Ola extends CommonDBRelation
                 throw new RuntimeException('Item_Ola cron only works for Ticket at the moment. Implemetation needed.');
             }
             $itil->getFromDB($item_ola['items_id']);
-            static::compute($itil, (int) $item_ola['olas_id']);
+            static::compute($itil, (int) $item_ola['olas_id'], (int) $item_ola['id']);
             $processed++;
         }
 
@@ -458,10 +506,5 @@ class Item_Ola extends CommonDBRelation
     private static function isCurrentUserInOlaGroup(int $groups_id): bool
     {
         return in_array($groups_id, $_SESSION["glpigroups"]);
-    }
-
-    private static function isCurrentUserInNewAssignedUsers(array $new_assigned_users): bool
-    {
-        return in_array($_SESSION["glpiID"], $new_assigned_users);
     }
 }

@@ -69,7 +69,7 @@ use User;
  *          - at update time :@see self::testAssociateMultipleOlaOnUpdate()
  *      - ola are unchanged when no ola form input is specified : @see self::testUpdateTicketWithoutOlaInputs()
  *      - existing ola associations can be changed : @see self::testUpdateTicketOlas()
- *      - multiple times the same ola results in a single association : @see self::testUpdateTicketWithDuplicatedOlasInputs()
+ *      - multiple times the same ola results in a single association : @see self::testUpdateTicketWithDuplicatedOlasNotCompleted()
  *      - Create and update a ticket with old form params (olas_id_tto, olas_id_ttr) still works :
  *          - on creation : @see self::testCreateTicketWithOldFormParams()
  *          - on update : @see self::testUpdateTicketWithOldFormParams()
@@ -170,6 +170,42 @@ class OLATest extends DbTestCase
         $this->assertCount(3, $ticket->getOlasData(), 'Expected 3 OLA associated with ticket, but ' . count($ticket->getOlasData()) . ' found');
         $this->assertCount(2, $ticket->getOlasTTOData(), 'Expected 2 OLA TTO associated with ticket, but found different results');
         $this->assertCount(1, $ticket->getOlasTTRData(), 'Expected 1 OLA TTR associated with ticket, but found different results');
+
+        $io = new Item_Ola();
+        $this->assertCount(3, $io->getDataFromOlasIdsForTicket($ticket, [$ola_tto1->getID(), $ola_tto2->getID(), $ola_ttr->getID()]));
+    }
+
+    public function testGetOLADataWithDuplicatedOla()
+    {
+        $this->login();
+        // arrange
+        $ticket = $this->createTicket();
+        ['ola' => $ola_tto1, 'slm' => $slm, 'group' => $group] = $this->createOLA(ola_type: SLM::TTO);
+        ['ola' => $ola_tto2] = $this->createOLA(ola_type: SLM::TTO, group: $group, slm: $slm);
+        ['ola' => $ola_ttr] = $this->createOLA(ola_type: SLM::TTR, group: $group, slm: $slm);
+
+        $association_data = [
+            'items_id' => $ticket->getID(),
+            'itemtype' => $ticket::class,
+            'start_time' => date('Y-m-d H:i:s'),
+        ];
+
+        // act - create associations
+        $this->createItem(Item_Ola::class, ['olas_id' => $ola_tto1->getID(), 'ola_type' => SLM::TTO, 'end_time' => \Session::getCurrentTime()] + $association_data);
+        $this->createItem(Item_Ola::class, ['olas_id' => $ola_tto2->getID(), 'ola_type' => SLM::TTO] + $association_data);
+        $this->createItem(Item_Ola::class, ['olas_id' => $ola_ttr->getID(), 'ola_type' => SLM::TTR] + $association_data);
+        // duplicated association - associate with ola_tto1 again, but not completed this time
+        $this->createItem(Item_Ola::class, ['olas_id' => $ola_tto1->getID(), 'ola_type' => SLM::TTO] + $association_data);
+
+
+        // assert - check if the ticket has the 3 OLA associated
+        $ticket = $this->reloadItem($ticket);
+        $this->assertCount(4, $ticket->getOlasData(), 'Expected 4 OLA associated with ticket, but ' . count($ticket->getOlasData()) . ' found');
+        $this->assertCount(3, $ticket->getOlasTTOData(), 'Expected 3 OLA TTO associated with ticket, but found different results');
+        $this->assertCount(1, $ticket->getOlasTTRData(), 'Expected 1 OLA TTR associated with ticket, but found different results');
+
+        $io = new Item_Ola();
+        $this->assertCount(4, $io->getDataFromOlasIdsForTicket($ticket, [$ola_tto1->getID(), $ola_tto2->getID(), $ola_ttr->getID(), $ola_tto1->getID()]));
     }
 
     public function testAssociateSingleOlaOnCreation(): void
@@ -279,7 +315,7 @@ class OLATest extends DbTestCase
      * When passing multiple OLA IDs to the ticket, the same OLA ID should not be passed associated multiple times
      * Just test for update, no need to test for create (process is in the same function)
      */
-    public function testUpdateTicketWithDuplicatedOlasInputs(): void
+    public function testUpdateTicketWithDuplicatedOlasNotCompleted(): void
     {
         // arrange
         $this->login();
@@ -287,11 +323,33 @@ class OLATest extends DbTestCase
         $ola = $this->createOLA()['ola'];
 
         // act - update ticket
+        $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [$ola->getID()]]);
         $ticket = $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [$ola->getID(), $ola->getID()]]);
 
         // assert
         $fetched_olas = array_column($ticket->getOlasData(), 'olas_id');
         $this->assertEqualsCanonicalizing([$ola->getID()], $fetched_olas, 'Unexpected OLA associated with ticket, duplicated OLA IDs should be ignored');
+    }
+
+    public function testUpdateTicketWithDuplicatedOlasButNotAllCompleted(): void
+    {
+        // arrange
+        $this->login();
+        $ticket = $this->createTicket();
+        $ola = $this->createOLA()['ola'];
+
+        // act - update ticket - associated with a ola
+        $ticket = $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [$ola->getID()]]);
+        // set associated ola as completed
+        $io = new Item_Ola();
+        $io->getFromDBByCrit(['items_id' => $ticket->getID(), 'itemtype' => $ticket::class, 'olas_id' => $ola->getID()]);
+        $this->updateItem($io::class, $io->getID(), ['end_time' => \Session::getCurrentTime()] + $io->fields);
+        // update ticket with twice the same ola id (one is completed, the other is not)
+        $ticket = $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [$ola->getID(), $ola->getID()]]);
+
+        // assert
+        $fetched_olas = array_column($ticket->getOlasData(), 'olas_id');
+        $this->assertEqualsCanonicalizing([$ola->getID(),$ola->getID() ], $fetched_olas, 'Unexpected OLA associated with ticket, duplicated OLA IDs should be ignored');
     }
 
     /**

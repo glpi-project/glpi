@@ -6256,7 +6256,7 @@ JAVASCRIPT;
     }
 
     /**
-     * Ticket Olas data from database
+     * Ticket Olas data from database if exists or an empty array
      *
      * Get currently associated Ola from database
      * Data from ola + item_ola + custom data
@@ -6273,7 +6273,7 @@ JAVASCRIPT;
     /**
      * Olas data from form input
      *
-     * Unlike getOlasData(), it rely on $this->fields['_olas_id'] field because the field could be filled by a template.
+     * Unlike getOlasData(), it relies on $this->fields['_olas_id'] field because the field could be filled by a template.
      *
      * @return array<ItemOlaData>
      *
@@ -6377,7 +6377,9 @@ JAVASCRIPT;
         }
 
         // add new olas
-        $toadd_olas_ids = array_unique(array_diff($request_olas_ids, $current_olas_ids));
+        // deduplicate ola (but not completed)
+        $toadd_olas_ids = Item_Ola::filterInputOlas($this->getType(), $this->getID(), $request_olas_ids);
+
         $items_ola = new Item_Ola();
         foreach ($toadd_olas_ids as $olas_id) {
             $ola = new OLA();
@@ -6413,7 +6415,7 @@ JAVASCRIPT;
         OLA::deleteLevelsToDo($this); // todo levels are rebuild in Item_Ola::compute()
         $olas = $this->getOlasData();
         foreach ($olas as $ola) {
-            Item_Ola::compute($this, (int) $ola['olas_id'], $new_assigned_groups, $new_assigned_users);
+            Item_Ola::compute($this, (int) $ola['olas_id'], (int) $ola['items_olas_id']);
         }
     }
 
