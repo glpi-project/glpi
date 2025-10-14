@@ -178,7 +178,7 @@ export class GlpiFormServiceCatalogController
             });
         }
 
-        const breadcrumbContainer = document.querySelector('.breadcrumb');
+        const breadcrumbContainer = document.querySelector('[data-breadcrumbs-container]');
         breadcrumbContainer.innerHTML = '';
 
         this.breadcrumb.forEach((item, index) => {
