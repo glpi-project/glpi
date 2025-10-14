@@ -86,11 +86,7 @@
     {% else %}
         <section class="accordion mt-4" id="glpi-destinations-accordion" aria-label="{{ __("Form destinations") }}">
             {% for destination in destinations %}
-                {% set is_expanded = false %}
-                {% if destinations|length == 1 %}
-                    {% set is_expanded = true %}
-                    {% set active_destination = destination.getID() %}
-                {% endif %}
+                {% set is_expanded = active_destination == destination.getID() or destinations|length == 1 %}
                 {% set concrete_destination = destination.getConcreteDestinationItem() %}
                 {% set rand = random() %}
                 <section
