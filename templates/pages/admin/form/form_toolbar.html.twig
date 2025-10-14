@@ -37,6 +37,7 @@
 {# @var hide_section_button                       bool #}
 {# @var hide_new_horizontal_layout_button         bool #}
 {# @var show_remove_horizontal_placeholder_button bool #}
+{# @var extra_class                               ?string #}
 
 {% set ghost_button = ghost_button|default(false) %}
 {% set hide_section_button = hide_section_button|default(false) %}
@@ -45,7 +46,7 @@
 
 {% if can_update %}
     <div
-        class="d-flex h-full {{ (vertical_layout ?? false) ? 'position-absolute btn-group-vertical justify-content-end ms-2 pb-2' : 'btn-group justify-content-center mt-2' }}"
+        class="d-flex h-full {{ (vertical_layout ?? false) ? 'position-absolute btn-group-vertical justify-content-end ms-2 pb-2 ' ~ extra_class|default('') : 'btn-group justify-content-center mt-2' }}"
         style="box-shadow:none;"
         role="group"
         data-glpi-form-editor-toolbar
