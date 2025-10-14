@@ -71,6 +71,10 @@ INSERT INTO `glpi_dropdowntranslations` (`items_id`, `itemtype`, `language`, `fi
 INSERT INTO `glpi_infocoms` (`items_id`, `itemtype`, `entities_id`, `is_recursive`, `buy_date`, `use_date`, `warranty_duration`, `warranty_info`, `suppliers_id`, `order_number`, `delivery_number`, `immo_number`, `value`, `warranty_value`, `sink_time`, `sink_type`, `sink_coeff`, `comment`, `bill`, `budgets_id`, `alert`, `order_date`, `delivery_date`, `inventory_date`, `warranty_date`, `date_mod`, `date_creation`, `decommission_date`, `businesscriticities_id`) VALUES
 (2, 'PluginGenericobjectSmartphone', 0, 0, '2025-03-03', '2025-03-12', 12, NULL, 0, NULL, NULL, NULL, '1500.0000', '250.0000', 3, 2, 0, NULL, NULL, 0, 0, '2025-03-03', '2025-03-11', NULL, '2025-03-12', '2025-03-12 20:56:50', '2025-03-12 20:55:47', NULL, 0);
 
+INSERT IGNORE INTO `glpi_contracts` (`id`, `name`) VALUES (4, 'Contract 4');
+INSERT IGNORE INTO `glpi_contracts` (`id`, `name`) VALUES (7, 'Contract 7');
+INSERT IGNORE INTO `glpi_contracts` (`id`, `name`) VALUES (12, 'Contract 12');
+
 INSERT INTO `glpi_contracts_items` (`items_id`, `itemtype`, `contracts_id`) VALUES
 (1, 'PluginGenericobjectSmartphone', 4),
 (1, 'PluginGenericobjectSmartphone', 7),
