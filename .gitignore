@@ -45,3 +45,4 @@ phpstan.neon
 *.phar
 .env
 /resources/.illustrations_translations.php
+/phpunit/files/*
