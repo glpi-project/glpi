@@ -3350,9 +3350,44 @@ final class FormMigrationTest extends DbTestCase
         $this->assertEquals("Group", $condition->getValue());
     }
 
+    public function testFormWithConditionsOnInvalidQuestionForSubmitButton(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Arrange: create a form with a submit button condition
+        $this->createSimpleFormcreatorForm(
+            name: "My form with submit button condition",
+            questions: [
+                [
+                    'name'      => 'My question',
+                    'fieldtype' => 'radios',
+                    'values'    => json_encode(['1', '2', '3']),
+                ],
+            ],
+            submit_conditions: [
+                'plugin_formcreator_questions_id' => 'My question',
+                'show_condition'                  => 6, // Invalid for radios
+                'show_value'                      => 200,
+                'show_logic'                      => 1,
+                'show_rule'                       => 3,
+                'order'                           => 1,
+            ]
+        );
+
+        // Act: try to import the form
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $result = $migration->execute();
+
+        // Assert: the migration should succeed, the invalid condition will be
+        // ignored.
+        $this->assertTrue($result->isFullyProcessed());
+    }
+
     protected function createSimpleFormcreatorForm(
         string $name,
         array $questions,
+        array $submit_conditions = [],
     ): void {
         /** @var \DBmysql $DB */
         global $DB;
@@ -3360,6 +3395,7 @@ final class FormMigrationTest extends DbTestCase
         // Add form
         $DB->insert('glpi_plugin_formcreator_forms', [
             'name' => $name,
+            'show_rule' => $submit_conditions['show_rule'] ?? 1,
         ]);
         $form_id = $DB->insertId();
 
@@ -3398,6 +3434,23 @@ final class FormMigrationTest extends DbTestCase
                     $DB->insert('glpi_plugin_formcreator_conditions', $condition);
                 }
             }
+        }
+
+        // Add submit conditions
+        if ($submit_conditions !== []) {
+            // Replace target question name by id
+            $target_q_name = $submit_conditions['plugin_formcreator_questions_id'];
+            $target_q_id = $questions_names_map[$target_q_name];
+
+            $DB->insert('glpi_plugin_formcreator_conditions', [
+                'itemtype'                        => 'PluginFormcreatorForm',
+                'items_id'                        => $form_id,
+                'plugin_formcreator_questions_id' => $target_q_id,
+                'show_condition'                  => $submit_conditions['show_condition'],
+                'show_value'                      => $submit_conditions['show_value'],
+                'show_logic'                      => $submit_conditions['show_logic'],
+                'order'                           => $submit_conditions['order'],
+            ]);
         }
     }
 }

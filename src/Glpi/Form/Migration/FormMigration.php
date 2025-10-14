@@ -1405,10 +1405,10 @@ class FormMigration extends AbstractPluginMigration
 
                 // If no condition handler is found for the value operator, we skip this condition
                 if ($condition_handler === false) {
-                    /** @var Question|Comment|Section|FormDestination $item */
+                    /** @var Form|Question|Comment|Section|FormDestination $item */
                     $item = getItemForItemtype($target_item['itemtype']);
                     if ($item !== false && $item->getFromDB($target_item['items_id']) !== false) {
-                        $form = $item->getForm();
+                        $form = $item instanceof Form ? $item : $item->getForm();
                     } else {
                         $item = null;
                         $form = null;

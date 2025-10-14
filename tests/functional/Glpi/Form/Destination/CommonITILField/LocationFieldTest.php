@@ -43,6 +43,7 @@ use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdownExtraDataConfig;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use ITILCategory;
 use Location;
 use Override;
 use TicketTemplate;
@@ -54,6 +55,34 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
 {
     use FormTesterTrait;
 
+    public function testDefaultConfiguration(): void
+    {
+        // Arrange: create a location
+        $location = $this->createItem(Location::class, [
+            'name' => 'My location',
+        ]);
+
+        // Act: create a ticket
+        $this->sendFormAndAssertLocation(
+            form: $this->createAndGetFormWithMultipleLocationQuestions(),
+            config: null,
+            answers: [
+                "Location 2" => [
+                    'itemtype' => Location::class,
+                    'items_id' => $location->getID(),
+                ],
+                // Regression test: there was a failure when an itil category
+                // was sent after a location
+                "ITIL Category" => [
+                    'itemtype' => ITILCategory::class,
+                    'items_id' => 0,
+                ],
+            ],
+            // Assert: the location should be set
+            expected_location_id: $location->getID(),
+        );
+    }
+
     public function testLocationFromTemplate(): void
     {
         $from_template_config = new LocationFieldConfig(
@@ -61,7 +90,7 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
         );
 
         // The default GLPI's template doesn't have a predefined location
-        $this->sendFormAndAssertTicketType(
+        $this->sendFormAndAssertLocation(
             form: $this->createAndGetFormWithMultipleLocationQuestions(),
             config: $from_template_config,
             answers: [],
@@ -79,7 +108,7 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
             'num' => 83, // Location
             'value' => $location->getID(),
         ]);
-        $this->sendFormAndAssertTicketType(
+        $this->sendFormAndAssertLocation(
             form: $this->createAndGetFormWithMultipleLocationQuestions(),
             config: $from_template_config,
             answers: [],
@@ -97,7 +126,7 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
         ]);
 
         // Specific value: First location
-        $this->sendFormAndAssertTicketType(
+        $this->sendFormAndAssertLocation(
             form: $form,
             config: new LocationFieldConfig(
                 strategy: LocationFieldStrategy::SPECIFIC_VALUE,
@@ -108,7 +137,7 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
         );
 
         // Specific value: Second location
-        $this->sendFormAndAssertTicketType(
+        $this->sendFormAndAssertLocation(
             form: $form,
             config: new LocationFieldConfig(
                 strategy: LocationFieldStrategy::SPECIFIC_VALUE,
@@ -129,7 +158,7 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
         ]);
 
         // Using answer from first question
-        $this->sendFormAndAssertTicketType(
+        $this->sendFormAndAssertLocation(
             form: $form,
             config: new LocationFieldConfig(
                 strategy: LocationFieldStrategy::SPECIFIC_ANSWER,
@@ -149,7 +178,7 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
         );
 
         // Using answer from second question
-        $this->sendFormAndAssertTicketType(
+        $this->sendFormAndAssertLocation(
             form: $form,
             config: new LocationFieldConfig(
                 strategy: LocationFieldStrategy::SPECIFIC_ANSWER,
@@ -183,7 +212,7 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
         ]);
 
         // With multiple answers submitted
-        $this->sendFormAndAssertTicketType(
+        $this->sendFormAndAssertLocation(
             form: $form,
             config: $last_valid_answer_config,
             answers: [
@@ -200,7 +229,7 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
         );
 
         // Only first answer was submitted
-        $this->sendFormAndAssertTicketType(
+        $this->sendFormAndAssertLocation(
             form: $form,
             config: $last_valid_answer_config,
             answers: [
@@ -213,7 +242,7 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
         );
 
         // Only second answer was submitted
-        $this->sendFormAndAssertTicketType(
+        $this->sendFormAndAssertLocation(
             form: $form,
             config: $last_valid_answer_config,
             answers: [
@@ -226,7 +255,7 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
         );
 
         // No answers, fallback to default value
-        $this->sendFormAndAssertTicketType(
+        $this->sendFormAndAssertLocation(
             form: $form,
             config: $last_valid_answer_config,
             answers: [],
@@ -239,7 +268,7 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
             'num' => 83, // Location
             'value' => $locations[2]->getID(),
         ]);
-        $this->sendFormAndAssertTicketType(
+        $this->sendFormAndAssertLocation(
             form: $form,
             config: $last_valid_answer_config,
             answers: [],
@@ -309,9 +338,9 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
         ];
     }
 
-    private function sendFormAndAssertTicketType(
+    private function sendFormAndAssertLocation(
         Form $form,
-        LocationFieldConfig $config,
+        ?LocationFieldConfig $config,
         array $answers,
         int $expected_location_id,
     ): void {
@@ -319,12 +348,14 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
         $destinations = $form->getDestinations();
         $this->assertCount(1, $destinations);
         $destination = current($destinations);
-        $this->updateItem(
-            $destination::getType(),
-            $destination->getId(),
-            ['config' => [LocationField::getKey() => $config->jsonSerialize()]],
-            ["config"],
-        );
+        if ($config) {
+            $this->updateItem(
+                $destination::getType(),
+                $destination->getId(),
+                ['config' => [LocationField::getKey() => $config->jsonSerialize()]],
+                ["config"],
+            );
+        }
 
         // The provider use a simplified answer format to be more readable.
         // Rewrite answers into expected format.
@@ -358,10 +389,18 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
         $extra_data_config = (new QuestionTypeItemDropdownExtraDataConfig(
             itemtype: Location::getType(),
         ));
+        $category_config = (new QuestionTypeItemDropdownExtraDataConfig(
+            itemtype: ITILCategory::getType(),
+        ));
 
         $builder = new FormBuilder();
         $builder->addQuestion("Location 1", QuestionTypeItemDropdown::class, 0, json_encode($extra_data_config));
         $builder->addQuestion("Location 2", QuestionTypeItemDropdown::class, 0, json_encode($extra_data_config));
+        $builder->addQuestion(
+            name: "ITIL Category",
+            type: QuestionTypeItemDropdown::class,
+            extra_data: json_encode($category_config)
+        );
         return $this->createForm($builder);
     }
 }
