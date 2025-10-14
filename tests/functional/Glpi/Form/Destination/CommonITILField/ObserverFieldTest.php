@@ -44,6 +44,8 @@ use Glpi\Form\Destination\CommonITILField\ObserverFieldConfig;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
+use Glpi\Form\QuestionType\QuestionTypeItem;
+use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
 use Glpi\Tests\FormBuilder;
 use Group;
@@ -232,6 +234,14 @@ final class ObserverFieldTest extends AbstractActorFieldTest
             ],
             "Observer email 1" => 'test1@test.test',
             "Observer email 2" => 'test2@test.test',
+            "User question 1" => [
+                'itemtype' => User::class,
+                'items_id' => $user1->getID(),
+            ],
+            "User question 2" => [
+                'itemtype' => User::class,
+                'items_id' => $user2->getID(),
+            ],
         ];
 
         // Using answer from first observer question
@@ -306,6 +316,23 @@ final class ObserverFieldTest extends AbstractActorFieldTest
                 ['items_id' => 0, 'alternative_email' => 'test1@test.test'],
                 ['items_id' => 0, 'alternative_email' => 'test2@test.test'],
                 ['items_id' => $group->getID()],
+            ]
+        );
+
+        // Using answers from user questions
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: new ObserverFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
+                specific_question_ids: [
+                    $this->getQuestionId($form, "User question 1"),
+                    $this->getQuestionId($form, "User question 2"),
+                ]
+            ),
+            answers: $answers,
+            expected_actors: [
+                ['items_id' => $user1->getID()],
+                ['items_id' => $user2->getID()],
             ]
         );
     }
@@ -790,7 +817,20 @@ final class ObserverFieldTest extends AbstractActorFieldTest
             json_encode((new QuestionTypeActorsExtraDataConfig(true))->jsonSerialize())
         );
         $builder->addQuestion("Observer email 1", QuestionTypeEmail::class);
-        $builder->addQuestion("Observer email 2", QuestionTypeEmail::class, );
+        $builder->addQuestion("Observer email 2", QuestionTypeEmail::class);
+
+        $item_config = new QuestionTypeItemExtraDataConfig(itemtype: User::class);
+        $item_config = json_encode($item_config);
+        $builder->addQuestion(
+            name: "User question 1",
+            type: QuestionTypeItem::class,
+            extra_data: $item_config,
+        );
+        $builder->addQuestion(
+            name: "User question 2",
+            type: QuestionTypeItem::class,
+            extra_data: $item_config,
+        );
         return $this->createForm($builder);
     }
 }

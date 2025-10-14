@@ -37,8 +37,10 @@ namespace Glpi\Form\Destination\CommonITILField;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeRequester;
+use Group;
 use Override;
 use Session;
+use User;
 
 final class RequesterField extends ITILActorField
 {
@@ -46,6 +48,12 @@ final class RequesterField extends ITILActorField
     public function getAllowedQuestionType(): array
     {
         return [new QuestionTypeRequester(), new QuestionTypeEmail()];
+    }
+
+    #[Override]
+    public function getAllowedQuestionItemTypes(): array
+    {
+        return [User::class, Group::class];
     }
 
     #[Override]

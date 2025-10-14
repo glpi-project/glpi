@@ -38,6 +38,7 @@ namespace Glpi\Form\Destination\CommonITILField;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\QuestionType\AbstractQuestionTypeActors;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
+use Glpi\Form\QuestionType\QuestionTypeItem;
 use Group;
 use Session;
 use Ticket;
@@ -265,6 +266,28 @@ enum ITILActorFieldStrategy: string
                     ],
                 ];
             }
+        } elseif ($answer->getType() instanceof QuestionTypeItem) {
+            $value = $answer->getRawAnswer();
+            if (
+                !in_array(
+                    $value['itemtype'],
+                    $itil_actor_field->getAllowedActorTypes()
+                ) || !is_numeric($value['items_id'])
+            ) {
+                return null;
+            }
+
+            $item = getItemForItemtype($value['itemtype']);
+            if (!$item->getFromDB($value['items_id'])) {
+                return null;
+            }
+
+            return [
+                [
+                    'itemtype' => $value['itemtype'],
+                    'items_id' => (int) $value['items_id'],
+                ],
+            ];
         }
 
         return null;
