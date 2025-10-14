@@ -29,6 +29,8 @@
  *
  * ---------------------------------------------------------------------
  */
+import { GlpiFormDestinationAutoConfigController } from "./DestinationAutoConfigController.js";
+import {GlpiFormDestinationConditionController} from "./DestinationConditionController.js";
 
 export class GlpiFormDestinationAccordionController
 {
@@ -55,6 +57,10 @@ export class GlpiFormDestinationAccordionController
 
             // Note: must use `$().html` to make sure we trigger scripts
             $(accordionItemContent).html(content);
+
+            // We trigger the watcher
+            new GlpiFormDestinationAutoConfigController();
+            new GlpiFormDestinationConditionController();
         });
     }
 }

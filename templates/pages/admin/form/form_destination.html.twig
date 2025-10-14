@@ -156,19 +156,11 @@
 </div>
 
 <script>
-    async function main() {
-        const accordionController = await import("/js/modules/Forms/DestinationAccordionController.js");
-        const autoConfigController = await import("/js/modules/Forms/DestinationAutoConfigController.js");
-        const conditionController = await import("/js/modules/Forms/DestinationConditionController.js");
-
-        new accordionController.GlpiFormDestinationAccordionController();
-        new autoConfigController.GlpiFormDestinationAutoConfigController();
-        new conditionController.GlpiFormDestinationConditionController();
+    import("/js/modules/Forms/DestinationAccordionController.js").then(function (module) {
+        new module.GlpiFormDestinationAccordionController();
 
         {% if active_destination %}
             document.querySelector('.destination-{{ active_destination }} .accordion-button').click();
         {% endif %}
-    }
-
-    main();
+    })
 </script>
