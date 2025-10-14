@@ -3094,7 +3094,7 @@ JAVASCRIPT;
         $tab[] = [
             'id'                 => '159',
             'table'              => 'glpi_tickets',
-            'field'              => 'is_late',
+            'field'              => 'sla_tto_is_late',
             'name'               => __('Time to own exceeded'),
             'datatype'           => 'bool',
             'massiveaction'      => false,
@@ -3125,7 +3125,7 @@ JAVASCRIPT;
         $tab[] = [
             'id'                 => '182',
             'table'              => $this->getTable(),
-            'field'              => 'is_late',
+            'field'              => 'ola_ttr_is_late',
             'name'               => __('Internal time to resolve exceeded'),
             'datatype'           => 'bool',
             'massiveaction'      => false,
@@ -3156,7 +3156,7 @@ JAVASCRIPT;
         $tab[] = [
             'id'                 => '187',
             'table'              => 'glpi_tickets',
-            'field'              => 'is_late',
+            'field'              => 'ola_tto_is_late',
             'name'               => __('Internal time to own exceeded'),
             'datatype'           => 'bool',
             'massiveaction'      => false,
