@@ -39,7 +39,7 @@ describe('Request type configuration', () => {
         cy.createFormWithAPI().visitFormTab('Form');
         cy.findByRole('button', {'name': "Add a question"}).click();
         cy.focused().type("My request type question");
-        cy.getDropdownByLabelText('Question type').selectDropdownValue('Request type');
+        cy.findByRole('option', {'name': 'New question'}).changeQuestionType('Request type');
         cy.findByRole('button', {'name': 'Save'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
 
