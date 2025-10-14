@@ -62,6 +62,7 @@ final class GetDestinationFormController extends AbstractController
         $twig_params = [
             'destination' => $destination,
             'form' => $destination->getForm(),
+            'can_update' => FormDestination::canUpdate(),
             'concrete_destination' => $destination->getConcreteDestinationItem(),
         ];
 
