@@ -581,7 +581,6 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => $nb,
-            'filtered_number' => $nb,
             'showmassiveactions' => true,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),

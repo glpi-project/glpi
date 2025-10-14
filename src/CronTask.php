@@ -1191,7 +1191,6 @@ class CronTask extends CommonDBTM
             ],
             'entries' => $entries,
             'total_number' => $total_count,
-            'filtered_number' => $total_count,
             'showmassiveactions' => false,
         ]);
     }
@@ -1286,7 +1285,6 @@ TWIG, ['msg' => __('Last run list')]);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => false,
         ]);
     }

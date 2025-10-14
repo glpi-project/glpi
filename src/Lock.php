@@ -309,7 +309,6 @@ TWIG;
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => count(array_filter($entries, static fn($entry) => $entry['showmassiveactions'])) > 0,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -1048,7 +1047,6 @@ TWIG, $twig_params);
             ],
             'entries' => $rendered_subtables,
             'total_number' => count($rendered_subtables),
-            'filtered_number' => count($rendered_subtables),
             'showmassiveactions' => false,
         ]);
 
