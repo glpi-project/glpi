@@ -2370,7 +2370,7 @@ class User extends CommonDBTM
 
         $old_fields = $this->fields;
         if ($this->getFromDBbyName(addslashes($this->fields['name']))) {
-            $this->fields = array_replace($this->fields, array_filter($old_fields, function($value) {
+            $this->fields = array_replace($this->fields, array_filter($old_fields, function ($value) {
                 return $value !== null && $value !== '';
             }));
         }
