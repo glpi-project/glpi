@@ -107,7 +107,7 @@
                             aria-expanded="{{ is_expanded ? 'true' : 'false' }}"
                             data-glpi-destination-click-on-space {# Simulate how space would behave in a button instead of a div #}
                         >
-                            <i class="{{ concrete_destination.getIcon() }}"></i>
+                            <i class="{{ concrete_destination ? concrete_destination.getIcon() : '' }}"></i>
                             <span
                                 class="m-0 lh-base fw-normal glpi-form-destination-name"
                             >
