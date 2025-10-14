@@ -232,7 +232,6 @@ class ItemVirtualMachine extends CommonDBChild
                     ],
                     'entries' => $entries,
                     'total_number' => count($entries),
-                    'filtered_number' => count($entries),
                 ]);
             }
         }
@@ -342,7 +341,6 @@ class ItemVirtualMachine extends CommonDBChild
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
         ]);
     }
 

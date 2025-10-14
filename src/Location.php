@@ -581,7 +581,6 @@ class Location extends CommonTreeDropdown
             ],
             'entries' => $entries,
             'total_number' => $number,
-            'filtered_number' => $number,
             'showmassiveactions' => false,
         ]);
 

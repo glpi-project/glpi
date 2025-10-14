@@ -327,7 +327,6 @@ class IPAddress extends CommonDBChild
             ],
             'entries' => $entries,
             'total_number' => $total_number,
-            'filtered_number' => $total_number,
             'showmassiveactions' => false,
         ]);
     }

@@ -522,7 +522,6 @@ class Budget extends CommonDropdown
             ],
             'entries' => $entries,
             'total_number' => $total_count,
-            'filtered_number' => $total_count,
             'showmassiveactions' => false,
         ]);
 
@@ -645,7 +644,6 @@ class Budget extends CommonDropdown
             ],
             'footer_class' => 'fw-bold',
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => false,
         ]);
 

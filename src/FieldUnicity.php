@@ -580,7 +580,6 @@ class FieldUnicity extends CommonDropdown
             'columns' => $columns,
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => false,
         ]);
     }

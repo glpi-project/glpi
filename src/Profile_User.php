@@ -224,7 +224,6 @@ class Profile_User extends CommonDBRelation
             ],
             'entries' => $entries,
             'total_number' => $total_num,
-            'filtered_number' => $total_num,
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed'    => min($_SESSION['glpilist_limit'], count($entries)),
@@ -417,7 +416,6 @@ TWIG, $avatar_params) . $username;
                 'name' => 'raw_html',
             ],
             'total_number' => $total_count,
-            'filtered_number' => $total_count,
             'entries' => $entries,
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
@@ -611,7 +609,6 @@ TWIG, $avatar_params) . $username;
                 'name' => 'raw_html',
             ],
             'total_number' => $total_count,
-            'filtered_number' => $total_count,
             'entries' => $entries,
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
