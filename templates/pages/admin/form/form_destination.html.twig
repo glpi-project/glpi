@@ -86,7 +86,9 @@
     {% else %}
         <section class="accordion mt-4" id="glpi-destinations-accordion" aria-label="{{ __("Form destinations") }}">
             {% for destination in destinations %}
+                {% set is_expanded = false %}
                 {% if destinations|length == 1 %}
+                    {% set is_expanded = true %}
                     {% set active_destination = destination.getID() %}
                 {% endif %}
                 {% set concrete_destination = destination.getConcreteDestinationItem() %}
@@ -97,12 +99,12 @@
                 >
                     <div class="accordion-header">
                         <div
-                            class="accordion-button collapsed"
+                            class="accordion-button {{ is_expanded ? '' : 'collapsed' }}"
                             role="button"
                             tabindex="0"
                             data-bs-toggle="collapse"
                             data-bs-target="#glpi-destinations-accordion-collapse-{{ rand }}-{{ loop.index }}"
-                            aria-expanded="false"
+                            aria-expanded="{{ is_expanded ? 'true' : 'false' }}"
                             data-glpi-destination-click-on-space {# Simulate how space would behave in a button instead of a div #}
                         >
                             <i class="{{ concrete_destination.getIcon() }}"></i>
@@ -141,12 +143,20 @@
                     </div>
                     <div
                         id="glpi-destinations-accordion-collapse-{{ rand }}-{{ loop.index }}"
-                        class="accordion-collapse collapse"
+                        class="accordion-collapse collapse {{ is_expanded ? 'show' : '' }}"
                         data-bs-parent="#glpi-destinations-accordion"
                         data-form="{{ form.getID() }}"
                         data-form-destination="{{ destination.getID() }}"
                     >
                         <div class="accordion-body p-0">
+                            {% if is_expanded %}
+                                {{ include('pages/admin/form/form_destination_form.html.twig', {
+                                    destination,
+                                    form,
+                                    can_update,
+                                    concrete_destination,
+                                }) }}
+                            {% endif %}
                         </div>
                     </div>
                 </section>
@@ -157,10 +167,10 @@
 
 <script>
     import("/js/modules/Forms/DestinationAccordionController.js").then(function (module) {
-        new module.GlpiFormDestinationAccordionController();
+        const accordionController = new module.GlpiFormDestinationAccordionController();
 
         {% if active_destination %}
-            document.querySelector('.destination-{{ active_destination }} .accordion-button').click();
+            accordionController.triggerWatchers();
         {% endif %}
     })
 </script>

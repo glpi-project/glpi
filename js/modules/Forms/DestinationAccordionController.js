@@ -38,6 +38,11 @@ export class GlpiFormDestinationAccordionController
         this.#watchForAccordionToggle();
     }
 
+    triggerWatchers() {
+        new GlpiFormDestinationAutoConfigController();
+        new GlpiFormDestinationConditionController();
+    }
+
     #watchForAccordionToggle() {
         const accordionWrapper = document.querySelector('#glpi-destinations-accordion');
 
@@ -59,8 +64,7 @@ export class GlpiFormDestinationAccordionController
             $(accordionItemContent).html(content);
 
             // We trigger the watcher
-            new GlpiFormDestinationAutoConfigController();
-            new GlpiFormDestinationConditionController();
+            this.triggerWatchers();
         });
     }
 }
