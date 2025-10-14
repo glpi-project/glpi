@@ -59,41 +59,12 @@ final class GetDestinationFormController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        $twig_params = [
+        $twig = TemplateRenderer::getInstance()->render('pages/admin/form/form_destination_form.html.twig', [
             'destination' => $destination,
             'form' => $destination->getForm(),
             'can_update' => FormDestination::canUpdate(),
             'concrete_destination' => $destination->getConcreteDestinationItem(),
-        ];
-
-        // language=Twig
-        $twig = TemplateRenderer::getInstance()->renderFromStringTemplate(
-            <<<TWIG
-            <form id="form-destination-{{ destination.getID() }}">
-                <div class="overflow-x-hidden px-4">
-                    {{ concrete_destination.renderConfigForm(
-                        form,
-                        destination,
-                        destination.getConfig(),
-                    )|raw }}
-                    {% if concrete_destination.useDefaultConfigLayout() and can_update %}
-                        <div class="mt-3 mb-3">
-                            {{ include('pages/admin/form/form_destination_actions.html.twig', {
-                                form: form,
-                                destination: destination
-                            }, with_context = false) }}
-                        </div>
-                    {% endif %}
-                </div>
-
-                {# Hidden values #}
-                <input type="hidden" name="id" value="{{ destination.getID() }}"/>
-                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
-            </form>
-        TWIG,
-            $twig_params
-        );
-
+        ]);
         return new Response($twig);
     }
 }
