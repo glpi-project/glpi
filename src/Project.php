@@ -1178,7 +1178,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         $user = new User();
 
         foreach ($data as &$entry) {
-            $item->getFromDB($entry['item_id']);
+            $item->getFromDB($entry['id']);
             $entry['name'] = $item->getLink();
             $entry['status'] = [
                 'content' => Dropdown::getDropdownName('glpi_projectstates', $item->fields['projectstates_id']),
