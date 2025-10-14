@@ -47,6 +47,7 @@ use Safe\Exceptions\FilesystemException;
 use Session;
 use Symfony\Component\HttpFoundation\Response;
 use Toolbox;
+use wapmorgan\UnifiedArchive\Abilities;
 use wapmorgan\UnifiedArchive\Drivers\Basic\BasicDriver;
 use wapmorgan\UnifiedArchive\Exceptions\ArchiveExtractionException;
 use wapmorgan\UnifiedArchive\Formats;
@@ -210,7 +211,7 @@ class Controller extends CommonGLPI
 
         // extract the archive
         $type = Formats::detectArchiveFormat($dest);
-        $driver = $type ? Formats::getFormatDriver($type) : null;
+        $driver = $type ? Formats::getFormatDriver($type, [Abilities::OPEN]) : null;
         if ($driver === null) {
             Session::addMessageAfterRedirect(
                 htmlescape(sprintf(__('Plugin archive format is not supported by your system : %s.'), $type)),
