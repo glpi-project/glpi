@@ -214,7 +214,8 @@ class Controller extends CommonGLPI
             // @phpstan-ignore argument.type (see https://github.com/wapmorgan/UnifiedArchive/pull/54)
             ? Formats::getFormatDriver($format, [Abilities::OPEN, Abilities::EXTRACT_CONTENT])
             : null;
-        if (!($driver instanceof BasicDriver)) {
+
+        if (!is_a($driver, BasicDriver::class, true)) {
             Session::addMessageAfterRedirect(
                 htmlescape(sprintf(__('Plugin archive format is not supported by your system : %s.'), $format)),
                 false,
