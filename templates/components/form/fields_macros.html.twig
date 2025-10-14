@@ -808,8 +808,9 @@
    {% if not options.include_field %}
       {{ field }}
    {% else %}
-      {% set id    = (options.id ?? '')|length > 0 and options.id != '%id%' ? options.id : (name|safe_dom_id ~ '_' ~ options.rand) %}
-      {% set field = field|replace({'%id%': id}) %}
+      {% set id    = ((options.id ?? '')|length > 0 and options.id != '%id%' ? options.id : (name ~ '_' ~ options.rand))|safe_dom_id %}
+      {# `\u0025id\u0025` is the escaped JS form of `%id%` #}
+      {% set field = field|replace({'%id%': id, '\\u0025id\\u0025': id}) %}
       {% set add_field_html = options.add_field_html|length > 0 ? options.add_field_html : '' %}
 
       {% if not options.fields_template.isHiddenField(name)|default(false) %}
