@@ -687,7 +687,7 @@ PLAINTEXT;
                 'item_id' => $project->getID(),
                 'id' => $subproject->getID(),
                 'itemtype' => \Project::class,
-            ]
+            ],
         ];
         $entries = \Project::getDatatableEntries($entries_to_fetch);
         $this->assertCount(1, $entries);
@@ -701,7 +701,7 @@ PLAINTEXT;
                 'item_id' => $project->getID(),
                 'id' => $itil_project->getID(),
                 'itemtype' => \Itil_Project::class,
-            ]
+            ],
         ];
         $entries = \Project::getDatatableEntries($entries_to_fetch);
         $this->assertCount(1, $entries);
