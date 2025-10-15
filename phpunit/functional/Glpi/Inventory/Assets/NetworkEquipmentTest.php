@@ -4733,4 +4733,125 @@ Build Time: Mon Jan 27 10:02:25 2020</COMMENTS>
             'method' => 'netdiscovery',
         ])));
     }
+
+    public function testNeedToBeUpdatedFromDiscovery()
+    {
+        // Test 1: No IPs in discovery data - should return false
+        $val = new \stdClass();
+        $networkEquipment = $this->createItem(\NetworkEquipment::class, [
+            'name' => 'Test Network Equipment 1',
+            'entities_id' => 0
+        ]);
+
+        $result = \Glpi\Inventory\Asset\NetworkEquipment::needToBeUpdatedFromDiscovery($networkEquipment, $val);
+        $this->assertFalse($result, 'Should return false when no IPs in discovery data');
+
+        // Test 2: Discovery IP already exists on equipment - should return false
+        $val->ips = ['192.168.1.100'];
+        
+        // Create a network port with this IP
+        $networkPort = $this->createItem(\NetworkPort::class, [
+            'itemtype' => 'NetworkEquipment',
+            'items_id' => $networkEquipment->getID(),
+            'name' => 'Management',
+            'is_dynamic' => 1
+        ]);
+
+        // Add IP address to the port
+        $networkname = $this->createItem(\NetworkName::class, [
+            'itemtype' => 'NetworkPort',
+            'items_id' => $networkPort->getID()
+        ]);
+
+        $this->createItem(\IPAddress::class, [
+            'itemtype' => 'NetworkName',
+            'items_id' => $networkname->getID(),
+            'mainitems_id' => $networkEquipment->getID(),
+            'mainitemtype' => 'NetworkEquipment',
+            'name' => '192.168.1.100',
+            'is_dynamic' => 1
+        ]);
+
+        $result = \Glpi\Inventory\Asset\NetworkEquipment::needToBeUpdatedFromDiscovery($networkEquipment, $val);
+        $this->assertFalse($result, 'Should return false when discovery IP already exists on equipment');
+
+        // Test 3: Discovery IP is new (not on equipment) - should return true
+        $val->ips = ['192.168.1.200'];
+        
+        $result = \Glpi\Inventory\Asset\NetworkEquipment::needToBeUpdatedFromDiscovery($networkEquipment, $val);
+        $this->assertTrue($result, 'Should return true when discovery IP is new and not on equipment');
+
+        // Test 4: Multiple IPs - one exists, one is new - should return true
+        $val->ips = ['192.168.1.100', '192.168.1.201'];
+        
+        $result = \Glpi\Inventory\Asset\NetworkEquipment::needToBeUpdatedFromDiscovery($networkEquipment, $val);
+        $this->assertTrue($result, 'Should return true when at least one discovery IP is new');
+
+        // Test 5: Multiple IPs - all exist - should return false
+        // Add the second IP
+        $this->createItem(\IPAddress::class, [
+            'itemtype' => 'NetworkName',
+            'items_id' => $networkname->getID(),
+            'mainitems_id' => $networkEquipment->getID(),
+            'mainitemtype' => 'NetworkEquipment',
+            'name' => '192.168.1.201',
+            'is_dynamic' => 1
+        ]);
+
+        $result = \Glpi\Inventory\Asset\NetworkEquipment::needToBeUpdatedFromDiscovery($networkEquipment, $val);
+        $this->assertFalse($result, 'Should return false when all discovery IPs exist on equipment');
+
+        // Test 6: Blacklisted IP - should return false
+        $this->createItem(\Blacklist::class, [
+            'type' => \Blacklist::IP,
+            'name' => '10.0.0.1',
+            'value' => '10.0.0.1'
+        ]);
+
+        $val->ips = ['10.0.0.1'];
+        $result = \Glpi\Inventory\Asset\NetworkEquipment::needToBeUpdatedFromDiscovery($networkEquipment, $val);
+        $this->assertFalse($result, 'Should return false when discovery IP is blacklisted');
+
+        // Test 7: Mix of blacklisted and new IP - should return true (new IP not blacklisted)
+        $val->ips = ['10.0.0.1', '192.168.1.250'];
+        $result = \Glpi\Inventory\Asset\NetworkEquipment::needToBeUpdatedFromDiscovery($networkEquipment, $val);
+        $this->assertTrue($result, 'Should return true when at least one IP is new and not blacklisted');
+
+        // Test 8: Non-dynamic IP should not prevent update - should return true
+        $networkEquipment2 = $this->createItem(\NetworkEquipment::class, [
+            'name' => 'Test Network Equipment 2',
+            'entities_id' => 0
+        ]);
+
+        $networkPort2 = $this->createItem(\NetworkPort::class, [
+            'itemtype' => 'NetworkEquipment',
+            'items_id' => $networkEquipment2->getID(),
+            'name' => 'Management',
+            'is_dynamic' => 0  // Not dynamic
+        ]);
+
+        $networkname2 = $this->createItem(\NetworkName::class, [
+            'itemtype' => 'NetworkPort',
+            'items_id' => $networkPort2->getID()
+        ]);
+
+        // Add a non-dynamic IP
+        $this->createItem(\IPAddress::class, [
+            'itemtype' => 'NetworkName',
+            'items_id' => $networkname2->getID(),
+            'mainitems_id' => $networkEquipment2->getID(),
+            'mainitemtype' => 'NetworkEquipment',
+            'name' => '192.168.2.100',
+            'is_dynamic' => 0  // Not dynamic
+        ]);
+
+        $val->ips = ['192.168.2.100'];
+        $result = \Glpi\Inventory\Asset\NetworkEquipment::needToBeUpdatedFromDiscovery($networkEquipment2, $val);
+        $this->assertTrue($result, 'Should return true when IP exists but is not dynamic');
+
+        // Test 9: Empty IPs array - should return false
+        $val->ips = [];
+        $result = \Glpi\Inventory\Asset\NetworkEquipment::needToBeUpdatedFromDiscovery($networkEquipment2, $val);
+        $this->assertFalse($result, 'Should return false when IPs array is empty');
+    }
 }
