@@ -50,3 +50,4 @@ phpstan.neon
 /.phpunit.result.cache
 /phpunit/files/
 /phpunit/config
+/.dump/
