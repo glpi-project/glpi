@@ -41,7 +41,7 @@
 
 <div class="d-flex">
     <div class="col-12">
-        {% if display_dates %}
+        {% if display_dates and params.itemtype != 'PlanningExternalEventTemplate' %}
             {{ fields.datetimeField('plan[begin]', begin, __('Start date'), {
                 maybeempty: false,
                 canedit: true,
