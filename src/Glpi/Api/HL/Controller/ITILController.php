@@ -721,7 +721,24 @@ final class ITILController extends AbstractController
                         - 4: Refused
                         EOT,
                 ],
-                'approval_followup' => self::getDropdownTypeSchema(class: ITILFollowup::class, full_schema: 'Followup') + ['x-version-introduced' => '2.1.0'],
+                'approval_followup' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_OBJECT,
+                    'x-field' => ITILFollowup::getForeignKeyField(),
+                    'x-itemtype' => ITILFollowup::class,
+                    'x-join' => [
+                        'table' => ITILFollowup::getTable(),
+                        'fkey' => ITILFollowup::getForeignKeyField(),
+                        'field' => 'id',
+                    ],
+                    'properties' => [
+                        'id' => [
+                            'type' => Doc\Schema::TYPE_INTEGER,
+                            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                            'readOnly' => true,
+                        ],
+                    ],
+                ],
                 'date_creation' => [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_STRING,
