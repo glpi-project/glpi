@@ -178,6 +178,8 @@ final class ITILController extends AbstractController
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'content' => ['type' => Doc\Schema::TYPE_STRING],
+                'user_recipient' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_recipient', full_schema: 'User') + ['x-version-introduced' => '2.1.0'],
+                'user_editor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_lastupdater', full_schema: 'User') + ['x-version-introduced' => '2.1.0'],
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'category' => self::getDropdownTypeSchema(class: ITILCategory::class, full_schema: 'ITILCategory'),
                 'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location'),
@@ -203,6 +205,35 @@ final class ITILController extends AbstractController
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_solve' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'solvedate',
+                ],
+                'date_close' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'closedate',
+                ],
+                'global_validation' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'enum' => [
+                        CommonITILValidation::NONE,
+                        CommonITILValidation::WAITING,
+                        CommonITILValidation::ACCEPTED,
+                        CommonITILValidation::REFUSED,
+                    ],
+                    'description' => <<<EOT
+                        The global status of the validation.
+                        - 1: None
+                        - 2: Waiting
+                        - 3: Accepted
+                        - 4: Refused
+                        EOT,
+                ],
             ],
         ];
 
@@ -462,11 +493,46 @@ final class ITILController extends AbstractController
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'readOnly' => true,
                 ],
+                'uuid' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::PATTERN_UUIDV4,
+                    'readOnly' => true,
+                ],
                 'content' => ['type' => Doc\Schema::TYPE_STRING],
                 'is_private' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
                 'user_editor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_editor', full_schema: 'User'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User') + ['x-version-introduced' => '2.1.0'],
+                'group_tech' => self::getDropdownTypeSchema(class: Group::class, field: 'groups_id_tech', full_schema: 'Group') + ['x-version-introduced' => '2.1.0'],
+                'date' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                ],
+                'date_creation' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                ],
+                'date_mod' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                ],
                 'duration' => ['type' => Doc\Schema::TYPE_INTEGER, 'x-field' => 'actiontime'],
+                'planned_begin' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'begin',
+                ],
+                'planned_end' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'end',
+                ],
                 'state' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'enum' => [
@@ -595,6 +661,11 @@ final class ITILController extends AbstractController
                 'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
                 'user_editor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_editor', full_schema: 'User'),
                 'request_type' => self::getDropdownTypeSchema(RequestType::class, full_schema: 'RequestType'),
+                'date' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                ],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'timeline_position' => [
@@ -633,6 +704,39 @@ final class ITILController extends AbstractController
                 'content' => ['type' => Doc\Schema::TYPE_STRING],
                 'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
                 'user_editor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_editor', full_schema: 'User'),
+                'approver' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_approval', full_schema: 'User') + ['x-version-introduced' => '2.1.0'],
+                'status' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'enum' => [
+                        CommonITILValidation::NONE,
+                        CommonITILValidation::WAITING,
+                        CommonITILValidation::ACCEPTED,
+                        CommonITILValidation::REFUSED,
+                    ],
+                    'description' => <<<EOT
+                        The status of the solution.
+                        - 1: None
+                        - 2: Waiting
+                        - 3: Accepted
+                        - 4: Refused
+                        EOT,
+                ],
+                'approval_followup' => self::getDropdownTypeSchema(class: ITILFollowup::class, full_schema: 'Followup') + ['x-version-introduced' => '2.1.0'],
+                'date_creation' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                ],
+                'date_mod' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                ],
+                'date_approval' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                ],
             ],
         ];
 
