@@ -36,7 +36,6 @@
 {# @var \Glpi\Form\Desination\FormDestination          destinations #}
 {# @var int|null                                       active_destination #}
 {# @var boolean                                        can_update #}
-
 <div class="py-2 px-3">
     <h2 class="d-flex">
         <i class="{{ icon }} me-2"></i>
@@ -86,11 +85,11 @@
     {% else %}
         <section class="accordion mt-4" id="glpi-destinations-accordion" aria-label="{{ __("Form destinations") }}">
             {% for destination in destinations %}
-                {% set is_expanded = active_destination == destination.getID() or destinations|length == 1 %}
+                {% set is_expanded = active_destination == destination.getID() %}
                 {% set concrete_destination = destination.getConcreteDestinationItem() %}
                 {% set rand = random() %}
                 <section
-                    class="accordion-item"
+                    class="accordion-item destination-{{ destination.getID() }}"
                     aria-label="{{ destination.getName() }}"
                 >
                     <div class="accordion-header">
@@ -141,29 +140,18 @@
                         id="glpi-destinations-accordion-collapse-{{ rand }}-{{ loop.index }}"
                         class="accordion-collapse collapse {{ is_expanded ? 'show' : '' }}"
                         data-bs-parent="#glpi-destinations-accordion"
+                        data-form="{{ form.getID() }}"
+                        data-form-destination="{{ destination.getID() }}"
                     >
                         <div class="accordion-body p-0">
-                            <form id="form-destination-{{ destination.getID() }}">
-                                <div class="overflow-x-hidden px-4">
-                                    {{ concrete_destination.renderConfigForm(
-                                        form,
-                                        destination,
-                                        destination.getConfig(),
-                                    )|raw }}
-                                    {% if concrete_destination.useDefaultConfigLayout() and can_update %}
-                                        <div class="mt-3 mb-3">
-                                            {{ include('pages/admin/form/form_destination_actions.html.twig', {
-                                                form: form,
-                                                destination: destination
-                                            }, with_context = false) }}
-                                        </div>
-                                    {% endif %}
-                                </div>
-
-                                {# Hidden values #}
-                                <input type="hidden" name="id" value="{{ destination.getID() }}"/>
-                                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
-                            </form>
+                            {% if is_expanded %}
+                                {{ include('pages/admin/form/form_destination_form.html.twig', {
+                                    destination,
+                                    form,
+                                    can_update,
+                                    concrete_destination,
+                                }) }}
+                            {% endif %}
                         </div>
                     </div>
                 </section>
@@ -173,11 +161,11 @@
 </div>
 
 <script>
-    import("/js/modules/Forms/DestinationAutoConfigController.js").then((m) => {
-        new m.GlpiFormDestinationAutoConfigController();
-    });
+    import("/js/modules/Forms/DestinationAccordionController.js").then(function (module) {
+        const accordionController = new module.GlpiFormDestinationAccordionController();
 
-    import("/js/modules/Forms/DestinationConditionController.js").then((m) => {
-        new m.GlpiFormDestinationConditionController();
-    });
+        {% if active_destination %}
+            accordionController.triggerWatchers();
+        {% endif %}
+    })
 </script>
