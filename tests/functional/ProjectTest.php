@@ -670,4 +670,43 @@ PLAINTEXT;
         $has_my_tasks_link = in_array(ProjectTask::getMyTasksURL(false), $menu_links, true);
         $this->assertTrue($has_my_tasks_link);
     }
+
+    public function testGetDatatableEntries()
+    {
+        //create a project
+        $project = $this->createItem(\Project::class, ['name' => __FUNCTION__ . ' project']);
+        //create linked sub project
+        $subproject = $this->createItem(\Project::class, ['name' => __FUNCTION__ . ' sub project', 'projects_id' => $project->getID()]);
+        //create ticket
+        $ticket = $this->createItem(\Ticket::class, ['name' => __FUNCTION__ . ' ticket', 'content' => __FUNCTION__ . ' ticket']);
+        $itil_project = $this->createItem(\Itil_Project::class, ['itemtype' => Ticket::class, 'projects_id' => $project->getID(), 'items_id' => $ticket->getID()]);
+
+        //get projects datatable entries to retrieve sub projects - see Project::showChildren()
+        $entries_to_fetch = [
+            [
+                'item_id' => $project->getID(),
+                'id' => $subproject->getID(),
+                'itemtype' => \Project::class,
+            ],
+        ];
+        $entries = \Project::getDatatableEntries($entries_to_fetch);
+        $this->assertCount(1, $entries);
+        $this->assertEquals($subproject->getID(), $entries[0]['id']);
+        $this->assertEquals($project->getID(), $entries[0]['item_id']);
+        $this->assertEquals($subproject->fields['name'], $entries[0]['name']);
+
+        //get projects datatable entries to retrieve ITIL projects - see Itil_Project::showForItil()
+        $entries_to_fetch = [
+            [
+                'item_id' => $project->getID(),
+                'id' => $itil_project->getID(),
+                'itemtype' => \Itil_Project::class,
+            ],
+        ];
+        $entries = \Project::getDatatableEntries($entries_to_fetch);
+        $this->assertCount(1, $entries);
+        $this->assertEquals($project->getID(), $entries[0]['item_id']);
+        $this->assertEquals($itil_project->getID(), $entries[0]['id']);
+        $this->assertEquals($project->fields['name'], $entries[0]['name']);
+    }
 }

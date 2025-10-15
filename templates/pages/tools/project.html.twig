@@ -88,7 +88,8 @@
                 onclick: "$(`select[name='percent_done']`).prop('disabled', $(`input[type='checkbox'][name='auto_percent_done']`).prop('checked'));"
             },
         })),
-        helper: __('When automatic computation is active, percentage is computed based on the average of all child project and task percent done.')
+        helper: __('When automatic computation is active, percentage is computed based on the average of all child project and task percent done.'),
+        disabled: item.fields['auto_percent_done'] == 1
     })) }}
 
     {{ fields.dropdownField('ProjectType', 'projecttypes_id', item.fields['projecttypes_id'], _n('Type', 'Types', 1), field_options) }}
