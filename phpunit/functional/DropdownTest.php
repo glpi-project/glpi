@@ -2153,7 +2153,7 @@ class DropdownTest extends DbTestCase
             'computer' => false,
             'monitor' => false,
             'printer' => false,
-            'connected_monitor' => false
+            'connected_monitor' => false,
         ];
 
         foreach ($result['results'] as $group) {
