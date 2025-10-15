@@ -37,10 +37,6 @@
 {# @var int|null                                       active_destination #}
 {# @var boolean                                        can_update #}
 
-{% if destinations|length == 1 %}
-    {% set active_destination = (destinations|first).getID() %}
-{% endif %}
-
 <div class="py-2 px-3">
     <h2 class="d-flex">
         <i class="{{ icon }} me-2"></i>
