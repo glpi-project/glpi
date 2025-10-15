@@ -682,6 +682,10 @@ TWIG, $twig_params);
                 'text' => __('Name'),
                 'type' => StringType::class,
             ],
+            'template_name'   => [
+                'text' => __('Template name'),
+                'type' => StringType::class,
+            ],
             'states_id'        => [
                 'text' => __('Status'),
                 'type' => DropdownType::class,
