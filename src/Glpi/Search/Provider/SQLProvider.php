@@ -493,6 +493,18 @@ final class SQLProvider implements SearchProviderInterface
             case "glpi_tickettasks.state":
             case "glpi_changetasks.state":
             case "glpi_problemtasks.state":
+            case "glpi_tickettasks.is_private":
+            case "glpi_changetasks.is_private":
+            case "glpi_problemtasks.is_private":
+            case "glpi_tickettasks.actiontime":
+            case "glpi_changetasks.actiontime":
+            case "glpi_problemtasks.actiontime":
+            case "glpi_tickettasks.begin":
+            case "glpi_changetasks.begin":
+            case "glpi_problemtasks.begin":
+            case "glpi_tickettasks.end":
+            case "glpi_changetasks.end":
+            case "glpi_problemtasks.end":
                 if (is_subclass_of($itemtype, CommonITILObject::class)) {
                     // force ordering by date desc
                     $SELECT = [
@@ -6409,6 +6421,11 @@ final class SQLProvider implements SearchProviderInterface
             $unit = $so['unit'];
         }
 
+        $separate      = Search::LBBR;
+        if (isset($so['splititems']) && $so['splititems']) {
+            $separate = Search::LBHR;
+        }
+
         // Preformat items
         if (isset($so["datatype"])) {
             switch ($so["datatype"]) {
@@ -6417,10 +6434,6 @@ final class SQLProvider implements SearchProviderInterface
 
                     $out           = "";
                     $count_display = 0;
-                    $separate      = Search::LBBR;
-                    if (isset($so['splititems']) && $so['splititems']) {
-                        $separate = Search::LBHR;
-                    }
 
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
                         if (isset($data[$ID][$k]['id'])) {
@@ -6455,11 +6468,6 @@ final class SQLProvider implements SearchProviderInterface
                     return $out;
 
                 case "text":
-                    $separate = Search::LBBR;
-                    if (isset($so['splititems']) && $so['splititems']) {
-                        $separate = Search::LBHR;
-                    }
-
                     $out           = '';
                     $count_display = 0;
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
@@ -6511,9 +6519,9 @@ final class SQLProvider implements SearchProviderInterface
                             is_null($data[$ID][$k]['name'])
                             && isset($so['emptylabel']) && $so['emptylabel']
                         ) {
-                            $out .= (empty($out) ? '' : Search::LBBR) . \htmlescape($so['emptylabel']);
+                            $out .= (empty($out) ? '' : $separate) . \htmlescape($so['emptylabel']);
                         } else {
-                            $out .= (empty($out) ? '' : Search::LBBR) . \htmlescape(Html::convDate($data[$ID][$k]['name']));
+                            $out .= (empty($out) ? '' : $separate) . \htmlescape(Html::convDate($data[$ID][$k]['name']));
                         }
                     }
                     $out = "<span class='text-nowrap'>$out</span>";
@@ -6526,9 +6534,9 @@ final class SQLProvider implements SearchProviderInterface
                             is_null($data[$ID][$k]['name'])
                             && isset($so['emptylabel']) && $so['emptylabel']
                         ) {
-                            $out .= (empty($out) ? '' : Search::LBBR) . \htmlescape($so['emptylabel']);
+                            $out .= (empty($out) ? '' : $separate) . \htmlescape($so['emptylabel']);
                         } else {
-                            $out .= (empty($out) ? '' : Search::LBBR) . \htmlescape(Html::convDateTime($data[$ID][$k]['name']));
+                            $out .= (empty($out) ? '' : $separate) . \htmlescape(Html::convDateTime($data[$ID][$k]['name']));
                         }
                     }
                     $out = "<span class='text-nowrap'>$out</span>";
@@ -6546,8 +6554,10 @@ final class SQLProvider implements SearchProviderInterface
 
                     $out   = '';
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
-                        $out .= (empty($out) ? '' : '<br>')
-                            . \htmlescape(
+                        if ($k > 0) {
+                            $out .= $separate;
+                        }
+                        $out .= \htmlescape(
                                 Html::timestampToString(
                                     $data[$ID][$k]['name'],
                                     $withseconds,
@@ -6563,12 +6573,12 @@ final class SQLProvider implements SearchProviderInterface
                     $count_display = 0;
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
                         if ($count_display) {
-                            $out .= Search::LBBR;
+                            $out .= $separate;
                         }
                         $count_display++;
                         if (!empty($data[$ID][$k]['name'])) {
                             $mail = \htmlescape($data[$ID][$k]['name']);
-                            $out .= (empty($out) ? '' : Search::LBBR);
+                            $out .= (empty($out) ? '' : $separate);
                             $out .= "<a href='mailto:" . $mail . "'>" . $mail;
                             $out .= "</a>";
                         }
@@ -6597,7 +6607,7 @@ final class SQLProvider implements SearchProviderInterface
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
                         if (strlen(trim((string) $data[$ID][$k]['name'])) > 0) {
                             if ($count_display) {
-                                $out .= Search::LBBR;
+                                $out .= $separate;
                             }
                             $count_display++;
                             if (
@@ -6619,7 +6629,7 @@ final class SQLProvider implements SearchProviderInterface
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
                         if (strlen(trim((string) $data[$ID][$k]['name'])) > 0) {
                             if ($count_display) {
-                                $out .= Search::LBBR;
+                                $out .= $separate;
                             }
                             $count_display++;
                             if (
@@ -6641,7 +6651,7 @@ final class SQLProvider implements SearchProviderInterface
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
                         if (strlen(trim((string) $data[$ID][$k]['name'])) > 0) {
                             if ($count_display) {
-                                $out .= Search::LBBR;
+                                $out .= $separate;
                             }
                             $count_display++;
                             $out .= Dropdown::getYesNo($data[$ID][$k]['name']);
@@ -6658,7 +6668,7 @@ final class SQLProvider implements SearchProviderInterface
                             continue;
                         }
                         if ($count_display) {
-                            $out .= Search::LBBR;
+                            $out .= $separate;
                         }
                         $count_display++;
                         if ($obj = getItemForItemtype($itemtype_name)) {
@@ -6706,10 +6716,6 @@ final class SQLProvider implements SearchProviderInterface
         // Manage items with need group by / group_concat
         $out           = "";
         $count_display = 0;
-        $separate      = Search::LBBR;
-        if (isset($so['splititems']) && $so['splititems']) {
-            $separate = Search::LBHR;
-        }
 
         $aggregate = (isset($so['aggregate']) && $so['aggregate']);
 
