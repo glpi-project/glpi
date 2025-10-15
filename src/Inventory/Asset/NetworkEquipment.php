@@ -471,12 +471,11 @@ class NetworkEquipment extends MainAsset
                     $tmp['mainitemtype'] = $item::getType();
                     $tmp['is_dynamic']   = 1;
                     $tmp['name']         = $ipaddress->getTextual();
-                    if (count($ipaddress->find(Sanitizer::sanitize($tmp))) > 0) {
-                        return false;
+                    if (!count($ipaddress->find(Sanitizer::sanitize($tmp))) > 0) {
+                        return true;
                     }
                 }
             }
-            return true;
         }
         return false;
     }
