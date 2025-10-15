@@ -79,7 +79,7 @@
       } %}
 
       {{ fields.smallTitle(__('General')) }}
-      {{ alerts.alert('warning', '', __('If a location has child locations, the child locations will not be transferred with the parent to avoid visibility and hierarchy issues.')) }}
+      {{ alerts.alert('warning', '', __('Child locations will not be transferred with the parent to avoid visibility and hierarchy issues.')) }}
       {{ fields.dropdownArrayField('keep_history', item.fields['keep_history'], keep_options, __('Historical'), {
          readonly: not can_change_options,
       }) }}
