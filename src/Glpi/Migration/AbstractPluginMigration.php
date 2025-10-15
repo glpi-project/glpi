@@ -34,7 +34,9 @@
 
 namespace Glpi\Migration;
 
+use CommonDBChild;
 use CommonDBConnexity;
+use CommonDBRelation;
 use CommonDBTM;
 use Config;
 use DBmysql;
@@ -433,6 +435,29 @@ abstract class AbstractPluginMigration
                 }
 
                 $copied_item = new $itemtype();
+
+                if (
+                    (
+                        \is_a($itemtype, CommonDBChild::class, true)
+                        && $itemtype::$mustBeAttached
+                        && !$itemtype::getItemFromArray($itemtype::$itemtype, $itemtype::$items_id, $related_item_data)
+                    )
+                    || (
+                        \is_a($itemtype, CommonDBRelation::class, true)
+                        && $itemtype::$mustBeAttached_1
+                        && !$itemtype::getItemFromArray($itemtype::$itemtype_1, $itemtype::$items_id_1, $related_item_data)
+                    )
+                    || (
+                        \is_a($itemtype, CommonDBRelation::class, true)
+                        && $itemtype::$mustBeAttached_2
+                        && !$itemtype::getItemFromArray($itemtype::$itemtype_2, $itemtype::$items_id_2, $related_item_data)
+                    )
+                ) {
+                    // A mandatory linked item does not exist, meaning that the original item was an orphaned relation.
+                    // Do not try to copy it.
+                    continue;
+                }
+
                 if ($copied_item->getFromDbByCrit($related_item_data)) {
                     // The related item already exists, do not create a new one to prevent duplicates.
                     continue;
