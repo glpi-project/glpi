@@ -3153,7 +3153,7 @@ class AuthLDAP extends CommonDBTM
 
         // Only use STARTTLS if TLS is requested and the connection is not already using LDAPS
         // LDAPS (ldaps://) is already encrypted, so ldap_start_tls() should not be called
-        $scheme = parse_url($host, PHP_URL_SCHEME);
+        $scheme = parse_url($ldapuri, PHP_URL_SCHEME);
         $is_ldaps = ($scheme !== null && strtolower($scheme) === 'ldaps');
         if ($use_tls && !$is_ldaps) {
             if (!@ldap_start_tls($ds)) {
