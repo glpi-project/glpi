@@ -471,7 +471,7 @@ class NetworkEquipment extends MainAsset
                         'mainitems_id' => $item->fields['id'],
                         'mainitemtype' => $item::getType(),
                         'is_dynamic' => 1,
-                        'name' => $ipaddress->getTextual()
+                        'name' => $ipaddress->getTextual(),
                     ];
                     if (countElementsInTable(\IPAddress::getTable(), Sanitizer::sanitize($criteria)) === 0) {
                         return true;
