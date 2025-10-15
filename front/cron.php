@@ -61,9 +61,6 @@ if (PHP_SAPI === 'cli') {
 
     require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-    $kernel = new Kernel();
-    $kernel->boot();
-
     // Handle the `--debug` argument
     $debug = array_search('--debug', $_SERVER['argv']);
     if ($debug) {
@@ -72,6 +69,9 @@ if (PHP_SAPI === 'cli') {
         $_SERVER['argv'] = array_values($_SERVER['argv']);
         $_SERVER['argc']--;
     }
+
+    $kernel = new Kernel();
+    $kernel->boot();
 
     if ($is_superuser) {
         // Keep this warning after the GLPI Kernel boot to prevent issues with session path definition
