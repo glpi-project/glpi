@@ -1153,18 +1153,6 @@ class GLPIDashboard {
         }
     }
 
-    easter() {
-        const items = $(this.elem_id+" .grid-stack .grid-stack-item .card");
-
-        setInterval(() => {
-            const color = "#"+((1<<24)*Math.random()|0).toString(16);
-            const no_item = Math.floor(Math.random() * items.length);
-            const item = items[no_item];
-            $(item).css('background-color', color);
-        }, 10);
-    }
-
-
     /**
      * init filters of the dashboard
      */
