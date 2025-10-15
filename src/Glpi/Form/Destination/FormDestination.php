@@ -110,12 +110,17 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
             return false;
         }
 
+        $destinations = $item->getDestinations();
+
+        $active = null;
         // Reopen the active accordion item
         if (isset($_SESSION['active_destination'])) {
             $active = $_SESSION['active_destination'];
             unset($_SESSION['active_destination']);
         } else {
-            $active = null;
+            if (count($destinations) === 1) {
+                $active = $destinations[array_key_first($destinations)]->getID();
+            }
         }
 
         $manager = FormDestinationManager::getInstance();
@@ -125,7 +130,7 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
             'icon'                         => self::getIcon(),
             'form'                         => $item,
             'default_destination_object'   => $manager->getDefaultType(),
-            'destinations'                 => $item->getDestinations(),
+            'destinations'                 => $destinations,
             'available_destinations_types' => $manager->getDestinationTypesDropdownValues(),
             'active_destination'           => $active,
             'can_update'                   => self::canUpdate(),
