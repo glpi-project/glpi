@@ -167,7 +167,7 @@ final class ErrorHandler extends BaseErrorHandler
         foreach (self::getOutputHandlers() as $handler) {
             if ($handler->canOutput()) {
                 $handler->displayErrorMessage($error_label, $message, $log_level);
-                break; // Only one display per handler
+                break; // Stop after the first available handler
             }
         }
     }

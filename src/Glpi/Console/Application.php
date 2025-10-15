@@ -55,6 +55,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Toolbox;
@@ -108,6 +109,12 @@ class Application extends BaseApplication
     public function __construct(private Kernel $kernel)
     {
         global $DB, $CFG_GLPI;
+
+        // preconfigure the output to correctly handle kernel boot errors
+        $input = new ArgvInput();
+        $output = new ConsoleOutput();
+        parent::configureIO($input, $output);
+        ConsoleErrorDisplayHandler::setOutput($output);
 
         parent::__construct('GLPI CLI', GLPI_VERSION);
 
