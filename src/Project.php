@@ -1151,7 +1151,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     }
 
     /**
-     * @param array{item_id: int, id: int}[] $data
+     * @param array{item_id: int, id: int, itemtype: class-string<CommonDBTM>}[] $data
      *        - item_id: The ID of the Project
      *        - id: The ID of the entry in the datatable (probably the ID of the link between the Project and another item)
      *        - itemtype: The type of the entry in the datatable (Project or a link itemtype between the Project and another item)
