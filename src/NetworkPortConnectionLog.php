@@ -46,6 +46,7 @@ class NetworkPortConnectionLog extends CommonDBChild
     public static $itemtype        = 'NetworkPort';
     public static $items_id        = 'networkports_id';
     public $dohistory              = false;
+    public static $mustBeAttached  = false;
 
     public static function getTypeName($nb = 0)
     {
@@ -116,7 +117,7 @@ class NetworkPortConnectionLog extends CommonDBChild
                     htmlescape(trim($cport->fields['name']) === '' ? __('Without name') : $cport->fields['name'])
                 );
 
-                $entries = [
+                $entries[] = [
                     'status' => '<i class="ti ' . $co_class . '" title="' . $title . '"></i>',
                     'date' => $row['date'],
                     'connected_item' => sprintf(
