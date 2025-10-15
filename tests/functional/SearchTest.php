@@ -52,6 +52,7 @@ use Group_User;
 use Location;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
+use Session;
 use TaskCategory;
 use Ticket;
 use User;
@@ -2725,7 +2726,7 @@ class SearchTest extends DbTestCase
         $displaypref = new \DisplayPreference();
         $input = [
             'itemtype'  => 'Computer',
-            'users_id'  => \Session::getLoginUserID(),
+            'users_id'  => Session::getLoginUserID(),
             'num'       => 49, //Computer groups_id_tech SO
         ];
         $this->assertGreaterThan(0, $displaypref->add($input));
@@ -4871,7 +4872,7 @@ class SearchTest extends DbTestCase
         $displaypref = new \DisplayPreference();
         $input = [
             'itemtype'  => 'Ticket',
-            'users_id'  => \Session::getLoginUserID(),
+            'users_id'  => Session::getLoginUserID(),
             'num'       => 55, //Ticket glpi_ticketvalidations.status
         ];
         $this->assertGreaterThan(
@@ -6326,6 +6327,30 @@ class SearchTest extends DbTestCase
 
         $this->assertTrue(isset($result['data']['rows'][0]['Computer_3']['displayname']));
         $this->assertEquals('_sublocation04', $result['data']['rows'][0]['Computer_3']['displayname']);
+    }
+
+    /**
+     * Validate that the `notcontains` search on "user" itemlink column does not fail.
+     */
+    public function testUsernameNotContainsSearch(): void
+    {
+        $this->login();
+
+        $result = \Search::getDatas(
+            Computer::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => '24', // users_id_tech
+                        'searchtype' => 'notcontains',
+                        'value'      => 'whatever',
+                    ],
+                ],
+            ]
+        );
+
+        // we just check that the search did not failed with an exception
+        $this->assertTrue(isset($result['data']['totalcount']));
     }
 }
 
