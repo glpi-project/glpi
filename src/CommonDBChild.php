@@ -440,6 +440,11 @@ abstract class CommonDBChild extends CommonDBConnexity
             static::$mustBeAttached
             && !$this->getItemFromArray(static::$itemtype, static::$items_id, $input)
         ) {
+            Session::addMessageAfterRedirect(
+                __s('Parent item is invalid.'),
+                true,
+                ERROR
+            );
             return false;
         }
 
@@ -460,6 +465,7 @@ abstract class CommonDBChild extends CommonDBConnexity
                 static::$items_id,
             ])
         ) {
+            // A message is already added by `self::checkAttachedItemChangesAllowed()`
             return false;
         }
 
