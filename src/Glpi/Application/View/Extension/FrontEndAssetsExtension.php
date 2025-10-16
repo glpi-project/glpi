@@ -293,14 +293,54 @@ class FrontEndAssetsExtension extends AbstractExtension
             $cfg_glpi += Config::getSafeConfig(true);
         }
 
+        // Common config keys used by front-end code.
+        // These will be immediately available while others will be lazy-loaded via a proxy handler.
+        $common_configs = [
+            'root_doc', 'url_base', 'planning_begin', 'planning_end', 'planning_work_days', 'toast_location',
+            'is_demo_dashboards', 'priority_1', 'priority_2', 'priority_3', 'priority_4', 'priority_5', 'priority_6',
+            'date_format'
+        ];
+        $common_config = array_filter(
+            $cfg_glpi,
+            static fn($key) => in_array($key, $common_configs, true),
+            ARRAY_FILTER_USE_KEY
+        );
+        $common_config = json_encode($common_config);
+
         $plugins_path = \array_combine(
             Plugin::getPlugins(),
-            \array_map(fn(string $plugin_key) => "/plugins/{$plugin_key}", Plugin::getPlugins())
+            \array_map(static fn(string $plugin_key) => "/plugins/{$plugin_key}", Plugin::getPlugins())
         );
+        $plugins_path = json_encode($plugins_path);
 
-        $script = sprintf('window.CFG_GLPI = %s;', json_encode($cfg_glpi, JSON_PRETTY_PRINT))
-            . "\n"
-            . sprintf('window.GLPI_PLUGINS_PATH = %s;', json_encode($plugins_path, JSON_PRETTY_PRINT));
+        $script = <<<JS
+            window.CFG_GLPI = new Proxy($common_config, {
+                get: (target, prop, receiver) => {
+                    if (prop in target) {
+                        return Reflect.get(target, prop, receiver);
+                    }
+                    // Note there was a request for a config not in the common set to indicate a potential optimization
+                    console.debug("Lazy loading a CFG_GLPI property that was not available by default: " + prop + '. This may be an optimization opportunity.');
+                    // Hydrate the missing config via a synchronous AJAX call
+                    $.ajax({
+                        type: 'GET',
+                        url: CFG_GLPI.root_doc + '/ajax/config.php',
+                        async: false,
+                        dataType: 'json',
+                        data: { key: prop },
+                        success: (value) => {
+                            target[prop] = value;
+                        },
+                        error: () => {
+                            console.warn('Failed to load config property ' + prop);
+                            target[prop] = undefined;
+                        }
+                    });
+                    return Reflect.get(target, prop, receiver);
+                }
+            });
+            window.GLPI_PLUGINS_PATH = $plugins_path;
+JS;
 
         return Html::scriptBlock($script);
     }
