@@ -95,8 +95,8 @@ class AssetParameters extends AbstractParameters
         if ($model_class !== null) {
             $model_fk = $model_class::getForeignKeyField();
             if (isset($fields[$model_fk]) && $fields[$model_fk] > 0) {
-                $model = new $model_class();
-                if ($model->getFromDB($fields[$model_fk])) {
+                $model = getItemForItemtype($model_class);
+                if ($model && $model->getFromDB($fields[$model_fk])) {
                     $values['model'] = $model->getName();
                 }
             }
