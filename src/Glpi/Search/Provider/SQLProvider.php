@@ -6558,12 +6558,12 @@ final class SQLProvider implements SearchProviderInterface
                             $out .= $separate;
                         }
                         $out .= \htmlescape(
-                                Html::timestampToString(
-                                    $data[$ID][$k]['name'],
-                                    $withseconds,
-                                    $withdays
-                                )
-                            );
+                            Html::timestampToString(
+                                $data[$ID][$k]['name'],
+                                $withseconds,
+                                $withdays
+                            )
+                        );
                     }
                     $out = "<span class='text-nowrap'>$out</span>";
                     return $out;
