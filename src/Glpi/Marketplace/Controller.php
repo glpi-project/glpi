@@ -180,14 +180,11 @@ class Controller extends CommonGLPI
         $plugin   = $api->getPlugin($this->plugin_key, true);
 
         if ($version === null) {
-            $url = $plugin['installation_url'] ?? "";
+            $url = $plugin['installation_url'] ?? null;
+            $version = $plugin['version'] ?? null;
         } else {
             $specific_version = self::getPluginVersionInfo($plugin, $version);
-            $url = null;
-            if ($specific_version !== null) {
-                $url = $specific_version['download_url'] ?? null;
-            }
-            if ($url === null) {
+            if ($specific_version === null) {
                 Session::addMessageAfterRedirect(
                     __s('Cannot find the specified version of the plugin.'),
                     false,
@@ -195,11 +192,12 @@ class Controller extends CommonGLPI
                 );
                 return false;
             }
+            $url = $specific_version['download_url'] ?? null;
         }
-        $filename = basename(parse_url($url, PHP_URL_PATH));
-        $dest     = GLPI_TMP_DIR . '/' . $filename;
 
-        if (!$api->downloadArchive($url, $dest, $this->plugin_key)) {
+        $dest = $url !== null ? GLPI_TMP_DIR . '/' . basename(parse_url($url, PHP_URL_PATH)) : null;
+
+        if ($url === null || !$api->downloadArchive($url, $dest, $this->plugin_key)) {
             Session::addMessageAfterRedirect(
                 __s('Unable to download plugin archive.'),
                 false,
@@ -248,16 +246,35 @@ class Controller extends CommonGLPI
 
         $plugin_inst = new Plugin();
 
-        if (
-            $plugin_inst->getFromDBbyDir($this->plugin_key)
-            && !in_array($plugin_inst->fields['state'], [Plugin::ANEW, Plugin::NOTINSTALLED, Plugin::NOTUPDATED])
-        ) {
-            // Plugin was already existing, make it "not updated" before checking its state
-            // to prevent message like 'Plugin "xxx" version changed. It has been deactivated as its update process has to be launched.'.
-            $plugin_inst->update([
-                'id'    => $plugin_inst->fields['id'],
-                'state' => Plugin::NOTUPDATED,
+        if ($plugin_inst->getFromDBbyDir($this->plugin_key)) {
+            // Plugin exists, update its version/state
+            $update_input = [
+                'id'      => $plugin_inst->fields['id'],
+                'version' => $version,
+            ];
+            if (!in_array($plugin_inst->fields['state'], [Plugin::ANEW, Plugin::NOTINSTALLED, Plugin::NOTUPDATED])) {
+                // Plugin was already existing, make it "not updated" before checking its state
+                // to prevent message like 'Plugin "xxx" version changed. It has been deactivated as its update process has to be launched.'.
+                $update_input['state'] = Plugin::NOTUPDATED;
+            }
+
+            $plugin_inst->update($update_input);
+        } else {
+            // Plugin does not exist, initialize it with known information
+            $plugin_inst->add([
+                'name'      => $plugin['name'] ?? $this->plugin_key,
+                'directory' => $this->plugin_key,
+                'version'   => $version,
+                'state'     => Plugin::NOTINSTALLED,
+                'author'    => implode(' ', array_column($plugin['authors'] ?? [], 'name')),
+                'homepage'  => $plugin['homepage_url'] ?? '',
+                'license'   => $plugin['license'] ?? '',
             ]);
+        }
+
+        if ($plugin_inst->isPluginsExecutionSuspended()) {
+            // Plugins execution is suspended, so we stop here to not include any plugin file.
+            return true;
         }
 
         $plugin_inst->checkPluginState($this->plugin_key);
