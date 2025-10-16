@@ -80,8 +80,9 @@ class UpdateLocalPluginsCommand extends AbstractCommand
 
         // Update all plugins sources, to be sure that all plugins have the latest version.
         $updated_plugins = [];
-        foreach ($plugins_manager->getFilesystemPluginKeys() as $plugin_key) {
-            $local_version  = $local_versions[$plugin_key] ?? '0.0.0';
+        foreach ($local_versions as $plugin_key => $local_version) {
+            $exists_on_filesystem = $plugins_manager->isLoadable($plugin_key);
+
             $latest_version = $plugins_api->getPlugin($plugin_key)['version'] ?? null;
 
             if ($latest_version === null) {
@@ -93,7 +94,7 @@ class UpdateLocalPluginsCommand extends AbstractCommand
                 continue;
             }
 
-            if (\version_compare($local_version, $latest_version, '<') === false) {
+            if ($exists_on_filesystem && \version_compare($local_version, $latest_version, '<') === false) {
                 $msg = '<comment>'
                     . sprintf(__('Plugin "%s" is already up-to-date.'), $plugin_key)
                     . '</comment>'
