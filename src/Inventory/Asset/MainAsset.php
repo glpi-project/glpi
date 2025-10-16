@@ -861,12 +861,16 @@ abstract class MainAsset extends InventoryAsset
             ) {
                 //only update autoupdatesystems_id, last_inventory_update, snmpcredentials_id
                 $input = $this->handleInput($val, $this->item);
-                $this->item->update(Sanitizer::sanitize(['id' => $input['id'],
+                $update_data = [
+                    'id' => $input['id'],
                     'autoupdatesystems_id'  => $input['autoupdatesystems_id'],
                     'last_inventory_update' => $input['last_inventory_update'],
-                    'snmpcredentials_id'    => $input['snmpcredentials_id'],
                     'is_dynamic'            => true,
-                ]));
+                ];
+                if (isset($input['snmpcredentials_id'])) {
+                    $update_data['snmpcredentials_id'] = $input['snmpcredentials_id'];
+                }
+                $this->item->update(Sanitizer::sanitize($update_data));
                 //add rule matched log
                 $rulesmatched = new RuleMatchedLog();
                 $inputrulelog = [
