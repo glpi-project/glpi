@@ -604,7 +604,8 @@ JAVASCRIPT;
         $config = $config->allowAttribute('class', '*');
         $config = $config->allowAttribute('style', '*');
         // Allow border attribute for table tags
-        $config = $config->allowAttribute('border', ['table', 'td', 'th']);
+        $config = $config->allowAttribute('bgcolor', ['table', 'tr', 'th', 'td']);
+        $config = $config->allowAttribute('border', ['table']);
 
 
         if (GLPI_ALLOW_IFRAME_IN_RICH_TEXT) {

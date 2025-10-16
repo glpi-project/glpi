@@ -384,6 +384,37 @@ HTML,
             'encode_output_entities' => false,
             'expected_result'        => '<p class="myclass">Test</p><div class="alert">/!\ Warning !</div>',
         ];
+
+        // Table border attribute should be preserved (fix #21489)
+        yield '`border` attribute on table should be preserved' => [
+            'content'                => '<table border="1"><tr><td>Cell content</td></tr></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table border="1"><tr><td>Cell content</td></tr></table>',
+        ];
+
+        yield '`bgcolor` attribute on table elements should be preserved' => [
+            'content'                => '<table bgcolor="#f0f0f0"><tr bgcolor="#ffffff"><th bgcolor="#cccccc">Header</th><td bgcolor="#eeeeee">Data</td></tr></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table bgcolor="#f0f0f0"><tr bgcolor="#ffffff"><th bgcolor="#cccccc">Header</th><td bgcolor="#eeeeee">Data</td></tr></table>',
+        ];
+
+        yield 'table with both `border` and `bgcolor` attributes' => [
+            'content'                => '<table border="1" bgcolor="#ffffff"><tr><td>Test</td></tr></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table border="1" bgcolor="#ffffff"><tr><td>Test</td></tr></table>',
+        ];
+
+        yield '`border` attribute should be removed from non-table elements' => [
+            'content'                => '<div border="1">This is a div</div><p border="1">This is a paragraph</p>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<div>This is a div</div><p>This is a paragraph</p>',
+        ];
+
+        yield 'complex table with multiple presentation attributes (fix #21489)' => [
+            'content'                => '<table border="1" cellspacing="0" cellpadding="5" bgcolor="#f5f5f5"><thead><tr bgcolor="#cccccc"><th>Column 1</th><th>Column 2</th></tr></thead><tbody><tr><td bgcolor="#ffffff">Data 1</td><td>Data 2</td></tr></tbody></table>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<table border="1" cellspacing="0" cellpadding="5" bgcolor="#f5f5f5"><thead><tr bgcolor="#cccccc"><th>Column 1</th><th>Column 2</th></tr></thead><tbody><tr><td bgcolor="#ffffff">Data 1</td><td>Data 2</td></tr></tbody></table>',
+        ];
     }
 
     #[DataProvider('getSafeHtmlProvider')]
