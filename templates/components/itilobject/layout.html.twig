@@ -55,8 +55,28 @@
     {% set right_side_cls = right_expanded_cls %}
 {% endif %}
 
+<script type="module">
+    import("{{ js_path('js/modules/ITIL/Timeline/TimelineView.js') }}").then((m) => {
+        const timelineView = new m.TimelineView(
+            $('#itil-object-container'),
+            {#
+            Prevent WAF (Web Application Firewall) from triggering on item.fields['content']
 
-<div id="itil-object-container" class="mt-n1 {{ collapsed_cls }} {{ expanded_cls }}">
+            The WAF rule (signature ID 010000092) is triggered due to the presence of HTML-encoded content
+            in the 'content' field, which is falsely identified as a potential XSS injection.
+            This key is removed from the AJAX payload to avoid false positives.
+
+            Reference: https://github.com/glpi-project/glpi/pull/10300
+            #}
+            {{ item.fields|filter((value, key) => key != 'content')|json_encode|raw }}
+        );
+        $('#itil-object-container').data('timeline-view', timelineView);
+    });
+</script>
+<div id="itil-object-container" class="mt-n1 {{ collapsed_cls }} {{ expanded_cls }}"
+     data-entities-id="{{ entities_id|json_encode }}" data-itiltemplate-class="{{ itiltemplate.getType() }}"
+     data-itiltemplate-id="{{ itiltemplate.getID() }}" data-itemtype="{{ item.getType() }}"
+     data-items-id="{{ item.getID() }}">
 
    {% if item.isNewItem() and not template_preview %}
       {{ include('components/itilobject/mainform_open.html.twig') }}
