@@ -168,23 +168,30 @@ final class DirectAccess implements ControlTypeInterface
         DirectAccessConfig $config,
         FormAccessParameters $parameters,
     ): bool {
-        // Note: it is easy to validate the token when an user is accesing the
-        // form for the first time through the /Form/Render/{id} page as the
-        // link will contain the token as a GET parameter.
-        // However, for any subsequent AJAX requests, the token is not present
-        // in the URL. Therefore, we must rely on the session to store the token
-        // and validate it on each request.
+        // Try to read the token from the query parameters
         $token = $parameters->getUrlParameters()['token'] ?? null;
-        if ($token === null) {
-            $session_token = $_SESSION['helpdesk_form_access_control'][$form->getId()] ?? null;
-            if ($session_token === null) {
-                return false;
-            } else {
-                $token = $session_token;
-            }
-        } else {
-            $_SESSION['helpdesk_form_access_control'][$form->getId()] = $token;
+        $has_supplied_token = $token !== null;
+
+        // Read context about current and previous pages
+        $current_route_path = $_SERVER['REQUEST_URI'] ?? "";
+
+        // If the token is missing, we'll also look for the token in the session.
+        // This make it more convenient for AJAX calls from the form renderer
+        // as they don't need to manually include the token.
+        if (
+            !$has_supplied_token
+            // Disable this fallback for the service catalog, as it is out of scope
+            && !str_contains($current_route_path, "ServiceCatalog")
+        ) {
+            $token = $_SESSION['helpdesk_form_access_control'][$form->getId()] ?? null;
         }
+
+        if ($token === null) {
+            return false;
+        }
+
+        // Store token in the session so it can be reused for AJAX requests
+        $_SESSION['helpdesk_form_access_control'][$form->getId()] = $token;
 
         return hash_equals($config->getToken(), $token);
     }
