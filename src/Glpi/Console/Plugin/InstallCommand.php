@@ -46,8 +46,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use User;
 
-use function Safe\ob_end_clean;
-use function Safe\ob_start;
 use function Safe\opendir;
 
 class InstallCommand extends AbstractPluginCommand
@@ -337,26 +335,6 @@ class InstallCommand extends AbstractPluginCommand
             );
             $this->output->writeln(
                 '<error>' . $message . '</error>',
-                OutputInterface::VERBOSITY_QUIET
-            );
-            return false;
-        }
-
-        // Check prerequisites
-        ob_start();
-        $requirements_met = $plugin->checkVersions($directory);
-        $check_function   = 'plugin_' . $directory . '_check_prerequisites';
-        if ($requirements_met && function_exists($check_function)) {
-            $requirements_met = $check_function();
-        }
-        $ob_contents = ob_get_contents();
-        ob_end_clean();
-        if (!$requirements_met) {
-            $this->output->writeln(
-                [
-                    '<error>' . sprintf(__('Plugin "%s" requirements not met.'), $directory) . '</error>',
-                    '<error>' . $ob_contents . '</error>',
-                ],
                 OutputInterface::VERBOSITY_QUIET
             );
             return false;
