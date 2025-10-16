@@ -603,7 +603,7 @@ JAVASCRIPT;
         // Allow class and style attribute
         $config = $config->allowAttribute('class', '*');
         $config = $config->allowAttribute('style', '*');
-        // Allow border attribute for table tags
+        // Allow layout attribute for table tags
         $config = $config->allowAttribute('bgcolor', ['table', 'tr', 'th', 'td']);
         $config = $config->allowAttribute('border', ['table']);
 
