@@ -720,7 +720,7 @@ class Plugin extends CommonDBTM
     /**
      * Return plugin keys corresponding to directories found in filesystem.
      */
-    public function getFilesystemPluginKeys(): array
+    protected function getFilesystemPluginKeys(): array
     {
         if ($this->filesystem_plugin_keys === null) {
             $this->filesystem_plugin_keys = [];

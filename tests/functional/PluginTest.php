@@ -1123,7 +1123,7 @@ PHP
                  * Similar to the parent method but without using `getRealPath` due to vfsStream limitations.
                  * @return array
                  */
-                public function getFilesystemPluginKeys(): array
+                protected function getFilesystemPluginKeys(): array
                 {
                     $filesystem_plugin_keys = [];
                     $plugins_directories = new AppendIterator();
