@@ -4102,6 +4102,540 @@ HTML;
     }
 
     /**
+     * Get dropdown for user devices with lazy loading support
+     *
+     * @param array   $post Posted values
+     * @param boolean $json Encode to JSON, default to true
+     *
+     * @return string|array
+     */
+    public static function getDropdownMyDevices($post, $json = true)
+    {
+        global $CFG_GLPI, $DB;
+
+        // Basic security check - ensure user is logged in
+        Session::checkLoginUser();
+
+        $userID = $post['userID'] ?? Session::getLoginUserID();
+        $entity_restrict = Session::getMatchingActiveEntities($post['entity_restrict'] ?? -1);
+        $used = $post['used'] ?? [];
+
+        if (!isset($post['page'])) {
+            $post['page']       = 1;
+            $post['page_limit'] = $CFG_GLPI['dropdown_max'];
+        }
+
+        $start = intval(($post['page'] - 1) * $post['page_limit']);
+        $limit = intval($post['page_limit']);
+
+        $results = [];
+        $count = 0;
+
+        // Display first if no search and first page
+        if ($post['page'] == 1 && empty($post['searchText'])) {
+            $results[] = [
+                'id' => '',
+                'text' => Dropdown::EMPTY_VALUE,
+            ];
+        }
+
+        // Check helpdesk hardware permission
+        if (!($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] & 2 ** Ticket::HELPDESK_MY_HARDWARE)) {
+            $ret['count']   = $count;
+            $ret['results'] = $results;
+            return ($json === true) ? json_encode($ret) : $ret;
+        }
+
+        $all_devices = [];
+
+        // My items
+        foreach ($CFG_GLPI["linkuser_types"] as $itemtype) {
+            if (
+                ($item = getItemForItemtype($itemtype))
+                && Ticket::isPossibleToAssignType($itemtype)
+            ) {
+                $itemtable = getTableForItemType($itemtype);
+
+                $criteria = [
+                    'FROM'   => $itemtable,
+                    'WHERE'  => [
+                        'users_id' => $userID,
+                    ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict, $item->maybeRecursive())
+                    + $itemtype::getSystemSQLCriteria(),
+                    'ORDER'  => $item->getNameField(),
+                ];
+
+                if ($item->maybeDeleted()) {
+                    $criteria['WHERE']['is_deleted'] = 0;
+                }
+                if ($item->maybeTemplate()) {
+                    $criteria['WHERE']['is_template'] = 0;
+                }
+                if (in_array($itemtype, $CFG_GLPI["helpdesk_visible_types"])) {
+                    $criteria['WHERE']['is_helpdesk_visible'] = 1;
+                }
+
+                // Add search criteria
+                if (isset($post['searchText']) && !empty($post['searchText'])) {
+                    $search = ['LIKE', Search::makeTextSearchValue($post['searchText'])];
+                    $orwhere = [];
+                    if ($item->isField('name')) {
+                        $orwhere['name'] = $search;
+                    }
+                    if ($DB->fieldExists($itemtable, "serial")) {
+                        $orwhere['serial'] = $search;
+                    }
+                    if ($DB->fieldExists($itemtable, "otherserial")) {
+                        $orwhere['otherserial'] = $search;
+                    }
+                    if (is_numeric($post['searchText'])) {
+                        $orwhere['id'] = $post['searchText'];
+                    }
+                    if (!empty($orwhere)) {
+                        $criteria['WHERE'][] = ['OR' => $orwhere];
+                    }
+                }
+
+                $iterator = $DB->request($criteria);
+                foreach ($iterator as $data) {
+                    if (!isset($used[$itemtype]) || !in_array($data["id"], $used[$itemtype])) {
+                        $output = $data[$item->getNameField()];
+                        if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
+                            $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
+                        }
+
+                        if ($itemtype != 'Software') {
+                            if (!empty($data['serial'])) {
+                                $output = sprintf(__('%1$s - %2$s'), $output, $data['serial']);
+                            }
+                            if (!empty($data['otherserial'])) {
+                                $output = sprintf(__('%1$s - %2$s'), $output, $data['otherserial']);
+                            }
+                        }
+
+                        if (!isset($all_devices[$itemtype])) {
+                            $all_devices[$itemtype] = [
+                                'text' => sprintf(__('My %s'), $item->getTypeName(Session::getPluralNumber())),
+                                'children' => [],
+                                'itemtype' => $itemtype,
+                            ];
+                        }
+
+                        $all_devices[$itemtype]['children'][] = [
+                            'id' => $itemtype . "_" . $data["id"],
+                            'text' => $output,
+                            'itemtype' => $itemtype,
+                            'items_id' => $data["id"],
+                        ];
+                    }
+                }
+            }
+        }
+
+        // My group items
+        if (Session::haveRight("show_group_hardware", 1)) {
+            $iterator = $DB->request([
+                'SELECT'    => [
+                    'glpi_groups_users.groups_id',
+                    'glpi_groups.name',
+                ],
+                'FROM'      => 'glpi_groups_users',
+                'LEFT JOIN' => [
+                    'glpi_groups'  => [
+                        'ON' => [
+                            'glpi_groups_users'  => 'groups_id',
+                            'glpi_groups'        => 'id',
+                        ],
+                    ],
+                ],
+                'WHERE'     => [
+                    'glpi_groups_users.users_id'  => $userID,
+                ] + getEntitiesRestrictCriteria('glpi_groups', '', $entity_restrict, true),
+            ]);
+
+            $groups = [];
+            if (count($iterator)) {
+                foreach ($iterator as $data) {
+                    $a_groups = getAncestorsOf("glpi_groups", $data["groups_id"]);
+                    $a_groups[$data["groups_id"]] = $data["groups_id"];
+                    $groups = array_merge($groups, $a_groups);
+                }
+
+                foreach ($CFG_GLPI["linkgroup_types"] as $itemtype) {
+                    if (
+                        ($item = getItemForItemtype($itemtype))
+                        && Ticket::isPossibleToAssignType($itemtype)
+                    ) {
+                        $itemtable  = getTableForItemType($itemtype);
+                        $criteria = [
+                            'FROM'   => $itemtable,
+                            'WHERE'  => [
+                                'groups_id' => $groups,
+                            ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict, $item->maybeRecursive())
+                            + $itemtype::getSystemSQLCriteria(),
+                            'ORDER'  => $item->getNameField(),
+                        ];
+
+                        if ($item->maybeDeleted()) {
+                            $criteria['WHERE']['is_deleted'] = 0;
+                        }
+                        if ($item->maybeTemplate()) {
+                            $criteria['WHERE']['is_template'] = 0;
+                        }
+
+                        // Add search criteria
+                        if (isset($post['searchText']) && !empty($post['searchText'])) {
+                            $search = ['LIKE', Search::makeTextSearchValue($post['searchText'])];
+                            $orwhere = [];
+                            if ($item->isField('name')) {
+                                $orwhere['name'] = $search;
+                            }
+                            if ($DB->fieldExists($itemtable, "serial")) {
+                                $orwhere['serial'] = $search;
+                            }
+                            if ($DB->fieldExists($itemtable, "otherserial")) {
+                                $orwhere['otherserial'] = $search;
+                            }
+                            if (is_numeric($post['searchText'])) {
+                                $orwhere['id'] = $post['searchText'];
+                            }
+                            if (!empty($orwhere)) {
+                                $criteria['WHERE'][] = ['OR' => $orwhere];
+                            }
+                        }
+
+                        $iterator = $DB->request($criteria);
+                        if (count($iterator)) {
+                            foreach ($iterator as $data) {
+                                if (!isset($used[$itemtype]) || !in_array($data["id"], $used[$itemtype])) {
+                                    $output = '';
+                                    if (isset($data["name"])) {
+                                        $output = $data["name"];
+                                    }
+                                    if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
+                                        $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
+                                    }
+
+                                    if (isset($data['serial'])) {
+                                        $output = sprintf(__('%1$s - %2$s'), $output, $data['serial']);
+                                    }
+                                    if (isset($data['otherserial'])) {
+                                        $output = sprintf(__('%1$s - %2$s'), $output, $data['otherserial']);
+                                    }
+
+                                    if (!isset($all_devices[$itemtype])) {
+                                        $all_devices[$itemtype] = [
+                                            'text' => sprintf(__('My groups %s'), $item->getTypeName(Session::getPluralNumber())),
+                                            'children' => [],
+                                            'itemtype' => $itemtype,
+                                        ];
+                                    }
+
+                                    $all_devices[$itemtype]['children'][] = [
+                                        'id' => $itemtype . "_" . $data["id"],
+                                        'text' => $output,
+                                        'itemtype' => $itemtype,
+                                        'items_id' => $data["id"],
+                                    ];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Get software linked to all owned items
+        if (in_array('Software', $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
+            $software_helpdesk_types = array_intersect($CFG_GLPI['software_types'], $_SESSION["glpiactiveprofile"]["helpdesk_item_type"]);
+
+            // First, collect all user's items to find software linked to them
+            $user_items = [];
+            foreach ($CFG_GLPI["linkuser_types"] as $itemtype) {
+                if (
+                    ($item = getItemForItemtype($itemtype))
+                    && Ticket::isPossibleToAssignType($itemtype)
+                    && in_array($itemtype, $software_helpdesk_types)
+                ) {
+                    $itemtable = getTableForItemType($itemtype);
+                    $criteria = [
+                        'SELECT' => ['id'],
+                        'FROM'   => $itemtable,
+                        'WHERE'  => [
+                            'users_id' => $userID,
+                        ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict, $item->maybeRecursive())
+                        + $itemtype::getSystemSQLCriteria(),
+                    ];
+
+                    if ($item->maybeDeleted()) {
+                        $criteria['WHERE']['is_deleted'] = 0;
+                    }
+                    if ($item->maybeTemplate()) {
+                        $criteria['WHERE']['is_template'] = 0;
+                    }
+
+                    $iterator = $DB->request($criteria);
+                    foreach ($iterator as $data) {
+                        if (!isset($used[$itemtype]) || !in_array($data["id"], $used[$itemtype])) {
+                            $user_items[$itemtype][] = $data["id"];
+                        }
+                    }
+                }
+            }
+
+            foreach ($software_helpdesk_types as $itemtype) {
+                if (isset($user_items[$itemtype]) && count($user_items[$itemtype])) {
+                    $criteria = [
+                        'SELECT'          => [
+                            'glpi_softwareversions.name AS version',
+                            'glpi_softwares.name AS name',
+                            'glpi_softwares.id',
+                        ],
+                        'DISTINCT'        => true,
+                        'FROM'            => 'glpi_items_softwareversions',
+                        'LEFT JOIN'       => [
+                            'glpi_softwareversions'  => [
+                                'ON' => [
+                                    'glpi_items_softwareversions' => 'softwareversions_id',
+                                    'glpi_softwareversions'       => 'id',
+                                ],
+                            ],
+                            'glpi_softwares'        => [
+                                'ON' => [
+                                    'glpi_softwareversions' => 'softwares_id',
+                                    'glpi_softwares'        => 'id',
+                                ],
+                            ],
+                        ],
+                        'WHERE'        => [
+                            'glpi_items_softwareversions.items_id' => $user_items[$itemtype],
+                            'glpi_items_softwareversions.itemtype' => $itemtype,
+                            'glpi_softwares.is_helpdesk_visible'   => 1,
+                        ] + getEntitiesRestrictCriteria('glpi_softwares', '', $entity_restrict),
+                        'ORDERBY'      => 'glpi_softwares.name',
+                    ];
+
+                    // Add search criteria
+                    if (isset($post['searchText']) && !empty($post['searchText'])) {
+                        $search = ['LIKE', Search::makeTextSearchValue($post['searchText'])];
+                        $orwhere = [
+                            'glpi_softwares.name' => $search,
+                            'glpi_softwareversions.name' => $search,
+                        ];
+                        if (is_numeric($post['searchText'])) {
+                            $orwhere['glpi_softwares.id'] = $post['searchText'];
+                        }
+                        $criteria['WHERE'][] = ['OR' => $orwhere];
+                    }
+
+                    $iterator = $DB->request($criteria);
+                    if (count($iterator)) {
+                        $item = new Software();
+                        foreach ($iterator as $data) {
+                            if (!isset($used['Software']) || !in_array($data["id"], $used['Software'])) {
+                                $output = $data["name"];
+                                $output = sprintf(
+                                    __('%1$s (%2$s)'),
+                                    $output,
+                                    sprintf(
+                                        __('%1$s: %2$s'),
+                                        __('version'),
+                                        $data["version"]
+                                    )
+                                );
+                                if ($_SESSION["glpiis_ids_visible"]) {
+                                    $output = sprintf(__('%1$s (%2$s)'), $output, $data["id"]);
+                                }
+
+                                if (!isset($all_devices['Software'])) {
+                                    $all_devices['Software'] = [
+                                        'text' => __('Installed software'),
+                                        'children' => [],
+                                        'itemtype' => 'Software',
+                                    ];
+                                }
+
+                                $all_devices['Software']['children'][] = [
+                                    'id' => "Software_" . $data["id"],
+                                    'text' => $output,
+                                    'itemtype' => 'Software',
+                                    'items_id' => $data["id"],
+                                ];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Get linked items to computers
+        $computer_items = [];
+        foreach ($CFG_GLPI["linkuser_types"] as $itemtype) {
+            if ($itemtype == 'Computer') {
+                $itemtable = getTableForItemType($itemtype);
+                $criteria = [
+                    'SELECT' => ['id'],
+                    'FROM'   => $itemtable,
+                    'WHERE'  => [
+                        'users_id' => $userID,
+                    ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict, true),
+                ];
+
+                $item = getItemForItemtype($itemtype);
+                if ($item->maybeDeleted()) {
+                    $criteria['WHERE']['is_deleted'] = 0;
+                }
+                if ($item->maybeTemplate()) {
+                    $criteria['WHERE']['is_template'] = 0;
+                }
+
+                $iterator = $DB->request($criteria);
+                foreach ($iterator as $data) {
+                    if (!isset($used[$itemtype]) || !in_array($data["id"], $used[$itemtype])) {
+                        $computer_items[] = $data["id"];
+                    }
+                }
+                break;
+            }
+        }
+
+        if (count($computer_items)) {
+            // Direct Connection
+            $connected_types = ['Monitor', 'Peripheral', 'Phone', 'Printer'];
+            foreach ($connected_types as $itemtype) {
+                if (
+                    in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
+                    && ($item = getItemForItemtype($itemtype))
+                ) {
+                    $itemtable = getTableForItemType($itemtype);
+                    $criteria = [
+                        'SELECT'          => "$itemtable.*",
+                        'DISTINCT'        => true,
+                        'FROM'            => 'glpi_assets_assets_peripheralassets',
+                        'LEFT JOIN'       => [
+                            $itemtable  => [
+                                'ON' => [
+                                    'glpi_assets_assets_peripheralassets' => 'items_id_peripheral',
+                                    $itemtable                            => 'id',
+                                ],
+                            ],
+                        ],
+                        'WHERE'           => [
+                            'glpi_assets_assets_peripheralassets.itemtype_peripheral' => $itemtype,
+                            'glpi_assets_assets_peripheralassets.itemtype_asset'      => Computer::class,
+                            'glpi_assets_assets_peripheralassets.items_id_asset'      => $computer_items,
+                        ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict),
+                        'ORDERBY'         => "$itemtable.name",
+                    ];
+
+                    if ($item->maybeDeleted()) {
+                        $criteria['WHERE']["$itemtable.is_deleted"] = 0;
+                    }
+                    if ($item->maybeTemplate()) {
+                        $criteria['WHERE']["$itemtable.is_template"] = 0;
+                    }
+
+                    // Add search criteria
+                    if (isset($post['searchText']) && !empty($post['searchText'])) {
+                        $search = ['LIKE', Search::makeTextSearchValue($post['searchText'])];
+                        $orwhere = [];
+                        if ($item->isField('name')) {
+                            $orwhere["$itemtable.name"] = $search;
+                        }
+                        if ($DB->fieldExists($itemtable, "serial")) {
+                            $orwhere["$itemtable.serial"] = $search;
+                        }
+                        if ($DB->fieldExists($itemtable, "otherserial")) {
+                            $orwhere["$itemtable.otherserial"] = $search;
+                        }
+                        if (is_numeric($post['searchText'])) {
+                            $orwhere["$itemtable.id"] = $post['searchText'];
+                        }
+                        if ($orwhere !== []) {
+                            $criteria['WHERE'][] = ['OR' => $orwhere];
+                        }
+                    }
+
+                    $iterator = $DB->request($criteria);
+                    if (count($iterator)) {
+                        foreach ($iterator as $data) {
+                            if (!isset($used[$itemtype]) || !in_array($data["id"], $used[$itemtype])) {
+                                $output = $data["name"];
+                                if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
+                                    $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
+                                }
+
+                                if (!empty($data['serial'])) {
+                                    $output = sprintf(__('%1$s - %2$s'), $output, $data['serial']);
+                                }
+                                if (!empty($data['otherserial'])) {
+                                    $output = sprintf(__('%1$s - %2$s'), $output, $data['otherserial']);
+                                }
+
+                                if (!isset($all_devices[$itemtype])) {
+                                    $all_devices[$itemtype] = [
+                                        'text' => sprintf(__('Connected %s'), $item->getTypeName(Session::getPluralNumber())),
+                                        'children' => [],
+                                        'itemtype' => $itemtype,
+                                    ];
+                                }
+
+                                $all_devices[$itemtype]['children'][] = [
+                                    'id' => $itemtype . "_" . $data["id"],
+                                    'text' => $output,
+                                    'itemtype' => $itemtype,
+                                    'items_id' => $data["id"],
+                                ];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Flatten all items with their group information for pagination
+        $all_items_flat = [];
+        foreach ($all_devices as $itemtype => $group) {
+            if (count($group['children']) > 0) {
+                foreach ($group['children'] as $child) {
+                    $all_items_flat[] = [
+                        'item' => $child,
+                        'group' => $itemtype,
+                        'group_text' => $group['text'],
+                    ];
+                }
+            }
+        }
+
+        // Apply pagination to the flat list
+        $paginated_items = array_slice($all_items_flat, $start, $limit);
+
+        // Rebuild hierarchical structure from paginated items
+        $paginated_groups = [];
+        foreach ($paginated_items as $item_info) {
+            $group_type = $item_info['group'];
+
+            if (!isset($paginated_groups[$group_type])) {
+                $paginated_groups[$group_type] = [
+                    'text' => $item_info['group_text'],
+                    'children' => [],
+                ];
+            }
+
+            $paginated_groups[$group_type]['children'][] = $item_info['item'];
+        }
+
+        // Convert to indexed array and merge with initial empty value
+        $results = array_merge($results, array_values($paginated_groups));
+        $count = count($paginated_items);
+
+        $ret['count']   = $count;
+        $ret['results'] = $results;
+
+        return ($json === true) ? json_encode($ret) : $ret;
+    }
+
+    /**
      * Get dropdown number
      *
      * @param array   $post Posted values

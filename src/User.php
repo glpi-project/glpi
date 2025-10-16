@@ -6745,4 +6745,30 @@ HTML;
 
         return $input;
     }
+
+    /**
+     * User has right for given module and right.
+     *
+     * @param string  $module Module to check
+     * @param integer $right  Right to check
+     * @param integer $entities_id Entity to check
+     *
+     * @return boolean|int
+     **/
+    public function hasRight($module, $right, $entities_id)
+    {
+        if (!$this->isNewItem()) {
+            $user_id = $this->getID();
+            $profiles = Profile_User::getUserProfiles($user_id);
+            foreach ($profiles as $profile_id) {
+                $profile = new Profile();
+                $profile->getFromDB($profile_id);
+                $profile->cleanProfile();
+                if ($profile->haveUserRight($user_id, $module, $right, $entities_id)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

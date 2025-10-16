@@ -831,7 +831,7 @@ class NetworkPort extends InventoryAsset
             foreach ($this->ports as $k => $val) {
                 $matches = [];
                 if (
-                    preg_match('@[\w\s+]*(\d+)[/:][\w]@', $val->name, $matches)
+                    preg_match('@[\w\s+]*(\d+)[/:][\w]@', $val->name ?? '', $matches)
                 ) {
                     //reset increment when name length differ
                     //Gi0/0 then Gi0/0/1, Gi0/0/2, Gi0/0/3

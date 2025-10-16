@@ -804,14 +804,27 @@ TWIG, $twig_params);
             $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]
             & 2 ** CommonITILObject::HELPDESK_MY_HARDWARE
         ) {
-            $my_devices = array_merge(
-                ['' => Dropdown::EMPTY_VALUE],
-                self::getMyDevices($userID, $entity_restrict)
-            );
-
             echo "<div id='tracking_my_devices' class='input-group mb-1'>";
             echo "<span class='input-group-text'>" . __s('My devices') . "</span>";
-            Dropdown::showFromArray('my_items', $my_devices, ['rand' => $rand]);
+
+            $field_id = Html::cleanId("dropdown_my_items$rand");
+
+            $ajax_params = [
+                'userID'          => $userID,
+                'entity_restrict' => $entity_restrict,
+                'used'            => $params['used'],
+                'multiple'        => $params['multiple'],
+                'rand'            => $rand,
+                'width'           => '',
+            ];
+
+            echo Html::jsAjaxDropdown(
+                'my_items',
+                $field_id,
+                $CFG_GLPI["root_doc"] . "/ajax/getDropdownMyDevices.php",
+                $ajax_params
+            );
+
             echo "<span id='item_selection_information$rand' class='ms-1'></span>";
             echo "</div>";
 

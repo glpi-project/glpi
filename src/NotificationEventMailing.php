@@ -226,7 +226,9 @@ class NotificationEventMailing extends NotificationEventAbstract
                                 $item_for_docs instanceof CommonITILObject
                                 && $current->fields['attach_documents'] !== NotificationSetting::ATTACH_FROM_TRIGGER_ONLY
                             ) {
-                                $doc_crit = $item_for_docs->getAssociatedDocumentsCriteria(true);
+                                $user = new User();
+                                $user->getFromDBbyEmail($current->fields['recipient']);
+                                $doc_crit = $item_for_docs->getAssociatedDocumentsCriteria(false, $user);
                             }
 
                             if ($is_html) {

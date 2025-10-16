@@ -9383,4 +9383,127 @@ HTML,
         $survey = $crawler->filter('[data-testid="survey"]');
         $this->assertNotEmpty($survey);
     }
+
+    public function testGetAssociatedDocuments(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $postonly_user = getItemByTypeName(User::class, 'post-only', false);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name' => 'Ticket with documents',
+            'content' => 'test',
+            'entities_id' => $this->getTestRootEntity(true),
+            '_users_id_requester'       => '0',     // anonymous requester
+            '_users_id_requester_notif' => [
+                'use_notification'   => '1',
+                'alternative_email'  => 'unknownuser@localhost.local',
+            ],
+            '_users_id_observer' => [$postonly_user->getID()], // post-only observer
+        ]);
+
+        // Create a document linked to the ticket
+        $doc1 = $this->createItem(\Document::class, [
+            'tickets_id'   => $ticket->getID(),
+            'name'         => 'Doc 1: linked to ticket',
+        ]);
+        $this->createItem(\Document_Item::class, [
+            'items_id'      => $ticket->getID(),
+            'itemtype'      => 'Ticket',
+            'documents_id'  => $doc1->getID(),
+        ]);
+
+        // Create a document linked to a followup of the ticket
+        $followup = $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content' => 'Followup content',
+        ]);
+        $doc2 = $this->createItem(\Document::class, [
+            'name' => 'Doc 2: linked to followup',
+        ]);
+        $this->createItem(\Document_Item::class, [
+            'items_id'      => $followup->getID(),
+            'itemtype'      => 'ITILFollowup',
+            'documents_id'  => $doc2->getID(),
+        ]);
+
+        // Create a document linked to a private followup of the ticket
+        $private_followup = $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content' => 'Private Followup content',
+            'is_private' => 1,
+        ]);
+        $doc3 = $this->createItem(\Document::class, [
+            'name' => 'Doc 3: linked to private followup',
+        ]);
+        $this->createItem(\Document_Item::class, [
+            'items_id'      => $private_followup->getID(),
+            'itemtype'      => 'ITILFollowup',
+            'documents_id'  => $doc3->getID(),
+        ]);
+
+        // Current user can see all 3 documents
+        $doc_crit = $ticket->getAssociatedDocumentsCriteria();
+        $doc_crit[] = [
+            'timeline_position' => ['>', CommonITILObject::NO_TIMELINE],
+        ];
+        $doc_items_iterator = $DB->request(
+            [
+                'SELECT' => ['documents_id'],
+                'FROM' => \Document_Item::getTable(),
+                'WHERE' => $doc_crit,
+            ]
+        );
+        $found_docs = [];
+        foreach ($doc_items_iterator as $doc_item) {
+            $found_docs[] = $doc_item['documents_id'];
+        }
+        $this->assertContains($doc1->getID(), $found_docs);
+        $this->assertContains($doc2->getID(), $found_docs);
+        $this->assertContains($doc3->getID(), $found_docs);
+
+        // Post-only user can't see document linked to private followup
+        $doc_crit = $ticket->getAssociatedDocumentsCriteria(false, $postonly_user);
+        $doc_crit[] = [
+            'timeline_position' => ['>', CommonITILObject::NO_TIMELINE],
+        ];
+        $doc_items_iterator = $DB->request(
+            [
+                'SELECT' => ['documents_id'],
+                'FROM' => \Document_Item::getTable(),
+                'WHERE' => $doc_crit,
+            ]
+        );
+        $found_docs = [];
+        foreach ($doc_items_iterator as $doc_item) {
+            $found_docs[] = $doc_item['documents_id'];
+        }
+        $this->assertContains($doc1->getID(), $found_docs);
+        $this->assertContains($doc2->getID(), $found_docs);
+        $this->assertNotContains($doc3->getID(), $found_docs);
+
+        // Anonymous user can't see documents linked to private followups
+        $doc_crit = $ticket->getAssociatedDocumentsCriteria(false, new User());
+        $doc_crit[] = [
+            'timeline_position' => ['>', CommonITILObject::NO_TIMELINE],
+        ];
+        $doc_items_iterator = $DB->request(
+            [
+                'SELECT' => ['documents_id'],
+                'FROM' => \Document_Item::getTable(),
+                'WHERE' => $doc_crit,
+            ]
+        );
+        $found_docs = [];
+        foreach ($doc_items_iterator as $doc_item) {
+            $found_docs[] = $doc_item['documents_id'];
+        }
+        $this->assertContains($doc1->getID(), $found_docs);
+        $this->assertContains($doc2->getID(), $found_docs);
+        $this->assertNotContains($doc3->getID(), $found_docs);
+    }
 }

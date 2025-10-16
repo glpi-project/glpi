@@ -892,6 +892,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             'massiveaction'      => false,
             'forcegroupby'       => true,
             'splititems'         => true,
+            'htmltext'           => true,
             'joinparams'         => [
                 'jointype'  => 'child',
             ],
