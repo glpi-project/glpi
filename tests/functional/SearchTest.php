@@ -43,13 +43,16 @@ use DBConnection;
 use DbTestCase;
 use Document;
 use Document_Item;
+use DropdownTranslation;
 use Entity;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDocumentsCapacity;
 use Glpi\DBAL\QueryExpression;
 use Group_User;
+use Location;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
+use TaskCategory;
 use Ticket;
 use User;
 
@@ -2447,7 +2450,7 @@ class SearchTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $sid);
 
-        $ddtrans = new \DropdownTranslation();
+        $ddtrans = new DropdownTranslation();
         $this->assertGreaterThan(
             0,
             $ddtrans->add([
@@ -6162,6 +6165,167 @@ class SearchTest extends DbTestCase
                 . '<a href=\'mailto:external-requester2@example.com\'>external-requester2@example.com</a>',
             $result['data']['rows'][0]['Ticket_4']['displayname']
         );
+    }
+
+    /**
+     * Validate that dropdown complete names are correctly rendered.
+     */
+    public function testCompletenameColumnRenderingInSearchResults(): void
+    {
+        $this->login();
+
+        $this->createItem(
+            TaskCategory::class,
+            [
+                'name'              => 'subcat with <&> chars',
+                'taskcategories_id' => \getItemByTypeName(TaskCategory::class, '_cat_1', true),
+                'entities_id'   => $this->getTestRootEntity(true),
+            ]
+        );
+
+        // Test with default lang
+        $result = \Search::getDatas(
+            TaskCategory::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => '1',
+                        'searchtype' => 'contains',
+                        'value'      => '_cat_1',
+                    ],
+                ],
+            ]
+        );
+
+        $expected = [
+            '_cat_1',
+            '_cat_1 &gt; _subcat_1',
+            '_cat_1 &gt; R&amp;D',
+            '_cat_1 &gt; subcat with &lt;&amp;&gt; chars',
+        ];
+
+        foreach ($expected as $key => $displayname) {
+            $this->assertTrue(isset($result['data']['rows'][$key]['TaskCategory_1']['displayname']));
+            $this->assertEquals($displayname, $result['data']['rows'][$key]['TaskCategory_1']['displayname']);
+        }
+
+        // Test with fr_FR
+        $_SESSION['glpilanguage'] = 'fr_FR';
+        $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations('fr_FR');
+
+        $result = \Search::getDatas(
+            TaskCategory::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => '1',
+                        'searchtype' => 'contains',
+                        'value'      => '_cat_1',
+                    ],
+                ],
+            ]
+        );
+
+        $expected = [
+            'FR - _cat_1',
+            'FR - _cat_1 &gt; FR - _subcat_1',
+            'FR - _cat_1 &gt; R&amp;D',
+        ];
+
+        foreach ($expected as $key => $displayname) {
+            $this->assertTrue(isset($result['data']['rows'][$key]['TaskCategory_1']['displayname']));
+            $this->assertEquals($displayname, $result['data']['rows'][$key]['TaskCategory_1']['displayname']);
+        }
+    }
+
+
+    /**
+     * Validate that dropdown complete names are correctly translated.
+     */
+    public function testCompletenameColumnTranslationsInSearchResults(): void
+    {
+        $this->login();
+
+        $_SESSION['glpilanguage'] = 'fr_FR';
+        $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations('fr_FR');
+
+        $result = \Search::getDatas(
+            TaskCategory::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => '1',
+                        'searchtype' => 'contains',
+                        'value'      => '_cat_1',
+                    ],
+                ],
+            ]
+        );
+
+        $expected = [
+            'FR - _cat_1',
+            'FR - _cat_1 &gt; FR - _subcat_1',
+            'FR - _cat_1 &gt; R&amp;D',
+        ];
+
+        foreach ($expected as $key => $displayname) {
+            $this->assertTrue(isset($result['data']['rows'][$key]['TaskCategory_1']['displayname']));
+            $this->assertEquals($displayname, $result['data']['rows'][$key]['TaskCategory_1']['displayname']);
+        }
+    }
+
+
+    /**
+     * Validate that `use_flat_dropdowntree_on_search_result` is correctly applied.
+     */
+    public function testLinkedItemCompletenameColumnRenderingInSearchResults(): void
+    {
+        $this->login();
+
+        $this->createItem(
+            Computer::class,
+            [
+                'name'         => __FUNCTION__,
+                'locations_id' => \getItemByTypeName(Location::class, '_location02 > _sublocation04', true),
+                'entities_id'  => $this->getTestRootEntity(true),
+            ]
+        );
+
+        // Test with `use_flat_dropdowntree_on_search_result=1`
+        $_SESSION['glpiuse_flat_dropdowntree_on_search_result'] = 1;
+        $result = \Search::getDatas(
+            Computer::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => '1',
+                        'searchtype' => 'contains',
+                        'value'      => __FUNCTION__,
+                    ],
+                ],
+            ]
+        );
+
+        $this->assertTrue(isset($result['data']['rows'][0]['Computer_3']['displayname']));
+        $this->assertEquals('_location02 &gt; _sublocation04', $result['data']['rows'][0]['Computer_3']['displayname']);
+
+        // Test with `use_flat_dropdowntree_on_search_result=0`
+        $_SESSION['glpiuse_flat_dropdowntree_on_search_result'] = 0;
+        $result = \Search::getDatas(
+            Computer::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => '1',
+                        'searchtype' => 'contains',
+                        'value'      => __FUNCTION__,
+                    ],
+                ],
+            ]
+        );
+
+        $this->assertTrue(isset($result['data']['rows'][0]['Computer_3']['displayname']));
+        $this->assertEquals('_sublocation04', $result['data']['rows'][0]['Computer_3']['displayname']);
     }
 }
 
