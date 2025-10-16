@@ -424,7 +424,7 @@ class CacheManager
         }
         $scheme = $matches['scheme'];
 
-        return in_array($scheme, array_keys(static::getAvailableAdapters())) ? $scheme : null;
+        return in_array($scheme, static::getAvailableAdapters(), true) ? $scheme : null;
     }
 
     /**
@@ -533,7 +533,7 @@ PHP;
             return reset($schemes) === self::SCHEME_MEMCACHED;
         }
 
-        return in_array($this->extractScheme($dsn), array_keys(static::getAvailableAdapters()));
+        return in_array($this->extractScheme($dsn), static::getAvailableAdapters(), true);
     }
 
     /**
@@ -554,18 +554,33 @@ PHP;
 
     /**
      * Returns a list of available adapters.
-     * Keys are adapter schemes (see self::SCHEME_*).
-     * Values are translated names.
      *
-     * @return array
+     * @return self::SCHEME_*[]
      */
     public static function getAvailableAdapters(): array
     {
         return [
+            self::SCHEME_MEMCACHED,
+            self::SCHEME_REDIS,
+            self::SCHEME_REDISS,
+        ];
+    }
+
+    /**
+     * Returns the localized label of an available adapter.
+     *
+     * @param self::SCHEME_* $scheme
+     *
+     * @return string
+     */
+    public static function getAvailableAdapterLabel(string $scheme): string
+    {
+        return match($scheme) {
             self::SCHEME_MEMCACHED  => __('Memcached'),
             self::SCHEME_REDIS      => __('Redis (TCP)'),
             self::SCHEME_REDISS     => __('Redis (TLS)'),
-        ];
+            default => throw new InvalidArgumentException(sprintf('Invalid cache adapter scheme: "%s".', $scheme))
+        };
     }
 
     /**
