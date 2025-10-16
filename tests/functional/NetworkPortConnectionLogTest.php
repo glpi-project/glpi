@@ -35,7 +35,6 @@
 namespace tests\units;
 
 use DbTestCase;
-use Glpi\Inventory\Asset\NetworkPort;
 
 /* Test for inc/networkport_networkport.class.php */
 
