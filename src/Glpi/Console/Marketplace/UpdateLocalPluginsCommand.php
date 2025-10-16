@@ -40,6 +40,7 @@ use Glpi\Marketplace\Controller;
 use GLPINetwork;
 use Plugin;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
 
@@ -51,6 +52,13 @@ class UpdateLocalPluginsCommand extends AbstractCommand
 
         $this->setName('marketplace:update_local_plugins');
         $this->setDescription(__('Download up-to-date sources for all local plugins and process updates of active plugins'));
+
+        $this->addOption(
+            'username',
+            'u',
+            InputOption::VALUE_REQUIRED,
+            __('Name of user used during installation script (among other things to set plugin admin rights)')
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -63,6 +71,11 @@ class UpdateLocalPluginsCommand extends AbstractCommand
         if (!GLPINetwork::isRegistered()) {
             $output->writeln("<error>" . __("The GLPI Network registration key is missing or invalid") . "</error>");
             return self::FAILURE;
+        }
+
+        $username = $input->getOption('username');
+        if ($username !== null) {
+            $this->loadUserSession($username);
         }
 
         $has_errors = false;
