@@ -1080,7 +1080,7 @@ JAVASCRIPT;
                         $available_criteria[$crit]['table'],
                         $criteria['pattern'],
                         false,
-                        true,
+                        false,
                         false,
                         ''
                     );

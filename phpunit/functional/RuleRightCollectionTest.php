@@ -372,7 +372,7 @@ class RuleRightCollectionTest extends DbTestCase
             $xmlERuleCriteria = $xmlERule->addChild('rulecriteria');
             $xmlERuleCriteria->criteria = $rule_data['criteria']['field'];
             $xmlERuleCriteria->condition = $rule_data['criteria']['condition'];
-            $xmlERuleCriteria->pattern = $itemtype ? $itemtype->getID() : $rule_data['criteria']['value'];
+            $xmlERuleCriteria->pattern = $itemtype ? $itemtype->fields['name'] : $rule_data['criteria']['value'];
         }
         if (isset($rule_data['action'])) {
             $xmlERuleCriteria = $xmlERule->addChild('ruleaction');
