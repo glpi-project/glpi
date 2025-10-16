@@ -43,12 +43,10 @@ class Printer_CartridgeInfoTest extends DbTestCase
     public function testGetSpecificValueToDisplayWithAggregateData()
     {
         // Create printer
-        $printer = new \Printer();
-        $printers_id = $printer->add([
+        $printers_id = $this->createItem(\Printer::class, [
             'name' => 'Test Printer CMYK',
             'entities_id' => $this->getTestRootEntity(true),
-        ]);
-        $this->assertGreaterThan(0, $printers_id);
+        ])->getID();
 
         // Add cartridge info
         $cartridge_info = new \Printer_CartridgeInfo();
@@ -112,9 +110,7 @@ class Printer_CartridgeInfoTest extends DbTestCase
             $options
         );
 
-        $this->assertTrue(
-            empty($result) || $result === \CommonDBTM::getSpecificValueToDisplay('_virtual_toner_percent', [], $options)
-        );
+        $this->assertTrue(empty($result));
     }
 
     public function testGetSpecificValueToDisplayWithTonersAndDrums()
@@ -222,6 +218,62 @@ class Printer_CartridgeInfoTest extends DbTestCase
             $options
         );
 
-        $this->assertTrue(empty($result) || is_string($result));
+        $this->assertTrue(empty($result));
+    }
+
+    public function testGetSpecificValueToDisplayWithSearchEngine()
+    {
+        $this->login();
+
+        // Create printer with cartridge info
+        $printer = $this->createItem(\Printer::class, [
+            'name' => 'Test Printer Search',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $this->createItem(\Printer_CartridgeInfo::class, [
+            'printers_id' => $printer->getID(),
+            'property' => 'tonerblack',
+            'value' => '65'
+        ]);
+        $this->createItem(\Printer_CartridgeInfo::class, [
+            'printers_id' => $printer->getID(),
+            'property' => 'drumcyan',
+            'value' => '42'
+        ]);
+
+        // Run search with toner and drum columns
+        $params = [
+            'criteria' => [
+                [
+                    'field'      => 1, // Name
+                    'searchtype' => 'contains',
+                    'value'      => 'Test Printer Search',
+                ],
+            ],
+            'reset' => 'reset',
+        ];
+        $params = \Search::manageParams(\Printer::class, $params);
+        $data = \Search::getDatas(\Printer::class, $params, [1, 1400, 1401]);
+
+        // Verify search executed successfully
+        $this->assertGreaterThan(0, $data['data']['totalcount']);
+        $this->assertCount(1, $data['data']['rows']);
+
+        $row = $data['data']['rows'][0];
+
+        // Verify toner column contains the badge
+        $this->assertArrayHasKey('Printer_1400', $row);
+        $this->assertArrayHasKey('displayname', $row['Printer_1400']);
+        $toner_display = $row['Printer_1400']['displayname'];
+        $this->assertStringContainsString('65%', $toner_display);
+        $this->assertStringContainsString('Black', $toner_display);
+
+        // Verify drum column contains the badge
+        $this->assertArrayHasKey('Printer_1401', $row);
+        $this->assertArrayHasKey('displayname', $row['Printer_1401']);
+        $drum_display = $row['Printer_1401']['displayname'];
+        $this->assertStringContainsString('42%', $drum_display);
+        $this->assertStringContainsString('Cyan', $drum_display);
     }
 }
