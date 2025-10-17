@@ -258,16 +258,17 @@ export class TimelineView {
             // intercept event for edit notification button
             document.addEventListener('click', event => {
                 const target = $(event.target);
-                if (target.closest(`#${$element.id} + .select2 .edit-notify-user`)) {
+                if (target.closest(`#${$element.prop('id')} + .select2 .edit-notify-user`).length) {
                     return window.openNotifyModal(event);
                 }
                 // if a click on assign info is detected prevent opening of select2
-                if (target.closest(`#${$element.id} + .select2 .assign_infos`)) {
+                if (target.closest(`#${$element.prop('id')} + .select2 .assign_infos`).length) {
                     event.stopPropagation();
                 }
             }, {capture: true});
             document.addEventListener('keydown', event => {
-                if (event.target.closest(`#${$element.id} + .select2 .edit-notify-user`)
+                const target = $(event.target);
+                if (target.closest(`#${$element.prop('id')} + .select2 .edit-notify-user`).length
                     && event.key == "Enter") {
                     return window.openNotifyModal(event);
                 }
