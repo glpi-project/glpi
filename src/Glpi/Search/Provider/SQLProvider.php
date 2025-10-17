@@ -5659,16 +5659,25 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     break;
                 case $table . ".completename":
+                    $completename = !empty($data[$ID][0]['trans_completename'])
+                        ? $data[$ID][0]['trans_completename']
+                        : $data[$ID][0]['name'];
+
+                    if (empty($completename)) {
+                        return '';
+                    }
+
+                    $completename = (new SanitizedStringsDecoder())->decodeHtmlSpecialCharsInCompletename($completename);
+
                     if (
                         $itemtype != $opt_itemtype
-                        && $data[$ID][0]['name'] != null //column have value in DB
                         && !$_SESSION['glpiuse_flat_dropdowntree_on_search_result'] //user doesn't want the completename
                     ) {
-                        $completename = (new SanitizedStringsDecoder())->decodeHtmlSpecialCharsInCompletename($data[$ID][0]['name']);
                         $split_name = explode(">", $completename);
                         return htmlescape(trim(end($split_name)));
                     }
-                    break;
+
+                    return htmlescape($completename);
 
                 case "glpi_documenttypes.icon":
                     if (!empty($data[$ID][0]['name'])) {
