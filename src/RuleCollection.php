@@ -1075,6 +1075,14 @@ JAVASCRIPT;
 
                 $available_criteria = $rule->getCriterias();
                 $crit               = $criteria['criteria'];
+
+                foreach ($available_criteria as $key => $criterion_def) {
+                    if (isset($criterion_def['id']) && $criterion_def['id'] == $crit) {
+                        $crit = $key;
+                        break;
+                    }
+                }
+
                 if (self::isCriteraADropdown($available_criteria, $criteria['condition'], $crit)) {
                     $criteria['pattern'] = Dropdown::getDropdownName(
                         $available_criteria[$crit]['table'],
