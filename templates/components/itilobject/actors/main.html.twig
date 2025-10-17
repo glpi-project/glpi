@@ -242,6 +242,9 @@
       event.stopPropagation();
 
       var element = $(event.target).closest('.actor_entry');
+      if (element.length === 0) {
+         return;
+      }
       var itemtype  = element.data('itemtype');
       var items_id  = element.data('items-id');
       var actortype = element.data('actortype');

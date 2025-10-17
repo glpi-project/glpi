@@ -32,35 +32,7 @@
 
 {% set rand = random() %}
 
-<span id="user_{{ rand }}">
+<span id="user_{{ rand }}" class="user-link" {{ not enable_anonymization ? 'data-user-id=' ~ users_id : '' }}>
     <i class="ti ti-user ms-1"></i>
     {{ get_item_link('User', users_id, {'enable_anonymization': enable_anonymization}) }}
 </span>
-
-{% if not enable_anonymization %}
-    {% set user = user_object ?? get_item('User', users_id) %}
-    {% if user is not null and user.canView() %}
-        {% set user_fields = user.fields %}
-        {% set user_fields = user_fields|merge({user_name: user.getFriendlyName()}) %}
-        {% set user_fields = user_fields|merge({email: user.getDefaultEmail()}) %}
-        {% if has_profile_right('user', constant('READ')) %}
-            {% set user_fields = user_fields|merge({login: user.fields['name']}) %}
-        {% endif %}
-        {% do call(
-            'Html::showToolTip',
-            [
-                include(
-                    'components/user/info_card.html.twig',
-                    {
-                        'user': user_fields,
-                        'user_object': user,
-                    },
-                    with_context = false
-                ),
-                {
-                    'applyto': "user_" ~ rand
-                }
-            ]
-        ) %}
-    {% endif %}
-{% endif %}
