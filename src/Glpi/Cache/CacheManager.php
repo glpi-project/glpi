@@ -575,7 +575,7 @@ PHP;
      */
     public static function getAvailableAdapterLabel(string $scheme): string
     {
-        return match($scheme) {
+        return match ($scheme) {
             self::SCHEME_MEMCACHED  => __('Memcached'),
             self::SCHEME_REDIS      => __('Redis (TCP)'),
             self::SCHEME_REDISS     => __('Redis (TLS)'),
