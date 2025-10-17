@@ -37,6 +37,7 @@ export class TimelineView {
         this.safe_item_fields = safe_item_fields;
         this.info_card_cache = new Map();
         this.initActorFields();
+        this.initActorAvatarPopovers();
     }
 
     initActorFields() {
@@ -279,6 +280,16 @@ export class TimelineView {
             // Delay fetching user info card until actually needed
             const target = $(e.target).closest('.actor_entry');
             this.addActorInfoPopover(target, target.attr('data-itemtype'), target.attr('data-items-id'), true);
+        });
+    }
+
+    initActorAvatarPopovers() {
+        this.element.on('mouseenter', '.timeline-avatar[data-user-id]', (e) => {
+            const target = $(e.target).closest('.timeline-avatar');
+            const users_id = parseInt(target.attr('data-user-id'));
+            if (users_id > 0) {
+                this.addActorInfoPopover(target, 'User', target.attr('data-user-id'), true);
+            }
         });
     }
 

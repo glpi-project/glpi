@@ -141,23 +141,13 @@
                   {% if has_profile_right('user', constant('READ')) %}
                      {% set user_fields = user_fields|merge({login: entry_user.fields['name']}) %}
                   {% endif %}
-                  <span id="timeline-avatar{{ avatar_rand }}">
+                  <span id="timeline-avatar{{ avatar_rand }}" class="timeline-avatar" {{ not anonym_user and entry_user.canView() ? 'data-user-id=' ~ users_id : '' }}>
                      {{ include('components/user/picture.html.twig', {
                         'users_id': users_id,
                         'user_object': entry_user,
                         'enable_anonymization': anonym_user
                      }, with_context = false) }}
                   </span>
-                  {% if not anonym_user and entry_user.canView() %}
-                     {% do call('Html::showToolTip', [
-                        include('components/user/info_card.html.twig', {
-                           'user': user_fields,
-                           'user_object': entry_user,
-                           'enable_anonymization': false,
-                        }, with_context = false), {
-                           'applyto': 'timeline-avatar' ~ avatar_rand
-                        }]) %}
-                  {% endif %}
                {% else %}
                   <span id="timeline-avatar{{ avatar_rand }}"><span class="avatar avatar-md rounded"></span></span>
                {% endif %}
