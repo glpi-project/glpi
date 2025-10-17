@@ -490,6 +490,7 @@ final class SQLProvider implements SearchProviderInterface
             case "glpi_itilfollowups.content":
             case "glpi_tickettasks.content":
             case "glpi_changetasks.content":
+            case "glpi_problemtasks.content":
             case "glpi_tickettasks.state":
             case "glpi_changetasks.state":
             case "glpi_problemtasks.state":
