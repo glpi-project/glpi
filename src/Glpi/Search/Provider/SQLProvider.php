@@ -1531,9 +1531,11 @@ final class SQLProvider implements SearchProviderInterface
                                     $criteria,
                                     "$table.$field" => null,
                                 ],
-                                new QueryExpression($toadd),
                             ],
                         ];
+                        if ($toadd !== '') {
+                            $criteria[$tmplink][] = new QueryExpression($toadd);
+                        }
                     }
                     return $criteria;
                 }
