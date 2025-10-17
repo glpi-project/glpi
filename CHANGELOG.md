@@ -27,8 +27,15 @@ The present file will list all changes made to the project; according to the
 ## [11.0.1] 2025-10-09
 
 ### Added
+- `uuid`, `user_tech`, `group_tech`, `date`, `date_creation`, `date_mod`, `planned_begin`, `planned_end`, `timeline_position`, `source_item_id`, and `source_of_item_id` properties for the applicable Ticket, Change and Problem Task schemas in the High-Level API v2.1.
+- `date`, `timeline_position`, `source_item_id`, and `source_of_item_id` properties for the Followup schema in the High-Level API v2.1.
+- `approver`, `approval_followup`, `date_creation`, `date_mod`, and `date_approval` properties for the Solution schema in the High-Level API v2.1.
+- `timeline_position` property for the TicketValidation, ChangeValidation and Document_Item schemas in the High-Level API v2.1.
+- `date_solve`, `date_close`, and `global_validation` properties for the applicable Ticket, Change and Problem schemas in the High-Level API v2.1.
 
 ### Changed
+- Added High-Level API version 2.1. Make sure you are pinning your requests to a specific version (Ex: `/api.php/v2.0`) if needed to exclude endpoints/properties added in later versions. See version pinning in the getting started documentation `/api.php/getting-started`.
+- High-Level API responses for not found routes now correctly return a body including the standard error properties (status, title, detail). This is not controlled by the API version.
 
 ### Deprecated
 
