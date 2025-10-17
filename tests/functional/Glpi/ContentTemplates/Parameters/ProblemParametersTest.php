@@ -123,6 +123,7 @@ class ProblemParametersTest extends AbstractParametersTest
                             'mobile'   => null,
                             'firstname'  => null,
                             'realname'   => null,
+                            'registration_number' => null,
                             'used_items' => [],
                         ],
                     ],
