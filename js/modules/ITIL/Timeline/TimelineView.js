@@ -171,7 +171,7 @@ export class TimelineView {
                     }
 
                     // Don't offset to create a tag if it's not an email
-                    if (!new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,63}$/).test(term)) {
+                    if (!new RegExp(/^[\w-.]+@([\w-]+\.)+[\w-]{2,63}$/).test(term)) {
                         // Return null to disable tag creation
                         return null;
                     }
