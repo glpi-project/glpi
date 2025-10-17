@@ -36,8 +36,10 @@
 namespace Glpi\Api\HL\Controller;
 
 use AuthLDAP;
+use Calendar;
 use CommonDBTM;
 use Config;
+use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
@@ -46,6 +48,11 @@ use Glpi\Api\HL\RouteVersion;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use OLA;
+use OlaLevel;
+use SLA;
+use SlaLevel;
+use SLM;
 
 #[Route(path: '/Setup', tags: ['Setup'])]
 final class SetupController extends AbstractController
@@ -53,6 +60,70 @@ final class SetupController extends AbstractController
     public static function getRawKnownSchemas(): array
     {
         global $DB;
+
+        $base_la_properties = [
+            'id' => [
+                'type' => Doc\Schema::TYPE_INTEGER,
+                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                'readOnly' => true,
+            ],
+            'name' => ['type' => Doc\Schema::TYPE_STRING],
+            'slm' => self::getDropdownTypeSchema(class: SLM::class, full_schema: 'SLM'),
+            'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+            'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+            'type' => [
+                'type' => Doc\Schema::TYPE_INTEGER,
+                'enum' => [SLM::TTR, SLM::TTO],
+                'description' => <<<EOT
+                - 0: Time to resolve (TTR)
+                - 1: Time to own (TTO)
+EOT,
+            ],
+            'comment' => ['type' => Doc\Schema::TYPE_STRING],
+            'time' => [
+                'type' => Doc\Schema::TYPE_INTEGER,
+                'x-field' => 'number_time',
+                'description' => 'Time in the unit defined by the time_unit property',
+            ],
+            'time_unit' => [
+                'type' => Doc\Schema::TYPE_STRING,
+                'enum' => ['minute', 'hour', 'day', 'month'],
+                'description' => 'Unit of time for the time property',
+            ],
+            'use_ticket_calendar' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+            'calendar' => self::getDropdownTypeSchema(class: Calendar::class, full_schema: 'Calendar'),
+            'end_of_working_day' => [
+                'type' => Doc\Schema::TYPE_BOOLEAN,
+                'description' => 'Whether the time computation will target the end of the working day',
+            ],
+            'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+        ];
+
+        $base_la_level_properties = [
+            'id' => [
+                'type' => Doc\Schema::TYPE_INTEGER,
+                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                'readOnly' => true,
+            ],
+            'uuid' => [
+                'type' => Doc\Schema::TYPE_STRING,
+                'pattern' => Doc\Schema::PATTERN_UUIDV4,
+                'readOnly' => true,
+            ],
+            'name' => ['type' => Doc\Schema::TYPE_STRING],
+            'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+            'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+            'execution_time' => [
+                'type' => Doc\Schema::TYPE_INTEGER,
+                'readOnly' => true,
+            ],
+            'operator' => [
+                'type' => Doc\Schema::TYPE_STRING,
+                'enum' => ['AND', 'OR'],
+                'x-field' => 'match',
+            ],
+        ];
 
         return [
             'LDAPDirectory' => [
@@ -143,6 +214,54 @@ final class SetupController extends AbstractController
                         }
                         return ['WHERE' => ['_.id' => $disclosed_ids]];
                     },
+                ],
+            ],
+            'SLM' => [
+                'x-version-introduced' => '2.1.0',
+                'x-itemtype' => SLM::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                    'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'use_ticket_calendar' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'calendar' => self::getDropdownTypeSchema(class: Calendar::class, full_schema: 'Calendar'),
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                ],
+            ],
+            'SLA' => [
+                'x-version-introduced' => '2.1.0',
+                'x-itemtype' => SLA::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $base_la_properties,
+            ],
+            'OLA' => [
+                'x-version-introduced' => '2.1.0',
+                'x-itemtype' => OLA::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $base_la_properties,
+            ],
+            'SLALevel' => [
+                'x-version-introduced' => '2.1.0',
+                'x-itemtype' => SlaLevel::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $base_la_level_properties + [
+                    'sla' => self::getDropdownTypeSchema(class: SLA::class, full_schema: 'SLA'),
+                ],
+            ],
+            'OLALevel' => [
+                'x-version-introduced' => '2.1.0',
+                'x-itemtype' => OlaLevel::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => $base_la_level_properties + [
+                    'ola' => self::getDropdownTypeSchema(class: OLA::class, full_schema: 'OLA'),
                 ],
             ],
         ];
