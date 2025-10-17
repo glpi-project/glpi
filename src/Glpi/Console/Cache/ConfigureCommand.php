@@ -114,7 +114,7 @@ class ConfigureCommand extends AbstractCommand implements ConfigurationCommandIn
         $this->addUsage('--dsn=redis://redis.glpi-project.org:6379/glpi');
 
         $adapters = $this->cache_manager->getAvailableAdapters();
-        $adapters = array_combine($adapters, array_map(static fn($a) => $this->cache_manager::getAvailableAdapterLabel($a), $adapters));
+        $adapters = array_combine($adapters, array_map(fn($a) => $this->cache_manager::getAvailableAdapterLabel($a), $adapters));
         $help_lines = [
             sprintf(
                 __('Valid cache systems are: %s.'),
