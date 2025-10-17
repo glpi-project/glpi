@@ -298,7 +298,7 @@ class FrontEndAssetsExtension extends AbstractExtension
         $common_configs = [
             'root_doc', 'url_base', 'planning_begin', 'planning_end', 'planning_work_days', 'toast_location',
             'is_demo_dashboards', 'priority_1', 'priority_2', 'priority_3', 'priority_4', 'priority_5', 'priority_6',
-            'date_format'
+            'date_format',
         ];
         $common_config = array_filter(
             $cfg_glpi,
