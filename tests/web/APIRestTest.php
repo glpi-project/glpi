@@ -8,6 +8,7 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2025 Kyndryl Inc.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -360,7 +361,7 @@ class APIRestTest extends TestCase
         $this->assertIsArray($data[1]['available_searchtypes']);
 
         $this->assertSame(
-            ['contains', 'notcontains', 'equals', 'notequals', 'empty'],
+            ['contains', 'notcontains', 'matches', 'equals', 'notequals', 'empty'],
             $data[1]['available_searchtypes']
         );
     }
