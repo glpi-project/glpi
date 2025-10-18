@@ -52,6 +52,8 @@ final class SetupController extends AbstractController
 {
     public static function getRawKnownSchemas(): array
     {
+        global $DB;
+
         return [
             'LDAPDirectory' => [
                 'x-version-introduced' => '2.0',
@@ -119,6 +121,29 @@ final class SetupController extends AbstractController
                     'name' => ['type' => Doc\Schema::TYPE_STRING],
                     'value' => ['type' => Doc\Schema::TYPE_STRING],
                 ],
+                'x-rights-conditions' => [
+                    'read' => static function () use ($DB) {
+                        // Make a SQL request to get all config items so we can check which are undisclosed
+                        // We are using safe IDs rather than undisclosed IDs to avoid issues with concurrent modifications
+                        // We cannot reliably lock the table due to the fact that the DB connection here may differ from the one used to perform the actual read in the Search code
+                        $disclosed_ids = [];
+
+                        $it = $DB->request([
+                            'SELECT' => ['id', 'context', 'name'],
+                            'FROM'   => 'glpi_configs',
+                        ]);
+                        $test_configs = [];
+                        foreach ($it as $row) {
+                            $test_configs[] = $row + ['value' => 'dummy'];
+                        }
+                        foreach ($test_configs as $f) {
+                            if (!self::isUndisclosedConfig($f['context'], $f['name'])) {
+                                $disclosed_ids[] = $f['id'];
+                            }
+                        }
+                        return ['WHERE' => ['_.id' => $disclosed_ids]];
+                    }
+                ]
             ],
         ];
     }
@@ -230,7 +255,7 @@ final class SetupController extends AbstractController
         return ResourceAccessor::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-    private function isUndisclosedConfig(string $context, string $name): bool
+    private static function isUndisclosedConfig(string $context, string $name): bool
     {
         $f = ['context' => $context, 'name' => $name, 'value' => 'dummy'];
         Config::unsetUndisclosedFields($f);
@@ -254,7 +279,7 @@ final class SetupController extends AbstractController
         $value = $request->getParameter('value');
         Config::setConfigurationValues($context, [$name => $value]);
         // Return the updated config
-        if ($this->isUndisclosedConfig($context, $name)) {
+        if (self::isUndisclosedConfig($context, $name)) {
             // If the field is undisclosed, only return a 204 to indicate success without revealing the value
             return new JSONResponse(null, 204);
         }
@@ -263,6 +288,27 @@ final class SetupController extends AbstractController
             'name'    => $name,
             'value'   => Config::getConfigurationValue($context, $name),
         ]);
+    }
+
+    #[Route(path: '/Config', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.1')]
+    #[Doc\SearchRoute(schema_name: 'Config')]
+    public function searchConfigValues(Request $request): Response
+    {
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('Config', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/Config/{context}', methods: ['GET'], requirements: [
+        'context' => '\w+'
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.1')]
+    #[Doc\SearchRoute(schema_name: 'Config')]
+    public function searchConfigValuesByContext(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';context==' . $request->getAttribute('context');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('Config', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/Config/{context}/{name}', methods: ['GET'], requirements: [
@@ -280,7 +326,7 @@ final class SetupController extends AbstractController
         if (!$config->getFromDBByCrit(['context' => $context, 'name'    => $name,])) {
             return AbstractController::getNotFoundErrorResponse();
         }
-        if ($this->isUndisclosedConfig($context, $name) || !$config->can($config->getID(), READ)) {
+        if (self::isUndisclosedConfig($context, $name) || !$config->can($config->getID(), READ)) {
             return AbstractController::getAccessDeniedErrorResponse();
         }
         return new JSONResponse([

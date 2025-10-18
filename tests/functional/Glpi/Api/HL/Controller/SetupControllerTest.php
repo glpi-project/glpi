@@ -239,8 +239,24 @@ class SetupControllerTest extends \HLAPITestCase
                 ->status(static fn ($status) => $status === 204);
         });
 
+        // Can get a config value using GraphQL
+        $request = new Request('POST', '/GraphQL', [], 'query { Config(filter: "context==core;name==priority_2") { context, name, value } }');
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertArrayHasKey('data', $content);
+                    $this->assertArrayHasKey('Config', $content['data']);
+                    $this->assertCount(1, $content['data']['Config']);
+                    $config = $content['data']['Config'][0];
+                    $this->assertEquals('core', $config['context']);
+                    $this->assertEquals('priority_2', $config['name']);
+                    $this->assertEquals('#ffe0e0', $config['value']);
+                });
+        });
+
         // Cannot get an undisclosable config value using GraphQL
-        //FIXME: There are currently no restrictions in GraphQL to avoid fetching undisclosable config values
         $request = new Request('POST', '/GraphQL', [], 'query { Config(filter: "context==core;name==smtp_passwd") { context, name, value } }');
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
@@ -250,6 +266,34 @@ class SetupControllerTest extends \HLAPITestCase
                     $this->assertArrayHasKey('data', $content);
                     $this->assertArrayHasKey('Config', $content['data']);
                     $this->assertEmpty($content['data']['Config']);
+                });
+        });
+
+        // Can search config values
+        $request = new Request('GET', '/Setup/Config');
+        $request->setParameter('filter', 'name==priority_2');
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertCount(1, $content);
+                    $config = $content[0];
+                    $this->assertEquals('core', $config['context']);
+                    $this->assertEquals('priority_2', $config['name']);
+                    $this->assertEquals('#ffe0e0', $config['value']);
+                });
+        });
+
+        // Cannot search undisclosable config values
+        $request = new Request('GET', '/Setup/Config');
+        $request->setParameter('filter', 'name==smtp_passwd');
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEmpty($content);
                 });
         });
     }
