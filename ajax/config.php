@@ -34,6 +34,7 @@
  */
 
 use Glpi\Exception\Http\NotFoundHttpException;
+
 use function Safe\json_encode;
 
 Session::checkLoginUser();
