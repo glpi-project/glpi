@@ -2524,6 +2524,8 @@ describe ('Conditions', () => {
             initVisibilityConfiguration();
             setConditionStrategy('Visible if...');
             fillCondition(0, null, 'My first question', 'Contains', 'GLPI is great');
+            addNewEmptyCondition();
+            fillCondition(1, null, 'My first question', 'Contains', 'GLPI is great');
         });
         saveAndReload();
 
@@ -2549,6 +2551,13 @@ describe ('Conditions', () => {
                 'Contains',
                 'GLPI is great',
             );
+            checkThatConditionExist(
+                1,
+                null,
+                'Questions - My first question',
+                'Contains',
+                'GLPI is great',
+            );
         });
 
         // Delete the first question and check that the conditions are still there
@@ -2567,6 +2576,7 @@ describe ('Conditions', () => {
         getAndFocusQuestion('My second question').within(() => {
             openConditionEditor();
             deleteCondition(0);
+            deleteCondition(1);
         });
 
         // Delete the first question
