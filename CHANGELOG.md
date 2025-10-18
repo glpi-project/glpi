@@ -13,6 +13,8 @@ The present file will list all changes made to the project; according to the
 - `timeline_position` property for the TicketValidation, ChangeValidation and Document_Item schemas in the High-Level API v2.1.
 - `date_solve`, `date_close`, and `global_validation` properties for the applicable Ticket, Change and Problem schemas in the High-Level API v2.1.
 - New schemas/endpoints for Reminders, RSS Feeds, and Reservations in the High-Level API v2.1.
+- `date_password_change`, `location`, `authtype`, `last_login`, `default_profile` and `default_entity` properties for the User schema in the High-Level API v2.1.
+- New UserPreferences schema and endpoints in the High-Level API v2.1.
 
 ### Changed
 - Added High-Level API version 2.1. Make sure you are pinning your requests to a specific version (Ex: `/api.php/v2.0`) if needed to exclude endpoints/properties added in later versions. See version pinning in the getting started documentation `/api.php/getting-started`.
