@@ -2655,17 +2655,7 @@ HTML;
 
         echo "<tr class='tab_bg_1'>";
         echo "<td><label for='name'>" . __('Login') . "</label></td>";
-        if (
-            $this->fields["name"] == "" ||
-            !empty($this->fields["password"]) ||
-            ($this->fields["authtype"] == Auth::DB_GLPI)
-        ) {
-            //display login field for new records, or if this is not external auth
-            echo "<td><input name='name' id='name' value=\"" . $this->fields["name"] . "\" class='form-control'></td>";
-        } else {
-            echo "<td class='b'>" . $this->fields["name"];
-            echo "<input type='hidden' name='name' value=\"" . $this->fields["name"] . "\" class='form-control'></td>";
-        }
+        echo "<td><input name='name' id='name' value=\"" . $this->fields["name"] . "\" class='form-control'></td>";
 
         if (!empty($this->fields["name"])) {
             echo "<td rowspan='7'>" . _n('Picture', 'Pictures', 1) . "</td>";
