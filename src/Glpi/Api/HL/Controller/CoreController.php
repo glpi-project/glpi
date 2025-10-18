@@ -163,7 +163,8 @@ final class CoreController extends AbstractController
         $swagger_content .= Html::script('/lib/swagger-ui.js');
         $swagger_content .= Html::css('/lib/swagger-ui.css');
         $favicon = Html::getPrefixedUrl('/pics/favicon.ico');
-        $doc_json_path = $CFG_GLPI['root_doc'] . '/api.php/doc.json';
+        $api_version = $this->getAPIVersion($request);
+        $doc_json_path = $CFG_GLPI['root_doc'] . '/api.php/v' . $api_version .  '/doc.json';
         $swagger_content .= <<<HTML
         <link rel="shortcut icon" type="images/x-icon" href="$favicon" />
         </head>
