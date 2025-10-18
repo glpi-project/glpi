@@ -89,7 +89,7 @@ use function Safe\preg_match;
 class Router
 {
     /** @var string */
-    public const API_VERSION = '2.0.0';
+    public const API_VERSION = '2.1.0';
 
     /**
      * @var AbstractController[]
@@ -165,8 +165,13 @@ EOT;
             ],
             [
                 'api_version' => $current_version_major,
-                'version' => self::API_VERSION,
+                'version' => '2.0.0',
                 'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2',
+            ],
+            [
+                'api_version' => $current_version_major,
+                'version' => '2.1.0',
+                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.1',
             ],
         ];
     }
