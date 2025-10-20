@@ -94,7 +94,7 @@ final class ItemConditionHandler implements ConditionHandlerInterface, Condition
     }
 
     #[Override]
-    public function convertConditionValue(string $value): int
+    public function convertConditionValue(string $value): array|int
     {
         $nameFields = [];
         $item = getItemForItemtype($this->itemtype);
@@ -107,7 +107,10 @@ final class ItemConditionHandler implements ConditionHandlerInterface, Condition
             foreach ($nameFields as $nameField) {
                 // Retrieve item by name
                 if ($item->getFromDBByCrit([$nameField => $value])) {
-                    return $item->getID();
+                    return [
+                        'itemtype' => $this->itemtype,
+                        'items_id' => $item->getID(),
+                    ];
                 }
             }
         } catch (TooManyResultsException $e) {
