@@ -1744,6 +1744,7 @@ JAVASCRIPT;
             ]);
         } else {
             echo Html::timestampToString($default_delay, false);
+            echo Html::hidden('plan[_duration]', ['value' => $default_delay]);
         }
 
         echo "<br><div id='date_end$rand'></div>";
