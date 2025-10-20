@@ -440,17 +440,17 @@ abstract class AbstractPluginMigration
                     (
                         \is_a($itemtype, CommonDBChild::class, true)
                         && $itemtype::$mustBeAttached
-                        && !$itemtype::getItemFromArray($itemtype::$itemtype, $itemtype::$items_id, $related_item_data)
+                        && !$itemtype::getItemFromArray($itemtype::$itemtype, $itemtype::$items_id, $related_item_data, getEmpty: false)
                     )
                     || (
                         \is_a($itemtype, CommonDBRelation::class, true)
                         && $itemtype::$mustBeAttached_1
-                        && !$itemtype::getItemFromArray($itemtype::$itemtype_1, $itemtype::$items_id_1, $related_item_data)
+                        && !$itemtype::getItemFromArray($itemtype::$itemtype_1, $itemtype::$items_id_1, $related_item_data, getEmpty: false)
                     )
                     || (
                         \is_a($itemtype, CommonDBRelation::class, true)
                         && $itemtype::$mustBeAttached_2
-                        && !$itemtype::getItemFromArray($itemtype::$itemtype_2, $itemtype::$items_id_2, $related_item_data)
+                        && !$itemtype::getItemFromArray($itemtype::$itemtype_2, $itemtype::$items_id_2, $related_item_data, getEmpty: false)
                     )
                 ) {
                     // A mandatory linked item does not exist, meaning that the original item was an orphaned relation.
