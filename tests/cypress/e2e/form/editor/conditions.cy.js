@@ -2575,8 +2575,8 @@ describe ('Conditions', () => {
         // Delete conditions
         getAndFocusQuestion('My second question').within(() => {
             openConditionEditor();
-            deleteCondition(0);
             deleteCondition(1);
+            deleteCondition(0);
         });
 
         // Delete the first question
