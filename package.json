@@ -20,7 +20,7 @@
         "@fullcalendar/rrule": "^4.4.2",
         "@fullcalendar/timegrid": "^4.4.2",
         "@fullcalendar/timeline": "^4.4.3",
-        "@glpi-project/illustrations": "^0.7.0",
+        "@glpi-project/illustrations": "^0.8.0",
         "@tabler/core": "^1.4.0",
         "@tabler/icons-webfont": "^3.34.1",
         "altcha": "^2.1.0",
