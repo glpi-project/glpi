@@ -1518,7 +1518,14 @@ final class FormMigrationTest extends DbTestCase
             'expected_conditions'          => [
                 [
                     'value_operator' => ValueOperator::EQUALS,
-                    'value'          => getItemByTypeName('Computer', '_test_pc01', true),
+                    'value'          => [
+                        'itemtype' => Computer::class,
+                        'items_id' => getItemByTypeName(
+                            Computer::class,
+                            '_test_pc01',
+                            true
+                        ),
+                    ],
                     'logic_operator' => LogicOperator::AND,
                 ],
             ],
@@ -1539,7 +1546,14 @@ final class FormMigrationTest extends DbTestCase
             'expected_conditions'          => [
                 [
                     'value_operator' => ValueOperator::EQUALS,
-                    'value'          => getItemByTypeName('Location', '_sublocation01', true),
+                    'value'          => [
+                        'itemtype' => Location::class,
+                        'items_id' => getItemByTypeName(
+                            Location::class,
+                            '_sublocation01',
+                            true
+                        ),
+                    ],
                     'logic_operator' => LogicOperator::AND,
                 ],
             ],
@@ -1623,7 +1637,10 @@ final class FormMigrationTest extends DbTestCase
                 expected_conditions: [
                     [
                         'value_operator' => ValueOperator::EQUALS,
-                        'value'          => $expected_location_id,
+                        'value'          => [
+                            'itemtype' => Location::class,
+                            'items_id' => $expected_location_id,
+                        ],
                         'logic_operator' => LogicOperator::AND,
                     ],
                 ],
