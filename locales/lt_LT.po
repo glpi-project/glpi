@@ -912,7 +912,7 @@ msgstr "Pažymėti viską"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Entity tree"
-msgstr "Esybių nedus"
+msgstr "Esybių medis"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "No entity found"
@@ -920,7 +920,7 @@ msgstr ""
 
 #: templates/password_form.html.twig
 msgid "Your password has expired. You must change it to be able to login."
-msgstr ""
+msgstr "Tavo slaptažodis nebegalioja. Norėdami prisijungti, turite jį pakeisti."
 
 #: templates/password_form.html.twig src/User.php:5089
 msgid ""
