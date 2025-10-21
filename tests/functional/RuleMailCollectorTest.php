@@ -198,7 +198,7 @@ class RuleMailCollectorTest extends DbTestCase
             [
                 'mailcollector'       => 0,
                 '_users_id_requester' => $normal_user_id,
-                'from'                => 'noone@nodomain.com'
+                'from'                => 'noone@nodomain.com',
             ]
         );
 
@@ -218,7 +218,7 @@ class RuleMailCollectorTest extends DbTestCase
             [
                 'mailcollector'       => 0,
                 '_users_id_requester' => $normal_user_id,
-                'from'                => 'normal@glpi-project.org'
+                'from'                => 'normal@glpi-project.org',
             ]
         );
 
