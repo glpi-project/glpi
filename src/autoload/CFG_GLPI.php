@@ -49,7 +49,7 @@ $CFG_GLPI['languages'] = [
     //Code       Name in native lang          LANG FILE      jquery tinymce english name            standard plural number
     'ar_SA'  => ['العربية السعودية',          'ar_SA.mo',    'ar',    'ar_SA', 'arabic',            103],
     'ar_IQ'  => ['العربية العراق',            'ar_IQ.mo',    'ar',    'ar', 'irak arabic',          103],
-    'ar_SY'  => ['سوريا',                     'ar_SY.mo',    'ar',    'ar', 'syria arabic',         103],
+    'ar_SY'  => ['العربية سوريا',             'ar_SY.mo',    'ar',    'ar', 'syria arabic',         103],
     'az_AZ'  => ['Azərbaycan dili',           'az_AZ.mo',    'az',    'az', 'azerbaijani',          2],
     'bg_BG'  => ['Български',                 'bg_BG.mo',    'bg',    'bg', 'bulgarian',            2],
     'bn_BD'  => ['বাংলা (বাংলাদেশ)',          'bn_BD.mo',    'bn',    'bn_BD', 'bengali',           2],
