@@ -1488,10 +1488,7 @@ TWIG,
             throw new RuntimeException("Cant load current entity");
         }
 
-        if (
-            Session::haveRight("ticket", CREATE)
-            && $entity->isServiceCatalogEnabled()
-        ) {
+        if ($entity->isServiceCatalogEnabled()) {
             $menu['create_ticket'] = [
                 'default' => ServiceCatalog::getSearchURL(false),
                 'title'   => __('Create a ticket'),
