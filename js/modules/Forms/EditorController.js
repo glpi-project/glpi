@@ -1279,26 +1279,37 @@ export class GlpiFormEditorController
         const elementsWithConditions = [];
 
         // Process form elements (questions and sections)
+        const already_reported_items = [];
         conditionsUsingItem.each((_index, element) => {
             // Check if condition is in a question
             const parentItem = $(element).closest('[data-glpi-form-editor-block]');
             if (parentItem.length > 0) {
+                const uuid = this.#getItemInput(parentItem, "uuid");
+                if (already_reported_items.indexOf(uuid) != -1) {
+                    return;
+                }
                 elementsWithConditions.push({
                     name: this.#getItemInput(parentItem, "name"),
-                    uuid: this.#getItemInput(parentItem, "uuid"),
+                    uuid: uuid,
                     type: 'question',
                     element: parentItem
                 });
+                already_reported_items.push(uuid);
             } else {
                 // Check if condition is in a section
                 const parentSection = $(element).closest('[data-glpi-form-editor-section]');
                 if (parentSection.length > 0) {
+                    const uuid = this.#getItemInput(parentSection, "uuid");
+                    if (already_reported_items.indexOf(uuid) != -1) {
+                        return;
+                    }
                     elementsWithConditions.push({
                         name: this.#getItemInput(parentSection, "name"),
-                        uuid: this.#getItemInput(parentSection, "uuid"),
+                        uuid: uuid,
                         type: 'section',
                         element: parentSection
                     });
+                    already_reported_items.push(uuid);
                 }
             }
         });
