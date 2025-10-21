@@ -62,3 +62,22 @@ which broke styles of btn-group > .btn-check
         @include button-check($value);
     }
 }
+
+.btn-group.flex-row-reverse > .btn {
+    border-radius: 0 !important;
+}
+
+.btn-group.flex-row-reverse > .btn:first-child {
+    border-top-right-radius: 4px !important;
+    border-bottom-right-radius: 4px !important;
+}
+
+.btn-group.flex-row-reverse > .btn:last-child {
+    border-top-left-radius: 4px !important;
+    border-bottom-left-radius: 4px !important;
+    border-right: unset !important;
+}
+
+.btn-group > .btn:not(:last-child):not(.dropdown-toggle), .btn-group > .btn-group:not(:last-child) > .btn {
+    border-right: unset !important;
+}
