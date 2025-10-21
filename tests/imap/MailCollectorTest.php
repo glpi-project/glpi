@@ -1493,4 +1493,24 @@ PLAINTEXT,
         $result = $mailcollector->cleanContent($original);
         $this->assertEquals($expected, $result);
     }
+
+    public function testMissingCharsetMailIsProcessed()
+    {
+        $email_file = GLPI_ROOT . '/tests/emails-tests/47-missing-charset.eml';
+        $this->assertFileExists($email_file);
+
+        $storage = new \Laminas\Mail\Storage\Mbox(['filename' => $email_file]);
+        $message = $storage->current();
+
+        $body_text = null;
+        foreach ($message as $part) {
+            if ($part->getHeader('content-type')->getType() === 'text/plain') {
+                $body_text = $part->getContent();
+                break;
+            }
+        }
+
+        $this->assertNotNull($body_text, 'No text/plain part found in email');
+        $this->assertStringContainsString('ATTENTION', $body_text);
+    }
 }
