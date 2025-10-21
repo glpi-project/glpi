@@ -580,3 +580,9 @@ input.form-check-input[type="radio"]:disabled,
 input.form-check-input[type="checkbox"]:disabled {
     opacity: 0.9;
 }
+
+html[dir='rtl'] {
+    .form-select {
+        background-position: left 1rem center;
+    }
+}
