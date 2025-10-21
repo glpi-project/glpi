@@ -89,6 +89,7 @@ use Glpi\Migration\PluginMigrationResult;
 use Glpi\Tests\FormTesterTrait;
 use GlpiPlugin\Tester\Form\QuestionTypeIpConverter;
 use Group;
+use ITILCategory;
 use Location;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -1517,7 +1518,14 @@ final class FormMigrationTest extends DbTestCase
             'expected_conditions'          => [
                 [
                     'value_operator' => ValueOperator::EQUALS,
-                    'value'          => getItemByTypeName('Computer', '_test_pc01', true),
+                    'value'          => [
+                        'itemtype' => Computer::class,
+                        'items_id' => getItemByTypeName(
+                            Computer::class,
+                            '_test_pc01',
+                            true
+                        ),
+                    ],
                     'logic_operator' => LogicOperator::AND,
                 ],
             ],
@@ -1538,7 +1546,14 @@ final class FormMigrationTest extends DbTestCase
             'expected_conditions'          => [
                 [
                     'value_operator' => ValueOperator::EQUALS,
-                    'value'          => getItemByTypeName('Location', '_sublocation01', true),
+                    'value'          => [
+                        'itemtype' => Location::class,
+                        'items_id' => getItemByTypeName(
+                            Location::class,
+                            '_sublocation01',
+                            true
+                        ),
+                    ],
                     'logic_operator' => LogicOperator::AND,
                 ],
             ],
@@ -1622,7 +1637,10 @@ final class FormMigrationTest extends DbTestCase
                 expected_conditions: [
                     [
                         'value_operator' => ValueOperator::EQUALS,
-                        'value'          => $expected_location_id,
+                        'value'          => [
+                            'itemtype' => Location::class,
+                            'items_id' => $expected_location_id,
+                        ],
                         'logic_operator' => LogicOperator::AND,
                     ],
                 ],
@@ -2486,7 +2504,7 @@ final class FormMigrationTest extends DbTestCase
         $question = getItemByTypeName(Question::class, 'Test form migration question for dropdown item question with empty values');
         /** @var QuestionTypeItemDropdown $question_type */
         $question_type = $question->getQuestionType();
-        $this->assertEquals(\ITILCategory::getType(), $question_type->getDefaultValueItemtype($question));
+        $this->assertEquals(ITILCategory::getType(), $question_type->getDefaultValueItemtype($question));
         $this->assertEquals([], $question_type->getCategoriesFilter($question));
         $this->assertEquals(0, $question_type->getRootItemsId($question));
         $this->assertEquals(0, $question_type->getSubtreeDepth($question));
@@ -2562,13 +2580,13 @@ final class FormMigrationTest extends DbTestCase
         global $DB;
 
         $itilcategory = $this->createItem(
-            \ITILCategory::class,
+            ITILCategory::class,
             [
                 'name' => 'Root Category',
             ]
         );
         $this->createItem(
-            \ITILCategory::class,
+            ITILCategory::class,
             [
                 'name'              => 'Sub Category',
                 'itilcategories_id' => $itilcategory->getId(),
@@ -2623,7 +2641,7 @@ final class FormMigrationTest extends DbTestCase
         $question = getItemByTypeName(Question::class, 'Test form migration question for dropdown item question with advanced options');
         /** @var QuestionTypeItemDropdown $question_type */
         $question_type = $question->getQuestionType();
-        $this->assertEquals(\ITILCategory::getType(), $question_type->getDefaultValueItemtype($question));
+        $this->assertEquals(ITILCategory::getType(), $question_type->getDefaultValueItemtype($question));
         $this->assertEquals(['request'], $question_type->getCategoriesFilter($question));
         $this->assertEquals($itilcategory->getId(), $question_type->getRootItemsId($question));
         $this->assertEquals(0, $question_type->getSubtreeDepth($question));
@@ -3382,6 +3400,60 @@ final class FormMigrationTest extends DbTestCase
         // Assert: the migration should succeed, the invalid condition will be
         // ignored.
         $this->assertTrue($result->isFullyProcessed());
+    }
+
+    public function testFormWithConditionOnCategories(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Arrange: create a form with conditions on ITIL categories
+        $parent_category = $this->createItem(ITILCategory::class, [
+            'name' => "Parent category",
+        ]);
+        $category = $this->createItem(ITILCategory::class, [
+            'name' => "My category",
+            ITILCategory::getForeignKeyField() => $parent_category->getID(),
+        ]);
+        $this->createSimpleFormcreatorForm("Form with conditon on categories", [
+            [
+                'name'      => 'My category question',
+                'fieldtype' => 'dropdown',
+                'itemtype'  => ITILCategory::class,
+                'values'    => "{\"show_ticket_categories\":\"incident\",\"show_tree_depth\":\"0\",\"show_tree_root\":\"0\",\"selectable_tree_root\":\"0\",\"entity_restrict\":0}",
+            ],
+            [
+                'name'        => 'My other question',
+                'fieldtype'   => 'integer',
+                'show_rule'   => 2,
+                '_conditions' => [
+                    [
+                        'plugin_formcreator_questions_id' => 'My category question',
+                        'show_condition'                  => 1,
+                        'show_value'                      => "Parent category &gt; My category",
+                        'show_logic'                      => 1,
+                        'order'                           => 1,
+                    ],
+                ],
+            ],
+        ]);
+
+        // Act: import the form
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $migration->execute();
+        $form = getItemByTypeName(Form::class, "Form with conditon on categories");
+        $question = Question::getById(
+            $this->getQuestionId($form, "My other question")
+        );
+        $conditions_data = $question->getConfiguredConditionsData();
+
+        // Assert: make sure the condition value match the expected format
+        $this->assertCount(1, $conditions_data);
+        $condition_data = array_pop($conditions_data);
+        $this->assertEquals([
+            "itemtype" => ITILCategory::class,
+            "items_id" => $category->getID(),
+        ], $condition_data->getValue());
     }
 
     protected function createSimpleFormcreatorForm(
