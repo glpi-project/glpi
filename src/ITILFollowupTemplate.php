@@ -114,6 +114,14 @@ class ITILFollowupTemplate extends AbstractITILChildTemplate
             'datatype'           => 'bool',
         ];
 
+        $tab[] = [
+            'id'                 => '7',
+            'name'               => PendingReason::getTypeName(1),
+            'field'              => 'name',
+            'table'              => getTableForItemType('PendingReason'),
+            'datatype'           => 'dropdown',
+        ];
+
         return $tab;
     }
 
