@@ -91,6 +91,11 @@ abstract class CommonDropdown extends CommonDBTM
 
         $menu = [];
         if (static::class === 'CommonDropdown') {
+            $dps = Dropdown::getStandardDropdownItemTypes();
+            if ($dps === []) {
+                return [];
+            }
+
             $menu['title']             = static::getTypeName(Session::getPluralNumber());
             $menu['shortcut']          = 'n';
             $menu['page']              = '/front/dropdown.php';
@@ -112,7 +117,6 @@ abstract class CommonDropdown extends CommonDBTM
                 ],
             ];
 
-            $dps = Dropdown::getStandardDropdownItemTypes();
             foreach ($dps as $tab) {
                 foreach ($tab as $key => $val) {
                     /** @var class-string<CommonDropdown> $key */
