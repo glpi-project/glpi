@@ -1,0 +1,25 @@
+From: system@example.org
+To: collector@example.org
+Subject: System Report
+MIME-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 21 Oct 2025 10:00:00 +0000
+Message-ID: <missing-charset-test@example.org>
+
+ATTENTION: Ne cliquez pas sur les liens ou n'ouvrez pas les pi=E8ces jointe=
+s si vous n'=EAtes pas s=FBr du contenu.
+
+This is a test message with:
+- Accented characters: =E8 =EA =FB (è ê û in ISO-8859-1)
+- Quote printable encoding
+- NO charset parameter in Content-Type header
+
+The bug is that when charset is missing, these bytes are not converted to UTF-8.
+
+Details:
+=E8 (è), =E9 (é), =EA (ê), =EB (ë)
+=E0 (à), =E2 (â), =E4 (ä)
+=F9 (ù), =FB (û), =FC (ü)
+
+This should be handled correctly by mb_detect_encoding() fallback.
