@@ -36,6 +36,7 @@
 {# @var \Glpi\Form\Desination\FormDestination          destinations #}
 {# @var int|null                                       active_destination #}
 {# @var boolean                                        can_update #}
+
 <div class="py-2 px-3">
     <h2 class="d-flex">
         <i class="{{ icon }} me-2"></i>
@@ -92,7 +93,7 @@
                     class="accordion-item destination-{{ destination.getID() }}"
                     aria-label="{{ destination.getName() }}"
                 >
-                    <div class="accordion-header">
+                    <div class="accordion-header {{ not concrete_destination ? 'bg-danger' : '' }}">
                         <div
                             class="accordion-button {{ is_expanded ? '' : 'collapsed' }}"
                             role="button"
@@ -102,9 +103,9 @@
                             aria-expanded="{{ is_expanded ? 'true' : 'false' }}"
                             data-glpi-destination-click-on-space {# Simulate how space would behave in a button instead of a div #}
                         >
-                            <i class="{{ concrete_destination.getIcon() }}"></i>
+                            <i class="{{ concrete_destination ? concrete_destination.getIcon() : 'ti ti-unlink text-white' }}"></i>
                             <span
-                                class="m-0 lh-base fw-normal glpi-form-destination-name"
+                                class="m-0 lh-base fw-normal glpi-form-destination-name {{ not concrete_destination ? 'text-white' : '' }}"
                             >
                                 {{ destination.getName() }}
                             </span>
@@ -117,8 +118,8 @@
                                         class="{{ display_class }} badge bg-secondary-lt d-flex align-items-center ms-2"
                                         data-glpi-editor-condition-badge="{{ strategy.value }}"
                                     >
-                                        <i class="{{ strategy.getIcon() }} me-1"></i>
-                                        <span>{{ strategy.getLabel() }}</span>
+                                        <i class="{{ strategy.getIcon() }} me-1 {{ not concrete_destination ? 'text-white' : '' }}"></i>
+                                        <span class="{{ not concrete_destination ? 'text-white' : '' }}">{{ strategy.getLabel() }}</span>
                                     </span>
                                 {% endfor %}
                             </div>

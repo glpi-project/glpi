@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Form\Destination;
 
 use CommonGLPI;
+use DBmysql;
 use DbTestCase;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Destination\FormDestinationTicket;
@@ -91,6 +92,36 @@ final class FormDestinationTest extends DbTestCase
     {
         $link = new FormDestination();
         $form = $this->createAndGetFormWithFourDestinations();
+
+        // Render tab content
+        ob_start();
+        $return = $link->displayTabContentForItem($form);
+        ob_end_clean();
+
+        $this->assertTrue($return);
+    }
+
+    public function testDisplayTabContentForItemWithNotExistingItemType(): void
+    {
+        $link = new FormDestination();
+        $form = $this->createAndGetFormWithFourDestinations();
+
+        $destination = $this->createItem(FormDestination::class, [
+            'forms_forms_id' => $form->getID(),
+            'itemtype'       => FormDestinationTicket::class,
+            'name'           => 'Plugin not existing',
+        ], ['config']);
+
+        /** @var DBmysql $DB */
+        global $DB;
+
+        // We force the itemtype to be not existing, we use $DB->update to avoid itemtype checking that will deny it
+        $DB->update(FormDestination::getTable(), [
+            'itemtype' => 'GlpiPlugin\NotExistingPlugin\Form\ComputerDestination',
+        ], ['id' => $destination->getID()]);
+
+        $destination->getFromDB($destination->getID());
+        $this->assertEquals('GlpiPlugin\NotExistingPlugin\Form\ComputerDestination', $destination->fields['itemtype']);
 
         // Render tab content
         ob_start();

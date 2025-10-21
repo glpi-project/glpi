@@ -60,6 +60,7 @@ class ItemtypeExtension extends AbstractExtension
             new TwigFilter('itemtype_name', [$this, 'getItemtypeName']),
             new TwigFilter('itemtype_search_path', [$this, 'getItemtypeSearchPath']),
             new TwigFilter('itemtype_foreign_key', [$this, 'getItemtypeForeignKey']),
+            new TwigFilter('itemtype_plugin_key', [$this, 'getItemtypePluginKey']),
         ];
     }
 
@@ -244,6 +245,23 @@ class ItemtypeExtension extends AbstractExtension
     }
 
     /**
+     * @param class-string|object $itemtype The itemtype or an item instance.
+     * @return string|null The foreign key field name of the itemtype or null if not found.
+     */
+    public function getItemtypeForeignKey(string|object $itemtype): ?string
+    {
+        if (is_a($itemtype, CommonDBTM::class, true)) {
+            return $itemtype::getForeignKeyField();
+        }
+        return null;
+    }
+
+    public function getItemtypePluginKey(string $itemtype): ?string
+    {
+        return isPluginItemType($itemtype)['plugin'] ?? null;
+    }
+
+    /**
      * Returns instance of item with given ID.
      *
      * @param CommonDBTM|string $item   Item instance of itemtype of the item.
@@ -263,17 +281,5 @@ class ItemtypeExtension extends AbstractExtension
 
         $instance = $id !== null ? $item::getById($id) : null;
         return $instance ?: null;
-    }
-
-    /**
-     * @param class-string|object $itemtype The itemtype or an item instance.
-     * @return string|null The foreign key field name of the itemtype or null if not found.
-     */
-    public function getItemtypeForeignKey(string|object $itemtype): ?string
-    {
-        if (is_a($itemtype, CommonDBTM::class, true)) {
-            return $itemtype::getForeignKeyField();
-        }
-        return null;
     }
 }
