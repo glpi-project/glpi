@@ -1,0 +1,79 @@
+{
+    "version": 1,
+    "forms": [
+        {
+            "id": 24,
+            "uuid": "1867d336-38e1-4a55-aba4-40f72d933b5a",
+            "name": "Simple form",
+            "header": null,
+            "description": null,
+            "entity_name": "Root entity > E2ETestEntity",
+            "is_recursive": true,
+            "is_active": false,
+            "submit_button_visibility_strategy": "",
+            "illustration": "",
+            "submit_button_conditions": [],
+            "sections": [
+                {
+                    "id": 26,
+                    "uuid": "fcceda6e-19e2-43e3-82fe-4a33176bbf65",
+                    "name": "First section",
+                    "description": null,
+                    "rank": 0,
+                    "visibility_strategy": "",
+                    "conditions": []
+                }
+            ],
+            "comments": [],
+            "questions": [
+                {
+                    "id": 121,
+                    "uuid": "dc46ec4f-5231-4853-af59-776da821c0c2",
+                    "name": "Text question",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "is_mandatory": false,
+                    "vertical_rank": 0,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": "",
+                    "extra_data": null,
+                    "section_id": 26,
+                    "visibility_strategy": "",
+                    "validation_strategy": "",
+                    "conditions": [],
+                    "validation_conditions": []
+                }
+            ],
+            "policies": [
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "config": {
+                        "user_ids": [
+                            "all"
+                        ],
+                        "group_ids": [],
+                        "profile_ids": []
+                    },
+                    "is_active": true
+                }
+            ],
+            "destinations": [
+                {
+                    "id": 27,
+                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "name": "Ticket",
+                    "config": [],
+                    "creation_strategy": "",
+                    "conditions": []
+                }
+            ],
+            "translations": [],
+            "data_requirements": [
+                {
+                    "itemtype": "Entity",
+                    "name": "Root entity > E2ETestEntity"
+                }
+            ]
+        }
+    ]
+}

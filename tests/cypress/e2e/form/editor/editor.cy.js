@@ -1055,4 +1055,27 @@ describe ('Form editor', () => {
             cy.checkAndCloseAlert('Item successfully updated');
         });
     });
+
+    it('can change type to item', () => {
+        cy.login();
+        cy.importForm('form-with-text-question.json').visitFormTab('Form');
+
+        // Select the question
+        cy.findByRole('region', {'name': 'Question details'})
+            .as("question_details")
+        ;
+        cy.get("@question_details").click();
+
+        // Change the question type
+        cy.getDropdownByLabelText("Question type")
+            .selectDropdownValue('Item')
+        ;
+        cy.getDropdownByLabelText("Select an itemtype")
+            .should('be.visible')
+        ;
+
+        // Save the form
+        cy.findByRole('button', {'name': 'Save'}).click();
+        cy.checkAndCloseAlert('Item successfully updated');
+    });
 });
