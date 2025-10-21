@@ -45,6 +45,7 @@ use Glpi\Event;
 use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
 use Glpi\Search\DefaultSearchRequestInterface;
+use Glpi\Urgency;
 use Safe\DateTime;
 
 use function Safe\preg_match;
@@ -3489,7 +3490,7 @@ JAVASCRIPT;
             'name'                      => '',
             'content'                   => '',
             'itilcategories_id'         => 0,
-            'urgency'                   => 3,
+            'urgency'                   => Urgency::MEDIUM->value,
             'impact'                    => 3,
             'priority'                  => self::computePriority(3, 3),
             'requesttypes_id'           => $requesttype,

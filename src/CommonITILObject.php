@@ -32,6 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
+
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\ContentTemplates\Parameters\CommonITILObjectParameters;
 use Glpi\DBAL\QueryExpression;
@@ -52,6 +53,7 @@ use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
 use Glpi\Search\Output\HTMLSearchOutput;
 use Glpi\Team\Team;
+use Glpi\Urgency;
 use Safe\Exceptions\DatetimeException;
 
 use function Safe\getimagesize;
@@ -2333,6 +2335,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     private function handleReadonlyFields(array $input, bool $isAdd = false): array
     {
         $tt = $this->getITILTemplateFromInput($input);
+        $tt->getFromDBWithData($tt->getID()); // We load the fields (predefined and readonly)
+
         foreach (array_keys($tt->readonly) as $read_only_field) {
             if ($isAdd && array_key_exists($read_only_field, $tt->predefined)) {
                 $input[$read_only_field] = $tt->predefined[$read_only_field];
@@ -2832,7 +2836,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         // save value before clean;
-        $title = ltrim($input['name']);
+        $title = ltrim($input['name'] ?? '');
 
         // Set default status to avoid notice
         if (!isset($input["status"])) {
@@ -2843,7 +2847,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             !isset($input["urgency"])
             || !($CFG_GLPI['urgency_mask'] & (1 << $input["urgency"]))
         ) {
-            $input["urgency"] = 3;
+            $input["urgency"] = Urgency::MEDIUM->value;
         }
         if (
             !isset($input["impact"])
@@ -2894,8 +2898,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         // No name set name
-        $input["name"]    = ltrim($input["name"]);
-        $input['content'] = ltrim($input['content']);
+        $input["name"]    = ltrim($input["name"] ?? '');
+        $input['content'] = ltrim($input['content'] ?? '');
         if (empty($input["name"])) {
             // Build name based on content
 
