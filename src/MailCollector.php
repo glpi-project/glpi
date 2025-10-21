@@ -2382,6 +2382,19 @@ class MailCollector extends CommonDBTM
         }
 
         $charset = $content_type->getParameter('charset');
+
+        // If charset is not specified, try to detect it automatically
+        if ($charset === null) {
+            // Use mb_detect_encoding to guess the charset
+            $detected_charset = mb_detect_encoding($contents, ['UTF-8', 'ISO-8859-1', 'ISO-8859-15', 'Windows-1252'], true);
+            if ($detected_charset !== false) {
+                $charset = $detected_charset;
+            } else {
+                // Fallback to ISO-8859-1 as it's the most common for mail headers without charset
+                $charset = 'ISO-8859-1';
+            }
+        }
+
         if ($charset !== null && strtoupper($charset) != 'UTF-8') {
             /* mbstring functions do not handle the 'ks_c_5601-1987' &
              * 'ks_c_5601-1989' charsets. However, these charsets are used, for
