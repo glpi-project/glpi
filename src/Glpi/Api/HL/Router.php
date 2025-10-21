@@ -643,7 +643,7 @@ EOT;
 
         $this->original_request = clone $request;
         $matched_route = $this->match($request);
-        $routes_allowed_when_disabled = ['/token'];
+        $routes_allowed_when_disabled = ['/token', '/status/all'];
 
         if ($matched_route === null) {
             $response = new Response(404);
