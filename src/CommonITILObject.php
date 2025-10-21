@@ -1769,16 +1769,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     {
         //// check mandatory fields
         // First get ticket template associated: entity and type/category
-        $entid = $input['entities_id'] ?? $this->fields['entities_id'];
-
-        $type = null;
-        if (isset($input['type'])) {
-            $type = $input['type'];
-        } elseif (isset($this->fields['type'])) {
-            $type = $this->fields['type'];
-        }
-
-        $categid = $input['itilcategories_id'] ?? $this->fields['itilcategories_id'];
+        $tt = $this->getITILTemplateFromInput($input);
 
         $check_allowed_fields_for_template = false;
         $allowed_fields                    = [];
@@ -1864,8 +1855,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 return false;
             }
         }
-
-        $tt = $this->getITILTemplateToUse(0, $type, $categid, $entid);
 
         if (count($tt->mandatory)) {
             $mandatory_missing = [];
@@ -1976,6 +1965,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         if (!$this->checkFieldsConsistency($input)) {
             return false;
         }
+        $input = $this->handleReadonlyFields($input);
 
         // Add document if needed
         $this->getFromDB($input["id"]); // entities_id field required
@@ -2338,6 +2328,23 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             PendingReason_Item::deleteForItem($this);
         }
 
+        return $input;
+    }
+    private function handleReadonlyFields(array $input, bool $isAdd = false): array
+    {
+        $tt = $this->getITILTemplateFromInput($input);
+        foreach (array_keys($tt->readonly) as $read_only_field) {
+            if ($isAdd && array_key_exists($read_only_field, $tt->predefined)) {
+                $input[$read_only_field] = $tt->predefined[$read_only_field];
+                continue;
+            }
+
+            if (array_key_exists($read_only_field, $this->fields)) {
+                $input[$read_only_field] = $this->fields[$read_only_field];
+            } else {
+                unset($input[$read_only_field]);
+            }
+        }
         return $input;
     }
 
@@ -2813,6 +2820,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         if (!$this->checkFieldsConsistency($input)) {
             return false;
         }
+        $input = $this->handleReadonlyFields($input, true);
 
         $input = $this->transformActorsInput($input);
 
@@ -8250,6 +8258,29 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
         }
         return $tt;
+    }
+
+    /**
+     * Get the template to use
+     * If the input is not defined, it will get it from the object fields datas
+     *
+     * @param array $input
+     * @return ITILTemplate
+     *
+     * @since 11.0.2
+     */
+    public function getITILTemplateFromInput(array $input = []): ITILTemplate {
+        $entid = $input['entities_id'] ?? $this->fields['entities_id'];
+
+        $type = null;
+        if (isset($input['type'])) {
+            $type = $input['type'];
+        } elseif (isset($this->fields['type'])) {
+            $type = $this->fields['type'];
+        }
+
+        $categid = $input['itilcategories_id'] ?? $this->fields['itilcategories_id'];
+        return $this->getITILTemplateToUse(0, $type, $categid, $entid);
     }
 
     /**
