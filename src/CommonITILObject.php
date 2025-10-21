@@ -8273,7 +8273,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 11.0.2
      */
-    public function getITILTemplateFromInput(array $input = []): ITILTemplate {
+    public function getITILTemplateFromInput(array $input = []): ITILTemplate
+    {
         $entid = $input['entities_id'] ?? $this->fields['entities_id'];
 
         $type = null;
