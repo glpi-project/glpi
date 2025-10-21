@@ -585,4 +585,15 @@ html[dir='rtl'] {
     .form-select {
         background-position: left 1rem center;
     }
+
+    .pe-2 {
+        padding-left: 0.5rem!important;
+        padding-right: initial!important;
+    }
+
+    .ms-md-4 {
+        margin-left: initial!important;
+        margin-right: 1.5rem !important;
+    }
+
 }
