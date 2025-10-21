@@ -53,6 +53,10 @@ final class SingleChoiceFromValuesConditionHandler implements
         return [
             ValueOperator::EQUALS,
             ValueOperator::NOT_EQUALS,
+            ValueOperator::LESS_THAN,
+            ValueOperator::LESS_THAN_OR_EQUALS,
+            ValueOperator::GREATER_THAN,
+            ValueOperator::GREATER_THAN_OR_EQUALS,
         ];
     }
 
@@ -85,8 +89,12 @@ final class SingleChoiceFromValuesConditionHandler implements
         $b = strtolower(strval($b));
 
         return match ($operator) {
-            ValueOperator::EQUALS       => $a === $b,
-            ValueOperator::NOT_EQUALS   => $a !== $b,
+            ValueOperator::EQUALS                 => $a === $b,
+            ValueOperator::NOT_EQUALS             => $a !== $b,
+            ValueOperator::LESS_THAN              => $a < $b,
+            ValueOperator::LESS_THAN_OR_EQUALS    => $a <= $b,
+            ValueOperator::GREATER_THAN           => $a > $b,
+            ValueOperator::GREATER_THAN_OR_EQUALS => $a >= $b,
 
             // Unsupported operators
             default => false,

@@ -57,6 +57,9 @@ final class SingleChoiceFromValuesConditionHandlerTest extends AbstractCondition
             "option_b" => "option B",
             "option_c" => "option C",
             "option_d" => "option D",
+            "1" => 1,
+            "2" => 2,
+            "3" => 3,
         ];
 
         yield from self::getCasesForTypeAndConfig(
@@ -112,6 +115,110 @@ final class SingleChoiceFromValuesConditionHandlerTest extends AbstractCondition
             'condition_value'     => "option_c",
             'submitted_answer'    => "option_c",
             'expected_result'     => false,
+            'question_extra_data' => $extra_data,
+        ];
+
+        // Test with the LESS_THAN operator
+        yield "Less than check - case 1 for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::LESS_THAN,
+            'condition_value'     => "2",
+            'submitted_answer'    => "1",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data,
+        ];
+        yield "Less than check - case 2 for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::LESS_THAN,
+            'condition_value'     => "2",
+            'submitted_answer'    => "2",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data,
+        ];
+        yield "Less than check - case 3 for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::LESS_THAN,
+            'condition_value'     => "2",
+            'submitted_answer'    => "3",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data,
+        ];
+
+        // Test with the LESS_THAN_OR_EQUALS operator
+        yield "Less than or equals check - case 1 for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::LESS_THAN_OR_EQUALS,
+            'condition_value'     => "2",
+            'submitted_answer'    => "1",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data,
+        ];
+        yield "Less than or equals check - case 2 for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::LESS_THAN_OR_EQUALS,
+            'condition_value'     => "2",
+            'submitted_answer'    => "2",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data,
+        ];
+        yield "Less than or equals check - case 3 for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::LESS_THAN_OR_EQUALS,
+            'condition_value'     => "2",
+            'submitted_answer'    => "3",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data,
+        ];
+
+        // Test with the GREATER_THAN operator
+        yield "Greater than check - case 1 for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::GREATER_THAN,
+            'condition_value'     => "2",
+            'submitted_answer'    => "1",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data,
+        ];
+        yield "Greater than check - case 2 for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::GREATER_THAN,
+            'condition_value'     => "2",
+            'submitted_answer'    => "2",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data,
+        ];
+        yield "Greater than check - case 3 for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::GREATER_THAN,
+            'condition_value'     => "2",
+            'submitted_answer'    => "3",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data,
+        ];
+
+        // Test with the GREATER_THAN_OR_EQUALS operator
+        yield "Greater than or equals check - case 1 for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::GREATER_THAN_OR_EQUALS,
+            'condition_value'     => "2",
+            'submitted_answer'    => "1",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data,
+        ];
+        yield "Greater than or equals check - case 2 for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::GREATER_THAN_OR_EQUALS,
+            'condition_value'     => "2",
+            'submitted_answer'    => "2",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data,
+        ];
+        yield "Greater than or equals check - case 3 for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::GREATER_THAN_OR_EQUALS,
+            'condition_value'     => "2",
+            'submitted_answer'    => "3",
+            'expected_result'     => true,
             'question_extra_data' => $extra_data,
         ];
     }

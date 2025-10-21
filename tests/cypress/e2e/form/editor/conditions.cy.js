@@ -1795,7 +1795,31 @@ describe ('Conditions', () => {
                         operator: 'Do not match regular expression',
                         value: '^Option [1-4]$',
                         valueType: 'string'
-                    }
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is greater than',
+                        value: 'Option 1',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is less than',
+                        value: 'Option 2',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is greater than or equals to',
+                        value: 'Option 3',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is less than or equals to',
+                        value: 'Option 4',
+                        valueType: 'dropdown'
+                    },
                 ]
             }
         ],
@@ -1873,7 +1897,31 @@ describe ('Conditions', () => {
                         operator: 'Do not match regular expression',
                         value: '^Option [1-4]$',
                         valueType: 'string'
-                    }
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is greater than',
+                        value: 'Option 1',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is less than',
+                        value: 'Option 2',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is greater than or equals to',
+                        value: 'Option 3',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is less than or equals to',
+                        value: 'Option 4',
+                        valueType: 'dropdown'
+                    },
                 ]
             },
         ],

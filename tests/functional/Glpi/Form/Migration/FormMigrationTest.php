@@ -1573,19 +1573,7 @@ final class FormMigrationTest extends DbTestCase
             'expected_conditions'          => [],
         ];
 
-        yield 'QuestionTypeDropdown - Visible if with a value operator not supported by the question type' => [
-            'field_type' => 'select',
-            'show_rule'  => 2,
-            'conditions' => [
-                [
-                    'show_condition' => 3, // Less than operator, not supported by item type
-                    'show_value'     => 'Test item',
-                    'show_logic'     => 1,
-                ],
-            ],
-            'expected_visibility_strategy' => VisibilityStrategy::ALWAYS_VISIBLE,
-            'expected_conditions'          => [],
-        ];
+        // There is no 'QuestionTypeDropdown - Visible if with a value operator not supported by the question type' case because all operators are supported
 
         yield 'QuestionTypeShortText - Visible if value is not empty' => [
             'field_type' => 'text',
@@ -1908,7 +1896,6 @@ final class FormMigrationTest extends DbTestCase
             ],
         ];
 
-        // QuestionTypeDropdown does not support any validation operators
         yield 'QuestionTypeDropdown - Regex and range validation' => [
             'select',
             [
@@ -1924,6 +1911,16 @@ final class FormMigrationTest extends DbTestCase
             ],
             ValidationStrategy::VALID_IF,
             [
+                [
+                    'value_operator' => ValueOperator::GREATER_THAN_OR_EQUALS,
+                    'value'          => 5,
+                    'logic_operator' => LogicOperator::AND,
+                ],
+                [
+                    'value_operator' => ValueOperator::LESS_THAN_OR_EQUALS,
+                    'value'          => 50,
+                    'logic_operator' => LogicOperator::AND,
+                ],
                 [
                     'value_operator' => ValueOperator::MATCH_REGEX,
                     'value'          => '/^[A-Za-z0-9]+$/',
@@ -3107,7 +3104,7 @@ final class FormMigrationTest extends DbTestCase
         // Insert target question
         $DB->insert('glpi_plugin_formcreator_questions', [
             'name' => 'Target question with unsupported value operator',
-            'fieldtype' => 'select',
+            'fieldtype' => 'checkboxes',
             'plugin_formcreator_sections_id' => $sectionId,
         ]);
         $targetQuestionId = $DB->insertId();
