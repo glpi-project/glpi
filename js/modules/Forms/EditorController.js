@@ -1975,6 +1975,7 @@ export class GlpiFormEditorController
 
             // Remove the "original-name" data attribute to avoid conflicts
             sub_types_select.removeAttr("data-glpi-form-editor-original-name");
+            sub_types_select.removeData("glpi-form-editor-original-name");
 
             // Trigger sub type change
             sub_types_select.trigger("change");
