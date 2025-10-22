@@ -2345,7 +2345,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     {
         $tt = $this->getITILTemplateFromInput($input);
         if (!$tt) {
-            dump('Template not found');
             return $input;
         }
 
@@ -8300,7 +8299,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $type = $this->fields['type'];
         }
 
-        $categid = $input['itilcategories_id'] ?? $this->fields['itilcategories_id'];
+        $categid = $input['itilcategories_id'] ?? $this->fields['itilcategories_id'] ?? null;
         if (is_null($categid)) {
             return null;
         }

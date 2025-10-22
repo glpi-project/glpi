@@ -41,7 +41,7 @@ use ITILCategory;
 use ITILTemplate;
 use ITILTemplatePredefinedField;
 use ITILTemplateReadonlyField;
-use Ticket; // For type constants
+use Ticket;
 
 abstract class AbstractITILTemplateReadonlyFieldTest extends DbTestCase
 {
@@ -148,6 +148,24 @@ abstract class AbstractITILTemplateReadonlyFieldTest extends DbTestCase
         $this->login();
     }
 
+    public function testHandleReadonlyFieldsWithNoTemplate(): void
+    {
+        $itil_object = $this->getITILClass();
+        $input = [
+            'urgency'           => Urgency::LOW->value,
+            'name'              => 'Some content',
+            'status'            => CommonITILObject::INCOMING,
+            'entities_id'       => 0,
+        ];
+        if ($itil_object instanceof Ticket) {
+            $input['type'] = Ticket::INCIDENT_TYPE;
+        }
+
+        $processed_input = $itil_object->enforceReadonlyFields($input, true);
+
+        $this->assertEquals(Urgency::LOW->value, $processed_input['urgency']);
+        $this->assertEquals('Some content', $processed_input['name']);
+    }
 
     public function testHandleReadonlyFieldsOnAddWithPredefined(): void
     {
