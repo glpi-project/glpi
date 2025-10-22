@@ -2394,4 +2394,113 @@ class UserTest extends \DbTestCase
             $_SESSION['glpi_use_mode'] === \Session::DEBUG_MODE
         );
     }
+
+    // Test rule rights apply when user logs in from SSO
+    public function testGetFromSSOAndRightRules()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->login();
+
+        // Backup original SSO configuration
+        $original_config = [];
+        $sso_fields = [
+            'realname_ssofield' => 'HTTP_REAL_NAME',
+            'firstname_ssofield' => 'HTTP_FIRST_NAME',
+            'email1_ssofield' => 'HTTP_EMAIL',
+            'title_ssofield' => 'HTTP_TITLE',
+            'category_ssofield' => 'HTTP_CATEGORY',
+        ];
+
+        foreach ($sso_fields as $config_key => $server_key) {
+            $original_config[$config_key] = $CFG_GLPI[$config_key] ?? '';
+            $CFG_GLPI[$config_key] = $server_key;
+        }
+
+        // Create a test group for the rule
+        $group = new \Group();
+        $group_id = $group->add([
+            'name' => 'SSO Test Group',
+            'comment' => 'Group for SSO testing',
+        ]);
+        $this->assertGreaterThan(0, $group_id);
+
+        // Create a right rule that assigns Admin profile and root entity based on group membership
+        $rule_right = new \RuleRight();
+        $rule_id = $rule_right->add([
+            'name' => 'SSO Test Rule - Admin Profile Assignment',
+            'is_active' => 1,
+            'sub_type' => 'RuleRight',
+            'match' => 'AND',
+            'condition' => 0,
+        ]);
+        $this->assertGreaterThan(0, $rule_id);
+
+        // Add criteria: if user is member of our test group
+        $rule_criteria = new \RuleCriteria();
+        $criteria_id = $rule_criteria->add([
+            'rules_id' => $rule_id,
+            'criteria' => '_groups_id',
+            'condition' => 0, // is
+            'pattern' => $group_id,
+        ]);
+        $this->assertGreaterThan(0, $criteria_id);
+
+        // Add action: assign Admin profile
+        $admin_profile_id = getItemByTypeName('Profile', 'Super-Admin', true);
+        $rule_action = new \RuleAction();
+        $action_id = $rule_action->add([
+            'rules_id' => $rule_id,
+            'action_type' => 'assign',
+            'field' => 'profiles_id',
+            'value' => $admin_profile_id,
+        ]);
+        $this->assertGreaterThan(0, $action_id);
+
+        // Add action: assign to root entity (entity 0)
+        $entity_action_id = $rule_action->add([
+            'rules_id' => $rule_id,
+            'action_type' => 'assign',
+            'field' => 'entities_id',
+            'value' => 0,
+        ]);
+        $this->assertGreaterThan(0, $entity_action_id);
+
+        // Create a user and simulate SSO authentication
+        $user = new \User();
+        $username = 'sso_test_user_' . mt_rand();
+
+        // Simulate SSO server variables
+        $_SERVER['HTTP_REAL_NAME'] = 'Test';
+        $_SERVER['HTTP_FIRST_NAME'] = 'SSO';
+        $_SERVER['HTTP_EMAIL'] = 'sso.test@example.com';
+        $_SERVER['HTTP_TITLE'] = 'Administrator';
+        $_SERVER['HTTP_CATEGORY'] = 'IT Staff';
+
+        // Create the user with basic information
+        $user_id = $user->add([
+            'name' => $username,
+            'authtype' => \Auth::EXTERNAL,
+        ]);
+        $this->assertGreaterThan(0, $user_id);
+        $this->assertTrue($user->getFromDB($user_id));
+
+        // Add user to the test group to trigger the rule
+        $group_user = new \Group_User();
+        $group_user_id = $group_user->add([
+            'users_id' => $user_id,
+            'groups_id' => $group_id,
+            'is_dynamic' => 1,
+        ]);
+        $this->assertGreaterThan(0, $group_user_id);
+
+        // Simulate the SSO authentication process
+        $user->fields['_groups'] = [$group_id]; // Simulate group membership from SSO
+        $sso_result = $user->getFromSSO();
+        $this->assertTrue($sso_result);
+
+        $this->assertEquals("0", $user->fields["_ldap_rules"]["rules_entities_rights"][0][0]); // entities_id
+        $this->assertEquals($admin_profile_id, $user->fields["_ldap_rules"]["rules_entities_rights"][0][1]); // profiles_id
+    }
 }
