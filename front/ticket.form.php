@@ -74,6 +74,7 @@ if (isset($_POST['_actors'])) {
 
 if (isset($_POST["add"])) {
     $track->check(-1, CREATE, $_POST);
+    $_POST = $track->enforceReadonlyFields($_POST, true);
 
     if ($track->add($_POST)) {
         if ($_SESSION['glpibackcreated']) {
@@ -85,6 +86,7 @@ if (isset($_POST["add"])) {
     if (!$track::canUpdate()) {
         throw new AccessDeniedHttpException();
     }
+    $_POST = $track->enforceReadonlyFields($_POST);
     $track->update($_POST);
 
     if (isset($_POST['kb_linked_id'])) {

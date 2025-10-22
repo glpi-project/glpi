@@ -32,7 +32,6 @@
  *
  * ---------------------------------------------------------------------
  */
-
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\ContentTemplates\Parameters\CommonITILObjectParameters;
 use Glpi\DBAL\QueryExpression;
@@ -1770,8 +1769,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     protected function handleTemplateFields(array $input, bool $show_error_message = true)
     {
         //// check mandatory fields
-        // First get ticket template associated: entity and type/category
-        $tt = $this->getITILTemplateFromInput($input);
 
         $check_allowed_fields_for_template = false;
         $allowed_fields                    = [];
@@ -1858,7 +1855,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
         }
 
-        if (count($tt->mandatory)) {
+        // First get ticket template associated: entity and type/category
+        $tt = $this->getITILTemplateFromInput($input);
+        if ($tt && count($tt->mandatory)) {
             $mandatory_missing = [];
             $fieldsname        = $tt->getAllowedFieldsNames(true);
             foreach ($tt->mandatory as $key => $val) {
@@ -1967,7 +1966,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         if (!$this->checkFieldsConsistency($input)) {
             return false;
         }
-        $input = $this->handleReadonlyFields($input);
 
         // Add document if needed
         $this->getFromDB($input["id"]); // entities_id field required
@@ -2332,9 +2330,25 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         return $input;
     }
-    private function handleReadonlyFields(array $input, bool $isAdd = false): array
+
+    /**
+     * Processes readonly fields in the input array based on the ITIL template data.
+     *
+     * @param array $input The user input data to process (often $_POST).
+     * @param bool $isAdd true if we are in a creation, will force to apply the template predefined field.
+     *
+     * @return array The modified user input array after processing readonly fields.
+     *
+     * @since 11.0.2
+     */
+    public function enforceReadonlyFields(array $input, bool $isAdd = false): array
     {
         $tt = $this->getITILTemplateFromInput($input);
+        if (!$tt) {
+            dump('Template not found');
+            return $input;
+        }
+
         $tt->getFromDBWithData($tt->getID()); // We load the fields (predefined and readonly)
 
         foreach (array_keys($tt->readonly) as $read_only_field) {
@@ -2824,7 +2838,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         if (!$this->checkFieldsConsistency($input)) {
             return false;
         }
-        $input = $this->handleReadonlyFields($input, true);
 
         $input = $this->transformActorsInput($input);
 
@@ -8269,13 +8282,16 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * If the input is not defined, it will get it from the object fields datas
      *
      * @param array $input
-     * @return ITILTemplate
+     * @return ITILTemplate|null
      *
      * @since 11.0.2
      */
-    public function getITILTemplateFromInput(array $input = []): ITILTemplate
+    public function getITILTemplateFromInput(array $input = []): ?ITILTemplate
     {
-        $entid = $input['entities_id'] ?? $this->fields['entities_id'];
+        $entid = $input['entities_id'] ?? $this->fields['entities_id'] ?? $input['id'] ?? null;
+        if (is_null($entid)) {
+            return null;
+        }
 
         $type = null;
         if (isset($input['type'])) {
@@ -8285,6 +8301,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         $categid = $input['itilcategories_id'] ?? $this->fields['itilcategories_id'];
+        if (is_null($categid)) {
+            return null;
+        }
         return $this->getITILTemplateToUse(0, $type, $categid, $entid);
     }
 

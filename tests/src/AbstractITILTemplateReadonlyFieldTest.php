@@ -165,7 +165,7 @@ abstract class AbstractITILTemplateReadonlyFieldTest extends DbTestCase
             $input['type'] = Ticket::INCIDENT_TYPE;
         }
 
-        $processed_input = $itil_object->prepareInputForAdd($input);
+        $processed_input = $itil_object->enforceReadonlyFields($input, true);
 
         $this->assertEquals(Urgency::HIGH->value, $processed_input['urgency']);
         $this->assertEquals('Some content', $processed_input['name']);
@@ -187,9 +187,9 @@ abstract class AbstractITILTemplateReadonlyFieldTest extends DbTestCase
             $input['type'] = Ticket::INCIDENT_TYPE;
         }
 
-        $processed_input = $itil_object->prepareInputForAdd($input);
+        $processed_input = $itil_object->enforceReadonlyFields($input, true);
 
-        $this->assertEquals(Urgency::MEDIUM->value, $processed_input['urgency']); // Default value
+        $this->assertArrayNotHasKey('urgency', $processed_input); // Default value
         $this->assertEquals('Some content', $processed_input['name']);
     }
 
@@ -224,7 +224,7 @@ abstract class AbstractITILTemplateReadonlyFieldTest extends DbTestCase
             $update_input['type'] = Ticket::INCIDENT_TYPE;
         }
 
-        $processed_input = $itil_object->prepareInputForUpdate($update_input);
+        $processed_input = $itil_object->enforceReadonlyFields($update_input);
 
         $this->assertEquals(Urgency::MEDIUM->value, $processed_input['urgency']);
         $this->assertEquals('Updated content', $processed_input['name']);
@@ -261,7 +261,7 @@ abstract class AbstractITILTemplateReadonlyFieldTest extends DbTestCase
             $update_input['type'] = Ticket::INCIDENT_TYPE;
         }
 
-        $processed_input = $itil_object->prepareInputForUpdate($update_input);
+        $processed_input = $itil_object->enforceReadonlyFields($update_input);
 
         $this->assertEquals(Urgency::MEDIUM->value, $processed_input['urgency']); // Default value
         $this->assertEquals('Updated content', $processed_input['name']);
