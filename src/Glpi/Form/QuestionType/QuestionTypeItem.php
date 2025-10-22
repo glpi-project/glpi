@@ -42,6 +42,7 @@ use ConsumableItem;
 use DbUtils;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\AssetDefinitionManager;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionHandler\ItemAsTextConditionHandler;
 use Glpi\Form\Condition\ConditionHandler\ItemConditionHandler;
@@ -133,8 +134,15 @@ class QuestionTypeItem extends AbstractQuestionType implements
             $selectable_tree_root = (bool) $values['selectable_tree_root'];
         }
 
+        $itemtype = $rawData['itemtype'] ?? null;
+        // Replace generic object name with asset name if migrated
+        if (str_starts_with($itemtype, 'PluginGenericobject')) {
+            $manager = AssetDefinitionManager::getInstance();
+            $itemtype = $manager->getAssetClassNameFromLegacyClassName($itemtype);
+        }
+
         return (new QuestionTypeItemExtraDataConfig(
-            itemtype: $rawData['itemtype'] ?? null,
+            itemtype: $itemtype,
             root_items_id: $root_items_id,
             subtree_depth: $subtree_depth,
             selectable_tree_root: $selectable_tree_root

@@ -86,6 +86,7 @@ use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\Section;
 use Glpi\Message\MessageType;
+use Glpi\Migration\GenericobjectPluginMigration;
 use Glpi\Migration\PluginMigrationResult;
 use Glpi\Tests\FormTesterTrait;
 use GlpiPlugin\Tester\Form\QuestionTypeIpConverter;
@@ -112,6 +113,13 @@ final class FormMigrationTest extends DbTestCase
         foreach ($queries as $query) {
             $DB->doQuery($query);
         }
+
+        // Some tests in this file also require generic objects migration so
+        // we also load its tables.
+        $queries = $DB->getQueriesFromFile(sprintf('%s/tests/fixtures/genericobject-migration/genericobject-db.sql', GLPI_ROOT));
+        foreach ($queries as $query) {
+            $DB->doQuery($query);
+        }
     }
 
     public static function tearDownAfterClass(): void
@@ -119,6 +127,11 @@ final class FormMigrationTest extends DbTestCase
         global $DB;
 
         $tables = $DB->listTables('glpi\_plugin\_formcreator\_%');
+        foreach ($tables as $table) {
+            $DB->dropTable($table['TABLE_NAME']);
+        }
+
+        $tables = $DB->listTables('glpi\_plugin\_genericobject\_%');
         foreach ($tables as $table) {
             $DB->dropTable($table['TABLE_NAME']);
         }
@@ -3584,6 +3597,42 @@ final class FormMigrationTest extends DbTestCase
         $this->assertEquals(
             $expected_config->jsonSerialize(),
             json_decode($access_controls[0]->fields['config'], true),
+        );
+    }
+
+    public function testFormWithQuestionReferencingGenericObject(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Arrange: create a form with a reference to generic object assets
+        $this->createSimpleFormcreatorForm("With generic object", [
+            [
+                'name'      => 'Generic object',
+                'fieldtype' => 'glpiselect',
+                'itemtype'  => "PluginGenericobjectSmartphone",
+            ],
+        ]);
+        // Migrated asset definition
+        $asset_migrations = new GenericobjectPluginMigration($DB);
+        $asset_migrations->execute();
+
+        // Act: try to import the form
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $migration->execute();
+
+        // Assert: make sure the question was imported with the correct type
+        $form = getItemByTypeName(Form::class, "With generic object");
+        $question_id = $this->getQuestionId($form, "Generic object");
+        $question = Question::getById($question_id);
+
+        $config = $question->getExtraDataConfig();
+        if (!$config instanceof QuestionTypeItemExtraDataConfig) {
+            $this->fail("Unexpected config class");
+        }
+        $this->assertEquals(
+            "Glpi\CustomAsset\smartphoneAsset",
+            $config->getItemtype()
         );
     }
 

@@ -398,6 +398,32 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
         );
     }
 
+    public function getAssetClassNameFromLegacyClassName(string $legacy): ?string
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Try to load glpi_plugin_genericobject_types row for this legacy item
+        if (!$DB->tableExists('glpi_plugin_genericobject_types')) {
+            return null;
+        }
+        $rows = $DB->request([
+            'FROM'  => 'glpi_plugin_genericobject_types',
+            'WHERE' => ['itemtype' => $legacy],
+        ]);
+        if (count($rows) !== 1) {
+            return null;
+        }
+
+        $row = $rows->current();
+        $name = $row['name'];
+        return AssetDefinition::getCustomObjectNamespace()
+            . "\\"
+            . $name
+            . AssetDefinition::getCustomObjectClassSuffix()
+        ;
+    }
+
     private function loadConcreteClass(AssetDefinition $definition): void
     {
         $rightname = $definition->getCustomObjectRightname();
