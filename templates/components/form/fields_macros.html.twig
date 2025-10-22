@@ -366,7 +366,7 @@
          {% if clearable %}
             <input type="hidden" name="_blank_{{ name }}" />
              {%- set clear_js -%}
-                 const blank_input = $('input[name="_blank_{{ name|e('css')|e('js') }}"]');
+                 const blank_input = $('input[name=\'_blank_{{ name|e('css')|e('js') }}\']');
                  blank_input.val(blank_input.val() ? '' : true);
                  if ($(this).closest('.picture_gallery_item').length) {
                     $(this).closest('.picture_gallery_item').hide();
