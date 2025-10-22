@@ -381,6 +381,7 @@ TWIG;
                     data-glpi-form-editor-question-option-order
                 >
                 <button
+                    type="button"
                     class="btn btn-sm btn-icon btn-ghost-secondary {{ value ? '' : 'd-none' }}"
                     aria-label="{{ translations.remove_option }}"
                     data-glpi-form-editor-question-extra-details
