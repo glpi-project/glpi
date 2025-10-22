@@ -1857,4 +1857,108 @@ class UserTest extends \DbTestCase
 
         $this->assertEquals(['name' => 'test'], $fields);
     }
+
+    public function testApplyRightRulesWithDefaultProfile()
+    {
+        $this->login();
+
+        // Create a test user with login info for authentication
+        $user = new \User();
+        $uid = $user->add([
+            'name' => 'test_apply_right_rules_user',
+            'password' => 'test_password',
+            'password2' => 'test_password',
+        ]);
+        $this->assertGreaterThan(0, $uid);
+        $this->assertTrue($user->getFromDB($uid));
+
+        // Get default profile and tech profile
+        $default_profile = \Profile::getDefault();
+        $tech_profile = getItemByTypeName('Profile', 'Technician', true);
+        $this->assertGreaterThan(0, $default_profile);
+
+        // Remove the default profile that was automatically added during user creation
+        $profile_user = new \Profile_User();
+        $existing_profiles = \Profile_User::getForUser($uid, false);
+        foreach ($existing_profiles as $existing_profile) {
+            $profile_user->delete(['id' => $existing_profile['id']]);
+        }
+
+        // Verify user has no profiles
+        $profiles_before = \Profile_User::getForUser($uid, false);
+        $this->assertCount(0, $profiles_before);
+
+        // Create a right rule that assigns Technician profile based on user name
+        $rule_right = new \RuleRight();
+        $rule_id = $rule_right->add([
+            'name' => 'Test rule for profile assignment',
+            'is_active' => 1,
+            'sub_type' => 'RuleRight',
+            'match' => 'AND',
+            'condition' => 0,
+        ]);
+        $this->assertGreaterThan(0, $rule_id);
+
+        // Add criteria: if login equals test_apply_right_rules_user
+        $rule_criteria = new \RuleCriteria();
+        $criteria_id = $rule_criteria->add([
+            'rules_id' => $rule_id,
+            'criteria' => 'LOGIN',
+            'condition' => 0, // is
+            'pattern' => 'test_apply_right_rules_user',
+        ]);
+        $this->assertGreaterThan(0, $criteria_id);
+
+        // Add action: assign Technician profile on root entity
+        $rule_action = new \RuleAction();
+        $action_id = $rule_action->add([
+            'rules_id' => $rule_id,
+            'action_type' => 'assign',
+            'field' => 'profiles_id',
+            'value' => $tech_profile,
+        ]);
+        $this->assertGreaterThan(0, $action_id);
+
+        // Add action: assign to root entity
+        $entity_action_id = $rule_action->add([
+            'rules_id' => $rule_id,
+            'action_type' => 'assign',
+            'field' => 'entities_id',
+            'value' => 0,
+        ]);
+        $this->assertGreaterThan(0, $entity_action_id);
+
+        // Login as the test user to trigger rule processing
+        $this->login('test_apply_right_rules_user', 'test_password');
+
+        // Verify user now has the Technician profile (assigned by rule)
+        $profiles_after_rule = \Profile_User::getForUser($uid, false);
+        $this->assertCount(1, $profiles_after_rule);
+        $profile_after_rule = reset($profiles_after_rule);
+        $this->assertEquals($tech_profile, $profile_after_rule['profiles_id']);
+        $this->assertEquals(1, $profile_after_rule['is_dynamic']); // Profile assigned by rule is dynamic
+
+        // Now modify the rule criteria so it doesn't match anymore
+        $this->assertTrue($rule_criteria->update([
+            'id' => $criteria_id,
+            'pattern' => 'different_user_name', // This won't match our user
+        ]));
+
+        // Login again to trigger rule re-processing
+        $this->login('test_apply_right_rules_user', 'test_password');
+
+        // Verify user now has the default profile (since rule doesn't match anymore)
+        $profiles_after_no_match = \Profile_User::getForUser($uid, false);
+        $this->assertCount(1, $profiles_after_no_match);
+
+        $profile_after_no_match = reset($profiles_after_no_match);
+        $this->assertEquals($default_profile, $profile_after_no_match['profiles_id']);
+        $this->assertEquals(0, $profile_after_no_match['entities_id']);
+        $this->assertEquals(1, $profile_after_no_match['is_recursive']);
+        $this->assertEquals(1, $profile_after_no_match['is_dynamic']);
+        $this->assertEquals(1, $profile_after_no_match['is_default_profile']);
+
+        // Clean up: delete the test rule
+        $this->assertTrue($rule_right->delete(['id' => $rule_id]));
+    }
 }
