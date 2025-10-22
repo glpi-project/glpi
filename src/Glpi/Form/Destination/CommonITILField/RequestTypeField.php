@@ -158,7 +158,7 @@ final class RequestTypeField extends AbstractConfigField implements DestinationF
                 );
 
                 if ($mapped_item === null) {
-                    throw new InvalidArgumentException("Question '{$rawData['type_question']}' not found in a target form");
+                    $mapped_item = ['items_id' => 0];
                 }
 
                 return new RequestTypeFieldConfig(

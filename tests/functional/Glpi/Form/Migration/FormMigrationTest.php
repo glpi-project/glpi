@@ -3083,6 +3083,54 @@ final class FormMigrationTest extends DbTestCase
         }
     }
 
+    public function testFormMigrationWithInvalidQuestion(): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        $fc_id = $this->createSimpleFormcreatorForm(
+            name: "With invalid questions in destination",
+            questions: [],
+            ticket_destinations: [
+                [
+                    'name'                           => 'Ticket destination',
+                    'content'                        => 'My content',
+                    'urgency_rule'                   => 3,
+                    'urgency_question'               => 999999,
+                    'associate_rule'                 => 3,
+                    'associate_question'             => 999999,
+                    'destination_entity'             => 9,
+                    'destination_entity_value'       => 999999,
+                    'category_rule'                  => 3,
+                    'category_question'              => 999999,
+                    'location_rule'                  => 3,
+                    'location_question'              => 999999,
+                    'type_rule'                      => 2,
+                    'type_question'                  => 999999,
+                    'commonitil_validation_rule'     => 3,
+                    'commonitil_validation_question' => 999999,
+                ],
+            ]
+        );
+
+        // Act: execute migration
+        $migration = new FormMigration(
+            db: $DB,
+            formAccessControlManager: FormAccessControlManager::getInstance(),
+            specificFormsIds: [$fc_id],
+        );
+        $result = $migration->execute();
+
+        // Assert: no errors should exist
+        $errors = array_filter(
+            $result->getMessages(),
+            fn($m) => $m['type'] == MessageType::Error
+        );
+        $this->assertEmpty($errors);
+    }
+
     public function testFormMigrationQuestionWithUnsupportedValueOperator(): void
     {
         /**
@@ -3457,7 +3505,8 @@ final class FormMigrationTest extends DbTestCase
         string $name,
         array $questions,
         array $submit_conditions = [],
-    ): void {
+        array $ticket_destinations = [],
+    ): int {
         /** @var \DBmysql $DB */
         global $DB;
 
@@ -3521,5 +3570,15 @@ final class FormMigrationTest extends DbTestCase
                 'order'                           => $submit_conditions['order'],
             ]);
         }
+
+        foreach ($ticket_destinations as $ticket_destination) {
+            $ticket_destination['plugin_formcreator_forms_id'] = $form_id;
+            $DB->insert(
+                'glpi_plugin_formcreator_targettickets',
+                $ticket_destination,
+            );
+        }
+
+        return $form_id;
     }
 }
