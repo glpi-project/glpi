@@ -89,7 +89,7 @@ use function Safe\preg_match;
 class Router
 {
     /** @var string */
-    public const API_VERSION = '2.0.0';
+    public const API_VERSION = '2.1.0';
 
     /**
      * @var AbstractController[]
@@ -152,10 +152,6 @@ The low-level API which is closely tied to the GLPI source code.
 While not as user friendly as the high-level API, it is more powerful and allows to do some things that are not possible with the high-level API.
 It has no promise of stability between versions so it may change without warning.
 EOT;
-        $current_version = self::API_VERSION;
-        // Get short version which is the major part of the semver string
-        $current_version_major = explode('.', $current_version)[0];
-
         return [
             [
                 'api_version' => '1',
@@ -164,9 +160,14 @@ EOT;
                 'endpoint'   => $CFG_GLPI['url_base'] . '/api.php/v1',
             ],
             [
-                'api_version' => $current_version_major,
-                'version' => self::API_VERSION,
-                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2',
+                'api_version' => '2',
+                'version' => '2.0.0',
+                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.0',
+            ],
+            [
+                'api_version' => '2',
+                'version' => '2.1.0',
+                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.1',
             ],
         ];
     }
@@ -181,19 +182,23 @@ EOT;
      * @param string $version
      * @return string
      */
-    public static function normalizeAPIVersion(string $version): string
+    final public static function normalizeAPIVersion(string $version): string
     {
         $versions = array_column(static::getAPIVersions(), 'version');
-        $best_match = self::API_VERSION;
-        if (in_array($version, $versions, true)) {
-            // Exact match
-            return $version;
+        $best_match = null;
+        if (empty($version)) {
+            $version = static::API_VERSION;
         }
 
         foreach ($versions as $available_version) {
-            if (str_starts_with($available_version, $version . '.') && version_compare($available_version, $best_match, '>')) {
-                $best_match = $available_version;
+            if (str_starts_with($available_version, $version)) {
+                if ($best_match === null || version_compare($available_version, $best_match, '>')) {
+                    $best_match = $available_version;
+                }
             }
+        }
+        if ($best_match === null) {
+            $best_match = static::API_VERSION;
         }
         return $best_match;
     }
@@ -488,7 +493,7 @@ EOT;
     {
         $routes = $this->getRoutesFromCache();
 
-        $api_version = $request->getHeaderLine('GLPI-API-Version') ?: static::API_VERSION;
+        $api_version = self::normalizeAPIVersion($request->getHeaderLine('GLPI-API-Version') ?: static::API_VERSION);
         // Filter routes by the requested API version and method
         $routes = array_filter($routes, static function ($route) use ($request, $api_version) {
             if ($route->matchesAPIVersion($api_version) && in_array($request->getMethod(), $route->getRouteMethods(), true)) {

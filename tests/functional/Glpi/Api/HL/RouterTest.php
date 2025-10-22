@@ -87,20 +87,12 @@ class RouterTest extends GLPITestCase
         $this->assertEmpty($schemas_missing_versions, 'Schemas missing versioning info: ' . implode(', ', $schemas_missing_versions));
     }
 
-    public function testNormalizeAPIVersion()
-    {
-        $this->assertEquals('50.2.0', TestRouter::normalizeAPIVersion('50'));
-        $this->assertEquals('50.1.1', TestRouter::normalizeAPIVersion('50.1.1'));
-        $this->assertEquals('50.1.2', TestRouter::normalizeAPIVersion('50.1'));
-        $this->assertEquals('50.2.0', TestRouter::normalizeAPIVersion('50.2'));
-    }
-
     public function testHLAPIDisabled()
     {
         global $CFG_GLPI;
 
         $CFG_GLPI['enable_hlapi'] = 0;
-        $router = TestRouter::getInstance();
+        $router = Router::getInstance();
         $response = $router->handleRequest(new Request('GET', '/Computer'));
         $this->assertEquals(403, $response->getStatusCode());
         $this->assertStringContainsString('The High-Level API is disabled', (string) $response->getBody());
@@ -110,11 +102,71 @@ class RouterTest extends GLPITestCase
         $this->assertEquals(403, $response->getStatusCode());
         $this->assertStringContainsString('The High-Level API is disabled', (string) $response->getBody());
     }
+
+    public function testNormalizeVersion()
+    {
+        // invalid version = router default
+        $this->assertEquals('51.0.0', TestRouter::normalizeAPIVersion('99'));
+        // only major version = latest API version for this major
+        $this->assertEquals('50.2.0', TestRouter::normalizeAPIVersion('50'));
+        // major.minor version = latest API version for this major.minor
+        $this->assertEquals('50.1.2', TestRouter::normalizeAPIVersion('50.1'));
+        // major.minor.patch version = same version
+        $this->assertEquals('50.1.1', TestRouter::normalizeAPIVersion('50.1.1'));
+
+        $this->assertEquals('50.2.0', TestRouter::normalizeAPIVersion('50.2'));
+    }
+
+    public function testRoutingByVersion()
+    {
+        $router = TestRouter::getInstance();
+        // 50.0 is requesting 50.0.X or earlier
+        $this->assertNotEquals('/{req}', $router->match(new Request('GET', '/version500', ['GLPI-API-Version' => '50.0']))->getRoutePath());
+        // 50 is requesting 50.X.X or earlier
+        $this->assertNotEquals('/{req}', $router->match(new Request('GET', '/version500', ['GLPI-API-Version' => '50']))->getRoutePath());
+        // 50.1 is requesting 50.1.X or earlier
+        $this->assertNotEquals('/{req}', $router->match(new Request('GET', '/version500', ['GLPI-API-Version' => '50.1']))->getRoutePath());
+        $this->assertNotEquals('/{req}', $router->match(new Request('GET', '/version500', ['GLPI-API-Version' => '51']))->getRoutePath());
+
+        $this->assertEquals('/{req}', $router->match(new Request('GET', '/version501', ['GLPI-API-Version' => '50.0']))->getRoutePath());
+        $this->assertNotEquals('/{req}', $router->match(new Request('GET', '/version501', ['GLPI-API-Version' => '50.1']))->getRoutePath());
+        $this->assertNotEquals('/{req}', $router->match(new Request('GET', '/version501', ['GLPI-API-Version' => '50']))->getRoutePath());
+
+        $this->assertEquals('/{req}', $router->match(new Request('GET', '/version510', ['GLPI-API-Version' => '50.0']))->getRoutePath());
+        $this->assertEquals('/{req}', $router->match(new Request('GET', '/version510', ['GLPI-API-Version' => '50.1']))->getRoutePath());
+        $this->assertNotEquals('/{req}', $router->match(new Request('GET', '/version510', ['GLPI-API-Version' => '51']))->getRoutePath());
+        $this->assertEquals('/{req}', $router->match(new Request('GET', '/version510', ['GLPI-API-Version' => '50']))->getRoutePath());
+    }
+
+    public function testSchemaByVersion()
+    {
+        // Note that schema version matching is always done against the "Router" class so it cannot be mocked with the TestRouter versions
+        $this->assertEquals(['Schema200', 'Schema200_2', 'Schema210'], array_keys(TestController::getKnownSchemas('2')));
+        $this->assertEquals(['Schema200', 'Schema200_2'], array_keys(TestController::getKnownSchemas('2.0')));
+        $this->assertEquals(['Schema200', 'Schema200_2'], array_keys(TestController::getKnownSchemas('2.0.0')));
+        $this->assertEquals(['Schema200', 'Schema200_2', 'Schema210'], array_keys(TestController::getKnownSchemas('2.1')));
+        $this->assertEquals(['Schema200', 'Schema200_2', 'Schema210'], array_keys(TestController::getKnownSchemas('2.1.0')));
+
+        // Test the filtering of fields inside schemas
+        $schema = TestController::getKnownSchemas('2')['Schema200'];
+        $this->assertArrayHasKey('field1', $schema['properties']);
+        $this->assertArrayHasKey('field2', $schema['properties']);
+
+        $schema = TestController::getKnownSchemas('2.0')['Schema200'];
+        $this->assertArrayHasKey('field1', $schema['properties']);
+        $this->assertArrayNotHasKey('field2', $schema['properties']);
+
+        $schema = TestController::getKnownSchemas('2.1')['Schema200'];
+        $this->assertArrayHasKey('field1', $schema['properties']);
+        $this->assertArrayHasKey('field2', $schema['properties']);
+    }
 }
 
 // @codingStandardsIgnoreStart
 class TestRouter extends Router
 {
+    public const API_VERSION = '51.0.0';
+
     // @codingStandardsIgnoreEnd
     public static function getInstance(): Router
     {
@@ -172,13 +224,73 @@ class TestRouter extends Router
 class TestController extends AbstractController
 {
     // @codingStandardsIgnoreEnd
-    /**
-     * @param RequestInterface $request
-     * @return Response
-     */
+
+    protected static function getRawKnownSchemas(): array
+    {
+        return [
+            'Schema200' => [
+                'type' => 'object',
+                'x-version-introduced' => '2.0',
+                'properties' => [
+                    'field1' => [
+                        'type' => 'string',
+                    ],
+                    'field2' => [
+                        'type' => 'string',
+                        'x-version-introduced' => '2.1.0',
+                    ],
+                ],
+            ],
+            'Schema200_2' => [
+                'type' => 'object',
+                'x-version-introduced' => '2.0.0',
+                'properties' => [
+                    'field1' => [
+                        'type' => 'string',
+                    ],
+
+                    'field2' => [
+                        'type' => 'string',
+                        'x-version-introduced' => '2.1.0',
+                    ],
+                ],
+            ],
+            'Schema210' => [
+                'type' => 'object',
+                'x-version-introduced' => '2.1.0',
+                'properties' => [
+                    'field1' => [
+                        'type' => 'string',
+                    ],
+                ],
+            ],
+        ];
+    }
+
     #[Route('/{req}', ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'], ['req' => '.*'], -1)]
-    #[RouteVersion(introduced: TestRouter::API_VERSION)]
+    #[RouteVersion(introduced: '50.0.0')]
     public function defaultRoute(RequestInterface $request): Response
+    {
+        return new Response(200, [], __FUNCTION__);
+    }
+
+    #[Route('/version500', ['GET'])]
+    #[RouteVersion(introduced: '50.0.0')]
+    public function testVersion500(RequestInterface $request): Response
+    {
+        return new Response(200, [], __FUNCTION__);
+    }
+
+    #[Route('/version501', ['GET'])]
+    #[RouteVersion(introduced: '50.1.0')]
+    public function testVersion501(RequestInterface $request): Response
+    {
+        return new Response(200, [], __FUNCTION__);
+    }
+
+    #[Route('/version510', ['GET'])]
+    #[RouteVersion(introduced: '51.0.0')]
+    public function testVersion510(RequestInterface $request): Response
     {
         return new Response(200, [], __FUNCTION__);
     }

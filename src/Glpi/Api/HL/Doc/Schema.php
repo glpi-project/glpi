@@ -337,6 +337,8 @@ class Schema implements ArrayAccess
             'removed' => $schema['x-version-removed'] ?? null,
         ];
 
+        $api_version = Router::normalizeAPIVersion($api_version);
+
         // Check if the schema itself is applicable to the requested version
         // If the requested version is before the introduction of the schema, or after the removal of the schema, it is not applicable
         // Deprecation has no effect here
