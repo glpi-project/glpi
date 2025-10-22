@@ -141,7 +141,11 @@ class TicketTemplate extends ITILTemplate
                 'type',
                 'glpi_tickets'
             )   => 'type',
-
+            $itil_object->getSearchOptionIDByField(
+                'field',
+                'externalid',
+                'glpi_tickets'
+            )   => 'externalid',
         ];
 
         if ($withtypeandcategory) {
