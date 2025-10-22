@@ -243,9 +243,12 @@ TWIG, $twig_params);
         $printer = new Printer();
         if (str_starts_with($field, '_virtual_')) {
             $type = preg_match('/_virtual_(.*)_percent/', $field, $matches) ? $matches[1] : '';
+            $raw_data = $options['raw_data']['Printer_' . $printer->getSearchOptionIDByField('field', $field)] ?? [];
+            // Filter to keep only numeric keys (actual data entries, not metadata like 'count')
+            $data_entries = array_filter($raw_data, static fn($key) => is_int($key), ARRAY_FILTER_USE_KEY);
             $badges = array_filter(array_map(
                 static fn($data) => self::createCartridgeInformationBadge($data, $type),
-                $options['raw_data']['Printer_' . $printer->getSearchOptionIDByField('field', $field)]
+                $data_entries
             ));
 
             if ($badges) {
