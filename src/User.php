@@ -1417,6 +1417,25 @@ class User extends CommonDBTM
                     $right->delete($db_profile);
                 }
             }
+
+            // Check if user has any profile left after deletion, if not add default profile
+            $remaining_profiles = Profile_User::getForUser($this->fields["id"], false);
+            if (count($remaining_profiles) == 0) {
+                $default_profile = Profile::getDefault();
+                if ($default_profile > 0) {
+                    $affectation = [
+                        'entities_id'  => 0, // Root entity
+                        'profiles_id'  => $default_profile,
+                        'is_recursive' => 1,
+                        'users_id'     => $this->fields['id'],
+                        'is_dynamic'   => 1,
+                        'is_default_profile' => 1,
+                    ];
+                    $right = new Profile_User();
+                    $right->add($affectation);
+                }
+            }
+
             $this->must_process_ruleright = false;
         }
         return $return;
