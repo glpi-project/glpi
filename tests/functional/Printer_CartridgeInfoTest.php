@@ -53,12 +53,12 @@ class Printer_CartridgeInfoTest extends DbTestCase
         $cartridge_info->add([
             'printers_id' => $printers_id,
             'property' => 'tonerblack',
-            'value' => '71'
+            'value' => '71',
         ]);
         $cartridge_info->add([
             'printers_id' => $printers_id,
             'property' => 'tonercyan',
-            'value' => '85'
+            'value' => '85',
         ]);
 
         // Simulate search engine raw_data structure with 'count' metadata
@@ -68,14 +68,14 @@ class Printer_CartridgeInfoTest extends DbTestCase
                     'count' => 2,
                     0 => [
                         'property' => 'tonerblack',
-                        'value' => '71'
+                        'value' => '71',
                     ],
                     1 => [
                         'property' => 'tonercyan',
-                        'value' => '85'
-                    ]
-                ]
-            ]
+                        'value' => '85',
+                    ],
+                ],
+            ],
         ];
 
         $result = \Printer_CartridgeInfo::getSpecificValueToDisplay(
@@ -100,8 +100,8 @@ class Printer_CartridgeInfoTest extends DbTestCase
             'raw_data' => [
                 'Printer_1400' => [
                     'count' => 0,
-                ]
-            ]
+                ],
+            ],
         ];
 
         $result = \Printer_CartridgeInfo::getSpecificValueToDisplay(
@@ -120,9 +120,9 @@ class Printer_CartridgeInfoTest extends DbTestCase
                 'Printer_1400' => [
                     'count' => 2,
                     0 => ['property' => 'tonerblack', 'value' => '55'],
-                    1 => ['property' => 'tonercyan', 'value' => '78']
-                ]
-            ]
+                    1 => ['property' => 'tonercyan', 'value' => '78'],
+                ],
+            ],
         ];
 
         $options_drum = [
@@ -130,9 +130,9 @@ class Printer_CartridgeInfoTest extends DbTestCase
                 'Printer_1401' => [
                     'count' => 2,
                     0 => ['property' => 'drumblack', 'value' => '32'],
-                    1 => ['property' => 'drumcyan', 'value' => '45']
-                ]
-            ]
+                    1 => ['property' => 'drumcyan', 'value' => '45'],
+                ],
+            ],
         ];
 
         // Test toner column
@@ -164,8 +164,8 @@ class Printer_CartridgeInfoTest extends DbTestCase
             'raw_data' => [
                 'Printer_1400' => [
                     0 => ['property' => 'tonerblack', 'value' => '90'],
-                ]
-            ]
+                ],
+            ],
         ];
 
         $result = \Printer_CartridgeInfo::getSpecificValueToDisplay(
@@ -186,9 +186,9 @@ class Printer_CartridgeInfoTest extends DbTestCase
                     0 => ['property' => 'tonercyan', 'value' => '85'],
                     1 => ['property' => 'tonermagenta', 'value' => '62'],
                     2 => ['property' => 'toneryellow', 'value' => '47'],
-                    3 => ['property' => 'tonerblack', 'value' => '93']
-                ]
-            ]
+                    3 => ['property' => 'tonerblack', 'value' => '93'],
+                ],
+            ],
         ];
 
         $result = \Printer_CartridgeInfo::getSpecificValueToDisplay(
@@ -234,12 +234,12 @@ class Printer_CartridgeInfoTest extends DbTestCase
         $this->createItem(\Printer_CartridgeInfo::class, [
             'printers_id' => $printer->getID(),
             'property' => 'tonerblack',
-            'value' => '65'
+            'value' => '65',
         ]);
         $this->createItem(\Printer_CartridgeInfo::class, [
             'printers_id' => $printer->getID(),
             'property' => 'drumcyan',
-            'value' => '42'
+            'value' => '42',
         ]);
 
         // Run search with toner and drum columns
