@@ -39,6 +39,7 @@ use DbTestCase;
 use ITILFollowup;
 use Laminas\Mail\Protocol\Imap;
 use Laminas\Mail\Protocol\Pop3;
+use Laminas\Mail\Storage\Mbox;
 use Laminas\Mail\Storage\Message;
 use NotificationTarget;
 use NotificationTargetSoftwareLicense;
@@ -1499,7 +1500,7 @@ PLAINTEXT,
         $email_file = GLPI_ROOT . '/tests/emails-tests/47-missing-charset.eml';
         $this->assertFileExists($email_file);
 
-        $storage = new \Laminas\Mail\Storage\Mbox(['filename' => $email_file]);
+        $storage = new Mbox(['filename' => $email_file]);
         $message = $storage->current();
 
         $body_text = null;
