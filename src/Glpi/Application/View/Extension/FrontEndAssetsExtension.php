@@ -242,36 +242,32 @@ class FrontEndAssetsExtension extends AbstractExtension
             $locales_domains[$plugin] = Plugin::getPluginFilesVersion($plugin);
         }
 
-        $script = "
-            $(function() {
-                i18n.setLocale('" . \jsescape($_SESSION['glpilanguage']) . "');
-            });
-
-            $.fn.select2.defaults.set(
-                'language',
-                '" . \jsescape($CFG_GLPI['languages'][$_SESSION['glpilanguage']][2]) . "',
-            );
-        ";
-
-        foreach ($locales_domains as $locale_domain => $locale_version) {
-            $locales_path = Html::getPrefixedUrl(
+        $locales_json = json_encode(array_combine(array_keys($locales_domains), array_map(static function ($domain, $version) {
+            return Html::getPrefixedUrl(
                 '/front/locale.php'
-                . '?domain=' . $locale_domain
+                . '?domain=' . $domain
                 . '&lang=' . $_SESSION['glpilanguage']
-                . '&v=' . FrontEnd::getVersionCacheKey($locale_version)
+                . '&v=' . FrontEnd::getVersionCacheKey($version)
             );
-            $script .= "
-                $(function() {
-                    $.ajax({
-                        type: 'GET',
-                        url: '" . \jsescape($locales_path) . "',
-                        success: function(json) {
-                            i18n.loadJSON(json, '" . \jsescape($locale_domain) . "');
+        }, array_keys($locales_domains), $locales_domains)));
+
+        $script = <<<JS
+            // Fetch locale JSON without jQuery to allow fetching before jQuery is loaded
+            async function loadLocales() {
+                const locales = $locales_json;
+                const promises = [];
+                for (const [domain, url] of Object.entries(locales)) {
+                    promises.push(window.fetch(url).then(response => {
+                        if (response.ok) {
+                            return response.json().then(data => {
+                                i18n.loadJSON(data, domain);
+                            });
                         }
-                    });
-                });
-            ";
-        }
+                    }));
+                }
+                await Promise.all(promises);
+            }
+JS;
 
         return Html::scriptBlock($script);
     }
