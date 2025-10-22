@@ -597,7 +597,7 @@ class Config extends CommonDBTM
             'getting_started_doc_url' => $getting_started_doc,
             'endpoint_doc_url' => $endpoint_doc,
             'api_url' => $current_version['endpoint'],
-            'legacy_doc_url' => $legacy_version['endpoint'],
+            'legacy_doc_url' => $legacy_version['endpoint'] . '/',
             'legacy_api_url' => $legacy_version['endpoint'],
         ]);
         if ($CFG_GLPI['enable_api']) {
