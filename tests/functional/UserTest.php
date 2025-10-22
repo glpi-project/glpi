@@ -2468,7 +2468,7 @@ class UserTest extends \DbTestCase
         $this->assertGreaterThan(0, $entity_action_id);
 
         // Create a user and simulate SSO authentication
-        $user = new \User();
+        $user = new User();
         $username = 'sso_test_user_' . mt_rand();
 
         // Simulate SSO server variables
@@ -2496,7 +2496,6 @@ class UserTest extends \DbTestCase
         $this->assertGreaterThan(0, $group_user_id);
 
         // Simulate the SSO authentication process
-        $user->fields['_groups'] = [$group_id]; // Simulate group membership from SSO
         $sso_result = $user->getFromSSO();
         $this->assertTrue($sso_result);
 
