@@ -58,9 +58,24 @@ class GLPINetwork extends CommonGLPI
             return;
         }
 
-        $registration_key = self::getRegistrationKey();
+        // warning and no form if can't read keyfile
+        $glpi_key_read_errors = self::getGlpiKeyFileReadErrors();
+        if(!empty($glpi_key_read_errors)) {
+            \Glpi\Application\View\TemplateRenderer::getInstance()->display(
+                '/central/messages.html.twig',
+                [
+                    'messages' => [
+                        'errors' => $glpi_key_read_errors,
+                    ],
+                ]
+            );
+
+            return;
+        }
 
         $canedit = Config::canUpdate();
+        $registration_key = self::getRegistrationKey();
+
         if ($canedit) {
             echo "<form name='form' action=\"" . Toolbox::getItemTypeFormURL(Config::class) . "\" method='post'>";
         }
@@ -371,5 +386,13 @@ class GLPINetwork extends CommonGLPI
         $GLPI_CACHE->set($cache_key, $offers, HOUR_TIMESTAMP);
 
         return $offers;
+    }
+
+    /**
+     * @return string[]
+     */
+    private static function getGlpiKeyFileReadErrors(): array
+    {
+        return (new GLPIKey())->getKeyFileReadErrors();
     }
 }
