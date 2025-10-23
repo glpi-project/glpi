@@ -2961,7 +2961,12 @@ HTML;
                 $where = array_merge($where, $post['condition']['WHERE']);
             } else {
                 foreach ($post['condition'] as $key => $value) {
-                    if (!is_numeric($key) && !in_array($key, ['AND', 'OR', 'NOT']) && !str_contains($key, '.')) {
+                    if (isset($value['LEFT JOIN'])) {
+                        $ljoin = $value['LEFT JOIN'];
+                    }
+                    if (isset($value['WHERE'])) {
+                        $where = array_merge($where, $value['WHERE']);
+                    } elseif (!is_numeric($key) && !in_array($key, ['AND', 'OR', 'NOT']) && !str_contains($key, '.')) {
                         // Ensure condition contains table name to prevent ambiguity with fields from `glpi_entities` table
                         $where["$table.$key"] = $value;
                     } else {
