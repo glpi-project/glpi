@@ -380,12 +380,4 @@ class GLPINetwork extends CommonGLPI
 
         return $offers;
     }
-
-    /**
-     * @return string[]
-     */
-    private static function getGlpiKeyFileReadErrors(): array
-    {
-        return (new GLPIKey())->getKeyFileReadErrors();
-    }
 }
