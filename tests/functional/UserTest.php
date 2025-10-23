@@ -2419,53 +2419,49 @@ class UserTest extends \DbTestCase
         }
 
         // Create a test group for the rule
-        $group = new \Group();
-        $group_id = $group->add([
+        $group = $this->createItem('Group', [
             'name' => 'SSO Test Group',
             'comment' => 'Group for SSO testing',
         ]);
-        $this->assertGreaterThan(0, $group_id);
+        $group_id = $group->getID();
 
         // Create a right rule that assigns Admin profile and root entity based on group membership
-        $rule_right = new \RuleRight();
-        $rule_id = $rule_right->add([
+        $rule_right = $this->createItem('RuleRight', [
             'name' => 'SSO Test Rule - Admin Profile Assignment',
             'is_active' => 1,
             'sub_type' => 'RuleRight',
             'match' => 'AND',
             'condition' => 0,
         ]);
-        $this->assertGreaterThan(0, $rule_id);
+        $rule_id = $rule_right->getID();
 
         // Add criteria: if user is member of our test group
-        $rule_criteria = new \RuleCriteria();
-        $criteria_id = $rule_criteria->add([
+        $rule_criteria = $this->createItem('RuleCriteria', [
             'rules_id' => $rule_id,
             'criteria' => '_groups_id',
             'condition' => 0, // is
             'pattern' => $group_id,
         ]);
-        $this->assertGreaterThan(0, $criteria_id);
+        $criteria_id = $rule_criteria->getID();
 
         // Add action: assign Admin profile
         $admin_profile_id = getItemByTypeName('Profile', 'Super-Admin', true);
-        $rule_action = new \RuleAction();
-        $action_id = $rule_action->add([
+        $rule_action = $this->createItem('RuleAction', [
             'rules_id' => $rule_id,
             'action_type' => 'assign',
             'field' => 'profiles_id',
             'value' => $admin_profile_id,
         ]);
-        $this->assertGreaterThan(0, $action_id);
+        $action_id = $rule_action->getID();
 
         // Add action: assign to root entity (entity 0)
-        $entity_action_id = $rule_action->add([
+        $entity_action = $this->createItem('RuleAction', [
             'rules_id' => $rule_id,
             'action_type' => 'assign',
             'field' => 'entities_id',
             'value' => 0,
         ]);
-        $this->assertGreaterThan(0, $entity_action_id);
+        $entity_action_id = $entity_action->getID();
 
         // Create a user and simulate SSO authentication
         $user = new User();
@@ -2479,21 +2475,19 @@ class UserTest extends \DbTestCase
         $_SERVER['HTTP_CATEGORY'] = 'IT Staff';
 
         // Create the user with basic information
-        $user_id = $user->add([
+        $user = $this->createItem('User', [
             'name' => $username,
             'authtype' => \Auth::EXTERNAL,
         ]);
-        $this->assertGreaterThan(0, $user_id);
-        $this->assertTrue($user->getFromDB($user_id));
+        $user_id = $user->getID();
 
         // Add user to the test group to trigger the rule
-        $group_user = new \Group_User();
-        $group_user_id = $group_user->add([
+        $group_user = $this->createItem('Group_User', [
             'users_id' => $user_id,
             'groups_id' => $group_id,
             'is_dynamic' => 1,
         ]);
-        $this->assertGreaterThan(0, $group_user_id);
+        $group_user_id = $group_user->getID();
 
         // Simulate the SSO authentication process
         $sso_result = $user->getFromSSO();
