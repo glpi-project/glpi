@@ -2736,4 +2736,33 @@ HTML;
         // Test that count is accurate
         $this->assertGreaterThan(0, $result['count']);
     }
+
+    public function testSelfServiceCanSeeHisOwnAssets(): void
+    {
+        // Arrange: assign a computer to a self-service user
+        $this->createItem(Computer::class, [
+            'name' => 'My computer',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'users_id' => getItemByTypeName(User::class, "post-only", true),
+        ]);
+        $this->createItem(Computer::class, [
+            'name' => 'Not my computer',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // Act: get dropdown values for this user
+        $this->login('post-only');
+        $params = [
+            'itemtype' => Computer::class,
+        ];
+        $params['_idor_token'] = Session::getNewIDORToken(Computer::class, $params);
+        $results = \Dropdown::getDropdownValue($params, false);
+
+        // Assert: only one computer should be count
+        $this->assertEquals(1, $results["count"]);
+        $this->assertEquals(
+            "My computer",
+            $results["results"][1]["children"][0]["text"]
+        );
+    }
 }

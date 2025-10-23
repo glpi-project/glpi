@@ -105,8 +105,22 @@ trait AssignableItem
      * @return array[]|QueryExpression[]
      * @see AssignableItemInterface::getAssignableVisiblityCriteria()
      */
-    public static function getAssignableVisiblityCriteria(?string $item_table_reference = null): array
-    {
+    public static function getAssignableVisiblityCriteria(
+        ?string $item_table_reference = null
+    ): array {
+        return Session::getCurrentInterface() === "central"
+            ? self::getAssignableVisiblityCriteriaForCentral($item_table_reference)
+            : self::getAssignableVisiblityCriteriaForHelpdesk($item_table_reference)
+        ;
+    }
+
+    /**
+     * @param string|null $item_table_reference
+     * @return array[]|QueryExpression[]
+     */
+    private static function getAssignableVisiblityCriteriaForCentral(
+        ?string $item_table_reference = null
+    ): array {
         if (!Session::haveRightsOr(static::$rightname, [READ, READ_ASSIGNED, READ_OWNED])) {
             return [new QueryExpression('0')];
         }
@@ -138,22 +152,7 @@ trait AssignableItem
             }
         }
         if (Session::haveRight(static::$rightname, READ_OWNED)) {
-            $or[] = [
-                $item_table . '.users_id' => $_SESSION['glpiID'],
-            ];
-            if (count($_SESSION['glpigroups']) > 0) {
-                $or[] = [
-                    $item_table . '.id' => new QuerySubQuery([
-                        'SELECT'     => $relation_table . '.items_id',
-                        'FROM'       => $relation_table,
-                        'WHERE' => [
-                            'itemtype'  => static::class,
-                            'groups_id' => $_SESSION['glpigroups'],
-                            'type'      => Group_Item::GROUP_TYPE_NORMAL,
-                        ],
-                    ]),
-                ];
-            }
+            $or += self::getOwnAssetsCriteria($item_table, $relation_table);
         }
 
         // Add another layer to the array to prevent losing duplicates keys if the
@@ -161,6 +160,48 @@ trait AssignableItem
         $criteria = [crc32(serialize($or)) => ['OR' => $or]];
 
         return $criteria;
+    }
+
+    /**
+     * @param string|null $item_table_reference
+     * @return array[]|QueryExpression[]
+     */
+    private static function getAssignableVisiblityCriteriaForHelpdesk(
+        ?string $item_table_reference = null
+    ): array {
+        // Helpdesk doesn't support READ, READ_ASSIGNED, READ_OWNED rights.
+        // Instead, we assume the user can only see his own assets.
+        $item_table     = $item_table_reference ?? static::getTable();
+        $relation_table = Group_Item::getTable();
+        $or = self::getOwnAssetsCriteria($item_table, $relation_table);
+
+        // Add another layer to the array to prevent losing duplicates keys if the
+        // result of the function is merged with another array
+        $criteria = [crc32(serialize($or)) => ['OR' => $or]];
+
+        return $criteria;
+    }
+
+    private static function getOwnAssetsCriteria(
+        string $item_table,
+        string $relation_table,
+    ): array {
+        $or = [$item_table . '.users_id' => $_SESSION['glpiID']];
+        if (count($_SESSION['glpigroups']) > 0) {
+            $or[] = [
+                $item_table . '.id' => new QuerySubQuery([
+                    'SELECT'     => $relation_table . '.items_id',
+                    'FROM'       => $relation_table,
+                    'WHERE' => [
+                        'itemtype'  => static::class,
+                        'groups_id' => $_SESSION['glpigroups'],
+                        'type'      => Group_Item::GROUP_TYPE_NORMAL,
+                    ],
+                ]),
+            ];
+        }
+
+        return $or;
     }
 
     /** @see AssignableItemInterface::getRights() */
