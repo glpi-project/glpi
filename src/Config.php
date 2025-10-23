@@ -369,7 +369,15 @@ class Config extends CommonDBTM
 
         $input = array_filter($input, fn($key) => !in_array($key, $values_to_filter), ARRAY_FILTER_USE_KEY);
 
-        static::setConfigurationValues('core', $input);
+        try {
+            static::setConfigurationValues('core', $input);
+        } catch (Exception $e) {
+            Session::addMessageAfterRedirect(
+                'Error saving configuration: ' . htmlentities($e->getMessage()),
+                false,
+                ERROR
+            );
+        }
 
         return false;
     }

@@ -52,10 +52,23 @@ class GLPINetwork extends CommonGLPI
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item::class === Config::class) {
-            self::showForConfig();
+        try {
+            if ($item->getType() == 'Config') {
+                $glpiNetwork = new self();
+                $glpiNetwork->showForConfig();
+            }
+            return true;
+        } catch (Exception $e) {
+            TemplateRenderer::getInstance()->display(
+                '/central/messages.html.twig',
+                [
+                    'messages' => [
+                        'errors' => [$e->getMessage()],
+                    ],
+                ]
+            );
+            return false;
         }
-        return true;
     }
 
     public static function showForConfig()
