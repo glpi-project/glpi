@@ -141,6 +141,26 @@ class GLPIKey
         return $errors;
     }
 
+    public function hasReadErrors(): bool
+    {
+        return !empty($this->getKeyFileReadErrors());
+    }
+
+    public function showReadErrors(): void
+    {
+        $glpi_key_read_errors = $this->getKeyFileReadErrors();
+        if (!empty($glpi_key_read_errors)) {
+            \Glpi\Application\View\TemplateRenderer::getInstance()->display(
+                '/central/messages.html.twig',
+                [
+                    'messages' => [
+                        'errors' => $glpi_key_read_errors,
+                    ],
+                ]
+            );
+        }
+    }
+
     /**
      * Get GLPI security key used for decryptable passwords
      *

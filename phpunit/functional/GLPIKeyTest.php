@@ -594,4 +594,49 @@ class GLPIKeyTest extends \DbTestCase
         // assert
         $this->assertEmpty($errors);
     }
+
+    public function testHasKeyFileReadErrorsWithMissingFile(): void
+    {
+        // arrange : create directory structure without key file
+        vfsStream::setup('glpi', null, ['config' => []]);
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
+
+        // act + assert
+        $this->assertTrue($glpikey->hasReadErrors());
+    }
+
+    public function testHasKeyFileReadErrorsWithUnreadableFile(): void
+    {
+        // arrange : create unreadable key file
+        $structure = vfsStream::setup('glpi', null, ['config' => ['glpicrypt.key' => 'unreadable file']]);
+        $structure->getChild('config/glpicrypt.key')->chmod(0222);
+
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
+
+        // act + assert
+        $this->assertTrue($glpikey->hasReadErrors());
+
+    }
+
+    public function testHasKeyFileReadErrorsWithInvalidKey(): void
+    {
+        // arrange : key file exists but has invalid contents/length
+        vfsStream::setup('glpi', null, ['config' => ['glpicrypt.key' => 'not a valid key']]);
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
+
+        // act + assert
+        $this->assertTrue($glpikey->hasReadErrors());
+    }
+
+    public function testHasKeyFileReadErrorsWithValidKey(): void
+    {
+        // arrange : key file exists and is valid => no errors
+        $valid_key = 'abcdefghijklmnopqrstuvwxyz123456';
+        vfsStream::setup('glpi', null, ['config' => ['glpicrypt.key' => $valid_key]]);
+
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
+
+        // act + assert
+        $this->assertFalse($glpikey->hasReadErrors());
+    }
 }

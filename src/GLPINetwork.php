@@ -59,16 +59,9 @@ class GLPINetwork extends CommonGLPI
         }
 
         // warning and no form if can't read keyfile
-        $glpi_key_read_errors = self::getGlpiKeyFileReadErrors();
-        if (!empty($glpi_key_read_errors)) {
-            \Glpi\Application\View\TemplateRenderer::getInstance()->display(
-                '/central/messages.html.twig',
-                [
-                    'messages' => [
-                        'errors' => $glpi_key_read_errors,
-                    ],
-                ]
-            );
+        $glpi_encryption_key = new GLPIKey();
+        if ($glpi_encryption_key->hasReadErrors()) {
+            $glpi_encryption_key->showReadErrors();
 
             return;
         }
