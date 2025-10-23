@@ -1776,8 +1776,6 @@ HTML;
         ];
         $p = array_merge($default, $params);
 
-        $p['label'] = \htmlescape($p['label']);
-
         $id = "search-table-" . $p['rand'];
 
         $color = new Color($p['color']);
