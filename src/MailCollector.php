@@ -271,6 +271,14 @@ class MailCollector extends CommonDBTM
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
+        // warning and no form if can't read keyfile
+        $glpi_encryption_key = new GLPIKey();
+        if ($glpi_encryption_key->hasReadErrors()) {
+            $glpi_encryption_key->showReadErrors();
+
+            return false;
+        }
+
         $this->initForm($ID, $options);
         $options['colspan'] = 1;
         $this->showFormHeader($options);

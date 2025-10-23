@@ -124,6 +124,16 @@ class NotificationMailingSetting extends NotificationSetting
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
+        // warning and no form if can't read keyfile
+        // always display no matter what $options['display']
+        // see comment at the end of this function
+        $glpi_encryption_key = new GLPIKey();
+        if ($glpi_encryption_key->hasReadErrors()) {
+            $glpi_encryption_key->showReadErrors();
+
+            return;
+        }
+
         if (!isset($options['display'])) {
             $options['display'] = true;
         }
