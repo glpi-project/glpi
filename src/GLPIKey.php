@@ -159,6 +159,9 @@ class GLPIKey
      * and update values in DB if necessary.
      *
      * @return bool
+     * @throws RuntimeException|Exception
+     * @todo split update and generate methods
+     * @todo trigger exceptions not errors
      */
     public function generate(bool $update_db = true): bool
     {
@@ -169,19 +172,13 @@ class GLPIKey
             (file_exists($this->keyfile) && !is_writable($this->keyfile))
             || (!file_exists($this->keyfile) && !is_writable(dirname($this->keyfile)))
         ) {
-            trigger_error(sprintf('Security key file path (%s) is not writable.', $this->keyfile), E_USER_WARNING);
-            return false;
+            throw new InvalidGlpiKeyException(sprintf('Security key file (%s) cannot be updated. Fix it\'s permission.', $this->keyfile));
         }
 
         // Fetch old key before generating the new one (but only if DB exists and there is something to migrate)
         $previous_key = null;
         if ($update_db && $this->keyExists()) {
             $previous_key = $this->get();
-            if ($previous_key === null) {
-                // Do not continue if unable to get previous key when DB update is requested.
-                // Detailed warning has already been triggered by `get()` method.
-                return false;
-            }
         }
 
         $key = sodium_crypto_aead_chacha20poly1305_ietf_keygen();
@@ -191,8 +188,7 @@ class GLPIKey
             $written_bytes = false;
         }
         if ($written_bytes !== strlen($key)) {
-            trigger_error('Unable to write security key file contents.', E_USER_WARNING);
-            return false;
+            throw new InvalidGlpiKeyException("Unable to write security key file contents {$this->keyfile}.");
         }
 
         if (
@@ -381,60 +377,39 @@ class GLPIKey
      *
      * @param string|null $string String to decrypt.
      * @param string|null $key Key to use, fallback to default key if null.
-     *
-     * @return string|null
      */
-    public function decrypt(?string $string, ?string $key = null): ?string
+    public function decrypt(?string $string, ?string $key = null): string
     {
+        $key ??= $this->get(); // executed before everything to ensure invalid key exception is thrown early
+
+        // Early return of '' to avoid sodium exception for blank content.
         if (empty($string)) {
-            // Avoid sodium exception for blank content. Just return the null/empty value.
-            return $string;
-        }
-
-        if ($key === null) {
-            $key = $this->get();
-        }
-
-        if ($key === null) {
-            // Cannot decrypt string as key reading fails, returns encrypted value.
-            return $string;
+            return '';
         }
 
         try {
             $string = base64_decode($string);
         } catch (UrlException $e) {
-            trigger_error(
-                'Unable to base64_decode the string. The string was probably not encrypted using GLPIKey::encrypt',
-                E_USER_WARNING
-            );
-            return '';
+            throw new RuntimeException('Unable to base64_decode the string. The string was probably not encrypted using GLPIKey::encrypt', $e->getCode(), $e);
         }
 
         $nonce = mb_substr($string, 0, SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES, '8bit');
         if (mb_strlen($nonce, '8bit') !== SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES) {
-            trigger_error(
-                'Unable to extract nonce from string. It may not have been crypted with sodium functions.',
-                E_USER_WARNING
-            );
-            return '';
+            throw new InvalidGlpiKeyException('Unable to extract nonce from string. It may not have been crypted with sodium functions.');
         }
 
         $ciphertext = mb_substr($string, SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES, null, '8bit');
 
+        // try catch to provide a more meaningful exception (type & message)
         try {
-            $plaintext = sodium_crypto_aead_xchacha20poly1305_ietf_decrypt(
+            return sodium_crypto_aead_xchacha20poly1305_ietf_decrypt(
                 $ciphertext,
                 $nonce,
                 $nonce,
                 $key
             );
-            return $plaintext;
         } catch (SodiumException $e) {
-            trigger_error(
-                'Unable to decrypt string. It may have been crypted with another key.',
-                E_USER_WARNING
-            );
-            return '';
+            throw new InvalidGlpiKeyException('Unable to decrypt string. It may have been crypted with another key'); // sodium messages are not meaningful, no need to propagate them.
         }
     }
 

@@ -243,62 +243,63 @@ class GLPIKeyTest extends \DbTestCase
         $this->assertEquals('insecure', $glpikey->decrypt($ldap->fields['rootdn_passwd']));
     }
 
-    public function testGenerateFailureWithUnwritableConfigDir()
+    public function testGenerateFailureWithUnwritableConfigDir(): void
     {
-        // Unwritable dir
+        // arrange : create empty unwritable config directory
         $structure = vfsStream::setup('glpi', null, ['config' => []]);
         $structure->getChild('config')->chmod(0o555);
 
+        // assert
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessageMatches('/Security key file path .* is not writable\./');
 
+        // act
         $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
-
-        $this->assertFalse($glpikey->generate());
-        $this->hasPhpLogRecordThatContains(
-            'Security key file path (vfs://glpi/config/glpicrypt.key) is not writable.',
-            LogLevel::WARNING
-        );
+        $glpikey->generate();
     }
 
-    public function testGenerateFailureWithUnwritableConfigFile()
+    public function testGenerateFailureWithUnwritableConfigFile(): void
     {
-        // Unwritable key file
+        // arrange : create unwritable key file
         $structure = vfsStream::setup('glpi', null, ['config' => ['glpicrypt.key' => 'previouskey']]);
         $structure->getChild('config/glpicrypt.key')->chmod(0o444);
 
-        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
+        // assert
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessageMatches('/Security key file path .* is not writable\./');
 
-        $this->assertFalse($glpikey->generate());
-        $this->hasPhpLogRecordThatContains(
-            'Security key file path (vfs://glpi/config/glpicrypt.key) is not writable.',
-            LogLevel::WARNING
-        );
+        // act : try to generate and save new key
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
+        $glpikey->generate();
     }
 
-    public function testGenerateFailureWithUnreadableKey()
+    public function testGenerateFailureWithUnreadableKey(): void
     {
+        // arrange : create unreadable key file
         $structure = vfsStream::setup('glpi', null, ['config' => ['glpicrypt.key' => 'unreadable file']]);
         $structure->getChild('config/glpicrypt.key')->chmod(0o222);
 
-        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
+        // assert
+        $this->expectException(InvalidGlpiKeyException::class);
+        $this->expectExceptionMessageMatches('/Unable to read security key file contents\./');
 
-        $this->assertFalse($glpikey->generate());
-        $this->hasPhpLogRecordThatContains(
-            'Unable to get security key file contents.',
-            LogLevel::WARNING
-        );
+        // act : try to generate and save new key
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
+        $glpikey->generate();
     }
 
-    public function testGenerateFailureWithInvalidPreviousKey()
+    public function testGenerateFailureWithInvalidPreviousKey(): void
     {
+        // arrange : create key file with invalid contents
         vfsStream::setup('glpi', null, ['config' => ['glpicrypt.key' => 'not a valid key']]);
 
-        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
+        // assert
+        $this->expectException(InvalidGlpiKeyException::class);
+        $this->expectExceptionMessageMatches('/Invalid security key file contents\./');
 
-        $this->assertFalse($glpikey->generate());
-        $this->hasPhpLogRecordThatContains(
-            'Invalid security key file contents.',
-            LogLevel::WARNING
-        );
+        // act : try to generate and save new key
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
+        $glpikey->generate();
     }
 
     public function testEncryptDecryptUsingDefaultKey()
@@ -387,36 +388,38 @@ class GLPIKeyTest extends \DbTestCase
 
         $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
-        $this->assertNull($glpikey->decrypt(null));
+        $this->assertEmpty($glpikey->decrypt(null));
         $this->assertEmpty($glpikey->decrypt(''));
     }
 
-    public function testDecryptInvalidString()
+    public function testDecryptInvalidString(): void
     {
+        // arrange : create a valid key (copied from real config)
         $structure = vfsStream::setup('glpi', null, ['config' => []]);
         vfsStream::copyFromFileSystem(GLPI_CONFIG_DIR, $structure->getChild('config'));
 
-        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
+        // assert
+        $this->expectException(InvalidGlpiKeyException::class);
+        $this->expectExceptionMessage('Unable to extract nonce from string. It may not have been crypted with sodium functions.');
 
-        $this->assertEmpty($glpikey->decrypt('not a valid value'));
-        $this->hasPhpLogRecordThatContains(
-            'Unable to extract nonce from string. It may not have been crypted with sodium functions.',
-            LogLevel::WARNING
-        );
+        // act : decrypt invalid string
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
+        $glpikey->decrypt('not a valid value');
     }
 
-    public function testDecryptUsingBadKey()
+    public function testDecryptUsingBadKey(): void
     {
+        // arrange : create a valid key (copied from real config)
         $structure = vfsStream::setup('glpi', null, ['config' => []]);
         vfsStream::copyFromFileSystem(GLPI_CONFIG_DIR, $structure->getChild('config'));
 
-        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
+        // assert
+        $this->expectException(InvalidGlpiKeyException::class);
+        $this->expectExceptionMessageMatches('/' . preg_quote('Unable to decrypt string. It may have been crypted with another key', '/') . '/');
 
-        $this->assertEmpty($glpikey->decrypt('CUdPSEgzKroDOwM1F8lbC8WDcQUkGCxIZpdTEpp5W/PLSb70WmkaKP0Q7QY='));
-        $this->hasPhpLogRecordThatContains(
-            'Unable to decrypt string. It may have been crypted with another key.',
-            LogLevel::WARNING
-        );
+        // act : decrypt a string encoded with another key
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
+        $glpikey->decrypt('CUdPSEgzKroDOwM1F8lbC8WDcQUkGCxIZpdTEpp5W/PLSb70WmkaKP0Q7QY=');
     }
 
     public function testGetFields()
