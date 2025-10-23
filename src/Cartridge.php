@@ -250,7 +250,18 @@ class Cartridge extends CommonDBRelation
                 'id' => $input['id'],
             ]
         );
-        return $result && ($DB->affectedRows() > 0);
+        if ($result && ($DB->affectedRows() > 0)) {
+            $changesCartrige = [
+                0,
+                '',
+                __('Cartridge') . ' (' . $input['id'] . ') : ' . strtolower(__('Back to stock')),
+            ];
+            $this->getFromDB($input['id']);
+            Log::history($this->fields['cartridgeitems_id'], CartridgeItem::class, $changesCartrige, Cartridge::class, Log::HISTORY_ADD_SUBITEM);
+            return true;
+        }
+
+        return false;
     }
 
     // SPECIFIC FUNCTIONS
@@ -302,6 +313,14 @@ class Cartridge extends CommonDBRelation
                     __('Installing a cartridge'),
                 ];
                 Log::history($pID, 'Printer', $changes, 0, Log::HISTORY_LOG_SIMPLE_MESSAGE);
+
+                $changesCartrige = [
+                    0,
+                    '',
+                    __('Installing a cartridge') . ' (' . $cID . '). ' . __('Printer') .  ' : ' . $pID,
+                ];
+                $this->getFromDB($cID);
+                Log::history($this->fields['cartridgeitems_id'], CartridgeItem::class, $changesCartrige, Cartridge::class, Log::HISTORY_ADD_SUBITEM);
                 return true;
             }
         } else {
@@ -354,6 +373,15 @@ class Cartridge extends CommonDBRelation
                     0,
                     Log::HISTORY_LOG_SIMPLE_MESSAGE
                 );
+
+                $this->getFromDB($ID);
+                $changesCartrige = [
+                    0,
+                    '',
+                    __('Uninstalling a cartridge') . ' (' . $ID . ') ' . __('and') . ' ' . strtolower(__('Delete')),
+                ];
+
+                Log::history($this->fields['cartridgeitems_id'], CartridgeItem::class, $changesCartrige, Cartridge::class, Log::HISTORY_ADD_SUBITEM);
 
                 return true;
             }

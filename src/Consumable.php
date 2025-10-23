@@ -143,6 +143,19 @@ class Consumable extends CommonDBChild
             ]
         );
         if ($result) {
+
+            $this->getFromDB($input['id']);
+            Log::history(
+                $this->fields["consumableitems_id"],
+                ConsumableItem::class,
+                [
+                    0,
+                    '',
+                    __('Return') . ' : ' . $this->getPreAdditionalInfosForName() . ' (' . $input['id'] . '), ' . __('To') .  ' : ' . __('Stock'),
+                ],
+                static::class,
+                Log::HISTORY_UPDATE_SUBITEM
+            );
             return true;
         }
         return false;
@@ -188,6 +201,29 @@ class Consumable extends CommonDBChild
                 ]
             );
             if ($result) {
+                switch ($itemtype) {
+                    case 'User' :
+                        $model = new User();
+                        $model->getFromDB($items_id);
+                        $name = strtoupper($model->fields['name']);
+                        break;
+                    case 'Group' :
+                        default:
+                        $model = new Group();
+                        $model->getFromDB($items_id);
+                        break;
+                }
+                Log::history(
+                    $this->fields["consumableitems_id"],
+                    ConsumableItem::class,
+                    [
+                        0,
+                        '',
+                        $this->getPreAdditionalInfosForName() . ' (' . $ID . ') ' . strtolower(__('Given to')) . ' : '. $model->fields['name'] . ' (' . $ID . ')',
+                    ],
+                    static::class,
+                    Log::HISTORY_UPDATE_SUBITEM
+                );
                 return true;
             }
         }
