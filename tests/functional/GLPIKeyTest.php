@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use Glpi\Exception\InvalidGlpiKeyException;
 use Glpi\Plugin\Hooks;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -116,43 +117,48 @@ class GLPIKeyTest extends \DbTestCase
         $this->assertEquals($decrypted, $glpikey->decryptUsingLegacyKey($encrypted, $key));
     }
 
-    public function testGetWithoutKey()
+    public function testGetWithoutKey(): void
     {
+        // arrange
         vfsStream::setup('glpi', null, ['config' => []]);
         $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
+        // assert
+        $this->expectException(InvalidGlpiKeyException::class);
+        $this->expectExceptionMessageMatches('/File .* not found/');
+
+        // act
         $glpikey->get();
-        $this->hasPhpLogRecordThatContains(
-            'You must create a security key, see security:change_key command.',
-            LogLevel::WARNING
-        );
     }
 
-    public function testGetUnreadableKey()
+    public function testGetUnreadableKey(): void
     {
         $structure = vfsStream::setup('glpi', null, ['config' => ['glpicrypt.key' => 'unreadable file']]);
         $structure->getChild('config/glpicrypt.key')->chmod(0o222);
 
         $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
+        // assert
+        $this->expectException(InvalidGlpiKeyException::class);
+        $this->expectExceptionMessageMatches('/Unable to read security key file contents\./');
+
+        // act
         $glpikey->get();
-        $this->hasPhpLogRecordThatContains(
-            'Unable to get security key file contents.',
-            LogLevel::WARNING
-        );
     }
 
-    public function testGetInvalidKey()
+    public function testGetInvalidKey(): void
     {
+        // arrange : create invalid key file contents
         vfsStream::setup('glpi', null, ['config' => ['glpicrypt.key' => 'not a valid key']]);
+
+        // assert
+        $this->expectException(InvalidGlpiKeyException::class);
+        $this->expectExceptionMessageMatches('/Invalid security key file contents\./');
 
         $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
+        // act
         $glpikey->get();
-        $this->hasPhpLogRecordThatContains(
-            'Invalid security key file contents.',
-            LogLevel::WARNING
-        );
     }
 
     public function testGet()

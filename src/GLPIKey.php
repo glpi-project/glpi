@@ -32,6 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
+use Glpi\Exception\InvalidGlpiKeyException;
 use Glpi\Plugin\Hooks;
 use Safe\Exceptions\FilesystemException;
 use Safe\Exceptions\SodiumException;
@@ -126,25 +127,12 @@ class GLPIKey
     }
 
     /**
-     * Get GLPI security key used for decryptable passwords
-     *
-     * @return string|null
+     * Get GLPI security key used for decryptable contents
      */
-    public function get(): ?string
+    public function get(): string
     {
-        if (!file_exists($this->keyfile)) {
-            trigger_error('You must create a security key, see security:change_key command.', E_USER_WARNING);
-            return null;
-        }
-        if (!is_readable($this->keyfile) || ($key = file_get_contents($this->keyfile)) === false) { //@phpstan-ignore theCodingMachineSafe.function
-            trigger_error('Unable to get security key file contents.', E_USER_WARNING);
-            return null;
-        }
-        if (strlen($key) !== SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_KEYBYTES) {
-            trigger_error('Invalid security key file contents.', E_USER_WARNING);
-            return null;
-        }
-        return $key;
+        $this->ensureKeyIsValid();
+        return file_get_contents($this->keyfile);
     }
 
     /**
@@ -373,24 +361,19 @@ class GLPIKey
      */
     public function encrypt(string $string, ?string $key = null): string
     {
-        if ($key === null) {
-            $key = $this->get();
+        try {
+            $key ??= $this->get();
+            $nonce = random_bytes(SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES); // NONCE = Number to be used ONCE, for each message
+            $encrypted = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt(
+                $string,
+                $nonce,
+                $nonce,
+                $key
+            );
+            return base64_encode($nonce . $encrypted);
+        } catch (InvalidGlpiKeyException|SodiumException $e) {
+            throw new RuntimeException('Unable to encrypt string: ' . $e->getMessage(), 0, $e);
         }
-
-        if ($key === null) {
-            // Cannot encrypt string as key reading fails, returns a empty value
-            // to ensure sensitive data is not propagated unencrypted.
-            return '';
-        }
-
-        $nonce = random_bytes(SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES); // NONCE = Number to be used ONCE, for each message
-        $encrypted = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt(
-            $string,
-            $nonce,
-            $nonce,
-            $key
-        );
-        return base64_encode($nonce . $encrypted);
     }
 
     /**
@@ -497,4 +480,24 @@ class GLPIKey
 
         return $result;
     }
+
+    /**
+     * Ensure that key file exists, is readable and contains a valid key.
+     *
+     * @throws InvalidGlpiKeyException
+     */
+    private function ensureKeyIsValid(): void
+    {
+        $relative_keyfile_path = './' . ltrim(str_replace(GLPI_ROOT, '', $this->keyfile), '/');
+        if (!file_exists($this->keyfile)) {
+            throw new InvalidGlpiKeyException("File $relative_keyfile_path not found. Create it with `./bin/console security:change_key` command.");
+        }
+        if (!is_readable($this->keyfile) || ($key = @file_get_contents($this->keyfile)) === false) {
+            throw new InvalidGlpiKeyException("Unable to read security key file contents. Fix $relative_keyfile_path permissions.");
+        }
+        if (strlen($key) !== SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_KEYBYTES) {
+            throw new InvalidGlpiKeyException("Invalid security key file contents. Regenerate $relative_keyfile_path with `./bin/console security:change_key` command.");
+        }
+    }
+
 }
