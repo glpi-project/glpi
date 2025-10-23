@@ -128,8 +128,10 @@ class GLPIKey
         $errors = [];
         if (!file_exists($this->keyfile)) {
             $errors[] = __s('You must create a security key, use `./bin/console security:change_key` command.');
+
+            return $errors; // return as, if file does not exist, no need to check further
         }
-        if ($key = file_get_contents($this->keyfile) === false) {
+        if (false === ($key = @file_get_contents($this->keyfile))) {
             $errors[] = __s("Unable to get security key file contents. Fix file permissions of {$this->keyfile}.");
         }
         if (strlen($key) !== SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_KEYBYTES) {

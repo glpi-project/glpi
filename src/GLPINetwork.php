@@ -60,7 +60,7 @@ class GLPINetwork extends CommonGLPI
 
         // warning and no form if can't read keyfile
         $glpi_key_read_errors = self::getGlpiKeyFileReadErrors();
-        if(!empty($glpi_key_read_errors)) {
+        if (!empty($glpi_key_read_errors)) {
             \Glpi\Application\View\TemplateRenderer::getInstance()->display(
                 '/central/messages.html.twig',
                 [

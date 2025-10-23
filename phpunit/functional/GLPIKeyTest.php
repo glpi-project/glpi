@@ -538,4 +538,60 @@ class GLPIKeyTest extends \DbTestCase
         $this->assertFalse($is_myplugin_href_secured);
         $this->assertFalse($is_someplugin_conf_secured);
     }
+
+    public function testGetKeyFileReadErrorsWithMissingFile(): void
+    {
+        // arrange : create directory structure without key file
+        vfsStream::setup('glpi', null, ['config' => []]);
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
+
+        // act
+        $errors = $glpikey->getKeyFileReadErrors();
+
+        // assert
+        $this->assertStringContainsString('create a security key', implode(" ", $errors));
+    }
+
+    public function testGetKeyFileReadErrorsWithUnreadableFile(): void
+    {
+        // arrange : create unreadable key file
+        $structure = vfsStream::setup('glpi', null, ['config' => ['glpicrypt.key' => 'unreadable file']]);
+        $structure->getChild('config/glpicrypt.key')->chmod(0222);
+
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
+
+        // act
+        $errors = $glpikey->getKeyFileReadErrors();
+
+        // assert
+        $this->assertStringContainsString('Unable to get security key file contents', implode(" ", $errors));
+    }
+
+    public function testGetKeyFileReadErrorsWithInvalidKey(): void
+    {
+        // arrange : key file exists but has invalid contents/length
+        vfsStream::setup('glpi', null, ['config' => ['glpicrypt.key' => 'not a valid key']]);
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
+
+        // act
+        $errors = $glpikey->getKeyFileReadErrors();
+
+        // assert
+        $this->assertStringContainsString('Invalid security key file contents', implode(" ", $errors));
+    }
+
+    public function testGetKeyFileReadErrorsWithValidKey(): void
+    {
+        // arrange : key file exists and is valid => no errors
+        $valid_key = 'abcdefghijklmnopqrstuvwxyz123456';
+        vfsStream::setup('glpi', null, ['config' => ['glpicrypt.key' => $valid_key]]);
+
+        $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
+
+        // act
+        $errors = $glpikey->getKeyFileReadErrors();
+
+        // assert
+        $this->assertEmpty($errors);
+    }
 }
