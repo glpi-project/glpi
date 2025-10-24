@@ -220,7 +220,7 @@ class State extends CommonTreeDropdown
                 'start'    => 0,
                 'criteria' => [
                     '0' => [
-                        'value' => '$$$$' . $data['id'],
+                        'value' => $data['id'],
                         'searchtype' => 'contains',
                         'field' => 31,
                     ],
