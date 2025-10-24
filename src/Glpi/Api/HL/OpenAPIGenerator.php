@@ -526,16 +526,7 @@ EOT;
             if ($route_param->getName() === '_') {
                 continue;
             }
-            $body_param = [
-                'type' => $route_param->getSchema()->getType(),
-            ];
-            if ($route_param->getSchema()->getFormat() !== null) {
-                $body_param['format'] = $route_param->getSchema()->getFormat();
-            }
-            if (count($route_param->getSchema()->getProperties())) {
-                $body_param['properties'] = $route_param->getSchema()->getProperties();
-            }
-            $request_body['content']['application/json']['schema']['properties'][$route_param->getName()] = $body_param;
+            $request_body['content']['application/json']['schema']['properties'][$route_param->getName()] = $route_param->getSchema()->toArray();
         }
         return $request_body;
     }
