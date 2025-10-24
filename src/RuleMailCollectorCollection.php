@@ -57,6 +57,9 @@ class RuleMailCollectorCollection extends RuleCollection
         if (isset($params['_users_id_requester'])) {
             $input['_users_id_requester'] = $params['_users_id_requester'];
         }
+        if (isset($params['from'])) {
+            $input['from'] = $params['from'];
+        }
 
         $fields = $this->getFieldsToLookFor();
 
@@ -125,7 +128,6 @@ class RuleMailCollectorCollection extends RuleCollection
             }
         }
 
-        // Store the number of profiles of which the user belongs to
         if (in_array('known_domain', $fields, true)) {
             if (preg_match("/@(.*)/", $input['from'], $results)) {
                 if (Entity::getEntityIDByDomain($results[1]) !== -1) {

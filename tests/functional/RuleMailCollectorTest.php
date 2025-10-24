@@ -140,6 +140,97 @@ class RuleMailCollectorTest extends DbTestCase
         );
     }
 
+    public function testAssignEntityBasedOnKnowDomain()
+    {
+        $this->login();
+
+        $entity         = getItemByTypeName('Entity', '_test_child_1');
+        $entity_id      = $entity->getID();
+        $this->assertTrue(
+            $entity->update([
+                'id'          => $entity_id,
+                'mail_domain' => 'glpi-project.org',
+            ])
+        );
+        $entity->getFromDB($entity_id);
+        $this->assertSame('glpi-project.org', $entity->getField('mail_domain'));
+        $normal_user_id = getItemByTypeName('User', 'normal', true);
+
+        // Delete all existing rule
+        $rule     = new Rule();
+        $rule->deleteByCriteria(['sub_type' => 'RuleMailCollector']);
+
+        // Create rule
+        $rule     = new \RuleMailCollector();
+        $rule_id = $rule->add($rule_input = [
+            'name'         => 'test assign entity based on known domain',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleMailCollector',
+        ]);
+        $this->checkInput($rule, $rule_id, $rule_input);
+
+        // Create criteria to check if requester group matches a specific group
+        $criteria = new RuleCriteria();
+        $criteria_id = $criteria->add($criteria_input = [
+            'rules_id'  => $rule_id,
+            'criteria'  => 'KNOWN_DOMAIN',
+            'condition' => Rule::PATTERN_IS,
+            'pattern'   => 1,
+        ]);
+        $this->checkInput($criteria, $criteria_id, $criteria_input);
+
+        // Create action to assign entity
+        $action   = new RuleAction();
+        $action_id = $action->add($action_input = [
+            'rules_id'    => $rule_id,
+            'action_type' => 'assign',
+            'field'       => 'entities_id',
+            'value'       => $entity_id,
+        ]);
+        $this->checkInput($action, $action_id, $action_input);
+
+        // Check rules output: no rule should match
+        $rulecollection = new RuleMailCollectorCollection();
+        $output         = $rulecollection->processAllRules(
+            [],
+            [],
+            [
+                'mailcollector'       => 0,
+                '_users_id_requester' => $normal_user_id,
+                'from'                => 'noone@nodomain.com',
+            ]
+        );
+
+        $this->assertEquals(
+            [
+                '_no_rule_matches' => '1',
+                '_rule_process'    => '',
+            ],
+            $output
+        );
+
+        // Check rules output: new rule should match
+        $rulecollection = new RuleMailCollectorCollection();
+        $output         = $rulecollection->processAllRules(
+            [],
+            [],
+            [
+                'mailcollector'       => 0,
+                '_users_id_requester' => $normal_user_id,
+                'from'                => 'normal@glpi-project.org',
+            ]
+        );
+
+        $this->assertEquals(
+            [
+                'entities_id' => $entity_id,
+                '_ruleid'     => $rule_id,
+            ],
+            $output
+        );
+    }
+
     public function testExternalID()
     {
         $entity_id      = getItemByTypeName('Entity', '_test_child_1', true);
