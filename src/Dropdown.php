@@ -2898,16 +2898,6 @@ HTML;
             $post['permit_select_parent'] = false;
         }
 
-        if (isset($post['condition']) && !empty($post['condition']) && !is_array($post['condition'])) {
-            // Retreive conditions from SESSION using its key
-            $key = $post['condition'];
-            if (isset($_SESSION['glpicondition']) && isset($_SESSION['glpicondition'][$key])) {
-                $post['condition'] = $_SESSION['glpicondition'][$key];
-            } else {
-                $post['condition'] = [];
-            }
-        }
-
         if (!isset($post['emptylabel']) || ($post['emptylabel'] == '')) {
             $post['emptylabel'] = Dropdown::EMPTY_VALUE;
         }
@@ -2952,7 +2942,17 @@ HTML;
 
         $ljoin = [];
 
-        if (isset($post['condition']) && !empty($post['condition'])) {
+        if (!empty($post['condition']) && !is_array($post['condition'])) {
+            // Retrieve conditions from SESSION using its key
+            $key = $post['condition'];
+            if (isset($_SESSION['glpicondition'][$key])) {
+                $post['condition'] = $_SESSION['glpicondition'][$key];
+            } else {
+                $post['condition'] = [];
+            }
+        }
+
+        if (!empty($post['condition'])) {
             if (isset($post['condition']['LEFT JOIN'])) {
                 $ljoin = $post['condition']['LEFT JOIN'];
                 unset($post['condition']['LEFT JOIN']);
@@ -2961,7 +2961,12 @@ HTML;
                 $where = array_merge($where, $post['condition']['WHERE']);
             } else {
                 foreach ($post['condition'] as $key => $value) {
-                    if (!is_numeric($key) && !in_array($key, ['AND', 'OR', 'NOT']) && !str_contains($key, '.')) {
+                    if (isset($value['LEFT JOIN'])) {
+                        $ljoin = $value['LEFT JOIN'];
+                    }
+                    if (isset($value['WHERE'])) {
+                        $where = array_merge($where, $value['WHERE']);
+                    } elseif (!is_numeric($key) && !in_array($key, ['AND', 'OR', 'NOT']) && !str_contains($key, '.')) {
                         // Ensure condition contains table name to prevent ambiguity with fields from `glpi_entities` table
                         $where["$table.$key"] = $value;
                     } else {

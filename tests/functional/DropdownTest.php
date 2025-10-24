@@ -1732,6 +1732,38 @@ HTML;
         $this->assertEquals(3, $values['count']);
         $this->assertCount(2, $values['results']);
 
+        //use a WHERE array condition
+        $post = [
+            'itemtype'              => $location::getType(),
+            'condition'             => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]],
+            'display_emptychoice'   => true,
+            'entity_restrict'       => 0,
+            'page'                  => 1,
+            'page_limit'            => 10,
+            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]]]),
+        ];
+        $values = \Dropdown::getDropdownValue($post);
+        $values = (array) json_decode($values);
+
+        $this->assertEquals(3, $values['count']);
+        $this->assertCount(2, $values['results']);
+
+        //use a "multiple" WHERE array condition
+        $post = [
+            'itemtype'              => $location::getType(),
+            'condition'             => [0 => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]]],
+            'display_emptychoice'   => true,
+            'entity_restrict'       => 0,
+            'page'                  => 1,
+            'page_limit'            => 10,
+            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => [0 => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]]]]),
+        ];
+        $values = \Dropdown::getDropdownValue($post);
+        $values = (array) json_decode($values);
+
+        $this->assertEquals(3, $values['count']);
+        $this->assertCount(2, $values['results']);
+
         //use a string condition
         // Put condition in session and post its key
         $condition_key = sha1(serialize($post['condition']));
