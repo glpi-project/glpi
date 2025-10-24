@@ -193,4 +193,43 @@ html[dir='rtl'] {
         padding-right: 2.5rem!important;
         padding-left: initial!important;
     }
+
+    .me-0 {
+        margin-left: 0!important;
+        margin-right: initial!important;
+    }
+
+    .me-1 {
+        margin-left: 0.25rem!important;
+        margin-right: initial!important;
+    }
+
+    .me-2 {
+        margin-left: 0.5rem !important;
+        margin-right: initial !important;
+    }
+
+    .me-3 {
+        margin-left: 1rem!important;
+        margin-right: initial!important;
+    }
+
+    .me-4 {
+        margin-left: 1.5rem !important;
+        margin-right: initial !important;
+    }
+
+    .me-5 {
+        margin-left: 2rem!important;
+        margin-right: initial!important;
+    }
+
+    .me-6 {
+        margin-left: 2.5rem !important;
+        margin-right: initial !important;
+    }
+
+    #page .tab_cadre_fixe, .qtip .tab_cadre_fixe, .modal .modal-body .tab_cadre_fixe {
+        text-align: right;
+    }
 }
