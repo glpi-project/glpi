@@ -35,6 +35,7 @@ $is-dark: false !default;
 
 @import "tabler_compat";
 @import "base";
+@import "rtl";
 @import "mixins/badges_fixes";
 @import "highcontrast";
 @import "components/autocomplete";
