@@ -98,10 +98,10 @@ class StringConditionHandler implements ConditionHandlerInterface
             ValueOperator::NOT_CONTAINS    => !str_contains($b, $a),
 
             // Length comparison operators
-            ValueOperator::LENGTH_GREATER_THAN           => strlen($a) > intval($b),
-            ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS => strlen($a) >= intval($b),
-            ValueOperator::LENGTH_LESS_THAN              => strlen($a) < intval($b),
-            ValueOperator::LENGTH_LESS_THAN_OR_EQUALS    => strlen($a) <= intval($b),
+            ValueOperator::LENGTH_GREATER_THAN           => mb_strlen($a) > intval($b),
+            ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS => mb_strlen($a) >= intval($b),
+            ValueOperator::LENGTH_LESS_THAN              => mb_strlen($a) < intval($b),
+            ValueOperator::LENGTH_LESS_THAN_OR_EQUALS    => mb_strlen($a) <= intval($b),
 
             // Unsupported operators
             default => false,
