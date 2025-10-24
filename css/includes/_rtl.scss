@@ -94,6 +94,11 @@ html[dir='rtl'] {
         left: 0;
     }
 
+    .dropstart .dropdown-menu[data-bs-popper] {
+        left: 100%;
+        right: initial;
+    }
+
     .header-container.container-fluid {
         padding-right: calc(var(--tblr-gutter-x) * 0.5)!important;
         padding-left: 0!important;
