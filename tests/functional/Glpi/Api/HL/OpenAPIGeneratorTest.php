@@ -95,4 +95,178 @@ class OpenAPIGeneratorTest extends HLAPITestCase
             $this->assertEmpty(array_filter($openapi['paths'][$endpoint['path']]['get']['parameters'], static fn($v) => $v['name'] === $endpoint['placeholder']));
         }
     }
+
+    private function diffSchemaPaths($snapshot, $schema)
+    {
+        // Compare OpenAPI route paths and return differences
+        $differences = [];
+        // ignore "/Assets/Custom' paths
+        $snapshot_paths = array_filter($snapshot['paths'] ?? [], static fn($p) => !str_starts_with($p, '/Assets/Custom'), ARRAY_FILTER_USE_KEY);
+        $schema_paths = array_filter($schema['paths'] ?? [], static fn($p) => !str_starts_with($p, '/Assets/Custom'), ARRAY_FILTER_USE_KEY);
+        $common_paths = array_intersect(array_keys($snapshot_paths), array_keys($schema_paths));
+
+        if (count($common_paths) < count($snapshot_paths) || count($common_paths) < count($schema_paths)) {
+            $missing_in_schema = array_diff(array_keys($snapshot_paths), array_keys($schema_paths));
+            $missing_in_snapshot = array_diff(array_keys($schema_paths), array_keys($snapshot_paths));
+            if (!empty($missing_in_schema)) {
+                $differences[] = 'Paths missing in schema: ' . implode(', ', $missing_in_schema);
+            }
+            if (!empty($missing_in_snapshot)) {
+                $differences[] = 'Paths missing in snapshot: ' . implode(', ', $missing_in_snapshot);
+            }
+        }
+
+        foreach ($common_paths as $path) {
+            foreach (['get', 'post', 'put', 'delete', 'patch'] as $method) {
+                $snapshot_method = $snapshot_paths[$path][$method] ?? null;
+                $schema_method = $schema_paths[$path][$method] ?? null;
+                if ($snapshot_method === null && $schema_method === null) {
+                    continue;
+                } elseif ($snapshot_method === null) {
+                    $differences[] = "Method '$method' for path '$path' is missing in the snapshot";
+                    continue;
+                } elseif ($schema_method === null) {
+                    $differences[] = "Method '$method' for path '$path' is missing in the schema";
+                    continue;
+                }
+                unset($snapshot_method['description'], $schema_method['description'], $snapshot_method['tags'], $schema_method['tags']);
+                if ($snapshot_method !== $schema_method) {
+                    $differences[] = "Method '$method' for path '$path' differs between snapshot and schema";
+                }
+            }
+        }
+        return $differences;
+    }
+
+    private function diffSchemaProperties($snapshot_props, $schema_props, $parent_path = '')
+    {
+        $differences = [];
+        $common_props = array_intersect(array_keys($snapshot_props), array_keys($schema_props));
+
+        if (count($common_props) < count($snapshot_props) || count($common_props) < count($schema_props)) {
+            $missing_in_schema = array_diff(array_keys($snapshot_props), array_keys($schema_props));
+            $missing_in_snapshot = array_diff(array_keys($schema_props), array_keys($snapshot_props));
+            if (!empty($missing_in_schema)) {
+                $differences[] = 'Properties missing in schema at ' . $parent_path . ': ' . implode(', ', $missing_in_schema);
+            }
+            if (!empty($missing_in_snapshot)) {
+                $differences[] = 'Properties missing in snapshot at ' . $parent_path . ': ' . implode(', ', $missing_in_snapshot);
+            }
+        }
+
+        foreach ($common_props as $prop_name) {
+            $snapshot_prop = $snapshot_props[$prop_name];
+            $schema_prop = $schema_props[$prop_name];
+            unset($snapshot_prop['description'], $schema_prop['description']);
+
+            // Recursively compare nested properties
+            if (isset($snapshot_prop['properties'], $schema_prop['properties'])) {
+                $nested_diffs = $this->diffSchemaProperties(
+                    $snapshot_prop['properties'],
+                    $schema_prop['properties'],
+                    $parent_path . $prop_name . '.'
+                );
+                $differences = array_merge($differences, $nested_diffs);
+            } elseif (isset($snapshot_prop['items']['properties'], $schema_prop['items']['properties'])) {
+                $nested_diffs = $this->diffSchemaProperties(
+                    $snapshot_prop['items']['properties'],
+                    $schema_prop['items']['properties'],
+                    $parent_path . $prop_name . '[]' . '.'
+                );
+                $differences = array_merge($differences, $nested_diffs);
+            } elseif ($snapshot_prop != $schema_prop) {
+                $differences[] = "Property '$parent_path$prop_name' differs between snapshot and schema";
+            }
+        }
+
+        return $differences;
+    }
+
+    private function diffComponentSchemas($snapshot, $schema)
+    {
+        // Compare OpenAPI component schemas and return differences
+        $differences = [];
+        // Ignore custom assets
+        $snapshot_schemas = array_filter($snapshot['components']['schemas'] ?? [], static fn($k) => !str_starts_with($k, 'Custom'), ARRAY_FILTER_USE_KEY);
+        $schema_schemas = array_filter($schema['components']['schemas'] ?? [], static fn($k) => !str_starts_with($k, 'Custom'), ARRAY_FILTER_USE_KEY);
+        $common_schemas = array_intersect(array_keys($snapshot_schemas), array_keys($schema_schemas));
+
+        if (count($common_schemas) < count($snapshot_schemas) || count($common_schemas) < count($schema_schemas)) {
+            $missing_in_schema = array_diff(array_keys($snapshot_schemas), array_keys($schema_schemas));
+            $missing_in_snapshot = array_diff(array_keys($schema_schemas), array_keys($snapshot_schemas));
+            if (!empty($missing_in_schema)) {
+                $differences[] = 'Component schemas missing in schema: ' . implode(', ', $missing_in_schema);
+            }
+            if (!empty($missing_in_snapshot)) {
+                $differences[] = 'Component schemas missing in snapshot: ' . implode(', ', $missing_in_snapshot);
+            }
+        }
+
+        foreach ($common_schemas as $schema_name) {
+            $snapshot_schema = $snapshot_schemas[$schema_name];
+            $schema_schema = $schema_schemas[$schema_name];
+            unset($snapshot_schema['description'], $schema_schema['description']);
+
+            // Compare properties recursively
+            if (isset($snapshot_schema['properties'], $schema_schema['properties'])) {
+                $prop_diffs = $this->diffSchemaProperties(
+                    $snapshot_schema['properties'],
+                    $schema_schema['properties'],
+                    $schema_name . '.'
+                );
+                $differences = array_merge($differences, $prop_diffs);
+            }
+            unset($snapshot_schema['properties'], $schema_schema['properties']);
+            if ($snapshot_schema !== $schema_schema) {
+                $differences[] = "Component schema '$schema_name' differs between snapshot and schema";
+            }
+        }
+        return $differences;
+    }
+
+    private function assertSchemaMatchesSnapshot(array $snapshot, array $schema)
+    {
+        $path_differences = $this->diffSchemaPaths($snapshot, $schema);
+        $component_differences = $this->diffComponentSchemas($snapshot, $schema);
+
+        if (!empty($path_differences) || !empty($component_differences)) {
+            $version = $schema['info']['version'];
+            $this->fail("Schema for v{$version} does not match snapshot:\n" . implode("\n", $path_differences + $component_differences));
+        }
+    }
+
+    /**
+     * Ensure schemas do not change unexpectedly for API versions
+     * @return void
+     */
+    public function testSchemaSnapshot()
+    {
+        $this->login();
+
+        $snapshot_dir = __DIR__ . '/../../../../fixtures/hlapi/snapshots';
+        $this->assertDirectoryExists($snapshot_dir, "Snapshot directory does not exist: $snapshot_dir");
+
+        $router = Router::getInstance();
+        $api_versions = $router::getAPIVersions();
+        // Only care about the initial minor versions (2.0.0 and 2.1.0 but not 2.1.1, etc)
+        $initial_minor_versions = [];
+        foreach ($api_versions as $version_info) {
+            if ((int) $version_info['api_version'] === 1) {
+                continue;
+            }
+            $version = $version_info['version'];
+            if (preg_match('/\d+\.\d+\.0$/', $version)) {
+                $initial_minor_versions[] = $version;
+            }
+        }
+
+        foreach ($initial_minor_versions as $version) {
+            $openapi_generator = new OpenAPIGenerator($router, $version);
+            $schema = $openapi_generator->getSchema();
+            $snapshot_file = $snapshot_dir . '/v' . str_replace('.', '_', $version) . '.json';
+            $this->assertFileExists($snapshot_file, "Snapshot file does not exist for version $version: $snapshot_file");
+            $expected_schema = json_decode(file_get_contents($snapshot_file), true);
+            $this->assertSchemaMatchesSnapshot($expected_schema, $schema);
+        }
+    }
 }
