@@ -118,7 +118,15 @@ final class ITILController extends AbstractController
                     'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'completename' => ['type' => Doc\Schema::TYPE_STRING],
+                'completename' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'readOnly' => true,
+                ],
+                'level' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'readOnly' => true,
+                ],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
@@ -135,7 +143,6 @@ final class ITILController extends AbstractController
                 'readOnly' => true,
             ],
             'name' => ['type' => Doc\Schema::TYPE_STRING],
-            'completename' => ['type' => Doc\Schema::TYPE_STRING],
             'comment' => ['type' => Doc\Schema::TYPE_STRING],
             'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
             'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
@@ -494,6 +501,17 @@ final class ITILController extends AbstractController
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'completename' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'readOnly' => true,
+                ],
+                'parent' => self::getDropdownTypeSchema(class: TaskCategory::class, full_schema: 'TaskCategory') + ['x-version-introduced' => '2.1.0'],
+                'level' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'readOnly' => true,
+                ],
             ],
         ];
 
@@ -781,7 +799,10 @@ final class ITILController extends AbstractController
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'color' => ['type' => Doc\Schema::TYPE_STRING],
+                'color' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'pattern' => Doc\Schema::PATTERN_COLOR_HEX,
+                ],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
@@ -798,7 +819,11 @@ final class ITILController extends AbstractController
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'readOnly' => true,
                 ],
-                'uuid' => ['type' => Doc\Schema::TYPE_STRING, 'pattern' => Doc\Schema::PATTERN_UUIDV4],
+                'uuid' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'pattern' => Doc\Schema::PATTERN_UUIDV4,
+                    'readOnly' => true,
+                ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'text' => ['type' => Doc\Schema::TYPE_STRING],
                 'template' => self::getDropdownTypeSchema(class: PlanningExternalEventTemplate::class, full_schema: 'ExternalEventTemplate'),

@@ -87,6 +87,83 @@ class RouterTest extends GLPITestCase
         $this->assertEmpty($schemas_missing_versions, 'Schemas missing versioning info: ' . implode(', ', $schemas_missing_versions));
     }
 
+    /**
+     * Ensure all schemas for CommonTreeDropdown itemtypes have the correct readonly properties such as completename and level
+     * @return void
+     */
+    public function testAllTreeSchemasHaveReadonlyProps()
+    {
+        $router = Router::getInstance();
+        $controllers = $router->getControllers();
+
+        $schemas_errors = [];
+        $required_readonly_props = ['completename', 'level'];
+        foreach ($controllers as $controller) {
+            $schemas = $controller::getKnownSchemas(null);
+            foreach ($schemas as $schema_name => $schema) {
+                if (!isset($schema['x-itemtype']) || !is_subclass_of($schema['x-itemtype'], \CommonTreeDropdown::class)) {
+                    continue;
+                }
+                foreach ($required_readonly_props as $prop) {
+                    if (!isset($schema['properties'][$prop])) {
+                        $schemas_errors[] = "Schema $schema_name in " . $controller::class . " is missing property '$prop'";
+                    } else {
+                        if (!isset($schema['properties'][$prop]['readOnly']) || $schema['properties'][$prop]['readOnly'] !== true) {
+                            $schemas_errors[] = "Property '$prop' in schema $schema_name in " . $controller::class . " is not marked as readOnly";
+                        }
+                    }
+                }
+            }
+        }
+        $this->assertEmpty($schemas_errors, "Tree schemas with errors: \n" . implode("\n", $schemas_errors));
+    }
+
+    /**
+     * Ensure there are not multiple schemas for the same itemtype (identified by x-itemtype).
+     * In some cases, like user preferences, we may have multiple schemas for the same itemtype, but those extra schemas
+     * should use x-table instead to point to the table directly.
+     * @return void
+     */
+    public function testNoDuplicateItemtypeSchemas()
+    {
+        $router = Router::getInstance();
+        $controllers = $router->getControllers();
+
+        $seen_itemtypes = [];
+        $duplicate_schemas = [];
+        $all_schemas = [];
+        foreach ($controllers as $controller) {
+            /** @noinspection SlowArrayOperationsInLoopInspection */
+            $all_schemas = array_merge($all_schemas, $controller::getKnownSchemas(null));
+        }
+        foreach ($all_schemas as $schema_name => $schema) {
+            // Ignore known duplicate. Cannot fix until v3
+            if ($schema_name === 'SoftwareLicense') {
+                continue;
+            }
+            if (isset($schema['x-itemtype'])) {
+                $itemtype = $schema['x-itemtype'];
+                if (isset($seen_itemtypes[$itemtype])) {
+                    $duplicate_schemas[] = "Itemtype $itemtype has multiple schemas: " . $seen_itemtypes[$itemtype] . " and $schema_name";
+                } else {
+                    $seen_itemtypes[$itemtype] = $schema_name;
+                }
+            }
+        }
+        ksort($all_schemas['SoftwareLicense']['properties']);
+        ksort($all_schemas['License']['properties']);
+        $this->assertEquals(
+            array_keys($all_schemas['SoftwareLicense']['properties']),
+            array_keys($all_schemas['License']['properties']),
+            'Schemas SoftwareLicense and License should have the same properties',
+        );
+        // Ensure the duplication gets removed in v3
+        if (version_compare(Router::API_VERSION, '3.0.0', '>=')) {
+            $this->assertNotContains('SoftwareLicense', $seen_itemtypes, 'Schema SoftwareLicense should be removed in v3');
+        }
+        $this->assertEmpty($duplicate_schemas, "Duplicate itemtype schemas found: \n" . implode("\n", $duplicate_schemas));
+    }
+
     public function testNormalizeAPIVersion()
     {
         $this->assertEquals('50.2.0', TestRouter::normalizeAPIVersion('50'));

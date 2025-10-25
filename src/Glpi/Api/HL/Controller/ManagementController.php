@@ -304,7 +304,11 @@ final class ManagementController extends AbstractController
             }
 
             if ($item->isField('uuid')) {
-                $schemas[$m_name]['properties']['uuid'] = ['type' => Doc\Schema::TYPE_STRING];
+                $schemas[$m_name]['properties']['uuid'] = [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'pattern' => Doc\Schema::PATTERN_UUIDV4,
+                    'readOnly' => true,
+                ];
             }
             if ($item->isField('autoupdatesystems_id')) {
                 $schemas[$m_name]['properties']['autoupdatesystem'] = self::getDropdownTypeSchema(AutoUpdateSystem::class);
@@ -367,6 +371,23 @@ final class ManagementController extends AbstractController
                     'x-mapper' => static fn($v) => $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v,
                 ],
             ],
+        ];
+
+        // Post v2 additions
+        $schemas['License']['properties']['is_recursive'] = [
+            'x-version-introduced' => '2.1.0',
+            'type' => Doc\Schema::TYPE_BOOLEAN,
+            'readOnly' => true,
+        ];
+        $schemas['License']['properties']['completename'] = [
+            'x-version-introduced' => '2.1.0',
+            'type' => Doc\Schema::TYPE_STRING,
+            'readOnly' => true,
+        ];
+        $schemas['License']['properties']['level'] = [
+            'x-version-introduced' => '2.1.0',
+            'type' => Doc\Schema::TYPE_INTEGER,
+            'readOnly' => true,
         ];
 
         $schemas['Infocom'] = [

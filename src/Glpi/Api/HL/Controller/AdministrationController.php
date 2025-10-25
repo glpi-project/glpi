@@ -212,6 +212,7 @@ final class AdministrationController extends AbstractController
                     'completename' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Complete name',
+                        'readOnly' => true,
                     ],
                     'parent' => [
                         'type' => Doc\Schema::TYPE_OBJECT,
@@ -238,6 +239,7 @@ final class AdministrationController extends AbstractController
                     'level' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'Level',
+                        'readOnly' => true,
                     ],
                     'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 ],
@@ -264,6 +266,7 @@ final class AdministrationController extends AbstractController
                     'completename' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Complete name',
+                        'readOnly' => true,
                     ],
                     'parent' => [
                         'type' => Doc\Schema::TYPE_OBJECT,
@@ -290,6 +293,7 @@ final class AdministrationController extends AbstractController
                     'level' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'Level',
+                        'readOnly' => true,
                     ],
                 ],
             ],

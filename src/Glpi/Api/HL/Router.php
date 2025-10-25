@@ -89,7 +89,7 @@ use function Safe\preg_match;
 class Router
 {
     /** @var string */
-    public const API_VERSION = '2.0.0';
+    public const API_VERSION = '2.1.0';
 
     /**
      * @var AbstractController[]

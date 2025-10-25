@@ -90,7 +90,7 @@ final class OpenAPIGenerator
         return ['writeOnly', 'readOnly', 'x-full-schema', 'x-introduced', 'x-deprecated', 'x-removed'];
     }
 
-    private function cleanVendorExtensions(array $schema, ?string $parent_key = null): array
+    private function cleanVendorExtensions(array $schema, ?string $parent_key = null, ?array $parent_schema = null): array
     {
         $to_keep = $this->getPublicVendorExtensions();
         // Recursively walk through every key of the schema
@@ -103,15 +103,15 @@ final class OpenAPIGenerator
                 continue;
             }
             if ($parent_key === 'properties') {
-                if ($key === 'id') {
-                    //Implicitly set the id property as read-only
+                if (!array_key_exists('x-full-schema', $parent_schema) && $key === 'id') {
+                    // Implicitly set the id property as read-only but not for partials
                     $value['readOnly'] = true;
                 }
             }
             // If the value is an array
             if (is_array($value)) {
                 // Clean the value
-                $schema[$key] = $this->cleanVendorExtensions($value, $key);
+                $schema[$key] = $this->cleanVendorExtensions($value, $key, $schema);
             }
         }
         return $schema;

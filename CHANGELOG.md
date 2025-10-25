@@ -6,12 +6,20 @@ The present file will list all changes made to the project; according to the
 ## [11.0.2] unreleased
 
 ### Added
+- Some missing `readOnly` flags for properties for some schemas in High-Level API.
+- Some missing UUID and color pattern constraints for properties in some schemas in High-Level API.
+- Some missing `completename` and `level` properties for some schemas in High-Level API v2.1.
 
 ### Changed
+- Fixed `id` property in dropdown/linked object properties in schemas in High-Level API showing as readOnly when they are writable.
 
 ### Deprecated
 
 ### Removed
+- Invalid `max_power` property in the `PassiveDCEquipmentModel` schema in High-Level API.
+- Invalid `chipset` property in the `SystemboardModel` schema in High-Level API.
+- Invalid `date_creation` and `date_mod` properties in the `GenericDeviceType` and `SensorType` schemas in High-Level API.
+- Invalid `completename` property in the `TicketTemplate`, `ChangeTemplate`, and `ProblemTemplate` schemas in High-Level API.
 
 ### API changes
 
