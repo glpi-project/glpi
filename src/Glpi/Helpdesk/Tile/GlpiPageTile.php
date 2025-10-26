@@ -151,7 +151,7 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface, ProvideTra
                             'searchtype' => 'equals',
                             'value' => 'myself',
                             'link' => 'OR',
-                        ]
+                        ],
                     ],
                 ],
                 [
