@@ -2395,7 +2395,7 @@ class MailCollector extends CommonDBTM
             }
         }
 
-        if ($charset !== null && strtoupper($charset) != 'UTF-8') {
+        if (strtoupper($charset) != 'UTF-8') {
             /* mbstring functions do not handle the 'ks_c_5601-1987' &
              * 'ks_c_5601-1989' charsets. However, these charsets are used, for
              * example, by various versions of Outlook to send Korean characters.
