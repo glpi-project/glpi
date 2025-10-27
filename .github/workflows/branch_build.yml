@@ -37,7 +37,7 @@ jobs:
           docker exec --interactive ${{ job.services.app.id }} tools/make_release.sh -y . ${{ env.release_name }}
           docker cp ${{ job.services.app.id }}:/tmp/glpi-${{ env.release_name }}.tgz ${{ github.workspace }}/${{ env.release_name }}.tar.gz
       - name: "Store archive"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
             name: ${{ env.release_name }}.tar.gz
             path: ${{ github.workspace }}/${{ env.release_name }}.tar.gz

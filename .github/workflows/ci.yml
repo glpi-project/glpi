@@ -282,13 +282,13 @@ jobs:
           docker compose exec -T app .github/actions/test_tests-e2e.sh
       - name: "Upload Cypress screenshots"
         if: "${{ always() && (steps.e2e.conclusion == 'failure' || steps.e2e.conclusion == 'cancelled') }}"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: cypress-screenshots
           path: tests/cypress/screenshots
       - name: "Upload GLPI logs"
         if: "${{ always() && (steps.e2e.conclusion == 'failure' || steps.e2e.conclusion == 'cancelled') }}"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
             name: glpi-logs
             path: tests/files/_log
