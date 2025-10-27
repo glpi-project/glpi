@@ -44,11 +44,13 @@ class AssetParametersTest extends AbstractParameters
     {
         $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
 
-        // Create a computer model and state for testing
+        // Create a computer model, type and state for testing
         $this->createItem('ComputerModel', ['name' => 'Test Model']);
+        $this->createItem('ComputerType', ['name' => 'Test Type']);
         $this->createItem('State', ['name' => 'Test State']);
 
         $test_model_id = getItemByTypeName('ComputerModel', 'Test Model', true);
+        $test_type_id = getItemByTypeName('ComputerType', 'Test Type', true);
         $test_state_id = getItemByTypeName('State', 'Test State', true);
 
         $this->createItem('Computer', [
@@ -56,6 +58,7 @@ class AssetParametersTest extends AbstractParameters
             'serial'             => 'abcd1234',
             'entities_id'        => $test_entity_id,
             'computermodels_id'  => $test_model_id,
+            'computertypes_id'   => $test_type_id,
             'states_id'          => $test_state_id,
         ]);
 
@@ -68,6 +71,7 @@ class AssetParametersTest extends AbstractParameters
                 'itemtype'    => 'Computer',
                 'serial'      => 'abcd1234',
                 'model'       => 'Test Model',
+                'type'        => 'Test Type',
                 'state'       => 'Test State',
                 'entity' => [
                     'id'           => $test_entity_id,
