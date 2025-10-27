@@ -33,6 +33,7 @@
 {% extends "generic_show_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 {% set params  = params ?? [] %}
 {% set edit_mode = edit_mode|default(false) %}
 {% set no_header = not edit_mode %}
@@ -78,6 +79,7 @@
       } %}
 
       {{ fields.smallTitle(__('General')) }}
+      {{ alerts.alert('warning', '', __('Child locations will not be transferred with the parent to avoid visibility and hierarchy issues.')) }}
       {{ fields.dropdownArrayField('keep_history', item.fields['keep_history'], keep_options, __('Historical'), {
          readonly: not can_change_options,
       }) }}
@@ -88,7 +90,6 @@
       {{ fields.dropdownArrayField('keep_location', item.fields['keep_location'], location_options, 'Location'|itemtype_name(get_plural_number()), {
          readonly: not can_change_options,
       }) }}
-
       {{ fields.smallTitle(_n('Asset', 'Assets', get_plural_number())) }}
       {{ fields.dropdownArrayField('keep_networklink', item.fields['keep_networklink'], connection_options, 'NetworkPort'|itemtype_name(get_plural_number()), {
          readonly: not can_change_options,
