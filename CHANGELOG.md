@@ -17,6 +17,7 @@ The present file will list all changes made to the project; according to the
 - New schemas/endpoints for Reminders, RSS Feeds, and Reservations in the High-Level API v2.1.
 - `date_password_change`, `location`, `authtype`, `last_login`, `default_profile` and `default_entity` properties for the User schema in the High-Level API v2.1.
 - New UserPreferences schema and endpoints in the High-Level API v2.1.
+- Some missing `completename` and `level` properties for some schemas in High-Level API v2.1.
 
 ### Changed
 - Fixed `id` property in dropdown/linked object properties in schemas in High-Level API showing as readOnly when they are writable.

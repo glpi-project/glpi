@@ -395,6 +395,23 @@ final class ManagementController extends AbstractController
             ],
         ];
 
+        // Post v2 additions
+        $schemas['License']['properties']['is_recursive'] = [
+            'x-version-introduced' => '2.1.0',
+            'type' => Doc\Schema::TYPE_BOOLEAN,
+            'readOnly' => true,
+        ];
+        $schemas['License']['properties']['completename'] = [
+            'x-version-introduced' => '2.1.0',
+            'type' => Doc\Schema::TYPE_STRING,
+            'readOnly' => true,
+        ];
+        $schemas['License']['properties']['level'] = [
+            'x-version-introduced' => '2.1.0',
+            'type' => Doc\Schema::TYPE_INTEGER,
+            'readOnly' => true,
+        ];
+
         $schemas['Infocom'] = [
             'x-version-introduced' => '2.0',
             'type' => Doc\Schema::TYPE_OBJECT,
