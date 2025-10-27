@@ -62,6 +62,8 @@ use ITILCategory;
 use ITILFollowup;
 use ITILSolution;
 use Location;
+use OLA;
+use OlaLevel;
 use Planning;
 use PlanningEventCategory;
 use PlanningExternalEvent;
@@ -71,6 +73,8 @@ use ProblemTask;
 use RecurrentChange;
 use RequestType;
 use Session;
+use SLA;
+use SlaLevel;
 use TaskCategory;
 use Ticket;
 use TicketRecurrent;
@@ -203,6 +207,39 @@ final class ITILController extends AbstractController
                 'actiontime' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'readOnly' => true,
+                ],
+                'begin_waiting_date' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'readOnly' => true,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                ],
+                'waiting_duration' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'readOnly' => true,
+                    'description' => 'Total waiting duration in seconds',
+                ],
+                'resolution_duration' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'readOnly' => true,
+                    'x-field' => 'solve_delay_stat',
+                    'description' => 'Total resolution duration in seconds',
+                ],
+                'close_duration' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'readOnly' => true,
+                    'x-field' => 'close_delay_stat',
+                    'description' => 'Total close duration in seconds',
+                ],
+                'resolution_date' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'readOnly' => true,
+                    'x-field' => 'time_to_resolve',
                 ],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -390,6 +427,66 @@ final class ITILController extends AbstractController
                     'type' => Doc\Schema::TYPE_STRING,
                 ];
                 $schemas[$itil_type]['properties']['request_type'] = self::getDropdownTypeSchema(class: RequestType::class, full_schema: 'RequestType');
+
+                // SLA/OLA Properties
+                $schemas[$itil_type]['properties']['take_into_account_date'] = [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'readOnly' => true,
+                    'x-field' => 'takeintoaccountdate',
+                ];
+                $schemas[$itil_type]['properties']['take_into_account_duration'] = [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'readOnly' => true,
+                    'description' => 'Total take into account duration in seconds',
+                    'x-field' => 'takeintoaccount_delay_stat',
+                ];
+                $schemas[$itil_type]['properties']['sla_ttr'] = self::getDropdownTypeSchema(class: SLA::class, field: 'slas_id_ttr', full_schema: 'SLA') + ['x-version-introduced' => '2.1.0'];
+                $schemas[$itil_type]['properties']['sla_tto'] = self::getDropdownTypeSchema(class: SLA::class, field: 'slas_id_tto', full_schema: 'SLA') + ['x-version-introduced' => '2.1.0'];
+                $schemas[$itil_type]['properties']['ola_ttr'] = self::getDropdownTypeSchema(class: OLA::class, field: 'olas_id_ttr', full_schema: 'OLA') + ['x-version-introduced' => '2.1.0'];
+                $schemas[$itil_type]['properties']['ola_tto'] = self::getDropdownTypeSchema(class: OLA::class, field: 'olas_id_tto', full_schema: 'OLA') + ['x-version-introduced' => '2.1.0'];
+                $schemas[$itil_type]['properties']['sla_level_ttr'] = self::getDropdownTypeSchema(class: SlaLevel::class, field: 'slalevels_id_ttr', full_schema: 'SLALevel') + ['x-version-introduced' => '2.1.0'];
+                $schemas[$itil_type]['properties']['ola_level_ttr'] = self::getDropdownTypeSchema(class: OlaLevel::class, field: 'olalevels_id_ttr', full_schema: 'OLALevel') + ['x-version-introduced' => '2.1.0'];
+                $schemas[$itil_type]['properties']['sla_waiting_duration'] = [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'readOnly' => true,
+                    'description' => 'Total SLA waiting duration in seconds',
+                ];
+                $schemas[$itil_type]['properties']['ola_waiting_duration'] = [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'readOnly' => true,
+                    'description' => 'Total OLA waiting duration in seconds',
+                ];
+                $schemas[$itil_type]['properties']['ola_ttr_begin_date'] = [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'readOnly' => true,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                ];
+                $schemas[$itil_type]['properties']['ola_tto_begin_date'] = [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'readOnly' => true,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                ];
+                $schemas[$itil_type]['properties']['internal_resolution_date'] = [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'readOnly' => true,
+                    'x-field' => 'internal_time_to_resolve',
+                ];
+                $schemas[$itil_type]['properties']['internal_take_into_account_date'] = [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'readOnly' => true,
+                    'x-field' => 'internal_time_to_own',
+                ];
             }
             if ($itil_type === Ticket::class || $itil_type === Change::class) {
                 $schemas[$itil_type]['properties']['global_validation'] = [
