@@ -2383,16 +2383,9 @@ class MailCollector extends CommonDBTM
 
         $charset = $content_type->getParameter('charset');
 
-        // If charset is not specified, try to detect it automatically
+        // If charset is not specified, and not UTF-8, force fallback default encoding
         if ($charset === null) {
-            // Use mb_detect_encoding to guess the charset
-            $detected_charset = mb_detect_encoding($contents, ['UTF-8', 'ISO-8859-1', 'ISO-8859-15', 'Windows-1252'], true);
-            if ($detected_charset !== false) {
-                $charset = $detected_charset;
-            } else {
-                // Fallback to ISO-8859-1 as it's the most common for mail headers without charset
-                $charset = 'ISO-8859-1';
-            }
+            $charset = mb_check_encoding($contents, 'UTF-8') ? 'UTF-8' : 'ISO-8859-1';
         }
 
         if (strtoupper($charset) != 'UTF-8') {

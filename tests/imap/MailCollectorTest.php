@@ -748,7 +748,7 @@ class MailCollectorTest extends DbTestCase
         }
 
         $total_count                     = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
-        $expected_refused_count          = 11;
+        $expected_refused_count          = 12;
         $expected_error_count            = 2;
         $expected_blacklist_count        = 1;
         $expected_expected_already_seen  = 0;
