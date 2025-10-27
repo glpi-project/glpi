@@ -416,12 +416,13 @@ TWIG;
             question.getEndUserInputName(),
             value,
             {
-                'form_id'        : question.getForm().getId(),
-                'multiple'       : is_multiple_actors,
-                'allowed_types'  : allowed_types,
-                'aria_label'     : aria_label,
-                'mb'             : '',
-                'right_for_users': right_for_users,
+                'form_id'         : question.getForm().getId(),
+                'multiple'        : is_multiple_actors,
+                'allowed_types'   : allowed_types,
+                'aria_label'      : aria_label,
+                'mb'              : '',
+                'right_for_users' : right_for_users,
+                'group_conditions': group_conditions,
             }
         ]) %}
 
@@ -450,6 +451,7 @@ TWIG;
             'is_multiple_actors' => $is_multiple_actors,
             'aria_label'         => $question->fields['name'],
             'right_for_users'    => $this->getRightForUsers(),
+            'group_conditions'   => $this->getGroupConditions(),
         ]);
     }
 
