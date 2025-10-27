@@ -32,7 +32,7 @@
 
 <input
     class="me-2 form-control value-selector flex-grow-1 min-width-200"
-    value="{{ input_value }}"
+    value="{{ input_value is array ? "" : input_value }}"
     name="{{ input_name }}"
     placeholder="{{ __("Enter a value...") }}"
     data-glpi-conditions-editor-value
