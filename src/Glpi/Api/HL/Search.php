@@ -732,6 +732,9 @@ final class Search
         if ($schema['type'] !== Doc\Schema::TYPE_OBJECT) {
             throw new RuntimeException('Schema must be an object type');
         }
+        if (!isset($schema['x-itemtype']) && isset($schema['x-table'])) {
+            $schema['x-itemtype'] = getItemTypeForTable($schema['x-table']);
+        }
         Profiler::getInstance()->start('Search::getSearchResultsBySchema', Profiler::CATEGORY_HLAPI);
         // Initialize a new search
         $search = new self($schema, $request_params);

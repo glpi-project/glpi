@@ -232,7 +232,7 @@ final class ResourceAccessor
      */
     public static function searchBySchema(array $schema, array $request_params): Response
     {
-        $itemtype = $schema['x-itemtype'] ?? null;
+        $itemtype = $schema['x-itemtype'] ?? ($schema['x-table'] ? getItemTypeForTable($schema['x-table']) : null);
         // No item-level checks done here. They are handled when generating the SQL using the x-rights-condtions schema property
         if (($itemtype !== null) && !$itemtype::canView()) {
             return AbstractController::getAccessDeniedErrorResponse();
@@ -290,7 +290,7 @@ final class ResourceAccessor
      */
     public static function getOneBySchema(array $schema, array $request_attrs, array $request_params, string $field = 'id'): Response
     {
-        $itemtype = $schema['x-itemtype'] ?? null;
+        $itemtype = $schema['x-itemtype'] ?? ($schema['x-table'] ? getItemTypeForTable($schema['x-table']) : null);
         // No item-level checks done here. They are handled when generating the SQL using the x-rights-condtions schema property
         if (($itemtype !== null) && !$itemtype::canView()) {
             return AbstractController::getAccessDeniedErrorResponse();

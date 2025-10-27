@@ -385,7 +385,7 @@ EOD,
 
         $schemas['UserPreferences'] =  [
             'x-version-introduced' => '2.1.0',
-            'x-itemtype' => User::class,
+            'x-table' => User::getTable(),
             'type' => Doc\Schema::TYPE_OBJECT,
             'x-rights-conditions' => [
                 'read' => $schemas['User']['x-rights-conditions']['read'],

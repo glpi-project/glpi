@@ -47,6 +47,7 @@ use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Planning;
 use Reminder;
+use Reservation;
 use ReservationItem;
 use RSSFeed;
 use User;
@@ -182,7 +183,7 @@ final class ToolController extends AbstractController
             ],
             'Reservation' => [
                 'x-version-introduced' => '2.1.0',
-                'x-itemtype' => ReservationItem::class,
+                'x-itemtype' => Reservation::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
                     'id' => [
