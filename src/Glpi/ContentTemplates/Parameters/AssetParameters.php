@@ -72,6 +72,7 @@ class AssetParameters extends AbstractParameters
             new AttributeParameter("itemtype", __('Itemtype')),
             new AttributeParameter("serial", __('Serial number')),
             new AttributeParameter("model", _n('Model', 'Models', 1)),
+            new AttributeParameter("type", _n('Type', 'Types', 1)),
             new AttributeParameter("state", __('Status')),
             new ObjectParameter(new EntityParameters()),
         ];
@@ -87,6 +88,7 @@ class AssetParameters extends AbstractParameters
             'itemtype' => $asset->getType(),
             'serial'   => $fields['serial'],
             'model'    => '',
+            'type'     => '',
             'state'    => '',
         ];
 
@@ -98,6 +100,18 @@ class AssetParameters extends AbstractParameters
                 $model = getItemForItemtype($model_class);
                 if ($model && $model->getFromDB($fields[$model_fk])) {
                     $values['model'] = $model->getName();
+                }
+            }
+        }
+
+        // Add type if asset has a type
+        $type_class = $asset->getTypeClass();
+        if ($type_class !== null) {
+            $type_fk = $type_class::getForeignKeyField();
+            if (isset($fields[$type_fk]) && $fields[$type_fk] > 0) {
+                $type = getItemForItemtype($type_class);
+                if ($type && $type->getFromDB($fields[$type_fk])) {
+                    $values['type'] = $type->getName();
                 }
             }
         }
