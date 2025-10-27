@@ -393,7 +393,10 @@ final class Search
                 $fn_update_keys = static function ($restrict) use (&$fn_update_keys, $main_table) {
                     $new_restrict = [];
                     foreach ($restrict as $key => $value) {
-                        $new_key = str_replace($main_table, '_', $key);
+                        $new_key = $key;
+                        if ($key === $main_table || str_starts_with($key, $main_table . '.')) {
+                            $new_key = str_replace($main_table, '_', $key);
+                        }
                         if (is_array($value)) {
                             $value = $fn_update_keys($value);
                         }
