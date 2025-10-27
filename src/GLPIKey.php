@@ -137,7 +137,7 @@ class GLPIKey
             return $errors; // early return, as, if file does not exist, no need to check further
         }
         if (strlen($key) !== SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_KEYBYTES) {
-            $errors[] = __s('Invalid security key file contents. Regenerate a key using `./bin/console security:change_key` command.');
+            $errors[] = sprintf(__s('Invalid security key file contents. You have to run the "%s" command to regenerate a key.'), 'php bin/console security:change_key');
         }
 
         return $errors;
