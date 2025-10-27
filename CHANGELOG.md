@@ -14,6 +14,7 @@ The present file will list all changes made to the project; according to the
 - `approver`, `approval_followup`, `date_creation`, `date_mod`, and `date_approval` properties for the Solution schema in the High-Level API v2.1.
 - `timeline_position` property for the TicketValidation, ChangeValidation and Document_Item schemas in the High-Level API v2.1.
 - `date_solve`, `date_close`, and `global_validation` properties for the applicable Ticket, Change and Problem schemas in the High-Level API v2.1.
+- New schemas/endpoints for Reminders, RSS Feeds, and Reservations in the High-Level API v2.1.
 
 ### Changed
 - Fixed `id` property in dropdown/linked object properties in schemas in High-Level API showing as readOnly when they are writable.

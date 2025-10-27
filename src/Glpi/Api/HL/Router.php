@@ -53,6 +53,7 @@ use Glpi\Api\HL\Controller\ProjectController;
 use Glpi\Api\HL\Controller\ReportController;
 use Glpi\Api\HL\Controller\RuleController;
 use Glpi\Api\HL\Controller\SetupController;
+use Glpi\Api\HL\Controller\ToolController;
 use Glpi\Api\HL\Middleware\AbstractMiddleware;
 use Glpi\Api\HL\Middleware\AuthMiddlewareInterface;
 use Glpi\Api\HL\Middleware\CookieAuthMiddleware;
@@ -235,6 +236,7 @@ EOT;
             self::$instance->registerController(new GraphQLController());
             self::$instance->registerController(new ReportController());
             self::$instance->registerController(new RuleController());
+            self::$instance->registerController(new ToolController());
             self::$instance->registerController(new SetupController());
 
             // Register controllers from plugins

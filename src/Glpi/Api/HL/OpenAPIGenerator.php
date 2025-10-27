@@ -168,6 +168,32 @@ EOT;
                     $itemtype = $known_schema['x-itemtype'];
                     $known_schema['description'] = $itemtype::getTypeName(1);
                 }
+
+                // Add properties that have 'required' flags to a 'required' array on the nearest parent object
+                // We add the 'required' on individual properties so that it works well with the API version filtering
+                $fn_hoist_required_flags = static function (&$schema_part) use (&$fn_hoist_required_flags) {
+                    if (is_array($schema_part)) {
+                        if (isset($schema_part['properties']) && is_array($schema_part['properties'])) {
+                            $required_fields = [];
+                            foreach ($schema_part['properties'] as $prop_name => &$prop_value) {
+                                if (is_array($prop_value)) {
+                                    if (isset($prop_value['required']) && $prop_value['required'] === true) {
+                                        $required_fields[] = $prop_name;
+                                        unset($prop_value['required']);
+                                    }
+                                    // Recurse into the property value
+                                    $fn_hoist_required_flags($prop_value);
+                                }
+                            }
+                            unset($prop_value);
+                            if (count($required_fields) > 0) {
+                                $schema_part['required'] = $required_fields;
+                            }
+                        }
+                    }
+                };
+                $fn_hoist_required_flags($known_schema);
+
                 $schemas[$calculated_name] = $known_schema;
                 $schemas[$calculated_name]['x-controller'] = $controller::class;
                 $schemas[$calculated_name]['x-schemaname'] = $schema_name;
