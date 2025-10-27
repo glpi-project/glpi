@@ -201,7 +201,7 @@ class Group_User extends CommonDBRelation
             $entries[] = [
                 'itemtype' => self::class,
                 'id'       => $data["linkid"],
-                'group'    => $group->getLink(),
+                'group'    => $group->getLink(['complete' => true]),
                 'dynamic'  => $data['is_dynamic'] ? $yes_icon : $no_icon,
                 'manager'  => $data['is_manager'] ? $yes_icon : $no_icon,
                 'delegatee' => $data['is_userdelegate'] ? $yes_icon : $no_icon,
@@ -463,7 +463,7 @@ class Group_User extends CommonDBRelation
             $user->getFromDB($data["id"]);
             $group_link = '';
             if ($tmpgrp->getFromDB($data['groups_id'])) {
-                $group_link = $tmpgrp->getLink(['comments' => true]);
+                $group_link = $tmpgrp->getLink(['comments' => true, 'complete' => true]);
             }
             $entries[] = [
                 'itemtype'  => self::class,
