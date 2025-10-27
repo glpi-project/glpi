@@ -1380,6 +1380,7 @@ final class ITILController extends AbstractController
                 }
             }
             // Add a link to the full resource represented by the team member (User, Group, etc)
+            $member['id'] = $member_items_id;
             $member['href'] = $member_itemtype::getFormURLWithID($member_items_id);
             // Replace role with non-localized textual representation
             try {
@@ -1472,11 +1473,7 @@ final class ITILController extends AbstractController
         /** @var CommonITILObject $item */
         $item = $request->getParameter('_item');
 
-        // TODO Handle textual representations of roles
-        $role_id = $request->getAttribute('role');
-        if ($role_id === null) {
-            self::getInvalidParametersErrorResponse();
-        }
+        $role_id = self::getRoleName($request->getAttribute('role'));
 
         $team = self::getCleanTeam($item);
         $team = array_filter($team, static fn($v) => $v['role'] === $role_id, ARRAY_FILTER_USE_BOTH);
@@ -1521,8 +1518,7 @@ final class ITILController extends AbstractController
 
         $member_itemtype = $request->getParameter('type');
         $member_items_id = $request->getParameter('id');
-        // TODO Handle textual representations of roles
-        $role_id = $request->getParameter('role');
+        $role_id = self::getRoleID($request->getParameter('role'));
 
         $result = $item->addTeamMember($member_itemtype, $member_items_id, [
             'role'  => $role_id,
@@ -1571,7 +1567,6 @@ final class ITILController extends AbstractController
 
         $member_itemtype = $request->getParameter('type');
         $member_items_id = $request->getParameter('id');
-        // TODO Handle textual representations of roles
         $role_id = self::getRoleID($request->getParameter('role'));
 
         $result = $item->deleteTeamMember($member_itemtype, $member_items_id, [
