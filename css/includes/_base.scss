@@ -580,37 +580,3 @@ input.form-check-input[type="radio"]:disabled,
 input.form-check-input[type="checkbox"]:disabled {
     opacity: 0.9;
 }
-
-html[dir='rtl'] {
-    .form-select {
-        background-position: left 1rem center;
-    }
-
-    .pe-2 {
-        padding-left: 0.5rem!important;
-        padding-right: initial!important;
-    }
-
-    .ms-md-4 {
-        margin-left: initial!important;
-        margin-right: 1.5rem !important;
-    }
-
-    .input-group-flat .form-control:not(:last-child) {
-        border-left: 0;
-        border-right: var(--tblr-border-width);
-    }
-
-    .input-group > :not(:first-child, .dropdown-menu, .valid-tooltip, .valid-feedback, .invalid-tooltip, .invalid-feedback) {
-        margin-right: calc(-1 * var(--tblr-border-width));
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-        border-top-left-radius: var(--tblr-border-radius);
-        border-bottom-left-radius: var(--tblr-border-radius);
-    }
-
-    .input-group:not(.has-validation) > :not(:last-child, .dropdown-toggle, .dropdown-menu, .form-floating), .input-group:not(.has-validation) > .dropdown-toggle:nth-last-child(n+3), .input-group:not(.has-validation) > .form-floating:not(:last-child) > .form-control, .input-group:not(.has-validation) > .form-floating:not(:last-child) > .form-select {
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-    }
-}
