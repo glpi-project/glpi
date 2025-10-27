@@ -835,6 +835,7 @@ class MailCollectorTest extends DbTestCase
                     '42 - Missing Content Type',
                     '43 - Korean encoding issue',
                     '44 - Hebrew encoding issue',
+                    '47 - Missing charset parameter',
                 ],
             ],
             // Mails having "normal" user as observer (add_cc_to_observer = true)
@@ -859,6 +860,8 @@ Will cause a PHP fatal error:
 
 Best regards,
 PLAINTEXT,
+            // Email without charset parameter (47-missing-charset.eml) - tests ISO-8859-1 to UTF-8 fallback
+            '47 - Missing charset parameter' => 'ATTENTION: Ne cliquez pas sur les liens ou n\'ouvrez pas les pièces jointes si vous n\'êtes pas sûr du contenu.',
             // HTML on multi-part email
             'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine' => <<<HTML
 <p>This message have reply to header, requester should be get from this header.</p>
