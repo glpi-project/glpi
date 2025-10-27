@@ -149,36 +149,44 @@
     {{ _self.input(name, value, options|merge({'type': 'number'})) }}
 {% endmacro %}
 
-
 {% macro color(name, value, options = {}) %}
     {% set options = {
-        id: name ~ '_' ~ (options.rand ?? random()),
+        id: '%id%',
     }|merge(options) %}
 
     {{ _self.input(name, value, options|merge({
         'type': 'text',
-        'input_addclass': 'rounded-0',
+        'input_addclass': 'rounded-0 js-spectrum-field',
     })) }}
+
     <script>
-        $(function () {
-            $("#{{ options.id|e('css')|e('js') }}").spectrum({
+    $(function () {
+        $(".js-spectrum-field").each(function () {
+            const el = $(this);
+            if (el.data("spectrum-initialized")) return;
+
+            el.spectrum({
                 showInput: true,
                 preferredFormat: "hex",
                 type: "text",
                 cancelText: "{{ __('Cancel')|e('js') }}",
                 chooseText: "{{ __('Validate')|e('js') }}",
                 change: function (color) {
-                    if (color !== null && color.getAlpha() !== 1) {
+                    if (color) {
                         let hex = color.toHexString();
-                        hex += ("0" + Math.round(parseFloat(color.getAlpha()) * 255).toString(16)).slice(-2);
+                        if (color.getAlpha && color.getAlpha() !== 1) {
+                            hex += ("0" + Math.round(color.getAlpha() * 255).toString(16)).slice(-2);
+                        }
                         this.value = hex;
                     }
                 }
             });
+
+            el.data("spectrum-initialized", true);
         });
+    });
     </script>
 {% endmacro %}
-
 
 {% macro password(name, value, options = {}) %}
     {{ _self.input(name, value, options|merge({'type': 'password'})) }}
