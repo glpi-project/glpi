@@ -512,6 +512,9 @@ class Central extends CommonGLPI
                 . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:unsigned_keys');
             }
 
+            // encrypt/decrypt key problems
+            $messages['errors'] = (new GLPIKey())->getKeyFileReadErrors();
+
             $security_requirements = [
                 new PhpSupportedVersion(),
                 new SafeDocumentRoot(),
