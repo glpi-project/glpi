@@ -8,6 +8,7 @@ The present file will list all changes made to the project; according to the
 ### Added
 - Some missing `readOnly` flags for properties for some schemas in High-Level API.
 - Some missing UUID and color pattern constraints for properties in some schemas in High-Level API.
+- High-Level API endpoints for configuration settings `/Setup/Config/{context}/{name}`.
 
 ### Changed
 - Fixed `id` property in dropdown/linked object properties in schemas in High-Level API showing as readOnly when they are writable.
