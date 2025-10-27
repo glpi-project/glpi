@@ -40,6 +40,7 @@ use Budget;
 use BusinessCriticity;
 use Cluster;
 use CommonDBTM;
+use CommonITILObject;
 use Contact;
 use Contract;
 use Database;
@@ -369,6 +370,27 @@ final class ManagementController extends AbstractController
                     'type' => Doc\Schema::TYPE_STRING,
                     'x-mapped-from' => 'documents_id',
                     'x-mapper' => static fn($v) => $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v,
+                ],
+                'timeline_position' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'enum' => [
+                        CommonITILObject::NO_TIMELINE,
+                        CommonITILObject::TIMELINE_NOTSET,
+                        CommonITILObject::TIMELINE_LEFT,
+                        CommonITILObject::TIMELINE_MIDLEFT,
+                        CommonITILObject::TIMELINE_MIDRIGHT,
+                        CommonITILObject::TIMELINE_RIGHT,
+                    ],
+                    'description' => <<<EOT
+                        The position in the timeline.
+                        - 0: No timeline
+                        - 1: Not set
+                        - 2: Left
+                        - 3: Mid left
+                        - 4: Mid right
+                        - 5: Right
+                        EOT,
                 ],
             ],
         ];

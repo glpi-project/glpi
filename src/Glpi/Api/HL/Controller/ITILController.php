@@ -180,6 +180,8 @@ final class ITILController extends AbstractController
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'content' => ['type' => Doc\Schema::TYPE_STRING],
+                'user_recipient' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_recipient', full_schema: 'User') + ['x-version-introduced' => '2.1.0'],
+                'user_editor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_lastupdater', full_schema: 'User') + ['x-version-introduced' => '2.1.0'],
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'category' => self::getDropdownTypeSchema(class: ITILCategory::class, full_schema: 'ITILCategory'),
                 'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location'),
@@ -205,6 +207,18 @@ final class ITILController extends AbstractController
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_solve' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'solvedate',
+                ],
+                'date_close' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'closedate',
+                ],
             ],
         ];
 
@@ -377,6 +391,25 @@ final class ITILController extends AbstractController
                 ];
                 $schemas[$itil_type]['properties']['request_type'] = self::getDropdownTypeSchema(class: RequestType::class, full_schema: 'RequestType');
             }
+            if ($itil_type === Ticket::class || $itil_type === Change::class) {
+                $schemas[$itil_type]['properties']['global_validation'] = [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'enum' => [
+                        CommonITILValidation::NONE,
+                        CommonITILValidation::WAITING,
+                        CommonITILValidation::ACCEPTED,
+                        CommonITILValidation::REFUSED,
+                    ],
+                    'description' => <<<EOT
+                        The global status of the validation.
+                        - 1: None
+                        - 2: Waiting
+                        - 3: Accepted
+                        - 4: Refused
+                        EOT,
+                ];
+            }
             $schemas[$itil_type]['x-itemtype'] = $itil_type;
             $status_description = '';
             foreach ($itil_type::getAllStatusArray() as $status => $status_name) {
@@ -423,6 +456,24 @@ final class ITILController extends AbstractController
             ];
         }
 
+        $timeline_position_enum = [
+            CommonITILObject::NO_TIMELINE,
+            CommonITILObject::TIMELINE_NOTSET,
+            CommonITILObject::TIMELINE_LEFT,
+            CommonITILObject::TIMELINE_MIDLEFT,
+            CommonITILObject::TIMELINE_MIDRIGHT,
+            CommonITILObject::TIMELINE_RIGHT,
+        ];
+        $timeline_position_description = <<<EOT
+            The position in the timeline.
+            - 0: No timeline
+            - 1: Not set
+            - 2: Left
+            - 3: Mid left
+            - 4: Mid right
+            - 5: Right
+            EOT;
+
         $base_task_schema = [
             'type' => Doc\Schema::TYPE_OBJECT,
             'x-rights-conditions' => [ // Object-level extra permissions
@@ -446,11 +497,46 @@ final class ITILController extends AbstractController
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'readOnly' => true,
                 ],
+                'uuid' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::PATTERN_UUIDV4,
+                    'readOnly' => true,
+                ],
                 'content' => ['type' => Doc\Schema::TYPE_STRING],
                 'is_private' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
                 'user_editor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_editor', full_schema: 'User'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User') + ['x-version-introduced' => '2.1.0'],
+                'group_tech' => self::getDropdownTypeSchema(class: Group::class, field: 'groups_id_tech', full_schema: 'Group') + ['x-version-introduced' => '2.1.0'],
+                'date' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                ],
+                'date_creation' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                ],
+                'date_mod' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                ],
                 'duration' => ['type' => Doc\Schema::TYPE_INTEGER, 'x-field' => 'actiontime'],
+                'planned_begin' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'begin',
+                ],
+                'planned_end' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'end',
+                ],
                 'state' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'enum' => [
@@ -466,6 +552,12 @@ final class ITILController extends AbstractController
                         EOT,
                 ],
                 'category' => self::getDropdownTypeSchema(class: TaskCategory::class, full_schema: 'TaskCategory'),
+                'timeline_position' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'enum' => $timeline_position_enum,
+                    'description' => $timeline_position_description,
+                ],
             ],
         ];
 
@@ -473,6 +565,18 @@ final class ITILController extends AbstractController
         $schemas['TicketTask']['x-version-introduced'] = '2.0';
         $schemas['TicketTask']['x-itemtype'] = TicketTask::class;
         $schemas['TicketTask']['properties'][Ticket::getForeignKeyField()] = ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64];
+        $schemas['TicketTask']['properties']['source_item_id'] = [
+            'x-version-introduced' => '2.1.0',
+            'type' => Doc\Schema::TYPE_INTEGER,
+            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+            'x-field' => 'sourceitems_id',
+        ];
+        $schemas['TicketTask']['properties']['source_of_item_id'] = [
+            'x-version-introduced' => '2.1.0',
+            'type' => Doc\Schema::TYPE_INTEGER,
+            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+            'x-field' => 'sourceof_items_id',
+        ];
 
         $schemas['ChangeTask'] = $base_task_schema;
         $schemas['ChangeTask']['x-version-introduced'] = '2.0';
@@ -561,8 +665,31 @@ final class ITILController extends AbstractController
                 'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
                 'user_editor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_editor', full_schema: 'User'),
                 'request_type' => self::getDropdownTypeSchema(RequestType::class, full_schema: 'RequestType'),
+                'date' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                ],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'timeline_position' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'enum' => $timeline_position_enum,
+                    'description' => $timeline_position_description,
+                ],
+                'source_item_id' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'x-field' => 'sourceitems_id',
+                ],
+                'source_of_item_id' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'x-field' => 'sourceof_items_id',
+                ],
             ],
         ];
 
@@ -581,6 +708,56 @@ final class ITILController extends AbstractController
                 'content' => ['type' => Doc\Schema::TYPE_STRING],
                 'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
                 'user_editor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_editor', full_schema: 'User'),
+                'approver' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_approval', full_schema: 'User') + ['x-version-introduced' => '2.1.0'],
+                'status' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'enum' => [
+                        CommonITILValidation::NONE,
+                        CommonITILValidation::WAITING,
+                        CommonITILValidation::ACCEPTED,
+                        CommonITILValidation::REFUSED,
+                    ],
+                    'description' => <<<EOT
+                        The status of the solution.
+                        - 1: None
+                        - 2: Waiting
+                        - 3: Accepted
+                        - 4: Refused
+                        EOT,
+                ],
+                'approval_followup' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_OBJECT,
+                    'x-field' => ITILFollowup::getForeignKeyField(),
+                    'x-itemtype' => ITILFollowup::class,
+                    'x-join' => [
+                        'table' => ITILFollowup::getTable(),
+                        'fkey' => ITILFollowup::getForeignKeyField(),
+                        'field' => 'id',
+                    ],
+                    'properties' => [
+                        'id' => [
+                            'type' => Doc\Schema::TYPE_INTEGER,
+                            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                            'readOnly' => true,
+                        ],
+                    ],
+                ],
+                'date_creation' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                ],
+                'date_mod' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                ],
+                'date_approval' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                ],
             ],
         ];
 
@@ -627,6 +804,12 @@ final class ITILController extends AbstractController
                 ],
                 'submission_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'approval_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-field' => 'validation_date'],
+                'timeline_position' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'enum' => $timeline_position_enum,
+                    'description' => $timeline_position_description,
+                ],
             ],
         ];
 
