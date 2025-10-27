@@ -156,6 +156,7 @@ class NotificationMailingSetting extends NotificationSetting
         $supported_providers = OauthConfig::getInstance()->getSupportedProviders();
 
         TemplateRenderer::getInstance()->display('pages/setup/notification/mailing_setting.html.twig', [
+            'config_id' => Config::getConfigIDForContext('core'),
             'attach_documents_values' => $attach_documents_values,
             'mail_methods' => $mail_methods,
             'is_mail_function_available' => $is_mail_function_available,
