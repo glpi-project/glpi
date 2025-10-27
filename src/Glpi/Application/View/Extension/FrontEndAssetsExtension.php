@@ -324,10 +324,9 @@ class FrontEndAssetsExtension extends AbstractExtension
                     // Hydrate the missing config via a synchronous AJAX call
                     $.ajax({
                         type: 'GET',
-                        url: CFG_GLPI.root_doc + '/ajax/config.php',
+                        url: CFG_GLPI.root_doc + '/Session/Config/' + prop,
                         async: false,
                         dataType: 'json',
-                        data: { key: prop },
                         success: (value) => {
                             target[prop] = value;
                         },

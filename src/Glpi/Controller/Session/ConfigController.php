@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,17 +32,29 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Controller\Session;
+
+use Config;
+use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Http\Firewall;
+use Glpi\Security\Attribute\SecurityStrategy;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 
-use function Safe\json_encode;
-
-Session::checkLoginUser();
-Session::writeClose();
-
-header("Content-Type: application/json; charset=UTF-8");
-$safe_config = Config::getSafeConfig(true);
-if (!isset($_GET['key']) || !array_key_exists($_GET['key'], $safe_config)) {
-    throw new NotFoundHttpException();
+final class ConfigController extends AbstractController
+{
+    #[Route("/Session/Config/{key}", name: "get_config_value")]
+    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
+    public function content(Request $request): Response
+    {
+        $safe_config = Config::getSafeConfig(true);
+        $key = $request->get('key');
+        if (!array_key_exists($key, $safe_config)) {
+            throw new NotFoundHttpException();
+        }
+        return new JsonResponse($safe_config[$key]);
+    }
 }
-
-echo json_encode($safe_config[$_GET['key']]);
