@@ -989,7 +989,7 @@ $RELATION = [
         '_glpi_networkportaggregates'     => 'networkports_id',
         '_glpi_networkportaliases'        => 'networkports_id',
         'glpi_networkportaliases'         => 'networkports_id_alias',
-        'glpi_networkportconnectionlogs'  => [
+        '_glpi_networkportconnectionlogs'  => [
             'networkports_id_destination',
             'networkports_id_source',
         ],
