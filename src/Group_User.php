@@ -283,7 +283,7 @@ class Group_User extends CommonDBRelation
                     Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
                     echo "</td>";
                 }
-                echo "<td>" . $group->getLink() . "</td>";
+                echo "<td>" . $group->getLink(['complete' => true]) . "</td>";
                 echo "<td class='center'>";
                 if ($data['is_dynamic']) {
                     echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/ok.png' width='14' height='14' alt=\"" .
