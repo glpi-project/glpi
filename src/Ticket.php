@@ -3521,6 +3521,7 @@ JAVASCRIPT;
             '_tag_filename'             => [],
             '_actors'                   => [],
             '_contracts_id'             => 0,
+            'externalid'                => '',
         ];
     }
 
