@@ -1734,13 +1734,19 @@ JAVASCRIPT;
             $default_delay = floor((strtotime($end) - strtotime($begin)) / $CFG_GLPI['time_step'] / MINUTE_TIMESTAMP) * $CFG_GLPI['time_step'] * MINUTE_TIMESTAMP;
         }
 
-        Dropdown::showTimeStamp("plan[_duration]", [
-            'min'        => 0,
-            'max'        => 50 * HOUR_TIMESTAMP,
-            'value'      => $default_delay,
-            'emptylabel' => $empty_label,
-            'rand'       => $rand,
-        ]);
+        if ($default_delay <= 180000) {
+            Dropdown::showTimeStamp("plan[_duration]", [
+                'min'        => 0,
+                'max'        => 50 * HOUR_TIMESTAMP,
+                'value'      => $default_delay,
+                'emptylabel' => $empty_label,
+                'rand'       => $rand,
+            ]);
+        } else {
+            echo Html::timestampToString($default_delay, false);
+            echo Html::hidden('plan[_duration]', ['value' => $default_delay]);
+        }
+
         echo "<br><div id='date_end$rand'></div>";
 
         $event_options = [
