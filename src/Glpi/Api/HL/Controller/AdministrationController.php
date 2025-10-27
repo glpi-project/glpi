@@ -35,7 +35,9 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use Auth;
 use CommonDBTM;
+use CommonITILObject;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
@@ -45,7 +47,9 @@ use Glpi\Api\HL\RouteVersion;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use Glpi\UI\ThemeManager;
 use Group;
+use Planning;
 use Profile;
 use Session;
 use Toolbox;
@@ -62,7 +66,7 @@ final class AdministrationController extends AbstractController
 
     public static function getRawKnownSchemas(): array
     {
-        return [
+        $schemas = [
             'User' => [
                 'x-version-introduced' => '2.0',
                 'x-itemtype' => User::class,
@@ -187,6 +191,41 @@ final class AdministrationController extends AbstractController
                             }
                             return $CFG_GLPI["root_doc"] . '/pics/picture.png';
                         },
+                    ],
+                    'date_password_change' => [
+                        'x-version-introduced' => '2.1.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'description' => 'Date of last password change',
+                        'readOnly' => true,
+                        'x-field' => 'password_last_update',
+                    ],
+                    'location' => self::getDropdownTypeSchema(class: 'Location', full_schema: 'Location') + ['x-version-introduced' => '2.1.0'],
+                    'authtype' => [
+                        'x-version-introduced' => '2.1.0',
+                        'type' => Doc\Schema::TYPE_NUMBER,
+                        'enum' => [Auth::DB_GLPI, Auth::MAIL, Auth::LDAP, Auth::EXTERNAL, Auth::CAS, Auth::X509],
+                        'description' => <<<EOD
+                            - 1: GLPI database
+                            - 2: Email
+                            - 3: LDAP
+                            - 4: External
+                            - 5: CAS
+                            - 6: X.509 Certificate
+EOD,
+                    ],
+                    'last_login' => [
+                        'x-version-introduced' => '2.1.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    ],
+                    'default_profile' => self::getDropdownTypeSchema(class: Profile::class, full_schema: 'Profile') + [
+                        'x-version-introduced' => '2.1.0',
+                        'description' => 'Default profile',
+                    ],
+                    'default_entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity') + [
+                        'x-version-introduced' => '2.1.0',
+                        'description' => 'Default entity',
                     ],
                 ],
             ],
@@ -343,6 +382,340 @@ final class AdministrationController extends AbstractController
                 ],
             ],
         ];
+
+        $schemas['UserPreferences'] =  [
+            'x-version-introduced' => '2.1.0',
+            'x-itemtype' => User::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-rights-conditions' => [
+                'read' => $schemas['User']['x-rights-conditions']['read'],
+            ],
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'description' => 'User ID',
+                    'readOnly' => true,
+                ],
+                'language' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'description' => 'Language code (POSIX compliant format e.g. en_US or fr_FR)',
+                ],
+                'use_mode' => [
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'enum' => [Session::NORMAL_MODE, Session::DEBUG_MODE],
+                    'description' => <<<EOD
+                        - 0: Normal mode
+                        - 2: Debug mode
+EOD,
+                ],
+                'list_limit' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'min' => 5,
+                    'multipleOf' => 5,
+                ],
+                'date_format' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => [0, 1, 2],
+                    'description' => <<<EOD
+                        - 0: YYYY-MM-DD
+                        - 1: DD-MM-YYYY
+                        - 2: MM-DD-YYYY
+EOD,
+                ],
+                'number_format' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => [0, 1, 2, 3, 4],
+                    'description' => <<<EOD
+                        - 0: 1 234.56
+                        - 1: 1,234.56
+                        - 2: 1 234,56,
+                        - 3: 1234.56
+                        - 4: 1234,56
+EOD,
+                ],
+                'name_format' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => [User::REALNAME_BEFORE, User::FIRSTNAME_BEFORE],
+                    'description' => <<<EOD
+                        - 0: Surname First name
+                        - 1: First name Surname
+EOD,
+                    'x-field' => 'names_format',
+                ],
+                'csv_delimiter' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => [';', ','],
+                ],
+                'is_ids_visible' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                ],
+                'use_flat_dropdowntree' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'description' => 'Display the tree dropdown complete name in dropdown inputs',
+                ],
+                'use_flat_dropdowntree_on_search_result' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'description' => 'Display the complete name of tree dropdown in search results',
+                ],
+                'show_new_tickets_on_home' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'description' => 'Show new tickets on the home page',
+                    'x-field' => 'show_jobs_at_login',
+                ],
+                'priority_color_verylow' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'description' => 'Hex color code for very low priority',
+                    'pattern' => Doc\Schema::PATTERN_COLOR_HEX,
+                    'x-field' => 'priority_1',
+                ],
+                'priority_color_low' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'description' => 'Hex color code for low priority',
+                    'pattern' => Doc\Schema::PATTERN_COLOR_HEX,
+                    'x-field' => 'priority_2',
+                ],
+                'priority_color_medium' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'description' => 'Hex color code for medium priority',
+                    'pattern' => Doc\Schema::PATTERN_COLOR_HEX,
+                    'x-field' => 'priority_3',
+                ],
+                'priority_color_high' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'description' => 'Hex color code for high priority',
+                    'pattern' => Doc\Schema::PATTERN_COLOR_HEX,
+                    'x-field' => 'priority_4',
+                ],
+                'priority_color_veryhigh' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'description' => 'Hex color code for very high priority',
+                    'pattern' => Doc\Schema::PATTERN_COLOR_HEX,
+                    'x-field' => 'priority_5',
+                ],
+                'priority_color_major' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'description' => 'Hex color code for major priority',
+                    'pattern' => Doc\Schema::PATTERN_COLOR_HEX,
+                    'x-field' => 'priority_6',
+                ],
+                'private_followups_by_default' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'description' => 'Private followups by default',
+                    'x-field' => 'followup_private',
+                ],
+                'private_tasks_by_default' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'description' => 'Private tasks by default',
+                    'x-field' => 'task_private',
+                ],
+                'default_requesttype' => self::getDropdownTypeSchema(class: 'RequestType', field: 'default_requesttypes_id', full_schema: 'RequestType'),
+                'show_count_on_tabs' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'description' => 'Show counters on tabs',
+                ],
+                'refresh_view_interval' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'description' => 'Auto-refresh interval for tickets list, kanbans, and dashboards in minutes',
+                    'min' => 0,
+                    'max' => 30,
+                    'x-field' => 'refresh_views',
+                ],
+                'set_default_tech' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'description' => 'Pre-select me as a technician when creating a ticket',
+                ],
+                'set_default_requester' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'description' => 'Pre-select me as a requester when creating a ticket',
+                ],
+                'set_followup_tech' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'description' => 'Add me as a technician when adding a ticket followup',
+                ],
+                'set_solution_tech' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'description' => 'Add me as a technician when adding a ticket solution',
+                ],
+                'home_list_limit' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'min' => 0,
+                    'max' => 30,
+                    'description' => 'Results to display on home page',
+                    'x-field' => 'display_count_on_home',
+                ],
+                'notification_to_myself' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'description' => 'Notifications for my changes',
+                ],
+                'duedate_color_ok' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'description' => 'Hex color code for on-time due dates',
+                    'pattern' => Doc\Schema::PATTERN_COLOR_HEX,
+                    'x-field' => 'duedateok_color',
+                ],
+                'duedate_color_warning' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'description' => 'Hex color code for warning due dates',
+                    'pattern' => Doc\Schema::PATTERN_COLOR_HEX,
+                    'x-field' => 'duedatewarning_color',
+                ],
+                'duedate_color_critical' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'description' => 'Hex color code for overdue due dates',
+                    'pattern' => Doc\Schema::PATTERN_COLOR_HEX,
+                    'x-field' => 'duedatecritical_color',
+                ],
+                'duedate_threshold_warning' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'x-field' => 'duedatewarning_less',
+                ],
+                'duedate_threshold_warning_unit' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => ['%', 'hours', 'days'],
+                    'x-field' => 'duedatewarning_unit',
+                ],
+                'duedate_threshold_critical' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'x-field' => 'duedatecritical_less',
+                ],
+                'duedate_threshold_critical_unit' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => ['%', 'hours', 'days'],
+                    'x-field' => 'duedatecritical_unit',
+                ],
+                'pdf_font' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'description' => 'PDF export font',
+                    'enum' => array_keys(\GLPIPDF::getFontList()),
+                    'x-field' => 'pdffont',
+                ],
+                'keep_devices_when_purging_item' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'description' => 'Keep linked devices when purging an item',
+                ],
+                'show_new_item_after_creation' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'description' => 'Go to created item after creation',
+                    'x-field' => 'backcreated',
+                ],
+                'default_task_state' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'enum' => [Planning::INFO, Planning::TODO, Planning::DONE],
+                    'description' => <<<EOT
+                        Default state for new tasks
+                        - 1: Information
+                        - 2: To do
+                        - 3: Done
+EOT,
+                    'x-field' => 'task_state',
+                ],
+                'default_task_state_planned' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'enum' => [Planning::INFO, Planning::TODO, Planning::DONE],
+                    'description' => <<<EOT
+                        Default state for new planned tasks
+                        - 1: Information
+                        - 2: To do
+                        - 3: Done
+EOT,
+                    'x-field' => 'planned_task_state',
+                ],
+                'palette' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'description' => 'Color palette/theme',
+                    'enum' => array_map(static fn($theme) => $theme->getKey(), ThemeManager::getInstance()->getAllThemes()),
+                ],
+                'page_layout' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => ['horizontal', 'vertical'],
+                ],
+                'timeline_order' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'enum' => [CommonITILObject::TIMELINE_ORDER_NATURAL, CommonITILObject::TIMELINE_ORDER_REVERSE],
+                    'description' => <<<EOT
+                        - 0: Natural order (oldest first)
+                        - 1: Reverse order (newest first)
+EOT,
+                ],
+                'richtext_layout' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => ['inline', 'classic'],
+                    'description' => <<<EOT
+                        - inline: Toolbar displays at the cursor position and some options in right-click menu
+                        - classic: Toolbar displays at the top of the text area
+EOT,
+                ],
+                'autolock_mode' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'description' => 'Automatically lock items when editing',
+                    'x-field' => 'lock_autolock_mode',
+                ],
+                'directunlock_notification' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'description' => 'Direct Notification (requester for unlock will be the notification sender)',
+                    'x-field' => 'lock_directunlock_notification',
+                ],
+                'highcontrast_css' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'description' => 'Enable high contrast',
+                    'x-field' => 'highcontrast_css',
+                ],
+                //TODO Add default dashboard options when dashboards added to HLAPI
+                'default_homepage_tab' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'enum' => [0, 1, 2, 3, 4],
+                    'description' => <<<EOT
+                        Default homepage tab
+                        - 0: Dashboard
+                        - 1: Personal view
+                        - 2: Group view
+                        - 3: Global view
+                        - 4: RSS feeds
+EOT,
+                    'x-field' => 'default_central_tab',
+                ],
+                'toast_location' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => ['top-lest', 'top-right', 'bottom-left', 'bottom-right'],
+                    'description' => 'Location for toast notifications',
+                ],
+                'timeline_action_button_layout' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'enum' => [0, 1],
+                    'description' => <<<EOT
+                        Timeline action buttons layout
+                        - 0: Merged
+                        - 1: Split
+EOT,
+                    'x-field' => 'timeline_action_btn_layout',
+                ],
+                'timeline_date_format' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'enum' => [0, 1],
+                    'description' => <<<EOT
+                        Timeline date format
+                        - 0: Relative (e.g. "2 hours ago")
+                        - 1: Absolute (e.g. "2025-01-01 14:00")
+EOT,
+                ],
+                'default_is_notifications_enabled' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'description' => 'Enable notifications by default. If disabled, notifications on tickets, change and problems can be optionally enabled as needed but other items will not send notifications at all',
+                    'x-field' => 'is_notif_enable_default',
+                ],
+                'show_search_form' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'description' => 'Show search form above results',
+                ],
+                'search_pagination_on_top' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'description' => 'Show search pagination above results',
+                ],
+            ],
+        ];
+
+        return $schemas;
     }
 
     #[Route(path: '/User', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
@@ -836,5 +1209,57 @@ final class AdministrationController extends AbstractController
     public function deleteProfileByID(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('Profile', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/User/{id}/Preference', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.1')]
+    #[Doc\GetRoute(schema_name: 'UserPreferences')]
+    public function getUserPreferencesByID(Request $request): Response
+    {
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('UserPreferences', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/User/Me/Preference', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.1')]
+    #[Doc\GetRoute(schema_name: 'UserPreferences')]
+    public function getMyPreferences(Request $request): Response
+    {
+        $my_user_id = $this->getMyUserID();
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('UserPreferences', $this->getAPIVersion($request)), ['id' => $my_user_id], $request->getParameters());
+    }
+
+    #[Route(path: '/User/{username}/Preference', methods: ['GET'], requirements: ['username' => '[a-zA-Z0-9_]+'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.1')]
+    #[Doc\GetRoute(schema_name: 'UserPreferences')]
+    public function getUserPreferencesByUsername(Request $request): Response
+    {
+        $users_id = ResourceAccessor::getIDForOtherUniqueFieldBySchema($this->getKnownSchema('User', $this->getAPIVersion($request)), 'username', $request->getAttribute('username'));
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('UserPreferences', $this->getAPIVersion($request)), ['id' => $users_id], $request->getParameters());
+    }
+
+    #[Route(path: '/User/{id}/Preference', methods: ['PATCH'], requirements: ['id' => '\d+'])]
+    #[RouteVersion(introduced: '2.1')]
+    #[Doc\UpdateRoute(schema_name: 'UserPreferences')]
+    public function updateUserPreferencesByID(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('UserPreferences', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/User/Me/Preference', methods: ['PATCH'])]
+    #[RouteVersion(introduced: '2.1')]
+    #[Doc\UpdateRoute(schema_name: 'UserPreferences')]
+    public function updateMyPreferences(Request $request): Response
+    {
+        $my_user_id = $this->getMyUserID();
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('UserPreferences', $this->getAPIVersion($request)), ['id' => $my_user_id], $request->getParameters());
+    }
+
+    #[Route(path: '/User/{username}/Preference', methods: ['PATCH'], requirements: ['username' => '[a-zA-Z0-9_]+'])]
+    #[RouteVersion(introduced: '2.1')]
+    #[Doc\UpdateRoute(schema_name: 'UserPreferences')]
+    public function updateUserPreferencesByUsername(Request $request): Response
+    {
+        $users_id = ResourceAccessor::getIDForOtherUniqueFieldBySchema($this->getKnownSchema('User', $this->getAPIVersion($request)), 'username', $request->getAttribute('username'));
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('UserPreferences', $this->getAPIVersion($request)), ['id' => $users_id], $request->getParameters());
     }
 }
