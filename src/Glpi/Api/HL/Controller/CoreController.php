@@ -163,7 +163,8 @@ final class CoreController extends AbstractController
         $swagger_content .= Html::script('/lib/swagger-ui.js');
         $swagger_content .= Html::css('/lib/swagger-ui.css');
         $favicon = Html::getPrefixedUrl('/pics/favicon.ico');
-        $doc_json_path = $CFG_GLPI['root_doc'] . '/api.php/doc.json';
+        $api_version = $this->getAPIVersion($request);
+        $doc_json_path = $CFG_GLPI['root_doc'] . '/api.php/v' . $api_version . '/doc.json';
         $swagger_content .= <<<HTML
         <link rel="shortcut icon" type="images/x-icon" href="$favicon" />
         </head>
@@ -285,7 +286,7 @@ HTML;
     )]
     public function defaultRoute(Request $request): Response
     {
-        return new JSONResponse(null, 404);
+        return self::getNotFoundErrorResponse();
     }
 
     #[Route(path: '/{req}', methods: ['OPTIONS'], requirements: ['req' => '.*'], priority: -1, security_level: Route::SECURITY_NONE)]
@@ -299,7 +300,7 @@ HTML;
         $authenticated = Session::getLoginUserID() !== false;
         $allowed_methods = $authenticated ? $this->getAllowedMethodsForMatchedRoute($request) : ['GET', 'POST', 'PATCH', 'PUT', "DELETE"];
         if (count($allowed_methods) === 0) {
-            return new JSONResponse(null, 404);
+            return self::getNotFoundErrorResponse();
         }
         $response_headers = [];
         if ($authenticated) {
