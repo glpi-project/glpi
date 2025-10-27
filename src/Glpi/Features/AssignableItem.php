@@ -109,10 +109,14 @@ trait AssignableItem
     public static function getAssignableVisiblityCriteria(
         ?string $item_table_reference = null
     ): array {
-        return Session::getCurrentInterface() === "central"
+        $criteria = Session::getCurrentInterface() === "central"
             ? self::getAssignableVisiblityCriteriaForCentral($item_table_reference)
             : self::getAssignableVisiblityCriteriaForHelpdesk($item_table_reference)
         ;
+
+        // Add another layer to the array to prevent losing duplicates keys if the
+        // result of the function is merged with another array
+        return [crc32(serialize($criteria)) => $criteria];
     }
 
     /**
@@ -156,11 +160,7 @@ trait AssignableItem
             $or += self::getOwnAssetsCriteria($item_table, $relation_table);
         }
 
-        // Add another layer to the array to prevent losing duplicates keys if the
-        // result of the function is merged with another array
-        $criteria = [crc32(serialize($or)) => ['OR' => $or]];
-
-        return $criteria;
+        return ['OR' => $or];
     }
 
     /**
@@ -193,11 +193,7 @@ trait AssignableItem
             $relation_table = Group_Item::getTable();
             $or = self::getOwnAssetsCriteria($item_table, $relation_table);
 
-            // Add another layer to the array to prevent losing duplicates keys
-            // if the result of the marifunction is merged with another array
-            $criteria = [crc32(serialize($or)) => ['OR' => $or]];
-
-            return $criteria;
+            return ['OR' => $or];
         }
 
         // User can't see any assets
