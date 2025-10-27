@@ -122,11 +122,6 @@ final class ITILController extends AbstractController
                     'type' => Doc\Schema::TYPE_STRING,
                     'readOnly' => true,
                 ],
-                'level' => [
-                    'x-version-introduced' => '2.1.0',
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'readOnly' => true,
-                ],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
@@ -501,17 +496,6 @@ final class ITILController extends AbstractController
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'completename' => [
-                    'x-version-introduced' => '2.1.0',
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'readOnly' => true,
-                ],
-                'parent' => self::getDropdownTypeSchema(class: TaskCategory::class, full_schema: 'TaskCategory') + ['x-version-introduced' => '2.1.0'],
-                'level' => [
-                    'x-version-introduced' => '2.1.0',
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'readOnly' => true,
-                ],
             ],
         ];
 

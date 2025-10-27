@@ -550,19 +550,6 @@ final class AssetController extends AbstractController
             }
         }
 
-        // Post v2 additions to general assets
-        $schemas['SoftwareLicense']['properties']['completename'] = [
-            'x-version-introduced' => '2.1.0',
-            'type' => Doc\Schema::TYPE_STRING,
-            'readOnly' => true,
-        ];
-        $schemas['SoftwareLicense']['properties']['level'] = [
-            'x-version-introduced' => '2.1.0',
-            'type' => Doc\Schema::TYPE_INTEGER,
-            'readOnly' => true,
-        ];
-
-        // Additional asset schemas
         $schemas['Cartridge'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => Cartridge::class,
