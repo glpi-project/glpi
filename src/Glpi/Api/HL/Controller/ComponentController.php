@@ -190,7 +190,7 @@ class ComponentController extends AbstractController
             'product_number' => ['type' => Doc\Schema::TYPE_STRING],
         ];
 
-        return [
+        $schemas = [
             'BatteryType' => [
                 'x-version-introduced' => '2.0',
                 'x-itemtype' => DeviceBatteryType::class,
@@ -517,9 +517,7 @@ class ComponentController extends AbstractController
                 'x-version-introduced' => '2.0',
                 'x-itemtype' => DeviceMotherboardModel::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
-                'properties' => $common_device_model_properties + [
-                    'chipset' => ['type' => Doc\Schema::TYPE_STRING],
-                ],
+                'properties' => $common_device_model_properties,
             ],
             'Systemboard' => [
                 'x-version-introduced' => '2.0',
@@ -706,6 +704,16 @@ class ComponentController extends AbstractController
                 ],
             ],
         ];
+
+        // Remove some properties that refer to missing fields in the database, but should be added later
+        unset(
+            $schemas['GenericDeviceType']['properties']['date_creation'],
+            $schemas['GenericDeviceType']['properties']['date_mod'],
+            $schemas['SensorType']['properties']['date_creation'],
+            $schemas['SensorType']['properties']['date_mod']
+        );
+
+        return $schemas;
     }
 
     public static function getComponentTypes(): array

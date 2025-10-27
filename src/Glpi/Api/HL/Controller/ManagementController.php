@@ -304,7 +304,11 @@ final class ManagementController extends AbstractController
             }
 
             if ($item->isField('uuid')) {
-                $schemas[$m_name]['properties']['uuid'] = ['type' => Doc\Schema::TYPE_STRING];
+                $schemas[$m_name]['properties']['uuid'] = [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'pattern' => Doc\Schema::PATTERN_UUIDV4,
+                    'readOnly' => true,
+                ];
             }
             if ($item->isField('autoupdatesystems_id')) {
                 $schemas[$m_name]['properties']['autoupdatesystem'] = self::getDropdownTypeSchema(AutoUpdateSystem::class);
