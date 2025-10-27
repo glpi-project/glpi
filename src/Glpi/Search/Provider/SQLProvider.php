@@ -6431,7 +6431,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $name = sprintf(__('%1$s (%2$s)'), $name, $data[$ID][$k]['id']);
                             }
                             if (isset($field) && $field === 'completename') {
-                                $name = (new SanitizedStringsDecoder())->decodeHtmlSpecialCharsInCompletename($data[$ID][0]['name']);
+                                $name = (new SanitizedStringsDecoder())->decodeHtmlSpecialCharsInCompletename($data[$ID][$k]['name']);
                                 $chunks = \explode(' > ', $name);
                                 $completename = '';
                                 foreach ($chunks as $key => $element_name) {
