@@ -6,6 +6,7 @@ The present file will list all changes made to the project; according to the
 ## [11.0.2] unreleased
 
 ### Added
+- High-Level API endpoints for configuration settings `/Setup/Config/{context}/{name}`.
 
 ### Changed
 - Added High-Level API version 2.1. Make sure you are pinning your requests to a specific version (Ex: `/api.php/v2.0`) if needed to exclude endpoints/properties added in later versions. See version pinning in the getting started documentation `/api.php/getting-started`.
