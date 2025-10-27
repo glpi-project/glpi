@@ -59,13 +59,11 @@ final class GetDestinationFormController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        $plugin_item_type = isPluginItemType($destination->fields['itemtype'] ?? '')['plugin'] ?? 'glpi';
         $twig = TemplateRenderer::getInstance()->render('pages/admin/form/form_destination_form.html.twig', [
             'destination' => $destination,
             'form' => $destination->getForm(),
             'can_update' => FormDestination::canUpdate() && $destination->canUpdateItem(),
             'concrete_destination' => $destination->getConcreteDestinationItem(),
-            '_source' => $plugin_item_type,
         ]);
         return new Response($twig);
     }
