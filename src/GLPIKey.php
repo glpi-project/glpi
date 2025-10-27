@@ -127,7 +127,7 @@ class GLPIKey
     {
         $errors = [];
         if (!file_exists($this->keyfile)) {
-            $errors[] = __s('You must create a security key, use `./bin/console security:change_key` command.');
+            $errors[] = sprintf(__s('The security key file does not exist. You have to run the "%s" command to generate a key.'), 'php bin/console security:change_key');
 
             return $errors; // early return, as, if file does not exist, no need to check further
         }
