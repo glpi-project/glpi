@@ -46,8 +46,7 @@ class GLPINetwork extends CommonGLPI
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item->getType() == 'Config') {
-            $glpiNetwork = new self();
-            $glpiNetwork->showForConfig();
+            self::showForConfig();
         }
         return true;
     }
