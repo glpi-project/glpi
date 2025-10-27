@@ -35,8 +35,10 @@
 namespace tests\units;
 
 use CommonDBTM;
+use CommonITILObject;
 use Computer;
 use DbTestCase;
+use Entity;
 use Generator;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Features\AssignableItem;
@@ -45,9 +47,11 @@ use Glpi\Socket;
 use Item_DeviceSimcard;
 use Monitor;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Profile;
 use Session;
 use State;
 use Symfony\Component\DomCrawler\Crawler;
+use Ticket;
 use User;
 
 /* Test for inc/dropdown.class.php */
@@ -2569,12 +2573,12 @@ HTML;
             'is_recursive' => 1,
         ]);
         $params = [
-            'itemtype' => \Ticket::class,
+            'itemtype' => Ticket::class,
             'actortype' => 'assign',
             'returned_itemtypes' => [\Supplier::class],
             'searchText' => '',
         ];
-        $results = \Dropdown::getDropdownActors($params + ['_idor_token' => Session::getNewIDORToken(\Ticket::class, $params)], false);
+        $results = \Dropdown::getDropdownActors($params + ['_idor_token' => Session::getNewIDORToken(Ticket::class, $params)], false);
         $this->assertNotEmpty($results['results'][0]['children']);
         $this->assertCount(0, array_filter($results['results'][0]['children'], function ($result) use ($inactive_supplier) {
             return $result['id'] === \Supplier::class . '_' . $inactive_supplier->getID();
@@ -2582,7 +2586,7 @@ HTML;
 
         // If asking for inactive_deleted, it should return the inactive supplier
         $params['inactive_deleted'] = 1;
-        $results = \Dropdown::getDropdownActors($params + ['_idor_token' => Session::getNewIDORToken(\Ticket::class, $params)], false);
+        $results = \Dropdown::getDropdownActors($params + ['_idor_token' => Session::getNewIDORToken(Ticket::class, $params)], false);
         $this->assertNotEmpty($results['results'][0]['children']);
         $this->assertCount(1, array_filter($results['results'][0]['children'], function ($result) use ($inactive_supplier) {
             return $result['id'] === \Supplier::class . '_' . $inactive_supplier->getID();
@@ -2685,7 +2689,7 @@ HTML;
         ]);
 
         // Ensure proper permissions and helpdesk types
-        $_SESSION["glpiactiveprofile"]["helpdesk_hardware"] = pow(2, \Ticket::HELPDESK_MY_HARDWARE);
+        $_SESSION["glpiactiveprofile"]["helpdesk_hardware"] = pow(2, Ticket::HELPDESK_MY_HARDWARE);
         $_SESSION["glpiactiveprofile"]["helpdesk_item_type"] = ['Computer', 'Monitor', 'Printer'];
 
         $post = [
@@ -2767,5 +2771,83 @@ HTML;
 
         // Test that count is accurate
         $this->assertGreaterThan(0, $result['count']);
+    }
+
+    public static function assetsDropdownForHelpdeskProvider(): iterable
+    {
+        yield 'no rights' => [
+            'can_view'  => 0,
+            'itemtypes' => [Computer::class],
+            'expected'  => [],
+        ];
+        yield 'see his own computers' => [
+            'can_view'  => 2 ** CommonITILObject::HELPDESK_MY_HARDWARE,
+            'itemtypes' => [Computer::class],
+            'expected'  => ['My computer'],
+        ];
+        yield 'see all computers' => [
+            'can_view'  => 2 ** CommonITILObject::HELPDESK_ALL_HARDWARE,
+            'itemtypes' => [Computer::class],
+            'expected'  => ['My computer', 'Not my computer'],
+        ];
+        yield 'see all monitors' => [
+            'can_view'  => 2 ** CommonITILObject::HELPDESK_ALL_HARDWARE,
+            'itemtypes' => [Monitor::class],
+            'expected'  => [],
+        ];
+    }
+
+    #[DataProvider('assetsDropdownForHelpdeskProvider')]
+    public function testAssetsDropdownForHelpdesk(
+        int $can_view,
+        array $itemtypes,
+        array $expected,
+    ): void {
+        // Arrange: assign a computer to a self-service user and set up the
+        // profile with the given rights.
+        // Wrap items in an entity for better test isolation
+        $this->login(); // Need to be logged in to create an entity
+        $entity = $this->createItem(Entity::class, [
+            'name' => 'My entity',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $this->logOut();
+        $this->createItem(Computer::class, [
+            'name'        => 'My computer',
+            'entities_id' => $entity->getID(),
+            'users_id'    => getItemByTypeName(User::class, "post-only", true),
+        ]);
+        $this->createItem(Computer::class, [
+            'name' => 'Not my computer',
+            'entities_id' => $entity->getID(),
+        ]);
+        $this->updateItem(
+            Profile::class,
+            getItemByTypeName(Profile::class, 'Self-Service', onlyid: true),
+            [
+                'helpdesk_hardware'  => $can_view,
+                'helpdesk_item_type' => $itemtypes,
+            ],
+            ['helpdesk_item_type'],
+        );
+
+        // Act: get dropdown values for this user
+        $this->login('post-only');
+        $this->setEntity("My entity", false);
+        $params = [
+            'itemtype' => Computer::class,
+        ];
+        $params['_idor_token'] = Session::getNewIDORToken(Computer::class, $params);
+        $results = \Dropdown::getDropdownValue($params, false);
+
+        // Assert: only one computer should be count
+        $this->assertEquals(count($expected), $results["count"]);
+        if (!empty($expected)) {
+            $found_items = array_map(
+                fn($data) => $data['text'],
+                $results["results"][1]["children"],
+            );
+            $this->assertEquals($expected, $found_items);
+        }
     }
 }

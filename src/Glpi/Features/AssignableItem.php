@@ -35,6 +35,7 @@
 
 namespace Glpi\Features;
 
+use CommonITILObject;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Group_Item;
@@ -105,8 +106,26 @@ trait AssignableItem
      * @return array[]|QueryExpression[]
      * @see AssignableItemInterface::getAssignableVisiblityCriteria()
      */
-    public static function getAssignableVisiblityCriteria(?string $item_table_reference = null): array
-    {
+    public static function getAssignableVisiblityCriteria(
+        ?string $item_table_reference = null
+    ): array {
+        $criteria = Session::getCurrentInterface() === "central"
+            ? self::getAssignableVisiblityCriteriaForCentral($item_table_reference)
+            : self::getAssignableVisiblityCriteriaForHelpdesk($item_table_reference)
+        ;
+
+        // Add another layer to the array to prevent losing duplicates keys if the
+        // result of the function is merged with another array
+        return [crc32(serialize($criteria)) => $criteria];
+    }
+
+    /**
+     * @param string|null $item_table_reference
+     * @return array[]|QueryExpression[]
+     */
+    private static function getAssignableVisiblityCriteriaForCentral(
+        ?string $item_table_reference = null
+    ): array {
         if (!Session::haveRightsOr(static::$rightname, [READ, READ_ASSIGNED, READ_OWNED])) {
             return [new QueryExpression('0')];
         }
@@ -138,29 +157,69 @@ trait AssignableItem
             }
         }
         if (Session::haveRight(static::$rightname, READ_OWNED)) {
-            $or[] = [
-                $item_table . '.users_id' => $_SESSION['glpiID'],
-            ];
-            if (count($_SESSION['glpigroups']) > 0) {
-                $or[] = [
-                    $item_table . '.id' => new QuerySubQuery([
-                        'SELECT'     => $relation_table . '.items_id',
-                        'FROM'       => $relation_table,
-                        'WHERE' => [
-                            'itemtype'  => static::class,
-                            'groups_id' => $_SESSION['glpigroups'],
-                            'type'      => Group_Item::GROUP_TYPE_NORMAL,
-                        ],
-                    ]),
-                ];
-            }
+            $or += self::getOwnAssetsCriteria($item_table, $relation_table);
         }
 
-        // Add another layer to the array to prevent losing duplicates keys if the
-        // result of the function is merged with another array
-        $criteria = [crc32(serialize($or)) => ['OR' => $or]];
+        return ['OR' => $or];
+    }
 
-        return $criteria;
+    /**
+     * @param string|null $item_table_reference
+     * @return array[]|QueryExpression[]
+     */
+    private static function getAssignableVisiblityCriteriaForHelpdesk(
+        ?string $item_table_reference = null
+    ): array {
+        // Helpdesk doesn't support READ, READ_ASSIGNED, READ_OWNED rights.
+        // Instead, we will directly check the helpdesk_hardware and
+        // helpdesk_item_type properties from the profile
+        $profile = Session::getCurrentProfile();
+
+        $raw_allowed_itemtypes = $profile->fields['helpdesk_item_type'];
+        $allowed_itemtypes = importArrayFromDB($raw_allowed_itemtypes);
+        if (!in_array(static::class, $allowed_itemtypes)) {
+            return [new QueryExpression('0')];
+        }
+
+        $raw_rights = $profile->fields['helpdesk_hardware'];
+        $all_assets = $raw_rights & (2 ** CommonITILObject::HELPDESK_ALL_HARDWARE);
+        if ($all_assets) {
+            return [new QueryExpression('1')];
+        }
+
+        $my_assets = $raw_rights & (2 ** CommonITILObject::HELPDESK_MY_HARDWARE);
+        if ($my_assets) {
+            $item_table     = $item_table_reference ?? static::getTable();
+            $relation_table = Group_Item::getTable();
+            $or = self::getOwnAssetsCriteria($item_table, $relation_table);
+
+            return ['OR' => $or];
+        }
+
+        // User can't see any assets
+        return [new QueryExpression('0')];
+    }
+
+    private static function getOwnAssetsCriteria(
+        string $item_table,
+        string $relation_table,
+    ): array {
+        $or = [$item_table . '.users_id' => $_SESSION['glpiID']];
+        if (count($_SESSION['glpigroups']) > 0) {
+            $or[] = [
+                $item_table . '.id' => new QuerySubQuery([
+                    'SELECT'     => $relation_table . '.items_id',
+                    'FROM'       => $relation_table,
+                    'WHERE' => [
+                        'itemtype'  => static::class,
+                        'groups_id' => $_SESSION['glpigroups'],
+                        'type'      => Group_Item::GROUP_TYPE_NORMAL,
+                    ],
+                ]),
+            ];
+        }
+
+        return $or;
     }
 
     /** @see AssignableItemInterface::getRights() */
