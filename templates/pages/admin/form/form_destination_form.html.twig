@@ -36,7 +36,6 @@
         - `form`: Form
         - `can_update`: bool
         - `concrete_destination`: FormDestinationInterface|null
-        - `_source`: string
 #}
 
 {% set _source = destination.fields['itemtype']|itemtype_plugin_key|default('glpi') %}
