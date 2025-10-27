@@ -62,13 +62,19 @@ if ($is_cacheable) {
     header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $max_age));
 }
 
+$requested_language = $_GET['lang'] ?? $_SESSION['glpilanguage'];
+if (!isset($CFG_GLPI['languages'][$requested_language])) {
+    // Fallback to default language if requested one is not available
+    $requested_language = $_SESSION['glpilanguage'];
+}
+$requested_language = $CFG_GLPI['languages'][$requested_language][1];
 
 // Default response to send if locales cannot be loaded.
 // Prevent JS error for plugins that does not provide any translation files
 $default_response = json_encode(
     [
         '' => [
-            'language'     => $CFG_GLPI['languages'][$_SESSION['glpilanguage']][1],
+            'language'     => $requested_language,
             'plural-forms' => 'nplurals=2; plural=(n != 1);',
         ],
     ]
@@ -90,11 +96,7 @@ if (!($messages instanceof TextDomain)) {
 }
 
 // Extract headers from main po file
-$po_file = GLPI_ROOT . '/locales/' . preg_replace(
-    '/\.mo$/',
-    '.po',
-    $CFG_GLPI['languages'][$_SESSION['glpilanguage']][1]
-);
+$po_file = GLPI_ROOT . '/locales/' . preg_replace('/\.mo$/', '.po', $requested_language);
 $po_file_handle = fopen(
     $po_file,
     'rb'
