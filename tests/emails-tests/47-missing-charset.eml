@@ -1,7 +1,7 @@
-From system@example.org Mon Oct 21 10:00:00 2025
-From: system@example.org
-To: collector@example.org
-Subject: System Report
+From normal@glpi-project.org Mon Oct 21 10:00:00 2025
+From: normal@glpi-project.org
+To: unittests@glpi-project.org
+Subject: 47 - Missing charset parameter
 MIME-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
