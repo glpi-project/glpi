@@ -1253,18 +1253,6 @@ $break_tablet: 1400px;
     }
 }
 
-html[dir="rtl"] {
-    .dashboard {
-        .card {
-            text-align: right;
-        }
-    }
-
-    .main-icon {
-        left: 5px;
-    }
-}
-
 .embed_block {
     border: 1px dashed #a0a0a04f;
     padding: 5px 10px;
