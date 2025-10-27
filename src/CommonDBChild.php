@@ -64,7 +64,7 @@ abstract class CommonDBChild extends CommonDBConnexity
 
 
     /**
-     * Get request cirteria to search for an item
+     * Get request criteria to search for an item
      *
      * @since 9.4
      *
