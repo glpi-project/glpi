@@ -132,7 +132,7 @@ class GLPIKey
             return $errors; // early return, as, if file does not exist, no need to check further
         }
         if (false === ($key = @file_get_contents($this->keyfile))) {
-            $errors[] = __s("Unable to get security key file contents. Fix file permissions of $this->keyfile.");
+            $errors[] = sprintf(__s("Unable to get security key file contents. Fix file permissions of %s."), $this->keyfile);
 
             return $errors; // early return, as, if file does not exist, no need to check further
         }
