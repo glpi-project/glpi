@@ -2967,7 +2967,12 @@ TWIG, $twig_params);
         $canedit = self::canUpdate();
 
         if ($canedit && ($item instanceof Entity)) {
-            $this->showForm($item->getField('id'), [
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% import '/components/form/fields_macros.html.twig' as fields %}
+            {{ fields.smallTitle(label) }}
+TWIG, ['label' => $this->getTitle()]);
+            $this->showForm(0, [
                 'no_header' => true,
                 'short'     => true,
                 'entities_id' => $item->getField('id'),
