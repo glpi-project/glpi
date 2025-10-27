@@ -362,7 +362,10 @@ final class RoutePath
     public function matchesAPIVersion(string $api_version): bool
     {
         $version = $this->getRouteVersion();
-        return (version_compare($api_version, $version->introduced, '>=') && (empty($version->removed) || version_compare($api_version, $version->removed, '<')));
+        return (
+            version_compare($api_version, $version->introduced, '>=')
+            && (empty($version->removed) || version_compare($api_version, $version->removed, '<'))
+        );
     }
 
     private function setPath(string $path)
