@@ -463,7 +463,7 @@ class Group_User extends CommonDBRelation
             $user->getFromDB($data["id"]);
             $group_link = '';
             if ($tmpgrp->getFromDB($data['groups_id'])) {
-                $group_link = $tmpgrp->getLink(['comments' => true]);
+                $group_link = $tmpgrp->getLink(['comments' => true, 'complete' => true]);
             }
             $entries[] = [
                 'itemtype'  => self::class,
