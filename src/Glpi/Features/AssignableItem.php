@@ -35,6 +35,7 @@
 
 namespace Glpi\Features;
 
+use CommonITILObject;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Group_Item;
@@ -170,16 +171,37 @@ trait AssignableItem
         ?string $item_table_reference = null
     ): array {
         // Helpdesk doesn't support READ, READ_ASSIGNED, READ_OWNED rights.
-        // Instead, we assume the user can only see his own assets.
-        $item_table     = $item_table_reference ?? static::getTable();
-        $relation_table = Group_Item::getTable();
-        $or = self::getOwnAssetsCriteria($item_table, $relation_table);
+        // Instead, we will directly check the helpdesk_hardware and
+        // helpdesk_item_type properties from the profile
+        $profile = Session::getCurrentProfile();
 
-        // Add another layer to the array to prevent losing duplicates keys if the
-        // result of the function is merged with another array
-        $criteria = [crc32(serialize($or)) => ['OR' => $or]];
+        $raw_allowed_itemtypes = $profile->fields['helpdesk_item_type'];
+        $allowed_itemtypes = importArrayFromDB($raw_allowed_itemtypes);
+        if (!in_array(static::class, $allowed_itemtypes)) {
+            return [new QueryExpression('0')];
+        }
 
-        return $criteria;
+        $raw_rights = $profile->fields['helpdesk_hardware'];
+        $all_assets = $raw_rights & (2 ** CommonITILObject::HELPDESK_ALL_HARDWARE);
+        if ($all_assets) {
+            return [new QueryExpression('1')];
+        }
+
+        $my_assets = $raw_rights & (2 ** CommonITILObject::HELPDESK_MY_HARDWARE);
+        if ($my_assets) {
+            $item_table     = $item_table_reference ?? static::getTable();
+            $relation_table = Group_Item::getTable();
+            $or = self::getOwnAssetsCriteria($item_table, $relation_table);
+
+            // Add another layer to the array to prevent losing duplicates keys
+            // if the result of the marifunction is merged with another array
+            $criteria = [crc32(serialize($or)) => ['OR' => $or]];
+
+            return $criteria;
+        }
+
+        // User can't see any assets
+        return [new QueryExpression('0')];
     }
 
     private static function getOwnAssetsCriteria(
