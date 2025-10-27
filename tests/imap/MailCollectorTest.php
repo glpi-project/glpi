@@ -39,7 +39,6 @@ use DbTestCase;
 use ITILFollowup;
 use Laminas\Mail\Protocol\Imap;
 use Laminas\Mail\Protocol\Pop3;
-use Laminas\Mail\Storage\Mbox;
 use Laminas\Mail\Storage\Message;
 use NotificationTarget;
 use NotificationTargetSoftwareLicense;
@@ -1500,18 +1499,36 @@ PLAINTEXT,
         $email_file = GLPI_ROOT . '/tests/emails-tests/47-missing-charset.eml';
         $this->assertFileExists($email_file);
 
-        $storage = new Mbox(['filename' => $email_file]);
-        $message = $storage->current();
+        $raw_content = file_get_contents($email_file);
+        if (preg_match('/^From .+\n/', $raw_content, $matches)) {
+            $raw_content = substr($raw_content, strlen($matches[0]));
+        }
 
-        $body_text = null;
-        foreach ($message as $part) {
-            if ($part->getHeader('content-type')->getType() === 'text/plain') {
-                $body_text = $part->getContent();
-                break;
+        $message = \Laminas\Mail\Message::fromString($raw_content);
+        $headers = $message->getHeaders();
+
+        $this->assertTrue($headers->has('content-type'));
+        $content_type_value = $headers->get('content-type')->getFieldValue();
+        $this->assertStringNotContainsString('charset', $content_type_value, 'Charset should be missing in this test email');
+
+        $content = $message->getBody();
+        if ($headers->has('content-transfer-encoding')) {
+            $encoding = $headers->get('content-transfer-encoding')->getFieldValue();
+            if (strtolower($encoding) === 'quoted-printable') {
+                $content = quoted_printable_decode($content);
             }
         }
 
-        $this->assertNotNull($body_text, 'No text/plain part found in email');
-        $this->assertStringContainsString('ATTENTION', $body_text);
+        $charset = mb_check_encoding($content, 'UTF-8') ? 'UTF-8' : 'ISO-8859-1';
+
+        if (strtoupper($charset) !== 'UTF-8') {
+            $content = mb_convert_encoding($content, 'UTF-8', $charset);
+        }
+
+        $this->assertNotEmpty($content);
+        $this->assertStringContainsString('è', $content);
+        $this->assertStringContainsString('ê', $content);
+        $this->assertStringContainsString('û', $content);
+        $this->assertTrue(mb_check_encoding($content, 'UTF-8'), 'Final content should be valid UTF-8');
     }
 }
