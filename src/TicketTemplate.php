@@ -102,31 +102,13 @@ class TicketTemplate extends ITILTemplate
                 'slas_id_ttr',
                 'glpi_slas'
             )      => 'slas_id_ttr',
-            $itil_object->getSearchOptionIDByField(
-                'field',
-                'olas_id_tto',
-                'glpi_olas'
-            )      => 'olas_id_tto',
-            $itil_object->getSearchOptionIDByField(
-                'field',
-                'olas_id_ttr',
-                'glpi_olas'
-            )      => 'olas_id_ttr',
+            190      => '_olas_id_tto',
+            191      => '_olas_id_ttr',
             $itil_object->getSearchOptionIDByField(
                 'field',
                 'time_to_own',
                 'glpi_tickets'
             )   => 'time_to_own',
-            $itil_object->getSearchOptionIDByField(
-                'field',
-                'internal_time_to_resolve',
-                'glpi_tickets'
-            )   => 'internal_time_to_resolve',
-            $itil_object->getSearchOptionIDByField(
-                'field',
-                'internal_time_to_own',
-                'glpi_tickets'
-            )   => 'internal_time_to_own',
             $itil_object->getSearchOptionIDByField(
                 'field',
                 'global_validation',

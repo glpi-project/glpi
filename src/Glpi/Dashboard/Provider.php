@@ -54,7 +54,6 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Debug\Profiler;
 use Glpi\Search\Input\QueryBuilder;
-use Glpi\Search\SearchOption;
 use Group;
 use Group_Ticket;
 use Profile_User;
@@ -331,12 +330,47 @@ class Provider
                     ],
                 ];
                 $query_criteria['WHERE']["$table.status"] = Ticket::getNotSolvedStatusArray();
+
+                $ola_ttr_late_criteria = new QuerySubQuery(
+                    [
+                        'SELECT' => [Ticket::generateSLAOLAComputation('internal_time_to_resolve', 'glpi_items_olas')],
+                        'FROM' => new QueryExpression('glpi_tickets', 'glpi_tickets_subquery'),
+                        'LEFT JOIN' => [
+                            'glpi_items_olas' => [
+                                'ON' => [
+                                    'glpi_tickets_subquery' => 'id',
+                                    'glpi_items_olas' => 'items_id',
+                                    ['AND' => [ 'glpi_items_olas.itemtype' => ['=', (new QueryExpression(Ticket::class))->getValue()] ]                                ],
+                                ],
+                            ],
+                        ],
+                        'WHERE' => ['glpi_tickets_subquery.id' => new QueryExpression('glpi_tickets.id') ],
+                    ]
+                );
+
+                $ola_tto_late_criteria = new QuerySubQuery(
+                    [
+                        'SELECT' => [Ticket::generateSLAOLAComputation('internal_time_to_own', 'glpi_items_olas')],
+                        'FROM' => new QueryExpression('glpi_tickets', 'glpi_tickets_subquery'),
+                        'LEFT JOIN' => [
+                            'glpi_items_olas' => [
+                                'ON' => [
+                                    'glpi_tickets' => 'id',
+                                    'glpi_items_olas' => 'items_id',
+                                    ['AND' => [ 'glpi_items_olas.itemtype' => ['=', Ticket::class]]],
+                                ],
+                            ],
+                        ],
+                        'WHERE' => ['glpi_tickets_subquery.id' => new QueryExpression('glpi_tickets.id')],
+                    ]
+                );
+
                 $query_criteria['WHERE'][] = [
                     'OR' => [
                         CommonITILObject::generateSLAOLAComputation('time_to_resolve', 'glpi_tickets'),
-                        CommonITILObject::generateSLAOLAComputation('internal_time_to_resolve', 'glpi_tickets'),
+                        ['1' => $ola_ttr_late_criteria ],
                         CommonITILObject::generateSLAOLAComputation('time_to_own', 'glpi_tickets'),
-                        CommonITILObject::generateSLAOLAComputation('internal_time_to_own', 'glpi_tickets'),
+                        ['1' => $ola_tto_late_criteria ],
                     ],
                 ];
                 break;
@@ -491,6 +525,9 @@ class Provider
     }
 
 
+    /**
+     * Get the number of late tickets by SLA status and technician
+     */
     public static function nbTicketsByAgreementStatusAndTechnician(array $params = []): array
     {
         global $DB;
