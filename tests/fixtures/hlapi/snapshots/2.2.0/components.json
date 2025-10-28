@@ -15647,6 +15647,23 @@
                                     "x-label": "Global dropdowns",
                                     "x-right-scope": "global"
                                 },
+                                "enclosure": {
+                                    "type": "integer",
+                                    "description": "Enclosures rights. Possible values:\n- 1: View all\n- 2: Update all\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 256: View assigned\n- 512: Update assigned\n- 1024: View owned\n- 2048: Update owned",
+                                    "enum": [
+                                        1,
+                                        2,
+                                        4,
+                                        8,
+                                        16,
+                                        256,
+                                        512,
+                                        1024,
+                                        2048
+                                    ],
+                                    "x-label": "Enclosures",
+                                    "x-right-scope": "entity"
+                                },
                                 "entity": {
                                     "type": "integer",
                                     "description": "Entities rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge\n- 32: Read notes\n- 64: Update notes\n- 1024: Read parameters\n- 2048: Update parameters",
@@ -18648,36 +18665,6 @@
                     },
                     "x-full-schema": "SLA"
                 },
-                "ola_ttr": {
-                    "type": "object",
-                    "x-itemtype": "OLA",
-                    "properties": {
-                        "id": {
-                            "type": "integer",
-                            "format": "int64"
-                        },
-                        "name": {
-                            "type": "string",
-                            "readOnly": true
-                        }
-                    },
-                    "x-full-schema": "OLA"
-                },
-                "ola_tto": {
-                    "type": "object",
-                    "x-itemtype": "OLA",
-                    "properties": {
-                        "id": {
-                            "type": "integer",
-                            "format": "int64"
-                        },
-                        "name": {
-                            "type": "string",
-                            "readOnly": true
-                        }
-                    },
-                    "x-full-schema": "OLA"
-                },
                 "sla_level_ttr": {
                     "type": "object",
                     "x-itemtype": "SlaLevel",
@@ -18693,9 +18680,14 @@
                     },
                     "x-full-schema": "SLALevel"
                 },
-                "ola_level_ttr": {
+                "sla_waiting_duration": {
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "ola_ttr": {
                     "type": "object",
-                    "x-itemtype": "OlaLevel",
+                    "nullable": true,
+                    "x-full-schema": "OLA",
                     "properties": {
                         "id": {
                             "type": "integer",
@@ -18706,10 +18698,38 @@
                             "readOnly": true
                         }
                     },
-                    "x-full-schema": "OLALevel"
+                    "readOnly": true
                 },
-                "sla_waiting_duration": {
-                    "type": "integer",
+                "ola_tto": {
+                    "type": "object",
+                    "nullable": true,
+                    "x-full-schema": "OLA",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "readOnly": true
+                },
+                "ola_level_ttr": {
+                    "type": "object",
+                    "nullable": true,
+                    "x-full-schema": "OLALevel",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
                     "readOnly": true
                 },
                 "ola_waiting_duration": {
@@ -18718,13 +18738,13 @@
                 },
                 "ola_ttr_begin_date": {
                     "type": "string",
-                    "readOnly": true,
-                    "format": "date-time"
+                    "format": "date-time",
+                    "readOnly": true
                 },
                 "ola_tto_begin_date": {
                     "type": "string",
-                    "readOnly": true,
-                    "format": "date-time"
+                    "format": "date-time",
+                    "readOnly": true
                 },
                 "internal_resolution_date": {
                     "type": "string",
