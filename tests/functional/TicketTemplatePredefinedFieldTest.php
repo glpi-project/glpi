@@ -35,13 +35,46 @@
 namespace tests\units;
 
 use Glpi\Tests\AbstractITILTemplatePredefinedFieldTest;
+use Glpi\Tests\Glpi\SLMTrait;
 use ITILTemplatePredefinedField;
 use TicketTemplatePredefinedField;
 
 final class TicketTemplatePredefinedFieldTest extends AbstractITILTemplatePredefinedFieldTest
 {
+    use SLMTrait;
+
     public function getConcreteClass(): ITILTemplatePredefinedField
     {
         return new TicketTemplatePredefinedField();
+    }
+
+    public function testPredefinedOLA(): void
+    {
+        // arrange
+        $ola = $this->createOLA()['ola'];
+
+        $template = $this->createItem(\TicketTemplate::class, ['name' => 'Test Template']);
+        $this->createItem(
+            TicketTemplatePredefinedField::class,
+            [
+                'tickettemplates_id' => $template->getID(),
+                'num' => 190,
+                'value' => $ola->getID(),
+            ]
+        );
+        $template->getFromDBWithData($template->getID());
+        //        $this->reloadItem($template);
+
+        $ticket = new \Ticket();
+        $default_values = $ticket->getDefaultValues();
+        $options = ['_olas_id_tto' => []];
+
+        $reflectionMethod = new \ReflectionMethod(\Ticket::class, 'setPredefinedFields');
+        $r = new \ReflectionClass($ticket);
+        $m = $r->getMethod('setPredefinedFields');//->setAccessible(true);
+        $m->invokeArgs($ticket, [$template, &$options, $default_values]);
+
+        $this->assertArrayHasKey('_olas_id', $ticket->fields);
+        $this->assertEqualsCanonicalizing([$ola->getID()], $ticket->fields['_olas_id']);
     }
 }

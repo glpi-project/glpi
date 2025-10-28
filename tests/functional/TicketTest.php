@@ -48,6 +48,7 @@ use Entity;
 use Glpi\Search\SearchOption;
 use Glpi\Team\Team;
 use Glpi\Tests\Glpi\ITILTrait;
+use Glpi\Tests\Glpi\SLMTrait;
 use Glpi\Tests\Glpi\ValidationStepTrait;
 use Group;
 use Group_Ticket;
@@ -81,6 +82,7 @@ class TicketTest extends DbTestCase
 {
     use ValidationStepTrait;
     use ITILTrait;
+    use SLMTrait;
 
     public static function addActorsProvider(): iterable
     {
@@ -1627,17 +1629,9 @@ class TicketTest extends DbTestCase
         $matches = iterator_to_array($crawler->filter("#itil-data input[name=time_to_own]:not([disabled])"));
         $this->assertCount(($timeOwnResolve === true ? 1 : 0), $matches, "Time to own editable $caller");
 
-        // Internal time to own, editable
-        $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_own]:not([disabled])"));
-        $this->assertCount(($timeOwnResolve === true ? 1 : 0), $matches, "Internal time to own editable $caller");
-
         // Time to resolve, editable
         $matches = iterator_to_array($crawler->filter("#itil-data input[name=time_to_resolve]:not([disabled])"));
         $this->assertCount(($timeOwnResolve === true ? 1 : 0), $matches, "Time to resolve $caller");
-
-        // Internal time to resolve, editable
-        $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_resolve]:not([disabled])"));
-        $this->assertCount(($timeOwnResolve === true ? 1 : 0), $matches, "Internal time to resolve $caller");
 
         //Type
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=type]:not([disabled])"));
@@ -3088,11 +3082,6 @@ class TicketTest extends DbTestCase
         $this->assertEquals(0, (int) $input['slas_id_tto']);
         $this->assertEquals(0, (int) $input['slas_id_ttr']);
 
-        $this->assertEquals('NULL', $input['internal_time_to_resolve']);
-        $this->assertEquals('NULL', $input['internal_time_to_own']);
-        $this->assertEquals(0, (int) $input['olas_id_tto']);
-        $this->assertEquals(0, (int) $input['olas_id_ttr']);
-
         $this->assertEquals(0, (int) $input['_add_validation']);
 
         $this->assertCount(0, $input['_validation_targets']);
@@ -3558,6 +3547,26 @@ class TicketTest extends DbTestCase
                 $this->assertEquals($_SESSION['glpi_currenttime'], $ticket->fields['takeintoaccountdate']);
             }
         }
+    }
+
+    public function testGetSlasData(): void
+    {
+        $this->login();
+        // arrange - create a ticket with TTO SLA
+        ['sla' => $sla_tto] = $this->createSla(sla_type: SLM::TTO);
+        ['sla' => $sla_ttr] = $this->createSla(sla_type: SLM::TTR);
+        $ticket = $this->createTicket(['slas_id_tto' => $sla_tto->getID()]);
+
+        // act + assert
+        $slas_data = $ticket->getSlasData();
+        $this->assertCount(1, $slas_data);
+        $this->assertEquals($sla_tto->getID(), $slas_data[0]['id']);
+
+        // arrange - add TTR SLA to the ticket
+        $ticket = $this->updateItem($ticket::class, $ticket->getID(), [            'slas_id_ttr' => $sla_ttr->getID(),        ]);
+        $slas_data = $ticket->getSlasData();
+        $this->assertCount(2, $slas_data);
+        $this->assertEqualsCanonicalizing([$sla_ttr->getID(), $sla_tto->getID()], array_column($slas_data, 'id'));
     }
 
     /**
@@ -9283,7 +9292,8 @@ HTML,
         ]);
 
         // Create a ticket
-        $this->setCurrentTime('2025-10-06 11:26:34'); // be sure to be on monday
+        $ticket_creation_date = '2025-10-06 11:26:34';
+        $this->setCurrentTime($ticket_creation_date); // be sure to be on monday
         $ticket = $this->createItem(
             Ticket::class,
             [
@@ -9294,7 +9304,8 @@ HTML,
         );
 
         // Add a solution
-        $this->setCurrentTime('2025-10-07 09:12:48'); // add some time to consistent stats
+        $solution_creation_date = '2025-10-07 09:12:48';
+        $this->setCurrentTime($solution_creation_date); // add some time to consistent stats
         $solution = $this->createItem(
             ITILSolution::class,
             [
@@ -9304,15 +9315,20 @@ HTML,
             ]
         );
 
+        // $time_between_ticket_creation_and_solution is the result of $calendar->getActiveTimeBetween($ticket_creation_date, $solution_creation_date);
+        // testing the value using the calendar makes no sense, if it returns a wrong value, the test will pass without we can detect it.
+        // value is a number of seconds
+        $time_between_ticket_creation_and_solution = 27974;
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
-        $this->assertEquals(Ticket::SOLVED, $ticket->fields['status']);
-        $this->assertEquals(27974, $ticket->fields['solve_delay_stat']);
+        $this->assertEquals(CommonITILObject::SOLVED, $ticket->fields['status']);
+        $this->assertEquals($time_between_ticket_creation_and_solution, $ticket->fields['solve_delay_stat']);
         $this->assertEquals(0, $ticket->fields['close_delay_stat']);
         $this->assertTrue($solution->getFromDB($solution->getID()));
         $this->assertSame(CommonITILValidation::WAITING, $solution->fields['status']);
 
         // Refuse the solution
-        $this->setCurrentTime('2025-10-07 10:47:10'); // add some time to consistent stats
+        $solution_rejetion_date = '2025-10-07 10:47:10';
+        $this->setCurrentTime($solution_rejetion_date); // add some time to consistent stats
         $this->createItem(
             ITILFollowup::class,
             [
@@ -9324,21 +9340,28 @@ HTML,
             ['add_reopen']
         );
 
+        $expected_waiting_time = 5662; // result of $calendar->getActiveTimeBetween($solution_creation_date, $solution_rejetion_date);
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
-        $this->assertEquals(Ticket::INCOMING, $ticket->fields['status']);
-        $this->assertEquals(0, $ticket->fields['solve_delay_stat']);
+        $this->assertEquals(CommonITILObject::INCOMING, $ticket->fields['status']);
+        $this->assertEquals(0, $ticket->fields['solve_delay_stat']); // solution is rejected, so not solved, so no solve delay set
         $this->assertEquals(0, $ticket->fields['close_delay_stat']);
+        $this->assertEquals(0, $ticket->fields['begin_waiting_date'], 'begin_waiting_date should be reset to 0.');
+        $this->assertEquals($expected_waiting_time, $ticket->fields['waiting_duration'], 'Unexpected waiting_duration, it should be greater than 0.');
         $this->assertTrue($solution->getFromDB($solution->getID()));
         $this->assertSame(CommonITILValidation::REFUSED, $solution->fields['status']);
 
         // Close the ticket
-        $this->setCurrentTime('2025-10-08 14:17:31'); // add some time to consistent stats
-        $this->updateItem(Ticket::class, $ticket->getID(), ['status' => Ticket::CLOSED]);
+        $ticket_closing_date = '2025-10-08 14:17:31';
+        $this->setCurrentTime($ticket_closing_date); // add some time to consistent stats
+        $this->updateItem(Ticket::class, $ticket->getID(), ['status' => CommonITILObject::CLOSED]);
 
+        // solve delay is the time elapsed between ticket creation and it's solved/closed time. It excludes the time between solution proposal and rejection
+        $expected_solve_delay = 76595; // result of $calendar->getActiveTimeBetween($ticket_creation_date, $ticket_closing_date) - $expected_waiting_time;
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
-        $this->assertEquals(Ticket::CLOSED, $ticket->fields['status']);
-        $this->assertEquals(76595, $ticket->fields['solve_delay_stat']);
-        $this->assertEquals(76595, $ticket->fields['close_delay_stat']);
+        $this->assertEquals($expected_solve_delay, $ticket->fields['solve_delay_stat']);
+        $this->assertEquals($expected_solve_delay, $ticket->fields['close_delay_stat']);
+        $this->assertEquals($expected_waiting_time, $ticket->fields['waiting_duration'], 'Unexpected waiting_duration, it should be greater than 0 and unchanged.');
+        $this->assertNull($ticket->fields['begin_waiting_date'], 'begin_waiting_date should be null, ticket is closed.');
 
         // Reopen the ticket
         $this->setCurrentTime('2025-10-08 14:24:05'); // add some time to consistent stats
@@ -9354,9 +9377,11 @@ HTML,
         );
 
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
-        $this->assertEquals(Ticket::INCOMING, $ticket->fields['status']);
+        $this->assertEquals(CommonITILObject::INCOMING, $ticket->fields['status']);
         $this->assertEquals(0, $ticket->fields['solve_delay_stat']);
         $this->assertEquals(0, $ticket->fields['close_delay_stat']);
+        $this->assertEquals($expected_waiting_time, $ticket->fields['waiting_duration'], 'Unexpected waiting_duration, it should not be changed.');
+        $this->assertNull($ticket->fields['begin_waiting_date']);
     }
 
     public function testSatisfactionSurveyIsDisplayedOnHelpdesk(): void

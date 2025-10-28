@@ -924,18 +924,19 @@ function loadDataset()
 /**
  * Test helper, search an item from its type and name
  * @template T of CommonDBTM
- * @param class-string<T>   $type
- * @param string            $name
- * @param bool              $onlyid
- * @phpstan-return ($onlyid is true ? int : T)
- *      Item of $type class, or its id
+ * @param class-string<T> $type
+ * @param string $name
+ * @param bool $onlyid
+ * @phpstan-return ($onlyid is true ? int : T) Item of $type class, or its id
+ * @return CommonDBTM|int
  */
 function getItemByTypeName(string $type, string $name, bool $onlyid = false): CommonDBTM|int
 {
     $item = getItemForItemtype($type);
     $nameField = $type::getNameField();
     if (!$item->getFromDBByCrit([$nameField => $name])) {
-        throw new RuntimeException(sprintf('Unable to load a single `%s` item with the name `%s` (none or many exist may exist).', $type, $name));
+        $availables =  implode(', ', array_column($item->find([]), $nameField));
+        throw new RuntimeException(sprintf('Unable to load the `%s` item with the name `%s`. Available items are : %s', $type, $name, $availables));
     }
     return ($onlyid ? $item->getID() : $item);
 }
