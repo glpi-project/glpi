@@ -2544,19 +2544,8 @@ class User extends CommonDBTM implements TreeBrowseInterface
             }
         }
 
-        $old_fields = $this->fields;
-        // If user with same name already exists, keep its data
-        if ($this->getFromDBbyName($this->fields['name'])) {
-            // Filter old_fields to exclude 'id' if current id is not 0
-            $filtered_old_fields = array_filter($old_fields, function ($value, $key) {
-                if ($key === 'id' && isset($this->fields['id']) && $this->fields['id'] != 0) {
-                    return false; // Don't overwrite existing id
-                }
-                return $value !== null && $value !== '';
-            }, ARRAY_FILTER_USE_BOTH);
-
-            $this->fields = array_replace($this->fields, $filtered_old_fields);
-        }
+        // Load data from any potential existing user
+        $this->getFromDBbyName($this->fields['name']);
 
         if (count($a_field) == 0) {
             return true;
