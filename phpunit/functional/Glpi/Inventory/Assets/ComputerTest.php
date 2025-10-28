@@ -1762,4 +1762,72 @@ class ComputerTest extends AbstractInventoryAsset
         $this->assertTrue($computer->getFromDB($computers_id));
         $this->assertSame($locations_id, $computer->fields['locations_id']);
     }
+
+    /**
+     * Test reimport with locked states_id field.
+     * This test ensures that reimporting an inventory with a locked states_id field
+     * does not trigger an error when accessing raw_links.
+     *
+     */
+    public function testReimportWithLockedStatesId()
+    {
+        global $DB;
+
+        // Load the test fixture
+        $json_str = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/computer_locked_states_id.json');
+        $json = json_decode($json_str);
+
+        // Create initial states
+        $state = new \State();
+        $states_id_inventory = $state->add([
+            'name' => 'State from inventory',
+            'entities_id' => 0
+        ]);
+        $this->assertGreaterThan(0, $states_id_inventory);
+
+        $states_id_manual = $state->add([
+            'name' => 'State manually set',
+            'entities_id' => 0
+        ]);
+        $this->assertGreaterThan(0, $states_id_manual);
+
+        // First import - create the computer
+        $inventory = $this->doInventory($json);
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $computers_id);
+
+        $computer = new \Computer();
+        $this->assertTrue($computer->getFromDB($computers_id));
+
+        // Manually update states_id to create a lock
+        $this->assertTrue($computer->update([
+            'id' => $computers_id,
+            'states_id' => $states_id_manual,
+        ]));
+
+        // Verify the lock was created
+        $lockedfield = new \Lockedfield();
+        $locks = $lockedfield->find([
+            'itemtype' => 'Computer',
+            'items_id' => $computers_id,
+            'field' => 'states_id'
+        ]);
+        $this->assertCount(1, $locks);
+
+        // Reimport the same inventory - this should NOT trigger an error
+        // (before the fix, this would cause an error accessing $raw_links[$known_key])
+        $inventory = $this->doInventory($json);
+
+        // Verify the computer still exists and states_id is still locked
+        $this->assertTrue($computer->getFromDB($computers_id));
+        $this->assertEquals($states_id_manual, $computer->fields['states_id']);
+
+        // Verify the lock is still present
+        $locks = $lockedfield->find([
+            'itemtype' => 'Computer',
+            'items_id' => $computers_id,
+            'field' => 'states_id'
+        ]);
+        $this->assertCount(1, $locks);
+    }
 }
