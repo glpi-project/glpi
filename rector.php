@@ -41,6 +41,7 @@ use Rector\ValueObject\PhpVersion;
 use RectorGlpi\Set\GlpiSetList;
 
 return RectorConfig::configure()
+    ->withImportNames(removeUnusedImports: true)
     ->withSets([
         GlpiSetList::GLPI_DEFAULT_SET,
     ])

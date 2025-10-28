@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,35 +32,40 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\ContentTemplates\Parameters;
+namespace Glpi\Form\Destination\CommonITILField;
 
-use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
-use OLA;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\AnswersSet;
+use InvalidArgumentException;
+use Override;
 
-/**
- * Parameters for "OLA" items.
- *
- * @since 10.0.0
- */
-class OLAParameters extends LevelAgreementParameters
+abstract class OLAField extends SLMField
 {
-    public function getAvailableParameters(): array
-    {
-        return parent::getAvailableParameters() + [new ObjectParameter(new GroupParameters()),];
-    }
+    #[Override]
+    public function applyConfiguratedValueToInputUsingAnswers(
+        JsonFieldInterface $config,
+        array $input,
+        AnswersSet $answers_set
+    ): array {
+        if (!$config instanceof SLMFieldConfig) {
+            throw new InvalidArgumentException("Unexpected config class");
+        }
 
-    public static function getDefaultNodeName(): string
-    {
-        return 'ola';
-    }
+        // Only one strategy is allowed
+        $strategy = current($config->getStrategies());
 
-    public static function getObjectLabel(): string
-    {
-        return OLA::getTypeName(1);
-    }
+        // Compute value according to strategy
+        $slm_id = $strategy->getSLMID($config);
 
-    protected function getTargetClasses(): array
-    {
-        return [OLA::class];
+        // Do not edit input if invalid value was found
+        $slm = $this->getSLM();
+        if (!$slm::getById($slm_id)) {
+            return $input;
+        }
+
+        $input['_olas_id'] = [$slm_id];
+        $input['_la_update'] = true;
+
+        return $input;
     }
 }
