@@ -34,8 +34,7 @@
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 {% macro forceUnlockButton(item, check_unlock_right) %}
-    {% set real_profile = session('glpilocksavedprofile')|default(null) %}
-    {% if not check_unlock_right or (real_profile != null and (real_profile[item.fields['itemtype']] ?? false) b-and constant('UNLOCK')) %}
+    {% if not check_unlock_right b-and constant('UNLOCK') %}
         <button type="button" class="btn btn-sm btn-primary ms-2 force-unlock-item">
             <i class="ti ti-lock-open"></i>
             <span>{{ __('Force unlock %1s #%2s')|format(item.fields['itemtype']|itemtype_name, item.fields['items_id']) }}</span>
