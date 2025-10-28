@@ -492,11 +492,11 @@ body pre {
 
 .col-12.glpi-full-width {
     .col-form-label {
-        width: 33.3333%; /* Bootstrap 5 / Tabler.io .col-xxl-4 width */
+        width: calc(-4px + 20.8333%);
     }
 
     .field-container {
-        width: 66.6667%; /* Bootstrap 5 / Tabler.io .col-xxl-8 width  */
+        width: calc(-11px + 79.1666%);
     }
 }
 
@@ -507,6 +507,16 @@ body pre {
 
     .field-container {
         width: calc(-11px + 74.1666%);
+    }
+}
+
+.itil-object-fields .col-12.glpi-full-width {
+    .col-form-label {
+        width: 33.3333%; /* Bootstrap 5 / Tabler.io .col-xxl-4 width */
+    }
+
+    .field-container {
+        width: 66.6667%; /* Bootstrap 5 / Tabler.io .col-xxl-8 width */
     }
 }
 
