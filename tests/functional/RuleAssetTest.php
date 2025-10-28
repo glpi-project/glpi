@@ -39,6 +39,7 @@ use DbTestCase;
 use Generator;
 use Rule;
 use RuleAction;
+use RuleBuilder;
 use RuleCriteria;
 use SingletonRuleList;
 
@@ -636,6 +637,43 @@ class RuleAssetTest extends DbTestCase
         $this->assertTrue($update);
         $this->assertTrue($computer_em->getFromDB($computer_id));
         $this->assertEquals($locations_id, $computer_em->getField('locations_id'));
+    }
+
+    /**
+     * Test rule to assign tech groups to asset on creation
+     *
+     * action : append
+     * field: groups_id_tech
+     */
+    public function testAssignTechGroup(): void
+    {
+        $this->login();
+        // arrange - create 2 groups + create rule to associate a Computer with created groups
+        $tech_group_1 = $this->createItem(\Group::class, ['name' => 'tech group 1']);
+        $tech_group_2 = $this->createItem(\Group::class, ['name' => 'tech group 2']);
+        $rule_builder = new RuleBuilder(__FUNCTION__, \RuleAsset::class);
+        $rule_builder->setEntity(0);
+        $rule_builder->addCriteria('entities_id', Rule::PATTERN_IS, '0');
+        $rule_builder->addAction('append', 'groups_id_tech', $tech_group_1->getID());
+        $rule_builder->addAction('append', 'groups_id_tech', $tech_group_2->getID());
+        $rule_builder->setCondtion(\RuleAsset::ONADD);
+        $this->createRule($rule_builder);
+
+        // act - create a Computer
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'Computer',
+            'entities_id' => 0,
+        ]);
+
+        // assert - check that the computer has the tech groups assigned
+        $associations = (new \Group_Item())->find([
+            'items_id' => $computer->getID(),
+            'itemtype' => $computer::getType(),
+            'groups_id' => [$tech_group_1->getID(), $tech_group_2->getID()],
+        ]);
+        $fetched_group_ids = array_column($associations, 'groups_id');
+
+        $this->assertEqualsCanonicalizing([$tech_group_1->getID(), $tech_group_2->getID()], $fetched_group_ids, 'Unexpected Asset associated tech groups');
     }
 
     public function testGroupUserAssignFromDefaultUser()

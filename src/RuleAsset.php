@@ -213,6 +213,9 @@ class RuleAsset extends Rule
         $actions['groups_id_tech']['type']      = 'dropdown';
         $actions['groups_id_tech']['table']     = 'glpi_groups';
         $actions['groups_id_tech']['condition'] = ['is_assign' => 1];
+        $actions['groups_id_tech']['appendto']  = '_groups_id_tech';
+        $actions['groups_id_tech']['force_actions'] = ['assign', 'append'];
+        $actions['groups_id_tech']['permitseveral'] = ['append'];
 
         $actions['comment']['table']            = '';
         $actions['comment']['field']            = 'comment';
