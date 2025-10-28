@@ -254,10 +254,16 @@ class Cartridge extends CommonDBRelation
             $changesCartrige = [
                 0,
                 '',
-                __('Cartridge') . ' (' . $input['id'] . ') : ' . strtolower(__('Back to stock')),
+                sprintf(__('Cartridge (%1$s): back to stock'), $input['id']),
             ];
             $this->getFromDB($input['id']);
-            Log::history($this->fields['cartridgeitems_id'], CartridgeItem::class, $changesCartrige, Cartridge::class, Log::HISTORY_UPDATE_SUBITEM);
+            Log::history(
+                $this->fields['cartridgeitems_id'],
+                CartridgeItem::class,
+                $changesCartrige,
+                Cartridge::class,
+                Log::HISTORY_UPDATE_SUBITEM
+            );
             return true;
         }
 
@@ -317,10 +323,16 @@ class Cartridge extends CommonDBRelation
                 $changesCartrige = [
                     0,
                     '',
-                    __('Installing a cartridge') . ' (' . $cID . '). ' . __('Printer') .  ' : ' . $pID,
+                    sprintf(__('Instal the cartridge %1$s on printer : %2$s'), $cID, $pID),
                 ];
                 $this->getFromDB($cID);
-                Log::history($this->fields['cartridgeitems_id'], CartridgeItem::class, $changesCartrige, Cartridge::class, Log::HISTORY_UPDATE_SUBITEM);
+                Log::history(
+                    $this->fields['cartridgeitems_id'],
+                    CartridgeItem::class,
+                    $changesCartrige,
+                    Cartridge::class,
+                    Log::HISTORY_UPDATE_SUBITEM
+                );
                 return true;
             }
         } else {
@@ -378,10 +390,16 @@ class Cartridge extends CommonDBRelation
                 $changesCartrige = [
                     0,
                     '',
-                    __('Uninstalling a cartridge') . ' (' . $ID . ') ' . __('and') . ' ' . strtolower(__('Delete')),
+                    sprintf(__('Uninstal the cartridge %1$s for end life'), $ID),
                 ];
 
-                Log::history($this->fields['cartridgeitems_id'], CartridgeItem::class, $changesCartrige, Cartridge::class, Log::HISTORY_UPDATE_SUBITEM);
+                Log::history(
+                    $this->fields['cartridgeitems_id'],
+                    CartridgeItem::class,
+                    $changesCartrige,
+                    Cartridge::class,
+                    Log::HISTORY_UPDATE_SUBITEM
+                );
 
                 return true;
             }
