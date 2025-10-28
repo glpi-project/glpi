@@ -1768,36 +1768,53 @@ class ComputerTest extends AbstractInventoryAsset
      * This test ensures that reimporting an inventory with a locked states_id field
      * does not trigger an error when accessing raw_links.
      *
+     * Scenario:
+     * 1. Configure a default states_id for inventory imports
+     * 2. Import a computer (which receives the state from inventory configuration)
+     * 3. Manually change the states_id (this creates a lock on the field)
+     * 4. Reimport the same computer (before the fix, this caused an "Undefined array key" error)
      */
     public function testReimportWithLockedStatesId()
     {
-        global $DB;
-
         // Load the test fixture
         $json_str = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/computer_locked_states_id.json');
         $json = json_decode($json_str);
 
-        // Create initial states
+        // Create states
         $state = new \State();
         $states_id_inventory = $state->add([
             'name' => 'State from inventory',
-            'entities_id' => 0
+            'entities_id' => 0,
+            'is_visible_computer' => 1,
         ]);
         $this->assertGreaterThan(0, $states_id_inventory);
 
         $states_id_manual = $state->add([
             'name' => 'State manually set',
-            'entities_id' => 0
+            'entities_id' => 0,
+            'is_visible_computer' => 1,
         ]);
         $this->assertGreaterThan(0, $states_id_manual);
 
-        // First import - create the computer
+        // Configure inventory to set states_id from inventory
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue(
+            $conf->saveConf([
+                'states_id_default' => $states_id_inventory,
+            ])
+        );
+        $this->logout();
+
+        // First import - create the computer with state from inventory
         $inventory = $this->doInventory($json);
         $computers_id = $inventory->getItem()->fields['id'];
         $this->assertGreaterThan(0, $computers_id);
 
         $computer = new \Computer();
         $this->assertTrue($computer->getFromDB($computers_id));
+        // Verify the computer received the state from inventory configuration
+        $this->assertEquals($states_id_inventory, $computer->fields['states_id']);
 
         // Manually update states_id to create a lock
         $this->assertTrue($computer->update([
@@ -1814,11 +1831,17 @@ class ComputerTest extends AbstractInventoryAsset
         ]);
         $this->assertCount(1, $locks);
 
+        // Reload and verify the manual state is set
+        $this->assertTrue($computer->getFromDB($computers_id));
+        $this->assertEquals($states_id_manual, $computer->fields['states_id']);
+
         // Reimport the same inventory - this should NOT trigger an error
-        // (before the fix, this would cause an error accessing $raw_links[$known_key])
+        // Before the fix, this would cause: "Undefined array key" in $raw_links[$known_key]
+        // because the inventory wants to set states_id_inventory but the field is locked
+        // with states_id_manual, and the key doesn't exist in raw_links
         $inventory = $this->doInventory($json);
 
-        // Verify the computer still exists and states_id is still locked
+        // Verify the computer still exists and states_id is still the manual one (locked)
         $this->assertTrue($computer->getFromDB($computers_id));
         $this->assertEquals($states_id_manual, $computer->fields['states_id']);
 
