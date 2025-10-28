@@ -199,16 +199,20 @@ class RuleAsset extends Rule
         $actions['_affect_user_by_regex']['force_actions']     = ['regex_result'];
         $actions['_affect_user_by_regex']['duplicatewith']     = 'users_id';
 
+        // Group ownership assignment
         $actions['groups_id']['name']          = Group::getTypeName(1);
         $actions['groups_id']['type']          = 'dropdown';
         $actions['groups_id']['table']         = 'glpi_groups';
         $actions['groups_id']['condition']     = ['is_itemgroup' => 1];
-        $actions['groups_id']['force_actions'] = ['assign', 'defaultfromuser', 'firstgroupfromuser'];
+        $actions['groups_id']['force_actions'] = ['assign', 'append', 'defaultfromuser', 'firstgroupfromuser'];
+        $actions['groups_id']['appendto']      = '_groups_id';
+        $actions['groups_id']['permitseveral'] = ['append'];
 
         $actions['users_id_tech']['table']      = 'glpi_users';
         $actions['users_id_tech']['type']       = 'dropdown_users';
         $actions['users_id_tech']['name']       = __('Technician in charge');
 
+        // Group assignment (in charge)
         $actions['groups_id_tech']['name']      = __('Group in charge');
         $actions['groups_id_tech']['type']      = 'dropdown';
         $actions['groups_id_tech']['table']     = 'glpi_groups';
