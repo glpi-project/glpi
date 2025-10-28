@@ -124,6 +124,14 @@ final class DropdownDefinitionManager extends AbstractDefinitionManager
         }
     }
 
+    public function isCustomDropdown(string $class): bool
+    {
+        return str_starts_with(
+            $class,
+            DropdownDefinition::getCustomObjectNamespace()
+        );
+    }
+
     private function loadConcreteClass(DropdownDefinition $definition): void
     {
         $rightname = $definition->getCustomObjectRightname();

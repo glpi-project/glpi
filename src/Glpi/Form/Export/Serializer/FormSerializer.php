@@ -36,6 +36,8 @@ namespace Glpi\Form\Export\Serializer;
 
 use CommonDBTM;
 use Entity;
+use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Category;
 use Glpi\Form\Comment;
@@ -54,6 +56,7 @@ use Glpi\Form\Export\Specification\AccesControlPolicyContentSpecification;
 use Glpi\Form\Export\Specification\CommentContentSpecification;
 use Glpi\Form\Export\Specification\ConditionDataSpecification;
 use Glpi\Form\Export\Specification\CustomIllustrationContentSpecification;
+use Glpi\Form\Export\Specification\CustomTypeRequirementSpecification;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Export\Specification\DestinationContentSpecification;
 use Glpi\Form\Export\Specification\ExportContentSpecification;
@@ -65,9 +68,12 @@ use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
+use Glpi\Form\QuestionType\QuestionTypeItem;
+use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Form\Section;
 use Glpi\UI\IllustrationManager;
 use InvalidArgumentException;
+use LogicException;
 use RuntimeException;
 use Session;
 use Throwable;
@@ -120,9 +126,7 @@ final class FormSerializer extends AbstractFormSerializer
         // Validate each forms
         $results = new ImportResultPreview();
         foreach ($export_specification->forms as $form_spec) {
-            $requirements = $form_spec->data_requirements;
-            $mapper->mapExistingItemsForRequirements($requirements);
-
+            // Skip ignored forms
             $form_id   = $form_spec->id;
             $form_name = $form_spec->name;
             if (in_array($form_id, $skipped_forms)) {
@@ -130,7 +134,24 @@ final class FormSerializer extends AbstractFormSerializer
                 continue;
             }
 
-            if ($mapper->validateRequirements($requirements)) {
+            // Validate custom types requirements
+            $types_requirements = $form_spec->custom_types_requirements;
+            $missing_types = $this->getMissingCustomTypes($types_requirements);
+            foreach ($missing_types as $missing_type) {
+                $message = sprintf(__('Unknown custom type: %s'), $missing_type);
+                $results->addFatalErrorForForm($form_id, $form_name, $message);
+            }
+
+            // Do not process others requirements if we reached a fatal error
+            if ($results->hasFatalErrorForForm($form_id)) {
+                continue;
+            }
+
+            // Validate data requirements
+            $data_requirements = $form_spec->data_requirements;
+            $mapper->mapExistingItemsForRequirements($data_requirements);
+
+            if ($mapper->validateRequirements($data_requirements)) {
                 $results->addValidForm($form_id, $form_name);
             } else {
                 $results->addInvalidForm($form_id, $form_name);
@@ -180,15 +201,27 @@ final class FormSerializer extends AbstractFormSerializer
         // Import each forms
         $result = new ImportResult();
         foreach ($export_specification->forms as $form_spec) {
-            $requirements = $form_spec->data_requirements;
-            $mapper->mapExistingItemsForRequirements($requirements);
-
+            // Skip form if needed
             $form_id = $form_spec->id;
             if (in_array($form_id, $skipped_forms)) {
                 continue;
             }
 
-            if (!$mapper->validateRequirements($requirements)) {
+            // Validate custom types
+            $types_requirements = $form_spec->custom_types_requirements;
+            if (!$this->validateCustomTypesRequirements($types_requirements)) {
+                $result->addFailedFormImport(
+                    $form_spec->name,
+                    ImportError::MISSING_CUSTOM_TYPE_REQUIREMENT,
+                );
+                continue;
+            }
+
+            // Validate data requirements
+            $data_requirements = $form_spec->data_requirements;
+            $mapper->mapExistingItemsForRequirements($data_requirements);
+
+            if (!$mapper->validateRequirements($data_requirements)) {
                 $result->addFailedFormImport(
                     $form_spec->name,
                     ImportError::MISSING_DATA_REQUIREMENT
@@ -235,6 +268,7 @@ final class FormSerializer extends AbstractFormSerializer
         $form_spec = $this->exportAccesControlPolicies($form, $form_spec);
         $form_spec = $this->exportDestinations($form, $form_spec);
         $form_spec = $this->exportTranslations($form, $form_spec);
+        $form_spec = $this->addCustomTypesRequirements($form, $form_spec);
 
         return $form_spec;
     }
@@ -1062,5 +1096,63 @@ final class FormSerializer extends AbstractFormSerializer
         }
 
         return $prefix . $illustration->key;
+    }
+
+    private function addCustomTypesRequirements(
+        Form $form,
+        FormContentSpecification $form_spec,
+    ): FormContentSpecification {
+        $asset_manager = AssetDefinitionManager::getInstance();
+        $dropdown_manager = DropdownDefinitionManager::getInstance();
+
+        // Look for item question on custom assets types
+        foreach ($form->getQuestions() as $question) {
+            $type = $question->getQuestionType();
+            if (!$type instanceof QuestionTypeItem) {
+                continue;
+            }
+
+            $config = $question->getExtraDataConfig();
+            if (!$config instanceof QuestionTypeItemExtraDataConfig) {
+                throw new LogicException(); // Impossible
+            }
+
+            $itemtype = $config->getItemtype();
+            if (
+                $asset_manager->isCustomAsset($itemtype)
+                || $dropdown_manager->isCustomDropdown($itemtype)
+            ) {
+                $form_spec->addCustomTypeRequirement(
+                    new CustomTypeRequirementSpecification($itemtype)
+                );
+            }
+        }
+
+        return $form_spec;
+    }
+
+    /** @param CustomTypeRequirementSpecification[] $requirements */
+    private function validateCustomTypesRequirements(array $requirements): bool
+    {
+        foreach ($requirements as $requirement) {
+            if (!class_exists($requirement->itemtype)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /** @param CustomTypeRequirementSpecification[] $requirements */
+    private function getMissingCustomTypes(array $requirements): array
+    {
+        $missing_types = [];
+        foreach ($requirements as $requirement) {
+            if (!class_exists($requirement->itemtype)) {
+                $missing_types[] = $requirement->itemtype;
+            }
+        }
+
+        return $missing_types;
     }
 }

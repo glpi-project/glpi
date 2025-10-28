@@ -79,7 +79,11 @@ final class Step2PreviewController extends AbstractController
         }
 
         $previewResult = $serializer->previewImport($json, $mapper, $skipped_forms);
-        if (empty($previewResult->getValidForms()) && empty($previewResult->getInvalidForms())) {
+        if (
+            empty($previewResult->getValidForms())
+            && empty($previewResult->getInvalidForms())
+            && empty($previewResult->getFormsWithFatalErrors())
+        ) {
             return new RedirectResponse($request->getBasePath() . '/Form/Import');
         }
 
