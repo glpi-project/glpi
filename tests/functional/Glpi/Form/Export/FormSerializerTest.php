@@ -2082,6 +2082,62 @@ final class FormSerializerTest extends \DbTestCase
         $this->exportAndImportForm($form);
     }
 
+    public function testCustomAssetsAreAddedAsRequirements(): void
+    {
+        // Arrange: create a form that references custom assets
+        $asset_definition = $this->initAssetDefinition("Lawnmower");
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "Your favorite lawn mower",
+            type: QuestionTypeItem::class,
+            extra_data: json_encode(new QuestionTypeItemExtraDataConfig(
+                itemtype: $asset_definition->getAssetClassName(),
+            ))
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: a requirement should be added
+        $data = json_decode($json, associative: true);
+        $this->assertEquals([
+            ['itemtype' => "Glpi\\CustomAsset\\LawnmowerAsset"],
+        ], $data['forms'][0]['custom_types_requirements']);
+    }
+
+    public function testImportWithMissingCustomAsset(): void
+    {
+        // Arrange: read json from fixtures and create hammer asset
+        $json = $this->getFormJson('form-with-hammer-asset.json');
+
+        // Act: import the form
+        $mapper = new DatabaseMapper([$this->getTestRootEntity(true)]);
+        $import_result = self::$serializer->importFormsFromJson($json, $mapper);
+
+        // Assert: the import should fail
+        $this->assertEmpty($import_result->getImportedForms());
+        $this->assertEquals([
+            'Test form' => ImportError::MISSING_CUSTOM_TYPE_REQUIREMENT,
+        ], $import_result->getFailedFormImports());
+    }
+
+    public function testImportWithCustomAsset(): void
+    {
+        // Arrange: read json from fixtures
+        $this->initAssetDefinition("Hammer");
+        $this->assertTrue(class_exists("Glpi\\CustomAsset\\HammerAsset"));
+        $json = $this->getFormJson('form-with-hammer-asset.json');
+
+        // Act: import the form
+        $mapper = new DatabaseMapper([$this->getTestRootEntity(true)]);
+        $import_result = self::$serializer->importFormsFromJson($json, $mapper);
+
+        // Assert: the import should succeed
+        $this->assertCount(1, $import_result->getImportedForms());
+        $this->assertEmpty($import_result->getFailedFormImports());
+    }
+
     private function compareValuesForRelations(
         $relations,
         $ids_for_default_form,
