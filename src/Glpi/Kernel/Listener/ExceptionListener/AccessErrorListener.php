@@ -37,11 +37,11 @@ namespace Glpi\Kernel\Listener\ExceptionListener;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\AuthenticationFailedException;
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\HttpException;
 use Glpi\Exception\SessionExpiredException;
 use Glpi\Http\RedirectResponse;
 use Session;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -80,12 +80,10 @@ final readonly class AccessErrorListener implements EventSubscriberInterface
             Session::destroy(); // destroy the session to prevent pesistence of unexpected data
 
             if ($request->isXmlHttpRequest() || $request->getPreferredFormat() !== 'html') {
-                // For AJAX/JSON requests, return a JSON response with 401 status
-                $response = new JsonResponse([
-                    'error'   => __('Your session has expired'),
-                    'message' => __('Please log in again'),
-                    'code'    => 'ERROR_SESSION_EXPIRED',
-                ], 401);
+                // For AJAX/JSON requests, convert the error into a HttpException
+                $http_exception = new HttpException(401, 'Session expired.');
+                $http_exception->setMessageToDisplay(__('Your session has expired. Please log in again.'));
+                throw $http_exception;
             } else {
                 // For HTML requests, redirect to login page (existing behavior)
                 $response = new RedirectResponse(
