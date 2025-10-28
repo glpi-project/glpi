@@ -218,20 +218,57 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         }
         $data['##ticket.sla##'] = $data['##ticket.sla_ttr##'];
 
+        // OLA data
+        $data['ola_tto'] = [];
+        $olas_tto = $item->getOlasTTOData();
+
+        $data['ola_ttr'] = [];
+        $olas_ttr = $item->getOlasTTRData();
+
+        // backward compatibility ola_tto/ttr
+        // ticket.ola_tto & ticket.ola_ttr field are replaced by an array of OLA data, see below
         $data['##ticket.ola_tto##'] = '';
-        if ($item->getField('olas_id_tto')) {
-            $data['##ticket.ola_tto##'] = Dropdown::getDropdownName(
-                'glpi_olas',
-                $item->getField('olas_id_tto')
-            );
-        }
         $data['##ticket.ola_ttr##'] = '';
-        if ($item->getField('olas_id_ttr')) {
-            $data['##ticket.ola_ttr##'] = Dropdown::getDropdownName(
-                'glpi_olas',
-                $item->getField('olas_id_ttr')
-            );
+        $_separator = ' / ';
+        $_fn_remove_last_separator = static function ($ola_names) use ($_separator) {
+            if (str_ends_with($ola_names, $_separator)) {
+                return substr($ola_names, 0, -strlen($_separator));
+            }
+            return $ola_names;
+        };
+
+        // OLA TTO/TTR data - new version (multiple OLA per ticket)
+        foreach ($olas_tto as $ola_tto) {
+            $tmp['##ticket.ola_tto.name##'] = $ola_tto['name'];
+            $tmp['##ticket.ola_tto.comment##'] = $ola_tto['comment'];
+            $tmp['##ticket.ola_tto.group##'] = $ola_tto['group_name'];
+            $tmp['##ticket.ola_tto.start_time##'] = $ola_tto['start_time'];
+            $tmp['##ticket.ola_tto.due_time##'] = $ola_tto['due_time'];
+            $tmp['##ticket.ola_tto.end_time##'] = $ola_tto['end_time'];
+            $tmp['##ticket.ola_tto.waiting_time##'] = $ola_tto['waiting_time'];
+
+            // backward compatibility
+            $data['##ticket.ola_tto##'] .= $ola_tto['name'] . $_separator;
+            // new format
+            $data['ola_tto'][] = $tmp;
         }
+        $data['##ticket.ola_tto##'] = $_fn_remove_last_separator($data['##ticket.ola_tto##']);
+
+        foreach ($olas_ttr as $ola_ttr) {
+            $tmp['##ticket.ola_ttr.name##'] = $ola_ttr['name'];
+            $tmp['##ticket.ola_ttr.comment##'] = $ola_ttr['comment'];
+            $tmp['##ticket.ola_ttr.group##'] = $ola_ttr['group_name'];
+            $tmp['##ticket.ola_ttr.start_time##'] = $ola_ttr['start_time'];
+            $tmp['##ticket.ola_ttr.due_time##'] = $ola_ttr['due_time'];
+            $tmp['##ticket.ola_ttr.end_time##'] = $ola_ttr['end_time'];
+            $tmp['##ticket.ola_ttr.waiting_time##'] = $ola_ttr['waiting_time'];
+
+            // backward compatibility
+            $data['##ticket.ola_ttr##'] .= $ola_ttr['name'] . $_separator;
+
+            $data['ola_ttr'][] = $tmp;
+        }
+        $data['##ticket.ola_ttr##'] = $_fn_remove_last_separator($data['##ticket.ola_ttr##']);
 
         $data['##ticket.location##'] = '';
         if ($item->getField('locations_id')) {
@@ -567,16 +604,23 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                 __('SLA'),
                 __('Time to resolve')
             ),
-            'ticket.ola_tto'               => sprintf(
-                __('%1$s / %2$s'),
-                __('OLA'),
-                __('Internal time to own')
-            ),
-            'ticket.ola_ttr'               => sprintf(
-                __('%1$s / %2$s'),
-                __('OLA'),
-                __('Internal time to resolve')
-            ),
+
+            'ticket.ola_tto.name'                  => __('OLA name'),
+            'ticket.ola_tto.comment'               => __('OLA comment'),
+            'ticket.ola_tto.group'                 => __('Group assigned to OLA'),
+            'ticket.ola_tto.start_time'            => __('OLA start time'),
+            'ticket.ola_tto.due_time'              => __('OLA due time'),
+            'ticket.ola_tto.end_time'              => __('OLA end time'),
+            'ticket.ola_tto.waiting_time'          => __('OLA waiting duration'),
+
+            'ticket.ola_ttr.name'                  => __('OLA name'),
+            'ticket.ola_ttr.comment'               => __('OLA comment'),
+            'ticket.ola_ttr.group'                 => __('Group assigned to OLA'),
+            'ticket.ola_ttr.start_time'            => __('OLA start time'),
+            'ticket.ola_ttr.due_time'              => __('OLA due time'),
+            'ticket.ola_ttr.end_time'              => __('OLA end time'),
+            'ticket.ola_ttr.waiting_time'          => __('OLA waiting duration'),
+
             'ticket.externalid'            => __('External ID'),
             'ticket.requesttype'           => RequestType::getTypeName(1),
             'ticket.itemtype'              => __('Item type'),

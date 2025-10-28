@@ -66,6 +66,7 @@ foreach ($date_fields as $date_field) {
     }
 }
 
+// form submitted (add & update)
 // as _actors virtual field stores json, bypass automatic escaping
 if (isset($_POST['_actors'])) {
     $_POST['_actors'] = json_decode($_POST['_actors'], true);
@@ -73,6 +74,7 @@ if (isset($_POST['_actors'])) {
 }
 
 if (isset($_POST["add"])) {
+    // form submitted (add)
     $track->check(-1, CREATE, $_POST);
     $_POST = $track->enforceReadonlyFields($_POST, true);
 
@@ -83,6 +85,7 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 } elseif (isset($_POST['update'])) {
+    // form submitted (update)
     if (!$track::canUpdate()) {
         throw new AccessDeniedHttpException();
     }
@@ -123,6 +126,8 @@ if (isset($_POST["add"])) {
         }
         Html::redirect(Ticket::getFormURLWithID($_POST["id"]) . $toadd);
     }
+
+    // in case user can update the ticket but not read it, redirect to the ticket list
     Session::addMessageAfterRedirect(
         __s('You have been redirected because you no longer have access to this ticket'),
         true,
@@ -182,20 +187,6 @@ if (isset($_POST["add"])) {
     );
 
     Html::redirect(Ticket::getFormURLWithID($_POST["id"]));
-} elseif (isset($_POST['ola_delete'])) {
-    $track->check($_POST["id"], UPDATE);
-
-    $track->deleteLevelAgreement("OLA", $_POST["id"], $_POST['type'], $_POST['delete_date']);
-    Event::log(
-        $_POST["id"],
-        "ticket",
-        4,
-        "tracking",
-        //TRANS: %s is the user login
-        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
-    );
-
-    Html::redirect(Ticket::getFormURLWithID($_POST["id"]));
 } elseif (isset($_POST['addme_as_actor'])) {
     $id = (int) $_POST['id'];
     $track->check($id, READ);
@@ -234,6 +225,7 @@ if (isset($_POST["add"])) {
     Html::back();
 }
 
+// show form when editing a ticket
 $id = (int) $_GET['id'];
 if ($id > 0) {
     $available_options = ['_openfollowup'];

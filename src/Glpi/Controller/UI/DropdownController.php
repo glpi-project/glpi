@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,26 +32,34 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * Group_Ticket Class
- *
- * @since 0.85
- *
- * Relation between Groups and Tickets
- **/
-class Group_Ticket extends CommonITILActor
+namespace Glpi\Controller\UI;
+
+use Glpi\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+
+class DropdownController extends AbstractController
 {
-    // From CommonDBRelation
-    public static $itemtype_1 = Ticket::class;
-    public static $items_id_1 = 'tickets_id';
-    public static $itemtype_2 = Group::class;
-    public static $items_id_2 = 'groups_id';
-
-
-    public function post_purgeItem()
+    #[Route(
+        path: "/dropdown",
+        name: "glpi_ui_dropdown",
+    )]
+    public function __invoke(Request $request): Response
     {
-        Item_Ola::computeGroupAssigneeRemoval((int) $this->fields['tickets_id'], (int) $this->fields['groups_id']);
+        $itemtype = $request->query->getString('itemtype');
+        $fieldName = $request->query->getString('fieldname');
+        $selectedValue = $request->query->getInt('value', 0);
 
-        parent::post_purgeItem();
+        return $this->render('components/dropdown/dropdown.html.twig', [
+            'itemtype'  => $itemtype,
+            'fieldname' => $fieldName,
+            'selected_value' => $selectedValue,
+            'options' => [
+                'full_width' => true,
+                'no_label' => true,
+                'include_field' => false,
+            ],
+        ]);
     }
 }

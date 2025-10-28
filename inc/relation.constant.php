@@ -750,6 +750,7 @@ $RELATION = [
         'glpi_tickettasks'            => 'groups_id_tech',
         'glpi_users'                  => 'groups_id',
         'glpi_itilvalidationtemplates_targets' => 'groups_id',
+        'glpi_olas'                   => 'groups_id',
     ],
 
     'glpi_holidays' => [
@@ -1033,15 +1034,11 @@ $RELATION = [
         '_glpi_olalevelactions'   => 'olalevels_id',
         '_glpi_olalevelcriterias' => 'olalevels_id',
         '_glpi_olalevels_tickets' => 'olalevels_id',
-        'glpi_tickets'            => 'olalevels_id_ttr',
     ],
 
     'glpi_olas' => [
         'glpi_olalevels' => 'olas_id',
-        'glpi_tickets'   => [
-            'olas_id_ttr',
-            'olas_id_tto',
-        ],
+        '_glpi_items_olas' => 'olas_id',
     ],
 
     'glpi_operatingsystemarchitectures' => [

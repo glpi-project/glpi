@@ -40,7 +40,7 @@ use Override;
 use SLA;
 use SLM;
 
-final class SLATTRField extends SLMField
+final class SLATTRField extends SLAField
 {
     #[Override]
     public function getLabel(): string

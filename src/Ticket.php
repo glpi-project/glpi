@@ -47,6 +47,7 @@ use Glpi\RichText\UserMention;
 use Glpi\Search\DefaultSearchRequestInterface;
 use Glpi\Urgency;
 use Safe\DateTime;
+use Safe\Exceptions\DatetimeException;
 
 use function Safe\preg_match;
 use function Safe\preg_match_all;
@@ -55,6 +56,16 @@ use function Safe\strtotime;
 
 /**
  * Ticket Class
+ *
+ * Additionnal fields for $input add/update
+ *  - _olas_id : array of olas to associate with the ticket, used only if _la_update field is set
+ *  - _la_update : flag to know if _olas_id field must be handled. Do not handle unless it's true
+ *  - _la_append : flag to know if _olas_id must be appended to the existing olas without removing the existing ones
+ *
+ *  - _groups_id_assign : assign the ticket to a group
+ *  - _users_id_assign : assign the ticket to a user
+ *
+ * @phpstan-import-type ItemOlaData from Item_Ola
  **/
 class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 {
@@ -455,105 +466,65 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     /**
-     * Get Datas to be added for OLA add
-     *
-     * @param int    $olas_id      OLA id
-     * @param int    $entities_id  entity ID of the ticket
-     * @param string $date         begin date of the ticket
-     * @param int    $type         type of OLA
-     *
-     * @since 9.2 (before getDatasToAddOla without type parameter)
-     *
-     * @return array of datas to add in ticket
-     **/
-    public function getDatasToAddOLA($olas_id, $entities_id, $date, $type)
-    {
-
-        [$dateField, $olaField] = OLA::getFieldNames($type);
-
-        $data         = [];
-
-        $ola = new OLA();
-        if ($ola->getFromDB($olas_id)) {
-            $calendars_id = Entity::getUsedConfig(
-                'calendars_strategy',
-                $entities_id,
-                'calendars_id',
-                0
-            );
-            $ola->setTicketCalendar($calendars_id);
-            if ($ola->fields['type'] == SLM::TTR) {
-                $data["olalevels_id_ttr"] = OlaLevel::getFirstOlaLevel($olas_id);
-                $data['ola_ttr_begin_date'] = $date;
-            } elseif ($ola->fields['type'] == SLM::TTO) {
-                $data['ola_tto_begin_date'] = $date;
-            }
-            // Compute time_to_own
-            $data['ola_waiting_duration'] = (int) ($this->fields['ola_waiting_duration'] ?? 0);
-            $data[$dateField]             = $ola->computeDate($date, $data['ola_waiting_duration']);
-        } else {
-            $data["olalevels_id_ttr"]     = 0;
-            $data[$olaField]              = 0;
-            $data['ola_waiting_duration'] = 0;
-        }
-        return $data;
-    }
-
-
-    /**
      * Delete Level Agreement for the ticket
      *
-     * @since 9.2
+     * - update relataed fields in ticket ($laType = SLA only)
+     *  - remove Item_Olas
+     *  - OlaLevel_Ticket
      *
-     * @param string  $laType (SLA | OLA)
+     * @param class-string<LevelAgreement> $laType
      * @param int $la_id the sla/ola id
      * @param SLM::TTR|SLM::TTO $subtype (SLM::TTR | SLM::TTO) TODO: use a real type (enum)
      * @param bool    $delete_date (default false)
      *
      * @return bool
-     **/
+     * @since 9.2
+     */
     public function deleteLevelAgreement($laType, $la_id, $subtype, $delete_date = false)
     {
-        switch ($laType) {
-            case "SLA":
-                $prefix        = "sla";
-                $prefix_ticket = "";
-                $level_ticket  = new SlaLevel_Ticket();
-                break;
-            case "OLA":
-                $prefix        = "ola";
-                $prefix_ticket = "internal_";
-                $level_ticket  = new OlaLevel_Ticket();
-                break;
-            default:
-                return false;
+        if ($laType === 'OLA') {
+            // delete Item_Ola, there is just one item_ola for one ticket + ola
+            $item_ola = new Item_Ola();
+            if (!$item_ola->deleteByCriteria(['olas_id' => (int) $la_id])) {
+                throw new RuntimeException('Unable to delete Item_Ola #' . $la_id);
+            }
+
+            // delete level agreement level to do
+            $level_ticket  = new OlaLevel_Ticket();
+            $level_ticket->deleteForTicket($la_id, $subtype);
+
+            return true;
+        } elseif ($laType === 'SLA') {
+            switch ($subtype) {
+                case SLM::TTR:
+                    $input['slas_id_ttr'] = 0;
+                    if ($delete_date) {
+                        $input['time_to_resolve'] = '';
+                    }
+                    break;
+
+                case SLM::TTO:
+                    $input['slas_id_tto'] = 0;
+                    if ($delete_date) {
+                        $input['time_to_own'] = '';
+                    }
+                    break;
+                default:
+                    return false;
+            }
+
+            $input['sla_waiting_duration'] = 0;
+            $input['id'] = $la_id;
+
+            $level_ticket  = new SlaLevel_Ticket();
+
+            $level_ticket->deleteForTicket($la_id, $subtype);
+
+            return $this->update($input);
+        } else {
+            throw new Exception('invalid level type');
         }
 
-        $input = [];
-        switch ($subtype) {
-            case SLM::TTR:
-                $input[$prefix . 's_id_ttr'] = 0;
-                if ($delete_date) {
-                    $input[$prefix_ticket . 'time_to_resolve'] = '';
-                }
-                break;
-
-            case SLM::TTO:
-                $input[$prefix . 's_id_tto'] = 0;
-                if ($delete_date) {
-                    $input[$prefix_ticket . 'time_to_own'] = '';
-                }
-                break;
-            default:
-                return false;
-        }
-
-        $input[$prefix . '_waiting_duration'] = 0;
-        $input['id'] = $la_id;
-
-        $level_ticket->deleteForTicket($la_id, $subtype);
-
-        return $this->update($input);
     }
 
 
@@ -754,13 +725,9 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
                     case OLA::class:
                         $nb = countElementsInTable(
-                            'glpi_tickets',
+                            Item_Ola::getTable(),
                             [
-                                'OR'  => [
-                                    'olas_id_tto'  => $item->getID(),
-                                    'olas_id_ttr'  => $item->getID(),
-                                ],
-                                'is_deleted' => 0,
+                                'olas_id'  => $item->getID(),
                             ]
                         );
                         break;
@@ -938,7 +905,10 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
     public function prepareInputForUpdate($input)
     {
+        $this->failsWithOlaRemovedFields($input); // td à la fois fails et trarsform 2 lignes plus bas ?
+
         $input = $this->transformActorsInput($input);
+        $input = $this->transformOlasInputForBackwardCompatibility($input);
 
         // Get ticket : need for comparison
         $this->getFromDB($input['id']);
@@ -1021,12 +991,9 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             foreach ([SLM::TTR, SLM::TTO] as $slmType) {
                 [$dateField, $slaField] = SLA::getFieldNames($slmType);
                 unset($input[$dateField], $input[$slaField]);
-                [$dateField, $olaField] = OLA::getFieldNames($slmType);
-                unset($input[$dateField], $input[$olaField]);
             }
         }
 
-        //must be handled here for tickets. @see CommonITILObject::prepareInputForUpdate()
         $input = $this->handleTemplateFields($input);
         if ($input === false) {
             return false;
@@ -1165,100 +1132,9 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     /**
-     *  OLA affect by rules : reset internal_time_to_resolve and internal_time_to_own
-     *  Manual OLA defined : reset internal_time_to_resolve and internal_time_to_own
-     *  No manual OLA and due date defined : reset auto OLA
-     *
-     *  @since 9.1
-     *
-     * @param int $type
-     * @param array $input
-     * @param array $manual_olas_id
-     *
-     * @return void
-     */
-    public function olaAffect($type, &$input, $manual_olas_id)
-    {
-
-        [$dateField, $olaField] = OLA::getFieldNames($type);
-
-        // Restore olas
-        if (
-            isset($manual_olas_id[$type])
-            && !isset($input['_' . $olaField])
-        ) {
-            $input[$olaField] = $manual_olas_id[$type];
-        }
-
-        // Ticket update
-        if (isset($this->fields['id']) && $this->fields['id'] > 0) {
-            if (
-                !isset($manual_olas_id[$type])
-                && isset($input[$olaField]) && ($input[$olaField] > 0)
-                && ($input[$olaField] != $this->fields[$olaField])
-            ) {
-                if (isset($input[$dateField])) {
-                    // Unset due date
-                    unset($input[$dateField]);
-                }
-            }
-
-            if (
-                isset($input[$olaField]) && ($input[$olaField] > 0)
-                && ($input[$olaField] != $this->fields[$olaField]
-                 || isset($input['_' . $olaField]))
-            ) {
-                $date = $_SESSION['glpi_currenttime'];
-
-                // Get datas to initialize OLA and set it
-                $ola_data = $this->getDatasToAddOLA(
-                    $input[$olaField],
-                    $this->fields['entities_id'],
-                    $date,
-                    $type
-                );
-                if (count($ola_data)) {
-                    foreach ($ola_data as $key => $val) {
-                        $input[$key] = $val;
-                    }
-                }
-            }
-        } else { // Ticket add
-            if (
-                !isset($manual_olas_id[$type])
-                && isset($input[$dateField]) && ($input[$dateField] != 'NULL')
-            ) {
-                // Valid due date
-                if ($input[$dateField] >= $input['date']) {
-                    if (isset($input[$olaField])) {
-                        unset($input[$olaField]);
-                    }
-                } else {
-                    // Unset due date
-                    unset($input[$dateField]);
-                }
-            }
-
-            if (isset($input[$olaField]) && ($input[$olaField] > 0)) {
-                // Get datas to initialize OLA and set it
-                $ola_data = $this->getDatasToAddOLA(
-                    $input[$olaField],
-                    $input['entities_id'],
-                    $input['date'],
-                    $type
-                );
-                if (count($ola_data)) {
-                    foreach ($ola_data as $key => $val) {
-                        $input[$key] = $val;
-                    }
-                }
-            }
-        }
-    }
-
-
-    /**
      * Manage SLA level escalation
+     *
+     * Set escalation level for the ticket (or delete it)
      *
      * @since 9.1
      *
@@ -1288,23 +1164,29 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     /**
-     * Manage OLA level escalation
+     *  Manage OLA level escalation
      *
-     * @since 9.1
+     * - add level in todo table XLaLevel_Ticket
+     * - replayForTicket
      *
-     * @param int $slas_id
+     * Method requires levels to be cleared before - @see OLA::delete(All)LevelsToDo($ticket)
+     * @param int $olas_id
      *
      * @return void
+     *
+     * @since 9.1
      */
-    public function manageOlaLevel($slas_id)
+    public function manageOlaLevel($olas_id)
     {
-
         // Add first level in working table
-        $olalevels_id = OlaLevel::getFirstOlaLevel($slas_id);
+        $olalevels_id = OlaLevel::getFirstOlaLevel($olas_id);
 
         $ola = new OLA();
-        if ($ola->getFromDB($slas_id)) {
-            $ola->clearInvalidLevels($this->fields['id']);
+        $ola_fetched = $ola->getFromDB($olas_id);
+        if (!$ola_fetched) {
+            throw new Exception('Ola not found #: ' . $olas_id);
+        }
+        if ($olalevels_id) {
             $calendars_id = Entity::getUsedConfig(
                 'calendars_strategy',
                 $this->fields['entities_id'],
@@ -1312,11 +1194,10 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 0
             );
             $ola->setTicketCalendar($calendars_id);
-            $ola->addLevelToDo($this, $olalevels_id);
+            $ola->addLevelToDo($this, $olalevels_id, $olas_id);
         }
-        OlaLevel_Ticket::replayForTicket($this->getID(), $ola->getField('type'));
+        OlaLevel_Ticket::replayForTicket($this->getID(), $ola->fields['type']);
     }
-
 
     public function pre_updateInDB()
     {
@@ -1395,6 +1276,16 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     {
         global $CFG_GLPI;
 
+        // $new_assigned_groups & $new_assigned_users are used to recompute OLA
+        $new_assigned_groups = $this->input['_groups_id_assign'] ?? [];
+        if (!is_array($new_assigned_groups)) {
+            $new_assigned_groups = [$new_assigned_groups];
+        }
+        $new_assigned_users = $this->input['_users_id_assign'] ?? [];
+        if (!is_array($new_assigned_users)) {
+            $new_assigned_users = [$new_assigned_users];
+        }
+
         parent::post_updateItem($history);
 
         // Put same status on duplicated tickets when solving or closing (autoclose on solve)
@@ -1415,7 +1306,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             $donotif = true;
         }
 
-        // Manage SLA / OLA Level : add actions
+        // Update SLA
         foreach ([SLM::TTR, SLM::TTO] as $slmType) {
             [$dateField, $slaField] = SLA::getFieldNames($slmType);
             if (
@@ -1424,18 +1315,15 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             ) {
                 $this->manageSlaLevel($this->fields[$slaField]);
             }
-
-            [$dateField, $olaField] = OLA::getFieldNames($slmType);
-            if (
-                in_array($olaField, $this->updates)
-                && ($this->fields[$olaField] > 0)
-            ) {
-                $this->manageOlaLevel($this->fields[$olaField]);
-            }
         }
 
+        $this->updateOlaAssociations(false);
+        if (!isset($this->input['_auto_update'])) {
+            $this->recomputeOlas($new_assigned_groups, $new_assigned_users);
+        }
+
+        // Update Ticket Tco
         if (count($this->updates)) {
-            // Update Ticket Tco
             if (
                 in_array("actiontime", $this->updates)
                 || in_array("cost_time", $this->updates)
@@ -1523,11 +1411,15 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
     public function prepareInputForAdd($input)
     {
+        $this->failsWithOlaRemovedFields($input); // todo même remarque fails ici et transform plus bas
+
         // Standard clean datas
         $input =  parent::prepareInputForAdd($input);
         if ($input === false) {
             return false;
         }
+
+        $input = $this->transformOlasInputForBackwardCompatibility($input);
 
         if (!isset($input["requesttypes_id"])) {
             $input["requesttypes_id"] = RequestType::getDefault('helpdesk');
@@ -1583,8 +1475,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             foreach ([SLM::TTR, SLM::TTO] as $slmType) {
                 [$dateField, $slaField] = SLA::getFieldNames($slmType);
                 unset($input[$dateField], $input[$slaField]);
-                [$dateField, $olaField] = OLA::getFieldNames($slmType);
-                unset($input[$dateField], $input[$olaField]);
             }
         }
 
@@ -1751,11 +1641,9 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             if (isset($this->input[$slaField]) && ($this->input[$slaField] > 0)) {
                 $this->manageSlaLevel($this->input[$slaField]);
             }
-            [$dateField, $olaField] = OLA::getFieldNames($slmType);
-            if (isset($this->input[$olaField]) && ($this->input[$olaField] > 0)) {
-                $this->manageOlaLevel($this->input[$olaField]);
-            }
         }
+
+        $this->updateOlaAssociations(true);
 
         // Add project task link if needed
         if (isset($this->input['_projecttasks_id'])) {
@@ -1978,6 +1866,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 && !$this->isAlreadyTakenIntoAccount()
                 && ($this->canTakeIntoAccount() || isCommandLine())
             ) {
+                $this->recomputeOlas();
                 $this->update(
                     [
                         'id'                         => $ID,
@@ -1989,6 +1878,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             }
 
             parent::updateDateMod($ID, $no_stat_computation, $users_id_lastupdater);
+            $this->recomputeOlas();
         }
     }
 
@@ -2579,7 +2469,6 @@ JAVASCRIPT;
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
-
     public function rawSearchOptions()
     {
         global $DB;
@@ -2639,68 +2528,8 @@ JAVASCRIPT;
             'computation'        => self::generateSLAOLAComputation('time_to_own'),
         ];
 
-        $tab[] = [
-            'id'                 => '180',
-            'table'              => $this->getTable(),
-            'field'              => 'internal_time_to_resolve',
-            'name'               => __('Internal time to resolve'),
-            'datatype'           => 'datetime',
-            'maybefuture'        => true,
-            'massiveaction'      => false,
-            'additionalfields'   => ['solvedate', 'status'],
-        ];
-
-        $tab[] = [
-            'id'                 => '181',
-            'table'              => $this->getTable(),
-            'field'              => 'internal_time_to_resolve',
-            'name'               => __('Internal time to resolve + Progress'),
-            'massiveaction'      => false,
-            'nosearch'           => true,
-            'additionalfields'   => ['status'],
-        ];
-
-        $tab[] = [
-            'id'                 => '182',
-            'table'              => $this->getTable(),
-            'field'              => 'ola_ttr_is_late',
-            'name'               => __('Internal time to resolve exceeded'),
-            'datatype'           => 'bool',
-            'massiveaction'      => false,
-            'computation'        => self::generateSLAOLAComputation('internal_time_to_resolve'),
-        ];
-
-        $tab[] = [
-            'id'                 => '185',
-            'table'              => $this->getTable(),
-            'field'              => 'internal_time_to_own',
-            'name'               => __('Internal time to own'),
-            'datatype'           => 'datetime',
-            'maybefuture'        => true,
-            'massiveaction'      => false,
-            'additionalfields'   => ['date', 'status', 'takeintoaccount_delay_stat', 'takeintoaccountdate'],
-        ];
-
-        $tab[] = [
-            'id'                 => '186',
-            'table'              => $this->getTable(),
-            'field'              => 'internal_time_to_own',
-            'name'               => __('Internal time to own + Progress'),
-            'massiveaction'      => false,
-            'nosearch'           => true,
-            'additionalfields'   => ['status'],
-        ];
-
-        $tab[] = [
-            'id'                 => '187',
-            'table'              => 'glpi_tickets',
-            'field'              => 'ola_tto_is_late',
-            'name'               => __('Internal time to own exceeded'),
-            'datatype'           => 'bool',
-            'massiveaction'      => false,
-            'computation'        => self::generateSLAOLAComputation('internal_time_to_own'),
-        ];
-
+        // Minimal OLA/SLA TTO/TTR due time
+        // Label is wrong, nothing to do with escalation level, and nothing to do with future (can give date in the past)
         $max_date = new QueryExpression('99999999');
         $tab[] = [
             'id'                 => '188',
@@ -2711,31 +2540,28 @@ JAVASCRIPT;
             'usehaving'          => true,
             'maybefuture'        => true,
             'massiveaction'      => false,
-            // Get least value from TTO/TTR fields:
+            // Get the minimal date
+            // SLA
             // - use TTO fields only if ticket not already taken into account,
             // - use TTR fields only if ticket not already solved,
+            // OLA
+            // - no check, we rely on field value.
+            //
             // - replace NULL or not kept values with 99999999 to be sure that they will not be returned by the LEAST function,
             // - replace 99999999 by empty string to keep only valid values.
-            'computation'        => QueryFunction::replace(
+            'computation' => QueryFunction::replace(
                 expression: QueryFunction::least([
                     QueryFunction::if(
                         condition: ['TABLE.takeintoaccount_delay_stat' => ['<=', 0]],
                         true_expression: QueryFunction::coalesce(['TABLE.time_to_own', $max_date]),
                         false_expression: $max_date
                     ),
-                    QueryFunction::if(
-                        condition: ['TABLE.takeintoaccount_delay_stat' => ['<=', 0]],
-                        true_expression: QueryFunction::coalesce(['TABLE.internal_time_to_own', $max_date]),
-                        false_expression: $max_date
-                    ),
+                    QueryFunction::coalesce([
+                        new QueryExpression((new QuerySubQuery(['FROM' => Item_Ola::getTable(), 'SELECT' => QueryFunction::min('due_time')]))->getQuery()), $max_date,
+                    ]),
                     QueryFunction::if(
                         condition: ['TABLE.solvedate' => null],
                         true_expression: QueryFunction::coalesce(['TABLE.time_to_resolve', $max_date]),
-                        false_expression: $max_date
-                    ),
-                    QueryFunction::if(
-                        condition: ['TABLE.solvedate' => null],
-                        true_expression: QueryFunction::coalesce(['TABLE.internal_time_to_resolve', $max_date]),
                         false_expression: $max_date
                     ),
                 ]),
@@ -2796,6 +2622,7 @@ JAVASCRIPT;
 
         $tab = array_merge($tab, $this->getSearchOptionsActors());
 
+        // --- SLA
         $tab[] = [
             'id'                 => 'sla',
             'name'               => __('SLA'),
@@ -2847,39 +2674,155 @@ JAVASCRIPT;
             'forcegroupby'       => true,
         ];
 
+        // --- OLA
         $tab[] = [
             'id'                 => 'ola',
             'name'               => __('OLA'),
         ];
 
+        // associated OLA TTO names
         $tab[] = [
             'id'                 => '190',
             'table'              => 'glpi_olas',
             'field'              => 'name',
-            'linkfield'          => 'olas_id_tto',
-            'name'               => __('OLA') . ' ' . __('Internal time to own'),
+            'name'               =>  __('OLA') . ' ' . __('time to own'),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
-                'condition'          => ['NEWTABLE.type' => SLM::TTO],
+                'beforejoin'         => [
+                    'table'              => Item_Ola::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.ola_type' => SLM::TTO],
+                    ],
+                ],
             ],
-            'condition'          => ['glpi_olas.type' => SLM::TTO],
+            'forcegroupby'       => true,
+            'condition'          => ['type' => SLM::TTO],
         ];
 
+        // associated OLA TTO due time
+        $tab[] = [
+            'id' => '185',
+            'table' => Item_Ola::getTable(),
+            'field' => 'due_time',
+            'name' => __('OLA') . ' ' . __('time to own') . ' - ' . __('due time'),
+            'datatype'           => 'datetime',
+            'massiveaction' => false,
+            'additionalfields' => ['TABLE.status', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'],
+            'joinparams' => [
+                'jointype'  => 'itemtype_item',
+                'condition' => ['NEWTABLE.ola_type' => SLM::TTO,],
+            ],
+            'forcegroupby' => true,
+        ];
+
+        // OLA TTO due time (+ Progress)
+        // because filtering on items_olas is required, by type, we need to use a beforejoin
+        $tab[] = [
+            'id' => '186',
+            'table' => Item_Ola::getTable(),
+            'field' => 'due_time',
+            'name' => __('OLA') . ' ' . __('time to own') . ' - ' . __('due time + progress'),
+            'massiveaction' => false,
+            'nosearch'           => true,
+            'additionalfields' => ['TABLE.status', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'],
+            'joinparams' => [
+                'jointype'  => 'itemtype_item',
+                'condition' => ['NEWTABLE.ola_type' => SLM::TTO,],
+            ],
+            'forcegroupby' => true,
+        ];
+
+        // OLA TTO exceeded
+        $tab[] = [
+            'id'                 => '187',
+            'table'              => Item_Ola::getTable(),
+            'field'              => 'is_late',
+            'name'               => __('OLA') . ' ' . __('time to own exceeded'),
+            'datatype'           => 'bool',
+            'massiveaction'      => false,
+            'computation'        => self::generateSLAOLAComputation('internal_time_to_own'),
+            'joinparams' => [
+                'jointype'  => 'itemtype_item',
+                'condition' => ['NEWTABLE.ola_type' => SLM::TTO,],
+            ],
+            'forcegroupby'       => true,
+            'usehaving' => true, // needed because of generateSLAOLAComputation() use a group function (max).
+        ];
+
+        // associated OLA TTR names
         $tab[] = [
             'id'                 => '191',
             'table'              => 'glpi_olas',
             'field'              => 'name',
-            'linkfield'          => 'olas_id_ttr',
-            'name'               => __('OLA') . ' ' . __('Internal time to resolve'),
+            'name'               => __('OLA') . ' ' . __('time to resolve'),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
-                'condition'          => ['NEWTABLE.type' => SLM::TTR],
+                'beforejoin'         => [
+                    'table'              => Item_Ola::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.ola_type' => SLM::TTR],
+                    ],
+                ],
             ],
-            'condition'          => ['glpi_olas.type' => SLM::TTR],
+            'forcegroupby'       => true,
+            'condition'          => ['type' => SLM::TTR],
         ];
 
+        // associated OLA TTR due time
+        $tab[] = [
+            'id'                 => '180',
+            'table'              => Item_Ola::getTable(),
+            'field'              => 'due_time',
+            'name'               => __('OLA') . ' ' . __('time to resolve') . ' - ' . __('due time'),
+            'massiveaction'      => false,
+            'datatype'           => 'datetime',
+            'additionalfields' => ['TABLE.status', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'],
+            'joinparams' => [
+                'jointype'  => 'itemtype_item',
+                'condition' => ['NEWTABLE.ola_type' => SLM::TTR,],
+            ],
+            'forcegroupby'       => true,
+        ];
+
+        // OLA TTR due time (+ Progress)
+        $tab[] = [
+            'id' => '181',
+            'table' => Item_Ola::getTable(),
+            'field' => 'due_time',
+            'datatype' => 'datetime',
+            'name' => __('OLA') . ' ' . __('time to resolve') . ' - ' . __('due time + progress'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'additionalfields' => ['TABLE.status', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'],
+            'joinparams' => [
+                'jointype'  => 'itemtype_item',
+                'condition' => ['NEWTABLE.ola_type' => SLM::TTR,],
+            ],
+            'forcegroupby' => true,
+        ];
+
+        // OLA TTR exceeded
+        $tab[] = [
+            'id'                 => '182',
+            'table'              => Item_Ola::getTable(),
+            'field'              => 'is_late',
+            'name'               => __('OLA') . ' ' . __('time to resolve exceeded'),
+            'datatype'           => 'bool',
+            'massiveaction'      => false,
+            'computation'        => self::generateSLAOLAComputation('internal_time_to_resolve'),
+            'joinparams' => [
+                'jointype'  => 'itemtype_item',
+                'condition' => ['NEWTABLE.ola_type' => SLM::TTR,],
+            ],
+            'forcegroupby'       => true,
+            'usehaving' => true, // needed because of generateSLAOLAComputation() use a group function (max).
+        ];
+
+        // Ola levels
         $tab[] = [
             'id'                 => '192',
             'table'              => 'glpi_olalevels',
@@ -3202,7 +3145,6 @@ JAVASCRIPT;
         return $tab;
     }
 
-
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -3227,6 +3169,7 @@ JAVASCRIPT;
 
                 return htmlescape(sprintf(__('%s hours %s minutes'), floor($time / 3600), floor(($time % 3600) / 60)));
         }
+
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
@@ -3245,7 +3188,6 @@ JAVASCRIPT;
         }
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
-
 
     /**
      * Dropdown of ticket type
@@ -3524,10 +3466,9 @@ JAVASCRIPT;
             'time_to_own'               => 'NULL',
             'slas_id_tto'               => 0,
             'slas_id_ttr'               => 0,
-            'internal_time_to_resolve'  => 'NULL',
-            'internal_time_to_own'      => 'NULL',
-            'olas_id_tto'               => 0,
-            'olas_id_ttr'               => 0,
+            '_olas_id'                  => [],
+            '_olas_id_ttr'              => [], // needed to handle field in Ticket::setPredefinedFields(), no other uses
+            '_olas_id_tto'              => [], // needed to handle field in Ticket::setPredefinedFields(), no other uses
             '_add_validation'           => 0,
             '_validation_targets'       => [],
             'type'                      => $type,
@@ -3660,6 +3601,7 @@ JAVASCRIPT;
                 //Allow overriding the default values
                 $options['_skip_promoted_fields'] = true;
             }
+            $options['_olas_id'] = []; // $this->setPredefinedFields() needs it
         }
 
         // Default check
@@ -3727,6 +3669,7 @@ JAVASCRIPT;
         );
 
         // override current fields in options with template fields and return the array of these predefined fields
+        $this->fields['_olas_id'] = array_column($this->getOlasData(), 'olas_id');
         $predefined_fields = $this->setPredefinedFields($tt, $options, self::getDefaultValues());
 
         // check right used for this ticket
@@ -3756,8 +3699,11 @@ JAVASCRIPT;
             $canpriority = false;
         }
 
-        $sla = new SLA();
-        $ola = new OLA();
+        $ttr_sla = new SLA();
+        $ttr_sla->getFromDB($this->fields['slas_id_ttr']);
+
+        $tto_sla = new SLA();
+        $tto_sla->getFromDB($this->fields['slas_id_tto']);
 
         if ($this->isNewItem()) {
             $options['_canupdate'] = Session::haveRight('ticket', CREATE);
@@ -3793,8 +3739,8 @@ JAVASCRIPT;
             'itiltemplate'              => $tt,
             'predefined_fields'         => Toolbox::prepareArrayForInput($predefined_fields),
             'item_commonitilobject'     => $item_ticket,
-            'sla'                       => $sla,
-            'ola'                       => $ola,
+            'ttr_sla'                   => $ttr_sla,
+            'tto_sla'                   => $tto_sla,
             'canupdate'                 => $canupdate,
             'can_requester'             => $can_requester,
             'canpriority'               => $canpriority,
@@ -5010,6 +4956,15 @@ JAVASCRIPT;
             ],
         ];
 
+        $criteria['LEFT JOIN'][Item_Ola::getTable()] = [
+            'ON' => [
+                self::getTable() => 'id',
+                Item_Ola::getTable() => 'items_id',
+                ['AND' => ['glpi_items_olas.itemtype' => ['=', Ticket::class]],
+                ],
+            ],
+        ];
+
         return $criteria;
     }
 
@@ -5438,46 +5393,53 @@ JAVASCRIPT;
         return parent::getValueToSelect($field_id_or_search_options, $name, $values, $options);
     }
 
+    /**
+     * @return void
+     */
     public function showStatsDates()
     {
-        $now                      = time();
-        $date_creation            = strtotime($this->fields['date']);
+        // function to get strtotime safely, do not use if string is supposed to always be defined
+        $safe_get_strtime = static function ($date_string): ?int {
+            try {
+                return strtotime((string) $date_string);
+            } catch (DatetimeException $e) {
+                return null;
+            }
+        };
+        $now                      = strtotime(Session::getCurrentTime());
+        $date_creation            = $safe_get_strtime($this->fields['date']);
         // Tickets created before 10.0.4 do not have takeintoaccountdate field, use old and incorrect computation for those cases
-        $date_takeintoaccount     = 0;
-        if ($this->fields['takeintoaccountdate'] !== null) {
-            $date_takeintoaccount = strtotime($this->fields['takeintoaccountdate']);
-        } elseif ($this->fields['takeintoaccount_delay_stat'] > 0) {
+        $date_takeintoaccount     = $safe_get_strtime($this->fields['takeintoaccountdate']);
+        if ($date_takeintoaccount === 0 && $this->fields['takeintoaccount_delay_stat'] > 0 && $date_creation > 0) {
             $date_takeintoaccount = $date_creation + $this->fields['takeintoaccount_delay_stat'];
         }
+        $time_to_own              = $safe_get_strtime($this->fields['time_to_own']);
 
-        $internal_time_to_own     = !empty($this->fields['internal_time_to_own'])
-            ? strtotime($this->fields['internal_time_to_own'])
-            : null;
-        $time_to_own              = !empty($this->fields['time_to_own'])
-            ? strtotime($this->fields['time_to_own'])
-            : null;
-        $internal_time_to_resolve = !empty($this->fields['internal_time_to_resolve'])
-            ? strtotime($this->fields['internal_time_to_resolve'])
-            : null;
-        $time_to_resolve          = !empty($this->fields['time_to_resolve'])
-            ? strtotime($this->fields['time_to_resolve'])
-            : null;
-        $solvedate                = !empty($this->fields['solvedate'])
-            ? strtotime($this->fields['solvedate'])
-            : null;
-        $closedate                = !empty($this->fields['closedate'])
-            ? strtotime($this->fields['closedate'])
-            : null;
+        $dates_olas = [];
+        $ola = new OLA();
+        foreach ($this->getOlasData() as $ola_data) {
+            $ola->getFromDB($ola_data['olas_id']);
 
+            $due_time = $safe_get_strtime($ola_data['due_time']);
+            $key = $due_time . '_ola_' . $ola_data['olas_id'] . '_due_time';
+            $label = __('OLA') . ' ' . OLA::getOneTypeName($ola_data['type']) . ' ' . $ola_data['name'] . ' ' . __('due time');
+            $label .= "<a href=\"{$ola->getLinkURL()}\"><i class=\"ti ti-stopwatch slt\" title=\"{$ola->getName()}\"></i></a>";
+
+            $dates_olas[$key] = [
+                'timestamp' => $due_time,
+                'label'     => $label,
+                'class'     => $ola_data['is_late'] ? 'passed' : 'checked',
+            ];
+
+        }
+        $time_to_resolve          = $safe_get_strtime($this->fields['time_to_resolve']);
+        $solvedate                = $safe_get_strtime($this->fields['solvedate']);
+        $closedate                = $safe_get_strtime($this->fields['closedate']);
         $goal_takeintoaccount     = ($date_takeintoaccount > 0 ? $date_takeintoaccount : $now);
         $goal_solvedate           = ($solvedate > 0 ? $solvedate : $now);
 
         $sla = new SLA();
-        $ola = new OLA();
-        $sla_tto_link
-        = $sla_ttr_link
-        = $ola_tto_link
-        = $ola_ttr_link = "";
+        $sla_tto_link = $sla_ttr_link = "";
 
         if ($sla->getFromDB($this->fields['slas_id_tto'])) {
             $sla_tto_link = "<a href='" . htmlescape($sla->getLinkURL()) . "'>
@@ -5487,16 +5449,9 @@ JAVASCRIPT;
             $sla_ttr_link = "<a href='" . htmlescape($sla->getLinkURL()) . "'>
                           <i class='ti ti-stopwatch slt' title='" . htmlescape($sla->getName()) . "'></i></a>";
         }
-        if ($ola->getFromDB($this->fields['olas_id_tto'])) {
-            $ola_tto_link = "<a href='" . htmlescape($ola->getLinkURL()) . "'>
-                          <i class='ti ti-stopwatch slt' title='" . htmlescape($ola->getName()) . "'></i></a>";
-        }
-        if ($ola->getFromDB($this->fields['olas_id_ttr'])) {
-            $ola_ttr_link = "<a href='" . htmlescape($ola->getLinkURL()) . "'>
-                          <i class='ti ti-stopwatch slt' title='" . htmlescape($ola->getName()) . "'></i></a>";
-        }
 
-        $dates = [
+        $dates = $dates_olas;
+        $dates = array_merge($dates, [
             $date_creation . '_date_creation' => [
                 'timestamp' => $date_creation,
                 'label'     => __('Opening date'),
@@ -5507,28 +5462,12 @@ JAVASCRIPT;
                 'label'     => __('Take into account'),
                 'class'     => 'checked',
             ],
-            $internal_time_to_own . '_internal_time_to_own' => [
-                'timestamp' => $internal_time_to_own,
-                'label'     => __('Internal time to own') . " " . $ola_tto_link,
-                'class'     => ($internal_time_to_own < $goal_takeintoaccount
-                               ? 'passed' : '') . " "
-                           . ($date_takeintoaccount != ''
-                               ? 'checked' : ''),
-            ],
             $time_to_own . '_time_to_own' => [
                 'timestamp' => $time_to_own,
                 'label'     => __('Time to own') . " " . $sla_tto_link,
                 'class'     => ($time_to_own < $goal_takeintoaccount
                                ? 'passed' : '') . " "
                            . ($date_takeintoaccount != ''
-                               ? 'checked' : ''),
-            ],
-            $internal_time_to_resolve . '_internal_time_to_resolve' => [
-                'timestamp' => $internal_time_to_resolve,
-                'label'     => __('Internal time to resolve') . " " . $ola_ttr_link,
-                'class'     => ($internal_time_to_resolve < $goal_solvedate
-                               ? 'passed' : '') . " "
-                           . ($solvedate != ''
                                ? 'checked' : ''),
             ],
             $time_to_resolve . '_time_to_resolve' => [
@@ -5549,7 +5488,7 @@ JAVASCRIPT;
                 'label'     => __('Closing date'),
                 'class'     => 'end',
             ],
-        ];
+        ]);
 
         Html::showDatesTimelineGraph([
             'title'   => _n('Date', 'Dates', Session::getPluralNumber()),
@@ -5564,17 +5503,21 @@ JAVASCRIPT;
 
         // add SLA/OLA (for business rules)
         if (!$this->isNewItem()) {
+            // sla
             foreach ([SLM::TTR, SLM::TTO] as $slmType) {
                 [$dateField, $slaField] = SLA::getFieldNames($slmType);
                 if (!isset($input[$slaField]) && isset($this->fields[$slaField]) && $this->fields[$slaField] > 0) {
                     $input[$slaField] = $this->fields[$slaField];
                 }
-                [$dateField, $olaField] = OLA::getFieldNames($slmType);
-                if (!isset($input[$olaField]) && isset($this->fields[$olaField]) && $this->fields[$olaField] > 0) {
-                    $input[$olaField] = $this->fields[$olaField];
-                }
             }
         }
+
+        // ola - currently associated ola
+        // if $input_['_olas_id'] + _la_update is set, we are updating/adding ola
+        // otherwise, use the current associated ola data
+        $input['_olas_id_rule_criteria'] = (isset($input['_la_update']) && isset($input['_olas_id']))
+            ? $input['_olas_id']
+            : array_column($this->getOlasData(), 'olas_id');
     }
 
     /**
@@ -6188,16 +6131,10 @@ JAVASCRIPT;
 
         // Business Rules do not override manual SLA and OLA
         $manual_slas_id = [];
-        $manual_olas_id = [];
         foreach ([SLM::TTR, SLM::TTO] as $slmType) {
             [$dateField, $slaField] = SLA::getFieldNames($slmType);
             if (isset($input[$slaField]) && ($input[$slaField] > 0)) {
                 $manual_slas_id[$slmType] = $input[$slaField];
-            }
-
-            [$dateField, $olaField] = OLA::getFieldNames($slmType);
-            if (isset($input[$olaField]) && ($input[$olaField] > 0)) {
-                $manual_olas_id[$slmType] = $input[$olaField];
             }
         }
 
@@ -6213,14 +6150,13 @@ JAVASCRIPT;
                 unset($input['_users_id_requester_notif']);
             }
         }
-        if (!isset($input['_skip_sla_assign']) || $input['_skip_sla_assign'] === false) {
-            // Manage SLA / OLA asignment
-            // Manual SLA / OLA defined : reset due date
-            // No manual SLA / OLA and due date defined : reset auto SLA / OLA
-            foreach ([SLM::TTR, SLM::TTO] as $slmType) {
-                $this->slaAffect($slmType, $input, $manual_slas_id);
-                $this->olaAffect($slmType, $input, $manual_olas_id);
-            }
+
+        // @todo pas besoin de if (!isset($input['_skip_sla_assign']) || $input['_skip_sla_assign'] === false) ?
+        // Manage SLA asignment
+        // Manual SLA defined : reset due date
+        // No manual SLA and due date defined : reset auto SLA
+        foreach ([SLM::TTR, SLM::TTO] as $slmType) {
+            $this->slaAffect($slmType, $input, $manual_slas_id);
         }
     }
 
@@ -6284,12 +6220,7 @@ JAVASCRIPT;
                 break;
 
             case $item instanceof OLA:
-                $restrict[] = [
-                    'OR' => [
-                        'olas_id_tto'  => $item->getID(),
-                        'olas_id_ttr'  => $item->getID(),
-                    ],
-                ];
+                $restrict['glpi_items_olas.olas_id'] = $item->getID();
                 break;
 
             case $item instanceof Supplier:
@@ -6338,6 +6269,220 @@ JAVASCRIPT;
         }
 
         return $restrict;
+    }
+
+    /**
+     * Ticket Olas data from database if exists or an empty array
+     *
+     * Get currently associated Ola from database
+     * Data from ola + item_ola + custom data
+     *
+     * @return array<ItemOlaData>
+     */
+    public function getOlasData(): array
+    {
+        return $this->isNewItem()
+            ? []
+            : (new Item_Ola())->getDataFromDBForTicket($this);
+    }
+
+    /**
+     * Olas data from form input
+     *
+     * Unlike getOlasData(), it relies on $this->fields['_olas_id'] field because the field could be filled by a template.
+     *
+     * @return array<ItemOlaData>
+     *
+     * @used-by templates/components/itilobject/service_levels.html.twig
+     */
+    public function getOlasDataFromField(): array
+    {
+        return (new Item_Ola())->getDataFromOlasIdsForTicket($this, $this->fields['_olas_id'] ?? []);
+    }
+
+    /**
+     * @return array<ItemOlaData>
+     */
+    public function getOlasTTOData(): array
+    {
+        return array_values(array_filter($this->getOlasData(), fn(array $ola) => $ola['type'] === SLM::TTO));
+    }
+
+    /**
+     * @return array<ItemOlaData>
+     */
+    public function getOlasTTRData(): array
+    {
+        return array_values(array_filter($this->getOlasData(), fn(array $ola) => $ola['type'] === SLM::TTR));
+    }
+
+    /**
+     * Ticket slas
+     *
+     * Slas linked using slas_id_ttr and slas_id_tto
+     * Fields of Sla table + fields added below ('due_time', 'class', 'item', 'nextaction', 'level')
+     *
+     * used in template templates/components/itilobject/service_levels.html.twig
+     *
+     * @return array<array{id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|LevelAgreementLevel}>
+     */
+    public function getSlasData(): array
+    {
+        $slas = [];
+
+        $ttr = new SLA();
+        if ($ttr->getFromDB($this->fields['slas_id_ttr'])) {
+            $sla = $ttr->fields;
+
+            $sla['due_time'] = $this->fields['time_to_resolve'];
+            $sla['class'] = $ttr->getType(); // SLA::class
+            $sla['item'] = $this; // object, not just fields, functions used in template
+            $sla['nextaction'] = $ttr->getNextActionForTicket($this, $sla['type']);
+            $sla['level'] = $ttr->getLevelFromAction($sla['nextaction']);
+
+            $slas[] = $sla;
+        }
+
+        $tto = new SLA();
+        if ($tto->getFromDB($this->fields['slas_id_tto'])) {
+            $sla = $tto->fields;
+            $sla['due_time'] = $this->fields['time_to_own'];
+            $sla['class'] = $tto->getType();
+            $sla['item'] = $this; // object, not just fields, functions used in template
+            $sla['nextaction'] = $ttr->getNextActionForTicket($this, $sla['type']);
+            $sla['level'] = $tto->getLevelFromAction($sla['nextaction']);
+
+            $slas[] = $sla;
+        }
+
+        return $slas;
+    }
+
+    private function updateOlaAssociations(bool $on_ticket_creation): void
+    {
+        // handle _olas_id fiels only if _la_update is set
+        if (!isset($this->input['_la_update'])) {
+            return;
+        }
+        // input['_olas_id'] must be an array if defined
+        if (isset($this->input['_olas_id']) && !is_array($this->input['_olas_id'])) {
+            throw new InvalidArgumentException('Input "_olas_id" must be an array.');
+        }
+
+        $request_olas_ids = $this->input['_olas_id'] ?? [];
+        $current_olas_ids = array_column($this->getOlasData(), 'olas_id');
+
+        $items_ola = new Item_Ola();
+        // remove olas no more associated unless _la_append field is set
+        $removed_olas_ids = array_diff($current_olas_ids, $request_olas_ids);
+        if (isset($this->input['_la_append']) && $this->input['_la_append'] === true) {
+            // do not remove olas, just add new ones
+            $removed_olas_ids = [];
+        }
+        foreach ($removed_olas_ids as $olas_id) {
+            // find item_ola id
+            $items_ola->getFromDBByCrit([
+                'items_id' => $this->getID(),
+                'itemtype' => $this->getType(),
+                'olas_id'  => $olas_id,
+            ]);
+
+            if (!$items_ola->delete(['id' => $items_ola->getID()])) {
+                throw new Exception("Failed to dissociate OLA #$olas_id from ticket #{$this->getID()}");
+            }
+        }
+
+        // add new olas
+        // deduplicate ola (but not completed)
+        $toadd_olas_ids = Item_Ola::filterInputOlas($this->getType(), $this->getID(), $request_olas_ids);
+
+        $items_ola = new Item_Ola();
+        foreach ($toadd_olas_ids as $olas_id) {
+            $ola = new OLA();
+            $ola->getFromDB($olas_id);
+            // insert in association table items_ola
+            $ola_start_time = $on_ticket_creation ? $this->fields['date'] : Session::getCurrentTime();
+            if (
+                !$items_ola->add([
+                    'items_id' => $this->getID(),
+                    'itemtype' => $this->getType(),
+                    'olas_id' => $ola->getID(),
+                    'ola_type' => $ola->fields['type'],
+                    // on creation, use date from ticket creation, on update use current time
+                    'start_time' => $ola_start_time,
+                    'waiting_start' => $this->fields['status'] === CommonITILObject::WAITING ? $ola_start_time : null,
+                ])
+            ) {
+                throw new Exception("Failed to associate OLA #$olas_id to ticket #{$this->getID()}");
+            }
+        }
+
+        OLA::deleteLevelsToDo($this);
+        $current_olas_ids = array_column($this->getOlasData(), 'olas_id');
+        foreach ($current_olas_ids as $olas_id) {
+            $this->manageOlaLevel($olas_id);
+        }
+    }
+
+    /**
+     * Update Ola data + Manage OLA level
+     */
+    private function recomputeOlas(array $new_assigned_groups = [], array $new_assigned_users = []): void
+    {
+        // recompute all OLA for this ticket
+        OLA::deleteLevelsToDo($this); // todo levels are rebuild in Item_Ola::compute()
+        $olas = $this->getOlasData();
+        foreach ($olas as $ola) {
+            Item_Ola::compute($this, (int) $ola['olas_id'], (int) $ola['items_olas_id']);
+        }
+    }
+
+    /**
+     * Modify input for Ola to allow backward compatibility
+     *
+     * olas_id_tto, olas_id_ttr fields are not used anymore
+     */
+    private function transformOlasInputForBackwardCompatibility(array $input): array
+    {
+        // no old/deprecated fields, return array unchanged
+        if (!isset($input['olas_id_tto']) && !isset($input['olas_id_ttr'])) {
+            return $input;
+        }
+
+        // old and new fields set at the same time. (by a plugin not up to date)
+        // preserve previous behavior : replace olas set by legacy fields & ignore olas set by new field (_input['_olas_id'])
+        $input['_olas_id'] = [];
+        $input['_la_update'] = true;
+
+        // remove old fields and add new fields
+        if (isset($input['olas_id_tto'])) {
+            Toolbox::deprecated('Passing `olas_id_tto` input to ticket is deprecated.'
+                . ' Use `_olas_id` (array) + `_la_update` instead.', version: "11.0");
+            $input['_olas_id'][] = $input['olas_id_tto'];
+            unset($input['olas_id_tto']);
+        }
+        if (isset($input['olas_id_ttr'])) {
+            Toolbox::deprecated('Passing `olas_id_ttr` input to ticket is deprecated.'
+                . ' Use `_olas_id` (array) + `_la_update` instead.', version: "11.0");
+            $input['_olas_id'][] = $input['olas_id_ttr'];
+            unset($input['olas_id_ttr']);
+        }
+
+        return $input;
+    }
+
+    private function failsWithOlaRemovedFields(array $input): void
+    {
+        $ola_removed_inputs = ['ola_tto_begin_date', 'ola_ttr_begin_date', 'internal_time_to_resolve', 'internal_time_to_own', 'olalevels_id_ttr'];
+        if (!array_intersect($ola_removed_inputs, array_keys($input))) {
+            return;
+        }
+
+        foreach ($ola_removed_inputs as $ola_removed_input) {
+            if (isset($input[$ola_removed_input])) {
+                throw new RuntimeException('Input field "' . $ola_removed_input . '" is not used anymore, Ola are only associated now, use "_olas_id" please update your code. see Ticket.php docbloc.');
+            }
+        }
     }
 
     private function getSatisfactionSurveyForHelpdesk(): ?TicketSatisfaction

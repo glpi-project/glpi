@@ -6727,6 +6727,7 @@ CREATE TABLE `glpi_olas` (
   `end_of_working_day` tinyint NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
   `slms_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -6734,7 +6735,28 @@ CREATE TABLE `glpi_olas` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `calendars_id` (`calendars_id`),
-  KEY `slms_id` (`slms_id`)
+  KEY `slms_id` (`slms_id`),
+  KEY `groups_id` (`groups_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+### Dump table glpi_items_olas
+
+DROP TABLE IF EXISTS `glpi_items_olas`;
+CREATE TABLE `glpi_items_olas` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `due_time` timestamp,
+  `end_time` timestamp,
+  `items_id` int unsigned NOT NULL,
+  `itemtype` varchar(255) NOT NULL,
+  `olas_id` int unsigned NOT NULL,
+  `ola_type` tinyint NOT NULL,
+  `start_time` timestamp,
+  `waiting_time` int NOT NULL DEFAULT 0,
+  `waiting_start` timestamp,
+  `is_late` tinyint NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `item` (`itemtype`,`items_id`),
+  KEY `olas_id` (`olas_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 ### Dump table glpi_softwarecategories
@@ -7306,14 +7328,6 @@ CREATE TABLE `glpi_tickets` (
   `time_to_own` timestamp NULL DEFAULT NULL,
   `begin_waiting_date` timestamp NULL DEFAULT NULL,
   `sla_waiting_duration` int NOT NULL DEFAULT '0',
-  `ola_waiting_duration` int NOT NULL DEFAULT '0',
-  `olas_id_tto` int unsigned NOT NULL DEFAULT '0',
-  `olas_id_ttr` int unsigned NOT NULL DEFAULT '0',
-  `olalevels_id_ttr` int unsigned NOT NULL DEFAULT '0',
-  `ola_tto_begin_date` timestamp NULL DEFAULT NULL,
-  `ola_ttr_begin_date` timestamp NULL DEFAULT NULL,
-  `internal_time_to_resolve` timestamp NULL DEFAULT NULL,
-  `internal_time_to_own` timestamp NULL DEFAULT NULL,
   `waiting_duration` int NOT NULL DEFAULT '0',
   `close_delay_stat` int NOT NULL DEFAULT '0',
   `solve_delay_stat` int NOT NULL DEFAULT '0',
@@ -7342,11 +7356,7 @@ CREATE TABLE `glpi_tickets` (
   KEY `slas_id_ttr` (`slas_id_ttr`),
   KEY `time_to_resolve` (`time_to_resolve`),
   KEY `time_to_own` (`time_to_own`),
-  KEY `olas_id_tto` (`olas_id_tto`),
-  KEY `olas_id_ttr` (`olas_id_ttr`),
   KEY `slalevels_id_ttr` (`slalevels_id_ttr`),
-  KEY `internal_time_to_resolve` (`internal_time_to_resolve`),
-  KEY `internal_time_to_own` (`internal_time_to_own`),
   KEY `users_id_lastupdater` (`users_id_lastupdater`),
   KEY `type` (`type`),
   KEY `itilcategories_id` (`itilcategories_id`),
@@ -7354,8 +7364,6 @@ CREATE TABLE `glpi_tickets` (
   KEY `name` (`name`),
   KEY `locations_id` (`locations_id`),
   KEY `date_creation` (`date_creation`),
-  KEY `ola_waiting_duration` (`ola_waiting_duration`),
-  KEY `olalevels_id_ttr` (`olalevels_id_ttr`),
   KEY `tickettemplates_id` (`tickettemplates_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 

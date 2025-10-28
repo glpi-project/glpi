@@ -70,12 +70,10 @@ class RuleTicket extends RuleCommonITILObject
                         break;
 
                     case "assign":
-                        // Special case of slas_id_ttr & slas_id_tto & olas_id_ttr & olas_id_tto
+                        // slas_id_ttr & slas_id_tto
                         if (
                             $action->fields["field"] === 'slas_id_ttr'
                             || $action->fields["field"] === 'slas_id_tto'
-                            || $action->fields["field"] === 'olas_id_ttr'
-                            || $action->fields["field"] === 'olas_id_tto'
                         ) {
                             $output['_' . $action->fields["field"]] = $action->fields["value"];
                         }
@@ -106,6 +104,13 @@ class RuleTicket extends RuleCommonITILObject
                                 $output["_projects_id"] = [];
                             }
                             $output["_projects_id"][] = $value;
+                        }
+
+                        // olas_id - assign an ola
+                        if ($action->fields["field"] === 'olas_id') {
+                            $output['_la_update'] = true;
+                            $output['_la_append'] = true;
+                            $output['_olas_id'][] = $action->fields["value"];
                         }
 
                         break;
@@ -247,28 +252,14 @@ class RuleTicket extends RuleCommonITILObject
         $criterias['slas_id_tto']['type']                     = 'dropdown';
         $criterias['slas_id_tto']['condition']                = ['glpi_slas.type' => SLM::TTO];
 
-        $criterias['olas_id_ttr']['table']                    = 'glpi_olas';
-        $criterias['olas_id_ttr']['field']                    = 'name';
-        $criterias['olas_id_ttr']['name']                     = sprintf(
-            __('%1$s %2$s'),
-            __('OLA'),
-            __('Time to resolve')
-        );
-        $criterias['olas_id_ttr']['linkfield']                = 'olas_id_ttr';
-        $criterias['olas_id_ttr']['type']                     = 'dropdown';
-        $criterias['olas_id_ttr']['condition']                = ['glpi_olas.type' => SLM::TTR];
+        // associated ola
+        $criterias['_olas_id_rule_criteria']['type']           = 'dropdown';
+        $criterias['_olas_id_rule_criteria']['table']          = 'glpi_olas';
+        $criterias['_olas_id_rule_criteria']['field']          = 'name';
+        $criterias['_olas_id_rule_criteria']['name']           = __('OLA');
+        $criterias['_olas_id_rule_criteria']['linkfield']      = '_olas_id';
 
-        $criterias['olas_id_tto']['table']                    = 'glpi_olas';
-        $criterias['olas_id_tto']['field']                    = 'name';
-        $criterias['olas_id_tto']['name']                     = sprintf(
-            __('%1$s %2$s'),
-            __('OLA'),
-            __('Time to own')
-        );
-        $criterias['olas_id_tto']['linkfield']                = 'olas_id_tto';
-        $criterias['olas_id_tto']['type']                     = 'dropdown';
-        $criterias['olas_id_tto']['condition']                = ['glpi_olas.type' => SLM::TTO];
-
+        // requester location
         $criterias['_locations_id_of_requester']['table']     = 'glpi_locations';
         $criterias['_locations_id_of_requester']['field']     = 'completename';
         $criterias['_locations_id_of_requester']['name']      = __('Requester location');
@@ -326,7 +317,7 @@ class RuleTicket extends RuleCommonITILObject
         $actions['slas_id_ttr']['condition']                  = ['glpi_slas.type' => SLM::TTR];
 
         // empty ttr
-        $actions['time_to_resolve']['name']                   = __('Time to resolve');
+        $actions['time_to_resolve']['name']                   = __('Remove Time To Resolve value');
         $actions['time_to_resolve']['type']                   = 'yesno';
         $actions['time_to_resolve']['force_actions']          = ['delete'];
 
@@ -343,43 +334,17 @@ class RuleTicket extends RuleCommonITILObject
         $actions['slas_id_tto']['condition']                  = ['glpi_slas.type' => SLM::TTO];
 
         // empty sla tto
-        $actions['time_to_own']['name']                       = __('Time to own');
+        $actions['time_to_own']['name']                       = __('Remove Time To Own value');
         $actions['time_to_own']['type']                       = 'yesno';
         $actions['time_to_own']['force_actions']              = ['delete'];
 
-        // assign (existing) ola ttr
-        $actions['olas_id_ttr']['table']                      = 'glpi_olas';
-        $actions['olas_id_ttr']['field']                      = 'name';
-        $actions['olas_id_ttr']['name']                       = sprintf(
-            __('%1$s %2$s'),
-            __('OLA'),
-            __('Time to resolve')
-        );
-        $actions['olas_id_ttr']['linkfield']                  = 'olas_id_ttr';
-        $actions['olas_id_ttr']['type']                       = 'dropdown';
-        $actions['olas_id_ttr']['condition']                  = ['glpi_olas.type' => SLM::TTR];
-
-        // empty ola ttr
-        $actions['internal_time_to_resolve']['name']          = __('Internal time to resolve');
-        $actions['internal_time_to_resolve']['type']          = 'yesno';
-        $actions['internal_time_to_resolve']['force_actions'] = ['delete'];
-
         // assign (existing) ola tto
-        $actions['olas_id_tto']['table']                      = 'glpi_olas';
-        $actions['olas_id_tto']['field']                      = 'name';
-        $actions['olas_id_tto']['name']                       = sprintf(
-            __('%1$s %2$s'),
-            __('OLA'),
-            __('Time to own')
-        );
-        $actions['olas_id_tto']['linkfield']                  = 'olas_id_tto';
-        $actions['olas_id_tto']['type']                       = 'dropdown';
-        $actions['olas_id_tto']['condition']                  = ['glpi_olas.type' => SLM::TTO];
-
-        // set ola tto value
-        $actions['internal_time_to_own']['name']              = __('Internal Time to own');
-        $actions['internal_time_to_own']['type']              = 'yesno';
-        $actions['internal_time_to_own']['force_actions']     = ['delete'];
+        $actions['olas_id']['type']                       = 'dropdown';
+        $actions['olas_id']['table']                      = 'glpi_olas';
+        $actions['olas_id']['field']                      = 'name';
+        $actions['olas_id']['name']                       = 'OLA TTR/TTO';
+        $actions['olas_id']['force_actions']              = ['append'];
+        $actions['olas_id']['permitseveral']              = ['append'];
 
         // assign a location
         $actions['locations_id']['name']                            = Location::getTypeName(1);
