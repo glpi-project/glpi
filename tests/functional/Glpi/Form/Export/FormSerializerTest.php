@@ -1684,6 +1684,385 @@ final class FormSerializerTest extends \DbTestCase
         );
     }
 
+    public function testItemsIdsInSubmitConditionAreHandledByExport(): void
+    {
+        // Arrange: create a form with a condition on a specific item id
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'My computer',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "My item question",
+            type: QuestionTypeItem::class,
+            extra_data: json_encode(new QuestionTypeItemExtraDataConfig(
+                itemtype: Computer::class
+            )),
+        );
+        $builder->setSubmitButtonVisibility(
+            strategy: VisibilityStrategy::VISIBLE_IF,
+            conditions: [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My item question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => [
+                        'itemtype' => Computer::class,
+                        'items_id' => $computer->getId(),
+                    ],
+                ],
+            ],
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: make sure the items_id was replaced in the condition
+        // and that a data requirement was added
+        $data = json_decode($json, associative: true);
+        $this->assertEquals([
+            'itemtype' => Computer::class,
+            'name' => 'My computer',
+        ], $data['forms'][0]['data_requirements'][0]);
+        $this->assertEquals([
+            'itemtype' => Computer::class,
+            'items_id' => 'My computer',
+        ], $data['forms'][0]['submit_button_conditions'][0]['value']);
+    }
+
+    public function testItemsIdsInSectionConditionAreHandledByExport(): void
+    {
+        // Arrange: create a form with a condition on a specific item id
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'My computer',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $builder = new FormBuilder();
+        $builder->addSection("Section 1");
+        $builder->addQuestion(
+            name: "My item question",
+            type: QuestionTypeItem::class,
+            extra_data: json_encode(new QuestionTypeItemExtraDataConfig(
+                itemtype: Computer::class
+            )),
+        );
+        $builder->addSection("Section 2");
+        $builder->setSectionVisibility(
+            section_name: "Section 2",
+            strategy: VisibilityStrategy::VISIBLE_IF,
+            conditions: [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My item question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => [
+                        'itemtype' => Computer::class,
+                        'items_id' => $computer->getId(),
+                    ],
+                ],
+            ],
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: make sure the items_id was replaced in the condition
+        // and that a data requirement was added
+        $data = json_decode($json, associative: true);
+        $this->assertEquals([
+            'itemtype' => Computer::class,
+            'name' => 'My computer',
+        ], $data['forms'][0]['data_requirements'][1]);
+        $this->assertEquals([
+            'itemtype' => Computer::class,
+            'items_id' => 'My computer',
+        ], $data['forms'][0]['sections'][1]['conditions'][0]['value']);
+    }
+
+    public function testItemsIdsInQuestionConditionAreHandledByExport(): void
+    {
+        // Arrange: create a form with a condition on a specific item id
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'My computer',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "My item question",
+            type: QuestionTypeItem::class,
+            extra_data: json_encode(new QuestionTypeItemExtraDataConfig(
+                itemtype: Computer::class
+            )),
+        );
+        $builder->addQuestion("My other question", QuestionTypeShortText::class);
+        $builder->setQuestionVisibility(
+            question_name: "My other question",
+            strategy: VisibilityStrategy::VISIBLE_IF,
+            conditions: [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My item question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => [
+                        'itemtype' => Computer::class,
+                        'items_id' => $computer->getId(),
+                    ],
+                ],
+            ],
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: make sure the items_id was replaced in the condition
+        // and that a data requirement was added
+        $data = json_decode($json, associative: true);
+        $this->assertEquals([
+            'itemtype' => Computer::class,
+            'name' => 'My computer',
+        ], $data['forms'][0]['data_requirements'][1]);
+        $this->assertEquals([
+            'itemtype' => Computer::class,
+            'items_id' => 'My computer',
+        ], $data['forms'][0]['questions'][1]['conditions'][0]['value']);
+    }
+
+    public function testItemsIdsInCommentConditionAreHandledByExport(): void
+    {
+        // Arrange: create a form with a condition on a specific item id
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'My computer',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "My item question",
+            type: QuestionTypeItem::class,
+            extra_data: json_encode(new QuestionTypeItemExtraDataConfig(
+                itemtype: Computer::class
+            )),
+        );
+        $builder->addComment("My comment", QuestionTypeShortText::class);
+        $builder->setCommentVisibility(
+            comment_name: "My comment",
+            strategy: VisibilityStrategy::VISIBLE_IF,
+            conditions: [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My item question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => [
+                        'itemtype' => Computer::class,
+                        'items_id' => $computer->getId(),
+                    ],
+                ],
+            ],
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: make sure the items_id was replaced in the condition
+        // and that a data requirement was added
+        $data = json_decode($json, associative: true);
+        $this->assertEquals([
+            'itemtype' => Computer::class,
+            'name' => 'My computer',
+        ], $data['forms'][0]['data_requirements'][1]);
+        $this->assertEquals([
+            'itemtype' => Computer::class,
+            'items_id' => 'My computer',
+        ], $data['forms'][0]['comments'][0]['conditions'][0]['value']);
+    }
+
+    public function testItemsIdsInDestinationConditionAreHandledByExport(): void
+    {
+        // Arrange: create a form with a condition on a specific item id
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'My computer',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "My item question",
+            type: QuestionTypeItem::class,
+            extra_data: json_encode(new QuestionTypeItemExtraDataConfig(
+                itemtype: Computer::class
+            )),
+        );
+        $builder->addComment("My comment", QuestionTypeShortText::class);
+        $builder->setDestinationCondition(
+            destination_name: "Ticket",
+            strategy: CreationStrategy::CREATED_IF,
+            conditions: [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My item question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => [
+                        'itemtype' => Computer::class,
+                        'items_id' => $computer->getId(),
+                    ],
+                ],
+            ],
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: make sure the items_id was replaced in the condition
+        // and that a data requirement was added
+        $data = json_decode($json, associative: true);
+        $this->assertEquals([
+            'itemtype' => Computer::class,
+            'name' => 'My computer',
+        ], $data['forms'][0]['data_requirements'][1]);
+        $this->assertEquals([
+            'itemtype' => Computer::class,
+            'items_id' => 'My computer',
+        ], $data['forms'][0]['destinations'][0]['conditions'][0]['value']);
+    }
+
+    public function testItemsNamesInSubmitConditionAreHandledByImport(): void
+    {
+        // Arrange: create the expected computer
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'My computer',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // Act: import form
+        $json = $this->getFormJson('submit-with-item-condition.json');
+        $result = self::$serializer->importFormsFromJson(
+            json: $json,
+            mapper: new DatabaseMapper([$this->getTestRootEntity(true)]),
+        );
+
+        // Assert: condition should be updated with the computer id
+        $form = $result->getImportedForms()[0];
+        $condition_value = $form->getConfiguredConditionsData()[0]->getValue();
+        $this->assertEquals([
+            "itemtype" => Computer::class,
+            "items_id" => $computer->getID(),
+        ], $condition_value);
+    }
+
+    public function testItemsNamesInSectionConditionAreHandledByImport(): void
+    {
+        // Arrange: create the expected computer
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'My computer',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // Act: import form
+        $json = $this->getFormJson('section-with-item-condition.json');
+        $result = self::$serializer->importFormsFromJson(
+            json: $json,
+            mapper: new DatabaseMapper([$this->getTestRootEntity(true)]),
+        );
+
+        // Assert: condition should be updated with the computer id
+        $form = $result->getImportedForms()[0];
+        $sections = $form->getSections();
+        next($sections);  // Go to second question
+        $section = current($sections);
+        $condition_value = $section->getConfiguredConditionsData()[0]->getValue();
+        $this->assertEquals([
+            "itemtype" => Computer::class,
+            "items_id" => $computer->getID(),
+        ], $condition_value);
+    }
+
+    public function testItemsNamesInQuestionConditionAreHandledByImport(): void
+    {
+        // Arrange: create the expected computer
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'My computer',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // Act: import form
+        $json = $this->getFormJson('question-with-item-condition.json');
+        $result = self::$serializer->importFormsFromJson(
+            json: $json,
+            mapper: new DatabaseMapper([$this->getTestRootEntity(true)]),
+        );
+
+        // Assert: condition should be updated with the computer id
+        $form = $result->getImportedForms()[0];
+        $questions = $form->getQuestions();
+        next($questions);  // Go to second question
+        $question = current($questions);
+        $condition_value = $question->getConfiguredConditionsData()[0]->getValue();
+        $this->assertEquals([
+            "itemtype" => Computer::class,
+            "items_id" => $computer->getID(),
+        ], $condition_value);
+    }
+
+    public function testItemsNamesInCommentConditionAreHandledByImport(): void
+    {
+        // Arrange: create the expected computer
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'My computer',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // Act: import form
+        $json = $this->getFormJson('comment-with-item-condition.json');
+        $result = self::$serializer->importFormsFromJson(
+            json: $json,
+            mapper: new DatabaseMapper([$this->getTestRootEntity(true)]),
+        );
+
+        // Assert: condition should be updated with the computer id
+        $form = $result->getImportedForms()[0];
+        $comments = $form->getFormComments();
+        $comment = current($comments);
+        $condition_value = $comment->getConfiguredConditionsData()[0]->getValue();
+        $this->assertEquals([
+            "itemtype" => Computer::class,
+            "items_id" => $computer->getID(),
+        ], $condition_value);
+    }
+
+    public function testItemsNamesInDestinationConditionAreHandledByImport(): void
+    {
+        // Arrange: create the expected computer
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'My computer',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // Act: import form
+        $json = $this->getFormJson('destination-with-item-condition.json');
+        $result = self::$serializer->importFormsFromJson(
+            json: $json,
+            mapper: new DatabaseMapper([$this->getTestRootEntity(true)]),
+        );
+
+        // Assert: condition should be updated with the computer id
+        $form = $result->getImportedForms()[0];
+        $destinations = $form->getDestinations();
+        $destination = current($destinations);
+        $condition_value = $destination->getConfiguredConditionsData()[0]->getValue();
+        $this->assertEquals([
+            "itemtype" => Computer::class,
+            "items_id" => $computer->getID(),
+        ], $condition_value);
+    }
+
     public function testWithFormWithSpecialNegativeIdForRootEntity(): void
     {
         // Arrange: create a form with a -1 value for root_items_id

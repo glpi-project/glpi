@@ -751,4 +751,10 @@ trait FormTesterTrait
             ]);
         }
     }
+
+    protected function getFormJson(string $filename): string
+    {
+        $path = FIXTURE_DIR . "/forms/$filename";
+        return file_get_contents($path);
+    }
 }
