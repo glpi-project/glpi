@@ -707,7 +707,7 @@ class Group extends CommonTreeDropdown
                 }
             }
         }
-        $nb     = $this->getDataItems($tech, true, true, $start, $datas, $extra_criteria);
+        $nb     = $this->getDataItems($tech, true, false, $start, $datas, $extra_criteria);
 
         $show_massive_actions = false;
 
