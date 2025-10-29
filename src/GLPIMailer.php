@@ -149,8 +149,7 @@ class GLPIMailer
                 }
             }
             $dsn = sprintf(
-                '%s://%s%s:%s',
-                (((int) $CFG_GLPI['smtp_mode']) === MAIL_SMTPTLS ? 'smtps' : 'smtp'),
+                'smtp://%s%s:%s',
                 ($CFG_GLPI['smtp_username'] != '' ? sprintf(
                     '%s:%s@',
                     urlencode($CFG_GLPI['smtp_username']),

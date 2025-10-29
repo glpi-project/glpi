@@ -385,9 +385,9 @@ class Config extends CommonDBTM
     {
         global $CFG_GLPI;
 
-        if (array_key_exists('smtp_mode', $input) && $input['smtp_mode'] === MAIL_SMTPSSL) {
+        if (array_key_exists('smtp_mode', $input) && in_array($input['smtp_mode'], [MAIL_SMTPSSL, MAIL_SMTPTLS], true)) {
             $input['smtp_mode'] = MAIL_SMTP;
-            Toolbox::deprecated('Usage of "MAIL_SMTPSSL" SMTP mode is deprecated. Switch to "MAIL_SMTP" mode.');
+            Toolbox::deprecated('Usage of "MAIL_SMTPTLS" and "MAIL_SMTPTLS" SMTP mode is deprecated. Switch to "MAIL_SMTP" mode.');
         }
 
         if (array_key_exists('smtp_mode', $input) && (int) $input['smtp_mode'] === MAIL_SMTPOAUTH) {

@@ -135,7 +135,6 @@ class NotificationMailingSetting extends NotificationSetting
         $mail_methods = [
             MAIL_MAIL       => __('PHP'),
             MAIL_SMTP       => __('SMTP'),
-            MAIL_SMTPTLS    => __('SMTP+TLS'),
             MAIL_SMTPOAUTH  => __('SMTP+OAUTH'),
         ];
         $is_mail_function_available = true;
