@@ -549,7 +549,7 @@ class GLPIKeyTest extends \DbTestCase
         $errors = $glpikey->getKeyFileReadErrors();
 
         // assert
-        $this->assertStringContainsString('create a security key', implode(" ", $errors));
+        $this->assertStringContainsString('The security key file does not exist.', implode(" ", $errors));
     }
 
     public function testGetKeyFileReadErrorsWithUnreadableFile(): void
@@ -564,7 +564,7 @@ class GLPIKeyTest extends \DbTestCase
         $errors = $glpikey->getKeyFileReadErrors();
 
         // assert
-        $this->assertStringContainsString('Unable to get security key file contents', implode(" ", $errors));
+        $this->assertStringContainsString('Unable to get security key file contents.', implode(" ", $errors));
     }
 
     public function testGetKeyFileReadErrorsWithInvalidKey(): void
@@ -577,7 +577,7 @@ class GLPIKeyTest extends \DbTestCase
         $errors = $glpikey->getKeyFileReadErrors();
 
         // assert
-        $this->assertStringContainsString('Invalid security key file contents', implode(" ", $errors));
+        $this->assertStringContainsString('Invalid security key file contents.', implode(" ", $errors));
     }
 
     public function testGetKeyFileReadErrorsWithValidKey(): void
