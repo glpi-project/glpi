@@ -747,7 +747,7 @@ class MailCollectorTest extends DbTestCase
         }
 
         $total_count                     = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
-        $expected_refused_count          = 11;
+        $expected_refused_count          = 12;
         $expected_error_count            = 2;
         $expected_blacklist_count        = 1;
         $expected_expected_already_seen  = 0;
@@ -784,6 +784,13 @@ class MailCollectorTest extends DbTestCase
                 'from'    => '', // '' as value is not nullable in DB
                 'to'      => '', // '' as value is not nullable in DB
                 'reason'  => \NotImportedEmail::FAILED_OPERATION,
+            ],
+            [
+                // Email without 'To:' header that is refused should not crash
+                'subject' => 'Test email without To header that should be refused',
+                'from'    => 'unknown@glpi-project.org',
+                'to'      => '', // Empty string, not NULL (this is the fix!)
+                'reason'  => \NotImportedEmail::USER_UNKNOWN,
             ],
         ];
         $iterator = $DB->request(['FROM' => \NotImportedEmail::getTable()]);
