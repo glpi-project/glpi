@@ -789,7 +789,7 @@ class MailCollectorTest extends DbTestCase
                 // Email without 'To:' header that is refused should not crash
                 'subject' => 'Test email without To header that should be refused',
                 'from'    => 'unknown@glpi-project.org',
-                'to'      => '', // Empty string, not NULL (this is the fix!)
+                'to'      => '', // Empty string, not NULL
                 'reason'  => \NotImportedEmail::USER_UNKNOWN,
             ],
         ];
