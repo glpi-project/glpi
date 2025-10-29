@@ -8061,7 +8061,7 @@ abstract class CommonITILObject extends CommonDBTM
                     : $user->hasRight($task_class::$rightname, CommonITILTask::SEEPRIVATE, $this->fields['entities_id']);
 
                 if (!$can_seeprivate) {
-                    $fup_crits[] = [
+                    $tasks_crit[] = [
                         'OR' => ['is_private' => 0, 'users_id' => $user_id],
                     ];
                 }
