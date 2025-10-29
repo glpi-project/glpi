@@ -1827,7 +1827,7 @@ class ComputerTest extends AbstractInventoryAsset
         $locks = $lockedfield->find([
             'itemtype' => 'Computer',
             'items_id' => $computers_id,
-            'field' => 'states_id'
+            'field' => 'states_id',
         ]);
         $this->assertCount(1, $locks);
 
@@ -1836,9 +1836,6 @@ class ComputerTest extends AbstractInventoryAsset
         $this->assertEquals($states_id_manual, $computer->fields['states_id']);
 
         // Reimport the same inventory - this should NOT trigger an error
-        // Before the fix, this would cause: "Undefined array key" in $raw_links[$known_key]
-        // because the inventory wants to set states_id_inventory but the field is locked
-        // with states_id_manual, and the key doesn't exist in raw_links
         $inventory = $this->doInventory($json);
 
         // Verify the computer still exists and states_id is still the manual one (locked)
@@ -1849,7 +1846,7 @@ class ComputerTest extends AbstractInventoryAsset
         $locks = $lockedfield->find([
             'itemtype' => 'Computer',
             'items_id' => $computers_id,
-            'field' => 'states_id'
+            'field' => 'states_id',
         ]);
         $this->assertCount(1, $locks);
     }
