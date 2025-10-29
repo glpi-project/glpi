@@ -242,14 +242,12 @@ class FrontEndAssetsExtension extends AbstractExtension
             $locales_domains[$plugin] = Plugin::getPluginFilesVersion($plugin);
         }
 
-        $locales_json = json_encode(array_combine(array_keys($locales_domains), array_map(static function ($domain, $version) {
-            return Html::getPrefixedUrl(
-                '/front/locale.php'
-                . '?domain=' . $domain
-                . '&lang=' . $_SESSION['glpilanguage']
-                . '&v=' . FrontEnd::getVersionCacheKey($version)
-            );
-        }, array_keys($locales_domains), $locales_domains)));
+        $locales_json = json_encode(array_combine(array_keys($locales_domains), array_map(static fn($domain, $version) => Html::getPrefixedUrl(
+            '/front/locale.php'
+            . '?domain=' . $domain
+            . '&lang=' . $_SESSION['glpilanguage']
+            . '&v=' . FrontEnd::getVersionCacheKey($version)
+        ), array_keys($locales_domains), $locales_domains)));
 
         $script = <<<JS
             // Fetch locale JSON without jQuery to allow fetching before jQuery is loaded
