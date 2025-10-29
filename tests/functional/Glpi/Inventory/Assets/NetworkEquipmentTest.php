@@ -4382,4 +4382,548 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
             'method' => 'netdiscovery',
         ])));
     }
+
+    public function testSnmpNetworkEquipementDiscoveryUpdateWithMutipleIps()
+    {
+        $ip_address = new \IPAddress();
+        $rule_matched_log = new \RuleMatchedLog();
+        $network_equipement = new \NetworkEquipment();
+        $networkPort = new \NetworkPort();
+
+        /*Create the network equipment*/
+        $xml_source = '<?xml version="1.0" encoding="UTF-8"?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <AUTHSNMP>1</AUTHSNMP>
+      <DESCRIPTION>Dell EMC Networking OS Operating System Version: 2.0 Application Software Version: 9.14(2.5) Series: S4048-ON Copyright (c) 1999-2019 by Dell Inc. All Rights Reserved. Build Time: Mon Jan 27 10:02:25 2020</DESCRIPTION>
+      <DNSHOSTNAME>10.15.66.53</DNSHOSTNAME>
+      <FIRMWARE>9.14(2.5)</FIRMWARE>
+      <IP>10.15.66.53</IP>
+      <IPS>
+        <IP>10.15.66.53</IP>
+        <IP>192.168.222.13</IP>
+        <IP>192.168.223.13</IP>
+      </IPS>
+      <MAC>68:4f:64:6b:11:9f</MAC>
+      <MANUFACTURER>Force10</MANUFACTURER>
+      <MODEL>S4048-ON-01-FE-72</MODEL>
+      <SERIAL>NA</SERIAL>
+      <SNMPHOSTNAME>sw-dell-3</SNMPHOSTNAME>
+      <TYPE>NETWORKING</TYPE>
+      <UPTIME>479 days, 11:26:43.52</UPTIME>
+    </DEVICE>
+    <MODULEVERSION>6.8</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>NETDISCOVERY</QUERY>
+</REQUEST>';
+
+        //inventory
+        $converter = new Converter();
+        $json = json_decode($converter->convert($xml_source));
+
+        $data = (array) $json->content;
+        $inventory = new Inventory();
+        $this->assertTrue($inventory->setData($json));
+
+        // Create the agent
+        $agent = new \Agent();
+        $this->assertSame(0, $agent->handleAgent($inventory->extractMetadata()));
+
+        //Prepare the inventory
+        $network_equipement = new \NetworkEquipment();
+        $main = new \Glpi\Inventory\MainAsset\NetworkEquipment($network_equipement, $json);
+        $main->setAgent($agent)->setExtraData($data);
+        $main->checkConf(new Conf());
+        $main->setDiscovery(true);
+        $main->prepare();
+
+        //Handle the inventory
+        $main->handle();
+        $inventory->doInventory();
+
+        //Check the result
+        $this->assertEquals(3, count($ip_address->find([
+            'mainitemtype' => \NetworkEquipment::class,
+            'mainitems_id' => $network_equipement->fields['id'],
+        ])));
+
+        $ports = $networkPort->find([
+            'itemtype' => \NetworkEquipment::class,
+            'items_id' => $network_equipement->fields['id'],
+        ]);
+        $this->assertCount(1, $ports);
+
+        $this->assertEquals(0, count($rule_matched_log->find([
+            'itemtype' => \NetworkEquipment::class,
+            'items_id' => $network_equipement->fields['id'],
+            'method' => 'netdiscovery',
+        ])));
+
+        /*Network Equipement create log because IP Address don"t change*/
+        $xml_source = '<?xml version="1.0" encoding="UTF-8"?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <AUTHSNMP>1</AUTHSNMP>
+      <DESCRIPTION>Dell EMC Networking OS Operating System Version: 2.0 Application Software Version: 9.14(2.5) Series: S4048-ON Copyright (c) 1999-2019 by Dell Inc. All Rights Reserved. Build Time: Mon Jan 27 10:02:25 2020</DESCRIPTION>
+      <DNSHOSTNAME>10.15.66.53</DNSHOSTNAME>
+      <FIRMWARE>9.14(2.5)</FIRMWARE>
+      <IP>10.15.66.53</IP>
+      <IPS>
+        <IP>10.15.66.53</IP>
+        <IP>192.168.222.13</IP>
+        <IP>192.168.223.13</IP>
+      </IPS>
+      <MAC>68:4f:64:6b:11:9f</MAC>
+      <MANUFACTURER>Force10</MANUFACTURER>
+      <MODEL>S4048-ON-01-FE-72</MODEL>
+      <SERIAL>NA</SERIAL>
+      <SNMPHOSTNAME>sw-dell-3</SNMPHOSTNAME>
+      <TYPE>NETWORKING</TYPE>
+      <UPTIME>479 days, 11:26:43.52</UPTIME>
+    </DEVICE>
+    <MODULEVERSION>6.8</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>NETDISCOVERY</QUERY>
+</REQUEST>';
+
+        //inventory - 2nd NETDISCOVERY with discovery mode (update with same IPs)
+        $converter = new Converter();
+        $json = json_decode($converter->convert($xml_source));
+
+        $data = (array) $json->content;
+        $inventory = new Inventory();
+        $this->assertTrue($inventory->setData($json));
+
+        //Prepare the inventory
+        $main = new \Glpi\Inventory\MainAsset\NetworkEquipment($network_equipement, $json);
+        $main->setAgent($agent)->setExtraData($data);
+        $main->checkConf(new Conf());
+        $main->setDiscovery(true);
+        $main->prepare();
+
+        //Handle the inventory
+        $main->handle();
+        $inventory->doInventory();
+
+        //Check the result
+        $this->assertEquals(3, count($ip_address->find([
+            'mainitemtype' => \NetworkEquipment::class,
+            'mainitems_id' => $network_equipement->fields['id'],
+        ])));
+
+        $ports = $networkPort->find([
+            'itemtype' => \NetworkEquipment::class,
+            'items_id' => $network_equipement->fields['id'],
+        ]);
+        $this->assertCount(1, $ports);
+
+        //Verif if log is created
+        $this->assertEquals(1, count($rule_matched_log->find([
+            'itemtype' => \NetworkEquipment::class,
+            'items_id' => $network_equipement->fields['id'],
+            'method' => 'netdiscovery',
+        ])));
+
+        $this->assertTrue($rule_matched_log->deleteByCriteria([
+            'itemtype' => \NetworkEquipment::class,
+            'items_id' => $network_equipement->fields['id'],
+            'method' => 'netdiscovery',
+        ]));
+
+        //Add ports
+        $xml_source = '<?xml version="1.0" encoding="UTF-8"?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+	    <COMPONENTS>
+        <COMPONENT>
+          <CONTAINEDININDEX>0</CONTAINEDININDEX>
+          <FRU>2</FRU>
+          <INDEX>1</INDEX>
+          <NAME>Stack</NAME>
+          <TYPE>stack</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>1</CONTAINEDININDEX>
+          <DESCRIPTION>S4048-ON-01-FE-72 Chassis</DESCRIPTION>
+          <FRU>1</FRU>
+          <INDEX>2</INDEX>
+          <MODEL>S4048-ON-01-FE-72</MODEL>
+          <NAME>Unit 1</NAME>
+          <REVISION>2.0</REVISION>
+          <SERIAL>NA</SERIAL>
+          <TYPE>chassis</TYPE>
+          <VERSION>9.14(2.5)</VERSION>
+        </COMPONENT>
+      </COMPONENTS>
+      <FIRMWARES>
+        <DESCRIPTION>device firmware</DESCRIPTION>
+        <MANUFACTURER>Force10</MANUFACTURER>
+        <NAME>S4048-ON-01-FE-72</NAME>
+        <TYPE>device</TYPE>
+        <VERSION>9.14(2.5)</VERSION>
+      </FIRMWARES>
+      <INFO>
+        <COMMENTS>Dell EMC Networking OS
+Operating System Version: 2.0
+Application Software Version: 9.14(2.5)
+Series: S4048-ON
+Copyright (c) 1999-2019 by Dell Inc. All Rights Reserved.
+Build Time: Mon Jan 27 10:02:25 2020</COMMENTS>
+        <FIRMWARE>9.14(2.5)</FIRMWARE>
+        <ID>0</ID>
+        <IPS>
+          <IP>10.15.66.53</IP>
+          <IP>192.168.222.13</IP>
+          <IP>192.168.223.13</IP>
+        </IPS>
+        <MAC>68:4f:64:6b:11:9f</MAC>
+        <MANUFACTURER>Force10</MANUFACTURER>
+        <MODEL>S4048-ON-01-FE-72</MODEL>
+        <NAME>sw-dell-3</NAME>
+        <SERIAL>NA</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+        <UPTIME>479 days, 11:26:44.84</UPTIME>
+      </INFO>
+      <PORTS>
+        <PORT>
+          <IFDESCR>TenGigabitEthernet 1/2</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>3167370402</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>435 days, 09:34:33.36</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>TenGigabitEthernet 1/2</IFNAME>
+          <IFNUMBER>2097284</IFNUMBER>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>68:4f:64:6b:11:9f</MAC>
+          <TRUNK>0</TRUNK>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN 3901</NAME>
+              <NUMBER>3901</NUMBER>
+            </VLAN>
+          </VLANS>
+        </PORT>
+        <PORT>
+          <IFDESCR>TenGigabitEthernet 1/3</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>494724860</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>435 days, 10:28:29.82</IFLASTCHANGE>
+          <IFMTU>9216</IFMTU>
+          <IFNAME>TenGigabitEthernet 1/3</IFNAME>
+          <IFNUMBER>2097412</IFNUMBER>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>68:4f:64:6b:11:9f</MAC>
+          <TRUNK>1</TRUNK>
+          <VLANS>
+            <VLAN>
+              <NAME>VLAN 0</NAME>
+              <NUMBER>0</NUMBER>
+            </VLAN>
+          </VLANS>
+        </PORT>
+      </PORTS>
+    </DEVICE>
+    <MODULEVERSION>6.8</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
+        //inventory - SNMPQUERY without discovery mode
+        $converter = new Converter();
+        $json = json_decode($converter->convert($xml_source));
+
+        $data = (array) $json->content;
+        $inventory = new Inventory();
+        $this->assertTrue($inventory->setData($json));
+
+        //Prepare the inventory
+        $main = new \Glpi\Inventory\MainAsset\NetworkEquipment($network_equipement, $json);
+        $main->setAgent($agent)->setExtraData($data);
+        $main->checkConf(new Conf());
+
+        //Handle the inventory
+        $inventory->doInventory();
+
+        //Check that ports are added
+        $ports = $networkPort->find([
+            'itemtype' => \NetworkEquipment::class,
+            'items_id' => $network_equipement->fields['id'],
+        ]);
+        $this->assertCount(3, $ports);
+
+        //Verif if log is created
+        $this->assertEquals(0, count($rule_matched_log->find([
+            'itemtype' => \NetworkEquipment::class,
+            'items_id' => $network_equipement->fields['id'],
+            'method' => 'netdiscovery',
+        ])));
+
+        /*Network Equipement create log because IP Address don't change and check if port is preserved */
+        $xml_source = '<?xml version="1.0" encoding="UTF-8"?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <AUTHSNMP>1</AUTHSNMP>
+      <DESCRIPTION>Dell EMC Networking OS Operating System Version: 2.0 Application Software Version: 9.14(2.5) Series: S4048-ON Copyright (c) 1999-2019 by Dell Inc. All Rights Reserved. Build Time: Mon Jan 27 10:02:25 2020</DESCRIPTION>
+      <DNSHOSTNAME>10.15.66.53</DNSHOSTNAME>
+      <FIRMWARE>9.14(2.5)</FIRMWARE>
+      <IP>10.15.66.53</IP>
+      <IPS>
+        <IP>10.15.66.53</IP>
+        <IP>192.168.222.13</IP>
+        <IP>192.168.223.13</IP>
+      </IPS>
+      <MAC>68:4f:64:6b:11:9f</MAC>
+      <MANUFACTURER>Force10</MANUFACTURER>
+      <MODEL>S4048-ON-01-FE-72</MODEL>
+      <SERIAL>NA</SERIAL>
+      <SNMPHOSTNAME>sw-dell-3</SNMPHOSTNAME>
+      <TYPE>NETWORKING</TYPE>
+      <UPTIME>479 days, 11:26:43.52</UPTIME>
+    </DEVICE>
+    <MODULEVERSION>6.8</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>NETDISCOVERY</QUERY>
+</REQUEST>';
+
+        //inventory - NETDISCOVERY with discovery mode
+        $converter = new Converter();
+        $json = json_decode($converter->convert($xml_source));
+
+        $data = (array) $json->content;
+        $inventory = new Inventory();
+        $this->assertTrue($inventory->setData($json));
+
+        //Prepare the inventory
+        $main = new \Glpi\Inventory\MainAsset\NetworkEquipment($network_equipement, $json);
+        $main->setAgent($agent)->setExtraData($data);
+        $main->checkConf(new Conf());
+        $main->setDiscovery(true);
+        $inventory->setDiscovery(true);
+
+        //Handle the inventory
+        $inventory->doInventory();
+
+        //Check that ports are still present after NETDISCOVERY update
+        $ports = $networkPort->find([
+            'itemtype' => \NetworkEquipment::class,
+            'items_id' => $network_equipement->fields['id'],
+        ]);
+        $this->assertCount(3, $ports);
+
+        //Verif if log is created
+        $this->assertEquals(1, count($rule_matched_log->find([
+            'itemtype' => \NetworkEquipment::class,
+            'items_id' => $network_equipement->fields['id'],
+            'method' => 'netdiscovery',
+        ])));
+
+        $this->assertTrue($rule_matched_log->deleteByCriteria([
+            'itemtype' => \NetworkEquipment::class,
+            'items_id' => $network_equipement->fields['id'],
+            'method' => 'netdiscovery',
+        ]));
+
+        //Network Equipement update log because IP Address change
+        $xml_source = '<?xml version="1.0" encoding="UTF-8"?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <AUTHSNMP>1</AUTHSNMP>
+      <DESCRIPTION>Dell EMC Networking OS Operating System Version: 2.0 Application Software Version: 9.14(2.5) Series: S4048-ON Copyright (c) 1999-2019 by Dell Inc. All Rights Reserved. Build Time: Mon Jan 27 10:02:25 2020</DESCRIPTION>
+      <DNSHOSTNAME>10.15.66.53</DNSHOSTNAME>
+      <FIRMWARE>9.14(2.5)</FIRMWARE>
+      <IP>10.15.66.53</IP>
+      <IPS>
+        <IP>10.15.66.53</IP>
+        <IP>192.168.222.14</IP>
+        <IP>192.168.223.13</IP>
+      </IPS>
+      <MAC>68:4f:64:6b:11:9f</MAC>
+      <MANUFACTURER>Force10</MANUFACTURER>
+      <MODEL>S4048-ON-01-FE-72</MODEL>
+      <SERIAL>NA</SERIAL>
+      <SNMPHOSTNAME>sw-dell-3</SNMPHOSTNAME>
+      <TYPE>NETWORKING</TYPE>
+      <UPTIME>479 days, 11:26:43.52</UPTIME>
+    </DEVICE>
+    <MODULEVERSION>6.8</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>NETDISCOVERY</QUERY>
+</REQUEST>';
+
+        //inventory - NETDISCOVERY with discovery mode
+        $converter = new Converter();
+        $json = json_decode($converter->convert($xml_source));
+
+        $data = (array) $json->content;
+        $inventory = new Inventory();
+        $this->assertTrue($inventory->setData($json));
+
+        //Prepare the inventory
+        $main = new \Glpi\Inventory\MainAsset\NetworkEquipment($network_equipement, $json);
+        $main->setAgent($agent)->setExtraData($data);
+        $main->checkConf(new Conf());
+        $main->setDiscovery(true);
+        $inventory->setDiscovery(true);
+
+        //Handle the inventory
+        $inventory->doInventory();
+
+        //Check that ports
+        $ports = $networkPort->find([
+            'itemtype' => \NetworkEquipment::class,
+            'items_id' => $network_equipement->fields['id'],
+        ]);
+        $this->assertCount(1, $ports);
+
+        //Verif if log is created
+        $this->assertEquals(0, count($rule_matched_log->find([
+            'itemtype' => \NetworkEquipment::class,
+            'items_id' => $network_equipement->fields['id'],
+            'method' => 'netdiscovery',
+        ])));
+    }
+
+    public function testNeedToBeUpdatedFromDiscovery()
+    {
+        // Test 1: No IPs in discovery data - should return false
+        $val = new \stdClass();
+        $networkEquipment = $this->createItem(\NetworkEquipment::class, [
+            'name' => 'Test Network Equipment 1',
+            'entities_id' => 0,
+        ]);
+
+        $result = \Glpi\Inventory\MainAsset\NetworkEquipment::needToBeUpdatedFromDiscovery($networkEquipment, $val);
+        $this->assertFalse($result, 'Should return false when no IPs in discovery data');
+
+        // Test 2: Discovery IP already exists on equipment - should return false
+        $val->ips = ['192.168.1.100'];
+
+        // Create a network port with this IP
+        $networkPort = $this->createItem(\NetworkPort::class, [
+            'itemtype' => 'NetworkEquipment',
+            'items_id' => $networkEquipment->getID(),
+            'name' => 'Management',
+            'is_dynamic' => 1,
+        ]);
+
+        // Add IP address to the port
+        $networkname = $this->createItem(\NetworkName::class, [
+            'itemtype' => 'NetworkPort',
+            'items_id' => $networkPort->getID(),
+        ]);
+
+        $this->createItem(\IPAddress::class, [
+            'itemtype' => 'NetworkName',
+            'items_id' => $networkname->getID(),
+            'mainitems_id' => $networkEquipment->getID(),
+            'mainitemtype' => 'NetworkEquipment',
+            'name' => '192.168.1.100',
+            'is_dynamic' => 1,
+        ]);
+
+        $result = \Glpi\Inventory\MainAsset\NetworkEquipment::needToBeUpdatedFromDiscovery($networkEquipment, $val);
+        $this->assertFalse($result, 'Should return false when discovery IP already exists on equipment');
+
+        // Test 3: Discovery IP is new (not on equipment) - should return true
+        $val->ips = ['192.168.1.200'];
+
+        $result = \Glpi\Inventory\MainAsset\NetworkEquipment::needToBeUpdatedFromDiscovery($networkEquipment, $val);
+        $this->assertTrue($result, 'Should return true when discovery IP is new and not on equipment');
+
+        // Test 4: Multiple IPs - one exists, one is new - should return true
+        $val->ips = ['192.168.1.100', '192.168.1.201'];
+
+        $result = \Glpi\Inventory\MainAsset\NetworkEquipment::needToBeUpdatedFromDiscovery($networkEquipment, $val);
+        $this->assertTrue($result, 'Should return true when at least one discovery IP is new');
+
+        // Test 5: Multiple IPs - all exist - should return false
+        // Add the second IP
+        $this->createItem(\IPAddress::class, [
+            'itemtype' => 'NetworkName',
+            'items_id' => $networkname->getID(),
+            'mainitems_id' => $networkEquipment->getID(),
+            'mainitemtype' => 'NetworkEquipment',
+            'name' => '192.168.1.201',
+            'is_dynamic' => 1,
+        ]);
+
+        $result = \Glpi\Inventory\MainAsset\NetworkEquipment::needToBeUpdatedFromDiscovery($networkEquipment, $val);
+        $this->assertFalse($result, 'Should return false when all discovery IPs exist on equipment');
+
+        // Test 6: Blacklisted IP - should return false
+        $this->createItem(\Blacklist::class, [
+            'type' => \Blacklist::IP,
+            'name' => '10.0.0.1',
+            'value' => '10.0.0.1',
+        ]);
+
+        $val->ips = ['10.0.0.1'];
+        $result = \Glpi\Inventory\MainAsset\NetworkEquipment::needToBeUpdatedFromDiscovery($networkEquipment, $val);
+        $this->assertFalse($result, 'Should return false when discovery IP is blacklisted');
+
+        // Test 7: Mix of blacklisted and new IP - should return true (new IP not blacklisted)
+        $val->ips = ['10.0.0.1', '192.168.1.250'];
+        $result = \Glpi\Inventory\MainAsset\NetworkEquipment::needToBeUpdatedFromDiscovery($networkEquipment, $val);
+        $this->assertTrue($result, 'Should return true when at least one IP is new and not blacklisted');
+
+        // Test 8: Non-dynamic IP should not prevent update - should return true
+        $networkEquipment2 = $this->createItem(\NetworkEquipment::class, [
+            'name' => 'Test Network Equipment 2',
+            'entities_id' => 0,
+        ]);
+
+        $networkPort2 = $this->createItem(\NetworkPort::class, [
+            'itemtype' => 'NetworkEquipment',
+            'items_id' => $networkEquipment2->getID(),
+            'name' => 'Management',
+            'is_dynamic' => 0,  // Not dynamic
+        ]);
+
+        $networkname2 = $this->createItem(\NetworkName::class, [
+            'itemtype' => 'NetworkPort',
+            'items_id' => $networkPort2->getID(),
+        ]);
+
+        // Add a non-dynamic IP
+        $this->createItem(\IPAddress::class, [
+            'itemtype' => 'NetworkName',
+            'items_id' => $networkname2->getID(),
+            'mainitems_id' => $networkEquipment2->getID(),
+            'mainitemtype' => 'NetworkEquipment',
+            'name' => '192.168.2.100',
+            'is_dynamic' => 0,  // Not dynamic
+        ]);
+
+        $val->ips = ['192.168.2.100'];
+        $result = \Glpi\Inventory\MainAsset\NetworkEquipment::needToBeUpdatedFromDiscovery($networkEquipment2, $val);
+        $this->assertTrue($result, 'Should return true when IP exists but is not dynamic');
+
+        // Test 9: Empty IPs array - should return false
+        $val->ips = [];
+        $result = \Glpi\Inventory\MainAsset\NetworkEquipment::needToBeUpdatedFromDiscovery($networkEquipment2, $val);
+        $this->assertFalse($result, 'Should return false when IPs array is empty');
+    }
 }

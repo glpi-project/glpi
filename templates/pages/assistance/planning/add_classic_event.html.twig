@@ -64,12 +64,22 @@
                     })]) %}
                 </span>
             {% endif %}
-            {% do call('Dropdown::showTimeStamp', ['plan[_duration]', {
-                min: 0,
-                max: 50 * constant('HOUR_TIMESTAMP'),
-                value: default_delay,
-                emptylabel: display_dates ? __('Specify an end date') : constant('Dropdown::EMPTY_VALUE'),
-            }]) %}
+
+            {% if default_delay <= 180000 %}
+                {% do call('Dropdown::showTimeStamp', ['plan[_duration]', {
+                    min: 0,
+                    max: 50 * constant('HOUR_TIMESTAMP'),
+                    value: default_delay,
+                    emptylabel: display_dates ? __('Specify an end date') : constant('Dropdown::EMPTY_VALUE'),
+                }]) %}
+            {% else %}
+                {{ fields.hiddenField('plan[_duration]', default_delay) }}
+                {{ fields.htmlField(
+                    '',
+                    default_delay|formatted_duration,
+                    ''
+                ) }}
+            {% endif %}
             <br>
             <div id="date_end{{ rand }}"></div>
 
