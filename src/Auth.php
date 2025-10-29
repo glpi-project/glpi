@@ -909,7 +909,7 @@ class Auth extends CommonGLPI
                 ) {
                     // Case of using external auth and no LDAP servers, so get data from external auth
                     $this->user->getFromSSO();
-                    $this->user_present = $this->user->getFromDBbyName($this->user->fields['name']);
+                    $this->user_present = !$this->user->isNewItem();
                 } else {
                     if ($this->user->fields['authtype'] === self::LDAP) {
                         if (!$ldapservers_status) {

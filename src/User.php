@@ -2544,6 +2544,9 @@ class User extends CommonDBTM implements TreeBrowseInterface
             }
         }
 
+        // Load data from any potential existing user
+        $this->getFromDBbyName($this->fields['name']);
+
         if (count($a_field) == 0) {
             return true;
         }
