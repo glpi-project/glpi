@@ -48,6 +48,7 @@ use Laminas\Mail\Storage\Message;
 use Laminas\Mail\Storage\Part;
 use Laminas\Mail\Storage\Writable\WritableInterface;
 use LitEmoji\LitEmoji;
+use Safe\Exceptions\DatetimeException;
 use Safe\Exceptions\IconvException;
 
 use function Safe\base64_decode;
@@ -1361,7 +1362,12 @@ class MailCollector extends CommonDBTM
 
         $reply_to_addr = $this->getEmailFromHeader($message, 'reply-to');
 
-        $date         = date("Y-m-d H:i:s", strtotime($message->getHeader('date', 'string')));
+        try {
+            $date         = date("Y-m-d H:i:s", strtotime($message->getHeader('date', 'string')));
+        } catch (DatetimeException $e) {
+            //wrong date, ignoring
+            $date = null;
+        }
         $mail_details = [];
 
         // Construct to and cc arrays
