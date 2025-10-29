@@ -431,6 +431,15 @@ class AuthLDAP extends CommonDBTM
         if (!Config::canUpdate()) {
             return false;
         }
+
+        // warning and no form if can't read keyfile
+        $glpi_encryption_key = new GLPIKey();
+        if ($glpi_encryption_key->hasReadErrors()) {
+            $glpi_encryption_key->showReadErrors();
+
+            return false;
+        }
+
         if (empty($ID)) {
             $this->getEmpty();
             if (isset($options['preconfig'])) {
@@ -593,6 +602,13 @@ class AuthLDAP extends CommonDBTM
      */
     public function showFormAdvancedConfig()
     {
+        // warning and no form if can't read keyfile
+        $glpi_encryption_key = new GLPIKey();
+        if ($glpi_encryption_key->hasReadErrors()) {
+            $glpi_encryption_key->showReadErrors();
+
+            return;
+        }
 
         $ID = $this->getField('id');
         $hidden = '';

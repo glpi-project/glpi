@@ -119,6 +119,51 @@ class GLPIKey
     }
 
     /**
+     * Check if key is valid
+     *
+     * @return string[]
+     */
+    public function getKeyFileReadErrors(): array
+    {
+        $errors = [];
+        if (!file_exists($this->keyfile)) {
+            $errors[] = sprintf(__s('The security key file does not exist. You have to run the "%s" command to generate a key.'), 'php bin/console security:change_key');
+
+            return $errors; // early return, as, if file does not exist, no need to check further
+        }
+        if (false === ($key = @file_get_contents($this->keyfile))) {
+            $errors[] = sprintf(__s("Unable to get security key file contents. Fix file permissions of %s."), $this->keyfile);
+
+            return $errors; // early return, as, if file does not exist, no need to check further
+        }
+        if (strlen($key) !== SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_KEYBYTES) {
+            $errors[] = sprintf(__s('Invalid security key file contents. You have to run the "%s" command to regenerate a key.'), 'php bin/console security:change_key');
+        }
+
+        return $errors;
+    }
+
+    public function hasReadErrors(): bool
+    {
+        return !empty($this->getKeyFileReadErrors());
+    }
+
+    public function showReadErrors(): void
+    {
+        $glpi_key_read_errors = $this->getKeyFileReadErrors();
+        if (!empty($glpi_key_read_errors)) {
+            \Glpi\Application\View\TemplateRenderer::getInstance()->display(
+                '/central/messages.html.twig',
+                [
+                    'messages' => [
+                        'errors' => $glpi_key_read_errors,
+                    ],
+                ]
+            );
+        }
+    }
+
+    /**
      * Get GLPI security key used for decryptable passwords
      *
      * @return string|null

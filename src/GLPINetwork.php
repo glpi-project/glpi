@@ -46,8 +46,7 @@ class GLPINetwork extends CommonGLPI
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item->getType() == 'Config') {
-            $glpiNetwork = new self();
-            $glpiNetwork->showForConfig();
+            self::showForConfig();
         }
         return true;
     }
@@ -58,9 +57,17 @@ class GLPINetwork extends CommonGLPI
             return;
         }
 
-        $registration_key = self::getRegistrationKey();
+        // warning and no form if can't read keyfile
+        $glpi_encryption_key = new GLPIKey();
+        if ($glpi_encryption_key->hasReadErrors()) {
+            $glpi_encryption_key->showReadErrors();
+
+            return;
+        }
 
         $canedit = Config::canUpdate();
+        $registration_key = self::getRegistrationKey();
+
         if ($canedit) {
             echo "<form name='form' action=\"" . Toolbox::getItemTypeFormURL(Config::class) . "\" method='post'>";
         }
