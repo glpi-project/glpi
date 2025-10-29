@@ -1,0 +1,116 @@
+{
+    "version": 1,
+    "forms": [
+        {
+            "id": 186,
+            "uuid": "5ba43fed-528d-4d79-bb2e-aa81803daa2f",
+            "name": "Test form",
+            "header": "",
+            "description": "",
+            "entity_name": "Root entity > _test_root_entity",
+            "is_recursive": true,
+            "is_active": true,
+            "submit_button_visibility_strategy": "",
+            "illustration": "",
+            "submit_button_conditions": [],
+            "sections": [
+                {
+                    "id": 167,
+                    "uuid": "5443115b-dcd8-43fa-afc4-d443295ddea2",
+                    "name": "First section",
+                    "description": "",
+                    "rank": 0,
+                    "visibility_strategy": "",
+                    "conditions": []
+                }
+            ],
+            "comments": [],
+            "questions": [
+                {
+                    "id": 210,
+                    "uuid": "8ff0d090-762f-4029-a910-8b110d3f2aea",
+                    "name": "My item question",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeItem",
+                    "is_mandatory": false,
+                    "vertical_rank": 0,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": null,
+                    "extra_data": {
+                        "itemtype": "Computer",
+                        "root_items_id": 0,
+                        "subtree_depth": 0,
+                        "selectable_tree_root": false
+                    },
+                    "section_id": 167,
+                    "visibility_strategy": "",
+                    "validation_strategy": "",
+                    "conditions": [],
+                    "validation_conditions": []
+                },
+                {
+                    "id": 211,
+                    "uuid": "22351e03-f4fe-4d11-ae1e-ec91097a8089",
+                    "name": "My other question",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "is_mandatory": false,
+                    "vertical_rank": 1,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": "",
+                    "extra_data": null,
+                    "section_id": 167,
+                    "visibility_strategy": "visible_if",
+                    "validation_strategy": "",
+                    "conditions": [
+                        {
+                            "item_uuid": "8ff0d090-762f-4029-a910-8b110d3f2aea",
+                            "item_type": "question",
+                            "value_operator": "equals",
+                            "logic_operator": "and",
+                            "value": {
+                                "itemtype": "Computer",
+                                "items_id": "My computer"
+                            }
+                        }
+                    ],
+                    "validation_conditions": []
+                }
+            ],
+            "policies": [
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "config": {
+                        "user_ids": [
+                            "all"
+                        ],
+                        "group_ids": [],
+                        "profile_ids": []
+                    },
+                    "is_active": true
+                }
+            ],
+            "destinations": [
+                {
+                    "id": 171,
+                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "name": "Ticket",
+                    "config": [],
+                    "creation_strategy": "",
+                    "conditions": []
+                }
+            ],
+            "translations": [],
+            "data_requirements": [
+                {
+                    "itemtype": "Entity",
+                    "name": "Root entity > _test_root_entity"
+                },
+                {
+                    "itemtype": "Computer",
+                    "name": "My computer"
+                }
+            ]
+        }
+    ]
+}

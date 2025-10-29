@@ -289,7 +289,11 @@ final class FormSerializer extends AbstractFormSerializer
         $spec->is_recursive                      = $form->fields['is_recursive'];
         $spec->is_active                         = $form->fields['is_active'];
         $spec->submit_button_visibility_strategy = $form->fields['submit_button_visibility_strategy'];
-        $spec->submit_button_conditions          = $this->prepareConditionDataForExport($form);
+
+        $spec->submit_button_conditions = $this->prepareConditionDataForExport(
+            $form,
+            $spec,
+        );
 
         // Export entity
         $entity = Entity::getById($form->fields['entities_id']);
@@ -367,7 +371,10 @@ final class FormSerializer extends AbstractFormSerializer
             $spec->rank                = $section->fields['rank'];
             $spec->description         = $section->fields['description'];
             $spec->visibility_strategy = $section->fields['visibility_strategy'];
-            $spec->conditions          = $this->prepareConditionDataForExport($section);
+            $spec->conditions          = $this->prepareConditionDataForExport(
+                $section,
+                $form_spec,
+            );
             $form_spec->sections[] = $spec;
         }
 
@@ -427,7 +434,10 @@ final class FormSerializer extends AbstractFormSerializer
             $spec->description         = $comment->fields['description'];
             $spec->section_id          = $comment->fields['forms_sections_id'];
             $spec->visibility_strategy = $comment->fields['visibility_strategy'];
-            $spec->conditions          = $this->prepareConditionDataForExport($comment);
+            $spec->conditions          = $this->prepareConditionDataForExport(
+                $comment,
+                $form_spec,
+            );
             $form_spec->comments[]     = $spec;
         }
 
@@ -494,7 +504,10 @@ final class FormSerializer extends AbstractFormSerializer
             $spec->section_id            = $question->fields['forms_sections_id'];
             $spec->visibility_strategy   = $question->fields['visibility_strategy'];
             $spec->validation_strategy   = $question->fields['validation_strategy'];
-            $spec->conditions            = $this->prepareConditionDataForExport($question);
+            $spec->conditions            = $this->prepareConditionDataForExport(
+                $question,
+                $form_spec,
+            );
             $spec->validation_conditions = $this->prepareValidationConditionDataForExport($question);
 
             // Handle dynamic fields, we can't know the values that need to be mapped
@@ -580,7 +593,8 @@ final class FormSerializer extends AbstractFormSerializer
 
     /** @return ConditionDataSpecification[] */
     private function prepareConditionDataForExport(
-        ConditionableInterface $item
+        ConditionableInterface $item,
+        FormContentSpecification $form_spec,
     ): array {
         $specs = [];
         foreach ($item->getConfiguredConditionsData() as $data) {
@@ -590,6 +604,19 @@ final class FormSerializer extends AbstractFormSerializer
             $spec->value_operator = $data->getValueOperator()->value;
             $spec->logic_operator = $data->getLogicOperator()->value;
             $spec->value          = $data->getValue();
+
+            if (
+                is_array($spec->value)
+                && isset($spec->value['itemtype'])
+                && isset($spec->value['items_id'])
+                && ($item = getItemForItemtype($spec->value['itemtype']))
+                && $item->getFromDB($spec->value['items_id'])
+            ) {
+                // Condition is on a database item, add it to the requirements
+                $requirement = DataRequirementSpecification::fromItem($item);
+                $spec->value['items_id'] = $requirement->name;
+                $form_spec->addDataRequirement($requirement);
+            }
 
             $specs[] = $spec;
         }
@@ -635,11 +662,26 @@ final class FormSerializer extends AbstractFormSerializer
                 throw new RuntimeException($message);
             }
 
+            // Insert ids for conditions on items
+            $value = $condition_spec->value;
+            if (
+                is_array($value)
+                && isset($value['itemtype'])
+                && isset($value['items_id'])
+                && getItemForItemtype($value['itemtype'])
+            ) {
+                $items_id = $mapper->getItemId(
+                    itemtype: $value['itemtype'],
+                    key: $value['items_id'],
+                );
+                $value['items_id'] = $items_id;
+            }
+
             $data[] = new ConditionData(
                 item_type     : $type->value,
                 item_uuid     : $item->fields['uuid'],
                 value_operator: $condition_spec->value_operator,
-                value         : $condition_spec->value,
+                value         : $value,
                 logic_operator: $condition_spec->logic_operator
             );
         }
@@ -853,7 +895,10 @@ final class FormSerializer extends AbstractFormSerializer
             $spec->itemtype          = $destination->fields['itemtype'];
             $spec->name              = $destination->fields['name'];
             $spec->creation_strategy = $destination->fields['creation_strategy'];
-            $spec->conditions        = $this->prepareConditionDataForExport($destination);
+            $spec->conditions        = $this->prepareConditionDataForExport(
+                $destination,
+                $form_spec,
+            );
 
             // Handle dynamic config, we can't know the values that need to be
             // mapped here so we need to let the destination object handle it
