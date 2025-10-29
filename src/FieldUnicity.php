@@ -448,7 +448,7 @@ class FieldUnicity extends CommonDropdown
 
     private function prepareInput(array $input): array|false
     {
-        if (array_key_exists('_fields', $input)) {
+        if (array_key_exists('_fields', $input) && !empty($input['_fields'])) {
             // Convert multiple values received from the UI into a coma separated list
             $input['fields'] = implode(',', $input['_fields']);
             unset($input['_fields']);
