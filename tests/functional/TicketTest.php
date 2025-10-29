@@ -9283,7 +9283,8 @@ HTML,
         ]);
 
         // Create a ticket
-        $this->setCurrentTime('2025-10-06 11:26:34'); // be sure to be on monday
+        $ticket_creation_date = '2025-10-06 11:26:34';
+        $this->setCurrentTime($ticket_creation_date); // be sure to be on monday
         $ticket = $this->createItem(
             Ticket::class,
             [
@@ -9294,7 +9295,8 @@ HTML,
         );
 
         // Add a solution
-        $this->setCurrentTime('2025-10-07 09:12:48'); // add some time to consistent stats
+        $solution_creation_date = '2025-10-07 09:12:48';
+        $this->setCurrentTime($solution_creation_date); // add some time to consistent stats
         $solution = $this->createItem(
             ITILSolution::class,
             [
@@ -9304,15 +9306,17 @@ HTML,
             ]
         );
 
+        $time_between_ticket_creation_and_solution = $calendar->getActiveTimeBetween($ticket_creation_date, $solution_creation_date);
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
-        $this->assertEquals(Ticket::SOLVED, $ticket->fields['status']);
-        $this->assertEquals(27974, $ticket->fields['solve_delay_stat']);
+        $this->assertEquals(CommonITILObject::SOLVED, $ticket->fields['status']);
+        $this->assertEquals($time_between_ticket_creation_and_solution, $ticket->fields['solve_delay_stat']);
         $this->assertEquals(0, $ticket->fields['close_delay_stat']);
         $this->assertTrue($solution->getFromDB($solution->getID()));
         $this->assertSame(CommonITILValidation::WAITING, $solution->fields['status']);
 
         // Refuse the solution
-        $this->setCurrentTime('2025-10-07 10:47:10'); // add some time to consistent stats
+        $solution_rejetion_date = '2025-10-07 10:47:10';
+        $this->setCurrentTime($solution_rejetion_date); // add some time to consistent stats
         $this->createItem(
             ITILFollowup::class,
             [
@@ -9324,21 +9328,29 @@ HTML,
             ['add_reopen']
         );
 
+        $expected_waiting_time = $calendar->getActiveTimeBetween($solution_creation_date, $solution_rejetion_date);
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
-        $this->assertEquals(Ticket::INCOMING, $ticket->fields['status']);
-        $this->assertEquals(0, $ticket->fields['solve_delay_stat']);
+        $this->assertEquals(CommonITILObject::INCOMING, $ticket->fields['status']);
+        $this->assertEquals(0, $ticket->fields['solve_delay_stat']); // solution is rejected, so not solved, so no solve delay set
         $this->assertEquals(0, $ticket->fields['close_delay_stat']);
+        $this->assertEquals(0, $ticket->fields['begin_waiting_date'], 'begin_waiting_date should be reset to 0.');
+        $this->assertEquals($expected_waiting_time, $ticket->fields['waiting_duration'], 'Unexpected waiting_duration, it should be greater than 0.');
         $this->assertTrue($solution->getFromDB($solution->getID()));
         $this->assertSame(CommonITILValidation::REFUSED, $solution->fields['status']);
 
         // Close the ticket
-        $this->setCurrentTime('2025-10-08 14:17:31'); // add some time to consistent stats
-        $this->updateItem(Ticket::class, $ticket->getID(), ['status' => Ticket::CLOSED]);
+        $ticket_closing_date = '2025-10-08 14:17:31';
+        $this->setCurrentTime($ticket_closing_date); // add some time to consistent stats
+        $this->updateItem(Ticket::class, $ticket->getID(), ['status' => CommonITILObject::CLOSED]);
 
+        // solve delay is the time elapsed between ticket creation and it's solved/closed time. It excludes the time between solution proposal and rejection
+        $delay_between_solution_proposal_and_rejection = $calendar->getActiveTimeBetween($solution_creation_date, $solution_rejetion_date);
+        $expected_solve_delay = $calendar->getActiveTimeBetween($ticket_creation_date, $ticket_closing_date) - $delay_between_solution_proposal_and_rejection;
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
-        $this->assertEquals(Ticket::CLOSED, $ticket->fields['status']);
-        $this->assertEquals(76595, $ticket->fields['solve_delay_stat']);
-        $this->assertEquals(76595, $ticket->fields['close_delay_stat']);
+        $this->assertEquals($expected_solve_delay, $ticket->fields['solve_delay_stat']);
+        $this->assertEquals($expected_solve_delay, $ticket->fields['close_delay_stat']);
+        $this->assertEquals($expected_waiting_time, $ticket->fields['waiting_duration'], 'Unexpected waiting_duration, it should be greater than 0 and unchanged.');
+        $this->assertNull($ticket->fields['begin_waiting_date'], 'begin_waiting_date should be null, ticket is closed.');
 
         // Reopen the ticket
         $this->setCurrentTime('2025-10-08 14:24:05'); // add some time to consistent stats
@@ -9354,9 +9366,11 @@ HTML,
         );
 
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
-        $this->assertEquals(Ticket::INCOMING, $ticket->fields['status']);
+        $this->assertEquals(CommonITILObject::INCOMING, $ticket->fields['status']);
         $this->assertEquals(0, $ticket->fields['solve_delay_stat']);
         $this->assertEquals(0, $ticket->fields['close_delay_stat']);
+        $this->assertEquals($expected_waiting_time, $ticket->fields['waiting_duration'], 'Unexpected waiting_duration, it should not be changed.');
+        $this->assertNull($ticket->fields['begin_waiting_date']);
     }
 
     public function testSatisfactionSurveyIsDisplayedOnHelpdesk(): void
