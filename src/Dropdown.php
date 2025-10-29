@@ -1814,6 +1814,7 @@ HTML;
         $params = [
             'itemtype_name'                         => 'itemtype',
             'items_id_name'                         => 'items_id',
+            'items_aria_label'                      => '',
             'itemtypes'                             => '',
             'default_itemtype'                      => 0,
             'default_items_id'                      => -1,
