@@ -3501,6 +3501,49 @@ final class FormMigrationTest extends DbTestCase
         ], $condition_data->getValue());
     }
 
+    public function testFormWithNullShowValueCondition(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Arrange: create a form with a condition without a show_value
+        $id = $this->createSimpleFormcreatorForm(
+            name: "Form with null show value",
+            questions: [
+                [
+                    'name'      => 'My text question',
+                    'fieldtype' => 'dropdown',
+                    'itemtype'  => ITILCategory::class,
+                    'values'    => "{\"show_ticket_categories\":\"incident\",\"show_tree_depth\":\"0\",\"show_tree_root\":\"0\",\"selectable_tree_root\":\"0\",\"entity_restrict\":0}",
+                ],
+                [
+                    'name'        => 'My other question',
+                    'fieldtype' => 'text',
+                    'show_rule'   => 2,
+                    '_conditions' => [
+                        [
+                            'plugin_formcreator_questions_id' => 'My text question',
+                            'show_condition'                  => 2,
+                            'show_value'                      => null,
+                            'show_logic'                      => 1,
+                        ],
+                    ],
+                ],
+            ],
+        );
+
+        // Act: import the form
+        $migration = new FormMigration(
+            db: $DB,
+            formAccessControlManager: FormAccessControlManager::getInstance(),
+            specificFormsIds: [$id],
+        );
+        $result = $migration->execute();
+
+        // Assert: make sure the import didn't fail
+        $this->assertFalse($result->hasErrors());
+    }
+
     protected function createSimpleFormcreatorForm(
         string $name,
         array $questions,
