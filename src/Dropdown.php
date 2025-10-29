@@ -1861,6 +1861,7 @@ HTML;
         $p_ajax = [
             'idtable'                         => '__VALUE__',
             'name'                            => $params['items_id_name'],
+            'aria_label'                      => $params['items_aria_label'],
             'entity_restrict'                 => $params['entity_restrict'],
             'showItemSpecificity'             => $params['showItemSpecificity'],
             'rand'                            => $params['rand'],
