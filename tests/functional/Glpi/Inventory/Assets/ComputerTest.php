@@ -1903,4 +1903,156 @@ class ComputerTest extends AbstractInventoryAsset
         ]);
         $this->assertCount(1, $locks);
     }
+
+    public function testManyUsers(): void
+    {
+        $computer = new \Computer();
+        $json_source = <<<JSON
+{
+   "action": "inventory",
+   "content": {
+      "hardware": {
+         "chassis_type": "Other",
+         "defaultgateway": "10.10.4.1",
+         "description": "BAL-COD-TS01",
+         "dns": "10.10.4.30",
+         "lastloggeduser": "DyukovAA",
+         "memory": 65535,
+         "name": "BAL-COD-TS01",
+         "uuid": "ECA52C42-3AE7-62E9-542D-CF89786BEA15",
+         "vmsystem": "VMware",
+         "winlang": "1049",
+         "winowner": "Пользователь Windows",
+         "winprodid": "00377-60000-00000-AA934",
+         "winprodkey": "WC2BQ-8NRM3-FDDYY-2BFGV-KHKQY",
+         "workgroup": "xxxxxxxxx.local"
+      },
+      "users": [
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User00"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User01"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User02"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User03"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User04"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User05"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User06"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User07"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User08"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User09"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User10"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User11"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User12"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User13"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User14"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User15"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User16"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User17"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User18"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User19"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User20"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User21"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User22"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User23"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User24"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User25"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User26"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User27"
+         }
+      ],
+      "versionclient": "GLPI-Inventory_v1.15"
+   },
+   "deviceid": "BAL-COD-TS01.xxxxxxxxx.local-2025-10-29-09-41-40",
+   "itemtype": "Computer"
+}
+JSON;
+
+        $json = \Safe\json_decode($json_source);
+        $inventory = $this->doInventory($json);
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $computers_id);
+        //load computer
+        $this->assertTrue($computer->getFromDB($computers_id));
+    }
 }
