@@ -2388,7 +2388,13 @@ class MailCollector extends CommonDBTM
         }
 
         $charset = $content_type->getParameter('charset');
-        if ($charset !== null && strtoupper($charset) != 'UTF-8') {
+
+        // If charset is not specified, and not UTF-8, force fallback default encoding
+        if ($charset === null) {
+            $charset = mb_check_encoding($contents, 'UTF-8') ? 'UTF-8' : 'ISO-8859-1';
+        }
+
+        if (strtoupper($charset) != 'UTF-8') {
             /* mbstring functions do not handle the 'ks_c_5601-1987' &
              * 'ks_c_5601-1989' charsets. However, these charsets are used, for
              * example, by various versions of Outlook to send Korean characters.
