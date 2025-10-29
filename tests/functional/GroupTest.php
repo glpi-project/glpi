@@ -37,7 +37,6 @@ namespace tests\units;
 use Computer;
 use DbTestCase;
 use Group;
-use Group_Item;
 use Group_User;
 
 class GroupTest extends DbTestCase
