@@ -27,6 +27,7 @@ The present file will list all changes made to the project; according to the
 #### Changes
 
 #### Deprecated
+- Usage of `MAIL_SMTPTLS` mode for SMTP configuration.
 
 #### Removed
 
@@ -303,7 +304,7 @@ The present file will list all changes made to the project; according to the
 - Usage of the `/marketplace` path for plugins URLs. All plugins URLs should now start with `/plugins`.
 - Usage of `GLPI_PLUGINS_PATH` javascript variable.
 - Usage of the `GLPI_FORCE_MAIL` constant.
-- Usage of `MAIL_SMTPSSL` constants.
+- Usage of `MAIL_SMTPSSL` mode for SMTP configuration.
 - Usage of `name` and `users_id_validate` parameter in `ajax/dropdownValidator.php`.
 - Usage of `users_id_validate` parameter in `front/commonitilvalidation.form.php`.
 - `front/ticket_ticket.form.php` script usage.
