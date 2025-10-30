@@ -32,29 +32,24 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Kernel\Listener\PostBootListener;
+namespace Glpi\Kernel\Listener\RequestListener;
 
-use Glpi\Debug\Profiler;
 use Glpi\Error\ErrorHandler;
 use Glpi\Kernel\ListenersPriority;
-use Glpi\Kernel\PostBootEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 final readonly class FlushBootErrors implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
         return [
-            PostBootEvent::class => ['onPostBoot', ListenersPriority::POST_BOOT_LISTENERS_PRIORITIES[self::class]],
+            KernelEvents::REQUEST => ['onKernelRequest', ListenersPriority::REQUEST_LISTENERS_PRIORITIES[self::class]],
         ];
     }
 
-    public function onPostBoot(): void
+    public function onKernelRequest(): void
     {
-        Profiler::getInstance()->start('FlushBootErrors::execute', Profiler::CATEGORY_BOOT);
-
         ErrorHandler::disableBufferAndFlushMessages();
-
-        Profiler::getInstance()->stop('FlushBootErrors::execute');
     }
 }
