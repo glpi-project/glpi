@@ -85,7 +85,7 @@
       {% endif %}
    </div>
 
-   {% if not template_preview %}
+   {% if not template_preview and not show_extra_fields %}
        {% if not item.isNewItem() %}
            {{ include('components/itilobject/mainform_open.html.twig') }}
        {% endif %}
