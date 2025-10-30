@@ -112,10 +112,11 @@ final class TitleField extends AbstractConfigField implements DestinationFieldCo
             </script>
 TWIG;
 
+        $tag_manager = new FormTagsManager();
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
             'form_id'    => $form->fields['id'],
-            'value'      => $config->getValue(),
+            'value'      => $tag_manager->refreshTagsContent($config->getValue()),
             'input_name' => $input_name . "[" . SimpleValueConfig::VALUE . "]",
             'options'    => $display_options,
         ]);

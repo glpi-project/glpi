@@ -79,6 +79,17 @@ final class CommentTitleTagProvider implements TagProviderInterface, TagWithIdVa
         return Comment::class;
     }
 
+    #[Override]
+    public function getTagFromRawValue(string $value): ?Tag
+    {
+        $comment = Comment::getById((int) $value);
+        if (!$comment) {
+            return null;
+        }
+
+        return $this->getTitleTagForComment($comment);
+    }
+
     public function getTitleTagForComment(Comment $comment): Tag
     {
         return new Tag(

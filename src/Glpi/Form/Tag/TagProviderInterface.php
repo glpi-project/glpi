@@ -56,4 +56,6 @@ interface TagProviderInterface
         string $value,
         AnswersSet $answers_set
     ): string;
+
+    public function getTagFromRawValue(string $value): ?Tag;
 }

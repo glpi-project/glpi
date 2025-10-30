@@ -73,6 +73,17 @@ final class FormTagProvider implements TagProviderInterface, TagWithIdValueInter
         return Form::class;
     }
 
+    #[Override]
+    public function getTagFromRawValue(string $value): ?Tag
+    {
+        $form = Form::getById((int) $value);
+        if (!$form) {
+            return null;
+        }
+
+        return $this->getTagForForm($form);
+    }
+
     public function getTagForForm(Form $form): Tag
     {
         return new Tag(
