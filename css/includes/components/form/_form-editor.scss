@@ -426,7 +426,8 @@ input.value-selector {
         display: flex;
         flex-wrap: wrap;
 
-        &:not(:has(> :nth-child(2).d-none)) {
+        &:not(:has(> :nth-child(2).d-none)),
+        &:not(:has(> :nth-child(3).d-none)) {
             > div:not(:only-child) {
                 &:first-child {
                     .select2-selection {
@@ -471,7 +472,8 @@ input.value-selector {
             margin-right: auto;
         }
 
-        &:not(:has(> :nth-child(2).d-none)) {
+        &:not(:has(> :nth-child(2).d-none)),
+        &:not(:has(> :nth-child(3).d-none)) {
             > div:not(:only-child) {
                 &:first-child {
                     .select2-selection {
