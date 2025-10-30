@@ -21,7 +21,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-30 07:22+0000\n"
+"POT-Creation-Date: 2025-10-30 08:19+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
 "Last-Translator: gyeongho kang, 2025\n"
 "Language-Team: Korean (Korea) (https://app.transifex.com/glpi/teams/1637/ko_KR/)\n"
@@ -21786,7 +21786,8 @@ msgid "An addressable network is a network defined on an equipment"
 msgstr "주소 부여가 가능한 네트워크가 장비에 설정된 네트워크입니다"
 
 #: src/IPNetwork.php:332
-msgid "Missing network property (In CIDR notation. Ex: 192.168.1.1/24)"
+#, php-format
+msgid "Missing network property (In CIDR notation. Ex: %s)"
 msgstr ""
 
 #: src/IPNetwork.php:343

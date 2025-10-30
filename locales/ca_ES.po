@@ -12,7 +12,6 @@
 # Ivan Fustero, 2022
 # ramon lopez <info@proferamon.com>, 2022
 # DOMBRE Julien <moyo@indepnet.net>, 2023
-# Cédric Anne, 2023
 # Oriol Lladó, 2023
 # Lluís Forns Puigmartí, 2024
 # Joan F, 2024
@@ -21,15 +20,16 @@
 # Nuria Costa <nuria.costa@uvic.cat>, 2025
 # David Marti, 2025
 # Jordi Domene, 2025
+# Cédric Anne, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-30 07:22+0000\n"
+"POT-Creation-Date: 2025-10-30 08:19+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Jordi Domene, 2025\n"
+"Last-Translator: Cédric Anne, 2025\n"
 "Language-Team: Catalan (Spain) (https://app.transifex.com/glpi/teams/1637/ca_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1063,7 +1063,8 @@ msgstr "Nom de la plantilla"
 #: src/Profile.php:3407
 msgid "Template"
 msgid_plural "Templates"
-msgstr[0] "Plantilles"
+msgstr[0] "Plantilla"
+msgstr[1] "Plantilles"
 
 #: templates/components/form/header_content.html.twig
 #: templates/components/form/computervirtualmachine.html.twig
@@ -22252,7 +22253,8 @@ msgid "An addressable network is a network defined on an equipment"
 msgstr "Una xarxa adreçable és una xarxa definida en un equip"
 
 #: src/IPNetwork.php:332
-msgid "Missing network property (In CIDR notation. Ex: 192.168.1.1/24)"
+#, php-format
+msgid "Missing network property (In CIDR notation. Ex: %s)"
 msgstr ""
 
 #: src/IPNetwork.php:343

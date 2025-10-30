@@ -12,15 +12,16 @@
 # Zornitsa Koleva <zkoleva_@abv.bg>, 2025
 # Yoan Bojilov <admin@videnov.bg>, 2025
 # Konstantin Kabassanov <Konstantin.Kabassanov@lip6.fr>, 2025
+# Cédric Anne, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-30 07:22+0000\n"
+"POT-Creation-Date: 2025-10-30 08:19+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Konstantin Kabassanov <Konstantin.Kabassanov@lip6.fr>, 2025\n"
+"Last-Translator: Cédric Anne, 2025\n"
 "Language-Team: Bulgarian (Bulgaria) (https://app.transifex.com/glpi/teams/1637/bg_BG/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1051,7 +1052,8 @@ msgstr "Име на шаблона"
 #: src/Profile.php:3407
 msgid "Template"
 msgid_plural "Templates"
-msgstr[0] "Шаблони"
+msgstr[0] "Шаблон"
+msgstr[1] "Шаблони"
 
 #: templates/components/form/header_content.html.twig
 #: templates/components/form/computervirtualmachine.html.twig
@@ -22283,8 +22285,9 @@ msgid "An addressable network is a network defined on an equipment"
 msgstr "В оборудването е дефинирана адресируема мрежа"
 
 #: src/IPNetwork.php:332
-msgid "Missing network property (In CIDR notation. Ex: 192.168.1.1/24)"
-msgstr "Липсва мрежово свойство (в CIDR нотация. Напр.: 192.168.1.1/24)"
+#, php-format
+msgid "Missing network property (In CIDR notation. Ex: %s)"
+msgstr "Липсва мрежово свойство (в CIDR нотация. Напр.: %s)"
 
 #: src/IPNetwork.php:343
 msgid "Invalid input format for the network"

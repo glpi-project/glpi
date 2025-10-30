@@ -13,15 +13,16 @@
 # Appukonrad <appukonrad@gmail.com>, 2023
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # David Stepan <stepand@tiscali.cz>, 2025
+# Cédric Anne, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-30 07:22+0000\n"
+"POT-Creation-Date: 2025-10-30 08:19+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: David Stepan <stepand@tiscali.cz>, 2025\n"
+"Last-Translator: Cédric Anne, 2025\n"
 "Language-Team: Czech (Czech Republic) (https://app.transifex.com/glpi/teams/1637/cs_CZ/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23189,8 +23190,9 @@ msgid "An addressable network is a network defined on an equipment"
 msgstr "Adresovatelná síť je ta, která je určená na síťovém zařízení"
 
 #: src/IPNetwork.php:332
-msgid "Missing network property (In CIDR notation. Ex: 192.168.1.1/24)"
-msgstr "Chybějící síťová vlastnost (v notaci CIDR. Příklad: 192.168.1.1/24)"
+#, php-format
+msgid "Missing network property (In CIDR notation. Ex: %s)"
+msgstr "Chybějící síťová vlastnost (v notaci CIDR. Příklad: %s)"
 
 #: src/IPNetwork.php:343
 msgid "Invalid input format for the network"

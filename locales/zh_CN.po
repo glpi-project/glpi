@@ -17,19 +17,19 @@
 # Fung <fungmail@qq.com>, 2023
 # aleixcox, 2024
 # DOMBRE Julien <moyo@indepnet.net>, 2024
-# Cédric Anne, 2024
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # liAnGjiA <liangjia@qq.com>, 2025
 # DWXXX, 2025
+# Cédric Anne, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-30 07:22+0000\n"
+"POT-Creation-Date: 2025-10-30 08:19+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: DWXXX, 2025\n"
+"Last-Translator: Cédric Anne, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/glpi/teams/1637/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21800,8 +21800,9 @@ msgid "An addressable network is a network defined on an equipment"
 msgstr "可寻址网络是设备中定义了的网络"
 
 #: src/IPNetwork.php:332
-msgid "Missing network property (In CIDR notation. Ex: 192.168.1.1/24)"
-msgstr "缺少网络属性 (以CIDR 记法 . 如: 192.168.1.1/24)"
+#, php-format
+msgid "Missing network property (In CIDR notation. Ex: %s)"
+msgstr "缺少网络属性 (以CIDR 记法 . 如: %s)"
 
 #: src/IPNetwork.php:343
 msgid "Invalid input format for the network"

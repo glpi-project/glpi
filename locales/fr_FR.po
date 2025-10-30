@@ -35,7 +35,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-30 07:22+0000\n"
+"POT-Creation-Date: 2025-10-30 08:19+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
 "Last-Translator: Cédric Anne, 2025\n"
 "Language-Team: French (France) (https://app.transifex.com/glpi/teams/1637/fr_FR/)\n"
@@ -13895,11 +13895,15 @@ msgid ""
 "The security key file does not exist. You have to run the \"%s\" command to "
 "generate a key."
 msgstr ""
+"Le fichier contenant la clé de sécurité n'existe pas. Vous devez exécuter la"
+" commande \"%s\" pour générer une clé."
 
 #: src/GLPIKey.php:135
 #, php-format
 msgid "Unable to get security key file contents. Fix file permissions of %s."
 msgstr ""
+"Impossible de lire le contenu du fichier de clé de sécurité. Vous devez "
+"corriger les permissions d'accès au fichier %s."
 
 #: src/GLPIKey.php:140
 #, php-format
@@ -13907,6 +13911,8 @@ msgid ""
 "Invalid security key file contents. You have to run the \"%s\" command to "
 "regenerate a key."
 msgstr ""
+"Le contenu du fichier de clé de sécurité est invalide. Vous devez exécuter "
+"la commande \"%s\" pour regénérer une clé."
 
 #: src/Vlan.php:48
 msgid "VLAN"
@@ -16564,12 +16570,12 @@ msgstr "Gestion unitaire"
 #: src/Dropdown.php:4012
 #, php-format
 msgid "My %s"
-msgstr ""
+msgstr "Mes %s"
 
 #: src/Dropdown.php:4121
 #, php-format
 msgid "My groups %s"
-msgstr ""
+msgstr "Mes groupes %s"
 
 #: src/Dropdown.php:4234
 msgid "version"
@@ -16582,7 +16588,7 @@ msgstr "Logiciels installés"
 #: src/Dropdown.php:4368
 #, php-format
 msgid "Connected %s"
-msgstr ""
+msgstr "%s connectés"
 
 #: src/RichText/RichText.php:547 src/Marketplace/View.php:763
 #: src/Impact.php:1129
@@ -22956,9 +22962,9 @@ msgid "An addressable network is a network defined on an equipment"
 msgstr "Un réseau adressable est un réseau défini sur un équipement"
 
 #: src/IPNetwork.php:332
-msgid "Missing network property (In CIDR notation. Ex: 192.168.1.1/24)"
-msgstr ""
-"Propriété réseau manquante (dans la notation CIDR. Ex: 192.168.1.1/24)"
+#, php-format
+msgid "Missing network property (In CIDR notation. Ex: %s)"
+msgstr "Propriété réseau manquante (dans la notation CIDR. Ex: %s)"
 
 #: src/IPNetwork.php:343
 msgid "Invalid input format for the network"

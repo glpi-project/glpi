@@ -42,20 +42,20 @@
 # Lucas Barreto, 2024
 # Guilherme Montelo, 2024
 # Campo Largo, 2024
-# Cédric Anne, 2024
 # Diego Nobre <diego@koruma.com.br>, 2024
 # Nathan Calheiros, 2025
 # Eduardo Mozart de Oliveira <eduardomozart182@gmail.com>, 2025
 # pedroalves5770, 2025
+# Cédric Anne, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-30 07:22+0000\n"
+"POT-Creation-Date: 2025-10-30 08:19+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: pedroalves5770, 2025\n"
+"Last-Translator: Cédric Anne, 2025\n"
 "Language-Team: Portuguese (Brazil) (https://app.transifex.com/glpi/teams/1637/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22911,8 +22911,9 @@ msgid "An addressable network is a network defined on an equipment"
 msgstr "Uma rede endereçável é uma rede definido em um equipamento"
 
 #: src/IPNetwork.php:332
-msgid "Missing network property (In CIDR notation. Ex: 192.168.1.1/24)"
-msgstr "Propriedade de rede ausente (em notação CIDR. Ex: 192.168.1.1/24)"
+#, php-format
+msgid "Missing network property (In CIDR notation. Ex: %s)"
+msgstr "Propriedade de rede ausente (em notação CIDR. Ex: %s)"
 
 #: src/IPNetwork.php:343
 msgid "Invalid input format for the network"

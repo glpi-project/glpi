@@ -5,15 +5,16 @@
 # 
 # Translators:
 # Albion Paliqi, 2025
+# Cédric Anne, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-30 07:22+0000\n"
+"POT-Creation-Date: 2025-10-30 08:19+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Albion Paliqi, 2025\n"
+"Last-Translator: Cédric Anne, 2025\n"
 "Language-Team: Albanian (Albania) (https://app.transifex.com/glpi/teams/1637/sq_AL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -22522,8 +22523,9 @@ msgid "An addressable network is a network defined on an equipment"
 msgstr "Një rrjet i adresueshëm është një rrjet i përcaktuar në një pajisje"
 
 #: src/IPNetwork.php:332
-msgid "Missing network property (In CIDR notation. Ex: 192.168.1.1/24)"
-msgstr "Prona e rrjetit që mungon (në shënimin e CIDR. Ex: 192.168.1.1/24)"
+#, php-format
+msgid "Missing network property (In CIDR notation. Ex: %s)"
+msgstr "Prona e rrjetit që mungon (në shënimin e CIDR. Ex: %s)"
 
 #: src/IPNetwork.php:343
 msgid "Invalid input format for the network"
