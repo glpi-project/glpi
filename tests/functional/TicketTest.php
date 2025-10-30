@@ -9306,7 +9306,10 @@ HTML,
             ]
         );
 
-        $time_between_ticket_creation_and_solution = $calendar->getActiveTimeBetween($ticket_creation_date, $solution_creation_date);
+        // $time_between_ticket_creation_and_solution is the result of $calendar->getActiveTimeBetween($ticket_creation_date, $solution_creation_date);
+        // testing the value using the calendar makes no sense, if it returns a wrong value, the test will pass without we can detect it.
+        // value is a number of seconds
+        $time_between_ticket_creation_and_solution = 27974;
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
         $this->assertEquals(CommonITILObject::SOLVED, $ticket->fields['status']);
         $this->assertEquals($time_between_ticket_creation_and_solution, $ticket->fields['solve_delay_stat']);
@@ -9328,7 +9331,7 @@ HTML,
             ['add_reopen']
         );
 
-        $expected_waiting_time = $calendar->getActiveTimeBetween($solution_creation_date, $solution_rejetion_date);
+        $expected_waiting_time = 5662; // result of $calendar->getActiveTimeBetween($solution_creation_date, $solution_rejetion_date);
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
         $this->assertEquals(CommonITILObject::INCOMING, $ticket->fields['status']);
         $this->assertEquals(0, $ticket->fields['solve_delay_stat']); // solution is rejected, so not solved, so no solve delay set
@@ -9344,8 +9347,7 @@ HTML,
         $this->updateItem(Ticket::class, $ticket->getID(), ['status' => CommonITILObject::CLOSED]);
 
         // solve delay is the time elapsed between ticket creation and it's solved/closed time. It excludes the time between solution proposal and rejection
-        $delay_between_solution_proposal_and_rejection = $calendar->getActiveTimeBetween($solution_creation_date, $solution_rejetion_date);
-        $expected_solve_delay = $calendar->getActiveTimeBetween($ticket_creation_date, $ticket_closing_date) - $delay_between_solution_proposal_and_rejection;
+        $expected_solve_delay = 76595; // result of $calendar->getActiveTimeBetween($ticket_creation_date, $ticket_closing_date) - $expected_waiting_time;
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
         $this->assertEquals($expected_solve_delay, $ticket->fields['solve_delay_stat']);
         $this->assertEquals($expected_solve_delay, $ticket->fields['close_delay_stat']);
