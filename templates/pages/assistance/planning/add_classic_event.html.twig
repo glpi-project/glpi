@@ -71,6 +71,7 @@
                     max: 50 * constant('HOUR_TIMESTAMP'),
                     value: default_delay,
                     emptylabel: display_dates ? __('Specify an end date') : constant('Dropdown::EMPTY_VALUE'),
+                    rand: rand,
                 }]) %}
             {% else %}
                 {{ fields.hiddenField('plan[_duration]', default_delay) }}
@@ -93,15 +94,15 @@
                     </script>
                 {% endif %}
                 <script>
-                    {% set event_params = {
-                        duration: '__VALUE__',
-                        end: end,
-                        name: 'plan[end]',
-                        global_begin: config('planning_begin'),
-                        global_end: config('planning_end'),
-                    } %}
-                    $('#dropdown_plan[_duration]{{ rand }}').on('change', () => {
-                        $('#date_end{{ rand }}').load('{{ path('ajax/planningend.php')|e('js') }}', {{ event_params|json_encode|raw }});
+                    $('#dropdown_plan__duration_{{ rand }}').on('change', () => {
+                        const event_params = {
+                            duration: $('#dropdown_plan__duration_{{ rand }}').val(),
+                            end: '{{ end|e('js') }}',
+                            name: 'plan[end]',
+                            global_begin: '{{ config('planning_begin')|e('js') }}',
+                            global_end: '{{ config('planning_end')|e('js') }}',
+                        };
+                        $('#date_end{{ rand }}').load('{{ path('ajax/planningend.php')|e('js') }}', event_params);
                     });
                 </script>
             {% endif %}
