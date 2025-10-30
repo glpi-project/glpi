@@ -9,20 +9,20 @@
 # 李赋 <fu792659@163.com>, 2025
 # DOMBRE Julien <moyo@indepnet.net>, 2025
 # Robert Zhang, 2025
+# Cédric Anne, 2025
 # WangHongbin <wanghongbin@outlook.com>, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # liAnGjiA <liangjia@qq.com>, 2025
 # DWXXX, 2025
-# Cédric Anne, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-30 09:14+0000\n"
+"POT-Creation-Date: 2025-10-30 15:05+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Cédric Anne, 2025\n"
+"Last-Translator: DWXXX, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/glpi/teams/1637/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -584,7 +584,7 @@ msgstr "帮助"
 msgid "About"
 msgstr "关于"
 
-#: templates/layout/parts/user_header.html.twig src/Html.php:1336
+#: templates/layout/parts/user_header.html.twig src/Html.php:1338
 msgid "My settings"
 msgstr "我的设置"
 
@@ -629,7 +629,7 @@ msgstr "您正在绕过所需的更新"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/breadcrumbs.html.twig
-#: templates/layout/parts/page_header.html.twig src/Html.php:1474
+#: templates/layout/parts/page_header.html.twig src/Html.php:1476
 #: src/Glpi/Controller/Helpdesk/IndexController.php:74
 msgid "Home"
 msgstr "主页"
@@ -742,7 +742,7 @@ msgstr "传输列表"
 #: templates/pages/admin/profile/setup.html.twig front/rule.test.php:64
 #: front/dropdown.php:40 front/rulesengine.test.php:66
 #: front/documenttype.list.php:38 front/displaypreference.form.php:44
-#: front/plugin.php:48 src/Html.php:1324 src/NotificationSetting.php:101
+#: front/plugin.php:48 src/Html.php:1326 src/NotificationSetting.php:101
 #: src/Auth.php:171 src/Glpi/Event.php:206 src/Profile.php:171
 #: src/Profile.php:180 src/Profile.php:1976 src/Config.php:107
 msgid "Setup"
@@ -820,7 +820,7 @@ msgstr "已由您锁定！"
 msgid "Force unlock %1s #%2s"
 msgstr "强制解锁 %1s #%2s"
 
-#: templates/layout/parts/menu.html.twig src/Html.php:6297 src/Central.php:82
+#: templates/layout/parts/menu.html.twig src/Html.php:6299 src/Central.php:82
 #: src/Glpi/Helpdesk/HomePageTabs.php:108 src/Config.php:682
 msgid "Dashboard"
 msgstr "看板"
@@ -1007,7 +1007,7 @@ msgstr "%s-%s/%s"
 #: templates/components/form/support_hours.html.twig
 #: templates/pages/setup/calendarsegment.html.twig
 #: templates/pages/assistance/planning/availability.html.twig
-#: src/Html.php:3910 src/Html.php:4089 src/CalendarSegment.php:415
+#: src/Html.php:3912 src/Html.php:4091 src/CalendarSegment.php:415
 #: src/Holiday.php:56 src/Holiday.php:79 src/APIClient.php:144
 #: src/CronTask.php:1236 src/Calendar_Holiday.php:138
 msgid "Start"
@@ -1015,7 +1015,7 @@ msgstr "开始"
 
 #: templates/components/pager.html.twig
 #: templates/pages/assistance/stats/single_item_pager.html.twig
-#: src/Html.php:3912 src/Html.php:4093 src/CommonGLPI.php:1128
+#: src/Html.php:3914 src/Html.php:4095 src/CommonGLPI.php:1128
 msgid "Previous"
 msgstr "上一步"
 
@@ -1026,7 +1026,7 @@ msgstr "%s-%s 之于%s"
 
 #: templates/components/pager.html.twig
 #: templates/pages/assistance/stats/single_item_pager.html.twig
-#: src/Html.php:3932 src/Html.php:4154 src/CommonGLPI.php:1186
+#: src/Html.php:3934 src/Html.php:4156 src/CommonGLPI.php:1186
 msgid "Next"
 msgstr "下一步"
 
@@ -1035,8 +1035,8 @@ msgstr "下一步"
 #: templates/pages/tools/reminder.html.twig
 #: templates/pages/setup/calendarsegment.html.twig
 #: templates/pages/assistance/planning/availability.html.twig
-#: src/Entity.php:1883 src/Contract.php:1582 src/Html.php:3934
-#: src/Html.php:4158 src/CalendarSegment.php:416 src/Holiday.php:60
+#: src/Entity.php:1883 src/Contract.php:1582 src/Html.php:3936
+#: src/Html.php:4160 src/CalendarSegment.php:416 src/Holiday.php:60
 #: src/Holiday.php:87 src/APIClient.php:152 src/CronTask.php:1245
 #: src/Calendar_Holiday.php:139
 msgid "End"
@@ -1423,7 +1423,7 @@ msgstr "关闭"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 #: templates/pages/admin/user/user_picture_field.html.twig src/Entity.php:2714
-#: src/Html.php:2617 src/Html.php:2807 src/User.php:6244
+#: src/Html.php:2619 src/Html.php:2809 src/User.php:6244
 msgid "Clear"
 msgstr "清除"
 
@@ -1444,7 +1444,7 @@ msgstr "取消"
 msgid "Validate"
 msgstr "验证"
 
-#: templates/components/form/basic_inputs_macros.html.twig src/Html.php:2609
+#: templates/components/form/basic_inputs_macros.html.twig src/Html.php:2611
 msgid "Enter or select a date"
 msgstr "输入或选择一个日期"
 
@@ -1486,7 +1486,7 @@ msgid "Created from the template %s"
 msgstr "从模版 %s 创建"
 
 #: templates/components/form/reservationitem_comment.html.twig
-#: src/Glpi/Search/Provider/SQLProvider.php:6051
+#: src/Glpi/Search/Provider/SQLProvider.php:6063
 msgid "Modify the comment"
 msgstr "修改备注"
 
@@ -1557,8 +1557,8 @@ msgstr[0] "物品"
 #: src/Glpi/Inventory/Asset/Software.php:1027
 #: src/Glpi/Inventory/Asset/Software.php:1036
 #: src/Glpi/Search/Output/Spreadsheet.php:118
-#: src/Glpi/Search/Provider/SQLProvider.php:5571
-#: src/Glpi/Search/Provider/SQLProvider.php:5620
+#: src/Glpi/Search/Provider/SQLProvider.php:5583
+#: src/Glpi/Search/Provider/SQLProvider.php:5632
 #: src/Item_SoftwareLicense.php:963 src/CommonITILObject.php:6544
 #: src/CommonITILObject.php:6983 src/CommonITILObject.php:10392
 #: src/Cartridge.php:1136 src/IPNetwork.php:1088 src/Reservation.php:544
@@ -2054,7 +2054,7 @@ msgstr "无输入"
 #: templates/components/form/single-action.html.twig
 #: templates/pages/assets/template_list.html.twig
 #: templates/pages/admin/form/import/step2_preview.html.twig
-#: ajax/massiveaction.php:73 src/Html.php:2411 src/LevelAgreementLevel.php:524
+#: ajax/massiveaction.php:73 src/Html.php:2413 src/LevelAgreementLevel.php:524
 #: src/Rule.php:2190 src/RuleAction.php:92 src/Glpi/Inventory/Conf.php:973
 #: src/Link.php:632 src/Plugin.php:2704
 msgid "Action"
@@ -2324,7 +2324,7 @@ msgstr "机器"
 #: src/RuleCommonITILObject.php:892 src/RuleCommonITILObject.php:929
 #: src/Contract.php:1487 src/NetworkEquipment.php:461 src/Profile_User.php:166
 #: src/Profile_User.php:214 src/Profile_User.php:396 src/Profile_User.php:588
-#: src/Html.php:5289 src/Item_DeviceGraphicCard.php:52
+#: src/Html.php:5291 src/Item_DeviceGraphicCard.php:52
 #: src/Document_Item.php:431 src/Item_DeviceMemory.php:57
 #: src/NotificationTargetProject.php:750 src/NotificationTargetProject.php:751
 #: src/NotificationTargetCommonITILObject.php:2151
@@ -2365,9 +2365,9 @@ msgstr "机器"
 #: src/Ticket.php:4938 src/Glpi/Asset/Asset_PeripheralAsset.php:400
 #: src/Glpi/Asset/Asset_PeripheralAsset.php:554
 #: src/Glpi/Inventory/Asset/Software.php:859
-#: src/Glpi/Search/Provider/SQLProvider.php:5714
-#: src/Glpi/Search/Provider/SQLProvider.php:6167
-#: src/Glpi/Search/Provider/SQLProvider.php:6447
+#: src/Glpi/Search/Provider/SQLProvider.php:5726
+#: src/Glpi/Search/Provider/SQLProvider.php:6179
+#: src/Glpi/Search/Provider/SQLProvider.php:6459
 #: src/Glpi/Console/Ldap/SynchronizeUsersCommand.php:279
 #: src/Item_SoftwareLicense.php:1020 src/NetworkPort.php:934
 #: src/Item_DeviceProcessor.php:52 src/Item_DeviceProcessor.php:53
@@ -3863,7 +3863,7 @@ msgstr "仅搜索本地化的结果"
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 #: templates/pages/admin/ldap.user_criteria.html.twig src/Profile_User.php:188
 #: src/Profile_User.php:359 src/Profile_User.php:544 src/Html.php:163
-#: src/Html.php:4228 src/RuleTicket.php:231 src/RuleTicket.php:242
+#: src/Html.php:4230 src/RuleTicket.php:231 src/RuleTicket.php:242
 #: src/RuleTicket.php:253 src/RuleTicket.php:264 src/RuleTicket.php:320
 #: src/RuleTicket.php:337 src/RuleTicket.php:354 src/RuleTicket.php:371
 #: src/CommonDBVisible.php:206 src/CommonDBVisible.php:223
@@ -3892,12 +3892,12 @@ msgstr "仅搜索本地化的结果"
 #: src/Glpi/Search/Output/Spreadsheet.php:471
 #: src/Glpi/Search/Output/Spreadsheet.php:480
 #: src/Glpi/Search/Output/Spreadsheet.php:483
-#: src/Glpi/Search/Provider/SQLProvider.php:5479
-#: src/Glpi/Search/Provider/SQLProvider.php:5534
-#: src/Glpi/Search/Provider/SQLProvider.php:5589
-#: src/Glpi/Search/Provider/SQLProvider.php:5635
-#: src/Glpi/Search/Provider/SQLProvider.php:6176
-#: src/Glpi/Search/Provider/SQLProvider.php:6505 src/Group.php:409
+#: src/Glpi/Search/Provider/SQLProvider.php:5491
+#: src/Glpi/Search/Provider/SQLProvider.php:5546
+#: src/Glpi/Search/Provider/SQLProvider.php:5601
+#: src/Glpi/Search/Provider/SQLProvider.php:5647
+#: src/Glpi/Search/Provider/SQLProvider.php:6188
+#: src/Glpi/Search/Provider/SQLProvider.php:6517 src/Group.php:409
 #: src/Group.php:417 src/Contract_Item.php:104 src/Contract_Item.php:346
 #: src/NetworkPort.php:951 src/Reminder.php:782 src/CommonITILObject.php:6550
 #: src/CommonITILObject.php:6628 src/CommonITILObject.php:6663
@@ -4015,8 +4015,8 @@ msgstr "所有页"
 msgid "Copy names to clipboard"
 msgstr "复制名称到剪贴版"
 
-#: templates/components/search/table.html.twig src/Html.php:2084
-#: src/Html.php:2085
+#: templates/components/search/table.html.twig src/Html.php:2086
+#: src/Html.php:2087
 msgid "Check all as"
 msgstr "选择所有为"
 
@@ -4292,7 +4292,7 @@ msgstr "全部"
 #: src/Dropdown.php:1179 src/Glpi/Asset/Asset_PeripheralAsset.php:390
 #: src/Glpi/Asset/Asset_PeripheralAsset.php:547
 #: src/Glpi/Marketplace/View.php:1054
-#: src/Glpi/Search/Provider/SQLProvider.php:1966 src/Alert.php:165
+#: src/Glpi/Search/Provider/SQLProvider.php:1968 src/Alert.php:165
 #: src/SavedSearch.php:118 src/SavedSearch.php:896 src/SavedSearch.php:945
 #: src/Group_User.php:195 src/Group_User.php:459
 #: src/RuleDefineItemtype.php:105 src/ItemVirtualMachine.php:308
@@ -4322,7 +4322,7 @@ msgstr "是"
 #: src/Dropdown.php:1181 src/Glpi/Asset/Asset_PeripheralAsset.php:390
 #: src/Glpi/Asset/Asset_PeripheralAsset.php:547
 #: src/Glpi/Marketplace/View.php:1060
-#: src/Glpi/Search/Provider/SQLProvider.php:1964 src/Config.php:880
+#: src/Glpi/Search/Provider/SQLProvider.php:1966 src/Config.php:880
 #: src/Alert.php:164 src/SavedSearch.php:119 src/SavedSearch.php:893
 #: src/SavedSearch.php:946 src/Group_User.php:196 src/Group_User.php:460
 #: src/ItemVirtualMachine.php:308 src/CommonDBChild.php:1019
@@ -4342,7 +4342,7 @@ msgstr[0] "错误"
 
 #: templates/components/messages_after_redirect_toasts.html.twig
 #: templates/components/messages_after_redirect_alerts.html.twig
-#: src/Html.php:5766 src/CommonITILRecurrent.php:107 src/Planning.php:219
+#: src/Html.php:5768 src/CommonITILRecurrent.php:107 src/Planning.php:219
 #: src/Planning.php:321 js/misc.js:46 js/glpi_dialog.js:256
 #: js/glpi_dialog.js:290 js/glpi_dialog.js:397
 msgid "Information"
@@ -4999,7 +4999,7 @@ msgstr[0] "版本"
 #: src/NotificationTargetTicket.php:194 src/Entity.php:1348
 #: src/Entity.php:1367 src/Entity.php:2524 src/Entity.php:2532
 #: src/Entity.php:2554 src/Entity.php:2564 src/Entity.php:2735
-#: src/Contract.php:1519 src/Contract.php:1538 src/Html.php:6662
+#: src/Contract.php:1519 src/Contract.php:1538 src/Html.php:6664
 #: src/LevelAgreement.php:185 src/Infocom.php:1986
 #: src/Glpi/Features/PlanningEvent.php:784 src/Alert.php:115 src/Alert.php:195
 msgid "Never"
@@ -5531,7 +5531,7 @@ msgid "Back to results"
 msgstr "回到结果"
 
 #: templates/pages/tools/search_knowbaseitem.html.twig
-#: src/Glpi/Search/Provider/SQLProvider.php:6179 js/common.js:1976
+#: src/Glpi/Search/Provider/SQLProvider.php:6191 js/common.js:1976
 #: js/modules/Search/GenericView.js:69
 #: js/modules/Forms/EditorController.js:1778
 msgid "Loading..."
@@ -5593,7 +5593,7 @@ msgstr[0] "阅读了 %d 次"
 #: templates/pages/tools/kb/article.html.twig
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:145
-#: src/Glpi/Search/Provider/SQLProvider.php:6339 src/KnowbaseItem.php:1522
+#: src/Glpi/Search/Provider/SQLProvider.php:6351 src/KnowbaseItem.php:1522
 #: src/KnowbaseItem.php:1709
 msgid "This item is part of the FAQ"
 msgstr "此项是FAQ的一部分"
@@ -5932,7 +5932,7 @@ msgstr " %s 端"
 #: templates/pages/assets/cable.html.twig
 #: templates/pages/admin/transfer.html.twig
 #: templates/pages/admin/profile/assets.html.twig src/Entity.php:650
-#: src/Entity.php:1429 src/Html.php:1256 src/RuleLocation.php:81
+#: src/Entity.php:1429 src/Html.php:1258 src/RuleLocation.php:81
 #: src/Report.php:389 src/Glpi/Dashboard/Grid.php:1273 src/Glpi/Socket.php:888
 #: src/Glpi/Asset/AssetDefinitionManager.php:354 src/Glpi/Event.php:199
 #: src/Glpi/ContentTemplates/Parameters/AssetParameters.php:57
@@ -6616,7 +6616,7 @@ msgstr "显示以上结果的查询页码"
 #: templates/pages/setup/general/preferences_setup.html.twig
 #: templates/pages/admin/profile/assistance_simple.html.twig
 #: install/migrations/update_9.4.x_to_9.5.0/dashboards.php:260
-#: src/Entity.php:648 src/Entity.php:1320 src/Html.php:1277
+#: src/Entity.php:648 src/Entity.php:1320 src/Html.php:1279
 #: src/Webhook.php:450 src/Dropdown.php:1240 src/Glpi/Dashboard/Grid.php:1296
 #: src/Glpi/Dashboard/Grid.php:1312 src/Glpi/Dashboard/Grid.php:1329
 #: src/Glpi/Dashboard/Grid.php:1338 src/Glpi/Dashboard/Grid.php:1347
@@ -6925,7 +6925,7 @@ msgstr "GLPI历史延迟："
 #: src/ProfileRight.php:342 src/Item_Devices.php:1043 src/Dropdown.php:2519
 #: src/DBConnection.php:740 src/Infocom.php:808 src/Ticket.php:2241
 #: src/Glpi/Inventory/Conf.php:396 src/Glpi/Features/Inventoriable.php:216
-#: src/Glpi/Search/Provider/SQLProvider.php:6046 src/HTMLTableMain.php:227
+#: src/Glpi/Search/Provider/SQLProvider.php:6058 src/HTMLTableMain.php:227
 msgid "None"
 msgstr "无"
 
@@ -7094,7 +7094,7 @@ msgstr "恢复此项"
 msgid "Update the item"
 msgstr "更新此项"
 
-#: templates/pages/setup/general/logs_setup.html.twig src/Html.php:1543
+#: templates/pages/setup/general/logs_setup.html.twig src/Html.php:1545
 msgid "Plugins"
 msgstr "插件"
 
@@ -7447,7 +7447,7 @@ msgstr "会计年度末"
 msgid "Restrict phone management"
 msgstr "限制电话管理"
 
-#: templates/pages/setup/general/assets_setup.html.twig src/Html.php:1443
+#: templates/pages/setup/general/assets_setup.html.twig src/Html.php:1445
 #: src/RuleImportAssetCollection.php:72 src/Stat.php:1720 src/Stat.php:1732
 #: src/Stat.php:1745 src/Project.php:1502 src/Lock.php:229
 #: src/Lockedfield.php:181 src/CommonITILObject.php:10144 src/AllAssets.php:46
@@ -8163,7 +8163,7 @@ msgstr "不会显示比选择的值更久的通知。超期的通知将会被计
 #: templates/pages/management/contract.html.twig
 #: templates/pages/management/softwarelicense.html.twig
 #: src/SoftwareLicense.php:1131 src/SoftwareLicense.php:1155
-#: src/Glpi/Search/Provider/SQLProvider.php:6037
+#: src/Glpi/Search/Provider/SQLProvider.php:6049
 msgid "Unlimited"
 msgstr "无限制"
 
@@ -9678,7 +9678,7 @@ msgstr "备注描述"
 msgid ""
 "This destination is not available, the plugin \"%1$s\" is deactivated or "
 "removed."
-msgstr ""
+msgstr "目标无效, 插件 \"%1$s\" 已禁用或已移除。"
 
 #: templates/pages/admin/form/item_has_conditions_for_deletion_modal.html.twig
 msgid "Item has conditions and cannot be deleted"
@@ -9983,7 +9983,7 @@ msgstr "翻译名称"
 #: src/Glpi/Form/QuestionType/QuestionTypeDateTime.php:276
 #: src/Glpi/Form/QuestionType/QuestionTypeLongText.php:142
 #: src/Glpi/Form/QuestionType/QuestionTypeLongText.php:234
-#: src/Glpi/Search/Provider/SQLProvider.php:6689 src/CommonDBTM.php:4947
+#: src/Glpi/Search/Provider/SQLProvider.php:6701 src/CommonDBTM.php:4947
 msgid "Default value"
 msgstr "默认值"
 
@@ -10593,7 +10593,7 @@ msgstr "导入库存文件"
 msgid ""
 "You can use this menu to upload one or several inventory files. Files must "
 "have a known extension (%1$s)."
-msgstr "可用此菜单上传一个或多个资产清单文件。 文件必需包含已知扩展名 (%1$s)。"
+msgstr "可用此菜单上传一个或多个资产文件。 文件名必需有已知的扩展名 (%1$s)。"
 
 #: templates/pages/admin/inventory/upload_form.html.twig
 msgid ""
@@ -10632,7 +10632,7 @@ msgstr "保留"
 msgid ""
 "Child locations will not be transferred with the parent to avoid visibility "
 "and hierarchy issues."
-msgstr ""
+msgstr "子地址不会同上级被转移，以避免可见与等级问题。"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "Empty the location"
@@ -10691,7 +10691,7 @@ msgid "If phones are no longer used"
 msgstr "如果电话不再使用"
 
 #: templates/pages/admin/transfer.html.twig
-#: templates/pages/admin/profile/management.html.twig src/Html.php:1292
+#: templates/pages/admin/profile/management.html.twig src/Html.php:1294
 #: src/Webhook.php:454 src/Dropdown.php:1327 src/Infocom.php:172
 #: src/Glpi/Form/QuestionType/QuestionTypeItem.php:171 src/Glpi/Event.php:204
 #: src/Profile.php:177 src/Profile.php:1684 src/Config.php:968
@@ -10771,7 +10771,7 @@ msgid "Ticket creation form on login"
 msgstr "登录后创建工单"
 
 #: templates/pages/admin/profile/tools.html.twig
-#: templates/pages/admin/profile/tools_simple.html.twig src/Html.php:1301
+#: templates/pages/admin/profile/tools_simple.html.twig src/Html.php:1303
 #: src/Dropdown.php:1334 src/Ticket.php:3086 src/Glpi/Dashboard/Grid.php:1434
 #: src/Glpi/Form/QuestionType/QuestionTypeItem.php:172 src/Glpi/Event.php:203
 #: src/Profile.php:170 src/Profile.php:178 src/Profile.php:1900
@@ -10871,7 +10871,7 @@ msgstr "建立工单时就关联到设备"
 msgid "Associable items to tickets, changes and problems"
 msgstr "可关联到工单，变更和问题的项"
 
-#: templates/pages/admin/profile/admin.html.twig src/Html.php:1315
+#: templates/pages/admin/profile/admin.html.twig src/Html.php:1317
 #: src/ReservationItem.php:864
 #: src/Glpi/Form/QuestionType/QuestionTypeItem.php:173 src/Profile.php:179
 #: src/Profile.php:2307
@@ -11751,7 +11751,7 @@ msgstr "登录"
 #: front/knowbaseitemtranslation.form.php:82
 #: front/knowbaseitemtranslation.form.php:84
 #: front/knowbaseitemtranslation.form.php:88
-#: front/knowbaseitemtranslation.form.php:90 src/Html.php:1533
+#: front/knowbaseitemtranslation.form.php:90 src/Html.php:1535
 #: src/CommonDropdown.php:929 src/Glpi/Helpdesk/Tile/GlpiPageTile.php:93
 #: src/KnowbaseItem.php:105 src/NotificationTargetKnowbaseItem.php:64
 #: src/NotificationTargetKnowbaseItem.php:184
@@ -12420,12 +12420,12 @@ msgstr "传达"
 #: resources/.illustrations_translations.php:65
 msgctxt "Icon"
 msgid "Developer documentation"
-msgstr ""
+msgstr "开发人员文档"
 
 #: resources/.illustrations_translations.php:66
 msgctxt "Icon"
 msgid "Documentation"
-msgstr ""
+msgstr "文档"
 
 #: resources/.illustrations_translations.php:67
 msgctxt "Icon"
@@ -12450,7 +12450,7 @@ msgstr "工厂"
 #: resources/.illustrations_translations.php:71
 msgctxt "Icon"
 msgid "Frequently Asked Questions"
-msgstr ""
+msgstr "常见问题"
 
 #: resources/.illustrations_translations.php:72
 msgctxt "Icon"
@@ -12817,7 +12817,7 @@ msgstr "翻译"
 #: resources/.illustrations_translations.php:144
 msgctxt "Icon"
 msgid "Tutorial"
-msgstr ""
+msgstr "教程"
 
 #: resources/.illustrations_translations.php:145
 msgctxt "Icon"
@@ -12882,7 +12882,7 @@ msgstr "World"
 #: resources/.illustrations_translations.php:157
 msgctxt "Icon"
 msgid "YouTube"
-msgstr ""
+msgstr "YouTube"
 
 #: resources/.illustrations_translations.php:158
 msgctxt "Icon"
@@ -13337,32 +13337,32 @@ msgstr "运输"
 #: resources/.illustrations_translations.php:252
 msgctxt "Icon"
 msgid "developer"
-msgstr ""
+msgstr "开发人员"
 
 #: resources/.illustrations_translations.php:253
 msgctxt "Icon"
 msgid "api"
-msgstr ""
+msgstr "api"
 
 #: resources/.illustrations_translations.php:254
 msgctxt "Icon"
 msgid "code"
-msgstr ""
+msgstr "代码"
 
 #: resources/.illustrations_translations.php:255
 msgctxt "Icon"
 msgid "docs"
-msgstr ""
+msgstr "文档"
 
 #: resources/.illustrations_translations.php:256
 msgctxt "Icon"
 msgid "manual"
-msgstr ""
+msgstr "手册"
 
 #: resources/.illustrations_translations.php:257
 msgctxt "Icon"
 msgid "guide"
-msgstr ""
+msgstr "指南"
 
 #: resources/.illustrations_translations.php:258
 msgctxt "Icon"
@@ -13397,7 +13397,7 @@ msgstr "工业"
 #: resources/.illustrations_translations.php:264
 msgctxt "Icon"
 msgid "questions"
-msgstr ""
+msgstr "问题"
 
 #: resources/.illustrations_translations.php:265
 msgctxt "Icon"
@@ -13602,12 +13602,12 @@ msgstr "资产"
 #: resources/.illustrations_translations.php:305
 msgctxt "Icon"
 msgid "items"
-msgstr ""
+msgstr "设备"
 
 #: resources/.illustrations_translations.php:306
 msgctxt "Icon"
 msgid "resources"
-msgstr ""
+msgstr "资源"
 
 #: resources/.illustrations_translations.php:307
 msgctxt "Icon"
@@ -13882,12 +13882,12 @@ msgstr "l10n"
 #: resources/.illustrations_translations.php:362
 msgctxt "Icon"
 msgid "tutorial"
-msgstr ""
+msgstr "教程"
 
 #: resources/.illustrations_translations.php:363
 msgctxt "Icon"
 msgid "how-to"
-msgstr ""
+msgstr "入门"
 
 #: resources/.illustrations_translations.php:364
 msgctxt "Icon"
@@ -13957,17 +13957,17 @@ msgstr "行星"
 #: resources/.illustrations_translations.php:377
 msgctxt "Icon"
 msgid "video"
-msgstr ""
+msgstr "视频"
 
 #: resources/.illustrations_translations.php:378
 msgctxt "Icon"
 msgid "youtube"
-msgstr ""
+msgstr "youtube"
 
 #: resources/.illustrations_translations.php:379
 msgctxt "Icon"
 msgid "channel"
-msgstr ""
+msgstr "频道"
 
 #. TRANS: %1$s is the user login, %2$s is the name of the item
 #: front/change.form.php:63 front/user.form.php:86 front/user.form.php:215
@@ -15909,10 +15909,10 @@ msgstr "MSIN 为至少 8 到 10 位数的 IMSI"
 #: src/Profile_User.php:198 src/Profile_User.php:361 src/Profile_User.php:364
 #: src/Profile_User.php:367 src/Profile_User.php:369 src/Profile_User.php:546
 #: src/Profile_User.php:549 src/Profile_User.php:552 src/Profile_User.php:554
-#: src/Glpi/Search/Provider/SQLProvider.php:5582
-#: src/Glpi/Search/Provider/SQLProvider.php:5586
-#: src/Glpi/Search/Provider/SQLProvider.php:5628
-#: src/Glpi/Search/Provider/SQLProvider.php:5632
+#: src/Glpi/Search/Provider/SQLProvider.php:5594
+#: src/Glpi/Search/Provider/SQLProvider.php:5598
+#: src/Glpi/Search/Provider/SQLProvider.php:5640
+#: src/Glpi/Search/Provider/SQLProvider.php:5644
 #, php-format
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
@@ -15921,8 +15921,8 @@ msgstr "%1$s%2$s"
 #. TRANS: letter 'D' for Dynamic
 #: src/Profile_User.php:190 src/Profile_User.php:361 src/Profile_User.php:546
 #: src/Profile_User.php:994 src/Profile_User.php:1224 src/UserEmail.php:221
-#: src/Glpi/Search/Provider/SQLProvider.php:5586
-#: src/Glpi/Search/Provider/SQLProvider.php:5632
+#: src/Glpi/Search/Provider/SQLProvider.php:5598
+#: src/Glpi/Search/Provider/SQLProvider.php:5644
 msgid "D"
 msgstr "D"
 
@@ -15932,8 +15932,8 @@ msgstr "D"
 #: src/Profile_User.php:999 src/Profile_User.php:1228
 #: src/CommonDBVisible.php:225 src/CommonDBVisible.php:251
 #: src/CommonDBVisible.php:287 src/Rule.php:1960
-#: src/Glpi/Search/Provider/SQLProvider.php:5580
-#: src/Glpi/Search/Provider/SQLProvider.php:5626
+#: src/Glpi/Search/Provider/SQLProvider.php:5592
+#: src/Glpi/Search/Provider/SQLProvider.php:5638
 msgid "R"
 msgstr "R"
 
@@ -16063,19 +16063,19 @@ msgstr[0] "%1$s%2$s 秒"
 msgid "Progress"
 msgstr "进度"
 
-#: src/Html.php:1310 src/Glpi/Event.php:212
+#: src/Html.php:1312 src/Glpi/Event.php:212
 #: src/Glpi/Marketplace/NotificationTargetController.php:113
 #: src/Glpi/Search/SearchOption.php:363 src/Plugin.php:200
 msgid "Plugin"
 msgid_plural "Plugins"
 msgstr[0] "插件"
 
-#: src/Html.php:1494 src/Ticket.php:4675
+#: src/Html.php:1496 src/Ticket.php:4675
 #: src/Glpi/Helpdesk/DefaultDataManager.php:115 src/Profile.php:2688
 msgid "Create a ticket"
 msgstr "创建工单"
 
-#: src/Html.php:1505 src/NotificationTargetProject.php:780
+#: src/Html.php:1507 src/NotificationTargetProject.php:780
 #: src/NotificationTargetProject.php:798 src/NotificationTargetProblem.php:224
 #: src/NotificationTargetProblem.php:238
 #: src/NotificationTargetProjectTask.php:699
@@ -16086,272 +16086,272 @@ msgid "Ticket"
 msgid_plural "Tickets"
 msgstr[0] "工单"
 
-#: src/Html.php:1525 src/Glpi/Helpdesk/Tile/GlpiPageTile.php:94
+#: src/Html.php:1527 src/Glpi/Helpdesk/Tile/GlpiPageTile.php:94
 #: src/Glpi/Event.php:193 src/Glpi/Event.php:208 src/Profile.php:1921
 #: src/Reservation.php:56
 msgid "Reservation"
 msgid_plural "Reservations"
 msgstr[0] "预订"
 
-#: src/Html.php:1662 src/Central.php:629
+#: src/Html.php:1664 src/Central.php:629
 msgid "SQL replica: read only"
 msgstr "SQL 复制：只读"
 
-#: src/Html.php:2467
+#: src/Html.php:2469
 msgid "Selection too large, massive action disabled."
 msgstr "选择太多，禁止批量执行。"
 
-#: src/Html.php:2471
+#: src/Html.php:2473
 msgid ""
 "To increase the limit: change max_input_vars or suhosin.post.max_vars in php"
 " configuration."
 msgstr "为了提高上限: 请在php配置中更改 max_input_vars 或者 suhosin.post.max_vars。"
 
-#: src/Html.php:2511
+#: src/Html.php:2513
 msgid "Massive actions"
 msgstr "批量执行"
 
-#: src/Html.php:2814
+#: src/Html.php:2816
 msgid "Show date picker"
 msgstr "显示时间选择器"
 
-#: src/Html.php:3008 src/Html.php:3260 src/Html.php:6674
+#: src/Html.php:3010 src/Html.php:3262 src/Html.php:6676
 #: js/flatpickr_buttons_plugin.js:41
 msgid "Now"
 msgstr "现在"
 
-#: src/Html.php:3010 src/Html.php:3013 js/flatpickr_buttons_plugin.js:41
+#: src/Html.php:3012 src/Html.php:3015 js/flatpickr_buttons_plugin.js:41
 msgid "Today"
 msgstr "今天"
 
-#: src/Html.php:3017
+#: src/Html.php:3019
 msgid "Specify a date"
 msgstr "指定日期"
 
-#: src/Html.php:3022 src/LevelAgreementLevel.php:272
+#: src/Html.php:3024 src/LevelAgreementLevel.php:272
 #, php-format
 msgid "- %d hour"
 msgid_plural "- %d hours"
 msgstr[0] "- %d  小时"
 
-#: src/Html.php:3026 src/LevelAgreementLevel.php:260
+#: src/Html.php:3028 src/LevelAgreementLevel.php:260
 #, php-format
 msgid "- %d minute"
 msgid_plural "- %d minutes"
 msgstr[0] "- %d 分"
 
-#: src/Html.php:3031 src/LevelAgreementLevel.php:285
+#: src/Html.php:3033 src/LevelAgreementLevel.php:285
 #, php-format
 msgid "- %d day"
 msgid_plural "- %d days"
 msgstr[0] "- %d 天"
 
-#: src/Html.php:3035
+#: src/Html.php:3037
 msgid "last Sunday"
 msgstr "上周日"
 
-#: src/Html.php:3036
+#: src/Html.php:3038
 msgid "last Monday"
 msgstr "上周一"
 
-#: src/Html.php:3037
+#: src/Html.php:3039
 msgid "last Tuesday"
 msgstr "上周二"
 
-#: src/Html.php:3038
+#: src/Html.php:3040
 msgid "last Wednesday"
 msgstr "上周三"
 
-#: src/Html.php:3039
+#: src/Html.php:3041
 msgid "last Thursday"
 msgstr "上周四"
 
-#: src/Html.php:3040
+#: src/Html.php:3042
 msgid "last Friday"
 msgstr "上周五"
 
-#: src/Html.php:3041
+#: src/Html.php:3043
 msgid "last Saturday"
 msgstr "上周六"
 
-#: src/Html.php:3045
+#: src/Html.php:3047
 #, php-format
 msgid "- %d week"
 msgid_plural "- %d weeks"
 msgstr[0] "- %d 周"
 
-#: src/Html.php:3049
+#: src/Html.php:3051
 msgid "Beginning of the month"
 msgstr "月初"
 
-#: src/Html.php:3053
+#: src/Html.php:3055
 #, php-format
 msgid "- %d month"
 msgid_plural "- %d months"
 msgstr[0] "- %d 月"
 
-#: src/Html.php:3057
+#: src/Html.php:3059
 msgid "Beginning of the year"
 msgstr "年初"
 
-#: src/Html.php:3061
+#: src/Html.php:3063
 #, php-format
 msgid "- %d year"
 msgid_plural "- %d years"
 msgstr[0] "- %d 年"
 
-#: src/Html.php:3067 src/LevelAgreementLevel.php:267
+#: src/Html.php:3069 src/LevelAgreementLevel.php:267
 #, php-format
 msgid "+ %d hour"
 msgid_plural "+ %d hours"
 msgstr[0] "+ %d 小时"
 
-#: src/Html.php:3072 src/LevelAgreementLevel.php:281
+#: src/Html.php:3074 src/LevelAgreementLevel.php:281
 #, php-format
 msgid "+ %d day"
 msgid_plural "+ %d days"
 msgstr[0] "+ %d 天"
 
-#: src/Html.php:3076
+#: src/Html.php:3078
 #, php-format
 msgid "+ %d week"
 msgid_plural "+ %d weeks"
 msgstr[0] "+ %d 周"
 
-#: src/Html.php:3080
+#: src/Html.php:3082
 msgid "End of the month"
 msgstr "月底"
 
-#: src/Html.php:3084
+#: src/Html.php:3086
 #, php-format
 msgid "+ %d month"
 msgid_plural "+ %d months"
 msgstr[0] "+ %d  月"
 
-#: src/Html.php:3088
+#: src/Html.php:3090
 msgid "End of the year"
 msgstr "年底"
 
-#: src/Html.php:3092
+#: src/Html.php:3094
 #, php-format
 msgid "+ %d year"
 msgid_plural "+ %d years"
 msgstr[0] "+ %d 年"
 
-#: src/Html.php:3555 src/ValidationStep.php:76 src/ValidationStep.php:107
+#: src/Html.php:3557 src/ValidationStep.php:76 src/ValidationStep.php:107
 #: src/AuthMail.php:61 src/AuthMail.php:85
 #, php-format
 msgid "The %s field is mandatory"
 msgstr " %s 字段必填"
 
-#: src/Html.php:3816
+#: src/Html.php:3818
 msgid "Available variables"
 msgstr "可用变量"
 
 #. TRANS: %1$d, %2$d, %3$d are page numbers
-#: src/Html.php:3926 src/Html.php:4147
+#: src/Html.php:3928 src/Html.php:4149
 #, php-format
 msgid "From %1$d to %2$d of %3$d"
 msgstr "第 %1$d 到 %2$d 共 %3$d"
 
-#: src/Html.php:4008
+#: src/Html.php:4010
 msgid "Empty array"
 msgstr "空数组"
 
-#: src/Html.php:4189 src/Html.php:4193
+#: src/Html.php:4191 src/Html.php:4195
 msgid "Display (number of items)"
 msgstr "显示（项数）"
 
-#: src/Html.php:4222
+#: src/Html.php:4224
 #, php-format
 msgid "%1$d on %2$d"
 msgstr "%1$d 在 %2$d"
 
-#: src/Html.php:4645 src/Glpi/Form/AnswersHandler/AnswersHandler.php:123
+#: src/Html.php:4647 src/Glpi/Form/AnswersHandler/AnswersHandler.php:123
 msgid "This field is mandatory"
 msgstr "必填字段"
 
-#: src/Html.php:5289
+#: src/Html.php:5291
 msgid "File(s)"
 msgstr "文件"
 
-#: src/Html.php:5323
+#: src/Html.php:5325
 msgid "Drag and drop your file here, or"
 msgstr "批量选中要上传的文件并拖动到此处后松开鼠标，或者单个上传"
 
-#: src/Html.php:5412 src/UploadHandler.php:445
+#: src/Html.php:5414 src/UploadHandler.php:445
 msgid "Filetype not allowed"
 msgstr "文件类型不允许"
 
-#: src/Html.php:5413 src/UploadHandler.php:424
+#: src/Html.php:5415 src/UploadHandler.php:424
 msgid "File is too big"
 msgstr "文件太大"
 
-#: src/Html.php:6679
+#: src/Html.php:6681
 msgid "Just now"
 msgstr "现在"
 
-#: src/Html.php:6682 js/common.js:1168
+#: src/Html.php:6684 js/common.js:1168
 #, javascript-format, php-format
 msgid "%s minutes ago"
 msgstr "%s分钟前"
 
-#: src/Html.php:6685 js/common.js:1170
+#: src/Html.php:6687 js/common.js:1170
 #, javascript-format, php-format
 msgid "%s hours ago"
 msgstr "%s小时前"
 
-#: src/Html.php:6689
+#: src/Html.php:6691
 msgid "Yesterday"
 msgstr "昨天"
 
-#: src/Html.php:6692 js/common.js:1172
+#: src/Html.php:6694 js/common.js:1172
 #, javascript-format, php-format
 msgid "%s days ago"
 msgstr "%s天前"
 
-#: src/Html.php:6695 js/common.js:1174
+#: src/Html.php:6697 js/common.js:1174
 #, javascript-format, php-format
 msgid "%s weeks ago"
 msgstr "%s周前"
 
-#: src/Html.php:6698
+#: src/Html.php:6700
 msgid "Last month"
 msgstr "上个月"
 
-#: src/Html.php:6705
+#: src/Html.php:6707
 msgid "In a minute"
 msgstr "1 分钟内"
 
-#: src/Html.php:6708
+#: src/Html.php:6710
 #, php-format
 msgid "In %s minutes"
 msgstr "在 %s 分钟内"
 
-#: src/Html.php:6711
+#: src/Html.php:6713
 msgid "In an hour"
 msgstr "1 小时内"
 
-#: src/Html.php:6714
+#: src/Html.php:6716
 #, php-format
 msgid "In %s hours"
 msgstr "在 %s 小时内"
 
-#: src/Html.php:6718
+#: src/Html.php:6720
 msgid "Tomorrow"
 msgstr "明天"
 
-#: src/Html.php:6721
+#: src/Html.php:6723
 #, php-format
 msgid "In %s days"
 msgstr "在 %s 天内"
 
-#: src/Html.php:6724
+#: src/Html.php:6726
 #, php-format
 msgid "In %s weeks"
 msgstr "在 %s 周内"
 
-#: src/Html.php:6727
+#: src/Html.php:6729
 msgid "Next month"
 msgstr "下个月"
 
@@ -19310,19 +19310,19 @@ msgstr "表示工单类别的代码已被使用"
 msgid ""
 "The security key file does not exist. You have to run the \"%s\" command to "
 "generate a key."
-msgstr ""
+msgstr "安全密钥文件不存在。你需要运行 \"%s\" 命令生成密钥。"
 
 #: src/GLPIKey.php:149
 #, php-format
 msgid "Unable to get security key file contents. Fix file permissions of %s."
-msgstr ""
+msgstr "无法获取安全密钥内容。修复 %s 文件权限。"
 
 #: src/GLPIKey.php:155
 #, php-format
 msgid ""
 "Invalid security key file contents. You have to run the \"%s\" command to "
 "regenerate a key."
-msgstr ""
+msgstr "无效的安全密钥文件内容。你必须运行  \"%s\" 命令产生一个密钥。"
 
 #: src/Vlan.php:48
 msgid "VLAN"
@@ -21066,12 +21066,12 @@ msgstr "所有页面为 Office Open XML (.xlsx)"
 #: src/Dropdown.php:4223
 #, php-format
 msgid "My %s"
-msgstr ""
+msgstr "我的 %s"
 
 #: src/Dropdown.php:4333
 #, php-format
 msgid "My groups %s"
-msgstr ""
+msgstr "我的群组 %s"
 
 #: src/Dropdown.php:4447 src/CommonItilObject_Item.php:914
 msgid "version"
@@ -21084,7 +21084,7 @@ msgstr "已安装的软件"
 #: src/Dropdown.php:4582
 #, php-format
 msgid "Connected %s"
-msgstr ""
+msgstr "连接到 %s"
 
 #: src/DomainRelation.php:58
 msgid "Domain relation"
@@ -22911,7 +22911,7 @@ msgstr "永久删除"
 
 #: src/Consumable.php:737
 msgid "Give to"
-msgstr "给"
+msgstr "分发"
 
 #: src/Consumable.php:756
 msgid "In stock"
@@ -22919,7 +22919,7 @@ msgstr "在库存中"
 
 #: src/Consumable.php:944
 msgid "Given to"
-msgstr "给予"
+msgstr "已分发给"
 
 #: src/Consumable.php:984 src/Glpi/Inventory/Asset/Cartridge.php:86
 msgid "Used"
@@ -24055,9 +24055,9 @@ msgid "Default (from user profile)"
 msgstr "默认（个人配置）"
 
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:151
-#: src/Glpi/Search/Provider/SQLProvider.php:6344 src/KnowbaseItem.php:1528
+#: src/Glpi/Search/Provider/SQLProvider.php:6356 src/KnowbaseItem.php:1528
 msgid "This item is not published yet"
-msgstr "此项目尚未发布"
+msgstr "此项尚未发布"
 
 #: src/Glpi/Controller/InventoryController.php:173
 msgid "Configuration has been updated"
@@ -26697,14 +26697,14 @@ msgstr "所有 %1$s"
 msgid "Search results for %1$s"
 msgstr "为 %1$s 查询结果"
 
-#: src/Glpi/Search/Provider/SQLProvider.php:5213
+#: src/Glpi/Search/Provider/SQLProvider.php:5225
 msgid ""
 "'All' criterion is not usable with this object list, sql query fails (too "
 "many tables). Please use 'Items seen' criterion instead"
 msgstr "'All'标准不适用于此对象列表，sql查询失败（太多表）。请用“可见项”标准代替"
 
-#: src/Glpi/Search/Provider/SQLProvider.php:6269
-#: src/Glpi/Search/Provider/SQLProvider.php:6270 src/Reservation.php:1169
+#: src/Glpi/Search/Provider/SQLProvider.php:6281
+#: src/Glpi/Search/Provider/SQLProvider.php:6282 src/Reservation.php:1169
 #: src/Reservation.php:1171 src/Reservation.php:1175 src/Reservation.php:1177
 msgid "See planning"
 msgstr "查看计划"
@@ -31266,7 +31266,7 @@ msgstr "可寻址网络是设备中定义了的网络"
 #: src/IPNetwork.php:289
 #, php-format
 msgid "Missing network property (In CIDR notation. Ex: %s)"
-msgstr "缺少网络属性 (以CIDR 记法 . 如: %s)"
+msgstr "缺少网络属性 (以CIDR 记法。如: %s)"
 
 #: src/IPNetwork.php:300
 msgid "Invalid input format for the network"
@@ -31937,7 +31937,7 @@ msgstr "名片"
 #: src/CommonDBChild.php:253 src/NetworkPortInstantiation.php:326
 #: src/NetworkPortInstantiation.php:407
 msgid "Item not linked to an object"
-msgstr "项目未关联到物件"
+msgstr "品项未关联到对象"
 
 #: src/CommonDBChild.php:859
 #, php-format

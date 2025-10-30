@@ -27,18 +27,18 @@
 # Matías Orozco, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # Fernando Toledo <ftoledo@docksud.com.ar>, 2025
-# Alan Lehoux, 2025
 # DOMBRE Julien <moyo@indepnet.net>, 2025
 # Cédric Anne, 2025
+# Alan Lehoux, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-30 09:14+0000\n"
+"POT-Creation-Date: 2025-10-30 15:05+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Cédric Anne, 2025\n"
+"Last-Translator: Alan Lehoux, 2025\n"
 "Language-Team: Spanish (Argentina) (https://app.transifex.com/glpi/teams/1637/es_AR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -620,7 +620,7 @@ msgstr "Ayuda"
 msgid "About"
 msgstr "Acerca de"
 
-#: templates/layout/parts/user_header.html.twig src/Html.php:1336
+#: templates/layout/parts/user_header.html.twig src/Html.php:1338
 msgid "My settings"
 msgstr "Mis preferencias"
 
@@ -665,7 +665,7 @@ msgstr "Estás omitiendo una actualización necesaria"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/breadcrumbs.html.twig
-#: templates/layout/parts/page_header.html.twig src/Html.php:1474
+#: templates/layout/parts/page_header.html.twig src/Html.php:1476
 #: src/Glpi/Controller/Helpdesk/IndexController.php:74
 msgid "Home"
 msgstr "Inicio"
@@ -780,7 +780,7 @@ msgstr "Lista de transferencias"
 #: templates/pages/admin/profile/setup.html.twig front/rule.test.php:64
 #: front/dropdown.php:40 front/rulesengine.test.php:66
 #: front/documenttype.list.php:38 front/displaypreference.form.php:44
-#: front/plugin.php:48 src/Html.php:1324 src/NotificationSetting.php:101
+#: front/plugin.php:48 src/Html.php:1326 src/NotificationSetting.php:101
 #: src/Auth.php:171 src/Glpi/Event.php:206 src/Profile.php:171
 #: src/Profile.php:180 src/Profile.php:1976 src/Config.php:107
 msgid "Setup"
@@ -858,7 +858,7 @@ msgstr "¡Bloqueado por vos!"
 msgid "Force unlock %1s #%2s"
 msgstr "Forzar el desbloqueo de %1s #%2s"
 
-#: templates/layout/parts/menu.html.twig src/Html.php:6297 src/Central.php:82
+#: templates/layout/parts/menu.html.twig src/Html.php:6299 src/Central.php:82
 #: src/Glpi/Helpdesk/HomePageTabs.php:108 src/Config.php:682
 msgid "Dashboard"
 msgstr "Panel"
@@ -1054,7 +1054,7 @@ msgstr "%s-%s/%s"
 #: templates/components/form/support_hours.html.twig
 #: templates/pages/setup/calendarsegment.html.twig
 #: templates/pages/assistance/planning/availability.html.twig
-#: src/Html.php:3910 src/Html.php:4089 src/CalendarSegment.php:415
+#: src/Html.php:3912 src/Html.php:4091 src/CalendarSegment.php:415
 #: src/Holiday.php:56 src/Holiday.php:79 src/APIClient.php:144
 #: src/CronTask.php:1236 src/Calendar_Holiday.php:138
 msgid "Start"
@@ -1062,7 +1062,7 @@ msgstr "Inicio"
 
 #: templates/components/pager.html.twig
 #: templates/pages/assistance/stats/single_item_pager.html.twig
-#: src/Html.php:3912 src/Html.php:4093 src/CommonGLPI.php:1128
+#: src/Html.php:3914 src/Html.php:4095 src/CommonGLPI.php:1128
 msgid "Previous"
 msgstr "Anterior"
 
@@ -1073,7 +1073,7 @@ msgstr "%s-%s de %s"
 
 #: templates/components/pager.html.twig
 #: templates/pages/assistance/stats/single_item_pager.html.twig
-#: src/Html.php:3932 src/Html.php:4154 src/CommonGLPI.php:1186
+#: src/Html.php:3934 src/Html.php:4156 src/CommonGLPI.php:1186
 msgid "Next"
 msgstr "Siguiente"
 
@@ -1082,8 +1082,8 @@ msgstr "Siguiente"
 #: templates/pages/tools/reminder.html.twig
 #: templates/pages/setup/calendarsegment.html.twig
 #: templates/pages/assistance/planning/availability.html.twig
-#: src/Entity.php:1883 src/Contract.php:1582 src/Html.php:3934
-#: src/Html.php:4158 src/CalendarSegment.php:416 src/Holiday.php:60
+#: src/Entity.php:1883 src/Contract.php:1582 src/Html.php:3936
+#: src/Html.php:4160 src/CalendarSegment.php:416 src/Holiday.php:60
 #: src/Holiday.php:87 src/APIClient.php:152 src/CronTask.php:1245
 #: src/Calendar_Holiday.php:139
 msgid "End"
@@ -1474,7 +1474,7 @@ msgstr "Cerrar"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 #: templates/pages/admin/user/user_picture_field.html.twig src/Entity.php:2714
-#: src/Html.php:2617 src/Html.php:2807 src/User.php:6244
+#: src/Html.php:2619 src/Html.php:2809 src/User.php:6244
 msgid "Clear"
 msgstr "Limpiar"
 
@@ -1495,7 +1495,7 @@ msgstr "Cancelar"
 msgid "Validate"
 msgstr "Validar"
 
-#: templates/components/form/basic_inputs_macros.html.twig src/Html.php:2609
+#: templates/components/form/basic_inputs_macros.html.twig src/Html.php:2611
 msgid "Enter or select a date"
 msgstr "Ingresá o seleccioná una fecha"
 
@@ -1539,7 +1539,7 @@ msgid "Created from the template %s"
 msgstr "Creado desde la plantilla %s"
 
 #: templates/components/form/reservationitem_comment.html.twig
-#: src/Glpi/Search/Provider/SQLProvider.php:6051
+#: src/Glpi/Search/Provider/SQLProvider.php:6063
 msgid "Modify the comment"
 msgstr "Modificar el comentario"
 
@@ -1612,8 +1612,8 @@ msgstr[2] "Elementos"
 #: src/Glpi/Inventory/Asset/Software.php:1027
 #: src/Glpi/Inventory/Asset/Software.php:1036
 #: src/Glpi/Search/Output/Spreadsheet.php:118
-#: src/Glpi/Search/Provider/SQLProvider.php:5571
-#: src/Glpi/Search/Provider/SQLProvider.php:5620
+#: src/Glpi/Search/Provider/SQLProvider.php:5583
+#: src/Glpi/Search/Provider/SQLProvider.php:5632
 #: src/Item_SoftwareLicense.php:963 src/CommonITILObject.php:6544
 #: src/CommonITILObject.php:6983 src/CommonITILObject.php:10392
 #: src/Cartridge.php:1136 src/IPNetwork.php:1088 src/Reservation.php:544
@@ -2119,7 +2119,7 @@ msgstr "Sin entrada"
 #: templates/components/form/single-action.html.twig
 #: templates/pages/assets/template_list.html.twig
 #: templates/pages/admin/form/import/step2_preview.html.twig
-#: ajax/massiveaction.php:73 src/Html.php:2411 src/LevelAgreementLevel.php:524
+#: ajax/massiveaction.php:73 src/Html.php:2413 src/LevelAgreementLevel.php:524
 #: src/Rule.php:2190 src/RuleAction.php:92 src/Glpi/Inventory/Conf.php:973
 #: src/Link.php:632 src/Plugin.php:2704
 msgid "Action"
@@ -2393,7 +2393,7 @@ msgstr "Máquina"
 #: src/RuleCommonITILObject.php:892 src/RuleCommonITILObject.php:929
 #: src/Contract.php:1487 src/NetworkEquipment.php:461 src/Profile_User.php:166
 #: src/Profile_User.php:214 src/Profile_User.php:396 src/Profile_User.php:588
-#: src/Html.php:5289 src/Item_DeviceGraphicCard.php:52
+#: src/Html.php:5291 src/Item_DeviceGraphicCard.php:52
 #: src/Document_Item.php:431 src/Item_DeviceMemory.php:57
 #: src/NotificationTargetProject.php:750 src/NotificationTargetProject.php:751
 #: src/NotificationTargetCommonITILObject.php:2151
@@ -2434,9 +2434,9 @@ msgstr "Máquina"
 #: src/Ticket.php:4938 src/Glpi/Asset/Asset_PeripheralAsset.php:400
 #: src/Glpi/Asset/Asset_PeripheralAsset.php:554
 #: src/Glpi/Inventory/Asset/Software.php:859
-#: src/Glpi/Search/Provider/SQLProvider.php:5714
-#: src/Glpi/Search/Provider/SQLProvider.php:6167
-#: src/Glpi/Search/Provider/SQLProvider.php:6447
+#: src/Glpi/Search/Provider/SQLProvider.php:5726
+#: src/Glpi/Search/Provider/SQLProvider.php:6179
+#: src/Glpi/Search/Provider/SQLProvider.php:6459
 #: src/Glpi/Console/Ldap/SynchronizeUsersCommand.php:279
 #: src/Item_SoftwareLicense.php:1020 src/NetworkPort.php:934
 #: src/Item_DeviceProcessor.php:52 src/Item_DeviceProcessor.php:53
@@ -3974,7 +3974,7 @@ msgstr "Resultados de búsqueda solo para elementos localizados"
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 #: templates/pages/admin/ldap.user_criteria.html.twig src/Profile_User.php:188
 #: src/Profile_User.php:359 src/Profile_User.php:544 src/Html.php:163
-#: src/Html.php:4228 src/RuleTicket.php:231 src/RuleTicket.php:242
+#: src/Html.php:4230 src/RuleTicket.php:231 src/RuleTicket.php:242
 #: src/RuleTicket.php:253 src/RuleTicket.php:264 src/RuleTicket.php:320
 #: src/RuleTicket.php:337 src/RuleTicket.php:354 src/RuleTicket.php:371
 #: src/CommonDBVisible.php:206 src/CommonDBVisible.php:223
@@ -4003,12 +4003,12 @@ msgstr "Resultados de búsqueda solo para elementos localizados"
 #: src/Glpi/Search/Output/Spreadsheet.php:471
 #: src/Glpi/Search/Output/Spreadsheet.php:480
 #: src/Glpi/Search/Output/Spreadsheet.php:483
-#: src/Glpi/Search/Provider/SQLProvider.php:5479
-#: src/Glpi/Search/Provider/SQLProvider.php:5534
-#: src/Glpi/Search/Provider/SQLProvider.php:5589
-#: src/Glpi/Search/Provider/SQLProvider.php:5635
-#: src/Glpi/Search/Provider/SQLProvider.php:6176
-#: src/Glpi/Search/Provider/SQLProvider.php:6505 src/Group.php:409
+#: src/Glpi/Search/Provider/SQLProvider.php:5491
+#: src/Glpi/Search/Provider/SQLProvider.php:5546
+#: src/Glpi/Search/Provider/SQLProvider.php:5601
+#: src/Glpi/Search/Provider/SQLProvider.php:5647
+#: src/Glpi/Search/Provider/SQLProvider.php:6188
+#: src/Glpi/Search/Provider/SQLProvider.php:6517 src/Group.php:409
 #: src/Group.php:417 src/Contract_Item.php:104 src/Contract_Item.php:346
 #: src/NetworkPort.php:951 src/Reminder.php:782 src/CommonITILObject.php:6550
 #: src/CommonITILObject.php:6628 src/CommonITILObject.php:6663
@@ -4130,8 +4130,8 @@ msgstr "Todas las páginas"
 msgid "Copy names to clipboard"
 msgstr "Copiar nombres al portapapeles"
 
-#: templates/components/search/table.html.twig src/Html.php:2084
-#: src/Html.php:2085
+#: templates/components/search/table.html.twig src/Html.php:2086
+#: src/Html.php:2087
 msgid "Check all as"
 msgstr "Marcar todo como"
 
@@ -4411,7 +4411,7 @@ msgstr "Todos"
 #: src/Dropdown.php:1179 src/Glpi/Asset/Asset_PeripheralAsset.php:390
 #: src/Glpi/Asset/Asset_PeripheralAsset.php:547
 #: src/Glpi/Marketplace/View.php:1054
-#: src/Glpi/Search/Provider/SQLProvider.php:1966 src/Alert.php:165
+#: src/Glpi/Search/Provider/SQLProvider.php:1968 src/Alert.php:165
 #: src/SavedSearch.php:118 src/SavedSearch.php:896 src/SavedSearch.php:945
 #: src/Group_User.php:195 src/Group_User.php:459
 #: src/RuleDefineItemtype.php:105 src/ItemVirtualMachine.php:308
@@ -4441,7 +4441,7 @@ msgstr "Sí"
 #: src/Dropdown.php:1181 src/Glpi/Asset/Asset_PeripheralAsset.php:390
 #: src/Glpi/Asset/Asset_PeripheralAsset.php:547
 #: src/Glpi/Marketplace/View.php:1060
-#: src/Glpi/Search/Provider/SQLProvider.php:1964 src/Config.php:880
+#: src/Glpi/Search/Provider/SQLProvider.php:1966 src/Config.php:880
 #: src/Alert.php:164 src/SavedSearch.php:119 src/SavedSearch.php:893
 #: src/SavedSearch.php:946 src/Group_User.php:196 src/Group_User.php:460
 #: src/ItemVirtualMachine.php:308 src/CommonDBChild.php:1019
@@ -4463,7 +4463,7 @@ msgstr[2] "Errores"
 
 #: templates/components/messages_after_redirect_toasts.html.twig
 #: templates/components/messages_after_redirect_alerts.html.twig
-#: src/Html.php:5766 src/CommonITILRecurrent.php:107 src/Planning.php:219
+#: src/Html.php:5768 src/CommonITILRecurrent.php:107 src/Planning.php:219
 #: src/Planning.php:321 js/misc.js:46 js/glpi_dialog.js:256
 #: js/glpi_dialog.js:290 js/glpi_dialog.js:397
 msgid "Information"
@@ -5134,7 +5134,7 @@ msgstr[2] "Versiones"
 #: src/NotificationTargetTicket.php:194 src/Entity.php:1348
 #: src/Entity.php:1367 src/Entity.php:2524 src/Entity.php:2532
 #: src/Entity.php:2554 src/Entity.php:2564 src/Entity.php:2735
-#: src/Contract.php:1519 src/Contract.php:1538 src/Html.php:6662
+#: src/Contract.php:1519 src/Contract.php:1538 src/Html.php:6664
 #: src/LevelAgreement.php:185 src/Infocom.php:1986
 #: src/Glpi/Features/PlanningEvent.php:784 src/Alert.php:115 src/Alert.php:195
 msgid "Never"
@@ -5685,7 +5685,7 @@ msgid "Back to results"
 msgstr "Volver a resultados"
 
 #: templates/pages/tools/search_knowbaseitem.html.twig
-#: src/Glpi/Search/Provider/SQLProvider.php:6179 js/common.js:1976
+#: src/Glpi/Search/Provider/SQLProvider.php:6191 js/common.js:1976
 #: js/modules/Search/GenericView.js:69
 #: js/modules/Forms/EditorController.js:1778
 msgid "Loading..."
@@ -5749,7 +5749,7 @@ msgstr[2] "%d vistas"
 #: templates/pages/tools/kb/article.html.twig
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:145
-#: src/Glpi/Search/Provider/SQLProvider.php:6339 src/KnowbaseItem.php:1522
+#: src/Glpi/Search/Provider/SQLProvider.php:6351 src/KnowbaseItem.php:1522
 #: src/KnowbaseItem.php:1709
 msgid "This item is part of the FAQ"
 msgstr "Este elemento es parte de las Preguntas Frecuentes"
@@ -6102,7 +6102,7 @@ msgstr "Endpoint %s"
 #: templates/pages/assets/cable.html.twig
 #: templates/pages/admin/transfer.html.twig
 #: templates/pages/admin/profile/assets.html.twig src/Entity.php:650
-#: src/Entity.php:1429 src/Html.php:1256 src/RuleLocation.php:81
+#: src/Entity.php:1429 src/Html.php:1258 src/RuleLocation.php:81
 #: src/Report.php:389 src/Glpi/Dashboard/Grid.php:1273 src/Glpi/Socket.php:888
 #: src/Glpi/Asset/AssetDefinitionManager.php:354 src/Glpi/Event.php:199
 #: src/Glpi/ContentTemplates/Parameters/AssetParameters.php:57
@@ -6491,18 +6491,18 @@ msgstr "Extensión %s instalada"
 #, php-format
 msgid "Installing and enabling the \"%s\" extension may improve GLPI performance"
 msgstr ""
-"Instalación y habilitación de la extensión \"%s\" puede mejorar el "
-"rendimiento de GLPI"
+"Instalar y habilitar la extensión \"%s\" puede mejorar el rendimiento de "
+"GLPI"
 
 #: templates/pages/setup/general/performance.html.twig
 #: src/Glpi/System/Requirement/Extension.php:82 src/Config.php:1256
 #, php-format
 msgid "%s extension is not present"
-msgstr "%s La extensión no esta presente"
+msgstr "La extensión %s no está presente"
 
 #: templates/pages/setup/general/performance.html.twig
 msgid "PHP opcode cache"
-msgstr "Caché PHP opcode"
+msgstr "Caché de opcode de PHP"
 
 #: templates/pages/setup/general/performance.html.twig
 #: src/NotificationTargetTicket.php:566 src/NotificationTargetTicket.php:571
@@ -6520,7 +6520,7 @@ msgstr "%1$s / %2$s"
 #: templates/pages/setup/general/performance.html.twig
 #, php-format
 msgid "%1$s memory usage is correct"
-msgstr "El uso de memoria de  %1$s es correcto"
+msgstr "El uso de memoria de %1$s es correcto"
 
 #: templates/pages/setup/general/performance.html.twig
 #, php-format
@@ -6529,31 +6529,31 @@ msgstr "El uso de memoria de %1$s es muy bajo o muy alto"
 
 #: templates/pages/setup/general/performance.html.twig
 msgid "Hits rate"
-msgstr "Tasa de impacto"
+msgstr "Tasa de aciertos"
 
 #: templates/pages/setup/general/performance.html.twig
 #, php-format
 msgid "%1$s hits rate is correct"
-msgstr "La tasa de éxito %1$s es correcta"
+msgstr "La tasa de aciertos de %1$s es correcta"
 
 #: templates/pages/setup/general/performance.html.twig
 #, php-format
 msgid "%1$s hits rate is low"
-msgstr "La taza de éxito de %1$ss es baja"
+msgstr "La tasa de aciertos de %1$s es baja"
 
 #: templates/pages/setup/general/performance.html.twig
 msgid "Out of memory restart"
-msgstr "Reiniciar fuera de memoria"
+msgstr "Reinicio por falta de memoria"
 
 #: templates/pages/setup/general/performance.html.twig
 #, php-format
 msgid "%1$s restart rate is correct"
-msgstr "La tasa de reinicio %1$s es correcta"
+msgstr "La tasa de reinicio de %1$s es correcta"
 
 #: templates/pages/setup/general/performance.html.twig
 #, php-format
 msgid "%1$s restart rate is too high"
-msgstr "La tasa de reinicio %1$s es demasiado alta"
+msgstr "La tasa de reinicio de %1$s es demasiado alta"
 
 #: templates/pages/setup/general/performance.html.twig
 msgid "User data cache"
@@ -6567,12 +6567,12 @@ msgstr "Podés usar el comando \"%s\" para configurar el sistema de caché."
 #: templates/pages/setup/general/performance.html.twig
 #, php-format
 msgid "The \"%s\" cache extension is installed"
-msgstr "La extensión de cache \"%s\" está instalada"
+msgstr "La extensión de caché \"%s\" está instalada"
 
 #: templates/pages/setup/general/performance.html.twig
 #, php-format
 msgid "\"%s\" cache system is used"
-msgstr "La extensión de cache \"%s\" está en uso"
+msgstr "Se está usando el sistema de caché \"%s\""
 
 #: templates/pages/setup/general/performance.html.twig
 msgid "Translation cache"
@@ -6590,15 +6590,15 @@ msgstr "Habilitar API"
 #: templates/pages/setup/general/api_setup.html.twig
 #: src/Glpi/Api/HL/Controller/CoreController.php:232
 msgid "API Getting Started"
-msgstr "Primeros pasos con la API"
+msgstr "Primeros Pasos con la API"
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "API Endpoints"
-msgstr "Puntos finales de la API"
+msgstr "Puntos de Acceso de la API"
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "URL of the API"
-msgstr "URL de API"
+msgstr "URL de la API"
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "Legacy API"
@@ -6626,7 +6626,7 @@ msgstr ""
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "API inline Documentation"
-msgstr "API Documentación en linea"
+msgstr "Documentación integrada de la API"
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "Enable login with credentials"
@@ -6676,7 +6676,7 @@ msgstr "Idioma por defecto"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Date format"
-msgstr "Formato de fechas"
+msgstr "Formato de fecha"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Surname, First name"
@@ -6688,7 +6688,7 @@ msgstr "Nombre, Apellido"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Display order of surnames firstnames"
-msgstr "Orden de visualización para nombres y apellidos"
+msgstr "Orden de visualización de nombres y apellidos"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Number format"
@@ -6696,7 +6696,7 @@ msgstr "Formato de número"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Results to display by page"
-msgstr "Resultados por página"
+msgstr "Resultados a mostrar por página"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Go to created item after creation"
@@ -6720,7 +6720,7 @@ msgstr "Mostrar contadores"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Show GLPI ID"
-msgstr "Mostrar ID GLPI"
+msgstr "Mostrar ID de GLPI"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Keep devices when purging an item"
@@ -6737,19 +6737,19 @@ msgstr "Resultados a mostrar en la página de inicio"
 #: templates/pages/setup/general/preferences_setup.html.twig
 #: src/Config.php:341 src/User.php:6741
 msgid "PDF export font"
-msgstr "Al exportar PDF utilizar fuente"
+msgstr "Fuente para exportación a PDF"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "CSV delimiter"
-msgstr "Delimitador CSV"
+msgstr "Delimitador de CSV"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Color palette"
-msgstr "Paleta de color"
+msgstr "Paleta de colores"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Horizontal (menu in header)"
-msgstr "Horizontal (menú en encabezado)"
+msgstr "Horizontal (menú en el encabezado)"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Vertical (menu in sidebar)"
@@ -6757,11 +6757,11 @@ msgstr "Vertical (menú en la barra lateral)"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Page layout"
-msgstr "Diseño de página"
+msgstr "Disposición de página"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Inline (no toolbars)"
-msgstr "En línea (sin barras de herramientas)"
+msgstr "Integrado (sin barras de herramientas)"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Classic (toolbar on top)"
@@ -6769,11 +6769,11 @@ msgstr "Clásico (barra de herramientas arriba)"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Rich text field layout"
-msgstr "Diseño de campos de texto enriquecido"
+msgstr "Disposición del campo de texto enriquecido"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Enable high contrast"
-msgstr "Habilitar contraste alto"
+msgstr "Habilitar alto contraste"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 #: templates/pages/admin/user/user.html.twig src/RuleRight.php:324
@@ -6783,7 +6783,7 @@ msgstr "Zona horaria"
 #: templates/pages/setup/general/preferences_setup.html.twig
 #: templates/pages/admin/user/user.html.twig
 msgid "Use server configuration"
-msgstr "Usar la configuración del servidor"
+msgstr "Usar configuración del servidor"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 #: templates/pages/admin/user/user.html.twig
@@ -6794,7 +6794,7 @@ msgstr "El uso de la zona horaria no se ha activado."
 #: templates/pages/admin/user/user.html.twig
 #, php-format
 msgid "Run the \"%1$s\" command to activate it."
-msgstr "Ejecuta el comando \"%1$s\" para activarlo."
+msgstr "Ejecutá el comando \"%1$s\" para activarlo."
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Default central tab"
@@ -6823,7 +6823,7 @@ msgstr "Mostrar la paginación de búsqueda sobre los resultados"
 #: templates/pages/setup/general/preferences_setup.html.twig
 #: templates/pages/admin/profile/assistance_simple.html.twig
 #: install/migrations/update_9.4.x_to_9.5.0/dashboards.php:260
-#: src/Entity.php:648 src/Entity.php:1320 src/Html.php:1277
+#: src/Entity.php:648 src/Entity.php:1320 src/Html.php:1279
 #: src/Webhook.php:450 src/Dropdown.php:1240 src/Glpi/Dashboard/Grid.php:1296
 #: src/Glpi/Dashboard/Grid.php:1312 src/Glpi/Dashboard/Grid.php:1329
 #: src/Glpi/Dashboard/Grid.php:1338 src/Glpi/Dashboard/Grid.php:1347
@@ -6908,7 +6908,7 @@ msgstr "Visualización de fecha en la línea de tiempo"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Priority colors"
-msgstr "Colores de prioridades"
+msgstr "Colores de prioridad"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Due date progression"
@@ -6926,23 +6926,23 @@ msgstr[2] "Horas"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "OK state color"
-msgstr "Color para estado \"OK\""
+msgstr "Color del estado OK"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Warning state color"
-msgstr "Color para estado \"Advertencia\""
+msgstr "Color del estado Advertencia"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Warning state threshold"
-msgstr "Umbral para estado \"Advertencia\""
+msgstr "Umbral del estado Advertencia"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Critical state color"
-msgstr "Color para estado \"Crítico\""
+msgstr "Color del estado Crítico"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Critical state threshold"
-msgstr "Umbral para estado \"Crítico\""
+msgstr "Umbral del estado Crítico"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 #: templates/pages/setup/general/general_setup.html.twig
@@ -6957,8 +6957,8 @@ msgstr "Modo de bloqueo automático"
 msgid ""
 "Direct Notification (requester for unlock will be the notification sender)"
 msgstr ""
-"Notificación directa (el emisor de la notificación será el solicitante del "
-"desbloqueo)"
+"Notificación Directa (el solicitante del desbloqueo será el emisor de la "
+"notificación)"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Dashboards"
@@ -7022,11 +7022,11 @@ msgstr "Esquina superior derecha"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Bottom left"
-msgstr "Abajo a la izquierda"
+msgstr "Inferior izquierda"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Bottom right"
-msgstr "Abajo a la derecha"
+msgstr "Inferior derecha"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Notification location"
@@ -7049,11 +7049,11 @@ msgstr "Si está sincronizado (todos los cambios)"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "If synced (current user changes)"
-msgstr "Si está sincronizado (cambios de usuario actual)"
+msgstr "Si está sincronizado (cambios del usuario actual)"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "If synced or read-only account"
-msgstr "Si es una cuenta sincronizada o de sólo lectura"
+msgstr "Si está sincronizado o es cuenta de solo lectura"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Always"
@@ -7061,7 +7061,7 @@ msgstr "Siempre"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Use the replica for the search engine"
-msgstr "Usa la réplica para el buscador"
+msgstr "Usar la réplica para el buscador"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Replication status"
@@ -7070,7 +7070,7 @@ msgstr "Estado de la réplica"
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgctxt "status"
 msgid "Up"
-msgstr "Arriba"
+msgstr "Activo"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgctxt "status"
@@ -7080,7 +7080,7 @@ msgstr "Desconocido"
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgctxt "status"
 msgid "Down"
-msgstr "Caido"
+msgstr "Caído"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 #: src/Glpi/Event.php:339 src/Glpi/Event.php:413 src/RuleImportEntity.php:123
@@ -7146,7 +7146,7 @@ msgstr "Retraso en el historial de GLPI:"
 #: src/ProfileRight.php:342 src/Item_Devices.php:1043 src/Dropdown.php:2519
 #: src/DBConnection.php:740 src/Infocom.php:808 src/Ticket.php:2241
 #: src/Glpi/Inventory/Conf.php:396 src/Glpi/Features/Inventoriable.php:216
-#: src/Glpi/Search/Provider/SQLProvider.php:6046 src/HTMLTableMain.php:227
+#: src/Glpi/Search/Provider/SQLProvider.php:6058 src/HTMLTableMain.php:227
 msgid "None"
 msgstr "Ninguno"
 
@@ -7192,31 +7192,31 @@ msgstr "Longitud mínima de la contraseña"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Password need digit"
-msgstr "La contraseña necesita un dígito"
+msgstr "La contraseña requiere un dígito"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Password need lowercase character"
-msgstr "La contraseña necesita un caracter en minúscula"
+msgstr "La contraseña requiere un carácter en minúscula"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Password need uppercase character"
-msgstr "La contraseña necesita un caracter en mayúscula"
+msgstr "La contraseña requiere un carácter en mayúscula"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Password need symbol"
-msgstr "La contraseña necesita un caracter de puntuación"
+msgstr "La contraseña requiere un símbolo"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Password expiration policy"
-msgstr "Política de caducidad de contraseña"
+msgstr "Política de vencimiento de la contraseña"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Password expiration delay (in days)"
-msgstr "Retraso en el vencimiento de la contraseña (en días)"
+msgstr "Plazo de vencimiento de la contraseña (en días)"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Password expiration notice time (in days)"
-msgstr "Notificación de cambio de contraseña (en días)"
+msgstr "Tiempo de aviso de vencimiento de la contraseña (en días)"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Notification disabled"
@@ -7224,7 +7224,7 @@ msgstr "Notificación deshabilitada"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Delay before account deactivation (in days)"
-msgstr "Retraso antes de la desactivación de la cuenta (en días)"
+msgstr "Plazo antes de la desactivación de cuenta (en días)"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Do not deactivate"
@@ -7267,23 +7267,23 @@ msgstr "Configuración de la purga de registros"
 
 #: templates/pages/setup/general/logs_setup.html.twig src/Config.php:1589
 msgid "Delete all"
-msgstr "Borrar todo"
+msgstr "Eliminar todo"
 
 #: templates/pages/setup/general/logs_setup.html.twig src/Config.php:1590
 msgid "Keep all"
-msgstr "Mantener todo"
+msgstr "Conservar todo"
 
 #: templates/pages/setup/general/logs_setup.html.twig src/Config.php:1595
 #, php-format
 msgid "Delete if older than %s month"
 msgid_plural "Delete if older than %s months"
-msgstr[0] "Borrar si es anterior a %s mes"
-msgstr[1] "Borrar si es anterior a %s meses"
-msgstr[2] "Borrar si es anterior a %s meses"
+msgstr[0] "Eliminar si es más antiguo que %s mes"
+msgstr[1] "Eliminar si es más antiguo que %s meses"
+msgstr[2] "Eliminar si es más antiguo que %s meses"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Change all"
-msgstr "Cambiar todos"
+msgstr "Cambiar todo"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 #: templates/pages/admin/transfer.html.twig
@@ -7321,7 +7321,7 @@ msgstr "Restaurar el elemento"
 msgid "Update the item"
 msgstr "Actualizar el elemento"
 
-#: templates/pages/setup/general/logs_setup.html.twig src/Html.php:1543
+#: templates/pages/setup/general/logs_setup.html.twig src/Html.php:1545
 msgid "Plugins"
 msgstr "Complementos"
 
@@ -7343,19 +7343,19 @@ msgstr "Agregar información financiera a un elemento"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Add/remove profiles to users"
-msgstr "Agregar a/remover de perfiles a usuarios"
+msgstr "Agregar/remover perfiles a los usuarios"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Add/remove groups to users"
-msgstr "Agregar / remover grupos de los usuarios"
+msgstr "Agregar/remover grupos a los usuarios"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "User authentication method changes"
-msgstr "Cambios del método de autenticación de usuario"
+msgstr "Cambios en el método de autenticación del usuario"
 
 #: templates/pages/setup/general/logs_setup.html.twig src/User.php:3439
 msgid "Deleted user in LDAP directory"
-msgstr "Usuario eliminado en directorio LDAP"
+msgstr "Usuario eliminado en el directorio LDAP"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Add component"
@@ -7375,7 +7375,7 @@ msgstr "Conectar un componente"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Delete component"
-msgstr "Borrar componente"
+msgstr "Eliminar componente"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "All sections"
@@ -7686,7 +7686,7 @@ msgstr "Fin del año fiscal"
 msgid "Restrict phone management"
 msgstr "Restringir gestión de teléfonos"
 
-#: templates/pages/setup/general/assets_setup.html.twig src/Html.php:1443
+#: templates/pages/setup/general/assets_setup.html.twig src/Html.php:1445
 #: src/RuleImportAssetCollection.php:72 src/Stat.php:1720 src/Stat.php:1732
 #: src/Stat.php:1745 src/Project.php:1502 src/Lock.php:229
 #: src/Lockedfield.php:181 src/CommonITILObject.php:10144 src/AllAssets.php:46
@@ -8445,7 +8445,7 @@ msgstr ""
 #: templates/pages/management/contract.html.twig
 #: templates/pages/management/softwarelicense.html.twig
 #: src/SoftwareLicense.php:1131 src/SoftwareLicense.php:1155
-#: src/Glpi/Search/Provider/SQLProvider.php:6037
+#: src/Glpi/Search/Provider/SQLProvider.php:6049
 msgid "Unlimited"
 msgstr "Ilimitado"
 
@@ -10020,6 +10020,8 @@ msgid ""
 "This destination is not available, the plugin \"%1$s\" is deactivated or "
 "removed."
 msgstr ""
+"El destino no está disponible, el complemento \"%1$s\" está desactivado o "
+"fue eliminado."
 
 #: templates/pages/admin/form/item_has_conditions_for_deletion_modal.html.twig
 msgid "Item has conditions and cannot be deleted"
@@ -10341,7 +10343,7 @@ msgstr "Nombre de la traducción"
 #: src/Glpi/Form/QuestionType/QuestionTypeDateTime.php:276
 #: src/Glpi/Form/QuestionType/QuestionTypeLongText.php:142
 #: src/Glpi/Form/QuestionType/QuestionTypeLongText.php:234
-#: src/Glpi/Search/Provider/SQLProvider.php:6689 src/CommonDBTM.php:4947
+#: src/Glpi/Search/Provider/SQLProvider.php:6701 src/CommonDBTM.php:4947
 msgid "Default value"
 msgstr "Valor por defecto"
 
@@ -11006,6 +11008,8 @@ msgid ""
 "Child locations will not be transferred with the parent to avoid visibility "
 "and hierarchy issues."
 msgstr ""
+"Las ubicaciones hijas no se transferirán junto a la ubicación padre para "
+"evitar problemas de visibilidad y jerarquía."
 
 #: templates/pages/admin/transfer.html.twig
 msgid "Empty the location"
@@ -11064,7 +11068,7 @@ msgid "If phones are no longer used"
 msgstr "Si los teléfonos no se utilizan más"
 
 #: templates/pages/admin/transfer.html.twig
-#: templates/pages/admin/profile/management.html.twig src/Html.php:1292
+#: templates/pages/admin/profile/management.html.twig src/Html.php:1294
 #: src/Webhook.php:454 src/Dropdown.php:1327 src/Infocom.php:172
 #: src/Glpi/Form/QuestionType/QuestionTypeItem.php:171 src/Glpi/Event.php:204
 #: src/Profile.php:177 src/Profile.php:1684 src/Config.php:968
@@ -11144,7 +11148,7 @@ msgid "Ticket creation form on login"
 msgstr "Formulario de creación de tickets al iniciar sesión"
 
 #: templates/pages/admin/profile/tools.html.twig
-#: templates/pages/admin/profile/tools_simple.html.twig src/Html.php:1301
+#: templates/pages/admin/profile/tools_simple.html.twig src/Html.php:1303
 #: src/Dropdown.php:1334 src/Ticket.php:3086 src/Glpi/Dashboard/Grid.php:1434
 #: src/Glpi/Form/QuestionType/QuestionTypeItem.php:172 src/Glpi/Event.php:203
 #: src/Profile.php:170 src/Profile.php:178 src/Profile.php:1900
@@ -11253,7 +11257,7 @@ msgstr "Vincular con elementos para la creación de tickets"
 msgid "Associable items to tickets, changes and problems"
 msgstr "Elementos asociables a tickets, cambios y problemas"
 
-#: templates/pages/admin/profile/admin.html.twig src/Html.php:1315
+#: templates/pages/admin/profile/admin.html.twig src/Html.php:1317
 #: src/ReservationItem.php:864
 #: src/Glpi/Form/QuestionType/QuestionTypeItem.php:173 src/Profile.php:179
 #: src/Profile.php:2307
@@ -12172,7 +12176,7 @@ msgstr "Ingresar"
 #: front/knowbaseitemtranslation.form.php:82
 #: front/knowbaseitemtranslation.form.php:84
 #: front/knowbaseitemtranslation.form.php:88
-#: front/knowbaseitemtranslation.form.php:90 src/Html.php:1533
+#: front/knowbaseitemtranslation.form.php:90 src/Html.php:1535
 #: src/CommonDropdown.php:929 src/Glpi/Helpdesk/Tile/GlpiPageTile.php:93
 #: src/KnowbaseItem.php:105 src/NotificationTargetKnowbaseItem.php:64
 #: src/NotificationTargetKnowbaseItem.php:184
@@ -12861,12 +12865,12 @@ msgstr "Entrega"
 #: resources/.illustrations_translations.php:65
 msgctxt "Icon"
 msgid "Developer documentation"
-msgstr ""
+msgstr "Documentación para desarrolladores"
 
 #: resources/.illustrations_translations.php:66
 msgctxt "Icon"
 msgid "Documentation"
-msgstr ""
+msgstr "Documentación"
 
 #: resources/.illustrations_translations.php:67
 msgctxt "Icon"
@@ -12891,7 +12895,7 @@ msgstr "Fábrica"
 #: resources/.illustrations_translations.php:71
 msgctxt "Icon"
 msgid "Frequently Asked Questions"
-msgstr ""
+msgstr "Preguntas Frecuentes"
 
 #: resources/.illustrations_translations.php:72
 msgctxt "Icon"
@@ -13258,7 +13262,7 @@ msgstr "traducción"
 #: resources/.illustrations_translations.php:144
 msgctxt "Icon"
 msgid "Tutorial"
-msgstr ""
+msgstr "Tutorial"
 
 #: resources/.illustrations_translations.php:145
 msgctxt "Icon"
@@ -13323,7 +13327,7 @@ msgstr "Mundo"
 #: resources/.illustrations_translations.php:157
 msgctxt "Icon"
 msgid "YouTube"
-msgstr ""
+msgstr "YouTube"
 
 #: resources/.illustrations_translations.php:158
 msgctxt "Icon"
@@ -13778,32 +13782,32 @@ msgstr "envío"
 #: resources/.illustrations_translations.php:252
 msgctxt "Icon"
 msgid "developer"
-msgstr ""
+msgstr "desarrollador"
 
 #: resources/.illustrations_translations.php:253
 msgctxt "Icon"
 msgid "api"
-msgstr ""
+msgstr "api"
 
 #: resources/.illustrations_translations.php:254
 msgctxt "Icon"
 msgid "code"
-msgstr ""
+msgstr "código"
 
 #: resources/.illustrations_translations.php:255
 msgctxt "Icon"
 msgid "docs"
-msgstr ""
+msgstr "documentación"
 
 #: resources/.illustrations_translations.php:256
 msgctxt "Icon"
 msgid "manual"
-msgstr ""
+msgstr "manual"
 
 #: resources/.illustrations_translations.php:257
 msgctxt "Icon"
 msgid "guide"
-msgstr ""
+msgstr "guía"
 
 #: resources/.illustrations_translations.php:258
 msgctxt "Icon"
@@ -13838,7 +13842,7 @@ msgstr "industria"
 #: resources/.illustrations_translations.php:264
 msgctxt "Icon"
 msgid "questions"
-msgstr ""
+msgstr "preguntas"
 
 #: resources/.illustrations_translations.php:265
 msgctxt "Icon"
@@ -14043,12 +14047,12 @@ msgstr "inventario"
 #: resources/.illustrations_translations.php:305
 msgctxt "Icon"
 msgid "items"
-msgstr ""
+msgstr "elementos"
 
 #: resources/.illustrations_translations.php:306
 msgctxt "Icon"
 msgid "resources"
-msgstr ""
+msgstr "recursos"
 
 #: resources/.illustrations_translations.php:307
 msgctxt "Icon"
@@ -14323,12 +14327,12 @@ msgstr "l10n"
 #: resources/.illustrations_translations.php:362
 msgctxt "Icon"
 msgid "tutorial"
-msgstr ""
+msgstr "tutorial"
 
 #: resources/.illustrations_translations.php:363
 msgctxt "Icon"
 msgid "how-to"
-msgstr ""
+msgstr "cómo-hacer"
 
 #: resources/.illustrations_translations.php:364
 msgctxt "Icon"
@@ -14398,17 +14402,17 @@ msgstr "planeta"
 #: resources/.illustrations_translations.php:377
 msgctxt "Icon"
 msgid "video"
-msgstr ""
+msgstr "video"
 
 #: resources/.illustrations_translations.php:378
 msgctxt "Icon"
 msgid "youtube"
-msgstr ""
+msgstr "youtube"
 
 #: resources/.illustrations_translations.php:379
 msgctxt "Icon"
 msgid "channel"
-msgstr ""
+msgstr "canal"
 
 #. TRANS: %1$s is the user login, %2$s is the name of the item
 #: front/change.form.php:63 front/user.form.php:86 front/user.form.php:215
@@ -16413,10 +16417,10 @@ msgstr "El NISM (MSIN) son los últimos ocho o diez dígitos del IMSI"
 #: src/Profile_User.php:198 src/Profile_User.php:361 src/Profile_User.php:364
 #: src/Profile_User.php:367 src/Profile_User.php:369 src/Profile_User.php:546
 #: src/Profile_User.php:549 src/Profile_User.php:552 src/Profile_User.php:554
-#: src/Glpi/Search/Provider/SQLProvider.php:5582
-#: src/Glpi/Search/Provider/SQLProvider.php:5586
-#: src/Glpi/Search/Provider/SQLProvider.php:5628
-#: src/Glpi/Search/Provider/SQLProvider.php:5632
+#: src/Glpi/Search/Provider/SQLProvider.php:5594
+#: src/Glpi/Search/Provider/SQLProvider.php:5598
+#: src/Glpi/Search/Provider/SQLProvider.php:5640
+#: src/Glpi/Search/Provider/SQLProvider.php:5644
 #, php-format
 msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
@@ -16425,8 +16429,8 @@ msgstr "%1$s%2$s"
 #. TRANS: letter 'D' for Dynamic
 #: src/Profile_User.php:190 src/Profile_User.php:361 src/Profile_User.php:546
 #: src/Profile_User.php:994 src/Profile_User.php:1224 src/UserEmail.php:221
-#: src/Glpi/Search/Provider/SQLProvider.php:5586
-#: src/Glpi/Search/Provider/SQLProvider.php:5632
+#: src/Glpi/Search/Provider/SQLProvider.php:5598
+#: src/Glpi/Search/Provider/SQLProvider.php:5644
 msgid "D"
 msgstr "D"
 
@@ -16436,8 +16440,8 @@ msgstr "D"
 #: src/Profile_User.php:999 src/Profile_User.php:1228
 #: src/CommonDBVisible.php:225 src/CommonDBVisible.php:251
 #: src/CommonDBVisible.php:287 src/Rule.php:1960
-#: src/Glpi/Search/Provider/SQLProvider.php:5580
-#: src/Glpi/Search/Provider/SQLProvider.php:5626
+#: src/Glpi/Search/Provider/SQLProvider.php:5592
+#: src/Glpi/Search/Provider/SQLProvider.php:5638
 msgid "R"
 msgstr "R"
 
@@ -16577,7 +16581,7 @@ msgstr[2] "%1$s%2$s segundos"
 msgid "Progress"
 msgstr "Progreso"
 
-#: src/Html.php:1310 src/Glpi/Event.php:212
+#: src/Html.php:1312 src/Glpi/Event.php:212
 #: src/Glpi/Marketplace/NotificationTargetController.php:113
 #: src/Glpi/Search/SearchOption.php:363 src/Plugin.php:200
 msgid "Plugin"
@@ -16586,12 +16590,12 @@ msgstr[0] "Complemento"
 msgstr[1] "Complementos"
 msgstr[2] "Complementos"
 
-#: src/Html.php:1494 src/Ticket.php:4675
+#: src/Html.php:1496 src/Ticket.php:4675
 #: src/Glpi/Helpdesk/DefaultDataManager.php:115 src/Profile.php:2688
 msgid "Create a ticket"
 msgstr "Crear un ticket"
 
-#: src/Html.php:1505 src/NotificationTargetProject.php:780
+#: src/Html.php:1507 src/NotificationTargetProject.php:780
 #: src/NotificationTargetProject.php:798 src/NotificationTargetProblem.php:224
 #: src/NotificationTargetProblem.php:238
 #: src/NotificationTargetProjectTask.php:699
@@ -16604,7 +16608,7 @@ msgstr[0] "Ticket"
 msgstr[1] "Tickets"
 msgstr[2] "Tickets"
 
-#: src/Html.php:1525 src/Glpi/Helpdesk/Tile/GlpiPageTile.php:94
+#: src/Html.php:1527 src/Glpi/Helpdesk/Tile/GlpiPageTile.php:94
 #: src/Glpi/Event.php:193 src/Glpi/Event.php:208 src/Profile.php:1921
 #: src/Reservation.php:56
 msgid "Reservation"
@@ -16613,15 +16617,15 @@ msgstr[0] "Reserva"
 msgstr[1] "Reservas"
 msgstr[2] "Reservas"
 
-#: src/Html.php:1662 src/Central.php:629
+#: src/Html.php:1664 src/Central.php:629
 msgid "SQL replica: read only"
 msgstr "Replica SQL: solo lectura"
 
-#: src/Html.php:2467
+#: src/Html.php:2469
 msgid "Selection too large, massive action disabled."
 msgstr "Selección muy larga, acción masiva deshabilitada."
 
-#: src/Html.php:2471
+#: src/Html.php:2473
 msgid ""
 "To increase the limit: change max_input_vars or suhosin.post.max_vars in php"
 " configuration."
@@ -16629,28 +16633,28 @@ msgstr ""
 "Para aumentar el límite: cambiá max_input_vars o suhosin.post.max_vars en la"
 " configuración de php."
 
-#: src/Html.php:2511
+#: src/Html.php:2513
 msgid "Massive actions"
 msgstr "Acciones masivas"
 
-#: src/Html.php:2814
+#: src/Html.php:2816
 msgid "Show date picker"
 msgstr "Mostrar selector de fecha"
 
-#: src/Html.php:3008 src/Html.php:3260 src/Html.php:6674
+#: src/Html.php:3010 src/Html.php:3262 src/Html.php:6676
 #: js/flatpickr_buttons_plugin.js:41
 msgid "Now"
 msgstr "Ahora"
 
-#: src/Html.php:3010 src/Html.php:3013 js/flatpickr_buttons_plugin.js:41
+#: src/Html.php:3012 src/Html.php:3015 js/flatpickr_buttons_plugin.js:41
 msgid "Today"
 msgstr "Hoy"
 
-#: src/Html.php:3017
+#: src/Html.php:3019
 msgid "Specify a date"
 msgstr "Fecha específica"
 
-#: src/Html.php:3022 src/LevelAgreementLevel.php:272
+#: src/Html.php:3024 src/LevelAgreementLevel.php:272
 #, php-format
 msgid "- %d hour"
 msgid_plural "- %d hours"
@@ -16658,7 +16662,7 @@ msgstr[0] "- %d hora"
 msgstr[1] "- %d horas"
 msgstr[2] "- %d horas"
 
-#: src/Html.php:3026 src/LevelAgreementLevel.php:260
+#: src/Html.php:3028 src/LevelAgreementLevel.php:260
 #, php-format
 msgid "- %d minute"
 msgid_plural "- %d minutes"
@@ -16666,7 +16670,7 @@ msgstr[0] "+ %d minuto"
 msgstr[1] "+ %d minutos"
 msgstr[2] "+ %d minutos"
 
-#: src/Html.php:3031 src/LevelAgreementLevel.php:285
+#: src/Html.php:3033 src/LevelAgreementLevel.php:285
 #, php-format
 msgid "- %d day"
 msgid_plural "- %d days"
@@ -16674,35 +16678,35 @@ msgstr[0] "- %d día"
 msgstr[1] "- %d días"
 msgstr[2] "- %d días"
 
-#: src/Html.php:3035
+#: src/Html.php:3037
 msgid "last Sunday"
 msgstr "último Domingo"
 
-#: src/Html.php:3036
+#: src/Html.php:3038
 msgid "last Monday"
 msgstr "último Lunes"
 
-#: src/Html.php:3037
+#: src/Html.php:3039
 msgid "last Tuesday"
 msgstr "último Martes"
 
-#: src/Html.php:3038
+#: src/Html.php:3040
 msgid "last Wednesday"
 msgstr "último Miércoles"
 
-#: src/Html.php:3039
+#: src/Html.php:3041
 msgid "last Thursday"
 msgstr "último Jueves"
 
-#: src/Html.php:3040
+#: src/Html.php:3042
 msgid "last Friday"
 msgstr "último Viernes"
 
-#: src/Html.php:3041
+#: src/Html.php:3043
 msgid "last Saturday"
 msgstr "último Sábado"
 
-#: src/Html.php:3045
+#: src/Html.php:3047
 #, php-format
 msgid "- %d week"
 msgid_plural "- %d weeks"
@@ -16710,11 +16714,11 @@ msgstr[0] "- %d semana"
 msgstr[1] "- %d semanas"
 msgstr[2] "- %d semanas"
 
-#: src/Html.php:3049
+#: src/Html.php:3051
 msgid "Beginning of the month"
 msgstr "Inicio de mes"
 
-#: src/Html.php:3053
+#: src/Html.php:3055
 #, php-format
 msgid "- %d month"
 msgid_plural "- %d months"
@@ -16722,11 +16726,11 @@ msgstr[0] "- %d mes"
 msgstr[1] "- %d meses"
 msgstr[2] "- %d meses"
 
-#: src/Html.php:3057
+#: src/Html.php:3059
 msgid "Beginning of the year"
 msgstr "Principio del año"
 
-#: src/Html.php:3061
+#: src/Html.php:3063
 #, php-format
 msgid "- %d year"
 msgid_plural "- %d years"
@@ -16734,7 +16738,7 @@ msgstr[0] "- %d año"
 msgstr[1] "- %d años"
 msgstr[2] "- %d años"
 
-#: src/Html.php:3067 src/LevelAgreementLevel.php:267
+#: src/Html.php:3069 src/LevelAgreementLevel.php:267
 #, php-format
 msgid "+ %d hour"
 msgid_plural "+ %d hours"
@@ -16742,7 +16746,7 @@ msgstr[0] "+ %d hora"
 msgstr[1] "+ %d horas"
 msgstr[2] "+ %d horas"
 
-#: src/Html.php:3072 src/LevelAgreementLevel.php:281
+#: src/Html.php:3074 src/LevelAgreementLevel.php:281
 #, php-format
 msgid "+ %d day"
 msgid_plural "+ %d days"
@@ -16750,7 +16754,7 @@ msgstr[0] "+ %d día"
 msgstr[1] "+ %d días"
 msgstr[2] "+ %d días"
 
-#: src/Html.php:3076
+#: src/Html.php:3078
 #, php-format
 msgid "+ %d week"
 msgid_plural "+ %d weeks"
@@ -16758,11 +16762,11 @@ msgstr[0] "+ %d semana"
 msgstr[1] "+ %d semanas"
 msgstr[2] "+ %d semanas"
 
-#: src/Html.php:3080
+#: src/Html.php:3082
 msgid "End of the month"
 msgstr "Fin de mes"
 
-#: src/Html.php:3084
+#: src/Html.php:3086
 #, php-format
 msgid "+ %d month"
 msgid_plural "+ %d months"
@@ -16770,11 +16774,11 @@ msgstr[0] "+ %d mes"
 msgstr[1] "+ %d meses"
 msgstr[2] "+ %d meses"
 
-#: src/Html.php:3088
+#: src/Html.php:3090
 msgid "End of the year"
 msgstr "Fin de año"
 
-#: src/Html.php:3092
+#: src/Html.php:3094
 #, php-format
 msgid "+ %d year"
 msgid_plural "+ %d years"
@@ -16782,120 +16786,120 @@ msgstr[0] "+ %d año"
 msgstr[1] "+ %d años"
 msgstr[2] "+ %d años"
 
-#: src/Html.php:3555 src/ValidationStep.php:76 src/ValidationStep.php:107
+#: src/Html.php:3557 src/ValidationStep.php:76 src/ValidationStep.php:107
 #: src/AuthMail.php:61 src/AuthMail.php:85
 #, php-format
 msgid "The %s field is mandatory"
 msgstr "El campo %s es obligatorio"
 
-#: src/Html.php:3816
+#: src/Html.php:3818
 msgid "Available variables"
 msgstr "Variables disponibles"
 
 #. TRANS: %1$d, %2$d, %3$d are page numbers
-#: src/Html.php:3926 src/Html.php:4147
+#: src/Html.php:3928 src/Html.php:4149
 #, php-format
 msgid "From %1$d to %2$d of %3$d"
 msgstr "Desde %1$d a %2$d en %3$d"
 
-#: src/Html.php:4008
+#: src/Html.php:4010
 msgid "Empty array"
 msgstr "Matriz vacía"
 
-#: src/Html.php:4189 src/Html.php:4193
+#: src/Html.php:4191 src/Html.php:4195
 msgid "Display (number of items)"
 msgstr "Mostrar (cantidad de elementos)"
 
-#: src/Html.php:4222
+#: src/Html.php:4224
 #, php-format
 msgid "%1$d on %2$d"
 msgstr "%1$d en %2$d"
 
-#: src/Html.php:4645 src/Glpi/Form/AnswersHandler/AnswersHandler.php:123
+#: src/Html.php:4647 src/Glpi/Form/AnswersHandler/AnswersHandler.php:123
 msgid "This field is mandatory"
 msgstr "El campo es obligatorio"
 
-#: src/Html.php:5289
+#: src/Html.php:5291
 msgid "File(s)"
 msgstr "Archivo(s)"
 
-#: src/Html.php:5323
+#: src/Html.php:5325
 msgid "Drag and drop your file here, or"
 msgstr "Arrastrá y soltá tu archivo acá, o"
 
-#: src/Html.php:5412 src/UploadHandler.php:445
+#: src/Html.php:5414 src/UploadHandler.php:445
 msgid "Filetype not allowed"
 msgstr "Tipo de archivo no permitido"
 
-#: src/Html.php:5413 src/UploadHandler.php:424
+#: src/Html.php:5415 src/UploadHandler.php:424
 msgid "File is too big"
 msgstr "El archivo es demasiado grande"
 
-#: src/Html.php:6679
+#: src/Html.php:6681
 msgid "Just now"
 msgstr "En este momento"
 
-#: src/Html.php:6682 js/common.js:1168
+#: src/Html.php:6684 js/common.js:1168
 #, javascript-format, php-format
 msgid "%s minutes ago"
 msgstr "hace %s minutos"
 
-#: src/Html.php:6685 js/common.js:1170
+#: src/Html.php:6687 js/common.js:1170
 #, javascript-format, php-format
 msgid "%s hours ago"
 msgstr "hace %s horas"
 
-#: src/Html.php:6689
+#: src/Html.php:6691
 msgid "Yesterday"
 msgstr "Ayer"
 
-#: src/Html.php:6692 js/common.js:1172
+#: src/Html.php:6694 js/common.js:1172
 #, javascript-format, php-format
 msgid "%s days ago"
 msgstr "hace %s días"
 
-#: src/Html.php:6695 js/common.js:1174
+#: src/Html.php:6697 js/common.js:1174
 #, javascript-format, php-format
 msgid "%s weeks ago"
 msgstr "hace %s semanas"
 
-#: src/Html.php:6698
+#: src/Html.php:6700
 msgid "Last month"
 msgstr "Mes anterior"
 
-#: src/Html.php:6705
+#: src/Html.php:6707
 msgid "In a minute"
 msgstr "En un minuto"
 
-#: src/Html.php:6708
+#: src/Html.php:6710
 #, php-format
 msgid "In %s minutes"
 msgstr "En %s minutos"
 
-#: src/Html.php:6711
+#: src/Html.php:6713
 msgid "In an hour"
 msgstr "En una hora"
 
-#: src/Html.php:6714
+#: src/Html.php:6716
 #, php-format
 msgid "In %s hours"
 msgstr "En %s horas"
 
-#: src/Html.php:6718
+#: src/Html.php:6720
 msgid "Tomorrow"
 msgstr "Mañana"
 
-#: src/Html.php:6721
+#: src/Html.php:6723
 #, php-format
 msgid "In %s days"
 msgstr "En %s días"
 
-#: src/Html.php:6724
+#: src/Html.php:6726
 #, php-format
 msgid "In %s weeks"
 msgstr "En %s semanas"
 
-#: src/Html.php:6727
+#: src/Html.php:6729
 msgid "Next month"
 msgstr "Próximo mes"
 
@@ -20093,11 +20097,15 @@ msgid ""
 "The security key file does not exist. You have to run the \"%s\" command to "
 "generate a key."
 msgstr ""
+"El archivo de la clave de seguridad no existe. Debés ejecutar el comando "
+"\"%s\" para generar una clave."
 
 #: src/GLPIKey.php:149
 #, php-format
 msgid "Unable to get security key file contents. Fix file permissions of %s."
 msgstr ""
+"No se pueden obtener los contenidos del archivo de la clave de seguridad. "
+"Corregí los permisos del archivo %s."
 
 #: src/GLPIKey.php:155
 #, php-format
@@ -20105,6 +20113,8 @@ msgid ""
 "Invalid security key file contents. You have to run the \"%s\" command to "
 "regenerate a key."
 msgstr ""
+"Los contenidos del archivo de la clave de seguridad son inválidos. Debés "
+"ejecutar el comando \"%s\" para regenerar una clave."
 
 #: src/Vlan.php:48
 msgid "VLAN"
@@ -21981,12 +21991,12 @@ msgstr "Todas las páginas en formato Office Open XML (.xlsx)"
 #: src/Dropdown.php:4223
 #, php-format
 msgid "My %s"
-msgstr ""
+msgstr "Mis %s"
 
 #: src/Dropdown.php:4333
 #, php-format
 msgid "My groups %s"
-msgstr ""
+msgstr "Mis grupos %s"
 
 #: src/Dropdown.php:4447 src/CommonItilObject_Item.php:914
 msgid "version"
@@ -21999,7 +22009,7 @@ msgstr "Software instalado"
 #: src/Dropdown.php:4582
 #, php-format
 msgid "Connected %s"
-msgstr ""
+msgstr "%s asociados"
 
 #: src/DomainRelation.php:58
 msgid "Domain relation"
@@ -25156,7 +25166,7 @@ msgid "Default (from user profile)"
 msgstr "Valor por defecto (definido en el perfil del usuario)"
 
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:151
-#: src/Glpi/Search/Provider/SQLProvider.php:6344 src/KnowbaseItem.php:1528
+#: src/Glpi/Search/Provider/SQLProvider.php:6356 src/KnowbaseItem.php:1528
 msgid "This item is not published yet"
 msgstr "Este elemento todavía no está publicado"
 
@@ -27948,7 +27958,7 @@ msgstr "Todos los %1$s"
 msgid "Search results for %1$s"
 msgstr "Resultados de búsqueda para %1$s"
 
-#: src/Glpi/Search/Provider/SQLProvider.php:5213
+#: src/Glpi/Search/Provider/SQLProvider.php:5225
 msgid ""
 "'All' criterion is not usable with this object list, sql query fails (too "
 "many tables). Please use 'Items seen' criterion instead"
@@ -27957,8 +27967,8 @@ msgstr ""
 "sql falla (demasiadas tablas). Por favor, usá el criterio 'Elementos "
 "visualizados' en su lugar"
 
-#: src/Glpi/Search/Provider/SQLProvider.php:6269
-#: src/Glpi/Search/Provider/SQLProvider.php:6270 src/Reservation.php:1169
+#: src/Glpi/Search/Provider/SQLProvider.php:6281
+#: src/Glpi/Search/Provider/SQLProvider.php:6282 src/Reservation.php:1169
 #: src/Reservation.php:1171 src/Reservation.php:1175 src/Reservation.php:1177
 msgid "See planning"
 msgstr "Ver planificación"
