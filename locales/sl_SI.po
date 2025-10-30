@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-20 10:01+0000\n"
+"POT-Creation-Date: 2025-10-30 07:22+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
 "Last-Translator: Aktivni Uporabnik, 2025\n"
 "Language-Team: Slovenian (Slovenia) (https://app.transifex.com/glpi/teams/1637/sl_SI/)\n"
@@ -175,7 +175,7 @@ msgstr "SQL uporabnik"
 msgid "SQL password"
 msgstr "SQL geslo"
 
-#: templates/install/choose_language.html.twig front/tracking.injector.php:100
+#: templates/install/choose_language.html.twig front/tracking.injector.php:104
 #: src/ITILCategory.php:496 src/ITILCategory.php:504 src/ITILCategory.php:512
 #: src/ITILCategory.php:520 src/Printer_CartridgeInfo.php:97
 #: src/Console/System/CheckRequirementsCommand.php:78 js/glpi_dialog.js:79
@@ -197,7 +197,7 @@ msgid "Required"
 msgstr "Zahtevano"
 
 #: templates/install/blocks/requirements_table.html.twig src/Event.php:179
-#: src/Config.php:2631 src/Console/System/CheckRequirementsCommand.php:91
+#: src/Config.php:2639 src/Console/System/CheckRequirementsCommand.php:91
 msgid "Security"
 msgstr "Varnost"
 
@@ -241,27 +241,27 @@ msgstr "Helpdesk obrazec poročanja"
 msgid "Select an urgency level"
 msgstr "Izberi stopnjo nujnosti"
 
-#: templates/anonymous_helpdesk.html.twig src/CommonITILObject.php:3269
+#: templates/anonymous_helpdesk.html.twig src/CommonITILObject.php:3274
 msgctxt "urgency"
 msgid "Very high"
 msgstr "Zelo visoka"
 
-#: templates/anonymous_helpdesk.html.twig src/CommonITILObject.php:3272
+#: templates/anonymous_helpdesk.html.twig src/CommonITILObject.php:3277
 msgctxt "urgency"
 msgid "High"
 msgstr "Visoka"
 
-#: templates/anonymous_helpdesk.html.twig src/CommonITILObject.php:3275
+#: templates/anonymous_helpdesk.html.twig src/CommonITILObject.php:3280
 msgctxt "urgency"
 msgid "Medium"
 msgstr "Srednja"
 
-#: templates/anonymous_helpdesk.html.twig src/CommonITILObject.php:3278
+#: templates/anonymous_helpdesk.html.twig src/CommonITILObject.php:3283
 msgctxt "urgency"
 msgid "Low"
 msgstr "Nizka"
 
-#: templates/anonymous_helpdesk.html.twig src/CommonITILObject.php:3281
+#: templates/anonymous_helpdesk.html.twig src/CommonITILObject.php:3286
 msgctxt "urgency"
 msgid "Very low"
 msgstr "Zelo nizka"
@@ -283,8 +283,8 @@ msgstr "Opis težave"
 #: src/PlanningExternalEvent.php:232 src/CommonITILCost.php:106
 #: src/NotificationTargetProjectTask.php:634 src/ContractCost.php:123
 #: src/ProjectCost.php:132 src/CommonITILTask.php:1725 src/Reminder.php:402
-#: src/Reminder.php:644 src/User.php:3999 src/CommonITILObject.php:4038
-#: src/CommonITILObject.php:6747 src/NotificationTargetChange.php:392
+#: src/Reminder.php:644 src/User.php:3999 src/CommonITILObject.php:4043
+#: src/CommonITILObject.php:6752 src/NotificationTargetChange.php:392
 #: src/NotificationTargetChange.php:397 src/Contact.php:369
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:65
 msgid "Title"
@@ -292,13 +292,13 @@ msgstr "Kratek opis"
 
 #: templates/anonymous_helpdesk.html.twig src/SolutionTemplate.php:67
 #: src/SolutionTemplate.php:84 src/ITILFollowupTemplate.php:68
-#: src/ITILFollowupTemplate.php:85 src/Project.php:2419 src/Project.php:2461
+#: src/ITILFollowupTemplate.php:85 src/Project.php:2420 src/Project.php:2462
 #: src/TaskTemplate.php:60 src/TaskTemplate.php:102 src/RSSFeed.php:550
 #: src/BlacklistedMailContent.php:73 src/BlacklistedMailContent.php:91
 #: src/AbstractITILChildTemplate.php:106 src/KnowbaseItem.php:1081
 #: src/KnowbaseItem.php:1236 src/KnowbaseItem.php:1951
 #: src/KnowbaseItem.php:2299 src/KnowbaseItemTranslation.php:171
-#: src/KnowbaseItemTranslation.php:323 src/CommonITILObject.php:9499
+#: src/KnowbaseItemTranslation.php:323 src/CommonITILObject.php:9523
 #: src/ContentTemplates/Parameters/KnowbaseItemParameters.php:70
 msgid "Content"
 msgstr "Vsebina"
@@ -348,8 +348,8 @@ msgstr "Vrnitev na prejšnjo stran"
 #: src/ComputerVirtualMachine.php:464 src/ComputerVirtualMachine.php:515
 #: src/LevelAgreementLevel.php:110 src/Cable.php:121
 #: src/CommonITILCost.php:432 src/CommonITILCost.php:603 src/Project.php:539
-#: src/Project.php:907 src/Project.php:1177 src/Project.php:1590
-#: src/Project.php:2416 src/Project.php:2458 src/RuleLocation.php:105
+#: src/Project.php:907 src/Project.php:1178 src/Project.php:1591
+#: src/Project.php:2417 src/Project.php:2459 src/RuleLocation.php:105
 #: src/SoftwareLicense.php:368 src/SoftwareLicense.php:641
 #: src/SoftwareLicense.php:973 src/SoftwareLicense.php:1320
 #: src/Item_Project.php:153 src/Rule.php:720 src/Rule.php:922
@@ -360,7 +360,7 @@ msgstr "Vrnitev na prejšnjo stran"
 #: src/ComputerAntivirus.php:112 src/ComputerAntivirus.php:153
 #: src/ComputerAntivirus.php:329 src/AuthLdapReplicate.php:92
 #: src/ReminderTranslation.php:247 src/AuthMail.php:103 src/AuthMail.php:185
-#: src/AuthLDAP.php:456 src/AuthLDAP.php:745 src/AuthLDAP.php:1072
+#: src/AuthLDAP.php:465 src/AuthLDAP.php:761 src/AuthLDAP.php:1088
 #: src/Item_Disk.php:250 src/Item_Disk.php:344 src/Item_Disk.php:406
 #: src/Document.php:470 src/Document.php:1018 src/ReservationItem.php:183
 #: src/CableStrand.php:153 src/DatabaseInstance.php:182
@@ -373,7 +373,7 @@ msgstr "Vrnitev na prejšnjo stran"
 #: src/Database.php:164 src/Database.php:294 src/Database.php:458
 #: src/NetworkAlias.php:128 src/NetworkAlias.php:327
 #: src/NotificationTargetSavedSearch_Alert.php:104 src/CommonDropdown.php:431
-#: src/NotificationTargetContract.php:174 src/Features/PlanningEvent.php:956
+#: src/NotificationTargetContract.php:174 src/Features/PlanningEvent.php:959
 #: src/NotificationTargetProjectTask.php:554
 #: src/NotificationTargetProjectTask.php:576
 #: src/NotificationTargetProjectTask.php:671
@@ -381,7 +381,7 @@ msgstr "Vrnitev na prejšnjo stran"
 #: src/NotificationTargetProjectTask.php:691 src/DomainRelation.php:94
 #: src/APIClient.php:96 src/ContractCost.php:264 src/ContractCost.php:365
 #: src/ProjectCost.php:273 src/ProjectCost.php:373 src/IPNetwork_Vlan.php:172
-#: src/Pdu_Plug.php:166 src/MailCollector.php:279 src/MailCollector.php:510
+#: src/Pdu_Plug.php:166 src/MailCollector.php:287 src/MailCollector.php:518
 #: src/RuleDictionnaryPrinter.php:68 src/RuleDictionnaryPrinter.php:91
 #: src/CommonDevice.php:267 src/Item_OperatingSystem.php:158
 #: src/Item_OperatingSystem.php:374 src/Item_OperatingSystem.php:585
@@ -397,7 +397,7 @@ msgstr "Vrnitev na prejšnjo stran"
 #: src/DomainRecord.php:614 src/Contract_Supplier.php:180 src/Search.php:8244
 #: src/Search.php:8265 src/Profile.php:781 src/Profile.php:2035
 #: src/User.php:5094 src/User.php:5176 src/Item_Problem.php:152
-#: src/Change_Item.php:159 src/CommonITILObject.php:9496
+#: src/Change_Item.php:159 src/CommonITILObject.php:9520
 #: src/RuleCriteria.php:153 src/SLM.php:188 src/SLM.php:225
 #: src/SlaLevel.php:106 src/SlaLevel.php:157 src/SlaLevel.php:249
 #: src/NotificationTargetDomain.php:79 src/NotificationTargetDomain.php:97
@@ -434,7 +434,7 @@ msgstr "Ime"
 #: src/NotificationTargetCommonITILObject.php:1847
 #: src/ComputerVirtualMachine.php:288 src/ReservationItem.php:589
 #: src/KnowbaseItem_Comment.php:42 src/KnowbaseItem_Comment.php:367
-#: src/Features/PlanningEvent.php:1084
+#: src/Features/PlanningEvent.php:1087
 msgid "Comment"
 msgid_plural "Comments"
 msgstr[0] "Komentar"
@@ -444,8 +444,8 @@ msgstr[3] "Komentarji"
 
 #: templates/dropdown_form.html.twig
 #: templates/components/form/pictures.html.twig
-#: templates/generic_show_form.html.twig src/AuthLDAP.php:988
-#: src/AuthLDAP.php:4038 src/CommonDropdown.php:166 src/CommonDropdown.php:189
+#: templates/generic_show_form.html.twig src/AuthLDAP.php:1004
+#: src/AuthLDAP.php:4052 src/CommonDropdown.php:166 src/CommonDropdown.php:189
 #: src/User.php:2671 src/User.php:3152 src/User.php:3763 src/User.php:4135
 #: src/User.php:6714
 msgid "Picture"
@@ -585,7 +585,7 @@ msgstr "Najdi meni"
 #: src/RuleTicket.php:83 src/RSSFeed.php:1058 src/RSSFeed.php:1059
 #: src/Dropdown.php:286 src/Dropdown.php:290 src/RuleAction.php:436
 #: src/CommonDevice.php:432 src/CommonDevice.php:434 src/CommonDevice.php:436
-#: src/Infocom.php:802 src/Ticket.php:2841 src/DomainRecord.php:570
+#: src/Infocom.php:802 src/Ticket.php:2848 src/DomainRecord.php:570
 #: src/DomainRecord.php:572 src/Reminder.php:1002 src/Reminder.php:1003
 #: src/CommonDBChild.php:871 src/CommonDBChild.php:876
 #: js/modules/Kanban/Kanban.js:1216 js/modules/Kanban/Kanban.js:1833
@@ -611,8 +611,8 @@ msgstr "Upravljaj predloge..."
 msgid "Templates"
 msgstr "Predloge"
 
-#: templates/layout/parts/context_links.html.twig src/Ticket.php:5365
-#: src/Ticket.php:5517
+#: templates/layout/parts/context_links.html.twig src/Ticket.php:5372
+#: src/Ticket.php:5524
 msgid "Show all"
 msgstr "Pokaži vse"
 
@@ -677,7 +677,7 @@ msgstr "Vrh strani"
 msgid "Profiles"
 msgstr "Profili"
 
-#: templates/layout/parts/profile_selector.html.twig src/AuthLDAP.php:3980
+#: templates/layout/parts/profile_selector.html.twig src/AuthLDAP.php:3994
 #: src/RuleCollection.php:1399
 msgid "Select the desired entity"
 msgstr "Izberite željeno entiteto"
@@ -744,7 +744,7 @@ msgstr "Vnesite novo geslo."
 #: templates/password_form.html.twig
 #: templates/components/form/snmpcredential.html.twig
 #: templates/pages/login.html.twig src/AuthMail.php:235
-#: src/MailCollector.php:302 src/Config.php:2156 src/User.php:2744
+#: src/MailCollector.php:310 src/Config.php:2164 src/User.php:2744
 #: src/User.php:3230
 msgid "Password"
 msgstr "Geslo"
@@ -753,7 +753,7 @@ msgstr "Geslo"
 msgid "Password confirmation"
 msgstr "Potrdilo gesla"
 
-#: templates/password_form.html.twig src/Config.php:3474 src/User.php:2756
+#: templates/password_form.html.twig src/Config.php:3482 src/User.php:2756
 #: src/User.php:3243 src/User.php:5572
 msgid "Password security policy"
 msgstr "Varnostni pravilnik gesla"
@@ -779,11 +779,11 @@ msgstr ""
 #: src/NotificationTargetCommonITILObject.php:1836
 #: src/NotificationTargetCommonITILObject.php:1941 src/Auth.php:1757
 #: src/Auth.php:1763 src/Auth.php:1769 src/Auth.php:1775
-#: src/Contact_Supplier.php:310 src/AuthLDAP.php:952 src/AuthLDAP.php:955
-#: src/AuthLDAP.php:960 src/AuthLDAP.php:963 src/AuthLDAP.php:1211
-#: src/AuthLDAP.php:1220 src/AuthLDAP.php:1229 src/AuthLDAP.php:1238
-#: src/AuthLDAP.php:4015 src/AuthLDAP.php:4018 src/AuthLDAP.php:4023
-#: src/AuthLDAP.php:4028 src/Supplier.php:249 src/UserEmail.php:54
+#: src/Contact_Supplier.php:310 src/AuthLDAP.php:968 src/AuthLDAP.php:971
+#: src/AuthLDAP.php:976 src/AuthLDAP.php:979 src/AuthLDAP.php:1227
+#: src/AuthLDAP.php:1236 src/AuthLDAP.php:1245 src/AuthLDAP.php:1254
+#: src/AuthLDAP.php:4029 src/AuthLDAP.php:4032 src/AuthLDAP.php:4037
+#: src/AuthLDAP.php:4042 src/Supplier.php:249 src/UserEmail.php:54
 #: src/Dropdown.php:632 src/Dropdown.php:658 src/QueuedNotification.php:828
 #: src/Blacklist.php:247 src/Notification_NotificationTemplate.php:420
 #: src/User.php:2808 src/User.php:3303 src/User.php:3750 src/Contact.php:314
@@ -876,9 +876,9 @@ msgid "Validate"
 msgstr "Potrditi"
 
 #: templates/components/form/fields_macros.html.twig src/Html.php:2764
-#: src/Html.php:2959 src/Html.php:3094 src/AuthLDAP.php:531
-#: src/MailCollector.php:305 src/NotificationMailingSetting.php:435
-#: src/Config.php:616 src/Config.php:2158 src/User.php:2676 src/User.php:3159
+#: src/Html.php:2959 src/Html.php:3094 src/AuthLDAP.php:540
+#: src/MailCollector.php:313 src/NotificationMailingSetting.php:445
+#: src/Config.php:616 src/Config.php:2166 src/User.php:2676 src/User.php:3159
 #: src/User.php:3160 src/User.php:6719 src/DCRoom.php:177 src/DCRoom.php:180
 msgid "Clear"
 msgstr "Počisti"
@@ -980,7 +980,7 @@ msgstr "Ustvarjeno dne %s"
 
 #. TRANS: %s is the datetime of update
 #: templates/components/form/dates.html.twig src/Rule.php:959
-#: src/AuthMail.php:208 src/Document.php:464 src/MailCollector.php:364
+#: src/AuthMail.php:208 src/Document.php:464 src/MailCollector.php:372
 #: src/KnowbaseItem.php:999 src/KnowbaseItem.php:1317
 #, php-format
 msgid "Last update on %s"
@@ -1018,13 +1018,12 @@ msgstr "Ustvarjeno iz predloge %s"
 #: src/Dropdown.php:3104 src/Dropdown.php:3429 src/Dropdown.php:3434
 #: src/Dropdown.php:3449 src/Dropdown.php:3469 src/Dropdown.php:3712
 #: src/Dropdown.php:3715 src/Dropdown.php:3865 src/Dropdown.php:3868
-#: src/Dropdown.php:3871 src/Dropdown.php:4124 src/Dropdown.php:4202
-#: src/Infocom.php:553 src/Ticket.php:5137 src/Ticket.php:5673
-#: src/Item_Ticket.php:654 src/Item_Ticket.php:657 src/Item_Ticket.php:660
-#: src/Item_Ticket.php:741 src/Item_Ticket.php:743 src/Item_Ticket.php:746
-#: src/Item_Ticket.php:805 src/Item_Ticket.php:880 src/Item_Ticket.php:882
+#: src/Dropdown.php:3871 src/Dropdown.php:4003 src/Dropdown.php:4006
+#: src/Dropdown.php:4113 src/Dropdown.php:4116 src/Dropdown.php:4360
+#: src/Dropdown.php:4363 src/Dropdown.php:4658 src/Dropdown.php:4736
+#: src/Infocom.php:553 src/Ticket.php:5144 src/Ticket.php:5680
 #: src/Consumable.php:800 src/Item_SoftwareLicense.php:830 src/Search.php:1938
-#: src/Search.php:6864 src/Search.php:6911 src/CommonITILObject.php:6425
+#: src/Search.php:6864 src/Search.php:6911 src/CommonITILObject.php:6430
 #: src/Cartridge.php:1169 src/IPNetwork.php:1170 src/CronTask.php:593
 #: src/Reservation.php:620 src/Reservation.php:925
 #: src/NetworkPortInstantiation.php:613 src/NetworkPortInstantiation.php:835
@@ -1045,7 +1044,7 @@ msgstr "Nov predmet"
 #: templates/generic_show_form.html.twig src/Peripheral.php:343
 #: src/Contract.php:776 src/NetworkEquipment.php:471 src/Monitor.php:431
 #: src/Budget.php:283 src/Phone.php:433 src/PassiveDCEquipment.php:184
-#: src/Rack.php:276 src/Project.php:737 src/Project.php:1578
+#: src/Rack.php:276 src/Project.php:737 src/Project.php:1579
 #: src/SoftwareLicense.php:530 src/ProjectTask.php:941 src/Printer.php:624
 #: src/Enclosure.php:210 src/Software.php:432 src/Computer.php:567
 #: src/Certificate.php:278 src/PDU.php:187
@@ -1076,7 +1075,7 @@ msgstr "Predmet je bil izbrisan na %s"
 #: front/report.contract.list.php:219 front/report.year.list.php:190
 #: src/NotificationTargetTicket.php:712 src/CommonGLPI.php:1099
 #: src/CommonGLPI.php:1103 src/Problem.php:1194 src/Change.php:1539
-#: src/Ticket.php:5317 src/NetworkPort.php:1691
+#: src/Ticket.php:5324 src/NetworkPort.php:1691
 msgid "Deleted"
 msgstr "Izbrisano"
 
@@ -1102,9 +1101,9 @@ msgstr "Sprememba zastavice prepovedana. Povezane predmete našel."
 #: ajax/visibility.php:106 src/Contract.php:732 src/Profile_User.php:1003
 #: src/Budget.php:303 src/FieldUnicity.php:386 src/LevelAgreementLevel.php:165
 #: src/Project.php:765 src/SoftwareLicense.php:567 src/Rule.php:797
-#: src/ProjectTask.php:960 src/AuthLDAP.php:2349 src/Document.php:1087
+#: src/ProjectTask.php:960 src/AuthLDAP.php:2365 src/Document.php:1087
 #: src/CommonTreeDropdown.php:801 src/Supplier.php:328 src/Database.php:219
-#: src/CommonDropdown.php:478 src/Features/PlanningEvent.php:1033
+#: src/CommonDropdown.php:478 src/Features/PlanningEvent.php:1036
 #: src/Infocom.php:1727 src/Appliance.php:272 src/RuleImportEntity.php:255
 #: src/SavedSearch.php:123 src/SavedSearch.php:536 src/Certificate.php:329
 #: src/Contact.php:411 src/Notification.php:469 src/CommonDBTM.php:3895
@@ -1231,8 +1230,8 @@ msgstr "Vprašajte agenta o trenutnem stanju"
 
 #: templates/components/form/inventory_info.html.twig
 #: front/notificationmailingsetting.form.php:57
-#: front/notificationajaxsetting.form.php:51 src/GLPINetwork.php:117
-#: src/GLPINetwork.php:122 src/Item_Devices.php:1064
+#: front/notificationajaxsetting.form.php:51 src/GLPINetwork.php:124
+#: src/GLPINetwork.php:129 src/Item_Devices.php:1064
 #: src/Features/Inventoriable.php:200 src/NetworkPort.php:1047
 #: src/NetworkPort.php:1270 src/Agent.php:757 src/Agent.php:778
 msgid "Unknown"
@@ -1277,7 +1276,7 @@ msgstr "Tip predmeta"
 #: src/Transfer.php:3998 src/Item_Devices.php:277 src/Item_Devices.php:575
 #: src/Item_Devices.php:635 src/Dropdown.php:1091 src/Event.php:164
 #: src/CommonDevice.php:55 src/CommonDevice.php:331 src/Profile.php:1102
-#: src/Profile.php:2579 src/Config.php:3367
+#: src/Profile.php:2579 src/Config.php:3375
 msgid "Component"
 msgid_plural "Components"
 msgstr[0] "Komponenta"
@@ -1353,8 +1352,8 @@ msgstr "Inventarna številka"
 #: src/NotificationTargetCommonITILObject.php:1757
 #: src/NotificationTargetCommonITILObject.php:1921 src/Rack.php:181
 #: src/SoftwareVersion.php:141 src/SoftwareVersion.php:199
-#: src/SoftwareVersion.php:355 src/PlanningExternalEvent.php:279
-#: src/LevelAgreementLevel.php:242 src/Cable.php:292 src/Project.php:1166
+#: src/SoftwareVersion.php:355 src/PlanningExternalEvent.php:281
+#: src/LevelAgreementLevel.php:242 src/Cable.php:292 src/Project.php:1167
 #: src/SoftwareLicense.php:511 src/SoftwareLicense.php:982 src/State.php:55
 #: src/State.php:164 src/ProjectTask.php:991 src/TaskTemplate.php:73
 #: src/TaskTemplate.php:158 src/Printer.php:378 src/Cluster.php:86
@@ -1362,15 +1361,15 @@ msgstr "Inventarna številka"
 #: src/Item_SoftwareVersion.php:480 src/Item_SoftwareVersion.php:1135
 #: src/Item_SoftwareVersion.php:1354 src/Enclosure.php:131
 #: src/Item_Devices.php:384 src/Item_Devices.php:385
-#: src/NotificationTargetContract.php:182 src/Features/PlanningEvent.php:976
+#: src/NotificationTargetContract.php:182 src/Features/PlanningEvent.php:979
 #: src/Problem.php:605 src/Line.php:150 src/CommonITILTask.php:805
 #: src/CommonITILTask.php:1018 src/CommonITILTask.php:1539
 #: src/Software.php:572 src/Appliance.php:296 src/Item_SoftwareLicense.php:842
 #: src/Contract_Item.php:628 src/Search.php:8255 src/Search.php:8276
 #: src/Reminder.php:422 src/Reminder.php:692 src/Config.php:586
 #: src/User.php:5097 src/User.php:5179
-#: src/PlanningExternalEventTemplate.php:64 src/CommonITILObject.php:4068
-#: src/CommonITILObject.php:6748 src/Computer.php:414
+#: src/PlanningExternalEventTemplate.php:64 src/CommonITILObject.php:4073
+#: src/CommonITILObject.php:6753 src/Computer.php:414
 #: src/ProjectTask_Ticket.php:379 src/Certificate.php:259 src/CronTask.php:610
 #: src/CronTask.php:1449 src/CronTask.php:1655 src/PDU.php:150
 #: src/Console/System/CheckRequirementsCommand.php:68 src/CommonDBTM.php:3497
@@ -1445,22 +1444,23 @@ msgstr "Naprava"
 #: src/NotificationTargetProjectTask.php:679
 #: src/NotificationTargetProjectTask.php:684 src/Dropdown.php:667
 #: src/Dropdown.php:3085 src/Dropdown.php:3456 src/Dropdown.php:3709
-#: src/Dropdown.php:3878 src/ContractCost.php:390 src/ProjectCost.php:397
-#: src/IPNetwork_Vlan.php:188 src/MailCollector.php:1763
-#: src/MailCollector.php:1777 src/Item_OperatingSystem.php:266
+#: src/Dropdown.php:3878 src/Dropdown.php:3998 src/Dropdown.php:4109
+#: src/Dropdown.php:4230 src/Dropdown.php:4239 src/Dropdown.php:4356
+#: src/ContractCost.php:390 src/ProjectCost.php:397 src/IPNetwork_Vlan.php:188
+#: src/MailCollector.php:1771 src/MailCollector.php:1785
+#: src/Item_OperatingSystem.php:266
 #: src/KnowbaseItem_KnowbaseItemCategory.php:248 src/Appliance_Item.php:348
-#: src/GLPIPDF.php:183 src/Ticket.php:5134 src/Ticket.php:5518
-#: src/Ticket.php:5670 src/Item_Ticket.php:477 src/Item_Ticket.php:652
-#: src/Item_Ticket.php:739 src/Item_Ticket.php:807 src/Item_Ticket.php:816
-#: src/Item_Ticket.php:878 src/Item_SoftwareLicense.php:886
-#: src/Contract_Item.php:381 src/Contract_Item.php:656
-#: src/NetworkPort.php:1026 src/Contract_Supplier.php:204
-#: src/Contract_Supplier.php:342 src/Item_DeviceProcessor.php:52
-#: src/Item_DeviceProcessor.php:53 src/Search.php:6998 src/Search.php:7415
-#: src/Search.php:7609 src/User.php:3920 src/User.php:3978 src/User.php:5129
-#: src/User.php:5215 src/User.php:6935 src/Item_Problem.php:175
-#: src/Change_Item.php:181 src/CommonITILObject.php:6422 src/Cartridge.php:867
-#: src/Group_User.php:569 src/Group_User.php:675 src/DbUtils.php:1690
+#: src/GLPIPDF.php:183 src/Ticket.php:5141 src/Ticket.php:5525
+#: src/Ticket.php:5677 src/Item_Ticket.php:477
+#: src/Item_SoftwareLicense.php:886 src/Contract_Item.php:381
+#: src/Contract_Item.php:656 src/NetworkPort.php:1026
+#: src/Contract_Supplier.php:204 src/Contract_Supplier.php:342
+#: src/Item_DeviceProcessor.php:52 src/Item_DeviceProcessor.php:53
+#: src/Search.php:6998 src/Search.php:7415 src/Search.php:7609
+#: src/User.php:3920 src/User.php:3978 src/User.php:5129 src/User.php:5215
+#: src/User.php:6935 src/Item_Problem.php:175 src/Change_Item.php:181
+#: src/CommonITILObject.php:6427 src/Cartridge.php:867 src/Group_User.php:569
+#: src/Group_User.php:675 src/DbUtils.php:1690
 #: src/NotificationEventAbstract.php:157
 #: src/Console/Ldap/SynchronizeUsersCommand.php:247 src/CommonDBTM.php:3779
 #: src/CommonDBTM.php:5332 src/RuleCollection.php:1393
@@ -1578,7 +1578,7 @@ msgstr "Uporaba nedelje"
 #: src/Domain_Item.php:227 src/Certificate_Item.php:248
 #: src/Document_Item.php:384 src/Dashboard/Grid.php:664
 #: src/Dashboard/Grid.php:781 src/ITILTemplateMandatoryField.php:220
-#: src/Socket.php:949 src/Socket.php:988 src/Project.php:1835
+#: src/Socket.php:949 src/Socket.php:988 src/Project.php:1836
 #: src/Item_Project.php:126 src/Rule.php:3156 src/Contact_Supplier.php:142
 #: src/Contact_Supplier.php:276 src/ProjectTask.php:1296
 #: src/AuthLdapReplicate.php:110 src/KnowbaseItem_Item.php:147
@@ -1590,7 +1590,7 @@ msgstr "Uporaba nedelje"
 #: src/CommonITILTask.php:1550 src/Itil_Project.php:212
 #: src/Itil_Project.php:351 src/ManualLink.php:260
 #: src/KnowbaseItem_KnowbaseItemCategory.php:189 src/Appliance_Item.php:167
-#: src/Appliance_Item.php:289 src/Item_Ticket.php:424 src/Item_Ticket.php:1035
+#: src/Appliance_Item.php:289 src/Item_Ticket.php:424 src/Item_Ticket.php:770
 #: src/Item_SoftwareLicense.php:609 src/Contract_Item.php:311
 #: src/Contract_Item.php:597 src/MassiveAction.php:1291
 #: src/MassiveAction.php:1319 src/CommonDBRelation.php:1354
@@ -1623,15 +1623,15 @@ msgstr "Dodaj"
 #: src/Entity.php:2616 src/Entity.php:3231 src/PlanningRecall.php:362
 #: src/CommonITILActor.php:235 src/CommonITILActor.php:299
 #: src/Dashboard/Grid.php:293 src/DomainRecordType.php:413
-#: src/CommonGLPI.php:1421 src/GLPINetwork.php:129 src/ReservationItem.php:415
+#: src/CommonGLPI.php:1421 src/GLPINetwork.php:136 src/ReservationItem.php:415
 #: src/Item_Devices.php:766 src/Inventory/Conf.php:1005 src/Profile.php:1290
 #: src/Profile.php:1331 src/Profile.php:1379 src/Profile.php:1447
 #: src/Profile.php:1498 src/Profile.php:1632 src/Profile.php:1744
 #: src/Profile.php:1861 src/Profile.php:1915 src/Profile.php:1959
 #: src/Profile.php:2009 src/Config.php:637 src/Config.php:688
 #: src/Config.php:767 src/Config.php:838 src/Config.php:1045
-#: src/Config.php:1578 src/Config.php:2163 src/Config.php:3401
-#: src/Config.php:3644 src/Config.php:3698 src/User.php:3469
+#: src/Config.php:1578 src/Config.php:2171 src/Config.php:3409
+#: src/Config.php:3652 src/Config.php:3706 src/User.php:3469
 #: src/Reservation.php:1052 src/CommonITILValidation.php:917
 msgctxt "button"
 msgid "Save"
@@ -1761,7 +1761,7 @@ msgstr "Datum odpisa"
 #. TRANS: Always plural
 #: templates/components/infocom.html.twig src/Entity.php:2295
 #: src/Transfer.php:4019 src/Infocom.php:116 src/Infocom.php:1222
-#: src/Consumable.php:648 src/Config.php:3338 src/Cartridge.php:839
+#: src/Consumable.php:648 src/Config.php:3346 src/Cartridge.php:839
 msgid "Financial and administrative information"
 msgstr "Finančne in administrativne informacije"
 
@@ -1891,7 +1891,7 @@ msgstr "TTO"
 #: src/RuleTicket.php:831 src/RuleTicket.php:985 src/RuleTicket.php:991
 #: src/RuleTicket.php:1015 src/Dashboard/Provider.php:1543
 #: src/LevelAgreement.php:947 src/LevelAgreementLevel.php:304
-#: src/Ticket.php:3070 src/Ticket.php:3253 src/Ticket.php:6330
+#: src/Ticket.php:3077 src/Ticket.php:3260 src/Ticket.php:6337
 #: src/SlaLevel.php:194 src/OlaLevel.php:190
 #: src/ContentTemplates/Parameters/TicketParameters.php:81
 msgid "Time to own"
@@ -1907,9 +1907,9 @@ msgstr "TTR"
 #: src/RuleTicket.php:820 src/RuleTicket.php:970 src/RuleTicket.php:976
 #: src/RuleTicket.php:1000 src/Dashboard/Provider.php:1549
 #: src/NotificationTargetCommonITILObject.php:1765 src/LevelAgreement.php:948
-#: src/LevelAgreementLevel.php:306 src/Ticket.php:3267 src/Ticket.php:6346
-#: src/CommonITILObject.php:4122 src/CommonITILObject.php:5437
-#: src/CommonITILObject.php:6475 src/SlaLevel.php:195 src/OlaLevel.php:191
+#: src/LevelAgreementLevel.php:306 src/Ticket.php:3274 src/Ticket.php:6353
+#: src/CommonITILObject.php:4127 src/CommonITILObject.php:5442
+#: src/CommonITILObject.php:6480 src/SlaLevel.php:195 src/OlaLevel.php:191
 #: src/ContentTemplates/Parameters/TicketParameters.php:82
 msgid "Time to resolve"
 msgstr "Do datuma"
@@ -2045,16 +2045,16 @@ msgstr "Naslednje stopnjevanje: %s"
 #: src/SoftwareLicense.php:842 src/SoftwareLicense.php:860
 #: src/Item_Project.php:190 src/Rule.php:3608 src/ProjectTask.php:1621
 #: src/ProjectTask.php:1638 src/ProjectTask.php:1647 src/ProjectTask.php:1652
-#: src/ProjectTask.php:1660 src/NotificationEventMailing.php:405
-#: src/NotificationEventMailing.php:458 src/Ticket_Ticket.php:71
+#: src/ProjectTask.php:1660 src/NotificationEventMailing.php:407
+#: src/NotificationEventMailing.php:460 src/Ticket_Ticket.php:71
 #: src/Vlan.php:178 src/Vlan.php:183 src/RuleMailCollector.php:126
-#: src/AuthLDAP.php:757 src/CommonGLPI.php:1498 src/CommonGLPI.php:1501
+#: src/AuthLDAP.php:773 src/CommonGLPI.php:1498 src/CommonGLPI.php:1501
 #: src/CommonGLPI.php:1504 src/CommonGLPI.php:1507 src/CommonGLPI.php:1510
 #: src/Document.php:263 src/ReservationItem.php:859
 #: src/ReservationItem.php:866 src/ReservationItem.php:886
 #: src/NotificationAjax.php:104 src/Supplier.php:532 src/Supplier.php:573
 #: src/NotificationMailing.php:190 src/Item_Devices.php:1538
-#: src/NotificationTargetContract.php:199 src/Features/PlanningEvent.php:681
+#: src/NotificationTargetContract.php:199 src/Features/PlanningEvent.php:684
 #: src/NotificationTargetProjectTask.php:589
 #: src/NotificationTargetProjectTask.php:597
 #: src/NotificationTargetProjectTask.php:602
@@ -2080,22 +2080,22 @@ msgstr "Naslednje stopnjevanje: %s"
 #: src/Dropdown.php:610 src/Dropdown.php:617 src/Dropdown.php:624
 #: src/Dropdown.php:631 src/Dropdown.php:643 src/Dropdown.php:650
 #: src/Dropdown.php:657 src/Dropdown.php:682 src/Dropdown.php:694
-#: src/Dropdown.php:706 src/Dropdown.php:713 src/Problem.php:999
-#: src/Problem.php:1226 src/ProjectCost.php:445 src/MailCollector.php:1760
-#: src/MailCollector.php:1774 src/DBConnection.php:706
-#: src/DBConnection.php:712 src/DBConnection.php:717
+#: src/Dropdown.php:706 src/Dropdown.php:713 src/Dropdown.php:4233
+#: src/Problem.php:999 src/Problem.php:1226 src/ProjectCost.php:445
+#: src/MailCollector.php:1768 src/MailCollector.php:1782
+#: src/DBConnection.php:706 src/DBConnection.php:712 src/DBConnection.php:717
 #: src/CommonITILTask.php:1471 src/CommonITILTask.php:1746
 #: src/CommonITILTask.php:1812 src/Change.php:1344 src/Change.php:1570
 #: src/Infocom.php:587 src/Infocom.php:594 src/Infocom.php:614
-#: src/Ticket.php:5079 src/Ticket.php:5599 src/Ticket.php:5914
-#: src/Ticket.php:6033 src/Item_Ticket.php:495 src/Item_Ticket.php:810
-#: src/Item_Ticket.php:1228 src/Item_Ticket.php:1267 src/Contract_Item.php:551
+#: src/Ticket.php:5086 src/Ticket.php:5606 src/Ticket.php:5921
+#: src/Ticket.php:6040 src/Item_Ticket.php:495 src/Item_Ticket.php:963
+#: src/Item_Ticket.php:1002 src/Contract_Item.php:551
 #: src/Contract_Item.php:675 src/KnowbaseItem.php:1026
 #: src/KnowbaseItem.php:1225 src/KnowbaseItem.php:1303
 #: src/KnowbaseItem.php:1890 src/NetworkPort.php:1612 src/Reminder.php:843
 #: src/Config.php:1615 src/Config.php:1682 src/User.php:2860 src/User.php:3126
 #: src/User.php:4961 src/Item_Problem.php:189 src/RegisteredID.php:118
-#: src/Change_Item.php:194 src/CommonITILObject.php:6474
+#: src/Change_Item.php:194 src/CommonITILObject.php:6479
 #: src/NotificationTargetChange.php:306 src/NotificationTargetChange.php:311
 #: src/NotificationTargetChange.php:316 src/NotificationTargetChange.php:322
 #: src/NotificationTargetChange.php:343 src/NotificationTargetChange.php:389
@@ -2117,7 +2117,7 @@ msgid "%1$s: %2$s"
 msgstr "%1$s: %2$s"
 
 #: templates/components/itilobject/service_levels.html.twig
-#: src/LevelAgreementLevel.php:93 src/Ticket.php:3280 src/Ticket.php:3331
+#: src/LevelAgreementLevel.php:93 src/Ticket.php:3287 src/Ticket.php:3338
 msgid "Escalation level"
 msgid_plural "Escalation levels"
 msgstr[0] "Stopnja eskalacije"
@@ -2137,14 +2137,14 @@ msgstr "Dodelitev SLA"
 #: templates/components/messages_after_redirect_toasts.html.twig
 #: templates/components/messages_after_redirect_alerts.html.twig
 #: ajax/dropdownMassiveAction.php:48 ajax/massiveaction.php:56
-#: front/massiveaction.php:52 src/Html.php:615 src/AuthLDAP.php:1693
+#: front/massiveaction.php:52 src/Html.php:615 src/AuthLDAP.php:1709
 #: src/OLA.php:59 src/MassiveAction.php:1131 js/glpi_dialog.js:398
 msgid "Warning"
 msgstr "Opozorilo"
 
 #. TRANS: short for : Assign a ticket
 #: templates/components/itilobject/service_levels.html.twig
-#: src/RuleAction.php:435 src/Ticket.php:6149
+#: src/RuleAction.php:435 src/Ticket.php:6156
 msgid "Assign"
 msgstr "Dodeli"
 
@@ -2163,15 +2163,15 @@ msgstr[3] "Entitet"
 #: src/NotificationTargetCommonITILObject.php:1911
 #: src/NotificationTargetCommonITILObject.php:1974
 #: src/NotificationTargetProjectTask.php:575 src/Problem.php:643
-#: src/Ticket.php:6312 src/CommonITILObject.php:4104
-#: src/CommonITILObject.php:5434
+#: src/Ticket.php:6319 src/CommonITILObject.php:4109
+#: src/CommonITILObject.php:5439
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:67
 msgid "Opening date"
 msgstr "Datum odprtja"
 
 #: templates/components/itilobject/fields_panel.html.twig src/Problem.php:625
-#: src/Ticket.php:6354 src/CommonITILObject.php:4153
-#: src/CommonITILObject.php:5441
+#: src/Ticket.php:6361 src/CommonITILObject.php:4158
+#: src/CommonITILObject.php:5446
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:68
 msgid "Resolution date"
 msgstr "Datum reševanja"
@@ -2205,8 +2205,8 @@ msgstr "Datum zaključka"
 #: src/LevelAgreement.php:685 src/DeviceFirmware.php:54
 #: src/DeviceFirmware.php:101 src/DeviceFirmware.php:158
 #: src/DeviceFirmware.php:259 src/FieldUnicity.php:79 src/FieldUnicity.php:360
-#: src/CartridgeItem.php:226 src/Project.php:597 src/Project.php:957
-#: src/Project.php:1661 src/Project.php:1862
+#: src/CartridgeItem.php:226 src/Project.php:597 src/Project.php:958
+#: src/Project.php:1662 src/Project.php:1863
 #: src/RuleDictionnaryMonitorType.php:51 src/RuleDictionnaryMonitorType.php:65
 #: src/RuleDictionnaryPeripheralType.php:51
 #: src/RuleDictionnaryPeripheralType.php:65 src/SoftwareLicense.php:410
@@ -2232,7 +2232,7 @@ msgstr "Datum zaključka"
 #: src/DeviceSoundCard.php:118 src/DisplayPreference.php:708
 #: src/QueuedNotification.php:386 src/QueuedNotification.php:779
 #: src/NotificationTemplate.php:135 src/NotificationTemplate.php:181
-#: src/Infocom.php:1691 src/Ticket.php:3195 src/Ticket.php:3372
+#: src/Infocom.php:1691 src/Ticket.php:3202 src/Ticket.php:3379
 #: src/Blacklist.php:95 src/Blacklist.php:130 src/Item_Ticket.php:448
 #: src/Appliance.php:233 src/Group.php:880 src/Group.php:967
 #: src/Contract_Item.php:170 src/Contract_Item.php:623
@@ -2273,16 +2273,16 @@ msgstr[3] "Vrst"
 #: src/NotificationTargetCommonITILObject.php:1799
 #: src/NotificationTargetCommonITILObject.php:1835
 #: src/NotificationTargetCommonITILObject.php:1914
-#: src/PlanningExternalEvent.php:293 src/Auth.php:1805 src/AuthLDAP.php:981
-#: src/AuthLDAP.php:1194 src/AuthLDAP.php:4037 src/DatabaseInstance.php:418
+#: src/PlanningExternalEvent.php:295 src/Auth.php:1805 src/AuthLDAP.php:997
+#: src/AuthLDAP.php:1210 src/AuthLDAP.php:4051 src/DatabaseInstance.php:418
 #: src/Item_SoftwareVersion.php:1088 src/RuleSoftwareCategory.php:88
 #: src/CommonITILTask.php:876 src/CommonITILTask.php:1511 src/Software.php:378
 #: src/KnowbaseItem_KnowbaseItemCategory.php:140 src/KnowbaseItem.php:1225
 #: src/KnowbaseItem.php:1430 src/KnowbaseItem.php:1890
 #: src/KnowbaseItem.php:1957 src/DatabaseInstanceCategory.php:45
 #: src/User.php:2888 src/User.php:4007
-#: src/PlanningExternalEventTemplate.php:68 src/CommonITILObject.php:4171
-#: src/CommonITILObject.php:6764 src/RuleDictionnarySoftware.php:124
+#: src/PlanningExternalEventTemplate.php:68 src/CommonITILObject.php:4176
+#: src/CommonITILObject.php:6769 src/RuleDictionnarySoftware.php:124
 msgid "Category"
 msgid_plural "Categories"
 msgstr[0] "Kategorija"
@@ -2295,7 +2295,7 @@ msgstr[3] "Kategorij"
 #: src/NotificationTargetCommonITILObject.php:1761
 #: src/NotificationTargetCommonITILObject.php:1916 src/Stat.php:626
 #: src/TaskTemplate.php:149 src/NotificationTargetProjectTask.php:572
-#: src/CommonITILTask.php:796 src/CommonITILObject.php:4196
+#: src/CommonITILTask.php:796 src/CommonITILObject.php:4201
 #: src/CronTask.php:1281 src/CronTask.php:1383
 msgid "Total duration"
 msgstr "Skupaj trajanje"
@@ -2386,7 +2386,7 @@ msgid "Plans"
 msgstr "Načrti"
 
 #: templates/components/itilobject/fields/global_validation.html.twig
-#: src/ITILTemplate.php:337 src/Ticket.php:2632
+#: src/ITILTemplate.php:337 src/Ticket.php:2644
 msgid "Approval request"
 msgstr "Prošnja za odobritev"
 
@@ -2398,7 +2398,7 @@ msgstr "Ponovno odprtje"
 #: templates/components/itilobject/selfservice.html.twig
 #: front/stat.graph.php:248 front/stat.tracking.php:112 src/RuleTicket.php:751
 #: src/RuleTicket.php:931 src/NotificationTargetCommonITILObject.php:1758
-#: src/Config.php:997 src/CommonITILObject.php:4077
+#: src/Config.php:997 src/CommonITILObject.php:4082
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:71
 msgid "Urgency"
 msgstr "Prioriteta"
@@ -2407,7 +2407,7 @@ msgstr "Prioriteta"
 #: front/stat.graph.php:255 front/stat.tracking.php:113 src/RuleTicket.php:754
 #: src/RuleTicket.php:934 src/NotificationTargetCommonITILObject.php:1759
 #: src/Csv/ImpactCsvExport.php:99 src/Config.php:979
-#: src/CommonITILObject.php:4086 src/NotificationTargetChange.php:274
+#: src/CommonITILObject.php:4091 src/NotificationTargetChange.php:274
 #: src/Impact.php:269 src/Impact.php:1101
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:72
 msgid "Impact"
@@ -2417,8 +2417,8 @@ msgstr "Vpliv"
 #: front/stat.graph.php:241 front/stat.tracking.php:114 src/RuleTicket.php:757
 #: src/RuleTicket.php:937 src/NotificationTargetProject.php:655
 #: src/NotificationTargetCommonITILObject.php:1760 src/Project.php:588
-#: src/Project.php:1174 src/Project.php:1612 src/CommonITILTask.php:1471
-#: src/CommonITILObject.php:4095 src/CommonITILObject.php:6756
+#: src/Project.php:1175 src/Project.php:1613 src/CommonITILTask.php:1471
+#: src/CommonITILObject.php:4100 src/CommonITILObject.php:6761
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:73
 msgid "Priority"
 msgstr "Prioriteta (Interno)"
@@ -2448,20 +2448,20 @@ msgstr "Samodejna rešitev"
 #: src/NotificationTargetCommonITILObject.php:1912
 #: src/NotificationTargetCommonITILObject.php:1977 src/LevelAgreement.php:521
 #: src/NotificationTargetProblem.php:256 src/NotificationTargetProblem.php:261
-#: src/PlanningExternalEvent.php:341 src/Project.php:579 src/Project.php:921
-#: src/Project.php:1738 src/Rule.php:747 src/Rule.php:926 src/Rule.php:3147
+#: src/PlanningExternalEvent.php:343 src/Project.php:579 src/Project.php:921
+#: src/Project.php:1739 src/Rule.php:747 src/Rule.php:926 src/Rule.php:3147
 #: src/Rule.php:3222 src/ProjectTask.php:802 src/RuleImportComputer.php:94
 #: src/NotificationTargetCronTask.php:86 src/ReminderTranslation.php:253
-#: src/Features/PlanningEvent.php:984
+#: src/Features/PlanningEvent.php:987
 #: src/NotificationTargetProjectTask.php:556
 #: src/NotificationTargetProjectTask.php:577
 #: src/NotificationTargetProjectTask.php:639 src/Problem.php:988
 #: src/ITILFollowup.php:614 src/ITILFollowup.php:691 src/ITILFollowup.php:886
 #: src/CommonITILTask.php:751 src/CommonITILTask.php:844
 #: src/CommonITILTask.php:1518 src/CommonITILTask.php:1728 src/Change.php:1333
-#: src/Ticket.php:2803 src/Ticket.php:5064 src/Reminder.php:432
+#: src/Ticket.php:2810 src/Ticket.php:5071 src/Reminder.php:432
 #: src/Reminder.php:797 src/PlanningExternalEventTemplate.php:85
-#: src/CommonITILObject.php:4049 src/NotificationTargetChange.php:393
+#: src/CommonITILObject.php:4054 src/NotificationTargetChange.php:393
 #: src/NotificationTargetChange.php:398 src/CronTask.php:601
 #: src/CronTask.php:1385 src/CronTask.php:1452 src/CronTask.php:1643
 #: src/RuleRight.php:63 src/Console/Marketplace/SearchCommand.php:125
@@ -2594,7 +2594,7 @@ msgstr "Dodaj novo datoteko"
 
 #: templates/components/itilobject/timeline/simple_form.html.twig
 #: src/ProjectTask.php:1621 src/TaskTemplate.php:85 src/TaskTemplate.php:130
-#: src/RSSFeed.php:734 src/Features/PlanningEvent.php:681 src/Reminder.php:843
+#: src/RSSFeed.php:734 src/Features/PlanningEvent.php:684 src/Reminder.php:843
 #: src/Reservation.php:933 src/Reservation.php:1315 src/Reservation.php:1397
 msgid "By"
 msgstr "Od"
@@ -2606,8 +2606,8 @@ msgstr "%1$s bo dodan v entiteto %2$s"
 
 #: templates/components/itilobject/timeline/pending_reasons_messages.html.twig
 #: src/Dashboard/Provider.php:1270 src/Dashboard/Provider.php:1616
-#: src/Problem.php:675 src/Change.php:672 src/Ticket.php:3813
-#: src/CommonITILObject.php:5489 src/CommonITILObject.php:6769
+#: src/Problem.php:675 src/Change.php:672 src/Ticket.php:3820
+#: src/CommonITILObject.php:5494 src/CommonITILObject.php:6774
 msgid "Pending"
 msgstr "V čakanju"
 
@@ -2639,7 +2639,7 @@ msgstr "Zavrnitev"
 
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: src/NotificationTargetTicket.php:141 src/NotificationTargetTicket.php:880
-#: src/CommonITILObject.php:7238 src/NotificationTargetChange.php:54
+#: src/CommonITILObject.php:7243 src/NotificationTargetChange.php:54
 #: src/NotificationTargetChange.php:344
 msgid "Validation request"
 msgstr "Zahteva za odobritev"
@@ -2655,10 +2655,10 @@ msgstr "Zahteva za odobritev"
 #: src/NotificationTargetCommonITILObject.php:1768
 #: src/NotificationTargetCommonITILObject.php:1995 src/Log.php:565
 #: src/NotificationTargetReservation.php:63 src/RuleMailCollector.php:71
-#: src/Problem.php:985 src/Change.php:1330 src/Ticket.php:5057
-#: src/Group.php:319 src/Group.php:536 src/CommonITILObject.php:3879
-#: src/CommonITILObject.php:4453 src/CommonITILObject.php:4462
-#: src/CommonITILObject.php:6757 src/CommonITILObject.php:9618
+#: src/Problem.php:985 src/Change.php:1330 src/Ticket.php:5064
+#: src/Group.php:319 src/Group.php:536 src/CommonITILObject.php:3884
+#: src/CommonITILObject.php:4458 src/CommonITILObject.php:4467
+#: src/CommonITILObject.php:6762 src/CommonITILObject.php:9642
 #: src/NotificationTargetChange.php:303 src/NotImportedEmail.php:190
 #: src/CommonITILValidation.php:1275
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:76
@@ -2709,14 +2709,14 @@ msgstr[3] "Predlog naloge"
 #: src/NotificationTargetProject.php:736 src/NotificationTargetProject.php:741
 #: src/NotificationTargetCommonITILObject.php:2048 src/Csv/LogCsvExport.php:74
 #: src/NotificationTargetProblem.php:253 src/NotificationTargetProblem.php:258
-#: src/Item_DeviceBattery.php:56 src/Project.php:1167
+#: src/Item_DeviceBattery.php:56 src/Project.php:1168
 #: src/NetworkPortConnectionLog.php:121 src/RuleMatchedLog.php:232
 #: src/RuleMatchedLog.php:309 src/NotificationTargetProjectTask.php:599
 #: src/NotificationTargetProjectTask.php:629 src/ITILFollowup.php:632
 #: src/ITILFollowup.php:707 src/Event.php:311 src/Event.php:389
-#: src/CommonITILTask.php:769 src/CommonITILTask.php:988 src/Ticket.php:6365
-#: src/KnowbaseItem.php:1255 src/CommonITILObject.php:5432
-#: src/CommonITILObject.php:6749 src/NotificationTargetChange.php:308
+#: src/CommonITILTask.php:769 src/CommonITILTask.php:988 src/Ticket.php:6372
+#: src/KnowbaseItem.php:1255 src/CommonITILObject.php:5437
+#: src/CommonITILObject.php:6754 src/NotificationTargetChange.php:308
 #: src/NotificationTargetChange.php:318 src/NotificationTargetChange.php:390
 #: src/NotificationTargetChange.php:395 src/CronTask.php:1382
 #: src/CronTask.php:1448 src/NotImportedEmail.php:208
@@ -2820,14 +2820,14 @@ msgstr "Odobritev rešitve"
 #: src/Auth.php:1743 src/ComputerVirtualMachine.php:212
 #: src/ComputerVirtualMachine.php:340 src/CartridgeItem.php:336
 #: src/Cable.php:257 src/CommonITILCost.php:125 src/CommonITILCost.php:466
-#: src/Project.php:720 src/Project.php:1118 src/Project.php:1746
+#: src/Project.php:720 src/Project.php:1119 src/Project.php:1747
 #: src/RuleLocation.php:111 src/SoftwareLicense.php:484
 #: src/SoftwareLicense.php:702 src/SoftwareLicense.php:1325 src/Rule.php:772
 #: src/Rule.php:952 src/Lock.php:455 src/ProjectTask.php:925
 #: src/Transfer.php:149 src/Transfer.php:3917 src/Printer.php:471
 #: src/Vlan.php:184 src/NotificationTargetReservation.php:180
 #: src/AuthMail.php:155 src/AuthMail.php:202 src/Cluster.php:103
-#: src/AuthLDAP.php:534 src/AuthLDAP.php:942 src/AuthLDAP.php:1203
+#: src/AuthLDAP.php:543 src/AuthLDAP.php:958 src/AuthLDAP.php:1219
 #: src/Unmanaged.php:152 src/Document.php:504 src/Document.php:1122
 #: src/ReservationItem.php:162 src/ReservationItem.php:231
 #: src/ReservationItem.php:410 src/DatabaseInstance.php:254
@@ -2840,15 +2840,15 @@ msgstr "Odobritev rešitve"
 #: src/NotificationTargetProjectTask.php:557
 #: src/NotificationTargetProjectTask.php:578 src/DomainRelation.php:99
 #: src/ContractCost.php:142 src/ContractCost.php:280 src/ProjectCost.php:151
-#: src/ProjectCost.php:289 src/MailCollector.php:358 src/MailCollector.php:553
+#: src/ProjectCost.php:289 src/MailCollector.php:366 src/MailCollector.php:561
 #: src/RuleSoftwareCategory.php:73 src/Line.php:133
 #: src/RuleDictionnaryPrinter.php:76 src/CommonDevice.php:293
 #: src/Software.php:370 src/Software.php:590 src/NotificationTemplate.php:145
 #: src/NotificationTemplate.php:191 src/Infocom.php:1659
-#: src/ManualLink.php:117 src/Ticket.php:3422 src/Appliance.php:133
+#: src/ManualLink.php:117 src/Ticket.php:3429 src/Appliance.php:133
 #: src/Group.php:300 src/NetworkPort.php:1453 src/NetworkPort.php:1710
 #: src/DomainRecord.php:138 src/DomainRecord.php:495 src/Search.php:8290
-#: src/Profile.php:783 src/Profile.php:2098 src/Config.php:3297
+#: src/Profile.php:783 src/Profile.php:2098 src/Config.php:3305
 #: src/User.php:2903 src/User.php:3883 src/RuleImportEntity.php:122
 #: src/SLM.php:191 src/SLM.php:251 src/Computer.php:471
 #: src/NotificationTargetChange.php:313 src/NotificationTargetChange.php:324
@@ -2954,7 +2954,7 @@ msgstr "Spremljanje"
 #: templates/components/itilobject/actors/main.html.twig
 #: front/stat.tracking.php:128 src/NotificationTargetCommonITILObject.php:2011
 #: src/Log.php:567 src/Group.php:331 src/Group.php:544
-#: src/CommonITILObject.php:3881 src/CommonITILObject.php:4584
+#: src/CommonITILObject.php:3886 src/CommonITILObject.php:4589
 msgid "Assigned to"
 msgstr "Dodeljeno k"
 
@@ -2977,15 +2977,15 @@ msgstr "E-poštni naslov"
 #: ajax/dropdownItilActors.php:228 front/ticket_user.form.php:49
 #: front/supplier_ticket.form.php:49 front/problem_user.form.php:53
 #: front/change_supplier.form.php:49 front/change_user.form.php:53
-#: front/problem_supplier.form.php:49 src/CommonITILObject.php:4658
+#: front/problem_supplier.form.php:49 src/CommonITILObject.php:4663
 msgid "Email followup"
 msgstr "Nadaljevanje po e-pošti"
 
 #: templates/components/itilobject/actors/main.html.twig
 #: templates/impact/edit_compound_modal.html.twig
 #: templates/pages/setup/setup_notifications.html.twig
-#: src/Dashboard/Grid.php:873 src/Auth.php:1816 src/AuthLDAP.php:689
-#: src/AuthLDAP.php:876 src/AuthLDAP.php:1004 src/AuthLDAP.php:1040
+#: src/Dashboard/Grid.php:873 src/Auth.php:1816 src/AuthLDAP.php:705
+#: src/AuthLDAP.php:892 src/AuthLDAP.php:1020 src/AuthLDAP.php:1056
 #: src/User.php:5581 src/Impact.php:410 src/Impact.php:1120
 #: src/Impact.php:1836
 msgid "Save"
@@ -3059,9 +3059,9 @@ msgstr ""
 #: src/RuleTicket.php:950 src/NetworkName.php:110 src/Stat.php:1671
 #: src/KnowbaseItem_Item.php:71 src/Item_SoftwareVersion.php:79
 #: src/Item_Devices.php:174 src/Problem.php:454 src/Change.php:474
-#: src/Ticket.php:3204 src/Ticket.php:5061 src/Item_Ticket.php:1172
+#: src/Ticket.php:3211 src/Ticket.php:5068 src/Item_Ticket.php:907
 #: src/Lockedfield.php:169 src/Item_SoftwareLicense.php:98
-#: src/KnowbaseItem.php:1960 src/CommonITILObject.php:6762
+#: src/KnowbaseItem.php:1960 src/CommonITILObject.php:6767
 msgid "Associated element"
 msgid_plural "Associated elements"
 msgstr[0] "Povezan element"
@@ -3073,9 +3073,9 @@ msgstr[3] "Povezani elementi"
 #: src/RuleTicket.php:717 src/RuleTicket.php:915
 #: src/NotificationTargetCommonITILObject.php:866
 #: src/NotificationTargetCommonITILObject.php:1824 src/Log.php:569
-#: src/Group.php:325 src/Group.php:552 src/CommonITILObject.php:3880
-#: src/CommonITILObject.php:4537 src/CommonITILObject.php:4546
-#: src/CommonITILObject.php:9620
+#: src/Group.php:325 src/Group.php:552 src/CommonITILObject.php:3885
+#: src/CommonITILObject.php:4542 src/CommonITILObject.php:4551
+#: src/CommonITILObject.php:9644
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:77
 msgid "Watcher"
 msgid_plural "Watchers"
@@ -3238,15 +3238,15 @@ msgstr "Ne zgodovinsko"
 #: src/LevelAgreement.php:656 src/Csv/LogCsvExport.php:73
 #: src/NotificationTargetProblem.php:252 src/NotificationTargetProblem.php:257
 #: src/FieldUnicity.php:341 src/CartridgeItem.php:209 src/Cable.php:131
-#: src/CommonITILCost.php:116 src/Project.php:549 src/Project.php:1165
+#: src/CommonITILCost.php:116 src/Project.php:549 src/Project.php:1166
 #: src/SoftwareLicense.php:378 src/SoftwareLicense.php:1243 src/Rule.php:729
 #: src/Ticket_Ticket.php:71 src/Printer.php:351 src/AuthMail.php:112
-#: src/AuthLDAP.php:1081 src/Unmanaged.php:98 src/Document.php:1027
+#: src/AuthLDAP.php:1097 src/Unmanaged.php:98 src/Document.php:1027
 #: src/ReservationItem.php:195 src/DatabaseInstance.php:337
 #: src/Item_SoftwareVersion.php:70 src/CommonTreeDropdown.php:753
 #: src/Supplier.php:176 src/Enclosure.php:112 src/Item_Devices.php:144
 #: src/NotificationTargetSavedSearch_Alert.php:106 src/CommonDropdown.php:440
-#: src/Features/PlanningEvent.php:963
+#: src/Features/PlanningEvent.php:966
 #: src/NotificationTargetProjectTask.php:628
 #: src/NotificationTargetProjectTask.php:657 src/APIClient.php:104
 #: src/Problem.php:981 src/Problem.php:999 src/Problem.php:1226
@@ -3256,16 +3256,16 @@ msgstr "Ne zgodovinsko"
 #: src/CommonITILTask.php:1746 src/CommonITILTask.php:1812
 #: src/Software.php:359 src/Change.php:1326 src/Change.php:1344
 #: src/Change.php:1570 src/Infocom.php:1500 src/Infocom.php:1701
-#: src/Datacenter.php:100 src/Ticket.php:5053 src/Ticket.php:5079
-#: src/Ticket.php:5599 src/Consumable.php:641 src/Appliance.php:255
+#: src/Datacenter.php:100 src/Ticket.php:5060 src/Ticket.php:5086
+#: src/Ticket.php:5606 src/Consumable.php:641 src/Appliance.php:255
 #: src/Appliance.php:281 src/Item_SoftwareLicense.php:80
 #: src/Contract_Item.php:151 src/KnowbaseItem.php:2282
 #: src/CommonDBRelation.php:324 src/NetworkPort.php:1656
 #: src/NetworkPort.php:1728 src/Notification_NotificationTemplate.php:153
 #: src/Notification_NotificationTemplate.php:241 src/Search.php:8250
 #: src/Search.php:8271 src/Profile.php:2044 src/User.php:3725
-#: src/User.php:5907 src/CommonITILObject.php:4059
-#: src/CommonITILObject.php:6746 src/SLM.php:234 src/Cartridge.php:829
+#: src/User.php:5907 src/CommonITILObject.php:4064
+#: src/CommonITILObject.php:6751 src/SLM.php:234 src/Cartridge.php:829
 #: src/Cartridge.php:1118 src/Computer.php:387 src/DCRoom.php:304
 #: src/SavedSearch.php:294 src/NotificationTargetChange.php:389
 #: src/NotificationTargetChange.php:394 src/Link.php:220
@@ -3328,7 +3328,7 @@ msgstr "Pokaži %s vnosov"
 #: front/stat.tracking.php:106 src/NotificationTargetCommonITILObject.php:1774
 #: src/NotificationTargetCommonITILObject.php:1798
 #: src/NotificationTargetCommonITILObject.php:1834 src/Auth.php:1799
-#: src/AuthLDAP.php:977 src/AuthLDAP.php:1185 src/AuthLDAP.php:4036
+#: src/AuthLDAP.php:993 src/AuthLDAP.php:1201 src/AuthLDAP.php:4050
 #: src/User.php:2920
 msgctxt "person"
 msgid "Title"
@@ -3443,7 +3443,7 @@ msgstr "Naslednje (puščica desno)"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig
 #: templates/pages/tools/project_task.html.twig src/ProjectTaskTemplate.php:75
-#: src/ProjectTaskTemplate.php:157 src/Project.php:1132 src/Project.php:2305
+#: src/ProjectTaskTemplate.php:157 src/Project.php:1133 src/Project.php:2306
 #: src/ProjectTask.php:933
 msgid "Milestone"
 msgstr "Mejnik"
@@ -3477,14 +3477,14 @@ msgid "Take me home"
 msgstr "Odpelji me domov"
 
 #: templates/generic_show_form.html.twig src/Auth.php:1731
-#: src/AuthLDAP.php:935 src/AuthLDAP.php:1140 src/AuthLDAP.php:4031
+#: src/AuthLDAP.php:951 src/AuthLDAP.php:1156 src/AuthLDAP.php:4045
 #: src/User.php:2716 src/User.php:3132 src/User.php:6703
 #: src/ContentTemplates/Parameters/UserParameters.php:82
 msgid "Surname"
 msgstr "Priimek"
 
 #: templates/generic_show_form.html.twig src/Auth.php:1737
-#: src/AuthLDAP.php:938 src/AuthLDAP.php:1149 src/AuthLDAP.php:4032
+#: src/AuthLDAP.php:954 src/AuthLDAP.php:1165 src/AuthLDAP.php:4046
 #: src/User.php:2727 src/User.php:3167 src/User.php:3742 src/User.php:6724
 #: src/NotificationTargetUser.php:161 src/Contact.php:265
 #: src/ContentTemplates/Parameters/UserParameters.php:81
@@ -3504,9 +3504,9 @@ msgstr "Je aktivno"
 #: src/Item_DeviceCamera_ImageResolution.php:172 src/SavedSearch_User.php:57
 #: src/SavedSearch_User.php:78 src/RuleImportComputer.php:161
 #: src/Item_SoftwareVersion.php:1183 src/Dropdown.php:1042
-#: src/Dropdown.php:1068 src/MailCollector.php:343
+#: src/Dropdown.php:1068 src/MailCollector.php:351
 #: src/Marketplace/View.php:1080 src/Search.php:5376 src/Config.php:1172
-#: src/Config.php:2446 src/Alert.php:151 src/SavedSearch.php:112
+#: src/Config.php:2454 src/Alert.php:151 src/SavedSearch.php:112
 #: src/SavedSearch.php:509 src/SavedSearch.php:1160 src/SavedSearch.php:1217
 #: src/Item_RemoteManagement.php:351 src/CommonDBChild.php:1028
 #: src/RuleImportAsset.php:250
@@ -3516,7 +3516,7 @@ msgstr "Ne"
 #: templates/generic_show_form.html.twig
 #: templates/pages/tools/project_task.html.twig src/Location.php:57
 #: src/ProjectTaskTemplate.php:67 src/ProjectTaskTemplate.php:141
-#: src/Project.php:1618 src/ITILCategory.php:52 src/CommonTreeDropdown.php:52
+#: src/Project.php:1619 src/ITILCategory.php:52 src/CommonTreeDropdown.php:52
 #: src/CommonTreeDropdown.php:661 src/Group.php:306
 msgid "As child of"
 msgstr "Podrejeno"
@@ -3537,7 +3537,7 @@ msgid "Registration date"
 msgstr "Datum registracije"
 
 #: templates/generic_show_form.html.twig src/Auth.php:1750
-#: src/AuthLDAP.php:945 src/User.php:2909 src/User.php:3390 src/User.php:3950
+#: src/AuthLDAP.php:961 src/User.php:2909 src/User.php:3390 src/User.php:3950
 msgctxt "user"
 msgid "Administrative number"
 msgstr "Administrativna številka"
@@ -3552,8 +3552,8 @@ msgstr "Administrativna številka"
 #: src/NotificationTargetCommonITILObject.php:1772
 #: src/NotificationTargetCommonITILObject.php:1803
 #: src/NotificationTargetCommonITILObject.php:1839 src/Auth.php:1787
-#: src/Contact_Supplier.php:307 src/AuthLDAP.php:970 src/AuthLDAP.php:1167
-#: src/AuthLDAP.php:4034 src/Dropdown.php:611 src/User.php:2894
+#: src/Contact_Supplier.php:307 src/AuthLDAP.php:986 src/AuthLDAP.php:1183
+#: src/AuthLDAP.php:4048 src/Dropdown.php:611 src/User.php:2894
 #: src/User.php:3352 src/User.php:3800 src/Contact.php:290
 #: src/ContentTemplates/Parameters/UserParameters.php:79
 msgid "Phone 2"
@@ -3563,8 +3563,8 @@ msgstr "Telefon 2"
 #: src/NotificationTargetCommonITILObject.php:1770
 #: src/NotificationTargetCommonITILObject.php:1801
 #: src/NotificationTargetCommonITILObject.php:1837 src/Auth.php:1793
-#: src/Contact_Supplier.php:308 src/AuthLDAP.php:974 src/AuthLDAP.php:1176
-#: src/AuthLDAP.php:4035 src/Dropdown.php:618 src/User.php:2878
+#: src/Contact_Supplier.php:308 src/AuthLDAP.php:990 src/AuthLDAP.php:1192
+#: src/AuthLDAP.php:4049 src/Dropdown.php:618 src/User.php:2878
 #: src/User.php:3311 src/User.php:3808 src/Contact.php:298
 msgid "Mobile phone"
 msgstr "Mobilni telefon"
@@ -3825,9 +3825,9 @@ msgstr[3] "Različice OS"
 #: src/Entity.php:3112 src/Entity.php:3625 src/Entity.php:3636
 #: src/Entity.php:3663 src/Entity.php:3686 src/Contract.php:1563
 #: src/Contract.php:1585 src/Html.php:6994 src/LevelAgreement.php:193
-#: src/Transfer.php:3925 src/Features/PlanningEvent.php:758
+#: src/Transfer.php:3925 src/Features/PlanningEvent.php:761
 #: src/Infocom.php:1781 src/Config.php:746 src/Config.php:1177
-#: src/Config.php:1412 src/Config.php:3595 src/Alert.php:113 src/Alert.php:182
+#: src/Config.php:1412 src/Config.php:3603 src/Alert.php:113 src/Alert.php:182
 #: src/CronTask.php:667
 msgid "Never"
 msgstr "Nikoli"
@@ -3864,10 +3864,10 @@ msgstr "Začetni datum"
 #: src/Rule.php:3223 src/CommonITILRecurrent.php:171
 #: src/CommonITILRecurrent.php:295 src/ComputerAntivirus.php:183
 #: src/ComputerAntivirus.php:334 src/AuthMail.php:138 src/AuthMail.php:190
-#: src/AuthLDAP.php:471 src/AuthLDAP.php:1319 src/ReservationItem.php:170
+#: src/AuthLDAP.php:480 src/AuthLDAP.php:1335 src/ReservationItem.php:170
 #: src/RSSFeed.php:460 src/RSSFeed.php:745 src/Supplier.php:363
 #: src/Database.php:173 src/Database.php:321 src/APIClient.php:113
-#: src/MailCollector.php:292 src/MailCollector.php:519
+#: src/MailCollector.php:300 src/MailCollector.php:527
 #: src/SavedSearch_Alert.php:173 src/SavedSearch_Alert.php:277
 #: src/User.php:2797 src/User.php:3784 src/SlaLevel.php:123
 #: src/SlaLevel.php:159 src/SlaLevel.php:253 src/Group_User.php:619
@@ -3905,7 +3905,7 @@ msgstr "Posodobi moje geslo"
 #: templates/pages/tools/project_task.html.twig
 #: src/NotificationTargetProject.php:660 src/NotificationTargetProject.php:673
 #: src/ProjectTaskTemplate.php:58 src/ProjectTaskTemplate.php:125
-#: src/Project.php:935 src/Project.php:1628 src/ProjectTask.php:812
+#: src/Project.php:936 src/Project.php:1629 src/ProjectTask.php:812
 #: src/NotificationTargetProjectTask.php:567
 #: src/NotificationTargetProjectTask.php:582 src/Consumable.php:642
 #: src/Cartridge.php:830 src/CommonITILValidation.php:900
@@ -3917,7 +3917,7 @@ msgstr "Stanje"
 #: templates/pages/tools/project_task.html.twig
 #: src/NotificationTargetProject.php:661 src/NotificationTargetProject.php:674
 #: src/ProjectTaskTemplate.php:71 src/ProjectTaskTemplate.php:149
-#: src/Project.php:623 src/Project.php:1006 src/Project.php:1632
+#: src/Project.php:623 src/Project.php:1007 src/Project.php:1633
 #: src/ProjectTask.php:846 src/ProjectTask.php:992 src/ProjectTask.php:1660
 #: src/NotificationTargetProjectTask.php:568
 #: src/NotificationTargetProjectTask.php:583 src/ProjectTask_Ticket.php:380
@@ -3932,12 +3932,12 @@ msgstr ""
 "Če je aktivno samodejno izračunavanje, se odstotek izračuna na podlagi "
 "povprečja vseh odstotkov opravljenih podrejenih nalog."
 
-#: templates/pages/tools/project_task.html.twig src/Project.php:1648
+#: templates/pages/tools/project_task.html.twig src/Project.php:1649
 msgid "Automatically calculate"
 msgstr "Samodejni izračun"
 
 #: templates/pages/tools/project_task.html.twig front/planning.php:161
-#: src/Project.php:1695 src/ReservationItem.php:204 src/Event.php:165
+#: src/Project.php:1696 src/ReservationItem.php:204 src/Event.php:165
 #: src/Event.php:174 src/Profile.php:1617 src/Profile.php:3226
 #: src/Reminder.php:458 src/Reminder.php:1044 src/Planning.php:86
 msgid "Planning"
@@ -3946,7 +3946,7 @@ msgstr "Urniki"
 #: templates/pages/tools/project_task.html.twig
 #: src/NotificationTargetProject.php:651 src/NotificationTargetProject.php:675
 #: src/ProjectTaskTemplate.php:79 src/ProjectTaskTemplate.php:165
-#: src/Project.php:666 src/Project.php:1024 src/Project.php:1698
+#: src/Project.php:666 src/Project.php:1025 src/Project.php:1699
 #: src/ProjectTask.php:867 src/ProjectTask.php:993
 #: src/NotificationTargetProjectTask.php:560
 #: src/NotificationTargetProjectTask.php:584 src/ProjectTask_Ticket.php:381
@@ -3956,7 +3956,7 @@ msgstr "Načrtovan datum začetka"
 #: templates/pages/tools/project_task.html.twig
 #: src/NotificationTargetProject.php:653 src/NotificationTargetProject.php:677
 #: src/ProjectTaskTemplate.php:83 src/ProjectTaskTemplate.php:173
-#: src/Project.php:693 src/Project.php:1052 src/Project.php:1702
+#: src/Project.php:693 src/Project.php:1053 src/Project.php:1703
 #: src/ProjectTask.php:883 src/NotificationTargetProjectTask.php:562
 #: src/NotificationTargetProjectTask.php:586
 msgid "Real start date"
@@ -3965,7 +3965,7 @@ msgstr "Dejanski datum začetka"
 #: templates/pages/tools/project_task.html.twig
 #: src/NotificationTargetProject.php:652 src/NotificationTargetProject.php:676
 #: src/ProjectTaskTemplate.php:87 src/ProjectTaskTemplate.php:181
-#: src/Project.php:674 src/Project.php:1038 src/Project.php:1708
+#: src/Project.php:674 src/Project.php:1039 src/Project.php:1709
 #: src/ProjectTask.php:875 src/ProjectTask.php:994
 #: src/NotificationTargetProjectTask.php:561
 #: src/NotificationTargetProjectTask.php:585 src/ProjectTask_Ticket.php:382
@@ -3975,7 +3975,7 @@ msgstr "Načrtovan datum zaključka"
 #: templates/pages/tools/project_task.html.twig
 #: src/NotificationTargetProject.php:654 src/NotificationTargetProject.php:678
 #: src/ProjectTaskTemplate.php:91 src/ProjectTaskTemplate.php:189
-#: src/Project.php:701 src/Project.php:1066 src/Project.php:1712
+#: src/Project.php:701 src/Project.php:1067 src/Project.php:1713
 #: src/ProjectTask.php:891 src/NotificationTargetProjectTask.php:563
 #: src/NotificationTargetProjectTask.php:587
 msgid "Real end date"
@@ -3983,7 +3983,7 @@ msgstr "Dejanski datum zaključka"
 
 #: templates/pages/tools/project_task.html.twig
 #: src/NotificationTargetProject.php:662 src/ProjectTaskTemplate.php:95
-#: src/ProjectTaskTemplate.php:197 src/Project.php:682 src/Project.php:1718
+#: src/ProjectTaskTemplate.php:197 src/Project.php:682 src/Project.php:1719
 #: src/ProjectTask.php:899 src/ProjectTask.php:995
 #: src/NotificationTargetProjectTask.php:569 src/ProjectTask_Ticket.php:383
 msgid "Planned duration"
@@ -3991,8 +3991,8 @@ msgstr "Načrtovano trajanje"
 
 #: templates/pages/tools/project_task.html.twig
 #: src/NotificationTargetProject.php:663 src/ProjectTaskTemplate.php:99
-#: src/ProjectTaskTemplate.php:205 src/Project.php:709 src/Project.php:1099
-#: src/Project.php:1727 src/ProjectTask.php:912 src/ProjectTask.php:996
+#: src/ProjectTaskTemplate.php:205 src/Project.php:709 src/Project.php:1100
+#: src/Project.php:1728 src/ProjectTask.php:912 src/ProjectTask.php:996
 #: src/NotificationTargetProjectTask.php:570 src/ProjectTask_Ticket.php:384
 msgid "Effective duration"
 msgstr "Efektivno trajanje"
@@ -4027,9 +4027,9 @@ msgstr ""
 #: templates/pages/assets/phone.html.twig
 #: templates/pages/assets/printer.html.twig
 #: templates/pages/admin/inventory/agent.html.twig src/Auth.php:1654
-#: src/AuthLdapReplicate.php:94 src/AuthLDAP.php:1098
+#: src/AuthLdapReplicate.php:94 src/AuthLDAP.php:1114
 #: src/DatabaseInstance.php:293 src/DatabaseInstance.php:356
-#: src/NotificationMailingSetting.php:423 src/Config.php:2149
+#: src/NotificationMailingSetting.php:433 src/Config.php:2157
 #: src/Agent.php:148
 msgid "Port"
 msgid_plural "Ports"
@@ -4053,7 +4053,7 @@ msgstr "Končna točka %s"
 #: src/Entity.php:1308 src/Html.php:1325 src/Dashboard/Grid.php:1207
 #: src/Socket.php:1035 src/RuleLocation.php:82 src/Transfer.php:3963
 #: src/Event.php:171 src/Profile.php:161 src/Profile.php:1370
-#: src/Profile.php:2107 src/Config.php:482 src/Config.php:2624
+#: src/Profile.php:2107 src/Config.php:482 src/Config.php:2632
 #: src/AllAssets.php:45 src/RuleImportAsset.php:115
 #: src/RuleImportAsset.php:121 src/RuleImportAsset.php:124
 #: src/RuleImportAsset.php:127 src/RuleImportAsset.php:130
@@ -4083,7 +4083,7 @@ msgstr "Pozicija"
 msgid "Upgrade"
 msgstr "Nadgradi"
 
-#: templates/pages/assets/software.html.twig src/AuthLDAP.php:4409
+#: templates/pages/assets/software.html.twig src/AuthLDAP.php:4423
 #: src/NetworkPort.php:1469
 msgid "from"
 msgstr "od"
@@ -4339,7 +4339,7 @@ msgstr "Iskalnik"
 #: src/Item_DeviceCamera_ImageResolution.php:172 src/Rule.php:2435
 #: src/SavedSearch_User.php:55 src/SavedSearch_User.php:77
 #: src/RuleImportComputer.php:188 src/Item_SoftwareVersion.php:1182
-#: src/Dropdown.php:1046 src/Dropdown.php:1066 src/MailCollector.php:344
+#: src/Dropdown.php:1046 src/Dropdown.php:1066 src/MailCollector.php:352
 #: src/Marketplace/View.php:1075 src/Search.php:5378 src/Config.php:1173
 #: src/Alert.php:152 src/SavedSearch.php:111 src/SavedSearch.php:508
 #: src/SavedSearch.php:1163 src/SavedSearch.php:1216
@@ -4372,8 +4372,8 @@ msgstr "Globalno iskanje"
 #: front/report.contract.php:72 src/Profile_User.php:575
 #: src/RuleImportAssetCollection.php:120 src/CommonGLPI.php:932
 #: src/NotificationTemplateTranslation.php:440 src/Dropdown.php:2324
-#: src/Dropdown.php:4112 src/Problem.php:686 src/Change.php:687
-#: src/Ticket.php:3823 src/Marketplace/View.php:309 src/Search.php:2095
+#: src/Dropdown.php:4646 src/Problem.php:686 src/Change.php:687
+#: src/Ticket.php:3830 src/Marketplace/View.php:309 src/Search.php:2095
 #: src/Search.php:2931 src/Profile.php:1426 src/User.php:4727
 #: src/Planning.php:572 src/CommonITILValidation.php:545
 msgid "All"
@@ -4448,7 +4448,7 @@ msgstr "Omogoči nadaljevanje"
 #: front/setup.notification.php:45 src/Entity.php:493 src/Event.php:183
 #: src/NotificationEvent.php:230 src/Notification_NotificationTemplate.php:242
 #: src/Notification_NotificationTemplate.php:345 src/Profile.php:2594
-#: src/CommonITILObject.php:4651 src/Notification.php:145
+#: src/CommonITILObject.php:4656 src/Notification.php:145
 #: src/Notification.php:162 src/Notification.php:165
 msgid "Notification"
 msgid_plural "Notifications"
@@ -4592,7 +4592,7 @@ msgstr "Največje število predmetov"
 #: templates/pages/management/contract.html.twig
 #: templates/pages/management/softwarelicense.html.twig
 #: src/SoftwareLicense.php:1166 src/SoftwareLicense.php:1193
-#: src/AuthLDAP.php:638 src/Search.php:7282
+#: src/AuthLDAP.php:654 src/Search.php:7282
 msgid "Unlimited"
 msgstr "Neomejeno"
 
@@ -4607,7 +4607,7 @@ msgstr "Opozorila po e-pošti"
 #: src/Item_SoftwareVersion.php:1049 src/Dropdown.php:1253
 #: src/RuleSoftwareCategory.php:65 src/Software.php:67
 #: src/NotificationTargetSoftwareLicense.php:90 src/Profile.php:2142
-#: src/Config.php:3313 src/RuleDictionnarySoftware.php:74
+#: src/Config.php:3321 src/RuleDictionnarySoftware.php:74
 #: src/RuleDictionnarySoftware.php:101
 msgid "Software"
 msgid_plural "Software"
@@ -4673,8 +4673,8 @@ msgstr "Številka klicatelja"
 msgid "Caller name"
 msgstr "Ime klicatelja"
 
-#: templates/pages/admin/rules_list.html.twig src/AuthLDAP.php:1747
-#: src/AuthLDAP.php:2314 src/NotImportedEmail.php:79
+#: templates/pages/admin/rules_list.html.twig src/AuthLDAP.php:1763
+#: src/AuthLDAP.php:2330 src/NotImportedEmail.php:79
 #: src/NotImportedEmail.php:97 src/RuleCollection.php:989
 #: src/RuleCollection.php:1162
 msgctxt "button"
@@ -4717,7 +4717,7 @@ msgid "Network inventory timeout"
 msgstr ""
 
 #: templates/pages/admin/inventory/agent.html.twig src/Profile.php:2636
-#: src/Config.php:2091 src/Config.php:2622
+#: src/Config.php:2099 src/Config.php:2630
 msgid "General setup"
 msgstr "Osnovna namestitev"
 
@@ -4806,11 +4806,11 @@ msgstr "Naloži"
 msgid "Bulk import users from a LDAP directory"
 msgstr "Obsežen uvoz uporabnikov iz LDAP direktorija"
 
-#: templates/pages/admin/ldap.users.html.twig src/AuthLDAP.php:3892
+#: templates/pages/admin/ldap.users.html.twig src/AuthLDAP.php:3906
 msgid "Synchronizing already imported users"
 msgstr "Sinhronizacija že uvoženih uporabnikov"
 
-#: templates/pages/admin/ldap.users.html.twig src/AuthLDAP.php:3893
+#: templates/pages/admin/ldap.users.html.twig src/AuthLDAP.php:3907
 msgid "Import new users"
 msgstr "Uvoz novih uporabnikov"
 
@@ -4866,7 +4866,7 @@ msgstr[3] "LDAP imenik"
 #: src/Item_SoftwareLicense.php:171 src/KnowbaseItem.php:1433
 #: src/KnowbaseItem.php:1487 src/MassiveAction.php:928
 #: src/MassiveAction.php:1244 src/MassiveAction.php:1273 src/User.php:3637
-#: src/CommonITILObject.php:3899 src/Certificate.php:571
+#: src/CommonITILObject.php:3904 src/Certificate.php:571
 #: src/Certificate.php:580 src/NetworkPortMigration.php:365
 #: src/RuleCollection.php:1481 src/Domain.php:426 src/Domain.php:435
 #: src/Domain.php:445
@@ -4882,8 +4882,8 @@ msgstr "Noben LDAP imenik ni definiran v GLPI"
 msgid "Login to your account"
 msgstr "Prijava v vaš račun"
 
-#: templates/pages/login.html.twig src/AuthMail.php:232 src/AuthLDAP.php:4013
-#: src/MailCollector.php:298 src/MailCollector.php:536 src/Config.php:2154
+#: templates/pages/login.html.twig src/AuthMail.php:232 src/AuthLDAP.php:4027
+#: src/MailCollector.php:306 src/MailCollector.php:544 src/Config.php:2162
 #: src/User.php:2657 src/User.php:3126 src/User.php:3715 src/User.php:4899
 #: src/User.php:5536 src/NotificationTargetUser.php:159 src/RuleRight.php:271
 #: src/ContentTemplates/Parameters/UserParameters.php:75
@@ -4893,7 +4893,7 @@ msgstr "Uporabniško ime"
 #: templates/pages/login.html.twig src/Auth.php:1811
 #: src/DropdownTranslation.php:437 src/DropdownTranslation.php:529
 #: src/ReminderTranslation.php:171 src/ReminderTranslation.php:229
-#: src/AuthLDAP.php:984 src/AuthLDAP.php:1274
+#: src/AuthLDAP.php:1000 src/AuthLDAP.php:1290
 #: src/NotificationTemplateTranslation.php:137
 #: src/NotificationTemplateTranslation.php:234
 #: src/NotificationTemplateTranslation.php:353
@@ -5131,7 +5131,7 @@ msgstr "Inventar"
 #: src/Dashboard/Grid.php:1355 src/Dropdown.php:1116 src/Event.php:173
 #: src/Search.php:8350 src/Profile.php:156 src/Profile.php:162
 #: src/Profile.php:1193 src/Profile.php:3177 src/Config.php:885
-#: src/Config.php:1376 src/Config.php:2625
+#: src/Config.php:1376 src/Config.php:2633
 msgid "Assistance"
 msgstr "Pomoč"
 
@@ -5213,8 +5213,8 @@ msgstr "Novo"
 
 #: install/migrations/update_0.84.x_to_0.85.0.php:2259
 #: ajax/actorinformation.php:130 ajax/actorinformation.php:131
-#: src/Problem.php:684 src/Change.php:685 src/Ticket.php:3821
-#: src/CommonITILObject.php:5100
+#: src/Problem.php:684 src/Change.php:685 src/Ticket.php:3828
+#: src/CommonITILObject.php:5105
 msgid "Processing"
 msgstr "V obdelavi"
 
@@ -5412,7 +5412,7 @@ msgstr "Manjka obvezen argument!"
 #: ajax/dropdownMassiveActionAddValidator.php:136 src/PlanningRecall.php:289
 #: src/Item_Rack.php:706 src/ProfileRight.php:400 src/Item_Devices.php:1010
 #: src/Features/Inventoriable.php:204 src/Dropdown.php:2325
-#: src/DBConnection.php:717 src/Ticket.php:2730 src/Search.php:7299
+#: src/DBConnection.php:717 src/Ticket.php:2737 src/Search.php:7299
 #: src/Group_User.php:307 src/HTMLTableMain.php:281
 msgid "None"
 msgstr "Noben"
@@ -5473,7 +5473,7 @@ msgstr[1] "%s zahtevek v obdelavi ali pa že pred kratkim rešen."
 msgstr[2] "%s zahtevek v obdelavi ali pa že pred kratkim rešen."
 msgstr[3] "%s zahtevek v obdelavi ali pa že pred kratkim rešen."
 
-#: ajax/resaperiod.php:68 src/Features/PlanningEvent.php:806
+#: ajax/resaperiod.php:68 src/Features/PlanningEvent.php:809
 msgid "By day"
 msgstr "Po dnevu"
 
@@ -5582,7 +5582,7 @@ msgstr ""
 #: src/DropdownTranslation.php:588 src/RuleAction.php:195 src/Blacklist.php:90
 #: src/Blacklist.php:122 src/NotificationMailingSetting.php:115
 #: src/SavedSearch_Alert.php:167 src/SavedSearch_Alert.php:276
-#: src/Printer_CartridgeInfo.php:74 src/Config.php:3725
+#: src/Printer_CartridgeInfo.php:74 src/Config.php:3733
 #: src/Fieldblacklist.php:79 src/Fieldblacklist.php:121
 #: src/ITILTemplatePredefinedField.php:394 src/RuleCollection.php:1456
 msgid "Value"
@@ -5638,8 +5638,8 @@ msgstr "Skupaj vrednost"
 
 #: front/allassets.php:46 src/Html.php:1506
 #: src/RuleImportAssetCollection.php:68 src/Stat.php:1755 src/Stat.php:1767
-#: src/Stat.php:1776 src/Project.php:1908 src/Lock.php:235
-#: src/Lockedfield.php:160 src/Config.php:531 src/CommonITILObject.php:9577
+#: src/Stat.php:1776 src/Project.php:1909 src/Lock.php:235
+#: src/Lockedfield.php:160 src/Config.php:531 src/CommonITILObject.php:9601
 msgid "Global"
 msgstr "Globalno"
 
@@ -5673,7 +5673,7 @@ msgstr "Globalno"
 #: front/certificate.form.php:61 front/apiclient.form.php:57
 #: front/reminder.form.php:55 front/appliance.form.php:60
 #: front/contract.form.php:61 front/mailcollector.form.php:65
-#: src/Ticket.php:2056 src/RuleCollection.php:1573
+#: src/Ticket.php:2075 src/RuleCollection.php:1573
 #, php-format
 msgid "%1$s adds the item %2$s"
 msgstr "%1$s doda predmet %2$s"
@@ -5832,7 +5832,7 @@ msgstr "%s doda povezavo s predmetom"
 #: front/change_ticket.form.php:46 front/change_ticket.form.php:54
 #: front/contract_supplier.form.php:49 front/item_ticket.form.php:55
 #: src/Document_Item.php:196 src/MailCollector.php:169
-#: src/CommonITILObject.php:1773 src/CommonITILObject.php:2796
+#: src/CommonITILObject.php:1773 src/CommonITILObject.php:2801
 #, php-format
 msgid "Mandatory fields are not filled. Please correct: %s"
 msgstr "Obvezna polja niso izpolnjena. Prosimo popravite: %s"
@@ -5918,7 +5918,7 @@ msgid "LDAP directory link"
 msgstr "Povezava do imenika LDAP"
 
 #: front/ldap.group.import.php:76 src/Auth.php:290 src/Auth.php:320
-#: src/AuthLDAP.php:4217
+#: src/AuthLDAP.php:4231
 msgid "Unable to connect to the LDAP directory"
 msgstr "Ni se mogoče povezati z LDAP imenikom"
 
@@ -5963,7 +5963,7 @@ msgstr "Ne morem ustaviti predstavljanja uporabnika"
 #: front/stat.location.php:47 front/stat.item.php:38
 #: front/stat.tracking.php:47 src/Stat.php:49 src/Problem.php:182
 #: src/Change.php:231 src/Ticket.php:884 src/Profile.php:3240
-#: src/CommonITILObject.php:4410 src/CronTaskLog.php:84 src/CronTask.php:1192
+#: src/CommonITILObject.php:4415 src/CronTaskLog.php:84 src/CronTask.php:1192
 msgid "Statistics"
 msgstr "Statistika"
 
@@ -6275,7 +6275,7 @@ msgstr "Opravilo %s izvedeno"
 
 #: front/stat.graph.php:111 front/stat.graph.php:122 src/RuleTicket.php:698
 #: src/RuleTicket.php:890 src/Dashboard/Filters/UserTechFilter.php:48
-#: src/CommonITILTask.php:787 src/CommonITILObject.php:4593
+#: src/CommonITILTask.php:787 src/CommonITILObject.php:4598
 msgid "Technician"
 msgstr "Tehnik"
 
@@ -6377,11 +6377,11 @@ msgstr "Nimate pravic za izbris %s elementa."
 msgid "Equipment's report by year"
 msgstr "Leno poročilo opreme"
 
-#: front/tracking.injector.php:95
+#: front/tracking.injector.php:99
 msgid "Your ticket has been registered, its treatment is in progress."
 msgstr "Vaš zahtevek je bil uspešno dodan in je v obdelavi."
 
-#: front/tracking.injector.php:101
+#: front/tracking.injector.php:105
 msgid "Thank you for using our automatic helpdesk system."
 msgstr "Hvala za uporabo našega samodejnega sistema za oddajo zahtevkov."
 
@@ -6801,7 +6801,7 @@ msgid "No selected element or badly defined operation"
 msgstr "Ni izbranih elementov ali slabo definirana operacija"
 
 #: front/inventory.conf.php:42 src/Agent/Communication/AbstractRequest.php:174
-#: src/Inventory/Inventory.php:504 src/Inventory/Inventory.php:982
+#: src/Inventory/Inventory.php:504 src/Inventory/Inventory.php:988
 #: src/Profile.php:986 src/Profile.php:1900 src/Profile.php:3095
 msgid "Inventory"
 msgstr "Inventar"
@@ -6889,7 +6889,7 @@ msgstr "Prevod elementa baze znanja ni bil vrnjen v revizijo %s"
 #: src/ITILFollowup.php:788 src/CommonITILTask.php:912
 #: src/KnowbaseItem.php:1026 src/KnowbaseItem.php:1303
 #: src/KnowbaseItem.php:1955 src/Reminder.php:412
-#: src/CommonITILObject.php:4524
+#: src/CommonITILObject.php:4529
 msgid "Writer"
 msgstr "Avtor"
 
@@ -6918,7 +6918,7 @@ msgstr "Drevesna lokacija"
 #: src/Item_Devices.php:137 src/CommonDropdown.php:424
 #: src/NotificationTemplateTranslation.php:346 src/NetworkPortWifi.php:144
 #: src/ContractCost.php:116 src/ProjectCost.php:125 src/ITILFollowup.php:607
-#: src/MailCollector.php:503 src/QueuedNotification.php:231
+#: src/MailCollector.php:511 src/QueuedNotification.php:231
 #: src/CommonDevice.php:260 src/Item_OperatingSystem.php:338
 #: src/CommonITILTask.php:744 src/NotificationTemplate.php:165
 #: src/NetworkPortFiberchannel.php:209 src/Infocom.php:1493
@@ -6926,8 +6926,8 @@ msgstr "Drevesna lokacija"
 #: src/Item_SoftwareLicense.php:73 src/KnowbaseItem.php:2275
 #: src/CommonDBRelation.php:317 src/NetworkPort.php:621
 #: src/NetworkPort.php:1639 src/Search.php:8240 src/Search.php:8261
-#: src/Profile.php:2028 src/Reminder.php:395 src/Config.php:3718
-#: src/User.php:3708 src/CommonITILObject.php:4031 src/SLM.php:218
+#: src/Profile.php:2028 src/Reminder.php:395 src/Config.php:3726
+#: src/User.php:3708 src/CommonITILObject.php:4036 src/SLM.php:218
 #: src/DCRoom.php:288 src/Link.php:204 src/Group_User.php:748
 #: src/Item_RemoteManagement.php:247 src/Certificate.php:90
 #: src/CronTask.php:1618 src/Contact.php:249 src/Notification.php:367
@@ -7013,7 +7013,7 @@ msgstr "Zahtevek rešen"
 msgid "Solution rejected"
 msgstr "Rešitev zavrnjena"
 
-#: src/NotificationTargetTicket.php:142 src/CommonITILObject.php:7261
+#: src/NotificationTargetTicket.php:142 src/CommonITILObject.php:7266
 #: src/NotificationTargetChange.php:55
 msgid "Validation request answer"
 msgstr "Odgovor zahteve za odobritev"
@@ -7027,7 +7027,7 @@ msgid "Deletion of a ticket"
 msgstr "Izbris"
 
 #: src/NotificationTargetTicket.php:145 src/NotificationTargetTicket.php:871
-#: src/Dashboard/Grid.php:1218 src/Ticket.php:5766
+#: src/Dashboard/Grid.php:1218 src/Ticket.php:5773
 msgid "Not solved tickets"
 msgstr "Nerešeni zahtevki"
 
@@ -7041,8 +7041,8 @@ msgstr "Samodejno opozorilo na OLA"
 
 #: src/NotificationTargetTicket.php:148
 #: src/Stat/Data/Sglobal/StatDataSatisfaction.php:67
-#: src/Stat/Data/Graph/StatDataSatisfactionSurvey.php:64 src/Ticket.php:3365
-#: src/Ticket.php:5015
+#: src/Stat/Data/Graph/StatDataSatisfactionSurvey.php:64 src/Ticket.php:3372
+#: src/Ticket.php:5022
 msgid "Satisfaction survey"
 msgstr "Anketa o zadovoljstvu"
 
@@ -7081,8 +7081,8 @@ msgstr "Odgovor na zahtevo za odobritev je podal/a %s"
 #: src/NotificationTargetTicket.php:621 src/NotificationTargetTicket.php:624
 #: src/NotificationTargetTicket.php:629 src/RuleTicket.php:797
 #: src/RuleTicket.php:808 src/RuleTicket.php:969 src/RuleTicket.php:984
-#: src/Ticket.php:3245 src/Ticket.php:3253 src/Ticket.php:3267
-#: src/Ticket.php:3280 src/SLA.php:55
+#: src/Ticket.php:3252 src/Ticket.php:3260 src/Ticket.php:3274
+#: src/Ticket.php:3287 src/SLA.php:55
 msgid "SLA"
 msgstr "SLA"
 
@@ -7099,18 +7099,18 @@ msgstr "%1$s / %2$s"
 
 #: src/NotificationTargetTicket.php:634 src/NotificationTargetTicket.php:639
 #: src/RuleTicket.php:819 src/RuleTicket.php:830 src/RuleTicket.php:999
-#: src/RuleTicket.php:1014 src/OLA.php:51 src/Ticket.php:3296
-#: src/Ticket.php:3304 src/Ticket.php:3318 src/Ticket.php:3331
+#: src/RuleTicket.php:1014 src/OLA.php:51 src/Ticket.php:3303
+#: src/Ticket.php:3311 src/Ticket.php:3325 src/Ticket.php:3338
 msgid "OLA"
 msgstr "OLA"
 
-#: src/NotificationTargetTicket.php:635 src/Ticket.php:3132
-#: src/Ticket.php:3304 src/Ticket.php:6322
+#: src/NotificationTargetTicket.php:635 src/Ticket.php:3139
+#: src/Ticket.php:3311 src/Ticket.php:6329
 msgid "Internal time to own"
 msgstr "Interni čas lastništva"
 
 #: src/NotificationTargetTicket.php:640 src/RuleTicket.php:1006
-#: src/Ticket.php:3101 src/Ticket.php:3318 src/Ticket.php:6338
+#: src/Ticket.php:3108 src/Ticket.php:3325 src/Ticket.php:6345
 msgid "Internal time to resolve"
 msgstr "Interni čas reševanja"
 
@@ -7227,7 +7227,7 @@ msgid "Status of the approval request"
 msgstr "Stanje zahteve za odobritev"
 
 #: src/NotificationTargetTicket.php:748 src/NotificationTargetTicket.php:753
-#: src/ITILCategory.php:485 src/Ticket.php:3770 src/Ticket.php:3790
+#: src/ITILCategory.php:485 src/Ticket.php:3777 src/Ticket.php:3797
 #: src/NotificationTargetChange.php:307 src/NotificationTargetChange.php:312
 msgid "Request"
 msgstr "Zahtevek"
@@ -7258,7 +7258,7 @@ msgstr "Datum odgovora na anketo o zadovoljstvu"
 #: src/Stat/Data/Sglobal/StatDataAverageSatisfaction.php:62
 #: src/Stat/Data/Graph/StatDataSatisfaction.php:51
 #: src/Stat/Data/Graph/StatDataSatisfaction.php:59 src/Ticket.php:881
-#: src/Ticket.php:3410
+#: src/Ticket.php:3417
 msgid "Satisfaction"
 msgstr "Zadovoljstvo"
 
@@ -7278,7 +7278,7 @@ msgstr "Povabilo za izpolnitev ankete"
 #: src/NotificationTargetTicket.php:890 src/NotificationTargetTicket.php:895
 #: src/NotificationTargetTicket.php:900 src/NotificationTargetTicket.php:905
 #: src/NotificationTargetTicket.php:910 src/Ticket_Ticket.php:56
-#: src/Ticket.php:3454
+#: src/Ticket.php:3461
 msgid "Linked ticket"
 msgid_plural "Linked tickets"
 msgstr[0] "Povezan zahtevek"
@@ -7333,23 +7333,23 @@ msgstr "Dodaj licenco"
 #: src/Budget.php:224 src/Dashboard/Filters/DatesModFilter.php:44
 #: src/Phone.php:327 src/PassiveDCEquipment.php:130 src/Rack.php:230
 #: src/LevelAgreement.php:191 src/Cable.php:265 src/Project.php:728
-#: src/Project.php:992 src/Project.php:1168 src/Project.php:1567
+#: src/Project.php:993 src/Project.php:1169 src/Project.php:1568
 #: src/Rule.php:806 src/ProjectTask.php:837 src/Transfer.php:131
 #: src/Transfer.php:3923 src/Printer.php:453 src/AuthMail.php:146
-#: src/Cluster.php:111 src/AuthLDAP.php:459 src/AuthLDAP.php:1256
+#: src/Cluster.php:111 src/AuthLDAP.php:468 src/AuthLDAP.php:1272
 #: src/Unmanaged.php:168 src/Document.php:1095 src/ReservationItem.php:259
 #: src/DatabaseInstance.php:442 src/RSSFeed.php:519
 #: src/CommonTreeDropdown.php:811 src/Supplier.php:265 src/Database.php:181
 #: src/Enclosure.php:164 src/CommonDropdown.php:488
-#: src/Features/PlanningEvent.php:1011
+#: src/Features/PlanningEvent.php:1014
 #: src/NotificationTargetProjectTask.php:559
 #: src/NotificationTargetProjectTask.php:580 src/Notepad.php:245
-#: src/MailCollector.php:561 src/Line.php:141 src/CommonDevice.php:301
+#: src/MailCollector.php:569 src/Line.php:141 src/CommonDevice.php:301
 #: src/Software.php:386 src/Datacenter.php:111 src/Appliance.php:216
 #: src/KnowbaseItem.php:2341 src/DomainRecord.php:156 src/Search.php:8313
-#: src/Profile.php:2053 src/Reminder.php:483 src/Config.php:3300
-#: src/User.php:3901 src/CommonITILObject.php:4162
-#: src/CommonITILObject.php:6750 src/Computer.php:513 src/DCRoom.php:339
+#: src/Profile.php:2053 src/Reminder.php:483 src/Config.php:3308
+#: src/User.php:3901 src/CommonITILObject.php:4167
+#: src/CommonITILObject.php:6755 src/Computer.php:513 src/DCRoom.php:339
 #: src/Link.php:237 src/Certificate.php:232 src/CronTask.php:1743
 #: src/Contact.php:419 src/PDU.php:133 src/Domain.php:183
 msgid "Last update"
@@ -7362,19 +7362,19 @@ msgstr "Zadnja posodobitev"
 #: src/Budget.php:233 src/Dashboard/Filters/DatesFilter.php:47
 #: src/Phone.php:336 src/PassiveDCEquipment.php:195 src/Rack.php:239
 #: src/SoftwareVersion.php:208 src/Cable.php:283 src/Project.php:614
-#: src/Project.php:748 src/Project.php:978 src/Project.php:1555
+#: src/Project.php:748 src/Project.php:979 src/Project.php:1556
 #: src/SoftwareLicense.php:492 src/Rule.php:815 src/ProjectTask.php:828
 #: src/Transfer.php:140 src/Printer.php:462 src/Cluster.php:120
-#: src/AuthLDAP.php:1265 src/Document.php:1104 src/DatabaseInstance.php:451
+#: src/AuthLDAP.php:1281 src/Document.php:1104 src/DatabaseInstance.php:451
 #: src/RSSFeed.php:528 src/KnowbaseItem_Item.php:205
 #: src/CommonTreeDropdown.php:822 src/Supplier.php:274 src/Database.php:190
 #: src/Enclosure.php:173 src/CommonDropdown.php:499
-#: src/Features/PlanningEvent.php:1018
+#: src/Features/PlanningEvent.php:1021
 #: src/NotificationTargetProjectTask.php:558
 #: src/NotificationTargetProjectTask.php:579 src/Notepad.php:214
 #: src/KnowbaseItem_Revision.php:145 src/QueuedNotification.php:256
 #: src/QueuedNotification.php:814 src/Line.php:186 src/CommonDevice.php:310
-#: src/Software.php:395 src/Datacenter.php:120 src/Ticket.php:3386
+#: src/Software.php:395 src/Datacenter.php:120 src/Ticket.php:3393
 #: src/Lockedfield.php:143 src/KnowbaseItem.php:2350 src/DomainRecord.php:130
 #: src/DomainRecord.php:411 src/Profile.php:2062 src/Reminder.php:492
 #: src/User.php:3910 src/Computer.php:522 src/DCRoom.php:348 src/Link.php:246
@@ -7406,8 +7406,8 @@ msgstr "Entitete, ki vsebuje pod-entitete, ne morete izbrisati."
 msgid "You can't add an entity without name"
 msgstr "Ne morete dodati entitete brez imena"
 
-#: src/Entity.php:491 src/Entity.php:883 src/AuthLDAP.php:605
-#: src/AuthLDAP.php:4446
+#: src/Entity.php:491 src/Entity.php:883 src/AuthLDAP.php:621
+#: src/AuthLDAP.php:4460
 msgid "Advanced information"
 msgstr "Napredne informacije"
 
@@ -7476,22 +7476,22 @@ msgid "Enable notifications by default"
 msgstr "Privzeto omogočanje obvestil"
 
 #: src/Entity.php:965 src/Entity.php:2023
-#: src/NotificationMailingSetting.php:145
+#: src/NotificationMailingSetting.php:155
 msgid "Administrator email address"
 msgstr "E-poštni naslov skrbnika"
 
 #: src/Entity.php:974 src/Entity.php:2083
-#: src/NotificationMailingSetting.php:174
+#: src/NotificationMailingSetting.php:184
 msgid "Reply-To address"
 msgstr "Naslov za odgovor na sporočilo"
 
 #: src/Entity.php:983 src/Entity.php:2043
-#: src/NotificationMailingSetting.php:158
+#: src/NotificationMailingSetting.php:168
 msgid "Email sender address"
 msgstr "Naslov pošiljatelja e-pošte"
 
 #: src/Entity.php:992 src/Entity.php:2063
-#: src/NotificationMailingSetting.php:192
+#: src/NotificationMailingSetting.php:202
 msgid "No-Reply address"
 msgstr "Naslov brez odgovora"
 
@@ -7500,27 +7500,27 @@ msgid "Prefix for notifications"
 msgstr "Predpona za obvestila"
 
 #: src/Entity.php:1009 src/Entity.php:2033
-#: src/NotificationMailingSetting.php:152
+#: src/NotificationMailingSetting.php:162
 msgid "Administrator name"
 msgstr "Ime skrbnika"
 
 #: src/Entity.php:1017 src/Entity.php:2093 src/QueuedNotification.php:328
-#: src/QueuedNotification.php:846 src/NotificationMailingSetting.php:185
+#: src/QueuedNotification.php:846 src/NotificationMailingSetting.php:195
 msgid "Reply-To name"
 msgstr "Reply-To ime"
 
 #: src/Entity.php:1025 src/Entity.php:2053
-#: src/NotificationMailingSetting.php:166
+#: src/NotificationMailingSetting.php:176
 msgid "Email sender name"
 msgstr "Ime pošiljatelja e-pošte"
 
 #: src/Entity.php:1034 src/Entity.php:2073
-#: src/NotificationMailingSetting.php:203
+#: src/NotificationMailingSetting.php:213
 msgid "No-Reply name"
 msgstr "No-Reply ime"
 
 #: src/Entity.php:1043 src/Entity.php:2148
-#: src/NotificationMailingSetting.php:223
+#: src/NotificationMailingSetting.php:233
 msgid "Email signature"
 msgstr "E-poštni podpis"
 
@@ -7608,7 +7608,7 @@ msgid "Automatic assignment of tickets"
 msgstr "Samodejna dodelitev zahevkov"
 
 #: src/Entity.php:1275 src/Entity.php:2861 src/LevelAgreement.php:402
-#: src/PlanningExternalEvent.php:322 src/CommonITILRecurrent.php:210
+#: src/PlanningExternalEvent.php:324 src/CommonITILRecurrent.php:210
 #: src/CommonITILRecurrent.php:343 src/Dropdown.php:1211 src/Profile.php:2681
 #: src/Reminder.php:702 src/PlanningExternalEventTemplate.php:77
 #: src/Calendar.php:75 src/SLM.php:196 src/SLM.php:243
@@ -7691,7 +7691,7 @@ msgid "Values used in the interface to search users from a LDAP directory"
 msgstr ""
 "Vrednosti, uporabljene v vmesniku za iskanje uporabnikov iz imenika LDAP"
 
-#: src/Entity.php:1723 src/AuthLDAP.php:466 src/AuthLDAP.php:1122
+#: src/Entity.php:1723 src/AuthLDAP.php:475 src/AuthLDAP.php:1138
 msgid "Default server"
 msgstr "Privzeti strežnik"
 
@@ -7765,10 +7765,10 @@ msgstr "Osnovni URL agenta"
 
 #: src/Entity.php:2030 src/Entity.php:2050 src/Entity.php:2070
 #: src/Entity.php:2090 src/CommonITILActor.php:383 src/CommonITILActor.php:413
-#: src/NotificationMailingSetting.php:149
-#: src/NotificationMailingSetting.php:163
-#: src/NotificationMailingSetting.php:182
-#: src/NotificationMailingSetting.php:200 src/User.php:5815
+#: src/NotificationMailingSetting.php:159
+#: src/NotificationMailingSetting.php:173
+#: src/NotificationMailingSetting.php:192
+#: src/NotificationMailingSetting.php:210 src/User.php:5815
 #: src/CommonITILObject.php:1867 src/CommonITILObject.php:1938
 msgid "Invalid email address"
 msgstr "Nepravilen e-poštni naslov"
@@ -8010,17 +8010,17 @@ msgstr[1] "%d uri"
 msgstr[2] "%d ure"
 msgstr[3] "%d ur"
 
-#: src/Entity.php:3666 src/Features/PlanningEvent.php:759
+#: src/Entity.php:3666 src/Features/PlanningEvent.php:762
 #: src/Dropdown.php:2381 src/Alert.php:114
 msgid "Each day"
 msgstr "Vsak dan"
 
-#: src/Entity.php:3669 src/Features/PlanningEvent.php:760
+#: src/Entity.php:3669 src/Features/PlanningEvent.php:763
 #: src/Dropdown.php:2386 src/Alert.php:115
 msgid "Each week"
 msgstr "Vsak teden"
 
-#: src/Entity.php:3672 src/Features/PlanningEvent.php:761
+#: src/Entity.php:3672 src/Features/PlanningEvent.php:764
 #: src/Dropdown.php:2387 src/Alert.php:116
 msgid "Each month"
 msgstr "Vsak mesec"
@@ -8208,12 +8208,12 @@ msgstr[2] "Cena / Trajanje"
 msgstr[3] "Cena / Trajanje"
 
 #: src/Contract.php:424 src/SoftwareLicense.php:947 src/Document.php:1812
-#: src/Ticket.php:2611 src/Appliance.php:453
+#: src/Ticket.php:2623 src/Appliance.php:453
 msgctxt "button"
 msgid "Add an item"
 msgstr "Dodaj element"
 
-#: src/Contract.php:425 src/Document.php:1813 src/Ticket.php:2637
+#: src/Contract.php:425 src/Document.php:1813 src/Ticket.php:2649
 #: src/Appliance.php:454
 msgctxt "button"
 msgid "Remove an item"
@@ -8416,18 +8416,18 @@ msgstr "D=Dinamično, R=Rekurzivno"
 #: src/CommonDBVisible.php:360 src/CommonDBVisible.php:390
 #: src/CommonDBVisible.php:402 src/Log.php:743 src/Log.php:761
 #: src/Auth.php:1763 src/Auth.php:1769 src/Auth.php:1775
-#: src/CommonITILCost.php:643 src/Project.php:1331 src/Project.php:1365
+#: src/CommonITILCost.php:643 src/Project.php:1332 src/Project.php:1366
 #: src/Rule.php:2039 src/Rule.php:2086 src/Contact_Supplier.php:336
-#: src/ProjectTask.php:1166 src/AuthLDAP.php:955 src/AuthLDAP.php:960
-#: src/AuthLDAP.php:963 src/AuthLDAP.php:1220 src/AuthLDAP.php:1229
-#: src/AuthLDAP.php:1238 src/AuthLDAP.php:4017 src/AuthLDAP.php:4022
-#: src/AuthLDAP.php:4027 src/CommonGLPI.php:717 src/Item_Devices.php:303
+#: src/ProjectTask.php:1166 src/AuthLDAP.php:971 src/AuthLDAP.php:976
+#: src/AuthLDAP.php:979 src/AuthLDAP.php:1236 src/AuthLDAP.php:1245
+#: src/AuthLDAP.php:1254 src/AuthLDAP.php:4031 src/AuthLDAP.php:4036
+#: src/AuthLDAP.php:4041 src/CommonGLPI.php:717 src/Item_Devices.php:303
 #: src/UserEmail.php:228 src/Dropdown.php:599 src/Dropdown.php:967
 #: src/Dropdown.php:1887 src/Problem.php:1042 src/Problem.php:1245
 #: src/Problem.php:1284 src/ContractCost.php:397 src/ProjectCost.php:404
 #: src/QueuedNotification.php:484 src/CommonITILTask.php:1831
 #: src/Change.php:1387 src/Change.php:1589 src/Change.php:1628
-#: src/Ticket.php:5143 src/Ticket.php:5618 src/Ticket.php:5679
+#: src/Ticket.php:5150 src/Ticket.php:5625 src/Ticket.php:5686
 #: src/Group.php:576 src/Group.php:584 src/Contract_Item.php:107
 #: src/Contract_Item.php:395 src/NetworkPort.php:1043 src/Search.php:371
 #: src/Search.php:374 src/Search.php:2095 src/Search.php:2099
@@ -8437,8 +8437,8 @@ msgstr "D=Dinamično, R=Rekurzivno"
 #: src/Search.php:2335 src/Search.php:2338 src/Search.php:6777
 #: src/Search.php:6829 src/Search.php:6882 src/Search.php:6929
 #: src/Search.php:7423 src/Search.php:7664 src/Reminder.php:1032
-#: src/CommonITILObject.php:6431 src/CommonITILObject.php:6518
-#: src/CommonITILObject.php:6551 src/CommonITILObject.php:6678
+#: src/CommonITILObject.php:6436 src/CommonITILObject.php:6523
+#: src/CommonITILObject.php:6556 src/CommonITILObject.php:6683
 #: src/Toolbox.php:1001 src/ProjectTask_Ticket.php:494
 #: src/ProjectTask_Ticket.php:509 src/CronTask.php:1023 src/CronTask.php:1056
 #: src/CronTask.php:1068 src/CommonItilObject_Item.php:65
@@ -8475,7 +8475,7 @@ msgstr "R"
 #: src/LevelAgreement.php:375 src/LevelAgreement.php:528
 #: src/SoftwareVersion.php:346 src/Socket.php:817 src/Socket.php:1051
 #: src/ComputerVirtualMachine.php:275 src/CommonITILCost.php:619
-#: src/IPAddress.php:294 src/Project.php:1516 src/SoftwareLicense.php:1024
+#: src/IPAddress.php:294 src/Project.php:1517 src/SoftwareLicense.php:1024
 #: src/Item_Project.php:210 src/Rule.php:3232 src/Problem_Ticket.php:346
 #: src/Problem_Ticket.php:437 src/Contact_Supplier.php:184
 #: src/Contact_Supplier.php:320 src/ProjectTask.php:1133
@@ -8489,7 +8489,7 @@ msgstr "R"
 #: src/Ticket_Contract.php:155 src/Change.php:876 src/Itil_Project.php:241
 #: src/Itil_Project.php:380 src/Appliance_Item.php:135
 #: src/Appliance_Item.php:325 src/Change_Ticket.php:319
-#: src/Change_Ticket.php:437 src/Ticket.php:5507
+#: src/Change_Ticket.php:437 src/Ticket.php:5514
 #: src/Item_SoftwareLicense.php:829 src/Item_DeviceCamera_ImageFormat.php:125
 #: src/Contract_Item.php:357 src/NetworkPort.php:831
 #: src/Notification_NotificationTemplate.php:164
@@ -8727,12 +8727,12 @@ msgstr "Napredek"
 
 #: src/Html.php:1357 src/Transfer.php:4084 src/Dropdown.php:1200
 #: src/Event.php:176 src/Infocom.php:166 src/Profile.php:164
-#: src/Profile.php:1419 src/Profile.php:2266 src/Config.php:2626
+#: src/Profile.php:1419 src/Profile.php:2266 src/Config.php:2634
 msgid "Management"
 msgstr "Upravljanje"
 
 #: src/Html.php:1366 src/Dashboard/Grid.php:1368 src/Dropdown.php:1207
-#: src/Event.php:175 src/Ticket.php:3608 src/Profile.php:158
+#: src/Event.php:175 src/Ticket.php:3615 src/Profile.php:158
 #: src/Profile.php:165 src/Profile.php:1325 src/Profile.php:1486
 #: src/Profile.php:2482
 msgid "Tools"
@@ -8753,15 +8753,15 @@ msgstr[3] "Vtičniki"
 msgid "Administration"
 msgstr "Administracija"
 
-#: src/Html.php:1547 src/Ticket.php:5268 src/Profile.php:3184
+#: src/Html.php:1547 src/Ticket.php:5275 src/Profile.php:3184
 msgid "Create a ticket"
 msgstr "Ustvari zahtevek"
 
-#: src/Html.php:1596 src/Config.php:3306
+#: src/Html.php:1596 src/Config.php:3314
 msgid "Plugins"
 msgstr "Vtičniki"
 
-#: src/Html.php:1719 src/Central.php:528
+#: src/Html.php:1719 src/Central.php:531
 msgid "SQL replica: read only"
 msgstr "Replika SQL: samo za branje"
 
@@ -9106,11 +9106,11 @@ msgid "Alert on duplicate record"
 msgstr "Alarm ob podvojenem zapisu"
 
 #: src/NotificationTargetFieldUnicity.php:49 src/Log.php:1080
-#: src/Config.php:3280
+#: src/Config.php:3288
 msgid "Add the item"
 msgstr "Dodaj element"
 
-#: src/NotificationTargetFieldUnicity.php:49 src/Config.php:3292
+#: src/NotificationTargetFieldUnicity.php:49 src/Config.php:3300
 msgid "Update the item"
 msgstr "Posodobi predmet"
 
@@ -9250,7 +9250,7 @@ msgstr "Lokacija zahtevka"
 #: src/RuleTicket.php:692 src/RuleTicket.php:882
 #: src/NotificationTargetCommonITILObject.php:862
 #: src/NotificationTargetCommonITILObject.php:1815
-#: src/CommonITILObject.php:4490
+#: src/CommonITILObject.php:4495
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:79
 msgid "Requester group"
 msgid_plural "Requester groups"
@@ -9260,20 +9260,20 @@ msgstr[2] "Prosilec skupine"
 msgstr[3] "Prosilec skupine"
 
 #: src/RuleTicket.php:704 src/RuleTicket.php:899
-#: src/Dashboard/Filters/GroupTechFilter.php:47 src/CommonITILObject.php:4633
+#: src/Dashboard/Filters/GroupTechFilter.php:47 src/CommonITILObject.php:4638
 msgid "Technician group"
 msgstr "Skupina tehnikov"
 
 #: src/RuleTicket.php:711 src/RuleTicket.php:907
 #: src/NotificationTargetCommonITILObject.php:1813
-#: src/CommonITILObject.php:4613
+#: src/CommonITILObject.php:4618
 msgid "Assigned to a supplier"
 msgstr "Dodeljeno dobavitelju"
 
 #: src/RuleTicket.php:723 src/RuleTicket.php:924
 #: src/NotificationTargetCommonITILObject.php:865
 #: src/NotificationTargetCommonITILObject.php:1819
-#: src/CommonITILObject.php:4566
+#: src/CommonITILObject.php:4571
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:80
 msgid "Watcher group"
 msgid_plural "Watcher groups"
@@ -9855,15 +9855,7 @@ msgstr "Podatki o časovnem pasu DB"
 msgid "Enable usage of timezones."
 msgstr "Omogočite uporabo časovnih pasov."
 
-#: src/System/Requirement/DbTimezones.php:66
-msgid "Access to timezone database (mysql) is not allowed."
-msgstr "Dostop do baze časovnega pasu (mysql) ni dovoljen."
-
-#: src/System/Requirement/DbTimezones.php:78
-msgid "Access to timezone table (mysql.time_zone_name) is not allowed."
-msgstr "Dostop do tabele časovnih območij (mysql.time_zone_name) ni dovoljen."
-
-#: src/System/Requirement/DbTimezones.php:91
+#: src/System/Requirement/DbTimezones.php:67
 msgid ""
 "Timezones seems not loaded, see https://glpi-"
 "install.readthedocs.io/en/latest/timezones.html."
@@ -9871,7 +9863,7 @@ msgstr ""
 "Zdi se, da časovni pasovi niso naloženi, glej https://glpi-"
 "install.readthedocs.io/en/latest/timezones.html."
 
-#: src/System/Requirement/DbTimezones.php:96
+#: src/System/Requirement/DbTimezones.php:72
 msgid "Timezones seems loaded in database."
 msgstr "Zdi se, da so časovni pasovi naloženi v zbirki podatkov."
 
@@ -10137,7 +10129,7 @@ msgid "Group in charge of the task"
 msgstr "Skupina odgovorna za opravilo"
 
 #: src/NotificationTargetPlanningRecall.php:57
-#: src/PlanningExternalEvent.php:264 src/Features/PlanningEvent.php:1054
+#: src/PlanningExternalEvent.php:264 src/Features/PlanningEvent.php:1057
 msgid "Guests"
 msgstr "Gosti"
 
@@ -10190,8 +10182,8 @@ msgid "Deletion of a project"
 msgstr "Izbris projekta"
 
 #: src/NotificationTargetProject.php:61 src/NotificationTargetProject.php:657
-#: src/Project.php:647 src/Project.php:1175 src/Project.php:1674
-#: src/Project.php:2586 src/Group.php:592 src/Group_User.php:217
+#: src/Project.php:647 src/Project.php:1176 src/Project.php:1675
+#: src/Project.php:2587 src/Group.php:592 src/Group_User.php:217
 #: src/Group_User.php:257 src/Group_User.php:295 src/Group_User.php:353
 #: src/Group_User.php:523 src/Group_User.php:617 src/Group_User.php:652
 #: src/Group_User.php:792
@@ -10203,7 +10195,7 @@ msgstr[2] "Upravljalcev"
 msgstr[3] "Upravljalcev"
 
 #: src/NotificationTargetProject.php:62 src/NotificationTargetProject.php:658
-#: src/Project.php:657 src/Project.php:1176
+#: src/Project.php:657 src/Project.php:1177
 msgid "Manager group"
 msgstr "Upravitelj skupine"
 
@@ -10244,7 +10236,7 @@ msgid "Supplier of project team"
 msgstr "Dobavitelj projektne skupine"
 
 #: src/NotificationTargetProject.php:646 src/Project.php:558
-#: src/Project.php:1605
+#: src/Project.php:1606
 msgid "Code"
 msgstr "Koda"
 
@@ -10310,8 +10302,8 @@ msgstr[3] "Članov ekipe"
 msgid "Receiver errors"
 msgstr "Napake sprejemnika"
 
-#: src/NotificationTargetMailCollector.php:80 src/MailCollector.php:287
-#: src/MailCollector.php:586
+#: src/NotificationTargetMailCollector.php:80 src/MailCollector.php:295
+#: src/MailCollector.php:594
 msgid "Connection errors"
 msgstr "Težave s povezavo"
 
@@ -10406,13 +10398,13 @@ msgstr[1] "Predloge projektnih nalog"
 msgstr[2] "Predloge projektnih nalog"
 msgstr[3] "Predloge projektnih nalog"
 
-#: src/Dashboard/Dashboard.php:388 src/Planning.php:1810
+#: src/Dashboard/Dashboard.php:388 src/Planning.php:1816
 #, php-format
 msgid "Copy of %s"
 msgstr "Kopija od %s"
 
 #: src/Dashboard/Provider.php:271 src/Problem.php:682 src/Change.php:683
-#: src/Ticket.php:3819
+#: src/Ticket.php:3826
 msgctxt "status"
 msgid "Not solved"
 msgstr "Ni rešeno"
@@ -10506,33 +10498,33 @@ msgid "Late"
 msgstr "Pozno"
 
 #: src/Dashboard/Provider.php:1258 src/Problem.php:671 src/Change.php:668
-#: src/Ticket.php:3810 src/Plugin.php:2425 src/Plugin.php:2846
+#: src/Ticket.php:3817 src/Plugin.php:2425 src/Plugin.php:2846
 msgctxt "status"
 msgid "New"
 msgstr "Novo"
 
-#: src/Dashboard/Provider.php:1262 src/Problem.php:673 src/Ticket.php:3811
+#: src/Dashboard/Provider.php:1262 src/Problem.php:673 src/Ticket.php:3818
 msgctxt "status"
 msgid "Processing (assigned)"
 msgstr "V teku (dodeljeno)"
 
-#: src/Dashboard/Provider.php:1266 src/Problem.php:674 src/Ticket.php:3812
+#: src/Dashboard/Provider.php:1266 src/Problem.php:674 src/Ticket.php:3819
 msgctxt "status"
 msgid "Processing (planned)"
 msgstr "V teku (načrtovano)"
 
-#: src/Dashboard/Provider.php:1274 src/Problem.php:676 src/Ticket.php:3814
+#: src/Dashboard/Provider.php:1274 src/Problem.php:676 src/Ticket.php:3821
 msgctxt "status"
 msgid "Solved"
 msgstr "Rešeno"
 
 #: src/Dashboard/Provider.php:1278 src/Problem.php:678 src/Change.php:677
-#: src/Ticket.php:3815
+#: src/Ticket.php:3822
 msgctxt "status"
 msgid "Closed"
 msgstr "Zaprto"
 
-#: src/Dashboard/Provider.php:1546 src/CommonITILObject.php:4437
+#: src/Dashboard/Provider.php:1546 src/CommonITILObject.php:4442
 msgid "Waiting time"
 msgstr "Čakalni čas"
 
@@ -10544,7 +10536,7 @@ msgstr "Čas za zaprtje"
 msgid "New"
 msgstr "Novo"
 
-#: src/Dashboard/Provider.php:1611 src/CommonITILObject.php:6758
+#: src/Dashboard/Provider.php:1611 src/CommonITILObject.php:6763
 msgid "Assigned"
 msgstr "Dodeljen"
 
@@ -10769,7 +10761,7 @@ msgid "%s by %s"
 msgstr "%s po %s"
 
 #: src/Dashboard/Grid.php:1217 src/Ticket.php:173 src/Ticket.php:175
-#: src/Ticket.php:5297
+#: src/Ticket.php:5304
 msgid "Tickets waiting for your approval"
 msgstr "Zahtevki, ki čakajo na vašo odobritev"
 
@@ -10915,11 +10907,11 @@ msgstr "Čas preverjanja novih obvestil (v sekundah)"
 msgid "URL of the icon"
 msgstr "URL ikone"
 
-#: src/NotificationAjaxSetting.php:109 src/NotificationMailingSetting.php:447
+#: src/NotificationAjaxSetting.php:109 src/NotificationMailingSetting.php:457
 msgid "Notifications are disabled."
 msgstr "Obvestila so onemogočena."
 
-#: src/NotificationAjaxSetting.php:111 src/NotificationMailingSetting.php:449
+#: src/NotificationAjaxSetting.php:111 src/NotificationMailingSetting.php:459
 msgid "See configuration"
 msgstr "Poglej nastavitve"
 
@@ -11354,8 +11346,8 @@ msgstr "Avtor opravila"
 msgid "Followup author"
 msgstr "Avtor nadaljevanja"
 
-#: src/NotificationTargetCommonITILObject.php:1763 src/Ticket.php:6359
-#: src/CommonITILObject.php:4113 src/CommonITILObject.php:5446
+#: src/NotificationTargetCommonITILObject.php:1763 src/Ticket.php:6366
+#: src/CommonITILObject.php:4118 src/CommonITILObject.php:5451
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:69
 msgid "Closing date"
 msgstr "Datum zaprtja"
@@ -11815,7 +11807,7 @@ msgstr "Spremeni %1$s v %2$s"
 msgid "Update a field"
 msgstr "Posodobi polje"
 
-#: src/Log.php:1084 src/Config.php:3283
+#: src/Log.php:1084 src/Config.php:3291
 msgid "Delete the item"
 msgstr "Izbriši predmet"
 
@@ -11827,7 +11819,7 @@ msgstr "Zakleni napravo"
 msgid "Unlock the item"
 msgstr "Odkleni napravo"
 
-#: src/Log.php:1096 src/Config.php:3288
+#: src/Log.php:1096 src/Config.php:3296
 msgid "Restore the item"
 msgstr "Obnovi predmet"
 
@@ -11957,29 +11949,29 @@ msgstr[1] "Zunanji dogodek"
 msgstr[2] "Zunanji dogodki"
 msgstr[3] "Zunanji dogodki"
 
-#: src/PlanningExternalEvent.php:273
+#: src/PlanningExternalEvent.php:275
 msgid "Each guest will have a read-only copy of this event"
 msgstr "Vsak gost bo imel kopijo tega dogodka samo za branje"
 
-#: src/PlanningExternalEvent.php:310 src/Features/PlanningEvent.php:999
+#: src/PlanningExternalEvent.php:312 src/Features/PlanningEvent.php:1002
 #: src/PlanningExternalEventTemplate.php:73
 msgid "Background event"
 msgstr "Dogodek v ozadju"
 
-#: src/PlanningExternalEvent.php:334 src/Features/PlanningEvent.php:1005
+#: src/PlanningExternalEvent.php:336 src/Features/PlanningEvent.php:1008
 #: src/PlanningExternalEventTemplate.php:81
 msgid "Repeat"
 msgstr "Ponovitev"
 
-#: src/PlanningExternalEvent.php:366
+#: src/PlanningExternalEvent.php:368
 msgid "Delete serie"
 msgstr "Izbriši serijo"
 
-#: src/PlanningExternalEvent.php:370
+#: src/PlanningExternalEvent.php:372
 msgid "Delete instance"
 msgstr "Izbriši instanco"
 
-#: src/PlanningExternalEvent.php:386
+#: src/PlanningExternalEvent.php:388
 msgid "manage background events"
 msgstr "upravlja z dogodki v ozadju"
 
@@ -12029,7 +12021,7 @@ msgstr[3] "Vtičnic"
 
 #: src/Socket.php:430 src/Cable.php:165 src/Cable.php:187
 #: src/Item_Devices.php:185 src/Problem.php:471 src/Change.php:490
-#: src/Ticket.php:3221 src/Item_Ticket.php:1183 src/Link_Itemtype.php:178
+#: src/Ticket.php:3228 src/Item_Ticket.php:918 src/Link_Itemtype.php:178
 msgid "Associated item type"
 msgid_plural "Associated item types"
 msgstr[0] "Povezane vrste predmetov"
@@ -12084,7 +12076,7 @@ msgid "Send a notification"
 msgstr "Pošlji obvestilo"
 
 #: src/FieldUnicity.php:120 src/FieldUnicity.php:576 src/Ticket_Ticket.php:207
-#: src/Ticket_Ticket.php:229 src/Ticket.php:2732
+#: src/Ticket_Ticket.php:229 src/Ticket.php:2739
 msgid "Duplicates"
 msgstr "Dvojniki"
 
@@ -12104,7 +12096,7 @@ msgstr[3] "Datotečni sistemi"
 msgid "Incorrect username or password"
 msgstr "Nepravilno uporabniško ime ali geslo"
 
-#: src/Auth.php:214 src/MailCollector.php:1475
+#: src/Auth.php:214 src/MailCollector.php:1483
 #, php-format
 msgid "Unsupported mail server type:%s."
 msgstr "Nepodprt tip poštnega strežnika:%s."
@@ -12199,7 +12191,7 @@ msgstr "Ostalo"
 msgid "GLPI internal database"
 msgstr "Interna podatkovna zbirka GLPI"
 
-#: src/Auth.php:1278 src/Config.php:799 src/Config.php:2633
+#: src/Auth.php:1278 src/Config.php:799 src/Config.php:2641
 msgid "API"
 msgstr "API"
 
@@ -12427,20 +12419,20 @@ msgid "Average time to closure"
 msgstr "Povprečni čas do zaključka"
 
 #: src/Stat.php:607 src/Stat/Data/Graph/StatDataTicketNumber.php:86
-#: src/Ticket.php:6317 src/CommonITILObject.php:5459
-#: src/CommonITILObject.php:6767
+#: src/Ticket.php:6324 src/CommonITILObject.php:5464
+#: src/CommonITILObject.php:6772
 msgid "Take into account"
 msgstr "Prevzem"
 
 #: src/Stat.php:609 src/Stat/Data/Sglobal/StatDataTicketAverageTime.php:74
 #: src/Stat/Data/Graph/StatDataTicketNumber.php:70
-#: src/CommonITILObject.php:5469 src/CommonITILObject.php:6768
+#: src/CommonITILObject.php:5474 src/CommonITILObject.php:6773
 msgid "Resolution"
 msgstr "Čas obdelave zahtevka"
 
 #: src/Stat.php:610 src/Stat/Data/Sglobal/StatDataTicketAverageTime.php:71
 #: src/Stat/Data/Graph/StatDataTicketNumber.php:67
-#: src/CommonITILObject.php:5480
+#: src/CommonITILObject.php:5485
 msgid "Closure"
 msgstr "Zaključek"
 
@@ -12667,40 +12659,40 @@ msgstr "Preglednica"
 msgid "My tasks"
 msgstr "Moja opravila"
 
-#: src/Project.php:637 src/Project.php:1667
+#: src/Project.php:637 src/Project.php:1668
 msgid "Show on global Gantt"
 msgstr "Prikaži na globalnem Gantt"
 
-#: src/Project.php:1080
+#: src/Project.php:1081
 msgid "Planned Duration"
 msgstr "Načrtovano trajanje"
 
-#: src/Project.php:1279 src/CommonITILObject.php:6481
+#: src/Project.php:1280 src/CommonITILObject.php:6486
 #, php-format
 msgid "Opened on %s"
 msgstr "Odprto dne %s"
 
-#: src/Project.php:1390 src/CommonITILObject.php:6723
+#: src/Project.php:1391 src/CommonITILObject.php:6728
 msgid "No item in progress."
 msgstr "Noben element ni v postopku."
 
-#: src/Project.php:1419 src/ProjectTask.php:449
+#: src/Project.php:1420 src/ProjectTask.php:449
 msgid "Circular relation found. Parent not updated."
 msgstr "Najdeno krožno razmerje. Nadrejena oseba ni posodobljena."
 
-#: src/Project.php:1446
+#: src/Project.php:1447
 msgid "Invalid planned dates. Dates not updated."
 msgstr "Neveljavni načrtovani datumi. Datumi niso posodobljeni."
 
-#: src/Project.php:1460
+#: src/Project.php:1461
 msgid "Invalid real dates. Dates not updated."
 msgstr "Neveljavni dejanski datumi. Datumi niso posodobljeni."
 
-#: src/Project.php:1500
+#: src/Project.php:1501
 msgid "Create a sub project from this project"
 msgstr "Ustvari podprojekt iz tega projekta"
 
-#: src/Project.php:1656
+#: src/Project.php:1657
 msgid ""
 "When automatic computation is active, percentage is computed based on the "
 "average of all child project and task percent done."
@@ -12708,19 +12700,19 @@ msgstr ""
 "Če je aktiven samodejni izračun, se odstotek izračuna na podlagi povprečja "
 "vseh odstotkov opravljenega projekta in naloge."
 
-#: src/Project.php:1719
+#: src/Project.php:1720
 msgid "Sum of planned durations of tasks"
 msgstr "Vsota načrtovanih trajanj nalog"
 
-#: src/Project.php:1728
+#: src/Project.php:1729
 msgid "Sum of total effective durations of tasks"
 msgstr "Vsota skupnih efektivnih trajanj nalog"
 
-#: src/Project.php:1820 src/ProjectTask.php:1280
+#: src/Project.php:1821 src/ProjectTask.php:1280
 msgid "Add a team member"
 msgstr "Dodaj člana ekipe"
 
-#: src/Project.php:1863 src/Project.php:2588 src/ProjectTask.php:1323
+#: src/Project.php:1864 src/Project.php:2589 src/ProjectTask.php:1323
 msgid "Member"
 msgid_plural "Members"
 msgstr[0] "Član"
@@ -12728,74 +12720,74 @@ msgstr[1] "Člani"
 msgstr[2] "Člani"
 msgstr[3] "Člani"
 
-#: src/Project.php:2247
+#: src/Project.php:2248
 msgid "No status"
 msgstr "Brez stanja"
 
-#: src/Project.php:2290
+#: src/Project.php:2291
 msgid "Subproject"
 msgstr "Podprojekt"
 
-#: src/Project.php:2290
+#: src/Project.php:2291
 msgid "Subtask"
 msgstr "Podopravilo"
 
-#: src/Project.php:2294
+#: src/Project.php:2295
 #, php-format
 msgid "%s of %s"
 msgstr "%s od %s"
 
-#: src/Project.php:2313 src/CommonITILObject.php:9365
+#: src/Project.php:2314 src/CommonITILObject.php:9389
 #, php-format
 msgid "%s / %s tasks complete"
 msgstr "%s / %s končanih opravil"
 
-#: src/Project.php:2523 src/CommonITILObject.php:9538
+#: src/Project.php:2524 src/CommonITILObject.php:9562
 msgctxt "filters"
 msgid "The title of the item"
 msgstr "Naslov predmeta"
 
-#: src/Project.php:2527 src/CommonITILObject.php:9542
+#: src/Project.php:2528 src/CommonITILObject.php:9566
 msgctxt "filters"
 msgid "The type of the item"
 msgstr "Vrsta predmeta"
 
-#: src/Project.php:2531
+#: src/Project.php:2532
 msgctxt "filters"
 msgid "If the item represents a milestone or not"
 msgstr "Če element predstavlja mejnik ali ne"
 
-#: src/Project.php:2535 src/CommonITILObject.php:9550
+#: src/Project.php:2536 src/CommonITILObject.php:9574
 msgctxt "filters"
 msgid "The content of the item"
 msgstr "Vsebina predmeta"
 
-#: src/Project.php:2539
+#: src/Project.php:2540
 msgctxt "filters"
 msgid "If the item is deleted or not"
 msgstr "Če je element izbrisan ali ne"
 
-#: src/Project.php:2543 src/CommonITILObject.php:9554
+#: src/Project.php:2544 src/CommonITILObject.php:9578
 msgctxt "filters"
 msgid "A team member for the item"
 msgstr "Član ekipe za predmet"
 
-#: src/Project.php:2547 src/CommonITILObject.php:9558
+#: src/Project.php:2548 src/CommonITILObject.php:9582
 msgctxt "filters"
 msgid "A user in the team of the item"
 msgstr "Uporabnik v ekipi predmeta"
 
-#: src/Project.php:2551 src/CommonITILObject.php:9562
+#: src/Project.php:2552 src/CommonITILObject.php:9586
 msgctxt "filters"
 msgid "A group in the team of the item"
 msgstr "Skupina v ekipi predmeta"
 
-#: src/Project.php:2555 src/CommonITILObject.php:9566
+#: src/Project.php:2556 src/CommonITILObject.php:9590
 msgctxt "filters"
 msgid "A supplier in the team of the item"
 msgstr "Dobavitelj v ekipi predmeta"
 
-#: src/Project.php:2559
+#: src/Project.php:2560
 msgctxt "filters"
 msgid "A contact in the team of the item"
 msgstr "Kontakt v ekipi predmeta"
@@ -13059,8 +13051,8 @@ msgid "Use rule for"
 msgstr "Uporabi pravilo za"
 
 #: src/Rule.php:980 src/Rule.php:985 src/Rule.php:2899 src/AuthMail.php:240
-#: src/AuthMail.php:354 src/AuthLDAP.php:767 src/AuthLDAP.php:909
-#: src/AuthLDAP.php:4441 src/RuleCollection.php:1755
+#: src/AuthMail.php:354 src/AuthLDAP.php:783 src/AuthLDAP.php:925
+#: src/AuthLDAP.php:4455 src/RuleCollection.php:1755
 msgctxt "button"
 msgid "Test"
 msgstr "Test"
@@ -13122,8 +13114,8 @@ msgstr "Rezultat normalenega izraza"
 msgid "Key"
 msgstr "Tipka"
 
-#: src/Rule.php:2481 src/CommonGLPI.php:106 src/Ticket.php:5123
-#: src/Ticket.php:5659 src/Config.php:3270 src/CommonITILObject.php:6612
+#: src/Rule.php:2481 src/CommonGLPI.php:106 src/Ticket.php:5130
+#: src/Ticket.php:5666 src/Config.php:3278 src/CommonITILObject.php:6617
 #: src/CommonItilObject_Item.php:148 src/RuleImportAsset.php:183
 #: src/RuleImportAsset.php:187 src/RuleImportAsset.php:192
 msgid "General"
@@ -13314,7 +13306,7 @@ msgid "Solve tickets"
 msgstr "Reši zahtevke"
 
 #: src/Problem_Ticket.php:328 src/Problem.php:418 src/CommonITILTask.php:1508
-#: src/Change_Ticket.php:299 src/Ticket.php:2625
+#: src/Change_Ticket.php:299 src/Ticket.php:2637
 msgid "Add a new task"
 msgstr "Dodaj novo opravilo"
 
@@ -13643,33 +13635,33 @@ msgstr[1] "Maski podomrežja"
 msgstr[2] "Maske podomrežja"
 msgstr[3] "Mask podomrežja"
 
-#: src/NotificationEventMailing.php:384 src/NotificationMailing.php:114
+#: src/NotificationEventMailing.php:386 src/NotificationMailing.php:114
 #, php-format
 msgid "Original email address was %1$s"
 msgstr "Prvotni e-poštni naslov je bil %1$s"
 
-#: src/NotificationEventMailing.php:407
+#: src/NotificationEventMailing.php:409
 #, php-format
 msgid "An email was sent to %s"
 msgstr "Elektronska sporočila je bila poslana %s"
 
-#: src/NotificationEventMailing.php:436
+#: src/NotificationEventMailing.php:438
 msgid "Error in sending the email"
 msgstr "Napaka pri pošiljanju emaila"
 
-#: src/NotificationEventMailing.php:443
+#: src/NotificationEventMailing.php:445
 #, php-format
 msgid "%1$s. Message: %2$s, Error: %3$s"
 msgstr "%1$s. Sporočilo: %2$s, Napaka: %3$s"
 
-#: src/NotificationEventMailing.php:445
+#: src/NotificationEventMailing.php:447
 #, php-format
 msgid "Warning: an email was undeliverable to %s with %d retries remaining"
 msgstr ""
 "Opozorilo: e-poštno sporočilo je bilo nedostavljivo na naslov %s s "
 "preostalimi %d poskusi"
 
-#: src/NotificationEventMailing.php:460
+#: src/NotificationEventMailing.php:462
 #, php-format
 msgid "Fatal error: giving up delivery of email to %s"
 msgstr "Kritična napaka: trajni preklic dostave e-pošte na %s"
@@ -13804,7 +13796,7 @@ msgid "Instanciation type"
 msgstr "Vrsta namestitve"
 
 #: src/Transfer.php:3930 src/Transfer.php:3933 src/Transfer.php:3952
-#: src/AuthLDAP.php:4296
+#: src/AuthLDAP.php:4310
 msgid "Preserve"
 msgstr "Ohrani"
 
@@ -13917,17 +13909,17 @@ msgid "To empty the list of elements to be transferred"
 msgstr "S prazni seznam elementov, kateri naj bodo prenešeni"
 
 #: src/Ticket_Ticket.php:206 src/Ticket_Ticket.php:228
-#: src/Ticket_Ticket.php:233 src/Ticket.php:2731
+#: src/Ticket_Ticket.php:233 src/Ticket.php:2738
 msgid "Linked to"
 msgstr "Povezan z"
 
 #: src/Ticket_Ticket.php:208 src/Ticket_Ticket.php:230
-#: src/Ticket_Ticket.php:236 src/Ticket.php:2733
+#: src/Ticket_Ticket.php:236 src/Ticket.php:2740
 msgid "Son of"
 msgstr "Podrejen"
 
 #: src/Ticket_Ticket.php:209 src/Ticket_Ticket.php:231
-#: src/Ticket_Ticket.php:235 src/Ticket.php:2734
+#: src/Ticket_Ticket.php:235 src/Ticket.php:2741
 msgid "Parent of"
 msgstr "Nadrejen"
 
@@ -14004,9 +13996,28 @@ msgstr[3] "ITIL Kategorije"
 msgid "Code representing the ticket category is already used"
 msgstr "Koda, ki predstavlja kategorijo zahtevka, je že uporabljena"
 
-#: src/ITILCategory.php:484 src/Ticket.php:3769 src/Ticket.php:3787
+#: src/ITILCategory.php:484 src/Ticket.php:3776 src/Ticket.php:3794
 msgid "Incident"
 msgstr "Dogodek"
+
+#: src/GLPIKey.php:130
+#, php-format
+msgid ""
+"The security key file does not exist. You have to run the \"%s\" command to "
+"generate a key."
+msgstr ""
+
+#: src/GLPIKey.php:135
+#, php-format
+msgid "Unable to get security key file contents. Fix file permissions of %s."
+msgstr ""
+
+#: src/GLPIKey.php:140
+#, php-format
+msgid ""
+"Invalid security key file contents. You have to run the \"%s\" command to "
+"regenerate a key."
+msgstr ""
 
 #: src/Vlan.php:48
 msgid "VLAN"
@@ -14082,22 +14093,22 @@ msgstr "Dodaj protivirusno zaščito"
 msgid "Add a LDAP directory replica"
 msgstr "Dodaj LDAP repliko"
 
-#: src/AuthLdapReplicate.php:93 src/AuthMail.php:121 src/AuthLDAP.php:476
-#: src/AuthLDAP.php:1090 src/MailCollector.php:160 src/Config.php:2146
-#: src/Toolbox.php:1953
+#: src/AuthLdapReplicate.php:93 src/AuthMail.php:121 src/AuthLDAP.php:485
+#: src/AuthLDAP.php:1106 src/MailCollector.php:160 src/Config.php:2154
+#: src/Toolbox.php:1956
 msgid "Server"
 msgstr "Strežnik"
 
-#: src/AuthLdapReplicate.php:95 src/AuthLDAP.php:677 src/AuthLDAP.php:747
-#: src/AuthLDAP.php:1354
+#: src/AuthLdapReplicate.php:95 src/AuthLDAP.php:693 src/AuthLDAP.php:763
+#: src/AuthLDAP.php:1370
 msgid "Timeout"
 msgstr "Pretek časa"
 
-#: src/AuthLdapReplicate.php:105 src/AuthLDAP.php:684 src/AuthLDAP.php:1359
+#: src/AuthLdapReplicate.php:105 src/AuthLDAP.php:700 src/AuthLDAP.php:1375
 msgid "No timeout"
 msgstr "Brez časovnega limita"
 
-#: src/Preference.php:42 src/Config.php:2616 src/Impact.php:379
+#: src/Preference.php:42 src/Config.php:2624 src/Impact.php:379
 #: src/Impact.php:1072 src/Impact.php:1131
 msgid "Settings"
 msgstr "Nastavitve"
@@ -14194,7 +14205,7 @@ msgstr[2] "Poštni strežniki"
 msgstr[3] "Poštni strežniki"
 
 #. TRANS: for mail connection system
-#: src/AuthMail.php:129 src/MailCollector.php:527 src/Toolbox.php:2095
+#: src/AuthMail.php:129 src/MailCollector.php:535 src/Toolbox.php:2098
 msgid "Connection string"
 msgstr "Povezovalni niz"
 
@@ -14292,43 +14303,43 @@ msgstr "brez e-pošnega odgovora"
 msgid "with email response"
 msgstr "z e-poštnim odgovorom"
 
-#: src/AuthLDAP.php:302 src/AuthLDAP.php:544
+#: src/AuthLDAP.php:302 src/AuthLDAP.php:553
 msgid "Synchronization field cannot be changed once in use."
 msgstr "Polja za sinhronizacijo ni mogoče spremeniti, ko je enkrat v uporabi."
 
-#: src/AuthLDAP.php:447
+#: src/AuthLDAP.php:456
 msgid "Preconfiguration"
 msgstr "Prekonfiguracija"
 
-#: src/AuthLDAP.php:449
+#: src/AuthLDAP.php:458
 msgid "Active Directory"
 msgstr "Aktivni imenik"
 
-#: src/AuthLDAP.php:451
+#: src/AuthLDAP.php:460
 msgid "OpenLDAP"
 msgstr "OpenLDAP"
 
-#: src/AuthLDAP.php:453 src/Config.php:2623
+#: src/AuthLDAP.php:462 src/Config.php:2631
 msgid "Default values"
 msgstr "Privzete vrednosti"
 
-#: src/AuthLDAP.php:478
+#: src/AuthLDAP.php:487
 msgid "Port (default=389)"
 msgstr "Vrata (privzeto=389)"
 
-#: src/AuthLDAP.php:482 src/AuthLDAP.php:1114
+#: src/AuthLDAP.php:491 src/AuthLDAP.php:1130
 msgid "Connection filter"
 msgstr "Filter povezave"
 
-#: src/AuthLDAP.php:488 src/AuthLDAP.php:1106 src/AuthLDAP.php:3942
+#: src/AuthLDAP.php:497 src/AuthLDAP.php:1122 src/AuthLDAP.php:3956
 msgid "BaseDN"
 msgstr "OsnovaDN - baseDN"
 
-#: src/AuthLDAP.php:494
+#: src/AuthLDAP.php:503
 msgid "Use bind"
 msgstr "Uporaba vezave"
 
-#: src/AuthLDAP.php:495
+#: src/AuthLDAP.php:504
 msgid ""
 "Indicates whether a simple bind operation should be used during connection "
 "to LDAP server. Disabling this behaviour can be required when LDAPS bind is "
@@ -14338,95 +14349,95 @@ msgstr ""
 "preprosta operacija vezave. Če se uporablja povezava LDAPS, je lahko "
 "potrebno to ravnanje onemogočiti."
 
-#: src/AuthLDAP.php:521
+#: src/AuthLDAP.php:530
 msgid "RootDN (for non anonymous binds)"
 msgstr "RootDN (za neanonimne vezave)"
 
-#: src/AuthLDAP.php:527
+#: src/AuthLDAP.php:536
 msgid "Password (for non-anonymous binds)"
 msgstr "Geslo (za ne-anonimno vezave)"
 
-#: src/AuthLDAP.php:540 src/AuthLDAP.php:1131
+#: src/AuthLDAP.php:549 src/AuthLDAP.php:1147
 msgid "Login field"
 msgstr "Prijavno polje"
 
-#: src/AuthLDAP.php:546 src/AuthLDAP.php:1327 src/AuthLDAP.php:1771
-#: src/AuthLDAP.php:1830 src/AuthLDAP.php:4014 src/User.php:2691
+#: src/AuthLDAP.php:555 src/AuthLDAP.php:1343 src/AuthLDAP.php:1787
+#: src/AuthLDAP.php:1846 src/AuthLDAP.php:4028 src/User.php:2691
 #: src/User.php:3190 src/User.php:3773
 msgid "Synchronization field"
 msgstr "Polje sinhronizacije"
 
-#: src/AuthLDAP.php:580 src/Config.php:2908
+#: src/AuthLDAP.php:589 src/Config.php:2916
 #, php-format
 msgid "%s extension is missing"
 msgstr "%s končnica manjka"
 
-#: src/AuthLDAP.php:581
+#: src/AuthLDAP.php:590
 msgid "Impossible to use LDAP as external source of connection"
 msgstr "Nemogoče je uporabiti LDAP kot zunanji vir povezave"
 
-#: src/AuthLDAP.php:608
+#: src/AuthLDAP.php:624
 msgid "Use TLS"
 msgstr "Uporabite TLS"
 
-#: src/AuthLDAP.php:612
+#: src/AuthLDAP.php:628
 msgid "ldap_start_tls does not exist"
 msgstr "ldap_start_tls ne obstaja"
 
-#: src/AuthLDAP.php:615
+#: src/AuthLDAP.php:631
 msgid "LDAP directory time zone"
 msgstr "Časovni pas LDAP imenika"
 
-#: src/AuthLDAP.php:621
+#: src/AuthLDAP.php:637
 msgid "Use paged results"
 msgstr ""
 
-#: src/AuthLDAP.php:624
+#: src/AuthLDAP.php:640
 msgid "Page size"
 msgstr "Velikost strani"
 
-#: src/AuthLDAP.php:633
+#: src/AuthLDAP.php:649
 msgid "Maximum number of results"
 msgstr "Maksimalno število rezultatov"
 
-#: src/AuthLDAP.php:648
+#: src/AuthLDAP.php:664
 msgid "How LDAP aliases should be handled"
 msgstr "Kako se bo rokovalo z LDAP aliasi"
 
-#: src/AuthLDAP.php:650
+#: src/AuthLDAP.php:666
 msgid "Never dereferenced (default)"
 msgstr "Nikoli ne dereferenciraj (privzeto)"
 
-#: src/AuthLDAP.php:651
+#: src/AuthLDAP.php:667
 msgid "Always dereferenced"
 msgstr "Vedno dereferenciraj"
 
-#: src/AuthLDAP.php:652
+#: src/AuthLDAP.php:668
 msgid "Dereferenced during the search (but not when locating)"
 msgstr "Dereferenciraj med iskanjem (toda ne med lociranjem)"
 
-#: src/AuthLDAP.php:653
+#: src/AuthLDAP.php:669
 msgid "Dereferenced when locating (not during the search)"
 msgstr "Dereferancija ko lociraš (ne med iskanjem)"
 
-#: src/AuthLDAP.php:663
+#: src/AuthLDAP.php:679
 msgid "Domain name used by inventory tool for link the user"
 msgstr ""
 "Ime domene, ki ga orodje za inventar uporablja za povezavo z uporabnikom"
 
-#: src/AuthLDAP.php:669
+#: src/AuthLDAP.php:685
 msgid "TLS Certfile"
 msgstr "Datoteka TLS Certfile"
 
-#: src/AuthLDAP.php:672
+#: src/AuthLDAP.php:688
 msgid "TLS Keyfile"
 msgstr "Ključna datoteka TLS"
 
-#: src/AuthLDAP.php:734
+#: src/AuthLDAP.php:750
 msgid "List of LDAP directory replicates"
 msgstr "Seznam dvojnikov imenika LDAP"
 
-#: src/AuthLDAP.php:746 src/AuthLDAP.php:4447
+#: src/AuthLDAP.php:762 src/AuthLDAP.php:4461
 msgid "Replicate"
 msgid_plural "Replicates"
 msgstr[0] "Replike"
@@ -14434,221 +14445,221 @@ msgstr[1] "Replike"
 msgstr[2] "Replike"
 msgstr[3] "Replike"
 
-#: src/AuthLDAP.php:824 src/Group.php:658
+#: src/AuthLDAP.php:840 src/Group.php:658
 msgid "In users"
 msgstr "V uporabnikih"
 
-#: src/AuthLDAP.php:825 src/Group.php:673
+#: src/AuthLDAP.php:841 src/Group.php:673
 msgid "In groups"
 msgstr "V skupinah"
 
-#: src/AuthLDAP.php:826
+#: src/AuthLDAP.php:842
 msgid "In users and groups"
 msgstr "Uporabniki & Skupine"
 
-#: src/AuthLDAP.php:853
+#: src/AuthLDAP.php:869
 msgid "Belonging to groups"
 msgstr "Pripada skupinam"
 
-#: src/AuthLDAP.php:855 src/AuthLDAP.php:1311
+#: src/AuthLDAP.php:871 src/AuthLDAP.php:1327
 msgid "Search type"
 msgstr "Vrsta iskanja"
 
-#: src/AuthLDAP.php:858 src/AuthLDAP.php:1283
+#: src/AuthLDAP.php:874 src/AuthLDAP.php:1299
 msgid "User attribute containing its groups"
 msgstr "Uporabnikovi atributi vsebovani naslednjih skupinah"
 
-#: src/AuthLDAP.php:862 src/AuthLDAP.php:1292 src/AuthLDAP.php:1495
+#: src/AuthLDAP.php:878 src/AuthLDAP.php:1308 src/AuthLDAP.php:1511
 msgid "Filter to search in groups"
 msgstr "Filtriraj za iskanje po skupinah"
 
-#: src/AuthLDAP.php:867 src/AuthLDAP.php:1301
+#: src/AuthLDAP.php:883 src/AuthLDAP.php:1317
 msgid "Group attribute containing its users"
 msgstr "Skupine atributov, ki vsebujejo uporabnike"
 
-#: src/AuthLDAP.php:870 src/AuthLDAP.php:1247
+#: src/AuthLDAP.php:886 src/AuthLDAP.php:1263
 msgid "Use DN in the search"
 msgstr "Uporabite DN v iskanju"
 
-#: src/AuthLDAP.php:898
+#: src/AuthLDAP.php:914
 msgid "Test of connection to LDAP directory"
 msgstr "Test povezave do LDAP imenika"
 
-#: src/AuthLDAP.php:933
+#: src/AuthLDAP.php:949
 msgid "Binding to the LDAP directory"
 msgstr "Povezovanje z imenikom LDAP"
 
-#: src/AuthLDAP.php:967 src/AuthLDAP.php:1158 src/AuthLDAP.php:4033
+#: src/AuthLDAP.php:983 src/AuthLDAP.php:1174 src/AuthLDAP.php:4047
 msgctxt "ldap"
 msgid "Phone"
 msgstr "Telefon"
 
-#: src/AuthLDAP.php:995 src/AuthLDAP.php:1336 src/User.php:3016
+#: src/AuthLDAP.php:1011 src/AuthLDAP.php:1352 src/User.php:3016
 #: src/User.php:4104 src/ContentTemplates/Parameters/UserParameters.php:83
 msgid "Responsible"
 msgstr "Odgovoren"
 
-#: src/AuthLDAP.php:1000
+#: src/AuthLDAP.php:1016
 msgid "You can use a field name or an expression using various %{fieldname}"
 msgstr "Uporabite lahko ime polja ali izraz z različnimi %{fieldname}"
 
-#: src/AuthLDAP.php:1001
+#: src/AuthLDAP.php:1017
 msgid "Example for location: %{city} > %{roomnumber}"
 msgstr "Primer za lokacijo: %{city} > %{roomnumber}"
 
-#: src/AuthLDAP.php:1026
+#: src/AuthLDAP.php:1042
 msgid "Import entities from LDAP directory"
 msgstr "Uvozi entite iz LDAP direktorija"
 
-#: src/AuthLDAP.php:1029
+#: src/AuthLDAP.php:1045
 msgid "Attribute representing entity"
 msgstr "Atribut predstavlja entiteto"
 
-#: src/AuthLDAP.php:1034
+#: src/AuthLDAP.php:1050
 msgid "Search filter for entities"
 msgstr "Iskalni filter za entitete"
 
-#: src/AuthLDAP.php:1345
+#: src/AuthLDAP.php:1361
 msgid "Domain name used by inventory tool"
 msgstr "Ime domene, ki ga uporablja orodje za inventar"
 
-#: src/AuthLDAP.php:1494 src/AuthLDAP.php:1509 src/AuthLDAP.php:3947
+#: src/AuthLDAP.php:1510 src/AuthLDAP.php:1525 src/AuthLDAP.php:3961
 msgid "Search filter for users"
 msgstr "Iskalni filter za uporabnike"
 
-#: src/AuthLDAP.php:1518 src/AuthLDAP.php:4083 src/ReservationItem.php:480
+#: src/AuthLDAP.php:1534 src/AuthLDAP.php:4097 src/ReservationItem.php:480
 #: src/KnowbaseItem.php:1378 src/Search.php:2578 src/Knowbase.php:66
 #: src/Planning.php:584
 msgctxt "button"
 msgid "Search"
 msgstr "Išči"
 
-#: src/AuthLDAP.php:1694
+#: src/AuthLDAP.php:1710
 msgid ""
 "Warning: The request exceeds the limit of the directory. The results are "
 "only partial."
 msgstr "Pozor: Prošnja je presegla mejo direktorija. Rezultat je le delni."
 
-#: src/AuthLDAP.php:1744
+#: src/AuthLDAP.php:1760
 msgctxt "button"
 msgid "Synchronize"
 msgstr "Sinhroniziraj"
 
-#: src/AuthLDAP.php:1784 src/AuthLDAP.php:1843
+#: src/AuthLDAP.php:1800 src/AuthLDAP.php:1859
 msgid "Last update in the LDAP directory"
 msgstr "Zadnja posodobitev v LDAP imeniku"
 
-#: src/AuthLDAP.php:1786 src/AuthLDAP.php:1845
+#: src/AuthLDAP.php:1802 src/AuthLDAP.php:1861
 msgid "Last update in GLPI"
 msgstr "Zadnja posodobitev v GLPI"
 
-#: src/AuthLDAP.php:1863 src/AuthLDAP.php:1868
+#: src/AuthLDAP.php:1879 src/AuthLDAP.php:1884
 msgid "No user to be synchronized"
 msgstr "Ni uporabnika za sinhronizacijo"
 
-#: src/AuthLDAP.php:1864 src/AuthLDAP.php:1869
+#: src/AuthLDAP.php:1880 src/AuthLDAP.php:1885
 msgid "No user to be imported"
 msgstr "Ni uporabnika za uvoz"
 
-#: src/AuthLDAP.php:2344 src/Group.php:527 src/Group.php:677
+#: src/AuthLDAP.php:2360 src/Group.php:527 src/Group.php:677
 msgid "Group DN"
 msgstr "Skupina DN"
 
-#: src/AuthLDAP.php:2345
+#: src/AuthLDAP.php:2361
 msgid "Destination entity"
 msgstr "Destinacija entitete"
 
-#: src/AuthLDAP.php:2413 src/AuthLDAP.php:2416
+#: src/AuthLDAP.php:2429 src/AuthLDAP.php:2432
 msgid "No group to be imported"
 msgstr "Ni skupine za uvoz"
 
-#: src/AuthLDAP.php:3368
+#: src/AuthLDAP.php:3382
 msgid "User not found or several users found"
 msgstr "Uporabnik ni najden ali pa je več najdenih uporabnikov"
 
-#: src/AuthLDAP.php:3371
+#: src/AuthLDAP.php:3385
 msgid "Unable to add. The user already exist."
 msgstr "Dodajanje ni mogoče. Uporabnik že obstaja."
 
-#: src/AuthLDAP.php:3907
+#: src/AuthLDAP.php:3921
 msgid "Expert mode"
 msgstr "Napredni  način"
 
-#: src/AuthLDAP.php:3909
+#: src/AuthLDAP.php:3923
 msgid "Simple mode"
 msgstr "Enostaven način"
 
-#: src/AuthLDAP.php:3929 src/AuthLDAP.php:3959
+#: src/AuthLDAP.php:3943 src/AuthLDAP.php:3973
 msgid "LDAP directory choice"
 msgstr "LDAP izbira imenika"
 
-#: src/AuthLDAP.php:3938 src/AuthLDAP.php:3970
+#: src/AuthLDAP.php:3952 src/AuthLDAP.php:3984
 msgctxt "button"
 msgid "Change"
 msgstr "Spremeni"
 
-#: src/AuthLDAP.php:4046
+#: src/AuthLDAP.php:4060
 msgid "Search criteria for users"
 msgstr "Išči merilo za uporabnike"
 
-#: src/AuthLDAP.php:4087
+#: src/AuthLDAP.php:4101
 msgid "No directory selected"
 msgstr "Noben imenik ni izbran"
 
-#: src/AuthLDAP.php:4091
+#: src/AuthLDAP.php:4105
 msgid "No directory associated to entity: impossible search"
 msgstr "Noben imenik ni povezan z entiteto: iskanje je nemogoče"
 
-#: src/AuthLDAP.php:4297
+#: src/AuthLDAP.php:4311
 msgid "Put in trashbin"
 msgstr "Daj v koš"
 
-#: src/AuthLDAP.php:4298 src/AuthLDAP.php:4300
+#: src/AuthLDAP.php:4312 src/AuthLDAP.php:4314
 msgid "Withdraw dynamic authorizations and groups"
 msgstr "Umakni dinamične akreditacije in skupine"
 
-#: src/AuthLDAP.php:4299 src/AuthLDAP.php:4300 src/AuthLDAP.php:4301
+#: src/AuthLDAP.php:4313 src/AuthLDAP.php:4314 src/AuthLDAP.php:4315
 #: src/Marketplace/View.php:811 src/Plugin.php:2960
 msgid "Disable"
 msgstr "Onemogoči"
 
-#: src/AuthLDAP.php:4301
+#: src/AuthLDAP.php:4315
 msgid "Withdraw groups"
 msgstr "Umakni skupine"
 
-#: src/AuthLDAP.php:4314
+#: src/AuthLDAP.php:4328
 msgid "Do nothing"
 msgstr "Ne naredi ničesar"
 
-#: src/AuthLDAP.php:4315
+#: src/AuthLDAP.php:4329
 msgid "Restore (move out of trashbin)"
 msgstr "Obnovi (premakni iz koša)"
 
-#: src/AuthLDAP.php:4316 src/Marketplace/View.php:817 src/Plugin.php:2957
+#: src/AuthLDAP.php:4330 src/Marketplace/View.php:817 src/Plugin.php:2957
 msgid "Enable"
 msgstr "Omogoči"
 
-#: src/AuthLDAP.php:4403
+#: src/AuthLDAP.php:4417
 msgid "Enable filtering by date"
 msgstr "Omogoči razvrščanje po datumu"
 
-#: src/AuthLDAP.php:4408
+#: src/AuthLDAP.php:4422
 msgid "View updated users"
 msgstr "Poglej posodobljene uporabnike"
 
-#: src/AuthLDAP.php:4413 src/NetworkPort.php:1471
+#: src/AuthLDAP.php:4427 src/NetworkPort.php:1471
 msgid "to"
 msgstr "do"
 
-#: src/AuthLDAP.php:4421
+#: src/AuthLDAP.php:4435
 msgid "Disable filtering by date"
 msgstr "Onemogoči filtriranje po datumu"
 
-#: src/AuthLDAP.php:4805
+#: src/AuthLDAP.php:4819
 msgid "TLS certificate path is incorrect"
 msgstr "Pot potrdila TLS je napačna"
 
-#: src/AuthLDAP.php:4818
+#: src/AuthLDAP.php:4832
 msgid "TLS key file path is incorrect"
 msgstr "Pot do datoteke s ključem TLS je napačna"
 
@@ -14665,7 +14676,7 @@ msgid "Last"
 msgstr "Zadnja stran"
 
 #. TRANS: %1$s is the Itemtype name and $2$d the ID of the item
-#: src/CommonGLPI.php:1162 src/Item_Ticket.php:1216
+#: src/CommonGLPI.php:1162 src/Item_Ticket.php:951
 #: src/CommonITILObject.php:620 src/SavedSearch.php:493
 #: src/CommonDBTM.php:1505 src/CommonDBTM.php:1970
 #, php-format
@@ -14885,7 +14896,7 @@ msgstr ""
 msgid "No file available"
 msgstr "Nobena datoteka ni na voljo"
 
-#: src/Document.php:1806 src/CommonITILObject.php:6930
+#: src/Document.php:1806 src/CommonITILObject.php:6935
 msgctxt "button"
 msgid "Add a document"
 msgstr "Dodaj dokument"
@@ -14901,11 +14912,11 @@ msgid ""
 " any items."
 msgstr ""
 
-#: src/GLPINetwork.php:70
+#: src/GLPINetwork.php:77
 msgid "Registration"
 msgstr "Registracija"
 
-#: src/GLPINetwork.php:74
+#: src/GLPINetwork.php:81
 msgid ""
 "A registration key is needed to use advanced feature (like marketplace) in "
 "GLPI"
@@ -14913,56 +14924,56 @@ msgstr ""
 "Za uporabo napredne funkcije (kot je tržnica) v GLPI je potreben "
 "registracijski ključ"
 
-#: src/GLPINetwork.php:75
+#: src/GLPINetwork.php:82
 #, php-format
 msgid "Register on %1$s!"
 msgstr "Registriranje na %1$s!"
 
-#: src/GLPINetwork.php:76
+#: src/GLPINetwork.php:83
 msgid "And retrieve your key to paste it below"
 msgstr "In pridobite svoj ključ, da ga prilepite spodaj"
 
-#: src/GLPINetwork.php:86 src/Marketplace/View.php:153
+#: src/GLPINetwork.php:93 src/Marketplace/View.php:153
 #, php-format
 msgid "%1$s services website seems not available from your network or offline"
 msgstr ""
 "Zdi se, da spletno mesto storitev %1$s ni na voljo v vašem omrežju ali brez "
 "povezave"
 
-#: src/GLPINetwork.php:89
+#: src/GLPINetwork.php:96
 #, php-format
 msgid "Error was: %s"
 msgstr "Napaka je bila: %s"
 
-#: src/GLPINetwork.php:97
+#: src/GLPINetwork.php:104
 msgid "Registration key"
 msgstr "Registracijski ključ"
 
-#: src/GLPINetwork.php:116
+#: src/GLPINetwork.php:123
 msgid "Subscription"
 msgstr "Naročnina"
 
-#: src/GLPINetwork.php:121
+#: src/GLPINetwork.php:128
 msgid "Registered by"
 msgstr "Registriran od"
 
-#: src/GLPINetwork.php:243
+#: src/GLPINetwork.php:250
 msgid "Unable to fetch registration information."
 msgstr "Ni mogoče pridobiti informacij o registraciji."
 
-#: src/GLPINetwork.php:259
+#: src/GLPINetwork.php:266
 msgid "The registration key is invalid."
 msgstr "Registracijski ključ je neveljaven."
 
-#: src/GLPINetwork.php:261
+#: src/GLPINetwork.php:268
 msgid "The registration key refers to a terminated subscription."
 msgstr "Registracijski ključ se nanaša na prekinjeno naročnino."
 
-#: src/GLPINetwork.php:263
+#: src/GLPINetwork.php:270
 msgid "The registration key is valid."
 msgstr "Registracijski ključ je veljaven."
 
-#: src/GLPINetwork.php:288
+#: src/GLPINetwork.php:295
 #, php-format
 msgid ""
 "You need help to integrate GLPI in your IT, have a bug fixed or benefit from pre-configured rules or dictionaries?\n"
@@ -14979,7 +14990,7 @@ msgstr ""
 "\n"
 "V tem istem prostoru se boste lahko obrnili na uradnega partnerja, ki vam bo pomagal pri integraciji GLPI."
 
-#: src/GLPINetwork.php:301
+#: src/GLPINetwork.php:308
 #, php-format
 msgid ""
 "Having troubles setting up an advanced GLPI module?\n"
@@ -16105,12 +16116,12 @@ msgstr "Uvoz konfiguracije"
 msgid "Following keys has been ignored during process: %1$s"
 msgstr "Med postopkom so bili prezrti naslednji ključi: %1$s"
 
-#: src/Inventory/Inventory.php:528
+#: src/Inventory/Inventory.php:531
 msgid "Add global lock"
 msgstr "Dodajanje globalne ključavnice"
 
 #. TRANS: %s is a number of seconds
-#: src/Inventory/Inventory.php:798 src/Dropdown.php:1871 src/CronTask.php:1262
+#: src/Inventory/Inventory.php:804 src/Dropdown.php:1871 src/CronTask.php:1262
 #: src/CronTask.php:1269 src/CronTask.php:1276 src/CronTask.php:1283
 #: src/CronTask.php:1396 src/CronTask.php:1492
 #, php-format
@@ -16121,30 +16132,30 @@ msgstr[1] "%s sekund"
 msgstr[2] "%s sekund"
 msgstr[3] "%s sekund"
 
-#: src/Inventory/Inventory.php:851
+#: src/Inventory/Inventory.php:857
 msgid "Clean temporary files created from inventories"
 msgstr "Čiščenje začasnih datotek, ustvarjenih iz popisov"
 
-#: src/Inventory/Inventory.php:854
+#: src/Inventory/Inventory.php:860
 msgid "Clean inventories orphaned files"
 msgstr "Počisti osirotele datoteke v inventarju"
 
-#: src/Inventory/Inventory.php:878
+#: src/Inventory/Inventory.php:884
 #, php-format
 msgid "File %1$s has been removed"
 msgstr "Datoteka %1$s je bila odstranjena"
 
-#: src/Inventory/Inventory.php:953
+#: src/Inventory/Inventory.php:959
 #, php-format
 msgid "Unable to remove file %1$s"
 msgstr "Ni mogoče odstraniti datoteke %1$s"
 
-#: src/Inventory/Inventory.php:955
+#: src/Inventory/Inventory.php:961
 #, php-format
 msgid "File %1$s %2$s has not been removed"
 msgstr "Datoteka %1$s %2$s ni bila odstranjena"
 
-#: src/Inventory/Inventory.php:961
+#: src/Inventory/Inventory.php:967
 #, php-format
 msgid "File %1$s %2$s has been removed"
 msgstr "Datoteka %1$s %2$s je bila odstranjena"
@@ -16193,7 +16204,7 @@ msgstr "Zamenjaj"
 msgid "Merge and assign to current entity"
 msgstr "Združi in dodeli trenutni entiteti"
 
-#: src/CommonDropdown.php:871 src/ITILTemplate.php:553 src/Ticket.php:2737
+#: src/CommonDropdown.php:871 src/ITILTemplate.php:553 src/Ticket.php:2744
 msgctxt "button"
 msgid "Merge"
 msgstr "Združi"
@@ -16265,124 +16276,124 @@ msgid ""
 msgstr ""
 "Napaka pri vnosu datumov. Začetni datum je poznejši od končnega datuma"
 
-#: src/Features/PlanningEvent.php:703 src/CommonITILTask.php:1458
+#: src/Features/PlanningEvent.php:706 src/CommonITILTask.php:1458
 #: src/Reminder.php:865
 #, php-format
 msgid "Recall on %s"
 msgstr ""
 
-#: src/Features/PlanningEvent.php:762
+#: src/Features/PlanningEvent.php:765
 msgid "Each year"
 msgstr "Vsako leto"
 
-#: src/Features/PlanningEvent.php:780 src/Profile.php:1091
+#: src/Features/PlanningEvent.php:783 src/Profile.php:1091
 #: src/Profile.php:1151 src/Profile.php:2651 src/Config.php:1097
-#: src/Config.php:2609
+#: src/Config.php:2617
 msgid "Personalization"
 msgstr "Personalizacija"
 
-#: src/Features/PlanningEvent.php:787
+#: src/Features/PlanningEvent.php:790
 msgid "Interval"
 msgstr "Interval"
 
-#: src/Features/PlanningEvent.php:797
+#: src/Features/PlanningEvent.php:800
 msgid "Until"
 msgstr "Do"
 
-#: src/Features/PlanningEvent.php:808 src/Config.php:956 src/Toolbox.php:2291
+#: src/Features/PlanningEvent.php:811 src/Config.php:956 src/Toolbox.php:2294
 msgid "Monday"
 msgstr "Ponedeljek"
 
-#: src/Features/PlanningEvent.php:809 src/Config.php:957 src/Toolbox.php:2292
+#: src/Features/PlanningEvent.php:812 src/Config.php:957 src/Toolbox.php:2295
 msgid "Tuesday"
 msgstr "Torek"
 
-#: src/Features/PlanningEvent.php:810 src/Config.php:958 src/Toolbox.php:2293
+#: src/Features/PlanningEvent.php:813 src/Config.php:958 src/Toolbox.php:2296
 msgid "Wednesday"
 msgstr "Sreda"
 
-#: src/Features/PlanningEvent.php:811 src/Config.php:959 src/Toolbox.php:2294
+#: src/Features/PlanningEvent.php:814 src/Config.php:959 src/Toolbox.php:2297
 msgid "Thursday"
 msgstr "Četrtek"
 
-#: src/Features/PlanningEvent.php:812 src/Config.php:960 src/Toolbox.php:2295
+#: src/Features/PlanningEvent.php:815 src/Config.php:960 src/Toolbox.php:2298
 msgid "Friday"
 msgstr "Petek"
 
-#: src/Features/PlanningEvent.php:813 src/Config.php:961 src/Toolbox.php:2296
+#: src/Features/PlanningEvent.php:816 src/Config.php:961 src/Toolbox.php:2299
 msgid "Saturday"
 msgstr "Sobota"
 
-#: src/Features/PlanningEvent.php:814 src/Config.php:962 src/Toolbox.php:2290
+#: src/Features/PlanningEvent.php:817 src/Config.php:962 src/Toolbox.php:2293
 msgid "Sunday"
 msgstr "Nedelja"
 
-#: src/Features/PlanningEvent.php:826
+#: src/Features/PlanningEvent.php:829
 msgid "By month"
 msgstr "Po mesecu"
 
-#: src/Features/PlanningEvent.php:828 src/Toolbox.php:2309
+#: src/Features/PlanningEvent.php:831 src/Toolbox.php:2312
 msgid "January"
 msgstr "Januar"
 
-#: src/Features/PlanningEvent.php:829 src/Toolbox.php:2310
+#: src/Features/PlanningEvent.php:832 src/Toolbox.php:2313
 msgid "February"
 msgstr "Februar"
 
-#: src/Features/PlanningEvent.php:830 src/Toolbox.php:2311
+#: src/Features/PlanningEvent.php:833 src/Toolbox.php:2314
 msgid "March"
 msgstr "Marec"
 
-#: src/Features/PlanningEvent.php:831 src/Toolbox.php:2312
+#: src/Features/PlanningEvent.php:834 src/Toolbox.php:2315
 msgid "April"
 msgstr "April"
 
-#: src/Features/PlanningEvent.php:832 src/Toolbox.php:2313
+#: src/Features/PlanningEvent.php:835 src/Toolbox.php:2316
 msgid "May"
 msgstr "Maj"
 
-#: src/Features/PlanningEvent.php:833 src/Toolbox.php:2314
+#: src/Features/PlanningEvent.php:836 src/Toolbox.php:2317
 msgid "June"
 msgstr "Junij"
 
-#: src/Features/PlanningEvent.php:834 src/Toolbox.php:2315
+#: src/Features/PlanningEvent.php:837 src/Toolbox.php:2318
 msgid "July"
 msgstr "Julij"
 
-#: src/Features/PlanningEvent.php:835 src/Toolbox.php:2316
+#: src/Features/PlanningEvent.php:838 src/Toolbox.php:2319
 msgid "August"
 msgstr "Avgust"
 
-#: src/Features/PlanningEvent.php:836 src/Toolbox.php:2317
+#: src/Features/PlanningEvent.php:839 src/Toolbox.php:2320
 msgid "September"
 msgstr "September"
 
-#: src/Features/PlanningEvent.php:837 src/Toolbox.php:2318
+#: src/Features/PlanningEvent.php:840 src/Toolbox.php:2321
 msgid "October"
 msgstr "Oktober"
 
-#: src/Features/PlanningEvent.php:838 src/Toolbox.php:2319
+#: src/Features/PlanningEvent.php:841 src/Toolbox.php:2322
 msgid "November"
 msgstr "November"
 
-#: src/Features/PlanningEvent.php:839 src/Toolbox.php:2320
+#: src/Features/PlanningEvent.php:842 src/Toolbox.php:2323
 msgid "December"
 msgstr "December"
 
-#: src/Features/PlanningEvent.php:852
+#: src/Features/PlanningEvent.php:855
 msgid "Exceptions"
 msgstr "Izjeme"
 
-#: src/Features/PlanningEvent.php:884
+#: src/Features/PlanningEvent.php:887
 #, php-format
 msgid "%1$s: from %2$s to %3$s:"
 msgstr "%1$s: od %2$s do %3$s:"
 
-#: src/Features/PlanningEvent.php:1064 src/Reminder.php:467
+#: src/Features/PlanningEvent.php:1067 src/Reminder.php:467
 msgid "Planning start date"
 msgstr "Načrtovan datum začetka"
 
-#: src/Features/PlanningEvent.php:1074 src/Reminder.php:475
+#: src/Features/PlanningEvent.php:1077 src/Reminder.php:475
 msgid "Planning end date"
 msgstr "Načrtovan datum končanja"
 
@@ -16695,6 +16706,29 @@ msgstr "Podvoji element tolikokrat kot je povezav"
 msgid "Unit management"
 msgstr "Upravljanje enot"
 
+#: src/Dropdown.php:4012
+#, php-format
+msgid "My %s"
+msgstr ""
+
+#: src/Dropdown.php:4121
+#, php-format
+msgid "My groups %s"
+msgstr ""
+
+#: src/Dropdown.php:4234
+msgid "version"
+msgstr "različica"
+
+#: src/Dropdown.php:4244
+msgid "Installed software"
+msgstr "Nameščena programska oprema"
+
+#: src/Dropdown.php:4368
+#, php-format
+msgid "Connected %s"
+msgstr ""
+
 #: src/RichText/RichText.php:547 src/Marketplace/View.php:763
 #: src/Impact.php:1129
 msgid "Download"
@@ -16840,11 +16874,11 @@ msgstr[1] "Vprašanje"
 msgstr[2] "Vprašanja"
 msgstr[3] "Vprašanj"
 
-#: src/Problem.php:421 src/Change.php:215 src/Ticket.php:2643
+#: src/Problem.php:421 src/Change.php:215 src/Ticket.php:2655
 msgid "Add an actor"
 msgstr "Dodaj akterja"
 
-#: src/Problem.php:423 src/Change.php:217 src/Ticket.php:2645
+#: src/Problem.php:423 src/Change.php:217 src/Ticket.php:2657
 msgid "Set notifications for all actors"
 msgstr "Nastavi obvestila za vse udeležene"
 
@@ -16861,12 +16895,12 @@ msgstr "Sprejeto"
 msgid "Under observation"
 msgstr "Pod drobnogledom"
 
-#: src/Problem.php:683 src/Change.php:684 src/Ticket.php:3820
+#: src/Problem.php:683 src/Change.php:684 src/Ticket.php:3827
 msgctxt "status"
 msgid "Not closed"
 msgstr "Ni zaprto"
 
-#: src/Problem.php:685 src/Change.php:686 src/Ticket.php:3822
+#: src/Problem.php:685 src/Change.php:686 src/Ticket.php:3829
 msgctxt "status"
 msgid "Solved + Closed"
 msgstr "Rešeno + Zaprto"
@@ -16891,7 +16925,7 @@ msgstr "Ni vprašanj v obdelavi."
 msgid "Last problems"
 msgstr "Zadnje težave"
 
-#: src/Problem.php:1370 src/Change.php:813 src/Ticket.php:5437
+#: src/Problem.php:1370 src/Change.php:813 src/Ticket.php:5444
 #: src/Group.php:143 src/Group.php:891 src/Group_User.php:535
 msgid "Child groups"
 msgstr "Podrejene skupine"
@@ -17043,7 +17077,7 @@ msgid "If you reject the solution, you must specify a reason"
 msgstr "Če zavrneš to rešitev, moraš navesti razlog"
 
 #: src/ITILFollowup.php:721 src/CommonITILTask.php:1002
-#: src/CommonITILObject.php:4389
+#: src/CommonITILObject.php:4394
 msgid "Latest date"
 msgid_plural "Latest dates"
 msgstr[0] ""
@@ -17099,15 +17133,15 @@ msgstr "Dodajanje nadaljevanja na zahtevke (opazovalec)"
 msgid "See public ones"
 msgstr "Oglejte si javne"
 
-#: src/ITILFollowup.php:871 src/Ticket.php:2618
+#: src/ITILFollowup.php:871 src/Ticket.php:2630
 msgid "Add a new followup"
 msgstr "Dodaj nadaljevanje"
 
-#: src/MailCollector.php:163 src/Toolbox.php:1957
+#: src/MailCollector.php:163 src/Toolbox.php:1960
 msgid "Connection options"
 msgstr "Možnosti povezave"
 
-#: src/MailCollector.php:281
+#: src/MailCollector.php:289
 msgid ""
 "If name is a valid email address, it will be automatically added to "
 "blacklisted senders."
@@ -17115,77 +17149,77 @@ msgstr ""
 "Če je ime veljaven e-poštni naslov, se samodejno doda na seznam blokiranih "
 "pošiljateljev."
 
-#: src/MailCollector.php:310 src/MailCollector.php:570
+#: src/MailCollector.php:318 src/MailCollector.php:578
 msgid "Accepted mail archive folder (optional)"
 msgstr "Arhivska mapa za sprejeto pošto (neobvezno)"
 
-#: src/MailCollector.php:319 src/MailCollector.php:578
+#: src/MailCollector.php:327 src/MailCollector.php:586
 msgid "Refused mail archive folder (optional)"
 msgstr "Arhivska mapa za zavrnjeno pošto (neobvezno)"
 
-#: src/MailCollector.php:330 src/MailCollector.php:545
+#: src/MailCollector.php:338 src/MailCollector.php:553
 msgid "Maximum size of each file imported by the mails receiver"
 msgstr "Največja velikost vsake datoteke, ki jo uvozi prejemnik pošte"
 
-#: src/MailCollector.php:335
+#: src/MailCollector.php:343
 msgid "Use mail date, instead of collect one"
 msgstr "Uporabite datum pošte namesto datuma zbiranja"
 
-#: src/MailCollector.php:340
+#: src/MailCollector.php:348
 msgid "Use Reply-To as requester (when available)"
 msgstr "Uporabite Reply-To kot prosilec (ko je na voljo)"
 
-#: src/MailCollector.php:348
+#: src/MailCollector.php:356
 msgid "Add CC users as observer"
 msgstr "Dodajanje uporabnikov CC kot opazovalce"
 
-#: src/MailCollector.php:353
+#: src/MailCollector.php:361
 msgid "Collect only unread mail"
 msgstr "Zberi samo neprebrano pošto"
 
-#: src/MailCollector.php:430 src/MailCollector.php:751
+#: src/MailCollector.php:438 src/MailCollector.php:759
 msgid "An error occurred trying to connect to collector."
 msgstr "Pri poskusu vzpostavitve povezave z zbiralnikom je prišlo do napake."
 
-#: src/MailCollector.php:445
+#: src/MailCollector.php:453
 #, php-format
 msgid "No child found for folder '%s'."
 msgstr ""
 
-#: src/MailCollector.php:487
+#: src/MailCollector.php:495
 msgctxt "button"
 msgid "Get email tickets now"
 msgstr "Dobi e-poštne zahtevke sedaj"
 
-#: src/MailCollector.php:594
+#: src/MailCollector.php:602
 msgid "Date of last collection"
 msgstr "Datum zadnjega zbiranja"
 
-#: src/MailCollector.php:709
+#: src/MailCollector.php:717
 #, php-format
 msgid "Email %s not found. Impossible import."
 msgstr "E-poštni naslov %s ni najden. Uvoz nemogoč."
 
-#: src/MailCollector.php:804
+#: src/MailCollector.php:812
 #, php-format
 msgid "Emails retrieve limit reached. Check in \"%s\" for more details."
 msgstr ""
 "Dosežena je omejitev za prejemanje e-pošte. Za več podrobnosti preverite v "
 "\"%s\"."
 
-#: src/MailCollector.php:830
+#: src/MailCollector.php:838
 #, php-format
 msgid "Message is invalid (%s). Check in \"%s\" for more details"
 msgstr "Sporočilo je neveljavno (%s). Za več podrobnosti preverite \"%s\""
 
-#: src/MailCollector.php:878
+#: src/MailCollector.php:886
 #, php-format
 msgid "Error during message parsing (%s). Check in \"%s\" for more details"
 msgstr ""
 "Napaka med razčlenjevanjem sporočila (%s). Za več podrobnosti preverite "
 "\"%s\""
 
-#: src/MailCollector.php:1029
+#: src/MailCollector.php:1037
 #, php-format
 msgid ""
 "Number of messages: available=%1$d, already imported=%2$d, retrieved=%3$d, "
@@ -17194,54 +17228,54 @@ msgstr ""
 "Število sporočil: na voljo=%1$d, že uvoženo=%2$d, pridobljeno=%3$d, "
 "zavrnjeno=%4$d, napake=%5$d, na črnem seznamu=%6$d"
 
-#: src/MailCollector.php:1043
+#: src/MailCollector.php:1051
 msgid "Could not connect to mailgate server"
 msgstr "Ni se mogel povezati s strežnikom mailgate"
 
 #. TRANS: %s is the ID of the mailgate
-#: src/MailCollector.php:1053
+#: src/MailCollector.php:1061
 #, php-format
 msgid "Could not find mailgate %d"
 msgstr "Ni bilo mogoče najti mailgate %d"
 
 #. TRANS: %s is a directory
-#: src/MailCollector.php:1124
+#: src/MailCollector.php:1132
 #, php-format
 msgid "%s is not writable"
 msgstr "%s ni zapisljivo"
 
-#: src/MailCollector.php:1244 src/CommonITILObject.php:6652
+#: src/MailCollector.php:1252 src/CommonITILObject.php:6657
 #, php-format
 msgid "From %s"
 msgstr "Od %s"
 
-#: src/MailCollector.php:1761
+#: src/MailCollector.php:1769
 msgid "Too large attached file"
 msgstr "Pripeta datoteka je prevelika"
 
-#: src/MailCollector.php:1775
+#: src/MailCollector.php:1783
 msgid "Invalid attached file"
 msgstr "Pripeta datoteka je nepravilna"
 
 #. TRANS: %1$s is the name of the folder, %2$s is the name of the receiver
-#: src/MailCollector.php:1934
+#: src/MailCollector.php:1961
 #, php-format
 msgid "Invalid configuration for %1$s folder in receiver %2$s"
 msgstr "Neveljavna konfiguracija za %1$s folder in receiver %2$s"
 
-#: src/MailCollector.php:2004
+#: src/MailCollector.php:2031
 msgid "Retrieve email (Mails receivers)"
 msgstr "Prenesi e-pošto (Prejemniki e-pošte)"
 
-#: src/MailCollector.php:2005
+#: src/MailCollector.php:2032
 msgid "Number of emails to process"
 msgstr "Število elektronskih sporočil za obdelavo"
 
-#: src/MailCollector.php:2009
+#: src/MailCollector.php:2036
 msgid "Send alarms on receiver errors"
 msgstr "Pošiljanje alarmov ob napakah sprejemnika"
 
-#: src/MailCollector.php:2133
+#: src/MailCollector.php:2160
 msgid ""
 "Your email could not be processed.\n"
 "If the problem persists, contact the administrator"
@@ -17249,20 +17283,20 @@ msgstr ""
 "Vašega e-poštnega sporočila ni bilo mogoče obdelati.\n"
 "Če se težava nadaljuje, se obrnite na skrbnika"
 
-#: src/MailCollector.php:2154
+#: src/MailCollector.php:2181
 #, php-format
 msgid "Receivers in error: %s"
 msgstr "Prejemniki v napaki: %s"
 
-#: src/MailCollector.php:2163
+#: src/MailCollector.php:2190
 msgid "List of not imported emails"
 msgstr "Seznam ne-uvoženih e-poštnih sporočil"
 
-#: src/MailCollector.php:2432
+#: src/MailCollector.php:2459
 msgid "No import"
 msgstr "Brez uvoza"
 
-#: src/MailCollector.php:2434
+#: src/MailCollector.php:2461
 #, php-format
 msgid "%s Mio"
 msgstr "%s MB"
@@ -17374,7 +17408,7 @@ msgstr[3] "Linije"
 msgid "Consumables alarm"
 msgstr "Opozorilo za potrošni material"
 
-#: src/Event.php:163 src/Config.php:2630
+#: src/Event.php:163 src/Config.php:2638
 msgid "System"
 msgstr "Sistem"
 
@@ -17611,8 +17645,8 @@ msgstr "Dodaj pogodbo"
 msgid "Add a ticket"
 msgstr "Dodaj zahtevek"
 
-#: src/DBConnection.php:82 src/Config.php:720 src/Config.php:2120
-#: src/Config.php:2641
+#: src/DBConnection.php:82 src/Config.php:720 src/Config.php:2128
+#: src/Config.php:2649
 msgid "SQL replica"
 msgid_plural "SQL replicas"
 msgstr[0] "Replika SQL"
@@ -17771,7 +17805,7 @@ msgid "Private task"
 msgstr "Zasebno opravilo"
 
 #. TRANS: %s is user name
-#: src/CommonITILTask.php:1439 src/CommonITILObject.php:6663
+#: src/CommonITILTask.php:1439 src/CommonITILObject.php:6668
 #, php-format
 msgid "By %s"
 msgstr "Od %s"
@@ -18017,7 +18051,7 @@ msgstr "Spremembe, ki jih je treba obdelati"
 msgid "Your changes in progress"
 msgstr "Vaše spremembe v teku"
 
-#: src/Change.php:1403 src/Ticket.php:5158 src/Ticket.php:5694
+#: src/Change.php:1403 src/Ticket.php:5165 src/Ticket.php:5701
 msgid "No ticket in progress."
 msgstr "Noben zahtevek ni v teku."
 
@@ -18170,11 +18204,11 @@ msgstr[1] "Poverilnic SNMP"
 msgstr[2] "Poverilnic SNMP"
 msgstr[3] "Poverilnic SNMP"
 
-#: src/SNMPCredential.php:222
+#: src/SNMPCredential.php:231
 msgid "You must select an SNMP version"
 msgstr "Izbrati morate različico SNMP"
 
-#: src/SNMPCredential.php:229
+#: src/SNMPCredential.php:238
 msgid "You must enter a username"
 msgstr "Vnesti morate uporabniško ime"
 
@@ -18492,211 +18526,211 @@ msgstr "Anketa o zadovoljstvu se je iztekla"
 msgid "No generated survey"
 msgstr "Brez ustvarjene ankete"
 
-#: src/Ticket.php:1323 src/Ticket.php:2128
+#: src/Ticket.php:1323 src/Ticket.php:2147
 msgid "Unknown ticket"
 msgstr "Neznani zahtevek"
 
-#: src/Ticket.php:1832
+#: src/Ticket.php:1851
 msgid "You cannot create a ticket for this user"
 msgstr "Za tega uporabnika ne morete ustvariti zahtevka"
 
-#: src/Ticket.php:1986
+#: src/Ticket.php:2005
 #, php-format
 msgid "Invalid email address %s"
 msgstr "Neveljaven e-poštni naslov %s"
 
-#: src/Ticket.php:2104
+#: src/Ticket.php:2123
 msgid "Auto-created task"
 msgstr "Samodejno ustvarjeno opravilo"
 
-#: src/Ticket.php:2178
+#: src/Ticket.php:2197
 #, php-format
 msgid "%s promotes a followup from ticket %s"
 msgstr "%s promovira nadaljevanje zahtevka %s"
 
-#: src/Ticket.php:2194
+#: src/Ticket.php:2213
 #, php-format
 msgid "%s promotes a task from ticket %s"
 msgstr "%s nadgradi opravilo iz zahtevka %s"
 
-#: src/Ticket.php:2605
+#: src/Ticket.php:2617
 msgid "Merge as Followup"
 msgstr "Združi kot nadaljevanje"
 
-#: src/Ticket.php:2648
+#: src/Ticket.php:2660
 msgctxt "button"
 msgid "Link tickets"
 msgstr "Poveži zahtevke"
 
-#: src/Ticket.php:2652
+#: src/Ticket.php:2664
 msgctxt "button"
 msgid "Link project task"
 msgstr "Povezava projektne naloge"
 
-#: src/Ticket.php:2657
+#: src/Ticket.php:2669
 msgctxt "button"
 msgid "Add contract"
 msgstr "Dodaj pogodbo"
 
-#: src/Ticket.php:2666
+#: src/Ticket.php:2678
 msgid "Link to a problem"
 msgstr "Povezava na težavo"
 
-#: src/Ticket.php:2672
+#: src/Ticket.php:2684
 msgid "Resolve selected tickets"
 msgstr "Reševanje izbranih zahtevkov"
 
-#: src/Ticket.php:2704
+#: src/Ticket.php:2711
 msgid "Merge followups"
 msgstr "Združevanje nadaljnjih ukrepov"
 
-#: src/Ticket.php:2710
+#: src/Ticket.php:2717
 msgid "Merge documents"
 msgstr "Združevanje dokumentov"
 
-#: src/Ticket.php:2716
+#: src/Ticket.php:2723
 msgid "Merge tasks"
 msgstr "Združevanje opravil"
 
-#: src/Ticket.php:2722
+#: src/Ticket.php:2729
 msgid "Merge actors"
 msgstr "Združi akterje"
 
-#: src/Ticket.php:2728
+#: src/Ticket.php:2735
 msgid "Link type"
 msgstr "Tip povezave"
 
-#: src/Ticket.php:2739
+#: src/Ticket.php:2746
 msgid "Confirm the merge? This ticket will be deleted!"
 msgstr "Potrdite združitev? Ta zahtevek bo izbrisan!"
 
-#: src/Ticket.php:2750
+#: src/Ticket.php:2757
 msgctxt "button"
 msgid "Link"
 msgstr "Povezava"
 
-#: src/Ticket.php:2831
+#: src/Ticket.php:2838
 msgid "Resolve"
 msgstr "Razreši"
 
-#: src/Ticket.php:2913
+#: src/Ticket.php:2920
 msgid "Missing input: no Problem selected"
 msgstr "Manjkajoči vnos: izbrana ni nobena težava"
 
-#: src/Ticket.php:2919
+#: src/Ticket.php:2926
 msgid "Selected Problem can't be loaded"
 msgstr "Izbrane težave ni mogoče naložiti"
 
-#: src/Ticket.php:2963
+#: src/Ticket.php:2970
 msgid "Missing mandatory field in input"
 msgstr "Manjkajoče obvezno polje v vnosu"
 
-#: src/Ticket.php:3020
+#: src/Ticket.php:3027
 msgid "No contract specified"
 msgstr "Pogodba ni določena"
 
-#: src/Ticket.php:3081
+#: src/Ticket.php:3088
 msgid "Time to own + Progress"
 msgstr "Čas lastništva + Napredek"
 
-#: src/Ticket.php:3091
+#: src/Ticket.php:3098
 msgid "Time to own exceeded"
 msgstr "Čas za lastništvo presežen"
 
-#: src/Ticket.php:3112
+#: src/Ticket.php:3119
 msgid "Internal time to resolve + Progress"
 msgstr "Čas do realizacije + Status"
 
-#: src/Ticket.php:3122
+#: src/Ticket.php:3129
 msgid "Internal time to resolve exceeded"
 msgstr "Presežen notranji čas za rešitev"
 
-#: src/Ticket.php:3143
+#: src/Ticket.php:3150
 msgid "Internal time to own + Progress"
 msgstr "Interni čas lastništva + Napredek"
 
-#: src/Ticket.php:3153
+#: src/Ticket.php:3160
 msgid "Internal time to own exceeded"
 msgstr "Presežen notranji čas za lastništvo"
 
-#: src/Ticket.php:3164
+#: src/Ticket.php:3171
 msgid "Next escalation level"
 msgstr "Naslednja stopnja stopnjevanja"
 
-#: src/Ticket.php:3398
+#: src/Ticket.php:3405
 msgid "Response date"
 msgstr "Datum odziva"
 
-#: src/Ticket.php:3440
+#: src/Ticket.php:3447
 msgid "Take into account time"
 msgstr "Upoštevajte čas"
 
-#: src/Ticket.php:3461
+#: src/Ticket.php:3468
 msgid "All linked tickets"
 msgstr "Vsi povezani zahtevki"
 
-#: src/Ticket.php:3475
+#: src/Ticket.php:3482
 msgid "Duplicated tickets"
 msgstr "Podvojeni zahtevki"
 
-#: src/Ticket.php:3490
+#: src/Ticket.php:3497
 msgid "Number of all linked tickets"
 msgstr "Število vseh povezanih zahtevkov"
 
-#: src/Ticket.php:3503
+#: src/Ticket.php:3510
 msgid "Number of duplicated tickets"
 msgstr "Število podvojenih zahtevkov"
 
-#: src/Ticket.php:3518
+#: src/Ticket.php:3525
 msgid "Parent tickets"
 msgstr "Nadrejeni zahtevki"
 
-#: src/Ticket.php:3541
+#: src/Ticket.php:3548
 msgid "Child tickets"
 msgstr "Podrejeni zahtevki"
 
-#: src/Ticket.php:3563
+#: src/Ticket.php:3570
 msgid "Number of sons tickets"
 msgstr "Število podrejenih zahtevkov"
 
-#: src/Ticket.php:3579
+#: src/Ticket.php:3586
 msgid "Number of parent tickets"
 msgstr "Število nadrejenih zahtevkov"
 
-#: src/Ticket.php:4733 src/Ticket.php:4954
+#: src/Ticket.php:4740 src/Ticket.php:4961
 msgid "Your tickets to close"
 msgstr "Vaši zahtevki za zapreti"
 
-#: src/Ticket.php:4749 src/Ticket.php:4831
+#: src/Ticket.php:4756 src/Ticket.php:4838
 msgid "Tickets on pending status"
 msgstr "Zahtevki v čakanju"
 
-#: src/Ticket.php:4781 src/Ticket.php:4863
+#: src/Ticket.php:4788 src/Ticket.php:4870
 msgid "Tickets to be processed"
 msgstr "Zahtevki dodeljeni v obdelavo Vam"
 
-#: src/Ticket.php:4797 src/Ticket.php:4970
+#: src/Ticket.php:4804 src/Ticket.php:4977
 msgid "Your observed tickets"
 msgstr "Vaši spremljani zahtevki"
 
-#: src/Ticket.php:4814 src/Ticket.php:5032
+#: src/Ticket.php:4821 src/Ticket.php:5039
 msgid "Your tickets in progress"
 msgstr "Vaši zahtevki v teku"
 
-#: src/Ticket.php:4890
+#: src/Ticket.php:4897
 msgid "Your tickets to validate"
 msgstr "Vaši zahtevki za potrditev"
 
-#: src/Ticket.php:4908
+#: src/Ticket.php:4915
 msgid "Your tickets having rejected approval status"
 msgstr "Vaši zahtevki, ki imajo zavrnjeno odobritev"
 
-#: src/Ticket.php:4925
+#: src/Ticket.php:4932
 msgid "Your tickets having rejected solution"
 msgstr "Vaši zahtevki, ki imajo zavrnjeno rešitev"
 
 #. TRANS: %d is the number of new tickets
-#: src/Ticket.php:5363
+#: src/Ticket.php:5370
 #, php-format
 msgid "%d new ticket"
 msgid_plural "%d new tickets"
@@ -18705,19 +18739,19 @@ msgstr[1] "%d nova zahtevka"
 msgstr[2] "%d novi zahtevki"
 msgstr[3] "%d novih zahtevkov"
 
-#: src/Ticket.php:5378 src/Ticket.php:5525 src/Ticket.php:5574
+#: src/Ticket.php:5385 src/Ticket.php:5532 src/Ticket.php:5581
 msgid "No ticket found."
 msgstr "Ni najdenih zahtevkov."
 
-#: src/Ticket.php:5435
+#: src/Ticket.php:5442
 msgid "Last tickets"
 msgstr "Zadnji zahtevki"
 
-#: src/Ticket.php:5474 src/Ticket.php:5492
+#: src/Ticket.php:5481 src/Ticket.php:5499
 msgid "New ticket for this item..."
 msgstr "Nov zahtevek za ta predmet..."
 
-#: src/Ticket.php:5515
+#: src/Ticket.php:5522
 #, php-format
 msgid "Last %d ticket"
 msgid_plural "Last %d tickets"
@@ -18726,11 +18760,11 @@ msgstr[1] "Zadnja %d zahtevka"
 msgstr[2] "Zadnji %d zahtevki"
 msgstr[3] "Zadnjih %d zahtevkov"
 
-#: src/Ticket.php:5521
+#: src/Ticket.php:5528
 msgid "You don't have right to see all tickets"
 msgstr "Nimate pravice videti vseh zahtevkov"
 
-#: src/Ticket.php:5564
+#: src/Ticket.php:5571
 msgid "Ticket on linked items"
 msgid_plural "Tickets on linked items"
 msgstr[0] "Povezave na zahtevek"
@@ -18738,120 +18772,120 @@ msgstr[1] "Povezave na zahtevek"
 msgstr[2] "Povezave na zahtevek"
 msgstr[3] "Povezave na zahtevek"
 
-#: src/Ticket.php:5736
+#: src/Ticket.php:5743
 msgid "Assign equipment"
 msgstr "Dodeljena oprema"
 
-#: src/Ticket.php:5763
+#: src/Ticket.php:5770
 msgid "Automatic tickets closing"
 msgstr "Samodejno zaprtje zahtevkov"
 
-#: src/Ticket.php:5769
+#: src/Ticket.php:5776
 msgid "Generation of satisfaction surveys"
 msgstr "Izdelava anket o zadovoljstvu"
 
-#: src/Ticket.php:5772
+#: src/Ticket.php:5779
 msgid "Automatic closed tickets purge"
 msgstr "Samodejno čiščenje zaprtih zahtevkov"
 
-#: src/Ticket.php:6137
+#: src/Ticket.php:6144
 msgid "See my ticket"
 msgstr "Poglej moj zahtevek"
 
 #. TRANS: short for : See tickets created by my groups
-#: src/Ticket.php:6139
+#: src/Ticket.php:6146
 msgid "See group ticket"
 msgstr "Poglej skupne zahtevke"
 
-#: src/Ticket.php:6140
+#: src/Ticket.php:6147
 msgid "See tickets created by my groups"
 msgstr "Poglej zahtevke ustvarjene v moji skupini"
 
-#: src/Ticket.php:6143
+#: src/Ticket.php:6150
 msgid "See all tickets"
 msgstr "Poglej vse zahtevke"
 
 #. TRANS: short for : See assigned tickets (group associated)
-#: src/Ticket.php:6145
+#: src/Ticket.php:6152
 msgid "See assigned"
 msgstr "Poglej dodeljeno"
 
-#: src/Ticket.php:6146
+#: src/Ticket.php:6153
 msgid "See assigned tickets"
 msgstr "Poglej dodeljene zahtevke"
 
-#: src/Ticket.php:6150
+#: src/Ticket.php:6157
 msgid "Assign a ticket"
 msgstr "Dodeli zahtevek"
 
 #. TRANS: short for : Steal a ticket
-#: src/Ticket.php:6153
+#: src/Ticket.php:6160
 msgid "Steal"
 msgstr "Prevzem"
 
-#: src/Ticket.php:6154
+#: src/Ticket.php:6161
 msgid "Steal a ticket"
 msgstr "Prevzemi zahtevek"
 
 #. TRANS: short for : To be in charge of a ticket
-#: src/Ticket.php:6157
+#: src/Ticket.php:6164
 msgid "Beeing in charge"
 msgstr "Biti odgovoren"
 
-#: src/Ticket.php:6158
+#: src/Ticket.php:6165
 msgid "To be in charge of a ticket"
 msgstr "Odgovoren za zahtevke"
 
-#: src/Ticket.php:6160
+#: src/Ticket.php:6167
 msgid "Change the priority"
 msgstr "Spremeni prioriteto"
 
-#: src/Ticket.php:6161
+#: src/Ticket.php:6168
 msgid "Approve solution/Reply survey (my ticket)"
 msgstr "Odobritev rešitve / anketa z odgovori (moj zahtevek)"
 
-#: src/Ticket.php:6162
+#: src/Ticket.php:6169
 msgid "Approve solution and reply to survey for ticket created by me"
 msgstr ""
 "Odobritev rešitve in odgovor na anketo za zahtevek, ki sem ga ustvaril/a"
 
-#: src/Ticket.php:6597 src/Ticket.php:6653 src/Ticket.php:6673
-#: src/Ticket.php:6838
+#: src/Ticket.php:6604 src/Ticket.php:6660 src/Ticket.php:6680
+#: src/Ticket.php:6845
 #, php-format
 msgid "Not enough rights to merge tickets %d and %d"
 msgstr "Premalo pravic za združitev zahtevkov %d in %d"
 
-#: src/Ticket.php:6616
+#: src/Ticket.php:6623
 #, php-format
 msgid "Failed to load ticket %d"
 msgstr "Ni uspelo naložiti zahtevka %d"
 
-#: src/Ticket.php:6631 src/Ticket.php:6646
+#: src/Ticket.php:6638 src/Ticket.php:6653
 #, php-format
 msgid "Failed to add followup to ticket %d"
 msgstr "Ni uspelo dodati nadaljevanja na zahevek %d"
 
-#: src/Ticket.php:6667
+#: src/Ticket.php:6674
 #, php-format
 msgid "Failed to add task to ticket %d"
 msgstr "Ni uspelo dodati opravila v zahtevek %d"
 
-#: src/Ticket.php:6695
+#: src/Ticket.php:6702
 #, php-format
 msgid "Failed to add document to ticket %d"
 msgstr "Ni uspelo dodati dokumenta v zahtevek %d"
 
-#: src/Ticket.php:6725
+#: src/Ticket.php:6732
 #, php-format
 msgid "Failed to link tickets %d and %d"
 msgstr "Ni uspelo povezati zahtevkov %d in %d"
 
-#: src/Ticket.php:6819
+#: src/Ticket.php:6826
 #, php-format
 msgid "Failed to delete ticket %d"
 msgstr "Ni uspelo izbrisati zahtevka %d"
 
-#: src/Ticket.php:6831
+#: src/Ticket.php:6838
 #, php-format
 msgid "%s merges ticket %s into %s"
 msgstr "%s združi zahtevek %s v %s"
@@ -18896,36 +18930,19 @@ msgstr[3] "Predmetov zahtevka"
 msgid "Knowledge base entries"
 msgstr "Vnosi v bazo znanja"
 
-#: src/Item_Ticket.php:673 src/Item_Ticket.php:897 src/Profile.php:3816
-#: src/Profile.php:3822
+#: src/Item_Ticket.php:614 src/Profile.php:3816 src/Profile.php:3822
 msgid "My devices"
 msgstr "Moje naprave"
 
-#: src/Item_Ticket.php:757
-msgid "Devices own by my groups"
-msgstr "Naprave v lasti moje skupine"
-
-#: src/Item_Ticket.php:811
-msgid "version"
-msgstr "različica"
-
-#: src/Item_Ticket.php:824
-msgid "Installed software"
-msgstr "Nameščena programska oprema"
-
-#: src/Item_Ticket.php:893
-msgid "Connected devices"
-msgstr "Povezane naprave"
-
-#: src/Item_Ticket.php:1046 src/NetworkPort.php:1588
+#: src/Item_Ticket.php:781 src/NetworkPort.php:1588
 msgid "Delete permanently"
 msgstr "Trajno izbriši"
 
-#: src/Item_Ticket.php:1229 src/CommonDBTM.php:1518
+#: src/Item_Ticket.php:964 src/CommonDBTM.php:1518
 msgid "Item successfully added"
 msgstr "Predmet uspešno dodan"
 
-#: src/Item_Ticket.php:1267 src/CommonDBTM.php:2201
+#: src/Item_Ticket.php:1002 src/CommonDBTM.php:2201
 msgid "Item successfully deleted"
 msgstr "Predmet uspešno izbrisan"
 
@@ -18937,7 +18954,7 @@ msgstr "Nastavitev obveščanja preko e-pošte"
 msgid "Enable followups via email"
 msgstr "Omogoči nadaljevanje preko e-pošte"
 
-#: src/NotificationMailingSetting.php:136
+#: src/NotificationMailingSetting.php:146
 msgid "Email notification"
 msgid_plural "Email notifications"
 msgstr[0] "Obvestilo po e-pošti"
@@ -18945,100 +18962,100 @@ msgstr[1] "Obvestilo po e-pošti"
 msgstr[2] "Obvestilo po e-pošti"
 msgstr[3] "Obvestilo po e-pošti"
 
-#: src/NotificationMailingSetting.php:159
+#: src/NotificationMailingSetting.php:169
 msgid "Address to use in from for sent emails."
 msgstr "Naslov, ki se uporabi v \"od\", za poslana e-poštna sporočila."
 
-#: src/NotificationMailingSetting.php:159
-#: src/NotificationMailingSetting.php:175
+#: src/NotificationMailingSetting.php:169
+#: src/NotificationMailingSetting.php:185
 msgid "If not set, main or entity administrator email address will be used."
 msgstr ""
 "Če ni nastavljeno, se uporabi glavni e-poštni naslov ali e-poštni naslov "
 "skrbnika entitete."
 
-#: src/NotificationMailingSetting.php:167
+#: src/NotificationMailingSetting.php:177
 msgid "Name to use in from for sent emails."
 msgstr "Ime, ki se uporabi v \"od\" za poslana e-poštna sporočila."
 
-#: src/NotificationMailingSetting.php:167
+#: src/NotificationMailingSetting.php:177
 msgid "If not set, main or entity administrator email name will be used."
 msgstr ""
 "Če ni nastavljeno, bo uporabljeno e-poštno ime glavnega skrbnika ali "
 "skrbnika entitete."
 
-#: src/NotificationMailingSetting.php:175
+#: src/NotificationMailingSetting.php:185
 msgid "Optionnal reply to address."
 msgstr "Možnost odgovora na naslov."
 
-#: src/NotificationMailingSetting.php:186
+#: src/NotificationMailingSetting.php:196
 msgid "Optionnal reply to name."
 msgstr "Možnost odgovora na ime."
 
-#: src/NotificationMailingSetting.php:186
-#: src/NotificationMailingSetting.php:204
+#: src/NotificationMailingSetting.php:196
+#: src/NotificationMailingSetting.php:214
 msgid "If not set, main or entity administrator name will be used."
 msgstr ""
 "Če ni nastavljeno, se uporabi ime glavnega skrbnika ali skrbnika entitete."
 
-#: src/NotificationMailingSetting.php:193
+#: src/NotificationMailingSetting.php:203
 msgid "Optionnal No-Reply address."
 msgstr "Izbirni naslov No-Reply."
 
-#: src/NotificationMailingSetting.php:193
+#: src/NotificationMailingSetting.php:203
 msgid "If set, it will be used for notifications that doesn't expect a reply."
 msgstr ""
 "Če je nastavljeno, se bo uporabljalo za obvestila, ki ne pričakujejo "
 "odgovora."
 
-#: src/NotificationMailingSetting.php:204
+#: src/NotificationMailingSetting.php:214
 msgid "Optionnal No-Reply name."
 msgstr ""
 
-#: src/NotificationMailingSetting.php:212
+#: src/NotificationMailingSetting.php:222
 msgid "Add documents into ticket notifications"
 msgstr "Dodajanje dokumentov v obvestila o zahtevkih"
 
-#: src/NotificationMailingSetting.php:228
+#: src/NotificationMailingSetting.php:238
 msgid "Way of sending emails"
 msgstr "Način pošiljanja e-pošte"
 
-#: src/NotificationMailingSetting.php:230 src/Plugin.php:2098
+#: src/NotificationMailingSetting.php:240 src/Plugin.php:2098
 msgid "PHP"
 msgstr "PHP"
 
-#: src/NotificationMailingSetting.php:231
+#: src/NotificationMailingSetting.php:241
 msgid "SMTP"
 msgstr "SMTP"
 
-#: src/NotificationMailingSetting.php:232
+#: src/NotificationMailingSetting.php:242
 msgid "SMTP+SSL"
 msgstr "SMTP+SSL"
 
-#: src/NotificationMailingSetting.php:233
+#: src/NotificationMailingSetting.php:243
 msgid "SMTP+TLS"
 msgstr "SMTP+TLS"
 
-#: src/NotificationMailingSetting.php:234
+#: src/NotificationMailingSetting.php:244
 msgid "SMTP+OAUTH"
 msgstr "SMTP+OAUTH"
 
-#: src/NotificationMailingSetting.php:240
+#: src/NotificationMailingSetting.php:250
 msgid "The PHP mail function is unknown or is not activated on your system."
 msgstr "Funkcija PHP mail je neznana ali ni aktivirana v vašem sistemu."
 
-#: src/NotificationMailingSetting.php:241
+#: src/NotificationMailingSetting.php:251
 msgid "The use of a SMTP is needed."
 msgstr "Potrebna je uporaba SMTP-ja."
 
-#: src/NotificationMailingSetting.php:280
+#: src/NotificationMailingSetting.php:290
 msgid "Max. delivery retries"
 msgstr "Največ ponovitev dostave"
 
-#: src/NotificationMailingSetting.php:286
+#: src/NotificationMailingSetting.php:296
 msgid "Try to deliver again in (minutes)"
 msgstr "Poskusite ponovno dostaviti v (minutah)"
 
-#: src/NotificationMailingSetting.php:301
+#: src/NotificationMailingSetting.php:311
 msgid ""
 "Once the form has been validated, you will be redirected to your supplierʼs "
 "authentication page if necessary."
@@ -19046,16 +19063,16 @@ msgstr ""
 "Po potrditvi obrazca boste po potrebi preusmerjeni na dobaviteljevo stran za"
 " preverjanje pristnosti."
 
-#: src/NotificationMailingSetting.php:307
+#: src/NotificationMailingSetting.php:317
 msgid "Oauth provider"
 msgstr "Ponudnik Oauth"
 
-#: src/NotificationMailingSetting.php:325
+#: src/NotificationMailingSetting.php:335
 msgctxt "oauth"
 msgid "Callback URL"
 msgstr "Povratni naslov URL"
 
-#: src/NotificationMailingSetting.php:326
+#: src/NotificationMailingSetting.php:336
 msgctxt "oauth"
 msgid ""
 "This is the callback URL that you will have to declare in your provider "
@@ -19064,22 +19081,22 @@ msgstr ""
 "To je URL povratnega klica, ki ga boste morali prijaviti v aplikaciji "
 "ponudnika."
 
-#: src/NotificationMailingSetting.php:337
+#: src/NotificationMailingSetting.php:347
 msgctxt "oauth"
 msgid "Client ID"
 msgstr "ID klienta"
 
-#: src/NotificationMailingSetting.php:341
+#: src/NotificationMailingSetting.php:351
 msgctxt "oauth"
 msgid "Client secret"
 msgstr ""
 
-#: src/NotificationMailingSetting.php:398
+#: src/NotificationMailingSetting.php:408
 msgctxt "oauth"
 msgid "Force OAuth authentication refresh"
 msgstr "Osvežitev avtentikacije OAuth na silo"
 
-#: src/NotificationMailingSetting.php:399
+#: src/NotificationMailingSetting.php:409
 msgctxt "oauth"
 msgid ""
 "You can use this option to force redirection to the OAuth authentication "
@@ -19088,35 +19105,35 @@ msgstr ""
 "S to možnostjo lahko izsilite preusmeritev na postopek avtentikacije OAuth. "
 "To bo sprožilo generiranje novega žetona OAuth."
 
-#: src/NotificationMailingSetting.php:408
+#: src/NotificationMailingSetting.php:418
 msgid "Check certificate"
 msgstr "Preverite certifikat"
 
-#: src/NotificationMailingSetting.php:419
+#: src/NotificationMailingSetting.php:429
 msgid "SMTP host"
 msgstr "SMTP gostitelj"
 
-#: src/NotificationMailingSetting.php:429
+#: src/NotificationMailingSetting.php:439
 msgid "SMTP login (optional)"
 msgstr "SMTP prijava"
 
-#: src/NotificationMailingSetting.php:433
+#: src/NotificationMailingSetting.php:443
 msgid "SMTP password (optional)"
 msgstr "SMTP Geslo"
 
-#: src/NotificationMailingSetting.php:440
+#: src/NotificationMailingSetting.php:450
 msgid "Email sender"
 msgstr "Pošiljatelj e-pošte"
 
-#: src/NotificationMailingSetting.php:441
+#: src/NotificationMailingSetting.php:451
 msgid "May be required for some mails providers."
 msgstr "Pri nekaterih ponudnikih poštnih storitev je morda potrebno."
 
-#: src/NotificationMailingSetting.php:441
+#: src/NotificationMailingSetting.php:451
 msgid "If not set, main administrator email will be used."
 msgstr "Če ni nastavljeno, bo uporabljen glavni e-poštni naslov skrbnika."
 
-#: src/NotificationMailingSetting.php:454
+#: src/NotificationMailingSetting.php:464
 msgid "Send a test email to the administrator"
 msgstr "Pošljite testno e-poštno sporočilo skrbniku"
 
@@ -20684,7 +20701,7 @@ msgstr "Začni"
 msgid "Add to schedule"
 msgstr "Dodaj v načrtovano opravilo"
 
-#: src/Reminder.php:781 src/Planning.php:1775
+#: src/Reminder.php:781 src/Planning.php:1781
 msgctxt "Planning"
 msgid "Reminder"
 msgstr "Opomnik"
@@ -21170,7 +21187,7 @@ msgstr "Privzeto za pomoč"
 msgid "Default for tickets (mini dashboard)"
 msgstr "Privzeto za zahtevke (mini naslovna stran)"
 
-#: src/Config.php:1616 src/Config.php:3495
+#: src/Config.php:1616 src/Config.php:3503
 msgid "Password minimum length"
 msgstr "Minimalna dolžina gesla"
 
@@ -21218,7 +21235,7 @@ msgstr "Geslo mora vsebovati vsaj simbol!"
 msgid "PHP opcode cache"
 msgstr "Predpomnilnik PHP opcode"
 
-#: src/Config.php:1803 src/Config.php:2901
+#: src/Config.php:1803 src/Config.php:2909
 #, php-format
 msgid "%s extension is installed"
 msgstr "%s razširitev je nameščena"
@@ -21270,7 +21287,7 @@ msgstr "%1$s stopnja ponovnega zagona je pravilna"
 msgid "Reset"
 msgstr "Ponastavi"
 
-#: src/Config.php:1873 src/Config.php:2914
+#: src/Config.php:1873 src/Config.php:2922
 #, php-format
 msgid "%s extension is not present"
 msgstr "%s razširitev ni prisotna"
@@ -21310,191 +21327,191 @@ msgstr "Predpomnilnik prevodov"
 msgid "Information about system installation and configuration"
 msgstr "Informacije o sistemski instalaciji in konfiguraciji"
 
-#: src/Config.php:2066
+#: src/Config.php:2074
 msgid "To copy/paste in your support request"
 msgstr "Kopiraj/prilepi v tvojo prošnjo za podporo"
 
-#: src/Config.php:2094
+#: src/Config.php:2102
 msgid "Log Level"
 msgstr "Stopnja dnevnika (log)"
 
-#: src/Config.php:2097
+#: src/Config.php:2105
 msgid "1- Critical (login error only)"
 msgstr "1- Kritično (samo napake prijav)"
 
-#: src/Config.php:2098
+#: src/Config.php:2106
 msgid "2- Severe (not used)"
 msgstr "2- Strogo (Ni v uporabi)"
 
-#: src/Config.php:2099
+#: src/Config.php:2107
 msgid "3- Important (successful logins)"
 msgstr "3- Pomembno (uspešne prijave)"
 
-#: src/Config.php:2100
+#: src/Config.php:2108
 msgid "4- Notices (add, delete, tracking)"
 msgstr "4- Zapiski (dodano, izbrisano, sledenje)"
 
-#: src/Config.php:2101
+#: src/Config.php:2109
 msgid "5- Complete (all)"
 msgstr "5- Kompletno (vse)"
 
-#: src/Config.php:2109
+#: src/Config.php:2117
 msgid "Maximal number of automatic actions (run by CLI)"
 msgstr "Maksimalno število samodejnih dejanj (pognanih s CLI)"
 
-#: src/Config.php:2118
+#: src/Config.php:2126
 msgid "Logs in files (SQL, email, automatic action...)"
 msgstr "Dnevniki v datotekah (SQL, e-pošta, samodejni ukrepi...)"
 
-#: src/Config.php:2126 src/Config.php:2130
+#: src/Config.php:2134 src/Config.php:2138
 msgid "Maintenance mode"
 msgstr "Način vzdrževanja"
 
 #. TRANS: Proxy port
-#: src/Config.php:2135
+#: src/Config.php:2143
 msgid "Maintenance text"
 msgstr "Besedilo o vzdrževanju"
 
-#: src/Config.php:2142
+#: src/Config.php:2150
 msgid "Proxy configuration for upgrade check"
 msgstr "Konfiguracija posredniškega strežnika za preverjanje nadgradnje"
 
-#: src/Config.php:2179
+#: src/Config.php:2187
 msgid "Copy system information"
 msgstr "Kopiranje sistemskih informacij"
 
-#: src/Config.php:2189
+#: src/Config.php:2197
 msgid "Check if a new version is available"
 msgstr "Preveri, če je na voljo nova različica"
 
-#: src/Config.php:2444
+#: src/Config.php:2452
 msgid "Yes - Restrict to unit management"
 msgstr "Da - omejeno na upravljanje enote"
 
-#: src/Config.php:2445
+#: src/Config.php:2453
 msgid "Yes - Restrict to global management"
 msgstr "Da - omejeno na globalno upravljanje"
 
-#: src/Config.php:2629 src/PurgeLogs.php:42
+#: src/Config.php:2637 src/PurgeLogs.php:42
 msgid "Logs purge"
 msgstr "Čiščenje dnevnikov"
 
-#: src/Config.php:2632
+#: src/Config.php:2640
 msgid "Performance"
 msgstr "Zmogljivost"
 
-#: src/Config.php:2745
+#: src/Config.php:2753
 #, php-format
 msgid "Database version seems correct (%s) - Perfect!"
 msgstr "Različica baze podatkov se zdi pravilna (%s) - Odlično!"
 
-#: src/Config.php:2746
+#: src/Config.php:2754
 #, php-format
 msgid "Your database engine version seems too old: %s."
 msgstr ""
 "Zdi se, da je vaša različica mehanizma podatkovne zbirke zastarela: %s."
 
-#: src/Config.php:3191
+#: src/Config.php:3199
 msgid "You are using a development version, be careful!"
 msgstr "Uporabljate razvojno različico, bodite previdni!"
 
-#: src/Config.php:3192
+#: src/Config.php:3200
 msgid "You are using a pre-release version, be careful!"
 msgstr "Uporabljate pred-izdajno različico, bodite previdni!"
 
-#: src/Config.php:3199
+#: src/Config.php:3207
 msgid "I know I am using a unstable version."
 msgstr "Vem, da uporabljam nestabilno različico."
 
-#: src/Config.php:3207
+#: src/Config.php:3215
 msgid "Please check the unstable version checkbox."
 msgstr "Označite potrditveno polje Nestabilna različica."
 
-#: src/Config.php:3252
+#: src/Config.php:3260
 msgid "Logs purge configuration"
 msgstr "Nastavitve čiščenja dnevnikov"
 
-#: src/Config.php:3254
+#: src/Config.php:3262
 msgid "Change all"
 msgstr "Spremeni vse"
 
-#: src/Config.php:3271
+#: src/Config.php:3279
 msgid "Add/update relation between items"
 msgstr "Dodaj/Posodobi razmerje med elementi"
 
-#: src/Config.php:3275
+#: src/Config.php:3283
 msgid "Delete relation between items"
 msgstr "Brisanje razmerja med elementi"
 
-#: src/Config.php:3315
+#: src/Config.php:3323
 msgid "Installation/uninstallation of software on items"
 msgstr "Namestitev/odstranitev programske opreme na predmetih"
 
-#: src/Config.php:3321
+#: src/Config.php:3329
 msgid "Installation/uninstallation versions on software"
 msgstr ""
 
-#: src/Config.php:3330
+#: src/Config.php:3338
 msgid "Add/Remove items from software versions"
 msgstr "Dodajanje/odstranjevanje elementov iz različic programske opreme"
 
-#: src/Config.php:3341
+#: src/Config.php:3349
 msgid "Add financial information to an item"
 msgstr "Dodajanje finančnih informacij elementu"
 
-#: src/Config.php:3349
+#: src/Config.php:3357
 msgid "Add/remove profiles to users"
 msgstr "Dodajanje/odstranjevanje profilov uporabnikom"
 
-#: src/Config.php:3352
+#: src/Config.php:3360
 msgid "Add/remove groups to users"
 msgstr "Dodajanje/odstranjevanje skupin uporabnikom"
 
-#: src/Config.php:3358
+#: src/Config.php:3366
 msgid "User authentication method changes"
 msgstr "Spremembe metode avtentikacije uporabnika"
 
-#: src/Config.php:3361 src/User.php:3967
+#: src/Config.php:3369 src/User.php:3967
 msgid "Deleted user in LDAP directory"
 msgstr "Izbriši uporabnika iz LDAP direktorija"
 
-#: src/Config.php:3369
+#: src/Config.php:3377
 msgid "Add component"
 msgstr "Dodaj komponento"
 
-#: src/Config.php:3372
+#: src/Config.php:3380
 msgid "Update component"
 msgstr "Posodobi komponento"
 
-#: src/Config.php:3377
+#: src/Config.php:3385
 msgid "Disconnect a component"
 msgstr "Prekini povezavo s komponento"
 
-#: src/Config.php:3381
+#: src/Config.php:3389
 msgid "Connect a component"
 msgstr "Poveži komponento"
 
-#: src/Config.php:3386
+#: src/Config.php:3394
 msgid "Delete component"
 msgstr "Izbriši komponento"
 
-#: src/Config.php:3392
+#: src/Config.php:3400
 msgid "All sections"
 msgstr "Vse sekcije"
 
-#: src/Config.php:3394
+#: src/Config.php:3402
 msgid "Purge all log entries"
 msgstr "Počisti vse dnevniške zapise"
 
-#: src/Config.php:3424
+#: src/Config.php:3432
 msgid "Delete all"
 msgstr "Izbriši vse"
 
-#: src/Config.php:3425
+#: src/Config.php:3433
 msgid "Keep all"
 msgstr "Obdrži vse"
 
-#: src/Config.php:3430
+#: src/Config.php:3438
 #, php-format
 msgid "Delete if older than %s month"
 msgid_plural "Delete if older than %s months"
@@ -21503,59 +21520,59 @@ msgstr[1] "Izbriši, če je starejše od %s mesecev"
 msgstr[2] "Izbriši, če je starejše od %s mesecev"
 msgstr[3] "Izbriši, če je starejše od %s mesecev"
 
-#: src/Config.php:3471
+#: src/Config.php:3479
 msgid "Security setup"
 msgstr "Nastavitev varnosti"
 
-#: src/Config.php:3480
+#: src/Config.php:3488
 msgid "Password security policy validation"
 msgstr "Potrditev pravilnika o varnosti gesla"
 
-#: src/Config.php:3514
+#: src/Config.php:3522
 msgid "Password need digit"
 msgstr "Geslo mora vsebovati številko"
 
-#: src/Config.php:3529
+#: src/Config.php:3537
 msgid "Password need lowercase character"
 msgstr "Geslo mora vsebovati malo črko"
 
-#: src/Config.php:3547
+#: src/Config.php:3555
 msgid "Password need uppercase character"
 msgstr "Geslo mora vsebovati veliko črko"
 
-#: src/Config.php:3562
+#: src/Config.php:3570
 msgid "Password need symbol"
 msgstr "Geslo mora vsebovati simbol"
 
-#: src/Config.php:3578
+#: src/Config.php:3586
 msgid "Password expiration policy"
 msgstr "Pravilnik o poteku gesla"
 
-#: src/Config.php:3584
+#: src/Config.php:3592
 msgid "Password expiration delay (in days)"
 msgstr "Zamik poteka gesla (v dnevih)"
 
-#: src/Config.php:3602
+#: src/Config.php:3610
 msgid "Password expiration notice time (in days)"
 msgstr "Obvestilo o poteku gesla (v dnevih)"
 
-#: src/Config.php:3613
+#: src/Config.php:3621
 msgid "Notification disabled"
 msgstr "Obvestilo je onemogočeno"
 
-#: src/Config.php:3623
+#: src/Config.php:3631
 msgid "Delay before account deactivation (in days)"
 msgstr "Zamik pred deaktivacijo računa (v dnevih)"
 
-#: src/Config.php:3634
+#: src/Config.php:3642
 msgid "Do not deactivate"
 msgstr "Ne deaktiviraj"
 
-#: src/Config.php:3676
+#: src/Config.php:3684
 msgid "Documents setup"
 msgstr "Nastavitev dokumentov"
 
-#: src/Config.php:3681
+#: src/Config.php:3689
 msgid "Document files maximum size (Mio)"
 msgstr "Največja velikost datotek dokumentov (Mio)"
 
@@ -22018,198 +22035,198 @@ msgstr[3] "Vrst linij"
 msgid "Dictionary of computer models"
 msgstr ""
 
-#: src/CommonITILObject.php:2247 src/CommonITILObject.php:2266
-#: src/CommonITILObject.php:2287 src/CommonITILObject.php:2297
-#: src/CommonITILObject.php:2325
+#: src/CommonITILObject.php:2252 src/CommonITILObject.php:2271
+#: src/CommonITILObject.php:2292 src/CommonITILObject.php:2302
+#: src/CommonITILObject.php:2330
 msgid "Invalid dates. Update cancelled."
 msgstr "Nepravilni datumi. Posodobitev je bila preklicana."
 
-#: src/CommonITILObject.php:2730
+#: src/CommonITILObject.php:2735
 msgid "You cannot use predefined description verbatim"
 msgstr "Vnaprej določenega opisa ne morete uporabiti dobesedno"
 
-#: src/CommonITILObject.php:2823
+#: src/CommonITILObject.php:2828
 msgid "Incorrect value for date field."
 msgstr "Nepravilna vrednost za datumsko polje."
 
-#: src/CommonITILObject.php:3143
+#: src/CommonITILObject.php:3148
 msgctxt "priority"
 msgid "Major"
 msgstr "Največja"
 
-#: src/CommonITILObject.php:3146
+#: src/CommonITILObject.php:3151
 msgctxt "priority"
 msgid "Very high"
 msgstr "Zelo visoka"
 
-#: src/CommonITILObject.php:3149
+#: src/CommonITILObject.php:3154
 msgctxt "priority"
 msgid "High"
 msgstr "Visoka"
 
-#: src/CommonITILObject.php:3152
+#: src/CommonITILObject.php:3157
 msgctxt "priority"
 msgid "Medium"
 msgstr "Srednja"
 
-#: src/CommonITILObject.php:3155
+#: src/CommonITILObject.php:3160
 msgctxt "priority"
 msgid "Low"
 msgstr "Nizka"
 
-#: src/CommonITILObject.php:3158
+#: src/CommonITILObject.php:3163
 msgctxt "priority"
 msgid "Very low"
 msgstr "Zelo nizka"
 
-#: src/CommonITILObject.php:3162
+#: src/CommonITILObject.php:3167
 msgctxt "priority"
 msgid "All"
 msgstr "Vse"
 
-#: src/CommonITILObject.php:3164
+#: src/CommonITILObject.php:3169
 msgctxt "priority"
 msgid "At least very low"
 msgstr "Vsaj zelo nizka"
 
-#: src/CommonITILObject.php:3166
+#: src/CommonITILObject.php:3171
 msgctxt "priority"
 msgid "At least low"
 msgstr "Vsaj nizka"
 
-#: src/CommonITILObject.php:3168
+#: src/CommonITILObject.php:3173
 msgctxt "priority"
 msgid "At least medium"
 msgstr "Vsaj srednja"
 
-#: src/CommonITILObject.php:3170
+#: src/CommonITILObject.php:3175
 msgctxt "priority"
 msgid "At least high"
 msgstr "Vsaj visoka"
 
-#: src/CommonITILObject.php:3172
+#: src/CommonITILObject.php:3177
 msgctxt "priority"
 msgid "At least very high"
 msgstr "Vsaj zelo visoka"
 
-#: src/CommonITILObject.php:3285
+#: src/CommonITILObject.php:3290
 msgctxt "urgency"
 msgid "All"
 msgstr "Vse"
 
-#: src/CommonITILObject.php:3287
+#: src/CommonITILObject.php:3292
 msgctxt "urgency"
 msgid "At least very low"
 msgstr "Vsaj zelo nizko"
 
-#: src/CommonITILObject.php:3289
+#: src/CommonITILObject.php:3294
 msgctxt "urgency"
 msgid "At least low"
 msgstr "Vsaj nizko"
 
-#: src/CommonITILObject.php:3291
+#: src/CommonITILObject.php:3296
 msgctxt "urgency"
 msgid "At least medium"
 msgstr "Vsaj srednje"
 
-#: src/CommonITILObject.php:3293
+#: src/CommonITILObject.php:3298
 msgctxt "urgency"
 msgid "At least high"
 msgstr "Vsaj visoko"
 
-#: src/CommonITILObject.php:3295
+#: src/CommonITILObject.php:3300
 msgctxt "urgency"
 msgid "At least very high"
 msgstr "Vsaj zelo visoko"
 
-#: src/CommonITILObject.php:3392
+#: src/CommonITILObject.php:3397
 msgctxt "impact"
 msgid "Very high"
 msgstr "Zelo visok"
 
-#: src/CommonITILObject.php:3395
+#: src/CommonITILObject.php:3400
 msgctxt "impact"
 msgid "High"
 msgstr "Visok"
 
-#: src/CommonITILObject.php:3398
+#: src/CommonITILObject.php:3403
 msgctxt "impact"
 msgid "Medium"
 msgstr "Srednje"
 
-#: src/CommonITILObject.php:3401
+#: src/CommonITILObject.php:3406
 msgctxt "impact"
 msgid "Low"
 msgstr "Nizko"
 
-#: src/CommonITILObject.php:3404
+#: src/CommonITILObject.php:3409
 msgctxt "impact"
 msgid "Very low"
 msgstr "Zelo nizek"
 
-#: src/CommonITILObject.php:3408
+#: src/CommonITILObject.php:3413
 msgctxt "impact"
 msgid "All"
 msgstr "Vse"
 
-#: src/CommonITILObject.php:3410
+#: src/CommonITILObject.php:3415
 msgctxt "impact"
 msgid "At least very low"
 msgstr "Vsaj zelo nizek"
 
-#: src/CommonITILObject.php:3412
+#: src/CommonITILObject.php:3417
 msgctxt "impact"
 msgid "At least low"
 msgstr "Vsaj nizek"
 
-#: src/CommonITILObject.php:3414
+#: src/CommonITILObject.php:3419
 msgctxt "impact"
 msgid "At least medium"
 msgstr "Vsaj srednje"
 
-#: src/CommonITILObject.php:3416
+#: src/CommonITILObject.php:3421
 msgctxt "impact"
 msgid "At least high"
 msgstr "Vsaj visoko"
 
-#: src/CommonITILObject.php:3418
+#: src/CommonITILObject.php:3423
 msgctxt "impact"
 msgid "At least very high"
 msgstr "Vsaj zelo visoko"
 
-#: src/CommonITILObject.php:4133
+#: src/CommonITILObject.php:4138
 msgid "Time to resolve + Progress"
 msgstr "Čas do rešitve + Napredek"
 
-#: src/CommonITILObject.php:4143
+#: src/CommonITILObject.php:4148
 msgid "Time to resolve exceeded"
 msgstr "Presežen čas za rešitev"
 
-#: src/CommonITILObject.php:4207
+#: src/CommonITILObject.php:4212
 msgid "Last edit by"
 msgstr "Zadnje urejanje od"
 
-#: src/CommonITILObject.php:4345
+#: src/CommonITILObject.php:4350
 msgid "Any solution status"
 msgstr "Kakršno koli stanje rešitve"
 
-#: src/CommonITILObject.php:4360
+#: src/CommonITILObject.php:4365
 msgid "Last solution status"
 msgstr "Status zadnje rešitve"
 
-#: src/CommonITILObject.php:4417
+#: src/CommonITILObject.php:4422
 msgid "Resolution time"
 msgstr "Čas reševanja"
 
-#: src/CommonITILObject.php:4427
+#: src/CommonITILObject.php:4432
 msgid "Closing time"
 msgstr "Čas zaprtja"
 
-#: src/CommonITILObject.php:4671
+#: src/CommonITILObject.php:4676
 msgid "Email for followup"
 msgstr "E-mail naslov za nadaljevanje"
 
-#: src/CommonITILObject.php:5456
+#: src/CommonITILObject.php:5461
 msgid "Time"
 msgid_plural "Times"
 msgstr[0] "Čas"
@@ -22217,90 +22234,90 @@ msgstr[1] "Čas"
 msgstr[2] "Čas"
 msgstr[3] "Čas"
 
-#: src/CommonITILObject.php:6456
+#: src/CommonITILObject.php:6461
 #, php-format
 msgid "Closed on %s"
 msgstr "Zaključeno %s"
 
-#: src/CommonITILObject.php:6462
+#: src/CommonITILObject.php:6467
 #, php-format
 msgid "Solved on %s"
 msgstr "Rešeno na %s"
 
-#: src/CommonITILObject.php:6468
+#: src/CommonITILObject.php:6473
 #, php-format
 msgid "Put on hold on %s"
 msgstr "Daj na čakanje dne %s"
 
-#: src/CommonITILObject.php:6657
+#: src/CommonITILObject.php:6662
 #, php-format
 msgid "To %s"
 msgstr "To %s"
 
-#: src/CommonITILObject.php:6765
+#: src/CommonITILObject.php:6770
 msgid "Planification"
 msgstr "Načrtovanje"
 
-#: src/CommonITILObject.php:6900 src/CommonITILObject.php:6901
+#: src/CommonITILObject.php:6905 src/CommonITILObject.php:6906
 msgctxt "button"
 msgid "Answer"
 msgstr "Odgovor"
 
-#: src/CommonITILObject.php:6910
+#: src/CommonITILObject.php:6915
 msgctxt "button"
 msgid "Create a task"
 msgstr "Ustvarite opravilo"
 
-#: src/CommonITILObject.php:6911
+#: src/CommonITILObject.php:6916
 msgctxt "button"
 msgid "Task"
 msgstr "Opravilo"
 
-#: src/CommonITILObject.php:6920
+#: src/CommonITILObject.php:6925
 msgctxt "button"
 msgid "Add a solution"
 msgstr "Dodaj rešitev"
 
-#: src/CommonITILObject.php:6921
+#: src/CommonITILObject.php:6926
 msgctxt "button"
 msgid "Solution"
 msgstr "Rešitev"
 
-#: src/CommonITILObject.php:6931
+#: src/CommonITILObject.php:6936
 msgctxt "button"
 msgid "Document"
 msgstr "Dokument"
 
-#: src/CommonITILObject.php:6941
+#: src/CommonITILObject.php:6946
 msgctxt "button"
 msgid "Ask for validation"
 msgstr "Zahtevaj odobritev"
 
-#: src/CommonITILObject.php:6942
+#: src/CommonITILObject.php:6947
 msgctxt "button"
 msgid "Validation"
 msgstr "Odobritev"
 
-#: src/CommonITILObject.php:7351
+#: src/CommonITILObject.php:7356
 #, php-format
 msgid "%s: %s"
 msgstr "%s: %s"
 
-#: src/CommonITILObject.php:7353
+#: src/CommonITILObject.php:7358
 msgid "Log entry"
 msgstr "Vnos v dnevnik"
 
-#: src/CommonITILObject.php:8487
+#: src/CommonITILObject.php:8511
 #, php-format
 msgid "%1$s updates the item %2$s"
 msgstr "%1$s posodobi predmet %2$s"
 
-#: src/CommonITILObject.php:9546
+#: src/CommonITILObject.php:9570
 msgctxt "filters"
 msgid "The category of the item"
 msgstr "Kategorija predmeta"
 
-#: src/CommonITILObject.php:9622
+#: src/CommonITILObject.php:9646
 #: src/ContentTemplates/Parameters/CommonITILObjectParameters.php:78
 msgid "Assignee"
 msgid_plural "Assignees"
@@ -22309,7 +22326,7 @@ msgstr[1] "Prevzemniki"
 msgstr[2] "Prevzemniki"
 msgstr[3] "Prevzemniki"
 
-#: src/CommonITILObject.php:9846
+#: src/CommonITILObject.php:9870
 #, php-format
 msgid "%1$s (#%2$s) - %3$s"
 msgstr "%1$s (#%2$s) - %3$s"
@@ -22419,94 +22436,94 @@ msgstr ""
 msgid "You have the latest available version"
 msgstr "Imate najnovejšo verzijo"
 
-#: src/Toolbox.php:1553
+#: src/Toolbox.php:1556
 #, php-format
 msgid "Connection failed. If you use a proxy, please configure it. (%s)"
 msgstr ""
 "Povezava ni uspela. Če uporabljate posredniški strežnik, ga konfigurirajte. "
 "(%s)"
 
-#: src/Toolbox.php:1559
+#: src/Toolbox.php:1562
 #, php-format
 msgid "Failed to connect to the proxy server (%s)"
 msgstr "Ni se uspelo povezati s proxy strežnikom (%s)"
 
-#: src/Toolbox.php:1567
+#: src/Toolbox.php:1570
 msgid "No data available on the web site"
 msgstr "Na spletni strani ni na voljo nobenih podatkov"
 
-#: src/Toolbox.php:1657
+#: src/Toolbox.php:1660
 msgid "Redirection failed"
 msgstr ""
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: src/Toolbox.php:1973
+#: src/Toolbox.php:1976
 msgid "SSL"
 msgstr "SSL"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: src/Toolbox.php:1987
+#: src/Toolbox.php:1990
 msgid "TLS"
 msgstr "TLS"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: src/Toolbox.php:1989
+#: src/Toolbox.php:1992
 msgid "NO-TLS"
 msgstr "NO-TLS"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: src/Toolbox.php:2010
+#: src/Toolbox.php:2013
 msgid "NO-VALIDATE-CERT"
 msgstr "NO-VALIDATE-CERT"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: src/Toolbox.php:2012
+#: src/Toolbox.php:2015
 msgid "VALIDATE-CERT"
 msgstr ""
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: src/Toolbox.php:2032
+#: src/Toolbox.php:2035
 msgid "NORSH"
 msgstr "NORSH"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: src/Toolbox.php:2046
+#: src/Toolbox.php:2049
 msgid "SECURE"
 msgstr "VARNO"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: src/Toolbox.php:2060
+#: src/Toolbox.php:2063
 msgid "DEBUG"
 msgstr "Razhroščevanje"
 
-#: src/Toolbox.php:2078
+#: src/Toolbox.php:2081
 msgid "Incoming mail folder (optional, often INBOX)"
 msgstr "Mapa za dohodno pošto (neobvezno, pogosto INBOX)"
 
 #. TRANS: for mail connection system
-#: src/Toolbox.php:2089
+#: src/Toolbox.php:2092
 msgid "Port (optional)"
 msgstr "Vrata (opcijsko)"
 
 #. TRANS: IMAP mail server protocol
-#: src/Toolbox.php:2167
+#: src/Toolbox.php:2170
 msgid "IMAP"
 msgstr "IMAP"
 
 #. TRANS: POP3 mail server protocol
-#: src/Toolbox.php:2173
+#: src/Toolbox.php:2176
 msgid "POP"
 msgstr "POP"
 
-#: src/Toolbox.php:2595
+#: src/Toolbox.php:2598
 msgid ""
 "No HTTP_REFERER found in request. Reload previous page before doing action "
 "again."
@@ -22514,7 +22531,7 @@ msgstr ""
 "V prošnji ni bil najden HTTP_REFERER. Pred ponovnim dejanjem ponovno "
 "naložite prejšnjo stran."
 
-#: src/Toolbox.php:2603
+#: src/Toolbox.php:2606
 msgid ""
 "Error when parsing HTTP_REFERER. Reload previous page before doing action "
 "again."
@@ -22522,7 +22539,7 @@ msgstr ""
 "Napaka pri razčlenjevanju HTTP_REFERER. Pred ponovnim dejanjem ponovno "
 "naložite prejšnjo stran."
 
-#: src/Toolbox.php:2618
+#: src/Toolbox.php:2621
 msgid ""
 "None or Invalid host in HTTP_REFERER. Reload previous page before doing "
 "action again."
@@ -22530,7 +22547,7 @@ msgstr ""
 "Gostitelja ni ali je neveljaven v HTTP_REFERER. Pred ponovnim dejanjem "
 "ponovno naložite prejšnjo stran."
 
-#: src/Toolbox.php:2632
+#: src/Toolbox.php:2635
 msgid ""
 "None or Invalid path in HTTP_REFERER. Reload previous page before doing "
 "action again."
@@ -22538,7 +22555,7 @@ msgstr ""
 "Poti ni ali je neveljavna v HTTP_REFERER. Pred ponovnim dejanjem ponovno "
 "naložite prejšnjo stran."
 
-#: src/Toolbox.php:2641
+#: src/Toolbox.php:2644
 msgid ""
 "The action you have requested is not allowed. Reload previous page before "
 "doing action again."
@@ -22546,15 +22563,15 @@ msgstr ""
 "Zahtevano dejanje ni dovoljeno. Pred ponovnim dejanjem ponovno naložite "
 "prejšnjo stran."
 
-#: src/Toolbox.php:3096
+#: src/Toolbox.php:3099
 msgid "YYYY-MM-DD"
 msgstr "LLLL-MM-DD"
 
-#: src/Toolbox.php:3097
+#: src/Toolbox.php:3100
 msgid "DD-MM-YYYY"
 msgstr "DD-MM-LLLL"
 
-#: src/Toolbox.php:3098
+#: src/Toolbox.php:3101
 msgid "MM-DD-YYYY"
 msgstr "MM-DD-LLLL"
 
@@ -23823,24 +23840,24 @@ msgstr "Tip dogodka"
 msgid "Period"
 msgstr "Obdobje"
 
-#: src/Planning.php:2642
+#: src/Planning.php:2648
 msgid "Your planning"
 msgstr "Vaš urnik"
 
-#: src/Planning.php:2739
+#: src/Planning.php:2745
 #, php-format
 msgid "Ticket #%1$s %2$s"
 msgstr "Zahtevek #%1$s %2$s"
 
-#: src/Planning.php:2779
+#: src/Planning.php:2785
 msgid "See personnal planning"
 msgstr "Glej osebno načrtovanje"
 
-#: src/Planning.php:2780
+#: src/Planning.php:2786
 msgid "See schedule of people in my groups"
 msgstr "Glej razpored ljudi v mojih skupinah"
 
-#: src/Planning.php:2781
+#: src/Planning.php:2787
 msgid "See all plannings"
 msgstr "Ogled vseh urnikov"
 
@@ -25386,6 +25403,7 @@ msgid "Do you want to send \"usage statistics\"?"
 msgstr "Želite poslati \"statistične podatke o uporabi\"?"
 
 #: src/Console/AbstractCommand.php:109
+#: src/Console/Database/CheckSchemaIntegrityCommand.php:172
 msgid "Unable to connect to database."
 msgstr "Ni se mogoče povezati s podatkovno zbirko."
 
@@ -25967,42 +25985,42 @@ msgid "Database integrity check failed with error (%s)."
 msgstr "Preverjanje celovitosti podatkovne zbirke ni uspelo z napako (%s)."
 
 #: src/Console/Database/UpdateCommand.php:317
-#: src/Console/Database/CheckSchemaIntegrityCommand.php:220
+#: src/Console/Database/CheckSchemaIntegrityCommand.php:270
 msgid "Database schema is OK."
 msgstr "Shema podatkovne baze je v redu."
 
-#: src/Console/Database/CheckSchemaIntegrityCommand.php:88
+#: src/Console/Database/CheckSchemaIntegrityCommand.php:106
 msgid ""
 "Check for schema differences between current database and installation file."
 msgstr ""
 "Preverite razlike v shemi med trenutno podatkovno zbirko in namestitveno "
 "datoteko."
 
-#: src/Console/Database/CheckSchemaIntegrityCommand.php:94
+#: src/Console/Database/CheckSchemaIntegrityCommand.php:112
 msgid "Strict comparison of definitions"
 msgstr "Striktna primerjava definicij"
 
-#: src/Console/Database/CheckSchemaIntegrityCommand.php:101
+#: src/Console/Database/CheckSchemaIntegrityCommand.php:119
 msgid "Check tokens related to all databases migrations."
 msgstr "Preverite žetone, povezane z vsemi migracijami podatkovnih baz."
 
-#: src/Console/Database/CheckSchemaIntegrityCommand.php:108
+#: src/Console/Database/CheckSchemaIntegrityCommand.php:126
 msgid "Check tokens related to migration from \"MyISAM\" to \"InnoDB\"."
 msgstr "Preverite žetone, povezane z migracijo iz \"MyISAM\" v \"InnoDB\"."
 
-#: src/Console/Database/CheckSchemaIntegrityCommand.php:115
+#: src/Console/Database/CheckSchemaIntegrityCommand.php:133
 msgid "Check tokens related to migration from \"datetime\" to \"timestamp\"."
 msgstr "Preverite žetone, povezane z migracijo iz \"datetime\" v \"timestamp\"."
 
-#: src/Console/Database/CheckSchemaIntegrityCommand.php:122
+#: src/Console/Database/CheckSchemaIntegrityCommand.php:140
 msgid "Check tokens related to migration from \"utf8\" to \"utf8mb4\"."
 msgstr "Preverite žetone, povezane s prehodom iz \"utf8\" na \"utf8mb4\"."
 
-#: src/Console/Database/CheckSchemaIntegrityCommand.php:129
+#: src/Console/Database/CheckSchemaIntegrityCommand.php:147
 msgid "Check tokens related to \"DYNAMIC\" row format migration."
 msgstr "Preverite žetone, povezane z migracijo formata vrstic \"DYNAMIC\"."
 
-#: src/Console/Database/CheckSchemaIntegrityCommand.php:136
+#: src/Console/Database/CheckSchemaIntegrityCommand.php:154
 msgid ""
 "Check tokens related to migration from signed to unsigned integers in "
 "primary/foreign keys."
@@ -26010,7 +26028,7 @@ msgstr ""
 "Preverite žetone, povezane s prehodom s podpisanih na nepodpisane cele "
 "številke v primarnih/tujih ključih."
 
-#: src/Console/Database/CheckSchemaIntegrityCommand.php:143
+#: src/Console/Database/CheckSchemaIntegrityCommand.php:161
 msgid ""
 "Plugin to check. If option is not used, checks will be done on GLPI core "
 "database tables."
@@ -26018,27 +26036,40 @@ msgstr ""
 "Vtičnik za preverjanje. Če možnost ni uporabljena, se preverjanja opravijo v"
 " tabelah jedra podatkovne zbirke GLPI."
 
-#: src/Console/Database/CheckSchemaIntegrityCommand.php:178
+#: src/Console/Database/CheckSchemaIntegrityCommand.php:206
+msgid "Unable to fetch GLPI version."
+msgstr ""
+
+#: src/Console/Database/CheckSchemaIntegrityCommand.php:218
+msgid "The database contains no GLPI tables."
+msgstr ""
+
+#: src/Console/Database/CheckSchemaIntegrityCommand.php:219
+#, php-format
+msgid "The database contains no tables of the plugin \"%s\"."
+msgstr ""
+
+#: src/Console/Database/CheckSchemaIntegrityCommand.php:228
 #, php-format
 msgid "Checking database integrity of version \"%s\" is not supported."
 msgstr "Preverjanje integritete podatkovne zbirke različice \"%s\" ni podprto."
 
-#: src/Console/Database/CheckSchemaIntegrityCommand.php:179
+#: src/Console/Database/CheckSchemaIntegrityCommand.php:229
 #, php-format
 msgid "Checking database integrity of plugin \"%s\" is not supported."
 msgstr "Preverjanje integritete podatkovne zbirke vtičnika \"%s\" ni podprto."
 
-#: src/Console/Database/CheckSchemaIntegrityCommand.php:200
+#: src/Console/Database/CheckSchemaIntegrityCommand.php:250
 #, php-format
 msgid "Table schema differs for table \"%s\"."
 msgstr "Shema tabele se razlikuje za tabelo \"%s\"."
 
-#: src/Console/Database/CheckSchemaIntegrityCommand.php:203
+#: src/Console/Database/CheckSchemaIntegrityCommand.php:253
 #, php-format
 msgid "Table \"%s\" is missing."
 msgstr "Manjka tabela \"%s\"."
 
-#: src/Console/Database/CheckSchemaIntegrityCommand.php:206
+#: src/Console/Database/CheckSchemaIntegrityCommand.php:256
 #, php-format
 msgid "Unknown table \"%s\" has been found in database."
 msgstr "V zbirki podatkov je bila najdena neznana tabela \"%s\"."
