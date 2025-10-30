@@ -1766,7 +1766,7 @@ export class GlpiFormEditorController
      * @param {jQuery} question Question element
      * @param {boolean} isLoading Whether to set or remove loading state
      */
-    #setQuestionTypeSpecificLoadingState(question, isLoading) {
+    setQuestionTypeSpecificLoadingState(question, isLoading) {
         const specificContent = question.find("[data-glpi-form-editor-question-type-specific]");
 
         if (isLoading) {
@@ -1821,12 +1821,12 @@ export class GlpiFormEditorController
             .find(`option[data-glpi-form-editor-question-type="${CSS.escape(category)}"]`);
 
         // Set loading state for question type specific content
-        this.#setQuestionTypeSpecificLoadingState(question, true);
+        this.setQuestionTypeSpecificLoadingState(question, true);
 
         // Check if the change is allowed based on existing conditions
         if (!(await this.#checkItemConditionDependenciesForNewQuestionType(question, new_options.first().val()))) {
             // Remove loading state before reverting
-            this.#setQuestionTypeSpecificLoadingState(question, false);
+            this.setQuestionTypeSpecificLoadingState(question, false);
 
             // Revert to previous value if change is not allowed
             const previous_category = question.find('[data-glpi-form-editor-on-change="change-question-type-category"]').data('previous-value');
@@ -1838,7 +1838,7 @@ export class GlpiFormEditorController
         }
 
         // Remove loading state after successful check
-        this.#setQuestionTypeSpecificLoadingState(question, false);
+        this.setQuestionTypeSpecificLoadingState(question, false);
 
         // Remove current types options
         const types_select = question
@@ -1881,12 +1881,12 @@ export class GlpiFormEditorController
         }
 
         // Set loading state for question type specific content
-        this.#setQuestionTypeSpecificLoadingState(question, true);
+        this.setQuestionTypeSpecificLoadingState(question, true);
 
         // Check if the change is allowed based on existing conditions
         if (!(await this.#checkItemConditionDependenciesForNewQuestionType(question, type))) {
             // Remove loading state before reverting
-            this.#setQuestionTypeSpecificLoadingState(question, false);
+            this.setQuestionTypeSpecificLoadingState(question, false);
 
             // Revert to previous value if change is not allowed
             const previous_type = question.find('[data-glpi-form-editor-on-change="change-question-type"]').data('previous-value');
@@ -1898,7 +1898,7 @@ export class GlpiFormEditorController
         }
 
         // Remove loading state after successful check
-        this.#setQuestionTypeSpecificLoadingState(question, false);
+        this.setQuestionTypeSpecificLoadingState(question, false);
 
         // Extracted default value
         const extracted_default_value = this.#options[old_type].extractDefaultValue(question);
