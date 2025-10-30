@@ -4253,7 +4253,7 @@ final class SQLProvider implements SearchProviderInterface
                 $COMMONWHERE .= getEntitiesRestrictRequest($LINK, $itemtable);
             } elseif (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
                 // Will be replace below in Union/Recursivity Hack
-                $COMMONWHERE .= $LINK . " ADDDEFAULTWHERE ";
+                $COMMONWHERE .= $LINK . " ADDDEFAULTWHERE ENTITYRESTRICT ";
             } else {
                 $COMMONWHERE .= getEntitiesRestrictRequest(
                     $LINK,
@@ -4413,6 +4413,17 @@ final class SQLProvider implements SearchProviderInterface
                             Search::addDefaultWhere($ctype),
                             $query_num
                         );
+                        $query_num = str_replace(
+                            "ENTITYRESTRICT",
+                            getEntitiesRestrictRequest(
+                                ' AND ',
+                                $ctable,
+                                '',
+                                '',
+                                $citem->maybeRecursive()
+                            ),
+                            $query_num
+                        );
                         $data['sql']['count'][] = $query_num;
                     }
                 }
@@ -4542,6 +4553,17 @@ final class SQLProvider implements SearchProviderInterface
                     $tmpquery = str_replace(
                         "ADDDEFAULTWHERE",
                         Search::addDefaultWhere($ctype),
+                        $tmpquery
+                    );
+                    $tmpquery = str_replace(
+                        "ENTITYRESTRICT",
+                        getEntitiesRestrictRequest(
+                            ' AND ',
+                            $ctable,
+                            '',
+                            '',
+                            $citem->maybeRecursive()
+                        ),
                         $tmpquery
                     );
 
