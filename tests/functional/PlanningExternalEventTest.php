@@ -92,7 +92,7 @@ class PlanningExternalEventTest extends \AbstractPlanningEvent
         $this->login();
 
         // Create event with guests
-        $event = new \PlanningExternalEvent();
+        $event = new PlanningExternalEvent();
         $id = $event->add([
             'name'            => 'Test Event with Guests',
             'users_id'        => Session::getLoginUserID(),
@@ -138,7 +138,7 @@ class PlanningExternalEventTest extends \AbstractPlanningEvent
         $this->login();
 
         // Create event with guests
-        $event = new \PlanningExternalEvent();
+        $event = new PlanningExternalEvent();
         $id = $event->add([
             'name'            => 'Test Event with Guests',
             'users_id'        => Session::getLoginUserID(),
@@ -181,7 +181,7 @@ class PlanningExternalEventTest extends \AbstractPlanningEvent
     {
         $this->login();
 
-        $event = new \PlanningExternalEvent();
+        $event = new PlanningExternalEvent();
 
         // Test with empty string (simulates hidden input from form)
         // Should convert empty string to JSON empty array
@@ -216,7 +216,7 @@ class PlanningExternalEventTest extends \AbstractPlanningEvent
         $this->login();
 
         // Create event without guests
-        $event = new \PlanningExternalEvent();
+        $event = new PlanningExternalEvent();
         $id = $event->add([
             'name'     => 'Test Event',
             'users_id' => Session::getLoginUserID(),

@@ -480,7 +480,7 @@ trait PlanningEvent
                     "$table.users_id" => $who,
                     QueryFunction::jsonContains(
                         "$table.users_id_guests",
-                        new QueryExpression((string)$who),
+                        new QueryExpression((string) $who),
                         '$'
                     ),
                 ],

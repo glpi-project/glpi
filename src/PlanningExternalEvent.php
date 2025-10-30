@@ -215,7 +215,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
                 self::getTableField('users_id')        => $users_id,
                 QueryFunction::jsonContains(
                     self::getTableField('users_id_guests'),
-                    new QueryExpression((string)$users_id),
+                    new QueryExpression((string) $users_id),
                     '$'
                 ),
             ],
@@ -304,7 +304,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
                 self::getTableField('users_id') => $_SESSION['glpiID'],
                 QueryFunction::jsonContains(
                     self::getTableField('users_id_guests'),
-                    new QueryExpression((string)$_SESSION['glpiID']),
+                    new QueryExpression((string) $_SESSION['glpiID']),
                     '$'
                 ),
             ],
