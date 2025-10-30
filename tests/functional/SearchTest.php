@@ -1004,7 +1004,7 @@ class SearchTest extends DbTestCase
         }
 
         foreach ($itemtype_criteria as $itemtype => $criteria) {
-            if (empty($criteria)) {
+            if ($criteria === []) {
                 continue;
             }
 
@@ -2799,7 +2799,7 @@ class SearchTest extends DbTestCase
         $test_child_2    = getItemByTypeName('Entity', '_test_child_2', true);
         $test_child_3    = getItemByTypeName('Entity', '_test_child_3', true);
 
-        $data = $this->doSearch('AllAssets', [
+        $search_params = [
             'reset'      => 'reset',
             'is_deleted' => 0,
             'start'      => 0,
@@ -2812,7 +2812,8 @@ class SearchTest extends DbTestCase
                     'value'      => 'test',
                 ],
             ],
-        ]);
+        ];
+        $data = $this->doSearch('AllAssets', $search_params);
 
         $this->assertMatchesRegularExpression(
             "/OR\s*\(`glpi_entities`\.`completename`\s*LIKE '%test%'\s*\)/",
@@ -2854,6 +2855,26 @@ class SearchTest extends DbTestCase
                 $data['sql']['search']
             );
         }
+
+        $entities = [
+            $test_root,
+            $test_child_1,
+            $test_child_2,
+            $test_child_3,
+        ];
+        foreach ($entities as $entity) {
+            foreach ([true, false] as $is_recursive) {
+                \Session::loadEntity($entity, $is_recursive);
+                $data = $this->doSearch('AllAssets', $search_params);
+
+                // Check that all returned items are viewable
+                foreach ($data['data']['rows'] as $row) {
+                    $asset = new $row['TYPE']();
+                    $asset->getFromDB($row['id']);
+                    $this->assertTrue($asset->canViewItem());
+                }
+            }
+        }
     }
 
     public function testSearchWithNamespacedItem()
@@ -2868,8 +2889,8 @@ class SearchTest extends DbTestCase
         $this->login();
         $this->setEntity('_test_root_entity', true);
 
-        $CFG_GLPI['state_types'][] = 'SearchTest\\Computer';
-        $data = $this->doSearch('SearchTest\\Computer', $search_params);
+        $CFG_GLPI['state_types'][] = \SearchTest\Computer::class;
+        $data = $this->doSearch(\SearchTest\Computer::class, $search_params);
 
         $this->assertStringContainsString(
             "`glpi_computers`.`name` AS `ITEM_SearchTest\Computer_1`",
