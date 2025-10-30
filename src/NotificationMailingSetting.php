@@ -126,6 +126,16 @@ class NotificationMailingSetting extends NotificationSetting
     {
         global $CFG_GLPI;
 
+        // warning and no form if can't read keyfile
+        // always display no matter what $options['display']
+        // see comment at the end of this function
+        $glpi_encryption_key = new GLPIKey();
+        if ($glpi_encryption_key->hasReadErrors()) {
+            $glpi_encryption_key->showReadErrors();
+
+            return;
+        }
+
         $attach_documents_values = [
             self::ATTACH_NO_DOCUMENT       => __('No documents'),
             self::ATTACH_ALL_DOCUMENTS     => __('All documents'),

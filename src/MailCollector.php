@@ -270,6 +270,14 @@ class MailCollector extends CommonDBTM
      **/
     public function showForm($ID, array $options = [])
     {
+        // warning and no form if can't read keyfile
+        $glpi_encryption_key = new GLPIKey();
+        if ($glpi_encryption_key->hasReadErrors()) {
+            $glpi_encryption_key->showReadErrors();
+
+            return false;
+        }
+
         $protocol_choices = [];
         foreach (Toolbox::getMailServerProtocols(allow_plugins_protocols: true) as $key => $protocol) {
             $protocol_choices['/' . $key] = $protocol['label'];

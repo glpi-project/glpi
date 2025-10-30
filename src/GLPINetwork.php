@@ -64,10 +64,17 @@ class GLPINetwork extends CommonGLPI
             return;
         }
 
+        // warning and no form if can't read keyfile
+        $glpi_encryption_key = new GLPIKey();
+        if ($glpi_encryption_key->hasReadErrors()) {
+            $glpi_encryption_key->showReadErrors();
+
+            return;
+        }
+
         $registration_key = self::getRegistrationKey();
 
         $canedit = Config::canUpdate();
-
         $curl_error = null;
         $informations = [];
         if ($registration_key !== "") {

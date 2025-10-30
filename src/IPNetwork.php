@@ -286,7 +286,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
         // Don't validate an empty network
         if (empty($input["network"])) {
             return [
-                'error' => __('Missing network property (In CIDR notation. Ex: 192.168.1.1/24)'),
+                'error' => sprintf(__('Missing network property (In CIDR notation. Ex: %s)'), '198.51.100.0/24'),
                 'input' => false,
             ];
         }

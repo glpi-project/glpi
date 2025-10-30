@@ -1815,4 +1815,92 @@ class ComputerTest extends AbstractInventoryAsset
         $this->assertTrue($computer->getFromDB($computers_id));
         $this->assertSame($locations_id, $computer->fields['locations_id']);
     }
+
+    /**
+     * Test reimport with locked states_id field.
+     * This test ensures that reimporting an inventory with a locked states_id field
+     * does not trigger an error when accessing raw_links.
+     *
+     * Scenario:
+     * 1. Configure a default states_id for inventory imports
+     * 2. Import a computer (which receives the state from inventory configuration)
+     * 3. Manually change the states_id (this creates a lock on the field)
+     * 4. Reimport the same computer (before the fix, this caused an "Undefined array key" error)
+     */
+    public function testReimportWithLockedStatesId()
+    {
+        // Load the test fixture
+        $json_str = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/computer_locked_states_id.json');
+        $json = json_decode($json_str);
+
+        // Create states
+        $state = new \State();
+        $states_id_inventory = $state->add([
+            'name' => 'State from inventory',
+            'entities_id' => 0,
+            'is_visible_computer' => 1,
+        ]);
+        $this->assertGreaterThan(0, $states_id_inventory);
+
+        $states_id_manual = $state->add([
+            'name' => 'State manually set',
+            'entities_id' => 0,
+            'is_visible_computer' => 1,
+        ]);
+        $this->assertGreaterThan(0, $states_id_manual);
+
+        // Configure inventory to set states_id from inventory
+        $this->login();
+        $conf = new Conf();
+        $this->assertTrue(
+            $conf->saveConf([
+                'states_id_default' => $states_id_inventory,
+            ])
+        );
+        $this->logout();
+
+        // First import - create the computer with state from inventory
+        $inventory = $this->doInventory($json);
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $computers_id);
+
+        $computer = new \Computer();
+        $this->assertTrue($computer->getFromDB($computers_id));
+        // Verify the computer received the state from inventory configuration
+        $this->assertEquals($states_id_inventory, $computer->fields['states_id']);
+
+        // Manually update states_id to create a lock
+        $this->assertTrue($computer->update([
+            'id' => $computers_id,
+            'states_id' => $states_id_manual,
+        ]));
+
+        // Verify the lock was created
+        $lockedfield = new \Lockedfield();
+        $locks = $lockedfield->find([
+            'itemtype' => 'Computer',
+            'items_id' => $computers_id,
+            'field' => 'states_id',
+        ]);
+        $this->assertCount(1, $locks);
+
+        // Reload and verify the manual state is set
+        $this->assertTrue($computer->getFromDB($computers_id));
+        $this->assertEquals($states_id_manual, $computer->fields['states_id']);
+
+        // Reimport the same inventory - this should NOT trigger an error
+        $inventory = $this->doInventory($json);
+
+        // Verify the computer still exists and states_id is still the manual one (locked)
+        $this->assertTrue($computer->getFromDB($computers_id));
+        $this->assertEquals($states_id_manual, $computer->fields['states_id']);
+
+        // Verify the lock is still present
+        $locks = $lockedfield->find([
+            'itemtype' => 'Computer',
+            'items_id' => $computers_id,
+            'field' => 'states_id',
+        ]);
+        $this->assertCount(1, $locks);
+    }
 }

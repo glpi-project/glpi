@@ -32,12 +32,15 @@
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
 use Safe\Exceptions\FilesystemException;
 use Safe\Exceptions\SodiumException;
 use Safe\Exceptions\UrlException;
 
 use function Safe\base64_decode;
+use function Safe\file_get_contents;
 use function Safe\file_put_contents;
 use function Safe\sodium_crypto_aead_xchacha20poly1305_ietf_decrypt;
 use function Safe\sodium_crypto_aead_xchacha20poly1305_ietf_encrypt;
@@ -126,6 +129,56 @@ class GLPIKey
     }
 
     /**
+     * Check if key is valid
+     *
+     * @return string[]
+     */
+    public function getKeyFileReadErrors(): array
+    {
+        $errors = [];
+
+        if (!file_exists($this->keyfile)) {
+            $errors[] = sprintf(__s('The security key file does not exist. You have to run the "%s" command to generate a key.'), 'php bin/console security:change_key');
+
+            return $errors; // early return, as, if file does not exist, no need to check further
+        }
+
+        try {
+            $key = @file_get_contents($this->keyfile);
+        } catch (FilesystemException) {
+            $errors[] = sprintf(__s("Unable to get security key file contents. Fix file permissions of %s."), $this->keyfile);
+
+            return $errors; // early return, as, if file does not exist, no need to check further
+        }
+
+        if (strlen($key) !== SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_KEYBYTES) {
+            $errors[] = sprintf(__s('Invalid security key file contents. You have to run the "%s" command to regenerate a key.'), 'php bin/console security:change_key');
+        }
+
+        return $errors;
+    }
+
+    public function hasReadErrors(): bool
+    {
+        return !empty($this->getKeyFileReadErrors());
+    }
+
+    public function showReadErrors(): void
+    {
+        $glpi_key_read_errors = $this->getKeyFileReadErrors();
+        if ($glpi_key_read_errors !== []) {
+            TemplateRenderer::getInstance()->display(
+                '/central/messages.html.twig',
+                [
+                    'messages' => [
+                        'errors' => $glpi_key_read_errors,
+                    ],
+                ]
+            );
+        }
+    }
+
+    /**
      * Get GLPI security key used for decryptable passwords
      *
      * @return string|null
@@ -136,7 +189,7 @@ class GLPIKey
             trigger_error('You must create a security key, see security:change_key command.', E_USER_WARNING);
             return null;
         }
-        if (!is_readable($this->keyfile) || ($key = file_get_contents($this->keyfile)) === false) { //@phpstan-ignore theCodingMachineSafe.function
+        if (!is_readable($this->keyfile) || ($key = \file_get_contents($this->keyfile)) === false) { //@phpstan-ignore theCodingMachineSafe.function
             trigger_error('Unable to get security key file contents.', E_USER_WARNING);
             return null;
         }
@@ -159,7 +212,7 @@ class GLPIKey
             return GLPIKEY;
         }
         //load key from existing config file
-        if (!is_readable($this->legacykeyfile) || ($key = file_get_contents($this->legacykeyfile)) === false) { //@phpstan-ignore theCodingMachineSafe.function
+        if (!is_readable($this->legacykeyfile) || ($key = \file_get_contents($this->legacykeyfile)) === false) { //@phpstan-ignore theCodingMachineSafe.function
             trigger_error('Unable to get security legacy key file contents.', E_USER_WARNING);
             return null;
         }

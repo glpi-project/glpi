@@ -488,6 +488,15 @@ class AuthLDAP extends CommonDBTM
         if (!Config::canUpdate()) {
             return false;
         }
+
+        // warning and no form if can't read keyfile
+        $glpi_encryption_key = new GLPIKey();
+        if ($glpi_encryption_key->hasReadErrors()) {
+            $glpi_encryption_key->showReadErrors();
+
+            return false;
+        }
+
         if (empty($ID)) {
             $this->getEmpty();
             if (isset($options['preconfig'])) {
@@ -547,6 +556,14 @@ TWIG, $twig_params);
      */
     public function showFormAdvancedConfig()
     {
+        // warning and no form if can't read keyfile
+        $glpi_encryption_key = new GLPIKey();
+        if ($glpi_encryption_key->hasReadErrors()) {
+            $glpi_encryption_key->showReadErrors();
+
+            return;
+        }
+
         TemplateRenderer::getInstance()->display('pages/setup/ldap/adv_info.html.twig', [
             'item' => $this,
             'page_size_available' => self::isLdapPageSizeAvailable(false, false),
