@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\Migration;
 
+use AbstractRightsDropdown;
 use DBmysql;
 use DBmysqlIterator;
 use Entity;
@@ -90,6 +91,12 @@ class FormMigration extends AbstractPluginMigration
      */
     private array $forms = [];
 
+    /**
+     * Store the original form raw data indexed by plugin form ID for quick access
+     * @var array<int, array>
+     */
+    private array $formcreator_raw_forms = [];
+
     public function __construct(
         DBmysql $db,
         FormAccessControlManager $formAccessControlManager,
@@ -131,11 +138,13 @@ class FormMigration extends AbstractPluginMigration
      *
      * @return array Mapping between access type constants and strategy classes
      */
-    private function getStrategyForAccessTypes(): array
+    private function getStrategyForAccessTypes(array $formcreator_raw_form): array
     {
         return [
             self::PUBLIC_ACCESS_TYPE => DirectAccess::class,
-            self::PRIVATE_ACCESS_TYPE => DirectAccess::class,
+            self::PRIVATE_ACCESS_TYPE => $formcreator_raw_form['is_visible']
+                ? AllowList::class
+                : DirectAccess::class,
             self::RESTRICTED_ACCESS_TYPE => AllowList::class,
         ];
     }
@@ -223,23 +232,42 @@ class FormMigration extends AbstractPluginMigration
      * @return JsonFieldInterface The configuration object for the access control strategy
      * @throws LogicException When no strategy config is found for the given access type
      */
-    private function getStrategyConfigForAccessTypes(array $form_access_rights): JsonFieldInterface
-    {
+    private function getStrategyConfigForAccessTypes(
+        array $form_access_rights,
+        array $formcreator_raw_form,
+    ): JsonFieldInterface {
         $clean_ids = static fn(array $ids) => array_unique(array_filter($ids, fn(mixed $id) => is_int($id)));
 
-        if (in_array($form_access_rights['access_rights'], [self::PUBLIC_ACCESS_TYPE, self::PRIVATE_ACCESS_TYPE])) {
-            return new DirectAccessConfig(
-                allow_unauthenticated: $form_access_rights['access_rights'] === self::PUBLIC_ACCESS_TYPE
-            );
-        } elseif ($form_access_rights['access_rights'] === self::RESTRICTED_ACCESS_TYPE) {
-            return new AllowListConfig(
-                user_ids: $clean_ids(json_decode($form_access_rights['user_ids'], associative: true, flags: JSON_THROW_ON_ERROR)),
-                group_ids: $clean_ids(json_decode($form_access_rights['group_ids'], associative: true, flags: JSON_THROW_ON_ERROR)),
-                profile_ids: $clean_ids(json_decode($form_access_rights['profile_ids'], associative: true, flags: JSON_THROW_ON_ERROR))
-            );
-        }
-
-        throw new LogicException("Strategy config not found for access type {$form_access_rights['access_rights']}");
+        return match ($form_access_rights['access_rights']) {
+            self::PUBLIC_ACCESS_TYPE => new DirectAccessConfig(
+                allow_unauthenticated: true,
+            ),
+            self::PRIVATE_ACCESS_TYPE => $formcreator_raw_form['is_visible']
+                ? new AllowListConfig(
+                    user_ids: [AbstractRightsDropdown::ALL_USERS],
+                )
+                : new DirectAccessConfig(
+                    allow_unauthenticated: false,
+                ),
+            self::RESTRICTED_ACCESS_TYPE => new AllowListConfig(
+                user_ids: $clean_ids(json_decode(
+                    $form_access_rights['user_ids'],
+                    associative: true,
+                    flags: JSON_THROW_ON_ERROR
+                )),
+                group_ids: $clean_ids(json_decode(
+                    $form_access_rights['group_ids'],
+                    associative: true,
+                    flags: JSON_THROW_ON_ERROR
+                )),
+                profile_ids: $clean_ids(json_decode(
+                    $form_access_rights['profile_ids'],
+                    associative: true,
+                    flags: JSON_THROW_ON_ERROR
+                )),
+            ),
+            default => throw new LogicException("Strategy config not found for access type {$form_access_rights['access_rights']}"),
+        };
     }
 
     private function getFormWhereCriteria(): array
@@ -433,6 +461,7 @@ class FormMigration extends AbstractPluginMigration
                 'is_recursive',
                 'is_active',
                 'is_deleted',
+                'is_visible',
             ],
             'FROM'   => 'glpi_plugin_formcreator_forms',
             'WHERE'  => $this->getFormWhereCriteria(),
@@ -468,6 +497,7 @@ class FormMigration extends AbstractPluginMigration
 
             // Store the form for later use
             $this->forms[$raw_form['id']] = $form;
+            $this->formcreator_raw_forms[$raw_form['id']] = $raw_form;
 
             $this->mapItem(
                 'PluginFormcreatorForm',
@@ -877,12 +907,13 @@ class FormMigration extends AbstractPluginMigration
         foreach ($raw_form_access_rights as $form_access_rights) {
             // Use the stored form instead of loading it from the database
             $form = $this->forms[$form_access_rights['forms_id']] ?? null;
+            $formcreator_raw_form = $this->formcreator_raw_forms[$form_access_rights['forms_id']] ?? null;
 
-            if ($form === null) {
+            if ($form === null || $formcreator_raw_form === null) {
                 throw new LogicException("Form with plugin_id {$form_access_rights['forms_id']} not found in memory");
             }
 
-            $strategy_class = $this->getStrategyForAccessTypes()[$form_access_rights['access_rights']] ?? null;
+            $strategy_class = $this->getStrategyForAccessTypes($formcreator_raw_form)[$form_access_rights['access_rights']] ?? null;
             if ($strategy_class === null) {
                 throw new LogicException("Strategy class not found for access type {$form_access_rights['access_rights']}");
             }
@@ -895,7 +926,7 @@ class FormMigration extends AbstractPluginMigration
                 [
                     Form::getForeignKeyField() => $form->getID(),
                     'strategy'                 => $strategy_class,
-                    '_config'                  => self::getStrategyConfigForAccessTypes($form_access_rights)->jsonSerialize(),
+                    '_config'                  => self::getStrategyConfigForAccessTypes($form_access_rights, $formcreator_raw_form)->jsonSerialize(),
                     'is_active'                => true,
                 ],
                 [
