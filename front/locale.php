@@ -44,11 +44,8 @@ use function Safe\fopen;
 use function Safe\json_encode;
 use function Safe\preg_match;
 use function Safe\preg_replace;
-use function Safe\session_write_close;
 
 global $CFG_GLPI, $TRANSLATE;
-
-session_write_close(); // Unlocks session to permit concurrent calls
 
 header("Content-Type: application/json; charset=UTF-8");
 
@@ -56,16 +53,15 @@ $is_cacheable = Environment::get()->shouldForceExtraBrowserCache();
 if ($is_cacheable) {
     // Makes CSS cacheable by browsers and proxies.
     $max_age = MONTH_TIMESTAMP;
-    header_remove('Pragma');
     // no `must-revalidate`, a `v=xxx` param is used to prevent extensive caching issues
     header('Cache-Control: public, max-age=' . $max_age);
     header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $max_age));
 }
 
-$requested_language = $_GET['lang'] ?? $_SESSION['glpilanguage'];
+$requested_language = $_GET['lang'];
 if (!isset($CFG_GLPI['languages'][$requested_language])) {
     // Fallback to default language if requested one is not available
-    $requested_language = $_SESSION['glpilanguage'];
+    $requested_language = Session::getPreferredLanguage();
 }
 $requested_language = $CFG_GLPI['languages'][$requested_language][1];
 

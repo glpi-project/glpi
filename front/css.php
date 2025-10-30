@@ -69,7 +69,6 @@ $is_cacheable = !isset($_GET['nocache']) && Environment::get()->shouldForceExtra
 if ($is_cacheable) {
     // Makes CSS cacheable by browsers and proxies
     $max_age = MONTH_TIMESTAMP;
-    header_remove('Pragma');
     // no `must-revalidate`, a `v=xxx` param is used to prevent extensive caching issues
     header('Cache-Control: public, max-age=' . $max_age);
     header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $max_age));

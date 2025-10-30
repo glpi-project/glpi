@@ -88,6 +88,11 @@ class SessionManager
             return true;
         }
 
+        if (\str_starts_with($path, '/front/css.php') || \str_starts_with($path, '/front/locale.php')) {
+            // The CSS and locales endpoints are stateless compiled resources.
+            return true;
+        }
+
         $path_matches = [];
         if (preg_match(Plugin::PLUGIN_RESOURCE_PATTERN, $path, $path_matches) === 1) {
             $plugin_key      = $path_matches['plugin_key'];
