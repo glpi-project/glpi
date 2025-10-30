@@ -4853,7 +4853,7 @@ msgstr "استيراد ملفات المخزون"
 #, php-format
 msgid ""
 "You can use this menu to upload one or several inventory files. Files must "
-"have a known extension (%1$s).\n"
+"have a known extension (%1$s)."
 msgstr ""
 "يمكنك استخدام هذه القائمة لتحميل ملف مخزون واحد أو عدة ملفات.يجب أن يكون "
 "للملفات امتداد معروف (%1$s)."

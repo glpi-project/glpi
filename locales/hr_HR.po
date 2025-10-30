@@ -4730,10 +4730,10 @@ msgstr "Uvezi datoteke inventara"
 #, php-format
 msgid ""
 "You can use this menu to upload one or several inventory files. Files must "
-"have a known extension (%1$s).\n"
+"have a known extension (%1$s)."
 msgstr ""
 "Ovaj izbornik možeš koristiti za prijenos jedne ili više datoteka inventura."
-" Datoteke moraju imati poznati sufiks (%1$s).\n"
+" Datoteke moraju imati poznati sufiks (%1$s)."
 
 #: templates/pages/admin/inventory/upload_form.html.twig
 msgid ""

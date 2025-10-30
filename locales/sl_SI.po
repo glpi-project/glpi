@@ -4784,10 +4784,10 @@ msgstr "Uvoz datotek inventarja"
 #, php-format
 msgid ""
 "You can use this menu to upload one or several inventory files. Files must "
-"have a known extension (%1$s).\n"
+"have a known extension (%1$s)."
 msgstr ""
 "V tem meniju lahko naložite eno ali več datotek z inventarja. Datoteke "
-"morajo imeti znano končnico (%1$s).\n"
+"morajo imeti znano končnico (%1$s)."
 
 #: templates/pages/admin/inventory/upload_form.html.twig
 msgid ""

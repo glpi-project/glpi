@@ -4769,10 +4769,10 @@ msgstr "Імпорт файлів інвентаризації"
 #, php-format
 msgid ""
 "You can use this menu to upload one or several inventory files. Files must "
-"have a known extension (%1$s).\n"
+"have a known extension (%1$s)."
 msgstr ""
 "Ви можете використовувати це меню, щоб завантажити один або кілька файлів "
-"інвентаризації. Файли повинні мати відоме розширення (%1$s).\n"
+"інвентаризації. Файли повинні мати відоме розширення (%1$s)."
 
 #: templates/pages/admin/inventory/upload_form.html.twig
 msgid ""

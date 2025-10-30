@@ -4750,10 +4750,10 @@ msgstr "Importar archivos de inventario"
 #, php-format
 msgid ""
 "You can use this menu to upload one or several inventory files. Files must "
-"have a known extension (%1$s).\n"
+"have a known extension (%1$s)."
 msgstr ""
 "Puede utilizar este menú para cargar uno o varios archivos de inventario. "
-"Los archivos deben tener una extensión conocida (%1$s).\n"
+"Los archivos deben tener una extensión conocida (%1$s)."
 
 #: templates/pages/admin/inventory/upload_form.html.twig
 msgid ""

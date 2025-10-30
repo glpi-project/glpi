@@ -4786,10 +4786,10 @@ msgstr "Import souborů inventarizace"
 #, php-format
 msgid ""
 "You can use this menu to upload one or several inventory files. Files must "
-"have a known extension (%1$s).\n"
+"have a known extension (%1$s)."
 msgstr ""
 "Tuto nabídku můžete použít k nahrání jednoho nebo více souborů "
-"inventarizace. Soubory musí mít známou příponu (%1$s).\n"
+"inventarizace. Soubory musí mít známou příponu (%1$s)."
 
 #: templates/pages/admin/inventory/upload_form.html.twig
 msgid ""

@@ -4695,10 +4695,10 @@ msgstr "درون‌برد فایل‌های موجودی"
 #, php-format
 msgid ""
 "You can use this menu to upload one or several inventory files. Files must "
-"have a known extension (%1$s).\n"
+"have a known extension (%1$s)."
 msgstr ""
 "می‌توانید از این منو برای بارگذاری یک یا چند فایل موجودی استفاده کنید. "
-"فایل‌ها باید پسوند شناخته‌شده (%1$s) داشته باشند.\n"
+"فایل‌ها باید پسوند شناخته‌شده (%1$s) داشته باشند."
 
 #: templates/pages/admin/inventory/upload_form.html.twig
 msgid ""

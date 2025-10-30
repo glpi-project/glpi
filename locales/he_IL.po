@@ -4735,7 +4735,7 @@ msgstr "טעינת קבצי מלאי"
 #, php-format
 msgid ""
 "You can use this menu to upload one or several inventory files. Files must "
-"have a known extension (%1$s).\n"
+"have a known extension (%1$s)."
 msgstr ""
 "אתם יכולים להשתמש בתפריט הזה לעלא מספרי ציוד.  הקבצים חייבים להיות עם סיומת "
 "ידועה (%1$s)."
