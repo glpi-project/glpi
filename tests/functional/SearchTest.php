@@ -2864,7 +2864,7 @@ class SearchTest extends DbTestCase
         ];
         foreach ($entities as $entity) {
             foreach ([true, false] as $is_recursive) {
-                \Session::loadEntity($entity, $is_recursive);
+                Session::loadEntity($entity, $is_recursive);
                 $data = $this->doSearch('AllAssets', $search_params);
 
                 // Check that all returned items are viewable
