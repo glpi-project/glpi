@@ -1469,6 +1469,7 @@ class Toolbox
      */
     public static function getGuzzleClient(array $extra_options = []): Client
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $options = $extra_options + ['connect_timeout' => 5];
