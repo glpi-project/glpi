@@ -1966,13 +1966,21 @@ export class GlpiFormEditorController
             const new_sub_types = this.#question_subtypes_options[type].subtypes;
 
             // Copy the new sub types options into the dropdown
-            for (const category in new_sub_types) {
-                const optgroup = $(`<optgroup label="${_.escape(category)}"></optgroup>`);
-                for (const [sub_type, label] of Object.entries(new_sub_types[category])) {
-                    const option = $(`<option value="${_.escape(sub_type)}">${_.escape(label)}</option>`);
-                    optgroup.append(option);
+            for (const new_sub_type in new_sub_types) {
+                // If the sub type is an object, we have a category
+                if (typeof new_sub_types[new_sub_type] === 'object') {
+                    const optgroup = $(`<optgroup label="${_.escape(new_sub_type)}"></optgroup>`);
+                    for (const [sub_type, label] of Object.entries(new_sub_types[new_sub_type])) {
+                        const option = $(`<option value="${_.escape(sub_type)}">${_.escape(label)}</option>`);
+                        optgroup.append(option);
+                    }
+                    sub_types_select.append(optgroup);
+                    continue;
                 }
-                sub_types_select.append(optgroup);
+
+                // No category, just a single option
+                const option = $(`<option value="${_.escape(new_sub_type)}">${_.escape(new_sub_types[new_sub_type])}</option>`);
+                sub_types_select.append(option);
             }
 
             // Set the default sub type
