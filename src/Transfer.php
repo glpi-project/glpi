@@ -2302,7 +2302,7 @@ class Transfer extends CommonDBTM
 
                         if (count($contract_iterator)) {
                             $result = $iterator->current();
-                            $newcontractID = $result['id'];
+                            $newcontractID = $result['contracts_id'];
                             $this->addToAlreadyTransfer('Contract', $item_ID, $newcontractID);
                         }
 
