@@ -36,7 +36,6 @@
 namespace Glpi\Marketplace\Api;
 
 use GLPINetwork;
-use GuzzleHttp\Client as Guzzle_Client;
 use GuzzleHttp\Psr7\Message;
 use GuzzleHttp\Psr7\Response;
 use Session;
@@ -48,6 +47,7 @@ class Plugins
     protected $last_error  = null;
 
     public const COL_PAGE    = 200;
+    protected const TIMEOUT = 5;
 
     /**
      * Max request attemps on READ operations.

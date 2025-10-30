@@ -1551,9 +1551,11 @@ class Toolbox
             ];
 
             if (!empty($CFG_GLPI["proxy_user"])) {
+                $proxy_user = rawurlencode($CFG_GLPI["proxy_user"]);
+                $proxy_pass = rawurlencode((new GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]));
                 $opts += [
                     CURLOPT_PROXYAUTH    => CURLAUTH_BASIC,
-                    CURLOPT_PROXYUSERPWD => $CFG_GLPI["proxy_user"] . ":" . (new GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]),
+                    CURLOPT_PROXYUSERPWD => $proxy_user . ":" . $proxy_pass,
                 ];
             }
 

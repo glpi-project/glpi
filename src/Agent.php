@@ -39,7 +39,6 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Inventory\Conf;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\Sanitizer;
-use GuzzleHttp\Client as Guzzle_Client;
 use GuzzleHttp\Psr7\Response;
 
 /**
@@ -55,6 +54,9 @@ class Agent extends CommonDBTM
 
     /** @var string */
     public const ACTION_INVENTORY = 'inventory';
+
+    /** @var integer */
+    protected const TIMEOUT  = 5;
 
     /** @var boolean */
     public $dohistory = true;
