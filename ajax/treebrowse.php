@@ -34,6 +34,7 @@
  */
 
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -53,6 +54,16 @@ switch ($_REQUEST['action']) {
         ];
 
         $itemtype = $_REQUEST['itemtype'];
+        // If public FAQ is enabled we allow anonymous access to this script
+        // but only for FAQ/knowbase browsing. Prevent anonymous users from
+        // using this endpoint to list other item types (users, etc.).
+        global $CFG_GLPI;
+        if (Session::getLoginUserID() === false && !empty($CFG_GLPI['use_public_faq'])) {
+            // Allow only KnowbaseItem (FAQ) when anonymous
+            if ($itemtype !== KnowbaseItem::class) {
+                throw new AccessDeniedHttpException();
+            }
+        }
         $category_item = $itemtype::getCategoryItem($itemtype);
         $category_table = $category_item::getTable();
         $item = getItemForItemtype($itemtype);

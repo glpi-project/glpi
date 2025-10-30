@@ -197,6 +197,7 @@ final class Firewall
 
         $paths = [
             '/front/helpdesk.faq.php' => self::STRATEGY_FAQ_ACCESS,
+            '/ajax/treebrowse.php' => self::STRATEGY_FAQ_ACCESS, // allow anonymous only when public FAQ enabled
 
             '/ajax/common.tabs.php' => self::STRATEGY_NO_CHECK, // specific checks done later to allow anonymous access to public FAQ tabs
             '/ajax/telemetry.php' => self::STRATEGY_NO_CHECK, // Must be available during installation. This script already checks for permissions when the flag usually set by the installer is missing.
