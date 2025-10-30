@@ -39,7 +39,7 @@
       <div class="list-group list-group-flush list-group-hoverable">
          {% for id, linked in linked_itilobjects %}
             {% set new_itilobject = get_item(linked['itemtype'], linked['items_id']) %}
-            <div class="list-group-item" aria-label="Linked item group - {{ new_itilobject.fields['name'] }}">
+            <div class="list-group-item" aria-label="{{ __('Linked item group - %s')|format(new_itilobject.fields['name']) }}">
                <div class="row">
                   <div class="col-auto">
                      {{ call('CommonITILObject_CommonITILObject::getLinkName', [
@@ -104,14 +104,14 @@
          ]) %}
          {% do call('Dropdown::showSelectItemFromItemtypes', [{
             'items_id_name': '_link[items_id_2]',
-            'items_aria_label': 'ITIL item selector',
+            'items_aria_label': __('ITIL item selector'),
             'itemtype_name': '_link[itemtype_2]',
             'itemtypes': ['Ticket', 'Change', 'Problem'],
             'checkright': true,
             'entity_restrict': session('glpiactiveentities'),
             'default_itemtype': params['_link']['itemtype_2'] ?? '',
             'default_items_id': params['_link']['items_id_2'] ?? '',
-            'aria_label': 'ITIL type selector',
+            'aria_label': __('ITIL type selector'),
          }]) %}
       </span>
    </div>
