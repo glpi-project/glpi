@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Form\Migration;
 
+use AbstractRightsDropdown;
 use Computer;
 use DbTestCase;
 use Entity;
@@ -667,8 +668,8 @@ final class FormMigrationTest extends DbTestCase
             ],
         ];
 
-        $access_config = new DirectAccessConfig(
-            allow_unauthenticated: false
+        $access_config = new AllowListConfig(
+            user_ids: [AbstractRightsDropdown::ALL_USERS],
         );
         yield 'Test form migration for access types with private access' => [
             'form_name' => 'Test form migration for access types with private access',
@@ -678,7 +679,7 @@ final class FormMigrationTest extends DbTestCase
                     'Test form migration for access types with private access',
                     true
                 ),
-                'strategy'                 => DirectAccess::class,
+                'strategy'                 => AllowList::class,
                 'config'                   => json_encode($access_config->jsonSerialize()),
                 'is_active'                => 1,
             ],
@@ -3544,11 +3545,97 @@ final class FormMigrationTest extends DbTestCase
         $this->assertFalse($result->hasErrors());
     }
 
+    public function testVisiblePrivateFormMigration(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Arrange: create a form with a private access
+        $form_id = $this->createSimpleFormcreatorForm(
+            name: "My private form",
+            questions: [],
+            properties: [
+                'access_rights' => 1, // Private form
+                'is_visible' => 1, // This form is visible for all users
+            ]
+        );
+
+        // Act: migrate form
+        $control_manager = FormAccessControlManager::getInstance();
+        $migration = new FormMigration(
+            db: $DB,
+            formAccessControlManager: $control_manager,
+            specificFormsIds: [$form_id],
+        );
+        $migration->execute();
+
+        // Assert: form should be created with the default allow list (all users)
+        $form = getItemByTypeName(Form::class, "My private form");
+        $access_controls = $control_manager->getActiveAccessControlsForForm($form);
+        $this->assertCount(1, $access_controls);
+        $this->assertEquals(
+            AllowList::class,
+            $access_controls[0]->fields['strategy'],
+        );
+
+        $expected_config = new AllowListConfig(
+            user_ids: [AbstractRightsDropdown::ALL_USERS],
+        );
+        $this->assertEquals(
+            $expected_config->jsonSerialize(),
+            json_decode($access_controls[0]->fields['config'], true),
+        );
+    }
+
+    public function testNonVisiblePrivateFormMigration(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Arrange: create a form with a private access
+        $form_id = $this->createSimpleFormcreatorForm(
+            name: "My private form",
+            questions: [],
+            properties: [
+                'access_rights' => 1, // Private form
+                'is_visible' => 0, // This form is accessible with a direct link
+            ]
+        );
+
+        // Act: migrate form
+        $control_manager = FormAccessControlManager::getInstance();
+        $migration = new FormMigration(
+            db: $DB,
+            formAccessControlManager: $control_manager,
+            specificFormsIds: [$form_id],
+        );
+        $migration->execute();
+
+        // Assert: form should be created with the default allow list (all users)
+        $form = getItemByTypeName(Form::class, "My private form");
+        $access_controls = $control_manager->getActiveAccessControlsForForm($form);
+        $this->assertCount(1, $access_controls);
+        $this->assertEquals(
+            DirectAccess::class,
+            $access_controls[0]->fields['strategy'],
+        );
+
+        $expected_config = new DirectAccessConfig(
+            allow_unauthenticated: false,
+        );
+        $this->assertArrayIsEqualToArrayIgnoringListOfKeys(
+            $expected_config->jsonSerialize(),
+            json_decode($access_controls[0]->fields['config'], true),
+            ['token'], // We can't guess the token
+        );
+    }
+
     protected function createSimpleFormcreatorForm(
         string $name,
         array $questions,
         array $submit_conditions = [],
         array $ticket_destinations = [],
+        array $properties = [],
     ): int {
         /** @var \DBmysql $DB */
         global $DB;
@@ -3557,7 +3644,7 @@ final class FormMigrationTest extends DbTestCase
         $DB->insert('glpi_plugin_formcreator_forms', [
             'name' => $name,
             'show_rule' => $submit_conditions['show_rule'] ?? 1,
-        ]);
+        ] + $properties);
         $form_id = $DB->insertId();
 
         // Add a section
