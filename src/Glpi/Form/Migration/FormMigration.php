@@ -1377,7 +1377,10 @@ class FormMigration extends AbstractPluginMigration
                 continue;
             }
 
-            $value = $raw_condition['show_value'];
+            // The value can be null for formcreator, make sure to fallback to
+            // an empty string
+            $value = $raw_condition['show_value'] ?? "";
+
             $value_operator = $this->getValueOperatorFromLegacy(
                 $raw_condition['show_condition'],
                 $value,
