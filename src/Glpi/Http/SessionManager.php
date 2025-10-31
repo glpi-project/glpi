@@ -82,6 +82,17 @@ class SessionManager
     {
         $path = $this->normalizePath($request);
 
+        if ($this->getTargetFile($path) !== null && !$this->isTargetAPhpScript($path)) {
+            // Static files loaded by the FrontEndAssetsListener must not start
+            // a session or it'll prevent them from being cached.
+            return true;
+        }
+
+        if (\str_starts_with($path, '/front/css.php') || \str_starts_with($path, '/front/locale.php')) {
+            // The CSS and locales endpoints are stateless compiled resources.
+            return true;
+        }
+
         $path_matches = [];
         if (preg_match(Plugin::PLUGIN_RESOURCE_PATTERN, $path, $path_matches) === 1) {
             $plugin_key      = $path_matches['plugin_key'];
@@ -103,12 +114,6 @@ class SessionManager
 
         if (\str_starts_with($path, '/api.php') || \str_starts_with($path, '/apirest.php')) {
             // API clients must not use cookies, as the session token is expected to be passed in headers.
-            return true;
-        }
-
-        if ($this->getTargetFile($path) !== null && !$this->isTargetAPhpScript($path)) {
-            // Static files loaded by the FrontEndAssetsListener must not start
-            // a session or it'll prevent them from being cached.
             return true;
         }
 

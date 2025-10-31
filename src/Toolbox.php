@@ -613,14 +613,19 @@ class Toolbox
         $etag = md5_file($path);
         $lastModified = filemtime($path);
 
+        // remove headers automatically added by session start
+        header_remove('Pragma');
+        header_remove('Cache-Control');
+        header_remove('Expires');
+
         $headers = [
             'Last-Modified' => gmdate("D, d M Y H:i:s", $lastModified) . " GMT",
             'Etag'          => $etag,
-            'Cache-Control' => 'private',
+            'Cache-Control' => 'private, must-revalidate',
         ];
-        header_remove('Pragma');
         if ($expires_headers) {
             $max_age = WEEK_TIMESTAMP;
+            $headers['Cache-Control'] = 'private, max-age=' . $max_age . ', must-revalidate';
             $headers['Expires'] = gmdate('D, d M Y H:i:s \G\M\T', time() + $max_age);
         }
         $content_disposition = "$attachment filename=\""

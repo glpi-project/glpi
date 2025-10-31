@@ -988,10 +988,13 @@ HTML;
             $cache_age = 40;
 
             if ($use_cache) {
-                // browser cache
+                // remove headers automatically added by session start
                 header_remove('Pragma');
-                header('Cache-Control: public');
-                header('Cache-Control: max-age=' . $cache_age);
+                header_remove('Cache-Control');
+                header_remove('Expires');
+
+                // add cache headers
+                header('Cache-Control: public, max-age=' . $cache_age . ', must-revalidate');
                 header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $cache_age));
             }
 
