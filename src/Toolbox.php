@@ -40,6 +40,7 @@ use Glpi\Rules\RulesManager;
 use Glpi\Toolbox\Sanitizer;
 use Glpi\Toolbox\URL;
 use Glpi\Toolbox\VersionParser;
+use GuzzleHttp\Client;
 use Laminas\Mail\Storage\AbstractStorage;
 use Mexitek\PHPColors\Color;
 use Monolog\Logger;
@@ -1462,6 +1463,31 @@ class Toolbox
     }
 
     /**
+     * Get a new Guzzle client with proxy if configured and the specified other options.
+     * @param array $extra_options Extra options to pass to the Guzzle client constructor
+     * @return Client Guzzle client
+     */
+    public static function getGuzzleClient(array $extra_options = []): Client
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $options = $extra_options + ['connect_timeout' => 5];
+        // add proxy string if configured in glpi
+        if (!empty($CFG_GLPI["proxy_name"])) {
+            $proxy_creds = "";
+            if (!empty($CFG_GLPI["proxy_user"])) {
+                $proxy_user = rawurlencode($CFG_GLPI["proxy_user"]);
+                $proxy_pass = rawurlencode((new \GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]));
+                $proxy_creds = $proxy_user . ":" . $proxy_pass . "@";
+            }
+            $proxy_string = "http://{$proxy_creds}" . $CFG_GLPI['proxy_name'] . ":" . $CFG_GLPI['proxy_port'];
+            $options['proxy'] = $proxy_string;
+        }
+        return new Client($options);
+    }
+
+    /**
      * Executes a curl call
      *
      * @param string $url         URL to retrieve
@@ -1526,9 +1552,11 @@ class Toolbox
             ];
 
             if (!empty($CFG_GLPI["proxy_user"])) {
+                $proxy_user = rawurlencode($CFG_GLPI["proxy_user"]);
+                $proxy_pass = rawurlencode((new GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]));
                 $opts += [
                     CURLOPT_PROXYAUTH    => CURLAUTH_BASIC,
-                    CURLOPT_PROXYUSERPWD => $CFG_GLPI["proxy_user"] . ":" . (new GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]),
+                    CURLOPT_PROXYUSERPWD => $proxy_user . ":" . $proxy_pass,
                 ];
             }
 
