@@ -74,9 +74,9 @@
     --glpi-mainmenu-fg: #f4f6fa;
     --glpi-mainmenu-fg-muted: #f4f6fa99;
     --glpi-mainmenu-active-bg: color-mix(in srgb, var(--glpi-mainmenu-bg), white 45%);
-    --glpi-search-bg: color-mix(in srgb, var(--glpi-mainmenu-bg), transparent 95%);
-    --glpi-search-fg: color-mix(in srgb, var(--glpi-mainmenu-fg), white 5%);
-    --glpi-search-border-color: color-mix(in srgb, var(--glpi-search-fg), white 65%);
+    --glpi-search-bg: var(--tblr-bg-surface-tertiary);
+    --glpi-search-fg: var(--tblr-body-color);
+    --glpi-search-border-color: var(--tblr-border-color);
     --glpi-fg-secondary: #f4f6fa;
     --glpi-badge-bg: color-mix(in srgb, var(--tblr-link-color), var(--tblr-light) 91%);
     --glpi-badge-fg: var(--tblr-link-color);
