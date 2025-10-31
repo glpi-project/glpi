@@ -85,15 +85,22 @@
       {% endif %}
    </div>
 
-   {% if not template_preview and not show_extra_fields %}
-       {% if not item.isNewItem() %}
-           {{ include('components/itilobject/mainform_open.html.twig') }}
-       {% endif %}
-       {{ include('components/itilobject/footer.html.twig') }}
-       {% if not item.isNewItem() %}
-           {{ include('components/itilobject/mainform_close.html.twig') }}
-       {% endif %}
-   {% endif %}
+    {% if not template_preview %}
+        {% if item.canUpdate() %}
+            {% if show_extra_fields %}
+                {{ include('components/itilobject/footer.html.twig') }}
+            {% else %}
+                {% if not item.isNewItem() %}
+                    {{ include('components/itilobject/mainform_open.html.twig') }}
+                {% endif %}
+                {{ include('components/itilobject/footer.html.twig') }}
+                {% if not item.isNewItem() %}
+                    {{ include('components/itilobject/mainform_close.html.twig') }}
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+
 </div>
 
 {# Common form fields for CommonITILObject_CommonITILObject purge action #}
