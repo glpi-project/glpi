@@ -80,17 +80,12 @@ final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer implem
     #[Override]
     public function listTranslationsHandlers(Question $question): array
     {
-        $default_value = $question->fields['default_value'] ?? '';
-        if (empty($default_value)) {
-            return [];
-        }
-
         return [
             new TranslationHandler(
                 item: $question,
                 key: Question::TRANSLATION_KEY_DEFAULT_VALUE,
                 name: __('Default value'),
-                value: $default_value,
+                value: $question->fields['default_value'] ?? '',
             ),
         ];
     }

@@ -46,11 +46,11 @@ use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\QuestionType\TranslationAwareQuestionType;
-use Glpi\ItemTranslation\Context\TranslationHandler;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
+use Symfony\Component\DomCrawler\Crawler;
 
 use function Safe\json_encode;
 
@@ -288,16 +288,35 @@ class FormTranslationTest extends \DbTestCase
         $builder->addQuestion("My question", $type::class, "", $extra_data);
         $form = $this->createForm($builder);
 
+        // Arrange: add translation
+        $this->addTranslationToForm(
+            $form,
+            'fr_FR',
+            Form::TRANSLATION_KEY_NAME,
+            'My form in fr_FR',
+        );
+
         // Act: get translations handler for the question
         $question = Question::getById($this->getQuestionId($form, "My question"));
         $handlers = $type->listTranslationsHandlers($question);
 
-        // Assert: no default value handlers should exist for the empty question
-        $key = Question::TRANSLATION_KEY_DEFAULT_VALUE;
-        $handlers = array_filter(
-            $handlers,
-            fn(TranslationHandler $h) => $h->getKey() == $key
-        );
-        $this->assertEmpty($handlers);
+        ob_start();
+        FormTranslation::displayTabContentForItem($form);
+        $content = ob_get_clean();
+        $crawler = new Crawler($content);
+
+        // Assert: no default value handler should be listed
+        foreach ($handlers as $handler) {
+            // Assert: translation row exists in the translations table
+            $row = $crawler->filter('#form-translation-modal-fr_FR tbody tr')
+                ->reduce(function (Crawler $node) use ($handler) {
+                    return str_contains($node->text(), $handler->getName());
+                });
+            $this->assertEquals(
+                0,
+                $row->count(),
+                "Translation row for handler '{$handler->getName()}' should not be listed as the default value is empty."
+            );
+        }
     }
 }
