@@ -1050,11 +1050,9 @@ TWIG,
 
         $theme = ThemeManager::getInstance()->getCurrentTheme();
         $lang = $_SESSION['glpilanguage'] ?? Session::getPreferredLanguage();
-        // Force lang to be BCP 47 compliant
-        $lang = str_replace('_', '-', $lang);
 
         $tpl_vars = [
-            'lang'               => $lang,
+            'lang'               => $CFG_GLPI["languages"][$lang][3],
             'title'              => $title,
             'theme'              => $theme,
             'is_anonymous_page'  => false,
