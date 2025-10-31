@@ -41,7 +41,6 @@ use DateTimeZone;
 use Dropdown;
 use Entity;
 use ExtraVisibilityCriteria;
-use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\RichText\RichText;
 use Glpi\Toolbox\ArrayNormalizer;
@@ -480,7 +479,7 @@ trait PlanningEvent
                     "$table.users_id" => $who,
                     QueryFunction::jsonContains(
                         "$table.users_id_guests",
-                        new QueryExpression((string) $who),
+                        QueryFunction::jsonValue($who),
                         '$'
                     ),
                 ],

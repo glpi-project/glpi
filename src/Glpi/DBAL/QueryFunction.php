@@ -454,6 +454,35 @@ class QueryFunction
         return new QueryExpression('CONCAT_WS(' . $separator . ', ' . implode(', ', $params) . ')', $alias);
     }
 
+    /**
+     * Build a JSON_CONTAINS SQL function call
+     *
+     * Searches for a value within a JSON document. Handles both column references and scalar values.
+     *
+     * @param string|QueryExpression $target JSON field or expression to search in
+     * @param string|QueryExpression $candidate Value to search for:
+     *                                          - string: column name (will be quoted as identifier)
+     *                                          - QueryExpression: use jsonValue() for scalar values
+     * @param string $path JSON path expression (e.g., '$' for root, '$.fieldname' for nested)
+     * @param string|null $alias Function result alias (will be automatically quoted)
+     * @return QueryExpression
+     *
+     * @example
+     * // Search for a scalar value (recommended: use jsonValue())
+     * QueryFunction::jsonContains(
+     *     'users_id_guests',
+     *     QueryFunction::jsonValue(4),
+     *     '$'
+     * )
+     *
+     * @example
+     * // Search using a column reference
+     * QueryFunction::jsonContains(
+     *     'REFTABLE.custom_fields',
+     *     'NEWTABLE.id',
+     *     '$.field_id'
+     * )
+     */
     public static function jsonContains(string|QueryExpression $target, string|QueryExpression $candidate, string $path, ?string $alias = null): QueryExpression
     {
         global $DB;
@@ -472,5 +501,43 @@ class QueryFunction
         $path = new QueryExpression($DB::quoteValue($path));
 
         return self::getExpression('JSON_CONTAINS', [$target, $candidate, $path], $alias);
+    }
+
+    /**
+     * Converts a scalar value to a JSON-compatible expression for use in JSON functions.
+     *
+     * This method ensures that scalar values (integers or strings) are properly formatted
+     * for JSON functions like JSON_CONTAINS, handling differences between MariaDB and MySQL:
+     * - MariaDB: Accepts quoted strings directly
+     * - MySQL: Requires CAST(value AS JSON)
+     *
+     * Note: This function only handles scalar values (int, string). For complex JSON
+     * structures (objects, arrays), use json_encode() directly in your query building.
+     *
+     * @param int|string $value The scalar value to convert to JSON format (typically a user ID)
+     * @param string|null $alias Optional alias for the expression
+     * @return QueryExpression A QueryExpression suitable for use in JSON functions
+     *
+     * @since 11.0.0
+     *
+     * @example
+     * // Search for user ID 4 in a JSON array field
+     * QueryFunction::jsonContains(
+     *     'users_id_guests',
+     *     QueryFunction::jsonValue(4),  // Converts 4 to proper JSON value
+     *     '$'
+     * )
+     */
+    public static function jsonValue(int|string $value, ?string $alias = null): QueryExpression
+    {
+        global $DB;
+
+        $string_value = $DB::quoteValue((string) $value);
+        $server_info = $DB->getVersionAndServer();
+        $expression = $server_info['server'] === 'MariaDB'
+            ? $string_value
+            : "CAST($string_value AS JSON)";
+
+        return new QueryExpression($expression, $alias);
     }
 }
