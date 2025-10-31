@@ -1179,11 +1179,11 @@ final class SQLProvider implements SearchProviderInterface
         if (preg_match('/^\$\$\$\$([0-9]+)$/', $val, $regs)) {
             $criteria = [
                 'OR' => [
-                    "table.id" => [$nott ? "<>" : "=", $regs[1]],
+                    $table . ".id" => [$nott ? "<>" : "=", $regs[1]],
                 ],
             ];
             if ((int) $regs[1] === 0) {
-                $criteria['OR'][] = ["table.id" =>  "IS NULL"];
+                $criteria['OR'][] = [$table . ".id" =>  "IS NULL"];
             }
             return $criteria;
         }
