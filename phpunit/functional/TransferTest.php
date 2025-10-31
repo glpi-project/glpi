@@ -749,7 +749,7 @@ class TransferTest extends DbTestCase
         $contract_item = new \Contract_Item();
         $this->assertEquals(count($contract_item->find([
             'contracts_id' => $contract->getID(),
-            'itemtype' => 'Computer',
+            'itemtype' => \Computer::class,
         ])), 2);
 
         //transfer to another entity with keep contract option
