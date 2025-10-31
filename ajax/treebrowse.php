@@ -58,11 +58,8 @@ switch ($_REQUEST['action']) {
         // but only for FAQ/knowbase browsing. Prevent anonymous users from
         // using this endpoint to list other item types (users, etc.).
         global $CFG_GLPI;
-        if (Session::getLoginUserID() === false && !empty($CFG_GLPI['use_public_faq'])) {
-            // Allow only KnowbaseItem (FAQ) when anonymous
-            if ($itemtype !== KnowbaseItem::class) {
-                throw new AccessDeniedHttpException();
-            }
+        if ($itemtype::canView() === false) {
+            throw new AccessDeniedHttpException();
         }
         $category_item = $itemtype::getCategoryItem($itemtype);
         $category_table = $category_item::getTable();
