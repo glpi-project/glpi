@@ -146,12 +146,16 @@ class HTMLSearchOutput extends AbstractSearchOutput
         $active_savedsearch = false;
         if (isset($_SESSION['glpi_loaded_savedsearch'])) {
             $savedsearch = new SavedSearch();
-            $savedsearch->getFromDB($_SESSION['glpi_loaded_savedsearch']);
-            if ($itemtype === $savedsearch->fields['itemtype']) {
-                $active_search_name = $savedsearch->getName();
-                $active_savedsearch = true;
+            if ($savedsearch->getFromDB($_SESSION['glpi_loaded_savedsearch'])) {
+                if ($itemtype === $savedsearch->fields['itemtype']) {
+                    $active_search_name = $savedsearch->getName();
+                    $active_savedsearch = true;
+                }
+            } else {
+                unset($_SESSION['glpi_loaded_savedsearch']);
             }
-        } elseif (count($data['search']['criteria']) > 0) {
+        }
+        if (!$active_savedsearch && count($data['search']['criteria']) > 0) {
             // check if it isn't the default search
             $default = CriteriaFilter::getDefaultSearch($itemtype);
             if ($default != $data['search']['criteria']) {
