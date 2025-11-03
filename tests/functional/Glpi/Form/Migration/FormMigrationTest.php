@@ -3285,6 +3285,10 @@ final class FormMigrationTest extends DbTestCase
             'type' => 'tag',
             'expected_message' => 'The "tag" question type is available in the "tag" plugin: https://plugins.glpi-project.org/#/plugin/tag',
         ];
+        yield [
+            'type' => 'fields',
+            'expected_message' => 'The "fields" question type is available in the "fields" plugin: https://plugins.glpi-project.org/#/plugin/fields',
+        ];
     }
 
     #[DataProvider('pluginHintsProvider')]
