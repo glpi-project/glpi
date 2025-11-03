@@ -53,6 +53,7 @@ $change = new Change();
 if (isset($_POST["add"])) {
     $change->check(-1, CREATE, $_POST);
 
+    $_POST = $change->enforceReadonlyFields($_POST, true);
     $newID = $change->add($_POST);
     Event::log(
         $newID,
@@ -109,6 +110,7 @@ if (isset($_POST["add"])) {
 } elseif (isset($_POST["update"])) {
     $change->check($_POST["id"], UPDATE);
 
+    $_POST = $change->enforceReadonlyFields($_POST);
     $change->update($_POST);
     Event::log(
         $_POST["id"],
