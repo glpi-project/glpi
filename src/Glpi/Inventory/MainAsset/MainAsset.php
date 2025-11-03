@@ -345,7 +345,7 @@ abstract class MainAsset extends InventoryAsset
                     if (property_exists($val, 'contact')) {
                         if ($val->contact == '') {
                             $val->contact = $user;
-                        } else {
+                        } elseif (mb_strlen($val->contact . '/' . $user) <= 255) {
                             $val->contact .= "/" . $user;
                         }
                     } else {
