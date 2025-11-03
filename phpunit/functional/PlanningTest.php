@@ -326,13 +326,13 @@ class PlanningTest extends \DbTestCase
         $this->assertFalse($events[2]['allDay'] ?? false);
     }
 
-	public function testRRuleEncoding()
-	{
+    public function testRRuleEncoding()
+    {
         $event = new \PlanningExternalEvent();
-		$this->assertEquals('{"freq":"weekly","interval":"3","until":""}', $event->encodeRRule(["freq" => "weekly", "interval" => "3", "until" => ""]));
-		$this->assertEmpty($event->encodeRRule(["freq" => null]));
-		$this->assertEmpty($event->encodeRRule(["freq" => '']));
-	}
+        $this->assertEquals('{"freq":"weekly","interval":"3","until":""}', $event->encodeRRule(["freq" => "weekly", "interval" => "3", "until" => ""]));
+        $this->assertEmpty($event->encodeRRule(["freq" => null]));
+        $this->assertEmpty($event->encodeRRule(["freq" => '']));
+    }
 
     public function testCheckAlreadyPlannedProvider()
     {
