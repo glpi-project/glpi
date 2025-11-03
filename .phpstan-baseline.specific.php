@@ -456,6 +456,14 @@ $ignoreErrors[] = [
     'path' => __DIR__ . '/src/Dropdown.php',
 ];
 
+// Reported in PHP 8.5
+$ignoreErrors[] = [
+    'message' => '#^Invalid array key type null\\.$#',
+    'identifier' => 'array.invalidKey',
+    'count' => 5,
+    'path' => __DIR__ . '/src/Features/PlanningEvent.php',
+];
+
 // Reported in PHP 7.4
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$input of function str_pad expects string, float\\|int given\\.$#',
@@ -744,6 +752,14 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Search.php',
+];
+
+// Reported in PHP 8.5
+$ignoreErrors[] = [
+    'message' => '#^Invalid array key type null\\.$#',
+    'identifier' => 'array.invalidKey',
+    'count' => 5,
+    'path' => __DIR__ . '/src/Item_SoftwareVersion.php',
 ];
 
 // Reported in PHP 7.4
