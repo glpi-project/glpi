@@ -76,16 +76,28 @@ final class SubmitAnswerController extends AbstractController
         $form = $this->loadSubmittedForm($request);
         $this->checkFormAccessPolicies($form, $request);
 
-        $answers = $this->saveSubmittedAnswers($form, $request);
-        $links = $answers->getLinksToCreatedItems();
+        try {
+            $answers = $this->saveSubmittedAnswers($form, $request);
+            $links = $answers->getLinksToCreatedItems();
 
-        if ($is_unauthenticated_user) {
-            AltchaManager::getInstance()->removeChallenge($altcha);
+            if ($is_unauthenticated_user) {
+                AltchaManager::getInstance()->removeChallenge($altcha);
+            }
+
+            return new JsonResponse([
+                'links_to_created_items' => $links,
+            ]);
+        } catch (\Throwable $th) {
+            $messages = [];
+            if (isset($_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR])) {
+                $messages = $_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR];
+                unset($_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR]);
+            }
+
+            return new JsonResponse([
+                'errors' => $messages,
+            ], Response::HTTP_BAD_REQUEST);
         }
-
-        return new JsonResponse([
-            'links_to_created_items' => $links,
-        ]);
     }
 
     private function loadSubmittedForm(Request $request): Form
