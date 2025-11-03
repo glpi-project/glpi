@@ -93,6 +93,7 @@ final class TypesConversionMapper
             "ip"         => "advancedforms",
             "hostname"   => "advancedforms",
             "tag"        => "tag",
+            "fields"     => "fields",
         };
     }
 
