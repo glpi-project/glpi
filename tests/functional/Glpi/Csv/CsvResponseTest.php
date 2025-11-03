@@ -66,7 +66,7 @@ class CsvResponseTest extends DbTestCase
         Core_CsvResponse::output($mock_logexport);
 
         // Parse CSV
-        $csv = Reader::createFromString(ob_get_clean());
+        $csv = Reader::fromString(ob_get_clean());
         $csv->setHeaderOffset(0);
         $csv->setDelimiter($_SESSION["glpicsv_delimiter"] ?? ";");
         $csv->setEscape('');

@@ -46,7 +46,7 @@ class CsvResponse
      */
     public static function output(ExportToCsvInterface $export): void
     {
-        $csv = Writer::createFromString('');
+        $csv = Writer::fromString('');
 
         // Using a non-empty string for `$escape` is deprecated in PHP 8.4.
         // According to https://www.php.net/manual/fr/function.fgetcsv.php, using an empty value for `$escape`
