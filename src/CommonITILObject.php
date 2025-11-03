@@ -1967,6 +1967,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             return false;
         }
 
+        $input = $this->enforceReadonlyFields($input);
+
         // Add document if needed
         $this->getFromDB($input["id"]); // entities_id field required
 
@@ -2343,6 +2345,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public function enforceReadonlyFields(array $input, bool $isAdd = false): array
     {
+        // No enforcing for API
+        if (isAPI() || isCommandLine()) {
+            return $input;
+        }
+
         $tt = $this->getITILTemplateFromInput($input);
         if (!$tt) {
             return $input;
@@ -2837,6 +2844,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         if (!$this->checkFieldsConsistency($input)) {
             return false;
         }
+
+        $input = $this->enforceReadonlyFields($input, true);
 
         $input = $this->transformActorsInput($input);
 
