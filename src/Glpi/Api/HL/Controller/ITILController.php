@@ -823,6 +823,7 @@ final class ITILController extends AbstractController
                 'user_editor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_editor', full_schema: 'User'),
                 'approver' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_approval', full_schema: 'User') + ['x-version-introduced' => '2.1.0'],
                 'status' => [
+                    'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'enum' => [
                         CommonITILValidation::NONE,
