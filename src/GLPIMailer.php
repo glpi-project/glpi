@@ -152,8 +152,8 @@ class GLPIMailer
                 'smtp://%s%s:%s',
                 ($CFG_GLPI['smtp_username'] != '' ? sprintf(
                     '%s:%s@',
-                    urlencode($CFG_GLPI['smtp_username']),
-                    $with_clear_password ? urlencode($password) : '********'
+                    rawurlencode($CFG_GLPI['smtp_username']),
+                    $with_clear_password ? rawurlencode($password) : '********'
                 ) : ''),
                 $CFG_GLPI['smtp_host'],
                 $CFG_GLPI['smtp_port']
