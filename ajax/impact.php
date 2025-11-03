@@ -148,7 +148,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
         $item = new $start_node_details[0]();
         $item->getFromDB($start_node_details[1]);
         $impact_item = \ImpactItem::findForItem($item);
-        $start_node_impact_item_id = (int)$impact_item->fields['id'];
+        $start_node_impact_item_id = (int) $impact_item->fields['id'];
         $readonly = !$item->can($item->fields['id'], UPDATE);
 
         // Stop here if readonly graph
