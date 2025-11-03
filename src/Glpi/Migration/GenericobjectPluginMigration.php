@@ -38,7 +38,6 @@ use CommonDBTM;
 use CommonDropdown;
 use Domain_Item;
 use DropdownTranslation;
-use FieldUnicity;
 use Glpi\Asset\Asset;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetModel;
@@ -568,18 +567,8 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                 }
             }
 
-            // Import fields unicities
-            $this->copyItems(
-                FieldUnicity::class,
-                where: ['itemtype' => $plugin_itemtype],
-                replacements: [
-                    [
-                        'field' => 'itemtype',
-                        'from'  => $plugin_itemtype,
-                        'to'    => $asset_definition->getAssetClassName(),
-                    ],
-                ]
-            );
+            // Update class references
+            $this->updateItemtypeReferences($plugin_itemtype, $asset_definition->getAssetClassName());
 
             // FIXME Copy history, display preferences and saved searches, for main definition, model and type ?
             // This requires the implementation of a mapping between plugin SO and generic asset SO.
@@ -870,8 +859,8 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                         );
                     }
 
-                    // Copy relation/child items
-                    $this->copyPolymorphicConnexityItems(
+                    // Update relations with the migrated item
+                    $this->updatePolymorphicReferences(
                         $type_data['itemtype'],
                         $asset_data['id'],
                         $asset::class,
