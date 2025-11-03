@@ -87,12 +87,81 @@ class RouterTest extends GLPITestCase
         $this->assertEmpty($schemas_missing_versions, 'Schemas missing versioning info: ' . implode(', ', $schemas_missing_versions));
     }
 
-    public function testNormalizeAPIVersion()
+    /**
+     * Ensure all schemas for CommonTreeDropdown itemtypes have the correct readonly properties such as completename and level
+     * @return void
+     */
+    public function testAllTreeSchemasHaveReadonlyProps()
     {
-        $this->assertEquals('50.2.0', TestRouter::normalizeAPIVersion('50'));
-        $this->assertEquals('50.1.1', TestRouter::normalizeAPIVersion('50.1.1'));
-        $this->assertEquals('50.1.2', TestRouter::normalizeAPIVersion('50.1'));
-        $this->assertEquals('50.2.0', TestRouter::normalizeAPIVersion('50.2'));
+        $router = Router::getInstance();
+        $controllers = $router->getControllers();
+
+        $schemas_errors = [];
+        $required_readonly_props = ['completename', 'level'];
+        foreach ($controllers as $controller) {
+            $schemas = $controller::getKnownSchemas(null);
+            foreach ($schemas as $schema_name => $schema) {
+                if (!isset($schema['x-itemtype']) || !is_subclass_of($schema['x-itemtype'], \CommonTreeDropdown::class)) {
+                    continue;
+                }
+                foreach ($required_readonly_props as $prop) {
+                    if (!isset($schema['properties'][$prop])) {
+                        $schemas_errors[] = "Schema $schema_name in " . $controller::class . " is missing property '$prop'";
+                    } else {
+                        if (!isset($schema['properties'][$prop]['readOnly']) || $schema['properties'][$prop]['readOnly'] !== true) {
+                            $schemas_errors[] = "Property '$prop' in schema $schema_name in " . $controller::class . " is not marked as readOnly";
+                        }
+                    }
+                }
+            }
+        }
+        $this->assertEmpty($schemas_errors, "Tree schemas with errors: \n" . implode("\n", $schemas_errors));
+    }
+
+    /**
+     * Ensure there are not multiple schemas for the same itemtype (identified by x-itemtype).
+     * In some cases, like user preferences, we may have multiple schemas for the same itemtype, but those extra schemas
+     * should use x-table instead to point to the table directly.
+     * @return void
+     */
+    public function testNoDuplicateItemtypeSchemas()
+    {
+        $router = Router::getInstance();
+        $controllers = $router->getControllers();
+
+        $seen_itemtypes = [];
+        $duplicate_schemas = [];
+        $all_schemas = [];
+        foreach ($controllers as $controller) {
+            /** @noinspection SlowArrayOperationsInLoopInspection */
+            $all_schemas = array_merge($all_schemas, $controller::getKnownSchemas(null));
+        }
+        foreach ($all_schemas as $schema_name => $schema) {
+            // Ignore known duplicate. Cannot fix until v3
+            if ($schema_name === 'SoftwareLicense') {
+                continue;
+            }
+            if (isset($schema['x-itemtype'])) {
+                $itemtype = $schema['x-itemtype'];
+                if (isset($seen_itemtypes[$itemtype])) {
+                    $duplicate_schemas[] = "Itemtype $itemtype has multiple schemas: " . $seen_itemtypes[$itemtype] . " and $schema_name";
+                } else {
+                    $seen_itemtypes[$itemtype] = $schema_name;
+                }
+            }
+        }
+        ksort($all_schemas['SoftwareLicense']['properties']);
+        ksort($all_schemas['License']['properties']);
+        $this->assertEquals(
+            array_keys($all_schemas['SoftwareLicense']['properties']),
+            array_keys($all_schemas['License']['properties']),
+            'Schemas SoftwareLicense and License should have the same properties',
+        );
+        // Ensure the duplication gets removed in v3
+        if (version_compare(Router::API_VERSION, '3.0.0', '>=')) {
+            $this->assertNotContains('SoftwareLicense', $seen_itemtypes, 'Schema SoftwareLicense should be removed in v3');
+        }
+        $this->assertEmpty($duplicate_schemas, "Duplicate itemtype schemas found: \n" . implode("\n", $duplicate_schemas));
     }
 
     public function testHLAPIDisabled()
@@ -100,7 +169,7 @@ class RouterTest extends GLPITestCase
         global $CFG_GLPI;
 
         $CFG_GLPI['enable_hlapi'] = 0;
-        $router = TestRouter::getInstance();
+        $router = Router::getInstance();
         $response = $router->handleRequest(new Request('GET', '/Computer'));
         $this->assertEquals(403, $response->getStatusCode());
         $this->assertStringContainsString('The High-Level API is disabled', (string) $response->getBody());
@@ -110,11 +179,71 @@ class RouterTest extends GLPITestCase
         $this->assertEquals(403, $response->getStatusCode());
         $this->assertStringContainsString('The High-Level API is disabled', (string) $response->getBody());
     }
+
+    public function testNormalizeVersion()
+    {
+        // invalid version = router default
+        $this->assertEquals('51.0.0', TestRouter::normalizeAPIVersion('99'));
+        // only major version = latest API version for this major
+        $this->assertEquals('50.2.0', TestRouter::normalizeAPIVersion('50'));
+        // major.minor version = latest API version for this major.minor
+        $this->assertEquals('50.1.2', TestRouter::normalizeAPIVersion('50.1'));
+        // major.minor.patch version = same version
+        $this->assertEquals('50.1.1', TestRouter::normalizeAPIVersion('50.1.1'));
+
+        $this->assertEquals('50.2.0', TestRouter::normalizeAPIVersion('50.2'));
+    }
+
+    public function testRoutingByVersion()
+    {
+        $router = TestRouter::getInstance();
+        // 50.0 is requesting 50.0.X or earlier
+        $this->assertNotEquals('/{req}', $router->match(new Request('GET', '/version500', ['GLPI-API-Version' => '50.0']))->getRoutePath());
+        // 50 is requesting 50.X.X or earlier
+        $this->assertNotEquals('/{req}', $router->match(new Request('GET', '/version500', ['GLPI-API-Version' => '50']))->getRoutePath());
+        // 50.1 is requesting 50.1.X or earlier
+        $this->assertNotEquals('/{req}', $router->match(new Request('GET', '/version500', ['GLPI-API-Version' => '50.1']))->getRoutePath());
+        $this->assertNotEquals('/{req}', $router->match(new Request('GET', '/version500', ['GLPI-API-Version' => '51']))->getRoutePath());
+
+        $this->assertEquals('/{req}', $router->match(new Request('GET', '/version501', ['GLPI-API-Version' => '50.0']))->getRoutePath());
+        $this->assertNotEquals('/{req}', $router->match(new Request('GET', '/version501', ['GLPI-API-Version' => '50.1']))->getRoutePath());
+        $this->assertNotEquals('/{req}', $router->match(new Request('GET', '/version501', ['GLPI-API-Version' => '50']))->getRoutePath());
+
+        $this->assertEquals('/{req}', $router->match(new Request('GET', '/version510', ['GLPI-API-Version' => '50.0']))->getRoutePath());
+        $this->assertEquals('/{req}', $router->match(new Request('GET', '/version510', ['GLPI-API-Version' => '50.1']))->getRoutePath());
+        $this->assertNotEquals('/{req}', $router->match(new Request('GET', '/version510', ['GLPI-API-Version' => '51']))->getRoutePath());
+        $this->assertEquals('/{req}', $router->match(new Request('GET', '/version510', ['GLPI-API-Version' => '50']))->getRoutePath());
+    }
+
+    public function testSchemaByVersion()
+    {
+        // Note that schema version matching is always done against the "Router" class so it cannot be mocked with the TestRouter versions
+        $this->assertEquals(['Schema200', 'Schema200_2', 'Schema210'], array_keys(TestController::getKnownSchemas('2')));
+        $this->assertEquals(['Schema200', 'Schema200_2'], array_keys(TestController::getKnownSchemas('2.0')));
+        $this->assertEquals(['Schema200', 'Schema200_2'], array_keys(TestController::getKnownSchemas('2.0.0')));
+        $this->assertEquals(['Schema200', 'Schema200_2', 'Schema210'], array_keys(TestController::getKnownSchemas('2.1')));
+        $this->assertEquals(['Schema200', 'Schema200_2', 'Schema210'], array_keys(TestController::getKnownSchemas('2.1.0')));
+
+        // Test the filtering of fields inside schemas
+        $schema = TestController::getKnownSchemas('2')['Schema200'];
+        $this->assertArrayHasKey('field1', $schema['properties']);
+        $this->assertArrayHasKey('field2', $schema['properties']);
+
+        $schema = TestController::getKnownSchemas('2.0')['Schema200'];
+        $this->assertArrayHasKey('field1', $schema['properties']);
+        $this->assertArrayNotHasKey('field2', $schema['properties']);
+
+        $schema = TestController::getKnownSchemas('2.1')['Schema200'];
+        $this->assertArrayHasKey('field1', $schema['properties']);
+        $this->assertArrayHasKey('field2', $schema['properties']);
+    }
 }
 
 // @codingStandardsIgnoreStart
 class TestRouter extends Router
 {
+    public const API_VERSION = '51.0.0';
+
     // @codingStandardsIgnoreEnd
     public static function getInstance(): Router
     {
@@ -172,13 +301,73 @@ class TestRouter extends Router
 class TestController extends AbstractController
 {
     // @codingStandardsIgnoreEnd
-    /**
-     * @param RequestInterface $request
-     * @return Response
-     */
+
+    protected static function getRawKnownSchemas(): array
+    {
+        return [
+            'Schema200' => [
+                'type' => 'object',
+                'x-version-introduced' => '2.0',
+                'properties' => [
+                    'field1' => [
+                        'type' => 'string',
+                    ],
+                    'field2' => [
+                        'type' => 'string',
+                        'x-version-introduced' => '2.1.0',
+                    ],
+                ],
+            ],
+            'Schema200_2' => [
+                'type' => 'object',
+                'x-version-introduced' => '2.0.0',
+                'properties' => [
+                    'field1' => [
+                        'type' => 'string',
+                    ],
+
+                    'field2' => [
+                        'type' => 'string',
+                        'x-version-introduced' => '2.1.0',
+                    ],
+                ],
+            ],
+            'Schema210' => [
+                'type' => 'object',
+                'x-version-introduced' => '2.1.0',
+                'properties' => [
+                    'field1' => [
+                        'type' => 'string',
+                    ],
+                ],
+            ],
+        ];
+    }
+
     #[Route('/{req}', ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'], ['req' => '.*'], -1)]
-    #[RouteVersion(introduced: TestRouter::API_VERSION)]
+    #[RouteVersion(introduced: '50.0.0')]
     public function defaultRoute(RequestInterface $request): Response
+    {
+        return new Response(200, [], __FUNCTION__);
+    }
+
+    #[Route('/version500', ['GET'])]
+    #[RouteVersion(introduced: '50.0.0')]
+    public function testVersion500(RequestInterface $request): Response
+    {
+        return new Response(200, [], __FUNCTION__);
+    }
+
+    #[Route('/version501', ['GET'])]
+    #[RouteVersion(introduced: '50.1.0')]
+    public function testVersion501(RequestInterface $request): Response
+    {
+        return new Response(200, [], __FUNCTION__);
+    }
+
+    #[Route('/version510', ['GET'])]
+    #[RouteVersion(introduced: '51.0.0')]
+    public function testVersion510(RequestInterface $request): Response
     {
         return new Response(200, [], __FUNCTION__);
     }
