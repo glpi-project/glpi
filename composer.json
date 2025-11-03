@@ -34,7 +34,7 @@
         "altcha-org/altcha": "^1.1",
         "apereo/phpcas": "^1.6",
         "bacon/bacon-qr-code": "^3.0",
-        "donatj/phpuseragentparser": "^1.10",
+        "donatj/phpuseragentparser": "^1.11",
         "egulias/email-validator": "^4.0",
         "elvanto/litemoji": "^5.2",
         "gettext/languages": "^2.12",
