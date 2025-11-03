@@ -57,7 +57,6 @@ switch ($_REQUEST['action']) {
         // If public FAQ is enabled we allow anonymous access to this script
         // but only for FAQ/knowbase browsing. Prevent anonymous users from
         // using this endpoint to list other item types (users, etc.).
-        global $CFG_GLPI;
         if ($itemtype::canView() === false) {
             throw new AccessDeniedHttpException();
         }
