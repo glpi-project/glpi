@@ -1262,7 +1262,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Agent.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$parent of method Glpi\\\\Agent\\\\Communication\\\\AbstractRequest\\:\\:addNode\\(\\) expects DOMElement, \\(DOMNode\\|false\\) given\\.$#',
+	'message' => '#^Parameter \\#1 \\$parent of method Glpi\\\\Agent\\\\Communication\\\\AbstractRequest\\:\\:addNode\\(\\) expects DOMElement, \\(\\(TNode of DOMNode\\)\\|false\\) given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Agent/Communication/AbstractRequest.php',
@@ -6310,12 +6310,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method RuleCollection\\:\\:exportRulesToXML\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleCollection.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'entity\' on array\\{entity\\: true, criterias\\?\\: non\\-empty\\-list\\<mixed\\>, actions\\?\\: non\\-empty\\-list\\<mixed\\>\\} in isset\\(\\) always exists and is not nullable\\.$#',
-	'identifier' => 'isset.offset',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleCollection.php',
 ];
