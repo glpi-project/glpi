@@ -292,4 +292,44 @@ class StateTest extends DbTestCase
             $item->getStateVisibilityCriteria()
         );
     }
+
+    public function testShowSummary()
+    {
+        $this->login('glpi', 'glpi');
+
+        // Create a state
+        $state = $this->createItem(\State::class, ['name' => 'Test State', 'entities_id' => 0]);
+
+        // Create items linked to this state
+        $this->createItem(Computer::class, ['name' => 'Computer with state', 'states_id' => $state->getID(), 'entities_id' => 0]);
+        $this->createItem(\Monitor::class, ['name' => 'Monitor with state', 'states_id' => $state->getID(), 'entities_id' => 0]);
+        $this->createItem(
+            'Glpi\\CustomAsset\\Test01Asset',
+            [
+                'name' => 'Custom asset with state',
+                'states_id' => $state->getID(),
+                'entities_id' => 0,
+            ]
+        );
+
+        $criteria = [
+            [
+                'field' => "31",
+                'searchtype' => 'contains',
+                'value' => '$$$$' . $state->getID(),
+            ],
+        ];
+
+        // Search all assets with this state
+        $data = \Search::getDatas(\AllAssets::class, [
+            "criteria" => $criteria,
+        ]);
+
+        // There should be 3 items with this state
+        $this->assertSame(3, $data['data']['totalcount']);
+        foreach ($data['data']['rows'] as $row) {
+            $raw = $row['raw'];
+            $this->assertTrue(array_key_exists('ITEM_AllAssets_31', $raw));
+        }
+    }
 }
