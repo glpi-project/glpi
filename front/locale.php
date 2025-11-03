@@ -63,14 +63,14 @@ if (!isset($CFG_GLPI['languages'][$requested_language])) {
     // Fallback to default language if requested one is not available
     $requested_language = Session::getPreferredLanguage();
 }
-$requested_language = $CFG_GLPI['languages'][$requested_language][1];
+$requested_language_file = $CFG_GLPI['languages'][$requested_language][1];
 
 // Default response to send if locales cannot be loaded.
 // Prevent JS error for plugins that does not provide any translation files
 $default_response = json_encode(
     [
         '' => [
-            'language'     => $requested_language,
+            'language'     => $requested_language_file,
             'plural-forms' => 'nplurals=2; plural=(n != 1);',
         ],
     ]
@@ -79,7 +79,7 @@ $default_response = json_encode(
 // Get messages from translator component
 $messages = null;
 try {
-    $messages = $TRANSLATE->getAllMessages($_GET['domain']);
+    $messages = $TRANSLATE->getAllMessages($_GET['domain'], $requested_language);
 } catch (Throwable $e) {
     // Error may happen when overrided translation files does not use same plural rules as GLPI.
     ErrorHandler::logCaughtException($e);
@@ -92,7 +92,7 @@ if (!($messages instanceof TextDomain)) {
 }
 
 // Extract headers from main po file
-$po_file = GLPI_ROOT . '/locales/' . preg_replace('/\.mo$/', '.po', $requested_language);
+$po_file = GLPI_ROOT . '/locales/' . preg_replace('/\.mo$/', '.po', $requested_language_file);
 $po_file_handle = fopen(
     $po_file,
     'rb'
