@@ -84,6 +84,14 @@ use Glpi\Form\Tag\SectionTagProvider;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Glpi\UI\IllustrationManager;
+use GlpiPlugin\Tester\Asset\Foo;
+use GlpiPlugin\Tester\Form\ComputerDestination;
+use GlpiPlugin\Tester\Form\DayOfTheWeekPolicy;
+use GlpiPlugin\Tester\Form\DayOfTheWeekPolicyConfig;
+use GlpiPlugin\Tester\Form\ExternalIDField;
+use GlpiPlugin\Tester\Form\ExternalIDFieldConfig;
+use GlpiPlugin\Tester\Form\ExternalIDFieldStrategy;
+use GlpiPlugin\Tester\Form\QuestionTypeColor;
 use ITILCategory;
 use Location;
 use Monitor;
@@ -2136,6 +2144,232 @@ final class FormSerializerTest extends \DbTestCase
         // Assert: the import should succeed
         $this->assertCount(1, $import_result->getImportedForms());
         $this->assertEmpty($import_result->getFailedFormImports());
+    }
+
+    public function testExportThatUseQuestionTypeFromPlugin(): void
+    {
+        // Arrange: create a form with a type from a plugin
+        $builder = new FormBuilder();
+        $builder->setShouldInitDestinations(false);
+        $builder->addQuestion(
+            name: "My plugin question",
+            type: QuestionTypeColor::class, // From "tester" plugin
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: make sure a requirement was added
+        $data = json_decode($json, associative: true);
+        $this->assertEquals([
+            'key' => 'Tester',
+        ], $data['forms'][0]['plugin_requirements'][0]);
+    }
+
+    public function testExportThatUseDestinationTypeFromPlugin(): void
+    {
+        // Arrange: create a form with a type from a plugin
+        $builder = new FormBuilder();
+        $builder->setShouldInitDestinations(false);
+        $builder->addDestination(
+            itemtype: ComputerDestination::class, // From "tester" plugin
+            name: "My plugin question",
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: make sure a requirement was added
+        $data = json_decode($json, associative: true);
+        $this->assertEquals([
+            'key' => 'Tester',
+        ], $data['forms'][0]['plugin_requirements'][0]);
+    }
+
+    public function testExportThatUseAccessPolicyTypeFromPlugin(): void
+    {
+        // Arrange: create a form with a type from a plugin
+        $builder = new FormBuilder();
+        $builder->setShouldInitDestinations(false);
+        $builder->addAccessControl(
+            strategy: DayOfTheWeekPolicy::class, // From "tester" plugin
+            config: new DayOfTheWeekPolicyConfig("Friday"),
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: make sure a requirement was added
+        $data = json_decode($json, associative: true);
+        $this->assertEquals([
+            'key' => 'Tester',
+        ], $data['forms'][0]['plugin_requirements'][0]);
+    }
+
+    public function testExportThatUseItilDestinationFieldFromPlugin(): void
+    {
+        // Arrange: create a form with a type from a plugin
+        $builder = new FormBuilder();
+        $builder->setShouldInitDestinations(false);
+        $builder->addDestination(
+            itemtype: FormDestinationTicket::class,
+            name: "My plugin question",
+            config: [
+                ExternalIDField::getKey() => (
+                    new ExternalIDFieldConfig(ExternalIDFieldStrategy::NO_EXTERNAL_ID)
+                )->jsonSerialize(), // From "tester" plugin
+            ],
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: make sure a requirement was added
+        $data = json_decode($json, associative: true);
+        $this->assertEquals([
+            'key' => 'Tester',
+        ], $data['forms'][0]['plugin_requirements'][0]);
+    }
+
+    public function testExportThatUsesPluginItemsInQuestionsConfig(): void
+    {
+        global $CFG_GLPI;
+
+        // Arrange: create a form with a type from a plugin
+        $CFG_GLPI['asset_types'][] = Foo::class;
+        $builder = new FormBuilder();
+        $builder->setShouldInitDestinations(false);
+        $builder->addQuestion(
+            name: "My plugin question",
+            type: QuestionTypeItem::class,
+            extra_data: json_encode(new QuestionTypeItemExtraDataConfig(
+                itemtype: Foo::class, // Asset type from tester plugin
+            ))
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: make sure a requirement was added
+        $data = json_decode($json, associative: true);
+        $this->assertEquals([
+            'key' => 'Tester',
+        ], $data['forms'][0]['plugin_requirements'][0]);
+    }
+
+    public function testPluginRequirementAreUnique(): void
+    {
+        // Arrange: create a form with a type from a plugin
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "My plugin question",
+            type: QuestionTypeColor::class, // From "tester" plugin
+        );
+        $builder->addQuestion(
+            name: "My plugin question",
+            type: QuestionTypeColor::class, // From "tester" plugin
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: make sure only one requirement was added
+        $data = json_decode($json, associative: true);
+        $this->assertCount(1, $data['forms'][0]['plugin_requirements']);
+    }
+
+    public function testPluginRequirementAreNotAlwaysAdded(): void
+    {
+        // Arrange: create a form with a type NOT from a plugin
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "My plugin question",
+            type: QuestionTypeShortText::class,
+        );
+        $builder->setShouldInitDestinations(false);
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: make sure no requirements are added
+        // This test make sure the previous tests are reliable, as they could
+        // all be false negatives if this test was incorrect.
+        $data = json_decode($json, associative: true);
+        $this->assertCount(0, $data['forms'][0]['plugin_requirements']);
+    }
+
+    public function testImportWithMissingPlugin(): void
+    {
+        // Arrange: get json from fixtures
+        $json = $this->getFormJson('with-advancedforms-plugin-requirement.json');
+
+        // Act: import the form
+        $mapper = new DatabaseMapper([$this->getTestRootEntity(true)]);
+        $import_result = self::$serializer->importFormsFromJson($json, $mapper);
+
+        // Assert: the import should fail
+        $this->assertEmpty($import_result->getImportedForms());
+        $this->assertEquals([
+            'Test form' => ImportError::MISSING_PLUGIN_REQUIREMENT,
+        ], $import_result->getFailedFormImports());
+    }
+
+    public function testImportWithExistingPlugin(): void
+    {
+        // Arrange: get json from fixtures
+        $json = $this->getFormJson('with-tester-plugin-requirement.json');
+
+        // Act: import the form
+        $mapper = new DatabaseMapper([$this->getTestRootEntity(true)]);
+        $import_result = self::$serializer->importFormsFromJson($json, $mapper);
+
+        // Assert: the import should succeed
+        $this->assertEmpty($import_result->getFailedFormImports());
+        $this->assertCount(1, $import_result->getImportedForms());
+    }
+
+    public function testPreviewWithMissingPlugin(): void
+    {
+        // Arrange: get json from fixtures
+        $json = $this->getFormJson('with-advancedforms-plugin-requirement.json');
+
+        // Act: preview the form
+        $mapper = new DatabaseMapper([$this->getTestRootEntity(true)]);
+        $preview_results = self::$serializer->previewImport($json, $mapper);
+
+        // Assert: the preview should fail with a fatal error
+        $this->assertEmpty($preview_results->getValidForms());
+        $this->assertEmpty($preview_results->getSkippedForms());
+        $this->assertCount(1, $preview_results->getFormsWithFatalErrors());
+
+        $forms = $preview_results->getFormsWithFatalErrors();
+        $form = current($forms);
+        $this->assertEquals(
+            "Missing plugin: advancedforms",
+            $form["errors"][0],
+        );
+    }
+
+    public function testPreviewWithExistingPlugin(): void
+    {
+        // Arrange: get json from fixtures
+        $json = $this->getFormJson('with-tester-plugin-requirement.json');
+
+        // Act: preview the form
+        $mapper = new DatabaseMapper([$this->getTestRootEntity(true)]);
+        $preview_results = self::$serializer->previewImport($json, $mapper);
+
+        // Assert: the preview should succeed
+        $this->assertEmpty($preview_results->getFormsWithFatalErrors());
+        $this->assertEmpty($preview_results->getSkippedForms());
+        $this->assertCount(1, $preview_results->getValidForms());
     }
 
     private function compareValuesForRelations(
