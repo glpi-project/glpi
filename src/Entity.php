@@ -744,12 +744,8 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     public function post_addItem()
     {
         parent::post_addItem();
-
-        // Add right to current user - Hack to avoid login/logout
-        $_SESSION['glpiactiveentities'][$this->fields['id']] = $this->fields['id'];
-        $_SESSION['glpiactiveentities_string']              .= ",'" . $this->fields['id'] . "'";
-        // Root entity cannot be deleted, so if we added an entity this means GLPI is now multi-entity
-        $_SESSION['glpi_multientitiesmode'] = 1;
+        // We force the recursivity, so the new entity is visible in the current session
+        Session::changeActiveEntities(Session::getActiveEntity(), true);
     }
 
     public function post_updateItem($history = true)
