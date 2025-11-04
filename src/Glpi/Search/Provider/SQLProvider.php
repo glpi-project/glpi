@@ -5688,25 +5688,30 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     break;
                 case $table . ".completename":
-                    $completename = !empty($data[$ID][0]['trans_completename'])
-                        ? $data[$ID][0]['trans_completename']
-                        : $data[$ID][0]['name'];
+                    $completenames = [];
+                    for ($k = 0; $k < $data[$ID]['count']; $k++) {
+                        $completename = !empty($data[$ID][$k]['trans_completename'])
+                            ? $data[$ID][$k]['trans_completename']
+                            : $data[$ID][$k]['name'];
 
-                    if (empty($completename)) {
-                        return '';
+                        if (empty($completename)) {
+                            continue;
+                        }
+
+                        $completename = (new SanitizedStringsDecoder())->decodeHtmlSpecialCharsInCompletename($completename);
+
+                        if (
+                            $itemtype != $opt_itemtype
+                            && !$_SESSION['glpiuse_flat_dropdowntree_on_search_result'] //user doesn't want the completename
+                        ) {
+                            $split_name = explode(">", $completename);
+                            $completenames[] = htmlescape(trim(end($split_name)));
+                        } else {
+                            $completenames[] = htmlescape($completename);
+                        }
                     }
 
-                    $completename = (new SanitizedStringsDecoder())->decodeHtmlSpecialCharsInCompletename($completename);
-
-                    if (
-                        $itemtype != $opt_itemtype
-                        && !$_SESSION['glpiuse_flat_dropdowntree_on_search_result'] //user doesn't want the completename
-                    ) {
-                        $split_name = explode(">", $completename);
-                        return htmlescape(trim(end($split_name)));
-                    }
-
-                    return htmlescape($completename);
+                    return implode(Search::LBBR, $completenames);
 
                 case "glpi_documenttypes.icon":
                     if (!empty($data[$ID][0]['name'])) {

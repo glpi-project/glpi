@@ -48,6 +48,8 @@ use Entity;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDocumentsCapacity;
 use Glpi\DBAL\QueryExpression;
+use Group;
+use Group_Item;
 use Group_User;
 use Location;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -1134,7 +1136,7 @@ class SearchTest extends DbTestCase
         $computer1 = getItemByTypeName('Computer', '_test_pc01');
 
         //create group that can be notified
-        $group = new \Group();
+        $group = new Group();
         $gid = $group->add(
             [
                 'name'         => '_test_group01',
@@ -2266,7 +2268,7 @@ class SearchTest extends DbTestCase
         ]);
 
         // add a group for tech user
-        $group = new \Group();
+        $group = new Group();
         $groups_id = $group->add([
             'name' => "test group for tech user",
         ]);
@@ -2336,7 +2338,7 @@ class SearchTest extends DbTestCase
         ]);
 
         // add a group for tech user
-        $group = new \Group();
+        $group = new Group();
         $groups_id = $group->add([
             'name' => "test group for tech user",
         ]);
@@ -2392,7 +2394,7 @@ class SearchTest extends DbTestCase
         ]);
 
         // add a group for tech user
-        $group = new \Group();
+        $group = new Group();
         $groups_id = $group->add([
             'name' => "test group for tech user",
         ]);
@@ -6205,7 +6207,6 @@ class SearchTest extends DbTestCase
             ]
         );
 
-        // Test with default lang
         $result = \Search::getDatas(
             TaskCategory::class,
             [
@@ -6230,36 +6231,7 @@ class SearchTest extends DbTestCase
             $this->assertTrue(isset($result['data']['rows'][$key]['TaskCategory_1']['displayname']));
             $this->assertEquals($displayname, $result['data']['rows'][$key]['TaskCategory_1']['displayname']);
         }
-
-        // Test with fr_FR
-        $_SESSION['glpilanguage'] = 'fr_FR';
-        $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations('fr_FR');
-
-        $result = \Search::getDatas(
-            TaskCategory::class,
-            [
-                'criteria' => [
-                    [
-                        'field'      => '1',
-                        'searchtype' => 'contains',
-                        'value'      => '_cat_1',
-                    ],
-                ],
-            ]
-        );
-
-        $expected = [
-            'FR - _cat_1',
-            'FR - _cat_1 &gt; FR - _subcat_1',
-            'FR - _cat_1 &gt; R&amp;D',
-        ];
-
-        foreach ($expected as $key => $displayname) {
-            $this->assertTrue(isset($result['data']['rows'][$key]['TaskCategory_1']['displayname']));
-            $this->assertEquals($displayname, $result['data']['rows'][$key]['TaskCategory_1']['displayname']);
-        }
     }
-
 
     /**
      * Validate that dropdown complete names are correctly translated.
@@ -6295,7 +6267,6 @@ class SearchTest extends DbTestCase
             $this->assertEquals($displayname, $result['data']['rows'][$key]['TaskCategory_1']['displayname']);
         }
     }
-
 
     /**
      * Validate that `use_flat_dropdowntree_on_search_result` is correctly applied.
@@ -6348,6 +6319,83 @@ class SearchTest extends DbTestCase
 
         $this->assertTrue(isset($result['data']['rows'][0]['Computer_3']['displayname']));
         $this->assertEquals('_sublocation04', $result['data']['rows'][0]['Computer_3']['displayname']);
+    }
+
+    /**
+     * Validate that `use_flat_dropdowntree_on_search_result` is correctly applied.
+     */
+    public function testMultipleLinkedItemCompletenameColumnRenderingInSearchResults(): void
+    {
+        $this->login();
+
+        $computer = $this->createItem(
+            Computer::class,
+            [
+                'name'        => __FUNCTION__,
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
+        );
+        $this->createItems(
+            Group_Item::class,
+            [
+                [
+                    'groups_id' => \getItemByTypeName(Group::class, '_test_group_1', true),
+                    'itemtype'  => Computer::class,
+                    'items_id'  => $computer->getID(),
+                    'type'      => Group_Item::GROUP_TYPE_NORMAL,
+                ],
+                [
+                    'groups_id' => \getItemByTypeName(Group::class, '_test_group_2', true),
+                    'itemtype'  => Computer::class,
+                    'items_id'  => $computer->getID(),
+                    'type'      => Group_Item::GROUP_TYPE_NORMAL,
+                ],
+            ]
+        );
+
+        // Test with `use_flat_dropdowntree_on_search_result=1`
+        $_SESSION['glpiuse_flat_dropdowntree_on_search_result'] = 1;
+        $result = \Search::getDatas(
+            Computer::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => '1',
+                        'searchtype' => 'equals',
+                        'value'      => $computer->getID(),
+                    ],
+                ],
+                'forcetoview' => [71],
+            ]
+        );
+
+        $this->assertTrue(isset($result['data']['rows'][0]['Computer_71']['displayname']));
+        $this->assertEquals(
+            '_test_group_1#LBBR#_test_group_1 &gt; _test_group_2',
+            $result['data']['rows'][0]['Computer_71']['displayname']
+        );
+
+        // Test with `use_flat_dropdowntree_on_search_result=0`
+        $_SESSION['glpiuse_flat_dropdowntree_on_search_result'] = 0;
+        $result = \Search::getDatas(
+            Computer::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => '1',
+                        'searchtype' => 'equals',
+                        'value'      => $computer->getID(),
+                    ],
+                ],
+                'forcetoview' => [71],
+            ]
+        );
+
+        $this->assertTrue(isset($result['data']['rows'][0]['Computer_71']['displayname']));
+        $this->assertEquals(
+            '_test_group_1#LBBR#_test_group_2',
+            $result['data']['rows'][0]['Computer_71']['displayname']
+        );
     }
 
     /**
