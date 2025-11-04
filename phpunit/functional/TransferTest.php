@@ -784,6 +784,8 @@ class TransferTest extends DbTestCase
         /* Test the computer transfer and verify that contract link is kept */
 
         //Prepare items to transfer
+        $transfer = new \Transfer();
+        $this->assertTrue($transfer->getFromDB(1));
         $item_to_transfer = [\Computer::class => [
             $computer->getID() => $computer->getID(),
         ],
@@ -795,6 +797,18 @@ class TransferTest extends DbTestCase
             'contracts_id' => $contract->getID(),
             'itemtype' => 'Computer',
         ])), 2);
+
+        $this->assertEquals(count($contract_item->find([
+            'contracts_id' => $contract->getID(),
+            'itemtype' => 'Computer',
+            'items_id' => $computer->getID(),
+        ])), 1);
+
+        $this->assertEquals(count($contract_item->find([
+            'contracts_id' => $contract->getID(),
+            'itemtype' => 'Computer',
+            'items_id' => $computer_deleted->getID(),
+        ])), 1);
 
         //Check that computer is now in destination entity
         $this->assertEquals(count($computer->find([
