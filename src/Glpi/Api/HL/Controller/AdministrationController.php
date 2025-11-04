@@ -79,7 +79,7 @@ final class AdministrationController extends AbstractController
                                     'glpi_profiles_users' => [
                                         'ON' => [
                                             'glpi_profiles_users' => 'users_id',
-                                            'glpi_users' => 'id',
+                                            '_' => 'id',
                                         ],
                                     ],
                                 ],
