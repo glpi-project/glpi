@@ -42,7 +42,7 @@
 {% set itil_layout    = user_pref('itil_layout', true) %}
 {% set headers_states = itil_layout['items']|default([]) %}
 
-<div class="accordion open accordion-flush" id="itil-data">
+<div class="accordion open accordion-flush itil-object-fields" id="itil-data">
    {% set main_show = headers_states['item-main'] is not defined or headers_states['item-main'] == "true" ? true : false %}
    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITIL_INFO_SECTION'), {"item": item, 'options': params}) }}
    <section class="accordion-item" aria-label="{{ item.getTypeName(1) }}">
