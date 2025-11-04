@@ -88,7 +88,8 @@ final class SubmitAnswerController extends AbstractController
                 'links_to_created_items' => $links,
             ]);
         } catch (\Throwable $th) {
-            $this->logger->error(
+            global $PHPLOGGER;
+            $PHPLOGGER->error(
                 sprintf('An error occured during the form `%s` submission.', $form->getName()),
                 ['exception' => $th]
             );
