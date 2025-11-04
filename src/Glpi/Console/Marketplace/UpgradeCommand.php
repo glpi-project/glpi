@@ -44,13 +44,13 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
 
-class UpdateAllCommand extends AbstractCommand
+class UpgradeCommand extends AbstractCommand
 {
     protected function configure()
     {
         parent::configure();
 
-        $this->setName('marketplace:update_all');
+        $this->setName('marketplace:upgrade');
         $this->setDescription(__('Download and update all plugins to their latest compatible versions, then reactivate active ones.'));
 
         $this->addOption(
