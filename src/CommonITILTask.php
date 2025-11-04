@@ -1160,6 +1160,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             'name'               => __('Duration'),
             'datatype'           => 'timestamp',
             'massiveaction'      => false,
+            'splititems'         => true,
             'forcegroupby'       => true,
             'joinparams'         => [
                 'jointype'           => 'child',
@@ -1174,6 +1175,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             'name'               => _n('Date', 'Dates', 1),
             'datatype'           => 'datetime',
             'massiveaction'      => false,
+            'splititems'         => true,
             'forcegroupby'       => true,
             'joinparams'         => [
                 'jointype'           => 'child',
@@ -1222,6 +1224,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             'datatype'           => 'datetime',
             'maybefuture'        => true,
             'massiveaction'      => false,
+            'splititems'         => true,
             'forcegroupby'       => true,
             'joinparams'         => [
                 'jointype'           => 'child',
@@ -1237,6 +1240,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             'datatype'           => 'datetime',
             'maybefuture'        => true,
             'massiveaction'      => false,
+            'splititems'         => true,
             'forcegroupby'       => true,
             'joinparams'         => [
                 'jointype'           => 'child',
