@@ -138,6 +138,7 @@ TWIG, $twig_params);
             'joinparams' => [
                 'jointype' => 'custom_condition_only',
             ],
+            'field_definition' => $this->custom_field,
         ];
 
         if (!$multiple) {
