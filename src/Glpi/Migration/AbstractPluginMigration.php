@@ -651,6 +651,11 @@ abstract class AbstractPluginMigration
                     'OR' => [
                         ['column_name'  => 'items_id'],
                         ['column_name'  => ['LIKE', 'items_id_%']],
+                        [
+                            // `glpi_ipaddresses.mainitems_id` polymorphic relation does not respect naming conventions
+                            'table_name'   => 'glpi_ipaddresses',
+                            'column_name'  => 'mainitems_id',
+                        ],
                     ],
                 ],
                 'ORDER'  => 'TABLE_NAME',
