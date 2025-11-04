@@ -44,14 +44,14 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
 
-class UpdateLocalPluginsCommand extends AbstractCommand
+class UpdateAllCommand extends AbstractCommand
 {
     protected function configure()
     {
         parent::configure();
 
-        $this->setName('marketplace:update_local_plugins');
-        $this->setDescription(__('Download up-to-date sources for all local plugins and process updates of active plugins'));
+        $this->setName('marketplace:update_all');
+        $this->setDescription(__('Download and update all plugins to their latest compatible versions, then reactivate active ones.'));
 
         $this->addOption(
             'username',
@@ -94,9 +94,29 @@ class UpdateLocalPluginsCommand extends AbstractCommand
         // Update all plugins sources, to be sure that all plugins have the latest version.
         $updated_plugins = [];
         foreach ($local_versions as $plugin_key => $local_version) {
+            if (!\file_exists(GLPI_MARKETPLACE_DIR . '/' . $plugin_key)) {
+                $msg = '<comment>'
+                    . sprintf(__('Plugin "%s" was installed manually and therefore has not been updated automatically.'), $plugin_key)
+                    . '</comment>'
+                ;
+                $output->writeln($msg);
+                continue;
+            }
+
             $exists_on_filesystem = $plugins_manager->isLoadable($plugin_key);
 
-            $latest_version = $plugins_api->getPlugin($plugin_key)['version'] ?? null;
+            $plugin_info = $plugins_api->getPlugin($plugin_key);
+
+            if ($plugin_info === []) {
+                $msg = '<comment>'
+                    . sprintf(__('Plugin "%s" is not present in the marketplace.'), $plugin_key)
+                    . '</comment>'
+                ;
+                $output->writeln($msg);
+                continue;
+            }
+
+            $latest_version = $plugin_info['version'] ?? null;
 
             if ($latest_version === null) {
                 $msg = '<comment>'
