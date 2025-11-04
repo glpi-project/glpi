@@ -88,6 +88,11 @@ final class SubmitAnswerController extends AbstractController
                 'links_to_created_items' => $links,
             ]);
         } catch (\Throwable $th) {
+            $this->logger->error(
+                sprintf('An error occured during the form `%s` submission.', $form->getName()),
+                ['exception' => $th]
+            );
+
             $messages = [];
             if (isset($_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR])) {
                 $messages = $_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR];
