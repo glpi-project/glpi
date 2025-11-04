@@ -37,7 +37,6 @@ namespace GlpiPlugin\Tester\Form;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\AbstractQuestionType;
-use Glpi\Form\QuestionType\QuestionTypeCategory;
 use Glpi\Form\QuestionType\QuestionTypeCategoryInterface;
 use Override;
 

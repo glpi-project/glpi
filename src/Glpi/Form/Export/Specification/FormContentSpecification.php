@@ -80,6 +80,9 @@ final class FormContentSpecification
     /** @var CustomTypeRequirementSpecification[] $data_requirements */
     public array $custom_types_requirements = [];
 
+    /** @var PluginRequirementSpecification[] $plugin_requirements */
+    public array $plugin_requirements = [];
+
     /** @return DataRequirementSpecification[] */
     public function getDataRequirements(): array
     {
@@ -104,5 +107,25 @@ final class FormContentSpecification
         CustomTypeRequirementSpecification $requirement
     ): void {
         $this->custom_types_requirements[] = $requirement;
+    }
+
+    public function getPluginsRequirements(): array
+    {
+        return $this->plugin_requirements;
+    }
+    public function addPluginRequirement(
+        PluginRequirementSpecification $requirement
+    ): void {
+        $requirements = array_map(
+            fn(PluginRequirementSpecification $r): string => $r->key,
+            $this->plugin_requirements,
+        );
+
+        // Do nothing if requirement already exist
+        if (in_array($requirement->key, $requirements)) {
+            return;
+        }
+
+        $this->plugin_requirements[] = $requirement;
     }
 }

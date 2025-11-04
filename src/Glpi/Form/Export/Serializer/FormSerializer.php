@@ -44,6 +44,7 @@ use Glpi\Form\Comment;
 use Glpi\Form\Condition\ConditionableInterface;
 use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\Type;
+use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Destination\FormDestinationInterface;
 use Glpi\Form\Export\Context\DatabaseMapper;
@@ -61,6 +62,7 @@ use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Export\Specification\DestinationContentSpecification;
 use Glpi\Form\Export\Specification\ExportContentSpecification;
 use Glpi\Form\Export\Specification\FormContentSpecification;
+use Glpi\Form\Export\Specification\PluginRequirementSpecification;
 use Glpi\Form\Export\Specification\QuestionContentSpecification;
 use Glpi\Form\Export\Specification\SectionContentSpecification;
 use Glpi\Form\Export\Specification\TranslationContentSpecification;
@@ -73,7 +75,9 @@ use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Form\Section;
 use Glpi\UI\IllustrationManager;
 use InvalidArgumentException;
+use JsonSerializable;
 use LogicException;
+use Plugin;
 use RuntimeException;
 use Session;
 use Throwable;
@@ -139,6 +143,14 @@ final class FormSerializer extends AbstractFormSerializer
             $missing_types = $this->getMissingCustomTypes($types_requirements);
             foreach ($missing_types as $missing_type) {
                 $message = sprintf(__('Unknown custom type: %s'), $missing_type);
+                $results->addFatalErrorForForm($form_id, $form_name, $message);
+            }
+
+            // Validate plugins requirements
+            $plugins_requirements = $form_spec->getPluginsRequirements();
+            $missing_plugins = $this->getMissingPlugins($plugins_requirements);
+            foreach ($missing_plugins as $missing_plugin) {
+                $message = sprintf(__('Missing plugin: %s'), $missing_plugin);
                 $results->addFatalErrorForForm($form_id, $form_name, $message);
             }
 
@@ -217,6 +229,14 @@ final class FormSerializer extends AbstractFormSerializer
                 continue;
             }
 
+            $plugins_requirements = $form_spec->plugin_requirements;
+            if (!$this->validatePluginsRequirements($plugins_requirements)) {
+                $result->addFailedFormImport(
+                    $form_spec->name,
+                    ImportError::MISSING_PLUGIN_REQUIREMENT,
+                );
+                continue;
+            }
             // Validate data requirements
             $data_requirements = $form_spec->data_requirements;
             $mapper->mapExistingItemsForRequirements($data_requirements);
@@ -269,6 +289,7 @@ final class FormSerializer extends AbstractFormSerializer
         $form_spec = $this->exportDestinations($form, $form_spec);
         $form_spec = $this->exportTranslations($form, $form_spec);
         $form_spec = $this->addCustomTypesRequirements($form, $form_spec);
+        $form_spec = $this->addPluginsRequirements($form, $form_spec);
 
         return $form_spec;
     }
@@ -869,7 +890,11 @@ final class FormSerializer extends AbstractFormSerializer
             // mapped here so we need to let the policy object handle it itself.
             $dynamic_data = $policy->exportDynamicData();
             $form_spec->addRequirementsFromDynamicData($dynamic_data);
-            $spec->config = $dynamic_data->getFieldData('config');
+            $config = $dynamic_data->getFieldData('config');
+            if ($config instanceof JsonSerializable) {
+                $config = $config->jsonSerialize();
+            }
+            $spec->config = $config;
 
             // Add to form spec
             $form_spec->policies[] = $spec;
@@ -1199,5 +1224,105 @@ final class FormSerializer extends AbstractFormSerializer
         }
 
         return $missing_types;
+    }
+
+    private function addPluginsRequirements(
+        Form $form,
+        FormContentSpecification $form_spec,
+    ): FormContentSpecification {
+        // Look for question types from plugins
+        foreach ($form->getQuestions() as $question) {
+            $type = $question->getQuestionType();
+            $this->addPluginRequirementForTypeIfNeeded($type, $form_spec);
+
+            // Specific case for QuestionTypeItem, validate that the target
+            // itemtype is also not from a plugin
+            if ($type instanceof QuestionTypeItem) {
+                $config = $question->getExtraDataConfig();
+                if (!$config instanceof QuestionTypeItemExtraDataConfig) {
+                    throw new LogicException(); // Impossible
+                }
+
+                $this->addPluginRequirementForTypeIfNeeded(
+                    $config->getItemtype(),
+                    $form_spec
+                );
+            }
+        }
+
+        // Look for access policies types from plugins
+        foreach ($form->getAccessControls() as $control) {
+            $this->addPluginRequirementForTypeIfNeeded(
+                $control->getStrategy(),
+                $form_spec,
+            );
+        }
+
+        // Look for destination types from plugins
+        foreach ($form->getDestinations() as $destination) {
+            $type = $destination->getConcreteDestinationItem();
+            $this->addPluginRequirementForTypeIfNeeded($type, $form_spec);
+
+            // Specific case for AbstractCommonITILFormDestination, validate
+            // than each specified fields are also not from a plugin
+            if ($type instanceof AbstractCommonITILFormDestination) {
+                foreach ($type->getConfigurableFields() as $field) {
+                    $this->addPluginRequirementForTypeIfNeeded(
+                        $field,
+                        $form_spec,
+                    );
+                }
+            }
+        }
+
+        return $form_spec;
+    }
+
+    private function addPluginRequirementForTypeIfNeeded(
+        object|string|null $type,
+        FormContentSpecification $form_spec,
+    ): void {
+        if ($type === null) {
+            return;
+        } elseif (is_object($type)) {
+            $type = $type::class;
+        }
+
+        $info = isPluginItemType($type);
+        if ($info === false) {
+            return;
+        }
+
+        $req = new PluginRequirementSpecification($info['plugin']);
+        $form_spec->addPluginRequirement($req);
+    }
+
+    /** @param PluginRequirementSpecification[] $requirements */
+    private function validatePluginsRequirements(array $requirements): bool
+    {
+        $plugin = new Plugin();
+        foreach ($requirements as $requirement) {
+            if (!$plugin->isActivated(strtolower($requirement->key))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /** @param PluginRequirementSpecification[] $requirements */
+    private function getMissingPlugins(array $requirements): array
+    {
+        $missing_plugins = [];
+        $plugin = new Plugin();
+
+        foreach ($requirements as $requirement) {
+            $type = strtolower($requirement->key);
+            if (!$plugin->isActivated($type)) {
+                $missing_plugins[] = $type;
+            }
+        }
+
+        return $missing_plugins;
     }
 }
