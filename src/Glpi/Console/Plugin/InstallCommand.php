@@ -35,19 +35,11 @@
 
 namespace Glpi\Console\Plugin;
 
-use Auth;
 use Plugin;
-use Session;
-use Symfony\Component\Console\Exception\InvalidArgumentException;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
-use User;
 
-use function Safe\ob_end_clean;
-use function Safe\ob_start;
 use function Safe\opendir;
 
 class InstallCommand extends AbstractPluginCommand
@@ -94,28 +86,15 @@ class InstallCommand extends AbstractPluginCommand
         );
     }
 
-    protected function interact(InputInterface $input, OutputInterface $output)
-    {
-
-        parent::interact($input, $output);
-
-        if (null === $input->getOption('username')) {
-            $question_helper = new QuestionHelper();
-            $value = $question_helper->ask(
-                $input,
-                $output,
-                new Question('User to use:')
-            );
-            $input->setOption('username', $value);
-        }
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
         $this->normalizeInput($input);
 
-        $this->loadUserSession($input->getOption('username'));
+        $username = $input->getOption('username');
+        if ($username !== null) {
+            $this->loadUserSession($username);
+        }
 
         $directories = $input->getArgument('directory');
         $force       = $input->getOption('force');
@@ -231,39 +210,6 @@ class InstallCommand extends AbstractPluginCommand
     }
 
     /**
-     * Load user in session.
-     *
-     * @param string $username
-     * @return void
-     *
-     * @throws InvalidArgumentException
-     */
-    private function loadUserSession($username)
-    {
-
-        $user = new User();
-        if ($user->getFromDBbyName($username)) {
-            // Store computed output parameters
-            $lang = $_SESSION['glpilanguage'];
-            $session_use_mode = $_SESSION['glpi_use_mode'];
-
-            $auth = new Auth();
-            $auth->auth_succeded = true;
-            $auth->user = $user;
-            Session::init($auth);
-
-            // Force usage of computed output parameters
-            $_SESSION['glpilanguage'] = $lang;
-            $_SESSION['glpi_use_mode'] = $session_use_mode;
-            Session::loadLanguage();
-        } else {
-            throw new InvalidArgumentException(
-                __('User name defined by --username option is invalid.')
-            );
-        }
-    }
-
-    /**
      * Check if plugin is already installed.
      *
      * @param string $directory
@@ -337,26 +283,6 @@ class InstallCommand extends AbstractPluginCommand
             );
             $this->output->writeln(
                 '<error>' . $message . '</error>',
-                OutputInterface::VERBOSITY_QUIET
-            );
-            return false;
-        }
-
-        // Check prerequisites
-        ob_start();
-        $requirements_met = $plugin->checkVersions($directory);
-        $check_function   = 'plugin_' . $directory . '_check_prerequisites';
-        if ($requirements_met && function_exists($check_function)) {
-            $requirements_met = $check_function();
-        }
-        $ob_contents = ob_get_contents();
-        ob_end_clean();
-        if (!$requirements_met) {
-            $this->output->writeln(
-                [
-                    '<error>' . sprintf(__('Plugin "%s" requirements not met.'), $directory) . '</error>',
-                    '<error>' . $ob_contents . '</error>',
-                ],
                 OutputInterface::VERBOSITY_QUIET
             );
             return false;
