@@ -41,6 +41,7 @@ use DateTimeZone;
 use Dropdown;
 use Entity;
 use ExtraVisibilityCriteria;
+use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\RichText\RichText;
 use Glpi\Toolbox\ArrayNormalizer;
@@ -475,14 +476,15 @@ trait PlanningEvent
 
             // guests accounts
             if ($DB->fieldExists($table, 'users_id_guests')) {
-                $nreadpriv = ['OR' => [
-                    "$table.users_id" => $who,
-                    QueryFunction::jsonContains(
-                        "$table.users_id_guests",
-                        QueryFunction::jsonValue($who),
-                        '$'
-                    ),
-                ],
+                $nreadpriv = [
+                    'OR' => [
+                        "$table.users_id" => $who,
+                        QueryFunction::jsonContains(
+                            "$table.users_id_guests",
+                            new QueryExpression($DB::quoteValue((int) $who)),
+                            '$'
+                        ),
+                    ],
                 ];
             }
         }
