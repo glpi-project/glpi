@@ -52,6 +52,7 @@ use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
 use Glpi\Search\Output\HTMLSearchOutput;
 use Glpi\Team\Team;
+use Glpi\Urgency;
 use Safe\Exceptions\DatetimeException;
 
 use function Safe\getimagesize;
@@ -1768,17 +1769,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     protected function handleTemplateFields(array $input, bool $show_error_message = true)
     {
         //// check mandatory fields
-        // First get ticket template associated: entity and type/category
-        $entid = $input['entities_id'] ?? $this->fields['entities_id'];
-
-        $type = null;
-        if (isset($input['type'])) {
-            $type = $input['type'];
-        } elseif (isset($this->fields['type'])) {
-            $type = $this->fields['type'];
-        }
-
-        $categid = $input['itilcategories_id'] ?? $this->fields['itilcategories_id'];
 
         $check_allowed_fields_for_template = false;
         $allowed_fields                    = [];
@@ -1865,9 +1855,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
         }
 
-        $tt = $this->getITILTemplateToUse(0, $type, $categid, $entid);
-
-        if (count($tt->mandatory)) {
+        // First get ticket template associated: entity and type/category
+        $tt = $this->getITILTemplateFromInput($input);
+        if ($tt && count($tt->mandatory)) {
             $mandatory_missing = [];
             $fieldsname        = $tt->getAllowedFieldsNames(true);
             foreach ($tt->mandatory as $key => $val) {
@@ -2338,6 +2328,40 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             PendingReason_Item::deleteForItem($this);
         }
 
+        return $input;
+    }
+
+    /**
+     * Processes readonly fields in the input array based on the ITIL template data.
+     *
+     * @param array $input The user input data to process (often $_POST).
+     * @param bool $isAdd true if we are in a creation, will force to apply the template predefined field.
+     *
+     * @return array The modified user input array after processing readonly fields.
+     *
+     * @since 11.0.2
+     */
+    public function enforceReadonlyFields(array $input, bool $isAdd = false): array
+    {
+        $tt = $this->getITILTemplateFromInput($input);
+        if (!$tt) {
+            return $input;
+        }
+
+        $tt->getFromDBWithData($tt->getID()); // We load the fields (predefined and readonly)
+
+        foreach (array_keys($tt->readonly) as $read_only_field) {
+            if ($isAdd && array_key_exists($read_only_field, $tt->predefined)) {
+                $input[$read_only_field] = $tt->predefined[$read_only_field];
+                continue;
+            }
+
+            if (array_key_exists($read_only_field, $this->fields)) {
+                $input[$read_only_field] = $this->fields[$read_only_field];
+            } else {
+                unset($input[$read_only_field]);
+            }
+        }
         return $input;
     }
 
@@ -2824,7 +2848,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         // save value before clean;
-        $title = ltrim($input['name']);
+        $title = ltrim($input['name'] ?? '');
 
         // Set default status to avoid notice
         if (!isset($input["status"])) {
@@ -2835,7 +2859,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             !isset($input["urgency"])
             || !($CFG_GLPI['urgency_mask'] & (1 << $input["urgency"]))
         ) {
-            $input["urgency"] = 3;
+            $input["urgency"] = Urgency::MEDIUM->value;
         }
         if (
             !isset($input["impact"])
@@ -2886,8 +2910,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         // No name set name
-        $input["name"]    = ltrim($input["name"]);
-        $input['content'] = ltrim($input['content']);
+        $input["name"]    = ltrim($input["name"] ?? '');
+        $input['content'] = ltrim($input['content'] ?? '');
         if (empty($input["name"])) {
             // Build name based on content
 
@@ -8250,6 +8274,33 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
         }
         return $tt;
+    }
+
+    /**
+     * Get the template to use
+     * If the input is not defined, it will get it from the object fields datas
+     *
+     * @param array $input
+     * @return ITILTemplate|null
+     *
+     * @since 11.0.2
+     */
+    public function getITILTemplateFromInput(array $input = []): ?ITILTemplate
+    {
+        $entid = $input['entities_id'] ?? $this->fields['entities_id'];
+
+        $type = null;
+        if (isset($input['type'])) {
+            $type = $input['type'];
+        } elseif (isset($this->fields['type'])) {
+            $type = $this->fields['type'];
+        }
+
+        $categid = $input['itilcategories_id'] ?? $this->fields['itilcategories_id'] ?? null;
+        if (is_null($categid)) {
+            return null;
+        }
+        return $this->getITILTemplateToUse(0, $type, $categid, $entid);
     }
 
     /**
