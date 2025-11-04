@@ -1338,10 +1338,13 @@ class Toolbox
         $options = $extra_options + ['connect_timeout' => 5];
         // add proxy string if configured in glpi
         if (!empty($CFG_GLPI["proxy_name"])) {
-            $proxy_creds      = !empty($CFG_GLPI["proxy_user"])
-                ? $CFG_GLPI["proxy_user"] . ":" . (new GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]) . "@"
-                : "";
-            $proxy_string     = "http://{$proxy_creds}" . $CFG_GLPI['proxy_name'] . ":" . $CFG_GLPI['proxy_port'];
+            $proxy_creds = "";
+            if (!empty($CFG_GLPI["proxy_user"])) {
+                $proxy_user = rawurlencode($CFG_GLPI["proxy_user"]);
+                $proxy_pass = rawurlencode((new GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]));
+                $proxy_creds = $proxy_user . ":" . $proxy_pass . "@";
+            }
+            $proxy_string = "http://{$proxy_creds}" . $CFG_GLPI['proxy_name'] . ":" . $CFG_GLPI['proxy_port'];
             $options['proxy'] = $proxy_string;
         }
         return new Client($options);
@@ -1461,9 +1464,11 @@ class Toolbox
             ];
 
             if (!empty($CFG_GLPI["proxy_user"])) {
+                $proxy_user = rawurlencode($CFG_GLPI["proxy_user"]);
+                $proxy_pass = rawurlencode((new GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]));
                 $opts += [
                     CURLOPT_PROXYAUTH    => CURLAUTH_BASIC,
-                    CURLOPT_PROXYUSERPWD => $CFG_GLPI["proxy_user"] . ":" . (new GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]),
+                    CURLOPT_PROXYUSERPWD => $proxy_user . ":" . $proxy_pass,
                 ];
             }
 

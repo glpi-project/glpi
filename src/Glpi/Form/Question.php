@@ -156,7 +156,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         $question_type = $this->getQuestionType();
         if ($question_type instanceof TranslationAwareQuestionType) {
             $handlers[$key] = array_merge(
-                $handlers[$key] ?? [],
+                $handlers[$key],
                 array_values($question_type->listTranslationsHandlers($this))
             );
         }
