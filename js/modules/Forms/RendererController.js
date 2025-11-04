@@ -307,9 +307,19 @@ export class GlpiFormRendererController
 
         } catch (e) {
             console.error(e);
-            glpi_toast_error(
-                __("Failed to submit form, please contact your administrator.")
-            );
+
+            // Always display the default error message
+            let errorMessage = __("Failed to submit form, please contact your administrator.");
+
+            // Try to extract and concatenate specific error messages from the response
+            if (e.responseJSON && e.responseJSON.errors && e.responseJSON.errors.length > 0) {
+                const specificErrors = e.responseJSON.errors
+                    .map(msg => _.escape(msg))
+                    .join("<br>");
+                errorMessage = `${errorMessage}<br><br><strong>${__("Details:")}</strong><br>${specificErrors}`;
+            }
+
+            glpi_toast_error(errorMessage);
         } finally {
             this.#enableActions();
             submit.removeClass('btn-loading');
