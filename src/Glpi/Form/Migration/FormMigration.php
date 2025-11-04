@@ -1305,7 +1305,7 @@ class FormMigration extends AbstractPluginMigration
 
             foreach ($form->listTranslationsHandlers() as $handlers) {
                 foreach ($handlers as $handler) {
-                    if (isset($translations[$handler->getValue()])) {
+                    if (!empty($handler->getValue()) && isset($translations[$handler->getValue()])) {
                         $this->importItem(
                             FormTranslation::class,
                             [

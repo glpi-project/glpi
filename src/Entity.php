@@ -3385,10 +3385,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         $handlers = [];
         $key = sprintf('%s_%d', self::getType(), $this->getID());
         $category_name = sprintf('%s: %s', self::getTypeName(), $this->getName());
-        if (
-            !empty($this->fields['custom_helpdesk_home_title'])
-            && $this->fields['custom_helpdesk_home_title'] != self::CONFIG_PARENT
-        ) {
+        if ($this->fields['custom_helpdesk_home_title'] != self::CONFIG_PARENT) {
             $handlers[$key][] = new TranslationHandler(
                 item: $this,
                 key: self::TRANSLATION_KEY_CUSTOM_HELPDESK_HOME_TITLE,

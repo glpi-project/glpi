@@ -46,11 +46,11 @@ use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\QuestionType\TranslationAwareQuestionType;
-use Glpi\ItemTranslation\Context\TranslationHandler;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
+use Symfony\Component\DomCrawler\Crawler;
 
 use function Safe\json_encode;
 
@@ -258,7 +258,7 @@ class FormTranslationTest extends \DbTestCase
         }
     }
 
-    public static function emptyDefaultValuesAreNotListedProvider(): iterable
+    public static function defaultValueTranslationsProvider(): iterable
     {
         $types = QuestionTypesManager::getInstance()->getQuestionTypes();
         foreach ($types as $type) {
@@ -278,26 +278,169 @@ class FormTranslationTest extends \DbTestCase
         }
     }
 
-    #[DataProvider('emptyDefaultValuesAreNotListedProvider')]
+    /**
+     * Create a form with a question and add a translation for the form name.
+     *
+     * @param TranslationAwareQuestionType $type
+     * @param string $default_value
+     * @param string|null $extra_data
+     * @return Form
+     */
+    private function createFormWithQuestionAndTranslation(
+        TranslationAwareQuestionType $type,
+        string $default_value,
+        ?string $extra_data
+    ): Form {
+        $builder = new FormBuilder("My form");
+        $builder->addQuestion("My question", $type::class, $default_value, $extra_data);
+        $form = $this->createForm($builder);
+
+        $this->addTranslationToForm(
+            $form,
+            'fr_FR',
+            Form::TRANSLATION_KEY_NAME,
+            'My form in fr_FR',
+        );
+
+        return $form;
+    }
+
+    /**
+     * Assert that handlers are listed (or not) in the translation table.
+     *
+     * @param array $handlers
+     * @param Crawler $crawler
+     * @param int $expected_count 0 if not listed, 1 if listed
+     * @param string $message
+     * @return void
+     */
+    private function assertHandlersInTranslationTable(
+        array $handlers,
+        Crawler $crawler,
+        int $expected_count,
+        string $message
+    ): void {
+        foreach ($handlers as $handler) {
+            $row = $crawler->filter('#form-translation-modal-fr_FR tbody tr')
+                ->reduce(function (Crawler $node) use ($handler) {
+                    return str_contains($node->text(), $handler->getName());
+                });
+            $this->assertEquals(
+                $expected_count,
+                $row->count(),
+                $message . " (handler: '{$handler->getName()}')"
+            );
+        }
+    }
+
+    #[DataProvider('defaultValueTranslationsProvider')]
     public function testEmptyDefaultValuesAreNotListed(
         TranslationAwareQuestionType $type,
         ?string $extra_data,
     ): void {
         // Arrange: create a form with a question without default value
-        $builder = new FormBuilder("My form");
-        $builder->addQuestion("My question", $type::class, "", $extra_data);
-        $form = $this->createForm($builder);
+        $form = $this->createFormWithQuestionAndTranslation($type, "", $extra_data);
 
         // Act: get translations handler for the question
         $question = Question::getById($this->getQuestionId($form, "My question"));
         $handlers = $type->listTranslationsHandlers($question);
 
-        // Assert: no default value handlers should exist for the empty question
-        $key = Question::TRANSLATION_KEY_DEFAULT_VALUE;
-        $handlers = array_filter(
+        ob_start();
+        FormTranslation::displayTabContentForItem($form);
+        $content = ob_get_clean();
+        $crawler = new Crawler($content);
+
+        // Assert: no default value handler should be listed when value is empty
+        $this->assertHandlersInTranslationTable(
             $handlers,
-            fn(TranslationHandler $h) => $h->getKey() == $key
+            $crawler,
+            0,
+            "Translation row should not be listed as the default value is empty."
         );
-        $this->assertEmpty($handlers);
+    }
+
+    #[DataProvider('defaultValueTranslationsProvider')]
+    public function testNonEmptyDefaultValuesAreListed(
+        TranslationAwareQuestionType $type,
+        ?string $extra_data,
+    ): void {
+        // Arrange: create a form with a question with a non-empty default value
+        $form = $this->createFormWithQuestionAndTranslation($type, "Default value", $extra_data);
+
+        // Act: get translations handler for the question
+        $question = Question::getById($this->getQuestionId($form, "My question"));
+        $handlers = $type->listTranslationsHandlers($question);
+
+        ob_start();
+        FormTranslation::displayTabContentForItem($form);
+        $content = ob_get_clean();
+        $crawler = new Crawler($content);
+
+        // Assert: default value handler should be listed when value is not empty
+        $this->assertHandlersInTranslationTable(
+            $handlers,
+            $crawler,
+            1,
+            "Translation row should be listed as the default value is not empty."
+        );
+    }
+
+    #[DataProvider('defaultValueTranslationsProvider')]
+    public function testEmptyDefaultValuesWithExistingTranslationAreListed(
+        TranslationAwareQuestionType $type,
+        ?string $extra_data,
+    ): void {
+        // Arrange: create a form with a question without default value
+        $form = $this->createFormWithQuestionAndTranslation($type, "", $extra_data);
+
+        // Arrange: add translation for the question's default value
+        $question = Question::getById($this->getQuestionId($form, "My question"));
+        $handlers = $type->listTranslationsHandlers($question);
+
+        foreach ($handlers as $handler) {
+            $this->addTranslationToForm(
+                $handler->getItem(),
+                'fr_FR',
+                $handler->getKey(),
+                'Translated default value in fr_FR',
+            );
+        }
+
+        ob_start();
+        FormTranslation::displayTabContentForItem($form);
+        $content = ob_get_clean();
+        $crawler = new Crawler($content);
+
+        // Assert: default value handler should be listed even if original value is empty
+        // because a translation already exists
+        $this->assertHandlersInTranslationTable(
+            $handlers,
+            $crawler,
+            1,
+            "Translation row should be listed as a translation exists even though the original default value is empty."
+        );
+
+        // Arrange: delete the added translation to clean up
+        foreach ($handlers as $handler) {
+            $translation = FormTranslation::getForItemKeyAndLanguage(
+                $handler->getItem(),
+                $handler->getKey(),
+                'fr_FR'
+            );
+            $translation->delete($translation->fields, true);
+        }
+
+        ob_start();
+        FormTranslation::displayTabContentForItem($form);
+        $content = ob_get_clean();
+        $crawler = new Crawler($content);
+
+        // Assert: default value handler should not be listed anymore
+        $this->assertHandlersInTranslationTable(
+            $handlers,
+            $crawler,
+            0,
+            "Translation row should not be listed as the original default value is empty and the translation has been deleted."
+        );
     }
 }
