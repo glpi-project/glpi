@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,49 +32,34 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Destination\CommonITILField;
+namespace Glpi\Controller\UI;
 
-use LevelAgreement;
-use OLA;
-use Override;
-use SLM;
+use Glpi\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 
-final class OLATTOField extends OLAField
+class DropdownController extends AbstractController
 {
-    #[Override]
-    public function getLabel(): string
+    #[Route(
+        path: "/dropdown",
+        name: "glpi_ui_dropdown",
+    )]
+    public function __invoke(Request $request): Response
     {
-        return __("Internal TTO");
-    }
+        $itemtype = $request->query->getString('itemtype');
+        $fieldName = $request->query->getString('fieldname');
+        $selectedValue = $request->query->getInt('value', 0);
 
-    #[Override]
-    public function getWeight(): int
-    {
-        return 220;
+        return $this->render('components/dropdown/dropdown.html.twig', [
+            'itemtype'  => $itemtype,
+            'fieldname' => $fieldName,
+            'selected_value' => $selectedValue,
+            'options' => [
+                'full_width' => true,
+                'no_label' => true,
+                'include_field' => false,
+            ],
+        ]);
     }
-
-    #[Override]
-    public function getSLM(): LevelAgreement
-    {
-        return new OLA();
-    }
-
-    #[Override]
-    public function getType(): int
-    {
-        return SLM::TTO;
-    }
-
-    #[Override]
-    public function getConfigClass(): string
-    {
-        return OLATTOFieldConfig::class;
-    }
-
-    #[Override]
-    protected function getFieldNameToConvertSpecificSLMID(): string
-    {
-        return 'ola_question_tto';
-    }
-
 }

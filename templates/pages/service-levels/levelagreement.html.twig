@@ -1,0 +1,128 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set params  = params ?? [] %}
+
+{% block form_fields %}
+    {# name #}
+    {{ fields.autoNameField('name', item, __('Name')) }}
+
+    {# comment #}
+    {{ fields.textareaField(
+        'comment',
+        item.fields['comment'],
+        _n('Comment', 'Comments', get_plural_number())
+    ) }}
+
+    {# group (for ola, not sla) #}
+    {% if item.fields['groups_id'] is not null %}
+        {{ fields.dropdownField('Group', 'groups_id', item.fields['groups_id'], _n('Group', 'Groups', get_plural_number()), {
+            'helper': __('Actions done by users of this group will trigger the TTO/TTR.'),
+            'rand': rand,
+            'condition': {'is_assign': 1}
+        }) }}
+    {% endif %}
+
+    {# slm link #}
+    {% set slm_link %}
+        {% set slm = get_item('SLM', item.fields['slms_id']) %}
+        <a href="{{ slm.getFormURLWithID(item.fields['slms_id']) }}" class="text-decoration-none">
+            {{ slm.fields['name'] }}
+        </a>
+    {% endset %}
+    {{ fields.htmlField('no_matter', slm_link, __('SLM')) }}
+
+    {# type #}
+    {{ fields.dropdownArrayField(
+        'type',
+        item.fields['type'],
+        item.getTypes(),
+        _n('Type', 'Types', 1)
+    ) }}
+
+    {# maximumtime #}
+    {{ fields.dropdownArrayField(
+        'number_time',
+        item.fields['number_time'],
+        range(0, 1000),
+        ''
+    ) }}
+
+    {# definition_time #}
+    {{ fields.dropdownArrayField(
+        'definition_time',
+        item.fields['definition_time'],
+        item.getDefinitionTimeValues(),
+        __('Frequency'),
+        {
+            'rand': rand
+        }
+    ) }}
+    {% set definition_time_dom_id = 'dropdown_definition_time' ~ rand %}
+
+    {{ fields.dropdownYesNo(
+        'end_of_working_day',
+        item.fields['end_of_working_day'],
+        __('End of working day'),
+        {
+            'rand': rand
+        }
+    ) }}
+    {% set end_of_working_day_dom_id = 'dropdown_end_of_working_day' ~ rand %}
+
+    {# slm - hidden field + link #}
+    {{ fields.hiddenField('slms_id', item.fields['slms_id']) }}
+
+    <div class="text-center">
+        {{ item.showFormWarning() }}
+    </div>
+
+    {# javascript to hide/show end_of_working_day #}
+    <script>
+        $(function () {
+                const hideShowEndOfWorkingDay = () => {
+                    let selectedValue = $('#{{ definition_time_dom_id }}').val();
+                    if (selectedValue === 'day' || selectedValue === 'month') {
+                        $('#{{ end_of_working_day_dom_id }}').parent().parent().show();
+                    } else {
+                        $('#{{ end_of_working_day_dom_id }}').parent().parent().hide();
+                    }
+                };
+                hideShowEndOfWorkingDay();
+                $('#{{ definition_time_dom_id }}').on('change', hideShowEndOfWorkingDay);
+            }
+        );
+    </script>
+{% endblock %}

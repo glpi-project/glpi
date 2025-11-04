@@ -66,4 +66,12 @@ class Group_Ticket extends CommonITILActor
         parent::post_addItem();
         $this->_force_log_option = 0;
     }
+
+
+    public function post_purgeItem()
+    {
+        Item_Ola::computeGroupAssigneeRemoval((int) $this->fields['tickets_id'], (int) $this->fields['groups_id']);
+
+        parent::post_purgeItem();
+    }
 }

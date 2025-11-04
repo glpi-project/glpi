@@ -2271,7 +2271,6 @@ TWIG, $twig_params);
      **/
     public function getCriteriaDisplayPattern($ID, $condition, $pattern)
     {
-
         if (
             ($condition == self::PATTERN_EXISTS)
             || ($condition == self::PATTERN_DOES_NOT_EXISTS)
@@ -3233,11 +3232,21 @@ TWIG, $twig_params);
                     return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
 
                 case SLA::class:
-                case OLA::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             'glpi_ruleactions',
                             ['field' => $item::getFieldNames($item->fields['type'])[1],
+                                'value' => $item->getID(),
+                            ]
+                        );
+                    }
+                    return self::createTabEntry(self::getTypeName($nb), $nb, $item::class);
+
+                case OLA::class:
+                    if ($_SESSION['glpishow_count_on_tabs']) {
+                        $nb = countElementsInTable(
+                            'glpi_ruleactions',
+                            [   'field' => 'olas_id',
                                 'value' => $item->getID(),
                             ]
                         );

@@ -41,6 +41,7 @@ use Glpi\Form\Destination\CommonITILField\SLMFieldStrategy;
 use Glpi\Form\Form;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Glpi\Tests\Glpi\SLMTrait;
 use OLA;
 use Override;
 use SLM;
@@ -52,6 +53,7 @@ include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.p
 final class OLATTRFieldTest extends AbstractDestinationFieldTest
 {
     use FormTesterTrait;
+    use SLMTrait;
 
     public function testDefaultTemplateWithPredefinedField(): void
     {
@@ -60,15 +62,8 @@ final class OLATTRFieldTest extends AbstractDestinationFieldTest
             entities_id: $_SESSION["glpiactive_entity"]
         );
 
-        $created_ola_ttr = $this->createItem(
-            OLA::class,
-            [
-                'name'            => 'OLATTR',
-                'type'            => SLM::TTR,
-                'number_time'     => 1,
-                'definition_time' => 'hour',
-            ]
-        );
+        ['ola' => $created_ola_ttr] = $this->createOLA(ola_type: SLM::TTR);
+
         $this->createItem(
             TicketTemplatePredefinedField::class,
             [
@@ -90,15 +85,7 @@ final class OLATTRFieldTest extends AbstractDestinationFieldTest
     public function testSpecificOLATTR(): void
     {
         $this->login();
-        $created_ola_ttr = $this->createItem(
-            OLA::class,
-            [
-                'name'            => 'OLATTR',
-                'type'            => SLM::TTR,
-                'number_time'     => 1,
-                'definition_time' => 'hour',
-            ]
-        );
+        ['ola' => $created_ola_ttr] = $this->createOLA(ola_type: SLM::TTR);
 
         $this->checkOLATTRFieldConfiguration(
             form: $this->createAndGetFormWithTicketDestination(),
@@ -117,24 +104,9 @@ final class OLATTRFieldTest extends AbstractDestinationFieldTest
             entities_id: $_SESSION["glpiactive_entity"]
         );
 
-        $created_ola_ttr = $this->createItem(
-            OLA::class,
-            [
-                'name'            => 'OLATTR',
-                'type'            => SLM::TTR,
-                'number_time'     => 1,
-                'definition_time' => 'hour',
-            ]
-        );
-        $created_ola_ttr_for_template = $this->createItem(
-            OLA::class,
-            [
-                'name'            => 'OLATTR',
-                'type'            => SLM::TTR,
-                'number_time'     => 1,
-                'definition_time' => 'hour',
-            ]
-        );
+        ['ola' => $created_ola_ttr] = $this->createOLA(ola_type: SLM::TTR);
+        ['ola' => $created_ola_ttr_for_template] = $this->createOLA(ola_type: SLM::TTR);
+
         $this->createItem(
             TicketTemplatePredefinedField::class,
             [
@@ -184,7 +156,8 @@ final class OLATTRFieldTest extends AbstractDestinationFieldTest
         $ticket = current($created_items);
 
         // Check ola_id_ttr field
-        $this->assertEquals($expected_olas_ttr_id, $ticket->fields['olas_id_ttr']);
+        $ticket_ttr_data = $ticket->getOlasTTRData()[0] ?? throw new \Exception('Ola TTR not found');
+        $this->assertEquals($expected_olas_ttr_id, $ticket_ttr_data['olas_id']);
 
         // Return the created ticket to be able to check other fields
         return $ticket;
@@ -220,6 +193,9 @@ final class OLATTRFieldTest extends AbstractDestinationFieldTest
                         'type'            => SLM::TTR,
                         'number_time'     => 1,
                         'definition_time' => 'hour',
+                        'groups_id' => getItemByTypeName(\Group::class, '_test_group_1', true),
+                        'slms_id' => getItemByTypeName(SLM::class, 'Test SLM', true), // should be created by the test case
+                        'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
                     ]
                 )->getID(),
             ],
