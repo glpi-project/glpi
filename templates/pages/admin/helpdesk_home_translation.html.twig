@@ -87,28 +87,42 @@
 
 {% set entries = [] %}
 {% for handlers in item.listTranslationsHandlers() %}
-    {% set entries = entries|merge([{
-        'type': '<span data-glpi-helpdesk-translations-subtitle-row>' ~ handlers|first.getCategory() ~ '</span>',
-        'type_colspan': 3,
-        'type_aria_label': _n('Category', 'Categories', 1)
-    }]) %}
+    {% set group_entries = [] %}
     {% for handler in handlers %}
-        {% set entries = entries|merge([{
-            'type': '<span class="fw-medium">' ~ handler.getName() ~ '</span>',
-            'default': handler.isRichText() ? handler.getValue()|safe_html : handler.getValue()|e,
-            'translation': _self.getTranslationInput(
-                handler,
-                helpdesk_translation.getForItemKeyAndLanguage(
-                    handler.getItem(),
-                    handler.getKey(),
-                    helpdesk_translation.fields['language']
-                )
-            ),
-            'type_aria_label': __('Translation name'),
-            'default_aria_label': __('Default value'),
-            'translation_aria_label': __('Translated value')
-        }]) %}
+        {% set item_translation = helpdesk_translation.getForItemKeyAndLanguage(
+            handler.getItem(),
+            handler.getKey(),
+            helpdesk_translation.fields['language']
+        ) %}
+        {% if handler.getValue() is not empty or (item_translation is not null and item_translation.getTranslation() is not empty) %}
+            {% set default_value = handler.getValue() %}
+            {% if handler.getValue() is empty %}
+                {% set default_value = '<span class="text-muted fst-italic">' ~ __('No default value') ~ '</span>' %}
+            {% else %}
+                {% set default_value = handler.isRichText() ? default_value|safe_html : default_value|e %}
+            {% endif %}
+            {% set group_entries = group_entries|merge([{
+                'type': '<span class="fw-medium">' ~ handler.getName() ~ '</span>',
+                'default': default_value,
+                'translation': _self.getTranslationInput(
+                    handler,
+                    item_translation
+                ),
+                'type_aria_label': __('Translation name'),
+                'default_aria_label': __('Default value'),
+                'translation_aria_label': __('Translated value')
+            }]) %}
+        {% endif %}
     {% endfor %}
+
+    {% if group_entries is not empty %}
+        {% set entries = entries|merge([{
+            'type': '<span data-glpi-helpdesk-translations-subtitle-row>' ~ handlers|first.getCategory() ~ '</span>',
+            'type_colspan': 3,
+            'type_aria_label': _n('Category', 'Categories', 1)
+        }]) %}
+        {% set entries = entries|merge(group_entries) %}
+    {% endif %}
 {% endfor %}
 
 <button

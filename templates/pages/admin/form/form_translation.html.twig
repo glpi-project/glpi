@@ -87,11 +87,7 @@
 
 {% set entries = [] %}
 {% for handlers in form.listTranslationsHandlers() %}
-    {% set entries = entries|merge([{
-        'type': '<span data-glpi-form-translations-subtitle-row>' ~ handlers|first.getCategory() ~ '</span>',
-        'type_colspan': 3,
-        'type_aria_label': _n('Category', 'Categories', 1)
-    }]) %}
+    {% set group_entries = [] %}
     {% for handler in handlers %}
         {% set item_translation = form_translation.getForItemKeyAndLanguage(
             handler.getItem(),
@@ -105,7 +101,7 @@
             {% else %}
                 {% set default_value = handler.isRichText() ? default_value|safe_html : default_value|e %}
             {% endif %}
-            {% set entries = entries|merge([{
+            {% set group_entries = group_entries|merge([{
                 'type': '<span class="fw-medium">' ~ handler.getName() ~ '</span>',
                 'default': default_value,
                 'translation': _self.getTranslationInput(
@@ -118,6 +114,15 @@
             }]) %}
         {% endif %}
     {% endfor %}
+
+    {% if group_entries is not empty %}
+        {% set entries = entries|merge([{
+            'type': '<span data-glpi-form-translations-subtitle-row>' ~ handlers|first.getCategory() ~ '</span>',
+            'type_colspan': 3,
+            'type_aria_label': _n('Category', 'Categories', 1)
+        }]) %}
+        {% set entries = entries|merge(group_entries) %}
+    {% endif %}
 {% endfor %}
 
 <button
