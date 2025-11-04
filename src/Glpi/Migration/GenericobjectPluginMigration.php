@@ -36,9 +36,9 @@ namespace Glpi\Migration;
 
 use CommonDBTM;
 use CommonDropdown;
+use DisplayPreference;
 use Domain_Item;
 use DropdownTranslation;
-use FieldUnicity;
 use Glpi\Asset\Asset;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetModel;
@@ -75,6 +75,7 @@ use Override;
 use Profile;
 use ProfileRight;
 use RuntimeException;
+use SavedSearch;
 use Toolbox;
 
 use function Safe\preg_match;
@@ -568,17 +569,16 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                 }
             }
 
-            // Import fields unicities
-            $this->copyItems(
-                FieldUnicity::class,
-                where: ['itemtype' => $plugin_itemtype],
-                replacements: [
-                    [
-                        'field' => 'itemtype',
-                        'from'  => $plugin_itemtype,
-                        'to'    => $asset_definition->getAssetClassName(),
-                    ],
-                ]
+            // Update class references
+            $this->updateItemtypeReferences(
+                source_itemtype: $plugin_itemtype,
+                target_itemtype: $asset_definition->getAssetClassName(),
+                excluded_relations: [
+                    // Ignore display preferences (some are created by default) and saved searches.
+                    // These cannot be migrated this way, as a specific SO IDs mapping have to be applied.
+                    DisplayPreference::class,
+                    SavedSearch::class,
+                ],
             );
 
             // FIXME Copy history, display preferences and saved searches, for main definition, model and type ?
@@ -870,8 +870,8 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                         );
                     }
 
-                    // Copy relation/child items
-                    $this->copyPolymorphicConnexityItems(
+                    // Update relations with the migrated item
+                    $this->updatePolymorphicReferences(
                         $type_data['itemtype'],
                         $asset_data['id'],
                         $asset::class,

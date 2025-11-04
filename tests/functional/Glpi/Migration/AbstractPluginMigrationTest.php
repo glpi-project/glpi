@@ -39,11 +39,14 @@ use Contract;
 use Contract_Item;
 use DBmysql;
 use DbTestCase;
+use DisplayPreference;
 use DropdownTranslation;
 use Entity;
+use FieldUnicity;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasInfocomCapacity;
+use Glpi\DBAL\QueryExpression;
 use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Message\MessageType;
 use Glpi\Migration\AbstractPluginMigration;
@@ -967,6 +970,295 @@ class AbstractPluginMigrationTest extends DbTestCase
                 ],
             ],
             \array_values($copied_contract_relations)
+        );
+    }
+
+    public function testUpdateItemtypeReferences(): void
+    {
+        global $DB;
+
+        // Arrange
+        $definition = $this->initAssetDefinition('MyCustomAsset');
+
+        $field_unicity = $this->createItem(
+            FieldUnicity::class,
+            [
+                'name'          => __FUNCTION__,
+                'itemtype'      => Computer::class,
+                'fields'        => 'name,serial',
+                'entities_id'   => 0,
+                'is_recursive'  => true,
+                'is_active'     => true,
+                'action_refuse' => true,
+                'action_notify' => false,
+            ]
+        );
+
+        $instance = new class ($DB) extends AbstractPluginMigration {
+            protected function validatePrerequisites(): bool
+            {
+                return true;
+            }
+
+            protected function processMigration(): bool
+            {
+                $definition = \getItemByTypeName(AssetDefinition::class, 'MyCustomAsset');
+
+                $this->updateItemtypeReferences(Computer::class, $definition->getAssetClassName(), [DisplayPreference::class]);
+
+                return true;
+            }
+
+            protected function getHasBeenExecutedConfigurationKey(): string
+            {
+                return 'config';
+            }
+
+            protected function getMainPluginTables(): array
+            {
+                return ['table'];
+            }
+        };
+
+        // Act
+        global $PHPLOGGER;
+        $instance->setLogger($PHPLOGGER);
+        $result = $instance->execute();
+
+        // Assert
+        $this->assertTrue($result->isFullyProcessed());
+        $this->assertFalse($result->hasErrors());
+
+        $this->assertTrue($field_unicity->getFromDB($field_unicity->getID()));
+        $this->assertEquals($definition->getAssetClassName(), $field_unicity->fields['itemtype']);
+    }
+
+    public function testUpdatePolymorphicReferences(): void
+    {
+        global $DB;
+
+        // Arrange
+        $definition = $this->initAssetDefinition(
+            'MyCustomAsset',
+            capacities: [
+                new Capacity(name: HasInfocomCapacity::class),
+            ]
+        );
+
+        $computer_1_id = \getItemByTypeName(Computer::class, '_test_pc01', true);
+        $computer_2_id = \getItemByTypeName(Computer::class, '_test_pc02', true);
+        $computer_3_id = \getItemByTypeName(Computer::class, '_test_pc03', true); // this one will not be migrated
+
+        $DB->delete(Infocom::getTable(), [new QueryExpression(true)]);
+        $this->createItems(
+            Infocom::class,
+            [
+                [
+                    'itemtype'          => Computer::class,
+                    'items_id'          => $computer_1_id,
+                    'warranty_date'     => '2024-12-04',
+                    'warranty_duration' => 3,
+                ],
+                [
+                    'itemtype'          => Computer::class,
+                    'items_id'          => $computer_2_id,
+                    'warranty_date'     => '2025-01-17',
+                    'warranty_duration' => 12,
+                ],
+                [
+                    'itemtype'          => Computer::class,
+                    'items_id'          => $computer_3_id,
+                    'warranty_date'     => '2025-06-17',
+                    'warranty_duration' => 6,
+                ],
+            ]
+        );
+
+        $contract_1 = $this->createItem(
+            Contract::class,
+            [
+                'name'          => 'Contract 1',
+                'entities_id'   => 0,
+            ],
+        );
+        $contract_2 = $this->createItem(
+            Contract::class,
+            [
+                'name'          => 'Contract 2',
+                'entities_id'   => 0,
+            ],
+        );
+        $contract_3 = $this->createItem(
+            Contract::class,
+            [
+                'name'          => 'Contract 3',
+                'entities_id'   => 0,
+            ],
+        );
+
+        $DB->delete(Contract_Item::getTable(), [new QueryExpression(true)]);
+        $this->createItems(
+            Contract_Item::class,
+            [
+                [
+                    'itemtype'     => Computer::class,
+                    'items_id'     => $computer_1_id,
+                    'contracts_id' => $contract_1->getID(),
+                ],
+                [
+                    'itemtype'     => Computer::class,
+                    'items_id'     => $computer_1_id,
+                    'contracts_id' => $contract_2->getID(),
+                ],
+                [
+                    'itemtype'     => Computer::class,
+                    'items_id'     => $computer_2_id,
+                    'contracts_id' => $contract_3->getID(),
+                ],
+                [
+                    'itemtype'     => Computer::class,
+                    'items_id'     => $computer_3_id,
+                    'contracts_id' => $contract_1->getID(),
+                ],
+            ]
+        );
+
+        $instance = new class ($DB) extends AbstractPluginMigration {
+            protected function validatePrerequisites(): bool
+            {
+                return true;
+            }
+
+            protected function processMigration(): bool
+            {
+                $definition = \getItemByTypeName(AssetDefinition::class, 'MyCustomAsset');
+
+                $my_asset_1 = $this->importItem(
+                    $definition->getAssetClassName(),
+                    [
+                        'name'        => 'Test asset 1',
+                        'entities_id' => 0,
+                    ]
+                );
+                $computer_1_id = \getItemByTypeName(Computer::class, '_test_pc01', true);
+                $this->updatePolymorphicReferences(Computer::class, $computer_1_id, $my_asset_1::class, $my_asset_1->getID());
+
+                $my_asset_2 = $this->importItem(
+                    $definition->getAssetClassName(),
+                    [
+                        'name'        => 'Test asset 2',
+                        'entities_id' => 0,
+                    ]
+                );
+                $computer_2_id = \getItemByTypeName(Computer::class, '_test_pc02', true);
+                $this->updatePolymorphicReferences(Computer::class, $computer_2_id, $my_asset_2::class, $my_asset_2->getID());
+
+                return true;
+            }
+
+            protected function getHasBeenExecutedConfigurationKey(): string
+            {
+                return 'config';
+            }
+
+            protected function getMainPluginTables(): array
+            {
+                return ['table'];
+            }
+        };
+
+        // Act
+        global $PHPLOGGER;
+        $instance->setLogger($PHPLOGGER);
+        $result = $instance->execute();
+
+        // Assert
+        $my_asset_1 = \getItemByTypeName($definition->getAssetClassName(), 'Test asset 1');
+        $my_asset_2 = \getItemByTypeName($definition->getAssetClassName(), 'Test asset 2');
+
+        $expected_messages = [
+            [
+                'type' => MessageType::Debug,
+                'message' => sprintf('MyCustomAsset "Test asset 1" (%d) has been created.', $my_asset_1->getID()),
+            ],
+            [
+                'type' => MessageType::Debug,
+                'message' => sprintf('MyCustomAsset "Test asset 2" (%d) has been created.', $my_asset_2->getID()),
+            ],
+        ];
+        $this->assertEquals($expected_messages, $result->getMessages());
+        $this->assertTrue($result->isFullyProcessed());
+        $this->assertFalse($result->hasErrors());
+
+        // Assert all infocoms in DB are updated
+        $infocoms = \array_map(
+            static function (array $entry): array {
+                return [
+                    'itemtype'          => $entry['itemtype'],
+                    'items_id'          => $entry['items_id'],
+                    'warranty_date'     => $entry['warranty_date'],
+                    'warranty_duration' => $entry['warranty_duration'],
+                ];
+            },
+            \getAllDataFromTable(Infocom::getTable())
+        );
+
+        $this->assertEquals(
+            [
+                [
+                    'items_id'          => $my_asset_1->getID(),
+                    'itemtype'          => $my_asset_1::class,
+                    'warranty_date'     => '2024-12-04',
+                    'warranty_duration' => 3,
+                ],
+                [
+                    'items_id'          => $my_asset_2->getID(),
+                    'itemtype'          => $my_asset_2::class,
+                    'warranty_date'     => '2025-01-17',
+                    'warranty_duration' => 12,
+                ],
+                [
+                    'itemtype'          => Computer::class,
+                    'items_id'          => $computer_3_id,
+                    'warranty_date'     => '2025-06-17',
+                    'warranty_duration' => 6,
+                ],
+            ],
+            \array_values($infocoms)
+        );
+
+        $contract_relations = \array_map(
+            static function (array $entry): array {
+                unset($entry['id']);
+                return $entry;
+            },
+            \getAllDataFromTable(Contract_Item::getTable())
+        );
+
+        $this->assertEqualsCanonicalizing(
+            [
+                [
+                    'itemtype'     => $my_asset_1::class,
+                    'items_id'     => $my_asset_1->getID(),
+                    'contracts_id' => $contract_1->getID(),
+                ],
+                [
+                    'itemtype'     => $my_asset_1::class,
+                    'items_id'     => $my_asset_1->getID(),
+                    'contracts_id' => $contract_2->getID(),
+                ],
+                [
+                    'itemtype'     => $my_asset_2::class,
+                    'items_id'     => $my_asset_2->getID(),
+                    'contracts_id' => $contract_3->getID(),
+                ],
+                [
+                    'itemtype'     => Computer::class,
+                    'items_id'     => $computer_3_id,
+                    'contracts_id' => $contract_1->getID(),
+                ],
+            ],
+            \array_values($contract_relations)
         );
     }
 

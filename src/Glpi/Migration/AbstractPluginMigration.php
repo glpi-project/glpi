@@ -494,6 +494,8 @@ abstract class AbstractPluginMigration
         string $target_itemtype,
         int $target_items_id
     ): void {
+        // TODO Deprecate this in GLPI 11.1.
+
         $polymorphic_column_iterator = $this->db->request(
             [
                 'SELECT' => [
@@ -552,6 +554,136 @@ abstract class AbstractPluginMigration
                 // These check may fail considering the source item and the copied item are doubles,
                 // but as the source item will no longer be used, it should not be considered as an issue.
                 disable_unicity_check: true,
+            );
+        }
+    }
+
+    /**
+     * Update references to the given source itemtype and attach them to the given target itemtype.
+     *
+     * @param class-string<CommonDBTM> $source_itemtype
+     * @param class-string<CommonDBTM> $target_itemtype
+     * @param class-string<CommonDBTM>[] $excluded_relations
+     */
+    final protected function updateItemtypeReferences(
+        string $source_itemtype,
+        string $target_itemtype,
+        array $excluded_relations = [],
+    ): void {
+        $itemtype_column_criteria = [
+            'table_schema' => $this->db->dbdefault,
+            'table_name'   => ['LIKE', 'glpi\_%'],
+            'OR' => [
+                ['column_name'  => 'itemtype'],
+                ['column_name'  => ['LIKE', 'itemtype_%']],
+            ],
+        ];
+        if ($excluded_relations !== []) {
+            $itemtype_column_criteria[] = [
+                'NOT' => [
+                    'table_name' => \array_map(fn(string $classname) => $classname::getTable(), $excluded_relations),
+                ],
+            ];
+        }
+
+        $itemtype_column_iterator = $this->db->request(
+            [
+                'SELECT' => [
+                    'table_name AS TABLE_NAME',
+                    'column_name AS COLUMN_NAME',
+                ],
+                'FROM'   => 'information_schema.columns',
+                'WHERE'  => $itemtype_column_criteria,
+                'ORDER'  => 'TABLE_NAME',
+            ]
+        );
+
+        foreach ($itemtype_column_iterator as $itemtype_column_data) {
+            $table = $itemtype_column_data['TABLE_NAME'];
+            $itemtype_field = $itemtype_column_data['COLUMN_NAME'];
+            $items_id_field = \str_replace('itemtype', 'items_id', $itemtype_field);
+
+            if ($this->db->fieldExists($table, $items_id_field)) {
+                // The `items_id` field exists, it means that the `itemtype` column is not just a reference to the itemtype,
+                // but a polymorphic relation.
+                // This case is not handled by the current method.
+                continue;
+            }
+
+            // Do updates directly in DB.
+            //
+            // There are many unexpected reasons to get a failure from `prepareInputForUpdate` methods
+            // and it is impossible to handle them here automatically, especially
+            // because it can be related to code located in plugins.
+            // Therefore, doing updates directly in DB is the best option here.
+            $this->db->update(
+                table: $table,
+                params: [$itemtype_field => $target_itemtype],
+                where: [$itemtype_field => $source_itemtype]
+            );
+        }
+    }
+
+    /**
+     * Update the polymorphic references related to the given source item and attach them to the given target item.
+     *
+     * @param class-string<CommonDBTM> $source_itemtype
+     * @param int $source_items_id
+     * @param class-string<CommonDBTM> $target_itemtype
+     * @param int $target_items_id
+     */
+    final protected function updatePolymorphicReferences(
+        string $source_itemtype,
+        int $source_items_id,
+        string $target_itemtype,
+        int $target_items_id
+    ): void {
+        $polymorphic_column_iterator = $this->db->request(
+            [
+                'SELECT' => [
+                    'table_name AS TABLE_NAME',
+                    'column_name AS COLUMN_NAME',
+                ],
+                'FROM'   => 'information_schema.columns',
+                'WHERE'  => [
+                    'table_schema' => $this->db->dbdefault,
+                    'table_name'   => ['LIKE', 'glpi\_%'],
+                    'OR' => [
+                        ['column_name'  => 'items_id'],
+                        ['column_name'  => ['LIKE', 'items_id_%']],
+                    ],
+                ],
+                'ORDER'  => 'TABLE_NAME',
+            ]
+        );
+
+        foreach ($polymorphic_column_iterator as $polymorphic_column_data) {
+            $table = $polymorphic_column_data['TABLE_NAME'];
+            $items_id_field = $polymorphic_column_data['COLUMN_NAME'];
+            $itemtype_field = \str_replace('items_id', 'itemtype', $items_id_field);
+
+            if (!$this->db->fieldExists($table, $itemtype_field)) {
+                // The `items_id` field exists but the `itemtype` field does not exist.
+                // It is not a polymorphic relation.
+                continue;
+            }
+
+            // Do updates directly in DB.
+            //
+            // There are many unexpected reasons to get a failure from `prepareInputForUpdate` methods
+            // and it is impossible to handle them here automatically, especially
+            // because it can be related to code located in plugins.
+            // Therefore, doing updates directly in DB is the best option here.
+            $this->db->update(
+                table: $table,
+                params: [
+                    $itemtype_field => $target_itemtype,
+                    $items_id_field => $target_items_id,
+                ],
+                where: [
+                    $itemtype_field => $source_itemtype,
+                    $items_id_field => $source_items_id,
+                ]
             );
         }
     }
