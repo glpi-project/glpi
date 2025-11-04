@@ -454,6 +454,33 @@ class QueryFunction
         return new QueryExpression('CONCAT_WS(' . $separator . ', ' . implode(', ', $params) . ')', $alias);
     }
 
+    /**
+     * Build a JSON_CONTAINS SQL function call
+     *
+     * Searches for a value within a JSON document.
+     *
+     * @param string|QueryExpression $target JSON field or expression to search in.
+     * @param string|QueryExpression $candidate Value to search for. String values will be treated as field identifiers.
+     * @param string $path JSON path expression (e.g., '$' for root, '$.fieldname' for nested).
+     * @param string|null $alias Function result alias.
+     * @return QueryExpression
+     *
+     * @example
+     * // Search for a scalar value
+     * QueryFunction::jsonContains(
+     *     'users_id_guests',
+     *     new QueryExpression($DB::quoteValue(4)),
+     *     '$'
+     * )
+     *
+     * @example
+     * // Search using a column reference
+     * QueryFunction::jsonContains(
+     *     'REFTABLE.custom_fields',
+     *     'NEWTABLE.id',
+     *     '$.field_id'
+     * )
+     */
     public static function jsonContains(string|QueryExpression $target, string|QueryExpression $candidate, string $path, ?string $alias = null): QueryExpression
     {
         global $DB;
@@ -463,14 +490,19 @@ class QueryFunction
         }
 
         if (is_string($candidate)) {
-            $candidate = preg_match('/-MariaDB/', $DB->getVersion())
-                ? new QueryExpression($DB::quoteName($candidate))
-                : QueryFunction::cast($candidate, 'JSON')
-            ;
+            $candidate = new QueryExpression($DB::quoteName($candidate));
         }
 
         $path = new QueryExpression($DB::quoteValue($path));
 
-        return self::getExpression('JSON_CONTAINS', [$target, $candidate, $path], $alias);
+        return self::getExpression(
+            'JSON_CONTAINS',
+            [
+                $target,
+                $DB->getVersionAndServer()['server'] === 'MariaDB' ? $candidate : QueryFunction::cast($candidate, 'JSON'),
+                $path,
+            ],
+            $alias
+        );
     }
 }

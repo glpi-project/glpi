@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use PlanningExternalEvent;
 use Session;
 
 include_once __DIR__ . '/../abstracts/AbstractPlanningEvent.php';
@@ -91,7 +92,7 @@ class PlanningExternalEventTest extends \AbstractPlanningEvent
         $this->login();
 
         // Create event with guests
-        $event = new \PlanningExternalEvent();
+        $event = new PlanningExternalEvent();
         $id = $event->add([
             'name'            => 'Test Event with Guests',
             'users_id'        => Session::getLoginUserID(),
@@ -137,7 +138,7 @@ class PlanningExternalEventTest extends \AbstractPlanningEvent
         $this->login();
 
         // Create event with guests
-        $event = new \PlanningExternalEvent();
+        $event = new PlanningExternalEvent();
         $id = $event->add([
             'name'            => 'Test Event with Guests',
             'users_id'        => Session::getLoginUserID(),
@@ -180,7 +181,7 @@ class PlanningExternalEventTest extends \AbstractPlanningEvent
     {
         $this->login();
 
-        $event = new \PlanningExternalEvent();
+        $event = new PlanningExternalEvent();
 
         // Test with empty string (simulates hidden input from form)
         // Should convert empty string to JSON empty array
@@ -215,7 +216,7 @@ class PlanningExternalEventTest extends \AbstractPlanningEvent
         $this->login();
 
         // Create event without guests
-        $event = new \PlanningExternalEvent();
+        $event = new PlanningExternalEvent();
         $id = $event->add([
             'name'     => 'Test Event',
             'users_id' => Session::getLoginUserID(),
@@ -261,5 +262,166 @@ class PlanningExternalEventTest extends \AbstractPlanningEvent
         $this->assertContains(5, $guests);
         $this->assertNotContains(3, $guests);
         $this->assertNotContains(4, $guests);
+    }
+
+    /**
+     * Test that guests can see events in their planner (bug #21513)
+     *
+     * When an event is created with guests, those guests should be able
+     * to see the event in their own planner as a read-only item.
+     */
+    public function testGuestCanSeePlanningEvent()
+    {
+        $this->login();
+
+        // Create event with user 2 (TU_USER) as owner and user 4 as guest
+        $event = new PlanningExternalEvent();
+        $event_id = $event->add([
+            'name' => 'Event with guest for bug #21513',
+            'users_id' => Session::getLoginUserID(), // User 2
+            'plan' => [
+                'begin' => '2025-01-15 10:00:00',
+                'end' => '2025-01-15 12:00:00',
+            ],
+            'users_id_guests' => [4], // User 4 as guest
+        ]);
+        $this->assertGreaterThan(0, $event_id);
+
+        // Verify event was created with guest
+        $this->assertTrue($event->getFromDB($event_id));
+        $guests = $event->fields['users_id_guests'];
+        $this->assertCount(1, $guests);
+        $this->assertContains(4, $guests);
+
+        // Fetch events for guest user 4
+        $events = PlanningExternalEvent::populatePlanning([
+            'who' => 4,
+            'whogroup' => 0,
+            'begin' => '2025-01-15',
+            'end' => '2025-01-16',
+        ]);
+
+        // Guest user 4 MUST see the event
+        $found = false;
+        foreach ($events as $evt) {
+            if (isset($evt['id']) && $evt['id'] == $event_id) {
+                $found = true;
+                break;
+            }
+        }
+        $this->assertTrue($found, 'Guest user 4 should see the event in their planner');
+    }
+
+    /**
+     * Test that the owner can see their own event
+     */
+    public function testOwnerSeesOwnEvent()
+    {
+        $this->login();
+
+        $event = new PlanningExternalEvent();
+        $event_id = $event->add([
+            'name' => 'Owner event',
+            'users_id' => Session::getLoginUserID(), // User 2
+            'plan' => [
+                'begin' => '2025-01-15 10:00:00',
+                'end' => '2025-01-15 12:00:00',
+            ],
+            'users_id_guests' => [4], // User 4 as guest
+        ]);
+        $this->assertGreaterThan(0, $event_id);
+
+        // Owner fetches their events
+        $events = PlanningExternalEvent::populatePlanning([
+            'who' => Session::getLoginUserID(), // User 2
+            'whogroup' => 0,
+            'begin' => '2025-01-15',
+            'end' => '2025-01-16',
+        ]);
+
+        // Owner MUST see their own event
+        $found = false;
+        foreach ($events as $evt) {
+            if (isset($evt['id']) && $evt['id'] == $event_id) {
+                $found = true;
+                break;
+            }
+        }
+        $this->assertTrue($found, 'Owner should see their own event');
+    }
+
+    /**
+     * Test that non-guest users cannot see private events
+     */
+    public function testNonGuestCannotSeeEvent()
+    {
+        $this->login();
+
+        $event = new PlanningExternalEvent();
+        $event_id = $event->add([
+            'name' => 'Private event',
+            'users_id' => Session::getLoginUserID(), // User 2
+            'plan' => [
+                'begin' => '2025-01-15 10:00:00',
+                'end' => '2025-01-15 12:00:00',
+            ],
+            'users_id_guests' => [4], // Only user 4 is guest
+        ]);
+        $this->assertGreaterThan(0, $event_id);
+
+        // User 5 (not guest, not owner) tries to fetch
+        $events = PlanningExternalEvent::populatePlanning([
+            'who' => 5, // User 5 - neither owner nor guest
+            'whogroup' => 0,
+            'begin' => '2025-01-15',
+            'end' => '2025-01-16',
+        ]);
+
+        // User 5 MUST NOT see the event
+        $found = false;
+        foreach ($events as $evt) {
+            if (isset($evt['id']) && $evt['id'] == $event_id) {
+                $found = true;
+                break;
+            }
+        }
+        $this->assertFalse($found, 'Non-guest user should not see the event');
+    }
+
+    /**
+     * Test that getUserItemsAsVCalendars returns events for guests
+     */
+    public function testGetUserItemsAsVCalendarsForGuest()
+    {
+        $this->login();
+
+        $event = new PlanningExternalEvent();
+        $event_id = $event->add([
+            'name' => 'CalDAV event for guest',
+            'users_id' => Session::getLoginUserID(), // User 2
+            'plan' => [
+                'begin' => '2025-01-15 10:00:00',
+                'end' => '2025-01-15 12:00:00',
+            ],
+            'users_id_guests' => [4], // User 4 as guest
+        ]);
+        $this->assertGreaterThan(0, $event_id);
+
+        // Fetch vCalendars for guest user 4
+        $vcalendars = PlanningExternalEvent::getUserItemsAsVCalendars(4);
+
+        // Guest MUST receive at least one vCalendar (the one we just created)
+        $this->assertGreaterThanOrEqual(1, count($vcalendars), 'Guest should receive vCalendar');
+
+        // Verify that our event is in the vCalendars
+        $found = false;
+        foreach ($vcalendars as $vcalendar) {
+            $vevent = $vcalendar->VEVENT ?? $vcalendar->VTODO ?? null;
+            if ($vevent && strpos($vevent->SUMMARY, 'CalDAV event for guest') !== false) {
+                $found = true;
+                break;
+            }
+        }
+        $this->assertTrue($found, 'The created event should be in guest\'s vCalendars');
     }
 }
