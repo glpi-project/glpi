@@ -785,8 +785,8 @@ class TransferTest extends DbTestCase
 
         //Prepare items to transfer
         $item_to_transfer = [\Computer::class => [
-                $computer->getID() => $computer->getID(),
-            ]
+            $computer->getID() => $computer->getID(),
+        ],
         ];
         $transfer->moveItems($item_to_transfer, $dentity, $transfer->fields);
 
