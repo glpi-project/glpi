@@ -68,6 +68,9 @@ use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
 use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypeCheckbox;
+use Glpi\Form\QuestionType\QuestionTypeDropdown;
+use Glpi\Form\QuestionType\QuestionTypeDropdownExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
@@ -189,16 +192,41 @@ class FormMigration extends AbstractPluginMigration
      * @param QuestionTypeInterface $question_type The question type interface
      * @return ValueOperator|null The corresponding value operator or null if not found
      */
-    private function getValueOperatorFromLegacy(int $value_operator, mixed $value, QuestionTypeInterface $question_type): ?ValueOperator
-    {
+    private function getValueOperatorFromLegacy(
+        int $value_operator,
+        mixed $value,
+        QuestionTypeInterface $question_type,
+        ?JsonFieldInterface $question_config,
+    ): ?ValueOperator {
         // String condition handler support length comparison but with a different operator
         $has_string_condition_handler = in_array($question_type::class, [
             QuestionTypeShortText::class, QuestionTypeEmail::class, QuestionTypeLongText::class,
         ]);
 
+        $is_array_condition = $question_type instanceof QuestionTypeCheckbox
+            || (
+                $question_type instanceof QuestionTypeDropdown
+                && $question_config !== null
+                && $question_config instanceof QuestionTypeDropdownExtraDataConfig
+                && $question_config->isMultipleDropdown()
+            )
+        ;
+
         return match ($value_operator) {
-            1 => $value === "" ? ValueOperator::EMPTY : ValueOperator::EQUALS,
-            2 => $value === "" ? ValueOperator::NOT_EMPTY : ValueOperator::NOT_EQUALS,
+            1 => $value === ""
+                ? ValueOperator::EMPTY
+                : (
+                    $is_array_condition
+                    ? ValueOperator::CONTAINS
+                    : ValueOperator::EQUALS
+                ),
+            2 => $value === ""
+                ? ValueOperator::NOT_EMPTY
+                : (
+                    $is_array_condition
+                    ? ValueOperator::NOT_CONTAINS
+                    : ValueOperator::NOT_EQUALS
+                ),
             3 => $has_string_condition_handler ? ValueOperator::LENGTH_LESS_THAN : ValueOperator::LESS_THAN,
             4 => $has_string_condition_handler ? ValueOperator::LENGTH_GREATER_THAN : ValueOperator::GREATER_THAN,
             5 => $has_string_condition_handler ? ValueOperator::LENGTH_LESS_THAN_OR_EQUALS : ValueOperator::LESS_THAN_OR_EQUALS,
@@ -1415,7 +1443,8 @@ class FormMigration extends AbstractPluginMigration
             $value_operator = $this->getValueOperatorFromLegacy(
                 $raw_condition['show_condition'],
                 $value,
-                $question_type
+                $question_type,
+                $question->getExtraDataConfig()
             );
 
             if (isset($question->fields['extra_data'])) {
