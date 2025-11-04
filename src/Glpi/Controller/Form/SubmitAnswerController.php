@@ -96,7 +96,7 @@ final class SubmitAnswerController extends AbstractController
 
             return new JsonResponse([
                 'errors' => $messages,
-            ], Response::HTTP_BAD_REQUEST);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
