@@ -39,6 +39,7 @@ use Contract;
 use Contract_Item;
 use DBmysql;
 use DbTestCase;
+use DisplayPreference;
 use DropdownTranslation;
 use Entity;
 use FieldUnicity;
@@ -1003,7 +1004,7 @@ class AbstractPluginMigrationTest extends DbTestCase
             {
                 $definition = \getItemByTypeName(AssetDefinition::class, 'MyCustomAsset');
 
-                $this->updateItemtypeReferences(Computer::class, $definition->getAssetClassName());
+                $this->updateItemtypeReferences(Computer::class, $definition->getAssetClassName(), [DisplayPreference::class]);
 
                 return true;
             }

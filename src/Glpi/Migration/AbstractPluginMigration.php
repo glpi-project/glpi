@@ -563,11 +563,29 @@ abstract class AbstractPluginMigration
      *
      * @param class-string<CommonDBTM> $source_itemtype
      * @param class-string<CommonDBTM> $target_itemtype
+     * @param class-string<CommonDBTM>[] $excluded_relations
      */
     final protected function updateItemtypeReferences(
         string $source_itemtype,
-        string $target_itemtype
+        string $target_itemtype,
+        array $excluded_relations = [],
     ): void {
+        $itemtype_column_criteria = [
+            'table_schema' => $this->db->dbdefault,
+            'table_name'   => ['LIKE', 'glpi\_%'],
+            'OR' => [
+                ['column_name'  => 'itemtype'],
+                ['column_name'  => ['LIKE', 'itemtype_%']],
+            ],
+        ];
+        if ($excluded_relations !== []) {
+            $itemtype_column_criteria[] = [
+                'NOT' => [
+                    'table_name' => \array_map(fn(string $classname) => $classname::getTable(), $excluded_relations),
+                ],
+            ];
+        }
+
         $itemtype_column_iterator = $this->db->request(
             [
                 'SELECT' => [
@@ -575,14 +593,7 @@ abstract class AbstractPluginMigration
                     'column_name AS COLUMN_NAME',
                 ],
                 'FROM'   => 'information_schema.columns',
-                'WHERE'  => [
-                    'table_schema' => $this->db->dbdefault,
-                    'table_name'   => ['LIKE', 'glpi\_%'],
-                    'OR' => [
-                        ['column_name'  => 'itemtype'],
-                        ['column_name'  => ['LIKE', 'itemtype_%']],
-                    ],
-                ],
+                'WHERE'  => $itemtype_column_criteria,
                 'ORDER'  => 'TABLE_NAME',
             ]
         );
