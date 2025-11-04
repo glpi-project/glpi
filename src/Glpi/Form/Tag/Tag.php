@@ -55,7 +55,6 @@ final readonly class Tag
 
         // Build HTML representation of the tag.
         $properties = [
-            "contenteditable"        => "false",
             "data-form-tag"          => "true",
             "data-form-tag-value"    => $value,
             "data-form-tag-provider" => $provider::class,

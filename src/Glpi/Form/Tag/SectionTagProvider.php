@@ -79,6 +79,17 @@ final class SectionTagProvider implements TagProviderInterface, TagWithIdValueIn
         return Section::class;
     }
 
+    #[Override]
+    public function getTagFromRawValue(string $value): ?Tag
+    {
+        $section = Section::getById((int) $value);
+        if (!$section) {
+            return null;
+        }
+
+        return $this->getTagForSection($section);
+    }
+
     public function getTagForSection(Section $section): Tag
     {
         return new Tag(
