@@ -2691,8 +2691,8 @@ final class FormMigrationTest extends DbTestCase
             ],
             'expected_conditions' => [
                 [
-                    'value_operator' => ValueOperator::EQUALS,
-                    'value' => 3, // Index of 'Option 3' in ['Option 1', 'Option 2', 'Option 3']
+                    'value_operator' => ValueOperator::CONTAINS,
+                    'value' => [3], // Index of 'Option 3' in ['Option 1', 'Option 2', 'Option 3']
                     'logic_operator' => LogicOperator::AND,
                 ],
             ],
@@ -2746,13 +2746,13 @@ final class FormMigrationTest extends DbTestCase
             ],
             'expected_conditions' => [
                 [
-                    'value_operator' => ValueOperator::EQUALS,
-                    'value' => 2, // Index of 'Option 2' in ['Option 1', 'Option 2', 'Option 3']
+                    'value_operator' => ValueOperator::CONTAINS,
+                    'value' => [2], // Index of 'Option 2' in ['Option 1', 'Option 2', 'Option 3']
                     'logic_operator' => LogicOperator::AND,
                 ],
                 [
-                    'value_operator' => ValueOperator::EQUALS,
-                    'value' => 3, // Index of 'Option 3' in ['Option 1', 'Option 2', 'Option 3']
+                    'value_operator' => ValueOperator::CONTAINS,
+                    'value' => [3], // Index of 'Option 3' in ['Option 1', 'Option 2', 'Option 3']
                     'logic_operator' => LogicOperator::OR,
                 ],
             ],
@@ -3627,6 +3627,63 @@ final class FormMigrationTest extends DbTestCase
             $expected_config->jsonSerialize(),
             json_decode($access_controls[0]->fields['config'], true),
             ['token'], // We can't guess the token
+        );
+    }
+
+    public function testCheckboxesConditionsAreMigratedAsContains(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Arrange: create a form with a condition on a checkbox question
+        $id = $this->createSimpleFormcreatorForm(
+            name: "Form with checkboxes",
+            questions: [
+                [
+                    'name'      => 'My checkbox question',
+                    'fieldtype' => 'checkboxes',
+                    'values'    => '["A","B","C","D"]',
+                ],
+                [
+                    'name'        => 'My other question',
+                    'fieldtype' => 'text',
+                    'show_rule'   => 2,
+                    '_conditions' => [
+                        [
+                            'plugin_formcreator_questions_id' => 'My checkbox question',
+                            'show_condition'                  => 1,
+                            'show_value'                      => "A",
+                            'show_logic'                      => 1,
+                        ],
+                    ],
+                ],
+            ],
+        );
+
+        // Act: import the form
+        $control_manager = FormAccessControlManager::getInstance();
+        $migration = new FormMigration(
+            db: $DB,
+            formAccessControlManager: $control_manager,
+            specificFormsIds: [$id],
+        );
+        $migration->execute();
+
+        // Assert: make sure the condition was expected as "Contains A", not
+        // "Equals "A".
+        // This might seem unintuitive but it match the behavior of formcreator
+        // for these questions.
+        $form = getItemByTypeName(Form::class, "Form with checkboxes");
+        $question_id = $this->getQuestionId($form, "My other question");
+        $question = Question::getById($question_id);
+        $condition = $question->getConfiguredConditionsData()[0];
+        $this->assertEquals(
+            ValueOperator::CONTAINS,
+            $condition->getValueOperator()
+        );
+        $this->assertEquals(
+            [1], // "A" will be assigned the first index, which is 1-based
+            $condition->getValue()
         );
     }
 
