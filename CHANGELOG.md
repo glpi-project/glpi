@@ -55,6 +55,11 @@ The present file will list all changes made to the project; according to the
 
 ### Changed
 
+\GLPIKey::get() only returns a string now. It no longer returns null but can throw InvalidGlpiKeyException on errors (such as key not found, not readable, not at the expected format, not able to decrypt contents).
+\GLPIKey::decrypt()
+\GLPIKey::generate()
+
+@todo complete review of all changes
 ### Deprecated
 
 ### Removed
