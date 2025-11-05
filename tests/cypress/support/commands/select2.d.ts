@@ -35,5 +35,6 @@ declare namespace Cypress {
     interface Chainable<Subject> {
         getDropdownByLabelText(value: string): Chainable<any>
         selectDropdownValue(new_value: string): Chainable<any>
+        hasDropdownValue(expected_value: string, should_exist: boolean = true): Chainable<any>
     }
 }
