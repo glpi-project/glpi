@@ -1142,12 +1142,12 @@ class Item_SoftwareVersion extends CommonDBRelation
                     <td>" . Dropdown::showFromArray(
                     "filters[is_dynamic]",
                     [
-                        null => "",
+                        '' => "",
                         '1'  => __('Yes'),
                         '0'  => __('No'),
                     ],
                     [
-                        'value'   => ($filters['is_dynamic'] ?? null),
+                        'value'   => ($filters['is_dynamic'] ?? ''),
                         'display' => false,
                     ]
                 ) . "

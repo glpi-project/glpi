@@ -393,7 +393,10 @@ final class Search
                 $fn_update_keys = static function ($restrict) use (&$fn_update_keys, $main_table) {
                     $new_restrict = [];
                     foreach ($restrict as $key => $value) {
-                        $new_key = str_replace($main_table, '_', $key);
+                        $new_key = $key;
+                        if ($key === $main_table || str_starts_with($key, $main_table . '.')) {
+                            $new_key = str_replace($main_table, '_', $key);
+                        }
                         if (is_array($value)) {
                             $value = $fn_update_keys($value);
                         }
@@ -728,6 +731,9 @@ final class Search
         // Schema must be an object type
         if ($schema['type'] !== Doc\Schema::TYPE_OBJECT) {
             throw new RuntimeException('Schema must be an object type');
+        }
+        if (!isset($schema['x-itemtype']) && isset($schema['x-table'])) {
+            $schema['x-itemtype'] = getItemTypeForTable($schema['x-table']);
         }
         Profiler::getInstance()->start('Search::getSearchResultsBySchema', Profiler::CATEGORY_HLAPI);
         // Initialize a new search

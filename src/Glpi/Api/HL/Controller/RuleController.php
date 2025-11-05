@@ -201,6 +201,7 @@ final class RuleController extends AbstractController
                 ],
                 'uuid' => [
                     'type' => Doc\Schema::TYPE_STRING,
+                    'pattern' => Doc\Schema::PATTERN_UUIDV4,
                     'readOnly' => true,
                 ],
                 'sub_type' => [

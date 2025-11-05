@@ -179,4 +179,25 @@ describe ('Import forms', () => {
         // Check if we are back to the first step
         cy.findByLabelText("Select your file").should('exist');
     });
+
+    it("can see errors on forms that can't be imported at all", () => {
+        // Step 1: file selection
+        cy.visit('/front/form/form.php');
+        cy.findByRole('button', {'name': "Import forms"}).click();
+        cy.findByLabelText("Select your file").selectFile(
+            "fixtures/forms/form-with-hammer-asset.json"
+        );
+
+        // Step 2: preview
+        cy.findByRole('button', {'name': "Preview import"}).click();
+        cy.findAllByRole('row').as('preview');
+        cy.get("@preview").eq(1).within(() => {
+            cy.findByText("Test form").should('exist');
+            cy.findByText("Unknown custom type: Glpi\\CustomAsset\\HammerAsset")
+                .should('exist')
+            ;
+            cy.findByRole("button", {'name': "Resolve issues"}).should('not.exist');
+            cy.findByRole("button", {'name': "Remove form"}).should('exist');
+        });
+    });
 });

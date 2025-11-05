@@ -79,6 +79,17 @@ final class CommentDescriptionTagProvider implements TagProviderInterface, TagWi
         return Comment::class;
     }
 
+    #[Override]
+    public function getTagFromRawValue(string $value): ?Tag
+    {
+        $comment = Comment::getById((int) $value);
+        if (!$comment) {
+            return null;
+        }
+
+        return $this->getDescriptionTagForComment($comment);
+    }
+
     public function getDescriptionTagForComment(Comment $comment): Tag
     {
         return new Tag(

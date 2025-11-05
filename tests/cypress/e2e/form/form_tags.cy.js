@@ -123,7 +123,6 @@ describe('Form tags', () => {
         // Item has been inserted into rich text
         cy.get("@rich_text_editor")
             .findByText("#Question: Last name")
-            .should('have.attr', 'contenteditable', 'false')
             .should('have.attr', 'data-form-tag', 'true')
             .should('have.attr', 'data-form-tag-value', last_name_question_id)
         ;
@@ -134,7 +133,6 @@ describe('Form tags', () => {
         // Rich text content provided by autocompleted values should be displayed properly
         cy.findByRole('region', {name: 'Content configuration'}).awaitTinyMCE()
             .findByText("#Question: Last name")
-            .should('have.attr', 'contenteditable', 'false')
             .should('have.attr', 'data-form-tag', 'true')
             .should('have.attr', 'data-form-tag-value', last_name_question_id)
         ;

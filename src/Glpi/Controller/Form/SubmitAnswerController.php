@@ -47,6 +47,7 @@ use Glpi\Form\EndUserInputNameProvider;
 use Glpi\Form\Form;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
+use Psr\Log\LoggerInterface;
 use Session;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -56,6 +57,8 @@ use Symfony\Component\Routing\Attribute\Route;
 final class SubmitAnswerController extends AbstractController
 {
     use CanCheckAccessPolicies;
+
+    public function __construct(private LoggerInterface $logger) {}
 
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)] // Some forms can be accessed anonymously
     #[Route(
@@ -76,16 +79,33 @@ final class SubmitAnswerController extends AbstractController
         $form = $this->loadSubmittedForm($request);
         $this->checkFormAccessPolicies($form, $request);
 
-        $answers = $this->saveSubmittedAnswers($form, $request);
-        $links = $answers->getLinksToCreatedItems();
+        try {
+            $answers = $this->saveSubmittedAnswers($form, $request);
+            $links = $answers->getLinksToCreatedItems();
 
-        if ($is_unauthenticated_user) {
-            AltchaManager::getInstance()->removeChallenge($altcha);
+            if ($is_unauthenticated_user) {
+                AltchaManager::getInstance()->removeChallenge($altcha);
+            }
+
+            return new JsonResponse([
+                'links_to_created_items' => $links,
+            ]);
+        } catch (\Throwable $th) {
+            $this->logger->error(
+                sprintf('An error occured during the form `%s` submission.', $form->getName()),
+                ['exception' => $th]
+            );
+
+            $messages = [];
+            if (isset($_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR])) {
+                $messages = $_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR];
+                unset($_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR]);
+            }
+
+            return new JsonResponse([
+                'errors' => $messages,
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        return new JsonResponse([
-            'links_to_created_items' => $links,
-        ]);
     }
 
     private function loadSubmittedForm(Request $request): Form

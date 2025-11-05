@@ -44,31 +44,33 @@ use function Safe\fopen;
 use function Safe\json_encode;
 use function Safe\preg_match;
 use function Safe\preg_replace;
-use function Safe\session_write_close;
 
 global $CFG_GLPI, $TRANSLATE;
-
-session_write_close(); // Unlocks session to permit concurrent calls
 
 header("Content-Type: application/json; charset=UTF-8");
 
 $is_cacheable = Environment::get()->shouldForceExtraBrowserCache();
 if ($is_cacheable) {
     // Makes CSS cacheable by browsers and proxies.
-    $max_age = WEEK_TIMESTAMP;
-    header_remove('Pragma');
-    header('Cache-Control: public');
-    header('Cache-Control: max-age=' . $max_age);
+    $max_age = MONTH_TIMESTAMP;
+    // no `must-revalidate`, a `v=xxx` param is used to prevent extensive caching issues
+    header('Cache-Control: public, max-age=' . $max_age);
     header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $max_age));
 }
 
+$requested_language = $_GET['lang'];
+if (!isset($CFG_GLPI['languages'][$requested_language])) {
+    // Fallback to default language if requested one is not available
+    $requested_language = Session::getPreferredLanguage();
+}
+$requested_language_file = $CFG_GLPI['languages'][$requested_language][1];
 
 // Default response to send if locales cannot be loaded.
 // Prevent JS error for plugins that does not provide any translation files
 $default_response = json_encode(
     [
         '' => [
-            'language'     => $CFG_GLPI['languages'][$_SESSION['glpilanguage']][1],
+            'language'     => $requested_language_file,
             'plural-forms' => 'nplurals=2; plural=(n != 1);',
         ],
     ]
@@ -77,7 +79,7 @@ $default_response = json_encode(
 // Get messages from translator component
 $messages = null;
 try {
-    $messages = $TRANSLATE->getAllMessages($_GET['domain']);
+    $messages = $TRANSLATE->getAllMessages($_GET['domain'], $requested_language);
 } catch (Throwable $e) {
     // Error may happen when overrided translation files does not use same plural rules as GLPI.
     ErrorHandler::logCaughtException($e);
@@ -90,11 +92,7 @@ if (!($messages instanceof TextDomain)) {
 }
 
 // Extract headers from main po file
-$po_file = GLPI_ROOT . '/locales/' . preg_replace(
-    '/\.mo$/',
-    '.po',
-    $CFG_GLPI['languages'][$_SESSION['glpilanguage']][1]
-);
+$po_file = GLPI_ROOT . '/locales/' . preg_replace('/\.mo$/', '.po', $requested_language_file);
 $po_file_handle = fopen(
     $po_file,
     'rb'

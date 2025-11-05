@@ -1712,7 +1712,7 @@ function setupAjaxDropdown(config) {
         minimumInputLength: 0,
         quietMillis: 100,
         dropdownAutoWidth: true,
-        dropdownParent: $('#' + field_id).closest('div.modal, div.dropdown-menu, body'),
+        dropdownParent: $('#' + field_id).closest('div.modal, div.offcanvas, div.dropdown-menu, body'),
         minimumResultsForSearch: config.ajax_limit_count,
         ajax: {
             url: config.url,
@@ -1816,7 +1816,7 @@ function setupAdaptDropdown(config)
         width: config.width,
         dropdownAutoWidth: true,
         dropdownCssClass: config.dropdown_css_class,
-        dropdownParent: $('#' + field_id).closest('div.modal, div.dropdown-menu, body'),
+        dropdownParent: $('#' + field_id).closest('div.modal, div.offcanvas, div.dropdown-menu, body'),
         quietMillis: 100,
         minimumResultsForSearch: config.ajax_limit_count,
         matcher: function (params, data) {
@@ -1904,7 +1904,7 @@ function setupAdaptDropdown(config)
     }
     const select2_el = $('#' + field_id).select2(options);
 
-    select2_el.bind('setValue', (e, value) => {
+    select2_el.bind('setValue', (e, ...value) => {
         $('#' + field_id).val(value).trigger('change');
     });
     $('label[for=' + field_id + ']').on('click', function () {

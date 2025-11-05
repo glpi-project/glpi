@@ -40,6 +40,7 @@ use Budget;
 use BusinessCriticity;
 use Cluster;
 use CommonDBTM;
+use CommonITILObject;
 use Contact;
 use Contract;
 use Database;
@@ -304,7 +305,11 @@ final class ManagementController extends AbstractController
             }
 
             if ($item->isField('uuid')) {
-                $schemas[$m_name]['properties']['uuid'] = ['type' => Doc\Schema::TYPE_STRING];
+                $schemas[$m_name]['properties']['uuid'] = [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'pattern' => Doc\Schema::PATTERN_UUIDV4,
+                    'readOnly' => true,
+                ];
             }
             if ($item->isField('autoupdatesystems_id')) {
                 $schemas[$m_name]['properties']['autoupdatesystem'] = self::getDropdownTypeSchema(AutoUpdateSystem::class);
@@ -366,7 +371,45 @@ final class ManagementController extends AbstractController
                     'x-mapped-from' => 'documents_id',
                     'x-mapper' => static fn($v) => $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v,
                 ],
+                'timeline_position' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'enum' => [
+                        CommonITILObject::NO_TIMELINE,
+                        CommonITILObject::TIMELINE_NOTSET,
+                        CommonITILObject::TIMELINE_LEFT,
+                        CommonITILObject::TIMELINE_MIDLEFT,
+                        CommonITILObject::TIMELINE_MIDRIGHT,
+                        CommonITILObject::TIMELINE_RIGHT,
+                    ],
+                    'description' => <<<EOT
+                        The position in the timeline.
+                        - 0: No timeline
+                        - 1: Not set
+                        - 2: Left
+                        - 3: Mid left
+                        - 4: Mid right
+                        - 5: Right
+                        EOT,
+                ],
             ],
+        ];
+
+        // Post v2 additions
+        $schemas['License']['properties']['is_recursive'] = [
+            'x-version-introduced' => '2.1.0',
+            'type' => Doc\Schema::TYPE_BOOLEAN,
+            'readOnly' => true,
+        ];
+        $schemas['License']['properties']['completename'] = [
+            'x-version-introduced' => '2.1.0',
+            'type' => Doc\Schema::TYPE_STRING,
+            'readOnly' => true,
+        ];
+        $schemas['License']['properties']['level'] = [
+            'x-version-introduced' => '2.1.0',
+            'type' => Doc\Schema::TYPE_INTEGER,
+            'readOnly' => true,
         ];
 
         $schemas['Infocom'] = [

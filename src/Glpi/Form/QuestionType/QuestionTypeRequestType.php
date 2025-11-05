@@ -109,7 +109,7 @@ TWIG;
             '',
             {
                 'no_label'           : true,
-                'display_emptychoice': false,
+                'display_emptychoice': true,
                 'aria_label'         : label,
                 'mb'                 : '',
             }

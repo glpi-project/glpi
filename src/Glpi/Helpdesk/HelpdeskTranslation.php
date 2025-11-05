@@ -41,6 +41,7 @@ use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
+use Glpi\ItemTranslation\Context\TranslationHandler;
 use Glpi\ItemTranslation\ItemTranslation;
 use Override;
 
@@ -125,7 +126,7 @@ final class HelpdeskTranslation extends ItemTranslation implements ProvideTransl
         $tiles_manager = TilesManager::getInstance();
         $entities = array_map(
             fn($entity_id) => Entity::getById($entity_id),
-            array_keys((new Entity())->find())
+            array_keys((new Entity())->find(getEntitiesRestrictCriteria(Entity::getTable())))
         );
         $entities_handlers = array_map(
             fn($entity) => $entity->listTranslationsHandlers(),
@@ -183,7 +184,18 @@ final class HelpdeskTranslation extends ItemTranslation implements ProvideTransl
     #[Override]
     protected function getTranslationsHandlersForStats(): array
     {
-        return $this->listTranslationsHandlers();
+        // Filter out handlers with empty values and those that do not have a translation yet
+        return array_map(
+            fn(array $handlers) => array_filter(
+                $handlers,
+                fn(TranslationHandler $handler) => !empty($handler->getValue()) || !empty(self::getForItemKeyAndLanguage(
+                    $handler->getItem(),
+                    $handler->getKey(),
+                    $this->fields['language']
+                )?->getTranslation())
+            ),
+            $this->listTranslationsHandlers()
+        );
     }
 
     public static function getSystemSQLCriteria(?string $tablename = null): array

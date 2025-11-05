@@ -34,10 +34,12 @@
 
 namespace Glpi\Kernel\Listener\RequestListener;
 
+use DateInterval;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Http\RequestRouterTrait;
 use Glpi\Kernel\ListenersPriority;
 use Plugin;
+use Safe\DateTime;
 use Safe\Exceptions\FileinfoException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -94,10 +96,18 @@ final class FrontEndAssetsListener implements EventSubscriberInterface
         }
 
         // Serve static files if web server is not configured to do it directly.
-        $response = new BinaryFileResponse($target_file, 200, [
-            'Content-Type' => $this->getMimeType($target_file),
-        ]);
-        $response->setMaxAge(2_592_000);
+        $response = new BinaryFileResponse(
+            file: $target_file,
+            status: 200,
+            headers: [
+                'Content-Type' => $this->getMimeType($target_file),
+            ],
+            public: true,
+            autoEtag: true,
+        );
+        $max_age = MONTH_TIMESTAMP;
+        $response->setMaxAge($max_age);
+        $response->setExpires((new DateTime())->add(new DateInterval(sprintf('PT%dS', $max_age))));
         $response->mustRevalidate();
 
         // Automatically modifies the response to 304 if HTTP Cache headers match

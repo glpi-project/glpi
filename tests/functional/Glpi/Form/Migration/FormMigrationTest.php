@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Form\Migration;
 
+use AbstractRightsDropdown;
 use Computer;
 use DbTestCase;
 use Entity;
@@ -85,9 +86,12 @@ use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\Section;
 use Glpi\Message\MessageType;
+use Glpi\Migration\GenericobjectPluginMigration;
 use Glpi\Migration\PluginMigrationResult;
 use Glpi\Tests\FormTesterTrait;
 use GlpiPlugin\Tester\Form\QuestionTypeIpConverter;
+use Group;
+use ITILCategory;
 use Location;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -101,8 +105,18 @@ final class FormMigrationTest extends DbTestCase
         global $DB;
 
         parent::setUpBeforeClass();
-
+        $tables = $DB->listTables('glpi\_plugin\_formcreator\_%');
+        foreach ($tables as $table) {
+            $DB->dropTable($table['TABLE_NAME']);
+        }
         $queries = $DB->getQueriesFromFile(sprintf('%s/tests/glpi-formcreator-migration-data.sql', GLPI_ROOT));
+        foreach ($queries as $query) {
+            $DB->doQuery($query);
+        }
+
+        // Some tests in this file also require generic objects migration so
+        // we also load its tables.
+        $queries = $DB->getQueriesFromFile(sprintf('%s/tests/fixtures/genericobject-migration/genericobject-db.sql', GLPI_ROOT));
         foreach ($queries as $query) {
             $DB->doQuery($query);
         }
@@ -113,6 +127,11 @@ final class FormMigrationTest extends DbTestCase
         global $DB;
 
         $tables = $DB->listTables('glpi\_plugin\_formcreator\_%');
+        foreach ($tables as $table) {
+            $DB->dropTable($table['TABLE_NAME']);
+        }
+
+        $tables = $DB->listTables('glpi\_plugin\_genericobject\_%');
         foreach ($tables as $table) {
             $DB->dropTable($table['TABLE_NAME']);
         }
@@ -662,8 +681,8 @@ final class FormMigrationTest extends DbTestCase
             ],
         ];
 
-        $access_config = new DirectAccessConfig(
-            allow_unauthenticated: false
+        $access_config = new AllowListConfig(
+            user_ids: [AbstractRightsDropdown::ALL_USERS],
         );
         yield 'Test form migration for access types with private access' => [
             'form_name' => 'Test form migration for access types with private access',
@@ -673,7 +692,7 @@ final class FormMigrationTest extends DbTestCase
                     'Test form migration for access types with private access',
                     true
                 ),
-                'strategy'                 => DirectAccess::class,
+                'strategy'                 => AllowList::class,
                 'config'                   => json_encode($access_config->jsonSerialize()),
                 'is_active'                => 1,
             ],
@@ -1513,7 +1532,14 @@ final class FormMigrationTest extends DbTestCase
             'expected_conditions'          => [
                 [
                     'value_operator' => ValueOperator::EQUALS,
-                    'value'          => getItemByTypeName('Computer', '_test_pc01', true),
+                    'value'          => [
+                        'itemtype' => Computer::class,
+                        'items_id' => getItemByTypeName(
+                            Computer::class,
+                            '_test_pc01',
+                            true
+                        ),
+                    ],
                     'logic_operator' => LogicOperator::AND,
                 ],
             ],
@@ -1534,7 +1560,14 @@ final class FormMigrationTest extends DbTestCase
             'expected_conditions'          => [
                 [
                     'value_operator' => ValueOperator::EQUALS,
-                    'value'          => getItemByTypeName('Location', '_sublocation01', true),
+                    'value'          => [
+                        'itemtype' => Location::class,
+                        'items_id' => getItemByTypeName(
+                            Location::class,
+                            '_sublocation01',
+                            true
+                        ),
+                    ],
                     'logic_operator' => LogicOperator::AND,
                 ],
             ],
@@ -1554,19 +1587,7 @@ final class FormMigrationTest extends DbTestCase
             'expected_conditions'          => [],
         ];
 
-        yield 'QuestionTypeDropdown - Visible if with a value operator not supported by the question type' => [
-            'field_type' => 'select',
-            'show_rule'  => 2,
-            'conditions' => [
-                [
-                    'show_condition' => 3, // Less than operator, not supported by item type
-                    'show_value'     => 'Test item',
-                    'show_logic'     => 1,
-                ],
-            ],
-            'expected_visibility_strategy' => VisibilityStrategy::ALWAYS_VISIBLE,
-            'expected_conditions'          => [],
-        ];
+        // There is no 'QuestionTypeDropdown - Visible if with a value operator not supported by the question type' case because all operators are supported
 
         yield 'QuestionTypeShortText - Visible if value is not empty' => [
             'field_type' => 'text',
@@ -1618,7 +1639,10 @@ final class FormMigrationTest extends DbTestCase
                 expected_conditions: [
                     [
                         'value_operator' => ValueOperator::EQUALS,
-                        'value'          => $expected_location_id,
+                        'value'          => [
+                            'itemtype' => Location::class,
+                            'items_id' => $expected_location_id,
+                        ],
                         'logic_operator' => LogicOperator::AND,
                     ],
                 ],
@@ -1886,7 +1910,6 @@ final class FormMigrationTest extends DbTestCase
             ],
         ];
 
-        // QuestionTypeDropdown does not support any validation operators
         yield 'QuestionTypeDropdown - Regex and range validation' => [
             'select',
             [
@@ -1902,6 +1925,16 @@ final class FormMigrationTest extends DbTestCase
             ],
             ValidationStrategy::VALID_IF,
             [
+                [
+                    'value_operator' => ValueOperator::GREATER_THAN_OR_EQUALS,
+                    'value'          => 5,
+                    'logic_operator' => LogicOperator::AND,
+                ],
+                [
+                    'value_operator' => ValueOperator::LESS_THAN_OR_EQUALS,
+                    'value'          => 50,
+                    'logic_operator' => LogicOperator::AND,
+                ],
                 [
                     'value_operator' => ValueOperator::MATCH_REGEX,
                     'value'          => '/^[A-Za-z0-9]+$/',
@@ -2482,7 +2515,7 @@ final class FormMigrationTest extends DbTestCase
         $question = getItemByTypeName(Question::class, 'Test form migration question for dropdown item question with empty values');
         /** @var QuestionTypeItemDropdown $question_type */
         $question_type = $question->getQuestionType();
-        $this->assertEquals(\ITILCategory::getType(), $question_type->getDefaultValueItemtype($question));
+        $this->assertEquals(ITILCategory::getType(), $question_type->getDefaultValueItemtype($question));
         $this->assertEquals([], $question_type->getCategoriesFilter($question));
         $this->assertEquals(0, $question_type->getRootItemsId($question));
         $this->assertEquals(0, $question_type->getSubtreeDepth($question));
@@ -2558,13 +2591,13 @@ final class FormMigrationTest extends DbTestCase
         global $DB;
 
         $itilcategory = $this->createItem(
-            \ITILCategory::class,
+            ITILCategory::class,
             [
                 'name' => 'Root Category',
             ]
         );
         $this->createItem(
-            \ITILCategory::class,
+            ITILCategory::class,
             [
                 'name'              => 'Sub Category',
                 'itilcategories_id' => $itilcategory->getId(),
@@ -2619,7 +2652,7 @@ final class FormMigrationTest extends DbTestCase
         $question = getItemByTypeName(Question::class, 'Test form migration question for dropdown item question with advanced options');
         /** @var QuestionTypeItemDropdown $question_type */
         $question_type = $question->getQuestionType();
-        $this->assertEquals(\ITILCategory::getType(), $question_type->getDefaultValueItemtype($question));
+        $this->assertEquals(ITILCategory::getType(), $question_type->getDefaultValueItemtype($question));
         $this->assertEquals(['request'], $question_type->getCategoriesFilter($question));
         $this->assertEquals($itilcategory->getId(), $question_type->getRootItemsId($question));
         $this->assertEquals(0, $question_type->getSubtreeDepth($question));
@@ -2671,8 +2704,8 @@ final class FormMigrationTest extends DbTestCase
             ],
             'expected_conditions' => [
                 [
-                    'value_operator' => ValueOperator::EQUALS,
-                    'value' => 3, // Index of 'Option 3' in ['Option 1', 'Option 2', 'Option 3']
+                    'value_operator' => ValueOperator::CONTAINS,
+                    'value' => [3], // Index of 'Option 3' in ['Option 1', 'Option 2', 'Option 3']
                     'logic_operator' => LogicOperator::AND,
                 ],
             ],
@@ -2726,13 +2759,13 @@ final class FormMigrationTest extends DbTestCase
             ],
             'expected_conditions' => [
                 [
-                    'value_operator' => ValueOperator::EQUALS,
-                    'value' => 2, // Index of 'Option 2' in ['Option 1', 'Option 2', 'Option 3']
+                    'value_operator' => ValueOperator::CONTAINS,
+                    'value' => [2], // Index of 'Option 2' in ['Option 1', 'Option 2', 'Option 3']
                     'logic_operator' => LogicOperator::AND,
                 ],
                 [
-                    'value_operator' => ValueOperator::EQUALS,
-                    'value' => 3, // Index of 'Option 3' in ['Option 1', 'Option 2', 'Option 3']
+                    'value_operator' => ValueOperator::CONTAINS,
+                    'value' => [3], // Index of 'Option 3' in ['Option 1', 'Option 2', 'Option 3']
                     'logic_operator' => LogicOperator::OR,
                 ],
             ],
@@ -3064,6 +3097,54 @@ final class FormMigrationTest extends DbTestCase
         }
     }
 
+    public function testFormMigrationWithInvalidQuestion(): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        $fc_id = $this->createSimpleFormcreatorForm(
+            name: "With invalid questions in destination",
+            questions: [],
+            ticket_destinations: [
+                [
+                    'name'                           => 'Ticket destination',
+                    'content'                        => 'My content',
+                    'urgency_rule'                   => 3,
+                    'urgency_question'               => 999999,
+                    'associate_rule'                 => 3,
+                    'associate_question'             => 999999,
+                    'destination_entity'             => 9,
+                    'destination_entity_value'       => 999999,
+                    'category_rule'                  => 3,
+                    'category_question'              => 999999,
+                    'location_rule'                  => 3,
+                    'location_question'              => 999999,
+                    'type_rule'                      => 2,
+                    'type_question'                  => 999999,
+                    'commonitil_validation_rule'     => 3,
+                    'commonitil_validation_question' => 999999,
+                ],
+            ]
+        );
+
+        // Act: execute migration
+        $migration = new FormMigration(
+            db: $DB,
+            formAccessControlManager: FormAccessControlManager::getInstance(),
+            specificFormsIds: [$fc_id],
+        );
+        $result = $migration->execute();
+
+        // Assert: no errors should exist
+        $errors = array_filter(
+            $result->getMessages(),
+            fn($m) => $m['type'] == MessageType::Error
+        );
+        $this->assertEmpty($errors);
+    }
+
     public function testFormMigrationQuestionWithUnsupportedValueOperator(): void
     {
         /**
@@ -3085,7 +3166,7 @@ final class FormMigrationTest extends DbTestCase
         // Insert target question
         $DB->insert('glpi_plugin_formcreator_questions', [
             'name' => 'Target question with unsupported value operator',
-            'fieldtype' => 'select',
+            'fieldtype' => 'checkboxes',
             'plugin_formcreator_sections_id' => $sectionId,
         ]);
         $targetQuestionId = $DB->insertId();
@@ -3217,6 +3298,10 @@ final class FormMigrationTest extends DbTestCase
             'type' => 'tag',
             'expected_message' => 'The "tag" question type is available in the "tag" plugin: https://plugins.glpi-project.org/#/plugin/tag',
         ];
+        yield [
+            'type' => 'fields',
+            'expected_message' => 'The "fields" question type is available in the "fields" plugin: https://plugins.glpi-project.org/#/plugin/fields',
+        ];
     }
 
     #[DataProvider('pluginHintsProvider')]
@@ -3286,17 +3371,390 @@ final class FormMigrationTest extends DbTestCase
         );
     }
 
+    public function testFormWithDuplicatedNames(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Arrange: create a form with multiple groups that share the same name
+        $entity_id = $this->getTestRootEntity(only_id: true);
+        $group_1 = $this->createItem(Group::class, [
+            'name'        => "Group",
+            'entities_id' => $entity_id,
+        ]);
+        $group_2 = $this->createItem(Group::class, [
+            'name'        => "Group",
+            'entities_id' => $entity_id,
+        ]);
+        $this->createSimpleFormcreatorForm("My form with duplicated names", [
+            [
+                'name'           => 'Group question',
+                'fieldtype'      => 'glpiselect',
+                'itemtype'       => Group::class,
+            ],
+            [
+                'name'           => 'Another question',
+                'fieldtype'      => 'integer',
+                'show_rule'      => 2,
+                '_conditions'    => [
+                    [
+                        'plugin_formcreator_questions_id' => 'Group question',
+                        'show_condition'                  => 1,
+                        'show_value'                      => 'Group',
+                        'show_logic'                      => 1,
+                        'order'                           => 1,
+                    ],
+                ],
+            ],
+        ]);
+
+        // Act: try to import the form
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $result = $migration->execute();
+
+        // Assert: the condition should fallback to using "contains" as the group
+        // name is not unique
+        $this->assertTrue($result->isFullyProcessed());
+
+        $form = getItemByTypeName(Form::class, "My form with duplicated names");
+        $question_id = $this->getQuestionId($form, "Another question");
+        $question = Question::getById($question_id);
+
+        $conditions = $question->getConfiguredConditionsData();
+        $this->assertCount(1, $conditions);
+
+        $condition = array_pop($conditions);
+        $this->assertEquals(
+            ValueOperator::CONTAINS,
+            $condition->getValueOperator(),
+        );
+        $this->assertEquals("Group", $condition->getValue());
+    }
+
+    public function testFormWithConditionsOnInvalidQuestionForSubmitButton(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Arrange: create a form with a submit button condition
+        $this->createSimpleFormcreatorForm(
+            name: "My form with submit button condition",
+            questions: [
+                [
+                    'name'      => 'My question',
+                    'fieldtype' => 'radios',
+                    'values'    => json_encode(['1', '2', '3']),
+                ],
+            ],
+            submit_conditions: [
+                'plugin_formcreator_questions_id' => 'My question',
+                'show_condition'                  => 6, // Invalid for radios
+                'show_value'                      => 200,
+                'show_logic'                      => 1,
+                'show_rule'                       => 3,
+                'order'                           => 1,
+            ]
+        );
+
+        // Act: try to import the form
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $result = $migration->execute();
+
+        // Assert: the migration should succeed, the invalid condition will be
+        // ignored.
+        $this->assertTrue($result->isFullyProcessed());
+    }
+
+    public function testFormWithConditionOnCategories(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Arrange: create a form with conditions on ITIL categories
+        $parent_category = $this->createItem(ITILCategory::class, [
+            'name' => "Parent category",
+        ]);
+        $category = $this->createItem(ITILCategory::class, [
+            'name' => "My category",
+            ITILCategory::getForeignKeyField() => $parent_category->getID(),
+        ]);
+        $this->createSimpleFormcreatorForm("Form with conditon on categories", [
+            [
+                'name'      => 'My category question',
+                'fieldtype' => 'dropdown',
+                'itemtype'  => ITILCategory::class,
+                'values'    => "{\"show_ticket_categories\":\"incident\",\"show_tree_depth\":\"0\",\"show_tree_root\":\"0\",\"selectable_tree_root\":\"0\",\"entity_restrict\":0}",
+            ],
+            [
+                'name'        => 'My other question',
+                'fieldtype'   => 'integer',
+                'show_rule'   => 2,
+                '_conditions' => [
+                    [
+                        'plugin_formcreator_questions_id' => 'My category question',
+                        'show_condition'                  => 1,
+                        'show_value'                      => "Parent category &gt; My category",
+                        'show_logic'                      => 1,
+                        'order'                           => 1,
+                    ],
+                ],
+            ],
+        ]);
+
+        // Act: import the form
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $migration->execute();
+        $form = getItemByTypeName(Form::class, "Form with conditon on categories");
+        $question = Question::getById(
+            $this->getQuestionId($form, "My other question")
+        );
+        $conditions_data = $question->getConfiguredConditionsData();
+
+        // Assert: make sure the condition value match the expected format
+        $this->assertCount(1, $conditions_data);
+        $condition_data = array_pop($conditions_data);
+        $this->assertEquals([
+            "itemtype" => ITILCategory::class,
+            "items_id" => $category->getID(),
+        ], $condition_data->getValue());
+    }
+
+    public function testFormWithNullShowValueCondition(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Arrange: create a form with a condition without a show_value
+        $id = $this->createSimpleFormcreatorForm(
+            name: "Form with null show value",
+            questions: [
+                [
+                    'name'      => 'My text question',
+                    'fieldtype' => 'dropdown',
+                    'itemtype'  => ITILCategory::class,
+                    'values'    => "{\"show_ticket_categories\":\"incident\",\"show_tree_depth\":\"0\",\"show_tree_root\":\"0\",\"selectable_tree_root\":\"0\",\"entity_restrict\":0}",
+                ],
+                [
+                    'name'        => 'My other question',
+                    'fieldtype' => 'text',
+                    'show_rule'   => 2,
+                    '_conditions' => [
+                        [
+                            'plugin_formcreator_questions_id' => 'My text question',
+                            'show_condition'                  => 2,
+                            'show_value'                      => null,
+                            'show_logic'                      => 1,
+                        ],
+                    ],
+                ],
+            ],
+        );
+
+        // Act: import the form
+        $migration = new FormMigration(
+            db: $DB,
+            formAccessControlManager: FormAccessControlManager::getInstance(),
+            specificFormsIds: [$id],
+        );
+        $result = $migration->execute();
+
+        // Assert: make sure the import didn't fail
+        $this->assertFalse($result->hasErrors());
+    }
+
+    public function testVisiblePrivateFormMigration(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Arrange: create a form with a private access
+        $form_id = $this->createSimpleFormcreatorForm(
+            name: "My private form",
+            questions: [],
+            properties: [
+                'access_rights' => 1, // Private form
+                'is_visible' => 1, // This form is visible for all users
+            ]
+        );
+
+        // Act: migrate form
+        $control_manager = FormAccessControlManager::getInstance();
+        $migration = new FormMigration(
+            db: $DB,
+            formAccessControlManager: $control_manager,
+            specificFormsIds: [$form_id],
+        );
+        $migration->execute();
+
+        // Assert: form should be created with the default allow list (all users)
+        $form = getItemByTypeName(Form::class, "My private form");
+        $access_controls = $control_manager->getActiveAccessControlsForForm($form);
+        $this->assertCount(1, $access_controls);
+        $this->assertEquals(
+            AllowList::class,
+            $access_controls[0]->fields['strategy'],
+        );
+
+        $expected_config = new AllowListConfig(
+            user_ids: [AbstractRightsDropdown::ALL_USERS],
+        );
+        $this->assertEquals(
+            $expected_config->jsonSerialize(),
+            json_decode($access_controls[0]->fields['config'], true),
+        );
+    }
+
+    public function testFormWithQuestionReferencingGenericObject(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Arrange: create a form with a reference to generic object assets
+        $this->createSimpleFormcreatorForm("With generic object", [
+            [
+                'name'      => 'Generic object',
+                'fieldtype' => 'glpiselect',
+                'itemtype'  => "PluginGenericobjectSmartphone",
+            ],
+        ]);
+        // Migrated asset definition
+        $asset_migrations = new GenericobjectPluginMigration($DB);
+        $asset_migrations->execute();
+
+        // Act: try to import the form
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $migration->execute();
+
+        // Assert: make sure the question was imported with the correct type
+        $form = getItemByTypeName(Form::class, "With generic object");
+        $question_id = $this->getQuestionId($form, "Generic object");
+        $question = Question::getById($question_id);
+
+        $config = $question->getExtraDataConfig();
+        if (!$config instanceof QuestionTypeItemExtraDataConfig) {
+            $this->fail("Unexpected config class");
+        }
+        $this->assertEquals(
+            "Glpi\CustomAsset\smartphoneAsset",
+            $config->getItemtype()
+        );
+    }
+
+    public function testNonVisiblePrivateFormMigration(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Arrange: create a form with a private access
+        $form_id = $this->createSimpleFormcreatorForm(
+            name: "My private form",
+            questions: [],
+            properties: [
+                'access_rights' => 1, // Private form
+                'is_visible' => 0, // This form is accessible with a direct link
+            ]
+        );
+
+        // Act: migrate form
+        $control_manager = FormAccessControlManager::getInstance();
+        $migration = new FormMigration(
+            db: $DB,
+            formAccessControlManager: $control_manager,
+            specificFormsIds: [$form_id],
+        );
+        $migration->execute();
+
+        // Assert: form should be created with the default allow list (all users)
+        $form = getItemByTypeName(Form::class, "My private form");
+        $access_controls = $control_manager->getActiveAccessControlsForForm($form);
+        $this->assertCount(1, $access_controls);
+        $this->assertEquals(
+            DirectAccess::class,
+            $access_controls[0]->fields['strategy'],
+        );
+
+        $expected_config = new DirectAccessConfig(
+            allow_unauthenticated: false,
+        );
+        $this->assertArrayIsEqualToArrayIgnoringListOfKeys(
+            $expected_config->jsonSerialize(),
+            json_decode($access_controls[0]->fields['config'], true),
+            ['token'], // We can't guess the token
+        );
+    }
+
+    public function testCheckboxesConditionsAreMigratedAsContains(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Arrange: create a form with a condition on a checkbox question
+        $id = $this->createSimpleFormcreatorForm(
+            name: "Form with checkboxes",
+            questions: [
+                [
+                    'name'      => 'My checkbox question',
+                    'fieldtype' => 'checkboxes',
+                    'values'    => '["A","B","C","D"]',
+                ],
+                [
+                    'name'        => 'My other question',
+                    'fieldtype' => 'text',
+                    'show_rule'   => 2,
+                    '_conditions' => [
+                        [
+                            'plugin_formcreator_questions_id' => 'My checkbox question',
+                            'show_condition'                  => 1,
+                            'show_value'                      => "A",
+                            'show_logic'                      => 1,
+                        ],
+                    ],
+                ],
+            ],
+        );
+
+        // Act: import the form
+        $control_manager = FormAccessControlManager::getInstance();
+        $migration = new FormMigration(
+            db: $DB,
+            formAccessControlManager: $control_manager,
+            specificFormsIds: [$id],
+        );
+        $migration->execute();
+
+        // Assert: make sure the condition was expected as "Contains A", not
+        // "Equals "A".
+        // This might seem unintuitive but it match the behavior of formcreator
+        // for these questions.
+        $form = getItemByTypeName(Form::class, "Form with checkboxes");
+        $question_id = $this->getQuestionId($form, "My other question");
+        $question = Question::getById($question_id);
+        $condition = $question->getConfiguredConditionsData()[0];
+        $this->assertEquals(
+            ValueOperator::CONTAINS,
+            $condition->getValueOperator()
+        );
+        $this->assertEquals(
+            [1], // "A" will be assigned the first index, which is 1-based
+            $condition->getValue()
+        );
+    }
+
     protected function createSimpleFormcreatorForm(
         string $name,
         array $questions,
-    ): void {
+        array $submit_conditions = [],
+        array $ticket_destinations = [],
+        array $properties = [],
+    ): int {
         /** @var \DBmysql $DB */
         global $DB;
 
         // Add form
         $DB->insert('glpi_plugin_formcreator_forms', [
             'name' => $name,
-        ]);
+            'show_rule' => $submit_conditions['show_rule'] ?? 1,
+        ] + $properties);
         $form_id = $DB->insertId();
 
         // Add a section
@@ -3306,9 +3764,61 @@ final class FormMigrationTest extends DbTestCase
         $section_id = $DB->insertId();
 
         // Add questions
+        $questions_names_map = [];
         foreach ($questions as $data) {
+            $conditions = null;
+            if (isset($data['_conditions'])) {
+                $conditions = $data['_conditions'];
+                unset($data['_conditions']);
+            }
+
             $data['plugin_formcreator_sections_id'] = $section_id;
             $DB->insert('glpi_plugin_formcreator_questions', $data);
+            $question_id = $DB->insertId();
+
+            // Keep track of name => id map
+            $questions_names_map[$data['name']] = $question_id;
+
+            if ($conditions) {
+                foreach ($conditions as $condition) {
+                    // Replace target question name by id
+                    $target_q_name = $condition['plugin_formcreator_questions_id'];
+                    $target_q_id = $questions_names_map[$target_q_name];
+                    $condition['plugin_formcreator_questions_id'] = $target_q_id;
+
+                    $condition['itemtype'] = 'PluginFormcreatorQuestion';
+                    $condition['items_id'] = $question_id;
+
+                    $DB->insert('glpi_plugin_formcreator_conditions', $condition);
+                }
+            }
         }
+
+        // Add submit conditions
+        if ($submit_conditions !== []) {
+            // Replace target question name by id
+            $target_q_name = $submit_conditions['plugin_formcreator_questions_id'];
+            $target_q_id = $questions_names_map[$target_q_name];
+
+            $DB->insert('glpi_plugin_formcreator_conditions', [
+                'itemtype'                        => 'PluginFormcreatorForm',
+                'items_id'                        => $form_id,
+                'plugin_formcreator_questions_id' => $target_q_id,
+                'show_condition'                  => $submit_conditions['show_condition'],
+                'show_value'                      => $submit_conditions['show_value'],
+                'show_logic'                      => $submit_conditions['show_logic'],
+                'order'                           => $submit_conditions['order'],
+            ]);
+        }
+
+        foreach ($ticket_destinations as $ticket_destination) {
+            $ticket_destination['plugin_formcreator_forms_id'] = $form_id;
+            $DB->insert(
+                'glpi_plugin_formcreator_targettickets',
+                $ticket_destination,
+            );
+        }
+
+        return $form_id;
     }
 }

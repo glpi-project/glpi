@@ -1795,7 +1795,31 @@ describe ('Conditions', () => {
                         operator: 'Do not match regular expression',
                         value: '^Option [1-4]$',
                         valueType: 'string'
-                    }
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is greater than',
+                        value: 'Option 1',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is less than',
+                        value: 'Option 2',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is greater than or equals to',
+                        value: 'Option 3',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is less than or equals to',
+                        value: 'Option 4',
+                        valueType: 'dropdown'
+                    },
                 ]
             }
         ],
@@ -1873,7 +1897,31 @@ describe ('Conditions', () => {
                         operator: 'Do not match regular expression',
                         value: '^Option [1-4]$',
                         valueType: 'string'
-                    }
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is greater than',
+                        value: 'Option 1',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is less than',
+                        value: 'Option 2',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is greater than or equals to',
+                        value: 'Option 3',
+                        valueType: 'dropdown'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is less than or equals to',
+                        value: 'Option 4',
+                        valueType: 'dropdown'
+                    },
                 ]
             },
         ],
@@ -2524,6 +2572,8 @@ describe ('Conditions', () => {
             initVisibilityConfiguration();
             setConditionStrategy('Visible if...');
             fillCondition(0, null, 'My first question', 'Contains', 'GLPI is great');
+            addNewEmptyCondition();
+            fillCondition(1, null, 'My first question', 'Contains', 'GLPI is great');
         });
         saveAndReload();
 
@@ -2549,6 +2599,13 @@ describe ('Conditions', () => {
                 'Contains',
                 'GLPI is great',
             );
+            checkThatConditionExist(
+                1,
+                null,
+                'Questions - My first question',
+                'Contains',
+                'GLPI is great',
+            );
         });
 
         // Delete the first question and check that the conditions are still there
@@ -2566,6 +2623,7 @@ describe ('Conditions', () => {
         // Delete conditions
         getAndFocusQuestion('My second question').within(() => {
             openConditionEditor();
+            deleteCondition(1);
             deleteCondition(0);
         });
 

@@ -48,6 +48,7 @@ use Laminas\Mail\Storage\Message;
 use Laminas\Mail\Storage\Part;
 use Laminas\Mail\Storage\Writable\WritableInterface;
 use LitEmoji\LitEmoji;
+use Safe\Exceptions\DatetimeException;
 use Safe\Exceptions\IconvException;
 
 use function Safe\base64_decode;
@@ -269,6 +270,14 @@ class MailCollector extends CommonDBTM
      **/
     public function showForm($ID, array $options = [])
     {
+        // warning and no form if can't read keyfile
+        $glpi_encryption_key = new GLPIKey();
+        if ($glpi_encryption_key->hasReadErrors()) {
+            $glpi_encryption_key->showReadErrors();
+
+            return false;
+        }
+
         $protocol_choices = [];
         foreach (Toolbox::getMailServerProtocols(allow_plugins_protocols: true) as $key => $protocol) {
             $protocol_choices['/' . $key] = $protocol['label'];
@@ -700,7 +709,7 @@ class MailCollector extends CommonDBTM
 
                         if (!$tkt['_blacklisted']) {
                             $rejinput['from']              = $requester ?? '';
-                            $rejinput['to']                = $headers['to'];
+                            $rejinput['to']                = $headers['to'] ?? '';
                             $rejinput['users_id']          = $tkt['_users_id_requester'];
                             $rejinput['subject']           = $this->cleanSubject($headers['subject']);
                             $rejinput['messageid']         = $headers['message_id'];
@@ -1361,7 +1370,12 @@ class MailCollector extends CommonDBTM
 
         $reply_to_addr = $this->getEmailFromHeader($message, 'reply-to');
 
-        $date         = date("Y-m-d H:i:s", strtotime($message->getHeader('date', 'string')));
+        try {
+            $date         = date("Y-m-d H:i:s", strtotime($message->getHeader('date', 'string')));
+        } catch (DatetimeException $e) {
+            //wrong date, ignoring
+            $date = null;
+        }
         $mail_details = [];
 
         // Construct to and cc arrays
@@ -1908,11 +1922,8 @@ class MailCollector extends CommonDBTM
 
             case MAIL_SMTP:
             case MAIL_SMTPSSL:
-                $content .= 'SMTP';
-                break;
-
             case MAIL_SMTPTLS:
-                $content .= 'SMTP+TLS';
+                $content .= 'SMTP';
                 break;
 
             case MAIL_SMTPOAUTH:
@@ -2382,7 +2393,13 @@ class MailCollector extends CommonDBTM
         }
 
         $charset = $content_type->getParameter('charset');
-        if ($charset !== null && strtoupper($charset) != 'UTF-8') {
+
+        // If charset is not specified, and not UTF-8, force fallback default encoding
+        if ($charset === null) {
+            $charset = mb_check_encoding($contents, 'UTF-8') ? 'UTF-8' : 'ISO-8859-1';
+        }
+
+        if (strtoupper($charset) != 'UTF-8') {
             /* mbstring functions do not handle the 'ks_c_5601-1987' &
              * 'ks_c_5601-1989' charsets. However, these charsets are used, for
              * example, by various versions of Outlook to send Korean characters.

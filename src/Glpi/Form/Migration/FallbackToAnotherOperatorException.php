@@ -32,29 +32,33 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Kernel\Listener\PostBootListener;
+namespace Glpi\Form\Migration;
 
-use Glpi\Debug\Profiler;
-use Glpi\Error\ErrorHandler;
-use Glpi\Kernel\ListenersPriority;
-use Glpi\Kernel\PostBootEvent;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Exception;
+use Glpi\Form\Condition\ValueOperator;
 
-final readonly class FlushBootErrors implements EventSubscriberInterface
+final class FallbackToAnotherOperatorException extends Exception
 {
-    public static function getSubscribedEvents(): array
+    private ValueOperator $operator;
+    private mixed $value;
+
+    public function setOperator(ValueOperator $operator): void
     {
-        return [
-            PostBootEvent::class => ['onPostBoot', ListenersPriority::POST_BOOT_LISTENERS_PRIORITIES[self::class]],
-        ];
+        $this->operator = $operator;
     }
 
-    public function onPostBoot(): void
+    public function getOperator(): ValueOperator
     {
-        Profiler::getInstance()->start('FlushBootErrors::execute', Profiler::CATEGORY_BOOT);
+        return $this->operator;
+    }
 
-        ErrorHandler::disableBufferAndFlushMessages();
+    public function setValue(mixed $value): void
+    {
+        $this->value = $value;
+    }
 
-        Profiler::getInstance()->stop('FlushBootErrors::execute');
+    public function getValue(): mixed
+    {
+        return $this->value;
     }
 }

@@ -9283,7 +9283,8 @@ HTML,
         ]);
 
         // Create a ticket
-        $this->setCurrentTime('2025-10-06 11:26:34'); // be sure to be on monday
+        $ticket_creation_date = '2025-10-06 11:26:34';
+        $this->setCurrentTime($ticket_creation_date); // be sure to be on monday
         $ticket = $this->createItem(
             Ticket::class,
             [
@@ -9294,7 +9295,8 @@ HTML,
         );
 
         // Add a solution
-        $this->setCurrentTime('2025-10-07 09:12:48'); // add some time to consistent stats
+        $solution_creation_date = '2025-10-07 09:12:48';
+        $this->setCurrentTime($solution_creation_date); // add some time to consistent stats
         $solution = $this->createItem(
             ITILSolution::class,
             [
@@ -9304,15 +9306,20 @@ HTML,
             ]
         );
 
+        // $time_between_ticket_creation_and_solution is the result of $calendar->getActiveTimeBetween($ticket_creation_date, $solution_creation_date);
+        // testing the value using the calendar makes no sense, if it returns a wrong value, the test will pass without we can detect it.
+        // value is a number of seconds
+        $time_between_ticket_creation_and_solution = 27974;
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
-        $this->assertEquals(Ticket::SOLVED, $ticket->fields['status']);
-        $this->assertEquals(27974, $ticket->fields['solve_delay_stat']);
+        $this->assertEquals(CommonITILObject::SOLVED, $ticket->fields['status']);
+        $this->assertEquals($time_between_ticket_creation_and_solution, $ticket->fields['solve_delay_stat']);
         $this->assertEquals(0, $ticket->fields['close_delay_stat']);
         $this->assertTrue($solution->getFromDB($solution->getID()));
         $this->assertSame(CommonITILValidation::WAITING, $solution->fields['status']);
 
         // Refuse the solution
-        $this->setCurrentTime('2025-10-07 10:47:10'); // add some time to consistent stats
+        $solution_rejetion_date = '2025-10-07 10:47:10';
+        $this->setCurrentTime($solution_rejetion_date); // add some time to consistent stats
         $this->createItem(
             ITILFollowup::class,
             [
@@ -9324,21 +9331,28 @@ HTML,
             ['add_reopen']
         );
 
+        $expected_waiting_time = 5662; // result of $calendar->getActiveTimeBetween($solution_creation_date, $solution_rejetion_date);
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
-        $this->assertEquals(Ticket::INCOMING, $ticket->fields['status']);
-        $this->assertEquals(0, $ticket->fields['solve_delay_stat']);
+        $this->assertEquals(CommonITILObject::INCOMING, $ticket->fields['status']);
+        $this->assertEquals(0, $ticket->fields['solve_delay_stat']); // solution is rejected, so not solved, so no solve delay set
         $this->assertEquals(0, $ticket->fields['close_delay_stat']);
+        $this->assertEquals(0, $ticket->fields['begin_waiting_date'], 'begin_waiting_date should be reset to 0.');
+        $this->assertEquals($expected_waiting_time, $ticket->fields['waiting_duration'], 'Unexpected waiting_duration, it should be greater than 0.');
         $this->assertTrue($solution->getFromDB($solution->getID()));
         $this->assertSame(CommonITILValidation::REFUSED, $solution->fields['status']);
 
         // Close the ticket
-        $this->setCurrentTime('2025-10-08 14:17:31'); // add some time to consistent stats
-        $this->updateItem(Ticket::class, $ticket->getID(), ['status' => Ticket::CLOSED]);
+        $ticket_closing_date = '2025-10-08 14:17:31';
+        $this->setCurrentTime($ticket_closing_date); // add some time to consistent stats
+        $this->updateItem(Ticket::class, $ticket->getID(), ['status' => CommonITILObject::CLOSED]);
 
+        // solve delay is the time elapsed between ticket creation and it's solved/closed time. It excludes the time between solution proposal and rejection
+        $expected_solve_delay = 76595; // result of $calendar->getActiveTimeBetween($ticket_creation_date, $ticket_closing_date) - $expected_waiting_time;
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
-        $this->assertEquals(Ticket::CLOSED, $ticket->fields['status']);
-        $this->assertEquals(76595, $ticket->fields['solve_delay_stat']);
-        $this->assertEquals(76595, $ticket->fields['close_delay_stat']);
+        $this->assertEquals($expected_solve_delay, $ticket->fields['solve_delay_stat']);
+        $this->assertEquals($expected_solve_delay, $ticket->fields['close_delay_stat']);
+        $this->assertEquals($expected_waiting_time, $ticket->fields['waiting_duration'], 'Unexpected waiting_duration, it should be greater than 0 and unchanged.');
+        $this->assertNull($ticket->fields['begin_waiting_date'], 'begin_waiting_date should be null, ticket is closed.');
 
         // Reopen the ticket
         $this->setCurrentTime('2025-10-08 14:24:05'); // add some time to consistent stats
@@ -9354,9 +9368,11 @@ HTML,
         );
 
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
-        $this->assertEquals(Ticket::INCOMING, $ticket->fields['status']);
+        $this->assertEquals(CommonITILObject::INCOMING, $ticket->fields['status']);
         $this->assertEquals(0, $ticket->fields['solve_delay_stat']);
         $this->assertEquals(0, $ticket->fields['close_delay_stat']);
+        $this->assertEquals($expected_waiting_time, $ticket->fields['waiting_duration'], 'Unexpected waiting_duration, it should not be changed.');
+        $this->assertNull($ticket->fields['begin_waiting_date']);
     }
 
     public function testSatisfactionSurveyIsDisplayedOnHelpdesk(): void
@@ -9382,5 +9398,128 @@ HTML,
         $crawler = new Crawler($html);
         $survey = $crawler->filter('[data-testid="survey"]');
         $this->assertNotEmpty($survey);
+    }
+
+    public function testGetAssociatedDocuments(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $postonly_user = getItemByTypeName(User::class, 'post-only', false);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name' => 'Ticket with documents',
+            'content' => 'test',
+            'entities_id' => $this->getTestRootEntity(true),
+            '_users_id_requester'       => '0',     // anonymous requester
+            '_users_id_requester_notif' => [
+                'use_notification'   => '1',
+                'alternative_email'  => 'unknownuser@localhost.local',
+            ],
+            '_users_id_observer' => [$postonly_user->getID()], // post-only observer
+        ]);
+
+        // Create a document linked to the ticket
+        $doc1 = $this->createItem(\Document::class, [
+            'tickets_id'   => $ticket->getID(),
+            'name'         => 'Doc 1: linked to ticket',
+        ]);
+        $this->createItem(\Document_Item::class, [
+            'items_id'      => $ticket->getID(),
+            'itemtype'      => 'Ticket',
+            'documents_id'  => $doc1->getID(),
+        ]);
+
+        // Create a document linked to a followup of the ticket
+        $followup = $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content' => 'Followup content',
+        ]);
+        $doc2 = $this->createItem(\Document::class, [
+            'name' => 'Doc 2: linked to followup',
+        ]);
+        $this->createItem(\Document_Item::class, [
+            'items_id'      => $followup->getID(),
+            'itemtype'      => 'ITILFollowup',
+            'documents_id'  => $doc2->getID(),
+        ]);
+
+        // Create a document linked to a private followup of the ticket
+        $private_followup = $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'content' => 'Private Followup content',
+            'is_private' => 1,
+        ]);
+        $doc3 = $this->createItem(\Document::class, [
+            'name' => 'Doc 3: linked to private followup',
+        ]);
+        $this->createItem(\Document_Item::class, [
+            'items_id'      => $private_followup->getID(),
+            'itemtype'      => 'ITILFollowup',
+            'documents_id'  => $doc3->getID(),
+        ]);
+
+        // Current user can see all 3 documents
+        $doc_crit = $ticket->getAssociatedDocumentsCriteria();
+        $doc_crit[] = [
+            'timeline_position' => ['>', CommonITILObject::NO_TIMELINE],
+        ];
+        $doc_items_iterator = $DB->request(
+            [
+                'SELECT' => ['documents_id'],
+                'FROM' => \Document_Item::getTable(),
+                'WHERE' => $doc_crit,
+            ]
+        );
+        $found_docs = [];
+        foreach ($doc_items_iterator as $doc_item) {
+            $found_docs[] = $doc_item['documents_id'];
+        }
+        $this->assertContains($doc1->getID(), $found_docs);
+        $this->assertContains($doc2->getID(), $found_docs);
+        $this->assertContains($doc3->getID(), $found_docs);
+
+        // Post-only user can't see document linked to private followup
+        $doc_crit = $ticket->getAssociatedDocumentsCriteria(false, $postonly_user);
+        $doc_crit[] = [
+            'timeline_position' => ['>', CommonITILObject::NO_TIMELINE],
+        ];
+        $doc_items_iterator = $DB->request(
+            [
+                'SELECT' => ['documents_id'],
+                'FROM' => \Document_Item::getTable(),
+                'WHERE' => $doc_crit,
+            ]
+        );
+        $found_docs = [];
+        foreach ($doc_items_iterator as $doc_item) {
+            $found_docs[] = $doc_item['documents_id'];
+        }
+        $this->assertContains($doc1->getID(), $found_docs);
+        $this->assertContains($doc2->getID(), $found_docs);
+        $this->assertNotContains($doc3->getID(), $found_docs);
+
+        // Anonymous user can't see documents linked to private followups
+        $doc_crit = $ticket->getAssociatedDocumentsCriteria(false, new User());
+        $doc_crit[] = [
+            'timeline_position' => ['>', CommonITILObject::NO_TIMELINE],
+        ];
+        $doc_items_iterator = $DB->request(
+            [
+                'SELECT' => ['documents_id'],
+                'FROM' => \Document_Item::getTable(),
+                'WHERE' => $doc_crit,
+            ]
+        );
+        $found_docs = [];
+        foreach ($doc_items_iterator as $doc_item) {
+            $found_docs[] = $doc_item['documents_id'];
+        }
+        $this->assertContains($doc1->getID(), $found_docs);
+        $this->assertContains($doc2->getID(), $found_docs);
+        $this->assertNotContains($doc3->getID(), $found_docs);
     }
 }

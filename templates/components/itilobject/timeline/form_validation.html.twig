@@ -352,6 +352,7 @@
                   $("#dropdown__validatortype_{{ rand }}").trigger('setValue', data.validatortype);
 
                   if (data.groups_id !== undefined && data.groups_id !== null) {
+                     // Approver is a group or multiple users of a group
                      waitForElement("#dropdown_groups_id{{ rand }}").then((elm) => {
                         // set groups_id
                         $("#dropdown_groups_id{{ rand }}").ready(function() {
@@ -366,6 +367,7 @@
                         });
                      });
                   } else if (data.items_id_target !== undefined) {
+                     // Approver is a single user
                      new Promise((resolve) => {
                         // if dropdown_items_id_target exists, wait for it to be removed
                         // is required because the dropdown is removed and recreated when the setValue is triggered

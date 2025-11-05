@@ -390,6 +390,14 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
         return $this->capacities[$classname] ?? null;
     }
 
+    public function isCustomAsset(string $class): bool
+    {
+        return str_starts_with(
+            $class,
+            AssetDefinition::getCustomObjectNamespace()
+        );
+    }
+
     private function loadConcreteClass(AssetDefinition $definition): void
     {
         $rightname = $definition->getCustomObjectRightname();

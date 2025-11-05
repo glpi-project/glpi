@@ -36,10 +36,11 @@
 namespace Glpi\Form\ServiceCatalog;
 
 use CommonGLPI;
+use Entity;
 use Glpi\Application\View\TemplateRenderer;
+use LogicException;
 use Override;
 use Session;
-use Ticket;
 
 final class ServiceCatalog extends CommonGLPI
 {
@@ -97,6 +98,17 @@ final class ServiceCatalog extends CommonGLPI
     #[Override]
     public static function canView(): bool
     {
-        return Session::haveRight(Ticket::$rightname, CREATE);
+        $session_info = Session::getCurrentSessionInfo();
+        if ($session_info === null) {
+            // Unlogged users can't render the service catalog
+            return false;
+        }
+
+        $entity = Entity::getById($session_info->getCurrentEntityId());
+        if (!$entity) {
+            throw new LogicException(); // Can't happen
+        }
+
+        return $entity->isServiceCatalogEnabled();
     }
 }

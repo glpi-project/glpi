@@ -173,10 +173,16 @@ final class AssetController extends AbstractController
                     'readOnly' => true,
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'completename' => ['type' => Doc\Schema::TYPE_STRING],
+                'completename' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'readOnly' => true,
+                ],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'parent' => self::getDropdownTypeSchema(class: SoftwareCategory::class, full_schema: 'SoftwareCategory'),
-                'level' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'level' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'readOnly' => true,
+                ],
             ],
         ];
 
@@ -296,7 +302,6 @@ final class AssetController extends AbstractController
                 'depth' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT],
                 'power_connections' => ['type' => Doc\Schema::TYPE_INTEGER],
                 'power_consumption' => ['type' => Doc\Schema::TYPE_INTEGER],
-                'max_power' => ['type' => Doc\Schema::TYPE_INTEGER],
                 'is_half_rack' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -530,7 +535,11 @@ final class AssetController extends AbstractController
             }
 
             if ($asset->isField('uuid')) {
-                $schemas[$schema_name]['properties']['uuid'] = ['type' => Doc\Schema::TYPE_STRING];
+                $schemas[$schema_name]['properties']['uuid'] = [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'pattern' => Doc\Schema::PATTERN_UUIDV4,
+                    'readOnly' => true,
+                ];
             }
             if ($asset->isField('autoupdatesystems_id')) {
                 $schemas[$schema_name]['properties']['autoupdatesystem'] = self::getDropdownTypeSchema(AutoUpdateSystem::class);
@@ -541,6 +550,19 @@ final class AssetController extends AbstractController
             }
         }
 
+        // Post v2 additions to general assets
+        $schemas['SoftwareLicense']['properties']['completename'] = [
+            'x-version-introduced' => '2.1.0',
+            'type' => Doc\Schema::TYPE_STRING,
+            'readOnly' => true,
+        ];
+        $schemas['SoftwareLicense']['properties']['level'] = [
+            'x-version-introduced' => '2.1.0',
+            'type' => Doc\Schema::TYPE_INTEGER,
+            'readOnly' => true,
+        ];
+
+        // Additional asset schemas
         $schemas['Cartridge'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => Cartridge::class,
@@ -820,7 +842,10 @@ final class AssetController extends AbstractController
                 ],
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'is_update' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_valid' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_valid' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'readOnly' => true,
+                ],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
@@ -939,7 +964,10 @@ final class AssetController extends AbstractController
                 'room' => self::getDropdownTypeSchema(class: DCRoom::class, full_schema: 'DCRoom'),
                 'room_orientation' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                 'position' => ['type' => Doc\Schema::TYPE_STRING],
-                'bgcolor' => ['type' => Doc\Schema::TYPE_STRING],
+                'bgcolor' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'pattern' => Doc\Schema::PATTERN_COLOR_HEX,
+                ],
                 'max_power' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                 'measured_power' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
@@ -999,7 +1027,10 @@ final class AssetController extends AbstractController
                         - 1: Rear
                         EOT,
                 ],
-                'bgcolor' => ['type' => Doc\Schema::TYPE_STRING],
+                'bgcolor' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'pattern' => Doc\Schema::PATTERN_COLOR_HEX,
+                ],
                 'position_horizontal' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT32,
@@ -1411,6 +1442,7 @@ final class AssetController extends AbstractController
 
         if ($assets === null) {
             $assets = [];
+            //TODO remove SoftwareLicense in v3 as it is a duplicate of License in the Management Controller
             $types = ['Computer', 'Monitor', 'NetworkEquipment',
                 'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
                 'Certificate', 'Unmanaged', 'Appliance',

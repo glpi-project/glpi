@@ -179,27 +179,23 @@ final class Comment extends CommonDBChild implements
         $category_name = sprintf('%s: %s', self::getTypeName(), $this->getName());
         $handlers = [];
 
-        if (!empty($this->fields['name'])) {
-            $handlers[$key][] = new TranslationHandler(
-                item: $this,
-                key: self::TRANSLATION_KEY_NAME,
-                name: __('Comment title'),
-                value: $this->fields['name'],
-                is_rich_text: false,
-                category: $category_name
-            );
-        }
+        $handlers[$key][] = new TranslationHandler(
+            item: $this,
+            key: self::TRANSLATION_KEY_NAME,
+            name: __('Comment title'),
+            value: $this->fields['name'],
+            is_rich_text: false,
+            category: $category_name
+        );
 
-        if (!empty($this->fields['description'])) {
-            $handlers[$key][] = new TranslationHandler(
-                item: $this,
-                key: self::TRANSLATION_KEY_DESCRIPTION,
-                name: __('Comment description'),
-                value: $this->fields['description'],
-                is_rich_text: true,
-                category: $category_name
-            );
-        }
+        $handlers[$key][] = new TranslationHandler(
+            item: $this,
+            key: self::TRANSLATION_KEY_DESCRIPTION,
+            name: __('Comment description'),
+            value: $this->fields['description'],
+            is_rich_text: true,
+            category: $category_name
+        );
 
         return $handlers;
     }

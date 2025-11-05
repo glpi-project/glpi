@@ -2182,7 +2182,7 @@ final class Transfer extends CommonDBTM
                     } else {
                         $need_clean_process = true;
                         $contract->getFromDB($item_ID);
-                        // No : search contract
+                        // No : search in target entity if existing contract
                         $contract_iterator = $DB->request([
                             'SELECT' => 'id',
                             'FROM'   => 'glpi_contracts',
@@ -2193,7 +2193,8 @@ final class Transfer extends CommonDBTM
                         ]);
 
                         if (count($contract_iterator)) {
-                            $result = $iterator->current();
+                            // Found existing contract
+                            $result = $contract_iterator->current();
                             $newcontractID = $result['id'];
                             $this->addToAlreadyTransfer('Contract', $item_ID, $newcontractID);
                         }

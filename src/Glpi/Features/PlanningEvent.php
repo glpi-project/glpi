@@ -41,6 +41,7 @@ use DateTimeZone;
 use Dropdown;
 use Entity;
 use ExtraVisibilityCriteria;
+use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\RichText\RichText;
 use Glpi\Toolbox\ArrayNormalizer;
@@ -256,7 +257,7 @@ trait PlanningEvent
     public function encodeRrule(array $rrule = [])
     {
 
-        if ($rrule['freq'] == null) {
+        if (empty($rrule['freq'])) {
             return "";
         }
 
@@ -475,10 +476,15 @@ trait PlanningEvent
 
             // guests accounts
             if ($DB->fieldExists($table, 'users_id_guests')) {
-                $nreadpriv = ['OR' => [
-                    "$table.users_id" => $who,
-                    "$table.users_id_guests" => ['LIKE', '%"' . $who . '"%'],
-                ],
+                $nreadpriv = [
+                    'OR' => [
+                        "$table.users_id" => $who,
+                        QueryFunction::jsonContains(
+                            "$table.users_id_guests",
+                            new QueryExpression($DB::quoteValue((int) $who)),
+                            '$'
+                        ),
+                    ],
                 ];
             }
         }
@@ -764,7 +770,7 @@ trait PlanningEvent
             $rrule = [];
         }
         $defaults = [
-            'freq'       => null,
+            'freq'       => '',
             'interval'   => 1,
             'until'      => null,
             'byday'      => [],
@@ -781,7 +787,7 @@ trait PlanningEvent
 
         $out = "<div class='card' style='padding: 5px; width: 100%;'>";
         $out .= Dropdown::showFromArray('rrule[freq]', [
-            null      => __("Never"),
+            ''        => __("Never"),
             'daily'   => __("Each day"),
             'weekly'  => __("Each week"),
             'monthly' => __("Each month"),
@@ -802,8 +808,8 @@ trait PlanningEvent
             $bymonth = explode(',', $bymonth);
         }
 
-        $display_tar = $rrule['freq'] == null ? "none" : "inline";
-        $display_ar  = $rrule['freq'] == null
+        $display_tar = empty($rrule['freq']) ? "none" : "inline";
+        $display_ar  = empty($rrule['freq'])
                      || !($rrule['interval'] > 1
                           || $rrule['until'] != null
                           || count($byday) > 0

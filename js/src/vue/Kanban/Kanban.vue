@@ -465,7 +465,7 @@
                     refreshSortables();
 
                     // If there are no cards in the state for this column, force a state save
-                    if (state_for_col === undefined || state_for_col.cards.length === 0) {
+                    if ((state_for_col?.cards || []).length === 0) {
                         saveState();
                     }
                 }

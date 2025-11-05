@@ -243,20 +243,17 @@ TWIG;
     #[Override]
     public function listTranslationsHandlers(Question $question): array
     {
-        $handlers = [];
         $options = $this->getOptions($question);
-        if ($options !== []) {
-            $handlers = array_map(
-                fn($uuid, $option) => new TranslationHandler(
-                    item: $question,
-                    key: sprintf('%s-%s', self::TRANSLATION_KEY_OPTION, $uuid),
-                    name: sprintf('%s %s', self::getName(), __('Option')),
-                    value: $option,
-                ),
-                array_keys($options),
-                $options
-            );
-        }
+        $handlers = array_map(
+            fn($uuid, $option) => new TranslationHandler(
+                item: $question,
+                key: sprintf('%s-%s', self::TRANSLATION_KEY_OPTION, $uuid),
+                name: sprintf('%s %s', self::getName(), __('Option')),
+                value: $option,
+            ),
+            array_keys($options),
+            $options
+        );
 
         return $handlers;
     }
@@ -381,6 +378,7 @@ TWIG;
                     data-glpi-form-editor-question-option-order
                 >
                 <button
+                    type="button"
                     class="btn btn-sm btn-icon btn-ghost-secondary {{ value ? '' : 'd-none' }}"
                     aria-label="{{ translations.remove_option }}"
                     data-glpi-form-editor-question-extra-details

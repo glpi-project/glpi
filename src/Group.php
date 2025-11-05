@@ -619,7 +619,7 @@ class Group extends CommonTreeDropdown
                 $restrict[$itemtype]['is_deleted'] = 0;
             }
             $tot += $nb[$itemtype] = countElementsInTable($item::getTable(), [
-                'LEFT JOIN' => $joins[$itemtype] ?? [],
+                'LEFT JOIN' => $joins[$itemtype],
                 'WHERE'     => $restrict[$itemtype],
             ]);
         }

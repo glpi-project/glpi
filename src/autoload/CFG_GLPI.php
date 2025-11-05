@@ -47,9 +47,12 @@ $CFG_GLPI['app_name'] = 'GLPI';
 // dictionnaries
 $CFG_GLPI['languages'] = [
     //Code       Name in native lang          LANG FILE      jquery tinymce english name            standard plural number
-    'ar_SA'  => ['العَرَبِيَّةُ',                   'ar_SA.mo',    'ar',    'ar', 'arabic',               103],
-    //'az_AZ'  => ['Azerbaijani',               'az_AZ.mo',    'az',    'az', 'azeri',                2], //asked on transifex, not present
+    'ar_SA'  => ['العربية السعودية',          'ar_SA.mo',    'ar',    'ar_SA', 'arabic',            103],
+    'ar_IQ'  => ['العربية العراق',            'ar_IQ.mo',    'ar',    'ar', 'irak arabic',          103],
+    'ar_SY'  => ['العربية سوريا',             'ar_SY.mo',    'ar',    'ar', 'syria arabic',         103],
+    'az_AZ'  => ['Azərbaycan dili',           'az_AZ.mo',    'az',    'az', 'azerbaijani',          2],
     'bg_BG'  => ['Български',                 'bg_BG.mo',    'bg',    'bg', 'bulgarian',            2],
+    'bn_BD'  => ['বাংলা (বাংলাদেশ)',          'bn_BD.mo',    'bn',    'bn_BD', 'bengali',           2],
     'id_ID'  => ['Bahasa Indonesia',          'id_ID.mo',    'id',    'id', 'indonesian',           2],
     'ms_MY'  => ['Bahasa Melayu',             'ms_MY.mo',    'ms',    'ms', 'malay',                2],
     'ca_ES'  => ['Català',                    'ca_ES.mo',    'ca',    'ca', 'catalan',              2], // ca_CA
@@ -73,7 +76,7 @@ $CFG_GLPI['languages'] = [
     'gl_ES'  => ['Galego',                    'gl_ES.mo',    'gl',    'gl', 'galician',             2],
     'el_GR'  => ['Ελληνικά',                  'el_GR.mo',    'el',    'el', 'greek',                2], // el_EL
     'he_IL'  => ['עברית',                     'he_IL.mo',    'he',    'he', 'hebrew',               2], // he_HE
-    'hi_IN'  => ['हिन्दी',                     'hi_IN.mo',    'hi',    'hi_IN', 'hindi',            2],
+    'hi_IN'  => ['हिन्दी',                     'hi_IN.mo',    'hi',    'hi_IN', 'hindi',             2],
     'hr_HR'  => ['Hrvatski',                  'hr_HR.mo',    'hr',    'hr', 'croatian',             2],
     'hu_HU'  => ['Magyar',                    'hu_HU.mo',    'hu',    'hu', 'hungarian',            2],
     'it_IT'  => ['Italiano',                  'it_IT.mo',    'it',    'it', 'italian',              2],

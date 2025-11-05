@@ -41,7 +41,7 @@
 
     <form action="{{ 'NotificationMailingSetting'|itemtype_form_path }}" method="post">
         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-        <input type="hidden" name="id" value="1" />
+        <input type="hidden" name="id" value="{{ config_id }}" />
 
         <div class="row">
             {{ fields.emailField(

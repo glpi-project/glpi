@@ -90,7 +90,7 @@ final class OpenAPIGenerator
         return ['writeOnly', 'readOnly', 'x-full-schema', 'x-introduced', 'x-deprecated', 'x-removed'];
     }
 
-    private function cleanVendorExtensions(array $schema, ?string $parent_key = null): array
+    private function cleanVendorExtensions(array $schema, ?string $parent_key = null, ?array $parent_schema = null): array
     {
         $to_keep = $this->getPublicVendorExtensions();
         // Recursively walk through every key of the schema
@@ -103,15 +103,15 @@ final class OpenAPIGenerator
                 continue;
             }
             if ($parent_key === 'properties') {
-                if ($key === 'id') {
-                    //Implicitly set the id property as read-only
+                if (!array_key_exists('x-full-schema', $parent_schema) && $key === 'id') {
+                    // Implicitly set the id property as read-only but not for partials
                     $value['readOnly'] = true;
                 }
             }
             // If the value is an array
             if (is_array($value)) {
                 // Clean the value
-                $schema[$key] = $this->cleanVendorExtensions($value, $key);
+                $schema[$key] = $this->cleanVendorExtensions($value, $key, $schema);
             }
         }
         return $schema;
@@ -131,7 +131,7 @@ EOT;
         return [
             'title' => 'GLPI High-Level REST API',
             'description' => $description,
-            'version' => Router::API_VERSION,
+            'version' => $this->api_version,
             'license' => [
                 'name' => 'GNU General Public License v3 or later',
                 'url' => 'https://www.gnu.org/licenses/gpl-3.0.html',
@@ -141,40 +141,62 @@ EOT;
 
     public static function getComponentSchemas(string $api_version): array
     {
-        static $schemas = null;
+        $schemas = [];
 
-        if ($schemas === null) {
-            $schemas = [];
-
-            $controllers = Router::getInstance()->getControllers();
-            foreach ($controllers as $controller) {
-                $known_schemas = $controller::getKnownSchemas($api_version);
-                $short_name = (new ReflectionClass($controller))->getShortName();
-                $controller_name = str_replace('Controller', '', $short_name);
-                foreach ($known_schemas as $schema_name => $known_schema) {
-                    // Ignore schemas starting with an underscore. They are only used internally.
-                    if (str_starts_with($schema_name, '_')) {
-                        continue;
-                    }
-                    $calculated_name = $schema_name;
-                    if (isset($schemas[$schema_name])) {
-                        // For now, set the new calculated name to the short name of the controller + the schema name
-                        $calculated_name = $controller_name . ' - ' . $schema_name;
-                        // Change the existing schema name to its own calculated name
-                        $other_short_name = (new ReflectionClass($schemas[$schema_name]['x-controller']))->getShortName();
-                        $other_calculated_name = str_replace('Controller', '', $other_short_name) . ' - ' . $schema_name;
-                        $schemas[$other_calculated_name] = $schemas[$schema_name];
-                        unset($schemas[$schema_name]);
-                    }
-                    if (!isset($known_schema['description']) && isset($known_schema['x-itemtype'])) {
-                        /** @var class-string<CommonGLPI> $itemtype */
-                        $itemtype = $known_schema['x-itemtype'];
-                        $known_schema['description'] = $itemtype::getTypeName(1);
-                    }
-                    $schemas[$calculated_name] = $known_schema;
-                    $schemas[$calculated_name]['x-controller'] = $controller::class;
-                    $schemas[$calculated_name]['x-schemaname'] = $schema_name;
+        $controllers = Router::getInstance()->getControllers();
+        foreach ($controllers as $controller) {
+            $known_schemas = $controller::getKnownSchemas($api_version);
+            $short_name = (new ReflectionClass($controller))->getShortName();
+            $controller_name = str_replace('Controller', '', $short_name);
+            foreach ($known_schemas as $schema_name => $known_schema) {
+                // Ignore schemas starting with an underscore. They are only used internally.
+                if (str_starts_with($schema_name, '_')) {
+                    continue;
                 }
+                $calculated_name = $schema_name;
+                if (isset($schemas[$schema_name])) {
+                    // For now, set the new calculated name to the short name of the controller + the schema name
+                    $calculated_name = $controller_name . ' - ' . $schema_name;
+                    // Change the existing schema name to its own calculated name
+                    $other_short_name = (new ReflectionClass($schemas[$schema_name]['x-controller']))->getShortName();
+                    $other_calculated_name = str_replace('Controller', '', $other_short_name) . ' - ' . $schema_name;
+                    $schemas[$other_calculated_name] = $schemas[$schema_name];
+                    unset($schemas[$schema_name]);
+                }
+                if (!isset($known_schema['description']) && isset($known_schema['x-itemtype'])) {
+                    /** @var class-string<CommonGLPI> $itemtype */
+                    $itemtype = $known_schema['x-itemtype'];
+                    $known_schema['description'] = $itemtype::getTypeName(1);
+                }
+
+                // Add properties that have 'required' flags to a 'required' array on the nearest parent object
+                // We add the 'required' on individual properties so that it works well with the API version filtering
+                $fn_hoist_required_flags = static function (&$schema_part) use (&$fn_hoist_required_flags) {
+                    if (is_array($schema_part)) {
+                        if (isset($schema_part['properties']) && is_array($schema_part['properties'])) {
+                            $required_fields = [];
+                            foreach ($schema_part['properties'] as $prop_name => &$prop_value) {
+                                if (is_array($prop_value)) {
+                                    if (isset($prop_value['required']) && $prop_value['required'] === true) {
+                                        $required_fields[] = $prop_name;
+                                        unset($prop_value['required']);
+                                    }
+                                    // Recurse into the property value
+                                    $fn_hoist_required_flags($prop_value);
+                                }
+                            }
+                            unset($prop_value);
+                            if (count($required_fields) > 0) {
+                                $schema_part['required'] = $required_fields;
+                            }
+                        }
+                    }
+                };
+                $fn_hoist_required_flags($known_schema);
+
+                $schemas[$calculated_name] = $known_schema;
+                $schemas[$calculated_name]['x-controller'] = $controller::class;
+                $schemas[$calculated_name]['x-schemaname'] = $schema_name;
             }
         }
 
@@ -255,6 +277,9 @@ EOT;
         $paths = [];
 
         foreach ($routes as $route_path) {
+            if (!$route_path->matchesAPIVersion($this->api_version)) {
+                continue;
+            }
             /** @noinspection SlowArrayOperationsInLoopInspection */
             $paths = array_merge_recursive($paths, $this->getPathSchemas($route_path));
         }
@@ -526,16 +551,7 @@ EOT;
             if ($route_param->getName() === '_') {
                 continue;
             }
-            $body_param = [
-                'type' => $route_param->getSchema()->getType(),
-            ];
-            if ($route_param->getSchema()->getFormat() !== null) {
-                $body_param['format'] = $route_param->getSchema()->getFormat();
-            }
-            if (count($route_param->getSchema()->getProperties())) {
-                $body_param['properties'] = $route_param->getSchema()->getProperties();
-            }
-            $request_body['content']['application/json']['schema']['properties'][$route_param->getName()] = $body_param;
+            $request_body['content']['application/json']['schema']['properties'][$route_param->getName()] = $route_param->getSchema()->toArray();
         }
         return $request_body;
     }

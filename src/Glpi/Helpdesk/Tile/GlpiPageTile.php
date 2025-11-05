@@ -35,6 +35,7 @@
 namespace Glpi\Helpdesk\Tile;
 
 use CommonDBTM;
+use CommonITILValidation;
 use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Glpi\ItemTranslation\Context\TranslationHandler;
@@ -46,6 +47,7 @@ use ReservationItem;
 use Session;
 use Ticket;
 use TicketValidation;
+use Toolbox;
 
 final class GlpiPageTile extends CommonDBTM implements TileInterface, ProvideTranslationsInterface
 {
@@ -116,12 +118,61 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface, ProvideTra
     #[Override]
     public function getTileUrl(): string
     {
+        $approval_criteria = [
+            'criteria' => [
+                [
+                    'field' => 55, // Validation status
+                    'searchtype' => 'equals',
+                    'value' => CommonITILValidation::WAITING,
+                    'link' => 'AND',
+                ],
+                [
+                    'link' => 'AND',
+                    'criteria' => [
+                        [
+                            'field' => 59, // approver user
+                            'searchtype' => 'equals',
+                            'value' => 'myself',
+                        ],
+                        [
+                            'field' => 195, // approver user substitute
+                            'searchtype' => 'equals',
+                            'value' => 'myself',
+                            'link' => 'OR',
+                        ],
+                        [
+                            'field' => 196, // approver group
+                            'searchtype' => 'equals',
+                            'value' => 'mygroups',
+                            'link' => 'OR',
+                        ],
+                        [
+                            'field' => 197, // approver group substitute
+                            'searchtype' => 'equals',
+                            'value' => 'myself',
+                            'link' => 'OR',
+                        ],
+                    ],
+                ],
+                [
+                    'field' => 12, // Status
+                    'searchtype' => 'equals',
+                    'value' => 'notold',
+                    'link' => 'AND',
+                ],
+                [
+                    'field' => 52, // global validation status
+                    'searchtype' => 'notequals',
+                    'value' => CommonITILValidation::WAITING,
+                    'link' => 'AND',
+                ],
+            ],
+        ];
         $url = match ($this->fields['page']) {
             self::PAGE_SERVICE_CATALOG => '/ServiceCatalog',
             self::PAGE_FAQ             => '/front/helpdesk.faq.php',
             self::PAGE_RESERVATION     => '/front/reservationitem.php',
-            // TODO: apply correct search filter
-            self::PAGE_APPROVAL        => '/front/ticket.php',
+            self::PAGE_APPROVAL        => '/front/ticket.php?' . Toolbox::append_params($approval_criteria),
             self::PAGE_ALL_TICKETS     => '/front/ticket.php?is_deleted=0&criteria[0][link]=AND&criteria[0][field]=12&criteria[0][searchtype]=equals&criteria[0][value]=all',
             default                    => '/Helpdesk',
         };

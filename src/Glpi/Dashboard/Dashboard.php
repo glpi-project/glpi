@@ -37,8 +37,8 @@ namespace Glpi\Dashboard;
 
 use CommonDBTM;
 use Glpi\Debug\Profiler;
+use Glpi\Exception\TooManyResultsException;
 use Ramsey\Uuid\Uuid;
-use RuntimeException;
 use Session;
 use Toolbox;
 
@@ -132,7 +132,7 @@ class Dashboard extends CommonDBTM
             $this->post_getFromDB();
             return true;
         } elseif (count($iterator) > 1) {
-            throw new RuntimeException(
+            throw new TooManyResultsException(
                 sprintf(
                     '`%1$s::getFromDB()` expects to get one result, %2$s found in query "%3$s".',
                     static::class,

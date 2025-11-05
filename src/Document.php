@@ -478,7 +478,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             if (count($iterator) > 0) {
                 $result = $iterator->current();
                 $icon = $result['icon'];
-                if (!file_exists(GLPI_ROOT . "/pics/icones/$icon")) {
+                if (!file_exists(GLPI_ROOT . "/public/pics/icones/$icon")) {
                     $icon = "defaut-dist.png";
                 }
                 $out .= "<img class='middle' style='margin-left:3px; margin-right:6px;' alt=\""

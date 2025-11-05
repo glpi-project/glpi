@@ -53,6 +53,7 @@ $problem = new Problem();
 if (isset($_POST["add"])) {
     $problem->check(-1, CREATE, $_POST);
 
+    $_POST = $problem->enforceReadonlyFields($_POST, true);
     if ($newID = $problem->add($_POST)) {
         Event::log(
             $newID,
@@ -108,6 +109,7 @@ if (isset($_POST["add"])) {
 } elseif (isset($_POST["update"])) {
     $problem->check($_POST["id"], UPDATE);
 
+    $_POST = $problem->enforceReadonlyFields($_POST);
     $problem->update($_POST);
     Event::log(
         $_POST["id"],

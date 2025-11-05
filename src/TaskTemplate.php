@@ -177,6 +177,14 @@ class TaskTemplate extends AbstractITILChildTemplate
             'datatype'           => 'specific',
         ];
 
+        $tab[] = [
+            'id'                 => '11',
+            'name'               => PendingReason::getTypeName(1),
+            'field'              => 'name',
+            'table'              => getTableForItemType('PendingReason'),
+            'datatype'           => 'dropdown',
+        ];
+
         return $tab;
     }
 

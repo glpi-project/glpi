@@ -334,4 +334,52 @@ describe("Ticket Form", () => {
             cy.findByRole('cell').should('contain.text', 'No results found');
         });
     });
+
+    it('Create/update a ticket using a template with readonly fields', () => {
+        const ticket_template_name = `test template ${rand}`;
+        cy.createWithAPI('TicketTemplate', {
+            'name': ticket_template_name,
+        }).as('ticket_template_id');
+
+        cy.get('@ticket_template_id').then((ticket_template_id) => {
+            cy.createWithAPI('TicketTemplatePredefinedField', {
+                'tickettemplates_id': ticket_template_id, // Default template
+                'num': 10, // Urgency
+                'value': 4, // High
+            });
+
+            cy.createWithAPI('TicketTemplateReadonlyField', {
+                'tickettemplates_id': ticket_template_id,
+                'num': 10,
+            });
+
+            cy.createWithAPI('ITILCategory', {
+                'name':ticket_template_name,
+                'tickettemplates_id': ticket_template_id,
+                'tickettemplates_id_incident': ticket_template_id,
+                'tickettemplates_id_demand': ticket_template_id,
+                'changetemplates_id': ticket_template_id,
+                'problemtemplates_id': ticket_template_id,
+            });
+        });
+
+        // Create form
+        cy.visit(`/front/ticket.form.php`);
+
+        // intercept form submit
+        cy.intercept('POST', '/front/ticket.form.php').as('submit');
+
+        cy.getDropdownByLabelText('Category').selectDropdownValue(`»${ticket_template_name}`);
+
+        // We change the value of a readonly field, it should be ignored
+        cy.get('input[name="urgency"]').invoke('val', '1');
+        cy.findByRole('button', {'name': 'Add'}).click();
+        cy.wait('@submit').its('response.statusCode').should('eq', 200);
+        cy.get('input[name="urgency"]').should('have.value', '4'); // Should be the template 4 value
+
+        // We try updating it
+        cy.get('input[name="urgency"]').invoke('val', '1');
+        cy.findByRole('button', {'name': 'Save'}).click();
+        cy.get('input[name="urgency"]').should('have.value', '4'); // Should be the template 4 value
+    });
 });

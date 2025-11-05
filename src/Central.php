@@ -609,6 +609,9 @@ class Central extends CommonGLPI
                 );
             }
 
+            // encrypt/decrypt key problems
+            $messages['errors'] = (new GLPIKey())->getKeyFileReadErrors();
+
             $security_requirements = [
                 new PhpSupportedVersion(),
                 new SessionsSecurityConfiguration(),

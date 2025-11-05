@@ -35,6 +35,8 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Glpi\Features\PlanningEvent;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VTodo;
@@ -208,10 +210,16 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
 
     public static function getUserItemsAsVCalendars($users_id)
     {
+        global $DB;
+
         return self::getItemsAsVCalendars([
             'OR' => [
                 self::getTableField('users_id')        => $users_id,
-                self::getTableField('users_id_guests') => ['LIKE', '%"' . $users_id . '"%'],
+                QueryFunction::jsonContains(
+                    self::getTableField('users_id_guests'),
+                    new QueryExpression($DB::quoteValue((int) $users_id)),
+                    '$'
+                ),
             ],
         ]);
     }
@@ -289,6 +297,8 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
 
     public static function getVisibilityCriteria(): array
     {
+        global $DB;
+
         if (Session::haveRight(Planning::$rightname, Planning::READALL)) {
             return [];
         }
@@ -296,7 +306,11 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
         $condition = [
             'OR' => [
                 self::getTableField('users_id') => $_SESSION['glpiID'],
-                self::getTableField('users_id_guests') => ['LIKE', '%"' . $_SESSION['glpiID'] . '"%'],
+                QueryFunction::jsonContains(
+                    self::getTableField('users_id_guests'),
+                    new QueryExpression($DB::quoteValue((int) $_SESSION['glpiID'])),
+                    '$'
+                ),
             ],
         ];
 

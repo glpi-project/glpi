@@ -84,6 +84,14 @@ use Glpi\Form\Tag\SectionTagProvider;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Glpi\UI\IllustrationManager;
+use GlpiPlugin\Tester\Asset\Foo;
+use GlpiPlugin\Tester\Form\ComputerDestination;
+use GlpiPlugin\Tester\Form\DayOfTheWeekPolicy;
+use GlpiPlugin\Tester\Form\DayOfTheWeekPolicyConfig;
+use GlpiPlugin\Tester\Form\ExternalIDField;
+use GlpiPlugin\Tester\Form\ExternalIDFieldConfig;
+use GlpiPlugin\Tester\Form\ExternalIDFieldStrategy;
+use GlpiPlugin\Tester\Form\QuestionTypeColor;
 use ITILCategory;
 use Location;
 use Monitor;
@@ -1684,6 +1692,385 @@ final class FormSerializerTest extends \DbTestCase
         );
     }
 
+    public function testItemsIdsInSubmitConditionAreHandledByExport(): void
+    {
+        // Arrange: create a form with a condition on a specific item id
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'My computer',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "My item question",
+            type: QuestionTypeItem::class,
+            extra_data: json_encode(new QuestionTypeItemExtraDataConfig(
+                itemtype: Computer::class
+            )),
+        );
+        $builder->setSubmitButtonVisibility(
+            strategy: VisibilityStrategy::VISIBLE_IF,
+            conditions: [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My item question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => [
+                        'itemtype' => Computer::class,
+                        'items_id' => $computer->getId(),
+                    ],
+                ],
+            ],
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: make sure the items_id was replaced in the condition
+        // and that a data requirement was added
+        $data = json_decode($json, associative: true);
+        $this->assertEquals([
+            'itemtype' => Computer::class,
+            'name' => 'My computer',
+        ], $data['forms'][0]['data_requirements'][0]);
+        $this->assertEquals([
+            'itemtype' => Computer::class,
+            'items_id' => 'My computer',
+        ], $data['forms'][0]['submit_button_conditions'][0]['value']);
+    }
+
+    public function testItemsIdsInSectionConditionAreHandledByExport(): void
+    {
+        // Arrange: create a form with a condition on a specific item id
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'My computer',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $builder = new FormBuilder();
+        $builder->addSection("Section 1");
+        $builder->addQuestion(
+            name: "My item question",
+            type: QuestionTypeItem::class,
+            extra_data: json_encode(new QuestionTypeItemExtraDataConfig(
+                itemtype: Computer::class
+            )),
+        );
+        $builder->addSection("Section 2");
+        $builder->setSectionVisibility(
+            section_name: "Section 2",
+            strategy: VisibilityStrategy::VISIBLE_IF,
+            conditions: [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My item question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => [
+                        'itemtype' => Computer::class,
+                        'items_id' => $computer->getId(),
+                    ],
+                ],
+            ],
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: make sure the items_id was replaced in the condition
+        // and that a data requirement was added
+        $data = json_decode($json, associative: true);
+        $this->assertEquals([
+            'itemtype' => Computer::class,
+            'name' => 'My computer',
+        ], $data['forms'][0]['data_requirements'][1]);
+        $this->assertEquals([
+            'itemtype' => Computer::class,
+            'items_id' => 'My computer',
+        ], $data['forms'][0]['sections'][1]['conditions'][0]['value']);
+    }
+
+    public function testItemsIdsInQuestionConditionAreHandledByExport(): void
+    {
+        // Arrange: create a form with a condition on a specific item id
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'My computer',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "My item question",
+            type: QuestionTypeItem::class,
+            extra_data: json_encode(new QuestionTypeItemExtraDataConfig(
+                itemtype: Computer::class
+            )),
+        );
+        $builder->addQuestion("My other question", QuestionTypeShortText::class);
+        $builder->setQuestionVisibility(
+            question_name: "My other question",
+            strategy: VisibilityStrategy::VISIBLE_IF,
+            conditions: [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My item question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => [
+                        'itemtype' => Computer::class,
+                        'items_id' => $computer->getId(),
+                    ],
+                ],
+            ],
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: make sure the items_id was replaced in the condition
+        // and that a data requirement was added
+        $data = json_decode($json, associative: true);
+        $this->assertEquals([
+            'itemtype' => Computer::class,
+            'name' => 'My computer',
+        ], $data['forms'][0]['data_requirements'][1]);
+        $this->assertEquals([
+            'itemtype' => Computer::class,
+            'items_id' => 'My computer',
+        ], $data['forms'][0]['questions'][1]['conditions'][0]['value']);
+    }
+
+    public function testItemsIdsInCommentConditionAreHandledByExport(): void
+    {
+        // Arrange: create a form with a condition on a specific item id
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'My computer',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "My item question",
+            type: QuestionTypeItem::class,
+            extra_data: json_encode(new QuestionTypeItemExtraDataConfig(
+                itemtype: Computer::class
+            )),
+        );
+        $builder->addComment("My comment", QuestionTypeShortText::class);
+        $builder->setCommentVisibility(
+            comment_name: "My comment",
+            strategy: VisibilityStrategy::VISIBLE_IF,
+            conditions: [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My item question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => [
+                        'itemtype' => Computer::class,
+                        'items_id' => $computer->getId(),
+                    ],
+                ],
+            ],
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: make sure the items_id was replaced in the condition
+        // and that a data requirement was added
+        $data = json_decode($json, associative: true);
+        $this->assertEquals([
+            'itemtype' => Computer::class,
+            'name' => 'My computer',
+        ], $data['forms'][0]['data_requirements'][1]);
+        $this->assertEquals([
+            'itemtype' => Computer::class,
+            'items_id' => 'My computer',
+        ], $data['forms'][0]['comments'][0]['conditions'][0]['value']);
+    }
+
+    public function testItemsIdsInDestinationConditionAreHandledByExport(): void
+    {
+        // Arrange: create a form with a condition on a specific item id
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'My computer',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "My item question",
+            type: QuestionTypeItem::class,
+            extra_data: json_encode(new QuestionTypeItemExtraDataConfig(
+                itemtype: Computer::class
+            )),
+        );
+        $builder->addComment("My comment", QuestionTypeShortText::class);
+        $builder->setDestinationCondition(
+            destination_name: "Ticket",
+            strategy: CreationStrategy::CREATED_IF,
+            conditions: [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My item question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => [
+                        'itemtype' => Computer::class,
+                        'items_id' => $computer->getId(),
+                    ],
+                ],
+            ],
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: make sure the items_id was replaced in the condition
+        // and that a data requirement was added
+        $data = json_decode($json, associative: true);
+        $this->assertEquals([
+            'itemtype' => Computer::class,
+            'name' => 'My computer',
+        ], $data['forms'][0]['data_requirements'][1]);
+        $this->assertEquals([
+            'itemtype' => Computer::class,
+            'items_id' => 'My computer',
+        ], $data['forms'][0]['destinations'][0]['conditions'][0]['value']);
+    }
+
+    public function testItemsNamesInSubmitConditionAreHandledByImport(): void
+    {
+        // Arrange: create the expected computer
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'My computer',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // Act: import form
+        $json = $this->getFormJson('submit-with-item-condition.json');
+        $result = self::$serializer->importFormsFromJson(
+            json: $json,
+            mapper: new DatabaseMapper([$this->getTestRootEntity(true)]),
+        );
+
+        // Assert: condition should be updated with the computer id
+        $form = $result->getImportedForms()[0];
+        $condition_value = $form->getConfiguredConditionsData()[0]->getValue();
+        $this->assertEquals([
+            "itemtype" => Computer::class,
+            "items_id" => $computer->getID(),
+        ], $condition_value);
+    }
+
+    public function testItemsNamesInSectionConditionAreHandledByImport(): void
+    {
+        // Arrange: create the expected computer
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'My computer',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // Act: import form
+        $json = $this->getFormJson('section-with-item-condition.json');
+        $result = self::$serializer->importFormsFromJson(
+            json: $json,
+            mapper: new DatabaseMapper([$this->getTestRootEntity(true)]),
+        );
+
+        // Assert: condition should be updated with the computer id
+        $form = $result->getImportedForms()[0];
+        $sections = $form->getSections();
+        next($sections);  // Go to second question
+        $section = current($sections);
+        $condition_value = $section->getConfiguredConditionsData()[0]->getValue();
+        $this->assertEquals([
+            "itemtype" => Computer::class,
+            "items_id" => $computer->getID(),
+        ], $condition_value);
+    }
+
+    public function testItemsNamesInQuestionConditionAreHandledByImport(): void
+    {
+        // Arrange: create the expected computer
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'My computer',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // Act: import form
+        $json = $this->getFormJson('question-with-item-condition.json');
+        $result = self::$serializer->importFormsFromJson(
+            json: $json,
+            mapper: new DatabaseMapper([$this->getTestRootEntity(true)]),
+        );
+
+        // Assert: condition should be updated with the computer id
+        $form = $result->getImportedForms()[0];
+        $questions = $form->getQuestions();
+        next($questions);  // Go to second question
+        $question = current($questions);
+        $condition_value = $question->getConfiguredConditionsData()[0]->getValue();
+        $this->assertEquals([
+            "itemtype" => Computer::class,
+            "items_id" => $computer->getID(),
+        ], $condition_value);
+    }
+
+    public function testItemsNamesInCommentConditionAreHandledByImport(): void
+    {
+        // Arrange: create the expected computer
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'My computer',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // Act: import form
+        $json = $this->getFormJson('comment-with-item-condition.json');
+        $result = self::$serializer->importFormsFromJson(
+            json: $json,
+            mapper: new DatabaseMapper([$this->getTestRootEntity(true)]),
+        );
+
+        // Assert: condition should be updated with the computer id
+        $form = $result->getImportedForms()[0];
+        $comments = $form->getFormComments();
+        $comment = current($comments);
+        $condition_value = $comment->getConfiguredConditionsData()[0]->getValue();
+        $this->assertEquals([
+            "itemtype" => Computer::class,
+            "items_id" => $computer->getID(),
+        ], $condition_value);
+    }
+
+    public function testItemsNamesInDestinationConditionAreHandledByImport(): void
+    {
+        // Arrange: create the expected computer
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'My computer',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // Act: import form
+        $json = $this->getFormJson('destination-with-item-condition.json');
+        $result = self::$serializer->importFormsFromJson(
+            json: $json,
+            mapper: new DatabaseMapper([$this->getTestRootEntity(true)]),
+        );
+
+        // Assert: condition should be updated with the computer id
+        $form = $result->getImportedForms()[0];
+        $destinations = $form->getDestinations();
+        $destination = current($destinations);
+        $condition_value = $destination->getConfiguredConditionsData()[0]->getValue();
+        $this->assertEquals([
+            "itemtype" => Computer::class,
+            "items_id" => $computer->getID(),
+        ], $condition_value);
+    }
+
     public function testWithFormWithSpecialNegativeIdForRootEntity(): void
     {
         // Arrange: create a form with a -1 value for root_items_id
@@ -1701,6 +2088,288 @@ final class FormSerializerTest extends \DbTestCase
 
         // Act: export the form, no error should happen
         $this->exportAndImportForm($form);
+    }
+
+    public function testCustomAssetsAreAddedAsRequirements(): void
+    {
+        // Arrange: create a form that references custom assets
+        $asset_definition = $this->initAssetDefinition("Lawnmower");
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "Your favorite lawn mower",
+            type: QuestionTypeItem::class,
+            extra_data: json_encode(new QuestionTypeItemExtraDataConfig(
+                itemtype: $asset_definition->getAssetClassName(),
+            ))
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: a requirement should be added
+        $data = json_decode($json, associative: true);
+        $this->assertEquals([
+            ['itemtype' => "Glpi\\CustomAsset\\LawnmowerAsset"],
+        ], $data['forms'][0]['custom_types_requirements']);
+    }
+
+    public function testImportWithMissingCustomAsset(): void
+    {
+        // Arrange: read json from fixtures and create hammer asset
+        $json = $this->getFormJson('form-with-hammer-asset.json');
+
+        // Act: import the form
+        $mapper = new DatabaseMapper([$this->getTestRootEntity(true)]);
+        $import_result = self::$serializer->importFormsFromJson($json, $mapper);
+
+        // Assert: the import should fail
+        $this->assertEmpty($import_result->getImportedForms());
+        $this->assertEquals([
+            'Test form' => ImportError::MISSING_CUSTOM_TYPE_REQUIREMENT,
+        ], $import_result->getFailedFormImports());
+    }
+
+    public function testImportWithCustomAsset(): void
+    {
+        // Arrange: read json from fixtures
+        $this->initAssetDefinition("Hammer");
+        $this->assertTrue(class_exists("Glpi\\CustomAsset\\HammerAsset"));
+        $json = $this->getFormJson('form-with-hammer-asset.json');
+
+        // Act: import the form
+        $mapper = new DatabaseMapper([$this->getTestRootEntity(true)]);
+        $import_result = self::$serializer->importFormsFromJson($json, $mapper);
+
+        // Assert: the import should succeed
+        $this->assertCount(1, $import_result->getImportedForms());
+        $this->assertEmpty($import_result->getFailedFormImports());
+    }
+
+    public function testExportThatUseQuestionTypeFromPlugin(): void
+    {
+        // Arrange: create a form with a type from a plugin
+        $builder = new FormBuilder();
+        $builder->setShouldInitDestinations(false);
+        $builder->addQuestion(
+            name: "My plugin question",
+            type: QuestionTypeColor::class, // From "tester" plugin
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: make sure a requirement was added
+        $data = json_decode($json, associative: true);
+        $this->assertEquals([
+            'key' => 'Tester',
+        ], $data['forms'][0]['plugin_requirements'][0]);
+    }
+
+    public function testExportThatUseDestinationTypeFromPlugin(): void
+    {
+        // Arrange: create a form with a type from a plugin
+        $builder = new FormBuilder();
+        $builder->setShouldInitDestinations(false);
+        $builder->addDestination(
+            itemtype: ComputerDestination::class, // From "tester" plugin
+            name: "My plugin question",
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: make sure a requirement was added
+        $data = json_decode($json, associative: true);
+        $this->assertEquals([
+            'key' => 'Tester',
+        ], $data['forms'][0]['plugin_requirements'][0]);
+    }
+
+    public function testExportThatUseAccessPolicyTypeFromPlugin(): void
+    {
+        // Arrange: create a form with a type from a plugin
+        $builder = new FormBuilder();
+        $builder->setShouldInitDestinations(false);
+        $builder->addAccessControl(
+            strategy: DayOfTheWeekPolicy::class, // From "tester" plugin
+            config: new DayOfTheWeekPolicyConfig("Friday"),
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: make sure a requirement was added
+        $data = json_decode($json, associative: true);
+        $this->assertEquals([
+            'key' => 'Tester',
+        ], $data['forms'][0]['plugin_requirements'][0]);
+    }
+
+    public function testExportThatUseItilDestinationFieldFromPlugin(): void
+    {
+        // Arrange: create a form with a type from a plugin
+        $builder = new FormBuilder();
+        $builder->setShouldInitDestinations(false);
+        $builder->addDestination(
+            itemtype: FormDestinationTicket::class,
+            name: "My plugin question",
+            config: [
+                ExternalIDField::getKey() => (
+                    new ExternalIDFieldConfig(ExternalIDFieldStrategy::NO_EXTERNAL_ID)
+                )->jsonSerialize(), // From "tester" plugin
+            ],
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: make sure a requirement was added
+        $data = json_decode($json, associative: true);
+        $this->assertEquals([
+            'key' => 'Tester',
+        ], $data['forms'][0]['plugin_requirements'][0]);
+    }
+
+    public function testExportThatUsesPluginItemsInQuestionsConfig(): void
+    {
+        global $CFG_GLPI;
+
+        // Arrange: create a form with a type from a plugin
+        $CFG_GLPI['asset_types'][] = Foo::class;
+        $builder = new FormBuilder();
+        $builder->setShouldInitDestinations(false);
+        $builder->addQuestion(
+            name: "My plugin question",
+            type: QuestionTypeItem::class,
+            extra_data: json_encode(new QuestionTypeItemExtraDataConfig(
+                itemtype: Foo::class, // Asset type from tester plugin
+            ))
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: make sure a requirement was added
+        $data = json_decode($json, associative: true);
+        $this->assertEquals([
+            'key' => 'Tester',
+        ], $data['forms'][0]['plugin_requirements'][0]);
+    }
+
+    public function testPluginRequirementAreUnique(): void
+    {
+        // Arrange: create a form with a type from a plugin
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "My plugin question",
+            type: QuestionTypeColor::class, // From "tester" plugin
+        );
+        $builder->addQuestion(
+            name: "My plugin question",
+            type: QuestionTypeColor::class, // From "tester" plugin
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: make sure only one requirement was added
+        $data = json_decode($json, associative: true);
+        $this->assertCount(1, $data['forms'][0]['plugin_requirements']);
+    }
+
+    public function testPluginRequirementAreNotAlwaysAdded(): void
+    {
+        // Arrange: create a form with a type NOT from a plugin
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "My plugin question",
+            type: QuestionTypeShortText::class,
+        );
+        $builder->setShouldInitDestinations(false);
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: make sure no requirements are added
+        // This test make sure the previous tests are reliable, as they could
+        // all be false negatives if this test was incorrect.
+        $data = json_decode($json, associative: true);
+        $this->assertCount(0, $data['forms'][0]['plugin_requirements']);
+    }
+
+    public function testImportWithMissingPlugin(): void
+    {
+        // Arrange: get json from fixtures
+        $json = $this->getFormJson('with-advancedforms-plugin-requirement.json');
+
+        // Act: import the form
+        $mapper = new DatabaseMapper([$this->getTestRootEntity(true)]);
+        $import_result = self::$serializer->importFormsFromJson($json, $mapper);
+
+        // Assert: the import should fail
+        $this->assertEmpty($import_result->getImportedForms());
+        $this->assertEquals([
+            'Test form' => ImportError::MISSING_PLUGIN_REQUIREMENT,
+        ], $import_result->getFailedFormImports());
+    }
+
+    public function testImportWithExistingPlugin(): void
+    {
+        // Arrange: get json from fixtures
+        $json = $this->getFormJson('with-tester-plugin-requirement.json');
+
+        // Act: import the form
+        $mapper = new DatabaseMapper([$this->getTestRootEntity(true)]);
+        $import_result = self::$serializer->importFormsFromJson($json, $mapper);
+
+        // Assert: the import should succeed
+        $this->assertEmpty($import_result->getFailedFormImports());
+        $this->assertCount(1, $import_result->getImportedForms());
+    }
+
+    public function testPreviewWithMissingPlugin(): void
+    {
+        // Arrange: get json from fixtures
+        $json = $this->getFormJson('with-advancedforms-plugin-requirement.json');
+
+        // Act: preview the form
+        $mapper = new DatabaseMapper([$this->getTestRootEntity(true)]);
+        $preview_results = self::$serializer->previewImport($json, $mapper);
+
+        // Assert: the preview should fail with a fatal error
+        $this->assertEmpty($preview_results->getValidForms());
+        $this->assertEmpty($preview_results->getSkippedForms());
+        $this->assertCount(1, $preview_results->getFormsWithFatalErrors());
+
+        $forms = $preview_results->getFormsWithFatalErrors();
+        $form = current($forms);
+        $this->assertEquals(
+            "Missing plugin: advancedforms",
+            $form["errors"][0],
+        );
+    }
+
+    public function testPreviewWithExistingPlugin(): void
+    {
+        // Arrange: get json from fixtures
+        $json = $this->getFormJson('with-tester-plugin-requirement.json');
+
+        // Act: preview the form
+        $mapper = new DatabaseMapper([$this->getTestRootEntity(true)]);
+        $preview_results = self::$serializer->previewImport($json, $mapper);
+
+        // Assert: the preview should succeed
+        $this->assertEmpty($preview_results->getFormsWithFatalErrors());
+        $this->assertEmpty($preview_results->getSkippedForms());
+        $this->assertCount(1, $preview_results->getValidForms());
     }
 
     private function compareValuesForRelations(

@@ -337,6 +337,7 @@
         'content_style': "",
         'input_addclass': '',
         'additional_attributes': [],
+        'plugins_to_remove': [],
     }|merge(options) %}
 
     {% if options.fields_template.isMandatoryField(name)|default(false) %}
@@ -379,6 +380,7 @@
             options.statusbar,
             options.content_style,
             options.init_on_demand,
+            options.plugins_to_remove,
         ]) %}
    {% endif %}
    {% if options.enable_form_tags %}

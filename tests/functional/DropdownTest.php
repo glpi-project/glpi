@@ -35,17 +35,23 @@
 namespace tests\units;
 
 use CommonDBTM;
+use CommonITILObject;
 use Computer;
 use DbTestCase;
+use Entity;
 use Generator;
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Features\AssignableItem;
 use Glpi\Features\Clonable;
 use Glpi\Socket;
 use Item_DeviceSimcard;
+use Monitor;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Profile;
 use Session;
 use State;
 use Symfony\Component\DomCrawler\Crawler;
+use Ticket;
 use User;
 
 /* Test for inc/dropdown.class.php */
@@ -1730,6 +1736,38 @@ HTML;
         $this->assertEquals(3, $values['count']);
         $this->assertCount(2, $values['results']);
 
+        //use a WHERE array condition
+        $post = [
+            'itemtype'              => $location::getType(),
+            'condition'             => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]],
+            'display_emptychoice'   => true,
+            'entity_restrict'       => 0,
+            'page'                  => 1,
+            'page_limit'            => 10,
+            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]]]),
+        ];
+        $values = \Dropdown::getDropdownValue($post);
+        $values = (array) json_decode($values);
+
+        $this->assertEquals(3, $values['count']);
+        $this->assertCount(2, $values['results']);
+
+        //use a "multiple" WHERE array condition
+        $post = [
+            'itemtype'              => $location::getType(),
+            'condition'             => [0 => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]]],
+            'display_emptychoice'   => true,
+            'entity_restrict'       => 0,
+            'page'                  => 1,
+            'page_limit'            => 10,
+            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => [0 => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]]]]),
+        ];
+        $values = \Dropdown::getDropdownValue($post);
+        $values = (array) json_decode($values);
+
+        $this->assertEquals(3, $values['count']);
+        $this->assertCount(2, $values['results']);
+
         //use a string condition
         // Put condition in session and post its key
         $condition_key = sha1(serialize($post['condition']));
@@ -2189,7 +2227,7 @@ HTML;
     public static function assignableAssetsProvider()
     {
         return [
-            [\CartridgeItem::class], [Computer::class], [\ConsumableItem::class], [\Monitor::class], [\NetworkEquipment::class],
+            [\CartridgeItem::class], [Computer::class], [\ConsumableItem::class], [Monitor::class], [\NetworkEquipment::class],
             [\Peripheral::class], [\Phone::class], [\Printer::class], [\Software::class],
         ];
     }
@@ -2535,12 +2573,12 @@ HTML;
             'is_recursive' => 1,
         ]);
         $params = [
-            'itemtype' => \Ticket::class,
+            'itemtype' => Ticket::class,
             'actortype' => 'assign',
             'returned_itemtypes' => [\Supplier::class],
             'searchText' => '',
         ];
-        $results = \Dropdown::getDropdownActors($params + ['_idor_token' => Session::getNewIDORToken(\Ticket::class, $params)], false);
+        $results = \Dropdown::getDropdownActors($params + ['_idor_token' => Session::getNewIDORToken(Ticket::class, $params)], false);
         $this->assertNotEmpty($results['results'][0]['children']);
         $this->assertCount(0, array_filter($results['results'][0]['children'], function ($result) use ($inactive_supplier) {
             return $result['id'] === \Supplier::class . '_' . $inactive_supplier->getID();
@@ -2548,7 +2586,7 @@ HTML;
 
         // If asking for inactive_deleted, it should return the inactive supplier
         $params['inactive_deleted'] = 1;
-        $results = \Dropdown::getDropdownActors($params + ['_idor_token' => Session::getNewIDORToken(\Ticket::class, $params)], false);
+        $results = \Dropdown::getDropdownActors($params + ['_idor_token' => Session::getNewIDORToken(Ticket::class, $params)], false);
         $this->assertNotEmpty($results['results'][0]['children']);
         $this->assertCount(1, array_filter($results['results'][0]['children'], function ($result) use ($inactive_supplier) {
             return $result['id'] === \Supplier::class . '_' . $inactive_supplier->getID();
@@ -2609,5 +2647,207 @@ HTML;
         global $CFG_GLPI;
 
         $this->assertCount(count($CFG_GLPI['languages']), \Dropdown::getLanguages());
+    }
+
+    public function testGetDropdownMyDevices()
+    {
+        $this->login();
+
+        // Use existing admin user (ID 2) from test DB
+        $userID = 2;
+        $entity_id = $this->getTestRootEntity(true); // true to get ID instead of object
+
+        // Create test equipment owned by user using GLPI's createItem helper
+        $computer = $this->createItem('Computer', [
+            'name' => 'Test Laptop',
+            'users_id' => $userID,
+            'entities_id' => $entity_id,
+            'serial' => 'LAP123',
+            'otherserial' => 'INV456',
+        ]);
+
+        $monitor = $this->createItem('Monitor', [
+            'name' => 'Test Monitor 24"',
+            'users_id' => $userID,
+            'entities_id' => $entity_id,
+            'serial' => 'MON789',
+        ]);
+
+        $printer = $this->createItem('Printer', [
+            'name' => 'Test Printer HP',
+            'users_id' => $userID,
+            'entities_id' => $entity_id,
+            'serial' => 'PRT321',
+        ]);
+
+        // Connect monitor to computer to test connected devices
+        $this->createItem(Asset_PeripheralAsset::class, [
+            'itemtype_asset'      => Computer::class,
+            'items_id_asset'      => $computer->getID(),
+            'itemtype_peripheral' => Monitor::class,
+            'items_id_peripheral' => $monitor->getID(),
+        ]);
+
+        // Ensure proper permissions and helpdesk types
+        $_SESSION["glpiactiveprofile"]["helpdesk_hardware"] = pow(2, Ticket::HELPDESK_MY_HARDWARE);
+        $_SESSION["glpiactiveprofile"]["helpdesk_item_type"] = ['Computer', 'Monitor', 'Printer'];
+
+        $post = [
+            'userID' => $userID,
+            'entity_restrict' => $entity_id,
+            'page' => 1,
+            'page_limit' => 20, // Increase limit to see all items
+        ];
+
+        $result = \Dropdown::getDropdownMyDevices($post, false);
+
+        // Basic structure validation
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('count', $result);
+        $this->assertArrayHasKey('results', $result);
+        $this->assertIsArray($result['results']);
+
+        // Should have empty value plus our devices
+        $this->assertGreaterThan(1, count($result['results']));
+        $this->assertEquals('', $result['results'][0]['id']);
+        $this->assertEquals('-----', $result['results'][0]['text']);
+
+        // Verify hierarchical structure and find our devices
+        $found_devices = [
+            'computer' => false,
+            'monitor' => false,
+            'printer' => false,
+            'connected_monitor' => false,
+        ];
+
+        foreach ($result['results'] as $group) {
+            if (isset($group['text']) && isset($group['children'])) {
+                // This is a hierarchical group
+                $this->assertIsString($group['text']);
+                $this->assertIsArray($group['children']);
+
+                foreach ($group['children'] as $item) {
+                    // Each item should have required structure
+                    $this->assertArrayHasKey('id', $item);
+                    $this->assertArrayHasKey('text', $item);
+                    $this->assertArrayHasKey('itemtype', $item);
+                    $this->assertArrayHasKey('items_id', $item);
+
+                    // Check for our specific devices
+                    if ($item['itemtype'] === 'Computer' && $item['items_id'] == $computer->getID()) {
+                        $found_devices['computer'] = true;
+                        $this->assertStringContainsString('Test Laptop', $item['text']);
+                        $this->assertStringContainsString('LAP123', $item['text']);
+                    }
+
+                    if ($item['itemtype'] === 'Monitor' && $item['items_id'] == $monitor->getID()) {
+                        if (strpos($group['text'], 'Connected') !== false) {
+                            $found_devices['connected_monitor'] = true;
+                        } else {
+                            $found_devices['monitor'] = true;
+                        }
+                        $this->assertStringContainsString('Test Monitor', $item['text']);
+                        $this->assertStringContainsString('MON789', $item['text']);
+                    }
+
+                    if ($item['itemtype'] === 'Printer' && $item['items_id'] == $printer->getID()) {
+                        $found_devices['printer'] = true;
+                        $this->assertStringContainsString('Test Printer', $item['text']);
+                        $this->assertStringContainsString('PRT321', $item['text']);
+                    }
+                }
+            }
+        }
+
+        // Verify all devices were found
+        $this->assertTrue($found_devices['computer'], 'Computer should be found in "My devices" section');
+        $this->assertTrue($found_devices['printer'], 'Printer should be found in "My devices" section');
+
+        // Monitor can be in either "My devices" or "Connected devices" section
+        $this->assertTrue(
+            $found_devices['monitor'] || $found_devices['connected_monitor'],
+            'Monitor should be found in either "My devices" or "Connected devices" section'
+        );
+
+        // Test that count is accurate
+        $this->assertGreaterThan(0, $result['count']);
+    }
+
+    public static function assetsDropdownForHelpdeskProvider(): iterable
+    {
+        yield 'no rights' => [
+            'can_view'  => 0,
+            'itemtypes' => [Computer::class],
+            'expected'  => [],
+        ];
+        yield 'see his own computers' => [
+            'can_view'  => 2 ** CommonITILObject::HELPDESK_MY_HARDWARE,
+            'itemtypes' => [Computer::class],
+            'expected'  => ['My computer'],
+        ];
+        yield 'see all computers' => [
+            'can_view'  => 2 ** CommonITILObject::HELPDESK_ALL_HARDWARE,
+            'itemtypes' => [Computer::class],
+            'expected'  => ['My computer', 'Not my computer'],
+        ];
+        yield 'see all monitors' => [
+            'can_view'  => 2 ** CommonITILObject::HELPDESK_ALL_HARDWARE,
+            'itemtypes' => [Monitor::class],
+            'expected'  => [],
+        ];
+    }
+
+    #[DataProvider('assetsDropdownForHelpdeskProvider')]
+    public function testAssetsDropdownForHelpdesk(
+        int $can_view,
+        array $itemtypes,
+        array $expected,
+    ): void {
+        // Arrange: assign a computer to a self-service user and set up the
+        // profile with the given rights.
+        // Wrap items in an entity for better test isolation
+        $this->login(); // Need to be logged in to create an entity
+        $entity = $this->createItem(Entity::class, [
+            'name' => 'My entity',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $this->logOut();
+        $this->createItem(Computer::class, [
+            'name'        => 'My computer',
+            'entities_id' => $entity->getID(),
+            'users_id'    => getItemByTypeName(User::class, "post-only", true),
+        ]);
+        $this->createItem(Computer::class, [
+            'name' => 'Not my computer',
+            'entities_id' => $entity->getID(),
+        ]);
+        $this->updateItem(
+            Profile::class,
+            getItemByTypeName(Profile::class, 'Self-Service', onlyid: true),
+            [
+                'helpdesk_hardware'  => $can_view,
+                'helpdesk_item_type' => $itemtypes,
+            ],
+            ['helpdesk_item_type'],
+        );
+
+        // Act: get dropdown values for this user
+        $this->login('post-only');
+        $this->setEntity("My entity", false);
+        $params = [
+            'itemtype' => Computer::class,
+        ];
+        $params['_idor_token'] = Session::getNewIDORToken(Computer::class, $params);
+        $results = \Dropdown::getDropdownValue($params, false);
+
+        // Assert: only one computer should be count
+        $this->assertEquals(count($expected), $results["count"]);
+        if (!empty($expected)) {
+            $found_items = array_map(
+                fn($data) => $data['text'],
+                $results["results"][1]["children"],
+            );
+            $this->assertEquals($expected, $found_items);
+        }
     }
 }

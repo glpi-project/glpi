@@ -272,6 +272,7 @@ final class IllustrationManager
             // Cannot call `_x()` here as it results in an illegal empty translation `id` when strings are extracted.
             // see #21049
             $title = $TRANSLATE->translate("Icon\004" . ($icons[$icon_id]['title'] ?? ""), 'glpi');
+            $title = str_replace("Icon\004", "", $title);
         } catch (Throwable $e) {
             $title = '';
         }

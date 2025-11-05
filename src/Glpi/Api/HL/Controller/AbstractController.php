@@ -154,13 +154,18 @@ abstract class AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'readOnly' => $class !== Entity::class,
                 ],
-                $name_field => ['type' => Doc\Schema::TYPE_STRING],
+                $name_field => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'readOnly' => true,
+                ],
             ],
         ];
         if ($full_schema !== null) {
             $schema['x-full-schema'] = $full_schema;
+        }
+        if ($class === Entity::class) {
+            $schema['properties']['id']['readOnly'] = true;
         }
         return $schema;
     }

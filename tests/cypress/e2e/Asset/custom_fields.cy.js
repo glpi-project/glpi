@@ -103,7 +103,7 @@ describe("Custom Assets - Custom Fields", () => {
             cy.get('.sortable-field[data-key="states_id"][draggable="true"]')
                 .as('states_id_field')
                 .should('be.visible')
-                .invoke('index').should('eq', 1);
+                .invoke('index').should('eq', 2);
             cy.get("@name_field").then(($name_field) => {
                 cy.get("@states_id_field").then(($states_id_field) => {
                     $name_field.insertAfter($states_id_field);
@@ -112,10 +112,11 @@ describe("Custom Assets - Custom Fields", () => {
         });
         cy.findByRole('button', {name: 'Save'}).click();
 
-        cy.get('.sortable-field[data-key="name"][draggable="true"]').invoke('index').should('eq', 1);
-        cy.get('.sortable-field[data-key="states_id"][draggable="true"]').invoke('index').should('eq', 0);
+        cy.get('.sortable-field[data-key="name"][draggable="true"]').invoke('index').should('eq', 2);
+        cy.get('.sortable-field[data-key="states_id"][draggable="true"]').invoke('index').should('eq', 1);
 
         cy.visit(`/front/asset/asset.form.php?class=${asset_name}&id=-1&withtemplate=2`);
+        // Indexes are different because the template_name field won't be displayed here since it is not a template
         cy.findByLabelText('Name').closest('.form-field').should('be.visible').invoke('index').should('eq', 1);
         cy.findByLabelText('Status').closest('.form-field').should('be.visible').invoke('index').should('eq', 0);
     });

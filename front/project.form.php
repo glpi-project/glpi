@@ -133,6 +133,7 @@ if (isset($_POST["add"])) {
         Project::displayFullPageForItem($_GET["id"], $menus, [
             'withtemplate' => $_GET["withtemplate"],
             'formoptions'  => "data-track-changes=true",
+            'projects_id' => ($_GET['projects_id'] ?? null),
         ]);
     }
 }

@@ -97,7 +97,7 @@ class GLPITestCase extends TestCase
 
         // Make sure the tester plugin is never deactived by a test as it would
         // impact others tests that depend on it.
-        $this->assertTrue(Plugin::isPluginActive('tester'));
+        assert(true === Plugin::isPluginActive('tester'), 'The tester plugin must be active for tests to run properly. Make sure test db is initialized and tester plugin directory doesn\'t exist.');
     }
 
     public function tearDown(): void
@@ -108,7 +108,7 @@ class GLPITestCase extends TestCase
 
         // Make sure the tester plugin is never deactived by a test as it would
         // impact others tests that depend on it.
-        $this->assertTrue(Plugin::isPluginActive('tester'));
+        assert(true === Plugin::isPluginActive('tester'), 'The tester plugin must be active for tests to run properly. Make sure test db is initialized and tester plugin directory doesn\'t exist.');
 
         if (isset($_SESSION['MESSAGE_AFTER_REDIRECT']) && !$this->has_failed) {
             unset($_SESSION['MESSAGE_AFTER_REDIRECT'][INFO]);

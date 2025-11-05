@@ -451,38 +451,32 @@ final class Form extends CommonDBTM implements
         $key = sprintf('%s_%d', self::getType(), $this->getID());
         $category_name = __('Form properties');
         $handlers = [];
-        if (!empty($this->fields['name'])) {
-            $handlers[$key][] = new TranslationHandler(
-                item: $this,
-                key: self::TRANSLATION_KEY_NAME,
-                name: __('Form title'),
-                value: $this->fields['name'],
-                is_rich_text: false,
-                category: $category_name
-            );
-        }
+        $handlers[$key][] = new TranslationHandler(
+            item: $this,
+            key: self::TRANSLATION_KEY_NAME,
+            name: __('Form title'),
+            value: $this->fields['name'],
+            is_rich_text: false,
+            category: $category_name
+        );
 
-        if (!empty($this->fields['header'])) {
-            $handlers[$key][] = new TranslationHandler(
-                item: $this,
-                key: self::TRANSLATION_KEY_HEADER,
-                name: __('Form description'),
-                value: $this->fields['header'],
-                is_rich_text: true,
-                category: $category_name
-            );
-        }
+        $handlers[$key][] = new TranslationHandler(
+            item: $this,
+            key: self::TRANSLATION_KEY_HEADER,
+            name: __('Form description'),
+            value: $this->fields['header'],
+            is_rich_text: true,
+            category: $category_name
+        );
 
-        if (!empty($this->fields['description'])) {
-            $handlers[$key][] = new TranslationHandler(
-                item: $this,
-                key: self::TRANSLATION_KEY_DESCRIPTION,
-                name: __('Service catalog description'),
-                value: $this->fields['description'],
-                is_rich_text: true,
-                category: $category_name
-            );
-        }
+        $handlers[$key][] = new TranslationHandler(
+            item: $this,
+            key: self::TRANSLATION_KEY_DESCRIPTION,
+            name: __('Service catalog description'),
+            value: $this->fields['description'],
+            is_rich_text: true,
+            category: $category_name
+        );
 
         $sections_handlers = array_map(
             fn($section) => $section->listTranslationsHandlers(),

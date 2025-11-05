@@ -59,7 +59,7 @@ bash: ## Start a shell inside the php container
 .PHONY: bash
 
 sql: ## Enter the database cli
-	@$(DB) mariadb -D glpi -u glpi -pglpi
+	@$(DB) sh -c 'mariadb --user=$$MARIADB_USER --password=$$MARIADB_PASSWORD $$MARIADB_DATABASE'
 .PHONY: sql
 
 ## —— GLPI commands ————————————————————————————————————————————————————————————
@@ -112,6 +112,27 @@ db-update: ## Update local development's database
 		--force \
 		--skip-db-checks
 .PHONY: db-update
+
+db-dump: ## Dump the database
+	@mkdir -p ./.dump; \
+	DUMP_FILE="./.dump/dump_`date +%Y-%m-%d"_"%H_%M_%S`.sql.gz"; \
+	printf $(_TITLE) "db-dump" "Dumping database to $$DUMP_FILE"; \
+	$(DB) sh -c 'mariadb-dump --user $$MARIADB_USER --password=$$MARIADB_PASSWORD $$MARIADB_DATABASE | gzip' > $$DUMP_FILE; \
+	printf $(_TITLE) "db-dump" "Database successfully dumped to $$DUMP_FILE"
+.PHONY: db-dump
+
+db-restore: ## Drop the database and restores it from a dump file, i.e: make db-restore f=./.dump/dump.sql.gz
+	@$(eval f ?=)
+	@if [ -z "$(f)" ]; then \
+		printf $(_ERROR) "db-restore" "Please provide a file path, i.e: make db-restore f=./.dump/dump.sql.gz"; \
+		exit 1; \
+	fi
+	@printf $(_TITLE) "db-restore" "Dropping and recreating database..."
+	@$(DB) sh -c 'mariadb --user=$$MARIADB_USER --password=$$MARIADB_PASSWORD -e "DROP DATABASE IF EXISTS \`$$MARIADB_DATABASE\`; CREATE DATABASE \`$$MARIADB_DATABASE\`;"'
+	@printf $(_TITLE) "db-restore" "Restoring from $(f)"
+	@gunzip -c $(f) | $(COMPOSE) exec -T db sh -c 'mariadb --user=$$MARIADB_USER --password=$$MARIADB_PASSWORD $$MARIADB_DATABASE'
+.PHONY: db-restore
+
 
 test-db-install: ## Install testing's database
 	@$(CONSOLE) database:install \

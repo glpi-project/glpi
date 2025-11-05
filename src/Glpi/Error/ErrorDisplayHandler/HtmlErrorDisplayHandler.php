@@ -49,29 +49,22 @@ final class HtmlErrorDisplayHandler implements ErrorDisplayHandler
 
     public function canOutput(): bool
     {
-        if (\isCommandLine()) {
+        if (self::$currentRequest === null) {
             return false;
         }
 
-        $is_env_with_debug_tools = Environment::get()->shouldEnableExtraDevAndDebugTools();
-        $is_debug_mode = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE;
-
-        if (
-            !$is_env_with_debug_tools // error messages are always displayed in environments with debug tools
-            && !$is_debug_mode // error messages are always displayed in debug mode
-        ) {
-            return false;
-        }
-
-        // Need to fallback to `Request::createFromGlobals()` for errors that appears before the
-        // `onRequest` event.
-        $request = self::$currentRequest ?? Request::createFromGlobals();
-
-        return $request->getPreferredFormat() === 'html';
+        return self::$currentRequest->getPreferredFormat() === 'html';
     }
 
     public function displayErrorMessage(string $error_label, string $message, string $log_level): void
     {
+        $is_env_with_debug_tools = Environment::get()->shouldEnableExtraDevAndDebugTools();
+        $is_debug_mode = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE;
+        if (!$is_debug_mode && !$is_env_with_debug_tools) {
+            // Do not display messages if debug mode is not active and if the environment should not enable debug tools.
+            return;
+        }
+
         echo \sprintf(
             '<div class="alert alert-important alert-danger glpi-debug-alert"><span class="fw-bold">%s: </span>%s</div>',
             \htmlescape($error_label),

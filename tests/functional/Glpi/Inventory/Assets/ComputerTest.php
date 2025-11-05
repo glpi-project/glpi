@@ -1815,4 +1815,244 @@ class ComputerTest extends AbstractInventoryAsset
         $this->assertTrue($computer->getFromDB($computers_id));
         $this->assertSame($locations_id, $computer->fields['locations_id']);
     }
+
+    /**
+     * Test reimport with locked states_id field.
+     * This test ensures that reimporting an inventory with a locked states_id field
+     * does not trigger an error when accessing raw_links.
+     *
+     * Scenario:
+     * 1. Configure a default states_id for inventory imports
+     * 2. Import a computer (which receives the state from inventory configuration)
+     * 3. Manually change the states_id (this creates a lock on the field)
+     * 4. Reimport the same computer (before the fix, this caused an "Undefined array key" error)
+     */
+    public function testReimportWithLockedStatesId()
+    {
+        // Load the test fixture
+        $json_str = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/computer_locked_states_id.json');
+        $json = json_decode($json_str);
+
+        // Create states
+        $state = new \State();
+        $states_id_inventory = $state->add([
+            'name' => 'State from inventory',
+            'entities_id' => 0,
+            'is_visible_computer' => 1,
+        ]);
+        $this->assertGreaterThan(0, $states_id_inventory);
+
+        $states_id_manual = $state->add([
+            'name' => 'State manually set',
+            'entities_id' => 0,
+            'is_visible_computer' => 1,
+        ]);
+        $this->assertGreaterThan(0, $states_id_manual);
+
+        // Configure inventory to set states_id from inventory
+        $this->login();
+        $conf = new Conf();
+        $this->assertTrue(
+            $conf->saveConf([
+                'states_id_default' => $states_id_inventory,
+            ])
+        );
+        $this->logout();
+
+        // First import - create the computer with state from inventory
+        $inventory = $this->doInventory($json);
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $computers_id);
+
+        $computer = new \Computer();
+        $this->assertTrue($computer->getFromDB($computers_id));
+        // Verify the computer received the state from inventory configuration
+        $this->assertEquals($states_id_inventory, $computer->fields['states_id']);
+
+        // Manually update states_id to create a lock
+        $this->assertTrue($computer->update([
+            'id' => $computers_id,
+            'states_id' => $states_id_manual,
+        ]));
+
+        // Verify the lock was created
+        $lockedfield = new \Lockedfield();
+        $locks = $lockedfield->find([
+            'itemtype' => 'Computer',
+            'items_id' => $computers_id,
+            'field' => 'states_id',
+        ]);
+        $this->assertCount(1, $locks);
+
+        // Reload and verify the manual state is set
+        $this->assertTrue($computer->getFromDB($computers_id));
+        $this->assertEquals($states_id_manual, $computer->fields['states_id']);
+
+        // Reimport the same inventory - this should NOT trigger an error
+        $inventory = $this->doInventory($json);
+
+        // Verify the computer still exists and states_id is still the manual one (locked)
+        $this->assertTrue($computer->getFromDB($computers_id));
+        $this->assertEquals($states_id_manual, $computer->fields['states_id']);
+
+        // Verify the lock is still present
+        $locks = $lockedfield->find([
+            'itemtype' => 'Computer',
+            'items_id' => $computers_id,
+            'field' => 'states_id',
+        ]);
+        $this->assertCount(1, $locks);
+    }
+
+    public function testManyUsers(): void
+    {
+        $computer = new \Computer();
+        $json_source = <<<JSON
+{
+   "action": "inventory",
+   "content": {
+      "hardware": {
+         "chassis_type": "Other",
+         "defaultgateway": "10.10.4.1",
+         "description": "BAL-COD-TS01",
+         "dns": "10.10.4.30",
+         "lastloggeduser": "DyukovAA",
+         "memory": 65535,
+         "name": "BAL-COD-TS01",
+         "uuid": "ECA52C42-3AE7-62E9-542D-CF89786BEA15",
+         "vmsystem": "VMware",
+         "winlang": "1049",
+         "winowner": "Пользователь Windows",
+         "winprodid": "00377-60000-00000-AA934",
+         "winprodkey": "WC2BQ-8NRM3-FDDYY-2BFGV-KHKQY",
+         "workgroup": "xxxxxxxxx.local"
+      },
+      "users": [
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User00"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User01"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User02"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User03"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User04"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User05"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User06"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User07"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User08"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User09"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User10"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User11"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User12"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User13"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User14"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User15"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User16"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User17"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User18"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User19"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User20"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User21"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User22"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User23"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User24"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User25"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User26"
+         },
+         {
+            "domain": "xxxxxxxxx",
+            "login": "User27"
+         }
+      ],
+      "versionclient": "GLPI-Inventory_v1.15"
+   },
+   "deviceid": "BAL-COD-TS01.xxxxxxxxx.local-2025-10-29-09-41-40",
+   "itemtype": "Computer"
+}
+JSON;
+
+        $json = \Safe\json_decode($json_source);
+        $inventory = $this->doInventory($json);
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $computers_id);
+        //load computer
+        $this->assertTrue($computer->getFromDB($computers_id));
+    }
 }

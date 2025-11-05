@@ -55,6 +55,43 @@ final class FormTagsManager
         return $filter === '' ? $tags : $this->filterTags($tags, $filter);
     }
 
+    public function refreshTagsContent(string $content): string
+    {
+        return preg_replace_callback(
+            '/<span.*?data-form-tag="true".*?>.*?<\/span>/',
+            function ($match) {
+                $tag = $match[0];
+
+                // Extract value.
+                preg_match('/data-form-tag-value="([^"]+)"/', $tag, $value_match);
+                if ($value_match === []) {
+                    return "";
+                }
+
+                // Extract provider.
+                preg_match('/data-form-tag-provider="([^"]+)"/', $tag, $provider_match);
+                if (
+                    $provider_match === []
+                    || !is_a(
+                        $provider_match[1],
+                        TagProviderInterface::class,
+                        true
+                    )
+                ) {
+                    return "";
+                }
+
+                $provider = new $provider_match[1]();
+                $tag = $provider->getTagFromRawValue($value_match[1]);
+                if ($tag === null) {
+                    return "";
+                }
+                return $tag->html;
+            },
+            $content
+        );
+    }
+
     public function insertTagsContent(
         string $content,
         AnswersSet $answers_set

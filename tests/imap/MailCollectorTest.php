@@ -747,7 +747,7 @@ class MailCollectorTest extends DbTestCase
         }
 
         $total_count                     = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
-        $expected_refused_count          = 11;
+        $expected_refused_count          = 12;
         $expected_error_count            = 2;
         $expected_blacklist_count        = 1;
         $expected_expected_already_seen  = 0;
@@ -784,6 +784,13 @@ class MailCollectorTest extends DbTestCase
                 'from'    => '', // '' as value is not nullable in DB
                 'to'      => '', // '' as value is not nullable in DB
                 'reason'  => \NotImportedEmail::FAILED_OPERATION,
+            ],
+            [
+                // Email without 'To:' header that is refused should not crash
+                'subject' => 'Test email without To header that should be refused',
+                'from'    => 'unknown@glpi-project.org',
+                'to'      => '', // Empty string, not NULL
+                'reason'  => \NotImportedEmail::USER_UNKNOWN,
             ],
         ];
         $iterator = $DB->request(['FROM' => \NotImportedEmail::getTable()]);
@@ -857,6 +864,7 @@ class MailCollectorTest extends DbTestCase
                     '42 - Missing Content Type',
                     '43 - Korean encoding issue',
                     '44 - Hebrew encoding issue',
+                    '47 - Missing charset parameter',
                 ],
             ],
             // Mails having "normal" user as observer
@@ -882,6 +890,8 @@ Will cause a PHP fatal error:
 
 Best regards,
 PLAINTEXT,
+            // Email without charset parameter (47-missing-charset.eml) - tests ISO-8859-1 to UTF-8 fallback
+            '47 - Missing charset parameter' => 'ATTENTION: Ne cliquez pas sur les liens ou n\'ouvrez pas les pièces jointes si vous n\'êtes pas sûr du contenu.',
             // HTML on multi-part email
             'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine' => <<<HTML
 <p>This message have reply to header, requester should be get from this header.</p>

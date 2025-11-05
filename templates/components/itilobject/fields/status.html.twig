@@ -44,7 +44,7 @@
          'showtype': 'allowed',
          'width': '100%',
          'display': false,
-         'use_template_limits': itiltemplate.fields['id']
+         'use_template_limits': itiltemplate.fields['id'] ?? 0
       }|merge(field_options))|raw }}
 
       {% set validation_class = item.getValidationClassInstance() %}

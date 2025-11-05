@@ -260,6 +260,28 @@ final class FormTagsManagerTest extends DbTestCase
         $this->assertNotEmpty($providers);
     }
 
+    public function testTagsCanBeRefreshed(): void
+    {
+        // Arrange: create a form
+        $tag_provider = new FormTagProvider();
+        $form = $this->createItem(Form::class, ['name' => "My form name"]);
+        $tags = $tag_provider->getTags($form);
+        $tag = $tags[0];
+        $this->assertStringContainsString("My form name", $tag->html, );
+        $this->assertStringNotContainsString("My new form name", $tag->html);
+
+        // Act: update the form, then refresh the tag
+        $this->updateItem(Form::class, $form->getId(), [
+            'name' => "My new form name",
+        ]);
+        $tag_manager = new FormTagsManager();
+        $new_html = $tag_manager->refreshTagsContent($tag->html);
+
+        // Assert: the tag label was updated
+        $this->assertStringNotContainsString("My form name", $new_html);
+        $this->assertStringContainsString("My new form name", $new_html);
+    }
+
     private function createAndGetFormWithFirstAndLastNameQuestions(): Form
     {
         $builder = new FormBuilder();

@@ -2448,6 +2448,11 @@ $empty_data_builder = new class {
                 'name' => 'Scalable Vector Graphics',
                 'ext' => 'svg',
                 'icon' => 'svg-dist.png',
+            ], [
+                'id' => '73',
+                'name' => 'WebP',
+                'ext' => 'webp',
+                'icon' => 'webp-dist.png',
             ],
         ];
 

@@ -61,6 +61,7 @@ use PDU;
 use Session;
 use Software;
 use TicketRecurrent;
+use User;
 
 use function Safe\json_decode;
 use function Safe\json_encode;
@@ -212,7 +213,20 @@ class QuestionTypeItem extends AbstractQuestionType implements
             return 0;
         }
 
-        return (int) $config->getItemsId();
+        $default_value = (int) $config->getItemsId();
+
+        // Fallback to 0 instead of -1 for the empty value as it is already used
+        // as the "Current logged-in user" special value.
+        $extra_config = $question->getExtraDataConfig();
+        if (!$extra_config instanceof QuestionTypeItemExtraDataConfig) {
+            throw new LogicException();
+        }
+
+        if ($extra_config->getItemtype() === User::class) {
+            $default_value = $default_value == -1 ? 0 : $default_value;
+        }
+
+        return $default_value;
     }
 
     #[Override]

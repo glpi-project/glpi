@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\Migration;
 
+use AbstractRightsDropdown;
 use DBmysql;
 use DBmysqlIterator;
 use Entity;
@@ -67,6 +68,9 @@ use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
 use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypeCheckbox;
+use Glpi\Form\QuestionType\QuestionTypeDropdown;
+use Glpi\Form\QuestionType\QuestionTypeDropdownExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
@@ -89,6 +93,12 @@ class FormMigration extends AbstractPluginMigration
      * @var array<int, Form>
      */
     private array $forms = [];
+
+    /**
+     * Store the original form raw data indexed by plugin form ID for quick access
+     * @var array<int, array>
+     */
+    private array $formcreator_raw_forms = [];
 
     public function __construct(
         DBmysql $db,
@@ -131,11 +141,13 @@ class FormMigration extends AbstractPluginMigration
      *
      * @return array Mapping between access type constants and strategy classes
      */
-    private function getStrategyForAccessTypes(): array
+    private function getStrategyForAccessTypes(array $formcreator_raw_form): array
     {
         return [
             self::PUBLIC_ACCESS_TYPE => DirectAccess::class,
-            self::PRIVATE_ACCESS_TYPE => DirectAccess::class,
+            self::PRIVATE_ACCESS_TYPE => $formcreator_raw_form['is_visible']
+                ? AllowList::class
+                : DirectAccess::class,
             self::RESTRICTED_ACCESS_TYPE => AllowList::class,
         ];
     }
@@ -180,16 +192,41 @@ class FormMigration extends AbstractPluginMigration
      * @param QuestionTypeInterface $question_type The question type interface
      * @return ValueOperator|null The corresponding value operator or null if not found
      */
-    private function getValueOperatorFromLegacy(int $value_operator, mixed $value, QuestionTypeInterface $question_type): ?ValueOperator
-    {
+    private function getValueOperatorFromLegacy(
+        int $value_operator,
+        mixed $value,
+        QuestionTypeInterface $question_type,
+        ?JsonFieldInterface $question_config,
+    ): ?ValueOperator {
         // String condition handler support length comparison but with a different operator
         $has_string_condition_handler = in_array($question_type::class, [
             QuestionTypeShortText::class, QuestionTypeEmail::class, QuestionTypeLongText::class,
         ]);
 
+        $is_array_condition = $question_type instanceof QuestionTypeCheckbox
+            || (
+                $question_type instanceof QuestionTypeDropdown
+                && $question_config !== null
+                && $question_config instanceof QuestionTypeDropdownExtraDataConfig
+                && $question_config->isMultipleDropdown()
+            )
+        ;
+
         return match ($value_operator) {
-            1 => $value === "" ? ValueOperator::EMPTY : ValueOperator::EQUALS,
-            2 => $value === "" ? ValueOperator::NOT_EMPTY : ValueOperator::NOT_EQUALS,
+            1 => $value === ""
+                ? ValueOperator::EMPTY
+                : (
+                    $is_array_condition
+                    ? ValueOperator::CONTAINS
+                    : ValueOperator::EQUALS
+                ),
+            2 => $value === ""
+                ? ValueOperator::NOT_EMPTY
+                : (
+                    $is_array_condition
+                    ? ValueOperator::NOT_CONTAINS
+                    : ValueOperator::NOT_EQUALS
+                ),
             3 => $has_string_condition_handler ? ValueOperator::LENGTH_LESS_THAN : ValueOperator::LESS_THAN,
             4 => $has_string_condition_handler ? ValueOperator::LENGTH_GREATER_THAN : ValueOperator::GREATER_THAN,
             5 => $has_string_condition_handler ? ValueOperator::LENGTH_LESS_THAN_OR_EQUALS : ValueOperator::LESS_THAN_OR_EQUALS,
@@ -223,23 +260,42 @@ class FormMigration extends AbstractPluginMigration
      * @return JsonFieldInterface The configuration object for the access control strategy
      * @throws LogicException When no strategy config is found for the given access type
      */
-    private function getStrategyConfigForAccessTypes(array $form_access_rights): JsonFieldInterface
-    {
+    private function getStrategyConfigForAccessTypes(
+        array $form_access_rights,
+        array $formcreator_raw_form,
+    ): JsonFieldInterface {
         $clean_ids = static fn(array $ids) => array_unique(array_filter($ids, fn(mixed $id) => is_int($id)));
 
-        if (in_array($form_access_rights['access_rights'], [self::PUBLIC_ACCESS_TYPE, self::PRIVATE_ACCESS_TYPE])) {
-            return new DirectAccessConfig(
-                allow_unauthenticated: $form_access_rights['access_rights'] === self::PUBLIC_ACCESS_TYPE
-            );
-        } elseif ($form_access_rights['access_rights'] === self::RESTRICTED_ACCESS_TYPE) {
-            return new AllowListConfig(
-                user_ids: $clean_ids(json_decode($form_access_rights['user_ids'], associative: true, flags: JSON_THROW_ON_ERROR)),
-                group_ids: $clean_ids(json_decode($form_access_rights['group_ids'], associative: true, flags: JSON_THROW_ON_ERROR)),
-                profile_ids: $clean_ids(json_decode($form_access_rights['profile_ids'], associative: true, flags: JSON_THROW_ON_ERROR))
-            );
-        }
-
-        throw new LogicException("Strategy config not found for access type {$form_access_rights['access_rights']}");
+        return match ($form_access_rights['access_rights']) {
+            self::PUBLIC_ACCESS_TYPE => new DirectAccessConfig(
+                allow_unauthenticated: true,
+            ),
+            self::PRIVATE_ACCESS_TYPE => $formcreator_raw_form['is_visible']
+                ? new AllowListConfig(
+                    user_ids: [AbstractRightsDropdown::ALL_USERS],
+                )
+                : new DirectAccessConfig(
+                    allow_unauthenticated: false,
+                ),
+            self::RESTRICTED_ACCESS_TYPE => new AllowListConfig(
+                user_ids: $clean_ids(json_decode(
+                    $form_access_rights['user_ids'],
+                    associative: true,
+                    flags: JSON_THROW_ON_ERROR
+                )),
+                group_ids: $clean_ids(json_decode(
+                    $form_access_rights['group_ids'],
+                    associative: true,
+                    flags: JSON_THROW_ON_ERROR
+                )),
+                profile_ids: $clean_ids(json_decode(
+                    $form_access_rights['profile_ids'],
+                    associative: true,
+                    flags: JSON_THROW_ON_ERROR
+                )),
+            ),
+            default => throw new LogicException("Strategy config not found for access type {$form_access_rights['access_rights']}"),
+        };
     }
 
     private function getFormWhereCriteria(): array
@@ -433,6 +489,7 @@ class FormMigration extends AbstractPluginMigration
                 'is_recursive',
                 'is_active',
                 'is_deleted',
+                'is_visible',
             ],
             'FROM'   => 'glpi_plugin_formcreator_forms',
             'WHERE'  => $this->getFormWhereCriteria(),
@@ -468,6 +525,7 @@ class FormMigration extends AbstractPluginMigration
 
             // Store the form for later use
             $this->forms[$raw_form['id']] = $form;
+            $this->formcreator_raw_forms[$raw_form['id']] = $raw_form;
 
             $this->mapItem(
                 'PluginFormcreatorForm',
@@ -877,12 +935,13 @@ class FormMigration extends AbstractPluginMigration
         foreach ($raw_form_access_rights as $form_access_rights) {
             // Use the stored form instead of loading it from the database
             $form = $this->forms[$form_access_rights['forms_id']] ?? null;
+            $formcreator_raw_form = $this->formcreator_raw_forms[$form_access_rights['forms_id']] ?? null;
 
-            if ($form === null) {
+            if ($form === null || $formcreator_raw_form === null) {
                 throw new LogicException("Form with plugin_id {$form_access_rights['forms_id']} not found in memory");
             }
 
-            $strategy_class = $this->getStrategyForAccessTypes()[$form_access_rights['access_rights']] ?? null;
+            $strategy_class = $this->getStrategyForAccessTypes($formcreator_raw_form)[$form_access_rights['access_rights']] ?? null;
             if ($strategy_class === null) {
                 throw new LogicException("Strategy class not found for access type {$form_access_rights['access_rights']}");
             }
@@ -895,7 +954,7 @@ class FormMigration extends AbstractPluginMigration
                 [
                     Form::getForeignKeyField() => $form->getID(),
                     'strategy'                 => $strategy_class,
-                    '_config'                  => self::getStrategyConfigForAccessTypes($form_access_rights)->jsonSerialize(),
+                    '_config'                  => self::getStrategyConfigForAccessTypes($form_access_rights, $formcreator_raw_form)->jsonSerialize(),
                     'is_active'                => true,
                 ],
                 [
@@ -1246,7 +1305,7 @@ class FormMigration extends AbstractPluginMigration
 
             foreach ($form->listTranslationsHandlers() as $handlers) {
                 foreach ($handlers as $handler) {
-                    if (isset($translations[$handler->getValue()])) {
+                    if (!empty($handler->getValue()) && isset($translations[$handler->getValue()])) {
                         $this->importItem(
                             FormTranslation::class,
                             [
@@ -1377,15 +1436,22 @@ class FormMigration extends AbstractPluginMigration
                 continue;
             }
 
-            $value = $raw_condition['show_value'];
+            // The value can be null for formcreator, make sure to fallback to
+            // an empty string
+            $value = $raw_condition['show_value'] ?? "";
+
+            $value_operator = $this->getValueOperatorFromLegacy(
+                $raw_condition['show_condition'],
+                $value,
+                $question_type,
+                $question->getExtraDataConfig()
+            );
+
             if (isset($question->fields['extra_data'])) {
                 $config = $question_type->getExtraDataConfig(
                     json_decode($question->fields['extra_data'], true)
                 );
                 $condition_handlers = $question_type->getConditionHandlers($config);
-
-                // Get the value operator before trying to find a compatible handler
-                $value_operator = $this->getValueOperatorFromLegacy($raw_condition['show_condition'], $value, $question_type);
 
                 // If the value operator is null, we skip this condition
                 if ($value_operator === null) {
@@ -1402,10 +1468,10 @@ class FormMigration extends AbstractPluginMigration
 
                 // If no condition handler is found for the value operator, we skip this condition
                 if ($condition_handler === false) {
-                    /** @var Question|Comment|Section|FormDestination $item */
+                    /** @var Form|Question|Comment|Section|FormDestination $item */
                     $item = getItemForItemtype($target_item['itemtype']);
                     if ($item !== false && $item->getFromDB($target_item['items_id']) !== false) {
-                        $form = $item->getForm();
+                        $form = $item instanceof Form ? $item : $item->getForm();
                     } else {
                         $item = null;
                         $form = null;
@@ -1426,7 +1492,15 @@ class FormMigration extends AbstractPluginMigration
 
                 // Convert the condition value if a data converter is available
                 if ($condition_handler instanceof ConditionHandlerDataConverterInterface) {
-                    $value = $condition_handler->convertConditionValue($value);
+                    try {
+                        $value = $condition_handler->convertConditionValue($value);
+                    } catch (FallbackToAnotherOperatorException $e) {
+                        // Sometimes, the original operator cant be used because
+                        // of imprecise formcreator data (e.g. non unique item
+                        // names)
+                        $value_operator = $e->getOperator();
+                        $value = $e->getValue();
+                    }
                 }
             }
 
@@ -1439,7 +1513,7 @@ class FormMigration extends AbstractPluginMigration
                         'value'          => $value,
                         'item_type'      => 'question',
                         'item_uuid'      => $question->getUUID(),
-                        'value_operator' => $this->getValueOperatorFromLegacy($raw_condition['show_condition'], $value, $question_type),
+                        'value_operator' => $value_operator,
                         'logic_operator' => $this->getLogicOperatorFromLegacy($raw_condition['show_logic']),
                     ];
                 }
@@ -1452,7 +1526,7 @@ class FormMigration extends AbstractPluginMigration
                         'value'          => $value,
                         'item_type'      => 'question',
                         'item_uuid'      => $question->getUUID(),
-                        'value_operator' => $this->getValueOperatorFromLegacy($raw_condition['show_condition'], $value, $question_type),
+                        'value_operator' => $value_operator,
                         'logic_operator' => $this->getLogicOperatorFromLegacy($raw_condition['show_logic']),
                     ];
                 }

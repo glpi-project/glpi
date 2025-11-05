@@ -126,6 +126,16 @@ class NotificationMailingSetting extends NotificationSetting
     {
         global $CFG_GLPI;
 
+        // warning and no form if can't read keyfile
+        // always display no matter what $options['display']
+        // see comment at the end of this function
+        $glpi_encryption_key = new GLPIKey();
+        if ($glpi_encryption_key->hasReadErrors()) {
+            $glpi_encryption_key->showReadErrors();
+
+            return;
+        }
+
         $attach_documents_values = [
             self::ATTACH_NO_DOCUMENT       => __('No documents'),
             self::ATTACH_ALL_DOCUMENTS     => __('All documents'),
@@ -135,7 +145,6 @@ class NotificationMailingSetting extends NotificationSetting
         $mail_methods = [
             MAIL_MAIL       => __('PHP'),
             MAIL_SMTP       => __('SMTP'),
-            MAIL_SMTPTLS    => __('SMTP+TLS'),
             MAIL_SMTPOAUTH  => __('SMTP+OAUTH'),
         ];
         $is_mail_function_available = true;
@@ -156,6 +165,7 @@ class NotificationMailingSetting extends NotificationSetting
         $supported_providers = OauthConfig::getInstance()->getSupportedProviders();
 
         TemplateRenderer::getInstance()->display('pages/setup/notification/mailing_setting.html.twig', [
+            'config_id' => Config::getConfigIDForContext('core'),
             'attach_documents_values' => $attach_documents_values,
             'mail_methods' => $mail_methods,
             'is_mail_function_available' => $is_mail_function_available,

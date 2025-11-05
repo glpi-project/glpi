@@ -536,7 +536,9 @@ JS;
             'version'       => $plugin['version'] ?? null,
 
             'icon'          => self::getPluginIcon($plugin),
-            'state'         => Plugin::getStateKey($plugin_inst->fields['state'] ?? -1),
+            'state'         => (new Plugin())->isPluginsExecutionSuspended()
+                ? 'suspended'
+                : Plugin::getStateKey($plugin_inst->fields['state'] ?? -1),
             'network_info'  => !static::$offline_mode ? self::getNetworkInformations($plugin) : '',
             'buttons'       => self::getButtons($plugin_key),
             'authors'       => array_column($plugin['authors'] ?? [], 'name', 'id'),
@@ -585,12 +587,7 @@ JS;
     {
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
-        if ((new Plugin())->isPluginsExecutionSuspended()) {
-            return \sprintf(
-                '<span class="text-info" data-bs-toggle="tooltip" title="%s"><i class="ti ti-info-circle-filled"></i></span>',
-                __s('The plugins maintenance actions are disabled when the plugins execution is suspended.')
-            );
-        }
+        $is_execution_suspended = (new Plugin())->isPluginsExecutionSuspended();
 
         $plugin_inst        = new Plugin();
         $exists             = $plugin_inst->getFromDBbyDir($plugin_key);
@@ -613,7 +610,7 @@ JS;
         $has_local_update  = $exists && !$must_be_cleaned && $plugin_inst->isUpdatable($plugin_key);
 
         $error = "";
-        if ($exists && !$must_be_cleaned) {
+        if ($exists && !$is_execution_suspended && !$must_be_cleaned) {
             ob_start();
             $do_activate = $plugin_inst->checkVersions($plugin_key);
             if (!$do_activate) {
@@ -658,7 +655,7 @@ JS;
                     </button>";
             }
         } elseif (!$is_available) {
-            if (!$can_run_local_install) {
+            if (!$is_execution_suspended && !$can_run_local_install) {
                 $rand = mt_rand();
                 $buttons .= "<i class='ti ti-alert-triangle plugin-unavailable' id='plugin-tooltip-$rand'></i>";
                 Html::showToolTip(
@@ -748,7 +745,7 @@ JS;
                 </a>";
         }
 
-        if ($can_run_local_install) {
+        if (!$is_execution_suspended && $can_run_local_install) {
             if ($has_local_update) {
                 $buttons .= TemplateRenderer::getInstance()->render('components/plugin_update_modal.html.twig', [
                     'plugin_name' => $plugin_inst->getField('name'),
@@ -774,7 +771,7 @@ JS;
             }
         }
 
-        if ($is_installed) {
+        if (!$is_execution_suspended && $is_installed) {
             if (!strlen($error)) {
                 if ($is_actived) {
                     $buttons .= "<button class='modify_plugin'
@@ -820,6 +817,14 @@ JS;
                         </button>
                     </a>";
             }
+        }
+
+        if ($buttons === '' && $is_execution_suspended) {
+            // Add a tooltip to indicate why no action is available.
+            return \sprintf(
+                '<span class="text-info" data-bs-toggle="tooltip" title="%s"><i class="ti ti-info-circle-filled"></i></span>',
+                __s('The plugins maintenance actions are disabled when the plugins execution is suspended.')
+            );
         }
 
         return $buttons;

@@ -226,6 +226,20 @@ final class StringConditionHandlerTest extends AbstractConditionHandler
                 'submitted_answer'   => "exactlyten",
                 'expected_result'    => false,
             ];
+            yield "Length greater than check - case 4 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::LENGTH_GREATER_THAN,
+                'condition_value'    => 3,
+                'submitted_answer'   => "für", // multi byte string
+                'expected_result'    => false,
+            ];
+            yield "Length greater than check - case 5 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::LENGTH_GREATER_THAN,
+                'condition_value'    => 2,
+                'submitted_answer'   => "für", // multi byte string
+                'expected_result'    => true,
+            ];
 
             // Test string answers with the LENGTH_GREATER_THAN_OR_EQUALS operator
             yield "Length greater than or equals check - case 1 for $type" => [
@@ -256,6 +270,20 @@ final class StringConditionHandlerTest extends AbstractConditionHandler
                 'submitted_answer'   => "nine",
                 'expected_result'    => false,
             ];
+            yield "Length greater than or equals check - case 5 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS,
+                'condition_value'    => 3,
+                'submitted_answer'   => "für", // multi byte string
+                'expected_result'    => true,
+            ];
+            yield "Length greater than or equals check - case 6 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS,
+                'condition_value'    => 4,
+                'submitted_answer'   => "für", // multi byte string
+                'expected_result'    => false,
+            ];
 
             // Test string answers with the LENGTH_LESS_THAN operator
             yield "Length less than check - case 1 for $type" => [
@@ -277,6 +305,20 @@ final class StringConditionHandlerTest extends AbstractConditionHandler
                 'condition_operator' => ValueOperator::LENGTH_LESS_THAN,
                 'condition_value'    => 10,
                 'submitted_answer'   => "exactlyten",
+                'expected_result'    => false,
+            ];
+            yield "Length less than check - case 4 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::LENGTH_LESS_THAN,
+                'condition_value'    => 4,
+                'submitted_answer'   => "für", // multi byte string
+                'expected_result'    => true,
+            ];
+            yield "Length less than check - case 5 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::LENGTH_LESS_THAN,
+                'condition_value'    => 3,
+                'submitted_answer'   => "für", // multi byte string
                 'expected_result'    => false,
             ];
 
@@ -308,6 +350,20 @@ final class StringConditionHandlerTest extends AbstractConditionHandler
                 'condition_value'    => 10,
                 'submitted_answer'   => "nine",
                 'expected_result'    => true,
+            ];
+            yield "Length less than or equals check - case 5 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::LENGTH_LESS_THAN_OR_EQUALS,
+                'condition_value'    => 3,
+                'submitted_answer'   => "für", // multi byte string
+                'expected_result'    => true,
+            ];
+            yield "Length less than or equals check - case 6 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::LENGTH_LESS_THAN_OR_EQUALS,
+                'condition_value'    => 2,
+                'submitted_answer'   => "für", // multi byte string
+                'expected_result'    => false,
             ];
         }
     }

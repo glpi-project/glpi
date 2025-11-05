@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "53853f5baf7fddc2505e749dee85a0e8",
+    "content-hash": "9e2be75bb4432f8f17a24aa1244c24b0",
     "packages": [
         {
             "name": "altcha-org/altcha",
@@ -10961,16 +10961,16 @@
         },
         {
             "name": "glpi-project/tools",
-            "version": "0.8.1",
+            "version": "0.8.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/tools.git",
-                "reference": "cf182b1a6bd1a73c5c6469dbbd0edabf7cb5857e"
+                "reference": "8ea2a7d4702a858f4b0360ba7d4f1841a5e77026"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/tools/zipball/cf182b1a6bd1a73c5c6469dbbd0edabf7cb5857e",
-                "reference": "cf182b1a6bd1a73c5c6469dbbd0edabf7cb5857e",
+                "url": "https://api.github.com/repos/glpi-project/tools/zipball/8ea2a7d4702a858f4b0360ba7d4f1841a5e77026",
+                "reference": "8ea2a7d4702a858f4b0360ba7d4f1841a5e77026",
                 "shasum": ""
             },
             "require": {
@@ -11013,7 +11013,7 @@
                 "issues": "https://github.com/glpi-project/tools/issues",
                 "source": "https://github.com/glpi-project/tools"
             },
-            "time": "2025-09-08T09:45:41+00:00"
+            "time": "2025-10-14T10:26:06+00:00"
         },
         {
             "name": "kelunik/certificate",
@@ -11475,16 +11475,11 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.1.29",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phpstan/phpstan-phar-composer-source.git",
-                "reference": "git"
-            },
+            "version": "2.1.31",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/d618573eed4a1b6b75e37b2e0b65ac65c885d88e",
-                "reference": "d618573eed4a1b6b75e37b2e0b65ac65c885d88e",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/ead89849d879fe203ce9292c6ef5e7e76f867b96",
+                "reference": "ead89849d879fe203ce9292c6ef5e7e76f867b96",
                 "shasum": ""
             },
             "require": {
@@ -11529,7 +11524,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-09-25T06:58:18+00:00"
+            "time": "2025-10-10T14:14:11+00:00"
         },
         {
             "name": "phpstan/phpstan-deprecation-rules",
@@ -11915,16 +11910,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "11.5.42",
+            "version": "11.5.43",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "1c6cb5dfe412af3d0dfd414cfd110e3b9cfdbc3c"
+                "reference": "c6b89b6cf4324a8b4cb86e1f5dfdd6c9e0371924"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/1c6cb5dfe412af3d0dfd414cfd110e3b9cfdbc3c",
-                "reference": "1c6cb5dfe412af3d0dfd414cfd110e3b9cfdbc3c",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/c6b89b6cf4324a8b4cb86e1f5dfdd6c9e0371924",
+                "reference": "c6b89b6cf4324a8b4cb86e1f5dfdd6c9e0371924",
                 "shasum": ""
             },
             "require": {
@@ -11996,7 +11991,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.5.42"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.5.43"
             },
             "funding": [
                 {
@@ -12020,7 +12015,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-09-28T12:09:13+00:00"
+            "time": "2025-10-30T08:39:39+00:00"
         },
         {
             "name": "react/cache",
@@ -13859,16 +13854,16 @@
         },
         {
             "name": "symfony/debug-bundle",
-            "version": "v6.4.13",
+            "version": "v6.4.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/debug-bundle.git",
-                "reference": "7bcfaff39e094cc09455201916d016d9b2ae08ff"
+                "reference": "21a61c55192d558a6b81cdb12e8c010fc9474fe0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/debug-bundle/zipball/7bcfaff39e094cc09455201916d016d9b2ae08ff",
-                "reference": "7bcfaff39e094cc09455201916d016d9b2ae08ff",
+                "url": "https://api.github.com/repos/symfony/debug-bundle/zipball/21a61c55192d558a6b81cdb12e8c010fc9474fe0",
+                "reference": "21a61c55192d558a6b81cdb12e8c010fc9474fe0",
                 "shasum": ""
             },
             "require": {
@@ -13913,7 +13908,7 @@
             "description": "Provides a tight integration of the Symfony VarDumper component and the ServerLogCommand from MonologBridge into the Symfony full-stack framework",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/debug-bundle/tree/v6.4.13"
+                "source": "https://github.com/symfony/debug-bundle/tree/v6.4.27"
             },
             "funding": [
                 {
@@ -13925,11 +13920,15 @@
                     "type": "github"
                 },
                 {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
                     "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-09-25T14:18:03+00:00"
+            "time": "2025-10-11T17:35:31+00:00"
         },
         {
             "name": "symfony/http-client",
@@ -14512,16 +14511,16 @@
         },
         {
             "name": "symfony/web-profiler-bundle",
-            "version": "v6.4.25",
+            "version": "v6.4.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/web-profiler-bundle.git",
-                "reference": "4c1754d6b3ffe52e9eaed0d9a392eb43a60fc910"
+                "reference": "4c2ab411372e8bd854678cd7c81f1a9bfd6914aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/web-profiler-bundle/zipball/4c1754d6b3ffe52e9eaed0d9a392eb43a60fc910",
-                "reference": "4c1754d6b3ffe52e9eaed0d9a392eb43a60fc910",
+                "url": "https://api.github.com/repos/symfony/web-profiler-bundle/zipball/4c2ab411372e8bd854678cd7c81f1a9bfd6914aa",
+                "reference": "4c2ab411372e8bd854678cd7c81f1a9bfd6914aa",
                 "shasum": ""
             },
             "require": {
@@ -14574,7 +14573,7 @@
                 "dev"
             ],
             "support": {
-                "source": "https://github.com/symfony/web-profiler-bundle/tree/v6.4.25"
+                "source": "https://github.com/symfony/web-profiler-bundle/tree/v6.4.27"
             },
             "funding": [
                 {
@@ -14594,7 +14593,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-08-07T12:02:05+00:00"
+            "time": "2025-10-05T13:55:43+00:00"
         },
         {
             "name": "thecodingmachine/phpstan-safe-rule",

@@ -490,6 +490,22 @@ final class SQLProvider implements SearchProviderInterface
             case "glpi_itilfollowups.content":
             case "glpi_tickettasks.content":
             case "glpi_changetasks.content":
+            case "glpi_problemtasks.content":
+            case "glpi_tickettasks.state":
+            case "glpi_changetasks.state":
+            case "glpi_problemtasks.state":
+            case "glpi_tickettasks.is_private":
+            case "glpi_changetasks.is_private":
+            case "glpi_problemtasks.is_private":
+            case "glpi_tickettasks.actiontime":
+            case "glpi_changetasks.actiontime":
+            case "glpi_problemtasks.actiontime":
+            case "glpi_tickettasks.begin":
+            case "glpi_changetasks.begin":
+            case "glpi_problemtasks.begin":
+            case "glpi_tickettasks.end":
+            case "glpi_changetasks.end":
+            case "glpi_problemtasks.end":
                 if (is_subclass_of($itemtype, CommonITILObject::class)) {
                     // force ordering by date desc
                     $SELECT = [
@@ -607,11 +623,15 @@ final class SQLProvider implements SearchProviderInterface
                             $SELECT[] = $TRANS;
                         }
                         return array_merge($SELECT, $ADDITONALFIELDS);
-                    }
-                    return array_merge([
+                    };
+                    $SELECT = [
                         $tocompute . ' AS ' . $DB::quoteName($NAME),
                         $DB::quoteName("{$table}{$addtable}.id AS {$NAME}_id"),
-                    ], $ADDITONALFIELDS);
+                    ];
+                    if (Session::haveTranslations($opt_itemtype, $field)) {
+                        $SELECT[] = "$tocomputetrans AS " . $DB::quoteName("{$NAME}_trans_{$field}");
+                    }
+                    return array_merge($SELECT, $ADDITONALFIELDS);
             }
         }
 
@@ -1176,11 +1196,11 @@ final class SQLProvider implements SearchProviderInterface
         if (preg_match('/^\$\$\$\$([0-9]+)$/', $val, $regs)) {
             $criteria = [
                 'OR' => [
-                    "table.id" => [$nott ? "<>" : "=", $regs[1]],
+                    $table . ".id" => [$nott ? "<>" : "=", $regs[1]],
                 ],
             ];
             if ((int) $regs[1] === 0) {
-                $criteria['OR'][] = ["table.id" =>  "IS NULL"];
+                $criteria['OR'][] = [$table . ".id" =>  "IS NULL"];
             }
             return $criteria;
         }
@@ -1528,9 +1548,11 @@ final class SQLProvider implements SearchProviderInterface
                                     $criteria,
                                     "$table.$field" => null,
                                 ],
-                                new QueryExpression($toadd),
                             ],
                         ];
+                        if ($toadd !== '') {
+                            $criteria[$tmplink][] = new QueryExpression($toadd);
+                        }
                     }
                     return $criteria;
                 }
@@ -4246,7 +4268,7 @@ final class SQLProvider implements SearchProviderInterface
                 $COMMONWHERE .= getEntitiesRestrictRequest($LINK, $itemtable);
             } elseif (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
                 // Will be replace below in Union/Recursivity Hack
-                $COMMONWHERE .= $LINK . " ENTITYRESTRICT ";
+                $COMMONWHERE .= $LINK . " ADDDEFAULTWHERE ENTITYRESTRICT ";
             } else {
                 $COMMONWHERE .= getEntitiesRestrictRequest(
                     $LINK,
@@ -4402,9 +4424,14 @@ final class SQLProvider implements SearchProviderInterface
                             );
                         }
                         $query_num = str_replace(
+                            "ADDDEFAULTWHERE",
+                            Search::addDefaultWhere($ctype),
+                            $query_num
+                        );
+                        $query_num = str_replace(
                             "ENTITYRESTRICT",
                             getEntitiesRestrictRequest(
-                                '',
+                                ' AND ',
                                 $ctable,
                                 '',
                                 '',
@@ -4539,9 +4566,14 @@ final class SQLProvider implements SearchProviderInterface
                         $tmpquery = str_replace("`$ctable`.`name`", "`$ctable`.`$name_field`", $tmpquery);
                     }
                     $tmpquery = str_replace(
+                        "ADDDEFAULTWHERE",
+                        Search::addDefaultWhere($ctype),
+                        $tmpquery
+                    );
+                    $tmpquery = str_replace(
                         "ENTITYRESTRICT",
                         getEntitiesRestrictRequest(
-                            '',
+                            ' AND ',
                             $ctable,
                             '',
                             '',
@@ -5656,16 +5688,25 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     break;
                 case $table . ".completename":
+                    $completename = !empty($data[$ID][0]['trans_completename'])
+                        ? $data[$ID][0]['trans_completename']
+                        : $data[$ID][0]['name'];
+
+                    if (empty($completename)) {
+                        return '';
+                    }
+
+                    $completename = (new SanitizedStringsDecoder())->decodeHtmlSpecialCharsInCompletename($completename);
+
                     if (
                         $itemtype != $opt_itemtype
-                        && $data[$ID][0]['name'] != null //column have value in DB
                         && !$_SESSION['glpiuse_flat_dropdowntree_on_search_result'] //user doesn't want the completename
                     ) {
-                        $completename = (new SanitizedStringsDecoder())->decodeHtmlSpecialCharsInCompletename($data[$ID][0]['name']);
                         $split_name = explode(">", $completename);
                         return htmlescape(trim(end($split_name)));
                     }
-                    break;
+
+                    return htmlescape($completename);
 
                 case "glpi_documenttypes.icon":
                     if (!empty($data[$ID][0]['name'])) {
@@ -6406,6 +6447,11 @@ final class SQLProvider implements SearchProviderInterface
             $unit = $so['unit'];
         }
 
+        $separate      = Search::LBBR;
+        if (isset($so['splititems']) && $so['splititems']) {
+            $separate = Search::LBHR;
+        }
+
         // Preformat items
         if (isset($so["datatype"])) {
             switch ($so["datatype"]) {
@@ -6414,10 +6460,6 @@ final class SQLProvider implements SearchProviderInterface
 
                     $out           = "";
                     $count_display = 0;
-                    $separate      = Search::LBBR;
-                    if (isset($so['splititems']) && $so['splititems']) {
-                        $separate = Search::LBHR;
-                    }
 
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
                         if (isset($data[$ID][$k]['id'])) {
@@ -6431,7 +6473,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $name = sprintf(__('%1$s (%2$s)'), $name, $data[$ID][$k]['id']);
                             }
                             if (isset($field) && $field === 'completename') {
-                                $name = (new SanitizedStringsDecoder())->decodeHtmlSpecialCharsInCompletename($data[$ID][0]['name']);
+                                $name = (new SanitizedStringsDecoder())->decodeHtmlSpecialCharsInCompletename($data[$ID][$k]['name']);
                                 $chunks = \explode(' > ', $name);
                                 $completename = '';
                                 foreach ($chunks as $key => $element_name) {
@@ -6452,11 +6494,6 @@ final class SQLProvider implements SearchProviderInterface
                     return $out;
 
                 case "text":
-                    $separate = Search::LBBR;
-                    if (isset($so['splititems']) && $so['splititems']) {
-                        $separate = Search::LBHR;
-                    }
-
                     $out           = '';
                     $count_display = 0;
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
@@ -6508,9 +6545,9 @@ final class SQLProvider implements SearchProviderInterface
                             is_null($data[$ID][$k]['name'])
                             && isset($so['emptylabel']) && $so['emptylabel']
                         ) {
-                            $out .= (empty($out) ? '' : Search::LBBR) . \htmlescape($so['emptylabel']);
+                            $out .= (empty($out) ? '' : $separate) . \htmlescape($so['emptylabel']);
                         } else {
-                            $out .= (empty($out) ? '' : Search::LBBR) . \htmlescape(Html::convDate($data[$ID][$k]['name']));
+                            $out .= (empty($out) ? '' : $separate) . \htmlescape(Html::convDate($data[$ID][$k]['name']));
                         }
                     }
                     $out = "<span class='text-nowrap'>$out</span>";
@@ -6523,9 +6560,9 @@ final class SQLProvider implements SearchProviderInterface
                             is_null($data[$ID][$k]['name'])
                             && isset($so['emptylabel']) && $so['emptylabel']
                         ) {
-                            $out .= (empty($out) ? '' : Search::LBBR) . \htmlescape($so['emptylabel']);
+                            $out .= (empty($out) ? '' : $separate) . \htmlescape($so['emptylabel']);
                         } else {
-                            $out .= (empty($out) ? '' : Search::LBBR) . \htmlescape(Html::convDateTime($data[$ID][$k]['name']));
+                            $out .= (empty($out) ? '' : $separate) . \htmlescape(Html::convDateTime($data[$ID][$k]['name']));
                         }
                     }
                     $out = "<span class='text-nowrap'>$out</span>";
@@ -6543,14 +6580,16 @@ final class SQLProvider implements SearchProviderInterface
 
                     $out   = '';
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
-                        $out .= (empty($out) ? '' : '<br>')
-                            . \htmlescape(
-                                Html::timestampToString(
-                                    $data[$ID][$k]['name'],
-                                    $withseconds,
-                                    $withdays
-                                )
-                            );
+                        if ($k > 0) {
+                            $out .= $separate;
+                        }
+                        $out .= \htmlescape(
+                            Html::timestampToString(
+                                $data[$ID][$k]['name'],
+                                $withseconds,
+                                $withdays
+                            )
+                        );
                     }
                     $out = "<span class='text-nowrap'>$out</span>";
                     return $out;
@@ -6560,12 +6599,12 @@ final class SQLProvider implements SearchProviderInterface
                     $count_display = 0;
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
                         if ($count_display) {
-                            $out .= Search::LBBR;
+                            $out .= $separate;
                         }
                         $count_display++;
                         if (!empty($data[$ID][$k]['name'])) {
                             $mail = \htmlescape($data[$ID][$k]['name']);
-                            $out .= (empty($out) ? '' : Search::LBBR);
+                            $out .= (empty($out) ? '' : $separate);
                             $out .= "<a href='mailto:" . $mail . "'>" . $mail;
                             $out .= "</a>";
                         }
@@ -6594,7 +6633,7 @@ final class SQLProvider implements SearchProviderInterface
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
                         if (strlen(trim((string) $data[$ID][$k]['name'])) > 0) {
                             if ($count_display) {
-                                $out .= Search::LBBR;
+                                $out .= $separate;
                             }
                             $count_display++;
                             if (
@@ -6616,7 +6655,7 @@ final class SQLProvider implements SearchProviderInterface
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
                         if (strlen(trim((string) $data[$ID][$k]['name'])) > 0) {
                             if ($count_display) {
-                                $out .= Search::LBBR;
+                                $out .= $separate;
                             }
                             $count_display++;
                             if (
@@ -6638,7 +6677,7 @@ final class SQLProvider implements SearchProviderInterface
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
                         if (strlen(trim((string) $data[$ID][$k]['name'])) > 0) {
                             if ($count_display) {
-                                $out .= Search::LBBR;
+                                $out .= $separate;
                             }
                             $count_display++;
                             $out .= Dropdown::getYesNo($data[$ID][$k]['name']);
@@ -6655,7 +6694,7 @@ final class SQLProvider implements SearchProviderInterface
                             continue;
                         }
                         if ($count_display) {
-                            $out .= Search::LBBR;
+                            $out .= $separate;
                         }
                         $count_display++;
                         if ($obj = getItemForItemtype($itemtype_name)) {
@@ -6703,10 +6742,6 @@ final class SQLProvider implements SearchProviderInterface
         // Manage items with need group by / group_concat
         $out           = "";
         $count_display = 0;
-        $separate      = Search::LBBR;
-        if (isset($so['splititems']) && $so['splititems']) {
-            $separate = Search::LBHR;
-        }
 
         $aggregate = (isset($so['aggregate']) && $so['aggregate']);
 

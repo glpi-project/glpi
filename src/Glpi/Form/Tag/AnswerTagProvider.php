@@ -86,6 +86,17 @@ final class AnswerTagProvider implements TagProviderInterface, TagWithIdValueInt
         return Question::class;
     }
 
+    #[Override]
+    public function getTagFromRawValue(string $value): ?Tag
+    {
+        $question = Question::getById((int) $value);
+        if (!$question) {
+            return null;
+        }
+
+        return $this->getTagForQuestion($question);
+    }
+
     public function getTagForQuestion(Question $question): Tag
     {
         return new Tag(

@@ -282,15 +282,13 @@ class PrinterLog extends CommonDBChild
                 $series[$printer_id]['name'] = Printer::getById($printer_id)->fields['name'];
             }
 
-            // Keep values if at least 1 label is greater than 0
-            $valuesum = array_sum($metrics);
             foreach ($metrics as $metric) {
                 if ($is_comparison) {
                     $series[$printer_id]['data'][array_search($metric['date'], $labels, false)] = $metric[$compare_printer_stat];
                 } else {
                     foreach ($metric as $key => $value) {
                         $label = static::getLabelFor($key);
-                        if ($label && $valuesum > 0) {
+                        if ($label) {
                             $series[$key]['name'] = $label;
                             $series[$key]['data'][] = $value;
                         }

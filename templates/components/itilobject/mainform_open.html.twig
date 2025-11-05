@@ -51,7 +51,7 @@
    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
    <input type="hidden" name="_skip_default_actor" value="1" />
 
-   {% if itiltemplate_key is defined %}
+   {% if itiltemplate_key is defined and itiltemplate.fields['id'] is defined %}
       <input type="hidden" name="{{ itiltemplate_key }}" value="{{ itiltemplate.fields['id'] }}" />
    {% endif %}
    {% if predefined_fields is defined %}

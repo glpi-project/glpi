@@ -218,17 +218,32 @@ final class FormCloneHelper
 
     public function getMappedSectionUuid(string $old_uuid): string
     {
-        return $this->sections_uuid_map[$old_uuid];
+        $uuid = $this->sections_uuid_map[$old_uuid] ?? null;
+        if ($uuid === null) {
+            throw new MappedItemNotFoundException();
+        }
+
+        return $uuid;
     }
 
     public function getMappedQuestionUuid(string $old_uuid): string
     {
-        return $this->questions_uuid_map[$old_uuid];
+        $uuid = $this->questions_uuid_map[$old_uuid] ?? null;
+        if ($uuid === null) {
+            throw new MappedItemNotFoundException();
+        }
+
+        return $uuid;
     }
 
     public function getMappedCommentUuid(string $old_uuid): string
     {
-        return $this->comments_uuid_map[$old_uuid];
+        $uuid = $this->comments_uuid_map[$old_uuid] ?? null;
+        if ($uuid === null) {
+            throw new MappedItemNotFoundException();
+        }
+
+        return $uuid;
     }
 
     public function getMappedFormId(int $id): int
@@ -365,7 +380,15 @@ final class FormCloneHelper
 
             // Get correct uuid
             $type = Type::from($raw_type);
-            $new_uuid = $this->getMappedUuidForConditionItem($type, $uuid);
+            try {
+                $new_uuid = $this->getMappedUuidForConditionItem($type, $uuid);
+            } catch (MappedItemNotFoundException $e) {
+                // We try to prevent invalid conditions from happening on forms
+                // but if it happens we prefer to ignore them rather than block
+                // the form export
+                unset($data[$i]);
+                continue;
+            }
 
             // Apply updated values
             $condition_data["item_uuid"] = $new_uuid;

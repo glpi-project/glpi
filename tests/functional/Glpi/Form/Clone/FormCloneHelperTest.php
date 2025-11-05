@@ -1383,4 +1383,33 @@ final class FormCloneHelperTest extends DbTestCase
             ),
         );
     }
+
+    public function testFormWithInvalidConditionCanStillBeExported(): void
+    {
+        // Arrange: create a form with a condition that target a missing question
+        $builder = new FormBuilder("My form");
+        $builder->addQuestion("My question", QuestionTypeShortText::class);
+        $builder->setSubmitButtonVisibility(
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "my value",
+                ],
+            ]
+        );
+        $form = $this->createForm($builder);
+        $question_id = $this->getQuestionId($form, "My question");
+        $this->deleteItem(Question::class, $question_id);
+
+        // Act: clone form
+        $form_id = $form->clone();
+        $clone = Form::getById($form_id);
+
+        // Assert: form should have no conditions
+        $this->assertEmpty($clone->getConfiguredConditionsData());
+    }
 }

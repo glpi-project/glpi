@@ -605,4 +605,97 @@ class ITILControllerTest extends \HLAPITestCase
             }
         }
     }
+
+    public function testCRUDTeamMembers()
+    {
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+        $ticket = $this->createItem(Ticket::class, [
+            'name' => __FUNCTION__,
+            'content' => 'test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+
+        // Add team members
+        $members = [
+            ['type' => 'User', 'id' => 3, 'role' => 'requester'],
+            ['type' => 'User', 'id' => 2, 'role' => 'observer'],
+            ['type' => 'User', 'id' => 4, 'role' => 'assigned'],
+        ];
+        foreach ($members as $member) {
+            $request = new Request('POST', "/Assistance/Ticket/{$ticket->getID()}/TeamMember");
+            $request->setParameter('type', $member['type']);
+            $request->setParameter('id', $member['id']);
+            $request->setParameter('role', $member['role']);
+            $this->api->call($request, function ($call) {
+                /** @var \HLAPICallAsserter $call */
+                $call->response->isOK();
+            });
+        }
+
+        // Get all members
+        $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}/TeamMember"), function ($call) use ($members) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($members) {
+                    $this->assertCount(count($members), $content);
+                    $member_ids = array_column($members, 'id');
+                    foreach ($content as $member) {
+                        $this->assertContains($member['id'], $member_ids);
+                    }
+                });
+        });
+
+        // Get by role
+        $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}/TeamMember/requester"), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertCount(1, $content);
+                    $this->assertEquals(3, array_values($content)[0]['id']);
+                });
+        });
+        $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}/TeamMember/observer"), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertCount(1, $content);
+                    $this->assertEquals(2, array_values($content)[0]['id']);
+                });
+        });
+        $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}/TeamMember/assigned"), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertCount(1, $content);
+                    $this->assertEquals(4, array_values($content)[0]['id']);
+                });
+        });
+
+        // Remove members
+        foreach ($members as $member) {
+            $request = new Request('DELETE', "/Assistance/Ticket/{$ticket->getID()}/TeamMember");
+            $request->setParameter('type', $member['type']);
+            $request->setParameter('id', $member['id']);
+            $request->setParameter('role', $member['role']);
+            $this->api->call($request, function ($call) {
+                /** @var \HLAPICallAsserter $call */
+                $call->response->isOK();
+            });
+        }
+
+        // Verify removal
+        $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}/TeamMember"), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertCount(0, $content);
+                });
+        });
+    }
 }

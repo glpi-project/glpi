@@ -46,3 +46,4 @@ phpstan.neon
 .env
 /resources/.illustrations_translations.php
 /phpunit/files/*
+/.dump/

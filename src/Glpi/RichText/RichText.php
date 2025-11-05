@@ -603,6 +603,10 @@ JAVASCRIPT;
         // Allow class and style attribute
         $config = $config->allowAttribute('class', '*');
         $config = $config->allowAttribute('style', '*');
+        // Allow layout attribute for table tags
+        $config = $config->allowAttribute('bgcolor', ['table', 'tr', 'th', 'td']);
+        $config = $config->allowAttribute('border', ['table']);
+
 
         if (GLPI_ALLOW_IFRAME_IN_RICH_TEXT) {
             $config = $config->allowElement('iframe')->dropAttribute('srcdoc', '*');

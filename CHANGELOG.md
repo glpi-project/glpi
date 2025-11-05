@@ -31,12 +31,31 @@ The present file will list all changes made to the project; according to the
 ## [11.0.2] unreleased
 
 ### Added
+- Some missing `readOnly` flags for properties for some schemas in High-Level API.
+- Some missing UUID and color pattern constraints for properties in some schemas in High-Level API.
+- High-Level API endpoints for configuration settings `/Setup/Config/{context}/{name}`.
+- `uuid`, `user_tech`, `group_tech`, `date`, `date_creation`, `date_mod`, `planned_begin`, `planned_end`, `timeline_position`, `source_item_id`, and `source_of_item_id` properties for the applicable Ticket, Change and Problem Task schemas in the High-Level API v2.1.
+- `date`, `timeline_position`, `source_item_id`, and `source_of_item_id` properties for the Followup schema in the High-Level API v2.1.
+- `approver`, `approval_followup`, `date_creation`, `date_mod`, and `date_approval` properties for the Solution schema in the High-Level API v2.1.
+- `timeline_position` property for the TicketValidation, ChangeValidation and Document_Item schemas in the High-Level API v2.1.
+- `date_solve`, `date_close`, and `global_validation` properties for the applicable Ticket, Change and Problem schemas in the High-Level API v2.1.
+- New schemas/endpoints for Reminders, RSS Feeds, and Reservations in the High-Level API v2.1.
+- `date_password_change`, `location`, `authtype`, `last_login`, `default_profile` and `default_entity` properties for the User schema in the High-Level API v2.1.
+- New UserPreferences schema and endpoints in the High-Level API v2.1.
+- Some missing `completename` and `level` properties for some schemas in High-Level API v2.1.
 
 ### Changed
+- Fixed `id` property in dropdown/linked object properties in schemas in High-Level API showing as readOnly when they are writable.
+- Added High-Level API version 2.1. Make sure you are pinning your requests to a specific version (Ex: `/api.php/v2.0`) if needed to exclude endpoints/properties added in later versions. See version pinning in the getting started documentation `/api.php/getting-started`.
+- High-Level API responses for not found routes now correctly return a body including the standard error properties (status, title, detail). This is not controlled by the API version.
 
 ### Deprecated
 
 ### Removed
+- Invalid `max_power` property in the `PassiveDCEquipmentModel` schema in High-Level API.
+- Invalid `chipset` property in the `SystemboardModel` schema in High-Level API.
+- Invalid `date_creation` and `date_mod` properties in the `GenericDeviceType` and `SensorType` schemas in High-Level API.
+- Invalid `completename` property in the `TicketTemplate`, `ChangeTemplate`, and `ProblemTemplate` schemas in High-Level API.
 
 ### API changes
 
@@ -45,6 +64,7 @@ The present file will list all changes made to the project; according to the
 #### Changes
 
 #### Deprecated
+- Usage of `MAIL_SMTPTLS` mode for SMTP configuration.
 
 #### Removed
 
@@ -321,7 +341,7 @@ The present file will list all changes made to the project; according to the
 - Usage of the `/marketplace` path for plugins URLs. All plugins URLs should now start with `/plugins`.
 - Usage of `GLPI_PLUGINS_PATH` javascript variable.
 - Usage of the `GLPI_FORCE_MAIL` constant.
-- Usage of `MAIL_SMTPSSL` constants.
+- Usage of `MAIL_SMTPSSL` mode for SMTP configuration.
 - Usage of `name` and `users_id_validate` parameter in `ajax/dropdownValidator.php`.
 - Usage of `users_id_validate` parameter in `front/commonitilvalidation.form.php`.
 - `front/ticket_ticket.form.php` script usage.

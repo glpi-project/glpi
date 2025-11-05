@@ -37,15 +37,13 @@ use Glpi\Application\View\TemplateRenderer;
 
 /**
  * Store ports connections log
- *
- * FIXME This class should inherit from CommonDBRelation, as it is linked
- * to both 'networkports_id_source' and 'networkports_id_destination'
  */
-class NetworkPortConnectionLog extends CommonDBChild
+class NetworkPortConnectionLog extends CommonDBRelation
 {
-    public static $itemtype        = 'NetworkPort';
-    public static $items_id        = 'networkports_id';
-    public $dohistory              = false;
+    public static $itemtype_1 = NetworkPort::class;
+    public static $items_id_1 = 'networkports_id_source';
+    public static $itemtype_2 = NetworkPort::class;
+    public static $items_id_2 = 'networkports_id_destination';
 
     public static function getTypeName($nb = 0)
     {
@@ -116,7 +114,7 @@ class NetworkPortConnectionLog extends CommonDBChild
                     htmlescape(trim($cport->fields['name']) === '' ? __('Without name') : $cport->fields['name'])
                 );
 
-                $entries = [
+                $entries[] = [
                     'status' => '<i class="ti ' . $co_class . '" title="' . $title . '"></i>',
                     'date' => $row['date'],
                     'connected_item' => sprintf(

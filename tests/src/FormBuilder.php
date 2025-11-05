@@ -134,6 +134,8 @@ class FormBuilder
      */
     protected array $destinations_conditions;
 
+    protected bool $init_destinations;
+
     protected bool $use_default_access_policies;
 
     /**
@@ -166,6 +168,7 @@ class FormBuilder
         $this->comments_visibilities = [];
         $this->sections_visibilities = [];
         $this->destinations_conditions = [];
+        $this->init_destinations = true;
         $this->use_default_access_policies = true;
         $this->usage_count = 0;
     }
@@ -634,6 +637,17 @@ class FormBuilder
     public function getUseDefaultAccessPolicies(): bool
     {
         return $this->use_default_access_policies;
+    }
+
+    public function setShouldInitDestinations(bool $init_destinations): self
+    {
+        $this->init_destinations = $init_destinations;
+        return $this;
+    }
+
+    public function shouldInitDestinations(): bool
+    {
+        return $this->init_destinations;
     }
 
     /**

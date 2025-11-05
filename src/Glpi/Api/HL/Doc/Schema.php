@@ -68,6 +68,7 @@ class Schema implements ArrayAccess
     public const FORMAT_BOOLEAN_BOOLEAN = 'boolean';
 
     public const PATTERN_UUIDV4 = '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i';
+    public const PATTERN_COLOR_HEX = '/^#([A-Fa-f0-9]{6})$/';
 
     public function __construct(
         private string $type,
@@ -336,6 +337,8 @@ class Schema implements ArrayAccess
             'deprecated' => $schema['x-version-deprecated'] ?? null,
             'removed' => $schema['x-version-removed'] ?? null,
         ];
+
+        $api_version = Router::normalizeAPIVersion($api_version);
 
         // Check if the schema itself is applicable to the requested version
         // If the requested version is before the introduction of the schema, or after the removal of the schema, it is not applicable

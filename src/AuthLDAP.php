@@ -488,6 +488,15 @@ class AuthLDAP extends CommonDBTM
         if (!Config::canUpdate()) {
             return false;
         }
+
+        // warning and no form if can't read keyfile
+        $glpi_encryption_key = new GLPIKey();
+        if ($glpi_encryption_key->hasReadErrors()) {
+            $glpi_encryption_key->showReadErrors();
+
+            return false;
+        }
+
         if (empty($ID)) {
             $this->getEmpty();
             if (isset($options['preconfig'])) {
@@ -547,6 +556,14 @@ TWIG, $twig_params);
      */
     public function showFormAdvancedConfig()
     {
+        // warning and no form if can't read keyfile
+        $glpi_encryption_key = new GLPIKey();
+        if ($glpi_encryption_key->hasReadErrors()) {
+            $glpi_encryption_key->showReadErrors();
+
+            return;
+        }
+
         TemplateRenderer::getInstance()->display('pages/setup/ldap/adv_info.html.twig', [
             'item' => $this,
             'page_size_available' => self::isLdapPageSizeAvailable(false, false),
@@ -2034,11 +2051,9 @@ TWIG, $twig_params);
                             // If user is marked as coming from LDAP, but is not present in it anymore
                             User::manageDeletedUserInLdap($user['id']);
                             $results[self::USER_DELETED_LDAP]++;
-                        } elseif ((int) $user['is_deleted_ldap'] === 1) {
-                            // User is marked as coming from LDAP, but was previously deleted
-                            User::manageRestoredUserInLdap($user['id']);
-                            $results[self::USER_RESTORED_LDAP]++;
                         }
+                        // Note: Users with is_deleted_ldap=1 stay deleted until they are found again in LDAP.
+                        // Restoration is handled in ldapImportUserByServerId() when user is found in LDAP.
                     }
                 }
             }
@@ -2957,7 +2972,11 @@ TWIG, $twig_params);
             }
         }
 
-        if ($use_tls) {
+        // Only use STARTTLS if TLS is requested and the connection is not already using LDAPS
+        // LDAPS (ldaps://) is already encrypted, so ldap_start_tls() should not be called
+        $scheme = parse_url($ldapuri, PHP_URL_SCHEME);
+        $is_ldaps = ($scheme !== null && strtolower($scheme) === 'ldaps');
+        if ($use_tls && !$is_ldaps) {
             if (!@ldap_start_tls($ds)) {
                 self::$last_errno = ldap_errno($ds);
                 self::$last_error = ldap_error($ds);

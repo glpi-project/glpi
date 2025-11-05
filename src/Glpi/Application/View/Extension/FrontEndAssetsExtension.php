@@ -257,6 +257,7 @@ class FrontEndAssetsExtension extends AbstractExtension
             $locales_path = Html::getPrefixedUrl(
                 '/front/locale.php'
                 . '?domain=' . $locale_domain
+                . '&lang=' . $_SESSION['glpilanguage']
                 . '&v=' . FrontEnd::getVersionCacheKey($locale_version)
             );
             $script .= "

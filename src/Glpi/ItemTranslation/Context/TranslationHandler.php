@@ -52,7 +52,7 @@ final class TranslationHandler
     private string $name;
 
     /** @var string The default value (in the default language) */
-    private string $value;
+    private ?string $value;
 
     /** @var bool Whether this field contains rich text that should be edited in a rich text editor */
     private bool $is_rich_text;
@@ -72,7 +72,7 @@ final class TranslationHandler
         CommonDBTM $item,
         string $key,
         string $name,
-        string $value,
+        ?string $value,
         bool $is_rich_text = false,
         ?string $category = null
     ) {
@@ -117,9 +117,9 @@ final class TranslationHandler
     /**
      * Get the default value (in the default language)
      *
-     * @return string
+     * @return string|null
      */
-    public function getValue(): string
+    public function getValue(): ?string
     {
         return $this->value;
     }

@@ -37,6 +37,7 @@ namespace Glpi\Kernel\Listener\ExceptionListener;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\AuthenticationFailedException;
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\HttpException;
 use Glpi\Exception\SessionExpiredException;
 use Glpi\Http\RedirectResponse;
 use Session;
@@ -62,12 +63,6 @@ final readonly class AccessErrorListener implements EventSubscriberInterface
         }
 
         $request = $event->getRequest();
-
-        if ($request->isXmlHttpRequest() || $request->getPreferredFormat() !== 'html') {
-            // Do not redirect AJAX requests nor requests that expect the response to be something else than HTML.
-            return;
-        }
-
         $throwable = $event->getThrowable();
 
         $response = null;
@@ -79,18 +74,37 @@ final readonly class AccessErrorListener implements EventSubscriberInterface
             ->getBoolean('_redirected_from_profile_selector')
         ;
 
+        // Handle SessionExpiredException BEFORE checking if request is AJAX
+        // This ensures that expired sessions return proper HTTP 401 response for AJAX requests
         if ($throwable instanceof SessionExpiredException) {
             Session::destroy(); // destroy the session to prevent pesistence of unexpected data
 
-            $response = new RedirectResponse(
-                sprintf(
-                    '%s/?redirect=%s&error=3',
-                    $request->getBasePath(),
-                    \rawurlencode($request->getPathInfo() . '?' . $request->getQueryString())
-                )
-            );
-        } elseif (
-            $throwable instanceof AccessDeniedHttpException
+            if ($request->isXmlHttpRequest() || $request->getPreferredFormat() !== 'html') {
+                // For AJAX/JSON requests, convert the error into a HttpException
+                $http_exception = new HttpException(401, 'Session expired.');
+                $http_exception->setMessageToDisplay(__('Your session has expired. Please log in again.'));
+                throw $http_exception;
+            } else {
+                // For HTML requests, redirect to login page (existing behavior)
+                $response = new RedirectResponse(
+                    sprintf(
+                        '%s/?redirect=%s&error=3',
+                        $request->getBasePath(),
+                        \rawurlencode($request->getPathInfo() . '?' . $request->getQueryString())
+                    )
+                );
+            }
+        }
+
+        // Skip AJAX requests for OTHER exceptions (not SessionExpiredException)
+        if ($response === null && ($request->isXmlHttpRequest() || $request->getPreferredFormat() !== 'html')) {
+            // Do not redirect AJAX requests nor requests that expect the response to be something else than HTML.
+            return;
+        }
+
+        if (
+            $response === null
+            && $throwable instanceof AccessDeniedHttpException
             && $redirect_to_home_on_error
         ) {
             $request = $event->getRequest();
@@ -100,7 +114,9 @@ final readonly class AccessErrorListener implements EventSubscriberInterface
                     $request->getBasePath()
                 )
             );
-        } elseif ($throwable instanceof AuthenticationFailedException) {
+        }
+
+        if ($response === null && $throwable instanceof AuthenticationFailedException) {
             $login_url = sprintf(
                 '%s/front/logout.php?noAUTO=1',
                 $request->getBasePath()

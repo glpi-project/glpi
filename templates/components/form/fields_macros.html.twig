@@ -366,7 +366,7 @@
          {% if clearable %}
             <input type="hidden" name="_blank_{{ name }}" />
              {%- set clear_js -%}
-                 const blank_input = $('input[name="_blank_{{ name|e('css')|e('js') }}"]');
+                 const blank_input = $('input[name=\'_blank_{{ name|e('css')|e('js') }}\']');
                  blank_input.val(blank_input.val() ? '' : true);
                  if ($(this).closest('.picture_gallery_item').length) {
                     $(this).closest('.picture_gallery_item').hide();
@@ -808,8 +808,14 @@
    {% if not options.include_field %}
       {{ field }}
    {% else %}
-      {% set id    = (options.id ?? '')|length > 0 and options.id != '%id%' ? options.id : (name|safe_dom_id ~ '_' ~ options.rand) %}
-      {% set field = field|replace({'%id%': id}) %}
+      {% set id    = ((options.id ?? '')|length > 0 and options.id != '%id%' ? options.id : (name ~ '_' ~ options.rand))|safe_dom_id %}
+      {# `%id%` may have been escaped by different filters #}
+      {% set field = field|replace({
+          ('%id%'|e('css')|e('js')): id,
+          ('%id%'|e('js')): id,
+          ('%id%'|e('css')): id,
+          ('%id%'): id,
+      }) %}
       {% set add_field_html = options.add_field_html|length > 0 ? options.add_field_html : '' %}
 
       {% if not options.fields_template.isHiddenField(name)|default(false) %}

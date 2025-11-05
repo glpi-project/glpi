@@ -43,13 +43,17 @@ use DBConnection;
 use DbTestCase;
 use Document;
 use Document_Item;
+use DropdownTranslation;
 use Entity;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDocumentsCapacity;
 use Glpi\DBAL\QueryExpression;
 use Group_User;
+use Location;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
+use Session;
+use TaskCategory;
 use Ticket;
 use User;
 
@@ -1000,7 +1004,7 @@ class SearchTest extends DbTestCase
         }
 
         foreach ($itemtype_criteria as $itemtype => $criteria) {
-            if (empty($criteria)) {
+            if ($criteria === []) {
                 continue;
             }
 
@@ -2447,7 +2451,7 @@ class SearchTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $sid);
 
-        $ddtrans = new \DropdownTranslation();
+        $ddtrans = new DropdownTranslation();
         $this->assertGreaterThan(
             0,
             $ddtrans->add([
@@ -2722,7 +2726,7 @@ class SearchTest extends DbTestCase
         $displaypref = new \DisplayPreference();
         $input = [
             'itemtype'  => 'Computer',
-            'users_id'  => \Session::getLoginUserID(),
+            'users_id'  => Session::getLoginUserID(),
             'num'       => 49, //Computer groups_id_tech SO
         ];
         $this->assertGreaterThan(0, $displaypref->add($input));
@@ -2795,7 +2799,7 @@ class SearchTest extends DbTestCase
         $test_child_2    = getItemByTypeName('Entity', '_test_child_2', true);
         $test_child_3    = getItemByTypeName('Entity', '_test_child_3', true);
 
-        $data = $this->doSearch('AllAssets', [
+        $search_params = [
             'reset'      => 'reset',
             'is_deleted' => 0,
             'start'      => 0,
@@ -2808,7 +2812,8 @@ class SearchTest extends DbTestCase
                     'value'      => 'test',
                 ],
             ],
-        ]);
+        ];
+        $data = $this->doSearch('AllAssets', $search_params);
 
         $this->assertMatchesRegularExpression(
             "/OR\s*\(`glpi_entities`\.`completename`\s*LIKE '%test%'\s*\)/",
@@ -2850,6 +2855,26 @@ class SearchTest extends DbTestCase
                 $data['sql']['search']
             );
         }
+
+        $entities = [
+            $test_root,
+            $test_child_1,
+            $test_child_2,
+            $test_child_3,
+        ];
+        foreach ($entities as $entity) {
+            foreach ([true, false] as $is_recursive) {
+                Session::loadEntity($entity, $is_recursive);
+                $data = $this->doSearch('AllAssets', $search_params);
+
+                // Check that all returned items are viewable
+                foreach ($data['data']['rows'] as $row) {
+                    $asset = new $row['TYPE']();
+                    $asset->getFromDB($row['id']);
+                    $this->assertTrue($asset->canViewItem());
+                }
+            }
+        }
     }
 
     public function testSearchWithNamespacedItem()
@@ -2864,8 +2889,8 @@ class SearchTest extends DbTestCase
         $this->login();
         $this->setEntity('_test_root_entity', true);
 
-        $CFG_GLPI['state_types'][] = 'SearchTest\\Computer';
-        $data = $this->doSearch('SearchTest\\Computer', $search_params);
+        $CFG_GLPI['state_types'][] = \SearchTest\Computer::class;
+        $data = $this->doSearch(\SearchTest\Computer::class, $search_params);
 
         $this->assertStringContainsString(
             "`glpi_computers`.`name` AS `ITEM_SearchTest\Computer_1`",
@@ -4868,7 +4893,7 @@ class SearchTest extends DbTestCase
         $displaypref = new \DisplayPreference();
         $input = [
             'itemtype'  => 'Ticket',
-            'users_id'  => \Session::getLoginUserID(),
+            'users_id'  => Session::getLoginUserID(),
             'num'       => 55, //Ticket glpi_ticketvalidations.status
         ];
         $this->assertGreaterThan(
@@ -6162,6 +6187,191 @@ class SearchTest extends DbTestCase
                 . '<a href=\'mailto:external-requester2@example.com\'>external-requester2@example.com</a>',
             $result['data']['rows'][0]['Ticket_4']['displayname']
         );
+    }
+
+    /**
+     * Validate that dropdown complete names are correctly rendered.
+     */
+    public function testCompletenameColumnRenderingInSearchResults(): void
+    {
+        $this->login();
+
+        $this->createItem(
+            TaskCategory::class,
+            [
+                'name'              => 'subcat with <&> chars',
+                'taskcategories_id' => \getItemByTypeName(TaskCategory::class, '_cat_1', true),
+                'entities_id'   => $this->getTestRootEntity(true),
+            ]
+        );
+
+        // Test with default lang
+        $result = \Search::getDatas(
+            TaskCategory::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => '1',
+                        'searchtype' => 'contains',
+                        'value'      => '_cat_1',
+                    ],
+                ],
+            ]
+        );
+
+        $expected = [
+            '_cat_1',
+            '_cat_1 &gt; _subcat_1',
+            '_cat_1 &gt; R&amp;D',
+            '_cat_1 &gt; subcat with &lt;&amp;&gt; chars',
+        ];
+
+        foreach ($expected as $key => $displayname) {
+            $this->assertTrue(isset($result['data']['rows'][$key]['TaskCategory_1']['displayname']));
+            $this->assertEquals($displayname, $result['data']['rows'][$key]['TaskCategory_1']['displayname']);
+        }
+
+        // Test with fr_FR
+        $_SESSION['glpilanguage'] = 'fr_FR';
+        $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations('fr_FR');
+
+        $result = \Search::getDatas(
+            TaskCategory::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => '1',
+                        'searchtype' => 'contains',
+                        'value'      => '_cat_1',
+                    ],
+                ],
+            ]
+        );
+
+        $expected = [
+            'FR - _cat_1',
+            'FR - _cat_1 &gt; FR - _subcat_1',
+            'FR - _cat_1 &gt; R&amp;D',
+        ];
+
+        foreach ($expected as $key => $displayname) {
+            $this->assertTrue(isset($result['data']['rows'][$key]['TaskCategory_1']['displayname']));
+            $this->assertEquals($displayname, $result['data']['rows'][$key]['TaskCategory_1']['displayname']);
+        }
+    }
+
+
+    /**
+     * Validate that dropdown complete names are correctly translated.
+     */
+    public function testCompletenameColumnTranslationsInSearchResults(): void
+    {
+        $this->login();
+
+        $_SESSION['glpilanguage'] = 'fr_FR';
+        $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations('fr_FR');
+
+        $result = \Search::getDatas(
+            TaskCategory::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => '1',
+                        'searchtype' => 'contains',
+                        'value'      => '_cat_1',
+                    ],
+                ],
+            ]
+        );
+
+        $expected = [
+            'FR - _cat_1',
+            'FR - _cat_1 &gt; FR - _subcat_1',
+            'FR - _cat_1 &gt; R&amp;D',
+        ];
+
+        foreach ($expected as $key => $displayname) {
+            $this->assertTrue(isset($result['data']['rows'][$key]['TaskCategory_1']['displayname']));
+            $this->assertEquals($displayname, $result['data']['rows'][$key]['TaskCategory_1']['displayname']);
+        }
+    }
+
+
+    /**
+     * Validate that `use_flat_dropdowntree_on_search_result` is correctly applied.
+     */
+    public function testLinkedItemCompletenameColumnRenderingInSearchResults(): void
+    {
+        $this->login();
+
+        $this->createItem(
+            Computer::class,
+            [
+                'name'         => __FUNCTION__,
+                'locations_id' => \getItemByTypeName(Location::class, '_location02 > _sublocation04', true),
+                'entities_id'  => $this->getTestRootEntity(true),
+            ]
+        );
+
+        // Test with `use_flat_dropdowntree_on_search_result=1`
+        $_SESSION['glpiuse_flat_dropdowntree_on_search_result'] = 1;
+        $result = \Search::getDatas(
+            Computer::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => '1',
+                        'searchtype' => 'contains',
+                        'value'      => __FUNCTION__,
+                    ],
+                ],
+            ]
+        );
+
+        $this->assertTrue(isset($result['data']['rows'][0]['Computer_3']['displayname']));
+        $this->assertEquals('_location02 &gt; _sublocation04', $result['data']['rows'][0]['Computer_3']['displayname']);
+
+        // Test with `use_flat_dropdowntree_on_search_result=0`
+        $_SESSION['glpiuse_flat_dropdowntree_on_search_result'] = 0;
+        $result = \Search::getDatas(
+            Computer::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => '1',
+                        'searchtype' => 'contains',
+                        'value'      => __FUNCTION__,
+                    ],
+                ],
+            ]
+        );
+
+        $this->assertTrue(isset($result['data']['rows'][0]['Computer_3']['displayname']));
+        $this->assertEquals('_sublocation04', $result['data']['rows'][0]['Computer_3']['displayname']);
+    }
+
+    /**
+     * Validate that the `notcontains` search on "user" itemlink column does not fail.
+     */
+    public function testUsernameNotContainsSearch(): void
+    {
+        $this->login();
+
+        $result = \Search::getDatas(
+            Computer::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => '24', // users_id_tech
+                        'searchtype' => 'notcontains',
+                        'value'      => 'whatever',
+                    ],
+                ],
+            ]
+        );
+
+        // we just check that the search did not failed with an exception
+        $this->assertTrue(isset($result['data']['totalcount']));
     }
 }
 

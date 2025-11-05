@@ -665,7 +665,7 @@ class DBmysql
     }
 
     /**
-     * Returns tables not using "utf8mb4_unicode_ci" collation.
+     * Returns tables not using "utf8mb4_*" collation.
      *
      * @param bool $exclude_plugins
      *
@@ -683,7 +683,7 @@ class DBmysql
                 'information_schema.tables.table_schema' => $this->dbdefault,
                 'information_schema.tables.table_name'   => ['LIKE', 'glpi\_%'],
                 'information_schema.tables.table_type'    => 'BASE TABLE',
-                ['NOT' => ['information_schema.tables.table_collation' => 'utf8mb4_unicode_ci']],
+                ['NOT' => ['information_schema.tables.table_collation' => ['LIKE', 'utf8mb4\_%']]],
             ],
         ];
 

@@ -1488,10 +1488,7 @@ TWIG,
             throw new RuntimeException("Cant load current entity");
         }
 
-        if (
-            Session::haveRight("ticket", CREATE)
-            && $entity->isServiceCatalogEnabled()
-        ) {
+        if ($entity->isServiceCatalogEnabled()) {
             $menu['create_ticket'] = [
                 'default' => ServiceCatalog::getSearchURL(false),
                 'title'   => __('Create a ticket'),
@@ -3481,7 +3478,8 @@ JS;
         bool $toolbar = true,
         bool $statusbar = true,
         string $content_style = '',
-        bool $init_on_demand = false
+        bool $init_on_demand = false,
+        array $plugins_to_remove = [],
     ) {
         global $CFG_GLPI, $DB;
 
@@ -3540,7 +3538,11 @@ JS;
         if ($DB->use_utf8mb4) {
             $plugins[] = 'emoticons';
         }
-        $pluginsjs = json_encode($plugins);
+
+        // Remove specifics plugins if requested
+        $plugins = array_diff($plugins, $plugins_to_remove);
+
+        $pluginsjs = json_encode(array_values($plugins));
 
         $language_opts = '';
         if ($language !== 'en_GB') {

@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Form;
 
+use Config;
 use Dropdown;
 use Entity;
 use Glpi\Helpdesk\HelpdeskTranslation;
@@ -41,6 +42,7 @@ use Glpi\Helpdesk\Tile\GlpiPageTile;
 use Glpi\Helpdesk\Tile\Item_Tile;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Session;
+use Symfony\Component\DomCrawler\Crawler;
 
 class HelpdeskTranslationTest extends \DbTestCase
 {
@@ -170,6 +172,90 @@ class HelpdeskTranslationTest extends \DbTestCase
         }
     }
 
+    public function testEmptyOriginalValuesWithExistingTranslationAreListed(): void
+    {
+        // Arrange: add an entity with a custom helpdesk title and its translation
+        $this->login();
+        $entity = $this->createItem(Entity::class, [
+            'name'                        => 'Test Entity for Empty Values',
+            'entities_id'                 => $this->getTestRootEntity(true),
+            'custom_helpdesk_home_title'  => Entity::HELPDESK_TITLE_CUSTOM,
+            '_custom_helpdesk_home_title' => '',
+        ]);
+        $translation = $this->createItem(
+            HelpdeskTranslation::class,
+            [
+                'itemtype'     => Entity::class,
+                'items_id'     => $entity->getID(),
+                'language'     => 'fr_FR',
+                'key'          => Entity::TRANSLATION_KEY_CUSTOM_HELPDESK_HOME_TITLE,
+                'translations' => ['one' => 'custom_helpdesk_home_title in fr_FR'],
+            ],
+            ['translations']
+        );
+
+        // Act: get the handlers and display the translation tab content
+        $handlers = $entity->listTranslationsHandlers();
+
+        ob_start();
+        HelpdeskTranslation::displayTabContentForItem(new Config());
+        $content = ob_get_clean();
+        $crawler = new Crawler($content);
+
+        // Assert: handlers with non-empty original values are listed in the translation table
+        $this->assertHandlersInTranslationTable(
+            current($handlers),
+            $crawler,
+            1,
+            'Handlers with non-empty original values should be listed in the translation table'
+        );
+
+        // Arrange: update the entity to have an empty custom helpdesk title
+        $this->updateItem(
+            Entity::class,
+            $entity->getID(),
+            [
+                '_custom_helpdesk_home_title' => '',
+            ],
+            ['custom_helpdesk_home_title']
+        );
+
+        // Act: display the translation tab content again
+        ob_start();
+        HelpdeskTranslation::displayTabContentForItem(new Config());
+        $content = ob_get_clean();
+        $crawler = new Crawler($content);
+
+        // Assert: handlers with empty original values but existing translations are still listed in the translation table
+        $this->assertHandlersInTranslationTable(
+            current($handlers),
+            $crawler,
+            1,
+            'Handlers with empty original values but existing translations should still be listed in the translation table'
+        );
+
+        // Arrange: delete the translation
+        $this->deleteItem(
+            HelpdeskTranslation::class,
+            $translation->getID(),
+            true
+        );
+
+        // Act: display the translation tab content again
+        ob_start();
+        HelpdeskTranslation::displayTabContentForItem(new Config());
+        $content = ob_get_clean();
+        $crawler = new Crawler($content);
+
+        // Assert: handlers with empty original values and no existing translations are not listed in the translation table
+        $this->assertHandlersInTranslationTable(
+            current($handlers),
+            $crawler,
+            0,
+            'Handlers with empty original values and no existing translations should not be listed in the translation table'
+        );
+    }
+
     public function initHelpdeskWithTranslations(): void
     {
         $this->login();
@@ -282,5 +368,33 @@ class HelpdeskTranslationTest extends \DbTestCase
             ],
             ['translations']
         );
+    }
+
+    /**
+     * Assert that handlers are listed (or not) in the translation table.
+     *
+     * @param array $handlers
+     * @param Crawler $crawler
+     * @param int $expected_count 0 if not listed, 1 if listed
+     * @param string $message
+     * @return void
+     */
+    private function assertHandlersInTranslationTable(
+        array $handlers,
+        Crawler $crawler,
+        int $expected_count,
+        string $message
+    ): void {
+        foreach ($handlers as $handler) {
+            $row = $crawler->filter('#helpdesk-translation-modal-fr_FR tbody tr')
+                ->reduce(function (Crawler $node) use ($handler) {
+                    return str_contains($node->text(), $handler->getName());
+                });
+            $this->assertEquals(
+                $expected_count,
+                $row->count(),
+                $message . " (handler: '{$handler->getName()}')"
+            );
+        }
     }
 }

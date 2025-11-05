@@ -39,7 +39,7 @@ describe('Request type configuration', () => {
         cy.createFormWithAPI().visitFormTab('Form');
         cy.findByRole('button', {'name': "Add a question"}).click();
         cy.focused().type("My request type question");
-        cy.getDropdownByLabelText('Question type').selectDropdownValue('Request type');
+        cy.findByRole('option', {'name': 'New question'}).changeQuestionType('Request type');
         cy.findByRole('button', {'name': 'Save'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
 
@@ -101,7 +101,7 @@ describe('Request type configuration', () => {
         ;
 
         // Fill form
-        cy.getDropdownByLabelText("My request type question").should('have.text', 'Incident');
+        cy.getDropdownByLabelText("My request type question").should('have.text', '-----');
         cy.getDropdownByLabelText("My request type question").selectDropdownValue('Request');
         cy.findByRole('button', {'name': 'Submit'}).click();
         cy.findByRole('link', {'name': 'My test form'}).click();

@@ -41,7 +41,6 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Message;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
-use Safe\Exceptions\SessionException;
 use Session;
 use Toolbox;
 
@@ -435,11 +434,9 @@ class Plugins
             $_SESSION['marketplace_dl_progress'][$plugin_key] = 0;
         }
 
-        // close session to permits polling of progress by frontend
-        try {
+        if (PHP_SAPI !== 'cli') {
+            // close session to permits polling of progress by frontend
             session_write_close();
-        } catch (SessionException) {
-            // there may be no session started
         }
 
         $options = [
@@ -451,15 +448,17 @@ class Plugins
         if ($track_progress) {
             // track download progress
             $options['progress'] = function ($downloadTotal, $downloadedBytes) use ($plugin_key) {
-                // Prevent "net::ERR_RESPONSE_HEADERS_TOO_BIG" error
-                // Each time Session::start() is called, PHP add a 'Set-Cookie' header,
-                // so if a plugin takes more than a few seconds to be downloaded, PHP will set too many
-                // 'Set-Cookie' headers and response will not be accepted by browser.
-                // We can remove the 'Set-Cookie' here as it will be put back on next instruction (Session::start()).
-                header_remove('Set-Cookie');
+                if (PHP_SAPI !== 'cli') {
+                    // Prevent "net::ERR_RESPONSE_HEADERS_TOO_BIG" error
+                    // Each time Session::start() is called, PHP add a 'Set-Cookie' header,
+                    // so if a plugin takes more than a few seconds to be downloaded, PHP will set too many
+                    // 'Set-Cookie' headers and response will not be accepted by browser.
+                    // We can remove the 'Set-Cookie' here as it will be put back on next instruction (Session::start()).
+                    header_remove('Set-Cookie');
 
-                // restart session to store percentage of download for this plugin
-                Session::start();
+                    // restart session to store percentage of download for this plugin
+                    Session::start();
+                }
 
                 // calculate percent based on the size and store it in session
                 $percent = 0;
@@ -468,16 +467,20 @@ class Plugins
                 }
                 $_SESSION['marketplace_dl_progress'][$plugin_key] = $percent;
 
-                // reclose session to avoid blocking ajax requests
-                session_write_close();
+                if (PHP_SAPI !== 'cli') {
+                    // reclose session to avoid blocking ajax requests
+                    session_write_close();
+                }
             };
         }
 
         $response = $this->request($url, $options);
 
-        // restart session to permits write of vars
-        // (later, we also may have some addMessageAfterRedirect to provider errors to user)
-        Session::start();
+        if (PHP_SAPI !== 'cli') {
+            // restart session to permits write of vars
+            // (later, we also may have some addMessageAfterRedirect to provider errors to user)
+            Session::start();
+        }
 
         if ($track_progress) {
             // force finish of download (to avoid keeping js loop in case of errors)

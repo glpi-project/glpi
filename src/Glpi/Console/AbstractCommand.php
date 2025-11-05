@@ -35,18 +35,22 @@
 
 namespace Glpi\Console;
 
+use Auth;
 use DBmysql;
 use Glpi\Console\Command\GlpiCommandInterface;
 use Glpi\Console\Exception\EarlyExitException;
 use Glpi\System\RequirementsManager;
 use Override;
+use Session;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use User;
 
 use function Safe\preg_replace;
 
@@ -374,6 +378,35 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
             $this->output->writeln(
                 $message,
                 $verbosity
+            );
+        }
+    }
+
+    /**
+     * Load user in session.
+     *
+     * @throws InvalidArgumentException
+     */
+    protected function loadUserSession(string $username): void
+    {
+        $user = new User();
+        if ($user->getFromDBbyName($username)) {
+            // Store computed output parameters
+            $lang = $_SESSION['glpilanguage'];
+            $session_use_mode = $_SESSION['glpi_use_mode'];
+
+            $auth = new Auth();
+            $auth->auth_succeded = true;
+            $auth->user = $user;
+            Session::init($auth);
+
+            // Force usage of computed output parameters
+            $_SESSION['glpilanguage'] = $lang;
+            $_SESSION['glpi_use_mode'] = $session_use_mode;
+            Session::loadLanguage();
+        } else {
+            throw new InvalidArgumentException(
+                __('User name defined by --username option is invalid.')
             );
         }
     }

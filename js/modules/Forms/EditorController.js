@@ -1279,26 +1279,37 @@ export class GlpiFormEditorController
         const elementsWithConditions = [];
 
         // Process form elements (questions and sections)
+        const already_reported_items = [];
         conditionsUsingItem.each((_index, element) => {
             // Check if condition is in a question
             const parentItem = $(element).closest('[data-glpi-form-editor-block]');
             if (parentItem.length > 0) {
+                const uuid = this.#getItemInput(parentItem, "uuid");
+                if (already_reported_items.indexOf(uuid) != -1) {
+                    return;
+                }
                 elementsWithConditions.push({
                     name: this.#getItemInput(parentItem, "name"),
-                    uuid: this.#getItemInput(parentItem, "uuid"),
+                    uuid: uuid,
                     type: 'question',
                     element: parentItem
                 });
+                already_reported_items.push(uuid);
             } else {
                 // Check if condition is in a section
                 const parentSection = $(element).closest('[data-glpi-form-editor-section]');
                 if (parentSection.length > 0) {
+                    const uuid = this.#getItemInput(parentSection, "uuid");
+                    if (already_reported_items.indexOf(uuid) != -1) {
+                        return;
+                    }
                     elementsWithConditions.push({
                         name: this.#getItemInput(parentSection, "name"),
-                        uuid: this.#getItemInput(parentSection, "uuid"),
+                        uuid: uuid,
                         type: 'section',
                         element: parentSection
                     });
+                    already_reported_items.push(uuid);
                 }
             }
         });
@@ -1755,7 +1766,7 @@ export class GlpiFormEditorController
      * @param {jQuery} question Question element
      * @param {boolean} isLoading Whether to set or remove loading state
      */
-    #setQuestionTypeSpecificLoadingState(question, isLoading) {
+    setQuestionTypeSpecificLoadingState(question, isLoading) {
         const specificContent = question.find("[data-glpi-form-editor-question-type-specific]");
 
         if (isLoading) {
@@ -1810,12 +1821,12 @@ export class GlpiFormEditorController
             .find(`option[data-glpi-form-editor-question-type="${CSS.escape(category)}"]`);
 
         // Set loading state for question type specific content
-        this.#setQuestionTypeSpecificLoadingState(question, true);
+        this.setQuestionTypeSpecificLoadingState(question, true);
 
         // Check if the change is allowed based on existing conditions
         if (!(await this.#checkItemConditionDependenciesForNewQuestionType(question, new_options.first().val()))) {
             // Remove loading state before reverting
-            this.#setQuestionTypeSpecificLoadingState(question, false);
+            this.setQuestionTypeSpecificLoadingState(question, false);
 
             // Revert to previous value if change is not allowed
             const previous_category = question.find('[data-glpi-form-editor-on-change="change-question-type-category"]').data('previous-value');
@@ -1827,7 +1838,7 @@ export class GlpiFormEditorController
         }
 
         // Remove loading state after successful check
-        this.#setQuestionTypeSpecificLoadingState(question, false);
+        this.setQuestionTypeSpecificLoadingState(question, false);
 
         // Remove current types options
         const types_select = question
@@ -1870,12 +1881,12 @@ export class GlpiFormEditorController
         }
 
         // Set loading state for question type specific content
-        this.#setQuestionTypeSpecificLoadingState(question, true);
+        this.setQuestionTypeSpecificLoadingState(question, true);
 
         // Check if the change is allowed based on existing conditions
         if (!(await this.#checkItemConditionDependenciesForNewQuestionType(question, type))) {
             // Remove loading state before reverting
-            this.#setQuestionTypeSpecificLoadingState(question, false);
+            this.setQuestionTypeSpecificLoadingState(question, false);
 
             // Revert to previous value if change is not allowed
             const previous_type = question.find('[data-glpi-form-editor-on-change="change-question-type"]').data('previous-value');
@@ -1887,7 +1898,7 @@ export class GlpiFormEditorController
         }
 
         // Remove loading state after successful check
-        this.#setQuestionTypeSpecificLoadingState(question, false);
+        this.setQuestionTypeSpecificLoadingState(question, false);
 
         // Extracted default value
         const extracted_default_value = this.#options[old_type].extractDefaultValue(question);
@@ -1955,13 +1966,21 @@ export class GlpiFormEditorController
             const new_sub_types = this.#question_subtypes_options[type].subtypes;
 
             // Copy the new sub types options into the dropdown
-            for (const category in new_sub_types) {
-                const optgroup = $(`<optgroup label="${_.escape(category)}"></optgroup>`);
-                for (const [sub_type, label] of Object.entries(new_sub_types[category])) {
-                    const option = $(`<option value="${_.escape(sub_type)}">${_.escape(label)}</option>`);
-                    optgroup.append(option);
+            for (const new_sub_type in new_sub_types) {
+                // If the sub type is an object, we have a category
+                if (typeof new_sub_types[new_sub_type] === 'object') {
+                    const optgroup = $(`<optgroup label="${_.escape(new_sub_type)}"></optgroup>`);
+                    for (const [sub_type, label] of Object.entries(new_sub_types[new_sub_type])) {
+                        const option = $(`<option value="${_.escape(sub_type)}">${_.escape(label)}</option>`);
+                        optgroup.append(option);
+                    }
+                    sub_types_select.append(optgroup);
+                    continue;
                 }
-                sub_types_select.append(optgroup);
+
+                // No category, just a single option
+                const option = $(`<option value="${_.escape(new_sub_type)}">${_.escape(new_sub_types[new_sub_type])}</option>`);
+                sub_types_select.append(option);
             }
 
             // Set the default sub type
@@ -1975,6 +1994,7 @@ export class GlpiFormEditorController
 
             // Remove the "original-name" data attribute to avoid conflicts
             sub_types_select.removeAttr("data-glpi-form-editor-original-name");
+            sub_types_select.removeData("glpi-form-editor-original-name");
 
             // Trigger sub type change
             sub_types_select.trigger("change");
@@ -2330,17 +2350,17 @@ export class GlpiFormEditorController
                     // class that takes over. Manually adding "d-none" get us the
                     // desired effect.
                     $(e.detail.item).addClass('d-none');
+
+                    // If dragged item is active, store it to restore it later
+                    if ($(e.detail.item).is('[data-glpi-form-editor-active-question],[data-glpi-form-editor-active-comment]')) {
+                        $(e.detail.item).attr('data-glpi-form-editor-restore-active-state', '');
+                    }
+
+                    // Remove active states
+                    this.#setActiveItem(null);
                 }, 0);
 
                 $(this.#target).addClass("disable-focus").attr('data-glpi-form-editor-sorting', '');
-
-                // If dragged item is active, store it to restore it later
-                if ($(e.detail.item).is('[data-glpi-form-editor-active-question],[data-glpi-form-editor-active-comment]')) {
-                    $(e.detail.item).attr('data-glpi-form-editor-restore-active-state', '');
-                }
-
-                // Remove active states
-                this.#setActiveItem(null);
             });
 
         // Run the post move process if any item was dragged, even if it was not

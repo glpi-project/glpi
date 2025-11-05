@@ -113,6 +113,15 @@ class SNMPCredential extends CommonDBTM
 
     public function showForm($ID, array $options = [])
     {
+        // warning and no form if can't read keyfile,
+        // only version 3 is impacted but it's better to always show the warning & forbid form display
+        $glpi_encryption_key = new GLPIKey();
+        if ($glpi_encryption_key->hasReadErrors()) {
+            $glpi_encryption_key->showReadErrors();
+
+            return false;
+        }
+
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('components/form/snmpcredential.html.twig', [
             'item'   => $this,

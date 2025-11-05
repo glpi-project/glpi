@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Exception\TooManyResultsException;
 
 use function Safe\preg_match;
 use function Safe\preg_replace;
@@ -423,7 +424,7 @@ class ItemVirtualMachine extends CommonDBChild
             $result = $iterator->current();
             return $result['id'];
         } elseif (count($iterator) > 1) {
-            throw new RuntimeException(
+            throw new TooManyResultsException(
                 sprintf(
                     '`%1$s::findVirtualMachine()` expects to get one result, %2$s found in query "%3$s".',
                     static::class,

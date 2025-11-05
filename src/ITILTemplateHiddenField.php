@@ -73,6 +73,16 @@ abstract class ITILTemplateHiddenField extends ITILTemplateField
         return '';
     }
 
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
+        if (!$item instanceof ITILTemplate) {
+            return false;
+        }
+
+        self::showForITILTemplate($item, $withtemplate, false);
+        return true;
+    }
+
 
     public function post_purgeItem()
     {

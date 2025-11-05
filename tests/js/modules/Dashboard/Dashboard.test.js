@@ -95,32 +95,6 @@ describe('Dashboard', () => {
         expect(window.GLPIDashboard).toBeDefined();
     });
 
-    /**
-     * Super important feature to test.
-     */
-    test('\x1b[31mE\x1b[33ma\x1b[32ms\x1b[36mt\x1b[34me\x1b[35mr\x1b[0m', () => {
-        expect(true).toBe(true);
-        // Legacy fake timers needed to support setInterval
-        jest.useFakeTimers('legacy');
-
-        const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.easter();
-
-        let colors = ['', '', ''];
-        const new_colors = ['', '', ''];
-
-        for (let i = 0; i < 10; i++) {
-            jest.advanceTimersByTime(30);
-
-            $('.grid-stack-item .card').each((i, elem) => {
-                new_colors[i] = $(elem).css('background-color');
-            });
-            // At least one color should be different
-            expect(new_colors).not.toEqual(colors);
-            colors = [...new_colors];
-        }
-    });
-
     test('saveMarkdown', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
         $('body').find('.grid-stack-item').first().append(`<textarea name="markdown">test</textarea>`);

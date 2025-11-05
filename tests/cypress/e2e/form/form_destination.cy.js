@@ -239,7 +239,7 @@ describe('Form destination', () => {
             .click();
 
         cy.findByRole("textbox", {name: "Form destination name"}).should('have.value', 'Original destination');
-        cy.findByRole('region', {name: 'Title configuration'}).awaitTinyMCE().as("original_title_field");
+        cy.findByRole('region', {name: 'Title configuration'}).as("original_title_field");
         cy.get("@original_title_field").should('contain.text', 'Custom title for duplication test');
     });
 });

@@ -39,7 +39,11 @@ use DbTestCase;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\SessionExpiredException;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Profile;
+use Profile_User;
+use ProfileRight;
 use ReflectionClass;
+use User;
 
 class SessionTest extends DbTestCase
 {
@@ -280,7 +284,7 @@ class SessionTest extends DbTestCase
         global $CFG_GLPI;
 
         $this->login();
-        $user = new \User();
+        $user = new User();
         $username = 'test_must_change_pass_' . mt_rand();
         $user_id = (int) $user->add([
             'name'         => $username,
@@ -723,7 +727,7 @@ class SessionTest extends DbTestCase
 
         $users = [];
         for ($i = 0; $i < 6; $i++) {
-            $user = new \User();
+            $user = new User();
             $users_id = $user->add([
                 'name'     => 'testCanImpersonate' . $i,
                 'password' => 'test',
@@ -737,27 +741,27 @@ class SessionTest extends DbTestCase
         $profiles_to_copy = ['Technician', 'Admin'];
         // Copy the data of each profile to a new one with the same name but suffixed with '-Impersonate
         foreach ($profiles_to_copy as $profile_name) {
-            $profile = new \Profile();
+            $profile = new Profile();
             $profiles_id = getItemByTypeName('Profile', $profile_name, true);
             $this->assertGreaterThan(0, $profiles_id);
             $profile->getFromDB($profiles_id);
-            $old_user_rights = \ProfileRight::getProfileRights($profiles_id, ['user'])['user'];
+            $old_user_rights = ProfileRight::getProfileRights($profiles_id, ['user'])['user'];
             $new_profiles_id = $profile->clone(['name' => $profile_name . '-Impersonate']);
-            $DB->update('glpi_profilerights', ['rights' => $old_user_rights | \User::IMPERSONATE], [
+            $DB->update('glpi_profilerights', ['rights' => $old_user_rights | User::IMPERSONATE], [
                 'profiles_id' => $new_profiles_id,
                 'name' => 'user',
             ]);
         }
 
         $assign_profile = function (int $users_id, int $profiles_id) use ($root_entity) {
-            $profile_user = new \Profile_User();
+            $profile_user = new Profile_User();
             $result = $profile_user->add([
                 'profiles_id' => $profiles_id,
                 'users_id'    => $users_id,
                 'entities_id' => $root_entity,
             ]);
             $this->assertGreaterThan(0, $result);
-            $user = new \User();
+            $user = new User();
             $this->assertTrue($user->update([
                 'id' => $users_id,
                 'profiles_id' => $profiles_id,
@@ -913,7 +917,7 @@ class SessionTest extends DbTestCase
             ['_nonexistant', UNLOCK, 'UNLOCK'],
             ['ticket', READ, 'See my ticket'],
             ['ticket', \Ticket::READALL, 'See all tickets'],
-            ['user', \User::IMPORTEXTAUTHUSERS, 'Add external'],
+            ['user', User::IMPORTEXTAUTHUSERS, 'Add external'],
         ];
     }
 
@@ -1478,5 +1482,46 @@ class SessionTest extends DbTestCase
         $this->assertEquals('test', $exception->getMessage());
         $this->assertFalse(\Session::isRightChecksDisabled());
         $this->assertFalse(\Session::haveRight('_nonexistant_module', READ));
+    }
+
+    public function testDropdownMenuIsNotAddedIfUserCantSeeAny(): void
+    {
+        global $DB;
+
+        // Arrange: create a central user with no rights
+        $profile = $this->createItem(Profile::class, [
+            'name' => 'Central profile',
+            'interface' => 'central',
+        ]);
+        $user = $this->createItem(User::class, [
+            'name' => 'central_user',
+        ]);
+        $this->createItem(Profile_User::class, [
+            'users_id' => $user->getID(),
+            'profiles_id' => $profile->getID(),
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $DB->update(
+            table: ProfileRight::getTable(),
+            params: [
+                'rights' => 0,
+            ],
+            where: [
+                'profiles_id' => $profile->getID(),
+            ],
+        );
+
+
+        // Act: loggin as the user and get the menu
+        $this->login('central_user');
+        \Html::generateMenuSession(true);
+
+        // Assert: the config menu content should not be generated
+        $this->assertArrayNotHasKey('content', $_SESSION['glpimenu']['config']);
+
+        // Control group: make sure the given key is set for another user
+        $this->login('glpi');
+        \Html::generateMenuSession(true);
+        $this->assertArrayHasKey('content', $_SESSION['glpimenu']['config']);
     }
 }

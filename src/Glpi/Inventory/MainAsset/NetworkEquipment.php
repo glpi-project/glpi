@@ -472,14 +472,15 @@ class NetworkEquipment extends MainAsset
                     //if found refuse update
                     //if no, item IP have changed so  we allow the update from discovery
                     $ipaddress = new IPAddress($ip);
-                    $tmp['mainitems_id'] = $item->fields['id'];
-                    $tmp['mainitemtype'] = $item::getType();
-                    $tmp['is_dynamic']   = 1;
-                    $tmp['name']         = $ipaddress->getTextual();
-                    if ($ipaddress->getFromDBByCrit($tmp)) {
-                        return false;
+                    $criteria = [
+                        'mainitems_id' => $item->fields['id'],
+                        'mainitemtype' => $item::getType(),
+                        'is_dynamic'   => 1,
+                        'name'         => $ipaddress->getTextual(),
+                    ];
+                    if (countElementsInTable(IPAddress::getTable(), $criteria) === 0) {
+                        return true;
                     }
-                    return true;
                 }
             }
 

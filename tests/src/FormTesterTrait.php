@@ -81,6 +81,7 @@ trait FormTesterTrait
             'usage_count'           => $builder->getUsageCount(),
             '_init_sections'        => false,  // We will handle sections ourselves
             '_init_access_policies' => $builder->getUseDefaultAccessPolicies(),
+            '_init_destinations'    => $builder->shouldInitDestinations(),
         ]);
 
         $section_rank = 0;
@@ -750,5 +751,11 @@ trait FormTesterTrait
                 'is_active' => false,
             ]);
         }
+    }
+
+    protected function getFormJson(string $filename): string
+    {
+        $path = FIXTURE_DIR . "/forms/$filename";
+        return file_get_contents($path);
     }
 }

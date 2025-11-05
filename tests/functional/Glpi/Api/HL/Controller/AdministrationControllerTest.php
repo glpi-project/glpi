@@ -603,4 +603,115 @@ class AdministrationControllerTest extends \HLAPITestCase
                 ->isOK();
         });
     }
+
+    private function assertUserPreferenceResponseOK($content)
+    {
+        $this->assertIsArray($content);
+        // Spot check some known preferences
+        $this->assertArrayHasKey('language', $content);
+        $this->assertArrayHasKey('palette', $content);
+        $this->assertArrayHasKey('csv_delimiter', $content);
+        $this->assertArrayHasKey('refresh_view_interval', $content);
+    }
+
+    public function testGetUserPreferencesByID()
+    {
+        $this->login();
+
+        $tu_id = getItemByTypeName('User', TU_USER, true);
+        $this->api->call(new Request('GET', '/Administration/User/' . $tu_id . '/Preference'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertUserPreferenceResponseOK($content);
+                });
+        });
+    }
+
+    public function testGetUserPreferencesByUsername()
+    {
+        $this->login();
+
+        $this->api->call(new Request('GET', '/Administration/User/' . TU_USER . '/Preference'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertUserPreferenceResponseOK($content);
+                });
+        });
+    }
+
+    public function testGetMyPreferences()
+    {
+        $this->login();
+
+        $this->api->call(new Request('GET', '/Administration/User/me/Preference'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertUserPreferenceResponseOK($content);
+                });
+        });
+    }
+
+    public function testUpdateUserPreferencesByID()
+    {
+        $this->login();
+
+        $tu_id = getItemByTypeName('User', TU_USER, true);
+        $request = new Request('PATCH', '/Administration/User/' . $tu_id . '/Preference');
+        $request->setParameter('palette', 'teclib');
+        $request->setParameter('language', 'fr_FR');
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertUserPreferenceResponseOK($content);
+                    $this->assertEquals('teclib', $content['palette']);
+                    $this->assertEquals('fr_FR', $content['language']);
+                });
+        });
+    }
+
+    public function testUpdateUserPreferencesByUsername()
+    {
+        $this->login();
+
+        $request = new Request('PATCH', '/Administration/User/' . TU_USER . '/Preference');
+        $request->setParameter('palette', 'teclib');
+        $request->setParameter('language', 'fr_FR');
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertUserPreferenceResponseOK($content);
+                    $this->assertEquals('teclib', $content['palette']);
+                    $this->assertEquals('fr_FR', $content['language']);
+                });
+        });
+    }
+
+    public function testUpdateMyPreferences()
+    {
+        $this->login();
+
+        $request = new Request('PATCH', '/Administration/User/me/Preference');
+        $request->setParameter('palette', 'teclib');
+        $request->setParameter('language', 'fr_FR');
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertUserPreferenceResponseOK($content);
+                    $this->assertEquals('teclib', $content['palette']);
+                    $this->assertEquals('fr_FR', $content['language']);
+                });
+        });
+    }
 }

@@ -913,4 +913,123 @@ class TransferTest extends DbTestCase
         $this->assertTrue($doc_item->getFromDBByCrit(['documents_id' => $docid]));
         $this->assertSame($dentity, $doc_item->fields['entities_id']);
     }
+
+    public function testComputerWithContractTransfer()
+    {
+        //Login as a user
+        $this->login();
+
+        //Original entity
+        $fentity = (int) getItemByTypeName('Entity', '_test_root_entity', true);
+        //Destination entity
+        $dentity = (int) getItemByTypeName('Entity', '_test_child_2', true);
+
+        //Create a contract
+        $contract = $this->createItem(\Contract::class, [
+            'name'        => 'contract for computer',
+            'entities_id' => $fentity,
+        ]);
+
+        //Create computers
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'computer with contract',
+            'entities_id' => $fentity,
+        ]);
+
+        $computer_deleted = $this->createItem(Computer::class, [
+            'name'        => 'computer deleted',
+            'entities_id' => $fentity,
+            'is_deleted'   => 1,
+        ]);
+
+        //Link computer to contract
+        $this->createItems(\Contract_Item::class, [
+            [
+                'contracts_id' => $contract->getID(),
+                'itemtype'     => Computer::class,
+                'items_id'     => $computer->getID(),
+            ],
+            [
+                'contracts_id' => $contract->getID(),
+                'itemtype'     => Computer::class,
+                'items_id'     => $computer_deleted->getID(),
+            ],
+        ]);
+
+        //Check contract items count before transfer
+        $contract_item = new \Contract_Item();
+        $this->assertEquals(count($contract_item->find([
+            'contracts_id' => $contract->getID(),
+            'itemtype' => Computer::class,
+        ])), 2);
+
+        //transfer to another entity with keep contract option
+        $this->updateItem(\Transfer::class, 1, [
+            'keep_contract' => 1,
+        ]);
+
+        /* First, test the contract transfer */
+
+        //Get transfer object
+        $transfer = new \Transfer();
+        $this->assertTrue($transfer->getFromDB(1));
+
+        //Prepare items to transfer
+        $item_to_transfer = [\Contract::class => [$contract->getID() => $contract->getID()]];
+        $transfer->moveItems($item_to_transfer, $dentity, $transfer->fields);
+
+        $this->assertTrue($contract->getFromDB($contract->getID()));
+
+        //Check that contract is still linked to computers after transfer
+        $this->assertEquals(count($contract_item->find([
+            'contracts_id' => $contract->getID(),
+            'itemtype' => 'Computer',
+        ])), 2);
+
+        //Check that contract is now in destination entity
+        $this->assertEquals(count($contract->find([
+            'id' => $contract->getID(),
+            'entities_id' => $dentity,
+        ])), 1);
+
+        /* Test the computer transfer and verify that contract link is kept */
+
+        //Prepare items to transfer
+        $transfer = new \Transfer();
+        $this->assertTrue($transfer->getFromDB(1));
+        $item_to_transfer = [Computer::class => [
+            $computer->getID() => $computer->getID(),
+        ],
+        ];
+        $transfer->moveItems($item_to_transfer, $dentity, $transfer->fields);
+
+        //Check that contract is still linked to computer after transfer
+        $this->assertEquals(count($contract_item->find([
+            'contracts_id' => $contract->getID(),
+            'itemtype' => 'Computer',
+        ])), 2);
+
+        $this->assertEquals(count($contract_item->find([
+            'contracts_id' => $contract->getID(),
+            'itemtype' => 'Computer',
+            'items_id' => $computer->getID(),
+        ])), 1);
+
+        $this->assertEquals(count($contract_item->find([
+            'contracts_id' => $contract->getID(),
+            'itemtype' => 'Computer',
+            'items_id' => $computer_deleted->getID(),
+        ])), 1);
+
+        //Check that computer is now in destination entity
+        $this->assertEquals(count($computer->find([
+            'id' => $computer->getID(),
+            'entities_id' => $dentity,
+        ])), 1);
+
+        $this->assertEquals(count($computer_deleted->find([
+            'id' => $computer_deleted->getID(),
+            'entities_id' => $fentity,
+        ])), 1);
+    }
 }

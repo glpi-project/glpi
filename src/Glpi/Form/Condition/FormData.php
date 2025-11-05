@@ -185,7 +185,7 @@ final class FormData
     private function parseRawConditionsData(array $conditions_data): void
     {
         foreach ($conditions_data as $condition_data) {
-            $item_key = $condition_data['item'];
+            $item_key = $condition_data['item'] ?? '';
 
             if ($item_key == '') {
                 // Item has not yet been selected.
