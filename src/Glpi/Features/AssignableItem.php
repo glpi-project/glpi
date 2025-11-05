@@ -109,7 +109,7 @@ trait AssignableItem
     public static function getAssignableVisiblityCriteria(
         ?string $item_table_reference = null
     ): array {
-        if (Session::isCron()) {
+        if (Session::isCron() || Session::isRightChecksDisabled()) {
             $criteria = [new QueryExpression('1')];
         } elseif (Session::getCurrentInterface() === "central") {
             $criteria = self::getAssignableVisiblityCriteriaForCentral($item_table_reference);
