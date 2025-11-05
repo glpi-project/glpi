@@ -109,10 +109,13 @@ trait AssignableItem
     public static function getAssignableVisiblityCriteria(
         ?string $item_table_reference = null
     ): array {
-        $criteria = Session::getCurrentInterface() === "central"
-            ? self::getAssignableVisiblityCriteriaForCentral($item_table_reference)
-            : self::getAssignableVisiblityCriteriaForHelpdesk($item_table_reference)
-        ;
+        if (Session::isCron()) {
+            $criteria = [new QueryExpression('1')];
+        } elseif (Session::getCurrentInterface() === "central") {
+            $criteria = self::getAssignableVisiblityCriteriaForCentral($item_table_reference);
+        } else {
+            $criteria = self::getAssignableVisiblityCriteriaForHelpdesk($item_table_reference);
+        }
 
         // Add another layer to the array to prevent losing duplicates keys if the
         // result of the function is merged with another array
