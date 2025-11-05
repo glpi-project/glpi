@@ -64,7 +64,7 @@ final class AnswersSet extends CommonDBChild
     }
 
     #[Override]
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-circle-check";
     }

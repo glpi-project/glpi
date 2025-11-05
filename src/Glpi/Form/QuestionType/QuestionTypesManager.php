@@ -322,7 +322,7 @@ JS;
         $this->categories = QuestionTypeCategory::cases();
     }
 
-    protected function sortQuestionTypes()
+    protected function sortQuestionTypes(): void
     {
         // Sort question types by weight
         uasort(
@@ -335,7 +335,7 @@ JS;
         $this->question_types_are_sorted = true;
     }
 
-    protected function sortCategoriesTypes()
+    protected function sortCategoriesTypes(): void
     {
         // Sort question types by weight
         uasort(

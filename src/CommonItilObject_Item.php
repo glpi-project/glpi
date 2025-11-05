@@ -189,7 +189,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      */
     protected static function displayItemAddForm(CommonITILObject|TicketRecurrent $obj, array $options = [])
     {
-        if (!($obj instanceof static::$itemtype_1)) {
+        if (!(is_a($obj, static::$itemtype_1))) {
             return false;
         }
 
@@ -378,7 +378,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      **/
     protected static function showForObject(CommonITILObject|TicketRecurrent $obj)
     {
-        if (!($obj instanceof static::$itemtype_1)) {
+        if (!(is_a($obj, static::$itemtype_1))) {
             return false;
         }
 
@@ -1770,7 +1770,7 @@ TWIG, $twig_params);
      **/
     public static function itemAddForm(CommonITILObject|TicketRecurrent $object, $options = [])
     {
-        if (!($object instanceof static::$itemtype_1)) {
+        if (!(is_a($object, static::$itemtype_1))) {
             return;
         }
 
