@@ -457,11 +457,13 @@ abstract class CommonDBChild extends CommonDBConnexity
                 );
                 return false;
             } else {
-                // A valid parent is not mandatory, so invalid input is unset.
-                if (preg_match('/^itemtype/', static::$itemtype)) {
-                    unset($input[static::$itemtype]);
+                // A valid parent is not mandatory, so invalid input is cleaned.
+                if (array_key_exists(static::$itemtype, $input) && preg_match('/^itemtype/', static::$itemtype)) {
+                    $input[static::$itemtype] = ''; // `itemtype` fields are usually not nullable, a default value must be set
                 }
-                unset($input[static::$items_id]);
+                if (array_key_exists(static::$items_id, $input)) {
+                    $input[static::$items_id] = 0; // foreign key fields may be not nullable, a default value must be set
+                }
             }
         }
 

@@ -79,7 +79,7 @@ class CommonDBChildTest extends DbTestCase
         );
 
         $this->assertEquals(
-            ['foo' => 'bar'],
+            ['computers_id' => 0, 'foo' => 'bar'],
             $instance->prepareInputForAdd(['computers_id' => 9999999999, 'foo' => 'bar'])
         );
 
@@ -134,17 +134,17 @@ class CommonDBChildTest extends DbTestCase
         );
 
         $this->assertEquals(
-            ['foo' => 'bar'],
+            ['items_id' => 0, 'foo' => 'bar'],
             $instance->prepareInputForAdd(['items_id' => 9999999999, 'foo' => 'bar'])
         );
 
         $this->assertEquals(
-            ['foo' => 'bar'],
+            ['itemtype' => '', 'foo' => 'bar'],
             $instance->prepareInputForAdd(['itemtype' => 'NotAClass', 'foo' => 'bar'])
         );
 
         $this->assertEquals(
-            ['foo' => 'bar'],
+            ['itemtype' => '', 'items_id' => 0, 'foo' => 'bar'],
             $instance->prepareInputForAdd(['itemtype' => 'Computer', 'items_id' => 9999999999,  'foo' => 'bar'])
         );
 
