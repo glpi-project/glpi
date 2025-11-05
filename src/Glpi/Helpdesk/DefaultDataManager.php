@@ -165,6 +165,17 @@ final class DefaultDataManager
         $description_hash = md5($description);
         $section_name_hash = md5($first_section->fields['name']);
         foreach (array_keys($CFG_GLPI['languages']) as $lang) {
+            $DB->insert(
+                ItemTranslation::getTable(),
+                [
+                    'itemtype'     => Form::class,
+                    'items_id'     => $forms_id,
+                    'language'     => $lang,
+                    'key'          => Form::TRANSLATION_KEY_NAME,
+                    'translations' => '{}',
+                ]
+            );
+
             $translated_name = $TRANSLATE->translate($name, 'glpi', $lang);
             $translated_description = $TRANSLATE->translate($description, 'glpi', $lang);
             if ($translated_name !== $name) {
