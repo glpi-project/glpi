@@ -46,7 +46,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
 {
     // Item 1 information
     // * definition
-    /** @var null|string|class-string<CommonDBTM> $itemtype_1 */
+    /** @var null|string|class-string<CommonDBTM> $itemtype_1 TODO: remove null */
     public static $itemtype_1; // Type ref or field name (must start with itemtype)
     /** @var ?string $items_id_1 */
     public static $items_id_1; // Field name
@@ -65,7 +65,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
     // Item 2 information
     // * definition
-    /** @var null|string|class-string<CommonDBTM> $itemtype_2 */
+    /** @var null|string|class-string<CommonDBTM> $itemtype_2 TODO: remove null */
     public static $itemtype_2; // Type ref or field name (must start with itemtype)
     /** @var ?string $items_id_2 */
     public static $items_id_2; // Field name
