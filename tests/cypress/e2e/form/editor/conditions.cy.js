@@ -2959,6 +2959,101 @@ describe ('Conditions', () => {
         cy.findByRole('dialog', {'name': 'Question has conditions and its type cannot be changed'}).should('not.exist');
     });
 
+    it("can't delete a section, question or comment used in submit button conditions", () => {
+        createForm();
+        addQuestion('My first question');
+        addSection('My section');
+        addComment('My first comment');
+
+        getSubmitButtonContainer().within(() => {
+            openConditionEditor();
+            checkThatConditionEditorIsNotDisplayed();
+            setConditionStrategy('Visible if...');
+            checkThatConditionEditorIsDisplayed();
+            fillCondition(0, null, 'My first question', 'Is equal to', 'Expected answer 1');
+            addNewEmptyCondition();
+            fillCondition(1, null, 'My section', 'Is visible', null, null);
+            addNewEmptyCondition();
+            fillCondition(2, null, 'My first comment', 'Is visible', null, null);
+        });
+
+        saveAndReload();
+
+        // Delete the first question
+        getAndFocusQuestion('My first question').within(() => {
+            cy.findByRole('button', {'name': 'Delete'}).click();
+        });
+        cy.findByRole('dialog', {'name': 'Item has conditions and cannot be deleted'})
+            .should('have.attr', 'data-cy-shown', 'true')
+            .within(() => {
+                cy.findByRole('link', {'name': 'Submit button visibility'}).should('be.visible');
+                cy.findByRole('button', {'name': 'Close'}).click();
+            });
+
+        // Delete the section
+        getAndFocusSection('My section').within(() => {
+            cy.findByRole('button', {'name': 'More actions'}).click();
+            cy.findByRole('button', {'name': 'Delete section'}).click();
+        });
+        cy.findByRole('dialog', {'name': 'Item has conditions and cannot be deleted'})
+            .should('have.attr', 'data-cy-shown', 'true')
+            .within(() => {
+                cy.findByRole('link', {'name': 'Submit button visibility'}).should('be.visible');
+                cy.findByRole('button', {'name': 'Close'}).click();
+            });
+
+        // Delete the comment
+        getAndFocusComment('My first comment').within(() => {
+            cy.findByRole('button', {'name': 'Delete'}).click();
+        });
+        cy.findByRole('dialog', {'name': 'Item has conditions and cannot be deleted'})
+            .should('have.attr', 'data-cy-shown', 'true')
+            .within(() => {
+                cy.findByRole('link', {'name': 'Submit button visibility'}).should('be.visible');
+                cy.findByRole('button', {'name': 'Close'}).click();
+            });
+    });
+
+    it("can't change the type of a question used in submit button conditions with unsupported value operators", () => {
+        createForm();
+        addQuestion('My first question');
+        addQuestion('My second question');
+
+        getAndFocusQuestion('My first question').changeQuestionType('Urgency');
+
+        getSubmitButtonContainer().within(() => {
+            openConditionEditor();
+            setConditionStrategy('Visible if...');
+            fillCondition(0, null, 'My first question', 'Is greater than', 'High', 'dropdown');
+            addNewEmptyCondition();
+            fillCondition(1, null, 'My second question', 'Is equal to', 'Expected answer 2');
+        });
+        saveAndReload();
+
+        // Change the type of the first question to a type that doesn't support "Is greater than" operator
+        getAndFocusQuestion('My first question').changeQuestionType('Short answer');
+        cy.findByRole('dialog', {'name': 'Question has conditions and its type cannot be changed'})
+            .should('have.attr', 'data-cy-shown', 'true')
+            .within(() => {
+                cy.findByRole('link', {'name': 'Submit button visibility'}).should('be.visible');
+                cy.findByRole('button', {'name': 'Close'}).click();
+            });
+
+        // Change the type of the second question to a type that supports the operator used
+        getAndFocusQuestion('My second question').changeQuestionType('Long answer');
+        cy.findByRole('dialog', {'name': 'Question has conditions and its type cannot be changed'}).should('not.exist');
+
+        // Delete conditions
+        getSubmitButtonContainer().within(() => {
+            openConditionEditor();
+            deleteCondition(0);
+        });
+
+        // Change the type of the first question to a type that doesn't support "Is greater than" operator
+        getAndFocusQuestion('My first question').changeQuestionType('Short answer');
+        cy.findByRole('dialog', {'name': 'Question has conditions and its type cannot be changed'}).should('not.exist');
+    });
+
     it('conditions count badge is updated when conditions are added or removed', () => {
         createForm();
         // Add two questions to the form
