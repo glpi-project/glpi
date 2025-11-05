@@ -28,8 +28,8 @@
 # Dario, 2025
 # Matías Orozco, 2025
 # Cédric Anne, 2025
-# Alan Lehoux, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
+# Alan Lehoux, 2025
 # 
 #, fuzzy
 msgid ""
@@ -38,7 +38,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-04 18:54+0100\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2025\n"
+"Last-Translator: Alan Lehoux, 2025\n"
 "Language-Team: Spanish (Argentina) (https://app.transifex.com/glpi/teams/1637/es_AR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -674,7 +674,7 @@ msgstr "País"
 #: src/NotificationTargetCertificate.php:127 src/Certificate_Item.php:437
 #: src/ItemAntivirus.php:238 src/ItemAntivirus.php:362
 msgid "Expiration date"
-msgstr "Fecha de expiración"
+msgstr "Fecha de vencimiento"
 
 #: templates/generic_show_form.html.twig
 msgid "Empty for infinite"
@@ -1192,7 +1192,7 @@ msgstr "Solicitar desbloqueo"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Alert me when unlocked"
-msgstr "Notificarme cuando se desbloquea"
+msgstr "Alertarme cuando se desbloquee"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Locked by you!"
@@ -1709,7 +1709,7 @@ msgid ""
 "exists or is provided by a plugin that is not enabled."
 msgstr ""
 "Estas preferencias no se pueden editar en este momento. El tipo de elemento "
-"ya no existe o es provisto por un complemento que no está habilitado."
+"ya no existe o es provisto por un complemento que no está activado."
 
 #: templates/components/search/displaypreference_config.html.twig
 msgid ""
@@ -4575,7 +4575,7 @@ msgstr "No hay registros históricos que coincidan con tus filtros"
 #: templates/components/infocom.html.twig src/Infocom.php:2026
 #: src/Cartridge.php:809
 msgid "Enable the financial and administrative information"
-msgstr "Habilitar la información financiera y administrativa"
+msgstr "Activar la información financiera y administrativa"
 
 #: templates/components/infocom.html.twig
 msgid "Asset lifecycle"
@@ -4585,7 +4585,7 @@ msgstr "Ciclo de vida del activo"
 #: templates/pages/admin/entity/assets.html.twig src/Infocom.php:1521
 #: src/Infocom.php:1756 src/Entity.php:1446
 msgid "Order date"
-msgstr "Fecha de orden"
+msgstr "Fecha de pedido"
 
 #: templates/components/infocom.html.twig
 #: templates/pages/admin/entity/assets.html.twig src/Report.php:1075
@@ -5604,11 +5604,11 @@ msgstr "Cargando..."
 
 #: templates/pages/tools/search_knowbaseitem.html.twig
 msgid "An error occurred while searching in the knowledge base"
-msgstr "Ocurrió un error al buscar en la base de conocimiento"
+msgstr "Ocurrió un error al buscar en la base de conocimientos"
 
 #: templates/pages/tools/search_knowbaseitem.html.twig
 msgid "An error occurred while loading the knowledge base entry"
-msgstr "Ocurrió un error al cargar la entrada de la base de conocimiento"
+msgstr "Ocurrió un error al cargar la entrada de la base de conocimientos"
 
 #: templates/pages/tools/kb/knowbaseitem_item.html.twig
 msgid "Add a linked item"
@@ -6292,7 +6292,7 @@ msgstr ""
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Expiration delay"
-msgstr "Tiempo de expiración"
+msgstr "Plazo de vencimiento"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 #: templates/pages/setup/crontask/crontask.html.twig
@@ -6385,12 +6385,12 @@ msgstr "Configuración de notificaciones"
 
 #: templates/pages/setup/setup_notifications.html.twig
 msgid "You must enable at least one notification mode."
-msgstr "Debés habilitar al menos un modo de notificación."
+msgstr "Debés activar al menos un modo de notificación."
 
 #: templates/pages/setup/setup_notifications.html.twig
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Enable notifications"
-msgstr "Habilitar notificaciones"
+msgstr "Activar notificaciones"
 
 #: templates/pages/setup/setup_notifications.html.twig
 #: templates/pages/setup/general/preferences_setup.html.twig
@@ -6461,7 +6461,7 @@ msgstr "Última ejecución"
 #: templates/pages/setup/crontask/crontask.html.twig src/CronTask.php:835
 msgid "Maintenance mode enabled, running tasks is disabled"
 msgstr ""
-"Modo de mantenimiento activado, la ejecución de tareas está deshabilitada"
+"Modo de mantenimiento activado, la ejecución de tareas está desactivada"
 
 #: templates/pages/setup/crontask/crontask.html.twig
 #: templates/pages/admin/transfer.html.twig
@@ -6577,7 +6577,7 @@ msgstr "Sí - Restringir a la gestión global"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Enable the financial and administrative information by default"
-msgstr "Habilitar la información financiera y administrativa por defecto"
+msgstr "Activar la información financiera y administrativa por defecto"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "Restrict monitor management"
@@ -6745,7 +6745,7 @@ msgstr "API"
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "Enable API"
-msgstr "Habilitar API"
+msgstr "Activar API"
 
 #: templates/pages/setup/general/api_setup.html.twig
 #: src/Glpi/Api/HL/Controller/CoreController.php:233
@@ -6769,20 +6769,20 @@ msgid ""
 "The Legacy API is enabled. It is recommended to only use the new API when "
 "possible."
 msgstr ""
-"La API heredada está habilitada. Se recomienda usar la nueva API siempre que"
-" sea posible."
+"La API heredada está activada. Se recomienda usar la nueva API siempre que "
+"sea posible."
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "Enable Legacy REST API"
-msgstr "Habilitar API REST heredada"
+msgstr "Activar API REST heredada"
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid ""
 "Are you sure you want to enable the Legacy API? It is recommended to only "
 "use the new API when possible."
 msgstr ""
-"¿Estás seguro/a de que querés habilitar la API heredada? Se recomienda usar "
-"la nueva API siempre que sea posible."
+"¿Estás seguro/a de que querés activar la API heredada? Se recomienda usar la"
+" nueva API siempre que sea posible."
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "API inline Documentation"
@@ -7027,7 +7027,7 @@ msgstr "Disposición del campo de texto enriquecido"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Enable high contrast"
-msgstr "Habilitar alto contraste"
+msgstr "Activar contraste alto"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 #: templates/pages/admin/user/user.html.twig src/RuleRight.php:324
@@ -7288,7 +7288,7 @@ msgid ""
 "marketplace) in GLPI"
 msgstr ""
 "Se necesita una clave de registro para usar algunas funciones avanzadas "
-"(como el marketplace de complementos) en GLPI"
+"(como el mercado de complementos) en GLPI"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 #, php-format
@@ -7337,7 +7337,7 @@ msgstr "Registrado por"
 #: front/marketplace.php:52 src/Glpi/Marketplace/View.php:78
 #: src/Glpi/Marketplace/Controller.php:117
 msgid "Marketplace"
-msgstr "Marketplace"
+msgstr "Mercado"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "Ask before replacing"
@@ -7345,7 +7345,7 @@ msgstr "Preguntar antes de reemplazar"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "Replace plugins page with marketplace"
-msgstr "Reemplazar la página de complementos por el marketplace"
+msgstr "Reemplazar la página de complementos por el mercado"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "Never replace plugins page"
@@ -7361,11 +7361,11 @@ msgid ""
 "interface."
 msgstr ""
 "Elegí si querés reemplazar la página clásica de complementos por la nueva "
-"interfaz del marketplace."
+"interfaz del mercado."
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "Access GLPI Network Marketplace"
-msgstr "Acceder al Marketplace de GLPI Network"
+msgstr "Acceder al Mercado de GLPI Network"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Security policy validation"
@@ -7401,15 +7401,15 @@ msgstr "La contraseña requiere un símbolo"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Password expiration policy"
-msgstr "Política de vencimiento de la contraseña"
+msgstr "Política de vencimiento de contraseñas"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Password expiration delay (in days)"
-msgstr "Plazo de vencimiento de la contraseña (en días)"
+msgstr "Plazo de vencimiento de contraseñas (en días)"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Password expiration notice time (in days)"
-msgstr "Tiempo de aviso de vencimiento de la contraseña (en días)"
+msgstr "Tiempo de aviso de vencimiento de contraseñas (en días)"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Notification disabled"
@@ -7930,14 +7930,14 @@ msgstr "Datos de telemetría"
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 msgid "Telemetry enabled"
-msgstr "Telemetría habilitada"
+msgstr "Telemetría activada"
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 msgid ""
 "To enable or disable sending telemetry, please change the \"telemetry\" "
 "automatic action."
 msgstr ""
-"Para habilitar o deshabilitar el envío de telemetría, por favor, cambiá la "
+"Para activar o desactivar el envío de telemetría, por favor, cambiá la "
 "acción automática \"telemetría\"."
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
@@ -8915,7 +8915,7 @@ msgid ""
 "On search engine, use \"Expiration contains NULL\" to search licenses with "
 "no expiration date"
 msgstr ""
-"En la búsqueda, usar \"Vencimiento contiene NULL\" para buscar licencias sin"
+"En el buscador, usar \"Vencimiento contiene NULL\" para buscar licencias sin"
 " fecha de vencimiento"
 
 #: templates/pages/management/license_progressbar.html.twig
@@ -9046,7 +9046,7 @@ msgstr "Cantidad máxima de elementos"
 #: templates/pages/management/contract.html.twig src/Infocom.php:1668
 #: src/Contract.php:686
 msgid "Email alarms"
-msgstr "Alertas por correo electrónico"
+msgstr "Alarmas por correo electrónico"
 
 #: templates/pages/management/cost.html.twig src/CommonITILCost.php:159
 #: src/CommonITILCost.php:236 src/CommonITILCost.php:601
@@ -9268,7 +9268,7 @@ msgstr "Opcional"
 #: templates/pages/2fa/2fa_status.html.twig
 #: templates/pages/admin/user/user.html.twig
 msgid "2FA enabled"
-msgstr "2FA habilitada"
+msgstr "2FA activada"
 
 #: templates/pages/2fa/2fa_status.html.twig src/User.php:3014
 msgid "Disable 2FA"
@@ -9284,7 +9284,7 @@ msgstr "Regenerar códigos de respaldo"
 
 #: templates/pages/helpdesk/index.html.twig
 msgid "Search for knowledge base entries or forms"
-msgstr "Buscar entradas en la base de conocimiento o formularios"
+msgstr "Buscar entradas en la base de conocimientos o formularios"
 
 #: templates/pages/helpdesk/index.html.twig
 msgid "Search results"
@@ -9400,7 +9400,7 @@ msgstr "Vínculos entre tipos de cartucho y cartuchos"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "Links between consumable types and consumables"
-msgstr "Vínculos entre tipos de consumible y consumibles"
+msgstr "Vínculos entre tipos de insumo e insumos"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "Links between computers and volumes"
@@ -9471,9 +9471,9 @@ msgstr "Formulario destino"
 #: src/Glpi/Helpdesk/HelpdeskTranslation.php:55
 msgid "Helpdesk translation"
 msgid_plural "Helpdesk translations"
-msgstr[0] "Traducción de la Mesa de Ayuda"
-msgstr[1] "Traducciones de la Mesa de Ayuda"
-msgstr[2] "Traducciones de la Mesa de Ayuda"
+msgstr[0] "Traducción de mesa de ayuda"
+msgstr[1] "Traducciones de mesa de ayuda"
+msgstr[2] "Traducciones de mesa de ayuda"
 
 #: templates/pages/admin/helpdesk_home_translations.html.twig
 #: templates/pages/admin/form/form_translations.html.twig
@@ -9528,7 +9528,7 @@ msgid ""
 "If enabled, members of this group will also become implicit members of its "
 "children groups"
 msgstr ""
-"Si está habilitado, los miembros de este grupo también serán miembros "
+"Si está activado, los miembros de este grupo también serán miembros "
 "implícitos de sus grupos hijos"
 
 #: templates/pages/admin/group.html.twig
@@ -9841,12 +9841,12 @@ msgstr "Importar nuevos usuarios"
 #: templates/pages/admin/helpdesk_home_translation.html.twig
 #: templates/pages/admin/form/form_translation.html.twig
 msgid "No default value"
-msgstr ""
+msgstr "Sin valor por defecto"
 
 #: templates/pages/admin/helpdesk_home_translation.html.twig
 #: templates/pages/admin/form/form_translation.html.twig
 msgid "Translation name"
-msgstr "Nombre de la traducción"
+msgstr "Nombre de traducción"
 
 #: templates/pages/admin/helpdesk_home_translation.html.twig
 #: templates/pages/admin/form/form_translation.html.twig
@@ -9862,7 +9862,7 @@ msgstr "Editar traducción"
 #: templates/pages/admin/helpdesk_home_translation.html.twig
 #, php-format
 msgid "Helpdesk translations: %s"
-msgstr "Traducciones de la Mesa de Ayuda: %s"
+msgstr "Traducciones de mesa de ayuda: %s"
 
 #: templates/pages/admin/helpdesk_home_translation.html.twig
 #: templates/pages/admin/form/form_translation.html.twig
@@ -11135,15 +11135,15 @@ msgstr "Retraso en el envío de notificaciones por correo electrónico"
 
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:1069
 msgid "Enable notifications by default"
-msgstr "Habilitar notificaciones por defecto"
+msgstr "Activar notificaciones por defecto"
 
 #: templates/pages/admin/entity/notifications.html.twig
 msgid "Alarms options"
-msgstr "Opciones de alertas"
+msgstr "Opciones de alarmas"
 
 #: templates/pages/admin/entity/notifications.html.twig
 msgid "Reminders frequency for alarms on cartridges"
-msgstr "Frecuencia de los recordatorios de alertas sobre cartuchos"
+msgstr "Frecuencia de recordatorios de alarmas sobre cartuchos"
 
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:1282
 msgid "Default threshold for cartridges count"
@@ -11151,44 +11151,44 @@ msgstr "Umbral por defecto para conteo de cartuchos"
 
 #: templates/pages/admin/entity/notifications.html.twig
 msgid "Reminders frequency for alarms on consumables"
-msgstr "Frecuencia de los recordatorios de alertas sobre consumibles"
+msgstr "Frecuencia de recordatorios de alarmas sobre insumos"
 
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:1292
 msgid "Default threshold for consumables count"
-msgstr "Umbral por defecto para conteo de materiales"
+msgstr "Umbral por defecto para el conteo de insumos"
 
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:1212
 msgid "Alarms on contracts"
-msgstr "Alertas sobre contratos"
+msgstr "Alarmas sobre contratos"
 
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:1222
 msgid "Send contract alarms before"
-msgstr "Enviar alertas de contrato antes de"
+msgstr "Enviar alarmas de contrato antes de"
 
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:1242
 msgid "Send financial and administrative information alarms before"
-msgstr "Enviar alertas de información financiera y administrativa antes de"
+msgstr "Enviar alarmas de información financiera y administrativa antes de"
 
 #: templates/pages/admin/entity/notifications.html.twig
 #: src/NotificationTargetSoftwareLicense.php:43 src/Entity.php:1192
 msgid "Alarms on expired licenses"
-msgstr "Alertas sobre licencias vencidas"
+msgstr "Alarmas sobre licencias vencidas"
 
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:1202
 msgid "Send license alarms before"
-msgstr "Enviar alertas de licencia antes de"
+msgstr "Enviar alarmas de licencia antes de"
 
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:1302
 msgid "Alarms on expired certificates"
-msgstr "Alertas sobre certificados vencidos"
+msgstr "Alarmas sobre certificados vencidos"
 
 #: templates/pages/admin/entity/notifications.html.twig
 msgid "Send certificates alarms before"
-msgstr "Enviar alertas de certificados antes de"
+msgstr "Enviar alarmas de certificados antes de"
 
 #: templates/pages/admin/entity/notifications.html.twig
 msgid "Reminders frequency for alarms on certificates"
-msgstr "Frecuencia de los recordatorios de alertas sobre certificados"
+msgstr "Frecuencia de recordatorios de alarmas sobre certificados"
 
 #: templates/pages/admin/entity/notifications.html.twig
 #: src/ReservationItem.php:697 src/Entity.php:1252
@@ -11197,7 +11197,7 @@ msgstr "Alertas sobre reservas"
 
 #: templates/pages/admin/entity/notifications.html.twig
 msgid "Alerts on tickets which are not solved since"
-msgstr "Alertas sobre tickets que no se han resuelto desde"
+msgstr "Alertas sobre tickets que no fueron resueltos desde hace"
 
 #: templates/pages/admin/entity/notifications.html.twig
 msgid "Approval reminder frequency"
@@ -11205,7 +11205,7 @@ msgstr "Frecuencia del recordatorio de aprobación"
 
 #: templates/pages/admin/entity/notifications.html.twig
 msgid "Alarms on domains expiries"
-msgstr "Alertas sobre vencimientos de dominios"
+msgstr "Alarmas sobre vencimientos de dominios"
 
 #: templates/pages/admin/entity/notifications.html.twig
 msgid "Domains closes expiries"
@@ -11421,7 +11421,7 @@ msgstr "Mostrar propiedades del ticket en la mesa de ayuda"
 
 #: templates/pages/admin/entity/custom_ui.html.twig
 msgid "Enable CSS customization"
-msgstr "Habilitar personalización de CSS"
+msgstr "Activar personalización de CSS"
 
 #: templates/pages/admin/entity/custom_ui.html.twig
 msgid "Custom CSS is disabled"
@@ -11969,9 +11969,9 @@ msgstr[2] "Arquitecturas"
 #: src/Item_OperatingSystem.php:485 src/OperatingSystemKernel.php:42
 msgid "Kernel"
 msgid_plural "Kernels"
-msgstr[0] "Núcleo"
-msgstr[1] "Núcleos"
-msgstr[2] "Núcleos"
+msgstr[0] "Kernel"
+msgstr[1] "Kernels"
+msgstr[2] "Kernels"
 
 #: templates/pages/assets/operatingsystem.html.twig
 #: src/Item_OperatingSystem.php:528 src/Item_OperatingSystem.php:581
@@ -12155,7 +12155,7 @@ msgstr "Contador de impresora"
 #: templates/pages/assets/consumable_list.html.twig
 msgctxt "button"
 msgid "Add consumables"
-msgstr "Agregar consumibles"
+msgstr "Agregar insumos"
 
 #: templates/pages/assets/software.html.twig install/update.php:123
 #: install/install.php:441
@@ -12788,7 +12788,7 @@ msgstr "Bandeja de entrada"
 #: resources/.illustrations_translations.php:90
 msgctxt "Icon"
 msgid "Knowledge base and FAQ"
-msgstr "Base de conocimientos y FAQ"
+msgstr "Base de conocimientos y Preguntas Frecuentes"
 
 #: resources/.illustrations_translations.php:91
 msgctxt "Icon"
@@ -13365,7 +13365,7 @@ msgstr "base-de-conocimientos"
 #: resources/.illustrations_translations.php:209
 msgctxt "Icon"
 msgid "faq"
-msgstr "faq"
+msgstr "preguntas frecuentes"
 
 #: resources/.illustrations_translations.php:210
 msgctxt "Icon"
@@ -14368,14 +14368,14 @@ msgstr "No tenés permisos para eliminar el elemento %s."
 #, php-format
 msgid "Knowledge base item translation has been reverted to revision %s"
 msgstr ""
-"La traducción del elemento de la base de conocimiento se revirtió a la "
+"La traducción del elemento de la base de conocimientos se revirtió a la "
 "revisión %s"
 
 #: front/knowbaseitemtranslation.form.php:66
 #, php-format
 msgid "Knowledge base item translation has not been reverted to revision %s"
 msgstr ""
-"La traducción del elemento de la base de conocimiento no se revirtió a la "
+"La traducción del elemento de la base de conocimientos no se revirtió a la "
 "revisión %s"
 
 #. TRANS: %s is the user login
@@ -14735,7 +14735,7 @@ msgstr "%s actualiza un cartucho"
 msgid "Sending password initialization notification is not enabled."
 msgstr ""
 "El envío de notificaciones para la inicialización de la contraseña no está "
-"habilitado."
+"activado."
 
 #: front/initpassword.php:55
 msgid "Forgotten initialization"
@@ -14916,8 +14916,7 @@ msgstr "%s purga un seguimiento"
 
 #: front/lostpassword.php:50
 msgid "Sending password forget notification is not enabled."
-msgstr ""
-"El envío de notificaciones por contraseña olvidada no está habilitado."
+msgstr "El envío de notificaciones por contraseña olvidada no está activado."
 
 #: front/ldap.php:42 front/ldap.group.php:44 front/ldap.group.import.php:42
 #: front/ldap.import.php:46 src/User.php:173 src/Group.php:151
@@ -14954,7 +14953,7 @@ msgstr "¡No se han completado campos obligatorios!"
 #: front/knowbaseitem_item.form.php:62
 #, php-format
 msgid "%s adds a link with an knowledge base"
-msgstr "%s agrega un enlace con una base de conocimiento"
+msgstr "%s agrega un enlace con una base de conocimientos"
 
 #. TRANS: %s is a task name
 #: front/crontask.form.php:59
@@ -15276,24 +15275,24 @@ msgstr "Restablecimiento correcto de la caché de traducción"
 #: front/knowbaseitem.form.php:152
 #, php-format
 msgid "Knowledge base item has been reverted to revision %s"
-msgstr "El elemento de la base de conocimiento se revirtió a la revisión %s"
+msgstr "El elemento de la base de conocimientos se revirtió a la revisión %s"
 
 #: front/knowbaseitem.form.php:159
 #, php-format
 msgid "Knowledge base item has not been reverted to revision %s"
 msgstr ""
-"El elemento de la base de conocimiento no se revirtió a la revisión %s"
+"El elemento de la base de conocimientos no se revirtió a la revisión %s"
 
 #: front/knowbaseitem.form.php:173 src/CommonDropdown.php:936
 #: src/KnowbaseItem.php:89 src/ITILCategory.php:76 src/ITILCategory.php:298
 #: src/Profile.php:1907 src/Knowbase.php:46 src/KnowbaseItem_Item.php:73
 msgid "Knowledge base"
-msgstr "Base de conocimiento"
+msgstr "Base de conocimientos"
 
 #: front/knowbaseitem_comment.form.php:65
 #, php-format
 msgid "%s adds a comment on knowledge base"
-msgstr "%s agrega un comentario en la base de conocimiento"
+msgstr "%s agrega un comentario en la base de conocimientos"
 
 #: front/knowbaseitem_comment.form.php:68
 msgid "Your comment has been added"
@@ -15302,7 +15301,7 @@ msgstr "Se agregó tu comentario"
 #: front/knowbaseitem_comment.form.php:90
 #, php-format
 msgid "%s edit a comment on knowledge base"
-msgstr "%s edita un comentario en la base de conocimiento"
+msgstr "%s edita un comentario en la base de conocimientos"
 
 #: front/knowbaseitem_comment.form.php:93
 msgid "Your comment has been edited"
@@ -15365,7 +15364,7 @@ msgstr[2] "Elementos asociados"
 #: front/consumable.form.php:58
 #, php-format
 msgid "%s adds consumables"
-msgstr "%s agrega materiales"
+msgstr "%s agrega insumos"
 
 #: front/dashboard_assets.php:57
 msgid "Assets Dashboard"
@@ -15839,9 +15838,9 @@ msgstr "Diccionario de versiones de sistemas operativos"
 #: src/DeviceGraphicCard.php:43
 msgid "Graphics card"
 msgid_plural "Graphics cards"
-msgstr[0] "Tarjeta gráfica"
-msgstr[1] "Tarjetas gráficas"
-msgstr[2] "Tarjetas gráficas"
+msgstr[0] "Placa de video"
+msgstr[1] "Placas de video"
+msgstr[2] "Placas de video"
 
 #: src/DeviceGraphicCard.php:53 src/DeviceGraphicCard.php:90
 #: src/DeviceGraphicCard.php:164 src/DeviceMotherboard.php:51
@@ -16807,8 +16806,7 @@ msgid ""
 "Other financial and administrative information (licenses, cartridges, "
 "consumables)"
 msgstr ""
-"Otra información administrativa y financiera (licencias, cartuchos, "
-"materiales)"
+"Otra información financiera y administrativa (licencias, cartuchos, insumos)"
 
 #: src/Report.php:95 src/Report.php:1912
 msgid "Loan"
@@ -16872,7 +16870,7 @@ msgstr "Reporte de equipos por año"
 #: src/CommonDBTM.php:3585 src/Infocom.php:802 src/Infocom.php:1586
 #: src/Entity.php:1891
 msgid "Warranty expiration date"
-msgstr "Expiración de garantía"
+msgstr "Fecha de vencimiento de la garantía"
 
 #: src/Report.php:1077 src/Report.php:1350 src/ContractType.php:41
 msgid "Contract type"
@@ -17030,9 +17028,9 @@ msgstr[2] "Criterios LDAP"
 #: src/DeviceGraphicCardModel.php:44
 msgid "Device graphic card model"
 msgid_plural "Device graphic card models"
-msgstr[0] "Modelo de tarjeta gráfica de dispositivo"
-msgstr[1] "Modelos de tarjeta gráfica de dispositivo"
-msgstr[2] "Modelos de tarjeta gráfica de dispositivo"
+msgstr[0] "Modelo de placa de video de dispositivo"
+msgstr[1] "Modelos de placa de video de dispositivos"
+msgstr[2] "Modelos de placa de video de dispositivos"
 
 #: src/AutoUpdateSystem.php:42
 msgid "Update Source"
@@ -17870,7 +17868,7 @@ msgstr "La ruta del archivo de clave TLS es incorrecta"
 
 #: src/NetworkEquipmentModelStencil.php:42
 msgid "Graphical slot definition"
-msgstr "Definición de bloque gráfico"
+msgstr "Definición gráfica de ranuras"
 
 #: src/NetworkEquipmentModelStencil.php:54
 msgid "Set number of ports"
@@ -17951,9 +17949,9 @@ msgstr "To be unaware of import"
 #: src/DeviceGenericModel.php:44
 msgid "Device generic model"
 msgid_plural "Device generic models"
-msgstr[0] "Modelo genérico de dispositivo"
-msgstr[1] "Modelos genérico de dispositivo"
-msgstr[2] "Modelos genérico de dispositivo"
+msgstr[0] "Modelo de dispositivo genérico"
+msgstr[1] "Modelos de dispositivo genérico"
+msgstr[2] "Modelos de dispositivo genérico"
 
 #: src/CommonDBTM.php:1570 src/CommonDBTM.php:2015
 #: src/CommonItilObject_Item.php:1511 src/CommonITILObject.php:620
@@ -17991,7 +17989,7 @@ msgstr "Elementos desbloqueados"
 #: src/CommonDBTM.php:4141
 msgctxt "button"
 msgid "Associate to an appliance"
-msgstr "Asociar aplicación"
+msgstr "Asociar a una aplicación"
 
 #: src/CommonDBTM.php:4146
 msgctxt "button"
@@ -18094,7 +18092,7 @@ msgstr "Dar"
 #: src/Consumable.php:297
 #, php-format
 msgid "%s gives a consumable"
-msgstr "%s otorga un insumo"
+msgstr "%s entrega un insumo"
 
 #. TRANS: For consumable. %1$d is total number, %2$d is unused number, %3$d is
 #. old number
@@ -18450,9 +18448,9 @@ msgstr "Sistema Operativo"
 #: src/Item_OperatingSystem.php:509 src/OperatingSystemKernelVersion.php:42
 msgid "Kernel version"
 msgid_plural "Kernel versions"
-msgstr[0] "Versión de Kernel"
-msgstr[1] "Versiones de Kernel"
-msgstr[2] "Versiones de Kernel"
+msgstr[0] "Versión del kernel"
+msgstr[1] "Versiones del kernel"
+msgstr[2] "Versiones del kernel"
 
 #: src/OLA.php:74
 msgid "The internal time is recalculated when assigning the OLA"
@@ -18474,7 +18472,7 @@ msgstr "Configuración de notificaciones del navegador"
 
 #: src/NotificationAjaxSetting.php:50
 msgid "Enable browser notifications"
-msgstr "Habilitar notificaciones del navegador"
+msgstr "Activar notificaciones del navegador"
 
 #: src/NotificationAjaxSetting.php:71
 msgid "Send a test browser notification to you"
@@ -18743,12 +18741,12 @@ msgstr "Importando condiciones de validación..."
 #: src/Glpi/Form/Export/Serializer/FormSerializer.php:145
 #, php-format
 msgid "Unknown custom type: %s"
-msgstr ""
+msgstr "Tipo personalizado desconocido: %s"
 
 #: src/Glpi/Form/Export/Serializer/FormSerializer.php:153
 #, php-format
 msgid "Missing plugin: %s"
-msgstr ""
+msgstr "Complemento faltante: %s"
 
 #: src/Glpi/Form/Section.php:89
 msgid "Section"
@@ -19629,8 +19627,8 @@ msgstr "Explorar artículos de ayuda"
 #: src/Glpi/Helpdesk/DefaultDataManager.php:101
 msgid "See all available help articles and our FAQ."
 msgstr ""
-"Ver todos los artículos de ayuda disponibles y nuestras preguntas "
-"frecuentes."
+"Ver todos los artículos de ayuda disponibles y nuestras Preguntas "
+"Frecuentes."
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:115 src/Ticket.php:4676
 #: src/Profile.php:2688 src/Html.php:1494
@@ -19819,13 +19817,13 @@ msgid ""
 "Can be part of an appliance. An appliance is a virtual object that groups "
 "several assets"
 msgstr ""
-"Puede ser parte de un appliance. Un appliance es un objeto virtual que "
-"agrupa varios activos"
+"Puede formar parte de una aplicación. Una aplicación es un objeto virtual "
+"que agrupa varios activos"
 
 #: src/Glpi/Asset/Capacity/HasAppliancesCapacity.php:78
 #, php-format
 msgid "%1$s appliances attached to %2$s assets"
-msgstr "%1$s appliances asociados a %2$s activos"
+msgstr "%1$s aplicaciones asociadas a %2$s activos"
 
 #: src/Glpi/Asset/Capacity/HasCertificatesCapacity.php:59
 msgid "Track certificates used by the assets"
@@ -19851,7 +19849,7 @@ msgstr "Usado por %1$s de %2$s activos"
 #: src/Glpi/Asset/Capacity/HasPlugCapacity.php:59
 msgid "Has power plugs. Usually related to PDU or UPS"
 msgstr ""
-"Tiene enchufes de alimentación. Generalmente relacionados con PDU o UPS"
+"Tiene enchufes de alimentación. Generalmente relacionado con PDU o UPS"
 
 #: src/Glpi/Asset/Capacity/HasPlugCapacity.php:78
 #, php-format
@@ -19886,7 +19884,7 @@ msgstr ""
 
 #: src/Glpi/Asset/Capacity/HasNotepadCapacity.php:60
 msgid "Enable a simple notepad"
-msgstr "Habilitar un bloc de notas simple"
+msgstr "Activar un bloc de notas simple"
 
 #: src/Glpi/Asset/Capacity/HasNotepadCapacity.php:89
 #, php-format
@@ -20049,7 +20047,7 @@ msgstr "%1$s enlaces asociados a %2$s activos"
 
 #: src/Glpi/Asset/Capacity/HasDomainsCapacity.php:59
 msgid "Track domains, records and their expiration dates"
-msgstr "Hacer seguimiento de dominios, registros y sus fechas de vencimiento"
+msgstr "Seguimiento de dominios, registros y sus fechas de vencimiento"
 
 #: src/Glpi/Asset/Capacity/HasDomainsCapacity.php:78
 #, php-format
@@ -20566,7 +20564,7 @@ msgstr "Importar desde archivo"
 
 #: src/Glpi/Inventory/Conf.php:364
 msgid "Enable inventory"
-msgstr "Habilitar inventario"
+msgstr "Activar inventario"
 
 #: src/Glpi/Inventory/Conf.php:381
 msgid "The inventory is disabled, remember to activate it if necessary"
@@ -21215,7 +21213,7 @@ msgstr "Tu registro %1$s no es válido."
 #: src/Glpi/Marketplace/View.php:181
 msgid "A registration, at least a free one, is required to use marketplace!"
 msgstr ""
-"¡Se requiere un registro, al menos uno gratuito, para usar el marketplace!"
+"¡Se requiere un registro, al menos uno gratuito, para usar el mercado!"
 
 #: src/Glpi/Marketplace/View.php:182
 #, php-format
@@ -21417,18 +21415,17 @@ msgstr[2] "%s complementos"
 
 #: src/Glpi/Marketplace/View.php:1042
 msgid "Switch to marketplace"
-msgstr "Cambiar al marketplace"
+msgstr "Cambiar al mercado"
 
 #: src/Glpi/Marketplace/View.php:1049
 msgid "GLPI provides a new marketplace to download and install plugins."
-msgstr ""
-"GLPI ofrece un nuevo marketplace para descargar e instalar complementos."
+msgstr "GLPI ofrece un nuevo mercado para descargar e instalar complementos."
 
 #: src/Glpi/Marketplace/View.php:1051
 msgid "Do you want to replace the plugins setup page by the new marketplace?"
 msgstr ""
 "¿Querés reemplazar la página de configuración de complementos por el nuevo "
-"marketplace?"
+"mercado?"
 
 #: src/Glpi/Marketplace/View.php:1065
 msgid "Later"
@@ -21469,7 +21466,7 @@ msgstr "Número de versión anterior del complemento"
 
 #: src/Glpi/Marketplace/NotificationTargetController.php:131
 msgid "URL of GLPI marketplace"
-msgstr "URL del marketplace de GLPI"
+msgstr "URL del mercado de GLPI"
 
 #: src/Glpi/Marketplace/Controller.php:189
 msgid "Cannot find the specified version of the plugin."
@@ -21988,8 +21985,8 @@ msgid ""
 "Enable migration without plugin files (we cannot validate that plugin data "
 "are compatible with supported %s version)"
 msgstr ""
-"Habilite la migración sin archivos de complemento (no podemos validar que "
-"los datos del complemento sean compatibles con la versión %s)"
+"Habilitar migración sin archivos de complemento (no podemos validar que los "
+"datos del complemento sean compatibles con la versión %s soportada)"
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:217
 msgid ""
@@ -22353,8 +22350,8 @@ msgid ""
 "You are about to launch migration of Appliances plugin data into GLPI core "
 "tables."
 msgstr ""
-"Estás a punto de iniciar la migración de los datos del complemento "
-"Dispositivos a las tablas centrales de GLPI."
+"Estás por iniciar la migración de datos del complemento Aplicaciones a las "
+"tablas del núcleo de GLPI."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:159
 msgid "Any previous appliance created in core will be lost."
@@ -22363,12 +22360,12 @@ msgstr "Cualquier aplicación previa creada en el núcleo se perderá."
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:189
 #, php-format
 msgid "Appliances plugin table \"%s\" is missing."
-msgstr "Falta la tabla del complemento de aplicaciones \"%s\"."
+msgstr "Falta la tabla \"%s\" del complemento Aplicaciones."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:197
 #, php-format
 msgid "Appliances plugin field \"%s\" is missing."
-msgstr "Falta el campo del complemento de aplicaciones \"%s\"."
+msgstr "Falta el campo \"%s\" del complemento Aplicaciones."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:300
 #, php-format
@@ -22403,7 +22400,7 @@ msgstr "No se pudo crear el elemento de Aplicación %d."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:426
 msgid "Creating Appliance Environment..."
-msgstr "Creando entorno de aplicación..."
+msgstr "Creando Entorno de Aplicación..."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:443
 #, php-format
@@ -22414,21 +22411,21 @@ msgstr "Importando entorno \"%s\"..."
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:600
 #, php-format
 msgid "Unable to create Appliance environment %s (%d)."
-msgstr "No se ha podido crear el entorno de dispositivo %s (%d)."
+msgstr "No se pudo crear el entorno de Aplicación %s (%d)."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:485
 msgid "Creating Appliances..."
-msgstr "Creando Aplicación..."
+msgstr "Creando Aplicaciones..."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:501
 #, php-format
 msgid "Importing appliance \"%s\"..."
-msgstr "Importando dispositivo \"%s\"..."
+msgstr "Importando aplicación \"%s\"..."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:538
 #, php-format
 msgid "Unable to create Appliance %s (%d)."
-msgstr "No se puede crear la aplicación %s (%d)."
+msgstr "No se pudo crear la Aplicación %s (%d)."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:560
 msgid "Creating Appliance types..."
@@ -22441,7 +22438,7 @@ msgstr "Importando tipo \"%s\"..."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:622
 msgid "Creating Appliance relations..."
-msgstr "Creando relación de aplicación..."
+msgstr "Creando relaciones de Aplicación..."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:654
 #, php-format
@@ -22683,11 +22680,11 @@ msgstr "Usuario eliminado"
 
 #: src/Glpi/Console/User/EnableCommand.php:48
 msgid "Enable a GLPI user"
-msgstr "Habilitar un usuario de GLPI"
+msgstr "Activar un usuario de GLPI"
 
 #: src/Glpi/Console/User/EnableCommand.php:60
 msgid "User enabled"
-msgstr "Usuario habilitado"
+msgstr "Usuario activado"
 
 #: src/Glpi/Console/Cache/SetNamespacePrefixCommand.php:92
 #: src/Glpi/Console/Cache/ConfigureCommand.php:160
@@ -23282,7 +23279,7 @@ msgstr "Modo de mantenimiento desactivado."
 
 #: src/Glpi/Console/Maintenance/EnableMaintenanceModeCommand.php:53
 msgid "Enable maintenance mode"
-msgstr "Habilitar el modo de mantenimiento"
+msgstr "Activar el modo de mantenimiento"
 
 #: src/Glpi/Console/Maintenance/EnableMaintenanceModeCommand.php:59
 msgid "Text to display during maintenance"
@@ -23296,7 +23293,7 @@ msgstr "Modo de mantenimiento activado. Puerta trasera usando: %s"
 
 #: src/Glpi/Console/Marketplace/SearchCommand.php:54
 msgid "Search GLPI marketplace"
-msgstr "Buscar en el marketplace de GLPI"
+msgstr "Buscar en el mercado de GLPI"
 
 #: src/Glpi/Console/Marketplace/SearchCommand.php:56
 msgid "The search term"
@@ -23310,7 +23307,7 @@ msgid ""
 "Access to the marketplace CLI commands is disallowed by the GLPI "
 "configuration"
 msgstr ""
-"El acceso a los comandos CLI del marketplace no está permitido por la "
+"El acceso a los comandos CLI del mercado no está permitido por la "
 "configuración de GLPI"
 
 #: src/Glpi/Console/Marketplace/SearchCommand.php:67
@@ -23334,6 +23331,8 @@ msgid ""
 "Download and update all plugins to their latest compatible versions, then "
 "reactivate active ones."
 msgstr ""
+"Descargá y actualizá todos los complementos a sus últimas versiones, y luego"
+" reactivá los que estaban activos."
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:99
 #, php-format
@@ -23341,53 +23340,59 @@ msgid ""
 "Plugin \"%s\" was installed manually and therefore has not been updated "
 "automatically."
 msgstr ""
+"El complemento \"%s\" fue instalado manualmente y, por lo tanto, no se "
+"actualizó automáticamente."
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:112
 #, php-format
 msgid "Plugin \"%s\" is not present in the marketplace."
-msgstr ""
+msgstr "El complemento \"%s\" no está presente en el mercado."
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:123
 #, php-format
 msgid "Plugin \"%s\" is not available for your GLPI version."
-msgstr ""
+msgstr "El complemento \"%s\" no está disponible para tu versión de GLPI."
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:132
 #, php-format
 msgid "Plugin \"%s\" is already up-to-date."
-msgstr ""
+msgstr "El complemento \"%s\" ya está actualizado."
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:143
 #: src/Glpi/Console/Marketplace/DownloadCommand.php:88
 #, php-format
 msgid "Plugin \"%s\" has a local source versioning directory."
 msgstr ""
+"El complemento \"%s\" tiene un directorio de versiones de código fuente "
+"local."
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:150
 #, php-format
 msgid "Plugin \"%s\" has an available update but its directory is not writable."
 msgstr ""
+"El complemento \"%s\" tiene una actualización disponible, pero su directorio"
+" no es escribible."
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:162
 #: src/Glpi/Console/Marketplace/DownloadCommand.php:99
 #, php-format
 msgid "Plugin \"%s\" downloaded successfully"
-msgstr ""
+msgstr "El complemento \"%s\" se descargó exitosamente"
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:166
 #: src/Glpi/Console/Marketplace/DownloadCommand.php:100
 #, php-format
 msgid "Plugin \"%s\" could not be downloaded"
-msgstr ""
+msgstr "El complemento \"%s\" no se pudo descargar"
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:229
 #, php-format
 msgid "Plugin \"%1$s\" has been updated and reactivated."
-msgstr ""
+msgstr "El complemento \"%1$s\" fue actualizado y reactivado."
 
 #: src/Glpi/Console/Marketplace/DownloadCommand.php:52
 msgid "Download plugin from the GLPI marketplace"
-msgstr "Descargar complemento desde el marketplace de GLPI"
+msgstr "Descargar complemento desde el mercado de GLPI"
 
 #: src/Glpi/Console/Marketplace/DownloadCommand.php:54
 #: src/Glpi/Console/Marketplace/InfoCommand.php:53
@@ -23617,7 +23622,7 @@ msgstr "Tiempo transcurrido: %s."
 #: src/Glpi/Console/Application.php:345
 #, php-format
 msgid "Memory usage: %s."
-msgstr "Memoria usada: %s."
+msgstr "Uso de memoria: %s."
 
 #: src/Glpi/Console/Application.php:428
 msgid "Some mandatory system requirements are missing:"
@@ -23991,7 +23996,7 @@ msgstr "Habilitar el uso de zonas horarias."
 
 #: src/Glpi/Console/Database/EnableTimezonesCommand.php:110
 msgid "Timezone usage has been enabled."
-msgstr "Se ha habilitado el uso de la zona horaria."
+msgstr "El uso de la zona horaria fue habilitado."
 
 #: src/Glpi/Features/Inventoriable.php:143
 msgid "Try a reimport from stored inventory file"
@@ -24125,7 +24130,7 @@ msgid ""
 "marketplace, RSS feeds, ...)."
 msgstr ""
 "Requerido para el acceso remoto a recursos (solicitudes del agente de "
-"inventario, marketplace, fuentes RSS, ...)."
+"inventario, mercado, fuentes RSS, ...)."
 
 #: src/Glpi/System/RequirementsManager.php:107
 msgid "Required for images handling."
@@ -24147,8 +24152,8 @@ msgid ""
 "installation of gzip packages from marketplace and PDF generation."
 msgstr ""
 "Requerido para el manejo de comunicación comprimida con agentes de "
-"inventario, la instalación de paquetes gzip desde el marketplace y la "
-"generación de PDF."
+"inventario, la instalación de paquetes gzip desde el mercado y la generación"
+" de PDF."
 
 #: src/Glpi/System/RequirementsManager.php:127
 msgid "Required for qrcode support"
@@ -24163,8 +24168,8 @@ msgid ""
 "Enable usage of ChaCha20-Poly1305 encryption required by GLPI. This is "
 "provided by libsodium 1.0.12 and newer."
 msgstr ""
-"Habilite el uso del cifrado ChaCha20-Poly1305 requerido por GLPI. Esto lo "
-"proporciona libsodium 1.0.12 y versiones posteriores."
+"Habilitar el uso del cifrado ChaCha20-Poly1305 requerido por GLPI. Esto es "
+"provisto por libsodium 1.0.12 y versiones posteriores."
 
 #: src/Glpi/System/RequirementsManager.php:138
 msgid ""
@@ -24190,13 +24195,12 @@ msgstr ""
 
 #: src/Glpi/System/RequirementsManager.php:176
 msgid "PHP extensions for marketplace"
-msgstr "Extensiones de PHP para el marketplace"
+msgstr "Extensiones de PHP para el mercado"
 
 #: src/Glpi/System/RequirementsManager.php:179
 msgid "Enable support of most common packages formats in marketplace."
 msgstr ""
-"Habilitar el soporte de los formatos de paquetes más comunes en el "
-"marketplace."
+"Habilitar el soporte de los formatos de paquetes más comunes en el mercado."
 
 #: src/Glpi/System/RequirementsManager.php:184
 msgid "Enhance PHP engine performances."
@@ -24212,7 +24216,7 @@ msgstr "Mejorar ligeramente las actuaciones."
 
 #: src/Glpi/System/RequirementsManager.php:196
 msgid "Enable installation of plugins from marketplace."
-msgstr "Habilitar la instalación de complementos desde el marketplace."
+msgstr "Habilitar la instalación de complementos desde el mercado."
 
 #: src/Glpi/System/Status/StatusChecker.php:193
 #: src/Glpi/System/Status/StatusChecker.php:201
@@ -24273,11 +24277,11 @@ msgstr "Memoria asignada"
 
 #: src/Glpi/System/Requirement/MemoryLimit.php:76
 msgid "Allocated memory is sufficient."
-msgstr "Memoria asignada insuficiente."
+msgstr "La memoria asignada es suficiente."
 
 #: src/Glpi/System/Requirement/MemoryLimit.php:77
 msgid "Allocated memory is unlimited."
-msgstr "Memoria asignada ilimitada."
+msgstr "La memoria asignada es ilimitada."
 
 #: src/Glpi/System/Requirement/MemoryLimit.php:81
 #, php-format
@@ -24286,7 +24290,7 @@ msgstr "Un mínimo de %s se requiere comúnmente para GLPI."
 
 #: src/Glpi/System/Requirement/MemoryLimit.php:82
 msgid "Try increasing the memory_limit parameter in the php.ini file."
-msgstr "Intente aumentando el parámetro memory_limit en el archivo php.ini."
+msgstr "Intentá aumentar el parámetro memory_limit en el archivo php.ini."
 
 #: src/Glpi/System/Requirement/SessionsSecurityConfiguration.php:48
 msgid "Security configuration for sessions"
@@ -24405,7 +24409,7 @@ msgstr "Permisos para archivos de bloqueo"
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:83
 msgid "Permissions for marketplace directory"
-msgstr "Permisos para el directorio del marketplace"
+msgstr "Permisos para el directorio del mercado"
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:86
 msgid "Permissions for plugins document files"
@@ -25469,7 +25473,7 @@ msgstr "Configuración de notificaciones por correo"
 
 #: src/NotificationMailingSetting.php:54
 msgid "Enable email notifications"
-msgstr "Habilitar notificaciones por correo"
+msgstr "Activar notificaciones por correo"
 
 #: src/NotificationMailingSetting.php:146 src/Plugin.php:2171
 msgid "PHP"
@@ -25825,8 +25829,8 @@ msgstr[2] "meses"
 msgid "Case type"
 msgid_plural "Case types"
 msgstr[0] "Tipo de gabinete"
-msgstr[1] "Tipos de gabinetes"
-msgstr[2] "Tipos de gabinetes"
+msgstr[1] "Tipos de gabinete"
+msgstr[2] "Tipos de gabinete"
 
 #: src/MonitorType.php:41 src/Rule.php:390
 msgid "Monitor type"
@@ -25837,7 +25841,7 @@ msgstr[2] "Tipos de monitor"
 
 #: src/NotificationTargetCartridgeItem.php:45
 msgid "Cartridges alarm"
-msgstr "Alerta de cartuchos"
+msgstr "Alarma de cartuchos"
 
 #: src/NotificationTargetCartridgeItem.php:99
 #: src/NotificationTargetConsumableItem.php:99
@@ -25976,7 +25980,7 @@ msgstr[2] "Categorías de instancia de base de datos"
 
 #: src/CommonItilObject_Item.php:504
 msgid "Knowledge base entries"
-msgstr "Entradas de la base de conocimiento"
+msgstr "Entradas de la base de conocimientos"
 
 #: src/CommonItilObject_Item.php:808 src/CommonItilObject_Item.php:882
 #: src/Profile.php:3323 src/Profile.php:3330
@@ -26020,13 +26024,13 @@ msgstr[2] "Modelos de tarjeta de red"
 #: src/Item_Enclosure.php:50
 msgid "Enclosure item"
 msgid_plural "Enclosure items"
-msgstr[0] "Elemento del gabinete"
-msgstr[1] "Elementos del gabinete"
-msgstr[2] "Elementos del gabinete"
+msgstr[0] "Elemento del recinto"
+msgstr[1] "Elementos del recinto"
+msgstr[2] "Elementos del recinto"
 
 #: src/Item_Enclosure.php:108
 msgid "Add new item to this enclosure..."
-msgstr "Agregar nuevo elemento a este gabinete..."
+msgstr "Agregar nuevo elemento a este recinto..."
 
 #: src/Item_Enclosure.php:147 src/MassiveAction.php:690
 msgctxt "button"
@@ -26133,8 +26137,8 @@ msgstr "Agregar una licencia"
 msgid "Firmware"
 msgid_plural "Firmware"
 msgstr[0] "Firmware"
-msgstr[1] "Firmwares"
-msgstr[2] "Firmwares"
+msgstr[1] "Firmware"
+msgstr[2] "Firmware"
 
 #: src/NetworkEquipment.php:536 src/Phone.php:309 src/Printer.php:701
 #: src/Computer.php:502
@@ -26326,9 +26330,9 @@ msgstr "el formulario de registro"
 #: src/PassiveDCEquipmentModel.php:41
 msgid "Passive device model"
 msgid_plural "Passive device models"
-msgstr[0] "Modelos de dispositivos pasivos"
-msgstr[1] "Modelos de dispositivos pasivos"
-msgstr[2] "Modelos de dispositivos pasivos"
+msgstr[0] "Modelo de dispositivo pasivo"
+msgstr[1] "Modelos de dispositivo pasivo"
+msgstr[2] "Modelos de dispositivo pasivo"
 
 #: src/PrinterType.php:41 src/Rule.php:402
 msgid "Printer type"
@@ -26586,9 +26590,9 @@ msgstr[2] "Vínculos Problema/Problema"
 #: src/DeviceProcessorModel.php:44
 msgid "Device processor model"
 msgid_plural "Device processor models"
-msgstr[0] "Modelo de batería de dispositivo"
-msgstr[1] "Modelos de batería de dispositivo"
-msgstr[2] "Modelos de batería de dispositivo"
+msgstr[0] "Modelo de procesador de dispositivo"
+msgstr[1] "Modelos de procesador de dispositivos"
+msgstr[2] "Modelos de procesador de dispositivos"
 
 #: src/RuleCollection.php:375
 msgid "Rules list"
@@ -26663,12 +26667,12 @@ msgid ""
 "Purchase date incompatible with the associated budget. %1$s not in budget "
 "period: %2$s / %3$s"
 msgstr ""
-"Fecha de compra incompatible con el presupuesto asociado. %1$s no figura en "
-"el período del presupuesto %2$s / %3$s"
+"Fecha de compra incompatible con el presupuesto asociado. %1$s no está en el"
+" período del presupuesto: %2$s / %3$s"
 
 #: src/Infocom.php:633
 msgid "Send alarms on financial and administrative information"
-msgstr "Enviar alarmas de información administrativa y financiera"
+msgstr "Enviar alarmas sobre información financiera y administrativa"
 
 #: src/Infocom.php:708
 #, php-format
@@ -26681,7 +26685,7 @@ msgstr "No hay elementos próximos al fin de la garantía."
 
 #: src/Infocom.php:767
 msgid "send infocom alert failed"
-msgstr "no se pudo enviar la alerta de infocom"
+msgstr "falló el envío de la alerta infocom"
 
 #: src/Infocom.php:860 src/Infocom.php:883
 msgid "Linear"
@@ -26895,7 +26899,7 @@ msgstr "El dominio %1$s venció el %2$s"
 #: src/Domain.php:759
 #, php-format
 msgid "Domains alerts sending failed for entity %1$s"
-msgstr "Fallo al enviar las alertas de dominio para la entidad %1$s"
+msgstr "Falló el envío de alertas de dominios para la entidad %1$s"
 
 #: src/NetworkPortFiberchannelType.php:41
 msgid "Fiber type"
@@ -26907,9 +26911,9 @@ msgstr[2] "Tipos de fibra"
 #: src/PhonePowerSupply.php:44
 msgid "Phone power supply type"
 msgid_plural "Phone power supply types"
-msgstr[0] "Tipo de fuente de alimentación para teléfono"
-msgstr[1] "Tipos de fuentes de alimentación para teléfono"
-msgstr[2] "Tipos de fuentes de alimentación telefónica"
+msgstr[0] "Tipo de fuente de alimentación de teléfono"
+msgstr[1] "Tipos de fuente de alimentación de teléfono"
+msgstr[2] "Tipos de fuente de alimentación de teléfono"
 
 #: src/Change_Ticket.php:55
 msgid "Link Ticket/Change"
@@ -26983,7 +26987,7 @@ msgstr "Nunca expira"
 
 #: src/SoftwareLicense.php:749
 msgid "Send alarms on expired licenses"
-msgstr "Enviar alarmas al expirar licencias"
+msgstr "Enviar alarmas sobre licencias vencidas"
 
 #: src/SoftwareLicense.php:824
 #, php-format
@@ -27081,7 +27085,7 @@ msgstr[2] "Tipos de aplicaciones"
 #: src/KnowbaseItem_KnowbaseItemCategory.php:139 src/KnowbaseItem_Item.php:293
 msgctxt "button"
 msgid "Link knowledgebase article"
-msgstr "Vincular artículo de base de conocimientos"
+msgstr "Vincular artículo de la base de conocimientos"
 
 #: src/ClusterType.php:40
 msgid "Cluster type"
@@ -27396,7 +27400,7 @@ msgstr "Desasociar certificado"
 
 #: src/Certificate.php:709
 msgid "Send alarms on expired certificate"
-msgstr "Enviar alarma al expirar certificado"
+msgstr "Enviar alarmas sobre certificado vencido"
 
 #: src/Certificate.php:802
 #, php-format
@@ -27406,7 +27410,7 @@ msgstr "Certificado %1$s expirado el %2$s"
 #: src/Certificate.php:829
 #, php-format
 msgid "Certificate alerts sending failed for entity %1$s"
-msgstr "Fallo al enviar las alertas de certificado para la entidad %1$s"
+msgstr "Falló el envío de alertas de certificado para la entidad %1$s"
 
 #: src/QueuedNotification.php:55
 msgid "Notification queue"
@@ -27683,9 +27687,9 @@ msgstr "Incapaz de enviar notificación usando %1$s"
 #: src/EnclosureModel.php:41
 msgid "Enclosure model"
 msgid_plural "Enclosure models"
-msgstr[0] "Modelo de gabinete"
-msgstr[1] "Modelos de gabinete"
-msgstr[2] "Modelos de gabinete"
+msgstr[0] "Modelo de recinto"
+msgstr[1] "Modelos de recinto"
+msgstr[2] "Modelos de recinto"
 
 #: src/Item_SoftwareLicense.php:110 src/Item_SoftwareVersion.php:102
 msgctxt "software"
@@ -28482,9 +28486,9 @@ msgstr "Cantidad de impresoras"
 #: src/DevicePowerSupplyModel.php:44
 msgid "Device power supply model"
 msgid_plural "Device power supply models"
-msgstr[0] "Modelo de fuente de energía de dispositivo"
-msgstr[1] "Modelos de fuente de energía de dispositivo"
-msgstr[2] "Modelos de fuente de energía de dispositivo"
+msgstr[0] "Modelo de fuente de alimentación de dispositivo"
+msgstr[1] "Modelos de fuente de alimentación de dispositivos"
+msgstr[2] "Modelos de fuente de alimentación de dispositivos"
 
 #: src/MassiveAction.php:248
 msgid "No action available"
@@ -28506,7 +28510,7 @@ msgstr "Seleccioná el tipo de elemento al que aplicás esta acción"
 #: src/MassiveAction.php:594
 msgctxt "button"
 msgid "Add to transfer list"
-msgstr "Agregar a lista de transferencia"
+msgstr "Agregar a la lista de transferencias"
 
 #: src/MassiveAction.php:643
 msgctxt "button"
@@ -28794,9 +28798,9 @@ msgstr[2] "Elementos del ticket"
 #: src/Fieldblacklist.php:48
 msgid "Ignored value for the unicity"
 msgid_plural "Ignored values for the unicity"
-msgstr[0] "Valor omitido por la unicidad"
-msgstr[1] "Valores omitidos por la unicidad"
-msgstr[2] "Valores omitidos por la unicidad"
+msgstr[0] "Valor ignorado para la unicidad"
+msgstr[1] "Valores ignorados para la unicidad"
+msgstr[2] "Valores ignorados para la unicidad"
 
 #: src/ProjectTeam.php:75
 msgid "Project team"
@@ -28913,12 +28917,12 @@ msgstr "Tipo de instancia"
 msgid "Saved search alert"
 msgid_plural "Saved searches alerts"
 msgstr[0] "Alerta de búsqueda guardada"
-msgstr[1] "Alertas de búsqueda guardadas"
-msgstr[2] "Alertas de búsqueda guardadas"
+msgstr[1] "Alertas de búsquedas guardadas"
+msgstr[2] "Alertas de búsquedas guardadas"
 
 #: src/SavedSearch_Alert.php:266
 msgid "Saved searches alerts"
-msgstr "Alertas de búsqueda guardadas"
+msgstr "Alertas de búsquedas guardadas"
 
 #: src/SavedSearch_Alert.php:391
 msgid "less than"
@@ -29224,13 +29228,13 @@ msgstr[2] "Títulos de usuarios"
 #: src/KnowbaseItemCategory.php:49
 msgid "Knowledge base category"
 msgid_plural "Knowledge base categories"
-msgstr[0] "Categoría de base de conocimiento"
-msgstr[1] "Categorías de base de conocimiento"
-msgstr[2] "Categorías de base de conocimiento"
+msgstr[0] "Categoría de la base de conocimientos"
+msgstr[1] "Categorías de la base de conocimientos"
+msgstr[2] "Categorías de la base de conocimientos"
 
 #: src/FieldUnicity.php:53 src/Dropdown.php:1393
 msgid "Fields unicity"
-msgstr "Campos únicos"
+msgstr "Unicidad de campos"
 
 #: src/FieldUnicity.php:86 src/FieldUnicity.php:335
 msgid "Unique fields"
@@ -29368,7 +29372,7 @@ msgstr "%1$s debe ser único por nivel!"
 
 #: src/NotificationTargetConsumableItem.php:45
 msgid "Consumables alarm"
-msgstr "Alerta de materiales"
+msgstr "Alarma de insumos"
 
 #: src/DeviceSoundCardModel.php:44
 msgid "Device sound card model"
@@ -29612,7 +29616,7 @@ msgstr "Periodicidad del aviso"
 
 #: src/NotificationTargetContract.php:61
 msgid "Contracts alarm"
-msgstr "Alerta de contratos"
+msgstr "Alarma de contratos"
 
 #: src/NotificationTargetContract.php:155
 #: src/NotificationTargetContract.php:199
@@ -29919,11 +29923,11 @@ msgstr "Hacerse pasar por usuarios con los mismos o menos permisos"
 
 #: src/User.php:5791
 msgid "Handle users passwords expiration policy"
-msgstr "Manejar la política de caducidad de las contraseñas de los usuarios"
+msgstr "Gestionar la política de vencimiento de contraseñas de usuarios"
 
 #: src/User.php:5792
 msgid "Maximum expiration notifications to send at once"
-msgstr "Máximo de notificaciones de expiración para envío a la vez"
+msgstr "Máximo de notificaciones de vencimiento por envío"
 
 #: src/User.php:6036
 msgid "Your password has expired."
@@ -29957,11 +29961,11 @@ msgstr "¡La contraseña debe incluir al menos un dígito!"
 
 #: src/User.php:6641
 msgid "Password must include at least a lowercase letter!"
-msgstr "¡La contraseña debe incluir al menos un caracter en minúscula!"
+msgstr "¡La contraseña debe incluir al menos una letra minúscula!"
 
 #: src/User.php:6644
 msgid "Password must include at least a uppercase letter!"
-msgstr "¡La contraseña debe incluir al menos un caracter en mayúscula!"
+msgstr "¡La contraseña debe incluir al menos una letra mayúscula!"
 
 #: src/User.php:6647
 msgid "Password must include at least a symbol!"
@@ -29981,9 +29985,9 @@ msgstr[2] "Interfaces de red"
 #: src/PassiveDCEquipmentType.php:41
 msgid "Passive device type"
 msgid_plural "Passive device types"
-msgstr[0] "Tipos de dispositivos pasivos"
-msgstr[1] "Tipos de dispositivos pasivos"
-msgstr[2] "Tipos de dispositivos pasivos"
+msgstr[0] "Tipo de dispositivo pasivo"
+msgstr[1] "Tipos de dispositivo pasivo"
+msgstr[2] "Tipos de dispositivo pasivo"
 
 #: src/Change_Change.php:54
 msgid "Link Change/Change"
@@ -30013,16 +30017,16 @@ msgstr "Todos los usuarios"
 #: src/DeviceMotherboard.php:43
 msgid "System board"
 msgid_plural "System boards"
-msgstr[0] "Placa de sistema"
-msgstr[1] "Placas de sistema"
-msgstr[2] "Placas de sistema"
+msgstr[0] "Placa base"
+msgstr[1] "Placas base"
+msgstr[2] "Placas base"
 
 #: src/DeviceMemoryModel.php:44
 msgid "Device memory model"
 msgid_plural "Device memory models"
 msgstr[0] "Modelo de memoria de dispositivo"
-msgstr[1] "Modelos de memoria de dispositivo"
-msgstr[2] "Modelos de memoria de dispositivo"
+msgstr[1] "Modelos de memoria de dispositivos"
+msgstr[2] "Modelos de memoria de dispositivos"
 
 #: src/DeviceMemoryType.php:41
 msgid "Memory type"
@@ -30190,16 +30194,16 @@ msgstr "Finalizar a las %s"
 #: src/RSSFeed.php:60 src/Central.php:77 src/Config.php:678
 msgid "RSS feed"
 msgid_plural "RSS feed"
-msgstr[0] "Canal RSS"
-msgstr[1] "Canales RSS"
-msgstr[2] "Canales RSS"
+msgstr[0] "Fuente RSS"
+msgstr[1] "Fuentes RSS"
+msgstr[2] "Fuentes RSS"
 
 #: src/RSSFeed.php:62 src/RSSFeed.php:768
 msgid "Personal RSS feed"
 msgid_plural "Personal RSS feed"
-msgstr[0] "Noticia RSS personal"
-msgstr[1] "Noticias RSS personales"
-msgstr[2] "Noticias RSS personales"
+msgstr[0] "Fuente RSS personal"
+msgstr[1] "Fuentes RSS personales"
+msgstr[2] "Fuentes RSS personales"
 
 #: src/RSSFeed.php:539
 msgid "Feed URL is invalid."
@@ -30218,9 +30222,9 @@ msgstr "Revise los permisos del directorio: %s"
 #: src/Profile.php:3040
 msgid "Public RSS feed"
 msgid_plural "Public RSS feeds"
-msgstr[0] "Fuente RSS Público"
-msgstr[1] "Fuentes RSS públicos"
-msgstr[2] "Fuentes RSS publicos"
+msgstr[0] "Fuente RSS pública"
+msgstr[1] "Fuentes RSS públicas"
+msgstr[2] "Fuentes RSS públicas"
 
 #: src/RSSFeed.php:867 src/Reminder.php:824
 msgid "Manage personal"
@@ -30637,7 +30641,7 @@ msgstr "ATX"
 #: src/DevicePowerSupply.php:56 src/DevicePowerSupply.php:83
 #: src/DevicePowerSupply.php:114 src/Item_Rack.php:520
 msgid "Power"
-msgstr "Potencia"
+msgstr "Energía"
 
 #: src/ITILSubItemRights.php:58
 msgid "Add to all items"
@@ -30697,7 +30701,7 @@ msgstr "Nombre del campo"
 
 #: src/CommonITILValidationCron.php:53
 msgid "Alerts on approval which are waiting"
-msgstr "Alertas de aprobación que están en espera"
+msgstr "Alertas sobre aprobaciones que están en espera"
 
 #: src/ImageFormat.php:43
 msgid "Image format"
@@ -30944,7 +30948,7 @@ msgstr "Agregar una máquina virtual"
 
 #: src/ItemVirtualMachine.php:329
 msgid "Processors number"
-msgstr "Número de procesadores"
+msgstr "Cantidad de procesadores"
 
 #: src/ItemVirtualMachine.php:483 src/ItemVirtualMachine.php:592
 msgid "processor number"
@@ -31017,6 +31021,7 @@ msgstr "El complemento %1$s ha sido desinstalado por %2$s."
 #, php-format
 msgid "Plugin %1$s prerequisites are not matching, it cannot be installed."
 msgstr ""
+"Los prerrequisitos del complemento %1$s no coinciden, no se puede instalar."
 
 #: src/Plugin.php:1208
 #, php-format
@@ -31128,7 +31133,7 @@ msgstr "Este complemento requiere el parámetro GLPI %1$s"
 #: src/Plugin.php:2567 src/Plugin.php:3008
 msgctxt "plugin"
 msgid "Enabled"
-msgstr "Activo"
+msgstr "Activado"
 
 #: src/Plugin.php:2570 src/Plugin.php:3009
 msgctxt "plugin"
@@ -31186,7 +31191,7 @@ msgstr "Esto solo afectará a los complementos que ya estén instalados"
 
 #: src/Plugin.php:3176
 msgid "This will only affect plugins already enabled"
-msgstr "Esto solo afectará a los complementos que ya estén habilitados"
+msgstr "Esto solo afectará a los complementos que ya estén activados"
 
 #: src/Plugin.php:3184
 msgid "This will only affect plugins ready to be cleaned"
@@ -31318,9 +31323,9 @@ msgstr[2] "Tipos de licencia"
 #: src/PCIVendor.php:51
 msgid "PCI vendor"
 msgid_plural "PCI vendors"
-msgstr[0] "Fabricantes de dispositivos PCI"
-msgstr[1] "Fabricantes de dispositivos PCI"
-msgstr[2] "Fabricantes de dispositivos PCI"
+msgstr[0] "Fabricante PCI"
+msgstr[1] "Fabricantes PCI"
+msgstr[2] "Fabricantes PCI"
 
 #: src/PCIVendor.php:59 src/PCIVendor.php:77 src/USBVendor.php:60
 #: src/USBVendor.php:78
@@ -31364,11 +31369,11 @@ msgstr "Fecha de fin de visibilidad"
 
 #: src/KnowbaseItem.php:1970
 msgid "Knowledge base administration"
-msgstr "Administración de la base de datos de conocimientos"
+msgstr "Administración de la base de conocimientos"
 
 #: src/KnowbaseItem.php:1971
 msgid "Publish in the FAQ"
-msgstr "Publicar en FAQ"
+msgstr "Publicar en las Preguntas Frecuentes"
 
 #: src/KnowbaseItem.php:1972
 msgid "Comment KB entries"
@@ -31376,7 +31381,7 @@ msgstr "Entradas de comentario de base de conocimiento"
 
 #: src/KnowbaseItem.php:1974
 msgid "Read the FAQ"
-msgstr "Leer la FAQ"
+msgstr "Leer las Preguntas Frecuentes"
 
 #. TRANS: %1$s is the user login, %2$s the revision number
 #: src/KnowbaseItem.php:2060
@@ -31401,7 +31406,7 @@ msgstr "Cantidad de cartuchos nuevos"
 
 #: src/CartridgeItem.php:394 src/CartridgeItem.php:594
 msgid "Send alarms on cartridges"
-msgstr "Envía alarmas de cartuchos"
+msgstr "Enviar alarmas sobre cartuchos"
 
 #: src/CartridgeItem.php:464
 #, php-format
@@ -31409,8 +31414,8 @@ msgid ""
 "Threshold of alarm reached for the type of cartridge: %1$s - Reference %2$s "
 "- Remaining %3$d"
 msgstr ""
-"Umbral de alarma alcanzado para cartucho tipo %1$s - Referencia %2$s - "
-"Remanente %3$d"
+"Se alcanzó el umbral de alarma para el tipo de cartucho: %1$s - Referencia "
+"%2$s - Restante %3$d"
 
 #. TRANS: %s is entity name
 #: src/CartridgeItem.php:511
@@ -31497,7 +31502,7 @@ msgstr "El archivo adjunto no es válido"
 
 #: src/MailCollector.php:1856
 msgid "Retrieve email (Mails receivers)"
-msgstr "Recuperar correo (receptores de correo)"
+msgstr "Recuperar correo (Receptores de correos)"
 
 #: src/MailCollector.php:1857
 msgid "Number of emails to process"
@@ -31505,7 +31510,7 @@ msgstr "Cantidad de correos a procesar"
 
 #: src/MailCollector.php:1861
 msgid "Send alarms on receiver errors"
-msgstr "Enviar alarma al recibir error"
+msgstr "Enviar alarmas sobre errores de receptor"
 
 #: src/MailCollector.php:1971
 msgid ""
@@ -31518,7 +31523,7 @@ msgstr ""
 #: src/MailCollector.php:2004
 #, php-format
 msgid "Receivers in error: %s"
-msgstr "Receptores en error: %s"
+msgstr "Receptores con error: %s"
 
 #: src/MailCollector.php:2291
 msgid "No import"
@@ -31781,7 +31786,7 @@ msgstr ""
 
 #: src/NotificationTargetCertificate.php:49
 msgid "Alarm on expired certificate"
-msgstr "Alarma por certificado caducado"
+msgstr "Alarma por certificado vencido"
 
 #: src/NotificationTargetCertificate.php:56
 msgid "Technician in charge of the certificate"
@@ -32286,7 +32291,7 @@ msgstr "Internet"
 
 #: src/Profile.php:900 src/Profile.php:1672
 msgid "Simcard PIN/PUK"
-msgstr "Tarjeta SIM PIN/PUK"
+msgstr "PIN/PUK de la tarjeta SIM"
 
 #: src/Profile.php:913 src/Profile.php:1775 src/Contact.php:59
 msgid "Contact"
@@ -32448,9 +32453,9 @@ msgstr "PCI"
 #: src/RegisteredID.php:61
 msgid "Registered ID (issued by PCI-SIG)"
 msgid_plural "Registered IDs (issued by PCI-SIG)"
-msgstr[0] "ID registrado (expedido por PCI-SIG)"
-msgstr[1] "IDs registrado (expedido por PCI-SIG)"
-msgstr[2] "IDs registrado (expedido por PCI-SIG)"
+msgstr[0] "ID registrado (emitido por PCI-SIG)"
+msgstr[1] "IDs registrados (emitidos por PCI-SIG)"
+msgstr[2] "IDs registrados (emitidos por PCI-SIG)"
 
 #: src/VirtualMachineState.php:41
 msgid "State of the virtual machine"
@@ -32468,7 +32473,7 @@ msgstr[2] "Plantillas de eventos externos"
 
 #: src/Appliance_Item.php:256
 msgid "Add to an appliance"
-msgstr "Añadir a un aparato"
+msgstr "Agregar a una aplicación"
 
 #: src/Appliance_Item.php:352
 msgid "An appliance is required"
@@ -32820,7 +32825,7 @@ msgid ""
 "This will only work for types from GLPI itself or enabled plugins that "
 "support this action."
 msgstr ""
-"Esto solo funcionará para tipos de GLPI o de complementos habilitados que "
+"Esto solo funcionará para tipos de GLPI o de complementos activados que "
 "soporten esta acción."
 
 #: src/DisplayPreference.php:599
@@ -33108,7 +33113,7 @@ msgstr "Agregar un proveedor"
 
 #: src/Contract.php:652
 msgid "Expiration date + notice"
-msgstr "Fecha que expira + Preaviso"
+msgstr "Fecha de vencimiento + aviso"
 
 #: src/Contract.php:718 src/Contact.php:386
 msgid "Associated supplier"
@@ -33139,7 +33144,7 @@ msgstr "Contrato(s) cuyo preaviso comienza en menos de 30 días"
 
 #: src/Contract.php:1063
 msgid "Send alarms on contracts"
-msgstr "Enviar alarmas de contratos"
+msgstr "Enviar alarmas sobre contratos"
 
 #: src/Contract.php:1214
 msgid "Contract entered in notice time"
@@ -33454,7 +33459,7 @@ msgstr "Versión del protocolo Wifi"
 
 #: src/PDU_Rack.php:99
 msgid "A pdu is required"
-msgstr "Se requiere un PDU"
+msgstr "Se requiere un pdu"
 
 #: src/PDU_Rack.php:103 src/Item_Rack.php:959
 msgid "A rack is required"
@@ -33478,7 +33483,7 @@ msgstr "Lado (desde la perspectiva trasera)"
 
 #: src/PDU_Rack.php:310
 msgid "Side pdus"
-msgstr "PDUs laterales"
+msgstr "Pdus laterales"
 
 #: src/PDU_Rack.php:341 src/Item_Rack.php:155
 msgid "Side"
@@ -33494,7 +33499,7 @@ msgstr "Raqueado"
 
 #: src/PDU_Rack.php:467
 msgid "The pdu will be"
-msgstr "La PDU será"
+msgstr "La pdu será"
 
 #: src/PDU_Rack.php:469
 msgid "racked"
@@ -33569,11 +33574,11 @@ msgstr "Predeterminado para seguimientos"
 
 #: src/RequestType.php:61 src/RequestType.php:106
 msgid "Default for mail recipients"
-msgstr "Correo por defecto para destinatarios"
+msgstr "Por defecto para destinatarios de correo"
 
 #: src/RequestType.php:65 src/RequestType.php:115
 msgid "Default for followup mail recipients"
-msgstr "Recipiente de correo predeterminado para seguimientos"
+msgstr "Por defecto para destinatarios de correo de seguimiento"
 
 #: src/RequestType.php:69 src/RequestType.php:132
 msgid "Request source visible for tickets"
@@ -33598,7 +33603,7 @@ msgstr "Fecha de bloqueo de la cuenta si no se cambia la contraseña"
 
 #: src/NotificationTargetUser.php:227
 msgid "Password expiration date"
-msgstr "Fecha de caducidad de la contraseña"
+msgstr "Fecha de vencimiento de la contraseña"
 
 #: src/NotificationTargetUser.php:228
 msgid "Password has expired"
@@ -33668,7 +33673,7 @@ msgstr "Un correo para %s fue añadido a la cola"
 #: src/NotificationTargetSavedSearch_Alert.php:57
 #, php-format
 msgid "Search  alert for \"%1$s\" (%2$s)"
-msgstr "Alerta de búsqueda de \"%1$s\" (%2$s)"
+msgstr "Alerta  de búsqueda para \"%1$s\" (%2$s)"
 
 #: src/NotificationTargetSavedSearch_Alert.php:64
 msgid "Private search alert"
@@ -33820,7 +33825,7 @@ msgstr "Diccionario de arquitecturas de sistemas operativos"
 #: src/PassiveDCEquipment.php:59
 msgid "Passive device"
 msgid_plural "Passive devices"
-msgstr[0] "Dispositivos pasivos"
+msgstr[0] "Dispositivo pasivo"
 msgstr[1] "Dispositivos pasivos"
 msgstr[2] "Dispositivos pasivos"
 
@@ -34039,7 +34044,7 @@ msgstr[2] "Modelos de baterías de dispositivo"
 #: src/NotificationTargetFieldUnicity.php:41
 #: src/NotificationTargetFieldUnicity.php:86
 msgid "Alert on duplicate record"
-msgstr "Alerta en registro duplicado"
+msgstr "Alerta sobre registro duplicado"
 
 #: src/NotificationTargetFieldUnicity.php:66
 msgid "Item successfully added but duplicate record on"
@@ -34088,24 +34093,25 @@ msgstr "Dominio de correo"
 
 #: src/Entity.php:1172
 msgid "Alarms on cartridges"
-msgstr "Alertas sobre cartuchos"
+msgstr "Alarmas sobre cartuchos"
 
 #: src/Entity.php:1182
 msgid "Alarms on consumables"
-msgstr "Alertas sobre materiales"
+msgstr "Alarmas sobre insumos"
 
 #: src/Entity.php:1262
 msgid "Default value for alarms on contracts"
-msgstr "Valor por defecto para alarmas en contratos"
+msgstr "Valor por defecto para las alarmas sobre contratos"
 
 #: src/Entity.php:1272
 msgid "Default value for alarms on financial and administrative information"
 msgstr ""
-"Valor por defecto para alarmas en información financiera y administrativa"
+"Valor por defecto para las alarmas sobre información financiera y "
+"administrativa"
 
 #: src/Entity.php:1312
 msgid "Send Certificate alarms before"
-msgstr "Enviar las alarmas de certificado antes de"
+msgstr "Enviar alarmas de Certificado antes de"
 
 #: src/Entity.php:1376
 msgid "Alerts on tickets which are not solved"
@@ -34225,11 +34231,11 @@ msgstr "Total"
 
 #: src/Budget.php:645 src/Budget.php:651
 msgid "Total spent on the budget"
-msgstr "Gasto total del presupuesto"
+msgstr "Gasto total en el presupuesto"
 
 #: src/Budget.php:652
 msgid "Total remaining on the budget"
-msgstr "Remanante total del presupuesto"
+msgstr "Total restante del presupuesto"
 
 #: src/Group.php:62
 msgid "Group"
@@ -34655,9 +34661,9 @@ msgstr ""
 #: src/DeviceMotherboardModel.php:44
 msgid "System board model"
 msgid_plural "System board models"
-msgstr[0] "Modelo de placa de sistema"
-msgstr[1] "Modelos de placa de sistema"
-msgstr[2] "Modelos de placa de sistema"
+msgstr[0] "Modelo de placa base"
+msgstr[1] "Modelos de placa base"
+msgstr[2] "Modelos de placa base"
 
 #: src/DeviceHardDriveType.php:40
 msgid "Device hard drive type"
@@ -34675,15 +34681,15 @@ msgstr[2] "Modelos de insumo"
 
 #: src/ConsumableItem.php:221
 msgid "Number of used consumables"
-msgstr "Cantidad de materiales utilizados"
+msgstr "Cantidad de insumos utilizados"
 
 #: src/ConsumableItem.php:239
 msgid "Number of new consumables"
-msgstr "Cantidad de materiales nuevos"
+msgstr "Cantidad de insumos nuevos"
 
 #: src/ConsumableItem.php:321 src/ConsumableItem.php:462
 msgid "Send alarms on consumables"
-msgstr "Enviar alarmas de materiales"
+msgstr "Enviar alarmas sobre insumos"
 
 #: src/ConsumableItem.php:396
 #, php-format
@@ -34691,14 +34697,14 @@ msgid ""
 "Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s"
 " - Remaining %3$d"
 msgstr ""
-"Umbral de alarma alcanzado para insumo tipo %1$s - Referencia %2$s - "
-"Remanente %3$d"
+"Se alcanzó el umbral de alarma para el tipo de insumo: %1$s - Referencia "
+"%2$s - Restante %3$d"
 
 #. TRANS: %s is entity name
 #: src/ConsumableItem.php:447
 #, php-format
 msgid "%s: send consumable alert failed"
-msgstr "%s: fallo al enviar la alerta de consumible"
+msgstr "%s: no se pudo enviar la alerta de insumo"
 
 #: js/planning.js:283
 msgid "Clone"
@@ -35251,7 +35257,7 @@ msgstr ""
 
 #: js/modules/Forms/RendererController.js:319
 msgid "Details:"
-msgstr ""
+msgstr "Detalles:"
 
 #: js/modules/Search/Table.js:72
 msgid "Submit current search before saving it"

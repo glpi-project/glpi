@@ -18,11 +18,11 @@
 # Pierre <plebel@teclib.com>, 2025
 # alexis swyngedauw, 2025
 # Xavier CAILLAUD <thetsmr@gmail.com>, 2025
-# Johan Cwiklinski, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # Adrien Clairembault, 2025
 # Legastelois François <flegastelois@teclib.com>, 2025
 # Cédric Anne, 2025
+# Johan Cwiklinski, 2025
 # 
 #, fuzzy
 msgid ""
@@ -31,7 +31,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-04 18:54+0100\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Cédric Anne, 2025\n"
+"Last-Translator: Johan Cwiklinski, 2025\n"
 "Language-Team: French (France) (https://app.transifex.com/glpi/teams/1637/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -9352,6 +9352,8 @@ msgid ""
 "Child locations will not be transferred with the parent to avoid visibility "
 "and hierarchy issues."
 msgstr ""
+"Les lieux enfant ne seront pas transférés avec le parent pour prévenir des "
+"problème de visibilité et de hiérarchie."
 
 #: templates/pages/admin/transfer.html.twig
 msgid "Empty the location"
@@ -9843,7 +9845,7 @@ msgstr "Importation de nouveaux utilisateurs"
 #: templates/pages/admin/helpdesk_home_translation.html.twig
 #: templates/pages/admin/form/form_translation.html.twig
 msgid "No default value"
-msgstr ""
+msgstr "Aucune valeur par défaut"
 
 #: templates/pages/admin/helpdesk_home_translation.html.twig
 #: templates/pages/admin/form/form_translation.html.twig
@@ -10216,6 +10218,8 @@ msgid ""
 "This destination is not available, the plugin \"%1$s\" is deactivated or "
 "removed."
 msgstr ""
+"La destination n'est pas disponible, le plugin « %1$s » a été désactivé ou "
+"supprimé."
 
 #: templates/pages/admin/form/form_translation.html.twig
 #, php-format
@@ -18748,12 +18752,12 @@ msgstr "Import des conditions de validation..."
 #: src/Glpi/Form/Export/Serializer/FormSerializer.php:145
 #, php-format
 msgid "Unknown custom type: %s"
-msgstr ""
+msgstr "Type personnalisé inconnu : %s"
 
 #: src/Glpi/Form/Export/Serializer/FormSerializer.php:153
 #, php-format
 msgid "Missing plugin: %s"
-msgstr ""
+msgstr "Plugin manquant : %s"
 
 #: src/Glpi/Form/Section.php:89
 msgid "Section"
@@ -23348,6 +23352,8 @@ msgid ""
 "Download and update all plugins to their latest compatible versions, then "
 "reactivate active ones."
 msgstr ""
+"Télécharger et mettre à jour tous les plugin dans leur dernière version "
+"compatible, puis réactiver ceux qui l'étaient."
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:99
 #, php-format
@@ -23355,49 +23361,55 @@ msgid ""
 "Plugin \"%s\" was installed manually and therefore has not been updated "
 "automatically."
 msgstr ""
+"Le plugin « %s » a été installé manuellement et ne peut donc être mis à jour"
+" automatiquement."
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:112
 #, php-format
 msgid "Plugin \"%s\" is not present in the marketplace."
-msgstr ""
+msgstr "Le plugin « %s » n'est pas présent sur le marketplace."
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:123
 #, php-format
 msgid "Plugin \"%s\" is not available for your GLPI version."
-msgstr ""
+msgstr "Le plugin « %s » n'est pas disponible pour votre version de GLPI."
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:132
 #, php-format
 msgid "Plugin \"%s\" is already up-to-date."
-msgstr ""
+msgstr "Le plugin « %s » est déjà à jour."
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:143
 #: src/Glpi/Console/Marketplace/DownloadCommand.php:88
 #, php-format
 msgid "Plugin \"%s\" has a local source versioning directory."
 msgstr ""
+"Le plugin \"%s\" contient un dossier des fichiers d'un gestionnaire de "
+"versions."
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:150
 #, php-format
 msgid "Plugin \"%s\" has an available update but its directory is not writable."
 msgstr ""
+"Une mise à jour est disponible pour le plugin  « %s », mais son dossier "
+"n'est pas accessible en écriture."
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:162
 #: src/Glpi/Console/Marketplace/DownloadCommand.php:99
 #, php-format
 msgid "Plugin \"%s\" downloaded successfully"
-msgstr ""
+msgstr "Plugin « %s » téléchargé avec succès"
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:166
 #: src/Glpi/Console/Marketplace/DownloadCommand.php:100
 #, php-format
 msgid "Plugin \"%s\" could not be downloaded"
-msgstr ""
+msgstr "Le plugin « %s » ne peut pas être téléchargé"
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:229
 #, php-format
 msgid "Plugin \"%1$s\" has been updated and reactivated."
-msgstr ""
+msgstr "Le plugin « %1$s » a été mis à jour et peut être activé."
 
 #: src/Glpi/Console/Marketplace/DownloadCommand.php:52
 msgid "Download plugin from the GLPI marketplace"
@@ -31047,6 +31059,8 @@ msgstr "Le plugin « %1$s » a été désinstallé par %2$s."
 #, php-format
 msgid "Plugin %1$s prerequisites are not matching, it cannot be installed."
 msgstr ""
+"Les pré-requis du plugin %1$s ne sont pas satisfaits, il ne peut être "
+"activé."
 
 #: src/Plugin.php:1208
 #, php-format
@@ -35285,7 +35299,7 @@ msgstr ""
 
 #: js/modules/Forms/RendererController.js:319
 msgid "Details:"
-msgstr ""
+msgstr "Détails :"
 
 #: js/modules/Search/Table.js:72
 msgid "Submit current search before saving it"

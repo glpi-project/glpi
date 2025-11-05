@@ -10,8 +10,8 @@
 # in dow <in_dow@hotmail.com>, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # 青海K, 2025
-# INOUE Daisuke, 2025
 # Cédric Anne, 2025
+# INOUE Daisuke, 2025
 # 
 #, fuzzy
 msgid ""
@@ -20,7 +20,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-04 18:54+0100\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Cédric Anne, 2025\n"
+"Last-Translator: INOUE Daisuke, 2025\n"
 "Language-Team: Japanese (Japan) (https://app.transifex.com/glpi/teams/1637/ja_JP/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -9530,7 +9530,7 @@ msgstr "新しいユーザーをインポート"
 #: templates/pages/admin/helpdesk_home_translation.html.twig
 #: templates/pages/admin/form/form_translation.html.twig
 msgid "No default value"
-msgstr ""
+msgstr "標準値なし"
 
 #: templates/pages/admin/helpdesk_home_translation.html.twig
 #: templates/pages/admin/form/form_translation.html.twig
@@ -18090,12 +18090,12 @@ msgstr "検証条件をインポートしています..."
 #: src/Glpi/Form/Export/Serializer/FormSerializer.php:145
 #, php-format
 msgid "Unknown custom type: %s"
-msgstr ""
+msgstr "不明なカスタム型 : %s"
 
 #: src/Glpi/Form/Export/Serializer/FormSerializer.php:153
 #, php-format
 msgid "Missing plugin: %s"
-msgstr ""
+msgstr "プラグインが見つかりません : %s"
 
 #: src/Glpi/Form/Section.php:89
 msgid "Section"
@@ -22387,57 +22387,57 @@ msgstr "キー"
 msgid ""
 "Download and update all plugins to their latest compatible versions, then "
 "reactivate active ones."
-msgstr ""
+msgstr "すべてのプラグインを最新の互換性のあるバージョンにするため、ダウンロード・更新します。その後、利用するプラグインを有効にしてください。"
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:99
 #, php-format
 msgid ""
 "Plugin \"%s\" was installed manually and therefore has not been updated "
 "automatically."
-msgstr ""
+msgstr "「%s」プラグインは手動でインストールされたため、自動更新できません。"
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:112
 #, php-format
 msgid "Plugin \"%s\" is not present in the marketplace."
-msgstr ""
+msgstr "「%s」プラグインは、現在マーケットプレース上にありません。"
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:123
 #, php-format
 msgid "Plugin \"%s\" is not available for your GLPI version."
-msgstr ""
+msgstr "「%s」プラグインは、お使いの GLPI のバージョンでは利用できません。"
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:132
 #, php-format
 msgid "Plugin \"%s\" is already up-to-date."
-msgstr ""
+msgstr "「%s」プラグインは、最新状態です。"
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:143
 #: src/Glpi/Console/Marketplace/DownloadCommand.php:88
 #, php-format
 msgid "Plugin \"%s\" has a local source versioning directory."
-msgstr ""
+msgstr "「%s」プラグインには、ローカルでバージョン管理しているディレクトリーがあります。"
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:150
 #, php-format
 msgid "Plugin \"%s\" has an available update but its directory is not writable."
-msgstr ""
+msgstr "「%s」プラグインに更新がありますが、ディレクトリーが書き込めない権限設定です。"
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:162
 #: src/Glpi/Console/Marketplace/DownloadCommand.php:99
 #, php-format
 msgid "Plugin \"%s\" downloaded successfully"
-msgstr ""
+msgstr "「%s」プラグインをダウンロードしました"
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:166
 #: src/Glpi/Console/Marketplace/DownloadCommand.php:100
 #, php-format
 msgid "Plugin \"%s\" could not be downloaded"
-msgstr ""
+msgstr "「%s」プラグインはダウンロードできません"
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:229
 #, php-format
 msgid "Plugin \"%1$s\" has been updated and reactivated."
-msgstr ""
+msgstr "「%1$s」プラグインを更新し、有効にしました。"
 
 #: src/Glpi/Console/Marketplace/DownloadCommand.php:52
 msgid "Download plugin from the GLPI marketplace"
@@ -29568,7 +29568,7 @@ msgstr "%2$s が「%1$s」プラグインをアンインストールしました
 #: src/Plugin.php:1190
 #, php-format
 msgid "Plugin %1$s prerequisites are not matching, it cannot be installed."
-msgstr ""
+msgstr "「%1$s」プラグインは、前提条件が一致しないためインストールできません。"
 
 #: src/Plugin.php:1208
 #, php-format
@@ -33524,7 +33524,7 @@ msgstr "フォームの送信に失敗しました。管理者に連絡してく
 
 #: js/modules/Forms/RendererController.js:319
 msgid "Details:"
-msgstr ""
+msgstr "詳細 : "
 
 #: js/modules/Search/Table.js:72
 msgid "Submit current search before saving it"
