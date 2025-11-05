@@ -142,6 +142,33 @@ class Dashboard extends CommonDBTM
             );
         }
 
+        if (\is_numeric($ID)) {
+            // Search also on the `id` field.
+            // This is mandatory to handle the `$this->getFromDB($this->getID());` reload case.
+            $iterator = $DB->request([
+                'FROM'  => self::getTable(),
+                'WHERE' => [
+                    'id' => $ID,
+                ],
+                'LIMIT' => 1,
+            ]);
+            if (count($iterator) == 1) {
+                $this->fields = $iterator->current();
+                $this->key    = $this->fields['key'];
+                $this->post_getFromDB();
+                return true;
+            } elseif (count($iterator) > 1) {
+                throw new TooManyResultsException(
+                    sprintf(
+                        '`%1$s::getFromDB()` expects to get one result, %2$s found in query "%3$s".',
+                        static::class,
+                        count($iterator),
+                        $iterator->getSql()
+                    )
+                );
+            }
+        }
+
         return false;
     }
 
