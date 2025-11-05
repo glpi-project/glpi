@@ -200,26 +200,32 @@ class RuleAsset extends Rule
         $actions['_affect_user_by_regex']['duplicatewith']     = 'users_id';
 
         // Group ownership assignment
+        $field = '_groups_id';
         $actions['groups_id']['name']          = Group::getTypeName(1);
         $actions['groups_id']['type']          = 'dropdown';
         $actions['groups_id']['table']         = 'glpi_groups';
         $actions['groups_id']['condition']     = ['is_itemgroup' => 1];
         $actions['groups_id']['force_actions'] = ['assign', 'append', 'defaultfromuser', 'firstgroupfromuser'];
-        $actions['groups_id']['appendto']      = '_groups_id';
+        $actions['groups_id']['appendto']      = $field;
         $actions['groups_id']['permitseveral'] = ['append'];
+        $actions['groups_id']['appendtoarray'] = ['_rule_action' => null]; // _rule_action will be set in executeActions()
+        $actions['groups_id']['appendtoarrayfield'] = $field;
 
         $actions['users_id_tech']['table']      = 'glpi_users';
         $actions['users_id_tech']['type']       = 'dropdown_users';
         $actions['users_id_tech']['name']       = __('Technician in charge');
 
         // Group assignment (in charge)
+        $field = '_groups_id_tech';
         $actions['groups_id_tech']['name']      = __('Group in charge');
         $actions['groups_id_tech']['type']      = 'dropdown';
         $actions['groups_id_tech']['table']     = 'glpi_groups';
         $actions['groups_id_tech']['condition'] = ['is_assign' => 1];
-        $actions['groups_id_tech']['appendto']  = '_groups_id_tech';
+        $actions['groups_id_tech']['appendto']  = $field;
         $actions['groups_id_tech']['force_actions'] = ['assign', 'append'];
         $actions['groups_id_tech']['permitseveral'] = ['append'];
+        $actions['groups_id_tech']['appendtoarray'] = ['_rule_action' => null]; // _rule_action will be set in executeActions()
+        $actions['groups_id_tech']['appendtoarrayfield'] = $field;
 
         $actions['comment']['table']            = '';
         $actions['comment']['field']            = 'comment';
@@ -281,8 +287,8 @@ class RuleAsset extends Rule
                             && isset($actions[$action->fields["field"]]["appendtoarrayfield"])
                         ) {
                             $value = $actions[$action->fields["field"]]["appendtoarray"];
-                            $value[$actions[$action->fields["field"]]["appendtoarrayfield"]]
-                            = $action->fields["value"];
+                            $value["_rule_action"] = $action->fields["action_type"];
+                            $value[ $actions[$action->fields["field"]]["appendtoarrayfield"] ] = $action->fields["value"];
                         }
                         $output[$actions[$action->fields["field"]]["appendto"]][] = $value;
                         break;
