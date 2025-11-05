@@ -279,7 +279,7 @@ describe('Form rendering', () => {
 
     it('Items hidden by condition are ignored by destinations', () => {
         cy.login();
-        cy.importForm('form-with-a-hidden-question-2025-09-19.json').then((id) => {
+        cy.importForm('form-with-hidden-items.json').then((id) => {
             cy.visit(`/Form/Render/${id}`);
         });
 
@@ -288,14 +288,17 @@ describe('Form rendering', () => {
         cy.findByRole('button', {name : "Submit"}).click();
 
         // Go to created ticket
-        cy.findByRole('link', {name : "Form with a hidden question"}).click();
+        cy.findByRole('link', {name : "Form with hidden items"}).click();
 
         // Urgency should be set from the visible question value
         cy.getDropdownByLabelText('Urgency').should('have.text', "Very high");
 
         // Hidden question should not be referenced in the ticket description
+        cy.findByText('Visible section').should('exist');
         cy.findByText('1) Visible question').should('exist');
         cy.findByText('2) Hidden question').should('not.exist');
+        cy.findByText('Hidden section').should('not.exist');
+        cy.findByText('1) Visible question inside hidden section').should('not.exist');
     });
 
     it('test item question rendering with advanced configuration', () => {
