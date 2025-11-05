@@ -108,7 +108,7 @@
             'itemtype_name': '_link[itemtype_2]',
             'itemtypes': ['Ticket', 'Change', 'Problem'],
             'checkright': true,
-            'entity_restrict': session('glpiactiveentities'),
+            'entity_restrict': item.isRecursive() ? item.getEntityID() : call('getSonsOf', ['glpi_entities', item.getEntityID()]),
             'default_itemtype': params['_link']['itemtype_2'] ?? '',
             'default_items_id': params['_link']['items_id_2'] ?? '',
             'aria_label': __('ITIL type selector'),

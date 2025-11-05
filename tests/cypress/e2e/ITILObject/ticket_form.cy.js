@@ -418,5 +418,15 @@ describe("Ticket Form", () => {
         cy.findByLabelText('Linked item group - Test ticket').should('exist');
         cy.findByLabelText('Linked item group - Test ticket').findByRole('link').should('not.exist');
         cy.findByLabelText('Linked item group - Test ticket').findByLabelText('Unlink').should('not.exist');
+
+        // We check that a child problem can only see the child ticket and not the root ones
+        cy.visit(`/front/problem.form.php`);
+        cy.findByLabelText('Linked assistance objects - section').findByText('Add').click();
+        // We have to scroll otherwise cypress doesn't see the dropdown
+        cy.findByLabelText('Linked assistance objects - section').scrollIntoView({ offset: { top: 150 } });
+        cy.getDropdownByLabelText('ITIL type selector').selectDropdownValue('Tickets');
+        cy.findByLabelText('Linked assistance objects - section').scrollIntoView({ offset: { top: 150 } });
+        cy.getDropdownByLabelText('ITIL item selector').hasDropdownValue(`Child ticket - ${child_ticket_id}`);
+        cy.getDropdownByLabelText('ITIL item selector').hasDropdownValue(`Test ticket`, false);
     });
 });
