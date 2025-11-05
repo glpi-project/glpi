@@ -678,6 +678,49 @@ class RuleAssetTest extends DbTestCase
     }
 
     /**
+     * Test to ensure the rule to assign groups (ownership) to asset preserve previously groups
+     *
+     * action : append
+     * field: groups_id
+     */
+    public function testAssignTechGroupPreserveExistingGroups(): void
+    {
+        $auth = $this->login();
+        $entity_id = $auth->user->fields['entities_id'];
+        $asset_name_to_trigger_rule = $this->getUniqueString();
+        // arrange - create 2 groups + create rule to associate a Computer with created groups
+        $initial_group = $this->createItem(\Group::class, ['name' => $this->getUniqueString()]);
+        $group_for_rule = $this->createItem(\Group::class, ['name' => $this->getUniqueString()]);
+        $rule_builder = new RuleBuilder(__FUNCTION__, \RuleAsset::class);
+        $rule_builder->setEntity($entity_id);
+        $rule_builder->addCriteria('name', Rule::PATTERN_IS, $asset_name_to_trigger_rule);
+        $rule_builder->addAction('append', 'groups_id_tech', $group_for_rule->getID());
+        $rule_builder->setCondtion(\RuleAsset::ONUPDATE);
+        $this->createRule($rule_builder);
+
+        $computer = $this->createItem(Computer::class, [
+            'name'        => $this->getUniqueString(),
+            'entities_id' => $entity_id,
+            'groups_id_tech'   => [$initial_group->getID()],
+        ]);
+        $computer->getFromDB($computer->getID());
+        assert($computer->fields['groups_id_tech'] === [$initial_group->getID()]); // double check as "createItem" should have done it, but more clear this way
+
+        // act - update the Computer : triggers rule to append $group_for_rule to Asset ownership groups
+        $this->updateItem(Computer::class, $computer->getID(), ['name' => $asset_name_to_trigger_rule]);
+
+        // assert - check that the computer has the tech groups assigned
+        $associations = (new \Group_Item())->find([
+            'items_id' => $computer->getID(),
+            'itemtype' => $computer::getType(),
+            'groups_id' => [$initial_group->getID(), $group_for_rule->getID()],
+            'type' => \Group_Item::GROUP_TYPE_TECH,
+        ]);
+        $fetched_group_ids = array_column($associations, 'groups_id');
+        $this->assertEqualsCanonicalizing([$initial_group->getID(), $group_for_rule->getID()], $fetched_group_ids, 'Unexpected Asset associated owner groups');
+    }
+
+    /**
      * Test rule to assign groups (ownership) to asset on creation
      *
      * action : append
@@ -713,6 +756,49 @@ class RuleAssetTest extends DbTestCase
         $fetched_group_ids = array_column($associations, 'groups_id');
 
         $this->assertEqualsCanonicalizing([$group_1->getID(), $group_2->getID()], $fetched_group_ids, 'Unexpected Asset associated tech groups');
+    }
+
+    /**
+     * Test to ensure the rule to assign groups (ownership) to asset preserve previously groups
+     *
+     * action : append
+     * field: groups_id
+     */
+    public function testAssignGroupPreserveExistingGroups(): void
+    {
+        $auth = $this->login();
+        $entity_id = $auth->user->fields['entities_id'];
+        $asset_name_to_trigger_rule = $this->getUniqueString();
+        // arrange - create 2 groups + create rule to associate a Computer with created groups
+        $initial_group = $this->createItem(\Group::class, ['name' => $this->getUniqueString()]);
+        $group_for_rule = $this->createItem(\Group::class, ['name' => $this->getUniqueString()]);
+        $rule_builder = new RuleBuilder(__FUNCTION__, \RuleAsset::class);
+        $rule_builder->setEntity($entity_id);
+        $rule_builder->addCriteria('name', Rule::PATTERN_IS, $asset_name_to_trigger_rule);
+        $rule_builder->addAction('append', 'groups_id', $group_for_rule->getID());
+        $rule_builder->setCondtion(\RuleAsset::ONUPDATE);
+        $this->createRule($rule_builder);
+
+        $computer = $this->createItem(Computer::class, [
+            'name'        => $this->getUniqueString(),
+            'entities_id' => $entity_id,
+            'groups_id'   => [$initial_group->getID()],
+        ]);
+        $computer->getFromDB($computer->getID());
+        assert($computer->fields['groups_id'] === [$initial_group->getID()]); // double check as "createItem" should have done it, but more clear this way
+
+        // act - update the Computer : triggers rule to append $group_for_rule to Asset ownership groups
+        $this->updateItem(Computer::class, $computer->getID(), ['name' => $asset_name_to_trigger_rule]);
+
+        // assert - check that the computer has the tech groups assigned
+        $associations = (new \Group_Item())->find([
+            'items_id' => $computer->getID(),
+            'itemtype' => $computer::getType(),
+            'groups_id' => [$initial_group->getID(), $group_for_rule->getID()],
+            'type' => \Group_Item::GROUP_TYPE_NORMAL,
+        ]);
+        $fetched_group_ids = array_column($associations, 'groups_id');
+        $this->assertEqualsCanonicalizing([$initial_group->getID(), $group_for_rule->getID()], $fetched_group_ids, 'Unexpected Asset owner groups');
     }
 
     public function testGroupUserAssignFromDefaultUser()
