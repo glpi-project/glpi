@@ -59,6 +59,12 @@ enum Environment: string
     case TESTING = 'testing';
 
     /**
+     * E2E testing environment.
+     * Suitable for CI runners and local test execution.
+     */
+    case E2E = 'e2e_testing';
+
+    /**
      * Development environment.
      * Suitable for developer machines and development servers.
      */
@@ -175,6 +181,15 @@ enum Environment: string
                 'GLPI_STRICT_ENV'                    => true,
                 'GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING' => '1',
             ],
+            self::E2E => [
+                'GLPI_CONFIG_DIR'          => $root_dir . '/tests/e2e/glpi_config',
+                'GLPI_VAR_DIR'             => $root_dir . '/tests/e2e/glpi_files',
+                'GLPI_LOG_LVL'             => LogLevel::DEBUG,
+                'GLPI_STRICT_ENV'          => true,
+                'GLPI_PLUGINS_DIRECTORIES' => [
+                    $root_dir . '/tests/fixtures/plugins',
+                ],
+            ],
         };
     }
 
@@ -188,7 +203,11 @@ enum Environment: string
         // Only production/staging environment are considered as environments
         // where resources are not supposed to change.
         // In others environments, we must match for changes.
-        if ($this === self::TESTING || $this === self::DEVELOPMENT) {
+        if (
+            $this === self::TESTING
+            || $this === self::DEVELOPMENT
+            || $this === self::E2E
+        ) {
             return true;
         }
 
@@ -233,10 +252,28 @@ enum Environment: string
 
     public function shouldAddExtraE2EDataDuringInstallation(): bool
     {
+        return
+            $this->shouldAddExtraCypressDataDuringInstallation()
+            || $this->shouldAddExtraPlaywrightDataDuringInstallation()
+        ;
+    }
+
+    public function shouldAddExtraCypressDataDuringInstallation(): bool
+    {
         // Note: this will be removed when we switch to playwright.
         return match ($this) {
             default       => false,
             self::TESTING => true,
+        };
+    }
+
+    public function shouldAddExtraPlaywrightDataDuringInstallation(): bool
+    {
+        // Note: this is a temporary method, it should be replaced by a proper
+        // seeder system.
+        return match ($this) {
+            default   => false,
+            self::E2E => true,
         };
     }
 }
