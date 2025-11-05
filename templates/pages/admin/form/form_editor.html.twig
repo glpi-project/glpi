@@ -414,6 +414,9 @@
     {# Block has conditions modal #}
     {{ include('pages/admin/form/item_has_conditions_for_deletion_modal.html.twig') }}
     {{ include('pages/admin/form/item_has_conditions_for_new_question_type_modal.html.twig') }}
+
+    {# Delete non-empty section modal #}
+    {{ include('pages/admin/form/delete_non_empty_section_modal.html.twig') }}
 </form>
 
 {% if can_update %}

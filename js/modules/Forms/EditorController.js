@@ -1428,10 +1428,10 @@ export class GlpiFormEditorController
 
         if (uuid) {
             let targetElement;
-            if (type === 'question') {
-                // Find question with matching UUID
+            if (type === 'question' || type === 'comment') {
+                // Find block with matching UUID
                 targetElement = $(this.#target)
-                    .find('[data-glpi-form-editor-question]')
+                    .find('[data-glpi-form-editor-block]')
                     .filter((_index, item) => this.#getItemInput($(item), "uuid") === uuid)
                     .first();
             } else if (type === 'section') {
@@ -2163,6 +2163,90 @@ export class GlpiFormEditorController
             return;
         }
 
+        // Check if the section has any blocks (questions or comments)
+        const blocks = section.find("[data-glpi-form-editor-block]");
+        if (blocks.length > 0) {
+            // Section is not empty, show confirmation modal
+            this.#showDeleteNonEmptySectionModal(section);
+            return;
+        }
+
+        // Section is empty, proceed with deletion
+        this.#performSectionDeletion(section);
+    }
+
+    /**
+     * Show the modal warning about deleting a non-empty section
+     *
+     * @param {jQuery} section The section to delete
+     */
+    #showDeleteNonEmptySectionModal(section) {
+        const blocks = section.find("[data-glpi-form-editor-block]");
+
+        // Populate the list of elements that will be deleted
+        const modalList = $('[data-glpi-form-editor-delete-section-items-list]');
+        modalList.empty();
+
+        const template = $('[data-glpi-form-editor-delete-section-item-template]').html();
+
+        blocks.each((_index, block) => {
+            const $block = $(block);
+            const item = $(template);
+            const nameElement = item.find('[data-glpi-form-editor-delete-section-item-name]');
+
+            const name = this.#getItemInput($block, "name");
+            const uuid = this.#getItemInput($block, "uuid");
+
+            nameElement.text(name || __('Untitled'));
+            nameElement.attr('data-glpi-form-editor-delete-section-item-uuid', uuid);
+
+            // Determine the type (question or comment)
+            if ($block.is('[data-glpi-form-editor-question]')) {
+                nameElement.attr('data-glpi-form-editor-delete-section-item-type', 'question');
+            } else if ($block.is('[data-glpi-form-editor-comment]')) {
+                nameElement.attr('data-glpi-form-editor-delete-section-item-type', 'comment');
+            }
+
+            modalList.append(item);
+        });
+
+        // Set up click handlers for the items
+        modalList.find('[data-glpi-form-editor-delete-section-item-selector][href="#"]').on('click', e => {
+            e.preventDefault();
+
+            // Hide modal
+            $('[data-glpi-form-editor-delete-non-empty-section-modal]').modal('hide');
+
+            // Get the UUID and type
+            const clickedElement = $(e.currentTarget);
+            const uuid = clickedElement.data('glpi-form-editor-delete-section-item-uuid');
+            const type = clickedElement.data('glpi-form-editor-delete-section-item-type');
+
+            // Find and scroll to the element with matching UUID
+            this.#findAndHighlightElement(type, uuid);
+        });
+
+        // Set up the confirm button handler
+        $('[data-glpi-form-editor-confirm-delete-section]')
+            .off('click')
+            .on('click', () => {
+                // Hide modal
+                $('[data-glpi-form-editor-delete-non-empty-section-modal]').modal('hide');
+
+                // Proceed with deletion
+                this.#performSectionDeletion(section);
+            });
+
+        // Show the modal
+        $('[data-glpi-form-editor-delete-non-empty-section-modal]').modal('show');
+    }
+
+    /**
+     * Perform the actual section deletion (after checks and confirmations)
+     *
+     * @param {jQuery} section The section to delete
+     */
+    #performSectionDeletion(section) {
         if (section.prev().length == 0) {
             // If this is the first section of the form, set the next section as active if it exists
             if (section.next().length > 0 && this.#getSectionCount() > 2) {
@@ -2186,8 +2270,9 @@ export class GlpiFormEditorController
             }
         }
 
-        // Remove question and update UX
+        // Remove section and update UX
         section.remove();
+        this.#refreshUX();
     }
 
     /**
