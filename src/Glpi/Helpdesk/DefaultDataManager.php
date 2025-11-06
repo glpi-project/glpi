@@ -169,6 +169,8 @@ final class DefaultDataManager
             $translated_description = $TRANSLATE->translate($description, 'glpi', $lang);
             if ($translated_name !== $name) {
                 $form_stmt->execute([Form::TRANSLATION_KEY_NAME, $lang, json_encode(['one' => $translated_name]), $name_hash]);
+            } else {
+                $form_stmt->execute([Form::TRANSLATION_KEY_NAME, $lang, '{}',  $name_hash]);
             }
             if ($translated_description !== $description) {
                 $form_stmt->execute([Form::TRANSLATION_KEY_DESCRIPTION, $lang, json_encode(['one' => $translated_description]), $description_hash]);
