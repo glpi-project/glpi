@@ -170,16 +170,7 @@ final class DefaultDataManager
             if ($translated_name !== $name) {
                 $form_stmt->execute([Form::TRANSLATION_KEY_NAME, $lang, json_encode(['one' => $translated_name]), $name_hash]);
             } else {
-                $DB->insert(
-                    ItemTranslation::getTable(),
-                    [
-                        'itemtype'     => Form::class,
-                        'items_id'     => $forms_id,
-                        'language'     => $lang,
-                        'key'          => Form::TRANSLATION_KEY_NAME,
-                        'translations' => '{}',
-                    ]
-                );
+                $form_stmt->execute([Form::TRANSLATION_KEY_NAME, $lang, '{}',  $name_hash]);
             }
             if ($translated_description !== $description) {
                 $form_stmt->execute([Form::TRANSLATION_KEY_DESCRIPTION, $lang, json_encode(['one' => $translated_description]), $description_hash]);
