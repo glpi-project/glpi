@@ -54,6 +54,7 @@ switch ($_POST['action']) {
 
     case 'delete':
         if (!empty($_POST['itemtype']) && !empty($_POST['items_id'])) {
+            $deleted = true;
             if ($_POST['params']['id'] > 0) {
                 if ($item_ticket->canPurge()) {
                     /** @var DBmysql $DB */
@@ -69,10 +70,12 @@ switch ($_POST['action']) {
                     foreach ($iterator as $data) {
                         if ($item_ticket->can($data['id'], DELETE)) {
                             $item_ticket->getFromDB($data['id']);
-                            $item_ticket->delete(['id' => $data['id']]);
+                            $deleted = $deleted && $item_ticket->delete(['id' => $data['id']]);
                         }
                     }
                 }
+            }
+            if ($deleted) {
                 unset($_POST['params']['items_id'][$_POST['itemtype']][array_search($_POST['items_id'], $_POST['params']['items_id'][$_POST['itemtype']])]);
             }
             Item_Ticket::itemAddForm(new Ticket(), $_POST['params']);
