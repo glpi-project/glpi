@@ -41,6 +41,7 @@ use Item_DeviceCamera;
 use Item_DeviceCamera_ImageFormat;
 use Item_DeviceCamera_ImageResolution;
 use Item_Devices;
+use stdClass;
 
 class Camera extends Device
 {
@@ -70,7 +71,7 @@ class Camera extends Device
     }
 
 
-    protected function itemdeviceAdded(Item_Devices $itemdevice, $val)
+    protected function itemdeviceAdded(Item_Devices $itemdevice, stdClass $val): void
     {
 
         //handle resolutions
@@ -87,7 +88,7 @@ class Camera extends Device
         }
     }
 
-    private function handleResolution($itemdevice, $val, $is_video = false)
+    private function handleResolution(Item_Devices $itemdevice, array|string $val, bool $is_video = false): void
     {
         if (!is_array($val)) {
             $val = [$val];
@@ -120,7 +121,7 @@ class Camera extends Device
         }
     }
 
-    private function handleFormats($itemdevice, $val)
+    private function handleFormats(Item_Devices $itemdevice, array|string $val): void
     {
         if (!is_array($val)) {
             $val = [$val];

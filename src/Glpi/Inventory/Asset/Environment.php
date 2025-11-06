@@ -77,7 +77,7 @@ final class Environment extends InventoryAsset
         return $db_existing;
     }
 
-    public function handle()
+    public function handle(): void
     {
         $itemEnv = new Item_Environment();
         $db_itemEnvs = $this->getExisting();
@@ -103,7 +103,7 @@ final class Environment extends InventoryAsset
             }
         }
 
-        if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_itemEnvs) != 0) {
+        if ((!isset($this->main_asset) || !$this->main_asset->isPartial()) && count($db_itemEnvs) != 0) {
             // Delete Item_Environment in DB
             foreach ($db_itemEnvs as $dbid => $data) {
                 if ($data['is_dynamic'] == 1) {

@@ -74,7 +74,7 @@ abstract class MainAsset extends InventoryAsset
     use InventoryNetworkPort;
 
     /** @var array */
-    protected $extra_data = [
+    protected array $extra_data = [
         'hardware'     => null,
         'bios'         => null,
         'users'        => null,
@@ -82,26 +82,26 @@ abstract class MainAsset extends InventoryAsset
     ];
     /** @var mixed */
     protected $raw_data;
-    /* @var array */
-    protected $hardware;
+    /* @var stdClass */
+    protected stdClass $hardware;
     /** @var ?integer */
-    protected $states_id_default;
+    protected ?int $states_id_default;
     /** @var stdClass */
-    private $current_data;
+    private stdClass $current_data;
     /** @var array */
-    protected $assets = [];
+    protected array $assets = [];
     /** @var Conf */
-    protected $conf;
+    protected Conf $conf;
     /** @var array */
-    protected $refused = [];
+    protected array $refused = [];
     /** @var array */
-    protected $inventoried = [];
+    protected array $inventoried = [];
     /** @var boolean */
-    protected $partial = false;
+    protected bool $partial = false;
     /** @var bool */
     protected bool $is_discovery = false;
 
-    protected $current_key;
+    protected int $current_key;
 
     public function __construct(CommonDBTM $item, $data)
     {
@@ -254,7 +254,7 @@ abstract class MainAsset extends InventoryAsset
      *
      * @return void
      */
-    protected function prepareForUsers($val)
+    protected function prepareForUsers(stdClass $val): void
     {
         global $DB;
 
@@ -364,7 +364,7 @@ abstract class MainAsset extends InventoryAsset
         }
     }
 
-    protected function prepareForBios($val)
+    protected function prepareForBios(stdClass $val): void
     {
         $bios = (object) $this->extra_data['bios'];
 
@@ -543,7 +543,7 @@ abstract class MainAsset extends InventoryAsset
         return $input;
     }
 
-    public function handle()
+    public function handle(): void
     {
         $blacklist = new Blacklist();
 
@@ -625,7 +625,7 @@ abstract class MainAsset extends InventoryAsset
         }
     }
 
-    protected function addRefused(array $input)
+    protected function addRefused(array $input): void
     {
         $refused_input = [
             'name'         => $input['name'],
@@ -682,7 +682,7 @@ abstract class MainAsset extends InventoryAsset
      * @param int|null      $rules_id Matched rule id, if any (else null)
      * @param integer|array $ports_id Matched port id, if any
      */
-    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
+    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = []): void
     {
         global $CFG_GLPI, $DB;
 
@@ -992,7 +992,7 @@ abstract class MainAsset extends InventoryAsset
      *
      * @return stdClass
      */
-    public function getHardware()
+    public function getHardware(): stdClass
     {
         return $this->hardware;
     }
@@ -1002,7 +1002,7 @@ abstract class MainAsset extends InventoryAsset
      *
      * @return integer
      */
-    public function getEntityID()
+    public function getEntityID(): int
     {
         return $this->entities_id;
     }
@@ -1012,12 +1012,12 @@ abstract class MainAsset extends InventoryAsset
      *
      * @return integer
      */
-    public function getEntityRecursive()
+    public function getEntityRecursive(): int
     {
         return $this->is_recursive;
     }
 
-    public function handleAssets()
+    public function handleAssets(): void
     {
         $key = $this->current_key;
         $val = $this->data[$key];
@@ -1136,9 +1136,11 @@ abstract class MainAsset extends InventoryAsset
     /**
      * Is an access point
      *
+     * @parma stdClass $object Object to check
+     *
      * @return boolean
      */
-    protected function isAccessPoint($object): bool
+    protected function isAccessPoint(stdClass $object): bool
     {
         return property_exists($object, 'is_ap') && $object->is_ap == true;
     }

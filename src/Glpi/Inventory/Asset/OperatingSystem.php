@@ -48,8 +48,8 @@ use function Safe\strtotime;
 
 class OperatingSystem extends InventoryAsset
 {
-    protected $extra_data = ['hardware' => null];
-    private $operatingsystems_id;
+    protected array $extra_data = ['hardware' => null];
+    private string|int $operatingsystems_id;
 
     public function prepare(): array
     {
@@ -143,7 +143,7 @@ class OperatingSystem extends InventoryAsset
         return $this->data;
     }
 
-    public function handle()
+    public function handle(): void
     {
         global $DB;
 
@@ -184,7 +184,7 @@ class OperatingSystem extends InventoryAsset
         $this->operatingsystems_id =  $input_os['operatingsystems_id'];
 
         //cleanup
-        if (!$this->main_asset || !$this->main_asset->isPartial()) {
+        if (!isset($this->main_asset) || !$this->main_asset->isPartial()) {
             $iterator = $DB->request([
                 'FROM' => $ios->getTable(),
                 'WHERE' => [
@@ -209,9 +209,9 @@ class OperatingSystem extends InventoryAsset
     /**
      * Get current OS id
      *
-     * @return integer
+     * @return string|integer
      */
-    public function getId()
+    public function getId(): int|string
     {
         return $this->operatingsystems_id;
     }

@@ -41,7 +41,7 @@ use PCIVendor;
 
 class Controller extends Device
 {
-    protected $extra_data = ['ignored' => null];
+    protected array $extra_data = ['ignored' => null];
 
     public function prepare(): array
     {
@@ -80,7 +80,7 @@ class Controller extends Device
         return $this->data;
     }
 
-    public function handle()
+    public function handle(): void
     {
         $data = $this->data;
 

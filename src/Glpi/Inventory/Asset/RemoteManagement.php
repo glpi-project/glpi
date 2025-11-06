@@ -99,7 +99,7 @@ class RemoteManagement extends InventoryAsset
         return $db_existing;
     }
 
-    public function handle()
+    public function handle(): void
     {
         $db_mgmt = $this->getExisting();
         $value = $this->data;
@@ -122,7 +122,7 @@ class RemoteManagement extends InventoryAsset
             }
         }
 
-        if (!$this->main_asset || !$this->main_asset->isPartial()) {
+        if (!isset($this->main_asset) || !$this->main_asset->isPartial()) {
             foreach ($db_mgmt as $idtmp => $data) {
                 if ($data['is_dynamic']) {
                     $mgmt->delete(['id' => $idtmp], true);

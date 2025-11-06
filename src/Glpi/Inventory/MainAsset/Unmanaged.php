@@ -48,9 +48,9 @@ use Transfer;
 
 class Unmanaged extends MainAsset
 {
-    private $management_ports = [];
+    private array $management_ports = [];
 
-    protected $extra_data = [
+    protected array $extra_data = [
         'hardware'        => null,
         'network_device'  => null,
     ];
@@ -143,7 +143,7 @@ class Unmanaged extends MainAsset
      * @param integer       $rules_id Matched rule id, if any
      * @param integer|array $ports_id Matched port ids, if any
      */
-    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
+    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = []): void
     {
         $key = $this->current_key;
         $val = &$this->data[$key];
@@ -309,9 +309,9 @@ class Unmanaged extends MainAsset
         }
     }
 
-    public function handleLinks(?array $data = null)
+    public function handleLinks(?array $data = null): array
     {
-        if ($this->current_key !== null) {
+        if (isset($this->current_key)) {
             $data = [$this->data[$this->current_key]];
         } else {
             $data = $this->data;
@@ -319,7 +319,7 @@ class Unmanaged extends MainAsset
         return parent::handleLinks();
     }
 
-    public function getManagementPorts()
+    public function getManagementPorts(): array
     {
         return $this->management_ports;
     }

@@ -46,7 +46,7 @@ use USBVendor;
 
 class Peripheral extends InventoryAsset
 {
-    protected $extra_data = ['inputs' => null];
+    protected array $extra_data = ['inputs' => null];
 
     public function prepare(): array
     {
@@ -138,7 +138,7 @@ class Peripheral extends InventoryAsset
         return $this->data;
     }
 
-    public function handle()
+    public function handle(): void
     {
         global $DB;
 
@@ -236,7 +236,7 @@ class Peripheral extends InventoryAsset
             }
         }
 
-        if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_peripherals)) {
+        if ((!isset($this->main_asset) || !$this->main_asset->isPartial()) && count($db_peripherals)) {
             // Delete peripherals links in DB
             foreach ($db_peripherals as $keydb => $data) {
                 if ($data['is_dynamic']) {

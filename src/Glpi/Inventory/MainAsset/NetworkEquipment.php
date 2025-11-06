@@ -49,9 +49,9 @@ use function Safe\preg_replace;
 
 class NetworkEquipment extends MainAsset
 {
-    private $management_ports = [];
+    private array $management_ports = [];
 
-    protected $extra_data = [
+    protected array $extra_data = [
         'network_device'                          => null,
         'network_components'                      => null,
         NetworkPort::class       => null,
@@ -202,7 +202,7 @@ class NetworkEquipment extends MainAsset
      * @param integer       $rules_id Matched rule id, if any
      * @param integer|array $ports_id Matched port id, if any
      */
-    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
+    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = []): void
     {
         if (property_exists($this->data[$this->current_key], 'is_ap')) {
             $bkp_assets = $this->assets;
@@ -245,9 +245,9 @@ class NetworkEquipment extends MainAsset
         }
     }
 
-    public function handleLinks(?array $data = null)
+    public function handleLinks(?array $data = null): array
     {
-        if ($this->current_key !== null) {
+        if (isset($this->current_key)) {
             $data = [$this->data[$this->current_key]];
         } else {
             $data = $this->data;
@@ -255,7 +255,7 @@ class NetworkEquipment extends MainAsset
         return parent::handleLinks();
     }
 
-    protected function portCreated(stdClass $port, int $netports_id)
+    protected function portCreated(stdClass $port, int $netports_id): void
     {
         if (property_exists($port, 'is_internal') && $port->is_internal) {
             return;
@@ -279,7 +279,7 @@ class NetworkEquipment extends MainAsset
         }
     }
 
-    public function getManagementPorts()
+    public function getManagementPorts(): array
     {
         return $this->management_ports;
     }
@@ -441,7 +441,7 @@ class NetworkEquipment extends MainAsset
         return $aps;
     }
 
-    public function getStackId()
+    public function getStackId(): string
     {
         if (count($this->data) != 1) {
             throw new RuntimeException('Exactly one entry in data is expected.');
@@ -461,7 +461,7 @@ class NetworkEquipment extends MainAsset
      * Only if IP has changed
      * @return boolean
      */
-    public static function needToBeUpdatedFromDiscovery(\CommonDBTM $item, $val)
+    public static function needToBeUpdatedFromDiscovery(\CommonDBTM $item, stdClass $val): bool
     {
         if (property_exists($val, 'ips')) {
             foreach ($val->ips as $ip) {

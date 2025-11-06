@@ -50,8 +50,8 @@ class VirtualMachine extends InventoryAsset
 {
     use InventoryNetworkPort;
 
-    private $conf;
-    private $allports = [];
+    private Conf $conf;
+    private array $allports = [];
 
     private const VMCOMPONENTS = [
         'storages'  => Drive::class,
@@ -221,7 +221,7 @@ class VirtualMachine extends InventoryAsset
         return $db_existing;
     }
 
-    public function handle()
+    public function handle(): void
     {
         $value = $this->data;
         $itemVirtualmachine = new ItemVirtualMachine();
@@ -266,7 +266,7 @@ class VirtualMachine extends InventoryAsset
             }
         }
 
-        if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_vms) != 0) {
+        if ((!isset($this->main_asset) || !$this->main_asset->isPartial()) && count($db_vms) != 0) {
             // Delete virtual machines links in DB
             foreach (array_keys($db_vms) as $idtmp) {
                 $itemVirtualmachine->delete(['id' => $idtmp], true);

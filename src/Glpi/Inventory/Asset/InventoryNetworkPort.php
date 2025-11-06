@@ -45,6 +45,7 @@ use Glpi\Inventory\MainAsset\MainAsset;
 use IPAddress;
 use IPNetwork;
 use Item_DeviceNetworkCard;
+use mysqli_stmt;
 use NetworkName;
 use NetworkPort;
 use NetworkPortAggregate;
@@ -55,14 +56,14 @@ use Unmanaged;
 
 trait InventoryNetworkPort
 {
-    protected $ports = [];
-    protected $ipnetwork_stmt;
-    protected $idevice_stmt;
-    protected $networks = [];
-    protected $itemtype;
-    private $items_id;
+    protected array $ports = [];
+    protected mysqli_stmt $ipnetwork_stmt;
+    protected mysqli_stmt $idevice_stmt;
+    protected array $networks = [];
+    protected string $itemtype;
+    private int $items_id;
 
-    public function handle()
+    public function handle(): void
     {
         parent::handle();
         $this->handlePorts();
@@ -81,11 +82,11 @@ trait InventoryNetworkPort
     /**
      * Add network ports
      *
-     * @param $ports
+     * @param array $ports
      *
      * @return $this
      */
-    public function addNetworkPorts($ports): self
+    public function addNetworkPorts(array $ports): self
     {
         $this->ports += $ports;
         return $this;
@@ -96,7 +97,7 @@ trait InventoryNetworkPort
         if ($this instanceof MainAsset) {
             return $this->isPartial();
         } else {
-            if (isset($this->main_asset) && method_exists($this->main_asset, 'isPartial')) {
+            if (isset($this->main_asset)) {
                 return $this->main_asset->isPartial();
             }
         }
@@ -107,12 +108,12 @@ trait InventoryNetworkPort
     /**
      * Manage network ports
      *
-     * @param string  $itemtype Item type, will take current item per default
-     * @param integer $items_id Item ID, will take current item per default
+     * @param ?string  $itemtype Item type, will take current item per default
+     * @param ?integer $items_id Item ID, will take current item per default
      *
      * @return void
      */
-    public function handlePorts($itemtype = null, $items_id = null)
+    public function handlePorts(?string $itemtype = null, ?int $items_id = null)
     {
         if (!$this->checkPortsConf($this->conf)) {
             return;
@@ -134,8 +135,7 @@ trait InventoryNetworkPort
             $this->handleAggregations();
         }
 
-        $this->itemtype = null;
-        $this->items_id = null;
+        unset($this->itemtype, $this->items_id);
     }
 
     /**
@@ -143,7 +143,7 @@ trait InventoryNetworkPort
      *
      * @return void
      */
-    private function cleanUnmanageds()
+    private function cleanUnmanageds(): void
     {
         global $DB;
 
@@ -195,7 +195,7 @@ trait InventoryNetworkPort
      *
      * @return void
      */
-    private function handleIpNetworks()
+    private function handleIpNetworks(): void
     {
         global $DB;
 
@@ -210,7 +210,7 @@ trait InventoryNetworkPort
                 continue;
             }
 
-            if ($this->ipnetwork_stmt == null) {
+            if (!isset($this->ipnetwork_stmt)) {
                 $criteria = [
                     'COUNT'  => 'cnt',
                     'FROM'   => IPNetwork::getTable(),
@@ -268,7 +268,7 @@ trait InventoryNetworkPort
      *
      * @return integer
      */
-    private function addNetworkPort(stdClass $port)
+    private function addNetworkPort(stdClass $port): int
     {
         $networkport = new NetworkPort();
 
@@ -304,7 +304,7 @@ trait InventoryNetworkPort
      *
      * @return integer
      */
-    protected function addNetworkName($items_id, $name = null)
+    protected function addNetworkName(int $items_id, ?string $name = null): int
     {
         $networkname = new NetworkName();
         $input = [
@@ -331,7 +331,7 @@ trait InventoryNetworkPort
      *
      * @return void
      */
-    private function addIPAddresses(array $ips, $items_id)
+    private function addIPAddresses(array $ips, int $items_id): void
     {
         $ipaddress = new IPAddress();
         $blacklist = new Blacklist();
@@ -353,7 +353,7 @@ trait InventoryNetworkPort
      *
      * @return void
      */
-    private function handleUpdates()
+    private function handleUpdates(): void
     {
         global $DB;
 
@@ -443,13 +443,13 @@ trait InventoryNetworkPort
                 if (property_exists($data, 'instantiation_type')) {
                     $type = $data->instantiation_type;
                     //handle only ethernet and fiberchannel
-                    $this->handleInstantiation($type, $data, $keydb, true);
+                    $this->handleInstantiation($type, $data, $keydb);
                 }
 
                 $ips = $data->ipaddress ?? [];
                 if (count($ips)) {
                     //handle network name
-                    if ($netname_stmt == null) {
+                    if ($netname_stmt === null) {
                         $criteria = [
                             'SELECT' => 'id',
                             'FROM'   => NetworkName::getTable(),
@@ -549,7 +549,7 @@ trait InventoryNetworkPort
         }
     }
 
-    protected function portUpdated(stdClass $port, int $netports_id)
+    protected function portUpdated(stdClass $port, int $netports_id): void
     {
         //does nothing
     }
@@ -560,11 +560,10 @@ trait InventoryNetworkPort
      * @param string    $type     Instantiation class name
      * @param stdClass $data Data
      * @param integer   $ports_id NetworkPort id
-     * @param boolean   $load     Whether to load db results
      *
      * @return void
      */
-    private function handleInstantiation($type, $data, $ports_id, $load)
+    private function handleInstantiation(string $type, stdClass $data, int $ports_id): void
     {
         global $DB;
 
@@ -590,7 +589,7 @@ trait InventoryNetworkPort
         }
 
         if (property_exists($data, 'mac')) {
-            if ($this->idevice_stmt == null) {
+            if (!isset($this->idevice_stmt)) {
                 $criteria = [
                     'SELECT' => 'id',
                     'FROM'   => Item_DeviceNetworkCard::getTable(),
@@ -636,7 +635,7 @@ trait InventoryNetworkPort
      *
      * @return void
      */
-    private function handleCreates()
+    private function handleCreates(): void
     {
         $ports = $this->ports;
         if (method_exists($this, 'getManagementPorts')) {
@@ -664,7 +663,7 @@ trait InventoryNetworkPort
 
             if (property_exists($port, 'instantiation_type')) {
                 $type = $port->instantiation_type;
-                $this->handleInstantiation($type, $port, $netports_id, false);
+                $this->handleInstantiation($type, $port, $netports_id);
             }
             $this->portCreated($port, $netports_id);
         }
@@ -675,7 +674,7 @@ trait InventoryNetworkPort
      *
      * @return void
      */
-    private function handleDeletesManagementPorts()
+    private function handleDeletesManagementPorts(): void
     {
         if (method_exists($this, 'getManagementPorts')) {
             if (empty($this->getManagementPorts())) {
@@ -691,7 +690,7 @@ trait InventoryNetworkPort
         }
     }
 
-    protected function portCreated(stdClass $port, int $netports_id)
+    protected function portCreated(stdClass $port, int $netports_id): void
     {
         //does nothing
     }

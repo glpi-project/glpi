@@ -38,6 +38,7 @@ namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
 use Item_DeviceDrive;
+use stdClass;
 
 use function Safe\preg_match;
 
@@ -46,8 +47,8 @@ class Drive extends Device
     /** @var Conf */
     private Conf $conf;
 
-    private $harddrives;
-    private $prepared_harddrives = [];
+    private HardDrive $harddrives;
+    private array $prepared_harddrives = [];
 
     public function prepare(): array
     {
@@ -95,7 +96,7 @@ class Drive extends Device
      *
      * @return boolean
      */
-    public function isDrive($data)
+    public function isDrive(stdClass $data): bool
     {
         $drives_regex = [
             'rom',
@@ -121,10 +122,10 @@ class Drive extends Device
 
         return false;
     }
-    public function handle()
+    public function handle(): void
     {
         parent::handle();
-        if ($this->harddrives !== null) {
+        if (isset($this->harddrives)) {
             $this->harddrives->handleLinks();
             $this->harddrives->handle();
         }

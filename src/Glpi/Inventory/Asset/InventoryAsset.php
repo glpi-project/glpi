@@ -57,33 +57,33 @@ use function Safe\preg_replace;
 abstract class InventoryAsset
 {
     /** @var array */
-    protected $data = [];
+    protected array $data = [];
     /** @var CommonDBTM */
     protected CommonDBTM $item;
-    /** @var ?string */
-    protected $itemtype;
+    /** @var string */
+    protected string $itemtype;
     /** @var array */
-    protected $extra_data = [];
+    protected array $extra_data = [];
     /** @var Agent */
     protected Agent $agent;
     /** @var integer */
-    protected $entities_id = 0;
+    protected int $entities_id = 0;
     /** @var integer */
-    protected $is_recursive = 0;
+    protected int $is_recursive = 0;
     /** @var array */
-    protected $ruleentity_data = [];
+    protected array $ruleentity_data = [];
     /** @var array */
-    protected $rulelocation_data = [];
+    protected array $rulelocation_data = [];
     /** @var array */
     protected array $rulematchedlog_input = [];
     /** @var boolean */
-    protected $links_handled = false;
+    protected bool $links_handled = false;
     /** @var boolean */
-    protected $with_history = true;
+    protected bool $with_history = true;
     /** @var ?MainAsset */
-    protected $main_asset;
+    protected ?MainAsset $main_asset;
     /** @var ?string */
-    protected $request_query;
+    protected ?string $request_query;
     /** @var bool */
     private bool $is_new = false;
     /** @var array */
@@ -126,7 +126,7 @@ abstract class InventoryAsset
         return $this->entities_id;
     }
 
-    public function maybeRecursive()
+    public function maybeRecursive(): bool
     {
         return true;
     }
@@ -158,7 +158,7 @@ abstract class InventoryAsset
      *
      * @return void
      */
-    abstract public function handle();
+    abstract public function handle(): void;
 
     /**
      * Set extra sub parts of interest
@@ -185,7 +185,7 @@ abstract class InventoryAsset
      *
      * @return array
      */
-    public function getIgnored($type): array
+    public function getIgnored(string $type): array
     {
         return $this->ignored[$type] ?? [];
     }
@@ -204,7 +204,7 @@ abstract class InventoryAsset
      *
      * @return array
      */
-    public function handleLinks()
+    public function handleLinks(): array
     {
         $foreignkey_itemtype = [];
 
@@ -381,7 +381,7 @@ abstract class InventoryAsset
      *
      * @return $this
      */
-    public function setRequestQuery($query = Request::INVENT_QUERY): InventoryAsset
+    public function setRequestQuery(?string $query = Request::INVENT_QUERY): InventoryAsset
     {
         $this->request_query = $query;
         return $this;

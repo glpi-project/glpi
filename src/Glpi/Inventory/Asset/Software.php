@@ -58,22 +58,22 @@ class Software extends InventoryAsset
     public const SEPARATOR = '$$$$';
 
     /** @var array */
-    private $softwares = [];
+    private array $softwares = [];
     /** @var array */
-    private $versions = [];
+    private array $versions = [];
     /** @var array */
-    private $items_versions = [];
+    private array $items_versions = [];
     /** @var array */
-    private $current_versions = [];
+    private array $current_versions = [];
     /** @var array */
-    private $added_versions   = [];
+    private array $added_versions   = [];
     /** @var array */
-    private $updated_versions = [];
+    private array $updated_versions = [];
     /** @var array */
-    private $deleted_versions = [];
+    private array $deleted_versions = [];
 
     /** @var array */
-    protected $extra_data = [
+    protected array $extra_data = [
         OperatingSystem::class => null,
     ];
 
@@ -251,7 +251,7 @@ class Software extends InventoryAsset
         return $this->data;
     }
 
-    public function handle()
+    public function handle(): void
     {
         global $DB;
 
@@ -476,7 +476,7 @@ class Software extends InventoryAsset
         if (
             count($db_software) > 0
             && (
-                !$this->main_asset
+                !isset($this->main_asset)
                 || $this->main_asset->isPartial() && $count_import
                 || !$this->main_asset->isPartial()
             )
@@ -509,7 +509,7 @@ class Software extends InventoryAsset
         }
     }
 
-    public function getOsForKey($val)
+    public function getOsForKey(stdClass $val): string|int
     {
         if ($val->operatingsystems_id > 0) {
             return $val->operatingsystems_id;
@@ -526,7 +526,7 @@ class Software extends InventoryAsset
      *
      * @return string
      */
-    protected function getSoftwareKey($name, $manufacturers_id): string
+    protected function getSoftwareKey(string $name, int $manufacturers_id): string
     {
         return $this->getNormalizedComparisonKey([
             'name'             => $name,
@@ -542,7 +542,7 @@ class Software extends InventoryAsset
      *
      * @return string
      */
-    protected function getVersionKey($val, $softwares_id): string
+    protected function getVersionKey(stdClass $val, int $softwares_id): string
     {
         return $this->getNormalizedComparisonKey([
             'version'      => strtolower($val->version),
@@ -612,7 +612,7 @@ class Software extends InventoryAsset
      *
      * @return  void
      */
-    private function populateSoftware()
+    private function populateSoftware(): void
     {
         global $DB;
 
@@ -635,7 +635,7 @@ class Software extends InventoryAsset
         foreach ($this->data as $val) {
             $key = $this->getSoftwareKey(
                 $val->name,
-                $val->manufacturers_id
+                (int) $val->manufacturers_id
             );
 
             if (isset($this->softwares[$key])) {
@@ -671,7 +671,7 @@ class Software extends InventoryAsset
      *
      * @return  void
      */
-    private function populateVersions()
+    private function populateVersions(): void
     {
         global $DB;
 
@@ -700,7 +700,7 @@ class Software extends InventoryAsset
         foreach ($this->data as $val) {
             $skey = $this->getSoftwareKey(
                 $val->name,
-                $val->manufacturers_id
+                (int) $val->manufacturers_id
             );
 
             if (!isset($this->softwares[$skey])) {
@@ -749,7 +749,7 @@ class Software extends InventoryAsset
      *
      * @return void
      */
-    private function storeSoftware()
+    private function storeSoftware(): void
     {
         global $DB;
 
@@ -760,7 +760,7 @@ class Software extends InventoryAsset
         $stmt = $stmt_types = null;
 
         foreach ($this->data as $val) {
-            $skey = $this->getSoftwareKey($val->name, $val->manufacturers_id);
+            $skey = $this->getSoftwareKey($val->name, (int) $val->manufacturers_id);
             if (!isset($this->softwares[$skey])) {
                 $stmt_columns = $this->cleanInputToPrepare((array) $val, $soft_fields);
 
@@ -807,7 +807,7 @@ class Software extends InventoryAsset
      *
      * @return void
      */
-    private function storeVersions()
+    private function storeVersions(): void
     {
         global $DB;
 
@@ -816,7 +816,7 @@ class Software extends InventoryAsset
         $stmt = $stmt_types = null;
 
         foreach ($this->data as $val) {
-            $skey = $this->getSoftwareKey($val->name, $val->manufacturers_id);
+            $skey = $this->getSoftwareKey($val->name, (int) $val->manufacturers_id);
             $softwares_id = $this->softwares[$skey];
 
             $input = (array) $val;
@@ -877,7 +877,7 @@ class Software extends InventoryAsset
      *
      * @return array
      */
-    private function cleanInputToPrepare(array $input, array $known_fields)
+    private function cleanInputToPrepare(array $input, array $known_fields): array
     {
         foreach (array_keys($input) as $column) {
             if (!isset($known_fields[$column])) {
@@ -898,7 +898,7 @@ class Software extends InventoryAsset
      *
      * @return void
      */
-    private function storeAssetLink()
+    private function storeAssetLink(): void
     {
         global $DB;
 
@@ -908,7 +908,7 @@ class Software extends InventoryAsset
 
         $stmt = null;
         foreach ($this->data as $val) {
-            $skey = $this->getSoftwareKey($val->name, $val->manufacturers_id);
+            $skey = $this->getSoftwareKey($val->name, (int) $val->manufacturers_id);
             $softwares_id = $this->softwares[$skey];
 
             $vkey = $this->getVersionKey(
@@ -983,11 +983,11 @@ class Software extends InventoryAsset
     }
 
     /**
-     * logs changes of softwares in the history
+     * logs changes of software in the history
      *
      * @return void
      */
-    public function logSoftwares()
+    public function logSoftwares(): void
     {
         foreach ($this->added_versions as $software_data) {
             Log::history(

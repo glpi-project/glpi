@@ -144,7 +144,7 @@ class Volume extends InventoryAsset
         return $db_existing;
     }
 
-    public function handle()
+    public function handle(): void
     {
         $itemDisk = new Item_Disk();
         $db_itemdisk = $this->getExisting();
@@ -171,7 +171,7 @@ class Volume extends InventoryAsset
             }
         }
 
-        if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_itemdisk) != 0) {
+        if ((!isset($this->main_asset) || !$this->main_asset->isPartial()) && count($db_itemdisk) != 0) {
             // Delete Item_Disk in DB
             foreach ($db_itemdisk as $dbid => $data) {
                 if ($data['is_dynamic'] == 1) {

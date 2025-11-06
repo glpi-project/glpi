@@ -228,7 +228,7 @@ class Cartridge extends InventoryAsset
         return $db_existing;
     }
 
-    public function handle()
+    public function handle(): void
     {
         $cartinfo = new Printer_CartridgeInfo();
         $db_cartridges = $this->getExisting();
@@ -249,7 +249,7 @@ class Cartridge extends InventoryAsset
             }
         }
 
-        if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_cartridges) != 0) {
+        if ((!isset($this->main_asset) || !$this->main_asset->isPartial()) && count($db_cartridges) != 0) {
             foreach (array_keys($db_cartridges) as $idtmp) {
                 $cartinfo->delete(['id' => $idtmp], true);
             }

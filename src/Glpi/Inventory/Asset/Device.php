@@ -37,6 +37,7 @@ namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
 use Item_Devices;
+use stdClass;
 
 use function Safe\strtotime;
 
@@ -45,9 +46,12 @@ abstract class Device extends InventoryAsset
     /**
      * Get existing entries from database
      *
-     * @return array
+     * @param string $itemdevicetable Item_Device table
+     * @param string $fk              Foreign key column
+     *
+     * @return array<list<mixed>>
      */
-    protected function getExisting($itemdevicetable, $fk): array
+    protected function getExisting(string $itemdevicetable, string $fk): array
     {
         global $DB;
 
@@ -68,10 +72,8 @@ abstract class Device extends InventoryAsset
         return $db_existing;
     }
 
-    public function handle()
+    public function handle(): void
     {
-        global $DB;
-
         $devicetypes = Item_Devices::getItemAffinities($this->item->getType());
 
         $itemdevicetype = $this->getItemtype();
@@ -201,9 +203,9 @@ abstract class Device extends InventoryAsset
         }
     }
 
-    protected function itemdeviceAdded(Item_Devices $itemdevice, $val)
+    protected function itemdeviceAdded(Item_Devices $itemdevice, stdClass $val): void
     {
-        //to be overrided
+        //to be overridden
     }
 
     public function checkConf(Conf $conf): bool

@@ -43,7 +43,7 @@ use stdClass;
 
 class Itemtype extends MainAsset
 {
-    protected $extra_data = [
+    protected array $extra_data = [
         'hardware' => null,
         'bios' => null,
         'users' => null,
@@ -55,7 +55,7 @@ class Itemtype extends MainAsset
     /**
      * @param stdClass $data
      */
-    public function __construct($data)
+    public function __construct(stdClass $data)
     {
         $namespaced = explode('\\', static::class);
         $this->itemtype = array_pop($namespaced);
@@ -73,7 +73,7 @@ class Itemtype extends MainAsset
         return '';
     }
 
-    public function defineItemtype($original_itemtype): array
+    public function defineItemtype(string $original_itemtype): array
     {
         $blacklist = new Blacklist();
 
