@@ -70,7 +70,7 @@ switch ($_POST['action']) {
                     foreach ($iterator as $data) {
                         if ($item_ticket->can($data['id'], DELETE)) {
                             $item_ticket->getFromDB($data['id']);
-                            $deleted = $deleted && $item_ticket->delete(['id' => $data['id']]);
+                            $deleted = $item_ticket->delete(['id' => $data['id']]) && $deleted;
                         }
                     }
                 }
