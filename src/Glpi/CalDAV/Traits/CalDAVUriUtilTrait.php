@@ -202,7 +202,10 @@ trait CalDAVUriUtilTrait
 
         $union = new QueryUnion();
         foreach ($CFG_GLPI['planning_types'] as $itemtype) {
-            if (!is_a($itemtype, CalDAVCompatibleItemInterface::class, true)) {
+            if (
+                !is_a($itemtype, CalDAVCompatibleItemInterface::class, true)
+                || !is_a($itemtype, CommonDBTM::class, true)
+            ) {
                 continue;
             }
 
@@ -214,7 +217,7 @@ trait CalDAVUriUtilTrait
                             $DB->quoteValue($itemtype) . ' AS ' . $DB->quoteName('itemtype')
                         ),
                     ],
-                    'FROM'   => getTableForItemType($itemtype),
+                    'FROM'   => $itemtype::getTable(),
                     'WHERE'  => [
                         'uuid' => $uid,
                     ],

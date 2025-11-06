@@ -2686,7 +2686,7 @@ TWIG, $twig_params);
             if (isset($crit['type'])) {
                 return match ($crit['type']) {
                     'dropdown' => Dropdown::getDropdownName($crit["table"], (int) $value, translate: false),
-                    'dropdown_assign', 'dropdown_users' => getUserName($value),
+                    'dropdown_assign', 'dropdown_users' => getUserName((int) $value),
                     'yesonly', 'yesno' => Dropdown::getYesNo((int) $value),
                     'dropdown_impact' => CommonITILObject::getImpactName((int) $value),
                     'dropdown_urgency' => CommonITILObject::getUrgencyName((int) $value),
