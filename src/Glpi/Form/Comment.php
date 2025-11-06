@@ -148,7 +148,7 @@ final class Comment extends CommonDBChild implements
         ];
     }
 
-    private function prepareInput($input): array
+    private function prepareInput(array $input): array
     {
         // Set parent UUID
         if (

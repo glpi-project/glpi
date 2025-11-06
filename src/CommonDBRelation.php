@@ -46,7 +46,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
 {
     // Item 1 information
     // * definition
+    /** @var null|string|class-string<CommonDBTM> $itemtype_1 TODO: remove null */
     public static $itemtype_1; // Type ref or field name (must start with itemtype)
+    /** @var ?string $items_id_1 */
     public static $items_id_1; // Field name
     // * entity inheritance
     public static $take_entity_1          = true;
@@ -63,7 +65,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
     // Item 2 information
     // * definition
+    /** @var null|string|class-string<CommonDBTM> $itemtype_2 TODO: remove null */
     public static $itemtype_2; // Type ref or field name (must start with itemtype)
+    /** @var ?string $items_id_2 */
     public static $items_id_2; // Field name
     // * entity inheritance
     public static $take_entity_2          = false;
@@ -1702,8 +1706,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
                             && ($item_1->getType() == $item_2->getType())
                         ) {
                             $ORWHERE = [
-                                static::$items_id_1 = $item_2->getID(),
-                                static::$items_id_2 = $item_2->getID(),
+                                static::$items_id_1 => $item_2->getID(),
+                                static::$items_id_2 => $item_2->getID(),
                             ];
                             if (preg_match('/^itemtype/', static::$itemtype_1)) {
                                 $ORWHERE[static::$itemtype_1] = $item_2->getType();

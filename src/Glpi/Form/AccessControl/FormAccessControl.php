@@ -64,7 +64,7 @@ final class FormAccessControl extends CommonDBChild
     }
 
     #[Override]
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-key";
     }

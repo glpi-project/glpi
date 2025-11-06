@@ -134,7 +134,7 @@ final class Form extends CommonDBTM implements
     }
 
     #[Override]
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-forms";
     }
@@ -367,7 +367,7 @@ final class Form extends CommonDBTM implements
         return parent::prepareInputForUpdate($input);
     }
 
-    private function prepareInput($input): array
+    private function prepareInput(array $input): array
     {
         if (isset($input['_conditions'])) {
             $input['submit_button_conditions'] = json_encode($input['_conditions']);
@@ -741,12 +741,18 @@ final class Form extends CommonDBTM implements
             FormTranslation::class,
         ];
     }
+
+    /** @param array $input */
     public function prepareInputForClone($input): array
     {
         $input = $this->parentPrepareInputForClone($input);
         return FormCloneHelper::getInstance()->prepareFormInputForClone($input);
     }
 
+    /**
+     *  @param CommonDBTM $source
+     *  @param bool $history
+     */
     public function post_clone($source, $history): void
     {
         FormCloneHelper::getInstance()->postFormClone($this);

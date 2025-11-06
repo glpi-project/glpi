@@ -45,7 +45,7 @@ final readonly class FormAccessParameters
         private bool $bypass_restriction = false,
     ) {}
 
-    public function isAuthenticated()
+    public function isAuthenticated(): bool
     {
         return $this->session_info !== null;
     }
