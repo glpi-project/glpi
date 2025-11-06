@@ -958,7 +958,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
     public function pre_addInDB()
     {
         // Hash user_dn if set
-        if (isset($this->input['user_dn']) && is_string($this->input['user_dn']) && strlen($this->input['user_dn']) > 0) {
+        if (isset($this->input['user_dn']) && is_string($this->input['user_dn']) && $this->input['user_dn'] !== '') {
             $this->input['user_dn_hash'] = md5($this->input['user_dn']);
         }
     }
@@ -2975,7 +2975,7 @@ HTML;
         // Hash user_dn if is updated
         if (in_array('user_dn', $this->updates)) {
             $this->updates[] = 'user_dn_hash';
-            $this->fields['user_dn_hash'] = is_string($this->input['user_dn']) && strlen($this->input['user_dn']) > 0
+            $this->fields['user_dn_hash'] = is_string($this->input['user_dn']) && $this->input['user_dn'] !== ''
                 ? md5($this->input['user_dn'])
                 : null;
         }
@@ -4076,7 +4076,7 @@ HTML;
         }
 
         if (!$count) {
-            if (strlen((string) $search) > 0) {
+            if (((string) $search) !== '') {
                 $txt_search = Search::makeTextSearchValue($search);
 
                 $firstname_field = self::getTableField('firstname');
@@ -4412,7 +4412,7 @@ HTML;
             $icons .= '</div>';
         }
 
-        if (strlen($icons) > 0) {
+        if ($icons !== '') {
             $output = "<div class='btn-group btn-group-sm " . ($p['width'] == "100%" ? "w-100" : "") . "' role='group'>{$output} {$icons}</div>";
         }
 

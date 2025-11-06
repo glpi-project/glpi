@@ -506,7 +506,7 @@ class Controller extends CommonGLPI
         } else {
             $url = $api_plugin['installation_url'] ?? '';
         }
-        return strlen($url) > 0;
+        return $url !== '';
     }
 
     /**

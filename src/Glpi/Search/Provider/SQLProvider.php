@@ -4761,7 +4761,7 @@ final class SQLProvider implements SearchProviderInterface
                 }
             } elseif (
                 isset($criterion['value'])
-                && strlen($criterion['value']) > 0
+                && ((string) $criterion['value']) !== ''
             ) { // view and all search
                 $LINK       = " OR ";
                 $NOT        = false;
@@ -5049,7 +5049,7 @@ final class SQLProvider implements SearchProviderInterface
                 foreach ($data['search']['metacriteria'] as $metacriteria) {
                     if (
                         isset($metacriteria['itemtype']) && !empty($metacriteria['itemtype'])
-                        && isset($metacriteria['value']) && (strlen($metacriteria['value']) > 0)
+                        && isset($metacriteria['value']) && ((string) $metacriteria['value']) !== ''
                     ) {
                         if (!isset($already_printed[$metacriteria['itemtype'] . $metacriteria['field']])) {
                             $m_searchopt = SearchOption::getOptionsForItemtype($metacriteria['itemtype']);
@@ -5586,7 +5586,7 @@ final class SQLProvider implements SearchProviderInterface
                         for ($k = 0; $k < $data[$ID]['count']; $k++) {
                             if (
                                 isset($data[$ID][$k]['name'])
-                                && strlen(trim($data[$ID][$k]['name'])) > 0
+                                && trim($data[$ID][$k]['name']) !== ''
                                 && !in_array(
                                     $data[$ID][$k]['name'] . "-" . $data[$ID][$k]['entities_id'],
                                     $added
@@ -5631,7 +5631,7 @@ final class SQLProvider implements SearchProviderInterface
                         $added         = [];
                         $count_display = 0;
                         for ($k = 0; $k < $data[$ID]['count']; $k++) {
-                            $completename = isset($data[$ID][$k]['name']) && (strlen(trim($data[$ID][$k]['name'])) > 0)
+                            $completename = isset($data[$ID][$k]['name']) && trim($data[$ID][$k]['name']) !== ''
                                 ? (new SanitizedStringsDecoder())->decodeHtmlSpecialCharsInCompletename($data[$ID][$k]['name'])
                                 : null;
                             if (
@@ -6497,7 +6497,7 @@ final class SQLProvider implements SearchProviderInterface
                     $out           = '';
                     $count_display = 0;
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
-                        if (strlen(trim((string) $data[$ID][$k]['name'])) > 0) {
+                        if (trim((string) $data[$ID][$k]['name']) !== '') {
                             if ($count_display) {
                                 $out .= $separate;
                             }
@@ -6631,7 +6631,7 @@ final class SQLProvider implements SearchProviderInterface
                     $out           = "";
                     $count_display = 0;
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
-                        if (strlen(trim((string) $data[$ID][$k]['name'])) > 0) {
+                        if (trim((string) $data[$ID][$k]['name']) !== '') {
                             if ($count_display) {
                                 $out .= $separate;
                             }
@@ -6653,7 +6653,7 @@ final class SQLProvider implements SearchProviderInterface
                     $out           = "";
                     $count_display = 0;
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
-                        if (strlen(trim((string) $data[$ID][$k]['name'])) > 0) {
+                        if (trim((string) $data[$ID][$k]['name']) !== '') {
                             if ($count_display) {
                                 $out .= $separate;
                             }
@@ -6675,7 +6675,7 @@ final class SQLProvider implements SearchProviderInterface
                     $out           = "";
                     $count_display = 0;
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
-                        if (strlen(trim((string) $data[$ID][$k]['name'])) > 0) {
+                        if (trim((string) $data[$ID][$k]['name']) !== '') {
                             if ($count_display) {
                                 $out .= $separate;
                             }

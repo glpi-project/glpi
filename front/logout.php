@@ -43,7 +43,7 @@ global $CFG_GLPI;
 
 if (
     $CFG_GLPI["ssovariables_id"] > 0
-    && strlen($CFG_GLPI['ssologout_url']) > 0
+    && ((string) $CFG_GLPI['ssologout_url']) !== ''
 ) {
     Session::cleanOnLogout();
     Html::redirect($CFG_GLPI["ssologout_url"]);
@@ -69,9 +69,9 @@ if (
 $toADD = "";
 
 // Redirect management
-if (isset($_POST['redirect']) && (strlen($_POST['redirect']) > 0)) {
+if (isset($_POST['redirect']) && ((string) $_POST['redirect']) !== '') {
     $toADD = "?redirect=" . rawurlencode($_POST['redirect']);
-} elseif (isset($_GET['redirect']) && (strlen($_GET['redirect']) > 0)) {
+} elseif (isset($_GET['redirect']) && ((string) $_GET['redirect']) !== '') {
     $toADD = "?redirect=" . rawurlencode($_GET['redirect']);
 }
 

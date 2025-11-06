@@ -225,7 +225,7 @@ abstract class Spreadsheet extends ExportSearchOutput
                         $this->getTitle($newdata)
                     );
                 } else {
-                    if (strlen($criteria['value']) > 0) {
+                    if (((string) $criteria['value']) !== '') {
                         if (isset($criteria['link'])) {
                             $titlecontain = " " . $criteria['link'] . " ";
                         }
@@ -365,7 +365,7 @@ abstract class Spreadsheet extends ExportSearchOutput
                 }
 
                 $titlecontain2 = '';
-                if (strlen($metacriteria['value']) > 0) {
+                if (((string) $metacriteria['value']) !== '') {
                     if (isset($metacriteria['link'])) {
                         $titlecontain2 = sprintf(
                             __('%1$s %2$s'),

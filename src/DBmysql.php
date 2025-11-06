@@ -1990,7 +1990,7 @@ class DBmysql
         $output = "";
 
         for ($i = 0; $i < $linecount; $i++) {
-            if (($i != ($linecount - 1)) || (strlen($lines[$i]) > 0)) {
+            if (($i != ($linecount - 1)) || ($lines[$i] !== '')) {
                 if (isset($lines[$i][0])) {
                     if ($lines[$i][0] != "#" && !str_starts_with($lines[$i], "--")) {
                         $output .= $lines[$i] . "\n";
