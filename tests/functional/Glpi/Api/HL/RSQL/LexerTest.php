@@ -133,7 +133,7 @@ class LexerTest extends GLPITestCase
                 // Multibyte test
                 'name==テスト',
                 [[5, 'name'], [6, '=='], [7, 'テスト']],
-            ]
+            ],
         ];
     }
 
