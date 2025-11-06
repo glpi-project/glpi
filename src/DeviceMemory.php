@@ -211,6 +211,11 @@ class DeviceMemory extends CommonDevice
         ];
     }
 
+    /**
+     * @param class-string<CommonDBTM> $class
+     * @param array $main_joinparams
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($class, $main_joinparams)
     {
         $tab = [];
