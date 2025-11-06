@@ -102,7 +102,7 @@ final class CustomAssetController extends AbstractController
                         'readOnly' => true,
                     ],
                     'uuid' => [
-                        'x-version-introduced' => '2.1.1',
+                        'x-version-introduced' => '2.2.0',
                         'type' => Doc\Schema::TYPE_STRING,
                         'format' => Doc\Schema::PATTERN_UUIDV4,
                         'readOnly' => true,
