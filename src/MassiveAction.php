@@ -1228,6 +1228,9 @@ class MassiveAction
                     if (isset($ma->POST['additionalvalues'])) {
                         $values = $ma->POST['additionalvalues'];
                     }
+                    if ($item instanceof User and $fieldname == 'entities_id') {
+                        $options['toadd'] = [-1 => __('Full structure')];
+                    }
                     $values[$search["field"]] = '';
                     echo $item->getValueToSelect($search, $fieldname, $values, $options);
                 }
