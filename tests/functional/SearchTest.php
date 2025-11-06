@@ -6198,12 +6198,16 @@ class SearchTest extends DbTestCase
     {
         $this->login();
 
-        $this->createItem(
+        $cat_1_id    = \getItemByTypeName(TaskCategory::class, '_cat_1', true);
+        $subcat_1_id = \getItemByTypeName(TaskCategory::class, '_subcat_1', true);
+        $rnd_cat_id  = \getItemByTypeName(TaskCategory::class, 'R&D', true);
+
+        $new_subcat = $this->createItem(
             TaskCategory::class,
             [
                 'name'              => 'subcat with <&> chars',
-                'taskcategories_id' => \getItemByTypeName(TaskCategory::class, '_cat_1', true),
-                'entities_id'   => $this->getTestRootEntity(true),
+                'taskcategories_id' => $cat_1_id,
+                'entities_id'       => $this->getTestRootEntity(true),
             ]
         );
 
@@ -6221,10 +6225,10 @@ class SearchTest extends DbTestCase
         );
 
         $expected = [
-            '_cat_1',
-            '_cat_1 &gt; _subcat_1',
-            '_cat_1 &gt; R&amp;D',
-            '_cat_1 &gt; subcat with &lt;&amp;&gt; chars',
+            "<a id='TaskCategory_{$cat_1_id}_{$cat_1_id}' href='/front/taskcategory.form.php?id={$cat_1_id}'><span >_cat_1</span></a>",
+            "<a id='TaskCategory_{$subcat_1_id}_{$subcat_1_id}' href='/front/taskcategory.form.php?id={$subcat_1_id}'><span class=\"text-muted\">_cat_1</span> &gt; <span >_subcat_1</span></a>",
+            "<a id='TaskCategory_{$rnd_cat_id}_{$rnd_cat_id}' href='/front/taskcategory.form.php?id={$rnd_cat_id}'><span class=\"text-muted\">_cat_1</span> &gt; <span >R&amp;D</span></a>",
+            "<a id='TaskCategory_{$new_subcat->getID()}_{$new_subcat->getID()}' href='/front/taskcategory.form.php?id={$new_subcat->getID()}'><span class=\"text-muted\">_cat_1</span> &gt; <span >subcat with &lt;&amp;&gt; chars</span></a>",
         ];
 
         foreach ($expected as $key => $displayname) {
@@ -6239,6 +6243,10 @@ class SearchTest extends DbTestCase
     public function testCompletenameColumnTranslationsInSearchResults(): void
     {
         $this->login();
+
+        $cat_1_id    = \getItemByTypeName(TaskCategory::class, '_cat_1', true);
+        $subcat_1_id = \getItemByTypeName(TaskCategory::class, '_subcat_1', true);
+        $rnd_cat_id  = \getItemByTypeName(TaskCategory::class, 'R&D', true);
 
         $_SESSION['glpilanguage'] = 'fr_FR';
         $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations('fr_FR');
@@ -6257,9 +6265,9 @@ class SearchTest extends DbTestCase
         );
 
         $expected = [
-            'FR - _cat_1',
-            'FR - _cat_1 &gt; FR - _subcat_1',
-            'FR - _cat_1 &gt; R&amp;D',
+            "<a id='TaskCategory_{$cat_1_id}_{$cat_1_id}' href='/front/taskcategory.form.php?id={$cat_1_id}'><span >FR - _cat_1</span></a>",
+            "<a id='TaskCategory_{$subcat_1_id}_{$subcat_1_id}' href='/front/taskcategory.form.php?id={$subcat_1_id}'><span class=\"text-muted\">FR - _cat_1</span> &gt; <span >FR - _subcat_1</span></a>",
+            "<a id='TaskCategory_{$rnd_cat_id}_{$rnd_cat_id}' href='/front/taskcategory.form.php?id={$rnd_cat_id}'><span class=\"text-muted\">FR - _cat_1</span> &gt; <span >R&amp;D</span></a>",
         ];
 
         foreach ($expected as $key => $displayname) {
@@ -6269,9 +6277,83 @@ class SearchTest extends DbTestCase
     }
 
     /**
-     * Validate that `use_flat_dropdowntree_on_search_result` is correctly applied.
+     * Validate that `use_flat_dropdowntree_on_search_result` is correctly applied for `completename+itemlink`.
      */
-    public function testLinkedItemCompletenameColumnRenderingInSearchResults(): void
+    public function testForeignItemlinkCompletenameColumnRenderingInSearchResults(): void
+    {
+        $this->login();
+
+        $user_id    = \getItemByTypeName(User::class, 'glpi', true);
+        $group_1_id = \getItemByTypeName(Group::class, '_test_group_1', true);
+        $group_2_id = \getItemByTypeName(Group::class, '_test_group_2', true);
+
+        $this->createItems(
+            Group_User::class,
+            [
+                [
+                    'users_id'  => $user_id,
+                    'groups_id' => $group_1_id,
+                ],
+                [
+                    'users_id'  => $user_id,
+                    'groups_id' => $group_2_id,
+                ],
+            ]
+        );
+
+        // Test with `use_flat_dropdowntree_on_search_result=1`
+        $_SESSION['glpiuse_flat_dropdowntree_on_search_result'] = 1;
+        $result = \Search::getDatas(
+            User::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => '1',
+                        'searchtype' => 'contains',
+                        'value'      => 'glpi',
+                    ],
+                ],
+                'forcetoview' => [13],
+            ]
+        );
+
+        $this->assertTrue(isset($result['data']['rows'][0]['User_13']['displayname']));
+        $this->assertEquals(
+            "<a id='Group_{$user_id}_{$group_1_id}' href='/front/group.form.php?id={$group_1_id}'><span >_test_group_1</span></a>"
+                . "#LBBR#"
+                . "<a id='Group_{$user_id}_{$group_2_id}' href='/front/group.form.php?id={$group_2_id}'><span class=\"text-muted\">_test_group_1</span> &gt; <span >_test_group_2</span></a>",
+            $result['data']['rows'][0]['User_13']['displayname']
+        );
+
+        // Test with `use_flat_dropdowntree_on_search_result=0`
+        $_SESSION['glpiuse_flat_dropdowntree_on_search_result'] = 0;
+        $result = \Search::getDatas(
+            User::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => '1',
+                        'searchtype' => 'contains',
+                        'value'      => 'glpi',
+                    ],
+                ],
+                'forcetoview' => [13],
+            ]
+        );
+
+        $this->assertTrue(isset($result['data']['rows'][0]['User_13']['displayname']));
+        $this->assertEquals(
+            "<a id='Group_{$user_id}_{$group_1_id}' href='/front/group.form.php?id={$group_1_id}'><span >_test_group_1</span></a>"
+                . "#LBBR#"
+                . "<a id='Group_{$user_id}_{$group_2_id}' href='/front/group.form.php?id={$group_2_id}'><span >_test_group_2</span></a>",
+            $result['data']['rows'][0]['User_13']['displayname']
+        );
+    }
+
+    /**
+     * Validate that `use_flat_dropdowntree_on_search_result` is correctly applied for `completename+dropdown` SO with unique value.
+     */
+    public function testForeignDropdownCompletenameColumnRenderingInSearchResults(): void
     {
         $this->login();
 
@@ -6322,9 +6404,9 @@ class SearchTest extends DbTestCase
     }
 
     /**
-     * Validate that `use_flat_dropdowntree_on_search_result` is correctly applied.
+     * Validate that `use_flat_dropdowntree_on_search_result` is correctly applied for `completename+dropdown` SO with multiple values.
      */
-    public function testMultipleLinkedItemCompletenameColumnRenderingInSearchResults(): void
+    public function testMultipleForeignDropdownCompletenameColumnRenderingInSearchResults(): void
     {
         $this->login();
 
