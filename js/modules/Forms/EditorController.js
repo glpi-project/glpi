@@ -1129,7 +1129,7 @@ export class GlpiFormEditorController
         const itemIdentifier = `${type}-${uuid}`;
 
         // Find elements using this item in their conditions
-        const conditionsUsingItem = $('[data-glpi-conditions-editor-item]')
+        const conditionsUsingItem = $('[data-glpi-form-editor-form] [data-glpi-conditions-editor-item]')
             .filter((_index, element) => {
                 if (element.value !== itemIdentifier) {
                     return false;
@@ -1166,9 +1166,16 @@ export class GlpiFormEditorController
                 )
             );
 
+        // Find submit button conditions using this item
+        const item_used_by_submit_button = $('[data-glpi-form-editor-submit-button-conditional-visibility-field]')
+            .find('[data-glpi-conditions-editor-item]').filter((_index, element) => {
+                return element.value === itemIdentifier;
+            }).length > 0;
+
         return {
             conditionsUsingItem: conditionsUsingItem,
-            destinationsUsingItem: destinationsUsingItem
+            destinationsUsingItem: destinationsUsingItem,
+            itemUsedBySubmitButton: item_used_by_submit_button
         };
     }
 
@@ -1183,11 +1190,16 @@ export class GlpiFormEditorController
         const dependencies = this.#getItemConditionDependencies(type, item);
 
         // If the item is used in conditions, show modal and prevent deletion
-        if (dependencies.conditionsUsingItem.length > 0 || dependencies.destinationsUsingItem.length > 0) {
+        if (
+            dependencies.conditionsUsingItem.length > 0
+            || dependencies.destinationsUsingItem.length > 0
+            || dependencies.itemUsedBySubmitButton
+        ) {
             this.#showItemHasConditionsModal(
                 type,
                 dependencies.conditionsUsingItem,
                 dependencies.destinationsUsingItem,
+                dependencies.itemUsedBySubmitButton,
                 'deletion'
             );
             return false;
@@ -1246,13 +1258,38 @@ export class GlpiFormEditorController
                 .find('[data-glpi-conditions-editor-value-operator]').val()
             ));
 
-        const unsupported_destinations_conditions = dependencies.destinationsUsingItem;
+        const unsupported_destinations_conditions = dependencies.destinationsUsingItem
+            .filter(destination =>
+                destination.conditions &&
+                Object.values(destination.conditions).some(condition => {
+                    if (condition.item !== `question-${questionData.uuid}`) {
+                        return false;
+                    }
+                    return !supported_value_operators.includes(condition.value_operator);
+                })
+            );
 
-        if (unsupported_conditions.length > 0 || unsupported_destinations_conditions.length > 0) {
+        const is_submit_button_conditions_unsupported = dependencies.itemUsedBySubmitButton
+            && $('[data-glpi-form-editor-submit-button-conditional-visibility-field]')
+                .find('[data-glpi-conditions-editor-condition]').filter((_index, element) => {
+                    const item_value = $(element).find('[data-glpi-conditions-editor-item]').val();
+                    if (item_value !== `question-${questionData.uuid}`) {
+                        return false;
+                    }
+                    const value_operator = $(element).find('[data-glpi-conditions-editor-value-operator]').val();
+                    return !supported_value_operators.includes(value_operator);
+                }).length > 0;
+
+        if (
+            unsupported_conditions.length > 0
+            || unsupported_destinations_conditions.length > 0
+            || is_submit_button_conditions_unsupported
+        ) {
             this.#showItemHasConditionsModal(
                 'question',
-                dependencies.conditionsUsingItem,
-                dependencies.destinationsUsingItem,
+                unsupported_conditions,
+                unsupported_destinations_conditions,
+                is_submit_button_conditions_unsupported,
                 'new_question_type'
             );
             return false;
@@ -1268,7 +1305,7 @@ export class GlpiFormEditorController
      * @param {jQuery} conditionsUsingItem jQuery object containing condition elements
      * @param {array} destinationsUsingItem Array of destination objects
      */
-    #showItemHasConditionsModal(type, conditionsUsingItem, destinationsUsingItem, modal_name) {
+    #showItemHasConditionsModal(type, conditionsUsingItem, destinationsUsingItem, itemUsedBySubmitButton, modal_name) {
         // Show only the relevant header for this item type
         $(`[data-glpi-form-editor-item-has-conditions-modal="${CSS.escape(modal_name)}"] [data-glpi-form-editor-item-has-conditions-modal-header]`)
             .addClass('d-none')
@@ -1321,6 +1358,14 @@ export class GlpiFormEditorController
                 type: 'destination'
             });
         });
+
+        // Add submit button if needed
+        if (itemUsedBySubmitButton) {
+            elementsWithConditions.push({
+                name: __('Submit button visibility'),
+                type: 'submit-button'
+            });
+        }
 
         // Render the list of elements in the modal
         const modalList = $(`[data-glpi-form-editor-item-has-conditions-modal="${CSS.escape(modal_name)}"] [data-glpi-form-editor-item-has-conditions-list]`);
@@ -1377,42 +1422,48 @@ export class GlpiFormEditorController
      * @param {string} uuid The UUID of the element
      */
     #findAndHighlightElement(type, uuid) {
-        if (!uuid || !type) {
+        if (!type) {
             return;
         }
 
-        let targetElement;
-
-        if (type === 'question') {
-            // Find question with matching UUID
-            targetElement = $(this.#target)
-                .find('[data-glpi-form-editor-question]')
-                .filter((_index, item) => this.#getItemInput($(item), "uuid") === uuid)
-                .first();
-        } else if (type === 'section') {
-            // Find section with matching UUID
-            targetElement = $(this.#target)
-                .find('[data-glpi-form-editor-section-details]')
-                .filter((_index, section) => this.#getItemInput($(section), "uuid") === uuid)
-                .first();
-        }
-
-        // Make sure we found the element before proceeding
-        if (targetElement && targetElement.length > 0) {
-            // Make sure parent section is not collapsed
-            const parentSection = targetElement.closest('[data-glpi-form-editor-section]');
-            if (parentSection.hasClass('section-collapsed')) {
-                this.#collaspeSection(parentSection);
+        if (uuid) {
+            let targetElement;
+            if (type === 'question') {
+                // Find question with matching UUID
+                targetElement = $(this.#target)
+                    .find('[data-glpi-form-editor-question]')
+                    .filter((_index, item) => this.#getItemInput($(item), "uuid") === uuid)
+                    .first();
+            } else if (type === 'section') {
+                // Find section with matching UUID
+                targetElement = $(this.#target)
+                    .find('[data-glpi-form-editor-section-details]')
+                    .filter((_index, section) => this.#getItemInput($(section), "uuid") === uuid)
+                    .first();
             }
 
-            // Set as active
-            this.#setActiveItem(targetElement);
+            // Make sure we found the element before proceeding
+            if (targetElement && targetElement.length > 0) {
+                // Make sure parent section is not collapsed
+                const parentSection = targetElement.closest('[data-glpi-form-editor-section]');
+                if (parentSection.hasClass('section-collapsed')) {
+                    this.#collaspeSection(parentSection);
+                }
 
-            // Scroll to the element
-            targetElement.get(0).scrollIntoView({
-                behavior: 'smooth',
-                block: 'center',
-                inline: 'nearest'
+                // Set as active
+                this.#setActiveItem(targetElement);
+
+                // Scroll to the element
+                targetElement.get(0).scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center',
+                    inline: 'nearest'
+                });
+            }
+        } else if (type === 'submit-button') {
+            // Open the submit button dropdown menu
+            setTimeout(() => {
+                $('[data-glpi-form-editor-visibility-dropdown]').dropdown('show');
             });
         }
     }
