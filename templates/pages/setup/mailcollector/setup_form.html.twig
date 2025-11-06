@@ -232,12 +232,12 @@
 
                   const li       = $(this);
                   const input_id = li.data('input-id');
-                  const folder   = li.children('.folder-name').html();
+                  const folder   = li.children('.folder-name').data('globalname');
 
                   let _label = '';
                   const _parents = li.parents('li').children('.folder-name');
                   for (i = _parents.length -1 ; i >= 0; i--) {
-                      _label += $(_parents[i]).html() + '/';
+                      _label += $(_parents[i]).data('globalname') + '/';
                   }
                   _label += folder;
 
