@@ -1502,7 +1502,7 @@ HTML;
         global $CFG_GLPI;
         $new_key = "";
         $target = Toolbox::cleanTarget($_REQUEST['_target'] ?? $_SERVER['REQUEST_URI'] ?? "");
-        if (isset($_SESSION['last_dashboards']) && strlen($target) > 0) {
+        if (isset($_SESSION['last_dashboards']) && $target !== '') {
             $target = preg_replace('/^' . preg_quote($CFG_GLPI['root_doc'], '/') . '/', '', $target);
             if (!isset($_SESSION['last_dashboards'][$target])) {
                 return "";
@@ -1540,7 +1540,7 @@ HTML;
 
         if (!$strict) {
             $restored = $grid->restoreLastDashboard();
-            if (strlen($restored) > 0) {
+            if ($restored !== '') {
                 return $restored;
             }
         }

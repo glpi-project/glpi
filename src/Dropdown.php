@@ -3692,7 +3692,7 @@ HTML;
                                         $data[$key]
                                     );
                                 }
-                                if ((strlen($withoutput) > 0) && ($withoutput != '&nbsp;')) {
+                                if (((string) $withoutput) !== '' && ($withoutput != '&nbsp;')) {
                                     $outputval = sprintf(__('%1$s - %2$s'), $outputval, $withoutput);
                                 }
                             }
@@ -3800,7 +3800,7 @@ HTML;
             $where["$table.is_template"] = 0;
         }
 
-        if (isset($post['searchText']) && (strlen($post['searchText']) > 0)) {
+        if (isset($post['searchText']) && ((string) $post['searchText']) !== '') {
             $search = Search::makeTextSearchValue($post['searchText']);
             $where['OR'] = [
                 "$table.name"        => ['LIKE', $search],
@@ -3997,7 +3997,7 @@ HTML;
             $where[] = State::getDisplayConditionForAssistance();
         }
 
-        if (isset($_POST['searchText']) && (strlen($post['searchText']) > 0)) {
+        if (isset($_POST['searchText']) && ((string) $post['searchText']) !== '') {
             $search = ['LIKE', Search::makeTextSearchValue($post['searchText'])];
             $orwhere = $item->isField('name') ? [
                 'name'   => $search,
@@ -4947,7 +4947,7 @@ HTML;
                     'title'             => sprintf(__('%1$s - %2$s'), $text, $user['name']),
                     'itemtype'          => "User",
                     'items_id'          => $ID,
-                    'use_notification'  => strlen($user['default_email'] ?? "") > 0 ? 1 : 0,
+                    'use_notification'  => ((string) ($user['default_email'] ?? "")) !== '' ? 1 : 0,
                     'default_email'     => $user['default_email'],
                     'alternative_email' => '',
                 ];
@@ -5021,7 +5021,7 @@ HTML;
                         $children['items_id']          = $children['id'];
                         $children['id']                = "Supplier_" . $children['id'];
                         $children['itemtype']          = "Supplier";
-                        $children['use_notification']  = strlen($supplier_obj->fields['email'] ?? '') > 0 ? 1 : 0;
+                        $children['use_notification']  = ((string) $supplier_obj->fields['email']) !== '' ? 1 : 0;
                         $children['default_email']     = $supplier_obj->fields['email'];
                         $children['alternative_email'] = '';
                     }

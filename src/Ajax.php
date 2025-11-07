@@ -695,14 +695,14 @@ JS;
         // Old scheme
         if (
             isset($options["update_item"])
-            && (is_array($options["update_item"]) || (strlen($options["update_item"]) > 0))
+            && (is_array($options["update_item"]) || ((string) $options["update_item"]) !== '')
         ) {
             $field     = "update_item";
         }
         // New scheme
         if (
             isset($options["toupdate"])
-            && (is_array($options["toupdate"]) || (strlen($options["toupdate"]) > 0))
+            && (is_array($options["toupdate"]) || ((string) $options["toupdate"]) !== '')
         ) {
             $field     = "toupdate";
         }

@@ -1513,7 +1513,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             $specificities['label'] = $attributs['long name'];
             $specificities['protected'] = isset($attributs['protected']) && $attributs['protected'];
 
-            if (isset($attributs['tooltip']) && strlen($attributs['tooltip']) > 0) {
+            if (isset($attributs['tooltip']) && ((string) $attributs['tooltip']) !== '') {
                 $tooltip = $attributs['tooltip'];
             } else {
                 $tooltip = null;

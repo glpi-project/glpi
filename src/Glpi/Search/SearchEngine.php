@@ -459,7 +459,7 @@ final class SearchEngine
 
                         if (
                             isset($criterion['value'])
-                            && (strlen($criterion['value']) > 0)
+                            && ((string) $criterion['value']) !== ''
                         ) {
                             $data['search']['no_search'] = false;
                         }

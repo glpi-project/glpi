@@ -107,7 +107,7 @@
     },
     "require-dev": {
         "ext-xml": "*",
-        "friendsofphp/php-cs-fixer": "^3.88",
+        "friendsofphp/php-cs-fixer": "^3.89",
         "friendsoftwig/twigcs": "^6.5",
         "glpi-project/phpstan-glpi": "^1.1",
         "glpi-project/tools": "^0.8.3",
@@ -116,7 +116,7 @@
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpunit/phpunit": "^11.5",
-        "rector/rector": "^2.1",
+        "rector/rector": "^2.2",
         "shipmonk/composer-dependency-analyser": "^1.8",
         "symfony/browser-kit": "^6.4",
         "symfony/debug-bundle": "^6.4",

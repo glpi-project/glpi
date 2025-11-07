@@ -597,7 +597,7 @@ trait PlanningEvent
                     : $CFG_GLPI["url_base"]
                     . static::getFormURLWithID($data['id'], false);
 
-                    $is_rrule = isset($data['rrule']) && strlen($data['rrule']) > 0;
+                    $is_rrule = isset($data['rrule']) && $data['rrule'] !== '';
 
                     $events[$key] = [
                         'color'            => $options['color'],

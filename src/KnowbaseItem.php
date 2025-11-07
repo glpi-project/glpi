@@ -1142,7 +1142,7 @@ TWIG, $twig_params);
                 break;
 
             case 'search':
-                if (strlen($params["contains"]) > 0) {
+                if (((string) $params["contains"]) !== '') {
                     $search = $params["contains"];
                     $search_wilcard = self::computeBooleanFullTextSearch($search);
 

@@ -246,7 +246,7 @@ class Plugins
             $plugins_colct = self::$plugins;
         }
 
-        if (strlen($tag_filter) > 0) {
+        if ($tag_filter !== '') {
             $tagged_plugins = array_column($this->getPluginsForTag($tag_filter), 'key');
             if ($this->last_error !== null) {
                 $this->is_list_truncated = true;
@@ -254,7 +254,7 @@ class Plugins
             $plugins_colct  = array_intersect_key($plugins_colct, array_flip($tagged_plugins));
         }
 
-        if (strlen($string_filter) > 0) {
+        if ($string_filter !== '') {
             $plugins_colct = array_filter($plugins_colct, fn($plugin) => str_contains(strtolower(json_encode($plugin)), strtolower($string_filter)));
         }
 

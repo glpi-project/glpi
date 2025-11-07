@@ -610,7 +610,7 @@ class Notification extends CommonDBTM implements FilterableInterface
         global $CFG_GLPI;
 
         $signature = trim(Entity::getUsedConfig('mailing_signature', $entity, '', ''));
-        if (strlen($signature) > 0) {
+        if ($signature !== '') {
             return $signature;
         }
 

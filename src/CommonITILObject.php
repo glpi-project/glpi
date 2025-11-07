@@ -498,7 +498,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         } elseif (
                             $actor_obj instanceof User
                             && $existing_actor['items_id'] == 0
-                            && strlen($existing_actor['alternative_email']) > 0
+                            && ((string) $existing_actor['alternative_email']) !== ''
                         ) {
                             // direct mail actor
                             $fn_add_actor($existing_actor['itemtype'], $existing_actor['items_id'], $existing_actor + [
@@ -7816,7 +7816,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $log->post_getFromDB();
 
                 $content = $log_row['change'];
-                if (strlen($log_row['field']) > 0) {
+                if (((string) $log_row['field']) !== '') {
                     $content = sprintf(__s("%s: %s"), htmlescape($log_row['field']), $content);
                 }
                 $content = "<i class='ti ti-history me-1' title='" . __s("Log entry") . "' data-bs-toggle='tooltip'></i>" . $content;

@@ -130,7 +130,7 @@ final class IndexController extends AbstractController
                 'emptylabel'          => __('Default (from user profile)'),
                 'width'               => '100%',
             ]),
-            'right_panel'         => strlen($CFG_GLPI['text_login']) > 0
+            'right_panel'         => ((string) $CFG_GLPI['text_login']) !== ''
                 || count($PLUGIN_HOOKS[Hooks::DISPLAY_LOGIN] ?? []) > 0
                 || $CFG_GLPI["use_public_faq"],
             'auth_dropdown_login' => Auth::dropdownLogin(false, $rand),

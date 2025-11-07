@@ -1297,7 +1297,7 @@ class NotificationTarget extends CommonDBChild
         global $CFG_GLPI;
 
         $url_base = trim(Entity::getUsedConfig('url_base', $this->getEntity(), '', ''));
-        if (strlen($url_base) > 0) {
+        if ($url_base !== '') {
             return $url_base;
         }
 
