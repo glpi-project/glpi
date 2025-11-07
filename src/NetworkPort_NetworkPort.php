@@ -126,6 +126,8 @@ class NetworkPort_NetworkPort extends CommonDBRelation
      *
      * @param integer $ports_id Port to link
      * @param integer $hubs_id  Hub to link
+     *
+     * @return int
      */
     public function connectToHub($ports_id, $hubs_id)
     {

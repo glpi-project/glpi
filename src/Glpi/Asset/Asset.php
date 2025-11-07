@@ -352,6 +352,9 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
         return $search_options;
     }
 
+    /**
+     * @return string[]
+     */
     public function getUnallowedFieldsForUnicity()
     {
         $not_allowed = parent::getUnallowedFieldsForUnicity();

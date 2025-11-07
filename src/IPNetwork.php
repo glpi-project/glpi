@@ -142,6 +142,9 @@ class IPNetwork extends CommonImplicitTreeDropdown
     }
 
 
+    /**
+     * @return false|IPAddress|null
+     */
     public function getAddress()
     {
 
@@ -155,6 +158,9 @@ class IPNetwork extends CommonImplicitTreeDropdown
     }
 
 
+    /**
+     * @return false|IPNetmask|null
+     */
     public function getNetmask()
     {
 
@@ -168,6 +174,9 @@ class IPNetwork extends CommonImplicitTreeDropdown
     }
 
 
+    /**
+     * @return false|IPAddress|null
+     */
     public function getGateway()
     {
 
@@ -264,8 +273,10 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
 
     /**
-     * @param $input
-     **/
+     * @param array $input
+     *
+     * @return array
+     */
     public function prepareInput($input)
     {
 
@@ -907,11 +918,13 @@ class IPNetwork extends CommonImplicitTreeDropdown
      * Compute the first and the last address of $this
      * \see computeNetworkRangeFromAdressAndNetmask()
      *
-     * @param $start
-     * @param $end                         (default NULL)
-     * @param $excludeBroadcastAndNetwork  Don't provide extremties addresses
+     * @param IPAddress|array|null $start
+     * @param IPAddress|array|null $end                         (default NULL)
+     * @param string $excludeBroadcastAndNetwork Don't provide extremties addresses
      *                                     ($this->fields['addressable'] by default)
      *                                     (default '')
+     *
+     * @return void
      **/
     public function computeNetworkRange(&$start, &$end = null, $excludeBroadcastAndNetwork = '')
     {
@@ -936,18 +949,20 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
     /**
      * \brief Compute the first and the last address of a network.
-     * That is usefull, for instance, to compute the "real" network address (the first address)
+     * That is useful, for instance, to compute the "real" network address (the first address)
      * or the broadcast address of the network
      *
-     * @param $address                              (see \ref parameterType) the address of the network
-     * @param $netmask                              (see \ref parameterType) its netmask
-     * @param $firstAddress                         (see \ref parameterType - in/out)
-     *                                              the first address (ie real address of the network)
-     * @param $lastAddress                          (see \ref parameterType - in/out)
-     *                                              the lastAddress of the network
-     *                                              (ie. : the broadcast address) (default NULL)
-     * @param $excludeBroadcastAndNetwork  boolean  exclude broadcast and network address from the
-     *                                              result (false by default)
+     * @param IPAddress|array $address          (see \ref parameterType) the address of the network
+     * @param IPNetmask|array $netmask          (see \ref parameterType) its netmask
+     * @param IPAddress|array|null $firstAddress     (see \ref parameterType - in/out)
+     *                                          the first address (ie real address of the network)
+     * @param IPAddress|array|null $lastAddress (see \ref parameterType - in/out)
+     *                                          the lastAddress of the network
+     *                                          (ie. : the broadcast address) (default NULL)
+     * @param bool $excludeBroadcastAndNetwork  exclude broadcast and network address from the
+     *                                          result (false by default)
+     *
+     * @return void
      **/
     public static function computeNetworkRangeFromAdressAndNetmask(
         $address,
@@ -989,14 +1004,16 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
 
     /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param HTMLTableBase $base
+     * @param HTMLTableSuperHeader|null $super
+     * @param HTMLTableHeader|null $father
+     * @param array $options
+     * @throws Exception
      * @since 0.84
      *
-     * @param $itemtype
-     * @param $base                  HTMLTableBase object
-     * @param $super                 HTMLTableSuperHeader object (default NULL)
-     * @param $father                HTMLTableHeader object (default NULL)
-     * @param $options      array
-     **/
+     * @return void
+     */
     public static function getHTMLTableHeader(
         $itemtype,
         HTMLTableBase $base,
@@ -1021,13 +1038,15 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
 
     /**
-     * @since 0.84
+     * @param HTMLTableRow|null $row
+     * @param CommonDBTM|null $item
+     * @param HTMLTableCell|null $father
+     * @param array $options
+     * @return void
+     * @throws HTMLTableUnknownHeader
      *
-     * @param $row                HTMLTableRow object (default NULL)
-     * @param $item               CommonDBTM object (default NULL)
-     * @param $father             HTMLTableCell object (default NULL)
-     * @param $options   array
-     **/
+     * @return void
+     */
     public static function getHTMLTableCellsForItem(
         ?HTMLTableRow $row = null,
         ?CommonDBTM $item = null,
@@ -1095,9 +1114,12 @@ class IPNetwork extends CommonImplicitTreeDropdown
     /**
      * Show all available IPNetwork for a given entity
      *
-     * @param $entities_id  entity of the IPNetworks (-1 for all entities)
-     *                      (default -1)
-     **/
+     * @param int $entities_id entity of the IPNetworks (-1 for all entities)
+     *                         (default -1)
+     * @param int $value
+     *
+     * @return void
+     */
     public static function showIPNetworkProperties($entities_id = -1, $value = 0)
     {
         global $CFG_GLPI;

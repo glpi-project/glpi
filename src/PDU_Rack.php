@@ -303,6 +303,11 @@ class PDU_Rack extends CommonDBRelation
         return true;
     }
 
+    /**
+     * @param Rack $rack
+     *
+     * @return void
+     */
     public static function showListForRack(Rack $rack)
     {
         global $DB;
@@ -355,6 +360,11 @@ class PDU_Rack extends CommonDBRelation
         ]);
     }
 
+    /**
+     * @param Rack $rack
+     *
+     * @return void
+     */
     public static function showStatsForRack(Rack $rack)
     {
         global $CFG_GLPI, $DB;
@@ -460,6 +470,11 @@ class PDU_Rack extends CommonDBRelation
         echo "</div>";
     }
 
+    /**
+     * @param int $racks_id
+     *
+     * @return void
+     */
     public static function showFirstForm($racks_id = 0)
     {
 
@@ -499,6 +514,12 @@ JAVASCRIPT;
         echo "<div id='pdu_add_sub_form$rand'></div>";
     }
 
+    /**
+     * @param Rack      $rack
+     * @param int|array $side Side to target, use an array for multiple sides
+     *
+     * @return void
+     */
     public static function showVizForRack(Rack $rack, $side)
     {
         global $CFG_GLPI;

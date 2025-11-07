@@ -316,6 +316,11 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
         return $tab;
     }
 
+    /**
+     * @param string $name
+     *
+     * @return array
+     */
     public static function cronInfo($name)
     {
         return ['description' => __('Send alarms on consumables')];
@@ -457,6 +462,9 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
         return $cron_status;
     }
 
+    /**
+     * @return array
+     */
     public function getEvents()
     {
         return ['alert' => __('Send alarms on consumables')];

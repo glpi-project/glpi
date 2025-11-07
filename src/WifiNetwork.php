@@ -49,6 +49,9 @@ class WifiNetwork extends CommonDropdown
         return _n('Wifi network', 'Wifi networks', $nb);
     }
 
+    /**
+     * @return array<string,string>
+     */
     public static function getWifiCardVersion()
     {
         return [
@@ -67,6 +70,9 @@ class WifiNetwork extends CommonDropdown
     }
 
 
+    /**
+     * @return array<string,string>
+     */
     public static function getWifiCardModes()
     {
 
@@ -83,6 +89,9 @@ class WifiNetwork extends CommonDropdown
     }
 
 
+    /**
+     * @return array<string,string>
+     */
     public static function getWifiNetworkModes()
     {
 

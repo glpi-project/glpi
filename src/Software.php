@@ -802,6 +802,8 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      * @param string  $comment             comment (default '')
      * @param boolean $is_recursive        must the software be recursive (false by default)
      * @param boolean $is_helpdesk_visible show in helpdesk, default = config value (false by default)
+     *
+     * @return int
      */
     public function addOrRestoreFromTrash(
         $name,
@@ -1125,6 +1127,12 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         return "ti ti-apps";
     }
 
+    /**
+     * @param array $input
+     * @param bool $is_dynamic
+     *
+     * @return void
+     */
     public function handleCategoryRules(array &$input, bool $is_dynamic = false)
     {
         // If category was not set by user (when manually adding a user)
@@ -1156,6 +1164,11 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         return __('Max items to handle in one execution');
     }
 
+    /**
+     * @param string $name
+     *
+     * @return array
+     */
     public static function cronInfo($name)
     {
         return [
@@ -1164,6 +1177,11 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         ];
     }
 
+    /**
+     * @param CronTask $task
+     *
+     * @return int
+     */
     public static function cronPurgeSoftware(CronTask $task)
     {
         $max = $task->fields['param'];

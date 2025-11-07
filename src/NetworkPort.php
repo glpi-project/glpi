@@ -83,6 +83,11 @@ class NetworkPort extends CommonDBChild
      */
     private ?array $input_for_NetworkPortConnect = null;
 
+    /**
+     * @param string $property
+     *
+     * @return mixed
+     */
     public function __get(string $property)
     {
         $value = null;
@@ -109,6 +114,12 @@ class NetworkPort extends CommonDBChild
         return false;
     }
 
+    /**
+     * @param string $property
+     * @param mixed $value
+     *
+     * @return void
+     */
     public function __set(string $property, $value)
     {
         switch ($property) {
@@ -293,6 +304,12 @@ class NetworkPort extends CommonDBChild
         $this->updateMetrics();
     }
 
+    /**
+     * @param NetworkPort $source
+     * @param bool $history
+     *
+     * @return false|int
+     */
     public function post_clone($source, $history)
     {
         $instantiation = $source->getInstantiation();
@@ -300,6 +317,8 @@ class NetworkPort extends CommonDBChild
             $instantiation->fields[$instantiation->getIndexName()] = $this->getID();
             return $instantiation->clone([], $history);
         }
+
+        return false;
     }
 
     /**
@@ -374,9 +393,11 @@ class NetworkPort extends CommonDBChild
      *
      * @since 0.84
      *
-     * @param $history
+     * @param bool $history
      *
      * @see splitInputForElements() for preparing the input
+     *
+     * @return void
      **/
     public function updateDependencies($history = true)
     {
@@ -446,6 +467,9 @@ class NetworkPort extends CommonDBChild
         $this->input_for_NetworkPortConnect = null;
     }
 
+    /**
+     * @return void
+     */
     public function updateMetrics()
     {
         $unicity_input = [
@@ -1258,8 +1282,15 @@ class NetworkPort extends CommonDBChild
         return $whole_output;
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     *
+     * @return DBmysqlIterator
+     */
     protected function getIpsForPort($itemtype, $items_id)
     {
+        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

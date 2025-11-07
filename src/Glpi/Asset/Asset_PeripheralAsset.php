@@ -746,6 +746,12 @@ TWIG, $twig_params);
         return false;
     }
 
+    /**
+     * @param CommonDBTM $item
+     * @param array      $entities
+     *
+     * @return bool
+     */
     public static function canUnrecursSpecif(CommonDBTM $item, $entities)
     {
         global $DB;
@@ -838,6 +844,11 @@ TWIG, $twig_params);
         return _n('Connection', 'Connections', $nb);
     }
 
+    /**
+     * @param ?class-string<CommonDBTM> $itemtype
+     *
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
         global $CFG_GLPI;
