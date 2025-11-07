@@ -1069,7 +1069,9 @@ class User extends CommonDBTM implements TreeBrowseInterface
                     $extension = strtolower(pathinfo($fullpath, PATHINFO_EXTENSION));
                     $extension = in_array($extension, ['png', 'gif']) ? 'png' : 'jpg';
 
-                    @mkdir(GLPI_PICTURE_DIR . "/$sub");
+                    if (!file_exists(GLPI_PICTURE_DIR . "/$sub")) {
+                        mkdir(GLPI_PICTURE_DIR . "/$sub");
+                    }
                     $picture_path = GLPI_PICTURE_DIR . "/{$sub}/{$filename}.{$extension}";
                     self::dropPictureFiles("{$sub}/{$filename}.{$extension}");
 
