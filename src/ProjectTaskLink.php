@@ -49,6 +49,10 @@ class ProjectTaskLink extends CommonDBRelation
     public static $itemtype_2 = 'ProjectTask';
     public static $items_id_2 = 'projecttasks_id_target';
 
+    /**
+     * @param string $projecttaskIds Comma-separated list of project task IDs
+     * @return DBmysqlIterator
+     */
     public function getFromDBForItemIDs($projecttaskIds)
     {
         global $DB;
@@ -62,6 +66,10 @@ class ProjectTaskLink extends CommonDBRelation
         return $iterator;
     }
 
+    /**
+     * @param array{projecttasks_id_source: int, projecttasks_id_target: int, type: int} $taskLink
+     * @return bool
+     */
     public function checkIfExist($taskLink)
     {
         global $DB;

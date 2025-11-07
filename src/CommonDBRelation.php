@@ -53,6 +53,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
     // * entity inheritance
     public static $take_entity_1          = true;
     // * rights
+    /** @var self::DONT_CHECK_ITEM_RIGHTS|self::HAVE_VIEW_RIGHT_ON_ITEM|self::HAVE_SAME_RIGHT_ON_ITEM */
     public static $checkItem_1_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM;
     public static $mustBeAttached_1       = true;
     // * log
@@ -72,6 +73,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
     // * entity inheritance
     public static $take_entity_2          = false;
     // * rights
+    /** @var self::DONT_CHECK_ITEM_RIGHTS|self::HAVE_VIEW_RIGHT_ON_ITEM|self::HAVE_SAME_RIGHT_ON_ITEM */
     public static $checkItem_2_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM;
     public static $mustBeAttached_2       = true;
     // * log
