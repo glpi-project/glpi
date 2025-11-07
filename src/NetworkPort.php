@@ -304,6 +304,9 @@ class NetworkPort extends CommonDBChild
         $this->updateMetrics();
     }
 
+    /**
+     * @param NetworkPort $source
+     */
     public function post_clone($source, $history)
     {
         $instantiation = $source->getInstantiation();
