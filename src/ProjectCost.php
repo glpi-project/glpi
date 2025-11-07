@@ -210,6 +210,7 @@ class ProjectCost extends CommonDBChild
      * Get last datas for a project
      *
      * @param integer $projects_id ID of the project
+     * @return array
      **/
     public function getLastCostForProject($projects_id)
     {

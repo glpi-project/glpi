@@ -86,6 +86,7 @@ interface KanbanInterface
      * @param string $column_field The field used to represent columns (Ex: projectstates_id).
      *       If no field is specified, all columns are returned.
      * @param array $column_ids Array of column IDs to limit the result. These IDs are values of the column_field in the DB.
+     * @param bool $get_default
      * @return array Array of columns in the format:
      *       column_field => [id => [name, header_color, etc]]
      */
