@@ -36,6 +36,7 @@ namespace test\units;
 
 use DbTestCase;
 use Glpi\Toolbox\Sanitizer;
+use KnowbaseItem_User;
 
 /* Test for inc/knowbaseitem.class.php */
 
@@ -1543,5 +1544,44 @@ HTML
                 ]
             )
         );
+    }
+
+    public function testVisibilityRestrictionsInSearch()
+    {
+        $this->login();
+
+        $fn_can_tech_see_kb = static function () {
+            $criteria = [
+                'itemtype' => \KnowbaseItem::class,
+                'criteria' => [
+                    [
+                        'field' => 6,
+                        'searchtype' => 'contains',
+                        'value' => 'KB visible to tech',
+                    ],
+                ],
+            ];
+            ob_start();
+            \Search::showList(\KnowbaseItem::class, $criteria);
+            $output = ob_get_clean();
+            return str_contains($output, "KB visible to tech");
+        };
+
+        $tech_user = getItemByTypeName("User", "tech", true);
+        $kb_item = $this->createItem(\KnowbaseItem::class, [
+            'name'     => 'KB visible to tech',
+            'answer'   => 'KB visible to tech',
+            'is_faq'   => false,
+            'users_id' => $_SESSION['glpiID'],
+        ]);
+
+        $this->login('tech', 'tech');
+        $this->assertFalse($fn_can_tech_see_kb());
+
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $kb_item->getID(),
+            'users_id'         => $tech_user,
+        ]);
+        $this->assertTrue($fn_can_tech_see_kb());
     }
 }

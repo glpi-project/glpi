@@ -4629,6 +4629,10 @@ JAVASCRIPT;
                 $condition .= PlanningExternalEvent::addVisibilityRestrict();
                 break;
 
+            case 'KnowbaseItem':
+                $condition .= \KnowbaseItem::addVisibilityRestrict();
+                break;
+
             default:
                 // Plugin can override core definition for its type
                 if ($plug = isPluginItemType($itemtype)) {
@@ -5888,6 +5892,10 @@ JAVASCRIPT;
                         ]
                     );
                 }
+                break;
+
+            case 'KnowbaseItem':
+                $out = KnowbaseItem::addVisibilityJoins();
                 break;
 
             default:
