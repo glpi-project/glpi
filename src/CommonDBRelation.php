@@ -54,6 +54,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
     /** @var bool */
     public static $take_entity_1          = true;
     // * rights
+    /** @var int */
     public static $checkItem_1_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM;
     /** @var bool */
     public static $mustBeAttached_1       = true;
