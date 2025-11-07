@@ -645,7 +645,6 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      * @param CommonGLPI $item
      * @param integer $withtemplate
      * @return false|void
-     * @throws Exception
      */
     public static function showForItem(CommonGLPI $item, $withtemplate = 0)
     {

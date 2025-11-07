@@ -150,7 +150,6 @@ class DeviceNetworkCard extends CommonDevice
      * @param HTMLTableCell|null $father
      * @param array $options
      * @return void
-     * @throws Exception
      */
     public static function getHTMLTableCellsForItem(
         ?HTMLTableRow $row = null,
