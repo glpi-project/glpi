@@ -142,8 +142,12 @@
     {% endif %}
 
     {% if options.step != 'any' and options.step|round(0, 'floor') != options.step %}
-        {# Only format number if not a whole number #}
-        {% set value = call('Html::formatNumber', [value, true]) %}
+        {% if options.decimals is defined %}
+            {% set value = call('Html::formatNumber', [value, true, options.decimals]) %}
+        {% else %}
+            {# Only format number if not a whole number #}
+            {% set value = call('Html::formatNumber', [value, true]) %}
+        {% endif %}
     {% endif %}
 
     {{ _self.input(name, value, options|merge({'type': 'number'})) }}
