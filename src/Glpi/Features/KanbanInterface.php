@@ -88,7 +88,7 @@ interface KanbanInterface
      *       If no field is specified, all columns are returned.
      * @param array<int> $column_ids Array of column IDs to limit the result. These IDs are values of the column_field in the DB.
      * @param bool $get_default If true, the default columns are returned in addition to the requested ones in $column_ids.
-     * @return array<string, array<int, array{id: int, name: string, header_color: string, header_fg_color?: string, color_class?: string, drop_only?: int}>> Array of columns
+     * @return array<int, array{id: int|string, name: string, header_color: string, header_fg_color?: string, color_class?: string, drop_only?: bool}> Array of columns
      */
     public static function getAllKanbanColumns($column_field = null, $column_ids = [], $get_default = false);
 
