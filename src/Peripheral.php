@@ -423,7 +423,7 @@ class Peripheral extends CommonDBTM implements AssignableItemInterface, DCBreadc
     }
 
     /**
-     * @param $itemtype
+     * @param ?class-string<CommonDBTM>  $itemtype
      *
      * @return array
      */

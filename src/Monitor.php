@@ -514,7 +514,7 @@ class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrum
     }
 
     /**
-     * @param $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      *
      * @return array
      */

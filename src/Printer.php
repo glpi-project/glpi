@@ -724,7 +724,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
 
 
     /**
-     * @param $itemtype
+     * @param ?class-string<CommonDBTM> $itemtype
      *
      * @return array
      */
@@ -761,10 +761,12 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
     /**
      * Add a printer. If already exist in trashbin restore it
      *
-     * @param $name          the printer's name
-     * @param $manufacturer  the software's manufacturer
-     * @param $entity        the entity in which the software must be added
-     * @param $comment       comment (default '')
+     * @param string $name          the printer's name
+     * @param string $manufacturer  the software's manufacturer
+     * @param int    $entity        the entity in which the software must be added
+     * @param string $comment       comment (default '')
+     *
+     * @return int
      **/
     public function addOrRestoreFromTrash($name, $manufacturer, $entity, $comment = '')
     {
@@ -846,9 +848,9 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
     /**
      * Restore a software from trashbin
      *
-     * @param $ID  the ID of the software to put in trashbin
+     * @param int $ID the ID of the software to put in trashbin
      *
-     * @return boolean (success)
+     * @return bool
      **/
     public function removeFromTrash($ID)
     {

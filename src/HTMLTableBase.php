@@ -157,9 +157,11 @@ abstract class HTMLTableBase
     }
 
     /**
-     * @param $name
-     * @param $sub_name (default NULL)
-     **/
+     * @param string $name
+     * @param ?string $sub_name (default NULL)
+     *
+     * @throws HTMLTableUnknownHeader
+     */
     public function getHeaderByName($name, $sub_name = null)
     {
         if (is_string($sub_name)) {

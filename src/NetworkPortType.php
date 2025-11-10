@@ -207,6 +207,9 @@ class NetworkPortType extends CommonDropdown
         parent::post_deleteFromDB();
     }
 
+    /**
+     * @return void
+     */
     protected function invalidateCache()
     {
         global $GLPI_CACHE;

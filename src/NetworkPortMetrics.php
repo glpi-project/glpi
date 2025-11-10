@@ -104,6 +104,8 @@ class NetworkPortMetrics extends CommonDBChild
      * Display form for agent
      *
      * @param NetworkPort $netport Port instance
+     *
+     * @return void
      */
     public function showMetrics(NetworkPort $netport)
     {
@@ -176,7 +178,7 @@ class NetworkPortMetrics extends CommonDBChild
         echo "</div>";
     }
 
-    private function getLabelFor($key): string
+    private function getLabelFor(string $key): string
     {
         return match ($key) {
             'ifinbytes' => __('Input megabytes'),

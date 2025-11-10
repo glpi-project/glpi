@@ -173,6 +173,8 @@ class NetworkName extends FQDNLabel
     /**
      * @param array $tab the array to fill
      * @param array $joinparams
+     *
+     * @return void
      **/
     public static function rawSearchOptionsToAdd(array &$tab, array $joinparams)
     {
@@ -223,6 +225,8 @@ class NetworkName extends FQDNLabel
      * Update IPAddress database
      *
      * Update IPAddress database to remove old IPs and add new ones.
+     *
+     * @return void
      **/
     public function post_workOnItem()
     {
@@ -310,6 +314,8 @@ class NetworkName extends FQDNLabel
      *
      * @param integer $items_id  the id of the item
      * @param string  $itemtype  the type of the item
+     *
+     * @return void
      **/
     public static function unaffectAddressesOfItem($items_id, $itemtype)
     {
@@ -335,6 +341,8 @@ class NetworkName extends FQDNLabel
      * The address can be unaffected, and remain "free"
      *
      * @param integer $networkNameID the id of the NetworkName
+     *
+     * @return bool
      **/
     public static function unaffectAddressByID($networkNameID)
     {
@@ -360,7 +368,9 @@ class NetworkName extends FQDNLabel
     /**
      * @param integer $networkPortID
      * @used-by templates/pages/assets/networkport/form.html.twig
-     **/
+     *
+     * @return void
+     */
     public static function showFormForNetworkPort($networkPortID)
     {
         global $DB;
@@ -408,7 +418,7 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
     }
 
     /**
-     * @param $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      * @param HTMLTableBase $base
      * @param HTMLTableSuperHeader|null $super
      * @param HTMLTableHeader|null $father
@@ -416,6 +426,7 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
      * @throws Exception
      * @since 0.84
      *
+     * @return void
      */
     public static function getHTMLTableHeader(
         $itemtype,
@@ -469,6 +480,8 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
      * @param array $options
      * @throws Exception
      * @since 0.84
+     *
+     * @return void
      */
     public static function getHTMLTableCellsForItem(
         ?HTMLTableRow $row = null,

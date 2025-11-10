@@ -194,6 +194,8 @@ class PrinterLog extends CommonDBChild
      * Display form for agent
      *
      * @param Printer|Asset $printer Printer instance
+     *
+     * @return void
      */
     public function showMetrics(Printer|Asset $printer)
     {

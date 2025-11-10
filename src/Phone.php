@@ -538,7 +538,7 @@ class Phone extends CommonDBTM implements AssignableItemInterface, StateInterfac
 
 
     /**
-     * @param $itemtype
+     * @param ?class-string<CommonDBTM> $itemtype
      *
      * @return array
      */

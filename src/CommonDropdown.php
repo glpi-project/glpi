@@ -62,7 +62,8 @@ abstract class CommonDropdown extends CommonDBTM
     public $display_dropdowntitle  = true;
 
     /**
-     * This dropdown can be translated
+     * Flag to determine whether dropdown can be translated.
+     *
      * @var bool
      */
     public $can_be_translated = true;

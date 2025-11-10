@@ -125,13 +125,15 @@ class NetworkAlias extends FQDNLabel
     }
 
     /**
-     * @param string $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      * @param HTMLTableBase $base
      * @param HTMLTableSuperHeader|null $super
      * @param HTMLTableHeader|null $father
      * @param array $options
      * @throws Exception
      * @since 0.84
+     *
+     * @return void
      */
     public static function getHTMLTableHeader(
         $itemtype,
@@ -163,8 +165,8 @@ class NetworkAlias extends FQDNLabel
      * @param CommonDBTM|null $item
      * @param HTMLTableCell|null $father
      * @param array $options
-     * @throws Exception
-     * @since 0.84
+     *
+     * @return void
      */
     public static function getHTMLTableCellsForItem(
         ?HTMLTableRow $row = null,
@@ -221,8 +223,8 @@ class NetworkAlias extends FQDNLabel
     /**
      * Show aliases for an item from its form
      *
-     * Beware that the rendering can be different if readden from direct item form (ie : add new
-     * NetworkAlias, remove, ...) or if readden from item of the item (for instance from the computer
+     * Beware that the rendering can be different if read from direct item form (ie : add new
+     * NetworkAlias, remove, ...) or if read from item of the item (for instance from the computer
      * form through NetworkPort::ShowForItem and NetworkName::ShowForItem).
      *
      * @param NetworkName $item
@@ -365,7 +367,9 @@ class NetworkAlias extends FQDNLabel
      *
      * @param FQDN $item The FQDN owning the aliases
      * @param integer $withtemplate
-     **/
+     *
+     * @return void
+     */
     public static function showForFQDN(FQDN $item, $withtemplate)
     {
         global $DB;

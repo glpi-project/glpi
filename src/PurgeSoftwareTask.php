@@ -67,7 +67,7 @@ class PurgeSoftwareTask
         ];
     }
 
-    protected function purgeItems(array $scope, $em, int $max): int
+    protected function purgeItems(array $scope, Software $em, int $max): int
     {
         global $DB;
 
