@@ -1193,8 +1193,8 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     /**
      * @param positive-int $numberToAdd
      * @param class-string<CommonDBTM>|string $itemtype
-     * @param integer|numeric-string $items_id
-     * @param integer|numeric-string $devices_id
+     * @param int $items_id
+     * @param int $devices_id
      * @param array $input Array to complete (permit to define values)
      * @return void
      **/
