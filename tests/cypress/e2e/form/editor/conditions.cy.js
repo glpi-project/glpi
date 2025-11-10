@@ -3254,4 +3254,48 @@ describe ('Conditions', () => {
         // Section should still exist
         cy.findAllByRole('region', {'name': 'Form section'}).should('have.length', 2);
     });
+
+    it('blocks external dependencies when deleting non-empty section', () => {
+        // This test ensures that if a section contains elements that are used in conditions
+        // by elements OUTSIDE the section, the deletion is blocked with the condition dependency modal.
+
+        createForm();
+        addQuestion('My first question');
+        addSection('My section');
+        addQuestion('Question in section');
+        addComment('Comment in section');
+        addSection('Another section');
+        addQuestion('Question in another section');
+
+        saveAndReload();
+
+        // Add a condition to a question OUTSIDE the section that uses a question INSIDE the section
+        getAndFocusQuestion('Question in another section').within(() => {
+            initVisibilityConfiguration();
+            setConditionStrategy('Visible if...');
+            fillCondition(0, null, 'Question in section', 'Is visible', null, null);
+            closeConditionEditor();
+        });
+
+        // Try to delete the section that contains the question used in conditions
+        getAndFocusSection('My section').within(() => {
+            cy.findByRole('button', {'name': 'More actions'}).click();
+            cy.findByRole('button', {'name': 'Delete section'}).click();
+        });
+
+        // Should show the conditions dependency modal, NOT the non-empty warning modal
+        cy.findByRole('dialog', {'name': 'Child items have conditions and cannot be deleted'})
+            .should('be.visible')
+            .within(() => {
+                // Should mention the question that has dependencies
+                cy.contains('Question in another section').should('exist');
+                cy.findByRole('button', {'name': 'Close'}).click();
+            });
+
+        // The non-empty section modal should NOT have appeared
+        cy.findByRole('dialog', {'name': 'Delete non-empty section'}).should('not.exist');
+
+        // Section should still exist
+        cy.findAllByRole('region', {'name': 'Form section'}).should('have.length', 3);
+    });
 });

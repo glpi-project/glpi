@@ -2166,7 +2166,47 @@ export class GlpiFormEditorController
         // Check if the section has any blocks (questions or comments)
         const blocks = section.find("[data-glpi-form-editor-block]");
         if (blocks.length > 0) {
-            // Section is not empty, show confirmation modal
+            // Check if any block in the section is used in conditions outside the section
+            const sectionUuid = this.#getItemInput(section, "uuid");
+
+            const dependencies = blocks.map((_index, block) => {
+                const $block = $(block);
+                const blockType = $block.is('[data-glpi-form-editor-question]') ? 'question' : 'comment';
+                return this.#getItemConditionDependencies(blockType, $block);
+            }).get().map(dep => {
+                // Filter out dependencies that are within the same section
+                const externalConditions = dep.conditionsUsingItem.filter((_idx, conditionElement) => {
+                    const parentSection = $(conditionElement).closest('[data-glpi-form-editor-section]');
+                    const parentSectionUuid = this.#getItemInput(parentSection, "uuid");
+                    return parentSectionUuid !== sectionUuid;
+                });
+
+                return {
+                    conditionsUsingItem: externalConditions,
+                    destinationsUsingItem: dep.destinationsUsingItem
+                };
+            }).reduce((all, dep) => {
+                return {
+                    conditionsUsingItem: all.conditionsUsingItem.add(dep.conditionsUsingItem),
+                    destinationsUsingItem: all.destinationsUsingItem.concat(dep.destinationsUsingItem)
+                };
+            }, { conditionsUsingItem: $(), destinationsUsingItem: [] });
+
+
+            if (
+                dependencies.conditionsUsingItem.length > 0
+                || dependencies.destinationsUsingItem.length > 0
+            ) {
+                this.#showItemHasConditionsModal(
+                    'section',
+                    dependencies.conditionsUsingItem,
+                    dependencies.destinationsUsingItem,
+                    'section_child_elements_deletion'
+                );
+                return;
+            }
+
+            // Section is not empty and has no external dependencies, show confirmation modal
             this.#showDeleteNonEmptySectionModal(section);
             return;
         }
