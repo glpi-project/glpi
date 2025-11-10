@@ -126,7 +126,10 @@ abstract class InventoryAsset
         return $this->entities_id;
     }
 
-    public function maybeRecursive(): bool
+    /**
+     * @return bool
+     */
+    public function maybeRecursive()
     {
         return true;
     }
@@ -185,7 +188,7 @@ abstract class InventoryAsset
      *
      * @return array
      */
-    public function getIgnored(string $type): array
+    public function getIgnored($type): array
     {
         return $this->ignored[$type] ?? [];
     }
@@ -204,7 +207,7 @@ abstract class InventoryAsset
      *
      * @return array
      */
-    public function handleLinks(): array
+    public function handleLinks()
     {
         $foreignkey_itemtype = [];
 
@@ -381,7 +384,7 @@ abstract class InventoryAsset
      *
      * @return $this
      */
-    public function setRequestQuery(?string $query = Request::INVENT_QUERY): InventoryAsset
+    public function setRequestQuery($query = Request::INVENT_QUERY): InventoryAsset
     {
         $this->request_query = $query;
         return $this;

@@ -142,8 +142,10 @@ class Unmanaged extends MainAsset
      * @param string        $itemtype Item type
      * @param integer       $rules_id Matched rule id, if any
      * @param integer|array $ports_id Matched port ids, if any
+     *
+     * @return void
      */
-    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = []): void
+    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
     {
         $key = $this->current_key;
         $val = &$this->data[$key];
@@ -309,7 +311,12 @@ class Unmanaged extends MainAsset
         }
     }
 
-    public function handleLinks(?array $data = null): array
+    /**
+     * @param ?array $data
+     *
+     * @return array
+     */
+    public function handleLinks(?array $data = null)
     {
         if (isset($this->current_key)) {
             $data = [$this->data[$this->current_key]];
@@ -319,11 +326,18 @@ class Unmanaged extends MainAsset
         return parent::handleLinks();
     }
 
-    public function getManagementPorts(): array
+    /**
+     * @return array
+     * @final
+     */
+    public function getManagementPorts()
     {
         return $this->management_ports;
     }
 
+    /**
+     * @final
+     */
     public function setManagementPorts(array $ports): Unmanaged
     {
         $this->management_ports = $ports;

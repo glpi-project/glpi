@@ -201,8 +201,10 @@ class NetworkEquipment extends MainAsset
      * @param string        $itemtype Item type
      * @param integer       $rules_id Matched rule id, if any
      * @param integer|array $ports_id Matched port id, if any
+     *
+     * @return void
      */
-    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = []): void
+    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
     {
         if (property_exists($this->data[$this->current_key], 'is_ap')) {
             $bkp_assets = $this->assets;
@@ -245,7 +247,12 @@ class NetworkEquipment extends MainAsset
         }
     }
 
-    public function handleLinks(?array $data = null): array
+    /**
+     * @param ?array $data
+     *
+     * @return array
+     */
+    public function handleLinks(?array $data = null)
     {
         if (isset($this->current_key)) {
             $data = [$this->data[$this->current_key]];
@@ -279,11 +286,18 @@ class NetworkEquipment extends MainAsset
         }
     }
 
-    public function getManagementPorts(): array
+    /**
+     * @return array
+     * @final
+     */
+    public function getManagementPorts()
     {
         return $this->management_ports;
     }
 
+    /**
+     * @final
+     */
     public function setManagementPorts(array $ports): NetworkEquipment
     {
         $this->management_ports = $ports;
@@ -441,7 +455,12 @@ class NetworkEquipment extends MainAsset
         return $aps;
     }
 
-    public function getStackId(): string
+    /**
+     * @return string
+     *
+     * @final
+     */
+    public function getStackId()
     {
         if (count($this->data) != 1) {
             throw new RuntimeException('Exactly one entry in data is expected.');
@@ -459,9 +478,14 @@ class NetworkEquipment extends MainAsset
     /**
      * Try to know if networkEquipement need to be updated from discovery
      * Only if IP has changed
+     *
+     * @param CommonDBTM $item
+     * @param stdClass   $val
+     *
      * @return boolean
+     * @final
      */
-    public static function needToBeUpdatedFromDiscovery(\CommonDBTM $item, stdClass $val): bool
+    public static function needToBeUpdatedFromDiscovery(\CommonDBTM $item, $val)
     {
         if (property_exists($val, 'ips')) {
             foreach ($val->ips as $ip) {

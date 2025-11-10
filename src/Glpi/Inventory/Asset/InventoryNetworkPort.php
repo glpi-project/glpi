@@ -85,8 +85,9 @@ trait InventoryNetworkPort
      * @param array $ports
      *
      * @return $this
+     * @final
      */
-    public function addNetworkPorts(array $ports): self
+    public function addNetworkPorts($ports): self
     {
         $this->ports += $ports;
         return $this;
@@ -112,8 +113,9 @@ trait InventoryNetworkPort
      * @param ?integer $items_id Item ID, will take current item per default
      *
      * @return void
+     * @protected
      */
-    public function handlePorts(?string $itemtype = null, ?int $items_id = null)
+    public function handlePorts($itemtype = null, $items_id = null)
     {
         if (!$this->checkPortsConf($this->conf)) {
             return;

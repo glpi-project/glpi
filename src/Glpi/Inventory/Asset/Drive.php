@@ -94,9 +94,12 @@ class Drive extends Device
     /**
      * Is current data a drive
      *
+     * @param stdClass $data
+     *
      * @return boolean
+     * @final
      */
-    public function isDrive(stdClass $data): bool
+    public function isDrive($data)
     {
         $drives_regex = [
             'rom',

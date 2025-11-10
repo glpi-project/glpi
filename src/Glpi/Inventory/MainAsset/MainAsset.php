@@ -681,8 +681,10 @@ abstract class MainAsset extends InventoryAsset
      * @param string        $itemtype Item type
      * @param int|null      $rules_id Matched rule id, if any (else null)
      * @param integer|array $ports_id Matched port id, if any
+     *
+     * @return void
      */
-    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = []): void
+    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
     {
         global $CFG_GLPI, $DB;
 
@@ -991,8 +993,9 @@ abstract class MainAsset extends InventoryAsset
      * Get modified hardware
      *
      * @return stdClass
+     * @final
      */
-    public function getHardware(): stdClass
+    public function getHardware()
     {
         return $this->hardware;
     }
@@ -1001,8 +1004,9 @@ abstract class MainAsset extends InventoryAsset
      * Retrieve computer entities id
      *
      * @return integer
+     * @final
      */
-    public function getEntityID(): int
+    public function getEntityID()
     {
         return $this->entities_id;
     }
@@ -1011,13 +1015,17 @@ abstract class MainAsset extends InventoryAsset
      * Retrieve computer entities is_recursive
      *
      * @return integer
+     * @final
      */
-    public function getEntityRecursive(): int
+    public function getEntityRecursive()
     {
         return $this->is_recursive;
     }
 
-    public function handleAssets(): void
+    /**
+     * @return void
+     */
+    public function handleAssets()
     {
         $key = $this->current_key;
         $val = $this->data[$key];

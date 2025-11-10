@@ -300,7 +300,11 @@ class NetworkCard extends Device
         return $conf->component_networkcard == 1 && parent::checkConf($conf);
     }
 
-    public function handlePorts(?string $itemtype = null, ?int $items_id = null): void
+    /**
+     * @protected
+     * @final
+     */
+    public function handlePorts($itemtype = null, $items_id = null)
     {
         //ports are handled from main asset in NetworkCard case
         return;

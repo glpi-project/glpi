@@ -210,8 +210,9 @@ class OperatingSystem extends InventoryAsset
      * Get current OS id
      *
      * @return string|integer
+     * @final
      */
-    public function getId(): int|string
+    public function getId()
     {
         return $this->operatingsystems_id;
     }

@@ -179,8 +179,9 @@ class Conf extends CommonGLPI
      * @param array $files[filename => filepath] Files to import
      *
      * @return array [filename => [success => bool, message => string, asset => CommonDBTM]]
+     * @final
      */
-    public function importFiles(array $files): array
+    public function importFiles($files): array
     {
         $result = [];
 
@@ -214,9 +215,12 @@ class Conf extends CommonGLPI
     /**
      * Is an inventory known file
      *
+     * @param string $name
+     *
      * @return boolean
+     * @final
      */
-    public function isInventoryFile(string $name): bool
+    public function isInventoryFile($name): bool
     {
         return (bool) preg_match('/\.(' . implode('|', $this->knownInventoryExtensions()) . ')/i', $name);
     }
@@ -342,7 +346,7 @@ class Conf extends CommonGLPI
      * @return true (Always true)
      * @copyright 2010-2022 by the FusionInventory Development Team. (Agent cleanup section)
      **/
-    public function showConfigForm(): true
+    public function showConfigForm()
     {
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
@@ -1104,7 +1108,7 @@ class Conf extends CommonGLPI
      *
      * @return boolean
      */
-    public function saveConf(array $values): bool
+    public function saveConf(array $values)
     {
         if (!Config::canUpdate()) {
             return false;
@@ -1213,7 +1217,12 @@ class Conf extends CommonGLPI
         }
     }
 
-    public function getRights(string $interface = 'central'): array
+    /**
+     * @param string $interface
+     *
+     * @return array
+     */
+    public function getRights($interface = 'central')
     {
         $values = [ READ => __('Read')];
         $values[self::IMPORTFROMFILE] = ['short' => __('Import'),
@@ -1235,7 +1244,7 @@ class Conf extends CommonGLPI
      *
      * @return string
      */
-    public function buildInventoryFileName(string $itemtype, int $items_id, string $ext): string
+    public function buildInventoryFileName($itemtype, $items_id, $ext): string
     {
         $files_per_dir = 1000;
 
@@ -1296,7 +1305,7 @@ class Conf extends CommonGLPI
         ];
     }
 
-    public static function getIcon(): string
+    public static function getIcon()
     {
         return "ti ti-adjustments";
     }

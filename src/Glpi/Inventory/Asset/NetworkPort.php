@@ -663,8 +663,10 @@ class NetworkPort extends InventoryAsset
      * @param string        $itemtype Item type
      * @param integer       $rules_id Matched rule id, if any
      * @param integer|array $ports_id Matched port ids, if any
+     *
+     * @return void
      */
-    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = []): void
+    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
     {
         if (!is_array($ports_id)) {
             $ports_id = [$ports_id]; // Handle compatibility with previous signature.
@@ -805,7 +807,11 @@ class NetworkPort extends InventoryAsset
         return (bool) ($port->lldp ?? $port->cdp);
     }
 
-    public function handlePorts(?string $itemtype = null, ?int $items_id = null): void
+    /**
+     * @final
+     * @protected
+     */
+    public function handlePorts($itemtype = null, $items_id = null)
     {
         $mainasset = $this->extra_data[$this->main_asset::class];
 
@@ -875,8 +881,9 @@ class NetworkPort extends InventoryAsset
      * @param integer $netports_id Network port id
      *
      * @return void
+     * @private
      */
-    public function handleHub(array $found_macs, int $netports_id): void
+    public function handleHub($found_macs, $netports_id)
     {
         $hubs_id = 0;
 

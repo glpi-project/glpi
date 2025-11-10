@@ -509,7 +509,14 @@ class Software extends InventoryAsset
         }
     }
 
-    public function getOsForKey(stdClass $val): string|int
+    /**
+     * @protected
+     *
+     * @param stdClass $val
+     *
+     * @return string|int
+     */
+    public function getOsForKey($val)
     {
         if ($val->operatingsystems_id > 0) {
             return $val->operatingsystems_id;
@@ -987,7 +994,7 @@ class Software extends InventoryAsset
      *
      * @return void
      */
-    public function logSoftwares(): void
+    public function logSoftwares()
     {
         foreach ($this->added_versions as $software_data) {
             Log::history(
