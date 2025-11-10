@@ -1945,6 +1945,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
+    #[Override]
     public function updateDateMod($ID, $no_stat_computation = false, $users_id_lastupdater = 0)
     {
 
