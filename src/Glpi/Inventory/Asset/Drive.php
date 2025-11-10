@@ -122,7 +122,7 @@ class Drive extends Device
 
         return false;
     }
-    public function handle(): void
+    public function handle()
     {
         parent::handle();
         if (isset($this->harddrives)) {

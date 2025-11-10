@@ -63,7 +63,7 @@ trait InventoryNetworkPort
     protected string $itemtype;
     private int $items_id;
 
-    public function handle(): void
+    public function handle()
     {
         parent::handle();
         $this->handlePorts();

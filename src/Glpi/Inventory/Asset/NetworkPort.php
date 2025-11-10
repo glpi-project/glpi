@@ -632,7 +632,7 @@ class NetworkPort extends InventoryAsset
         }
     }
 
-    public function handle(): void
+    public function handle()
     {
         $this->ports += $this->extra_data[$this->main_asset::class]->getManagementPorts();
         $this->handlePorts();

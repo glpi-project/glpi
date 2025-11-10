@@ -182,7 +182,7 @@ class Printer extends NetworkEquipment
         return $this->data;
     }
 
-    public function handle(): void
+    public function handle()
     {
         parent::handle();
         $this->handleMetrics();

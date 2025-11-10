@@ -72,7 +72,7 @@ abstract class Device extends InventoryAsset
         return $db_existing;
     }
 
-    public function handle(): void
+    public function handle()
     {
         $devicetypes = Item_Devices::getItemAffinities($this->item->getType());
 

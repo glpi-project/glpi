@@ -114,7 +114,7 @@ class Antivirus extends InventoryAsset
         return $db_existing;
     }
 
-    public function handle(): void
+    public function handle()
     {
         $db_antivirus = $this->getExisting();
         $value = $this->data;

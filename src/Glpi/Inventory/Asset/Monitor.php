@@ -139,7 +139,7 @@ class Monitor extends InventoryAsset
         return $db_existing;
     }
 
-    public function handle(): void
+    public function handle()
     {
         $entities_id = $this->entities_id;
         $monitor = new GMonitor();

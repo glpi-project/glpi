@@ -101,7 +101,7 @@ class Process extends InventoryAsset
         return $db_existing;
     }
 
-    public function handle(): void
+    public function handle()
     {
         $itemProcess = new Item_Process();
         $db_itemProcess = $this->getExisting();

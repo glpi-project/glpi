@@ -101,7 +101,7 @@ class DatabaseInstance extends InventoryAsset
         return $db_existing;
     }
 
-    public function handle(): void
+    public function handle()
     {
         $rule = new RuleImportAssetCollection();
         $value = $this->data;

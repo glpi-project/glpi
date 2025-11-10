@@ -158,7 +158,7 @@ abstract class InventoryAsset
      *
      * @return void
      */
-    abstract public function handle(): void;
+    abstract public function handle();
 
     /**
      * Set extra sub parts of interest

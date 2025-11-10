@@ -543,7 +543,7 @@ abstract class MainAsset extends InventoryAsset
         return $input;
     }
 
-    public function handle(): void
+    public function handle()
     {
         $blacklist = new Blacklist();
 
@@ -1136,7 +1136,7 @@ abstract class MainAsset extends InventoryAsset
     /**
      * Is an access point
      *
-     * @parma stdClass $object Object to check
+     * @param stdClass $object Object to check
      *
      * @return boolean
      */

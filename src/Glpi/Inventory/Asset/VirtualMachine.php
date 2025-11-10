@@ -221,7 +221,7 @@ class VirtualMachine extends InventoryAsset
         return $db_existing;
     }
 
-    public function handle(): void
+    public function handle()
     {
         $value = $this->data;
         $itemVirtualmachine = new ItemVirtualMachine();

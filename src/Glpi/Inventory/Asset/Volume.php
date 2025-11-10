@@ -144,7 +144,7 @@ class Volume extends InventoryAsset
         return $db_existing;
     }
 
-    public function handle(): void
+    public function handle()
     {
         $itemDisk = new Item_Disk();
         $db_itemdisk = $this->getExisting();
