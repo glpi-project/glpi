@@ -53,22 +53,22 @@ abstract class CommonDBChild extends CommonDBConnexity
     /** @var string $items_id */
     public static $items_id; // Field name
     // * rights
-    /** @var int */
+    /** @var CommonDBConnexity::DONT_CHECK_ITEM_RIGHTS|CommonDBConnexity::HAVE_VIEW_RIGHT_ON_ITEM|CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM */
     public static $checkParentRights  = self::HAVE_SAME_RIGHT_ON_ITEM;
     /** @var bool */
     public static $mustBeAttached     = true;
     // * log
     /** @var bool */
     public static $logs_for_parent    = true;
-    /** @var int */
+    /** @var Log::HISTORY_* */
     public static $log_history_add    = Log::HISTORY_ADD_SUBITEM;
-    /** @var int */
+    /** @var Log::HISTORY_* */
     public static $log_history_update = Log::HISTORY_UPDATE_SUBITEM;
-    /** @var int */
+    /** @var Log::HISTORY_* */
     public static $log_history_delete = Log::HISTORY_DELETE_SUBITEM;
-    /** @var int */
+    /** @var Log::HISTORY_* */
     public static $log_history_lock   = Log::HISTORY_LOCK_SUBITEM;
-    /** @var int */
+    /** @var Log::HISTORY_* */
     public static $log_history_unlock = Log::HISTORY_UNLOCK_SUBITEM;
 
 

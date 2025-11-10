@@ -81,7 +81,7 @@ abstract class CommonDBConnexity extends CommonDBTM
     public static $canDeleteOnItemClean          = true;
 
     /**
-     *Disable auto forwarding information about entities?
+     * Disable auto forwarding information about entities?
      *
      * @var bool
      */
