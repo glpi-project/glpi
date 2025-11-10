@@ -275,6 +275,10 @@ class Item_Devices extends CommonDBRelation implements StateInterface
         return $tab;
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype)
     {
         global $CFG_GLPI;
@@ -378,12 +382,11 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      * Get the specificities of the given device. For instance, the
      * serial number, the size of the memory, the frequency of the CPUs ...
      *
-     * @param $specif   string   specificity to display
+     * @param string $specif specificity to display
      *
      * Should be overloaded by Item_Device*
      *
-     * @return array of the specificities: index is the field name and the values are the attributs
-     *                                     of the specificity (long name, short name, size)
+     * @return array Array of the specificities: index is the field name and the values are the attributes of the specificity
      **/
     public static function getSpecificities($specif = '')
     {
@@ -638,7 +641,11 @@ class Item_Devices extends CommonDBRelation implements StateInterface
         return true;
     }
 
-
+    /**
+     * @param CommonGLPI $item
+     * @param integer $withtemplate
+     * @return false|void
+     */
     public static function showForItem(CommonGLPI $item, $withtemplate = 0)
     {
         global $CFG_GLPI;
@@ -807,12 +814,19 @@ class Item_Devices extends CommonDBRelation implements StateInterface
         $_SESSION['glpimassiveactionselected'] = [];
     }
 
-
+    /**
+     * @return string
+     */
     public static function getDeviceForeignKey()
     {
         return getForeignKeyFieldForTable(getTableForItemType(static::getDeviceType()));
     }
 
+    /**
+     * @param CommonDBTM $item
+     * @param class-string<CommonDBTM>|null $peer_type
+     * @return array
+     */
     public function getTableGroupCriteria($item, $peer_type = null)
     {
         $is_device = ($item instanceof CommonDevice);
@@ -876,14 +890,15 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      * In cas of $item is an instance, then $options contains the type of the item (Computer,
      * Printer ...).
      *
-     * @param $item
-     * @param $table
-     * @param $options            array
-     * @param $delete_all_column
-     * @param $common_column
-     * @param $specific_column
-     * @param $delete_column
-     * @param $dynamic_column
+     * @param CommonDBTM $item
+     * @param HTMLTableMain $table
+     * @param array $options
+     * @param ?HTMLTableSuperHeader $delete_all_column
+     * @param HTMLTableSuperHeader $common_column
+     * @param HTMLTableSuperHeader $specific_column
+     * @param ?HTMLTableSuperHeader $delete_column
+     * @param ?HTMLTableSuperHeader $dynamic_column
+     * @return void
      **/
     public function getTableGroup(
         CommonDBTM $item,
@@ -1176,11 +1191,12 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
 
     /**
-     * @param $numberToAdd
-     * @param $itemtype
-     * @param $items_id
-     * @param $devices_id
-     * @param $input          array to complete (permit to define values)
+     * @param positive-int $numberToAdd
+     * @param class-string<CommonDBTM>|string $itemtype
+     * @param int $items_id
+     * @param int $devices_id
+     * @param array $input Array to complete (permit to define values)
+     * @return void
      **/
     public function addDevices($numberToAdd, $itemtype, $items_id, $devices_id, $input = [])
     {
@@ -1213,8 +1229,8 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     /**
      * Add one or several device(s) from front/item_devices.form.php.
      *
-     * @param $input array of input: should be $_POST
-     *
+     * @param array $input Array of input: should be $_POST
+     * @return void
      * @since 0.85
      **/
     public static function addDevicesFromPOST($input)
@@ -1289,7 +1305,8 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
 
     /**
-     * @param $input array of input: should be $_POST
+     * @param array $input Array of input: should be $_POST
+     * @return void
      **/
     public static function updateAll($input)
     {
@@ -1365,7 +1382,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             $link = getItemForItemtype($type);
             if ($link instanceof Item_Devices) {
                 foreach ($commands['add'] as $link_to_add => $number) {
-                    $link->addDevices($number, $itemtype, $items_id, $link_to_add);
+                    $link->addDevices($number, $itemtype, $items_id, (int) $link_to_add);
                 }
                 foreach ($commands['update'] as $link_to_update => $input) {
                     $input['id'] = $link_to_update;
@@ -1380,9 +1397,9 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     /**
      * @since 0.85
      *
-     * @param $item_devices_id
-     * @param $items_id
-     * @param $itemtype
+     * @param positive-int $item_devices_id
+     * @param positive-int $items_id
+     * @param class-string<CommonDBTM> $itemtype
      *
      * @return boolean
      **/
@@ -1398,9 +1415,10 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
 
     /**
-     * @param $itemtype
-     * @param $items_id
-     * @param $unaffect
+     * @param class-string<CommonDBTM> $itemtype
+     * @param positive-int $items_id
+     * @param boolean $unaffect
+     * @return void
      **/
     public static function cleanItemDeviceDBOnItemDelete($itemtype, $items_id, $unaffect)
     {
@@ -1468,9 +1486,6 @@ class Item_Devices extends CommonDBRelation implements StateInterface
         return $ong;
     }
 
-    /**
-     * @since 0.85
-     **/
     public function showForm($ID, array $options = [])
     {
         if (!$this->isNewID($ID)) {
@@ -1480,9 +1495,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             $this->check(-1, CREATE);
         }
 
-        /** @var CommonDBTM  */
         $item1   = $this->getOnePeer(0);
-        /** @var CommonDBTM  */
         $device = $this->getOnePeer(1);
 
         $specificities_fields = [];

@@ -561,6 +561,9 @@ abstract class CommonDevice extends CommonDropdown
     /**
      * Criteria used for import function
      *
+     * @return array<string, string> Fieldname => Comparison type where comparison type is one of:
+     * - 'equal': field must be equal
+     * - 'delta:n': field must be within n of the value
      * @since 0.84
      **/
     public function getImportCriteria()
@@ -585,6 +588,7 @@ abstract class CommonDevice extends CommonDropdown
     }
 
     /**
+     * @return void
      * @since 0.85
      **/
     public function post_workOnItem()

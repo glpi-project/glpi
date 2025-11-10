@@ -141,6 +141,11 @@ class DeviceSoundCard extends CommonDevice
         return $cell;
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param array $main_joinparams
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
     {
         $tab = [];
