@@ -304,21 +304,13 @@ class NetworkPort extends CommonDBChild
         $this->updateMetrics();
     }
 
-    /**
-     * @param NetworkPort $source
-     * @param bool $history
-     *
-     * @return false|int
-     */
     public function post_clone($source, $history)
     {
         $instantiation = $source->getInstantiation();
         if ($instantiation !== false) {
             $instantiation->fields[$instantiation->getIndexName()] = $this->getID();
-            return $instantiation->clone([], $history);
+            $instantiation->clone([], $history);
         }
-
-        return false;
     }
 
     /**
