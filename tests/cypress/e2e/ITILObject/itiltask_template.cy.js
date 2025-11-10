@@ -80,11 +80,11 @@ describe("ITIL Task Template Preservation", () => {
 
         cy.login();
         cy.visit(`/front/ticket.form.php?id=${test_ticket_id}`);
-        cy.findByRole('tab', { name: 'Processing ticket' }).click();
     });
 
     it("preserves user's pending reason when applying template without pending reason", () => {
-        cy.findByRole('button', { name: 'Add a new task' }).click();
+        cy.findByRole('button', { name: 'View other actions' }).click();
+        cy.findByRole('link', { name: 'Create a task' }).click();
         cy.get('.itiltask').should('be.visible');
 
         cy.get('input[name="pending"][type="checkbox"]').then($checkbox => {
@@ -137,7 +137,8 @@ describe("ITIL Task Template Preservation", () => {
     });
 
     it("preserves user's content when applying template without content", () => {
-        cy.findByRole('button', { name: 'Add a new task' }).click();
+        cy.findByRole('button', { name: 'View other actions' }).click();
+        cy.findByRole('link', { name: 'Create a task' }).click();
         cy.get('.itiltask').should('be.visible');
 
         const user_content = 'User typed task content';
@@ -177,7 +178,8 @@ describe("ITIL Task Template Preservation", () => {
     });
 
     it("replaces user's content when applying template with content", () => {
-        cy.findByRole('button', { name: 'Add a new task' }).click();
+        cy.findByRole('button', { name: 'View other actions' }).click();
+        cy.findByRole('link', { name: 'Create a task' }).click();
         cy.get('.itiltask').should('be.visible');
 
         const user_content = 'User initial task content';

@@ -164,8 +164,9 @@
                   itemtype: '{{ item.getType()|e('js') }}'
                }
             }).done(function (data) {
-                if (data.content !== undefined) {
-                    // set textarea content
+                // set textarea content ONLY if template defines content
+                // If template has no content defined, preserve user's existing content
+                if (data.content && data.content.trim() !== '') {
                     setRichTextEditorContent("content_{{ rand }}", data.content);
                 }
 
