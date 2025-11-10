@@ -1382,7 +1382,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             $link = getItemForItemtype($type);
             if ($link instanceof Item_Devices) {
                 foreach ($commands['add'] as $link_to_add => $number) {
-                    $link->addDevices($number, $itemtype, $items_id, $link_to_add);
+                    $link->addDevices($number, $itemtype, $items_id, (int) $link_to_add);
                 }
                 foreach ($commands['update'] as $link_to_update => $input) {
                     $input['id'] = $link_to_update;
