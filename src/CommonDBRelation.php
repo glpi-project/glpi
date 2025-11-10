@@ -51,16 +51,25 @@ abstract class CommonDBRelation extends CommonDBConnexity
     /** @var ?string $items_id_1 */
     public static $items_id_1; // Field name
     // * entity inheritance
+    /** @var bool */
     public static $take_entity_1          = true;
     // * rights
+    /** @var CommonDBConnexity::DONT_CHECK_ITEM_RIGHTS|CommonDBConnexity::HAVE_VIEW_RIGHT_ON_ITEM|CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM */
     public static $checkItem_1_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM;
+    /** @var bool */
     public static $mustBeAttached_1       = true;
     // * log
+    /** @var bool */
     public static $logs_for_item_1        = true;
+    /** @var Log::HISTORY_* */
     public static $log_history_1_add      = Log::HISTORY_ADD_RELATION;
+    /** @var Log::HISTORY_* */
     public static $log_history_1_update   = Log::HISTORY_UPDATE_RELATION;
+    /** @var Log::HISTORY_* */
     public static $log_history_1_delete   = Log::HISTORY_DEL_RELATION;
+    /** @var Log::HISTORY_* */
     public static $log_history_1_lock     = Log::HISTORY_LOCK_RELATION;
+    /** @var Log::HISTORY_* */
     public static $log_history_1_unlock   = Log::HISTORY_UNLOCK_RELATION;
 
     // Item 2 information
@@ -70,24 +79,36 @@ abstract class CommonDBRelation extends CommonDBConnexity
     /** @var ?string $items_id_2 */
     public static $items_id_2; // Field name
     // * entity inheritance
+    /** @var bool */
     public static $take_entity_2          = false;
     // * rights
+    /** @var CommonDBConnexity::DONT_CHECK_ITEM_RIGHTS|CommonDBConnexity::HAVE_VIEW_RIGHT_ON_ITEM|CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM */
     public static $checkItem_2_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM;
+    /** @var bool  */
     public static $mustBeAttached_2       = true;
     // * log
+    /** @var bool */
     public static $logs_for_item_2        = true;
+    /** @var Log::HISTORY_* */
     public static $log_history_2_add      = Log::HISTORY_ADD_RELATION;
+    /** @var Log::HISTORY_* */
     public static $log_history_2_update   = Log::HISTORY_UPDATE_RELATION;
+    /** @var Log::HISTORY_* */
     public static $log_history_2_delete   = Log::HISTORY_DEL_RELATION;
+    /** @var Log::HISTORY_* */
     public static $log_history_2_lock     = Log::HISTORY_LOCK_RELATION;
+    /** @var Log::HISTORY_* */
     public static $log_history_2_unlock   = Log::HISTORY_UNLOCK_RELATION;
 
     // Relation between items to check
     /// If both items must be checked for rights (default is only one)
+    /** @var bool */
     public static $checkAlwaysBothItems   = false;
     /// If both items must be in viewable each other entities
+    /** @var bool */
     public static $check_entity_coherency = true;
 
+    /** @var bool */
     public $no_form_page                  = true;
 
     /**
@@ -98,7 +119,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
     protected $_force_log_option = 0;
 
     /**
-     * Get request cirteria to search for an item
+     * Get request criteria to search for an item
      *
      * @since 9.4
      *
