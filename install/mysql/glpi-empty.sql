@@ -3891,7 +3891,7 @@ CREATE TABLE `glpi_items_processes` (
   `started` timestamp NULL DEFAULT NULL,
   `tty` varchar(100) DEFAULT NULL,
   `user` varchar(100) DEFAULT NULL,
-  `virtualmemory` int NOT NULL DEFAULT '1',
+  `virtualmemory` bigint NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
