@@ -2183,48 +2183,36 @@ export class GlpiFormEditorController
     #showDeleteNonEmptySectionModal(section) {
         const blocks = section.find("[data-glpi-form-editor-block]");
 
-        // Populate the list of elements that will be deleted
-        const modalList = $('[data-glpi-form-editor-delete-section-items-list]');
-        modalList.empty();
-
-        const template = $('[data-glpi-form-editor-delete-section-item-template]').html();
+        // Count questions and comments
+        let questionCount = 0;
+        let commentCount = 0;
 
         blocks.each((_index, block) => {
             const $block = $(block);
-            const item = $(template);
-            const nameElement = item.find('[data-glpi-form-editor-delete-section-item-name]');
-
-            const name = this.#getItemInput($block, "name");
-            const uuid = this.#getItemInput($block, "uuid");
-
-            nameElement.text(name || __('Untitled'));
-            nameElement.attr('data-glpi-form-editor-delete-section-item-uuid', uuid);
-
-            // Determine the type (question or comment)
             if ($block.is('[data-glpi-form-editor-question]')) {
-                nameElement.attr('data-glpi-form-editor-delete-section-item-type', 'question');
+                questionCount++;
             } else if ($block.is('[data-glpi-form-editor-comment]')) {
-                nameElement.attr('data-glpi-form-editor-delete-section-item-type', 'comment');
+                commentCount++;
             }
-
-            modalList.append(item);
         });
 
-        // Set up click handlers for the items
-        modalList.find('[data-glpi-form-editor-delete-section-item-selector][href="#"]').on('click', e => {
-            e.preventDefault();
+        // Build the message
+        const messageParts = [];
+        if (questionCount > 0) {
+            const questionText = _n('question', 'questions', questionCount);
+            messageParts.push(`${questionCount} ${questionText}`);
+        }
+        if (commentCount > 0) {
+            const commentText = _n('comment', 'comments', commentCount);
+            messageParts.push(`${commentCount} ${commentText}`);
+        }
 
-            // Hide modal
-            $('[data-glpi-form-editor-delete-non-empty-section-modal]').modal('hide');
+        const elementsText = messageParts.join(` ${__('and')} `);
+        const message = __('Deleting this section will also delete %s. This action cannot be undone.')
+            .replace('%s', elementsText);
 
-            // Get the UUID and type
-            const clickedElement = $(e.currentTarget);
-            const uuid = clickedElement.data('glpi-form-editor-delete-section-item-uuid');
-            const type = clickedElement.data('glpi-form-editor-delete-section-item-type');
-
-            // Find and scroll to the element with matching UUID
-            this.#findAndHighlightElement(type, uuid);
-        });
+        // Set the message in the modal
+        $('[data-glpi-form-editor-delete-section-message]').text(message);
 
         // Set up the confirm button handler
         $('[data-glpi-form-editor-confirm-delete-section]')

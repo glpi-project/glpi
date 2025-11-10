@@ -338,7 +338,10 @@ describe ('Form editor', () => {
         cy.findByRole('dialog', {'name': 'Delete non-empty section'})
             .should('have.attr', 'data-cy-shown', 'true')
             .within(() => {
-                cy.findByRole('link', {'name': 'First question'}).should('exist');
+                // Check that the message contains the count of elements
+                cy.get('[data-glpi-form-editor-delete-section-message]')
+                    .should('contain', '1')
+                    .should('contain', 'question');
                 cy.findByRole('button', {'name': 'Delete section and all its elements'}).click();
             });
 
