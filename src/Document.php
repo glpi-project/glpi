@@ -701,7 +701,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         $request = [
             'FROM'      => 'glpi_documents_items',
             'COUNT'     => 'cpt',
-            'LEFT JOIN' => [
+            'INNER JOIN' => [
                 'glpi_knowbaseitems' => [
                     'FKEY' => [
                         'glpi_knowbaseitems'   => 'id',
@@ -716,7 +716,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         ];
 
         if (array_key_exists('LEFT JOIN', $visibilityCriteria) && count($visibilityCriteria['LEFT JOIN']) > 0) {
-            $request['LEFT JOIN'] += $visibilityCriteria['LEFT JOIN'];
+            $request['LEFT JOIN'] = $visibilityCriteria['LEFT JOIN'];
         }
         if (array_key_exists('WHERE', $visibilityCriteria) && count($visibilityCriteria['WHERE']) > 0) {
             $request['WHERE'] += $visibilityCriteria['WHERE'];
@@ -802,8 +802,9 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             'FROM'  => Document_Item::getTable(),
             'COUNT' => 'cpt',
             'WHERE' => [
-                'itemtype' => $itemtype,
-                'items_id' => $items_id,
+                'itemtype'     => $itemtype,
+                'items_id'     => $items_id,
+                'documents_id' => $this->getID(),
             ],
             'LIMIT' => 1, // Only need to see one result
         ])->current();
