@@ -165,7 +165,6 @@ class NetworkAlias extends FQDNLabel
      * @param CommonDBTM|null $item
      * @param HTMLTableCell|null $father
      * @param array $options
-     * @return void
      *
      * @return void
      */

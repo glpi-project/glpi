@@ -143,7 +143,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
 
     /**
-     * @return false|IPAddress|null
+     * @return false|IPAddress
      */
     public function getAddress()
     {
@@ -159,7 +159,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
 
     /**
-     * @return false|IPNetmask|null
+     * @return false|IPNetmask
      */
     public function getNetmask()
     {
@@ -175,7 +175,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
 
     /**
-     * @return false|IPAddress|null
+     * @return false|IPAddress
      */
     public function getGateway()
     {
@@ -925,6 +925,8 @@ class IPNetwork extends CommonImplicitTreeDropdown
      *                                     (default '')
      *
      * @return void
+     *
+     * @TODO Deprecate the `$excludeBroadcastAndNetwork`, it is never used.
      **/
     public function computeNetworkRange(&$start, &$end = null, $excludeBroadcastAndNetwork = '')
     {
