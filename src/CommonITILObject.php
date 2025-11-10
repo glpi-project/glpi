@@ -4051,7 +4051,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 0.84
      *
-     * @param integer $value status ID
+     * @param int|string $value status ID
      * @return string|int
      **/
     public static function getStatus($value)
@@ -5179,7 +5179,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Get status icon
      *
-     * @param int $status
+     * @param int|string $status
      * @return string
      *
      * @since 9.3
@@ -5194,7 +5194,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Get CSS status class
      *
-     * @param int $status
+     * @param int|string $status
      * @return string
      *
      * @since 9.3
@@ -10274,12 +10274,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         return $items;
     }
 
-    /**
-     * @param string|null   $column_field
-     * @param array<int>    $column_ids
-     * @param bool          $get_default
-     * @return array
-     */
     #[Override]
     public static function getAllKanbanColumns($column_field = null, $column_ids = [], $get_default = false)
     {
@@ -10326,11 +10320,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         };
     }
 
-    /**
-     * Returns the itemtypes that can be used as team members.
-     *
-     * @return array<class-string<CommonDBTM>>
-     */
     #[Override]
     public static function getTeamItemtypes(): array
     {
@@ -10569,8 +10558,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     }
 
     /**
+     * Echo a row with the Assign action link.
+     *
      * @param array $output
-     * @return array
+     * @return array updated output var (unset `entities_id`, `items_id`, `itemtype`)
      */
     public static function showPreviewAssignAction($output)
     {
@@ -10681,7 +10672,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
     /**
      * @param string $name
-     * @return array
+     * @return array{description: string, parameter?: string}
      */
     public static function cronInfo($name)
     {
