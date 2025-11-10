@@ -28,7 +28,29 @@ The present file will list all changes made to the project; according to the
 
 #### Removed
 
-## [11.0.2] unreleased
+
+## [11.0.3] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [11.0.2] 2025-11-05
 
 ### Added
 - Some missing `readOnly` flags for properties for some schemas in High-Level API.

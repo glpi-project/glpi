@@ -50,16 +50,25 @@ abstract class CommonDBChild extends CommonDBConnexity
     // * definition
     /** @var class-string<CommonDBTM>|string $itemtype Class name or field name (start with itemtype) for link to Parent */
     public static $itemtype;
+    /** @var string $items_id */
     public static $items_id; // Field name
     // * rights
+    /** @var CommonDBConnexity::DONT_CHECK_ITEM_RIGHTS|CommonDBConnexity::HAVE_VIEW_RIGHT_ON_ITEM|CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM */
     public static $checkParentRights  = self::HAVE_SAME_RIGHT_ON_ITEM;
+    /** @var bool */
     public static $mustBeAttached     = true;
     // * log
+    /** @var bool */
     public static $logs_for_parent    = true;
+    /** @var Log::HISTORY_* */
     public static $log_history_add    = Log::HISTORY_ADD_SUBITEM;
+    /** @var Log::HISTORY_* */
     public static $log_history_update = Log::HISTORY_UPDATE_SUBITEM;
+    /** @var Log::HISTORY_* */
     public static $log_history_delete = Log::HISTORY_DELETE_SUBITEM;
+    /** @var Log::HISTORY_* */
     public static $log_history_lock   = Log::HISTORY_LOCK_SUBITEM;
+    /** @var Log::HISTORY_* */
     public static $log_history_unlock = Log::HISTORY_UNLOCK_SUBITEM;
 
 
@@ -435,12 +444,36 @@ abstract class CommonDBChild extends CommonDBConnexity
             return false;
         }
 
-        // Check item exists
-        if (
-            static::$mustBeAttached
-            && !$this->getItemFromArray(static::$itemtype, static::$items_id, $input)
-        ) {
-            return false;
+        if (!$this->getItemFromArray(static::$itemtype, static::$items_id, $input)) {
+            // The parent item is invalid.
+
+            if (static::$mustBeAttached) {
+                // A valid parent item is mandatory, so creation is blocked with an error message.
+                $linked_itemtype = preg_match('/^itemtype/', static::$itemtype)
+                    ? ($input[static::$itemtype] ?? null)
+                    : static::$itemtype
+                ;
+                $linked_items_id = $input[static::$items_id] ?? null;
+
+                Session::addMessageAfterRedirect(
+                    htmlescape(sprintf(
+                        __('Parent item %s #%s is invalid.'),
+                        is_a($linked_itemtype, CommonDBTM::class, true) ? $linked_itemtype::getTypeName(1) : ($linked_itemtype ?? 'null'),
+                        $linked_items_id ?? 'null'
+                    )),
+                    false,
+                    ERROR
+                );
+                return false;
+            } else {
+                // A valid parent is not mandatory, so invalid input is cleaned.
+                if (array_key_exists(static::$itemtype, $input) && preg_match('/^itemtype/', static::$itemtype)) {
+                    $input[static::$itemtype] = ''; // `itemtype` fields are usually not nullable, a default value must be set
+                }
+                if (array_key_exists(static::$items_id, $input)) {
+                    $input[static::$items_id] = 0; // foreign key fields may be not nullable, a default value must be set
+                }
+            }
         }
 
         return $this->addNeededInfoToInput($input);
@@ -460,6 +493,7 @@ abstract class CommonDBChild extends CommonDBConnexity
                 static::$items_id,
             ])
         ) {
+            // A message is already added by `self::checkAttachedItemChangesAllowed()`
             return false;
         }
 

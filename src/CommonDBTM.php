@@ -5857,6 +5857,7 @@ class CommonDBTM extends CommonGLPI
         return $data;
     }
 
+    /** @return string */
     public static function getIcon()
     {
         // Generic icon that is not visible, but still takes up space to allow proper alignment in lists

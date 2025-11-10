@@ -7525,7 +7525,7 @@ HTML,
             ],
         ];
 
-        foreach ([null => null, 'post-only' => 'postonly', 'tech' => 'tech'] as $login => $pass) {
+        foreach (['' => null, 'post-only' => 'postonly', 'tech' => 'tech'] as $login => $pass) {
             // usage of `check_view_rights` should produce the same result whoever is logged-in (used for notifications)
             yield [
                 'login'              => $login,

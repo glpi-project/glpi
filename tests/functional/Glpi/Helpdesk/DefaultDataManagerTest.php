@@ -41,6 +41,7 @@ use Entity;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Form;
+use Glpi\Form\FormTranslation;
 use Glpi\Helpdesk\DefaultDataManager;
 use Glpi\Helpdesk\Tile\Item_Tile;
 use Glpi\Helpdesk\Tile\TileInterface;
@@ -50,7 +51,9 @@ use Glpi\UI\IllustrationManager;
 use ITILCategory;
 use Location;
 use Monitor;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
+use Symfony\Component\DomCrawler\Crawler;
 use Ticket;
 use User;
 
@@ -212,6 +215,40 @@ final class DefaultDataManagerTest extends DbTestCase
         $actors = $ticket->getActorsForType(CommonITILActor::REQUESTER);
         $actor = current($actors);
         $this->assertEquals(TU_USER, $actor['title']);
+    }
+
+    public static function provideFormTranslationsProvider(): iterable
+    {
+        yield ['Report an issue'];
+        yield ['Request a service'];
+    }
+
+    #[DataProvider('provideFormTranslationsProvider')]
+    public function testFormTranslations(string $form_name): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        // Arrange: Get default incident form
+        $rows = (new Form())->find(['name' => $form_name]);
+        $row = current($rows);
+        $form = Form::getById($row['id']);
+
+        // Assert: initial translation exist
+        $this->assertNotFalse(FormTranslation::getTranslationsForItem($form));
+
+        // Act: show translations page
+        ob_start();
+        FormTranslation::displayTabContentForItem($form);
+        $content = ob_get_clean();
+        $crawler = new Crawler($content);
+
+        // Assert: the translations languages table is not empty
+        foreach (array_keys($CFG_GLPI['languages']) as $language) {
+            $nodes = $crawler->filter(sprintf('#form-translation-modal-%s', $language));
+            $this->assertCount(1, $nodes, sprintf("Translation modal for language '%s' should be present", $language));
+        }
     }
 
     public function testRequestFormQuestions(): void

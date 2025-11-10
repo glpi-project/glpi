@@ -43,10 +43,6 @@ class Item extends CommonDBChild
     public static $itemtype = Dashboard::class;
     public static $items_id = 'dashboards_dashboards_id';
 
-    // prevent bad getFromDB when bootstraping tests suite
-    // FIXME Should be true
-    public static $mustBeAttached = false;
-
     /**
      * Return items for the provided dashboard
      *

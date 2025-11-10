@@ -42,6 +42,7 @@ use Glpi\DBAL\QueryExpression;
  **/
 abstract class CommonTreeDropdown extends CommonDropdown
 {
+    /** @var bool $can_be_translated */
     public $can_be_translated = false;
 
 
@@ -82,6 +83,8 @@ abstract class CommonTreeDropdown extends CommonDropdown
     /**
      * Override this method to easily insert new tabs between the children tab
      * and the log tab.
+     *
+     * @param array $options
      */
     protected function insertTabs($options = []): array
     {

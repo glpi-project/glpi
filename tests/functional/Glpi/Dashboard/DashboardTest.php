@@ -66,11 +66,15 @@ class DashboardTest extends DbTestCase
 
     public function testGetFromDB()
     {
-        // we need to test we get the dashboard by it's key and not it's id
-        $this->assertFalse($this->dashboard->getFromDB(1));
+        // get the dashboard by its key
         $this->assertTrue($this->dashboard->getFromDB('test_dashboard'));
         $this->assertEquals('test_dashboard', $this->getPrivateProperty('key'));
         $this->assertNotEmpty($this->getPrivateProperty('fields'));
+
+        // get the dashboard by its id
+        $dashboard = $this->createItem(Dashboard::class, ['key' => 'test_by_id', 'name' => __FUNCTION__]);
+        $this->assertTrue($this->dashboard->getFromDB($dashboard->getID()));
+        $this->assertEquals('test_by_id', $this->getPrivateProperty('key'));
     }
 
 

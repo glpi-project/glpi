@@ -47,6 +47,7 @@ use Glpi\Form\DelegationData;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Form;
+use Glpi\Form\Question;
 use Glpi\Form\QuestionType\CustomMandatoryMessageInterface;
 use Glpi\Form\QuestionType\QuestionTypeValidationInterface;
 use Glpi\Form\Section;
@@ -224,7 +225,27 @@ final class AnswersHandler
         $result = $engine->computeVisibility();
 
         foreach (array_keys($answers) as $anwer_id) {
+            // If the question itself is hidden, remove it
             if (!$result->isQuestionVisible($anwer_id)) {
+                unset($answers[$anwer_id]);
+                continue;
+            }
+
+            // We now need to load the parent section to make sure it is not
+            // hidden too
+            $question = Question::getById($anwer_id);
+            if (!$question) {
+                unset($answers[$anwer_id]); // Unexpected data
+                continue;
+            }
+
+            $section = $question->getSection();
+            if (!$section) {
+                unset($answers[$anwer_id]); // Unexpected data
+                continue;
+            }
+
+            if (!$result->isSectionVisible($section->getId())) {
                 unset($answers[$anwer_id]);
             }
         }

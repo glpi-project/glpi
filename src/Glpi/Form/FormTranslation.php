@@ -53,7 +53,7 @@ final class FormTranslation extends ItemTranslation
     }
 
     #[Override]
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-language";
     }

@@ -58,7 +58,9 @@ final class DbUtils
      *
      * @param string $table table name
      *
-     * @return string field name used for a foreign key to the parameter table
+     * @return string|''
+     *      field name used for a foreign key to the parameter table,
+     *      or an empty string if the table name does match the GLPI table name pattern
      */
     public function getForeignKeyFieldForTable($table)
     {
@@ -74,7 +76,7 @@ final class DbUtils
      *
      * @param string $field field name
      *
-     * @return boolean
+     * @return bool
      */
     public function isForeignKeyField($field)
     {
@@ -88,7 +90,9 @@ final class DbUtils
      *
      * @param string $fkname foreign key name
      *
-     * @return string table name corresponding to a foreign key name
+     * @return string|''
+     *      table name corresponding to a foreign key name
+     *      or an empty string if the foreign key name does match the GLPI foreign key name pattern
      */
     public function getTableNameForForeignKeyField($fkname)
     {
@@ -192,9 +196,9 @@ final class DbUtils
     /**
      * Return table name for an item type
      *
-     * @param string $itemtype itemtype
+     * @param class-string<CommonDBTM> $itemtype itemtype
      *
-     * @return string table name corresponding to the itemtype  parameter
+     * @return string table name corresponding to the itemtype parameter
      */
     public function getTableForItemType($itemtype)
     {
@@ -271,7 +275,8 @@ final class DbUtils
      *
      * @param string $table table name
      *
-     * @return class-string<CommonDBTM>|null itemtype corresponding to a table name parameter,
+     * @return class-string<CommonDBTM>|null
+     *      itemtype corresponding to a table name parameter,
      *      or null if no valid itemtype is attached to the table
      */
     public function getItemTypeForTable($table)
@@ -571,10 +576,10 @@ final class DbUtils
     /**
      * Count the number of elements in a table.
      *
-     * @param string|array   $table     table name(s)
-     * @param string|array   $condition array of criteria
+     * @param string|string[]            $table     table name(s)
+     * @param string|array<mixed, mixed> $condition filtering criteria
      *
-     * @return integer Number of elements in table
+     * @return int Number of elements in table
      */
     public function countElementsInTable($table, $condition = [])
     {
@@ -606,9 +611,9 @@ final class DbUtils
     /**
      * Count the number of elements in a table.
      *
-     * @param string|array   $table     table name(s)
-     * @param string         $field     field name
-     * @param array|string|null          $condition array of criteria
+     * @param string|string[]            $table     table name(s)
+     * @param string                     $field     field name
+     * @param string|array<mixed, mixed> $condition filtering criteria
      *
      * @return int nb of elements in table
      */
@@ -631,10 +636,12 @@ final class DbUtils
     /**
      * Count the number of elements in a table for a specific entity
      *
-     * @param string|array $table     table name(s)
-     * @param array        $condition array of criteria
+     * @param string|string[]            $table     table name(s)
+     * @param string|array<mixed, mixed> $condition filtering criteria
      *
-     * @return integer Number of elements in table
+     * @return int Number of elements in table
+     *
+     * @TODO This method is not used, deprecate it in GLPI 11.1.
      */
     public function countElementsInTableForMyEntities($table, $condition = [])
     {
@@ -651,12 +658,12 @@ final class DbUtils
     /**
      * Count the number of elements in a table for a specific entity
      *
-     * @param string|array $table     table name(s)
-     * @param integer      $entity    the entity ID
-     * @param array        $condition condition to use (default '') or array of criteria
-     * @param boolean      $recursive Whether to recurse or not. If true, will be conditionned on item recursivity
+     * @param string|string[]            $table     table name(s)
+     * @param int                        $entity    the entity ID
+     * @param string|array<mixed, mixed> $condition filtering criteria
+     * @param bool                       $recursive Whether to recurse or not. If true, will be conditionned on item recursivity
      *
-     * @return integer number of elements in table
+     * @return int number of elements in table
      */
     public function countElementsInTableForEntity($table, $entity, $condition = [], $recursive = true)
     {
@@ -674,15 +681,15 @@ final class DbUtils
     }
 
     /**
-     * Get data from a table in an array :
-     * CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
+     * Get data from a table in an array.
+     * /!\ CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
      *
-     * @param string         $table    Table name
-     * @param array|string|null          $criteria Request criteria
-     * @param boolean        $usecache Use cache (false by default)
-     * @param string         $order    Result order (default '')
+     * @param string                     $table    Table name
+     * @param string|array<mixed, mixed> $criteria filtering criteria
+     * @param bool                       $usecache Use cache (false by default)
+     * @param string                     $order    Result order (default '')
      *
-     * @return array containing all the datas
+     * @return array containing all the data
      */
     public function getAllDataFromTable($table, $criteria = [], $usecache = false, $order = '')
     {
@@ -778,19 +785,18 @@ final class DbUtils
     /**
      * Get SQL request to restrict to current entities of the user
      *
-     * @param string  $separator        separator in the begin of the request (default AND)
-     * @param string  $table            table where apply the limit (if needed, multiple tables queries)
-     *                                  (default '')
-     * @param string  $field            field where apply the limit (id != entities_id) (default '')
-     * @param mixed   $value            entity to restrict (if not set use $_SESSION['glpiactiveentities_string']).
-     *                                  single item or array (default '')
-     * @param boolean $is_recursive     need to use recursive process to find item
-     *                                  (field need to be named recursive) (false by default)
-     * @param boolean $complete_request need to use a complete request and not a simple one
-     *                                  when have acces to all entities (used for reminders)
-     *                                  (false by default)
+     * @param string        $separator        separator in the begin of the request (default AND)
+     * @param string        $table            table where apply the limit (if needed, multiple tables queries)
+     * @param string        $field            field where apply the limit (id != entities_id)
+     * @param int|int[]|''  $value            entity to restrict (if not set use $_SESSION['glpiactiveentities_string'])
+     * @param bool          $is_recursive     need to use recursive process to find item
+     *                                        (field need to be named recursive)
+     * @param bool          $complete_request need to use a complete request and not a simple one
+     *                                        when have acces to all entities (used for reminders)
      *
      * @return string the WHERE clause to restrict
+     *
+     * @TODO Deprecate this method in GLPI 11.1, usages should be replaced by `getEntitiesRestrictCriteria()`.
      */
     public function getEntitiesRestrictRequest(
         $separator = "AND",
@@ -886,18 +892,15 @@ final class DbUtils
      *
      * @since 9.2
      *
-     * @param string $table             table where apply the limit (if needed, multiple tables queries)
-     *                                  (default '')
-     * @param string $field             field where apply the limit (id != entities_id) (default '')
-     * @param mixed $value              entity to restrict (if not set use $_SESSION['glpiactiveentities']).
-     *                                  single item or array (default '')
-     * @param boolean|'auto' $is_recursive     need to use recursive process to find item
-     *                                  (field need to be named recursive) (false by default, set to 'auto' to automatic detection)
-     * @param boolean $complete_request need to use a complete request and not a simple one
-     *                                  when have acces to all entities (used for reminders)
-     *                                  (false by default)
+     * @param string        $table            table where apply the limit (if needed, multiple tables queries)
+     * @param string        $field            field where apply the limit (id != entities_id)
+     * @param int|int[]|''  $value            entity to restrict (if not set use $_SESSION['glpiactiveentities'])
+     * @param bool|'auto'   $is_recursive     need to use recursive process to find item
+     *                                        (field need to be named recursive) (false by default, set to 'auto' to automatic detection)
+     * @param bool          $complete_request need to use a complete request and not a simple one
+     *                                        when have acces to all entities (used for reminders)
      *
-     * @return array of criteria
+     * @return array<mixed, mixed>
      */
     public function getEntitiesRestrictCriteria(
         $table = '',
@@ -980,12 +983,12 @@ final class DbUtils
     }
 
     /**
-     * Get the sons of an item in a tree dropdown. Get datas in cache if available
+     * Get the sons of an item in a tree dropdown.
      *
      * @param string  $table table name
-     * @param integer $IDf   The ID of the father
+     * @param int     $IDf   The ID of the father
      *
-     * @return array of IDs of the sons
+     * @return int[] IDs of the sons
      */
     public function getSonsOf($table, $IDf)
     {
@@ -1088,14 +1091,14 @@ final class DbUtils
     }
 
     /**
-     * Get the ancestors of an item in a tree dropdown
+     * Get the ancestors of an item in a tree dropdown.
      *
-     * @param string       $table    Table name
-     * @param array|string|int $items_id The IDs of the items. If an array is passed, the result will be the union of the ancestors of each item.
-     * @phpstan-param non-empty-array<int>|int|numeric-string $items_id
+     * @param string    $table    Table name
+     * @param int|int[] $items_id The IDs of the items. If an array is passed, the result will be the union of the ancestors of each item.
      *
-     * @return array Array of IDs of the ancestors. The keys and values should be identical. The result *may* include the IDs passed in the $items_id parameter.
-     * @todo Should this function really allow returning the requested ID in the result? Especially if only a single ID is requested?
+     * @return int[] IDs of the ancestors.
+     *
+     * @TODO Cache and only array values, keys are useless.
      */
     public function getAncestorsOf($table, $items_id)
     {
@@ -1270,14 +1273,14 @@ final class DbUtils
     }
 
     /**
-     * Get the sons and the ancestors of an item in a tree dropdown. Rely on getSonsOf and getAncestorsOf
+     * Get the sons and the ancestors of an item in a tree dropdown.
      *
      * @since 0.84
      *
      * @param string $table table name
      * @param int    $IDf   The ID of the father
      *
-     * @return array of IDs of the sons and the ancestors
+     * @return int[] IDs of the sons and the ancestors
      */
     public function getSonsAndAncestorsOf($table, $IDf)
     {
@@ -1288,15 +1291,16 @@ final class DbUtils
      * Get the Name of the element of a Dropdown Tree table
      *
      * @param string  $table       Dropdown Tree table
-     * @param integer $ID          ID of the element
-     * @param boolean $withcomment 1 if you want to give the array with the comments (false by default)
-     * @param boolean $translate   (true by default)
+     * @param int     $ID          ID of the element
+     * @param bool    $withcomment whether to get the array with the comments
+     * @param bool    $translate   whether to get translated values
      *
-     * @return ($withcomment is true ? array : string)
+     * @return ($withcomment is true ? array{name: string, comment: string} : string)
      *
      * @see DbUtils::getTreeValueCompleteName
      *
      * @TODO Deprecate the `$withcomment` parameter, it is never used.
+     * @TODO Deprecate the `$translate` parameter, it is never used.
      */
     public function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = true)
     {
@@ -1390,13 +1394,13 @@ final class DbUtils
      * Get completename of a Dropdown Tree table
      *
      * @param string  $table       Dropdown Tree table
-     * @param integer $ID          ID of the element
-     * @param boolean $withcomment 1 if you want to give the array with the comments (false by default)
-     * @param boolean $translate   (true by default)
-     * @param boolean $tooltip     (true by default) returns a tooltip, else returns only 'comment'
+     * @param int     $ID          ID of the element
+     * @param bool    $withcomment whether to get the array with the comments
+     * @param bool    $translate   whether to get translated values
+     * @param bool    $tooltip     whether to get a tooltip for additional comments
      * @param string  $default     default value returned when item not exists
      *
-     * @return ($withcomment is true ? array : string)
+     * @return ($withcomment is true ? array{name: string, comment: string} : string)
      *
      * @see DbUtils::getTreeLeafValueName
      *
@@ -1498,15 +1502,16 @@ final class DbUtils
 
 
     /**
-     * show name category
-     * DO NOT DELETE THIS FUNCTION : USED IN THE UPDATE
+     * Get the tree value name (corresponds to the relative completename).
      *
      * @param string  $table     table name
-     * @param integer $ID        integer  value ID
+     * @param int     $ID        integer  value ID
      * @param string  $wholename current name to complete (use for recursivity) (default '')
-     * @param integer $level     current level of recursion (default 0)
+     * @param int     $level     current level of recursion (default 0)
      *
-     * @return array
+     * @return array{0: string, 1:int}
+     *
+     * @TODO This method is not used, deprecate it in GLPI 11.1.
      */
     public function getTreeValueName($table, $ID, $wholename = "", $level = 0)
     {
@@ -1542,9 +1547,11 @@ final class DbUtils
      * Get the sons of an item in a tree dropdown
      *
      * @param string  $table table name
-     * @param integer $IDf   The ID of the father
+     * @param int     $IDf   The ID of the father
      *
-     * @return array of IDs of the sons
+     * @return array<int, array{name: string, tree: array<int, mixed>}> Recursive tree
+     *
+     * @TODO This method is not used, deprecate it in GLPI 11.1.
      */
     public function getTreeForItem($table, $IDf)
     {
@@ -1603,10 +1610,12 @@ final class DbUtils
     /**
      * Construct a tree from a list structure
      *
-     * @param array   $list the list
-     * @param integer $root root of the tree
+     * @param array<int, array{name: string, parent: int}>  $list
+     * @param int                                           $root root of the tree
      *
-     * @return array list of items in the tree
+     * @return array<int, array{name: string, tree: array<int, mixed>}> Recursive tree
+     *
+     * @TODO This method is not used, deprecate it in GLPI 11.1.
      */
     public function constructTreeFromList($list, $root)
     {
@@ -1625,10 +1634,12 @@ final class DbUtils
     /**
      * Construct a list from a tree structure
      *
-     * @param array   $tree   the tree
-     * @param integer $parent root of the tree (default =0)
+     * @param array<int, array{tree: array<int, mixed>}> $tree   recursive tree
+     * @param int                                        $parent root of the tree
      *
-     * @return array list of items in the tree
+     * @return array<int, int> list of items in the tree
+     *
+     * @TODO This method is not used, deprecate it in GLPI 11.1.
      */
     public function constructListFromTree($tree, $parent = 0)
     {
@@ -1748,14 +1759,16 @@ final class DbUtils
 
 
     /**
-     * Get name of the user with ID=$ID (optional with link to user.form.php)
+     * Get name of the user with the given ID.
      *
-     * @param integer|string $ID   ID of the user.
-     * @param integer $link 1 = Show link to user.form.php 2 = return array with comments and link
-     *                      (default =0)
-     * @param $disable_anon   bool  disable anonymization of username.
+     * @param int       $ID
+     * @param int<0, 2> $link
+     *      0 = No link
+     *      1 = Show link to user.form.php
+     *      2 = return array with comments and link
+     * @param bool      $disable_anon   disable anonymization of username
      *
-     * @return ($link is 2 ? array : string) username string (realname if not empty and name if realname is empty).
+     * @return ($link is 2 ? array{name: string, link: string, comment: string} : string)
      *
      * @since 11.0 `$link` parameter is deprecated.
      */
@@ -2074,6 +2087,8 @@ final class DbUtils
      * @param string $time datetime time
      *
      * @return string
+     *
+     * @TODO This method is not used, deprecate it in GLPI 11.1.
      */
     public function getHourFromSql($time)
     {
@@ -2086,7 +2101,7 @@ final class DbUtils
      * Get the $RELATION array. It defines all relations between tables in the DB;
      * plugins may add their own stuff
      *
-     * @return array the $RELATION array
+     * @return array<string, array<string, string|list<string|array{0: string, 1: string}>>>
      */
     public function getDbRelations()
     {
@@ -2280,7 +2295,8 @@ final class DbUtils
      *
      * @param string $fkname Foreign key
      *
-     * @return class-string<CommonDBTM>|null Itemtype class for the fkname parameter,
+     * @return class-string<CommonDBTM>|null
+     *      Itemtype class for the fkname parameter,
      *      or null if no valid itemtype is attached to the foreign key field
      */
     public function getItemtypeForForeignKeyField($fkname)

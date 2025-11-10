@@ -204,6 +204,7 @@ class RuleCriteriaTest extends DbTestCase
         // Expects prepareInputForAdd to return false if `rules_id` is not a valid ID
         $input = ['rules_id' => $rules_id + 1000, 'criteria' => 'name'];
         $this->assertFalse($criteria->prepareInputForAdd($input));
+        $this->hasSessionMessages(ERROR, ['Parent item Rule #' . ($rules_id + 1000) . ' is invalid.']);
     }
 
     public function testGetSearchOptionsNew()

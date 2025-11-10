@@ -20011,7 +20011,7 @@ msgstr "أجهزة المستخدم"
 #: src/Glpi/Helpdesk/HomePageTabs.php:81 src/Glpi/Dashboard/Provider.php:408
 #: src/Glpi/Dashboard/FakeProvider.php:202 src/Glpi/Dashboard/Grid.php:1292
 msgid "Solved tickets"
-msgstr "تذاكر محلولة"
+msgstr "التذاكر المحلولة"
 
 #: src/Glpi/Helpdesk/Tile/GlpiPageTile.php:74
 msgid "GLPI page"
@@ -25601,11 +25601,11 @@ msgstr "التذاكر في انتظار موافقتك"
 #: src/Glpi/Dashboard/Grid.php:1287 src/Ticket.php:5035
 #: src/NotificationTargetTicket.php:146 src/NotificationTargetTicket.php:779
 msgid "Not solved tickets"
-msgstr "تذاكر غير مغلقة"
+msgstr "التذاكر الغير محلولة"
 
 #: src/Glpi/Dashboard/Grid.php:1288
 msgid "New tickets"
-msgstr "تذاكر جديدة"
+msgstr "التذاكر الجديدة"
 
 #: src/Glpi/Dashboard/Grid.php:1333
 msgid "Number of tickets by month"

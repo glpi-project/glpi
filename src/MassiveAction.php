@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Features\Clonable;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchOption;
@@ -1115,6 +1116,9 @@ class MassiveAction
                     if (isset($ma->POST['additionalvalues'])) {
                         $values = $ma->POST['additionalvalues'];
                     }
+                    if ($item instanceof User && $fieldname == 'entities_id') {
+                        $options['toadd'] = [-1 => __('Full structure')];
+                    }
                     $values[$search["field"]] = '';
                     echo $item->getValueToSelect($search, $fieldname, $values, $options);
                 }
@@ -1489,6 +1493,15 @@ class MassiveAction
                         $itemtable = getTableForItemType($item->getType());
                         $itemtype2 = getItemTypeForTable($searchopt[$index]["table"]);
 
+                        $field_name  = $input["field"];
+                        $field_value = $input[$input["field"]];
+                        if (
+                            array_key_exists('field_definition', $searchopt[$index])
+                            && $searchopt[$index]['field_definition'] instanceof CustomFieldDefinition
+                        ) {
+                            $field_name = 'custom_' . $searchopt[$index]['field_definition']->fields['system_name'];
+                        }
+
                         foreach ($ids as $key) {
 
                             if ($item2 = getItemForItemtype($itemtype2)) {
@@ -1500,9 +1513,9 @@ class MassiveAction
                                 ) {
                                     $related_item = null;
                                     // Case 1: The modified field is a foreign key (ex : locations_id)
-                                    if (isForeignKeyField($input["field"])) {
+                                    if (isForeignKeyField($field_name)) {
                                         // Attempt to load the related object using its ID (from the input value)
-                                        if ($item2->getFromDB($input[$input["field"]])) {
+                                        if ($item2->getFromDB($field_value)) {
                                             $related_item = $item2;
                                         }
                                         // Case 2: The field is not a foreign key, but the target class supports connexity (relations)
@@ -1537,7 +1550,7 @@ class MassiveAction
                                 && $item->canMassiveAction(
                                     $action,
                                     $input['field'],
-                                    $input[$input["field"]]
+                                    $field_value
                                 )
                             ) {
                                 if (
@@ -1545,8 +1558,9 @@ class MassiveAction
                                     || in_array($item->fields["entities_id"], $link_entity_type)
                                 ) {
                                     if (
-                                        $item->update(['id'            => $key,
-                                            $input["field"] => $input[$input["field"]],
+                                        $item->update([
+                                            'id'        => $key,
+                                            $field_name => $field_value,
                                         ])
                                     ) {
                                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);

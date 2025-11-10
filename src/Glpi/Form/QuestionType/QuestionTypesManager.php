@@ -286,7 +286,7 @@ JS;
         $this->raw_question_types_map[$type::class] = true;
     }
 
-    protected function isClassAValidQuestionType(?string $classname): bool
+    private function isClassAValidQuestionType(?string $classname): bool
     {
         return
             $classname !== null
@@ -296,7 +296,7 @@ JS;
         ;
     }
 
-    protected function loadCoreQuestionsTypes(): void
+    private function loadCoreQuestionsTypes(): void
     {
         // Get files in the current directory
         $directory_iterator = new DirectoryIterator(__DIR__);
@@ -317,12 +317,12 @@ JS;
         }
     }
 
-    protected function loadCoreCategories(): void
+    private function loadCoreCategories(): void
     {
         $this->categories = QuestionTypeCategory::cases();
     }
 
-    protected function sortQuestionTypes()
+    private function sortQuestionTypes(): void
     {
         // Sort question types by weight
         uasort(
@@ -335,7 +335,7 @@ JS;
         $this->question_types_are_sorted = true;
     }
 
-    protected function sortCategoriesTypes()
+    private function sortCategoriesTypes(): void
     {
         // Sort question types by weight
         uasort(

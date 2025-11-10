@@ -213,10 +213,13 @@
                   // Force empty value for server_mailbox
                   data += '&server_mailbox=';
 
-                  // Ask for password if missing
-                  if ($(this).closest('form').find('input[name=\"passwd\"]').val() == '') {
-                      var passwd = prompt(__('Please enter password to list folders'));
-                      data += '&passwd=' + encodeURIComponent(passwd);
+                  // In some case (like oauth imap) provide password is not possible
+                  // So, ask for password only if there is one stored in database
+                  var passwdField = $(this).closest('form').find('input[name="passwd"]');
+                  var hasStoredPassword = {{ (item.fields['passwd'] is defined and item.fields['passwd']) ? 'true' : 'false' }};
+                  if (hasStoredPassword && passwdField.val() == '') {
+                     var passwd = prompt(__('Please enter password to list folders'));
+                     data += '&passwd=' + encodeURIComponent(passwd);
                   }
 
                   glpi_ajax_dialog({
@@ -232,12 +235,12 @@
 
                   const li       = $(this);
                   const input_id = li.data('input-id');
-                  const folder   = li.children('.folder-name').html();
+                  const folder   = li.children('.folder-name').data('globalname');
 
                   let _label = '';
                   const _parents = li.parents('li').children('.folder-name');
                   for (i = _parents.length -1 ; i >= 0; i--) {
-                      _label += $(_parents[i]).html() + '/';
+                      _label += $(_parents[i]).data('globalname') + '/';
                   }
                   _label += folder;
 

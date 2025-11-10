@@ -111,6 +111,9 @@ abstract class ItemTranslation extends CommonDBChild
 
         // retrieve the formulas associated to the language
         $gettext_language = Language::getById($this->fields['language']);
+        if ($gettext_language === null) {
+            return null;
+        }
 
         // compute the formula with the paramater count
         $formula_to_compute = str_replace('n', (string) $count, $gettext_language->formula);

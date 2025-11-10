@@ -101,6 +101,12 @@ final class CustomAssetController extends AbstractController
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                         'readOnly' => true,
                     ],
+                    'uuid' => [
+                        'x-version-introduced' => '2.2.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::PATTERN_UUIDV4,
+                        'readOnly' => true,
+                    ],
                     'name' => ['type' => Doc\Schema::TYPE_STRING],
                     'comment' => ['type' => Doc\Schema::TYPE_STRING],
                     'serial' => ['type' => Doc\Schema::TYPE_STRING],

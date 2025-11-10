@@ -75,7 +75,7 @@ enum ValidationFieldStrategy: string
         };
     }
 
-    private function isValidAnswer($value): bool
+    private function isValidAnswer(mixed $value): bool
     {
         if (is_array($value) && is_array(current($value))) {
             foreach ($value as $item) {

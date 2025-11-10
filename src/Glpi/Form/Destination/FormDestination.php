@@ -73,7 +73,7 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
     }
 
     #[Override]
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-arrow-forward";
     }
