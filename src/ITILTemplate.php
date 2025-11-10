@@ -38,6 +38,9 @@
  *
  * since version 0.83
  **/
+
+use Glpi\Toolbox\Sanitizer;
+
 abstract class ITILTemplate extends CommonDropdown
 {
     // From CommonDBTM
@@ -764,6 +767,8 @@ abstract class ITILTemplate extends CommonDropdown
         if (empty($input['name'])) {
             return -1;
         }
+
+        $input = Sanitizer::sanitize($input);
 
         // Check twin
         $ID = $this->findID($input);

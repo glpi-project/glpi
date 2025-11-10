@@ -101,7 +101,7 @@ abstract class Device extends InventoryAsset
 
                 //create device or get existing device ID
                 $raw_input = $this->handleInput($val, $device);
-                $device_input = Sanitizer::dbEscapeRecursive($raw_input); // `handleInput` may copy unescaped values
+                $device_input = Sanitizer::sanitize($raw_input); // `handleInput` may copy unescaped values
                 $device_criteria = $device->getImportCriteria();
                 foreach (array_keys($device_criteria) as $device_criterion) {
                     if (!isset($device_input[$device_criterion]) && \isForeignKeyField($device_criterion)) {

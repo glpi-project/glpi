@@ -37,6 +37,9 @@
  * CommonDevice Class
  * for Device*class
  */
+
+use Glpi\Toolbox\Sanitizer;
+
 abstract class CommonDevice extends CommonDropdown
 {
     public static $rightname          = 'device';
@@ -481,6 +484,9 @@ abstract class CommonDevice extends CommonDropdown
         if (!isset($input['designation']) || empty($input['designation'])) {
             return 0;
         }
+
+        $input = Sanitizer::sanitize($input);
+
         $where      = [];
         $a_criteria = $this->getImportCriteria();
         foreach ($a_criteria as $field => $compare) {

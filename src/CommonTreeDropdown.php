@@ -938,6 +938,8 @@ abstract class CommonTreeDropdown extends CommonDropdown
             unset($input['name']);
         }
 
+        $input = Sanitizer::sanitize($input);
+
         // Import a full tree from completename
         $names  = explode('>', self::unsanitizeSeparatorInCompletename($input['completename']));
         $fk     = $this->getForeignKeyField();
