@@ -40,7 +40,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class ResourceAccessorTest extends GLPITestCase
 {
-    public static function getInputParamsBySchemaProvider() {
+    public static function getInputParamsBySchemaProvider()
+    {
         $schema_a = [
             'type' => 'object',
             'properties' => [
@@ -53,7 +54,7 @@ class ResourceAccessorTest extends GLPITestCase
                     'x-join' => [],
                     'properties' => [
                         'id' => ['type' => 'integer'],
-                        'name' => ['type' => 'string']
+                        'name' => ['type' => 'string'],
                     ],
                 ],
             ],
@@ -65,7 +66,8 @@ class ResourceAccessorTest extends GLPITestCase
     }
 
     #[DataProvider('getInputParamsBySchemaProvider')]
-    public function testGetInputParamsBySchema($schema, $request_params, $expected) {
+    public function testGetInputParamsBySchema($schema, $request_params, $expected)
+    {
         $this->assertEquals($expected, ResourceAccessor::getInputParamsBySchema($schema, $request_params));
     }
 }
