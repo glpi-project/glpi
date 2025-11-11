@@ -182,7 +182,8 @@ final class Search
             $prop = $prop['items'];
         }
         if (array_key_exists('type', $prop) && $prop['type'] !== Doc\Schema::TYPE_OBJECT) {
-            if (isset($prop['x-mapper']) || isset($prop['x-mapped-property'])) {
+            $mapped_from_self = isset($prop['x-mapped-from']) && $prop['x-mapped-from'] === $prop_name;
+            if ((isset($prop['x-mapper']) || isset($prop['x-mapped-property'])) && !$mapped_from_self) {
                 // Do not select fields mapped after the results are retrieved
                 return null;
             }

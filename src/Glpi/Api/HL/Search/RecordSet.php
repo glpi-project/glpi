@@ -58,15 +58,18 @@ final class RecordSet
         return array_sum(array_map(static fn($records) => count($records), $this->records));
     }
 
-    public function getHydrationCriteria(string $fkey, string $table, string $itemtype, string $schema_name, array $ids_to_fetch): array
+    private function getJoinNameForFKey(string $fkey): string
     {
-        $criteria = [
-            'SELECT' => [],
-        ];
-        $id_field = 'id';
-        $join_name = '_';
-
         if ($fkey === 'id') {
+            return '_';
+        }
+        return $this->search->getJoinNameForProperty($fkey);
+    }
+
+    private function getPropertiesToHydrate(string $fkey)
+    {
+        if ($fkey === 'id') {
+            // Main item
             $props_to_use = array_filter($this->search->getContext()->getFlattenedProperties(), function ($prop_params, $prop_name) {
                 if (isset($this->search->getContext()->getJoins()[$prop_name])) {
                     /** Scalar joined properties are fetched directly during {@link self::getMatchingRecords()} */
@@ -80,12 +83,8 @@ final class RecordSet
                 $is_join = count(array_filter($this->search->getContext()->getJoins(), static fn($j_name) => str_starts_with($prop_parent, $j_name), ARRAY_FILTER_USE_KEY)) > 0;
                 return !$is_join && !$mapped_from_other;
             }, ARRAY_FILTER_USE_BOTH);
-            $criteria['FROM'] = "$table AS " . $this->search->getDBRead()::quoteName('_');
-            if ($this->search->getContext()->isUnionSearchMode()) {
-                $criteria['SELECT'][] = new QueryExpression($this->search->getDBRead()::quoteValue($schema_name), '_itemtype');
-            }
         } else {
-            $join_name = $this->search->getJoinNameForProperty($fkey);
+            $join_name = $this->getJoinNameForFKey($fkey);
             $props_to_use = array_filter($this->search->getContext()->getFlattenedProperties(), function ($prop_name) use ($join_name) {
                 if (isset($this->search->getContext()->getJoins()[$prop_name])) {
                     /** Scalar joined properties are fetched directly during {@link self::getMatchingRecords()} */
@@ -94,7 +93,48 @@ final class RecordSet
                 $prop_parent = substr($prop_name, 0, strrpos($prop_name, '.'));
                 return $prop_parent === $join_name;
             }, ARRAY_FILTER_USE_KEY);
+        }
+        return $props_to_use;
+    }
 
+    /**
+     * Returns the row with only the parts that were already hydrated by the initial {@link Search::getMatchingRecords()} call.
+     * @param $row
+     * @return array
+     */
+    private function getHydratedPartsOfMainRecord($row)
+    {
+        $hydrated_row = [];
+        foreach ($row as $fkey => $value) {
+            if (str_starts_with($fkey, '_')) {
+                $hydrated_row[$fkey] = $value;
+                continue;
+            }
+            $join_name = $this->search->getJoinNameForProperty($fkey);
+            if (isset($this->search->getContext()->getJoins()[$join_name])) {
+                // This is a joined property
+                continue;
+            }
+            $hydrated_row[$fkey] = $value;
+        }
+        return $hydrated_row;
+    }
+
+    public function getHydrationCriteria(string $fkey, string $table, string $itemtype, string $schema_name, array $ids_to_fetch): array
+    {
+        $criteria = [
+            'SELECT' => [],
+        ];
+        $id_field = 'id';
+        $join_name = $this->getJoinNameForFKey($fkey);
+        $props_to_use = $fkey !== 'id' || $this->search->getContext()->isUnionSearchMode() ? $this->getPropertiesToHydrate($fkey) : [];
+
+        if ($fkey === 'id') {
+            $criteria['FROM'] = "$table AS " . $this->search->getDBRead()::quoteName('_');
+            if ($this->search->getContext()->isUnionSearchMode()) {
+                $criteria['SELECT'][] = new QueryExpression($this->search->getDBRead()::quoteValue($schema_name), '_itemtype');
+            }
+        } else {
             $criteria['FROM'] = "$table AS " . $this->search->getDBRead()::quoteName(str_replace('.', chr(0x1F), $join_name));
             $id_field = str_replace('.', chr(0x1F), $join_name) . '.id';
         }
@@ -197,6 +237,12 @@ final class RecordSet
                     }
 
                     $criteria = $this->getHydrationCriteria($fkey, $table, $itemtype, $schema_name, $ids_to_fetch);
+                    if (empty($criteria['SELECT'])) {
+                        // Nothing new to select
+                        $fetched_records[$table] ??= [];
+                        $fetched_records[$table][$record_ids] = $this->getHydratedPartsOfMainRecord($row);
+                        continue;
+                    }
 
                     // Fetch the data for the current dehydrated record
                     Profiler::getInstance()->resume('RecordSet::hydrate get data for dehydrated records');
