@@ -6,6 +6,8 @@ The present file will list all changes made to the project; according to the
 ## [11.0.3] unreleased
 
 ### Added
+- Support for setting a dropdown value like `status` for assets by using the `id` property (ex: `"status": {"id": 5}`) as it shows in the OpenAPI schema for the High-Level API.
+  The previous behavior of setting these properties directly (ex: `"status": 5`) is still supported.
 
 ### Changed
 
