@@ -126,6 +126,9 @@ abstract class InventoryAsset
         return $this->entities_id;
     }
 
+    /**
+     * @return bool
+     */
     public function maybeRecursive()
     {
         return true;

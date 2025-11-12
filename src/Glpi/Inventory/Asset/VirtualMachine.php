@@ -50,8 +50,8 @@ class VirtualMachine extends InventoryAsset
 {
     use InventoryNetworkPort;
 
-    private $conf;
-    private $allports = [];
+    private Conf $conf;
+    private array $allports = [];
 
     private const VMCOMPONENTS = [
         'storages'  => Drive::class,

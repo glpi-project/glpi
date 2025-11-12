@@ -130,7 +130,7 @@ use function Safe\simplexml_load_string;
  */
 class Conf extends CommonGLPI
 {
-    private $currents = [];
+    private array $currents = [];
 
     public const STALE_AGENT_ACTION_CLEAN = 0;
 
@@ -213,6 +213,8 @@ class Conf extends CommonGLPI
 
     /**
      * Is an inventory known file
+     *
+     * @param string $name
      *
      * @return boolean
      */
@@ -1213,6 +1215,11 @@ class Conf extends CommonGLPI
         }
     }
 
+    /**
+     * @param string $interface
+     *
+     * @return array
+     */
     public function getRights($interface = 'central')
     {
         $values = [ READ => __('Read')];
@@ -1296,6 +1303,9 @@ class Conf extends CommonGLPI
         ];
     }
 
+    /**
+     * @return string
+     */
     public static function getIcon()
     {
         return "ti ti-adjustments";

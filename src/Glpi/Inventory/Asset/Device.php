@@ -37,6 +37,7 @@ namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
 use Item_Devices;
+use stdClass;
 
 use function Safe\strtotime;
 
@@ -44,6 +45,9 @@ abstract class Device extends InventoryAsset
 {
     /**
      * Get existing entries from database
+     *
+     * @param string $itemdevicetable
+     * @param string $fk
      *
      * @return array
      */
@@ -201,9 +205,15 @@ abstract class Device extends InventoryAsset
         }
     }
 
+    /**
+     * @param Item_Devices $itemdevice
+     * @param stdClass $val
+     *
+     * @return void
+     */
     protected function itemdeviceAdded(Item_Devices $itemdevice, $val)
     {
-        //to be overrided
+        //to be overridden
     }
 
     public function checkConf(Conf $conf): bool

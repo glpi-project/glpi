@@ -49,7 +49,7 @@ use function Safe\strtotime;
 class OperatingSystem extends InventoryAsset
 {
     protected $extra_data = ['hardware' => null];
-    private $operatingsystems_id;
+    private string|int $operatingsystems_id;
 
     public function prepare(): array
     {

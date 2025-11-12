@@ -45,6 +45,7 @@ use Glpi\Inventory\MainAsset\MainAsset;
 use IPAddress;
 use IPNetwork;
 use Item_DeviceNetworkCard;
+use mysqli_stmt;
 use NetworkName;
 use NetworkPort;
 use NetworkPortAggregate;
@@ -55,12 +56,17 @@ use Unmanaged;
 
 trait InventoryNetworkPort
 {
+    /** @var array  */
     protected $ports = [];
+    /** @var mysqli_stmt */
     protected $ipnetwork_stmt;
+    /** @var mysqli_stmt */
     protected $idevice_stmt;
+    /** @var array  */
     protected $networks = [];
+    /** @var string */
     protected $itemtype;
-    private $items_id;
+    private ?int $items_id;
 
     public function handle()
     {
@@ -81,7 +87,7 @@ trait InventoryNetworkPort
     /**
      * Add network ports
      *
-     * @param $ports
+     * @param array $ports
      *
      * @return $this
      */
@@ -549,6 +555,12 @@ trait InventoryNetworkPort
         }
     }
 
+    /**
+     * @param stdClass $port
+     * @param int $netports_id
+     *
+     * @return void
+     */
     protected function portUpdated(stdClass $port, int $netports_id)
     {
         //does nothing
@@ -691,6 +703,12 @@ trait InventoryNetworkPort
         }
     }
 
+    /**
+     * @param stdClass $port
+     * @param int $netports_id
+     *
+     * @return void
+     */
     protected function portCreated(stdClass $port, int $netports_id)
     {
         //does nothing
