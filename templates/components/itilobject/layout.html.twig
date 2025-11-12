@@ -58,6 +58,7 @@
 
 <div id="itil-object-container" class="mt-n1 {{ collapsed_cls }} {{ expanded_cls }}">
 
+    <!-- Main form opening for new item -->
     {% if item.isNewItem() and not template_preview %}
         {{ include('components/itilobject/mainform_open.html.twig') }}
     {% endif %}
@@ -85,12 +86,19 @@
         {% endif %}
     </div>
 
+    <!-- Main form closing for new item -->
+    {% if item.isNewItem() and not template_preview %}
+        {{ include('components/itilobject/mainform_close.html.twig') }}
+    {% endif %}
+
     {% if not template_preview %}
         {% if not item.isNewItem() %}
+            <!-- Main form opening for action buttons display by footer -->
             {{ include('components/itilobject/mainform_open.html.twig') }}
         {% endif %}
         {{ include('components/itilobject/footer.html.twig') }}
         {% if not item.isNewItem() %}
+            <!-- Main form closing for action button display by footer -->
             {{ include('components/itilobject/mainform_close.html.twig') }}
         {% endif %}
     {% endif %}
