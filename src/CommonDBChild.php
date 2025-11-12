@@ -188,7 +188,8 @@ abstract class CommonDBChild extends CommonDBConnexity
     /**
      * @since 0.84
      *
-     * @param $method
+     * @param string $method
+     * @return bool
      **/
     public static function canChild($method)
     {
@@ -205,8 +206,8 @@ abstract class CommonDBChild extends CommonDBConnexity
     /**
      * @since 0.84
      *
-     * @param $methodItem
-     * @param $methodNotItem
+     * @param string $methodItem
+     * @param string $methodNotItem
      *
      * @return boolean
      **/
@@ -232,8 +233,8 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @since 0.84
      *
-     * @param $getFromDB   (true by default)
-     * @param $getEmpty    (true by default)
+     * @param bool $getFromDB   (true by default)
+     * @param bool $getEmpty    (true by default)
      *
      * @return CommonDBTM|false object of the concerned item or false on error
      **/
@@ -254,6 +255,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      * @param array  $recursiveItems    items of the current elements (see recursivelyGetItems())
      * @param string $elementToDisplay  what to display : 'Type', 'Name', 'Link'
      * @param bool $display  display html or return html
+     * @return bool|string
      **/
     public static function displayRecursiveItems(array $recursiveItems, $elementToDisplay, bool $display = true)
     {
@@ -1000,9 +1002,9 @@ abstract class CommonDBChild extends CommonDBConnexity
     /**
      * Affect a CommonDBChild to a given item. By default, unaffect it
      *
-     * @param $id          integer   the id of the CommonDBChild to affect
-     * @param $items_id    integer   the id of the new item (default 0)
-     * @param $itemtype    string    the type of the new item (default '')
+     * @param int    $id        the id of the CommonDBChild to affect
+     * @param int    $items_id  the id of the new item (default 0)
+     * @param string $itemtype  the type of the new item (default '')
      *
      * @return boolean : true on success
      **/
@@ -1037,6 +1039,9 @@ abstract class CommonDBChild extends CommonDBConnexity
         throw new RuntimeException('Cannot guess field for itemtype ' . $itemtype . ' on ' . static::class);
     }
 
+    /**
+     * @return void
+     */
     protected function autoinventoryInformation()
     {
         echo "<td>" . __s('Automatic inventory') . "</td>";
