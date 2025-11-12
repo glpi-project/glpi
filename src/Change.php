@@ -967,9 +967,9 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
 
 
     /**
-     * @param string $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      * @param int $items_id
-     * @return mixed
+     * @return DBmysqlIterator
      */
     public function getActiveChangesForItem($itemtype, $items_id)
     {
