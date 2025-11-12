@@ -1678,7 +1678,7 @@ class TicketTest extends DbTestCase
         // Check that the itil form exist
         $matches = iterator_to_array($crawler->filter("#itil-form"));
         $this->assertCount(
-            ($itil_form === true ? 2 : 1),
+            ($itil_form === true ? 1 : 0),
             $matches,
             ($itil_form === true ? 'ITIL form' : 'ITIL form present') . ' ' . $caller
         );
