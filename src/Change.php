@@ -1420,7 +1420,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @param bool $foruser only for current login user as requester
      * @param bool $display if false, return html
-     * @return bool|string|void
+     * @return ($display is true ? void : string)
      **/
     public static function showCentralCount(bool $foruser = false, bool $display = true)
     {
