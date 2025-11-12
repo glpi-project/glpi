@@ -39,7 +39,7 @@
       <div class="list-group list-group-flush list-group-hoverable">
          {% for id, linked in linked_itilobjects %}
             {% set new_itilobject = get_item(linked['itemtype'], linked['items_id']) %}
-            <div class="list-group-item" aria-label="{{ __('Linked item group - %s')|format(new_itilobject.fields['name']) }}">
+            <div class="list-group-item" data-testid="{{ 'Linked item group - %s'|format(new_itilobject.fields['name']) }}">
                <div class="row">
                   <div class="col-auto">
                      {{ call('CommonITILObject_CommonITILObject::getLinkName', [

@@ -392,40 +392,40 @@ describe("Ticket Form", () => {
 
     it('Link a ticket with another one that is in a child entity', () => {
         cy.visit(`/front/ticket.form.php?id=${test_tickets_id}`);
-        cy.findByLabelText('Linked assistance objects - section').click();
-        cy.findByLabelText('Linked assistance objects - section').findByText('Add').click();
+        cy.findByTestId('Linked assistance objects - section').click();
+        cy.findByTestId('Linked assistance objects - section').findByText('Add').click();
         // We have to scroll otherwise cypress doesn't see the dropdown
-        cy.findByLabelText('Linked assistance objects - section').scrollIntoView({ offset: { top: 150 } });
+        cy.findByTestId('Linked assistance objects - section').scrollIntoView({ offset: { top: 150 } });
         cy.getDropdownByLabelText('ITIL type selector').selectDropdownValue('Tickets');
-        cy.findByLabelText('Linked assistance objects - section').scrollIntoView({ offset: { top: 150 } });
+        cy.findByTestId('Linked assistance objects - section').scrollIntoView({ offset: { top: 150 } });
         cy.getDropdownByLabelText('ITIL item selector').selectDropdownValue(`Child ticket - ${child_ticket_id}`);
 
         cy.findByRole('button', { name: 'Save' }).click();
 
         // We should now see it in the linked items
-        cy.findByLabelText('Linked item group - Child ticket').should('exist');
-        cy.findByLabelText('Linked item group - Child ticket').findByLabelText('Unlink').should('exist');
+        cy.findByTestId('Linked item group - Child ticket').should('exist');
+        cy.findByTestId('Linked item group - Child ticket').findByLabelText('Unlink').should('exist');
 
         cy.visit(`/front/ticket.form.php?id=${child_ticket_id}`);
-        cy.findByLabelText('Linked item group - Test ticket').should('exist');
-        cy.findByLabelText('Linked item group - Test ticket').findByRole('link').should('exist');
-        cy.findByLabelText('Linked item group - Test ticket').findByLabelText('Unlink').should('exist');
+        cy.findByTestId('Linked item group - Test ticket').should('exist');
+        cy.findByTestId('Linked item group - Test ticket').findByRole('link').should('exist');
+        cy.findByTestId('Linked item group - Test ticket').findByLabelText('Unlink').should('exist');
 
         // Switching to Sub-entity level
         cy.openEntitySelector();
         cy.get('.fancytree-expander[role=button]:visible').as('toggle_tree').click(); // From entities_selector tests.
         cy.findByRole('gridcell', {'name': "E2ETestSubEntity1"}).findByRole('button').click();
-        cy.findByLabelText('Linked item group - Test ticket').should('exist');
-        cy.findByLabelText('Linked item group - Test ticket').findByRole('link').should('not.exist');
-        cy.findByLabelText('Linked item group - Test ticket').findByLabelText('Unlink').should('not.exist');
+        cy.findByTestId('Linked item group - Test ticket').should('exist');
+        cy.findByTestId('Linked item group - Test ticket').findByRole('link').should('not.exist');
+        cy.findByTestId('Linked item group - Test ticket').findByLabelText('Unlink').should('exist');
 
         // We check that a child problem can only see the child ticket and not the root ones
         cy.visit(`/front/problem.form.php`);
-        cy.findByLabelText('Linked assistance objects - section').findByText('Add').click();
+        cy.findByTestId('Linked assistance objects - section').findByText('Add').click();
         // We have to scroll otherwise cypress doesn't see the dropdown
-        cy.findByLabelText('Linked assistance objects - section').scrollIntoView({ offset: { top: 150 } });
+        cy.findByTestId('Linked assistance objects - section').scrollIntoView({ offset: { top: 150 } });
         cy.getDropdownByLabelText('ITIL type selector').selectDropdownValue('Tickets');
-        cy.findByLabelText('Linked assistance objects - section').scrollIntoView({ offset: { top: 150 } });
+        cy.findByTestId('Linked assistance objects - section').scrollIntoView({ offset: { top: 150 } });
         cy.getDropdownByLabelText('ITIL item selector').hasDropdownValue(`Child ticket - ${child_ticket_id}`);
         cy.getDropdownByLabelText('ITIL item selector').hasDropdownValue(`Test ticket`, false);
     });
