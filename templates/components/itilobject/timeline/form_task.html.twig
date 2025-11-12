@@ -164,8 +164,9 @@
                   itemtype: '{{ item.getType()|e('js') }}'
                }
             }).done(function (data) {
-                if (data.content !== undefined) {
-                    // set textarea content
+                // set textarea content ONLY if template defines content
+                // If template has no content defined, preserve user's existing content
+                if (data.content && data.content.trim() !== '') {
                     setRichTextEditorContent("content_{{ rand }}", data.content);
                 }
 
@@ -209,10 +210,11 @@
                    $("#dropdown_groups_id_tech{{ rand }}").trigger('setValue', data.groups_id_tech);
                }
 
-               // set predefined pending reason
-               $("#enable-pending-reasons-{{ rand }}")
-                  .prop("checked", data.pendingreasons_id > 0);
+               // set predefined pending reason ONLY if template defines one
+               // If template has no pending reason defined, preserve user's choices
                if (data.pendingreasons_id > 0) {
+                  $("#enable-pending-reasons-{{ rand }}")
+                     .prop("checked", true);
                   $("#pending-reasons-setup-{{ rand }}")
                      .collapse('show');
 
@@ -222,17 +224,9 @@
                   $("#dropdown_pendingreasons_id{{ rand }}")
                      .append(newOption)
                      .trigger('change');
-               } else if (
-                  $("#dropdown_pendingreasons_id{{ rand }}").val() > 0
-                     && $("#pending-reasons-setup-{{ rand }}").hasClass('show')
-               ) {
-                  $("#pending-reasons-setup-{{ rand }}")
-                     .collapse('hide');
-
-                  $("#dropdown_pendingreasons_id{{ rand }}")
-                     .val(0)
-                     .trigger('change');
                }
+               // If template has NO pending (data.pendingreasons_id is 0 or undefined),
+               // DO NOTHING to preserve user's pending choices
             });
          }
       </script>
