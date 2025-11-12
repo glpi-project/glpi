@@ -695,7 +695,7 @@ TWIG, $twig_params);
                 'type' => DropdownType::class,
             ],
             $type_class::getForeignKeyField() => [
-                'text' => $type_class::getTypeName(1),
+                'text' => $type_class::getFieldLabel(),
                 'type' => DropdownType::class,
             ],
             'users_id_tech'    => [
@@ -711,7 +711,7 @@ TWIG, $twig_params);
                 'type' => DropdownType::class,
             ],
             $model_class::getForeignKeyField() => [
-                'text' => $model_class::getTypeName(1),
+                'text' => $model_class::getFieldLabel(),
                 'type' => DropdownType::class,
             ],
             'contact_num'      => [
