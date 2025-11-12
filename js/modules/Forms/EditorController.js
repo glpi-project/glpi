@@ -1544,7 +1544,7 @@ export class GlpiFormEditorController
         // Look for select2 to init
         copy.find("select").each(function() {
             let selected_values;
-            if (is_from_duplicate_action) {
+            if (is_from_duplicate_action && $(this).hasClass("select2-hidden-accessible")) {
                 // Retrieve selected values
                 selected_values = $(this).select2("data");
 
@@ -1593,10 +1593,14 @@ export class GlpiFormEditorController
                     && config !== undefined
                 ) {
                     config.field_id = new_id;
-                    select2_to_init.push(config);
+                    window.select2_configs[new_id] = config;
 
-                    if (selected_values) {
-                        select2_values_to_restore[new_id] = selected_values;
+                    if ($(this).attr('data-glpi-loaded') !== 'false') {
+                        select2_to_init.push(config);
+
+                        if (selected_values) {
+                            select2_values_to_restore[new_id] = selected_values;
+                        }
                     }
                 }
             }
