@@ -163,7 +163,7 @@
       {% set options = options|merge({'step': step_value}) %}
    {% endif %}
 
-   {% if options.step != 'any' and options.step|round(0, 'floor') != options.step %}
+   {% if options.step|round(0, 'floor') != options.step %}
       {# Only format number if not a whole number #}
       {% set value = call('Html::formatNumber', [value, true]) %}
    {% endif %}
