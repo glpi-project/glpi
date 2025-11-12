@@ -656,7 +656,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     /**
-     * @param string $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      * @return array
      */
     public static function rawSearchOptionsToAdd(string $itemtype)
