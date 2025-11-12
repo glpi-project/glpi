@@ -4051,7 +4051,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 0.84
      *
-     * @param integer $value status ID
+     * @param int $value status ID
      * @return string|int
      **/
     public static function getStatus($value)
@@ -5640,7 +5640,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             !$this->canView()
             || !isset($this->fields['id'])
         ) {
-            return false;
+            return;
         }
 
         $this->showStatsDates();

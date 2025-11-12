@@ -1127,7 +1127,10 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
 
         // show a tab with count of jobs in the central and give link
         if (!static::canView()) {
-            return false;
+            if (!$display) {
+                return '';
+            }
+            return;
         }
         if (!Session::haveRight(self::$rightname, self::READALL)) {
             $foruser = true;
