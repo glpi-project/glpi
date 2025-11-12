@@ -1004,7 +1004,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @param int    $id        the id of the CommonDBChild to affect
      * @param int    $items_id  the id of the new item (default 0)
-     * @param string $itemtype  the type of the new item (default '')
+     * @param class-string<CommonDBTM>|'' $itemtype  the type of the new item (default '')
      *
      * @return boolean : true on success
      **/

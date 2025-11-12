@@ -2409,6 +2409,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @see Asset_PeripheralAsset::unglobalizeItem()
      * @return null
+     * @TODO Return a bool value (true on success, false on failure).
      */
     public function unglobalize()
     {
