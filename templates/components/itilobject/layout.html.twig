@@ -161,12 +161,14 @@ $(function() {
     });
 
     var myCollapsible = document.getElementById('itil-data');
-    myCollapsible.addEventListener('shown.bs.collapse', function () {
-        saveFieldPanelState();
-    });
-    myCollapsible.addEventListener('hidden.bs.collapse', function () {
-        saveFieldPanelState();
-    });
+    if (myCollapsible) {
+        myCollapsible.addEventListener('shown.bs.collapse', function () {
+            saveFieldPanelState();
+        });
+        myCollapsible.addEventListener('hidden.bs.collapse', function () {
+            saveFieldPanelState();
+        });
+    }
 
     var itil_layout = {
         collapsed: false,
