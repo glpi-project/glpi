@@ -43,6 +43,7 @@ use DbUtils;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Category;
 use Glpi\Form\Condition\ConditionHandler\ItemAsTextConditionHandler;
 use Glpi\Form\Condition\ConditionHandler\ItemConditionHandler;
 use Glpi\Form\Condition\ConditionValueTransformerInterface;
@@ -133,8 +134,15 @@ class QuestionTypeItem extends AbstractQuestionType implements
             $selectable_tree_root = (bool) $values['selectable_tree_root'];
         }
 
+        // Map specific itemtypes
+        $itemtype = $rawData['itemtype'] ?? null;
+        $itemtype = match($itemtype) {
+            "PluginFormcreatorCategory" => Category::class,
+            default                     => $itemtype,
+        };
+
         return (new QuestionTypeItemExtraDataConfig(
-            itemtype: $rawData['itemtype'] ?? null,
+            itemtype: $itemtype,
             root_items_id: $root_items_id,
             subtree_depth: $subtree_depth,
             selectable_tree_root: $selectable_tree_root
