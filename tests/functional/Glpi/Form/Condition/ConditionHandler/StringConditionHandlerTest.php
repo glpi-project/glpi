@@ -141,15 +141,15 @@ final class StringConditionHandlerTest extends AbstractConditionHandler
             yield "Contains check - case 2 for $type" => [
                 'question_type'      => $type,
                 'condition_operator' => ValueOperator::CONTAINS,
-                'condition_value'    => "Exact answer",
-                'submitted_answer'   => "Exact",
+                'condition_value'    => "Exact",
+                'submitted_answer'   => "Exact answer",
                 'expected_result'    => true,
             ];
             yield "Contains check - case 3 for $type" => [
                 'question_type'      => $type,
                 'condition_operator' => ValueOperator::CONTAINS,
-                'condition_value'    => "Exact answer",
-                'submitted_answer'   => "answer",
+                'condition_value'    => "answer",
+                'submitted_answer'   => "Exact answer",
                 'expected_result'    => true,
             ];
             yield "Contains check - case 4 for $type" => [
@@ -162,8 +162,8 @@ final class StringConditionHandlerTest extends AbstractConditionHandler
             yield "Contains check - case 5 for $type" => [
                 'question_type'      => $type,
                 'condition_operator' => ValueOperator::CONTAINS,
-                'condition_value'    => "Exact answer",
-                'submitted_answer'   => "exact ANSWER",
+                'condition_value'    => "exact ANSWER",
+                'submitted_answer'   => "Exact answer",
                 'expected_result'    => true,
             ];
 
@@ -178,15 +178,15 @@ final class StringConditionHandlerTest extends AbstractConditionHandler
             yield "Not contains check - case 2 for $type" => [
                 'question_type'      => $type,
                 'condition_operator' => ValueOperator::NOT_CONTAINS,
-                'condition_value'    => "Exact answer",
-                'submitted_answer'   => "Exact",
+                'condition_value'    => "Exact",
+                'submitted_answer'   => "Exact answer",
                 'expected_result'    => false,
             ];
             yield "Not contains check - case 3 for $type" => [
                 'question_type'      => $type,
                 'condition_operator' => ValueOperator::NOT_CONTAINS,
-                'condition_value'    => "Exact answer",
-                'submitted_answer'   => "answer",
+                'condition_value'    => "answer",
+                'submitted_answer'   => "Exact answer",
                 'expected_result'    => false,
             ];
             yield "Not contains check - case 4 for $type" => [
@@ -199,8 +199,8 @@ final class StringConditionHandlerTest extends AbstractConditionHandler
             yield "Not contains check - case 5 for $type" => [
                 'question_type'      => $type,
                 'condition_operator' => ValueOperator::NOT_CONTAINS,
-                'condition_value'    => "Exact answer",
-                'submitted_answer'   => "exact ANSWER",
+                'condition_value'    => "exact ANSWER",
+                'submitted_answer'   => "Exact answer",
                 'expected_result'    => false,
             ];
 
