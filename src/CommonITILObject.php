@@ -1695,7 +1695,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 0.83
      *
-     * @param string $itemtype     Item type
+     * @param class-string<CommonDBTM> $itemtype     Item type
      * @param integer $items_id    ID of the Item
      * @param integer $days        day number
      *
@@ -3272,8 +3272,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 0.84
      *
-     * @param integer $urgency    from 1 to 5
-     * @param integer $impact     from 1 to 5
+     * @param int<1, 5> $urgency    from 1 to 5
+     * @param int<1, 5> $impact     from 1 to 5
      *
      * @return integer from 1 to 5 (priority)
      **/
@@ -4051,7 +4051,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 0.84
      *
-     * @param int|string $value status ID
+     * @param integer $value status ID
      * @return string|int
      **/
     public static function getStatus($value)
@@ -5179,7 +5179,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Get status icon
      *
-     * @param int|string $status
+     * @param int $status
      * @return string
      *
      * @since 9.3
@@ -5194,7 +5194,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Get CSS status class
      *
-     * @param int|string $status
+     * @param int $status
      * @return string
      *
      * @since 9.3
@@ -5273,7 +5273,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * show actor add div
      *
-     * @param string|integer $type    actor type
+     * @param CommonITILActor::REQUESTER|CommonITILActor::ASSIGN|CommonITILActor::OBSERVER $type    actor type
      * @param integer $rand_type      rand value of div to use
      * @param integer $entities_id    entity ID
      * @param array $is_hidden        of hidden fields (if empty consider as not hidden)
@@ -5631,7 +5631,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
 
     /**
-     * @return false|void
+     * @return void
      */
     public function showStats()
     {

@@ -589,7 +589,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
 
 
     /**
-     * @param string $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      * @return array
      */
     public static function rawSearchOptionsToAdd(string $itemtype)
@@ -1119,7 +1119,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @param bool $foruser only for current login user as requester
      * @param bool $display if false, return html
-     * @return bool|string|void
+     * @return ($display is true ? void : string)
      **/
     public static function showCentralCount(bool $foruser = false, bool $display = true)
     {
