@@ -136,7 +136,7 @@ class QuestionTypeItem extends AbstractQuestionType implements
 
         // Map specific itemtypes
         $itemtype = $rawData['itemtype'] ?? null;
-        $itemtype = match($itemtype) {
+        $itemtype = match ($itemtype) {
             "PluginFormcreatorCategory" => Category::class,
             default                     => $itemtype,
         };
