@@ -49,7 +49,7 @@ use function Safe\strtotime;
 
 class Printer extends NetworkEquipment
 {
-    private $counters;
+    private stdClass $counters;
 
     public function __construct(CommonDBTM $item, $data)
     {
@@ -205,7 +205,7 @@ class Printer extends NetworkEquipment
      */
     public function handleMetrics()
     {
-        if ($this->counters === null) {
+        if (!isset($this->counters)) {
             return;
         }
 

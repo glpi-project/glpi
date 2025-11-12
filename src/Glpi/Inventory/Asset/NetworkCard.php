@@ -48,6 +48,7 @@ class NetworkCard extends Device
     private $conf;
 
     protected $extra_data = ['controllers' => null];
+    /** @var array */
     protected $ignored = ['controllers' => null];
     private array $cards_macs = [];
 
@@ -300,6 +301,12 @@ class NetworkCard extends Device
         return $conf->component_networkcard == 1 && parent::checkConf($conf);
     }
 
+    /**
+     * @param ?string $itemtype
+     * @param ?int $items_id
+     *
+     * @return void
+     */
     public function handlePorts($itemtype = null, $items_id = null)
     {
         //ports are handled from main asset in NetworkCard case
