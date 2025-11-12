@@ -5729,6 +5729,16 @@ class CommonDBTM extends CommonGLPI
     /**
      * Manage business rules for assets
      *
+     * This function applies business rules defined for assets during their addition or update.
+     * It consists of updating $this->input based on the results of the applied rules.
+     *
+     * It performs the following operations:
+     * 1. Validates prerequisites to determine if rules should be applied
+     * 2. Enriches input data with associated user information
+     * 3. Determines if the process is automatic or manual
+     * 4. Executes all rules defined for the asset type
+     * 5. Update $this->input with any changes resulting from the applied rules
+     *
      * @since 9.4
      *
      * @param int $condition the condition (RuleAsset::ONADD or RuleAsset::ONUPDATE)
@@ -5739,29 +5749,36 @@ class CommonDBTM extends CommonGLPI
     {
         global $CFG_GLPI;
 
+        // Ensure input data is valid
         if ($this->input === false) {
             return;
         }
 
+        // Verify if rules should be skipped
+        // (useful for certain programmatic operations that should not trigger rules)
         if (array_key_exists('_skip_rules', $this->input) && $this->input['_skip_rules'] !== false) {
             return;
         }
 
-        // Only process itemtype that are assets
+        // Only process itemtypes that are assets
         if (in_array(static::class, $CFG_GLPI['asset_types'], true)) {
+            // Initialize the asset rule collection
             $ruleasset          = new RuleAssetCollection();
             $ruleasset->setEntity($this->input['entities_id'] ?? $this->fields['entities_id']);
             $input              = $this->input;
             $input['_itemtype'] = static::class;
 
+            // Add in $input : _groups_id_of_user, _default_groups_id_of_user, _default_locations_id_of_user
             $user = new User();
             if (
                 isset($input["users_id"]) && $input["users_id"] != 0
                 && $user->getFromDB($input["users_id"])
             ) {
+                // Retrieve user's groups
                 $group_user  = new Group_User();
                 $groups_user = $group_user->find(['users_id' => $input["users_id"]]);
                 $input['_groups_id_of_user'] = [];
+
                 foreach ($groups_user as $group) {
                     $item = new Group();
                     if (
@@ -5771,34 +5788,81 @@ class CommonDBTM extends CommonGLPI
                         $input['_groups_id_of_user'][] = $group['groups_id'];
                     }
                 }
+
+                // Add user's location and default group
                 $input['_locations_id_of_user']      = $user->fields['locations_id'];
                 $input['_default_groups_id_of_user'] = $user->fields['groups_id'];
             }
 
-            // If _auto is not defined : it's a manual process : set it's value to 0
+            // Determine process type (automatic or manual) -> $input['_auto']
+            // If _auto is not defined, it's a manual process
             if (!isset($this->input['_auto'])) {
                 $input['_auto'] = 0;
             }
 
-            // Add last_inventory_update
+            // Add last inventory update date if available -> last_inventory_update
             if (!isset($this->input['last_inventory_update']) && isset($this->fields['last_inventory_update'])) {
                 $input['last_inventory_update'] = $this->fields['last_inventory_update'];
             }
 
-            // Set the condition (add or update)
+            // cache groups data from form in case it needs to be merged after rule processing
+            // existing_data is user submited data (form) + database data
+            $existing_data['_groups_id'] = $this->input['_groups_id'] ?? [];
+            $existing_data['_groups_id_tech'] = $this->input['_groups_id_tech'] ?? [];
+
+            // retrieve existing _groups_id_tech & _groups_id
+            $existing_data['_groups_id'] = array_merge($existing_data['_groups_id'], $this->fields['groups_id'] ?? []); // on add fields['groups_id'] is not set
+            $existing_data['_groups_id_tech'] = array_merge($existing_data['_groups_id_tech'], $this->fields['groups_id_tech'] ?? []);
+
+            //            throw new \Exception('Ajouter aussi les valeurs issues de la bd');
+
+            // Execute all defined rules with the specified condition (add or update)
             $output = $ruleasset->processAllRules($input, [], [], [
                 'condition' => $condition,
             ]);
 
-            // If at least one rule has matched
+            // Apply rule results to input data
+            // If at least one rule has been applied
             if (isset($output['_rule_process'])) {
-                foreach ($output as $key => $value) {
-                    if ($key === '_rule_process' || $key === '_no_rule_matches') {
+                foreach ($output as $field => $value) {
+                    // Skip internal rule processing keys
+                    if ($field === '_rule_process' || $field === '_no_rule_matches') {
                         continue;
                     }
-                    // Add the rule output to the input array
-                    $this->input[$key] = $value;
-                }
+
+                    $value_processed = false;
+
+                    // Add the rule result to the object's input data
+                    if (is_array($value) && $value !== []) {
+                        // determine $preserve_user_input by processing the first item, the value is the same on each entry
+                        // but just in case this is not the case anymore a check is processed
+                        // value can be an array if multiples values are set and can be an array because of appendtoarray & appendtoarrayfield are defined in action (for group fields, _groups_id , _groups_id_tech)
+                        // @see \RuleAsset::getActions()
+                        $_rule_action_field_exists = array_reduce(
+                            $value,
+                            static fn($result, $v) => $result && is_array($v) && array_key_exists('_rule_action', $v),
+                            true
+                        );
+                        if ($_rule_action_field_exists) {
+
+                            $preserve_user_input = $value[0]['_rule_action'] === 'append';
+                            if ($preserve_user_input && !isset($existing_data[$field])) {
+                                throw new LogicException('Implemetation error : action defined with appendtoarray but value not backup before rule processing');
+                            }
+                            // use value before rule processing
+                            $this->input[$field] = $preserve_user_input ? $existing_data[$field] : [];
+                            foreach ($value as $_value) {
+                                $this->input[$field][] = $_value[$field];
+                            }
+                            $value_processed = true;
+                        }
+                    }
+
+                    if (!$value_processed) {
+                        $this->input[$field] = $value;
+                    }
+
+                } // end foreach
             }
         }
     }

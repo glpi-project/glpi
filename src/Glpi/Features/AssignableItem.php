@@ -306,21 +306,7 @@ trait AssignableItem
         ];
         foreach ($fields as $type => $field) {
             $existing_for_type = array_column(array_filter($existing_links, static fn($link) => $link['type'] === $type), 'groups_id');
-            $remove_old = true;
             if (array_key_exists($field, $this->input)) {
-                // in some cases, the existing groups must not be removed (e.g, a rule that append groups)
-                // each entry of $this->input[$field] can be either a single value or an array
-                // if it's an array, it's because of the 'appendtoarray' & 'appendtoarrayfield' keys are set in action definition, @see \RuleAsset::getActions()
-                if (isset($this->input[$field][0]) && is_array($this->input[$field][0])) {
-                    // remove old links unless '_rule_action' is set to 'append'
-                    if (!empty($this->input[$field][0]) && isset($this->input[$field][0]['_rule_action']) && $this->input[$field][0]['_rule_action'] == 'append') {
-                        $remove_old = false;
-                    }
-
-                    // transform input to a flat array of IDs, as if there were no 'appendtoarray' & 'appendtoarrayfield' keys
-                    $this->input[$field] = array_map(static fn($i) => $i[$field], $this->input[$field]); // field is for the value defined by appendtoarrayfield
-                }
-
                 $new_links = array_diff($this->input[$field], $existing_for_type);
                 $old_links = array_diff($existing_for_type, $this->input[$field]);
                 foreach ($new_links as $group_id) {
@@ -334,19 +320,17 @@ trait AssignableItem
                         ]
                     );
                 }
-                if ($remove_old) {
-                    foreach ($old_links as $group_id) {
-                        $group_item = new Group_Item();
-                        $group_item->deleteByCriteria(
-                            [
-                                'itemtype' => static::class,
-                                'items_id' => $this->getID(),
-                                'groups_id' => $group_id,
-                                'type' => $type,
-                            ],
-                            true
-                        );
-                    }
+                foreach ($old_links as $group_id) {
+                    $group_item = new Group_Item();
+                    $group_item->deleteByCriteria(
+                        [
+                            'itemtype' => static::class,
+                            'items_id' => $this->getID(),
+                            'groups_id' => $group_id,
+                            'type' => $type,
+                        ],
+                        true
+                    );
                 }
             }
         }

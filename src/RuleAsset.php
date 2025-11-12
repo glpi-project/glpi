@@ -208,7 +208,7 @@ class RuleAsset extends Rule
         $actions['groups_id']['force_actions'] = ['assign', 'append', 'defaultfromuser', 'firstgroupfromuser'];
         $actions['groups_id']['appendto']      = $field;
         $actions['groups_id']['permitseveral'] = ['append'];
-        $actions['groups_id']['appendtoarray'] = ['_rule_action' => null]; // _rule_action will be set in executeActions()
+        $actions['groups_id']['appendtoarray'] = ['_rule_action' => null]; // _rule_action will be set in executeActions() for append action
         $actions['groups_id']['appendtoarrayfield'] = $field;
 
         $actions['users_id_tech']['table']      = 'glpi_users';
@@ -224,7 +224,7 @@ class RuleAsset extends Rule
         $actions['groups_id_tech']['appendto']  = $field;
         $actions['groups_id_tech']['force_actions'] = ['assign', 'append'];
         $actions['groups_id_tech']['permitseveral'] = ['append'];
-        $actions['groups_id_tech']['appendtoarray'] = ['_rule_action' => null]; // _rule_action will be set in executeActions()
+        $actions['groups_id_tech']['appendtoarray'] = ['_rule_action' => null]; // _rule_action will be set in executeActions()  for append action
         $actions['groups_id_tech']['appendtoarrayfield'] = $field;
 
         $actions['comment']['table']            = '';
