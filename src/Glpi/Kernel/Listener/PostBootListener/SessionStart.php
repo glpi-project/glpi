@@ -45,6 +45,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 
+use function Safe\ini_get;
 use function Safe\ini_set;
 
 /**
