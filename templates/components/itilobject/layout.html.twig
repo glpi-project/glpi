@@ -58,7 +58,7 @@
 
 <div id="itil-object-container" class="mt-n1 {{ collapsed_cls }} {{ expanded_cls }}">
 
-    <!-- Main form opening for new item -->
+    {# Main form opening for new item #}
     {% if item.isNewItem() and not template_preview %}
         {{ include('components/itilobject/mainform_open.html.twig') }}
     {% endif %}
@@ -90,7 +90,7 @@
         {{ include('components/itilobject/footer.html.twig') }}
     {% endif %}
 
-    <!-- Main form closing for new item -->
+    {# Main form closing for new item #}
     {% if item.isNewItem() and not template_preview %}
         {{ include('components/itilobject/mainform_close.html.twig') }}
     {% endif %}
