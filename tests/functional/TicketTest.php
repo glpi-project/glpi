@@ -9522,4 +9522,35 @@ HTML,
         $this->assertContains($doc2->getID(), $found_docs);
         $this->assertNotContains($doc3->getID(), $found_docs);
     }
+
+    public function testgetRecipientUserID(): void
+    {
+        $ticket = new Ticket();
+        $ticket_id = $ticket->add(
+            [
+                'name'        => 'ticket title',
+                'content'     => 'a description',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                'users_id_recipient' => getItemByTypeName('User', 'normal', true),
+            ]
+        );
+        $this->assertGreaterThan(0, $ticket_id);
+        //reload and check
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+        $this->assertSame(getItemByTypeName('User', 'normal', true), $ticket->getRecipientUserID());
+
+        $ticket = new Ticket();
+        $ticket_id = $ticket->add(
+            [
+                'name'        => 'ticket title',
+                'content'     => 'a description',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                'users_id_recipient' => 999999,
+            ]
+        );
+        $this->assertGreaterThan(0, $ticket_id);
+        //reload and check
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+        $this->assertNull($ticket->getRecipientUserID());
+    }
 }

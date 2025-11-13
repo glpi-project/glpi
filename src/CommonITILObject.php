@@ -11371,4 +11371,17 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     {
         return true;
     }
+
+    /**
+     * Retrieve recipient user ID
+     */
+    public function getRecipientUserID(): ?int
+    {
+        $users_id = (int) ($this->fields['users_id_recipient'] ?? 0);
+        $user = new User();
+        if ($users_id === 0 || !$user->getFromDB($users_id)) {
+            return null;
+        }
+        return $users_id;
+    }
 }
