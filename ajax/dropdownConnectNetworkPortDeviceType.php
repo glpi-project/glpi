@@ -67,16 +67,17 @@ if (class_exists($_POST["itemtype"])) {
         'entity'    => $_POST["entity_restrict"],
         'condition' => [
             'WHERE' => [
-                'id' => new QuerySubQuery([
-                    'SELECT' => 'items_id',
-                    'FROM'   => 'glpi_networkports',
-                    'WHERE'  => [
-                        'itemtype'           => $_POST['itemtype'],
-                        'instantiation_type' => $_POST['instantiation_type'],
+                'id' => new QuerySubQuery(
+                    [
+                        'SELECT' => 'items_id',
+                        'FROM'   => 'glpi_networkports',
+                        'WHERE'  => [
+                            'itemtype'           => $_POST['itemtype'],
+                            'instantiation_type' => $_POST['instantiation_type'],
+                        ],
                     ],
-                ],
-            ),
-        ],],
+                ),
+            ],],
         'toupdate'  => $toupdate,
     ];
 
