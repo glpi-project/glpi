@@ -56,6 +56,7 @@ class Rule extends CommonDBTM
     /**
      * Actions affected to this rule
      *
+     * FIXME: should probably not be nullable
      * @var ?array
      */
     public $actions               = [];
