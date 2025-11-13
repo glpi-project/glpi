@@ -98,6 +98,7 @@ use function Safe\imagepng;
 use function Safe\imagesavealpha;
 use function Safe\imagewebp;
 use function Safe\ini_get;
+use function Safe\ini_set;
 use function Safe\json_decode;
 use function Safe\json_encode;
 use function Safe\mb_convert_encoding;
@@ -3467,7 +3468,7 @@ class Toolbox
 
     public static function iniSet(
         string $name,
-        string $value,
+        string|int $value,
         string $loglvl = LogLevel::WARNING
     ): void {
         try {
@@ -3475,12 +3476,12 @@ class Toolbox
         } catch (InfoException $e) {
             self::log(
                 $loglvl,
-                sprintf(
+                [sprintf(
                     'Unable to set `%s` to `%s`. This may be caused by a `php_admin_flag` or a `php_admin_value` directive in your web server configuration. Try to use `php_flag` or `php_value` instead. Error is: %s',
                     $name,
                     $value,
                     $e->getMessage()
-                ),
+                )],
             );
         }
     }
