@@ -571,7 +571,7 @@ TWIG, $twig_params);
                 // The field is already translated in this language
                 if (count($iterator)) {
                     $current = $iterator->current();
-                    return $current['value'];
+                    return $current['value'] ?? "";
                 }
             }
             // Get the value coming from the dropdown table
@@ -582,7 +582,7 @@ TWIG, $twig_params);
             ]);
             if (count($iterator)) {
                 $current = $iterator->current();
-                return $current[$field];
+                return $current[$field] ?? "";
             }
         }
 
