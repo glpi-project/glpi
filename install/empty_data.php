@@ -74,12 +74,20 @@ $empty_data_builder = new class {
     /** @var int Value indicating no rights */
     public const RIGHT_NONE           = 0;
 
+    // We want to create one entity and user per worker thread.
+    // This cover up to 16 concurent threads, it should be quite enough.
+    public const PLAYWRIGHT_MAX_WORKERS = 16;
+
     public function getEmptyData(): array
     {
         $tables = [];
 
         // API need to be enabled to ease e2e testing
-        $add_e2e_data = Environment::get()->shouldAddExtraE2EDataDuringInstallation();
+        $env = Environment::get();
+        $add_playwright_data = $env->shouldAddExtraPlaywrightDataDuringInstallation();
+        $add_cypress_data = $env->shouldAddExtraCypressDataDuringInstallation();
+
+        $add_e2e_data = $env->shouldAddExtraE2EDataDuringInstallation();
         $enable_api = $add_e2e_data ? "1" : "0";
         $enable_api_login_credentials = $add_e2e_data ? "1" : "0";
 
@@ -9397,6 +9405,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'list_limit' => '20',
                 'authtype' => '1',
                 'profiles_id' => 0,
+                'entities_id' => 0,
             ], [
                 'id' => self::USER_POST_ONLY,
                 'name' => 'post-only',
@@ -9406,6 +9415,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'list_limit' => '20',
                 'authtype' => '1',
                 'profiles_id' => 0,
+                'entities_id' => 0,
             ], [
                 'id' => self::USER_TECH,
                 'name' => 'tech',
@@ -9415,6 +9425,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'list_limit' => '20',
                 'authtype' => '1',
                 'profiles_id' => 0,
+                'entities_id' => 0,
             ], [
                 'id' => self::USER_NORMAL,
                 'name' => 'normal',
@@ -9424,6 +9435,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'list_limit' => '20',
                 'authtype' => '1',
                 'profiles_id' => 0,
+                'entities_id' => 0,
             ], [
                 'id' => self::USER_SYSTEM,
                 'name' => 'glpi-system',
@@ -9433,6 +9445,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'list_limit' => null,
                 'authtype' => 1,
                 'profiles_id' => 0,
+                'entities_id' => 0,
             ],
         ];
 
@@ -9478,10 +9491,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
         ];
 
         // Test environment data
-        if ($add_e2e_data) {
-            $root_entity = array_filter($tables['glpi_entities'], static fn($e) => $e['id'] === 0);
-            $root_entity = current($root_entity);
+        $root_entity = array_filter($tables['glpi_entities'], static fn($e) => $e['id'] === 0);
+        $root_entity = current($root_entity);
 
+        if ($add_cypress_data) {
             // Main E2E test entity
             $e2e_entity = array_replace($root_entity, [
                 'id' => 1,
@@ -9616,6 +9629,119 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'group_condition' => '(objectclass=groupOfNames)',
                 'group_member_field' => 'member',
             ];
+        } elseif ($add_playwright_data) {
+            // Main E2E test entity
+            $e2e_parent_entity_id = max(
+                array_column($tables['glpi_entities'], 'id')
+            ) + 1;
+            $e2e_parent_entity_label = "E2E tests entity";
+            $e2e_parent_entity = array_replace($root_entity, [
+                'id'           => $e2e_parent_entity_id,
+                'name'         => $e2e_parent_entity_label,
+                'entities_id'  => 0,
+                'completename' => __('Root entity') . " > $e2e_parent_entity_label",
+                'level'        => 2,
+            ]);
+            $tables['glpi_entities'][] = $e2e_parent_entity;
+
+            // Keep track of entities and users to create
+            $sub_entities_to_create = [];
+            $users_to_create = [
+                [
+                    'login'       => 'e2e_api_account',
+                    'password'    => 'e2e_api_account',
+                    'realname'    => 'E2E API account',
+                    'entities_id' => 0,
+                ],
+            ];
+
+            // Add one worker user and entity per worker
+            $next_available_entity_id = max(
+                array_column($tables['glpi_entities'], 'id')
+            );
+            for ($i = 1; $i <= self::PLAYWRIGHT_MAX_WORKERS; $i++) {
+                $padded_i = str_pad((string) $i, 2, '0', STR_PAD_LEFT);
+                $sub_entities_to_create[] = "E2E worker entity $padded_i";
+
+                // Compute matching entity id
+                $entity_id = $next_available_entity_id + $i;
+
+                $users_to_create[] = [
+                    'login'       => "e2e_worker_account_$padded_i",
+                    'password'    => password_hash(
+                        "e2e_worker_account_$padded_i",
+                        PASSWORD_DEFAULT,
+                    ),
+                    'realname'    => "E2E worker account $padded_i",
+                    'entities_id' => $entity_id,
+                ];
+            }
+
+            // Create required entites
+            foreach ($sub_entities_to_create as $entity) {
+                $next_available_entity_id = max(
+                    array_column($tables['glpi_entities'], 'id')
+                ) + 1;
+                $subentity = array_replace($root_entity, [
+                    'id'           => $next_available_entity_id,
+                    'name'         => $entity,
+                    'entities_id'  => $e2e_parent_entity_id,
+                    'completename' => __('Root entity')
+                        . " > $e2e_parent_entity_label"
+                        . " > $entity",
+                    'level'        => 3,
+                ]);
+                $tables['glpi_entities'][] = $subentity;
+            }
+
+            // // Create required users
+            $default_glpi_user = array_filter(
+                $tables['glpi_users'],
+                static fn($u) => $u['id'] === self::USER_GLPI
+            );
+            $default_glpi_user = array_shift($default_glpi_user);
+
+            $extra_profiles_to_add = [
+                self::PROFILE_SELF_SERVICE,
+                self::PROFILE_OBSERVER,
+                self::PROFILE_ADMIN,
+                self::PROFILE_SUPER_ADMIN,
+                self::PROFILE_HOTLINER,
+                self::PROFILE_TECHNICIAN,
+                self::PROFILE_SUPERVISOR,
+                self::PROFILE_READ_ONLY,
+            ];
+            foreach ($users_to_create as $user_data) {
+                $next_available_user_id = max(
+                    array_column($tables['glpi_users'], 'id')
+                ) + 1;
+                $user = array_replace($default_glpi_user, [
+                    'id'          => $next_available_user_id++,
+                    'name'        => $user_data['login'],
+                    'password'    => $user_data['password'],
+                    'realname'    => $user_data['realname'],
+                    'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                    'entities_id' => $user_data['entities_id'],
+                ]);
+                $tables['glpi_users'][] = $user;
+
+                foreach ($extra_profiles_to_add as $profile_id) {
+                    $next_available_profile_id = max(
+                        array_column($tables['glpi_profiles_users'], 'id')
+                    ) + 1;
+                    $tables['glpi_profiles_users'][] = [
+                        'id'           => $next_available_profile_id,
+                        'users_id'     => $user['id'],
+                        'profiles_id'  => $profile_id,
+                        // Enable access to all entities in case a test need
+                        // to interact with a setting that only exist for the
+                        // root entity.
+                        'entities_id'  => 0,
+                        'is_recursive' => 1,
+                        'is_dynamic'   => 0,
+                    ];
+                }
+            }
         }
 
         // initial validation steps
