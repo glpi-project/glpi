@@ -3477,7 +3477,7 @@ class Toolbox
             self::log(
                 $loglvl,
                 sprintf(
-                    'Unable to set `%s` to `%s`. You should enforce the value in your PHP configuration. Error is: %s',
+                    'Unable to set `%s` to `%s`. This may be caused by a `php_admin_flag` or a `php_admin_value` directive in your web server configuration. Try to use `php_flag` or `php_value` instead. Error is: %s',
                     $name,
                     $value,
                     $e->getMessage()
