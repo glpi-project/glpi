@@ -53,17 +53,33 @@ class Rule extends CommonDBTM
     public $dohistory             = true;
 
     // Specific ones
-    ///Actions affected to this rule
+    /**
+     * Actions affected to this rule
+     *
+     * @var ?array
+     */
     public $actions               = [];
-    ///Criterias affected to this rule
+    /**
+     * Criteria affected to this rule
+     *
+     * @var array
+     */
     public $criterias             = [];
 
-    // preview context ?
+    /**
+     * preview context ?
+     *
+     * @var bool
+     */
     protected $is_preview = false;
 
-    /// restrict matching to self::AND_MATCHING or self::OR_MATCHING: specify value to activate
+    /**
+     * Restrict matching to self::AND_MATCHING or self::OR_MATCHING: specify value to activate
+     *
+     * @var self::*_MATCHING|false
+     */
     public $restrict_matching     = false;
-
+    /** @var string */
     protected $rules_id_field     = 'rules_id';
     /**
      * @var class-string<RuleAction>
@@ -74,9 +90,12 @@ class Rule extends CommonDBTM
      */
     protected $rulecriteriaclass  = RuleCriteria::class;
 
+    /** @var bool */
     public $specific_parameters   = false;
 
+    /** @var array */
     public $regex_results         = [];
+    /** @var array */
     public $criterias_results     = [];
 
     public static $rightname             = 'config';
@@ -134,8 +153,10 @@ class Rule extends CommonDBTM
      *
      *  @since 0.84
      *
-     *  @param integer $rules_id ID of the rule
-     **/
+     *  @param int $rules_id ID of the rule
+     *
+     * @return ?Rule
+     */
     public static function getRuleObjectByID($rules_id)
     {
         $rule = new self();
@@ -180,6 +201,8 @@ class Rule extends CommonDBTM
      * @since 0.85
      *
      * @param array $options array of parameters
+     *
+     * @return int|string|false
      **/
     public static function dropdownConditions($options = [])
     {
@@ -574,6 +597,9 @@ class Rule extends CommonDBTM
         return $this->rulecriteriaclass;
     }
 
+    /**
+     * @return string
+     */
     public function getRuleIdField()
     {
         return $this->rules_id_field;
@@ -1011,6 +1037,8 @@ class Rule extends CommonDBTM
 
     /**
      * display title for action form
+     *
+     * @return void
      **/
     public function getTitleAction()
     {
@@ -1708,7 +1736,7 @@ TWIG, $twig_params);
     /**
      * @param array $input
      *
-     * return boolean
+     * @return bool
      */
     public function findWithGlobalCriteria($input)
     {
@@ -2036,6 +2064,9 @@ TWIG, $twig_params);
     /**
      * Handles any rank change from the API or another source except {@link RuleCollection::moveRule()}
      * by moving the rule rather than directly setting the rank to handle the other rules and avoid rules with the same rank.
+     *
+     * @param bool $new_rule
+     *
      * @return void
      */
     private function handleRankChange($new_rule = false)
@@ -2087,6 +2118,8 @@ TWIG, $twig_params);
      * @param array $params    params used (see addSpecificParamsForPreview)
      *
      * @since 11.0.0 The `$target` parameter has been removed.
+     *
+     * @return void
      */
     public function showRulePreviewResultsForm($input, $params)
     {
@@ -2203,6 +2236,8 @@ TWIG, $twig_params);
     /**
      * @param array  $fields
      * @param string $addtotd   (default '')
+     *
+     * @return string
      **/
     public function getMinimalCriteriaText($fields, $addtotd = '')
     {
@@ -2234,6 +2269,8 @@ TWIG, $twig_params);
     /**
      * @param array  $fields
      * @param string $addtotd   (default '')
+     *
+     * @return string
      **/
     public function getMinimalActionText($fields, $addtotd = '')
     {
@@ -2392,11 +2429,11 @@ TWIG, $twig_params);
     /**
      * Display item used to select a pattern for a criteria
      *
-     * @param string  $name      criteria name
-     * @param string  $ID        the given criteria
-     * @param integer $condition condition used
-     * @param string  $value     the pattern (default '')
-     * @param boolean $test      Is to test rule ? (false by default)
+     * @param string          $name      criteria name
+     * @param string          $ID        the given criteria
+     * @param self::PATTERN_* $condition condition used
+     * @param string          $value     the pattern (default '')
+     * @param boolean         $test      Is to test rule ? (false by default)
      *
      * @return void
      **/
@@ -2704,6 +2741,8 @@ TWIG, $twig_params);
      * Function used to display type specific criteria during rule's preview
      *
      * @param array $fields fields values
+     *
+     * @return void
      **/
     public function showSpecificCriteriasForPreview($fields) {}
 
@@ -2722,9 +2761,10 @@ TWIG, $twig_params);
     /**
      * Criteria form used to preview rule
      *
-     * @param integer $rules_id ID of the rule
+     * @param int $rules_id ID of the rule
      *
      * @since 11.0.0 The `$target` parameter has been removed.
+     * @return void
      */
     public function showRulePreviewCriteriasForm($rules_id)
     {
@@ -2828,11 +2868,17 @@ TWIG, $twig_params);
         return Dropdown::show($p['sub_type'], $p);
     }
 
+    /**
+     * @return array
+     */
     public function getAllCriteria()
     {
         return self::doHookAndMergeResults(Hooks::AUTO_GET_RULE_CRITERIA, $this->getCriterias(), static::class);
     }
 
+    /**
+     * @return array
+     */
     public function getCriterias()
     {
         return [];
@@ -2847,6 +2893,9 @@ TWIG, $twig_params);
         return self::doHookAndMergeResults(Hooks::AUTO_GET_RULE_ACTIONS, $this->getActions(), static::class);
     }
 
+    /**
+     * @return array
+     */
     public function getActions()
     {
         $actions = [];
@@ -3049,6 +3098,8 @@ TWIG, ['label' => $this->getTitle()]);
     /**
      * Add more criteria specific to this type of rule
      *
+     * @param string $criterion
+     *
      * @return array
      **/
     public static function addMoreCriteria($criterion = '')
@@ -3069,11 +3120,12 @@ TWIG, ['label' => $this->getTitle()]);
     }
 
     /**
-     * @param $condition
-     * @param $criteria
-     * @param $name
-     * @param $value
+     * @param self::PATTERN_* $condition
+     * @param array $criteria
+     * @param string $name
+     * @param string $value
      * @param bool $test (false by default)
+     *
      * @return boolean
      */
     public function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false)
@@ -3101,6 +3153,8 @@ TWIG, ['label' => $this->getTitle()]);
      * @param string     $table      glpi_ruleactions, glpi_rulescriterias or glpi_slalevelcriterias
      * @param string     $valfield   value or pattern
      * @param string     $fieldfield criteria of field
+     *
+     * @return void
      **/
     private static function cleanForItemActionOrCriteria(
         $item,
@@ -3159,6 +3213,8 @@ TWIG, ['label' => $this->getTitle()]);
      *
      * @param Object $item
      * @param string $field name (default is FK to item) (default '')
+     *
+     * @return void
      **/
     public static function cleanForItemAction($item, $field = '')
     {
@@ -3195,7 +3251,9 @@ TWIG, ['label' => $this->getTitle()]);
      *
      * @param Object $item
      * @param string $field name (default is FK to item) (default '')
-     **/
+     *
+     * @return void
+     */
     public static function cleanForItemCriteria($item, $field = '')
     {
         self::cleanForItemActionOrCriteria(

@@ -45,7 +45,7 @@ class SingletonRuleList
      * get a unique instance of a SingletonRuleList for a type of RuleCollection
      *
      * @param string $type   type of the Rule listed
-     * @param string $entity entity where the rule Rule is processed
+     * @param int    $entity entity ID where the rule Rule is processed
      *
      * @return SingletonRuleList unique instance of an object
      **/

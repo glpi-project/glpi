@@ -41,7 +41,7 @@ abstract class RuleCommonITILObjectCollection extends RuleCollection
     public $use_output_rule_process_as_next_input   = true;
 
     /**
-     * @param $entity (default 0)
+     * @param int $entity (default 0)
      **/
     public function __construct($entity = 0)
     {

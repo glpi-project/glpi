@@ -81,6 +81,12 @@ class RuleImportAssetCollection extends RuleCollection
         return __('Rules for import and link equipments');
     }
 
+    /**
+     * @param array $criteria
+     * @param array $options
+     *
+     * @return array
+     */
     public function collectionFilter($criteria, $options = [])
     {
         // current tab

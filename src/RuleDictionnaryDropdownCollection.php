@@ -40,7 +40,11 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
     public $menu_type = 'dictionnary';
 
     // Specific ones
-    /// dropdown table
+    /**
+     * Dropdown table
+     *
+     * @var string
+     */
     public $item_table = "";
 
     public $stop_on_first_match = true;
