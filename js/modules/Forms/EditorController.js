@@ -2183,15 +2183,16 @@ export class GlpiFormEditorController
 
                 return {
                     conditionsUsingItem: externalConditions,
-                    destinationsUsingItem: dep.destinationsUsingItem
+                    destinationsUsingItem: dep.destinationsUsingItem,
+                    itemUsedBySubmitButton: dep.itemUsedBySubmitButton
                 };
             }).reduce((all, dep) => {
                 return {
                     conditionsUsingItem: all.conditionsUsingItem.add(dep.conditionsUsingItem),
-                    destinationsUsingItem: all.destinationsUsingItem.concat(dep.destinationsUsingItem)
+                    destinationsUsingItem: all.destinationsUsingItem.concat(dep.destinationsUsingItem),
+                    itemUsedBySubmitButton: all.itemUsedBySubmitButton || dep.itemUsedBySubmitButton
                 };
-            }, { conditionsUsingItem: $(), destinationsUsingItem: [] });
-
+            }, { conditionsUsingItem: $(), destinationsUsingItem: [], itemUsedBySubmitButton: false });
 
             if (
                 dependencies.conditionsUsingItem.length > 0
@@ -2201,6 +2202,7 @@ export class GlpiFormEditorController
                     'section',
                     dependencies.conditionsUsingItem,
                     dependencies.destinationsUsingItem,
+                    dependencies.itemUsedBySubmitButton,
                     'section_child_elements_deletion'
                 );
                 return;

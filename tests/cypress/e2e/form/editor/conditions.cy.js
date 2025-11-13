@@ -3259,26 +3259,13 @@ describe ('Conditions', () => {
         // This test ensures that if a section contains elements that are used in conditions
         // by elements OUTSIDE the section, the deletion is blocked with the condition dependency modal.
 
-        createForm();
-        addQuestion('My first question');
-        addSection('My section');
-        addQuestion('Question in section');
-        addComment('Comment in section');
-        addSection('Another section');
-        addQuestion('Question in another section');
-
-        saveAndReload();
-
-        // Add a condition to a question OUTSIDE the section that uses a question INSIDE the section
-        getAndFocusQuestion('Question in another section').within(() => {
-            initVisibilityConfiguration();
-            setConditionStrategy('Visible if...');
-            fillCondition(0, null, 'Question in section', 'Is visible', null, null);
-            closeConditionEditor();
+        cy.importForm('form-with-question-destination-submit-button-conditions.json').then((id) => {
+            cy.visit(`front/form/form.form.php?id=${id}`);
         });
 
         // Try to delete the section that contains the question used in conditions
-        getAndFocusSection('My section').within(() => {
+        cy.findAllByRole('region', {'name': 'Section details'}).eq(1).click();
+        cy.findAllByRole('region', {'name': 'Section details'}).eq(1).within(() => {
             cy.findByRole('button', {'name': 'More actions'}).click();
             cy.findByRole('button', {'name': 'Delete section'}).click();
         });
@@ -3289,6 +3276,8 @@ describe ('Conditions', () => {
             .within(() => {
                 // Should mention the question that has dependencies
                 cy.contains('Question in another section').should('exist');
+                cy.contains('Submit button visibility').should('exist');
+                cy.contains('Ticket').should('exist');
                 cy.findByRole('button', {'name': 'Close'}).click();
             });
 
