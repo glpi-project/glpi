@@ -156,6 +156,28 @@ test-db-update: ## Update testing's database
 		--env=testing
 .PHONY: test-db-update
 
+e2e-db-install: ## Install e2e testing's database
+	@$(CONSOLE) database:install \
+		-r -f \
+		--db-host=db \
+		--db-port=3306 \
+		--db-name=glpi_e2e \
+		--db-user=root \
+		--db-password=glpi \
+		--no-interaction \
+		--no-telemetry \
+		--env=e2e_testing
+.PHONY: e2e-db-install
+
+e2e-db-update: ## Update e2e testing's database
+	@$(CONSOLE) database:update \
+		-n \
+		--allow-unstable \
+		--force \
+		--skip-db-checks  \
+		--env=e2e_testing
+.PHONY: e2e-db-update
+
 ## —— Dependencies —————————————————————————————————————————————————————————————
 composer: ## Run a composer command, example: make composer c='require mypackage/package'
 	@$(eval c ?=)
