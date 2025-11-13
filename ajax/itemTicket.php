@@ -56,23 +56,16 @@ switch ($_POST['action']) {
         if (!empty($_POST['itemtype']) && !empty($_POST['items_id'])) {
             $deleted = true;
             if ($_POST['params']['id'] > 0) {
-                if ($item_ticket->canPurge()) {
-                    /** @var DBmysql $DB */
-                    global $DB;
-                    $iterator = $DB->request([
-                        'FROM' => Item_Ticket::getTable(),
-                        'WHERE' => [
-                            'tickets_id' => $_POST['params']['id'],
-                            'items_id' => $_POST['items_id'],
-                            'itemtype' => $_POST['itemtype'],
-                        ],
-                    ]);
-                    foreach ($iterator as $data) {
-                        if ($item_ticket->can($data['id'], DELETE)) {
-                            $item_ticket->getFromDB($data['id']);
-                            $deleted = $item_ticket->delete(['id' => $data['id']]) && $deleted;
-                        }
-                    }
+                $criteria = [
+                    'tickets_id' => $_POST['params']['id'],
+                    'items_id' => $_POST['items_id'],
+                    'itemtype' => $_POST['itemtype'],
+                ];
+                if (
+                    $item_ticket->getFromDBByCrit($criteria)
+                    && $item_ticket->can($item_ticket->getID(), DELETE)
+                ) {
+                    $deleted = $item_ticket->delete(['id' => $item_ticket->getID()]);
                 }
             }
             if ($deleted) {
