@@ -207,6 +207,7 @@ class CommonDBTM extends CommonGLPI
      */
     public $right;
 
+    /** @var array<class-string, array> */
     private static $search_options_cache = [];
 
     /**
@@ -256,6 +257,9 @@ class CommonDBTM extends CommonGLPI
     }
 
 
+    /**
+     * @return string
+     */
     public static function getForeignKeyField()
     {
         $classname = static::class;
@@ -2404,6 +2408,8 @@ class CommonDBTM extends CommonGLPI
      * Unglobalize the item : duplicate item and connections.
      *
      * @see Asset_PeripheralAsset::unglobalizeItem()
+     * @return null
+     * @TODO Return a bool value (true on success, false on failure).
      */
     public function unglobalize()
     {
@@ -2556,6 +2562,9 @@ class CommonDBTM extends CommonGLPI
     }
 
 
+    /**
+     * @return bool
+     */
     public function canRecurs()
     {
 
@@ -4391,6 +4400,9 @@ class CommonDBTM extends CommonGLPI
     }
 
 
+    /**
+     * @return array
+     */
     public function getUnallowedFieldsForUnicity()
     {
         return ['alert', 'comment', 'date_mod', 'id', 'is_recursive', 'items_id'];

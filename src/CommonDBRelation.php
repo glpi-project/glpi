@@ -203,8 +203,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
     /**
      * @since 0.84
      *
-     * @param $item            CommonDBTM object
-     * @param $relations_id    (default NULL)
+     * @param CommonDBTM   $item         CommonDBTM object
+     * @param integer|null $relations_id (default NULL)
+     * @return CommonDBTM|false
      **/
     public static function getOpposite(CommonDBTM $item, &$relations_id = null)
     {
@@ -218,6 +219,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @param string       $itemtype        Type of the item to search for its opposite
      * @param integer      $items_id        ID of the item to search for its opposite
      * @param integer|null $relations_id
+     * @return CommonDBTM|false
      **/
     public static function getOppositeByTypeAndID($itemtype, $items_id, &$relations_id = null)
     {
@@ -281,7 +283,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
     /**
      * @since 0.84
      *
-     * @param $number
+     * @param int $number
      *
      * @return CommonDBTM|false
      **/
@@ -426,8 +428,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
     /**
      * @since 0.84
      *
-     * @param $method
-     * @param $forceCheckBoth boolean force check both items(false by default)
+     * @param string $method
+     * @param bool   $forceCheckBoth force check both items(false by default)
      *
      * @return boolean
      **/
@@ -492,10 +494,10 @@ abstract class CommonDBRelation extends CommonDBConnexity
     /**
      * @since 0.84
      *
-     * @param $method
-     * @param $methodNotItem
-     * @param $check_entity            (true by default)
-     * @param $forceCheckBoth boolean  force check both items (false by default)
+     * @param string $method
+     * @param string $methodNotItem
+     * @param bool   $check_entity     (true by default)
+     * @param bool   $forceCheckBoth   force check both items (false by default)
      *
      * @return boolean
      **/
@@ -1200,6 +1202,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @param HTMLTableSuperHeader $super     HTMLTableSuperHeader object (default NULL)
      * @param HTMLTableHeader      $father    HTMLTableHeader object (default NULL)
      * @param array                $options
+     * @return void
      **/
     public static function getHTMLTableHeader(
         $itemtype,
@@ -1243,6 +1246,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @param CommonDBTM    $item     CommonDBTM object (default NULL)
      * @param HTMLTableCell $father   HTMLTableCell object (default NULL)
      * @param array         $options
+     * @return void
      **/
     public static function getHTMLTableCellsForItem(
         ?HTMLTableRow $row = null,

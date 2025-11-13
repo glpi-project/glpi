@@ -1086,7 +1086,7 @@ class NetworkPort extends CommonDBChild
                             $relations_id = 0;
                             $oppositePort = NetworkPort_NetworkPort::getOpposite($netport, $relations_id);
 
-                            if ($oppositePort === false) {
+                            if (!($oppositePort instanceof NetworkPort)) {
                                 break;
                             }
 
