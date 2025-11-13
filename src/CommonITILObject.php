@@ -7957,12 +7957,17 @@ abstract class CommonITILObject extends CommonDBTM
      * Returns criteria that can be used to get documents related to current instance.
      *
      * @param bool      $bypass_rights  Whether to bypass rights checks (default: false)
-     * @param User|null $user           User for rights checking (default: null = current session rights)
+     * @FIXME uncomment @param User|null $user           User for rights checking (default: null = current session rights)
      *
      * @return array
      */
-    public function getAssociatedDocumentsCriteria($bypass_rights = false, ?User $user = null): array
+    public function getAssociatedDocumentsCriteria($bypass_rights = false/*, ?User $user = null*/): array
     {
+        $user = null;
+        if (func_num_args() == 2) {
+            $user = func_get_arg(1);
+        }
+
         $user_id = $user ? $user->getID() : Session::getLoginUserID();
 
         $task_class = $this->getType() . 'Task';
