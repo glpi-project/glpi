@@ -151,7 +151,8 @@ final class FormAccessControlManagerTest extends DbTestCase
                 static::getInactiveAllowListAccessControl(),
                 static::getActiveDirectAccessControl(),
             ],
-            'expected' => [DirectAccess::class, AllowList::class],
+            // Active status no longer has an impact on the sort result
+            'expected' => [AllowList::class, DirectAccess::class],
         ];
         yield 'Form with two active access controls' => [
             'access_controls' => [
