@@ -5582,7 +5582,10 @@ class CommonDBTM extends CommonGLPI
 
                 $input2["entities_id"]             = $entities_id;
                 $input2["is_recursive"]            = $is_recursive;
-                $input2["documentcategories_id"]   = $CFG_GLPI["documentcategories_id_forticket"];
+                // Fill in the document category only if the edited item has a default one
+                if (isset($this->fields['documentcategories_id']) && $this->fields['documentcategories_id']) {
+                    $input2['documentcategories_id'] = $this->fields['documentcategories_id'];
+                }
                 $input2["_only_if_upload_succeed"] = 1;
                 $input2["_filename"]               = [$file];
                 if (isset($this->input[$prefixUploadName][$key])) {
