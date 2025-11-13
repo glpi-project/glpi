@@ -615,7 +615,7 @@ TWIG, $twig_params);
         $relations_id = 0;
         $oppositePort = NetworkPort_NetworkPort::getOpposite($netport, $relations_id);
 
-        if ($oppositePort !== false) {
+        if ($oppositePort instanceof NetworkPort) {
             $device2 = $oppositePort->getItem();
 
             if ($device2->can($device2->fields["id"], READ)) {
