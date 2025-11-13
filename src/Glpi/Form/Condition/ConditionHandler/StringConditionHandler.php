@@ -94,8 +94,8 @@ class StringConditionHandler implements ConditionHandlerInterface
         return match ($operator) {
             ValueOperator::EQUALS          => $a === $b,
             ValueOperator::NOT_EQUALS      => $a !== $b,
-            ValueOperator::CONTAINS        => str_contains($b, $a),
-            ValueOperator::NOT_CONTAINS    => !str_contains($b, $a),
+            ValueOperator::CONTAINS        => str_contains($a, $b),
+            ValueOperator::NOT_CONTAINS    => !str_contains($a, $b),
 
             // Length comparison operators
             ValueOperator::LENGTH_GREATER_THAN           => mb_strlen($a) > intval($b),
