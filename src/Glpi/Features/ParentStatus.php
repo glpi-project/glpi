@@ -124,7 +124,7 @@ trait ParentStatus
             && !$is_set_pending
         ) {
             if (
-                isset($parentitem::getAllStatusArray($parentitem->getType())[CommonITILObject::ASSIGNED])
+                isset($parentitem::getAllStatusArray()[CommonITILObject::ASSIGNED])
                 && (
                     ($parentitem->countUsers(CommonITILActor::ASSIGN) > 0)
                     || ($parentitem->countGroups(CommonITILActor::ASSIGN) > 0)

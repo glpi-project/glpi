@@ -1945,15 +1945,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
-    /**
-     * Update date mod of the ticket
-     *
-     * @since 0.83.3 new proto
-     *
-     * @param $ID                           ID of the ticket
-     * @param $no_stat_computation  boolean do not cumpute take into account stat (false by default)
-     * @param $users_id_lastupdater integer to force last_update id (default 0 = not used)
-     **/
+    #[Override]
     public function updateDateMod($ID, $no_stat_computation = false, $users_id_lastupdater = 0)
     {
 
@@ -1963,7 +1955,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 && !$this->isAlreadyTakenIntoAccount()
                 && ($this->canTakeIntoAccount() || isCommandLine())
             ) {
-                return $this->update(
+                $this->update(
                     [
                         'id'                         => $ID,
                         'takeintoaccount_delay_stat' => $this->computeTakeIntoAccountDelayStat(),

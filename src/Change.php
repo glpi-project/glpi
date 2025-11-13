@@ -69,16 +69,19 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     public const REFUSED                = 13;
     public const CANCELED               = 14;
 
+    #[Override]
     public static function getTypeName($nb = 0)
     {
         return _n('Change', 'Changes', $nb);
     }
 
+    #[Override]
     public static function getSectorizedDetails(): array
     {
         return ['helpdesk', self::class];
     }
 
+    #[Override]
     public function canSolve()
     {
 
@@ -96,17 +99,13 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
+    #[Override]
     public static function canView(): bool
     {
         return Session::haveRightsOr(self::$rightname, [self::READALL, self::READMY]);
     }
 
-
-    /**
-     * Is the current user have right to show the current change ?
-     *
-     * @return boolean
-     **/
+    #[Override]
     public function canViewItem(): bool
     {
 
@@ -131,11 +130,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                               ))))));
     }
 
-    /**
-     * Is the current user have right to create the current change ?
-     *
-     * @return boolean
-     **/
+    #[Override]
     public function canCreateItem(): bool
     {
 
@@ -145,13 +140,8 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         return Session::haveRight(self::$rightname, CREATE);
     }
 
-
     /**
-     * is the current user could reopen the current change
-     *
-     * @since 9.4.0
-     *
-     * @return boolean
+     * @return bool
      */
     public function canReopen()
     {
@@ -161,7 +151,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                  || $this->isAllowedStatus($this->fields['status'], self::EVALUATION));
     }
 
-
+    #[Override]
     public function prepareInputForAdd($input)
     {
         $input =  parent::prepareInputForAdd($input);
@@ -191,6 +181,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         return $input;
     }
 
+    #[Override]
     public function prepareInputForUpdate($input)
     {
         $input = $this->transformActorsInput($input);
@@ -202,7 +193,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         return $input;
     }
 
-
+    #[Override]
     public function pre_deleteItem()
     {
         global $CFG_GLPI;
@@ -213,7 +204,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         return true;
     }
 
-
+    #[Override]
     public function getSpecificMassiveActions($checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
@@ -227,6 +218,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         return $actions;
     }
 
+    #[Override]
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
@@ -281,7 +273,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         return '';
     }
 
-
+    #[Override]
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
@@ -304,7 +296,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         return true;
     }
 
-
+    #[Override]
     public function defineTabs($options = [])
     {
         $ong = [];
@@ -326,7 +318,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         return $ong;
     }
 
-
+    #[Override]
     public function cleanDBonPurge()
     {
 
@@ -357,7 +349,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         parent::cleanDBonPurge();
     }
 
-
+    #[Override]
     public function post_updateItem($history = true)
     {
         global $CFG_GLPI;
@@ -401,7 +393,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         $this->handleSatisfactionSurveyOnUpdate();
     }
 
-
+    #[Override]
     public function post_addItem()
     {
         global $DB;
@@ -498,7 +490,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         return $search;
     }
 
-
+    #[Override]
     public function rawSearchOptions()
     {
         $tab = [];
@@ -663,6 +655,10 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         return $tab;
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @return array
+     */
     public static function rawSearchOptionsToAdd(string $itemtype)
     {
         global $CFG_GLPI;
@@ -731,6 +727,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         return $tab;
     }
 
+    #[Override]
     public static function getAllStatusArray($withmetaforsearch = false)
     {
 
@@ -759,14 +756,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         return $tab;
     }
 
-
-    /**
-     * Get the ITIL object closed status list
-     *
-     * @since 0.83
-     *
-     * @return array
-     **/
+    #[Override]
     public static function getClosedStatusArray()
     {
 
@@ -779,14 +769,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         return $tab;
     }
 
-
-    /**
-     * Get the ITIL object solved or observe status list
-     *
-     * @since 0.83
-     *
-     * @return array
-     **/
+    #[Override]
     public static function getSolvedStatusArray()
     {
         // To be overridden by class
@@ -794,26 +777,13 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         return $tab;
     }
 
-    /**
-     * Get the ITIL object new status list
-     *
-     * @since 0.83.8
-     *
-     * @return array
-     **/
+    #[Override]
     public static function getNewStatusArray()
     {
         return [self::INCOMING, self::ACCEPTED, self::EVALUATION, self::APPROVAL];
     }
 
-    /**
-     * Get the ITIL object test, qualification or accepted status list
-     * To be overridden by class
-     *
-     * @since 0.83
-     *
-     * @return array
-     **/
+    #[Override]
     public static function getProcessStatusArray()
     {
 
@@ -822,11 +792,13 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         return $tab;
     }
 
+    #[Override]
     public static function getReopenableStatusArray()
     {
         return array_merge(self::getClosedStatusArray(), [self::SOLVED]);
     }
 
+    #[Override]
     public function getRights($interface = 'central')
     {
 
@@ -844,14 +816,10 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     /**
-     * Display changes for an item
-     *
-     * Will also display changes of linked items
-     *
      * @param CommonDBTM $item
      * @param integer    $withtemplate
      *
-     * @return boolean|void
+     * @return void|false
      **/
     public static function showListForItem(CommonDBTM $item, $withtemplate = 0)
     {
@@ -884,6 +852,10 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         Change_Item::showListForItem($item, $withtemplate, $options);
     }
 
+    /**
+     * @param CommonDBTM $item
+     * @return array
+     */
     public static function getListForItemRestrict(CommonDBTM $item)
     {
         $restrict = [];
@@ -933,6 +905,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         return $restrict;
     }
 
+    #[Override]
     public static function getDefaultValues($entity = 0)
     {
         if (is_numeric(Session::getLoginUserID(false))) {
@@ -992,14 +965,10 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         ];
     }
 
+
     /**
-     * Get active changes for an item
-     *
-     * @since 9.5
-     *
-     * @param string $itemtype     Item type
-     * @param integer $items_id    ID of the Item
-     *
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
      * @return DBmysqlIterator
      */
     public function getActiveChangesForItem($itemtype, $items_id)
@@ -1036,16 +1005,19 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
+    #[Override]
     public static function getIcon()
     {
         return "ti ti-clipboard-check";
     }
 
+    #[Override]
     public static function getItemLinkClass(): string
     {
         return Change_Item::class;
     }
 
+    #[Override]
     public static function getStatusKey($status)
     {
         switch ($status) {
@@ -1058,24 +1030,25 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         }
     }
 
+    #[Override]
     public static function getContentTemplatesParametersClassInstance(): CommonITILObjectParameters
     {
         return new ChangeParameters();
     }
 
     /**
-     * @param $start
-     * @param $status             (default 'process')
-     * @param $showgroupchanges  (true by default)
-     * @since 10.0.0
+     * @param int $start
+     * @param string $status             (default 'proces)
+     * @param bool $showgroupchanges  (true by default)
      *
-     */
+     * @return void
+     **/
     public static function showCentralList($start, $status = "process", $showgroupchanges = true)
     {
         global $CFG_GLPI, $DB;
 
         if (!static::canView()) {
-            return false;
+            return;
         }
 
         $JOINS = [];
@@ -1444,12 +1417,10 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
 
 
     /**
-     * Get changes count
-     *
-     * @since 10.0.0
      *
      * @param bool $foruser only for current login user as requester
      * @param bool $display if false, return html
+     * @return ($display is true ? void : string)
      **/
     public static function showCentralCount(bool $foruser = false, bool $display = true)
     {
@@ -1457,7 +1428,10 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
 
         // show a tab with count of jobs in the central and give link
         if (!static::canView()) {
-            return false;
+            if (!$display) {
+                return '';
+            }
+            return;
         }
         if (!Session::haveRight(self::$rightname, self::READALL)) {
             $foruser = true;
@@ -1572,11 +1546,10 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     /**
-     * @since 10.0.0
-     *
-     * @param $ID
-     * @param $forcetab  string   name of the tab to force at the display (default '')
-     **/
+     * @param int $ID
+     * @param string $forcetab
+     * @return void
+     */
     public static function showVeryShort($ID, $forcetab = '')
     {
         // Prints a job in short form
