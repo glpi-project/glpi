@@ -36,10 +36,9 @@ namespace Glpi\Controller\Traits;
 
 use Glpi\Progress\StoredProgressIndicator;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-
 use Toolbox;
+
 use function Safe\fastcgi_finish_request;
-use function Safe\ini_set;
 use function Safe\ob_end_clean;
 use function Safe\session_write_close;
 

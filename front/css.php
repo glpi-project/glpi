@@ -38,7 +38,6 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 use Glpi\Application\Environment;
 use Glpi\UI\ThemeManager;
 
-use function Safe\ini_set;
 use function Safe\preg_match;
 
 if (preg_match('~^css/glpi(\.scss)?$~', $_GET['file'] ?? '') === 1) {

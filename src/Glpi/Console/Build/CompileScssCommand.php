@@ -48,7 +48,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Toolbox;
 
 use function Safe\file_put_contents;
-use function Safe\ini_set;
 use function Safe\mkdir;
 use function Safe\preg_match;
 use function Safe\preg_replace;

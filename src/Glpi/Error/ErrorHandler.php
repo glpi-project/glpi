@@ -44,9 +44,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\ErrorHandler\ErrorHandler as BaseErrorHandler;
 use Throwable;
-
 use Toolbox;
-use function Safe\ini_set;
 
 /**
  * @phpstan-ignore class.extendsFinalByPhpDoc

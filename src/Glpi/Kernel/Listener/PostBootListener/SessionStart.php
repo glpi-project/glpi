@@ -44,9 +44,7 @@ use Session;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
-
 use Toolbox;
-use function Safe\ini_set;
 
 /**
  * @final

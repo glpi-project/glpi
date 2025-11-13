@@ -52,7 +52,6 @@ use wapmorgan\UnifiedArchive\Drivers\Basic\BasicDriver;
 use wapmorgan\UnifiedArchive\Exceptions\ArchiveExtractionException;
 use wapmorgan\UnifiedArchive\Formats;
 
-use function Safe\ini_set;
 use function Safe\ob_end_clean;
 use function Safe\ob_start;
 use function Safe\parse_url;

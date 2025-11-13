@@ -3469,8 +3469,7 @@ class Toolbox
         string $name,
         string $value,
         string $loglvl = LogLevel::WARNING
-    ): void
-    {
+    ): void {
         try {
             ini_set($name, $value);
         } catch (InfoException $e) {

@@ -37,7 +37,6 @@ namespace Glpi\Api\HL\Middleware;
 
 use Session;
 
-use Toolbox;
 use function Safe\ini_set;
 
 class CookieAuthMiddleware extends AbstractMiddleware implements AuthMiddlewareInterface

@@ -61,7 +61,6 @@ use function Safe\gzinflate;
 use function Safe\gzuncompress;
 use function Safe\iconv;
 use function Safe\ini_get;
-use function Safe\ini_set;
 use function Safe\json_decode;
 use function Safe\json_encode;
 use function Safe\preg_match;
