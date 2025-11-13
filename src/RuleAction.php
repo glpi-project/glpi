@@ -448,7 +448,7 @@ class RuleAction extends CommonDBChild
      * @param integer $rules_id
      * @param class-string<Rule> $sub_type
      *
-     * @return array|void
+     * @return array
      */
     public function getAlreadyUsedForRuleID($rules_id, $sub_type)
     {
@@ -476,6 +476,8 @@ class RuleAction extends CommonDBChild
             }
             return $actions;
         }
+
+        return [];
     }
 
     /**
