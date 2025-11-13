@@ -1059,6 +1059,15 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                                 'scope'     => 'entity',
                             ]),
                             $fn_get_rights(Grid::class, 'central', [
+                                'rights'    => [
+                                    READ   => __('Read'),
+                                    UPDATE => __('Update'),
+                                    CREATE => __('Create'),
+                                    PURGE  => [
+                                        'short' => __('Purge'),
+                                        'long'  => _x('button', 'Delete permanently'),
+                                    ],
+                                ],
                                 'label'     => __('All dashboards'),
                                 'field'     => 'dashboard',
                                 'scope'     => 'entity',
