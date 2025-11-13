@@ -43,6 +43,7 @@ $finder = (new PhpCsFixer\Finder())
         'plugins/',
         'tests/config/',
         'tests/files/',
+        'tests/e2e/',
         'vendor/',
     ])
 ;
