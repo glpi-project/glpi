@@ -205,6 +205,7 @@ final class FakeProvider extends Provider
         };
 
         $icon = match ($case) {
+            'notold' => Ticket::getIcon(),
             'late' => 'ti ti-clock',
             'waiting_validation' => 'ti ti-eye',
             'incoming' => Ticket::getIcon(),
@@ -213,7 +214,7 @@ final class FakeProvider extends Provider
             'planned' => 'ti ti-calendar',
             'solved' => 'ti ti-checkbox',
             'closed' => 'ti ti-archive',
-            default => '', // notold has no icon defined
+            default => throw new InvalidArgumentException("Invalid case: $case"),
         };
 
         return [
