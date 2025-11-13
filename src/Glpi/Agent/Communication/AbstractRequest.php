@@ -297,10 +297,10 @@ abstract class AbstractRequest
         $memory_limit       = (int) Toolbox::getMemoryLimit();
         $max_execution_time = ini_get('max_execution_time');
         if ($memory_limit > 0 && $memory_limit < (1024 * 1024 * 1024)) {
-            ini_set('memory_limit', '1024M');
+            Toolbox::iniSet('memory_limit', '1024M');
         }
         if ($max_execution_time > 0 && $max_execution_time < 300) {
-            ini_set('max_execution_time', '300');
+            Toolbox::iniSet('max_execution_time', '300');
         }
 
         if ($this->compression !== self::COMPRESS_NONE) {

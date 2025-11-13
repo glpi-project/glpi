@@ -45,6 +45,7 @@ use Psr\Log\LogLevel;
 use Symfony\Component\ErrorHandler\ErrorHandler as BaseErrorHandler;
 use Throwable;
 
+use Toolbox;
 use function Safe\ini_set;
 
 /**
@@ -296,7 +297,7 @@ final class ErrorHandler extends BaseErrorHandler
      */
     private function disableNativeErrorDisplaying(): void
     {
-        ini_set('display_errors', 'Off');
+        Toolbox::iniSet('display_errors', 'Off');
     }
 
     private static function cleanPaths(string $message): string

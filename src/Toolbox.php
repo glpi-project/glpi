@@ -60,6 +60,7 @@ use Safe\Exceptions\CurlException;
 use Safe\Exceptions\ErrorfuncException;
 use Safe\Exceptions\FilesystemException;
 use Safe\Exceptions\ImageException;
+use Safe\Exceptions\InfoException;
 use Safe\Exceptions\JsonException;
 use Safe\Exceptions\PcreException;
 use Safe\Exceptions\UrlException;
@@ -3462,5 +3463,26 @@ class Toolbox
     public static function cleanPaths(string $message): string
     {
         return ErrorUtils::cleanPaths($message);
+    }
+
+    public static function iniSet(
+        string $name,
+        string $value,
+        string $loglvl = LogLevel::WARNING
+    ): void
+    {
+        try {
+            ini_set($name, $value);
+        } catch (InfoException $e) {
+            self::log(
+                $loglvl,
+                sprintf(
+                    'Unable to set `%s` to `%s`. You should enforce the value in your PHP configuration. Error is: %s',
+                    $name,
+                    $value,
+                    $e->getMessage()
+                ),
+            );
+        }
     }
 }

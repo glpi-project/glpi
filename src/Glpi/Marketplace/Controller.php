@@ -226,7 +226,7 @@ class Controller extends CommonGLPI
         // Upgrade memory limit to 512M, which should be enough.
         $memory_limit = (int) Toolbox::getMemoryLimit();
         if ($memory_limit > 0 && $memory_limit < (512 * 1024 * 1024)) {
-            ini_set('memory_limit', '512M');
+            Toolbox::iniSet('memory_limit', '512M');
         }
 
         // clean dir in case of update

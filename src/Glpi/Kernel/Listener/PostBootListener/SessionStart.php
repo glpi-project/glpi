@@ -45,6 +45,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 
+use Toolbox;
 use function Safe\ini_set;
 
 /**
@@ -106,7 +107,7 @@ class SessionStart implements EventSubscriberInterface
             if ($this->php_sapi !== 'cli') {
                 // Stateless endpoints will often have to start their own PHP session (based on a token for instance).
                 // Be sure to not use cookies defined in the request or to send a cookie in the response.
-                ini_set('session.use_cookies', 0);
+                Toolbox::iniSet('session.use_cookies', 0);
             }
 
             // The session base vars must always be defined.
