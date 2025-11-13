@@ -51,7 +51,10 @@ class CookieAuthMiddleware extends AbstractMiddleware implements AuthMiddlewareI
         }
         // User could be authenticated by a cookie
         // Need to use cookies for session and start it manually
-        Toolbox::iniSet('session.use_cookies', '1');
+        $use_cookies = filter_var(ini_get('session.use_cookies'), FILTER_VALIDATE_BOOLEAN);
+        if ($use_cookies !== true) {
+            ini_set('session.use_cookies', '1');
+        }
         Session::start();
 
         if (($user_id = Session::getLoginUserID()) !== false) {
