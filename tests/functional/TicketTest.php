@@ -9551,6 +9551,6 @@ HTML,
         $this->assertGreaterThan(0, $ticket_id);
         //reload and check
         $this->assertTrue($ticket->getFromDB($ticket_id));
-        $this->assertFalse($ticket->getRecipientUserID());
+        $this->assertNull($ticket->getRecipientUserID());
     }
 }
