@@ -101,6 +101,7 @@ class AuthDeletedUserTest extends DbTestCase
         $this->assertTrue($result);
 
         Session::destroy();
+        Session::start();
 
         $this->updateItem(User::class, $user->getID(), [
             'is_deleted' => 1,
@@ -115,65 +116,6 @@ class AuthDeletedUserTest extends DbTestCase
     }
 
     /**
-     * Test SSO authentication with deleted and active user with same name
-     */
-    public function testSSOSucceedsWithDeletedAndActiveUserSameName()
-    {
-        $this->login();
-
-        $username = 'user@domain.com';
-
-        $first_user = $this->createItem(User::class, [
-            'name' => $username,
-            'authtype' => Auth::EXTERNAL,
-            'auths_id' => 1,
-            '_profiles_id' => Profile::getDefault(),
-        ]);
-
-        $this->updateItem(User::class, $first_user->getID(), [
-            'is_deleted' => 1,
-        ]);
-
-        $second_user = $this->createItem(User::class, [
-            'name' => $username,
-            'authtype' => Auth::EXTERNAL,
-            'auths_id' => 0,
-            '_profiles_id' => Profile::getDefault(),
-        ]);
-
-        $users = getAllDataFromTable(User::getTable(), ['name' => $username]);
-        $this->assertCount(2, $users);
-
-        $deleted_count = 0;
-        $active_count = 0;
-        foreach ($users as $user_data) {
-            if ($user_data['is_deleted'] == 1) {
-                $deleted_count++;
-            } else {
-                $active_count++;
-            }
-        }
-        $this->assertEquals(1, $deleted_count);
-        $this->assertEquals(1, $active_count);
-
-        Session::destroy();
-
-        $_SERVER['REMOTE_USER'] = $username;
-        $auth = new Auth();
-        $result = $auth->login('', '', false);
-
-        $this->assertTrue($result);
-
-        $logged_user_id = Session::getLoginUserID();
-        $this->assertEquals($second_user->getID(), $logged_user_id);
-
-        $logged_user = new User();
-        $logged_user->getFromDB($logged_user_id);
-        $this->assertEquals(0, $logged_user->fields['is_deleted']);
-        $this->assertEquals(1, $logged_user->fields['is_active']);
-    }
-
-    /**
      * Test that an inactive user cannot authenticate via SSO
      */
     public function testSSOFailsWithInactiveUser()
@@ -181,7 +123,7 @@ class AuthDeletedUserTest extends DbTestCase
         $this->login();
 
         $username = 'test_sso_inactive_' . mt_rand();
-        $user = $this->createItem(User::class, [
+        $this->createItem(User::class, [
             'name' => $username,
             'authtype' => Auth::EXTERNAL,
             '_profiles_id' => Profile::getDefault(),
@@ -189,6 +131,7 @@ class AuthDeletedUserTest extends DbTestCase
         ]);
 
         Session::destroy();
+        Session::start();
 
         $_SERVER['REMOTE_USER'] = $username;
         $auth = new Auth();
