@@ -235,6 +235,9 @@ class RuleImportAsset extends Rule
         return $actions;
     }
 
+    /**
+     * @return array
+     */
     public static function getRuleActionValues()
     {
         return [
@@ -250,6 +253,13 @@ class RuleImportAsset extends Rule
         return $values[$value] ?? '';
     }
 
+    /**
+     * @param array $criteria
+     * @param string $name
+     * @param string $value
+     *
+     * @return false
+     */
     public function manageSpecificCriteriaValues($criteria, $name, $value)
     {
         switch ($criteria['type']) {
@@ -344,6 +354,11 @@ class RuleImportAsset extends Rule
         return false;
     }
 
+    /**
+     * @param string $ID
+     *
+     * @return array
+     */
     public function getCriteriaByID($ID)
     {
         $criteria = [];
@@ -1103,6 +1118,13 @@ TWIG, $twig_params);
     public function addSpecificParamsForPreview($params)
     {
         $class = new class {
+            /**
+             * @param int $items_id
+             * @param class-string<CommonDBTM> $itemtype
+             * @param int $rules_id
+             *
+             * @return void
+             */
             public function rulepassed($items_id, $itemtype, $rules_id) {}
         };
         return $params + ['class' => $class];

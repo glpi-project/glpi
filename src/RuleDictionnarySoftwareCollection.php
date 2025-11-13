@@ -281,7 +281,9 @@ TWIG, $twig_params);
      * @param string $name                  software name
      * @param string $manufacturer          manufacturer name
      * @param array &$soft_ids       array containing replay software need to be put in trashbin
-     **/
+     *
+     * @return void
+     */
     public function replayDictionnaryOnOneSoftware(
         array &$new_softs,
         array $res_rule,
@@ -398,7 +400,9 @@ TWIG, $twig_params);
      * Delete a list of software
      *
      * @param array $soft_ids array containing replay software need to be put in trashbin
-     **/
+     *
+     * @return void
+     */
     public function putOldSoftsInTrash(array $soft_ids)
     {
         global $DB;
@@ -544,8 +548,8 @@ TWIG, $twig_params);
      * @param integer $old_software_id old software ID
      * @param integer $new_software_id new software ID
      *
-     * @return boolean
-     **/
+     * @return bool
+     */
     public function moveLicenses($old_software_id, $new_software_id)
     {
         global $DB;
@@ -578,7 +582,9 @@ TWIG, $twig_params);
      *
      * @param integer $software_id  software ID
      * @param string $version      version name
-     **/
+     *
+     * @return bool
+     */
     public function versionExists($software_id, $version)
     {
         global $DB;

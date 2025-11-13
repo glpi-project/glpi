@@ -49,21 +49,46 @@ class RuleCollection extends CommonDBTM
     public const MOVE_BEFORE = 'before';
     public const MOVE_AFTER = 'after';
 
-    /// Rule type
+    /**
+     * Rule type
+     *
+     * @var string
+     */
     public $sub_type;
-    /// process collection stop on first matched rule
+    /**
+     * Process collection stop on first matched rule
+     *
+     * @var bool
+     */
     public $stop_on_first_match                   = false;
-    /// Processing several rules : use result of the previous one to computer the current one
+    /**
+     * Processing several rules : use result of the previous one to computer the current one
+     *
+     * @var bool
+     */
     public $use_output_rule_process_as_next_input = false;
-    /// Rule collection can be replay (for dictionary)
+    /**
+     * Rule collection can be replay (for dictionary)
+     *
+     * @var bool
+     */
     public $can_replay_rules                      = false;
     /** @var SingletonRuleList $RuleList */
     public $RuleList                              = null;
-    /// Menu type
+    /**
+     * Menu type
+     *
+     * @var string
+     */
     public $menu_type                             = "rule";
-    /// Menu option
+    /**
+     * Menu option
+     *
+     * @var string
+     */
     public $menu_option                           = "";
 
+    /** @var int */
     public $entity                                = 0;
 
     public static $rightname                             = 'config';
@@ -80,13 +105,18 @@ class RuleCollection extends CommonDBTM
     }
 
     /**
-     * @param $entity (default 0)
+     * @param int $entity (default 0)
+     *
+     * @return void
      **/
     public function setEntity($entity = 0)
     {
         $this->entity = $entity;
     }
 
+    /**
+     * @return bool
+     */
     public function canList()
     {
         return static::canView();
@@ -216,7 +246,9 @@ class RuleCollection extends CommonDBTM
      *         - start : first rule (in the result set - default 0)
      *         - limit : max number of rules to retrieve (default 0)
      *         - recursive : boolean get recursive rules
-     *         - childirens : boolean get childrens rules
+     *         - childrens : boolean get children rules
+     *
+     * @return void
      **/
     public function getCollectionPart($options = [])
     {
@@ -256,6 +288,8 @@ class RuleCollection extends CommonDBTM
      * @param integer $retrieve_criteria  Retrieve the criteria of the rules ? (default false)
      * @param integer $retrieve_action    Retrieve the action of the rules ? (default 0)
      * @param integer $condition          Retrieve with a specific condition
+     *
+     * @return void
      **/
     public function getCollectionDatas($retrieve_criteria = 0, $retrieve_action = 0, $condition = 0)
     {
@@ -425,6 +459,9 @@ class RuleCollection extends CommonDBTM
         return 0;
     }
 
+    /**
+     * @return void
+     */
     public function showEngineSummary()
     {
         TemplateRenderer::getInstance()->display('pages/admin/rules/engine_summary.html.twig', [
@@ -830,6 +867,7 @@ TWIG, $twig_params);
      * @param integer $ID        ID of the rule to move
      * @param integer $ref_ID    ID of the rule position  (0 means all, so before all or after all)
      * @param string|integer  $type  Movement type, one of self::MOVE_AFTER or self::MOVE_BEFORE or the new rank
+     * @param bool    $new_rule Whether we work on a new rule or existing one
      *
      * @return boolean
      **/
@@ -1890,11 +1928,17 @@ TWIG, $twig_params);
         return null;
     }
 
+    /**
+     * @return bool
+     */
     public function showInheritedTab()
     {
         return false;
     }
 
+    /**
+     * @return bool
+     */
     public function showChildrensTab()
     {
         return false;
