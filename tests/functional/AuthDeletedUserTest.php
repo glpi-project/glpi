@@ -57,7 +57,7 @@ class AuthDeletedUserTest extends DbTestCase
 
         $this->ssovariable = $this->createItem(SsoVariable::class, [
             'name' => 'REMOTE_USER',
-            'comment' => 'Test SSO variable'
+            'comment' => 'Test SSO variable',
         ]);
 
         $this->original_ssovariables_id = $CFG_GLPI["ssovariables_id"] ?? null;
@@ -103,7 +103,7 @@ class AuthDeletedUserTest extends DbTestCase
         Session::destroy();
 
         $this->updateItem(User::class, $user->getID(), [
-            'is_deleted' => 1
+            'is_deleted' => 1,
         ]);
 
         $_SERVER['REMOTE_USER'] = $username;
@@ -131,7 +131,7 @@ class AuthDeletedUserTest extends DbTestCase
         ]);
 
         $this->updateItem(User::class, $first_user->getID(), [
-            'is_deleted' => 1
+            'is_deleted' => 1,
         ]);
 
         $second_user = $this->createItem(User::class, [
