@@ -819,7 +819,7 @@ class Auth extends CommonGLPI
                 // Used for log when login process failed
                 $login_name                        = $this->user->fields['name'];
                 $this->auth_succeded               = true;
-                $this->user_present                = $this->user->getFromDBbyName($login_name);
+                $this->user_present                = $this->user->getFromDBbyName($login_name, true);
                 $this->extauth                     = 1;
                 $user_dn                           = false;
 
