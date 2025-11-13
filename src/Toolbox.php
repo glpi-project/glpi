@@ -60,6 +60,7 @@ use Safe\Exceptions\CurlException;
 use Safe\Exceptions\ErrorfuncException;
 use Safe\Exceptions\FilesystemException;
 use Safe\Exceptions\ImageException;
+use Safe\Exceptions\InfoException;
 use Safe\Exceptions\JsonException;
 use Safe\Exceptions\PcreException;
 use Safe\Exceptions\UrlException;
@@ -97,6 +98,7 @@ use function Safe\imagepng;
 use function Safe\imagesavealpha;
 use function Safe\imagewebp;
 use function Safe\ini_get;
+use function Safe\ini_set;
 use function Safe\json_decode;
 use function Safe\json_encode;
 use function Safe\mb_convert_encoding;
@@ -3462,5 +3464,25 @@ class Toolbox
     public static function cleanPaths(string $message): string
     {
         return ErrorUtils::cleanPaths($message);
+    }
+
+    public static function safeIniSet(
+        string $name,
+        string|int $value,
+        string $loglvl = LogLevel::WARNING
+    ): void {
+        try {
+            ini_set($name, $value);
+        } catch (InfoException $e) {
+            self::log(
+                $loglvl,
+                [sprintf(
+                    'Unable to set `%s` to `%s`. This may be caused by a `php_admin_flag` or a `php_admin_value` directive in your web server configuration. Try to use `php_flag` or `php_value` instead. Error is: %s',
+                    $name,
+                    $value,
+                    $e->getMessage()
+                )],
+            );
+        }
     }
 }

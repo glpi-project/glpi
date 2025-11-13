@@ -48,7 +48,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Toolbox;
 
 use function Safe\file_put_contents;
-use function Safe\ini_set;
 use function Safe\mkdir;
 use function Safe\preg_match;
 use function Safe\preg_replace;
@@ -108,7 +107,7 @@ class CompileScssCommand extends Command
         // Ensure to have enough memory to not reach memory limit.
         $max_memory = Html::MAIN_SCSS_COMPILATION_REQUIRED_MEMORY;
         if (Toolbox::getMemoryLimit() < ($max_memory * 1024 * 1024)) {
-            ini_set('memory_limit', sprintf('%dM', $max_memory));
+            Toolbox::safeIniSet('memory_limit', sprintf('%dM', $max_memory));
         }
     }
 

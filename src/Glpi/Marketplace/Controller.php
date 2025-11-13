@@ -52,7 +52,6 @@ use wapmorgan\UnifiedArchive\Drivers\Basic\BasicDriver;
 use wapmorgan\UnifiedArchive\Exceptions\ArchiveExtractionException;
 use wapmorgan\UnifiedArchive\Formats;
 
-use function Safe\ini_set;
 use function Safe\ob_end_clean;
 use function Safe\ob_start;
 use function Safe\parse_url;
@@ -226,7 +225,7 @@ class Controller extends CommonGLPI
         // Upgrade memory limit to 512M, which should be enough.
         $memory_limit = (int) Toolbox::getMemoryLimit();
         if ($memory_limit > 0 && $memory_limit < (512 * 1024 * 1024)) {
-            ini_set('memory_limit', '512M');
+            Toolbox::safeIniSet('memory_limit', '512M');
         }
 
         // clean dir in case of update
