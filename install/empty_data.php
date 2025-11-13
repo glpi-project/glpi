@@ -9653,15 +9653,16 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 ],
             ];
 
-            // // Add one worker user and entity per worker
+            // Add one worker user and entity per worker
+            $next_available_entity_id = max(
+                array_column($tables['glpi_entities'], 'id')
+            );
             for ($i = 1; $i <= self::PLAYWRIGHT_MAX_WORKERS; $i++) {
                 $padded_i = str_pad((string) $i, 2, '0', STR_PAD_LEFT);
                 $sub_entities_to_create[] = "E2E worker entity $padded_i";
 
                 // Compute matching entity id
-                $entity_id = max(
-                    array_column($tables['glpi_entities'], 'id')
-                ) + $i;
+                $entity_id = $next_available_entity_id + $i;
 
                 $users_to_create[] = [
                     'login'       => "e2e_worker_account_$padded_i",

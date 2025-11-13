@@ -202,7 +202,7 @@ enum Environment: string
     {
         // Only production/staging environment are considered as environments
         // where resources are not supposed to change.
-        // In others environments, we must match for changes.
+        // In other environments, we must watch for changes.
         if (
             $this === self::TESTING
             || $this === self::DEVELOPMENT
