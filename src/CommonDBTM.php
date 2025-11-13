@@ -5814,8 +5814,6 @@ class CommonDBTM extends CommonGLPI
             $existing_data['_groups_id'] = array_merge($existing_data['_groups_id'], $this->fields['groups_id'] ?? []); // on add fields['groups_id'] is not set
             $existing_data['_groups_id_tech'] = array_merge($existing_data['_groups_id_tech'], $this->fields['groups_id_tech'] ?? []);
 
-            //            throw new \Exception('Ajouter aussi les valeurs issues de la bd');
-
             // Execute all defined rules with the specified condition (add or update)
             $output = $ruleasset->processAllRules($input, [], [], [
                 'condition' => $condition,
