@@ -49,8 +49,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Toolbox;
 
-use function Safe\ini_set;
-
 class CheckSourceCodeIntegrityCommand extends AbstractCommand
 {
     protected $requires_db = false;
@@ -64,7 +62,7 @@ class CheckSourceCodeIntegrityCommand extends AbstractCommand
             // Ensure to have enough memory to not reach memory limit.
             $max_memory = 512;
             if (Toolbox::getMemoryLimit() < ($max_memory * 1024 * 1024)) {
-                ini_set('memory_limit', sprintf('%dM', $max_memory));
+                Toolbox::safeIniSet('memory_limit', sprintf('%dM', $max_memory));
             }
         }
     }

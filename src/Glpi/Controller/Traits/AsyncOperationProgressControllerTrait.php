@@ -36,9 +36,9 @@ namespace Glpi\Controller\Traits;
 
 use Glpi\Progress\StoredProgressIndicator;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Toolbox;
 
 use function Safe\fastcgi_finish_request;
-use function Safe\ini_set;
 use function Safe\ob_end_clean;
 use function Safe\session_write_close;
 
@@ -53,7 +53,7 @@ trait AsyncOperationProgressControllerTrait
         StoredProgressIndicator $progress_indicator,
         callable $operation_callable
     ): StreamedResponse {
-        ini_set('max_execution_time', '300'); // Allow up to 5 minutes to prevent unexpected timeout
+        Toolbox::safeIniSet('max_execution_time', '300'); // Allow up to 5 minutes to prevent unexpected timeout
         session_write_close(); // Prevent the session file lock to block the progress check requests
 
         // Be sure to disable the output buffering.
