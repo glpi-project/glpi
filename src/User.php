@@ -573,13 +573,21 @@ class User extends CommonDBTM implements TreeBrowseInterface
     /**
      * Retrieve a user from the database using its login.
      *
-     * @param string $name Login of the user
+     * @param string  $name        Login of the user
+     * @param boolean $only_active If true, only return active users (is_deleted=0, is_active=1)
      *
      * @return boolean
      */
-    public function getFromDBbyName($name)
+    public function getFromDBbyName($name, $only_active = false)
     {
-        return $this->getFromDBByCrit(['name' => (string) $name]);
+        $criteria = ['name' => (string) $name];
+
+        if ($only_active) {
+            $criteria['is_deleted'] = 0;
+            $criteria['is_active'] = 1;
+        }
+
+        return $this->getFromDBByCrit($criteria);
     }
 
     /**
@@ -799,7 +807,11 @@ class User extends CommonDBTM implements TreeBrowseInterface
             return false;
         }
 
-        return $this->getFromDBByCrit([$this->getTable() . ".$field" => $token]);
+        return $this->getFromDBByCrit([
+            $this->getTable() . ".$field" => $token,
+            'is_deleted' => 0,
+            'is_active' => 1,
+        ]);
     }
 
     public static function unsetUndisclosedFields(&$fields)
@@ -2547,7 +2559,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
 
         // Load data from any potential existing user
-        $this->getFromDBbyName($this->fields['name']);
+        $this->getFromDBbyName($this->fields['name'], true);
 
         if (count($a_field) == 0) {
             return true;
