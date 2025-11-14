@@ -37,6 +37,7 @@ namespace tests\units;
 use CommonITILObject;
 use CommonItilObject_Item;
 use Computer;
+use Glpi\Form\Form;
 use User;
 
 abstract class AbstractCommonItilObject_ItemTest extends \DbTestCase
@@ -81,6 +82,18 @@ abstract class AbstractCommonItilObject_ItemTest extends \DbTestCase
         $this->assertEquals(
             '<span class="d-flex align-items-center"><i class="ti ti-package me-2"></i>Items <span class="badge glpi-badge">2</span></span>',
             $link->getTabNameForItem($itil_item),
+        );
+
+        // Adding a form should not increase the counter as it should only keep
+        // track assets
+        $this->createItem($this->getTestedClass(), [
+            $itil_itemtype::getForeignKeyField() => $itil_item->getID(),
+            'itemtype' => Form::class,
+            'items_id' => getItemByTypeName(Form::class, 'Request a service', true),
+        ]);
+        $this->assertEquals(
+            'Items 2', // 2 is the value from the last test, no change
+            strip_tags($link->getTabNameForItem($itil_item)),
         );
     }
 
