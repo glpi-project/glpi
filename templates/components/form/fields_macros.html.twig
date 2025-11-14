@@ -157,6 +157,10 @@
 
 
 {% macro numberField(name, value, label = '', options = {}) %}
+   {% set options = {
+        'step': 1,
+   }|merge(options) %}
+
    {% if options.step != 'any' and options.step|round(0, 'floor') != options.step %}
       {# Only format number if not a whole number #}
       {% set value = call('Html::formatNumber', [value, true]) %}
