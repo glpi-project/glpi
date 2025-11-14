@@ -694,6 +694,41 @@ class APIRestTest extends TestCase
         $this->createNote($computers_id);
     }
 
+    /**
+     * Api accept an array for groups_id & groups_id_tech but also a single id
+     */
+    public function testCreateComputerWithGroupWithSingleId(): void
+    {
+        // act : query to create a Computer associated with a group and a tech group
+        $group_own = getItemByTypeName(\Group::class, '_test_group_1', true);
+        $group_tech = getItemByTypeName(\Group::class, '_test_group_2', true);
+        $response = $this->query(
+            'createItems',
+            [
+                'verb'     => 'POST',
+                'itemtype' => 'Computer',
+                'headers'  => ['Session-Token' => $this->session_token, 'accept' => 'application/json'],
+                'json'     => ['input' => [
+                    'name' => "My single computer 2 " . rand(0, 999999),
+                    "groups_id" => $group_own,
+                    "groups_id_tech" => $group_tech,
+                ]],
+            ],
+            201
+        );
+
+        // assert
+        $id_created_item = $response['id'];
+        $asset = new Computer();
+        $this->assertTrue($asset->getFromDB($id_created_item), 'Fail to retrieve created asset #' . $id_created_item);
+
+        $this->assertCount(1, $asset->fields['groups_id']);
+        $this->assertContains($group_own, $asset->fields['groups_id']);
+
+        $this->assertCount(1, $asset->fields['groups_id_tech']);
+        $this->assertContains($group_tech, $asset->fields['groups_id_tech']);
+    }
+
     public function testCreateItems()
     {
         $data = $this->query(
