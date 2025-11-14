@@ -173,6 +173,7 @@
                         _x('price', 'Value'),
                         {
                             'disabled': disabled,
+                            'step': '0.0001',
                         }
                      ) }}
 
@@ -182,6 +183,7 @@
                         __('Warranty extension value'),
                         {
                             'disabled': disabled,
+                            'step': '0.0001',
                         }
                      ) }}
 
@@ -229,7 +231,7 @@
                         'sink_coeff',
                         infocom.fields['sink_coeff'],
                         __('Amortization coefficient'),
-                        {'disabled': disabled}
+                        {'disabled': disabled, 'step': '0.0001'}
                      ) }}
 
                      {% if item.getType() not in infocom.getExcludedTypes()|merge(['Cartridge', 'Consumable', 'SoftwareLicense'])  %}
