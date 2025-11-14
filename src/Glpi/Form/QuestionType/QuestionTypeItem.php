@@ -380,7 +380,7 @@ class QuestionTypeItem extends AbstractQuestionType implements
             return '';
         }
 
-        return $item->fields['name'];
+        return $item->fields['name'] . ' - ' . $item->getID();
     }
 
     #[Override]
