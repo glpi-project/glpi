@@ -429,4 +429,18 @@ class ProfileTest extends DbTestCase
             }
         }
     }
+
+    public function testRightsForForm()
+    {
+        $all_rights = \Profile::getRightsForForm();
+        foreach ($all_rights as $interface => $forms) {
+            foreach ($forms as $form => $groups) {
+                foreach ($groups as $group => $rights) {
+                    foreach ($rights as $right) {
+                        $this->assertGreaterThan(0, count($right['rights']), 'Right "' . $right['label'] . '" in ' . $interface . '/' . $form . '/' . $group . ' has no defined rights.');
+                    }
+                }
+            }
+        }
+    }
 }
