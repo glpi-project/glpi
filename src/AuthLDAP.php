@@ -3060,7 +3060,9 @@ class AuthLDAP extends CommonDBTM
      */
     public function connect()
     {
-
+        if ($this->fields['is_active'] != 1) {
+            return false;
+        }
         return $this->connectToServer(
             $this->fields['host'],
             $this->fields['port'],
