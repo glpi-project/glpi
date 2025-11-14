@@ -2111,14 +2111,12 @@ HTML;
         $itil_object = $this->getItem();
         $this->checkIsAnItilObject($itil_object);
 
-        $update = $itil_object->update([
+        // update result not checked, there can be legit reasons to fails (e.g. ticket is closed)
+        $itil_object->update([
             'id' => $itil_object->getID(),
             'global_validation' => self::computeValidationStatus($itil_object),
             '_from_itilvalidation' => true,
         ]);
-        if (!$update) {
-            throw new RuntimeException('Failed to update Itil global approval status.');
-        }
     }
 
     /**
