@@ -34,23 +34,23 @@
 
 <form method="POST" action="{{ item.getFormURL() }}" data-submit-once>
     <div class="py-2 px-3 container-narrow ms-0">
+        <h2 class="d-flex align-items-center">
+            <i class="{{ icon }} me-2"></i>
+            {{ __("Service catalog configuration") }}
+            {% if item.isField('show_in_service_catalog') %}
+                <label class="form-check mb-0 ms-auto form-switch">
+                    <input type="hidden" value="0" name="show_in_service_catalog">
+                    <input aria-label="{{ __(" Active") }}" class="form-check-input" type="checkbox"
+                        name="show_in_service_catalog" value="1"
+                        onchange="$('[data-service-catalog-config]').css({'opacity': this.checked ? 1 : 0.5, 'pointer-events': this.checked ? 'auto' : 'none'})"
+                        {{ item.fields.show_in_service_catalog == true ? "checked" : "" }}
+                    >
+                </label>
+            {% endif %}
+        </h2>
         <section data-service-catalog-config
-            style="{{ item.fields.show_in_service_catalog|default(true) ? "" : "opacity: 0.5" }}"
+            style="{{ item.fields.show_in_service_catalog|default(true) ? '' : 'opacity: 0.5; pointer-events: none;' }}"
         >
-            <h2 class="d-flex align-items-center">
-                <i class="{{ icon }} me-2"></i>
-                {{ __("Service catalog configuration") }}
-                {% if item.isField('show_in_service_catalog') %}
-                    <label class="form-check mb-0 ms-auto form-switch">
-                        <input type="hidden" value="0" name="show_in_service_catalog">
-                        <input aria-label="{{ __(" Active") }}" class="form-check-input" type="checkbox"
-                            name="show_in_service_catalog" value="1"
-                            onchange="$('[data-service-catalog-config]').css('opacity', this.checked ? 1 : 0.5)"
-                            {{ item.fields.show_in_service_catalog == true ? "checked" : "" }}
-                        >
-                    </label>
-                {% endif %}
-            </h2>
             <div class="row">
                 <div class="col-lg-10 col-12">
                     {{ fields.textareaField(
