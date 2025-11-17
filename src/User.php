@@ -102,8 +102,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
     private $entities = null;
 
-    private bool $pass_rehash = false;
-
     public function getCloneRelations(): array
     {
         return [
@@ -1120,7 +1118,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                     $password_errors = [];
                     if (
                         isset($input['id'])
-                        && ($this->pass_rehash === true || $this->validatePassword($input["password"] ?? '', $password_errors))
+                        && $this->validatePassword($input["password"] ?? '', $password_errors)
                         && (($input['id'] == Session::getLoginUserID())
                         || $this->currentUserHaveMoreRightThan($input['id'])
                         // Permit to change password with token and email
@@ -1130,9 +1128,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                         $input["password"]
                         = Auth::getPasswordHash($input["password"]);
 
-                        if (!$this->pass_rehash) {
-                            $input['password_last_update'] = $_SESSION["glpi_currenttime"];
-                        }
+                        $input['password_last_update'] = $_SESSION["glpi_currenttime"];
                     } else {
                         if ($password_errors === []) {
                             $password_errors = [__('An error occurred during password update')];
@@ -1388,7 +1384,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
         if (
             in_array('password', $this->updates)
-            && !$this->pass_rehash
             && !PasswordHistory::getInstance()->updatePasswordHistory($this, $this->oldvalues['password'])
         ) {
             trigger_error(
@@ -6780,11 +6775,5 @@ HTML;
             }
         }
         return false;
-    }
-
-    public function rehashPassword(array $input): bool
-    {
-        $this->pass_rehash = true;
-        return $this->update($input);
     }
 }
