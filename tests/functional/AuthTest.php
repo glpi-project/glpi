@@ -155,7 +155,7 @@ class AuthTest extends DbTestCase
         // reset session to prevent session having less rights to create a user
         $this->login();
 
-        $user = new \User();
+        $user = new User();
         $username = 'test_lock_' . mt_rand();
         $user_id = (int) $user->add([
             'name'         => $username,
@@ -307,6 +307,6 @@ class AuthTest extends DbTestCase
         $user->getFromDB($user->getID());
         $new_cost = null;
         preg_match('/\$2y\$(\d+)\$.+/', $user->fields['password'], $new_cost);
-        $this->assertGreaterThan(5, (int)$new_cost[1]);
+        $this->assertGreaterThan(5, (int) $new_cost[1]);
     }
 }
