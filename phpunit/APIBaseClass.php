@@ -89,10 +89,7 @@ abstract class APIBaseClass extends TestCase
         $user = new User();
         $uid = getItemByTypeName('User', TU_USER, true);
         $user->getFromDB($uid);
-        $token = $user->fields['api_token'] ?? "";
-        if (empty($token)) {
-            $token = $user->getAuthToken('api_token');
-        }
+        $token = $user->getAuthToken('api_token');
 
         $data = $this->query(
             'initSession',
@@ -120,8 +117,10 @@ abstract class APIBaseClass extends TestCase
             ])
         );
 
-        $app_token = $apiclient->fields['app_token'];
-        $this->assertNotEmpty($app_token);
+        $encrypted_app_token = $apiclient->fields['app_token'];
+        $this->assertNotEmpty($encrypted_app_token);
+
+        $app_token = (new GLPIKey())->decrypt($encrypted_app_token);
         $this->assertSame(40, strlen($app_token));
 
         // test valid app token -> expect ok session
@@ -1667,7 +1666,11 @@ abstract class APIBaseClass extends TestCase
 
         // get the password recovery token
         $user = getItemByTypeName('User', TU_USER);
-        $token = $user->fields['password_forget_token'];
+
+        $encrypted_token = $user->fields['password_forget_token'];
+        $this->assertNotEmpty($encrypted_token);
+
+        $token = (new \GLPIKey())->decrypt($encrypted_token);
         $this->assertNotEmpty($token);
 
         // Test reset password with a bad token

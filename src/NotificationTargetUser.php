@@ -135,10 +135,13 @@ class NotificationTargetUser extends NotificationTarget
                 );
                 break;
             case 'passwordforget':
-                $this->data['##user.token##']             = $this->obj->getField("password_forget_token");
+                $encrypted_token = $this->obj->fields['password_forget_token'];
+                $token = (new GLPIKey())->decrypt($encrypted_token);
+
+                $this->data['##user.token##']             = $token;
                 $this->data['##user.passwordforgeturl##'] = urldecode($CFG_GLPI["url_base"]
                 . "/front/lostpassword.php?password_forget_token="
-                . $this->obj->getField("password_forget_token"));
+                . $token);
                 break;
         }
 

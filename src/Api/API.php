@@ -50,6 +50,7 @@ use Config;
 use Contract;
 use Document;
 use Dropdown;
+use GLPIKey;
 use Glpi\Toolbox\Sanitizer;
 use Html;
 use Infocom;
@@ -202,7 +203,15 @@ abstract class API
                 false
             );
         }
-        $app_tokens = array_column($found_clients, 'app_token');
+        $app_tokens = array_map(
+            static function (array $client): string {
+                if ($client['app_token'] === null || $client['app_token'] === '') {
+                    return '';
+                }
+                return (new GLPIKey())->decrypt($client['app_token']);
+            },
+            $found_clients
+        );
         $apiclients_id = array_column($found_clients, 'id');
         $this->app_tokens = array_combine($apiclients_id, $app_tokens);
     }
@@ -2196,7 +2205,7 @@ abstract class API
             $this->returnError(__("Email notifications are disabled"));
         }
 
-        if (!isset($params['email']) && !$params['password_forget_token']) {
+        if (!isset($params['email']) && !isset($params['password_forget_token'])) {
             $this->returnError(__("email parameter missing"));
         }
 
@@ -2272,25 +2281,27 @@ abstract class API
      */
     private function checkAppToken()
     {
-
         // check app token (if needed)
         if (!isset($this->parameters['app_token'])) {
             $this->parameters['app_token'] = "";
         }
-        if (!$this->apiclients_id = array_search($this->parameters['app_token'], $this->app_tokens)) {
-            if ($this->parameters['app_token'] != "") {
-                $this->returnError(
-                    __("parameter app_token seems wrong"),
-                    400,
-                    "ERROR_WRONG_APP_TOKEN_PARAMETER"
-                );
-            } else {
-                $this->returnError(
-                    __("missing parameter app_token"),
-                    400,
-                    "ERROR_APP_TOKEN_PARAMETERS_MISSING"
-                );
-            }
+
+        $token_id = array_search($this->parameters['app_token'], $this->app_tokens, true);
+
+        if ($token_id !== false) {
+            $this->apiclients_id = $token_id;
+        } elseif ($this->parameters['app_token'] != "") {
+            $this->returnError(
+                __("parameter app_token seems wrong"),
+                400,
+                "ERROR_WRONG_APP_TOKEN_PARAMETER"
+            );
+        } else {
+            $this->returnError(
+                __("missing parameter app_token"),
+                400,
+                "ERROR_APP_TOKEN_PARAMETERS_MISSING"
+            );
         }
     }
 

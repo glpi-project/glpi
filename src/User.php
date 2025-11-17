@@ -706,6 +706,9 @@ class User extends CommonDBTM
      */
     public function getFromDBbyToken($token, $field = 'personal_token')
     {
+        /** @var \DBmysql $DB */
+        global $DB;
+
         if (!is_string($token)) {
             trigger_error(
                 sprintf('Unexpected token value received: "string" expected, received "%s".', gettype($token)),
@@ -723,7 +726,23 @@ class User extends CommonDBTM
             return false;
         }
 
-        return $this->getFromDBByCrit([$this->getTable() . ".$field" => $token]);
+        $glpi_key = new GLPIKey();
+
+        $iterator = $DB->request([
+            'SELECT' => ['id', $field],
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                ['NOT' => [$field => null]],
+                ['NOT' => [$field => '']],
+            ],
+        ]);
+        foreach ($iterator as $user_data) {
+            if ($token === $glpi_key->decrypt($user_data[$field])) {
+                return $this->getFromDB($user_data['id']);
+            }
+        }
+
+        return false;
     }
 
     public static function unsetUndisclosedFields(&$fields)
@@ -856,6 +875,17 @@ class User extends CommonDBTM
             $input["profiles_id"] = 0;
         }
 
+        $glpi_key = new GLPIKey();
+        foreach (['api_token', 'cookie_token', 'password_forget_token', 'personal_token'] as $token_field) {
+            if (
+                array_key_exists($token_field, $input)
+                && $input[$token_field] !== null
+                && $input[$token_field] !== ''
+            ) {
+                $input[$token_field] = $glpi_key->encrypt($input[$token_field]);
+            }
+        }
+
         return $input;
     }
 
@@ -940,6 +970,8 @@ class User extends CommonDBTM
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
+
+        $glpi_key = new GLPIKey();
 
         $input = $this->cleanInput($input);
 
@@ -1031,7 +1063,7 @@ class User extends CommonDBTM
                         && (($input['id'] == Session::getLoginUserID())
                         || $this->currentUserHaveMoreRightThan($input['id'])
                         // Permit to change password with token and email
-                        || (($input['password_forget_token'] == $this->fields['password_forget_token'])
+                        || (($input['password_forget_token'] == $glpi_key->decrypt($this->fields['password_forget_token']))
                            && (abs(strtotime($_SESSION["glpi_currenttime"])
                                - strtotime($this->fields['password_forget_token_date'])) < DAY_TIMESTAMP)))
                     ) {
@@ -1228,6 +1260,16 @@ class User extends CommonDBTM
                 false,
                 ERROR
             );
+        }
+
+        foreach (['api_token', 'cookie_token', 'password_forget_token', 'personal_token'] as $token_field) {
+            if (
+                array_key_exists($token_field, $input)
+                && $input[$token_field] !== null
+                && $input[$token_field] !== ''
+            ) {
+                $input[$token_field] = $glpi_key->encrypt($input[$token_field]);
+            }
         }
 
         return $input;
@@ -3056,7 +3098,7 @@ HTML;
                 if (!empty($this->fields["api_token"])) {
                     echo "<div class='copy_to_clipboard_wrapper'>";
                     echo Html::input('_api_token', [
-                        'value'    => $this->fields["api_token"],
+                        'value'    => (new GLPIKey())->decrypt($this->fields["api_token"]),
                         'style'    => 'width:90%',
                     ]);
                     echo "</div>";
@@ -3449,7 +3491,7 @@ HTML;
             if (!empty($this->fields["api_token"])) {
                 echo "<div class='copy_to_clipboard_wrapper'>";
                 echo Html::input('_api_token', [
-                    'value'    => $this->fields["api_token"],
+                    'value'    => (new GLPIKey())->decrypt($this->fields["api_token"]),
                     'style'    => 'width:90%',
                 ]);
                 echo "</div>";
@@ -5822,7 +5864,7 @@ HTML;
         $DB->update(
             'glpi_users',
             [
-                'password_forget_token'      => sha1(Toolbox::getRandomString(30)),
+                'password_forget_token'      => (new GLPIKey())->encrypt(sha1(Toolbox::getRandomString(30))),
                 'password_forget_token_date' => $_SESSION["glpi_currenttime"],
             ],
             [
@@ -5932,19 +5974,28 @@ HTML;
         /** @var \DBmysql $DB */
         global $DB;
 
-        $ok = false;
-        do {
-            $key    = Toolbox::getRandomString(40);
-            $row = $DB->request([
-                'COUNT'  => 'cpt',
-                'FROM'   => self::getTable(),
-                'WHERE'  => [$field => $key],
-            ])->current();
+        $iterator = $DB->request([
+            'SELECT' => [$field],
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                ['NOT' => [$field => null]],
+                ['NOT' => [$field => '']],
+            ],
+        ]);
 
-            if ($row['cpt'] == 0) {
-                return $key;
-            }
-        } while (!$ok);
+        $glpi_key = new GLPIKey();
+
+        // As encryption will not produce the same value each time, we have to compare decrypted values.
+        $existing_tokens = [];
+        foreach ($iterator as $user_data) {
+            $existing_tokens[] = $glpi_key->decrypt($user_data[$field]);
+        }
+
+        do {
+            $token = Toolbox::getRandomString(40);
+        } while (in_array($token, $existing_tokens, true));
+
+        return $token;
     }
 
 
@@ -6003,7 +6054,7 @@ HTML;
 
         // token exists, is not oudated, and we may use it
         if (!empty($this->fields[$field]) && !$force_new && !$outdated) {
-            return $this->fields[$field];
+            return (new GLPIKey())->decrypt($this->fields[$field]);
         }
 
         // else get a new token
@@ -6872,33 +6923,26 @@ HTML;
             return null;
         }
 
-        // Find users which match the given token and asked for a password reset
-        // less than one day ago
+        // Find users which match the given token and asked for a password reset less than one day ago.
+        // As encryption will not produce the same value each time, we have to compare decrypted values.
         $iterator = $DB->request([
-            'SELECT' => 'id',
+            'SELECT' => ['id', 'password_forget_token'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'password_forget_token'       => $token,
                 new \QueryExpression('NOW() < ADDDATE(' . $DB->quoteName('password_forget_token_date') . ', INTERVAL 1 DAY)'),
             ],
         ]);
 
-        // Check that we found exactly one user
-        if (count($iterator) !== 1) {
-            return null;
+        $glpi_key = new GLPIKey();
+
+        foreach ($iterator as $user_data) {
+            if ($token === $glpi_key->decrypt($user_data['password_forget_token'])) {
+                $user = new self();
+                return $user->getFromDB($user_data['id']) ? $user : null;
+            }
         }
 
-        // Get first row, should use current() when updated to GLPI 10
-        $data = iterator_to_array($iterator);
-        $data = array_pop($data);
-
-        // Try to load the user
-        $user = new self();
-        if (!$user->getFromDB($data['id'])) {
-            return null;
-        }
-
-        return $user;
+        return null;
     }
 
     /**

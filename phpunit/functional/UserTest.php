@@ -56,7 +56,7 @@ class UserTest extends \DbTestCase
         $this->assertNotEmpty($token);
 
         $user->getFromDB($user->getID());
-        $this->assertSame($token, $user->fields['personal_token']);
+        $this->assertSame($token, (new \GLPIKey())->decrypt($user->fields['personal_token']));
         $this->assertSame($_SESSION['glpi_currenttime'], $user->fields['personal_token_date']);
     }
 
@@ -75,10 +75,17 @@ class UserTest extends \DbTestCase
     public function testLostPasswordInvalidToken()
     {
         $user = getItemByTypeName('User', TU_USER);
+
         // Test reset password with a bad token
         $result = $user->forgetPassword($user->getDefaultEmail());
         $this->assertTrue($result);
-        $token = $user->fields['password_forget_token'];
+
+        $this->assertTrue($user->getFromDB($user->getID()));
+
+        $encrypted_token = $user->fields['password_forget_token'];
+        $this->assertNotEmpty($encrypted_token);
+
+        $token = (new \GLPIKey())->decrypt($encrypted_token);
         $this->assertNotEmpty($token);
 
         $input = [
@@ -100,8 +107,13 @@ class UserTest extends \DbTestCase
 
         // Test reset password with good token
         // 1 - Refresh the in-memory instance of user and get the current password
-        $user->getFromDB($user->getID());
-        $token = $user->fields['password_forget_token'];
+        $this->assertTrue($user->getFromDB($user->getID()));
+
+        $encrypted_token = $user->fields['password_forget_token'];
+        $this->assertNotEmpty($encrypted_token);
+
+        $token = (new \GLPIKey())->decrypt($encrypted_token);
+        $this->assertNotEmpty($token);
 
         // 2 - Set a new password
         $input = [

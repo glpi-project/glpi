@@ -353,6 +353,8 @@ $empty_data_builder = new class {
             'initialized_rules_collections' => '[]',
             'timeline_action_btn_layout' => 0,
             'timeline_date_format' => 0,
+            'are_apiclients_tokens_encrypted' => 1,
+            'are_users_tokens_encrypted' => 1,
         ];
 
         $tables['glpi_configs'] = [];
