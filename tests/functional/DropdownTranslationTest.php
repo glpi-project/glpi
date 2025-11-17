@@ -207,7 +207,7 @@ class DropdownTranslationTest extends DbTestCase
      * Regression test to make sure getTranslatedValue return a string even if
      * the translation value is null.
      */
-    public function testNullValue(): void
+    public function testGetTanslatedValueFallbackToDropdownValue(): void
     {
         // Arrange: create a null translation
         $category = $this->createItem(Category::class, [
@@ -231,7 +231,39 @@ class DropdownTranslationTest extends DbTestCase
             'my fallback value'
         );
 
-        // Assert: translation should not be null
+        // Assert: translation should correspond to the untranslated value
         $this->assertEquals('My description', $translation);
+    }
+
+    /**
+     * Regression test to make sure getTranslatedValue return a string even if
+     * the translation value is null.
+     */
+    public function testGetTanslatedValueFallbackToDefaultValue(): void
+    {
+        // Arrange: create a null translation
+        $category = $this->createItem(Category::class, [
+            'name'        => 'My category',
+            'description' => '',
+        ]);
+        $this->createItem(DropdownTranslation::class, [
+            'items_id' => $category->getID(),
+            'itemtype' => Category::class,
+            'language' => 'fr_FR',
+            'field'    => 'description',
+            'value'    => null,
+        ]);
+
+        // Act: get translation
+        $translation = DropdownTranslation::getTranslatedValue(
+            $category->getID(),
+            Category::class,
+            'description',
+            'fr_FR',
+            'my fallback value'
+        );
+
+        // Assert: translation should correspond to the given fallback value parameter
+        $this->assertEquals('my fallback value', $translation);
     }
 }
