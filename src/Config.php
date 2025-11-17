@@ -1965,7 +1965,15 @@ class Config extends CommonDBTM
             }
         }
 
-        echo "<tr class='tab_bg_1'><td><pre class='section-content'>";
+        echo "<tr class='tab_bg_1'><td>";
+        if (!Glpi\Toolbox\VersionParser::isStableRelease($ver)) {
+            echo sprintf(
+                "<div class='alert alert-important alert-warning d-flex'><strong>⚠️ %1\$s ⚠️</strong></div>",
+                __("This version is UNSTABLE and some SECURITY FIXES may not be included.")
+            );
+        }
+        echo "<pre class='section-content'>";
+
         echo "GLPI $ver (" . $CFG_GLPI['root_doc'] . " => " . GLPI_ROOT . ")\n";
         echo "Installation mode: " . GLPI_INSTALL_MODE . "\n";
         echo "Current language:" . $oldlang . "\n";
