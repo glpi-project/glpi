@@ -131,6 +131,28 @@ final class RequestSourceFieldTest extends AbstractDestinationFieldTest
         $this->assertEquals($specified_source, $created_ticket->fields['requesttypes_id']);
     }
 
+    /**
+     * This test make sure the "helpdesk" value works even if it was removed
+     * as the default value.
+     */
+    public function testHelpdeskSourceWithoutDefaultFallback(): void
+    {
+        $helpdesk_source = RequestType::getDefault('helpdesk');
+        $this->updateItem(RequestType::class, $helpdesk_source, [
+            'is_helpdesk_default' => 0,
+        ]);
+
+        $created_ticket = $this->checkRequestSourceFieldConfiguration(
+            form: $this->createAndGetFormWithTicketDestination(),
+            config: new RequestSourceFieldConfig(
+                strategy: RequestSourceFieldStrategy::SPECIFIC_VALUE,
+                specific_request_source: $helpdesk_source,
+            ),
+        );
+
+        $this->assertEquals($helpdesk_source, $created_ticket->fields['requesttypes_id']);
+    }
+
     private function checkRequestSourceFieldConfiguration(
         Form $form,
         RequestSourceFieldConfig $config,

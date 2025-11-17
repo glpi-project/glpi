@@ -113,7 +113,7 @@ final class RequestSourceField extends AbstractConfigField
             $valid_values[] = $data['id'];
         }
 
-        if (!array_search($request_source, $valid_values)) {
+        if (!in_array($request_source, $valid_values)) {
             return $input;
         }
 
