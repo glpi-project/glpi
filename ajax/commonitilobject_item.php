@@ -35,8 +35,6 @@
 
 use Glpi\Exception\Http\BadRequestHttpException;
 
-global $DB;
-
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
@@ -62,23 +60,21 @@ switch ($_POST['action']) {
 
     case 'delete':
         if (isset($_POST['itemtype']) && !empty($_POST['items_id'])) {
+            $deleted = true;
             if ($_POST['params']['id'] > 0) {
-                if ($item_obj->canPurge()) {
-                    $iterator = $DB->request([
-                        'FROM' => $item_obj::getTable(),
-                        'WHERE' => [
-                            'tickets_id' => $_POST['params']['id'],
-                            'items_id' => $_POST['items_id'],
-                            'itemtype' => $_POST['itemtype'],
-                        ],
-                    ]);
-                    foreach ($iterator as $data) {
-                        $item_obj->getFromDB($data['id']);
-                        if ($item_obj->can($data['id'], DELETE)) {
-                            $item_obj->delete(['id' => $data['id']]);
-                        }
-                    }
+                $criteria = [
+                    'tickets_id' => $_POST['params']['id'],
+                    'items_id' => $_POST['items_id'],
+                    'itemtype' => $_POST['itemtype'],
+                ];
+                if (
+                    $item_obj->getFromDBByCrit($criteria)
+                    && $item_obj->can($item_obj->getID(), DELETE)
+                ) {
+                    $deleted = $item_obj->delete(['id' => $item_obj->getID()]);
                 }
+            }
+            if ($deleted) {
                 unset($_POST['params']['items_id'][$_POST['itemtype']][array_search($_POST['items_id'], $_POST['params']['items_id'][$_POST['itemtype']])]);
             }
             $item_obj::itemAddForm($obj, $_POST['params'] ?? []);
