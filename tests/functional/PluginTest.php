@@ -551,6 +551,21 @@ namespace tests\units {
             );
         }
 
+        public function testLoadPluginLocales(): void
+        {
+            global $TRANSLATE;
+
+            $plugin = 'tester';
+            $string = 'my plugin translation';
+
+            $translation = $TRANSLATE->translate($string, $plugin, 'fr_FR');
+            $this->assertEquals($string, $translation); // Translation not here
+
+            Plugin::loadAllLangs($plugin);
+            $translation = $TRANSLATE->translate($string, $plugin, 'fr_FR');
+            $this->assertEquals('ma traduction de plugin', $translation); // Translation not here
+        }
+
         /**
          * Test state checking on a valid directory corresponding to a known inactive plugin with no modifications
          * but not validating config.
