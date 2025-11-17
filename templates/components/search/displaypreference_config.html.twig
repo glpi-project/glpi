@@ -77,15 +77,20 @@
                     {% endset %}
 
                     <div class="d-flex justify-content-between mb-2">
-                        {{ fields.dropdownArrayField('num', null, available_to_add, '', {
-                            field_class: 'col-12 d-flex flex-column flex-sm-row',
-                            no_label: true,
-                            add_field_html: add_opt_btn,
-                            templateResult: result_template_js,
-                            mb: '',
-                            aria_label: __('Select an option to add'),
-                        }) }}
-
+                        <div class="row g-0 flex-fill">
+                            <div class="col-12 col-sm">
+                                {{ fields.dropdownArrayField('num', null, available_to_add, '', {
+                                    field_class: 'd-flex',
+                                    no_label: true,
+                                    templateResult: result_template_js,
+                                    mb: '',
+                                    aria_label: __('Select an option to add'),
+                                }) }}
+                            </div>
+                            <div class="col-12 col-sm-auto d-flex align-items-start px-0">
+                                {{ add_opt_btn }}
+                            </div>
+                        </div>
                         {% if not is_global %}
                             <button type="button" class="btn btn-ghost-danger me-1" name="disable" value="1">{{ __('Delete personal view') }}</button>
                         {% endif %}
