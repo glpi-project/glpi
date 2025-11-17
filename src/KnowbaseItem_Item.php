@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
 
 /**
  *  Class KnowbaseItem_Item
@@ -124,7 +125,7 @@ class KnowbaseItem_Item extends CommonDBRelation
 
                 if (isset($visibility['WHERE']) && is_array($visibility['WHERE'])) {
                     foreach ($visibility['WHERE'] as $where_condition) {
-                        if ($where_condition instanceof \Glpi\DBAL\QueryExpression) {
+                        if ($where_condition instanceof QueryExpression) {
                             $condition[] = (string) $where_condition;
                         } else {
                             $condition[] = $where_condition;
