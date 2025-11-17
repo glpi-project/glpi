@@ -103,7 +103,7 @@ describe('Entities selector', () => {
 
         // Enable sub entities
         cy.get('header').findByTitle('Root entity > E2ETestEntity (tree structure)').should('not.exist');
-        cy.findAllByRole('gridcell').findByTitle('+ sub-entities').click();
+        cy.findAllByRole('gridcell').findByTitle('Select Root entity > E2ETestEntity entity with all its sub entities').click();
         cy.get('header').findByTitle('Root entity > E2ETestEntity (tree structure)').should('exist');
     });
 });
