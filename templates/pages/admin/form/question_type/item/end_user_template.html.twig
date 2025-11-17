@@ -52,8 +52,8 @@
     },
 } %}
 
-{# Ajouter displaywith seulement pour les objets ITIL #}
-{% if is_itil_type %}
+{# Ajouter displaywith seulement pour les objets ITIL et si les ID ne sont pas déjà visibles globalement #}
+{% if is_itil_type and not id_already_visible %}
     {% set dropdown_options = dropdown_options|merge({'displaywith': ['id']}) %}
 {% endif %}
 

@@ -362,6 +362,7 @@ class QuestionTypeItem extends AbstractQuestionType implements
 
         $itemtype = $this->getDefaultValueItemtype($question) ?? '0';
         $is_itil_type = in_array($itemtype, $CFG_GLPI['itil_types']);
+        $id_already_visible = isset($_SESSION['glpiis_ids_visible']) && $_SESSION['glpiis_ids_visible'];
 
         $twig = TemplateRenderer::getInstance();
         return $twig->render(
@@ -374,6 +375,7 @@ class QuestionTypeItem extends AbstractQuestionType implements
                 'sub_types'                   => $this->getSubTypes(),
                 'dropdown_restriction_params' => $this->getDropdownRestrictionParams($question),
                 'is_itil_type'                => $is_itil_type,
+                'id_already_visible'          => $id_already_visible,
             ]
         );
     }
