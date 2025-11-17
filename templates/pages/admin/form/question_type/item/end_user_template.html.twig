@@ -37,24 +37,30 @@
     itemtype
 ) }}
 {# Define empty choice manually to handle root entity #}
+{% set dropdown_options = {
+    'no_label'           : true,
+    'right'              : 'all',
+    'aria_label'         : aria_label,
+    'mb'                 : '',
+    'addicon'            : false,
+    'comments'           : false,
+    'condition'          : dropdown_restriction_params,
+    'nochecklimit'       : true,
+    'display_emptychoice': false,
+    'toadd'              : {
+        '-1': constant('Dropdown::EMPTY_VALUE'),
+    },
+} %}
+
+{# Ajouter displaywith seulement pour les objets ITIL #}
+{% if is_itil_type %}
+    {% set dropdown_options = dropdown_options|merge({'displaywith': ['id']}) %}
+{% endif %}
+
 {{ fields.dropdownField(
     itemtype,
     question.getEndUserInputName() ~ '[items_id]',
     default_items_id,
     '',
-    {
-        'no_label'           : true,
-        'right'              : 'all',
-        'aria_label'         : aria_label,
-        'mb'                 : '',
-        'addicon'            : false,
-        'comments'           : false,
-        'condition'          : dropdown_restriction_params,
-        'nochecklimit'       : true,
-        'display_emptychoice': false,
-        'displaywith'        : ['id'],
-        'toadd'              : {
-            '-1': constant('Dropdown::EMPTY_VALUE'),
-        },
-    }
+    dropdown_options
 ) }}
