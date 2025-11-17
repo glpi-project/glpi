@@ -1026,8 +1026,9 @@ class User extends CommonDBTM
                     // Check right : my password of user with lesser rights
                     if (
                         isset($input['id'])
-                        && !Auth::checkPassword($input['password'], $this->fields['password'] ?? '') // Validate that password is not same as previous
-                        && Config::validatePassword($input["password"])
+                        && (isset($input['_rehash']) ||
+                        !Auth::checkPassword($input['password'], $this->fields['password'] ?? '') // Validate that password is not same as previous
+                        && Config::validatePassword($input["password"]))
                         && (($input['id'] == Session::getLoginUserID())
                         || $this->currentUserHaveMoreRightThan($input['id'])
                         // Permit to change password with token and email
