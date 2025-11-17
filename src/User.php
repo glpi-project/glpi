@@ -1128,7 +1128,9 @@ class User extends CommonDBTM implements TreeBrowseInterface
                         $input["password"]
                         = Auth::getPasswordHash($input["password"]);
 
-                        $input['password_last_update'] = $_SESSION["glpi_currenttime"];
+                        if (!isset($input['_rehash'])) {
+                            $input['password_last_update'] = $_SESSION["glpi_currenttime"];
+                        }
                     } else {
                         if ($password_errors === []) {
                             $password_errors = [__('An error occurred during password update')];
