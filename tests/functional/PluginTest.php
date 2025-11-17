@@ -551,6 +551,13 @@ namespace tests\units {
             );
         }
 
+        public function testGetAvailablePluginsLanguages(): void
+        {
+            $plugin = 'tester';
+            $availableLanguages = Plugin::getAvailableLanguages($plugin);
+            $this->assertArraysEqualRecursive(['en_GB', 'fr_FR'], $availableLanguages);
+        }
+
         public function testLoadPluginLocales(): void
         {
             global $TRANSLATE;
@@ -561,9 +568,9 @@ namespace tests\units {
             $translation = $TRANSLATE->translate($string, $plugin, 'fr_FR');
             $this->assertEquals($string, $translation); // Translation not here
 
-            Plugin::loadAllLangs($plugin);
+            Plugin::loadAllLang($plugin);
             $translation = $TRANSLATE->translate($string, $plugin, 'fr_FR');
-            $this->assertEquals('ma traduction de plugin', $translation); // Translation not here
+            $this->assertEquals('ma traduction de plugin', $translation);
         }
 
         /**

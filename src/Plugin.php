@@ -646,10 +646,25 @@ class Plugin extends CommonDBTM
      */
     public static function loadAllLang(string $plugin_key): void
     {
+        $available_languages = self::getAvailableLanguages($plugin_key);
+
+        foreach ($available_languages as $language) {
+            self::loadLang($plugin_key, $language);
+        }
+    }
+
+    /**
+     * Return available langcode for a plugin
+     *
+     * @param string $plugin_key
+     * @return array
+     */
+    public static function getAvailableLanguages(string $plugin_key): array
+    {
         $plugin_directory = self::getPhpDir($plugin_key);
         $locales_dir = $plugin_directory . '/locales/';
         if (!is_dir($locales_dir)) {
-            return;
+            return [];
         }
 
         // Scan locale files and extract available language codes
@@ -660,15 +675,13 @@ class Plugin extends CommonDBTM
             }
 
             // Extract language code from files like fr_FR.mo, en_GB.mo, ...
-            if (preg_match('/^([a-z]{2}_[A-Z]{2})\.(mo)$/', $locale_file, $matches)) {
+            if (preg_match('/^([a-z]{2}_[A-Z]{2})\.mo$/', $locale_file, $matches)) {
                 $language_code = $matches[1];
-                $available_languages[$language_code] = $language_code;
+                $available_languages[] = $language_code;
             }
         }
 
-        foreach ($available_languages as $language) {
-            self::loadLang($plugin_key, $language);
-        }
+        return $available_languages;
     }
 
     /**
