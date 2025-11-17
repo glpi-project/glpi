@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
 
 /**
  *  Class KnowbaseItem_Item
@@ -121,7 +122,14 @@ class KnowbaseItem_Item extends CommonDBRelation
         if ($canedit && $ok_state) {
             if ($item::class !== KnowbaseItem::class) {
                 $visibility = KnowbaseItem::getVisibilityCriteria();
-                $condition = (isset($visibility['WHERE']) && count($visibility['WHERE'])) ? $visibility['WHERE'] : [];
+                if (isset($visibility['WHERE']) && count($visibility['WHERE'])) {
+                    foreach ($visibility['WHERE'] as $key => $value) {
+                        if ($value instanceof QueryExpression) {
+                            continue;
+                        }
+                        $condition[$key] = $value;
+                    }
+                }
                 $used_knowbase_items = self::getItems($item, 0, 0, true);
             }
             TemplateRenderer::getInstance()->display('pages/tools/kb/knowbaseitem_item.html.twig', [
