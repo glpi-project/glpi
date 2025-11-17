@@ -3213,4 +3213,78 @@ describe ('Conditions', () => {
         // Check that the target question is not visible anymore
         validateThatQuestionIsNotVisible('My target question');
     });
+
+    it('condition dependency check takes priority over non-empty section warning', () => {
+        // This test ensures that if a section has both conditions dependencies AND contains elements,
+        // the condition dependency modal is shown first (blocking deletion),
+        // and the non-empty warning modal is not shown.
+
+        createForm();
+        addQuestion('My first question');
+        addSection('My section with conditions');
+        addQuestion('Question in section');
+        addComment('Comment in section');
+
+        saveAndReload();
+
+        // Add a condition to another element that uses this section
+        getAndFocusQuestion('My first question').within(() => {
+            initVisibilityConfiguration();
+            setConditionStrategy('Visible if...');
+            fillCondition(0, null, 'My section with conditions', 'Is visible', null, null);
+            closeConditionEditor();
+        });
+
+        // Try to delete the section with conditions (which also has elements)
+        getAndFocusSection('My section with conditions').within(() => {
+            cy.findByRole('button', {'name': 'More actions'}).click();
+            cy.findByRole('button', {'name': 'Delete section'}).click();
+        });
+
+        // Should show the conditions dependency modal, NOT the non-empty warning modal
+        cy.findByRole('dialog', {'name': 'Item has conditions and cannot be deleted'})
+            .should('be.visible')
+            .within(() => {
+                cy.findByRole('button', {'name': 'Close'}).click();
+            });
+
+        // The non-empty section modal should NOT have appeared
+        cy.findByRole('dialog', {'name': 'Delete non-empty section'}).should('not.exist');
+
+        // Section should still exist
+        cy.findAllByRole('region', {'name': 'Form section'}).should('have.length', 2);
+    });
+
+    it('blocks external dependencies when deleting non-empty section', () => {
+        // This test ensures that if a section contains elements that are used in conditions
+        // by elements OUTSIDE the section, the deletion is blocked with the condition dependency modal.
+
+        cy.importForm('form-with-question-destination-submit-button-conditions.json').then((id) => {
+            cy.visit(`front/form/form.form.php?id=${id}`);
+        });
+
+        // Try to delete the section that contains the question used in conditions
+        cy.findAllByRole('region', {'name': 'Section details'}).eq(1).click();
+        cy.findAllByRole('region', {'name': 'Section details'}).eq(1).within(() => {
+            cy.findByRole('button', {'name': 'More actions'}).click();
+            cy.findByRole('button', {'name': 'Delete section'}).click();
+        });
+
+        // Should show the conditions dependency modal, NOT the non-empty warning modal
+        cy.findByRole('dialog', {'name': 'Child items have conditions and cannot be deleted'})
+            .should('be.visible')
+            .within(() => {
+                // Should mention the question that has dependencies
+                cy.contains('Question in another section').should('exist');
+                cy.contains('Submit button visibility').should('exist');
+                cy.contains('Ticket').should('exist');
+                cy.findByRole('button', {'name': 'Close'}).click();
+            });
+
+        // The non-empty section modal should NOT have appeared
+        cy.findByRole('dialog', {'name': 'Delete non-empty section'}).should('not.exist');
+
+        // Section should still exist
+        cy.findAllByRole('region', {'name': 'Form section'}).should('have.length', 3);
+    });
 });

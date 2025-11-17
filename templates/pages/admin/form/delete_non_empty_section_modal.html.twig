@@ -1,0 +1,75 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{# Delete non-empty section confirmation modal #}
+<div
+    data-glpi-form-editor-delete-non-empty-section-modal
+    class="modal modal-blur fade"
+    aria-modal="true"
+    role="dialog"
+    aria-label="{{ __("Delete non-empty section") }}"
+>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header p-3">
+                <div>
+                    <h3 class="mb-2">{{ __("This section contains elements") }}</h3>
+                    <p class="m-0 text-muted" data-glpi-form-editor-delete-section-message>
+                        {# Message will be populated dynamically by JavaScript #}
+                    </p>
+                </div>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="{{ __("Close") }}"
+                ></button>
+            </div>
+            <div class="modal-footer">
+                <button
+                    type="button"
+                    class="btn btn-link"
+                    data-bs-dismiss="modal"
+                >
+                    {{ __("Cancel") }}
+                </button>
+                <button
+                    type="button"
+                    class="btn btn-danger"
+                    data-glpi-form-editor-confirm-delete-section
+                >
+                    {{ __("Delete section and all its elements") }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
