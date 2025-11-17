@@ -123,13 +123,11 @@ class KnowbaseItem_Item extends CommonDBRelation
             if ($item::class !== KnowbaseItem::class) {
                 $visibility = KnowbaseItem::getVisibilityCriteria();
 
-                if (isset($visibility['WHERE']) && is_array($visibility['WHERE'])) {
-                    foreach ($visibility['WHERE'] as $where_condition) {
-                        if ($where_condition instanceof QueryExpression) {
-                            $condition[] = (string) $where_condition;
-                        } else {
-                            $condition[] = $where_condition;
-                        }
+                foreach ($visibility['WHERE'] ?? [] as $key => $where_condition) {
+                    if ($where_condition instanceof QueryExpression) {
+                        $condition[$key] = $where_condition->getValue();
+                    } else {
+                        $condition[$key] = $where_condition;
                     }
                 }
 
