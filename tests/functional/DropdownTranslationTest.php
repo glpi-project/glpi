@@ -232,6 +232,6 @@ class DropdownTranslationTest extends DbTestCase
         );
 
         // Assert: translation should not be null
-        $this->assertEquals('my fallback value', $translation);
+        $this->assertEquals('My description', $translation);
     }
 }
