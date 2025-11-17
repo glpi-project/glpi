@@ -85,8 +85,17 @@ describe('Service catalog tab', () => {
         // Check that the service catalog configuration isn't active by default
         cy.findByRole('checkbox', {'name': 'Active'}).should('not.be.checked');
 
+        // Verify that content is not interactable when toggle is disabled
+        cy.get('[data-service-catalog-config]').should('have.css', 'pointer-events', 'none');
+        cy.get('[data-service-catalog-config]').should('have.css', 'opacity', '0.5');
+
         // Set values
         cy.findByRole('checkbox', {'name': 'Active'}).check();
+
+        // Verify that content becomes interactable when toggle is enabled
+        cy.get('[data-service-catalog-config]').should('have.css', 'pointer-events', 'auto');
+        cy.get('[data-service-catalog-config]').should('have.css', 'opacity', '1');
+
         cy.findByLabelText("Description").awaitTinyMCE().type('My description');
         cy.getDropdownByLabelText('Category').selectDropdownValue(category_dropdown_value);
         cy.findByRole('checkbox', {'name': 'Pin to top of the service catalog'}).check();
