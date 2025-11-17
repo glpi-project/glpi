@@ -1025,7 +1025,11 @@ class Auth extends CommonGLPI
                     if (isset($email)) {
                         $this->user->fields['_useremails'] = $email;
                     }
-                    $this->user->update(Sanitizer::sanitize($this->user->fields));
+
+                    $input = $this->user->fields;
+                    unset($input['api_token'], $input['cookie_token'], $input['password_forget_token'], $input['personal_token']);
+
+                    $this->user->update(Sanitizer::sanitize($input));
                 } elseif ($CFG_GLPI["is_users_auto_add"]) {
                     // Auto add user
                     $input = $this->user->fields;

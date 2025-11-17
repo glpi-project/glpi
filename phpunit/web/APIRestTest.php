@@ -282,7 +282,7 @@ class APIRestTest extends APIBaseClass
         $updated = $DB->update(
             'glpi_users',
             [
-                'api_token' => $token,
+                'api_token' => (new \GLPIKey())->encrypt($token),
             ],
             ['id' => $uid]
         );

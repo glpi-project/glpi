@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,44 +32,40 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Application\View\Extension;
-
-use GLPIKey;
-use Session;
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFilter;
-use Twig\TwigFunction;
-
 /**
- * @since 10.0.0
- */
-class SecurityExtension extends AbstractExtension
+ * Update from 10.0.20 to 10.0.21
+ *
+ * @return bool for success (will die for most error)
+ **/
+function update10020to10021()
 {
-    public function getFunctions(): array
-    {
-        return [
-            new TwigFunction('csrf_token', [Session::class, 'getNewCSRFToken']),
-            new TwigFunction('idor_token', [Session::class, 'getNewIDORToken']),
-        ];
-    }
-
-    public function getFilters(): array
-    {
-        return [
-            new TwigFilter('decrypt', [$this, 'decrypt']),
-        ];
-    }
-
     /**
-     * @param string|null $value
-     * @return string
+     * @var \DBmysql $DB
+     * @var \Migration $migration
      */
-    public function decrypt($value): string
-    {
-        if ($value === null) {
-            return '';
-        }
+    global $DB, $migration;
 
-        return (new GLPIKey())->decrypt($value);
+    $updateresult       = true;
+    $ADDTODISPLAYPREF   = [];
+    $DELFROMDISPLAYPREF = [];
+    $update_dir = __DIR__ . '/update_10.0.20_to_10.0.21/';
+
+    //TRANS: %s is the number of new version
+    $migration->displayTitle(sprintf(__('Update to %s'), '10.0.21'));
+    $migration->setVersion('10.0.21');
+
+    $update_scripts = scandir($update_dir);
+    foreach ($update_scripts as $update_script) {
+        if (preg_match('/\.php$/', $update_script) !== 1) {
+            continue;
+        }
+        require $update_dir . $update_script;
     }
+
+    // ************ Keep it at the end **************
+    $migration->updateDisplayPrefs($ADDTODISPLAYPREF, $DELFROMDISPLAYPREF);
+
+    $migration->executeMigration();
+
+    return $updateresult;
 }
