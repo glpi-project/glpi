@@ -358,16 +358,24 @@ class QuestionTypeItem extends AbstractQuestionType implements
     #[Override]
     public function renderEndUserTemplate(Question $question): string
     {
+        global $CFG_GLPI;
+
+        $itemtype = $this->getDefaultValueItemtype($question) ?? '0';
+        $is_itil_type = in_array($itemtype, $CFG_GLPI['itil_types']);
+        $id_already_visible = isset($_SESSION['glpiis_ids_visible']) && $_SESSION['glpiis_ids_visible'];
+
         $twig = TemplateRenderer::getInstance();
         return $twig->render(
             'pages/admin/form/question_type/item/end_user_template.html.twig',
             [
                 'question'                    => $question,
-                'itemtype'                    => $this->getDefaultValueItemtype($question) ?? '0',
+                'itemtype'                    => $itemtype,
                 'default_items_id'            => $this->getDefaultValueItemId($question),
                 'aria_label'                  => $question->fields['name'],
                 'sub_types'                   => $this->getSubTypes(),
                 'dropdown_restriction_params' => $this->getDropdownRestrictionParams($question),
+                'is_itil_type'                => $is_itil_type,
+                'id_already_visible'          => $id_already_visible,
             ]
         );
     }
