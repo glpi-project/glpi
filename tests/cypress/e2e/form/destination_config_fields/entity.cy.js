@@ -120,7 +120,7 @@ describe('Entity configuration', () => {
 
         cy.openEntitySelector();
         cy.findByRole('gridcell', {'name': "Root entity > E2ETestEntity"})
-            .findByTitle('+ sub-entities')
+            .findByTitle('Select Root entity > E2ETestEntity entity with all its sub entities')
             .click();
 
         // Go to preview
