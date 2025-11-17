@@ -502,12 +502,11 @@ class Auth extends CommonGLPI
                         'id' => $row['id'],
                         'password' => $password,
                         'password2' => $password,
-                        '_rehash' => true
                     ];
                     // Set glpiID to allow password update
                     $_SESSION['glpiID'] = $input['id'];
                     $user = new User();
-                    $user->update($input);
+                    $user->rehashPassword($input);
                 }
                 $this->user->getFromDBByCrit(['id' => $row['id']]);
                 $this->extauth                  = 0;
