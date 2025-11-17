@@ -1039,7 +1039,9 @@ class User extends CommonDBTM
                         $input["password"]
                         = Auth::getPasswordHash(Sanitizer::unsanitize($input["password"]));
 
-                        $input['password_last_update'] = $_SESSION["glpi_currenttime"];
+                        if (!isset($input['_rehash'])) {
+                            $input['password_last_update'] = $_SESSION["glpi_currenttime"];
+                        }
                     } else {
                         unset($input["password"]);
                     }
