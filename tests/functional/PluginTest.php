@@ -551,6 +551,28 @@ namespace tests\units {
             );
         }
 
+        public function testGetAvailablePluginsLanguages(): void
+        {
+            $plugin = 'tester';
+            $availableLanguages = Plugin::getAvailableLanguages($plugin);
+            $this->assertArraysEqualRecursive(['en_GB', 'fr_FR'], $availableLanguages);
+        }
+
+        public function testLoadPluginLocales(): void
+        {
+            global $TRANSLATE;
+
+            $plugin = 'tester';
+            $string = 'my plugin translation';
+
+            $translation = $TRANSLATE->translate($string, $plugin, 'fr_FR');
+            $this->assertEquals($string, $translation); // Translation not here
+
+            Plugin::loadAllLang($plugin);
+            $translation = $TRANSLATE->translate($string, $plugin, 'fr_FR');
+            $this->assertEquals('ma traduction de plugin', $translation);
+        }
+
         /**
          * Test state checking on a valid directory corresponding to a known inactive plugin with no modifications
          * but not validating config.
