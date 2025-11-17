@@ -5812,10 +5812,10 @@ class CommonDBTM extends CommonGLPI
 
             // retrieve existing _groups_id_tech & _groups_id
             // api accept single value for $this->fields['groups_id'] -> format as array
-            if (is_numeric($this->fields['groups_id'])) {
+            if (isset($this->fields['groups_id']) && is_numeric($this->fields['groups_id'])) {
                 $this->fields['groups_id'] = [$this->fields['groups_id']];
             }
-            if (is_numeric($this->fields['groups_id_tech'])) {
+            if (isset($this->fields['groups_id_tech']) && is_numeric($this->fields['groups_id_tech'])) {
                 $this->fields['groups_id_tech'] = [$this->fields['groups_id_tech']];
             }
 
