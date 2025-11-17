@@ -103,7 +103,7 @@ final class PasswordHistory
                 return false;
             }
 
-            // History might contain more entries than configurated (skip them)
+            // History might contain more entries than configured (skip them)
             $passwords_checked_count++;
             if ($passwords_checked_count == $length) {
                 break;
