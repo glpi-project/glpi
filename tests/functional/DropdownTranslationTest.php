@@ -237,7 +237,7 @@ class DropdownTranslationTest extends DbTestCase
 
     /**
      * Regression test to make sure getTranslatedValue return a string even if
-     * the translation value is null.
+     * the translation value is null and the untranslated value is empty.
      */
     public function testGetTanslatedValueFallbackToDefaultValue(): void
     {
