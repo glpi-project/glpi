@@ -203,7 +203,7 @@ class AuthTest extends DbTestCase
         $user->getFromDB($user->getID());
         $this->assertStringStartsWith('$2y$', $user->fields['password']);
 
-        //create a user - with a low wost password
+        //create a user - with a low cost password
         $user = $this->createItem(User::class, ['name' => 'BCRYPT low cost Passwd test', 'password' => password_hash('dapass', PASSWORD_DEFAULT, ['cost' => 5])]);
         $user->getFromDB($user->getID());
         $this->assertStringStartsWith('$2y$05$', $user->fields['password']);
