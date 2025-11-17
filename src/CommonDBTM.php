@@ -1575,9 +1575,8 @@ class CommonDBTM extends CommonGLPI
     {
         /**
          * @var \DBmysql $DB
-         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
          */
-        global $DB, $GLPI_CACHE;
+        global $DB;
 
         if ($DB->isSlave()) {
             return false;
