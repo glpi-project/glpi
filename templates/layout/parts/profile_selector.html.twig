@@ -82,21 +82,12 @@
         <div class="dropdown-menu p-3 overflow-y-auto" style="max-height: calc(100vh - 8rem)">
             <h3>{{ __('Select the desired entity') }}</h3>
 
-            <div class="alert alert-info" role="alert">
+            <div class="alert alert-info d-block" role="alert">
                 {% set shortcut = __('Ctrl + Alt + E') %}
                 {% if platform == constant("donatj\\UserAgent\\Platforms::MACINTOSH") %}
                     {% set shortcut = __('⌥ (option) + ⌘ (command) + E') %}
                 {% endif %}
                 {{ __("Tip: You can call this modal with %s keys combination")|format('<kbd>' ~ shortcut ~ '</kbd>')|raw }}
-            </div>
-            <div class="alert alert-info" role="alert">
-                <i class="ti ti-info-circle-filled"></i>
-                <span class="ms-2">
-                {% set recursive_icon %}
-                    <i class="ti ti-chevrons-down" title="{{ __('+ sub-entities') }}"></i>
-                {% endset %}
-                {{ __('Click on the %s icon to load the elements of the selected entity, as well as its sub-entities.')|format(recursive_icon)|raw }}
-                </span>
             </div>
 
             {% set switch_to_full_structure_id = 'switch_to_full_structure_' ~ rand %}

@@ -41,12 +41,12 @@
 
     {% if is_recursive %}
         <form method="POST" action="{{ path('/Session/ChangeEntity') }}">
-            <button class="btn btn-link p-0 bg-transparent">
+            <button class="btn btn-outline-secondary p-0 ms-1">
                 <i
                     class="ti ti-chevrons-down"
                     data-bs-toggle="tooltip"
                     data-bs-placement="right"
-                    title="{{ __('+ sub-entities') }}"
+                    title="{{ __('Select %1s entity with all its sub entities')|format(name) }}"
                 ></i>
             </button>
             <input type="hidden" name="id" value="{{ id }}">
