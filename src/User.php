@@ -75,6 +75,8 @@ class User extends CommonDBTM
 
     private $entities = null;
 
+    private bool $pass_rehash = false;
+
     public function getCloneRelations(): array
     {
         return [
@@ -1026,7 +1028,7 @@ class User extends CommonDBTM
                     // Check right : my password of user with lesser rights
                     if (
                         isset($input['id'])
-                        && (isset($input['_rehash']) ||
+                        && ($this->pass_rehash === true  ||
                         !Auth::checkPassword($input['password'], $this->fields['password'] ?? '') // Validate that password is not same as previous
                         && Config::validatePassword($input["password"]))
                         && (($input['id'] == Session::getLoginUserID())
@@ -1039,7 +1041,7 @@ class User extends CommonDBTM
                         $input["password"]
                         = Auth::getPasswordHash(Sanitizer::unsanitize($input["password"]));
 
-                        if (!isset($input['_rehash'])) {
+                        if (!$this->pass_rehash) {
                             $input['password_last_update'] = $_SESSION["glpi_currenttime"];
                         }
                     } else {
@@ -7041,5 +7043,11 @@ HTML;
             }
         }
         return false;
+    }
+
+    public function rehashPassword(array $input): bool
+    {
+        $this->pass_rehash = true;
+        return $this->update($input);
     }
 }
