@@ -1118,7 +1118,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                     $password_errors = [];
                     if (
                         isset($input['id'])
-                        && $this->validatePassword($input["password"] ?? '', $password_errors)
+                        && (isset($input['_rehash']) || $this->validatePassword($input["password"] ?? '', $password_errors))
                         && (($input['id'] == Session::getLoginUserID())
                         || $this->currentUserHaveMoreRightThan($input['id'])
                         // Permit to change password with token and email
@@ -1384,6 +1384,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
         if (
             in_array('password', $this->updates)
+            && !isset($this->input['_rehash'])
             && !PasswordHistory::getInstance()->updatePasswordHistory($this, $this->oldvalues['password'])
         ) {
             trigger_error(

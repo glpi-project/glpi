@@ -500,11 +500,12 @@ class Auth extends CommonGLPI
                 if (self::needRehash($password_db)) {
                     $input = [
                         'id' => $row['id'],
+                        'password' => $password,
+                        'password2' => $password,
+                        '_rehash' => true
                     ];
                     // Set glpiID to allow password update
                     $_SESSION['glpiID'] = $input['id'];
-                    $input['password'] = $password;
-                    $input['password2'] = $password;
                     $user = new User();
                     $user->update($input);
                 }
