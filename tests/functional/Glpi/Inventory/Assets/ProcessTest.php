@@ -34,7 +34,8 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
-use Glpi\Asset\Capacity\IsInventoriableCapacity;
+use Glpi\Asset\Capacity;
+use Glpi\Inventory\Asset\Process;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Converter;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -114,7 +115,7 @@ class ProcessTest extends AbstractInventoryAsset
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\Process($computer, $json->content->processes);
+        $asset = new Process($computer, $json->content->processes);
         $asset->setExtraData((array) $json->content);
 
         $this->assertTrue($asset->checkConf($conf));
@@ -149,7 +150,7 @@ class ProcessTest extends AbstractInventoryAsset
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\Process($computer, $json->content->processes);
+        $asset = new Process($computer, $json->content->processes);
         $asset->setExtraData((array) $json->content);
 
         $this->assertTrue($asset->checkConf($conf));
@@ -173,11 +174,9 @@ class ProcessTest extends AbstractInventoryAsset
         //create generic asset
         $definition = $this->initAssetDefinition(
             system_name: 'MyAsset' . $this->getUniqueString(),
-            capacities: array_merge(
-                [
-                    IsInventoriableCapacity::class,
-                ]
-            )
+            capacities: [
+                new Capacity(name: Capacity\IsInventoriableCapacity::class),
+            ]
         );
         $classname  = $definition->getAssetClassName();
 
@@ -193,6 +192,8 @@ class ProcessTest extends AbstractInventoryAsset
         $json = json_decode($data);
         //we change itemtype to our asset
         $json->itemtype = $classname;
+        dump($classname);
+        dump($json);
         $inventory = $this->doInventory($json);
 
         //check created asset
