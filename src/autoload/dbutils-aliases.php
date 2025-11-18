@@ -237,7 +237,7 @@ function countDistinctElementsInTable($table, $field, $condition = [])
  *
  * @return int Number of elements in table
  *
- * @TODO This method is not used, deprecate it in GLPI 11.1.
+ * @TODO This method is not used, deprecate it in GLPI 12.0.
  */
 function countElementsInTableForMyEntities($table, $condition = [])
 {
@@ -340,7 +340,7 @@ function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate 
  *
  * @return array{0: string, 1:int}
  *
- * @TODO This method is not used, deprecate it in GLPI 11.1.
+ * @TODO This method is not used, deprecate it in GLPI 12.0.
  */
 function getTreeValueName($table, $ID, $wholename = "", $level = 0)
 {
@@ -404,7 +404,7 @@ function getSonsAndAncestorsOf($table, $IDf)
  *
  * @return array<int, array{name: string, tree: array<int, mixed>}> Recursive tree
  *
- * @TODO This method is not used, deprecate it in GLPI 11.1.
+ * @TODO This method is not used, deprecate it in GLPI 12.0.
  */
 function getTreeForItem($table, $IDf)
 {
@@ -421,7 +421,7 @@ function getTreeForItem($table, $IDf)
  *
  * @return array<int, array{name: string, tree: array<int, mixed>}> Recursive tree
  *
- * @TODO This method is not used, deprecate it in GLPI 11.1.
+ * @TODO This method is not used, deprecate it in GLPI 12.0.
  */
 function contructTreeFromList($list, $root)
 {
@@ -438,7 +438,7 @@ function contructTreeFromList($list, $root)
  *
  * @return array<int, int> list of items in the tree
  *
- * @TODO This method is not used, deprecate it in GLPI 11.1.
+ * @TODO This method is not used, deprecate it in GLPI 12.0.
  */
 function contructListFromTree($tree, $parent = 0)
 {
@@ -630,7 +630,7 @@ function importArrayFromDB($DATA)
  *
  * @return string
  *
- * @TODO This method is not used, deprecate it in GLPI 11.1.
+ * @TODO This method is not used, deprecate it in GLPI 12.0.
  */
 function get_hour_from_sql($time)
 {
@@ -666,7 +666,7 @@ function getDbRelations()
  *
  * @return string the WHERE clause to restrict
  *
- * @TODO Deprecate this method in GLPI 11.1, usages should be replaced by `getEntitiesRestrictCriteria()`.
+ * @TODO Deprecate this method in GLPI 12.0, usages should be replaced by `getEntitiesRestrictCriteria()`.
  */
 function getEntitiesRestrictRequest(
     $separator = "AND",
