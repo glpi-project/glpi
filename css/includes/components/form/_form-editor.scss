@@ -70,6 +70,11 @@
             }
         }
     }
+
+    [data-glpi-conditions-editor-disabled] {
+        pointer-events: none;
+        cursor: wait;
+    }
 }
 
 .form-editor {
