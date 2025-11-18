@@ -192,6 +192,8 @@ class ProcessTest extends AbstractInventoryAsset
         $json = json_decode($data);
         //we change itemtype to our asset
         $json->itemtype = $classname;
+        dump($classname);
+        dump($json);
         $inventory = $this->doInventory($json);
 
         //check created asset
