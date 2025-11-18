@@ -108,7 +108,7 @@
         "eslint-plugin-mocha": "^11.1.0",
         "eslint-plugin-vue": "^10.3.0",
         "exports-loader": "^5.0.0",
-        "glob": "^11.0.3",
+        "glob": "^11.1.0",
         "globals": "^16.3.0",
         "jest": "^30.0.5",
         "jest-environment-jsdom": "^30.0.5",
