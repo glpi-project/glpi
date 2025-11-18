@@ -145,6 +145,7 @@ class FirewallTest extends \DbTestCase
                     $plugin_path_prefix . '/myplugin/css.php'             => $default_for_plugins_legacy,
                     $plugin_path_prefix . '/myplugin/index.php'           => $default_for_plugins_legacy,
                     // matches the `/public/index.php` legacy script
+                    $plugin_path_prefix . '/myplugin'                     => $default_for_plugins_legacy,
                     $plugin_path_prefix . '/myplugin/'                    => $default_for_plugins_legacy,
                     $plugin_path_prefix . '/myplugin/PluginRoute'         => $default_for_symfony_routes,
 
@@ -153,6 +154,7 @@ class FirewallTest extends \DbTestCase
                     $plugin_path_prefix . '/pluginb/front/a/b.php'        => $default_for_plugins_legacy,
                     $plugin_path_prefix . '/pluginb/front/foo.php'        => $default_for_plugins_legacy,
                     $plugin_path_prefix . '/pluginb/Route/To/Something'   => $default_for_symfony_routes,
+                    $plugin_path_prefix . '/pluginb'                      => $default_for_symfony_routes,
                     $plugin_path_prefix . '/pluginb/'                     => $default_for_symfony_routes,
                     // outside the public dir, the file will not be served and the router will try to match a symfony route
                     $plugin_path_prefix . '/pluginb/test.php'             => $default_for_symfony_routes,

@@ -93,7 +93,14 @@ final readonly class PluginsRouterListener implements EventSubscriberInterface
         $router = $this->plugin_container->get('glpi_plugin_router');
 
         try {
-            $matches = $router->matchRequest($request);
+            $request_to_match = $request;
+            if ($route_matches['plugin_resource'] === '') {
+                // Append `/` to the requested path, to be able to match routes attached to the `/` path.
+                $server = $request->server->all();
+                $server['REQUEST_URI'] = \str_replace($request->getPathInfo(), $request->getPathInfo() . '/', $server['REQUEST_URI']);
+                $request_to_match = $request->duplicate(server: $server);
+            }
+            $matches = $router->matchRequest($request_to_match);
         } catch (ResourceNotFoundException) {
             // No route found, let Symfony do the rest of the work.
             return;
