@@ -8357,8 +8357,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public function getITILTemplateFromInput(array $input = []): ?ITILTemplate
     {
-        $entid = $input['entities_id'] ?? $this->fields['entities_id'];
-
         $type = null;
         if (isset($input['type'])) {
             $type = $input['type'];
@@ -8370,6 +8368,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         if (is_null($categid)) {
             return null;
         }
+
+        $entid = $input['entities_id'] ?? $this->fields['entities_id'] ?? -1;
         return $this->getITILTemplateToUse(0, $type, $categid, $entid);
     }
 
