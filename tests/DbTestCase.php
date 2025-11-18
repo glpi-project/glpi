@@ -177,9 +177,8 @@ class DbTestCase extends GLPITestCase
                     $this->assertEquals(
                         $v,
                         $object->fields[$k],
-                        "
-                    Object not created or updated as expected
-                    field '$k' value is '{$object->fields[$k]}' (" . gettype($object->fields[$k]) . ")
+                        "                    Object not created or updated as expected
+                    field '" . $k . "' value is '" . var_export($object->fields[$k], true) . "' (type : " . gettype($object->fields[$k]) . ")
                     but was expected to be '$v' (" . gettype($v) . ")"
                     );
                 }
