@@ -52,6 +52,7 @@ use ITILSolution;
 use RuntimeException;
 use Session;
 use Toolbox;
+use Webhook;
 
 use function Safe\ob_get_clean;
 use function Safe\ob_start;
@@ -151,6 +152,9 @@ class Event extends CommonDBTM
 
             Toolbox::logInFile("event", $full_message);
         }
+        $added = new self();
+        $added->getFromDB($id);
+        Webhook::raise('new', $added);
     }
 
     /**
