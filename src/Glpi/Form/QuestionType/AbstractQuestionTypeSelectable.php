@@ -228,6 +228,10 @@ TWIG;
     {
         $values = json_decode($rawData['values'] ?? '[]', true) ?? [];
 
+        // Formcreator may include some empty values, remove them
+        $values = array_filter($values, fn($v) => $v !== "");
+        $values = array_values($values); // Re-index keys
+
         // Convert array values to use index + 1 as keys
         $options = [];
         foreach ($values as $index => $value) {
