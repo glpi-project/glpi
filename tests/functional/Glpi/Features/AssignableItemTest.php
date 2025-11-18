@@ -37,7 +37,7 @@ namespace tests\units\Glpi\Features;
 use Group_Item;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class AssignableItem extends \DbTestCase
+class AssignableItemTest extends \DbTestCase
 {
     protected function itemtypeProvider(): iterable
     {
