@@ -35,7 +35,9 @@
 namespace tests\units;
 
 use DbTestCase;
+use DropdownTranslation;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Form\Category;
 use ITILCategory;
 
 class DropdownTranslationTest extends DbTestCase
@@ -172,7 +174,7 @@ class DropdownTranslationTest extends DbTestCase
         $values = $this->completenameGenerationFakeProvider();
         foreach ($values as $value) {
             // Delete existing translations to prevent conflicts with tested data
-            $DB->delete(\DropdownTranslation::getTable(), [new QueryExpression("true")]);
+            $DB->delete(DropdownTranslation::getTable(), [new QueryExpression("true")]);
 
             $translations = $value['translations'];
             $category_id = $value['category_id'];
@@ -180,16 +182,16 @@ class DropdownTranslationTest extends DbTestCase
             $default_value = $value['default_value'];
             $result = $value['result'];
 
-            $this->createItems(\DropdownTranslation::class, $translations);
+            $this->createItems(DropdownTranslation::class, $translations);
 
             foreach (['en_GB', 'fr_FR', 'es_ES'] as $session_language) {
                 // Current session language should not affect result
                 $_SESSION['glpilanguage'] = $session_language;
-                $_SESSION['glpi_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($session_language);
+                $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($session_language);
 
                 $this->assertEquals(
                     $result,
-                    \DropdownTranslation::getTranslatedValue(
+                    DropdownTranslation::getTranslatedValue(
                         $category_id,
                         ITILCategory::class,
                         'completename',
@@ -199,5 +201,69 @@ class DropdownTranslationTest extends DbTestCase
                 );
             }
         }
+    }
+
+    /**
+     * Regression test to make sure getTranslatedValue return a string even if
+     * the translation value is null.
+     */
+    public function testGetTanslatedValueFallbackToDropdownValue(): void
+    {
+        // Arrange: create a null translation
+        $category = $this->createItem(Category::class, [
+            'name'        => 'My category',
+            'description' => 'My description',
+        ]);
+        $this->createItem(DropdownTranslation::class, [
+            'items_id' => $category->getID(),
+            'itemtype' => Category::class,
+            'language' => 'fr_FR',
+            'field'    => 'description',
+            'value'    => null,
+        ]);
+
+        // Act: get translation
+        $translation = DropdownTranslation::getTranslatedValue(
+            $category->getID(),
+            Category::class,
+            'description',
+            'fr_FR',
+            'my fallback value'
+        );
+
+        // Assert: translation should correspond to the untranslated value
+        $this->assertEquals('My description', $translation);
+    }
+
+    /**
+     * Regression test to make sure getTranslatedValue return a string even if
+     * the translation value is null and the untranslated value is empty.
+     */
+    public function testGetTanslatedValueFallbackToDefaultValue(): void
+    {
+        // Arrange: create a null translation
+        $category = $this->createItem(Category::class, [
+            'name'        => 'My category',
+            'description' => '',
+        ]);
+        $this->createItem(DropdownTranslation::class, [
+            'items_id' => $category->getID(),
+            'itemtype' => Category::class,
+            'language' => 'fr_FR',
+            'field'    => 'description',
+            'value'    => null,
+        ]);
+
+        // Act: get translation
+        $translation = DropdownTranslation::getTranslatedValue(
+            $category->getID(),
+            Category::class,
+            'description',
+            'fr_FR',
+            'my fallback value'
+        );
+
+        // Assert: translation should correspond to the given fallback value parameter
+        $this->assertEquals('my fallback value', $translation);
     }
 }
