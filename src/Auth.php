@@ -676,6 +676,7 @@ class Auth extends CommonGLPI
 
                         if (self::checkPassword($cookie_token, $hash)) {
                             $this->user->fields['name'] = $user->fields['name'];
+                            $user->update(['id' => $user->getID(), 'last_login' => $_SESSION["glpi_currenttime"]]);
                             return true;
                         } else {
                             $this->addToError(__("Invalid cookie data"));
