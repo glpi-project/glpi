@@ -58,7 +58,7 @@ describe('Ajax Controller', () => {
 
             // Go to history tab, it must be updated with a new entry
             cy.findByRole('tab', {'name': "Historical 4"}).click();
-            cy.findAllByRole('row').should('have.length', 6); // 5 entries + header
+            cy.findAllByRole('row').should('have.length', 7); // 6 entries + header
         });
     });
 });
