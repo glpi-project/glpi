@@ -238,7 +238,11 @@ trait AssignableItem
         return $rights;
     }
 
-    /** @see AssignableItemInterface::prepareGroupFields() */
+    /**
+     * - set groups_id & groups_id_tech of $input as array (if they exist and are not arrays)
+     * - add _groups_id & _groups_id_tech in $input, which are copies of not underscored fields,
+     *  casted to int and fitered (values =< 0 are removed)
+     */
     public function prepareGroupFields(array $input)
     {
         $fields = ['groups_id', 'groups_id_tech'];
@@ -247,10 +251,12 @@ trait AssignableItem
                 if (!is_array($input[$field])) {
                     $input[$field] = [$input[$field]];
                 }
+
                 $input['_' . $field] = array_filter(array_map('intval', $input[$field] ?? []), static fn($v) => $v > 0);
                 unset($input[$field]);
             }
         }
+
         return $input;
     }
 

@@ -5811,14 +5811,6 @@ class CommonDBTM extends CommonGLPI
             $existing_data['_groups_id_tech'] = $this->input['_groups_id_tech'] ?? [];
 
             // retrieve existing _groups_id_tech & _groups_id
-            // api accept single value for $this->fields['groups_id'] -> format as array
-            if (isset($this->fields['groups_id']) && is_numeric($this->fields['groups_id'])) {
-                $this->fields['groups_id'] = [$this->fields['groups_id']];
-            }
-            if (isset($this->fields['groups_id_tech']) && is_numeric($this->fields['groups_id_tech'])) {
-                $this->fields['groups_id_tech'] = [$this->fields['groups_id_tech']];
-            }
-
             $existing_data['_groups_id'] = array_merge($existing_data['_groups_id'], $this->fields['groups_id'] ?? []); // on add fields['groups_id'] is not set
             $existing_data['_groups_id_tech'] = array_merge($existing_data['_groups_id_tech'], $this->fields['groups_id_tech'] ?? []);
 
