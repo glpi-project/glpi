@@ -41,9 +41,9 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
-/* Test for inc/inventory/asset/environment.class.php */
+/* Test for inc/inventory/asset/process.class.php */
 
-class Environment extends AbstractInventoryAsset
+class ProcessTest extends AbstractInventoryAsset
 {
     public static function assetProvider(): array
     {
@@ -58,28 +58,43 @@ class Environment extends AbstractInventoryAsset
     <BIOS>
       <SSN>ggheb7ne7</SSN>
     </BIOS>
-    <ENVS>
-      <KEY>LC_ALL</KEY>
-      <VAL>C</VAL>
-    </ENVS>
-    <ENVS>
-      <KEY>LANG</KEY>
-      <VAL>C</VAL>
-    </ENVS>
-    <ENVS>
-      <KEY>SHELL</KEY>
-      <VAL>/bin/zsh</VAL>
-    </ENVS>
-    <ENVS>
-      <KEY>PATH</KEY>
-      <VAL>/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin</VAL>
-    </ENVS>
+    <PROCESSES>
+        <CMD>php-fpm: pool www</CMD>
+        <CPUUSAGE>0.0</CPUUSAGE>
+        <MEM>0.0</MEM>
+        <PID>3002</PID>
+        <STARTED>2022-03-18 14:54</STARTED>
+        <TTY>?</TTY>
+        <USER>alexand+</USER>
+        <VIRTUALMEMORY>231176</VIRTUALMEMORY>
+    </PROCESSES>
     <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
   </CONTENT>
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '[{"key":"LC_ALL","val":"C","value":"C","is_dynamic":1},{"key":"LANG","val":"C","value":"C","is_dynamic":1},{"key":"SHELL","val":"\\/bin\\/zsh","value":"\\/bin\\/zsh","is_dynamic":1},{"key":"PATH","val":"\\/usr\\/local\\/sbin:\\/usr\\/local\\/bin:\\/usr\\/sbin:\\/usr\\/bin:\\/root\\/bin","value":"\\/usr\\/local\\/sbin:\\/usr\\/local\\/bin:\\/usr\\/sbin:\\/usr\\/bin:\\/root\\/bin","is_dynamic":1}]',
+                'expected'  => '{"cmd": "php-fpm: pool www", "cpuusage": "0.0", "mem": "0.0", "pid": 3002, "started": "2022-03-18 14:54:00", "tty": "?", "user": "alexand+", "virtualmemory": 231176, "memusage": "0.0", "is_dynamic": 1}',
+            ],
+            [
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <PROCESSES>
+        <CMD>/usr/sbin/mysqld</CMD>
+        <CPUUSAGE>4.5</CPUUSAGE>
+        <MEM>4.1</MEM>
+        <PID>3012</PID>
+        <STARTED>2022-03-18 14:54</STARTED>
+        <TTY>?</TTY>
+        <USER>mysql</USER>
+        <VIRTUALMEMORY>2935028</VIRTUALMEMORY>
+    </PROCESSES>
+    <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+  </REQUEST>",
+                'expected'  => '{"cmd": "/usr/sbin/mysqld", "cpuusage": "4.5", "mem": "4.1", "pid": 3012, "started": "2022-03-18 14:54:00", "tty": "?", "user": "mysql", "virtualmemory": 2935028, "memusage": "4.1", "is_dynamic": 1}',
             ],
         ];
     }
@@ -90,7 +105,7 @@ class Environment extends AbstractInventoryAsset
         $this->login();
         $conf = new Conf();
         $this->assertTrue($conf->saveConf([
-            'import_env' => 1,
+            'import_process' => 1,
         ]));
         $this->logout();
 
@@ -99,13 +114,13 @@ class Environment extends AbstractInventoryAsset
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\Environment($computer, $json->content->envs);
+        $asset = new \Glpi\Inventory\Asset\Process($computer, $json->content->processes);
         $asset->setExtraData((array) $json->content);
 
         $this->assertTrue($asset->checkConf($conf));
 
         $result = $asset->prepare();
-        $this->assertEquals(json_decode($expected), $result);
+        $this->assertEquals(json_decode($expected), $result[0]);
     }
 
     public function testHandle()
@@ -113,17 +128,17 @@ class Environment extends AbstractInventoryAsset
         $this->login();
         $conf = new Conf();
         $this->assertTrue($conf->saveConf([
-            'import_env' => 1,
+            'import_process' => 1,
         ]));
         $this->logout();
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
-        //first, check there are no environments linked to this computer
-        $this->assertSame(
-            0,
-            countElementsInTable(\Item_Environment::getTable()),
-            'An environment is already linked to computer!'
+        //first, check there are no process linked to this computer
+        $ipr = new \Item_Process();
+        $this->assertFalse(
+            $ipr->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
+            'A process is already linked to computer!'
         );
 
         //convert data
@@ -134,26 +149,24 @@ class Environment extends AbstractInventoryAsset
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\Environment($computer, $json->content->envs);
+        $asset = new \Glpi\Inventory\Asset\Process($computer, $json->content->processes);
         $asset->setExtraData((array) $json->content);
 
         $this->assertTrue($asset->checkConf($conf));
 
         $result = $asset->prepare();
-        $this->assertEquals(json_decode($expected['expected']), $result);
+        $this->assertEquals(json_decode($expected['expected']), $result[0]);
 
         //handle
         $asset->handleLinks();
         $asset->handle();
-
-        $this->assertSame(
-            count($result),
-            countElementsInTable(\Item_Environment::getTable()),
-            'Environments has not been linked to computer :('
+        $this->assertTrue(
+            $ipr->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
+            'Process has not been linked to computer :('
         );
     }
 
-    public function testGenericAssetEnvironment(): void
+    public function testGenericAssetProcess(): void
     {
         global $DB;
 
@@ -171,7 +184,7 @@ class Environment extends AbstractInventoryAsset
         $this->login();
         $conf = new Conf();
         $this->assertTrue($conf->saveConf([
-            'import_env' => 1,
+            'import_process' => 1,
         ]));
         $this->logout();
 
@@ -189,13 +202,13 @@ class Environment extends AbstractInventoryAsset
         $this->assertTrue($asset->getFromDB($assets_id));
 
         $this->assertSame(
-            4,
-            countElementsInTable(\Item_Environment::getTable(), ['itemtype' => $classname, 'items_id' => $assets_id]),
-            'Environments has not been linked to asset :('
+            1,
+            countElementsInTable(\Item_Process::getTable(), ['itemtype' => $classname, 'items_id' => $assets_id]),
+            'Process has not been linked to asset :('
         );
 
         //check for tab presence
         $this->login();
-        $this->assertArrayHasKey('Item_Environment$1', $asset->defineAllTabs());
+        $this->assertArrayHasKey('Item_Process$1', $asset->defineAllTabs());
     }
 }

@@ -34,9 +34,9 @@
 
 namespace tests\units\Glpi\System\Log;
 
-class LogParser extends \GLPITestCase
+class LogParserTest extends \GLPITestCase
 {
-    private $log_file_path = GLPI_LOG_DIR . '/test.log';
+    private string $log_file_path = GLPI_LOG_DIR . '/test.log';
 
     public function setUp(): void
     {
