@@ -209,7 +209,11 @@ class SessionManagerTest extends \DbTestCase
 
         foreach (['', '/glpi', '/path/to/app'] as $root_doc) {
             // Check an URL matching the index URL
+            $request = $this->getMockedRequest($root_doc, '/plugins/myplugin');
+            $this->assertEquals(true, $instance->isResourceStateless($request));
             $request = $this->getMockedRequest($root_doc, '/plugins/myplugin/');
+            $this->assertEquals(true, $instance->isResourceStateless($request));
+            $request = $this->getMockedRequest($root_doc, '/marketplace/myplugin');
             $this->assertEquals(true, $instance->isResourceStateless($request));
             $request = $this->getMockedRequest($root_doc, '/marketplace/myplugin/');
             $this->assertEquals(true, $instance->isResourceStateless($request));

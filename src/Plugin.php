@@ -134,9 +134,9 @@ class Plugin extends CommonDBTM
      * Regex pattern that matches a plugin resource path.
      * This pattern will capture:
      *      `plugin_key`: the plugin key;
-     *      `plugin_resource`: the resource path relative to the plugin.
+     *      `plugin_resource`: the resource path relative to the plugin, may be empty when URL points to the plugin dir (e.g. `/plugins/myplugin`).
      */
-    public const PLUGIN_RESOURCE_PATTERN = '#^/(?:plugins|marketplace)/(?<plugin_key>[^/]+)(?<plugin_resource>/.*)$#';
+    public const PLUGIN_RESOURCE_PATTERN = '#^/(?:plugins|marketplace)/(?<plugin_key>[^/]+)(?<plugin_resource>/.*|)$#';
 
     /**
      * Plugin key validation pattern.
