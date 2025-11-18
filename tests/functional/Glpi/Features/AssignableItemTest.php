@@ -87,9 +87,6 @@ class AssignableItemTest extends \DbTestCase
                 $class::getNameField() => __FUNCTION__ . ' 1',
                 'groups_id'            => [1, 2],
                 'groups_id_tech'       => [3],
-            ],
-            [
-                'domains_id',
             ]
         );
         $this->assertEqualsCanonicalizing([1, 2], $item_1->fields['groups_id']);
@@ -106,8 +103,6 @@ class AssignableItemTest extends \DbTestCase
                 // groups_id, groups_id_tech are set as empty array, not null
                 'groups_id',
                 'groups_id_tech',
-                // not all AssignableItem have domains_id field
-                'domains_id',
             ]
         );
         $this->assertEquals([], $item_2->fields['groups_id']);
@@ -148,9 +143,6 @@ class AssignableItemTest extends \DbTestCase
             $class,
             $input + [
                 $class::getNameField() => __FUNCTION__,
-            ],
-            [
-                'domains_id',
             ]
         );
         $this->assertEquals([], $item->fields['groups_id']);
@@ -239,8 +231,6 @@ class AssignableItemTest extends \DbTestCase
                 // groups_id & groups_id_tech are returned as array
                 'groups_id',
                 'groups_id_tech',
-                // set only for some Itemtypes (eg. Appliance)
-                'domains_id',
             ]
         );
 
