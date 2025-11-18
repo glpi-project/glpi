@@ -1284,7 +1284,7 @@ final class FormMigrationTest extends DbTestCase
                 'name'                           => 'Test form migration for radio question - Question',
                 'fieldtype'                      => 'radios',
                 'default_values'                 => '1',
-                'values'                         => json_encode(['1', '2', '3']),
+                'values'                         => json_encode(['1', '2', '', '3', '']),
             ]
         ));
 
