@@ -87,6 +87,10 @@ class AssignableItemTest extends \DbTestCase
                 $class::getNameField() => __FUNCTION__ . ' 1',
                 'groups_id'            => [1, 2],
                 'groups_id_tech'       => [3],
+                'domains_id'            => getItemByTypeName(Domain::class, '_testDomain', true),
+            ],
+            [
+                'domains_id',
             ]
         );
         $this->assertEqualsCanonicalizing([1, 2], $item_1->fields['groups_id']);
@@ -143,6 +147,10 @@ class AssignableItemTest extends \DbTestCase
             $class,
             $input + [
                 $class::getNameField() => __FUNCTION__,
+                'domains_id'            => getItemByTypeName(Domain::class, '_testDomain', true),
+            ],
+            [
+                'domains_id',
             ]
         );
         $this->assertEquals([], $item->fields['groups_id']);
@@ -226,6 +234,7 @@ class AssignableItemTest extends \DbTestCase
                 $class::getNameField() => __FUNCTION__,
                 'groups_id'            => 1,
                 'groups_id_tech'       => 2,
+                'domains_id'            => getItemByTypeName(Domain::class, '_testDomain', true),
             ],
             [
                 // groups_id & groups_id_tech are returned as array
