@@ -641,7 +641,7 @@ final class DbUtils
      *
      * @return int Number of elements in table
      *
-     * @TODO This method is not used, deprecate it in GLPI 11.1.
+     * @TODO This method is not used, deprecate it in GLPI 12.0.
      */
     public function countElementsInTableForMyEntities($table, $condition = [])
     {
@@ -796,7 +796,7 @@ final class DbUtils
      *
      * @return string the WHERE clause to restrict
      *
-     * @TODO Deprecate this method in GLPI 11.1, usages should be replaced by `getEntitiesRestrictCriteria()`.
+     * @TODO Deprecate this method in GLPI 12.0, usages should be replaced by `getEntitiesRestrictCriteria()`.
      */
     public function getEntitiesRestrictRequest(
         $separator = "AND",
@@ -1511,7 +1511,7 @@ final class DbUtils
      *
      * @return array{0: string, 1:int}
      *
-     * @TODO This method is not used, deprecate it in GLPI 11.1.
+     * @TODO This method is not used, deprecate it in GLPI 12.0.
      */
     public function getTreeValueName($table, $ID, $wholename = "", $level = 0)
     {
@@ -1551,7 +1551,7 @@ final class DbUtils
      *
      * @return array<int, array{name: string, tree: array<int, mixed>}> Recursive tree
      *
-     * @TODO This method is not used, deprecate it in GLPI 11.1.
+     * @TODO This method is not used, deprecate it in GLPI 12.0.
      */
     public function getTreeForItem($table, $IDf)
     {
@@ -1615,7 +1615,7 @@ final class DbUtils
      *
      * @return array<int, array{name: string, tree: array<int, mixed>}> Recursive tree
      *
-     * @TODO This method is not used, deprecate it in GLPI 11.1.
+     * @TODO This method is not used, deprecate it in GLPI 12.0.
      */
     public function constructTreeFromList($list, $root)
     {
@@ -1639,7 +1639,7 @@ final class DbUtils
      *
      * @return array<int, int> list of items in the tree
      *
-     * @TODO This method is not used, deprecate it in GLPI 11.1.
+     * @TODO This method is not used, deprecate it in GLPI 12.0.
      */
     public function constructListFromTree($tree, $parent = 0)
     {
@@ -2088,7 +2088,7 @@ final class DbUtils
      *
      * @return string
      *
-     * @TODO This method is not used, deprecate it in GLPI 11.1.
+     * @TODO This method is not used, deprecate it in GLPI 12.0.
      */
     public function getHourFromSql($time)
     {

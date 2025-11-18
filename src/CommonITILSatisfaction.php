@@ -131,7 +131,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
     }
 
     /**
-     * @deprecated 11.1.0
+     * @deprecated 12.0.0
      */
     public function showSatisactionForm($item)
     {

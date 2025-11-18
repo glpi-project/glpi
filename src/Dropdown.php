@@ -1466,7 +1466,7 @@ HTML;
      **/
     public static function showItemTypeMenu(string $title, array $optgroup, string $value = '', array $options = []): void
     {
-        Toolbox::deprecated(version: '11.1.0');
+        Toolbox::deprecated(version: '12.0.0');
         $params = [
             'on_change'             => "var _value = this.options[this.selectedIndex].value; if (_value != 0) {window.location.href=_value;}",
             'width'                 => '300px',

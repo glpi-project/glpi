@@ -330,7 +330,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @since 0.83.7
      *
-     * @deprecated 11.1.0
+     * @deprecated 12.0.0
      */
     public function loadMinimalSession($entities_id, $is_recursive)
     {

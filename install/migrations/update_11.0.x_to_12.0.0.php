@@ -36,11 +36,11 @@ use function Safe\preg_match;
 use function Safe\scandir;
 
 /**
- * Update from 11.0.x to 11.1.0
+ * Update from 11.0.x to 12.0.0
  *
  * @return bool
  */
-function update110xto1110()
+function update110xto1200()
 {
     /**
      * @var DBmysql $DB
@@ -52,9 +52,9 @@ function update110xto1110()
     $ADDTODISPLAYPREF          = [];
     $ADDTODISPLAYPREF_HELPDESK = [];
     $DELFROMDISPLAYPREF        = [];
-    $update_dir                = __DIR__ . '/update_11.0.x_to_11.1.0/';
+    $update_dir                = __DIR__ . '/update_11.0.x_to_12.0.0/';
 
-    $migration->setVersion('11.1.0');
+    $migration->setVersion('12.0.0');
 
     $update_scripts = scandir($update_dir);
     foreach ($update_scripts as $update_script) {

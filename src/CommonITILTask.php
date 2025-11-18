@@ -440,7 +440,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
     public function assignTechFromtask(array $input): void
     {
-        Toolbox::deprecated(version: '11.1.0');
+        Toolbox::deprecated(version: '12.0.0');
 
         //if user or group assigned to CommonITIL task, add it to the main item
         $item = static::getItilObjectItemInstance();

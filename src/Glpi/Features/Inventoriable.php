@@ -105,7 +105,7 @@ trait Inventoriable
      *
      * @return void
      *
-     * @deprecated 11.1.0
+     * @deprecated 12.0.0
      */
     protected function showInventoryInfo()
     {
@@ -185,7 +185,7 @@ HTML;
     /**
      * Display agent information
      *
-     * @deprecated 11.1.0
+     * @deprecated 12.0.0
      */
     protected function displayAgentInformation()
     {
