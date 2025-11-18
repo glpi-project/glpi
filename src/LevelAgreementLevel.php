@@ -218,21 +218,15 @@ abstract class LevelAgreementLevel extends RuleTicket
 
     public function getCriterias()
     {
-        $actions = parent::getCriterias();
+        $criterias = parent::getCriterias();
 
-        unset($actions['olas_id']);
-        unset($actions['slas_id']);
-        // Could not be used as criteria
-        unset($actions['users_id_validate_requester_supervisor']);
-        unset($actions['users_id_validate_assign_supervisor']);
-        unset($actions['affectobject']);
-        unset($actions['groups_id_validate']);
-        unset($actions['users_id_validate']);
-        unset($actions['validationsteps_id']);
-        unset($actions['validationsteps_threshold']);
-        $actions['status']['name']    = __('Status');
-        $actions['status']['type']    = 'dropdown_status';
-        return $actions;
+        unset($criterias['olas_id_ttr']);
+        unset($criterias['olas_id_tto']);
+        unset($criterias['slas_id_ttr']);
+        unset($criterias['slas_id_tto']);
+        $criterias['status']['name']    = __('Status');
+        $criterias['status']['type']    = 'dropdown_status';
+        return $criterias;
     }
 
     public static function getExecutionTimes($options = [])
