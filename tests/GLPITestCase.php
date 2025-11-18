@@ -568,6 +568,8 @@ class GLPITestCase extends TestCase
                 $input['cartridgeitems_id'] = getItemByTypeName(CartridgeItem::class, '_test_cartridgeitem01', true);
                 break;
             case Change::class:
+            case Problem::class:
+            case Ticket::class:
                 $input['content'] = $this->getUniqueString();
                 break;
             case Consumable::class:
@@ -582,14 +584,8 @@ class GLPITestCase extends TestCase
                 $input['items_id']          = getItemByTypeName(Computer::class, '_test_pc01', true);
                 $input['devicesimcards_id'] = getItemByTypeName(DeviceSimcard::class, '_test_simcard_1', true);
                 break;
-            case Problem::class:
-                $input['content'] = $this->getUniqueString();
-                break;
             case SoftwareLicense::class:
                 $input['softwares_id'] = getItemByTypeName(Software::class, '_test_soft', true);
-                break;
-            case Ticket::class:
-                $input['content'] = $this->getUniqueString();
                 break;
         }
 
