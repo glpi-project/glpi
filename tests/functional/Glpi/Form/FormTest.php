@@ -43,6 +43,10 @@ use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Comment;
+use Glpi\Form\Condition\LogicOperator;
+use Glpi\Form\Condition\Type;
+use Glpi\Form\Condition\ValueOperator;
+use Glpi\Form\Condition\VisibilityStrategy;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Destination\FormDestinationChange;
 use Glpi\Form\Destination\FormDestinationProblem;
@@ -810,5 +814,30 @@ class FormTest extends DbTestCase
 
         // Assert: the tabs should match the expected data
         $this->assertEquals($expected_tabs, $tabs);
+    }
+
+    public function testSubmitConditionsDataAreCleanedWhenStrategyIsReset(): void
+    {
+        // Arrange: create a form with a condition on its submit button
+        $builder = new FormBuilder();
+        $builder->addQuestion("My question", QuestionTypeShortText::class);
+        $builder->setSubmitButtonVisibility(VisibilityStrategy::VISIBLE_IF, [
+            [
+                'logic_operator' => LogicOperator::AND,
+                'item_name'      => "My question",
+                'item_type'      => Type::QUESTION,
+                'value_operator' => ValueOperator::EQUALS,
+                'value'          => "Yes",
+            ],
+        ]);
+        $form = $this->createForm($builder);
+
+        // Act: reset the submit button's visibility strategy
+        $form = $this->updateItem(Form::class, $form->getID(), [
+            'submit_button_visibility_strategy' => VisibilityStrategy::ALWAYS_VISIBLE->value,
+        ]);
+
+        // Assert: the conditions should be deleted
+        $this->assertEmpty($form->getConfiguredConditionsData());
     }
 }

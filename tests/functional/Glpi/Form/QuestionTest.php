@@ -36,16 +36,25 @@ namespace tests\units\Glpi\Form;
 
 use Computer;
 use DbTestCase;
+use Glpi\Form\Condition\LogicOperator;
+use Glpi\Form\Condition\Type;
+use Glpi\Form\Condition\ValidationStrategy;
+use Glpi\Form\Condition\ValueOperator;
+use Glpi\Form\Condition\VisibilityStrategy;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\AbstractQuestionTypeShortAnswer;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Tests\FormBuilder;
+use Glpi\Tests\FormTesterTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class QuestionTest extends DbTestCase
 {
+    use FormTesterTrait;
+
     public static function getQuestionTypeProvider(): iterable
     {
         // First set of tests: valid values
@@ -98,5 +107,67 @@ class QuestionTest extends DbTestCase
     {
         $type = $question->getQuestionType();
         $this->assertEquals($expected, $type);
+    }
+
+    public function testVisibilityConditionsDataAreCleanedWhenStrategyIsReset(): void
+    {
+        // Arrange: create a form with visibility conditions on a question
+        $builder = new FormBuilder();
+        $builder->addQuestion("My question", QuestionTypeShortText::class);
+        $builder->addQuestion("My other question", QuestionTypeShortText::class);
+        $builder->setQuestionVisibility(
+            "My other question",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "Yes",
+                ],
+            ]
+        );
+        $form = $this->createForm($builder);
+
+        // Act: reset the question's visibility strategy
+        $question_id = $this->getQuestionId($form, "My other question");
+        $question = $this->updateItem(Question::class, $question_id, [
+            'visibility_strategy' => VisibilityStrategy::ALWAYS_VISIBLE->value,
+        ]);
+
+        // Assert: the conditions should be deleted
+        $this->assertEmpty($question->getConfiguredConditionsData());
+    }
+
+    public function testValidationConditionsDataAreCleanedWhenStrategyIsReset(): void
+    {
+        // Arrange: create a form with visibility conditions on a question
+        $builder = new FormBuilder();
+        $builder->addQuestion("My question", QuestionTypeShortText::class);
+        $builder->addQuestion("My other question", QuestionTypeShortText::class);
+        $builder->setQuestionValidation(
+            "My other question",
+            ValidationStrategy::VALID_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "Yes",
+                ],
+            ]
+        );
+        $form = $this->createForm($builder);
+
+        // Act: reset the question's validation strategy
+        $question_id = $this->getQuestionId($form, "My other question");
+        $question = $this->updateItem(Question::class, $question_id, [
+            'validation_strategy' => ValidationStrategy::NO_VALIDATION->value,
+        ]);
+
+        // Assert: the conditions should be deleted
+        $this->assertEmpty($question->getConfiguredValidationConditionsData());
     }
 }

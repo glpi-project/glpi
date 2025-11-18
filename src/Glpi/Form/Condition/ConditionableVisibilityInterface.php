@@ -49,4 +49,7 @@ interface ConditionableVisibilityInterface extends ConditionableInterface
      * @return string
      */
     public function getUUID(): string;
+
+    // TODO: uncomment on main to prevent BC breaks
+    // protected function removeSavedConditionsIfAlwaysVisible(array $input): array;
 }

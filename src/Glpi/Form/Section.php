@@ -144,6 +144,8 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
             unset($input['_conditions']);
         }
 
+        $input = $this->removeSavedConditionsIfAlwaysVisible($input);
+
         return $input;
     }
 
