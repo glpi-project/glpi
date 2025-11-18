@@ -87,7 +87,6 @@ class AssignableItemTest extends \DbTestCase
                 $class::getNameField() => __FUNCTION__ . ' 1',
                 'groups_id'            => [1, 2],
                 'groups_id_tech'       => [3],
-
             ],
             [
                 'domains_id',
@@ -102,7 +101,6 @@ class AssignableItemTest extends \DbTestCase
                 $class::getNameField() => __FUNCTION__ . ' 2',
                 'groups_id'            => null,
                 'groups_id_tech'       => null,
-                'domains_id'            => getItemByTypeName(Domain::class, '_testDomain', true),
             ],
             [
                 // groups_id, groups_id_tech are set as empty array, not null
@@ -112,14 +110,14 @@ class AssignableItemTest extends \DbTestCase
                 'domains_id',
             ]
         );
-        $this->assertEmpty($item_2->fields['groups_id']);
-        $this->assertEmpty($item_2->fields['groups_id_tech']);
+        $this->assertEquals([], $item_2->fields['groups_id']);
+        $this->assertEquals([], $item_2->fields['groups_id_tech']);
 
         // Update both items. Asset 1 will have the groups set to null and item 2 will have the groups set to an array.
         $updated = $item_1->update(['id' => $item_1->getID(), 'groups_id' => null, 'groups_id_tech' => null]);
         $this->assertTrue($updated);
-        $this->assertEmpty($item_1->fields['groups_id']);
-        $this->assertEmpty($item_1->fields['groups_id_tech']);
+        $this->assertEquals([], $item_1->fields['groups_id']);
+        $this->assertEquals([], $item_1->fields['groups_id_tech']);
 
         $updated = $item_2->update(['id' => $item_2->getID(), 'groups_id' => [5, 6], 'groups_id_tech' => [7]]);
         $this->assertTrue($updated);
@@ -150,14 +148,13 @@ class AssignableItemTest extends \DbTestCase
             $class,
             $input + [
                 $class::getNameField() => __FUNCTION__,
-                'domains_id'            => getItemByTypeName(Domain::class, '_testDomain', true),
             ],
             [
                 'domains_id',
             ]
         );
-        $this->assertEmpty($item->fields['groups_id']);
-        $this->assertEmpty($item->fields['groups_id_tech']);
+        $this->assertEquals([], $item->fields['groups_id']);
+        $this->assertEquals([], $item->fields['groups_id_tech']);
 
         $DB->insert(
             'glpi_groups_items',
@@ -215,8 +212,8 @@ class AssignableItemTest extends \DbTestCase
     {
         $item = new $class();
         $this->assertTrue($item->getEmpty());
-        $this->assertEmpty($item->fields['groups_id']);
-        $this->assertEmpty($item->fields['groups_id_tech']);
+        $this->assertEquals([], $item->fields['groups_id']);
+        $this->assertEquals([], $item->fields['groups_id_tech']);
     }
 
     /**
@@ -237,7 +234,6 @@ class AssignableItemTest extends \DbTestCase
                 $class::getNameField() => __FUNCTION__,
                 'groups_id'            => 1,
                 'groups_id_tech'       => 2,
-                'domains_id'            => getItemByTypeName(Domain::class, '_testDomain', true),
             ],
             [
                 // groups_id & groups_id_tech are returned as array

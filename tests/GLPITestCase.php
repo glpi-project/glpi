@@ -587,6 +587,8 @@ class GLPITestCase extends TestCase
             case SoftwareLicense::class:
                 $input['softwares_id'] = getItemByTypeName(Software::class, '_test_soft', true);
                 break;
+            case DomainRecord::class:
+                $input['domains_id'] = getItemByTypeName(Domain::class, '_testDomain', true);
         }
 
         if (is_a($class, Item_Devices::class, true)) {
