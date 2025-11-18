@@ -42,12 +42,13 @@ use SsoVariable;
 use User;
 
 /**
- * Test for SSO authentication with deleted and inactive users
+ * Test for SSO and API authentication with deleted and inactive users
  */
 class AuthDeletedUserTest extends DbTestCase
 {
     private $ssovariable;
     private $original_ssovariables_id;
+    private $original_api_login_setting;
 
     public function setUp(): void
     {
@@ -62,6 +63,9 @@ class AuthDeletedUserTest extends DbTestCase
 
         $this->original_ssovariables_id = $CFG_GLPI["ssovariables_id"] ?? null;
         $CFG_GLPI["ssovariables_id"] = $this->ssovariable->getID();
+
+        $this->original_api_login_setting = $CFG_GLPI['enable_api_login_external_token'] ?? false;
+        $CFG_GLPI['enable_api_login_external_token'] = true;
     }
 
     public function tearDown(): void
@@ -74,8 +78,14 @@ class AuthDeletedUserTest extends DbTestCase
             unset($CFG_GLPI["ssovariables_id"]);
         }
 
+        $CFG_GLPI['enable_api_login_external_token'] = $this->original_api_login_setting;
+
         if (isset($_SERVER['REMOTE_USER'])) {
             unset($_SERVER['REMOTE_USER']);
+        }
+
+        if (isset($_REQUEST['user_token'])) {
+            unset($_REQUEST['user_token']);
         }
 
         parent::tearDown();
@@ -139,5 +149,65 @@ class AuthDeletedUserTest extends DbTestCase
 
         $this->assertFalse($result);
         $this->assertFalse(Session::getLoginUserID());
+    }
+
+    /**
+     * Test that a deleted user cannot authenticate via API token
+     */
+    public function testAPITokenFailsWithDeletedUser()
+    {
+        $this->login();
+
+        $username = 'test_api_deleted_' . mt_rand();
+        $token = User::getUniqueToken('api_token');
+
+        $user = $this->createItem(User::class, [
+            'name' => $username,
+            'api_token' => $token,
+            '_profiles_id' => Profile::getDefault(),
+        ]);
+
+        $_REQUEST['user_token'] = $token;
+        $auth = new Auth();
+        $result = $auth->getAlternateAuthSystemsUserLogin(Auth::API);
+        $this->assertTrue($result);
+
+        Session::destroy();
+        Session::start();
+
+        $this->updateItem(User::class, $user->getID(), [
+            'is_deleted' => 1,
+        ]);
+
+        $_REQUEST['user_token'] = $token;
+        $auth2 = new Auth();
+        $result2 = $auth2->getAlternateAuthSystemsUserLogin(Auth::API);
+        $this->assertFalse($result2);
+    }
+
+    /**
+     * Test that an inactive user cannot authenticate via API token
+     */
+    public function testAPITokenFailsWithInactiveUser()
+    {
+        $this->login();
+
+        $username = 'test_api_inactive_' . mt_rand();
+        $token = User::getUniqueToken('api_token');
+
+        $this->createItem(User::class, [
+            'name' => $username,
+            'api_token' => $token,
+            '_profiles_id' => Profile::getDefault(),
+            'is_active' => 0,
+        ]);
+
+        Session::destroy();
+        Session::start();
+
+        $_REQUEST['user_token'] = $token;
+        $auth = new Auth();
+        $result = $auth->getAlternateAuthSystemsUserLogin(Auth::API);
+        $this->assertFalse($result);
     }
 }

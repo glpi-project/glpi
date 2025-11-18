@@ -332,7 +332,11 @@ TWIG, $twig_params);
             );
             if ($auth->auth_succeded) {
                 $auth->extauth      = 1;
-                $auth->user_present = $auth->user->getFromDBbyName($login);
+                $auth->user_present = $auth->user->getFromDBByCrit([
+                    'name' => $login,
+                    'is_deleted' => 0,
+                    'is_active' => 1,
+                ]);
                 $auth->user->getFromIMAP($mail_method, Toolbox::decodeFromUtf8($login));
                 // Update the authentication method for the current user
                 $auth->user->fields["authtype"] = Auth::MAIL;
