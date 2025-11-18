@@ -50,7 +50,7 @@ function loadDataset()
     // Unit test data definition
     $data = [
         // bump this version to force reload of the full dataset, when content change
-        '_version' => '4.13',
+        '_version' => '4.14',
 
         // Type => array of entries
         'Entity' => [
@@ -836,6 +836,11 @@ function loadDataset()
                 'followup_frequency' => DAY_TIMESTAMP,
                 'followups_before_resolution' => 3,
                 'solutiontemplates_id' => 'noupdate_solutiontemplate',
+            ],
+        ],
+        Domain::class => [
+            [
+                'name' => '_testDomain',
             ],
         ],
     ];

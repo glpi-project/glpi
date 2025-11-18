@@ -34,12 +34,14 @@
 
 namespace tests\units\Glpi\Features;
 
+use Domain;
+use Glpi\Features\AssignableItem;
 use Group_Item;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class AssignableItemTest extends \DbTestCase
 {
-    protected function itemtypeProvider(): iterable
+    public static function itemtypeProvider(): iterable
     {
         global $CFG_GLPI;
 
@@ -50,15 +52,27 @@ class AssignableItemTest extends \DbTestCase
         }
     }
 
+    /**
+     * @param class-string<AssignableItem> $class
+ */
     #[DataProvider('itemtypeProvider')]
     public function testClassUsesTrait(string $class): void
     {
-        $this->boolean(in_array(\Glpi\Features\AssignableItem::class, class_uses($class), true))->isTrue();
+        // class_uses() doesn't match traits in parents -> $parent_has_trait() does it.
+        $has_trait = static fn($_class) => in_array(AssignableItem::class, class_uses($_class), true);
+        $parent_has_trait = fn($_class) => array_reduce(
+            class_parents($_class),
+            static fn($result, $_class) => $result || $has_trait($_class),
+            false,
+        );
+        $this->assertTrue($has_trait($class) || $parent_has_trait($class));
     }
 
     /**
      * Test adding an item with the groups_id/groups_id_tech field as an array and null.
      * Test updating an item with the groups_id/groups_id_tech field as an array and null.
+     *
+     * @param class-string<AssignableItem> $class
      */
     #[DataProvider('itemtypeProvider')]
     public function testAddAndUpdateMultipleGroups(string $class): void
@@ -73,10 +87,14 @@ class AssignableItemTest extends \DbTestCase
                 $class::getNameField() => __FUNCTION__ . ' 1',
                 'groups_id'            => [1, 2],
                 'groups_id_tech'       => [3],
+                'domains_id'            => getItemByTypeName(Domain::class, '_testDomain', true),
+            ],
+            [
+                'domains_id',
             ]
         );
-        $this->array($item_1->fields['groups_id'])->isEqualTo([1, 2]);
-        $this->array($item_1->fields['groups_id_tech'])->isEqualTo([3]);
+        $this->assertEqualsCanonicalizing([1, 2], $item_1->fields['groups_id']);
+        $this->assertEqualsCanonicalizing([3], $item_1->fields['groups_id_tech']);
 
         $item_2 = $this->createItem(
             $class,
@@ -84,32 +102,42 @@ class AssignableItemTest extends \DbTestCase
                 $class::getNameField() => __FUNCTION__ . ' 2',
                 'groups_id'            => null,
                 'groups_id_tech'       => null,
+                'domains_id'            => getItemByTypeName(Domain::class, '_testDomain', true),
+            ],
+            [
+                // groups_id, groups_id_tech are set as empty array, not null
+                'groups_id',
+                'groups_id_tech',
+                // not all AssignableItem have domains_id field
+                'domains_id',
             ]
         );
-        $this->array($item_2->fields['groups_id'])->isEmpty();
-        $this->array($item_2->fields['groups_id_tech'])->isEmpty();
+        $this->assertEmpty($item_2->fields['groups_id']);
+        $this->assertEmpty($item_2->fields['groups_id_tech']);
 
         // Update both items. Asset 1 will have the groups set to null and item 2 will have the groups set to an array.
         $updated = $item_1->update(['id' => $item_1->getID(), 'groups_id' => null, 'groups_id_tech' => null]);
-        $this->boolean($updated)->isTrue();
-        $this->array($item_1->fields['groups_id'])->isEmpty();
-        $this->array($item_1->fields['groups_id_tech'])->isEmpty();
+        $this->assertTrue($updated);
+        $this->assertEmpty($item_1->fields['groups_id']);
+        $this->assertEmpty($item_1->fields['groups_id_tech']);
 
         $updated = $item_2->update(['id' => $item_2->getID(), 'groups_id' => [5, 6], 'groups_id_tech' => [7]]);
-        $this->boolean($updated)->isTrue();
-        $this->array($item_2->fields['groups_id'])->isEqualTo([5, 6]);
-        $this->array($item_2->fields['groups_id_tech'])->isEqualTo([7]);
+        $this->assertTrue($updated);
+        $this->assertEqualsCanonicalizing([5, 6], $item_2->fields['groups_id']);
+        $this->assertEqualsCanonicalizing([7], $item_2->fields['groups_id_tech']);
 
         // Test updating array to array
         $updated = $item_2->update(['id' => $item_2->getID(), 'groups_id' => [1, 2], 'groups_id_tech' => [4, 5]]);
-        $this->boolean($updated)->isTrue();
-        $this->array($item_2->fields['groups_id'])->isEqualTo([1, 2]);
-        $this->array($item_2->fields['groups_id_tech'])->isEqualTo([4, 5]);
+        $this->assertTrue($updated);
+        $this->assertEqualsCanonicalizing([1, 2], $item_2->fields['groups_id']);
+        $this->assertEqualsCanonicalizing([4, 5], $item_2->fields['groups_id_tech']);
     }
 
     /**
      * Test the loading item which still have integer values for groups_id/groups_id_tech (0 for no group).
      * The value should be automatically normalized to an array. If the group was '0', the array should be empty.
+     *
+     * @param class-string<AssignableItem> $class
      */
     #[DataProvider('itemtypeProvider')]
     public function testLoadGroupsFromDb(string $class): void
@@ -122,10 +150,14 @@ class AssignableItemTest extends \DbTestCase
             $class,
             $input + [
                 $class::getNameField() => __FUNCTION__,
+                'domains_id'            => getItemByTypeName(Domain::class, '_testDomain', true),
+            ],
+            [
+                'domains_id',
             ]
         );
-        $this->array($item->fields['groups_id'])->isEmpty();
-        $this->array($item->fields['groups_id_tech'])->isEmpty();
+        $this->assertEmpty($item->fields['groups_id']);
+        $this->assertEmpty($item->fields['groups_id_tech']);
 
         $DB->insert(
             'glpi_groups_items',
@@ -146,9 +178,9 @@ class AssignableItemTest extends \DbTestCase
             ],
         );
 
-        $this->boolean($item->getFromDB($item->getID()))->isTrue();
-        $this->array($item->fields['groups_id'])->isEqualTo([1]);
-        $this->array($item->fields['groups_id_tech'])->isEqualTo([2]);
+        $this->assertTrue($item->getFromDB($item->getID()));
+        $this->assertEqualsCanonicalizing([1], $item->fields['groups_id']);
+        $this->assertEqualsCanonicalizing([2], $item->fields['groups_id_tech']);
 
         $DB->insert(
             'glpi_groups_items',
@@ -168,25 +200,29 @@ class AssignableItemTest extends \DbTestCase
                 'type'      => Group_Item::GROUP_TYPE_TECH,
             ],
         );
-        $this->boolean($item->getFromDB($item->getID()))->isTrue();
-        $this->array($item->fields['groups_id'])->isEqualTo([1, 3]);
-        $this->array($item->fields['groups_id_tech'])->isEqualTo([2, 4]);
+        $this->assertTrue($item->getFromDB($item->getID()));
+        $this->assertEqualsCanonicalizing([1, 3], $item->fields['groups_id']);
+        $this->assertEqualsCanonicalizing([2, 4], $item->fields['groups_id_tech']);
     }
 
     /**
      * An empty item should have the groups_id/groups_id_tech fields initialized as an empty array.
+     *
+     * @param class-string<AssignableItem> $class
      */
     #[DataProvider('itemtypeProvider')]
     public function testGetEmpty(string $class): void
     {
         $item = new $class();
-        $this->boolean($item->getEmpty())->isTrue();
-        $this->array($item->fields['groups_id'])->isEmpty();
-        $this->array($item->fields['groups_id_tech'])->isEmpty();
+        $this->assertTrue($item->getEmpty());
+        $this->assertEmpty($item->fields['groups_id']);
+        $this->assertEmpty($item->fields['groups_id_tech']);
     }
 
     /**
      * Check that adding and updating an item with groups_id/groups_id_tech as an integer still works (minor BC, mainly for API scripts).
+     *
+     * @param class-string<AssignableItem> $class
      */
     #[DataProvider('itemtypeProvider')]
     public function testAddUpdateWithIntGroups(string $class): void
@@ -201,16 +237,24 @@ class AssignableItemTest extends \DbTestCase
                 $class::getNameField() => __FUNCTION__,
                 'groups_id'            => 1,
                 'groups_id_tech'       => 2,
+                'domains_id'            => getItemByTypeName(Domain::class, '_testDomain', true),
             ],
-            ['groups_id', 'groups_id_tech'] // ignore the fields as it will be transformed to an array
+            [
+                // groups_id & groups_id_tech are returned as array
+                'groups_id',
+                'groups_id_tech',
+                // set only for some Itemtypes (eg. Appliance)
+                'domains_id',
+            ]
         );
-        $this->array($item->fields['groups_id'])->isEqualTo([1]);
-        $this->array($item->fields['groups_id_tech'])->isEqualTo([2]);
+
+        $this->assertEqualsCanonicalizing([1], $item->fields['groups_id']);
+        $this->assertEqualsCanonicalizing([2], $item->fields['groups_id_tech']);
 
         $updated = $item->update(['id' => $item->getID(), 'groups_id' => 3, 'groups_id_tech' => 4]);
-        $this->boolean($updated)->isTrue();
-        $this->array($item->fields['groups_id'])->isEqualTo([3]);
-        $this->array($item->fields['groups_id_tech'])->isEqualTo([4]);
+        $this->assertTrue($updated);
+        $this->assertEqualsCanonicalizing([3], $item->fields['groups_id']);
+        $this->assertEqualsCanonicalizing([4], $item->fields['groups_id_tech']);
     }
 
     public function testGenericAsset(): void
