@@ -558,7 +558,7 @@ TWIG, $twig_params);
      */
     public function embed(array $params)
     {
-        Toolbox::deprecated(version: '11.1.0');
+        Toolbox::deprecated(version: '12.0.0');
 
         // show embedded dashboard
         $this->initEmbed($params);

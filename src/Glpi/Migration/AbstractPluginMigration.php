@@ -494,7 +494,7 @@ abstract class AbstractPluginMigration
         string $target_itemtype,
         int $target_items_id
     ): void {
-        // TODO Deprecate this in GLPI 11.1.
+        // TODO Deprecate this in GLPI 12.0.
 
         $polymorphic_column_iterator = $this->db->request(
             [

@@ -430,7 +430,7 @@
             If `options` is not iterable, it means that this macro was used
             with its previous signature (name, value, label, options = {}).
             We get the `options` value from the extra positional arguments (available in `varargs`).
-            @TODO Add a deprecation in GLPI 11.1.
+            @TODO Add a deprecation in GLPI 12.0.
          #}
         {% set options = varargs[0]|default({}) %}
     {% endif %}
