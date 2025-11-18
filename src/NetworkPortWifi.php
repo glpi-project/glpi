@@ -50,6 +50,14 @@ class NetworkPortWifi extends NetworkPortInstantiation
         return ['link.mac' => 'mac'];
     }
 
+    /**
+     * @param NetworkPort $netport NetworkPort object :the port that owns this instantiation
+     *                               (useful for instance to get network port attributes)
+     * @param array $options array of options given to NetworkPort::showForm
+     * @param array $recursiveItems list of the items on which this port is attached
+     *
+     * @return void
+     */
     public function showInstantiationForm(NetworkPort $netport, $options, $recursiveItems)
     {
         if (!$options['several']) {
@@ -173,6 +181,12 @@ class NetworkPortWifi extends NetworkPortInstantiation
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
+    /**
+     * @param array $tab
+     * @param array $joinparams
+     *
+     * @return void
+     */
     public static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams)
     {
         $tab[] = [

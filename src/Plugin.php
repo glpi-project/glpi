@@ -638,6 +638,51 @@ class Plugin extends CommonDBTM
         }
     }
 
+    /**
+     * Load all lang files for a plugin
+     *
+     * @param string $plugin_key System name (Plugin directory)
+     * @return void
+     */
+    public static function loadAllLang(string $plugin_key): void
+    {
+        $available_languages = self::getAvailableLanguages($plugin_key);
+
+        foreach ($available_languages as $language) {
+            self::loadLang($plugin_key, $language);
+        }
+    }
+
+    /**
+     * Return available langcode for a plugin
+     *
+     * @param string $plugin_key
+     * @return array
+     */
+    public static function getAvailableLanguages(string $plugin_key): array
+    {
+        $plugin_directory = self::getPhpDir($plugin_key);
+        $locales_dir = $plugin_directory . '/locales/';
+        if (!is_dir($locales_dir)) {
+            return [];
+        }
+
+        // Scan locale files and extract available language codes
+        $available_languages = [];
+        foreach (scandir($locales_dir) as $locale_file) {
+            if ($locale_file === '.' || $locale_file === '..') {
+                continue;
+            }
+
+            // Extract language code from files like fr_FR.mo, en_GB.mo, ...
+            if (preg_match('/^([a-z]{2}_[A-Z]{2})\.mo$/', $locale_file, $matches)) {
+                $language_code = $matches[1];
+                $available_languages[] = $language_code;
+            }
+        }
+
+        return $available_languages;
+    }
 
     /**
      * Check plugins states and detect new plugins.

@@ -537,7 +537,9 @@ TWIG, $twig_params);
 
             if ($item::class === static::$itemtype_1) {
                 if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb = static::countForMainItem($item);
+                    $nb = static::countForMainItem($item, [
+                        'itemtype' => $_SESSION["glpiactiveprofile"]["helpdesk_item_type"],
+                    ]);
                 }
                 return static::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::class);
             } elseif ($_SESSION['glpishow_count_on_tabs'] && is_subclass_of(static::$itemtype_1, CommonITILObject::class)) {

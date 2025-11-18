@@ -30,7 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set users_id = (item.fields['users_id_recipient'] > 0 ? item.fields['users_id_recipient'] : 0) %}
+{% set users_id = item.getRecipientUserID() %}
 {% set entry_rand = random() %}
 
 <div class="timeline-item mb-3 ITILContent"

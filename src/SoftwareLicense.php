@@ -610,6 +610,9 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
         return $tab;
     }
 
+    /**
+     * @return array<int,array<string,mixed>>
+     */
     public static function rawSearchOptionsToAdd()
     {
         $tab = [];
@@ -739,7 +742,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
     /**
      * Give cron information
      *
-     * @param $name : task's name
+     * @param string $name task's name
      *
      * @return array of information
      * @used-by CronTask

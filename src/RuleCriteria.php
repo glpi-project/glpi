@@ -636,7 +636,9 @@ class RuleCriteria extends CommonDBChild
      *
      * @param string $itemtype
      * @param array  $params
-     **/
+     *
+     * @return int|string
+     */
     public static function dropdownConditions($itemtype, $params = [])
     {
         $p['name']             = 'condition';

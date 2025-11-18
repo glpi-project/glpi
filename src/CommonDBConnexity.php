@@ -118,6 +118,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      *
      * @param string  $itemtype  type of the item
      * @param integer $items_id  id of the item
+     * @return void
      **/
     public function cleanDBonItemDelete($itemtype, $items_id)
     {

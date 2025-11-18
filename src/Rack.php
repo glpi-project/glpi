@@ -98,6 +98,11 @@ class Rack extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbIn
         return $ong;
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     *
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype)
     {
         return [

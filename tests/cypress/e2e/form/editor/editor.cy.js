@@ -316,6 +316,53 @@ describe ('Form editor', () => {
         cy.findByRole('region', {'name': 'Section details'}).should('not.exist');
     });
 
+    it('can delete a non-empty section with confirmation modal', () => {
+        cy.createFormWithAPI().visitFormTab('Form');
+
+        // We must create at least one question before we can add a section
+        cy.addQuestion("First question");
+
+        // Create section
+        cy.addSection("Second section");
+
+        // Add a question in the section
+        cy.addQuestion("Second question");
+
+        // Delete first section
+        cy.findAllByRole('region', {'name': 'Section details'}).eq(0).within(() => {
+            cy.findByRole('button', {'name': "More actions"}).click();
+            cy.findByRole('button', {'name': "Delete section"}).click();
+        });
+
+        // The delete non-empty section modal should be displayed
+        cy.findByRole('dialog', {'name': 'Delete non-empty section'})
+            .should('have.attr', 'data-cy-shown', 'true')
+            .within(() => {
+                // Check that the message contains the count of elements
+                cy.get('[data-glpi-form-editor-delete-section-message]')
+                    .should('contain', '1')
+                    .should('contain', 'question');
+                cy.findByRole('button', {'name': 'Delete section and all its elements'}).click();
+            });
+
+        cy.findByRole('dialog', {'name': 'Delete non-empty section'}).should('not.exist');
+
+        // Check that the section and its question have been deleted
+        cy.findByRole('region', {'name': 'Section details'}).should('not.exist');
+        cy.findByRole('region', {'name': 'Question details'})
+            .findByRole('textbox', {'name': 'Question name'})
+            .should('have.value', 'Second question');
+
+        // Save and reload
+        cy.saveFormEditorAndReload();
+
+        // Check that the section and its question have been deleted
+        cy.findByRole('region', {'name': 'Section details'}).should('not.exist');
+        cy.findByRole('region', {'name': 'Question details'})
+            .findByRole('textbox', {'name': 'Question name'})
+            .should('have.value', 'Second question');
+    });
+
     it('can duplicate a section', () => {
         cy.createFormWithAPI().visitFormTab('Form');
 
@@ -331,6 +378,9 @@ describe ('Form editor', () => {
         cy.addQuestion("Second question");
         cy.addQuestion("Third question");
 
+        // Set question types to "Item" to test select2 duplication
+        cy.findAllByRole('option', {'name': 'New question'}).eq(-1).changeQuestionType('Item');
+
         // Duplicate second section
         cy.get('@sections').eq(1).as('second_section');
         cy.get('@second_section')
@@ -345,8 +395,29 @@ describe ('Form editor', () => {
         cy.findAllByRole('region', {'name': 'Section details'}).as('sections_details');
         cy.get('@sections_details').should('have.length', 3);
 
-        // Section 2 and 3 should be identical
-        [1, 2].forEach((section_index) => {
+        // Duplicate the third section (trying duplication of questions with lazy loaded select2)
+        cy.get('@sections').eq(2).as('third_section');
+        cy.get('@third_section')
+            .findByRole('button', {'name': "More actions"})
+            .click()
+        ;
+        cy.findByRole('button', {'name': "Duplicate section"}).click();
+
+        // There should now be 4 sections
+        cy.findAllByRole('region', {'name': 'Form section'}).as('sections_containers');
+        cy.findAllByRole('region', {'name': 'Section details'}).as('sections_details');
+        cy.get('@sections_details').should('have.length', 4);
+
+        // Check lazy loaded select2 in duplicated section
+        cy.get('@sections_containers').eq(-1).as('fourth_section');
+        cy.get('@fourth_section').findByRole('option', { 'name': 'Third question' }).within(() => {
+            cy.getDropdownByLabelText('Select an item').should('exist');
+            cy.findByRole('region', { 'name': 'Question details' }).click();
+            cy.getDropdownByLabelText('Question type').should('exist');
+        });
+
+        // Section 2, 3 and 4 should be identical
+        [1, 2, 3].forEach((section_index) => {
             cy.get('@sections_containers').eq(section_index).as('section_container');
             cy.get('@sections_details').eq(section_index).as('section_detail');
 

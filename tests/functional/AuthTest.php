@@ -39,6 +39,7 @@ use AuthLDAP;
 use AuthMail;
 use DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use User;
 
 /* Test for inc/auth.class.php */
 
@@ -154,7 +155,7 @@ class AuthTest extends DbTestCase
         // reset session to prevent session having less rights to create a user
         $this->login();
 
-        $user = new \User();
+        $user = new User();
         $username = 'test_lock_' . mt_rand();
         $user_id = (int) $user->add([
             'name'         => $username,
@@ -269,5 +270,43 @@ class AuthTest extends DbTestCase
             ),
             Auth::getMethodLink(Auth::EXTERNAL, $local_ldap_id)
         );
+    }
+
+    public function testPasswordCostUpdate(): void
+    {
+        $auth = new Auth();
+        $_SESSION["glpiextauth"] = false; //required to prevent undefined array index
+
+        //create a user - with a md5 password
+        $user = $this->createItem(User::class, ['name' => 'MD5 Passwd test', 'password' => md5('dapass')]);
+        $user->getFromDB($user->getID());
+        $this->assertSame('6902587896395f6b27f5aa550f69008a', $user->fields['password']);
+
+        //log in should update password to default PHP (BCRYPT currently)
+        $this->assertTrue($auth->login('MD5 Passwd test', 'dapass'));
+        $user->getFromDB($user->getID());
+        $this->assertStringStartsWith('$2y$', $user->fields['password']);
+
+        //create a user - with a sha1 password
+        $user = $this->createItem(User::class, ['name' => 'SHA1 Passwd test', 'password' => sha1('dapass')]);
+        $user->getFromDB($user->getID());
+        $this->assertSame('a5c805c5e55c0ce85e515e34ff9ae0b6a94d142a', $user->fields['password']);
+
+        //log in should update password to default PHP (BCRYPT currently)
+        $this->assertTrue($auth->login('SHA1 Passwd test', 'dapass'));
+        $user->getFromDB($user->getID());
+        $this->assertStringStartsWith('$2y$', $user->fields['password']);
+
+        //create a user - with a low cost password
+        $user = $this->createItem(User::class, ['name' => 'BCRYPT low cost Passwd test', 'password' => password_hash('dapass', PASSWORD_DEFAULT, ['cost' => 5])]);
+        $user->getFromDB($user->getID());
+        $this->assertStringStartsWith('$2y$05$', $user->fields['password']);
+
+        //log in should update password to default PHP (BCRYPT currently, with a higher default than 5)
+        $this->assertTrue($auth->login('BCRYPT low cost Passwd test', 'dapass'));
+        $user->getFromDB($user->getID());
+        $new_cost = null;
+        preg_match('/\$2y\$(\d+)\$.+/', $user->fields['password'], $new_cost);
+        $this->assertGreaterThan(5, (int) $new_cost[1]);
     }
 }

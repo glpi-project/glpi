@@ -156,6 +156,14 @@ final class ResourceAccessor
             } else {
                 $internal_name = $prop_name;
             }
+
+            // Modify the request params to support setting a dropdown value by its id as expected from the OpenAPI schema
+            foreach ($request_params as $key => $value) {
+                if (is_array($value) && array_key_exists('id', $value)) {
+                    $request_params[$key] = $value['id'];
+                }
+            }
+
             if (ArrayPathAccessor::hasElementByArrayPath($request_params, $prop_name)) {
                 $params[$internal_name] = ArrayPathAccessor::getElementByArrayPath($request_params, $prop_name);
             }

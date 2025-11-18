@@ -136,6 +136,8 @@ class RuleMatchedLog extends CommonDBTM
      * @global object $DB
      * @param integer $items_id
      * @param string $itemtype
+     *
+     * @return void
      */
     public function cleanOlddata($items_id, $itemtype)
     {

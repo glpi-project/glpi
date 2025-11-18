@@ -48,7 +48,7 @@ use Transfer;
 
 class Unmanaged extends MainAsset
 {
-    private $management_ports = [];
+    private array $management_ports = [];
 
     protected $extra_data = [
         'hardware'        => null,
@@ -142,6 +142,8 @@ class Unmanaged extends MainAsset
      * @param string        $itemtype Item type
      * @param integer       $rules_id Matched rule id, if any
      * @param integer|array $ports_id Matched port ids, if any
+     *
+     * @return void
      */
     public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
     {
@@ -319,6 +321,9 @@ class Unmanaged extends MainAsset
         return parent::handleLinks();
     }
 
+    /**
+     * @return array
+     */
     public function getManagementPorts()
     {
         return $this->management_ports;

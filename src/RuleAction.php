@@ -319,7 +319,9 @@ class RuleAction extends CommonDBChild
      * @param integer $ruleid Rule ID
      * @param string $field Field name
      * @param mixed $value Value
-     **/
+     *
+     * @return void
+     */
     public function addActionByAttributes($action, $ruleid, $field, $value)
     {
         $input = [
@@ -445,7 +447,9 @@ class RuleAction extends CommonDBChild
     /**
      * @param integer $rules_id
      * @param class-string<Rule> $sub_type
-     **/
+     *
+     * @return array
+     */
     public function getAlreadyUsedForRuleID($rules_id, $sub_type)
     {
         global $DB;
@@ -472,11 +476,15 @@ class RuleAction extends CommonDBChild
             }
             return $actions;
         }
+
+        return [];
     }
 
     /**
      * @param array $options
-     **/
+     *
+     * FIXME: should return a string, since method result is used... Or remove usage.
+     */
     public function displayActionSelectPattern($options = [])
     {
 

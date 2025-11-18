@@ -59,13 +59,16 @@ class NetworkPortInstantiation extends CommonDBChild
     public $auto_message_on_action   = false;
 
     // From CommonDBChild
-    public static $itemtype       = 'NetworkPort';
+    public static $itemtype       = NetworkPort::class;
     public static $items_id       = 'networkports_id';
     public $dohistory             = false;
 
     // Instantiation properties
+    /** @var bool */
     public $canHaveVLAN           = true;
+    /** @var bool */
     public $canHaveVirtualPort    = true;
+    /** @var bool */
     public $haveMAC               = true;
 
     public static function getIndexName()
@@ -81,12 +84,19 @@ class NetworkPortInstantiation extends CommonDBChild
      *                                     (usefull, for instance to get network port attributs
      * @param array       $options         array of options given to NetworkPort::showForm
      * @param array       $recursiveItems  list of the items on which this port is attached
-     **/
+     *
+     * @return void
+     */
     public function showInstantiationForm(NetworkPort $netport, $options, $recursiveItems)
     {
         echo "<div class='alert alert-info'>" . __s('No options available for this port type.') . "</div>";
     }
 
+    /**
+     * @param array $input
+     *
+     * @return array
+     */
     public function prepareInput($input)
     {
         // Try to get mac address from the instantiation ...
@@ -116,6 +126,9 @@ class NetworkPortInstantiation extends CommonDBChild
         $this->manageSocket();
     }
 
+    /**
+     * @return void
+     */
     public function manageSocket()
     {
         // add link to define
@@ -249,14 +262,16 @@ class NetworkPortInstantiation extends CommonDBChild
 
     /**
      * Select which network card to attach to the current NetworkPort (for the moment, only ethernet
-     * and wifi ports). Whenever a card is attached, its information (mac, type, ...) are
-     * autmatically set to the required field.
+     * and Wi-Fi ports). Whenever a card is attached, its information (mac, type, ...) are
+     * automatically set to the required field.
      *
      * @param NetworkPort $netport   NetworkPort object :the port that owns this instantiation
-     *                               (usefull, for instance to get network port attributs
+     *                               (useful for instance to get network port attributs)
      * @param array $options         array of options given to NetworkPort::showForm
      * @param array $recursiveItems  list of the items on which this port is attached
-     **/
+     *
+     * @return void
+     */
     public function showNetworkCardField(NetworkPort $netport, $options = [], $recursiveItems = [])
     {
         global $CFG_GLPI, $DB;
@@ -372,7 +387,9 @@ TWIG, $twig_params);
      * @param NetworkPort $netport object : the port that owns this instantiation
      *                         (usefull, for instance to get network port attributs
      * @param array $options Array of options given to NetworkPort::showForm
-     **/
+     *
+     * @return void
+     */
     public function showMacField(NetworkPort $netport, $options = [])
     {
         // language=Twig
@@ -389,7 +406,9 @@ TWIG, ['label' => __('MAC'), 'mac' => $netport->fields['mac']]);
      *                                     (usefull, for instance to get network port attributs
      * @param array       $options         array of options given to NetworkPort::showForm
      * @param array       $recursiveItems  list of the items on which this port is attached
-     **/
+     *
+     * @return void
+     */
     public function showSocketField(NetworkPort $netport, $options = [], $recursiveItems = [])
     {
         $socket_id = 0;
@@ -429,6 +448,8 @@ TWIG, $twig_params);
      *     <li>NetworkPortAlias are based on one NetworkPort wherever</li>
      *     <li>NetworkPortAggregate are based on several NetworkPort</li>
      * </ul>
+     *
+     * @return void
      **/
     public function showNetworkPortSelector($recursiveItems, $origin)
     {
@@ -564,6 +585,8 @@ TWIG, $twig_params);
     /**
      * @param array $tab
      * @param array $joinparams
+     *
+     * @return void
      **/
     public static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams) {}
 
@@ -573,7 +596,9 @@ TWIG, $twig_params);
      *
      * @param NetworkPort $netport  to be displayed
      * @param boolean     $edit     permit to edit ? (false by default)
-     **/
+     *
+     * @return void|false
+     */
     public static function showConnection($netport, $edit = false)
     {
         $ID = $netport->getID();
@@ -590,7 +615,7 @@ TWIG, $twig_params);
         $relations_id = 0;
         $oppositePort = NetworkPort_NetworkPort::getOpposite($netport, $relations_id);
 
-        if ($oppositePort !== false) {
+        if ($oppositePort instanceof NetworkPort) {
             $device2 = $oppositePort->getItem();
 
             if ($device2->can($device2->fields["id"], READ)) {

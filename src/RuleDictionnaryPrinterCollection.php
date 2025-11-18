@@ -233,6 +233,8 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
 
     /**
      * @param array $IDS
+     *
+     * @return void
      */
     public function putOldPrintersInTrash($IDS = [])
     {
@@ -249,7 +251,9 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
      * @param array $res_rule        array of rule results
      * @param array $params
      * @param array &$printers_ids   array containing replay printer need to be put in trashbin
-     **/
+     *
+     * @return void
+     */
     public function replayDictionnaryOnOnePrinter(
         array &$new_printers,
         array $res_rule,

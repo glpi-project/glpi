@@ -204,7 +204,18 @@ final class FakeProvider extends Provider
             default => throw new InvalidArgumentException("Invalid case: $case"),
         };
 
-        $icon = Ticket::getStatusIcon($case);
+        $icon = match ($case) {
+            'notold' => Ticket::getIcon(),
+            'late' => 'ti ti-clock',
+            'waiting_validation' => 'ti ti-eye',
+            'incoming' => Ticket::getIcon(),
+            'waiting' => 'ti ti-player-pause-filled',
+            'assigned' => 'ti ti-users',
+            'planned' => 'ti ti-calendar',
+            'solved' => 'ti ti-checkbox',
+            'closed' => 'ti ti-archive',
+            default => throw new InvalidArgumentException("Invalid case: $case"),
+        };
 
         return [
             'number'     => $number,

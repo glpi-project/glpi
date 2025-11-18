@@ -290,9 +290,11 @@ TWIG, $twig_params);
             && in_array($field, ['name', 'answer'])
         ) {
             $first = array_shift($found);
-            return $first[$field];
+            if ($first[$field] !== null && $first[$field] !== "") {
+                return $first[$field];
+            }
         }
-        return $item->fields[$field];
+        return $item->fields[$field] ?? "";
     }
 
     /**

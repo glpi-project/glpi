@@ -66,6 +66,13 @@ interface ConditionHandlerInterface
      */
     public function getTemplateParameters(ConditionData $condition): array;
 
+    /**
+     * Applies the given value operator to the two given values.
+     * @param mixed         $a        Input value
+     * @param ValueOperator $operator The operator to apply
+     * @param mixed         $b        Condition value
+     * @return bool Result of the operation
+     */
     public function applyValueOperator(
         mixed $a,
         ValueOperator $operator,

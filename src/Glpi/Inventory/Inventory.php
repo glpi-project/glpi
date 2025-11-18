@@ -107,7 +107,7 @@ class Inventory
 
     /** @var integer */
     protected $mode;
-    /** @var stdClass */
+    /** @var ?stdClass */
     protected $raw_data = null;
     /** @var array */
     protected $data = [];
@@ -154,6 +154,11 @@ class Inventory
         }
     }
 
+    /**
+     * @param self::FULL_MODE|self::INCR_MODE $mode
+     *
+     * @return self
+     */
     public function setMode($mode = self::FULL_MODE): Inventory
     {
         $this->mode = $mode;
@@ -284,6 +289,10 @@ class Inventory
 
     /**
      * CONTACT request from agent
+     *
+     * @param stdClass $data
+     *
+     * @return void
      */
     public function contact($data)
     {
@@ -573,6 +582,9 @@ class Inventory
         return (bool) count($this->errors);
     }
 
+    /**
+     * @return array|false
+     */
     public static function getMenuContent()
     {
         if (!Session::haveRight(Conf::$rightname, Conf::IMPORTFROMFILE)) {
@@ -942,6 +954,9 @@ class Inventory
         }
     }
 
+    /**
+     * @return string
+     */
     public static function getIcon()
     {
         return "ti ti-cloud-download";
@@ -952,6 +967,9 @@ class Inventory
         return $this->metadata;
     }
 
+    /**
+     * @return InventoryAsset[]
+     */
     public function getAssets()
     {
         return $this->assets;
@@ -967,6 +985,11 @@ class Inventory
         return $this->item;
     }
 
+    /**
+     * @param string $name
+     *
+     * @return array
+     */
     public static function cronInfo($name)
     {
         switch ($name) {
@@ -1099,6 +1122,11 @@ class Inventory
         return 1;
     }
 
+    /**
+     * @param int $nb
+     *
+     * @return string
+     */
     public static function getTypeName($nb = 0)
     {
         return __("Inventory");

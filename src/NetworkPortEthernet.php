@@ -53,6 +53,11 @@ class NetworkPortEthernet extends NetworkPortInstantiation
         return ['link.mac' => 'mac'];
     }
 
+    /**
+     * @param array $input
+     *
+     * @return array
+     */
     public function prepareInput($input)
     {
         if (isset($input['speed']) && ($input['speed'] === 'speed_other_value')) {
@@ -289,6 +294,12 @@ TWIG, $twig_params);
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
+    /**
+     * @param array $tab
+     * @param array $joinparams
+     *
+     * @return void
+     */
     public static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams)
     {
         $tab[] = [

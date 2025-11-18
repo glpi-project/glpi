@@ -121,6 +121,11 @@
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
                </div>
                <div class="modal-body">
+                  {% if not call('\Glpi\Toolbox\VersionParser::isStableRelease', [constant('GLPI_VERSION')]) %}
+                      <div class='alert alert-important alert-warning d-flex'>
+                        <strong>⚠️  {{ __("This version is UNSTABLE and some SECURITY FIXES may not be included.") }} ⚠️</strong>
+                      </div>
+                  {% endif %}
                   <p><a href="http://glpi-project.org/" title="Powered by Teclib and contributors" class="copyright">
                      GLPI {{ constant('GLPI_VERSION') }}
                      Copyright (C) 2015-{{ constant('GLPI_YEAR') }} Teclib' and contributors

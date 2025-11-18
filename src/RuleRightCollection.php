@@ -188,7 +188,9 @@ class RuleRightCollection extends RuleCollection
     }
 
     /**
-     * Get the list of fields to be retreived to process rules
+     * Get the list of fields to be retrieved to process rules
+     *
+     * @return array
      **/
     public function getFieldsForQuery()
     {

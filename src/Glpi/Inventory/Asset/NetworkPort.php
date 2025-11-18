@@ -40,6 +40,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\FilesToJSON;
+use mysqli_stmt;
 use NetworkPort as GlobalNetworkPort;
 use NetworkPort_NetworkPort;
 use NetworkPort_Vlan;
@@ -60,14 +61,14 @@ class NetworkPort extends InventoryAsset
     use InventoryNetworkPort {
         handlePorts as protected handlePortsTrait;
     }
-    private $connections = [];
-    private $aggregates = [];
-    private $vlans = [];
-    private $connection_ports = [];
-    private $current_port;
-    private $current_connection;
-    private $vlan_stmt;
-    private $pvlan_stmt;
+    private array $connections = [];
+    private array $aggregates = [];
+    private array $vlans = [];
+    private array $connection_ports = [];
+    private stdClass $current_port;
+    private stdClass $current_connection;
+    private mysqli_stmt $vlan_stmt;
+    private mysqli_stmt $pvlan_stmt;
     protected Conf $conf;
 
     public function prepare(): array
@@ -124,7 +125,7 @@ class NetworkPort extends InventoryAsset
             }
 
             if (property_exists($val, 'vlans')) {
-                $this->vlans += $this->prepareVlans($val->vlans, $val->ifnumber);
+                $this->vlans += $this->prepareVlans($val->vlans, (int) $val->ifnumber);
                 unset($val->vlans);
             }
 
@@ -250,11 +251,12 @@ class NetworkPort extends InventoryAsset
     /**
      * Prepare network ports vlans
      *
-     * @param array $vlans Port vlans
+     * @param array $vlans    Port vlans
+     * @param int   $ifnumber Port ifnumber
      *
      * @return array
      */
-    private function prepareVlans($vlans, $ifnumber)
+    private function prepareVlans(array $vlans, int $ifnumber): array
     {
         $results = [];
 
@@ -277,7 +279,7 @@ class NetworkPort extends InventoryAsset
         return $results;
     }
 
-    private function handleLLDPConnection(stdClass $port, int $netports_id)
+    private function handleLLDPConnection(stdClass $port, int $netports_id): void
     {
         if (!property_exists($port, 'logical_number') || !isset($this->connections[$port->logical_number])) {
             return;
@@ -347,7 +349,7 @@ class NetworkPort extends InventoryAsset
         unset($this->current_connection);
     }
 
-    private function handleMacConnection(stdClass $port, int $netports_id)
+    private function handleMacConnection(stdClass $port, int $netports_id): void
     {
         if (!property_exists($port, 'logical_number') || !isset($this->connections[$port->logical_number])) {
             return;
@@ -423,7 +425,7 @@ class NetworkPort extends InventoryAsset
         }
     }
 
-    private function handleVlans(stdClass $port, int $netports_id)
+    private function handleVlans(stdClass $port, int $netports_id): void
     {
         global $DB;
 
@@ -505,7 +507,7 @@ class NetworkPort extends InventoryAsset
                 ];
                 $stmt_types = str_repeat('s', count($stmt_columns));
 
-                if ($this->vlan_stmt === null) {
+                if (!isset($this->vlan_stmt)) {
                     $reference = array_fill_keys(
                         array_keys($stmt_columns),
                         new QueryParam()
@@ -533,7 +535,7 @@ class NetworkPort extends InventoryAsset
             ];
             $pvlan_stmt_types = str_repeat('s', count($pvlan_stmt_columns));
 
-            if ($this->pvlan_stmt === null) {
+            if (!isset($this->pvlan_stmt)) {
                 $reference = array_fill_keys(
                     array_keys($pvlan_stmt_columns),
                     new QueryParam()
@@ -551,7 +553,7 @@ class NetworkPort extends InventoryAsset
         }
     }
 
-    private function handleMetrics(stdClass $port, int $netports_id)
+    private function handleMetrics(stdClass $port, int $netports_id): void
     {
         $input = (array) $port;
         //only update networkport metric if needed
@@ -567,7 +569,7 @@ class NetworkPort extends InventoryAsset
         }
     }
 
-    private function prepareAggregations(stdClass $port, int $netports_id)
+    private function prepareAggregations(stdClass $port, int $netports_id): void
     {
         if (!property_exists($port, 'logical_number')) {
             return;
@@ -595,7 +597,7 @@ class NetworkPort extends InventoryAsset
         }
     }
 
-    private function handleAggregations()
+    private function handleAggregations(): void
     {
         $netport_aggregate = new NetworkPortAggregate();
 
@@ -619,7 +621,7 @@ class NetworkPort extends InventoryAsset
         }
     }
 
-    private function handleConnections(stdClass $port, int $netports_id)
+    private function handleConnections(stdClass $port, int $netports_id): void
     {
         if ($this->isLLDP($port)) {
             $this->handleLLDPConnection($port, $netports_id);
@@ -636,16 +638,34 @@ class NetworkPort extends InventoryAsset
         $this->handlePorts();
     }
 
+    /**
+     * @param stdClass $port
+     * @param int $netports_id
+     *
+     * @return void
+     */
     protected function portUpdated(stdClass $port, int $netports_id)
     {
         $this->portChanged($port, $netports_id);
     }
 
+    /**
+     * @param stdClass $port
+     * @param int $netports_id
+     *
+     * @return void
+     */
     protected function portCreated(stdClass $port, int $netports_id)
     {
         $this->portChanged($port, $netports_id);
     }
 
+    /**
+     * @param stdClass $port
+     * @param int $netports_id
+     *
+     * @return void
+     */
     protected function portChanged(stdClass $port, int $netports_id)
     {
         $this->handleConnections($port, $netports_id);
@@ -661,6 +681,8 @@ class NetworkPort extends InventoryAsset
      * @param string        $itemtype Item type
      * @param integer       $rules_id Matched rule id, if any
      * @param integer|array $ports_id Matched port ids, if any
+     *
+     * @return void
      */
     public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
     {
@@ -803,6 +825,12 @@ class NetworkPort extends InventoryAsset
         return (bool) ($port->lldp ?? $port->cdp);
     }
 
+    /**
+     * @param ?string $itemtype
+     * @param ?int $items_id
+     *
+     * @return void
+     */
     public function handlePorts($itemtype = null, $items_id = null)
     {
         $mainasset = $this->extra_data[$this->main_asset::class];
@@ -932,6 +960,14 @@ class NetworkPort extends InventoryAsset
         return in_array($this->item::class, $CFG_GLPI['networkport_types']);
     }
 
+    /**
+     * Retrieve connections, aggregates, vlans or connection_ports
+     * Added for tests.
+     *
+     * @param string $part Part to retrieve
+     *
+     * @return array|void
+     */
     public function getPart($part)
     {
         if (!in_array($part, ['connections', 'aggregates', 'vlans', 'connection_ports'])) {

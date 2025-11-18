@@ -1050,7 +1050,7 @@ final class SQLProvider implements SearchProviderInterface
                             Problem::getType(),
                             'problems_id',
                             "glpi_problems_users",
-                            "glpi_problems_groups"
+                            "glpi_groups_problems"
                         )),
                     ],
                 ];

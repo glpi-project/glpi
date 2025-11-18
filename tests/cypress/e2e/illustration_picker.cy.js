@@ -107,6 +107,7 @@ describe('Illustration picker', () => {
             'Business Intelligence and Reporting 1',
             'Business Intelligence and Reporting 2',
             'Business Intelligence and Reporting 3',
+            'Business Intelligence and Reporting 4',
         ];
 
         // Only 3 icons must be found

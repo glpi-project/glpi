@@ -571,6 +571,11 @@ class Consumable extends CommonDBChild
         ]);
     }
 
+    /**
+     * @param User $user
+     *
+     * @return void
+     */
     public static function showForUser(User $user)
     {
         global $DB;

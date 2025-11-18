@@ -509,6 +509,11 @@ class Software extends InventoryAsset
         }
     }
 
+    /**
+     * @param stdClass $val
+     *
+     * @return string
+     */
     public function getOsForKey($val)
     {
         if ($val->operatingsystems_id > 0) {

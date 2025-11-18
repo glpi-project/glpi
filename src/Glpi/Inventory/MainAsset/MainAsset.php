@@ -100,7 +100,7 @@ abstract class MainAsset extends InventoryAsset
     protected $partial = false;
     /** @var bool */
     protected bool $is_discovery = false;
-
+    /** @var int */
     protected $current_key;
 
     public function __construct(CommonDBTM $item, $data)
@@ -364,6 +364,11 @@ abstract class MainAsset extends InventoryAsset
         }
     }
 
+    /**
+     * @param stdClass $val
+     *
+     * @return void
+     */
     protected function prepareForBios($val)
     {
         $bios = (object) $this->extra_data['bios'];
@@ -625,6 +630,11 @@ abstract class MainAsset extends InventoryAsset
         }
     }
 
+    /**
+     * @param array $input
+     *
+     * @return void
+     */
     protected function addRefused(array $input)
     {
         $refused_input = [
@@ -681,6 +691,8 @@ abstract class MainAsset extends InventoryAsset
      * @param string        $itemtype Item type
      * @param int|null      $rules_id Matched rule id, if any (else null)
      * @param integer|array $ports_id Matched port id, if any
+     *
+     * @return void
      */
     public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
     {
@@ -1017,6 +1029,9 @@ abstract class MainAsset extends InventoryAsset
         return $this->is_recursive;
     }
 
+    /**
+     * @return void
+     */
     public function handleAssets()
     {
         $key = $this->current_key;
@@ -1135,6 +1150,8 @@ abstract class MainAsset extends InventoryAsset
 
     /**
      * Is an access point
+     *
+     * @param stdClass $object
      *
      * @return boolean
      */

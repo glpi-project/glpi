@@ -63,16 +63,19 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     public const IMPACT_MASK_FIELD    = 'impact_mask';
     public const STATUS_MATRIX_FIELD  = 'problem_status';
 
+    #[Override]
     public static function getTypeName($nb = 0)
     {
         return _n('Problem', 'Problems', $nb);
     }
 
+    #[Override]
     public static function getSectorizedDetails(): array
     {
         return ['helpdesk', self::class];
     }
 
+    #[Override]
     public function canSolve()
     {
 
@@ -90,17 +93,14 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
+    #[Override]
     public static function canView(): bool
     {
         return Session::haveRightsOr(self::$rightname, [self::READALL, self::READMY]);
     }
 
 
-    /**
-     * Is the current user have right to show the current problem ?
-     *
-     * @return boolean
-     **/
+    #[Override]
     public function canViewItem(): bool
     {
 
@@ -126,11 +126,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
-    /**
-     * Is the current user have right to create the current problem ?
-     *
-     * @return boolean
-     **/
+    #[Override]
     public function canCreateItem(): bool
     {
 
@@ -142,11 +138,8 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
 
 
     /**
-     * is the current user could reopen the current problem
-     *
      * @since 9.4.0
-     *
-     * @return boolean
+     * @return bool
      */
     public function canReopen()
     {
@@ -157,6 +150,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
+    #[Override]
     public function pre_deleteItem()
     {
         global $CFG_GLPI;
@@ -168,6 +162,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
+    #[Override]
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
@@ -216,6 +211,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
+    #[Override]
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
@@ -236,6 +232,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
+    #[Override]
     public function defineTabs($options = [])
     {
         $ong = [];
@@ -257,6 +254,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
+    #[Override]
     public function cleanDBonPurge()
     {
         // CommonITILTask does not extends CommonDBConnexity
@@ -281,6 +279,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
+    #[Override]
     public function post_updateItem($history = true)
     {
         global $CFG_GLPI;
@@ -323,6 +322,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
+    #[Override]
     public function prepareInputForAdd($input)
     {
         $input =  parent::prepareInputForAdd($input);
@@ -352,6 +352,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
         return $input;
     }
 
+    #[Override]
     public function prepareInputForUpdate($input)
     {
         $input = $this->transformActorsInput($input);
@@ -364,6 +365,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
+    #[Override]
     public function post_addItem()
     {
         global $DB;
@@ -439,6 +441,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
+    #[Override]
     public function getSpecificMassiveActions($checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
@@ -455,6 +458,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
+    #[Override]
     public function rawSearchOptions()
     {
         $tab = [];
@@ -584,6 +588,10 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @return array
+     */
     public static function rawSearchOptionsToAdd(string $itemtype)
     {
         global $CFG_GLPI;
@@ -709,6 +717,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
         return $tab;
     }
 
+    #[Override]
     public static function getAllStatusArray($withmetaforsearch = false)
     {
         $tab = [
@@ -795,16 +804,18 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     /**
      * @since 0.84
      *
-     * @param $start
-     * @param $status             (default 'proces)
-     * @param $showgroupproblems  (true by default)
+     * @param int $start
+     * @param string $status             (default 'proces)
+     * @param bool $showgroupproblems  (true by default)
+     *
+     * @return void
      **/
     public static function showCentralList($start, $status = "process", $showgroupproblems = true)
     {
         global $CFG_GLPI, $DB;
 
         if (!static::canView()) {
-            return false;
+            return;
         }
 
         $WHERE = [
@@ -1108,6 +1119,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @param bool $foruser only for current login user as requester
      * @param bool $display if false, return html
+     * @return ($display is true ? void : string)
      **/
     public static function showCentralCount(bool $foruser = false, bool $display = true)
     {
@@ -1115,7 +1127,10 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
 
         // show a tab with count of jobs in the central and give link
         if (!static::canView()) {
-            return false;
+            if (!$display) {
+                return '';
+            }
+            return;
         }
         if (!Session::haveRight(self::$rightname, self::READALL)) {
             $foruser = true;
@@ -1232,10 +1247,10 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
 
     /**
      * @since 0.84
-     *
-     * @param $ID
-     * @param $forcetab  string   name of the tab to force at the display (default '')
-     **/
+     * @param int $ID
+     * @param string $forcetab
+     * @return void
+     */
     public static function showVeryShort($ID, $forcetab = '')
     {
         // Prints a job in short form
@@ -1368,6 +1383,10 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
         Item_Problem::showListForItem($item, $withtemplate, $options);
     }
 
+    /**
+     * @param CommonDBTM $item
+     * @return array
+     */
     public static function getListForItemRestrict(CommonDBTM $item)
     {
         $restrict = [];
@@ -1529,16 +1548,19 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
+    #[Override]
     public static function getIcon()
     {
         return "ti ti-alert-triangle";
     }
 
+    #[Override]
     public static function getItemLinkClass(): string
     {
         return Item_Problem::class;
     }
 
+    #[Override]
     public static function getContentTemplatesParametersClassInstance(): CommonITILObjectParameters
     {
         return new ProblemParameters();

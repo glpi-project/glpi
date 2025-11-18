@@ -1428,10 +1428,10 @@ export class GlpiFormEditorController
 
         if (uuid) {
             let targetElement;
-            if (type === 'question') {
-                // Find question with matching UUID
+            if (type === 'question' || type === 'comment') {
+                // Find block with matching UUID
                 targetElement = $(this.#target)
-                    .find('[data-glpi-form-editor-question]')
+                    .find('[data-glpi-form-editor-block]')
                     .filter((_index, item) => this.#getItemInput($(item), "uuid") === uuid)
                     .first();
             } else if (type === 'section') {
@@ -1544,7 +1544,7 @@ export class GlpiFormEditorController
         // Look for select2 to init
         copy.find("select").each(function() {
             let selected_values;
-            if (is_from_duplicate_action) {
+            if (is_from_duplicate_action && $(this).hasClass("select2-hidden-accessible")) {
                 // Retrieve selected values
                 selected_values = $(this).select2("data");
 
@@ -1593,10 +1593,14 @@ export class GlpiFormEditorController
                     && config !== undefined
                 ) {
                     config.field_id = new_id;
-                    select2_to_init.push(config);
+                    window.select2_configs[new_id] = config;
 
-                    if (selected_values) {
-                        select2_values_to_restore[new_id] = selected_values;
+                    if ($(this).attr('data-glpi-loaded') !== 'false') {
+                        select2_to_init.push(config);
+
+                        if (selected_values) {
+                            select2_values_to_restore[new_id] = selected_values;
+                        }
                     }
                 }
             }
@@ -2163,6 +2167,120 @@ export class GlpiFormEditorController
             return;
         }
 
+        // Check if the section has any blocks (questions or comments)
+        const blocks = section.find("[data-glpi-form-editor-block]");
+        if (blocks.length > 0) {
+            // Check if any block in the section is used in conditions outside the section
+            const sectionUuid = this.#getItemInput(section, "uuid");
+
+            const dependencies = blocks.map((_index, block) => {
+                const $block = $(block);
+                const blockType = $block.is('[data-glpi-form-editor-question]') ? 'question' : 'comment';
+                return this.#getItemConditionDependencies(blockType, $block);
+            }).get().map(dep => {
+                // Filter out dependencies that are within the same section
+                const externalConditions = dep.conditionsUsingItem.filter((_idx, conditionElement) => {
+                    const parentSection = $(conditionElement).closest('[data-glpi-form-editor-section]');
+                    const parentSectionUuid = this.#getItemInput(parentSection, "uuid");
+                    return parentSectionUuid !== sectionUuid;
+                });
+
+                return {
+                    conditionsUsingItem: externalConditions,
+                    destinationsUsingItem: dep.destinationsUsingItem,
+                    itemUsedBySubmitButton: dep.itemUsedBySubmitButton
+                };
+            }).reduce((all, dep) => {
+                return {
+                    conditionsUsingItem: all.conditionsUsingItem.add(dep.conditionsUsingItem),
+                    destinationsUsingItem: all.destinationsUsingItem.concat(dep.destinationsUsingItem),
+                    itemUsedBySubmitButton: all.itemUsedBySubmitButton || dep.itemUsedBySubmitButton
+                };
+            }, { conditionsUsingItem: $(), destinationsUsingItem: [], itemUsedBySubmitButton: false });
+
+            if (
+                dependencies.conditionsUsingItem.length > 0
+                || dependencies.destinationsUsingItem.length > 0
+            ) {
+                this.#showItemHasConditionsModal(
+                    'section',
+                    dependencies.conditionsUsingItem,
+                    dependencies.destinationsUsingItem,
+                    dependencies.itemUsedBySubmitButton,
+                    'section_child_elements_deletion'
+                );
+                return;
+            }
+
+            // Section is not empty and has no external dependencies, show confirmation modal
+            this.#showDeleteNonEmptySectionModal(section);
+            return;
+        }
+
+        // Section is empty, proceed with deletion
+        this.#performSectionDeletion(section);
+    }
+
+    /**
+     * Show the modal warning about deleting a non-empty section
+     *
+     * @param {jQuery} section The section to delete
+     */
+    #showDeleteNonEmptySectionModal(section) {
+        const blocks = section.find("[data-glpi-form-editor-block]");
+
+        // Count questions and comments
+        let questionCount = 0;
+        let commentCount = 0;
+
+        blocks.each((_index, block) => {
+            const $block = $(block);
+            if ($block.is('[data-glpi-form-editor-question]')) {
+                questionCount++;
+            } else if ($block.is('[data-glpi-form-editor-comment]')) {
+                commentCount++;
+            }
+        });
+
+        // Build the message
+        const messageParts = [];
+        if (questionCount > 0) {
+            const questionText = _n('question', 'questions', questionCount);
+            messageParts.push(`${questionCount} ${questionText}`);
+        }
+        if (commentCount > 0) {
+            const commentText = _n('comment', 'comments', commentCount);
+            messageParts.push(`${commentCount} ${commentText}`);
+        }
+
+        const elementsText = messageParts.join(` ${__('and')} `);
+        const message = __('Deleting this section will also delete %s. This action cannot be undone.')
+            .replace('%s', elementsText);
+
+        // Set the message in the modal
+        $('[data-glpi-form-editor-delete-section-message]').text(message);
+
+        // Set up the confirm button handler
+        $('[data-glpi-form-editor-confirm-delete-section]')
+            .off('click')
+            .on('click', () => {
+                // Hide modal
+                $('[data-glpi-form-editor-delete-non-empty-section-modal]').modal('hide');
+
+                // Proceed with deletion
+                this.#performSectionDeletion(section);
+            });
+
+        // Show the modal
+        $('[data-glpi-form-editor-delete-non-empty-section-modal]').modal('show');
+    }
+
+    /**
+     * Perform the actual section deletion (after checks and confirmations)
+     *
+     * @param {jQuery} section The section to delete
+     */
+    #performSectionDeletion(section) {
         if (section.prev().length == 0) {
             // If this is the first section of the form, set the next section as active if it exists
             if (section.next().length > 0 && this.#getSectionCount() > 2) {
@@ -2186,8 +2304,9 @@ export class GlpiFormEditorController
             }
         }
 
-        // Remove question and update UX
+        // Remove section and update UX
         section.remove();
+        this.#refreshUX();
     }
 
     /**

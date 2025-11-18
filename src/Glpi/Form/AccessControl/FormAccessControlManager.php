@@ -149,17 +149,14 @@ final class FormAccessControlManager
      */
     public function sortAccessControls(array $controls): array
     {
-        // Sort by is_active + strategy weight
-        usort($controls, function (FormAccessControl $a, FormAccessControl $b) {
-            if ($a->fields['is_active'] && !$b->fields['is_active']) {
-                return -1;
-            } elseif (!$a->fields['is_active'] && $b->fields['is_active']) {
-                return 1;
-            } else {
-                $strategy = $a->getStrategy();
-                return $strategy->getWeight() <=> $strategy->getWeight();
-            }
-        });
+        // Sort by strategy weight
+        usort(
+            $controls,
+            fn(
+                FormAccessControl $a,
+                FormAccessControl $b,
+            ): int => $a->getStrategy()->getWeight() <=> $b->getStrategy()->getWeight()
+        );
 
         return $controls;
     }

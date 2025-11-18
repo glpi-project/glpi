@@ -43,7 +43,7 @@
    no_label: true
 }) }}
 
-{% macro sysinfo_section(label, content, raw = false) %}
+{% macro sysinfo_section(label, content, raw = false, raw_precontent = '') %}
    {% set rand = random() %}
    {% set cleaned_content = content|trim|u.wordwrap(128) %}
    <div class="accordion-item">
@@ -51,6 +51,7 @@
          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#sysinfo_section_{{ rand }}">{{ label }}</button>
       </div>
       <div id="sysinfo_section_{{ rand }}" class="accordion-collapse collapse" aria-labelledby="sysinfo_header_{{ rand }}" data-bs-parent="#sysinfo_accordion">
+         {{ raw_precontent|raw }}
          <pre class="section-content">{{ raw ? cleaned_content|raw : cleaned_content|e }}</pre>
       </div>
    </div>
@@ -61,6 +62,14 @@
     (constant('Glpi\\System\\Diagnostic\\SourceCodeIntegrityChecker::STATUS_MISSING')): 'D',
     (constant('Glpi\\System\\Diagnostic\\SourceCodeIntegrityChecker::STATUS_ADDED')): 'A',
 } %}
+
+{% set glpi_info_precontent %}
+    {% if not call('\Glpi\Toolbox\VersionParser::isStableRelease', [constant('GLPI_VERSION')]) %}
+        <div class='alert alert-important alert-warning d-flex'>
+            <strong>⚠️  {{ __("This version is UNSTABLE and some SECURITY FIXES may not be included.") }} ⚠️</strong>
+        </div>
+    {% endif %}
+{% endset %}
 
 {% set glpi_info %}
 GLPI: {{ ver }} ({{ config('root_doc') }} => {{ constant('GLPI_ROOT') }})
@@ -128,7 +137,7 @@ Requirements:
 {% endset %}
 
 <div class="accordion" id="sysinfo_accordion">
-   {{ _self.sysinfo_section('GLPI information', glpi_info) }}
+   {{ _self.sysinfo_section('GLPI information', glpi_info, false, glpi_info_precontent) }}
    {{ _self.sysinfo_section('Server', server_info, true) }}
    {{ _self.sysinfo_section('GLPI constants', constants_info, true) }}
    {% for info_obj in system_info_objs %}

@@ -34,9 +34,11 @@
 
 namespace tests\units;
 
+use Central;
 use Change;
 use ChangeTask;
 use CommonITILObject;
+use Config;
 use DbTestCase;
 use ITILFollowup;
 use ITILFollowupTemplate;
@@ -1535,5 +1537,79 @@ class PendingReasonTest extends DbTestCase
         // Verify that the pending reason was deleted
         $pending_item = PendingReason_Item::getForItem($ticket);
         $this->assertFalse($pending_item, 'PendingReason_Item should be deleted when status is changed by a rule');
+    }
+
+    public function testPendingReasonWarningMessage(): void
+    {
+        $this->login();
+
+        // Arrange: Enable notifications
+        Config::setConfigurationValues('core', ['use_notifications' => 1]);
+
+        // Arrange: Create a ticket
+        $ticket = new Ticket();
+        $tickets_id = $ticket->add([
+            'name'    => 'Test ticket for pending reason warning',
+            'content' => 'This ticket tests the pending reason warning system',
+        ]);
+        $this->assertGreaterThan(0, $tickets_id);
+        $this->assertTrue($ticket->getFromDB($tickets_id));
+
+        // Arrange: Add a followup to the ticket with "Pending" status but no pending reason
+        $this->createItem(ITILFollowup::class, [
+            'itemtype'           => Ticket::class,
+            'items_id'          => $ticket->getID(),
+            'content'           => 'This is a followup that sets the ticket to pending without a reason',
+            'pending'           => 1,
+        ], ['pending']);
+
+        // Act: Reload ticket to get updated data
+        $this->assertTrue($ticket->getFromDB($tickets_id));
+
+        // Assert: Verify that the ticket status is "Waiting"
+        $this->assertEquals(CommonITILObject::WAITING, $ticket->fields['status']);
+
+        // Assert: Verify that NO warning is displayed when no pending reason is defined
+        $messages = $this->callPrivateMethod(new Central(), 'getMessages');
+        $this->assertArrayHasKey('warnings', $messages);
+
+        $warning_found = false;
+        foreach ($messages['warnings'] as $warning) {
+            if (strpos($warning, 'You have defined pending reasons without any respective active') !== false) {
+                $warning_found = true;
+                break;
+            }
+        }
+        $this->assertFalse($warning_found, 'Warning should not be displayed when no pending reason is defined');
+
+        // Arrange: Now create a pending reason
+        $pending_reason = $this->createItem(PendingReason::class, [
+            'name' => 'Test Pending Reason for Warning',
+        ]);
+
+        // Arrange: Add a followup to the ticket with "Pending" status and pending reason
+        $this->createItem(ITILFollowup::class, [
+            'itemtype'                    => Ticket::class,
+            'items_id'                    => $ticket->getID(),
+            'content'                     => 'This is a followup that sets the ticket to pending without a reason',
+            'pending'                     => 1,
+            'pendingreasons_id'           => $pending_reason->getID(),
+            'followup_frequency'          => 604800,
+            'followups_before_resolution' => 3,
+        ], ['pending', 'pendingreasons_id', 'followup_frequency', 'followups_before_resolution']);
+
+        // Act: Get messages again
+        $messages = $this->callPrivateMethod(new Central(), 'getMessages');
+        $this->assertArrayHasKey('warnings', $messages);
+
+        // Assert: Verify that the warning IS displayed when a pending reason exists without active tickets
+        $warning_found = false;
+        foreach ($messages['warnings'] as $warning) {
+            if (strpos($warning, 'You have defined pending reasons without any respective active') !== false) {
+                $warning_found = true;
+                break;
+            }
+        }
+        $this->assertTrue($warning_found, 'Expected warning about missing pending reason not found');
     }
 }

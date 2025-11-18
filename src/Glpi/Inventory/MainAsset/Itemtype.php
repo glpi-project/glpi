@@ -73,6 +73,11 @@ class Itemtype extends MainAsset
         return '';
     }
 
+    /**
+     * @param string $original_itemtype
+     *
+     * @return array
+     */
     public function defineItemtype($original_itemtype): array
     {
         $blacklist = new Blacklist();

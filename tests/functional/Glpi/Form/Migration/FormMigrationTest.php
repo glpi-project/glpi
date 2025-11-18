@@ -93,6 +93,7 @@ use GlpiPlugin\Tester\Form\QuestionTypeIpConverter;
 use Group;
 use ITILCategory;
 use Location;
+use LogicException;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -3738,6 +3739,47 @@ final class FormMigrationTest extends DbTestCase
             [1], // "A" will be assigned the first index, which is 1-based
             $condition->getValue()
         );
+    }
+
+    public function testMigrationOfSpecificCategoryItemtype(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Arrange: create a form with an item question on the formcreator
+        // category type
+        // This is a special type that needs to be replaced by the new native
+        // category type
+        $id = $this->createSimpleFormcreatorForm(
+            name: "Form with formcreator category",
+            questions: [
+                [
+                    'name'      => 'My item question',
+                    'fieldtype' => 'dropdown',
+                    'itemtype'  => "PluginFormcreatorCategory",
+                    'values'    => "{\"show_tree_depth\":\"0\",\"show_tree_root\":\"0\",\"selectable_tree_root\":\"0\",\"entity_restrict\":0}",
+                ],
+            ],
+        );
+
+        // Act: import the form
+        $control_manager = FormAccessControlManager::getInstance();
+        $migration = new FormMigration(
+            db: $DB,
+            formAccessControlManager: $control_manager,
+            specificFormsIds: [$id],
+        );
+        $migration->execute();
+
+        // Assert: check that the itemtype was configured to the native categories
+        $form = getItemByTypeName(Form::class, "Form with formcreator category");
+        $question_id = $this->getQuestionId($form, "My item question");
+        $question = Question::getById($question_id);
+        $config = $question->getExtraDataConfig();
+        if (!$config instanceof QuestionTypeItemExtraDataConfig) {
+            throw new LogicException();
+        }
+        $this->assertEquals(Category::class, $config->getItemtype());
     }
 
     protected function createSimpleFormcreatorForm(

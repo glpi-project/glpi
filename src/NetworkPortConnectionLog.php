@@ -61,6 +61,11 @@ class NetworkPortConnectionLog extends CommonDBRelation
         return $array_ret;
     }
 
+    /**
+     * @param NetworkPort $netport
+     *
+     * @return array
+     */
     public function getCriteria(NetworkPort $netport)
     {
         return [
@@ -81,6 +86,12 @@ class NetworkPortConnectionLog extends CommonDBRelation
         return false;
     }
 
+    /**
+     * @param NetworkPort $netport
+     * @param array       $user_filters
+     *
+     * @return void
+     */
     public function showForItem(NetworkPort $netport, $user_filters = [])
     {
         global $DB;

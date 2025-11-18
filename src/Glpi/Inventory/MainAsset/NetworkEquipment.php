@@ -49,7 +49,7 @@ use function Safe\preg_replace;
 
 class NetworkEquipment extends MainAsset
 {
-    private $management_ports = [];
+    private array $management_ports = [];
 
     protected $extra_data = [
         'network_device'                          => null,
@@ -201,6 +201,8 @@ class NetworkEquipment extends MainAsset
      * @param string        $itemtype Item type
      * @param integer       $rules_id Matched rule id, if any
      * @param integer|array $ports_id Matched port id, if any
+     *
+     * @return void
      */
     public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
     {
@@ -255,6 +257,12 @@ class NetworkEquipment extends MainAsset
         return parent::handleLinks();
     }
 
+    /**
+     * @param stdClass $port
+     * @param int $netports_id
+     *
+     * @return void
+     */
     protected function portCreated(stdClass $port, int $netports_id)
     {
         if (property_exists($port, 'is_internal') && $port->is_internal) {
@@ -279,6 +287,9 @@ class NetworkEquipment extends MainAsset
         }
     }
 
+    /**
+     * @return array
+     */
     public function getManagementPorts()
     {
         return $this->management_ports;
@@ -441,6 +452,9 @@ class NetworkEquipment extends MainAsset
         return $aps;
     }
 
+    /**
+     * @return string
+     */
     public function getStackId()
     {
         if (count($this->data) != 1) {
@@ -459,6 +473,10 @@ class NetworkEquipment extends MainAsset
     /**
      * Try to know if networkEquipement need to be updated from discovery
      * Only if IP has changed
+     *
+     * @param \CommonDBTM $item
+     * @param stdClass    $val
+     *
      * @return boolean
      */
     public static function needToBeUpdatedFromDiscovery(\CommonDBTM $item, $val)
