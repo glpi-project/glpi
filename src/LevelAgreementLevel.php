@@ -218,8 +218,7 @@ abstract class LevelAgreementLevel extends RuleTicket
 
     public function getCriterias()
     {
-
-        $actions = parent::getActions();
+        $actions = parent::getCriterias();
 
         unset($actions['olas_id']);
         unset($actions['slas_id']);
