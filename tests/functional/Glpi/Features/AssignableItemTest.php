@@ -87,7 +87,7 @@ class AssignableItemTest extends \DbTestCase
                 $class::getNameField() => __FUNCTION__ . ' 1',
                 'groups_id'            => [1, 2],
                 'groups_id_tech'       => [3],
-                'domains_id'            => getItemByTypeName(Domain::class, '_testDomain', true),
+
             ],
             [
                 'domains_id',
