@@ -83,6 +83,7 @@
 
    {% if date_displayed or la_displayed %}
       {% set la_html %}
+         {# display for existing sla/ola #}
          {% if la_field.la.getDataForTicket(item.fields['id'], la_field.type) %}
             {% if date_displayed %}
                <span class="text-muted">
@@ -100,6 +101,7 @@
                         {{ get_item_name(la_field.la.getType(), item.fields[la_field.lafieldname]) }}
                      </span>
 
+                     {# delete button #}
                      {% if can_assign_sla_ola %}
                         <i class="ti ti-x ms-1" role="button"
                            onclick="delete_date_{{ rand }}(event)"
@@ -143,6 +145,7 @@
                </script>
             {% endif %}
          {% else %}
+            {# --- display form input (no sla/ola defined) --- #}
             <div class="d-flex align-items-center flex-wrap">
                {% set assign_la_id = 'assign_la_' ~ rand %}
 
@@ -162,6 +165,7 @@
                {% endif %}
 
                {% if la_displayed %}
+                  {# dropdown to choose an existing sla/ola #}
                   <div class="{{ item.isNewItem() ? '' : 'collapsed' }} w-100 mt-1 d-none" id="dropdown_{{ assign_la_id }}">
                      {{ fields.dropdownField(
                         la_field.la.getType(),
@@ -227,6 +231,7 @@
             </div>
          {% endif %}
       {% endset %}
+
       {{ fields.field(
          la_field.lafieldname,
          la_html,
