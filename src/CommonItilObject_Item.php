@@ -659,7 +659,7 @@ TWIG, $twig_params);
      *
      * @return bool|void (display a table)
      **/
-    public static function showListForItem(CommonDBTM $item, $withtemplate = 0, $options = [])
+    public static function showListForItem(CommonDBTM $item, $withtemplate = 0, array $options = [])
     {
         global $DB;
 
@@ -1333,7 +1333,7 @@ TWIG, $twig_params);
     /**
      * Form for Followup on Massive action
      **/
-    public static function showFormMassiveAction($ma)
+    public static function showFormMassiveAction(MassiveAction $ma): void
     {
         global $CFG_GLPI;
 
@@ -1606,7 +1606,7 @@ TWIG, $twig_params);
                 $options['value'] = $values[$field];
                 return Dropdown::show($values['itemtype'], $options);
             } else {
-                static::dropdownAllDevices($name, 0, 0);
+                static::dropdownAllDevices($name, '', 0);
                 return ' ';
             }
         }
@@ -1614,14 +1614,14 @@ TWIG, $twig_params);
     }
 
     public static function dropdownAllDevices(
-        $myname,
-        $itemtype,
-        $items_id = 0,
-        $admin = 0,
-        $users_id = 0,
-        $entity_restrict = -1,
-        $options = []
-    ) {
+        string $myname,
+        string $itemtype,
+        int $items_id = 0,
+        int $admin = 0,
+        int $users_id = 0,
+        int $entity_restrict = -1,
+        array $options = []
+    ): int {
         global $CFG_GLPI;
 
         $params = [static::$items_id_1 => 0,
