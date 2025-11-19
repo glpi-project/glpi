@@ -54,6 +54,7 @@ use Glpi\Team\Team;
 class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInterface, TeamworkInterface
 {
     use Kanban;
+    /** @use Clonable<Project> */
     use Clonable;
     use Teamwork;
 
@@ -2501,7 +2502,7 @@ TWIG, $twig_params);
     /**
      * Update the specified project's percent_done based on the percent_done of subprojects and tasks.
      * This function indirectly updates the percent done for all parents if they are set to automatically update.
-     * @param int|numeric-string $ID The ID of the project to recalculate.
+     * @param int $ID The ID of the project to recalculate.
      * @since 9.5.0
      * @return boolean False if the specified project is not set to automatically update the percent done.
      */
@@ -2561,7 +2562,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param class-string<CommonDBTM> $itemtype
+     * @param class-string<CommonDBTM>|null $itemtype
      * @return array
      */
     public static function rawSearchOptionsToAdd($itemtype = null)

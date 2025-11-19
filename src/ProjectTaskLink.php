@@ -52,6 +52,7 @@ class ProjectTaskLink extends CommonDBRelation
     /**
      * @param string $projecttaskIds Comma-separated list of project task IDs
      * @return DBmysqlIterator
+     * @used-by gantt plugin
      */
     public function getFromDBForItemIDs($projecttaskIds)
     {

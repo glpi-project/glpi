@@ -2109,7 +2109,7 @@ TWIG, $twig_params);
      * Update the specified project task's percent_done based on the percent_done of sub-tasks.
      * This function indirectly updates the percent done for all parent tasks if they are set to automatically update.
      * The parent project's percent_done is not updated here to avoid duplicate updates.
-     * @param int|numeric-string $ID The ID of the project task to recalculate.
+     * @param int $ID The ID of the project task to recalculate.
      * @since 9.5.0
      * @return boolean False if the specified project task is not set to automatically update the percent done.
      */
