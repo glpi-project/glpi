@@ -591,7 +591,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
         return ((int) $result['cpt']) + $count;
     }
 
-    public static function manageLinksOnChange($itemtype, $items_id, $changes): void
+    public static function manageLinksOnChange(string $itemtype, int $items_id, array $changes): void
     {
         if ($itemtype === Ticket::class) {
             $ticket = new Ticket();

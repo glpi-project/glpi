@@ -192,7 +192,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
      *
      * @param Problem $problem
      **/
-    public static function showForProblem(Problem $problem)
+    public static function showForProblem(Problem $problem): bool
     {
         $ID = $problem->getField('id');
 
@@ -260,6 +260,8 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
                 'extraparams'      => ['problems_id' => $problem->getID()],
             ],
         ]);
+
+        return true;
     }
 
     /**
@@ -267,7 +269,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
      *
      * @param Ticket $ticket object
      **/
-    public static function showForTicket(Ticket $ticket)
+    public static function showForTicket(Ticket $ticket): bool
     {
 
         $ID = $ticket->getField('id');
@@ -331,6 +333,8 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
                 'container'     => 'mass' . static::class . $rand,
             ],
         ]);
+
+        return true;
     }
 
     /**

@@ -207,7 +207,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
      *
      * @param Change $change
      **/
-    public static function showForChange(Change $change)
+    public static function showForChange(Change $change): bool
     {
         global $DB;
 
@@ -300,6 +300,8 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
                 'extraparams'      => ['changes_id' => $change->getID()],
             ],
         ]);
+
+        return true;
     }
 
 
@@ -308,7 +310,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
      *
      * @param Ticket $ticket object
      **/
-    public static function showForTicket(Ticket $ticket)
+    public static function showForTicket(Ticket $ticket): bool
     {
         global $DB;
 
@@ -396,5 +398,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
                 'container'     => 'mass' . static::class . $rand,
             ],
         ]);
+
+        return true;
     }
 }

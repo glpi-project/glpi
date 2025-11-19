@@ -103,7 +103,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
      *
      * @param Problem $problem
      **/
-    public static function showForProblem(Problem $problem)
+    public static function showForProblem(Problem $problem): bool
     {
         global $DB;
 
@@ -188,6 +188,8 @@ class Change_Problem extends CommonITILObject_CommonITILObject
                 'container'     => 'mass' . static::class . $rand,
             ],
         ]);
+
+        return true;
     }
 
     /**
@@ -195,7 +197,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
      *
      * @param Change $change object
      **/
-    public static function showForChange(Change $change)
+    public static function showForChange(Change $change): bool
     {
         global $DB;
 
@@ -279,5 +281,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
                 'container'     => 'mass' . static::class . $rand,
             ],
         ]);
+
+        return true;
     }
 }
