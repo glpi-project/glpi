@@ -30,7 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set theme = current_theme() %}
+{% set theme = anonymous_theme() %}
 {% if css_files is not defined %}
    {% set css_files = [
        {'path': 'lib/base.css'},
@@ -38,6 +38,13 @@
        {'path': 'css/glpi.scss'},
        {'path': 'css/core_palettes.scss'}
    ] %}
+
+   {# Load custom theme CSS if a custom theme is detected for anonymous pages #}
+   {% if theme.isCustomTheme() %}
+      {% set theme_path = theme.getKey() ~ '?is_custom_theme=1' %}
+      {% set css_files = css_files|merge([{'path': theme_path}]) %}
+   {% endif %}
+
    {# TODO : load hight contrast css #}
 {% endif %}
 {% if js_files is not defined %}

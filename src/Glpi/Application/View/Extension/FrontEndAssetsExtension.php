@@ -78,6 +78,7 @@ class FrontEndAssetsExtension extends AbstractExtension
             new TwigFunction('config_js', [$this, 'configJs'], ['is_safe' => ['html']]),
             new TwigFunction('locales_js', [$this, 'localesJs'], ['is_safe' => ['html']]),
             new TwigFunction('current_theme', [$this, 'currentTheme']),
+            new TwigFunction('anonymous_theme', [$this, 'anonymousTheme']),
             new TwigFunction('importmap', [$this, 'importmap'], ['is_safe' => ['html']]),
         ];
     }
@@ -90,6 +91,16 @@ class FrontEndAssetsExtension extends AbstractExtension
     public function currentTheme(): Theme
     {
         return ThemeManager::getInstance()->getCurrentTheme();
+    }
+
+    /**
+     * Anonymous theme for login and other non-logged pages
+     *
+     * @return Theme
+     */
+    public function anonymousTheme(): Theme
+    {
+        return ThemeManager::getInstance()->getAnonymousTheme();
     }
 
     /**

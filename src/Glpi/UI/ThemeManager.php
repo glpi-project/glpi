@@ -224,4 +224,36 @@ class ThemeManager
         }
         return null;
     }
+
+    /**
+     * Get theme for anonymous pages (login page)
+     *
+     * This method checks if there's a custom branding theme configured for the root entity (ID 0)
+     * which should be applied on anonymous pages like the login page.
+     *
+     * @return Theme Custom theme for entity 0 if found, default theme otherwise
+     */
+    public function getAnonymousTheme(): Theme
+    {
+        // Check if branding plugin is available and get the custom palette for entity 0
+        if (class_exists('PluginBrandingCustomPaletteEntity')) {
+            try {
+                $custom_palette = \PluginBrandingCustomPaletteEntity::getCustomPalette(0);
+                if ($custom_palette instanceof \PluginBrandingCustomPalette) {
+                    $theme_key = 'plugin_branding_' . $custom_palette->getID();
+                    $custom_theme = $this->getTheme($theme_key);
+
+                    if ($custom_theme !== null) {
+                        return $custom_theme;
+                    }
+                }
+            } catch (\Exception $e) {
+                // Silently fail if branding plugin is not available or misconfigured
+                // Log the error in debug mode if needed
+            }
+        }
+
+        // Fallback to default theme if no custom branding theme is configured for entity 0
+        return $this->getTheme(self::DEFAULT_THEME) ?? $this->getCoreThemes()[0];
+    }
 }
