@@ -37,6 +37,7 @@ namespace tests\units;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Search\SearchOption;
 use Psr\Log\LogLevel;
+use Webhook;
 
 class WebhookTest extends \DbTestCase
 {
@@ -359,5 +360,36 @@ JSON;
                 ),
             ]
         );
+    }
+
+    public function testItemtypeDropdownExcludesNoReadItemtypes()
+    {
+        $this->login();
+        $this->assertContains('Computer', Webhook::getItemtypesDropdownValues()['Assets']);
+        $this->assertContains('Monitor', Webhook::getItemtypesDropdownValues()['Assets']);
+        $_SESSION['glpiactiveprofile']['computer'] = ALLSTANDARDRIGHT & ~READ;
+        $this->assertNotContains('Computer', Webhook::getItemtypesDropdownValues()['Assets']);
+        $this->assertContains('Monitor', Webhook::getItemtypesDropdownValues()['Assets']);
+    }
+
+    public function testCreateUpdateNoReadItemtypes()
+    {
+        $this->login();
+        $webhook = $this->createItem('Webhook', [
+            'name' => 'Test webhook',
+            'entities_id' => $_SESSION['glpiactive_entity'],
+            'url' => 'http://localhost',
+            'itemtype' => 'Computer',
+            'event' => 'new',
+            'is_active' => 1,
+            'use_default_payload' => 1,
+        ]);
+        $this->assertTrue($webhook->canUpdateItem());
+        $_SESSION['glpiactiveprofile']['computer'] = ALLSTANDARDRIGHT & ~READ;
+        $this->assertFalse($webhook->canUpdateItem());
+
+        $this->assertFalse($webhook->canCreateItem());
+        $webhook->fields['itemtype'] = 'Monitor';
+        $this->assertTrue($webhook->canCreateItem());
     }
 }
