@@ -139,7 +139,7 @@ final class Lexer
                 // Now the operator is started
                 $pos++;
                 $char = mb_substr($query, $pos, 1, 'UTF-8');
-                if (!isset($char) || ($char !== '=' && $char !== '!')) {
+                if (empty($char) || ($char !== '=' && $char !== '!')) {
                     throw new RSQLException('', sprintf(__('RSQL query is missing an operator in filter for property "%1$s"'), $tokens[count($tokens) - 1][1]));
                 }
                 $fn_validate_pos();
@@ -149,7 +149,7 @@ final class Lexer
                     $buffer .= mb_substr($query, ++$pos, 1, 'UTF-8');
                 }
                 $nextChar = mb_substr($query, $pos + 1, 1, 'UTF-8');
-                if (!isset($nextChar) || $nextChar !== '=') {
+                if (empty($nextChar) || $nextChar !== '=') {
                     throw new RSQLException('', sprintf(__('RSQL query has an incomplete operator in filter for property "%1$s"'), $tokens[count($tokens) - 1][1]));
                 }
                 $tokens[] = [self::T_OPERATOR, $buffer . '='];
@@ -159,7 +159,7 @@ final class Lexer
                 $fn_validate_pos();
                 $in_value = true;
                 $char = mb_substr($query, $pos, 1, 'UTF-8');
-                if (!isset($char)) {
+                if (empty($char)) {
                     $tokens[] = [self::T_UNSPECIFIED_VALUE, ''];
                     break;
                 }
