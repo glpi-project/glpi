@@ -252,7 +252,7 @@
         {% endif %}
     {% endif %}
 
-    <div class="btn-group flex-grow-1 flatpickr d-flex" id="{{ options.id }}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Enter or select a date') }}">
+    <div class="btn-group flex-grow-1 flatpickr d-flex" id="{{ options.id }}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{  options.readonly ? __('Date') : __('Enter or select a date') }}">
         {{ _self.input(name, value, options|merge({
             'type': 'text',
             'id': options.id ~ '_input',
