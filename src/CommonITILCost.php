@@ -361,7 +361,7 @@ abstract class CommonITILCost extends CommonDBChild
      *
      * @param integer $items_id ID of the item
      **/
-    public function getTotalActionTimeForItem($items_id): int|null
+    public function getTotalActionTimeForItem($items_id): ?int
     {
         global $DB;
 
