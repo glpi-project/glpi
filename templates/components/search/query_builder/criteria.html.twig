@@ -36,15 +36,6 @@
 {% set add_class = add_class|default('') %}
 {% set normalized_itemtype = itemtype|replace({'\\': ''}) %}
 
-{% if mainform is defined and mainform %}
-    {% set item = itemtype != 'AllAssets' ? call('getItemForItemtype', [itemtype]) : null %}
-    {% if item is not null and item.maybeDeleted() %}
-        <input type="hidden" id="is_deleted" name="is_deleted" value="{{ p['is_deleted'] }}">
-    {% endif %}
-    <input type="hidden" id="as_map" name="as_map" value="{{ p['as_map'] }}">
-    <input type="hidden" id="browse" name="browse" value="{{ p['browse'] }}">
-    <input type="hidden" id="unpublished" name="unpublished" value="{{ p['unpublished'] }}">
-{% endif %}
 {% if meta and not from_meta %}
    {{ call("Glpi\\Search\\Input\\QueryBuilder::displayMetaCriteria", [{
       from_meta: from_meta ?? false,
