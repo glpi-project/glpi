@@ -72,6 +72,7 @@ use Glpi\Message\MessageType;
 use Group_Item;
 use LogicException;
 use Override;
+use PluginGenericobjectType;
 use Profile;
 use ProfileRight;
 use RuntimeException;
@@ -578,7 +579,9 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                     // These cannot be migrated this way, as a specific SO IDs mapping have to be applied.
                     DisplayPreference::class,
                     SavedSearch::class,
-                    'PluginGenericobjectType',
+
+                    // Ignore self reference in the `genericobject` plugin table
+                    PluginGenericobjectType::class,
                 ],
             );
 
