@@ -578,6 +578,9 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                     // These cannot be migrated this way, as a specific SO IDs mapping have to be applied.
                     DisplayPreference::class,
                     SavedSearch::class,
+
+                    // Ignore self reference in the `genericobject` plugin table
+                    'PluginGenericobjectType',
                 ],
             );
 
