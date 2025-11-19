@@ -50,7 +50,6 @@ use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Glpi\UI\ThemeManager;
 use Group;
-use Log;
 use Planning;
 use Profile;
 use Session;
@@ -1315,14 +1314,16 @@ EOT,
     #[Route(path: '/EventLog', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.2')]
     #[Doc\SearchRoute(schema_name: 'EventLog')]
-    public function searchEventLogs(Request $request): Response {
+    public function searchEventLogs(Request $request): Response
+    {
         return ResourceAccessor::searchBySchema($this->getKnownSchema('EventLog', $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/EventLog/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.2')]
     #[Doc\GetRoute(schema_name: 'EventLog')]
-    public function getEventLogByID(Request $request): Response {
+    public function getEventLogByID(Request $request): Response
+    {
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('EventLog', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 }
