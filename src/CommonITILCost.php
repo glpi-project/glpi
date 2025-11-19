@@ -57,7 +57,7 @@ abstract class CommonITILCost extends CommonDBChild
         return Infocom::getIcon();
     }
 
-    public function getItilObjectItemType()
+    public function getItilObjectItemType(): string
     {
         return str_replace('Cost', '', static::class);
     }
@@ -361,7 +361,7 @@ abstract class CommonITILCost extends CommonDBChild
      *
      * @param integer $items_id ID of the item
      **/
-    public function getTotalActionTimeForItem($items_id)
+    public function getTotalActionTimeForItem($items_id): int|null
     {
         global $DB;
 
@@ -379,7 +379,7 @@ abstract class CommonITILCost extends CommonDBChild
      *
      * @param integer $items_id ID of the item
      **/
-    public function getLastCostForItem($items_id)
+    public function getLastCostForItem($items_id): array|false
     {
         global $DB;
 
