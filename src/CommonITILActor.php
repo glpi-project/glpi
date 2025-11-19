@@ -49,7 +49,7 @@ abstract class CommonITILActor extends CommonDBRelation
     public const OBSERVER  = 3;
 
     /**
-     * @return string
+     * @return ?string
      */
     public function getActorForeignKey()
     {
@@ -57,7 +57,7 @@ abstract class CommonITILActor extends CommonDBRelation
     }
 
     /**
-     * @return string
+     * @return ?string
      */
     public static function getItilObjectForeignKey()
     {
