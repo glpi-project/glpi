@@ -109,6 +109,7 @@ abstract class CommonITILActor extends CommonDBRelation
     /**
      * @param int $items_id
      * @param string $email
+     *
      * @return bool
      */
     public function isAlternateEmailForITILObject($items_id, $email)

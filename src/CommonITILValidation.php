@@ -69,6 +69,9 @@ abstract class CommonITILValidation extends CommonDBChild
         return 'ti ti-thumb-up';
     }
 
+    /**
+     * @return string
+     */
     public static function getItilObjectItemType()
     {
         return str_replace('Validation', '', static::class);
@@ -105,18 +108,27 @@ abstract class CommonITILValidation extends CommonDBChild
         return $class ? getItemForItemtype($class) : null;
     }
 
+    /**
+     * @return int[]
+     */
     public static function getCreateRights()
     {
         return [CREATE];
     }
 
 
+    /**
+     * @return int[]
+     */
     public static function getPurgeRights()
     {
         return [PURGE];
     }
 
 
+    /**
+     * @return int[]
+     */
     public static function getValidateRights()
     {
         return [static::VALIDATE];
@@ -225,8 +237,10 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
     /**
-     * @param integer $items_id ID of the item
-     **/
+     * @param int $items_id ID of the item
+     *
+     * @return bool
+     */
     public static function canValidate($items_id)
     {
         global $DB;
@@ -619,12 +633,11 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * get the Ticket validation status list
      *
-     * @param $withmetaforsearch  boolean (false by default)
-     * @param $global             boolean (true for global status, with "no validation" option)
-     *                                    (false by default)
+     * @param bool $withmetaforsearch  false by default)
+     * @param bool $global             true for global status, with "no validation" option, false by default
      *
      * @return array
-     **/
+     */
     public static function getAllStatusArray($withmetaforsearch = false, $global = false)
     {
 
@@ -695,6 +708,8 @@ abstract class CommonITILValidation extends CommonDBChild
      *
      * @param integer   $value
      * @param bool      $decorated
+     *
+     * @return string
      **/
     public static function getStatus($value, bool $decorated = false)
     {
@@ -726,7 +741,9 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * Get Ticket validation status Color
      *
-     * @param integer $value status ID
+     * @param int $value status ID
+     *
+     * @return string
      **/
     public static function getStatusColor($value)
     {
@@ -753,7 +770,9 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * Get item validation demands count for a user
      *
-     * @param $users_id  integer  User ID
+     * @param int $users_id User ID
+     *
+     * @return int
      **/
     public static function getNumberToValidate($users_id)
     {
@@ -781,7 +800,7 @@ abstract class CommonITILValidation extends CommonDBChild
             ],
         ]);
 
-        return $it->current()['cpt'];
+        return (int) $it->current()['cpt'];
     }
 
     /**
@@ -878,6 +897,8 @@ abstract class CommonITILValidation extends CommonDBChild
 
     /**
      * Form for Followup on Massive action
+     *
+     * @return void
      **/
     public static function showFormMassiveAction()
     {
@@ -1406,6 +1427,9 @@ HTML;
     }
 
 
+    /**
+     * @return array
+     */
     public static function rawSearchOptionsToAdd()
     {
         $tab = [];
@@ -1939,15 +1963,15 @@ HTML;
     }
 
     /**
-     * @param $item       CommonITILObject
-     * @param $type
+     * @param CommonITILObject $item
+     * @param string $type
      *
      * Used in twig template
+     *
+     * @return void
      */
     public static function alertValidation(CommonITILObject $item, $type)
     {
-        global $CFG_GLPI;
-
         // No alert for new item
         if ($item->isNewID($item->getID())) {
             return;

@@ -597,6 +597,8 @@ abstract class CommonDropdown extends CommonDBTM
     /**
      * Report if a dropdown have Child
      * Used to (dis)allow delete action
+     *
+     * @return false
      **/
     public function haveChildren()
     {
@@ -609,6 +611,8 @@ abstract class CommonDropdown extends CommonDBTM
      * And propose a value to replace
      *
      * since 11.0.0 The `$target` parameter has been removed and its value is automatically computed.
+     *
+     * @return bool
      */
     public function showDeleteConfirmForm()
     {
@@ -679,6 +683,8 @@ abstract class CommonDropdown extends CommonDBTM
         echo "</td></tr></table>\n";
         Html::closeForm();
         echo "</div>";
+
+        return true;
     }
 
 
@@ -920,8 +926,10 @@ abstract class CommonDropdown extends CommonDBTM
     /**
      * Get links to Faq
      *
-     * @param $withname  boolean  also display name ? (false by default)
-     **/
+     * @param bool $withname also display name ? (false by default)
+     *
+     * @return string
+     */
     public function getLinks($withname = false)
     {
         global $CFG_GLPI;
