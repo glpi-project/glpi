@@ -44,9 +44,12 @@ use Glpi\Features\AssignableItem;
 use Glpi\Features\Clonable;
 use Glpi\Socket;
 use Glpi\Tests\DbTestCase;
+use Group;
+use Group_User;
 use Item_DeviceSimcard;
 use Monitor;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Printer;
 use Profile;
 use Session;
 use State;
@@ -2228,7 +2231,7 @@ HTML;
     {
         return [
             [\CartridgeItem::class], [Computer::class], [\ConsumableItem::class], [Monitor::class], [\NetworkEquipment::class],
-            [\Peripheral::class], [\Phone::class], [\Printer::class], [\Software::class],
+            [\Peripheral::class], [\Phone::class], [Printer::class], [\Software::class],
         ];
     }
 
@@ -2240,7 +2243,7 @@ HTML;
         $this->assertTrue(\Toolbox::hasTrait($itemtype, AssignableItem::class));
 
         // Create group for the user
-        $group = new \Group();
+        $group = new Group();
         $this->assertGreaterThan(
             0,
             $groups_id = $group->add([
@@ -2250,7 +2253,7 @@ HTML;
             ])
         );
         // Add user to group
-        $group_user = new \Group_User();
+        $group_user = new Group_User();
         $this->assertGreaterThan(
             0,
             $group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']])
@@ -2331,7 +2334,7 @@ HTML;
         $this->assertTrue(\Toolbox::hasTrait($itemtype, AssignableItem::class));
 
         // Create group for the user
-        $group = new \Group();
+        $group = new Group();
         $this->assertGreaterThan(
             0,
             $groups_id = $group->add([
@@ -2341,7 +2344,7 @@ HTML;
             ])
         );
         // Add user to group
-        $group_user = new \Group_User();
+        $group_user = new Group_User();
         $this->assertGreaterThan(
             0,
             $group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']])
@@ -2653,47 +2656,83 @@ HTML;
     {
         $this->login();
 
-        // Use existing admin user (ID 2) from test DB
-        $userID = 2;
-        $entity_id = $this->getTestRootEntity(true); // true to get ID instead of object
+        $user_id   = \getItemByTypeName(User::class, 'glpi', true);
+        $group_id  = \getItemByTypeName(Group::class, '_test_group_1', true);
+        $entity_id = $this->getTestRootEntity(true);
 
-        // Create test equipment owned by user using GLPI's createItem helper
-        $computer = $this->createItem('Computer', [
+        // Add `glpi` user inside the test group
+        $this->createItem(
+            Group_User::class,
+            [
+                'groups_id' => $group_id,
+                'users_id'  => $user_id,
+            ]
+        );
+
+        // Create test equipment owned by user/group using GLPI's createItem helper
+        $computer_1 = $this->createItem('Computer', [
             'name' => 'Test Laptop',
-            'users_id' => $userID,
+            'users_id' => $user_id,
             'entities_id' => $entity_id,
             'serial' => 'LAP123',
             'otherserial' => 'INV456',
         ]);
+        $computer_2 = $this->createItem('Computer', [
+            'name' => 'Test group Laptop',
+            'groups_id' => [$group_id],
+            'entities_id' => $entity_id,
+            'serial' => 'LAP456',
+            'otherserial' => 'INV789',
+        ]);
 
-        $monitor = $this->createItem('Monitor', [
+        $monitor_1 = $this->createItem('Monitor', [
             'name' => 'Test Monitor 24"',
-            'users_id' => $userID,
+            'users_id' => $user_id,
             'entities_id' => $entity_id,
             'serial' => 'MON789',
         ]);
+        $monitor_2 = $this->createItem('Monitor', [
+            'name' => 'Test group Monitor 24"',
+            'groups_id' => [$group_id],
+            'entities_id' => $entity_id,
+            'serial' => 'MON999',
+        ]);
 
-        $printer = $this->createItem('Printer', [
+        $printer_1 = $this->createItem('Printer', [
             'name' => 'Test Printer HP',
-            'users_id' => $userID,
+            'users_id' => $user_id,
             'entities_id' => $entity_id,
             'serial' => 'PRT321',
+        ]);
+        $printer_2 = $this->createItem('Printer', [
+            'name' => 'Test group Printer HP',
+            'users_id' => \getItemByTypeName(User::class, 'post-only', true), // not visible for glpi user
+            'groups_id' => [\getItemByTypeName(Group::class, '_test_group_1', true)], // not visible for _test_group_1
+            'entities_id' => $entity_id,
+            'serial' => 'PRT975',
         ]);
 
         // Connect monitor to computer to test connected devices
         $this->createItem(Asset_PeripheralAsset::class, [
             'itemtype_asset'      => Computer::class,
-            'items_id_asset'      => $computer->getID(),
+            'items_id_asset'      => $computer_1->getID(),
             'itemtype_peripheral' => Monitor::class,
-            'items_id_peripheral' => $monitor->getID(),
+            'items_id_peripheral' => $monitor_1->getID(),
+        ]);
+        $this->createItem(Asset_PeripheralAsset::class, [
+            'itemtype_asset'      => Computer::class,
+            'items_id_asset'      => $computer_2->getID(),
+            'itemtype_peripheral' => Monitor::class,
+            'items_id_peripheral' => $monitor_2->getID(),
         ]);
 
-        // Ensure proper permissions and helpdesk types
+        // Check with user that can see only its own hardware
+        $_SESSION["glpiactiveprofile"]["show_group_hardware"] = 0; // cannot see group hardware
         $_SESSION["glpiactiveprofile"]["helpdesk_hardware"] = pow(2, Ticket::HELPDESK_MY_HARDWARE);
-        $_SESSION["glpiactiveprofile"]["helpdesk_item_type"] = ['Computer', 'Monitor', 'Printer'];
+        $_SESSION["glpiactiveprofile"]["helpdesk_item_type"] = [Computer::class, Monitor::class, Printer::class];
 
         $post = [
-            'userID' => $userID,
+            'userID' => $user_id,
             'entity_restrict' => $entity_id,
             'page' => 1,
             'page_limit' => 20, // Increase limit to see all items
@@ -2701,76 +2740,136 @@ HTML;
 
         $result = \Dropdown::getDropdownMyDevices($post, false);
 
-        // Basic structure validation
         $this->assertIsArray($result);
         $this->assertArrayHasKey('count', $result);
         $this->assertArrayHasKey('results', $result);
         $this->assertIsArray($result['results']);
-
-        // Should have empty value plus our devices
-        $this->assertGreaterThan(1, count($result['results']));
-        $this->assertEquals('', $result['results'][0]['id']);
-        $this->assertEquals('-----', $result['results'][0]['text']);
-
-        // Verify hierarchical structure and find our devices
-        $found_devices = [
-            'computer' => false,
-            'monitor' => false,
-            'printer' => false,
-            'connected_monitor' => false,
-        ];
-
-        foreach ($result['results'] as $group) {
-            if (isset($group['text']) && isset($group['children'])) {
-                // This is a hierarchical group
-                $this->assertIsString($group['text']);
-                $this->assertIsArray($group['children']);
-
-                foreach ($group['children'] as $item) {
-                    // Each item should have required structure
-                    $this->assertArrayHasKey('id', $item);
-                    $this->assertArrayHasKey('text', $item);
-                    $this->assertArrayHasKey('itemtype', $item);
-                    $this->assertArrayHasKey('items_id', $item);
-
-                    // Check for our specific devices
-                    if ($item['itemtype'] === 'Computer' && $item['items_id'] == $computer->getID()) {
-                        $found_devices['computer'] = true;
-                        $this->assertStringContainsString('Test Laptop', $item['text']);
-                        $this->assertStringContainsString('LAP123', $item['text']);
-                    }
-
-                    if ($item['itemtype'] === 'Monitor' && $item['items_id'] == $monitor->getID()) {
-                        if (strpos($group['text'], 'Connected') !== false) {
-                            $found_devices['connected_monitor'] = true;
-                        } else {
-                            $found_devices['monitor'] = true;
-                        }
-                        $this->assertStringContainsString('Test Monitor', $item['text']);
-                        $this->assertStringContainsString('MON789', $item['text']);
-                    }
-
-                    if ($item['itemtype'] === 'Printer' && $item['items_id'] == $printer->getID()) {
-                        $found_devices['printer'] = true;
-                        $this->assertStringContainsString('Test Printer', $item['text']);
-                        $this->assertStringContainsString('PRT321', $item['text']);
-                    }
-                }
-            }
-        }
-
-        // Verify all devices were found
-        $this->assertTrue($found_devices['computer'], 'Computer should be found in "My devices" section');
-        $this->assertTrue($found_devices['printer'], 'Printer should be found in "My devices" section');
-
-        // Monitor can be in either "My devices" or "Connected devices" section
-        $this->assertTrue(
-            $found_devices['monitor'] || $found_devices['connected_monitor'],
-            'Monitor should be found in either "My devices" or "Connected devices" section'
+        $this->assertEquals(
+            [
+                [
+                    'id' => '',
+                    'text' => '-----',
+                ],
+                [
+                    'text' => 'My Computers',
+                    'children' => [
+                        [
+                            'id'       => Computer::class . '_' . $computer_1->getID(),
+                            'text'     => 'Test Laptop - LAP123 - INV456',
+                            'itemtype' => Computer::class,
+                            'items_id' => $computer_1->getID(),
+                        ],
+                    ],
+                ],
+                [
+                    'text' => 'My Monitors',
+                    'children' => [
+                        [
+                            'id'       => Monitor::class . '_' . $monitor_1->getID(),
+                            'text'     => 'Test Monitor 24" - MON789',
+                            'itemtype' => Monitor::class,
+                            'items_id' => $monitor_1->getID(),
+                        ],
+                        [
+                            'id'       => Monitor::class . '_' . $monitor_1->getID(),
+                            'text'     => 'Test Monitor 24" - MON789',
+                            'itemtype' => Monitor::class,
+                            'items_id' => $monitor_1->getID(),
+                        ],
+                    ],
+                ],
+                [
+                    'text' => 'My Printers',
+                    'children' => [
+                        [
+                            'id'       => Printer::class . '_' . $printer_1->getID(),
+                            'text'     => 'Test Printer HP - PRT321',
+                            'itemtype' => Printer::class,
+                            'items_id' => $printer_1->getID(),
+                        ],
+                    ],
+                ],
+            ],
+            $result['results']
         );
 
-        // Test that count is accurate
-        $this->assertGreaterThan(0, $result['count']);
+        // Check with user that can see its own hardware + its groups hardware
+        $_SESSION["glpiactiveprofile"]["show_group_hardware"] = READ; // can see group hardware
+
+        $result = \Dropdown::getDropdownMyDevices($post, false);
+
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('count', $result);
+        $this->assertArrayHasKey('results', $result);
+        $this->assertIsArray($result['results']);
+        $_SESSION["glpiactiveprofile"]["show_group_hardware"] = 0;
+
+        $this->assertEquals(
+            [
+                [
+                    'id' => '',
+                    'text' => '-----',
+                ],
+                [
+                    'text' => 'My Computers',
+                    'children' => [
+                        [
+                            'id'       => Computer::class . '_' . $computer_1->getID(),
+                            'text'     => 'Test Laptop - LAP123 - INV456',
+                            'itemtype' => Computer::class,
+                            'items_id' => $computer_1->getID(),
+                        ],
+                        [
+                            'id'       => Computer::class . '_' . $computer_2->getID(),
+                            'text'     => 'Test group Laptop - LAP456 - INV789',
+                            'itemtype' => Computer::class,
+                            'items_id' => $computer_2->getID(),
+                        ],
+                    ],
+                ],
+                [
+                    'text' => 'My Monitors',
+                    'children' => [
+                        [
+                            'id'       => Monitor::class . '_' . $monitor_1->getID(),
+                            'text'     => 'Test Monitor 24" - MON789',
+                            'itemtype' => Monitor::class,
+                            'items_id' => $monitor_1->getID(),
+                        ],
+                        [
+                            'id'       => Monitor::class . '_' . $monitor_2->getID(),
+                            'text'     => 'Test group Monitor 24" - MON999',
+                            'itemtype' => Monitor::class,
+                            'items_id' => $monitor_2->getID(),
+                        ],
+                        [
+                            'id'       => Monitor::class . '_' . $monitor_1->getID(),
+                            'text'     => 'Test Monitor 24" - MON789',
+                            'itemtype' => Monitor::class,
+                            'items_id' => $monitor_1->getID(),
+                        ],
+                    ],
+                ],
+                [
+                    'text' => 'My Printers',
+                    'children' => [
+                        [
+                            'id'       => Printer::class . '_' . $printer_1->getID(),
+                            'text'     => 'Test Printer HP - PRT321',
+                            'itemtype' => Printer::class,
+                            'items_id' => $printer_1->getID(),
+                        ],
+                        [
+                            'id'       => Printer::class . '_' . $printer_2->getID(),
+                            'text'     => 'Test group Printer HP - PRT975',
+                            'itemtype' => Printer::class,
+                            'items_id' => $printer_2->getID(),
+                        ],
+                    ],
+                ],
+            ],
+            $result['results']
+        );
     }
 
     public static function assetsDropdownForHelpdeskProvider(): iterable
