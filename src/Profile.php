@@ -896,7 +896,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                             $fn_get_rights(NetworkName::class, 'central', [
                                 'label' => __('Internet'),
                             ]),
-                            $fn_get_rights(DeviceSimcard::class, 'central', [
+                            $fn_get_rights(Item_DeviceSimcard::class, 'central', [
                                 'label' => __('Simcard PIN/PUK'),
                                 'field' => 'devicesimcard_pinpuk',
                             ]),

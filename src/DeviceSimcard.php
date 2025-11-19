@@ -113,13 +113,4 @@ class DeviceSimcard extends CommonDevice
     {
         return "ti ti-device-sim";
     }
-
-    public function getRights($interface = 'central')
-    {
-        $rights = parent::getRights($interface);
-        // Update labels to match other assets
-        $rights[READ] = __('View all');
-        $rights[UPDATE] = __('Update all');
-        return $rights;
-    }
 }
