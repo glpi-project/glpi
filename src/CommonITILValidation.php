@@ -69,7 +69,7 @@ abstract class CommonITILValidation extends CommonDBChild
         return 'ti ti-thumb-up';
     }
 
-    public static function getItilObjectItemType()
+    public static function getItilObjectItemType(): string
     {
         return str_replace('Validation', '', static::class);
     }
@@ -105,19 +105,19 @@ abstract class CommonITILValidation extends CommonDBChild
         return $class ? getItemForItemtype($class) : null;
     }
 
-    public static function getCreateRights()
+    public static function getCreateRights(): array
     {
         return [CREATE];
     }
 
 
-    public static function getPurgeRights()
+    public static function getPurgeRights(): array
     {
         return [PURGE];
     }
 
 
-    public static function getValidateRights()
+    public static function getValidateRights(): array
     {
         return [static::VALIDATE];
     }
@@ -227,7 +227,7 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * @param integer $items_id ID of the item
      **/
-    public static function canValidate($items_id)
+    public static function canValidate($items_id): bool
     {
         global $DB;
 
@@ -625,7 +625,7 @@ abstract class CommonITILValidation extends CommonDBChild
      *
      * @return array
      **/
-    public static function getAllStatusArray($withmetaforsearch = false, $global = false)
+    public static function getAllStatusArray(bool $withmetaforsearch = false, bool $global = false): array
     {
 
         $tab = [
@@ -696,7 +696,7 @@ abstract class CommonITILValidation extends CommonDBChild
      * @param integer   $value
      * @param bool      $decorated
      **/
-    public static function getStatus($value, bool $decorated = false)
+    public static function getStatus($value, bool $decorated = false): string
     {
         $statuses = self::getAllStatusArray(true, true);
 
@@ -728,7 +728,7 @@ abstract class CommonITILValidation extends CommonDBChild
      *
      * @param integer $value status ID
      **/
-    public static function getStatusColor($value)
+    public static function getStatusColor($value): string
     {
 
         switch ($value) {
@@ -755,7 +755,7 @@ abstract class CommonITILValidation extends CommonDBChild
      *
      * @param $users_id  integer  User ID
      **/
-    public static function getNumberToValidate($users_id)
+    public static function getNumberToValidate(int $users_id): int
     {
         global $DB;
 
@@ -879,7 +879,7 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * Form for Followup on Massive action
      **/
-    public static function showFormMassiveAction()
+    public static function showFormMassiveAction(): void
     {
 
         global $CFG_GLPI;
@@ -1406,7 +1406,7 @@ HTML;
     }
 
 
-    public static function rawSearchOptionsToAdd()
+    public static function rawSearchOptionsToAdd(): array
     {
         $tab = [];
 
@@ -1944,7 +1944,7 @@ HTML;
      *
      * Used in twig template
      */
-    public static function alertValidation(CommonITILObject $item, $type)
+    public static function alertValidation(CommonITILObject $item, string $type): void
     {
         global $CFG_GLPI;
 

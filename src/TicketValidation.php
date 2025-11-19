@@ -51,7 +51,7 @@ class TicketValidation extends CommonITILValidation
 
 
 
-    public static function getCreateRights()
+    public static function getCreateRights(): array
     {
         return [static::CREATEREQUEST, static::CREATEINCIDENT];
     }
@@ -61,7 +61,7 @@ class TicketValidation extends CommonITILValidation
         return _n('Ticket approval', 'Ticket approvals', $nb);
     }
 
-    public static function getValidateRights()
+    public static function getValidateRights(): array
     {
         return [static::VALIDATEREQUEST, static::VALIDATEINCIDENT];
     }
