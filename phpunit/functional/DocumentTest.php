@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use DocumentCategory;
 
 /* Test for inc/document.class.php */
 
@@ -973,5 +974,271 @@ class DocumentTest extends DbTestCase
         // Test when the document exists and is blacklisted
         $output = $instance->getDuplicateOf(0, FIXTURE_DIR . '/uploads/foo.png');
         $this->assertFalse($output);
+    }
+
+    public function testDefaultDocumentCategoryForOtherCommonDBTM()
+    {
+        global $CFG_GLPI;
+
+        $document = new \Document();
+        $document_item = new \Document_Item();
+        $documentCategory = new DocumentCategory();
+
+        ///////////////////////////////////////////////////////////////////////
+        // Create KnowbaseItem with document, check document has no category //
+        ///////////////////////////////////////////////////////////////////////
+        $kb = new \KnowbaseItem();
+        $filename = 'wdgrgserh5515rgg.222222' . 'foo.txt';
+        $input = [
+            'name' => 'KnowbaseItem 1',
+            'content' => 'testUploadDocumentWithoutCategory',
+            '_filename' => [
+                $filename,
+            ],
+            '_tag_filename' => [ '564grgt4-684vfv8-fvs8b81.0000',
+            ],
+            '_prefix_filename' => [
+                'wdgrgserh5515rgg.222222',
+            ],
+        ];
+
+        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        $kb_id = $kb->add($input);
+        $this->assertGreaterThan(0, $kb_id);
+
+        $data = $document_item->find([
+            'itemtype' => \KnowbaseItem::class,
+            'items_id' => $kb_id,
+        ]);
+        $this->assertCount(1, $data);
+
+        $this->assertTrue($document->getFromDB(current($data)['documents_id']));
+        $this->assertEquals(0, $document->fields['documentcategories_id']);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////
+        // Update config to have default category for document uploaded during kb creation //
+        /////////////////////////////////////////////////////////////////////////////////////
+        $documentCategory_id = $documentCategory->add([
+            'name'        => 'Default Category',
+        ]);
+        $this->assertGreaterThan(0, $documentCategory_id);
+        $CFG_GLPI['documentcategories_id_forticket'] = $documentCategory_id;
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////////
+        // Create KnowbaseItem with document, check document has category defined in configuration //
+        /////////////////////////////////////////////////////////////////////////////////////////////
+        $kb = new \KnowbaseItem();
+        $filename = 'azerty987654.444444' . 'foo2.txt';
+        $input2 = [
+            'name' => 'KnowbaseItem 2',
+            'content' => 'testUploadDocumentWithoutCategory',
+            '_filename' => [
+                $filename,
+            ],
+            '_tag_filename' => [
+                'abc123-def456-ghi789.2222',
+            ],
+            '_prefix_filename' => [
+                'azerty987654.444444',
+            ],
+        ];
+
+        copy(FIXTURE_DIR . '/uploads/bar.txt', GLPI_TMP_DIR . '/' . $filename);
+        $kb_id = $kb->add($input2);
+
+        $data = $document_item->find([
+            'itemtype' => \KnowbaseItem::class,
+            'items_id' => $kb_id,
+        ]);
+        $this->assertCount(1, $data);
+
+        $this->assertTrue($document->getFromDB(current($data)['documents_id']));
+        $this->assertEquals(0, $document->fields['documentcategories_id']);
+    }
+
+
+    public function testDefaultDocumentCategoryFromDocumentForm()
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $document = new \Document();
+        $documentCategory = new DocumentCategory();
+
+        ///////////////////////////////////////////////////////////////////////////////////////
+        // Create Ticket, add new document via form with itemtype, check category is not set //
+        //////////////////////////////////////////////////////////////////////////////////////
+        $input = [
+            'name' => 'Ticket 1',
+            'content' => 'testDefaultDocumentCategoryFromDocumentForm',
+            'entities_id' => 0,
+        ];
+        $ticket_id = $this->createItem(\Ticket::class, $input)->getID();
+
+
+        $filename = 'qsdfg789.555555' . 'foo.txt';
+        $input2 = [
+            '_filename' => [
+                $filename,
+            ],
+            '_tag_filename' => [ 'xyz987-uvw654-rst321.3333',
+            ],
+            '_prefix_filename' => [
+                'qsdfg789.555555',
+            ],
+            'itemtype' => \Ticket::class,
+            'items_id' => $ticket_id,
+        ];
+
+        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        $document_id = $document->add($input2);
+
+        // Verify document was created and linked to ticket with default category
+        $this->assertTrue($document->getFromDB($document_id));
+        $this->assertEquals(0, $document->fields['documentcategories_id']);
+
+        // Verify relation document_item exists
+        $docItem = new \Document_Item();
+        $this->assertTrue($docItem->getFromDBByCrit([
+            'documents_id' => $document_id,
+            'items_id'     => $ticket_id,
+            'itemtype'     => \Ticket::class,
+        ]));
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+        // Update config to have default category for document uploaded during ticket tracking //
+        ////////////////////////////////////////////////////////////////////////////////////////
+
+        $documentCategory_id = $documentCategory->add([
+            'name'        => 'Default Category',
+        ]);
+        $this->assertGreaterThan(0, $documentCategory_id);
+        $CFG_GLPI['documentcategories_id_forticket'] = $documentCategory_id;
+
+        ///////////////////////////////////////////////////////////////////////////////////
+        // Create Ticket, add new document via form with itemtype, check category is set //
+        ///////////////////////////////////////////////////////////////////////////////////
+
+        $input3 = [
+            'name' => 'Ticket 2',
+            'content' => 'testDefaultDocumentCategoryFromDocumentForm 2',
+            'entities_id' => 0,
+        ];
+        $ticket2_id = $this->createItem(\Ticket::class, $input3)->getID();
+
+        $this->assertGreaterThan(0, $ticket2_id);
+        $filename2 = 'plmokn456.666666' . 'foo2.txt';
+
+        $input4 = [
+            '_filename' => [
+                $filename2,
+            ],
+            '_tag_filename' => [ 'lmn456-opq789-rst012.444',
+            ],
+            '_prefix_filename' => [
+                'plmokn456.666666',
+            ],
+            'itemtype' => \Ticket::class,
+            'items_id' => $ticket2_id,
+        ];
+
+        copy(FIXTURE_DIR . '/uploads/bar.txt', GLPI_TMP_DIR . '/' . $filename2);
+        $document2_id = $document->add($input4);
+
+        // Verify document was created and linked to ticket with default category
+        $this->assertTrue($document->getFromDB($document2_id));
+        $this->assertEquals($documentCategory_id, $document->fields['documentcategories_id']);
+
+        // Verify relation document_item exists
+        $this->assertTrue($docItem->getFromDBByCrit([
+            'documents_id' => $document2_id,
+            'items_id'     => $ticket2_id,
+            'itemtype'     => \Ticket::class,
+        ]));
+    }
+
+    public function testDefaultDocumentCategoryForTicket()
+    {
+        global $CFG_GLPI;
+
+        $document = new \Document();
+        $document_item = new \Document_Item();
+        $documentCategory = new DocumentCategory();
+
+        /////////////////////////////////////////////////////////////////
+        // Create Ticket with document, check document has no category //
+        /////////////////////////////////////////////////////////////////
+        $ticket = new \Ticket();
+        $filename = 'wdgrgserh5515rgg.222222' . 'foo.txt';
+        $input = [
+            'name' => 'Ticket 1',
+            'content' => 'testUploadDocumentWithoutCategory',
+            '_filename' => [
+                $filename,
+            ],
+            '_tag_filename' => [ '564grgt4-684vfv8-fvs8b81.0000',
+            ],
+            '_prefix_filename' => [
+                'wdgrgserh5515rgg.222222',
+            ],
+        ];
+
+        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        $tickets_id = $ticket->add($input);
+        $this->assertGreaterThan(0, $tickets_id);
+
+        $data = $document_item->find([
+            'itemtype' => \Ticket::class,
+            'items_id' => $tickets_id,
+        ]);
+        $this->assertCount(1, $data);
+
+        $this->assertTrue($document->getFromDB(current($data)['documents_id']));
+        $this->assertEquals(0, $document->fields['documentcategories_id']);
+
+
+        /////////////////////////////////////////////////////////////////////////////////////////
+        // Update config to have default category for document uploaded during ticket creation //
+        /////////////////////////////////////////////////////////////////////////////////////////
+        $documentCategory_id = $documentCategory->add([
+            'name'        => 'Default Category',
+        ]);
+        $this->assertGreaterThan(0, $documentCategory_id);
+        $CFG_GLPI['documentcategories_id_forticket'] = $documentCategory_id;
+
+
+        ///////////////////////////////////////////////////////////////////////////////////////
+        // Create Ticket with document, check document has category defined in configuration //
+        ///////////////////////////////////////////////////////////////////////////////////////
+        $ticket = new \Ticket();
+        $filename = 'azerty987654.444444' . 'foo2.txt';
+        $input2 = [
+            'name' => 'Ticket 2',
+            'content' => 'testUploadDocumentWithDefaultCategory',
+            '_filename' => [
+                $filename,
+            ],
+            '_tag_filename' => [
+                'abc123-def456-ghi789.2222',
+            ],
+            '_prefix_filename' => [
+                'azerty987654.444444',
+            ],
+        ];
+
+        copy(FIXTURE_DIR . '/uploads/bar.txt', GLPI_TMP_DIR . '/' . $filename);
+        $tickets_id = $ticket->add($input2);
+
+        $data = $document_item->find([
+            'itemtype' => \Ticket::class,
+            'items_id' => $tickets_id,
+        ]);
+        $this->assertCount(1, $data);
+
+        $this->assertTrue($document->getFromDB(current($data)['documents_id']));
+        $this->assertEquals($documentCategory_id, $document->fields['documentcategories_id']);
     }
 }

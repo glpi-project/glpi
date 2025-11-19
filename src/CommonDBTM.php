@@ -5598,6 +5598,7 @@ class CommonDBTM extends CommonGLPI
                     //TRANS: Default document to files attached to tickets : %d is the ticket id
                     $input2["name"] = addslashes(sprintf(__('Document Ticket %d'), $this->getID()));
                     $input2["tickets_id"] = $this->getID();
+                    $input2['itemtype'] = Ticket::class;
                 }
 
                 if (isset($input['_tag'][$key])) {
@@ -5607,7 +5608,6 @@ class CommonDBTM extends CommonGLPI
 
                 $input2["entities_id"]             = $entities_id;
                 $input2["is_recursive"]            = $is_recursive;
-                $input2["documentcategories_id"]   = $CFG_GLPI["documentcategories_id_forticket"];
                 $input2["_only_if_upload_succeed"] = 1;
                 $input2["_filename"]               = [$file];
                 if (isset($this->input[$prefixUploadName][$key])) {
