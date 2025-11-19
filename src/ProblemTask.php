@@ -51,7 +51,7 @@ class ProblemTask extends CommonITILTask
      *
      * @return array of planning item
      **/
-    public static function populatePlanning($options = []): array
+    public static function populatePlanning(mixed $options = []): array
     {
         return parent::genericPopulatePlanning(self::class, $options);
     }
@@ -83,7 +83,7 @@ class ProblemTask extends CommonITILTask
      *
      * @return array of planning item
      **/
-    public static function populateNotPlanned($options = []): array
+    public static function populateNotPlanned(mixed $options = []): array
     {
         return parent::genericPopulateNotPlanned(self::class, $options);
     }

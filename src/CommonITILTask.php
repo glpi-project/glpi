@@ -113,13 +113,13 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     }
 
 
-    public function canViewPrivates()
+    public function canViewPrivates(): bool
     {
         return Session::haveRight(self::$rightname, self::SEEPRIVATE);
     }
 
 
-    public function canEditAll()
+    public function canEditAll(): bool
     {
         return Session::haveRightsOr(self::$rightname, [CREATE, DELETE, PURGE, self::UPDATEALL]);
     }
@@ -1000,7 +1000,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     /**
      * @since 0.85
      **/
-    public static function rawSearchOptionsToAdd($itemtype = null)
+    public static function rawSearchOptionsToAdd(?string $itemtype = null): array
     {
         global $DB;
 
@@ -1277,7 +1277,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      *@return boolean
      **/
-    public function test_valid_date($input)
+    public function test_valid_date(array $input): bool
     {
 
         return (!empty($input["begin"])
@@ -1688,7 +1688,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     /**
      * Form for Ticket or Problem Task on Massive action
      */
-    public function showMassiveActionAddTaskForm()
+    public function showMassiveActionAddTaskForm(): void
     {
         $twig = TemplateRenderer::getInstance();
 
@@ -1716,7 +1716,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      * @return DBmysqlIterator
      */
-    public static function getTaskList($status, $showgrouptickets, $start = null, $limit = null)
+    public static function getTaskList(string $status, bool $showgrouptickets, ?int $start = null, ?int $limit = null): DBmysqlIterator
     {
         global $DB;
 
