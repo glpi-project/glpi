@@ -854,7 +854,7 @@ class SessionTest extends DbTestCase
 
         $this->assertFalse(\Session::canImpersonate($user->getID()));
 
-        $DB->update('glpi_profilerights', ['rights' => $old_user_rights | \User::IMPERSONATE], [
+        $DB->update('glpi_profilerights', ['rights' => $old_user_rights | User::IMPERSONATE], [
             'profiles_id' => $new_profiles_id,
             'name' => 'user',
         ]);
