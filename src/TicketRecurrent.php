@@ -55,17 +55,17 @@ class TicketRecurrent extends CommonITILRecurrent
         return ['helpdesk', self::class];
     }
 
-    public static function getConcreteClass()
+    public static function getConcreteClass(): string
     {
         return Ticket::class;
     }
 
-    public static function getTemplateClass()
+    public static function getTemplateClass(): string
     {
         return TicketTemplate::class;
     }
 
-    public static function getPredefinedFieldsClass()
+    public static function getPredefinedFieldsClass(): string
     {
         return TicketTemplatePredefinedField::class;
     }

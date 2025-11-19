@@ -50,17 +50,17 @@ class RecurrentChange extends CommonITILRecurrent
         return ['helpdesk', self::class];
     }
 
-    public static function getConcreteClass()
+    public static function getConcreteClass(): string
     {
         return Change::class;
     }
 
-    public static function getTemplateClass()
+    public static function getTemplateClass(): string
     {
         return ChangeTemplate::class;
     }
 
-    public static function getPredefinedFieldsClass()
+    public static function getPredefinedFieldsClass(): string
     {
         return ChangeTemplatePredefinedField::class;
     }
