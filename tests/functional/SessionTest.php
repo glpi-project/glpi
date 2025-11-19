@@ -819,6 +819,60 @@ class SessionTest extends DbTestCase
         $this->assertTrue(\Session::canImpersonate($users[1]));
     }
 
+    public function testConfigRightDoesNotAllowImpersonation()
+    {
+        global $DB;
+
+        $root_entity = getItemByTypeName(\Entity::class, '_test_root_entity', true);
+        $user = getItemByTypeName(User::class, 'tech');
+        $this->assertGreaterThan(0, $user->getID());
+
+        $tech_admin = $this->createItem(User::class, [
+            'name'        => 'techImpersonateTest',
+            'password'    => 'test',
+            'password2'   => 'test',
+            'entities_id' => $root_entity,
+        ], ['password', 'password2']);
+
+        $profile = getItemByTypeName(Profile::class, 'Technician');
+        $this->assertGreaterThan(0, $profile->getID());
+        $old_user_rights = ProfileRight::getProfileRights($profile->getID(), ['user'])['user'];
+        $new_profiles_id = $profile->clone(['name' => $profile->getName() . '-ImpersonateTest']);
+        $DB->update('glpi_profilerights', ['rights' => READ | UPDATE], [
+            'profiles_id' => $new_profiles_id,
+            'name' => 'config',
+        ]);
+
+        $this->createItem(Profile_User::class, [
+            'profiles_id' => $new_profiles_id,
+            'users_id'    => $tech_admin->getID(),
+            'entities_id' => $root_entity,
+        ]);
+
+        $this->login('techImpersonateTest', 'test');
+        \Session::changeProfile(getItemByTypeName('Profile', 'Technician-ImpersonateTest', true));
+
+        $this->assertFalse(\Session::canImpersonate($user->getID()));
+
+        $DB->update('glpi_profilerights', ['rights' => $old_user_rights | \User::IMPERSONATE], [
+            'profiles_id' => $new_profiles_id,
+            'name' => 'user',
+        ]);
+
+        \Session::reloadCurrentProfile();
+
+        $this->assertTrue(\Session::canImpersonate($user->getID()));
+
+        $DB->update('glpi_profilerights', ['rights' => 0], [
+            'profiles_id' => $new_profiles_id,
+            'name' => 'config',
+        ]);
+
+        \Session::reloadCurrentProfile();
+
+        $this->assertTrue(\Session::canImpersonate($user->getID()));
+    }
+
     protected function sessionGroupsProvider(): iterable
     {
         // Base entity for our tests
