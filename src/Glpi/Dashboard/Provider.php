@@ -130,7 +130,7 @@ class Provider
                 $where += getEntitiesRestrictCriteria($item::getTable(), '', '', $item->maybeRecursive());
             }
             $request = [
-                'SELECT' => ['COUNT DISTINCT' => $item::getTableField($item::getIndexName()) . ' as cpt'],
+                'SELECT' => ['COUNT' => $item::getTableField($item::getIndexName()) . ' as cpt'],
                 'FROM'   => $i_table,
                 'WHERE'  => $where,
             ];
@@ -868,7 +868,7 @@ class Provider
                         ],
                     ],
                 ],
-                'GROUPBY'   => "$fk_table.$name",
+                'GROUPBY'   => "$fk_table.id",
                 'ORDERBY'   => "cpt DESC",
                 'LIMIT'     => $params['limit'],
             ],

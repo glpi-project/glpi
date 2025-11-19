@@ -6888,7 +6888,8 @@ CREATE TABLE `glpi_softwares` (
   KEY `softwares_id` (`softwares_id`),
   KEY `is_deleted` (`is_deleted`),
   KEY `is_helpdesk_visible` (`is_helpdesk_visible`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `active_softwares` (`is_deleted`,`is_template`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
