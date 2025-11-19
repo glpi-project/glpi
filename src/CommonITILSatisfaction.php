@@ -135,7 +135,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
      *
      * @param CommonITILObject $item The item this satisfaction is for
      **/
-    public function showSatisactionForm($item, bool $add_form_header = true)
+    public function showSatisactionForm($item, bool $add_form_header = true): void
     {
         $options             = [];
         $options['colspan']  = 1;
@@ -223,7 +223,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         }
     }
 
-    public function post_UpdateItem($history = true)
+    public function post_UpdateItem(mixed $history = true): void
     {
         global $CFG_GLPI;
 
@@ -246,7 +246,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
      *
      * @param int|float $value Between 0 and 10
      **/
-    public static function displaySatisfaction($value, $entities_id)
+    public static function displaySatisfaction($value, int $entities_id): string
     {
         if (!is_numeric($value)) {
             return "";
@@ -287,7 +287,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
      *
      * @param int $value Survey type ID
      **/
-    public static function getTypeInquestName($value)
+    public static function getTypeInquestName($value): string|int
     {
 
         switch ($value) {
@@ -348,7 +348,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         return $item::getFormURLWithID($satisfaction->fields[$item::getForeignKeyField()]) . '&forcetab=' . $item::class . '$3';
     }
 
-    public static function rawSearchOptionsToAdd()
+    public static function rawSearchOptionsToAdd(): array
     {
         global $DB;
 
