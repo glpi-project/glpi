@@ -960,6 +960,8 @@ HTML;
     {
         global $GLPI_CACHE;
 
+        $start = microtime(true);
+
         $force = ($card_options['args']['force'] ?? $card_options['force'] ?? false);
 
         // retrieve card
@@ -1068,9 +1070,10 @@ HTML;
         Profiler::getInstance()->stop(__METHOD__ . ' get card data');
 
         if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
-            // Use the current PHP request duration as the execution time for a more accurate card loading time
-            $execution_time = Profiler::getInstance()->getCurrentDuration('php_request');
-            $html .= '<span class="debug-card">' . \htmlescape($execution_time) . 'ms</span>';
+            $html .= '<span class="debug-card">';
+            $html .= "query: " . \htmlescape(Profiler::getInstance()->getCurrentDuration('php_request')) . 'ms - ';
+            $html .= "card: " . \htmlescape(round((microtime(true) - $start) * 1000)) . 'ms';
+            $html .= '</span>';
         }
 
         return $html;
