@@ -1433,9 +1433,9 @@ class Session
      * @param string  $module Module to check
      * @param integer $right  Right to check
      *
-     * @return boolean|int
+     * @return bool
      **/
-    public static function haveRight($module, $right)
+    public static function haveRight(string $module, int $right): bool
     {
         global $DB;
 
@@ -1452,7 +1452,7 @@ class Session
         }
 
         if (isset($_SESSION["glpiactiveprofile"][$module])) {
-            return (int) $_SESSION["glpiactiveprofile"][$module] & $right;
+            return (bool) ((int) $_SESSION["glpiactiveprofile"][$module] & $right);
         }
 
         return false;

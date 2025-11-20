@@ -19,6 +19,7 @@ The present file will list all changes made to the project; according to the
 #### Added
 
 #### Changes
+- `Session::haveRight()` now only returns a boolean
 
 #### Deprecated
 - `CommonITILSatisfaction::showSatisactionForm()`, use `CommonITILSatisfaction::showSatisfactionForm()` instead.
