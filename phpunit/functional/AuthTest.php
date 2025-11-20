@@ -228,7 +228,10 @@ class AuthTest extends DbTestCase
         ]);
 
         //login using remember_me cookie just set
-        $this->assertTrue((new \Auth())->login('', ''));
+        $success = (new \Auth())->login('', '');
+        unset($_COOKIE[session_name() . '_rememberme']);
+
+        $this->assertTrue($success);
 
         //check if last_login is now set
         $this->assertTrue($user->getFromDB($user->getID()));
