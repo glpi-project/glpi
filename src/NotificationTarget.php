@@ -87,7 +87,10 @@ class NotificationTarget extends CommonDBChild
     private $mode                       = null;
     private $event                      = null;
 
+    /** @var string */
     public const TAG_LANGUAGE               = 'lang';
+
+    /** @var string */
     public const TAG_VALUE                  = 'tag';
     public const TAG_FOR_ALL_EVENTS         = 0;
 
@@ -96,7 +99,7 @@ class NotificationTarget extends CommonDBChild
     public const EXTERNAL_USER              = 2;
 
     /**
-     * @param string $entity  (default '')
+     * @param int|'' $entity  (default '')
      * @param string $event   (default '')
      * @param mixed  $object  (default null)
      * @param array  $options Options
@@ -144,9 +147,9 @@ class NotificationTarget extends CommonDBChild
     /**
      * Retrieve an item from the database for a specific target
      *
-     * @param integer $notifications_id notification ID
-     * @param string  $type             type of the target to retrive
-     * @param integer $ID               ID of the target to retrieve
+     * @param integer                   $notifications_id notification ID
+     * @param class-string<CommonDBTM>  $itemtype         type of the target to retrive
+     * @param integer                   $ID               ID of the target to retrieve
      *
      * @since 0.85
      *
@@ -169,22 +172,21 @@ class NotificationTarget extends CommonDBChild
 
 
     /**
-     * Validate send before doing it (may be overloaded : exemple for private tasks or followups)
+     * Validate send before doing it (can be overloaded : exemple for private tasks or followups)
      *
-     * @since 0.84 (new parameter)
-     *
-     * @param string  $event     notification event
-     * @param array   $infos     destination of the notification
+     * @param string $event notification event
+     * @param array $infos destination of the notification
      * @param boolean $notify_me notify me on my action ?
      *                           ($infos contains users_id to check if the target is me)
      *                           (false by default)
-     * @param mixed $emitter     if this action is executed by the cron, we can
+     * @param int|string|null $emitter if this action is executed by the cron, we can
      *                           supply the id of the user (or the email if this
      *                           is an anonymous user with no account) who
      *                           triggered the event so it can be used instead of
      *                           getLoginUserID
      *
      * @return boolean
+     * @since 0.84 (new parameter)
      **/
     public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null)
     {
@@ -231,9 +233,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Check if notification (for a specific event) can be disabled
      *
-     * @param string  $event     notification event
-     *
-     * @return boolean
+     * @return true
      **/
     protected function canNotificationBeDisabled(string $event): bool
     {
@@ -480,10 +480,15 @@ class NotificationTarget extends CommonDBChild
         return true;
     }
 
-
-
     /**
-     * @param $input
+     * @param array{
+     *     itemtype: class-string<CommonDBTM>,
+     *     notifications_id?: int,
+     *     _targets?: array<string>,
+     *     _exclusions?: array<string>
+     *     } $input
+     *
+     * This method has no effect if $input parameter has no 'notifications_id' key
      **/
     public static function updateTargets($input)
     {
@@ -571,8 +576,14 @@ class NotificationTarget extends CommonDBChild
     /**
      * Add new recipient with lang to current recipients array
      *
-     * @param array $data Data (users_id, lang[, field used for notification])
+     * @param $data array{
+     *     language?: string,
+     *     name?: string,
+     *     users_id?: int,
+     *     usertype?: int, // @todo à check
+     *     }
      *
+     * returns false if user is not found/active or it has no profile.
      * @return void|false
      **/
     public function addToRecipientsList(array $data)
@@ -690,6 +701,8 @@ class NotificationTarget extends CommonDBChild
 
     /**
      * @since 0.84
+     *
+     * @return self::EXTERNAL_USER|self::GLPI_USER
      **/
     public function getDefaultUserType()
     {
@@ -701,6 +714,7 @@ class NotificationTarget extends CommonDBChild
     }
 
     /**
+     * @param self::EXTERNAL_USER|self::GLPI_USER|self::ANONYMOUS_USER $usertype
      * @since 0.84
      *
      * @param $usertype
@@ -711,7 +725,7 @@ class NotificationTarget extends CommonDBChild
     {
         if (urldecode($redirect) === $redirect) {
             // `redirect` parameter value have to be url-encoded.
-            // Prior to GLPI 10.0.3, method caller was responsible of this encoding,
+            // Prior to GLPI 10.0.3, method caller was responsible for this encoding,
             // so we have to ensure that param is not already encoded before encoding it,
             // to prevent BC breaks.
             $redirect = rawurlencode($redirect);
@@ -947,7 +961,7 @@ class NotificationTarget extends CommonDBChild
      * Return main notification events for the object type
      * Internal use only => should use getAllEvents
      *
-     * @return array an array which contains : event => event label
+     * @return array<string, string> event name => event label
      **/
     public function getEvents()
     {
@@ -993,7 +1007,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Return all (GLPI + plugins) notification events for the object type
      *
-     * @return array which contains : event => event label
+     * @return array<string, string> [event => event label, ...]
      **/
     public function getAllEvents()
     {
@@ -1034,7 +1048,7 @@ class NotificationTarget extends CommonDBChild
 
 
     /**
-     * @param $entity
+     * @param $entity int|int[]|'' (could maybe be narrowed, using getEntitiesRestrictCriteria() signature)
      **/
     final public function addGroupsToTargets($entity)
     {
@@ -1128,10 +1142,9 @@ class NotificationTarget extends CommonDBChild
 
 
     /**
-     * Fetch item associated with the object on which the event was raised
+     * Push $this->obj in $this->target_object array
      *
-     * @param $event  (default '')
-     *
+     * @param string $event
      * @return void
      **/
     public function getObjectItem($event = '')
@@ -1375,14 +1388,16 @@ class NotificationTarget extends CommonDBChild
 
 
     /**
-     * Get all data needed for template processing
+     * Add data needed for template processing
+     *
      * Provides minimum information for alerts
      * Can be overridden by each NotificationTartget class if needed
      *
-     * @param string $event   Event name
-     * @param array  $options Options
-     *
-     * @return void
+     * @param string $event
+     * @param array{
+     *      additionnaloption?: array{usertype: NotificationTarget::EXTERNAL_USER|NotificationTarget::GLPI_USER|NotificationTarget::ANONYMOUS_USER},
+     *      plugins?: array<string, string>
+     *      } $options
      **/
     public function addDataForTemplate($event, $options = []) {}
 
@@ -1543,7 +1558,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Define global tags data.
      *
-     * @return array
+     * @return array<string, string>
      */
     private function getGlobalTagsData(): array
     {
@@ -1552,22 +1567,23 @@ class NotificationTarget extends CommonDBChild
         ];
     }
 
-
+    /**
+     * @return string[]|string[][]|void
+     */
     public function getTags()
     {
         return $this->tag_descriptions;
     }
 
-
     /**
      * @param $options array{
-     *   tag: string|false,
-     *   value: bool,
-     *   label: string|false,
-     *   events: array<string>|self::TAG_FOR_ALL_EVENTS,
-     *   foreach: bool,
-     *   lang: bool,
-     *   allowed_values: array<mixed>
+     *   tag?: string|false,
+     *   value?: bool,
+     *   label?: string|false,
+     *   events?: array<string>|self::TAG_FOR_ALL_EVENTS,
+     *   foreach?: bool,
+     *   lang?: bool,
+     *   allowed_values?: array
      * }
      **/
     public function addTagToList($options = [])
