@@ -556,9 +556,7 @@ class NotificationTarget extends CommonDBChild
         }
     }
 
-
     public function addAdditionnalInfosForTarget() {}
-
 
     /**
      * @param $data
@@ -986,8 +984,6 @@ class NotificationTarget extends CommonDBChild
 
     /**
      * Return whether the notification content corresponding to the given event can be disclosed.
-     *
-     * @return bool
      */
     public function canNotificationContentBeDisclosed(string $event): bool
     {
@@ -1395,7 +1391,7 @@ class NotificationTarget extends CommonDBChild
         return $this->removeExcludedTargets($this->target);
     }
 
-    private function removeExcludedTargets(array $target_list)
+    private function removeExcludedTargets(array $target_list): array
     {
         global $DB;
         $exclusions = iterator_to_array($DB->request([
@@ -1534,11 +1530,6 @@ class NotificationTarget extends CommonDBChild
         return $this->data;
     }
 
-    /**
-     * Register global tags.
-     *
-     * @return void
-     */
     private function registerGlobalTags(): void
     {
         $this->addTagToList([
