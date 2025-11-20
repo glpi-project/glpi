@@ -1078,7 +1078,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return void
      **/
-    public function addTarget($target = '', $label = '', $type = Notification::USER_TYPE)
+    public function addTarget($target, $label = '', $type = Notification::USER_TYPE)
     {
         $key                                               = ((string) $type) . '_' . $target;
         // Value used for sort
