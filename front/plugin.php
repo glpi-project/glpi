@@ -49,6 +49,7 @@ Html::header(__('Setup'), '', "config", "plugin");
 
 View::showFeatureSwitchDialog();
 
+echo $plugin->getPluginsUpdatableAlert();
 echo $plugin->getPluginsListSuspendBanner();
 
 Search::show('Plugin');
