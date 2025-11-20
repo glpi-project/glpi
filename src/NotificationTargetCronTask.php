@@ -38,20 +38,20 @@
  **/
 class NotificationTargetCronTask extends NotificationTarget
 {
-    #[\Override]
+    #[Override]
     public function getEvents()
     {
         return ['alert' => __('Monitoring of automatic actions')];
     }
 
-    #[Override()]
+    #[Override]
     public function getEventsToSendImmediately(): array
     {
         return [
             'alert',
         ];
     }
-#[Override]
+    #[Override]
     public function addDataForTemplate($event, $options = []): void
     {
 
@@ -85,7 +85,7 @@ class NotificationTargetCronTask extends NotificationTarget
     }
 
 
-    #[\Override]
+    #[Override]
     public function getTags()
     {
 

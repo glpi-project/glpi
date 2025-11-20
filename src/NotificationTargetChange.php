@@ -42,7 +42,8 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
 {
     public $private_profiles = [];
 
-    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null)
+    #[\Override]
+    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null): bool
     {
         if ($event == 'satisfaction') {
             return true;
@@ -54,7 +55,8 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
     /**
      * Get events related to tickets
      **/
-    public function getEvents()
+    #[\Override]
+    public function getEvents(): array
     {
 
         $events = ['new'               => __('New change'),
@@ -74,6 +76,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
     }
 
 
+    #[\Override]
     public function getDataForObject(CommonDBTM $item, array $options, $simple = false)
     {
         // Common ITIL data
@@ -268,6 +271,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
     }
 
 
+    #[\Override]
     public function getTags()
     {
 
