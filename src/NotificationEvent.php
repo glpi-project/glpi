@@ -149,7 +149,7 @@ class NotificationEvent extends CommonDBTM
 
                 $notificationtarget->clearAddressesList();
                 $notificationtarget->setMode($data['mode']);
-                $notificationtarget->setAllowResponse($data['allow_response']);
+                $notificationtarget->setAllowResponse((bool) $data['allow_response']);
 
                 // Get template's information
                 $template = new NotificationTemplate();
