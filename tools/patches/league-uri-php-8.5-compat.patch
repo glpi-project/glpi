@@ -1,0 +1,24 @@
+diff -up vendor/league/uri/BaseUri.php.patch vendor/league/uri/BaseUri.php
+--- vendor/league/uri/BaseUri.php.patch	2025-11-20 10:03:15.787390110 +0100
++++ vendor/league/uri/BaseUri.php	2025-11-20 10:03:32.771584536 +0100
+@@ -365,7 +365,7 @@ class BaseUri implements Stringable, Jso
+         $scheme = $uri->getScheme();
+         if ('blob' !== $scheme) {
+             return match (true) {
+-                isset(static::WHATWG_SPECIAL_SCHEMES[$scheme]) => $uri
++                isset(static::WHATWG_SPECIAL_SCHEMES[$scheme ?? '']) => $uri
+                     ->withFragment($nullValue)
+                     ->withQuery($nullValue)
+                     ->withPath('')
+diff -up vendor/league/uri/Uri.php.patch vendor/league/uri/Uri.php
+--- vendor/league/uri/Uri.php.patch	2025-11-20 10:01:58.150735079 +0100
++++ vendor/league/uri/Uri.php	2025-11-20 10:02:06.314847430 +0100
+@@ -369,7 +369,7 @@ final class Uri implements UriInterface
+      */
+     private function formatPort(?int $port = null): ?int
+     {
+-        $defaultPort = self::SCHEME_DEFAULT_PORT[$this->scheme] ?? null;
++        $defaultPort = self::SCHEME_DEFAULT_PORT[$this->scheme ?? ''] ?? null;
+ 
+         return match (true) {
+             null === $port, $defaultPort === $port => null,
