@@ -60,7 +60,7 @@
             <div class="pt-3">
                 {% if available_to_add|length > 0 %}
                     {% set add_opt_btn %}
-                        <button type="button" name="add_opt" class="btn btn-primary ms-1 d-inline-block">
+                        <button type="button" name="add_opt" class="btn btn-primary w-100 w-sm-auto ms-sm-1 mt-2 mt-sm-0">
                             <i class="ti ti-plus"></i>
                             <span>{{ _x('button', 'Add') }}</span>
                         </button>
@@ -77,15 +77,20 @@
                     {% endset %}
 
                     <div class="d-flex justify-content-between mb-2">
-                        {{ fields.dropdownArrayField('num', null, available_to_add, '', {
-                            field_class: 'col-12 col-sm-6 d-flex',
-                            no_label: true,
-                            add_field_html: add_opt_btn,
-                            templateResult: result_template_js,
-                            mb: '',
-                            aria_label: __('Select an option to add'),
-                        }) }}
-
+                        <div class="row g-0 flex-fill mw-100">
+                            <div class="col-12 col-sm">
+                                {{ fields.dropdownArrayField('num', null, available_to_add, '', {
+                                    field_class: 'd-flex',
+                                    no_label: true,
+                                    templateResult: result_template_js,
+                                    mb: '',
+                                    aria_label: __('Select an option to add'),
+                                }) }}
+                            </div>
+                            <div class="col-12 col-sm-auto d-flex align-items-start px-0">
+                                {{ add_opt_btn }}
+                            </div>
+                        </div>
                         {% if not is_global %}
                             <button type="button" class="btn btn-ghost-danger me-1" name="disable" value="1">{{ __('Delete personal view') }}</button>
                         {% endif %}
