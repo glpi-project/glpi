@@ -38,6 +38,7 @@
  **/
 class NotificationTargetInfocom extends NotificationTarget
 {
+    #[\Override]
     public function getEvents()
     {
         return ['alert' => __('Alarms on financial and administrative information')];
@@ -82,6 +83,7 @@ class NotificationTargetInfocom extends NotificationTarget
     }
 
 
+    #[\Override]
     public function getTags()
     {
 

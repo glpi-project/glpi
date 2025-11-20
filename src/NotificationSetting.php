@@ -47,6 +47,7 @@ abstract class NotificationSetting extends CommonDBTM
     protected $displaylist  = false;
     public static $rightname       = 'config';
 
+    #[\Override]
     public static function getTypeName($nb = 0)
     {
         throw new RuntimeException('getTypeName must be implemented');
@@ -79,12 +80,14 @@ abstract class NotificationSetting extends CommonDBTM
     abstract protected function showFormConfig();
 
 
+    #[\Override]
     public static function getTable($classname = null)
     {
         return parent::getTable('Config');
     }
 
 
+    #[\Override]
     public function defineTabs($options = [])
     {
         $ong = [];
@@ -94,6 +97,7 @@ abstract class NotificationSetting extends CommonDBTM
     }
 
 
+    #[\Override]
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         switch ($item->getType()) {
@@ -105,6 +109,7 @@ abstract class NotificationSetting extends CommonDBTM
     }
 
 
+    #[\Override]
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if (get_class($item) == static::class) {
@@ -135,6 +140,7 @@ abstract class NotificationSetting extends CommonDBTM
         }
     }
 
+    #[\Override]
     public static function getIcon()
     {
         return "ti ti-bell";

@@ -44,6 +44,7 @@ class NotificationSettingConfig extends CommonDBTM
     protected $displaylist  = false;
     public static $rightname       = 'config';
 
+    #[\Override]
     public function update(array $input, $history = true, $options = [])
     {
         $success = true;

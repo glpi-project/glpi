@@ -35,6 +35,7 @@
 
 class NotificationTargetSavedSearch_Alert extends NotificationTarget
 {
+    #[\Override]
     public function getEvents()
     {
         global $DB;
@@ -93,6 +94,7 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
     }
 
 
+    #[\Override]
     public function getTags()
     {
         $tags = [
@@ -115,6 +117,7 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
     }
 
 
+    #[\Override]
     public function addNotificationTargets($entity)
     {
         if ($this->raiseevent == 'alert') {

@@ -38,6 +38,7 @@ use function Safe\strtotime;
 // Class NotificationTarget
 class NotificationTargetUser extends NotificationTarget
 {
+    #[\Override]
     public function getEvents()
     {
         return [
@@ -57,6 +58,7 @@ class NotificationTargetUser extends NotificationTarget
         ];
     }
 
+    #[\Override]
     public function canNotificationContentBeDisclosed(string $event): bool
     {
         if ($event === 'passwordforget') {
@@ -69,6 +71,7 @@ class NotificationTargetUser extends NotificationTarget
     /**
      * @see NotificationTarget::addNotificationTargets()
      **/
+    #[\Override]
     public function addNotificationTargets($entity)
     {
         $this->addTarget(Notification::USER, User::getTypeName(1));
@@ -78,6 +81,7 @@ class NotificationTargetUser extends NotificationTarget
         }
     }
 
+    #[\Override]
     protected function canNotificationBeDisabled(string $event): bool
     {
         if (in_array($event, ['passwordinit', 'passwordforget', 'passwordexpires'])) {
@@ -182,6 +186,7 @@ class NotificationTargetUser extends NotificationTarget
     }
 
 
+    #[\Override]
     public function getTags()
     {
 

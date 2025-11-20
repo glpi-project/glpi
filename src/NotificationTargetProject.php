@@ -43,6 +43,7 @@ class NotificationTargetProject extends NotificationTarget
     /**
      * Get events related to tickets
      **/
+    #[\Override]
     public function getEvents()
     {
 
@@ -624,6 +625,7 @@ class NotificationTargetProject extends NotificationTarget
     }
 
 
+    #[\Override]
     public function getTags()
     {
 

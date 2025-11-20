@@ -48,21 +48,25 @@ class NotificationTemplateTranslation extends CommonDBChild
     public $dohistory = true;
 
 
+    #[\Override]
     public static function getTypeName($nb = 0)
     {
         return _n('Template translation', 'Template translations', $nb);
     }
 
+    #[\Override]
     public static function getIcon()
     {
         return 'ti ti-language';
     }
 
+    #[\Override]
     public static function getNameField()
     {
         return 'id';
     }
 
+    #[\Override]
     public function getForbiddenStandardMassiveAction()
     {
         $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -70,6 +74,7 @@ class NotificationTemplateTranslation extends CommonDBChild
         return $forbidden;
     }
 
+    #[\Override]
     protected function computeFriendlyName()
     {
         global $CFG_GLPI;
@@ -80,6 +85,7 @@ class NotificationTemplateTranslation extends CommonDBChild
         return __('Default translation');
     }
 
+    #[\Override]
     public function defineTabs($options = [])
     {
         $ong = [];
@@ -90,6 +96,7 @@ class NotificationTemplateTranslation extends CommonDBChild
         return $ong;
     }
 
+    #[\Override]
     public function showForm($ID, array $options = [])
     {
         if (!Config::canUpdate()) {
@@ -200,16 +207,19 @@ TWIG, $twig_params);
         return $input;
     }
 
+    #[\Override]
     public function prepareInputForAdd($input)
     {
         return parent::prepareInputForAdd(self::cleanContentHtml($input));
     }
 
+    #[\Override]
     public function prepareInputForUpdate($input)
     {
         return parent::prepareInputForUpdate(self::cleanContentHtml($input));
     }
 
+    #[\Override]
     public function post_addItem()
     {
         // Handle rich-text images and uploaded documents
@@ -223,6 +233,7 @@ TWIG, $twig_params);
         parent::post_addItem();
     }
 
+    #[\Override]
     public function post_updateItem($history = true)
     {
         // Handle rich-text images and uploaded documents
@@ -236,6 +247,7 @@ TWIG, $twig_params);
         parent::post_updateItem($history);
     }
 
+    #[\Override]
     public function rawSearchOptions()
     {
         $tab = [];
@@ -378,6 +390,7 @@ TWIG, $twig_params);
         ]);
     }
 
+    #[\Override]
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
@@ -399,6 +412,7 @@ TWIG, $twig_params);
         return '';
     }
 
+    #[\Override]
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         switch ($item::class) {
