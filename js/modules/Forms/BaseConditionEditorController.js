@@ -93,7 +93,7 @@ export class BaseConditionEditorController {
             '[data-glpi-conditions-editor-enable-on-ready]'
         );
         for (const disabled_item of disabled_items) {
-            disabled_item.removeAttribute('disabled');
+            disabled_item.removeAttribute('data-glpi-conditions-editor-disabled');
         }
     }
 
