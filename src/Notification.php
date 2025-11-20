@@ -612,7 +612,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     /**
      * Get the mailing signature for the entity
      *
-     * @param $entity
+     * @param int $entity
      **/
     public static function getMailingSignature($entity)
     {

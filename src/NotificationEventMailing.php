@@ -519,8 +519,8 @@ class NotificationEventMailing extends NotificationEventAbstract
     protected static function extraRaise($params)
     {
         //Set notification's signature (the one which corresponds to the entity)
-        $entity = $params['notificationtarget']->getEntity();
-        $params['template']->setSignature(Notification::getMailingSignature($entity));
+        $entities_id = (int) $params['notificationtarget']->getEntity();
+        $params['template']->setSignature(Notification::getMailingSignature($entities_id));
     }
 
     public static function setMailer(?GLPIMailer $mailer): void

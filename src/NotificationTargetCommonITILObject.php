@@ -100,15 +100,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         return false;
     }
 
-    /**
-     * Get notification subject prefix
-     *
-     * @param string $event Event name (default '')
-     *
-     * @return string
-     */
     #[\Override]
-    public function getSubjectPrefix($event = '')
+    public function getSubjectPrefix(string $event = ''): string
     {
 
         $perso_tag = trim(Entity::getUsedConfig(
