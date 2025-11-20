@@ -4,6 +4,9 @@ FROM ghcr.io/glpi-project/glpi-development-env:$PHP_VERSION
 
 USER root
 
+# Use apache configuration suitable for GLPI 10.x
+RUN cp /etc/apache2/sites-available/glpi-10.x.conf /etc/apache2/sites-available/000-default.conf
+
 # Allow extra PHP configuration to be placed in a dedicated folder than can serve
 # as a volume
 ENV PHP_INI_SCAN_DIR "/usr/local/etc/php/conf.d/:/usr/local/etc/php/custom_conf.d/"

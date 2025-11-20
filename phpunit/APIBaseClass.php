@@ -1758,14 +1758,26 @@ abstract class APIBaseClass extends TestCase
 
     public function testUndisclosedNotificationContent()
     {
+        global $DB;
+
+        $user = getItemByTypeName('User', TU_USER);
+
         // Enable notifications
         Config::setConfigurationValues('core', [
             'use_notifications' => '1',
             'notifications_mailing' => '1',
         ]);
 
+        // Empty existing notifications
+        $DB->delete(
+            QueuedNotification::getTable(),
+            [
+                'itemtype' => User::class,
+                'items_id' => $user->getID(),
+            ]
+        );
+
         // Trigger a notification sending
-        $user = getItemByTypeName('User', TU_USER);
         $this->query(
             'lostPassword',
             [
@@ -1795,6 +1807,12 @@ abstract class APIBaseClass extends TestCase
             [
                 'itemtype' => QueuedNotification::class,
                 'headers'  => ['Session-Token' => $data['session_token']],
+                'query'     => [
+                    'searchText' => [
+                        'itemtype' => User::class,
+                        'items_id' => $user->getID(),
+                    ],
+                ],
             ],
             200
         );
@@ -1821,6 +1839,18 @@ abstract class APIBaseClass extends TestCase
                 'headers'  => ['Session-Token' => $data['session_token']],
                 'query'    => [
                     'reset'         => 'reset',
+                    'criteria'      => [
+                        [
+                            'field'      => 20,
+                            'searchtype' => 'equals',
+                            'value'      => User::class,
+                        ],
+                        [
+                            'field'      => 21,
+                            'searchtype' => 'equals',
+                            'value'      => $user->getID(),
+                        ],
+                    ],
                     'forcedisplay'  => [12, 13],
                 ],
             ],
