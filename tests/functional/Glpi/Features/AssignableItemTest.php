@@ -54,7 +54,7 @@ class AssignableItemTest extends \DbTestCase
 
     /**
      * @param class-string<AssignableItem> $class
- */
+     */
     #[DataProvider('itemtypeProvider')]
     public function testClassUsesTrait(string $class): void
     {
