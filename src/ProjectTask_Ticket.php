@@ -135,6 +135,7 @@ class ProjectTask_Ticket extends CommonDBRelation
      * Show tickets for a projecttask
      *
      * @param ProjectTask $projecttask object
+     * @return void|false
      **/
     public static function showForProjectTask(ProjectTask $projecttask)
     {
@@ -211,6 +212,7 @@ class ProjectTask_Ticket extends CommonDBRelation
      * Show projecttasks for a ticket
      *
      * @param Ticket $ticket object
+     * @return void|false
      **/
     public static function showForTicket(Ticket $ticket)
     {

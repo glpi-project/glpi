@@ -54,6 +54,7 @@ use Glpi\Team\Team;
 class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInterface, TeamworkInterface
 {
     use Kanban;
+    /** @use Clonable<Project> */
     use Clonable;
     use Teamwork;
 
@@ -66,6 +67,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     public const READMY                        = 1;
     public const READALL                       = 1024;
 
+    /** @var array<class-string<CommonDBTM>, array<array{id: int, projects_id: int, itemtype: class-string<CommonDBTM>, items_id: int, display_name?: string}>> */
     protected $team                     = [];
 
     public function getCloneRelations(): array
@@ -1271,6 +1273,10 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         return self::checkPlanAndRealDates($input);
     }
 
+    /**
+     * @param array $input
+     * @return array
+     */
     public static function checkPlanAndRealDates($input)
     {
         if (
@@ -1413,6 +1419,8 @@ TWIG, ['projects_id' => $ID, 'label' => __('Create a sub project from this proje
 
     /**
      * Show team for a project
+     * @param Project $project
+     * @return true
      **/
     public function showTeam(Project $project)
     {
@@ -2198,6 +2206,9 @@ TWIG, $twig_params);
         return (bool) $result;
     }
 
+    /**
+     * @return array<array{id: int, projects_id: int, itemtype: class-string<CommonDBTM>, items_id: int, display_name?: string}>
+     */
     public function getTeam(): array
     {
         $team = ProjectTeam::getTeamFor($this->getID(), true);
@@ -2491,6 +2502,7 @@ TWIG, $twig_params);
     /**
      * Update the specified project's percent_done based on the percent_done of subprojects and tasks.
      * This function indirectly updates the percent done for all parents if they are set to automatically update.
+     * @param int $ID The ID of the project to recalculate.
      * @since 9.5.0
      * @return boolean False if the specified project is not set to automatically update the percent done.
      */
@@ -2549,6 +2561,10 @@ TWIG, $twig_params);
         return true;
     }
 
+    /**
+     * @param class-string<CommonDBTM>|null $itemtype
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
         $tab = [];
