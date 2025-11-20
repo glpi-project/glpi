@@ -52,6 +52,7 @@ use Glpi\Search\FilterableInterface;
 use Glpi\Search\SearchOption;
 use Glpi\Socket;
 use Glpi\Toolbox\UuidStore;
+use Glpi\UI\IllustrationManager;
 
 use function Safe\getimagesize;
 use function Safe\preg_grep;
@@ -2037,7 +2038,32 @@ class CommonDBTM extends CommonGLPI
      **/
     public function prepareInputForUpdate($input)
     {
+        $this->deleteUnusedCustomIllustrationFile($input);
+
         return $input;
+    }
+
+    private function deleteUnusedCustomIllustrationFile(array $input): void
+    {
+        if (
+            // This item support illustrations?
+            isset($this->fields['illustration'])
+            // An illustration was set before these changes?
+            && str_starts_with(
+                $this->fields['illustration'],
+                IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX,
+            )
+            // A new illustration value exist in the input?
+            && isset($input['illustration'])
+            // The new illustration value is different?
+            && $input['illustration'] !== $this->fields['illustration']
+        ) {
+            $manager = (new IllustrationManager());
+            $id = $manager->getCustomIconIdFromPrefixedString(
+                $this->fields['illustration']
+            );
+            $manager->deleteCustomIllustrationFile($id);
+        }
     }
 
     /**
