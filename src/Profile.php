@@ -57,7 +57,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
     /// Helpdesk fields of helpdesk profiles
     public static $helpdesk_rights = [
-        'bookmark_public',
         'create_ticket_on_login',
         'changetemplates_id',
         'followup',
@@ -1119,9 +1118,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                             $fn_get_rights(ReservationItem::class, 'helpdesk'),
                             $fn_get_rights(Reminder::class, 'helpdesk'),
                             $fn_get_rights(RSSFeed::class, 'helpdesk'),
-                            $fn_get_rights(SavedSearch::class, 'helpdesk', [
-                                'label' => _n('Public saved search', 'Public saved searches', Session::getPluralNumber()),
-                            ]),
                         ],
                     ],
                     'setup' => [

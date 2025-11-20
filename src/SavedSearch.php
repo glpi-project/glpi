@@ -268,6 +268,21 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return parent::canCreateItem();
     }
 
+    /**
+     * Check if user can view saved searches
+     * Allow access in helpdesk interface for private searches
+     */
+    public static function canView(): bool
+    {
+        // Allow access in helpdesk interface (private searches only)
+        if (Session::getCurrentInterface() === 'helpdesk') {
+            return true;
+        }
+
+        // Standard check for central interface
+        return Session::haveRight(static::$rightname, READ);
+    }
+
     public function canViewItem(): bool
     {
         if ($this->fields['is_private'] == 1) {
