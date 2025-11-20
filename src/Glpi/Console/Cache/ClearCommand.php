@@ -51,6 +51,7 @@ class ClearCommand extends Command
      */
     public const ERROR_CACHE_CLEAR_FAILURE = 1;
 
+    /** @var bool */
     protected $requires_db_up_to_date = false;
 
     protected function configure()

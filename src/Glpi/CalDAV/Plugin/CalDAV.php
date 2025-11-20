@@ -71,6 +71,12 @@ class CalDAV extends Plugin
         return $calendar_uri;
     }
 
+    /**
+     * @param PropFind $propFind
+     * @param INode $node
+     *
+     * @return void
+     */
     public function propFind(PropFind $propFind, INode $node)
     {
 

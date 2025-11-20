@@ -46,6 +46,7 @@ final class Profiler
     /** @var ProfilerSection[] */
     private $current_sections = [];
 
+    /** @var bool */
     private $disabled = false;
 
     public const CATEGORY_BOOT = 'boot';
@@ -57,6 +58,7 @@ final class Profiler
     public const CATEGORY_CUSTOMOBJECTS = 'customobjects';
     public const CATEGORY_HLAPI = 'hlapi';
 
+    /** @var ?self */
     private static $instance;
 
     public static function getInstance(): self
@@ -91,7 +93,7 @@ final class Profiler
             $parent_id = array_key_last($this->current_sections);
             $parent_id = $this->current_sections[$parent_id]->getId();
         }
-        $this->current_sections[] = new ProfilerSection($category, $name, microtime(true) * 1000, $parent_id);
+        $this->current_sections[] = new ProfilerSection($category, $name, (int) (microtime(true) * 1000), $parent_id);
     }
 
     /**
@@ -137,7 +139,7 @@ final class Profiler
         if (count($section)) {
             $k = array_key_last($section);
             $section = array_pop($section);
-            $section->end(microtime(true) * 1000);
+            $section->end((int) (microtime(true) * 1000));
             $duration = $section->getDuration();
             unset($this->current_sections[$k]);
             Profile::getCurrent()->setData('profiler', $section->toArray() + ['auto_ended' => $auto_ended]);

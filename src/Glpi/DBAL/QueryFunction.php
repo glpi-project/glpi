@@ -82,6 +82,12 @@ class QueryFunction
         return new QueryExpression($func_name . '(' . implode(', ', $params) . ')', $alias);
     }
 
+    /**
+     * @param string $name
+     * @param array $arguments
+     *
+     * @return QueryExpression
+     */
     public static function __callStatic(string $name, array $arguments)
     {
         $args = array_values($arguments);

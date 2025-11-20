@@ -170,6 +170,11 @@ class Calendar extends AbstractBackend
         throw new NotImplemented('Calendar creation is not implemented');
     }
 
+    /**
+     * @param string $calendarId
+     *
+     * @return void
+     */
     public function deleteCalendar($calendarId)
     {
         throw new NotImplemented('Calendar deletion is not implemented');
@@ -257,6 +262,12 @@ class Calendar extends AbstractBackend
         return null;
     }
 
+    /**
+     * @param string $calendarId
+     * @param string $objectPath
+     *
+     * @return void
+     */
     public function deleteCalendarObject($calendarId, $objectPath)
     {
 

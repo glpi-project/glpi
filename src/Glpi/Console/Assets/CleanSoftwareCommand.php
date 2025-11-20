@@ -77,6 +77,7 @@ class CleanSoftwareCommand extends AbstractCommand
      *
      * @param InputInterface $input
      *
+     * @return void
      * @throws InvalidArgumentException
      */
     private function validateInput(InputInterface $input)

@@ -158,6 +158,9 @@ final class LogViewer extends CommonGLPI
     }
 
 
+    /**
+     * @return string
+     */
     public static function getIcon()
     {
         return "ti ti-news";

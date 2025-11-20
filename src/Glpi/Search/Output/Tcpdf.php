@@ -56,6 +56,11 @@ class Tcpdf extends \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf
             null,
             false
         ) extends GLPIPDF {
+            /**
+             * @param bool $val
+             *
+             * @return void
+             */
             public function setPrintFooter($val = true)
             {
                 //override because \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf::save() explicitly calls setPrintFooter(false) -_-

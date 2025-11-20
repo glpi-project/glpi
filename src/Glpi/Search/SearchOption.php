@@ -68,6 +68,7 @@ use User;
  * This is a wrapper class for the array format search option.
  *
  * @internal Not for use outside {@link Search} class and the "Glpi\Search" namespace.
+ * @implements ArrayAccess<string|int, mixed>
  */
 final class SearchOption implements ArrayAccess
 {
@@ -76,6 +77,7 @@ final class SearchOption implements ArrayAccess
      * @var array{id: int, name: string, field: string, table: string}
      */
     private array $search_opt_array;
+    /** @var array */
     private static $search_options_cache = [];
 
     public function __construct(array $search_opt_array)
@@ -426,6 +428,8 @@ final class SearchOption implements ArrayAccess
     /**
      * @param class-string<CommonDBTM> $itemtype
      * @param integer $field_num
+     *
+     * @return array
      **/
     public static function getActionsFor($itemtype, $field_num)
     {

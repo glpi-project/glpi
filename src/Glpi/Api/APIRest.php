@@ -150,7 +150,7 @@ class APIRest extends API
         if (isset($this->parameters['debug'])) {
             $this->debug = $this->parameters['debug'];
             if (empty($this->debug)) {
-                $this->debug = 1;
+                $this->debug = true;
             }
         }
 

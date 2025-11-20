@@ -40,6 +40,7 @@ use Plugin;
 
 final class Palette
 {
+    /** @var string[] */
     private $colors = [];
 
     private const DEFAULT = "tab10";

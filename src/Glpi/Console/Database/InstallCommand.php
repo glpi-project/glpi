@@ -264,6 +264,9 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
 
         // Check for compatibility with utf8mb4 usage.
         $db = new class ($mysqli) extends DBmysql {
+            /**
+             * @param mysqli $dbh
+             */
             public function __construct($dbh)
             {
                 $this->dbh = $dbh;

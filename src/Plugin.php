@@ -1872,7 +1872,7 @@ class Plugin extends CommonDBTM
      *                                  or callable function
      * @param mixed           ...$args  [optional] One or more arguments passed to hook function
      *
-     * @return mixed $data
+     * @return mixed|void $data
      **/
     public static function doOneHook($plugin_key, $hook, ...$args)
     {

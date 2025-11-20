@@ -265,6 +265,12 @@ abstract class AbstractConfigureCommand extends AbstractCommand
         } else {
             // Instanciate DB to be able to compute boolean properties flags.
             $db = new class ($db_hostport, $db_user, $db_pass, $db_name) extends DBmysql {
+                /**
+                 * @param string $dbhost
+                 * @param string $dbuser
+                 * @param string $dbpassword
+                 * @param string $dbdefault
+                 */
                 public function __construct($dbhost, $dbuser, $dbpassword, $dbdefault)
                 {
                     $this->dbhost     = $dbhost;
@@ -326,6 +332,17 @@ abstract class AbstractConfigureCommand extends AbstractCommand
             $allow_datetime,
             $allow_signed_keys
         ) extends DBmysql {
+            /**
+             * @param string $dbhost
+             * @param string $dbuser
+             * @param string $dbpassword
+             * @param string $dbdefault
+             * @param bool $use_timezones
+             * @param bool $log_deprecation_warnings
+             * @param bool $use_utf8mb4
+             * @param bool $allow_datetime
+             * @param bool $allow_signed_keys
+             */
             public function __construct(
                 $dbhost,
                 $dbuser,
@@ -370,6 +387,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
      *
      * @param InputInterface $input
      *
+     * @return void
      * @throws InvalidArgumentException
      */
     protected function validateConfigInput(InputInterface $input)
@@ -438,6 +456,9 @@ abstract class AbstractConfigureCommand extends AbstractCommand
     {
 
         $db = new class ($mysqli) extends DBmysql {
+            /**
+             * @param mysqli $dbh
+             */
             public function __construct($dbh)
             {
                 $this->dbh = $dbh;

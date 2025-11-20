@@ -167,6 +167,9 @@ class Provider
     /**
      * @method array bigNumberItem(CommonDBTM $item, array $params = [])
      * @method array nbItemByFk(CommonDBTM $item, array $params = [])
+     * @method array articleListItem(CommonDBTM $item, array $params = [])
+     *
+     * @return array|void
      */
     public static function __callStatic(string $name = "", array $arguments = [])
     {
@@ -1750,6 +1753,12 @@ class Provider
         return ['criteria' => $s_criteria];
     }
 
+    /**
+     * @param string $table
+     * @param array $apply_filters
+     *
+     * @return array
+     */
     public static function getFiltersCriteria(string $table = "", array $apply_filters = [])
     {
         $where = [];

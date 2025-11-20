@@ -160,7 +160,7 @@ class CommandLoader implements CommandLoaderInterface
      *
      * return void
      */
-    private function findCoreCommands()
+    private function findCoreCommands(): void
     {
 
         $basedir = $this->rootdir . DIRECTORY_SEPARATOR . 'src';
@@ -293,7 +293,7 @@ class CommandLoader implements CommandLoaderInterface
      *
      * return void
      */
-    private function findToolsCommands()
+    private function findToolsCommands(): void
     {
 
         $basedir = $this->rootdir . DIRECTORY_SEPARATOR . 'tools';

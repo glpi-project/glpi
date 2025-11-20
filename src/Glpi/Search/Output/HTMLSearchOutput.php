@@ -275,6 +275,12 @@ class HTMLSearchOutput extends AbstractSearchOutput
         $_SESSION['glpimassiveactionselected'] = [];
     }
 
+    /**
+     * @param bool $odd
+     * @param bool $is_deleted
+     *
+     * @return string
+     */
     public static function showNewLine($odd = false, $is_deleted = false): string
     {
         $class = " class='tab_bg_2" . ($is_deleted ? '_2' : '') . "' ";
@@ -294,7 +300,13 @@ class HTMLSearchOutput extends AbstractSearchOutput
         return '<thead>';
     }
 
-    public static function showHeader($rows, $cols, $fixed = 0): string
+    /**
+     * @param int $rows
+     * @param int $cols
+     * @param bool $fixed
+     * @return string
+     */
+    public static function showHeader($rows, $cols, $fixed = false): string
     {
         if ($fixed) {
             return "<div class='text-center'><table class='table'>";
@@ -303,7 +315,17 @@ class HTMLSearchOutput extends AbstractSearchOutput
         return "<div class='text-center'><table class='table card-table table-hover'>";
     }
 
-    public static function showHeaderItem($value, &$num, $linkto = "", $issort = 0, $order = "", $options = ""): string
+    /**
+     * @param string $value
+     * @param int $num
+     * @param string $linkto
+     * @param bool $issort
+     * @param string $order
+     * @param string $options
+     *
+     * @return string
+     */
+    public static function showHeaderItem($value, &$num, $linkto = "", $issort = false, $order = "", $options = ""): string
     {
         $class = "";
         if ($issort) {
@@ -327,6 +349,14 @@ class HTMLSearchOutput extends AbstractSearchOutput
         return '</thead>';
     }
 
+    /**
+     * @param string $value
+     * @param int $num
+     * @param int $row
+     * @param string $extraparam
+     *
+     * @return string
+     */
     public static function showItem($value, &$num, $row, $extraparam = ''): string
     {
         global $CFG_GLPI;
@@ -370,11 +400,22 @@ class HTMLSearchOutput extends AbstractSearchOutput
         return $out;
     }
 
+    /**
+     * @param string $title
+     * @param ?int $count
+     *
+     * @return string
+     */
     public static function showFooter($title = "", $count = null): string
     {
         return "</table></div>\n";
     }
 
+    /**
+     * @param string $message
+     *
+     * @return string
+     */
     public static function showError($message = ''): string
     {
         return "<div class='center b'>" . \htmlescape($message) . "</div>";

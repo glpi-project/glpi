@@ -36,10 +36,12 @@
 namespace Glpi\Search;
 
 use AllAssets;
+use Change;
 use CommonDBTM;
 use CommonITILObject;
 use CommonITILTask;
 use CommonITILValidation;
+use Computer;
 use DisplayPreference;
 use Dropdown;
 use Entity;
@@ -65,10 +67,17 @@ use Glpi\Socket;
 use ITILFollowup;
 use ITILSolution;
 use KnowbaseItem;
+use Monitor;
+use Peripheral;
+use Phone;
 use Plugin;
+use Printer;
+use Problem;
 use RuntimeException;
 use Search;
 use Session;
+use Software;
+use Ticket;
 use Toolbox;
 
 use function Safe\preg_match;
@@ -246,10 +255,9 @@ final class SearchEngine
     }
 
     /**
-     *
-     * @param $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      * @return class-string<CommonDBTM>|false
-     **/
+     */
     public static function getMetaReferenceItemtype($itemtype)
     {
 
@@ -259,15 +267,15 @@ final class SearchEngine
 
         // Use reference type if given itemtype extends a reference type.
         $types = [
-            'Computer',
-            'Problem',
-            'Change',
-            'Ticket',
-            'Printer',
-            'Monitor',
-            'Peripheral',
-            'Software',
-            'Phone',
+            Computer::class,
+            Problem::class,
+            Change::class,
+            Ticket::class,
+            Printer::class,
+            Monitor::class,
+            Peripheral::class,
+            Software::class,
+            Phone::class,
         ];
         foreach ($types as $type) {
             if (is_a($itemtype, $type, true)) {

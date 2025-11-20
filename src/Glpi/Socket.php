@@ -62,6 +62,7 @@ class Socket extends CommonDBChild
     // From CommonDBTM
     public $dohistory          = true;
     public static $rightname          = 'cable_management';
+    /** @var bool */
     public $can_be_translated  = false;
 
     public const REAR    = 1;
@@ -165,6 +166,11 @@ class Socket extends CommonDBChild
         return $input;
     }
 
+    /**
+     * @param array $input
+     *
+     * @return array
+     */
     public function retrievedataFromNetworkPort($input)
     {
         // get position from networkport if needed
@@ -315,8 +321,10 @@ class Socket extends CommonDBChild
      *
      * @since 0.84
      *
-     * @param integer $value     status ID
-     **/
+     * @param int $value status ID
+     *
+     * @return int
+     */
     public static function getWiringSideName($value)
     {
         $tab  = static::getSides();
@@ -401,6 +409,9 @@ class Socket extends CommonDBChild
         return $tab;
     }
 
+    /**
+     * @return array
+     */
     public static function rawSearchOptionsToAdd()
     {
         $tab = [];
@@ -561,6 +572,9 @@ class Socket extends CommonDBChild
         $this->cleanIfStealNetworkPort();
     }
 
+    /**
+     * @return void
+     */
     public function cleanIfStealNetworkPort()
     {
         global $DB;
@@ -913,12 +927,12 @@ class Socket extends CommonDBChild
     }
 
     /**
-     * @since 0.84
+     * @param ?HTMLTableRow $row
+     * @param ?CommonDBTM $item
+     * @param ?HTMLTableCell $father
+     * @param array $options
      *
-     * @param $row             HTMLTableRow object (default NULL)
-     * @param $item            CommonDBTM object (default NULL)
-     * @param $father          HTMLTableCell object (default NULL)
-     * @param $options   array
+     * @return void
      **/
     public static function getHTMLTableCellsForItem(
         ?HTMLTableRow $row = null,
