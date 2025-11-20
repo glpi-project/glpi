@@ -3527,6 +3527,7 @@ HTML;
             'forcegroupby'       => true,
             'usehaving'          => true,
             'datatype'           => 'count',
+            'use_join_subquery'  => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
@@ -3547,6 +3548,7 @@ HTML;
             'forcegroupby'       => true,
             'usehaving'          => true,
             'datatype'           => 'count',
+            'use_join_subquery'  => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'           => 'child',
@@ -3562,6 +3564,7 @@ HTML;
             'forcegroupby'       => true,
             'usehaving'          => true,
             'datatype'           => 'count',
+            'use_join_subquery'  => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
