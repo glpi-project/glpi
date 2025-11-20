@@ -185,13 +185,13 @@ class NotificationTarget extends CommonDBChild
         $this->registerGlobalTags();
     }
 
-    #[\Override]
+    #[Override]
     public static function getTable($classname = null): string
     {
         return parent::getTable(self::class);
     }
 
-    #[\Override]
+    #[Override]
     public static function getIcon()
     {
         return Notification::getIcon();
@@ -379,13 +379,13 @@ class NotificationTarget extends CommonDBChild
     }
 
 
-    #[\Override]
+    #[Override]
     public static function getTypeName($nb = 0)
     {
         return _n('Recipient', 'Recipients', $nb);
     }
 
-    #[\Override]
+    #[Override]
     protected function computeFriendlyName()
     {
 
@@ -1700,7 +1700,7 @@ class NotificationTarget extends CommonDBChild
         }
     }
 
-    #[\Override]
+    #[Override]
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
@@ -1834,7 +1834,7 @@ class NotificationTarget extends CommonDBChild
     }
 
 
-    #[\Override]
+    #[Override]
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
