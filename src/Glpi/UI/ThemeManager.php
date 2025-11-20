@@ -35,6 +35,7 @@
 
 namespace Glpi\UI;
 
+use Plugin;
 use RuntimeException;
 use Toolbox;
 
@@ -228,32 +229,37 @@ class ThemeManager
     /**
      * Get theme for anonymous pages (login page)
      *
-     * This method checks if there's a custom branding theme configured for the root entity (ID 0)
-     * which should be applied on anonymous pages like the login page.
+     * This method checks if there's a custom theme configured for anonymous pages
+     * by using plugin hooks instead of directly calling plugin classes.
      *
-     * @return Theme Custom theme for entity 0 if found, default theme otherwise
+     * @return Theme Custom theme if found via plugin hook, default theme otherwise
      */
     public function getAnonymousTheme(): Theme
     {
-        // Check if branding plugin is available and get the custom palette for entity 0
-        if (class_exists('PluginBrandingCustomPaletteEntity')) {
-            try {
-                $custom_palette = \PluginBrandingCustomPaletteEntity::getCustomPalette(0);
-                if ($custom_palette instanceof \PluginBrandingCustomPalette) {
-                    $theme_key = 'plugin_branding_' . $custom_palette->getID();
-                    $custom_theme = $this->getTheme($theme_key);
+        // Use plugin hook to allow plugins to define an anonymous theme
+        $anonymous_theme_data = Plugin::doHookFunction('anonymous_theme', [
+            'entity_id' => 0, // Root entity for anonymous pages
+            'theme_key' => null
+        ]);
 
-                    if ($custom_theme !== null) {
-                        return $custom_theme;
-                    }
-                }
-            } catch (\Exception $e) {
-                // Silently fail if branding plugin is not available or misconfigured
-                // Log the error in debug mode if needed
+        // If a plugin provided a theme key, try to get that theme
+        if (!empty($anonymous_theme_data['theme_key'])) {
+            $custom_theme = $this->getTheme($anonymous_theme_data['theme_key']);
+            if ($custom_theme !== null) {
+                return $custom_theme;
             }
         }
 
-        // Fallback to default theme if no custom branding theme is configured for entity 0
+        // Fallback: check if any custom themes exist and use the first one found
+        // This provides a fallback for existing installations
+        $custom_themes = $this->getCustomThemes();
+        foreach ($custom_themes as $theme) {
+            if (str_starts_with($theme->getKey(), 'plugin_branding_')) {
+                return $theme;
+            }
+        }
+
+        // Final fallback to default theme
         return $this->getTheme(self::DEFAULT_THEME) ?? $this->getCoreThemes()[0];
     }
 }
