@@ -70,7 +70,7 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
     /**
-     * @return string
+     * @return class-string<CommonITILObject>
      */
     public static function getItilObjectItemType()
     {
@@ -633,7 +633,7 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * get the Ticket validation status list
      *
-     * @param bool $withmetaforsearch  false by default)
+     * @param bool $withmetaforsearch  false by default
      * @param bool $global             true for global status, with "no validation" option, false by default
      *
      * @return array

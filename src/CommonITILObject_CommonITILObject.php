@@ -592,7 +592,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
     }
 
     /**
-     * @param string $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      * @param int $items_id
      * @param array $changes
      *

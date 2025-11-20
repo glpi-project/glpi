@@ -573,7 +573,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
     /**
      * Get all available types to which an ITIL object can be assigned
      *
-     * @return array
+     * @return class-string<CommonDBTM>[]
      **/
     public static function getAllTypesForHelpdesk()
     {

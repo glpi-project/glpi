@@ -598,7 +598,7 @@ abstract class CommonDropdown extends CommonDBTM
      * Report if a dropdown have Child
      * Used to (dis)allow delete action
      *
-     * @return false
+     * @return bool
      **/
     public function haveChildren()
     {

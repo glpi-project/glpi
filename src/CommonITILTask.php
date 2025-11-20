@@ -1003,7 +1003,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     }
 
     /**
-     * @param ?string $itemtype
+     * @param ?class-string<CommonDBTM> $itemtype
      *
      * @return array
      */

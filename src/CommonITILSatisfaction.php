@@ -298,7 +298,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
      *
      * @param int $value Survey type ID
      *
-     * @return string|int
+     * @return string
      */
     public static function getTypeInquestName($value)
     {
