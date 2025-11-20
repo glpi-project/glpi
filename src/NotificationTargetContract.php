@@ -38,6 +38,7 @@
  **/
 class NotificationTargetContract extends NotificationTarget
 {
+    #[\Override]
     public function getEvents()
     {
 
@@ -48,8 +49,8 @@ class NotificationTargetContract extends NotificationTarget
         ];
     }
 
-
-    public function addDataForTemplate($event, $options = [])
+#[Override]
+    public function addDataForTemplate($event, $options = []): void
     {
         $this->data['##contract.entity##'] = Dropdown::getDropdownName(
             'glpi_entities',
@@ -179,6 +180,7 @@ class NotificationTargetContract extends NotificationTarget
     }
 
 
+    #[\Override]
     public function getTags()
     {
 

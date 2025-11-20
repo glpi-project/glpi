@@ -45,6 +45,7 @@ class NotificationTargetProjectTask extends NotificationTarget
      *
      * @return array
      **/
+    #[\Override]
     public function getEvents()
     {
 
@@ -532,6 +533,7 @@ class NotificationTargetProjectTask extends NotificationTarget
     }
 
 
+    #[\Override]
     public function getTags()
     {
 

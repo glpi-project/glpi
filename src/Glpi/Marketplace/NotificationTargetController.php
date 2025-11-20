@@ -43,11 +43,7 @@ use Session;
 // Class NotificationTarget
 class NotificationTargetController extends NotificationTarget
 {
-    /**
-     * Overwrite the function in NotificationTarget because there's only one target to be notified
-     *
-     * @see NotificationTarget::addNotificationTargets()
-     */
+    #[\Override]
     public function addNotificationTargets($entity)
     {
 
@@ -57,13 +53,14 @@ class NotificationTargetController extends NotificationTarget
     }
 
 
-    public function getEvents()
+    #[\Override]
+    public function getEvents(): array
     {
         return ['checkpluginsupdate' => __('Check all plugin updates')];
     }
 
-
-    public function addDataForTemplate($event, $options = [])
+    #[Override]
+    public function addDataForTemplate(string $event, array $options): void
     {
         $updated_plugins = $options['plugins'];
         $plugin = new Plugin();
@@ -92,10 +89,8 @@ class NotificationTargetController extends NotificationTarget
     }
 
 
-    /**
-     * @return void
-     */
-    public function getTags()
+    #[\Override]
+    public function getTags(): void
     {
         //Tags with just lang
         $tags = [

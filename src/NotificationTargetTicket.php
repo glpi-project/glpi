@@ -41,6 +41,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
     public const HEADERTAG = '=-=-=-=';
     public const FOOTERTAG = '=_=_=_=';
 
+    #[\Override]
     public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null)
     {
         // Always send notification for satisfaction : if send on ticket closure
@@ -53,6 +54,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
     }
 
 
+    #[\Override]
     public function getSubjectPrefix($event = '')
     {
 
@@ -75,6 +77,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
     /**
      * Get header to add to content
      **/
+    #[\Override]
     public function getContentHeader()
     {
 
@@ -94,6 +97,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
     /**
      * Get footer to add to content
      **/
+    #[\Override]
     public function getContentFooter()
     {
 
@@ -109,6 +113,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         return '';
     }
 
+    #[\Override]
     public function getObjectItem($event = '')
     {
 
@@ -128,10 +133,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         }
     }
 
-    /**
-     *Get events related to tickets
-     **/
-    public function getEvents()
+#[Override]
+    public function getEvents(): array
     {
 
         $events = ['new'               => __('New ticket'),
@@ -156,6 +159,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
     }
 
 
+    #[\Override]
     public function getDataForObject(CommonDBTM $item, array $options, $simple = false)
     {
         // Common ITIL data
@@ -554,6 +558,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
     }
 
 
+    #[\Override]
     public function getTags()
     {
 

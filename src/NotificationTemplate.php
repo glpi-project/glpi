@@ -66,32 +66,38 @@ class NotificationTemplate extends CommonDBTM
         ];
     }
 
+    #[\Override]
     public static function getTypeName($nb = 0)
     {
         return _n('Notification template', 'Notification templates', $nb);
     }
 
+    #[\Override]
     public static function getSectorizedDetails(): array
     {
         return ['config', Notification::class, self::class];
     }
 
+    #[\Override]
     public static function getIcon()
     {
         return 'ti ti-template';
     }
 
+    #[\Override]
     public static function canCreate(): bool
     {
         return static::canUpdate();
     }
 
+    #[\Override]
     public static function canPurge(): bool
     {
         return static::canUpdate();
     }
 
 
+    #[\Override]
     public function defineTabs($options = [])
     {
 
@@ -114,6 +120,7 @@ class NotificationTemplate extends CommonDBTM
     }
 
 
+    #[\Override]
     public function showForm($ID, array $options = [])
     {
         if (!Config::canUpdate()) {
@@ -127,6 +134,7 @@ class NotificationTemplate extends CommonDBTM
     }
 
 
+    #[\Override]
     public function rawSearchOptions()
     {
         $tab = [];
