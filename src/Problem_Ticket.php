@@ -191,6 +191,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
      * Show tickets for a problem
      *
      * @param Problem $problem
+     * @return void|false
      **/
     public static function showForProblem(Problem $problem)
     {
@@ -266,6 +267,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
      * Show problems for a ticket
      *
      * @param Ticket $ticket object
+     * @return void|false
      **/
     public static function showForTicket(Ticket $ticket)
     {

@@ -102,6 +102,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
      * Show tickets for a problem
      *
      * @param Problem $problem
+     * @return void|false
      **/
     public static function showForProblem(Problem $problem)
     {
@@ -194,6 +195,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
      * Show problems for a change
      *
      * @param Change $change object
+     * @return void|false
      **/
     public static function showForChange(Change $change)
     {

@@ -206,6 +206,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
      * Show tickets for a change
      *
      * @param Change $change
+     * @return void|false
      **/
     public static function showForChange(Change $change)
     {
@@ -307,6 +308,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
      * Show changes for a ticket
      *
      * @param Ticket $ticket object
+     * @return void|false
      **/
     public static function showForTicket(Ticket $ticket)
     {

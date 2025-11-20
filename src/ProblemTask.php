@@ -43,7 +43,7 @@ class ProblemTask extends CommonITILTask
     /**
      * Populate the planning with planned problem tasks
      *
-     * @param $options  array of possible options:
+     * @param array $options  array of possible options:
      *    - who         ID of the user (0 = undefined)
      *    - whogroup    ID of the group of users (0 = undefined)
      *    - begin Date
@@ -75,7 +75,7 @@ class ProblemTask extends CommonITILTask
     /**
      * Populate the planning with not planned problem tasks
      *
-     * @param $options  array of possible options:
+     * @param array $options  array of possible options:
      *    - who         ID of the user (0 = undefined)
      *    - whogroup    ID of the group of users (0 = undefined)
      *    - begin Date
