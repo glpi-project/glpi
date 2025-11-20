@@ -91,7 +91,6 @@ class NotificationTarget extends CommonDBChild
     public const TAG_VALUE                  = 'tag';
     public const TAG_FOR_ALL_EVENTS         = 0;
 
-
     public const ANONYMOUS_USER             = 0;
     public const GLPI_USER                  = 1;
     public const EXTERNAL_USER              = 2;
@@ -104,7 +103,6 @@ class NotificationTarget extends CommonDBChild
      **/
     public function __construct($entity = '', $event = '', $object = null, $options = [])
     {
-
         if ($entity === '') {
             $this->entity = ($_SESSION['glpiactive_entity'] ?? 0);
         } else {
@@ -247,7 +245,6 @@ class NotificationTarget extends CommonDBChild
      **/
     public function getSubjectPrefix($event = '')
     {
-
         $perso_tag = trim(Entity::getUsedConfig(
             'notification_subject_tag',
             $this->getEntity(),
@@ -494,6 +491,7 @@ class NotificationTarget extends CommonDBChild
         if (!isset($input['notifications_id'])) {
             return;
         }
+
         $targets = getAllDataFromTable(
             self::getTable(),
             [
@@ -568,7 +566,6 @@ class NotificationTarget extends CommonDBChild
     {
         return [];
     }
-
 
     /**
      * Add new recipient with lang to current recipients array
@@ -690,7 +687,6 @@ class NotificationTarget extends CommonDBChild
         }
     }
 
-
     /**
      * @since 0.84
      **/
@@ -702,7 +698,6 @@ class NotificationTarget extends CommonDBChild
         }
         return self::GLPI_USER;
     }
-
 
     /**
      * @since 0.84
@@ -996,7 +991,6 @@ class NotificationTarget extends CommonDBChild
         return true;
     }
 
-
     /**
      * Return all (GLPI + plugins) notification events for the object type
      *
@@ -1004,14 +998,12 @@ class NotificationTarget extends CommonDBChild
      **/
     public function getAllEvents()
     {
-
         $this->events = $this->getEvents();
         //If plugin adds new events for an already defined type
         Plugin::doHook(Hooks::ITEM_GET_EVENTS, $this);
 
         return $this->events;
     }
-
 
     /**
      * @param $target    (default '') Typically the ID of the recipient
@@ -1020,16 +1012,14 @@ class NotificationTarget extends CommonDBChild
      **/
     public function addTarget($target = '', $label = '', $type = Notification::USER_TYPE)
     {
-
-        $key                                               = $type . '_' . $target;
+        $key                                               = ((string) $type) . '_' . $target;
         // Value used for sort
         $this->notification_targets[$key]                  = $type . '_' . $label;
         // Displayed value
         $this->notification_targets_labels[$type][$target] = $label;
     }
 
-
-    public function addProfilesToTargets()
+    public function addProfilesToTargets(): void
     {
         global $DB;
 
@@ -1149,7 +1139,6 @@ class NotificationTarget extends CommonDBChild
     {
         $this->target_object[] = $this->obj;
     }
-
 
     /**
      * Add user to the notified users list
@@ -1398,8 +1387,7 @@ class NotificationTarget extends CommonDBChild
      **/
     public function addDataForTemplate($event, $options = []) {}
 
-
-    final public function getTargets()
+    final public function getTargets(): array
     {
         return $this->removeExcludedTargets($this->target);
     }
@@ -1482,12 +1470,10 @@ class NotificationTarget extends CommonDBChild
         return $this->entity;
     }
 
-
-    public function clearAddressesList()
+    public function clearAddressesList(): void
     {
         $this->target = [];
     }
-
 
     /**
      * Get SQL join to restrict by profile and by config to avoid send notification
@@ -1536,12 +1522,10 @@ class NotificationTarget extends CommonDBChild
     public function &getForTemplate($event, $options)
     {
         $this->data = [];
-
         $this->addDataForTemplate($event, $options);
 
         // Add global tags data, use `+` operator to preserve overriden values
         $this->data += $this->getGlobalTagsData();
-
         Plugin::doHook(Hooks::ITEM_GET_DATA, $this);
 
         return $this->data;

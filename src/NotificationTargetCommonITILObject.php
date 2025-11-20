@@ -56,7 +56,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      **/
     public function __construct($entity = '', $event = '', $object = null, $options = [])
     {
-
         parent::__construct($entity, $event, $object, $options);
 
         if (isset($options['followup_id'])) {
@@ -119,6 +118,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         if (empty($perso_tag)) {
             $perso_tag = 'GLPI';
         }
+
         return sprintf("[$perso_tag #%07d] ", $this->obj->getField('id'));
     }
 
@@ -157,7 +157,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         asort($events);
         return $events;
     }
-
 
     /**
      * Add linked users to the notified users list
@@ -345,7 +344,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         }
     }
 
-
     /**
      * Get the email of the item's user : Overloaded manual address used
      **/
@@ -353,7 +351,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     {
         $this->addLinkedUserByType(CommonITILActor::REQUESTER);
     }
-
 
     /**
      * Add previous technician in charge (before reassign)
@@ -412,7 +409,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         $this->addUserByField("users_id_recipient");
     }
 
-
     /**
      * Get supplier related to the ITIL object
      *
@@ -458,7 +454,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         }
     }
 
-
     /**
      * Add approver related to the ITIL object validation
      *
@@ -485,10 +480,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $criteria['FROM'] = $validationtable;
             $criteria['WHERE']["$validationtable.id"] = $options['validation_id'];
 
-            $iterator = $DB->request($criteria);
-            foreach ($iterator as $data) {
-                $this->addToRecipientsList($data);
-            }
+        $iterator = $DB->request($criteria);
+        foreach ($iterator as $data) {
+            $this->addToRecipientsList($data);
         }
     }
 
@@ -518,10 +512,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $criteria['FROM'] = $validationtable;
             $criteria['WHERE']["$validationtable.id"] = $options['validation_id'];
 
-            $iterator = $DB->request($criteria);
-            foreach ($iterator as $data) {
-                $this->addToRecipientsList($data);
-            }
+        $iterator = $DB->request($criteria);
+        foreach ($iterator as $data) {
+            $this->addToRecipientsList($data);
         }
     }
 
@@ -554,13 +547,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $criteria['FROM'] = $validationtable;
                 $criteria['WHERE']["$validationtable.id"] = $options['validation_id'];
 
-                $iterator = $DB->request($criteria);
-                foreach ($iterator as $data) {
-                    $this->addToRecipientsList($data);
-                }
-            } elseif ($validation->fields['itemtype_target'] === Group::class) {
-                $this->addForGroup(0, $validation->fields['items_id_target']);
+            $iterator = $DB->request($criteria);
+            foreach ($iterator as $data) {
+                $this->addToRecipientsList($data);
             }
+        } elseif ($validation->fields['itemtype_target'] === Group::class) {
+            $this->addForGroup(0, $validation->fields['items_id_target']);
         }
     }
 
@@ -622,10 +614,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                     ],
                 ];
 
-                $iterator = $DB->request($criteria);
-                foreach ($iterator as $data) {
-                    $this->addToRecipientsList($data);
-                }
+            $iterator = $DB->request($criteria);
+            foreach ($iterator as $data) {
+                $this->addToRecipientsList($data);
             }
         }
     }
