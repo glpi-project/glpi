@@ -266,6 +266,18 @@ class DBmysql
 
             $this->dbh->query("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
 
+            //check if previous query was successful
+            $req = $this->doQuery("SELECT @@sql_mode as mode");
+            if (($data = $req->fetch_array())) {
+                if (str_contains(strtoupper($data['mode']), 'ONLY_FULL_GROUP_BY')) {
+                    trigger_error(
+                        'GLPI requires ONLY_FULL_GROUP_BY mode to be disabled; but this cannot be achieved programmatically. Please fix your database configuration.',
+                        E_USER_ERROR
+                    );
+                }
+            }
+
+
             $this->connected = true;
 
             $this->setTimezone($this->guessTimezone());
