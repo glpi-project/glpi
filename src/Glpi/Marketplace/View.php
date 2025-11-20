@@ -458,16 +458,8 @@ HTML;
             $refresh_lbl  = __s("Refresh plugin list");
             $search_label = __s("Filter plugin list");
 
-            $plugin_message = '';
-            $updates = Controller::getAllUpdates();
-            if (($count = count($updates)) > 0) {
-                $plugin_message = '<div class="alert alert-important alert-warning d-flex" role="alert">
-                    <i class="ti ti-alert-triangle fs-2x"></i>
-                    <ul>
-                        ' . _n('You have %d plugin to update', 'You have %d plugins to update', $count) . '
-                    </ul>
-                </div>';
-            }
+            $plugin = new Plugin();
+            $plugin_message = $plugin->getPluginsUpdatableAlert();
 
             $marketplace  = <<<HTML
                 <div class='marketplace $tab' data-tab='{$tab}'>
