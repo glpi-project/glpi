@@ -178,7 +178,7 @@
 
     {% if item.isField('picture') %}
         {% if item.fields['picture'] is not empty %}
-            {{ fields.imageField('picture', item.fields['picture']|picture_url, field['label'], {
+            {{ fields.imageField('picture', item.fields['picture']|picture_url, _n('Picture', 'Pictures', 1), {
                 'clearable': (not item.isNewItem() and item.canUpdateItem())
             }) }}
         {% else %}
