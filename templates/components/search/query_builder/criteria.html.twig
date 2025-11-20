@@ -53,15 +53,6 @@
    <div class="list-group-item {{ add_padding }} border-0 normalcriteria{{ add_class }}" id="{{ row_id }}">
       <div class="row g-1">
          {% if not from_meta %}
-            {% if num == 0 and mainform is defined and mainform %}
-               {% set item = itemtype != 'AllAssets' ? call('getItemForItemtype', [itemtype]) : null %}
-               {% if item is not null and item.maybeDeleted() %}
-                  <input type="hidden" id="is_deleted" name="is_deleted" value="{{ p['is_deleted'] }}">
-               {% endif %}
-               <input type="hidden" id="as_map" name="as_map" value="{{ p['as_map'] }}">
-               <input type="hidden" id="browse" name="browse" value="{{ p['browse'] }}">
-               <input type="hidden" id="unpublished" name="unpublished" value="{{ p['unpublished'] }}">
-            {% endif %}
             <div class="col-auto">
                <button class="btn btn-sm btn-icon btn-ghost-secondary remove-search-criteria" type="button" data-rowid="{{ row_id }}"
                        data-bs-toggle="tooltip" data-bs-placement="left" title="{{ __('Delete a rule') }}">
