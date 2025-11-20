@@ -50,13 +50,13 @@ class NotificationTarget extends CommonDBChild
 
     /**
      * @var array<string, string>
-     *      key is a formated <Notification::*_TYPE>_<Notification::VALIDATION_*>
+     *      key is a formated <Notification::*_TYPE>_<value-of<Notification::TARGETS>>
      *      value is formated <Notification::*_TYPE>_<string(label)>
      */
     public $notification_targets = [];
 
     /**
-     * @var array<Notification::*_TYPE, array<Notification::VALIDATION_*, string>>
+     * @var array<Notification::*_TYPE, array<value-of<Notification::TARGETS>, string>>
      */
     public $notification_targets_labels = [];
 
@@ -1072,9 +1072,9 @@ class NotificationTarget extends CommonDBChild
     }
 
     /**
-     * @param Notification::VALIDATION_*    $target
-     * @param string                        $label  Recipient label
-     * @param Notification::*_TYPE          $type   Recipient type
+     * @param value-of<Notification::TARGETS> $target
+     * @param string                          $label  Recipient label
+     * @param Notification::*_TYPE            $type   Recipient type
      *
      * @return void
      **/
