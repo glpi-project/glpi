@@ -464,7 +464,7 @@ HTML;
                 $plugin_message = '<div class="alert alert-important alert-warning d-flex" role="alert">
                     <i class="ti ti-alert-triangle fs-2x"></i>
                     <ul>
-                        <li>You have 11 plugins to update</li>
+                        ' . _n('You have %d plugin to update', 'You have %d plugins to update', $count) . '
                     </ul>
                 </div>';
             }
