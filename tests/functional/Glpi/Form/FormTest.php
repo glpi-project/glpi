@@ -61,6 +61,7 @@ use Glpi\Form\Section;
 use Glpi\Helpdesk\Tile\FormTile;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Glpi\UI\IllustrationManager;
 use Item_Ticket;
 use Log;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -548,6 +549,39 @@ class FormTest extends DbTestCase
         $this->assertEquals(1 + $access_controls, countElementsInTable(FormAccessControl::getTable()));
         $this->assertEquals(1 + $form_tiles, countElementsInTable(FormTile::getTable()));
         $this->assertEquals(2 + $linked_items, countElementsInTable(Item_Ticket::getTable()));
+    }
+
+    public function testCustomIllustrationsAreDeleted(): void
+    {
+        // Arrange: create a form with a custom illustration
+        $illustration_manager = new IllustrationManager();
+
+        $custom_icon_source = GLPI_ROOT . "/tests/fixtures/uploads/foo.png";
+        $file_name = Uuid::uuid4() . "-foo.png";
+        $tmp_file_path = GLPI_TMP_DIR . "/$file_name";
+
+        copy($custom_icon_source, $tmp_file_path);
+        $illustration_manager->saveCustomIllustration($file_name, $tmp_file_path);
+
+        $saved_icon_path = GLPI_PICTURE_DIR . "/illustrations/" . $file_name;
+        if (!file_exists($saved_icon_path)) {
+            $this->fail("Failed to save icon");
+        }
+
+        $icon_key = IllustrationManager::CUSTOM_SCENE_PREFIX . "$file_name";
+        $form = $this->createItem(Form::class, [
+            'name'         => "My form with a custom icon",
+            'illustration' => $icon_key,
+            'entities_id'  => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // Act: set another icon on the form
+        $this->updateItem(Form::class, $form->getID(), [
+            'illustration' => 'laptop',
+        ]);
+
+        // Assert: file should be deleted
+        $this->assertFalse(file_exists($saved_icon_path));
     }
 
     /**
