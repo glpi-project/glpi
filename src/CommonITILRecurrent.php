@@ -63,16 +63,22 @@ abstract class CommonITILRecurrent extends CommonDropdown
 
     /**
      * Concrete items to be instanciated
+     *
+     * @return class-string<CommonDBTM>
      */
     abstract public static function getConcreteClass();
 
     /**
      * Template class to use to create the concrete items
+     *
+     * @return class-string<CommonDBTM>
      */
     abstract public static function getTemplateClass();
 
     /**
      * Predefined field class to use to set the concrete items's data
+     *
+     * @return class-string<CommonDBTM>
      */
     abstract public static function getPredefinedFieldsClass();
 
@@ -566,6 +572,8 @@ abstract class CommonITILRecurrent extends CommonDropdown
 
     /**
      * Get all available types to which an ITIL object can be assigned
+     *
+     * @return class-string<CommonDBTM>[]
      **/
     public static function getAllTypesForHelpdesk()
     {

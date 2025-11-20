@@ -112,13 +112,18 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         ));
     }
 
-
+    /**
+     * @return bool|int
+     */
     public function canViewPrivates()
     {
         return Session::haveRight(self::$rightname, self::SEEPRIVATE);
     }
 
 
+    /**
+     * @return bool
+     */
     public function canEditAll()
     {
         return Session::haveRightsOr(self::$rightname, [CREATE, DELETE, PURGE, self::UPDATEALL]);
@@ -998,12 +1003,12 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     }
 
     /**
-     * @since 0.85
-     **/
+     * @param ?class-string<CommonDBTM> $itemtype
+     *
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
-        global $DB;
-
         $task = new static();
         $tab = [];
         $name = _n('Task', 'Tasks', Session::getPluralNumber());
@@ -1271,12 +1276,12 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     }
 
     /**
-     * Current dates are valid ? begin before end
+     * Current dates are valid? begin before end
      *
-     * @param $input
+     * @param array $input
      *
-     *@return boolean
-     **/
+     * @return bool
+     */
     public function test_valid_date($input)
     {
 
@@ -1669,10 +1674,11 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
     /** form for Task
      *
-     * @param $ID        Integer : Id of the task
-     * @param $options   array
-     *     -  parent Object : the object
-     **/
+     * @param int   $ID      Id of the task
+     * @param array $options [parent Object : the object]
+     *
+     * @return true
+     */
     public function showForm($ID, array $options = [])
     {
         TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_task.html.twig', [
@@ -1687,6 +1693,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
     /**
      * Form for Ticket or Problem Task on Massive action
+     *
+     * @return void
      */
     public function showMassiveActionAddTaskForm()
     {
@@ -1713,6 +1721,11 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      * Get tasks list
      *
      * @since 9.2
+     *
+     * @param string $status
+     * @param bool $showgrouptickets
+     * @param ?int $start
+     * @param ?int $limit
      *
      * @return DBmysqlIterator
      */

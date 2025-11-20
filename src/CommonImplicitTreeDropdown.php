@@ -115,15 +115,22 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
     /**
      * The haveChildren=false must be defined to be sure that CommonDropdown allows the deletion of a
      * node of the tree
+     *
+     * @return false
      **/
     public function haveChildren()
     {
         return false;
     }
 
-
-    // Key function to manage the children of the node
-    private function alterElementInsideTree($step)
+    /**
+     * Key function to manage the children of the node
+     *
+     * @param string $step
+     *
+     * @return void
+     */
+    private function alterElementInsideTree(string $step): void
     {
         global $DB;
 
