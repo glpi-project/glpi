@@ -80,7 +80,7 @@ abstract class LevelAgreement extends CommonDBChild
     /**
      * Get table fields
      *
-     * @param integer $subtype of OLA/SLA, can be SLM::TTO or SLM::TTR
+     * @param SLM::TTO|SLM::TTR $subtype of OLA/SLA, can be SLM::TTO or SLM::TTR
      *
      * @return array of 'date' and 'sla' field names
      */

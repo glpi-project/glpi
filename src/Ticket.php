@@ -1154,9 +1154,9 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      *  @since 9.1
      *
-     * @param $type
-     * @param $input
-     * @param $manual_olas_id
+     * @param SLM::TTO|SLM::TTR $type
+     * @param array $input
+     * @param array $manual_olas_id
      */
     public function olaAffect($type, &$input, $manual_olas_id)
     {
@@ -1798,13 +1798,13 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
 
     /**
-     * Get active or solved tickets for an hardware last X days
+     * Get active or solved tickets for a hardware last X days
      *
      * @since 0.83
      *
-     * @param $itemtype  string   Item type
-     * @param $items_id  integer  ID of the Item
-     * @param $days      integer  day number
+     * @param class-string<CommonDBTM> $itemtype Item type
+     * @param int $items_id ID of the Item
+     * @param int $days day number
      *
      * @return array
      **/
@@ -1815,14 +1815,14 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
 
     /**
-     * Count active tickets for an hardware
+     * Count active tickets for a hardware
      *
      * @since 0.83
      *
-     * @param $itemtype  string   Item type
-     * @param $items_id  integer  ID of the Item
+     * @param class-string<CommonDBTM> $itemtype Item type
+     * @param int $items_id ID of the Item
      *
-     * @return integer
+     * @return int
      **/
     public function countActiveTicketsForItem($itemtype, $items_id)
     {
@@ -3796,6 +3796,8 @@ JAVASCRIPT;
      * @param string  $status             (default ''process)
      * @param boolean $showgrouptickets   (true by default)
      * @param boolean $display            set to false to return html
+     *
+     * @return false|string
      */
     public static function showCentralList($start, $status = "process", bool $showgrouptickets = true, bool $display = true)
     {
@@ -4612,6 +4614,8 @@ JAVASCRIPT;
      *
      * @param boolean $foruser  Only for current login user as requester or observer (false by default)
      * @param boolean $display  il false return html
+     *
+     * @return false|string
      **/
     public static function showCentralCount(bool $foruser = false, bool $display = true)
     {
@@ -4840,8 +4844,10 @@ JAVASCRIPT;
     }
 
     /**
-     * @param $ID
-     * @param $forcetab  string   name of the tab to force at the display (default '')
+     * @param int $ID
+     * @param string $forcetab name of the tab to force at the display (default '')
+     *
+     * @return void
      **/
     public static function showVeryShort($ID, $forcetab = '')
     {
@@ -6192,6 +6198,11 @@ JAVASCRIPT;
         }
     }
 
+    /**
+     * @param $itemtype
+     *
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype)
     {
         global $CFG_GLPI;
@@ -6222,6 +6233,11 @@ JAVASCRIPT;
         return $options;
     }
 
+    /**
+     * @param CommonDBTM $item
+     *
+     * @return array
+     */
     public static function getListForItemRestrict(CommonDBTM $item)
     {
         $restrict = [];
