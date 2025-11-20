@@ -312,7 +312,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
 
             default:
                 // Get value if not defined
-                return $value;
+                return (string) $value;
         }
     }
 
