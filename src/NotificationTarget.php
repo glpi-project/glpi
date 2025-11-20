@@ -43,7 +43,6 @@ use Glpi\Plugin\Hooks;
  **/
 class NotificationTarget extends CommonDBChild
 {
-    public $prefix                      = '';
     // From CommonDBChild
     public static $itemtype             = 'Notification';
     public static $items_id             = 'notifications_id';
