@@ -2951,7 +2951,7 @@ final class Transfer extends CommonDBTM
         }
 
         $taskclass = $itemtype::getTaskClass();
-        if (!is_a($taskclass, CommonITILTask::class, true)) {
+        if (!is_a($taskclass ?? '', CommonITILTask::class, true)) {
             return;
         }
 
