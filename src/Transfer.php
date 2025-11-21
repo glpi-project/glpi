@@ -1305,8 +1305,8 @@ final class Transfer extends CommonDBTM
     private function transferDropdownLocation(int $locID): int
     {
         if ($locID > 0) {
-            if (isset($this->already_transfer['locations_id'][$locID])) {
-                return $this->already_transfer['locations_id'][$locID];
+            if (isset($this->already_transfer[Location::class][$locID])) {
+                return $this->already_transfer[Location::class][$locID];
             }
             // else  // Not already transfer
             // Search init item
@@ -1322,7 +1322,7 @@ final class Transfer extends CommonDBTM
                     $newID = $location->import($input);
                 }
 
-                $this->addToAlreadyTransfer('locations_id', $locID, $newID);
+                $this->addToAlreadyTransfer(Location::class, $locID, $newID);
                 return $newID;
             }
         }
@@ -1341,8 +1341,8 @@ final class Transfer extends CommonDBTM
         global $DB;
 
         if ($sockets_id > 0) {
-            if (isset($this->already_transfer['sockets_id'][$sockets_id])) {
-                return $this->already_transfer['sockets_id'][$sockets_id];
+            if (isset($this->already_transfer[Socket::class][$sockets_id])) {
+                return $this->already_transfer[Socket::class][$sockets_id];
             }
             // else  // Not already transfer
             // Search init item
@@ -1366,7 +1366,7 @@ final class Transfer extends CommonDBTM
                     // Found : -> use it
                     $row = $iterator->current();
                     $newID = $row['id'];
-                    $this->addToAlreadyTransfer('sockets_id', $sockets_id, $newID);
+                    $this->addToAlreadyTransfer(Socket::class, $sockets_id, $newID);
                     return $newID;
                 }
 
@@ -1379,7 +1379,7 @@ final class Transfer extends CommonDBTM
                     'locations_id' => $locID,
                 ]);
 
-                $this->addToAlreadyTransfer('sockets_id', $sockets_id, $newID);
+                $this->addToAlreadyTransfer(Socket::class, $sockets_id, $newID);
                 return $newID;
             }
         }
