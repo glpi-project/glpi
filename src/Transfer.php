@@ -1300,7 +1300,7 @@ final class Transfer extends CommonDBTM
      *
      * @param int $locID location ID
      *
-     * @return int The new location ID. May be 0 if the location is not transfered.
+     * @return int The new location ID. May be 0 if the location is not transferred.
      **/
     private function transferDropdownLocation(int $locID): int
     {
@@ -1334,7 +1334,7 @@ final class Transfer extends CommonDBTM
      *
      * @param int $sockets_id socket ID
      *
-     * @return int The new socket ID. May be 0 if the socket is not transfered.
+     * @return int The new socket ID. May be 0 if the socket is not transferred.
      **/
     private function transferDropdownSocket(int $sockets_id): int
     {
@@ -1398,7 +1398,7 @@ final class Transfer extends CommonDBTM
     {
         global $DB;
 
-        // Get cartrdiges linked
+        // Get cartridges linked
         $iterator = $DB->request([
             'SELECT' => ['id', 'cartridgeitems_id'],
             'FROM'   => 'glpi_cartridges',
@@ -1440,7 +1440,7 @@ final class Transfer extends CommonDBTM
 
                             $result = $DB->request($ccriteria)->current();
 
-                            // Is the carttype will be completly transfer ?
+                            // Is the carttype will be completely transfer?
                             if ($result['cpt'] == 0) {
                                 // Yes : transfer
                                 $need_clean_process = false;
@@ -2557,8 +2557,8 @@ final class Transfer extends CommonDBTM
                             if ($newID != $item_ID) {
                                 $need_clean_process = true;
                             }
-                        } else { // Not yet tranfer
-                            // Can be managed like a non global one ?
+                        } else { // Not yet transferred
+                            // Can be managed like a non-global one ?
                             // = all linked assets need to be transfer (so not copy)
                             $asset_criteria = [
                                 'COUNT'  => 'cpt',
@@ -2690,7 +2690,7 @@ final class Transfer extends CommonDBTM
     }
 
     /**
-     * Handle direct connection between a peripheral and its main asset when transfering the peripheral.
+     * Handle direct connection between a peripheral and its main asset when transferring the peripheral.
      *
      * @param string $peripheral_itemtype
      * @param int    $ID
@@ -2711,13 +2711,13 @@ final class Transfer extends CommonDBTM
             ],
         ];
 
-        $transfered_itemtypes = array_intersect(
+        $transferred_itemtypes = array_intersect(
             Asset_PeripheralAsset::getPeripheralHostItemtypes(),
             array_keys($this->needtobe_transfer)
         );
-        if (count($transfered_itemtypes) > 0) {
+        if (count($transferred_itemtypes) > 0) {
             $where_not = [];
-            foreach ($transfered_itemtypes as $itemtype) {
+            foreach ($transferred_itemtypes as $itemtype) {
                 if ($this->haveItemsToTransfer($itemtype)) {
                     $where_not[] = [
                         'itemtype_asset' => $itemtype,
