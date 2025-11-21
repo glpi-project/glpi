@@ -59,15 +59,15 @@
                      mb: '',
                      field_class: '',
                      rand: rand,
-                  }|merge(dropdown_options))
-               }}
+                  }|merge(dropdown_options)
+               ) }}
 
                {% if ajax_dropdown is defined %}
                   {% do call('Ajax::updateItemOnSelectEvent', [
                      ajax_dropdown['toobserve'],
                      ajax_dropdown['toupdate']['id'],
                      ajax_dropdown['url'],
-                     ajax_dropdown['params'],
+                     ajax_dropdown['params']
                   ]) %}
                   <div id="{{ ajax_dropdown['toupdate']['id'] }}" style="display: none;" class="d-flex align-items-center gap-2"></div>
                {% endif %}
