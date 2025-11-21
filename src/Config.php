@@ -276,6 +276,12 @@ class Config extends CommonDBTM
             );
         }
 
+        if (isset($input['proxy_exclusions'])) {
+            $input['proxy_exclusions'] = exportArrayToDB(
+                ArrayNormalizer::normalizeValues($input['proxy_exclusions'] ?: [], 'strval')
+            );
+        }
+
         // lock mechanism update
         if (isset($input['lock_use_lock_item']) && isset($input['lock_item_list'])) {
             $input['lock_item_list'] = exportArrayToDB(
@@ -870,6 +876,12 @@ class Config extends CommonDBTM
         TemplateRenderer::getInstance()->display('pages/setup/general/systeminfo_form.html.twig', [
             'config' => $CFG_GLPI,
             'canedit' => static::canUpdate(),
+            'possible_proxy_exclusions' => array_merge(
+                [
+                    Agent::class => Agent::getTypeName(),
+                ],
+                $CFG_GLPI['possible_proxy_exclusions']
+            ),
         ]);
         self::showSystemInfoTable();
     }
@@ -1382,6 +1394,10 @@ class Config extends CommonDBTM
             $CFG_GLPI['lock_item_list'] = importArrayFromDB($CFG_GLPI['lock_item_list']);
         }
 
+        if (isset($CFG_GLPI['proxy_exclusions'])) {
+            $CFG_GLPI['proxy_exclusions'] = importArrayFromDB($CFG_GLPI['proxy_exclusions']);
+        }
+
         if (
             isset($CFG_GLPI['lock_lockprofile_id'])
             && $CFG_GLPI['lock_use_lock_item']
@@ -1742,6 +1758,7 @@ class Config extends CommonDBTM
                 'lock_item_list',
                 'planning_work_days',
                 Impact::CONF_ENABLED,
+                'proxy_exclusions',
             ];
             if (in_array($this->fields['name'], $array_fields, true)) {
                 $CFG_GLPI[$this->fields['name']] = importArrayFromDB($newvalue);

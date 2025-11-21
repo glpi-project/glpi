@@ -198,6 +198,7 @@ $empty_data_builder = new class {
             'proxy_name' => '',
             'proxy_port' => '8080',
             'proxy_user' => '',
+            'proxy_exclusions' => '',
             'add_followup_on_update_ticket' => '1',
             'keep_tickets_on_delete' => '0',
             'time_step' => '5',

@@ -645,3 +645,5 @@ $CFG_GLPI['admin_types'] = [
 
 $CFG_GLPI['process_types'] = [Computer::class];
 $CFG_GLPI['environment_types'] = [Computer::class];
+
+$CFG_GLPI['possible_proxy_exclusions'] = [];

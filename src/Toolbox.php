@@ -1338,8 +1338,8 @@ class Toolbox
         global $CFG_GLPI;
 
         $options = $extra_options + ['connect_timeout' => 5];
-        // add proxy string if configured in glpi
-        if (!empty($CFG_GLPI["proxy_name"])) {
+        // add proxy string if configured in glpi - and not excluded
+        if (!empty($CFG_GLPI["proxy_name"]) && ($extra_options['proxy_excluded'] ?? false) === false) {
             $proxy_creds = "";
             if (!empty($CFG_GLPI["proxy_user"])) {
                 $proxy_user = rawurlencode($CFG_GLPI["proxy_user"]);
@@ -1379,7 +1379,7 @@ class Toolbox
             $PHPLOGGER->error($e->getMessage(), ['exception' => $e]);
 
             $curl_error = $e->getMessage();
-            if (empty($CFG_GLPI["proxy_name"])) {
+            if (empty($CFG_GLPI["proxy_name"]) || ($eopts['proxy_excluded'] ?? false)) {
                 $msgerr = sprintf(
                     __('Connection failed. If you use a proxy, please configure it. (%s)'),
                     $curl_error
@@ -1446,6 +1446,11 @@ class Toolbox
         }
 
         $ch = curl_init($url);
+        $proxy_excluded = false;
+        if (isset($eopts['proxy_excluded'])) {
+            $proxy_excluded = (bool) $eopts['proxy_excluded'];
+            unset($eopts['proxy_excluded']);
+        }
         $opts = [
             CURLOPT_URL             => $url,
             CURLOPT_USERAGENT       => "GLPI/" . trim($CFG_GLPI["version"]),
@@ -1457,7 +1462,7 @@ class Toolbox
             $opts[CURLOPT_FOLLOWLOCATION] = false;
         }
 
-        if (!empty($CFG_GLPI["proxy_name"])) {
+        if (!empty($CFG_GLPI["proxy_name"]) && !$proxy_excluded) {
             // Connection using proxy
             $opts += [
                 CURLOPT_PROXY           => $CFG_GLPI['proxy_name'],
