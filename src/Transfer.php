@@ -1883,7 +1883,7 @@ final class Transfer extends CommonDBTM
         }
 
         $vers = new SoftwareVersion();
-        foreach ($this->already_transfer[SoftwareVersion::class] as $old => $new) {
+        foreach (array_keys($this->already_transfer[SoftwareVersion::class]) as $old) {
             if (
                 (countElementsInTable("glpi_softwarelicenses", ['softwareversions_id_buy' => $old]) === 0)
                 && (countElementsInTable("glpi_softwarelicenses", ['softwareversions_id_use' => $old]) === 0)
@@ -1909,7 +1909,7 @@ final class Transfer extends CommonDBTM
         }
 
         $soft = new Software();
-        foreach ($this->already_transfer[Software::class] as $old => $new) {
+        foreach (array_keys($this->already_transfer[Software::class]) as $old) {
             if (
                 (countElementsInTable("glpi_softwarelicenses", ['softwares_id' => $old]) == 0)
                 && (countElementsInTable("glpi_softwareversions", ['softwares_id' => $old]) == 0)
