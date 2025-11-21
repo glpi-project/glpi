@@ -936,9 +936,11 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         // automatic recalculate if user changes urgency or technician change impact
         $canpriority               = Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
         if (
-            (isset($input['urgency']) && $input['urgency'] != $this->fields['urgency'])
-            || (isset($input['impact']) && $input['impact'] != $this->fields['impact'])
-            && ($canpriority && !isset($input['priority']) || !$canpriority)
+            (
+                (isset($input['urgency']) && $input['urgency'] != $this->fields['urgency'])
+                || (isset($input['impact']) && $input['impact'] != $this->fields['impact'])
+            )
+            && (!$canpriority || !isset($input['priority']) || $input['priority'] == $this->fields['priority'])
         ) {
             if (!isset($input['urgency'])) {
                 $input['urgency'] = $this->fields['urgency'];
