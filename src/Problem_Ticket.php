@@ -191,7 +191,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
      * Show tickets for a problem
      *
      * @param Problem $problem
-     * @return void|false
+     * @return false
      **/
     public static function showForProblem(Problem $problem)
     {
@@ -261,13 +261,15 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
                 'extraparams'      => ['problems_id' => $problem->getID()],
             ],
         ]);
+
+        return false;
     }
 
     /**
      * Show problems for a ticket
      *
      * @param Ticket $ticket object
-     * @return void|false
+     * @return false
      **/
     public static function showForTicket(Ticket $ticket)
     {
@@ -333,6 +335,8 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
                 'container'     => 'mass' . static::class . $rand,
             ],
         ]);
+
+        return false;
     }
 
     /**

@@ -102,7 +102,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
      * Show tickets for a problem
      *
      * @param Problem $problem
-     * @return void|false
+     * @return false
      **/
     public static function showForProblem(Problem $problem)
     {
@@ -189,13 +189,15 @@ class Change_Problem extends CommonITILObject_CommonITILObject
                 'container'     => 'mass' . static::class . $rand,
             ],
         ]);
+
+        return false;
     }
 
     /**
      * Show problems for a change
      *
      * @param Change $change object
-     * @return void|false
+     * @return false
      **/
     public static function showForChange(Change $change)
     {
@@ -281,5 +283,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
                 'container'     => 'mass' . static::class . $rand,
             ],
         ]);
+
+        return false;
     }
 }
