@@ -41,22 +41,35 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 if (isset($_POST["projects_id"])) {
-    $condition = ['glpi_projecttasks.projectstates_id' => ['<>', 3]];
+    $container_id = 'results_projects' . $_POST["rand"];
 
     if ($_POST["projects_id"] > 0) {
-        $condition['glpi_projecttasks.projects_id'] = $_POST['projects_id'];
+        $condition = ['glpi_projecttasks.projects_id' => $_POST['projects_id']];
+
+        // Filtrer les états de tâches terminées si nécessaire
+        if (isset($_POST['condition']) && is_array($_POST['condition'])) {
+            $condition = array_merge($condition, $_POST['condition']);
+        }
+
+        $dropdown_params = [
+            'itemtype'        => ProjectTask::getType(),
+            'entity_restrict' => Session::getMatchingActiveEntities($_POST['entity_restrict']),
+            'myname'          => $_POST["myname"],
+            'condition'       => $condition,
+            'rand'            => $_POST["rand"],
+        ];
+
+        if (isset($_POST["used"]) && !empty($_POST["used"])) {
+            $dropdown_params["used"] = $_POST["used"];
+        }
+
+        if (isset($_POST["displaywith"])) {
+            $dropdown_params["displaywith"] = $_POST["displaywith"];
+        }
+
+        $label = ProjectTask::getTypeName(1);
+
+        echo '<label class="form-label mb-0">' . htmlspecialchars($label) . '</label>';
+        ProjectTask::dropdown($dropdown_params);
     }
-
-    $p = ['itemtype'     => ProjectTask::getType(),
-        'entity_restrict' => Session::getMatchingActiveEntities($_POST['entity_restrict']),
-        'myname'          => $_POST["myname"],
-        'condition'       => $condition,
-        'rand'            => $_POST["rand"],
-    ];
-
-    if (isset($_POST["used"]) && !empty($_POST["used"])) {
-        $p["used"] = $_POST["used"];
-    }
-
-    ProjectTask::dropdown($p);
 }
