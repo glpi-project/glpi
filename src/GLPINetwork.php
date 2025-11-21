@@ -40,6 +40,11 @@ use function Safe\preg_replace;
 
 class GLPINetwork extends CommonGLPI
 {
+    public static function getTypeName($nb = 0)
+    {
+        return __('GLPI Network');
+    }
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         return self::createTabEntry('GLPI Network');
@@ -150,7 +155,7 @@ class GLPINetwork extends CommonGLPI
      */
     public static function getRegistrationInformations(bool $force_refresh = false)
     {
-        global $GLPI_CACHE;
+        global $GLPI_CACHE, $CFG_GLPI;
 
         $registration_key = self::getRegistrationKey();
         $lang = preg_replace('/^([a-z]+)_.+$/', '$1', $_SESSION["glpilanguage"]);
@@ -173,18 +178,22 @@ class GLPINetwork extends CommonGLPI
 
         // Verify registration from registration API
         $error_message = null;
+        $eopts = [
+            CURLOPT_HTTPHEADER => [
+                'Accept:application/json',
+                'Accept-Language: ' . $lang,
+                'Content-Type:application/json',
+                'User-Agent:' . self::getGlpiUserAgent(),
+                'X-Registration-Key:' . $registration_key,
+                'X-Glpi-Network-Uid:' . self::getGlpiNetworkUid(),
+            ],
+        ];
+        if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
+            $eopts['proxy_excluded'] = true;
+        }
         $registration_response = Toolbox::callCurl(
             rtrim(GLPI_NETWORK_REGISTRATION_API_URL, '/') . '/info',
-            [
-                CURLOPT_HTTPHEADER => [
-                    'Accept:application/json',
-                    'Accept-Language: ' . $lang,
-                    'Content-Type:application/json',
-                    'User-Agent:' . self::getGlpiUserAgent(),
-                    'X-Registration-Key:' . $registration_key,
-                    'X-Glpi-Network-Uid:' . self::getGlpiNetworkUid(),
-                ],
-            ],
+            $eopts,
             $error_message
         );
 
@@ -277,20 +286,26 @@ class GLPINetwork extends CommonGLPI
     /**
      * Executes a curl call
      *
-     * @param string $curl_error  will contains original curl error string if an error occurs
+     * @param ?string $curl_error  will contain original curl error string if an error occurs
      *
      * @return bool
      */
     public static function isServicesAvailable(&$curl_error = null): bool
     {
+        global $CFG_GLPI;
+
         $error_msg = null;
-        $content = Toolbox::callCurl(rtrim(GLPI_NETWORK_API_URL, '/') . '/ping', [], $error_msg, $curl_error);
+        $eopts = [];
+        if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
+            $eopts['proxy_excluded'] = true;
+        }
+        $content = Toolbox::callCurl(rtrim(GLPI_NETWORK_API_URL, '/') . '/ping', $eopts, $error_msg, $curl_error);
         return $content !== '';
     }
 
     public static function getOffers(bool $force_refresh = false): array
     {
-        global $GLPI_CACHE;
+        global $GLPI_CACHE, $CFG_GLPI;
 
         $lang = preg_replace('/^([a-z]+)_.+$/', '$1', $_SESSION["glpilanguage"]);
         $cache_key = 'glpi_network_offers_' . $lang;
@@ -300,14 +315,18 @@ class GLPINetwork extends CommonGLPI
         }
 
         $error_message = null;
+        $eopts = [
+            CURLOPT_HTTPHEADER => [
+                'Accept:application/json',
+                'Accept-Language: ' . $lang,
+            ],
+        ];
+        if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
+            $eopts['proxy_excluded'] = true;
+        }
         $response = Toolbox::callCurl(
             rtrim(GLPI_NETWORK_REGISTRATION_API_URL, '/') . '/offers',
-            [
-                CURLOPT_HTTPHEADER => [
-                    'Accept:application/json',
-                    'Accept-Language: ' . $lang,
-                ],
-            ],
+            $eopts,
             $error_message
         );
 

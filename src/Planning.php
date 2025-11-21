@@ -1923,13 +1923,20 @@ TWIG, $twig_params);
      */
     private static function getExternalCalendarRawEvents(string $limit_begin, string $limit_end): array
     {
+        global $CFG_GLPI;
+
         $raw_events = [];
 
         foreach ($_SESSION['glpi_plannings']['plannings'] as $planning_id => $planning_params) {
             if ('external' !== $planning_params['type'] || !$planning_params['display']) {
                 continue; // Ignore non-external and inactive calendars
             }
-            $calendar_data = Toolbox::getURLContent($planning_params['url']);
+            $errmsg = null;
+            $eopts = [];
+            if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
+                $eopts['proxy_excluded'] = true;
+            }
+            $calendar_data = Toolbox::getURLContent($planning_params['url'], $errmsg, 0, $eopts);
             if (empty($calendar_data)) {
                 continue;
             }
