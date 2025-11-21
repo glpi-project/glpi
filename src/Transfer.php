@@ -1322,11 +1322,13 @@ final class Transfer extends CommonDBTM
                 $newID                 = $location->findID($input);
 
                 if ($newID < 0) {
-                    $newID = $location->import($input);
+                    $newID = (int) $location->import($input);
                 }
 
-                $this->addToAlreadyTransfer(Location::class, $locID, $newID);
-                return $newID;
+                if ($newID > 0) {
+                    $this->addToAlreadyTransfer(Location::class, $locID, $newID);
+                    return $newID;
+                }
             }
         }
         return 0;
@@ -1375,15 +1377,17 @@ final class Transfer extends CommonDBTM
 
                 // Not found :
                 // add item
-                $newID    = $socket->add([
+                $newID    = (int) $socket->add([
                     'name'         => $data['name'],
                     'comment'      => $data['comment'],
                     'entities_id'  => $this->to,
                     'locations_id' => $locID,
                 ]);
 
-                $this->addToAlreadyTransfer(Socket::class, $sockets_id, $newID);
-                return $newID;
+                if ($newID > 0) {
+                    $this->addToAlreadyTransfer(Socket::class, $sockets_id, $newID);
+                    return $newID;
+                }
             }
         }
         return 0;
@@ -1478,13 +1482,15 @@ final class Transfer extends CommonDBTM
                                     $input                = $carttype->fields;
                                     $input['entities_id'] = $this->to;
                                     $carttype->fields = [];
-                                    $newcarttypeID        = $carttype->add($input);
+                                    $newcarttypeID        = (int) $carttype->add($input);
                                     // 2 - transfer as copy
-                                    $this->transferItem(
-                                        CartridgeItem::class,
-                                        $data['cartridgeitems_id'],
-                                        $newcarttypeID
-                                    );
+                                    if ($newcarttypeID > 0) {
+                                        $this->transferItem(
+                                            CartridgeItem::class,
+                                            $data['cartridgeitems_id'],
+                                            $newcarttypeID
+                                        );
+                                    }
                                 }
                             }
 
@@ -2025,9 +2031,11 @@ final class Transfer extends CommonDBTM
                             $input                = $certificate->fields;
                             $input['entities_id'] = $this->to;
                             $certificate->fields = [];
-                            $newcertificateID     = $certificate->add($input);
+                            $newcertificateID     = (int) $certificate->add($input);
                             // 2 - transfer as copy
-                            $this->transferItem(Certificate::class, $item_ID, $newcertificateID);
+                            if ($newcertificateID > 0) {
+                                $this->transferItem(Certificate::class, $item_ID, $newcertificateID);
+                            }
                         }
                     }
                 }
@@ -2210,9 +2218,11 @@ final class Transfer extends CommonDBTM
                             $input                = $contract->fields;
                             $input['entities_id'] = $this->to;
                             $contract->fields = [];
-                            $newcontractID        = $contract->add($input);
+                            $newcontractID        = (int) $contract->add($input);
                             // 2 - transfer as copy
-                            $this->transferItem(Contract::class, $item_ID, $newcontractID);
+                            if ($newcontractID > 0) {
+                                $this->transferItem(Contract::class, $item_ID, $newcontractID);
+                            }
                         }
                     }
                 }
@@ -2402,9 +2412,11 @@ final class Transfer extends CommonDBTM
                             $input    = $document->fields;
                             // Not set new entity Do by transferItem
                             $document->fields = [];
-                            $newdocID = $document->add($input);
+                            $newdocID = (int) $document->add($input);
                             // 2 - transfer as copy
-                            $this->transferItem(Document::class, $item_ID, $newdocID);
+                            if ($newdocID > 0) {
+                                $this->transferItem(Document::class, $item_ID, $newdocID);
+                            }
                         }
                     }
                 }
@@ -2611,9 +2623,11 @@ final class Transfer extends CommonDBTM
                                     $input['entities_id'] = $this->to;
 
                                     $link_item = new $link_item();
-                                    $newID = $link_item->add($input);
+                                    $newID = (int) $link_item->add($input);
                                     // 2 - transfer as copy
-                                    $this->transferItem($link_type, $item_ID, $newID);
+                                    if ($newID > 0) {
+                                        $this->transferItem($link_type, $item_ID, $newID);
+                                    }
                                 }
 
                                 // Found -> use to link : nothing to do
@@ -3241,9 +3255,11 @@ final class Transfer extends CommonDBTM
                     $input                = $ent->fields;
                     $input['entities_id'] = $this->to;
                     $ent->fields = [];
-                    $newID                = $ent->add($input);
+                    $newID                = (int) $ent->add($input);
                     // 2 - transfer as copy
-                    $this->transferItem(Supplier::class, $ID, $newID);
+                    if ($newID > 0) {
+                        $this->transferItem(Supplier::class, $ID, $newID);
+                    }
                 }
 
                 // Found -> use to link : nothing to do
@@ -3346,9 +3362,11 @@ final class Transfer extends CommonDBTM
                             $input                = $contact->fields;
                             $input['entities_id'] = $this->to;
                             $contact->fields = [];
-                            $newcontactID         = $contact->add($input);
+                            $newcontactID         = (int) $contact->add($input);
                             // 2 - transfer as copy
-                            $this->transferItem(Contact::class, $item_ID, $newcontactID);
+                            if ($newcontactID > 0) {
+                                $this->transferItem(Contact::class, $item_ID, $newcontactID);
+                            }
                         }
                     }
                 }
@@ -3608,9 +3626,11 @@ final class Transfer extends CommonDBTM
                                         $input['entities_id'] = $this->to;
 
                                         $device = new $device();
-                                        $newdeviceID = $device->add($input);
+                                        $newdeviceID = (int) $device->add($input);
                                         // 2 - transfer as copy
-                                        $this->transferItem($devicetype, $item_ID, $newdeviceID);
+                                        if ($newdeviceID > 0) {
+                                            $this->transferItem($devicetype, $item_ID, $newdeviceID);
+                                        }
                                     }
                                 }
                             }
