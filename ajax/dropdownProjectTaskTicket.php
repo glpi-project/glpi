@@ -46,7 +46,6 @@ if (isset($_POST["projects_id"])) {
     if ($_POST["projects_id"] > 0) {
         $condition = ['glpi_projecttasks.projects_id' => $_POST['projects_id']];
 
-        // Filtrer les états de tâches terminées si nécessaire
         if (isset($_POST['condition']) && is_array($_POST['condition'])) {
             $condition = array_merge($condition, $_POST['condition']);
         }
@@ -59,7 +58,7 @@ if (isset($_POST["projects_id"])) {
             'rand'            => $_POST["rand"],
         ];
 
-        if (isset($_POST["used"]) && !empty($_POST["used"])) {
+        if (!empty($_POST["used"])) {
             $dropdown_params["used"] = $_POST["used"];
         }
 
