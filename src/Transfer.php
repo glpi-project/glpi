@@ -1796,6 +1796,7 @@ class Transfer extends CommonDBTM
                 if (
                     ($newversID > 0)
                     && ($newversID != $data['softwareversions_id'])
+                    && !$this->already_transfer['SoftwareVersion'][$data['softwareversions_id']]
                 ) {
                     $DB->update(
                         'glpi_items_softwareversions',
