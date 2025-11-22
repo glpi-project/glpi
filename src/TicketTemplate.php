@@ -42,6 +42,7 @@ use Glpi\Features\Clonable;
  **/
 class TicketTemplate extends ITILTemplate
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     #[Override]
