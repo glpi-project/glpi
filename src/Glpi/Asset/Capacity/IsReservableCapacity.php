@@ -76,7 +76,13 @@ class IsReservableCapacity extends AbstractCapacity
 
     public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
+        global $CFG_GLPI;
         $this->registerToTypeConfig('reservation_types', $classname);
+        // Manually set sector-based JS registration
+        $CFG_GLPI['javascript']['assets'][strtolower($classname)] = array_merge(
+            $CFG_GLPI['javascript']['assets'][strtolower($classname)] ?? [],
+            ['fullcalendar', 'reservations']
+        );
 
         CommonGLPI::registerStandardTab($classname, Reservation::class, 85);
     }
