@@ -352,18 +352,12 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
     public function prepareInputForAdd($input)
     {
         $input = $this->prepareGroupFields($input);
-        if (empty($input)) {
-            return false;
-        }
         return $this->prepareInput($input, true);
     }
 
     public function prepareInputForUpdate($input)
     {
         $input = $this->prepareGroupFields($input);
-        if (empty($input)) {
-            return false;
-        }
         return $this->prepareInput($input);
     }
 
