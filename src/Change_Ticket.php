@@ -206,6 +206,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
      * Show tickets for a change
      *
      * @param Change $change
+     * @return void
      **/
     public static function showForChange(Change $change)
     {
@@ -213,7 +214,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
 
         $ID = $change->getField('id');
         if (!$change->can($ID, READ)) {
-            return false;
+            return;
         }
 
         $canedit = $change->canEdit($ID);
@@ -307,6 +308,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
      * Show changes for a ticket
      *
      * @param Ticket $ticket object
+     * @return void
      **/
     public static function showForTicket(Ticket $ticket)
     {
@@ -314,7 +316,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
 
         $ID = $ticket->getField('id');
         if (!$ticket->can($ID, READ)) {
-            return false;
+            return;
         }
 
         $canedit = $ticket->canEdit($ID);

@@ -44,6 +44,7 @@ use function Safe\strtotime;
  */
 abstract class CommonITILRecurrent extends CommonDropdown
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     /**
