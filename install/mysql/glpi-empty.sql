@@ -320,6 +320,7 @@ CREATE TABLE `glpi_budgets` (
   KEY `begin_date` (`begin_date`),
   KEY `end_date` (`end_date`),
   KEY `is_template` (`is_template`),
+  KEY `active_assets` (`is_deleted`, `is_template`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `locations_id` (`locations_id`),
@@ -561,6 +562,7 @@ CREATE TABLE `glpi_certificates` (
   KEY `is_recursive` (`is_recursive`),
   KEY `is_template` (`is_template`),
   KEY `is_deleted` (`is_deleted`),
+  KEY `active_assets` (`is_deleted`, `is_template`),
   KEY `certificatetypes_id` (`certificatetypes_id`),
   KEY `users_id_tech` (`users_id_tech`),
   KEY `users_id` (`users_id`),
@@ -1009,7 +1011,7 @@ CREATE TABLE `glpi_computers` (
   KEY `states_id` (`states_id`),
   KEY `users_id_tech` (`users_id_tech`),
   KEY `computertypes_id` (`computertypes_id`),
-  KEY `is_deleted` (`is_deleted`),
+  KEY `active_assets` (`is_deleted`, `is_template`),
   KEY `is_dynamic` (`is_dynamic`),
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
@@ -1521,6 +1523,7 @@ CREATE TABLE `glpi_contracts` (
   KEY `is_recursive` (`is_recursive`),
   KEY `is_deleted` (`is_deleted`),
   KEY `is_template` (`is_template`),
+  KEY `active_assets` (`is_deleted`, `is_template`),
   KEY `use_sunday` (`use_sunday`),
   KEY `use_saturday` (`use_saturday`),
   KEY `alert` (`alert`),
@@ -4444,6 +4447,7 @@ CREATE TABLE `glpi_monitors` (
   KEY `users_id_tech` (`users_id_tech`),
   KEY `monitortypes_id` (`monitortypes_id`),
   KEY `is_deleted` (`is_deleted`),
+  KEY `active_assets` (`is_deleted`, `is_template`),
   KEY `is_dynamic` (`is_dynamic`),
   KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
   KEY `serial` (`serial`),
@@ -4548,7 +4552,7 @@ CREATE TABLE `glpi_cables` (
   KEY `cabletypes_id` (`cabletypes_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
-  KEY `is_deleted` (`is_deleted`)
+  KEY `active_assets` (`is_deleted`, `is_template`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -4694,6 +4698,7 @@ CREATE TABLE `glpi_networkequipments` (
   KEY `users_id_tech` (`users_id_tech`),
   KEY `networkequipmenttypes_id` (`networkequipmenttypes_id`),
   KEY `is_deleted` (`is_deleted`),
+  KEY `active_assets` (`is_deleted`, `is_template`),
   KEY `date_mod` (`date_mod`),
   KEY `is_dynamic` (`is_dynamic`),
   KEY `serial` (`serial`),
@@ -5248,6 +5253,7 @@ CREATE TABLE `glpi_passivedcequipments` (
   KEY `users_id_tech` (`users_id_tech`),
   KEY `is_template` (`is_template`),
   KEY `is_deleted` (`is_deleted`),
+  KEY `active_assets` (`is_deleted`, `is_template`),
   KEY `states_id` (`states_id`),
   KEY `manufacturers_id` (`manufacturers_id`),
   KEY `date_creation` (`date_creation`),
@@ -5369,6 +5375,7 @@ CREATE TABLE `glpi_peripherals` (
   KEY `users_id_tech` (`users_id_tech`),
   KEY `peripheraltypes_id` (`peripheraltypes_id`),
   KEY `is_deleted` (`is_deleted`),
+  KEY `active_assets` (`is_deleted`, `is_template`),
   KEY `date_mod` (`date_mod`),
   KEY `is_dynamic` (`is_dynamic`),
   KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
@@ -5483,6 +5490,7 @@ CREATE TABLE `glpi_phones` (
   KEY `users_id_tech` (`users_id_tech`),
   KEY `phonetypes_id` (`phonetypes_id`),
   KEY `is_deleted` (`is_deleted`),
+  KEY `active_assets` (`is_deleted`, `is_template`),
   KEY `date_mod` (`date_mod`),
   KEY `is_dynamic` (`is_dynamic`),
   KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
@@ -5625,6 +5633,7 @@ CREATE TABLE `glpi_printers` (
   KEY `users_id_tech` (`users_id_tech`),
   KEY `printertypes_id` (`printertypes_id`),
   KEY `is_deleted` (`is_deleted`),
+  KEY `active_assets` (`is_deleted`, `is_template`),
   KEY `date_mod` (`date_mod`),
   KEY `last_pages_counter` (`last_pages_counter`),
   KEY `is_dynamic` (`is_dynamic`),
@@ -6007,7 +6016,8 @@ CREATE TABLE `glpi_projects` (
   KEY `show_on_global_gantt` (`show_on_global_gantt`),
   KEY `date_creation` (`date_creation`),
   KEY `projecttemplates_id` (`projecttemplates_id`),
-  KEY `is_template` (`is_template`)
+  KEY `is_template` (`is_template`),
+  KEY `active_assets` (`is_deleted`, `is_template`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -6082,6 +6092,7 @@ CREATE TABLE `glpi_projecttasks` (
   KEY `projecttasktypes_id` (`projecttasktypes_id`),
   KEY `projecttasktemplates_id` (`projecttasktemplates_id`),
   KEY `is_template` (`is_template`),
+  KEY `active_assets` (`is_deleted`, `is_template`),
   KEY `is_milestone` (`is_milestone`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
@@ -6812,6 +6823,7 @@ CREATE TABLE `glpi_softwarelicenses` (
   KEY `users_id` (`users_id`),
   KEY `is_helpdesk_visible` (`is_helpdesk_visible`),
   KEY `is_deleted` (`is_deleted`),
+  KEY `active_assets` (`is_deleted`, `is_template`),
   KEY `date_creation` (`date_creation`),
   KEY `manufacturers_id` (`manufacturers_id`),
   KEY `states_id` (`states_id`),
@@ -8390,6 +8402,7 @@ CREATE TABLE `glpi_racks` (
   KEY `users_id_tech` (`users_id_tech`),
   KEY `is_template` (`is_template`),
   KEY `is_deleted` (`is_deleted`),
+  KEY `active_assets` (`is_deleted`, `is_template`),
   KEY `dcrooms_id` (`dcrooms_id`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`)
@@ -8467,6 +8480,7 @@ CREATE TABLE `glpi_enclosures` (
   KEY `users_id_tech` (`users_id_tech`),
   KEY `is_template` (`is_template`),
   KEY `is_deleted` (`is_deleted`),
+  KEY `active_assets` (`is_deleted`, `is_template`),
   KEY `states_id` (`states_id`),
   KEY `manufacturers_id` (`manufacturers_id`),
   KEY `date_mod` (`date_mod`),
@@ -8560,6 +8574,7 @@ CREATE TABLE `glpi_pdus` (
   KEY `users_id_tech` (`users_id_tech`),
   KEY `is_template` (`is_template`),
   KEY `is_deleted` (`is_deleted`),
+  KEY `active_assets` (`is_deleted`, `is_template`),
   KEY `states_id` (`states_id`),
   KEY `manufacturers_id` (`manufacturers_id`),
   KEY `pdutypes_id` (`pdutypes_id`),
@@ -8883,7 +8898,8 @@ CREATE TABLE `glpi_domains_items` (
   KEY `domainrelations_id` (`domainrelations_id`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `is_dynamic` (`is_dynamic`),
-  KEY `is_deleted` (`is_deleted`)
+  KEY `is_deleted` (`is_deleted`),
+  KEY `active_assets` (`is_deleted`, `is_template`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_domainrecordtypes`;
@@ -10046,6 +10062,7 @@ CREATE TABLE `glpi_assets_assets` (
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `is_deleted` (`is_deleted`),
+  KEY `active_assets` (`is_deleted`, `is_template`),
   KEY `is_template` (`is_template`),
   KEY `is_dynamic` (`is_dynamic`),
   KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
