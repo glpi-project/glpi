@@ -35,8 +35,9 @@
 namespace tests\units\Glpi\Api\HL\Controller;
 
 use Glpi\Http\Request;
+use Glpi\Tests\HLAPITestCase;
 
-class ReportControllerTest extends \HLAPITestCase
+class ReportControllerTest extends HLAPITestCase
 {
     public function testListStatisticReports()
     {

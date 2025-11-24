@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Asset\AssetDefinition;
 use Glpi\DBAL\QueryExpression;
 use PHPUnit\Framework\Attributes\DataProvider;

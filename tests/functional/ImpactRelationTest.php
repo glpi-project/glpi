@@ -34,7 +34,9 @@
 
 namespace tests\units;
 
-class ImpactRelationTest extends \DbTestCase
+use Glpi\Tests\DbTestCase;
+
+class ImpactRelationTest extends DbTestCase
 {
     public function testPrepareInputForAdd_requiredFields()
     {

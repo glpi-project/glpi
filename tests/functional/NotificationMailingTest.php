@@ -35,7 +35,7 @@
 namespace tests\units;
 
 use CronTask;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Ticket;
 use User;

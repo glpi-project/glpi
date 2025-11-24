@@ -35,7 +35,7 @@
 namespace tests\units;
 
 use Calendar;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Holiday;
 use PHPUnit\Framework\Attributes\Group;
 

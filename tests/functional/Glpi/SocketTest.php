@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasSocketCapacity;
 use Glpi\Features\Clonable;

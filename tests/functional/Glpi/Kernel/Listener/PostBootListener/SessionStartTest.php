@@ -36,10 +36,11 @@ namespace tests\units\Glpi\Kernel\Listener\PostBootListener;
 
 use Glpi\Http\SessionManager;
 use Glpi\Kernel\Listener\PostBootListener\SessionStart;
+use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
 
-class SessionStartTest extends \GLPITestCase
+class SessionStartTest extends GLPITestCase
 {
     public static function bootContextProvider(): iterable
     {

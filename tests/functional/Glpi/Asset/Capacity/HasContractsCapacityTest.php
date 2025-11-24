@@ -36,7 +36,7 @@ namespace tests\units\Glpi\Asset\Capacity;
 
 use Contract;
 use Contract_Item;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use DisplayPreference;
 use Glpi\Asset\Asset;
 use Glpi\Asset\Capacity;

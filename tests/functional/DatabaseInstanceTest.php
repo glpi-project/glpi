@@ -35,7 +35,7 @@
 namespace tests\units;
 
 use DatabaseInstance;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDatabaseInstanceCapacity;
 use Glpi\Features\Clonable;

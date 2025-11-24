@@ -39,7 +39,7 @@ use Glpi\Form\Form;
 use Glpi\Routing\Attribute\ItemtypeListRoute;
 use GlpiPlugin\Tester\Asset\Foo;
 use GlpiPlugin\Tester\MyPsr4Dropdown;
-use GLPITestCase;
+use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class ItemtypeListRouteTest extends GLPITestCase

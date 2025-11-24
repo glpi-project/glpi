@@ -35,7 +35,7 @@
 namespace tests\units\Glpi\Migration;
 
 use Contract_Item;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Domain_Item;
 use DropdownTranslation;
 use FieldUnicity;

@@ -35,9 +35,10 @@
 namespace tests\units\Glpi\Inventory;
 
 use Config;
+use GLpi\Tests\GLPITestCase;
 use GuzzleHttp;
 
-class InventoryTest extends \GLPITestCase
+class InventoryTest extends GLPITestCase
 {
     private $http_client;
     private $base_uri;

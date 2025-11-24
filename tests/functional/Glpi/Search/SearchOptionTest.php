@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\Search;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Search\SearchOption;
 use PHPUnit\Framework\Attributes\DataProvider;

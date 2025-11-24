@@ -42,8 +42,9 @@ use Glpi\Http\Request;
 use Problem;
 use Ticket;
 use TicketValidation;
+use Glpi\Tests\HLAPITestCase;
 
-class ITILControllerTest extends \HLAPITestCase
+class ITILControllerTest extends HLAPITestCase
 {
     public function testCreateGetUpdateDelete()
     {

@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use DomainRecord;
 
 /* Test for inc/software.class.php */

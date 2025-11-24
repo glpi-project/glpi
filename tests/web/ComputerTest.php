@@ -34,7 +34,9 @@
 
 namespace tests\units;
 
-class ComputerTest extends \FrontBaseClass
+use Glpi\Tests\FrontBaseClass;
+
+class ComputerTest extends FrontBaseClass
 {
     public function testComputerCreate()
     {

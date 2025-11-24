@@ -35,11 +35,12 @@
 namespace tests\units\Glpi\Features;
 
 use Domain;
+use Glpi\Tests\DbTestCase;
 use Glpi\Features\AssignableItem;
 use Group_Item;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class AssignableItemTest extends \DbTestCase
+class AssignableItemTest extends DbTestCase
 {
     public static function itemtypeProvider(): iterable
     {

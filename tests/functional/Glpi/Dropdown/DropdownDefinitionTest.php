@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\Dropdown;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Gettext\Languages\Category;
 use Glpi\Dropdown\DropdownDefinition;
 use PHPUnit\Framework\Attributes\DataProvider;

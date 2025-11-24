@@ -34,4 +34,6 @@
 
 namespace tests\units;
 
-class ShareDashboardDropdownTest extends AbstractRightsDropdown {}
+use Glpi\Tests\AbstractRightsDropdownTest;
+
+class ShareDashboardDropdownTest extends AbstractRightsDropdownTest {}

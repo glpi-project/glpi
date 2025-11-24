@@ -34,4 +34,6 @@
 
 namespace tests\units;
 
+use Glpi\Tests\AbstractCommonItilObject_ItemTest;
+
 class Change_ItemTest extends AbstractCommonItilObject_ItemTest {}

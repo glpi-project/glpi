@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use Glpi\Search\SearchEngine;
+use Glpi\Tests\CommonITILTaskTestCase;
 use Override;
 use TicketTask;
 

@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use SoftwareVersion as CoreSoftwareVersion;
 
 /* Test for inc/softwareversion.class.php */

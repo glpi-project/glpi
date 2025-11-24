@@ -32,8 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units;
+namespace Glpi\Tests;
 
+use AbstractRightsDropdown;
 use Change;
 use Generator;
 use Group;
@@ -42,7 +43,7 @@ use Profile;
 use Ticket;
 use User;
 
-abstract class AbstractRightsDropdown extends \GLPITestCase
+abstract class AbstractRightsDropdownTest extends GLPITestCase
 {
     public static function getPostedIdsProvider(): Generator
     {
@@ -96,7 +97,7 @@ abstract class AbstractRightsDropdown extends \GLPITestCase
         string $class,
         array $expected_ids
     ): void {
-        $ids = \AbstractRightsDropdown::getPostedIds($values, $class);
+        $ids = AbstractRightsDropdown::getPostedIds($values, $class);
         $this->assertSame($expected_ids, $ids);
     }
 }

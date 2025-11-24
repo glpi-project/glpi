@@ -36,7 +36,7 @@ namespace tests\units\Glpi\Asset\Capacity;
 
 use Appliance;
 use Appliance_Item;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use DisplayPreference;
 use Entity;
 use Glpi\Asset\Capacity;

@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Document_Item;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDocumentsCapacity;

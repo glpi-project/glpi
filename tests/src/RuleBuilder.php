@@ -32,8 +32,15 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Tests;
+
+use Entity;
+use Rule;
+use RuleCommonITILObject;
+use RuleTicket;
+
 /**
- * Helper class to configurate rule creation in DbTestCase::createRule()
+ * Helper class to configure rule creation in DbTestCase::createRule()
  */
 class RuleBuilder
 {

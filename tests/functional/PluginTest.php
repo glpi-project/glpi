@@ -35,7 +35,7 @@
 namespace tests\units {
 
     use AppendIterator;
-    use DbTestCase;
+    use Glpi\Tests\DbTestCase;
     use DirectoryIterator;
     use Error;
     use Glpi\Toolbox\VersionParser;

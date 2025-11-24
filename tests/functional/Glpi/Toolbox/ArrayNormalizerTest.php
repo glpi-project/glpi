@@ -34,10 +34,11 @@
 
 namespace tests\units\Glpi\Cache;
 
+use Glpi\Tests\GLPITestCase;
 use Glpi\Toolbox\ArrayNormalizer;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class ArrayNormalizerTest extends \GLPITestCase
+class ArrayNormalizerTest extends GLPITestCase
 {
     public static function valuesProvider(): iterable
     {

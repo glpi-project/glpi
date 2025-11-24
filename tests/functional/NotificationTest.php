@@ -35,7 +35,7 @@
 namespace tests\units;
 
 use Contract;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\DBAL\QueryExpression;
 use Group;
 use Group_User;

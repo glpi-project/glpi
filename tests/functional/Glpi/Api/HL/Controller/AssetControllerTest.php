@@ -40,10 +40,11 @@ use Glpi\Asset\Asset;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Http\Request;
 use Group_Item;
+use Glpi\Tests\HLAPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Unmanaged;
 
-class AssetControllerTest extends \HLAPITestCase
+class AssetControllerTest extends HLAPITestCase
 {
     public function testIndex()
     {

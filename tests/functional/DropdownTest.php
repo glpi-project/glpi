@@ -37,7 +37,7 @@ namespace tests\units;
 use CommonDBTM;
 use CommonITILObject;
 use Computer;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Entity;
 use Generator;
 use Glpi\Asset\Asset_PeripheralAsset;

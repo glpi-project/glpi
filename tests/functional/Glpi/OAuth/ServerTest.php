@@ -36,8 +36,9 @@ namespace tests\units\Glpi\Migration;
 
 use Glpi\Exception\OAuth2KeyException;
 use Glpi\OAuth\Server;
+use Glpi\Tests\DbTestCase;
 
-class ServerTest extends \DbTestCase
+class ServerTest extends DbTestCase
 {
     public function tearDown(): void
     {

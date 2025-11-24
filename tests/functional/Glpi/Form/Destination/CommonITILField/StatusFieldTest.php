@@ -35,7 +35,7 @@
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use CommonITILObject;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
 use Glpi\Form\Destination\CommonITILField\StatusField;
 use Glpi\Form\Form;

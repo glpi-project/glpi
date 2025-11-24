@@ -35,7 +35,7 @@
 namespace tests\units\Glpi\Form\Clone;
 
 use Computer;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Entity;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\ControlType\AllowList;

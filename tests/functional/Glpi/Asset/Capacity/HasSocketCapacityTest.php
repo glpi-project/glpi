@@ -36,7 +36,7 @@ namespace tests\units\Glpi\Asset\Capacity;
 
 use Cable;
 use Computer;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use DisplayPreference;
 use Entity;
 use Glpi\Asset\Asset;

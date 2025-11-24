@@ -35,7 +35,6 @@
 
 namespace Glpi\Tests;
 
-use DbTestCase;
 use ITILTemplatePredefinedField;
 use PHPUnit\Framework\Attributes\DataProvider;
 

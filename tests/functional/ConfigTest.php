@@ -35,7 +35,7 @@
 namespace tests\units;
 
 use Config;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Plugin\Hooks;
 use Log;

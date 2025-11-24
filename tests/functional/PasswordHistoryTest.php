@@ -35,7 +35,7 @@
 namespace tests\units;
 
 use Auth;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Psr\Log\LogLevel;
 use User;
 

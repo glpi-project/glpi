@@ -36,7 +36,7 @@ namespace tests\units\Glpi\Api\HL\RSQL;
 
 use Glpi\Api\HL\RSQL\Lexer;
 use Glpi\Api\HL\RSQL\RSQLException;
-use GLPITestCase;
+use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class LexerTest extends GLPITestCase

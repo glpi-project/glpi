@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\Form\QuestionType;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Form\QuestionType\QuestionTypeAssignee;
 use Glpi\Form\QuestionType\QuestionTypeCategory;
 use Glpi\Form\QuestionType\QuestionTypeCategoryInterface;

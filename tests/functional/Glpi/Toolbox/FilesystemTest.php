@@ -34,11 +34,12 @@
 
 namespace tests\units\Glpi\Toolbox;
 
+use Glpi\Tests\GLPITestCase;
 use Glpi\Toolbox\Filesystem;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class FilesystemTest extends \GLPITestCase
+class FilesystemTest extends GLPITestCase
 {
     public function testCanWriteFile(): void
     {

@@ -43,11 +43,12 @@ use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
 use Glpi\Session\SessionInfo;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class DirectAccessTest extends \DBTestCase
+class DirectAccessTest extends DbTestCase
 {
     use FormTesterTrait;
 

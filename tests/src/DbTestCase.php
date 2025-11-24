@@ -32,13 +32,29 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Tests;
+
 // Generic test classe, to be extended for CommonDBTM Object
 
+use Auth;
+use CommonDBTM;
+use Document;
+use Entity;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\CapacityConfig;
 use Glpi\Dropdown\DropdownDefinition;
+use Profile;
+use ProfileRight;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use ReflectionClass;
+use Rule;
+use RuleAction;
+use RuleCriteria;
+use Session;
+use User;
 
 class DbTestCase extends GLPITestCase
 {
@@ -364,6 +380,7 @@ class DbTestCase extends GLPITestCase
     /**
      * Helper methods to quickly get the names of multiple items using their ids.
      *
+     * @param class-string<CommonDBTM> $itemtype
      * @param int[] $ids
      * @return string[]
      */

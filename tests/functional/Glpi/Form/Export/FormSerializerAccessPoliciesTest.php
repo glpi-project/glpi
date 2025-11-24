@@ -42,6 +42,7 @@ use Glpi\Form\AccessControl\ControlType\DirectAccess;
 use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\FormSerializer;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Group;
@@ -53,7 +54,7 @@ use User;
  * Separate file for serializer tests related to form access policies.
  * This helps keeping the main serializer test file smaller and more readable.
  */
-final class FormSerializerAccessPoliciesTest extends \DbTestCase
+final class FormSerializerAccessPoliciesTest extends DbTestCase
 {
     use FormTesterTrait;
 

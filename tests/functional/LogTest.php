@@ -35,7 +35,7 @@
 namespace tests\units;
 
 use Computer;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Form\AccessControl\ControlType\DirectAccess;
 use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
 use Glpi\Tests\FormBuilder;

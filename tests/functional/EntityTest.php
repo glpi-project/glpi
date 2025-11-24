@@ -36,7 +36,7 @@ namespace tests\units;
 
 use CommonITILActor;
 use Contract;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Controller\ServiceCatalog\IndexController;

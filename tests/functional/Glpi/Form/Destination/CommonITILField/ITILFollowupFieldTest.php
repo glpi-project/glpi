@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\ITILFollowupField;
 use Glpi\Form\Destination\CommonITILField\ITILFollowupFieldConfig;

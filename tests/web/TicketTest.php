@@ -34,7 +34,9 @@
 
 namespace tests\units;
 
-class TicketTest extends \FrontBaseClass
+use Glpi\Tests\FrontBaseClass;
+
+class TicketTest extends FrontBaseClass
 {
     public function testTicketCreate()
     {

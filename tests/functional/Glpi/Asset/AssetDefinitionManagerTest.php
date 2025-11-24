@@ -35,7 +35,7 @@
 namespace tests\units\Glpi\Asset;
 
 use Change_Item;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\AbstractCapacity;

@@ -32,6 +32,10 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Tests;
+
+use Auth;
+use CommonDBTM;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Controller\CoreController;
 use Glpi\Api\HL\Doc as Doc;
@@ -43,6 +47,8 @@ use Glpi\Api\HL\Router;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use Group_Item;
+use Session;
 
 /**
  * @property HLAPIHelper $api
@@ -164,7 +170,7 @@ final class HLAPIHelper
     /**
      * @param Router $router
      * @param HLAPITestCase $test
-     * @param string|null $api_version The API version to use. Cannot be specified or overriden by the request URL. Defaults to the current API version.
+     * @param string|null $api_version The API version to use. Cannot be specified or overridden by the request URL. Defaults to the current API version.
      */
     public function __construct(Router $router, HLAPITestCase $test, ?string $api_version = null)
     {

@@ -36,7 +36,7 @@ namespace tests\units;
 
 use CommonDBTM;
 use Computer;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use DropdownVisibility;
 use Glpi\Features\StateInterface;
 use Phone;

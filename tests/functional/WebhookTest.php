@@ -36,10 +36,11 @@ namespace tests\units;
 
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Search\SearchOption;
+use Glpi\Tests\DbTestCase;
 use Psr\Log\LogLevel;
 use Webhook;
 
-class WebhookTest extends \DbTestCase
+class WebhookTest extends DbTestCase
 {
     /**
      * Make sure all webhook item types have an ID search option so that the criteria filters can be applied properly

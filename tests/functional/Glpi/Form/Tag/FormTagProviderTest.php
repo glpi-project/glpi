@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\Form\Tag;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
 use Glpi\Form\Tag\FormTagProvider;

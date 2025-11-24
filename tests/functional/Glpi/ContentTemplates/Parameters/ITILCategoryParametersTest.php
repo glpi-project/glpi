@@ -35,10 +35,9 @@
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
 use Glpi\ContentTemplates\Parameters\ITILCategoryParameters;
+use Glpi\Tests\AbstractParametersTest;
 
-include_once __DIR__ . '/../../../../abstracts/AbstractParameters.php';
-
-class ITILCategoryParametersTest extends AbstractParameters
+class ITILCategoryParametersTest extends AbstractParametersTest
 {
     public function testGetValues(): void
     {

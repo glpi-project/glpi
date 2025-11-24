@@ -32,12 +32,11 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units;
+namespace Glpi\Tests;
 
-use DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-abstract class CommonDropdown extends DbTestCase
+abstract class CommonDropdownTest extends DbTestCase
 {
     /**
      * Get object class name

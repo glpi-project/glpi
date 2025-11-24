@@ -36,9 +36,10 @@ namespace tests\units\Glpi\DBAL;
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class QueryFunctionTest extends \GLPITestCase
+class QueryFunctionTest extends GLPITestCase
 {
     public static function dateAddProvider(): iterable
     {

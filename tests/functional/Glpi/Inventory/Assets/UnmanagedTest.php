@@ -36,12 +36,9 @@ namespace tests\units\Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Converter;
+use Glpi\Tests\AbstractInventoryAsset;
 use Lockedfield;
 use PHPUnit\Framework\Attributes\DataProvider;
-
-include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
-
-/* Test for inc/inventory/asset/antivirus.class.php */
 
 class UnmanagedTest extends AbstractInventoryAsset
 {

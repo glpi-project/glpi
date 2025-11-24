@@ -39,11 +39,8 @@ use Glpi\Asset\Capacity\IsInventoriableCapacity;
 use Glpi\Inventory\Asset\Environment;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Converter;
+use Glpi\Tests\AbstractInventoryAsset;
 use PHPUnit\Framework\Attributes\DataProvider;
-
-include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
-
-/* Test for inc/inventory/asset/environment.class.php */
 
 class EnvironmentTest extends AbstractInventoryAsset
 {

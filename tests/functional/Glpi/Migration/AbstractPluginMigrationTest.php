@@ -38,7 +38,7 @@ use Computer;
 use Contract;
 use Contract_Item;
 use DBmysql;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use DisplayPreference;
 use DropdownTranslation;
 use Entity;

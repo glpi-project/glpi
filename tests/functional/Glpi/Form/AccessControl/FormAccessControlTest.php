@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\Form\AccessControl;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\ControlType\DirectAccess;

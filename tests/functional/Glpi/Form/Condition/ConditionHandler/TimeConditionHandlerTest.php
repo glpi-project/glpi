@@ -38,9 +38,9 @@ use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\QuestionType\QuestionTypeDateTime;
 use Glpi\Form\QuestionType\QuestionTypeDateTimeExtraDataConfig;
 use Override;
-use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
+use Glpi\Tests\AbstractConditionHandlerTest;
 
-final class TimeConditionHandlerTest extends AbstractConditionHandler
+final class TimeConditionHandlerTest extends AbstractConditionHandlerTest
 {
     public static function getConditionHandler(): ConditionHandlerInterface
     {

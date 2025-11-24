@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Generator;
 use Glpi\Api\Deprecated\TicketFollowup;
 use Glpi\Features\Clonable;

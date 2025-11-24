@@ -36,7 +36,7 @@ namespace tests\units\Glpi\Form\ServiceCatalog;
 
 use Computer;
 use ComputerType;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Entity;
 use Entity_KnowbaseItem;
 use Glpi\Form\AccessControl\FormAccessParameters;

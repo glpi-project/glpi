@@ -35,8 +35,9 @@
 namespace tests\units\Glpi\Form\AccessControl\ControlType;
 
 use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
+use Glpi\Tests\GLPITestCase;
 
-final class DirectAccessConfigTest extends \GLPITestCase
+final class DirectAccessConfigTest extends GLPITestCase
 {
     public function testJsonDeserialize(): void
     {

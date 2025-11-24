@@ -32,16 +32,14 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\Form\Destination\CommonITILField;
+namespace Glpi\Tests;
 
-use DbTestCase;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\Migration\FormMigration;
 use Glpi\Migration\PluginMigrationResult;
-use Glpi\Tests\FormTesterTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 abstract class AbstractDestinationFieldTest extends DbTestCase

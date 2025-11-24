@@ -35,7 +35,7 @@
 namespace tests\units;
 
 use AuthLDAP;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\DBAL\QueryExpression;
 use GLPIKey;
 use Group;
@@ -45,7 +45,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Profile_User;
 use Psr\Log\LogLevel;
-use RuleBuilder;
+use Glpi\Tests\RuleBuilder;
 use RuleRight;
 use UserTitle;
 

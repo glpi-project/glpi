@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasPlugCapacity;
 use Glpi\Features\Clonable;

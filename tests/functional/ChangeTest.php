@@ -36,7 +36,7 @@ namespace tests\units;
 
 use Change;
 use CommonITILObject;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/change.class.php */

@@ -36,7 +36,7 @@ namespace tests\units\Glpi\Api\HL;
 
 use Glpi\Api\HL\OpenAPIGenerator;
 use Glpi\Api\HL\Router;
-use HLAPITestCase;
+use Glpi\Tests\HLAPITestCase;
 
 class OpenAPIGeneratorTest extends HLAPITestCase
 {

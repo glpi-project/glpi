@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\Controller;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Controller\ErrorController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;

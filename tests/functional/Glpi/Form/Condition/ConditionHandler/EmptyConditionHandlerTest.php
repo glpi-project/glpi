@@ -64,9 +64,9 @@ use Glpi\Form\QuestionType\QuestionTypeUserDevicesConfig;
 use Location;
 use Override;
 use Software;
-use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
+use Glpi\Tests\AbstractConditionHandlerTest;
 
-final class EmptyConditionHandlerTest extends AbstractConditionHandler
+final class EmptyConditionHandlerTest extends AbstractConditionHandlerTest
 {
     public static function getConditionHandler(): ConditionHandlerInterface
     {

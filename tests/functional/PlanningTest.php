@@ -34,11 +34,10 @@
 
 namespace tests\units;
 
-/* Test for inc/planning.class.php */
-
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class PlanningTest extends \DbTestCase
+class PlanningTest extends DbTestCase
 {
     public function testCloneEvent()
     {

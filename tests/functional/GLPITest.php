@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use GLPITestCase;
+use Glpi\Tests\GLPITestCase;
 
 class GLPITest extends GLPITestCase
 {

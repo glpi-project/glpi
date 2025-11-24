@@ -35,7 +35,7 @@
 namespace tests\units\Glpi\Form\Helpdesk\TilesManagerTest;
 
 use CommonDBTM;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Form;

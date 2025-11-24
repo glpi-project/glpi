@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\Form\Dropdown;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Form\Dropdown\FormActorsDropdown;
 use Glpi\Tests\FormTesterTrait;
 use Group;

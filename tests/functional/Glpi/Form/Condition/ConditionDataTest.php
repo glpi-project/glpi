@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\Form\Condition;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Form\Comment;
 use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\LogicOperator;

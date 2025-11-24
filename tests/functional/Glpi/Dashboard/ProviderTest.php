@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\Dashboard;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\CustomAsset\Test01Asset;
 use Glpi\CustomAsset\Test01AssetType;
 use Glpi\Dashboard\Provider;

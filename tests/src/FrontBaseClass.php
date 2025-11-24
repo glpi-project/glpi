@@ -32,6 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Tests;
+
 use Symfony\Component\BrowserKit\HttpBrowser;
 
 class FrontBaseClass extends GLPITestCase

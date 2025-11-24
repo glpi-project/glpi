@@ -34,7 +34,9 @@
 
 namespace tests\units;
 
-class SNMPCredentialTest extends \FrontBaseClass
+use Glpi\Tests\FrontBaseClass;
+
+class SNMPCredentialTest extends FrontBaseClass
 {
     public function testCreate()
     {

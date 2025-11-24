@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Dashboard\Dashboard;
 use Glpi\DBAL\QueryExpression;
 use GlpiPlugin\Tester\Asset\Foo;

@@ -35,7 +35,7 @@
 namespace tests\units;
 
 use Config;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use ITILFollowup;
 use Laminas\Mail\Protocol\Imap;
 use Laminas\Mail\Protocol\Pop3;

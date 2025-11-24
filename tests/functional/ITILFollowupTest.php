@@ -36,7 +36,7 @@ namespace tests\units;
 
 use Change;
 use CommonITILActor;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Search\SearchEngine;
 use ITILFollowup as CoreITILFollowup;

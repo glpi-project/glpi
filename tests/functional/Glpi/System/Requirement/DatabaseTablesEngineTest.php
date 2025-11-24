@@ -35,7 +35,7 @@
 namespace tests\units\Glpi\System\Requirement;
 
 use Glpi\System\Requirement\DatabaseTablesEngine;
-use GLPITestCase;
+use Glpi\Tests\GLPITestCase;
 
 final class DatabaseTablesEngineTest extends GLPITestCase
 {

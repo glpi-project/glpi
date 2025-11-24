@@ -39,8 +39,9 @@ use Glpi\Api\HL\Middleware\MiddlewareInput;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RoutePath;
 use Glpi\Http\Request;
+use Glpi\Tests\DbTestCase;
 
-class DebugRequestMiddlewareTest extends \DbTestCase
+class DebugRequestMiddlewareTest extends DbTestCase
 {
     public function testDebugModeEnabled()
     {

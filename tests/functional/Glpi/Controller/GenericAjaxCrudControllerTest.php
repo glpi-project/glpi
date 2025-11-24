@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\Controller;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Controller\GenericAjaxCrudController;
 use Glpi\Form\Form;
 use Symfony\Component\HttpFoundation\Request;

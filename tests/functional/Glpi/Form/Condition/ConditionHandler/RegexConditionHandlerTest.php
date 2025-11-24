@@ -64,9 +64,9 @@ use Glpi\Form\QuestionType\QuestionTypeUserDevicesConfig;
 use Location;
 use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
-use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
+use Glpi\Tests\AbstractConditionHandlerTest;
 
-final class RegexConditionHandlerTest extends AbstractConditionHandler
+final class RegexConditionHandlerTest extends AbstractConditionHandlerTest
 {
     public static function getConditionHandler(): ConditionHandlerInterface
     {

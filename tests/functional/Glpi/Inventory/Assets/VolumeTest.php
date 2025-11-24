@@ -37,11 +37,8 @@ namespace tests\units\Glpi\Inventory\Asset;
 use Glpi\Inventory\Asset\Volume;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Converter;
+use Glpi\Tests\AbstractInventoryAsset;
 use PHPUnit\Framework\Attributes\DataProvider;
-
-include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
-
-/* Test for inc/inventory/asset/volume.class.php */
 
 class VolumeTest extends AbstractInventoryAsset
 {

@@ -34,7 +34,7 @@
 
 namespace Glpi\Tests\Glpi\Form\QuestionType;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeActorsDefaultValueConfig;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;

@@ -82,22 +82,6 @@ if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FIL
     $GLPI_CACHE = new SimpleCache(new ArrayAdapter());
 }
 
-# TODO: register a proper PSR4 autoloader for these files.
-include_once __DIR__ . '/GLPITestCase.php';
-include_once __DIR__ . '/DbTestCase.php';
-include_once __DIR__ . '/CsvTestCase.php';
-include_once __DIR__ . '/FrontBaseClass.php';
-include_once __DIR__ . '/RuleBuilder.php';
-include_once __DIR__ . '/InventoryTestCase.php';
-include_once __DIR__ . '/abstracts/AbstractCommonItilObject_ItemTest.php';
-include_once __DIR__ . '/abstracts/CommonITILRecurrentTest.php';
-//include_once __DIR__ . '/functional/Glpi/ContentTemplates/Parameters/AbstractParameters.php';
-include_once __DIR__ . '/AbstractRightsDropdown.php';
-include_once __DIR__ . '/CommonDropdown.php';
-include_once __DIR__ . '/HLAPITestCase.php';
-require_once __DIR__ . '/functional/Glpi/Form/Condition/ConditionHandler/AbstractConditionHandler.php';
-include_once __DIR__ . '/functional/CommonITILTaskTestCase.php';
-
 loadDataset();
 
 $tu_oauth_client = new OAuthClient();

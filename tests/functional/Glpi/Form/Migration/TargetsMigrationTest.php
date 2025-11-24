@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\Form\Migration;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\CommonITILField\AssigneeField;

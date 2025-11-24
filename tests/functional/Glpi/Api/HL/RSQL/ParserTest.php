@@ -39,7 +39,7 @@ use Glpi\Api\HL\RSQL\Error;
 use Glpi\Api\HL\RSQL\Parser;
 use Glpi\Api\HL\RSQL\RSQLException;
 use Glpi\Api\HL\Search;
-use GLPITestCase;
+use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class ParserTest extends GLPITestCase

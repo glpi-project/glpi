@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Inventory\Inventory;
 
 /* Test for inc/ruleimportlocation.class.php */

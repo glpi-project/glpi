@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Inventory\Converter;
 use Glpi\Inventory\Inventory;
 use Location;

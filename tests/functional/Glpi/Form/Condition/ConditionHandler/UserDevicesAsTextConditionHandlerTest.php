@@ -38,9 +38,9 @@ use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\QuestionType\QuestionTypeUserDevice;
 use Glpi\Form\QuestionType\QuestionTypeUserDevicesConfig;
 use Override;
-use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
+use Glpi\Tests\AbstractConditionHandlerTest;
 
-final class UserDevicesAsTextConditionHandlerTest extends AbstractConditionHandler
+final class UserDevicesAsTextConditionHandlerTest extends AbstractConditionHandlerTest
 {
     public static function getConditionHandler(): ConditionHandlerInterface
     {

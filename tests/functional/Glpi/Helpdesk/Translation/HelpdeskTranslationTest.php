@@ -41,10 +41,11 @@ use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\Helpdesk\Tile\GlpiPageTile;
 use Glpi\Helpdesk\Tile\Item_Tile;
 use Glpi\Helpdesk\Tile\TilesManager;
+use Glpi\Tests\DbTestCase;
 use Session;
 use Symfony\Component\DomCrawler\Crawler;
 
-class HelpdeskTranslationTest extends \DbTestCase
+class HelpdeskTranslationTest extends DbTestCase
 {
     public function testGetLanguagesCanBeAddedToTranslation()
     {

@@ -35,7 +35,7 @@
 namespace tests\units\Glpi\Form;
 
 use CommonITILActor;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Form\Answer;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\DelegationData;

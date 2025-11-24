@@ -36,7 +36,7 @@ namespace tests\units\Glpi\ContentTemplates;
 
 use Change;
 use CommonITILActor;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\ContentTemplates\TemplateManager;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;

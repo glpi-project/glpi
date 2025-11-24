@@ -37,7 +37,7 @@ namespace tests\units\Glpi\Log;
 use DateTimeImmutable;
 use Glpi\Message\MessageType;
 use Glpi\Progress\AbstractProgressIndicator;
-use GLPITestCase;
+use Glpi\Tests\GLPITestCase;
 
 class AbstractProgressIndicatorTest extends GLPITestCase
 {

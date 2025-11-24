@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use NotificationTarget;
 use NotificationTargetTicket;
 use NotificationTemplate;

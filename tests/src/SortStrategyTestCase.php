@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\Form;
+namespace Glpi\Tests;
 
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Category;
@@ -45,7 +45,7 @@ use KnowbaseItem;
 use Override;
 use Session;
 
-abstract class SortStrategyTestCase extends \DbTestCase
+abstract class SortStrategyTestCase extends DbTestCase
 {
     use FormTesterTrait;
 

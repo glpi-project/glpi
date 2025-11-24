@@ -34,15 +34,12 @@
 
 namespace tests\units;
 
-include_once __DIR__ . '/../abstracts/AbstractITILChildTemplate.php';
+use AbstractITILChildTemplate;
+use Glpi\Tests\AbstractITILChildTemplateTest;
 
-use tests\units\Glpi\AbstractITILChildTemplate;
-
-/* Test for inc/solutiontemplate.class.php */
-
-class SolutionTemplateTest extends AbstractITILChildTemplate
+class SolutionTemplateTest extends AbstractITILChildTemplateTest
 {
-    protected function getInstance(): \AbstractITILChildTemplate
+    protected function getInstance(): AbstractITILChildTemplate
     {
         return new \SolutionTemplate();
     }

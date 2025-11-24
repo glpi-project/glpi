@@ -34,14 +34,14 @@
 
 namespace tests\units;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\ITILTrait;
 use Glpi\Tests\Glpi\SLMTrait;
 use MassiveAction;
 use OlaLevel_Ticket;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rule;
-use RuleBuilder;
+use Glpi\Tests\RuleBuilder;
 use RuleTicket;
 use SlaLevel_Ticket;
 use SLM;

@@ -32,11 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
-// namespace tests\units;
+namespace Glpi\Tests;
 
-use Glpi\Csv\ExportToCsvInterface;
 
-/* Test for inc/log.class.php */
 abstract class CsvTestCase extends DbTestCase
 {
     /**

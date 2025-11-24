@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\Form;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use DropdownTranslation;
 use Glpi\Form\Category;
 use Glpi\Form\Form;

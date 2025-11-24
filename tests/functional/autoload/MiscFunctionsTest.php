@@ -34,7 +34,7 @@
 
 namespace tests\units\autoload;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 

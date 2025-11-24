@@ -68,9 +68,9 @@ use Glpi\Tests\FormBuilder;
 use Location;
 use Override;
 use Software;
-use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
+use Glpi\Tests\AbstractConditionHandlerTest;
 
-final class VisibilityConditionHandlerTest extends AbstractConditionHandler
+final class VisibilityConditionHandlerTest extends AbstractConditionHandlerTest
 {
     public static function getConditionHandler(): ConditionHandlerInterface
     {

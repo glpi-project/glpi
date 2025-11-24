@@ -34,23 +34,21 @@
 
 namespace tests\units;
 
-include_once __DIR__ . '/../abstracts/AbstractITILChildTemplate.php';
+use AbstractITILChildTemplate;
+use TaskTemplate;
+use Glpi\Tests\AbstractITILChildTemplateTest;
 
-use tests\units\Glpi\AbstractITILChildTemplate;
-
-/* Test for inc/tasktemplate.class.php */
-
-class TaskTemplateTest extends AbstractITILChildTemplate
+class TaskTemplateTest extends AbstractITILChildTemplateTest
 {
-    protected function getInstance(): \AbstractITILChildTemplate
+    protected function getInstance(): AbstractITILChildTemplate
     {
-        return new \TaskTemplate();
+        return new TaskTemplate();
     }
 
     public function testCurrentUserFeature()
     {
         $this->login();
-        $template = new \TaskTemplate();
+        $template = new TaskTemplate();
 
         $template_id = $this->createItem(
             'TaskTemplate',

@@ -36,7 +36,7 @@ namespace test\units\Glpi\Helpdesk;
 
 use CommonITILActor;
 use Computer;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Entity;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\AccessControl\FormAccessParameters;

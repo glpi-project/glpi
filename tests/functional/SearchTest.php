@@ -40,7 +40,7 @@ use Change;
 use CommonDBTM;
 use Computer;
 use DBConnection;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Document;
 use Document_Item;
 use DropdownTranslation;
@@ -6123,7 +6123,7 @@ class SearchTest extends DbTestCase
             $names[] = explode('$#$', $n)[0];
         }
 
-        // Sort both array as atoum is "position sensitive"
+        // Sort both array for comparison
         sort($names);
         sort($expected);
 

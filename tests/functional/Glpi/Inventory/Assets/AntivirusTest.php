@@ -36,11 +36,8 @@ namespace tests\units\Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Asset\Antivirus;
 use Glpi\Inventory\Converter;
+use Glpi\Tests\AbstractInventoryAsset;
 use PHPUnit\Framework\Attributes\DataProvider;
-
-include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
-
-/* Test for inc/inventory/asset/antivirus.class.php */
 
 class AntivirusTest extends AbstractInventoryAsset
 {

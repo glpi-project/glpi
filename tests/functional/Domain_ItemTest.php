@@ -35,7 +35,7 @@
 namespace tests\units;
 
 use Computer;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Domain;
 use Domain_Item;
 use Glpi\Asset\Capacity;

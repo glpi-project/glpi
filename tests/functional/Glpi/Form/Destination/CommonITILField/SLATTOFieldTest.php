@@ -39,6 +39,7 @@ use Glpi\Form\Destination\CommonITILField\SLATTOField;
 use Glpi\Form\Destination\CommonITILField\SLATTOFieldConfig;
 use Glpi\Form\Destination\CommonITILField\SLMFieldStrategy;
 use Glpi\Form\Form;
+use Glpi\Tests\AbstractDestinationFieldTest;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Override;
@@ -46,8 +47,6 @@ use SLA;
 use SLM;
 use Ticket;
 use TicketTemplatePredefinedField;
-
-include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
 
 final class SLATTOFieldTest extends AbstractDestinationFieldTest
 {

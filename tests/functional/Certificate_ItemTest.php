@@ -36,7 +36,7 @@ namespace tests\units;
 
 use Certificate;
 use Certificate_Item;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasCertificatesCapacity;
 use Glpi\Features\Clonable;

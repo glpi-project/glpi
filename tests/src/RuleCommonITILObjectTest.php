@@ -32,11 +32,10 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units;
+namespace Glpi\Tests;
 
 use CommonITILActor;
 use CommonITILValidation;
-use DbTestCase;
 use Entity;
 use Generator;
 use Glpi\Tests\Glpi\ValidationStepTrait;
@@ -49,7 +48,7 @@ use ITILFollowupTemplate;
 use Location;
 use Rule;
 use RuleAction;
-use RuleBuilder;
+use Glpi\Tests\RuleBuilder;
 use RuleCriteria;
 use Session;
 use SingletonRuleList;
@@ -1502,8 +1501,6 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $itil_class = $this->getItilObjectClass();
         $validation_class = $itil_class . 'Validation';
         if (!class_exists($validation_class)) {
-            // Useless assertion to prevent atoum from marking this as a failure
-            $this->assertTrue(true);
             return;
         }
         $this->login();
@@ -1587,8 +1584,6 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $itil_class = $this->getItilObjectClass();
         $validation_class = $itil_class . 'Validation';
         if (!class_exists($validation_class)) {
-            // Useless assertion to prevent atoum from marking this as a failure
-            $this->assertTrue(true);
             return;
         }
         $this->login();

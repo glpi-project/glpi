@@ -37,7 +37,7 @@ namespace tests\units;
 use ArrayIterator;
 use Computer;
 use CronTask;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Progress\AbstractProgressIndicator;
 use Glpi\Socket;

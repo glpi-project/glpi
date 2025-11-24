@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\Form\QuestionType;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Form\QuestionType\QuestionTypeRequestType;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;

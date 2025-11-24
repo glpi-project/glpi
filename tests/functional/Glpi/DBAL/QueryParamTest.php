@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\DBAL;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\DBAL\QueryParam;
 
 class QueryParamTest extends DbTestCase

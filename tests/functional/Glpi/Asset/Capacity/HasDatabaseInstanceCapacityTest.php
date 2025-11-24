@@ -35,7 +35,7 @@
 namespace tests\units\Glpi\Asset\Capacity;
 
 use DatabaseInstance;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Entity;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDatabaseInstanceCapacity;

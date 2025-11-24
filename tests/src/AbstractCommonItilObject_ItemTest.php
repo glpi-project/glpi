@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units;
+namespace Glpi\Tests;
 
 use CommonITILObject;
 use CommonItilObject_Item;
@@ -40,7 +40,7 @@ use Computer;
 use Glpi\Form\Form;
 use User;
 
-abstract class AbstractCommonItilObject_ItemTest extends \DbTestCase
+abstract class AbstractCommonItilObject_ItemTest extends DbTestCase
 {
     /**
      * Return the name of the Rule class this test class tests

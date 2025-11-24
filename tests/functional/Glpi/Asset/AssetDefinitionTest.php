@@ -35,7 +35,7 @@
 namespace tests\units\Glpi\Asset;
 
 use Computer;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Gettext\Languages\Category;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\Capacity;

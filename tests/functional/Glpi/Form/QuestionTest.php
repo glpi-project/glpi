@@ -35,7 +35,7 @@
 namespace tests\units\Glpi\Form;
 
 use Computer;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Form\Condition\LogicOperator;
 use Glpi\Form\Condition\Type;
 use Glpi\Form\Condition\ValidationStrategy;

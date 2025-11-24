@@ -32,6 +32,11 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Tests;
+
+use Log;
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Converter;
 use Glpi\Inventory\Inventory;

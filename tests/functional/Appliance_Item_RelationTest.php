@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Entity;
 
 class Appliance_Item_RelationTest extends DbTestCase

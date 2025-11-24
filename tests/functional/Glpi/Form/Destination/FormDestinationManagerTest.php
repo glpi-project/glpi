@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\Form\Destination;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Form\Condition\CreationStrategy;
 use Glpi\Form\Destination\FormDestinationInterface;
 use Glpi\Form\Destination\FormDestinationManager;

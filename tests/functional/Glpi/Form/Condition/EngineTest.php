@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\Form\Condition;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Form\Condition\CreationStrategy;
 use Glpi\Form\Condition\Engine;
 use Glpi\Form\Condition\EngineInput;

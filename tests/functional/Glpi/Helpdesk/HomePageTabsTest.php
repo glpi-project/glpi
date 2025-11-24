@@ -34,7 +34,7 @@
 
 namespace test\units\Glpi\Helpdesk;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Dashboard\Right;
 use Glpi\Helpdesk\HomePageTabs;
 use Profile;

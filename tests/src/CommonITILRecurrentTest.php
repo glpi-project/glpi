@@ -32,13 +32,10 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units;
+namespace Glpi\Tests;
 
 use Calendar;
 use CalendarSegment;
-use DbTestCase;
-
-/* Test for inc/commonitilrecurrent.class.php */
 
 abstract class CommonITILRecurrentTest extends DbTestCase
 {

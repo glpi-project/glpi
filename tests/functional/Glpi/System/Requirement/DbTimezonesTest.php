@@ -35,8 +35,9 @@
 namespace tests\units\Glpi\System\Requirement;
 
 use Glpi\System\Requirement\DbTimezones;
+use Glpi\Tests\GLPITestCase;
 
-class DbTimezonesTest extends \GLPITestCase
+class DbTimezonesTest extends GLPITestCase
 {
     public function testCheckWithTimezonenameEmptyList()
     {

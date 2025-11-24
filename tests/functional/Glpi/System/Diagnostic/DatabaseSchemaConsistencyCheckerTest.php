@@ -35,9 +35,10 @@
 namespace tests\units\Glpi\System\Diagnostic;
 
 use Glpi\System\Diagnostic\DatabaseSchemaConsistencyChecker;
+use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class DatabaseSchemaConsistencyCheckerTest extends \GLPITestCase
+class DatabaseSchemaConsistencyCheckerTest extends GLPITestCase
 {
     public static function sqlProvider(): iterable
     {

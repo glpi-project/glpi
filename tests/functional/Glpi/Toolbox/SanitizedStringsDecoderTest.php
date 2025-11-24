@@ -34,10 +34,11 @@
 
 namespace tests\units\Glpi\Toolbox;
 
+use Glpi\Tests\GLPITestCase;
 use Glpi\Toolbox\SanitizedStringsDecoder;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class SanitizedStringsDecoderTest extends \GLPITestCase
+class SanitizedStringsDecoderTest extends GLPITestCase
 {
     public static function sanitizedValueProvider(): iterable
     {

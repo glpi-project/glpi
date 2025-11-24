@@ -32,9 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\Form\Condition;
+namespace Glpi\Tests;
 
-use DbTestCase;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\Engine;
@@ -45,11 +44,9 @@ use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Condition\VisibilityStrategy;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
-use Glpi\Tests\FormBuilder;
-use Glpi\Tests\FormTesterTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-abstract class AbstractConditionHandler extends DbTestCase
+abstract class AbstractConditionHandlerTest extends DbTestCase
 {
     use FormTesterTrait;
 

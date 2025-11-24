@@ -39,8 +39,9 @@ use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Http\Request;
 use Project;
 use ProjectTask;
+use Glpi\Tests\HLAPITestCase;
 
-class ProjectControllerTest extends \HLAPITestCase
+class ProjectControllerTest extends HLAPITestCase
 {
     public function testCreateGetUpdateDelete()
     {

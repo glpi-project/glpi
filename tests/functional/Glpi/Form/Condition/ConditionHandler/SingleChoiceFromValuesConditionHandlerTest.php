@@ -40,9 +40,9 @@ use Glpi\Form\QuestionType\QuestionTypeDropdownExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeRadio;
 use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Override;
-use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
+use Glpi\Tests\AbstractConditionHandlerTest;
 
-final class SingleChoiceFromValuesConditionHandlerTest extends AbstractConditionHandler
+final class SingleChoiceFromValuesConditionHandlerTest extends AbstractConditionHandlerTest
 {
     public static function getConditionHandler(): ConditionHandlerInterface
     {

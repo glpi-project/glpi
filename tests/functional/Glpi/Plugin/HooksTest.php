@@ -35,9 +35,10 @@
 namespace tests\units;
 
 use Glpi\Plugin\Hooks;
+use Glpi\Tests\GLPITestCase;
 use ReflectionClass;
 
-class HooksTest extends \GLPITestCase
+class HooksTest extends GLPITestCase
 {
     public function testAllConstsHavePHPDoc()
     {

@@ -35,7 +35,7 @@
 namespace tests\units\Glpi\Form\AnswersHandler;
 
 use CommonITILObject;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Entity;
 use Glpi\Form\Answer;
 use Glpi\Form\AnswersHandler\AnswersHandler;

@@ -38,9 +38,9 @@ use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Override;
-use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
+use Glpi\Tests\AbstractConditionHandlerTest;
 
-final class StringConditionHandlerTest extends AbstractConditionHandler
+final class StringConditionHandlerTest extends AbstractConditionHandlerTest
 {
     public static function getConditionHandler(): ConditionHandlerInterface
     {

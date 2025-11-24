@@ -32,7 +32,11 @@
  * ---------------------------------------------------------------------
  */
 
-abstract class AbstractPlanningEvent extends DbTestCase
+namespace Glpi\Tests;
+
+use Planning;
+
+abstract class AbstractPlanningEventTest extends DbTestCase
 {
     protected $myclass = "";
     protected $input   = [];

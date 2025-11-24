@@ -32,12 +32,11 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units;
+namespace Glpi\Tests;
 
-use DbTestCase;
 use Glpi\Team\Team;
 
-abstract class CommonITILSatisfaction extends DbTestCase
+abstract class CommonITILSatisfactionTest extends DbTestCase
 {
     /**
      * Return the name of the class this test class tests

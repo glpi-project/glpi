@@ -37,7 +37,7 @@ namespace tests\units;
 use Cartridge;
 use Computer;
 use Consumable;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasInfocomCapacity;
 use Glpi\Features\Clonable;

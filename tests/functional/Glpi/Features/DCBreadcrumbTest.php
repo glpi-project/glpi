@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\Features;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use DCRoom;
 use Glpi\Features\DCBreadcrumb;
 use PHPUnit\Framework\Attributes\DataProvider;

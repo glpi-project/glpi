@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Kernel\Listener\RequestListener;
 use Glpi\Controller\LegacyFileLoadController;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Kernel\Listener\RequestListener\LegacyRouterListener;
+use Glpi\Tests\GLPITestCase;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
@@ -45,7 +46,7 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-class LegacyRouterListenerTest extends \GLPITestCase
+class LegacyRouterListenerTest extends GLPITestCase
 {
     public static function fileProvider(): iterable
     {
@@ -281,7 +282,6 @@ class LegacyRouterListenerTest extends \GLPITestCase
             '/videos/demo.webm',
         ];
         $glpi_hidden_files = [
-            '/.atoum.php',
             '/.htaccess',
             '/.tx/config',
             '/front/.hidden.php',
@@ -409,7 +409,6 @@ class LegacyRouterListenerTest extends \GLPITestCase
         ];
 
         $plugins_hidden_files = [
-            '/.atoum.php',
             '/.gitignore',
             '/.htaccess',
             '/.tx/config',

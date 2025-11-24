@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Inventory;
 

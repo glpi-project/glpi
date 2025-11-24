@@ -37,13 +37,14 @@ namespace tests\units\Glpi\Http;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\SessionExpiredException;
 use Glpi\Http\Firewall;
+use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Request;
 
-class FirewallTest extends \DbTestCase
+class FirewallTest extends DbTestCase
 {
     public function testComputeFallbackStrategy(): void
     {

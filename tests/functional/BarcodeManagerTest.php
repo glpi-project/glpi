@@ -37,7 +37,7 @@ namespace tests\units;
 use BarcodeManager;
 use Com\Tecnick\Barcode\Type\Square\QrCode;
 use Computer;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Software;
 
 class BarcodeManagerTest extends DbTestCase

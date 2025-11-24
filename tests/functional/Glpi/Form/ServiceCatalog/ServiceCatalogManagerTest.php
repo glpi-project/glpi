@@ -47,6 +47,7 @@ use Glpi\Form\Form;
 use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\Form\ServiceCatalog\ServiceCatalogItemInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use GlpiPlugin\Tester\Form\ComputerForServiceCatalog;
@@ -56,7 +57,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
 use User;
 
-final class ServiceCatalogManagerTest extends \DbTestCase
+final class ServiceCatalogManagerTest extends DbTestCase
 {
     use FormTesterTrait;
 

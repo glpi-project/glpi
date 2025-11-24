@@ -35,8 +35,9 @@
 namespace tests\units\Glpi\Session;
 
 use Glpi\Session\SessionInfo;
+use Glpi\Tests\GLPITestCase;
 
-final class SessionInfoTest extends \GLPITestCase
+final class SessionInfoTest extends GLPITestCase
 {
     public function testGetUserId(): void
     {

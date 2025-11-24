@@ -38,6 +38,7 @@ use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\OLATTOField;
 use Glpi\Form\Destination\CommonITILField\OLATTOFieldConfig;
 use Glpi\Form\Destination\CommonITILField\SLMFieldStrategy;
+use Glpi\Tests\AbstractDestinationFieldTest;
 use Glpi\Form\Form;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
@@ -46,8 +47,6 @@ use Override;
 use SLM;
 use Ticket;
 use TicketTemplatePredefinedField;
-
-include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
 
 final class OLATTOFieldTest extends AbstractDestinationFieldTest
 {

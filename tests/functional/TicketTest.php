@@ -43,7 +43,7 @@ use CommonITILValidation;
 use Computer;
 use Contract;
 use CronTask;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Entity;
 use Glpi\Search\SearchOption;
 use Glpi\Team\Team;

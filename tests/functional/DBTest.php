@@ -37,12 +37,13 @@ namespace tests\units;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 
 /* Test for inc/dbmysql.class.php */
 
-class DBTest extends \GLPITestCase
+class DBTest extends GLPITestCase
 {
     public function testTableExist()
     {

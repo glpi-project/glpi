@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\Form\ServiceCatalog\Provider;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Entity;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Category;

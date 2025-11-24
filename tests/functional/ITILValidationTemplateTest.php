@@ -34,13 +34,12 @@
 
 namespace tests\units;
 
-include_once __DIR__ . '/../abstracts/AbstractITILChildTemplate.php';
-
+use AbstractITILChildTemplate;
 use ITILValidationTemplate as GlobalITILValidationTemplate;
 use ITILValidationTemplate_Target;
-use tests\units\Glpi\AbstractITILChildTemplate;
+use Glpi\Tests\AbstractITILChildTemplateTest;
 
-class ITILValidationTemplateTest extends AbstractITILChildTemplate
+class ITILValidationTemplateTest extends AbstractITILChildTemplateTest
 {
     public function testPostTargets()
     {
@@ -102,7 +101,7 @@ class ITILValidationTemplateTest extends AbstractITILChildTemplate
         }
     }
 
-    protected function getInstance(): \AbstractITILChildTemplate
+    protected function getInstance(): AbstractITILChildTemplate
     {
         return new GlobalITILValidationTemplate();
     }

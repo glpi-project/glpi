@@ -35,10 +35,9 @@
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
 use Glpi\ContentTemplates\Parameters\UserTitleParameters;
+use Glpi\Tests\AbstractParametersTest;
 
-include_once __DIR__ . '/../../../../abstracts/AbstractParameters.php';
-
-class UserTitleParametersTest extends AbstractParameters
+class UserTitleParametersTest extends AbstractParametersTest
 {
     public function testGetValues(): void
     {

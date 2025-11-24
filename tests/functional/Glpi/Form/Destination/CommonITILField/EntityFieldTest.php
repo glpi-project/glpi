@@ -41,11 +41,10 @@ use Glpi\Form\Destination\CommonITILField\EntityFieldConfig;
 use Glpi\Form\Destination\CommonITILField\EntityFieldStrategy;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeItem;
+use Glpi\Tests\AbstractDestinationFieldTest;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Override;
-
-include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
 
 final class EntityFieldTest extends AbstractDestinationFieldTest
 {

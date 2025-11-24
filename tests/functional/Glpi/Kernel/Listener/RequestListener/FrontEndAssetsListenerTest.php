@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Kernel\Listener\RequestListener;
 
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Kernel\Listener\RequestListener\FrontEndAssetsListener;
+use Glpi\Tests\GLPITestCase;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -45,7 +46,7 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-class FrontEndAssetsListenerTest extends \GLPITestCase
+class FrontEndAssetsListenerTest extends GLPITestCase
 {
     public static function assetsProvider(): iterable
     {
@@ -305,7 +306,6 @@ class FrontEndAssetsListenerTest extends \GLPITestCase
             '/videos/demo.webm',
         ];
         $glpi_hidden_files = [
-            '/.atoum.php',
             '/.htaccess',
             '/.tx/config',
             '/front/.hidden.php',
@@ -428,7 +428,6 @@ class FrontEndAssetsListenerTest extends \GLPITestCase
             '/yarn.lock',
         ];
         $plugins_hidden_files = [
-            '/.atoum.php',
             '/.gitignore',
             '/.htaccess',
             '/.tx/config',
