@@ -60,4 +60,5 @@ $assets_tables_with_templates_and_trashbin = [
 
 foreach ($assets_tables_with_templates_and_trashbin as $table) {
     $migration->addKey($table, ['is_deleted', 'is_template'], 'active_assets');
+    $migration->dropKey($table, 'is_deleted');
 }
