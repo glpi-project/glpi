@@ -48,7 +48,6 @@ class NotificationTargetReservation extends NotificationTarget
         ];
     }
 
-
     public function addAdditionalTargets($event = '')
     {
         if ($event != 'alert') {
@@ -63,11 +62,7 @@ class NotificationTargetReservation extends NotificationTarget
             $this->addTarget(Notification::ITEM_USER, __('Hardware user'));
             $this->addTarget(Notification::AUTHOR, _n('Requester', 'Requesters', 1));
         }
-        // else if ($event == 'alert') {
-        //   $this->addTarget(Notification::ITEM_USER, __('User reserving equipment'));
-        //}
     }
-
 
     public function addDataForTemplate($event, $options = []): void
     {
@@ -157,7 +152,6 @@ class NotificationTargetReservation extends NotificationTarget
         }
     }
 
-
     #[Override]
     public function getTags()
     {
@@ -217,7 +211,7 @@ class NotificationTargetReservation extends NotificationTarget
     }
 
     #[Override]
-    public function getObjectItem($event = ''): void
+    public function getObjectItem(): void
     {
         if ($this->obj) {
             $ri = new ReservationItem();

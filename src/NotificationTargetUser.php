@@ -97,7 +97,6 @@ class NotificationTargetUser extends NotificationTarget
         return true;
     }
 
-
     /**
      * @see NotificationTarget::addSpecificTargets()
      **/
@@ -124,7 +123,6 @@ class NotificationTargetUser extends NotificationTarget
                 }
         }
     }
-
 
     public function addDataForTemplate($event, $options = []): void
     {
@@ -189,7 +187,6 @@ class NotificationTargetUser extends NotificationTarget
             }
         }
     }
-
 
     #[Override]
     public function getTags()

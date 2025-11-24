@@ -463,13 +463,17 @@ class Controller extends CommonGLPI
                 $task->log(sprintf(__("New version for plugin %s: %s"), $plugin_key, $version));
             }
 
-            if (!$CFG_GLPI["use_notifications"]) {
-                return $cron_status;
-            }
+            // commented, is usesless because of NotificationEvent::raiseEvent is commented below
+            // if (!$CFG_GLPI["use_notifications"]) {
+            //      return $cron_status;
+            // }
 
-            NotificationEvent::raiseEvent('checkpluginsupdate', new self(), [
-                'plugins' => $updates,
-            ]);
+            // commented : no Notification is raised (only CommonDBTM class can raise events, @see /src/NotificationEvent.php:145)
+            // commenting instruction won't result in any change in glpi behaviour.
+            // NotificationEvent::raiseEvent('checkpluginsupdate', new self(), [
+            //      'plugins' => $updates,
+            // ]);
+            // @todo this block can be removed after review
         }
 
         return $cron_status;

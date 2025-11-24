@@ -115,9 +115,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
     }
 
     #[Override]
-    public function getObjectItem($event = ''): void
+    public function getObjectItem(): void
     {
-
         if ($this->obj && isset($this->obj->fields['id']) && !empty($this->obj->fields['id'])) {
             $item_ticket = new Item_Ticket();
             $data = $item_ticket->find(['tickets_id' => $this->obj->fields['id']]);
@@ -557,7 +556,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
 
         return $data;
     }
-
 
     #[Override]
     public function getTags()

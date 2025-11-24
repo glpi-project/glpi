@@ -135,7 +135,6 @@ class NotificationTemplate extends CommonDBTM
         return true;
     }
 
-
     #[Override]
     public function rawSearchOptions()
     {
@@ -175,7 +174,6 @@ class NotificationTemplate extends CommonDBTM
 
         return $tab;
     }
-
 
     /**
      * Display templates available for an itemtype
@@ -254,7 +252,6 @@ class NotificationTemplate extends CommonDBTM
             $orig_tz = null;
             if (isset($user_infos['additionnaloption']['timezone'])) {
                 $orig_tz = $DB->guessTimezone();
-                /** @var DBmysql $DB */
                 $DB->setTimezone($user_infos['additionnaloption']['timezone']);
 
                 if (is_a($options['item'], CommonDBTM::class, true)) {
