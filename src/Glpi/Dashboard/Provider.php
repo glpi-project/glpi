@@ -1280,6 +1280,14 @@ class Provider
             self::getFiltersCriteria($t_table, $params['apply_filters'])
         );
 
+        // avoid costy DISTINCT if there isn't any JOIN (/3 perf gain)
+        if (!isset($sub_query['LEFT JOIN'])
+            && !isset($sub_query['JOIN'])
+            && !isset($sub_query['INNER JOIN'])
+            && !isset($sub_query['RIGHT JOIN'])) {
+            unset($sub_query['DISTINCT']);
+        }
+
         $criteria = [
             'SELECT'   => [
                 QueryFunction::fromUnixtime(
