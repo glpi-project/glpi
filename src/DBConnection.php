@@ -713,7 +713,10 @@ class DBConnection extends CommonGLPI
                         'name'        => $name,
                         'entities_id' => 0,
                     ]; // entity to avoid warning in getReplyTo
-                    NotificationEvent::raiseEvent('desynchronization', new self(), $options);
+                    // commented : no Notification is raised in fact (only CommonDBTM class can raise events, @see /src/NotificationEvent.php:145)
+                    // commenting instruction won't result in any change in glpi behaviour.
+                    // NotificationEvent::raiseEvent('desynchronization', new self(), $options);
+                    // @todo this block can be removed after review
                 }
             }
             return 1;

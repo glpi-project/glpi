@@ -84,7 +84,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                         //If the user have not yet been notified
                         if (!isset($processed[$users_infos['language']][$key])) {
                             //If ther user's language is the same as the template's one
-                            $options = array_merge($options, ['item' => $item]);
+                            $options = array_merge(['item' => $item], $options);
                             if ($tid = $template->getTemplateByLanguage(
                                 $notificationtarget,
                                 $users_infos,

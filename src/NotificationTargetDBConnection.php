@@ -50,7 +50,6 @@ class NotificationTargetDBConnection extends NotificationTarget
         $this->addTarget(Notification::GLOBAL_ADMINISTRATOR, __('Administrator'));
     }
 
-
     #[Override]
     public function getEvents()
     {
@@ -60,7 +59,6 @@ class NotificationTargetDBConnection extends NotificationTarget
     #[Override]
     public function addDataForTemplate($event, $options = []): void
     {
-
         if ($options['diff'] > 1000000000) {
             $tmp = __("Can't connect to the database.");
         } else {
@@ -76,13 +74,10 @@ class NotificationTargetDBConnection extends NotificationTarget
         }
     }
 
-
     #[Override]
     public function getTags()
     {
-
         $tags = ['dbconnection.delay' => __('Difference between main and replica')];
-
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,

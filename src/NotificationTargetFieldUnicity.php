@@ -73,7 +73,6 @@ class NotificationTargetFieldUnicity extends NotificationTarget
         }
     }
 
-
     #[Override]
     public function getTags()
     {

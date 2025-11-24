@@ -44,12 +44,6 @@ class NotificationTargetInfocom extends NotificationTarget
         return ['alert' => __('Alarms on financial and administrative information')];
     }
 
-    /**
-     * @x-param array{
-     *     entities_id: int,
-     *     items: array{itemtype: string, items_id: int, item_name: string, warrantyexpiration: string}
-     *     } $options
-    **/
     #[Override]
     public function addDataForTemplate($event, $options = [])
     {
@@ -87,7 +81,6 @@ class NotificationTargetInfocom extends NotificationTarget
             }
         }
     }
-
 
     #[Override]
     public function getTags()

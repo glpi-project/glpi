@@ -44,16 +44,16 @@ use Glpi\Plugin\Hooks;
 class NotificationTarget extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype = 'Notification';
-    public static $items_id = 'notifications_id';
-    public string $table = 'glpi_notificationtargets';
+    public static $itemtype             = 'Notification';
+    public static $items_id             = 'notifications_id';
+    public string $table                = 'glpi_notificationtargets';
 
     /**
      * @var array<string, string>
      *      key is a formated <Notification::*_TYPE>_<value-of<Notification::TARGETS>>
      *      value is formated <Notification::*_TYPE>_<string(label)>
      */
-    public $notification_targets = [];
+    public $notification_targets        = [];
 
     /**
      * @var array<Notification::*_TYPE, array<value-of<Notification::TARGETS>, string>>
@@ -63,7 +63,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * @var array<string, string|array<string>> Data from the objet which can be used by the template
      */
-    public $data = [];
+    public $data                        = [];
 
     /**
      * @var array<string, string|array<string|array>>
@@ -71,7 +71,7 @@ class NotificationTarget extends CommonDBChild
     public $tag_descriptions = [];
 
     // From CommonDBTM
-    public $dohistory = true;
+    public $dohistory                   = true;
 
     /**
      * @var array<string, array{
@@ -80,22 +80,22 @@ class NotificationTarget extends CommonDBChild
      *                      username: string,
      *     }> store emails by notification
      */
-    public $target = [];
+    public $target                      = [];
 
     /**
      * @var int|string
      */
-    public $entity = '';
+    public $entity                      = '';
 
     /**
      * @var CommonDBTM|null Object which raises the notification event
      */
-    public $obj = null;
+    public $obj                         = null;
 
     /**
      * @var array<CommonDBTM> Object which is associated with the event
      */
-    public $target_object = [];
+    public $target_object               = [];
 
     /**
      * @var array<string, string>
@@ -122,13 +122,13 @@ class NotificationTarget extends CommonDBChild
      * Variable contains `itemtype` and `items_id` keys and is set only during hook execution.
      * @var array{itemtype?: class-string<CommonDBTM>, items_id?: int}
      */
-    public $recipient_data = [];
+    public $recipient_data              = [];
 
     /** @var bool */
-    private $allow_response = true;
+    private $allow_response             = true;
 
     /** @var Notification_NotificationTemplate::MODE_*|null */
-    private $mode           = null;
+    private $mode                       = null;
 
     /** @var string|null*/
     private $event                      = null;
@@ -1196,11 +1196,8 @@ class NotificationTarget extends CommonDBChild
 
     /**
      * Push $this->obj in $this->target_object array
-     *
-     * @param string $event
-     * @return void
      **/
-    public function getObjectItem($event = '')
+    public function getObjectItem(): void
     {
         $this->target_object[] = $this->obj;
     }
@@ -1334,7 +1331,6 @@ class NotificationTarget extends CommonDBChild
      **/
     public function getReplyTo(): array
     {
-        // @todo refacto
         if (!$this->allowResponse()) {
             return Config::getNoReplyEmailSender($this->getEntity());
         }

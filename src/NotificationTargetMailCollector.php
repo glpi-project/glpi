@@ -72,7 +72,6 @@ class NotificationTargetMailCollector extends NotificationTarget
         }
     }
 
-
     #[Override]
     public function getTags()
     {

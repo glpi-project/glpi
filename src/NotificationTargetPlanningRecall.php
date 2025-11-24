@@ -92,7 +92,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget
 
     /**
      * Get group assigned to the task
-     * @todo doc
+     *
      * @return false|void
      */
     public function addTaskAssignGroup()
@@ -111,7 +111,6 @@ class NotificationTargetPlanningRecall extends NotificationTarget
     /**
      * Get tech related to the task
      *
-     * @todo doc
      * @return false|void
      **/
     public function addTaskAssignUser()
@@ -145,7 +144,6 @@ class NotificationTargetPlanningRecall extends NotificationTarget
     /**
      * Get guests related to external events
      *
-     * @todo doc
      * @return false|void
      **/
     public function addGuests()
@@ -284,7 +282,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget
     }
 
     #[Override]
-    public function getObjectItem($event = ''): void
+    public function getObjectItem(): void
     {
         if ($this->obj) {
             if (
