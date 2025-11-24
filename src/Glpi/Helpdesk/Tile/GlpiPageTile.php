@@ -184,10 +184,10 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface, ProvideTra
     public function isAvailable(SessionInfo $session_info): bool
     {
         return match ($this->fields['page']) {
-            self::PAGE_SERVICE_CATALOG => $session_info->hasRight(
-                Ticket::$rightname,
-                CREATE,
-            ),
+            self::PAGE_SERVICE_CATALOG => $session_info
+                ->getCurrentEntity()
+                ->isServiceCatalogEnabled()
+            ,
             self::PAGE_FAQ             => true,
             self::PAGE_RESERVATION     => $session_info->hasRight(
                 'reservation',

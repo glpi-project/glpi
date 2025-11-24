@@ -35,6 +35,8 @@
 
 namespace Glpi\Session;
 
+use Entity;
+use LogicException;
 use Profile;
 
 final class SessionInfo
@@ -75,6 +77,16 @@ final class SessionInfo
     public function getCurrentEntityId(): int
     {
         return $this->current_entity_id;
+    }
+
+    public function getCurrentEntity(): Entity
+    {
+        $entity = Entity::getById($this->current_entity_id);
+        if ($entity === false) {
+            throw new LogicException(); // Can't happen
+        }
+
+        return $entity;
     }
 
     public function hasRight(string $right, int $action): bool

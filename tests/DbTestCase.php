@@ -168,7 +168,7 @@ class DbTestCase extends GLPITestCase
                 $this->assertArrayHasKey(
                     $k,
                     $object->fields,
-                    "Object not created as expected, field '$k' not found in object " . get_class($object),
+                    "Object not created or updated as expected, field '$k' not found in object " . get_class($object),
                 );
 
                 if (is_array($v)) {
@@ -178,7 +178,7 @@ class DbTestCase extends GLPITestCase
                         $v,
                         $object->fields[$k],
                         "
-                    Object not created as expected
+                    Object not created or updated as expected
                     field '$k' value is '{$object->fields[$k]}' (" . gettype($object->fields[$k]) . ")
                     but was expected to be '$v' (" . gettype($v) . ")"
                     );
