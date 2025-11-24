@@ -79,6 +79,8 @@ class FrontEndAssetsExtension extends AbstractExtension
             new TwigFunction('locales_js', [$this, 'localesJs'], ['is_safe' => ['html']]),
             new TwigFunction('current_theme', [$this, 'currentTheme']),
             new TwigFunction('anonymous_theme', [$this, 'anonymousTheme']),
+            new TwigFunction('get_themes', [$this, 'getThemes']),
+            new TwigFunction('file_mtime', [$this, 'fileMtime']),
             new TwigFunction('importmap', [$this, 'importmap'], ['is_safe' => ['html']]),
         ];
     }
@@ -101,6 +103,27 @@ class FrontEndAssetsExtension extends AbstractExtension
     public function anonymousTheme(): Theme
     {
         return ThemeManager::getInstance()->getAnonymousTheme();
+    }
+
+    /**
+     * Get all themes from ThemeManager
+     *
+     * @return array
+     */
+    public function getThemes(): array
+    {
+        return ThemeManager::getInstance()->getAllThemes();
+    }
+
+    /**
+     * Get file modification time
+     *
+     * @param string $filepath
+     * @return int
+     */
+    public function fileMtime(string $filepath): int
+    {
+        return file_exists($filepath) ? filemtime($filepath) : 0;
     }
 
     /**

@@ -39,11 +39,14 @@
        {'path': 'css/core_palettes.scss'}
    ] %}
 
-   {# Load custom theme CSS if a custom theme is detected for anonymous pages #}
-   {% if theme.isCustomTheme() %}
-      {% set theme_path = theme.getKey() ~ '?is_custom_theme=1' %}
-      {% set css_files = css_files|merge([{'path': theme_path}]) %}
-   {% endif %}
+   {# Load all custom themes CSS - reproduce Html.php logic lines 1206-1214 #}
+   {% for theme_info in get_themes() %}
+      {% if theme_info.isCustomTheme() %}
+         {% set theme_path = theme_info.getKey() ~ '?is_custom_theme=1' %}
+         {% set theme_path = theme_path ~ '&lastupdate=' ~ file_mtime(theme_info.getPath(false)) %}
+         {% set css_files = css_files|merge([{'path': theme_path}]) %}
+      {% endif %}
+   {% endfor %}
 
    {# TODO : load hight contrast css #}
 {% endif %}
