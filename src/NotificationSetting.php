@@ -43,11 +43,11 @@ abstract class NotificationSetting extends CommonDBTM
     public const ATTACH_ALL_DOCUMENTS     = 1;    // All documents
     public const ATTACH_FROM_TRIGGER_ONLY = 2;    // Only documents related to the item that triggers the event
 
-    public $table           = 'glpi_configs';
+    public string $table           = 'glpi_configs';
     protected $displaylist  = false;
     public static $rightname       = 'config';
 
-    #[\Override]
+    #[Override]
     public static function getTypeName($nb = 0)
     {
         throw new RuntimeException('getTypeName must be implemented');
@@ -80,14 +80,14 @@ abstract class NotificationSetting extends CommonDBTM
     abstract protected function showFormConfig();
 
 
-    #[\Override]
+    #[Override]
     public static function getTable($classname = null)
     {
         return parent::getTable('Config');
     }
 
 
-    #[\Override]
+    #[Override]
     public function defineTabs($options = [])
     {
         $ong = [];
@@ -97,7 +97,7 @@ abstract class NotificationSetting extends CommonDBTM
     }
 
 
-    #[\Override]
+    #[Override]
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         switch ($item->getType()) {
@@ -109,7 +109,7 @@ abstract class NotificationSetting extends CommonDBTM
     }
 
 
-    #[\Override]
+    #[Override]
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if (get_class($item) == static::class) {
@@ -140,7 +140,7 @@ abstract class NotificationSetting extends CommonDBTM
         }
     }
 
-    #[\Override]
+    #[Override]
     public static function getIcon()
     {
         return "ti ti-bell";

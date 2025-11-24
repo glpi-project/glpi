@@ -35,7 +35,7 @@
 
 class NotificationTargetKnowbaseItem extends NotificationTarget
 {
-    #[\Override]
+    #[Override]
     public function getEvents()
     {
         return [
@@ -45,7 +45,7 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
         ];
     }
 
-    #[\Override]
+    #[Override]
     public function addNotificationTargets($entity)
     {
         if (Session::haveRight("config", UPDATE)) {
@@ -156,7 +156,7 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
             'items_id' => $knowbase->getID(),
             'itemtype' => 'KnowbaseItem',
         ]);
-        $this->data['##knowbaseitem.numberofdocuments##']      = count($associateddocuments);
+        $this->data['##knowbaseitem.numberofdocuments##']      = (string) count($associateddocuments);
         foreach ($associateddocuments as $docid) {
             $document = Document::getById($docid['documents_id']);
             if (!$document instanceof Document) {
@@ -174,7 +174,7 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
         }
     }
 
-    #[\Override]
+    #[Override]
     public function getTags()
     {
         $tags = [

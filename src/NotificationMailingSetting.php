@@ -43,7 +43,7 @@ use function Safe\json_decode;
  */
 class NotificationMailingSetting extends NotificationSetting
 {
-    #[\Override]
+    #[Override]
     public static function getTypeName($nb = 0)
     {
         return __('Email notifications configuration');
@@ -61,7 +61,7 @@ class NotificationMailingSetting extends NotificationSetting
         return Notification_NotificationTemplate::MODE_MAIL;
     }
 
-    #[\Override]
+    #[Override]
     public function defineTabs($options = [])
     {
         $ong = parent::defineTabs($options);
@@ -104,7 +104,7 @@ class NotificationMailingSetting extends NotificationSetting
         ];
     }
 
-    #[\Override]
+    #[Override]
     public function rawSearchOptions()
     {
         $tab = [];
@@ -178,7 +178,7 @@ class NotificationMailingSetting extends NotificationSetting
         ]);
     }
 
-    #[\Override]
+    #[Override]
     public static function getIcon()
     {
         return "ti ti-mail";

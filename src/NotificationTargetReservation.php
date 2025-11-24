@@ -38,7 +38,7 @@
  **/
 class NotificationTargetReservation extends NotificationTarget
 {
-    #[\Override]
+    #[Override]
     public function getEvents()
     {
         return ['new'    => __('New reservation'),
@@ -69,7 +69,7 @@ class NotificationTargetReservation extends NotificationTarget
     }
 
 
-    public function addDataForTemplate($event, $options = [])
+    public function addDataForTemplate($event, $options = []): void
     {
         //----------- Reservation infos -------------- //
         $events                                  = $this->getAllEvents();
@@ -158,7 +158,7 @@ class NotificationTargetReservation extends NotificationTarget
     }
 
 
-    #[\Override]
+    #[Override]
     public function getTags()
     {
 
@@ -216,10 +216,9 @@ class NotificationTargetReservation extends NotificationTarget
         asort($this->tag_descriptions);
     }
 
-    #[\Override]
-    public function getObjectItem($event = '')
+    #[Override]
+    public function getObjectItem($event = ''): void
     {
-
         if ($this->obj) {
             $ri = new ReservationItem();
 
@@ -229,6 +228,7 @@ class NotificationTargetReservation extends NotificationTarget
                 if (
                     ($itemtype != NOT_AVAILABLE) && ($itemtype != '')
                     && ($item = getItemForItemtype($itemtype))
+                    && $item instanceof CommonDBChild
                 ) {
                     $item->getFromDB($ri->getField('items_id'));
                     $this->target_object[] = $item;

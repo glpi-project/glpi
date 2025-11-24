@@ -51,10 +51,14 @@ class NotificationTemplate extends CommonDBTM
     // From CommonDBTM
     public $dohistory = true;
 
-    //Signature to add to the template
+    /**
+     * @var string Signature to add to the template
+     **/
     public $signature = '';
 
-    //Store templates for each language
+    /**
+     * @var array<string, array{subject: string, content_html:string, content_text:string}> Store templates for each language
+     */
     public $templates_by_languages = [];
 
     public static $rightname = 'config';
@@ -66,38 +70,38 @@ class NotificationTemplate extends CommonDBTM
         ];
     }
 
-    #[\Override]
+    #[Override]
     public static function getTypeName($nb = 0)
     {
         return _n('Notification template', 'Notification templates', $nb);
     }
 
-    #[\Override]
+    #[Override]
     public static function getSectorizedDetails(): array
     {
         return ['config', Notification::class, self::class];
     }
 
-    #[\Override]
+    #[Override]
     public static function getIcon()
     {
         return 'ti ti-template';
     }
 
-    #[\Override]
+    #[Override]
     public static function canCreate(): bool
     {
         return static::canUpdate();
     }
 
-    #[\Override]
+    #[Override]
     public static function canPurge(): bool
     {
         return static::canUpdate();
     }
 
 
-    #[\Override]
+    #[Override]
     public function defineTabs($options = [])
     {
 
@@ -110,17 +114,15 @@ class NotificationTemplate extends CommonDBTM
         return $ong;
     }
 
-
     /**
      * Reset already computed templates
      **/
-    public function resetComputedTemplates()
+    public function resetComputedTemplates(): void
     {
         $this->templates_by_languages = [];
     }
 
-
-    #[\Override]
+    #[Override]
     public function showForm($ID, array $options = [])
     {
         if (!Config::canUpdate()) {
@@ -134,7 +136,7 @@ class NotificationTemplate extends CommonDBTM
     }
 
 
-    #[\Override]
+    #[Override]
     public function rawSearchOptions()
     {
         $tab = [];
@@ -178,11 +180,11 @@ class NotificationTemplate extends CommonDBTM
     /**
      * Display templates available for an itemtype
      *
-     * @param $name      the dropdown name
-     * @param $itemtype  display templates for this itemtype only
-     * @param $value     the dropdown's default value (0 by default)
+     * @param string                    $name       dropdown name
+     * @param class-string<CommonDBTM> $itemtype   templates for this itemtype only
+     * @param string                $value      default value
      **/
-    public static function dropdownTemplates($name, $itemtype, $value = 0)
+    public static function dropdownTemplates($name, $itemtype, $value = "0"): void
     {
         self::dropdown([
             'name'       => $name,
@@ -192,13 +194,13 @@ class NotificationTemplate extends CommonDBTM
         ]);
     }
 
-
     /**
-     * @param $options
+     * @param array{sendprivate?: bool} $options
+     * @return 0|1
+     * @todo can probably be removed
      **/
-    public function getAdditionnalProcessOption($options)
+    public function getAdditionnalProcessOption($options): int
     {
-
         //Additionnal option can be given for template processing
         //For the moment, only option to see private tasks & followups is available
         if (
@@ -210,20 +212,19 @@ class NotificationTemplate extends CommonDBTM
         return 0;
     }
 
-
     /**
-     * @param $target             NotificationTarget object
-     * @param $user_infos   array
-     * @param $event
-     * @param $options      array
+     * @param NotificationTarget $target
+     * @param array{language: string, additionnaloption?: array{timezone?: string} } $user_infos
+     * @param string $event
+     * @param array{item?: CommonDBTM} $options
      *
      * @return false|string id of the template in templates_by_languages / false if computation failed
      **/
     public function getTemplateByLanguage(
         NotificationTarget $target,
-        $user_infos = [],
-        $event = '',
-        $options = []
+        $user_infos,
+        $event,
+        $options
     ) {
         global $CFG_GLPI, $DB;
 
@@ -253,6 +254,7 @@ class NotificationTemplate extends CommonDBTM
             $orig_tz = null;
             if (isset($user_infos['additionnaloption']['timezone'])) {
                 $orig_tz = $DB->guessTimezone();
+                /** @var DBmysql $DB */
                 $DB->setTimezone($user_infos['additionnaloption']['timezone']);
 
                 if (is_a($options['item'], CommonDBTM::class, true)) {
@@ -342,17 +344,18 @@ class NotificationTemplate extends CommonDBTM
         if (isset($this->templates_by_languages[$tid])) {
             return $tid;
         }
+
         return false;
     }
 
 
     /**
-     * @param $string
-     * @param $data
+     * @param  string $string
+     * @param  array<string, mixed> $data
+     * @return string
      **/
     public static function process($string, $data, bool $html_context = false)
     {
-
         $cleandata = [];
         // clean data for strtr
         foreach ($data as $field => $value) {
@@ -447,14 +450,13 @@ class NotificationTemplate extends CommonDBTM
         return $string;
     }
 
-
     /**
-     * @param $string
-     * @param $data
+     * @param string $string
+     * @param array $data<string, string>
+     * @return string
      **/
     public static function processIf($string, $data)
     {
-
         if (preg_match_all("/##IF([a-z-0-9\._]*)[=]?(.*?)##/i", $string, $out)) {
             foreach ($out[1] as $key => $tag_infos) {
                 $if_field = $tag_infos;
@@ -563,18 +565,17 @@ class NotificationTemplate extends CommonDBTM
         return $data;
     }
 
-
     /**
-     * @param $signature
+     * @param string $signature
      **/
-    public function setSignature($signature)
+    public function setSignature($signature): void
     {
         $this->signature = $signature;
     }
 
-
     /**
-     * @param $language
+     * @param string $language
+     * @return false|array<string, mixed>
      **/
     public function getByLanguage($language)
     {
@@ -596,7 +597,6 @@ class NotificationTemplate extends CommonDBTM
         //No template found at all!
         return false;
     }
-
 
     /**
      * @param NotificationTarget $target     Target instance

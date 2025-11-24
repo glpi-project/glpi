@@ -47,14 +47,13 @@
  **/
 class NotificationTargetObjectLock extends NotificationTarget
 {
-    #[\Override]
+    #[Override]
     public function getEvents()
     {
         return ['unlock'               => __('Unlock Item Request')];
     }
 
-
-    #[\Override]
+    #[Override]
     public function getTags()
     {
 
@@ -80,16 +79,14 @@ class NotificationTargetObjectLock extends NotificationTarget
         asort($this->tag_descriptions);
     }
 
-
     /**
      * @see NotificationTarget::addNotificationTargets()
      **/
-    #[\Override]
+    #[Override]
     public function addNotificationTargets($entity)
     {
         $this->addTarget(Notification::USER, __('Locking User'));
     }
-
 
     /**
      * @see NotificationTarget::addSpecificTargets()
@@ -105,8 +102,7 @@ class NotificationTargetObjectLock extends NotificationTarget
         }
     }
 
-
-    public function addDataForTemplate($event, $options = [])
+    public function addDataForTemplate($event, $options = []): void
     {
         global $CFG_GLPI;
 
@@ -146,8 +142,7 @@ class NotificationTargetObjectLock extends NotificationTarget
         }
     }
 
-
-    #[\Override]
+    #[Override]
     public function getSender(): array
     {
 
@@ -176,11 +171,9 @@ class NotificationTargetObjectLock extends NotificationTarget
         return $ret;
     }
 
-
-    #[\Override]
-    public function getReplyTo($options = []): array
+    #[Override]
+    public function getReplyTo(): array
     {
-
         return $this->getSender();
     }
 }

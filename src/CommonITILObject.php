@@ -131,6 +131,15 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     public const TIMELINE_MIDRIGHT = 3;
     public const TIMELINE_RIGHT    = 4;
 
+    public const TIMELINE_POSITION = [
+        self::NO_TIMELINE,
+        self::TIMELINE_NOTSET,
+        self::TIMELINE_LEFT,
+        self::TIMELINE_MIDLEFT,
+        self::TIMELINE_MIDRIGHT,
+        self::TIMELINE_RIGHT,
+    ];
+
     public const TIMELINE_ORDER_NATURAL = 'natural';
     public const TIMELINE_ORDER_REVERSE = 'reverse';
 

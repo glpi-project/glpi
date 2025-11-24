@@ -38,7 +38,7 @@
  **/
 class NotificationTargetContract extends NotificationTarget
 {
-    #[\Override]
+    #[Override]
     public function getEvents()
     {
 
@@ -49,7 +49,7 @@ class NotificationTargetContract extends NotificationTarget
         ];
     }
 
-#[Override]
+    #[Override]
     public function addDataForTemplate($event, $options = []): void
     {
         $this->data['##contract.entity##'] = Dropdown::getDropdownName(
@@ -180,7 +180,7 @@ class NotificationTargetContract extends NotificationTarget
     }
 
 
-    #[\Override]
+    #[Override]
     public function getTags()
     {
 

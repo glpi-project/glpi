@@ -36,13 +36,13 @@
 // Class NotificationTarget
 class NotificationTargetFieldUnicity extends NotificationTarget
 {
-    #[\Override]
+    #[Override]
     public function getEvents(): array
     {
         return ['refuse' => __('Alert on duplicate record')];
     }
 
-#[Override]
+    #[Override]
     public function addDataForTemplate($event, $options = []): void
     {
         //User who tries to add or update an item in DB
@@ -74,7 +74,7 @@ class NotificationTargetFieldUnicity extends NotificationTarget
     }
 
 
-    #[\Override]
+    #[Override]
     public function getTags()
     {
 

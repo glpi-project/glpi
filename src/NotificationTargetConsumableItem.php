@@ -40,13 +40,13 @@
  **/
 class NotificationTargetConsumableItem extends NotificationTarget
 {
-    #[\Override]
+    #[Override]
     public function getEvents()
     {
         return ['alert' => __('Consumables alarm')];
     }
 
-#[Override]
+    #[Override]
     public function addDataForTemplate($event, $options = []): void
     {
 
@@ -89,7 +89,7 @@ class NotificationTargetConsumableItem extends NotificationTarget
     }
 
 
-    #[\Override]
+    #[Override]
     public function getTags()
     {
 

@@ -40,17 +40,21 @@
  **/
 class NotificationTargetPlanningRecall extends NotificationTarget
 {
-    #[\Override]
+    /**
+     * @var array<CommonITILTask> Object which is associated with the event
+     */
+    public $target_object = [];
+
+    #[Override]
     public function getEvents()
     {
         return ['planningrecall' => __('Planning recall')];
     }
 
-
     /**
      * @see NotificationTarget::addNotificationTargets()
      **/
-    #[\Override]
+    #[Override]
     public function addNotificationTargets($entity)
     {
         $this->addTarget(Notification::AUTHOR, _n('Requester', 'Requesters', 1));
@@ -86,9 +90,10 @@ class NotificationTargetPlanningRecall extends NotificationTarget
         }
     }
 
-
     /**
      * Get group assigned to the task
+     * @todo doc
+     * @return false|void
      */
     public function addTaskAssignGroup()
     {
@@ -103,9 +108,11 @@ class NotificationTargetPlanningRecall extends NotificationTarget
         }
     }
 
-
     /**
      * Get tech related to the task
+     *
+     * @todo doc
+     * @return false|void
      **/
     public function addTaskAssignUser()
     {
@@ -137,6 +144,9 @@ class NotificationTargetPlanningRecall extends NotificationTarget
 
     /**
      * Get guests related to external events
+     *
+     * @todo doc
+     * @return false|void
      **/
     public function addGuests()
     {
@@ -158,13 +168,14 @@ class NotificationTargetPlanningRecall extends NotificationTarget
         }
     }
 
-
-    public function addDataForTemplate($event, $options = [])
+    public function addDataForTemplate($event, $options = []): void
     {
-
         $events                             = $this->getAllEvents();
         $target_object                      = reset($this->target_object);
-        ;
+
+        if ($target_object === false) {
+            return;
+        }
 
         $this->data['##recall.action##']   = $events[$event];
         $this->data['##recall.itemtype##'] = $target_object->getTypeName(1);
@@ -246,10 +257,9 @@ class NotificationTargetPlanningRecall extends NotificationTarget
     }
 
 
-    #[\Override]
+    #[Override]
     public function getTags()
     {
-
         $tags_all = ['recall.action'            => _n('Event', 'Events', 1),
             'recall.item.user'         => __('Writer'),
             'recall.item.date_mod'     => __('Last update'),
@@ -273,14 +283,14 @@ class NotificationTargetPlanningRecall extends NotificationTarget
         asort($this->tag_descriptions);
     }
 
-    #[\Override]
-    public function getObjectItem($event = '')
+    #[Override]
+    public function getObjectItem($event = ''): void
     {
-
         if ($this->obj) {
             if (
                 ($item = getItemForItemtype($this->obj->getField('itemtype')))
                 && $item->getFromDB($this->obj->getField('items_id'))
+                && $item instanceof CommonDBChild
             ) {
                 $this->target_object[] = $item;
             }

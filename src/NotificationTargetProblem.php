@@ -38,9 +38,7 @@
  **/
 class NotificationTargetProblem extends NotificationTargetCommonITILObject
 {
-    public $private_profiles = [];
-
-#[Override]
+    #[Override]
     public function getEvents(): array
     {
 
@@ -57,7 +55,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject
     }
 
 
-    #[\Override]
+    #[Override]
     public function getDataForObject(CommonDBTM $item, array $options, $simple = false)
     {
         // Common ITIL data
@@ -189,7 +187,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject
     }
 
 
-    #[\Override]
+    #[Override]
     public function getTags()
     {
 

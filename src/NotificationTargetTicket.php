@@ -41,8 +41,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
     public const HEADERTAG = '=-=-=-=';
     public const FOOTERTAG = '=_=_=_=';
 
-    #[\Override]
-    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null)
+    #[Override]
+    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null): bool
     {
         // Always send notification for satisfaction : if send on ticket closure
         // Always send notification for new ticket
@@ -53,11 +53,12 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         return parent::validateSendTo($event, $infos, $notify_me, $emitter);
     }
 
-
-    #[\Override]
-    public function getSubjectPrefix($event = '')
+    /**
+     * @param string $event
+     */
+    #[Override]
+    public function getSubjectPrefix($event = ''): string
     {
-
         if ($event != 'alertnotclosed') {
             $perso_tag = trim(Entity::getUsedConfig(
                 'notification_subject_tag',
@@ -77,7 +78,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
     /**
      * Get header to add to content
      **/
-    #[\Override]
+    #[Override]
     public function getContentHeader()
     {
 
@@ -97,7 +98,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
     /**
      * Get footer to add to content
      **/
-    #[\Override]
+    #[Override]
     public function getContentFooter()
     {
 
@@ -113,8 +114,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         return '';
     }
 
-    #[\Override]
-    public function getObjectItem($event = '')
+    #[Override]
+    public function getObjectItem($event = ''): void
     {
 
         if ($this->obj && isset($this->obj->fields['id']) && !empty($this->obj->fields['id'])) {
@@ -133,7 +134,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         }
     }
 
-#[Override]
+    #[Override]
     public function getEvents(): array
     {
 
@@ -159,7 +160,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
     }
 
 
-    #[\Override]
+    #[Override]
     public function getDataForObject(CommonDBTM $item, array $options, $simple = false)
     {
         // Common ITIL data
@@ -558,7 +559,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
     }
 
 
-    #[\Override]
+    #[Override]
     public function getTags()
     {
 

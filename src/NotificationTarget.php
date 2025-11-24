@@ -88,12 +88,12 @@ class NotificationTarget extends CommonDBChild
     public $entity = '';
 
     /**
-     * @var \CommonDBTM|null Object which raises the notification event
+     * @var CommonDBTM|null Object which raises the notification event
      */
     public $obj = null;
 
     /**
-     * @var array<\CommonDBTM> Object which is associated with the event
+     * @var array<CommonDBTM> Object which is associated with the event
      */
     public $target_object = [];
 
@@ -120,7 +120,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Recipient related to called "add_recipient_to_target" hook.
      * Variable contains `itemtype` and `items_id` keys and is set only during hook execution.
-     * @var array{itemtype?: class-string<\CommonDBTM>, items_id?: int}
+     * @var array{itemtype?: class-string<CommonDBTM>, items_id?: int}
      */
     public $recipient_data = [];
 
@@ -147,7 +147,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * @param int|'' $entity
      * @param string $event
-     * @param \CommonDBTM|null  $object
+     * @param CommonDBTM|null  $object
      * @param array{
      *      _old_user?: array{
      *           type?: CommonITILActor::ASSIGN|CommonITILActor::REQUESTER|CommonITILActor::OBSERVER,
@@ -280,7 +280,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Check if notification (for a specific event) can be disabled
      *
-     * @return true
+     * @return bool (child class can return false)
      **/
     protected function canNotificationBeDisabled(string $event): bool
     {
@@ -396,7 +396,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Get a notificationtarget class by giving the object which raises the event
      *
-     * @param \CommonDBTM $item Object which raises the event
+     * @param CommonDBTM $item Object which raises the event
      * @param string|null $event
      * @param array       $options
      *
@@ -424,9 +424,9 @@ class NotificationTarget extends CommonDBChild
     /**
      * Get the expected notification target class name for a given itemtype
      *
-     * @param class-string<\CommonDBTM> $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      *
-     * @return class-string <NotificationTarget>
+     * @return class-string<NotificationTarget> // @todo voir si les plugins renvoient bien ce type
      */
     public static function getInstanceClass(string $itemtype): string
     {
@@ -449,7 +449,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Get a notificationtarget class by giving an itemtype
      *
-     * @param class-string<\CommonDBTM> $itemtype the itemtype of the object which raises the event
+     * @param class-string<CommonDBTM> $itemtype the itemtype of the object which raises the event
      * @param string|null $event Event which will be used
      * @param array $options
      *
@@ -457,7 +457,6 @@ class NotificationTarget extends CommonDBChild
      **/
     public static function getInstanceByType($itemtype, $event = '', $options = [])
     {
-
         if (
             ($itemtype)
             && ($item = getItemForItemtype($itemtype))
@@ -544,8 +543,6 @@ class NotificationTarget extends CommonDBChild
      **/
     public static function updateTargets(array $input)
     {
-
-        $type   = "";
         $target = self::getInstanceByType($input['itemtype']);
 
         if (!isset($input['notifications_id'])) {
@@ -1337,6 +1334,7 @@ class NotificationTarget extends CommonDBChild
      **/
     public function getReplyTo(): array
     {
+        // @todo refacto
         if (!$this->allowResponse()) {
             return Config::getNoReplyEmailSender($this->getEntity());
         }

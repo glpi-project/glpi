@@ -43,7 +43,7 @@ class NotificationTargetProject extends NotificationTarget
     /**
      * Get events related to tickets
      **/
-    #[\Override]
+    #[Override]
     public function getEvents()
     {
 
@@ -257,7 +257,7 @@ class NotificationTargetProject extends NotificationTarget
     }
 
 
-    public function addDataForTemplate($event, $options = [])
+    public function addDataForTemplate($event, $options = []): void
     {
         global $CFG_GLPI, $DB;
 
@@ -376,7 +376,7 @@ class NotificationTargetProject extends NotificationTarget
             }
         }
 
-        $this->data['##project.numberofteammembers##'] = count($this->data['teammembers']);
+        $this->data['##project.numberofteammembers##'] = (string) count($this->data['teammembers']);
 
         // Task infos
         $tasks                = getAllDataFromTable(
@@ -425,7 +425,7 @@ class NotificationTargetProject extends NotificationTarget
             $this->data['tasks'][]                 = $tmp;
         }
 
-        $this->data["##project.numberoftasks##"] = count($this->data['tasks']);
+        $this->data["##project.numberoftasks##"] = (string) count($this->data['tasks']);
 
         //costs infos
         $costs                = getAllDataFromTable(
@@ -436,7 +436,7 @@ class NotificationTargetProject extends NotificationTarget
             ]
         );
         $this->data['costs'] = [];
-        $this->data["##project.totalcost##"] = 0;
+        $this->data["##project.totalcost##"] = "0";
         foreach ($costs as $cost) {
             $tmp = [];
             $tmp['##cost.name##']         = $cost['name'];
@@ -453,7 +453,7 @@ class NotificationTargetProject extends NotificationTarget
 
             /// TODO add ticket costs ?
         }
-        $this->data["##project.numberofcosts##"] = count($this->data['costs']);
+        $this->data["##project.numberofcosts##"] = (string) count($this->data['costs']);
 
         // History infos
         $this->data['log'] = [];
@@ -468,7 +468,7 @@ class NotificationTargetProject extends NotificationTarget
             $this->data['log'][]           = $tmp;
         }
 
-        $this->data["##project.numberoflogs##"] = count($this->data['log']);
+        $this->data["##project.numberoflogs##"] = (string) count($this->data['log']);
 
         // ITIL items information
         foreach ([Change::class, Problem::class, Ticket::class] as $itemtype) {
@@ -499,7 +499,7 @@ class NotificationTargetProject extends NotificationTarget
             }
             $this->data[$lc_itemtype . 's'] = $values;
 
-            $this->data['##project.numberof' . $lc_itemtype . 's##'] = count($values);
+            $this->data['##project.numberof' . $lc_itemtype . 's##'] = (string) count($values);
         }
 
         // Document
@@ -556,8 +556,7 @@ class NotificationTargetProject extends NotificationTarget
                          "Project_" . $item->getField("id") . '_Document_Item$1'
                      );
 
-        $this->data["##project.numberofdocuments##"]
-                     = count($this->data['documents']);
+        $this->data["##project.numberofdocuments##"] = (string) count($this->data['documents']);
 
         // Items infos
         $items                = getAllDataFromTable('glpi_items_projects', $restrict);
@@ -614,7 +613,7 @@ class NotificationTargetProject extends NotificationTarget
             }
         }
 
-        $this->data['##project.numberofitems##'] = count($this->data['items']);
+        $this->data['##project.numberofitems##'] = (string) count($this->data['items']);
 
         $this->getTags();
         foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
@@ -625,7 +624,7 @@ class NotificationTargetProject extends NotificationTarget
     }
 
 
-    #[\Override]
+    #[Override]
     public function getTags()
     {
 
