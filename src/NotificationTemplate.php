@@ -262,14 +262,14 @@ class NotificationTemplate extends CommonDBTM
                 $orig_tz = $DB->guessTimezone();
                 $DB->setTimezone($user_infos['additionnaloption']['timezone']);
 
-                if (is_a($options['item'], CommonDBTM::class, true)) {
+                if ($options['item'] instanceof \CommonDBTM) {
                     // reload item to ensure timestamps will be converted to the current user timezone
                     $options['item']->getFromDB($options['item']->fields['id']);
                 }
             }
 
             //If event is raised by a plugin, load it in order to get the language file available
-            if ($plug = isPluginItemType(get_class($target->obj))) {
+            if ($plug = isPluginItemType($target->obj !== null ? get_class($target->obj) : self::class)) {
                 Plugin::loadLang(strtolower($plug['plugin']), $language);
             }
 
