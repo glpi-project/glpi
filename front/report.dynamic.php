@@ -42,6 +42,7 @@ if (!isset($_GET['item_type']) || !is_string($_GET['item_type']) || !is_a($_GET[
     return;
 }
 
+/** @var class-string<AllAssets|CommonDBTM> $itemtype */
 $itemtype = $_GET['item_type'];
 $item = getItemForItemtype($itemtype);
 if ($item instanceof AllAssets) {

@@ -170,7 +170,7 @@ class Search
     /**
      * Display result table for search engine for a type
      *
-     * @param class-string<CommonGLPI> $itemtype Item type to manage
+     * @param class-string<AllAssets|CommonDBTM> $itemtype Item type to manage
      * @param array  $params       Search params passed to
      *                             prepareDatasForSearch function
      * @param array  $forcedisplay Array of columns to display (default empty
