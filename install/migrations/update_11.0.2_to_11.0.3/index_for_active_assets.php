@@ -58,6 +58,6 @@ $assets_tables_with_templates_and_trashbin = [
     'glpi_assets_assets',
 ];
 
-foreach ($tables_to_index as $table) {
+foreach ($assets_tables_with_templates_and_trashbin as $table) {
     $migration->addKey($table, ['is_deleted', 'is_template'], 'active_assets');
 }
