@@ -46,7 +46,7 @@ jobs:
         run: |
           echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
       - name: "Checkout"
-        uses: "actions/checkout@v5"
+        uses: "actions/checkout@v6"
       - name: "Restore dependencies cache"
         uses: actions/cache@v4
         with:
@@ -166,7 +166,7 @@ jobs:
         run: |
           echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
       - name: "Checkout"
-        uses: "actions/checkout@v5"
+        uses: "actions/checkout@v6"
       - name: "Restore dependencies cache"
         uses: actions/cache@v4
         with:
@@ -240,7 +240,7 @@ jobs:
         run: |
           echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
       - name: "Checkout"
-        uses: "actions/checkout@v5"
+        uses: "actions/checkout@v6"
       - name: "Restore dependencies cache"
         uses: actions/cache@v4
         with:
