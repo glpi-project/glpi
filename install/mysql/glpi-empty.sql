@@ -1010,6 +1010,7 @@ CREATE TABLE `glpi_computers` (
   KEY `networks_id` (`networks_id`),
   KEY `states_id` (`states_id`),
   KEY `users_id_tech` (`users_id_tech`),
+  KEY `is_deleted` (`is_deleted`),
   KEY `computertypes_id` (`computertypes_id`),
   KEY `active_assets` (`is_deleted`, `is_template`),
   KEY `is_dynamic` (`is_dynamic`),
@@ -2699,6 +2700,7 @@ CREATE TABLE `glpi_domains` (
   KEY `date_mod` (`date_mod`),
   KEY `is_deleted` (`is_deleted`),
   KEY `is_template` (`is_template`),
+  KEY `active_assets` (`is_deleted`, `is_template`),
   KEY `is_active` (`is_active`),
   KEY `date_expiration` (`date_expiration`),
   KEY `date_domaincreation` (`date_domaincreation`),
@@ -4552,6 +4554,7 @@ CREATE TABLE `glpi_cables` (
   KEY `cabletypes_id` (`cabletypes_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
+  KEY `is_deleted` (`is_deleted`)
   KEY `active_assets` (`is_deleted`, `is_template`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
@@ -6901,7 +6904,7 @@ CREATE TABLE `glpi_softwares` (
   KEY `is_deleted` (`is_deleted`),
   KEY `is_helpdesk_visible` (`is_helpdesk_visible`),
   KEY `date_creation` (`date_creation`),
-  KEY `active_softwares` (`is_deleted`,`is_template`)
+  KEY `active_assets` (`is_deleted`,`is_template`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -8898,8 +8901,7 @@ CREATE TABLE `glpi_domains_items` (
   KEY `domainrelations_id` (`domainrelations_id`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `is_dynamic` (`is_dynamic`),
-  KEY `is_deleted` (`is_deleted`),
-  KEY `active_assets` (`is_deleted`, `is_template`)
+  KEY `is_deleted` (`is_deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_domainrecordtypes`;
