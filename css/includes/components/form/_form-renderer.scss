@@ -124,6 +124,8 @@
 
     // Handle invalid states for specific inputs (select2 and tinymce)
     [data-glpi-form-renderer-question] {
+        scroll-margin-top: calc(var(--glpi-contextbar-height) + 16px);
+
         &:has(select.is-invalid) {
             .select2-container--default .select2-selection {
                 border-color: var(--tblr-form-invalid-border-color) !important;
@@ -153,6 +155,6 @@
     }
 
     [data-glpi-form-renderer-section] {
-        scroll-margin-top: 72px; // Height of sticky header + 16px
+        scroll-margin-top: calc(var(--glpi-contextbar-height) + 16px);
     }
 }

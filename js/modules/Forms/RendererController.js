@@ -198,6 +198,7 @@ export class GlpiFormRendererController
             .removeAttr("aria-errormessage");
 
         if (response.success === false) {
+            let is_first_error = true;
             Object.values(response.errors).forEach(error => {
                 // Highlight the field with error
                 const question = $(`[data-glpi-form-renderer-id="${CSS.escape(error.question_id)}"][data-glpi-form-renderer-question]`);
@@ -235,6 +236,16 @@ export class GlpiFormRendererController
                 targetElement.append(
                     `<span id="${_.escape(errorId)}" class="invalid-tooltip">${_.escape(error.message)}</span>`
                 );
+
+                // Make sure the first error is inside the viewport so the user
+                // can see it properly.
+                if (is_first_error) {
+                    targetElement
+                        .closest('[data-glpi-form-renderer-question]')[0]
+                        .scrollIntoView()
+                    ;
+                    is_first_error = false;
+                }
             });
 
             return false;
