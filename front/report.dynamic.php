@@ -43,10 +43,10 @@ if (!isset($_GET['item_type']) || !is_string($_GET['item_type']) || !is_a($_GET[
 }
 
 $itemtype = $_GET['item_type'];
-if ($itemtype === 'AllAssets') {
+$item = getItemForItemtype($itemtype);
+if ($item instanceof AllAssets) {
     Session::checkCentralAccess();
 } else {
-    $item = getItemForItemtype($itemtype);
     if (!$item::canView()) {
         throw new AccessDeniedHttpException();
     }
@@ -114,9 +114,6 @@ if (isset($_GET["display_type"])) {
                 }
             }
             $params = Search::manageParams($itemtype, $_GET);
-            $item = getItemForItemtype($itemtype);
-            if ($item instanceof CommonDBTM) {
-                Search::showList($item::class, $params);
-            }
+            Search::showList($itemtype, $params);
     }
 }
