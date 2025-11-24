@@ -62,7 +62,7 @@ interface AssignableItemInterface
     /**
      * @param array $input
      *
-     * @return false|array
+     * @return array
      */
     public function prepareGroupFields(array $input);
 

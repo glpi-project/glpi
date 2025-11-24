@@ -239,9 +239,11 @@ trait AssignableItem
     }
 
     /**
-     * - set groups_id & groups_id_tech of $input as array (if they exist and are not arrays)
-     * - add _groups_id & _groups_id_tech in $input, which are copies of not underscored fields,
-     *  casted to int and fitered (values =< 0 are removed)
+     * Update input with _groups_id & _groups_id_tech
+     *
+     * - set _groups_id & _groups_id_tech as arrays from groups_id & groups_id_tech
+     *   cast to int and fitered (values =< 0 are removed)
+     * - remove groups_id & groups_id_tech from input
      */
     public function prepareGroupFields(array $input)
     {
