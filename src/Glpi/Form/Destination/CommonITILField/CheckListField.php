@@ -32,40 +32,38 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Destination;
+namespace Glpi\Form\Destination\CommonITILField;
 
-use Change;
-use CommonITILObject;
-use Glpi\Form\Destination\CommonITILField\BackupPlanField;
-use Glpi\Form\Destination\CommonITILField\CheckListField;
-use Glpi\Form\Destination\CommonITILField\ControlsListField;
-use Glpi\Form\Destination\CommonITILField\DeploymentPlanField;
-use Glpi\Form\Destination\CommonITILField\ImpactsField;
+use Glpi\Form\Destination\HasFormTags;
+use Glpi\Form\Migration\TagConversionTrait;
 use Override;
 
-final class FormDestinationChange extends AbstractCommonITILFormDestination
+#[HasFormTags]
+final class CheckListField extends AbstractTextAreaField
 {
+    use TagConversionTrait;
+
     #[Override]
-    public function getTarget(): CommonITILObject
+    protected function getColumnName(): string
     {
-        return new Change();
+        return 'checklistcontent';
+    }
+
+    #[Override]
+    public function getLabel(): string
+    {
+        return __("Checklist");
+    }
+
+    #[Override]
+    public function getCategory(): Category
+    {
+        return Category::PLANS;
     }
 
     #[Override]
     public function getWeight(): int
     {
-        return 20;
-    }
-
-    #[Override]
-    protected function defineConfigurableFields(): array
-    {
-        return array_merge(parent::defineConfigurableFields(), [
-            new ImpactsField(),
-            new ControlsListField(),
-            new DeploymentPlanField(),
-            new BackupPlanField(),
-            new CheckListField(),
-        ]);
+        return 30;
     }
 }

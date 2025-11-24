@@ -34,19 +34,24 @@
 
 namespace Glpi\Tests;
 
+use Change;
 use CommonDBTM;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Comment;
 use Glpi\Form\Condition\Type;
+use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
 use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\Section;
 use Glpi\Form\Tag\Tag;
+use LogicException;
+use Problem;
 use RuntimeException;
 use Session;
 use Ticket;
@@ -757,5 +762,233 @@ trait FormTesterTrait
     {
         $path = FIXTURE_DIR . "/forms/$filename";
         return file_get_contents($path);
+    }
+
+    private function sendFormAndGetCreatedChange(Form $form, array $answers): Change
+    {
+        // The provider use a simplified answer format to be more readable.
+        // Rewrite answers into expected format.
+        $formatted_answers = [];
+        foreach ($answers as $question => $answer) {
+            $key = $this->getQuestionId($form, $question);
+            $formatted_answers[$key] = $answer;
+        }
+
+        // Submit form
+        $answers_handler = AnswersHandler::getInstance();
+        $answers = $answers_handler->saveAnswers(
+            $form,
+            $formatted_answers,
+            getItemByTypeName(User::class, TU_USER, true)
+        );
+
+        // Get created change
+        $created_items = $answers->getCreatedItems();
+        $this->assertCount(1, $created_items);
+        $change = current($created_items);
+
+        // Check request type
+        if (!$change instanceof Change) {
+            throw new LogicException("Test should have create a change");
+        }
+
+        return $change;
+    }
+
+    private function sendFormAndGetCreatedProblem(Form $form, array $answers): Problem
+    {
+        // Submit form
+        $answers = $this->sendForm($form, $answers);
+
+        // Get created problem
+        $created_items = $answers->getCreatedItems();
+        $this->assertCount(1, $created_items);
+        $problem = current($created_items);
+
+        // Check request type
+        if (!$problem instanceof Problem) {
+            throw new LogicException("Test should have create a problem");
+        }
+
+        return $problem;
+    }
+
+    private function sendForm(Form $form, array $answers): AnswersSet
+    {
+        // The provider use a simplified answer format to be more readable.
+        // Rewrite answers into expected format.
+        $formatted_answers = [];
+        foreach ($answers as $question => $answer) {
+            $key = $this->getQuestionId($form, $question);
+            $formatted_answers[$key] = $answer;
+        }
+
+        // Submit form
+        $answers_handler = AnswersHandler::getInstance();
+        $answers = $answers_handler->saveAnswers(
+            $form,
+            $formatted_answers,
+            getItemByTypeName(User::class, TU_USER, true)
+        );
+
+        return $answers;
+    }
+
+
+    private function createAndGetFormWithFirstAndLastNameQuestions(
+        string $destination_type
+    ): Form {
+        $builder = new FormBuilder("My form name");
+        $builder->addQuestion("First name", QuestionTypeShortText::class);
+        $builder->addQuestion("Last name", QuestionTypeShortText::class);
+        $builder->addDestination($destination_type, "My item to create", []);
+        $builder->setShouldInitDestinations(false); // Prevent default ticket
+        return $this->createForm($builder);
+    }
+
+    private function setDestinationFieldConfig(
+        Form $form,
+        string $key,
+        string $config
+    ): void {
+        $config = new SimpleValueConfig($config);
+
+        $destinations = $form->getDestinations();
+        $this->assertCount(1, $destinations);
+
+        $destination = current($destinations);
+        $this->updateItem(
+            $destination::getType(),
+            $destination->getId(),
+            [
+                'config' => [
+                    $key => $config->jsonSerialize(),
+                ],
+            ],
+            ["config"],
+        );
+    }
+
+    protected function createSimpleFormcreatorForm(
+        string $name,
+        array $questions,
+        array $submit_conditions = [],
+        array $ticket_destinations = [],
+        array $properties = [],
+    ): int {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Add form
+        $DB->insert('glpi_plugin_formcreator_forms', [
+            'name' => $name,
+            'show_rule' => $submit_conditions['show_rule'] ?? 1,
+        ] + $properties);
+        $form_id = $DB->insertId();
+
+        // Add a section
+        $DB->insert('glpi_plugin_formcreator_sections', [
+            'plugin_formcreator_forms_id' => $form_id,
+        ]);
+        $section_id = $DB->insertId();
+
+        // Add questions
+        $questions_names_map = [];
+        foreach ($questions as $data) {
+            $conditions = null;
+            if (isset($data['_conditions'])) {
+                $conditions = $data['_conditions'];
+                unset($data['_conditions']);
+            }
+
+            $data['plugin_formcreator_sections_id'] = $section_id;
+            $DB->insert('glpi_plugin_formcreator_questions', $data);
+            $question_id = $DB->insertId();
+
+            // Keep track of name => id map
+            $questions_names_map[$data['name']] = $question_id;
+
+            if ($conditions) {
+                foreach ($conditions as $condition) {
+                    // Replace target question name by id
+                    $target_q_name = $condition['plugin_formcreator_questions_id'];
+                    $target_q_id = $questions_names_map[$target_q_name];
+                    $condition['plugin_formcreator_questions_id'] = $target_q_id;
+
+                    $condition['itemtype'] = 'PluginFormcreatorQuestion';
+                    $condition['items_id'] = $question_id;
+
+                    $DB->insert('glpi_plugin_formcreator_conditions', $condition);
+                }
+            }
+        }
+
+        // Add submit conditions
+        if ($submit_conditions !== []) {
+            // Replace target question name by id
+            $target_q_name = $submit_conditions['plugin_formcreator_questions_id'];
+            $target_q_id = $questions_names_map[$target_q_name];
+
+            $DB->insert('glpi_plugin_formcreator_conditions', [
+                'itemtype'                        => 'PluginFormcreatorForm',
+                'items_id'                        => $form_id,
+                'plugin_formcreator_questions_id' => $target_q_id,
+                'show_condition'                  => $submit_conditions['show_condition'],
+                'show_value'                      => $submit_conditions['show_value'],
+                'show_logic'                      => $submit_conditions['show_logic'],
+                'order'                           => $submit_conditions['order'],
+            ]);
+        }
+
+        foreach ($ticket_destinations as $ticket_destination) {
+            $ticket_destination['plugin_formcreator_forms_id'] = $form_id;
+            $DB->insert(
+                'glpi_plugin_formcreator_targettickets',
+                $ticket_destination,
+            );
+        }
+
+        return $form_id;
+    }
+
+    protected function addChangeTargetToFromcreatorForm(
+        int $form_id,
+        array $data
+    ): void {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $data['plugin_formcreator_forms_id'] = $form_id;
+        $DB->insert('glpi_plugin_formcreator_targetchanges', $data);
+    }
+
+    protected function addProblemTargetToFromcreatorForm(
+        int $form_id,
+        array $data
+    ): void {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $data['plugin_formcreator_forms_id'] = $form_id;
+        $DB->insert('glpi_plugin_formcreator_targetproblems', $data);
+    }
+
+    protected function getFormCreatorQuestionId(string $name): int
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $results = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => 'glpi_plugin_formcreator_questions',
+            'WHERE'  => ['name' => $name],
+        ]);
+
+        if (count($results) !== 1) {
+            $this->fail("Can't find a unique question named $name");
+        }
+
+        $result = current(iterator_to_array($results));
+        return $result['id'];
     }
 }
