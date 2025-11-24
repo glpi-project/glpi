@@ -57,7 +57,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
      * @param string $event
      */
     #[Override]
-    public function getSubjectPrefix($event = ''): string
+    public function getSubjectPrefix($event = '')
     {
         if ($event != 'alertnotclosed') {
             $perso_tag = trim(Entity::getUsedConfig(
@@ -115,7 +115,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
     }
 
     #[Override]
-    public function getObjectItem(): void
+    public function getObjectItem($event = '')
     {
         if ($this->obj && isset($this->obj->fields['id']) && !empty($this->obj->fields['id'])) {
             $item_ticket = new Item_Ticket();

@@ -52,7 +52,7 @@ class NotificationTargetCronTask extends NotificationTarget
         ];
     }
     #[Override]
-    public function addDataForTemplate($event, $options = []): void
+    public function addDataForTemplate($event, $options = [])
     {
 
         $events                             = $this->getAllEvents();
@@ -83,7 +83,6 @@ class NotificationTargetCronTask extends NotificationTarget
             }
         }
     }
-
 
     #[Override]
     public function getTags()

@@ -289,8 +289,10 @@ TWIG, $twig_params);
 
     /**
      * Form for Notification on Massive action
+     *
+     * @return void
      **/
-    public static function showFormMassiveAction(): void
+    public static function showFormMassiveAction()
     {
         echo __s('Mode') . "<br>";
         self::dropdownMode(['name' => 'mode']);

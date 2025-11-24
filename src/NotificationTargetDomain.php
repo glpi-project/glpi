@@ -56,7 +56,7 @@ class NotificationTargetDomain extends NotificationTarget
         );
     }
     #[Override]
-    public function addDataForTemplate($event, $options = []): void
+    public function addDataForTemplate($event, $options = [])
     {
         $domain = $this->obj;
 

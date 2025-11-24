@@ -57,7 +57,7 @@ class NotificationTargetDBConnection extends NotificationTarget
     }
 
     #[Override]
-    public function addDataForTemplate($event, $options = []): void
+    public function addDataForTemplate($event, $options = [])
     {
         if ($options['diff'] > 1000000000) {
             $tmp = __("Can't connect to the database.");
