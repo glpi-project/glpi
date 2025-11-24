@@ -261,7 +261,6 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
                 'extraparams'      => ['problems_id' => $problem->getID()],
             ],
         ]);
-
     }
 
     /**
@@ -334,7 +333,6 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
                 'container'     => 'mass' . static::class . $rand,
             ],
         ]);
-
     }
 
     /**

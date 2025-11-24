@@ -189,7 +189,6 @@ class Change_Problem extends CommonITILObject_CommonITILObject
                 'container'     => 'mass' . static::class . $rand,
             ],
         ]);
-
     }
 
     /**
@@ -282,6 +281,5 @@ class Change_Problem extends CommonITILObject_CommonITILObject
                 'container'     => 'mass' . static::class . $rand,
             ],
         ]);
-
     }
 }
