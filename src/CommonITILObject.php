@@ -7527,11 +7527,29 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * - hide_private_items : force hiding private items (followup/tasks), even if session allow it
      * @since 9.4.0
      *
-     * @return mixed[] Timeline items
+     * @return array<array{
+     *     type: class-string<CommonITILObject>,
+     *     itiltype: class-string<CommonITILObject>,
+     *     item: array{
+     *      id: int,
+     *      content: string,
+     *      date: string|null,
+     *      users_id: int,
+     *      solutiontypes_id: int,
+     *      can_edit: bool,
+     *      timeline_position: value-of<self::TIMELINE_POSITION>,
+     *      users_id_editor: int,
+     *      date_creation: string|null,
+     *      date_mod: string|null,
+     *      users_id_approval: int,
+     *      date_approval: string|null,
+     *      status: int
+     *     },
+     *     object: ITILSolution
+     * }> Timeline items
      */
     public function getTimelineItems(array $options = [])
     {
-
         $params = [
             'with_documents'     => true,
             'with_logs'          => true,

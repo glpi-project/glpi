@@ -42,6 +42,9 @@ use function Safe\preg_replace;
 
 /**
  * NotificationTemplate Class
+ *
+ * @use \Glpi\Features\Clonable<\NotificationTemplate>
+ *     // @todo utile ?
  **/
 class NotificationTemplate extends CommonDBTM
 {
@@ -53,7 +56,7 @@ class NotificationTemplate extends CommonDBTM
 
     /**
      * @var string Signature to add to the template
-     **/
+     */
     public $signature = '';
 
     /**
