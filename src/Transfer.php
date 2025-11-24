@@ -49,7 +49,7 @@ final class Transfer extends CommonDBTM
 {
     /**
      * Array of items that have already been transferred
-     * @var array
+     * @var array<class-string<CommonDBTM>, int[]>
      */
     public array $already_transfer      = [];
 
@@ -67,7 +67,7 @@ final class Transfer extends CommonDBTM
 
     /**
      * Options used to transfer
-     * @var array
+     * @var array<string, int>
      */
     public array $options               = [];
 
@@ -104,6 +104,9 @@ final class Transfer extends CommonDBTM
         ];
     }
 
+    /**
+     * @return int
+     */
     public function maxActionsCount()
     {
         return 0;
@@ -162,7 +165,7 @@ final class Transfer extends CommonDBTM
      * Associated items will be evaluated based on the passed options and transferred/copied as well if required.
      * This will disable notifications for the rest of the request execution.
      *
-     * @param array $items    Array of items to transfer in the format [itemtype => [ids]]
+     * @param array<class-string<CommonDBTM>, int[]> $items    Array of items to transfer in the format [itemtype => [ids]]
      * @param int $to         entity destination ID
      * @param array $options  options used to transfer
      *
@@ -356,16 +359,16 @@ final class Transfer extends CommonDBTM
         $DC_CONNECT = [];
         // TODO base on directconnect_types dynamically
         if ($this->options['keep_dc_monitor']) {
-            $DC_CONNECT[] = 'Monitor';
+            $DC_CONNECT[] = Monitor::class;
         }
         if ($this->options['keep_dc_phone']) {
-            $DC_CONNECT[] = 'Phone';
+            $DC_CONNECT[] = Phone::class;
         }
         if ($this->options['keep_dc_peripheral']) {
-            $DC_CONNECT[] = 'Peripheral';
+            $DC_CONNECT[] = Peripheral::class;
         }
         if ($this->options['keep_dc_printer']) {
-            $DC_CONNECT[] = 'Printer';
+            $DC_CONNECT[] = Printer::class;
         }
 
         if ($DC_CONNECT === []) {
@@ -524,10 +527,10 @@ final class Transfer extends CommonDBTM
 
                 // Force version transfer
                 if ($lic['softwareversions_id_buy'] > 0) {
-                    $this->addToBeTransfer('SoftwareVersion', $lic['softwareversions_id_buy']);
+                    $this->addToBeTransfer(SoftwareVersion::class, $lic['softwareversions_id_buy']);
                 }
                 if ($lic['softwareversions_id_use'] > 0) {
-                    $this->addToBeTransfer('SoftwareVersion', $lic['softwareversions_id_use']);
+                    $this->addToBeTransfer(SoftwareVersion::class, $lic['softwareversions_id_use']);
                 }
             }
         }
@@ -628,7 +631,7 @@ final class Transfer extends CommonDBTM
             ]);
 
             foreach ($iterator as $data) {
-                $this->addToBeTransfer('Ticket', $data['id']);
+                $this->addToBeTransfer(Ticket::class, $data['id']);
             }
         }
     }
@@ -1072,7 +1075,7 @@ final class Transfer extends CommonDBTM
         ]);
 
         foreach ($iterator as $data) {
-            $this->addToBeTransfer('CartridgeItem', $data['cartridgeitems_id']);
+            $this->addToBeTransfer(CartridgeItem::class, $data['cartridgeitems_id']);
         }
     }
 
@@ -1080,7 +1083,7 @@ final class Transfer extends CommonDBTM
      * Simulate the transfer to know which items need to be transfer.
      * This method will reset the needtobe_transfer and noneedtobe_transfer arrays.
      *
-     * @param array<string, int[]> $items Array of items to transfer in the format [itemtype => [ids]]
+     * @param array<class-string<CommonDBTM>, int[]> $items Array of items to transfer in the format [itemtype => [ids]]
      *
      * @return void
      **/
@@ -1122,7 +1125,7 @@ final class Transfer extends CommonDBTM
     /**
      * transfer an item to another item (may be the same) in the new entity
      *
-     * @param string $itemtype Itemtype of the item
+     * @param class-string<CommonDBTM> $itemtype Itemtype of the item
      * @param int $ID          ID of the item
      * @param int $newID       ID of the new item
      *
@@ -1130,7 +1133,7 @@ final class Transfer extends CommonDBTM
      *                                $ID!=$new ID -> copy datas (like template system)
      * @return void
      **/
-    private function transferItem($itemtype, $ID, $newID)
+    private function transferItem(string $itemtype, int $ID, int $newID): void
     {
         global $CFG_GLPI;
 
@@ -1239,7 +1242,7 @@ final class Transfer extends CommonDBTM
             $input['locations_id'] = 0;
         }
 
-        if (in_array($itemtype, ['Ticket', 'Problem', 'Change'])) {
+        if (in_array($itemtype, [Ticket::class, Problem::class, Change::class])) {
             $input2 = $this->transferHelpdeskAdditionalInformations($item->fields);
             $input  = array_merge($input, $input2);
         }
@@ -1248,20 +1251,20 @@ final class Transfer extends CommonDBTM
         $this->addToAlreadyTransfer($itemtype, $ID, $newID);
 
         // Do it after item transfer for entity checks
-        if (in_array($itemtype, ['Ticket', 'Problem', 'Change'])) {
+        if (in_array($itemtype, [Ticket::class, Problem::class, Change::class])) {
             $this->transferTaskCategory($itemtype, $ID, $newID);
             $this->transferLinkedSuppliers($itemtype, $ID, $newID);
         }
 
         if (in_array($itemtype, Asset_PeripheralAsset::getPeripheralHostItemtypes(), true)) {
             // Monitor Direct Connect : keep / delete + clean unused / keep unused
-            $this->transferDirectConnection($itemtype, $ID, 'Monitor');
+            $this->transferDirectConnection($itemtype, $ID, Monitor::class);
             // Peripheral Direct Connect : keep / delete + clean unused / keep unused
-            $this->transferDirectConnection($itemtype, $ID, 'Peripheral');
+            $this->transferDirectConnection($itemtype, $ID, Peripheral::class);
             // Phone Direct Connect : keep / delete + clean unused / keep unused
-            $this->transferDirectConnection($itemtype, $ID, 'Phone');
+            $this->transferDirectConnection($itemtype, $ID, Phone::class);
             // Printer Direct Connect : keep / delete + clean unused / keep unused
-            $this->transferDirectConnection($itemtype, $ID, 'Printer');
+            $this->transferDirectConnection($itemtype, $ID, Printer::class);
             // Computer Disks :  delete them or not ?
             $this->transferItem_Disks($itemtype, $ID);
         }
@@ -1282,7 +1285,7 @@ final class Transfer extends CommonDBTM
     /**
      * Add an item to already transfer array
      *
-     * @param string $key         Itemtype of the item
+     * @param class-string<CommonDBTM> $key         Itemtype of the item
      * @param int    $ID          ID of the item
      * @param int    $newID       ID of the new item
      *
@@ -1300,13 +1303,13 @@ final class Transfer extends CommonDBTM
      *
      * @param int $locID location ID
      *
-     * @return int The new location ID. May be 0 if the location is not transfered.
+     * @return int The new location ID. May be 0 if the location is not transferred.
      **/
     private function transferDropdownLocation(int $locID): int
     {
         if ($locID > 0) {
-            if (isset($this->already_transfer['locations_id'][$locID])) {
-                return $this->already_transfer['locations_id'][$locID];
+            if (isset($this->already_transfer[Location::class][$locID])) {
+                return $this->already_transfer[Location::class][$locID];
             }
             // else  // Not already transfer
             // Search init item
@@ -1319,11 +1322,13 @@ final class Transfer extends CommonDBTM
                 $newID                 = $location->findID($input);
 
                 if ($newID < 0) {
-                    $newID = $location->import($input);
+                    $newID = (int) $location->import($input);
                 }
 
-                $this->addToAlreadyTransfer('locations_id', $locID, $newID);
-                return $newID;
+                if ($newID > 0) {
+                    $this->addToAlreadyTransfer(Location::class, $locID, $newID);
+                    return $newID;
+                }
             }
         }
         return 0;
@@ -1334,15 +1339,15 @@ final class Transfer extends CommonDBTM
      *
      * @param int $sockets_id socket ID
      *
-     * @return int The new socket ID. May be 0 if the socket is not transfered.
+     * @return int The new socket ID. May be 0 if the socket is not transferred.
      **/
     private function transferDropdownSocket(int $sockets_id): int
     {
         global $DB;
 
         if ($sockets_id > 0) {
-            if (isset($this->already_transfer['sockets_id'][$sockets_id])) {
-                return $this->already_transfer['sockets_id'][$sockets_id];
+            if (isset($this->already_transfer[Socket::class][$sockets_id])) {
+                return $this->already_transfer[Socket::class][$sockets_id];
             }
             // else  // Not already transfer
             // Search init item
@@ -1366,21 +1371,23 @@ final class Transfer extends CommonDBTM
                     // Found : -> use it
                     $row = $iterator->current();
                     $newID = $row['id'];
-                    $this->addToAlreadyTransfer('sockets_id', $sockets_id, $newID);
+                    $this->addToAlreadyTransfer(Socket::class, $sockets_id, $newID);
                     return $newID;
                 }
 
                 // Not found :
                 // add item
-                $newID    = $socket->add([
+                $newID    = (int) $socket->add([
                     'name'         => $data['name'],
                     'comment'      => $data['comment'],
                     'entities_id'  => $this->to,
                     'locations_id' => $locID,
                 ]);
 
-                $this->addToAlreadyTransfer('sockets_id', $sockets_id, $newID);
-                return $newID;
+                if ($newID > 0) {
+                    $this->addToAlreadyTransfer(Socket::class, $sockets_id, $newID);
+                    return $newID;
+                }
             }
         }
         return 0;
@@ -1394,11 +1401,11 @@ final class Transfer extends CommonDBTM
      *
      * @return void
      **/
-    private function transferPrinterCartridges($ID, $newID): void
+    private function transferPrinterCartridges(int $ID, int $newID): void
     {
         global $DB;
 
-        // Get cartrdiges linked
+        // Get cartridges linked
         $iterator = $DB->request([
             'SELECT' => ['id', 'cartridgeitems_id'],
             'FROM'   => 'glpi_cartridges',
@@ -1420,9 +1427,9 @@ final class Transfer extends CommonDBTM
 
                     // 1 - Search carttype destination ?
                     // Already transfer carttype :
-                    if (isset($this->already_transfer['CartridgeItem'][$data['cartridgeitems_id']])) {
+                    if (isset($this->already_transfer[CartridgeItem::class][$data['cartridgeitems_id']])) {
                         $newcarttypeID
-                           = $this->already_transfer['CartridgeItem'][$data['cartridgeitems_id']];
+                           = $this->already_transfer[CartridgeItem::class][$data['cartridgeitems_id']];
                     } else {
                         if ($this->haveItemsToTransfer(Printer::class)) {
                             // Not already transfer cartype
@@ -1440,7 +1447,7 @@ final class Transfer extends CommonDBTM
 
                             $result = $DB->request($ccriteria)->current();
 
-                            // Is the carttype will be completly transfer ?
+                            // Is the carttype will be completely transfer?
                             if ($result['cpt'] == 0) {
                                 // Yes : transfer
                                 $need_clean_process = false;
@@ -1475,13 +1482,15 @@ final class Transfer extends CommonDBTM
                                     $input                = $carttype->fields;
                                     $input['entities_id'] = $this->to;
                                     $carttype->fields = [];
-                                    $newcarttypeID        = $carttype->add($input);
+                                    $newcarttypeID        = (int) $carttype->add($input);
                                     // 2 - transfer as copy
-                                    $this->transferItem(
-                                        'CartridgeItem',
-                                        $data['cartridgeitems_id'],
-                                        $newcarttypeID
-                                    );
+                                    if ($newcarttypeID > 0) {
+                                        $this->transferItem(
+                                            CartridgeItem::class,
+                                            $data['cartridgeitems_id'],
+                                            $newcarttypeID
+                                        );
+                                    }
                                 }
                             }
 
@@ -1540,12 +1549,12 @@ final class Transfer extends CommonDBTM
      *
      * @return int ID of the new software (could be the same)
      **/
-    private function copySingleSoftware($ID): int
+    private function copySingleSoftware(int $ID): int
     {
         global $DB;
 
-        if (isset($this->already_transfer['Software'][$ID])) {
-            return $this->already_transfer['Software'][$ID];
+        if (isset($this->already_transfer[Software::class][$ID])) {
+            return $this->already_transfer[Software::class][$ID];
         }
 
         $soft = new Software();
@@ -1589,7 +1598,7 @@ final class Transfer extends CommonDBTM
                 }
             }
 
-            $this->addToAlreadyTransfer('Software', $ID, $newsoftID);
+            $this->addToAlreadyTransfer(Software::class, $ID, $newsoftID);
             return $newsoftID;
         }
 
@@ -1603,12 +1612,12 @@ final class Transfer extends CommonDBTM
      *
      * @return int ID of the new version (could be the same)
      **/
-    private function copySingleVersion($ID): int
+    private function copySingleVersion(int $ID): int
     {
         global $DB;
 
-        if (isset($this->already_transfer['SoftwareVersion'][$ID])) {
-            return $this->already_transfer['SoftwareVersion'][$ID];
+        if (isset($this->already_transfer[SoftwareVersion::class][$ID])) {
+            return $this->already_transfer[SoftwareVersion::class][$ID];
         }
 
         $vers = new SoftwareVersion();
@@ -1644,7 +1653,7 @@ final class Transfer extends CommonDBTM
                 }
             }
 
-            $this->addToAlreadyTransfer('SoftwareVersion', $ID, $newversID);
+            $this->addToAlreadyTransfer(SoftwareVersion::class, $ID, $newversID);
             return $newversID;
         }
 
@@ -1654,12 +1663,12 @@ final class Transfer extends CommonDBTM
     /**
      * Transfer disks of an item
      *
-     * @param string  $itemtype Item type
+     * @param class-string<CommonDBTM>  $itemtype Item type
      * @param integer $ID       ID of the item
      *
      * @return void
      */
-    private function transferItem_Disks($itemtype, $ID): void
+    private function transferItem_Disks(string $itemtype, int $ID): void
     {
         if (!$this->options['keep_disk']) {
             $disk = new Item_Disk();
@@ -1670,12 +1679,12 @@ final class Transfer extends CommonDBTM
     /**
      * Transfer software of an item
      *
-     * @param string $itemtype  Type of the item
+     * @param class-string<CommonDBTM> $itemtype  Type of the item
      * @param int    $ID        ID of the item
      *
      * @return void
      **/
-    private function transferItemSoftwares($itemtype, $ID): void
+    private function transferItemSoftwares(string $itemtype, int $ID): void
     {
         global $DB;
 
@@ -1689,9 +1698,9 @@ final class Transfer extends CommonDBTM
             ],
         ];
 
-        if (!empty($this->noneedtobe_transfer['SoftwareVersion'])) {
+        if (!empty($this->noneedtobe_transfer[SoftwareVersion::class])) {
             $criteria['WHERE']['NOT'] = [
-                'softwareversions_id' => $this->noneedtobe_transfer['SoftwareVersion'],
+                'softwareversions_id' => $this->noneedtobe_transfer[SoftwareVersion::class],
             ];
         }
 
@@ -1749,7 +1758,7 @@ final class Transfer extends CommonDBTM
      *
      * @return void
      **/
-    private function transferAffectedLicense($ID): void
+    private function transferAffectedLicense(int $ID): void
     {
         global $DB;
 
@@ -1837,7 +1846,7 @@ final class Transfer extends CommonDBTM
      *
      * @return void
      **/
-    private function transferSoftwareLicensesAndVersions($ID): void
+    private function transferSoftwareLicensesAndVersions(int $ID): void
     {
         global $DB;
 
@@ -1848,7 +1857,7 @@ final class Transfer extends CommonDBTM
         ]);
 
         foreach ($iterator as $data) {
-            $this->transferItem('SoftwareLicense', $data['id'], $data['id']);
+            $this->transferItem(SoftwareLicense::class, $data['id'], $data['id']);
         }
 
         $iterator = $DB->request([
@@ -1859,7 +1868,7 @@ final class Transfer extends CommonDBTM
 
         foreach ($iterator as $data) {
             // Just Store the info.
-            $this->addToAlreadyTransfer('SoftwareVersion', $data['id'], $data['id']);
+            $this->addToAlreadyTransfer(SoftwareVersion::class, $data['id'], $data['id']);
         }
     }
 
@@ -1869,12 +1878,12 @@ final class Transfer extends CommonDBTM
      */
     private function cleanSoftwareVersions(): void
     {
-        if (!isset($this->already_transfer['SoftwareVersion'])) {
+        if (!isset($this->already_transfer[SoftwareVersion::class])) {
             return;
         }
 
         $vers = new SoftwareVersion();
-        foreach ($this->already_transfer['SoftwareVersion'] as $old => $new) {
+        foreach (array_keys($this->already_transfer[SoftwareVersion::class]) as $old) {
             if (
                 (countElementsInTable("glpi_softwarelicenses", ['softwareversions_id_buy' => $old]) === 0)
                 && (countElementsInTable("glpi_softwarelicenses", ['softwareversions_id_use' => $old]) === 0)
@@ -1894,13 +1903,13 @@ final class Transfer extends CommonDBTM
      */
     public function cleanSoftwares()
     {
-        if (!isset($this->already_transfer['Software']) || (int) $this->options['clean_software'] === 0) {
+        if (!isset($this->already_transfer[Software::class]) || (int) $this->options['clean_software'] === 0) {
             // Nothing to clean
             return;
         }
 
         $soft = new Software();
-        foreach ($this->already_transfer['Software'] as $old => $new) {
+        foreach (array_keys($this->already_transfer[Software::class]) as $old) {
             if (
                 (countElementsInTable("glpi_softwarelicenses", ['softwares_id' => $old]) == 0)
                 && (countElementsInTable("glpi_softwareversions", ['softwares_id' => $old]) == 0)
@@ -1917,13 +1926,13 @@ final class Transfer extends CommonDBTM
     /**
      * Transfer certificates
      *
-     * @param string $itemtype  The original type of transferred item
+     * @param class-string<CommonDBTM> $itemtype  The original type of transferred item
      * @param int $ID           Original ID of the certificate
      * @param int $newID        New ID of the certificate
      *
      * @return void
      **/
-    private function transferCertificates($itemtype, $ID, $newID): void
+    private function transferCertificates(string $itemtype, int $ID, int $newID): void
     {
         global $DB;
 
@@ -1953,8 +1962,8 @@ final class Transfer extends CommonDBTM
                 $newcertificateID   = -1;
 
                 // is already transfer ?
-                if (isset($this->already_transfer['Certificate'][$item_ID])) {
-                    $newcertificateID = $this->already_transfer['Certificate'][$item_ID];
+                if (isset($this->already_transfer[Certificate::class][$item_ID])) {
+                    $newcertificateID = $this->already_transfer[Certificate::class][$item_ID];
                     if ($newcertificateID != $item_ID) {
                         $need_clean_process = true;
                     }
@@ -1993,7 +2002,7 @@ final class Transfer extends CommonDBTM
 
                     // Yes : transfer
                     if ($canbetransfer) {
-                        $this->transferItem('Certificate', $item_ID, $item_ID);
+                        $this->transferItem(Certificate::class, $item_ID, $item_ID);
                         $newcertificateID = $item_ID;
                     } else {
                         $need_clean_process = true;
@@ -2011,7 +2020,7 @@ final class Transfer extends CommonDBTM
                         if (count($certificate_iterator)) {
                             $result = $iterator->current();
                             $newcertificateID = $result['id'];
-                            $this->addToAlreadyTransfer('Certificate', $item_ID, $newcertificateID);
+                            $this->addToAlreadyTransfer(Certificate::class, $item_ID, $newcertificateID);
                         }
 
                         // found : use it
@@ -2022,9 +2031,11 @@ final class Transfer extends CommonDBTM
                             $input                = $certificate->fields;
                             $input['entities_id'] = $this->to;
                             $certificate->fields = [];
-                            $newcertificateID     = $certificate->add($input);
+                            $newcertificateID     = (int) $certificate->add($input);
                             // 2 - transfer as copy
-                            $this->transferItem('Certificate', $item_ID, $newcertificateID);
+                            if ($newcertificateID > 0) {
+                                $this->transferItem(Certificate::class, $item_ID, $newcertificateID);
+                            }
                         }
                     }
                 }
@@ -2101,13 +2112,13 @@ final class Transfer extends CommonDBTM
     /**
      * Transfer contracts
      *
-     * @param string $itemtype  The original type of transferred item
+     * @param class-string<CommonDBTM> $itemtype  The original type of transferred item
      * @param int $ID           Original ID of the contract
      * @param int $newID        New ID of the contract
      *
      * @return void
      **/
-    private function transferContracts($itemtype, $ID, $newID): void
+    private function transferContracts(string $itemtype, int $ID, int $newID): void
     {
         global $DB;
 
@@ -2137,8 +2148,8 @@ final class Transfer extends CommonDBTM
                 $newcontractID      = -1;
 
                 // is already transfer ?
-                if (isset($this->already_transfer['Contract'][$item_ID])) {
-                    $newcontractID = $this->already_transfer['Contract'][$item_ID];
+                if (isset($this->already_transfer[Contract::class][$item_ID])) {
+                    $newcontractID = $this->already_transfer[Contract::class][$item_ID];
                     if ($newcontractID != $item_ID) {
                         $need_clean_process = true;
                     }
@@ -2177,7 +2188,7 @@ final class Transfer extends CommonDBTM
 
                     // Yes : transfer
                     if ($canbetransfer) {
-                        $this->transferItem('Contract', $item_ID, $item_ID);
+                        $this->transferItem(Contract::class, $item_ID, $item_ID);
                         $newcontractID = $item_ID;
                     } else {
                         $need_clean_process = true;
@@ -2196,7 +2207,7 @@ final class Transfer extends CommonDBTM
                             // Found existing contract
                             $result = $contract_iterator->current();
                             $newcontractID = $result['id'];
-                            $this->addToAlreadyTransfer('Contract', $item_ID, $newcontractID);
+                            $this->addToAlreadyTransfer(Contract::class, $item_ID, $newcontractID);
                         }
 
                         // found : use it
@@ -2207,9 +2218,11 @@ final class Transfer extends CommonDBTM
                             $input                = $contract->fields;
                             $input['entities_id'] = $this->to;
                             $contract->fields = [];
-                            $newcontractID        = $contract->add($input);
+                            $newcontractID        = (int) $contract->add($input);
                             // 2 - transfer as copy
-                            $this->transferItem('Contract', $item_ID, $newcontractID);
+                            if ($newcontractID > 0) {
+                                $this->transferItem(Contract::class, $item_ID, $newcontractID);
+                            }
                         }
                     }
                 }
@@ -2286,13 +2299,13 @@ final class Transfer extends CommonDBTM
     /**
      * Transfer documents
      *
-     * @param string $itemtype  The original type of transferred item
+     * @param class-string<CommonDBTM> $itemtype  The original type of transferred item
      * @param int $ID           Original ID of the document
      * @param int $newID        New ID of the document
      *
      * @return void
      **/
-    private function transferDocuments($itemtype, $ID, $newID): void
+    private function transferDocuments(string $itemtype, int $ID, int $newID): void
     {
         global $DB;
 
@@ -2322,8 +2335,8 @@ final class Transfer extends CommonDBTM
                 $newdocID           = -1;
 
                 // is already transfer ?
-                if (isset($this->already_transfer['Document'][$item_ID])) {
-                    $newdocID = $this->already_transfer['Document'][$item_ID];
+                if (isset($this->already_transfer[Document::class][$item_ID])) {
+                    $newdocID = $this->already_transfer[Document::class][$item_ID];
                     if ($newdocID != $item_ID) {
                         $need_clean_process = true;
                     }
@@ -2370,7 +2383,7 @@ final class Transfer extends CommonDBTM
 
                     // Yes : transfer
                     if ($canbetransfer) {
-                        $this->transferItem('Document', $item_ID, $item_ID);
+                        $this->transferItem(Document::class, $item_ID, $item_ID);
                         $newdocID = $item_ID;
                     } else {
                         $need_clean_process = true;
@@ -2388,7 +2401,7 @@ final class Transfer extends CommonDBTM
                         if (count($doc_iterator)) {
                             $result = $doc_iterator->current();
                             $newdocID = $result['id'];
-                            $this->addToAlreadyTransfer('Document', $item_ID, $newdocID);
+                            $this->addToAlreadyTransfer(Document::class, $item_ID, $newdocID);
                         }
 
                         // found : use it
@@ -2399,9 +2412,11 @@ final class Transfer extends CommonDBTM
                             $input    = $document->fields;
                             // Not set new entity Do by transferItem
                             $document->fields = [];
-                            $newdocID = $document->add($input);
+                            $newdocID = (int) $document->add($input);
                             // 2 - transfer as copy
-                            $this->transferItem('Document', $item_ID, $newdocID);
+                            if ($newdocID > 0) {
+                                $this->transferItem(Document::class, $item_ID, $newdocID);
+                            }
                         }
                     }
                 }
@@ -2480,13 +2495,13 @@ final class Transfer extends CommonDBTM
     /**
      * Delete direct connection for a linked item
      *
-     * @param string $itemtype  The original type of transferred item
+     * @param class-string<CommonDBTM> $itemtype  The original type of transferred item
      * @param int $ID           ID of the item
-     * @param string $link_type Type of the linked items to transfer
+     * @param class-string<Printer|Monitor|Peripheral|Phone> $link_type Type of the linked items to transfer
      *
      * @return void
      **/
-    private function transferDirectConnection($itemtype, $ID, $link_type): void
+    private function transferDirectConnection(string $itemtype, int $ID, string $link_type): void
     {
         global $DB;
 
@@ -2496,22 +2511,22 @@ final class Transfer extends CommonDBTM
         $clean     = 0;
 
         switch ($link_type) {
-            case 'Printer':
+            case Printer::class:
                 $keep      = $this->options['keep_dc_printer'];
                 $clean     = $this->options['clean_dc_printer'];
                 break;
 
-            case 'Monitor':
+            case Monitor::class:
                 $keep      = $this->options['keep_dc_monitor'];
                 $clean     = $this->options['clean_dc_monitor'];
                 break;
 
-            case 'Peripheral':
+            case Peripheral::class:
                 $keep      = $this->options['keep_dc_peripheral'];
                 $clean     = $this->options['clean_dc_peripheral'];
                 break;
 
-            case 'Phone':
+            case Phone::class:
                 $keep  = $this->options['keep_dc_phone'];
                 $clean = $this->options['clean_dc_phone'];
                 break;
@@ -2557,8 +2572,8 @@ final class Transfer extends CommonDBTM
                             if ($newID != $item_ID) {
                                 $need_clean_process = true;
                             }
-                        } else { // Not yet tranfer
-                            // Can be managed like a non global one ?
+                        } else { // Not yet transferred
+                            // Can be managed like a non-global one ?
                             // = all linked assets need to be transfer (so not copy)
                             $asset_criteria = [
                                 'COUNT'  => 'cpt',
@@ -2608,9 +2623,11 @@ final class Transfer extends CommonDBTM
                                     $input['entities_id'] = $this->to;
 
                                     $link_item = new $link_item();
-                                    $newID = $link_item->add($input);
+                                    $newID = (int) $link_item->add($input);
                                     // 2 - transfer as copy
-                                    $this->transferItem($link_type, $item_ID, $newID);
+                                    if ($newID > 0) {
+                                        $this->transferItem($link_type, $item_ID, $newID);
+                                    }
                                 }
 
                                 // Found -> use to link : nothing to do
@@ -2690,9 +2707,9 @@ final class Transfer extends CommonDBTM
     }
 
     /**
-     * Handle direct connection between a peripheral and its main asset when transfering the peripheral.
+     * Handle direct connection between a peripheral and its main asset when transferring the peripheral.
      *
-     * @param string $peripheral_itemtype
+     * @param class-string<CommonDBTM> $peripheral_itemtype
      * @param int    $ID
      *
      * @return void
@@ -2711,13 +2728,13 @@ final class Transfer extends CommonDBTM
             ],
         ];
 
-        $transfered_itemtypes = array_intersect(
+        $transferred_itemtypes = array_intersect(
             Asset_PeripheralAsset::getPeripheralHostItemtypes(),
             array_keys($this->needtobe_transfer)
         );
-        if (count($transfered_itemtypes) > 0) {
+        if (count($transferred_itemtypes) > 0) {
             $where_not = [];
-            foreach ($transfered_itemtypes as $itemtype) {
+            foreach ($transferred_itemtypes as $itemtype) {
                 if ($this->haveItemsToTransfer($itemtype)) {
                     $where_not[] = [
                         'itemtype_asset' => $itemtype,
@@ -2758,13 +2775,13 @@ final class Transfer extends CommonDBTM
     /**
      * Transfer tickets
      *
-     * @param string $itemtype  The original type of transferred item
+     * @param class-string<CommonDBTM> $itemtype  The original type of transferred item
      * @param int $ID           Original ID of the ticket
      * @param int $newID        New ID of the ticket
      *
      * @return void
      **/
-    private function transferTickets($itemtype, $ID, $newID): void
+    private function transferTickets(string $itemtype, int $ID, int $newID): void
     {
         global $DB;
 
@@ -2810,8 +2827,8 @@ final class Transfer extends CommonDBTM
 
                         $rel->update($input);
 
-                        $this->addToAlreadyTransfer('Ticket', $data['id'], $data['id']);
-                        $this->transferTaskCategory('Ticket', $data['id'], $data['id']);
+                        $this->addToAlreadyTransfer(Ticket::class, $data['id'], $data['id']);
+                        $this->transferTaskCategory(Ticket::class, $data['id'], $data['id']);
                     }
                     break;
 
@@ -2820,7 +2837,7 @@ final class Transfer extends CommonDBTM
                     // Same Item / Copy Item : keep and clean ref
                     foreach ($iterator as $data) {
                         $rel->delete(['id'       => $data['_relid']]);
-                        $this->addToAlreadyTransfer('Ticket', $data['id'], $data['id']);
+                        $this->addToAlreadyTransfer(Ticket::class, $data['id'], $data['id']);
                     }
                     break;
 
@@ -2843,13 +2860,13 @@ final class Transfer extends CommonDBTM
      *
      * @since 0.84
      *
-     * @param string $itemtype ITIL Object Itemtype (Only Ticket, Change, and Problem supported)
+     * @param class-string<CommonITILObject> $itemtype ITIL Object Itemtype (Only CommonITILObject supported)
      * @param int $ID          Original ITIL Object ID
      * @param int $newID       New ITIL Object ID (not used)
      *
      * @return void
      **/
-    private function transferLinkedSuppliers($itemtype, $ID, $newID): void
+    private function transferLinkedSuppliers(string $itemtype, int $ID, int $newID): void
     {
         global $DB;
 
@@ -2919,13 +2936,13 @@ final class Transfer extends CommonDBTM
      *
      * @since 0.83
      *
-     * @param string $itemtype ITIL Object Itemtype (Only Ticket, Change, and Problem supported)
+     * @param class-string<CommonITILObject> $itemtype ITIL Object Itemtype (Only CommonITILObject supported)
      * @param int $ID          Original ITIL Object ID
      * @param int $newID       New ITIL Object ID (not used))
      *
      * @return void
      **/
-    private function transferTaskCategory($itemtype, $ID, $newID): void
+    private function transferTaskCategory(string $itemtype, int $ID, int $newID): void
     {
         global $DB;
 
@@ -2934,7 +2951,7 @@ final class Transfer extends CommonDBTM
         }
 
         $taskclass = $itemtype::getTaskClass();
-        if (!is_a($taskclass, CommonITILTask::class, true)) {
+        if (!is_a($taskclass ?? '', CommonITILTask::class, true)) {
             return;
         }
 
@@ -3010,13 +3027,13 @@ final class Transfer extends CommonDBTM
     /**
      * Transfer history
      *
-     * @param string $itemtype  The original type of transferred item
+     * @param class-string<CommonDBTM> $itemtype  The original type of transferred item
      * @param int $ID           Original ID of the item
      * @param int $newID        New ID of the item
      *
      * @return void
      **/
-    private function transferHistory($itemtype, $ID, $newID): void
+    private function transferHistory(string $itemtype, int $ID, int $newID): void
     {
         global $DB;
 
@@ -3058,7 +3075,7 @@ final class Transfer extends CommonDBTM
      *
      * @return void
      **/
-    private function transferCompatiblePrinters($ID, $newID): void
+    private function transferCompatiblePrinters(int $ID, int $newID): void
     {
         global $DB;
 
@@ -3083,13 +3100,13 @@ final class Transfer extends CommonDBTM
     /**
      * Transfer infocoms of an item
      *
-     * @param string $itemtype  The original type of transferred item
+     * @param class-string<CommonDBTM> $itemtype  The original type of transferred item
      * @param int $ID           Original ID of the item
      * @param int $newID        New ID of the item
      *
      * @return void
      **/
-    private function transferInfocoms($itemtype, $ID, $newID): void
+    private function transferInfocoms(string $itemtype, int $ID, int $newID): void
     {
         global $DB;
 
@@ -3153,7 +3170,7 @@ final class Transfer extends CommonDBTM
      *
      * @return int ID of the new supplier
      **/
-    private function transferSingleSupplier($ID): int
+    private function transferSingleSupplier(int $ID): int
     {
         global $DB;
 
@@ -3163,13 +3180,13 @@ final class Transfer extends CommonDBTM
             $this->options['keep_supplier']
             && $ent->getFromDB($ID)
         ) {
-            if (isset($this->noneedtobe_transfer['Supplier'][$ID])) {
+            if (isset($this->noneedtobe_transfer[Supplier::class][$ID])) {
                 // recursive supplier
                 return $ID;
             }
-            if (isset($this->already_transfer['Supplier'][$ID])) {
+            if (isset($this->already_transfer[Supplier::class][$ID])) {
                 // Already transfer
-                return $this->already_transfer['Supplier'][$ID];
+                return $this->already_transfer[Supplier::class][$ID];
             }
 
             $newID           = -1;
@@ -3213,7 +3230,7 @@ final class Transfer extends CommonDBTM
 
             // All linked items need to be transfer -> use unique transfer system
             if ($links_remaining === 0) {
-                $this->transferItem('Supplier', $ID, $ID);
+                $this->transferItem(Supplier::class, $ID, $ID);
                 $newID = $ID;
             } else { // else Transfer by Copy
                 // Is existing item in the destination entity ?
@@ -3228,7 +3245,7 @@ final class Transfer extends CommonDBTM
                 if (count($iterator)) {
                     $result = $iterator->current();
                     $newID = $result['id'];
-                    $this->addToAlreadyTransfer('Supplier', $ID, $newID);
+                    $this->addToAlreadyTransfer(Supplier::class, $ID, $newID);
                 }
 
                 // Not found -> transfer copy
@@ -3238,9 +3255,11 @@ final class Transfer extends CommonDBTM
                     $input                = $ent->fields;
                     $input['entities_id'] = $this->to;
                     $ent->fields = [];
-                    $newID                = $ent->add($input);
+                    $newID                = (int) $ent->add($input);
                     // 2 - transfer as copy
-                    $this->transferItem('Supplier', $ID, $newID);
+                    if ($newID > 0) {
+                        $this->transferItem(Supplier::class, $ID, $newID);
+                    }
                 }
 
                 // Found -> use to link : nothing to do
@@ -3258,7 +3277,7 @@ final class Transfer extends CommonDBTM
      *
      * @return void
      **/
-    private function transferSupplierContacts($ID, $newID): void
+    private function transferSupplierContacts(int $ID, int $newID): void
     {
         global $DB;
 
@@ -3284,8 +3303,8 @@ final class Transfer extends CommonDBTM
                 $newcontactID       = -1;
 
                 // is already transfer ?
-                if (isset($this->already_transfer['Contact'][$item_ID])) {
-                    $newcontactID = $this->already_transfer['Contact'][$item_ID];
+                if (isset($this->already_transfer[Contact::class][$item_ID])) {
+                    $newcontactID = $this->already_transfer[Contact::class][$item_ID];
                     if ($newcontactID != $item_ID) {
                         $need_clean_process = true;
                     }
@@ -3300,7 +3319,7 @@ final class Transfer extends CommonDBTM
                                 'contacts_id'  => $item_ID,
                             ],
                         ];
-                        $exclusions = [...($this->needtobe_transfer['Supplier'] ?? []), ...($this->noneedtobe_transfer['Supplier'] ?? [])];
+                        $exclusions = [...($this->needtobe_transfer[Supplier::class] ?? []), ...($this->noneedtobe_transfer[Supplier::class] ?? [])];
                         if ($exclusions !== []) {
                             $scriteria['WHERE']['NOT'] = ['suppliers_id' => $exclusions];
                         }
@@ -3313,7 +3332,7 @@ final class Transfer extends CommonDBTM
 
                     // Yes : transfer
                     if ($canbetransfer) {
-                        $this->transferItem('Contact', $item_ID, $item_ID);
+                        $this->transferItem(Contact::class, $item_ID, $item_ID);
                         $newcontactID = $item_ID;
                     } else {
                         $need_clean_process = true;
@@ -3332,7 +3351,7 @@ final class Transfer extends CommonDBTM
                         if (count($contact_iterator)) {
                             $result = $contact_iterator->current();
                             $newcontactID = $result['id'];
-                            $this->addToAlreadyTransfer('Contact', $item_ID, $newcontactID);
+                            $this->addToAlreadyTransfer(Contact::class, $item_ID, $newcontactID);
                         }
 
                         // found : use it
@@ -3343,9 +3362,11 @@ final class Transfer extends CommonDBTM
                             $input                = $contact->fields;
                             $input['entities_id'] = $this->to;
                             $contact->fields = [];
-                            $newcontactID         = $contact->add($input);
+                            $newcontactID         = (int) $contact->add($input);
                             // 2 - transfer as copy
-                            $this->transferItem('Contact', $item_ID, $newcontactID);
+                            if ($newcontactID > 0) {
+                                $this->transferItem(Contact::class, $item_ID, $newcontactID);
+                            }
                         }
                     }
                 }
@@ -3420,13 +3441,13 @@ final class Transfer extends CommonDBTM
     /**
      * Transfer reservations of an item
      *
-     * @param string $itemtype  The original type of transferred item
+     * @param class-string<CommonDBTM> $itemtype  The original type of transferred item
      * @param int $ID           Original ID of the item
      * @param int $newID        New ID of the item
      *
      * @return void
      **/
-    private function transferReservations($itemtype, $ID, $newID): void
+    private function transferReservations(string $itemtype, int $ID, int $newID): void
     {
         $ri = new ReservationItem();
 
@@ -3460,13 +3481,13 @@ final class Transfer extends CommonDBTM
     /**
      * Transfer devices of an item
      *
-     * @param string $itemtype  The original type of transferred item
+     * @param class-string<CommonDBTM> $itemtype  The original type of transferred item
      * @param int $ID           Original ID of the item
      * @param int $newID        New ID of the item
      *
      * @return void
      **/
-    private function transferDevices($itemtype, $ID, $newID): void
+    private function transferDevices(string $itemtype, int $ID, int $newID): void
     {
         global $DB;
 
@@ -3605,9 +3626,11 @@ final class Transfer extends CommonDBTM
                                         $input['entities_id'] = $this->to;
 
                                         $device = new $device();
-                                        $newdeviceID = $device->add($input);
+                                        $newdeviceID = (int) $device->add($input);
                                         // 2 - transfer as copy
-                                        $this->transferItem($devicetype, $item_ID, $newdeviceID);
+                                        if ($newdeviceID > 0) {
+                                            $this->transferItem($devicetype, $item_ID, $newdeviceID);
+                                        }
                                     }
                                 }
                             }
@@ -3634,13 +3657,13 @@ final class Transfer extends CommonDBTM
     /**
      * Transfer network links
      *
-     * @param string $itemtype  The original type of transferred item
+     * @param class-string<CommonDBTM> $itemtype  The original type of transferred item
      * @param int $ID           Original ID of the item
      * @param int $newID        New ID of the item
      *
      * @return void
      **/
-    private function transferNetworkLink($itemtype, $ID, $newID): void
+    private function transferNetworkLink(string $itemtype, int $ID, int $newID): void
     {
         global $DB;
         /// TODO manage with new network system
@@ -3829,8 +3852,8 @@ final class Transfer extends CommonDBTM
     public function getItemtypes(): array
     {
         $itemtypes = [
-            'Software', // Software first (to avoid copy during computer transfer)
-            'Computer', // Computer before all other items
+            Software::class, // Software first (to avoid copy during computer transfer)
+            Computer::class, // Computer before all other items
         ];
 
         $definitions = AssetDefinitionManager::getInstance()->getDefinitions(true);
@@ -3841,24 +3864,24 @@ final class Transfer extends CommonDBTM
         $itemtypes = array_merge(
             $itemtypes,
             [
-                'CartridgeItem',
-                'ConsumableItem',
-                'Monitor',
-                'NetworkEquipment',
-                'Peripheral',
-                'Phone',
-                'Printer',
-                'SoftwareLicense',
-                'Certificate',
-                'Contact',
-                'Contract',
-                'Document',
-                'Supplier',
-                'Group',
-                'Link',
-                'Ticket',
-                'Problem',
-                'Change',
+                CartridgeItem::class,
+                ConsumableItem::class,
+                Monitor::class,
+                NetworkEquipment::class,
+                Peripheral::class,
+                Phone::class,
+                Printer::class,
+                SoftwareLicense::class,
+                Certificate::class,
+                Contact::class,
+                Contract::class,
+                Document::class,
+                Supplier::class,
+                Group::class,
+                Link::class,
+                Ticket::class,
+                Problem::class,
+                Change::class,
             ]
         );
 
