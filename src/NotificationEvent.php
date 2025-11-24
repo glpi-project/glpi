@@ -41,7 +41,7 @@ class NotificationEvent extends CommonDBTM
 {
     protected static $notable = true;
 
-    #[\Override]
+    #[Override]
     public static function getTypeName($nb = 0)
     {
         return _n('Event', 'Events', $nb);
@@ -106,7 +106,7 @@ class NotificationEvent extends CommonDBTM
      * Raise a notification event
      *
      * @param string            $event   the event raised for the itemtype
-     * @param CommonGLPI        $item    the object which raised the event
+     * @param CommonDBChild        $item    the object which raised the event
      * @param array             $options array of options used
      * @param CommonDBTM|null   $trigger item that raises the notification (in case notification was raised by a child item)
      * @param string            $label   used for debugEvent()

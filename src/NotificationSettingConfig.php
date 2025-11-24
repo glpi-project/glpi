@@ -40,11 +40,11 @@ use Glpi\Application\View\TemplateRenderer;
  */
 class NotificationSettingConfig extends CommonDBTM
 {
-    public $table           = 'glpi_configs';
+    public string $table           = 'glpi_configs';
     protected $displaylist  = false;
     public static $rightname       = 'config';
 
-    #[\Override]
+    #[Override]
     public function update(array $input, $history = true, $options = [])
     {
         $success = true;
@@ -87,9 +87,10 @@ class NotificationSettingConfig extends CommonDBTM
     /**
      * Show configuration form
      *
+     * @param array{display?: bool} $options
      * @return string|void
      */
-    public function showConfigForm($options = [])
+    public function showConfigForm($options = ['display' => true])
     {
         global $CFG_GLPI;
 

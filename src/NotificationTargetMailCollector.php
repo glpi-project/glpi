@@ -40,14 +40,14 @@
  **/
 class NotificationTargetMailCollector extends NotificationTarget
 {
-    #[\Override]
+    #[Override]
     public function getEvents()
     {
         return ['error' => __('Receiver errors')];
     }
 
 
-    public function addDataForTemplate($event, $options = [])
+    public function addDataForTemplate($event, $options = []): void
     {
 
         $events                                  = $this->getEvents();
@@ -73,7 +73,7 @@ class NotificationTargetMailCollector extends NotificationTarget
     }
 
 
-    #[\Override]
+    #[Override]
     public function getTags()
     {
 

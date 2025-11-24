@@ -37,14 +37,18 @@ use Glpi\DBAL\QueryFunction;
 
 abstract class NotificationTargetCommonITILObject extends NotificationTarget
 {
-    /** @var array */
+    /**
+     * @var CommonITILObject|null Object which raises the notification event
+     */
+    public $obj = null;
+
+    /** @var array<int, int> */
     public $private_profiles = [];
 
     /**
-     * Keep track of profiles who have acces to the "central" interface
-     * Will only be loaded if the source item's entity is using anonymisation
-     *
-     * @var array
+     * Profiles with acces to the "central" interface
+     * Loaded if the source item's entity is using anonymization
+     * @var array<int, int>
      */
     public $central_profiles = [];
 
@@ -72,7 +76,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
 
-    #[\Override]
+    #[Override]
     public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null)
     {
 
@@ -93,14 +97,17 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         return true;
     }
 
-    #[\Override]
+    /**
+     * @return false
+     */
+    #[Override]
     protected function canNotificationBeDisabled(string $event): bool
     {
         // Notifications on ITIL objects are relying on `use_notification` property of actors.
         return false;
     }
 
-    #[\Override]
+    #[Override]
     public function getSubjectPrefix(string $event = ''): string
     {
 
@@ -118,7 +125,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         return sprintf("[$perso_tag #%07d] ", $this->obj->getField('id'));
     }
 
-    #[\Override]
+    #[Override]
     public function getEvents(): array
     {
 
@@ -335,7 +342,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     /**
      * Get the email of the item's user : Overloaded manual address used
      **/
-    #[\Override]
+    #[Override]
     public function addItemAuthor(): void
     {
         $this->addLinkedUserByType(CommonITILActor::REQUESTER);
@@ -829,7 +836,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
 
-    #[\Override]
+    #[Override]
     public function addAdditionnalUserInfo(array $data): array
     {
         return [
@@ -839,8 +846,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
     /**
-     * @param array $data
-     *
+     * @param array $data{users_id?: int}
      * @return bool
      */
     protected function getShowPrivateInfo(array $data)
@@ -867,8 +873,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
     /**
-     * @param array $data
-     *
+     * @param array $data{users_id?: int}
      * @return bool
      */
     protected function getIsSelfServiceInfo(array $data)
@@ -894,7 +899,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         return true;
     }
 
-    #[\Override]
+    #[Override]
     public function getProfileJoinCriteria()
     {
         $criteria = parent::getProfileJoinCriteria();
@@ -921,7 +926,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
 
 
-    #[\Override]
+    #[Override]
     public function isPrivate()
     {
 
@@ -1156,7 +1161,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         }
     }
 
-#[Override]
+    #[Override]
     public function addDataForTemplate($event, $options = []): void
     {
         $events    = $this->getAllEvents();
@@ -1983,7 +1988,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     /**
      * @return array|void
      */
-    #[\Override]
+    #[Override]
     public function getTags()
     {
 
@@ -2522,6 +2527,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         }
     }
 
+    /**
+     * @param value-of<CommonITILObject::TIMELINE_POSITION> $position
+     * @return string
+     */
     private function getUserPositionFromTimelineItemPosition(int $position): string
     {
 

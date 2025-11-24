@@ -35,7 +35,7 @@
 
 class NotificationTargetDomain extends NotificationTarget
 {
-    #[\Override]
+    #[Override]
     public function getEvents()
     {
         return [
@@ -55,7 +55,7 @@ class NotificationTargetDomain extends NotificationTarget
             __('Group in charge of the domain')
         );
     }
-#[Override]
+    #[Override]
     public function addDataForTemplate($event, $options = []): void
     {
         $domain = $this->obj;
@@ -92,7 +92,7 @@ class NotificationTargetDomain extends NotificationTarget
         }
     }
 
-    #[\Override]
+    #[Override]
     public function getTags()
     {
         $tags = [

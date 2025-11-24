@@ -50,26 +50,26 @@ class QueuedNotification extends CommonDBTM
     public static $rightname = 'queuednotification';
 
 
-    #[\Override]
+    #[Override]
     public static function getTypeName($nb = 0)
     {
         return __('Notification queue');
     }
 
-    #[\Override]
+    #[Override]
     public static function getSectorizedDetails(): array
     {
         return ['admin', self::class];
     }
 
-    #[\Override]
+    #[Override]
     public static function canCreate(): bool
     {
         // Everybody can create : human and cron
         return Session::getLoginUserID(false);
     }
 
-    #[\Override]
+    #[Override]
     public static function unsetUndisclosedFields(&$fields)
     {
         parent::unsetUndisclosedFields($fields);
@@ -91,13 +91,13 @@ class QueuedNotification extends CommonDBTM
         }
     }
 
-    #[\Override]
+    #[Override]
     public static function getForbiddenActionsForMenu()
     {
         return ['add'];
     }
 
-    #[\Override]
+    #[Override]
     public function getForbiddenStandardMassiveAction()
     {
 
@@ -106,7 +106,7 @@ class QueuedNotification extends CommonDBTM
         return $forbidden;
     }
 
-    #[\Override]
+    #[Override]
     public function getForbiddenSingleMassiveActions()
     {
         $forbidden = parent::getForbiddenSingleMassiveActions();
@@ -118,7 +118,11 @@ class QueuedNotification extends CommonDBTM
         return $forbidden;
     }
 
-    #[\Override]
+    /**
+     * @param bool $is_deleted
+     * @return array<string, string>
+     */
+    #[Override]
     public function getSpecificMassiveActions($checkitem = null, $is_deleted = false)
     {
         $isadmin = static::canUpdate();
@@ -159,7 +163,7 @@ class QueuedNotification extends CommonDBTM
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
-    #[\Override]
+    #[Override]
     public function prepareInputForAdd($input)
     {
         if (empty($input['create_time'])) {
@@ -201,7 +205,7 @@ class QueuedNotification extends CommonDBTM
         return $input;
     }
 
-    #[\Override]
+    #[Override]
     public function rawSearchOptions()
     {
         $tab = [];
@@ -411,7 +415,7 @@ class QueuedNotification extends CommonDBTM
         return $tab;
     }
 
-    #[\Override]
+    #[Override]
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
         global $CFG_GLPI;
@@ -483,7 +487,7 @@ class QueuedNotification extends CommonDBTM
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    #[\Override]
+    #[Override]
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
         if (!is_array($values)) {
@@ -526,9 +530,9 @@ class QueuedNotification extends CommonDBTM
     /**
      * Give cron information
      *
-     * @param $name : task's name
+     * @param string $name : task's name
      *
-     * @return array of information
+     * @return array{queuednotification?: array{description: string, parameter?:string}}
      **/
     public static function cronInfo($name)
     {
@@ -730,7 +734,7 @@ class QueuedNotification extends CommonDBTM
      *
      * @return boolean true if displayed  false if item not found or not right to display
      **/
-    #[\Override]
+    #[Override]
     public function showForm($ID, array $options = [])
     {
         if (!Session::haveRight("queuednotification", READ)) {
@@ -759,7 +763,7 @@ class QueuedNotification extends CommonDBTM
     }
 
     /**
-     * @param $string
+     * @param  string $string
      * @return string
      * @since 0.85
      */
@@ -792,7 +796,7 @@ class QueuedNotification extends CommonDBTM
         return $newstring;
     }
 
-    #[\Override]
+    #[Override]
     public static function getIcon()
     {
         return "ti ti-notification";

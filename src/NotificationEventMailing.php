@@ -515,7 +515,7 @@ class NotificationEventMailing extends NotificationEventAbstract
         }
     }
 
-    #[\Override]
+    #[Override]
     protected static function extraRaise($params)
     {
         //Set notification's signature (the one which corresponds to the entity)

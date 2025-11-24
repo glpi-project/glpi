@@ -38,14 +38,14 @@
  **/
 class NotificationTargetSoftwareLicense extends NotificationTarget
 {
-    #[\Override]
+    #[Override]
     public function getEvents()
     {
         return ['alert' => __('Alarms on expired licenses')];
     }
 
 
-    public function addDataForTemplate($event, $options = [])
+    public function addDataForTemplate($event, $options = []): void
     {
 
         $events                            = $this->getAllEvents();
@@ -84,7 +84,7 @@ class NotificationTargetSoftwareLicense extends NotificationTarget
     }
 
 
-    #[\Override]
+    #[Override]
     public function getTags()
     {
 

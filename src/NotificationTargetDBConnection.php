@@ -41,7 +41,7 @@ class NotificationTargetDBConnection extends NotificationTarget
      *
      * @see NotificationTarget::addNotificationTargets()
      **/
-    #[\Override]
+    #[Override]
     public function addNotificationTargets($entity)
     {
 
@@ -51,13 +51,13 @@ class NotificationTargetDBConnection extends NotificationTarget
     }
 
 
-    #[\Override]
+    #[Override]
     public function getEvents()
     {
         return ['desynchronization' => __('Desynchronization SQL replica')];
     }
 
-#[Override]
+    #[Override]
     public function addDataForTemplate($event, $options = []): void
     {
 
@@ -77,7 +77,7 @@ class NotificationTargetDBConnection extends NotificationTarget
     }
 
 
-    #[\Override]
+    #[Override]
     public function getTags()
     {
 

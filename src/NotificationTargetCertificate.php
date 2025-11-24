@@ -44,7 +44,7 @@
  **/
 class NotificationTargetCertificate extends NotificationTarget
 {
-    #[\Override]
+    #[Override]
     public function getEvents()
     {
         return ['alert' => __('Alarm on expired certificate')];
@@ -61,7 +61,7 @@ class NotificationTargetCertificate extends NotificationTarget
             __('Group in charge of the certificate')
         );
     }
-#[Override]
+    #[Override]
     public function addDataForTemplate($event, $options = []): void
     {
 
@@ -122,7 +122,7 @@ class NotificationTargetCertificate extends NotificationTarget
     }
 
 
-    #[\Override]
+    #[Override]
     public function getTags()
     {
 

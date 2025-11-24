@@ -40,7 +40,7 @@
  **/
 class NotificationTargetCartridgeItem extends NotificationTarget
 {
-    #[\Override]
+    #[Override]
     public function getEvents()
     {
         return ['alert' => __('Cartridges alarm')];
@@ -88,7 +88,7 @@ class NotificationTargetCartridgeItem extends NotificationTarget
     }
 
 
-    #[\Override]
+    #[Override]
     public function getTags()
     {
 

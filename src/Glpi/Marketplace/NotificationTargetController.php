@@ -59,8 +59,8 @@ class NotificationTargetController extends NotificationTarget
         return ['checkpluginsupdate' => __('Check all plugin updates')];
     }
 
-    #[Override]
-    public function addDataForTemplate(string $event, array $options): void
+    #[\Override]
+    public function addDataForTemplate($event, $options = []): void
     {
         $updated_plugins = $options['plugins'];
         $plugin = new Plugin();
