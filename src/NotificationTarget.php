@@ -853,7 +853,7 @@ class NotificationTarget extends CommonDBChild
     final public function addItemGroup()
     {
 
-        if (!empty($this->target_object)) {
+        if ($this->target_object !== []) {
             foreach ($this->target_object as $val) {
                 if ($val->fields['groups_id'] > 0) {
                     $this->addForGroup(0, $val->fields['groups_id']);
@@ -872,7 +872,7 @@ class NotificationTarget extends CommonDBChild
      */
     final public function addItemGroupSupervisor()
     {
-        if (!empty($this->target_object)) {
+        if ($this->target_object !== []) {
             foreach ($this->target_object as $val) {
                 if ($val->fields['groups_id'] > 0) {
                     $this->addForGroup(1, $val->fields['groups_id']);
@@ -892,7 +892,7 @@ class NotificationTarget extends CommonDBChild
     final public function addItemGroupWithoutSupervisor()
     {
 
-        if (!empty($this->target_object)) {
+        if ($this->target_object !== []) {
             foreach ($this->target_object as $val) {
                 if ($val->fields['groups_id'] > 0) {
                     $this->addForGroup(2, $val->fields['groups_id']);
@@ -1228,7 +1228,7 @@ class NotificationTarget extends CommonDBChild
         $id = [];
         if (!$search_in_object) {
             $id[] = $this->obj->getField($field);
-        } elseif (!empty($this->target_object)) {
+        } elseif ($this->target_object !== []) {
             foreach ($this->target_object as $val) {
                 $id[] = $val->fields[$field];
             }
@@ -1267,7 +1267,7 @@ class NotificationTarget extends CommonDBChild
      */
     final public function addItemGroupTechInCharge()
     {
-        if (!empty($this->target_object)) {
+        if ($this->target_object !== []) {
             foreach ($this->target_object as $val) {
                 if (isset($val->fields['groups_id_tech']) && $val->fields['groups_id_tech'] > 0) {
                     $this->addForGroup(0, $val->fields['groups_id_tech']);
