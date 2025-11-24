@@ -83,6 +83,8 @@
                     {{ include('components/itilobject/mainform_close.html.twig') }}
                 {% endif %}
             </div>
+        {% else %}
+            {{ include('components/itilobject/mainform_open.html.twig') }}
         {% endif %}
     </div>
 

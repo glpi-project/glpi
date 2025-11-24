@@ -1742,7 +1742,7 @@ class TicketTest extends DbTestCase
             category: false,
             requestSource: false,
             location: false,
-            itil_form: false,
+            itil_form: true,
             cancel_ticket: true,
         );
 
@@ -1775,7 +1775,7 @@ class TicketTest extends DbTestCase
             $category = false,
             $requestSource = false,
             $location = false,
-            itil_form: false,
+            itil_form: true,
             cancel_ticket: false, // Can no longer cancel once a followup is added
         );
 
@@ -7525,7 +7525,7 @@ HTML,
             ],
         ];
 
-        foreach ([null => null, 'post-only' => 'postonly', 'tech' => 'tech'] as $login => $pass) {
+        foreach (['' => null, 'post-only' => 'postonly', 'tech' => 'tech'] as $login => $pass) {
             // usage of `check_view_rights` should produce the same result whoever is logged-in (used for notifications)
             yield [
                 'login'              => $login,
