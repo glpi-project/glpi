@@ -257,7 +257,7 @@ class NotificationTargetProject extends NotificationTarget
     }
 
 
-    public function addDataForTemplate($event, $options = []): void
+    public function addDataForTemplate($event, $options = [])
     {
         global $CFG_GLPI, $DB;
 

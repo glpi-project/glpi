@@ -41,7 +41,7 @@
 class NotificationTargetChange extends NotificationTargetCommonITILObject
 {
     #[Override]
-    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null): bool
+    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null)
     {
         if ($event == 'satisfaction') {
             return true;
@@ -54,7 +54,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
      * Get events related to tickets
      **/
     #[Override]
-    public function getEvents(): array
+    public function getEvents()
     {
 
         $events = ['new'               => __('New change'),

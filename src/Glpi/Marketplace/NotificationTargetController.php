@@ -54,13 +54,13 @@ class NotificationTargetController extends NotificationTarget
 
 
     #[\Override]
-    public function getEvents(): array
+    public function getEvents()
     {
         return ['checkpluginsupdate' => __('Check all plugin updates')];
     }
 
     #[\Override]
-    public function addDataForTemplate($event, $options = []): void
+    public function addDataForTemplate($event, $options = [])
     {
         $updated_plugins = $options['plugins'];
         $plugin = new Plugin();
@@ -90,7 +90,7 @@ class NotificationTargetController extends NotificationTarget
 
 
     #[\Override]
-    public function getTags(): void
+    public function getTags()
     {
         //Tags with just lang
         $tags = [

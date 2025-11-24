@@ -108,7 +108,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
     #[Override]
-    public function getSubjectPrefix(string $event = ''): string
+    public function getSubjectPrefix($event = '')
     {
 
         $perso_tag = trim(Entity::getUsedConfig(
@@ -126,7 +126,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
     #[Override]
-    public function getEvents(): array
+    public function getEvents()
     {
 
         $events = [
@@ -159,8 +159,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      * Add linked users to the notified users list
      *
      * @param integer $type type of linked users
+     * @return void
      */
-    public function addLinkedUserByType(int $type): void
+    public function addLinkedUserByType(int $type)
     {
         global $CFG_GLPI, $DB;
 
@@ -343,15 +344,17 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      * Get the email of the item's user : Overloaded manual address used
      **/
     #[Override]
-    public function addItemAuthor(): void
+    public function addItemAuthor()
     {
         $this->addLinkedUserByType(CommonITILActor::REQUESTER);
     }
 
     /**
      * Add previous technician in charge (before reassign)
+     *
+     * @return void
      */
-    public function addOldAssignTechnician(): void
+    public function addOldAssignTechnician()
     {
         global $CFG_GLPI;
 
@@ -392,7 +395,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         }
     }
 
-    public function addRecipientAddress(): void
+    /**
+     * @return void
+     */
+    public function addRecipientAddress()
     {
         $this->addUserByField("users_id_recipient");
     }
@@ -401,8 +407,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      * Get supplier related to the ITIL object
      *
      * @param boolean $sendprivate (false by default)
+     * @return void
      */
-    public function addSupplier(bool $sendprivate = false): void
+    public function addSupplier($sendprivate = false)
     {
         global $DB;
 
@@ -449,8 +456,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      * @param array{
      *     validation_id?: int
      * } $options Options
+     *
+     * @return void
      */
-    public function addValidationApprover(array $options = []): void
+    public function addValidationApprover($options = [])
     {
         global $DB;
         if (!isset($options['validation_id'])) {
@@ -486,8 +495,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      * @param array{
      *     validation_id?: int
      * } $options Options
+     *
+     * @return void
      */
-    public function addValidationRequester(array $options = []): void
+    public function addValidationRequester($options = [])
     {
         global $DB;
 
@@ -524,8 +535,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      * @param array{
      *     validation_id?: int
      * } $options Options
+     *
+     * @return void
      */
-    public function addValidationTarget(array $options = []): void
+    public function addValidationTarget($options = [])
     {
         global $DB;
 
@@ -570,8 +583,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      * @param array{
      *     validation_id?: int
      * } $options Options
+     *
+     * @return void
      */
-    public function addValidationTargetSubstitutes(array $options = []): void
+    public function addValidationTargetSubstitutes($options = [])
     {
         global $DB;
 
@@ -804,8 +819,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      *
      * - Profiles with interface 'central' in $this->central_profiles
      * - Profiles with right ITILFollowup::SEEPRIVATE on followup in $this->private_profiles
+     *
+     * @return void
      */
-    public function addAdditionnalInfosForTarget(): void
+    public function addAdditionnalInfosForTarget()
     {
         global $DB;
 
@@ -1162,7 +1179,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
     #[Override]
-    public function addDataForTemplate($event, $options = []): void
+    public function addDataForTemplate($event, $options = [])
     {
         $events    = $this->getAllEvents();
         $objettype = strtolower($this->obj::class);

@@ -119,8 +119,9 @@ class NotificationTemplate extends CommonDBTM
 
     /**
      * Reset already computed templates
+     * @return void
      **/
-    public function resetComputedTemplates(): void
+    public function resetComputedTemplates()
     {
         $this->templates_by_languages = [];
     }
@@ -184,8 +185,10 @@ class NotificationTemplate extends CommonDBTM
      * @param string                    $name       dropdown name
      * @param class-string<CommonDBTM> $itemtype   templates for this itemtype only
      * @param string                $value      default value
+     *
+     * @return void
      **/
-    public static function dropdownTemplates($name, $itemtype, $value = "0"): void
+    public static function dropdownTemplates($name, $itemtype, $value = "0")
     {
         self::dropdown([
             'name'       => $name,
@@ -199,8 +202,10 @@ class NotificationTemplate extends CommonDBTM
      * @param array{sendprivate?: bool} $options
      * @return 0|1
      * @todo can probably be removed
+     *
+     * @return int
      **/
-    public function getAdditionnalProcessOption($options): int
+    public function getAdditionnalProcessOption($options)
     {
         //Additionnal option can be given for template processing
         //For the moment, only option to see private tasks & followups is available
@@ -567,8 +572,10 @@ class NotificationTemplate extends CommonDBTM
 
     /**
      * @param string $signature
+     *
+     * @return void
      **/
-    public function setSignature($signature): void
+    public function setSignature($signature)
     {
         $this->signature = $signature;
     }

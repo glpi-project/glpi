@@ -47,7 +47,7 @@ class NotificationTargetCartridgeItem extends NotificationTarget
     }
 
     #[Override]
-    public function addDataForTemplate($event, $options = []): void
+    public function addDataForTemplate($event, $options = [])
     {
         $events = $this->getAllEvents();
 

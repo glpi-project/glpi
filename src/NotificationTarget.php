@@ -167,7 +167,7 @@ class NotificationTarget extends CommonDBChild
 
         if ($object) {
             $this->obj = $object;
-            $this->getObjectItem();
+            $this->getObjectItem($event);
         }
 
         $this->raiseevent = $event;
@@ -288,9 +288,10 @@ class NotificationTarget extends CommonDBChild
     }
 
     /**
+     * @param string $event
      * @return string
      */
-    public function getSubjectPrefix(string $event = '')
+    public function getSubjectPrefix($event = '')
     {
         $perso_tag = trim(Entity::getUsedConfig(
             'notification_subject_tag',
@@ -426,7 +427,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @param class-string<CommonDBTM> $itemtype
      *
-     * @return class-string<NotificationTarget> // @todo voir si les plugins renvoient bien ce type
+     * @return class-string<NotificationTarget> // @todo review, do the plugin returns a NotificationTarget instance
      */
     public static function getInstanceClass(string $itemtype): string
     {
@@ -541,7 +542,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return void
      **/
-    public static function updateTargets(array $input)
+    public static function updateTargets($input)
     {
         $target = self::getInstanceByType($input['itemtype']);
 
@@ -632,7 +633,7 @@ class NotificationTarget extends CommonDBChild
      *     language?: string,
      *     name?: string,
      *     users_id?: int,
-     *     usertype?: int, // @todo à check
+     *     usertype?: int,
      *     }
      *
      * returns false if user is not found/active or it has no profile.
@@ -771,7 +772,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return string
      */
-    public function formatURL($usertype, $redirect, $anchor = null)
+    public function formatURL($usertype, $redirect, ?string $anchor = null)
     {
         if (urldecode($redirect) === $redirect) {
             // `redirect` parameter value have to be url-encoded.
@@ -1084,7 +1085,10 @@ class NotificationTarget extends CommonDBChild
         $this->notification_targets_labels[$type][$target] = $label;
     }
 
-    public function addProfilesToTargets(): void
+    /**
+     * @return void
+     */
+    public function addProfilesToTargets()
     {
         global $DB;
 
@@ -1196,8 +1200,13 @@ class NotificationTarget extends CommonDBChild
 
     /**
      * Push $this->obj in $this->target_object array
+     *
+     * Parameter $event is ignored
+     *
+     * @param string $event
+     * @return void
      **/
-    public function getObjectItem(): void
+    public function getObjectItem($event = '')
     {
         $this->target_object[] = $this->obj;
     }
@@ -1455,7 +1464,10 @@ class NotificationTarget extends CommonDBChild
      **/
     public function addDataForTemplate($event, $options = []) {}
 
-    final public function getTargets(): array
+    /**
+     * @return array
+     */
+    final public function getTargets()
     {
         return $this->removeExcludedTargets($this->target);
     }

@@ -64,7 +64,7 @@ class NotificationTargetReservation extends NotificationTarget
         }
     }
 
-    public function addDataForTemplate($event, $options = []): void
+    public function addDataForTemplate($event, $options = [])
     {
         //----------- Reservation infos -------------- //
         $events                                  = $this->getAllEvents();
@@ -211,7 +211,7 @@ class NotificationTargetReservation extends NotificationTarget
     }
 
     #[Override]
-    public function getObjectItem(): void
+    public function getObjectItem($event = '')
     {
         if ($this->obj) {
             $ri = new ReservationItem();

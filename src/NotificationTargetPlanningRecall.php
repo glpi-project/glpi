@@ -166,7 +166,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget
         }
     }
 
-    public function addDataForTemplate($event, $options = []): void
+    public function addDataForTemplate($event, $options = [])
     {
         $events                             = $this->getAllEvents();
         $target_object                      = reset($this->target_object);
@@ -282,7 +282,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget
     }
 
     #[Override]
-    public function getObjectItem(): void
+    public function getObjectItem($event = '')
     {
         if ($this->obj) {
             if (

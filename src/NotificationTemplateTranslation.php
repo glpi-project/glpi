@@ -127,8 +127,10 @@ class NotificationTemplateTranslation extends CommonDBChild
     /**
      * @param NotificationTemplate $template object
      * @param array $options
+     *
+     * @return void
      **/
-    public function showSummary(NotificationTemplate $template, $options = []): void
+    public function showSummary(NotificationTemplate $template, $options = [])
     {
         global $CFG_GLPI, $DB;
 
