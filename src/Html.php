@@ -1491,7 +1491,7 @@ TWIG,
         if ($entity->isServiceCatalogEnabled()) {
             $menu['create_ticket'] = [
                 'default' => ServiceCatalog::getSearchURL(false),
-                'title'   => __('Create a ticket'),
+                'title'   => __('Service catalog'),
                 'icon'    => 'ti ti-plus',
             ];
         }
