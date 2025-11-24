@@ -74,6 +74,10 @@ class ProjectTaskTeam extends CommonDBRelation
         return _n('Task team', 'Task teams', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-users';
+    }
 
     public function getForbiddenStandardMassiveAction()
     {
