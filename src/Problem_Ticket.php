@@ -191,14 +191,14 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
      * Show tickets for a problem
      *
      * @param Problem $problem
-     * @return false
+     * @return void
      **/
     public static function showForProblem(Problem $problem)
     {
         $ID = $problem->getField('id');
 
         if (!static::canView() || !$problem->can($ID, READ)) {
-            return false;
+            return;
         }
 
         $canedit = $problem->canEdit($ID);
@@ -262,14 +262,13 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
             ],
         ]);
 
-        return false;
     }
 
     /**
      * Show problems for a ticket
      *
      * @param Ticket $ticket object
-     * @return false
+     * @return void
      **/
     public static function showForTicket(Ticket $ticket)
     {
@@ -277,7 +276,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
         $ID = $ticket->getField('id');
 
         if (!static::canView() || !$ticket->can($ID, READ)) {
-            return false;
+            return;
         }
 
         $canedit = $ticket->can($ID, UPDATE);
@@ -336,7 +335,6 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
             ],
         ]);
 
-        return false;
     }
 
     /**

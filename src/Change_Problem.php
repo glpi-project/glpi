@@ -102,7 +102,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
      * Show tickets for a problem
      *
      * @param Problem $problem
-     * @return false
+     * @return void
      **/
     public static function showForProblem(Problem $problem)
     {
@@ -110,7 +110,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
 
         $ID = $problem->getField('id');
         if (!$problem->can($ID, READ)) {
-            return false;
+            return;
         }
 
         $canedit = $problem->canEdit($ID);
@@ -190,14 +190,13 @@ class Change_Problem extends CommonITILObject_CommonITILObject
             ],
         ]);
 
-        return false;
     }
 
     /**
      * Show problems for a change
      *
      * @param Change $change object
-     * @return false
+     * @return void
      **/
     public static function showForChange(Change $change)
     {
@@ -205,7 +204,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
 
         $ID = $change->getField('id');
         if (!$change->can($ID, READ)) {
-            return false;
+            return;
         }
 
         $canedit = $change->canEdit($ID);
@@ -284,6 +283,5 @@ class Change_Problem extends CommonITILObject_CommonITILObject
             ],
         ]);
 
-        return false;
     }
 }
