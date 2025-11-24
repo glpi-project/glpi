@@ -56,6 +56,13 @@ final class ProfilerSection
      */
     private array $pauses = [];
 
+    /**
+     * @param string $category
+     * @param string $name
+     * @param int $start
+     * @param ?string $parent_id
+     * @param ?string $id
+     */
     public function __construct(string $category, string $name, $start, ?string $parent_id = null, ?string $id = null)
     {
         $this->id = $id ?? Uuid::uuid4()->toString();
@@ -65,6 +72,11 @@ final class ProfilerSection
         $this->start = (int) $start;
     }
 
+    /**
+     * @param int $time
+     *
+     * @return void
+     */
     public function end($time): void
     {
         // Force resume to complete the last pause.

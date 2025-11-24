@@ -104,6 +104,12 @@ class Principal extends AbstractBackend
         return $this->getPrincipalFromItem($item);
     }
 
+    /**
+     * @param string $path
+     * @param PropPatch $propPatch
+     *
+     * @return void
+     */
     public function updatePrincipal($path, PropPatch $propPatch)
     {
         throw new NotImplemented('Principal update is not implemented');
@@ -232,6 +238,12 @@ class Principal extends AbstractBackend
         return $groups_uris;
     }
 
+    /**
+     * @param string $path
+     * @param array $members
+     *
+     * @return void
+     */
     public function setGroupMemberSet($path, array $members)
     {
         throw new NotImplemented('Group member set update is not implemented');

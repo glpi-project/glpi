@@ -44,23 +44,21 @@ use RuntimeException;
  **/
 class QueryUnion extends AbstractQuery
 {
-    private $queries = [];
-    private $distinct = false;
+    private array $queries = [];
 
     /**
      * Create a sub query
      *
      * @param array $queries An array of queries to union. Either SubQuery objects
      *                          or an array of criteria to build them.
-     *                          You can also add later using @param boolean $distinct Include duplicates or not. Turning on may has
+     * @param boolean $distinct Include duplicates or not. Turning on may has
      *                          huge cost on queries performances.
      * @param string $alias Union ALIAS. Defaults to null.
      * @see addQuery
      */
-    public function __construct(array $queries = [], $distinct = false, $alias = null)
+    public function __construct(array $queries = [], private $distinct = false, $alias = null)
     {
         parent::__construct($alias);
-        $this->distinct = $distinct;
 
         foreach ($queries as $query) {
             $this->addQuery($query);
@@ -72,6 +70,8 @@ class QueryUnion extends AbstractQuery
      *
      * @param QuerySubQuery|array $query Either a SubQuery object
      *                                   or an array of criteria to build it.
+     *
+     * @return void
      */
     public function addQuery($query)
     {

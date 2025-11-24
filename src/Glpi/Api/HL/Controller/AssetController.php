@@ -1528,7 +1528,7 @@ final class AssetController extends AbstractController
         return new JSONResponse($asset_paths);
     }
 
-    private static function getGlobalAssetSchema($asset_schemas)
+    private static function getGlobalAssetSchema(array $asset_schemas): array
     {
         $asset_types = self::getAssetTypes();
         $asset_schemas = array_filter($asset_schemas, static fn($key) => !str_starts_with($key, '_') && in_array($key, $asset_types, true), ARRAY_FILTER_USE_KEY);

@@ -93,7 +93,7 @@ final class QuestionActorsDropdownController extends AbstractController
         return $form;
     }
 
-    private function checkFormAccessPolicies(Request $request)
+    private function checkFormAccessPolicies(Request $request): void
     {
         $form_access_manager = FormAccessControlManager::getInstance();
 

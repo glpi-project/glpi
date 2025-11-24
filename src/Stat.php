@@ -1650,7 +1650,7 @@ class Stat extends CommonGLPI
 
             $header_num = 1;
             if ($is_html_output) {
-                echo $output::showHeader($end_display - $start + 1, 2, 1);
+                echo $output::showHeader($end_display - $start + 1, 2, true);
                 echo $output::showNewLine();
                 echo $output::showHeaderItem(_sn('Associated element', 'Associated elements', $numrows), $header_num);
                 if ($view_entities) {

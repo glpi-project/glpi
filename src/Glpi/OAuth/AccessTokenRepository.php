@@ -42,6 +42,13 @@ use Safe\DateTime;
 
 class AccessTokenRepository implements AccessTokenRepositoryInterface
 {
+    /**
+     * @param ClientEntityInterface $clientEntity
+     * @param array $scopes
+     * @param ?string $userIdentifier
+     *
+     * @return AccessTokenEntityInterface
+     */
     public function getNewToken(ClientEntityInterface $clientEntity, array $scopes, $userIdentifier = null): AccessTokenEntityInterface
     {
         $token = new AccessToken();
@@ -68,6 +75,11 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
         ]);
     }
 
+    /**
+     * @param string $tokenId
+     *
+     * @return void
+     */
     public function revokeAccessToken($tokenId): void
     {
         global $DB;
@@ -75,6 +87,11 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
         $DB->delete('glpi_oauth_access_tokens', ['identifier' => $tokenId]);
     }
 
+    /**
+     * @param string $tokenId
+     *
+     * @return bool
+     */
     public function isAccessTokenRevoked($tokenId): bool
     {
         global $DB;

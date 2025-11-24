@@ -94,6 +94,7 @@ final class Form extends CommonDBTM implements
     ConditionableVisibilityInterface
 {
     use ConditionableVisibilityTrait;
+    /** @use Clonable<static> */
     use Clonable {
         Clonable::prepareInputForClone as parentPrepareInputForClone;
         Clonable::post_clone as parentPostClone;

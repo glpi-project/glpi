@@ -64,6 +64,7 @@ final class Profile
 
     private static ?self $current = null;
 
+    /** @var bool */
     private $disabled = false;
 
     public function __construct(string $id, ?string $parent_id)
@@ -137,6 +138,12 @@ final class Profile
         return $this->parent_id;
     }
 
+    /**
+     * @param string $widget
+     * @param mixed $data
+     *
+     * @return void
+     */
     public function setData(string $widget, $data)
     {
         if ($this->disabled) {
@@ -148,6 +155,15 @@ final class Profile
         $this->additional_info[$widget][] = $data;
     }
 
+    /**
+     * @param string $query
+     * @param float $time
+     * @param int $rows
+     * @param string $errors
+     * @param string $warnings
+     *
+     * @return void
+     */
     public function addSQLQueryData(string $query, float $time, int $rows = 0, string $errors = '', string $warnings = '')
     {
         if ($this->disabled) {

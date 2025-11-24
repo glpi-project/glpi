@@ -50,6 +50,9 @@ interface ProviderInterface
     public function getAuthorizationUrl(array $options = []);
 
     /**
+     * @param string $grant
+     * @param array $options
+     *
      * @return AccessTokenInterface
      * @see \League\OAuth2\Client\Provider\AbstractProvider::getAccessToken()
      */

@@ -46,14 +46,22 @@ use function Safe\json_decode;
 
 class Dashboard extends CommonDBTM
 {
+    /** @var int */
     protected $id      = 0;
+    /** @var string */
     protected $key     = "";
+    /** @var string */
     protected $title   = "";
+    /** @var bool */
     protected $embed   = false;
+    /** @var ?array  */
     protected $items   = null;
+    /** @var ?array */
     protected $rights  = null;
+    /** @var string */
     protected $filters  = "";
 
+    /** @var array */
     public static $all_dashboards = [];
     public static $rightname = 'dashboard';
 
@@ -621,6 +629,11 @@ class Dashboard extends CommonDBTM
         return true;
     }
 
+    /**
+     * @param bool $is_private
+     *
+     * @return bool
+     */
     public function setPrivate($is_private)
     {
         $this->load();
@@ -632,6 +645,9 @@ class Dashboard extends CommonDBTM
         ]);
     }
 
+    /**
+     * @return string (int as string... should be a boolean.)
+     */
     public function getPrivate()
     {
         $this->load();

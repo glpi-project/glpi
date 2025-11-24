@@ -42,6 +42,7 @@ use Traversable;
 
 /**
  * @since 9.5.0
+ * @implements IteratorAggregate<RequirementInterface>
  */
 class RequirementsList implements IteratorAggregate
 {

@@ -124,7 +124,14 @@ final class NamesListSearchOutput extends ExportSearchOutput
         return "\n";
     }
 
-    public static function showHeader($rows, $cols, $fixed = 0): string
+    /**
+     * @param int $rows
+     * @param int $cols
+     * @param bool $fixed
+     *
+     * @return string
+     */
+    public static function showHeader($rows, $cols, $fixed = false): string
     {
         if (!headers_sent()) {
             header("Content-disposition: filename=glpi.txt");
@@ -133,6 +140,14 @@ final class NamesListSearchOutput extends ExportSearchOutput
         return '';
     }
 
+    /**
+     * @param string $value
+     * @param int $num
+     * @param int $row
+     * @param string $extraparam
+     *
+     * @return string
+     */
     public static function showItem($value, &$num, $row, $extraparam = ''): string
     {
         // We only want to display one column (the name of the item).

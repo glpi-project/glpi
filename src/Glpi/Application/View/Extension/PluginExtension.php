@@ -96,6 +96,14 @@ class PluginExtension extends AbstractExtension
         }
     }
 
+    /**
+     * @param string $plugin
+     * @param string $name
+     * @param array $params
+     * @param bool $return_result
+     *
+     * @return ($return_result is true ? mixed : void)
+     */
     public function callPluginOneHook(string $plugin, string $name, $params = null, bool $return_result = false)
     {
         $result = Plugin::doOneHook($plugin, $name, $params);

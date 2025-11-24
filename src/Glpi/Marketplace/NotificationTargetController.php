@@ -92,6 +92,9 @@ class NotificationTargetController extends NotificationTarget
     }
 
 
+    /**
+     * @return void
+     */
     public function getTags()
     {
         //Tags with just lang

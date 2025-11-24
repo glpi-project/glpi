@@ -218,7 +218,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
      *
      * @throws RuntimeException
      */
-    private function cleanCoreTables()
+    private function cleanCoreTables(): void
     {
         $core_tables = [
             Appliance::getTable(),

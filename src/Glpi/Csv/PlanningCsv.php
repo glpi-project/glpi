@@ -44,9 +44,9 @@ use User;
  **/
 class PlanningCsv implements ExportToCsvInterface
 {
-    private $users_id;
-    private $groups_id;
-    private $limititemtype;
+    private int $users_id;
+    private ?int $groups_id;
+    private string $limititemtype;
 
     /**
      * @param int     $who            user ID

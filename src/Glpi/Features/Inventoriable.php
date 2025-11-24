@@ -52,6 +52,9 @@ trait Inventoriable
 {
     protected ?Agent $agent = null;
 
+    /**
+     * @return bool
+     */
     public function pre_purgeInventory()
     {
         $file_name = $this->getInventoryFileName();
@@ -182,6 +185,8 @@ HTML;
 
     /**
      * Display agent information
+     *
+     * @return void
      */
     protected function displayAgentInformation()
     {

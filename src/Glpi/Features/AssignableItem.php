@@ -338,21 +338,35 @@ trait AssignableItem
         $this->loadGroupFields();
     }
 
-    /** @see AssignableItemInterface::post_addItem() */
+    /**
+     * @see AssignableItemInterface::post_addItem()
+     *
+     * @return void
+     */
     public function post_addItem()
     {
         parent::post_addItem();
         $this->updateGroupFields();
     }
 
-    /** @see AssignableItemInterface::post_updateItem() */
+    /**
+     * @see AssignableItemInterface::post_updateItem()
+     *
+     * @param bool $history
+     *
+     *@return void
+     */
     public function post_updateItem($history = true)
     {
         parent::post_updateItem($history);
         $this->updateGroupFields();
     }
 
-    /** @see AssignableItemInterface::getEmpty() */
+    /**
+     * @see AssignableItemInterface::getEmpty()
+     *
+     * @return bool
+     */
     public function getEmpty()
     {
         if (!parent::getEmpty()) {
@@ -365,7 +379,7 @@ trait AssignableItem
         return true;
     }
 
-    private function loadGroupFields()
+    private function loadGroupFields(): void
     {
         global $DB;
 
@@ -389,7 +403,11 @@ trait AssignableItem
         }
     }
 
-    /** @see AssignableItemInterface::post_getFromDB() */
+    /**
+     * @see AssignableItemInterface::post_getFromDB()
+     *
+     * @return void
+     */
     public function post_getFromDB()
     {
         $this->loadGroupFields();

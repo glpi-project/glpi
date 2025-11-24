@@ -108,12 +108,14 @@ class Event extends CommonDBTM
      * Log the event $event on the glpi_event table with all the others args, if
      * $level is above or equal to setting from configuration.
      *
-     * @param $items_id
-     * @param $type
-     * @param $level
-     * @param $service
-     * @param $event
-     **/
+     * @param string|int $items_id
+     * @param string $type
+     * @param int $level
+     * @param string $service
+     * @param string $event
+     *
+     * @return void
+     */
     public static function log($items_id, $type, $level, $service, $event)
     {
         global $CFG_GLPI, $DB;
@@ -154,7 +156,7 @@ class Event extends CommonDBTM
     /**
      * Clean old event - Call by cron
      *
-     * @param $day integer
+     * @param int $day
      *
      * @return integer number of events deleted
      **/
@@ -175,7 +177,9 @@ class Event extends CommonDBTM
 
     /**
      * Return arrays for function showEvent et lastEvent
-     **/
+     *
+     * @return array
+     */
     public static function logArray()
     {
 
@@ -218,8 +222,10 @@ class Event extends CommonDBTM
     }
 
     /**
-     * @param $type
-     * @param $items_id
+     * @param class-string<CommonDBTM> $type
+     * @param int $items_id
+     *
+     * @return void
      **/
     public static function displayItemLogID($type, $items_id)
     {
@@ -281,7 +287,9 @@ class Event extends CommonDBTM
      *
      * @param string $user  name user to search on message (default '')
      * @param bool $display if false, return html
-     **/
+     *
+     * @return void|string
+     */
     public static function showForUser(string $user = "", bool $display = true)
     {
         global $CFG_GLPI, $DB;
