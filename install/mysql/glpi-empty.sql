@@ -4554,7 +4554,7 @@ CREATE TABLE `glpi_cables` (
   KEY `cabletypes_id` (`cabletypes_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
-  KEY `is_deleted` (`is_deleted`)
+  KEY `is_deleted` (`is_deleted`),
   KEY `active_assets` (`is_deleted`, `is_template`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
