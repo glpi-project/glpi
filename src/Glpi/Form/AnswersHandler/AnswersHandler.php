@@ -120,7 +120,7 @@ final class AnswersHandler
             }
 
             // Check if the question is not answered (empty or not set)
-            if (empty($answer) || (is_string($answer) && empty(strip_tags($answer)))) {
+            if ((empty($answer) || (is_string($answer) && empty(strip_tags($answer)))) && !is_numeric($answer)) {
                 $message = __('This field is mandatory');
                 $type = $question->getQuestionType();
                 if ($type instanceof CustomMandatoryMessageInterface) {

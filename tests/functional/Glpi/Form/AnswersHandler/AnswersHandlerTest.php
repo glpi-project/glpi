@@ -239,6 +239,29 @@ class AnswersHandlerTest extends DbTestCase
             ],
         ];
 
+        $mandatory_number_form_builder = (new FormBuilder("Validation Test Form"))
+                ->addQuestion("Mandatory Number", QuestionTypeNumber::class, is_mandatory: true);
+
+        yield 'Zero in mandatory number field - should be valid' => [
+            'builder' => $mandatory_number_form_builder,
+            'answers' => [
+                'Mandatory Number' => 0,
+            ],
+            'expectedIsValid' => true,
+            'expectedErrors' => [],
+        ];
+
+        yield 'Empty mandatory number field - should be invalid' => [
+            'builder' => $mandatory_number_form_builder,
+            'answers' => [
+                'Mandatory Number' => '',
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Mandatory Number' => 'Please enter a valid number',
+            ],
+        ];
+
         $mandatory_entity_question_form_buidler = (new FormBuilder("Mandatory Item Question Type Test Form"))
             ->addQuestion(
                 "Mandatory Entity Question",
