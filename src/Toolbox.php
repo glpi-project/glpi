@@ -1364,9 +1364,9 @@ class Toolbox
      *
      * @param string $url         URL to retrieve
      * @param array  $eopts       Extra curl opts
-     * @param string $msgerr      will contains a human readable error string if an error occurs of url returns empty contents
-     * @param bool   $check_url_safeness    indicated whether the URL have to be filetered by safety checks
-     * @param array  $curl_info   will contains contents provided by `curl_getinfo`
+     * @param string $msgerr      will contain a human-readable error string if an error occurs of url returns empty contents
+     * @param bool   $check_url_safeness    indicated whether the URL have to be filtered by safety checks
+     * @param ?array $curl_info   will contain contents provided by `curl_getinfo`
      *
      * @return string
      */
