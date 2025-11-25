@@ -784,7 +784,7 @@ final class Search
                 $data = array_merge($existing_data, $data);
                 ArrayPathAccessor::setElementByArrayPath($result, $path, $data);
             }
-            $result = Doc\Schema::fromArray($schema)->castProperties($result);
+            $result = Doc\Schema::castProperties($result, $search->context->getFlattenedProperties());
         }
         Profiler::getInstance()->stop('Map and cast properties');
         unset($result);

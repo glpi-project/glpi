@@ -475,11 +475,9 @@ class Schema implements ArrayAccess
         return true;
     }
 
-    public function castProperties(array $content): array
+    public static function castProperties(array $content, array $flattened_properties): array
     {
-        $flattened_schema = self::flattenProperties($this->toArray()['properties'], '', false);
-
-        foreach ($flattened_schema as $sk => $sv) {
+        foreach ($flattened_properties as $sk => $sv) {
             // Get value from original content by the array path $sk
             $path_arr = explode('.', $sk);
             $current = &$content;
