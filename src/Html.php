@@ -1492,7 +1492,7 @@ TWIG,
             $menu['create_ticket'] = [
                 'default' => ServiceCatalog::getSearchURL(false),
                 'title'   => __('Service catalog'),
-                'icon'    => 'ti ti-plus',
+                'icon'    => 'ti ti-brand-telegram',
             ];
         }
 
