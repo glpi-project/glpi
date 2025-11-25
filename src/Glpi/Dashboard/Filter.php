@@ -84,6 +84,9 @@ class Filter extends CommonDBChild
             }
         }
 
+        // Set a short cache to have an auto-invalidation;
+        // 5s should be enough to load a full dashboard
+        // and expiring before the user hit another request.
         $GLPI_CACHE->set($cache_key, $filters_ids, 5);
 
         return $filters_ids;
