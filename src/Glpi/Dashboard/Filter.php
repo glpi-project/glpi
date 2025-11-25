@@ -71,7 +71,7 @@ class Filter extends CommonDBChild
     {
         global $GLPI_CACHE;
 
-        $cache_key = "dashboard_filters_appliable_$table";
+        $cache_key = "dashboard_filters_appliable_$table" . Session::getLoginUserID();
         if (($filters_ids = $GLPI_CACHE->get($cache_key)) !== null) {
             return $filters_ids;
         }
