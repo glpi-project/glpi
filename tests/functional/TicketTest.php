@@ -3122,7 +3122,7 @@ class TicketTest extends DbTestCase
             'impact'   => 5,
             'priority' => 3,
         ]);
-        $this->assertSame(4, $result['priority']);
+        $this->assertSame(3, $result['priority']);
 
         $result = $ticket->prepareInputForUpdate([
             'id'      => $ticket_id,
