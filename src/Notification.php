@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Search\CriteriaFilter;
 use Glpi\Search\FilterableInterface;
 use Glpi\Search\FilterableTrait;
 
@@ -223,10 +224,10 @@ class Notification extends CommonDBTM implements FilterableInterface
         $parent_tabs = parent::defineTabs();
 
         // remove filter tab for items that do not extend CommonDBTM (searchOptions() is needed)
-        if (!is_subclass_of($this->fields['itemtype']::getType(), CommonDBTM::class)) {
+        if (!is_subclass_of($this->fields['itemtype'], CommonDBTM::class)) {
             $parent_tabs = array_filter(
                 $parent_tabs,
-                static fn($key) => str_contains(\Glpi\Search\CriteriaFilter::class, $key),
+                static fn($key) => str_contains(CriteriaFilter::class, $key),
                 ARRAY_FILTER_USE_KEY
             );
         }
