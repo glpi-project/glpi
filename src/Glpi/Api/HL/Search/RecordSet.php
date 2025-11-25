@@ -206,6 +206,9 @@ final class RecordSet
         foreach ($this->records as $schema_name => $dehydrated_records) {
             // Clear lookup cache between schemas just in case.
             $this->search->getContext()->clearFkeyTablesCache();
+            $to_hydrate = [];
+
+            // Collect all IDs to hydrate
             foreach ($dehydrated_records as $row) {
                 unset($row['_itemtype']);
                 // Make sure we have all the needed data
@@ -236,29 +239,56 @@ final class RecordSet
                         continue;
                     }
 
-                    $criteria = $this->getHydrationCriteria($fkey, $table, $itemtype, $schema_name, $ids_to_fetch);
-                    if (empty($criteria['SELECT'])) {
-                        // Nothing new to select
-                        $fetched_records[$table] ??= [];
-                        $fetched_records[$table][$record_ids] = $this->getHydratedPartsOfMainRecord($row);
-                        continue;
+                    if (!array_key_exists($fkey, $to_hydrate)) {
+                        $to_hydrate[$fkey] = [
+                            'table' => $table,
+                            'itemtype' => $itemtype,
+                            'ids' => [],
+                        ];
                     }
+                    $to_hydrate[$fkey]['ids'] = [...$to_hydrate[$fkey]['ids'], ...$ids_to_fetch];
+                }
+            }
 
-                    // Fetch the data for the current dehydrated record
-                    Profiler::getInstance()->resume('RecordSet::hydrate get data for dehydrated records');
-                    $it = $this->search->getDBRead()->request($criteria);
-                    Profiler::getInstance()->pause('RecordSet::hydrate get data for dehydrated records');
-                    $this->search->validateIterator($it);
-                    foreach ($it as $data) {
-                        $cleaned_data = [];
-                        foreach ($data as $k => $v) {
-                            ArrayPathAccessor::setElementByArrayPath($cleaned_data, $k, $v);
-                        }
-                        $fkey_local_name = trim(strrchr($fkey, chr(0x1F)) ?: $fkey, chr(0x1F));
-                        $fetched_records[$table][$data[$fkey_local_name]] = $cleaned_data;
+            // Do the actual requests to fetch the data for the dehydrated records
+            foreach ($to_hydrate as $fkey => $info) {
+                $table = $info['table'];
+                $itemtype = $info['itemtype'];
+                $ids_to_fetch = array_values(array_unique($info['ids']));
+                if (empty($ids_to_fetch)) {
+                    continue;
+                }
+                $criteria = $this->getHydrationCriteria($fkey, $table, $itemtype, $schema_name, $ids_to_fetch);
+
+                if (empty($criteria['SELECT'])) {
+                    // Nothing to select. Security guard to prevent leaking extra data.
+                    $fetched_records[$table] ??= [];
+                    // fill fetched records with the hydrated parts of the main records
+                    foreach ($dehydrated_records as $row) {
+                        $hydrated_row = $this->getHydratedPartsOfMainRecord($row);
+                        $needed_ids = explode(chr(0x1D), $row[$fkey] ?? '');
+                        $needed_ids = array_filter($needed_ids, static fn($id) => $id !== chr(0x0));
+                        $fetched_records[$table][$needed_ids[0]] = $hydrated_row;
                     }
+                    continue;
                 }
 
+                // Fetch the data for the current dehydrated record
+                Profiler::getInstance()->resume('RecordSet::hydrate get data for dehydrated records');
+                $it = $this->search->getDBRead()->request($criteria);
+                Profiler::getInstance()->pause('RecordSet::hydrate get data for dehydrated records');
+                $this->search->validateIterator($it);
+                foreach ($it as $data) {
+                    $cleaned_data = [];
+                    foreach ($data as $k => $v) {
+                        ArrayPathAccessor::setElementByArrayPath($cleaned_data, $k, $v);
+                    }
+                    $fkey_local_name = trim(strrchr($fkey, chr(0x1F)) ?: $fkey, chr(0x1F));
+                    $fetched_records[$table][$data[$fkey_local_name]] = $cleaned_data;
+                }
+            }
+
+            foreach ($dehydrated_records as $row) {
                 $hydrated_records[] = $this->assembleHydratedRecords($row, $schema_name, $fetched_records);
             }
         }
