@@ -172,7 +172,7 @@ class Certificate_Item extends CommonDBRelation
      *
      * @param integer $certificates_id the certificate ID
      * @param integer $items_id the item's id
-     * @param string $itemtype the itemtype*
+     * @param string $itemtype the itemtype
      *
      * @return bool
      */
