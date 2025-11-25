@@ -51,11 +51,14 @@ class Domain extends CommonDBTM implements AssignableItemInterface
     public static $rightname = 'domain';
     protected static $forward_entity_to = ['DomainRecord'];
 
+    /** @var bool */
     public $can_be_translated = false;
 
     public $dohistory        = true;
+    /** @var bool */
     protected $usenotepadrights = true;
     protected $usenotepad       = true;
+    /** @var string */
     public static $tags             = '[DOMAIN_NAME]';
 
     public function getCloneRelations(): array
@@ -261,6 +264,11 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         return $tab;
     }
 
+    /**
+     * @param ?class-string<CommonDBTM> $itemtype
+     *
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
         $tab = [];
@@ -336,6 +344,11 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         return $ong;
     }
 
+    /**
+     * @param array $input
+     *
+     * @return array
+     */
     private function prepareInput($input)
     {
         if (isset($input['date_creation']) && empty($input['date_creation'])) {
@@ -376,7 +389,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
      *                   (default -1 : no restriction)
      *    - used : array / Already used items ID: not to display in dropdown (default empty)
      *
-     * @param $options array of possible options
+     * @param array $options possible options
      *
      * @return string|int string (rendered html) if $option['display'] is false, else int (rand value)
      * */
@@ -603,6 +616,11 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
+    /**
+     * @param string $name
+     *
+     * @return array
+     */
     public static function cronInfo($name)
     {
         switch ($name) {
@@ -776,10 +794,10 @@ class Domain extends CommonDBTM implements AssignableItemInterface
     /**
      * Type than could be linked to a Rack
      *
-     * @param $all boolean, all type, or only allowed ones
+     * @param bool  $all all types, or only allowed ones
      *
      * @return array of types
-     * */
+     */
     public static function getTypes($all = false)
     {
         global $CFG_GLPI;
@@ -815,6 +833,12 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         );
     }
 
+    /**
+     * @param array $used
+     * @param int $domaintype
+     *
+     * @return array
+     */
     public static function getUsed(array $used, $domaintype)
     {
         global $DB;
@@ -835,6 +859,9 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         return $used;
     }
 
+    /**
+     * @return bool
+     */
     public static function canManageRecords()
     {
         return static::canView() && count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] ?? []) > 0;
@@ -873,6 +900,9 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         return false;
     }
 
+    /**
+     * @return string
+     */
     public function getCanonicalName()
     {
         return rtrim($this->fields['name'], '.') . '.';

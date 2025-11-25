@@ -51,8 +51,10 @@ class DBmysqlIterator implements SeekableIterator, Countable
      */
     private $conn;
     // Current SQL query
+    /** @var ?string */
     private $sql;
     // Current result
+    /** @var mysqli_result|bool  */
     private $res = false;
 
     /**
@@ -71,10 +73,10 @@ class DBmysqlIterator implements SeekableIterator, Countable
      * Current pointer position.
      * @var int
      */
-    private $position = null;
+    private ?int $position = null;
 
     //Known query operators
-    private $allowed_operators = [
+    private array $allowed_operators = [
         '=',
         '!=',
         '<',
@@ -339,7 +341,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @param string|array $clause Clause parameters
      *
-     * @reutn string
+     * @return string
      */
     public function handleOrderClause($clause)
     {
@@ -646,6 +648,11 @@ class DBmysqlIterator implements SeekableIterator, Countable
         };
     }
 
+    /**
+     * @param mixed $value
+     *
+     * @return mixed
+     */
     private function analyseCriterionValue($value)
     {
         $crit_value = null;

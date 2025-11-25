@@ -523,12 +523,12 @@ TWIG, $twig_params);
     /**
      * @since 0.90
      *
-     * @param $item
-     * @param $withtemplate    (default 0)
-     * @param $options         array
+     * @param CommonDBTM $item
+     * @param int $withtemplate    (default 0)
+     * @param array $options
      *
      * @return boolean
-     **/
+     */
     public static function showAddFormForItem(CommonDBTM $item, $withtemplate = 0, $options = [])
     {
         global $CFG_GLPI, $DB;
@@ -612,6 +612,8 @@ TWIG, $twig_params);
      * @param CommonDBTM $item
      * @param integer $withtemplate
      * @param array $options
+     *
+     * @return void
      */
     public static function showListForItem(CommonDBTM $item, $withtemplate = 0, $options = [])
     {

@@ -117,6 +117,9 @@ class Central extends CommonGLPI
         return true;
     }
 
+    /**
+     * @return void
+     */
     public function showGlobalDashboard()
     {
         echo "<table class='tab_cadre_central'>";
@@ -135,6 +138,8 @@ class Central extends CommonGLPI
 
     /**
      * Show the central global view
+     *
+     * @return void
      **/
     public static function showGlobalView()
     {
@@ -172,7 +177,9 @@ class Central extends CommonGLPI
 
     /**
      * Show the central personal view
-     **/
+     *
+     * @return void
+     */
     public static function showMyView()
     {
         $showticket  = Session::haveRightsOr(
@@ -347,7 +354,9 @@ class Central extends CommonGLPI
      * Show the central RSS view
      *
      * @since 0.84
-     **/
+     *
+     * @return void
+     */
     public static function showRSSView()
     {
 
@@ -385,7 +394,9 @@ class Central extends CommonGLPI
 
     /**
      * Show the central group view
-     **/
+     *
+     * @return void
+     */
     public static function showGroupView()
     {
 
@@ -633,6 +644,9 @@ class Central extends CommonGLPI
     }
 
 
+    /**
+     * @return void
+     */
     public static function showMessages()
     {
 

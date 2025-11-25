@@ -390,6 +390,11 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
         return $tab;
     }
 
+    /**
+     * @param string $name
+     *
+     * @return array
+     */
     public static function cronInfo($name)
     {
         return ['description' => __('Send alarms on cartridges')];
@@ -402,7 +407,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
      *
      * @return int
      * @used-by CronTask
-     **/
+     */
     public static function cronCartridge($task = null)
     {
         global $CFG_GLPI, $DB;
@@ -590,6 +595,9 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
         return false;
     }
 
+    /**
+     * @return array
+     */
     public function getEvents()
     {
         return ['alert' => __('Send alarms on cartridges')];

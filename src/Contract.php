@@ -177,6 +177,9 @@ class Contract extends CommonDBTM implements StateInterface
         return true;
     }
 
+    /**
+     * @return array
+     */
     public static function rawSearchOptionsToAdd()
     {
         $tab = [];
@@ -1059,6 +1062,11 @@ class Contract extends CommonDBTM implements StateInterface
         return $out;
     }
 
+    /**
+     * @param string $name
+     *
+     * @return array
+     */
     public static function cronInfo($name)
     {
         return ['description' => __('Send alarms on contracts')];
@@ -1634,11 +1642,17 @@ class Contract extends CommonDBTM implements StateInterface
         }
     }
 
+    /**
+     * @return string
+     */
     public static function getIcon()
     {
         return "ti ti-writing-sign";
     }
 
+    /**
+     * @return array
+     */
     public static function getNotExpiredCriteria()
     {
         global $DB;

@@ -75,6 +75,11 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
         return '';
     }
 
+    /**
+     * @param Domain $item
+     *
+     * @return int
+     */
     public static function countForDomain(Domain $item)
     {
         return countElementsInTable(
@@ -529,6 +534,12 @@ TWIG, $twig_params);
         ]);
     }
 
+    /**
+     * @param Domain $domain
+     * @param string $name
+     *
+     * @return string
+     */
     public static function getDisplayName(Domain $domain, $name)
     {
         $name_txt = rtrim(

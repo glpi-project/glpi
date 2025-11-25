@@ -54,13 +54,29 @@ use function Safe\preg_split;
  **/
 class DBmysql
 {
-    //! Database Host - string or Array of string (round-robin)
+    /**
+     * Database Host - string or Array of string (round-robin)
+     *
+     * @var string|string[]
+     */
     public $dbhost             = "";
-    //! Database User
+    /**
+     * Database User
+     *
+     * @var string
+     */
     public $dbuser             = "";
-    //! Database Password
+    /**
+     * Database Password
+     *
+     * @var string
+     */
     public $dbpassword         = "";
-    //! Default Database
+    /**
+     * Default Database
+     *
+     * @var string
+     */
     public $dbdefault          = "";
 
     /**
@@ -69,7 +85,11 @@ class DBmysql
      */
     protected $dbh;
 
-    // Slave management
+    /**
+     * Slave management
+     *
+     * @var bool
+     */
     public $slave              = false;
 
     /**
@@ -164,15 +184,19 @@ class DBmysql
     /** Is it a first connection ?
      * Indicates if the first connection attempt is successful or not
      * if first attempt fail -> display a warning which indicates that glpi is in readonly
-     **/
+     *
+     * @var bool
+     */
     public $first_connection   = true;
     // Is connected to the DB ?
+    /** @var bool */
     public $connected          = false;
 
     //to calculate execution time
+    /** @var bool|float */
     public $execution_time          = false;
 
-    private $cache_disabled = false;
+    private bool $cache_disabled = false;
 
     private string $current_query;
 
@@ -1488,6 +1512,14 @@ class DBmysql
         return $this->doQuery($query);
     }
 
+    /**
+     * @param string $table
+     * @param array $params
+     * @param array $where
+     * @param bool $onlyone
+     *
+     * @return string
+     */
     public function buildUpdateOrInsert($table, $params, $where, $onlyone = true): string
     {
         $req = $this->request(array_merge(['FROM' => $table], $where));
@@ -1978,7 +2010,7 @@ class DBmysql
      * @see DBmysql::removeSqlComments()
      * © 2011 PHPBB Group
      *
-     * @param $string $sql SQL statements
+     * @param string $sql SQL statements
      *
      * @return string
      */

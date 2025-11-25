@@ -138,6 +138,11 @@ class Datacenter extends CommonDBTM
         return $tab;
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     *
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype)
     {
         $tab = [];

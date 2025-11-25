@@ -38,6 +38,7 @@
  **/
 abstract class AbstractQuery
 {
+    /** @var ?string */
     protected $alias = null;
 
     /**

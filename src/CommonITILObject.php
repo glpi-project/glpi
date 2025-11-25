@@ -7973,7 +7973,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     {
 
         if ($item instanceof Document_Item) {
-            Document_Item::showAddFormForItem($params['parent'], '');
+            Document_Item::showAddFormForItem($params['parent'], 0);
         } elseif ($item->getType() == $params['parent']->getType()) {
             self::showEditDescriptionForm($params['parent']);
         } elseif ($item->can(-1, CREATE, $params)) {

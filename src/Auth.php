@@ -1700,6 +1700,11 @@ class Auth extends CommonGLPI
 
     /**
      * Display the authentication source dropdown for login form
+     *
+     * @param bool $display
+     * @param int $rand
+     *
+     * @return string
      */
     public static function dropdownLogin(bool $display = true, $rand = 1)
     {
@@ -1723,6 +1728,9 @@ class Auth extends CommonGLPI
         return $out;
     }
 
+    /**
+     * @return string
+     */
     public static function getIcon()
     {
         return "ti ti-login";
