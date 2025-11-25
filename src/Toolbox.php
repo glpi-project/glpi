@@ -1318,13 +1318,14 @@ class Toolbox
      * @param string  $url    URL to retrieve
      * @param string  $msgerr set if problem encountered (default NULL)
      * @param integer $rec    internal use only Must be 0 (default 0)
+     * @param array   $eopts  CURL options (or 'proxy_excluded')
      *
      * @return string content of the page (or empty)
      **/
-    public static function getURLContent($url, &$msgerr = null, $rec = 0)
+    public static function getURLContent($url, &$msgerr = null, $rec = 0, array $eopts = [])
     {
         $curl_error = null;
-        $content = self::callCurl($url, [], $msgerr, $curl_error, true);
+        $content = self::callCurl($url, $eopts, $msgerr, $curl_error, true);
         return $content;
     }
 
