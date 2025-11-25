@@ -84,7 +84,7 @@ class Filter extends CommonDBChild
             }
         }
 
-        $GLPI_CACHE->set($cache_key, $filters_ids);
+        $GLPI_CACHE->set($cache_key, $filters_ids, 5);
 
         return $filters_ids;
     }
