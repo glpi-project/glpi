@@ -1050,9 +1050,15 @@ class Toolbox
      **/
     public static function checkNewVersionAvailable()
     {
-        //parse github releases (get last version number)
+        global $CFG_GLPI;
+
+        //parse GitHub releases (get last version number)
         $error = "";
-        $json_gh_releases = self::getURLContent("https://api.github.com/repos/glpi-project/glpi/releases", $error);
+        $eopts = [];
+        if (in_array(GLPINetwork::class, $CFG_GLPI['proxy_exclusions'])) {
+            $eopts['proxy_excluded'] = true;
+        }
+        $json_gh_releases = self::getURLContent("https://api.github.com/repos/glpi-project/glpi/releases", $error, 0, $eopts);
         if (empty($json_gh_releases)) {
             return $error;
         }

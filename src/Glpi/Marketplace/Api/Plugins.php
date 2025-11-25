@@ -77,10 +77,17 @@ class Plugins
 
     public function __construct()
     {
-        // init guzzle client with base options
-        $this->httpClient = Toolbox::getGuzzleClient([
+        global $CFG_GLPI;
+
+        $eopts = [
             'base_uri'        => GLPI_MARKETPLACE_PLUGINS_API_URI,
-        ]);
+        ];
+        if (in_array(GLPINetwork::class, $CFG_GLPI['proxy_exclusions'])) {
+            $eopts['proxy_excluded'] = true;
+        }
+
+        // init guzzle client with base options
+        $this->httpClient = Toolbox::getGuzzleClient($eopts);
     }
 
 

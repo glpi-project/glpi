@@ -879,6 +879,7 @@ class Config extends CommonDBTM
             'possible_proxy_exclusions' => array_merge(
                 [
                     Agent::class => Agent::getTypeName(),
+                    GLPINetwork::class => GLPINetwork::getTypeName(),
                 ],
                 $CFG_GLPI['possible_proxy_exclusions']
             ),
