@@ -127,6 +127,32 @@ class AssignableItemTest extends \DbTestCase
     }
 
     /**
+     * Test form with an empty string as groups_id, as the form does in front
+     *
+     * Reproduce a bug despite the form doesn't really use these fields ("array_merge(): Argument #1 must be of type array, string given")
+     *
+     * @param class-string<AssignableItem> $class
+     **/
+    #[DataProvider('itemtypeProvider')]
+    public function testAddNoGroups(string $class): void
+    {
+        $this->login(); // login to bypass some rights checks (e.g. on domain records)
+
+        $input = $this->getMinimalCreationInput($class);
+        $item_1 = $this->createItem(
+            $class,
+            $input + [
+                $class::getNameField() => __FUNCTION__ . ' 1',
+                '_groups_id'             => '',
+                '_groups_id_tech'        => '',
+            ]
+        );
+
+        $this->assertEqualsCanonicalizing([], $item_1->fields['groups_id']);
+        $this->assertEqualsCanonicalizing([], $item_1->fields['groups_id_tech']);
+    }
+
+    /**
      * Test the loading item which still have integer values for groups_id/groups_id_tech (0 for no group).
      * The value should be automatically normalized to an array. If the group was '0', the array should be empty.
      *

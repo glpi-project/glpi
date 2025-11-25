@@ -5811,8 +5811,15 @@ class CommonDBTM extends CommonGLPI
             $existing_data['_groups_id_tech'] = $this->input['_groups_id_tech'] ?? [];
 
             // retrieve existing _groups_id_tech & _groups_id
-            $existing_data['_groups_id'] = array_merge($existing_data['_groups_id'], $this->fields['groups_id'] ?? []); // on add fields['groups_id'] is not set
-            $existing_data['_groups_id_tech'] = array_merge($existing_data['_groups_id_tech'], $this->fields['groups_id_tech'] ?? []);
+            $existing_data['_groups_id'] = array_merge(
+                $existing_data['_groups_id'],
+                is_array($this->fields['groups_id'] ?? null) ? $this->fields['groups_id'] : []
+            );
+
+            $existing_data['_groups_id_tech'] = array_merge(
+                $existing_data['_groups_id_tech'],
+                is_array($this->fields['groups_id_tech'] ?? null) ? $this->fields['groups_id_tech'] : []
+            );
 
             // Execute all defined rules with the specified condition (add or update)
             $output = $ruleasset->processAllRules($input, [], [], [
