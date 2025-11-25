@@ -41,14 +41,8 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 if (isset($_POST["projects_id"])) {
-    $container_id = 'results_projects' . $_POST["rand"];
-
     if ($_POST["projects_id"] > 0) {
         $condition = ['glpi_projecttasks.projects_id' => $_POST['projects_id']];
-
-        if (isset($_POST['condition']) && is_array($_POST['condition'])) {
-            $condition = array_merge($condition, $_POST['condition']);
-        }
 
         $dropdown_params = [
             'itemtype'        => ProjectTask::getType(),
