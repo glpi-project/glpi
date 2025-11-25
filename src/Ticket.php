@@ -940,7 +940,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 (isset($input['urgency']) && $input['urgency'] != $this->fields['urgency'])
                 || (isset($input['impact']) && $input['impact'] != $this->fields['impact'])
             )
-            && (!$canpriority || !isset($input['priority']) || $input['priority'] == $this->fields['priority'])
+            && (!$canpriority || !isset($input['priority']))
         ) {
             if (!isset($input['urgency'])) {
                 $input['urgency'] = $this->fields['urgency'];
