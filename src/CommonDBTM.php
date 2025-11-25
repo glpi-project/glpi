@@ -1729,12 +1729,12 @@ class CommonDBTM extends CommonGLPI
 
                                     // no break
                                 default:
-                                    $ischanged = ($this->fields[$key] != $this->input[$key]);
+                                    $ischanged = ($this->fields[$key] !== $this->input[$key]);
                                     break;
                             }
                         } else {
                             // No searchoption case
-                            $ischanged = ($this->fields[$key] != $this->input[$key]);
+                            $ischanged = ($this->fields[$key] !== $this->input[$key]);
                         }
                         if ($ischanged) {
                             if ($key != "id") {

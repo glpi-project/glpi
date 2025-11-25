@@ -46,6 +46,7 @@ use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use SoftwareVersion;
+use TicketSatisfaction;
 
 /* Test for inc/commondbtm.class.php */
 
@@ -924,6 +925,20 @@ class CommonDBTMTest extends DbTestCase
         $this->assertSame('renamed', $computer->fields['name']);
         $this->assertTrue($computer->getFromDB($computerID));
         $this->assertSame('renamed', $computer->fields['name']);
+
+        $satisfaction = new TicketSatisfaction();
+        $satisfactionID = $satisfaction->add([
+            'tickets_id'   => 0,
+            'satisfaction_scaled_to_5' => 0,
+        ]);
+        $this->assertTrue(
+            $satisfaction->update([
+                'id' => $satisfactionID,
+                'tickets_id'   => 0, // this key is needed to update without error
+                'satisfaction_scaled_to_5' => null,
+            ])
+        );
+        $this->assertSame($satisfaction->fields['satisfaction_scaled_to_5'], null);
     }
 
     public function testEmptyUpdateInDB()
