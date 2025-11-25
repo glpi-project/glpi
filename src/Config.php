@@ -39,6 +39,7 @@ use Glpi\Cache\CacheManager;
 use Glpi\Dashboard\Grid;
 use Glpi\Event;
 use Glpi\Helpdesk\HelpdeskTranslation;
+use Glpi\Mail\SMTP\OauthConfig;
 use Glpi\Plugin\Hooks;
 use Glpi\System\Diagnostic\SourceCodeIntegrityChecker;
 use Glpi\System\RequirementsManager;
@@ -882,6 +883,7 @@ class Config extends CommonDBTM
                     GLPINetwork::class => GLPINetwork::getTypeName(),
                     RSSFeed::class => RSSFeed::getTypeName(),
                     Planning::class => Planning::getTypeName(),
+                    OauthConfig::class => __('SMTP OAuth Authentication'),
                 ],
                 $CFG_GLPI['possible_proxy_exclusions']
             ),
