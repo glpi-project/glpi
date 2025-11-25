@@ -627,51 +627,53 @@ final class Search
             // No validation done because we know the inner result isn't a mysqli result
         }
 
-        if ($this->context->isUnionSearchMode()) {
-            // group by _itemtype
-            foreach ($iterator as $row) {
-                if (!isset($records[$row['_itemtype']])) {
-                    $records[$row['_itemtype']] = [];
-                }
-                $records[$row['_itemtype']][$row['id']] = $row;
-            }
-        } else {
-            foreach ($iterator as $row) {
-                if (!isset($records[$this->context->getSchemaItemtype()])) {
-                    $records[$this->context->getSchemaItemtype()] = [];
-                }
-                $records[$this->context->getSchemaItemtype()][$row['id']] = $row;
-            }
-        }
-
-        if ($this->criteriaHasJoinFilter($criteria['WHERE'] ?? [])) {
-            // There was a filter on joined data, so the IDs we got are only the ones that match the filter.
-            // We want to get all related items in the result and not just the ones that match the filter.
-            $criteria['WHERE'] = [];
+        if (!$count_only) {
             if ($this->context->isUnionSearchMode()) {
-                foreach ($records as $schema_name => $type_records) {
-                    if (!isset($criteria['WHERE']['OR'])) {
-                        $criteria['WHERE']['OR'] = [];
+                // group by _itemtype
+                foreach ($iterator as $row) {
+                    if (!isset($records[$row['_itemtype']])) {
+                        $records[$row['_itemtype']] = [];
                     }
-                    $criteria['WHERE']['OR'][] = [
-                        'id' => array_column($type_records, 'id'),
-                        '_itemtype' => $schema_name,
-                    ];
+                    $records[$row['_itemtype']][$row['id']] = $row;
                 }
             } else {
-                $type_records = $records[$this->context->getSchemaItemtype()];
-                $criteria['WHERE'] = [
-                    '_.id' => array_column($type_records, 'id'),
-                ];
-            }
-            $iterator = $this->db_read->request($criteria);
-            $this->validateIterator($iterator);
-            foreach ($iterator as $data) {
-                $itemtype = $this->context->isUnionSearchMode() ? $data['_itemtype'] : $this->context->getSchemaItemtype();
-                if (!isset($records[$itemtype])) {
-                    $records[$itemtype] = [];
+                foreach ($iterator as $row) {
+                    if (!isset($records[$this->context->getSchemaItemtype()])) {
+                        $records[$this->context->getSchemaItemtype()] = [];
+                    }
+                    $records[$this->context->getSchemaItemtype()][$row['id']] = $row;
                 }
-                $records[$itemtype][$data['id']] = $data;
+            }
+
+            if ($this->criteriaHasJoinFilter($criteria['WHERE'] ?? [])) {
+                // There was a filter on joined data, so the IDs we got are only the ones that match the filter.
+                // We want to get all related items in the result and not just the ones that match the filter.
+                $criteria['WHERE'] = [];
+                if ($this->context->isUnionSearchMode()) {
+                    foreach ($records as $schema_name => $type_records) {
+                        if (!isset($criteria['WHERE']['OR'])) {
+                            $criteria['WHERE']['OR'] = [];
+                        }
+                        $criteria['WHERE']['OR'][] = [
+                            'id' => array_column($type_records, 'id'),
+                            '_itemtype' => $schema_name,
+                        ];
+                    }
+                } else {
+                    $type_records = $records[$this->context->getSchemaItemtype()];
+                    $criteria['WHERE'] = [
+                        '_.id' => array_column($type_records, 'id'),
+                    ];
+                }
+                $iterator = $this->db_read->request($criteria);
+                $this->validateIterator($iterator);
+                foreach ($iterator as $data) {
+                    $itemtype = $this->context->isUnionSearchMode() ? $data['_itemtype'] : $this->context->getSchemaItemtype();
+                    if (!isset($records[$itemtype])) {
+                        $records[$itemtype] = [];
+                    }
+                    $records[$itemtype][$data['id']] = $data;
+                }
             }
         }
 
