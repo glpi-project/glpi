@@ -41,6 +41,7 @@ use Glpi\Features\Clonable;
  **/
 class ITILFollowupTemplate extends AbstractITILChildTemplate
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     // From CommonDBTM

@@ -71,6 +71,7 @@ use function Safe\strtotime;
  **/
 abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, TeamworkInterface
 {
+    /** @use Clonable<static> */
     use Clonable;
     use Timeline;
     use Kanban;

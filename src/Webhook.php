@@ -60,6 +60,7 @@ use function Safe\json_encode;
 
 class Webhook extends CommonDBTM implements FilterableInterface
 {
+    /** @use Clonable<static> */
     use Clonable;
     use FilterableTrait;
 

@@ -47,6 +47,7 @@ use function Safe\strtotime;
  */
 class Certificate extends CommonDBTM implements AssignableItemInterface, StateInterface
 {
+    /** @use Clonable<static> */
     use Clonable;
     use Glpi\Features\State;
     use AssignableItem {

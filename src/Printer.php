@@ -48,6 +48,7 @@ use Glpi\Socket;
  **/
 class Printer extends CommonDBTM implements AssignableItemInterface, StateInterface
 {
+    /** @use Clonable<static> */
     use Clonable;
     use Inventoriable;
     use Glpi\Features\State;

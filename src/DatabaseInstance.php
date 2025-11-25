@@ -41,6 +41,7 @@ use Glpi\Features\StateInterface;
 
 class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, StateInterface
 {
+    /** @use Clonable<static> */
     use Clonable;
     use Inventoriable;
     use Glpi\Features\State;

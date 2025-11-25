@@ -49,6 +49,7 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
         prepareInputForAdd as prepareInputForAddAssignableItem;
     }
     use DCBreadcrumb;
+    /** @use Clonable<static> */
     use Clonable;
     use Glpi\Features\State;
 

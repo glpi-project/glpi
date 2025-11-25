@@ -51,6 +51,7 @@ use Glpi\Toolbox\ArrayNormalizer;
  **/
 class Profile extends CommonDBTM implements LinkableToTilesInterface
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     // Specific ones

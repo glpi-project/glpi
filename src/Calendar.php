@@ -41,6 +41,7 @@ use function Safe\strtotime;
  **/
 class Calendar extends CommonDropdown
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     // From CommonDBTM

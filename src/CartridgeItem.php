@@ -51,6 +51,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
         prepareInputForAdd as prepareInputForAddAssignableItem;
         prepareInputForUpdate as prepareInputForUpdateAssignableItem;
     }
+    /** @use Clonable<static> */
     use Clonable;
 
     // From CommonDBTM

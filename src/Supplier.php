@@ -45,6 +45,7 @@ use Glpi\Features\Clonable;
 class Supplier extends CommonDBTM
 {
     use AssetImage;
+    /** @use Clonable<static> */
     use Clonable;
 
     // From CommonDBTM

@@ -45,6 +45,7 @@ use function Safe\mktime;
  **/
 class Cartridge extends CommonDBRelation
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     // From CommonDBTM

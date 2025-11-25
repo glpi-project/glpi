@@ -72,6 +72,7 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
         post_updateItem as post_updateItemFromAssignableItem;
         canView as canViewFromAssignableItem;
     }
+    /** @use Clonable<static> */
     use Clonable;
     use \Glpi\Features\State;
     use Inventoriable;

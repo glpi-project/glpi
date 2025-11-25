@@ -38,6 +38,7 @@ use Glpi\Features\Clonable;
 
 class Appliance_Item extends CommonDBRelation
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     public static $itemtype_1 = 'Appliance';

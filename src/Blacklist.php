@@ -44,6 +44,7 @@ use function Safe\preg_match;
  **/
 class Blacklist extends CommonDropdown
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     // From CommonDBTM

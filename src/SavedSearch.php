@@ -51,6 +51,7 @@ use function Safe\preg_replace;
  **/
 class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     public static $rightname               = 'bookmark_public';

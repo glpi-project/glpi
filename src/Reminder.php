@@ -55,6 +55,7 @@ class Reminder extends CommonDBVisible implements
         post_getEmpty as trait_post_getEmpty;
     }
     use VobjectConverterTrait;
+    /** @use Clonable<static> */
     use Clonable;
 
     // From CommonDBTM

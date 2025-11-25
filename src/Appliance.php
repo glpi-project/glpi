@@ -44,6 +44,7 @@ use Glpi\Features\StateInterface;
  **/
 class Appliance extends CommonDBTM implements AssignableItemInterface, StateInterface
 {
+    /** @use Clonable<static> */
     use Clonable;
     use Glpi\Features\State;
     use AssetImage;

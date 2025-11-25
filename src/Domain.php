@@ -40,6 +40,7 @@ use Glpi\Features\Clonable;
 /// Class Domain
 class Domain extends CommonDBTM implements AssignableItemInterface
 {
+    /** @use Clonable<static> */
     use Clonable;
     use AssignableItem {
         prepareInputForAdd as prepareInputForAddAssignableItem;

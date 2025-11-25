@@ -46,6 +46,7 @@ use Glpi\Features\StateInterface;
 class Enclosure extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInterface, StateInterface
 {
     use DCBreadcrumb;
+    /** @use Clonable<static> */
     use Clonable;
     use Glpi\Features\State;
     use AssignableItem {

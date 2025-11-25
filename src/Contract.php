@@ -45,6 +45,7 @@ use function Safe\strtotime;
  */
 class Contract extends CommonDBTM implements StateInterface
 {
+    /** @use Clonable<static> */
     use Clonable;
     use Glpi\Features\State;
 
