@@ -34,10 +34,10 @@
 
 namespace Glpi\Tests\Glpi\Form\QuestionType;
 
-use Glpi\Tests\DbTestCase;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeActorsDefaultValueConfig;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Group;

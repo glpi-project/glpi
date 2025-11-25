@@ -37,9 +37,9 @@ namespace tests\units\Glpi\Api\HL\Controller;
 use Entity;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Http\Request;
+use Glpi\Tests\HLAPITestCase;
 use Project;
 use ProjectTask;
-use Glpi\Tests\HLAPITestCase;
 
 class ProjectControllerTest extends HLAPITestCase
 {

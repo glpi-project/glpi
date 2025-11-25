@@ -35,8 +35,8 @@
 namespace tests\units;
 
 use AbstractITILChildTemplate;
-use ITILFollowupTemplate;
 use Glpi\Tests\AbstractITILChildTemplateTest;
+use ITILFollowupTemplate;
 
 class ITILFollowupTemplateTest extends AbstractITILChildTemplateTest
 {

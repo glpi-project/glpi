@@ -34,13 +34,13 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
 use Generator;
 use Glpi\Api\Deprecated\TicketFollowup;
 use Glpi\Features\Clonable;
 use Glpi\Features\DCBreadcrumb;
 use Glpi\Features\Kanban;
 use Glpi\Features\PlanningEvent;
+use Glpi\Tests\DbTestCase;
 use ITILFollowup;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;

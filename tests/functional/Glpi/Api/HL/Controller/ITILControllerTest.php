@@ -39,10 +39,10 @@ use ChangeValidation;
 use CommonITILObject;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Http\Request;
+use Glpi\Tests\HLAPITestCase;
 use Problem;
 use Ticket;
 use TicketValidation;
-use Glpi\Tests\HLAPITestCase;
 
 class ITILControllerTest extends HLAPITestCase
 {

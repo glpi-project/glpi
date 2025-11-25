@@ -35,9 +35,9 @@
 namespace tests\units {
 
     use AppendIterator;
-    use Glpi\Tests\DbTestCase;
     use DirectoryIterator;
     use Error;
+    use Glpi\Tests\DbTestCase;
     use Glpi\Toolbox\VersionParser;
     use org\bovigo\vfs\vfsStream;
     use PHPUnit\Framework\Attributes\DataProvider;

@@ -36,9 +36,9 @@ namespace Glpi\Form\Condition\ConditionHandler;
 
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
+use Glpi\Tests\AbstractConditionHandlerTest;
 use Glpi\Urgency;
 use Override;
-use Glpi\Tests\AbstractConditionHandlerTest;
 
 final class UrgencyConditionHandlerTest extends AbstractConditionHandlerTest
 {

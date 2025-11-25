@@ -35,9 +35,9 @@
 namespace tests\units;
 
 use AbstractITILChildTemplate;
+use Glpi\Tests\AbstractITILChildTemplateTest;
 use ITILValidationTemplate as GlobalITILValidationTemplate;
 use ITILValidationTemplate_Target;
-use Glpi\Tests\AbstractITILChildTemplateTest;
 
 class ITILValidationTemplateTest extends AbstractITILChildTemplateTest
 {

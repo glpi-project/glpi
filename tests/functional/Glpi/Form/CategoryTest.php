@@ -34,10 +34,10 @@
 
 namespace tests\units\Glpi\Form;
 
-use Glpi\Tests\DbTestCase;
 use DropdownTranslation;
 use Glpi\Form\Category;
 use Glpi\Form\Form;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use PHPUnit\Framework\Attributes\DataProvider;

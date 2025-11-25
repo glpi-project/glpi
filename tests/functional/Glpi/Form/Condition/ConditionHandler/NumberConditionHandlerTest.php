@@ -36,8 +36,8 @@ namespace Glpi\Form\Condition\ConditionHandler;
 
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
-use Override;
 use Glpi\Tests\AbstractConditionHandlerTest;
+use Override;
 
 final class NumberConditionHandlerTest extends AbstractConditionHandlerTest
 {

@@ -36,8 +36,8 @@ namespace tests\units;
 
 use AuthLDAP;
 use AuthMail;
-use Glpi\Tests\DbTestCase;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\Auth\HelpersTrait;
 
 class AuthLdapTest extends DbTestCase

@@ -34,9 +34,9 @@
 
 namespace tests\units\Glpi\Form\QuestionType;
 
-use Glpi\Tests\DbTestCase;
 use Glpi\Form\QuestionType\QuestionTypeDropdown;
 use Glpi\Form\QuestionType\QuestionTypeDropdownExtraDataConfig;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 

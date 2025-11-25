@@ -34,9 +34,9 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
 use Glpi\Socket;
 use Glpi\SocketModel;
+use Glpi\Tests\DbTestCase;
 
 /* Test for inc/networkport.class.php */
 

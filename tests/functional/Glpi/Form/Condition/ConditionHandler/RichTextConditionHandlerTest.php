@@ -36,8 +36,8 @@ namespace Glpi\Form\Condition\ConditionHandler;
 
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
-use Override;
 use Glpi\Tests\AbstractConditionHandlerTest;
+use Override;
 
 final class RichTextConditionHandlerTest extends AbstractConditionHandlerTest
 {

@@ -36,7 +36,6 @@ namespace tests\units\Glpi\Form\Migration;
 
 use AbstractRightsDropdown;
 use Computer;
-use Glpi\Tests\DbTestCase;
 use Entity;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Form\AccessControl\ControlType\AllowList;
@@ -88,6 +87,7 @@ use Glpi\Form\Section;
 use Glpi\Message\MessageType;
 use Glpi\Migration\GenericobjectPluginMigration;
 use Glpi\Migration\PluginMigrationResult;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormTesterTrait;
 use GlpiPlugin\Tester\Form\QuestionTypeIpConverter;
 use Group;

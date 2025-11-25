@@ -36,8 +36,8 @@ namespace tests\units\Glpi\RichText;
 
 use CommonITILActor;
 use CommonITILObject;
-use Glpi\Tests\DbTestCase;
 use Glpi\RichText\UserMention;
+use Glpi\Tests\DbTestCase;
 use Notification;
 use Notification_NotificationTemplate;
 use NotificationTarget;

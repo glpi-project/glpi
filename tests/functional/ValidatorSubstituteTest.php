@@ -36,8 +36,8 @@ namespace tests\units;
 
 use Auth;
 use Computer;
-use Glpi\Tests\DbTestCase;
 use DbUtils;
+use Glpi\Tests\DbTestCase;
 use Preference;
 use Session;
 use User;

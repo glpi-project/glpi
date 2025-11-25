@@ -34,12 +34,12 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
-use Glpi\Tests\DbTestCase;
 use DisplayPreference;
 use Glpi\Asset\Asset;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
 use Glpi\Asset\Capacity\HasOperatingSystemCapacity;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Item_OperatingSystem;
 use Log;

@@ -34,8 +34,8 @@
 
 namespace tests\units\Glpi\Search\Provider;
 
-use Glpi\Tests\DbTestCase;
 use Glpi\Search\Provider\SQLProvider;
+use Glpi\Tests\DbTestCase;
 
 class SQLProviderTest extends DbTestCase
 {

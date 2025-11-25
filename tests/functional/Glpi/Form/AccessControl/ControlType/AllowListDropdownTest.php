@@ -35,8 +35,8 @@
 namespace tests\units\Glpi\Form\AccessControl\ControlType;
 
 use AbstractRightsDropdown;
-use Glpi\Tests\DbTestCase;
 use Glpi\Form\AccessControl\ControlType\AllowListDropdown;
+use Glpi\Tests\DbTestCase;
 use Group;
 use Group_User;
 use Profile;

@@ -34,11 +34,11 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDevicesCapacity;
 use Glpi\Features\Clonable;
 use Glpi\Search\SearchOption;
+use Glpi\Tests\DbTestCase;
 use Item_Devices;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Toolbox;

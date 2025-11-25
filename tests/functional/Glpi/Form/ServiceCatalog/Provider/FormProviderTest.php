@@ -34,13 +34,13 @@
 
 namespace tests\units\Glpi\Form\ServiceCatalog\Provider;
 
-use Glpi\Tests\DbTestCase;
 use Entity;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Category;
 use Glpi\Form\Form;
 use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\Form\ServiceCatalog\Provider\FormProvider;
+use Glpi\Tests\DbTestCase;
 use Session;
 
 class FormProviderTest extends DbTestCase

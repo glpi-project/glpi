@@ -40,8 +40,6 @@ use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
-use Glpi\Tests\FormBuilder;
-use Glpi\Tests\FormTesterTrait;
 use Group;
 use User;
 

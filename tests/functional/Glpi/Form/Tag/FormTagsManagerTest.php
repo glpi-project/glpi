@@ -34,7 +34,6 @@
 
 namespace tests\units\Glpi\Form\Tag;
 
-use Glpi\Tests\DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
@@ -46,6 +45,7 @@ use Glpi\Form\Tag\FormTagsManager;
 use Glpi\Form\Tag\QuestionTagProvider;
 use Glpi\Form\Tag\SectionTagProvider;
 use Glpi\Form\Tag\Tag;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 

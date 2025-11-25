@@ -34,8 +34,8 @@
 
 namespace tests\units\Glpi\Form\Dropdown;
 
-use Glpi\Tests\DbTestCase;
 use Glpi\Form\Dropdown\FormActorsDropdown;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormTesterTrait;
 use Group;
 use PHPUnit\Framework\Attributes\DataProvider;

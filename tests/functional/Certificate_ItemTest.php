@@ -36,10 +36,10 @@ namespace tests\units;
 
 use Certificate;
 use Certificate_Item;
-use Glpi\Tests\DbTestCase;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasCertificatesCapacity;
 use Glpi\Features\Clonable;
+use Glpi\Tests\DbTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 use Toolbox;
 

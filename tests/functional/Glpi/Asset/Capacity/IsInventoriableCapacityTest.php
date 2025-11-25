@@ -34,7 +34,6 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
-use Glpi\Tests\DbTestCase;
 use Entity;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
@@ -44,6 +43,7 @@ use Glpi\Asset\CapacityConfig;
 use Glpi\Inventory\MainAsset\GenericAsset;
 use Glpi\Inventory\MainAsset\GenericNetworkAsset;
 use Glpi\Inventory\MainAsset\GenericPrinterAsset;
+use Glpi\Tests\DbTestCase;
 
 class IsInventoriableCapacityTest extends DbTestCase
 {

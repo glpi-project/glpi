@@ -39,8 +39,8 @@ use Glpi\Form\QuestionType\QuestionTypeDropdown;
 use Glpi\Form\QuestionType\QuestionTypeDropdownExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeRadio;
 use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
-use Override;
 use Glpi\Tests\AbstractConditionHandlerTest;
+use Override;
 
 final class SingleChoiceFromValuesConditionHandlerTest extends AbstractConditionHandlerTest
 {

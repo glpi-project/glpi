@@ -34,11 +34,11 @@
 
 namespace tests\units\Glpi\Asset;
 
-use Glpi\Tests\DbTestCase;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasPeripheralAssetsCapacity;
 use Glpi\Features\Clonable;
+use Glpi\Tests\DbTestCase;
 use Toolbox;
 
 class Asset_PeripheralAssetTest extends DbTestCase

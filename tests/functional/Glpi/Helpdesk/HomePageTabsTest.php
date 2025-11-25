@@ -34,9 +34,9 @@
 
 namespace test\units\Glpi\Helpdesk;
 
-use Glpi\Tests\DbTestCase;
 use Glpi\Dashboard\Right;
 use Glpi\Helpdesk\HomePageTabs;
+use Glpi\Tests\DbTestCase;
 use Profile;
 use Reminder;
 use Reminder_User;

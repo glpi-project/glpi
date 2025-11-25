@@ -34,7 +34,6 @@
 
 namespace Glpi\Tests;
 
-
 abstract class CsvTestCase extends DbTestCase
 {
     /**

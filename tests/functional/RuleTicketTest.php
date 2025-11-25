@@ -34,11 +34,11 @@
 
 namespace tests\units;
 
-use Glpi\Tests\RuleCommonITILObjectTest;
 use CommonITILObject;
 use Contract;
 use ContractType;
 use Entity;
+use Glpi\Tests\RuleCommonITILObjectTest;
 use ITILCategory;
 use ITILFollowup;
 use ITILFollowupTemplate;

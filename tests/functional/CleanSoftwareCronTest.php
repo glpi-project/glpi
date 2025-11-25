@@ -34,8 +34,8 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Tests\DbTestCase;
 
 class CleanSoftwareCronTest extends DbTestCase
 {

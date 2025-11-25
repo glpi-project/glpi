@@ -35,8 +35,8 @@
 namespace tests\units\Glpi\Form\QuestionType;
 
 use CommonITILObject;
-use Glpi\Tests\DbTestCase;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 

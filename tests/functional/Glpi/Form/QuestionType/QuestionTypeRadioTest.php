@@ -34,9 +34,9 @@
 
 namespace tests\units\Glpi\Form\QuestionType;
 
-use Glpi\Tests\DbTestCase;
 use Glpi\Form\QuestionType\QuestionTypeRadio;
 use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 

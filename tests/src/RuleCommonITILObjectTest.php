@@ -48,7 +48,6 @@ use ITILFollowupTemplate;
 use Location;
 use Rule;
 use RuleAction;
-use Glpi\Tests\RuleBuilder;
 use RuleCriteria;
 use Session;
 use SingletonRuleList;

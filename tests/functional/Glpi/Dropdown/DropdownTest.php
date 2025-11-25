@@ -34,8 +34,8 @@
 
 namespace tests\units\Glpi\Dropdown;
 
-use Glpi\Tests\DbTestCase;
 use Glpi\Dropdown\Dropdown;
+use Glpi\Tests\DbTestCase;
 
 class DropdownTest extends DbTestCase
 {

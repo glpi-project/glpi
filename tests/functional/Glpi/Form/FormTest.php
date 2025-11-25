@@ -35,7 +35,6 @@
 namespace tests\units\Glpi\Form;
 
 use CronTask;
-use Glpi\Tests\DbTestCase;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\ControlType\DirectAccess;
@@ -63,6 +62,7 @@ use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\Section;
 use Glpi\Helpdesk\Tile\FormTile;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Glpi\UI\IllustrationManager;

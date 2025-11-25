@@ -34,8 +34,8 @@
 
 namespace tests\units\Glpi\UI;
 
-use Glpi\UI\IllustrationManager;
 use Glpi\Tests\GLPITestCase;
+use Glpi\UI\IllustrationManager;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 final class IllustrationManagerTest extends GLPITestCase

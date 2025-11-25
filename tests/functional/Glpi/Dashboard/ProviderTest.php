@@ -34,10 +34,10 @@
 
 namespace tests\units\Glpi\Dashboard;
 
-use Glpi\Tests\DbTestCase;
 use Glpi\CustomAsset\Test01Asset;
 use Glpi\CustomAsset\Test01AssetType;
 use Glpi\Dashboard\Provider;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Reminder;
 use Reminder_User;

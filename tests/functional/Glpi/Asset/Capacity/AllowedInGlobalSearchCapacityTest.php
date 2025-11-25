@@ -34,12 +34,12 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
-use Glpi\Tests\DbTestCase;
 use Entity;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\AllowedInGlobalSearchCapacity;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
 use Glpi\Asset\Capacity\HasNotepadCapacity;
+use Glpi\Tests\DbTestCase;
 use Log;
 
 class AllowedInGlobalSearchCapacityTest extends DbTestCase

@@ -34,9 +34,9 @@
 
 namespace tests\units\Glpi\Form;
 
-use Glpi\Tests\DbTestCase;
 use Glpi\Form\EndUserInputNameProvider;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 

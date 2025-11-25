@@ -61,10 +61,10 @@ use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\QuestionType\QuestionTypeUserDevice;
 use Glpi\Form\QuestionType\QuestionTypeUserDevicesConfig;
+use Glpi\Tests\AbstractConditionHandlerTest;
 use Location;
 use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Glpi\Tests\AbstractConditionHandlerTest;
 
 final class RegexConditionHandlerTest extends AbstractConditionHandlerTest
 {

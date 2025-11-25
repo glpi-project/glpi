@@ -34,7 +34,6 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
-use Glpi\Tests\DbTestCase;
 use DisplayPreference;
 use Entity;
 use Glpi\Asset\Capacity;
@@ -42,6 +41,7 @@ use Glpi\Asset\Capacity\HasDocumentsCapacity;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
 use Glpi\Asset\Capacity\HasNotepadCapacity;
 use Glpi\Asset\Capacity\IsProjectAssetCapacity;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Item_Project;
 use Log;

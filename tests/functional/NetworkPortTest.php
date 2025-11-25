@@ -34,10 +34,10 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasNetworkPortCapacity;
 use Glpi\Features\Clonable;
+use Glpi\Tests\DbTestCase;
 use NetworkPort;
 use Toolbox;
 

@@ -34,9 +34,9 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
 use Glpi\Asset\AssetDefinition;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/profile.class.php */

@@ -34,7 +34,6 @@
 
 namespace tests\units\Glpi\Form\Migration;
 
-use Glpi\Tests\DbTestCase;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\CommonITILField\AssigneeField;
@@ -107,6 +106,7 @@ use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\Migration\FormMigration;
 use Glpi\Migration\PluginMigrationResult;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormTesterTrait;
 use GlpiPlugin\Tester\Form\ExternalIDField;
 use GlpiPlugin\Tester\Form\ExternalIDFieldConfig;

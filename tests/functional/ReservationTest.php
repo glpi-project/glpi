@@ -35,9 +35,9 @@
 namespace tests\units;
 
 use Computer;
-use Glpi\Tests\DbTestCase;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\IsReservableCapacity;
+use Glpi\Tests\DbTestCase;
 use MassiveAction;
 use PHPUnit\Framework\Attributes\DataProvider;
 use ReservationItem;

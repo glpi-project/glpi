@@ -34,10 +34,10 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasVolumesCapacity;
 use Glpi\Features\Clonable;
+use Glpi\Tests\DbTestCase;
 use Item_Disk;
 use Toolbox;
 

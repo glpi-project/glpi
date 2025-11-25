@@ -39,8 +39,6 @@ use Glpi\Form\Category;
 use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
 use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyEnum;
-use Glpi\Tests\FormBuilder;
-use Glpi\Tests\FormTesterTrait;
 use KnowbaseItem;
 use Override;
 use Session;

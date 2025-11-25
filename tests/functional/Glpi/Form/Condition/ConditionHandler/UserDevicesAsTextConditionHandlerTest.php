@@ -37,8 +37,8 @@ namespace Glpi\Form\Condition\ConditionHandler;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\QuestionType\QuestionTypeUserDevice;
 use Glpi\Form\QuestionType\QuestionTypeUserDevicesConfig;
-use Override;
 use Glpi\Tests\AbstractConditionHandlerTest;
+use Override;
 
 final class UserDevicesAsTextConditionHandlerTest extends AbstractConditionHandlerTest
 {

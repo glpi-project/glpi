@@ -34,9 +34,9 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
 use Glpi\Dashboard\Dashboard;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Tests\DbTestCase;
 use GlpiPlugin\Tester\Asset\Foo;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;

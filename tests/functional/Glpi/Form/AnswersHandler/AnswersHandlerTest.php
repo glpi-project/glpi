@@ -35,7 +35,6 @@
 namespace tests\units\Glpi\Form\AnswersHandler;
 
 use CommonITILObject;
-use Glpi\Tests\DbTestCase;
 use Entity;
 use Glpi\Form\Answer;
 use Glpi\Form\AnswersHandler\AnswersHandler;
@@ -59,6 +58,7 @@ use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\ValidationResult;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Location;

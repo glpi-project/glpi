@@ -34,9 +34,9 @@
 
 namespace tests\units\Glpi\Features;
 
-use Glpi\Tests\DbTestCase;
 use DCRoom;
 use Glpi\Features\DCBreadcrumb;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rack;
 

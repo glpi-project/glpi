@@ -39,8 +39,8 @@ use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Asset\Asset;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Http\Request;
-use Group_Item;
 use Glpi\Tests\HLAPITestCase;
+use Group_Item;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Unmanaged;
 

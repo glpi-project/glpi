@@ -34,9 +34,9 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
 use Glpi\Inventory\Converter;
 use Glpi\Inventory\Inventory;
+use Glpi\Tests\DbTestCase;
 use Printer;
 use RuleMatchedLog as GlobalRuleMatchedLog;
 

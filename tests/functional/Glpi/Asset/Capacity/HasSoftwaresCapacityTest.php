@@ -34,13 +34,13 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
-use Glpi\Tests\DbTestCase;
 use Entity;
 use Glpi\Asset\Asset;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
 use Glpi\Asset\Capacity\HasNotepadCapacity;
 use Glpi\Asset\Capacity\HasSoftwaresCapacity;
+use Glpi\Tests\DbTestCase;
 use Item_SoftwareLicense;
 use Item_SoftwareVersion;
 use Log;

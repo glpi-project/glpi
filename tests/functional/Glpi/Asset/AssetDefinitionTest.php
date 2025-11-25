@@ -35,12 +35,12 @@
 namespace tests\units\Glpi\Asset;
 
 use Computer;
-use Glpi\Tests\DbTestCase;
 use Gettext\Languages\Category;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDocumentsCapacity;
 use Glpi\Asset\Capacity\HasInfocomCapacity;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
 

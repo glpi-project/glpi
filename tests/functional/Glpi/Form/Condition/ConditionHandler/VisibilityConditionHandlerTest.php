@@ -64,11 +64,11 @@ use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\QuestionType\QuestionTypeUserDevice;
 use Glpi\Form\QuestionType\QuestionTypeUserDevicesConfig;
+use Glpi\Tests\AbstractConditionHandlerTest;
 use Glpi\Tests\FormBuilder;
 use Location;
 use Override;
 use Software;
-use Glpi\Tests\AbstractConditionHandlerTest;
 
 final class VisibilityConditionHandlerTest extends AbstractConditionHandlerTest
 {

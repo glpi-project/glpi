@@ -34,10 +34,10 @@
 
 namespace tests\units\Glpi\Dashboard;
 
-use Glpi\Tests\DbTestCase;
 use Glpi\Dashboard\Dashboard;
 use Glpi\Dashboard\Item;
 use Glpi\Dashboard\Right;
+use Glpi\Tests\DbTestCase;
 
 /* Test for inc/dashboard/dashboard.class.php */
 

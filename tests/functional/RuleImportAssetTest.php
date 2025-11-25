@@ -34,8 +34,8 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/ruleimportcomputer.class.php */

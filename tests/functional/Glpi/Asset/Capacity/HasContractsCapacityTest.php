@@ -36,12 +36,12 @@ namespace tests\units\Glpi\Asset\Capacity;
 
 use Contract;
 use Contract_Item;
-use Glpi\Tests\DbTestCase;
 use DisplayPreference;
 use Glpi\Asset\Asset;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasContractsCapacity;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Log;
 
