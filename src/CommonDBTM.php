@@ -5845,7 +5845,7 @@ class CommonDBTM extends CommonGLPI
 
                             $preserve_user_input = $value[0]['_rule_action'] === 'append';
                             if ($preserve_user_input && !isset($existing_data[$field])) {
-                                throw new LogicException('Implemetation error : action defined with appendtoarray but value not backup before rule processing');
+                                throw new LogicException('Implemetation error: action was defined with appendtoarray but the value not backed up before rule processing');
                             }
                             // use value before rule processing
                             $this->input[$field] = $preserve_user_input ? $existing_data[$field] : [];
