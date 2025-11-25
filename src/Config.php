@@ -881,6 +881,7 @@ class Config extends CommonDBTM
                     Agent::class => Agent::getTypeName(),
                     GLPINetwork::class => GLPINetwork::getTypeName(),
                     RSSFeed::class => RSSFeed::getTypeName(),
+                    Planning::class => Planning::getTypeName(),
                 ],
                 $CFG_GLPI['possible_proxy_exclusions']
             ),
