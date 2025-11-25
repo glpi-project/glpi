@@ -3058,8 +3058,7 @@ class TicketTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $ticket_id);
 
-        $auth = new \Auth();
-        $this->assertTrue((bool) $auth->login('tech', 'tech', true));
+        $this->login('tech', 'tech');
         $this->assertFalse((bool) Session::haveRight(Ticket::$rightname, Ticket::CHANGEPRIORITY));
 
         $ticket->getFromDB($ticket_id);
@@ -3080,34 +3079,8 @@ class TicketTest extends DbTestCase
         $this->assertSame(3, $result['impact']);
         $this->assertSame(4, $result['priority']);
 
-        global $DB;
-        $this->assertTrue(
-            $DB->update(
-                'glpi_profilerights',
-                ['rights' => 234503],
-                [
-                    'profiles_id'  => 6,
-                    'name'         => 'ticket',
-                ]
-            )
-        );
-
-        $this->assertTrue((bool) $auth->login('tech', 'tech', true));
-
-        $this->assertTrue(
-            $DB->update(
-                'glpi_profilerights',
-                ['rights' => 168967],
-                [
-                    'profiles_id'  => 6,
-                    'name'         => 'ticket',
-                ]
-            )
-        );
-
+        $_SESSION['glpiactiveprofile']['ticket'] |= Ticket::CHANGEPRIORITY;
         $this->assertTrue((bool) Session::haveRight(Ticket::$rightname, Ticket::CHANGEPRIORITY));
-
-        $ticket->getFromDB($ticket_id);
 
         $result = $ticket->prepareInputForUpdate([
             'id'     => $ticket_id,
