@@ -567,12 +567,12 @@ final class Search
     }
 
     /**
-     * @param bool $ignore_pagination
+     * @param bool $count_only
      * @return RecordSet
      * @throws APIException
      * @throws RSQLException
      */
-    private function getMatchingRecords($ignore_pagination = false): RecordSet
+    private function getMatchingRecords($count_only = false): RecordSet
     {
         $records = [];
 
@@ -582,7 +582,7 @@ final class Search
 
         $criteria = array_merge_recursive($criteria, $this->getSearchCriteria());
 
-        if ($ignore_pagination) {
+        if ($count_only) {
             unset($criteria['START'], $criteria['LIMIT']);
         }
 
@@ -601,13 +601,20 @@ final class Search
                 $criteria['GROUPBY'] = ['_itemtype', '_.id'];
             } else {
                 $criteria['SELECT'][] = '_.id';
-                foreach (array_keys($this->context->getJoins()) as $join_alias) {
-                    $s = $this->getSelectCriteriaForProperty($this->context->getPrimaryKeyPropertyForJoin($join_alias), true);
-                    if ($s !== null) {
-                        $criteria['SELECT'][] = $s;
+                if (!$count_only) {
+                    foreach (array_keys($this->context->getJoins()) as $join_alias) {
+                        $s = $this->getSelectCriteriaForProperty($this->context->getPrimaryKeyPropertyForJoin($join_alias), true);
+                        if ($s !== null) {
+                            $criteria['SELECT'][] = $s;
+                        }
                     }
                 }
                 $criteria['GROUPBY'] = ['_.id'];
+            }
+
+            if ($count_only) {
+                $criteria['SELECT'] = [new QueryExpression('COUNT(DISTINCT(_.id))', 'count')];
+                unset($criteria['GROUPBY']);
             }
 
             // request just to get the ids/union itemtypes

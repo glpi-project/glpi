@@ -55,7 +55,11 @@ final class RecordSet
 
     public function getTotalCount(): int
     {
-        return array_sum(array_map(static fn($records) => count($records), $this->records));
+        $count = 0;
+        foreach ($this->records as $itemtype => $records) {
+            $count += reset($records)['count'];
+        }
+        return $count;
     }
 
     private function getJoinNameForFKey(string $fkey): string
