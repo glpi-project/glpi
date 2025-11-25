@@ -884,6 +884,7 @@ class Config extends CommonDBTM
                     RSSFeed::class => RSSFeed::getTypeName(),
                     Planning::class => Planning::getTypeName(),
                     OauthConfig::class => __('SMTP OAuth Authentication'),
+                    Webhook::class => Webhook::getTypeName(),
                 ],
                 $CFG_GLPI['possible_proxy_exclusions']
             ),
