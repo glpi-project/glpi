@@ -2528,9 +2528,9 @@ export class GlpiFormEditorController
 
                     // Remove active states
                     this.#setActiveItem(null);
-                }, 0);
 
-                $(this.#target).addClass("disable-focus").attr('data-glpi-form-editor-sorting', '');
+                    $(this.#target).addClass("disable-focus").attr('data-glpi-form-editor-sorting', '');
+                }, 0);
             });
 
         // Run the post move process if any item was dragged, even if it was not
