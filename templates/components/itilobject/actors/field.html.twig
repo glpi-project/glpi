@@ -66,7 +66,7 @@
             data-alternative-email="{{ actor['alternative_email'] ?? '' }}"
             data-icon-name="{{ actor['icon_name'] ?? '' }}"
             data-editable="{{ not (actor['is_editable'] is defined and not actor['is_editable']) }}"
-            {% if (actor['itemtype'] == 'User' and itiltemplate.isHiddenField('_users_id_' ~ actortype)) or (actor['itemtype'] == 'Group' and itiltemplate.isHiddenField('_groups_id_' ~ actortype) or (actor['is_editable'] is defined and not actor['is_editable']) ) %}
+            {% if (actor['itemtype'] == 'User' and itiltemplate.isHiddenField('_users_id_' ~ actortype)) or (actor['itemtype'] == 'Group' and itiltemplate.isHiddenField('_groups_id_' ~ actortype) or (actor['is_editable'] is defined and not actor['is_editable'])) %}
                disabled="disabled" style="display: none;"
             {% endif %}
             data-text="{{ actor['text'] }}" data-title="{{ actor['title'] }}" data-glpi-popover-source="content{{ unique_id }}">
