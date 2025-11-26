@@ -392,13 +392,13 @@ describe("Ticket Form", () => {
         }).then((ticket_id) => {
             cy.visit(`/front/ticket.form.php?id=${ticket_id}`);
 
-            cy.getDropdownByLabelText('Priority').should('have.value', '3');
+            cy.getDropdownByLabelText('Priority').should('contain.text', 'Medium');
 
             cy.getDropdownByLabelText('Urgency').selectDropdownValue('High');
-            cy.getDropdownByLabelText('Priority').should('have.value', '4');
+            cy.getDropdownByLabelText('Priority').should('contain.text', 'High');
 
             cy.getDropdownByLabelText('Impact').selectDropdownValue('Very high');
-            cy.getDropdownByLabelText('Priority').should('have.value', '5');
+            cy.getDropdownByLabelText('Priority').should('contain.text', 'Very high');
         });
     });
 });
