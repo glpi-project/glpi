@@ -100,13 +100,15 @@ final class RecordSet
     private function getHydratedPartsOfMainRecord($row)
     {
         $hydrated_row = [];
+        $context = $this->search->getContext();
+        $joins = $context->getJoins();
         foreach ($row as $fkey => $value) {
             if (str_starts_with($fkey, '_')) {
                 $hydrated_row[$fkey] = $value;
                 continue;
             }
-            $join_name = $this->search->getContext()->getJoinNameForProperty($fkey);
-            if (isset($this->search->getContext()->getJoins()[$join_name])) {
+            $join_name = $context->getJoinNameForProperty($fkey);
+            if (isset($joins[$join_name])) {
                 // This is a joined property
                 continue;
             }
@@ -272,6 +274,7 @@ final class RecordSet
                         $needed_ids = array_filter($needed_ids, static fn($id) => $id !== chr(0x0));
                         $fetched_records[$table][$needed_ids[0]] = $hydrated_row;
                     }
+                    Profiler::getInstance()->stop('RecordSet::check if nothing to select');
                     continue;
                 }
                 Profiler::getInstance()->stop('RecordSet::check if nothing to select');
@@ -311,11 +314,14 @@ final class RecordSet
     {
         $dehydrated_refs = array_keys($dehydrated_row);
         $hydrated_record = [];
+        $context = $this->search->getContext();
+        $joins = $context->getJoins();
+        $flattened_properties = $context->getFlattenedProperties();
         foreach ($dehydrated_refs as $dehydrated_ref) {
             if (str_starts_with($dehydrated_ref, '_')) {
-                $dehydrated_ref = 'id';
+                continue;
             }
-            $table = $this->search->getContext()->getTableForFKey($dehydrated_ref, $schema_name);
+            $table = $context->getTableForFKey($dehydrated_ref, $schema_name);
             if ($table === null) {
                 continue;
             }
@@ -326,17 +332,13 @@ final class RecordSet
                 $main_record = $fetched_records[$table][$needed_ids[0]];
                 $hydrated_record = [];
                 foreach ($main_record as $k => $v) {
-                    $k_path = str_replace(chr(0x1F), '.', $k);
-                    ArrayPathAccessor::setElementByArrayPath($hydrated_record, $k_path, $v);
+                    ArrayPathAccessor::setElementByArrayPath($hydrated_record, $k, $v, chr(0x1F));
                 }
             } else {
                 // Add the joined item fields
-                $join_name = $this->search->getContext()->getJoinNameForProperty($dehydrated_ref);
-                if (isset($this->search->getContext()->getFlattenedProperties()[$join_name])) {
+                $join_name = $context->getJoinNameForProperty($dehydrated_ref);
+                if (isset($flattened_properties[$join_name])) {
                     continue;
-                }
-                if (!ArrayPathAccessor::hasElementByArrayPath($hydrated_record, $join_name)) {
-                    ArrayPathAccessor::setElementByArrayPath($hydrated_record, $join_name, []);
                 }
                 foreach ($needed_ids as $id) {
                     [$join_prop_path, $id] = $this->search->getItemRecordPath($join_name, $id, $hydrated_record);
@@ -345,14 +347,10 @@ final class RecordSet
                     }
                     $matched_record = $fetched_records[$table][(int) $id] ?? null;
 
-                    if (isset($this->search->getContext()->getJoins()[$join_name]['parent_type']) && $this->search->getContext()->getJoins()[$join_name]['parent_type'] === Doc\Schema::TYPE_OBJECT) {
+                    if (isset($joins[$join_name]['parent_type']) && $joins[$join_name]['parent_type'] === Doc\Schema::TYPE_OBJECT) {
                         ArrayPathAccessor::setElementByArrayPath($hydrated_record, $join_prop_path, $matched_record);
-                    } else {
-                        if ($matched_record !== null) {
-                            $current = ArrayPathAccessor::getElementByArrayPath($hydrated_record, $join_prop_path);
-                            $current[$id] = $matched_record;
-                            ArrayPathAccessor::setElementByArrayPath($hydrated_record, $join_prop_path, $current);
-                        }
+                    } elseif ($matched_record !== null) {
+                        ArrayPathAccessor::setElementByArrayPath($hydrated_record, $join_prop_path . '.' . $id, $matched_record);
                     }
                 }
             }
@@ -361,7 +359,7 @@ final class RecordSet
         // Do this last as some scalar joined properties may be nested and have other data added after the main record was built
         foreach ($dehydrated_row as $k => $v) {
             $normalized_k = str_replace(chr(0x1F), '.', $k);
-            if (isset($this->search->getContext()->getJoins()[$normalized_k]) && !ArrayPathAccessor::hasElementByArrayPath($hydrated_record, $normalized_k)) {
+            if (isset($joins[$normalized_k]) && !ArrayPathAccessor::hasElementByArrayPath($hydrated_record, $normalized_k)) {
                 $v = explode(chr(0x1E), $v);
                 $v = end($v);
                 ArrayPathAccessor::setElementByArrayPath($hydrated_record, $normalized_k, $v);
