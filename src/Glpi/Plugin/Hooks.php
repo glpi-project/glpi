@@ -613,7 +613,7 @@ class Hooks
      * - 'count' => Current displayed count
      *
      * The function is expected to modify the given array as needed and return it.
-     * @used-by templates/components/itilobject/actors/field.html.twig
+     * @used-by templates/components/itilobject/fields_panel.html.twig
      */
     public const POST_ITIL_ACTORS_COUNT = 'post_itil_actors_count';
 
