@@ -8,6 +8,21 @@ DB = $(COMPOSE) exec db
 CONSOLE = $(PHP) bin/console
 INI_DIR = /usr/local/etc/php/custom_conf.d
 
+# Store playwright's version in a variable so that the correct docker image is used.
+# When the playwright npm package is updated,
+PLAYWRIGHT_VERSION = 1.56.1
+
+# See: https://playwright.dev/docs/docker
+PLAYWRIGHT = docker run \
+	-it \
+	--rm \
+	--ipc=host \
+	-v .:/app \
+	-w /app \
+	-p 9323:9323 \
+	mcr.microsoft.com/playwright:v$(PLAYWRIGHT_VERSION)-noble \
+	npx playwright
+
 # Helper variables
 _TITLE := "\033[32m[%s]\033[0m %s\n" # Green text
 _ERROR := "\033[31m[%s]\033[0m %s\n" # Red text
@@ -244,6 +259,21 @@ cypress-open: ## Open cypress UI
 	@$(PHP) bash -c 'node_modules/.bin/cypress verify || node_modules/.bin/cypress install'
 	@$(PHP) node_modules/.bin/cypress open --e2e --browser electron --project tests $(c)
 .PHONY: cypress-open
+
+playwright: ## Run playwright tests
+	@$(eval c ?=)
+	@$(PLAYWRIGHT) test $(c)
+.PHONY: playwright
+
+playwright-report: ## View playwright reports
+	@$(eval c ?=)
+	@$(PLAYWRIGHT) show-report tests/e2e/results --host=0.0.0.0 $(c)
+.PHONY: playwright-report
+
+playwright-ui: ## Open playwright's UI mode
+	@$(eval c ?=)
+	@$(PLAYWRIGHT) test --ui-host=0.0.0.0 --ui-port=9323 $(c)
+.PHONY: playwright-ui
 
 ## —— Coding standards —————————————————————————————————————————————————————————
 phpcsfixer-check: ## Check for php coding standards issues
