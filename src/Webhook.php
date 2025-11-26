@@ -117,6 +117,18 @@ class Webhook extends CommonDBTM implements FilterableInterface
         return static::canUpdate();
     }
 
+    public function canCreateItem(): bool
+    {
+        $itemtype = $this->fields['itemtype'];
+        return empty($itemtype) || (is_subclass_of($itemtype, CommonGLPI::class) && $itemtype::canView());
+    }
+
+    public function canUpdateItem(): bool
+    {
+        $itemtype = $this->fields['itemtype'];
+        return empty($itemtype) || (is_subclass_of($itemtype, CommonGLPI::class) && $itemtype::canView());
+    }
+
     public function defineTabs($options = [])
     {
         $parent_tabs = parent::defineTabs();
@@ -457,7 +469,9 @@ class Webhook extends CommonDBTM implements FilterableInterface
         // Move leaf values to the keys and make the value the ::getTypeName
         foreach ($values as $category => $itemtypes) {
             foreach ($itemtypes as $i => $itemtype) {
-                $values[$category][$itemtype] = $itemtype::getTypeName(1);
+                if ($itemtype::canView()) {
+                    $values[$category][$itemtype] = $itemtype::getTypeName(1);
+                }
                 unset($values[$category][$i]);
             }
         }
