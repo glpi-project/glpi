@@ -41,14 +41,13 @@
 class NotificationTargetProjectTask extends NotificationTarget
 {
     /**
-     * Get events related to tickets
-     *
-     * @return array
-     **/
+     * @var ProjectTask|null
+     */
+    public $obj = null;
+
     #[Override]
     public function getEvents()
     {
-
         $events = ['new'               => __('New project task'),
             'update'            => __('Update of a project task'),
             'delete'            => __('Deletion of a project task'),
@@ -57,7 +56,7 @@ class NotificationTargetProjectTask extends NotificationTarget
         return $events;
     }
 
-
+    #[Override]
     public function addAdditionalTargets($event = '')
     {
 
@@ -72,7 +71,7 @@ class NotificationTargetProjectTask extends NotificationTarget
         $this->addTarget(Notification::TEAM_SUPPLIER, __('Supplier of project team'));
     }
 
-
+    #[Override]
     public function addSpecificTargets($data, $options)
     {
         // Look for all targets whose type is Notification::ITEM_USER
@@ -112,7 +111,6 @@ class NotificationTargetProjectTask extends NotificationTarget
         }
     }
 
-
     /**
      * Add team users to the notified user list
      *
@@ -140,7 +138,6 @@ class NotificationTargetProjectTask extends NotificationTarget
             }
         }
     }
-
 
     /**
      * Add team groups to the notified user list
@@ -223,7 +220,6 @@ class NotificationTargetProjectTask extends NotificationTarget
         }
     }
 
-
     /**
      * Add team suppliers to the notified user list
      *
@@ -254,7 +250,7 @@ class NotificationTargetProjectTask extends NotificationTarget
         }
     }
 
-
+    #[Override]
     public function addDataForTemplate($event, $options = [])
     {
         global $CFG_GLPI, $DB;
@@ -530,7 +526,6 @@ class NotificationTargetProjectTask extends NotificationTarget
             }
         }
     }
-
 
     #[Override]
     public function getTags()

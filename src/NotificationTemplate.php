@@ -42,9 +42,6 @@ use function Safe\preg_replace;
 
 /**
  * NotificationTemplate Class
- *
- * @use \Glpi\Features\Clonable<\NotificationTemplate>
- *     // @todo utile ?
  **/
 class NotificationTemplate extends CommonDBTM
 {
@@ -66,6 +63,7 @@ class NotificationTemplate extends CommonDBTM
 
     public static $rightname = 'config';
 
+    #[Override]
     public function getCloneRelations(): array
     {
         return [
@@ -102,7 +100,6 @@ class NotificationTemplate extends CommonDBTM
     {
         return static::canUpdate();
     }
-
 
     #[Override]
     public function defineTabs($options = [])
@@ -262,7 +259,7 @@ class NotificationTemplate extends CommonDBTM
                 $orig_tz = $DB->guessTimezone();
                 $DB->setTimezone($user_infos['additionnaloption']['timezone']);
 
-                if ($options['item'] instanceof \CommonDBTM) {
+                if ($options['item'] instanceof CommonDBTM) {
                     // reload item to ensure timestamps will be converted to the current user timezone
                     $options['item']->getFromDB($options['item']->fields['id']);
                 }
@@ -352,7 +349,6 @@ class NotificationTemplate extends CommonDBTM
 
         return false;
     }
-
 
     /**
      * @param  string $string
@@ -644,7 +640,7 @@ class NotificationTemplate extends CommonDBTM
         return $mailing_options;
     }
 
-
+    #[Override]
     public function cleanDBonPurge()
     {
 

@@ -88,12 +88,12 @@ class NotificationTarget extends CommonDBChild
     public $entity                      = '';
 
     /**
-     * @var CommonDBTM|null Object which raises the notification event
+     * @var CommonGLPI|null Object which raises the notification event // @todo note : ne peut pas être CommonGLPI -> ligne 835 : ->isField()
      */
     public $obj                         = null;
 
     /**
-     * @var array<CommonDBTM> Object which is associated with the event
+     * @var array<CommonGLPI> Object which is associated with the event
      */
     public $target_object               = [];
 
@@ -147,7 +147,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * @param int|'' $entity
      * @param string $event
-     * @param CommonDBTM|null  $object
+     * @param CommonGLPI|null  $object
      * @param array{
      *      _old_user?: array{
      *           type?: CommonITILActor::ASSIGN|CommonITILActor::REQUESTER|CommonITILActor::OBSERVER,
@@ -397,7 +397,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Get a notificationtarget class by giving the object which raises the event
      *
-     * @param CommonDBTM $item Object which raises the event
+     * @param CommonGLPI  $item Object which raises the event
      * @param string|null $event
      * @param array       $options
      *
@@ -425,7 +425,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Get the expected notification target class name for a given itemtype
      *
-     * @param class-string<CommonDBTM> $itemtype
+     * @param class-string<CommonGLPI> $itemtype
      *
      * @return class-string<NotificationTarget> // @todo review, do the plugin returns a NotificationTarget instance
      */
@@ -830,6 +830,10 @@ class NotificationTarget extends CommonDBChild
      */
     public function addItemAuthor()
     {
+        if (!$this->obj instanceof CommonDBTM) {
+            return;
+        }
+
         $user = new User();
         if (
             $this->obj->isField('users_id')
@@ -842,7 +846,6 @@ class NotificationTarget extends CommonDBChild
         }
     }
 
-
     /**
      * Add item's group
      *
@@ -852,16 +855,18 @@ class NotificationTarget extends CommonDBChild
      */
     final public function addItemGroup()
     {
-
         if ($this->target_object !== []) {
-            foreach ($this->target_object as $val) {
-                if ($val->fields['groups_id'] > 0) {
-                    $this->addForGroup(0, $val->fields['groups_id']);
+            foreach ($this->target_object as $target) {
+                if (!$target instanceof CommonDBTM) {
+                    continue;
+                }
+
+                if ($target->fields['groups_id'] > 0) {
+                    $this->addForGroup(0, $target->fields['groups_id']);
                 }
             }
         }
     }
-
 
     /**
      * Add item's group supervisor
@@ -873,14 +878,17 @@ class NotificationTarget extends CommonDBChild
     final public function addItemGroupSupervisor()
     {
         if ($this->target_object !== []) {
-            foreach ($this->target_object as $val) {
-                if ($val->fields['groups_id'] > 0) {
-                    $this->addForGroup(1, $val->fields['groups_id']);
+            foreach ($this->target_object as $target) {
+                if (!$target instanceof CommonDBTM) {
+                    continue;
+                }
+
+                if ($target->fields['groups_id'] > 0) {
+                    $this->addForGroup(1, $target->fields['groups_id']);
                 }
             }
         }
     }
-
 
     /**
      * Add item's group users exepted supervisor
@@ -891,16 +899,18 @@ class NotificationTarget extends CommonDBChild
      */
     final public function addItemGroupWithoutSupervisor()
     {
-
         if ($this->target_object !== []) {
-            foreach ($this->target_object as $val) {
-                if ($val->fields['groups_id'] > 0) {
-                    $this->addForGroup(2, $val->fields['groups_id']);
+            foreach ($this->target_object as $target) {
+                if (!$target instanceof CommonDBTM) {
+                    continue;
+                }
+
+                if ($target->fields['groups_id'] > 0) {
+                    $this->addForGroup(2, $target->fields['groups_id']);
                 }
             }
         }
     }
-
 
     /**
      * Add entity admin
@@ -921,7 +931,6 @@ class NotificationTarget extends CommonDBChild
             }
         }
     }
-
 
     /**
      * Add users of a group to targets
@@ -1153,7 +1162,6 @@ class NotificationTarget extends CommonDBChild
         }
     }
 
-
     /**
      * Add all targets for this notification
      *
@@ -1175,7 +1183,6 @@ class NotificationTarget extends CommonDBChild
         $this->addGroupsToTargets($entity);
     }
 
-
     /**
      * Allows to add more notification targets
      * Can be overridden in some case (for example Ticket)
@@ -1186,7 +1193,6 @@ class NotificationTarget extends CommonDBChild
      */
     public function addAdditionalTargets($event = '') {}
 
-
     /**
      * Add targets by a method not defined in NotificationTarget (specific to an itemtype)
      *
@@ -1196,7 +1202,6 @@ class NotificationTarget extends CommonDBChild
      * @return void
      **/
     public function addSpecificTargets($data, $options) {}
-
 
     /**
      * Push $this->obj in $this->target_object array
@@ -1227,10 +1232,18 @@ class NotificationTarget extends CommonDBChild
 
         $id = [];
         if (!$search_in_object) {
+            if (!$this->obj instanceof CommonDBTM) {
+                return;
+            }
+
             $id[] = $this->obj->getField($field);
         } elseif ($this->target_object !== []) {
-            foreach ($this->target_object as $val) {
-                $id[] = $val->fields[$field];
+            foreach ($this->target_object as $target) {
+                if (!$target instanceof CommonDBTM) {
+                    continue;
+                }
+
+                $id[] = $target->fields[$field];
             }
         }
 
@@ -1248,7 +1261,6 @@ class NotificationTarget extends CommonDBChild
         }
     }
 
-
     /**
      * Add technician in charge of the item
      *
@@ -1259,7 +1271,6 @@ class NotificationTarget extends CommonDBChild
         $this->addUserByField('users_id_tech', true);
     }
 
-
     /**
      * Add group of technicians in charge of the item
      *
@@ -1269,13 +1280,16 @@ class NotificationTarget extends CommonDBChild
     {
         if ($this->target_object !== []) {
             foreach ($this->target_object as $val) {
+                if (!$this->obj instanceof CommonDBTM) {
+                    continue;
+                }
+
                 if (isset($val->fields['groups_id_tech']) && $val->fields['groups_id_tech'] > 0) {
                     $this->addForGroup(0, $val->fields['groups_id_tech']);
                 }
             }
         }
     }
-
 
     /**
      * Add owner of the material
@@ -1286,7 +1300,6 @@ class NotificationTarget extends CommonDBChild
     {
         $this->addUserByField('users_id', true);
     }
-
 
     /**
      * Add users from a profile
@@ -1843,6 +1856,9 @@ class NotificationTarget extends CommonDBChild
     #[Override]
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
 
         if ($item instanceof Group) {
             return self::showForGroup($item);

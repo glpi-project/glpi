@@ -36,15 +36,9 @@
 // Class NotificationTarget
 class NotificationTargetDBConnection extends NotificationTarget
 {
-    /**
-     * Overwrite the function in NotificationTarget because there's only one target to be notified
-     *
-     * @see NotificationTarget::addNotificationTargets()
-     **/
     #[Override]
     public function addNotificationTargets($entity)
     {
-
         $this->addProfilesToTargets();
         $this->addGroupsToTargets($entity);
         $this->addTarget(Notification::GLOBAL_ADMINISTRATOR, __('Administrator'));

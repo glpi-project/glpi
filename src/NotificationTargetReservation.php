@@ -38,6 +38,11 @@
  **/
 class NotificationTargetReservation extends NotificationTarget
 {
+    /**
+     * @var Reservation|null
+     */
+    public $obj = null;
+
     #[Override]
     public function getEvents()
     {
@@ -48,6 +53,7 @@ class NotificationTargetReservation extends NotificationTarget
         ];
     }
 
+    #[Override]
     public function addAdditionalTargets($event = '')
     {
         if ($event != 'alert') {
@@ -64,6 +70,7 @@ class NotificationTargetReservation extends NotificationTarget
         }
     }
 
+    #[Override]
     public function addDataForTemplate($event, $options = [])
     {
         //----------- Reservation infos -------------- //
