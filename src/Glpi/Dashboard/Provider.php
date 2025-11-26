@@ -144,7 +144,7 @@ class Provider
             $item instanceof Ticket ? Ticket::getCriteriaFromProfile() : []
         );
 
-                // avoid costy DISTINCT if there isn't any JOIN (/3 perf gain)
+            // avoid costly DISTINCT if there isn't any JOIN (/3 perf gain)
         if (!isset($request['LEFT JOIN'])
             && !isset($request['JOIN'])
             && !isset($request['INNER JOIN'])
@@ -1291,7 +1291,7 @@ class Provider
             self::getFiltersCriteria($t_table, $params['apply_filters'])
         );
 
-        // avoid costy DISTINCT if there isn't any JOIN (/3 perf gain)
+        // avoid costly DISTINCT if there isn't any JOIN (/3 perf gain)
         if (!isset($sub_query['LEFT JOIN'])
             && !isset($sub_query['JOIN'])
             && !isset($sub_query['INNER JOIN'])
