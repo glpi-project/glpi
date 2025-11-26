@@ -278,6 +278,13 @@
 {% endmacro %}
 
 {% macro flatpickrHtmlInput(name, value, label = '', options = {}) %}
+   {% set options = {
+       'readonly': false,
+       'disabled': false,
+   }|merge(options) %}
+
+   {% set editable = not options.readonly and not options.disabled %}
+
    {% if options.fields_template.isMandatoryField(name) %}
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
@@ -285,6 +292,7 @@
    {% if value == 'NULL' %}
       {% set value = null %}
    {% endif %}
+
    {% if options.checkIsExpired %}
       {% if value|date('Y-m-d H:i:s') < "now"|date('Y-m-d H:i:s') %}
          {% set class = 'warn' %}
@@ -305,7 +313,7 @@
              {{ options.required ? 'required' : '' }}
              {{ options.readonly ? 'readonly' : '' }}
              {{ options.disabled ? 'disabled' : '' }} />
-      {% if not options.readonly %}
+      {% if editable %}
          <i class="input-group-text far fa-calendar-alt" data-toggle role="button"></i>
       {% endif %}
    </div>
@@ -346,35 +354,43 @@
 {% endmacro %}
 
 {% macro datetimeField(name, value, label = '', options = {}) %}
-   {% set options = {'rand': random()}|merge(options) %}
+   {% set options = {
+        'rand': random(),
+        'readonly': false,
+        'disabled': false,
+   }|merge(options) %}
    {% set options = {'id': name|slug ~ '_' ~ options.rand}|merge(options) %}
+
    {% set locale = get_current_locale() %}
+   {% set editable = not options.readonly and not options.disabled %}
 
    {% set field %}
-      {{ _self.flatpickrHtmlInput(name, value, label, options) }}
-      <script>
-      $(function() {
-         $('#{{ options.id }}').flatpickr({
-            altInput: true,
-            dateFormat: 'Y-m-d H:i:S',
-            altFormat: '{{ call('Toolbox::getDateFormat', ['js']) }} H:i:S',
-            enableTime: true,
-            wrap: true,
-            enableSeconds: true,
-            weekNumbers: true,
-            time_24hr: true,
-            allowInput: {{ options.readonly ? 'false' : 'true' }},
-            clickOpens: {{ options.readonly ? 'false' : 'true' }},
-            locale: getFlatPickerLocale('{{ locale['language'] }}', '{{ locale['region'] }}'),
-            onClose(dates, currentdatestring, picker) {
-               picker.setDate(picker.altInput.value, true, picker.config.altFormat)
-            },
-            plugins: [
-               CustomFlatpickrButtons()
-            ]
-         });
-      });
-      </script>
+       {{ _self.flatpickrHtmlInput(name, value, label, options) }}
+       {% if editable %}
+           <script>
+               $(function () {
+                   $('#{{ options.id }}').flatpickr({
+                       altInput: true,
+                       dateFormat: 'Y-m-d H:i:S',
+                       altFormat: '{{ call('Toolbox::getDateFormat', ['js']) }} H:i:S',
+                       enableTime: true,
+                       wrap: true,
+                       enableSeconds: true,
+                       weekNumbers: true,
+                       time_24hr: true,
+                       allowInput: {{ editable ? 'true' : 'false' }},
+                       clickOpens: {{ editable ? 'true' : 'false' }},
+                       locale: getFlatPickerLocale('{{ locale['language'] }}', '{{ locale['region'] }}'),
+                       onClose(dates, currentdatestring, picker) {
+                           picker.setDate(picker.altInput.value, true, picker.config.altFormat)
+                       },
+                       plugins: [
+                           CustomFlatpickrButtons()
+                       ]
+                   });
+               });
+           </script>
+       {% endif %}
    {% endset %}
 
    {{ _self.field(name, field, label, options) }}
