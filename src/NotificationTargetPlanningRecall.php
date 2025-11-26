@@ -41,6 +41,11 @@
 class NotificationTargetPlanningRecall extends NotificationTarget
 {
     /**
+     * @var CommonITILTask|null
+     */
+    public $obj = null;
+
+    /**
      * @var array<CommonITILTask> Object which is associated with the event
      */
     public $target_object = [];
@@ -63,10 +68,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget
         $this->addTarget(Notification::PLANNING_EVENT_GUESTS, __('Guests'));
     }
 
-
-    /**
-     * @see NotificationTarget::addSpecificTargets()
-     **/
+    #[Override]
     public function addSpecificTargets($data, $options)
     {
         switch ($data['type']) {
@@ -139,7 +141,6 @@ class NotificationTargetPlanningRecall extends NotificationTarget
             }
         }
     }
-
 
     /**
      * Get guests related to external events
@@ -253,7 +254,6 @@ class NotificationTargetPlanningRecall extends NotificationTarget
             }
         }
     }
-
 
     #[Override]
     public function getTags()

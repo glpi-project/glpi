@@ -41,8 +41,10 @@
 class NotificationTargetProject extends NotificationTarget
 {
     /**
-     * Get events related to tickets
-     **/
+     * @var Project|null
+     */
+    public $obj = null;
+
     #[Override]
     public function getEvents()
     {
@@ -55,10 +57,9 @@ class NotificationTargetProject extends NotificationTarget
         return $events;
     }
 
-
+    #[Override]
     public function addAdditionalTargets($event = '')
     {
-
         $this->addTarget(Notification::MANAGER_USER, _n('Manager', 'Managers', 1));
         $this->addTarget(Notification::MANAGER_GROUP, __('Manager group'));
         $this->addTarget(Notification::MANAGER_GROUP_SUPERVISOR, __('Manager of manager group'));
@@ -77,10 +78,6 @@ class NotificationTargetProject extends NotificationTarget
         $this->addTarget(Notification::TEAM_SUPPLIER, __('Supplier of project team'));
     }
 
-
-    /**
-     * @see NotificationTarget::addSpecificTargets()
-     **/
     public function addSpecificTargets($data, $options)
     {
 
@@ -140,7 +137,6 @@ class NotificationTargetProject extends NotificationTarget
         }
     }
 
-
     /**
      * Add team users to the notified user list
      *
@@ -168,7 +164,6 @@ class NotificationTargetProject extends NotificationTarget
         }
     }
 
-
     /**
      * Add team groups to the notified user list
      *
@@ -193,7 +188,6 @@ class NotificationTargetProject extends NotificationTarget
             $this->addForGroup($manager, $data['items_id']);
         }
     }
-
 
     /**
      * Add team contacts to the notified user list
@@ -225,7 +219,6 @@ class NotificationTargetProject extends NotificationTarget
         }
     }
 
-
     /**
      * Add team suppliers to the notified user list
      *
@@ -256,7 +249,7 @@ class NotificationTargetProject extends NotificationTarget
         }
     }
 
-
+    #[Override]
     public function addDataForTemplate($event, $options = [])
     {
         global $CFG_GLPI, $DB;
@@ -622,7 +615,6 @@ class NotificationTargetProject extends NotificationTarget
             }
         }
     }
-
 
     #[Override]
     public function getTags()

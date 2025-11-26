@@ -34,11 +34,6 @@
  */
 
 /**
- * @since 9.1
- */
-
-
-/**
  * Summary of NotificationTargetObjectLock
  *
  * Notifications for ObjectLock
@@ -47,6 +42,11 @@
  **/
 class NotificationTargetObjectLock extends NotificationTarget
 {
+    /**
+     * @var ObjectLock|null
+     */
+    public $obj = null;
+
     #[Override]
     public function getEvents()
     {
@@ -79,18 +79,12 @@ class NotificationTargetObjectLock extends NotificationTarget
         asort($this->tag_descriptions);
     }
 
-    /**
-     * @see NotificationTarget::addNotificationTargets()
-     **/
     #[Override]
     public function addNotificationTargets($entity)
     {
         $this->addTarget(Notification::USER, __('Locking User'));
     }
 
-    /**
-     * @see NotificationTarget::addSpecificTargets()
-     **/
     public function addSpecificTargets($data, $options)
     {
 

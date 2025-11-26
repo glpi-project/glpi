@@ -35,6 +35,11 @@
 
 class NotificationTargetSavedSearch_Alert extends NotificationTarget
 {
+    /**
+     * @var SavedSearch_Alert|null
+     */
+    public $obj = null;
+
     #[Override]
     public function getEvents()
     {
@@ -67,7 +72,6 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
         return $events;
     }
 
-
     public function addDataForTemplate($event, $options = [])
     {
         global $CFG_GLPI;
@@ -93,7 +97,6 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
         }
     }
 
-
     #[Override]
     public function getTags()
     {
@@ -116,7 +119,6 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
         asort($this->tag_descriptions);
     }
 
-
     #[Override]
     public function addNotificationTargets($entity)
     {
@@ -127,7 +129,7 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
         }
     }
 
-
+    #[Override]
     public function addSpecificTargets($data, $options)
     {
         //Look for all targets whose type is Notification::ITEM_USER

@@ -34,16 +34,16 @@
  */
 
 /**
- * @since 9.2
- */
-
-
-
-/**
  * NotificationTargetSoftwareLicense Class
+ *
+ * @since 9.2
+ *
  **/
 class NotificationTargetCertificate extends NotificationTarget
 {
+    /** @var Certificate|null  */
+    public $obj = null;
+
     #[Override]
     public function getEvents()
     {

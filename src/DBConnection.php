@@ -77,12 +77,10 @@ class DBConnection extends CommonGLPI
     /** @var bool */
     protected static $notable = true;
 
-
     public static function getTypeName($nb = 0)
     {
         return _n('SQL replica', 'SQL replicas', $nb);
     }
-
 
     /**
      * Create GLPI main configuration file
@@ -154,7 +152,6 @@ class DBConnection extends CommonGLPI
         return Toolbox::writeConfig('config_db.php', $config_str, $config_dir);
     }
 
-
     /**
      * Change a variable value in config(s) file.
      *
@@ -171,7 +168,6 @@ class DBConnection extends CommonGLPI
     {
         return self::updateConfigProperties([$name => $value], $update_slave, $config_dir);
     }
-
 
     /**
      * Change variables value in config(s) file.
@@ -233,7 +229,6 @@ class DBConnection extends CommonGLPI
 
         return true;
     }
-
 
     /**
      * Create slave DB configuration file
@@ -302,7 +297,6 @@ class DBConnection extends CommonGLPI
         return Toolbox::writeConfig('config_db_slave.php', $config_str, $config_dir);
     }
 
-
     /**
      * Indicates is the DB replicate is active or not
      *
@@ -312,7 +306,6 @@ class DBConnection extends CommonGLPI
     {
         return file_exists(GLPI_CONFIG_DIR . "/config_db_slave.php");
     }
-
 
     /**
      * Read slave DB configuration file
@@ -329,7 +322,6 @@ class DBConnection extends CommonGLPI
             return new DBSlave($choice);
         }
     }
-
 
     /**
      * Create a default slave DB configuration file
@@ -351,7 +343,6 @@ class DBConnection extends CommonGLPI
             $DB->allow_signed_keys
         );
     }
-
 
     /**
      * Save changes to the slave DB configuration file
@@ -379,7 +370,6 @@ class DBConnection extends CommonGLPI
         );
     }
 
-
     /**
      * Delete slave DB configuration file
      *
@@ -389,7 +379,6 @@ class DBConnection extends CommonGLPI
     {
         unlink(GLPI_CONFIG_DIR . "/config_db_slave.php");
     }
-
 
     /**
      * Switch database connection to slave
@@ -408,7 +397,6 @@ class DBConnection extends CommonGLPI
         return false;
     }
 
-
     /**
      * Switch database connection to master
      *
@@ -421,7 +409,6 @@ class DBConnection extends CommonGLPI
         $DB = new DB();
         return $DB->connected;
     }
-
 
     /**
      * Get Connection to slave, if exists,
@@ -490,7 +477,6 @@ class DBConnection extends CommonGLPI
         return $DB;
     }
 
-
     /**
      *  Establish a connection to a mysql server (main or replicate)
      *
@@ -546,7 +532,6 @@ class DBConnection extends CommonGLPI
 
         return $res;
     }
-
 
     /**
      * Get delay between slave and master
@@ -654,7 +639,6 @@ class DBConnection extends CommonGLPI
         return 0;
     }
 
-
     /**
      * @param string $name
      *
@@ -667,7 +651,6 @@ class DBConnection extends CommonGLPI
             'parameter'   => __('Max delay between main and replica (minutes)'),
         ];
     }
-
 
     /**
      * Cron process to check DB replicate state
@@ -713,17 +696,14 @@ class DBConnection extends CommonGLPI
                         'name'        => $name,
                         'entities_id' => 0,
                     ]; // entity to avoid warning in getReplyTo
-                    // commented : no Notification is raised in fact (only CommonDBTM class can raise events, @see /src/NotificationEvent.php:145)
-                    // commenting instruction won't result in any change in glpi behaviour.
-                    // NotificationEvent::raiseEvent('desynchronization', new self(), $options);
-                    // @todo this block can be removed after review
+
+                    NotificationEvent::raiseEvent('desynchronization', new self(), $options);
                 }
             }
             return 1;
         }
         return 0;
     }
-
 
     /**
      * Display in HTML, delay between master and slave
@@ -763,7 +743,6 @@ class DBConnection extends CommonGLPI
         return null;
     }
 
-
     /**
      * Get system information
      *
@@ -787,7 +766,6 @@ class DBConnection extends CommonGLPI
         ];
     }
 
-
     /**
      * Enable or disable db replication check cron task
      *
@@ -806,7 +784,6 @@ class DBConnection extends CommonGLPI
         ];
         $cron->update($input);
     }
-
 
     /**
      * Set charset to use for DB connection handler.
