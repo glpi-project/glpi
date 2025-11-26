@@ -589,28 +589,29 @@ class Log extends CommonDBTM
                         if ($item2 = getItemForItemtype($data["itemtype_link"])) {
                             $tmp['field'] = $item2->getTypeName(1);
                         }
-                        $tmp['change'] = sprintf(
-                            __s('%1$s: %2$s'),
-                            htmlescape($action_label),
-                            htmlescape($data["new_value"])
-                        );
 
-                        if ($data['itemtype'] == 'Ticket') {
+                        $as = false;
+                        if ($data['id_search_option']) {
+                            // Record with specific value in `_force_log_option`
+                            $as = $SEARCHOPTION[$data['id_search_option']]['name'] ?? false;
+                        }
+
+                        if (is_a($data['itemtype'], CommonITILObject::class, true)) {
                             /** @var CommonITILObject $item */
-                            if ($data['id_search_option']) { // Recent record - see CommonITILObject::getSearchOptionsActors()
-                                $as = $SEARCHOPTION[$data['id_search_option']]['name'];
-                            } else { // Old record
+                            if ($as === false) {
+                                // Old record, befoe the usage of specific `_force_log_option` value.
+
                                 $is = $isr = $isa = $iso = false;
                                 switch ($data['itemtype_link']) {
-                                    case 'Group':
+                                    case Group::class:
                                         $is = 'isGroup';
                                         break;
 
-                                    case 'User':
+                                    case User::class:
                                         $is = 'isUser';
                                         break;
 
-                                    case 'Supplier':
+                                    case Supplier::class:
                                         $is = 'isSupplier';
                                         break;
                                 }
@@ -627,28 +628,26 @@ class Log extends CommonDBTM
                                     $as = __('Assigned to');
                                 } elseif (!$isr && !$isa && $iso) {
                                     $as = _n('Observer', 'Observers', 1);
-                                } else {
-                                    // Deleted or Ambiguous
-                                    $as = false;
                                 }
                             }
-                            if ($as) {
-                                $tmp['change'] = sprintf(
-                                    __s('%1$s: %2$s'),
-                                    htmlescape($action_label),
-                                    sprintf(
-                                        __s('%1$s (%2$s)'),
-                                        htmlescape($data["new_value"]),
-                                        htmlescape($as)
-                                    )
-                                );
-                            } else {
-                                $tmp['change'] = sprintf(
-                                    __s('%1$s: %2$s'),
-                                    htmlescape($action_label),
-                                    htmlescape($data["new_value"])
-                                );
-                            }
+                        }
+
+                        if ($as) {
+                            $tmp['change'] = sprintf(
+                                __s('%1$s: %2$s'),
+                                htmlescape($action_label),
+                                sprintf(
+                                    __s('%1$s (%2$s)'),
+                                    htmlescape($data["new_value"]),
+                                    htmlescape($as)
+                                )
+                            );
+                        } else {
+                            $tmp['change'] = sprintf(
+                                __s('%1$s: %2$s'),
+                                htmlescape($action_label),
+                                htmlescape($data["new_value"])
+                            );
                         }
                         break;
 
@@ -672,11 +671,27 @@ class Log extends CommonDBTM
                         if ($item2 = getItemForItemtype($data["itemtype_link"])) {
                             $tmp['field'] = $item2->getTypeName(1);
                         }
-                        $tmp['change'] = sprintf(
-                            __s('%1$s: %2$s'),
-                            htmlescape($action_label),
-                            htmlescape($data["old_value"])
-                        );
+
+                        $as = false;
+                        if ($data['id_search_option']) {
+                            // Record with specific value in `_force_log_option`
+                            $as = $SEARCHOPTION[$data['id_search_option']]['name'] ?? false;
+                        }
+
+                        if ($as) {
+                            $tmp['change'] = sprintf(
+                                __s('%1$s: %2$s (%3$s)'),
+                                htmlescape($action_label),
+                                htmlescape($data["old_value"]),
+                                htmlescape($as)
+                            );
+                        } else {
+                            $tmp['change'] = sprintf(
+                                __s('%1$s: %2$s'),
+                                htmlescape($action_label),
+                                htmlescape($data["old_value"])
+                            );
+                        }
                         break;
 
                     case self::HISTORY_LOCK_RELATION:
