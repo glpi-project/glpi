@@ -1610,19 +1610,19 @@ class TicketTest extends DbTestCase
         $this->assertCount(($openDate === true ? 1 : 0), $matches, "RW Opening date $caller");
 
         // Time to own, editable
-        $matches = iterator_to_array($crawler->filter("#itil-data input[name=time_to_own]:not([readonly])"));
+        $matches = iterator_to_array($crawler->filter("#itil-data input[name=time_to_own]:not([disabled])"));
         $this->assertCount(($timeOwnResolve === true ? 1 : 0), $matches, "Time to own editable $caller");
 
         // Internal time to own, editable
-        $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_own]:not([readonly])"));
+        $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_own]:not([disabled])"));
         $this->assertCount(($timeOwnResolve === true ? 1 : 0), $matches, "Internal time to own editable $caller");
 
         // Time to resolve, editable
-        $matches = iterator_to_array($crawler->filter("#itil-data input[name=time_to_resolve]:not([readonly])"));
+        $matches = iterator_to_array($crawler->filter("#itil-data input[name=time_to_resolve]:not([disabled])"));
         $this->assertCount(($timeOwnResolve === true ? 1 : 0), $matches, "Time to resolve $caller");
 
         // Internal time to resolve, editable
-        $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_resolve]:not([readonly])"));
+        $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_resolve]:not([disabled])"));
         $this->assertCount(($timeOwnResolve === true ? 1 : 0), $matches, "Internal time to resolve $caller");
 
         //Type
