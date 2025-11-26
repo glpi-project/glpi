@@ -38,6 +38,7 @@ use Glpi\Features\Clonable;
 /// Class DeviceBatteryModel
 abstract class CommonDeviceModel extends CommonDropdown
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     public static function getTypeName($nb = 0)

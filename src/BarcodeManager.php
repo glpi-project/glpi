@@ -34,9 +34,15 @@
  */
 
 use Com\Tecnick\Barcode\Barcode;
+use Com\Tecnick\Barcode\Model;
 
 class BarcodeManager
 {
+    /**
+     * @param CommonDBTM $item
+     *
+     * @return Model|false
+     */
     public function generateQRCode(CommonDBTM $item)
     {
         global $CFG_GLPI;
@@ -58,6 +64,11 @@ class BarcodeManager
         return $qrcode;
     }
 
+    /**
+     * @param CommonDBTM $item
+     *
+     * @return false|string
+     */
     public static function renderQRCode(CommonDBTM $item)
     {
         $barcode_manager = new self();

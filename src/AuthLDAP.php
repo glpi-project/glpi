@@ -174,7 +174,10 @@ class AuthLDAP extends CommonDBTM
 
     public static $rightname = 'config';
 
-    /** connection caching stuff */
+    /**
+     * connection caching stuff
+     * @var array
+     */
     public static $conn_cache = [];
 
     public static $undisclosedFields = [
@@ -2863,6 +2866,7 @@ TWIG, $twig_params);
      * @param string  $tls_certfile         TLS CERT file name within config directory (default '')
      * @param string  $tls_keyfile          TLS KEY file name within config directory (default '')
      * @param boolean $use_bind             do we need to do an ldap_bind? (true by default)
+     * @param int     $timeout
      * @param string  $tls_version          TLS VERSION (default '')
      * @param bool    $silent_bind_errors   Indicates whether bind errors must be silented
      *
@@ -4364,6 +4368,11 @@ TWIG, $twig_params);
         return $users;
     }
 
+    /**
+     * @param array $input
+     *
+     * @return bool
+     */
     public function checkFilesExist(&$input)
     {
         if (
@@ -4429,6 +4438,12 @@ TWIG, $twig_params);
         }
     }
 
+    /**
+     * @param Connection $ds
+     * @param string $message
+     *
+     * @return string
+     */
     final public static function buildError($ds, string $message): string
     {
         $diag_message = '';

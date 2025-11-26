@@ -47,6 +47,7 @@ use function Safe\strtotime;
  */
 class Certificate extends CommonDBTM implements AssignableItemInterface, StateInterface
 {
+    /** @use Clonable<static> */
     use Clonable;
     use Glpi\Features\State;
     use AssignableItem {
@@ -387,6 +388,11 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
         return $tab;
     }
 
+    /**
+     * @param ?string $itemtype
+     *
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
         $tab = [];
@@ -700,10 +706,10 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
     /**
      * Give cron information
      *
-     * @param $name : task's name
+     * @param string $name : task's name
      *
      * @return array
-     **/
+     */
     public static function cronInfo($name)
     {
         return ['description' => __('Send alarms on expired certificate')];
@@ -715,7 +721,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
      * @param CronTask $task CronTask to log, if NULL display (default NULL)
      *
      * @return integer 0 : nothing to do 1 : done with success
-     **/
+     */
     public static function cronCertificate($task = null)
     {
         global $CFG_GLPI, $DB;

@@ -47,6 +47,7 @@ use Glpi\SocketModel;
 class Cable extends CommonDBTM implements AssignableItemInterface, StateInterface
 {
     use AssignableItem;
+    /** @use Clonable<static> */
     use Clonable;
     use Glpi\Features\State;
 

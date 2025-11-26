@@ -41,6 +41,7 @@ use Glpi\Features\StateInterface;
 
 class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, StateInterface
 {
+    /** @use Clonable<static> */
     use Clonable;
     use Inventoriable;
     use Glpi\Features\State;
@@ -397,6 +398,9 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         );
     }
 
+    /**
+     * @return bool
+     */
     public function pre_purgeInventory()
     {
         return true;
@@ -433,6 +437,12 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         return true;
     }
 
+    /**
+     * @param CommonDBTM $item
+     * @param int $withtemplate
+     *
+     * @return void
+     */
     public static function showInstances(CommonDBTM $item, $withtemplate)
     {
         global $DB;

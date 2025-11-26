@@ -4957,7 +4957,7 @@ final class SQLProvider implements SearchProviderInterface
             if (isset($data['search']['savedsearches_id'])) {
                 SavedSearch::updateExecutionTime(
                     (int) $data['search']['savedsearches_id'],
-                    $DBread->execution_time
+                    (int) $DBread->execution_time
                 );
             }
 

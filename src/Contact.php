@@ -44,6 +44,7 @@ use Sabre\VObject\Component\VCard;
 class Contact extends CommonDBTM
 {
     use AssetImage;
+    /** @use Clonable<static> */
     use Clonable;
 
     // From CommonDBTM

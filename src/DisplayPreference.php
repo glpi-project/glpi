@@ -254,7 +254,9 @@ class DisplayPreference extends CommonDBTM
      * Active personal config based on global one
      *
      * @param $input  array parameter (itemtype,users_id)
-     **/
+     *
+     * @return void|false
+     */
     public function activatePerso(array $input)
     {
         global $DB;
@@ -304,6 +306,14 @@ class DisplayPreference extends CommonDBTM
         }
     }
 
+    /**
+     * @param string $itemtype
+     * @param int $users_id
+     * @param array $order
+     * @param string $interface
+     *
+     * @return void
+     */
     public function updateOrder(string $itemtype, int $users_id, array $order, string $interface = 'central')
     {
         global $DB;
@@ -353,7 +363,9 @@ class DisplayPreference extends CommonDBTM
      *
      * @param array  $input  array parameter (id,itemtype,users_id)
      * @param string $action       up or down
-     **/
+     *
+     * @return void|false
+     */
     public function orderItem(array $input, $action)
     {
         global $DB;
@@ -559,7 +571,7 @@ class DisplayPreference extends CommonDBTM
     /**
      * Print the search config form
      *
-     * @param string $itemtype  item type
+     * @param class-string<CommonDBTM> $itemtype  item type
      *
      * @return null|false (display) Returns false if there is a rights error.
      **/
@@ -568,16 +580,29 @@ class DisplayPreference extends CommonDBTM
         return $this->showConfigForm($itemtype, true);
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     *
+     * @return void
+     */
     public function showFormHelpdesk($itemtype): void
     {
         $this->showConfigForm($itemtype, true, 'helpdesk');
     }
 
+    public function isNewItem()
+    {
+        // For tab management : force isNewItem
+        return false;
+    }
+
     /**
      * show defined display preferences for a user
      *
-     * @param $users_id integer user ID
-     **/
+     * @param int $users_id  ID
+     *
+     * @return void
+     */
     public static function showForUser($users_id)
     {
         global $DB;
@@ -613,12 +638,6 @@ class DisplayPreference extends CommonDBTM
             'preferences' => $iterator,
             'rand' => $rand,
         ]);
-    }
-
-    public function isNewItem()
-    {
-        // For tab management : force isNewItem
-        return false;
     }
 
     public function defineTabs($options = [])

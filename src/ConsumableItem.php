@@ -48,6 +48,7 @@ use Glpi\Features\Clonable;
  */
 class ConsumableItem extends CommonDBTM implements AssignableItemInterface
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     use AssetImage;

@@ -59,6 +59,9 @@ class AllAssets extends CommonGLPI
         return _n('Asset', 'Assets', $nb);
     }
 
+    /**
+     * @return string
+     */
     public static function getIcon()
     {
         return 'ti ti-packages';

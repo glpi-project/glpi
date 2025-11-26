@@ -54,6 +54,7 @@ use function Safe\realpath;
  */
 class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, ProvideTranslationsInterface
 {
+    /** @use Clonable<static> */
     use Clonable;
     use MapGeolocation;
 

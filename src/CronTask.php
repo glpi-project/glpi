@@ -62,10 +62,10 @@ class CronTask extends CommonDBTM
     public $dohistory                   = true;
 
     // Specific ones
-    private static $lockname = '';
-    private $timer           = 0.0;
-    private $startlog        = 0;
-    private $volume          = 0;
+    private static string $lockname = '';
+    private float $timer           = 0.0;
+    private int $startlog        = 0;
+    private int $volume          = 0;
     public static $rightname        = 'config';
 
     /** The automatic action is disabled */
@@ -211,6 +211,8 @@ class CronTask extends CommonDBTM
      * @param integer $signo Signal number
      * @since 9.1
      * @todo Is there an alternative way to handle this? ext-pcntl is not enabled by default in PHP and isn't available on Windows.
+     *
+     * @return void
      */
     public function signal($signo)
     {
@@ -289,18 +291,22 @@ class CronTask extends CommonDBTM
     /**
      * Set the currently proccessed volume of a running task
      *
-     * @param $volume
-     **/
+     * @param int $volume
+     *
+     * @return void
+     */
     public function setVolume($volume)
     {
         $this->volume = $volume;
     }
 
     /**
-     * Increase the currently proccessed volume of a running task
+     * Increase the currently processed volume of a running task
      *
-     * @param $volume
-     **/
+     * @param int $volume
+     *
+     * @return void
+     */
     public function addVolume($volume)
     {
         $this->volume += $volume;
@@ -378,6 +384,8 @@ class CronTask extends CommonDBTM
      * Add a log message for a running task
      *
      * @param string $content
+     *
+     * @return false|int
      **/
     public function log($content)
     {
@@ -660,6 +668,8 @@ class CronTask extends CommonDBTM
 
     /**
      * reset the next launch date => for a launch as soon as possible
+     *
+     * @return bool
      **/
     public function resetDate()
     {
@@ -674,6 +684,8 @@ class CronTask extends CommonDBTM
 
     /**
      * reset the current state
+     *
+     * @return bool
      **/
     public function resetState()
     {
@@ -807,7 +819,7 @@ class CronTask extends CommonDBTM
     /**
      * Release the global database lock
      **/
-    private static function release_lock()
+    private static function release_lock(): void
     {
         global $DB;
 
@@ -1197,9 +1209,9 @@ class CronTask extends CommonDBTM
     }
 
     /**
-     * Display detail of a runned task
+     * Display detail of a ran task
      *
-     * @param $logid : crontasklogs_id
+     * @param int $logid crontasklogs_id
      *
      * @return void
      **/

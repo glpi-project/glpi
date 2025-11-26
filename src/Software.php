@@ -45,6 +45,7 @@ use Glpi\Search\DefaultSearchRequestInterface;
  **/
 class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItemInterface, DefaultSearchRequestInterface
 {
+    /** @use Clonable<static> */
     use Clonable;
     use TreeBrowse;
     use AssetImage;

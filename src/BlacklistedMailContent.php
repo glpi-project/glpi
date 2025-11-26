@@ -42,6 +42,7 @@ use Glpi\Features\Clonable;
  **/
 class BlacklistedMailContent extends CommonDropdown
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     // From CommonDBTM

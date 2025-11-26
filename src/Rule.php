@@ -48,6 +48,7 @@ use function Safe\simplexml_load_file;
  **/
 class Rule extends CommonDBTM
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     public $dohistory             = true;

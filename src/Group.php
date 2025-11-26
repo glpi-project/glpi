@@ -43,6 +43,7 @@ use Glpi\Search\Provider\SQLProvider;
  **/
 class Group extends CommonTreeDropdown
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     public $dohistory       = true;

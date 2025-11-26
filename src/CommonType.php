@@ -37,6 +37,7 @@ use Glpi\Features\Clonable;
 
 abstract class CommonType extends CommonDropdown
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     public static function getFieldLabel()
