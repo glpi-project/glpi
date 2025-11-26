@@ -81,7 +81,9 @@
       'rand': field_options.rand,
    }|merge(impact_options)),
    __('Impact'),
-   field_options
+   field_options|merge({
+      'id': 'dropdown_impact' ~ field_options.rand,
+   })
 ) }}
 
 {% set priority_options = field_options|merge({
@@ -108,7 +110,9 @@
       'rand': field_options.rand,
    }|merge(field_options|merge(priority_options))),
    __('Priority'),
-   field_options
+   field_options|merge({
+      'id': 'dropdown_priority' ~ field_options.rand,
+   })
 ) }}
 
 <script type="text/javascript">

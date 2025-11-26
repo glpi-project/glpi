@@ -392,16 +392,13 @@ describe("Ticket Form", () => {
         }).then((ticket_id) => {
             cy.visit(`/front/ticket.form.php?id=${ticket_id}`);
 
-            cy.get('select[name="priority"]').should('have.value', '3');
+            cy.getDropdownByLabelText('Priority').should('have.value', '3');
 
             cy.getDropdownByLabelText('Urgency').selectDropdownValue('High');
-            cy.waitForNetworkIdle(500);
-            cy.get('select[name="priority"]').should('have.value', '4');
+            cy.getDropdownByLabelText('Priority').should('have.value', '4');
 
-            cy.get('select[name="impact"]').next('.select2').find('[role=combobox]').click();
-            cy.document().its('body').findByRole('option', { name: 'Very high' }).click();
-            cy.waitForNetworkIdle(500);
-            cy.get('select[name="priority"]').should('have.value', '5');
+            cy.getDropdownByLabelText('Impact').selectDropdownValue('Very high');
+            cy.getDropdownByLabelText('Priority').should('have.value', '5');
         });
     });
 });
