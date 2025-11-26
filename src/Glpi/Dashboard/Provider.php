@@ -130,9 +130,11 @@ class Provider
                 $where += getEntitiesRestrictCriteria($item::getTable(), '', '', $item->maybeRecursive());
             }
             $request = [
-                'SELECT' => ['COUNT' => $item::getTableField($item::getIndexName()) . ' as cpt'],
-                'FROM'   => $i_table,
-                'WHERE'  => $where,
+                'SELECT'   => $item::getTableField($item::getIndexName()),
+                'COUNT'    => 'cpt',
+                'DISTINCT' => true,
+                'FROM'     => $i_table,
+                'WHERE'    => $where,
             ];
         }
 
@@ -141,6 +143,15 @@ class Provider
             self::getFiltersCriteria($i_table, $params['apply_filters']),
             $item instanceof Ticket ? Ticket::getCriteriaFromProfile() : []
         );
+
+                // avoid costy DISTINCT if there isn't any JOIN (/3 perf gain)
+        if (!isset($request['LEFT JOIN'])
+            && !isset($request['JOIN'])
+            && !isset($request['INNER JOIN'])
+            && !isset($request['RIGHT JOIN'])) {
+            unset($request['DISTINCT']);
+        }
+
         Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
         $iterator = $DB->request($criteria);
 
