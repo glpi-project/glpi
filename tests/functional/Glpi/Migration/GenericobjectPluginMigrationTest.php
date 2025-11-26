@@ -120,6 +120,16 @@ class GenericobjectPluginMigrationTest extends DbTestCase
 
         // Assert
 
+        // Validate that plugin data is not altered
+        $plugin_itemtypes = \array_column(
+            \getAllDataFromTable('glpi_plugin_genericobject_types'),
+            'itemtype'
+        );
+        $this->assertEqualsCanonicalizing(
+            ['PluginGenericobjectSmartphone', 'PluginGenericobjectTablet', 'PluginGenericobjectInactive'],
+            $plugin_itemtypes
+        );
+
         // Validate created asset definitions
         $expected_definitions = [
             [

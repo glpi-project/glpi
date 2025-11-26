@@ -47,7 +47,7 @@ return $config
         // 'src' Loaded from the autoloader
     ], false)
 
-    ->ignoreUnknownClasses(['DB', 'DbTestCase'])
+    ->ignoreUnknownClasses(['DB', 'DbTestCase', 'PluginGenericobjectType'])
 
     // Ignore errors on extensions that are suggested but not required
     ->ignoreErrorsOnExtensionAndPaths('ext-exif', [
