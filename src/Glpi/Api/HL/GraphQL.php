@@ -39,8 +39,10 @@ use CommonDBTM;
 use Glpi\Debug\Profiler;
 use Glpi\Http\Request;
 use GraphQL\Error\Error;
+use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Utils\BuildSchema;
+use Psr\SimpleCache\CacheInterface;
 use Throwable;
 
 use function Safe\json_decode;
@@ -57,13 +59,25 @@ final class GraphQL
 
     public static function processRequest(Request $request): array
     {
+        /** @var CacheInterface $GLPI_CACHE */
+        global $GLPI_CACHE;
+
         $api_version = $request->getHeaderLine('GLPI-API-Version') ?: Router::API_VERSION;
         $query = self::extractQueryFromBody($request);
         $generator = new GraphQLGenerator($api_version);
         Profiler::getInstance()->start('GraphQL::processRequest', Profiler::CATEGORY_HLAPI);
-        Profiler::getInstance()->start('Build GraphQLSchema', Profiler::CATEGORY_HLAPI);
+        Profiler::getInstance()->start('Get GraphQLSchema', Profiler::CATEGORY_HLAPI);
         $schema_str = $generator->getSchema();
-        $built_schema = BuildSchema::build($schema_str);
+        Profiler::getInstance()->stop('Get GraphQLSchema');
+        Profiler::getInstance()->start('Build GraphQLSchema', Profiler::CATEGORY_HLAPI);
+        $cache_key = "graphql_schema_{$api_version}";
+        if (!$GLPI_CACHE->has($cache_key)) {
+            $parsed = Parser::parse(source: $schema_str, options: ['assumeValid' => true, 'assumeValidSDL' => true]);
+            $GLPI_CACHE->set($cache_key, $parsed);
+        } else {
+            $parsed = $GLPI_CACHE->get($cache_key);
+        }
+        $built_schema = BuildSchema::buildAST(ast: $parsed, options: ['assumeValid' => true, 'assumeValidSDL' => true]);
         Profiler::getInstance()->stop('Build GraphQLSchema');
         try {
             $result = \GraphQL\GraphQL::executeQuery(
