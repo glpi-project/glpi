@@ -2850,4 +2850,45 @@ HTML;
             $this->assertEquals($expected, $found_items);
         }
     }
+
+    public function testGetDropdownValueWithUsedAndConditionNot(): void
+    {
+        $this->login();
+
+        $project = $this->createItem(\Project::class, [
+            'name' => 'Test Project',
+            'entities_id' => 0,
+        ]);
+
+        $task_used = $this->createItem(\ProjectTask::class, [
+            'name' => 'Task in used',
+            'projects_id' => $project->getID(),
+        ]);
+
+        $task_available = $this->createItem(\ProjectTask::class, [
+            'name' => 'Task available',
+            'projects_id' => $project->getID(),
+        ]);
+
+        $params = [
+            'itemtype' => \ProjectTask::class,
+            'display_emptychoice' => false,
+            'entity_restrict' => 0,
+            'used' => [$task_used->getID() => $task_used->getID()],
+            'condition' => ['NOT' => ['glpi_projecttasks.name' => ['Nonexistent']]],
+        ];
+        $params['_idor_token'] = Session::getNewIDORToken(\ProjectTask::class, $params);
+
+        $result = \Dropdown::getDropdownValue($params, false);
+
+        $ids = [];
+        foreach ($result['results'] as $group) {
+            foreach ($group['children'] ?? [$group] as $item) {
+                $ids[] = $item['id'];
+            }
+        }
+
+        $this->assertNotContains($task_used->getID(), $ids);
+        $this->assertContains($task_available->getID(), $ids);
+    }
 }

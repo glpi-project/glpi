@@ -2990,7 +2990,11 @@ HTML;
                         // Ensure condition contains table name to prevent ambiguity with fields from `glpi_entities` table
                         $where["$table.$key"] = $value;
                     } else {
-                        $where[$key] = $value;
+                        if ($key === 'NOT' && isset($where['NOT'])) {
+                            $where[] = ['NOT' => $value];
+                        } else {
+                            $where[$key] = $value;
+                        }
                     }
                 }
             }
