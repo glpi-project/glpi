@@ -5807,8 +5807,8 @@ class CommonDBTM extends CommonGLPI
 
             // cache groups data from form in case it needs to be merged after rule processing
             // existing_data is user submited data (form) + database data
-            $existing_data['_groups_id'] = $this->input['_groups_id'] ?? [];
-            $existing_data['_groups_id_tech'] = $this->input['_groups_id_tech'] ?? [];
+            $existing_data['_groups_id'] = is_array($this->input['_groups_id'] ?? null) ? $this->input['_groups_id'] : [];
+            $existing_data['_groups_id_tech'] = is_array($this->input['_groups_id_tech'] ?? null) ? $this->input['_groups_id_tech'] : [];
 
             // retrieve existing _groups_id_tech & _groups_id
             $existing_data['_groups_id'] = array_merge(

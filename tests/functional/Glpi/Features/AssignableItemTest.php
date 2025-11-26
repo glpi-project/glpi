@@ -136,15 +136,15 @@ class AssignableItemTest extends \DbTestCase
     #[DataProvider('itemtypeProvider')]
     public function testAddNoGroups(string $class): void
     {
-        $this->login(); // login to bypass some rights checks (e.g. on domain records)
+        $this->login();
 
         $input = $this->getMinimalCreationInput($class);
+        assert(!array_key_exists('groups_id', $input), 'There should be no groups_id input for this test');
+        assert(!array_key_exists('groups_id_tech', $input), 'There should be no groups_id_tech input for this test');
         $item_1 = $this->createItem(
             $class,
             $input + [
                 $class::getNameField() => __FUNCTION__ . ' 1',
-                '_groups_id'             => '',
-                '_groups_id_tech'        => '',
             ]
         );
 

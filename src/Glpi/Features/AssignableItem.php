@@ -241,8 +241,7 @@ trait AssignableItem
     /**
      * Update input with _groups_id & _groups_id_tech
      *
-     * - set _groups_id & _groups_id_tech as arrays from groups_id & groups_id_tech
-     *   cast to int and fitered (values =< 0 are removed)
+     * - set _groups_id & _groups_id_tech as arrays from groups_id & groups_id_tech (cast to int and fiter (values =< 0 are removed))
      * - remove groups_id & groups_id_tech from input
      */
     public function prepareGroupFields(array $input)
