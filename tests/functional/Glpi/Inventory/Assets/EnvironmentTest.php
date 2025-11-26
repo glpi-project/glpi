@@ -34,7 +34,9 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\IsInventoriableCapacity;
+use Glpi\Inventory\Asset\Environment;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Converter;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -43,7 +45,7 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/environment.class.php */
 
-class Environment extends AbstractInventoryAsset
+class EnvironmentTest extends AbstractInventoryAsset
 {
     public static function assetProvider(): array
     {
@@ -99,7 +101,7 @@ class Environment extends AbstractInventoryAsset
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\Environment($computer, $json->content->envs);
+        $asset = new Environment($computer, $json->content->envs);
         $asset->setExtraData((array) $json->content);
 
         $this->assertTrue($asset->checkConf($conf));
@@ -134,7 +136,7 @@ class Environment extends AbstractInventoryAsset
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\Environment($computer, $json->content->envs);
+        $asset = new Environment($computer, $json->content->envs);
         $asset->setExtraData((array) $json->content);
 
         $this->assertTrue($asset->checkConf($conf));
@@ -155,16 +157,12 @@ class Environment extends AbstractInventoryAsset
 
     public function testGenericAssetEnvironment(): void
     {
-        global $DB;
-
         //create generic asset
         $definition = $this->initAssetDefinition(
             system_name: 'MyAsset' . $this->getUniqueString(),
-            capacities: array_merge(
-                [
-                    IsInventoriableCapacity::class,
-                ]
-            )
+            capacities: [
+                new Capacity(name: IsInventoriableCapacity::class),
+            ]
         );
         $classname  = $definition->getAssetClassName();
 

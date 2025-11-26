@@ -34,9 +34,11 @@
 
 namespace tests\units\Glpi\System\Log;
 
-class LogParser extends \GLPITestCase
+use Glpi\System\Log\LogParser;
+
+class LogParserTest extends \GLPITestCase
 {
-    private $log_file_path = GLPI_LOG_DIR . '/test.log';
+    private string $log_file_path = GLPI_LOG_DIR . '/test.log';
 
     public function setUp(): void
     {
@@ -73,13 +75,13 @@ LOG
     public function testConstructor()
     {
         $this->expectExceptionMessage('Invalid directory "/dir/not/exists".');
-        new \Glpi\System\Log\LogParser('/dir/not/exists');
+        new LogParser('/dir/not/exists');
     }
 
 
     public function testGetLogsFilesList()
     {
-        $instance = new \Glpi\System\Log\LogParser();
+        $instance = new LogParser();
 
         touch($this->log_file_path, strtotime('2022-09-20 00:00:00'));
         $log_files = $instance->getLogsFilesList();
@@ -97,7 +99,7 @@ LOG
 
     public function testParseLogFile()
     {
-        $instance = new \Glpi\System\Log\LogParser();
+        $instance = new LogParser();
 
         $log_entries = $instance->parseLogFile('test.log');
         $this->assertSame(
@@ -125,7 +127,7 @@ LOG
 
     public function testDownloadFile()
     {
-        $instance = new \Glpi\System\Log\LogParser();
+        $instance = new LogParser();
 
         $this->expectOutputString(file_get_contents($this->log_file_path));
         $instance->download('test.log');
@@ -134,7 +136,7 @@ LOG
 
     public function testEmptyFile()
     {
-        $instance = new \Glpi\System\Log\LogParser();
+        $instance = new LogParser();
 
         $this->assertTrue($instance->empty('test.log'));
         $this->assertEmpty(file_get_contents($this->log_file_path));
@@ -143,7 +145,7 @@ LOG
 
     public function testDeleteFile()
     {
-        $instance = new \Glpi\System\Log\LogParser();
+        $instance = new LogParser();
 
         $this->assertTrue(file_exists($this->log_file_path));
         $this->assertTrue($instance->delete('test.log'));

@@ -50,7 +50,7 @@ function loadDataset()
     // Unit test data definition
     $data = [
         // bump this version to force reload of the full dataset, when content change
-        '_version' => '4.13',
+        '_version' => '4.14',
 
         // Type => array of entries
         'Entity' => [
@@ -838,6 +838,11 @@ function loadDataset()
                 'solutiontemplates_id' => 'noupdate_solutiontemplate',
             ],
         ],
+        Domain::class => [
+            [
+                'name' => '_testDomain',
+            ],
+        ],
     ];
 
     // To bypass various right checks
@@ -935,7 +940,9 @@ function getItemByTypeName(string $type, string $name, bool $onlyid = false): Co
     $item = getItemForItemtype($type);
     $nameField = $type::getNameField();
     if (!$item->getFromDBByCrit([$nameField => $name])) {
-        throw new RuntimeException(sprintf('Unable to load a single `%s` item with the name `%s` (none or many exist may exist).', $type, $name));
+        $found = $item->find();
+        $found_names = array_column($found, $nameField);
+        throw new RuntimeException(sprintf('Unable to load a single `%s` item with the name `%s` (available items names are : ' . implode(', ', $found_names) . ').', $type, $name));
     }
     return ($onlyid ? $item->getID() : $item);
 }
