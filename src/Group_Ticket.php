@@ -47,5 +47,4 @@ class Group_Ticket extends CommonITILActor
     public static $items_id_1 = 'tickets_id';
     public static $itemtype_2 = 'Group';
     public static $items_id_2 = 'groups_id';
-
 }

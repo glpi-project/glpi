@@ -590,42 +590,48 @@ class Log extends CommonDBTM
                             $tmp['field'] = $item2->getTypeName(1);
                         }
 
-                        /** @var CommonITILObject $item */
-                        if ($data['id_search_option']) { // Recent record - see CommonITILObject::getSearchOptionsActors()
-                            $as = $SEARCHOPTION[$data['id_search_option']]['name'];
-                        } else { // Old record
-                            $is = $isr = $isa = $iso = false;
-                            switch ($data['itemtype_link']) {
-                                case Group::class:
-                                    $is = 'isGroup';
-                                    break;
+                        $as = false;
+                        if ($data['id_search_option']) {
+                            // Record with specific value in `_force_log_option`
+                            $as = $SEARCHOPTION[$data['id_search_option']]['name'] ?? false;
+                        }
 
-                                case User::class:
-                                    $is = 'isUser';
-                                    break;
+                        if (is_a($data['itemtype'], CommonITILObject::class, true)) {
+                            /** @var CommonITILObject $item */
+                            if ($as === false) {
+                                // Old record, befoe the usage of specific `_force_log_option` value.
 
-                                case Supplier::class:
-                                    $is = 'isSupplier';
-                                    break;
-                            }
-                            if ($is) {
-                                $iditem = intval(substr($data['new_value'], strrpos($data['new_value'], '(') + 1)); // This is terrible idea
-                                $isr = $item->$is(CommonITILActor::REQUESTER, $iditem);
-                                $isa = $item->$is(CommonITILActor::ASSIGN, $iditem);
-                                $iso = $item->$is(CommonITILActor::OBSERVER, $iditem);
-                            }
-                            // Simple Heuristic, of course not enough
-                            if ($isr && !$isa && !$iso) {
-                                $as = _n('Requester', 'Requesters', 1);
-                            } elseif (!$isr && $isa && !$iso) {
-                                $as = __('Assigned to');
-                            } elseif (!$isr && !$isa && $iso) {
-                                $as = _n('Observer', 'Observers', 1);
-                            } else {
-                                // Deleted or Ambiguous
-                                $as = false;
+                                $is = $isr = $isa = $iso = false;
+                                switch ($data['itemtype_link']) {
+                                    case Group::class:
+                                        $is = 'isGroup';
+                                        break;
+
+                                    case User::class:
+                                        $is = 'isUser';
+                                        break;
+
+                                    case Supplier::class:
+                                        $is = 'isSupplier';
+                                        break;
+                                }
+                                if ($is) {
+                                    $iditem = intval(substr($data['new_value'], strrpos($data['new_value'], '(') + 1)); // This is terrible idea
+                                    $isr = $item->$is(CommonITILActor::REQUESTER, $iditem);
+                                    $isa = $item->$is(CommonITILActor::ASSIGN, $iditem);
+                                    $iso = $item->$is(CommonITILActor::OBSERVER, $iditem);
+                                }
+                                // Simple Heuristic, of course not enough
+                                if ($isr && !$isa && !$iso) {
+                                    $as = _n('Requester', 'Requesters', 1);
+                                } elseif (!$isr && $isa && !$iso) {
+                                    $as = __('Assigned to');
+                                } elseif (!$isr && !$isa && $iso) {
+                                    $as = _n('Observer', 'Observers', 1);
+                                }
                             }
                         }
+
                         if ($as) {
                             $tmp['change'] = sprintf(
                                 __s('%1$s: %2$s'),
@@ -662,14 +668,16 @@ class Log extends CommonDBTM
 
                     case self::HISTORY_DEL_RELATION:
                         $tmp['field'] = NOT_AVAILABLE;
-                        $as = false; //Old record were id_search_option is 0
-                        if ($data['id_search_option']) { // Recent record - see CommonITILObject::getSearchOptionsActors()
-                            $as = $SEARCHOPTION[$data['id_search_option']]['name'];
-                        }
-
                         if ($item2 = getItemForItemtype($data["itemtype_link"])) {
                             $tmp['field'] = $item2->getTypeName(1);
                         }
+
+                        $as = false;
+                        if ($data['id_search_option']) {
+                            // Record with specific value in `_force_log_option`
+                            $as = $SEARCHOPTION[$data['id_search_option']]['name'] ?? false;
+                        }
+
                         if ($as) {
                             $tmp['change'] = sprintf(
                                 __s('%1$s: %2$s (%3$s)'),

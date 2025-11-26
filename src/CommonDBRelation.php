@@ -1160,7 +1160,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 && static::$logs_for_item_1
             ) {
                 $changes = [
-                    $this -> _force_log_option,
+                    $this->_force_log_option,
                     $this->getHistoryNameForItem1($item2, 'delete'),
                     '',
                 ];
