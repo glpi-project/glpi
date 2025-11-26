@@ -193,7 +193,7 @@ final class Search
                 $sql_field = $this->getSQLFieldForProperty($prop_name);
                 $expression = $this->db_read::quoteName($sql_field);
                 if (str_contains($sql_field, '.')) {
-                    $join_name = $this->getJoinNameForProperty($prop_name);
+                    $join_name = $this->context->getJoinNameForProperty($prop_name);
                     // Check if the join property is in an array. If so, we need to concat each result.
                     if (array_key_exists($join_name, $this->context->getJoins())) {
                         $join_def = $this->context->getJoins()[$join_name];
@@ -554,18 +554,6 @@ final class Search
         return false;
     }
 
-    public function getJoinNameForProperty(string $prop_name): string
-    {
-        $joins = $this->context->getJoins();
-        $prop_name = str_replace(chr(0x1F), '.', $prop_name);
-        if (array_key_exists($prop_name, $joins)) {
-            $join_name = $prop_name;
-        } else {
-            $join_name = substr($prop_name, 0, strrpos($prop_name, '.'));
-        }
-        return $join_name;
-    }
-
     /**
      * @param bool $count_only
      * @return RecordSet
@@ -793,7 +781,7 @@ final class Search
                 $data = array_merge($existing_data, $data);
                 ArrayPathAccessor::setElementByArrayPath($result, $path, $data);
             }
-            $result = Doc\Schema::castProperties($result, $search->context->getFlattenedProperties());
+            Doc\Schema::castProperties($result, $search->context->getFlattenedProperties());
         }
         Profiler::getInstance()->stop('Map and cast properties');
         unset($result);

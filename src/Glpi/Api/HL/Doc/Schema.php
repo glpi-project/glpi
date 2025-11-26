@@ -475,7 +475,7 @@ class Schema implements ArrayAccess
         return true;
     }
 
-    public static function castProperties(array $content, array $flattened_properties): array
+    public static function castProperties(array &$content, array $flattened_properties): void
     {
         foreach ($flattened_properties as $sk => $sv) {
             // Get value from original content by the array path $sk
@@ -487,6 +487,7 @@ class Schema implements ArrayAccess
                     $current = &$current[$path];
                 } else {
                     $no_match = true;
+                    break;
                 }
             }
             if ($no_match) {
@@ -508,7 +509,6 @@ class Schema implements ArrayAccess
                 $cv = date(DATE_RFC3339, strtotime($cv));
             }
         }
-        return $content;
     }
 
     /**

@@ -67,7 +67,7 @@ final class RecordSet
         if ($fkey === 'id') {
             return '_';
         }
-        return $this->search->getJoinNameForProperty($fkey);
+        return $this->search->getContext()->getJoinNameForProperty($fkey);
     }
 
     private function getPropertiesToHydrate(string $fkey)
@@ -114,7 +114,7 @@ final class RecordSet
                 $hydrated_row[$fkey] = $value;
                 continue;
             }
-            $join_name = $this->search->getJoinNameForProperty($fkey);
+            $join_name = $this->search->getContext()->getJoinNameForProperty($fkey);
             if (isset($this->search->getContext()->getJoins()[$join_name])) {
                 // This is a joined property
                 continue;
@@ -204,8 +204,7 @@ final class RecordSet
         $hydrated_records = [];
         /** All data retrieved by table */
         $fetched_records = [];
-        Profiler::getInstance()->start('RecordSet::hydrate get data for dehydrated records', Profiler::CATEGORY_HLAPI);
-        Profiler::getInstance()->pause('RecordSet::hydrate get data for dehydrated records');
+        $itemtype_cache = [];
 
         foreach ($this->records as $schema_name => $dehydrated_records) {
             // Clear lookup cache between schemas just in case.
@@ -213,6 +212,7 @@ final class RecordSet
             $to_hydrate = [];
 
             // Collect all IDs to hydrate
+            Profiler::getInstance()->start('RecordSet::collectIdsToHydrate', Profiler::CATEGORY_HLAPI);
             foreach ($dehydrated_records as $row) {
                 unset($row['_itemtype']);
                 // Make sure we have all the needed data
@@ -221,21 +221,24 @@ final class RecordSet
                     if ($table === null) {
                         continue;
                     }
-                    $itemtype = getItemTypeForTable($table);
+                    if (!array_key_exists($table, $itemtype_cache)) {
+                        $itemtype = getItemTypeForTable($table);
+                        $itemtype_cache[$table] = $itemtype;
+                    }
+                    $itemtype = $itemtype_cache[$table];
 
                     if ($record_ids === null || $record_ids === '' || $record_ids === "\0") {
                         continue;
                     }
                     // Find which IDs we need to fetch. We will avoid fetching records multiple times.
-                    $ids_to_fetch = array_map(static function (string|int $id) {
-                        // If an ID contains a record separator, it includes a path of IDs to identify the parent record.
-                        // The item ID itself is the last one.
+                    $ids_to_fetch = explode(chr(0x1D), $record_ids);
+                    foreach ($ids_to_fetch as &$id) {
                         if (str_contains($id, chr(0x1E))) {
-                            $id = explode(chr(0x1E), (string) $id);
-                            $id = end($id);
+                            $id_parts = explode(chr(0x1E), $id);
+                            $id = end($id_parts);
                         }
-                        return (int) $id;
-                    }, explode(chr(0x1D), $record_ids));
+                    }
+                    unset($id);
                     $ids_to_fetch = array_diff($ids_to_fetch, array_keys($fetched_records[$table] ?? []));
 
                     if ($ids_to_fetch === []) {
@@ -253,6 +256,7 @@ final class RecordSet
                     $to_hydrate[$fkey]['ids'] = [...$to_hydrate[$fkey]['ids'], ...$ids_to_fetch];
                 }
             }
+            Profiler::getInstance()->stop('RecordSet::collectIdsToHydrate');
 
             // Do the actual requests to fetch the data for the dehydrated records
             foreach ($to_hydrate as $fkey => $info) {
@@ -262,8 +266,11 @@ final class RecordSet
                 if (empty($ids_to_fetch)) {
                     continue;
                 }
+                Profiler::getInstance()->start('RecordSet::getHydrationCriteria', Profiler::CATEGORY_HLAPI);
                 $criteria = $this->getHydrationCriteria($fkey, $table, $itemtype, $schema_name, $ids_to_fetch);
+                Profiler::getInstance()->stop('RecordSet::getHydrationCriteria');
 
+                Profiler::getInstance()->start('RecordSet::check if nothing to select', Profiler::CATEGORY_HLAPI);
                 if (empty($criteria['SELECT'])) {
                     // Nothing to select. Security guard to prevent leaking extra data.
                     $fetched_records[$table] ??= [];
@@ -276,27 +283,29 @@ final class RecordSet
                     }
                     continue;
                 }
+                Profiler::getInstance()->stop('RecordSet::check if nothing to select');
 
                 // Fetch the data for the current dehydrated record
-                Profiler::getInstance()->resume('RecordSet::hydrate get data for dehydrated records');
                 $it = $this->search->getDBRead()->request($criteria);
-                Profiler::getInstance()->pause('RecordSet::hydrate get data for dehydrated records');
                 $this->search->validateIterator($it);
+                Profiler::getInstance()->start('RecordSet::processFetchedData', Profiler::CATEGORY_HLAPI);
+                $fkey_local_name = trim(strrchr($fkey, chr(0x1F)) ?: $fkey, chr(0x1F));
                 foreach ($it as $data) {
                     $cleaned_data = [];
                     foreach ($data as $k => $v) {
                         ArrayPathAccessor::setElementByArrayPath($cleaned_data, $k, $v);
                     }
-                    $fkey_local_name = trim(strrchr($fkey, chr(0x1F)) ?: $fkey, chr(0x1F));
                     $fetched_records[$table][$data[$fkey_local_name]] = $cleaned_data;
                 }
+                Profiler::getInstance()->stop('RecordSet::processFetchedData');
             }
 
+            Profiler::getInstance()->start('RecordSet::assembleHydratedRecordsLoop', Profiler::CATEGORY_HLAPI);
             foreach ($dehydrated_records as $row) {
                 $hydrated_records[] = $this->assembleHydratedRecords($row, $schema_name, $fetched_records);
             }
+            Profiler::getInstance()->stop('RecordSet::assembleHydratedRecordsLoop');
         }
-        Profiler::getInstance()->stop('RecordSet::hydrate get data for dehydrated records');
         return $hydrated_records;
     }
 
@@ -309,7 +318,6 @@ final class RecordSet
      */
     private function assembleHydratedRecords(array $dehydrated_row, string $schema_name, array $fetched_records): array
     {
-        Profiler::getInstance()->start('RecordSet::assembleHydratedRecords', Profiler::CATEGORY_HLAPI);
         $dehydrated_refs = array_keys($dehydrated_row);
         $hydrated_record = [];
         foreach ($dehydrated_refs as $dehydrated_ref) {
@@ -332,7 +340,7 @@ final class RecordSet
                 }
             } else {
                 // Add the joined item fields
-                $join_name = $this->search->getJoinNameForProperty($dehydrated_ref);
+                $join_name = $this->search->getContext()->getJoinNameForProperty($dehydrated_ref);
                 if (isset($this->search->getContext()->getFlattenedProperties()[$join_name])) {
                     continue;
                 }
@@ -368,10 +376,7 @@ final class RecordSet
                 ArrayPathAccessor::setElementByArrayPath($hydrated_record, $normalized_k, $v);
             }
         }
-        Profiler::getInstance()->start('RecordSet::fixupAssembledRecord', Profiler::CATEGORY_HLAPI);
         $this->fixupAssembledRecord($hydrated_record);
-        Profiler::getInstance()->stop('RecordSet::fixupAssembledRecord');
-        Profiler::getInstance()->stop('RecordSet::assembleHydratedRecords');
         return $hydrated_record;
     }
 
@@ -387,39 +392,32 @@ final class RecordSet
      */
     private function fixupAssembledRecord(array &$record): void
     {
-        // Fix keys for array properties. Currently, the keys are probably the IDs of the joined records. They should be the index of the record in the array.
-        $array_joins = array_filter($this->search->getContext()->getJoins(), static fn($v) => isset($v['parent_type']) && $v['parent_type'] === Doc\Schema::TYPE_ARRAY, ARRAY_FILTER_USE_BOTH);
-        foreach (array_keys($array_joins) as $name) {
-            // Get all paths in the array that match the join name. Paths may or may not have number parts between the parts of the join name (separated by '.')
-            $pattern = str_replace('.', '\.(?:\d+\.)?', $name);
-            $paths = ArrayPathAccessor::getArrayPaths($record, "/^{$pattern}$/");
-            foreach ($paths as $path) {
-                $join_prop = ArrayPathAccessor::getElementByArrayPath($record, $path);
-                if ($join_prop === null) {
-                    continue;
-                }
-                $join_prop = array_values($join_prop);
-                // Remove any empty values
-                $join_prop = array_filter($join_prop, static fn($v) => !empty($v));
-                ArrayPathAccessor::setElementByArrayPath($record, $path, $join_prop);
+        foreach ($this->search->getContext()->getJoins() as $name => $j) {
+            if (!array_key_exists('parent_type', $j)) {
+                continue;
             }
-        }
+            if (str_contains($name, '.')) {
+                $pattern = str_replace('.', '\.(?:\d+\.)?', $name);
+                $paths = ArrayPathAccessor::getArrayPaths($record, "/^{$pattern}$/");
+            } else {
+                $paths = [$name];
+            }
 
-        // Fix empty array values for objects by replacing them with null
-        $obj_joins = array_filter($this->search->getContext()->getJoins(), fn($v, $k) => isset($v['parent_type']) && $v['parent_type'] === Doc\Schema::TYPE_OBJECT && !isset($this->search->getContext()->getFlattenedProperties()[$k]), ARRAY_FILTER_USE_BOTH);
-        foreach (array_keys($obj_joins) as $name) {
-            // Get all paths in the array that match the join name. Paths may or may not have number parts between the parts of the join name (separated by '.')
-            $pattern = str_replace('.', '\.(?:\d+\.)?', $name);
-            $paths = ArrayPathAccessor::getArrayPaths($record, "/^{$pattern}$/");
             foreach ($paths as $path) {
                 $join_prop = ArrayPathAccessor::getElementByArrayPath($record, $path);
                 if ($join_prop === null) {
                     continue;
                 }
-                $join_prop = array_filter($join_prop, static fn($v) => !empty($v));
-                if ($join_prop === []) {
+                if ($j['parent_type'] === Doc\Schema::TYPE_ARRAY) {
+                    $join_prop = array_values($join_prop);
+                } else if (empty($join_prop)) {
+                    // Object join with no data = null
                     ArrayPathAccessor::setElementByArrayPath($record, $path, null);
+                    continue;
                 }
+                // Remove any empty values
+                $join_prop = array_filter($join_prop, static fn($v) => $v !== []);
+                ArrayPathAccessor::setElementByArrayPath($record, $path, $join_prop);
             }
         }
     }
