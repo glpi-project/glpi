@@ -49,6 +49,7 @@ use Glpi\Api\HL\Search\RecordSet;
 use Glpi\Api\HL\Search\SearchContext;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Debug\Profiler;
 use Glpi\Toolbox\ArrayPathAccessor;
@@ -556,11 +557,12 @@ final class Search
 
     /**
      * @param bool $count_only
-     * @return RecordSet
+     * @return RecordSet|int
+     * @phpstan-return $count_only ? int : RecordSet
      * @throws APIException
      * @throws RSQLException
      */
-    private function getMatchingRecords($count_only = false): RecordSet
+    private function getMatchingRecords(bool $count_only = false): RecordSet|int
     {
         $records = [];
 
@@ -588,7 +590,6 @@ final class Search
                 $criteria['SELECT'][] = '_itemtype';
                 $criteria['GROUPBY'] = ['_itemtype', '_.id'];
             } else {
-                $criteria['SELECT'][] = '_.id';
                 if (!$count_only) {
                     foreach (array_keys($this->context->getJoins()) as $join_alias) {
                         $s = $this->getSelectCriteriaForProperty($this->context->getPrimaryKeyPropertyForJoin($join_alias), true);
@@ -601,8 +602,23 @@ final class Search
             }
 
             if ($count_only) {
-                $criteria['SELECT'] = [new QueryExpression('COUNT(DISTINCT(_.id))', 'count')];
-                unset($criteria['GROUPBY']);
+                if (!array_key_exists('HAVING', $criteria) || empty($criteria['HAVING'])) {
+                    $table_alias = '_';
+                    unset($criteria['GROUPBY'], $criteria['ORDERBY']);
+                } else {
+                    // Some queries may use HAVING to filter on computed fields so the main query must be done as a subquery and then count that
+                    $table_alias = 'subquery_count';
+                    $subquery_criteria = new QuerySubQuery($criteria, 'subquery_count');
+                    $criteria = [
+                        'FROM' => $subquery_criteria,
+                    ];
+                }
+                if ($this->context->isUnionSearchMode()) {
+                    $count_select = [QueryFunction::count(QueryFunction::concat(['_itemtype', new QueryExpression('0x1E'), "$table_alias.id",]), true, 'count')];
+                } else {
+                    $count_select = [QueryFunction::count("$table_alias.id", true, 'count')];
+                }
+                $criteria['SELECT'] = $count_select;
             }
 
             // request just to get the ids/union itemtypes
@@ -610,6 +626,9 @@ final class Search
             $this->validateIterator($iterator);
         } catch (RightConditionNotMetException) {
             // The read restrict check seems to have returned false indicating that we already know the user cannot view any of these resources
+            if ($count_only) {
+                return 0;
+            }
             global $DB;
             $iterator = new DBmysqlIterator($DB);
             // No validation done because we know the inner result isn't a mysqli result
@@ -663,6 +682,10 @@ final class Search
                     $records[$itemtype][$data['id']] = $data;
                 }
             }
+        } else {
+            // Count only mode
+            $row = $iterator->current();
+            return (int) $row['count'];
         }
 
         return new RecordSet($this, $records);
@@ -790,7 +813,7 @@ final class Search
         // Count the total number of results with the same criteria, but without the offset and limit
         $criteria = $search->getSearchCriteria();
         // We only need the total count, so we don't need to hydrate the records
-        $all_records = $search->getMatchingRecords(true);
+        $total = $search->getMatchingRecords(true);
         Profiler::getInstance()->stop('Query for the total count');
         Profiler::getInstance()->stop('Search::getSearchResultsBySchema');
 
@@ -798,7 +821,7 @@ final class Search
             'results' => array_values($results),
             'start' => $criteria['START'] ?? 0,
             'limit' => $criteria['LIMIT'] ?? count($results),
-            'total' => $all_records->getTotalCount(),
+            'total' => $total,
         ];
     }
 }

@@ -53,15 +53,6 @@ final class RecordSet
         private array $records
     ) {}
 
-    public function getTotalCount(): int
-    {
-        $count = 0;
-        foreach ($this->records as $itemtype => $records) {
-            $count += reset($records)['count'];
-        }
-        return $count;
-    }
-
     private function getJoinNameForFKey(string $fkey): string
     {
         if ($fkey === 'id') {
@@ -410,6 +401,9 @@ final class RecordSet
                 }
                 if ($j['parent_type'] === Doc\Schema::TYPE_ARRAY) {
                     $join_prop = array_values($join_prop);
+                } elseif (array_key_exists($name, $this->search->getContext()->getFlattenedProperties())) {
+                    // Nothing more to do
+                    continue;
                 } else if (empty($join_prop)) {
                     // Object join with no data = null
                     ArrayPathAccessor::setElementByArrayPath($record, $path, null);
