@@ -243,11 +243,11 @@ class Group_User extends CommonDBRelation
      *
      * @param Group $group
      * @param array $used_ids Array of already added users
-     * @param array $entityrestrict Array of entities
+     * @param int|array $entityrestrict Array of entities
      *
      * @return void
-     **/
-    private static function showAddUserForm(Group $group, array $used_ids, array $entityrestrict): void
+     */
+    private static function showAddUserForm(Group $group, array $used_ids, int|array $entityrestrict): void
     {
         $res  = User::getSqlSearchResult(true, "all", $entityrestrict, 0, $used_ids, '', 0, -1, false, 1);
         $nb = count($res);

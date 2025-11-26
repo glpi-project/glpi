@@ -563,6 +563,21 @@ class Html
     }
 
     /**
+     * Display Debug Information
+     *
+     * @param boolean $with_session with session information (true by default)
+     * @param boolean $ajax         If we're called from ajax (false by default)
+     *
+     * @return void
+     * @deprecated 10.0.0
+     **/
+    public static function displayDebugInfos($with_session = true, $ajax = false, $rand = null)
+    {
+        Toolbox::deprecated('Html::displayDebugInfo is not used anymore. It was replaced by a unified debug bar.');
+    }
+
+
+    /**
      * Display a Link to the last page.
      *
      * @return void
