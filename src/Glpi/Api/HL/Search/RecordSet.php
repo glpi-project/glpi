@@ -404,7 +404,7 @@ final class RecordSet
                 } elseif (array_key_exists($name, $this->search->getContext()->getFlattenedProperties())) {
                     // Nothing more to do
                     continue;
-                } else if (empty($join_prop)) {
+                } elseif (empty($join_prop)) {
                     // Object join with no data = null
                     ArrayPathAccessor::setElementByArrayPath($record, $path, null);
                     continue;
