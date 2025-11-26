@@ -68,13 +68,14 @@
     {{ fields.dropdownArrayField(
         'proxy_exclusions',
         null,
-        possible_proxy_exclusions,
+        possible_proxy_exclusions.getDropDownValues(),
         __('Proxy exclusions'),
         {
             multiple: true,
             size: 3,
-            values: config['proxy_exclusions']
-        }
+            values: config['proxy_exclusions'],
+            helper: possible_proxy_exclusions.getDescriptions()
+        },
     ) }}
 
    {{ fields.smallTitle(__('Telemetry data')) }}

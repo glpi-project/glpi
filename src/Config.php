@@ -36,6 +36,7 @@ use Glpi\Api\HL\Router;
 use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
+use Glpi\Config\ProxyExclusion;
 use Glpi\Dashboard\Grid;
 use Glpi\Event;
 use Glpi\Helpdesk\HelpdeskTranslation;
@@ -874,20 +875,39 @@ class Config extends CommonDBTM
             return;
         }
 
+        /** @var \Glpi\Config\ProxyExclusions $proxy_exclusions */
+        $proxy_exclusions = $CFG_GLPI['possible_proxy_exclusions'];
+        $proxy_exclusions->addExclusions([
+            new ProxyExclusion(
+                Agent::class,
+                Agent::getTypeName()
+            ),
+            new ProxyExclusion(
+                GLPINetwork::class,
+                GLPINetwork::getTypeName(),
+                __('GLPI network related calls (marketplace, versions check, telemetry, ...')
+            ),
+            new ProxyExclusion(
+                RSSFeed::class,
+                RSSFeed::getTypeName()
+            ),
+            new ProxyExclusion(
+                Planning::class,
+                Planning::getTypeName()
+            ),
+            new ProxyExclusion(
+                OauthConfig::class,
+                __('SMTP OAuth Authentication')
+            ),
+            new ProxyExclusion(
+                Webhook::class,
+                Webhook::getTypeName()
+            ),
+        ]);
         TemplateRenderer::getInstance()->display('pages/setup/general/systeminfo_form.html.twig', [
             'config' => $CFG_GLPI,
             'canedit' => static::canUpdate(),
-            'possible_proxy_exclusions' => array_merge(
-                [
-                    Agent::class => Agent::getTypeName(),
-                    GLPINetwork::class => GLPINetwork::getTypeName(),
-                    RSSFeed::class => RSSFeed::getTypeName(),
-                    Planning::class => Planning::getTypeName(),
-                    OauthConfig::class => __('SMTP OAuth Authentication'),
-                    Webhook::class => Webhook::getTypeName(),
-                ],
-                $CFG_GLPI['possible_proxy_exclusions']
-            ),
+            'possible_proxy_exclusions' => $proxy_exclusions,
         ]);
         self::showSystemInfoTable();
     }
