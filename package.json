@@ -77,7 +77,7 @@
         "build": "npm run build:pack && npm run build:vue && npm run build:illustration-translations",
         "dependencies:postinstall": "php -r \"file_put_contents('.package.hash', sha1_file('package-lock.json'));\"",
         "dependencies": "npm run dependencies:postinstall",
-        "postinstall": "patch-package --patch-dir tools/patches/npm && ./tests/e2e/scripts/sync-playwright-version.sh",
+        "postinstall": "patch-package --patch-dir tools/patches/npm",
         "test": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --colors --forceExit --config tests/js/jest.config.js",
         "test:vue": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --colors --verbose --forceExit --config tests/js/jest.config.js --selectProjects vue",
         "watch:vue": "webpack --config .vue.webpack.config.js --watch",
