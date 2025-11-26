@@ -157,6 +157,7 @@ final class Search
             } else {
                 if ($is_scalar_join) {
                     $cache[$prop_name] = str_replace('.', chr(0x1F), $prop_name) . '.' . $sql_field;
+                    return $cache[$prop_name];
                 }
                 $join_alias = substr($prop_name, 0, strrpos($prop_name, '.'));
                 $sql_field = trim(preg_replace('/^' . preg_quote($join_alias, '/') . '/', '', $sql_field), '.');
