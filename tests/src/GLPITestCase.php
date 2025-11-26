@@ -46,6 +46,8 @@ use DateTimeImmutable;
 use DBmysql;
 use DCRoom;
 use DeviceSimcard;
+use Domain;
+use DomainRecord;
 use Dropdown;
 use Entity;
 use Glpi\Asset\AssetDefinitionManager;

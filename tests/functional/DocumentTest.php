@@ -34,8 +34,8 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
 use DocumentCategory;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/document.class.php */
