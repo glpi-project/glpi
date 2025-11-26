@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Cache;
 
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\SimpleCache;
+use Glpi\Tests\GLPITestCase;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
@@ -44,7 +45,7 @@ use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
 
-class CacheManagerTest extends \GLPITestCase
+class CacheManagerTest extends GLPITestCase
 {
     public static function contextProvider(): iterable
     {

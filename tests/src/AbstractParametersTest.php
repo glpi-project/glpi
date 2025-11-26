@@ -32,12 +32,11 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\ContentTemplates\Parameters;
+namespace Glpi\Tests;
 
-use DbTestCase;
 use Glpi\ContentTemplates\TemplateManager;
 
-class AbstractParameters extends DbTestCase
+class AbstractParametersTest extends DbTestCase
 {
     protected function testGetAvailableParameters($values, $parameters): void
     {

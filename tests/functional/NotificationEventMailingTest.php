@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Psr\Log\LogLevel;
 
 /* Test for inc/notificationeventajax.class.php */

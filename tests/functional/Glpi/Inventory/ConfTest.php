@@ -35,13 +35,11 @@
 namespace tests\units\Glpi\Inventory;
 
 use Glpi\Inventory\Conf;
+use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 
-/**
- * Test class for src/Glpi/Inventory/conf.class.php
- */
-class ConfTest extends \GLPITestCase
+class ConfTest extends GLPITestCase
 {
     public function testKnownInventoryExtensions()
     {

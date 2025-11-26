@@ -36,7 +36,7 @@ namespace tests\units\Glpi\Form\AccessControl;
 
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Session\SessionInfo;
-use GLPITestCase;
+use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class FormAccessParametersTest extends GLPITestCase

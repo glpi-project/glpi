@@ -39,11 +39,8 @@ use Glpi\Inventory\Conf;
 use Glpi\Inventory\Converter;
 use Glpi\Inventory\Inventory;
 use Glpi\Inventory\Request;
+use Glpi\Tests\AbstractInventoryAsset;
 use PHPUnit\Framework\Attributes\DataProvider;
-
-include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
-
-/* Test for inc/inventory/asset/computer.class.php */
 
 class ComputerTest extends AbstractInventoryAsset
 {

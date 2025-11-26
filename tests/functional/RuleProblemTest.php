@@ -34,8 +34,7 @@
 
 namespace tests\units;
 
-// Force import because of autoloader not working
-require_once __DIR__ . '/../abstracts/RuleCommonITILObjectTest.php';
+use Glpi\Tests\RuleCommonITILObjectTest;
 
 class RuleProblemTest extends RuleCommonITILObjectTest
 {

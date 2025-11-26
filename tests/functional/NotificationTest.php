@@ -35,8 +35,8 @@
 namespace tests\units;
 
 use Contract;
-use DbTestCase;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Tests\DbTestCase;
 use Group;
 use Group_User;
 use NotificationEvent;

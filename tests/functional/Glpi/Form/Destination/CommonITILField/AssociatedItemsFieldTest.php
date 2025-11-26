@@ -43,12 +43,11 @@ use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldStrategy;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeUserDevice;
+use Glpi\Tests\AbstractDestinationFieldTest;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Monitor;
 use Override;
-
-include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
 
 final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
 {

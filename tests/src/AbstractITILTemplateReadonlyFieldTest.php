@@ -35,7 +35,6 @@
 namespace Glpi\Tests;
 
 use CommonITILObject;
-use DbTestCase;
 use Glpi\Urgency;
 use ITILCategory;
 use ITILTemplate;

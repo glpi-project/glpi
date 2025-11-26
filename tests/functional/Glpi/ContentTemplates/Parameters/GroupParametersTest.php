@@ -35,10 +35,9 @@
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
 use Glpi\ContentTemplates\Parameters\GroupParameters;
+use Glpi\Tests\AbstractParametersTest;
 
-include_once __DIR__ . '/../../../../abstracts/AbstractParameters.php';
-
-class GroupParametersTest extends AbstractParameters
+class GroupParametersTest extends AbstractParametersTest
 {
     public function testGetValues(): void
     {

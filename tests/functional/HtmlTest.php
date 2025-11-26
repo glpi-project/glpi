@@ -34,15 +34,14 @@
 
 namespace tests\units;
 
+use Glpi\Tests\DbTestCase;
 use Glpi\Toolbox\FrontEnd;
 use GlpiPlugin\Tester\MyPsr4Class;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 
-/* Test for inc/html.class.php */
-
-class HtmlTest extends \DbTestCase
+class HtmlTest extends DbTestCase
 {
     public function testConvDate()
     {

@@ -35,11 +35,12 @@
 namespace tests\units\Glpi\Security;
 
 use Glpi\Security\TOTPManager;
+use Glpi\Tests\DbTestCase;
 use RobThree\Auth\Algorithm;
 use RobThree\Auth\Providers\Qr\BaconQrCodeProvider;
 use RobThree\Auth\TwoFactorAuth;
 
-class TOTPManagerTest extends \DbTestCase
+class TOTPManagerTest extends DbTestCase
 {
     public function testCreateSecret()
     {

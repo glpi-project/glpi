@@ -36,9 +36,10 @@ namespace tests\units\Glpi\Api\HL\Controller;
 
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Http\Request;
+use Glpi\Tests\HLAPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class CoreControllerTest extends \HLAPITestCase
+class CoreControllerTest extends HLAPITestCase
 {
     public static function routeMatchProvider()
     {

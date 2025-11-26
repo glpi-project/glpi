@@ -35,8 +35,9 @@
 namespace tests\units\Glpi\Form\AccessControl\ControlType;
 
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
+use Glpi\Tests\GLPITestCase;
 
-final class AllowListConfigTest extends \GlpiTestCase
+final class AllowListConfigTest extends GLPITestCase
 {
     public function testJsonDeserialize(): void
     {

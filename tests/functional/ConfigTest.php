@@ -35,9 +35,9 @@
 namespace tests\units;
 
 use Config;
-use DbTestCase;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Plugin\Hooks;
+use Glpi\Tests\DbTestCase;
 use Log;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;

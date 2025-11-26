@@ -37,12 +37,10 @@ namespace tests\units\Glpi\RichText;
 use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Form\Tag\Tag;
 use Glpi\RichText\RichText;
+use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-/**
- * Test class for src/Glpi/RichText/richtext.class.php
- */
-class RichTextTest extends \GLPITestCase
+class RichTextTest extends GLPITestCase
 {
     public static function getSafeHtmlProvider(): iterable
     {

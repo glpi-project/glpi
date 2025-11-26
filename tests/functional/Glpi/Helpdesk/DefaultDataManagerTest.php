@@ -36,7 +36,6 @@ namespace test\units\Glpi\Helpdesk;
 
 use CommonITILActor;
 use Computer;
-use DbTestCase;
 use Entity;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\AccessControl\FormAccessParameters;
@@ -46,6 +45,7 @@ use Glpi\Helpdesk\DefaultDataManager;
 use Glpi\Helpdesk\Tile\Item_Tile;
 use Glpi\Helpdesk\Tile\TileInterface;
 use Glpi\Session\SessionInfo;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormTesterTrait;
 use Glpi\UI\IllustrationManager;
 use ITILCategory;

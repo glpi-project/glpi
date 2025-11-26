@@ -37,9 +37,9 @@ namespace tests\units\Glpi\Routing\Attribute;
 use Computer;
 use Glpi\Form\Form;
 use Glpi\Routing\Attribute\ItemtypeListRoute;
+use Glpi\Tests\GLPITestCase;
 use GlpiPlugin\Tester\Asset\Foo;
 use GlpiPlugin\Tester\MyPsr4Dropdown;
-use GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class ItemtypeListRouteTest extends GLPITestCase

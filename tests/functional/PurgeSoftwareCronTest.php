@@ -34,8 +34,8 @@
 
 namespace tests\units;
 
-use DbTestCase;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Tests\DbTestCase;
 
 class PurgeSoftwareCronTest extends DbTestCase
 {

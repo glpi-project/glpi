@@ -34,7 +34,6 @@
 
 namespace tests\units\Glpi\Asset;
 
-use DbTestCase;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
@@ -51,6 +50,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class CustomFieldDefinitionTest extends DbTestCase

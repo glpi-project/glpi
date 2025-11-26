@@ -38,6 +38,7 @@ use CommonITILObject;
 use Contract;
 use ContractType;
 use Entity;
+use Glpi\Tests\RuleCommonITILObjectTest;
 use ITILCategory;
 use ITILFollowup;
 use ITILFollowupTemplate;
@@ -49,11 +50,6 @@ use RuleCriteria;
 use TaskTemplate;
 use Ticket;
 use Ticket_Contract;
-
-// Force import because of autoloader not working
-require_once __DIR__ . '/../abstracts/RuleCommonITILObjectTest.php';
-
-/* Test for inc/ruleticket.class.php */
 
 class RuleTicketTest extends RuleCommonITILObjectTest
 {

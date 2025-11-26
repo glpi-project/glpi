@@ -35,8 +35,9 @@
 namespace tests\units\Glpi\System\Requirement;
 
 use Glpi\System\Requirement\ExtensionConstant;
+use Glpi\Tests\GLPITestCase;
 
-class ExtensionConstantTest extends \GLPITestCase
+class ExtensionConstantTest extends GLPITestCase
 {
     public function testCheckOnExistingConstant()
     {

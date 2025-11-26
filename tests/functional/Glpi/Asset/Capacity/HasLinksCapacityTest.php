@@ -34,13 +34,13 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
-use DbTestCase;
 use DisplayPreference;
 use Entity;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
 use Glpi\Asset\Capacity\HasLinksCapacity;
 use Glpi\Asset\Capacity\HasNotepadCapacity;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Link;
 use Link_Itemtype;

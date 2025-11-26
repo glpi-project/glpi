@@ -34,10 +34,8 @@
 
 namespace tests\units\Glpi\Csv;
 
-use CsvTestCase;
 use Glpi\Csv\PlanningCsv;
-
-/* Test for inc/planningcsv.class.php */
+use Glpi\Tests\CsvTestCase;
 
 class PlanningCsvTest extends CsvTestCase
 {

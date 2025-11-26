@@ -34,12 +34,12 @@
 
 namespace tests\units\Glpi\Form\Tag;
 
-use DbTestCase;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\Tag\QuestionTagProvider;
 use Glpi\Form\Tag\Tag;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 

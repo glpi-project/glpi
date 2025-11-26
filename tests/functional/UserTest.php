@@ -38,14 +38,13 @@ use DateInterval;
 use DateTime;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Exception\ForgetPasswordException;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile_User;
 use Psr\Log\LogLevel;
 use User;
 
-/* Test for inc/user.class.php */
-
-class UserTest extends \DbTestCase
+class UserTest extends DbTestCase
 {
     public function testGenerateUserToken()
     {

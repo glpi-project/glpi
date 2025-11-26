@@ -34,12 +34,12 @@
 
 namespace tests\units\Glpi\Controller;
 
-use DbTestCase;
 use Glpi\Controller\ErrorController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\HttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
 use Symfony\Component\HttpFoundation\Request;

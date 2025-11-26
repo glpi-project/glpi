@@ -35,10 +35,9 @@
 namespace tests\units\Glpi\Cache;
 
 use Glpi\Cache\CacheManager;
+use Glpi\Tests\GLPITestCase;
 
-/* Test for inc/cache/simplecache.class.php */
-
-class SimpleCacheTest extends \GLPITestCase
+class SimpleCacheTest extends GLPITestCase
 {
     /**
      * Test all possible cache operations.

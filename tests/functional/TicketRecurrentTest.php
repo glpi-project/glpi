@@ -34,7 +34,8 @@
 
 namespace tests\units;
 
-/* Test for inc/ticketrecurrent.class.php */
+use Glpi\Tests\CommonITILRecurrentTest;
+
 class TicketRecurrentTest extends CommonITILRecurrentTest
 {
     protected function getChildClass()

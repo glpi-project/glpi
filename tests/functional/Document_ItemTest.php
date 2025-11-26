@@ -34,11 +34,11 @@
 
 namespace tests\units;
 
-use DbTestCase;
 use Document_Item;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDocumentsCapacity;
 use Glpi\Features\Clonable;
+use Glpi\Tests\DbTestCase;
 use Psr\Log\LogLevel;
 use Toolbox;
 

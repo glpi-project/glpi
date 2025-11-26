@@ -36,9 +36,10 @@ namespace tests\units\Glpi\Api\HL\Controller;
 
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Http\Request;
+use Glpi\Tests\HLAPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class RuleControllerTest extends \HLAPITestCase
+class RuleControllerTest extends HLAPITestCase
 {
     protected function getRuleCollections()
     {

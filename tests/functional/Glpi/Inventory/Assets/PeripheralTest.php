@@ -37,11 +37,8 @@ namespace tests\units\Glpi\Inventory\Asset;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Converter;
+use Glpi\Tests\AbstractInventoryAsset;
 use PHPUnit\Framework\Attributes\DataProvider;
-
-include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
-
-/* Test for inc/inventory/asset/controller.class.php */
 
 class PeripheralTest extends AbstractInventoryAsset
 {

@@ -36,7 +36,6 @@ namespace tests\units\Glpi\Asset\Capacity;
 
 use Cable;
 use Computer;
-use DbTestCase;
 use DisplayPreference;
 use Entity;
 use Glpi\Asset\Asset;
@@ -44,6 +43,7 @@ use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
 use Glpi\Asset\Capacity\HasSocketCapacity;
 use Glpi\Socket;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Log;
 

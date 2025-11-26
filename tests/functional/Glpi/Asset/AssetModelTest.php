@@ -34,8 +34,8 @@
 
 namespace tests\units\Glpi\Asset;
 
-use DbTestCase;
 use Glpi\Asset\AssetModel;
+use Glpi\Tests\DbTestCase;
 
 class AssetModelTest extends DbTestCase
 {

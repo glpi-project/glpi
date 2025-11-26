@@ -37,7 +37,7 @@ namespace tests\units;
 use Certificate;
 use Certificate_Item;
 use Computer;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Item_SoftwareVersion;
 use Software;
 use SoftwareVersion;

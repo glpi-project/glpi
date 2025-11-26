@@ -34,8 +34,8 @@
 
 namespace tests\units;
 
-use DbTestCase;
 use Glpi\Marketplace\Controller;
+use Glpi\Tests\DbTestCase;
 use NotificationEvent;
 use PHPUnit\Framework\Attributes\TestWith;
 use Ticket;

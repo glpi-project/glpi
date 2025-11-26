@@ -37,9 +37,10 @@ namespace tests\units\Glpi\Api\HL\Controller;
 use Glpi\Api\HL\Controller\ComponentController;
 use Glpi\Api\HL\Router;
 use Glpi\Http\Request;
+use Glpi\Tests\HLAPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class ComponentControllerTest extends \HLAPITestCase
+class ComponentControllerTest extends HLAPITestCase
 {
     public function testIndex()
     {

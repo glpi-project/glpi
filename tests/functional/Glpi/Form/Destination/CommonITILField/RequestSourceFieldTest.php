@@ -39,14 +39,13 @@ use Glpi\Form\Destination\CommonITILField\RequestSourceField;
 use Glpi\Form\Destination\CommonITILField\RequestSourceFieldConfig;
 use Glpi\Form\Destination\CommonITILField\RequestSourceFieldStrategy;
 use Glpi\Form\Form;
+use Glpi\Tests\AbstractDestinationFieldTest;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Override;
 use RequestType;
 use Ticket;
 use TicketTemplatePredefinedField;
-
-include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
 
 final class RequestSourceFieldTest extends AbstractDestinationFieldTest
 {

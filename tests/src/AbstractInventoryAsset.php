@@ -32,9 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\Inventory\Asset;
+namespace Glpi\Tests;
 
-abstract class AbstractInventoryAsset extends \InventoryTestCase
+abstract class AbstractInventoryAsset extends InventoryTestCase
 {
     protected $myclass = "";
 

@@ -34,10 +34,10 @@
 
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
-use DbTestCase;
 use Glpi\Form\Destination\CommonITILField\ControlsListField;
 use Glpi\Form\Destination\FormDestinationChange;
 use Glpi\Form\Tag\AnswerTagProvider;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormTesterTrait;
 
 final class ControlsListFieldTest extends DbTestCase

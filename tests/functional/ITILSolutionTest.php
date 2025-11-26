@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Ticket;
 
 /* Test for inc/itilsolution.class.php */

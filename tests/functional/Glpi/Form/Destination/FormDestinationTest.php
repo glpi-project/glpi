@@ -36,7 +36,6 @@ namespace tests\units\Glpi\Form\Destination;
 
 use CommonGLPI;
 use DBmysql;
-use DbTestCase;
 use Glpi\Form\Condition\CreationStrategy;
 use Glpi\Form\Condition\LogicOperator;
 use Glpi\Form\Condition\Type;
@@ -45,6 +44,7 @@ use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 

@@ -37,10 +37,10 @@ namespace Glpi\Form\Condition\ConditionHandler;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\QuestionType\QuestionTypeUserDevice;
 use Glpi\Form\QuestionType\QuestionTypeUserDevicesConfig;
+use Glpi\Tests\AbstractConditionHandlerTest;
 use Override;
-use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
 
-final class UserDevicesAsTextConditionHandlerTest extends AbstractConditionHandler
+final class UserDevicesAsTextConditionHandlerTest extends AbstractConditionHandlerTest
 {
     public static function getConditionHandler(): ConditionHandlerInterface
     {

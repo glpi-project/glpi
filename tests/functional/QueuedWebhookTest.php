@@ -35,7 +35,7 @@
 namespace tests\units;
 
 use CronTask;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use QueuedWebhook;
 use Webhook;
 

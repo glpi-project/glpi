@@ -35,11 +35,12 @@
 namespace tests\units\Glpi\System\Requirement;
 
 use Glpi\System\Requirement\LogsWriteAccess;
+use Glpi\Tests\GLPITestCase;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use org\bovigo\vfs\vfsStream;
 
-class LogsWriteAccessTest extends \GLPITestCase
+class LogsWriteAccessTest extends GLPITestCase
 {
     public function testCheckOnExistingWritableDir()
     {

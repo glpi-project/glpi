@@ -34,12 +34,12 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
-use DbTestCase;
 use Entity;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
 use Glpi\Asset\Capacity\HasKnowbaseCapacity;
 use Glpi\Asset\Capacity\HasNotepadCapacity;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use KnowbaseItem;
 use KnowbaseItem_Item;

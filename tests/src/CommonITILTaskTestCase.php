@@ -32,9 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units;
+namespace Glpi\Tests;
 
-use DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 abstract class CommonITILTaskTestCase extends DbTestCase

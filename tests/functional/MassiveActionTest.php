@@ -36,7 +36,7 @@ namespace tests\units;
 
 use CommonDBTM;
 use Contract;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Location;
 use MassiveAction;
 use Notepad;

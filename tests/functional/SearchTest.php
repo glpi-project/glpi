@@ -40,7 +40,6 @@ use Change;
 use CommonDBTM;
 use Computer;
 use DBConnection;
-use DbTestCase;
 use Document;
 use Document_Item;
 use DropdownTranslation;
@@ -48,6 +47,7 @@ use Entity;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDocumentsCapacity;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Tests\DbTestCase;
 use Group;
 use Group_Item;
 use Group_User;
@@ -6123,7 +6123,7 @@ class SearchTest extends DbTestCase
             $names[] = explode('$#$', $n)[0];
         }
 
-        // Sort both array as atoum is "position sensitive"
+        // Sort both array for comparison
         sort($names);
         sort($expected);
 

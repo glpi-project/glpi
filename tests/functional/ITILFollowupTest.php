@@ -36,9 +36,9 @@ namespace tests\units;
 
 use Change;
 use CommonITILActor;
-use DbTestCase;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Search\SearchEngine;
+use Glpi\Tests\DbTestCase;
 use ITILFollowup as CoreITILFollowup;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;

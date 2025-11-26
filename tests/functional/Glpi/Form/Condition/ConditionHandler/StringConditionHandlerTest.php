@@ -37,10 +37,10 @@ namespace Glpi\Form\Condition\ConditionHandler;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Tests\AbstractConditionHandlerTest;
 use Override;
-use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
 
-final class StringConditionHandlerTest extends AbstractConditionHandler
+final class StringConditionHandlerTest extends AbstractConditionHandlerTest
 {
     public static function getConditionHandler(): ConditionHandlerInterface
     {

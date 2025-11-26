@@ -34,14 +34,13 @@
 
 namespace tests\units;
 
+use Glpi\Tests\AbstractPlanningEventTest;
 use PlanningExternalEvent;
 use Session;
 
-include_once __DIR__ . '/../abstracts/AbstractPlanningEvent.php';
-
-class PlanningExternalEventTest extends \AbstractPlanningEvent
+class PlanningExternalEventTest extends AbstractPlanningEventTest
 {
-    public $myclass = "\PlanningExternalEvent";
+    public $myclass = PlanningExternalEvent::class;
 
 
     public function testAddInstanceException()

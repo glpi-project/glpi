@@ -41,14 +41,13 @@ use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldStrategy;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdownExtraDataConfig;
+use Glpi\Tests\AbstractDestinationFieldTest;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use ITILCategory;
 use Override;
 use Ticket;
 use TicketTemplate;
-
-include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
 
 final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
 {

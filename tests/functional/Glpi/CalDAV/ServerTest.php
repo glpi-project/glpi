@@ -34,8 +34,8 @@
 
 namespace tests\units\Glpi\CalDAV;
 
-use DbTestCase;
 use Glpi\CalDAV\Server;
+use Glpi\Tests\DbTestCase;
 use Ramsey\Uuid\Uuid;
 use Sabre\DAV\Exception\NotAuthenticated;
 use Sabre\HTTP\Response;

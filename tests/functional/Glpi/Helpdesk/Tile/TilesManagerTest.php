@@ -35,7 +35,6 @@
 namespace tests\units\Glpi\Form\Helpdesk\TilesManagerTest;
 
 use CommonDBTM;
-use DbTestCase;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Form;
@@ -46,6 +45,7 @@ use Glpi\Helpdesk\Tile\Item_Tile;
 use Glpi\Helpdesk\Tile\TileInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\Session\SessionInfo;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use GlpiPlugin\Tester\Form\CustomTile;

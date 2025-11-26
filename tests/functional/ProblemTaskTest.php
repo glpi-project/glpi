@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use Glpi\Tests\CommonITILTaskTestCase;
 use Override;
 use ProblemTask;
 

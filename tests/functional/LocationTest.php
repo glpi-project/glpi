@@ -34,8 +34,8 @@
 
 namespace tests\units;
 
-use DbTestCase;
 use Glpi\Socket;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/location.class.php */

@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\Form\Destination\CommonITILField;
+namespace Glpi\Tests;
 
 use Computer;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldConfig;
@@ -40,12 +40,8 @@ use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
-use Glpi\Tests\FormBuilder;
-use Glpi\Tests\FormTesterTrait;
 use Group;
 use User;
-
-include_once __DIR__ . '/AbstractDestinationFieldTest.php';
 
 abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
 {

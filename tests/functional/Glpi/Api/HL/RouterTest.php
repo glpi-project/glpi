@@ -40,7 +40,7 @@ use Glpi\Api\HL\Router;
 use Glpi\Api\HL\RouteVersion;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
-use GLPITestCase;
+use Glpi\Tests\GLPITestCase;
 use Psr\Http\Message\RequestInterface;
 
 class RouterTest extends GLPITestCase

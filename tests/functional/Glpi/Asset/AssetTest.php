@@ -34,7 +34,6 @@
 
 namespace tests\units\Glpi\Asset;
 
-use DbTestCase;
 use Glpi\Asset\Asset;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
@@ -43,6 +42,7 @@ use Glpi\Asset\Capacity\CapacityInterface;
 use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Asset\CustomFieldType\DropdownType;
 use Glpi\Asset\CustomFieldType\StringType;
+use Glpi\Tests\DbTestCase;
 
 class AssetTest extends DbTestCase
 {

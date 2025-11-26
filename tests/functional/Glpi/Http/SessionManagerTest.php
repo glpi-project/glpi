@@ -35,11 +35,12 @@
 namespace tests\units\Glpi\Http;
 
 use Glpi\Http\SessionManager;
+use Glpi\Tests\DbTestCase;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Request;
 
-class SessionManagerTest extends \DbTestCase
+class SessionManagerTest extends DbTestCase
 {
     public static function requestStateProvider(): iterable
     {

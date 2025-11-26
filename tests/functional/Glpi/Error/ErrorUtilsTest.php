@@ -34,9 +34,10 @@
 
 namespace Glpi\Error;
 
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class ErrorUtilsTest extends \DbTestCase
+class ErrorUtilsTest extends DbTestCase
 {
     #[DataProvider('safeContentsProvider')]
     public function testcleanPathsOnSafeContent($input)

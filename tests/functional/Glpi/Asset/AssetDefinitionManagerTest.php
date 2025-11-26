@@ -35,11 +35,11 @@
 namespace tests\units\Glpi\Asset;
 
 use Change_Item;
-use DbTestCase;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\AbstractCapacity;
 use Glpi\Asset\CapacityConfig;
+use Glpi\Tests\DbTestCase;
 use GlpiPlugin\Tester\Asset\Capacity\HasFooCapacity;
 use GlpiPlugin\Tester\Asset\Foo;
 use Item_Problem;

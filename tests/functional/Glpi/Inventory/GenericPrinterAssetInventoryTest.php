@@ -41,7 +41,7 @@ use Glpi\Asset\Capacity\IsInventoriableCapacity;
 use Glpi\Asset\CapacityConfig;
 use Glpi\Inventory\MainAsset\GenericPrinterAsset;
 use Glpi\Inventory\Request;
-use InventoryTestCase;
+use Glpi\Tests\InventoryTestCase;
 
 class GenericPrinterAssetInventoryTest extends InventoryTestCase
 {

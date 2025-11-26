@@ -34,9 +34,7 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
-include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
-
-/* Test for inc/inventory/asset/memory.class.php */
+use Glpi\Tests\AbstractInventoryAsset;
 
 class DeviceTest extends AbstractInventoryAsset
 {

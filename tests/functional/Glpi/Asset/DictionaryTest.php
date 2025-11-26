@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\Asset;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Rule;
 use RuleCollection;
 use Session;

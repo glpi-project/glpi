@@ -35,8 +35,7 @@
 namespace tests\units\Glpi\Form;
 
 use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyEnum;
-
-include_once __DIR__ . '/../../../../../abstracts/SortStrategyTestCase.php';
+use Glpi\Tests\SortStrategyTestCase;
 
 class ReverseAlphabeticalSortTest extends SortStrategyTestCase
 {

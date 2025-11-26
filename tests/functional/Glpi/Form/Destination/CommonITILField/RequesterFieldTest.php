@@ -47,6 +47,7 @@ use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeRequester;
+use Glpi\Tests\AbstractActorFieldTest;
 use Glpi\Tests\FormBuilder;
 use Group;
 use Override;
@@ -55,8 +56,6 @@ use Ticket;
 use TicketTemplate;
 use TicketTemplatePredefinedField;
 use User;
-
-include_once __DIR__ . '/../../../../../abstracts/AbstractActorFieldTest.php';
 
 final class RequesterFieldTest extends AbstractActorFieldTest
 {

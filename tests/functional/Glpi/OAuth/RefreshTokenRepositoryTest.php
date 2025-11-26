@@ -38,8 +38,9 @@ use DateTimeImmutable;
 use Glpi\OAuth\AccessToken;
 use Glpi\OAuth\RefreshToken;
 use Glpi\OAuth\RefreshTokenRepository;
+use Glpi\Tests\DbTestCase;
 
-class RefreshTokenRepositoryTest extends \DbTestCase
+class RefreshTokenRepositoryTest extends DbTestCase
 {
     public function testPersistNewRefreshToken(): void
     {

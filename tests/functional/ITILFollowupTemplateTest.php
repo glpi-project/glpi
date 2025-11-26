@@ -34,16 +34,14 @@
 
 namespace tests\units;
 
-include_once __DIR__ . '/../abstracts/AbstractITILChildTemplate.php';
+use AbstractITILChildTemplate;
+use Glpi\Tests\AbstractITILChildTemplateTest;
+use ITILFollowupTemplate;
 
-use tests\units\Glpi\AbstractITILChildTemplate;
-
-/* Test for inc/itilfollowuptemplate.class.php */
-
-class ITILFollowupTemplateTest extends AbstractITILChildTemplate
+class ITILFollowupTemplateTest extends AbstractITILChildTemplateTest
 {
-    protected function getInstance(): \AbstractITILChildTemplate
+    protected function getInstance(): AbstractITILChildTemplate
     {
-        return new \ITILFollowupTemplate();
+        return new ITILFollowupTemplate();
     }
 }

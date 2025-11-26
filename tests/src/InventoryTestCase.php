@@ -32,9 +32,14 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Tests;
+
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Converter;
 use Glpi\Inventory\Inventory;
+use Log;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 class InventoryTestCase extends DbTestCase
 {

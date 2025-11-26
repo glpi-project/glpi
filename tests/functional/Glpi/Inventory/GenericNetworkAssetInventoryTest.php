@@ -42,7 +42,7 @@ use Glpi\Asset\Capacity\IsInventoriableCapacity;
 use Glpi\Asset\CapacityConfig;
 use Glpi\Inventory\MainAsset\GenericNetworkAsset;
 use Glpi\Inventory\Request;
-use InventoryTestCase;
+use Glpi\Tests\InventoryTestCase;
 use NetworkEquipment;
 
 class GenericNetworkAssetInventoryTest extends InventoryTestCase

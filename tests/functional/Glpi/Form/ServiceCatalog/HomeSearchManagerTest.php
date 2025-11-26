@@ -36,13 +36,13 @@ namespace tests\units\Glpi\Form\ServiceCatalog;
 
 use Computer;
 use ComputerType;
-use DbTestCase;
 use Entity;
 use Entity_KnowbaseItem;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Form;
 use Glpi\Form\ServiceCatalog\HomeSearchManager;
 use Glpi\Form\ServiceCatalog\ItemRequest;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use GlpiPlugin\Tester\Form\ComputerForServiceCatalog;

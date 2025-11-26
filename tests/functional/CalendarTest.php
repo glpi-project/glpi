@@ -35,7 +35,7 @@
 namespace tests\units;
 
 use CalendarSegment;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/calendar.class.php */

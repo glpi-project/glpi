@@ -35,12 +35,10 @@
 namespace tests\units\Glpi\Inventory;
 
 use Glpi\Inventory\Request;
+use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-/**
- * Test class for src/Glpi/Inventory/Request.php
- */
-class RequestTest extends \GLPITestCase
+class RequestTest extends GLPITestCase
 {
     public function testConstructor()
     {
@@ -77,7 +75,7 @@ class RequestTest extends \GLPITestCase
 
     public function testProlog()
     {
-        $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><QUERY>PROLOG</QUERY></REQUEST>";
+        $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>tested-device</DEVICEID><QUERY>PROLOG</QUERY></REQUEST>";
         $request = new Request();
         $request->handleContentType('application/xml');
         $request->handleRequest($data);
@@ -104,7 +102,7 @@ class RequestTest extends \GLPITestCase
     #[DataProvider('queriesProvider')]
     public function testSnmpQuery($query)
     {
-        $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><CONTENT><DEVICE></DEVICE></CONTENT><QUERY>$query</QUERY></REQUEST>";
+        $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>tested-device</DEVICEID><CONTENT><DEVICE></DEVICE></CONTENT><QUERY>$query</QUERY></REQUEST>";
 
         $request = $this->getMockBuilder(Request::class)
             ->onlyMethods(['inventory', 'prolog'])
@@ -140,7 +138,7 @@ class RequestTest extends \GLPITestCase
     #[DataProvider('unhandledQueriesProvider')]
     public function testWrongQuery($query)
     {
-        $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><QUERY>$query</QUERY></REQUEST>";
+        $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>tested-device</DEVICEID><QUERY>$query</QUERY></REQUEST>";
         $request = new Request();
         $request->handleContentType('application/xml');
         $request->handleRequest($data);
@@ -255,13 +253,13 @@ class RequestTest extends \GLPITestCase
     #[DataProvider('compressionProvider')]
     public function testCompression(string $function, string $mime)
     {
-        $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>atoumized-device</DEVICEID><QUERY>PROLOG</QUERY></REQUEST>";
+        $data = "<?xml version=\"1.0\"?>\n<REQUEST><DEVICEID>tested-device</DEVICEID><QUERY>PROLOG</QUERY></REQUEST>";
         $cdata = $function($data);
 
         $request = new Request();
         $request->handleContentType($mime);
         $request->handleRequest($cdata);
-        $this->assertSame('atoumized-device', $request->getDeviceID());
+        $this->assertSame('tested-device', $request->getDeviceID());
         $this->assertSame($function("<?xml version=\"1.0\"?>\n<REPLY><PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE></REPLY>"), $request->getResponse());
     }
 }

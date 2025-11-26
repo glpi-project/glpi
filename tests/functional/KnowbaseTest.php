@@ -34,7 +34,7 @@
 
 namespace test\units;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 
 class KnowbaseTest extends DbTestCase
 {

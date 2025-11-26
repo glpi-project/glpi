@@ -34,11 +34,11 @@
 
 namespace tests\units\Glpi\Form\ServiceCatalog\Provider;
 
-use DbTestCase;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Category;
 use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\Form\ServiceCatalog\Provider\KnowbaseItemProvider;
+use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 use Session;
 

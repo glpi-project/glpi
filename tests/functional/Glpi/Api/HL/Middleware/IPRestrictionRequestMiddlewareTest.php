@@ -35,9 +35,10 @@
 namespace tests\units\Glpi\Api\HL\Middleware;
 
 use Glpi\Api\HL\Middleware\IPRestrictionRequestMiddleware;
+use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class IPRestrictionRequestMiddlewareTest extends \GLPITestCase
+class IPRestrictionRequestMiddlewareTest extends GLPITestCase
 {
     public static function isIPAllowedProvider()
     {

@@ -38,7 +38,7 @@ use AuthLDAP;
 use AuthMail;
 use CronTask;
 use Glpi\System\Status\StatusChecker;
-use GLPITestCase;
+use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class StatusCheckerTest extends GLPITestCase

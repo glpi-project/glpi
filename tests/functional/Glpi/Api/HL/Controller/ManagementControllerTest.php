@@ -38,8 +38,9 @@ use Document;
 use Glpi\Api\HL\Controller\ManagementController;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Http\Request;
+use Glpi\Tests\HLAPITestCase;
 
-class ManagementControllerTest extends \HLAPITestCase
+class ManagementControllerTest extends HLAPITestCase
 {
     public function testCreateGetUpdateDelete()
     {

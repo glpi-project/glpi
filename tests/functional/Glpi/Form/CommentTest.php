@@ -34,13 +34,13 @@
 
 namespace tests\units\Glpi\Form;
 
-use DbTestCase;
 use Glpi\Form\Comment;
 use Glpi\Form\Condition\LogicOperator;
 use Glpi\Form\Condition\Type;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Condition\VisibilityStrategy;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 

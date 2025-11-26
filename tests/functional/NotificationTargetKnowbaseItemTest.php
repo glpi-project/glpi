@@ -35,7 +35,7 @@
 namespace tests\units;
 
 use Config;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Group;
 use Notification;
 use NotificationTarget;

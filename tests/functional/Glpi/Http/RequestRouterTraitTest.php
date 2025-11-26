@@ -35,10 +35,11 @@
 namespace tests\units\Glpi\Http;
 
 use Glpi\Http\RequestRouterTrait;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Request;
 
-class RequestRouterTraitTest extends \DbTestCase
+class RequestRouterTraitTest extends DbTestCase
 {
     public static function requestProvider(): iterable
     {

@@ -35,11 +35,11 @@
 namespace tests\units;
 
 use Appliance_Item;
-use DbTestCase;
 use Entity;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasAppliancesCapacity;
 use Glpi\Features\Clonable;
+use Glpi\Tests\DbTestCase;
 use Toolbox;
 
 class Appliance_ItemTest extends DbTestCase

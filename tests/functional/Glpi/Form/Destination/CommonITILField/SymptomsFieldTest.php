@@ -34,10 +34,10 @@
 
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
-use DbTestCase;
 use Glpi\Form\Destination\CommonITILField\SymptomsField;
 use Glpi\Form\Destination\FormDestinationProblem;
 use Glpi\Form\Tag\AnswerTagProvider;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormTesterTrait;
 
 final class SymptomsFieldTest extends DbTestCase

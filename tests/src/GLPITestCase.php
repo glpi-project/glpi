@@ -32,21 +32,55 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Tests;
+
+use Cartridge;
+use CartridgeItem;
+use Change;
+use CommonDBTM;
+use Computer;
+use Consumable;
+use ConsumableItem;
+use DateTime;
+use DateTimeImmutable;
+use DBmysql;
+use DCRoom;
+use DeviceSimcard;
+use Domain;
+use DomainRecord;
+use Dropdown;
+use Entity;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Search\SearchOption;
 use Glpi\Tests\Log\TestHandler;
+use InvalidArgumentException;
+use Item_Devices;
+use Item_DeviceSimcard;
 use Laminas\I18n\Translator\Translator;
+use Log;
 use Monolog\Level;
 use Monolog\Logger;
 use Monolog\LogRecord;
+use mysqli;
 use org\bovigo\vfs\vfsStreamWrapper;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
+use Plugin;
+use Problem;
 use Psr\Log\LogLevel;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionProperty;
+use RuntimeException;
 use SebastianBergmann\Comparator\ComparisonFailure;
+use Session;
+use Software;
+use SoftwareLicense;
+use Throwable;
+use Ticket;
 
-// Main GLPI test case. All tests should extends this class.
+// Main GLPI test case. All tests should extend this class.
 
 class GLPITestCase extends TestCase
 {
@@ -135,7 +169,7 @@ class GLPITestCase extends TestCase
                         'context' => [],
                     ];
                     if (isset($entry->context['exception']) && $entry->context['exception'] instanceof Throwable) {
-                        /* @var \Throwable $exception */
+                        /* @var Throwable $exception */
                         $exception = $entry->context['exception'];
                         $clean_entry['context']['exception'] = [
                             'message' => $exception->getMessage(),
@@ -567,6 +601,8 @@ class GLPITestCase extends TestCase
             case Cartridge::class:
                 $input['cartridgeitems_id'] = getItemByTypeName(CartridgeItem::class, '_test_cartridgeitem01', true);
                 break;
+            case Problem::class:
+            case Ticket::class:
             case Change::class:
             case Problem::class:
             case Ticket::class:

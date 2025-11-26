@@ -35,7 +35,6 @@
 namespace tests\units\Glpi\Migration;
 
 use Contract_Item;
-use DbTestCase;
 use Domain_Item;
 use DropdownTranslation;
 use FieldUnicity;
@@ -54,6 +53,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Migration\GenericobjectPluginMigration;
 use Glpi\Migration\PluginMigrationResult;
+use Glpi\Tests\DbTestCase;
 use Group_Item;
 use Infocom;
 use Profile;

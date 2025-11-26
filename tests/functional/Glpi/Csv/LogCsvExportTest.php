@@ -36,8 +36,9 @@ namespace tests\units\Glpi\Csv;
 
 use Computer;
 use Glpi\Csv\LogCsvExport as Core_LogCsvExport;
+use Glpi\Tests\CsvTestCase;
 
-class LogCsvExportTest extends \CsvTestCase
+class LogCsvExportTest extends CsvTestCase
 {
     protected function getTestData(): array
     {

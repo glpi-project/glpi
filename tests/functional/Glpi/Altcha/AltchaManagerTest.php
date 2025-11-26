@@ -36,7 +36,7 @@ namespace tests\units\Glpi\Altcha;
 
 use Glpi\Altcha\AltchaManager;
 use Glpi\Application\View\TemplateRenderer;
-use GLPITestCase;
+use Glpi\Tests\GLPITestCase;
 
 final class AltchaManagerTest extends GLPITestCase
 {

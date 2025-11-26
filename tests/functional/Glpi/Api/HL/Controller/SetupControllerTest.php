@@ -38,8 +38,9 @@ use AuthLDAP;
 use Config;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Http\Request;
+use Glpi\Tests\HLAPITestCase;
 
-class SetupControllerTest extends \HLAPITestCase
+class SetupControllerTest extends HLAPITestCase
 {
     public function testIndex()
     {

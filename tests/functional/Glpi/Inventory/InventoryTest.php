@@ -39,7 +39,7 @@ use Glpi\Inventory\Asset\Software;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Inventory;
 use Glpi\Inventory\Request;
-use InventoryTestCase;
+use Glpi\Tests\InventoryTestCase;
 use Item_OperatingSystem;
 use Lockedfield;
 use OperatingSystem;

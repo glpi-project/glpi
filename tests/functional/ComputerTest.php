@@ -34,9 +34,9 @@
 
 namespace tests\units;
 
-use DbTestCase;
 use Entity;
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/computer.class.php */

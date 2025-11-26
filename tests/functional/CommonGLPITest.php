@@ -35,9 +35,9 @@
 namespace tests\units;
 
 use Computer;
-use DbTestCase;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class CommonGLPITest extends DbTestCase

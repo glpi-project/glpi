@@ -34,10 +34,11 @@
 
 namespace tests\units\Glpi\Toolbox;
 
+use Glpi\Tests\GLPITestCase;
 use Glpi\Toolbox\DatabaseSchema;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class DatabaseSchemaTest extends \GLPITestCase
+class DatabaseSchemaTest extends GLPITestCase
 {
     public static function versionsProvider(): iterable
     {

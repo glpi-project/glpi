@@ -34,11 +34,12 @@
 
 namespace tests\units;
 
-include_once __DIR__ . '/../abstracts/AbstractPlanningEvent.php';
+use Glpi\Tests\AbstractPlanningEventTest;
+use PlanningExternalEventTemplate;
 
-class PlanningExternalEventTemplateTest extends \AbstractPlanningEvent
+class PlanningExternalEventTemplateTest extends AbstractPlanningEventTest
 {
-    protected $myclass = "\PlanningExternalEventTemplate";
+    protected $myclass = PlanningExternalEventTemplate::class;
 
     public function setUp(): void
     {

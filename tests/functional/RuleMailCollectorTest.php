@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Group;
 use Group_User;
 use PHPUnit\Framework\Attributes\DataProvider;

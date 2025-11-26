@@ -36,11 +36,10 @@ namespace tests\units\Glpi\Console;
 
 use Error;
 use Glpi\Console\CommandLoader;
+use Glpi\Tests\GLPITestCase;
 use org\bovigo\vfs\vfsStream;
 
-/* Test for inc/console/commandloader.class.php */
-
-class CommandLoaderTest extends \GLPITestCase
+class CommandLoaderTest extends GLPITestCase
 {
     public function testLoader()
     {

@@ -35,13 +35,12 @@
 namespace tests\units;
 
 use Glpi\Plugin\Hooks;
+use Glpi\Tests\DbTestCase;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 
-/* Test for inc/glpikey.class.php */
-
-class GLPIKeyTest extends \DbTestCase
+class GLPIKeyTest extends DbTestCase
 {
     public static function getExpectedKeyPathProvider()
     {

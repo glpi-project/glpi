@@ -64,13 +64,13 @@ use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\QuestionType\QuestionTypeUserDevice;
 use Glpi\Form\QuestionType\QuestionTypeUserDevicesConfig;
+use Glpi\Tests\AbstractConditionHandlerTest;
 use Glpi\Tests\FormBuilder;
 use Location;
 use Override;
 use Software;
-use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
 
-final class VisibilityConditionHandlerTest extends AbstractConditionHandler
+final class VisibilityConditionHandlerTest extends AbstractConditionHandlerTest
 {
     public static function getConditionHandler(): ConditionHandlerInterface
     {

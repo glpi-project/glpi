@@ -36,7 +36,7 @@ namespace tests\units\Glpi\System\Diagnostic;
 
 use ArrayIterator;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
-use GLPITestCase;
+use Glpi\Tests\GLPITestCase;
 use mysqli_result;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;

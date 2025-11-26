@@ -35,9 +35,9 @@
 namespace tests\units\Glpi\Csv;
 
 use Computer;
-use DbTestCase;
 use Glpi\Csv\CsvResponse as Core_CsvResponse;
 use Glpi\Csv\LogCsvExport as CsvLogCsvExport;
+use Glpi\Tests\DbTestCase;
 use League\Csv\Reader;
 
 class CsvResponseTest extends DbTestCase

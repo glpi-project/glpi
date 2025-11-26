@@ -34,9 +34,9 @@
 
 namespace tests\units;
 
-/* Test for inc/group_user.class.php */
+use Glpi\Tests\DbTestCase;
 
-class Group_UserTest extends \DbTestCase
+class Group_UserTest extends DbTestCase
 {
     public function testGetGroupUsers()
     {

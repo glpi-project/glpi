@@ -36,10 +36,10 @@ namespace Glpi\Form\Condition\ConditionHandler;
 
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
+use Glpi\Tests\AbstractConditionHandlerTest;
 use Override;
-use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
 
-final class NumberConditionHandlerTest extends AbstractConditionHandler
+final class NumberConditionHandlerTest extends AbstractConditionHandlerTest
 {
     public static function getConditionHandler(): ConditionHandlerInterface
     {

@@ -34,10 +34,10 @@
 
 namespace tests\units;
 
-use DbTestCase;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Converter;
 use Glpi\Inventory\Inventory;
+use Glpi\Tests\DbTestCase;
 
 class AgentTest extends DbTestCase
 {

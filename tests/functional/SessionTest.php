@@ -35,9 +35,9 @@
 namespace tests\units;
 
 use Computer;
-use DbTestCase;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\SessionExpiredException;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
 use Profile_User;

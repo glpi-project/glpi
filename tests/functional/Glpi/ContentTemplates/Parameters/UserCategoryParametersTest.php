@@ -35,10 +35,9 @@
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
 use Glpi\ContentTemplates\Parameters\UserCategoryParameters;
+use Glpi\Tests\AbstractParametersTest;
 
-include_once __DIR__ . '/../../../../abstracts/AbstractParameters.php';
-
-class UserCategoryParametersTest extends AbstractParameters
+class UserCategoryParametersTest extends AbstractParametersTest
 {
     public function testGetValues(): void
     {

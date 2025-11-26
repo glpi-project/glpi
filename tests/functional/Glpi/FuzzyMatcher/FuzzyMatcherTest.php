@@ -36,7 +36,7 @@ namespace tests\units\Glpi\FuzzyMatcher;
 
 use Glpi\FuzzyMatcher\FuzzyMatcher;
 use Glpi\FuzzyMatcher\PartialMatchStrategy;
-use GLPITestCase;
+use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 final class FuzzyMatcherTest extends GLPITestCase

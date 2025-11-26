@@ -35,11 +35,12 @@
 namespace tests\units\Glpi\System\Diagnostic;
 
 use Glpi\System\Diagnostic\SourceCodeIntegrityChecker;
+use Glpi\Tests\GLPITestCase;
 use Glpi\Toolbox\VersionParser;
 use org\bovigo\vfs\vfsStream;
 use Psr\Log\LogLevel;
 
-class SourceCodeIntegrityCheckerTest extends \GLPITestCase
+class SourceCodeIntegrityCheckerTest extends GLPITestCase
 {
     /**
      * Setup the minimal VFS structure required to compute the manifest, and containing some fake files.
@@ -174,7 +175,6 @@ EOL
 
         $errors = [];
         $diff = $checker->getDiff(false, $errors);
-        // Why not isEmpty? Because then atoum will not tell you what the contents are when this fails.
         $this->assertEmpty($errors);
         $this->assertEquals(
             <<<EOL

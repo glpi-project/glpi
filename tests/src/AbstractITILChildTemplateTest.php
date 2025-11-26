@@ -32,13 +32,14 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi;
+namespace Glpi\Tests;
 
+use AbstractITILChildTemplate;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-abstract class AbstractITILChildTemplate extends \DbTestCase
+abstract class AbstractITILChildTemplateTest extends DbTestCase
 {
-    abstract protected function getInstance(): \AbstractITILChildTemplate;
+    abstract protected function getInstance(): AbstractITILChildTemplate;
 
     public function testGetRenderedContent()
     {

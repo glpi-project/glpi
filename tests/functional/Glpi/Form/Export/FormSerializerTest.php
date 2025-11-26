@@ -81,6 +81,7 @@ use Glpi\Form\Tag\CommentTitleTagProvider;
 use Glpi\Form\Tag\FormTagProvider;
 use Glpi\Form\Tag\QuestionTagProvider;
 use Glpi\Form\Tag\SectionTagProvider;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Glpi\UI\IllustrationManager;
@@ -100,7 +101,7 @@ use Session;
 
 use function Safe\json_encode;
 
-final class FormSerializerTest extends \DbTestCase
+final class FormSerializerTest extends DbTestCase
 {
     use FormTesterTrait;
 

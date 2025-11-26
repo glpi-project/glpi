@@ -37,7 +37,7 @@ namespace tests\units;
 use Auth;
 use AuthLDAP;
 use AuthMail;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use User;
 

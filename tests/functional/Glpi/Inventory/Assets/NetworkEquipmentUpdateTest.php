@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Converter;
 use Glpi\Inventory\Inventory;
+use Glpi\Tests\InventoryTestCase;
 use IPAddress;
 use NetworkEquipment;
 use NetworkName;
@@ -47,7 +48,7 @@ use NetworkPortAggregate;
 use NetworkPortType;
 use Unmanaged;
 
-class NetworkEquipmentUpdateTest extends \InventoryTestCase
+class NetworkEquipmentUpdateTest extends InventoryTestCase
 {
     public function testAddNetworkEquipment()
     {

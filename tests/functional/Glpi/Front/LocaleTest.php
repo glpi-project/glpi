@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\Front;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class LocaleTest extends DbTestCase

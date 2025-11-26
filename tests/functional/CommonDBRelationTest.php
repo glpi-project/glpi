@@ -35,9 +35,9 @@
 namespace tests\units;
 
 use CommonDBRelation;
-use DbTestCase;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\ItemLinkException;
+use Glpi\Tests\DbTestCase;
 
 class CommonDBRelationTest extends DbTestCase
 {

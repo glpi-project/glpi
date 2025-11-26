@@ -39,10 +39,10 @@ use Glpi\Form\QuestionType\QuestionTypeCheckbox;
 use Glpi\Form\QuestionType\QuestionTypeDropdown;
 use Glpi\Form\QuestionType\QuestionTypeDropdownExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
+use Glpi\Tests\AbstractConditionHandlerTest;
 use Override;
-use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
 
-final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditionHandler
+final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditionHandlerTest
 {
     public static function getConditionHandler(): ConditionHandlerInterface
     {

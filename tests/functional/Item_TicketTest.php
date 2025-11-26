@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use Computer;
+use Glpi\Tests\AbstractCommonItilObject_ItemTest;
 use Ticket;
 use TicketCost;
 
