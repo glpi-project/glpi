@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Search\CriteriaFilter;
 use Glpi\Search\FilterableInterface;
 use Glpi\Search\FilterableTrait;
 
@@ -222,11 +223,19 @@ class Notification extends CommonDBTM implements FilterableInterface
         // Get parents tabs
         $parent_tabs = parent::defineTabs();
 
+        // remove filter tab for items that do not extend CommonDBTM (searchOptions() is needed)
+        if (!is_subclass_of($this->fields['itemtype'], CommonDBTM::class)) {
+            $parent_tabs = array_filter(
+                $parent_tabs,
+                static fn($key) => str_contains(CriteriaFilter::class, $key),
+                ARRAY_FILTER_USE_KEY
+            );
+        }
+
         // Main tab shoud be first, then the most relevants tabs, then inherited common tabs and finish with the history
-        $tabs = [
-            // Main tab retrieved from parents
-            array_keys($parent_tabs)[0] => array_shift($parent_tabs),
-        ];
+        $tabs = isset(array_keys($parent_tabs)[0])
+            ? [ array_keys($parent_tabs)[0] => array_shift($parent_tabs), ]
+            : [];
 
         // Most relevant tabs first
         $this->addStandardTab(Notification_NotificationTemplate::class, $tabs, $options);
