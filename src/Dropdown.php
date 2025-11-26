@@ -1821,6 +1821,7 @@ HTML;
         $params = [
             'itemtype_name'                         => 'itemtype',
             'items_id_name'                         => 'items_id',
+            'items_aria_label'                      => '',
             'itemtypes'                             => '',
             'default_itemtype'                      => 0,
             'default_items_id'                      => -1,
@@ -1868,6 +1869,7 @@ HTML;
         $p_ajax = [
             'idtable'                         => '__VALUE__',
             'name'                            => $params['items_id_name'],
+            'aria_label'                      => $params['items_aria_label'],
             'entity_restrict'                 => $params['entity_restrict'],
             'showItemSpecificity'             => $params['showItemSpecificity'],
             'rand'                            => $params['rand'],

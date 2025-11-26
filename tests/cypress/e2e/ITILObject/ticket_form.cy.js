@@ -33,6 +33,7 @@
 describe("Ticket Form", () => {
     let test_tickets_id;
     let search_sol_ticket_id;
+    let child_ticket_id;
     const rand = Math.floor(Math.random() * 1000);
 
     before(() => {
@@ -117,6 +118,12 @@ describe("Ticket Form", () => {
                 validationsteps_id: validationsteps_id
             });
         });
+
+        cy.createWithAPI('Ticket', {
+            name: 'Child ticket',
+            content: 'Test child ticket',
+            entities_id: 2,
+        }).then(ticket_id => child_ticket_id = ticket_id);
     });
 
     beforeEach(() => {
@@ -381,5 +388,45 @@ describe("Ticket Form", () => {
         cy.get('input[name="urgency"]').invoke('val', '1');
         cy.findByRole('button', {'name': 'Save'}).click();
         cy.get('input[name="urgency"]').should('have.value', '4'); // Should be the template 4 value
+    });
+
+    it('Link a ticket with another one that is in a child entity', () => {
+        cy.visit(`/front/ticket.form.php?id=${test_tickets_id}`);
+        cy.findByTestId('linked-itilobjects-section').click();
+        cy.findByTestId('linked-itilobjects-section').findByText('Add').click();
+        // We have to scroll otherwise cypress doesn't see the dropdown
+        cy.findByTestId('linked-itilobjects-section').scrollIntoView({ offset: { top: 150 } });
+        cy.getDropdownByLabelText('ITIL type selector').selectDropdownValue('Tickets');
+        cy.findByTestId('linked-itilobjects-section').scrollIntoView({ offset: { top: 150 } });
+        cy.getDropdownByLabelText('ITIL item selector').selectDropdownValue(`Child ticket - ${child_ticket_id}`);
+
+        cy.findByRole('button', { name: 'Save' }).click();
+
+        // We should now see it in the linked items
+        cy.findByTestId(`linked-item-group-${child_ticket_id}`).should('exist');
+        cy.findByTestId(`linked-item-group-${child_ticket_id}`).findByLabelText('Unlink').should('exist');
+
+        cy.visit(`/front/ticket.form.php?id=${child_ticket_id}`);
+        cy.findByTestId(`linked-item-group-${test_tickets_id}`).should('exist');
+        cy.findByTestId(`linked-item-group-${test_tickets_id}`).findByRole('link').should('exist');
+        cy.findByTestId(`linked-item-group-${test_tickets_id}`).findByLabelText('Unlink').should('exist');
+
+        // Switching to Sub-entity level
+        cy.openEntitySelector();
+        cy.get('.fancytree-expander[role=button]:visible').as('toggle_tree').click(); // From entities_selector tests.
+        cy.findByRole('gridcell', {'name': "E2ETestSubEntity1"}).findByRole('button').click();
+        cy.findByTestId(`linked-item-group-${test_tickets_id}`).should('exist');
+        cy.findByTestId(`linked-item-group-${test_tickets_id}`).findByRole('link').should('not.exist');
+        cy.findByTestId(`linked-item-group-${test_tickets_id}`).findByLabelText('Unlink').should('exist');
+
+        // We check that a child problem can only see the child ticket and not the root ones
+        cy.visit(`/front/problem.form.php`);
+        cy.findByTestId('linked-itilobjects-section').findByText('Add').click();
+        // We have to scroll otherwise cypress doesn't see the dropdown
+        cy.findByTestId('linked-itilobjects-section').scrollIntoView({ offset: { top: 150 } });
+        cy.getDropdownByLabelText('ITIL type selector').selectDropdownValue('Tickets');
+        cy.findByTestId('linked-itilobjects-section').scrollIntoView({ offset: { top: 150 } });
+        cy.getDropdownByLabelText('ITIL item selector').hasDropdownValue(`Child ticket - ${child_ticket_id}`);
+        cy.getDropdownByLabelText('ITIL item selector').hasDropdownValue(`Test ticket`, false);
     });
 });
