@@ -492,7 +492,9 @@ class Html
 
     /**
      * Display a div containing messages set in session in the previous page
-     **/
+     *
+     * @return void
+     */
     public static function displayMessageAfterRedirect(bool $display_container = true)
     {
         TemplateRenderer::getInstance()->display('components/messages_after_redirect_toasts.html.twig', [
@@ -509,7 +511,7 @@ class Html
      * @param array|string  $ref_btts        Extra items to display array(link=>text...) (default '')
      *
      * @return void
-     **/
+     */
     public static function displayTitle($ref_pic_link = "", $ref_pic_text = "", $ref_title = "", $ref_btts = "")
     {
 
@@ -561,23 +563,10 @@ class Html
     }
 
     /**
-     * Display Debug Information
-     *
-     * @param boolean $with_session with session information (true by default)
-     * @param boolean $ajax         If we're called from ajax (false by default)
+     * Display a Link to the last page.
      *
      * @return void
-     * @deprecated 10.0.0
-     **/
-    public static function displayDebugInfos($with_session = true, $ajax = false, $rand = null)
-    {
-        Toolbox::deprecated('Html::displayDebugInfo is not used anymore. It was replaced by a unified debug bar.');
-    }
-
-
-    /**
-     * Display a Link to the last page.
-     **/
+     */
     public static function displayBackLink()
     {
         echo '<a href="' . htmlescape(self::getBackUrl()) . '">' . __s('Back') . "</a>";
@@ -1605,6 +1594,8 @@ TWIG,
      * @param string $item    item corresponding to the page displayed
      * @param string $option  option corresponding to the page displayed
      * @param bool   $add_id  add current item id to the title ?
+     *
+     * @return void
      */
     public static function header(
         $title,
@@ -1621,7 +1612,8 @@ TWIG,
 
         // If in modal : display popHeader
         if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
-            return self::popHeader($title, '', false, $sector, $item, $option);
+            self::popHeader($title, '', false, $sector, $item, $option);
+            return;
         }
         // Print a nice HTML-head for every page
         if ($HEADER_LOADED) {
@@ -1672,6 +1664,8 @@ TWIG,
      * Print footer for every page
      *
      * @since 11.0.0 The `$keepDB` parameter has been removed.
+     *
+     * @return void
      */
     public static function footer()
     {
@@ -1682,7 +1676,8 @@ TWIG,
 
         // If in modal : display popFooter
         if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
-            return self::popFooter();
+            self::popFooter();
+            return;
         }
 
         // Print foot for every page
@@ -1753,6 +1748,8 @@ TWIG,
      * Display Ajax Footer for debug
      *
      * @deprecated 11.0.0
+     *
+     * @return void
      */
     public static function ajaxFooter()
     {
@@ -1765,7 +1762,9 @@ TWIG,
      *
      * @param string $title  title of the page
      * @param array  $links  links to display
-     **/
+     *
+     * @return void
+     */
     public static function simpleHeader($title, $links = [])
     {
         /** @var bool $HEADER_LOADED */
@@ -1812,6 +1811,8 @@ TWIG,
      * @param string $item    item corresponding to the page displayed
      * @param string $option  option corresponding to the page displayed
      * @param bool   $add_id  add current item id to the title ?
+     *
+     * @return void
      */
     public static function helpHeader(
         $title,
@@ -1907,7 +1908,9 @@ TWIG,
 
     /**
      * Print footer for help page
-     **/
+     *
+     * @return void
+     */
     public static function helpFooter()
     {
         self::footer();
@@ -1919,7 +1922,9 @@ TWIG,
      *
      * @param string $title  title of the page
      * @param string $url    not used anymore
-     **/
+     *
+     * @return void
+     */
     public static function nullHeader($title, $url = '')
     {
         /** @var bool $HEADER_LOADED */
@@ -1945,7 +1950,9 @@ TWIG,
 
     /**
      * Print footer for null page
-     **/
+     *
+     * @return void
+     */
     public static function nullFooter()
     {
         self::footer();
@@ -1961,7 +1968,9 @@ TWIG,
      * @param string  $sector    sector in which the page displayed is (default 'none')
      * @param string  $item      item corresponding to the page displayed (default 'none')
      * @param string  $option    option corresponding to the page displayed (default '')
-     **/
+     *
+     * @return void
+     */
     public static function popHeader(
         $title,
         $url = '',
@@ -2020,7 +2029,9 @@ TWIG,
 
     /**
      * Print footer for a modal window
-     **/
+     *
+     * @return void
+     */
     public static function popFooter()
     {
         /** @var bool $FOOTER_LOADED */
@@ -2044,6 +2055,8 @@ TWIG,
      * @see https://www.sitepoint.com/php-streaming-output-buffering-explained/
      *
      * @deprecated 11.0.0
+     *
+     * @return void
      */
     public static function glpi_flush()
     {
@@ -2056,7 +2069,9 @@ TWIG,
 
     /**
      * Set page not to use the cache
-     **/
+     *
+     * @return void
+     */
     public static function header_nocache()
     {
         header("Cache-Control: no-store, no-cache, must-revalidate"); // HTTP/1.1
@@ -3795,10 +3810,12 @@ JAVASCRIPT
     }
 
     /**
-     * Insert an html link to the twig template variables documentation page
+     * Insert a html link to the twig template variables documentation page
      *
      * @param string $preset_target Preset of parameters for which to show documentation (key)
-     * @param string|null $link_id  Useful if you need to interract with the link through client side code
+     * @param string|null $link_id  Useful if you need to interact with the link through client side code
+     *
+     * @return void
      */
     public static function addTemplateDocumentationLink(
         string $preset_target,
@@ -3818,12 +3835,14 @@ JAVASCRIPT
     }
 
     /**
-     * Insert an html link to the twig template variables documentation page and
+     * Insert a html link to the twig template variables documentation page and
      * move it before the given textarea.
      * Useful if you don't have access to the form where you want to put this link at
      *
      * @param string $selector JQuery selector to find the target textarea
      * @param string $preset_target   Preset of parameters for which to show documentation (key)
+     *
+     * @return void
      */
     public static function addTemplateDocumentationLinkJS(
         string $selector,
@@ -4243,7 +4262,9 @@ JAVASCRIPT
      * @param string|array $confirm  Optional confirm message      (default '')
      *
      * @since 0.84
-     **/
+     *
+     * @return string
+     */
     public static function getSimpleForm(
         $action,
         $btname,
@@ -4316,7 +4337,9 @@ JAVASCRIPT
      * @param string|array $confirm  Optional confirm message (default '')
      *
      * @since 0.83.3
-     **/
+     *
+     * @return void
+     */
     public static function showSimpleForm(
         $action,
         $btname,
@@ -5689,7 +5712,7 @@ HTML;
             'nb_cb_per_row'  => $nb_cb_per_row,
         ]);
 
-        return (int) $param['rand'];
+        return $param['rand'];
     }
 
 
@@ -5705,7 +5728,9 @@ HTML;
      * @see https://api.jquery.com/jQuery.ajax/
      *
      * @since 9.1
-     **/
+     *
+     * @return void
+     */
     public static function ajaxForm($selector, $success = "console.log(html);", $error = "console.error(html)", $complete = '')
     {
         $selector = jsescape($selector);
@@ -5752,7 +5777,9 @@ JS);
      * by a prettier dialog.
      *
      * @since 9.1
-     **/
+     *
+     * @return void
+     */
     public static function redefineAlert()
     {
 
@@ -5780,6 +5807,8 @@ JS);
      * In this case, we trigger a new click on element to return the value (and without display dialog)
      *
      * @since 9.1
+     *
+     * @return void
      */
     public static function redefineConfirm()
     {
@@ -5845,7 +5874,9 @@ JS);
      * @param string $title        Title for dialog box
      * @param string $okCallback   Function that will be called when 'Ok' is pressed
      *                               (default null)
-     **/
+     *
+     * @return string
+     */
     public static function jsAlertCallback($msg, $title, $okCallback = null)
     {
         return "glpi_alert({
@@ -5862,7 +5893,7 @@ JS);
      * Get image html tag for image document.
      *
      * @param int    $document_id  identifier of the document
-     * @param int    $width        witdh of the final image
+     * @param int    $width        width of the final image
      * @param int    $height       height of the final image
      * @param bool   $addLink      boolean, do we need to add an anchor link
      * @param string $more_link    append to the link (ex &test=true)
@@ -5870,7 +5901,7 @@ JS);
      * @return string
      *
      * @since 9.4.3
-     **/
+     */
     public static function getImageHtmlTagForDocument($document_id, $width, $height, $addLink = true, $more_link = "")
     {
         global $CFG_GLPI;
@@ -6623,6 +6654,7 @@ CSS;
     /**
      * Get scss compilation path for given file.
      *
+     * @param string $file
      * @param string $root_dir
      *
      * @return string

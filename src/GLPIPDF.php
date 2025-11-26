@@ -40,12 +40,9 @@ use function Safe\glob;
  */
 class GLPIPDF extends TCPDF
 {
-    /**
-     * @var int
-     */
-    private $total_count;
+    private int $total_count;
 
-    private static $default_config = [
+    private static array $default_config = [
         'orientation'        => 'P',
         'unit'               => 'mm',
         'mode'               => 'UTF-8',
@@ -114,7 +111,9 @@ class GLPIPDF extends TCPDF
      * Page header
      *
      * @see TCPDF::Header()
-    **/
+     *
+     * @return void
+    */
     public function Header()
     {
         // Title
@@ -126,7 +125,9 @@ class GLPIPDF extends TCPDF
      * Page footer
      *
      * @see TCPDF::Footer()
-    **/
+     *
+     * @return void
+    */
     public function Footer()
     {
         // Position at 15 mm from bottom

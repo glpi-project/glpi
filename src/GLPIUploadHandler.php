@@ -42,6 +42,11 @@ use function Safe\unlink;
  **/
 class GLPIUploadHandler extends UploadHandler
 {
+    /**
+     * @param array $params
+     *
+     * @return mixed
+     */
     public static function uploadFiles($params = [])
     {
         $default_params = [
@@ -82,6 +87,15 @@ class GLPIUploadHandler extends UploadHandler
         return $upload_handler->generate_response($response, $params['print_response']);
     }
 
+    /**
+     * @param string $uploaded_file
+     * @param stdClass $file
+     * @param int $error
+     * @param int $index
+     * @param ?array $content_range
+     *
+     * @return bool
+     */
     protected function validate($uploaded_file, $file, $error, $index, $content_range)
     {
         if (

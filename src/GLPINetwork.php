@@ -45,6 +45,9 @@ class GLPINetwork extends CommonGLPI
         return self::createTabEntry('GLPI Network');
     }
 
+    /**
+     * @return string
+     */
     public static function getIcon()
     {
         return 'ti ti-headset';
@@ -58,6 +61,9 @@ class GLPINetwork extends CommonGLPI
         return true;
     }
 
+    /**
+     * @return void
+     */
     public static function showForConfig()
     {
         if (!Config::canView()) {

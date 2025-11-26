@@ -282,6 +282,9 @@ class Fieldblacklist extends CommonDropdown
     }
 
 
+    /**
+     * @return void
+     */
     public function selectCriterias()
     {
         global $CFG_GLPI;
@@ -324,7 +327,9 @@ class Fieldblacklist extends CommonDropdown
      *
      * @param string $itemtype
      * @param array  $options
-     **/
+     *
+     * @return string|int|false
+     */
     public static function dropdownField($itemtype, $options = [])
     {
         global $DB;
@@ -367,6 +372,8 @@ class Fieldblacklist extends CommonDropdown
 
     /**
      * @param string $field  (default '')
+     *
+     * @return void
      **/
     public function selectValues($field = '')
     {
