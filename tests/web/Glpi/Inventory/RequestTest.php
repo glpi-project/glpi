@@ -52,6 +52,11 @@ class RequestTest extends TestCase
         $this->http_client = new GuzzleHttp\Client();
         $this->base_uri    = trim(GLPI_URI, '/') . '/';
 
+        // Enable inventory
+        Config::setConfigurationValues('inventory', [
+            'enabled_inventory' => '1',
+        ]);
+
         parent::setUp();
     }
 
@@ -61,6 +66,7 @@ class RequestTest extends TestCase
         Config::setConfigurationValues('core', [
             'enable_hlapi' => true,
         ]);
+
         parent::tearDownAfterClass();
     }
 

@@ -7833,7 +7833,7 @@ CREATE TABLE `glpi_users` (
   `followup_private` tinyint DEFAULT NULL,
   `task_private` tinyint DEFAULT NULL,
   `default_requesttypes_id` int unsigned DEFAULT NULL,
-  `password_forget_token` char(40) DEFAULT NULL,
+  `password_forget_token` varchar(255) DEFAULT NULL,
   `password_forget_token_date` timestamp NULL DEFAULT NULL,
   `user_dn` text,
   `user_dn_hash` varchar(32),

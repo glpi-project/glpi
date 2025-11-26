@@ -70,11 +70,16 @@ class GLPIKey
      * @var array
      */
     protected $fields = [
+        'glpi_apiclients.app_token',
         'glpi_authldaps.rootdn_passwd',
         'glpi_mailcollectors.passwd',
         'glpi_oauthclients.secret',
         'glpi_snmpcredentials.auth_passphrase',
         'glpi_snmpcredentials.priv_passphrase',
+        'glpi_users.api_token',
+        'glpi_users.cookie_token',
+        'glpi_users.password_forget_token',
+        'glpi_users.personal_token',
     ];
 
     /**

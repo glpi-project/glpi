@@ -260,7 +260,7 @@
 
                             {% if not item.isNewItem() and ((caneditpassword ?? false) or is_preference_form) %}
                                 {{ fields.smallTitle(__('Passwords and access keys')) }}
-                                {{ fields.passwordField('api_token', item.fields['api_token'], __('API token'), {
+                                {{ fields.passwordField('api_token', item.fields['api_token']|decrypt, __('API token'), {
                                     can_regenerate: true,
                                     is_disclosable: true,
                                     clearable: false,
