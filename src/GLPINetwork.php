@@ -40,6 +40,11 @@ use function Safe\preg_replace;
 
 class GLPINetwork extends CommonGLPI
 {
+    public static function getTypeName($nb = 0)
+    {
+        return __('GLPI Network');
+    }
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         return self::createTabEntry('GLPI Network');
