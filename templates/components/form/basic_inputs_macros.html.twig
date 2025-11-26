@@ -224,9 +224,11 @@
         'clearable': false,
         'input_addclass': '',
         'readonly': false,
+        'disabled': false,
         'maybeempty': false,
     }|merge(options) %}
 
+    {% set editable = not options.readonly and not options.disabled %}
     {% set options = {
         'id': name|safe_dom_id ~ '_' ~ options.rand
     }|merge(options) %}
@@ -252,7 +254,7 @@
         {% endif %}
     {% endif %}
 
-    <div class="btn-group flex-grow-1 flatpickr d-flex" id="{{ options.id }}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ options.readonly ? _n('Date', 'Dates', 1) : __('Enter or select a date') }}">
+    <div class="btn-group flex-grow-1 flatpickr d-flex" id="{{ options.id }}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ editable ? _n('Date', 'Dates', 1) : __('Enter or select a date') }}">
         {{ _self.input(name, value, options|merge({
             'type': 'text',
             'id': options.id ~ '_input',
