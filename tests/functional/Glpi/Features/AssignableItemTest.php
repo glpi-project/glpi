@@ -35,8 +35,8 @@
 namespace tests\units\Glpi\Features;
 
 use Domain;
-use Glpi\Tests\DbTestCase;
 use Glpi\Features\AssignableItem;
+use Glpi\Tests\DbTestCase;
 use Group_Item;
 use PHPUnit\Framework\Attributes\DataProvider;
 
