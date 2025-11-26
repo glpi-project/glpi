@@ -145,11 +145,11 @@ class Provider
         );
 
         // avoid costly DISTINCT if there isn't any JOIN (/3 perf gain)
-        if (!isset($request['LEFT JOIN'])
-            && !isset($request['JOIN'])
-            && !isset($request['INNER JOIN'])
-            && !isset($request['RIGHT JOIN'])) {
-            unset($request['DISTINCT']);
+        if (!isset($criteria['LEFT JOIN'])
+            && !isset($criteria['JOIN'])
+            && !isset($criteria['INNER JOIN'])
+            && !isset($criteria['RIGHT JOIN'])) {
+            unset($criteria['DISTINCT']);
         }
 
         Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
