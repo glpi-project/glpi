@@ -169,6 +169,8 @@ final class Comment extends CommonDBChild implements
             unset($input['_conditions']);
         }
 
+        $input = $this->removeSavedConditionsIfAlwaysVisible($input);
+
         return $input;
     }
 

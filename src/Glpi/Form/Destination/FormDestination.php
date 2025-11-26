@@ -284,6 +284,8 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
             unset($input['_conditions']);
         }
 
+        $input = $this->removeSavedConditionsIfAlwaysCreated($input);
+
         return $input;
     }
 

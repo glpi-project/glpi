@@ -401,6 +401,9 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
             }
         }
 
+        $input = $this->removeSavedConditionsIfAlwaysVisible($input);
+        $input = $this->removeSavedConditionsIfNoValidation($input);
+
         return $input;
     }
 

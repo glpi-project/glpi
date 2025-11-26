@@ -35,6 +35,10 @@
 namespace tests\units\Glpi\Form;
 
 use DbTestCase;
+use Glpi\Form\Condition\LogicOperator;
+use Glpi\Form\Condition\Type;
+use Glpi\Form\Condition\ValueOperator;
+use Glpi\Form\Condition\VisibilityStrategy;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\Section;
@@ -112,6 +116,34 @@ class SectionTest extends DbTestCase
         );
         $section = Section::getById(static::getSectionId($form, 'Section 1'));
         $this->checkGetQuestions($section, ['Valid question type']);
+    }
+
+    public function testConditionsDataAreCleanedWhenStrategyIsReset(): void
+    {
+        // Arrange: create a form with visibility conditions on a section
+        $builder = new FormBuilder();
+        $builder->addSection("Section 1");
+        $builder->addQuestion("My question", QuestionTypeShortText::class);
+        $builder->addSection("Section 2");
+        $builder->setSectionVisibility("Section 2", VisibilityStrategy::VISIBLE_IF, [
+            [
+                'logic_operator' => LogicOperator::AND,
+                'item_name'      => "My question",
+                'item_type'      => Type::QUESTION,
+                'value_operator' => ValueOperator::EQUALS,
+                'value'          => "Yes",
+            ],
+        ]);
+        $form = $this->createForm($builder);
+
+        // Act: reset the section's visibility strategy
+        $section_id = $this->getSectionId($form, "Section 2");
+        $section = $this->updateItem(Section::class, $section_id, [
+            'visibility_strategy' => VisibilityStrategy::ALWAYS_VISIBLE->value,
+        ]);
+
+        // Assert: the conditions should be deleted
+        $this->assertEmpty($section->getConfiguredConditionsData());
     }
 
     private function checkGetQuestions(
