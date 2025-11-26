@@ -34,6 +34,8 @@
 
 {% set load_actors = params['load_actors'] ?? true %}
 {% set actors = load_actors ? item.getActorsForType(actortypeint, params) : [] %}
+{% set _hook_result = call_plugin_hook_func(constant('Glpi\\Plugin\\Hooks::POST_ITIL_ACTORS_LOAD'), {"item": item, 'options': params, 'actor_type': actortypeint, 'actors': actors}, true) %}
+{% set actors = _hook_result.actors ?? actors %}
 
 {% set required = false %}
 {% if itiltemplate.isMandatoryField('_users_id_' ~ actortype) or itiltemplate.isMandatoryField('_groups_id_' ~ actortype) or (actortype == 'assign' and itiltemplate.isMandatoryField('_suppliers_id_' ~ actortype)) %}
@@ -62,7 +64,9 @@
             data-use-notification="{{ actor_use_notification ? 1 : 0 }}"
             data-default-email="{{ actor['default_email'] ?? '' }}"
             data-alternative-email="{{ actor['alternative_email'] ?? '' }}"
-            {% if (actor['itemtype'] == 'User' and itiltemplate.isHiddenField('_users_id_' ~ actortype)) or (actor['itemtype'] == 'Group' and itiltemplate.isHiddenField('_groups_id_' ~ actortype)) %}
+            data-icon-name="{{ actor['icon_name'] ?? '' }}"
+            data-editable="{{ not (actor['is_editable'] is defined and not actor['is_editable']) }}"
+            {% if (actor['itemtype'] == 'User' and itiltemplate.isHiddenField('_users_id_' ~ actortype)) or (actor['itemtype'] == 'Group' and itiltemplate.isHiddenField('_groups_id_' ~ actortype) or (actor['is_editable'] is defined and not actor['is_editable']) ) %}
                disabled="disabled" style="display: none;"
             {% endif %}
             data-text="{{ actor['text'] }}" data-title="{{ actor['title'] }}" data-glpi-popover-source="content{{ unique_id }}">
@@ -97,16 +101,22 @@
             const title     = _.escape(element.data('title') ?? option.title ?? '');
             const use_notif = element.data('use-notification') ?? option.use_notification ?? 1;
             const alt_email = element.data('alternative-email') ?? option.alternative_email ?? '';
+            const editable  = element.data('editable') ?? option.editable ?? true;
+            let icon_name = element.data('icon-name') ?? option.editable;
 
             let icon = "";
             let fk   = "";
             switch (itemtype) {
                 case "User":
                     if (items_id == 0) {
-                        text = alt_email;
-                        icon = `<i class="ti ti-mail mx-1" title="{{ __('Direct email')|e('html')|e('js') }}"></i>`;
+                        text = alt_email ? alt_email : text;
+                        icon_name = icon_name ? icon_name : "ti ti-mail";
+                        const icon_title = title ? title : `{{ __('Direct email')|e('html')|e('js') }}`;
+
+                        icon = `<i class="${icon_name} mx-1" title="${icon_title}"></i>`;
                     } else {
-                        icon = `<i class="ti ti-user mx-1" title="{{ 'User'|itemtype_name|e('html')|e('js') }}"></i>`;
+                        icon_name = icon_name ? icon_name : "ti ti-user";
+                        icon = `<i class="${icon_name} mx-1" title="{{ 'User'|itemtype_name|e('html')|e('js') }}"></i>`;
                     }
                     if ("{{ actortype|e('js') }}" == "assign") {
                         fk = "users_id_assign";
@@ -135,7 +145,7 @@
             let actions = "";
             {% if canupdate %}
             if (['User', 'Supplier', 'Email'].includes(itemtype)
-                && is_selection) {
+                && is_selection && editable) {
                 const icon_class = use_notif ? "ti-bell-filled" : "ti-bell";
                 actions = `
                     <button class="btn btn-sm btn-ghost-secondary edit-notify-user"
@@ -305,6 +315,14 @@
         }).on('select2:open', () => {
             // Close popovers
             $('.popover').popover('hide');
+        }).on('select2:unselecting', (e) => {
+            // Prevent removing items that are not editable
+            const data = e.params.args.data;
+            const element = $(data.element);
+            const editable = element.data('editable') ?? data.editable ?? true;
+            if (!editable) {
+                e.preventDefault();
+            }
         });
 
         actor_select.parent().popover({

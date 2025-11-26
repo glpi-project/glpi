@@ -594,6 +594,30 @@ class Hooks
     public const POST_ITIL_INFO_SECTION  = 'post_itil_info_section';
 
     /**
+     * Register a function to edit or add actors inside the Actors fields panel.
+     * The function is called with the following parameters:
+     * - 'item' => The item for which the actors are shown
+     * - 'options' => An array of form parameters
+     * - 'actors' => The actors list, you can add is_editable => false field to disable the edit of this actor
+     *
+     * The function is expected to modify the given array as needed and return it.
+     * @used-by templates/components/itilobject/actors/field.html.twig
+     */
+    public const POST_ITIL_ACTORS_LOAD = 'post_itil_actors_load';
+
+    /**
+     * Register a function alter the displayed count of actors inside the fields panel.
+     * The function is called with the following parameters:
+     * - 'item' => The item for which the actors are shown
+     * - 'options' => An array of form parameters
+     * - 'count' => Current displayed count
+     *
+     * The function is expected to modify the given array as needed and return it.
+     * @used-by templates/components/itilobject/actors/field.html.twig
+     */
+    public const POST_ITIL_ACTORS_COUNT = 'post_itil_actors_count';
+
+    /**
      * Register a function to be called after an item is transferred to another entity.
      * The function is called with an array containing several properties including:
      * - 'type' => The type of the item being transferred.

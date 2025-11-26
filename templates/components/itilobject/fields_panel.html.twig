@@ -277,7 +277,12 @@
                 {{ __('Actors') }}
             </span>
             <span class="badge bg-secondary text-secondary-fg ms-2">
-               {{ item.countActors() }}
+                {% set actors_count = item.countActors() %}
+
+                {% set _hook_result = call_plugin_hook_func(constant('Glpi\\Plugin\\Hooks::POST_ITIL_ACTORS_COUNT'), {"item": item, 'options': params, 'count': actors_count}, true) %}
+                {% set actors_count = _hook_result.count ?? actors_count %}
+
+                {{ actors_count }}
             </span>
             {% if not (params['template_preview'] ?? false) and cancreateuser|default(false) and canupdate %}
                {{ include('components/user/create_user.html.twig') }}

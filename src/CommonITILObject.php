@@ -364,6 +364,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $actors[] = [
                     'itemtype' => $itemtype,
                     'items_id' => $items_id,
+                    'icon_name' => $params['icon_name'] ?: 'ti ti-user',
                 ] + $params;
             }
         };
@@ -539,6 +540,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     'use_notification'  => $user['use_notification'],
                     'default_email'     => UserEmail::getDefaultForUser($user['users_id']),
                     'alternative_email' => $user['alternative_email'],
+                    'icon_name'         => $user['alternative_email'] ? 'ti ti-mail' : '',
                 ]);
             }
         }
@@ -565,6 +567,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         'use_notification'  => $supplier['use_notification'],
                         'default_email'     => $supplier_obj->fields['email'],
                         'alternative_email' => $supplier['alternative_email'],
+                        'icon_name'         => $supplier['alternative_email'] ? 'ti ti-mail' : '',
                     ]);
                 }
             }
