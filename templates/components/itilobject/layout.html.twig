@@ -55,42 +55,45 @@
     {% set right_side_cls = right_expanded_cls %}
 {% endif %}
 
+{% set can_have_form = not template_preview %}
 
 <div id="itil-object-container" class="mt-n1 {{ collapsed_cls }} {{ expanded_cls }}">
 
-   {% if item.isNewItem() and not template_preview %}
-      {{ include('components/itilobject/mainform_open.html.twig') }}
-   {% endif %}
+    {% if can_have_form and item.isNewItem() %}
+        {{ include('components/itilobject/mainform_open.html.twig') }}
+    {% endif %}
 
-   <div class="row d-flex flex-column itil-object">
-      {% set is_timeline_reversed = user_pref('timeline_order') == constant('CommonITILObject::TIMELINE_ORDER_REVERSE') %}
-      {% set fl_direction = (item.isNewItem() or is_timeline_reversed ? 'flex-column' : 'flex-column-reverse') %}
-      <div class="itil-left-side col-12 {{ left_side_cls }} order-last order-lg-first pt-2 pe-2 pe-lg-4 d-flex {{ fl_direction }} border-top border-4 {{ not show_extra_fields ? "w-100" : "" }}">
-         {% if item.isNewItem() %}
-            {{ include('components/itilobject/timeline/new_form.html.twig') }}
-         {% else %}
-            {{ include('components/itilobject/timeline/timeline.html.twig') }}
-         {% endif %}
-      </div>
-      {% if show_extra_fields %}
-         <div class="itil-right-side col-12 {{ right_side_cls }} mt-0 mt-lg-n1 card-footer p-0 rounded-0">
-            {% if not item.isNewItem() %}
-               {{ include('components/itilobject/mainform_open.html.twig') }}
+    <div class="row d-flex flex-column itil-object">
+        {% set is_timeline_reversed = user_pref('timeline_order') == constant('CommonITILObject::TIMELINE_ORDER_REVERSE') %}
+        {% set fl_direction = (item.isNewItem() or is_timeline_reversed ? 'flex-column' : 'flex-column-reverse') %}
+        <div class="itil-left-side col-12 {{ left_side_cls }} order-last order-lg-first pt-2 pe-2 pe-lg-4 d-flex {{ fl_direction }} border-top border-4 {{ not show_extra_fields ? "w-100" : "" }}">
+            {% if item.isNewItem() %}
+                {{ include('components/itilobject/timeline/new_form.html.twig') }}
+            {% else %}
+                {{ include('components/itilobject/timeline/timeline.html.twig') }}
             {% endif %}
-            {{ include('components/itilobject/fields_panel.html.twig') }}
-            {% if not item.isNewItem() %}
-               {{ include('components/itilobject/mainform_close.html.twig') }}
+        </div>
+        <div class="itil-right-side col-12 {{ right_side_cls }} mt-0 mt-lg-n1 card-footer p-0 rounded-0 {{ show_extra_fields ? '' : 'd-none' }}">
+            {# Even without extra fields, this form is necessary for footer buttons #}
+            {% if can_have_form and not item.isNewItem() %}
+                {{ include('components/itilobject/mainform_open.html.twig') }}
             {% endif %}
-         </div>
-      {% endif %}
-   </div>
+            {% if show_extra_fields %}
+                {{ include('components/itilobject/fields_panel.html.twig') }}
+            {% endif %}
+            {% if can_have_form and not item.isNewItem() %}
+                {{ include('components/itilobject/mainform_close.html.twig') }}
+            {% endif %}
+        </div>
+    </div>
 
-   {% if not template_preview %}
-      {{ include('components/itilobject/footer.html.twig') }}
-      {% if not item.isNewItem() %}
-           {{ include('components/itilobject/mainform_close.html.twig') }}
-      {% endif %}
-   {% endif %}
+    {% if not template_preview %}
+        {{ include('components/itilobject/footer.html.twig') }}
+    {% endif %}
+
+    {% if can_have_form and item.isNewItem() %}
+        {{ include('components/itilobject/mainform_close.html.twig') }}
+    {% endif %}
 </div>
 
 {# Common form fields for CommonITILObject_CommonITILObject purge action #}
@@ -167,13 +170,15 @@ $(function() {
         saveFieldPanelState();
     });
 
-    var myCollapsible = document.getElementById('itil-data')
-    myCollapsible.addEventListener('shown.bs.collapse', function () {
-        saveFieldPanelState();
-    });
-    myCollapsible.addEventListener('hidden.bs.collapse', function () {
-        saveFieldPanelState();
-    });
+    var myCollapsible = document.getElementById('itil-data');
+    if (myCollapsible) {
+        myCollapsible.addEventListener('shown.bs.collapse', function () {
+            saveFieldPanelState();
+        });
+        myCollapsible.addEventListener('hidden.bs.collapse', function () {
+            saveFieldPanelState();
+        });
+    }
 
     var itil_layout = {
         collapsed: false,

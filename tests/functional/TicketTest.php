@@ -1742,7 +1742,7 @@ class TicketTest extends DbTestCase
             category: false,
             requestSource: false,
             location: false,
-            itil_form: false,
+            itil_form: true,
             cancel_ticket: true,
         );
 
@@ -1775,7 +1775,7 @@ class TicketTest extends DbTestCase
             $category = false,
             $requestSource = false,
             $location = false,
-            itil_form: false,
+            itil_form: true,
             cancel_ticket: false, // Can no longer cancel once a followup is added
         );
 
