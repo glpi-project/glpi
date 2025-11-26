@@ -156,7 +156,9 @@ class Group_User extends CommonDBRelation
      * Show groups of a user
      *
      * @param User $user   User object
-     **/
+     *
+     * @return void
+     */
     public static function showForUser(User $user)
     {
         $ID = $user->fields['id'];
@@ -164,7 +166,7 @@ class Group_User extends CommonDBRelation
             !Group::canView()
             || !$user->can($ID, READ)
         ) {
-            return false;
+            return;
         }
 
         $canedit = $user->can($ID, UPDATE);
@@ -241,9 +243,11 @@ class Group_User extends CommonDBRelation
      *
      * @param Group $group
      * @param array $used_ids Array of already added users
-     * @param array $entityrestrict Array of entities
-     **/
-    private static function showAddUserForm(Group $group, $used_ids, $entityrestrict)
+     * @param int|array $entityrestrict Array of entities
+     *
+     * @return void
+     */
+    private static function showAddUserForm(Group $group, array $used_ids, int|array $entityrestrict): void
     {
         $res  = User::getSqlSearchResult(true, "all", $entityrestrict, 0, $used_ids, '', 0, -1, false, 1);
         $nb = count($res);
@@ -389,6 +393,8 @@ class Group_User extends CommonDBRelation
      *
      * @param Group $group
      * @since 0.83
+     *
+     * @return void
      */
     public static function showForGroup(Group $group)
     {
@@ -397,7 +403,7 @@ class Group_User extends CommonDBRelation
             !User::canView()
             || !$group->can($ID, READ)
         ) {
-            return false;
+            return;
         }
 
         // Have right to manage members
@@ -637,6 +643,11 @@ class Group_User extends CommonDBRelation
         return $tab;
     }
 
+    /**
+     * @param ?class-string<CommonDBTM> $itemtype
+     *
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
         $tab = [];
@@ -665,9 +676,11 @@ class Group_User extends CommonDBRelation
     }
 
     /**
-     * @param $user_ID
-     * @param $only_dynamic (false by default
-     **/
+     * @param int $user_ID
+     * @param bool $only_dynamic (false by default)
+     *
+     * @return void
+     */
     public static function deleteGroups($user_ID, $only_dynamic = false)
     {
         $crit['users_id'] = $user_ID;

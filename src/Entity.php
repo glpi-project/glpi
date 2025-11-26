@@ -113,8 +113,8 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     public const HELPDESK_TITLE_CUSTOM = "custom";
 
     // Array of "right required to update" => array of fields allowed
-    // Missing field here couldn't be update (no right)
-    private static $field_right = [
+    // Missing field here couldn't be updated (no right)
+    private static array $field_right = [
         'entity' => [
             // Address
             'address', 'country', 'email', 'fax', 'notepad',
@@ -312,8 +312,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     /**
      * Check right on each field before add / update
      *
-     * @since 0.84 (before in entitydata.class)
-     *
      * @param array $input
      *
      * @return array (filtered input)
@@ -355,9 +353,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         return $tmp;
     }
 
-    /**
-     * @since 0.84 (before in entitydata.class)
-     **/
     public function prepareInputForAdd($input)
     {
         global $DB;
@@ -412,9 +407,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         return $input;
     }
 
-    /**
-     * @since 0.84 (before in entitydata.class)
-     **/
     public function prepareInputForUpdate($input)
     {
         // Force entities_id = NULL for root entity
@@ -1581,11 +1573,11 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     }
 
     /**
-     * @since 0.83 (before addRule)
-     *
      * @param array $input
      * @used-by front/dropdown.common.form.php
-     **/
+     *
+     * @return void
+     */
     public function executeAddRule($input)
     {
         $this->check($_POST["affectentity"], UPDATE);
@@ -1990,12 +1982,12 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     }
 
     /**
-     * @since 0.84 (before in entitydata.class)
-     *
      * @param string $field
      * @param string $value
-     **/
-    private static function getEntityIDByField($field, $value)
+     *
+     * @return int
+     */
+    private static function getEntityIDByField(string $field, string $value): int
     {
         global $DB;
 
@@ -2007,46 +1999,46 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
         if (count($iterator) === 1) {
             $result = $iterator->current();
-            return $result['id'];
+            return (int) $result['id'];
         }
         return -1;
     }
 
     /**
-     * @since 0.84 (before in entitydata.class)
+     * @param string $value
      *
-     * @param $value
-     **/
+     * @return int
+     */
     public static function getEntityIDByDN($value)
     {
         return self::getEntityIDByField("ldap_dn", $value);
     }
 
     /**
-     * @since 0.84
+     * @param string $value
      *
-     * @param $value
-     **/
+     * @return int
+     */
     public static function getEntityIDByCompletename($value)
     {
         return self::getEntityIDByField("completename", $value);
     }
 
     /**
-     * @since 0.84 (before in entitydata.class)
+     * @param string $value
      *
-     * @param $value
-     **/
+     * @return int
+     */
     public static function getEntityIDByTag($value)
     {
         return self::getEntityIDByField("tag", $value);
     }
 
     /**
-     * @since 0.84 (before in entitydata.class)
+     * @param string $value
      *
-     * @param $value
-     **/
+     * @return int
+     */
     public static function getEntityIDByDomain($value)
     {
         return self::getEntityIDByField("mail_domain", $value);
@@ -2055,10 +2047,10 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     /**
      * Is the entity associated with an AuthLDAP ?
      *
-     * @since 0.84 (before in entitydata.class)
-     *
      * @param int $entities_id
-     **/
+     *
+     * @return bool
+     */
     public static function isEntityDirectoryConfigured($entities_id)
     {
         $entity = new self();
@@ -2138,13 +2130,13 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     /**
      * Retrieve data of current entity or parent entity
      *
-     * @since 0.84 (before in entitydata.class)
-     *
      * @param string  $fieldref       name of the referent field to know if we look at parent entity
      * @param integer $entities_id
      * @param string  $fieldval       name of the field that we want value (default '')
      * @param mixed   $default_value  value to return (default -2)
-     **/
+     *
+     * @return mixed
+     */
     public static function getUsedConfig($fieldref, $entities_id, $fieldval = '', $default_value = -2)
     {
         global $DB, $GLPI_CACHE;
@@ -2225,8 +2217,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
     /**
      * Generate link for ITIL Object satisfaction
-     *
-     * @since 0.84 (before in entitydata.class)
      *
      * @param CommonITILObject $item ITIL Object item to create the survey link for
      *
@@ -2403,8 +2393,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     /**
      * get value for auto_assign_mode
      *
-     * @since 0.84 (created in version 0.83 in entitydata.class)
-     *
      * @param integer|null $val if not set, ask for all values, else for 1 value (default NULL)
      *
      * @return string|array
@@ -2480,7 +2468,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     /**
      * @param array $options
      * @return int|string Returns the HTML code if the `display` option is false. Otherwise, the random number used for the dropdown is returned.
-     * @since 0.84
      */
     public static function dropdownAutoAssignMode(array $options): int|string
     {
@@ -2888,6 +2875,13 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     /**
      * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
      * @psalm-taint-sink html $value (string will be added to HTML source)
+     *
+     *
+     * @param string $value
+     * @param bool $inline
+     * @param bool $display
+     *
+     * @return string
      */
     public static function inheritedValue($value = "", bool $inline = false, bool $display = true): string
     {
@@ -2977,6 +2971,11 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         return "ti ti-stack";
     }
 
+    /**
+     * @param ?int $entities_id
+     *
+     * @return mixed
+     */
     public static function getAnonymizeConfig(?int $entities_id = null)
     {
         if ($entities_id === null) {

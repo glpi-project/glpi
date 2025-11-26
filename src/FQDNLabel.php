@@ -49,6 +49,9 @@ abstract class FQDNLabel extends CommonDBChild
     // Inherits from CommonDBChild as it must be attached to a specific element
     // (NetworkName, NetworkPort, ...)
 
+    /**
+     * @return string
+     */
     public function getInternetName()
     {
 
@@ -89,7 +92,9 @@ abstract class FQDNLabel extends CommonDBChild
      * than alphanumerics. Minus ('-') is allowed if it is not at the end or begin of the lable.
      *
      * @param string $label  the label to check
-     **/
+     *
+     * @return bool
+     */
     public static function checkFQDNLabel($label)
     {
         try {
@@ -115,7 +120,9 @@ abstract class FQDNLabel extends CommonDBChild
 
 
     /**
-     * @param $input
+     * @param array $input
+     *
+     * @return array|false
      **/
     public function prepareLabelInput($input)
     {
@@ -138,8 +145,10 @@ abstract class FQDNLabel extends CommonDBChild
 
 
     /**
-     * @param $input
-     **/
+     * @param array $input
+     *
+     * @return array
+     */
     public function prepareIPNetworkFromInput($input)
     {
 
@@ -184,12 +193,12 @@ abstract class FQDNLabel extends CommonDBChild
     /**
      * Get all label IDs corresponding to given string label and FQDN ID
      *
-     * @param $label           string   label to search for
-     * @param $fqdns_id        integer  the id of the FQDN that owns the label
-     * @param $wildcard_search boolean  true if we search with wildcard (false by default)
+     * @param string    $label           label to search for
+     * @param array|int $fqdns_id        the id of the FQDN that owns the label
+     * @param bool      $wildcard_search true if we search with wildcard (false by default)
      *
      * @return array two arrays (NetworkName and NetworkAlias) of the IDs
-     **/
+     */
     public static function getIDsByLabelAndFQDNID($label, $fqdns_id, $wildcard_search = false)
     {
         global $DB;
