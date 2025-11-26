@@ -1011,7 +1011,7 @@ SCSS,
 
         $this->assertEquals(
             <<<CSS
-
+            
             nav > ul {
               margin: 0;
               padding: 0;
