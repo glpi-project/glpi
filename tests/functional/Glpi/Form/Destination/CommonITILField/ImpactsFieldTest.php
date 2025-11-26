@@ -34,11 +34,11 @@
 
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
-use DbTestCase;
 use Glpi\Form\Destination\CommonITILField\ImpactsField;
 use Glpi\Form\Destination\FormDestinationChange;
 use Glpi\Form\Destination\FormDestinationProblem;
 use Glpi\Form\Tag\AnswerTagProvider;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormTesterTrait;
 
 final class ImpactsFieldTest extends DbTestCase
