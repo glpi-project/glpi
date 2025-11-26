@@ -36,6 +36,7 @@
 namespace Glpi\Api\HL;
 
 use CommonDBTM;
+use Glpi\Application\Environment;
 use Glpi\Debug\Profiler;
 use Glpi\Http\Request;
 use GraphQL\Error\Error;
@@ -71,9 +72,12 @@ final class GraphQL
         Profiler::getInstance()->stop('Get GraphQLSchema');
         Profiler::getInstance()->start('Build GraphQLSchema', Profiler::CATEGORY_HLAPI);
         $cache_key = "graphql_schema_{$api_version}";
-        if (!$GLPI_CACHE->has($cache_key)) {
+        // Cannot cache in test env as it uses the ArrayAdapter and it recurses too many times with the large schema
+        if (Environment::get() === Environment::TESTING || !$GLPI_CACHE->has($cache_key)) {
             $parsed = Parser::parse(source: $schema_str, options: ['assumeValid' => true, 'assumeValidSDL' => true]);
-            $GLPI_CACHE->set($cache_key, $parsed);
+            if (Environment::get() !== Environment::TESTING) {
+                $GLPI_CACHE->set($cache_key, $parsed);
+            }
         } else {
             $parsed = $GLPI_CACHE->get($cache_key);
         }
