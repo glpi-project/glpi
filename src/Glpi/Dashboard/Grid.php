@@ -1071,7 +1071,7 @@ HTML;
 
         if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
             $html .= '<span class="debug-card">';
-            $html .= "query: " . \htmlescape(Profiler::getInstance()->getCurrentDuration('php_request')) . 'ms - ';
+            $html .= "total: " . \htmlescape(Profiler::getInstance()->getCurrentDuration('php_request')) . 'ms - ';
             $html .= "card: " . \htmlescape(round((microtime(true) - $start) * 1000)) . 'ms';
             $html .= '</span>';
         }

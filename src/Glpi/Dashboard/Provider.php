@@ -144,7 +144,7 @@ class Provider
             $item instanceof Ticket ? Ticket::getCriteriaFromProfile() : []
         );
 
-            // avoid costly DISTINCT if there isn't any JOIN (/3 perf gain)
+        // avoid costly DISTINCT if there isn't any JOIN (/3 perf gain)
         if (!isset($request['LEFT JOIN'])
             && !isset($request['JOIN'])
             && !isset($request['INNER JOIN'])
