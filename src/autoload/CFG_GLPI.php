@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\Config\ProxyExclusions;
 use Glpi\Marketplace\Controller;
 use Glpi\Socket;
 use Glpi\SocketModel;
@@ -647,4 +648,4 @@ $CFG_GLPI['process_types'] = [Computer::class];
 $CFG_GLPI['environment_types'] = [Computer::class];
 
 
-$CFG_GLPI['possible_proxy_exclusions'] = new \Glpi\Config\ProxyExclusions();
+$CFG_GLPI['possible_proxy_exclusions'] = new ProxyExclusions();

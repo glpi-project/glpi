@@ -37,6 +37,7 @@ use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Config\ProxyExclusion;
+use Glpi\Config\ProxyExclusions;
 use Glpi\Dashboard\Grid;
 use Glpi\Event;
 use Glpi\Helpdesk\HelpdeskTranslation;
@@ -875,7 +876,7 @@ class Config extends CommonDBTM
             return;
         }
 
-        /** @var \Glpi\Config\ProxyExclusions $proxy_exclusions */
+        /** @var ProxyExclusions $proxy_exclusions */
         $proxy_exclusions = $CFG_GLPI['possible_proxy_exclusions'];
         $proxy_exclusions->addExclusions([
             new ProxyExclusion(
