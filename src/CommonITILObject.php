@@ -7545,7 +7545,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *      date_approval: string|null,
      *      status: int
      *     },
-     *     object: ITILSolution
+     *     object: mixed
      * }> Timeline items
      */
     public function getTimelineItems(array $options = [])
