@@ -702,19 +702,6 @@ class Auth extends CommonGLPI
     }
 
     /**
-     * Get the current identification error
-     *
-     * @return string current identification error
-     *
-     * @deprecated 11.0.0
-     */
-    public function getErr()
-    {
-        Toolbox::deprecated();
-        return implode("<br>\n", array_map('htmlescape', $this->getErrors()));
-    }
-
-    /**
      * Get errors
      *
      * @since 9.4
