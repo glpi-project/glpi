@@ -104,22 +104,6 @@ class Migration
     }
 
     /**
-     * Add new message
-     *
-     * @since 0.84
-     *
-     * @param string $id Area ID
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     */
-    public function addNewMessageArea($id)
-    {
-        Toolbox::deprecated();
-    }
-
-    /**
      * Flush previous displayed message in log file
      *
      * @since 0.84
@@ -179,57 +163,6 @@ class Migration
         ) {
             $this->log_errors++;
         }
-    }
-
-    /**
-     * Display a title
-     *
-     * @param string $title Title to display
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     */
-    public function displayTitle($title): void
-    {
-        Toolbox::deprecated();
-
-        $this->flushLogDisplayMessage();
-
-        $this->progress_indicator?->setProgressBarMessage($title);
-    }
-
-    /**
-     * Display a Warning
-     *
-     * @param string  $msg Message to display
-     * @param boolean $red Displays with red class (false by default)
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     */
-    public function displayWarning($msg, $red = false): void
-    {
-        Toolbox::deprecated();
-
-        $this->addMessage($red ? MessageType::Warning : MessageType::Notice, (string) $msg);
-    }
-
-    /**
-     * Display an error
-     *
-     * @param string  $message Message to display
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     */
-    public function displayError(string $message): void
-    {
-        Toolbox::deprecated();
-
-        $this->addMessage(MessageType::Error, $message);
     }
 
     /**
@@ -1511,14 +1444,6 @@ class Migration
                 'id' => $profile_id,
             ]
         );
-    }
-
-    /**
-     * @deprecated 11.0.0
-     */
-    public function setOutputHandler($output_handler): void
-    {
-        Toolbox::deprecated();
     }
 
     /**

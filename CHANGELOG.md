@@ -63,6 +63,11 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Toolbox\Sanitizer::dbEscapeRecursive()`
 - `Glpi\Toolbox\Sanitizer::dbUnescape()`
 - `Glpi\Toolbox\Sanitizer::dbUnescapeRecursive()`
+- `Migration::setOutputHandler()`
+- `Migration::addNewMessageArea()`
+- `Migration::displayTitle()`
+- `Migration::displayWarning()`
+- `Migration::displayError()`
 
 
 ## [11.0.3] unreleased
