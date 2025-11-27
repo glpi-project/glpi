@@ -8871,7 +8871,7 @@ HTML,
 
         yield [
             'profilerights' => [
-                'followup' => ITILFollowup::ADDMYTICKET,
+                'followup' => ITILFollowup::ADDMY,
                 'ticket'   => 0,
                 'document' => 0,
             ],
@@ -8898,7 +8898,7 @@ HTML,
 
         yield [
             'profilerights' => [
-                'followup' => ITILFollowup::ADDMYTICKET,
+                'followup' => ITILFollowup::ADDMY,
                 'ticket'   => UPDATE,
                 'document' => 0,
             ],
@@ -8907,7 +8907,7 @@ HTML,
 
         yield [
             'profilerights' => [
-                'followup' => ITILFollowup::ADDMYTICKET,
+                'followup' => ITILFollowup::ADDMY,
                 'ticket'   => 0,
                 'document' => CREATE,
             ],

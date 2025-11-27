@@ -359,7 +359,7 @@ class ProblemTest extends DbTestCase
 
         yield [
             'profilerights' => [
-                'followup' => \ITILFollowup::ADDMYTICKET,
+                'followup' => \ITILFollowup::ADDMY,
                 'problem'  => 0,
                 'document' => 0,
             ],
@@ -386,7 +386,7 @@ class ProblemTest extends DbTestCase
 
         yield [
             'profilerights' => [
-                'followup' => \ITILFollowup::ADDMYTICKET,
+                'followup' => \ITILFollowup::ADDMY,
                 'problem'  => UPDATE,
                 'document' => 0,
             ],
@@ -395,7 +395,7 @@ class ProblemTest extends DbTestCase
 
         yield [
             'profilerights' => [
-                'followup' => \ITILFollowup::ADDMYTICKET,
+                'followup' => \ITILFollowup::ADDMY,
                 'problem'  => 0,
                 'document' => CREATE,
             ],

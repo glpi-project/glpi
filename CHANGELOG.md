@@ -103,6 +103,9 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Plugin\HookManager::enableCSRF()`
 - `Glpi\Plugin\Hook::CSRF_COMPLIANT` constant
 - `Glpi\Plugin\Hook::SHOW_IN_TIMELINE` constant
+- `ITILFollowup::ADDMYTICKET` constant
+- `ITILFollowup::ADDGROUPTICKET` constant
+- `ITILFollowup::ADDALLTICKET` constant
 
 
 ## [11.0.3] unreleased
