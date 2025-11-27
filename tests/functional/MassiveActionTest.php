@@ -1037,4 +1037,207 @@ class MassiveActionTest extends DbTestCase
             ],
         ];
     }
+
+    /**
+     * Data provider for event logging tests
+     * @return array
+     */
+    public static function massiveActionEventLoggingProvider(): array
+    {
+        return [
+            'computer_delete' => [
+                'itemtype' => 'Computer',
+                'action' => 'delete',
+                'item_names' => ['Test Computer 1 for Delete', 'Test Computer 2 for Delete'],
+                'expected_message_pattern' => '/deletes 2 items by massive action/',
+                'setup_callback' => null // No special setup needed for delete
+            ],
+            'computer_restore' => [
+                'itemtype' => 'Computer',
+                'action' => 'restore',
+                'item_names' => ['Test Computer 1 for Restore', 'Test Computer 2 for Restore'],
+                'expected_message_pattern' => '/restores 2 items by massive action/',
+                'setup_callback' => 'setupForRestore' // Need to delete items first
+            ],
+            'computer_purge' => [
+                'itemtype' => 'Computer',
+                'action' => 'purge',
+                'item_names' => ['Test Computer 1 for Purge', 'Test Computer 2 for Purge'],
+                'expected_message_pattern' => '/purges 2 items by massive action/',
+                'setup_callback' => null
+            ],
+            'monitor_delete' => [
+                'itemtype' => 'Monitor',
+                'action' => 'delete',
+                'item_names' => ['Test Monitor 1 for Delete', 'Test Monitor 2 for Delete', 'Test Monitor 3 for Delete'],
+                'expected_message_pattern' => '/deletes 3 items by massive action/',
+                'setup_callback' => null
+            ],
+            'single_item_delete' => [
+                'itemtype' => 'Computer',
+                'action' => 'delete',
+                'item_names' => ['Single Computer for Delete'],
+                'expected_message_pattern' => '/deletes 1 items by massive action/',
+                'setup_callback' => null
+            ]
+        ];
+    }
+
+    /**
+     * Test that massive actions create appropriate event logs
+     */
+    #[DataProvider('massiveActionEventLoggingProvider')]
+    public function testMassiveActionEventLogging(
+        string $itemtype,
+        string $action,
+        array $item_names,
+        string $expected_message_pattern,
+        ?string $setup_callback
+    ) {
+        $this->login();
+
+        // Create test items
+        $item_class = $itemtype;
+        $items = [];
+        foreach ($item_names as $name) {
+            $items[] = $this->createItem($item_class, [
+                'name' => $name,
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ]);
+        }
+
+        $item = new $item_class();
+        $ids = array_map(fn($i) => $i->getID(), $items);
+
+        // Setup specific to action type (e.g., delete items for restore test)
+        if ($setup_callback && method_exists($this, $setup_callback)) {
+            $this->$setup_callback($items);
+        }
+
+        // Clear existing events for clean test
+        global $DB;
+        $DB->delete('glpi_events', [
+            'type' => strtolower($item->getType()),
+            'service' => 'inventory'
+        ]);
+
+        // Count events before action
+        $events_before = countElementsInTable('glpi_events', [
+            'type' => strtolower($item->getType()),
+            'service' => 'inventory'
+        ]);
+
+        // Create mock MassiveAction
+        $ma = $this->getMockBuilder(MassiveAction::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getAction', 'addMessage', 'getInput', 'itemDone'])
+            ->getMock();
+
+        $ma->method('getAction')->willReturn($action);
+        $ma->method('addMessage')->willReturn(null);
+        $ma->method('getInput')->willReturn([]);
+        $ma->method('itemDone')->willReturn(null);
+
+        // Execute massive action
+        MassiveAction::processMassiveActionsForOneItemtype($ma, $item, $ids);
+
+        // Count events after action
+        $events_after = countElementsInTable('glpi_events', [
+            'type' => strtolower($item->getType()),
+            'service' => 'inventory'
+        ]);
+
+        // Verify one log entry was created
+        $this->assertSame(
+            $events_before + 1,
+            $events_after,
+            "Expected 1 new event log entry for {$action} of " . count($items) . " items"
+        );
+
+        // Verify log message content if events were created
+        if ($events_after > $events_before) {
+            global $DB;
+            $iterator = $DB->request([
+                'SELECT' => ['message'],
+                'FROM' => 'glpi_events',
+                'WHERE' => [
+                    'type' => strtolower($item->getType()),
+                    'service' => 'inventory'
+                ],
+                'ORDER' => ['date DESC'],
+                'LIMIT' => 1
+            ]);
+
+            $this->assertCount(1, $iterator);
+            $latest_event = $iterator->current();
+            $this->assertMatchesRegularExpression(
+                $expected_message_pattern,
+                $latest_event['message'],
+                "{$action} log message should match expected pattern"
+            );
+        }
+    }
+
+    /**
+     * Setup method for restore tests - deletes items first
+     */
+    private function setupForRestore(array $items): void
+    {
+        foreach ($items as $item) {
+            $item->delete(['id' => $item->getID()]);
+        }
+    }
+
+
+    /**
+     * Test that no event logs are created when no items are successfully processed
+     */
+    public function testNoEventLoggingWhenNoItemsProcessed()
+    {
+        $this->login();
+
+        // Clear existing events for clean test
+        global $DB;
+        $DB->delete('glpi_events', [
+            'type' => 'computer',
+            'service' => 'inventory'
+        ]);
+
+        // Count events before action
+        $events_before = countElementsInTable('glpi_events', [
+            'type' => 'computer',
+            'service' => 'inventory'
+        ]);
+
+        // Create mock MassiveAction that will fail (no rights)
+        $ma = $this->getMockBuilder(MassiveAction::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getAction', 'addMessage', 'getInput', 'itemDone'])
+            ->getMock();
+
+        $ma->method('getAction')->willReturn('delete');
+        $ma->method('addMessage')->willReturn(null);
+        $ma->method('getInput')->willReturn([]);
+        $ma->method('itemDone')->willReturn(null);
+
+        // Try to delete non-existent item (should fail)
+        MassiveAction::processMassiveActionsForOneItemtype(
+            $ma,
+            new \Computer(),
+            [999999] // Non-existent ID
+        );
+
+        // Count events after action
+        $events_after = countElementsInTable('glpi_events', [
+            'type' => 'computer',
+            'service' => 'inventory'
+        ]);
+
+        // Verify no log entry was created since no items were successfully processed
+        $this->assertSame(
+            $events_before,
+            $events_after,
+            "No event log should be created when no items are successfully processed"
+        );
+    }
 }
