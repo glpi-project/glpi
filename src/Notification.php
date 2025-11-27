@@ -593,15 +593,9 @@ class Notification extends CommonDBTM implements FilterableInterface
         return Session::haveAccessToEntity($this->getEntityID(), $this->isRecursive());
     }
 
-    /**
-     * Is the current user have right to update the current notification ?
-     *
-     * @return boolean
-     **/
     #[Override]
     public function canCreateItem(): bool
     {
-
         if (
             (($this->fields['itemtype'] == 'CronTask')
             || ($this->fields['itemtype'] == 'DBConnection'))
