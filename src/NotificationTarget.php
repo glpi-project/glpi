@@ -1059,13 +1059,13 @@ class NotificationTarget extends CommonDBChild
     }
 
     /**
-     * @param value-of<Notification::TARGETS> $target
-     * @param string                          $label  Recipient label
-     * @param Notification::*_TYPE            $type   Recipient type
+     * @param value-of<Notification::TARGETS>|'' $target
+     * @param string                             $label  Recipient label
+     * @param Notification::*_TYPE               $type   Recipient type
      *
      * @return void
      **/
-    public function addTarget($target, $label = '', $type = Notification::USER_TYPE)
+    public function addTarget($target = '', $label = '', $type = Notification::USER_TYPE)
     {
         $key                                               = ((string) $type) . '_' . $target;
         // Value used for sort
@@ -1539,7 +1539,10 @@ class NotificationTarget extends CommonDBChild
         return $this->entity;
     }
 
-    public function clearAddressesList(): void
+    /**
+     * @return void
+     */
+    public function clearAddressesList()
     {
         $this->target = [];
     }

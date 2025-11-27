@@ -72,21 +72,8 @@ class NotificationAjax implements NotificationInterface
         ]);
     }
 
-
-    /**
-     * @param array{
-     *      _itemtype: string,
-     *      _items_id: int,
-     *      _notificationtemplates_id: int,
-     *      _entities_id: int,
-     *      fromname: string,
-     *      subject: string,
-     *      content_text: string,
-     *      to: int,
-     *      event?: string|null} $options
-     * @return bool
-     */
-    public function sendNotification($options)
+    #[Override]
+    public function sendNotification($options = [])
     {
         $data = [];
         $data['itemtype']                             = $options['_itemtype'];

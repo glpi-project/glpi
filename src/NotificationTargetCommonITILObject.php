@@ -154,10 +154,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     /**
      * Add linked users to the notified users list
      *
-     * @param integer $type type of linked users
+     * @param int $type type of linked users
      * @return void
      */
-    public function addLinkedUserByType(int $type)
+    public function addLinkedUserByType($type)
     {
         global $CFG_GLPI, $DB;
 
