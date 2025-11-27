@@ -256,7 +256,7 @@ final class RecordSet
                 $table = $info['table'];
                 $itemtype = $info['itemtype'];
                 $ids_to_fetch = array_values(array_unique($info['ids']));
-                if (empty($ids_to_fetch)) {
+                if ($ids_to_fetch === []) {
                     continue;
                 }
                 Profiler::getInstance()->start('RecordSet::getHydrationCriteria', Profiler::CATEGORY_HLAPI);
