@@ -53,10 +53,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     public $central_profiles = [];
 
     /**
-     * @param $entity          (default '')
-     * @param $event           (default '')
-     * @param $object          (default null)
-     * @param $options   array
+     * @param $entity  (default '')
+     * @param $event   (default '')
+     * @param $object  (default null)
+     * @param $options array
      **/
     public function __construct($entity = '', $event = '', $object = null, $options = [])
     {
@@ -446,9 +446,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     /**
      * Add approver related to the ITIL object validation
      *
-     * @param array $options
      * This method has no effect if $option parameter has no 'validation_id' key
      *
+     * @param array $options
      * @param array{
      *     validation_id?: int
      * } $options Options
@@ -1230,9 +1230,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     /**
      * Get data from an item
      *
-     * @param CommonITILObject  $item    Object instance
-     * @param array             $options Options
-     * @param boolean           $simple  (false by default)
+     * @param CommonITILObject $item    Object instance
+     * @param array            $options Options
+     * @param boolean          $simple  (false by default)
      *
      * @return array
      **/
@@ -2542,7 +2542,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      */
     private function getUserPositionFromTimelineItemPosition(int $position): string
     {
-
         switch ($position) {
             case CommonITILObject::TIMELINE_MIDLEFT:
                 $user_position = 'left middle';

@@ -446,7 +446,7 @@ class NotificationEventMailing extends NotificationEventAbstract
      * - update the number of retries in notification or delete it when number of retries is reached
      *
      * @param QueuedNotification $notification The notification that failed
-     * @param string $error The error message to log
+     * @param string             $error        Message to log
      */
     private static function handleFailedSend(QueuedNotification $notification, string $error): void
     {

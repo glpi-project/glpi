@@ -126,7 +126,7 @@ class NotificationTemplateTranslation extends CommonDBChild
 
     /**
      * @param NotificationTemplate $template object
-     * @param array $options
+     * @param array                $options
      *
      * @return void
      **/
@@ -299,7 +299,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param  array<string> $language_id
+     * @param array<string> $language_id
      * @return array
      */
     public static function getAllUsedLanguages($language_id)

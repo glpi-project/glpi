@@ -179,9 +179,9 @@ class NotificationTemplate extends CommonDBTM
     /**
      * Display templates available for an itemtype
      *
-     * @param string                    $name       dropdown name
-     * @param class-string<CommonDBTM> $itemtype   templates for this itemtype only
-     * @param string                $value      default value
+     * @param string                   $name     dropdown name
+     * @param class-string<CommonDBTM> $itemtype templates for this itemtype only
+     * @param string                   $value    default value
      *
      * @return void
      **/
@@ -217,8 +217,8 @@ class NotificationTemplate extends CommonDBTM
 
     /**
      * @param array{language: string, additionnaloption?: array{timezone?: string} } $user_infos
-     * @param string $event
-     * @param array{item?: CommonDBTM} $options
+     * @param string                                                                 $event
+     * @param array{item?: CommonDBTM}                                               $options
      *
      * @return false|string id of the template in templates_by_languages / false if computation failed
      **/
@@ -350,8 +350,8 @@ class NotificationTemplate extends CommonDBTM
     }
 
     /**
-     * @param  string $string
-     * @param  array<string, mixed> $data
+     * @param string               $string
+     * @param array<string, mixed> $data
      * @return string
      **/
     public static function process($string, $data, bool $html_context = false)
@@ -449,7 +449,7 @@ class NotificationTemplate extends CommonDBTM
 
     /**
      * @param string $string
-     * @param array $data<string, string>
+     * @param array  $data<string, string>
      * @return string
      **/
     public static function processIf($string, $data)

@@ -64,7 +64,6 @@ abstract class NotificationSetting extends CommonDBTM
         throw new RuntimeException('getMode must be implemented');
     }
 
-
     /**
      * Get label for enable configuration
      *
@@ -79,13 +78,11 @@ abstract class NotificationSetting extends CommonDBTM
      */
     abstract protected function showFormConfig();
 
-
     #[Override]
     public static function getTable($classname = null)
     {
         return parent::getTable('Config');
     }
-
 
     #[Override]
     public function defineTabs($options = [])
@@ -95,7 +92,6 @@ abstract class NotificationSetting extends CommonDBTM
 
         return $ong;
     }
-
 
     #[Override]
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
@@ -107,7 +103,6 @@ abstract class NotificationSetting extends CommonDBTM
         }
         return '';
     }
-
 
     #[Override]
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
@@ -121,7 +116,6 @@ abstract class NotificationSetting extends CommonDBTM
         }
         return true;
     }
-
 
     /**
      * Disable (temporary) all notifications for the rest of the request execution

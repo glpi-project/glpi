@@ -145,9 +145,9 @@ class NotificationTarget extends CommonDBChild
     public const EXTERNAL_USER              = 2;
 
     /**
-     * @param int|'' $entity
-     * @param string $event
-     * @param CommonGLPI|null  $object
+     * @param int|''          $entity
+     * @param string          $event
+     * @param CommonGLPI|null $object
      * @param array{
      *      _old_user?: array{
      *           type?: CommonITILActor::ASSIGN|CommonITILActor::REQUESTER|CommonITILActor::OBSERVER,
@@ -200,13 +200,12 @@ class NotificationTarget extends CommonDBChild
     /**
      * Retrieve an item from the database for a specific target
      *
-     * @param int $notifications_id notification ID
-     * @param class-string<CommonDBTM> $type type of the target to retrive
-     * @param int $ID ID of the target to retrieve
+     * @param int                      $notifications_id
+     * @param class-string<CommonDBTM> $type             type of the target to retrive
+     * @param int                      $ID               ID of the target to retrieve
      *
      * @return boolean
      **@since 0.85
-     *
      */
     public function getFromDBForTarget($notifications_id, $type, $ID)
     {
@@ -221,19 +220,17 @@ class NotificationTarget extends CommonDBChild
     /**
      * Validate send before doing it (can be overloaded : exemple for private tasks or followups)
      *
-     * @param string $event notification event
-     * @param array $infos destination of the notification
-     * @param boolean $notify_me notify me on my action ?
-     *                           ($infos contains users_id to check if the target is me)
-     *                           (false by default)
-     * @param int|string|null $emitter if this action is executed by the cron, we can
-     *                           supply the id of the user (or the email if this
-     *                           is an anonymous user with no account) who
-     *                           triggered the event so it can be used instead of
-     *                           getLoginUserID
+     * @param string          $event     notification event
+     * @param array           $infos     destination of the notification
+     * @param boolean         $notify_me notify me on my action ?
+     *                                   ($infos contains users_id to check if the target is me)
+     * @param int|string|null $emitter   if this action is executed by the cron, we can
+     *                                   supply the id of the user (or the email if this
+     *                                   is an anonymous user with no account) who
+     *                                   triggered the event so it can be used instead of
+     *                                   getLoginUserID
      *
      * @return boolean
-     * @since 0.84 (new parameter)
      **/
     public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null)
     {
@@ -388,7 +385,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Get a notificationtarget class by giving the object which raises the event
      *
-     * @param CommonGLPI  $item Object which raises the event
+     * @param CommonGLPI  $item    Object which raises the event
      * @param string|null $event
      * @param array       $options
      *
@@ -417,7 +414,6 @@ class NotificationTarget extends CommonDBChild
      * Get the expected notification target class name for a given itemtype
      *
      * @param class-string<CommonGLPI> $itemtype
-     *
      * @return class-string<NotificationTarget>
      */
     public static function getInstanceClass(string $itemtype): string
@@ -442,8 +438,8 @@ class NotificationTarget extends CommonDBChild
      * Get a notificationtarget class by giving an itemtype
      *
      * @param class-string<CommonDBTM> $itemtype the itemtype of the object which raises the event
-     * @param string|null $event Event which will be used
-     * @param array $options
+     * @param string|null              $event    Event which will be used
+     * @param array                    $options
      *
      * @return NotificationTarget|false
      **/
@@ -615,11 +611,11 @@ class NotificationTarget extends CommonDBChild
      * Add new recipient with lang to current recipients array
      *
      * @param $data array{
-     *     language?: string,
-     *     name?: string,
-     *     users_id?: int,
-     *     usertype?: int,
-     *     }
+     *              language?: string,
+     *              name?: string,
+     *              users_id?: int,
+     *              usertype?: int,
+     *              }
      *
      * returns false if user is not found/active or it has no profile.
      * @return void|false
@@ -751,7 +747,7 @@ class NotificationTarget extends CommonDBChild
 
     /**
      * @param self::EXTERNAL_USER|self::GLPI_USER|self::ANONYMOUS_USER $usertype
-     * @param string $redirect
+     * @param string                                                   $redirect
      * @since 0.84
      *
      * @return string
@@ -1443,9 +1439,9 @@ class NotificationTarget extends CommonDBChild
      * Provides minimum information for alerts
      * Can be overridden by each NotificationTartget class if needed
      *
-     * @param string $event
+     * @param string               $event
      * @param array<string, mixed> $options
-     * Cannot use array shape because overrides have a different keys and phpstan complains about that.
+     *                                      Cannot use array shape because overrides have a different keys and phpstan complains about that.
      * @x-param array{
      *      additionnaloption?: array{usertype: NotificationTarget::EXTERNAL_USER|NotificationTarget::GLPI_USER|NotificationTarget::ANONYMOUS_USER},
      *      plugins?: array<string, string>
@@ -1591,7 +1587,7 @@ class NotificationTarget extends CommonDBChild
 
     /**
      * @param string|null $event
-     * @param array $options
+     * @param array       $options
      *
      * @return array<string, string|array<string>>
      **/

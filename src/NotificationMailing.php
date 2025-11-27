@@ -58,7 +58,7 @@ class NotificationMailing implements NotificationInterface
      *
      * @param string $address email to check
      * @param array  $options options used (by default 'checkdns'=>false)
-     *     - checkdns :check dns entry
+     *                        - checkdns :check dns entry
      *
      * @return boolean
      **/
