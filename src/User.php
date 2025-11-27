@@ -1158,7 +1158,12 @@ class User extends CommonDBTM
             && $input['groups_id'] > 0
             && !Group_User::isUserInGroup($input['id'], $input['groups_id'])
         ) {
-            unset($input['groups_id']);
+            // Remove group_id if LDAP rules or sync groups do not contain it
+            $rules_groups = $input['_ldap_rules']['groups_id'] ?? [];
+            $ldap_groups = $input['_groups'] ?? [];
+            if (!in_array($input['groups_id'], array_merge($rules_groups, $ldap_groups))) {
+                unset($input['groups_id']);
+            }
         }
 
         if (
@@ -1478,7 +1483,15 @@ class User extends CommonDBTM
                                 $this->input["_groups"]
                             )]);
                         } elseif ($data['is_dynamic']) {
-                            $groupuser->delete(['id' => $data["id"]]);
+                            // Get groups that will be added by authorization rules
+                            $rules_groups = [];
+                            if (isset($this->input["_ldap_rules"]['groups_id'])) {
+                                $rules_groups = $this->input["_ldap_rules"]['groups_id'];
+                            }
+                            // Delete only dynamic groups not matching rules
+                            if (!in_array($data["groups_id"], $rules_groups)) {
+                                $groupuser->delete(['id' => $data["id"]]);
+                            }
                         }
                     }
 
