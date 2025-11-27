@@ -84,52 +84,6 @@ class Html
     public const MAIN_SCSS_COMPILATION_REQUIRED_MEMORY = 192 * 1024 * 1024;
 
     /**
-     * Recursivly execute html_entity_decode on an array
-     *
-     * @param string|array $value
-     *
-     * @return string|array
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function entity_decode_deep($value)
-    {
-        Toolbox::deprecated();
-
-        if (is_array($value)) {
-            return array_map([self::class, 'entity_decode_deep'], $value);
-        }
-        if (!is_string($value)) {
-            return $value;
-        }
-
-        return html_entity_decode($value, ENT_QUOTES, "UTF-8");
-    }
-
-    /**
-     * Recursivly execute htmlentities on an array
-     *
-     * @param string|array $value
-     *
-     * @return string|array
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function entities_deep($value)
-    {
-        Toolbox::deprecated();
-
-        if (is_array($value)) {
-            return array_map([self::class, 'entities_deep'], $value);
-        }
-        if (!is_string($value)) {
-            return $value;
-        }
-
-        return htmlentities($value, ENT_QUOTES, "UTF-8");
-    }
-
-    /**
      * Convert a date YY-MM-DD to DD-MM-YY for calendar
      *
      * @param string       $time    Date to convert
@@ -195,25 +149,6 @@ class Html
     }
 
     /**
-     * Clean string for input text field
-     *
-     * @param string $string
-     *
-     * @return string
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function cleanInputText($string)
-    {
-        Toolbox::deprecated();
-
-        if (!is_string($string)) {
-            return $string;
-        }
-        return htmlescape($string);
-    }
-
-    /**
      * Clean all parameters of an URL. Get a clean URL
      *
      * @param string $url
@@ -244,23 +179,6 @@ class Html
         }
 
         return \htmlescape($string) . $append;
-    }
-
-    /**
-     * Clean post value for display in textarea
-     *
-     * @param string $value
-     *
-     * @return string
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function cleanPostForTextArea($value)
-    {
-        Toolbox::deprecated();
-
-        // As input is no more sanitized automatically, this method does not need to revert backslashes anymore.
-        return $value;
     }
 
     /**
@@ -461,36 +379,6 @@ class Html
 
 
     /**
-     * Display common message for item not found
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     */
-    public static function displayNotFoundError(string $additional_info = '')
-    {
-        Toolbox::deprecated('Throw a `Symfony\\Component\\HttpKernel\\Exception\\NotFoundHttpException` exception instead.');
-
-        throw new NotFoundHttpException();
-    }
-
-
-    /**
-     * Display common message for privileges errors
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     */
-    public static function displayRightError(string $additional_info = '')
-    {
-        Toolbox::deprecated('Throw a `Symfony\\Component\\HttpKernel\\Exception\\AccessDeniedHttpException` exception instead.');
-
-        throw new AccessDeniedHttpException();
-    }
-
-
-    /**
      * Display a div containing messages set in session in the previous page
      *
      * @return void
@@ -560,20 +448,6 @@ class Html
         $request = str_ireplace("SORT", "<br/>SORT", $request);
 
         return $request;
-    }
-
-    /**
-     * Display Debug Information
-     *
-     * @param boolean $with_session with session information (true by default)
-     * @param boolean $ajax         If we're called from ajax (false by default)
-     *
-     * @return void
-     * @deprecated 10.0.0
-     **/
-    public static function displayDebugInfos($with_session = true, $ajax = false, $rand = null)
-    {
-        Toolbox::deprecated('Html::displayDebugInfo is not used anymore. It was replaced by a unified debug bar.');
     }
 
 
@@ -648,23 +522,6 @@ class Html
 
 
     /**
-     * Simple Error message page
-     *
-     * @param string  $message  displayed before dying
-     * @param boolean $minimal  set to true do not display app menu (false by default)
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     */
-    public static function displayErrorAndDie($message, $minimal = false): void
-    {
-        Toolbox::deprecated('Throw a `Symfony\\Component\\HttpKernel\\Exception\\BadRequestHttpException` exception instead.');
-
-        throw new BadRequestHttpException();
-    }
-
-    /**
      * Add confirmation on button or link before action
      *
      * @param string $string             to display or array of string for using multilines
@@ -721,267 +578,6 @@ class Html
         return $out;
     }
 
-
-    /**
-     * Manage progresse bars
-     *
-     * @since 0.85
-     *
-     * @param string $id HTML ID of the progress bar
-     * @param array $options progress status options
-     *                    - create    do we have to create it ?
-     *                    - message   add or change the message (HTML allowed. Text content must be escaped)
-     *                    - percent   current level (Must be cast to a numeric type)
-     *
-     *
-     * @return string|void Generated HTML if `display` param is true, void otherwise.
-     *
-     * @deprecated 11.0.0
-     */
-    public static function progressBar($id, array $options = [])
-    {
-        Toolbox::deprecated(
-            '`Html::progressBar()` is deprecated.'
-            . ' Use the `Html::getProgressBar()` method to get a static progress bar HTML snippet,'
-            . ' or the `ProgressIndicator` JS module to display a progress bar related to a process progression.'
-        );
-
-        $params = [
-            'create'    => false,
-            'message'   => null,
-            'percent'   => -1,
-            'display'   => true,
-            'colors'    => null,
-        ];
-
-        if (count($options)) {
-            foreach ($options as $key => $val) {
-                if ($key === 'colors' && $val !== null) {
-                    $params['colors'] = array_merge([
-                        'bg' => null,
-                        'fg' => null,
-                        'border' => null,
-                        'text' => null,
-                    ], $val);
-                } else {
-                    $params[$key] = $val;
-                }
-            }
-        }
-
-        $out = '';
-        if ($params['create']) {
-            $apply_custom_colors = $params['colors'] !== null;
-            $outer_style = 'height: 16px;';
-            if ($apply_custom_colors) {
-                if ($params['colors']['bg']) {
-                    $outer_style .= 'background-color: ' . $params['colors']['bg'] . ';';
-                }
-                if ($params['colors']['border']) {
-                    $outer_style .= 'border: 1px solid ' . $params['colors']['border'] . ';';
-                }
-            }
-            $inner_style = 'width: 0%; overflow: visible;';
-            $inner_class = 'progress-bar text-dark';
-            if (!$apply_custom_colors) {
-                $inner_class .= ' progress-bar-striped bg-info';
-            } else {
-                if ($params['colors']['fg']) {
-                    $inner_style .= 'background-color: ' . $params['colors']['fg'] . ';';
-                }
-                if ($params['colors']['text']) {
-                    $inner_style .= 'color: ' . $params['colors']['text'] . ';';
-                }
-            }
-            $out = '
-                <div class="progress bg-primary-emphasis bg-light" style="' . htmlescape($outer_style) . '" id="' . htmlescape($id) . '">
-                   <div class="' . htmlescape($inner_class) . '" role="progressbar"
-                         style="' . htmlescape($inner_style) . '"
-                         aria-valuenow="0"
-                         aria-valuemin="0" aria-valuemax="100"
-                         id="' . htmlescape($id) . '_text">
-                   </div>
-                </div>
-            ';
-        }
-
-        if ($params['message'] !== null) {
-            $out .= Html::scriptBlock(
-                sprintf(
-                    '$("#%s_text").html("%s");',
-                    jsescape($id),
-                    jsescape($params['message'])
-                )
-            );
-        }
-
-        if (
-            ($params['percent'] >= 0)
-            && ($params['percent'] <= 100)
-        ) {
-            $out .= Html::scriptBlock(
-                sprintf(
-                    '$("#%s_text").css("width", "%d%%");',
-                    jsescape($id),
-                    (int) $params['percent']
-                )
-            );
-        }
-
-        if (!$params['display']) {
-            return $out;
-        }
-
-        echo $out;
-        if (!$params['create']) {
-            self::glpi_flush();
-        }
-    }
-
-
-    /**
-     * Create a Dynamic Progress Bar
-     *
-     * @param string $msg  initial message (under the bar)
-     * @param array  $options See {@link Html::progressBar()} for available options (excluding message)
-     *
-     * @return string|void
-     *
-     * @deprecated 11.0.0
-     */
-    public static function createProgressBar($msg = null, array $options = [])
-    {
-        Toolbox::deprecated(
-            '`Html::createProgressBar()` is deprecated.'
-            . ' Use the `Html::getProgressBar()` method to get a static progress bar HTML snippet,'
-            . ' or the `ProgressIndicator` JS module to display a progress bar related to a process progression.'
-        );
-
-        $options = array_replace([
-            'create' => true,
-            'display' => true,
-        ], $options);
-        $options['message'] = $msg;
-
-        if (!$options['display']) {
-            return self::progressBar('doaction_progress', $options);
-        }
-        self::progressBar('doaction_progress', $options);
-    }
-
-    /**
-     * Change the Message under the Progress Bar
-     *
-     * @param string $msg message under the bar
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     */
-    public static function changeProgressBarMessage($msg = "&nbsp;")
-    {
-        Toolbox::deprecated(
-            '`Html::changeProgressBarMessage()` is deprecated.'
-            . ' Use the `ProgressIndicator` JS module to display a progress bar related to a process progression.'
-        );
-
-        self::progressBar('doaction_progress', ['message' => $msg]);
-        self::glpi_flush();
-    }
-
-
-    /**
-     * Change the Progress Bar Position
-     *
-     * @param float  $crt   Current Value (less then $tot)
-     * @param float  $tot   Maximum Value
-     * @param string $msg   message inside the bar (default is %)
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     */
-    public static function changeProgressBarPosition($crt, $tot, $msg = "")
-    {
-        Toolbox::deprecated(
-            '`Html::changeProgressBarPosition()` is deprecated.'
-            . ' Use the `ProgressIndicator` JS module to display a progress bar related to a process progression.'
-        );
-
-        $options = [];
-
-        if (!$tot) {
-            $options['percent'] = 0;
-        } elseif ($crt > $tot) {
-            $options['percent'] = 100;
-        } else {
-            $options['percent'] = 100 * $crt / $tot;
-        }
-
-        if ($msg != "") {
-            $options['message'] = $msg;
-        }
-
-        self::progressBar('doaction_progress', $options);
-        self::glpi_flush();
-    }
-
-
-    /**
-     * Display a simple progress bar
-     *
-     * @param integer $width       Width   of the progress bar
-     * @param float   $percent     Percent of the progress bar
-     * @param array   $options     possible options:
-     *            - title : string title to display (default Progesssion)
-     *            - simple : display a simple progress bar (no title / only percent)
-     *            - forcepadding : boolean force str_pad to force refresh (default true)
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     */
-    public static function displayProgressBar($width, $percent, $options = [])
-    {
-        Toolbox::deprecated(
-            '`Html::displayProgressBar()` is deprecated.'
-            . ' Use the `Html::getProgressBar()` method to get a static progress bar HTML snippet,'
-            . ' or the `ProgressIndicator` JS module to display a progress bar related to a process progression.'
-        );
-
-        $param['title']        = __('Progress');
-        $param['simple']       = false;
-        $param['forcepadding'] = true;
-
-        if (is_array($options) && count($options)) {
-            foreach ($options as $key => $val) {
-                $param[$key] = $val;
-            }
-        }
-
-        $title   = htmlescape($param['title']);
-        $percent = htmlescape($percent);
-        $label = "";
-        if ($param['simple']) {
-            $label = "$percent%";
-            $title = "";
-        }
-
-        $output = <<<HTML
-      $title
-      <div class="progress" style="height: 15px; min-width: 50px;">
-         <div class="progress-bar bg-info" role="progressbar" style="width: {$percent}%;"
-            aria-valuenow="$percent" aria-valuemin="0" aria-valuemax="100">$label</div>
-      </div>
-HTML;
-
-        if (!$param['forcepadding']) {
-            echo $output;
-        } else {
-            echo Toolbox::str_pad($output, 4096);
-            self::glpi_flush();
-        }
-    }
 
     /**
      * Returns a static progress bar HTML snippet.
@@ -1760,19 +1356,8 @@ TWIG,
     }
 
     /**
-     * Display Ajax Footer for debug
-     *
-     * @deprecated 11.0.0
      *
      * @return void
-     */
-    public static function ajaxFooter()
-    {
-        // Not currently used. Old debug stuff is now in the new debug bar.
-        Toolbox::deprecated();
-    }
-
-    /**
      * Print a simple HTML head with links
      *
      * @param string $title  title of the page
@@ -2065,24 +1650,8 @@ TWIG,
 
 
     /**
-     * Flushes the system write buffers of PHP and whatever backend PHP is using (CGI, a web server, etc).
-     * This attempts to push current output all the way to the browser with a few caveats.
-     * @see https://www.sitepoint.com/php-streaming-output-buffering-explained/
-     *
-     * @deprecated 11.0.0
      *
      * @return void
-     */
-    public static function glpi_flush()
-    {
-        trigger_error(
-            '`Html::glpi_glush()` no longer has any effect.',
-            E_USER_WARNING
-        );
-    }
-
-
-    /**
      * Set page not to use the cache
      *
      * @return void
@@ -4404,66 +3973,6 @@ JAVASCRIPT
     {
         return str_replace(['[',']'], '_', $id);
     }
-
-    /**
-     * Get javascript code to get item by id
-     *
-     * @param string $id ID of the dom element
-     *
-     * @since 0.85.
-     *
-     * @return string
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function jsGetElementbyID($id)
-    {
-        Toolbox::deprecated();
-
-        $id = jsescape($id);
-
-        return "$('#$id')";
-    }
-
-    /**
-     * Set dropdown value
-     *
-     * @param string $id      ID of the dom element
-     * @param string $value   Value to set
-     *
-     * @since 0.85.
-     *
-     * @return string
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function jsSetDropdownValue($id, $value)
-    {
-        Toolbox::deprecated();
-
-        $value = jsescape($value);
-
-        return self::jsGetElementbyID($id) . ".trigger('setValue', '$value');";
-    }
-
-    /**
-     * Get item value
-     *
-     * @param string $id  ID of the dom element
-     *
-     * @since 0.85.
-     *
-     * @return string
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function jsGetDropdownValue($id)
-    {
-        Toolbox::deprecated();
-
-        return self::jsGetElementbyID($id) . ".val()";
-    }
-
 
     /**
      * Adapt dropdown to clean JS

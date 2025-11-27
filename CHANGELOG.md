@@ -73,6 +73,24 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::sendFile()`
 - `Toolbox::addslashes_deep()`
 - `Toolbox::stripslashes_deep()`
+- `Html::entity_decode_deep()`
+- `Html::entities_deep()`
+- `Html::cleanInputText()`
+- `Html::cleanPostForTextArea()`
+- `Html::displayNotFoundError()`
+- `Html::displayRightError()`
+- `Html::displayDebugInfos()`
+- `Html::displayErrorAndDie()`
+- `Html::progressBar()`
+- `Html::createProgressBar()`
+- `Html::changeProgressBarMessage()`
+- `Html::changeProgressBarPosition()`
+- `Html::displayProgressBar()`
+- `Html::ajaxFooter()`
+- `Html::glpi_flush()`
+- `Html::jsGetElementbyID()`
+- `Html::jsSetDropdownValue()`
+- `Html::jsGetDropdownValue()`
 
 
 ## [11.0.3] unreleased
