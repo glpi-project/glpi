@@ -40,6 +40,14 @@ The present file will list all changes made to the project; according to the
 - `SynchronizeUsersCommand::convertOldDeleteStrategyToNew()`
 - `ComputerAntivirus` class and API entries
 - `ComputerVirtualMachine` class and API entries
+- `DBmysql::query()`
+- `DBmysql::queryOrDie()`
+- `DBmysql::doQueryOrDie()`
+- `DBmysql::insertOrDie()`
+- `DBmysql::updateOrDie()`
+- `DBmysql::deleteOrDie()`
+- `DBmysql::truncate()`
+- `DBmysql::truncateOrDie()`
 
 
 ## [11.0.3] unreleased

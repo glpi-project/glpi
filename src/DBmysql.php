@@ -356,20 +356,6 @@ class DBmysql
     /**
      * Execute a MySQL query
      *
-     * @param string $query Query to execute
-     *
-     * @return mysqli_result|boolean Query result handler
-     *
-     * @deprecated 10.0.11
-     */
-    public function query($query)
-    {
-        throw new Exception('Executing direct queries is not allowed!');
-    }
-
-    /**
-     * Execute a MySQL query
-     *
      * @phpstan-impure Results will depend on database content.
      *
      * @param string $query Query to execute
@@ -444,41 +430,6 @@ class DBmysql
             $this->execution_time = $duration;
         }
         return $res;
-    }
-
-    /**
-     * Execute a MySQL query and throw an exception
-     * (optionally with a message) if it fails
-     *
-     * @since 0.84
-     *
-     * @param string $query   Query to execute
-     * @param string $message Explanation of query (default '')
-     *
-     * @return mysqli_result Query result handler
-     *
-     * @deprecated 10.0.11
-     */
-    public function queryOrDie($query, $message = '')
-    {
-        throw new Exception('Executing direct queries is not allowed!');
-    }
-
-    /**
-     * Execute a MySQL query and throw an exception if it fails.
-     *
-     * @param string $query   Query to execute
-     * @param string $message Explanation of query (default '')
-     *
-     * @return mysqli_result Query result handler
-     *
-     * @deprecated 11.0.0
-     */
-    public function doQueryOrDie($query, $message = '')
-    {
-        Toolbox::deprecated('Use `DBmysql::doQuery()`.');
-
-        return $this->doQuery($query);
     }
 
     /**
@@ -1355,26 +1306,6 @@ class DBmysql
     }
 
     /**
-     * Insert a row in the database and throw an exception if it fails.
-     *
-     * @since 9.3
-     *
-     * @param string $table  Table name
-     * @param array  $params  Query parameters ([field name => field value)
-     * @param string $message Explanation of query (default '')
-     *
-     * @return mysqli_result|boolean Query result handler
-     *
-     * @deprecated 11.0.0
-     */
-    public function insertOrDie($table, $params, $message = '')
-    {
-        Toolbox::deprecated('Use `DBmysql::insert()`.');
-
-        return $this->insert($table, $params);
-    }
-
-    /**
      * Builds an update statement
      *
      * @since 9.3
@@ -1472,29 +1403,6 @@ class DBmysql
     }
 
     /**
-     * Update a row in the database and throw an exception if it fails.
-     *
-     * @since 9.3
-     *
-     * @param string $table   Table name
-     * @param array  $params  Query parameters ([:field name => field value)
-     * @param array  $where   WHERE clause
-     * @param string $message Explanation of query (default '')
-     * @param array  $joins   JOINS criteria array
-     *
-     * @since 9.4.0 $joins parameter added
-     * @return mysqli_result|boolean Query result handler
-     *
-     * @deprecated 11.0.0
-     */
-    public function updateOrDie($table, $params, $where, $message = '', array $joins = [])
-    {
-        Toolbox::deprecated('Use `DBmysql::update()`.');
-
-        return $this->update($table, $params, $where, $joins);
-    }
-
-    /**
      * Update a row in the database or insert a new one
      *
      * @since 9.4
@@ -1578,67 +1486,6 @@ class DBmysql
         $query = $this->buildDelete($table, $where, $joins);
         $result = $this->doQuery($query);
         return $result;
-    }
-
-    /**
-     * Delete a row in the database and throw an exception if it fails.
-     *
-     * @since 9.3
-     *
-     * @param string $table   Table name
-     * @param array  $where   WHERE clause
-     * @param string $message Explanation of query (default '')
-     * @param array  $joins   JOINS criteria array
-     *
-     * @since 9.4.0 $joins parameter added
-     * @return mysqli_result|boolean Query result handler
-     *
-     * @deprecated 11.0.0
-     */
-    public function deleteOrDie($table, $where, $message = '', array $joins = [])
-    {
-        Toolbox::deprecated('Use `DBmysql::delete()`.');
-
-        return $this->delete($table, $where, $joins);
-    }
-
-
-    /**
-     * Truncate table in the database
-     *
-     * @since 10.0.0
-     *
-     * @param string $table Table name
-     *
-     * @return mysqli_result|boolean Query result handler
-     *
-     * @deprecated 11.0.0
-     */
-    public function truncate($table)
-    {
-        Toolbox::deprecated();
-        // Use delete to prevent table corruption on some MySQL operations
-        // (i.e. when using mysqldump without `--single-transaction` option)
-        return $this->delete($table, [1]);
-    }
-
-    /**
-     * Truncate table in the database or throw an exception
-     * (optionally with a message) if it fails
-     *
-     * @since 10.0.0
-     *
-     * @param string $table   Table name
-     * @param string $message Explanation of query (default '')
-     *
-     * @return mysqli_result|boolean Query result handler
-     *
-     * @deprecated 11.0.0
-     */
-    public function truncateOrDie($table, $message = '')
-    {
-        Toolbox::deprecated();
-        return $this->deleteOrDie($table, [1], $message);
     }
 
     /**
