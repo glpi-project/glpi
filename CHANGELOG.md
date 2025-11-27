@@ -29,6 +29,14 @@ The present file will list all changes made to the project; according to the
 
 #### Removed
 
+- `AuthLDAP::DELETED_USER_PRESERVE`
+- `AuthLDAP::DELETED_USER_DELETE`
+- `AuthLDAP::DELETED_USER_WITHDRAWDYNINFO`
+- `AuthLDAP::DELETED_USER_DISABLE`
+- `AuthLDAP::DELETED_USER_DISABLEANDWITHDRAWDYNINFO`
+- `AuthLDAP::DELETED_USER_DISABLEANDDELETEGROUPS`
+- `SynchronizeUsersCommand::convertOldDeleteStrategyToNew()`
+
 
 ## [11.0.3] unreleased
 

@@ -79,48 +79,6 @@ class AuthLDAP extends CommonDBTM
     public const GROUP_SEARCH_GROUP   = 1;
     public const GROUP_SEARCH_BOTH    = 2;
 
-    /**
-     * Deleted user strategy: preserve user.
-     * @var int
-     * @deprecated
-     */
-    public const DELETED_USER_PRESERVE = 0;
-
-    /**
-     * Deleted user strategy: put user in trashbin.
-     * @var int
-     * @deprecated
-     */
-    public const DELETED_USER_DELETE = 1;
-
-    /**
-     * Deleted user strategy: withdraw dynamic authorizations and groups.
-     * @var int
-     * @deprecated
-     */
-    public const DELETED_USER_WITHDRAWDYNINFO = 2;
-
-    /**
-     * Deleted user strategy: disable user.
-     * @var int
-     * @deprecated
-     */
-    public const DELETED_USER_DISABLE = 3;
-
-    /**
-     * Deleted user strategy: disable user and withdraw dynamic authorizations and groups.
-     * @var int
-     * @deprecated
-     */
-    public const DELETED_USER_DISABLEANDWITHDRAWDYNINFO = 4;
-
-    /**
-     * Deleted user strategy: disable user and withdraw groups.
-     * @var int
-     * @deprecated
-     */
-    public const DELETED_USER_DISABLEANDDELETEGROUPS = 5;
-
     // Deleted user strategies for user
     public const DELETED_USER_ACTION_USER_DO_NOTHING = 0;
     public const DELETED_USER_ACTION_USER_DISABLE = 1;
