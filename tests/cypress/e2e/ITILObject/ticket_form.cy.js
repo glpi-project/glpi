@@ -382,4 +382,23 @@ describe("Ticket Form", () => {
         cy.findByRole('button', {'name': 'Save'}).click();
         cy.get('input[name="urgency"]').should('have.value', '4'); // Should be the template 4 value
     });
+
+    it('Priority recalculates when urgency or impact changes', () => {
+        cy.createWithAPI('Ticket', {
+            name: 'Test priority recalculation',
+            content: 'Test priority recalculation',
+            urgency: 3,
+            impact: 3,
+        }).then((ticket_id) => {
+            cy.visit(`/front/ticket.form.php?id=${ticket_id}`);
+
+            cy.getDropdownByLabelText('Priority').should('contain.text', 'Medium');
+
+            cy.getDropdownByLabelText('Urgency').selectDropdownValue('High');
+            cy.getDropdownByLabelText('Priority').should('contain.text', 'High');
+
+            cy.getDropdownByLabelText('Impact').selectDropdownValue('Very high');
+            cy.getDropdownByLabelText('Priority').should('contain.text', 'Very high');
+        });
+    });
 });
