@@ -49,7 +49,6 @@ class QueuedNotification extends CommonDBTM
 {
     public static $rightname = 'queuednotification';
 
-
     #[Override]
     public static function getTypeName($nb = 0)
     {
@@ -763,7 +762,7 @@ class QueuedNotification extends CommonDBTM
     }
 
     /**
-     * @param  string $string
+     * @param string $string
      * @return string
      * @since 0.85
      */

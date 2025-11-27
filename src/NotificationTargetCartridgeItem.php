@@ -87,11 +87,9 @@ class NotificationTargetCartridgeItem extends NotificationTarget
         }
     }
 
-
     #[Override]
     public function getTags()
     {
-
         $tags = [
             'cartridge.action'         => _n('Event', 'Events', 1),
             'cartridge.reference'      => __('Reference'),

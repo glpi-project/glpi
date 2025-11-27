@@ -315,16 +315,6 @@ TWIG, $twig_params);
         return (string) $this->getID();
     }
 
-    /**
-     * Print the form
-     *
-     * @param integer $ID      ID of the item
-     * @param array   $options array
-     *     - target for the Form
-     *     - computers_id ID of the computer for add process
-     *
-     * @return boolean true if displayed  false if item not found or not right to display
-     **/
     #[Override]
     public function showForm($ID, array $options = [])
     {
@@ -493,7 +483,7 @@ TWIG, $twig_params);
     /**
      * Get class name for specified mode
      *
-     * @param string $mode      Requested mode
+     * @param string               $mode      Requested mode
      * @param 'event'|'setting'|'' $extratype Extra type
      *
      * @return (
