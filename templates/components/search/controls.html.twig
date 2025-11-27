@@ -237,6 +237,13 @@
                     </template>
                 {% endif %}
 
+                {% if not user_pref('show_search_form') %}
+                    <button type="button" class="btn btn-icon btn-sm p-1 btn-ghost-secondary refresh-search"
+                        title="{{ __('Refresh') }}"  data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover">
+                        <i class="ti ti-refresh"></i>
+                    </button>
+                {% endif %}
+
                 {% if count > 0 %}
                     <button class="dropdown-toggle btn btn-sm btn-ghost-secondary" type="button" name="export" id="dropdown-export-{{ rand }}"
                             data-bs-toggle="dropdown" aria-expanded="false" data-bs-popper-config='{"strategy":"fixed"}'>
@@ -317,6 +324,19 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
+   const refreshSearchResults = function() {
+      const search_display = $('.ajax-container.search-display-data');
+      try {
+         if (search_display.length === 1 && search_display.data('js_class') !== undefined) {
+            search_display.data('js_class').view.refreshResults();
+         } else {
+            window.location.reload();
+         }
+      } catch (err) {
+         window.location.reload();
+      }
+   };
+
    $('.show_displaypreference_modal').click(function(e) {
       e.preventDefault();
 
@@ -330,19 +350,7 @@ $(document).ready(function() {
    });
 
    $("body").on('hide.bs.modal', '#displaypreference_modal{{ rand }}', function() {
-      // Try finding a fluid search instance
-      const search_display = $('.ajax-container.search-display-data');
-      try {
-          if (search_display.length === 1 && search_display.data('js_class') !== undefined) {
-              // Trigger a reload of just the results
-              search_display.data('js_class').view.refreshResults();
-          } else {
-              // There is no (or multiple) search results, reload the page
-              window.location.reload();
-          }
-      } catch (err) {
-          window.location.reload();
-      }
+      refreshSearchResults();
    });
 
    $('.default-filter').change(function(event) {
@@ -353,6 +361,15 @@ $(document).ready(function() {
           search_params.delete('nodefault');
       }
       window.location.replace('?' + search_params.toString());
+   });
+
+   $('.refresh-search').on('click', function(e) {
+      e.preventDefault();
+      const tooltip = bootstrap.Tooltip.getInstance($(this)[0]);
+      if (tooltip !== null) {
+         tooltip.hide();
+      }
+      refreshSearchResults();
    });
 
    // Callbacks for copy success/failure
