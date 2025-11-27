@@ -11,7 +11,7 @@
  * ---------------------------------------------------------------------
  *
  * LICENSE
- *
+ *e
  * This file is part of GLPI.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,26 +30,14 @@
  * ---------------------------------------------------------------------
  */
 
-import { test, expect } from '@playwright/test';
+export class Config
+{
+    public static getBaseUrl(): string
+    {
+        if (process.env.E2E_BASE_URL === undefined) {
+            throw new Error("Invalid configuration, 'E2E_BASE_URL' is not defined");
+        }
 
-test('has title', async ({ page }) => {
-    await page.goto('https://playwright.dev/');
-
-    // Expect a title "to contain" a substring.
-    await expect(page).toHaveTitle(/Playwright/);
-});
-
-test('get started link', async ({ page }) => {
-    await page.goto('https://playwright.dev/');
-
-    // Click the get started link.
-    await page.getByRole('link', { name: 'Get started' }).click();
-
-    // Expects page to have a heading with the name of Installation.
-    await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
-});
-
-test('real GLPI page', async ({page}) => {
-    await page.goto('');
-    await expect(page).toHaveTitle("Authentication - GLPI");
-});
+        return process.env.E2E_BASE_URL;
+    }
+}
