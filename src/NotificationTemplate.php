@@ -218,7 +218,7 @@ class NotificationTemplate extends CommonDBTM
     /**
      * @param array{language: string, additionnaloption?: array{timezone?: string} } $user_infos
      * @param string                                                                 $event
-     * @param array{item?: CommonDBTM}                                               $options
+     * @param array<mixed>                                                           $options
      *
      * @return false|string id of the template in templates_by_languages / false if computation failed
      **/
