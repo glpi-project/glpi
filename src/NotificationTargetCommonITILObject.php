@@ -75,11 +75,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         }
     }
 
-
     #[Override]
     public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null)
     {
-
         // Check global ones for notification to myself
         if (!parent::validateSendTo($event, $infos, $notify_me, $emitter)) {
             return false;
@@ -110,7 +108,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     #[Override]
     public function getSubjectPrefix($event = '')
     {
-
         $perso_tag = trim(Entity::getUsedConfig(
             'notification_subject_tag',
             $this->getEntity(),
@@ -128,7 +125,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     #[Override]
     public function getEvents()
     {
-
         $events = [
             'requester_user'    => __('New user in requesters'),
             'requester_group'   => __('New group in requesters'),
@@ -1160,10 +1156,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
     /**
      * Add mentionned user to recipients.
-     *
-     * @param array $options
-     *
-     * @return void
      */
     protected function addMentionnedUser(array $options): void
     {

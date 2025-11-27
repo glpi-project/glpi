@@ -313,13 +313,6 @@ class Notification extends CommonDBTM implements FilterableInterface
         return true;
     }
 
-    /**
-     * @since 0.84
-     *
-     * @param $field
-     * @param $values
-     * @param $options   array
-     **/
     #[Override]
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
@@ -337,14 +330,6 @@ class Notification extends CommonDBTM implements FilterableInterface
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    /**
-     * @since 0.84
-     *
-     * @param $field
-     * @param $name               (default '')
-     * @param $values             (default '')
-     * @param $options      array
-     **/
     #[Override]
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {

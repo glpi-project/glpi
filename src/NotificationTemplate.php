@@ -216,7 +216,6 @@ class NotificationTemplate extends CommonDBTM
     }
 
     /**
-     * @param NotificationTarget $target
      * @param array{language: string, additionnaloption?: array{timezone?: string} } $user_infos
      * @param string $event
      * @param array{item?: CommonDBTM} $options
@@ -428,9 +427,6 @@ class NotificationTemplate extends CommonDBTM
 
     /**
      * Convert relative links to GLPI nto absolute links.
-     *
-     * @param string $string
-     * @return string
      */
     private static function convertRelativeGlpiLinksToAbsolute(string $string, bool $html_context): string
     {
@@ -514,7 +510,6 @@ class NotificationTemplate extends CommonDBTM
     /**
      * Convert notification data to HTML format.
      *
-     * @param array $data
      * @return array
      */
     private static function getDataForHtml(array $data)
@@ -540,7 +535,6 @@ class NotificationTemplate extends CommonDBTM
     /**
      * Convert notification data to plain text format.
      *
-     * @param array $data
      * @return array
      */
     private static function getDataForPlainText(array $data)

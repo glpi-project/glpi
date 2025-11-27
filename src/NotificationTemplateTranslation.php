@@ -191,7 +191,6 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param array $input
      * @return array
      */
     public static function cleanContentHtml(array $input)
