@@ -486,6 +486,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         if ($projectstate_id !== false) {
             $input['projectstates_id'] = $projectstate_id;
         }
+        if (array_key_exists('percent_done', $input) && $input['percent_done'] === null) {
+            unset($input['percent_done']);
+        }
 
         if (isset($input["plan"])) {
             $input["plan_start_date"] = $input['plan']["begin"];
