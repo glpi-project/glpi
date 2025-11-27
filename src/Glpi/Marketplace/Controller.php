@@ -463,7 +463,6 @@ class Controller extends CommonGLPI
                 $task->log(sprintf(__("New version for plugin %s: %s"), $plugin_key, $version));
             }
 
-            // commented, is usesless because of NotificationEvent::raiseEvent is commented below
             if (!$CFG_GLPI["use_notifications"]) {
                 return $cron_status;
             }

@@ -441,9 +441,12 @@ class NotificationEventMailing extends NotificationEventAbstract
 
     /**
      * Handle a failure when trying to send an email
+     *
+     * - write an entry in log file "mail-error"
+     * - update the number of retries in notification or delete it when number of retries is reached
+     *
      * @param QueuedNotification $notification The notification that failed
      * @param string $error The error message to log
-     * @return void
      */
     private static function handleFailedSend(QueuedNotification $notification, string $error): void
     {
@@ -496,9 +499,6 @@ class NotificationEventMailing extends NotificationEventAbstract
     /**
      * Attach documents to message.
      * Documents will not be attached if configuration says they should not be.
-     *
-     * @param Email $mail
-     * @param array $documents_ids
      *
      * @return void
      */

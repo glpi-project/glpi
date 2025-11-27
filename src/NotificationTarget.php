@@ -88,7 +88,7 @@ class NotificationTarget extends CommonDBChild
     public $entity                      = '';
 
     /**
-     * @var CommonGLPI|null Object which raises the notification event // @todo note : ne peut pas être CommonGLPI -> ligne 835 : ->isField()
+     * @var CommonGLPI|null Object which raises the notification event
      */
     public $obj                         = null;
 
@@ -341,15 +341,6 @@ class NotificationTarget extends CommonDBChild
         );
     }
 
-    /**
-     * Get message ID for given item/event.
-     *
-     * @param string $itemtype
-     * @param int $items_id
-     * @param string $event
-     *
-     * @return string
-     */
     final public static function getMessageIdForEvent(?string $itemtype, ?int $items_id, ?string $event): string
     {
         if (empty($event)) {
@@ -427,7 +418,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @param class-string<CommonGLPI> $itemtype
      *
-     * @return class-string<NotificationTarget> // @todo review, do the plugin returns a NotificationTarget instance
+     * @return class-string<NotificationTarget>
      */
     public static function getInstanceClass(string $itemtype): string
     {
@@ -467,10 +458,6 @@ class NotificationTarget extends CommonDBChild
         return false;
     }
 
-
-    /**
-     * @param Notification $notification
-     **/
     public function showForNotification(Notification $notification): bool
     {
         if (!Notification::canView()) {
@@ -617,8 +604,6 @@ class NotificationTarget extends CommonDBChild
     public function addAdditionnalInfosForTarget() {}
 
     /**
-     * @param $data
-     *
      * @return array
      **/
     public function addAdditionnalUserInfo(array $data)
@@ -767,7 +752,6 @@ class NotificationTarget extends CommonDBChild
     /**
      * @param self::EXTERNAL_USER|self::GLPI_USER|self::ANONYMOUS_USER $usertype
      * @param string $redirect
-     * @param string|null $anchor
      * @since 0.84
      *
      * @return string
@@ -1028,11 +1012,6 @@ class NotificationTarget extends CommonDBChild
         return [];
     }
 
-    /**
-     * Return list of notification events for which the notifications should be sent immediately.
-     *
-     * @return array
-     */
     public function getEventsToSendImmediately(): array
     {
         return [];
@@ -1363,7 +1342,6 @@ class NotificationTarget extends CommonDBChild
     /**
      * Get the url base for the entity
      *
-     * @param $entity
      * @return string
      **/
     public function getUrlBase()
@@ -1786,16 +1764,6 @@ class NotificationTarget extends CommonDBChild
         return $count['cpt'];
     }
 
-
-    /**
-     * Display notification registered for a group
-     *
-     * @since 0.83
-     *
-     * @param $group Group object
-     *
-     * @return bool
-     **/
     public static function showForGroup(Group $group): bool
     {
         global $DB;
@@ -1945,11 +1913,6 @@ class NotificationTarget extends CommonDBChild
         return $this;
     }
 
-    /**
-     * Check if at least one target item is recursive
-     *
-     * @return bool
-     */
     protected function isTargetItemRecursive(): bool
     {
         // If the notification target more than one item, we can't handle the
