@@ -68,6 +68,7 @@ The present file will list all changes made to the project; according to the
 - `Migration::displayTitle()`
 - `Migration::displayWarning()`
 - `Migration::displayError()`
+- `Timer` class
 
 
 ## [11.0.3] unreleased
