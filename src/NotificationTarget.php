@@ -214,12 +214,17 @@ class NotificationTarget extends CommonDBChild
      */
     public function getFromDBForTarget($notifications_id, $type, $ID)
     {
-        return
+
+        if (
             $this->getFromDBByCrit([
                 static::getTable() . '.notifications_id'   => $notifications_id,
                 static::getTable() . '.items_id'           => $ID,
                 static::getTable() . '.type'               => $type,
-            ]);
+            ])
+        ) {
+            return true;
+        }
+        return false;
     }
 
     /**
