@@ -272,27 +272,20 @@ class ProjectTask_Ticket extends CommonDBRelation
                 $finished_states_ids[] = $finished_state['id'];
             }
 
-            $p = ['projects_id'     => '__VALUE__',
+            $p = [
+                'projects_id'     => '__VALUE__',
                 'entity_restrict' => $ticket->getEntityID(),
                 'used'            => $used,
                 'rand'            => $rand,
                 'myname'          => "projecttasks",
             ];
 
-            $dd_params = [
-                'used'        => $used,
-                'entity'      => $ticket->getEntityID(),
-                'entity_sons' => $ticket->isRecursive(),
-                'displaywith' => ['id'],
+            $project_conditions = [
+                'glpi_projects.is_template' => 0,
             ];
 
-            $condition = [];
             if (count($finished_states_ids)) {
-                $condition['glpi_projecttasks.projectstates_id'] = $finished_states_ids;
-            }
-
-            if (count($condition)) {
-                $dd_params['condition'] = ['NOT' => $condition];
+                $project_conditions['glpi_projects.projectstates_id'] = ['NOT IN', $finished_states_ids];
             }
 
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
@@ -306,7 +299,7 @@ class ProjectTask_Ticket extends CommonDBRelation
                     'itemtype' => Project::class,
                     'entity'      => $ticket->getEntityID(),
                     'entity_sons' => $ticket->isRecursive(),
-                    'condition'   => ['glpi_projects.is_template' => 0],
+                    'condition'   => $project_conditions,
                 ],
                 'ajax_dropdown' => [
                     'toobserve' => "dropdown_projects_id$rand",
