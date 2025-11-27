@@ -38,6 +38,8 @@ The present file will list all changes made to the project; according to the
 - `AuthLDAP::DELETED_USER_DISABLEANDWITHDRAWDYNINFO`
 - `AuthLDAP::DELETED_USER_DISABLEANDDELETEGROUPS`
 - `SynchronizeUsersCommand::convertOldDeleteStrategyToNew()`
+- `ComputerAntivirus` class and API entries
+- `ComputerVirtualMachine` class and API entries
 
 
 ## [11.0.3] unreleased
