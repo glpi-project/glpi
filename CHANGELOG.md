@@ -91,6 +91,18 @@ The present file will list all changes made to the project; according to the
 - `Html::jsGetElementbyID()`
 - `Html::jsSetDropdownValue()`
 - `Html::jsGetDropdownValue()`
+- `Document::send()`
+- `Glpi\Application\View\Extension\DataHelpersExtension::getVerbatimValue()`
+- `Glpi\Application\View\Extension\PluginExtension::getPluginWebDir()`
+- `Glpi\Dashoboard\Filter::getAll()`
+- `Glpi\Http\HeaderlessStreamedResponse` class
+- `Glpi\Http\Response::sendError()`
+- `Glpi\Http\Response::sendHeaders()`
+- `Glpi\Http\Response::sendContent()`
+- `Glpi\Http\Response::send()`
+- `Glpi\Plugin\HookManager::enableCSRF()`
+- `Glpi\Plugin\Hook::CSRF_COMPLIANT` constant
+- `Glpi\Plugin\Hook::SHOW_IN_TIMELINE` constant
 
 
 ## [11.0.3] unreleased

@@ -276,29 +276,6 @@ class DataHelpersExtension extends AbstractExtension
     }
 
     /**
-     * Return verbatim value for an itemtype field.
-     * Returned value will be unsanitized if it has been transformed by GLPI sanitizing process (value fetched from DB).
-     * Twig autoescaping system will then ensure that value is correctly escaped in rendered HTML.
-     *
-     * @param mixed  $string
-     *
-     * @return mixed
-     *
-     * @deprecated 11.0
-     */
-    public function getVerbatimValue($string)
-    {
-        Toolbox::deprecated();
-
-        if (!is_string($string)) {
-            return $string;
-        }
-
-        return Sanitizer::unsanitize($string);
-    }
-
-
-    /**
      * return the provided string truncated on the left and prepend a prefix separator if length is reached
      *
      * @param string $string the string to left truncate

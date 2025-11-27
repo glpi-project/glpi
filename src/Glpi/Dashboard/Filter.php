@@ -144,21 +144,6 @@ class Filter extends CommonDBChild
     }
 
     /**
-     * Return all available filters.
-     * Keys are filters ids, values are filters labels.
-     *
-     * @return array of filters
-     *
-     * @deprecated 11.0.0.
-     */
-    public static function getAll(): array
-    {
-        Toolbox::deprecated();
-
-        return self::getFilterChoices();
-    }
-
-    /**
      * Return filters for the provided dashboard
      *
      * @param int $dashboards_id

@@ -48,20 +48,6 @@ class HookManager
     }
 
     /**
-     * Enable CSRF
-     *
-     * @deprecated 11.0.0
-     */
-    public function enableCSRF(): void
-    {
-        Toolbox::deprecated();
-
-        global $PLUGIN_HOOKS;
-
-        $PLUGIN_HOOKS[Hooks::CSRF_COMPLIANT][$this->plugin] = true;
-    }
-
-    /**
      * Add a given javascript file
      *
      * @param string $file

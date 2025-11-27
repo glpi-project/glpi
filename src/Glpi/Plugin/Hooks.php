@@ -41,11 +41,6 @@ namespace Glpi\Plugin;
  */
 class Hooks
 {
-    /**
-     * @deprecated 11.0.0
-     */
-    public const CSRF_COMPLIANT = 'csrf_compliant';
-
     // File hooks
     /**
      * Add CSS file in the head of all non-anonymous pages.
@@ -719,11 +714,6 @@ class Hooks
      * - 'hide_in_menu' => If true, the option is not available in the dropdown menu but the related items may still be shown in the timeline.
      */
     public const TIMELINE_ANSWER_ACTIONS = 'timeline_answer_actions';
-
-    /**
-     * @deprecated 11.0.0 Use `TIMELINE_ITEMS` instead. The usage of both hooks is the same.
-     */
-    public const SHOW_IN_TIMELINE        = 'show_in_timeline';
 
     /**
      * Register a function to add new items to the timeline of a Ticket, Change or Problem.

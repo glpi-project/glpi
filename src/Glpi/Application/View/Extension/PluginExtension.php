@@ -114,26 +114,6 @@ class PluginExtension extends AbstractExtension
     }
 
     /**
-     * Call Plugin::getWebDir() with given params.
-     *
-     * @param string  $plugin
-     * @param bool    $full
-     * @param bool    $use_url_base
-     *
-     * @return string|null
-     *
-     * @deprecated 11.0
-     */
-    public function getPluginWebDir(
-        string $plugin,
-        bool $full = true,
-        bool $use_url_base = false
-    ): ?string {
-        Toolbox::deprecated('All plugins resources should be accessed from the `/plugins/` path.');
-        return Plugin::getWebDir($plugin, $full, $use_url_base) ?: null;
-    }
-
-    /**
      * Returns the list of active plugins CSS files.
      *
      * @phpstan-return array<int, array{path: string, options: array{version: string}}>
