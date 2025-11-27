@@ -29,6 +29,7 @@ The present file will list all changes made to the project; according to the
 
 #### Removed
 
+- `js/Forms/FaIconSelector.js` module
 - `AuthLDAP::DELETED_USER_PRESERVE`
 - `AuthLDAP::DELETED_USER_DELETE`
 - `AuthLDAP::DELETED_USER_WITHDRAWDYNINFO`
