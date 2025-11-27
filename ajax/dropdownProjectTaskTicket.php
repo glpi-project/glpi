@@ -64,7 +64,7 @@ if (isset($_POST["projects_id"])) {
             $finished_states_ids[] = $state['id'];
         }
 
-        if (!empty($finished_states_ids)) {
+        if ($finished_states_ids !== []) {
             $condition['glpi_projecttasks.projectstates_id'] = ['NOT IN', $finished_states_ids];
         }
 
