@@ -46,7 +46,7 @@ if (isset($_POST["projects_id"])) {
     if ($_POST["projects_id"] > 0) {
 
         $condition = [
-            'glpi_projecttasks.projects_id' => $_POST['projects_id']
+            'glpi_projecttasks.projects_id' => $_POST['projects_id'],
         ];
 
         $finished_states_it = $DB->request(
