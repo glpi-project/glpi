@@ -43,7 +43,7 @@ const config = {
             }
         ),
         new webpack.DefinePlugin({
-            __VUE_OPTIONS_API__: false, // We will only use composition API
+            __VUE_OPTIONS_API__: true, // We will only use composition API but some dependencies may require Options API (PrimeVue)
             __VUE_PROD_DEVTOOLS__: false,
             __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
         }),

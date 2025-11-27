@@ -1,4 +1,6 @@
 <script setup>
+    import {Button} from 'primevue';
+
     const props = defineProps({
         field_key: String,
         customfields_id: {
@@ -27,17 +29,17 @@
                 <slot name="field_markers"></slot>
             </div>
             <div v-if="is_active" class="col-auto btn-group shadow-none field-actions">
-                <button type="button" class="btn btn-ghost-secondary btn-sm edit-field" :title="__('Edit')">
+                <Button type="button" variant="ghost" size="small" class="edit-field" :title="__('Edit')">
                     <i class="ti ti-pencil"></i>
-                </button>
-                <button type="button" class="btn btn-ghost-danger btn-sm hide-field" :title="__('Hide')">
+                </Button>
+                <Button type="button" variant="ghost" size="small" severity="danger" class="hide-field" :title="__('Hide')">
                     <i class="ti ti-eye-off"></i>
-                </button>
+                </Button>
             </div>
             <div v-if="!is_active && customfields_id > 0" class="col-auto btn-group shadow-none field-actions">
-                <button type="button" class="btn btn-ghost-danger btn-sm purge-field" :title="_x('button', 'Delete permanently')">
+                <Button type="button" variant="ghost" size="small" severity="danger" class="purge-field" :title="_x('button', 'Delete permanently')">
                     <i class="ti ti-trash"></i>
-                </button>
+                </Button>
             </div>
         </div>
     </div>

@@ -31,8 +31,9 @@
  * ---------------------------------------------------------------------
  */
 
-import { createApp } from 'vue/dist/vue.esm-bundler.js';
-import * as vue from "vue";
+import * as vue from "vue/dist/vue.esm-bundler.js";
+import PrimeVue from 'primevue/config';
+import primevue_style from './primevue_style.js';
 
 let existing_components = {};
 if (window.Vue !== undefined && window.Vue.components !== undefined) {
@@ -41,7 +42,11 @@ if (window.Vue !== undefined && window.Vue.components !== undefined) {
 window.Vue = {
     createApp: (...args) => {
         // pass arguments directly to createApp
-        const app = createApp(...args);
+        const app = vue.createApp(...args);
+        app.use(PrimeVue, {
+            unstyled: true,
+            pt: primevue_style,
+        });
         // add default global properties so they can be used within the templates
         app.config.globalProperties.__ = __;
         app.config.globalProperties._n = _n;
