@@ -95,9 +95,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         return true;
     }
 
-    /**
-     * @return false
-     */
     #[Override]
     protected function canNotificationBeDisabled(string $event): bool
     {
