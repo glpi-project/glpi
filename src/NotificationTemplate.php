@@ -181,11 +181,11 @@ class NotificationTemplate extends CommonDBTM
      *
      * @param string                   $name     dropdown name
      * @param class-string<CommonDBTM> $itemtype templates for this itemtype only
-     * @param string                   $value    default value
+     * @param string|int               $value    default value
      *
      * @return void
      **/
-    public static function dropdownTemplates($name, $itemtype, $value = "0")
+    public static function dropdownTemplates($name, $itemtype, $value = 0)
     {
         self::dropdown([
             'name'       => $name,
@@ -216,17 +216,17 @@ class NotificationTemplate extends CommonDBTM
     }
 
     /**
-     * @param array{language: string, additionnaloption?: array{timezone?: string} } $user_infos
-     * @param string                                                                 $event
-     * @param array<mixed>                                                           $options
+     * @param array<mixed> $user_infos
+     * @param string       $event
+     * @param array<mixed> $options
      *
      * @return false|string id of the template in templates_by_languages / false if computation failed
      **/
     public function getTemplateByLanguage(
         NotificationTarget $target,
-        $user_infos,
-        $event,
-        $options
+        $user_infos = [],
+        $event = '',
+        $options = []
     ) {
         global $CFG_GLPI, $DB;
 

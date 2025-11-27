@@ -40,10 +40,10 @@ interface NotificationInterface
 {
     /**
      * Send notifications
-     * @param array $options
+     * @param array<mixed> $options
      * @return boolean
      **/
-    public function sendNotification($options);
+    public function sendNotification($options = []);
 
     /**
      * Check data

@@ -165,8 +165,11 @@ class NotificationTargetObjectLock extends NotificationTarget
         return $ret;
     }
 
+    /**
+     * @param array $options
+     */
     #[Override]
-    public function getReplyTo(): array
+    public function getReplyTo($options = []): array
     {
         return $this->getSender();
     }

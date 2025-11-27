@@ -131,32 +131,8 @@ class NotificationMailing implements NotificationInterface
         ];
     }
 
-
-    /**
-     * @param array{
-     *     _itemtype: string,
-     *     _items_id: int,
-     *     _notificationtemplates_id: int,
-     *     _entities_id: int,
-     *     from: string,
-     *     fromname: string,
-     *     event?: string|null,
-     *     itemtype_trigger?: string|null,
-     *     items_id_trigger?: int,
-     *     replyto?: string,
-     *     replytoname?: string,
-     *     subject: string,
-     *     content_text: string,
-     *     content_html?: string,
-     *     to: string,
-     *     toname: string,
-     *     messageid?: string,
-     *     documents?: array,
-     *     attach_documents?: bool
-     * } $options
-     * @return bool
-     */
-    public function sendNotification($options)
+    #[Override]
+    public function sendNotification($options = [])
     {
         global $CFG_GLPI;
 
