@@ -41,7 +41,6 @@ use Glpi\Routing\Attribute\ItemtypeFormRoute;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Html;
 use SavedSearch;
-use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
