@@ -3107,56 +3107,6 @@ class Plugin extends CommonDBTM
     }
 
 
-    /**
-     * Return the web path for a given plugin key
-     *
-     * @since 9.5
-     *
-     * @param string $plugin_key plugin system key
-     * @param bool $full if true, append root_doc from config
-     * @param bool $use_url_base if true, url_base instead root_doc
-     *
-     * @return false|string the web path
-     *
-     * @deprecated 11.0
-     */
-    public static function getWebDir(string $plugin_key = "", $full = true, $use_url_base = false)
-    {
-        global $CFG_GLPI;
-
-        Toolbox::deprecated('All plugins resources should be accessed from the `/plugins/` path.');
-
-        try {
-            $marketplace_dir = realpath(GLPI_MARKETPLACE_DIR);
-        } catch (FilesystemException) {
-            $marketplace_dir = null;
-        }
-
-        $found       = false;
-        $marketplace = false;
-        foreach (static::getPluginDirectories() as $plugins_directory) {
-            if (is_dir("$plugins_directory/$plugin_key")) {
-                $found       = true;
-                $marketplace = realpath($plugins_directory) === $marketplace_dir;
-                break;
-            }
-        }
-
-        if (!$found) {
-            return false;
-        }
-
-        $path = ($marketplace ? 'marketplace' : 'plugins') . '/' . $plugin_key;
-
-        if ($full) {
-            $root = $use_url_base ? $CFG_GLPI['url_base'] : $CFG_GLPI["root_doc"];
-            $path = "$root/$path";
-        }
-
-        return $path;
-    }
-
-
     public static function getIcon()
     {
         return "ti ti-puzzle";

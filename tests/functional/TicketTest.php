@@ -2062,16 +2062,6 @@ class TicketTest extends DbTestCase
         }
     }
 
-    /**
-     * @param $rights
-     * @return void
-     * @deprecated 11.0.0 - Use changeTechRights() instead
-     */
-    public function changeTechRight($rights = 168967)
-    {
-        $this->changeTechRights(['ticket' => $rights]);
-    }
-
     public function testPriorityAcl()
     {
         $this->login();

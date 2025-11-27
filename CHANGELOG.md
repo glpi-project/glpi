@@ -106,6 +106,14 @@ The present file will list all changes made to the project; according to the
 - `ITILFollowup::ADDMYTICKET` constant
 - `ITILFollowup::ADDGROUPTICKET` constant
 - `ITILFollowup::ADDALLTICKET` constant
+- `Pdu_Plug` class
+- `Plugin::getWebDir()`
+- `QueryExprfession` class
+- `QueryParam` class
+- `QuerySubQuery` class
+- `QueryUnion` class
+- `Search::joinDropdownTranslations()`
+- `Ticket_Ticket::getLinkedTicketsTo()`
 
 
 ## [11.0.3] unreleased
