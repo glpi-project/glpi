@@ -48,6 +48,21 @@ The present file will list all changes made to the project; according to the
 - `DBmysql::deleteOrDie()`
 - `DBmysql::truncate()`
 - `DBmysql::truncateOrDie()`
+- `Glpi\Toolbox\Sanitizer` class
+- `Glpi\Toolbox\Sanitizer::sanitize()`
+- `Glpi\Toolbox\Sanitizer::unsanitize()`
+- `Glpi\Toolbox\Sanitizer::isHtmlEncoded()`
+- `Glpi\Toolbox\Sanitizer::isDbEscaped()`
+- `Glpi\Toolbox\Sanitizer::isNsClassOrCallableIdentifier()`
+- `Glpi\Toolbox\Sanitizer::getVerbatimValue()`
+- `Glpi\Toolbox\Sanitizer::encodeHtmlSpecialChars()`
+- `Glpi\Toolbox\Sanitizer::encodeHtmlSpecialCharsRecursive()`
+- `Glpi\Toolbox\Sanitizer::decodeHtmlSpecialChars()`
+- `Glpi\Toolbox\Sanitizer::decodeHtmlSpecialCharsRecursive()`
+- `Glpi\Toolbox\Sanitizer::dbEscape()`
+- `Glpi\Toolbox\Sanitizer::dbEscapeRecursive()`
+- `Glpi\Toolbox\Sanitizer::dbUnescape()`
+- `Glpi\Toolbox\Sanitizer::dbUnescapeRecursive()`
 
 
 ## [11.0.3] unreleased
