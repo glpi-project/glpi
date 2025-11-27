@@ -47,6 +47,7 @@ use Glpi\Api\HL\RSQL\Parser;
 use Glpi\Api\HL\RSQL\RSQLException;
 use Glpi\Api\HL\Search\RecordSet;
 use Glpi\Api\HL\Search\SearchContext;
+use Glpi\Application\Environment;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
@@ -127,7 +128,7 @@ final class Search
     public function getSQLFieldForProperty(string $prop_name): string
     {
         static $cache = [];
-        if (!isset($cache[$prop_name])) {
+        if (!isset($cache[$prop_name]) || Environment::get() === Environment::TESTING) {
             $prop = $this->context->getFlattenedProperties()[$prop_name];
             $is_scalar_join = false;
             $is_join = $this->context->isJoinedProperty($prop_name);
@@ -143,6 +144,7 @@ final class Search
             // Computed fields may be used in HAVING clauses so we have no refer to the fields by the alias
             if ($is_computed) {
                 $cache[$prop_name] = str_replace('.', chr(0x1F), trim($prop_name, '.'));
+                return $cache[$prop_name];
             }
 
             if (!$is_join) {

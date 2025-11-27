@@ -340,6 +340,9 @@ final class RecordSet
                 if (isset($flattened_properties[$join_name])) {
                     continue;
                 }
+                if (!ArrayPathAccessor::hasElementByArrayPath($hydrated_record, $join_name)) {
+                    ArrayPathAccessor::setElementByArrayPath($hydrated_record, $join_name, []);
+                }
                 foreach ($needed_ids as $id) {
                     [$join_prop_path, $id] = $this->search->getItemRecordPath($join_name, $id, $hydrated_record);
                     if ($id === '' || $id === "\0") {
