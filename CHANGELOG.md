@@ -69,6 +69,10 @@ The present file will list all changes made to the project; according to the
 - `Migration::displayWarning()`
 - `Migration::displayError()`
 - `Timer` class
+- `Toolbox::seems_utf8()`
+- `Toolbox::sendFile()`
+- `Toolbox::addslashes_deep()`
+- `Toolbox::stripslashes_deep()`
 
 
 ## [11.0.3] unreleased

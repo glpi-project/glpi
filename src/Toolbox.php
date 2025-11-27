@@ -274,22 +274,6 @@ class Toolbox
 
 
     /**
-     * Is a string seems to be UTF-8 one ?
-     *
-     * @param $str string   string to analyse
-     *
-     * @return boolean
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function seems_utf8($str)
-    {
-        Toolbox::deprecated();
-        return mb_check_encoding($str, "UTF-8");
-    }
-
-
-    /**
      * Encode string to UTF-8
      *
      * @param string $string        string to convert
@@ -665,82 +649,6 @@ class Toolbox
         );
     }
 
-
-    /**
-     * Send a file (not a document) to the navigator
-     * See Document->send();
-     *
-     * @param string      $file        storage filename
-     * @param string      $filename    file title
-     * @param string|null $mime        file mime type
-     * @param boolean     $expires_headers add expires headers maximize cacheability ?
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     */
-    public static function sendFile($file, $filename, $mime = null, $expires_headers = false)
-    {
-        Toolbox::deprecated();
-
-        static::getFileAsResponse($file, $filename, $mime, $expires_headers)->send();
-    }
-
-
-    /**
-     *  Add slash for variable & array
-     *
-     * @param string|string[] $value value to add slashes
-     *
-     * @return string|string[]
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function addslashes_deep($value)
-    {
-        Toolbox::deprecated();
-
-        global $DB;
-
-        $value = ((array) $value === $value)
-                  ? array_map([self::class, 'addslashes_deep'], $value)
-                  : (
-                      is_null($value)
-                       ? null : (is_resource($value) || is_object($value)
-                       ? $value : $DB->escape(
-                           str_replace(
-                               ['&#039;', '&#39;', '&#x27;', '&apos;', '&quot;'],
-                               ["'", "'", "'", "'", "\""],
-                               $value
-                           )
-                       ))
-                  );
-
-        return $value;
-    }
-
-
-    /**
-     * Strip slash  for variable & array
-     *
-     * @param array|string $value  item to stripslashes
-     *
-     * @return array|string stripslashes item
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function stripslashes_deep($value)
-    {
-        Toolbox::deprecated();
-
-        $value = ((array) $value === $value)
-                  ? array_map([self::class, 'stripslashes_deep'], $value)
-                  : (is_null($value)
-                        ? null : (is_resource($value) || is_object($value)
-                                    ? $value : stripslashes($value)));
-
-        return $value;
-    }
 
     /** Converts an array of parameters into a query string to be appended to a URL.
      *
