@@ -564,7 +564,6 @@ final class Search
     /**
      * @param bool $count_only
      * @return RecordSet|int
-     * @phpstan-return ($count_only ? int : RecordSet)
      * @throws APIException
      * @throws RSQLException
      */
