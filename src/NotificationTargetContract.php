@@ -35,6 +35,9 @@
 
 /**
  * NotificationTargetContract Class
+ *
+ * @extends \NotificationTarget<\Contract>
+ *
  **/
 class NotificationTargetContract extends NotificationTarget
 {

@@ -33,13 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @extends NotificationTarget<KnowbaseItem>
+ */
 class NotificationTargetKnowbaseItem extends NotificationTarget
 {
-    /**
-     * @var KnowbaseItem|null
-     */
-    public $obj = null;
-
     #[Override]
     public function getEvents()
     {

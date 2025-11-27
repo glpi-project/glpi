@@ -36,7 +36,7 @@
 /**
  * NotificationTargetChange Class
  *
- * @since 0.85
+ * @extends NotificationTargetCommonITILObject<Change>
  **/
 class NotificationTargetChange extends NotificationTargetCommonITILObject
 {

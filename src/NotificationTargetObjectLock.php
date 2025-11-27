@@ -39,14 +39,10 @@
  * Notifications for ObjectLock
  *
  * @since 9.1
+ * @extends NotificationTarget<ObjectLock>
  **/
 class NotificationTargetObjectLock extends NotificationTarget
 {
-    /**
-     * @var ObjectLock|null
-     */
-    public $obj = null;
-
     #[Override]
     public function getEvents()
     {

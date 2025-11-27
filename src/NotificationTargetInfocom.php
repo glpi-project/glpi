@@ -35,6 +35,9 @@
 
 /**
  * NotificationTargetInfocom Class
+ *
+ * @extends \NotificationTarget<\Infocom>
+ *
  **/
 class NotificationTargetInfocom extends NotificationTarget
 {

@@ -35,6 +35,7 @@
 
 /**
  * NotificationTargetTicket Class
+ * @extends NotificationTargetCommonITILObject<Ticket>
  **/
 class NotificationTargetTicket extends NotificationTargetCommonITILObject
 {

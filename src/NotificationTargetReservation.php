@@ -36,13 +36,11 @@
 /**
  * NotificationTargetReservation Class
  **/
+/**
+ * @extends NotificationTarget<Reservation>
+ */
 class NotificationTargetReservation extends NotificationTarget
 {
-    /**
-     * @var Reservation|null
-     */
-    public $obj = null;
-
     #[Override]
     public function getEvents()
     {

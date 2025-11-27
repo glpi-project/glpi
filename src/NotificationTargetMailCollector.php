@@ -36,7 +36,7 @@
 /**
  * NotificationTargetMailCollector Class
  *
- * @since 0.85
+ * @extends \NotificationTarget<\MailCollector>
  **/
 class NotificationTargetMailCollector extends NotificationTarget
 {

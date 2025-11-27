@@ -35,6 +35,9 @@
 
 /**
  * NotificationTargetSoftwareLicense Class
+ *
+ * @extends \NotificationTarget<\SoftwareLicense>
+ *
  **/
 class NotificationTargetSoftwareLicense extends NotificationTarget
 {
