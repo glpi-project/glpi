@@ -1050,36 +1050,36 @@ class MassiveActionTest extends DbTestCase
                 'action' => 'delete',
                 'item_names' => ['Test Computer 1 for Delete', 'Test Computer 2 for Delete'],
                 'expected_message_pattern' => '/deletes 2 items by massive action/',
-                'setup_callback' => null // No special setup needed for delete
+                'setup_callback' => null, // No special setup needed for delete
             ],
             'computer_restore' => [
                 'itemtype' => 'Computer',
                 'action' => 'restore',
                 'item_names' => ['Test Computer 1 for Restore', 'Test Computer 2 for Restore'],
                 'expected_message_pattern' => '/restores 2 items by massive action/',
-                'setup_callback' => 'setupForRestore' // Need to delete items first
+                'setup_callback' => 'setupForRestore', // Need to delete items first
             ],
             'computer_purge' => [
                 'itemtype' => 'Computer',
                 'action' => 'purge',
                 'item_names' => ['Test Computer 1 for Purge', 'Test Computer 2 for Purge'],
                 'expected_message_pattern' => '/purges 2 items by massive action/',
-                'setup_callback' => null
+                'setup_callback' => null,
             ],
             'monitor_delete' => [
                 'itemtype' => 'Monitor',
                 'action' => 'delete',
                 'item_names' => ['Test Monitor 1 for Delete', 'Test Monitor 2 for Delete', 'Test Monitor 3 for Delete'],
                 'expected_message_pattern' => '/deletes 3 items by massive action/',
-                'setup_callback' => null
+                'setup_callback' => null,
             ],
             'single_item_delete' => [
                 'itemtype' => 'Computer',
                 'action' => 'delete',
                 'item_names' => ['Single Computer for Delete'],
                 'expected_message_pattern' => '/deletes 1 items by massive action/',
-                'setup_callback' => null
-            ]
+                'setup_callback' => null,
+            ],
         ];
     }
 
@@ -1118,13 +1118,13 @@ class MassiveActionTest extends DbTestCase
         global $DB;
         $DB->delete('glpi_events', [
             'type' => strtolower($item->getType()),
-            'service' => 'inventory'
+            'service' => 'inventory',
         ]);
 
         // Count events before action
         $events_before = countElementsInTable('glpi_events', [
             'type' => strtolower($item->getType()),
-            'service' => 'inventory'
+            'service' => 'inventory',
         ]);
 
         // Create mock MassiveAction
@@ -1144,7 +1144,7 @@ class MassiveActionTest extends DbTestCase
         // Count events after action
         $events_after = countElementsInTable('glpi_events', [
             'type' => strtolower($item->getType()),
-            'service' => 'inventory'
+            'service' => 'inventory',
         ]);
 
         // Verify one log entry was created
@@ -1162,10 +1162,10 @@ class MassiveActionTest extends DbTestCase
                 'FROM' => 'glpi_events',
                 'WHERE' => [
                     'type' => strtolower($item->getType()),
-                    'service' => 'inventory'
+                    'service' => 'inventory',
                 ],
                 'ORDER' => ['date DESC'],
-                'LIMIT' => 1
+                'LIMIT' => 1,
             ]);
 
             $this->assertCount(1, $iterator);
@@ -1200,13 +1200,13 @@ class MassiveActionTest extends DbTestCase
         global $DB;
         $DB->delete('glpi_events', [
             'type' => 'computer',
-            'service' => 'inventory'
+            'service' => 'inventory',
         ]);
 
         // Count events before action
         $events_before = countElementsInTable('glpi_events', [
             'type' => 'computer',
-            'service' => 'inventory'
+            'service' => 'inventory',
         ]);
 
         // Create mock MassiveAction that will fail (no rights)
@@ -1230,7 +1230,7 @@ class MassiveActionTest extends DbTestCase
         // Count events after action
         $events_after = countElementsInTable('glpi_events', [
             'type' => 'computer',
-            'service' => 'inventory'
+            'service' => 'inventory',
         ]);
 
         // Verify no log entry was created since no items were successfully processed
