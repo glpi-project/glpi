@@ -1446,12 +1446,6 @@ class NotificationTarget extends CommonDBChild
      *
      * @param string               $event
      * @param array<string, mixed> $options
-     *                                      Cannot use array shape because overrides have a different keys and phpstan complains about that.
-     * @x-param array{
-     *      additionnaloption?: array{usertype: NotificationTarget::EXTERNAL_USER|NotificationTarget::GLPI_USER|NotificationTarget::ANONYMOUS_USER},
-     *      plugins?: array<string, string>
-     *      } $options
-     *
      * @return void
      **/
     public function addDataForTemplate($event, $options = []) {}
