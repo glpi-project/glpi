@@ -364,7 +364,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $actors[] = [
                     'itemtype' => $itemtype,
                     'items_id' => $items_id,
-                    'icon_name' => $params['icon_name'] ?: 'ti ti-user',
+                    'icon_name' => $params['icon_name'] ?? 'ti ti-user',
                 ] + $params;
             }
         };
