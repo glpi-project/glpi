@@ -33,13 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @extends NotificationTarget<Domain>
+ */
 class NotificationTargetDomain extends NotificationTarget
 {
-    /**
-     * @var Domain|null
-     */
-    public $obj = null;
-
     #[Override]
     public function getEvents()
     {

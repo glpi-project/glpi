@@ -35,6 +35,9 @@
 
 abstract class NotificationEventAbstract implements NotificationEventInterface
 {
+    /**
+     * @param NotificationTarget<CommonGLPI> $notificationtarget
+     */
     public static function raise(
         $event,
         CommonGLPI $item,
@@ -149,7 +152,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
      * Extra steps raising
      *
      * @param array{
-     *              notificationtarget: NotificationTarget,
+     *              notificationtarget: NotificationTarget<CommonGLPI>,
      *              event: string,
      *              options: array<mixed>,
      *              data: array<mixed>,

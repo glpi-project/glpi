@@ -36,7 +36,7 @@
 /**
  * NotificationTargetCartridgeItem Class
  *
- * @since 0.84
+ * @extends \NotificationTarget<\CartridgeItem>
  **/
 class NotificationTargetCartridgeItem extends NotificationTarget
 {

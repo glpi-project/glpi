@@ -36,7 +36,7 @@
 /**
  * NotificationTargetConsumableItem Class
  *
- * @since 0.84
+ * @extends \NotificationTarget<ConsumableItem>
  **/
 class NotificationTargetConsumableItem extends NotificationTarget
 {

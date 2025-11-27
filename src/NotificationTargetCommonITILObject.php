@@ -35,13 +35,12 @@
 
 use Glpi\DBAL\QueryFunction;
 
+/**
+ * @template T of CommonITILObject
+ * @extends NotificationTarget<T>
+ */
 abstract class NotificationTargetCommonITILObject extends NotificationTarget
 {
-    /**
-     * @var CommonITILObject|null Object which raises the notification event
-     */
-    public $obj = null;
-
     /** @var array<int, int> */
     public $private_profiles = [];
 

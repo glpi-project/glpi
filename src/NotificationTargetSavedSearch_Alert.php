@@ -33,13 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @extends NotificationTarget<SavedSearch_Alert>
+ */
 class NotificationTargetSavedSearch_Alert extends NotificationTarget
 {
-    /**
-     * @var SavedSearch_Alert|null
-     */
-    public $obj = null;
-
     #[Override]
     public function getEvents()
     {

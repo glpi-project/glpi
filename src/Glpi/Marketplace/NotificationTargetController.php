@@ -40,7 +40,9 @@ use NotificationTarget;
 use Plugin;
 use Session;
 
-// Class NotificationTarget
+/**
+ * @extends NotificationTarget<\Glpi\Marketplace\Controller>
+ */
 class NotificationTargetController extends NotificationTarget
 {
     #[\Override]

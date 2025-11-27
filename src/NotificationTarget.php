@@ -39,7 +39,7 @@ use Glpi\Plugin\Hooks;
 /**
  * NotificationTarget Class
  *
- * @since 0.84
+ * @template T of CommonGLPI
  **/
 class NotificationTarget extends CommonDBChild
 {
@@ -93,7 +93,7 @@ class NotificationTarget extends CommonDBChild
     public $entity                      = '';
 
     /**
-     * @var CommonGLPI|null Object which raises the notification event
+     * @var T|null Object which raises the notification event
      */
     public $obj                         = null;
 
@@ -399,7 +399,7 @@ class NotificationTarget extends CommonDBChild
      * @param string|null $event
      * @param array       $options
      *
-     * @return NotificationTarget|false
+     * @return NotificationTarget<CommonGLPI>|false
      **/
     public static function getInstance($item, $event = '', $options = [])
     {
@@ -424,7 +424,7 @@ class NotificationTarget extends CommonDBChild
      * Get the expected notification target class name for a given itemtype
      *
      * @param class-string<CommonGLPI> $itemtype
-     * @return class-string<NotificationTarget>
+     * @return class-string<NotificationTarget<CommonGLPI>>
      */
     public static function getInstanceClass(string $itemtype): string
     {
@@ -451,7 +451,7 @@ class NotificationTarget extends CommonDBChild
      * @param string|null              $event    Event which will be used
      * @param array                    $options
      *
-     * @return NotificationTarget|false
+     * @return NotificationTarget<CommonGLPI>|false
      **/
     public static function getInstanceByType($itemtype, $event = '', $options = [])
     {
@@ -1851,7 +1851,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @param string $mode Mode (see Notification_NotificationTemplate::MODE_*)
      *
-     * @return NotificationTarget
+     * @return NotificationTarget<CommonGLPI>
      */
     public function setMode($mode)
     {
@@ -1884,7 +1884,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @param string $event Event class
      *
-     * @return NotificationTarget
+     * @return NotificationTarget<CommonGLPI>
      */
     public function setEvent($event)
     {
@@ -1907,7 +1907,7 @@ class NotificationTarget extends CommonDBChild
      * Set the value of allow_response
      *
      * @param bool $allow_response
-     * @return self
+     * @return NotificationTarget<CommonGLPI>
      */
     public function setAllowResponse($allow_response)
     {

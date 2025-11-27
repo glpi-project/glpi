@@ -35,6 +35,9 @@
 
 /**
  * NotificationTargetCronTask Class
+ *
+ * @extends \NotificationTarget<CronTask>
+ *
  **/
 class NotificationTargetCronTask extends NotificationTarget
 {

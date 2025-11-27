@@ -216,9 +216,10 @@ class NotificationTemplate extends CommonDBTM
     }
 
     /**
-     * @param array<mixed> $user_infos
-     * @param string       $event
-     * @param array<mixed> $options
+     * @param NotificationTarget<CommonGLPI> $target
+     * @param array<mixed>                   $user_infos
+     * @param string                         $event
+     * @param array<mixed>                   $options
      *
      * @return false|string id of the template in templates_by_languages / false if computation failed
      **/
@@ -596,11 +597,11 @@ class NotificationTemplate extends CommonDBTM
     }
 
     /**
-     * @param NotificationTarget $target     Target instance
-     * @param string             $tid        template computed id
-     * @param mixed              $to         Recipient
-     * @param array              $user_infos Extra user infos
-     * @param array              $options    Options
+     * @param NotificationTarget<CommonGLPI> $target     Target instance
+     * @param string                         $tid        template computed id
+     * @param mixed                          $to         Recipient
+     * @param array                          $user_infos Extra user infos
+     * @param array                          $options    Options
      *
      * @return array
      **/

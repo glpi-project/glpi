@@ -37,14 +37,10 @@
  * NotificationTargetTicket Class
  *
  * @since 0.85
+ * @extends NotificationTarget<Project>
  **/
 class NotificationTargetProject extends NotificationTarget
 {
-    /**
-     * @var Project|null
-     */
-    public $obj = null;
-
     #[Override]
     public function getEvents()
     {

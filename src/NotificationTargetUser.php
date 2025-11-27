@@ -36,13 +36,11 @@
 use function Safe\strtotime;
 
 // Class NotificationTarget
+/**
+ * @extends NotificationTarget<User>
+ */
 class NotificationTargetUser extends NotificationTarget
 {
-    /**
-     * @var User|null Object which raises the notification event
-     */
-    public $obj = null;
-
     #[Override]
     public function getEvents()
     {

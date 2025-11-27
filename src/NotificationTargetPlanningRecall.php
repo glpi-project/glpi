@@ -37,14 +37,10 @@
  * NotificationTargetPlanningRecall Class
  *
  * @since 0.84
+ * @extends NotificationTarget<CommonITILTask>
  **/
 class NotificationTargetPlanningRecall extends NotificationTarget
 {
-    /**
-     * @var CommonITILTask|null
-     */
-    public $obj = null;
-
     /**
      * @var array<CommonITILTask> Object which is associated with the event
      */
