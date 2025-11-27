@@ -12,6 +12,10 @@ INI_DIR = /usr/local/etc/php/custom_conf.d
 # When the playwright npm package is updated,
 PLAYWRIGHT_VERSION = 1.56.1
 
+# Load E2E env files
+include tests/e2e/.env
+-include tests/e2e/.env.local
+
 # See: https://playwright.dev/docs/docker
 PLAYWRIGHT = docker run \
 	-it \
@@ -20,6 +24,8 @@ PLAYWRIGHT = docker run \
 	-v .:/app \
 	-w /app \
 	-p 9323:9323 \
+	-e E2E_BASE_URL=$(E2E_BASE_URL) \
+	--add-host host.docker.internal:host-gateway \
 	mcr.microsoft.com/playwright:v$(PLAYWRIGHT_VERSION)-noble \
 	npx playwright
 

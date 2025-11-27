@@ -49,4 +49,6 @@ phpstan.neon
 
 # Playwright
 /tests/e2e/results/
+/tests/e2e/.env.local
+!/tests/e2e/.env
 
