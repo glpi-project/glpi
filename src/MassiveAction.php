@@ -34,6 +34,7 @@
  */
 
 use Glpi\Asset\CustomFieldDefinition;
+use Glpi\Event;
 use Glpi\Features\Clonable;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchOption;
@@ -1331,6 +1332,15 @@ class MassiveAction
                     if ($item->can($id, DELETE)) {
                         if ($item->delete(["id" => $id])) {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+
+                            // Log event for successful delete action
+                            Event::log(
+                                $id,
+                                strtolower($item->getType()),
+                                4,
+                                "inventory",
+                                sprintf(__('%s deletes an item by massive action'), $_SESSION["glpiname"])
+                            );
                         } else {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
@@ -1347,6 +1357,15 @@ class MassiveAction
                     if ($item->can($id, DELETE)) {
                         if ($item->restore(["id" => $id])) {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+
+                            // Log event for successful restore action
+                            Event::log(
+                                $id,
+                                strtolower($item->getType()),
+                                4,
+                                "inventory",
+                                sprintf(__('%s restores an item by massive action'), $_SESSION["glpiname"])
+                            );
                         } else {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
@@ -1399,6 +1418,19 @@ class MassiveAction
                         }
                         if ($item->delete($delete_array, $force)) {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+
+                            // Log event for successful purge action
+                            $purge_message = $force
+                                ? sprintf(__('%s purges an item by massive action'), $_SESSION["glpiname"])
+                                : sprintf(__('%s deletes an item by massive action'), $_SESSION["glpiname"]);
+
+                            Event::log(
+                                $id,
+                                strtolower($item->getType()),
+                                4,
+                                "inventory",
+                                $purge_message
+                            );
                         } else {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
