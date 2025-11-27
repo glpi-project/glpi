@@ -476,7 +476,7 @@ TWIG, $twig_params);
             ];
 
             $template->resetComputedTemplates();
-            $template->setSignature(Notification::getMailingSignature((int) $_SESSION['glpiactive_entity']));
+            $template->setSignature(Notification::getMailingSignature($_SESSION['glpiactive_entity']));
             if ($tid = $template->getTemplateByLanguage($target, $infos, $event, $options)) {
                 $data = $template->templates_by_languages[$tid];
             }
