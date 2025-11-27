@@ -1242,6 +1242,26 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return "ti ti-bookmarks";
     }
 
+    /**
+     * Return the action to execute after a generic form action has been done.
+     * For simplified interface users, redirect back to the search page instead of the saved search management page.
+     *
+     * @param string $form_action    The action that has been performed ('add, 'update', etc.)
+     * @param bool   $action_success Whether the action was successful
+     *
+     * @return string|null 'back' to go back to the previous page, null to use the default behavior
+     */
+    public static function getPostFormAction(string $form_action, bool $action_success): ?string
+    {
+        // For simplified interface users, always redirect back to the search page
+        if ($form_action === 'add' && $action_success && Session::getCurrentInterface() === 'helpdesk') {
+            return 'back';
+        }
+
+        // Use parent behavior for all other cases
+        return parent::getPostFormAction($form_action, $action_success);
+    }
+
     public function getCloneRelations(): array
     {
         return [];
