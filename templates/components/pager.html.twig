@@ -113,6 +113,12 @@
         </p>
     {% endif %}
 
+    {% if short_display and nb_pages <= 1 %}
+        <span class="text-muted mx-2 my-0 page-infos">
+            {{ __('Showing %s to %s of %s rows')|format(current_start, current_end, count) }}
+        </span>
+    {% endif %}
+
     <ul class="pagination m-0 mt-sm-2 mt-md-0 align-items-center {{ short_display ? "mx-2" : "" }}">
         {% if nb_pages > 1 %}
             {% set is_first_page = start == 0 %}
