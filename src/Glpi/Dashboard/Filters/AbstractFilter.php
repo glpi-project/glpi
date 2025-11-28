@@ -72,7 +72,7 @@ abstract class AbstractFilter
     /**
      * Get the filter criteria
      *
-     * @param mixed  $value
+     * @param mixed $value
      *
      */
     abstract public static function getCriteria(string $table, $value): array;
@@ -88,7 +88,7 @@ abstract class AbstractFilter
      * 'value'      => (int) $apply_filters[ItilCategoryFilter::getId()]
      * ]
      *
-     * @param mixed  $value
+     * @param mixed $value
      *
      */
     abstract public static function getSearchCriteria(string $table, $value): array;
@@ -108,7 +108,7 @@ abstract class AbstractFilter
     /**
      * Get generic HTML for a filter
      *
-     * @param string $id system name of the filter (ex "dates")
+     * @param string $id    system name of the filter (ex "dates")
      * @param string $field html of the filter
      * @param string $label displayed label for the filter
      *

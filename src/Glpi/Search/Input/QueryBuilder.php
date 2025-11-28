@@ -64,8 +64,8 @@ final class QueryBuilder implements SearchInputInterface
      *
      * Params need to parsed before using Search::manageParams function
      *
-     * @param string $itemtype  Type to display the form
-     * @param array  $params    Array of parameters may include sort, is_deleted, criteria, metacriteria
+     * @param string $itemtype Type to display the form
+     * @param array  $params   Array of parameters may include sort, is_deleted, criteria, metacriteria
      *
      **/
     public static function showGenericSearch(string $itemtype, array $params): void
@@ -137,8 +137,8 @@ final class QueryBuilder implements SearchInputInterface
      *
      * @since 11.0
      *
-     * @param string $itemtype  Type to display the form
-     * @param array  $params    Array of parameters may include sort, is_deleted, criteria, metacriteria
+     * @param string $itemtype Type to display the form
+     * @param array  $params   Array of parameters may include sort, is_deleted, criteria, metacriteria
      *
      */
     public static function showGenericSort(string $itemtype, array $params): void
@@ -163,11 +163,11 @@ final class QueryBuilder implements SearchInputInterface
      * Display first part of criteria (field + searchtype, just after link)
      * will call displaySearchoptionValue for the next part (value)
      *
-     * @param  array  $request we should have these keys of parameters:
-     *                            - itemtype: main itemtype for criteria, sub one for metacriteria
-     *                            - num: index of the criteria
-     *                            - field: field key of the criteria
-     *                            - p: params of showGenericSearch method
+     * @param array $request we should have these keys of parameters:
+     *                       - itemtype: main itemtype for criteria, sub one for metacriteria
+     *                       - num: index of the criteria
+     *                       - field: field key of the criteria
+     *                       - p: params of showGenericSearch method
      *
      * @return void
      */
@@ -244,8 +244,8 @@ final class QueryBuilder implements SearchInputInterface
      * Display last part of criteria (value, just after searchtype)
      * called by displaySearchoptionValue
      *
-     * @param  array  $request we should have these keys of parameters:
-     *                            - searchtype: (contains, equals) passed by displaySearchoption
+     * @param array $request we should have these keys of parameters:
+     *                       - searchtype: (contains, equals) passed by displaySearchoption
      *
      * @return void|string
      */
@@ -385,10 +385,10 @@ final class QueryBuilder implements SearchInputInterface
      *
      * @since 9.4
      *
-     * @param  array  $request we should have these keys of parameters:
-     *                            - itemtype: main itemtype for criteria, sub one for metacriteria
-     *                            - num: index of the criteria
-     *                            - p: params of showGenericSearch method
+     * @param array $request we should have these keys of parameters:
+     *                       - itemtype: main itemtype for criteria, sub one for metacriteria
+     *                       - num: index of the criteria
+     *                       - p: params of showGenericSearch method
      *
      * @return void
      */
@@ -489,7 +489,7 @@ final class QueryBuilder implements SearchInputInterface
      *
      * @since 9.4
      *
-     * @param  array  $request @see displayCriteria method
+     * @param array $request @see displayCriteria method
      *
      * @return void
      */
@@ -548,7 +548,7 @@ final class QueryBuilder implements SearchInputInterface
      *
      * @since 11.0
      *
-     * @param  array  $request @see displayCriteria method
+     * @param array $request @see displayCriteria method
      *
      */
     public static function displaySortCriteria(array $request = []): void
@@ -614,7 +614,7 @@ final class QueryBuilder implements SearchInputInterface
      *
      * @since 9.4
      *
-     * @param  array  $request @see displayCriteria method
+     * @param array $request @see displayCriteria method
      *
      * @return void
      */
@@ -970,9 +970,9 @@ final class QueryBuilder implements SearchInputInterface
     /**
      * Retrieve a single criteria in Session by its index
      *
-     * @param class-string<CommonDBTM> $itemtype which glpi type we must search in session
-     * @param  integer $num         index of the criteria
-     * @param  array   $parents_num node indexes of the parents (@see displayCriteriaGroup)
+     * @param class-string<CommonDBTM> $itemtype    which glpi type we must search in session
+     * @param integer                  $num         index of the criteria
+     * @param array                    $parents_num node indexes of the parents (@see displayCriteriaGroup)
      *
      * @return array|false The found criteria array or false if nothing found
      */
@@ -1005,9 +1005,9 @@ final class QueryBuilder implements SearchInputInterface
     /**
      * Get the input value validation pattern for given datatype.
      *
-     * @param bool      $with_delimiters
-     *      True to return a complete pattern, including delimiters.
-     *      False to return a pattern without delimiters, that can be used inside another regex or in a HTML input pattern.
+     * @param bool $with_delimiters
+     *                              True to return a complete pattern, including delimiters.
+     *                              False to return a pattern without delimiters, that can be used inside another regex or in a HTML input pattern.
      *
      * @return array An array with
      *      - a `pattern` entry that contains the pattern that can be used to validate the value;

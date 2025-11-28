@@ -315,9 +315,9 @@ class Calendar extends AbstractBackend
      * Store calendar object into given item.
      * If no item is specified, a new one (PlanningExternalEvent) will be created.
      *
-     * @param string                             $calendarId    Calendar identifier
-     * @param string                             $calendarData  Seialized VCalendar object
-     * @param (CalDAVCompatibleItemInterface&CommonDBTM)|null $item          Item on which input will be stored
+     * @param string                                          $calendarId   Calendar identifier
+     * @param string                                          $calendarData Seialized VCalendar object
+     * @param (CalDAVCompatibleItemInterface&CommonDBTM)|null $item         Item on which input will be stored
      *
      * @return boolean
      */

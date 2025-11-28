@@ -441,7 +441,7 @@ class Session
      *
      * @param integer|string $ID           ID of the new active entity ("all"=>load all possible entities)
      *                                     (default 'all')
-     * @param boolean         $is_recursive Also display sub entities of the active entity? (false by default)
+     * @param boolean        $is_recursive Also display sub entities of the active entity? (false by default)
      *
      * @return boolean true on success, false on failure
      **/
@@ -798,8 +798,8 @@ class Session
      * Get the default language from current user in $_SESSION["glpilanguage"].
      * And load the dict that correspond.
      *
-     * @param string  $forcelang     Force to load a specific lang
-     * @param boolean $with_plugins  Whether to load plugin languages or not
+     * @param string  $forcelang    Force to load a specific lang
+     * @param boolean $with_plugins Whether to load plugin languages or not
      *
      * @return string
      **/
@@ -1188,7 +1188,7 @@ class Session
      * The session will be closed by this method.
      *
      * @param string $module The module
-     * @param int $right The right
+     * @param int    $right  The right
      * @return string The right name
      * @internal No backwards compatibility promise. Use in core only.
      */
@@ -1610,8 +1610,8 @@ class Session
     /**
      *  Force active Tab for an itemtype
      *
-     * @param string  $itemtype item type
-     * @param mixed $tab      ID of the tab
+     * @param string $itemtype item type
+     * @param mixed  $tab      ID of the tab
      *
      * @return void
      **/
@@ -1627,9 +1627,9 @@ class Session
      *
      * @since 0.83
      *
-     * @param string $itemtype  name of itemtype
-     * @param string $name      name of the option
-     * @param mixed  $defvalue  mixed default value for option
+     * @param string $itemtype name of itemtype
+     * @param string $name     name of the option
+     * @param mixed  $defvalue mixed default value for option
      *
      * @return mixed
      **/
@@ -1673,7 +1673,7 @@ class Session
      *
      * @since 0.83.3
      * @param bool $standalone
-     *    Generates a standalone token that will not be shared with other component of current request.
+     *                         Generates a standalone token that will not be shared with other component of current request.
      *
      * @return string
      **/
@@ -1791,7 +1791,7 @@ class Session
      *
      * @since 9.5.3
      *
-     * @param array  $add_params more criteria to check validity of IDOR tokens
+     * @param array $add_params more criteria to check validity of IDOR tokens
      *
      **/
     public static function getNewIDORToken(string $itemtype = "", array $add_params = []): string

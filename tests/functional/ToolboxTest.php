@@ -1483,7 +1483,7 @@ HTML;
     /**
      * Tests for Toolbox::getMioSizeFromString()
      *
-     * @param mixed  $expected
+     * @param mixed $expected
      *
      */
     #[DataProvider('getMioSizeFromStringProvider')]

@@ -221,8 +221,8 @@ final class AssetDefinition extends AbstractDefinition
 
     /**
      * Show field options for a core field.
-     * @param string $field_key The field key
-     * @param array $field_option_values Field option value overrides
+     * @param string $field_key           The field key
+     * @param array  $field_option_values Field option value overrides
      */
     public function showFieldOptionsForCoreField(string $field_key, array $field_option_values = []): void
     {

@@ -107,11 +107,11 @@ class Socket extends CommonDBChild
     /**
      * Print the version form
      *
-     * @param integer $ID ID of the item
-     * @param array $options
-     *     - target for the Form
-     *     - itemtype type of the item for add process
-     *     - items_id ID of the item for add process
+     * @param integer $ID      ID of the item
+     * @param array   $options
+     *                         - target for the Form
+     *                         - itemtype type of the item for add process
+     *                         - items_id ID of the item for add process
      *
      * @return boolean true if displayed  false if item not found or not right to display
      **/
@@ -270,10 +270,10 @@ class Socket extends CommonDBChild
     /**
      * Dropdown of Wiring Side
      *
-     * @param string $name   select name
+     * @param string $name    select name
      * @param array  $options possible options:
-     *    - value       : integer / preselected value (default 0)
-     *    - display
+     *                        - value       : integer / preselected value (default 0)
+     *                        - display
      * @return string ID of the select
      **/
     public static function dropdownWiringSide($name, $options = [], bool $full = false)
@@ -465,9 +465,9 @@ class Socket extends CommonDBChild
     /**
      * @since 0.84
      *
-     * @param $name            (default '')
-     * @param $values          (default '')
-     * @param array $options   array
+     * @param       $name    (default '')
+     * @param       $values  (default '')
+     * @param array $options array
      *
      * @return string
      **/

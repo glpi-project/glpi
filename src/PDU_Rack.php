@@ -171,8 +171,8 @@ class PDU_Rack extends CommonDBRelation
 
     /**
      * Get already filled places
-     * @param  Rack    $rack The current rack
-     * @param  integer $side The side of rack to check
+     * @param Rack    $rack The current rack
+     * @param integer $side The side of rack to check
      * @return Array   [position -> racks_id | 0]
      */
     public static function getFilled(Rack $rack, $side = 0)
@@ -671,7 +671,7 @@ JAVASCRIPT;
 
     /**
      * Get a side name from its index
-     * @param  integer $side See class constants and above `getSides`` method
+     * @param integer $side See class constants and above `getSides`` method
      * @return string        the side name
      */
     public static function getSideName($side)
@@ -681,7 +681,7 @@ JAVASCRIPT;
 
     /**
      * Return an iterator for all pdu used in a side of a rack
-     * @param  int|array $side Side to target, use an array for multiple sides
+     * @param int|array $side Side to target, use an array for multiple sides
      * @return DBmysqlIterator
      */
     public static function getForRackSide(Rack $rack, $side)
@@ -716,7 +716,7 @@ JAVASCRIPT;
 
     /**
      * Return the opposite side from a passed side
-     * @param  integer $side
+     * @param integer $side
      * @return false|integer       the opposite side
      */
     public static function getOtherSide($side)

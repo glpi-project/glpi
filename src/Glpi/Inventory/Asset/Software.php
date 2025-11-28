@@ -541,8 +541,8 @@ class Software extends InventoryAsset
     /**
      * Get software version comparison key
      *
-     * @param stdClass $val Version name
-     * @param integer   $softwares_id Software id
+     * @param stdClass $val          Version name
+     * @param integer  $softwares_id Software id
      *
      */
     protected function getVersionKey($val, $softwares_id): string

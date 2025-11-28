@@ -273,7 +273,7 @@ class GLPINetwork extends CommonGLPI
     /**
      * Executes a curl call
      *
-     * @param string $curl_error  will contains original curl error string if an error occurs
+     * @param string $curl_error will contains original curl error string if an error occurs
      *
      * @return boolean
      */

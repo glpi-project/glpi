@@ -782,14 +782,14 @@ final class DbUtils
     /**
      * Get SQL request to restrict to current entities of the user
      *
-     * @param string        $separator        separator in the begin of the request (default AND)
-     * @param string        $table            table where apply the limit (if needed, multiple tables queries)
-     * @param string        $field            field where apply the limit (id != entities_id)
-     * @param int|int[]|''  $value            entity to restrict (if not set use $_SESSION['glpiactiveentities_string'])
-     * @param bool          $is_recursive     need to use recursive process to find item
-     *                                        (field need to be named recursive)
-     * @param bool          $complete_request need to use a complete request and not a simple one
-     *                                        when have acces to all entities (used for reminders)
+     * @param string       $separator        separator in the begin of the request (default AND)
+     * @param string       $table            table where apply the limit (if needed, multiple tables queries)
+     * @param string       $field            field where apply the limit (id != entities_id)
+     * @param int|int[]|'' $value            entity to restrict (if not set use $_SESSION['glpiactiveentities_string'])
+     * @param bool         $is_recursive     need to use recursive process to find item
+     *                                       (field need to be named recursive)
+     * @param bool         $complete_request need to use a complete request and not a simple one
+     *                                       when have acces to all entities (used for reminders)
      *
      * @return string the WHERE clause to restrict
      *
@@ -889,13 +889,13 @@ final class DbUtils
      *
      * @since 9.2
      *
-     * @param string        $table            table where apply the limit (if needed, multiple tables queries)
-     * @param string        $field            field where apply the limit (id != entities_id)
-     * @param int|int[]|''  $value            entity to restrict (if not set use $_SESSION['glpiactiveentities'])
-     * @param bool|'auto'   $is_recursive     need to use recursive process to find item
-     *                                        (field need to be named recursive) (false by default, set to 'auto' to automatic detection)
-     * @param bool          $complete_request need to use a complete request and not a simple one
-     *                                        when have acces to all entities (used for reminders)
+     * @param string       $table            table where apply the limit (if needed, multiple tables queries)
+     * @param string       $field            field where apply the limit (id != entities_id)
+     * @param int|int[]|'' $value            entity to restrict (if not set use $_SESSION['glpiactiveentities'])
+     * @param bool|'auto'  $is_recursive     need to use recursive process to find item
+     *                                       (field need to be named recursive) (false by default, set to 'auto' to automatic detection)
+     * @param bool         $complete_request need to use a complete request and not a simple one
+     *                                       when have acces to all entities (used for reminders)
      *
      * @return array<mixed, mixed>
      */
@@ -982,8 +982,8 @@ final class DbUtils
     /**
      * Get the sons of an item in a tree dropdown.
      *
-     * @param string  $table table name
-     * @param int     $IDf   The ID of the father
+     * @param string $table table name
+     * @param int    $IDf   The ID of the father
      *
      * @return int[] IDs of the sons
      */
@@ -1287,10 +1287,10 @@ final class DbUtils
     /**
      * Get the Name of the element of a Dropdown Tree table
      *
-     * @param string  $table       Dropdown Tree table
-     * @param int     $ID          ID of the element
-     * @param bool    $withcomment whether to get the array with the comments
-     * @param bool    $translate   whether to get translated values
+     * @param string $table       Dropdown Tree table
+     * @param int    $ID          ID of the element
+     * @param bool   $withcomment whether to get the array with the comments
+     * @param bool   $translate   whether to get translated values
      *
      * @return ($withcomment is true ? array{name: string, comment: string} : string)
      *
@@ -1394,12 +1394,12 @@ final class DbUtils
      *
      *
      * @since 11.0.0 Usage of the `$withcomment` parameter is deprecated.
-     * @param string  $table       Dropdown Tree table
-     * @param int     $ID          ID of the element
-     * @param bool    $withcomment whether to get the array with the comments
-     * @param bool    $translate   whether to get translated values
-     * @param bool    $tooltip     whether to get a tooltip for additional comments
-     * @param string  $default     default value returned when item not exists
+     * @param string $table       Dropdown Tree table
+     * @param int    $ID          ID of the element
+     * @param bool   $withcomment whether to get the array with the comments
+     * @param bool   $translate   whether to get translated values
+     * @param bool   $tooltip     whether to get a tooltip for additional comments
+     * @param string $default     default value returned when item not exists
      * @return ($withcomment is true ? array{name: string, comment: string} : string)
      * @see DbUtils::getTreeLeafValueName
      */
@@ -1501,10 +1501,10 @@ final class DbUtils
     /**
      * Get the tree value name (corresponds to the relative completename).
      *
-     * @param string  $table     table name
-     * @param int     $ID        integer  value ID
-     * @param string  $wholename current name to complete (use for recursivity) (default '')
-     * @param int     $level     current level of recursion (default 0)
+     * @param string $table     table name
+     * @param int    $ID        integer  value ID
+     * @param string $wholename current name to complete (use for recursivity) (default '')
+     * @param int    $level     current level of recursion (default 0)
      *
      * @return array{0: string, 1:int}
      *
@@ -1543,8 +1543,8 @@ final class DbUtils
     /**
      * Get the sons of an item in a tree dropdown
      *
-     * @param string  $table table name
-     * @param int     $IDf   The ID of the father
+     * @param string $table table name
+     * @param int    $IDf   The ID of the father
      *
      * @return array<int, array{name: string, tree: array<int, mixed>}> Recursive tree
      *
@@ -1607,8 +1607,8 @@ final class DbUtils
     /**
      * Construct a tree from a list structure
      *
-     * @param array<int, array{name: string, parent: int}>  $list
-     * @param int                                           $root root of the tree
+     * @param array<int, array{name: string, parent: int}> $list
+     * @param int                                          $root root of the tree
      *
      * @return array<int, array{name: string, tree: array<int, mixed>}> Recursive tree
      *
@@ -1665,13 +1665,13 @@ final class DbUtils
      *
      * @since 11.0 `$link` parameter is deprecated
      * @since 11.0 `$cut` parameter is ignored
-     * @param integer       $ID           ID of the user.
-     * @param string|null   $login        login of the user
-     * @param string|null   $realname     realname of the user
-     * @param string|null   $firstname    firstname of the user
-     * @param integer       $link         include link
-     * @param integer       $cut          IGNORED PARAMETER
-     * @param boolean       $force_config force order and id_visible to use common config
+     * @param integer     $ID           ID of the user.
+     * @param string|null $login        login of the user
+     * @param string|null $realname     realname of the user
+     * @param string|null $firstname    firstname of the user
+     * @param integer     $link         include link
+     * @param integer     $cut          IGNORED PARAMETER
+     * @param boolean     $force_config force order and id_visible to use common config
      * @return string
      */
     public function formatUserName($ID, $login, $realname, $firstname, $link = 0, $cut = 0, $force_config = false)
@@ -1731,10 +1731,10 @@ final class DbUtils
     /**
      * Format a user link.
      *
-     * @param integer       $id           ID of the user.
-     * @param string|null   $login        login of the user
-     * @param string|null   $realname     realname of the user
-     * @param string|null   $firstname    firstname of the user
+     * @param integer     $id        ID of the user.
+     * @param string|null $login     login of the user
+     * @param string|null $realname  realname of the user
+     * @param string|null $firstname firstname of the user
      *
      */
     public function formatUserLink(int $id, ?string $login, ?string $realname, ?string $firstname): string
@@ -1762,10 +1762,10 @@ final class DbUtils
      * @since 11.0 `$link` parameter is deprecated.
      * @param int       $ID
      * @param int<0, 2> $link
-     *      0 = No link
-     *      1 = Show link to user.form.php
-     *      2 = return array with comments and link
-     * @param bool      $disable_anon   disable anonymization of username
+     *                                0 = No link
+     *                                1 = Show link to user.form.php
+     *                                2 = return array with comments and link
+     * @param bool      $disable_anon disable anonymization of username
      * @return ($link is 2 ? array{name: string, link: string, comment: string} : string)
      */
     public function getUserName($ID, $link = 0, $disable_anon = false)

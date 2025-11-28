@@ -816,7 +816,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     /**
-     * @param integer    $withtemplate
+     * @param integer $withtemplate
      *
      * @return void|false
      **/
@@ -966,7 +966,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
 
     /**
      * @param class-string<CommonDBTM> $itemtype
-     * @param int $items_id
+     * @param int                      $items_id
      * @return DBmysqlIterator
      */
     public function getActiveChangesForItem($itemtype, $items_id)
@@ -1035,9 +1035,9 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     /**
-     * @param int $start
-     * @param string $status             (default 'proces)
-     * @param bool $showgroupchanges  (true by default)
+     * @param int    $start
+     * @param string $status           (default 'proces)
+     * @param bool   $showgroupchanges (true by default)
      *
      * @return void
      **/
@@ -1544,7 +1544,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     /**
-     * @param int $ID
+     * @param int    $ID
      * @param string $forcetab
      * @return void
      */

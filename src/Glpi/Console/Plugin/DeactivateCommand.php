@@ -115,7 +115,7 @@ class DeactivateCommand extends AbstractPluginCommand
     /**
      * Check if deactivate method can be run for given plugin.
      *
-     * @param string  $directory
+     * @param string $directory
      *
      * @return boolean
      */

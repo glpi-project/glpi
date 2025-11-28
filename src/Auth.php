@@ -181,8 +181,8 @@ class Auth extends CommonGLPI
      * Check user existence in DB
      *
      * @global DBmysql $DB
-     * @param  array   $options conditions : array('name'=>'glpi')
-     *                                    or array('email' => 'test at test.com')
+     * @param array $options conditions : array('name'=>'glpi')
+     *                       or array('email' => 'test at test.com')
      *
      * @return integer {@link Auth::USER_DOESNT_EXIST}, {@link Auth::USER_EXISTS_WITHOUT_PWD} or {@link Auth::USER_EXISTS_WITH_PWD}
      */
@@ -274,10 +274,10 @@ class Auth extends CommonGLPI
      * Find a user in LDAP
      * Based on GRR auth system
      *
-     * @param array    $ldap_method ldap_method array to use
-     * @param string    $login       User Login
-     * @param string    $password    User Password
-     * @param bool      $error       Boolean flag that will be set to `true` if a LDAP error occurs during connection
+     * @param array  $ldap_method ldap_method array to use
+     * @param string $login       User Login
+     * @param string $password    User Password
+     * @param bool   $error       Boolean flag that will be set to `true` if a LDAP error occurs during connection
      *
      * @return false|array
      */
@@ -773,9 +773,9 @@ class Auth extends CommonGLPI
      * If testing more than one set of credentials, it is best to use a new Auth object for each set of credentials.
      * The {@link user} property may have some updated fields set here, but they will not be saved to the database
      * (unless this function was called by {@link login()} in which case the login function will trigger the update).
-     * @param string $login_name Login
+     * @param string $login_name     Login
      * @param string $login_password Password
-     * @param string $login_auth Type of auth
+     * @param string $login_auth     Type of auth
      * @return bool True if the user could log in, false otherwise
      */
     public function validateLogin(string $login_name, string $login_password, bool $noauto = false, string $login_auth = ''): bool
@@ -1015,11 +1015,11 @@ class Auth extends CommonGLPI
     /**
      * Manage use authentication and initialize the session
      *
-     * @param string  $login_name      Login
-     * @param string  $login_password  Password
-     * @param boolean $noauto          (false by default)
+     * @param string  $login_name     Login
+     * @param string  $login_password Password
+     * @param boolean $noauto         (false by default)
      * @param bool    $remember_me
-     * @param string  $login_auth      Type of auth - id of the auth
+     * @param string  $login_auth     Type of auth - id of the auth
      *
      * @return boolean (success)
      */
@@ -1178,11 +1178,11 @@ class Auth extends CommonGLPI
      * Print all the authentication methods
      *
      * @param array $options Possible options:
-     * - name : Name of the select (default is auths_id)
-     * - value : Selected value (default 0)
-     * - display : If true, the dropdown is displayed instead of returned (default true)
-     * - display_emptychoice : If true, an empty option is added (default true)
-     * - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
+     *                       - name : Name of the select (default is auths_id)
+     *                       - value : Selected value (default 0)
+     *                       - display : If true, the dropdown is displayed instead of returned (default true)
+     *                       - display_emptychoice : If true, an empty option is added (default true)
+     *                       - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
      *
      * @return void|string (Based on 'display' option)
      */
@@ -1463,7 +1463,7 @@ class Auth extends CommonGLPI
      * Check alternate authentication systems
      *
      * @param boolean $redirect        need to redirect (true) or get type of Auth system which match
-     *                                (false by default)
+     *                                 (false by default)
      * @param string  $redirect_string redirect string if exists (default '')
      *
      * @return false|integer nothing if redirect is true, else Auth system ID

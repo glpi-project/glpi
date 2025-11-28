@@ -455,7 +455,7 @@ TWIG, $twig_params);
      *
      * Print the form for a peripheral
      *
-     * @param CommonDBTM $peripheral         CommonDBTM object
+     * @param CommonDBTM $peripheral   CommonDBTM object
      * @param integer    $withtemplate Template or basic item (default 0)
      *
      **/
@@ -743,7 +743,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param array      $entities
+     * @param array $entities
      *
      * @return bool
      */
@@ -973,8 +973,8 @@ TWIG, $twig_params);
     /**
      * Returns peripheral assets data for given main asset.
      *
-     * @param CommonDBTM $asset Main asset.
-     * @param string $itemtype  Itemtype of the peripherals to retrieve.
+     * @param CommonDBTM $asset    Main asset.
+     * @param string     $itemtype Itemtype of the peripherals to retrieve.
      */
     private static function getPeripheralAssets(CommonDBTM $asset, string $itemtype): iterable
     {

@@ -88,12 +88,12 @@ class PrinterLog extends CommonDBChild
     /**
      * Get metrics
      *
-     * @param array|Printer|Asset $printers Printer instance
-     * @param array         $user_filters User filters
-     * @param string        $interval     Date interval string (e.g. 'P1Y' for 1 year)
-     * @param DateTime|null $start_date   Start date for the metrics range
-     * @param DateTime      $end_date     End date for the metrics range
-     * @param string        $format       Format for the metrics data ('dynamic', 'daily', 'weekly', 'monthly', 'yearly')
+     * @param array|Printer|Asset $printers     Printer instance
+     * @param array               $user_filters User filters
+     * @param string              $interval     Date interval string (e.g. 'P1Y' for 1 year)
+     * @param DateTime|null       $start_date   Start date for the metrics range
+     * @param DateTime            $end_date     End date for the metrics range
+     * @param string              $format       Format for the metrics data ('dynamic', 'daily', 'weekly', 'monthly', 'yearly')
      *
      * @return array An array of printer metrics data
      */

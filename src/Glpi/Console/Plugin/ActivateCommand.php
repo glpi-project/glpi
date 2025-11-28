@@ -115,7 +115,7 @@ class ActivateCommand extends AbstractPluginCommand
     /**
      * Check if activate method can be run for given plugin.
      *
-     * @param string  $directory
+     * @param string $directory
      *
      * @return boolean
      */

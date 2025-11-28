@@ -875,9 +875,9 @@ class Config extends CommonDBTM
     /**
      * Dropdown for global management config
      *
-     * @param string       $name   select name
-     * @param string       $value  default value
-     * @param integer|null $rand   rand
+     * @param string       $name  select name
+     * @param string       $value default value
+     * @param integer|null $rand  rand
      *
      * @return void
      */
@@ -1157,7 +1157,7 @@ class Config extends CommonDBTM
      *
      * @since 9.2 Method signature and return has changed
      *
-     * @param null|array $list     Extensions list (from plugins)
+     * @param null|array $list Extensions list (from plugins)
      *
      * @return array [
      *                'error'     => integer 2: missing extension,  1: missing optionnal extension, 0: OK,
@@ -1314,8 +1314,8 @@ class Config extends CommonDBTM
      *
      *
      * @since 10.0.0
-     * @param $context  string   context to get values (default for glpi is core)
-     * @param $name     string   config name
+     * @param $context string   context to get values (default for glpi is core)
+     * @param $name    string   config name
      * @return mixed
      */
     public static function getConfigurationValue(string $context, string $name)
@@ -1862,10 +1862,10 @@ class Config extends CommonDBTM
     /**
      * Try to find a valid sender email from the GLPI configuration
      *
-     * @param int|null $entities_id  Entity configuration to be used, default to
-     *                               global configuration
-     * @param bool     $no_reply     Should the configured "noreply" address be
-     *                               used (default: false)
+     * @param int|null $entities_id Entity configuration to be used, default to
+     *                              global configuration
+     * @param bool     $no_reply    Should the configured "noreply" address be
+     *                              used (default: false)
      *
      * @return array [email => sender address, name => sender name]
      */
@@ -1912,8 +1912,8 @@ class Config extends CommonDBTM
     /**
      * Try to find a valid "from" email from the GLPI configuration
      *
-     * @param int|null $entities_id  Entity configuration to be used, default to
-     *                               global configuration
+     * @param int|null $entities_id Entity configuration to be used, default to
+     *                              global configuration
      *
      * @return array [email => sender address, name => sender name]
      */
@@ -1925,8 +1925,8 @@ class Config extends CommonDBTM
     /**
      * Try to find a valid "admin_email" email from the GLPI configuration
      *
-     * @param int|null $entities_id  Entity configuration to be used, default to
-     *                               global configuration
+     * @param int|null $entities_id Entity configuration to be used, default to
+     *                              global configuration
      *
      * @return array [email => sender address, name => sender name]
      */
@@ -1938,8 +1938,8 @@ class Config extends CommonDBTM
     /**
      * Try to find a valid noreply email from the GLPI configuration
      *
-     * @param int|null $entities_id  Entity configuration to be used, default to
-     *                               global configuration
+     * @param int|null $entities_id Entity configuration to be used, default to
+     *                              global configuration
      *
      * @return array [email => noreply address, name => noreply name]
      */
@@ -1951,8 +1951,8 @@ class Config extends CommonDBTM
     /**
      * Try to find a valid replyto email from the GLPI configuration
      *
-     * @param int|null $entities_id  Entity configuration to be used, default to
-     *                               global configuration
+     * @param int|null $entities_id Entity configuration to be used, default to
+     *                              global configuration
      *
      * @return array [email => replyto address, name => replyto name]
      */
@@ -1964,9 +1964,9 @@ class Config extends CommonDBTM
     /**
      * Try to find a valid email from the GLPI configuration
      *
-     * @param string   $config_name  Configuration name
-     * @param int|null $entities_id  Entity configuration to be used, default to
-     *                               global configuration
+     * @param string   $config_name Configuration name
+     * @param int|null $entities_id Entity configuration to be used, default to
+     *                              global configuration
      *
      * @return array [email => address, name => name]
      */

@@ -89,7 +89,7 @@ interface FilterableInterface
     /**
      * Create or update filter for the current item
      *
-     * @param array  $search_criteria Search criteria used as filter
+     * @param array $search_criteria Search criteria used as filter
      *
      */
     public function saveFilter(array $search_criteria): bool;

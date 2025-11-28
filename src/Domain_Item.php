@@ -145,8 +145,8 @@ class Domain_Item extends CommonDBRelation
     }
 
     /**
-     * @param int $domains_id
-     * @param int $items_id
+     * @param int                      $domains_id
+     * @param int                      $items_id
      * @param class-string<CommonDBTM> $itemtype
      *
      * @return bool
@@ -183,8 +183,8 @@ class Domain_Item extends CommonDBRelation
     }
 
     /**
-     * @param int $domains_id
-     * @param int $items_id
+     * @param int                      $domains_id
+     * @param int                      $items_id
      * @param class-string<CommonDBTM> $itemtype
      *
      * @return bool
@@ -463,8 +463,8 @@ TWIG, $twig_params);
     /**
      * Show domains associated to an item
      *
-     * @param CommonDBTM $item      Object for which associated domains must be displayed
-     * @param integer $withtemplate
+     * @param CommonDBTM $item         Object for which associated domains must be displayed
+     * @param integer    $withtemplate
      *
      * @return void|false
      */

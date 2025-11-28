@@ -44,8 +44,8 @@ final class ArrayPathAccessor
 {
     /**
      * Check an element exists within the array at the given path.
-     * @param array $array The array to check
-     * @param string $path The path to the element
+     * @param array  $array          The array to check
+     * @param string $path           The path to the element
      * @param string $path_delimiter The delimiter used in the path
      */
     public static function hasElementByArrayPath(array $array, string $path, string $path_delimiter = '.'): bool
@@ -66,8 +66,8 @@ final class ArrayPathAccessor
 
     /**
      * Get an element within the array at the given path.
-     * @param array $array The array to check
-     * @param string $path The path to the element
+     * @param array  $array          The array to check
+     * @param string $path           The path to the element
      * @param string $path_delimiter The delimiter used in the path
      */
     public static function getElementByArrayPath(array $array, string $path, string $path_delimiter = '.'): mixed
@@ -88,9 +88,9 @@ final class ArrayPathAccessor
 
     /**
      * Set an element within the array at the given path.
-     * @param array $array The array to check
-     * @param string $path The path to the element
-     * @param mixed $value The value to set
+     * @param array  $array          The array to check
+     * @param string $path           The path to the element
+     * @param mixed  $value          The value to set
      * @param string $path_delimiter The delimiter used in the path
      */
     public static function setElementByArrayPath(array &$array, string $path, mixed $value, string $path_delimiter = '.'): void
@@ -111,8 +111,8 @@ final class ArrayPathAccessor
 
     /**
      * Get all paths of an array matching a regex pattern
-     * @param array $array The array to check
-     * @param string $regex The regex pattern to match against the full paths
+     * @param array  $array          The array to check
+     * @param string $regex          The regex pattern to match against the full paths
      * @param string $path_delimiter The delimiter used in the path
      */
     public static function getArrayPaths(array $array, string $regex = '/.*/', string $path_delimiter = '.'): array

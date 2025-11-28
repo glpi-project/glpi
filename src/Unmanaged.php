@@ -84,10 +84,10 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
     /**
      * Print the unmanaged form
      *
-     * @param $ID integer ID of the item
+     * @param $ID      integer ID of the item
      * @param $options array
-     *     - target filename : where to go when done.
-     *     - withtemplate boolean : template or basic item
+     *                 - target filename : where to go when done.
+     *                 - withtemplate boolean : template or basic item
      *
      * @return boolean item found
      **/

@@ -620,9 +620,9 @@ TWIG, $avatar_params) . $username;
     /**
      * Get entities for which a user have a right
      *
-     * @param $user_ID         user ID
-     * @param $is_recursive    check also using recursive rights (true by default)
-     * @param $default_first   user default entity first (false by default)
+     * @param $user_ID       user ID
+     * @param $is_recursive  check also using recursive rights (true by default)
+     * @param $default_first user default entity first (false by default)
      *
      * @return array of entities ID
      **/
@@ -738,8 +738,8 @@ TWIG, $avatar_params) . $username;
      *
      * @since 9.3 can pass sqlfilter as a parameter
      *
-     * @param int $user_ID      User ID
-     * @param array $sqlfilter  Additional filter (default [])
+     * @param int   $user_ID   User ID
+     * @param array $sqlfilter Additional filter (default [])
      *
      * @return array of the IDs of the profiles
      **/
@@ -772,10 +772,10 @@ TWIG, $avatar_params) . $username;
     /**
      * retrieve the entities allowed to a user for a profile
      *
-     * @param $users_id     Integer  ID of the user
-     * @param $profiles_id  Integer  ID of the profile
-     * @param $child        Boolean  when true, include child entity when recursive right
-     *                               (false by default)
+     * @param $users_id    Integer  ID of the user
+     * @param $profiles_id Integer  ID of the profile
+     * @param $child       Boolean  when true, include child entity when recursive right
+     *                     (false by default)
      *
      * @return Array of entity ID
      **/
@@ -814,9 +814,9 @@ TWIG, $avatar_params) . $username;
      *
      *
      * @since 0.85
-     * @param $users_id     Integer  ID of the user
-     * @param $child        Boolean  when true, include child entity when recursive right
-     *                               (false by default)
+     * @param $users_id Integer  ID of the user
+     * @param $child    Boolean  when true, include child entity when recursive right
+     *                  (false by default)
      *
      * @return Array of entity ID
      **/
@@ -886,7 +886,7 @@ TWIG, $avatar_params) . $username;
 
 
     /**
-     * @param $only_dynamic    (false by default)
+     * @param $only_dynamic (false by default)
      **/
     public static function deleteRights($user_ID, $only_dynamic = false)
     {

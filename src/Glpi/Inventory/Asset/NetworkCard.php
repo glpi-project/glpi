@@ -303,7 +303,7 @@ class NetworkCard extends Device
 
     /**
      * @param ?string $itemtype
-     * @param ?int $items_id
+     * @param ?int    $items_id
      *
      * @return void
      */

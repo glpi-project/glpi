@@ -5162,7 +5162,7 @@ class SearchTest extends DbTestCase
      * @param string     $searchtype     Positive searchtype (equals, under, contains, ...)
      * @param mixed      $value          Value being searched
      * @param null|array $not_expected   Optional, item expected to be found is the condition is negative
-     *                               If null, will be computed from $all and $expected
+     *                                   If null, will be computed from $all and $expected
      */
     private static function provideCriteriaWithSubqueries_getAllCombination(
         string $itemtype,

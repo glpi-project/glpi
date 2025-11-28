@@ -50,10 +50,10 @@ interface TypeInterface
      * Get the HTML code to use to display the custom field input in the asset form.
      *
      *
-     * @param string $name          The field `name` attribute
-     * @param mixed $value          The field current value
-     * @param string|null $label    The custom label to use, fallback to the label defined in the field definition
-     * @param bool $for_default     Indicates whether the field is used to configure the default value of the field definition
+     * @param string      $name        The field `name` attribute
+     * @param mixed       $value       The field current value
+     * @param string|null $label       The custom label to use, fallback to the label defined in the field definition
+     * @param bool        $for_default Indicates whether the field is used to configure the default value of the field definition
      */
     public function getFormInput(string $name, mixed $value, ?string $label = null, bool $for_default = false): string;
 

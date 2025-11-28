@@ -119,7 +119,7 @@ class ProfileRight extends CommonDBChild
     }
 
     /**
-     * @param $rights         array
+     * @param $rights array
      **/
     public static function getProfileRights($profiles_id, array $rights = [])
     {
@@ -142,7 +142,7 @@ class ProfileRight extends CommonDBChild
 
 
     /**
-     * @param $rights   array
+     * @param $rights array
      *
      * @return boolean
      **/
@@ -178,7 +178,7 @@ class ProfileRight extends CommonDBChild
 
 
     /**
-     * @param $rights   array
+     * @param $rights array
      *
      * @return boolean
      **/
@@ -248,7 +248,7 @@ class ProfileRight extends CommonDBChild
     /**
      * Update the rights of a profile (static since 0.90.1)
      *
-     * @param $rights         array
+     * @param $rights array
      */
     public static function updateProfileRights($profiles_id, array $rights = [])
     {
@@ -307,7 +307,7 @@ class ProfileRight extends CommonDBChild
     /**
      * @since 085
      *
-     * @param $options   array
+     * @param $options array
      **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {

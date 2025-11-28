@@ -171,9 +171,9 @@ class RuleBuilder
     /**
      * Add criteria
      *
-     * @param string $criteria key of an item of Rule::getCriterias()
-     * @param int $condition Rule::PATTERN_IS, ...
-     * @param mixed $pattern value to match
+     * @param string $criteria  key of an item of Rule::getCriterias()
+     * @param int    $condition Rule::PATTERN_IS, ...
+     * @param mixed  $pattern   value to match
      *
      */
     public function addCriteria(
@@ -193,8 +193,8 @@ class RuleBuilder
      * Add action
      *
      * @param string $action_type 'assign', etc
-     * @param string $field key of an item of Rule::getActions()
-     * @param mixed $value
+     * @param string $field       key of an item of Rule::getActions()
+     * @param mixed  $value
      *
      */
     public function addAction(

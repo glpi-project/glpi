@@ -210,7 +210,7 @@ class View extends CommonGLPI
      * Display installed tab (only currently installed plugins)
      *
      * @param bool   $force_refresh do not rely on cache to get plugins list
-     * @param bool   $only_lis display only the li tags in return html (used by ajax queries)
+     * @param bool   $only_lis      display only the li tags in return html (used by ajax queries)
      * @param string $string_filter filter the plugin by given string
      *
      * @return void display things
@@ -274,12 +274,12 @@ class View extends CommonGLPI
     /**
      * Display discover tab (all availble plugins)
      *
-     * @param bool   $force do not rely on cache to get plugins list
-     * @param bool   $only_lis display only the li tags in return html (used by ajax queries)
-     * @param string $tag_filter filter the plugin list by given tag
+     * @param bool   $force         do not rely on cache to get plugins list
+     * @param bool   $only_lis      display only the li tags in return html (used by ajax queries)
+     * @param string $tag_filter    filter the plugin list by given tag
      * @param string $string_filter filter the plugin by given string
-     * @param int    $page What's sub page of plugin we want to display
-     * @param string $sort sort-alpha-asc|sort-alpha-desc|sort-dl|sort-update|sort-added|sort-note
+     * @param int    $page          What's sub page of plugin we want to display
+     * @param string $sort          sort-alpha-asc|sort-alpha-desc|sort-dl|sort-update|sort-added|sort-note
      *
      * @return void display things
      */
@@ -335,13 +335,13 @@ class View extends CommonGLPI
     /**
      * Display a list of plugins
      *
-     * @param array $plugins list of plugins returned by
-     * - \Plugin::getList
-     * - \Glpi\Marketplace\Api\Plugins::getPaginatedPlugins
-     * @param string $tab current display tab (discover or installed)
-     * @param bool $only_lis display only the li tags in return html (used by ajax queries)
-     * @param int $nb_plugins total of plugins ($plugins contains only the current page)
-     * @param string $sort sort-alpha-asc|sort-alpha-desc|sort-dl|sort-update|sort-added|sort-note
+     * @param array  $plugins    list of plugins returned by
+     *                           - \Plugin::getList
+     *                           - \Glpi\Marketplace\Api\Plugins::getPaginatedPlugins
+     * @param string $tab        current display tab (discover or installed)
+     * @param bool   $only_lis   display only the li tags in return html (used by ajax queries)
+     * @param int    $nb_plugins total of plugins ($plugins contains only the current page)
+     * @param string $sort       sort-alpha-asc|sort-alpha-desc|sort-dl|sort-update|sort-added|sort-note
      *
      * @return false|void displays things
      */
@@ -516,8 +516,8 @@ JS;
     /**
      * Return HTML part for plugin card
      *
-     * @param array $plugin information (title, description, etc) of the plugins
-     * @param string $tab current displayed tab (installed or discover)
+     * @param array  $plugin information (title, description, etc) of the plugins
+     * @param string $tab    current displayed tab (installed or discover)
      *
      * @return string the plugin card
      */
@@ -906,9 +906,9 @@ JS;
     /**
      * Retrieve localized description for a given plugin and matching the session lang
      *
-     * @param array $plugin data of the plugin.
-     *                      in the `description` key, we must found an array of localized descirption
-     *                      indexed by lang key, return the good one
+     * @param array  $plugin  data of the plugin.
+     *                        in the `description` key, we must found an array of localized descirption
+     *                        indexed by lang key, return the good one
      * @param string $version short_description or long_description
      *
      * @return string the localized description

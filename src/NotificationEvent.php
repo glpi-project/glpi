@@ -107,11 +107,11 @@ class NotificationEvent extends CommonDBTM
      *
      *
      * @since 11.0.0 Param `$trigger` has been added.
-     * @param string            $event   the event raised for the itemtype
-     * @param CommonGLPI        $item    the object which raised the event
-     * @param array             $options array of options used
-     * @param CommonDBTM|null   $trigger item that raises the notification (in case notification was raised by a child item)
-     * @param string            $label   used for debugEvent()
+     * @param string          $event   the event raised for the itemtype
+     * @param CommonGLPI      $item    the object which raised the event
+     * @param array           $options array of options used
+     * @param CommonDBTM|null $trigger item that raises the notification (in case notification was raised by a child item)
+     * @param string          $label   used for debugEvent()
      * @return boolean
      **/
     public static function raiseEvent($event, $item, $options = [], ?CommonDBTM $trigger = null, $label = '')

@@ -285,10 +285,10 @@ final class SearchEngine
      *
      * @since 0.85
      *
-     * @param string $itemtype      Item type
-     * @param array  $params        Array of parameters
-     *                               may include sort, order, start, list_limit, deleted, criteria, metacriteria
-     * @param array  $forcedisplay  Array of columns to display (default empty = empty use display pref and search criteria)
+     * @param string $itemtype     Item type
+     * @param array  $params       Array of parameters
+     *                             may include sort, order, start, list_limit, deleted, criteria, metacriteria
+     * @param array  $forcedisplay Array of columns to display (default empty = empty use display pref and search criteria)
      *
      * @return array prepare to be used for a search (include criteria and others needed information)
      **/
@@ -578,8 +578,8 @@ final class SearchEngine
      * - The $_GET or $get array is passed to the search input class to be parsed and have some default values set.
      * - The returned parameters are then merged with the $params array. Anything set in both arrays will be overwritten by the result of {@link SearchInputInterface::manageParams()}.
      * @param class-string<CommonDBTM> $itemtype
-     * @param array $params Array of options:
-     *                       - (bool) init_session_data - default: false
+     * @param array                    $params   Array of options:
+     *                                           - (bool) init_session_data - default: false
      */
     public static function show(string $itemtype, array $params = []): void
     {
@@ -654,9 +654,9 @@ final class SearchEngine
     }
 
     /**
-     * @param string $itemtype The itemtype being displayed
-     * @param array $params The search parameters
-     * @param array $forced_display Array of columns to display (default empty = empty use display pref and search criteria)
+     * @param string $itemtype       The itemtype being displayed
+     * @param array  $params         The search parameters
+     * @param array  $forced_display Array of columns to display (default empty = empty use display pref and search criteria)
      */
     public static function showOutput(string $itemtype, array $params, array $forced_display = []): void
     {

@@ -89,15 +89,15 @@ class DBConnection extends CommonGLPI
      *
      * @since 9.1
      *
-     * @param string  $host                      The DB host
-     * @param string  $user                      The DB user
-     * @param string  $password                  The DB password
-     * @param string  $dbname                    The name of the DB
-     * @param boolean $use_timezones             Flag that indicates if timezones usage should be activated
-     * @param boolean $log_deprecation_warnings  Flag that indicates if DB deprecation warnings should be logged
-     * @param boolean $use_utf8mb4               Flag that indicates if utf8mb4 charset/collation should be used
-     * @param boolean $allow_datetime            Flag that indicates if datetime fields usage should be allowed
-     * @param boolean $allow_signed_keys         Flag that indicates if signed integers in primary/foreign keys usage should be allowed
+     * @param string  $host                     The DB host
+     * @param string  $user                     The DB user
+     * @param string  $password                 The DB password
+     * @param string  $dbname                   The name of the DB
+     * @param boolean $use_timezones            Flag that indicates if timezones usage should be activated
+     * @param boolean $log_deprecation_warnings Flag that indicates if DB deprecation warnings should be logged
+     * @param boolean $use_utf8mb4              Flag that indicates if utf8mb4 charset/collation should be used
+     * @param boolean $allow_datetime           Flag that indicates if datetime fields usage should be allowed
+     * @param boolean $allow_signed_keys        Flag that indicates if signed integers in primary/foreign keys usage should be allowed
      *
      * @return boolean
      */
@@ -160,9 +160,9 @@ class DBConnection extends CommonGLPI
      *
      *
      * @since 10.0.0
-     * @param string $name
+     * @param string      $name
      * @param string|bool $value
-     * @param bool   $update_slave
+     * @param bool        $update_slave
      * @return boolean
      */
     public static function updateConfigProperty($name, $value, $update_slave = true, string $config_dir = GLPI_CONFIG_DIR): bool
@@ -177,7 +177,7 @@ class DBConnection extends CommonGLPI
      *
      *
      * @since 10.0.0
-     * @param bool   $update_slave
+     * @param bool $update_slave
      * @return boolean
      */
     public static function updateConfigProperties(array $properties, $update_slave = true, string $config_dir = GLPI_CONFIG_DIR): bool
@@ -234,15 +234,15 @@ class DBConnection extends CommonGLPI
     /**
      * Create slave DB configuration file
      *
-     * @param string  $host                      The DB host
-     * @param string  $user                      The DB user
-     * @param string  $password                  The DB password
-     * @param string  $dbname                    The name of the DB
-     * @param boolean $use_timezones             Flag that indicates if timezones usage should be activated
-     * @param boolean $log_deprecation_warnings  Flag that indicates if DB deprecation warnings should be logged
-     * @param boolean $use_utf8mb4               Flag that indicates if utf8mb4 charset/collation should be used
-     * @param boolean $allow_datetime            Flag that indicates if datetime fields usage should be allowed
-     * @param boolean $allow_signed_keys         Flag that indicates if signed integers in primary/foreign keys usage should be allowed
+     * @param string  $host                     The DB host
+     * @param string  $user                     The DB user
+     * @param string  $password                 The DB password
+     * @param string  $dbname                   The name of the DB
+     * @param boolean $use_timezones            Flag that indicates if timezones usage should be activated
+     * @param boolean $log_deprecation_warnings Flag that indicates if DB deprecation warnings should be logged
+     * @param boolean $use_utf8mb4              Flag that indicates if utf8mb4 charset/collation should be used
+     * @param boolean $allow_datetime           Flag that indicates if datetime fields usage should be allowed
+     * @param boolean $allow_signed_keys        Flag that indicates if signed integers in primary/foreign keys usage should be allowed
      *
      * @return boolean for success
      **/
@@ -312,7 +312,7 @@ class DBConnection extends CommonGLPI
     /**
      * Read slave DB configuration file
      *
-     * @param integer $choice  Host number (default NULL)
+     * @param integer $choice Host number (default NULL)
      *
      * @return DBmysql|void object
      **/
@@ -546,7 +546,7 @@ class DBConnection extends CommonGLPI
     /**
      * Get delay between slave and master
      *
-     * @param integer $choice  Host number (default NULL)
+     * @param integer $choice Host number (default NULL)
      *
      * @return integer
      **/

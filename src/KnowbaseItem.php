@@ -193,7 +193,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      * Get the form page URL for the current classe
      *
      * @param array   $params parameters to add to the URL
-     * @param boolean $full  path or relative one
+     * @param boolean $full   path or relative one
      **/
     public static function getFormURLWithParam($params = [], $full = true): string
     {
@@ -951,7 +951,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     /**
      * Print out an HTML form for Search knowbase item
      *
-     * @param $options   $_GET
+     * @param $options $_GET
      *
      * @return void
      **/
@@ -1006,8 +1006,8 @@ TWIG, $twig_params);
      *
      * @since 0.83
      *
-     * @param array $params (contains, knowbaseitemcategories_id, faq)
-     * @param string $type search type : browse / search (default search)
+     * @param array  $params (contains, knowbaseitemcategories_id, faq)
+     * @param string $type   search type : browse / search (default search)
      *
      * @return array : SQL request
      **/
@@ -1342,8 +1342,8 @@ TWIG, $twig_params);
     /**
      * Print out list kb item
      *
-     * @param array $options            $_GET
-     * @param string $type search type : browse / search (default search)
+     * @param array  $options $_GET
+     * @param string $type    search type : browse / search (default search)
      **/
     public static function showList($options, $type = 'search')
     {
@@ -2061,8 +2061,8 @@ TWIG, $twig_params);
     /**
      * Get ids of KBI in given category
      *
-     * @param int           $category_id   id of the parent category
-     * @param KnowbaseItem  $kbi           used only for unit tests
+     * @param int          $category_id id of the parent category
+     * @param KnowbaseItem $kbi         used only for unit tests
      *
      * @return array        Array of ids
      */

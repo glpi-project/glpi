@@ -91,42 +91,42 @@ use function Safe\simplexml_load_string;
 
 /**
  * Inventory configuration
- * @property int $import_software
- * @property int $import_volume
- * @property int $import_antivirus
- * @property int $import_registry
- * @property int $import_process
- * @property int $import_vm
- * @property int $import_monitor_on_partial_sn
- * @property int $import_unmanaged
- * @property int $component_processor
- * @property int $component_memory
- * @property int $component_harddrive
- * @property int $component_networkcard
- * @property int $component_graphiccard
- * @property int $component_soundcard
- * @property int $component_drive
- * @property int $component_networkdrive
- * @property int $component_networkcardvirtual
- * @property int $component_control
- * @property int $component_battery
- * @property int $component_simcard
- * @property int $states_id_default
- * @property int $entities_id_default
- * @property int $location
- * @property int $group
- * @property int $vm_type
- * @property int $vm_components
- * @property int $vm_as_computer
- * @property int $component_removablemedia
- * @property int $component_powersupply
- * @property int $inventory_frequency
- * @property int $import_monitor
- * @property int $import_printer
- * @property int $import_peripheral
- * @property int $import_env
+ * @property int    $import_software
+ * @property int    $import_volume
+ * @property int    $import_antivirus
+ * @property int    $import_registry
+ * @property int    $import_process
+ * @property int    $import_vm
+ * @property int    $import_monitor_on_partial_sn
+ * @property int    $import_unmanaged
+ * @property int    $component_processor
+ * @property int    $component_memory
+ * @property int    $component_harddrive
+ * @property int    $component_networkcard
+ * @property int    $component_graphiccard
+ * @property int    $component_soundcard
+ * @property int    $component_drive
+ * @property int    $component_networkdrive
+ * @property int    $component_networkcardvirtual
+ * @property int    $component_control
+ * @property int    $component_battery
+ * @property int    $component_simcard
+ * @property int    $states_id_default
+ * @property int    $entities_id_default
+ * @property int    $location
+ * @property int    $group
+ * @property int    $vm_type
+ * @property int    $vm_components
+ * @property int    $vm_as_computer
+ * @property int    $component_removablemedia
+ * @property int    $component_powersupply
+ * @property int    $inventory_frequency
+ * @property int    $import_monitor
+ * @property int    $import_printer
+ * @property int    $import_peripheral
+ * @property int    $import_env
  * @property string $auth_required
- * @property bool $enabled_inventory
+ * @property bool   $enabled_inventory
  */
 class Conf extends CommonGLPI
 {
@@ -225,8 +225,8 @@ class Conf extends CommonGLPI
     /**
      * Import contents of a file
      *
-     * @param ?string $path              File path
-     * @param string  $contents          File contents
+     * @param ?string $path     File path
+     * @param string  $contents File contents
      *
      * @return array [success => bool, message => ?string, items => CommonDBTM[], request => Glpi\Inventory\Request]
      */

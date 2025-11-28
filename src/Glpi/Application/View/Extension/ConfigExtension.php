@@ -68,10 +68,10 @@ class ConfigExtension extends AbstractExtension
     /**
      * Get entity configuration value.
      *
-     * @param string        $key              Configuration key.
-     * @param int           $entity_id        Entity ID.
-     * @param mixed         $default_value    Default value.
-     * @param null|string   $inheritence_key  Key to use for inheritance check if different than key used to get value.
+     * @param string      $key             Configuration key.
+     * @param int         $entity_id       Entity ID.
+     * @param mixed       $default_value   Default value.
+     * @param null|string $inheritence_key Key to use for inheritance check if different than key used to get value.
      *
      * @return mixed
      */

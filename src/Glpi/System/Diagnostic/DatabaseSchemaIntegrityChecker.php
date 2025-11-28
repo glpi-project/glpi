@@ -145,13 +145,13 @@ class DatabaseSchemaIntegrityChecker
     private $db_version;
 
     /**
-     * @param DBmysql $db                                 DB instance.
-     * @param bool $strict                                Ignore differences that has no effect on application (columns and keys order for instance).
-     * @param bool $ignore_innodb_migration               Do not check tokens related to migration from "MyISAM" to "InnoDB".
-     * @param bool $ignore_timestamps_migration           Do not check tokens related to migration from "datetime" to "timestamp".
-     * @param bool $ignore_utf8mb4_migration              Do not check tokens related to migration from "utf8" to "utf8mb4".
-     * @param bool $ignore_dynamic_row_format_migration   Do not check tokens related to "DYNAMIC" row format migration.
-     * @param bool $ignore_unsigned_keys_migration        Do not check tokens related to migration from signed to unsigned integers in primary/foreign keys.
+     * @param DBmysql $db                                  DB instance.
+     * @param bool    $strict                              Ignore differences that has no effect on application (columns and keys order for instance).
+     * @param bool    $ignore_innodb_migration             Do not check tokens related to migration from "MyISAM" to "InnoDB".
+     * @param bool    $ignore_timestamps_migration         Do not check tokens related to migration from "datetime" to "timestamp".
+     * @param bool    $ignore_utf8mb4_migration            Do not check tokens related to migration from "utf8" to "utf8mb4".
+     * @param bool    $ignore_dynamic_row_format_migration Do not check tokens related to "DYNAMIC" row format migration.
+     * @param bool    $ignore_unsigned_keys_migration      Do not check tokens related to migration from signed to unsigned integers in primary/foreign keys.
      */
     public function __construct(
         DBmysql $db,
@@ -246,9 +246,9 @@ class DatabaseSchemaIntegrityChecker
     /**
      * Check if there is differences between effective schema and schema contained in given file.
      *
-     * @param string $schema_path           The absolute path to the schema file
-     * @param bool $include_unknown_tables  Indicates whether unknown existing tables should be included in results
-     * @param string $context               Context used for unknown tables identification (could be 'core' or 'plugin:plugin_key')
+     * @param string $schema_path            The absolute path to the schema file
+     * @param bool   $include_unknown_tables Indicates whether unknown existing tables should be included in results
+     * @param string $context                Context used for unknown tables identification (could be 'core' or 'plugin:plugin_key')
      *
      * @return array    List of tables that differs from the expected schema.
      *                  Keys are table names, and each entry has following properties:
@@ -326,9 +326,9 @@ class DatabaseSchemaIntegrityChecker
     /**
      * Check if there is differences between effective schema and expected schema for given version/context.
      *
-     * @param string|null $schema_version   Installed schema version
-     * @param bool $include_unknown_tables  Indicates whether unknown existing tables should be included in results
-     * @param string $context               Context used for unknown tables identification (could be 'core' or 'plugin:plugin_key')
+     * @param string|null $schema_version         Installed schema version
+     * @param bool        $include_unknown_tables Indicates whether unknown existing tables should be included in results
+     * @param string      $context                Context used for unknown tables identification (could be 'core' or 'plugin:plugin_key')
      *
      * @return array    List of tables that differs from the expected schema.
      *                  Keys are table names, and each entry has following properties:
@@ -743,8 +743,8 @@ class DatabaseSchemaIntegrityChecker
     /**
      * Get schema file path for given version.
      *
-     * @param string|null $schema_version   Installed schema version
-     * @param string $context               Context used for unknown tables identification (could be 'core' or 'plugin:plugin_key')
+     * @param string|null $schema_version Installed schema version
+     * @param string      $context        Context used for unknown tables identification (could be 'core' or 'plugin:plugin_key')
      *
      */
     private function getSchemaPath(?string $schema_version = null, string $context = 'core'): ?string
@@ -794,8 +794,8 @@ class DatabaseSchemaIntegrityChecker
     /**
      * Check if schema integrity can be checked for given version/context.
      *
-     * @param string|null $schema_version   Installed schema version
-     * @param string $context               Context used for unknown tables identification (could be 'core' or 'plugin:plugin_key')
+     * @param string|null $schema_version Installed schema version
+     * @param string      $context        Context used for unknown tables identification (could be 'core' or 'plugin:plugin_key')
      *
      */
     final public function canCheckIntegrity(?string $schema_version = null, string $context = 'core'): bool

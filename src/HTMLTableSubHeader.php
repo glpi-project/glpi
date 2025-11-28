@@ -43,8 +43,8 @@ class HTMLTableSubHeader extends HTMLTableHeader implements HTMLCompositeTableIn
     public $numberOfSubHeaders;
 
     /**
-     * @param string               $name
-     * @param string               $content
+     * @param string $name
+     * @param string $content
      **/
     public function __construct(
         HTMLTableSuperHeader $header,

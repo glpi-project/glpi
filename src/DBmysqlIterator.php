@@ -113,7 +113,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      *
      * @since 11.0.0 The `$debug` parameter has been removed.
-     * @param array   $criteria Query criteria
+     * @param array $criteria Query criteria
      */
     public function execute($criteria): self
     {
@@ -132,7 +132,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      *
      * @since 11.0.0 The `$log` parameter has been removed.
-     * @param array   $criteria Query criteria
+     * @param array $criteria Query criteria
      */
     public function buildQuery($criteria): void
     {
@@ -500,7 +500,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      * Generate the SQL statement for a array of criteria
      *
      * @param array|string $crit Criteria
-     * @param string   $bool Boolean operator (default AND)
+     * @param string       $bool Boolean operator (default AND)
      *
      * @return string
      */
@@ -627,11 +627,11 @@ class DBmysqlIterator implements SeekableIterator, Countable
      * @since 9.5.0
      *
      * @param mixed $value The value to handle. This may be:
-     *                      - an instance of AbstractQuery
-     *                      - a QueryExpression
-     *                      - a value quoted as a name in the db engine
-     *                      - a QueryParam
-     *                      - a value or an array of values
+     *                     - an instance of AbstractQuery
+     *                     - a QueryExpression
+     *                     - a value quoted as a name in the db engine
+     *                     - a QueryParam
+     *                     - a value or an array of values
      *
      * @return string
      */
@@ -671,7 +671,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      * @since 9.4.0
      *
      * @param array $joinarray Array of joins to analyse
-     *       [jointype => [table => criteria]]
+     *                         [jointype => [table => criteria]]
      *
      * @return string
      */

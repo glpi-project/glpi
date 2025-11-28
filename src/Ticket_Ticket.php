@@ -115,7 +115,7 @@ class Ticket_Ticket extends CommonITILObject_CommonITILObject
      *
      *
      * @deprecated 11.0.0 Use CommonITILObject_CommonITILObject::getLinkedTo()
-     * @param integer $ID ID of the ticket id
+     * @param integer $ID                ID of the ticket id
      * @param boolean $check_view_rights check view rights
      * @return array of linked tickets  array(id=>linktype)
      **/

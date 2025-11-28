@@ -52,7 +52,7 @@ interface AssignableItemInterface
     public static function getAssignableVisiblityCriteria(): array;
 
     /**
-     * @param string $interface
+     * @param         string               $interface
      * @phpstan-param 'central'|'helpdesk' $interface
      * @return array
      * @phpstan-return array<integer, string|array>

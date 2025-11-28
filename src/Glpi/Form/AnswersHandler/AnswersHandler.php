@@ -89,7 +89,7 @@ final class AnswersHandler
      * Check if the given answers are valid for the given form
      *
      * @param Form|Section $questions_container The form or section to check
-     * @param array $answers The answers to check
+     * @param array        $answers             The answers to check
      * @return ValidationResult The validation result
      */
     public function validateAnswers(

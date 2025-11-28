@@ -118,8 +118,8 @@ abstract class ITILTemplateHiddenField extends ITILTemplateField
      *
      * @since 0.83
      *
-     * @param $ID                    integer  the template ID
-     * @param $withtypeandcategory   boolean  with type and category (false by default)
+     * @param $ID                  integer  the template ID
+     * @param $withtypeandcategory boolean  with type and category (false by default)
      *
      * @return array of hidden fields
      **/

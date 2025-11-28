@@ -119,7 +119,7 @@ class NotificationTemplateTranslation extends CommonDBChild
 
     /**
      * @param NotificationTemplate $template object
-     * @param array $options
+     * @param array                $options
      **/
     public function showSummary(NotificationTemplate $template, $options = [])
     {

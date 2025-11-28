@@ -532,11 +532,11 @@ class Group extends CommonTreeDropdown
      *
      * @since 0.83
      *
-     * @param bool $tech     Whether to fetch items related to technician assignment or not.
+     * @param bool    $tech  Whether to fetch items related to technician assignment or not.
      * @param boolean $tree  Include child groups
      * @param boolean $user  Include members (users)
      * @param integer $start First row to retrieve
-     * @param array $res     Result filled on ouput
+     * @param array   $res   Result filled on ouput
      *
      * @return integer total of items
      **/

@@ -251,7 +251,7 @@ class SourceCodeIntegrityChecker
     /**
      * Get the diff (unified diff format) between current source code and expected source code.
      *
-     * @param bool $allow_download  Whether the release download is allowed.
+     * @param bool  $allow_download Whether the release download is allowed.
      * @param array $errors         Array on which any errors will be added.
      */
     public function getDiff(bool $allow_download = false, array &$errors = []): ?string

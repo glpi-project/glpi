@@ -1046,7 +1046,7 @@ class DBmysql
      *
      *
      * @since 11.0.0 The `$debug` parameter has been removed.
-     * @param array|QueryUnion  $criteria Query criteria
+     * @param array|QueryUnion $criteria Query criteria
      * @return DBmysqlIterator
      */
     public function request($criteria)
@@ -1290,8 +1290,8 @@ class DBmysql
      *
      * @since 9.3
      *
-     * @param string $table  Table name
-     * @param QuerySubQuery|array  $params Array of field => value pairs or a QuerySubQuery for INSERT INTO ... SELECT
+     * @param         string                             $table  Table name
+     * @param         QuerySubQuery|array                $params Array of field => value pairs or a QuerySubQuery for INSERT INTO ... SELECT
      * @phpstan-param array<string, mixed>|QuerySubQuery $params
      *
      * @return string
@@ -1332,8 +1332,8 @@ class DBmysql
      *
      * @since 9.3
      *
-     * @param string $table  Table name
-     * @param QuerySubQuery|array  $params Array of field => value pairs or a QuerySubQuery for INSERT INTO ... SELECT
+     * @param string              $table  Table name
+     * @param QuerySubQuery|array $params Array of field => value pairs or a QuerySubQuery for INSERT INTO ... SELECT
      *
      * @return mysqli_result|boolean Query result handler
      */
@@ -1353,7 +1353,7 @@ class DBmysql
      *
      * @deprecated 11.0.0
      * @since 9.3
-     * @param string $table  Table name
+     * @param string $table   Table name
      * @param array  $params  Query parameters ([field name => field value)
      * @param string $message Explanation of query (default '')
      * @return mysqli_result|boolean Query result handler
@@ -1375,7 +1375,7 @@ class DBmysql
      * @param string $table   Table name
      * @param array  $params  Query parameters ([field name => field value)
      * @param array  $clauses Clauses to use. If not 'WHERE' key specified, will b the WHERE clause (@see DBmysqlIterator capabilities)
-     * @param array  $joins  JOINS criteria array
+     * @param array  $joins   JOINS criteria array
      * @return string
      */
     public function buildUpdate($table, $params, $clauses, array $joins = [])
@@ -1505,9 +1505,9 @@ class DBmysql
 
     /**
      * @param string $table
-     * @param array $params
-     * @param array $where
-     * @param bool $onlyone
+     * @param array  $params
+     * @param array  $where
+     * @param bool   $onlyone
      *
      */
     public function buildUpdateOrInsert($table, $params, $where, $onlyone = true): string
@@ -1530,9 +1530,9 @@ class DBmysql
      *
      *
      * @since 9.4.0 $joins parameter added
-     * @param string $table  Table name
-     * @param array  $where  WHERE clause (@see DBmysqlIterator capabilities)
-     * @param array  $joins  JOINS criteria array
+     * @param string $table Table name
+     * @param array  $where WHERE clause (@see DBmysqlIterator capabilities)
+     * @param array  $joins JOINS criteria array
      * @return string
      */
     public function buildDelete($table, $where, array $joins = [])
@@ -1558,9 +1558,9 @@ class DBmysql
      *
      *
      * @since 9.4.0 $joins parameter added
-     * @param string $table  Table name
-     * @param array  $where  WHERE clause
-     * @param array  $joins  JOINS criteria array
+     * @param string $table Table name
+     * @param array  $where WHERE clause
+     * @param array  $joins JOINS criteria array
      * @return mysqli_result|boolean Query result handler
      */
     public function delete($table, $where, array $joins = [])

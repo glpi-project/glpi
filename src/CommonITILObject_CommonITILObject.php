@@ -281,7 +281,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
      * Get links to given item.
      *
      * @param string $itemtype Itemtype of the ITIL Object (Ticket, Change, or Problem)
-     * @param int $items_id ID of the ITIL Object
+     * @param int    $items_id ID of the ITIL Object
      *
      * @return array Array of linked ITIL Objects  array(id=>linktype)
      **/
@@ -360,7 +360,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
      * Get linked CommonITILObjects to a specific CommonITILObject
      *
      * @param string $itemtype Itemtype of the ITIL Object (Ticket, Change, or Problem)
-     * @param int $items_id ID of the ITIL Object
+     * @param int    $items_id ID of the ITIL Object
      *
      * @return array Array of linked ITIL Objects  array(id=>linktype)
      **/
@@ -506,12 +506,12 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
     /**
      * Count linked ITIL Objects.
      *
-     * @param class-string<CommonITILObject> $itemtype The given item's type
-     * @param int $items_id The given item's ID
-     * @param array<int> $status Optional array of statuses that the linked item must have to be included.
-     *  If no statuses are specified, then linked items of all statuses will be included.
-     * @param array<int> $link_types Optional array of link types that the linked item must have to be included.
-     *  If no link types are specified, then linked items of all link types will be included.
+     * @param class-string<CommonITILObject> $itemtype   The given item's type
+     * @param int                            $items_id   The given item's ID
+     * @param array<int>                     $status     Optional array of statuses that the linked item must have to be included.
+     *                                                   If no statuses are specified, then linked items of all statuses will be included.
+     * @param array<int>                     $link_types Optional array of link types that the linked item must have to be included.
+     *                                                   If no link types are specified, then linked items of all link types will be included.
      * @return int The number of linked ITIL Objects
      */
     public static function countLinksByStatus(string $itemtype, int $items_id, array $status = [], array $link_types = []): int
@@ -588,8 +588,8 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
 
     /**
      * @param class-string<CommonDBTM> $itemtype
-     * @param int $items_id
-     * @param array $changes
+     * @param int                      $items_id
+     * @param array                    $changes
      *
      */
     public static function manageLinksOnChange($itemtype, $items_id, $changes): void

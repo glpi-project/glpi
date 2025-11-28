@@ -683,7 +683,7 @@ TWIG, $twig_params);
      * Elapsed time between two dates in seconds
      *
      * @param string $start start date formated 'Y-m-d H:i:s'
-     * @param string $end end date formated 'Y-m-d H:i:s'
+     * @param string $end   end date formated 'Y-m-d H:i:s'
      *
      * @return integer elapsed time in seconds
      **/
@@ -713,8 +713,8 @@ TWIG, $twig_params);
     /**
      * Get due date for current agreement
      *
-     * @param string  $start_date        datetime start date ('Y-m-d H:i:s')
-     * @param integer $additional_delay  integer  additional delay to add or substract (for waiting time)
+     * @param string  $start_date       datetime start date ('Y-m-d H:i:s')
+     * @param integer $additional_delay integer  additional delay to add or substract (for waiting time)
      *
      * @return string|null  due datetime 'Y-m-d H:i:s' (NULL if sla/ola not exists)
      **/
@@ -765,9 +765,9 @@ TWIG, $twig_params);
     /**
      * Get execution date of a level
      *
-     * @param string  $start_date        start date
-     * @param integer $levels_id         sla/ola level id
-     * @param integer $additional_delay  additional delay to add or substract (for waiting time)
+     * @param string  $start_date       start date
+     * @param integer $levels_id        sla/ola level id
+     * @param integer $additional_delay additional delay to add or substract (for waiting time)
      *
      * @return string|null  execution date time (NULL if ola/sla not exists)
      **/
@@ -838,7 +838,7 @@ TWIG, $twig_params);
     /**
      * Get types name
      *
-     * @param  integer $type
+     * @param integer $type
      * @return string  name
      **/
     public static function getOneTypeName($type)
@@ -907,7 +907,7 @@ TWIG, $twig_params);
      * Add an entry in slalevels_tickets | olalevels_tickets table
      * The level is set by $levels_id parameter or the current level set in slalevels_id_ttr | olalevels_id_ttr (if set)
      *
-     * @param Ticket  $ticket Ticket object
+     * @param Ticket  $ticket    Ticket object
      * @param integer $levels_id SlaLevel or OlaLevel ID
      *
      * @return void

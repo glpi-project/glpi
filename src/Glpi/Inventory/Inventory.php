@@ -867,7 +867,7 @@ class Inventory
      * Add bench value
      *
      * @param string        $asset Asset
-     * @param string        $type Either prepare or handle
+     * @param string        $type  Either prepare or handle
      * @param float|integer $start Start time
      * @param string        $extra Extra value to be used as label
      *

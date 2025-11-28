@@ -183,8 +183,8 @@ class Filter extends CommonDBChild
     /**
      * Save filter in DB for the provided dashboard
      *
-     * @param int $dashboards_id id (not key) of the dashboard
-     * @param string $settings contains a JSON representation of the filter data
+     * @param int    $dashboards_id id (not key) of the dashboard
+     * @param string $settings      contains a JSON representation of the filter data
      *
      * @return void
      */

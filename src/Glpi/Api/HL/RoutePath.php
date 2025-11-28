@@ -120,9 +120,9 @@ final class RoutePath
     }
 
     /**
-     * @param Route $route Route Attribute instance
-     * @param class-string<AbstractController> $class Controller class name
-     * @param string $method Controller method name
+     * @param Route                            $route  Route Attribute instance
+     * @param class-string<AbstractController> $class  Controller class name
+     * @param string                           $method Controller method name
      */
     public static function fromRouteAttribute(Route $route, string $class, string $method): self
     {

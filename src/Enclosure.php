@@ -106,10 +106,10 @@ class Enclosure extends CommonDBTM implements AssignableItemInterface, DCBreadcr
     /**
      * Print the enclosure form
      *
-     * @param $ID integer ID of the item
+     * @param $ID      integer ID of the item
      * @param $options array
-     *     - target filename : where to go when done.
-     *     - withtemplate boolean : template or basic item
+     *                 - target filename : where to go when done.
+     *                 - withtemplate boolean : template or basic item
      *
      * @return boolean item found
      **/
@@ -272,8 +272,8 @@ class Enclosure extends CommonDBTM implements AssignableItemInterface, DCBreadcr
     /**
      * Get already filled places
      *
-     * @param string  $itemtype  The item type
-     * @param integer $items_id  The item's ID
+     * @param string  $itemtype The item type
+     * @param integer $items_id The item's ID
      *
      * @return array [x => ['depth' => 1, 'orientation' => 0, 'width' => 1, 'hpos' =>0]]
      *               orientation will not be available if depth is > 0.5; hpos will not be available

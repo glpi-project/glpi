@@ -514,7 +514,7 @@ final class Form extends CommonDBTM implements
     /**
      * Give cron information
      *
-     * @param string $name  Task's name
+     * @param string $name Task's name
      *
      * @return array Array of information
      **/
@@ -750,8 +750,8 @@ final class Form extends CommonDBTM implements
     }
 
     /**
-     *  @param CommonDBTM $source
-     *  @param bool $history
+     * @param CommonDBTM $source
+     * @param bool       $history
      */
     public function post_clone($source, $history): void
     {

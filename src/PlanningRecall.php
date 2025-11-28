@@ -101,7 +101,7 @@ class PlanningRecall extends CommonDBChild
     /**
      * Retrieve an item from the database
      *
-     * @param string $itemtype itemtype to get
+     * @param string  $itemtype itemtype to get
      * @param integer $items_id id of the item
      * @param integer $users_id id of the user
      *
@@ -204,9 +204,9 @@ class PlanningRecall extends CommonDBChild
     /**
      * Update planning recal date when changing begin of planning
      *
-     * @param string $itemtype itemtype to get
+     * @param string  $itemtype itemtype to get
      * @param integer $items_id id of the item
-     * @param string $begin new begin date
+     * @param string  $begin    new begin date
      *
      * @return boolean true if succeed else false
      **/
@@ -237,8 +237,8 @@ class PlanningRecall extends CommonDBChild
     /**
      * Get the planning recall for an item if it exists
      * @param class-string<CommonDBTM> $itemtype The itemtype
-     * @param int $items_id The item id
-     * @param int $users_id The user id. If 0 (default), the current user is used.
+     * @param int                      $items_id The item id
+     * @param int                      $users_id The user id. If 0 (default), the current user is used.
      */
     public static function getForItem(string $itemtype, int $items_id, int $users_id = 0): ?PlanningRecall
     {
@@ -258,11 +258,11 @@ class PlanningRecall extends CommonDBChild
      * Mandatory options : itemtype, items_id
      *
      * @param array $options array of possible options:
-     *    - itemtype : string itemtype
-     *    - items_id : integer id of the item
-     *    - users_id : integer id of the user (if not set used login user)
-     *    - value    : integer preselected value for before_time
-     *    - field    : string  field used as time mark (default begin)
+     *                       - itemtype : string itemtype
+     *                       - items_id : integer id of the item
+     *                       - users_id : integer id of the user (if not set used login user)
+     *                       - value    : integer preselected value for before_time
+     *                       - field    : string  field used as time mark (default begin)
      *
      * @return void|false print out an HTML select box or return false if mandatory fields are not ok
      **/

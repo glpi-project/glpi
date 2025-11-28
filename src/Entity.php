@@ -2123,10 +2123,10 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     /**
      * Retrieve data of current entity or parent entity
      *
-     * @param string  $fieldref       name of the referent field to know if we look at parent entity
+     * @param string  $fieldref      name of the referent field to know if we look at parent entity
      * @param integer $entities_id
-     * @param string  $fieldval       name of the field that we want value (default '')
-     * @param mixed   $default_value  value to return (default -2)
+     * @param string  $fieldval      name of the field that we want value (default '')
+     * @param mixed   $default_value value to return (default -2)
      *
      * @return mixed
      */
@@ -2891,7 +2891,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
     /**
      * Get the badge HTML for a field that can be inherited
-     * @param string $field The field name
+     * @param string      $field          The field name
      * @param string|null $strategy_field The field name of the strategy
      * @return string|null The badge HTML or null if the field is not inherited
      */
@@ -2925,10 +2925,10 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
     /**
      * Get the badge HTML for a linked field that can be inherited
-     * @param class-string<CommonDBTM> $itemtype The item type
-     * @param string $empty_value The value to display when the field is empty
-     * @param string|null $field The field name
-     * @param int $default_value The default value
+     * @param class-string<CommonDBTM> $itemtype      The item type
+     * @param string                   $empty_value   The value to display when the field is empty
+     * @param string|null              $field         The field name
+     * @param int                      $default_value The default value
      * @return string|null The badge HTML or null if the field is not inherited
      */
     public function getInheritedLinkedValueBadge(string $itemtype, string $empty_value = Dropdown::EMPTY_VALUE, ?string $field = null, int $default_value = 0): ?string

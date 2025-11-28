@@ -70,7 +70,7 @@ trait VobjectConverterTrait
     /**
      * Get VCalendar object for given item.
      *
-     * @param string      $component_type  Base component type (i.e. VEVENT, VTODO, ...).
+     * @param string $component_type Base component type (i.e. VEVENT, VTODO, ...).
      *
      */
     protected function getVCalendarForItem(CommonDBTM $item, $component_type): VCalendar

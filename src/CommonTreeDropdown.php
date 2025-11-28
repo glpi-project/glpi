@@ -245,7 +245,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
 
 
     /**
-     * @param int $ID
+     * @param int  $ID
      * @param bool $updateName
      * @param bool $changeParent
      *

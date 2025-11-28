@@ -149,7 +149,7 @@ abstract class CommonITILActor extends CommonDBRelation
         return $this->_force_log_option; // again just return default
     }
     /**
-     * @param int $items_id
+     * @param int    $items_id
      * @param string $email
      *
      * @return bool

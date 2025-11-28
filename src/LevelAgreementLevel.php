@@ -298,11 +298,11 @@ abstract class LevelAgreementLevel extends RuleTicket
     /**
      * Dropdown execution time for SLA
      *
-     * @param string $name name of the select
-     * @param array $options Array of possible options:
-     *       - value : default value
-     *       - max_time : max time to use
-     *       - used : already used values
+     * @param string $name    name of the select
+     * @param array  $options Array of possible options:
+     *                        - value : default value
+     *                        - max_time : max time to use
+     *                        - used : already used values
      *
      * @return integer|string
      *    integer if option display=true (random part of elements id)

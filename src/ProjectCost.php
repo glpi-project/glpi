@@ -232,8 +232,8 @@ class ProjectCost extends CommonDBChild
     /**
      * Print the project cost form
      *
-     * @param integer $ID ID of the item
-     * @param array $options options used
+     * @param integer $ID      ID of the item
+     * @param array   $options options used
      **/
     public function showForm($ID, array $options = [])
     {

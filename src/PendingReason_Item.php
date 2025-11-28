@@ -76,8 +76,8 @@ class PendingReason_Item extends CommonDBRelation
     /**
      * Create a pendingreason_item for a given item
      *
-     * @param array      $fields field to insert (pendingreasons_id, followup_frequency
-     *                           and followups_before_resolution)
+     * @param array $fields field to insert (pendingreasons_id, followup_frequency
+     *                      and followups_before_resolution)
      * @return bool true on success
      */
     public static function createForItem(CommonDBTM $item, array $fields): bool
@@ -115,7 +115,7 @@ class PendingReason_Item extends CommonDBRelation
     /**
      * Update a pendingreason_item for a given item
      *
-     * @param array      $fields fields to update
+     * @param array $fields fields to update
      * @return bool true on success
      */
     public static function updateForItem(CommonDBTM $item, array $fields): bool

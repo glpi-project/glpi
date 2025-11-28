@@ -507,7 +507,7 @@ class Reservation extends CommonDBChild
     /**
      * Show reservation calendar
      *
-     * @param integer $ID   ID of the reservation item (if 0 display all)
+     * @param integer $ID ID of the reservation item (if 0 display all)
      **/
     public static function showCalendar(int $ID = 0)
     {
@@ -734,11 +734,11 @@ class Reservation extends CommonDBChild
      * Called from a drag&drop in planning
      *
      * @param array{id: integer, start: string, end: string} $event
-     * <ul>
-     *     <li>id: integer to identify reservation</li>
-     *     <li>start: planning start (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
-     *     <li>end: planning end (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
-     * </ul>
+     *                                                              <ul>
+     *                                                              <li>id: integer to identify reservation</li>
+     *                                                              <li>start: planning start (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
+     *                                                              <li>end: planning end (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
+     *                                                              </ul>
      */
     public static function updateEvent(array $event): bool
     {
@@ -759,13 +759,13 @@ class Reservation extends CommonDBChild
     /**
      * Display for reservation
      *
-     * @param integer $ID ID of the reservation (empty for create new)
-     * @param array $options possible optional options:
-     * <ul>
-     *      <li>item: Reservation items ID(s) for creation process. The array keys and values are expected to be symmetrical (ex: [2 => 2, 5 => 5])</li>
-     *      <li>begin: planning start (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
-     *      <li>end: planning end (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
-     *  </ul>
+     * @param integer $ID      ID of the reservation (empty for create new)
+     * @param array   $options possible optional options:
+     *                         <ul>
+     *                         <li>item: Reservation items ID(s) for creation process. The array keys and values are expected to be symmetrical (ex: [2 => 2, 5 => 5])</li>
+     *                         <li>begin: planning start (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
+     *                         <li>end: planning end (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
+     *                         </ul>
      **/
     public function showForm($ID, array $options = [])
     {
@@ -866,8 +866,8 @@ class Reservation extends CommonDBChild
      *
      * @since 0.84
      *
-     * @param string $begin  Planning start (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)
-     * @param string $end    Planning end (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)
+     * @param string                                                                           $begin   Planning start (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)
+     * @param string                                                                           $end     Planning end (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)
      * @param array{type: 'day'|'week'|'month', end: string, subtype?: string, days?: integer} $options Periodicity parameters
      **/
     public static function computePeriodicities($begin, $end, $options)
@@ -984,8 +984,8 @@ class Reservation extends CommonDBChild
     /**
      * Display reservations for an item
      *
-     * @param CommonDBTM $item Object for which the reservation tab need to be displayed
-     * @param integer $withtemplate
+     * @param CommonDBTM $item         Object for which the reservation tab need to be displayed
+     * @param integer    $withtemplate
      * @return void
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)

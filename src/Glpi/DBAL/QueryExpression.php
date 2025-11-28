@@ -49,8 +49,8 @@ class QueryExpression
     /**
      * Create a query expression
      *
-     * @param string $expression The query expression
-     * @param ?string $alias     The query expression alias
+     * @param string  $expression The query expression
+     * @param ?string $alias      The query expression alias
      */
     public function __construct($expression, ?string $alias = null)
     {

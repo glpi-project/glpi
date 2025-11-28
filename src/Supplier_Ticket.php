@@ -50,7 +50,7 @@ class Supplier_Ticket extends CommonITILActor
     /**
      *
      * @since 0.85
-     * @param int $items_id
+     * @param int    $items_id
      * @param string $email
      * @return bool
      **/

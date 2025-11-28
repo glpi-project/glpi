@@ -113,9 +113,9 @@ class KnowbaseItem_Comment extends CommonDBTM
     /**
      * Gat all comments for specified KB entry
      *
-     * @param integer $kbitem_id KB entry ID
-     * @param string  $lang      Requested language
-     * @param integer $parent    Parent ID (defaults to 0)
+     * @param integer $kbitem_id       KB entry ID
+     * @param string  $lang            Requested language
+     * @param integer $parent          Parent ID (defaults to 0)
      * @param array   $user_data_cache
      *
      * @return array

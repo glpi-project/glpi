@@ -804,9 +804,9 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     /**
      * @since 0.84
      *
-     * @param int $start
-     * @param string $status             (default 'proces)
-     * @param bool $showgroupproblems  (true by default)
+     * @param int    $start
+     * @param string $status            (default 'proces)
+     * @param bool   $showgroupproblems (true by default)
      *
      * @return void
      **/
@@ -1247,7 +1247,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
 
     /**
      * @since 0.84
-     * @param int $ID
+     * @param int    $ID
      * @param string $forcetab
      * @return void
      */
@@ -1347,7 +1347,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * Will also display problems of linked items
      *
-     * @param integer    $withtemplate
+     * @param integer $withtemplate
      *
      * @return void|false
      **/
@@ -1507,8 +1507,8 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @since 9.5
      *
-     * @param string $itemtype     Item type
-     * @param integer $items_id    ID of the Item
+     * @param string  $itemtype Item type
+     * @param integer $items_id ID of the Item
      *
      * @return DBmysqlIterator
      */

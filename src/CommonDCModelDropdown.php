@@ -248,7 +248,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
      * Check if a cell is filled for a specific orientation, horizontal position and depth
      *
      * @param int $orientation front or rear
-     * @param int $hpos left, right or full
+     * @param int $hpos        left, right or full
      *
      */
     private function isCellFilled(array $cell, int $orientation, int $hpos, float $depth): bool

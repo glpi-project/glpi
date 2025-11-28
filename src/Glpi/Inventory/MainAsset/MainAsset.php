@@ -527,8 +527,8 @@ abstract class MainAsset extends InventoryAsset
     /**
      * Prepare input for Entities rules
      *
-     * @param stdClass $val Current data values
-     * @param array     $input Input processed or all rules
+     * @param stdClass $val   Current data values
+     * @param array    $input Input processed or all rules
      *
      */
     public function prepareEntitiesRulesInput(stdClass $val, array $input): array

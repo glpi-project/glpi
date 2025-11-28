@@ -335,8 +335,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 10.0
      *
-     * @param int $actortype 1=requester, 2=assign, 3=observer
-     * @param array $params posted data of itil object
+     * @param int   $actortype 1=requester, 2=assign, 3=observer
+     * @param array $params    posted data of itil object
      *
      * @return array of actors
      */
@@ -567,10 +567,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
     /**
      * Restores input, restores saved values, then sets the default options for any that are missing.
-     * @param integer $ID The item ID
-     * @param array $options ITIL Object options array passed to showFormXXXX functions. This is passed by reference and will be modified by this function.
-     * @param ?array $overriden_defaults If specified, these values will be used as the defaults instead of the ones from the {@link getDefaultValues()} function.
-     * @param bool $force_set_defaults If true, the defaults are set for missing options even if the item is not new.
+     * @param integer $ID                 The item ID
+     * @param array   $options            ITIL Object options array passed to showFormXXXX functions. This is passed by reference and will be modified by this function.
+     * @param ?array  $overriden_defaults If specified, these values will be used as the defaults instead of the ones from the {@link getDefaultValues()} function.
+     * @param bool    $force_set_defaults If true, the defaults are set for missing options even if the item is not new.
      * @see getDefaultOptions()
      * @see restoreInput()
      * @see restoreSavedValues()
@@ -600,7 +600,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     }
 
     /**
-     * @param $options   array
+     * @param $options array
      **/
     public function showForm($ID, array $options = [])
     {
@@ -688,9 +688,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *  - if template changed (provided template doesn't match the one found in options), append a key _template_changed in $options
      *  - finally, append templates_id in options
      *
-     * @param ITILTemplate $tt The ticket template to use
-     * @param array $options The current options array (PASSED BY REFERENCE)
-     * @param array $default_values The default values to use in case they are not predefined
+     * @param ITILTemplate $tt             The ticket template to use
+     * @param array        $options        The current options array (PASSED BY REFERENCE)
+     * @param array        $default_values The default values to use in case they are not predefined
      * @return array An array of the predefined values
      */
     protected function setPredefinedFields(ITILTemplate $tt, array &$options, array $default_values): array
@@ -1677,9 +1677,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 0.83
      *
-     * @param class-string<CommonDBTM> $itemtype     Item type
-     * @param integer $items_id    ID of the Item
-     * @param integer $days        day number
+     * @param class-string<CommonDBTM> $itemtype Item type
+     * @param integer                  $items_id ID of the Item
+     * @param integer                  $days     day number
      *
      * @return array
      **/
@@ -1761,7 +1761,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Handle template mandatory fields on update
      *
-     * @param array $input Input
+     * @param array $input              Input
      * @param bool  $show_error_message Show error message
      *
      * @return false|array
@@ -2341,7 +2341,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 11.0.2
      * @param array $input The user input data to process (often $_POST).
-     * @param bool $isAdd true if we are in a creation, will force to apply the template predefined field.
+     * @param bool  $isAdd true if we are in a creation, will force to apply the template predefined field.
      * @return array The modified user input array after processing readonly fields.
      */
     public function enforceReadonlyFields(array $input, bool $isAdd = false): array
@@ -3203,7 +3203,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      *
      * @param CommonDBTM $source
-     * @param mixed $history Not used
+     * @param mixed      $history Not used
      * @return void
      * @see Clonable::post_clone
      */
@@ -3249,8 +3249,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 0.84
      *
-     * @param int<1, 5> $urgency    from 1 to 5
-     * @param int<1, 5> $impact     from 1 to 5
+     * @param int<1, 5> $urgency from 1 to 5
+     * @param int<1, 5> $impact  from 1 to 5
      *
      * @return integer from 1 to 5 (priority)
      **/
@@ -3268,11 +3268,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @since  version 0.84 new proto
      *
      * @param $options array of options
-     *       - name     : select name (default is urgency)
-     *       - value    : default value (default 0)
-     *       - showtype : list proposed : normal, search (default normal)
-     *       - wthmajor : boolean with major priority ?
-     *       - display  : boolean if false get string
+     *                 - name     : select name (default is urgency)
+     *                 - value    : default value (default 0)
+     *                 - showtype : list proposed : normal, search (default normal)
+     *                 - wthmajor : boolean with major priority ?
+     *                 - display  : boolean if false get string
      *
      * @return string id of the select
      **/
@@ -3463,10 +3463,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @since 0.84 new proto
      *
      * @param $options array of options
-     *       - name     : select name (default is urgency)
-     *       - value    : default value (default 0)
-     *       - showtype : list proposed: normal, search (default normal)
-     *       - display  : boolean if false get string
+     *                 - name     : select name (default is urgency)
+     *                 - value    : default value (default 0)
+     *                 - showtype : list proposed: normal, search (default normal)
+     *                 - display  : boolean if false get string
      *
      * @return string id of the select
      **/
@@ -3591,11 +3591,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 0.84 new proto
      *
-     * @param $options   array of options
-     *  - name     : select name (default is impact)
-     *  - value    : default value (default 0)
-     *  - showtype : list proposed : normal, search (default normal)
-     *  - display  : boolean if false get string
+     * @param $options array of options
+     *                 - name     : select name (default is impact)
+     *                 - value    : default value (default 0)
+     *                 - showtype : list proposed : normal, search (default normal)
+     *                 - display  : boolean if false get string
      *
      * \
      * @return string id of the select
@@ -3912,7 +3912,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 0.84 new proto
      *
-     * @param int|null $current   status
+     * @param int|null $current status
      *
      * @return array
      **/
@@ -3940,7 +3940,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 0.85
      *
-     * @param integer $status   status
+     * @param integer $status status
      *
      * @return boolean
      **/
@@ -3957,12 +3957,12 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 0.84 new proto
      *
-     * @param $options   array of options
-     *  - name     : select name (default is status)
-     *  - value    : default value (default self::INCOMING)
-     *  - showtype : list proposed : normal, search or allowed (default normal)
-     *  - display  : boolean if false get string
-     *  - use_template_limits: Integer ID of the template to use when considering the available statuses (false disables this limitation).
+     * @param $options array of options
+     *                 - name     : select name (default is status)
+     *                 - value    : default value (default self::INCOMING)
+     *                 - showtype : list proposed : normal, search or allowed (default normal)
+     *                 - display  : boolean if false get string
+     *                 - use_template_limits: Integer ID of the template to use when considering the available statuses (false disables this limitation).
      *
      * @return string|integer Output string if display option is set to false,
      *                        otherwise random part of dropdown id
@@ -5250,14 +5250,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * show actor add div
      *
-     * @param CommonITILActor::REQUESTER|CommonITILActor::ASSIGN|CommonITILActor::OBSERVER $type    actor type
-     * @param integer $rand_type      rand value of div to use
-     * @param integer $entities_id    entity ID
-     * @param array $is_hidden        of hidden fields (if empty consider as not hidden)
-     * @param boolean $withgroup      allow adding a group (true by default)
-     * @param boolean $withsupplier   allow adding a supplier (only one possible in ASSIGN case)
-     *                               (false by default)
-     * @param boolean $inobject       display in ITIL object ? (true by default)
+     * @param CommonITILActor::REQUESTER|CommonITILActor::ASSIGN|CommonITILActor::OBSERVER $type         actor type
+     * @param integer                                                                      $rand_type    rand value of div to use
+     * @param integer                                                                      $entities_id  entity ID
+     * @param array                                                                        $is_hidden    of hidden fields (if empty consider as not hidden)
+     * @param boolean                                                                      $withgroup    allow adding a group (true by default)
+     * @param boolean                                                                      $withsupplier allow adding a supplier (only one possible in ASSIGN case)
+     *                                                                                                   (false by default)
+     * @param boolean                                                                      $inobject     display in ITIL object ? (true by default)
      *
      * @return void|boolean Nothing if displayed, false if not applicable
      **/
@@ -5390,9 +5390,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Update date mod of the ITIL object
      *
-     * @param integer $ID                      ID of the ITIL object
-     * @param boolean $no_stat_computation     do not compute take into account stat (false by default)
-     * @param integer $users_id_lastupdater    to force last_update id (default 0 = not used)
+     * @param integer $ID                   ID of the ITIL object
+     * @param boolean $no_stat_computation  do not compute take into account stat (false by default)
+     * @param integer $users_id_lastupdater to force last_update id (default 0 = not used)
      * @return void
      **/
     public function updateDateMod($ID, $no_stat_computation = false, $users_id_lastupdater = 0)
@@ -6536,11 +6536,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      *
      * @since 10.0.0 "followups" option has been dropped
-     * @param integer $id              ID of the object
-     * @param array $options           array of options
-     *      row_num                : row num used for display
-     *      type_for_massiveaction : itemtype for massive action
-     *      id_for_massaction      : default 0 means no massive action
+     * @param integer $id      ID of the object
+     * @param array   $options array of options
+     *                         row_num                : row num used for display
+     *                         type_for_massiveaction : itemtype for massive action
+     *                         id_for_massaction      : default 0 means no massive action
      * @return void
      */
     public static function showShort($id, $options = [])
@@ -6880,7 +6880,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
     /**
      * @param integer $output_type Output type
-     * @param string $mass_id      id of the form to check all
+     * @param string  $mass_id     id of the form to check all
      * @return void
      */
     public static function commonListHeader(
@@ -6992,10 +6992,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
     /**
      * @param array{item_id: int, id: int, itemtype: class-string<CommonITILObject>}[] $data
-     *        - item_id: The ID of the ITIL object
-     *        - id: The ID of the entry in the datatable (probably the ID of the link between the ITIL item and another item)
-     *       - itemtype: The class name of the ITIL object
-     * @param array{ticket_stats?: bool} $params
+     *                                                                                         - item_id: The ID of the ITIL object
+     *                                                                                         - id: The ID of the entry in the datatable (probably the ID of the link between the ITIL item and another item)
+     *                                                                                         - itemtype: The class name of the ITIL object
+     * @param array{ticket_stats?: bool}                                               $params
      * @return array The data with the other required fields added
      * @see CommonITILObject::getCommonDatatableColumns()
      */
@@ -7288,9 +7288,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      *
      * @since 9.2
-     * @param int $items_id is the id of the ITIL object
+     * @param int    $items_id is the id of the ITIL object
      * @param string $sub_type is ITILFollowup, Document_Item, TicketTask, TicketValidation or Solution
-     * @param int $users_id
+     * @param int    $users_id
      * @return int
      */
     public static function getTimelinePosition($items_id, $sub_type, $users_id)
@@ -7485,12 +7485,12 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 9.4.0
      * @param array $options Possible options:
-     * - with_documents     : include documents elements
-     * - with_logs          : include log entries
-     * - with_validations   : include validation elements
-     * - sort_by_date_desc  : sort timeline items by date
-     * - check_view_rights  : indicates whether current session rights should be checked for view rights
-     * - hide_private_items : force hiding private items (followup/tasks), even if session allow it
+     *                       - with_documents     : include documents elements
+     *                       - with_logs          : include log entries
+     *                       - with_validations   : include validation elements
+     *                       - sort_by_date_desc  : sort timeline items by date
+     *                       - check_view_rights  : indicates whether current session rights should be checked for view rights
+     *                       - hide_private_items : force hiding private items (followup/tasks), even if session allow it
      *
      * @return mixed[] Timeline items
      */
@@ -7937,9 +7937,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * @since 9.4.0
      *
-     * @param CommonDBTM $item The item whose form should be shown
-     * @param integer $id ID of the item
-     * @param mixed[] $params Array of extra parameters
+     * @param CommonDBTM $item   The item whose form should be shown
+     * @param integer    $id     ID of the item
+     * @param mixed[]    $params Array of extra parameters
      *
      * @return void
      */
@@ -8199,10 +8199,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      *
      * @since 9.5.0
-     * @param integer      $force_template     itiltemplate_id to use (case of preview for example)
-     * @param integer|null $type               type of the ticket
-     *                                         (use Ticket::INCIDENT_TYPE or Ticket::DEMAND_TYPE constants value)
-     * @param integer      $itilcategories_id  ticket category
+     * @param integer      $force_template    itiltemplate_id to use (case of preview for example)
+     * @param integer|null $type              type of the ticket
+     *                                        (use Ticket::INCIDENT_TYPE or Ticket::DEMAND_TYPE constants value)
+     * @param integer      $itilcategories_id ticket category
      * @param integer      $entities_id
      * @return ITILTemplate
      **/
@@ -8511,8 +8511,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Returns criteria that can be used to get documents related to current instance.
      *
-     * @param bool      $bypass_rights  Whether to bypass rights checks (default: false)
-     * @param User|null $user           User for rights checking (default: null = current session rights)
+     * @param bool      $bypass_rights Whether to bypass rights checks (default: false)
+     * @param User|null $user          User for rights checking (default: null = current session rights)
      *
      */
     public function getAssociatedDocumentsCriteria($bypass_rights = false, ?User $user = null): array
@@ -9533,7 +9533,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
     /**
      * Fill the tech and the group from the hardware
-     * @param array $input
+     * @param array           $input
      * @param CommonDBTM|null $item
      * @return array
      */

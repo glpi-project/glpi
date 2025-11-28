@@ -102,7 +102,7 @@ trait AssignableItem
 
     /**
      * @param string|null $item_table_reference Table name to use in criteria, defaults to static::getTable().
-     * Useful if the criteria that this will be used with uses aliases.
+     *                                          Useful if the criteria that this will be used with uses aliases.
      * @return array[]|QueryExpression[]
      * @see AssignableItemInterface::getAssignableVisiblityCriteria()
      */

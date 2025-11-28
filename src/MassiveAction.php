@@ -163,10 +163,10 @@ class MassiveAction
      *
      * We trust all previous stages: we don't redo the checks
      *
-     * @param array     $POST       something like $_POST
-     * @param array     $GET        something like $_GET
-     * @param string    $stage      the current stage
-     * @param int|null  $items_id   Get actions for a single item
+     * @param array    $POST     something like $_POST
+     * @param array    $GET      something like $_GET
+     * @param string   $stage    the current stage
+     * @param int|null $items_id Get actions for a single item
      **/
     public function __construct(array $POST, array $GET, $stage, ?int $items_id = null)
     {
@@ -530,7 +530,7 @@ class MassiveAction
      * window), then display a dropdown to select the itemtype.
      * This is only usefull in case of itemtype specific massive actions (update, ...)
      *
-     * @param boolean $display_selector  can we display the itemtype selector ?
+     * @param boolean $display_selector can we display the itemtype selector ?
      *
      * @return string|boolean  the itemtype, or true if the selector is displayed, or false if we cannot define the itemtype nor display the selector
      **/
@@ -576,7 +576,7 @@ class MassiveAction
     /**
      * Get 'add to transfer list' action when needed
      *
-     * @param $actions   array
+     * @param $actions array
      **/
     public static function getAddTransferList(array &$actions)
     {
@@ -596,10 +596,10 @@ class MassiveAction
     /**
      * Get the standard massive actions
      *
-     * @param string|CommonDBTM $item        the item for which we want the massive actions
-     * @param boolean           $is_deleted  massive action for deleted items ?   (default false)
-     * @param CommonDBTM        $checkitem   link item to check right              (default NULL)
-     * @param int|null          $items_id    Get actions for a single item
+     * @param string|CommonDBTM $item       the item for which we want the massive actions
+     * @param boolean           $is_deleted massive action for deleted items ?   (default false)
+     * @param CommonDBTM        $checkitem  link item to check right              (default NULL)
+     * @param int|null          $items_id   Get actions for a single item
      *
      * @return array|false Array of massive actions or false if $item is not valid
      **/
@@ -1722,7 +1722,7 @@ class MassiveAction
     /**
      * add a message to display when action is done.
      *
-     * @param string $message  the message to add
+     * @param string $message the message to add
      *
      * @return void
      *
@@ -1738,13 +1738,13 @@ class MassiveAction
      * Set an item as done. If the delay is too long, then reload the page to continue the action.
      * Update the progress if necessary.
      *
-     * @param string  $itemtype    the type of the item that has been done
-     * @param integer|array $id    id or array of ids of the item(s) that have been done.
-     * @param integer $result
-     *                self::NO_ACTION      in case of no specific action (used internally for older actions)
-     *                MassiveAction::ACTION_OK      everything is OK for the action
-     *                MassiveAction::ACTION_KO      something went wrong for the action
-     *                MassiveAction::ACTION_NORIGHT not anough right for the action
+     * @param         string                 $itemtype the type of the item that has been done
+     * @param         integer|array          $id       id or array of ids of the item(s) that have been done.
+     * @param         integer                $result
+     *                                                 self::NO_ACTION      in case of no specific action (used internally for older actions)
+     *                                                 MassiveAction::ACTION_OK      everything is OK for the action
+     *                                                 MassiveAction::ACTION_KO      something went wrong for the action
+     *                                                 MassiveAction::ACTION_NORIGHT not anough right for the action
      * @phpstan-param array<integer>|integer $id
      **/
     public function itemDone($itemtype, $id, $result)

@@ -50,7 +50,7 @@ class KnowbaseItem_Profile extends CommonDBRelation
     /**
      * Get profiles for a knowbaseitem
      *
-     * @param integer $knowbaseitems_id  ID of the knowbaseitem
+     * @param integer $knowbaseitems_id ID of the knowbaseitem
      *
      * @return array of profiles linked to a knowbaseitem
      **/

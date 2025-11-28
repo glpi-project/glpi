@@ -145,7 +145,7 @@ class Toolbox
      * @since 0.83
      * @since 9.3 Rework
      *
-     * @param string $str  string to change
+     * @param string $str string to change
      *
      * @return string
      **/
@@ -162,8 +162,8 @@ class Toolbox
      *
      * @since 0.83
      *
-     * @param string $str       from dico
-     * @param string $shortcut  letter of shortcut
+     * @param string $str      from dico
+     * @param string $shortcut letter of shortcut
      *
      * @return string
      **/
@@ -183,9 +183,9 @@ class Toolbox
     /**
      * substr function for utf8 string
      *
-     * @param string  $str      string
-     * @param string  $tofound  string to found
-     * @param integer $offset   The search offset. If it is not specified, 0 is used.
+     * @param string  $str     string
+     * @param string  $tofound string to found
+     * @param integer $offset  The search offset. If it is not specified, 0 is used.
      *
      * @return integer|false
      **/
@@ -200,10 +200,10 @@ class Toolbox
      *  Replace str_pad()
      *  who bug with utf8
      *
-     * @param string  $input       input string
-     * @param integer $pad_length  padding length
-     * @param string  $pad_string  padding string
-     * @param integer $pad_type    padding type
+     * @param string  $input      input string
+     * @param integer $pad_length padding length
+     * @param string  $pad_string padding string
+     * @param integer $pad_type   padding type
      *
      * @return string
      **/
@@ -232,8 +232,8 @@ class Toolbox
      * substr function for utf8 string
      *
      * @param string  $str
-     * @param integer $start   start of the result substring
-     * @param integer $length  The maximum length of the returned string if > 0 (default -1)
+     * @param integer $start  start of the result substring
+     * @param integer $length The maximum length of the returned string if > 0 (default -1)
      *
      * @return string
      **/
@@ -292,8 +292,8 @@ class Toolbox
     /**
      * Encode string to UTF-8
      *
-     * @param string $string        string to convert
-     * @param string $from_charset  original charset (if 'auto' try to autodetect)
+     * @param string $string       string to convert
+     * @param string $from_charset original charset (if 'auto' try to autodetect)
      *
      * @return string  utf8 string
      **/
@@ -310,8 +310,8 @@ class Toolbox
     /**
      * Decode string from UTF-8 to specified charset
      *
-     * @param string $string      string to convert
-     * @param string $to_charset  destination charset (default "ISO-8859-1")
+     * @param string $string     string to convert
+     * @param string $to_charset destination charset (default "ISO-8859-1")
      *
      * @return string  converted string
      **/
@@ -323,8 +323,8 @@ class Toolbox
     /**
      * Log in 'php-errors' all args
      *
-     * @param mixed $level  The log level (a Monolog, PSR-3 or RFC 5424 level)
-     * @param array $args   Arguments (message to log, ...)
+     * @param mixed $level The log level (a Monolog, PSR-3 or RFC 5424 level)
+     * @param array $args  Arguments (message to log, ...)
      *
      * @return void
      **/
@@ -454,9 +454,9 @@ class Toolbox
 
     /**
      * Send a deprecated message in log (with backtrace)
-     * @param  string $message the message to send
-     * @param  boolean $strict
-     * @param  string|null $version The version to start the deprecation alert. If null, it is considered deprecated in the current version.
+     * @param string      $message the message to send
+     * @param boolean     $strict
+     * @param string|null $version The version to start the deprecation alert. If null, it is considered deprecated in the current version.
      * @return void
      */
     public static function deprecated($message = "Called method is deprecated", $strict = true, ?string $version = null)
@@ -482,10 +482,10 @@ class Toolbox
     /**
      * Log a message in log file
      *
-     * @param string    $name   name of the log file, relative to GLPI_LOG_DIR, without '.log' extension
-     * @param string    $text   text to log
-     * @param bool      $force  force log in file not seeing use_log_in_files config
-     * @param bool      $output whether to output the message
+     * @param string $name   name of the log file, relative to GLPI_LOG_DIR, without '.log' extension
+     * @param string $text   text to log
+     * @param bool   $force  force log in file not seeing use_log_in_files config
+     * @param bool   $output whether to output the message
      *
      * @return boolean
      **/
@@ -537,8 +537,8 @@ class Toolbox
      *
      *
      * @since 0.84
-     * @param integer|null $mode       From Session::*_MODE
-     * @param boolean|null $removed_param No longer used (Used to be $debug_sql)
+     * @param integer|null $mode            From Session::*_MODE
+     * @param boolean|null $removed_param   No longer used (Used to be $debug_sql)
      * @param boolean|null $removed_param_2 No longer used (Used to be $debug_vars)
      * @param boolean|null $log_in_files
      * @return void
@@ -559,10 +559,10 @@ class Toolbox
     /**
      * Get a Symfony response for the given file.
      *
-     * @param string      $path             filesystem path
-     * @param string      $filename         file name to send in the response
-     * @param string|null $mime             mime type
-     * @param boolean     $expires_headers  whether to add expires headers to maximize cacheability
+     * @param string      $path            filesystem path
+     * @param string      $filename        file name to send in the response
+     * @param string|null $mime            mime type
+     * @param boolean     $expires_headers whether to add expires headers to maximize cacheability
      *
      * @throws HttpException
      */
@@ -673,9 +673,9 @@ class Toolbox
      *
      *
      * @deprecated 11.0.0
-     * @param string      $file        storage filename
-     * @param string      $filename    file title
-     * @param string|null $mime        file mime type
+     * @param string      $file            storage filename
+     * @param string      $filename        file title
+     * @param string|null $mime            file mime type
      * @param boolean     $expires_headers add expires headers maximize cacheability ?
      * @return void
      */
@@ -726,7 +726,7 @@ class Toolbox
      *
      *
      * @deprecated 11.0.0
-     * @param array|string $value  item to stripslashes
+     * @param array|string $value item to stripslashes
      * @return array|string stripslashes item
      **/
     public static function stripslashes_deep($value)
@@ -744,9 +744,9 @@ class Toolbox
 
     /** Converts an array of parameters into a query string to be appended to a URL.
      *
-     * @param array  $array      parameters to append to the query string.
-     * @param string $separator  separator may be defined as &amp; to display purpose
-     * @param string $parent     This should be left blank (it is used internally by the function).
+     * @param array  $array     parameters to append to the query string.
+     * @param string $separator separator may be defined as &amp; to display purpose
+     * @param string $parent    This should be left blank (it is used internally by the function).
      *
      * @return string  Query string to append to a URL.
      **/
@@ -778,7 +778,7 @@ class Toolbox
     /**
      * Compute PHP memory_limit
      *
-     * @param string $ininame  name of the ini option to retrieve (since 9.1)
+     * @param string $ininame name of the ini option to retrieve (since 9.1)
      *
      * @return integer|string memory limit
      **/
@@ -846,7 +846,7 @@ class Toolbox
 
     /** Format a size passing a size in octet
      *
-     * @param integer $size  Size in octet
+     * @param integer $size Size in octet
      *
      * @return string  formatted size
      **/
@@ -880,7 +880,7 @@ class Toolbox
     /**
      * Delete a directory and file contains in it
      *
-     * @param string $dir  directory to delete
+     * @param string $dir directory to delete
      *
      * @return void
      **/
@@ -916,15 +916,15 @@ class Toolbox
      *
      * @since 0.85
      *
-     * @param string  $source_path   path of the picture to be resized
-     * @param string  $dest_path     path of the new resized picture
-     * @param integer $new_width     new width after resized (default 71)
-     * @param integer $new_height    new height after resized (default 71)
-     * @param integer $img_y         y axis of picture (default 0)
-     * @param integer $img_x         x axis of picture (default 0)
-     * @param integer $img_width     width of picture (default 0)
-     * @param integer $img_height    height of picture (default 0)
-     * @param integer $max_size      max size of the picture (default 500, is set to 0 no resize)
+     * @param string  $source_path path of the picture to be resized
+     * @param string  $dest_path   path of the new resized picture
+     * @param integer $new_width   new width after resized (default 71)
+     * @param integer $new_height  new height after resized (default 71)
+     * @param integer $img_y       y axis of picture (default 0)
+     * @param integer $img_x       x axis of picture (default 0)
+     * @param integer $img_width   width of picture (default 0)
+     * @param integer $img_height  height of picture (default 0)
+     * @param integer $max_size    max size of the picture (default 500, is set to 0 no resize)
      *
      * @return boolean
      **/
@@ -1095,7 +1095,7 @@ class Toolbox
     /**
      * Check Write Access to a directory
      *
-     * @param string $dir  directory to check
+     * @param string $dir directory to check
      *
      * @return integer
      *   0: OK,
@@ -1145,8 +1145,8 @@ class Toolbox
     /**
      * Get form URL for itemtype
      *
-     * @param string  $itemtype  item type
-     * @param boolean $full      path or relative one
+     * @param string  $itemtype item type
+     * @param boolean $full     path or relative one
      *
      * return string itemtype Form URL
      **/
@@ -1173,8 +1173,8 @@ class Toolbox
     /**
      * Get search URL for itemtype
      *
-     * @param string  $itemtype  item type
-     * @param boolean $full      path or relative one
+     * @param string  $itemtype item type
+     * @param boolean $full     path or relative one
      *
      * return string itemtype search URL
      **/
@@ -1207,8 +1207,8 @@ class Toolbox
     /**
      * Get ajax tabs url for itemtype
      *
-     * @param string  $itemtype  item type
-     * @param boolean $full      path or relative one
+     * @param string  $itemtype item type
+     * @param boolean $full     path or relative one
      *
      * return string itemtype tabs URL
      **/
@@ -1246,7 +1246,7 @@ class Toolbox
     /**
      * Split timestamp in time units
      *
-     * @param integer|float $time  timestamp
+     * @param integer|float $time timestamp
      *
      * @return array
      **/
@@ -1287,8 +1287,8 @@ class Toolbox
      *
      * @since 10.0.3
      *
-     * @param string    $url        URL to check
-     * @param array     $allowlist  Allowlist (regex array)
+     * @param string $url       URL to check
+     * @param array  $allowlist Allowlist (regex array)
      *
      */
     public static function isUrlSafe(string $url, array $allowlist = GLPI_SERVERSIDE_URL_ALLOWLIST): bool
@@ -1354,11 +1354,11 @@ class Toolbox
     /**
      * Executes a curl call
      *
-     * @param string $url         URL to retrieve
-     * @param array  $eopts       Extra curl opts
-     * @param string $msgerr      will contains a human readable error string if an error occurs of url returns empty contents
-     * @param bool   $check_url_safeness    indicated whether the URL have to be filetered by safety checks
-     * @param array  $curl_info   will contains contents provided by `curl_getinfo`
+     * @param string $url                URL to retrieve
+     * @param array  $eopts              Extra curl opts
+     * @param string $msgerr             will contains a human readable error string if an error occurs of url returns empty contents
+     * @param bool   $check_url_safeness indicated whether the URL have to be filetered by safety checks
+     * @param array  $curl_info          will contains contents provided by `curl_getinfo`
      *
      * @return string
      */
@@ -1528,7 +1528,7 @@ class Toolbox
      * Manage planning posted datas (must have begin + duration or end)
      * Compute end if duration is set
      *
-     * @param array $data  data to process
+     * @param array $data data to process
      *
      * @return void
      **/
@@ -1545,7 +1545,7 @@ class Toolbox
     /**
      * Manage login redirection
      *
-     * @param string $where  where to redirect ?
+     * @param string $where where to redirect ?
      *
      * @return void
      **/
@@ -1715,7 +1715,7 @@ class Toolbox
     /**
      * Convert a value in byte, kbyte, megabyte etc...
      *
-     * @param string $val  config value (like 10k, 5M)
+     * @param string $val config value (like 10k, 5M)
      *
      * @return integer $val
      **/
@@ -1761,9 +1761,9 @@ class Toolbox
      *
      * @since 0.84
      *
-     * @param string    $value                      connect string
-     * @param bool      $forceport                  force compute port if not set
-     * @param bool      $allow_plugins_protocols    Whether plugins protocol must be allowed.
+     * @param string $value                   connect string
+     * @param bool   $forceport               force compute port if not set
+     * @param bool   $allow_plugins_protocols Whether plugins protocol must be allowed.
      *
      * @return array  parsed arguments (address, port, mailbox, type, ssl, tls, validate-cert
      *                norsh, secure and debug) : options are empty if not set
@@ -1899,7 +1899,7 @@ class Toolbox
      *  - 'protocol_class' field is the protocol class to use (see Laminas\Mail\Protocol\Imap | Laminas\Mail\Protocol\Pop3);
      *  - 'storage_class' field is the storage class to use (see Laminas\Mail\Storage\Imap | Laminas\Mail\Storage\Pop3).
      *
-     * @param bool  $allow_plugins_protocols    Whether plugins protocol must be allowed.
+     * @param bool $allow_plugins_protocols Whether plugins protocol must be allowed.
      *
      */
     public static function getMailServerProtocols(bool $allow_plugins_protocols = true): array
@@ -1963,7 +1963,7 @@ class Toolbox
      * Class should implements Glpi\Mail\Protocol\ProtocolInterface
      * or should be \Laminas\Mail\Protocol\Imap|\Laminas\Mail\Protocol\Pop3 for native protocols.
      *
-     * @param bool      $allow_plugins_protocols    Whether plugins protocol must be allowed.
+     * @param bool $allow_plugins_protocols Whether plugins protocol must be allowed.
      *
      * @return null|ProtocolInterface|Imap|Pop3
      */
@@ -1996,8 +1996,8 @@ class Toolbox
      *
      * Class should extends \Laminas\Mail\Storage\AbstractStorage.
      *
-     * @param array     $params                     Storage constructor params, as defined in AbstractStorage
-     * @param bool      $allow_plugins_protocols    Whether plugins protocol must be allowed.
+     * @param array $params                  Storage constructor params, as defined in AbstractStorage
+     * @param bool  $allow_plugins_protocols Whether plugins protocol must be allowed.
      *
      */
     public static function getMailServerStorageInstance(string $protocol_type, array $params, bool $allow_plugins_protocols = true): ?AbstractStorage
@@ -2068,8 +2068,8 @@ class Toolbox
      *
      * @since 0.84
      *
-     * @param string $string  string to search
-     * @param array  $data    array to search in
+     * @param string $string string to search
+     * @param array  $data   array to search in
      *
      * @return boolean  string found ?
      **/
@@ -2092,7 +2092,7 @@ class Toolbox
      *
      * @since version 0.83.5
      *
-     * @param string  $integer  integer string
+     * @param string $integer integer string
      *
      * @return string  clean integer
      **/
@@ -2107,7 +2107,7 @@ class Toolbox
      *
      * @since versin 0.83.5
      *
-     * @param string $decimal  float string
+     * @param string $decimal float string
      *
      * @return string  clean decimal
      **/
@@ -2122,7 +2122,7 @@ class Toolbox
      *
      * @since versin 0.85
      *
-     * @param string $string  string to clean
+     * @param string $string string to clean
      *
      * @return string  clean string
      **/
@@ -2291,9 +2291,9 @@ class Toolbox
      *
      * @since 0.84
      *
-     * @param string $name        config file name
-     * @param string $content     config file content
-     * @param string $config_dir  configuration directory to write on
+     * @param string $name       config file name
+     * @param string $content    config file content
+     * @param string $config_dir configuration directory to write on
      *
      * @return boolean
      **/
@@ -2321,7 +2321,7 @@ class Toolbox
      *
      *
      * @since 0.83.91
-     * @param array $value  passed array
+     * @param array $value passed array
      * @return string  encoded array
      **/
     public static function prepareArrayForInput(array $value)
@@ -2338,7 +2338,7 @@ class Toolbox
      *
      *
      * @since 0.83.91
-     * @param string $value  encoded value
+     * @param string $value encoded value
      * @return array  decoded array
      **/
     public static function decodeArrayFromInput($value)
@@ -2359,8 +2359,8 @@ class Toolbox
      *
      * @since 0.85.5
      *
-     * @param string         $file  path of the file
-     * @param boolean|string $type  check if $file is the correct type
+     * @param string         $file path of the file
+     * @param boolean|string $type check if $file is the correct type
      *
      * @return boolean|string (if $type not given) else boolean
      *
@@ -2389,8 +2389,8 @@ class Toolbox
      *
      * @param mixed $needle
      * @param array $haystack
-     * @param bool  $strict: If strict is set to TRUE then it will also
-     *              check the types of the needle in the haystack.
+     * @param bool  $strict:  If strict is set to TRUE then it will also
+     *                        check the types of the needle in the haystack.
      * @return bool
      */
     public static function in_array_recursive($needle, $haystack, $strict = false)
@@ -2415,8 +2415,8 @@ class Toolbox
     /**
      * Slugify
      *
-     * @param string $string String to slugify
-     * @param string $prefix Prefix to use (anchors cannot begin with a number)
+     * @param string $string             String to slugify
+     * @param string $prefix             Prefix to use (anchors cannot begin with a number)
      * @param bool   $force_special_dash Replace all special chars by a dash
      *
      */
@@ -2471,9 +2471,9 @@ class Toolbox
      *
      * @since 9.2
      *
-     * @param string $content_text   text content of input
-     * @param CommonDBTM $item       Glpi item where to convert image tag to image document
-     * @param array $doc_data        list of filenames and tags
+     * @param string     $content_text text content of input
+     * @param CommonDBTM $item         Glpi item where to convert image tag to image document
+     * @param array      $doc_data     list of filenames and tags
      *
      * @return string                the $content_text param after parsing
      **/
@@ -2609,8 +2609,8 @@ class Toolbox
      *
      * @since 9.2
      *
-     * @param string $content   html content of input
-     * @param array $tags       list of tags to clen
+     * @param string $content html content of input
+     * @param array  $tags    list of tags to clen
      *
      * @return string  html content
      **/
@@ -2626,8 +2626,8 @@ class Toolbox
     /**
      * Decode JSON in GLPI.
      *
-     * @param string $encoded Encoded JSON
-     * @param boolean $assoc  assoc parameter of json_encode native function
+     * @param string  $encoded Encoded JSON
+     * @param boolean $assoc   assoc parameter of json_encode native function
      *
      * @return mixed
      */
@@ -2844,7 +2844,7 @@ class Toolbox
     /**
      * Convert a integer index into an excel like alpha index (A, B, ..., AA, AB, ...)
      * @since 9.3
-     * @param  integer $index the numeric index
+     * @param integer $index the numeric index
      * @return string         excel like string index
      */
     public static function getBijectiveIndex($index = 0)
@@ -2879,8 +2879,8 @@ class Toolbox
      *
      *
      * @since 9.5.0
-     * @param string|null $src          Source path of the picture
-     * @param string      $uniq_prefix  Unique prefix that can be used to improve uniqueness of destination filename
+     * @param string|null $src         Source path of the picture
+     * @param string      $uniq_prefix Unique prefix that can be used to improve uniqueness of destination filename
      * @return boolean|string      Destination filepath, relative to GLPI_PICTURE_DIR, or false on failure
      */
     public static function savePicture($src, $uniq_prefix = '', $keep_src = false)
@@ -2987,9 +2987,9 @@ class Toolbox
     /**
      * Return a shortened number with a suffix (K, M, B, T)
      *
-     * @param int $number to shorten
-     * @param int $precision how much number after comma we need
-     * @param bool $html do we return an html or a single string
+     * @param int  $number    to shorten
+     * @param int  $precision how much number after comma we need
+     * @param bool $html      do we return an html or a single string
      *
      * @return string shortened number
      */
@@ -3097,9 +3097,9 @@ class Toolbox
      * if bg color is light, we'll return dark fg color
      * else a light fg color
      *
-     * @param string $color the background color in hexadecimal notation (ex #FFFFFF) to compute
-     * @param int $offset how much we need to darken/lighten the color
-     * @param bool $inherit_if_transparent if color contains an opacity value, and if this value is too transparent return 'inherit'
+     * @param string $color                  the background color in hexadecimal notation (ex #FFFFFF) to compute
+     * @param int    $offset                 how much we need to darken/lighten the color
+     * @param bool   $inherit_if_transparent if color contains an opacity value, and if this value is too transparent return 'inherit'
      *
      * @return string hexadecimal fg color (ex #FFFFFF)
      */
@@ -3230,7 +3230,7 @@ class Toolbox
      * This function checks the class itself and all parent classes for the trait.
      * @since 10.0.0
      * @param string|object $class The class or object
-     * @param class-string $trait The trait
+     * @param class-string  $trait The trait
      * @return bool True if the class or its parents have the specified trait
      */
     public static function hasTrait($class, string $trait): bool

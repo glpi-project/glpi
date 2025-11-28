@@ -899,7 +899,7 @@ EOT,
 
     /**
      * Get the specified user picture as a Response
-     * @param string $username The username of the user. Used in Content-Disposition header.
+     * @param string      $username     The username of the user. Used in Content-Disposition header.
      * @param string|null $picture_path The path to the picture from the user's "picture" field.
      * @return Response A response with the picture as binary content (or the placeholder user picture if the user has no picture).
      */

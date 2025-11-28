@@ -218,7 +218,7 @@ class ProjectTeam extends CommonDBRelation
      * Get team for a project
      *
      * @param integer $projects_id
-     * @param bool $expand If true, the team member data is expanded to include specific properties like firstname, realname, ...
+     * @param bool    $expand      If true, the team member data is expanded to include specific properties like firstname, realname, ...
      * @return array<class-string<CommonDBTM>, array<array{id: int, projects_id: int, itemtype: class-string<CommonDBTM>, items_id: int, display_name?: string}>>
      */
     public static function getTeamFor($projects_id, bool $expand = false)

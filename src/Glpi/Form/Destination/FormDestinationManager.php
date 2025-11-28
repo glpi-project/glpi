@@ -153,7 +153,7 @@ final class FormDestinationManager
      * Register a config field from a plugin for a specific common ITIL destination type
      *
      * @param class-string<AbstractCommonITILFormDestination> $destination_class The common ITIL destination class
-     * @param AbstractConfigField $field The config field to register
+     * @param AbstractConfigField                             $field             The config field to register
      */
     public function registerPluginCommonITILConfigField(
         string $destination_class,

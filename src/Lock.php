@@ -1109,8 +1109,8 @@ TWIG);
      * Get infos to build an SQL query to get locks fields in a table.
      * The criteria returned will only retrieve the 'id' column of the main table by default.
      *
-     * @param class-string<CommonDBTM> $itemtype      itemtype of the item to look for locked fields
-     * @param class-string<CommonDBTM> $baseitemtype  itemtype of the based item
+     * @param class-string<CommonDBTM> $itemtype     itemtype of the item to look for locked fields
+     * @param class-string<CommonDBTM> $baseitemtype itemtype of the based item
      *
      * @return array{criteria: array, field: string, type: class-string<CommonDBTM>} Necessary information to build the SQL query.
      * <ul>

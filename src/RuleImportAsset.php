@@ -254,7 +254,7 @@ class RuleImportAsset extends Rule
     }
 
     /**
-     * @param array $criteria
+     * @param array  $criteria
      * @param string $name
      * @param string $value
      *
@@ -1119,9 +1119,9 @@ TWIG, $twig_params);
     {
         $class = new class {
             /**
-             * @param int $items_id
+             * @param int                      $items_id
              * @param class-string<CommonDBTM> $itemtype
-             * @param int $rules_id
+             * @param int                      $rules_id
              *
              * @return void
              */

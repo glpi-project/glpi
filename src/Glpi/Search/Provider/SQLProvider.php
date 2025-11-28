@@ -192,10 +192,10 @@ final class SQLProvider implements SearchProviderInterface
     /**
      * Generic function to create SELECT criteria
      *
-     * @param class-string<CommonDBTM> $itemtype Item type
-     * @param int $ID Search option ID
-     * @param bool $meta If true, this is for a meta relation
-     * @param string $meta_type Meta item type
+     * @param class-string<CommonDBTM> $itemtype  Item type
+     * @param int                      $ID        Search option ID
+     * @param bool                     $meta      If true, this is for a meta relation
+     * @param string                   $meta_type Meta item type
      * @return array|QueryExpression
      */
     public static function getSelectCriteria(string $itemtype, int $ID, bool $meta = false, string $meta_type = '')
@@ -1119,7 +1119,7 @@ final class SQLProvider implements SearchProviderInterface
     /**
      * Return where part related to system criteria of main itemtype.
      *
-     * @param string $itemtype  Main itemtype
+     * @param string $itemtype Main itemtype
      *
      */
     private static function getMainItemtypeSystemSQLCriteria(string $itemtype): string
@@ -1141,12 +1141,12 @@ final class SQLProvider implements SearchProviderInterface
     }
 
     /**
-     * @param bool $nott
+     * @param bool                     $nott
      * @param class-string<CommonDBTM> $itemtype
-     * @param int $ID
-     * @param string $searchtype
-     * @param string|int $val
-     * @param bool $meta
+     * @param int                      $ID
+     * @param string                   $searchtype
+     * @param string|int               $val
+     * @param bool                     $meta
      *
      */
     public static function getWhereCriteria($nott, $itemtype, $ID, $searchtype, $val, $meta = false): ?array
@@ -1395,7 +1395,7 @@ final class SQLProvider implements SearchProviderInterface
         }
 
         /**
-         * @param array &$criteria
+         * @param array                  &$criteria
          * @param string|QueryExpression $value
          * @return void
          * @note 'use' parameters are bound at the time the function is declared. To account for changes to the search parameters later, we need to pass the arrays by reference.
@@ -2322,9 +2322,9 @@ final class SQLProvider implements SearchProviderInterface
     /**
      * Generic Function to add Default left join to a request
      *
-     * @param class-string<CommonDBTM> $itemtype   Reference item type
-     * @param class-string<CommonDBTM> $ref_table  Reference table
-     * @param array &$already_link_tables  Array of tables already joined
+     * @param class-string<CommonDBTM> $itemtype             Reference item type
+     * @param class-string<CommonDBTM> $ref_table            Reference table
+     * @param array                    &$already_link_tables Array of tables already joined
      *
      * @return array Left join criteria array
      **/
@@ -2722,15 +2722,15 @@ final class SQLProvider implements SearchProviderInterface
     /**
      * Generic Function to get left join criteria
      *
-     * @param class-string<CommonDBTM> $itemtype Item type
-     * @param string  $ref_table            Reference table
-     * @param array   $already_link_tables  Array of tables already joined
-     * @param string  $new_table            New table to join
-     * @param string  $linkfield            Linkfield for LeftJoin
-     * @param boolean $meta                 Is it a meta item? (default 0)
-     * @param class-string<CommonDBTM>|'' $meta_type Meta type table (default 0)
-     * @param array   $joinparams           Array join parameters (condition / joinbefore...)
-     * @param string  $field                Field to display (needed for translation join) (default '')
+     * @param class-string<CommonDBTM>    $itemtype            Item type
+     * @param string                      $ref_table           Reference table
+     * @param array                       $already_link_tables Array of tables already joined
+     * @param string                      $new_table           New table to join
+     * @param string                      $linkfield           Linkfield for LeftJoin
+     * @param boolean                     $meta                Is it a meta item? (default 0)
+     * @param class-string<CommonDBTM>|'' $meta_type           Meta type table (default 0)
+     * @param array                       $joinparams          Array join parameters (condition / joinbefore...)
+     * @param string                      $field               Field to display (needed for translation join) (default '')
      *
      * @return array Left join string
      **/
@@ -3209,9 +3209,9 @@ final class SQLProvider implements SearchProviderInterface
     /**
      * Generic Function to add left join for meta items
      *
-     * @param class-string<CommonDBTM> $from_type  Reference item type ID
-     * @param class-string<CommonDBTM> $to_type    Item type to add
-     * @param array  $already_link_tables2         Array of tables already joined
+     * @param class-string<CommonDBTM> $from_type            Reference item type ID
+     * @param class-string<CommonDBTM> $to_type              Item type to add
+     * @param array                    $already_link_tables2 Array of tables already joined
      *
      * @return array Meta Left join criteria
      **/
@@ -3774,10 +3774,10 @@ final class SQLProvider implements SearchProviderInterface
     /**
      * Get join criteria for dropdown translations
      *
-     * @param string $alias    Alias for translation table
-     * @param string $table    Table to join on
+     * @param string                   $alias    Alias for translation table
+     * @param string                   $table    Table to join on
      * @param class-string<CommonDBTM> $itemtype Item type
-     * @param string $field    Field name
+     * @param string                   $field    Field name
      *
      */
     public static function getDropdownTranslationJoinCriteria($alias, $table, $itemtype, $field): array
@@ -3806,12 +3806,12 @@ final class SQLProvider implements SearchProviderInterface
     /**
      * Generic Function to add GROUP BY to a request
      *
-     * @param string  $LINK           link to use
-     * @param bool    $NOT            is is a negative search?
-     * @param class-string<CommonDBTM>  $itemtype       item type
-     * @param int     $ID             ID of the item to search
-     * @param string  $searchtype     search type ('contains' or 'equals')
-     * @param string  $val            value search
+     * @param string                   $LINK       link to use
+     * @param bool                     $NOT        is is a negative search?
+     * @param class-string<CommonDBTM> $itemtype   item type
+     * @param int                      $ID         ID of the item to search
+     * @param string                   $searchtype search type ('contains' or 'equals')
+     * @param string                   $val        value search
      *
      * @return array HAVING criteria as an array
      **/
@@ -3972,10 +3972,10 @@ final class SQLProvider implements SearchProviderInterface
      *    Old functionality maintained by checking the type of the first parameter.
      *    This backwards compatibility will be removed in a later version.
      *
-     * @param class-string<CommonDBTM> $itemtype The itemtype
-     * @param array  $sort_fields The search options to order on. This array should contain one or more associative arrays containing:
-     *    - id: The search option ID
-     *    - order: The sort direction (Default: ASC). Invalid sort directions will be replaced with the default option
+     * @param class-string<CommonDBTM> $itemtype    The itemtype
+     * @param array                    $sort_fields The search options to order on. This array should contain one or more associative arrays containing:
+     *                                              - id: The search option ID
+     *                                              - order: The sort direction (Default: ASC). Invalid sort directions will be replaced with the default option
      *
      * @return array ORDER BY criteria
      *
@@ -4646,16 +4646,16 @@ final class SQLProvider implements SearchProviderInterface
     /**
      * Construct WHERE (or HAVING) part of the sql based on passed criteria
      **
-     * @param  array   $criteria  list of search criterion, we should have these keys:
-     *                               - link (optionnal): AND, OR, NOT AND, NOT OR
-     *                               - field: id of the searchoption
-     *                               - searchtype: how to match value (contains, equals, etc)
-     *                               - value
-     * @param  array   $data      common array used by search engine,
-     *                            contains all the search part (sql, criteria, params, itemtype etc)
-     *                            TODO: should be a property of the class
-     * @param  array   $searchopt Search options for the current itemtype
-     * @param  boolean $is_having Do we construct sql WHERE or HAVING part
+     * @param array   $criteria  list of search criterion, we should have these keys:
+     *                           - link (optionnal): AND, OR, NOT AND, NOT OR
+     *                           - field: id of the searchoption
+     *                           - searchtype: how to match value (contains, equals, etc)
+     *                           - value
+     * @param array   $data      common array used by search engine,
+     *                           contains all the search part (sql, criteria, params, itemtype etc)
+     *                           TODO: should be a property of the class
+     * @param array   $searchopt Search options for the current itemtype
+     * @param boolean $is_having Do we construct sql WHERE or HAVING part
      *
      * @return string             the sql sub string
      */
@@ -4852,11 +4852,11 @@ final class SQLProvider implements SearchProviderInterface
     /**
      * Construct additional SQL (select, joins, etc) for meta-criteria
      **
-     * @param  array  $criteria             list of search criterion
-     * @param  string &$SELECT              TODO: should be a class property (output parameter)
-     * @param  string &$FROM                TODO: should be a class property (output parameter)
-     * @param  array  &$already_link_tables TODO: should be a class property (output parameter)
-     * @param  array  &$data                TODO: should be a class property (output parameter)
+     * @param array  $criteria             list of search criterion
+     * @param string &$SELECT              TODO: should be a class property (output parameter)
+     * @param string &$FROM                TODO: should be a class property (output parameter)
+     * @param array  &$already_link_tables TODO: should be a class property (output parameter)
+     * @param array  &$data                TODO: should be a class property (output parameter)
      *
      * @return void
      */
@@ -5250,10 +5250,10 @@ final class SQLProvider implements SearchProviderInterface
     /**
      * Create SQL search condition
      *
-     * @param string  $field  Name (should be ` protected)
-     * @param string  $val    Value to search
-     * @param boolean $not    Is a negative search ? (false by default)
-     * @param string  $link   With previous criteria (default 'AND')
+     * @param string  $field Name (should be ` protected)
+     * @param string  $val   Value to search
+     * @param boolean $not   Is a negative search ? (false by default)
+     * @param string  $link  With previous criteria (default 'AND')
      *
      * @return string Search SQL string
      **/
@@ -5300,7 +5300,7 @@ final class SQLProvider implements SearchProviderInterface
      *
      * @since 9.4
      *
-     * @param string  $val value to search
+     * @param string $val value to search
      *
      * @return string|null
      **/
@@ -5354,8 +5354,8 @@ final class SQLProvider implements SearchProviderInterface
     /**
      * Create SQL search condition
      *
-     * @param string  $val  Value to search
-     * @param boolean $not  Is a negative search? (false by default)
+     * @param string  $val Value to search
+     * @param boolean $not Is a negative search? (false by default)
      *
      * @return string Search string
      **/

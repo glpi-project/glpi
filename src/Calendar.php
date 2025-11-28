@@ -401,11 +401,11 @@ class Calendar extends CommonDropdown
      * if delay >= DAY_TIMESTAMP : work in days
      * else work in minutes
      *
-     * @param string   $start               begin
-     * @param integer  $delay               delay to add (in seconds)
-     * @param integer  $additional_delay    delay to add (default 0)
-     * @param boolean  $work_in_days        force working in days (false by default)
-     * @param boolean  $end_of_working_day  end of working day (false by default)
+     * @param string  $start              begin
+     * @param integer $delay              delay to add (in seconds)
+     * @param integer $additional_delay   delay to add (default 0)
+     * @param boolean $work_in_days       force working in days (false by default)
+     * @param boolean $end_of_working_day end of working day (false by default)
      *
      * @return boolean|string end date
      **/
@@ -620,8 +620,8 @@ class Calendar extends CommonDropdown
     }
 
     /**
-     * @param int $current_time
-     * @param int $number
+     * @param int  $current_time
+     * @param int  $number
      * @param bool $negative
      *
      * @return int

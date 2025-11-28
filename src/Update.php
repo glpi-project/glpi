@@ -68,7 +68,7 @@ class Update
      *
      *
      * @since 11.0.0 The `$args` parameter has been removed.
-     * @param object $DB   Database instance
+     * @param object $DB Database instance
      */
     public function __construct($DB, string $migrations_directory = GLPI_ROOT . '/install/migrations/')
     {
@@ -163,8 +163,8 @@ class Update
     /**
      * Run updates
      *
-     * @param string $current_version  Current version
-     * @param bool   $force_latest     Force replay of latest migration
+     * @param string $current_version Current version
+     * @param bool   $force_latest    Force replay of latest migration
      *
      */
     public function doUpdates(

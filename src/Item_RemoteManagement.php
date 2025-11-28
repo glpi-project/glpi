@@ -109,8 +109,8 @@ class Item_RemoteManagement extends CommonDBChild
     /**
      * Print the remote management
      *
-     * @param CommonDBTM $item          Item object
-     * @param integer    $withtemplate  Template or basic item (default 0)
+     * @param CommonDBTM $item         Item object
+     * @param integer    $withtemplate Template or basic item (default 0)
      *
      * @return void
      **/

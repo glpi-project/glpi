@@ -251,8 +251,8 @@ abstract class CommonITILSatisfaction extends CommonDBTM
     /**
      * display satisfaction value
      *
-     * @param int|float $value Between 0 and 10
-     * @param int $entities_id
+     * @param int|float $value       Between 0 and 10
+     * @param int       $entities_id
      *
      * @return string
      */

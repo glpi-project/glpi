@@ -1019,10 +1019,10 @@ PHP
          * the plugin directory on each time. Not doing this will prevent updating the `init` function of
          * the plugin on each test.
          *
-         * @param array|null $initial_data Initial data in DB, null for none.
-         * @param array|null $setup_informations Information hosted by setup file, null for none.
-         * @param array|null $expected_data Expected data in DB, null for none.
-         * @param string|null $expected_warning Expected warning message, null for none.
+         * @param array|null  $initial_data       Initial data in DB, null for none.
+         * @param array|null  $setup_informations Information hosted by setup file, null for none.
+         * @param array|null  $expected_data      Expected data in DB, null for none.
+         * @param string|null $expected_warning   Expected warning message, null for none.
          *
          * @return void
          */
@@ -1081,9 +1081,9 @@ PHP
         /**
          * Create test plugin files.
          *
-         * @param boolean $withsetup Include setup file ?
-         * @param array $informations Information to put in setup files.
-         * @param null|string $directory Directory where to create files, null to use default location.
+         * @param boolean     $withsetup    Include setup file ?
+         * @param array       $informations Information to put in setup files.
+         * @param null|string $directory    Directory where to create files, null to use default location.
          *
          * @return void
          */

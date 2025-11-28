@@ -96,7 +96,7 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
 
     /**
      * Check that the given IP is in the given CIDR range
-     * @param string $ip The IP to check
+     * @param string $ip    The IP to check
      * @param string $range The CIDR notation range
      */
     private function isCidrMatch(string $ip, string $range): bool

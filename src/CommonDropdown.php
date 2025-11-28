@@ -381,9 +381,9 @@ abstract class CommonDropdown extends CommonDBTM
      *
      *
      * @since 10.0.0 $options param added
-     * @param int $ID          ID of the item
-     * @param array $field     Field specs (see self::getAdditionalFields())
-     * @param array $options   Additional options
+     * @param int   $ID      ID of the item
+     * @param array $field   Field specs (see self::getAdditionalFields())
+     * @param array $options Additional options
      * @return void
      */
     public function displaySpecificTypeField($ID, $field = [], array $options = []) {}
@@ -690,7 +690,7 @@ abstract class CommonDropdown extends CommonDBTM
     /**
      * check if a dropdown already exists (before import)
      *
-     * @param &$input  array of value to import (name)
+     * @param &$input array of value to import (name)
      *
      * @return integer the ID of the new (or -1 if not found)
      **/
@@ -732,7 +732,7 @@ abstract class CommonDropdown extends CommonDBTM
     /**
      * Import a dropdown - check if already exists
      *
-     * @param $input  array of value to import (name, ...)
+     * @param $input array of value to import (name, ...)
      *
      * @return integer|boolean the ID of the new or existing dropdown (-1 or false on failure)
      **/

@@ -792,7 +792,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
     /**
      * Type than could be linked to a Rack
      *
-     * @param bool  $all all types, or only allowed ones
+     * @param bool $all all types, or only allowed ones
      *
      * @return array of types
      */

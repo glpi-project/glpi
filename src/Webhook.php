@@ -397,7 +397,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
             /**
              * @param class-string<CommonDBTM> $itemtype
-             * @param array $schemas
+             * @param array                    $schemas
              * @return array|null
              * @phpstan-return array{name: string, schema: array}|null
              */
@@ -517,11 +517,11 @@ class Webhook extends CommonDBTM implements FilterableInterface
     /**
      * Get the body of a webhook request for the given event and API data.
      * In some cases, the provided itemtype and items_id may be used to inject some information about the parent item into a top-level 'parent_item' object.
-     * @param string $event The event to use in the payload.
-     * @param array $api_data The data to use in the payload.
-     * @param string $itemtype The related itemtype.
-     * @param int $items_id The related items_id.
-     * @param bool $raw_output Whether to return the raw JSON or process it through the payload template.
+     * @param string $event      The event to use in the payload.
+     * @param array  $api_data   The data to use in the payload.
+     * @param string $itemtype   The related itemtype.
+     * @param int    $items_id   The related items_id.
+     * @param bool   $raw_output Whether to return the raw JSON or process it through the payload template.
      */
     private function getWebhookBody(string $event, array $api_data, string $itemtype, int $items_id, bool $raw_output = false): ?string
     {
@@ -645,11 +645,11 @@ class Webhook extends CommonDBTM implements FilterableInterface
     /**
      * Get a result from the API for a given path.
      * In some cases, the provided itemtype and items_id may be used to inject some information about the parent item into a top-level 'parent_item' object.
-     * @param string $path The API path to get the data from.
-     * @param string $event The event to use in the payload.
-     * @param class-string<CommonDBTM> $itemtype The itemtype related to the path.
-     * @param int $items_id The items_id related to the path.
-     * @param bool $raw_output Whether to return the raw JSON or process it through the payload template.
+     * @param string                   $path       The API path to get the data from.
+     * @param string                   $event      The event to use in the payload.
+     * @param class-string<CommonDBTM> $itemtype   The itemtype related to the path.
+     * @param int                      $items_id   The items_id related to the path.
+     * @param bool                     $raw_output Whether to return the raw JSON or process it through the payload template.
      */
     public function getResultForPath(string $path, string $event, string $itemtype, int $items_id, bool $raw_output = false): ?string
     {
@@ -1106,8 +1106,8 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
     /**
      * Raise an event for an item to trigger related outgoing webhooks
-     * @param string $event The event being raised
-     * @param CommonDBTM $item The item the event is being raised for
+     * @param string     $event The event being raised
+     * @param CommonDBTM $item  The item the event is being raised for
      */
     public static function raise(string $event, CommonDBTM $item): void
     {

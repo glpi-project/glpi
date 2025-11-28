@@ -49,15 +49,15 @@ class Ajax
      *
      * @since 0.84
      *
-     * @param string   $name    name of the js object
-     * @param string   $url     URL to display in modal
-     * @param array    $options Possible options:
-     *     - width      (default 800)
-     *     - height     (default 400)
-     *     - modal      is a modal window? (default true)
-     *     - container  specify a html element to render (default empty to html.body)
-     *     - title      window title (default empty)
-     *     - display    display or get string? (default true)
+     * @param string $name    name of the js object
+     * @param string $url     URL to display in modal
+     * @param array  $options Possible options:
+     *                        - width      (default 800)
+     *                        - height     (default 400)
+     *                        - modal      is a modal window? (default true)
+     *                        - container  specify a html element to render (default empty to html.body)
+     *                        - title      window title (default empty)
+     *                        - display    display or get string? (default true)
      *
      * @return void|string (see $options['display'])
      */
@@ -143,12 +143,12 @@ class Ajax
      * @param string $domid   DOM ID of the js object
      * @param string $url     URL to display in modal
      * @param array  $options Possible options:
-     *          - width          (default 800)
-     *          - height         (default 400)
-     *          - modal          is a modal window? (default true)
-     *          - title          window title (default empty)
-     *          - display        display or get string? (default true)
-     *          - reloadonclose  reload main page on close? (default false)
+     *                        - width          (default 800)
+     *                        - height         (default 400)
+     *                        - modal          is a modal window? (default true)
+     *                        - title          window title (default empty)
+     *                        - display        display or get string? (default true)
+     *                        - reloadonclose  reload main page on close? (default false)
      *
      * @return void|string (see $options['display'])
      */
@@ -265,8 +265,8 @@ class Ajax
      * @param string  $tabdivcontent_id ID of the div containing the content loaded by tabs (default 'tabcontent')
      * @param array   $tabs             Tabs to create : tabs is array('key' => array('title'=> 'x',
      *                                  tabs is array('key' => array('title'=> 'x',
-     *                                                                   url    => 'url_toload',
-     *                                                                   params => 'url_params')...
+     *                                  url    => 'url_toload',
+     *                                  params => 'url_params')...
      * @param string  $type             itemtype for active tab
      * @param integer $ID               ID of element for active tab (default 0)
      * @param string  $orientation      orientation of tabs (default vertical may also be horizontal)
@@ -678,10 +678,10 @@ JS;
      * Javascript code for update an item (Javascript code only)
      *
      * @param array   $options Options :
-     *  - toupdate : array / Update a specific item on select change on dropdown
-     *               (need value_fieldname, to_update,
-     *                url (@see Ajax::updateItemOnSelectEvent for information)
-     *                and may have moreparams)
+     *                         - toupdate : array / Update a specific item on select change on dropdown
+     *                         (need value_fieldname, to_update,
+     *                         url (@see Ajax::updateItemOnSelectEvent for information)
+     *                         and may have moreparams)
      * @param boolean $display display or get string (default true)
      *
      * @return void|string (see $display)
@@ -755,8 +755,8 @@ JS;
      * @param string       $url        Url to get datas to update the item
      * @param array        $parameters of parameters to send to ajax URL
      * @param string|array $toobserve  id of another item used to get value in case of __VALUE__ used or array    of id to get value in case of __VALUE#__ used (default '')
-     *                               or
-     *                      array    of id to get value in case of __VALUE#__ used (default '')
+     *                                 or
+     *                                 array    of id to get value in case of __VALUE#__ used (default '')
      * @param boolean      $display    display or get string (default true)
      *
      * @return void|string (see $display)
@@ -812,7 +812,7 @@ JS;
      * @param string  $url        Url to get datas to update the item
      * @param array   $parameters of parameters to send to ajax URL
      * @param string  $toobserve  id of another item used to get value in case of __VALUE__ used
-     *                               (default '')
+     *                            (default '')
      * @param boolean $display    display or get string (default true)
      *
      * @return void|string (see $display)

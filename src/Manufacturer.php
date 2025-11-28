@@ -136,7 +136,7 @@ class Manufacturer extends CommonDropdown
 
 
     /**
-     * @param null|string $old_name  Old name
+     * @param null|string $old_name Old name
      *
      * @return null|string new name
      **/
@@ -168,10 +168,10 @@ class Manufacturer extends CommonDropdown
     /**
      * @since 0.84
      *
-     * @param $base                  HTMLTableBase object
-     * @param $super                 HTMLTableSuperHeader object (default NULL)
-     * @param $father                HTMLTableHeader object (default NULL)
-     * @param $options      array
+     * @param $base    HTMLTableBase object
+     * @param $super   HTMLTableSuperHeader object (default NULL)
+     * @param $father  HTMLTableHeader object (default NULL)
+     * @param $options array
      **/
     public static function getHTMLTableHeader(
         $itemtype,
@@ -194,10 +194,10 @@ class Manufacturer extends CommonDropdown
     /**
      * @since 0.84
      *
-     * @param $row                HTMLTableRow object (default NULL)
-     * @param $item               CommonDBTM object (default NULL)
-     * @param $father             HTMLTableCell object (default NULL)
-     * @param $options   array
+     * @param $row     HTMLTableRow object (default NULL)
+     * @param $item    CommonDBTM object (default NULL)
+     * @param $father  HTMLTableCell object (default NULL)
+     * @param $options array
      **/
     public static function getHTMLTableCellsForItem(
         ?HTMLTableRow $row = null,

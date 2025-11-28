@@ -300,8 +300,8 @@ class HTMLSearchOutput extends AbstractSearchOutput
     }
 
     /**
-     * @param int $rows
-     * @param int $cols
+     * @param int  $rows
+     * @param int  $cols
      * @param bool $fixed
      */
     public static function showHeader($rows, $cols, $fixed = false): string
@@ -315,9 +315,9 @@ class HTMLSearchOutput extends AbstractSearchOutput
 
     /**
      * @param string $value
-     * @param int $num
+     * @param int    $num
      * @param string $linkto
-     * @param bool $issort
+     * @param bool   $issort
      * @param string $order
      * @param string $options
      *
@@ -348,8 +348,8 @@ class HTMLSearchOutput extends AbstractSearchOutput
 
     /**
      * @param string $value
-     * @param int $num
-     * @param int $row
+     * @param int    $num
+     * @param int    $row
      * @param string $extraparam
      *
      */
@@ -398,7 +398,7 @@ class HTMLSearchOutput extends AbstractSearchOutput
 
     /**
      * @param string $title
-     * @param ?int $count
+     * @param ?int   $count
      *
      */
     public static function showFooter($title = "", $count = null): string

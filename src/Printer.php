@@ -305,10 +305,10 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
     /**
      * Print the printer form
      *
-     * @param $ID integer ID of the item
+     * @param $ID      integer ID of the item
      * @param $options array
-     *     - target filename : where to go when done.
-     *     - withtemplate boolean : template or basic item
+     *                 - target filename : where to go when done.
+     *                 - withtemplate boolean : template or basic item
      *
      * @return boolean item found
      **/
@@ -762,10 +762,10 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
     /**
      * Add a printer. If already exist in trashbin restore it
      *
-     * @param string $name          the printer's name
-     * @param string $manufacturer  the software's manufacturer
-     * @param int    $entity        the entity in which the software must be added
-     * @param string $comment       comment (default '')
+     * @param string $name         the printer's name
+     * @param string $manufacturer the software's manufacturer
+     * @param int    $entity       the entity in which the software must be added
+     * @param string $comment      comment (default '')
      *
      * @return int
      **/

@@ -165,8 +165,8 @@ final class Search
 
     /**
      * Get the SQL SELECT criteria required to get the data for the specified property.
-     * @param string $prop_name The property name
-     * @param bool $distinct_groups Whether to use DISTINCT in GROUP_CONCAT
+     * @param string $prop_name       The property name
+     * @param bool   $distinct_groups Whether to use DISTINCT in GROUP_CONCAT
      */
     private function getSelectCriteriaForProperty(string $prop_name, bool $distinct_groups = false): ?QueryExpression
     {
@@ -260,8 +260,8 @@ final class Search
 
     /**
      * Get all JOIN clauses for the specified join definition
-     * @param string $join_alias The alias/name for the join
-     * @param array $join_definition The join definition
+     * @param string $join_alias      The alias/name for the join
+     * @param array  $join_definition The join definition
      * @return array JOIN clauses in array format used bt {@link \DBmysqlIterator}
      */
     private function getJoins(string $join_alias, array $join_definition): array

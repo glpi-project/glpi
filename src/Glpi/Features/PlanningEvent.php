@@ -340,7 +340,7 @@ trait PlanningEvent
     /**
      * Add an exception into a serie
      *
-     * @param int $id of the serie
+     * @param int    $id  of the serie
      * @param string $day the exception
      *
      * @return bool
@@ -366,7 +366,7 @@ trait PlanningEvent
      * Clone recurrent event into a non recurrent event
      * (and add an exception to the orginal one)
      *
-     * @param int $id of the serie
+     * @param int    $id    of the serie
      * @param string $start the new start for the event (in case of dragging)
      *
      * @return object the new object
@@ -396,14 +396,14 @@ trait PlanningEvent
     /**
      * Populate the planning with planned event
      *
-     * @param $options   array of possible options:
-     *    - who          ID of the user (0 = undefined)
-     *    - whogroup     ID of the group of users (0 = undefined)
-     *    - begin        Date
-     *    - end          Date
-     *    - color
-     *    - event_type_color
-     *    - check_planned (boolean)
+     * @param $options array of possible options:
+     *                 - who          ID of the user (0 = undefined)
+     *                 - whogroup     ID of the group of users (0 = undefined)
+     *                 - begin        Date
+     *                 - end          Date
+     *                 - color
+     *                 - event_type_color
+     *                 - check_planned (boolean)
      *
      * @return array of planning item
      **/
@@ -681,11 +681,11 @@ trait PlanningEvent
      * Generate the html code to display a Planning Item.
      * Note: despite its name, this method do not display anything by itself.
      *
-     * @param $val        array of the item to display
-     * @param $who        ID of the user (0 if all)
-     * @param $type       position of the item in the time block (in, through, begin or end)
-     *                    default '')
-     * @param $complete   complete display (more details) (default 0)
+     * @param $val      array of the item to display
+     * @param $who      ID of the user (0 if all)
+     * @param $type     position of the item in the time block (in, through, begin or end)
+     *                  default '')
+     * @param $complete complete display (more details) (default 0)
      *
      * @return string
      **/
@@ -757,8 +757,8 @@ trait PlanningEvent
      * Display a mini form html for setup a reccuring event
      * to construct an rrule array
      *
-     * @param string $rrule  existing rrule entry with ical format (https://www.kanzaki.com/docs/ical/rrule.html)
-     * @param array $options can contains theses keys:
+     * @param string $rrule   existing rrule entry with ical format (https://www.kanzaki.com/docs/ical/rrule.html)
+     * @param array  $options can contains theses keys:
      *                        - 'rand' => random string for generated inputs
      * @return string        the generated html
      */
@@ -942,8 +942,8 @@ trait PlanningEvent
     /**
      * Returns RSet occurrence corresponding to rrule field value.
      *
-     * @param array  $rrule    RRule field value
-     * @param string $dtstart  Start of first occurrence
+     * @param array  $rrule   RRule field value
+     * @param string $dtstart Start of first occurrence
      *
      */
     public static function getRsetFromRRuleField(array $rrule, $dtstart): RSet

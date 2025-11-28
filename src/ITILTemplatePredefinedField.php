@@ -167,8 +167,8 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
      *
      * @since 0.83
      *
-     * @param integer $ID                   the template ID
-     * @param boolean $withtypeandcategory  with type and category (false by default)
+     * @param integer $ID                  the template ID
+     * @param boolean $withtypeandcategory with type and category (false by default)
      *
      * @return array of predefined fields
      **/

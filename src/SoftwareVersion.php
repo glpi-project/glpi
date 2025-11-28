@@ -94,10 +94,10 @@ class SoftwareVersion extends CommonDBChild implements StateInterface
     /**
      * Print the Software / version form
      *
-     * @param integer $ID Id of the version or the template to print
-     * @param array $options of possible options:
-     *     - target form target
-     *     - softwares_id ID of the software for add process
+     * @param integer $ID      Id of the version or the template to print
+     * @param array   $options of possible options:
+     *                         - target form target
+     *                         - softwares_id ID of the software for add process
      *
      * @return bool true if displayed  false if item not found or not right to display
      *
@@ -200,10 +200,10 @@ TWIG, $twig_params);
      * Make a select box for  software to install
      *
      * @param array $options Array of possible options:
-     *    - name          : string / name of the select (default is softwareversions_id)
-     *    - softwares_id  : integer / ID of the software (mandatory)
-     *    - value         : integer / value of the selected version
-     *    - used          : array / already used items
+     *                       - name          : string / name of the select (default is softwareversions_id)
+     *                       - softwares_id  : integer / ID of the software (mandatory)
+     *                       - value         : integer / value of the selected version
+     *                       - used          : array / already used items
      *
      * @return integer|string
      *    integer if option display=true (random part of elements id)

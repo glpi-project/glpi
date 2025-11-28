@@ -315,10 +315,10 @@ class RuleAction extends CommonDBChild
     /**
      * Add an action
      *
-     * @param string $action Action type
+     * @param string  $action Action type
      * @param integer $ruleid Rule ID
-     * @param string $field Field name
-     * @param mixed $value Value
+     * @param string  $field  Field name
+     * @param mixed   $value  Value
      *
      * @return void
      */
@@ -337,14 +337,14 @@ class RuleAction extends CommonDBChild
      * Display a dropdown with all the possible actions
      *
      * @param array{subtype: class-string<Rule>, name: string, field?: string, value?: string, alreadyused: bool, display?: bool} $options
-     * <ul>
-     *     <li>subtype: the itemtype of the rule</li>
-     *     <li>name: the name of the dropdown</li>
-     *     <li>field: the field name</li>
-     *     <li>value: the value</li>
-     *     <li>alreadyused: if an action of the same type was already used for the rule (default false)</li>
-     *     <li>display: if the dropdown should be displayed< (default true)/li>
-     * </ul>
+     *                                                                                                                                     <ul>
+     *                                                                                                                                     <li>subtype: the itemtype of the rule</li>
+     *                                                                                                                                     <li>name: the name of the dropdown</li>
+     *                                                                                                                                     <li>field: the field name</li>
+     *                                                                                                                                     <li>value: the value</li>
+     *                                                                                                                                     <li>alreadyused: if an action of the same type was already used for the rule (default false)</li>
+     *                                                                                                                                     <li>display: if the dropdown should be displayed< (default true)/li>
+     *                                                                                                                                     </ul>
      * @return string|int|false Returns the dropdown HTML if display is false, otherwise the random number used to create the dropdown is returned.
      **/
     public static function dropdownActions($options)
@@ -423,7 +423,7 @@ class RuleAction extends CommonDBChild
 
     /**
      * @param string $action
-     * @param array $regex_result
+     * @param array  $regex_result
      * @return string
      **/
     public static function getRegexResultById($action, $regex_result)
@@ -445,7 +445,7 @@ class RuleAction extends CommonDBChild
     }
 
     /**
-     * @param integer $rules_id
+     * @param integer            $rules_id
      * @param class-string<Rule> $sub_type
      *
      * @return array

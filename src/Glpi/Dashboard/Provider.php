@@ -80,7 +80,7 @@ class Provider
      * @param CommonDBTM|null $item object to count
      *
      * @param array $params default values for
-     * - 'apply_filters' values from dashboard filters
+     *                      - 'apply_filters' values from dashboard filters
      *
      * @return array :
      * - 'number'
@@ -227,19 +227,19 @@ class Provider
      * Count number of tickets for a given case
      *
      * @param string $case:
-     * - 'notold': not closed or solved tickets
-     * - 'late': late tickets
-     * - 'waiting_validation': tickets waiting validation for connected user
-     * - 'incoming': ticket with incoming status
-     * - 'waiting': ticket with waiting status
-     * - 'assigned': ticket with assigned status
-     * - 'planned': ticket with planned status
-     * - 'solved': ticket with solved status
-     * - 'closed': ticket with closed status
-     * @param array $params default values for
-     * - 'title' of the card
-     * - 'icon' of the card
-     * - 'apply_filters' values from dashboard filters
+     *                       - 'notold': not closed or solved tickets
+     *                       - 'late': late tickets
+     *                       - 'waiting_validation': tickets waiting validation for connected user
+     *                       - 'incoming': ticket with incoming status
+     *                       - 'waiting': ticket with waiting status
+     *                       - 'assigned': ticket with assigned status
+     *                       - 'planned': ticket with planned status
+     *                       - 'solved': ticket with solved status
+     *                       - 'closed': ticket with closed status
+     * @param array  $params default values for
+     *                       - 'title' of the card
+     *                       - 'icon' of the card
+     *                       - 'apply_filters' values from dashboard filters
      *
      * @return array :
      * - 'number'
@@ -799,15 +799,15 @@ class Provider
     /**
      * Get multiple counts of computer by a specific foreign key
      *
-     * @param CommonDBTM $item main item to count
+     * @param CommonDBTM $item    main item to count
      * @param CommonDBTM $fk_item groupby by this item (we will find the foreign key in the main item)
-     * @param array $params values for:
-     * - 'title' of the card
-     * - 'icon' of the card
-     * - 'searchoption_id' id corresponding to FK search option
-     * - 'limit' max data to return
-     * - 'join_key' LEFT, INNER, etc JOIN
-     * - 'apply_filters' values from dashboard filters
+     * @param array      $params  values for:
+     *                            - 'title' of the card
+     *                            - 'icon' of the card
+     *                            - 'searchoption_id' id corresponding to FK search option
+     *                            - 'limit' max data to return
+     *                            - 'join_key' LEFT, INNER, etc JOIN
+     *                            - 'apply_filters' values from dashboard filters
      *
      * @return array :
      * - 'data': [
@@ -932,10 +932,10 @@ class Provider
     /**
      * Get a list of article for an compatible item (with date,name,text fields)
      *
-     * @param CommonDBTM $item the itemtype to list
-     * @param array   $params default values for
-     * - 'icon' of the card
-     * - 'apply_filters' values from dashboard filters
+     * @param CommonDBTM $item   the itemtype to list
+     * @param array      $params default values for
+     *                           - 'icon' of the card
+     *                           - 'apply_filters' values from dashboard filters
      *
      */
     public static function articleListItem(?CommonDBTM $item = null, array $params = []): array
@@ -994,9 +994,9 @@ class Provider
      * get multiple count of ticket by month
      *
      * @param array $params default values for
-     * - 'title' of the card
-     * - 'icon' of the card
-     * - 'apply_filters' values from dashboard filters
+     *                      - 'title' of the card
+     *                      - 'icon' of the card
+     *                      - 'apply_filters' values from dashboard filters
      *
      */
     public static function ticketsOpened(array $params = []): array
@@ -1074,9 +1074,9 @@ class Provider
      * Get ticket evolution by opened, solved, closed, late series and months group
      *
      * @param array $params default values for
-     * - 'title' of the card
-     * - 'icon' of the card
-     * - 'apply_filters' values from dashboard filters
+     *                      - 'title' of the card
+     *                      - 'icon' of the card
+     *                      - 'apply_filters' values from dashboard filters
      *
      */
     public static function getTicketsEvolution(array $params = []): array
@@ -1256,9 +1256,9 @@ class Provider
      * get ticket by their curent status and their opening date
      *
      * @param array $params default values for
-     * - 'title' of the card
-     * - 'icon' of the card
-     * - 'apply_filters' values from dashboard filters
+     *                      - 'title' of the card
+     *                      - 'icon' of the card
+     *                      - 'apply_filters' values from dashboard filters
      *
      */
     public static function getTicketsStatus(array $params = []): array
@@ -1425,17 +1425,17 @@ class Provider
     /**
      * Get numbers of tickets grouped by actors
      *
-     * @param string $case cound be:
-     * - user_requester
-     * - group_requester
-     * - user_observer
-     * - group_observer
-     * - user_assign
-     * - group_assign
-     * @param array $params default values for
-     * - 'title' of the card
-     * - 'icon' of the card
-     * - 'apply_filters' values from dashboard filters
+     * @param string $case   cound be:
+     *                       - user_requester
+     *                       - group_requester
+     *                       - user_observer
+     *                       - group_observer
+     *                       - user_assign
+     *                       - group_assign
+     * @param array  $params default values for
+     *                       - 'title' of the card
+     *                       - 'icon' of the card
+     *                       - 'apply_filters' values from dashboard filters
      *
      */
     public static function nbTicketsActor(
@@ -1577,9 +1577,9 @@ class Provider
      * get average stats (takeintoaccoutn, solve/close delay, waiting) of ticket by month
      *
      * @param array $params default values for
-     * - 'title' of the card
-     * - 'icon' of the card
-     * - 'apply_filters' values from dashboard filters
+     *                      - 'title' of the card
+     *                      - 'icon' of the card
+     *                      - 'apply_filters' values from dashboard filters
      *
      * @return array
      */
@@ -1658,9 +1658,9 @@ class Provider
      * get multiple count of ticket by status and month
      *
      * @param array $params default values for
-     * - 'title' of the card
-     * - 'icon' of the card
-     * - 'apply_filters' values from dashboard filters
+     *                      - 'title' of the card
+     *                      - 'icon' of the card
+     *                      - 'apply_filters' values from dashboard filters
      *
      * @return array
      */
@@ -1737,8 +1737,8 @@ class Provider
      * Get search criteria based on given filters.
      *
      * @param string $table                     Related itemtype table.
-     * @param array $apply_filters              Dashboard filters.
-     * @param bool $default_criteria_on_empty   Return default criteria if filters are not producing any criteria.
+     * @param array  $apply_filters             Dashboard filters.
+     * @param bool   $default_criteria_on_empty Return default criteria if filters are not producing any criteria.
      *
      * @return array An empty array, or an array containing a `criteria` key that contains search criteria.
      *

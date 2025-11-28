@@ -109,10 +109,10 @@ class Event extends CommonDBTM
      * $level is above or equal to setting from configuration.
      *
      * @param string|int $items_id
-     * @param string $type
-     * @param int $level
-     * @param string $service
-     * @param string $event
+     * @param string     $type
+     * @param int        $level
+     * @param string     $service
+     * @param string     $event
      *
      * @return void
      */
@@ -223,7 +223,7 @@ class Event extends CommonDBTM
 
     /**
      * @param class-string<CommonDBTM> $type
-     * @param int $items_id
+     * @param int                      $items_id
      *
      * @return void
      **/
@@ -285,8 +285,8 @@ class Event extends CommonDBTM
      *
      * Print a great tab to present lasts events occurred on glpi
      *
-     * @param string $user  name user to search on message (default '')
-     * @param bool $display if false, return html
+     * @param string $user    name user to search on message (default '')
+     * @param bool   $display if false, return html
      *
      * @return void|string
      */

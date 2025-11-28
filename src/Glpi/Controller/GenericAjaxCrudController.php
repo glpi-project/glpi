@@ -302,9 +302,9 @@ class GenericAjaxCrudController extends AbstractController
      *
      * If a check fail, throws an  exception
      *
-     * @param int   $id     Target item's id
-     * @param int   $right  Specific right to check
-     * @param array $input  Input data
+     * @param int   $id    Target item's id
+     * @param int   $right Specific right to check
+     * @param array $input Input data
      *
      *
      * @throws HttpException

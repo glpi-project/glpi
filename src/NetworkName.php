@@ -311,8 +311,8 @@ class NetworkName extends FQDNLabel
      *
      * The address can be unaffected, and remain "free"
      *
-     * @param integer $items_id  the id of the item
-     * @param string  $itemtype  the type of the item
+     * @param integer $items_id the id of the item
+     * @param string  $itemtype the type of the item
      *
      * @return void
      **/
@@ -351,7 +351,7 @@ class NetworkName extends FQDNLabel
     /**
      * @param integer $networkNameID
      * @param integer $items_id
-     * @param string $itemtype
+     * @param string  $itemtype
      * @return bool
      */
     public static function affectAddress($networkNameID, $items_id, $itemtype)

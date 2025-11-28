@@ -288,7 +288,7 @@ class DomainRecordType extends CommonDropdown
     /**
      * Validate fields descriptor.
      *
-     * @param string $fields_str  Value of "fields" field (should be a JSON encoded string).
+     * @param string $fields_str Value of "fields" field (should be a JSON encoded string).
      *
      */
     private function validateFieldsDescriptor($fields_str): bool
@@ -370,8 +370,8 @@ class DomainRecordType extends CommonDropdown
     /**
      * Display ajax form used to fill record data.
      *
-     * @param string $str_input_id    Id of input used to get/store record data as string.
-     * @param string $obj_input_id    Id of input used to get/store record data as object.
+     * @param string $str_input_id Id of input used to get/store record data as string.
+     * @param string $obj_input_id Id of input used to get/store record data as object.
      *
      * @return void
      */

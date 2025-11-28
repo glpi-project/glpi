@@ -203,7 +203,7 @@ class NetworkPort extends CommonDBChild
      *
      * @since 0.84
      *
-     * @param class-string<NetworkPortInstantiation> $new_instantiation_type  the name of the new instaniation type
+     * @param class-string<NetworkPortInstantiation> $new_instantiation_type the name of the new instaniation type
      *
      * @return NetworkPortInstantiation|boolean false on error, true if the previous instantiation is not available
      *                 (ie.: invalid instantiation type) or the object of the previous instantiation.
@@ -538,7 +538,7 @@ class NetworkPort extends CommonDBChild
     /**
      * Get port opposite port ID if linked item
      *
-     * @param integer $ID  networking port ID
+     * @param integer $ID networking port ID
      *
      * @return integer|false  ID of the NetworkPort found, false if not found
      **/
@@ -1270,7 +1270,7 @@ class NetworkPort extends CommonDBChild
 
     /**
      * @param class-string<CommonDBTM> $itemtype
-     * @param int $items_id
+     * @param int                      $items_id
      *
      * @return DBmysqlIterator
      */

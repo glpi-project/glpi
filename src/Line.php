@@ -101,10 +101,10 @@ class Line extends CommonDBTM implements AssignableItemInterface, StateInterface
     /**
      * Print the line form
      *
-     * @param $ID integer ID of the item
+     * @param $ID      integer ID of the item
      * @param $options array
-     *     - target filename : where to go when done.
-     *     - withtemplate boolean : template or basic item
+     *                 - target filename : where to go when done.
+     *                 - withtemplate boolean : template or basic item
      *
      * @return boolean item found
      **/

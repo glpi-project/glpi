@@ -43,11 +43,11 @@ class TicketTask extends CommonITILTask
     /**
      * Populate the planning with planned ticket tasks
      *
-     * @param array $options   array of possible options:
-     *    - who          ID of the user (0 = undefined)
-     *    - whogroup     ID of the group of users (0 = undefined)
-     *    - begin        Date
-     *    - end          Date
+     * @param array $options array of possible options:
+     *                       - who          ID of the user (0 = undefined)
+     *                       - whogroup     ID of the group of users (0 = undefined)
+     *                       - begin        Date
+     *                       - end          Date
      *
      * @return array of planning item
      **/
@@ -60,11 +60,11 @@ class TicketTask extends CommonITILTask
     /**
      * Populate the planning with planned ticket tasks
      *
-     * @param array $options   array of possible options:
-     *    - who          ID of the user (0 = undefined)
-     *    - whogroup     ID of the group of users (0 = undefined)
-     *    - begin        Date
-     *    - end          Date
+     * @param array $options array of possible options:
+     *                       - who          ID of the user (0 = undefined)
+     *                       - whogroup     ID of the group of users (0 = undefined)
+     *                       - begin        Date
+     *                       - end          Date
      *
      * @return array of planning item
      **/
@@ -77,10 +77,10 @@ class TicketTask extends CommonITILTask
     /**
      * Display a Planning Item
      *
-     * @param array           $val       array of the item to display
-     * @param integer         $who       ID of the user (0 if all)
-     * @param string          $type      position of the item in the time block (in, through, begin or end)
-     * @param integer|boolean $complete  complete display (more details)
+     * @param array           $val      array of the item to display
+     * @param integer         $who      ID of the user (0 if all)
+     * @param string          $type     position of the item in the time block (in, through, begin or end)
+     * @param integer|boolean $complete complete display (more details)
      *
      * @return string
      */

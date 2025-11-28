@@ -470,8 +470,8 @@ trait FormTesterTrait
     /**
      * Helper method to access the ID of a section for a given form.
      *
-     * @param Form        $form         Given form
-     * @param string      $section_name Section name to look for
+     * @param Form   $form         Given form
+     * @param string $section_name Section name to look for
      *
      * @return int The ID of the section
      */

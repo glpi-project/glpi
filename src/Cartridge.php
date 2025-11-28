@@ -364,7 +364,7 @@ class Cartridge extends CommonDBRelation
     /**
      * Print the cartridge count HTML array for the cartridge item $tID
      *
-     * @param integer         $tID      ID of the cartridge item
+     * @param integer         $tID             ID of the cartridge item
      * @param integer         $alarm_threshold Alarm threshold value
      * @param integer|boolean $nohtml          True if the return value should be without HTML tags (default 0/false).
      *                                         The return value will anyway be a safe HTML string.
@@ -716,8 +716,8 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
     /**
      * Get the translated value for the status of a cartridge based on the use and out date (if any).
      *
-     * @param string $date_use  Date of use (May be null or empty)
-     * @param string $date_out  Date of delete (May be null or empty)
+     * @param string $date_use Date of use (May be null or empty)
+     * @param string $date_out Date of delete (May be null or empty)
      *
      * @return string : Translated value for the cartridge status.
      **/
@@ -735,8 +735,8 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
     /**
      * Print out the cartridges of a defined type
      *
-     * @param CartridgeItem   $cartitem  The cartridge item
-     * @param boolean|integer $show_old  Show old cartridges or not (default 0/false)
+     * @param CartridgeItem   $cartitem The cartridge item
+     * @param boolean|integer $show_old Show old cartridges or not (default 0/false)
      *
      * @return boolean|void
      **/
@@ -1224,9 +1224,9 @@ TWIG, ['printer_id' => $printer->getID()]);
      * Show form for Cartridge
      * @since 0.84
      *
-     * @param integer $ID       Id of the cartridge
-     * @param array   $options  Array of possible options:
-     *     - parent Object : the printers where the cartridge is used
+     * @param integer $ID      Id of the cartridge
+     * @param array   $options Array of possible options:
+     *                         - parent Object : the printers where the cartridge is used
      *
      * @return boolean False if there was a rights issue. Otherwise, returns true.
      */

@@ -251,7 +251,7 @@ class ItemAntivirus extends CommonDBChild
     /**
      * Display form for antivirus
      *
-     * @param integer $ID      id of the antivirus
+     * @param integer $ID id of the antivirus
      *
      * @return boolean TRUE if form is ok
      **/
@@ -287,7 +287,7 @@ class ItemAntivirus extends CommonDBChild
     /**
      * Print the items antiviruses
      *
-     * @param CommonDBTM $asset         Asset
+     * @param CommonDBTM $asset        Asset
      * @param integer    $withtemplate Template or basic item (default 0)
      *
      * @return void

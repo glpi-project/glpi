@@ -142,9 +142,9 @@ class ITILSolution extends CommonDBChild
     /**
      * Print the phone form
      *
-     * @param $ID integer ID of the item
+     * @param $ID      integer ID of the item
      * @param $options array
-     *     - item: CommonITILObject instance
+     *                 - item: CommonITILObject instance
      *
      * @return boolean item found
      **/

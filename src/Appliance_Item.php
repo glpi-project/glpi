@@ -107,7 +107,7 @@ class Appliance_Item extends CommonDBRelation
     /**
      * Print enclosure items
      *
-     * @param Appliance $appliance  Appliance object wanted
+     * @param Appliance $appliance Appliance object wanted
      *
      * @return void|boolean (display) Returns false if there is a rights error.
      **/

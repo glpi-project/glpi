@@ -257,10 +257,10 @@ class Dashboard extends CommonDBTM
     /**
      * Save the current dashboard instance to DB
      *
-     * @param string $title label of the dashboard, will be suglified to have a corresponding key
+     * @param string $title   label of the dashboard, will be suglified to have a corresponding key
      * @param string $context of the dashboard, filter the dashboard collection by a key
-     * @param array $items cards for the dashboard
-     * @param array $rights for the dashboard
+     * @param array  $items   cards for the dashboard
+     * @param array  $rights  for the dashboard
      *
      */
     public function saveNew(
@@ -334,13 +334,13 @@ class Dashboard extends CommonDBTM
      * Save items in DB for the current dashboard
      *
      * @param array $items cards of the dashboard, contains:
-     *    - gridstack_id: unique id of the card in the grid, usually build like card_id.uuidv4
-     *    - card_id: key of array return by getAllDasboardCards
-     *    - x: position in grid
-     *    - y: position in grid
-     *    - width: size in grid
-     *    - height: size in grid
-     *    - card_options, sub array, depends on the card, contains at least a key color
+     *                     - gridstack_id: unique id of the card in the grid, usually build like card_id.uuidv4
+     *                     - card_id: key of array return by getAllDasboardCards
+     *                     - x: position in grid
+     *                     - y: position in grid
+     *                     - width: size in grid
+     *                     - height: size in grid
+     *                     - card_options, sub array, depends on the card, contains at least a key color
      *
      * @return void
      */
@@ -379,10 +379,10 @@ class Dashboard extends CommonDBTM
      * Save rights (share) in DB for the current dashboard
      *
      * @param array $rights contains these data:
-     * - 'users_id'    => [items_id]
-     * - 'groups_id'   => [items_id]
-     * - 'entities_id' => [items_id]
-     * - 'profiles_id' => [items_id]
+     *                      - 'users_id'    => [items_id]
+     *                      - 'groups_id'   => [items_id]
+     *                      - 'entities_id' => [items_id]
+     *                      - 'profiles_id' => [items_id]
      *
      * @return void
      */
@@ -459,9 +459,9 @@ class Dashboard extends CommonDBTM
     /**
      * Retrieve all dashboards and store them into a static var
      *
-     * @param bool   $force don't check dashboard are already loaded and force their load
-     * @param bool   $check_rights use to remove rights checking (use in embed)
-     * @param ?string $context only dashboard for given context
+     * @param bool    $force        don't check dashboard are already loaded and force their load
+     * @param bool    $check_rights use to remove rights checking (use in embed)
+     * @param ?string $context      only dashboard for given context
      *
      * @return array dasboards
      */
@@ -586,15 +586,15 @@ class Dashboard extends CommonDBTM
      * Import dashboards from a variable
      *
      * @param string|array $import json or php array representing the dashboards collection
-     * [
-     *    dashboard_key => [
-     *       'title'  => '...',
-     *       'items'  => [...],
-     *       'rights' => [...],
-     *    ], [
-     *       ...
-     *    ]
-     * ]
+     *                             [
+     *                             dashboard_key => [
+     *                             'title'  => '...',
+     *                             'items'  => [...],
+     *                             'rights' => [...],
+     *                             ], [
+     *                             ...
+     *                             ]
+     *                             ]
      *
      * @return bool
      */

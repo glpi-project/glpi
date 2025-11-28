@@ -54,7 +54,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
     /**
      * get its name and subname : usefull for instance to create an index for arrays
      *
-     * @param string $header_name [out]     header name
+     * @param string $header_name    [out]     header name
      * @param string $subheader_name [out]  sub header name ( = '' in case of super header)
      *
      * @return void
@@ -69,7 +69,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
     abstract public function isSuperHeader();
 
     /**
-     * @param $title         (default '')
+     * @param $title (default '')
      **/
     public function setItemType($itemtype, $title = '')
     {

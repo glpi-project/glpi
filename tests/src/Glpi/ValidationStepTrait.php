@@ -49,8 +49,8 @@ trait ValidationStepTrait
 
     /**
      * @param array<int, int> $validations_statuses CommonITILValidation:: statuses constants
-     * @param int|null $expected_status Expected status of the created ITIL_ValidationStep
-     * @param string|null $itil_classname Class name of the ITIL object to create (e.g. Ticket, Change)
+     * @param int|null        $expected_status      Expected status of the created ITIL_ValidationStep
+     * @param string|null     $itil_classname       Class name of the ITIL object to create (e.g. Ticket, Change)
      *
      * Also create the related itilobject
      * @return array{\Ticket|\Change, \TicketValidationStep|\ChangeValidationStep}

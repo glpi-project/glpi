@@ -142,8 +142,8 @@ final class SearchOption implements ArrayAccess
     /**
      * Get the SEARCH_OPTION array
      *
-     * @param class-string<CommonDBTM> $itemtype Item type
-     * @param boolean $withplugins  Get search options from plugins (true by default)
+     * @param class-string<CommonDBTM> $itemtype    Item type
+     * @param boolean                  $withplugins Get search options from plugins (true by default)
      *
      * @return array The reference to the array of search options for the given item type
      **/
@@ -407,7 +407,7 @@ final class SearchOption implements ArrayAccess
      * Is the search item related to infocoms
      *
      * @param class-string<CommonDBTM> $itemtype Item type
-     * @param integer $searchID  ID of the element in $SEARCHOPTION
+     * @param integer                  $searchID ID of the element in $SEARCHOPTION
      *
      * @return boolean
      **/
@@ -425,7 +425,7 @@ final class SearchOption implements ArrayAccess
 
     /**
      * @param class-string<CommonDBTM> $itemtype
-     * @param integer $field_num
+     * @param integer                  $field_num
      *
      * @return array
      **/
@@ -608,8 +608,8 @@ final class SearchOption implements ArrayAccess
      *
      * Get an option number in the SEARCH_OPTION array
      *
-     * @param class-string<CommonDBTM> $itemtype Item type the search option belongs to
-     * @param string $field     Name of the field
+     * @param class-string<CommonDBTM>      $itemtype      Item type the search option belongs to
+     * @param string                        $field         Name of the field
      * @param class-string<CommonDBTM>|null $meta_itemtype If specified, the itemtype that provides the search option. This affects the table used to match the search option.
      *
      * @return integer
@@ -635,10 +635,10 @@ final class SearchOption implements ArrayAccess
     /**
      * Clean search options depending on the user active profile
      *
-     * @param class-string<CommonDBTM> $itemtype Item type to manage
-     * @param integer $action       Action which is used to manipulate searchoption
-     *                               (default READ)
-     * @param boolean $withplugins  Get plugins options (true by default)
+     * @param class-string<CommonDBTM> $itemtype    Item type to manage
+     * @param integer                  $action      Action which is used to manipulate searchoption
+     *                                              (default READ)
+     * @param boolean                  $withplugins Get plugins options (true by default)
      *
      * @return array Clean $SEARCH_OPTION array
      **/

@@ -122,8 +122,8 @@ class Certificate_Item extends CommonDBRelation
 
 
     /**
-     * @param int $certificates_id
-     * @param int $items_id
+     * @param int                      $certificates_id
+     * @param int                      $items_id
      * @param class-string<CommonDBTM> $itemtype
      *
      * @return bool
@@ -170,8 +170,8 @@ class Certificate_Item extends CommonDBRelation
      * @since 9.2
      *
      * @param integer $certificates_id the certificate ID
-     * @param integer $items_id the item's id
-     * @param string $itemtype the itemtype
+     * @param integer $items_id        the item's id
+     * @param string  $itemtype        the itemtype
      *
      * @return bool
      */
@@ -316,8 +316,8 @@ TWIG, $twig_params);
      *
      * @since 9.2
      *
-     * @param CommonDBTM $item object for which associated certificates must be displayed
-     * @param int $withtemplate (default 0)
+     * @param CommonDBTM $item         object for which associated certificates must be displayed
+     * @param int        $withtemplate (default 0)
      *
      * @return bool
      */

@@ -142,9 +142,9 @@ class DocumentType extends CommonDropdown
     /**
      * @since 0.84
      *
-     * @param $name               (default '')
-     * @param $values             (default '')
-     * @param $options      array
+     * @param $name    (default '')
+     * @param $values  (default '')
+     * @param $options array
      **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
@@ -165,7 +165,7 @@ class DocumentType extends CommonDropdown
      * @since 0.85
      *
      * @param array $options list of options with theses possible keys:
-     *                        - bool 'display', echo the generated html or return it
+     *                       - bool 'display', echo the generated html or return it
      *
      * @return void|string
      */

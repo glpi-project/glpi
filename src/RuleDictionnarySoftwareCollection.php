@@ -218,8 +218,8 @@ TWIG, $twig_params);
     /**
      * Replay dictionary on several software
      *
-     * @param array $IDs       array of software IDs to replay
-     * @param array $res_rule  array of rule results
+     * @param array $IDs      array of software IDs to replay
+     * @param array $res_rule array of rule results
      *
      * @return void
      **/
@@ -274,13 +274,13 @@ TWIG, $twig_params);
     /**
      * Replay dictionary on one software
      *
-     * @param array &$new_softs      array containing new software already computed
-     * @param array $res_rule        array of rule results
-     * @param integer $ID                    ID of the software
-     * @param integer $entity                working entity ID
-     * @param string $name                  software name
-     * @param string $manufacturer          manufacturer name
-     * @param array &$soft_ids       array containing replay software need to be put in trashbin
+     * @param array   &$new_softs   array containing new software already computed
+     * @param array   $res_rule     array of rule results
+     * @param integer $ID           ID of the software
+     * @param integer $entity       working entity ID
+     * @param string  $name         software name
+     * @param string  $manufacturer manufacturer name
+     * @param array   &$soft_ids    array containing replay software need to be put in trashbin
      *
      * @return void
      */
@@ -442,12 +442,12 @@ TWIG, $twig_params);
     /**
      * Change software's name, and move versions if needed
      *
-     * @param int $ID                    old software ID
-     * @param int $new_software_id       new software ID
-     * @param int $version_id            version ID to move
-     * @param string $old_version        old version name (Not used)
-     * @param string $new_version        new version name
-     * @param int $entity                entity ID
+     * @param int    $ID              old software ID
+     * @param int    $new_software_id new software ID
+     * @param int    $version_id      version ID to move
+     * @param string $old_version     old version name (Not used)
+     * @param string $new_version     new version name
+     * @param int    $entity          entity ID
      * @return void
      */
     public function moveVersions($ID, $new_software_id, $version_id, $old_version, $new_version, $entity)
@@ -580,8 +580,8 @@ TWIG, $twig_params);
     /**
      * Check if a version exists
      *
-     * @param integer $software_id  software ID
-     * @param string $version      version name
+     * @param integer $software_id software ID
+     * @param string  $version     version name
      *
      * @return bool
      */

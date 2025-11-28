@@ -170,8 +170,8 @@ class Contract_Item extends CommonDBRelation
     /**
      * @since 0.84
      *
-     * @param integer $contract_id   contract ID
-     * @param integer $entities_id   entity ID
+     * @param integer $contract_id contract ID
+     * @param integer $entities_id entity ID
      *
      * @return array of items linked to contracts
      **/

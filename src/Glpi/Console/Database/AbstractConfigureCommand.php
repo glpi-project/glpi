@@ -334,11 +334,11 @@ abstract class AbstractConfigureCommand extends AbstractCommand
              * @param string $dbuser
              * @param string $dbpassword
              * @param string $dbdefault
-             * @param bool $use_timezones
-             * @param bool $log_deprecation_warnings
-             * @param bool $use_utf8mb4
-             * @param bool $allow_datetime
-             * @param bool $allow_signed_keys
+             * @param bool   $use_timezones
+             * @param bool   $log_deprecation_warnings
+             * @param bool   $use_utf8mb4
+             * @param bool   $allow_datetime
+             * @param bool   $allow_signed_keys
              */
             public function __construct(
                 $dbhost,
@@ -417,8 +417,8 @@ abstract class AbstractConfigureCommand extends AbstractCommand
      * Ask user to confirm DB configuration.
      *
      * @param string $db_hostport DB host and port
-     * @param string $db_name DB name
-     * @param string $db_user DB username
+     * @param string $db_name     DB name
+     * @param string $db_user     DB username
      *
      * @return void
      */

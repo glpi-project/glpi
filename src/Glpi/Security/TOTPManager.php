@@ -158,8 +158,8 @@ final class TOTPManager
 
     /**
      * Set the TOTP secret code for a user
-     * @param int $users_id ID of the user
-     * @param string $secret The secret code
+     * @param int    $users_id ID of the user
+     * @param string $secret   The secret code
      * @return bool True on success, false otherwise
      */
     public function setSecretForUser(int $users_id, string $secret, ?string $algorithm = null): bool
@@ -257,8 +257,8 @@ final class TOTPManager
 
     /**
      * Verify a TOTP code for a user
-     * @param string $code The code to verify
-     * @param int $users_id ID of the user
+     * @param string $code     The code to verify
+     * @param int    $users_id ID of the user
      * @return bool True if the code is valid, false otherwise
      * @throws JsonException
      * @throws TwoFactorAuthException
@@ -274,7 +274,7 @@ final class TOTPManager
 
     /**
      * Verify a TOTP code for a secret
-     * @param string $code The code to verify
+     * @param string $code   The code to verify
      * @param string $secret The secret to use
      * @return string|false The algorithm matched if the code is valid, false otherwise
      * @throws TwoFactorAuthException
@@ -358,9 +358,9 @@ final class TOTPManager
 
     /**
      * Verify a backup code for a user
-     * @param string $code Backup code
-     * @param int $users_id User ID
-     * @param bool $consume_code If true, the backup code will be consumed and will not be usable again
+     * @param string $code         Backup code
+     * @param int    $users_id     User ID
+     * @param bool   $consume_code If true, the backup code will be consumed and will not be usable again
      * @return bool True if the code is valid, false otherwise
      * @throws JsonException
      */
@@ -497,8 +497,8 @@ final class TOTPManager
 
     /**
      * Show a form to set up TOTP for the current user or manage the settings if it is set up already.
-     * @param int $users_id ID of the user
-     * @param bool $force_setup Force the setup form to be shown even if 2FA is already enabled
+     * @param int  $users_id                ID of the user
+     * @param bool $force_setup             Force the setup form to be shown even if 2FA is already enabled
      * @param bool $regenerate_backup_codes Regenerate backup codes immediately when showing the status form
      * @throws JsonException
      * @throws TwoFactorAuthException

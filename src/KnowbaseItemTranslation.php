@@ -271,8 +271,8 @@ TWIG, $twig_params);
     /**
      * Get a translation for a value
      *
-     * @param KnowbaseItem $item   item to translate
-     * @param string       $field  field to return (default 'name')
+     * @param KnowbaseItem $item  item to translate
+     * @param string       $field field to return (default 'name')
      *
      * @return string  the field translated if a translation is available, or the original field if not
      **/

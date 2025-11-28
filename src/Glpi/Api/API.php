@@ -145,7 +145,7 @@ abstract class API
      * Construct this->parameters from query string and http body
      *
      * @param boolean $is_inline_doc Is the current request asks to display inline documentation
-     *  This will remove the default behavior who set content-type to application/json
+     *                               This will remove the default behavior who set content-type to application/json
      *
      * @return void
      */
@@ -281,9 +281,9 @@ abstract class API
      * Init GLPI Session
      *
      * @param array $params array with those options :
-     *    - a couple 'name' & 'password' : 2 parameters to login with user authentication
-     *         OR
-     *    - an 'user_token' defined in User Configuration
+     *                      - a couple 'name' & 'password' : 2 parameters to login with user authentication
+     *                      OR
+     *                      - an 'user_token' defined in User Configuration
      *
      * @return array|void array with session_token, or void when error response is send in case of error
      */
@@ -413,8 +413,8 @@ abstract class API
      * Change active entity to the entities_id one.
      *
      * @param array $params array with those options :
-     *   - 'entities_id': (default 'all') ID of the new active entity ("all" = load all possible entities). Optional
-     *   - 'is_recursive': (default false) Also display sub entities of the active entity.  Optional
+     *                      - 'entities_id': (default 'all') ID of the new active entity ("all" = load all possible entities). Optional
+     *                      - 'is_recursive': (default false) Also display sub entities of the active entity.  Optional
      *
      * @return bool|void success status or void when error response is send in case of error
      */
@@ -444,7 +444,7 @@ abstract class API
      * Return all the possible entity of the current logged user (and for current active profile)
      *
      * @param array $params array with those options :
-     *   - 'is_recursive': (default false) Also display sub entities of the active entity. Optional
+     *                      - 'is_recursive': (default false) Also display sub entities of the active entity. Optional
      *
      * @return array of entities (with id and name)
      */
@@ -512,7 +512,7 @@ abstract class API
      * set a profile to active
      *
      * @param array $params with those options :
-     *    - profiles_id : identifier of profile to set
+     *                      - profiles_id : identifier of profile to set
      *
      * @return boolean|void success status, or void when error response is send in case of error
      */
@@ -600,23 +600,23 @@ abstract class API
      * @param string  $itemtype itemtype (class) of object
      * @param integer $id       identifier of object
      * @param array   $params   with those options :
-     *    - 'expand_dropdowns': Show dropdown's names instead of id. default: false. Optional
-     *    - 'get_hateoas':      Show relation of current item in a links attribute. default: true. Optional
-     *    - 'get_sha1':         Get a sha1 signature instead of the full answer. default: false. Optional
-     *    - 'with_devices':  Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], Optional.
-     *    - 'with_disks':       Only for Computer, retrieve the associated filesystems. Optional.
-     *    - 'with_softwares':   Only for Computer, retrieve the associated software installations. Optional.
-     *    - 'with_connections': Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optional.
-     *    - 'with_networkports':Retrieve all network connections and advanced information. Optional.
-     *    - 'with_infocoms':    Retrieve financial and administrative information. Optional.
-     *    - 'with_contracts':   Retrieve associated contracts. Optional.
-     *    - 'with_documents':   Retrieve associated external documents. Optional.
-     *    - 'with_tickets':     Retrieve associated itil tickets. Optional.
-     *    - 'with_problems':    Retrieve associated itil problems. Optional.
-     *    - 'with_changes':     Retrieve associated itil changes. Optional.
-     *    - 'with_notes':       Retrieve Notes (if exists, not all itemtypes have notes). Optional.
-     *    - 'with_logs':        Retrieve historical. Optional.
-     *    - 'add_keys_names':   Get friendly names. Optional.
+     *                          - 'expand_dropdowns': Show dropdown's names instead of id. default: false. Optional
+     *                          - 'get_hateoas':      Show relation of current item in a links attribute. default: true. Optional
+     *                          - 'get_sha1':         Get a sha1 signature instead of the full answer. default: false. Optional
+     *                          - 'with_devices':  Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], Optional.
+     *                          - 'with_disks':       Only for Computer, retrieve the associated filesystems. Optional.
+     *                          - 'with_softwares':   Only for Computer, retrieve the associated software installations. Optional.
+     *                          - 'with_connections': Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optional.
+     *                          - 'with_networkports':Retrieve all network connections and advanced information. Optional.
+     *                          - 'with_infocoms':    Retrieve financial and administrative information. Optional.
+     *                          - 'with_contracts':   Retrieve associated contracts. Optional.
+     *                          - 'with_documents':   Retrieve associated external documents. Optional.
+     *                          - 'with_tickets':     Retrieve associated itil tickets. Optional.
+     *                          - 'with_problems':    Retrieve associated itil problems. Optional.
+     *                          - 'with_changes':     Retrieve associated itil changes. Optional.
+     *                          - 'with_notes':       Retrieve Notes (if exists, not all itemtypes have notes). Optional.
+     *                          - 'with_logs':        Retrieve historical. Optional.
+     *                          - 'add_keys_names':   Get friendly names. Optional.
      *
      * @return array    fields of found object
      */
@@ -1098,21 +1098,21 @@ abstract class API
     /**
      * Return a collection of rows of the desired itemtype
      *
-     * @param class-string<CommonDBTM>  $itemtype   itemtype (class) of object
-     * @param array   $params     with those options :
-     * - 'expand_dropdowns' (default: false): show dropdown's names instead of id. Optional
-     * - 'get_hateoas'      (default: true): show relations of items in a links attribute. Optional
-     * - 'only_id'          (default: false): keep only id in fields list. Optional
-     * - 'range'            (default: 0-49): limit the list to start-end attributes
-     * - 'sort'             (default: id): sort by the field.
-     * - 'order'            (default: ASC): ASC(ending) or DESC(ending).
-     * - 'searchText'       (default: NULL): array of filters to pass on the query (with key = field and value the search)
-     * - 'is_deleted'       (default: false): show trashbin. Optional
-     * - 'add_keys_names'   (default: []): insert raw name(s) for given itemtype(s) and fkey(s)
-     * - 'with_networkports'(default: false): Retrieve all network connections and advanced information. Optional.
-     * @param integer $totalcount output parameter who receive the total count of the query result.
-     *                            As this function paginate results (with a mysql LIMIT),
-     *                            we can have the full range. (default 0)
+     * @param class-string<CommonDBTM> $itemtype   itemtype (class) of object
+     * @param array                    $params     with those options :
+     *                                             - 'expand_dropdowns' (default: false): show dropdown's names instead of id. Optional
+     *                                             - 'get_hateoas'      (default: true): show relations of items in a links attribute. Optional
+     *                                             - 'only_id'          (default: false): keep only id in fields list. Optional
+     *                                             - 'range'            (default: 0-49): limit the list to start-end attributes
+     *                                             - 'sort'             (default: id): sort by the field.
+     *                                             - 'order'            (default: ASC): ASC(ending) or DESC(ending).
+     *                                             - 'searchText'       (default: NULL): array of filters to pass on the query (with key = field and value the search)
+     *                                             - 'is_deleted'       (default: false): show trashbin. Optional
+     *                                             - 'add_keys_names'   (default: []): insert raw name(s) for given itemtype(s) and fkey(s)
+     *                                             - 'with_networkports'(default: false): Retrieve all network connections and advanced information. Optional.
+     * @param integer                  $totalcount output parameter who receive the total count of the query result.
+     *                                             As this function paginate results (with a mysql LIMIT),
+     *                                             we can have the full range. (default 0)
      *
      * @return array|void collection of fields, or void when error response is send in case of error
      */
@@ -1395,28 +1395,28 @@ abstract class API
      * Call self::getItem for each line of $items
      *
      * @param array $params with those options :
-     *    - items:               array containing lines with itemtype and items_id keys
-     *                               Ex: [
-     *                                      [itemtype => 'Ticket', id => 102],
-     *                                      [itemtype => 'User',   id => 10],
-     *                                      [itemtype => 'User',   id => 11],
-     *                                   ]
-     *    - 'expand_dropdowns':  Show dropdown's names instead of id. default: false. Optional
-     *    - 'get_hateoas':       Show relation of current item in a links attribute. default: true. Optional
-     *    - 'get_sha1':          Get a sha1 signature instead of the full answer. default: false. Optional
-     *    - 'with_devices':   Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], Optional.
-     *    - 'with_disks':        Only for Computer, retrieve the associated filesystems. Optional.
-     *    - 'with_softwares':    Only for Computer, retrieve the associated software installations. Optional.
-     *    - 'with_connections':  Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optional.
-     *    - 'with_networkports': Retrieve all network connections and advanced information. Optional.
-     *    - 'with_infocoms':     Retrieve financial and administrative information. Optional.
-     *    - 'with_contracts':    Retrieve associated contracts. Optional.
-     *    - 'with_documents':    Retrieve associated external documents. Optional.
-     *    - 'with_tickets':      Retrieve associated itil tickets. Optional.
-     *    - 'with_problems':     Retrieve associated itil problems. Optional.
-     *    - 'with_changes':      Retrieve associated itil changes. Optional.
-     *    - 'with_notes':        Retrieve Notes (if exists, not all itemtypes have notes). Optional.
-     *    - 'with_logs':         Retrieve historical. Optional.
+     *                      - items:               array containing lines with itemtype and items_id keys
+     *                      Ex: [
+     *                      [itemtype => 'Ticket', id => 102],
+     *                      [itemtype => 'User',   id => 10],
+     *                      [itemtype => 'User',   id => 11],
+     *                      ]
+     *                      - 'expand_dropdowns':  Show dropdown's names instead of id. default: false. Optional
+     *                      - 'get_hateoas':       Show relation of current item in a links attribute. default: true. Optional
+     *                      - 'get_sha1':          Get a sha1 signature instead of the full answer. default: false. Optional
+     *                      - 'with_devices':   Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], Optional.
+     *                      - 'with_disks':        Only for Computer, retrieve the associated filesystems. Optional.
+     *                      - 'with_softwares':    Only for Computer, retrieve the associated software installations. Optional.
+     *                      - 'with_connections':  Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optional.
+     *                      - 'with_networkports': Retrieve all network connections and advanced information. Optional.
+     *                      - 'with_infocoms':     Retrieve financial and administrative information. Optional.
+     *                      - 'with_contracts':    Retrieve associated contracts. Optional.
+     *                      - 'with_documents':    Retrieve associated external documents. Optional.
+     *                      - 'with_tickets':      Retrieve associated itil tickets. Optional.
+     *                      - 'with_problems':     Retrieve associated itil problems. Optional.
+     *                      - 'with_changes':      Retrieve associated itil changes. Optional.
+     *                      - 'with_notes':        Retrieve Notes (if exists, not all itemtypes have notes). Optional.
+     *                      - 'with_logs':         Retrieve historical. Optional.
      *
      * @return array collection of glpi object's fields
      */
@@ -1444,11 +1444,11 @@ abstract class API
     /**
      * List the searchoptions of provided itemtype. To use with searchItems function
      *
-     * @param string $itemtype             itemtype (class) of object
-     * @param array  $params               parameters
-     * @param bool   $check_depreciation   disable depreciation check, useful
-     *                                     if depreciation have already been
-     *                                     handled by a parent call (e.g. search)
+     * @param string $itemtype           itemtype (class) of object
+     * @param array  $params             parameters
+     * @param bool   $check_depreciation disable depreciation check, useful
+     *                                   if depreciation have already been
+     *                                   handled by a parent call (e.g. search)
      *
      * @return array all searchoptions of specified itemtype
      */
@@ -1585,31 +1585,31 @@ abstract class API
      *
      * @param string $itemtype itemtype (class) of object
      * @param array  $params   with those options :
-     *    - 'criteria': array of criterion object to filter search.
-     *        Optional.
-     *        Each criterion object must provide :
-     *           - link: (optional for 1st element) logical operator in [AND, OR, AND NOT, AND NOT].
-     *           - field: id of searchoptions.
-     *           - searchtype: type of search in [contains, equals, notequals, lessthan, morethan, under, notunder].
-     *           - value : value to search.
-     *    - 'metacriteria' (optional): array of metacriterion object to filter search.
-     *                                  Optional.
-     *                                  A meta search is a link with another itemtype
-     *                                  (ex: Computer with software).
-     *         Each metacriterion object must provide :
-     *            - link: logical operator in [AND, OR, AND NOT, AND NOT]. Mandatory
-     *            - itemtype: second itemtype to link.
-     *            - field: id of searchoptions.
-     *            - searchtype: type of search in [contains, equals, notequals, lessthan, morethan, under, notunder].
-     *            - value : value to search.
-     *    - 'sort' :  id of searchoption to sort by (default 1). Optional.
-     *    - 'order' : ASC - Ascending sort / DESC Descending sort (default ASC). Optional.
-     *    - 'range' : a string with a couple of number for start and end of pagination separated by a '-'. Ex : 150-199. (default 0-49)
-     *                Optional.
-     *    - 'forcedisplay': array of columns to display (default empty = empty use display pref and search criterias).
-     *                      Some columns will be always presents (1-id, 2-name, 80-Entity).
-     *                      Optional.
-     *    - 'rawdata': boolean for displaying raws data of Search engine of glpi (like sql request, and full searchoptions)
+     *                         - 'criteria': array of criterion object to filter search.
+     *                         Optional.
+     *                         Each criterion object must provide :
+     *                         - link: (optional for 1st element) logical operator in [AND, OR, AND NOT, AND NOT].
+     *                         - field: id of searchoptions.
+     *                         - searchtype: type of search in [contains, equals, notequals, lessthan, morethan, under, notunder].
+     *                         - value : value to search.
+     *                         - 'metacriteria' (optional): array of metacriterion object to filter search.
+     *                         Optional.
+     *                         A meta search is a link with another itemtype
+     *                         (ex: Computer with software).
+     *                         Each metacriterion object must provide :
+     *                         - link: logical operator in [AND, OR, AND NOT, AND NOT]. Mandatory
+     *                         - itemtype: second itemtype to link.
+     *                         - field: id of searchoptions.
+     *                         - searchtype: type of search in [contains, equals, notequals, lessthan, morethan, under, notunder].
+     *                         - value : value to search.
+     *                         - 'sort' :  id of searchoption to sort by (default 1). Optional.
+     *                         - 'order' : ASC - Ascending sort / DESC Descending sort (default ASC). Optional.
+     *                         - 'range' : a string with a couple of number for start and end of pagination separated by a '-'. Ex : 150-199. (default 0-49)
+     *                         Optional.
+     *                         - 'forcedisplay': array of columns to display (default empty = empty use display pref and search criterias).
+     *                         Some columns will be always presents (1-id, 2-name, 80-Entity).
+     *                         Optional.
+     *                         - 'rawdata': boolean for displaying raws data of Search engine of glpi (like sql request, and full searchoptions)
      *
      * @return array|void array of raw rows from Search class, or void when error response is sent in case of error
      */
@@ -1862,9 +1862,9 @@ abstract class API
      *
      * @param string $itemtype itemtype (class) of object
      * @param array  $params   with those options :
-     *    - 'input' : object with fields of itemtype to be inserted.
-     *                You can add several items in one action by passing array of input object.
-     *                Mandatory.
+     *                         - 'input' : object with fields of itemtype to be inserted.
+     *                         You can add several items in one action by passing array of input object.
+     *                         Mandatory.
      *
      * @return array|void array of id, or void when error response is send in case of error
      */
@@ -1968,7 +1968,7 @@ abstract class API
      *
      * @since 9.1
      *
-     * @param  mixed $input can be an object or array
+     * @param mixed $input can be an object or array
      *
      * @return array the cleaned input
      */
@@ -1993,9 +1993,9 @@ abstract class API
      *
      * @param string $itemtype itemtype (class) of object
      * @param array  $params   with those options :
-     *    - 'input' : Array of objects with fields of itemtype to be updated.
-     *                Mandatory.
-     *                You must provide in each object a key named 'id' to identify item to update.
+     *                         - 'input' : Array of objects with fields of itemtype to be updated.
+     *                         Mandatory.
+     *                         You must provide in each object a key named 'id' to identify item to update.
      *
      * @return array|void  array of boolean, or void when error response is send in case of error
      */
@@ -2109,13 +2109,13 @@ abstract class API
      *
      * @param string $itemtype itemtype (class) of object
      * @param array  $params   with those options :
-     *    - 'input' : Array of objects with fields of itemtype to be updated.
-     *                Mandatory.
-     *                You must provide in each object a key named 'id' to identify item to delete.*
-     *    - 'force_purge' : boolean, if itemtype have a trashbin, you can force purge (delete finally).
-     *                      Optional.
-     *    - 'history' : boolean, default true, false to disable saving of deletion in global history.
-     *                  Optional.
+     *                         - 'input' : Array of objects with fields of itemtype to be updated.
+     *                         Mandatory.
+     *                         You must provide in each object a key named 'id' to identify item to delete.*
+     *                         - 'force_purge' : boolean, if itemtype have a trashbin, you can force purge (delete finally).
+     *                         Optional.
+     *                         - 'history' : boolean, default true, false to disable saving of deletion in global history.
+     *                         Optional.
      *
      * @return array|void success status, or void when error response is send in case of error
      */
@@ -2544,10 +2544,10 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      * change value from  integer id to string name of foreign key
      * You can pass an array of array, this method is recursive.
      *
-     * @param array   $fields to check and transform
-     * @param array   $params array of option to enable, could be :
-     *                                 - expand_dropdowns (default false)
-     *                                 - get_hateoas      (default true)
+     * @param array $fields to check and transform
+     * @param array $params array of option to enable, could be :
+     *                      - expand_dropdowns (default false)
+     *                      - get_hateoas      (default true)
      *
      * @return array altered $fields
      */
@@ -2898,9 +2898,9 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      *
      * @since 9.5
      *
-     * @param array  $data           A raw from the database
-     * @param array  $params         API parameters
-     * @param string $self_itemtype  Itemtype the API was called on
+     * @param array  $data          A raw from the database
+     * @param array  $params        API parameters
+     * @param string $self_itemtype Itemtype the API was called on
      *
      * @return array
      */
@@ -2946,8 +2946,8 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      *
      * @since 10.0.0
      *
-     * @param int    $id         Id of the source item
-     * @param string  $itemtype  Type of the source item
+     * @param int    $id       Id of the source item
+     * @param string $itemtype Type of the source item
      *
      */
     protected function getNetworkPorts(
@@ -3207,9 +3207,9 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      * "getMassiveActions" endpoint.
      * Return possible massive actions for a given item or itemtype.
      *
-     * @param string $itemtype    Itemtype for which to show possible massive actions
-     * @param int    $id          If >0, will load given item and restrict massive actions to this item
-     * @param bool   $is_deleted  Should we show massive action in "deleted" mode ?
+     * @param string $itemtype   Itemtype for which to show possible massive actions
+     * @param int    $id         If >0, will load given item and restrict massive actions to this item
+     * @param bool   $is_deleted Should we show massive action in "deleted" mode ?
      *
      * @return array|void array of massive actions, or void when error response is send in case of error
      */
@@ -3259,8 +3259,8 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
     /**
      * Return possible massive actions for a given itemtype.
      *
-     * @param string $itemtype    Itemtype for which to show possible massive actions
-     * @param bool   $is_deleted  Should we show massive action in "deleted" mode ?
+     * @param string $itemtype   Itemtype for which to show possible massive actions
+     * @param bool   $is_deleted Should we show massive action in "deleted" mode ?
      */
     public function getMassiveActionsForItemtype(
         string $itemtype,
@@ -3282,7 +3282,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
     /**
      * Return possible massive actions for a given item.
      *
-     * @param CommonDBTM $item    Item for which to show possible massive actions
+     * @param CommonDBTM $item Item for which to show possible massive actions
      */
     public function getMassiveActionsForItem(CommonDBTM $item): array
     {
@@ -3308,9 +3308,9 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      * "getMassiveActionParameters" endpoint.
      * Return required parameters for a given massive action key.
      *
-     * @param string        $itemtype      Target itemtype
-     * @param string|null   $action_key    Target massive action
-     * @param bool          $is_deleted    Is this massive action to be used on items in the trashbin ?
+     * @param string      $itemtype   Target itemtype
+     * @param string|null $action_key Target massive action
+     * @param bool        $is_deleted Is this massive action to be used on items in the trashbin ?
      *
      * @return array|void array of massive actions parameters, or void when error response is send in case of error
      */
@@ -3400,10 +3400,10 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      * Handle "applyMassiveAction" endpoint and send response to client.
      * Execute the given massive action
      *
-     * @param string        $itemtype      Target itemtype
-     * @param string|null   $action_key    Target massive action
-     * @param array         $ids           Ids of items to execute the action on
-     * @param array         $params        Action parameters
+     * @param string      $itemtype   Target itemtype
+     * @param string|null $action_key Target massive action
+     * @param array       $ids        Ids of items to execute the action on
+     * @param array       $params     Action parameters
      * @return void
      */
     protected function applyMassiveAction(

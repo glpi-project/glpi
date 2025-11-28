@@ -73,6 +73,12 @@ return (new PhpCsFixer\Config())
         // phpdoc param in same order as signature
         // https://mlocati.github.io/php-cs-fixer-configurator/#version:3.90|fixer:phpdoc_param_order
         'phpdoc_param_order' => true,
+        // align tags
+        // https://mlocati.github.io/php-cs-fixer-configurator/#version:3.90|fixer:phpdoc_align
+        'phpdoc_align' => [
+            'align' => 'vertical',
+            'tags' => ['param', 'property', 'property-read', 'property-write', 'phpstan-param', 'phpstan-property', 'phpstan-property-read', 'phpstan-property-write', 'phpstan-assert', 'phpstan-assert-if-true', 'phpstan-assert-if-false', 'psalm-param', 'psalm-param-out', 'psalm-property', 'psalm-property-read', 'psalm-property-write', 'psalm-assert', 'psalm-assert-if-true', 'psalm-assert-if-false'],
+        ],
     ])
     ->setFinder($finder)
 ;

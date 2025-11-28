@@ -170,9 +170,9 @@ class NotificationTemplate extends CommonDBTM
     /**
      * Display templates available for an itemtype
      *
-     * @param $name      the dropdown name
-     * @param $itemtype  display templates for this itemtype only
-     * @param $value     the dropdown's default value (0 by default)
+     * @param $name     the dropdown name
+     * @param $itemtype display templates for this itemtype only
+     * @param $value    the dropdown's default value (0 by default)
      **/
     public static function dropdownTemplates($name, $itemtype, $value = 0)
     {
@@ -203,9 +203,9 @@ class NotificationTemplate extends CommonDBTM
 
 
     /**
-     * @param $target             NotificationTarget object
-     * @param $user_infos   array
-     * @param $options      array
+     * @param $target     NotificationTarget object
+     * @param $user_infos array
+     * @param $options    array
      *
      * @return false|string id of the template in templates_by_languages / false if computation failed
      **/

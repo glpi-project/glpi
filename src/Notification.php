@@ -266,7 +266,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     /**
      * @since 0.84
      *
-     * @param $options   array
+     * @param $options array
      **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
@@ -288,9 +288,9 @@ class Notification extends CommonDBTM implements FilterableInterface
     /**
      * @since 0.84
      *
-     * @param $name               (default '')
-     * @param $values             (default '')
-     * @param $options      array
+     * @param $name    (default '')
+     * @param $values  (default '')
+     * @param $options array
      **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {

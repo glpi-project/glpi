@@ -117,8 +117,8 @@ abstract class CommonDBConnexity extends CommonDBTM
      * Clean the Connecity Table when item of the relation is deleted
      * To be call from the cleanDBonPurge of each Item class
      *
-     * @param string  $itemtype  type of the item
-     * @param integer $items_id  id of the item
+     * @param string  $itemtype type of the item
+     * @param integer $items_id id of the item
      * @return void
      **/
     public function cleanDBonItemDelete($itemtype, $items_id)
@@ -145,11 +145,11 @@ abstract class CommonDBConnexity extends CommonDBTM
      * get associated item (defined by $itemtype and $items_id)
      *
      *
-     * @param string  $itemtype          the name of the field of the type of the item to get
-     * @param string  $items_id          the name of the field of the id of the item to get
-     * @param boolean $getFromDB         do we have to load the item from the DB ?
-     * @param boolean $getEmpty          else : do we have to load an empty item ?
-     * @param boolean $getFromDBOrEmpty  get from DB if possible, else, getEmpty
+     * @param string  $itemtype         the name of the field of the type of the item to get
+     * @param string  $items_id         the name of the field of the id of the item to get
+     * @param boolean $getFromDB        do we have to load the item from the DB ?
+     * @param boolean $getEmpty         else : do we have to load an empty item ?
+     * @param boolean $getFromDBOrEmpty get from DB if possible, else, getEmpty
      *
      * @return CommonDBTM|false the item or false if we cannot load the item
      * @see CommonDBConnexity::getItemFromArray()
@@ -177,8 +177,8 @@ abstract class CommonDBConnexity extends CommonDBTM
      *
      * @since 9.5
      *
-     * @param string  $itemtype          Itemtype for which we want data
-     * @param int     $items_id          the id of the item we want the resulting items to be associated to
+     * @param string $itemtype Itemtype for which we want data
+     * @param int    $items_id the id of the item we want the resulting items to be associated to
      *
      * @return array the items associated to the given one (empty if none was found)
      * @see CommonDBConnexity::getItemsAssociationRequest()
@@ -202,8 +202,8 @@ abstract class CommonDBConnexity extends CommonDBTM
      *
      * @since 9.5
      *
-     * @param string  $itemtype          the type of the item we want the resulting items to be associated to
-     * @param int     $items_id          the id of the item we want the resulting items to be associated to
+     * @param string $itemtype the type of the item we want the resulting items to be associated to
+     * @param int    $items_id the id of the item we want the resulting items to be associated to
      *
      * @return DBmysqlIterator the items associated to the given one (empty if none was found)
      */
@@ -224,12 +224,12 @@ abstract class CommonDBConnexity extends CommonDBTM
     /**
      * get associated item (defined by $itemtype and $items_id)
      *
-     * @param string  $itemtype          the name of the field of the type of the item to get
-     * @param string  $items_id          the name of the field of the id of the item to get
-     * @param array   $array             the array in we have to search ($input, $this->fields ...)
-     * @param boolean $getFromDB         do we have to load the item from the DB ?
-     * @param boolean $getEmpty          else : do we have to load an empty item ?
-     * @param boolean $getFromDBOrEmpty  get from DB if possible, else, getEmpty
+     * @param string  $itemtype         the name of the field of the type of the item to get
+     * @param string  $items_id         the name of the field of the id of the item to get
+     * @param array   $array            the array in we have to search ($input, $this->fields ...)
+     * @param boolean $getFromDB        do we have to load the item from the DB ?
+     * @param boolean $getEmpty         else : do we have to load an empty item ?
+     * @param boolean $getFromDBOrEmpty get from DB if possible, else, getEmpty
      *
      * @return CommonDBTM|false the item or false if we cannot load the item
      **/
@@ -289,8 +289,8 @@ abstract class CommonDBConnexity extends CommonDBTM
      *
      * @warning if the update is not possible (right problem), then $input become false
      *
-     * @param $input   array   the new values for the current item
-     * @param $fields  array   list of fields that define the attached items
+     * @param $input  array   the new values for the current item
+     * @param $fields array   list of fields that define the attached items
      *
      * @return boolean true if the attached item has changed, false if the attached items has not changed
      **/
@@ -402,7 +402,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      * existing), then we can do the action of the current connexity
      *
      * @param string          $methodItem    the method to check (canCreateItem, canViewItem,
-     * canUpdateItem or canDeleteItem)
+     *                                       canUpdateItem or canDeleteItem)
      * @param string          $methodNotItem the method to check (canCreate, canView, canUpdate of canDelete)
      * @param integer         $item_right    the right to check (DONT_CHECK_ITEM_RIGHTS, HAVE_VIEW_RIGHT_ON_ITEM ...)
      * @param string          $itemtype      the name of the field of the type of the item to get
@@ -474,8 +474,8 @@ abstract class CommonDBConnexity extends CommonDBTM
      * Factorized method to search difference when updating a connexity : return both previous
      * item and new item if both are different. Otherwise returns new items
      *
-     * @param string $itemtype  the name of the field of the type of the item to get
-     * @param string $items_id  the name of the field of the id of the item to get
+     * @param string $itemtype the name of the field of the type of the item to get
+     * @param string $items_id the name of the field of the id of the item to get
      *
      * @return array containing "previous" (if exists) and "new". Beware that both can be equal
      *         to false
@@ -715,10 +715,10 @@ abstract class CommonDBConnexity extends CommonDBTM
      * Set based array for static::add or static::update in case of massive actions are doing
      * something.
      *
-     * @param string     $action  the name of the action
-     * @param CommonDBTM $item    the item on which apply the massive action
-     * @param integer[]  $ids     the ids of the item on which apply the action
-     * @param array      $input   the input provided by the form ($_POST, $_GET ...)
+     * @param string     $action the name of the action
+     * @param CommonDBTM $item   the item on which apply the massive action
+     * @param integer[]  $ids    the ids of the item on which apply the action
+     * @param array      $input  the input provided by the form ($_POST, $_GET ...)
      *
      * @return array containing the elements
      **/

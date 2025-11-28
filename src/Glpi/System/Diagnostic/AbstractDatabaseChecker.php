@@ -65,7 +65,7 @@ abstract class AbstractDatabaseChecker
     private $indexes = [];
 
     /**
-     * @param DBmysql $db   DB instance.
+     * @param DBmysql $db DB instance.
      */
     public function __construct(DBmysql $db)
     {

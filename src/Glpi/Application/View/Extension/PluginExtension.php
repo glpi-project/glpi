@@ -63,9 +63,9 @@ class PluginExtension extends AbstractExtension
     /**
      * Call plugin hook with given params.
      *
-     * @param string  $name          Hook name.
-     * @param mixed   $params        Hook parameters.
-     * @param bool    $return_result Indicates that the result should be returned.
+     * @param string $name          Hook name.
+     * @param mixed  $params        Hook parameters.
+     * @param bool   $return_result Indicates that the result should be returned.
      *
      * @return mixed|void
      */
@@ -81,9 +81,9 @@ class PluginExtension extends AbstractExtension
     /**
      * Call plugin hook function with given params.
      *
-     * @param string  $name          Hook name.
-     * @param mixed   $params        Hook parameters.
-     * @param bool    $return_result Indicates that the result should be returned.
+     * @param string $name          Hook name.
+     * @param mixed  $params        Hook parameters.
+     * @param bool   $return_result Indicates that the result should be returned.
      *
      * @return mixed|void
      */

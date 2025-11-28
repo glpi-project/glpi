@@ -434,7 +434,7 @@ class Plugin extends CommonDBTM
      * Init a plugin including setup.php file
      * launching plugin_init_NAME function  after checking compatibility
      *
-     * @param string  $plugin_key        System name (Plugin directory)
+     * @param string  $plugin_key System name (Plugin directory)
      * @param boolean $withhook   Load hook functions (false by default)
      *
      * @return void
@@ -513,7 +513,7 @@ class Plugin extends CommonDBTM
     /**
      * Unload a plugin.
      *
-     * @param string  $plugin_key  System name (Plugin directory)
+     * @param string $plugin_key System name (Plugin directory)
      *
      * @return void
      */
@@ -1181,8 +1181,8 @@ class Plugin extends CommonDBTM
      *
      *
      * @since 9.5.0 Added $param parameter
-     * @param integer $ID      ID of the plugin (The `id` field, not directory)
-     * @param array   $params  Additional params to pass to install hook.
+     * @param integer $ID     ID of the plugin (The `id` field, not directory)
+     * @param array   $params Additional params to pass to install hook.
      * @return void
      **/
     public function install($ID, array $params = [])
@@ -1525,7 +1525,7 @@ class Plugin extends CommonDBTM
      *
      * @phpstan-impure
      *
-     * @param string $directory  Plugin directory
+     * @param string $directory Plugin directory
      *
      * @return boolean
      */
@@ -1552,7 +1552,7 @@ class Plugin extends CommonDBTM
     /**
      * Is a plugin updatable ?
      *
-     * @param string $directory  Plugin directory
+     * @param string $directory Plugin directory
      *
      * @return boolean
      */
@@ -1578,7 +1578,7 @@ class Plugin extends CommonDBTM
     /**
      * Is a plugin loadable ?
      *
-     * @param string $directory  Plugin directory
+     * @param string $directory Plugin directory
      *
      * @return boolean
      */
@@ -1601,7 +1601,7 @@ class Plugin extends CommonDBTM
      *
      * @phpstan-impure
      *
-     * @param string $directory  Plugin directory
+     * @param string $directory Plugin directory
      *
      * @return boolean
      */
@@ -1760,8 +1760,8 @@ class Plugin extends CommonDBTM
     /**
      * This function executes a hook.
      *
-     * @param string  $name   Name of hook to fire
-     * @param mixed   $param  Parameters if needed : if object limit to the itemtype (default NULL)
+     * @param string $name  Name of hook to fire
+     * @param mixed  $param Parameters if needed : if object limit to the itemtype (default NULL)
      *
      * @return mixed $data
      **/
@@ -1827,8 +1827,8 @@ class Plugin extends CommonDBTM
     /**
      * This function executes a hook.
      *
-     * @param string $name   Name of hook to fire
-     * @param mixed  $parm   Parameters (default NULL)
+     * @param string $name Name of hook to fire
+     * @param mixed  $parm Parameters (default NULL)
      *
      * @return mixed $data
      **/
@@ -1863,9 +1863,9 @@ class Plugin extends CommonDBTM
      * This function executes a hook for 1 plugin.
      *
      * @param string          $plugin_key System name of the plugin
-     * @param string|callable $hook     suffix used to build function to be called ("plugin_myplugin_{$hook}")
-     *                                  or callable function
-     * @param mixed           ...$args  [optional] One or more arguments passed to hook function
+     * @param string|callable $hook       suffix used to build function to be called ("plugin_myplugin_{$hook}")
+     *                                    or callable function
+     * @param mixed           ...$args    [optional] One or more arguments passed to hook function
      *
      * @return mixed|void $data
      **/
@@ -2004,7 +2004,7 @@ class Plugin extends CommonDBTM
     /**
      * Returns plugin option.
      *
-     * @param mixed  $default_value
+     * @param mixed $default_value
      *
      * @return array
      */
@@ -2583,7 +2583,7 @@ class Plugin extends CommonDBTM
      *
      * @since 9.3
      *
-     * @param  integer $state see this class constants (ex self::ANEW, self::ACTIVATED)
+     * @param integer $state see this class constants (ex self::ANEW, self::ACTIVATED)
      * @return string  the label
      */
     public static function getState($state = 0)
@@ -2621,7 +2621,7 @@ class Plugin extends CommonDBTM
      *
      * @since 9.5
      *
-     * @param  integer $state see this class constants (ex self::ANEW, self::ACTIVATED)
+     * @param integer $state see this class constants (ex self::ANEW, self::ACTIVATED)
      * @return string  the key
      */
     public static function getStateKey(int $state = 0): string
@@ -2666,7 +2666,7 @@ class Plugin extends CommonDBTM
      *
      * @since 9.3.2
      *
-     * @param string $plugin_key  System name (Plugin directory)
+     * @param string $plugin_key System name (Plugin directory)
      *
      * @return boolean
      */
@@ -2683,7 +2683,7 @@ class Plugin extends CommonDBTM
      *
      * @since 9.5.0
      *
-     * @param string $plugin_key  System name (Plugin directory)
+     * @param string $plugin_key System name (Plugin directory)
      *
      * @return boolean
      */
@@ -3065,7 +3065,7 @@ class Plugin extends CommonDBTM
      * @since 9.5
      *
      * @param string $plugin_key plugin system key
-     * @param bool $full true for absolute path
+     * @param bool   $full       true for absolute path
      *
      * @return false|string the path
      */
@@ -3099,9 +3099,9 @@ class Plugin extends CommonDBTM
      *
      * @deprecated 11.0
      * @since 9.5
-     * @param string $plugin_key plugin system key
-     * @param bool $full if true, append root_doc from config
-     * @param bool $use_url_base if true, url_base instead root_doc
+     * @param string $plugin_key   plugin system key
+     * @param bool   $full         if true, append root_doc from config
+     * @param bool   $use_url_base if true, url_base instead root_doc
      * @return false|string the web path
      */
     public static function getWebDir(string $plugin_key = "", $full = true, $use_url_base = false)

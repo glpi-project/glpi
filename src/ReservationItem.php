@@ -100,7 +100,7 @@ class ReservationItem extends CommonDBChild
      * Retrieve an item from the database for a specific item
      *
      * @param class-string<CommonDBTM> $itemtype Type of the item
-     * @param int $ID ID of the item
+     * @param int                      $ID       ID of the item
      *
      * @return boolean true if succeed else false
      **/
@@ -895,10 +895,10 @@ TWIG, $twig_params);
      * Display a dropdown with only reservable items
      *
      * @param array{idtable: string, name: string} $post
-     * <ul>
-     *     <li>idtable: itemtype of items to show</li>
-     *     <li>name: input name</li>
-     * </ul>
+     *                                                   <ul>
+     *                                                   <li>idtable: itemtype of items to show</li>
+     *                                                   <li>name: input name</li>
+     *                                                   </ul>
      *
      * @return void
      */

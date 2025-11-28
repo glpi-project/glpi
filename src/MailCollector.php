@@ -262,9 +262,9 @@ class MailCollector extends CommonDBTM
     /**
      * Print the mailgate form
      *
-     * @param $ID        integer  Id of the item to print
-     * @param $options   array
-     *     - target filename : where to go when done.
+     * @param $ID      integer  Id of the item to print
+     * @param $options array
+     *                 - target filename : where to go when done.
      *
      * @return boolean item found
      **/
@@ -449,9 +449,9 @@ class MailCollector extends CommonDBTM
 
 
     /**
-     * @param $emails_ids   array
-     * @param $action                (default 0)
-     * @param $entity                (default 0)
+     * @param $emails_ids array
+     * @param $action     (default 0)
+     * @param $entity     (default 0)
      **/
     public function deleteOrImportSeveralEmails($emails_ids = [], $action = 0, $entity = 0)
     {
@@ -574,8 +574,8 @@ class MailCollector extends CommonDBTM
     /**
      * Do collect
      *
-     * @param integer $mailgateID  ID of the mailgate
-     * @param boolean $display     display messages in MessageAfterRedirect or just return error (default 0=)
+     * @param integer $mailgateID ID of the mailgate
+     * @param boolean $display    display messages in MessageAfterRedirect or just return error (default 0=)
      *
      * @return string|void
      **/
@@ -908,9 +908,9 @@ class MailCollector extends CommonDBTM
     /**
      * Builds and returns the main structure of the ticket to be created
      *
-     * @param string                        $uid     UID of the message
+     * @param string  $uid     UID of the message
      * @param Message $message Messge
-     * @param array                         $options  Possible options
+     * @param array   $options Possible options
      *
      * @return array ticket fields
      */
@@ -1472,11 +1472,11 @@ class MailCollector extends CommonDBTM
      * Recursivly get attached documents
      * Result is stored in $this->files
      *
-     * @param Part $part Message part
-     * @param string                     $path     Temporary path
-     * @param integer                    $maxsize  Maximum size of document to be retrieved
-     * @param string                     $subject  Message subject
-     * @param string                     $subpart  Subpart index (used in document filenames)
+     * @param Part    $part    Message part
+     * @param string  $path    Temporary path
+     * @param integer $maxsize Maximum size of document to be retrieved
+     * @param string  $subject Message subject
+     * @param string  $subpart Subpart index (used in document filenames)
      *
      * @return void
      **/
@@ -1638,8 +1638,8 @@ class MailCollector extends CommonDBTM
      * Get attached documents in a mail
      *
      * @param Message $message Message
-     * @param string                        $path     Temporary path
-     * @param integer                       $maxsize  Maximaum size of document to be retrieved
+     * @param string  $path    Temporary path
+     * @param integer $maxsize Maximaum size of document to be retrieved
      *
      * @return array containing extracted filenames in file/_tmp
      **/
@@ -1951,8 +1951,8 @@ class MailCollector extends CommonDBTM
 
 
     /**
-     * @param $to        (default '')
-     * @param $subject   (default '')
+     * @param $to      (default '')
+     * @param $subject (default '')
      **/
     public function sendMailRefusedResponse($to = '', $subject = '')
     {
@@ -2271,7 +2271,7 @@ class MailCollector extends CommonDBTM
     }
 
     /**
-     * @param $value  (default 0)
+     * @param $value (default 0)
      **/
     public static function showMaxFilesize($name, $value = 0, $rand = null)
     {

@@ -130,9 +130,9 @@ class Log extends CommonDBTM
     /**
      * Construct  history for an item
      *
-     * @param $item               CommonDBTM object
-     * @param $oldvalues    array of old values updated
-     * @param $values       array of all values of the item
+     * @param $item      CommonDBTM object
+     * @param $oldvalues array of old values updated
+     * @param $values    array of all values of the item
      *
      * @return boolean for success (at least 1 log entry added)
      **/
@@ -218,8 +218,8 @@ class Log extends CommonDBTM
     /**
      * Log history
      *
-     * @param $itemtype_link   (default '')
-     * @param $linked_action   (default '0')
+     * @param $itemtype_link (default '')
+     * @param $linked_action (default '0')
      *
      * @return boolean success
      **/
@@ -304,8 +304,8 @@ class Log extends CommonDBTM
     /**
      * Show History of an item
      *
-     * @param $item                     CommonDBTM object
-     * @param $withtemplate    integer  withtemplate param (default 0)
+     * @param $item         CommonDBTM object
+     * @param $withtemplate integer  withtemplate param (default 0)
      *
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
@@ -927,7 +927,7 @@ class Log extends CommonDBTM
      *
      *
      * @since 9.3
-     * @param CommonDBTM $item  Object instance
+     * @param CommonDBTM $item Object instance
      * @return array
      **/
     public static function getDistinctUserNamesValuesInItemLog(CommonDBTM $item)
@@ -968,7 +968,7 @@ class Log extends CommonDBTM
      *
      *
      * @since 9.3
-     * @param CommonDBTM $item  Object instance
+     * @param CommonDBTM $item Object instance
      * @return array
      **/
     public static function getDistinctAffectedFieldValuesInItemLog(CommonDBTM $item)
@@ -1142,7 +1142,7 @@ class Log extends CommonDBTM
      *
      *
      * @since 9.3
-     * @param CommonDBTM $item  Object instance
+     * @param CommonDBTM $item Object instance
      * @return array
      **/
     public static function getDistinctLinkedActionValuesInItemLog(CommonDBTM $item)
@@ -1208,7 +1208,7 @@ class Log extends CommonDBTM
      *
      *
      * @since 9.3
-     * @param integer $linked_action  Linked action value of a log entry.
+     * @param integer $linked_action Linked action value of a log entry.
      * @return string
      **/
     public static function getLinkedActionLabel($linked_action)
@@ -1330,12 +1330,12 @@ class Log extends CommonDBTM
      *
      *
      * @since 9.3
-     * @param array $filters  Filters values.
-     *    Filters values must be passed as indexed array using following rules :
-     *     - 'affected_fields' key for values corresponding to values built in 'self::getDistinctAffectedFieldValuesInItemLog()',
-     *     - 'date' key for a date value in 'Y-m-d H:i:s' format,
-     *     - 'linked_actions' key for values corresponding to values built in 'self::getDistinctLinkedActionValuesInItemLog()',
-     *     - 'users_names' key for values corresponding to values built in 'self::getDistinctUserNamesValuesInItemLog()'.
+     * @param array $filters Filters values.
+     *                       Filters values must be passed as indexed array using following rules :
+     *                       - 'affected_fields' key for values corresponding to values built in 'self::getDistinctAffectedFieldValuesInItemLog()',
+     *                       - 'date' key for a date value in 'Y-m-d H:i:s' format,
+     *                       - 'linked_actions' key for values corresponding to values built in 'self::getDistinctLinkedActionValuesInItemLog()',
+     *                       - 'users_names' key for values corresponding to values built in 'self::getDistinctUserNamesValuesInItemLog()'.
      * @return array
      **/
     public static function convertFiltersValuesToSqlCriteria(array $filters)

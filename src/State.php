@@ -90,7 +90,7 @@ class State extends CommonTreeDropdown
     /**
      * States for behaviour config
      *
-     * @param string $lib to add for -1 value (default '')
+     * @param string  $lib            to add for -1 value (default '')
      * @param boolean $is_inheritable
      */
     final public static function getBehaviours(string $lib = "", bool $is_inheritable = false): array
@@ -123,8 +123,8 @@ class State extends CommonTreeDropdown
     /**
      * Dropdown of states for behaviour config
      *
-     * @param string $name  select name
-     * @param string $lib   to add for -1 value (default '')
+     * @param string  $name           select name
+     * @param string  $lib            to add for -1 value (default '')
      * @param integer $value
      * @param boolean $is_inheritable
      * @used-by templates/pages/admin/entity/assets.html.twig

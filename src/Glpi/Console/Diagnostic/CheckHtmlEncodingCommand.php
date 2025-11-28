@@ -250,8 +250,8 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
     /**
      * Fix a single item, on specified fields.
      *
-     * @param CommonDBTM $item item to fix
-     * @param array $fields fields names to fix
+     * @param CommonDBTM $item   item to fix
+     * @param array      $fields fields names to fix
      */
     private function fixOneItem(CommonDBTM $item, array $fields): void
     {

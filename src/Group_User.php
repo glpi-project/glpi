@@ -154,7 +154,7 @@ class Group_User extends CommonDBRelation
     /**
      * Show groups of a user
      *
-     * @param User $user   User object
+     * @param User $user User object
      *
      * @return void
      */
@@ -240,7 +240,7 @@ class Group_User extends CommonDBRelation
      *
      * @since 0.83
      *
-     * @param array $used_ids Array of already added users
+     * @param array     $used_ids       Array of already added users
      * @param int|array $entityrestrict Array of entities
      *
      */
@@ -267,12 +267,12 @@ class Group_User extends CommonDBRelation
      *
      * @since 0.83
      *
-     * @param Group    $group            Group object
-     * @param array    $members          Array filled on output of member (filtered)
-     * @param array    $ids              Array of ids (not filtered)
-     * @param string|array $crit         Filter key (is_manager, is_userdelegate) or array of filters (default '')
-     * @param bool|int $tree             True to include member of sub-group (default 0)
-     * @param bool     $check_entities   Apply entities restrictions ?
+     * @param Group        $group          Group object
+     * @param array        $members        Array filled on output of member (filtered)
+     * @param array        $ids            Array of ids (not filtered)
+     * @param string|array $crit           Filter key (is_manager, is_userdelegate) or array of filters (default '')
+     * @param bool|int     $tree           True to include member of sub-group (default 0)
+     * @param bool         $check_entities Apply entities restrictions ?
      *
      * @return array|int Entities for restriction
      **/
@@ -672,7 +672,7 @@ class Group_User extends CommonDBRelation
     }
 
     /**
-     * @param int $user_ID
+     * @param int  $user_ID
      * @param bool $only_dynamic (false by default)
      *
      * @return void

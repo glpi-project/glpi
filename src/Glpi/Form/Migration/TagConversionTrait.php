@@ -48,7 +48,7 @@ trait TagConversionTrait
     /**
      * Convert legacy tags in the format ##question_ID## or ##answer_ID## to new tag format
      *
-     * @param string $content Content containing legacy tags
+     * @param string        $content   Content containing legacy tags
      * @param FormMigration $migration Migration object for ID mapping
      * @return string Content with converted tags
      */

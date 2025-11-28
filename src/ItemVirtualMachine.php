@@ -392,7 +392,7 @@ class ItemVirtualMachine extends CommonDBChild
     /**
      * Find a virtual machine by uuid
      *
-     * @param array $fields  Array of virtualmachine fields
+     * @param array $fields Array of virtualmachine fields
      *
      * @return integer|boolean ID of the asset that have this uuid or false otherwise
      **/

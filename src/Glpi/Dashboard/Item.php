@@ -81,15 +81,15 @@ class Item extends CommonDBChild
     /**
      * Save items in DB for the provided dashboard
      *
-     * @param int $dashboards_id id (not key) of the dashboard
-     * @param array $items cards of the dashboard, contains:
-     *    - gridstack_id: unique id of the card in the grid, usually build like card_id.uuidv4
-     *    - card_id: key of array return by getAllDasboardCards
-     *    - x: position in grid
-     *    - y: position in grid
-     *    - width: size in grid
-     *    - height: size in grid
-     *    - card_options, sub array, depends on the card, contains at least a key color
+     * @param int   $dashboards_id id (not key) of the dashboard
+     * @param array $items         cards of the dashboard, contains:
+     *                             - gridstack_id: unique id of the card in the grid, usually build like card_id.uuidv4
+     *                             - card_id: key of array return by getAllDasboardCards
+     *                             - x: position in grid
+     *                             - y: position in grid
+     *                             - width: size in grid
+     *                             - height: size in grid
+     *                             - card_options, sub array, depends on the card, contains at least a key color
      *
      * @return void
      */

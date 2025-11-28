@@ -41,9 +41,9 @@ use Attribute;
 class Route
 {
     /**
-     * @param string[] $methods
+     * @param string[]    $methods
      * @param Parameter[] $parameters
-     * @param Response[] $responses
+     * @param Response[]  $responses
      */
     public function __construct(
         protected string $description = '',

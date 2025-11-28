@@ -469,7 +469,7 @@ class NetworkEquipment extends MainAsset
      * Try to know if networkEquipement need to be updated from discovery
      * Only if IP has changed
      *
-     * @param stdClass    $val
+     * @param stdClass $val
      *
      * @return boolean
      */

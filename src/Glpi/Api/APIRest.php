@@ -485,7 +485,7 @@ class APIRest extends API
      * Construct this->parameters from query string and http body
      *
      * @param boolean $is_inline_doc Is the current request asks to display inline documentation
-     *  This will remove the default behavior who set content-type to application/json
+     *                               This will remove the default behavior who set content-type to application/json
      *
      * @return void
      */

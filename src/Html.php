@@ -132,8 +132,8 @@ class Html
     /**
      * Convert a date YY-MM-DD to DD-MM-YY for calendar
      *
-     * @param string       $time    Date to convert
-     * @param integer|null $format  Date format
+     * @param string       $time   Date to convert
+     * @param integer|null $format Date format
      *
      * @return null|string
      *
@@ -179,9 +179,9 @@ class Html
     /**
      * Convert a date YY-MM-DD HH:MM to DD-MM-YY HH:MM for display in a html table
      *
-     * @param string       $time            Datetime to convert
-     * @param integer|null $format          Datetime format
-     * @param bool         $with_seconds    Indicates if seconds should be present in output
+     * @param string       $time         Datetime to convert
+     * @param integer|null $format       Datetime format
+     * @param bool         $with_seconds Indicates if seconds should be present in output
      *
      * @return null|string
      **/
@@ -230,8 +230,8 @@ class Html
      * Cut a text if longer than than the expected length.
      * This method always encodes the HTML special chars of the provided text.
      *
-     * @param string  $string  string to resume
-     * @param integer $length  resume length (default 255)
+     * @param string  $string string to resume
+     * @param integer $length resume length (default 255)
      *
      * @return string
      **/
@@ -266,9 +266,9 @@ class Html
     /**
      * Convert a number to correct display
      *
-     * @param float   $number        Number to display
-     * @param boolean $edit          display number for edition ? (id edit use . in all case)
-     * @param integer $forcedecimal  Force decimal number (do not use default value) (default -1)
+     * @param float   $number       Number to display
+     * @param boolean $edit         display number for edition ? (id edit use . in all case)
+     * @param integer $forcedecimal Force decimal number (do not use default value) (default -1)
      *
      * @return string
      **/
@@ -307,9 +307,9 @@ class Html
     /**
      * Make a good string from the unix timestamp $sec
      *
-     * @param int|float  $time         timestamp
-     * @param boolean    $display_sec  display seconds ?
-     * @param boolean    $use_days     use days for display ?
+     * @param int|float $time        timestamp
+     * @param boolean   $display_sec display seconds ?
+     * @param boolean   $use_days    use days for display ?
      *
      * @return string
      **/
@@ -448,7 +448,7 @@ class Html
     /**
      * Redirection hack
      *
-     * @param string $dest Redirection destination
+     * @param string $dest               Redirection destination
      * @param int    $http_response_code Forces the HTTP response code to the specified value
      *
      **/
@@ -503,10 +503,10 @@ class Html
     /**
      * Common Title Function
      *
-     * @param string        $ref_pic_link    Path to the image to display (default '')
-     * @param string        $ref_pic_text    Alt text of the icon (default '')
-     * @param string        $ref_title       Title to display (default '')
-     * @param array|string  $ref_btts        Extra items to display array(link=>text...) (default '')
+     * @param string       $ref_pic_link Path to the image to display (default '')
+     * @param string       $ref_pic_text Alt text of the icon (default '')
+     * @param string       $ref_title    Title to display (default '')
+     * @param array|string $ref_btts     Extra items to display array(link=>text...) (default '')
      *
      * @return void
      */
@@ -539,7 +539,7 @@ class Html
      *
      * @since 0.83.1
      *
-     * @param string $request  SQL request
+     * @param string $request SQL request
      *
      * @return string
      **/
@@ -650,8 +650,8 @@ class Html
      *
      *
      * @deprecated 11.0.0
-     * @param string  $message  displayed before dying
-     * @param boolean $minimal  set to true do not display app menu (false by default)
+     * @param string  $message displayed before dying
+     * @param boolean $minimal set to true do not display app menu (false by default)
      */
     public static function displayErrorAndDie($message, $minimal = false): void
     {
@@ -663,9 +663,9 @@ class Html
     /**
      * Add confirmation on button or link before action
      *
-     * @param string $string             to display or array of string for using multilines
-     * @param string $additionalactions  additional actions to do on success confirmation
-     *                                     (default '')
+     * @param string $string            to display or array of string for using multilines
+     * @param string $additionalactions additional actions to do on success confirmation
+     *                                  (default '')
      *
      * @return string
      **/
@@ -680,9 +680,9 @@ class Html
      *
      * @since 0.85
      *
-     * @param string $string             to display or array of string for using multilines
-     * @param string $additionalactions  additional actions to do on success confirmation
-     *                                     (default '')
+     * @param string $string            to display or array of string for using multilines
+     * @param string $additionalactions additional actions to do on success confirmation
+     *                                  (default '')
      *
      * @return string confirmation script
      **/
@@ -727,11 +727,11 @@ class Html
      *
      * @deprecated 11.0.0
      * @since 0.85
-     * @param string $id HTML ID of the progress bar
-     * @param array $options progress status options
-     *                    - create    do we have to create it ?
-     *                    - message   add or change the message (HTML allowed. Text content must be escaped)
-     *                    - percent   current level (Must be cast to a numeric type)
+     * @param string $id      HTML ID of the progress bar
+     * @param array  $options progress status options
+     *                        - create    do we have to create it ?
+     *                        - message   add or change the message (HTML allowed. Text content must be escaped)
+     *                        - percent   current level (Must be cast to a numeric type)
      * @return string|void Generated HTML if `display` param is true, void otherwise.
      */
     public static function progressBar($id, array $options = [])
@@ -841,7 +841,7 @@ class Html
      *
      *
      * @deprecated 11.0.0
-     * @param string $msg  initial message (under the bar)
+     * @param string $msg     initial message (under the bar)
      * @param array  $options See {@link Html::progressBar()} for available options (excluding message)
      * @return string|void
      */
@@ -892,9 +892,9 @@ class Html
      *
      *
      * @deprecated 11.0.0
-     * @param float  $crt   Current Value (less then $tot)
-     * @param float  $tot   Maximum Value
-     * @param string $msg   message inside the bar (default is %)
+     * @param float  $crt Current Value (less then $tot)
+     * @param float  $tot Maximum Value
+     * @param string $msg message inside the bar (default is %)
      * @return void
      */
     public static function changeProgressBarPosition($crt, $tot, $msg = "")
@@ -929,12 +929,12 @@ class Html
      *
      *
      * @deprecated 11.0.0
-     * @param integer $width       Width   of the progress bar
-     * @param float   $percent     Percent of the progress bar
-     * @param array   $options     possible options:
-     *            - title : string title to display (default Progesssion)
-     *            - simple : display a simple progress bar (no title / only percent)
-     *            - forcepadding : boolean force str_pad to force refresh (default true)
+     * @param integer $width   Width   of the progress bar
+     * @param float   $percent Percent of the progress bar
+     * @param array   $options possible options:
+     *                         - title : string title to display (default Progesssion)
+     *                         - simple : display a simple progress bar (no title / only percent)
+     *                         - forcepadding : boolean force str_pad to force refresh (default true)
      * @return void
      */
     public static function displayProgressBar($width, $percent, $options = [])
@@ -1007,13 +1007,13 @@ TWIG,
     /**
      * Include common HTML headers
      *
-     * @param string $title   title used for the page (default '')
-     * @param string $sector  sector in which the page displayed is
-     * @param string $item    item corresponding to the page displayed
-     * @param string $option  option corresponding to the page displayed
-     * @param bool   $add_id  add current item id to the title ?
-     * @param bool   $allow_insecured_iframe  allow insecured iframe (default false)
-     * @param bool   $display display the header (default true)
+     * @param string $title                  title used for the page (default '')
+     * @param string $sector                 sector in which the page displayed is
+     * @param string $item                   item corresponding to the page displayed
+     * @param string $option                 option corresponding to the page displayed
+     * @param bool   $add_id                 add current item id to the title ?
+     * @param bool   $allow_insecured_iframe allow insecured iframe (default false)
+     * @param bool   $display                display the header (default true)
      *
      * @return string|void Generated HTML if `display` param is false, void otherwise.
      * @phpstan-return ($display is true ? void : string)
@@ -1345,7 +1345,7 @@ TWIG,
      *
      * @since  9.2
      *
-     * @param  boolean $force do we need to force regeneration of $_SESSION['glpimenu']
+     * @param boolean $force do we need to force regeneration of $_SESSION['glpimenu']
      * @return array the menu array
      */
     public static function generateMenuSession($force = false)
@@ -1594,12 +1594,12 @@ TWIG,
     /**
      * Print a nice HTML head for every page
      *
-     * @param string $title   title of the page
-     * @param string $url     not used anymore
-     * @param string $sector  sector in which the page displayed is
-     * @param string $item    item corresponding to the page displayed
-     * @param string $option  option corresponding to the page displayed
-     * @param bool   $add_id  add current item id to the title ?
+     * @param string $title  title of the page
+     * @param string $url    not used anymore
+     * @param string $sector sector in which the page displayed is
+     * @param string $item   item corresponding to the page displayed
+     * @param string $option option corresponding to the page displayed
+     * @param bool   $add_id add current item id to the title ?
      *
      * @return void
      */
@@ -1766,8 +1766,8 @@ TWIG,
     /**
      * Print a simple HTML head with links
      *
-     * @param string $title  title of the page
-     * @param array  $links  links to display
+     * @param string $title title of the page
+     * @param array  $links links to display
      *
      * @return void
      */
@@ -1813,10 +1813,10 @@ TWIG,
      * Print a nice HTML head for help page
      *
      * @param string $title  title of the page
-     * @param string $sector  sector in which the page displayed is
-     * @param string $item    item corresponding to the page displayed
-     * @param string $option  option corresponding to the page displayed
-     * @param bool   $add_id  add current item id to the title ?
+     * @param string $sector sector in which the page displayed is
+     * @param string $item   item corresponding to the page displayed
+     * @param string $option option corresponding to the page displayed
+     * @param bool   $add_id add current item id to the title ?
      *
      * @return void
      */
@@ -1925,8 +1925,8 @@ TWIG,
     /**
      * Print a nice HTML head with no controls
      *
-     * @param string $title  title of the page
-     * @param string $url    not used anymore
+     * @param string $title title of the page
+     * @param string $url   not used anymore
      *
      * @return void
      */
@@ -1970,9 +1970,9 @@ TWIG,
      * @param string  $title    title of the page
      * @param string  $url      not used anymore
      * @param boolean $in_modal indicate if page loaded in modal - css target
-     * @param string  $sector    sector in which the page displayed is (default 'none')
-     * @param string  $item      item corresponding to the page displayed (default 'none')
-     * @param string  $option    option corresponding to the page displayed (default '')
+     * @param string  $sector   sector in which the page displayed is (default 'none')
+     * @param string  $item     item corresponding to the page displayed (default 'none')
+     * @param string  $option   option corresponding to the page displayed (default '')
      *
      * @return void
      */
@@ -2007,9 +2007,9 @@ TWIG,
      *
      * @since 10.0.7
      *
-     * @param string  $sector    sector in which the page displayed is (default 'none')
-     * @param string  $item      item corresponding to the page displayed (default 'none')
-     * @param string  $option    option corresponding to the page displayed (default '')
+     * @param string $sector sector in which the page displayed is (default 'none')
+     * @param string $item   item corresponding to the page displayed (default 'none')
+     * @param string $option option corresponding to the page displayed (default '')
      */
     public static function zeroSecurityIframedHeader(
         string $title = "",
@@ -2087,8 +2087,8 @@ TWIG,
      *
      * @since 0.84
      *
-     * @param string $container_id  html of the container of checkboxes link to this check all checkbox
-     * @param null|int|'__RAND__'   $rand          rand value to use (default is auto generated)
+     * @param string              $container_id html of the container of checkboxes link to this check all checkbox
+     * @param null|int|'__RAND__' $rand         rand value to use (default is auto generated)
      *
      * @return string
      **/
@@ -2119,9 +2119,9 @@ TWIG,
      *
      * @since 0.85
      *
-     * @param array $options  array of parameters:
-     *    - tag_for_massive tag of the checkboxes to update
-     *    - container_id    if of the container of the checkboxes
+     * @param array $options array of parameters:
+     *                       - tag_for_massive tag of the checkboxes to update
+     *                       - container_id    if of the container of the checkboxes
      *
      * @return string  the javascript code for jquery criterion or empty string if it is not a
      *         massive update checkbox
@@ -2172,17 +2172,17 @@ TWIG,
      *
      * @since 0.85
      *
-     * @param array $options  array of parameters:
-     *    - title         its title
-     *    - name          its name
-     *    - id            its id
-     *    - value         the value to set when checked
-     *    - readonly      can we edit it ?
-     *    - massive_tags  the tag to set for massive checkbox update
-     *    - checked       is it checked or not ?
-     *    - zero_on_empty do we send 0 on submit when it is not checked ?
-     *    - specific_tags HTML5 tags to add
-     *    - criterion     the criterion for massive checkbox
+     * @param array $options array of parameters:
+     *                       - title         its title
+     *                       - name          its name
+     *                       - id            its id
+     *                       - value         the value to set when checked
+     *                       - readonly      can we edit it ?
+     *                       - massive_tags  the tag to set for massive checkbox update
+     *                       - checked       is it checked or not ?
+     *                       - zero_on_empty do we send 0 on submit when it is not checked ?
+     *                       - specific_tags HTML5 tags to add
+     *                       - criterion     the criterion for massive checkbox
      *
      * @return string  the HTML code for the checkbox
      **/
@@ -2285,8 +2285,8 @@ TWIG,
      *
      * @since 0.84
      *
-     * @param string  $itemtype  Massive action itemtype
-     * @param string|integer $id        ID of the item
+     * @param string         $itemtype Massive action itemtype
+     * @param string|integer $id       ID of the item
      *
      * @return string
      **/
@@ -2317,8 +2317,8 @@ TWIG,
      *
      * @since 0.84
      *
-     * @param string  $itemtype  Massive action itemtype
-     * @param string|integer $id        ID of the item
+     * @param string         $itemtype Massive action itemtype
+     * @param string|integer $id       ID of the item
      *
      * @return void
      **/
@@ -2333,7 +2333,7 @@ TWIG,
      *
      * @since 0.84
      *
-     * @param string $name  given name/id to the form
+     * @param string $name given name/id to the form
      *
      * @return void
      **/
@@ -2348,7 +2348,7 @@ TWIG,
      *
      * @since 0.84
      *
-     * @param string $name  given name/id to the form
+     * @param string $name given name/id to the form
      *
      * @return string
      **/
@@ -2375,30 +2375,30 @@ TWIG,
      * @since 0.85 only 1 parameter (in 0.84 $itemtype required)
      *
      *
-     * @param array $options  Array of parameters
-     * must contains :
-     *    - container       : DOM ID of the container of the item checkboxes (since version 0.85)
-     * may contains :
-     *    - num_displayed   : integer number of displayed items. Permit to check suhosin limit.
-     *                        (default -1 not to check)
-     *    - ontop           : boolean true if displayed on top (default true)
-     *    - forcecreate     : boolean force creation of modal window (default = false).
-     *            Modal is automatically created when displayed the ontop item.
-     *            If only a bottom one is displayed use it
-     *    - check_itemtype   : string alternate itemtype to check right if different from main itemtype
-     *                         (default empty)
-     *    - check_items_id   : integer ID of the alternate item used to check right / optional
-     *                         (default empty)
-     *    - is_deleted       : boolean is massive actions for deleted items ?
-     *    - extraparams      : string extra URL parameters to pass to massive actions (default empty)
-     *                         if ([extraparams]['hidden'] is set : add hidden fields to post)
-     *    - specific_actions : array of specific actions (do not use standard one)
-     *    - add_actions      : array of actions to add (do not use standard one)
-     *    - confirm          : string of confirm message before massive action
-     *    - item             : CommonDBTM object that has to be passed to the actions
-     *    - tag_to_send      : the tag of the elements to send to the ajax window (default: common)
-     *    - action_button_classes : string of classes to add to the action button
-     *    - display          : display or return the generated html (default true)
+     * @param array $options Array of parameters
+     *                       must contains :
+     *                       - container       : DOM ID of the container of the item checkboxes (since version 0.85)
+     *                       may contains :
+     *                       - num_displayed   : integer number of displayed items. Permit to check suhosin limit.
+     *                       (default -1 not to check)
+     *                       - ontop           : boolean true if displayed on top (default true)
+     *                       - forcecreate     : boolean force creation of modal window (default = false).
+     *                       Modal is automatically created when displayed the ontop item.
+     *                       If only a bottom one is displayed use it
+     *                       - check_itemtype   : string alternate itemtype to check right if different from main itemtype
+     *                       (default empty)
+     *                       - check_items_id   : integer ID of the alternate item used to check right / optional
+     *                       (default empty)
+     *                       - is_deleted       : boolean is massive actions for deleted items ?
+     *                       - extraparams      : string extra URL parameters to pass to massive actions (default empty)
+     *                       if ([extraparams]['hidden'] is set : add hidden fields to post)
+     *                       - specific_actions : array of specific actions (do not use standard one)
+     *                       - add_actions      : array of actions to add (do not use standard one)
+     *                       - confirm          : string of confirm message before massive action
+     *                       - item             : CommonDBTM object that has to be passed to the actions
+     *                       - tag_to_send      : the tag of the elements to send to the ajax window (default: common)
+     *                       - action_button_classes : string of classes to add to the action button
+     *                       - display          : display or return the generated html (default true)
      *
      * @return bool|string     the html if display parameter is false, or true
      * @todo replace 'hidden' by data-glpicore-ma-tags ?
@@ -2562,23 +2562,23 @@ TWIG,
      *
      * @since 0.84
      *
-     * @param string $name     name of the element
-     * @param array  $options  array of possible options:
-     *      - value        : default value to display (default '')
-     *      - maybeempty   : may be empty ? (true by default)
-     *      - canedit      :  could not modify element (true by default)
-     *      - min          :  minimum allowed date (default '')
-     *      - max          : maximum allowed date (default '')
-     *      - showyear     : should we set/diplay the year? (true by default)
-     *      - display      : boolean display of return string (default true)
-     *      - calendar_btn : boolean display calendar icon (default true)
-     *      - clear_btn    : boolean display clear icon (default true)
-     *      - range        : boolean set the datepicket in range mode
-     *      - rand         : specific rand value (default generated one)
-     *      - yearrange    : set a year range to show in drop-down (default '')
-     *      - required     : required field (will add required attribute)
-     *      - placeholder  : text to display when input is empty
-     *      - on_change    : function to execute when date selection changed
+     * @param string $name    name of the element
+     * @param array  $options array of possible options:
+     *                        - value        : default value to display (default '')
+     *                        - maybeempty   : may be empty ? (true by default)
+     *                        - canedit      :  could not modify element (true by default)
+     *                        - min          :  minimum allowed date (default '')
+     *                        - max          : maximum allowed date (default '')
+     *                        - showyear     : should we set/diplay the year? (true by default)
+     *                        - display      : boolean display of return string (default true)
+     *                        - calendar_btn : boolean display calendar icon (default true)
+     *                        - clear_btn    : boolean display clear icon (default true)
+     *                        - range        : boolean set the datepicket in range mode
+     *                        - rand         : specific rand value (default generated one)
+     *                        - yearrange    : set a year range to show in drop-down (default '')
+     *                        - required     : required field (will add required attribute)
+     *                        - placeholder  : text to display when input is empty
+     *                        - on_change    : function to execute when date selection changed
      *
      * @return integer|string
      *    integer if option display=true (random part of elements id)
@@ -2708,11 +2708,11 @@ JS;
      *
      * @since 0.85
      *
-     * @param string $name     name of the element
-     * @param array  $options  array  of possible options:
-     *   - value      : default value to display (default '')
-     *   - display    : boolean display or get string (default true)
-     *   - rand       : specific random value (default generated one)
+     * @param string $name    name of the element
+     * @param array  $options array  of possible options:
+     *                        - value      : default value to display (default '')
+     *                        - display    : boolean display or get string (default true)
+     *                        - rand       : specific random value (default generated one)
      *
      * @return integer|string
      *    integer if option display=true (random part of elements id)
@@ -2744,19 +2744,19 @@ JS;
      *
      * @since 0.84
      *
-     * @param string $name     name of the element
-     * @param array  $options  array  of possible options:
-     *   - value      : default value to display (default '')
-     *   - timestep   : step for time in minute (-1 use default config) (default -1)
-     *   - maybeempty : may be empty ? (true by default)
-     *   - canedit    : could not modify element (true by default)
-     *   - mindate    : minimum allowed date (default '')
-     *   - maxdate    : maximum allowed date (default '')
-     *   - showyear   : should we set/diplay the year? (true by default)
-     *   - display    : boolean display or get string (default true)
-     *   - rand       : specific random value (default generated one)
-     *   - required   : required field (will add required attribute)
-     *   - on_change    : function to execute when date selection changed
+     * @param string $name    name of the element
+     * @param array  $options array  of possible options:
+     *                        - value      : default value to display (default '')
+     *                        - timestep   : step for time in minute (-1 use default config) (default -1)
+     *                        - maybeempty : may be empty ? (true by default)
+     *                        - canedit    : could not modify element (true by default)
+     *                        - mindate    : minimum allowed date (default '')
+     *                        - maxdate    : maximum allowed date (default '')
+     *                        - showyear   : should we set/diplay the year? (true by default)
+     *                        - display    : boolean display or get string (default true)
+     *                        - rand       : specific random value (default generated one)
+     *                        - required   : required field (will add required attribute)
+     *                        - on_change    : function to execute when date selection changed
      *
      * @return integer|string
      *    integer if option display=true (random part of elements id)
@@ -2889,12 +2889,12 @@ JS;
     /**
      * Show generic date search
      *
-     * @param string $element  name of the html element
-     * @param string $value    default value
-     * @param array $options   Array of possible options:
-     *      - with_time display with time selection ? (default false)
-     *      - with_future display with future date selection ? (default false)
-     *      - with_days display specific days selection TODAY, BEGINMONTH, LASTMONDAY... ? (default true)
+     * @param string $element name of the html element
+     * @param string $value   default value
+     * @param array  $options Array of possible options:
+     *                        - with_time display with time selection ? (default false)
+     *                        - with_future display with future date selection ? (default false)
+     *                        - with_days display specific days selection TODAY, BEGINMONTH, LASTMONDAY... ? (default true)
      *
      * @return integer|string
      *    integer if option display=true (random part of elements id)
@@ -2997,10 +2997,10 @@ JS;
      *
      * @since 0.83
      *
-     * @param array $options  array of possible options:
-     *      - with_time display with time selection ? (default false)
-     *      - with_future display with future date selection ? (default false)
-     *      - with_days display specific days selection TODAY, BEGINMONTH, LASTMONDAY... ? (default true)
+     * @param array $options array of possible options:
+     *                       - with_time display with time selection ? (default false)
+     *                       - with_future display with future date selection ? (default false)
+     *                       - with_days display specific days selection TODAY, BEGINMONTH, LASTMONDAY... ? (default true)
      *
      * @return array of posible values
      * @see self::showGenericDateTimeSearch()
@@ -3117,9 +3117,9 @@ JS;
      *
      * @since 0.83
      *
-     * @param string         $val           date / datetime value passed
-     * @param boolean        $force_day     force computation in days
-     * @param integer|string $specifictime  set specific timestamp
+     * @param string         $val          date / datetime value passed
+     * @param boolean        $force_day    force computation in days
+     * @param integer|string $specifictime set specific timestamp
      *
      * @return string  computed date / datetime value
      * @see self::showGenericDateTimeSearch()
@@ -3241,16 +3241,16 @@ JS;
      *
      * @since 9.2
      *
-     * @param array $options  array of possible options:
-     *      - title, do we need to append an H2 title tag
-     *      - dates, an array containing a collection of theses keys:
-     *         * timestamp
-     *         * class, supported: passed, checked, now
-     *         * label
-     *         The key should contain a string starting with the timestamp, it is used to order the displayed events
-     *      - display, boolean to precise if we need to display (true) or return (false) the html
-     *      - add_now, boolean to precise if we need to add to dates array, an entry for now time
-     *        (with now class)
+     * @param array $options array of possible options:
+     *                       - title, do we need to append an H2 title tag
+     *                       - dates, an array containing a collection of theses keys:
+     *                       * timestamp
+     *                       * class, supported: passed, checked, now
+     *                       * label
+     *                       The key should contain a string starting with the timestamp, it is used to order the displayed events
+     *                       - display, boolean to precise if we need to display (true) or return (false) the html
+     *                       - add_now, boolean to precise if we need to add to dates array, an entry for now time
+     *                       (with now class)
      *
      * @return void|string
      *    void if option display=true
@@ -3307,7 +3307,7 @@ JS;
     /**
      * Show a tooltip on an item
      *
-     * @param string $content  data to put in the tooltip
+     * @param string $content data to put in the tooltip
      * @param array{
      *   applyto?: string,       // id of the target element
      *   title?: string,         // title to display
@@ -3812,8 +3812,8 @@ JAVASCRIPT
     /**
      * Insert a html link to the twig template variables documentation page
      *
-     * @param string $preset_target Preset of parameters for which to show documentation (key)
-     * @param string|null $link_id  Useful if you need to interact with the link through client side code
+     * @param string      $preset_target Preset of parameters for which to show documentation (key)
+     * @param string|null $link_id       Useful if you need to interact with the link through client side code
      *
      * @return void
      */
@@ -3839,8 +3839,8 @@ JAVASCRIPT
      * move it before the given textarea.
      * Useful if you don't have access to the form where you want to put this link at
      *
-     * @param string $selector JQuery selector to find the target textarea
-     * @param string $preset_target   Preset of parameters for which to show documentation (key)
+     * @param string $selector      JQuery selector to find the target textarea
+     * @param string $preset_target Preset of parameters for which to show documentation (key)
      *
      * @return void
      */
@@ -3869,12 +3869,12 @@ JAVASCRIPT
     /**
      * Print Ajax pager for list in tab panel
      *
-     * @param string  $title              displayed above
-     * @param integer $start              from witch item we start
-     * @param integer $numrows            total items
-     * @param string  $additional_info    Additional information to display (default '')
-     * @param boolean $display            display if true, return the pager if false
-     * @param string  $additional_params  Additional parameters to pass to tab reload request (default '')
+     * @param string  $title             displayed above
+     * @param integer $start             from witch item we start
+     * @param integer $numrows           total items
+     * @param string  $additional_info   Additional information to display (default '')
+     * @param boolean $display           display if true, return the pager if false
+     * @param string  $additional_params Additional parameters to pass to tab reload request (default '')
      *
      * @return void|string
      *
@@ -3969,9 +3969,9 @@ JAVASCRIPT
      * Clean Printing of and array in a table
      * ONLY FOR DEBUG
      *
-     * @param array   $tab       the array to display
-     * @param integer $pad       Pad used
-     * @param boolean $jsexpand  Expand using JS ?
+     * @param array   $tab      the array to display
+     * @param integer $pad      Pad used
+     * @param boolean $jsexpand Expand using JS ?
      *
      * @return void
      **/
@@ -4033,13 +4033,13 @@ JAVASCRIPT
     /**
      * Print pager for search option (first/previous/next/last)
      *
-     * @param integer        $start                   from witch item we start
-     * @param integer        $numrows                 total items
-     * @param string         $target                  page would be open when click on the option (last,previous etc)
-     * @param string         $parameters              parameters would be passed on the URL.
-     * @param integer|string $item_type_output        item type display - if >0 display export
-     * @param integer|array  $item_type_output_param  item type parameter for export
-     * @param string         $additional_info         Additional information to display (default '')
+     * @param integer        $start                  from witch item we start
+     * @param integer        $numrows                total items
+     * @param string         $target                 page would be open when click on the option (last,previous etc)
+     * @param string         $parameters             parameters would be passed on the URL.
+     * @param integer|string $item_type_output       item type display - if >0 display export
+     * @param integer|array  $item_type_output_param item type parameter for export
+     * @param string         $additional_info        Additional information to display (default '')
      *
      * @return void
      *
@@ -4187,9 +4187,9 @@ JAVASCRIPT
     /**
      * Display the list_limit combo choice
      *
-     * @param string  $action             page would be posted when change the value (URL + param) (default '')
-     * @param boolean $display            display the pager form if true, return it if false
-     * @param string  $additional_params  Additional parameters to pass to tab reload request (default '')
+     * @param string  $action            page would be posted when change the value (URL + param) (default '')
+     * @param boolean $display           display the pager form if true, return it if false
+     * @param string  $additional_params Additional parameters to pass to tab reload request (default '')
      *
      * ajax Pager will be displayed if empty
      *
@@ -4227,9 +4227,9 @@ JAVASCRIPT
      *
      *
      * @since 0.83.1
-     * @param string $string Text for title
-     * @param integer $num   Number of item displayed
-     * @param integer $tot   Number of item existing
+     * @param string  $string Text for title
+     * @param integer $num    Number of item displayed
+     * @param integer $tot    Number of item existing
      *
      * @return string
      **/
@@ -4258,8 +4258,8 @@ JAVASCRIPT
      * @param string       $btlabel  Button label
      * @param array        $fields   Field name => field  value
      * @param string       $btimage  Button image uri (optional)   (default '')
-     *                           If image name starts with "fa-" or "ti-", it will be turned into
-     *                           a FontAwesone/Tabler icon rather than an image.
+     *                               If image name starts with "fa-" or "ti-", it will be turned into
+     *                               a FontAwesone/Tabler icon rather than an image.
      * @param string       $btoption Optional button option        (default '')
      * @param string|array $confirm  Optional confirm message      (default '')
      *
@@ -4418,8 +4418,8 @@ JAVASCRIPT
      *
      * @deprecated 11.0.0
      * @since 0.85.
-     * @param string $id      ID of the dom element
-     * @param string $value   Value to set
+     * @param string $id    ID of the dom element
+     * @param string $value Value to set
      * @return string
      **/
     public static function jsSetDropdownValue($id, $value)
@@ -4439,7 +4439,7 @@ JAVASCRIPT
      *
      * @deprecated 11.0.0
      * @since 0.85.
-     * @param string $id  ID of the dom element
+     * @param string $id ID of the dom element
      * @return string
      **/
     public static function jsGetDropdownValue($id)
@@ -4456,7 +4456,7 @@ JAVASCRIPT
      *
      * @since 0.85.
      * @param string $id     ID of the dom element
-     * @param array $params  Array of parameters
+     * @param array  $params Array of parameters
      *
      * @return string
      *
@@ -4512,16 +4512,16 @@ JS;
      *
      * @since 0.85.
      * @param string $name
-     * @param string $field_id  ID of the dom element
-     * @param string $url       URL to get datas
-     * @param array $params     Array of parameters, see $default_options below
-     *            must contains :
-     *                if single select
-     *                   - 'value'       : default value selected
-     *                   - 'valuename'   : default name of selected value
-     *                if multiple select
-     *                   - 'values'      : default values selected
-     *                   - 'valuesnames' : default names of selected values
+     * @param string $field_id ID of the dom element
+     * @param string $url      URL to get datas
+     * @param array  $params   Array of parameters, see $default_options below
+     *                         must contains :
+     *                         if single select
+     *                         - 'value'       : default value selected
+     *                         - 'valuename'   : default name of selected value
+     *                         if multiple select
+     *                         - 'values'      : default values selected
+     *                         - 'valuesnames' : default names of selected values
      *
      * @return string
      *
@@ -4717,10 +4717,10 @@ JS;
      *
      * @since 0.85
      *
-     * @param string $path     Path to the image file
-     * @param array  $options  array of HTML attributes
-     *        - `url` If provided an image link will be generated and the link will point at
-     *               `$options['url']`.
+     * @param string $path    Path to the image file
+     * @param array  $options array of HTML attributes
+     *                        - `url` If provided an image link will be generated and the link will point at
+     *                        `$options['url']`.
      * @return string completed img tag
      **/
     public static function image($path, $options = [])
@@ -4768,11 +4768,11 @@ JS;
      *
      * @since 0.85
      *
-     * @param string $text     The content to be wrapped by a tags.
-     * @param string $url      URL parameter
-     * @param array  $options  Array of HTML attributes:
-     *     - `confirm` JavaScript confirmation message.
-     *     - `confirmaction` optional action to do on confirmation
+     * @param string $text    The content to be wrapped by a tags.
+     * @param string $url     URL parameter
+     * @param array  $options Array of HTML attributes:
+     *                        - `confirm` JavaScript confirmation message.
+     *                        - `confirmaction` optional action to do on confirmation
      * @return string an `a` element.
      *
      * @TODO Deprecate this method in GLPI 11.1, it is not used anymore in GLPI itself.
@@ -4816,8 +4816,8 @@ JS;
      *
      * @since 0.85
      *
-     * @param string $fieldName  Name of a field
-     * @param array  $options    Array of HTML attributes.
+     * @param string $fieldName Name of a field
+     * @param array  $options   Array of HTML attributes.
      *
      * @return string A generated hidden input
      **/
@@ -4846,8 +4846,8 @@ JS;
      *
      * @since 0.85
      *
-     * @param string $fieldName  Name of a field
-     * @param array  $options    Array of HTML attributes.
+     * @param string $fieldName Name of a field
+     * @param array  $options   Array of HTML attributes.
      *
      * @return string A generated hidden input
      **/
@@ -4874,9 +4874,9 @@ JS;
      *
      * @since 9.3
      *
-     * @param string $name     Name of the field
-     * @param array  $values   Array of the options
-     * @param array  $options  Array of HTML attributes
+     * @param string $name    Name of the field
+     * @param array  $values  Array of the options
+     * @param array  $options Array of HTML attributes
      *
      * @return string
      */
@@ -4928,11 +4928,11 @@ JS;
      *
      * @since 0.85
      *
-     * @param string $caption  caption of the input
-     * @param array  $options  Array of options.
-     *     - image : will use a submit image input
-     *     - `confirm` JavaScript confirmation message.
-     *     - `confirmaction` optional action to do on confirmation
+     * @param string $caption caption of the input
+     * @param array  $options Array of options.
+     *                        - image : will use a submit image input
+     *                        - `confirm` JavaScript confirmation message.
+     *                        - `confirmaction` optional action to do on confirmation
      *
      * @return string A HTML submit button
      **/
@@ -4997,16 +4997,16 @@ JS;
     /**
      * Creates an accessible, stylable progress bar control.
      * @since 9.5.0
-     * @param int $max    The maximum value of the progress bar.
-     * @param int $value    The current value of the progress bar.
-     * @param array $params  Array of options:
-     *                         - rand: Random int for the progress id. Default is a new random int.
-     *                         - tooltip: Text to show in the tooltip. Default is nothing.
-     *                         - append_percent_tt: If true, the percent will be appended to the tooltip.
-     *                               In this case, it will also be automatically updated. Default is true.
-     *                         - text: Text to show in the progress bar. Default is nothing.
-     *                         - append_percent_text: If true, the percent will be appended to the text.
-     *                               In this case, it will also be automatically updated. Default is false.
+     * @param int   $max    The maximum value of the progress bar.
+     * @param int   $value  The current value of the progress bar.
+     * @param array $params Array of options:
+     *                      - rand: Random int for the progress id. Default is a new random int.
+     *                      - tooltip: Text to show in the tooltip. Default is nothing.
+     *                      - append_percent_tt: If true, the percent will be appended to the tooltip.
+     *                      In this case, it will also be automatically updated. Default is true.
+     *                      - text: Text to show in the progress bar. Default is nothing.
+     *                      - append_percent_text: If true, the percent will be appended to the text.
+     *                      In this case, it will also be automatically updated. Default is false.
      * @return string     The progress bar HTML
      */
     public static function progress($max, $value, $params = [])
@@ -5079,8 +5079,8 @@ HTML;
      *
      * @since 0.85
      *
-     * @param string $key    The name of the attribute to create
-     * @param string|array $value  The value of the attribute to create.
+     * @param string       $key   The name of the attribute to create
+     * @param string|array $value The value of the attribute to create.
      *
      * @return string The composed attribute.
      **/
@@ -5099,7 +5099,7 @@ HTML;
      *
      * @since 0.85
      *
-     * @param string $script  The script to wrap
+     * @param string $script The script to wrap
      *
      * @return string
      *
@@ -5184,8 +5184,8 @@ HTML;
      *
      *
      * @since 11.0.0 The `$no_debug` parameter has bbeen removed.
-     * @param string  $url      File to include (relative to GLPI_ROOT)
-     * @param array   $options  Array of HTML attributes
+     * @param string $url     File to include (relative to GLPI_ROOT)
+     * @param array  $options Array of HTML attributes
      * @return string CSS link tag
      **/
     public static function scss($url, $options = [])
@@ -5214,8 +5214,8 @@ HTML;
      *
      * @since 9.4
      *
-     * @param string $url      File to include (raltive to GLPI_ROOT)
-     * @param array  $options  Array of HTML attributes
+     * @param string $url     File to include (raltive to GLPI_ROOT)
+     * @param array  $options Array of HTML attributes
      *
      * @return string CSS link tag
      **/
@@ -5252,23 +5252,23 @@ HTML;
      *
      * @since 9.2
      *
-     * @param array $options    Array of options
-     *    - name                string   field name (default filename)
-     *    - onlyimages          boolean  restrict to image files (default false)
-     *    - filecontainer       string   DOM ID of the container showing file uploaded:
-     *                                   use selector to display
-     *    - showfilesize        boolean  show file size with file name
-     *    - showtitle           boolean  show the title above file list
-     *                                   (with max upload size indication)
-     *    - enable_richtext     boolean  switch to richtext fileupload
-     *    - editor_id           string   id attribute for the richtext editor
-     *    - pasteZone           string   DOM ID of the paste zone
-     *    - dropZone            string   DOM ID of the drop zone
-     *    - rand                string   already computed rand value
-     *    - display             boolean  display or return the generated html (default true)
-     *    - only_uploaded_files boolean  show only the uploaded files block, i.e. no title, no dropzone
-     *                                   (should be false when upload has to be enable only from rich text editor)
-     *    - required            boolean  display a required mark
+     * @param array $options Array of options
+     *                       - name                string   field name (default filename)
+     *                       - onlyimages          boolean  restrict to image files (default false)
+     *                       - filecontainer       string   DOM ID of the container showing file uploaded:
+     *                       use selector to display
+     *                       - showfilesize        boolean  show file size with file name
+     *                       - showtitle           boolean  show the title above file list
+     *                       (with max upload size indication)
+     *                       - enable_richtext     boolean  switch to richtext fileupload
+     *                       - editor_id           string   id attribute for the richtext editor
+     *                       - pasteZone           string   DOM ID of the paste zone
+     *                       - dropZone            string   DOM ID of the drop zone
+     *                       - rand                string   already computed rand value
+     *                       - display             boolean  display or return the generated html (default true)
+     *                       - only_uploaded_files boolean  show only the uploaded files block, i.e. no title, no dropzone
+     *                       (should be false when upload has to be enable only from rich text editor)
+     *                       - required            boolean  display a required mark
      *
      * @return void|string   the html if display parameter is false
      **/
@@ -5453,20 +5453,20 @@ HTML;
      *
      * @since 9.2
      *
-     * @param  array  $options with these keys:
-     *  - name (string):              corresponding html attribute
-     *  - filecontainer (string):     dom id for the upload filelist
-     *  - rand (string):              random param to avoid overriding between textareas
-     *  - editor_id (string):         id attribute for the textarea
-     *  - value (string):             value attribute for the textarea
-     *  - enable_richtext (bool):     enable tinymce for this textarea
-     *  - enable_images (bool):       enable image pasting in tinymce (default: true)
-     *  - enable_fileupload (bool):   enable the inline fileupload system
-     *  - display (bool):             display or return the generated html
-     *  - cols (int):                 textarea cols attribute (witdh)
-     *  - rows (int):                 textarea rows attribute (height)
-     *  - required (bool):            textarea is mandatory
-     *  - uploads (array):            uploads to recover from a prevous submit
+     * @param array $options with these keys:
+     *                       - name (string):              corresponding html attribute
+     *                       - filecontainer (string):     dom id for the upload filelist
+     *                       - rand (string):              random param to avoid overriding between textareas
+     *                       - editor_id (string):         id attribute for the textarea
+     *                       - value (string):             value attribute for the textarea
+     *                       - enable_richtext (bool):     enable tinymce for this textarea
+     *                       - enable_images (bool):       enable image pasting in tinymce (default: true)
+     *                       - enable_fileupload (bool):   enable the inline fileupload system
+     *                       - display (bool):             display or return the generated html
+     *                       - cols (int):                 textarea cols attribute (witdh)
+     *                       - rows (int):                 textarea rows attribute (height)
+     *                       - required (bool):            textarea is mandatory
+     *                       - uploads (array):            uploads to recover from a prevous submit
      *
      * @return mixed          the html if display paremeter is false or true
      */
@@ -5529,12 +5529,12 @@ HTML;
     /**
      * Display uploaded files area
      *
-     * @param array $options  Array of options
-     *    - name                string   field name (default filename)
-     *    - filecontainer       string   DOM ID of the container showing file uploaded:
-     *    - editor_id           string   id attribute for the textarea
-     *    - display             bool     display or return the generated html
-     *    - uploads             array    uploads to display (done in a previous form submit)
+     * @param array $options Array of options
+     *                       - name                string   field name (default filename)
+     *                       - filecontainer       string   DOM ID of the container showing file uploaded:
+     *                       - editor_id           string   id attribute for the textarea
+     *                       - display             bool     display or return the generated html
+     *                       - uploads             array    uploads to display (done in a previous form submit)
      * @return string|true   The html if display parameter is false
      * @see displayUploadedFile() in fileupload.js
      */
@@ -5626,19 +5626,19 @@ HTML;
      * Display choice matrix
      *
      * @since 0.85
-     * @param array $columns  Array of column field name => column label
-     * @param array $rows     Array of field name => array(
-     *      'label' the label of the row
-     *      'columns' an array of specific information regaring current row
-     *                and given column indexed by column field_name
-     *                 * a string if only have to display a string
-     *                 * an array('value' => ???, 'readonly' => ???) that is used to Dropdown::showYesNo()
+     * @param array $columns Array of column field name => column label
+     * @param array $rows    Array of field name => array(
+     *                       'label' the label of the row
+     *                       'columns' an array of specific information regaring current row
+     *                       and given column indexed by column field_name
+     *                       * a string if only have to display a string
+     *                       * an array('value' => ???, 'readonly' => ???) that is used to Dropdown::showYesNo()
      * @param array $options Possible:
-     *       'title'         of the matrix
-     *       'first_cell'    the content of the upper-left cell
-     *       'row_check_all' set to true to display a checkbox to check all elements of the row
-     *       'col_check_all' set to true to display a checkbox to check all elements of the col
-     *       'rand'          random number to use for ids
+     *                       'title'         of the matrix
+     *                       'first_cell'    the content of the upper-left cell
+     *                       'row_check_all' set to true to display a checkbox to check all elements of the row
+     *                       'col_check_all' set to true to display a checkbox to check all elements of the col
+     *                       'rand'          random number to use for ids
      *
      * @return integer random value used to generate the ids
      **/
@@ -5870,10 +5870,10 @@ JS);
      *
      * @since 9.1
      *
-     * @param string $msg          Message to be shown
-     * @param string $title        Title for dialog box
-     * @param string $okCallback   Function that will be called when 'Ok' is pressed
-     *                               (default null)
+     * @param string $msg        Message to be shown
+     * @param string $title      Title for dialog box
+     * @param string $okCallback Function that will be called when 'Ok' is pressed
+     *                           (default null)
      *
      * @return string
      */
@@ -5895,11 +5895,11 @@ JS);
      *
      *
      * @since 9.4.3
-     * @param int    $document_id  identifier of the document
-     * @param int    $width        width of the final image
-     * @param int    $height       height of the final image
-     * @param bool   $addLink      boolean, do we need to add an anchor link
-     * @param string $more_link    append to the link (ex &test=true)
+     * @param int    $document_id identifier of the document
+     * @param int    $width       width of the final image
+     * @param int    $height      height of the final image
+     * @param bool   $addLink     boolean, do we need to add an anchor link
+     * @param string $more_link   append to the link (ex &test=true)
      * @return string
      */
     public static function getImageHtmlTagForDocument($document_id, $width, $height, $addLink = true, $more_link = "")
@@ -6363,10 +6363,10 @@ JS);
      *
      * @since  9.3
      *
-     * @param  string  $hexcolor the color, you can pass hex color (prefixed or not by #)
-     *                           You can also pass a short css color (ex #FFF)
-     * @param  boolean $bw       default true, should we invert the color or return black/white function of the input color
-     * @param  boolean $sbw      default true, should we soft the black/white to a dark/light grey
+     * @param string  $hexcolor the color, you can pass hex color (prefixed or not by #)
+     *                          You can also pass a short css color (ex #FFF)
+     * @param boolean $bw       default true, should we invert the color or return black/white function of the input color
+     * @param boolean $sbw      default true, should we soft the black/white to a dark/light grey
      * @return string            the inverted color prefixed by #
      */
     public static function getInvertedColor($hexcolor = "", $bw = true, $sbw = true)
@@ -6413,11 +6413,11 @@ JS);
      * Compile SCSS styleshet
      *
      * @param array $args Arguments. May contain:
-     *                      - v: version to append (will default to GLPI_VERSION)
-     *                      - debug: if present, will not use Crunched formatter
-     *                      - file: filerepresentation  to load
-     *                      - reload: force reload and recache
-     *                      - nocache: do not use nor update cache
+     *                    - v: version to append (will default to GLPI_VERSION)
+     *                    - debug: if present, will not use Crunched formatter
+     *                    - file: filerepresentation  to load
+     *                    - reload: force reload and recache
+     *                    - nocache: do not use nor update cache
      *
      * @return string
      */

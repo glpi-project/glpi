@@ -122,7 +122,7 @@ final class IllustrationManager
 
     /**
      * @param int|null $height Height (px). Will be set to 100% if null.
-     * @param int|null $width Width (px). Will be set to 100% if null.
+     * @param int|null $width  Width (px). Will be set to 100% if null.
      */
     public function renderScene(
         string $icon_id,

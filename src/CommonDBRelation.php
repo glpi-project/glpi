@@ -216,8 +216,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
     /**
      * @since 0.84
      *
-     * @param string       $itemtype        Type of the item to search for its opposite
-     * @param integer      $items_id        ID of the item to search for its opposite
+     * @param string       $itemtype     Type of the item to search for its opposite
+     * @param integer      $items_id     ID of the item to search for its opposite
      * @param integer|null $relations_id
      * @return CommonDBTM|false
      **/
@@ -496,8 +496,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @param string $method
      * @param string $methodNotItem
-     * @param bool   $check_entity     (true by default)
-     * @param bool   $forceCheckBoth   force check both items (false by default)
+     * @param bool   $check_entity   (true by default)
+     * @param bool   $forceCheckBoth force check both items (false by default)
      *
      * @return boolean
      **/
@@ -789,12 +789,12 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @since 0.84
      *
-     * @param CommonDBTM $item    CommonDBTM object   the other item (ie. : $item2)
+     * @param CommonDBTM $item CommonDBTM object   the other item (ie. : $item2)
      * @param string     $case : can be overwritten by object
-     *                            - 'add' when this CommonDBRelation is added (to and item)
-     *                            - 'update item previous' transfert : this is removed from the old item
-     *                            - 'update item next' transfert : this is added to the new item
-     *                            - 'delete' when this CommonDBRelation is remove (from an item)
+     *                         - 'add' when this CommonDBRelation is added (to and item)
+     *                         - 'update item previous' transfert : this is removed from the old item
+     *                         - 'update item next' transfert : this is added to the new item
+     *                         - 'delete' when this CommonDBRelation is remove (from an item)
      *
      * @return string The name of the entry for the database (ie. : correctly slashed)
      **/
@@ -814,10 +814,10 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @param CommonDBTM $item the other item (ie. : $item1)
      * @param string     $case : can be overwritten by object
-     *                            - 'add' when this CommonDBRelation is added (to and item)
-     *                            - 'update item previous' transfert : this is removed from the old item
-     *                            - 'update item next' transfert : this is added to the new item
-     *                            - 'delete' when this CommonDBRelation is remove (from an item)
+     *                         - 'add' when this CommonDBRelation is added (to and item)
+     *                         - 'update item previous' transfert : this is removed from the old item
+     *                         - 'update item next' transfert : this is added to the new item
+     *                         - 'delete' when this CommonDBRelation is remove (from an item)
      *
      * @return string the name of the entry for the database (ie. : correctly slashed)
      **/
@@ -1198,9 +1198,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @since 0.84
      *
      * @param string               $itemtype
-     * @param HTMLTableBase        $base      HTMLTableBase object
-     * @param HTMLTableSuperHeader $super     HTMLTableSuperHeader object (default NULL)
-     * @param HTMLTableHeader      $father    HTMLTableHeader object (default NULL)
+     * @param HTMLTableBase        $base     HTMLTableBase object
+     * @param HTMLTableSuperHeader $super    HTMLTableSuperHeader object (default NULL)
+     * @param HTMLTableHeader      $father   HTMLTableHeader object (default NULL)
      * @return void
      **/
     public static function getHTMLTableHeader(
@@ -1241,9 +1241,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
     /**
      * @since 0.84
      *
-     * @param HTMLTableRow  $row      HTMLTableRow object (default NULL)
-     * @param CommonDBTM    $item     CommonDBTM object (default NULL)
-     * @param HTMLTableCell $father   HTMLTableCell object (default NULL)
+     * @param HTMLTableRow  $row    HTMLTableRow object (default NULL)
+     * @param CommonDBTM    $item   CommonDBTM object (default NULL)
+     * @param HTMLTableCell $father HTMLTableCell object (default NULL)
      * @return void
      **/
     public static function getHTMLTableCellsForItem(
@@ -1368,8 +1368,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
     /**
      * Display subForm of the massive action
      *
-     * @param MassiveAction $ma           current massive action
-     * @param integer       $peer_number  the number of the concerned peer
+     * @param MassiveAction $ma          current massive action
+     * @param integer       $peer_number the number of the concerned peer
      *
      * @return void
      **/
@@ -1496,10 +1496,10 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * Set based array for static::add or static::update in case of massive actions are doing
      * something.
      *
-     * @param string     $action  the name of the action
-     * @param CommonDBTM $item    the item on which apply the massive action
-     * @param integer[]  $ids     ids of the item on which apply the action
-     * @param array      $input   input provided by the form ($_POST, $_GET ...)
+     * @param string     $action the name of the action
+     * @param CommonDBTM $item   the item on which apply the massive action
+     * @param integer[]  $ids    ids of the item on which apply the action
+     * @param array      $input  input provided by the form ($_POST, $_GET ...)
      *
      * @return array containing the elements
      **/
@@ -1884,7 +1884,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @since 9.3.1
      *
-     * @param CommonDBTM $item Item instance
+     * @param CommonDBTM $item  Item instance
      * @param integer    $start Start index
      * @param integer    $limit Limit of results. If 0, no limit.
      * @param array      $order The order for the results where the first element is the column name that will be sorted and the second element is the direction of the sorting (ASC or DESC)

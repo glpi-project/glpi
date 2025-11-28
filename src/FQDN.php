@@ -141,8 +141,8 @@ class FQDN extends CommonDropdown
     /**
      * Search FQDN id from string FDQDN
      *
-     * @param string  $fqdn             value of the fdqn (for instance : indeptnet.net)
-     * @param boolean $wildcard_search  true if we search with wildcard (false by default)
+     * @param string  $fqdn            value of the fdqn (for instance : indeptnet.net)
+     * @param boolean $wildcard_search true if we search with wildcard (false by default)
      *
      * @return integer|integer[]
      *    if $wildcard_search == false : the id of the fqdn, -1 if not found or several answers
@@ -191,7 +191,7 @@ class FQDN extends CommonDropdown
 
 
     /**
-     * @param integer $ID  id of the FQDN
+     * @param integer $ID id of the FQDN
      *
      * @return string  the FQDN of the element, or "" if invalid FQDN
      **/
@@ -225,7 +225,7 @@ class FQDN extends CommonDropdown
     /**
      * Check FQDN Validity
      *
-     * @param string $fqdn  the FQDN to check
+     * @param string $fqdn the FQDN to check
      *
      * @return boolean  true if the FQDN is valid
      **/

@@ -442,7 +442,7 @@ class NotificationEventMailing extends NotificationEventAbstract
     /**
      * Handle a failure when trying to send an email
      * @param QueuedNotification $notification The notification that failed
-     * @param string $error The error message to log
+     * @param string             $error        The error message to log
      */
     private static function handleFailedSend(QueuedNotification $notification, string $error): void
     {

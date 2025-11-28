@@ -61,12 +61,12 @@ final class TranslationHandler
     private ?string $category;
 
     /**
-     * @param CommonDBTM $item The item to translate
-     * @param string $key The key of the field to translate
-     * @param string $name The human-readable name of the field
-     * @param string $value The default value (in the default language)
-     * @param bool $is_rich_text Whether this field contains rich text
-     * @param string|null $category The category name for grouping translations
+     * @param CommonDBTM  $item         The item to translate
+     * @param string      $key          The key of the field to translate
+     * @param string      $name         The human-readable name of the field
+     * @param string      $value        The default value (in the default language)
+     * @param bool        $is_rich_text Whether this field contains rich text
+     * @param string|null $category     The category name for grouping translations
      */
     public function __construct(
         CommonDBTM $item,

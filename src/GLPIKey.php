@@ -325,7 +325,7 @@ class GLPIKey
     /**
      * Migrate fields in database
      *
-     * @param string|null   $sodium_key Previous key. If null, legacy key will be used.
+     * @param string|null $sodium_key Previous key. If null, legacy key will be used.
      *
      */
     protected function migrateFieldsInDb(?string $sodium_key): bool
@@ -368,7 +368,7 @@ class GLPIKey
     /**
      * Migrate configurations in database
      *
-     * @param string|null   $sodium_key Previous key. If null, legacy key will be used.
+     * @param string|null $sodium_key Previous key. If null, legacy key will be used.
      *
      */
     protected function migrateConfigsInDb($sodium_key): bool
@@ -412,8 +412,8 @@ class GLPIKey
     /**
      * Encrypt a string.
      *
-     * @param string        $string  String to encrypt.
-     * @param string|null   $key     Key to use, fallback to default key if null.
+     * @param string      $string String to encrypt.
+     * @param string|null $key    Key to use, fallback to default key if null.
      *
      */
     public function encrypt(string $string, ?string $key = null): string
@@ -442,7 +442,7 @@ class GLPIKey
      * Decrypt a string.
      *
      * @param string|null $string String to decrypt.
-     * @param string|null $key Key to use, fallback to default key if null.
+     * @param string|null $key    Key to use, fallback to default key if null.
      *
      */
     public function decrypt(?string $string, ?string $key = null): ?string

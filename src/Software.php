@@ -650,7 +650,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
     /**
      * Make a select box for software to install
      *
-     * @param string $myname select name
+     * @param string             $myname          select name
      * @param integer|array<int> $entity_restrict restrict to a defined entity
      *
      * @return integer random part of elements id
@@ -688,7 +688,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
     /**
      * Make a select box for license software to associate
      *
-     * @param string $myname select name
+     * @param string             $myname          select name
      * @param integer|array<int> $entity_restrict restrict to a defined entity
      *
      * @return integer random part of elements id
@@ -1001,7 +1001,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
     /**
      * Merge software with current.
      *
-     * @param array   $item array of software ID to be merged
+     * @param array $item array of software ID to be merged
      *
      * @return boolean about success
      */

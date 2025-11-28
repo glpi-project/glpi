@@ -566,10 +566,10 @@ trait InventoryNetworkPort
     /**
      * Handle network port instantiation
      *
-     * @param string    $type     Instantiation class name
-     * @param stdClass $data Data
-     * @param integer   $ports_id NetworkPort id
-     * @param boolean   $load     Whether to load db results
+     * @param string   $type     Instantiation class name
+     * @param stdClass $data     Data
+     * @param integer  $ports_id NetworkPort id
+     * @param boolean  $load     Whether to load db results
      *
      * @return void
      */

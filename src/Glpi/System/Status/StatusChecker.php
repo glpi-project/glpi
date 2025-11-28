@@ -120,9 +120,9 @@ final class StatusChecker
      * Get a service's status
      *
      * @since 10.0.0
-     * @param string|null $service The name of the service or if null/'all' all services will be checked
-     * @param bool $public_only True if only public information should be available in the status check.
-     *    If true, assume the data is being viewed by an anonymous user.
+     * @param string|null $service     The name of the service or if null/'all' all services will be checked
+     * @param bool        $public_only True if only public information should be available in the status check.
+     *                                 If true, assume the data is being viewed by an anonymous user.
      * @return array An array with the status information
      */
     public static function getServiceStatus(?string $service, $public_only = true): array

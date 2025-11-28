@@ -574,7 +574,7 @@ class RuleCriteria extends CommonDBChild
 
     /**
      * @param class-string<Rule> $itemtype  itemtype
-     * @param string $criterion (default '')
+     * @param string             $criterion (default '')
      *
      * @return array<int, string> array of criteria
      **/

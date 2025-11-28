@@ -81,7 +81,7 @@ class DevicePci extends CommonDevice
 
     /**
      * @param class-string<CommonDBTM> $itemtype
-     * @param array $main_joinparams
+     * @param array                    $main_joinparams
      * @return array
      */
     public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)

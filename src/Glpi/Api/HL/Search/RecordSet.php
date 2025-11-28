@@ -222,9 +222,9 @@ final class RecordSet
 
     /**
      * Assemble the hydrated object
-     * @param array $dehydrated_row The dehydrated result (just the primary/foreign keys)
-     * @param string $schema_name The name of the schema of the object we are building
-     * @param array $fetched_records The records fetched from the DB
+     * @param array  $dehydrated_row  The dehydrated result (just the primary/foreign keys)
+     * @param string $schema_name     The name of the schema of the object we are building
+     * @param array  $fetched_records The records fetched from the DB
      */
     private function assembleHydratedRecords(array $dehydrated_row, string $schema_name, array $fetched_records): array
     {

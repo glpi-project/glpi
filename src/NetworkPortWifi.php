@@ -51,10 +51,10 @@ class NetworkPortWifi extends NetworkPortInstantiation
     }
 
     /**
-     * @param NetworkPort $netport NetworkPort object :the port that owns this instantiation
-     *                               (useful for instance to get network port attributes)
-     * @param array $options array of options given to NetworkPort::showForm
-     * @param array $recursiveItems list of the items on which this port is attached
+     * @param NetworkPort $netport        NetworkPort object :the port that owns this instantiation
+     *                                    (useful for instance to get network port attributes)
+     * @param array       $options        array of options given to NetworkPort::showForm
+     * @param array       $recursiveItems list of the items on which this port is attached
      *
      * @return void
      */

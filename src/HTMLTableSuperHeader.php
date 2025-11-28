@@ -43,10 +43,10 @@ class HTMLTableSuperHeader extends HTMLTableHeader implements HTMLCompositeTable
     private $table;
 
     /**
-     * @param HTMLTableBase         $table    HTMLTableBase object: table owning the current header
-     * @param string                $name     the name of the header
-     * @param string                $content  see inc/HTMLTableEntity#__construct()
-     * @param ?HTMLTableHeader      $father   HTMLTableHeader objet (default NULL)
+     * @param HTMLTableBase    $table   HTMLTableBase object: table owning the current header
+     * @param string           $name    the name of the header
+     * @param string           $content see inc/HTMLTableEntity#__construct()
+     * @param ?HTMLTableHeader $father  HTMLTableHeader objet (default NULL)
      **/
     public function __construct(HTMLTableBase $table, $name, $content, ?HTMLTableHeader $father = null)
     {

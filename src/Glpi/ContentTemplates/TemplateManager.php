@@ -60,9 +60,9 @@ class TemplateManager
     /**
      * Boiler plate code to render a template
      *
-     * @param string    $content        Template content (html + twig)
-     * @param array     $params         Variables to be exposed to the templating engine
-     * @param bool      $expect_html    Is content expected to be HTML content ?
+     * @param string $content     Template content (html + twig)
+     * @param array  $params      Variables to be exposed to the templating engine
+     * @param bool   $expect_html Is content expected to be HTML content ?
      *
      * @return string The rendered HTML
      */
@@ -124,8 +124,8 @@ class TemplateManager
     /**
      * Boiler plate code to validate a template that user is trying to submit
      *
-     * @param string $content        Template content (html + twig)
-     * @param null|string $err_msg   Reference to variable that will be filled by error message if validation fails
+     * @param string      $content Template content (html + twig)
+     * @param null|string $err_msg Reference to variable that will be filled by error message if validation fails
      *
      */
     public static function validate(string $content, ?string &$err_msg = null): bool

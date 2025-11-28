@@ -160,9 +160,9 @@ class Fieldblacklist extends CommonDropdown
     /**
      * @since 0.84
      *
-     * @param $name               (default '')
-     * @param $values             (default '')
-     * @param $options      array
+     * @param $name    (default '')
+     * @param $values  (default '')
+     * @param $options array
      **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
@@ -370,7 +370,7 @@ class Fieldblacklist extends CommonDropdown
 
 
     /**
-     * @param string $field  (default '')
+     * @param string $field (default '')
      *
      * @return void
      **/
@@ -398,10 +398,10 @@ class Fieldblacklist extends CommonDropdown
     /**
      * Check if a field & value are blacklisted or not
      *
-     * @param string $itemtype      itemtype of the blacklisted field
-     * @param int $entities_id   the entity in which the field must be saved
-     * @param string $field         the field to check
-     * @param string $value         the field's value
+     * @param string $itemtype    itemtype of the blacklisted field
+     * @param int    $entities_id the entity in which the field must be saved
+     * @param string $field       the field to check
+     * @param string $value       the field's value
      *
      * @return bool true is value if blacklisted, false otherwise
      **/

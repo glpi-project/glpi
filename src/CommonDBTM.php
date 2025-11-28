@@ -532,10 +532,10 @@ class CommonDBTM extends CommonGLPI
      * Print the item generic form
      * Use a twig template to detect automatically fields and display them in a two column layout
      *
-     * @param int   $ID        ID of the item
-     * @param array $options   possible optional options:
-     *     - target for the Form
-     *     - withtemplate : 1 for newtemplate, 2 for newobject from template
+     * @param int   $ID      ID of the item
+     * @param array $options possible optional options:
+     *                       - target for the Form
+     *                       - withtemplate : 1 for newtemplate, 2 for newobject from template
      *
      * @return bool true if displayed  false if item not found or not right to display
      */
@@ -821,7 +821,7 @@ class CommonDBTM extends CommonGLPI
      * Mark deleted or purge an item in the database
      *
      * @param boolean $force force the purge of the item (not used if the table do not have a deleted field)
-     *               (default false)
+     *                       (default false)
      *
      * @return boolean true if succeed else false
      **/
@@ -1277,8 +1277,8 @@ class CommonDBTM extends CommonGLPI
      *
      * @param array   $input   the _POST vars returned by the item form when press add
      * @param array   $options with the insert options
-     *   - unicity_message : do not display message if item it a duplicate (default is yes)
-     *   - disable_infocom_creation: do not automatically create infocom (default is false)
+     *                         - unicity_message : do not display message if item it a duplicate (default is yes)
+     *                         - disable_infocom_creation: do not automatically create infocom (default is false)
      * @param boolean $history do history log ? (true by default)
      *
      * @return false|integer the new ID of the added item (or false if fail)
@@ -1448,12 +1448,12 @@ class CommonDBTM extends CommonGLPI
      * Get the link to an item
      *
      * @param array $options array of options
-     *    - comments    : boolean / display comments
-     *    - complete    : boolean / display completename instead of name
-     *    - additional  : boolean / display additionals information
-     *    - class       : string  / CSS class to add to the link
-     *    - icon        : boolean / display item icon next to label
-     *    - forceid     : boolean  override config and display item's ID (false by default)
+     *                       - comments    : boolean / display comments
+     *                       - complete    : boolean / display completename instead of name
+     *                       - additional  : boolean / display additionals information
+     *                       - class       : string  / CSS class to add to the link
+     *                       - icon        : boolean / display item icon next to label
+     *                       - forceid     : boolean  override config and display item's ID (false by default)
      *
      * @return string HTML link
      **/
@@ -2796,11 +2796,11 @@ class CommonDBTM extends CommonGLPI
      * Close the form is user can edit
      *
      * @param array $options array of possible options:
-     *     - withtemplate : 1 for newtemplate, 2 for newobject from template
-     *     - colspan for each column (default 2)
-     *     - candel : set to false to hide "delete" button
-     *     - canedit : set to false to hide all buttons
-     *     - addbuttons : array of buttons to add
+     *                       - withtemplate : 1 for newtemplate, 2 for newobject from template
+     *                       - colspan for each column (default 2)
+     *                       - candel : set to false to hide "delete" button
+     *                       - canedit : set to false to hide all buttons
+     *                       - addbuttons : array of buttons to add
      *
      * @return void
      **/
@@ -2839,7 +2839,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param integer $ID      ID of the item/template
      * @param array   $options Array of possible options:
-     *     - withtemplate : 1 for newtemplate, 2 for newobject from template
+     *                         - withtemplate : 1 for newtemplate, 2 for newobject from template
      *
      * @return integer|void value of withtemplate option (throw an exception if not enough rights)
      **/
@@ -2885,14 +2885,14 @@ class CommonDBTM extends CommonGLPI
      * Open the form is user can edit
      *
      * @param array $options array of possible options:
-     *     - target for the Form
-     *     - withtemplate : 1 for newtemplate, 2 for newobject from template
-     *     - colspan for each column (default 2)
-     *     - formoptions string (javascript p.e.)
-     *     - canedit boolean edit mode of form ?
-     *     - formtitle specific form title
-     *     - noid Set to true if ID should not be append (eg. already done in formtitle)
-     *     - header_toolbar Array of header toolbar elements (HTML code)
+     *                       - target for the Form
+     *                       - withtemplate : 1 for newtemplate, 2 for newobject from template
+     *                       - colspan for each column (default 2)
+     *                       - formoptions string (javascript p.e.)
+     *                       - canedit boolean edit mode of form ?
+     *                       - formtitle specific form title
+     *                       - noid Set to true if ID should not be append (eg. already done in formtitle)
+     *                       - header_toolbar Array of header toolbar elements (HTML code)
      *
      * @return void
      **/
@@ -3081,8 +3081,8 @@ class CommonDBTM extends CommonGLPI
      * Check right on an item with block
      *
      * @param integer $ID    ID of the item (-1 if new item)
-     * @param int $right Right to check
-     * @param ?array $input array of input data (used for adding item) (default NULL)
+     * @param int     $right Right to check
+     * @param ?array  $input array of input data (used for adding item) (default NULL)
      *
      **/
     public function check($ID, int $right, ?array &$input = null): void
@@ -3697,8 +3697,8 @@ class CommonDBTM extends CommonGLPI
      * @since 11.0 `comments` option has been removed
      * @since 11.0 `icon` option has been removed
      * @param array $options array of options
-     *    - complete     : boolean / display completename instead of name
-     *    - additional   : boolean / display additional information
+     *                       - complete     : boolean / display completename instead of name
+     *                       - additional   : boolean / display additional information
      * @return string name of the object in the current language
      * @see CommonDBTM::getRawCompleteName
      * @see CommonDBTM::getFriendlyName
@@ -3783,9 +3783,9 @@ class CommonDBTM extends CommonGLPI
      * @since 11.0 `comments` option has been removed
      * @since 11.0 `icon` option has been removed
      * @param array $options array of options
-     *    - complete     : boolean / display completename instead of name
-     *    - additional   : boolean / display additional information
-     *    - forceid      : boolean  override config and display item's ID (false by default)
+     *                       - complete     : boolean / display completename instead of name
+     *                       - additional   : boolean / display additional information
+     *                       - forceid      : boolean  override config and display item's ID (false by default)
      * @return string name of the object in the current language
      * @see CommonDBTM::getName
      **/
@@ -4005,10 +4005,10 @@ class CommonDBTM extends CommonGLPI
      *
      *
      **@since 0.85
-     * @param array      $actions    Array of the actions to update where the keys are the internal identifier for the action and the values are the displayed value.
-     *          Displayed values may contain HTML code, so text data must be sanitized before returning them from this method.
-     * @param string $itemtype   the type of the item for which we want the actions
-     * @param boolean    $is_deleted (default false)
+     * @param array       $actions    Array of the actions to update where the keys are the internal identifier for the action and the values are the displayed value.
+     *                                Displayed values may contain HTML code, so text data must be sanitized before returning them from this method.
+     * @param string      $itemtype   the type of the item for which we want the actions
+     * @param boolean     $is_deleted (default false)
      * @param ?CommonDBTM $checkitem  (default NULL)
      * @return void (update is set inside $actions)
      *
@@ -4763,13 +4763,13 @@ class CommonDBTM extends CommonGLPI
      * @since 0.83
      *
      * @param integer|string|array $field_id_or_search_options id of the search option field
-     *                                                             or field name
-     *                                                             or search option array
+     *                                                         or field name
+     *                                                         or search option array
      * @param mixed                $values                     value to display
      * @param array                $options                    array of possible options:
-     * Parameters which could be used in options array :
-     *    - comments : boolean / is the comments displayed near the value (default false)
-     *    - any others options passed to specific display method
+     *                                                         Parameters which could be used in options array :
+     *                                                         - comments : boolean / is the comments displayed near the value (default false)
+     *                                                         - any others options passed to specific display method
      *
      * @return mixed the value to display
      **/
@@ -5015,16 +5015,16 @@ class CommonDBTM extends CommonGLPI
      * @since 0.83
      *
      * @param integer|string|array $field_id_or_search_options id of the search option field
-     *                                                             or field name
-     *                                                             or search option array
+     *                                                         or field name
+     *                                                         or search option array
      * @param string               $name                       name of the select (if empty use linkfield)
      *                                                         (default '')
      * @param mixed                $values                     default value to display
      *                                                         (default '')
      * @param array                $options                    array of possible options:
-     * Parameters which could be used in options array :
-     *    - comments : boolean / is the comments displayed near the value (default false)
-     *    - any others options passed to specific display method
+     *                                                         Parameters which could be used in options array :
+     *                                                         - comments : boolean / is the comments displayed near the value (default false)
+     *                                                         - any others options passed to specific display method
      *
      * @return false|string the string to display
      **/
@@ -5464,9 +5464,9 @@ class CommonDBTM extends CommonGLPI
      *
      * @since 9.1
      *
-     * @param string        $link       original string content
-     * @param CommonDBTM    $item       item used to make replacements
-     * @param bool          $safe_url   indicates whether URL should be sanitized or not
+     * @param string     $link     original string content
+     * @param CommonDBTM $item     item used to make replacements
+     * @param bool       $safe_url indicates whether URL should be sanitized or not
      *
      * @return array of link contents (may have several when item have several IP / MAC cases)
      */
@@ -5485,11 +5485,11 @@ class CommonDBTM extends CommonGLPI
      *
      * @param array $input   Input data
      * @param array $options array with those keys
-     *                        - force_update (default false) update the content field of the object
-     *                        - content_field (default content) the field who receive the main text
-     *                                                          (with images)
-     *                        - name (default filename) name of the HTML input containing files
-     *                        - date  Date to set on document_items
+     *                       - force_update (default false) update the content field of the object
+     *                       - content_field (default content) the field who receive the main text
+     *                       (with images)
+     *                       - name (default filename) name of the HTML input containing files
+     *                       - date  Date to set on document_items
      * @return array the input param transformed
      **/
     public function addFiles(array $input, $options = [])
@@ -5798,8 +5798,8 @@ class CommonDBTM extends CommonGLPI
     /**
      * Ensure the relation would not create a circular parent-child relation.
      * @since 9.5.0
-     * @param int    $items_id The ID of the item to evaluate.
-     * @param int    $parents_id  The wanted parent of the specified item.
+     * @param int $items_id   The ID of the item to evaluate.
+     * @param int $parents_id The wanted parent of the specified item.
      * @return bool True if there is a circular relation.
      */
     public static function checkCircularRelation($items_id, $parents_id)
@@ -6462,22 +6462,22 @@ class CommonDBTM extends CommonGLPI
     /**
      * Display a full helpdesk page (header + content + footer) for a given item
      *
-     * @param int|string  $id      Id of the item to be displayed, may be a
-     *                             string due to some weird default values.
-     *                             Will be cast to int straight away.
-     * @param null|array  $menus   Menu path used to load specific JS file and
-     *                             show breadcrumbs, see $CFG_GLPI['javascript']
-     *                             and Html::includeHeader()
-     *                             Three possible formats:
-     *                             - [menu 1, menu 2, menu 3]
-     *                             - [
-     *                                'central'  => [menu 1, menu 2, menu 3],
-     *                                'helpdesk' => [menu 1, menu 2, menu 3],
-     *                               ]
-     *                             - null (use auto computed values, mainly
-     *                             used for children of CommonDropdown that can
-     *                             define their menus as object properties)
-     * @param array      $options  Display options
+     * @param int|string $id      Id of the item to be displayed, may be a
+     *                            string due to some weird default values.
+     *                            Will be cast to int straight away.
+     * @param null|array $menus   Menu path used to load specific JS file and
+     *                            show breadcrumbs, see $CFG_GLPI['javascript']
+     *                            and Html::includeHeader()
+     *                            Three possible formats:
+     *                            - [menu 1, menu 2, menu 3]
+     *                            - [
+     *                            'central'  => [menu 1, menu 2, menu 3],
+     *                            'helpdesk' => [menu 1, menu 2, menu 3],
+     *                            ]
+     *                            - null (use auto computed values, mainly
+     *                            used for children of CommonDropdown that can
+     *                            define their menus as object properties)
+     * @param array      $options Display options
      *
      */
     public static function displayFullPageForItem(
@@ -6664,7 +6664,7 @@ class CommonDBTM extends CommonGLPI
      * for instance, when fetching available dropdown values, or a list of linked items.
      * These criteria will be added in the `WHERE` conditions.
      *
-     * @param string|null $tablename    Table name to use for field in SQL query, can be used to prevent ambiguous field naming.
+     * @param string|null $tablename Table name to use for field in SQL query, can be used to prevent ambiguous field naming.
      *
      */
     public static function getSystemSQLCriteria(?string $tablename = null): array

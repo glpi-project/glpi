@@ -275,10 +275,10 @@ class Planning extends CommonGLPI
     /**
      * Dropdown of planning state
      *
-     * @param string $name   Select name
-     * @param string $value  Default value (default '')
-     * @param boolean $display  Display of send string ? (true by default)
-     * @param array $options
+     * @param string  $name    Select name
+     * @param string  $value   Default value (default '')
+     * @param boolean $display Display of send string ? (true by default)
+     * @param array   $options
      **/
     public static function dropdownState($name, $value = '', $display = true, $options = [])
     {
@@ -399,14 +399,14 @@ JAVASCRIPT;
      *
      * @since 0.83
      *
-     * @param array $params   array of params
-     *    must contain :
-     *          - begin: begin date to check (default '')
-     *          - end: end date to check (default '')
-     *          - itemtype : User or Object type (Ticket...)
-     *          - foreign key field of the itemtype to define which item to used
-     *    optional :
-     *          - limitto : limit display to a specific user
+     * @param array $params array of params
+     *                      must contain :
+     *                      - begin: begin date to check (default '')
+     *                      - end: end date to check (default '')
+     *                      - itemtype : User or Object type (Ticket...)
+     *                      - foreign key field of the itemtype to define which item to used
+     *                      optional :
+     *                      - limitto : limit display to a specific user
      *
      * @return void
      **/
@@ -605,7 +605,7 @@ JAVASCRIPT;
      * Return a palette array (for example self::$palette_bg)
      *
      * @since  9.1.1
-     * @param  string $palette_name  the short name for palette (bg, fg, ev)
+     * @param string $palette_name the short name for palette (bg, fg, ev)
      * @return mixed                 the palette array or false
      */
     public static function getPalette($palette_name = 'bg')
@@ -621,8 +621,8 @@ JAVASCRIPT;
      * Return an hexa color from a palette
      *
      * @since  9.1.1
-     * @param  string  $palette_name the short name for palette (bg, fg, ev)
-     * @param  integer $color_index  The color index in this palette
+     * @param string  $palette_name the short name for palette (bg, fg, ev)
+     * @param integer $color_index  The color index in this palette
      * @return mixed                 the color in hexa (ex: #FFFFFF) or false
      */
     public static function getPaletteColor($palette_name = 'bg', $color_index = 0)
@@ -717,8 +717,8 @@ JAVASCRIPT;
      *
      * @param $filter_key  : identify curent line of filter
      * @param $filter_data : array of filter date, must contains :
-     *   * 'show_delete' (boolean): show delete button
-     *   * 'filter_color_index' (integer): index of the color to use in self::$palette_bg
+     *                     * 'show_delete' (boolean): show delete button
+     *                     * 'filter_color_index' (integer): index of the color to use in self::$palette_bg
      *
      * @return void
      * @used-by templates/pages/assistance/planning/filters.html.twig
@@ -1245,10 +1245,10 @@ TWIG, $twig_params);
      * @since 9.1
      *
      * @param array $params Must contain these keys:
-     *  - begin : start of selection range.
-     *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
-     *  - end : end of selection range.
-     *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
+     *                      - begin : start of selection range.
+     *                      (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
+     *                      - end : end of selection range.
+     *                      (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
      *
      * @return void
      */
@@ -1282,13 +1282,13 @@ TWIG, $twig_params);
      * @since 9.1
      *
      * @param array $params Array of parameters whou should contain :
-     *   - id (integer): id of item who receive the planification
-     *   - itemtype (string): itemtype of item who receive the planification
-     *   - begin (string) : start date of event
-     *   - _display_dates (bool) : display dates fields (default true)
-     *   - end (optionnal) (string) : end date of event. Ifg missing, it will computerd from begin+1hour
-     *   - rand_user (integer) : a random number for planning user avaibility or not specified if no user availability check should be done
-     *   - rand : specific rand if needed (default is generated one)
+     *                      - id (integer): id of item who receive the planification
+     *                      - itemtype (string): itemtype of item who receive the planification
+     *                      - begin (string) : start date of event
+     *                      - _display_dates (bool) : display dates fields (default true)
+     *                      - end (optionnal) (string) : end date of event. Ifg missing, it will computerd from begin+1hour
+     *                      - rand_user (integer) : a random number for planning user avaibility or not specified if no user availability check should be done
+     *                      - rand : specific rand if needed (default is generated one)
      */
     public static function showAddEventClassicForm($params = [])
     {
@@ -1458,11 +1458,11 @@ TWIG, $twig_params);
      *
      * @since 9.1
      *
-     * @param  array $options: should contain :
-     *  - type : event type, can be event_filter, user, group or group_users
-     *  - parent : in case of type=users_group, must contains the id of the group
-     *  - name : contains a string with type and id concatened with a '_' char (ex user_41).
-     *  - display : boolean value to set to his line
+     * @param array $options: should contain :
+     *                        - type : event type, can be event_filter, user, group or group_users
+     *                        - parent : in case of type=users_group, must contains the id of the group
+     *                        - name : contains a string with type and id concatened with a '_' char (ex user_41).
+     *                        - display : boolean value to set to his line
      * @return void
      */
     public static function toggleFilter($options = [])
@@ -1486,11 +1486,11 @@ TWIG, $twig_params);
      *
      * @since 9.1
      *
-     * @param  array $options: should contain:
-     *  - type : event type, can be event_filter, user, group or group_users
-     *  - parent : in case of type=users_group, must contains the id of the group
-     *  - name : contains a string with type and id concatened with a '_' char (ex user_41).
-     *  - color : rgb color (preceded by '#'' char)
+     * @param array $options: should contain:
+     *                        - type : event type, can be event_filter, user, group or group_users
+     *                        - parent : in case of type=users_group, must contains the id of the group
+     *                        - name : contains a string with type and id concatened with a '_' char (ex user_41).
+     *                        - color : rgb color (preceded by '#'' char)
      * @return void
      */
     public static function colorFilter($options = [])
@@ -1513,9 +1513,9 @@ TWIG, $twig_params);
      *
      * @since 9.1
      *
-     * @param  array $options: should contain:
-     *  - type : event type, can be event_filter, user, group or group_users
-     *  - filter : contains a string with type and id concatened with a '_' char (ex user_41).
+     * @param array $options: should contain:
+     *                        - type : event type, can be event_filter, user, group or group_users
+     *                        - filter : contains a string with type and id concatened with a '_' char (ex user_41).
      * @return void
      */
     public static function deleteFilter($options = [])
@@ -1546,11 +1546,11 @@ TWIG, $twig_params);
      * @since 9.1
      *
      * @param array $options with these keys:
-     *  - begin: mandatory, planning start.
-     *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
-     *  - end: mandatory, planning end.
-     *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
-     *  - force_all_events: even if the range is big, don't reduce the returned set
+     *                       - begin: mandatory, planning start.
+     *                       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
+     *                       - end: mandatory, planning end.
+     *                       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
+     *                       - force_all_events: even if the range is big, don't reduce the returned set
      * @return array $events : array with events in fullcalendar.io format
      */
     public static function constructEventsArray($options = [])
@@ -1806,14 +1806,14 @@ TWIG, $twig_params);
      *
      * @since 9.1
      *
-     * @param string $actor: a type and id concaneted separated by '_' char, ex 'user_41'
-     * @param array  $params: must contains this keys :
-     *  - display: boolean for pass or not the consstruction of this line (a group of users can be displayed but its users not).
-     *  - type: event type, can be event_filter, user, group or group_users
-     *  - who: integer for identify user
-     *  - whogroup: integer for identify group
-     *  - color: string with #rgb color for event's foreground color.
-     *  - event_type_color : string with #rgb color for event's foreground color.
+     * @param string $actor:      a type and id concaneted separated by '_' char, ex 'user_41'
+     * @param array  $params:     must contains this keys :
+     *                            - display: boolean for pass or not the consstruction of this line (a group of users can be displayed but its users not).
+     *                            - type: event type, can be event_filter, user, group or group_users
+     *                            - who: integer for identify user
+     *                            - whogroup: integer for identify group
+     *                            - color: string with #rgb color for event's foreground color.
+     *                            - event_type_color : string with #rgb color for event's foreground color.
      * @param array  $raw_events: (passed by reference) the events array in construction
      * @param array  $not_planned (passed by references) not planned events array in construction
      * @return void
@@ -1969,12 +1969,12 @@ TWIG, $twig_params);
      * @since 9.1
      *
      * @param array $params must contains this keys :
-     *  - items_id : integer to identify items
-     *  - itemtype : string to identify items
-     *  - start : planning start .
-     *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
-     *  - end : planning end .
-     *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
+     *                      - items_id : integer to identify items
+     *                      - itemtype : string to identify items
+     *                      - start : planning start .
+     *                      (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
+     *                      - end : planning end .
+     *                      (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
      * @return bool
      */
     public static function updateEventTimes($params = [])
@@ -2127,10 +2127,10 @@ TWIG, $twig_params);
     /**
      * Display a Planning Item
      *
-     * @param array $val       Array of the item to display
-     * @param integer $who             ID of the user (0 if all)
-     * @param 'in'|'through'|'begin'|'end'|'' $type Position of the item in the time block (in, through, begin or end)
-     * @param boolean $complete        complete display (more details)
+     * @param array                           $val      Array of the item to display
+     * @param integer                         $who      ID of the user (0 if all)
+     * @param 'in'|'through'|'begin'|'end'|'' $type     Position of the item in the time block (in, through, begin or end)
+     * @param boolean                         $complete complete display (more details)
      *
      * @return string
      **/
@@ -2197,9 +2197,9 @@ TWIG, ['msg' => __('Your planning')]);
     /**
      *  Generate ical file content
      *
-     * @param integer $who             user ID
-     * @param integer $whogroup        group ID
-     * @param string  $limititemtype   itemtype only display this itemtype (default '')
+     * @param integer $who           user ID
+     * @param integer $whogroup      group ID
+     * @param string  $limititemtype itemtype only display this itemtype (default '')
      *
      * @return void Outputs ical contents
      **/

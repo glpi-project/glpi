@@ -334,7 +334,7 @@ class IPAddress extends CommonDBChild
     }
 
     /**
-     * @param $item      CommonDBTM object
+     * @param $item CommonDBTM object
      **/
     public static function countForItem(CommonDBTM $item)
     {
@@ -392,11 +392,11 @@ class IPAddress extends CommonDBChild
      * If the field name is empty, then, the field is not set
      * If the object is not valid, then, version = 0, textual = "" and binary = (0, 0, 0, 0)
      *
-     * @param array  $array         the array to Fill
-     * @param string $versionField  the name of the key inside $array that contains de IP version number
-     * @param string $textualField  the name of the key inside $array that contains de textual version
-     * @param string $binaryField   the name of the key inside $array that contains de binary.
-     *                              Each element of the array is post-fixed by _i, with i the index
+     * @param array  $array        the array to Fill
+     * @param string $versionField the name of the key inside $array that contains de IP version number
+     * @param string $textualField the name of the key inside $array that contains de textual version
+     * @param string $binaryField  the name of the key inside $array that contains de binary.
+     *                             Each element of the array is post-fixed by _i, with i the index
      *
      * @return array the array altered
      **/
@@ -437,11 +437,11 @@ class IPAddress extends CommonDBChild
      * \brief Fill the local address object from an array
      * Fill the local address object from an array. Usefull for reading $input
      *
-     * @param array  $array         the array to Fill
-     * @param string $versionField  the name of the key inside $array that contains de IP version number
-     * @param string $textualField  the name of the key inside $array that contains de textual version
-     * @param string $binaryField   the name of the key inside $array that contains de binary.
-     *                              Each element of the array is post-fixed by _i, with i the index
+     * @param array  $array        the array to Fill
+     * @param string $versionField the name of the key inside $array that contains de IP version number
+     * @param string $textualField the name of the key inside $array that contains de textual version
+     * @param string $binaryField  the name of the key inside $array that contains de binary.
+     *                             Each element of the array is post-fixed by _i, with i the index
      *
      * If the field name is empty, then, the field is not set
      *
@@ -565,9 +565,9 @@ class IPAddress extends CommonDBChild
      * try to find it inside the database and load it from database.
      * \warning The resulting binary form is created inside the current object
      *
-     * @param string  $address   textual (ie. human readable) address
-     * @param string  $itemtype  type of the item this address has to be attached (default '')
-     * @param integer $items_id  id of the item this address has to be attached (default -1)
+     * @param string  $address  textual (ie. human readable) address
+     * @param string  $itemtype type of the item this address has to be attached (default '')
+     * @param integer $items_id id of the item this address has to be attached (default -1)
      *
      * @return boolean address is valid
      **/
@@ -748,9 +748,9 @@ class IPAddress extends CommonDBChild
      * one (ie : 2001:db8:0:85a3\::ac1f:8001 rather than 2001:0db8:0000:85a3:0000:0000:ac1f:8001)
      * \warning The resulting binary form is created inside the current object
      *
-     * @param integer[] $address   (bytes[4]) binary (ie. SQL requests) address
-     * @param string    $itemtype  type of the item this address has to be attached (default '')
-     * @param integer   $items_id  id of the item this address has to be attached (default -1)
+     * @param integer[] $address  (bytes[4]) binary (ie. SQL requests) address
+     * @param string    $itemtype type of the item this address has to be attached (default '')
+     * @param integer   $items_id id of the item this address has to be attached (default -1)
      *
      * @return boolean address is valid
      **/
@@ -872,8 +872,8 @@ class IPAddress extends CommonDBChild
     /**
      * \brief add value to the address for iterator on addresses
      *
-     * @param (integer|float)[] $address   (in and out) the address to increment or decrement
-     * @param integer   $value     the value to add or remove. Must be betwwen -0xffffffff and +0xffffffff
+     * @param (integer|float)[] $address (in and out) the address to increment or decrement
+     * @param integer           $value   the value to add or remove. Must be betwwen -0xffffffff and +0xffffffff
      *
      * @return boolean true if the increment is valid
      **/
@@ -929,7 +929,7 @@ class IPAddress extends CommonDBChild
     /**
      * Search IP Addresses
      *
-     * @param string $IPaddress  the address to search
+     * @param string $IPaddress the address to search
      *
      * @return array  each value of the array (corresponding to one IPAddress) is an array of the
      *                items from the master item to the IPAddress
@@ -974,8 +974,8 @@ class IPAddress extends CommonDBChild
     /**
      * Get an Object ID by its IP address (only if one result is found in the entity)
      *
-     * @param string  $value   the ip address
-     * @param integer $entity  the entity to look for
+     * @param string  $value  the ip address
+     * @param integer $entity the entity to look for
      *
      * @return array containing the object ID
      *         or an empty array is no value of serverals ID where found
@@ -1022,7 +1022,7 @@ class IPAddress extends CommonDBChild
     /**
      * Check if two addresses are equals
      *
-     * @param IPAddress|string|integer[] $ipaddress  the ip address to check with this
+     * @param IPAddress|string|integer[] $ipaddress the ip address to check with this
      *
      * @return boolean true if and only if both addresses are binary equals.
      **/
@@ -1051,10 +1051,10 @@ class IPAddress extends CommonDBChild
     }
 
     /**
-     * @param $base                  HTMLTableBase object
-     * @param $super                 HTMLTableSuperHeader object (default NULL)
-     * @param $father                HTMLTableHeader object (default NULL)
-     * @param $options      array
+     * @param $base    HTMLTableBase object
+     * @param $super   HTMLTableSuperHeader object (default NULL)
+     * @param $father  HTMLTableHeader object (default NULL)
+     * @param $options array
      **/
     public static function getHTMLTableHeader(
         $itemtype,

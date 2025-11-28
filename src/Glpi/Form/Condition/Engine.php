@@ -232,7 +232,7 @@ final class Engine
     }
 
     /**
-     * @param ConditionData[] $conditions
+     * @param ConditionData[]  $conditions
      * @param array<int, bool> &$result_per_condition
      */
     private function computeConditions(array $conditions, array &$result_per_condition = []): bool

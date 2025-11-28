@@ -68,9 +68,9 @@ class Item_Kanban extends CommonDBRelation
      * Save the state of a Kanban's columns for a specific item for the current user or globally.
      * @since 9.5.0
      * @param string $itemtype Type of the item.
-     * @param int $items_id ID of the item.
-     * @param array $state Array of Kanban column state data.
-     * @param array $columns Array of columns to save state for. If empty, all columns are saved.
+     * @param int    $items_id ID of the item.
+     * @param array  $state    Array of Kanban column state data.
+     * @param array  $columns  Array of columns to save state for. If empty, all columns are saved.
      * @return bool
      */
     public static function saveStateForItem($itemtype, $items_id, $state, array $columns = [])
@@ -141,8 +141,8 @@ class Item_Kanban extends CommonDBRelation
     /**
      * Load the state of a Kanban's columns for a specific item for the current user or globally.
      * @since 9.5.0
-     * @param string $itemtype Type of the item.
-     * @param int $items_id ID of the item.
+     * @param string $itemtype  Type of the item.
+     * @param int    $items_id  ID of the item.
      * @param string $timestamp Timestamp string of last check or null to always get the state.
      * @return ?array Array of Kanban column state data.
      *       Null is returned if $timestamp is specified, but no changes have been made to the state since then
@@ -188,7 +188,7 @@ class Item_Kanban extends CommonDBRelation
      * Clear the state of a Kanban's columns for a specific item for the current user or globally.
      * @since 11.0.0
      * @param string $itemtype Type of the item.
-     * @param int $items_id ID of the item.
+     * @param int    $items_id ID of the item.
      * @return bool True if successful
      */
     public static function clearStateForItem(string $itemtype, int $items_id)

@@ -103,7 +103,7 @@ class GLPIMailer
     /**
      * Return DSN string built using SMTP configuration.
      *
-     * @param bool $with_clear_password   Indicates whether the password should be present as clear text or redacted.
+     * @param bool $with_clear_password Indicates whether the password should be present as clear text or redacted.
      *
      */
     final public static function buildDsn(bool $with_clear_password): string

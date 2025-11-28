@@ -149,8 +149,8 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
      *
      *
      * @since 0.85
-     * @param integer $ID        ID of the licence
-     * @param integer $number    licence count to check (default -1)
+     * @param integer $ID     ID of the licence
+     * @param integer $number licence count to check (default -1)
      *
      * @return int validity indicator
      **/
@@ -878,9 +878,9 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
     /**
      * Get number of bought licenses of a version
      *
-     * @param integer $softwareversions_id   version ID
-     * @param integer|''|array<int> $entity  Entity to search for licenses in (default = all active entities)
-     *                               (default '')
+     * @param integer               $softwareversions_id version ID
+     * @param integer|''|array<int> $entity              Entity to search for licenses in (default = all active entities)
+     *                                                   (default '')
      *
      * @return integer number of installations
      */

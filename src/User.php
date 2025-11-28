@@ -1995,9 +1995,9 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * by searching in the attributes of the User.
      *
      * @param Connection $ldap_connection LDAP connection
-     * @param array    $ldap_method     LDAP method
-     * @param string   $userdn          Basedn of the user
-     * @param string   $login           User login
+     * @param array      $ldap_method     LDAP method
+     * @param string     $userdn          Basedn of the user
+     * @param string     $login           User login
      *
      */
     private function getFromLDAPGroupVirtual($ldap_connection, array $ldap_method, $userdn, $login): void
@@ -2109,9 +2109,9 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * by searching in the attributes of the Groups.
      *
      * @param Connection $ldap_connection LDAP connection
-     * @param array    $ldap_method        LDAP method
-     * @param string   $userdn             Basedn of the user
-     * @param string   $login              User login
+     * @param array      $ldap_method     LDAP method
+     * @param string     $userdn          Basedn of the user
+     * @param string     $login           User login
      *
      * @return boolean true if search is applicable, false otherwise
      */
@@ -2165,10 +2165,10 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * Function that tries to load the user information from LDAP.
      *
      * @param Connection $ldap_connection LDAP connection
-     * @param array    $ldap_method     LDAP method
-     * @param string   $userdn          Basedn of the user
-     * @param string   $login           User Login
-     * @param boolean  $import          true for import, false for update
+     * @param array      $ldap_method     LDAP method
+     * @param string     $userdn          Basedn of the user
+     * @param string     $login           User Login
+     * @param boolean    $import          true for import, false for update
      *
      * @return boolean true if found / false if not
      */
@@ -2431,13 +2431,13 @@ class User extends CommonDBTM implements TreeBrowseInterface
     /**
      * Get all groups a user belongs to.
      *
-     * @param Connection $ds ldap connection
-     * @param string   $ldap_base_dn       Basedn used
-     * @param string   $user_dn            Basedn of the user
-     * @param string   $group_condition    group search condition
-     * @param string   $group_member_field group field member in a user object
-     * @param boolean  $use_dn             search dn of user ($login_field=$user_dn) in group_member_field
-     * @param string   $login_field        user login field
+     * @param Connection $ds                 ldap connection
+     * @param string     $ldap_base_dn       Basedn used
+     * @param string     $user_dn            Basedn of the user
+     * @param string     $group_condition    group search condition
+     * @param string     $group_member_field group field member in a user object
+     * @param boolean    $use_dn             search dn of user ($login_field=$user_dn) in group_member_field
+     * @param string     $login_field        user login field
      *
      * @return array Groups of the user located in [0][$group_member_field] in returned array
      */
@@ -2505,8 +2505,8 @@ class User extends CommonDBTM implements TreeBrowseInterface
     /**
      * Function that tries to load the user information from IMAP.
      *
-     * @param array  $mail_method  mail method description array
-     * @param string $name         login of the user
+     * @param array  $mail_method mail method description array
+     * @param string $name        login of the user
      *
      * @return boolean true if method is applicable, false otherwise
      */
@@ -2776,10 +2776,10 @@ HTML;
     /**
      * Print the user form.
      *
-     * @param integer $ID    ID of the user
-     * @param array $options Options
-     *     - string   target        Form target
-     *     - boolean  withtemplate  Template or basic item
+     * @param integer $ID      ID of the user
+     * @param array   $options Options
+     *                         - string   target        Form target
+     *                         - boolean  withtemplate  Template or basic item
      *
      * @return boolean true if user found, false otherwise
      */
@@ -4161,41 +4161,41 @@ HTML;
      * Make a select box with all glpi users where select key = name
      *
      * @param $options array of possible options:
-     *    - name             : string / name of the select (default is users_id)
-     *    - value
-     *    - values           : in case of select[multiple], pass the array of multiple values
-     *    - right            : string / limit user who have specific right :
-     *                             id -> only current user (default case);
-     *                             interface -> central;
-     *                             all -> all users;
-     *                             specific right like Ticket::READALL, CREATE.... (is array passed one of all passed right is needed)
-     *    - comments         : boolean / is the comments displayed near the dropdown (default true)
-     *    - entity           : integer or array / restrict to a defined entity or array of entities
-     *                          (default -1 : no restriction)
-     *    - entity_sons      : boolean / if entity restrict specified auto select its sons
-     *                          only available if entity is a single value not an array(default false)
-     *    - all              : Nobody or All display for none selected
-     *                             all=0 (default) -> Nobody
-     *                             all=1 -> All
-     *                             all=-1-> nothing
-     *    - rand             : integer / already computed rand value
-     *    - toupdate         : array / Update a specific item on select change on dropdown
-     *                          (need value_fieldname, to_update, url
-     *                          (see Ajax::updateItemOnSelectEvent for information)
-     *                          and may have moreparams)
-     *    - used             : array / Already used items ID: not to display in dropdown (default empty)
-     *    - ldap_import
-     *    - on_change        : string / value to transmit to "onChange"
-     *    - display          : boolean / display or get string (default true)
-     *    - width            : specific width needed
-     *    - specific_tags    : array of HTML5 tags to add to the field
-     *    - class            : class to pass to html select
-     *    - url              : url of the ajax php code which should return the json data to show in
-     *                         the dropdown (default /ajax/getDropdownUsers.php)
-     *    - inactive_deleted : retreive also inactive or deleted users
-     *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
-     *    - readonly         : boolean / return getUserName is true (default false)
-     *    - required         : boolean / is the field required (default false)
+     *                 - name             : string / name of the select (default is users_id)
+     *                 - value
+     *                 - values           : in case of select[multiple], pass the array of multiple values
+     *                 - right            : string / limit user who have specific right :
+     *                 id -> only current user (default case);
+     *                 interface -> central;
+     *                 all -> all users;
+     *                 specific right like Ticket::READALL, CREATE.... (is array passed one of all passed right is needed)
+     *                 - comments         : boolean / is the comments displayed near the dropdown (default true)
+     *                 - entity           : integer or array / restrict to a defined entity or array of entities
+     *                 (default -1 : no restriction)
+     *                 - entity_sons      : boolean / if entity restrict specified auto select its sons
+     *                 only available if entity is a single value not an array(default false)
+     *                 - all              : Nobody or All display for none selected
+     *                 all=0 (default) -> Nobody
+     *                 all=1 -> All
+     *                 all=-1-> nothing
+     *                 - rand             : integer / already computed rand value
+     *                 - toupdate         : array / Update a specific item on select change on dropdown
+     *                 (need value_fieldname, to_update, url
+     *                 (see Ajax::updateItemOnSelectEvent for information)
+     *                 and may have moreparams)
+     *                 - used             : array / Already used items ID: not to display in dropdown (default empty)
+     *                 - ldap_import
+     *                 - on_change        : string / value to transmit to "onChange"
+     *                 - display          : boolean / display or get string (default true)
+     *                 - width            : specific width needed
+     *                 - specific_tags    : array of HTML5 tags to add to the field
+     *                 - class            : class to pass to html select
+     *                 - url              : url of the ajax php code which should return the json data to show in
+     *                 the dropdown (default /ajax/getDropdownUsers.php)
+     *                 - inactive_deleted : retreive also inactive or deleted users
+     *                 - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
+     *                 - readonly         : boolean / return getUserName is true (default false)
+     *                 - required         : boolean / is the field required (default false)
      *
      * @return integer|string Random value if displayed, string otherwise
      */
@@ -5515,7 +5515,7 @@ HTML;
      *
      * @since 9.4
      *
-     * @param string $field the field storing the token
+     * @param string  $field     the field storing the token
      * @param boolean $force_new force generation of a new token
      *
      * @return string|false token or false in case of error
@@ -5608,7 +5608,7 @@ HTML;
      * @since 0.85
      *
      * @param string $picture Picture field value
-     * @param bool  $full     get full path
+     * @param bool   $full    get full path
      *
      * @return string
      */
@@ -6229,10 +6229,10 @@ HTML;
     /**
      * Print a simplified user form.
      *
-     * @param integer $ID    ID of the user
-     * @param array $options Options
-     *     - string   target        Form target
-     *     - boolean  withtemplate  Template or basic item
+     * @param integer $ID      ID of the user
+     * @param array   $options Options
+     *                         - string   target        Form target
+     *                         - boolean  withtemplate  Template or basic item
      *
      * @return boolean true
      */
@@ -6489,7 +6489,7 @@ HTML;
     /**
      * Get name of the user with ID
      *
-     * @param integer $ID   ID of the user.
+     * @param integer $ID ID of the user.
      *
      * @return string username string (realname if not empty and name if realname is empty).
      */
@@ -6753,8 +6753,8 @@ HTML;
     /**
      * User has right for given module and right.
      *
-     * @param string  $module Module to check
-     * @param integer $right  Right to check
+     * @param string  $module      Module to check
+     * @param integer $right       Right to check
      * @param integer $entities_id Entity to check
      *
      * @return boolean|int

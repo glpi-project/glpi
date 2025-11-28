@@ -142,7 +142,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
 
     /**
      * Add/remove blueprint picture
-     * @param  array $input the form input
+     * @param array $input the form input
      * @return array        the altered input
      */
     public function manageBlueprint($input)

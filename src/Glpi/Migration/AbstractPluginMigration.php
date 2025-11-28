@@ -169,11 +169,11 @@ abstract class AbstractPluginMigration
      * Check that the given fields exists in database.
      *
      * @param array<string, array<int , string>> $required_fields
-     *      List of required fields, in the following format:
-     *          [
-     *              'tablename1' => ['id', 'name', ...],
-     *              'tablename2' => ['id', ...],
-     *          ]
+     *                                                            List of required fields, in the following format:
+     *                                                            [
+     *                                                            'tablename1' => ['id', 'name', ...],
+     *                                                            'tablename2' => ['id', ...],
+     *                                                            ]
      */
     final protected function checkDbFieldsExists(array $required_fields): bool
     {
@@ -226,8 +226,8 @@ abstract class AbstractPluginMigration
     /**
      * Count records from a table with optional conditions
      *
-     * @param string $table Table name
-     * @param array $conditions Optional WHERE conditions
+     * @param string $table      Table name
+     * @param array  $conditions Optional WHERE conditions
      *
      * @return int Count of records
      */
@@ -249,10 +249,10 @@ abstract class AbstractPluginMigration
      * Import a plugin item.
      *
      * @template T of CommonDBTM
-     * @param class-string<T> $itemtype             Target itemtype.
-     * @param array $input                          Creation/update input.
-     * @param array|null $reconciliation_criteria   Fields used to reconciliate input with a potential existing item.
-     * @param array $options                        Options to use during add/update operation.
+     * @param class-string<T> $itemtype                Target itemtype.
+     * @param array           $input                   Creation/update input.
+     * @param array|null      $reconciliation_criteria Fields used to reconciliate input with a potential existing item.
+     * @param array           $options                 Options to use during add/update operation.
      *
      * @return T    The created/reused item.
      */
@@ -392,8 +392,8 @@ abstract class AbstractPluginMigration
     /**
      * Copy the items found using the given criteria, after application of the given replacements.
      *
-     * @param class-string<CommonDBTM> $itemtype
-     * @param array<mixed, mixed> $where
+     * @param class-string<CommonDBTM>                                 $itemtype
+     * @param array<mixed, mixed>                                      $where
      * @param array<int, array{field: string, from: mixed, to: mixed}> $replacements
      */
     final protected function copyItems(string $itemtype, array $where, array $replacements, bool $disable_unicity_check = false): void
@@ -557,8 +557,8 @@ abstract class AbstractPluginMigration
     /**
      * Update references to the given source itemtype and attach them to the given target itemtype.
      *
-     * @param class-string<CommonDBTM> $source_itemtype
-     * @param class-string<CommonDBTM> $target_itemtype
+     * @param class-string<CommonDBTM>   $source_itemtype
+     * @param class-string<CommonDBTM>   $target_itemtype
      * @param class-string<CommonDBTM>[] $excluded_relations
      */
     final protected function updateItemtypeReferences(
@@ -690,8 +690,8 @@ abstract class AbstractPluginMigration
     /**
      * Map the target item with the given source item.
      *
-     * @param string                    $source_itemtype Note: may be an itemtype from a deleted or disabled plugin so
-     *                                                   it is not safe to assume that this is a class-string<CommonDBTM>
+     * @param string                   $source_itemtype Note: may be an itemtype from a deleted or disabled plugin so
+     *                                                  it is not safe to assume that this is a class-string<CommonDBTM>
      * @param class-string<CommonDBTM> $target_itemtype
      *
      */

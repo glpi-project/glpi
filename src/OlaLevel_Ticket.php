@@ -52,7 +52,7 @@ class OlaLevel_Ticket extends CommonDBTM
      *
      *
      * @since 9.1 2 mandatory parameters
-     * @param integer $ID        ID of the item to get
+     * @param integer           $ID      ID of the item to get
      * @param SLM::TTR|SLM::TTO $olaType
      *
      * @return boolean
@@ -204,7 +204,7 @@ class OlaLevel_Ticket extends CommonDBTM
      *
      *
      * @since 9.1   2 parameters mandatory
-     * @param array $data data of an entry of olalevels_tickets
+     * @param array             $data    data of an entry of olalevels_tickets
      * @param SLM::TTR|SLM::TTO $olaType Type of OLA
      *
      * @return void
@@ -311,8 +311,8 @@ class OlaLevel_Ticket extends CommonDBTM
      *
      *
      * @since 9.1    2 parameters mandatory
-     * @param integer $tickets_id Ticket ID
-     * @param SLM::TTR|SLM::TTO $olaType Type of ola
+     * @param integer           $tickets_id Ticket ID
+     * @param SLM::TTR|SLM::TTO $olaType    Type of ola
      *
      */
     public static function replayForTicket($tickets_id, $olaType)

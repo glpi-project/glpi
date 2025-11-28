@@ -146,8 +146,8 @@ class Appliance_Item_Relation extends CommonDBRelation
     /**
      * count number of appliance's items relations for a give item
      *
-     * @param CommonDBTM $item the give item
-     * @param array $extra_types_where additional criteria to pass to the count function
+     * @param CommonDBTM $item              the give item
+     * @param array      $extra_types_where additional criteria to pass to the count function
      *
      * @return int number of relations
      */
@@ -205,8 +205,8 @@ class Appliance_Item_Relation extends CommonDBRelation
      * we separate in two function because the list is usually displayed in a form tag
      * and we need to display an additionnal form.
      *
-     * @param int $appliances_items_id the id of Appliance_Item
-     * @param bool $canedit do we have the right to edit
+     * @param int  $appliances_items_id the id of Appliance_Item
+     * @param bool $canedit             do we have the right to edit
      *
      * @return string the html for the list
      */
@@ -234,9 +234,9 @@ class Appliance_Item_Relation extends CommonDBRelation
      * Return the corresponding javascript to an mini html list of relation
      * see self::showListForApplianceItem docblock
      *
-     * @param CommonDBTM $item the item where the mini list will be displayed,
-     *                         we use this to check entities/is_recursive attributes
-     * @param bool $canedit do we have the right to edit
+     * @param CommonDBTM $item    the item where the mini list will be displayed,
+     *                            we use this to check entities/is_recursive attributes
+     * @param bool       $canedit do we have the right to edit
      *
      * @return string the javascript
      */

@@ -54,8 +54,8 @@ final class RichText
      *
      * @since 10.0.0
      *
-     * @param null|string   $content        HTML string to be made safe
-     * @param boolean       $encode_output  Indicates whether the output should be encoded (encoding of HTML special chars)
+     * @param null|string $content       HTML string to be made safe
+     * @param boolean     $encode_output Indicates whether the output should be encoded (encoding of HTML special chars)
      *
      *
      * @psalm-taint-escape html
@@ -87,11 +87,11 @@ final class RichText
      *
      * @since 10.0.0
      *
-     * @param string  $content                HTML string to be made safe
-     * @param boolean $keep_presentation      Indicates whether the presentation elements have to be replaced by plaintext equivalents
-     * @param boolean $compact                Indicates whether the output should be compact (limited line length, no links URL, ...)
-     * @param boolean $encode_output          Indicates whether the output should be encoded (encoding of HTML special chars)
-     * @param boolean $preserve_line_breaks   Indicates whether the line breaks should be preserved
+     * @param string  $content              HTML string to be made safe
+     * @param boolean $keep_presentation    Indicates whether the presentation elements have to be replaced by plaintext equivalents
+     * @param boolean $compact              Indicates whether the output should be compact (limited line length, no links URL, ...)
+     * @param boolean $encode_output        Indicates whether the output should be encoded (encoding of HTML special chars)
+     * @param boolean $preserve_line_breaks Indicates whether the line breaks should be preserved
      *
      */
     public static function getTextFromHtml(
@@ -255,8 +255,8 @@ final class RichText
      *
      * @since 10.0.0
      *
-     * @param null|string   $content HTML string to enahnce
-     * @param array         $params  Enhancement parameters
+     * @param null|string $content HTML string to enahnce
+     * @param array       $params  Enhancement parameters
      *
      */
     public static function getEnhancedHtml(?string $content, array $params = []): string
@@ -424,10 +424,10 @@ HTML;
      *
      * @since 10.0.0
      *
-     * @param array $imgs  Array of image info
-     *                      - src The public path of img
-     *                      - w   The width of img
-     *                      - h   The height of img
+     * @param array $imgs Array of image info
+     *                    - src The public path of img
+     *                    - w   The width of img
+     *                    - h   The height of img
      * @return string completed gallery
      */
     private static function imageGallery(array $imgs, array $options = []): string

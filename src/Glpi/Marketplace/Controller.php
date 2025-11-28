@@ -146,7 +146,7 @@ class Controller extends CommonGLPI
     /**
      * Get the version information of the plugin
      *
-     * @param array $plugin plugin data
+     * @param array  $plugin  plugin data
      * @param string $version version to check
      * @return array|null Version information or null if no information about the specified version is available
      */
@@ -164,8 +164,8 @@ class Controller extends CommonGLPI
     /**
      * Download and uncompress plugin archive
      *
-     * @param bool $auto_install Automatically install the plugin after download
-     * @param ?string $version Download a specific version of the plugin
+     * @param bool    $auto_install Automatically install the plugin after download
+     * @param ?string $version      Download a specific version of the plugin
      */
     public function downloadPlugin($auto_install = true, ?string $version = null): bool
     {

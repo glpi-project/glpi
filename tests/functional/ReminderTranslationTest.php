@@ -85,7 +85,7 @@ class ReminderTranslationTest extends DbTestCase
     /**
      * Add translation into database
      *
-     * @param string    $lang Reminder language, defaults to null
+     * @param string $lang Reminder language, defaults to null
      *
      * @return void
      */

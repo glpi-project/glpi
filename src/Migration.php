@@ -220,7 +220,7 @@ class Migration
      *
      *
      * @deprecated 11.0.0
-     * @param string  $message Message to display
+     * @param string $message Message to display
      */
     public function displayError(string $message): void
     {
@@ -421,18 +421,18 @@ class Migration
     /**
      * Add a new GLPI normalized field
      *
-     * @param string $table   Table name
-     * @param string $field   Field name
-     * @param string $type    Field type, @see Migration::fieldFormat()
+     * @param string                                                                                                                                                   $table   Table name
+     * @param string                                                                                                                                                   $field   Field name
+     * @param string                                                                                                                                                   $type    Field type, @see Migration::fieldFormat()
      * @param array{update?: string|int, condition?: string, value?: string|int|null, nodefault?: bool, comment?: string, first?: string, after?: string, null?: bool} $options
-     *                         - update    : value to set after field creation (update query)
-     *                         - condition : sql condition to apply for update query
-     *                         - value     : default_value new field's default value, if a specific default value needs to be used
-     *                         - nodefault : do not define default value (default false)
-     *                         - comment   : comment to be added during field creation
-     *                         - first     : add the new field at first column
-     *                         - after     : where adding the new field
-     *                         - null      : value could be NULL (default false)
+     *                                                                                                                                                                          - update    : value to set after field creation (update query)
+     *                                                                                                                                                                          - condition : sql condition to apply for update query
+     *                                                                                                                                                                          - value     : default_value new field's default value, if a specific default value needs to be used
+     *                                                                                                                                                                          - nodefault : do not define default value (default false)
+     *                                                                                                                                                                          - comment   : comment to be added during field creation
+     *                                                                                                                                                                          - first     : add the new field at first column
+     *                                                                                                                                                                          - after     : where adding the new field
+     *                                                                                                                                                                          - null      : value could be NULL (default false)
      *
      * @return boolean
      **/
@@ -629,7 +629,7 @@ class Migration
 
     /**
      * Mockable function to check if a key already exists
-     * @param string $table Table name
+     * @param string $table     Table name
      * @param string $indexname Index name
      * @see isIndex()
      * @note Could be removed when using dependency injection or some other refactoring
@@ -916,9 +916,9 @@ class Migration
      *
      * @since 0.85
      *
-     * @param array $toadd items to add : itemtype => array of values
-     * @param array $todel items to del : itemtype => array of values
-     * @param bool $only_default : add the display pref only on global view
+     * @param array $toadd        items to add : itemtype => array of values
+     * @param array $todel        items to del : itemtype => array of values
+     * @param bool  $only_default : add the display pref only on global view
      *
      * @return void
      **/
@@ -1109,7 +1109,7 @@ class Migration
      *
      * @since 11.0.0
      *
-     * @param array  $values  Value(s) to remove
+     * @param array   $values  Value(s) to remove
      * @param ?string $context Context to remove on. Defaults to the context of this migration instance.
      *
      * @return Migration
@@ -1178,12 +1178,12 @@ class Migration
      * Add new right to profiles that match rights requirements
      *    Default is to give rights to profiles with READ and UPDATE rights on config
      *
-     * @param string  $name   Right name
-     * @param integer $rights Right to set (defaults to ALLSTANDARDRIGHT)
-     * @param array<string, int>   $requiredrights Array of right name => value
-     *                   A profile must have these rights in order to get the new right.
-     *                   This array can be empty to add the right to every profile.
-     *                   Default is ['config' => READ | UPDATE].
+     * @param string             $name           Right name
+     * @param integer            $rights         Right to set (defaults to ALLSTANDARDRIGHT)
+     * @param array<string, int> $requiredrights Array of right name => value
+     *                                           A profile must have these rights in order to get the new right.
+     *                                           This array can be empty to add the right to every profile.
+     *                                           Default is ['config' => READ | UPDATE].
      *
      * @return void
      */
@@ -1325,12 +1325,12 @@ class Migration
      * Replace right to profiles that match rights requirements.
      * Default is to update rights of profiles with READ and UPDATE rights on config.
      *
-     * @param string  $name   Right name
-     * @param integer $rights Right to set
-     * @param array<string, int>   $requiredrights Array of right name => value
-     *                   A profile must have these rights in order to get its rights updated.
-     *                   This array can be empty to add the right to every profile.
-     *                   Default is ['config' => READ | UPDATE].
+     * @param string             $name           Right name
+     * @param integer            $rights         Right to set
+     * @param array<string, int> $requiredrights Array of right name => value
+     *                                           A profile must have these rights in order to get its rights updated.
+     *                                           This array can be empty to add the right to every profile.
+     *                                           Default is ['config' => READ | UPDATE].
      *
      * @return void
      */
@@ -1390,12 +1390,12 @@ class Migration
      * Give right to profiles that match rights requirements
      *   Default is to give rights to profiles with READ and UPDATE rights on config
      *
-     * @param string  $name   Right name
-     * @param integer $rights Right to set
-     * @param array<string, int>   $requiredrights Array of right name => value
-     *                   A profile must have these rights in order to get its rights added.
-     *                   This array can be empty to add the right to every profile.
-     *                   Default is ['config' => READ | UPDATE].
+     * @param string             $name           Right name
+     * @param integer            $rights         Right to set
+     * @param array<string, int> $requiredrights Array of right name => value
+     *                                           A profile must have these rights in order to get its rights added.
+     *                                           This array can be empty to add the right to every profile.
+     *                                           Default is ['config' => READ | UPDATE].
      *
      * @return void
      */
@@ -1527,7 +1527,7 @@ class Migration
      * @param string  $old_itemtype
      * @param string  $new_itemtype
      * @param boolean $update_structure
-     *    Whether to update or not DB structure (itemtype table name and foreign key fields)
+     *                                  Whether to update or not DB structure (itemtype table name and foreign key fields)
      * @return void
      */
     public function renameItemtype($old_itemtype, $new_itemtype, $update_structure = true)
@@ -1663,7 +1663,7 @@ class Migration
      *
      *
      * @since 9.5.6
-     * @param string $itemtype The itemtype
+     * @param string $itemtype       The itemtype
      * @param int    $old_search_opt The old search option ID
      * @param int    $new_search_opt The new search option ID
      * @return void
@@ -1683,8 +1683,8 @@ class Migration
      * Remove a search option from various locations in the database including display preferences and saved searches.
      * The changes made by this function will only be applied when the migration is finalized through {@link Migration::executeMigration()}.
      *
-     * @param string $itemtype The itemtype
-     * @param int $search_opt The search option ID to remove
+     * @param string $itemtype   The itemtype
+     * @param int    $search_opt The search option ID to remove
      * @return void
      */
     public function removeSearchOption(string $itemtype, int $search_opt)
@@ -1854,7 +1854,7 @@ class Migration
      * - foreign key 1 (first itemtype)
      * - foreign key 2 (second itemtype)
      *
-     * @param string $table Table name
+     * @param string                   $table   Table name
      * @param class-string<CommonDBTM> $class_1 First itemtype (CommonDBTM)
      * @param class-string<CommonDBTM> $class_2 Second itemtype (CommonDBTM)
      */
@@ -1891,7 +1891,7 @@ class Migration
      *
      * @since 11.0.0
      *
-     * @param string $itemtype Usually a class-string<CommonDBTM> but may be an itemtype that doesn't exist anymore for old migrations
+     * @param string                                                                                             $itemtype Usually a class-string<CommonDBTM> but may be an itemtype that doesn't exist anymore for old migrations
      * @param array{mode?: int, state?: int, hourmin?: int, hourmax?: int, logs_lifetime?: int, allowmode?: int} $options
      */
     public function addCrontask(string $itemtype, string $name, int $frequency, ?int $param = null, array $options = []): void

@@ -52,11 +52,11 @@ abstract class HTMLTableEntity
      * Constructor of an entity
      *
      * @param string $content
-     *    The content of a cell, header, ... Can simply be a string. But it can also
-     *    be a call to a specific function during the rendering of the table in case
-     *    of direct display function (for instance: Dropdown::showNumber). A function
-     *    call is an array containing two elements : 'function', the name the function
-     *    and 'parameters', an array of the parameters given to the function.
+     *                        The content of a cell, header, ... Can simply be a string. But it can also
+     *                        be a call to a specific function during the rendering of the table in case
+     *                        of direct display function (for instance: Dropdown::showNumber). A function
+     *                        call is an array containing two elements : 'function', the name the function
+     *                        and 'parameters', an array of the parameters given to the function.
      *
      * @psalm-taint-sink html $content (content will be sent to output without being escaped)
      */

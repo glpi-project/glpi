@@ -233,8 +233,8 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @since 0.84
      *
-     * @param bool $getFromDB   (true by default)
-     * @param bool $getEmpty    (true by default)
+     * @param bool $getFromDB (true by default)
+     * @param bool $getEmpty  (true by default)
      *
      * @return CommonDBTM|false object of the concerned item or false on error
      **/
@@ -252,9 +252,9 @@ abstract class CommonDBChild extends CommonDBConnexity
     /**
      * Recursively display the items of this
      *
-     * @param array  $recursiveItems    items of the current elements (see recursivelyGetItems())
-     * @param string $elementToDisplay  what to display : 'Type', 'Name', 'Link'
-     * @param bool $display  display html or return html
+     * @param array  $recursiveItems   items of the current elements (see recursivelyGetItems())
+     * @param string $elementToDisplay what to display : 'Type', 'Name', 'Link'
+     * @param bool   $display          display html or return html
      * @return bool|string
      **/
     public static function displayRecursiveItems(array $recursiveItems, $elementToDisplay, bool $display = true)
@@ -508,10 +508,10 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @param CommonDBTM $item the other item
      * @param string     $case : can be overwrite by object
-     *    - 'add' when this CommonDBChild is added (to and item)
-     *    - 'update item previous' transfert : this is removed from the old item
-     *    - 'update item next' transfert : this is added to the new item
-     *    - 'delete' when this CommonDBChild is remove (from an item)
+     *                         - 'add' when this CommonDBChild is added (to and item)
+     *                         - 'update item previous' transfert : this is removed from the old item
+     *                         - 'update item next' transfert : this is added to the new item
+     *                         - 'delete' when this CommonDBChild is remove (from an item)
      *
      * @return string the name of the entry for the database (ie. : correctly slashed)
      **/
@@ -813,9 +813,9 @@ abstract class CommonDBChild extends CommonDBConnexity
      * @since 0.84
      *
      *
-     * @param boolean $canedit     true if we can edit the child
-     * @param string  $field_name  the name of the HTML field inside Item's form
-     * @param integer $id          id of the child
+     * @param boolean $canedit    true if we can edit the child
+     * @param string  $field_name the name of the HTML field inside Item's form
+     * @param integer $id         id of the child
      *
      * @return string|void
      * @see showChildsForItemForm()
@@ -852,10 +852,10 @@ abstract class CommonDBChild extends CommonDBConnexity
      * @since 0.84
      *
      *
-     * @param CommonDBTM   $item        the item on which to add the current CommonDBChild
-     * @param string       $field_name  the name of the HTML field inside Item's form
-     * @param boolean|null $canedit     boolean to force rights, NULL to use default behaviour
-     * @param boolean      $display     true display or false to return the button HTML code
+     * @param CommonDBTM   $item       the item on which to add the current CommonDBChild
+     * @param string       $field_name the name of the HTML field inside Item's form
+     * @param boolean|null $canedit    boolean to force rights, NULL to use default behaviour
+     * @param boolean      $display    true display or false to return the button HTML code
      *
      *
      * @return void|false|string the button HTML code if $display is true, void otherwise
@@ -919,9 +919,9 @@ abstract class CommonDBChild extends CommonDBConnexity
      * @since 0.84
      *
      *
-     * @param CommonDBTM   $item        the item on which to add the current CommonDBChild
-     * @param string       $field_name  the name of the HTML field inside Item's form
-     * @param boolean|null $canedit     boolean to force rights, NULL to use default behaviour
+     * @param CommonDBTM   $item       the item on which to add the current CommonDBChild
+     * @param string       $field_name the name of the HTML field inside Item's form
+     * @param boolean|null $canedit    boolean to force rights, NULL to use default behaviour
      *
      * @return void|boolean|string (display) Returns false if there is a right error.
      * @see showAddChildButtonForItemForm()
@@ -1002,9 +1002,9 @@ abstract class CommonDBChild extends CommonDBConnexity
     /**
      * Affect a CommonDBChild to a given item. By default, unaffect it
      *
-     * @param int    $id        the id of the CommonDBChild to affect
-     * @param int    $items_id  the id of the new item (default 0)
-     * @param class-string<CommonDBTM>|'' $itemtype  the type of the new item (default '')
+     * @param int                         $id       the id of the CommonDBChild to affect
+     * @param int                         $items_id the id of the new item (default 0)
+     * @param class-string<CommonDBTM>|'' $itemtype the type of the new item (default '')
      *
      * @return boolean : true on success
      **/

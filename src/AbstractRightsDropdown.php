@@ -64,8 +64,8 @@ abstract class AbstractRightsDropdown
     /**
      * Check if a given type is enabled
      *
-     * @param string $type Class to check
-     * @param array $options Additional options
+     * @param string $type    Class to check
+     * @param array  $options Additional options
      *
      */
     protected static function isTypeEnabled(string $type, array $options = []): bool
@@ -77,8 +77,8 @@ abstract class AbstractRightsDropdown
     /**
      * Get possible data for profiles
      *
-     * @param string $name  Field name
-     * @param array $values Selected values
+     * @param string $name   Field name
+     * @param array  $values Selected values
      *
      */
     public static function show(string $name, array $values, array $params = []): string
@@ -117,8 +117,8 @@ abstract class AbstractRightsDropdown
     /**
      * Get possible data for profiles
      *
-     * @param string $text Search string
-     * @param array $options Additional options
+     * @param string $text    Search string
+     * @param array  $options Additional options
      *
      */
     public static function fetchValues(string $text = "", array $options = []): array
@@ -252,8 +252,8 @@ abstract class AbstractRightsDropdown
     /**
      * Get possible values for users
      *
-     * @param string $text Search string
-     * @param array $options Additional options
+     * @param string $text    Search string
+     * @param array  $options Additional options
      *
      */
     protected static function getUsers(string $text, array $options): array
@@ -281,8 +281,8 @@ abstract class AbstractRightsDropdown
     /**
      * Get possible values for groups
      *
-     * @param string $text Search string
-     * @param array $options Additional options
+     * @param string $text    Search string
+     * @param array  $options Additional options
      *
      */
     protected static function getGroups(string $text, array $options): array

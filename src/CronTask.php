@@ -133,8 +133,8 @@ class CronTask extends CommonDBTM
      *
      * Used by plugins to load its crontasks
      *
-     * @param string $itemtype  itemtype of the crontask
-     * @param string $name      name of the task
+     * @param string $itemtype itemtype of the crontask
+     * @param string $name     name of the task
      *
      * @return boolean true if succeed else false
      **/
@@ -319,11 +319,11 @@ class CronTask extends CommonDBTM
      *
      * @since 9.5.5 Added parameter $log_state.
      * @param int|null $retcode
-     * <ul>
-     *    <li>&lt; 0: Need to run again</li>
-     *    <li>0: Nothing to do</li>
-     *   <li>&gt; 0: Ok</li>
-     * </ul>
+     *                          <ul>
+     *                          <li>&lt; 0: Need to run again</li>
+     *                          <li>0: Nothing to do</li>
+     *                          <li>&gt; 0: Ok</li>
+     *                          </ul>
      * @return bool : true if ok (not start by another)
      **/
     public function end($retcode, int $log_state = CronTaskLog::STATE_STOP)
@@ -408,7 +408,7 @@ class CronTask extends CommonDBTM
      *
      * @param integer $mode >0 retrieve task configured for this mode
      *                      <0 retrieve task allowed for this mode (force, no time check)
-     * @param string $name  one specify action
+     * @param string  $name one specify action
      *
      * @return boolean false if no task to run
      **/
@@ -599,8 +599,8 @@ class CronTask extends CommonDBTM
      *
      * @param integer $ID
      * @param array   $options
-     *     - target filename : where to go when done.
-     *     - withtemplate boolean : template or basic item
+     *                         - target filename : where to go when done.
+     *                         - withtemplate boolean : template or basic item
      *
      * @return boolean
      **/
@@ -741,7 +741,7 @@ class CronTask extends CommonDBTM
     /**
      * Translate state to string
      *
-     * @param integer $state
+     * @param         integer       $state
      * @phpstan-param self::STATE_* $state
      *
      * @return string
@@ -759,9 +759,9 @@ class CronTask extends CommonDBTM
     /**
      * Dropdown of state
      *
-     * @param string  $name     select name
-     * @param integer $value    default value
-     * @param boolean $display  display or get string
+     * @param string  $name    select name
+     * @param integer $value   default value
+     * @param boolean $display display or get string
      *
      * @return string|integer HTML output, or random part of dropdown ID.
      **/
@@ -781,7 +781,7 @@ class CronTask extends CommonDBTM
     /**
      * Translate Mode to string
      *
-     * @param integer $mode
+     * @param         integer      $mode
      * @phpstan-param self::MODE_* $mode
      *
      * @return string
@@ -831,9 +831,9 @@ class CronTask extends CommonDBTM
     /**
      * Launch the need cron tasks
      *
-     * @param integer $mode   (internal/external, <0 to force)
-     * @param integer $max    number of task to launch
-     * @param string  $name   name of task to run
+     * @param integer $mode (internal/external, <0 to force)
+     * @param integer $max  number of task to launch
+     * @param string  $name name of task to run
      *
      * @return string|boolean the name of last task launched, or false if execution not available
      **/
@@ -958,7 +958,7 @@ class CronTask extends CommonDBTM
      * @param string  $name      task name
      * @param integer $frequency execution frequency
      * @param array   $options   optional options
-     *       (state, mode, allowmode, hourmin, hourmax, logs_lifetime, param, comment)
+     *                           (state, mode, allowmode, hourmin, hourmax, logs_lifetime, param, comment)
      * @phpstan-param array{
      *   state?: CronTask::STATE_*,
      *   mode?: CronTask::MODE_*,

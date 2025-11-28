@@ -188,7 +188,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
      * Handle import error message.
      * Throws a `\Glpi\Console\Exception\EarlyExitException` unless `skip-errors` option is used.
      *
-     * @param string            $message
+     * @param string $message
      *
      */
     protected function handleImportError($message, ?ProgressBar $progress_bar = null, bool $prevent_exit = false): void

@@ -65,9 +65,9 @@ class Response extends \GuzzleHttp\Psr7\Response
      *
      *
      * @deprecated 11.0.0
-     * @param int     $code          HTTP code to set for the response
-     * @param string  $message       Error message to send
-     * @param string  $content_type  Response content type
+     * @param int    $code         HTTP code to set for the response
+     * @param string $message      Error message to send
+     * @param string $content_type Response content type
      */
     public static function sendError(int $code, string $message, string $content_type = self::CONTENT_TYPE_JSON): never
     {

@@ -213,10 +213,10 @@ class KnowbaseItem_Item extends CommonDBRelation
     /**
      * Retrieve items for a knowbase item
      *
-     * @param CommonDBTM $item      CommonDBTM object
-     * @param integer    $start     first line to retrieve (default 0)
-     * @param integer    $limit     max number of line to retrive (0 for all) (default 0)
-     * @param boolean    $used      whether to retrieve data for "used" records
+     * @param CommonDBTM $item  CommonDBTM object
+     * @param integer    $start first line to retrieve (default 0)
+     * @param integer    $limit max number of line to retrive (0 for all) (default 0)
+     * @param boolean    $used  whether to retrieve data for "used" records
      *
      * @return array of linked items
      **/

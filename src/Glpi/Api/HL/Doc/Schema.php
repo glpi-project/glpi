@@ -355,9 +355,9 @@ class Schema implements ArrayAccess
 
     /**
      * Recursively filter properties by the requested API version
-     * @param array $props The properties to filter
+     * @param array                                                            $props           The properties to filter
      * @param array{introduced: string, deprecated?: string, removed?: string} $schema_versions The versioning info from the schema
-     * @param string $api_version The API version to filter by
+     * @param string                                                           $api_version     The API version to filter by
      * @return array The filtered properties
      */
     private static function filterPropertiesByAPIVersion(array $props, array $schema_versions, string $api_version): array

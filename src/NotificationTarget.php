@@ -179,7 +179,7 @@ class NotificationTarget extends CommonDBChild
      * @param boolean $notify_me notify me on my action ?
      *                           ($infos contains users_id to check if the target is me)
      *                           (false by default)
-     * @param mixed $emitter     if this action is executed by the cron, we can
+     * @param mixed   $emitter   if this action is executed by the cron, we can
      *                           supply the id of the user (or the email if this
      *                           is an anonymous user with no account) who
      *                           triggered the event so it can be used instead of
@@ -232,7 +232,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Check if notification (for a specific event) can be disabled
      *
-     * @param string  $event     notification event
+     * @param string $event notification event
      *
      * @return boolean
      **/
@@ -243,7 +243,7 @@ class NotificationTarget extends CommonDBChild
 
 
     /**
-     * @param $event  (default '')
+     * @param $event (default '')
      **/
     public function getSubjectPrefix($event = '')
     {
@@ -342,9 +342,9 @@ class NotificationTarget extends CommonDBChild
     /**
      * Get a notificationtarget class by giving the object which raises the event
      *
-     * @param $item            the object which raises the event
-     * @param $event           the event which will be used (default '')
-     * @param $options   array of options
+     * @param $item    the object which raises the event
+     * @param $event   the event which will be used (default '')
+     * @param $options array of options
      *
      * @return NotificationTarget|false
      **/
@@ -393,9 +393,9 @@ class NotificationTarget extends CommonDBChild
     /**
      * Get a notificationtarget class by giving an itemtype
      *
-     * @param $itemtype           the itemtype of the object which raises the event
-     * @param $event              the event which will be used (default '')
-     * @param $options   array    of options
+     * @param $itemtype the itemtype of the object which raises the event
+     * @param $event    the event which will be used (default '')
+     * @param $options  array    of options
      *
      * @return NotificationTarget|false
      **/
@@ -1001,9 +1001,9 @@ class NotificationTarget extends CommonDBChild
 
 
     /**
-     * @param $target    (default '') Typically the ID of the recipient
-     * @param $label     (default '') The recipient label
-     * @param $type      (=Notification::USER_TYPE) Type of the recipient
+     * @param $target (default '') Typically the ID of the recipient
+     * @param $label  (default '') The recipient label
+     * @param $type   (=Notification::USER_TYPE) Type of the recipient
      **/
     public function addTarget($target = '', $label = '', $type = Notification::USER_TYPE)
     {
@@ -1127,7 +1127,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Fetch item associated with the object on which the event was raised
      *
-     * @param $event  (default '')
+     * @param $event (default '')
      *
      * @return void
      **/
@@ -1564,14 +1564,14 @@ class NotificationTarget extends CommonDBChild
 
     /**
      * @param $options array{
-     *   tag: string|false,
-     *   value: bool,
-     *   label: string|false,
-     *   events: array<string>|self::TAG_FOR_ALL_EVENTS,
-     *   foreach: bool,
-     *   lang: bool,
-     *   allowed_values: array<mixed>
-     * }
+     *                 tag: string|false,
+     *                 value: bool,
+     *                 label: string|false,
+     *                 events: array<string>|self::TAG_FOR_ALL_EVENTS,
+     *                 foreach: bool,
+     *                 lang: bool,
+     *                 allowed_values: array<mixed>
+     *                 }
      **/
     public function addTagToList($options = [])
     {

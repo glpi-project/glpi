@@ -174,7 +174,7 @@ TWIG, $twig_params);
     /**
      * Get the possible value for Ethernet port type
      *
-     * @param string|null $val  if not set, ask for all values, else for 1 value (default NULL)
+     * @param string|null $val if not set, ask for all values, else for 1 value (default NULL)
      *
      * @return array|string
      * @phpstan-return ($val is null ? array : string)
@@ -197,8 +197,8 @@ TWIG, $twig_params);
     /**
      * Transform a port speed from string to integerer and vice-versa
      *
-     * @param integer|string $val        port speed
-     * @param boolean        $to_string  true if we must transform the speed to string
+     * @param integer|string $val       port speed
+     * @param boolean        $to_string true if we must transform the speed to string
      *
      * @return false|integer|string (regarding what is requested)
      **/
@@ -241,7 +241,7 @@ TWIG, $twig_params);
     /**
      * Get the possible value for Ethernet port speed
      *
-     * @param integer|null $val  if not set, ask for all values, else for 1 value (default NULL)
+     * @param integer|null $val if not set, ask for all values, else for 1 value (default NULL)
      *
      * @return array|string
      * @phpstan-return ($val is null ? array : false|integer|string)

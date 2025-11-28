@@ -70,7 +70,7 @@ class Infocom extends CommonDBChild
      *
      * @since 0.85
      *
-     * @param string|object $item  an object or a string
+     * @param string|object $item an object or a string
      *
      * @return boolean true if $object is an object that can have Infocom
      *
@@ -194,7 +194,7 @@ class Infocom extends CommonDBChild
 
 
     /**
-     * @param $item   Supplier  object
+     * @param $item Supplier  object
      **/
     public static function countForSupplier(Supplier $item)
     {
@@ -228,9 +228,9 @@ class Infocom extends CommonDBChild
     /**
      * @since 0.84
      *
-     * @param $name               (default '')
-     * @param $values             (default '')
-     * @param $options      array
+     * @param $name    (default '')
+     * @param $values  (default '')
+     * @param $options array
      **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
@@ -255,8 +255,8 @@ class Infocom extends CommonDBChild
     /**
      * Retrieve an item from the database for a device
      *
-     * @param string  $itemtype  type of the device to retrieve infocom
-     * @param integer $ID        ID of the device to retrieve infocom
+     * @param string  $itemtype type of the device to retrieve infocom
+     * @param integer $ID       ID of the device to retrieve infocom
      *
      * @return boolean true if succeed else false
      **/
@@ -279,8 +279,8 @@ class Infocom extends CommonDBChild
 
     /**
      * @param class-string<CommonDBTM> $itemtype The itemtype to get data for. The itemtype must have a `ticket_tco` field.
-     * @param string $begin Date string for the beginning of the period to retrieve (based on buy or use date)
-     * @param string $end Date string for the end of the period to retrieve (based on buy or use date)
+     * @param string                   $begin    Date string for the beginning of the period to retrieve (based on buy or use date)
+     * @param string                   $end      Date string for the end of the period to retrieve (based on buy or use date)
      */
     public static function getDataForAssetInfocomReport(string $itemtype, string $begin, string $end): ?array
     {
@@ -349,8 +349,8 @@ class Infocom extends CommonDBChild
 
     /**
      * @param class-string<CommonDBTM> $itemtype The itemtype to get data for. The itemtype must have a `ticket_tco` field.
-     * @param string $begin Date string for the beginning of the period to retrieve (based on buy or use date)
-     * @param string $end Date string for the end of the period to retrieve (based on buy or use date)
+     * @param string                   $begin    Date string for the beginning of the period to retrieve (based on buy or use date)
+     * @param string                   $end      Date string for the end of the period to retrieve (based on buy or use date)
      */
     public static function getDataForOtherInfocomReport(string $itemtype, string $begin, string $end): ?array
     {
@@ -439,8 +439,8 @@ class Infocom extends CommonDBChild
     /**
      * Fill, if necessary, automatically some dates when status changes
      *
-     * @param CommonDBTM $item          CommonDBTM object: the item whose status have changed
-     * @param boolean $action_add    true if object is added, false if updated (true by default)
+     * @param CommonDBTM $item       CommonDBTM object: the item whose status have changed
+     * @param boolean    $action_add true if object is added, false if updated (true by default)
      *
      * @return void
      **/
@@ -487,10 +487,10 @@ class Infocom extends CommonDBChild
     /**
      * Automatically manage copying one date to another is necessary
      *
-     * @param array $infocoms   array of item's infocom to modify
-     * @param string $field            the date to modify (default '')
-     * @param integer $action           the action to peform (copy from another date) (default 0)
-     * @param array $params     array of additional parameters needed to perform the task
+     * @param array   $infocoms array of item's infocom to modify
+     * @param string  $field    the date to modify (default '')
+     * @param integer $action   the action to peform (copy from another date) (default 0)
+     * @param array   $params   array of additional parameters needed to perform the task
      *
      * @return void
      **/
@@ -845,9 +845,9 @@ class Infocom extends CommonDBChild
     /**
      * Dropdown of amortissement type for infocoms
      *
-     * @param string  $name      select name
-     * @param integer $value     default value (default 0)
-     * @param boolean $display   display or get string (true by default)
+     * @param string  $name    select name
+     * @param integer $value   default value (default 0)
+     * @param boolean $display display or get string (true by default)
      **/
     public static function dropdownAmortType($name, $value = 0, $display = true)
     {
@@ -930,9 +930,9 @@ class Infocom extends CommonDBChild
     /**
      * Calculate TCO and TCO by month for an item
      *
-     * @param string|number $ticket_tco    Tco part of tickets
+     * @param string|number $ticket_tco Tco part of tickets
      * @param number        $value
-     * @param string        $date_achat    (default '')
+     * @param string        $date_achat (default '')
      *
      * @return string
      **/
@@ -968,9 +968,9 @@ class Infocom extends CommonDBChild
     /**
      * Show infocom link to display modal
      *
-     * @param class-string<CommonDBTM> $itemtype item type
-     * @param integer $device_id item ID
-     * @param boolean $display  display or not the link (default true)
+     * @param class-string<CommonDBTM> $itemtype  item type
+     * @param integer                  $device_id item ID
+     * @param boolean                  $display   display or not the link (default true)
      *
      * @return void|string
      **/
@@ -1055,11 +1055,11 @@ HTML;
     /**
      * Calculate amortization values
      *
-     * @param number        $value       Purchase value
-     * @param number        $duration    Amortise duration
-     * @param string        $fiscaldate  Begin of fiscal excercise
-     * @param string $buydate     Buy date
-     * @param string $usedate     Date of use
+     * @param number $value      Purchase value
+     * @param number $duration   Amortise duration
+     * @param string $fiscaldate Begin of fiscal excercise
+     * @param string $buydate    Buy date
+     * @param string $usedate    Date of use
      *
      * @return array|boolean
      */
@@ -1153,7 +1153,7 @@ HTML;
      * Maps new amortise format to old one...
      * To not rewrite all the old method.
      *
-     * @param array $values New format amortise values
+     * @param array   $values  New format amortise values
      * @param boolean $current True to get only current year, false to get the whole array
      *
      * @return array|double
@@ -1184,14 +1184,14 @@ HTML;
     /**
      * Calculate depreciation for an item
      *
-     * @param integer $type_amort    type of depreciation "linear=2" or "degressive=1"
-     * @param number  $va            valeur d'acquisition
-     * @param number  $duree         acquisition value
-     * @param number  $coef          amortization coefficient
-     * @param string|null  $date_achat    Date of purchase
-     * @param string|null  $date_use      Startup date
-     * @param string|null  $date_tax      start date of fiscal year
-     * @param string  $view          "n" for the current year or "all" for the complete table (default 'n')
+     * @param integer     $type_amort type of depreciation "linear=2" or "degressive=1"
+     * @param number      $va         valeur d'acquisition
+     * @param number      $duree      acquisition value
+     * @param number      $coef       amortization coefficient
+     * @param string|null $date_achat Date of purchase
+     * @param string|null $date_use   Startup date
+     * @param string|null $date_tax   start date of fiscal year
+     * @param string      $view       "n" for the current year or "all" for the complete table (default 'n')
      *
      * @return float|array|string Depreciation value or array of values. If an error occurs, return '-'.
      **/
@@ -1359,7 +1359,7 @@ HTML;
     /**
      * Show Infocom form for an item (not a standard showForm)
      *
-     * @param $item                  CommonDBTM object
+     * @param $item         CommonDBTM object
      * @param $withtemplate integer  template or basic item (default 0)
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
@@ -1960,12 +1960,12 @@ HTML;
     /**
      * Get date using a begin date and a period in month
      *
-     * @param string  $from          begin date
-     * @param integer $addwarranty   period in months
-     * @param integer $deletenotice  period in months of notice (default 0)
-     * @param boolean $color         if show expire date in red color (false by default)
+     * @param string  $from         begin date
+     * @param integer $addwarranty  period in months
+     * @param integer $deletenotice period in months of notice (default 0)
+     * @param boolean $color        if show expire date in red color (false by default)
      * @param boolean $auto_renew
-     * @param integer $periodicity   renewal periodicity in month if different from addwarranty
+     * @param integer $periodicity  renewal periodicity in month if different from addwarranty
      *
      * @return string Expiration date automatically converted to the user's preferred date format.
      *                The returned value is a safe HTML string.

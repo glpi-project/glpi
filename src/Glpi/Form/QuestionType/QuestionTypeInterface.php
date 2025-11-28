@@ -70,7 +70,7 @@ interface QuestionTypeInterface extends UsedAsCriteriaInterface
      * This method is called before saving the answer.
      *
      * @param Question $question The question data.
-     * @param mixed $answer The raw answer data.
+     * @param mixed    $answer   The raw answer data.
      * @return mixed The prepared answer data.
      */
     public function prepareEndUserAnswer(Question $question, mixed $answer): mixed;

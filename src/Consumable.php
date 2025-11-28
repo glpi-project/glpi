@@ -125,7 +125,7 @@ class Consumable extends CommonDBChild
     /**
      * send back to stock
      *
-     * @param array $input Array of item fields. Only the ID field is used here.
+     * @param array   $input   Array of item fields. Only the ID field is used here.
      * @param boolean $history Not used
      *
      * @return bool

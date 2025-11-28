@@ -91,8 +91,8 @@ class DbTestCase extends GLPITestCase
      *
      * @param string $user_name User name (defaults to TU_USER)
      * @param string $user_pass user password (defaults to TU_PASS)
-     * @param bool $noauto disable autologin (from CAS by example)
-     * @param bool $expected bool result expected from login return
+     * @param bool   $noauto    disable autologin (from CAS by example)
+     * @param bool   $expected  bool result expected from login return
      *
      */
     protected function realLogin(
@@ -152,7 +152,7 @@ class DbTestCase extends GLPITestCase
      * change current entity
      *
      * @param int|string $entityname Name of the entity (or its id)
-     * @param boolean $subtree   Recursive load
+     * @param boolean    $subtree    Recursive load
      *
      * @return void
      */
@@ -166,9 +166,9 @@ class DbTestCase extends GLPITestCase
     /**
      * Assert added object is inserted as expected (reload the object from DB)
      *
-     * @param  CommonDBTM $object The object to test
-     * @param  int        $id     The id of added object
-     * @param  array      $input  the input used for add object (optionnal)
+     * @param CommonDBTM $object The object to test
+     * @param int        $id     The id of added object
+     * @param array      $input  the input used for add object (optionnal)
      *
      * @return void
      */
@@ -208,7 +208,7 @@ class DbTestCase extends GLPITestCase
      * excluding classnames matching a pattern in $excludes
      *
      * @param string|false $function Whether to look for a function
-     * @param array $excludes List of classes to exclude
+     * @param array        $excludes List of classes to exclude
      *
      * @return array<int, class-string>
      */
@@ -264,8 +264,8 @@ class DbTestCase extends GLPITestCase
      *
      * @template T of CommonDBTM
      * @param class-string<T> $itemtype
-     * @param array $input
-     * @param array $skip_fields Fields that won't be checked after creation
+     * @param array           $input
+     * @param array           $skip_fields Fields that won't be checked after creation
      *
      * @return T
      */
@@ -293,8 +293,8 @@ class DbTestCase extends GLPITestCase
      *
      * @template T of CommonDBTM
      * @param class-string<T> $itemtype
-     * @param array $input
-     * @param array $skip_fields Fields that wont be checked after creation
+     * @param array           $input
+     * @param array           $skip_fields Fields that wont be checked after creation
      * @return T The updated item
      */
     protected function updateItem($itemtype, $id, $input, $skip_fields = []): CommonDBTM
@@ -318,7 +318,7 @@ class DbTestCase extends GLPITestCase
      * Create multiples items of the given class
      *
      * @param string $itemtype
-     * @param array $inputs
+     * @param array  $inputs
      *
      * @return array created items
      */
@@ -336,7 +336,7 @@ class DbTestCase extends GLPITestCase
      * Delete an item of the given class
      *
      * @param string $itemtype
-     * @param int $id
+     * @param int    $id
      *
      */
     protected function deleteItem($itemtype, $id, bool $purge = false): void
@@ -378,7 +378,7 @@ class DbTestCase extends GLPITestCase
      * Helper methods to quickly get the names of multiple items using their ids.
      *
      * @param class-string<CommonDBTM> $itemtype
-     * @param int[] $ids
+     * @param int[]                    $ids
      * @return string[]
      */
     protected function getItemsNames(string $itemtype, array $ids): array
@@ -579,8 +579,8 @@ class DbTestCase extends GLPITestCase
     /**
      * Helper method to enable a capacity on the given asset definition
      *
-     * @param AssetDefinition $definition           Asset definition
-     * @param string          $capacity_classname   Capacity to enable
+     * @param AssetDefinition $definition         Asset definition
+     * @param string          $capacity_classname Capacity to enable
      *
      * @return AssetDefinition Updated asset definition
      */
@@ -618,8 +618,8 @@ class DbTestCase extends GLPITestCase
     /**
      * Helper method to disable a capacity on the given asset definition
      *
-     * @param AssetDefinition $definition           Asset definition
-     * @param string          $capacity_classname   Capacity to disable
+     * @param AssetDefinition $definition         Asset definition
+     * @param string          $capacity_classname Capacity to disable
      *
      * @return AssetDefinition Updated asset definition
      */
@@ -666,7 +666,7 @@ class DbTestCase extends GLPITestCase
      * regardless of the order of elements.
      *
      * @param array $expected The expected array
-     * @param array $actual The actual array to compare against
+     * @param array $actual   The actual array to compare against
      */
     protected function assertArraysEqualRecursive($expected, $actual): void
     {

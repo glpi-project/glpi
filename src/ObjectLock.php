@@ -191,7 +191,7 @@ class ObjectLock extends CommonDBTM
     }
 
     /**
-     * @param string $itemtype
+     * @param string  $itemtype
      * @param integer $items_id
      *
      * @return false|ObjectLock returns ObjectLock if locked, else false
@@ -251,8 +251,8 @@ class ObjectLock extends CommonDBTM
     /**
      * Is the main function to be called in order to lock an item
      *
-     * @param  string $itemtype
-     * @param  array $options
+     * @param string $itemtype
+     * @param array  $options
      **/
     public static function manageObjectLock($itemtype, &$options)
     {
@@ -384,8 +384,8 @@ TWIG;
     }
 
     /**
-     * @param  string $itemtype
-     * @param  string $interface
+     * @param string $itemtype
+     * @param string $interface
      *
      * @return array empty array if itemtype is not lockable; else returns UNLOCK right
      **/

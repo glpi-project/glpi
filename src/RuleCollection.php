@@ -132,7 +132,7 @@ class RuleCollection extends CommonDBTM
      *
      * @param boolean $recursive (true by default)
      * @param integer $condition (0 by default)
-     * @param integer $children (0 by default)
+     * @param integer $children  (0 by default)
      *
      * @return integer number of rules
      **/
@@ -243,10 +243,10 @@ class RuleCollection extends CommonDBTM
      * Get Collection Part : retrieve descriptions of a range of rules
      *
      * @param array $options array of options may be :
-     *         - start : first rule (in the result set - default 0)
-     *         - limit : max number of rules to retrieve (default 0)
-     *         - recursive : boolean get recursive rules
-     *         - childrens : boolean get children rules
+     *                       - start : first rule (in the result set - default 0)
+     *                       - limit : max number of rules to retrieve (default 0)
+     *                       - recursive : boolean get recursive rules
+     *                       - childrens : boolean get children rules
      *
      * @return void
      **/
@@ -285,9 +285,9 @@ class RuleCollection extends CommonDBTM
     /**
      * Get Collection Data: retrieve descriptions and rules
      *
-     * @param integer $retrieve_criteria  Retrieve the criteria of the rules ? (default false)
-     * @param integer $retrieve_action    Retrieve the action of the rules ? (default 0)
-     * @param integer $condition          Retrieve with a specific condition
+     * @param integer $retrieve_criteria Retrieve the criteria of the rules ? (default false)
+     * @param integer $retrieve_action   Retrieve the action of the rules ? (default 0)
+     * @param integer $condition         Retrieve with a specific condition
      *
      * @return void
      **/
@@ -387,10 +387,10 @@ class RuleCollection extends CommonDBTM
     /**
      * Replay Collection on DB
      *
-     * @param int     $offset  first row to work on (default 0)
-     * @param int     $maxtime max system time to stop working (default 0)
-     * @param array   $items   array containing items to replay. If empty -> all
-     * @param array   $params  array additional parameters if needed
+     * @param int   $offset  first row to work on (default 0)
+     * @param int   $maxtime max system time to stop working (default 0)
+     * @param array $items   array containing items to replay. If empty -> all
+     * @param array $params  array additional parameters if needed
      *
      * @return int|false -1 if all rows done, else offset for next run, or false on error
      **/
@@ -497,7 +497,7 @@ class RuleCollection extends CommonDBTM
      * Show the list of rules
      *
      * @param string $target
-     * @param array $options
+     * @param array  $options
      *
      * @return void
      **/
@@ -864,10 +864,10 @@ TWIG, $twig_params);
     /**
      * Move a rule in an ordered collection
      *
-     * @param integer $ID        ID of the rule to move
-     * @param integer $ref_ID    ID of the rule position  (0 means all, so before all or after all)
-     * @param string|integer  $type  Movement type, one of self::MOVE_AFTER or self::MOVE_BEFORE or the new rank
-     * @param bool    $new_rule Whether we work on a new rule or existing one
+     * @param integer        $ID       ID of the rule to move
+     * @param integer        $ref_ID   ID of the rule position  (0 means all, so before all or after all)
+     * @param string|integer $type     Movement type, one of self::MOVE_AFTER or self::MOVE_BEFORE or the new rank
+     * @param bool           $new_rule Whether we work on a new rule or existing one
      *
      * @return boolean
      **/
@@ -1501,12 +1501,12 @@ TWIG, $twig_params);
     /**
      * Process all the rules collection
      *
-     * @param array $input    The input data used to check criterias
-     * @param array $output   The initial ouput array used to be manipulate by actions
-     * @param array $params   Parameters for all internal functions
-     * @param array $options  Options :
-     *                            - condition : specific condition to limit rule list
-     *                            - only_criteria : only react on specific criteria
+     * @param array $input   The input data used to check criterias
+     * @param array $output  The initial ouput array used to be manipulate by actions
+     * @param array $params  Parameters for all internal functions
+     * @param array $options Options :
+     *                       - condition : specific condition to limit rule list
+     *                       - only_criteria : only react on specific criteria
      *
      * @return array The output array updated by actions
      **/
@@ -1898,7 +1898,7 @@ TWIG, $twig_params);
      *
      * @param string  $itemtype               itemtype
      * @param boolean $check_dictionnary_type check if the itemtype is a dictionary or not
-     *                                  (false by default)
+     *                                        (false by default)
      *
      * @return RuleCollection|null
      */

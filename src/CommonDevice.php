@@ -392,14 +392,14 @@ abstract class CommonDevice extends CommonDropdown
      *
      * @throws Exception
      * @since 0.84
-     * @param string $itemtype The type of the item
-     * @param HTMLTableBase $base The element on which adding the header
-     *                            (ie.: HTMLTableMain or HTMLTableGroup)
-     * @param HTMLTableSuperHeader|null $super The super header
-     *                            (in case of adding to HTMLTableGroup) (default NULL)
-     * @param HTMLTableHeader|null $father The father of the current headers
-     *                            (default NULL)
-     * @param array $options parameter such as restriction
+     * @param string                    $itemtype The type of the item
+     * @param HTMLTableBase             $base     The element on which adding the header
+     *                                            (ie.: HTMLTableMain or HTMLTableGroup)
+     * @param HTMLTableSuperHeader|null $super    The super header
+     *                                            (in case of adding to HTMLTableGroup) (default NULL)
+     * @param HTMLTableHeader|null      $father   The father of the current headers
+     *                                            (default NULL)
+     * @param array                     $options  parameter such as restriction
      * @return HTMLTableHeader|void
      */
     public static function getHTMLTableHeader(
@@ -437,8 +437,8 @@ abstract class CommonDevice extends CommonDropdown
      * @throws Exception
      * @warning note the difference between getHTMLTableCellForItem and getHTMLTableCellsForItem
      * @since 0.84
-     * @param HTMLTableRow|null $row object
-     * @param CommonDBTM|null $item object (default NULL)
+     * @param HTMLTableRow|null  $row    object
+     * @param CommonDBTM|null    $item   object (default NULL)
      * @param HTMLTableCell|null $father object (default NULL)
      * @return HTMLTableCell|null
      */

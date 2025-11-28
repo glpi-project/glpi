@@ -190,7 +190,7 @@ trait CalDAVUriUtilTrait
     /**
      * Returns calendar item for given UID.
      *
-     * @param string  $uid
+     * @param string $uid
      *
      * @return (CalDAVCompatibleItemInterface&CommonDBTM)|null
      */
@@ -273,7 +273,7 @@ trait CalDAVUriUtilTrait
     /**
      * Returns calendar item for given path.
      *
-     * @param string  $path
+     * @param string $path
      *
      * @return (CalDAVCompatibleItemInterface&CommonDBTM)|null
      */

@@ -190,7 +190,7 @@ final class LogParser extends CommonGLPI
     /**
      * Send a log file as attachment to the browser.
      *
-     * @param string $filepath  Path of file to display (relative to log directory)
+     * @param string $filepath Path of file to display (relative to log directory)
      *
      */
     public function download(string $filepath): void
@@ -250,7 +250,7 @@ final class LogParser extends CommonGLPI
     /**
      * Get full path for given relative path.
      *
-     * @param string $filepath  Path of file to display (relative to log directory)
+     * @param string $filepath Path of file to display (relative to log directory)
      *
      */
     public function getFullPath(string $filepath): ?string

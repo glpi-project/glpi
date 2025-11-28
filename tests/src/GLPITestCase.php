@@ -221,8 +221,8 @@ class GLPITestCase extends TestCase
     /**
      * Call a private method, and get its return value.
      *
-     * @param mixed     $instance   Class instance
-     * @param string    $methodName Method to call
+     * @param mixed  $instance   Class instance
+     * @param string $methodName Method to call
      *
      * @return mixed
      */
@@ -237,8 +237,8 @@ class GLPITestCase extends TestCase
      * Call a private constructor, and get the created instance.
      *
      * @template T
-     * @param class-string<T>   $classname  Class to instanciate
-     * @param array             $args       Constructor arguments
+     * @param class-string<T> $classname Class to instanciate
+     * @param array           $args      Constructor arguments
      *
      * @return T
      */
@@ -256,8 +256,8 @@ class GLPITestCase extends TestCase
     /**
      * Get the value of a private property.
      *
-     * @param mixed     $instance       Class instance
-     * @param string    $propertyName   Property name
+     * @param mixed  $instance     Class instance
+     * @param string $propertyName Property name
      */
     protected function setPrivateProperty($instance, string $propertyName, $value)
     {
@@ -284,7 +284,7 @@ class GLPITestCase extends TestCase
     /**
      * Check that the session contains messages for the given level.
      *
-     * @param int $level one of the constant values (INFO, ERROR, WARNING) @see src/autoload/constants.php:105
+     * @param int           $level    one of the constant values (INFO, ERROR, WARNING) @see src/autoload/constants.php:105
      * @param array<string> $messages
      */
     protected function hasSessionMessages(int $level, array $messages): void

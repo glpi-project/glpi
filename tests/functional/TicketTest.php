@@ -1580,7 +1580,7 @@ class TicketTest extends DbTestCase
     /**
      * Checks showForm() output
      *
-     * @param Ticket $ticket   Ticket instance
+     * @param Ticket  $ticket   Ticket instance
      * @param boolean $name     Name is editable
      * @param boolean $textarea Content is editable
      * @param boolean $priority Priority can be changed

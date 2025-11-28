@@ -75,8 +75,8 @@ class ImportMapGenerator
     private $registered_plugin_modules = [];
 
     /**
-     * @param string $root_doc Root document URL path
-     * @param CacheInterface|null $cache Optional cache instance
+     * @param string              $root_doc Root document URL path
+     * @param CacheInterface|null $cache    Optional cache instance
      */
     public function __construct(string $root_doc, string $glpi_root, ?CacheInterface $cache = null)
     {
@@ -104,7 +104,7 @@ class ImportMapGenerator
      * Register a module path for a specific plugin
      *
      * @param string $plugin_key The plugin key
-     * @param string $path The path relative to the plugin directory
+     * @param string $path       The path relative to the plugin directory
      */
     public function registerModulesPath(string $plugin_key, string $path): void
     {
@@ -216,9 +216,9 @@ class ImportMapGenerator
      * Add modules from a directory to the import map
      *
      * @param array{imports: array<string, string>} $import_map Reference to the import map array
-     * @param string $dir Directory to scan
-     * @param string $base_path Base path for generating relative paths
-     * @param string|null $plugin_key Plugin key for module prefixing (null for core modules)
+     * @param string                                $dir        Directory to scan
+     * @param string                                $base_path  Base path for generating relative paths
+     * @param string|null                           $plugin_key Plugin key for module prefixing (null for core modules)
      */
     private function addModulesToImportMap(
         array &$import_map,

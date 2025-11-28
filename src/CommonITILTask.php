@@ -308,7 +308,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     /**
      * @since 0.84
      *
-     * @param $options   array
+     * @param $options array
      **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
@@ -332,9 +332,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     /**
      * @since 0.84
      *
-     * @param $name            (default '')
-     * @param $values          (default '')
-     * @param $options   array
+     * @param $name    (default '')
+     * @param $values  (default '')
+     * @param $options array
      *
      * @return string
      **/
@@ -423,9 +423,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      * This function ensures a bidirectional link between the task duration and the planned duration.
      * These two fields can be a bit redundant when task planning is enabled.
      *
-     * @param array $input The input array, passed by reference.
-     * @param int $timestart The start time of the task.
-     * @param int $timeend The end time of the task.
+     * @param array $input     The input array, passed by reference.
+     * @param int   $timestart The start time of the task.
+     * @param int   $timeend   The end time of the task.
      */
     private function handleTaskDuration(array &$input, int $timestart, int $timeend): void
     {
@@ -1290,13 +1290,13 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      * Populate the planning with planned tasks
      *
      * @param string $itemtype itemtype
-     * @param array $options   options must contains :
-     *    - who                ID of the user (0 = undefined)
-     *    - whogroup           ID of the group of users (0 = undefined)
-     *    - begin              Date
-     *    - end                Date
-     *    - color
-     *    - event_type_color
+     * @param array  $options  options must contains :
+     *                         - who                ID of the user (0 = undefined)
+     *                         - whogroup           ID of the group of users (0 = undefined)
+     *                         - begin              Date
+     *                         - end                Date
+     *                         - color
+     *                         - event_type_color
      *
      * @return false|array of planning item
      **/
@@ -1556,13 +1556,13 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      * Populate the planning with not planned tasks
      *
      * @param string $itemtype itemtype
-     * @param array $options   options must contains :
-     *    - who                ID of the user (0 = undefined)
-     *    - whogroup           ID of the group of users (0 = undefined)
-     *    - begin              Date
-     *    - end                Date
-     *    - color
-     *    - event_type_color
+     * @param array  $options  options must contains :
+     *                         - who                ID of the user (0 = undefined)
+     *                         - whogroup           ID of the group of users (0 = undefined)
+     *                         - begin              Date
+     *                         - end                Date
+     *                         - color
+     *                         - event_type_color
      *
      * @return array of planning item
      **/
@@ -1575,11 +1575,11 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     /**
      * Display a Planning Item
      *
-     * @param string          $itemtype  itemtype
-     * @param array           $val       the item to display
-     * @param integer         $who       ID of the user (0 if all)
-     * @param string          $type      position of the item in the time block (in, through, begin or end)
-     * @param integer|boolean $complete  complete display (more details) (default 0)
+     * @param string          $itemtype itemtype
+     * @param array           $val      the item to display
+     * @param integer         $who      ID of the user (0 if all)
+     * @param string          $type     position of the item in the time block (in, through, begin or end)
+     * @param integer|boolean $complete complete display (more details) (default 0)
      *
      * @return false|string Output
      **/
@@ -1719,9 +1719,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      * @since 9.2
      *
      * @param string $status
-     * @param bool $showgrouptickets
-     * @param ?int $start
-     * @param ?int $limit
+     * @param bool   $showgrouptickets
+     * @param ?int   $start
+     * @param ?int   $limit
      *
      * @return DBmysqlIterator
      */

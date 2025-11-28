@@ -359,10 +359,10 @@ class Item_SoftwareLicense extends CommonDBRelation
     /**
      * Get number of installed licenses of a license
      *
-     * @param integer $softwarelicenses_id license ID
-     * @param integer|string $entity       to search for item in (default = all entities)
-     *                                     (default '') -1 means no entity restriction
-     * @param string $itemtype             Item type to filter on. Use null for all itemtypes
+     * @param integer        $softwarelicenses_id license ID
+     * @param integer|string $entity              to search for item in (default = all entities)
+     *                                            (default '') -1 means no entity restriction
+     * @param string         $itemtype            Item type to filter on. Use null for all itemtypes
      *
      * @return integer number of installations
      **/
@@ -1089,8 +1089,8 @@ JAVASCRIPT;
     /**
      * Get licenses list corresponding to an installation
      *
-     * @param string $itemtype          Type of item
-     * @param integer $items_id         ID of the item
+     * @param string  $itemtype            Type of item
+     * @param integer $items_id            ID of the item
      * @param integer $softwareversions_id ID of the version
      *
      * @return array

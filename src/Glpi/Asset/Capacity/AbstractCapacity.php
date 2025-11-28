@@ -164,8 +164,8 @@ abstract class AbstractCapacity implements CapacityInterface
     /**
      * Count the number of assets for the given asset definition.
      *
-     * @param class-string<Asset> $classname
-     * @param array<string, mixed>            $where_clause
+     * @param class-string<Asset>  $classname
+     * @param array<string, mixed> $where_clause
      *
      */
     protected function countAssets(string $classname, array $where_clause = []): int

@@ -130,7 +130,7 @@ class DataHelpersExtension extends AbstractExtension
      * Return human readable duration.
      *
      * @param mixed $duration
-     * @param bool $display_seconds (default: true)
+     * @param bool  $display_seconds (default: true)
      *
      */
     public function getFormattedDuration(
@@ -210,9 +210,9 @@ class DataHelpersExtension extends AbstractExtension
     /**
      * Return plain text from HTML (rich text).
      *
-     * @param mixed $string             HTML string to be made safe
-     * @param bool  $keep_presentation  Indicates whether the presentation elements have to be replaced by plaintext equivalents
-     * @param bool  $compact            Indicates whether the output should be compact (limited line length, no links URL, ...)
+     * @param mixed $string            HTML string to be made safe
+     * @param bool  $keep_presentation Indicates whether the presentation elements have to be replaced by plaintext equivalents
+     * @param bool  $compact           Indicates whether the output should be compact (limited line length, no links URL, ...)
      *
      * @return mixed
      */
@@ -271,7 +271,7 @@ class DataHelpersExtension extends AbstractExtension
      *
      *
      * @deprecated 11.0
-     * @param mixed  $string
+     * @param mixed $string
      * @return mixed
      */
     public function getVerbatimValue($string)
@@ -289,8 +289,8 @@ class DataHelpersExtension extends AbstractExtension
     /**
      * return the provided string truncated on the left and prepend a prefix separator if length is reached
      *
-     * @param string $string the string to left truncate
-     * @param int    $length number of char to preserve
+     * @param string $string    the string to left truncate
+     * @param int    $length    number of char to preserve
      * @param string $separator prefix to prepend to the string
      *
      * @return string truncated string

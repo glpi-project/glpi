@@ -81,8 +81,8 @@ class HTMLTableRow extends HTMLTableEntity
 
     /**
      * @param HTMLTableHeader $header object
-     * @param ?HTMLTableCell $father object (default NULL)
-     * @param ?CommonDBTM $item object: The item associated with the current cell (default NULL)
+     * @param ?HTMLTableCell  $father object (default NULL)
+     * @param ?CommonDBTM     $item   object: The item associated with the current cell (default NULL)
      **/
     public function addCell(
         HTMLTableHeader $header,
@@ -192,7 +192,7 @@ class HTMLTableRow extends HTMLTableEntity
     }
 
     /**
-     * @param $sub_name  (default NULL)
+     * @param $sub_name (default NULL)
      */
     public function getHeaderByName($name, $sub_name = null)
     {

@@ -367,7 +367,7 @@ class Item_Rack extends CommonDBRelation
 
     /**
      * Print racks items
-     * @param  Rack   $rack the current rack instance
+     * @param Rack $rack the current rack instance
      */
     public static function showItems(Rack $rack): bool
     {
@@ -440,7 +440,7 @@ class Item_Rack extends CommonDBRelation
 
     /**
      * Display a mini stats block (wiehgt, power, etc) for the current rack instance
-     * @param  Rack   $rack the current rack instance
+     * @param Rack $rack the current rack instance
      * @return void
      */
     public static function showStats(Rack $rack)
@@ -884,7 +884,7 @@ class Item_Rack extends CommonDBRelation
 
     /**
      * Return an i html tag with a dedicated icon for the itemtype
-     * @param  string $itemtype  A rackable itemtype
+     * @param string $itemtype A rackable itemtype
      * @return string           The i html tag
      */
     private static function getItemIcon($itemtype = "")

@@ -917,9 +917,9 @@ class ITILFollowup extends CommonDBChild
 
     /** form for Followup
      *
-     *@param $ID      integer : Id of the followup
-     *@param $options array of possible options:
-     *     - item Object : the ITILObject parent
+     * @param $ID      integer : Id of the followup
+     * @param $options array of possible options:
+     *                 - item Object : the ITILObject parent
      **/
     public function showForm($ID, array $options = [])
     {

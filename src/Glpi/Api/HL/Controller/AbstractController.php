@@ -116,7 +116,7 @@ abstract class AbstractController
 
     /**
      * Get a schema by name and API version
-     * @param string $name The name of the schema
+     * @param string $name        The name of the schema
      * @param string $api_version The API version
      */
     protected function getKnownSchema(string $name, string $api_version): ?array
@@ -126,10 +126,10 @@ abstract class AbstractController
     }
 
     /**
-     * @param class-string<CommonDBTM> $class The class this schema represents. Used in the SQL join.
-     * @param string|null $field The SQL field to use as a reference in the SQL join.
-     * @param string $name_field The field that contains the name
-     * @param string|null $full_schema The name of the schema that represents the full object
+     * @param class-string<CommonDBTM> $class       The class this schema represents. Used in the SQL join.
+     * @param string|null              $field       The SQL field to use as a reference in the SQL join.
+     * @param string                   $name_field  The field that contains the name
+     * @param string|null              $full_schema The name of the schema that represents the full object
      * @return array The schema
      */
     public static function getDropdownTypeSchema(string $class, ?string $field = null, string $name_field = 'name', ?string $full_schema = null): array
@@ -179,8 +179,8 @@ abstract class AbstractController
     }
 
     /**
-     * @param AdditionalErrorMessage[] $additionalMessages
-     * @phpstan-param self::ERROR_* $status
+     * @param         AdditionalErrorMessage[] $additionalMessages
+     * @phpstan-param self::ERROR_*            $status
      * @phpstan-return ErrorResponseBody
      */
     public static function getErrorResponseBody(string $status, string $title, string|array|null $detail = null, array $additionalMessages = []): array
@@ -251,7 +251,7 @@ abstract class AbstractController
 
     /**
      * @param array{missing?: array<string>, invalid?: InvalidParameterInfo[]} $errors
-     * @param array<string, mixed> $headers
+     * @param array<string, mixed>                                             $headers
      */
     public static function getInvalidParametersErrorResponse(array $errors = [], array $headers = []): Response
     {

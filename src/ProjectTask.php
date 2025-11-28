@@ -643,7 +643,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Set automatically the effective duration if not set
      * @param string $startdate the start date
-     * @param string $enddate the end date
+     * @param string $enddate   the end date
      *
      * @return int the effective duration
      * @throws Exception if the start or end date is not valid dates
@@ -761,10 +761,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Print the Project task form
      *
-     * @param integer $ID Id of the project task
-     * @param array $options of possible options:
-     *     - target form target
-     *     - projects_id ID of the software for add process
+     * @param integer $ID      Id of the project task
+     * @param array   $options of possible options:
+     *                         - target form target
+     *                         - projects_id ID of the software for add process
      *
      * @return bool True if displayed, false if item not found or not right to display
      **/
@@ -1597,8 +1597,8 @@ TWIG, $twig_params);
     /**
      * Get the list of active project tasks for a list of users
      *
-     * @param array $users_id The user IDs.
-     * @param bool $search_in_groups Whether to search in groups.
+     * @param array $users_id         The user IDs.
+     * @param bool  $search_in_groups Whether to search in groups.
      * @return array The list of projecttask IDs.
      */
     public static function getActiveProjectTaskIDsForUser(array $users_id, bool $search_in_groups = true): array
@@ -1794,12 +1794,12 @@ TWIG, $twig_params);
      * @since 9.1
      *
      * @param array $options of possible options:
-     *    - who         ID of the user (0 = undefined)
-     *    - whogroup    ID of the group of users (0 = undefined)
-     *    - begin       Date
-     *    - end         Date
-     *    - color
-     *    - event_type_color
+     *                       - who         ID of the user (0 = undefined)
+     *                       - whogroup    ID of the group of users (0 = undefined)
+     *                       - begin       Date
+     *                       - end         Date
+     *                       - color
+     *                       - event_type_color
      *
      * @return array of planning item
      **/
@@ -2003,12 +2003,12 @@ TWIG, $twig_params);
      * @since 9.1
      *
      * @param array $options of possible options:
-     *    - who         ID of the user (0 = undefined)
-     *    - whogroup    ID of the group of users (0 = undefined)
-     *    - begin       Date
-     *    - end         Date
-     *    - color
-     *    - event_type_color
+     *                       - who         ID of the user (0 = undefined)
+     *                       - whogroup    ID of the group of users (0 = undefined)
+     *                       - begin       Date
+     *                       - end         Date
+     *                       - color
+     *                       - event_type_color
      *
      * @return array of planning item
      * @used-by Planning
@@ -2024,10 +2024,10 @@ TWIG, $twig_params);
      *
      * @since 9.1
      *
-     * @param array $val Array of the items to display
-     * @param integer $who ID of the user (0 if all)
-     * @param string $type Position of the item in the time block (in, through, begin or end)
-     *                         (default '')
+     * @param array   $val      Array of the items to display
+     * @param integer $who      ID of the user (0 if all)
+     * @param string  $type     Position of the item in the time block (in, through, begin or end)
+     *                          (default '')
      * @param integer $complete (Not used)
      *
      * @return string

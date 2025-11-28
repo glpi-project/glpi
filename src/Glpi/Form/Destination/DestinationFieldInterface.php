@@ -59,10 +59,10 @@ interface DestinationFieldInterface
     /**
      * Render the input field for this configuration.
      *
-     * @param string     $input_name Input name supplied by the controller.
-     *                               Must be reused in the actual input field.
-     * @param array      $display_options Common twig options to display the
-     *                                    input.
+     * @param string $input_name      Input name supplied by the controller.
+     *                                Must be reused in the actual input field.
+     * @param array  $display_options Common twig options to display the
+     *                                input.
      *
      */
     public function renderConfigForm(
@@ -87,8 +87,8 @@ interface DestinationFieldInterface
     /**
      * Process field after all destinations have been created
      *
-     * @param JsonFieldInterface $config The field configuration
-     * @param AnswersSet $answers_set The answers from the form
+     * @param JsonFieldInterface       $config          The field configuration
+     * @param AnswersSet               $answers_set     The answers from the form
      * @param array<int, CommonDBTM[]> $created_objects Array mapping destination_id to created objects
      */
     public function applyConfiguratedValueAfterDestinationCreation(

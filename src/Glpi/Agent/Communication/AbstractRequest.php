@@ -350,7 +350,7 @@ abstract class AbstractRequest
     /**
      * Handle Task
      *
-     * @param string $task  Task (one of self::*_TASK)
+     * @param string $task Task (one of self::*_TASK)
      *
      */
     abstract protected function handleTask(string $task): array;

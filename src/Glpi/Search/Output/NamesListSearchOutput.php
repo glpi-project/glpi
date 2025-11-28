@@ -125,8 +125,8 @@ final class NamesListSearchOutput extends ExportSearchOutput
     }
 
     /**
-     * @param int $rows
-     * @param int $cols
+     * @param int  $rows
+     * @param int  $cols
      * @param bool $fixed
      *
      */
@@ -141,8 +141,8 @@ final class NamesListSearchOutput extends ExportSearchOutput
 
     /**
      * @param string $value
-     * @param int $num
-     * @param int $row
+     * @param int    $num
+     * @param int    $row
      * @param string $extraparam
      *
      */

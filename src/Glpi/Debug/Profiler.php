@@ -76,7 +76,7 @@ final class Profiler
 
     /**
      * Starts a new section in the profiler. This section will be stopped when Profiler::stop() is called with the same name.
-     * @param string $name The name of the section. This name will be used to stop the section later.
+     * @param string $name     The name of the section. This name will be used to stop the section later.
      * @param string $category The category of the section. See Profiler::CATEGORY_* for some predefined categories.
      */
     public function start(string $name, string $category = self::CATEGORY_CORE): void
@@ -125,8 +125,8 @@ final class Profiler
 
     /**
      * Stops a section started with Profiler::start()
-     * @param string $name The name of the section to stop. This name must be the same as the one used in Profiler::start()
-     * @param bool $auto_ended Whether the section was automatically ended (e.g. at the end of the request)
+     * @param string $name       The name of the section to stop. This name must be the same as the one used in Profiler::start()
+     * @param bool   $auto_ended Whether the section was automatically ended (e.g. at the end of the request)
      * @return int The duration of the section in milliseconds
      */
     public function stop(string $name, bool $auto_ended = false): int

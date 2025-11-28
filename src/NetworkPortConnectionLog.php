@@ -86,7 +86,7 @@ class NetworkPortConnectionLog extends CommonDBRelation
     }
 
     /**
-     * @param array       $user_filters
+     * @param array $user_filters
      *
      * @return void
      */

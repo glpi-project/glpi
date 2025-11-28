@@ -480,7 +480,7 @@ class AuthLDAP extends CommonDBTM
      *
      * @param integer $ID      ID of the item
      * @param array   $options Options
-     *     - target for the form
+     *                         - target for the form
      *
      * @return void|boolean (display) Returns false if there is a rights error.
      */
@@ -1366,7 +1366,7 @@ TWIG, ['authldaps_id' => $ID]);
     /**
      * Test a LDAP connection
      *
-     * @param integer $auths_id ID of the LDAP server
+     * @param integer $auths_id     ID of the LDAP server
      * @param integer $replicate_id use a replicate if > 0 (default -1)
      *
      * @return boolean connection succeeded?
@@ -1734,14 +1734,14 @@ TWIG, $twig_params);
     /**
      * Search users
      *
-     * @param Connection $ds An LDAP link identifier
-     * @param array    $values        values to search
-     * @param string   $filter        search filter
-     * @param array    $attrs         An array of the required attributes
-     * @param boolean  $limitexceeded is limit exceeded
-     * @param array    $user_infos    user information
-     * @param array    $ldap_users    ldap users
-     * @param object   $config_ldap   ldap configuration
+     * @param Connection $ds            An LDAP link identifier
+     * @param array      $values        values to search
+     * @param string     $filter        search filter
+     * @param array      $attrs         An array of the required attributes
+     * @param boolean    $limitexceeded is limit exceeded
+     * @param array      $user_infos    user information
+     * @param array      $ldap_users    ldap users
+     * @param object     $config_ldap   ldap configuration
      *
      * @return boolean
      */
@@ -1888,14 +1888,14 @@ TWIG, $twig_params);
      * Get the list of LDAP users to add/synchronize
      *
      * @param array   $options       possible options:
-     *          - authldaps_id ID of the server to use
-     *          - mode user to synchronize or add?
-     *          - ldap_filter ldap filter to use
-     *          - basedn force basedn (default authldaps_id one)
-     *          - order display order
-     *          - begin_date begin date to time limit
-     *          - end_date end date to time limit
-     *          - script true if called by an external script
+     *                               - authldaps_id ID of the server to use
+     *                               - mode user to synchronize or add?
+     *                               - ldap_filter ldap filter to use
+     *                               - basedn force basedn (default authldaps_id one)
+     *                               - order display order
+     *                               - begin_date begin date to time limit
+     *                               - end_date end date to time limit
+     *                               - script true if called by an external script
      * @param array   $results       result stats
      * @param boolean $limitexceeded limit exceeded exception
      *
@@ -2366,7 +2366,7 @@ TWIG, $twig_params);
      * Get the group's cn by giving his DN
      *
      * @param Connection $ldap_connection ldap connection to use
-     * @param string   $group_dn        the group's dn
+     * @param string     $group_dn        the group's dn
      *
      * @return false|string the group cn
      */
@@ -2401,12 +2401,12 @@ TWIG, $twig_params);
      *
      * @since 0.84 new parameter $limitexceeded
      *
-     * @param Connection $ldap_connection LDAP connection
-     * @param object   $config_ldap      LDAP configuration
-     * @param string   $filter           Filters
-     * @param boolean  $limitexceeded    Is limit exceeded
-     * @param boolean  $search_in_groups Search in groups (true by default)
-     * @param array    $groups           Groups to search
+     * @param Connection $ldap_connection  LDAP connection
+     * @param object     $config_ldap      LDAP configuration
+     * @param string     $filter           Filters
+     * @param boolean    $limitexceeded    Is limit exceeded
+     * @param boolean    $search_in_groups Search in groups (true by default)
+     * @param array      $groups           Groups to search
      *
      * @return array
      */
@@ -2618,10 +2618,10 @@ TWIG, $twig_params);
     /**
      * Import a user from a specific ldap server
      *
-     * @param array $params of parameters: method (IDENTIFIER_LOGIN or IDENTIFIER_EMAIL) + value
-     * @param int $action synchronize (self::ACTION_SYNCHRONIZE) or import (self::ACTION_IMPORT)
+     * @param array   $params      of parameters: method (IDENTIFIER_LOGIN or IDENTIFIER_EMAIL) + value
+     * @param int     $action      synchronize (self::ACTION_SYNCHRONIZE) or import (self::ACTION_IMPORT)
      * @param integer $ldap_server ID of the LDAP server to use
-     * @param boolean $display display message information on redirect (false by default)
+     * @param boolean $display     display message information on redirect (false by default)
      *
      * @return array|boolean  with state, else false
      * @throws SodiumException
@@ -2779,10 +2779,10 @@ TWIG, $twig_params);
      * Import grousp from an LDAP directory
      *
      * @param string $group_dn dn of the group to import
-     * @param array $options array for
-     *             - authldaps_id
-     *             - entities_id where group must to be imported
-     *             - is_recursive
+     * @param array  $options  array for
+     *                         - authldaps_id
+     *                         - entities_id where group must to be imported
+     *                         - is_recursive
      *
      * @return integer|false
      * @throws SodiumException
@@ -2849,18 +2849,18 @@ TWIG, $twig_params);
     /**
      * Connect to a LDAP server
      *
-     * @param string  $host                 LDAP host to connect
-     * @param string  $port                 port to use
-     * @param string  $login                login to use (default '')
-     * @param string  $password             password to use (default '')
-     * @param boolean $use_tls              use a TLS connection? (false by default)
-     * @param integer $deref_options        deref options used
-     * @param string  $tls_certfile         TLS CERT file name within config directory (default '')
-     * @param string  $tls_keyfile          TLS KEY file name within config directory (default '')
-     * @param boolean $use_bind             do we need to do an ldap_bind? (true by default)
+     * @param string  $host               LDAP host to connect
+     * @param string  $port               port to use
+     * @param string  $login              login to use (default '')
+     * @param string  $password           password to use (default '')
+     * @param boolean $use_tls            use a TLS connection? (false by default)
+     * @param integer $deref_options      deref options used
+     * @param string  $tls_certfile       TLS CERT file name within config directory (default '')
+     * @param string  $tls_keyfile        TLS KEY file name within config directory (default '')
+     * @param boolean $use_bind           do we need to do an ldap_bind? (true by default)
      * @param int     $timeout
-     * @param string  $tls_version          TLS VERSION (default '')
-     * @param bool    $silent_bind_errors   Indicates whether bind errors must be silented
+     * @param string  $tls_version        TLS VERSION (default '')
+     * @param bool    $silent_bind_errors Indicates whether bind errors must be silented
      *
      * @return false|Connection link to the LDAP server : false if connection failed
      */
@@ -3038,9 +3038,9 @@ TWIG, $twig_params);
     /**
      * Try to connect to a ldap server
      *
-     * @param array $ldap_method ldap_method array to use
-     * @param string $login User Login
-     * @param string $password User Password
+     * @param array  $ldap_method ldap_method array to use
+     * @param string $login       User Login
+     * @param string $password    User Password
      *
      * @return Connection|boolean link to the LDAP server : false if connection failed
      * @throws SodiumException
@@ -3167,7 +3167,7 @@ TWIG, $twig_params);
      * Check all the directories. When the user is found, then import it
      *
      * @param array $options array containing condition:
-     *                 array('name'=>'glpi') or array('email' => 'test at test.com')
+     *                       array('name'=>'glpi') or array('email' => 'test at test.com')
      *
      * @return array|boolean false if fail
      * @throws SodiumException
@@ -3216,12 +3216,12 @@ TWIG, $twig_params);
     /**
      * Authentify a user by checking a specific directory
      *
-     * @param Auth      $auth        identification object
-     * @param string    $login       user login
-     * @param string    $password    user password
-     * @param array     $ldap_method ldap_method array to use
-     * @param bool      $user_dn     user LDAP DN if present (note: value is always ignored, TODO: investigate and cleanup)
-     * @param bool      $error       Boolean flag that will be set to `true` if a LDAP error occurs during connection
+     * @param Auth   $auth        identification object
+     * @param string $login       user login
+     * @param string $password    user password
+     * @param array  $ldap_method ldap_method array to use
+     * @param bool   $user_dn     user LDAP DN if present (note: value is always ignored, TODO: investigate and cleanup)
+     * @param bool   $error       Boolean flag that will be set to `true` if a LDAP error occurs during connection
      *
      * @return object identification object
      */
@@ -3375,14 +3375,14 @@ TWIG, $twig_params);
     /**
      * Get dn for a user
      *
-     * @param Connection $ds LDAP link
-     * @param array    $options array of possible options:
-     *          - basedn : base dn used to search
-     *          - login_field : attribute to store login
-     *          - search_parameters array of search parameters
-     *          - user_params  array of parameters : method (IDENTIFIER_LOGIN or IDENTIFIER_EMAIL) + value
-     *          - condition : ldap condition used
-     * @param bool|null $error  Boolean flag that will be set to `true` if a LDAP error occurs during operation
+     * @param Connection $ds      LDAP link
+     * @param array      $options array of possible options:
+     *                            - basedn : base dn used to search
+     *                            - login_field : attribute to store login
+     *                            - search_parameters array of search parameters
+     *                            - user_params  array of parameters : method (IDENTIFIER_LOGIN or IDENTIFIER_EMAIL) + value
+     *                            - condition : ldap condition used
+     * @param bool|null  $error   Boolean flag that will be set to `true` if a LDAP error occurs during operation
      *
      * @return array|boolean dn of the user, else false
      * @throws RuntimeException
@@ -3484,12 +3484,12 @@ TWIG, $twig_params);
     /**
      * Get an object from LDAP by giving his DN
      *
-     * @param Connection $ds the active connection to the directory
-     * @param string    $condition  the LDAP filter to use for the search
-     * @param string    $dn         DN of the object
-     * @param array     $attrs      Array of the attributes to retrieve
-     * @param boolean   $clean      (true by default)
-     * @param bool|null $error      Boolean flag that will be set to `true` if a LDAP error occurs during operation
+     * @param Connection $ds        the active connection to the directory
+     * @param string     $condition the LDAP filter to use for the search
+     * @param string     $dn        DN of the object
+     * @param array      $attrs     Array of the attributes to retrieve
+     * @param boolean    $clean     (true by default)
+     * @param bool|null  $error     Boolean flag that will be set to `true` if a LDAP error occurs during operation
      *
      * @return array|boolean false if failed
      */
@@ -3531,11 +3531,11 @@ TWIG, $twig_params);
     /**
      * Get user by domain name
      *
-     * @param Connection $ds the active connection to the directory
-     * @param string    $user_dn    domain name
-     * @param array     $attrs      attributes
-     * @param boolean   $clean      (true by default)
-     * @param bool|null $error      Boolean flag that will be set to `true` if a LDAP error occurs during operation
+     * @param Connection $ds      the active connection to the directory
+     * @param string     $user_dn domain name
+     * @param array      $attrs   attributes
+     * @param boolean    $clean   (true by default)
+     * @param bool|null  $error   Boolean flag that will be set to `true` if a LDAP error occurs during operation
      *
      * @return array|boolean false if failed
      */
@@ -3551,8 +3551,8 @@ TWIG, $twig_params);
     /**
      * Get infos for groups
      *
-     * @param Connection $ds LDAP link
-     * @param string   $group_dn dn of the group
+     * @param Connection $ds       LDAP link
+     * @param string     $group_dn dn of the group
      *
      * @return array|boolean group infos if found, else false
      */
@@ -4050,9 +4050,9 @@ TWIG, $twig_params);
     /**
      * Get ldap query results and clean them at the same time
      *
-     * @param Connection $link link to the directory connection
+     * @param Connection $link   link to the directory connection
      * @param Result     $result the query results
-     * @param bool|null $error  Boolean flag that will be set to `true` if a LDAP error occurs during operation
+     * @param bool|null  $error  Boolean flag that will be set to `true` if a LDAP error occurs during operation
      *
      * @return array which contains ldap query results
      */
@@ -4107,8 +4107,8 @@ TWIG, $twig_params);
      *
      * @since 0.84
      *
-     * @param ($check_config_value is true ? object : false)   $config_ldap        LDAP configuration. May only be false if $check_config_value is also false.
-     * @param boolean  $check_config_value Whether to check config values
+     * @param ($check_config_value is true ? object : false) $config_ldap        LDAP configuration. May only be false if $check_config_value is also false.
+     * @param boolean                                        $check_config_value Whether to check config values
      *
      * @return boolean true if maxPageSize can be used, false otherwise
      */
@@ -4126,9 +4126,9 @@ TWIG, $twig_params);
     /**
      * Does LDAP user already exists in the database?
      *
-     * @param string  $name          User login/name
-     * @param integer $authldaps_id  LDAP authentication server ID
-     * @param ?string $sync          Sync field
+     * @param string  $name         User login/name
+     * @param integer $authldaps_id LDAP authentication server ID
+     * @param ?string $sync         Sync field
      *
      * @return false|User
      */
@@ -4283,14 +4283,14 @@ TWIG, $twig_params);
      * When importing, already existing users will be filtered
      *
      * @param array   $values        possible options:
-     *          - authldaps_id ID of the server to use
-     *          - mode user to synchronise or add?
-     *          - ldap_filter ldap filter to use
-     *          - basedn force basedn (default authldaps_id one)
-     *          - order display order
-     *          - begin_date begin date to time limit
-     *          - end_date end date to time limit
-     *          - script true if called by an external script
+     *                               - authldaps_id ID of the server to use
+     *                               - mode user to synchronise or add?
+     *                               - ldap_filter ldap filter to use
+     *                               - basedn force basedn (default authldaps_id one)
+     *                               - order display order
+     *                               - begin_date begin date to time limit
+     *                               - end_date end date to time limit
+     *                               - script true if called by an external script
      * @param array   $results       result stats
      * @param boolean $limitexceeded limit exceeded exception
      *

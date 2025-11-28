@@ -135,10 +135,10 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
     /**
      * Print the appliance form
      *
-     * @param $ID        integer ID of the item
-     * @param $options   array
-     *     - target filename : where to go when done.
-     *     - withtemplate boolean : template or basic item
+     * @param $ID      integer ID of the item
+     * @param $options array
+     *                 - target filename : where to go when done.
+     *                 - withtemplate boolean : template or basic item
      *
      * @return boolean item found
      */

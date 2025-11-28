@@ -98,8 +98,8 @@ final class Firewall
     private static array $plugins_legacy_scripts_strategies = [];
 
     /**
-     * @param ?string $glpi_root             GLPI root directory on filesystem
-     * @param ?array  $plugin_directories         GLPI plugins root directories on filesystem
+     * @param ?string $glpi_root          GLPI root directory on filesystem
+     * @param ?array  $plugin_directories GLPI plugins root directories on filesystem
      */
     public function __construct(?string $glpi_root = null, ?array $plugin_directories = null)
     {
@@ -110,9 +110,9 @@ final class Firewall
     /**
      * Add a security strategy for specific plugin legacy scripts.
      *
-     * @param string $plugin_key    The plugin key.
-     * @param string $pattern       The resource pattern, relative to the plugin root URI (e.g. `#^/front/api.php/#`).
-     * @param string $strategy      The strategy to apply.
+     * @param string $plugin_key The plugin key.
+     * @param string $pattern    The resource pattern, relative to the plugin root URI (e.g. `#^/front/api.php/#`).
+     * @param string $strategy   The strategy to apply.
      *
      * @phpstan-param self::STRATEGY_* $strategy
      */

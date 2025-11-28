@@ -68,7 +68,7 @@ class Request extends AbstractRequest
     /**
      * Handle Query
      *
-     * @param string $action   Query mode (one of self::*_QUERY or self::*_ACTION)
+     * @param string     $action  Query mode (one of self::*_QUERY or self::*_ACTION)
      * @param mixed|null $content Contents, optional
      *
      * @return boolean
@@ -114,7 +114,7 @@ class Request extends AbstractRequest
     /**
      * Handle Task
      *
-     * @param string $task  Task (one of self::*_TASK)
+     * @param string $task Task (one of self::*_TASK)
      *
      */
     protected function handleTask(string $task): array

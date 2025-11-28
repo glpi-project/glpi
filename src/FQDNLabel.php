@@ -70,8 +70,8 @@ abstract class FQDNLabel extends CommonDBChild
     /**
      * Get the internet name from a label and a domain ID
      *
-     * @param string  $label   the label of the computer or its alias
-     * @param integer $domain  id of the domain that owns the item
+     * @param string  $label  the label of the computer or its alias
+     * @param integer $domain id of the domain that owns the item
      *
      * @return string  result the full internet name
      **/
@@ -91,7 +91,7 @@ abstract class FQDNLabel extends CommonDBChild
      * Check a label regarding section 2.1 of RFC 1123 : 63 lengths and no other characters
      * than alphanumerics. Minus ('-') is allowed if it is not at the end or begin of the lable.
      *
-     * @param string $label  the label to check
+     * @param string $label the label to check
      *
      * @return bool
      */
@@ -246,8 +246,8 @@ abstract class FQDNLabel extends CommonDBChild
     /**
      * Look for "computer name" inside all databases
      *
-     * @param string  $fqdn             name to search (for instance : forge.indepnet.net)
-     * @param boolean $wildcard_search  true if we search with wildcard (false by default)
+     * @param string  $fqdn            name to search (for instance : forge.indepnet.net)
+     * @param boolean $wildcard_search true if we search with wildcard (false by default)
      *
      * @return array
      *    each value of the array (corresponding to one NetworkPort) is an array of the

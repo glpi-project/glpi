@@ -184,9 +184,9 @@ class CleanSoftwareCron extends CommonDBTM
     /**
      * Delete given items
      *
-     * @param array         $scope   Items to delete
-     * @param CommonDBTM    $em      EM for this itemtype
-     * @param int           $max     Max number of items to handle
+     * @param array      $scope Items to delete
+     * @param CommonDBTM $em    EM for this itemtype
+     * @param int        $max   Max number of items to handle
      *
      * @return int Number of items deleted
      */

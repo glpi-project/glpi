@@ -49,10 +49,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     public $central_profiles = [];
 
     /**
-     * @param $entity          (default '')
-     * @param $event           (default '')
-     * @param $object          (default null)
-     * @param $options   array
+     * @param $entity  (default '')
+     * @param $event   (default '')
+     * @param $object  (default null)
+     * @param $options array
      **/
     public function __construct($entity = '', $event = '', $object = null, $options = [])
     {
@@ -1211,9 +1211,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     /**
      * Get data from an item
      *
-     * @param CommonITILObject  $item    Object instance
-     * @param array             $options Options
-     * @param boolean           $simple  (false by default)
+     * @param CommonITILObject $item    Object instance
+     * @param array            $options Options
+     * @param boolean          $simple  (false by default)
      *
      * @return array
      **/

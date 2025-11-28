@@ -520,7 +520,7 @@ TWIG, $twig_params);
     /**
      * @since 0.90
      *
-     * @param int $withtemplate    (default 0)
+     * @param int   $withtemplate (default 0)
      * @param array $options
      *
      * @return boolean
@@ -606,7 +606,7 @@ TWIG, $twig_params);
      * @since 0.90
      *
      * @param integer $withtemplate
-     * @param array $options
+     * @param array   $options
      *
      * @return void
      */
@@ -759,10 +759,10 @@ TWIG, $twig_params);
      *
      * @since 9.3.1
      *
-     * @param integer $items_id Object id to restrict on
+     * @param integer                  $items_id Object id to restrict on
      * @param class-string<CommonDBTM> $itemtype Type for items to retrieve
-     * @param boolean $noent    Flag to not compute enitty information (see Document_Item::getTypeItemsQueryParams)
-     * @param array   $where    Inital WHERE clause. Defaults to []
+     * @param boolean                  $noent    Flag to not compute enitty information (see Document_Item::getTypeItemsQueryParams)
+     * @param array                    $where    Inital WHERE clause. Defaults to []
      *
      * @return array Criteria to use in a request
      */

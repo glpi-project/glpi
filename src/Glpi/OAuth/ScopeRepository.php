@@ -51,7 +51,7 @@ class ScopeRepository implements ScopeRepositoryInterface
     }
 
     /**
-     * @param string $grantType
+     * @param string  $grantType
      * @param ?string $userIdentifier
      *
      * @return ScopeEntityInterface[]

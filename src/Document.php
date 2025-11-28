@@ -414,8 +414,8 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     /**
      * Get download link for a document
      *
-     * @param CommonDBTM|null   $linked_item    Item linked to the document, to check access right
-     * @param integer           $len            maximum length of displayed string (default 20)
+     * @param CommonDBTM|null $linked_item Item linked to the document, to check access right
+     * @param integer         $len         maximum length of displayed string (default 20)
      * @return string HTML link
      **/
     public function getDownloadLink($linked_item = null, $len = 20): string
@@ -497,8 +497,8 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     /**
      * find a document with a file attached
      *
-     * @param integer $entity    entity of the document
-     * @param string  $path      path of the searched file
+     * @param integer $entity entity of the document
+     * @param string  $path   path of the searched file
      *
      * @return boolean
      **/
@@ -541,10 +541,10 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      * Check is the curent user is allowed to see the file.
      *
      * @param array $options array of possible options used to check rights:
-     *     - itemtype/items_id:     itemtype and ID of item linked to document
-     *     - changes_id (legacy):   ID of Change linked to document. Ignored if itemtype/items_id options are set.
-     *     - problems_id (legacy):  ID of Problem linked to document. Ignored if itemtype/items_id options are set.
-     *     - tickets_id (legacy):   ID of Ticket linked to document. Ignored if itemtype/items_id options are set.
+     *                       - itemtype/items_id:     itemtype and ID of item linked to document
+     *                       - changes_id (legacy):   ID of Change linked to document. Ignored if itemtype/items_id options are set.
+     *                       - problems_id (legacy):  ID of Problem linked to document. Ignored if itemtype/items_id options are set.
+     *                       - tickets_id (legacy):   ID of Ticket linked to document. Ignored if itemtype/items_id options are set.
      *
      * @return boolean
      **/
@@ -992,8 +992,8 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      * Move a file to a new location
      * Work even if dest file already exists
      *
-     * @param string $srce   source file path
-     * @param string $dest   destination file path
+     * @param string $srce source file path
+     * @param string $dest destination file path
      *
      * @return boolean : success
      **/
@@ -1017,8 +1017,8 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     /**
      * Move an uploaded document (files in GLPI_DOC_DIR."/_uploads" dir)
      *
-     * @param array  $input     array of datas used in adding process (need current_filepath)
-     * @param string $filename  filename to move
+     * @param array  $input    array of datas used in adding process (need current_filepath)
+     * @param string $filename filename to move
      *
      * @return boolean for success / $input array is updated
      **/
@@ -1137,8 +1137,8 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     /**
      * Move a document (files in GLPI_DOC_DIR."/_tmp" dir)
      *
-     * @param array  $input     array of datas used in adding process (need current_filepath)
-     * @param string $filename  filename to move
+     * @param array  $input    array of datas used in adding process (need current_filepath)
+     * @param string $filename filename to move
      *
      * @return boolean for success / $input array is updated
      **/
@@ -1246,8 +1246,8 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     /**
      * Find a valid path for the new file
      *
-     * @param string $dir      dir to search a free path for the file
-     * @param string $sha1sum  SHA1 of the file
+     * @param string $dir     dir to search a free path for the file
+     * @param string $sha1sum SHA1 of the file
      *
      * @return string
      **/
@@ -1712,8 +1712,8 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     /**
      * Find and load a document which is a duplicate of a file, with respect of blacklisting
      *
-     * @param integer $entities_id    Entity of the document
-     * @param string  $filename      Name of the searched file
+     * @param integer $entities_id Entity of the document
+     * @param string  $filename    Name of the searched file
      *
      * @return boolean
      */

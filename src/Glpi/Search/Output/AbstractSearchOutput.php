@@ -58,7 +58,7 @@ abstract class AbstractSearchOutput
     /**
      * Display the search results
      *
-     * @param array $data Array of search data prepared to get data
+     * @param array $data   Array of search data prepared to get data
      * @param array $params The original search parameters
      *
      * @return void|false

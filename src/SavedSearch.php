@@ -670,7 +670,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      * return an array of saved searches for a given itemtype
      *
      * @param string $itemtype if given filter saved search by only this one
-     * @param bool   $inverse if true, the `itemtype` params filter by "not" criteria
+     * @param bool   $inverse  if true, the `itemtype` params filter by "not" criteria
      *
      */
     public function getMine(?string $itemtype = null, bool $inverse = false): array

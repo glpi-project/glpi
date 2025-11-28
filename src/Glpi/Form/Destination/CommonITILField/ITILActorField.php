@@ -173,7 +173,7 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
     /**
      * Add a single ITIL actor to the input array
      *
-     * @param array $input The input array to modify
+     * @param array $input     The input array to modify
      * @param array $itilactor The actor data containing itemtype, items_id, use_notification, alternative_email
      */
     private function addActorToInput(array &$input, array $itilactor): void

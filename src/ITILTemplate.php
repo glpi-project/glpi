@@ -76,8 +76,8 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @since 0.83
      *
-     * @param $ID                    integer  ID of the item to get
-     * @param $withtypeandcategory   boolean  with type and category (true by default)
+     * @param $ID                  integer  ID of the item to get
+     * @param $withtypeandcategory boolean  with type and category (true by default)
      *
      * @return boolean
      **/
@@ -397,8 +397,8 @@ abstract class ITILTemplate extends CommonDropdown
 
 
     /**
-     * @param $withtypeandcategory   (default 0)
-     * @param $with_items_id         (default 0)
+     * @param $withtypeandcategory (default 0)
+     * @param $with_items_id       (default 0)
      **/
     public function getAllowedFieldsNames($withtypeandcategory = 0, $with_items_id = 0)
     {
@@ -476,8 +476,8 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @since 0.83
      *
-     * @param $field  string   field
-     * @param $force  boolean  force display based on global config (false by default)
+     * @param $field string   field
+     * @param $force boolean  force display based on global config (false by default)
      *
      * @return string to display
      **/
@@ -803,7 +803,7 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @since 0.90
      *
-     * @param array $input  array of value to import (name, ...)
+     * @param array $input array of value to import (name, ...)
      *
      * @return integer|boolean true in case of success, -1 otherwise
      **/

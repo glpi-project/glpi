@@ -40,9 +40,9 @@ interface KanbanInterface
      * Get all data needed to display a Kanban for the item with the specified ID.
      * This function does not format the data for viewing in the kanban.
      * @since 9.5.0
-     * @param int $ID ID of the item
+     * @param int   $ID       ID of the item
      * @param array $criteria Array of criteria to restrict the data returned.
-     *       For example, it can restrict based on a specific Kanban column field to only get data for a specific column.
+     *                        For example, it can restrict based on a specific Kanban column field to only get data for a specific column.
      * @return array Array of the data.
      *       This can be in any format as long as the getKanbanColumns function in this class can interpret it.
      **/
@@ -51,12 +51,12 @@ interface KanbanInterface
     /**
      * Get Kanban columns data for the specified item to pass to the Kanban JS component.
      * @since 9.5.0
-     * @param int $ID ID of the item
+     * @param int    $ID           ID of the item
      * @param string $column_field The field used to represent columns (Ex: projectstates_id).
-     *       If no field is specified, the default columns are returned.
-     * @param array $column_ids Array of Kanban column IDs that should be returned.
-     *       By default, this array is empty which signifies that all columns should be retuned.
-     * @param bool $get_default If true, the default columns are returned in addition to the requested ones in $column_ids.
+     *                             If no field is specified, the default columns are returned.
+     * @param array  $column_ids   Array of Kanban column IDs that should be returned.
+     *                             By default, this array is empty which signifies that all columns should be retuned.
+     * @param bool   $get_default  If true, the default columns are returned in addition to the requested ones in $column_ids.
      * @return array Array of constructed columns data for the Kanban
      **/
     public static function getKanbanColumns($ID, $column_field = null, $column_ids = [], $get_default = false);
@@ -72,9 +72,9 @@ interface KanbanInterface
     /**
      * Get a list of all items to be included in the 'switch board' dropdown.
      * @since 9.5.0
-     * @param bool $active True if only open/active items should be returned.
+     * @param bool    $active     True if only open/active items should be returned.
      * @param integer $current_id ID of the currently viewed Kanban.
-     *       This is used to ensure the current Kanban is always in the list regardless of if it is active or not.
+     *                            This is used to ensure the current Kanban is always in the list regardless of if it is active or not.
      * @return array Array of items that can have a Kanban view.
      *       Array format must be item_id => item_name.
      */
@@ -85,9 +85,9 @@ interface KanbanInterface
      * Get a list of all valid columns (without items) for the column based on the specified column field.
      * @since 9.5.0
      * @param string|null $column_field The field used to represent columns (Ex: projectstates_id).
-     *       If no field is specified, all columns are returned.
-     * @param array<int> $column_ids Array of column IDs to limit the result. These IDs are values of the column_field in the DB.
-     * @param bool $get_default If true, the default columns are returned in addition to the requested ones in $column_ids.
+     *                                  If no field is specified, all columns are returned.
+     * @param array<int>  $column_ids   Array of column IDs to limit the result. These IDs are values of the column_field in the DB.
+     * @param bool        $get_default  If true, the default columns are returned in addition to the requested ones in $column_ids.
      * @return array<int, array{id: int|string, name: string, header_color: string, header_fg_color?: string, color_class?: string, drop_only?: bool}> Array of columns.
      */
     public static function getAllKanbanColumns($column_field = null, $column_ids = [], $get_default = false);
@@ -112,7 +112,7 @@ interface KanbanInterface
      * You can deny the save completely by returning null or false.
      * @param array $oldstate The state currently in the DB.
      * @param array $newstate The new state to be saved.
-     * @param int $users_id The ID of the user this state is for. If 0, it is the global/default state.
+     * @param int   $users_id The ID of the user this state is for. If 0, it is the global/default state.
      * @return mixed The modified state or false/null to deny the save.
      */
     public function prepareKanbanStateForUpdate($oldstate, $newstate, $users_id);

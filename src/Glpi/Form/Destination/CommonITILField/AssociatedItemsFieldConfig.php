@@ -52,8 +52,8 @@ final class AssociatedItemsFieldConfig implements
 
     /**
      * @param array<AssociatedItemsFieldStrategy> $strategies
-     * @param array<int> $specific_question_ids
-     * @param array<CommonITILObject> $specific_associated_items
+     * @param array<int>                          $specific_question_ids
+     * @param array<CommonITILObject>             $specific_associated_items
      */
     public function __construct(
         private array $strategies,

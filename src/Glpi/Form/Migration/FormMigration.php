@@ -186,9 +186,9 @@ class FormMigration extends AbstractPluginMigration
     /**
      * Get the value operator from the legacy value
      *
-     * @param int $value_operator The legacy value operator
-     * @param mixed $value The value to compare against
-     * @param QuestionTypeInterface $question_type The question type interface
+     * @param int                   $value_operator The legacy value operator
+     * @param mixed                 $value          The value to compare against
+     * @param QuestionTypeInterface $question_type  The question type interface
      * @return ValueOperator|null The corresponding value operator or null if not found
      */
     private function getValueOperatorFromLegacy(
@@ -1032,9 +1032,9 @@ class FormMigration extends AbstractPluginMigration
     /**
      * Process migration of form destinations for a given destination type and target table
      *
-     * @param DBmysqlIterator $raw_targets The raw targets to process
+     * @param DBmysqlIterator                                 $raw_targets      The raw targets to process
      * @param class-string<AbstractCommonITILFormDestination> $destinationClass The destination class
-     * @param string $targetTable The target table name
+     * @param string                                          $targetTable      The target table name
      * @throws LogicException
      */
     private function processMigrationOfDestination(
@@ -1159,9 +1159,9 @@ class FormMigration extends AbstractPluginMigration
     /**
      * Process migration of ITIL actors fields for a given destination type and target table
      *
-     * @param class-string<AbstractCommonITILFormDestination> $destinationClass The destination class
-     * @param string $targetTable The target table name
-     * @param string $fcDestinationClass The form creator destination class
+     * @param class-string<AbstractCommonITILFormDestination> $destinationClass   The destination class
+     * @param string                                          $targetTable        The target table name
+     * @param string                                          $fcDestinationClass The form creator destination class
      * @throws LogicException
      */
     private function processMigrationOfITILActorsFields(
@@ -1730,10 +1730,10 @@ class FormMigration extends AbstractPluginMigration
     /**
      * Add a single validation condition to the input array
      *
-     * @param array $input The input array to modify
-     * @param Question $question The question object
-     * @param string $value_operator The value operator to use
-     * @param string $value The value for the condition
+     * @param array    $input          The input array to modify
+     * @param Question $question       The question object
+     * @param string   $value_operator The value operator to use
+     * @param string   $value          The value for the condition
      */
     private function addValidationCondition(array &$input, Question $question, string $value_operator, string $value): void
     {
@@ -1750,10 +1750,10 @@ class FormMigration extends AbstractPluginMigration
     /**
      * Add range validation conditions (min/max) with proper handling of FormCreator's default zero values
      *
-     * @param array $input The input array to modify
-     * @param array $raw_condition The raw condition data from FormCreator
-     * @param Question $question The question object
-     * @param array $supported_value_operators List of supported value operators
+     * @param array    $input                     The input array to modify
+     * @param array    $raw_condition             The raw condition data from FormCreator
+     * @param Question $question                  The question object
+     * @param array    $supported_value_operators List of supported value operators
      */
     private function addRangeValidationConditions(array &$input, array $raw_condition, Question $question, array $supported_value_operators): void
     {
@@ -1809,7 +1809,7 @@ class FormMigration extends AbstractPluginMigration
     /**
      * Get translations from a formcreator translation file
      *
-     * @param int $form_id The form ID
+     * @param int    $form_id  The form ID
      * @param string $language The language code
      * @return array Translation key-value pairs
      */
@@ -1893,11 +1893,11 @@ class FormMigration extends AbstractPluginMigration
     /**
      * Generic method to process migration of destination types
      *
-     * @param string $targetTable Source table name
+     * @param string $targetTable      Source table name
      * @param string $destinationClass Target destination class
-     * @param string $sourceItemtype Source itemtype for mapping
-     * @param string $progressMessage Progress bar message
-     * @param array $queryConfig Database query configuration
+     * @param string $sourceItemtype   Source itemtype for mapping
+     * @param string $progressMessage  Progress bar message
+     * @param array  $queryConfig      Database query configuration
      */
     private function processMigrationOfDestinationType(
         string $targetTable,
@@ -1921,10 +1921,10 @@ class FormMigration extends AbstractPluginMigration
      * Generic method to process migration of destination fields for a type
      *
      * @param string $destinationClass Target destination class
-     * @param string $targetTable Source table name
-     * @param string $sourceItemtype Source itemtype for mapping
-     * @param string $progressMessage Progress bar message
-     * @param array $queryConfig Database query configuration
+     * @param string $targetTable      Source table name
+     * @param string $sourceItemtype   Source itemtype for mapping
+     * @param string $progressMessage  Progress bar message
+     * @param array  $queryConfig      Database query configuration
      */
     private function processMigrationOfDestinationFieldsForType(
         string $destinationClass,
@@ -1984,7 +1984,7 @@ class FormMigration extends AbstractPluginMigration
      * Validate that an item exists and return its ID, or 0 if not found
      *
      * @param string $sourceItemtype Source itemtype
-     * @param int $sourceId Source item ID
+     * @param int    $sourceId       Source item ID
      * @return int Target item ID or 0 if not found
      */
     private function validateItemExists(string $sourceItemtype, int $sourceId): int

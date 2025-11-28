@@ -639,8 +639,8 @@ class RuleImportAssetTest extends DbTestCase
     /**
      * With default rules, refuse import in theses cases
      *
-     * @param array  $rdata  Rules data to use
-     * @param string $rname  Expected rule name
+     * @param array  $rdata Rules data to use
+     * @param string $rname Expected rule name
      */
     #[DataProvider('refuseProvider')]
     public function testRefuseImport($rdata, $rname)
@@ -1057,7 +1057,7 @@ class RuleImportAssetTest extends DbTestCase
 
     /**
      * @param string $criterion Criterion to test
-     * @param array $expected   Expected result
+     * @param array  $expected  Expected result
      *
      * @return void
      */

@@ -111,8 +111,8 @@ class SavedSearch_Alert extends CommonDBChild
      *
      * @param integer $ID      integer ID of the item
      * @param array   $options array
-     *     - target for the Form
-     *     - computers_id ID of the computer for add process
+     *                         - target for the Form
+     *                         - computers_id ID of the computer for add process
      *
      * @return boolean true if displayed  false if item not found or not right to display
      **/

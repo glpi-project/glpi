@@ -42,9 +42,9 @@ final class RequestException extends Exception
     protected int $http_code;
 
     /**
-     * @param int $http_code
-     * @param string $message
-     * @param int $code
+     * @param int       $http_code
+     * @param string    $message
+     * @param int       $code
      * @param Exception $previous
      */
     public function __construct($http_code, $message, $code = 0, $previous = null)

@@ -113,8 +113,8 @@ class Vlan extends CommonDropdown
 
     /**
      * @since 0.84
-     * @param HTMLTableRow|null $row object (default NULL)
-     * @param CommonDBTM|null $item object (default NULL)
+     * @param HTMLTableRow|null  $row    object (default NULL)
+     * @param CommonDBTM|null    $item   object (default NULL)
      * @param HTMLTableCell|null $father object (default NULL)
      */
     public static function getHTMLTableCellsForItem(

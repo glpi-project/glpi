@@ -50,7 +50,7 @@ class MemoryLimit extends AbstractRequirement
     private $min;
 
     /**
-     * @param int $min  Minimal allocated memory.
+     * @param int $min Minimal allocated memory.
      */
     public function __construct(int $min)
     {

@@ -127,8 +127,8 @@ final class LogViewer extends CommonGLPI
     /**
      * Display a log file content.
      *
-     * @param string $filepath      Path of file to display (relative to log directory)
-     * @param bool $only_content    If true, don't return the html layout.
+     * @param string $filepath     Path of file to display (relative to log directory)
+     * @param bool   $only_content If true, don't return the html layout.
      *
      */
     public function showLogFile(string $filepath, bool $only_content = false): void

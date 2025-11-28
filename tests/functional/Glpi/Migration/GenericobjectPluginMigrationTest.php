@@ -863,7 +863,7 @@ class GenericobjectPluginMigrationTest extends DbTestCase
     /**
      * Check that the expected items of the given class are present in DB and have the expected fields values.
      *
-     * @param class-string<\CommonDBTM> $class
+     * @param class-string<\CommonDBTM>           $class
      * @param array<string, array<string, mixed>> $expected_items
      */
     private function checkItems(string $class, array $expected_items): void

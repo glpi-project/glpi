@@ -134,7 +134,7 @@ class RuleMatchedLog extends CommonDBTM
      *
      * @global object $DB
      * @param integer $items_id
-     * @param string $itemtype
+     * @param string  $itemtype
      *
      * @return void
      */

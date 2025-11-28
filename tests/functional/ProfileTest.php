@@ -100,8 +100,8 @@ class ProfileTest extends DbTestCase
     /**
      * Tests user rights checking.
      *
-     * @param array   $user     Array containing 'login' and 'password' fields of tested user.
-     * @param array   $rightset Array of arrays containing 'name', 'value' and 'expected' result of a right.
+     * @param array $user     Array containing 'login' and 'password' fields of tested user.
+     * @param array $rightset Array of arrays containing 'name', 'value' and 'expected' result of a right.
      */
     #[DataProvider('haveUserRightProvider')]
     public function testHaveUserRight(array $user, array $rightset)
