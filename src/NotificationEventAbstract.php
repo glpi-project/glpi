@@ -35,9 +35,6 @@
 
 abstract class NotificationEventAbstract implements NotificationEventInterface
 {
-    /**
-     * @param NotificationTarget<CommonGLPI> $notificationtarget
-     */
     public static function raise(
         $event,
         CommonGLPI $item,
