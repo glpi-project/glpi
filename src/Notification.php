@@ -639,7 +639,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     /**
      * Get the mailing signature for the entity
      *
-     * @param int|'' $entity
+     * @param int $entity
      * @return string
      **/
     public static function getMailingSignature($entity)
