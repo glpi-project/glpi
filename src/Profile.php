@@ -787,8 +787,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * This is only used for GLPI core rights and not rights added by plugins.
      *
-     * @param string $form The tab/form name
      * @param string $interface The interface name
+     * @param string $form The tab/form name
      * @phpstan-param non-empty-string $form
      * @phpstan-param 'all'|'central'|'helpdesk' $interface
      * @phpstan-return ($interface is 'all' ? array<string, array<string, array<string, RightDefinition[]>>> : ($form is 'all' ? array<string, array<string, RightDefinition[]>> : ($group is 'all' ? array<string, RightDefinition[]> : RightDefinition[])))

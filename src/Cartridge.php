@@ -260,8 +260,8 @@ class Cartridge extends CommonDBRelation
      *
      * Link the first unused cartridge of type $Tid to the printer $pID.
      *
-     * @param integer $tID ID of the cartridge
      * @param integer $pID : ID of the printer
+     * @param integer $tID ID of the cartridge
      *
      * @return boolean True if successful
      **/

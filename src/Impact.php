@@ -1183,8 +1183,8 @@ TWIG, $twig_params);
      *
      * @since 9.5
      *
-     * @param array      $edges          Edges of the graph
      * @param array      $nodes          Nodes of the graph
+     * @param array      $edges          Edges of the graph
      * @param CommonDBTM $node           Current node
      * @param int        $direction      The direction in which the graph
      *                                   is being explored : DIRECTION_FORWARD

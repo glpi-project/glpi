@@ -5664,6 +5664,8 @@ JAVASCRIPT;
      * @since 9.5.0
      * @param int   $merge_target_id The ID of the ticket that the other tickets will be merged into
      * @param array $ticket_ids Array of IDs of tickets to merge into the ticket with ID $merge_target_id
+     * @param array $status Reference array that this function uses to store the status of each ticket attempted to be merged.
+     *                   id => status (0 = Success, 1 = Error, 2 = Insufficient Rights).
      * @param array $params Array of parameters for the ticket merge.
      *       linktypes - Array of itemtypes that will be duplicated into the ticket $merge_target_id.
      *                By default, no sub-items are copied. Currently supported link types are ITILFollowup, Document, and TicketTask.
@@ -5673,8 +5675,6 @@ JAVASCRIPT;
      *                By default, this is CommonITILObject_CommonITILObject::SON_OF. To disable linking, use 0 or a negative value.
      *       append_actors - Array of actor types to migrate into the ticket $merge_ticket. See types in CommonITILActor.
      *                By default, all actors are added to the ticket.
-     * @param array $status Reference array that this function uses to store the status of each ticket attempted to be merged.
-     *                   id => status (0 = Success, 1 = Error, 2 = Insufficient Rights).
      * @return boolean  True if the merge was successful if "full_transaction" is true.
      *                      Otherwise, true if any ticket was successfully merged.
      */

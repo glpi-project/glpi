@@ -3469,10 +3469,10 @@ JS;
      * @param boolean $enable_images    enable image pasting in rich text
      * @param int     $editor_height    editor default height
      * @param array   $add_body_classes tinymce iframe's body classes
-     * @param bool    $toolbar          tinymce toolbar (default: true)
      * @param string  $toolbar_location tinymce toolbar location (default: top)
      * @param bool    $init             init the editor (default: true)
      * @param string  $placeholder      textarea placeholder
+     * @param bool    $toolbar          tinymce toolbar (default: true)
      * @param bool    $statusbar        tinymce statusbar (default: true)
      * @param string  $content_style    content style to apply to the editor
      *

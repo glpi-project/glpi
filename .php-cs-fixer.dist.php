@@ -70,6 +70,9 @@ return (new PhpCsFixer\Config())
         // https://mlocati.github.io/php-cs-fixer-configurator/#version:3.90|fixer:phpdoc_order
         // order defined in devdoc : https://glpi-developer-documentation.readthedocs.io/en/master/codingstandards.html
         'phpdoc_order' => ['order' => ['deprecated', 'since', 'var', 'param', 'return', 'see', 'throw', 'todo']],
+        // phpdoc param in same order as signature
+        // https://mlocati.github.io/php-cs-fixer-configurator/#version:3.90|fixer:phpdoc_param_order
+        'phpdoc_param_order' => true,
     ])
     ->setFinder($finder)
 ;
