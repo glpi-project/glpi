@@ -38,6 +38,7 @@ use Glpi\DBAL\QueryFunction;
 /**
  * @template T of CommonITILObject
  * @extends NotificationTarget<T>
+ * @phpstan-import-type TimelinePosition from CommonITILObject
  */
 abstract class NotificationTargetCommonITILObject extends NotificationTarget
 {
@@ -2533,7 +2534,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
     /**
-     * @param value-of<CommonITILObject::TIMELINE_POSITION> $position
+     * @param TimelinePosition $position
      * @return string
      */
     private function getUserPositionFromTimelineItemPosition(int $position): string
