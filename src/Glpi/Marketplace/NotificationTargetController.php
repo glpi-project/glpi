@@ -39,29 +39,28 @@ use Notification;
 use NotificationTarget;
 use Plugin;
 use Session;
+use Override;
 
 /**
  * @extends NotificationTarget<\Glpi\Marketplace\Controller>
  */
 class NotificationTargetController extends NotificationTarget
 {
-    #[\Override]
+    #[Override]
     public function addNotificationTargets($entity)
     {
-
         $this->addProfilesToTargets();
         $this->addGroupsToTargets($entity);
         $this->addTarget(Notification::GLOBAL_ADMINISTRATOR, __('Administrator'));
     }
 
-
-    #[\Override]
+    #[Override]
     public function getEvents()
     {
         return ['checkpluginsupdate' => __('Check all plugin updates')];
     }
 
-    #[\Override]
+    #[Override]
     public function addDataForTemplate($event, $options = [])
     {
         $updated_plugins = $options['plugins'];
@@ -90,8 +89,7 @@ class NotificationTargetController extends NotificationTarget
         }
     }
 
-
-    #[\Override]
+    #[Override]
     public function getTags()
     {
         //Tags with just lang
