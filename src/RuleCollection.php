@@ -130,11 +130,11 @@ class RuleCollection extends CommonDBTM
     /**
      * Get Collection Size : retrieve the number of rules
      *
-     * @param boolean $recursive (true by default)
-     * @param integer $condition (0 by default)
-     * @param integer $children  (0 by default)
+     * @param bool $recursive (true by default)
+     * @param int  $condition (0 by default)
+     * @param int  $children  (0 by default)
      *
-     * @return integer number of rules
+     * @return int number of rules
      **/
     public function getCollectionSize(
         $recursive = true,
@@ -285,9 +285,9 @@ class RuleCollection extends CommonDBTM
     /**
      * Get Collection Data: retrieve descriptions and rules
      *
-     * @param integer $retrieve_criteria Retrieve the criteria of the rules ? (default false)
-     * @param integer $retrieve_action   Retrieve the action of the rules ? (default 0)
-     * @param integer $condition         Retrieve with a specific condition
+     * @param int $retrieve_criteria Retrieve the criteria of the rules ? (default false)
+     * @param int $retrieve_action   Retrieve the action of the rules ? (default 0)
+     * @param int $condition         Retrieve with a specific condition
      *
      * @return void
      **/
@@ -365,7 +365,7 @@ class RuleCollection extends CommonDBTM
      * Is a confirmation needed before replay on DB ?
      * If needed need to send 'replay_confirm' in POST
      *
-     * @return boolean true if confirmation is needed, else false
+     * @return bool true if confirmation is needed, else false
      *
      * since 11.0.0 The `$target` parameter has been removed and its value is automatically computed.
      */
@@ -412,7 +412,7 @@ class RuleCollection extends CommonDBTM
     /**
      * Indicates if the rule can be affected to an entity or if it's global
      *
-     * @return boolean
+     * @return bool
      **/
     public function isRuleEntityAssigned()
     {
@@ -423,7 +423,7 @@ class RuleCollection extends CommonDBTM
     /**
      * Indicates if the rule can be affected to an entity or if it's global
      *
-     * @return boolean
+     * @return bool
      **/
     public function isRuleRecursive()
     {
@@ -434,7 +434,7 @@ class RuleCollection extends CommonDBTM
     /**
      * Indicates if the rule use conditions
      *
-     * @return boolean
+     * @return bool
      * @used-by templates/pages/admin/rules/engine_summary.html.twig
      **/
     public function isRuleUseConditions()
@@ -446,7 +446,7 @@ class RuleCollection extends CommonDBTM
     /**
      * Get default rule conditions
      *
-     * @return integer
+     * @return int
      **/
     public function getDefaultRuleConditionForList()
     {
@@ -718,11 +718,11 @@ TWIG, $twig_params);
     /**
      * Modify rule's ranking and automatically reorder all rules
      *
-     * @param integer $ID        rule ID whose ranking must be modified
-     * @param string  $action    up or down
-     * @param integer $condition action on a specific condition
+     * @param int    $ID        rule ID whose ranking must be modified
+     * @param string $action    up or down
+     * @param int    $condition action on a specific condition
      *
-     * @return boolean
+     * @return bool
      **/
     public function changeRuleOrder($ID, $action, $condition = 0)
     {
@@ -840,9 +840,9 @@ TWIG, $twig_params);
     /**
      * Update Rule Order when deleting a rule
      *
-     * @param integer $ranking rank of the deleted rule
+     * @param int $ranking rank of the deleted rule
      *
-     * @return boolean
+     * @return bool
      **/
     public function deleteRuleOrder($ranking)
     {
@@ -864,12 +864,12 @@ TWIG, $twig_params);
     /**
      * Move a rule in an ordered collection
      *
-     * @param integer        $ID       ID of the rule to move
-     * @param integer        $ref_ID   ID of the rule position  (0 means all, so before all or after all)
-     * @param string|integer $type     Movement type, one of self::MOVE_AFTER or self::MOVE_BEFORE or the new rank
-     * @param bool           $new_rule Whether we work on a new rule or existing one
+     * @param int        $ID       ID of the rule to move
+     * @param int        $ref_ID   ID of the rule position  (0 means all, so before all or after all)
+     * @param string|int $type     Movement type, one of self::MOVE_AFTER or self::MOVE_BEFORE or the new rank
+     * @param bool       $new_rule Whether we work on a new rule or existing one
      *
-     * @return boolean
+     * @return bool
      **/
     public function moveRule($ID, $ref_ID, $type = self::MOVE_AFTER, $new_rule = false)
     {
@@ -1143,11 +1143,11 @@ TWIG, $twig_params);
      *
      * @since 0.85
      *
-     * @param array   $available_criteria available criteria for this rule
-     * @param integer $condition          the rulecriteria condition
-     * @param string  $criterion          the criterion
+     * @param array  $available_criteria available criteria for this rule
+     * @param int    $condition          the rulecriteria condition
+     * @param string $criterion          the criterion
      *
-     * @return boolean true if a criterion is a dropdown, false otherwise
+     * @return bool true if a criterion is a dropdown, false otherwise
      **/
     public static function isCriteraADropdown($available_criteria, $condition, $criterion)
     {
@@ -1161,7 +1161,7 @@ TWIG, $twig_params);
      *
      * @since 0.85
      *
-     * @return boolean true if all ok
+     * @return bool true if all ok
      **/
     public static function previewImportRules()
     {
@@ -1367,7 +1367,7 @@ TWIG, $twig_params);
      *
      * @since 0.85
      *
-     * @return boolean
+     * @return bool
      **/
     public static function processImportRules()
     {
@@ -1568,8 +1568,8 @@ TWIG, $twig_params);
      *
      *
      * @since 11.0.0 The `$target` parameter has been removed.
-     * @param array   $values    array of data
-     * @param integer $condition condition to limit rules (default 0)
+     * @param array $values    array of data
+     * @param int   $condition condition to limit rules (default 0)
      * @return array
      */
     public function showRulesEnginePreviewCriteriasForm(array $values, $condition = 0)
@@ -1615,10 +1615,10 @@ TWIG, $twig_params);
     /**
      * Test all the rules collection
      *
-     * @param array   $input     array the input data used to check criterias
-     * @param array   $output    array the initial output array used to be manipulated by actions
-     * @param array   $params    array parameters for all internal functions
-     * @param integer $condition condition to limit rules (DEFAULT 0)
+     * @param array $input     array the input data used to check criterias
+     * @param array $output    array the initial output array used to be manipulated by actions
+     * @param array $params    array parameters for all internal functions
+     * @param int   $condition condition to limit rules (DEFAULT 0)
      *
      * @return array the output array updated by actions
      **/
@@ -1720,7 +1720,7 @@ TWIG, $twig_params);
     /**
      * Prepare input data for the rules collection
      *
-     * @param integer $condition condition to limit rules (DEFAULT 0)
+     * @param int $condition condition to limit rules (DEFAULT 0)
      *
      * @return array the updated input data
      **/
@@ -1764,8 +1764,8 @@ TWIG, $twig_params);
      *
      *
      * @since 11.0.0 The `$target` parameter has been removed.
-     * @param array   $input     array of data
-     * @param integer $condition condition to limit rules (DEFAULT 0)
+     * @param array $input     array of data
+     * @param int   $condition condition to limit rules (DEFAULT 0)
      * @return void
      */
     public function showRulesEnginePreviewResultsForm(array $input, $condition = 0)
@@ -1896,9 +1896,9 @@ TWIG, $twig_params);
     /**
      * Get rulecollection classname by giving his itemtype
      *
-     * @param string  $itemtype               itemtype
-     * @param boolean $check_dictionnary_type check if the itemtype is a dictionary or not
-     *                                        (false by default)
+     * @param string $itemtype               itemtype
+     * @param bool   $check_dictionnary_type check if the itemtype is a dictionary or not
+     *                                       (false by default)
      *
      * @return RuleCollection|null
      */

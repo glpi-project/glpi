@@ -1077,7 +1077,7 @@ class Contract extends CommonDBTM implements StateInterface
      *
      * @param CronTask|null $task CronTask for log, if NULL display (default NULL)
      *
-     * @return integer
+     * @return int
      * @used-by CronTask
      **/
     public static function cronContract(?CronTask $task = null)
@@ -1393,7 +1393,7 @@ class Contract extends CommonDBTM implements StateInterface
      *                       - toadd         : array / array of specific values to add at the beginning
      *                       - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
      *
-     * @return string|integer HTML output, or random part of dropdown ID.
+     * @return string|int HTML output, or random part of dropdown ID.
      **/
     public static function dropdown($options = [])
     {
@@ -1516,11 +1516,11 @@ class Contract extends CommonDBTM implements StateInterface
      *
      * Print a select named $name with contract renewal options and selected value $value
      *
-     * @param string  $name    HTML select name
-     * @param integer $value   HTML select selected value (default = 0)
-     * @param boolean $display get or display string ? (true by default)
+     * @param string $name    HTML select name
+     * @param int    $value   HTML select selected value (default = 0)
+     * @param bool   $display get or display string ? (true by default)
      *
-     * @return string|integer HTML output, or random part of dropdown ID.
+     * @return string|int HTML output, or random part of dropdown ID.
      **/
     public static function dropdownContractRenewal($name, $value = 0, $display = true)
     {
@@ -1537,7 +1537,7 @@ class Contract extends CommonDBTM implements StateInterface
     /**
      * Get the renewal type name
      *
-     * @param integer $value HTML select selected value
+     * @param int $value HTML select selected value
      *
      **/
     public static function getContractRenewalName(int $value): string
@@ -1552,7 +1552,7 @@ class Contract extends CommonDBTM implements StateInterface
 
     /**
      *
-     * @return string|integer HTML output, or random part of dropdown ID.
+     * @return string|int HTML output, or random part of dropdown ID.
      **/
     public static function dropdownAlert(array $options)
     {
@@ -1578,7 +1578,7 @@ class Contract extends CommonDBTM implements StateInterface
      *
      * @since 0.83
      *
-     * @param string|integer|null $val if not set, ask for all values, else for 1 value (default NULL)
+     * @param string|int|null $val if not set, ask for all values, else for 1 value (default NULL)
      *
      * @return string|string[]
      **/

@@ -96,7 +96,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Flag to determine whether or not changes must be logged into history.
      *
-     * @var boolean
+     * @var bool
      */
     public $dohistory = false;
 
@@ -111,7 +111,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Flag to determine whether or not automatic messages must be generated on actions.
      *
-     * @var boolean
+     * @var bool
      */
     public $auto_message_on_action = true;
 
@@ -119,7 +119,7 @@ class CommonDBTM extends CommonGLPI
      * Flag to determine whether or not a link to item form can be automatically generated via
      * self::getLink() method.
      *
-     * @var boolean
+     * @var bool
      */
     public $no_form_page = false;
 
@@ -127,7 +127,7 @@ class CommonDBTM extends CommonGLPI
      * Flag to determine whether or not table name of item can be automatically generated via
      * self::getTable() method.
      *
-     * @var boolean
+     * @var bool
      */
     protected static $notable = false;
 
@@ -178,7 +178,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Flag to determine whether or not table name of item has a notepad.
      *
-     * @var boolean
+     * @var bool
      */
     protected $usenotepad = false;
 
@@ -331,7 +331,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param int|string $ID ID of the item to get (matched against the index field of the table, not necessarily the ID)
      *
-     * @return boolean true if succeed to find a single item matching $ID else false (no items or more than one item)
+     * @return bool true if succeed to find a single item matching $ID else false (no items or more than one item)
      * @see self::getIndexName()
      **/
     public function getFromDB($ID)
@@ -453,7 +453,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param array $request expression
      *
-     * @return boolean true if succeed else false
+     * @return bool true if succeed else false
      * @see DB::request()
      **/
     public function getFromDBByRequest(array $request)
@@ -491,7 +491,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Get the identifier of the current item
      *
-     * @return integer ID
+     * @return int ID
      **/
     public function getID()
     {
@@ -602,7 +602,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param array        $condition WHERE condition used to filter (can be empty to get all)
      * @param array|string $order     ORDER field (can be empty)
-     * @param integer      $limit     LIMIT sql clause
+     * @param int          $limit     LIMIT sql clause
      *
      * @return array all retrieved data in an associative array by id
      **/
@@ -651,7 +651,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Get an empty item
      *
-     * @return boolean true if succeed else false
+     * @return bool true if succeed else false
      **/
     public function getEmpty()
     {
@@ -756,7 +756,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Add an item to the database
      *
-     * @return integer|boolean new ID of the item is insert successful else false
+     * @return int|bool new ID of the item is insert successful else false
      **/
     public function addToDB()
     {
@@ -797,7 +797,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Restore item = set deleted flag to 0
      *
-     * @return boolean true if succeed else false
+     * @return bool true if succeed else false
      **/
     public function restoreInDB()
     {
@@ -820,10 +820,10 @@ class CommonDBTM extends CommonGLPI
     /**
      * Mark deleted or purge an item in the database
      *
-     * @param boolean $force force the purge of the item (not used if the table do not have a deleted field)
-     *                       (default false)
+     * @param bool $force force the purge of the item (not used if the table do not have a deleted field)
+     *                    (default false)
      *
-     * @return boolean true if succeed else false
+     * @return bool true if succeed else false
      **/
     public function deleteFromDB($force = false)
     {
@@ -1275,13 +1275,13 @@ class CommonDBTM extends CommonGLPI
     /**
      * Add an item in the database with all it's items.
      *
-     * @param array   $input   the _POST vars returned by the item form when press add
-     * @param array   $options with the insert options
-     *                         - unicity_message : do not display message if item it a duplicate (default is yes)
-     *                         - disable_infocom_creation: do not automatically create infocom (default is false)
-     * @param boolean $history do history log ? (true by default)
+     * @param array $input   the _POST vars returned by the item form when press add
+     * @param array $options with the insert options
+     *                       - unicity_message : do not display message if item it a duplicate (default is yes)
+     *                       - disable_infocom_creation: do not automatically create infocom (default is false)
+     * @param bool  $history do history log ? (true by default)
      *
-     * @return false|integer the new ID of the added item (or false if fail)
+     * @return false|int the new ID of the added item (or false if fail)
      **/
     public function add(array $input, $options = [], $history = true)
     {
@@ -1631,11 +1631,11 @@ class CommonDBTM extends CommonGLPI
     /**
      * Update some elements of an item in the database.
      *
-     * @param array   $input   the _POST vars returned by the item form when press update
-     * @param boolean $history do history log ? (default true)
-     * @param array   $options with the insert options
+     * @param array $input   the _POST vars returned by the item form when press update
+     * @param bool  $history do history log ? (default true)
+     * @param array $options with the insert options
      *
-     * @return boolean true on success
+     * @return bool true on success
      **/
     public function update(array $input, $history = true, $options = [])
     {
@@ -2065,7 +2065,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Actions done after the UPDATE of the item in the database
      *
-     * @param boolean $history store changes history ? (default true)
+     * @param bool $history store changes history ? (default true)
      *
      * @return void
      **/
@@ -2107,11 +2107,11 @@ class CommonDBTM extends CommonGLPI
     /**
      * Delete an item in the database.
      *
-     * @param array   $input   the _POST vars returned by the item form when press delete
-     * @param boolean $force   force deletion (default false)
-     * @param boolean $history do history log ? (default true)
+     * @param array $input   the _POST vars returned by the item form when press delete
+     * @param bool  $force   force deletion (default false)
+     * @param bool  $history do history log ? (default true)
      *
-     * @return boolean true on success
+     * @return bool true on success
      **/
     public function delete(array $input, $force = false, $history = true)
     {
@@ -2311,7 +2311,7 @@ class CommonDBTM extends CommonGLPI
      * Actions done before the DELETE of the item in the database /
      * Maybe used to add another check for deletion
      *
-     * @return boolean true if item need to be deleted else false
+     * @return bool true if item need to be deleted else false
      **/
     public function pre_deleteItem()
     {
@@ -2322,10 +2322,10 @@ class CommonDBTM extends CommonGLPI
     /**
      * Restore an item put in the trashbin in the database.
      *
-     * @param array   $input   the _POST vars returned by the item form when press restore
-     * @param boolean $history do history log ? (default true)
+     * @param array $input   the _POST vars returned by the item form when press restore
+     * @param bool  $history do history log ? (default true)
      *
-     * @return boolean true on success
+     * @return bool true on success
      **/
     public function restore(array $input, $history = true)
     {
@@ -2448,7 +2448,6 @@ class CommonDBTM extends CommonGLPI
      *
      **@since 0.83
      * @param string $type itemtype of object to add
-     * @return boolean
      *
      */
     public function canAddItem(string $type): bool
@@ -2464,7 +2463,6 @@ class CommonDBTM extends CommonGLPI
      *
      * May be overloaded if needed
      *
-     * @return boolean
      **/
     public function canCreateItem(): bool
     {
@@ -2483,7 +2481,6 @@ class CommonDBTM extends CommonGLPI
      *
      * May be overloaded if needed
      *
-     * @return boolean
      **/
     public function canUpdateItem(): bool
     {
@@ -2502,7 +2499,6 @@ class CommonDBTM extends CommonGLPI
      *
      * May be overloaded if needed
      *
-     * @return boolean
      **/
     public function canDeleteItem(): bool
     {
@@ -2520,7 +2516,6 @@ class CommonDBTM extends CommonGLPI
      * Default is true and check entity if the objet is entity assign
      *
      **@since 0.85
-     * @return boolean
      *
      */
     public function canPurgeItem(): bool
@@ -2546,7 +2541,6 @@ class CommonDBTM extends CommonGLPI
      * Have I the right to "view" the Object
      * May be overloaded if needed
      *
-     * @return boolean
      **/
     public function canViewItem(): bool
     {
@@ -2565,8 +2559,7 @@ class CommonDBTM extends CommonGLPI
      *
      *
      **@since 0.85
-     * @param integer $ID ID to check
-     * @return boolean
+     * @param int $ID ID to check
      *
      */
     public function canEdit($ID): bool
@@ -2611,7 +2604,7 @@ class CommonDBTM extends CommonGLPI
      *
      * May be overloaded if needed
      *
-     * @return boolean
+     * @return bool
      **/
     public function canUnrecurs()
     {
@@ -2775,11 +2768,11 @@ class CommonDBTM extends CommonGLPI
      *
      * @since 0.83
      *
-     * @param string  $action name of the action
-     * @param integer $field  id of the field
-     * @param string  $value  value of the field
+     * @param string $action name of the action
+     * @param int    $field  id of the field
+     * @param string $value  value of the field
      *
-     * @return boolean
+     * @return bool
      **/
     public function canMassiveAction($action, $field, $value)
     {
@@ -2837,11 +2830,11 @@ class CommonDBTM extends CommonGLPI
      *
      * @since 0.84
      *
-     * @param integer $ID      ID of the item/template
-     * @param array   $options Array of possible options:
-     *                         - withtemplate : 1 for newtemplate, 2 for newobject from template
+     * @param int   $ID      ID of the item/template
+     * @param array $options Array of possible options:
+     *                       - withtemplate : 1 for newtemplate, 2 for newobject from template
      *
-     * @return integer|void value of withtemplate option (throw an exception if not enough rights)
+     * @return int|void value of withtemplate option (throw an exception if not enough rights)
      **/
     public function initForm($ID, array $options = [])
     {
@@ -3080,9 +3073,9 @@ class CommonDBTM extends CommonGLPI
     /**
      * Check right on an item with block
      *
-     * @param integer $ID    ID of the item (-1 if new item)
-     * @param int     $right Right to check
-     * @param ?array  $input array of input data (used for adding item) (default NULL)
+     * @param int    $ID    ID of the item (-1 if new item)
+     * @param int    $right Right to check
+     * @param ?array $input array of input data (used for adding item) (default NULL)
      *
      **/
     public function check($ID, int $right, ?array &$input = null): void
@@ -3134,10 +3127,10 @@ class CommonDBTM extends CommonGLPI
      * Check if have right on this entity
      *
      * @since 0.85
-     * @param boolean $recursive set true to accept recursive items of ancestors
-     *                           of active entities (View case for example) (default false)
+     * @param bool $recursive set true to accept recursive items of ancestors
+     *                        of active entities (View case for example) (default false)
      *
-     * @return boolean
+     * @return bool
      **/
     public function checkEntity($recursive = false)
     {
@@ -3196,7 +3189,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Get the ID of entity assigned to the object
      *
-     * @return integer ID of the entity
+     * @return int ID of the entity
      **/
     public function getEntityID()
     {
@@ -3211,7 +3204,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Is the object assigned to an entity
      *
-     * @return boolean
+     * @return bool
      **/
     public function isEntityAssign()
     {
@@ -3226,7 +3219,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Is the object may be recursive
      *
-     * @return boolean
+     * @return bool
      **/
     public function maybeRecursive()
     {
@@ -3241,7 +3234,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Is the object recursive
      *
-     * @return boolean
+     * @return bool
      **/
     public function isRecursive()
     {
@@ -3255,7 +3248,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Is the object may be deleted
      *
-     * @return boolean
+     * @return bool
      **/
     public function maybeDeleted()
     {
@@ -3270,7 +3263,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Is the object deleted
      *
-     * @return boolean
+     * @return bool
      **/
     public function isDeleted()
     {
@@ -3286,7 +3279,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @since 9.2
      *
-     * @return boolean
+     * @return bool
      **/
     public function maybeActive()
     {
@@ -3303,7 +3296,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @since 9.2
      *
-     * @return boolean
+     * @return bool
      **/
     public function isActive()
     {
@@ -3317,7 +3310,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Is the object may be a template
      *
-     * @return boolean
+     * @return bool
      **/
     public function maybeTemplate()
     {
@@ -3332,7 +3325,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Is the object a template
      *
-     * @return boolean
+     * @return bool
      **/
     public function isTemplate()
     {
@@ -3348,7 +3341,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @since 0.84
      *
-     * @return boolean
+     * @return bool
      **/
     public function maybeDynamic()
     {
@@ -3366,7 +3359,7 @@ class CommonDBTM extends CommonGLPI
      * need to be overriden if object need to use standard deleted management (Computer...)
      * @since 0.84
      *
-     * @return boolean
+     * @return bool
      **/
     public function useDeletedToLockIfDynamic()
     {
@@ -3379,7 +3372,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @since 0.84
      *
-     * @return boolean
+     * @return bool
      **/
     public function isDynamic()
     {
@@ -3393,7 +3386,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Is the object may be private
      *
-     * @return boolean
+     * @return bool
      **/
     public function maybePrivate()
     {
@@ -3409,7 +3402,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Is the object private
      *
-     * @return boolean
+     * @return bool
      **/
     public function isPrivate()
     {
@@ -3424,7 +3417,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @since 9.3
      *
-     * @return boolean
+     * @return bool
      */
     public function maybeLocated()
     {
@@ -3451,7 +3444,7 @@ class CommonDBTM extends CommonGLPI
      * Return the count of linked items (`Asset_PeripheralAsset` relations)
      *
      * @since 0.84.4
-     * @return integer number of linked items
+     * @return int number of linked items
      **/
     public function getLinkedItemsCount()
     {
@@ -3491,7 +3484,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param string $field field name
      *
-     * @return boolean
+     * @return bool
      **/
     public function isField($field)
     {
@@ -4008,7 +4001,7 @@ class CommonDBTM extends CommonGLPI
      * @param array       $actions    Array of the actions to update where the keys are the internal identifier for the action and the values are the displayed value.
      *                                Displayed values may contain HTML code, so text data must be sanitized before returning them from this method.
      * @param string      $itemtype   the type of the item for which we want the actions
-     * @param boolean     $is_deleted (default false)
+     * @param bool        $is_deleted (default false)
      * @param ?CommonDBTM $checkitem  (default NULL)
      * @return void (update is set inside $actions)
      *
@@ -4028,7 +4021,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param MassiveAction $ma the current massive action object
      *
-     * @return boolean false if parameters displayed ?
+     * @return bool false if parameters displayed ?
      **/
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
@@ -4185,7 +4178,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param array $options @see Dropdown::show()
      *
-     * @return string|false|integer
+     * @return string|false|int
      **/
     public static function dropdown($options = [])
     {
@@ -4266,7 +4259,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Check float and decimal values
      *
-     * @param boolean $display display or not messages in and addAfterRedirect (true by default)
+     * @param bool $display display or not messages in and addAfterRedirect (true by default)
      *
      * @return void
      **/
@@ -4395,7 +4388,7 @@ class CommonDBTM extends CommonGLPI
      * @param string $datatype datatype of the value
      * @param array  $value    value to check (pass by reference)
      *
-     * @return boolean true if value is ok, false if not
+     * @return bool true if value is ok, false if not
      **/
     public function checkSpecificValues($datatype, &$value)
     {
@@ -4513,10 +4506,10 @@ class CommonDBTM extends CommonGLPI
     /**
      * Check field unicity before insert or update
      *
-     * @param boolean $add     true for insert, false for update (false by default)
-     * @param array   $options array
+     * @param bool  $add     true for insert, false for update (false by default)
+     * @param array $options array
      *
-     * @return boolean true if item can be written in DB, false if not
+     * @return bool true if item can be written in DB, false if not
      **/
     public function checkUnicity($add = false, $options = [])
     {
@@ -4682,11 +4675,11 @@ class CommonDBTM extends CommonGLPI
     /**
      * Clean all infos which match some criteria
      *
-     * @param array   $crit    array of criteria (ex array('is_active'=>'1'))
-     * @param boolean $force   force purge not on put in trashbin (default false)
-     * @param boolean $history do history log ? (true by default)
+     * @param array $crit    array of criteria (ex array('is_active'=>'1'))
+     * @param bool  $force   force purge not on put in trashbin (default false)
+     * @param bool  $history do history log ? (true by default)
      *
-     * @return boolean
+     * @return bool
      **/
     public function deleteByCriteria($crit = [], $force = false, $history = true)
     {
@@ -4711,10 +4704,10 @@ class CommonDBTM extends CommonGLPI
     /**
      * get the Entity of an Item
      *
-     * @param string  $itemtype item type
-     * @param integer $items_id id of the item
+     * @param string $itemtype item type
+     * @param int    $items_id id of the item
      *
-     * @return integer ID of the entity or -1
+     * @return int ID of the entity or -1
      **/
     public static function getItemEntity($itemtype, $items_id)
     {
@@ -4762,14 +4755,14 @@ class CommonDBTM extends CommonGLPI
      *
      * @since 0.83
      *
-     * @param integer|string|array $field_id_or_search_options id of the search option field
-     *                                                         or field name
-     *                                                         or search option array
-     * @param mixed                $values                     value to display
-     * @param array                $options                    array of possible options:
-     *                                                         Parameters which could be used in options array :
-     *                                                         - comments : boolean / is the comments displayed near the value (default false)
-     *                                                         - any others options passed to specific display method
+     * @param int|string|array $field_id_or_search_options id of the search option field
+     *                                                     or field name
+     *                                                     or search option array
+     * @param mixed            $values                     value to display
+     * @param array            $options                    array of possible options:
+     *                                                     Parameters which could be used in options array :
+     *                                                     - comments : boolean / is the comments displayed near the value (default false)
+     *                                                     - any others options passed to specific display method
      *
      * @return mixed the value to display
      **/
@@ -5014,17 +5007,17 @@ class CommonDBTM extends CommonGLPI
      *
      * @since 0.83
      *
-     * @param integer|string|array $field_id_or_search_options id of the search option field
-     *                                                         or field name
-     *                                                         or search option array
-     * @param string               $name                       name of the select (if empty use linkfield)
-     *                                                         (default '')
-     * @param mixed                $values                     default value to display
-     *                                                         (default '')
-     * @param array                $options                    array of possible options:
-     *                                                         Parameters which could be used in options array :
-     *                                                         - comments : boolean / is the comments displayed near the value (default false)
-     *                                                         - any others options passed to specific display method
+     * @param int|string|array $field_id_or_search_options id of the search option field
+     *                                                     or field name
+     *                                                     or search option array
+     * @param string           $name                       name of the select (if empty use linkfield)
+     *                                                     (default '')
+     * @param mixed            $values                     default value to display
+     *                                                     (default '')
+     * @param array            $options                    array of possible options:
+     *                                                     Parameters which could be used in options array :
+     *                                                     - comments : boolean / is the comments displayed near the value (default false)
+     *                                                     - any others options passed to specific display method
      *
      * @return false|string the string to display
      **/
@@ -5274,9 +5267,9 @@ class CommonDBTM extends CommonGLPI
     }
 
     /**
-     * @param string  $itemtype Item type
-     * @param string  $target   Target
-     * @param boolean $add      If true, displays the template list to select the template to use when creating an item. Otherwise, displays the list of templates with the options to add/delete templates.
+     * @param string $itemtype Item type
+     * @param string $target   Target
+     * @param bool   $add      If true, displays the template list to select the template to use when creating an item. Otherwise, displays the list of templates with the options to add/delete templates.
      *
      * @return false|void
      */
@@ -5400,7 +5393,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param string $itemtype itemtype to check
      *
-     * @return boolean
+     * @return bool
      **/
     public static function isEntityForwardTo($itemtype)
     {
@@ -5988,8 +5981,8 @@ class CommonDBTM extends CommonGLPI
     /**
      * Correct entity id if needed when cloning a template
      *
-     * @param integer $parent_id
-     * @param string  $parent_itemtype
+     * @param int    $parent_id
+     * @param string $parent_itemtype
      *
      * @return array
      */

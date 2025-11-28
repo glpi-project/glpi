@@ -67,8 +67,8 @@ interface SearchProviderInterface
      *      cols : columns definition
      *      rows : rows data
      *
-     * @param array   $data      array of search data prepared to get data
-     * @param boolean $onlycount If we just want to count results
+     * @param array $data      array of search data prepared to get data
+     * @param bool  $onlycount If we just want to count results
      *
      * @return void|false
      **/

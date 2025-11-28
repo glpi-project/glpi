@@ -86,7 +86,7 @@ abstract class CommonDropdown extends CommonDBTM
      *
      * @since 0.85
      *
-     * @return boolean true if translation is available, false otherwise
+     * @return bool true if translation is available, false otherwise
      **/
     public function maybeTranslated()
     {
@@ -528,7 +528,7 @@ abstract class CommonDropdown extends CommonDBTM
     /**
      * Check if the dropdown $ID is used into item tables
      *
-     * @return boolean : is the value used ?
+     * @return bool : is the value used ?
      */
     public function isUsed()
     {
@@ -692,7 +692,7 @@ abstract class CommonDropdown extends CommonDBTM
      *
      * @param &$input array of value to import (name)
      *
-     * @return integer the ID of the new (or -1 if not found)
+     * @return int the ID of the new (or -1 if not found)
      **/
     public function findID(array &$input)
     {
@@ -734,7 +734,7 @@ abstract class CommonDropdown extends CommonDBTM
      *
      * @param $input array of value to import (name, ...)
      *
-     * @return integer|boolean the ID of the new or existing dropdown (-1 or false on failure)
+     * @return int|bool the ID of the new or existing dropdown (-1 or false on failure)
      **/
     public function import(array $input)
     {
@@ -765,14 +765,14 @@ abstract class CommonDropdown extends CommonDBTM
      *
      * This import a new dropdown if it doesn't exist - Play dictionary if needed
      *
-     * @param string  $value           Value of the new dropdown
-     * @param integer $entities_id     Entity in case of specific dropdown (default -1)
-     * @param array   $external_params (manufacturer)
-     * @param string  $comment         Comment
-     * @param boolean $add             if true, add it if not found. if false,
-     *                                 just check if exists (true by default)
+     * @param string $value           Value of the new dropdown
+     * @param int    $entities_id     Entity in case of specific dropdown (default -1)
+     * @param array  $external_params (manufacturer)
+     * @param string $comment         Comment
+     * @param bool   $add             if true, add it if not found. if false,
+     *                                just check if exists (true by default)
      *
-     * @return integer Dropdown id
+     * @return int Dropdown id
      **/
     public function importExternal(
         $value,

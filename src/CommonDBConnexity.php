@@ -102,8 +102,8 @@ abstract class CommonDBConnexity extends CommonDBTM
      *
      * @since 9.4
      *
-     * @param string  $itemtype the type of the item to look for
-     * @param integer $items_id the id of the item to look for
+     * @param string $itemtype the type of the item to look for
+     * @param int    $items_id the id of the item to look for
      *
      * @return array|null
      */
@@ -117,8 +117,8 @@ abstract class CommonDBConnexity extends CommonDBTM
      * Clean the Connecity Table when item of the relation is deleted
      * To be call from the cleanDBonPurge of each Item class
      *
-     * @param string  $itemtype type of the item
-     * @param integer $items_id id of the item
+     * @param string $itemtype type of the item
+     * @param int    $items_id id of the item
      * @return void
      **/
     public function cleanDBonItemDelete($itemtype, $items_id)
@@ -145,11 +145,11 @@ abstract class CommonDBConnexity extends CommonDBTM
      * get associated item (defined by $itemtype and $items_id)
      *
      *
-     * @param string  $itemtype         the name of the field of the type of the item to get
-     * @param string  $items_id         the name of the field of the id of the item to get
-     * @param boolean $getFromDB        do we have to load the item from the DB ?
-     * @param boolean $getEmpty         else : do we have to load an empty item ?
-     * @param boolean $getFromDBOrEmpty get from DB if possible, else, getEmpty
+     * @param string $itemtype         the name of the field of the type of the item to get
+     * @param string $items_id         the name of the field of the id of the item to get
+     * @param bool   $getFromDB        do we have to load the item from the DB ?
+     * @param bool   $getEmpty         else : do we have to load an empty item ?
+     * @param bool   $getFromDBOrEmpty get from DB if possible, else, getEmpty
      *
      * @return CommonDBTM|false the item or false if we cannot load the item
      * @see CommonDBConnexity::getItemFromArray()
@@ -224,12 +224,12 @@ abstract class CommonDBConnexity extends CommonDBTM
     /**
      * get associated item (defined by $itemtype and $items_id)
      *
-     * @param string  $itemtype         the name of the field of the type of the item to get
-     * @param string  $items_id         the name of the field of the id of the item to get
-     * @param array   $array            the array in we have to search ($input, $this->fields ...)
-     * @param boolean $getFromDB        do we have to load the item from the DB ?
-     * @param boolean $getEmpty         else : do we have to load an empty item ?
-     * @param boolean $getFromDBOrEmpty get from DB if possible, else, getEmpty
+     * @param string $itemtype         the name of the field of the type of the item to get
+     * @param string $items_id         the name of the field of the id of the item to get
+     * @param array  $array            the array in we have to search ($input, $this->fields ...)
+     * @param bool   $getFromDB        do we have to load the item from the DB ?
+     * @param bool   $getEmpty         else : do we have to load an empty item ?
+     * @param bool   $getFromDBOrEmpty get from DB if possible, else, getEmpty
      *
      * @return CommonDBTM|false the item or false if we cannot load the item
      **/
@@ -292,7 +292,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @param $input  array   the new values for the current item
      * @param $fields array   list of fields that define the attached items
      *
-     * @return boolean true if the attached item has changed, false if the attached items has not changed
+     * @return bool true if the attached item has changed, false if the attached items has not changed
      **/
     public function checkAttachedItemChangesAllowed(array $input, array $fields)
     {
@@ -351,7 +351,7 @@ abstract class CommonDBConnexity extends CommonDBTM
     /**
      * Is auto entityForwarding needed ?
      *
-     * @return boolean
+     * @return bool
      **/
     public function tryEntityForwarding()
     {
@@ -371,12 +371,12 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @warning By default, if the action is possible regarding the attaching item, then it is
      * possible on the CommonDBChild and the CommonDBRelation.
      *
-     * @param string  $method     the method to check (canCreate, canView, canUpdate of canDelete)
-     * @param integer $item_right the right to check (DONT_CHECK_ITEM_RIGHTS, HAVE_VIEW_RIGHT_ON_ITEM ...)
-     * @param string  $itemtype   the name of the field of the type of the item to get
-     * @param string  $items_id   the name of the field of the id of the item to get
+     * @param string $method     the method to check (canCreate, canView, canUpdate of canDelete)
+     * @param int    $item_right the right to check (DONT_CHECK_ITEM_RIGHTS, HAVE_VIEW_RIGHT_ON_ITEM ...)
+     * @param string $itemtype   the name of the field of the type of the item to get
+     * @param string $items_id   the name of the field of the id of the item to get
      *
-     * @return boolean true if we have absolute right to create the current connexity
+     * @return bool true if we have absolute right to create the current connexity
      **/
     public static function canConnexity($method, $item_right, $itemtype, $items_id)
     {
@@ -404,12 +404,12 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @param string          $methodItem    the method to check (canCreateItem, canViewItem,
      *                                       canUpdateItem or canDeleteItem)
      * @param string          $methodNotItem the method to check (canCreate, canView, canUpdate of canDelete)
-     * @param integer         $item_right    the right to check (DONT_CHECK_ITEM_RIGHTS, HAVE_VIEW_RIGHT_ON_ITEM ...)
+     * @param int             $item_right    the right to check (DONT_CHECK_ITEM_RIGHTS, HAVE_VIEW_RIGHT_ON_ITEM ...)
      * @param string          $itemtype      the name of the field of the type of the item to get
      * @param string          $items_id      the name of the field of the id of the item to get
      * @param CommonDBTM|null &$item         the item concerned by the item
      *
-     * @return boolean true if we have absolute right to create the current connexity
+     * @return bool true if we have absolute right to create the current connexity
      **/
     public function canConnexityItem(
         $methodItem,
@@ -717,7 +717,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      *
      * @param string     $action the name of the action
      * @param CommonDBTM $item   the item on which apply the massive action
-     * @param integer[]  $ids    the ids of the item on which apply the action
+     * @param int[]      $ids    the ids of the item on which apply the action
      * @param array      $input  the input provided by the form ($_POST, $_GET ...)
      *
      * @return array containing the elements

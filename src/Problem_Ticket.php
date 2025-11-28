@@ -338,7 +338,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
      * Returns problems data for given ticket.
      * Returned data is usable by `Problem::showShort()` method.
      *
-     * @param integer $tickets_id
+     * @param int $tickets_id
      *
      */
     private static function getTicketProblemsData($tickets_id): array
@@ -363,7 +363,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
      * Returns tickets data for given problem.
      * Returned data is usable by `Ticket::showShort()` method.
      *
-     * @param integer $problems_id
+     * @param int $problems_id
      *
      */
     private static function getProblemTicketsData($problems_id): array

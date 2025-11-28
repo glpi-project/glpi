@@ -816,7 +816,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     /**
-     * @param integer $withtemplate
+     * @param int $withtemplate
      *
      * @return void|false
      **/

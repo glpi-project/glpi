@@ -148,7 +148,7 @@ class UserEmail extends CommonDBChild
      * @param $users_id user ID
      * @param $email    string   email to check user ID
      *
-     * @return boolean is this email set for the user ?
+     * @return bool is this email set for the user ?
      **/
     public static function isEmailForUser($users_id, $email)
     {

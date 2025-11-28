@@ -101,11 +101,11 @@ class PlanningRecall extends CommonDBChild
     /**
      * Retrieve an item from the database
      *
-     * @param string  $itemtype itemtype to get
-     * @param integer $items_id id of the item
-     * @param integer $users_id id of the user
+     * @param string $itemtype itemtype to get
+     * @param int    $items_id id of the item
+     * @param int    $users_id id of the user
      *
-     * @return boolean true if succeed else false
+     * @return bool true if succeed else false
      **/
     public function getFromDBForItemAndUser($itemtype, $items_id, $users_id)
     {
@@ -204,11 +204,11 @@ class PlanningRecall extends CommonDBChild
     /**
      * Update planning recal date when changing begin of planning
      *
-     * @param string  $itemtype itemtype to get
-     * @param integer $items_id id of the item
-     * @param string  $begin    new begin date
+     * @param string $itemtype itemtype to get
+     * @param int    $items_id id of the item
+     * @param string $begin    new begin date
      *
-     * @return boolean true if succeed else false
+     * @return bool true if succeed else false
      **/
     public static function managePlanningUpdates($itemtype, $items_id, $begin)
     {

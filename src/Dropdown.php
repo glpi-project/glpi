@@ -114,7 +114,7 @@ class Dropdown
      *                         - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
      *                         - readonly             : boolean / return self::getDropdownValue if true (default false)
      *                         - parent_id_field      : field used to compute parent id (to filter available values inside the dropdown tree)
-     * @return string|false|integer
+     * @return string|false|int
      **/
     public static function show($itemtype, $options = [])
     {
@@ -532,12 +532,12 @@ class Dropdown
      *
      *
      * @since 11.0.0 Usage of the `$withcomment` parameter is deprecated.
-     * @param string  $table       the dropdown table from witch we want values on the select
-     * @param integer $id          id of the element to get
-     * @param boolean $withcomment give array with name and comment (default 0)
-     * @param boolean $translate   (true by default)
-     * @param boolean $tooltip     (true by default) returns a tooltip, else returns only 'comment'
-     * @param string  $default     default value returned when item not exists
+     * @param string $table       the dropdown table from witch we want values on the select
+     * @param int    $id          id of the element to get
+     * @param bool   $withcomment give array with name and comment (default 0)
+     * @param bool   $translate   (true by default)
+     * @param bool   $tooltip     (true by default) returns a tooltip, else returns only 'comment'
+     * @param string $default     default value returned when item not exists
      * @return ($withcomment is true ? array|string : string) the value of the dropdown
      *      The returned `comment` will corresponds to a safe HTML string.
      **/
@@ -650,9 +650,6 @@ class Dropdown
      * Get comments of a dropdown entry.
      * The returned value is a safe HTML string.
      *
-     * @param integer $id
-     * @param boolean $translate
-     * @param boolean $tooltip
      *
      **/
     public static function getDropdownComments(string $table, int $id, bool $translate = true, bool $tooltip = true): string
@@ -837,8 +834,8 @@ class Dropdown
     /**
      * Get values of a dropdown for a list of item
      *
-     * @param string    $table the dropdown table from witch we want values on the select
-     * @param integer[] $ids   array containing the ids to get
+     * @param string $table the dropdown table from witch we want values on the select
+     * @param int[]  $ids   array containing the ids to get
      *
      * @return array containing the value of the dropdown or &nbsp; if not exists
      **/
@@ -885,7 +882,7 @@ class Dropdown
      *                          - emptylabel          : empty label if empty displayed (default self::EMPTY_VALUE)
      *                          - display_emptychoice : display empty choice (default false)
      *
-     * @return integer|string
+     * @return int|string
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      **/
@@ -930,7 +927,7 @@ class Dropdown
      * @param array  $options      array of possible options:
      *                             - may be value (default value) / field (used field to search itemtype)
      *
-     * @return integer|string
+     * @return int|string
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      **/
@@ -964,11 +961,11 @@ class Dropdown
     /**
      * Make a select box for icons
      *
-     * @param string  $myname     the name of the HTML select
-     * @param mixed   $value      the preselected value we want
-     * @param string  $store_path path where icons are stored (No longer used)
-     * @param boolean $display    display of get string ? (true by default)
-     * @param array   $options
+     * @param string $myname     the name of the HTML select
+     * @param mixed  $value      the preselected value we want
+     * @param string $store_path path where icons are stored (No longer used)
+     * @param bool   $display    display of get string ? (true by default)
+     * @param array  $options
      *
      *
      * @return void|string
@@ -1097,12 +1094,12 @@ HTML;
      * Make a select box for a boolean choice (Yes/No) or display a checkbox. Add a
      * 'use_checkbox' = true to the $params array to display a checkbox instead a select box
      *
-     * @param string  $name        select name
-     * @param mixed   $value       preselected value. (default 0)
-     * @param integer $restrict_to allows to display only yes or no in the dropdown (default -1)
-     * @param array   $params      Array of optional options (passed to showFromArray)
+     * @param string $name        select name
+     * @param mixed  $value       preselected value. (default 0)
+     * @param int    $restrict_to allows to display only yes or no in the dropdown (default -1)
+     * @param array  $params      Array of optional options (passed to showFromArray)
      *
-     * @return integer|string
+     * @return int|string
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      **/
@@ -1598,7 +1595,7 @@ HTML;
      *                        - width              specific width needed (default auto adaptive)
      *                        - step               step time (defaut config GLPI)
      *
-     * @return integer|string
+     * @return int|string
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      **/
@@ -1687,7 +1684,7 @@ HTML;
      *                              url (see Ajax::updateItemOnSelectEvent for information)
      *                              and may have moreparams)
      *
-     * @return integer rand for select id
+     * @return int rand for select id
      **/
     public static function showItemType($types = '', $options = [])
     {
@@ -1807,7 +1804,7 @@ HTML;
      *                 - used                : array / Already used items ID: not to display in dropdown (default empty)
      *                 - display             : true : display directly, false return the html
      *
-     * @return integer|string randomized value used to generate HTML IDs or html contents
+     * @return int|string randomized value used to generate HTML IDs or html contents
      **/
     public static function showSelectItemFromItemtypes(array $options = [])
     {
@@ -2031,9 +2028,9 @@ HTML;
      *
      * @since 0.84
      *
-     * @param integer $value    numeric value
-     * @param string  $unit     unit (maybe year, month, day, hour, % for standard management)
-     * @param integer $decimals number of decimal
+     * @param int    $value    numeric value
+     * @param string $unit     unit (maybe year, month, day, hour, % for standard management)
+     * @param int    $decimals number of decimal
      *
      * @return string
      **/
@@ -2282,7 +2279,7 @@ HTML;
      *       'optgroupname2' => array('key3' => 'val3',
      *                                'key4' => 'val4'))
      *
-     * @return integer|string
+     * @return int|string
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      **/
@@ -2560,9 +2557,9 @@ HTML;
     /**
      * Dropdown for frequency (interval between 2 actions)
      *
-     * @param string  $name    select name
-     * @param integer $value   default value (default 0)
-     * @param array   $options
+     * @param string $name    select name
+     * @param int    $value   default value (default 0)
+     * @param array  $options
      *
      * @return void
      **/
@@ -2600,8 +2597,8 @@ HTML;
     /**
      * Dropdown for global item management
      *
-     * @param integer $ID    item ID
-     * @param array   $attrs array which contains the extra parameters
+     * @param int   $ID    item ID
+     * @param array $attrs array which contains the extra parameters
      *
      * Parameters can be :
      * - target target for actions
@@ -2685,7 +2682,7 @@ HTML;
      * @param string $itemtype name of the class
      * @param array  $input    of value to import
      *
-     * @return boolean|integer ID of the new item or false on error
+     * @return bool|int ID of the new item or false on error
      **/
     public static function import($itemtype, $input)
     {
@@ -2709,14 +2706,14 @@ HTML;
      *
      * This import a new dropdown if it doesn't exist - Play dictionary if needed
      *
-     * @param string  $itemtype        name of the class
-     * @param string  $value           Value of the new dropdown.
-     * @param integer $entities_id     entity in case of specific dropdown
-     * @param array   $external_params
-     * @param string  $comment
-     * @param boolean $add             if true, add it if not found. if false, just check if exists
+     * @param string $itemtype        name of the class
+     * @param string $value           Value of the new dropdown.
+     * @param int    $entities_id     entity in case of specific dropdown
+     * @param array  $external_params
+     * @param string $comment
+     * @param bool   $add             if true, add it if not found. if false, just check if exists
      *
-     * @return false|integer : dropdown id.
+     * @return false|int : dropdown id.
      **/
     public static function importExternal(
         $itemtype,
@@ -2743,7 +2740,7 @@ HTML;
     /**
      * Get the label associated with a management type
      *
-     * @param integer $value the type of management (default 0)
+     * @param int $value the type of management (default 0)
      *
      * @return string the label corresponding to it, or ""
      **/
@@ -2858,8 +2855,8 @@ HTML;
     /**
      * Get dropdown value
      *
-     * @param array   $post Posted values
-     * @param boolean $json Encode to JSON, default to true
+     * @param array $post Posted values
+     * @param bool  $json Encode to JSON, default to true
      *
      * @return string|array|false
      */
@@ -3766,8 +3763,8 @@ HTML;
     /**
      * Get dropdown connect
      *
-     * @param array   $post Posted values
-     * @param boolean $json Encode to JSON, default to true
+     * @param array $post Posted values
+     * @param bool  $json Encode to JSON, default to true
      *
      * @return string|array|false
      */
@@ -3964,8 +3961,8 @@ HTML;
     /**
      * Get dropdown find num
      *
-     * @param array   $post Posted values
-     * @param boolean $json Encode to JSON, default to true
+     * @param array $post Posted values
+     * @param bool  $json Encode to JSON, default to true
      *
      * @return string|array|false
      */
@@ -4124,8 +4121,8 @@ HTML;
     /**
      * Get dropdown for user devices with lazy loading support
      *
-     * @param array   $post Posted values
-     * @param boolean $json Encode to JSON, default to true
+     * @param array $post Posted values
+     * @param bool  $json Encode to JSON, default to true
      *
      * @return string|array
      */
@@ -4658,8 +4655,8 @@ HTML;
     /**
      * Get dropdown number
      *
-     * @param array   $post Posted values
-     * @param boolean $json Encode to JSON, default to true
+     * @param array $post Posted values
+     * @param bool  $json Encode to JSON, default to true
      *
      * @return string|array
      */
@@ -4770,8 +4767,8 @@ HTML;
     /**
      * Get dropdown users
      *
-     * @param array   $post Posted values
-     * @param boolean $json Encode to JSON, default to true
+     * @param array $post Posted values
+     * @param bool  $json Encode to JSON, default to true
      *
      * @return string|array|false
      */

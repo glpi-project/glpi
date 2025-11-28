@@ -159,7 +159,6 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * Is the current user have right to delete the current validation ?
      *
-     * @return boolean
      **/
     public function canCreateItem(): bool
     {
@@ -204,7 +203,6 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * Is the current user have right to delete the current validation ?
      *
-     * @return boolean
      **/
     public function canDeleteItem(): bool
     {
@@ -222,7 +220,6 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * Does the current user have the rights needed to update the current validation?
      *
-     * @return boolean
      */
     public function canUpdateItem(): bool
     {
@@ -670,7 +667,7 @@ abstract class CommonITILValidation extends CommonDBChild
      *                        - global   : for global validation (default false)
      *                        - display  : boolean display or get string ? (default true)
      *
-     * @return string|integer Output string if display option is set to false,
+     * @return string|int Output string if display option is set to false,
      *                        otherwise random part of dropdown id
      **/
     public static function dropdownStatus($name, $options = [])
@@ -705,7 +702,7 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * Get Ticket validation status Name
      *
-     * @param integer $value
+     * @param int $value
      *
      * @return string
      **/

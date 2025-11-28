@@ -55,7 +55,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
      * Method that must be overloaded. This method provides the ancestor of the current item
      * according to $this->input
      *
-     * @return integer the id of the current object ancestor
+     * @return int the id of the current object ancestor
      **/
     public function getNewAncestor()
     {

@@ -140,7 +140,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
      *                 - target filename : where to go when done.
      *                 - withtemplate boolean : template or basic item
      *
-     * @return boolean item found
+     * @return bool item found
      */
     public function showForm($ID, array $options = [])
     {
@@ -482,7 +482,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
     /**
      * Get item types that can be linked to an appliance
      *
-     * @param boolean $all Get all possible types or only allowed ones
+     * @param bool $all Get all possible types or only allowed ones
      *
      */
     public static function getTypes($all = false): array

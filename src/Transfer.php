@@ -1655,7 +1655,7 @@ final class Transfer extends CommonDBTM
      * Transfer disks of an item
      *
      * @param class-string<CommonDBTM> $itemtype Item type
-     * @param integer                  $ID       ID of the item
+     * @param int                      $ID       ID of the item
      *
      */
     private function transferItem_Disks(string $itemtype, int $ID): void

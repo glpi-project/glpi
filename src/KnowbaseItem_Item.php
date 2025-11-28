@@ -90,7 +90,7 @@ class KnowbaseItem_Item extends CommonDBRelation
     /**
      * Show linked items of a knowbase item
      *
-     * @param integer $withtemplate withtemplate param (default 0)
+     * @param int $withtemplate withtemplate param (default 0)
      *
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
@@ -214,9 +214,9 @@ class KnowbaseItem_Item extends CommonDBRelation
      * Retrieve items for a knowbase item
      *
      * @param CommonDBTM $item  CommonDBTM object
-     * @param integer    $start first line to retrieve (default 0)
-     * @param integer    $limit max number of line to retrive (0 for all) (default 0)
-     * @param boolean    $used  whether to retrieve data for "used" records
+     * @param int        $start first line to retrieve (default 0)
+     * @param int        $limit max number of line to retrive (0 for all) (default 0)
+     * @param bool       $used  whether to retrieve data for "used" records
      *
      * @return array of linked items
      **/

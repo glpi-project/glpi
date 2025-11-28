@@ -63,21 +63,21 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
     /**
      * Error code returned when invalid items are found and are not fixed.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_INVALID_ITEMS_FOUND = 1;
 
     /**
      * Error code returned when update of an item failed.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_UPDATE_FAILED = 2;
 
     /**
      * Error code returned when rollback file could not be created.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_ROLLBACK_FILE_FAILED = 3;
 
@@ -426,7 +426,6 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
     /**
      * Count items in list of invalid idems
      *
-     * @return integer
      */
     private function countItems(array $items_array): int
     {

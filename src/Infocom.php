@@ -72,7 +72,7 @@ class Infocom extends CommonDBChild
      *
      * @param string|object $item an object or a string
      *
-     * @return boolean true if $object is an object that can have Infocom
+     * @return bool true if $object is an object that can have Infocom
      *
      **/
     public static function canApplyOn($item)
@@ -255,10 +255,10 @@ class Infocom extends CommonDBChild
     /**
      * Retrieve an item from the database for a device
      *
-     * @param string  $itemtype type of the device to retrieve infocom
-     * @param integer $ID       ID of the device to retrieve infocom
+     * @param string $itemtype type of the device to retrieve infocom
+     * @param int    $ID       ID of the device to retrieve infocom
      *
-     * @return boolean true if succeed else false
+     * @return bool true if succeed else false
      **/
     public function getFromDBforDevice($itemtype, $ID)
     {
@@ -440,7 +440,7 @@ class Infocom extends CommonDBChild
      * Fill, if necessary, automatically some dates when status changes
      *
      * @param CommonDBTM $item       CommonDBTM object: the item whose status have changed
-     * @param boolean    $action_add true if object is added, false if updated (true by default)
+     * @param bool       $action_add true if object is added, false if updated (true by default)
      *
      * @return void
      **/
@@ -487,10 +487,10 @@ class Infocom extends CommonDBChild
     /**
      * Automatically manage copying one date to another is necessary
      *
-     * @param array   $infocoms array of item's infocom to modify
-     * @param string  $field    the date to modify (default '')
-     * @param integer $action   the action to peform (copy from another date) (default 0)
-     * @param array   $params   array of additional parameters needed to perform the task
+     * @param array  $infocoms array of item's infocom to modify
+     * @param string $field    the date to modify (default '')
+     * @param int    $action   the action to peform (copy from another date) (default 0)
+     * @param array  $params   array of additional parameters needed to perform the task
      *
      * @return void
      **/
@@ -635,7 +635,7 @@ class Infocom extends CommonDBChild
      *
      * @param CronTask $task to log, if NULL use display (default NULL)
      *
-     * @return integer 0 : nothing to do 1 : done with success
+     * @return int 0 : nothing to do 1 : done with success
      **/
     public static function cronInfocom($task = null)
     {
@@ -787,7 +787,7 @@ class Infocom extends CommonDBChild
      *
      * @since 0.84 (before in alert.class)
      *
-     * @param integer|string|null $val if not set, ask for all values, else for 1 value (default NULL)
+     * @param int|string|null $val if not set, ask for all values, else for 1 value (default NULL)
      *
      * @return array|string
      **/
@@ -845,9 +845,9 @@ class Infocom extends CommonDBChild
     /**
      * Dropdown of amortissement type for infocoms
      *
-     * @param string  $name    select name
-     * @param integer $value   default value (default 0)
-     * @param boolean $display display or get string (true by default)
+     * @param string $name    select name
+     * @param int    $value   default value (default 0)
+     * @param bool   $display display or get string (true by default)
      **/
     public static function dropdownAmortType($name, $value = 0, $display = true)
     {
@@ -869,7 +869,7 @@ class Infocom extends CommonDBChild
     /**
      * Get amortissement type name for infocoms
      *
-     * @param integer $value status ID
+     * @param int $value status ID
      **/
     public static function getAmortTypeName($value)
     {
@@ -969,8 +969,8 @@ class Infocom extends CommonDBChild
      * Show infocom link to display modal
      *
      * @param class-string<CommonDBTM> $itemtype  item type
-     * @param integer                  $device_id item ID
-     * @param boolean                  $display   display or not the link (default true)
+     * @param int                      $device_id item ID
+     * @param bool                     $display   display or not the link (default true)
      *
      * @return void|string
      **/
@@ -1061,7 +1061,7 @@ HTML;
      * @param string $buydate    Buy date
      * @param string $usedate    Date of use
      *
-     * @return array|boolean
+     * @return array|bool
      */
     public static function linearAmortise($value, $duration, $fiscaldate, $buydate = '', $usedate = '')
     {
@@ -1153,10 +1153,10 @@ HTML;
      * Maps new amortise format to old one...
      * To not rewrite all the old method.
      *
-     * @param array   $values  New format amortise values
-     * @param boolean $current True to get only current year, false to get the whole array
+     * @param array $values  New format amortise values
+     * @param bool  $current True to get only current year, false to get the whole array
      *
-     * @return array|double
+     * @return array|float
      */
     public static function mapOldAmortiseFormat($values, $current = true)
     {
@@ -1184,7 +1184,7 @@ HTML;
     /**
      * Calculate depreciation for an item
      *
-     * @param integer     $type_amort type of depreciation "linear=2" or "degressive=1"
+     * @param int         $type_amort type of depreciation "linear=2" or "degressive=1"
      * @param number      $va         valeur d'acquisition
      * @param number      $duree      acquisition value
      * @param number      $coef       amortization coefficient
@@ -1960,12 +1960,12 @@ HTML;
     /**
      * Get date using a begin date and a period in month
      *
-     * @param string  $from         begin date
-     * @param integer $addwarranty  period in months
-     * @param integer $deletenotice period in months of notice (default 0)
-     * @param boolean $color        if show expire date in red color (false by default)
-     * @param boolean $auto_renew
-     * @param integer $periodicity  renewal periodicity in month if different from addwarranty
+     * @param string $from         begin date
+     * @param int    $addwarranty  period in months
+     * @param int    $deletenotice period in months of notice (default 0)
+     * @param bool   $color        if show expire date in red color (false by default)
+     * @param bool   $auto_renew
+     * @param int    $periodicity  renewal periodicity in month if different from addwarranty
      *
      * @return string Expiration date automatically converted to the user's preferred date format.
      *                The returned value is a safe HTML string.

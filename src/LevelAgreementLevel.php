@@ -304,7 +304,7 @@ abstract class LevelAgreementLevel extends RuleTicket
      *                        - max_time : max time to use
      *                        - used : already used values
      *
-     * @return integer|string
+     * @return int|string
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      **/
@@ -335,7 +335,7 @@ abstract class LevelAgreementLevel extends RuleTicket
     /**
      * Get already used execution time for a OLA
      *
-     * @param integer $las_id id of the OLA
+     * @param int $las_id id of the OLA
      *
      * @return array of already used execution times
      **/

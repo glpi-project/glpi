@@ -134,7 +134,7 @@ class Log extends CommonDBTM
      * @param $oldvalues array of old values updated
      * @param $values    array of all values of the item
      *
-     * @return boolean for success (at least 1 log entry added)
+     * @return bool for success (at least 1 log entry added)
      **/
     public static function constructHistory(CommonDBTM $item, $oldvalues, $values)
     {
@@ -221,7 +221,7 @@ class Log extends CommonDBTM
      * @param $itemtype_link (default '')
      * @param $linked_action (default '0')
      *
-     * @return boolean success
+     * @return bool success
      **/
     public static function history($items_id, $itemtype, $changes, $itemtype_link = '', $linked_action = '0')
     {
@@ -362,8 +362,8 @@ class Log extends CommonDBTM
      * Retrieve last history Data for an item
      *
      * @param CommonDBTM $item       Object instance
-     * @param integer    $start      First line to retrieve (default 0)
-     * @param integer    $limit      Max number of line to retrieve (0 for all) (default 0)
+     * @param int        $start      First line to retrieve (default 0)
+     * @param int        $limit      Max number of line to retrieve (0 for all) (default 0)
      * @param array      $sqlfilters SQL filters applied to history (default [])
      *
      * @return array of log entries, each containing the following keys:
@@ -1208,7 +1208,7 @@ class Log extends CommonDBTM
      *
      *
      * @since 9.3
-     * @param integer $linked_action Linked action value of a log entry.
+     * @param int $linked_action Linked action value of a log entry.
      * @return string
      **/
     public static function getLinkedActionLabel($linked_action)

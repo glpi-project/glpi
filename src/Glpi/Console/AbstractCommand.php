@@ -74,14 +74,14 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
     /**
      * Flag to indicate if command requires a DB connection.
      *
-     * @var boolean
+     * @var bool
      */
     protected $requires_db = true;
 
     /**
      * Flag to indicate if command requires an up-to-date DB.
      *
-     * @var boolean
+     * @var bool
      */
     protected $requires_db_up_to_date = true;
 
@@ -134,7 +134,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
      * Correctly write output messages when a progress bar is displayed.
      *
      * @param string|array $messages
-     * @param integer      $verbosity
+     * @param int          $verbosity
      *
      * @return void
      */

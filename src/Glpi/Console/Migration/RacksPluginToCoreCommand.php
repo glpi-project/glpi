@@ -74,14 +74,14 @@ class RacksPluginToCoreCommand extends AbstractCommand
     /**
      * Error code returned if plugin version or plugin data is invalid.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_PLUGIN_VERSION_OR_DATA_INVALID = 1;
 
     /**
      * Error code returned if import failed.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_PLUGIN_IMPORT_FAILED = 1;
 
@@ -136,14 +136,14 @@ class RacksPluginToCoreCommand extends AbstractCommand
     /**
      * Datacenter on which rooms will be created.
      *
-     * @var integer
+     * @var int
      */
     private $datacenter_id;
 
     /**
      * Room on which racks will be placed if no corresponding room found.
      *
-     * @var integer
+     * @var int
      */
     private $fallback_room_id;
 
@@ -244,7 +244,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
      *
      * @throws LogicException
      *
-     * @return boolean
+     * @return bool
      */
     private function checkPlugin()
     {
@@ -457,7 +457,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
     /**
      * Create temporary datacenter.
      *
-     * @return null|integer Datacenter id, or null in case of failure
+     * @return null|int Datacenter id, or null in case of failure
      */
     private function createDatacenter()
     {
@@ -492,7 +492,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
      *
      * @throws LogicException
      *
-     * @return boolean True in case of success, false in case of errors.
+     * @return bool True in case of success, false in case of errors.
      */
     private function importOtherElements()
     {
@@ -690,7 +690,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
     /**
      * Import items specifications.
      *
-     * @return boolean True in case of success, false in case of errors.
+     * @return bool True in case of success, false in case of errors.
      */
     private function importItemsSpecifications()
     {
@@ -784,7 +784,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
     /**
      * Import rack models.
      *
-     * @return boolean True in case of success, false in case of errors.
+     * @return bool True in case of success, false in case of errors.
      */
     private function importRackModels()
     {
@@ -863,7 +863,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
     /**
      * Import rack types.
      *
-     * @return boolean True in case of success, false in case of errors.
+     * @return bool True in case of success, false in case of errors.
      */
     private function importRackTypes()
     {
@@ -944,7 +944,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
     /**
      * Import rack states.
      *
-     * @return boolean True in case of success, false in case of errors.
+     * @return bool True in case of success, false in case of errors.
      */
     private function importRackStates()
     {
@@ -1026,7 +1026,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
     /**
      * Import rooms.
      *
-     * @return boolean True in case of success, false in case of errors.
+     * @return bool True in case of success, false in case of errors.
      */
     private function importRooms()
     {
@@ -1109,7 +1109,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
     /**
      * Import racks.
      *
-     * @return boolean True in case of success, false in case of errors.
+     * @return bool True in case of success, false in case of errors.
      */
     private function importRacks()
     {
@@ -1236,7 +1236,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
     /**
      * Import rack items.
      *
-     * @return boolean True in case of success, false in case of errors.
+     * @return bool True in case of success, false in case of errors.
      */
     private function importRackItems()
     {
@@ -1366,10 +1366,10 @@ class RacksPluginToCoreCommand extends AbstractCommand
     /**
      * Add an element to mapping.
      *
-     * @param string  $old_itemtype
-     * @param integer $old_id
-     * @param string  $new_itemtype
-     * @param integer $new_id
+     * @param string $old_itemtype
+     * @param int    $old_id
+     * @param string $new_itemtype
+     * @param int    $new_id
      *
      * @return void
      */
@@ -1389,8 +1389,8 @@ class RacksPluginToCoreCommand extends AbstractCommand
      * Returns item corresponding to itemtype and id.
      * If item has been migrated to another itemtype, il will return the new item.
      *
-     * @param string  $itemtype
-     * @param integer $id
+     * @param string $itemtype
+     * @param int    $id
      *
      * @return null|CommonDBTM
      */

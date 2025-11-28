@@ -339,7 +339,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
      *
      * @param Datacenter $datacenter Datacenter object
      *
-     * @return void|boolean (display) Returns false if there is a rights error.
+     * @return void|bool (display) Returns false if there is a rights error.
      **/
     public static function showForDatacenter(Datacenter $datacenter)
     {

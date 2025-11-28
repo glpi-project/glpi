@@ -51,7 +51,7 @@ abstract class HTMLTableBase
     }
 
     /**
-     * @param boolean $allow_super_header (false by default
+     * @param bool $allow_super_header (false by default
      **/
     public function appendHeader(HTMLTableHeader $header_object, $allow_super_header = false)
     {

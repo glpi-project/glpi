@@ -397,11 +397,11 @@ class APIRest extends API
     /**
      * Retrieve and check itemtype from $this->url_elements
      *
-     * @param integer $index      we'll find itemtype in this index of $this->url_elements
-     *                            (default o)
-     * @param boolean $recursive  can we go depper or we trigger an http error if we fail to find itemtype?
-     *                            (default true)
-     * @param boolean $all_assets if we can have allasset virtual type (default false)
+     * @param int  $index      we'll find itemtype in this index of $this->url_elements
+     *                         (default o)
+     * @param bool $recursive  can we go depper or we trigger an http error if we fail to find itemtype?
+     *                         (default true)
+     * @param bool $all_assets if we can have allasset virtual type (default false)
      *
      * @return false|class-string<CommonDBTM>
      */
@@ -460,7 +460,7 @@ class APIRest extends API
      * Retrieve in url_element the current id. If we have a multiple id (ex /Ticket/1/TicketFollwup/2),
      * it always find the second
      *
-     * @return integer|boolean id of current itemtype (or false if not found)
+     * @return int|bool id of current itemtype (or false if not found)
      */
     private function getId()
     {
@@ -484,8 +484,8 @@ class APIRest extends API
     /**
      * Construct this->parameters from query string and http body
      *
-     * @param boolean $is_inline_doc Is the current request asks to display inline documentation
-     *                               This will remove the default behavior who set content-type to application/json
+     * @param bool $is_inline_doc Is the current request asks to display inline documentation
+     *                            This will remove the default behavior who set content-type to application/json
      *
      * @return void
      */

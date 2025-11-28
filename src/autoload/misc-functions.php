@@ -40,7 +40,7 @@ use function Safe\preg_match;
 /**
  * Is the script launch in Command line?
  *
- * @return boolean
+ * @return bool
  */
 function isCommandLine()
 {
@@ -50,7 +50,7 @@ function isCommandLine()
 /**
  * Is the script launched From API?
  *
- * @return boolean
+ * @return bool
  */
 function isAPI()
 {
@@ -70,7 +70,7 @@ function isAPI()
  *
  * @param string $classname Class name to analyze
  *
- * @return boolean|array False or an array containing plugin name and class name
+ * @return bool|array False or an array containing plugin name and class name
  */
 function isPluginItemType($classname)
 {

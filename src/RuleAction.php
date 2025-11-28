@@ -289,7 +289,7 @@ class RuleAction extends CommonDBChild
     /**
      * Get all actions for a given rule
      *
-     * @param integer $ID the rule_description ID
+     * @param int $ID the rule_description ID
      *
      * @return array of RuleAction objects
      **/
@@ -315,10 +315,10 @@ class RuleAction extends CommonDBChild
     /**
      * Add an action
      *
-     * @param string  $action Action type
-     * @param integer $ruleid Rule ID
-     * @param string  $field  Field name
-     * @param mixed   $value  Value
+     * @param string $action Action type
+     * @param int    $ruleid Rule ID
+     * @param string $field  Field name
+     * @param mixed  $value  Value
      *
      * @return void
      */
@@ -445,7 +445,7 @@ class RuleAction extends CommonDBChild
     }
 
     /**
-     * @param integer            $rules_id
+     * @param int                $rules_id
      * @param class-string<Rule> $sub_type
      *
      * @return array

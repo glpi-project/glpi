@@ -62,8 +62,8 @@ interface SearchInputInterface
      *
      * @param class-string<CommonDBTM> $itemtype      Item type to manage
      * @param array                    $params        Params to parse
-     * @param boolean                  $usesession    Use data saved in the session (true by default)
-     * @param boolean                  $forcebookmark Force trying to load parameters from default bookmark:
+     * @param bool                     $usesession    Use data saved in the session (true by default)
+     * @param bool                     $forcebookmark Force trying to load parameters from default bookmark:
      *                                                used for global search (false by default)
      *
      * @return array parsed params

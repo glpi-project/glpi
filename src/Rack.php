@@ -151,7 +151,7 @@ class Rack extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbIn
      *                 - target filename : where to go when done.
      *                 - withtemplate boolean : template or basic item
      *
-     * @return boolean item found
+     * @return bool item found
      **/
     public function showForm($ID, array $options = [])
     {

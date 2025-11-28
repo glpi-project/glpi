@@ -48,21 +48,21 @@ class EnableTimezonesCommand extends AbstractCommand implements ConfigurationCom
     /**
      * Error code returned if DB configuration file cannot be updated.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_UNABLE_TO_UPDATE_CONFIG = 1;
 
     /**
      * Error code returned if prerequisites are missing.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_MISSING_PREREQUISITES = 2;
 
     /**
      * Error code returned if some tables are still using datetime field type.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_TIMESTAMP_FIELDS_REQUIRED = 3;
 

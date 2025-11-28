@@ -169,12 +169,12 @@ class DropdownTranslation extends CommonDBChild
     /**
      * Return the number of translations for a field in a language
      *
-     * @param string  $itemtype
-     * @param integer $items_id
-     * @param string  $field
-     * @param string  $language
+     * @param string $itemtype
+     * @param int    $items_id
+     * @param string $field
+     * @param string $language
      *
-     * @return integer the number of translations for this field
+     * @return int the number of translations for this field
      **/
     public static function getNumberOfTranslations($itemtype, $items_id, $field, $language): int
     {
@@ -194,7 +194,7 @@ class DropdownTranslation extends CommonDBChild
      *
      * @param CommonDBTM $item
      *
-     * @return integer the number of translations for this item
+     * @return int the number of translations for this item
      **/
     public static function getNumberOfTranslationsForItem($item)
     {
@@ -211,10 +211,10 @@ class DropdownTranslation extends CommonDBChild
     /**
      * Check if a field's translation can be added or updated
      *
-     * @param array   $input translation's fields
-     * @param boolean $add   true if a transaltion must be added, false if updated (true by default)
+     * @param array $input translation's fields
+     * @param bool  $add   true if a transaltion must be added, false if updated (true by default)
      *
-     * @return boolean true if translation can be added/update, false otherwise
+     * @return bool true if translation can be added/update, false otherwise
      **/
     public function checkBeforeAddorUpdate($input, $add = true)
     {
@@ -233,8 +233,8 @@ class DropdownTranslation extends CommonDBChild
     /**
      * Generate completename associated with a tree dropdown
      *
-     * @param array   $input Array of user values
-     * @param boolean $add   True if translation is added, false if update (tgrue by default)
+     * @param array $input Array of user values
+     * @param bool  $add   True if translation is added, false if update (tgrue by default)
      *
      * @return void
      **/
@@ -437,7 +437,7 @@ TWIG, $twig_params);
     /**
      * Display translation form
      *
-     * @param integer $ID field (default -1)
+     * @param int $ID field (default -1)
      */
     public function showForm($ID = -1, array $options = [])
     {
@@ -474,7 +474,7 @@ TWIG, $twig_params);
      * @param string     $language language to look for translations (default '')
      * @param string     $value    field which must be selected by default (default '')
      *
-     * @return integer the dropdown's random identifier
+     * @return int the dropdown's random identifier
      **/
     public static function dropdownFields(CommonDBTM $item, $language = '', $value = '')
     {
@@ -517,11 +517,11 @@ TWIG, $twig_params);
     /**
      * Get translated value for a field in a particular language
      *
-     * @param integer $ID       dropdown item's id
-     * @param string  $itemtype dropdown itemtype
-     * @param string  $field    the field to look for (default 'name')
-     * @param string  $language get translation for this language
-     * @param string  $value    default value for the field (default '')
+     * @param int    $ID       dropdown item's id
+     * @param string $itemtype dropdown itemtype
+     * @param string $field    the field to look for (default 'name')
+     * @param string $language get translation for this language
+     * @param string $value    default value for the field (default '')
      *
      * @return string the translated value of the value in the default language
      **/
@@ -597,12 +597,12 @@ TWIG, $twig_params);
     /**
      * Get the id of a translated string
      *
-     * @param integer $ID       item id
-     * @param string  $itemtype item type
-     * @param string  $field    the field for which the translation is needed
-     * @param string  $language the target language
+     * @param int    $ID       item id
+     * @param string $itemtype item type
+     * @param string $field    the field for which the translation is needed
+     * @param string $language the target language
      *
-     * @return integer the row id or 0 if not translation found
+     * @return int the row id or 0 if not translation found
      **/
     public static function getTranslationID($ID, $itemtype, $field, $language)
     {
@@ -625,9 +625,9 @@ TWIG, $twig_params);
     /**
      * Get translations for an item
      *
-     * @param string  $itemtype itemtype
-     * @param integer $items_id item ID
-     * @param string  $field    the field for which the translation is needed
+     * @param string $itemtype itemtype
+     * @param int    $items_id item ID
+     * @param string $field    the field for which the translation is needed
      *
      * @return array
      **/
@@ -654,8 +654,8 @@ TWIG, $twig_params);
     /**
      * Regenerate all completename translations for an item
      *
-     * @param string  $itemtype itemtype
-     * @param integer $items_id item ID
+     * @param string $itemtype itemtype
+     * @param int    $items_id item ID
      *
      * @return void
      **/
@@ -672,7 +672,7 @@ TWIG, $twig_params);
      *
      * @param string $itemtype itemtype to check
      *
-     * @return boolean true if there's at least one translation, otherwise false
+     * @return bool true if there's at least one translation, otherwise false
      **/
     public static function hasItemtypeATranslation($itemtype)
     {

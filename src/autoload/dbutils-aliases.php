@@ -454,13 +454,13 @@ function contructListFromTree($tree, $parent = 0)
  *
  * @since 11.0 `$link` parameter is deprecated
  * @since 11.0 `$cut` parameter is ignored
- * @param integer     $ID           ID of the user.
+ * @param int         $ID           ID of the user.
  * @param string|null $login        login of the user
  * @param string|null $realname     realname of the user
  * @param string|null $firstname    firstname of the user
- * @param integer     $link         include link
- * @param integer     $cut          IGNORED PARAMETER
- * @param boolean     $force_config force order and id_visible to use common config
+ * @param int         $link         include link
+ * @param int         $cut          IGNORED PARAMETER
+ * @param bool        $force_config force order and id_visible to use common config
  * @return string
  */
 function formatUserName($ID, $login, $realname, $firstname, $link = 0, $cut = 0, $force_config = false)
@@ -482,7 +482,7 @@ function formatUserName($ID, $login, $realname, $firstname, $link = 0, $cut = 0,
 /**
  * Format a user link.
  *
- * @param integer     $id        ID of the user.
+ * @param int         $id        ID of the user.
  * @param string|null $login     login of the user
  * @param string|null $realname  realname of the user
  * @param string|null $firstname firstname of the user
@@ -537,7 +537,7 @@ function getUserLink(int $id): string
  * @param string $table table of the index
  * @param string $field name of the index
  *
- * @return boolean
+ * @return bool
  */
 function isIndex($table, $field)
 {
@@ -552,7 +552,7 @@ function isIndex($table, $field)
  * @param string $table
  * @param string $keyname
  *
- * @return boolean
+ * @return bool
  */
 function isForeignKeyContraint($table, $keyname)
 {
@@ -564,11 +564,11 @@ function isForeignKeyContraint($table, $keyname)
 /**
  * Create a new name using a autoname field defined in a template
  *
- * @param string  $objectName  autoname template
- * @param string  $field       field to autoname
- * @param boolean $isTemplate  true if create an object from a template
- * @param string  $itemtype    item type
- * @param integer $entities_id limit generation to an entity (default -1)
+ * @param string $objectName  autoname template
+ * @param string $field       field to autoname
+ * @param bool   $isTemplate  true if create an object from a template
+ * @param string $itemtype    item type
+ * @param int    $entities_id limit generation to an entity (default -1)
  *
  * @return string new auto string
  */

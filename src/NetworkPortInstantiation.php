@@ -161,8 +161,8 @@ class NetworkPortInstantiation extends CommonDBChild
     /**
      * Get all NetworkPort and NetworkEquipments that have a specific MAC address
      *
-     * @param string  $mac             address to search
-     * @param boolean $wildcard_search true if we search with wildcard (false by default)
+     * @param string $mac             address to search
+     * @param bool   $wildcard_search true if we search with wildcard (false by default)
      *
      * @return array  each value of the array (corresponding to one NetworkPort) is an array of the
      *                items from the master item to the NetworkPort
@@ -208,8 +208,8 @@ class NetworkPortInstantiation extends CommonDBChild
     /**
      * Get an Object ID by its MAC address (only if one result is found in the entity)
      *
-     * @param string  $value  the mac address
-     * @param integer $entity the entity to look for
+     * @param string $value  the mac address
+     * @param int    $entity the entity to look for
      *
      * @return array containing the object ID
      *         or an empty array is no value of serverals ID where found
@@ -593,7 +593,7 @@ TWIG, $twig_params);
      * Display a connection of a networking port
      *
      * @param NetworkPort $netport to be displayed
-     * @param boolean     $edit    permit to edit ? (false by default)
+     * @param bool        $edit    permit to edit ? (false by default)
      *
      * @return void|false
      */
@@ -683,16 +683,16 @@ TWIG, $twig_params);
     /**
      * Make a select box for  connected port
      *
-     * @param integer $ID      ID of the current port to connect
-     * @param array   $options array of possible options:
-     *                         - name : string / name of the select (default is networkports_id)
-     *                         - comments : boolean / is the comments displayed near the dropdown (default true)
-     *                         - entity : integer or array / restrict to a defined entity or array of entities
-     *                         (default -1 : no restriction)
-     *                         - entity_sons : boolean / if entity restrict specified auto select its sons
-     *                         only available if entity is a single value not an array (default false)
+     * @param int   $ID      ID of the current port to connect
+     * @param array $options array of possible options:
+     *                       - name : string / name of the select (default is networkports_id)
+     *                       - comments : boolean / is the comments displayed near the dropdown (default true)
+     *                       - entity : integer or array / restrict to a defined entity or array of entities
+     *                       (default -1 : no restriction)
+     *                       - entity_sons : boolean / if entity restrict specified auto select its sons
+     *                       only available if entity is a single value not an array (default false)
      *
-     * @return integer random part of elements id
+     * @return int random part of elements id
      **/
     public static function dropdownConnect($ID, $options = [])
     {

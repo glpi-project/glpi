@@ -121,8 +121,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @since 9.4
      *
-     * @param string  $itemtype Item type
-     * @param integer $items_id Item ID
+     * @param string $itemtype Item type
+     * @param int    $items_id Item ID
      *
      * @return array|null
      **/
@@ -203,8 +203,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
     /**
      * @since 0.84
      *
-     * @param CommonDBTM   $item         CommonDBTM object
-     * @param integer|null $relations_id (default NULL)
+     * @param CommonDBTM $item         CommonDBTM object
+     * @param int|null   $relations_id (default NULL)
      * @return CommonDBTM|false
      **/
     public static function getOpposite(CommonDBTM $item, &$relations_id = null)
@@ -216,9 +216,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
     /**
      * @since 0.84
      *
-     * @param string       $itemtype     Type of the item to search for its opposite
-     * @param integer      $items_id     ID of the item to search for its opposite
-     * @param integer|null $relations_id
+     * @param string   $itemtype     Type of the item to search for its opposite
+     * @param int      $items_id     ID of the item to search for its opposite
+     * @param int|null $relations_id
      * @return CommonDBTM|false
      **/
     public static function getOppositeByTypeAndID($itemtype, $items_id, &$relations_id = null)
@@ -311,7 +311,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @param CommonDBTM $item1 object 1
      * @param CommonDBTM $item2 object 2
      *
-     * @return boolean
+     * @return bool
      **/
     public function getFromDBForItems(CommonDBTM $item1, CommonDBTM $item2)
     {
@@ -402,7 +402,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @param $input Array of data to be added
      *
-     * @return boolean
+     * @return bool
      **/
     public function isAttach2Valid(array &$input)
     {
@@ -417,7 +417,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @param $input Array of data to be added
      *
-     * @return boolean
+     * @return bool
      **/
     public function isAttach1Valid(array &$input)
     {
@@ -431,7 +431,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @param string $method
      * @param bool   $forceCheckBoth force check both items(false by default)
      *
-     * @return boolean
+     * @return bool
      **/
     public static function canRelation($method, $forceCheckBoth = false)
     {
@@ -499,7 +499,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @param bool   $check_entity   (true by default)
      * @param bool   $forceCheckBoth force check both items (false by default)
      *
-     * @return boolean
+     * @return bool
      **/
     public function canRelationItem($method, $methodNotItem, $check_entity = true, $forceCheckBoth = false)
     {
@@ -1290,12 +1290,12 @@ abstract class CommonDBRelation extends CommonDBConnexity
     /**
      * Affect a CommonDBRelation to a given item. By default, unaffect it
      *
-     * @param integer $id       the id of the CommonDBRelation to affect
-     * @param integer $peer     the number of the peer (ie.: 0 or 1)
-     * @param integer $items_id the id of the new item
-     * @param string  $itemtype the type of the new item
+     * @param int    $id       the id of the CommonDBRelation to affect
+     * @param int    $peer     the number of the peer (ie.: 0 or 1)
+     * @param int    $items_id the id of the new item
+     * @param string $itemtype the type of the new item
      *
-     * @return boolean : true on success
+     * @return bool : true on success
      **/
     public function affectRelation($id, $peer, $items_id = 0, $itemtype = '')
     {
@@ -1369,7 +1369,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * Display subForm of the massive action
      *
      * @param MassiveAction $ma          current massive action
-     * @param integer       $peer_number the number of the concerned peer
+     * @param int           $peer_number the number of the concerned peer
      *
      * @return void
      **/
@@ -1498,7 +1498,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @param string     $action the name of the action
      * @param CommonDBTM $item   the item on which apply the massive action
-     * @param integer[]  $ids    ids of the item on which apply the action
+     * @param int[]      $ids    ids of the item on which apply the action
      * @param array      $input  input provided by the form ($_POST, $_GET ...)
      *
      * @return array containing the elements
@@ -1796,7 +1796,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @since 9.3.1
      *
      * @param CommonDBTM $item  Item instance
-     * @param boolean    $noent Flag to not compute entity information (see Document_Item::getListForItemParams)
+     * @param bool       $noent Flag to not compute entity information (see Document_Item::getListForItemParams)
      *
      * @return array
      */
@@ -1885,8 +1885,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @since 9.3.1
      *
      * @param CommonDBTM $item  Item instance
-     * @param integer    $start Start index
-     * @param integer    $limit Limit of results. If 0, no limit.
+     * @param int        $start Start index
+     * @param int        $limit Limit of results. If 0, no limit.
      * @param array      $order The order for the results where the first element is the column name that will be sorted and the second element is the direction of the sorting (ASC or DESC)
      *
      * @return DBmysqlIterator
@@ -1911,8 +1911,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @since 9.3.1
      *
-     * @param integer $items_id    Object id to restrict on
-     * @param array   $extra_where Extra where clause
+     * @param int   $items_id    Object id to restrict on
+     * @param array $extra_where Extra where clause
      *
      * @return array
      */
@@ -1935,8 +1935,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @since 9.3.1
      *
-     * @param integer $items_id    Object id to restrict on
-     * @param array   $extra_where Extra where clause
+     * @param int   $items_id    Object id to restrict on
+     * @param array $extra_where Extra where clause
      *
      * @return DBmysqlIterator
      */
@@ -1967,10 +1967,10 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @since 9.3.1
      *
-     * @param integer $items_id Object id to restrict on
-     * @param string  $itemtype Type for items to retrieve
-     * @param boolean $noent    Flag to not compute entity information (see Document_Item::getTypeItemsQueryParams)
-     * @param array   $where    Inital WHERE clause. Defaults to []
+     * @param int    $items_id Object id to restrict on
+     * @param string $itemtype Type for items to retrieve
+     * @param bool   $noent    Flag to not compute entity information (see Document_Item::getTypeItemsQueryParams)
+     * @param array  $where    Inital WHERE clause. Defaults to []
      *
      * @return array
      */
@@ -2040,8 +2040,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @since 9.3.1
      *
-     * @param integer $items_id Object id to restrict on
-     * @param string  $itemtype Type for items to retrieve
+     * @param int    $items_id Object id to restrict on
+     * @param string $itemtype Type for items to retrieve
      *
      * @return DBmysqlIterator
      */
@@ -2060,7 +2060,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @param CommonDBTM $item CommonDBTM object
      *
-     * @return integer
+     * @return int
      */
     public static function countForItem(CommonDBTM $item)
     {
@@ -2085,7 +2085,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @param CommonDBTM $item              Item instance
      * @param array      $extra_types_where Extra WHERE clause on types
      *
-     * @return integer
+     * @return int
      **/
     public static function countForMainItem(CommonDBTM $item, $extra_types_where = [])
     {

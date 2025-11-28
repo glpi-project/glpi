@@ -383,7 +383,7 @@ class Database extends CommonDBChild
      *
      * @param DatabaseInstance $instance Database object
      *
-     * @return void|boolean
+     * @return void|bool
      **/
     public static function showForInstance(DatabaseInstance $instance)
     {

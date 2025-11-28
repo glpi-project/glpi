@@ -65,14 +65,14 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
     /**
      * Error code returned if plugin version or plugin data is invalid.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_PLUGIN_VERSION_OR_DATA_INVALID = 1;
 
     /**
      * Error code returned if import failed.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_PLUGIN_IMPORT_FAILED = 2;
 

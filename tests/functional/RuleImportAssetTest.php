@@ -1015,8 +1015,8 @@ class RuleImportAssetTest extends DbTestCase
     }
 
     /**
-     * @param integer $value    Value to test
-     * @param string  $expected Excpected result
+     * @param int    $value    Value to test
+     * @param string $expected Excpected result
      *
      * @return void
      */

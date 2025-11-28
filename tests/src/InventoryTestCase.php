@@ -129,8 +129,8 @@ class InventoryTestCase extends DbTestCase
     /**
      * Execute an inventory
      *
-     * @param mixed   $source Source as JSON or XML
-     * @param boolean $is_xml XML or JSON
+     * @param mixed $source Source as JSON or XML
+     * @param bool  $is_xml XML or JSON
      *
      * @return Inventory
      */

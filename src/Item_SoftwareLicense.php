@@ -359,12 +359,12 @@ class Item_SoftwareLicense extends CommonDBRelation
     /**
      * Get number of installed licenses of a license
      *
-     * @param integer        $softwarelicenses_id license ID
-     * @param integer|string $entity              to search for item in (default = all entities)
-     *                                            (default '') -1 means no entity restriction
-     * @param string         $itemtype            Item type to filter on. Use null for all itemtypes
+     * @param int        $softwarelicenses_id license ID
+     * @param int|string $entity              to search for item in (default = all entities)
+     *                                        (default '') -1 means no entity restriction
+     * @param string     $itemtype            Item type to filter on. Use null for all itemtypes
      *
-     * @return integer number of installations
+     * @return int number of installations
      **/
     public static function countForLicense($softwarelicenses_id, $entity = '', $itemtype = null)
     {
@@ -432,9 +432,9 @@ class Item_SoftwareLicense extends CommonDBRelation
     /**
      * Get number of installed licenses of a software
      *
-     * @param integer $softwares_id software ID
+     * @param int $softwares_id software ID
      *
-     * @return integer number of installations
+     * @return int number of installations
      **/
     public static function countForSoftware($softwares_id)
     {
@@ -1067,8 +1067,8 @@ JAVASCRIPT;
     /**
      * Update license associated on a computer
      *
-     * @param integer $licID               ID of the install software lienk
-     * @param integer $softwarelicenses_id ID of the new license
+     * @param int $licID               ID of the install software lienk
+     * @param int $softwarelicenses_id ID of the new license
      *
      * @return void
      **/
@@ -1089,9 +1089,9 @@ JAVASCRIPT;
     /**
      * Get licenses list corresponding to an installation
      *
-     * @param string  $itemtype            Type of item
-     * @param integer $items_id            ID of the item
-     * @param integer $softwareversions_id ID of the version
+     * @param string $itemtype            Type of item
+     * @param int    $items_id            ID of the item
+     * @param int    $softwareversions_id ID of the version
      *
      * @return array
      **/
@@ -1183,7 +1183,7 @@ JAVASCRIPT;
      *
      * @since 0.85
      *
-     * @param integer $softwares_id Software ID
+     * @param int $softwares_id Software ID
      *
      * @return int
      **/

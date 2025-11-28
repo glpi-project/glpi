@@ -50,9 +50,9 @@ final class TicketTaskTest extends CommonITILTaskTestCase
     /**
      * Create a new ticket
      *
-     * @param boolean $as_object Return Ticket object or its id
+     * @param bool $as_object Return Ticket object or its id
      *
-     * @return integer|\Ticket
+     * @return int|\Ticket
      */
     private function getNewTicket($as_object = false)
     {

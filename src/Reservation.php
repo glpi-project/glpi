@@ -319,7 +319,7 @@ class Reservation extends CommonDBChild
     /**
      * Is the item already reserved ?
      *
-     *@return boolean
+     *@return bool
      **/
     public function is_reserved()
     {
@@ -353,7 +353,7 @@ class Reservation extends CommonDBChild
     /**
      * Current dates are valid ? begin before end
      *
-     * @return boolean
+     * @return bool
      **/
     public function test_valid_date()
     {
@@ -507,7 +507,7 @@ class Reservation extends CommonDBChild
     /**
      * Show reservation calendar
      *
-     * @param integer $ID ID of the reservation item (if 0 display all)
+     * @param int $ID ID of the reservation item (if 0 display all)
      **/
     public static function showCalendar(int $ID = 0)
     {
@@ -733,12 +733,12 @@ class Reservation extends CommonDBChild
      * Change dates of a selected reservation.
      * Called from a drag&drop in planning
      *
-     * @param array{id: integer, start: string, end: string} $event
-     *                                                              <ul>
-     *                                                              <li>id: integer to identify reservation</li>
-     *                                                              <li>start: planning start (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
-     *                                                              <li>end: planning end (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
-     *                                                              </ul>
+     * @param array{id: int, start: string, end: string} $event
+     *                                                          <ul>
+     *                                                          <li>id: integer to identify reservation</li>
+     *                                                          <li>start: planning start (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
+     *                                                          <li>end: planning end (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
+     *                                                          </ul>
      */
     public static function updateEvent(array $event): bool
     {
@@ -759,13 +759,13 @@ class Reservation extends CommonDBChild
     /**
      * Display for reservation
      *
-     * @param integer $ID      ID of the reservation (empty for create new)
-     * @param array   $options possible optional options:
-     *                         <ul>
-     *                         <li>item: Reservation items ID(s) for creation process. The array keys and values are expected to be symmetrical (ex: [2 => 2, 5 => 5])</li>
-     *                         <li>begin: planning start (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
-     *                         <li>end: planning end (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
-     *                         </ul>
+     * @param int   $ID      ID of the reservation (empty for create new)
+     * @param array $options possible optional options:
+     *                       <ul>
+     *                       <li>item: Reservation items ID(s) for creation process. The array keys and values are expected to be symmetrical (ex: [2 => 2, 5 => 5])</li>
+     *                       <li>begin: planning start (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
+     *                       <li>end: planning end (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
+     *                       </ul>
      **/
     public function showForm($ID, array $options = [])
     {
@@ -866,9 +866,9 @@ class Reservation extends CommonDBChild
      *
      * @since 0.84
      *
-     * @param string                                                                           $begin   Planning start (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)
-     * @param string                                                                           $end     Planning end (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)
-     * @param array{type: 'day'|'week'|'month', end: string, subtype?: string, days?: integer} $options Periodicity parameters
+     * @param string                                                                       $begin   Planning start (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)
+     * @param string                                                                       $end     Planning end (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)
+     * @param array{type: 'day'|'week'|'month', end: string, subtype?: string, days?: int} $options Periodicity parameters
      **/
     public static function computePeriodicities($begin, $end, $options)
     {
@@ -985,7 +985,7 @@ class Reservation extends CommonDBChild
      * Display reservations for an item
      *
      * @param CommonDBTM $item         Object for which the reservation tab need to be displayed
-     * @param integer    $withtemplate
+     * @param int        $withtemplate
      * @return void
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
@@ -1213,7 +1213,7 @@ JAVASCRIPT;
     /**
      * Display reservations for a user
      *
-     * @param integer $ID ID of the user
+     * @param int $ID ID of the user
      * @return void
      **/
     public static function showForUser($ID)

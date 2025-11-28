@@ -116,7 +116,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     /**
      * Get type name for device (used in Log)
      *
-     * @param integer $nb Count
+     * @param int $nb Count
      *
      * @return string
      */
@@ -642,7 +642,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     }
 
     /**
-     * @param integer $withtemplate
+     * @param int $withtemplate
      * @return false|void
      */
     public static function showForItem(CommonGLPI $item, $withtemplate = 0)
@@ -1393,7 +1393,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      * @param positive-int             $items_id
      * @param class-string<CommonDBTM> $itemtype
      *
-     * @return boolean
+     * @return bool
      **/
     public static function affectItem_Device($item_devices_id, $items_id, $itemtype)
     {
@@ -1409,7 +1409,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     /**
      * @param class-string<CommonDBTM> $itemtype
      * @param positive-int             $items_id
-     * @param boolean                  $unaffect
+     * @param bool                     $unaffect
      * @return void
      **/
     public static function cleanItemDeviceDBOnItemDelete($itemtype, $items_id, $unaffect)

@@ -94,7 +94,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
      *
      * @param $item CartridgeItem object
      *
-     * @return boolean|void
+     * @return bool|void
      **/
     public static function showForCartridgeItem(CartridgeItem $item)
     {

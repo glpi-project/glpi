@@ -117,13 +117,13 @@ class Item_Disk extends CommonDBChild
     /**
      * Print the version form
      *
-     * @param integer $ID      ID of the item
-     * @param array   $options
-     *                         - target for the Form
-     *                         - itemtype type of the item for add process
-     *                         - items_id ID of the item for add process
+     * @param int   $ID      ID of the item
+     * @param array $options
+     *                       - target for the Form
+     *                       - itemtype type of the item for add process
+     *                       - items_id ID of the item for add process
      *
-     * @return boolean true if displayed  false if item not found or not right to display
+     * @return bool true if displayed  false if item not found or not right to display
      **/
     public function showForm($ID, array $options = [])
     {
@@ -208,7 +208,7 @@ class Item_Disk extends CommonDBChild
      * Print the disks
      *
      * @param CommonDBTM $item         Item object
-     * @param integer    $withtemplate Template or basic item (default 0)
+     * @param int        $withtemplate Template or basic item (default 0)
      *
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0): bool
@@ -578,7 +578,7 @@ TWIG, $twig_params);
     /**
      * Get the correct label for each encryption status
      *
-     * @param         integer                   $status The status
+     * @param         int                       $status The status
      * @phpstan-param self::ENCRYPTION_STATUS_* $status
      * @return string The appropriate label
      */
@@ -605,9 +605,9 @@ TWIG, $twig_params);
     /**
      * Print the encryption status dropdown
      *
-     * @param integer $value   Current value (defaut self::ENCRYPTION_STATUS_NO)
-     * @param array   $options Array of possible options:
-     *                         - name : name of the dropdown (default encryption_status)
+     * @param int   $value   Current value (defaut self::ENCRYPTION_STATUS_NO)
+     * @param array $options Array of possible options:
+     *                       - name : name of the dropdown (default encryption_status)
      *
      * @return string the string to display
      */

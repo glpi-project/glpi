@@ -65,7 +65,7 @@ class RuleMatchedLog extends CommonDBTM
      * Count number of elements
      *
      *
-     * @return integer
+     * @return int
      */
     public static function countForItem(CommonDBTM $item)
     {
@@ -133,8 +133,8 @@ class RuleMatchedLog extends CommonDBTM
      * Clean old data
      *
      * @global object $DB
-     * @param integer $items_id
-     * @param string  $itemtype
+     * @param int    $items_id
+     * @param string $itemtype
      *
      * @return void
      */

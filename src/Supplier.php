@@ -377,7 +377,7 @@ class Supplier extends CommonDBTM
     /**
      * Get links for an enterprise (website / edit)
      *
-     * @param boolean $withname Also display name ? (false by default)
+     * @param bool $withname Also display name ? (false by default)
      **/
     public function getLinks($withname = false)
     {

@@ -77,7 +77,7 @@ class DocumentCategory extends CommonTreeDropdown
     /**
      * Check if category is used as default for tickets documents.
      *
-     * @return boolean
+     * @return bool
      */
     private function isUsedAsDefaultCategoryForTickets()
     {

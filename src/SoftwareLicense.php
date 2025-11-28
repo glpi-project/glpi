@@ -149,8 +149,8 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
      *
      *
      * @since 0.85
-     * @param integer $ID     ID of the licence
-     * @param integer $number licence count to check (default -1)
+     * @param int $ID     ID of the licence
+     * @param int $number licence count to check (default -1)
      *
      * @return int validity indicator
      **/
@@ -170,7 +170,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
      * Update validity indicator of a specific license
      *
      * @since 0.85
-     * @param integer $ID ID of the licence
+     * @param int $ID ID of the licence
      *
      * @return void
      **/
@@ -291,7 +291,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
     /**
      * Is the license may be recursive
      *
-     * @return boolean
+     * @return bool
      **/
     public function maybeRecursive()
     {
@@ -309,7 +309,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
     /**
      * Is the license recursive ?
      *
-     * @return boolean
+     * @return bool
      **/
     public function isRecursive()
     {
@@ -758,7 +758,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
      *
      * @param CronTask $task Task to log, if NULL display (default NULL)
      *
-     * @return integer 0 : nothing to do 1 : done with success
+     * @return int 0 : nothing to do 1 : done with success
      * @used-by CronTask
      **/
     public static function cronSoftware($task = null)
@@ -878,11 +878,11 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
     /**
      * Get number of bought licenses of a version
      *
-     * @param integer               $softwareversions_id version ID
-     * @param integer|''|array<int> $entity              Entity to search for licenses in (default = all active entities)
-     *                                                   (default '')
+     * @param int               $softwareversions_id version ID
+     * @param int|''|array<int> $entity              Entity to search for licenses in (default = all active entities)
+     *                                               (default '')
      *
-     * @return integer number of installations
+     * @return int number of installations
      */
     public static function countForVersion($softwareversions_id, $entity = '')
     {
@@ -902,9 +902,9 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
     /**
      * Get number of licenses of a software
      *
-     * @param integer $softwares_id software ID
+     * @param int $softwares_id software ID
      *
-     * @return integer number of licenses
+     * @return int number of licenses
      **/
     public static function countForSoftware($softwares_id)
     {

@@ -1081,7 +1081,7 @@ PHP
         /**
          * Create test plugin files.
          *
-         * @param boolean     $withsetup    Include setup file ?
+         * @param bool        $withsetup    Include setup file ?
          * @param array       $informations Information to put in setup files.
          * @param null|string $directory    Directory where to create files, null to use default location.
          *

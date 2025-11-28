@@ -319,7 +319,7 @@ class Calendar extends AbstractBackend
      * @param string                                          $calendarData Seialized VCalendar object
      * @param (CalDAVCompatibleItemInterface&CommonDBTM)|null $item         Item on which input will be stored
      *
-     * @return boolean
+     * @return bool
      */
     private function storeCalendarObject($calendarId, $calendarData, (CalDAVCompatibleItemInterface&CommonDBTM)|null $item = null)
     {
@@ -402,11 +402,11 @@ class Calendar extends AbstractBackend
     /**
      * Store raw VCalendar data and attach it to given item.
      *
-     * @param string  $calendarData
-     * @param integer $items_id
-     * @param string  $itemtype
+     * @param string $calendarData
+     * @param int    $items_id
+     * @param string $itemtype
      *
-     * @return boolean
+     * @return bool
      */
     private function storeVCalendarData($calendarData, $items_id, $itemtype)
     {

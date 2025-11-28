@@ -58,35 +58,35 @@ abstract class AbstractConfigureCommand extends AbstractCommand
     /**
      * Error code returned if DB configuration succeed.
      *
-     * @var integer
+     * @var int
      */
     public const SUCCESS = 0;
 
     /**
      * Error code returned if DB connection initialization fails.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_DB_CONNECTION_FAILED = 1;
 
     /**
      * Error code returned if DB engine is unsupported.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_DB_ENGINE_UNSUPPORTED = 2;
 
     /**
      * Error code returned when trying to configure and having a DB config already set.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_DB_CONFIG_ALREADY_SET = 3;
 
     /**
      * Error code returned when failing to save database configuration file.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_DB_CONFIG_FILE_NOT_SAVED = 4;
 
@@ -371,7 +371,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
     /**
      * Check if DB is already configured.
      *
-     * @return boolean
+     * @return bool
      */
     protected function isDbAlreadyConfigured()
     {

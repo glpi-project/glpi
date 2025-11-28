@@ -55,17 +55,17 @@ use function Safe\json_encode;
 final class TOTPManager
 {
     /**
-     * @var integer Length of the secret in bits
+     * @var int Length of the secret in bits
      */
     public const SECRET_LENGTH_BITS = 160;
 
     /**
-     * @var integer Number of digits in the TOTP code
+     * @var int Number of digits in the TOTP code
      */
     public const CODE_LENGTH_DIGITS = 6;
 
     /**
-     * @var integer Number of seconds the TOTP code is valid for.
+     * @var int Number of seconds the TOTP code is valid for.
      * For compatibility with Google Authenticator, this should be 30 because that app support anything else.
      */
     public const CODE_VALIDITY_SECONDS = 30;
@@ -81,27 +81,27 @@ final class TOTPManager
     public const CODE_ALGORITHM = ['sha1', 'sha256'];
 
     /**
-     * @var integer 2FA is not enforced. Users can choose to enable it or not.
+     * @var int 2FA is not enforced. Users can choose to enable it or not.
      */
     public const ENFORCEMENT_OPTIONAL = 0;
 
     /**
-     * @var integer 2FA is enforced, but users have some time before they are forced to enable it.
+     * @var int 2FA is enforced, but users have some time before they are forced to enable it.
      */
     public const ENFORCEMENT_MANDATORY_GRACE_PERIOD = 1;
 
     /**
-     * @var integer 2FA is enforced, and users must enable it (no grace period remaining).
+     * @var int 2FA is enforced, and users must enable it (no grace period remaining).
      */
     public const ENFORCEMENT_MANDATORY = 2;
 
     /**
-     * @var integer Number of backup codes to generate
+     * @var int Number of backup codes to generate
      */
     public const BACKUP_CODES_COUNT = 5;
 
     /**
-     * @var integer Length of backup codes in characters
+     * @var int Length of backup codes in characters
      */
     public const BACKUP_CODES_LENGTH = 16;
 

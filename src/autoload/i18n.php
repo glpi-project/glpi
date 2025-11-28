@@ -114,10 +114,10 @@ function _sx($ctx, $str, $domain = 'glpi')
  *
  * @since 0.84
  *
- * @param string  $sing   in singular
- * @param string  $plural in plural
- * @param integer $nb     to select singular or plural
- * @param string  $domain domain used (default is glpi, may be plugin name)
+ * @param string $sing   in singular
+ * @param string $plural in plural
+ * @param int    $nb     to select singular or plural
+ * @param string $domain domain used (default is glpi, may be plugin name)
  *
  * @return string translated string
  *
@@ -147,10 +147,10 @@ function _n($sing, $plural, $nb, $domain = 'glpi')
  *
  * @since 0.84
  *
- * @param string  $sing   in singular
- * @param string  $plural in plural
- * @param integer $nb     to select singular or plural
- * @param string  $domain domain used (default is glpi, may be plugin name)
+ * @param string $sing   in singular
+ * @param string $plural in plural
+ * @param int    $nb     to select singular or plural
+ * @param string $domain domain used (default is glpi, may be plugin name)
  *
  * @return string
  */
@@ -191,11 +191,11 @@ function _x($ctx, $str, $domain = 'glpi')
  *
  * @since 0.84
  *
- * @param string  $ctx    context
- * @param string  $sing   in singular
- * @param string  $plural in plural
- * @param integer $nb     to select singular or plural
- * @param string  $domain domain used (default is glpi, may be plugin name)
+ * @param string $ctx    context
+ * @param string $sing   in singular
+ * @param string $plural in plural
+ * @param int    $nb     to select singular or plural
+ * @param string $domain domain used (default is glpi, may be plugin name)
  *
  * @return string
  */

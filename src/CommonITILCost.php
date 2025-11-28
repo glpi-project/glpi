@@ -361,7 +361,7 @@ abstract class CommonITILCost extends CommonDBChild
     /**
      * Get total action time used on costs for an item
      *
-     * @param integer $items_id ID of the item
+     * @param int $items_id ID of the item
      *
      * @return int
      **/
@@ -381,7 +381,7 @@ abstract class CommonITILCost extends CommonDBChild
     /**
      * Get last datas for an item
      *
-     * @param integer $items_id ID of the item
+     * @param int $items_id ID of the item
      *
      * @return array
      **/
@@ -405,8 +405,8 @@ abstract class CommonITILCost extends CommonDBChild
     /**
      * Print the item cost form
      *
-     * @param integer $ID      ID of the item
-     * @param array   $options options used
+     * @param int   $ID      ID of the item
+     * @param array $options options used
      **/
     public function showForm($ID, array $options = [])
     {
@@ -678,8 +678,8 @@ TWIG, $twig_params);
     /**
      * Get costs summary values
      *
-     * @param string  $type type
-     * @param integer $ID   ID of the ticket
+     * @param string $type type
+     * @param int    $ID   ID of the ticket
      *
      * @return array of costs and actiontime
      * @used-by src/NotificationTargetCommonITILObject.php
@@ -735,11 +735,11 @@ TWIG, $twig_params);
     /**
      * Computer total cost of a item
      *
-     * @param float   $actiontime    actiontime
-     * @param float   $cost_time     time cost
-     * @param float   $cost_fixed    fixed cost
-     * @param float   $cost_material material cost
-     * @param boolean $edit          used for edit of computation ? (true by default)
+     * @param float $actiontime    actiontime
+     * @param float $cost_time     time cost
+     * @param float $cost_fixed    fixed cost
+     * @param float $cost_material material cost
+     * @param bool  $edit          used for edit of computation ? (true by default)
      *
      * @return string total cost formatted string
      **/

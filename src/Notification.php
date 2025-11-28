@@ -558,7 +558,6 @@ class Notification extends CommonDBTM implements FilterableInterface
     /**
      * Is the current user have right to update the current notification ?
      *
-     * @return boolean
      **/
     public function canCreateItem(): bool
     {

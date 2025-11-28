@@ -422,7 +422,7 @@ class Telemetry extends CommonGLPI
     /**
      * Is telemetry currently enabled
      *
-     * @return boolean
+     * @return bool
      */
     public static function isEnabled()
     {

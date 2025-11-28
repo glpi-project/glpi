@@ -125,8 +125,8 @@ class Consumable extends CommonDBChild
     /**
      * send back to stock
      *
-     * @param array   $input   Array of item fields. Only the ID field is used here.
-     * @param boolean $history Not used
+     * @param array $input   Array of item fields. Only the ID field is used here.
+     * @param bool  $history Not used
      *
      * @return bool
      */
@@ -163,11 +163,11 @@ class Consumable extends CommonDBChild
      *
      * UnLink the consumable identified by $ID
      *
-     * @param integer $ID       consumable identifier
-     * @param string  $itemtype itemtype of who we give the consumable
-     * @param integer $items_id ID of the item giving the consumable
+     * @param int    $ID       consumable identifier
+     * @param string $itemtype itemtype of who we give the consumable
+     * @param int    $items_id ID of the item giving the consumable
      *
-     * @return boolean
+     * @return bool
      **/
     public function out($ID, $itemtype = '', $items_id = 0)
     {
@@ -308,9 +308,9 @@ class Consumable extends CommonDBChild
     /**
      * count how many consumable for the consumable item $tID
      *
-     * @param integer $tID consumable item identifier.
+     * @param int $tID consumable item identifier.
      *
-     * @return integer number of consumable counted.
+     * @return int number of consumable counted.
      **/
     public static function getTotalNumber($tID)
     {
@@ -327,9 +327,9 @@ class Consumable extends CommonDBChild
     /**
      * count how many old consumable for the consumable item $tID
      *
-     * @param integer $tID consumable item identifier.
+     * @param int $tID consumable item identifier.
      *
-     * @return integer number of old consumable counted.
+     * @return int number of old consumable counted.
      **/
     public static function getOldNumber($tID)
     {
@@ -349,9 +349,9 @@ class Consumable extends CommonDBChild
     /**
      * count how many consumable unused for the consumable item $tID
      *
-     * @param integer $tID consumable item identifier.
+     * @param int $tID consumable item identifier.
      *
-     * @return integer number of consumable unused counted.
+     * @return int number of consumable unused counted.
      **/
     public static function getUnusedNumber($tID)
     {
@@ -372,8 +372,7 @@ class Consumable extends CommonDBChild
      * The desired stock level
      *
      * This is used when the alarm threshold is reached to know how many to order.
-     * @param integer $tID Consumable item ID
-     * @return integer
+     * @param int $tID Consumable item ID
      */
     public static function getStockTarget(int $tID): int
     {
@@ -395,8 +394,7 @@ class Consumable extends CommonDBChild
     /**
      * The lower threshold for the stock amount before an alarm is triggered
      *
-     * @param integer $tID Consumable item ID
-     * @return integer
+     * @param int $tID Consumable item ID
      */
     public static function getAlarmThreshold(int $tID): int
     {
@@ -418,10 +416,10 @@ class Consumable extends CommonDBChild
     /**
      * Get the consumable count HTML array for a defined consumable type
      *
-     * @param integer $tID             consumable item identifier.
-     * @param integer $alarm_threshold threshold alarm value.
-     * @param boolean $nohtml          Return value without HTML tags.
-     *                                 The return value will anyway be a safe HTML string.
+     * @param int  $tID             consumable item identifier.
+     * @param int  $alarm_threshold threshold alarm value.
+     * @param bool $nohtml          Return value without HTML tags.
+     *                              The return value will anyway be a safe HTML string.
      *
      * @return string to display
      **/
@@ -458,9 +456,9 @@ class Consumable extends CommonDBChild
     /**
      * Check if a Consumable is New (not used, in stock)
      *
-     * @param integer $cID consumable ID.
+     * @param int $cID consumable ID.
      *
-     * @return boolean
+     * @return bool
      **/
     public static function isNew($cID)
     {
@@ -480,9 +478,9 @@ class Consumable extends CommonDBChild
     /**
      * Check if a consumable is Old (used, not in stock)
      *
-     * @param integer $cID consumable ID.
+     * @param int $cID consumable ID.
      *
-     * @return boolean
+     * @return bool
      **/
     public static function isOld($cID)
     {
@@ -502,7 +500,7 @@ class Consumable extends CommonDBChild
     /**
      * Get the localized string for the status of a consumable
      *
-     * @param integer $cID consumable ID.
+     * @param int $cID consumable ID.
      *
      * @return string
      **/
@@ -835,7 +833,7 @@ class Consumable extends CommonDBChild
 
     /**
      *
-     * @return integer
+     * @return int
      **/
     public static function countForConsumableItem(ConsumableItem $item)
     {
@@ -844,7 +842,7 @@ class Consumable extends CommonDBChild
 
     /**
      *
-     * @return integer
+     * @return int
      **/
     public static function countForUser(User $item)
     {

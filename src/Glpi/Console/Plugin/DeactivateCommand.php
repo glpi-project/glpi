@@ -44,7 +44,7 @@ class DeactivateCommand extends AbstractPluginCommand
     /**
      * Error code returned when a plugin deactivation failed.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_PLUGIN_DEACTIVATION_FAILED = 1;
 
@@ -117,7 +117,7 @@ class DeactivateCommand extends AbstractPluginCommand
      *
      * @param string $directory
      *
-     * @return boolean
+     * @return bool
      */
     private function canRunDeactivateMethod($directory)
     {

@@ -60,7 +60,7 @@ class DbTestCase extends GLPITestCase
 {
     /**
      * Indicates whether the custom assets autoloader is registered.
-     * @var boolean
+     * @var bool
      */
     private $is_asset_autoloader_registered = false;
 
@@ -152,7 +152,7 @@ class DbTestCase extends GLPITestCase
      * change current entity
      *
      * @param int|string $entityname Name of the entity (or its id)
-     * @param boolean    $subtree    Recursive load
+     * @param bool       $subtree    Recursive load
      *
      * @return void
      */

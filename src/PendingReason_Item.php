@@ -303,7 +303,6 @@ class PendingReason_Item extends CommonDBRelation
      * Check that the given timeline event is the lastest "pending" action for
      * the given item
      *
-     * @return boolean
      */
     public static function isLastPendingForItem(
         CommonITILObject $item,
@@ -325,7 +324,6 @@ class PendingReason_Item extends CommonDBRelation
      * Check that the given timeline_item is the last one added in it's
      * parent timeline
      *
-     * @return boolean
      */
     public static function isLastTimelineItem(CommonDBTM $timeline_item): bool
     {
@@ -386,7 +384,6 @@ class PendingReason_Item extends CommonDBRelation
     /**
      * Determines if a pending reason can be displayed for a given item.
      *
-     * @return boolean
      */
     public static function canDisplayPendingReasonForItem(CommonDBTM $item): bool
     {

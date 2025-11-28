@@ -274,13 +274,13 @@ TWIG, $twig_params);
     /**
      * Replay dictionary on one software
      *
-     * @param array   &$new_softs   array containing new software already computed
-     * @param array   $res_rule     array of rule results
-     * @param integer $ID           ID of the software
-     * @param integer $entity       working entity ID
-     * @param string  $name         software name
-     * @param string  $manufacturer manufacturer name
-     * @param array   &$soft_ids    array containing replay software need to be put in trashbin
+     * @param array  &$new_softs   array containing new software already computed
+     * @param array  $res_rule     array of rule results
+     * @param int    $ID           ID of the software
+     * @param int    $entity       working entity ID
+     * @param string $name         software name
+     * @param string $manufacturer manufacturer name
+     * @param array  &$soft_ids    array containing replay software need to be put in trashbin
      *
      * @return void
      */
@@ -545,8 +545,8 @@ TWIG, $twig_params);
     /**
      * Move licenses from a software to another
      *
-     * @param integer $old_software_id old software ID
-     * @param integer $new_software_id new software ID
+     * @param int $old_software_id old software ID
+     * @param int $new_software_id new software ID
      *
      * @return bool
      */
@@ -580,8 +580,8 @@ TWIG, $twig_params);
     /**
      * Check if a version exists
      *
-     * @param integer $software_id software ID
-     * @param string  $version     version name
+     * @param int    $software_id software ID
+     * @param string $version     version name
      *
      * @return bool
      */

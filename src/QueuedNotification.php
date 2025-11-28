@@ -491,9 +491,9 @@ class QueuedNotification extends CommonDBTM
     /**
      * Send notification in queue
      *
-     * @param integer $ID Id
+     * @param int $ID Id
      *
-     * @return boolean
+     * @return bool
      */
     public function sendById($ID)
     {
@@ -539,10 +539,10 @@ class QueuedNotification extends CommonDBTM
     /**
      * Get pending notifications in queue
      *
-     * @param string  $send_time   Maximum sent_time
-     * @param integer $limit       Query limit clause
-     * @param array   $limit_modes Modes to limit to
-     * @param array   $extra_where Extra params to add to the where clause
+     * @param string $send_time   Maximum sent_time
+     * @param int    $limit       Query limit clause
+     * @param array  $limit_modes Modes to limit to
+     * @param array  $extra_where Extra params to add to the where clause
      *
      * @return array
      */
@@ -603,7 +603,7 @@ class QueuedNotification extends CommonDBTM
      *
      * @param CronTask $task for log (default NULL)
      *
-     * @return integer either 0 or 1
+     * @return int either 0 or 1
      * @used-by CronTask
      **/
     public static function cronQueuedNotification($task = null)
@@ -645,7 +645,7 @@ class QueuedNotification extends CommonDBTM
      *
      * @param CronTask $task for log (default NULL)
      *
-     * @return integer either 0 or 1
+     * @return int either 0 or 1
      * @used-by CronTask
      **/
     public static function cronQueuedNotificationClean(?CronTask $task = null)
@@ -677,7 +677,7 @@ class QueuedNotification extends CommonDBTM
      *
      * @param CronTask $task for log (default NULL)
      *
-     * @return integer either 0 or 1
+     * @return int either 0 or 1
      * @used-by CronTask
      **/
     public static function cronQueuedNotificationCleanStaleAjax(?CronTask $task = null)
@@ -713,10 +713,10 @@ class QueuedNotification extends CommonDBTM
     /**
      * Print the queued mail form
      *
-     * @param integer $ID      ID of the item
-     * @param array   $options Options
+     * @param int   $ID      ID of the item
+     * @param array $options Options
      *
-     * @return boolean true if displayed  false if item not found or not right to display
+     * @return bool true if displayed  false if item not found or not right to display
      **/
     public function showForm($ID, array $options = [])
     {

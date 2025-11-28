@@ -112,8 +112,8 @@ trait InventoryNetworkPort
     /**
      * Manage network ports
      *
-     * @param string  $itemtype Item type, will take current item per default
-     * @param integer $items_id Item ID, will take current item per default
+     * @param string $itemtype Item type, will take current item per default
+     * @param int    $items_id Item ID, will take current item per default
      *
      * @return void
      */
@@ -271,7 +271,7 @@ trait InventoryNetworkPort
      *
      * @param stdClass $port Port data
      *
-     * @return integer
+     * @return int
      */
     private function addNetworkPort(stdClass $port)
     {
@@ -304,10 +304,10 @@ trait InventoryNetworkPort
     /**
      * Add a network name into database
      *
-     * @param integer $items_id Port id
-     * @param string  $name     Network name
+     * @param int    $items_id Port id
+     * @param string $name     Network name
      *
-     * @return integer
+     * @return int
      */
     protected function addNetworkName($items_id, $name = null)
     {
@@ -331,8 +331,8 @@ trait InventoryNetworkPort
     /**
      * Add several ip addresses into database
      *
-     * @param array   $ips      IP adresses to add
-     * @param integer $items_id NetworkName id
+     * @param array $ips      IP adresses to add
+     * @param int   $items_id NetworkName id
      *
      * @return void
      */
@@ -568,8 +568,8 @@ trait InventoryNetworkPort
      *
      * @param string   $type     Instantiation class name
      * @param stdClass $data     Data
-     * @param integer  $ports_id NetworkPort id
-     * @param boolean  $load     Whether to load db results
+     * @param int      $ports_id NetworkPort id
+     * @param bool     $load     Whether to load db results
      *
      * @return void
      */

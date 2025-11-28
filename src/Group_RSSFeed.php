@@ -50,7 +50,7 @@ class Group_RSSFeed extends CommonDBRelation
     /**
      * Get groups for a rssfeed
      *
-     * @param integer $rssfeeds_id ID of the rssfeed
+     * @param int $rssfeeds_id ID of the rssfeed
      *
      * @return array of groups linked to a rssfeed
      **/

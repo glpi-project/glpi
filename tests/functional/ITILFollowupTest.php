@@ -55,7 +55,7 @@ class ITILFollowupTest extends DbTestCase
      * Create a new ITILObject and return its id or the object
      *
      * @param string $itemtype ITILObject parent to test followups on
-     * @return integer|\CommonDBTM
+     * @return int|\CommonDBTM
      */
     private function getNewITILObject($itemtype, bool $as_object = false)
     {

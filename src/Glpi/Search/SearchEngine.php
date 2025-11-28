@@ -223,7 +223,6 @@ final class SearchEngine
      * Check if an itemtype is a possible subitem of another itemtype in a "meta" search context.
      *
      *
-     * @return boolean
      */
     public static function isPossibleMetaSubitemOf(string $parent_itemtype, string $child_itemtype): bool
     {

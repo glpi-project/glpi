@@ -197,10 +197,10 @@ class NetworkEquipment extends MainAsset
     /**
      * After rule engine passed, update task (log) and create item if required
      *
-     * @param integer       $items_id id of the item (0 if new)
-     * @param string        $itemtype Item type
-     * @param integer       $rules_id Matched rule id, if any
-     * @param integer|array $ports_id Matched port id, if any
+     * @param int       $items_id id of the item (0 if new)
+     * @param string    $itemtype Item type
+     * @param int       $rules_id Matched rule id, if any
+     * @param int|array $ports_id Matched port id, if any
      *
      * @return void
      */
@@ -303,9 +303,8 @@ class NetworkEquipment extends MainAsset
      * Is device a stacked switch
      * Relies on level/dependencies of network_components
      *
-     * @param integer $parent_index Parent index for recursive calls
+     * @param int $parent_index Parent index for recursive calls
      *
-     * @return boolean
      */
     public function isStackedSwitch($parent_index = 0): bool
     {
@@ -402,7 +401,6 @@ class NetworkEquipment extends MainAsset
      * Is device a wireless controller
      * Relies on level/dependencies of network_components
      *
-     * @return boolean
      */
     public function isWirelessController(): bool
     {
@@ -471,7 +469,7 @@ class NetworkEquipment extends MainAsset
      *
      * @param stdClass $val
      *
-     * @return boolean
+     * @return bool
      */
     public static function needToBeUpdatedFromDiscovery(\CommonDBTM $item, $val)
     {

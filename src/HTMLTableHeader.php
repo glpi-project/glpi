@@ -64,7 +64,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
     /**
      * check to see if it is a super header or not
      *
-     * @return boolean
+     * @return bool
      **/
     abstract public function isSuperHeader();
 
@@ -111,7 +111,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
     }
 
     /**
-     * @param integer $colSpan
+     * @param int $colSpan
      **/
     public function setColSpan($colSpan)
     {
@@ -134,8 +134,8 @@ abstract class HTMLTableHeader extends HTMLTableEntity
     }
 
     /**
-     * @param boolean $with_content do we display the content ?
-     * @param boolean $main_header  main header (from table) or secondary (from group) ? (true by default)
+     * @param bool $with_content do we display the content ?
+     * @param bool $main_header  main header (from table) or secondary (from group) ? (true by default)
      **/
     public function displayTableHeader($with_content, $main_header = true)
     {

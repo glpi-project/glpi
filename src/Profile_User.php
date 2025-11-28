@@ -671,11 +671,11 @@ TWIG, $avatar_params) . $username;
      * @since 0.84
      * @since 9.2  Add $rightname parameter
      *
-     * @param integer $user_ID      user ID
-     * @param string  $rightname    name of the rights to check (CommonDBTM::$rightname)
-     * @param integer $rights       rights to check (may be a OR combinaison of several rights)
-     *                              (exp: CommonDBTM::READ | CommonDBTM::UPDATE ...)
-     * @param boolean $is_recursive check also using recursive rights (true by default)
+     * @param int    $user_ID      user ID
+     * @param string $rightname    name of the rights to check (CommonDBTM::$rightname)
+     * @param int    $rights       rights to check (may be a OR combinaison of several rights)
+     *                             (exp: CommonDBTM::READ | CommonDBTM::UPDATE ...)
+     * @param bool   $is_recursive check also using recursive rights (true by default)
      *
      * @return array of entities ID
      **/
@@ -1139,7 +1139,7 @@ TWIG, $avatar_params) . $username;
      * @since 9.3.1
      *
      * @param CommonDBTM $item  Item instance
-     * @param boolean    $noent Flag to not compute entity information (see Document_Item::getListForItemParams)
+     * @param bool       $noent Flag to not compute entity information (see Document_Item::getListForItemParams)
      *
      * @return array
      */

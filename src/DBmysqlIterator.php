@@ -374,8 +374,8 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Handle LIMIT and OFFSET
      *
-     * @param integer $limit  SQL LIMIT
-     * @param integer $offset Start OFFSET (defaults to null)
+     * @param int $limit  SQL LIMIT
+     * @param int $offset Start OFFSET (defaults to null)
      *
      * @return string
      */
@@ -394,8 +394,8 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Handle fields
      *
-     * @param integer|string $t Table name or function
-     * @param array|string   $f Field(s) name(s)
+     * @param int|string   $t Table name or function
+     * @param array|string $f Field(s) name(s)
      *
      * @return string
      */
@@ -827,7 +827,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Number of rows on a result
      *
-     * @return integer
+     * @return int
      */
     public function numrows()
     {
@@ -889,7 +889,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @param string $value Value to check
      *
-     * @return boolean
+     * @return bool
      */
     public function isOperator($value)
     {

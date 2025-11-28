@@ -112,7 +112,7 @@ class NotificationEvent extends CommonDBTM
      * @param array           $options array of options used
      * @param CommonDBTM|null $trigger item that raises the notification (in case notification was raised by a child item)
      * @param string          $label   used for debugEvent()
-     * @return boolean
+     * @return bool
      **/
     public static function raiseEvent($event, $item, $options = [], ?CommonDBTM $trigger = null, $label = '')
     {

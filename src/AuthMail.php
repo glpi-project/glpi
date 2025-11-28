@@ -187,10 +187,10 @@ class AuthMail extends CommonDBTM
     /**
      * Print the auth mail form
      *
-     * @param integer $ID      ID of the item
-     * @param array   $options Options
+     * @param int   $ID      ID of the item
+     * @param array $options Options
      *
-     * @return void|boolean (display) Returns false if there is a rights error.
+     * @return void|bool (display) Returns false if there is a rights error.
      */
     public function showForm($ID, array $options = [])
     {
@@ -286,7 +286,7 @@ TWIG, $twig_params);
     /**
      * Is the Mail authentication used?
      *
-     * @return boolean
+     * @return bool
      */
     public static function useAuthMail()
     {
@@ -300,7 +300,7 @@ TWIG, $twig_params);
      * @param string $login          user login
      * @param string $password       user password
      *
-     * @return boolean Authentication succeeded?
+     * @return bool Authentication succeeded?
      */
     public static function testAuth($connect_string, $login, $password)
     {
@@ -345,12 +345,12 @@ TWIG, $twig_params);
     /**
      * Try to authenticate a user by checking all the mail server
      *
-     * @param object  $auth     identification object
-     * @param string  $login    user login
-     * @param string  $password user password
-     * @param integer $auths_id auths_id already used for the user (default 0)
-     * @param boolean $break    if user is not found in the first directory,
-     *                          stop searching or try the following ones (true by default)
+     * @param object $auth     identification object
+     * @param string $login    user login
+     * @param string $password user password
+     * @param int    $auths_id auths_id already used for the user (default 0)
+     * @param bool   $break    if user is not found in the first directory,
+     *                         stop searching or try the following ones (true by default)
      *
      * @return object identification object
      */

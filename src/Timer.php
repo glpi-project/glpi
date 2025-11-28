@@ -59,8 +59,8 @@ class Timer
     /**
      * Get the current time of the timer
      *
-     * @param integer $decimals Number of decimal of the result (default 3)
-     * @param boolean $raw      Get raw time
+     * @param int  $decimals Number of decimal of the result (default 3)
+     * @param bool $raw      Get raw time
      *
      * @return string time past from start
      **/

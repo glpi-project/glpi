@@ -107,13 +107,13 @@ class Socket extends CommonDBChild
     /**
      * Print the version form
      *
-     * @param integer $ID      ID of the item
-     * @param array   $options
-     *                         - target for the Form
-     *                         - itemtype type of the item for add process
-     *                         - items_id ID of the item for add process
+     * @param int   $ID      ID of the item
+     * @param array $options
+     *                       - target for the Form
+     *                       - itemtype type of the item for add process
+     *                       - items_id ID of the item for add process
      *
-     * @return boolean true if displayed  false if item not found or not right to display
+     * @return bool true if displayed  false if item not found or not right to display
      **/
     public function showForm($ID, array $options = [])
     {
@@ -525,7 +525,7 @@ class Socket extends CommonDBChild
      *
      * @param array $input Array of values to import (name, locations_id)
      *
-     * @return integer the ID of the new (or -1 if not found)
+     * @return int the ID of the new (or -1 if not found)
      **/
     public function findID(array &$input)
     {

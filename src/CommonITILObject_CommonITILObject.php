@@ -407,8 +407,8 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
     /**
      * Dropdown for link types
      *
-     * @param string  $myname select name
-     * @param integer $value  default value (default self::LINK_TO)
+     * @param string $myname select name
+     * @param int    $value  default value (default self::LINK_TO)
      *
      * @return void
      **/
@@ -421,9 +421,9 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
     /**
      * Get Link Name
      *
-     * @param integer $value     Current value
-     * @param boolean $inverted  Whether to invert label
-     * @param boolean $with_icon prefix label with an icon
+     * @param int  $value     Current value
+     * @param bool $inverted  Whether to invert label
+     * @param bool $with_icon prefix label with an icon
      *
      **/
     public static function getLinkName($value, bool $inverted = false, bool $with_icon = false): string

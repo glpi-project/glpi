@@ -93,7 +93,7 @@ class SavedSearch_User extends CommonDBRelation
      * @since 9.2
      * @param mixed $users_id id of the user
      * @param mixed $itemtype type of item
-     * @return array|boolean same output than SavedSearch::getParameters()
+     * @return array|bool same output than SavedSearch::getParameters()
      */
     public static function getDefault($users_id, $itemtype)
     {

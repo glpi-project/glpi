@@ -703,7 +703,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      *
      * simply return ID
      *
-     * @return integer ID of the entity
+     * @return int ID of the entity
      **/
     public function getEntityID()
     {
@@ -2123,10 +2123,10 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     /**
      * Retrieve data of current entity or parent entity
      *
-     * @param string  $fieldref      name of the referent field to know if we look at parent entity
-     * @param integer $entities_id
-     * @param string  $fieldval      name of the field that we want value (default '')
-     * @param mixed   $default_value value to return (default -2)
+     * @param string $fieldref      name of the referent field to know if we look at parent entity
+     * @param int    $entities_id
+     * @param string $fieldval      name of the field that we want value (default '')
+     * @param mixed  $default_value value to return (default -2)
      *
      * @return mixed
      */
@@ -2386,7 +2386,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     /**
      * get value for auto_assign_mode
      *
-     * @param integer|null $val if not set, ask for all values, else for 1 value (default NULL)
+     * @param int|null $val if not set, ask for all values, else for 1 value (default NULL)
      *
      * @phpstan-return ($val is null ? array<int|string, string> : string)
      **/

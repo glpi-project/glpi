@@ -436,7 +436,7 @@ class ITILCategory extends CommonTreeDropdown
     }
 
     /**
-     * @param integer $withtemplate (default 0)
+     * @param int $withtemplate (default 0)
      * @return false|void
      */
     public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0)

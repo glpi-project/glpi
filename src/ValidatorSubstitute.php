@@ -171,7 +171,6 @@ final class ValidatorSubstitute extends CommonDBTM
      * Update the substitutes list for the current user
      *
      * @param array $input
-     * @return boolean
      */
     public function updateSubstitutes($input): bool
     {

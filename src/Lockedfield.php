@@ -234,8 +234,8 @@ class Lockedfield extends CommonDBTM
     /**
      * Get locked fields
      *
-     * @param string  $itemtype Item type
-     * @param integer $items_id Item ID
+     * @param string $itemtype Item type
+     * @param int    $items_id Item ID
      *
      * return array
      */
@@ -266,8 +266,8 @@ class Lockedfield extends CommonDBTM
     /**
      * Get locked fields
      *
-     * @param string  $itemtype Item type
-     * @param integer $items_id Item ID
+     * @param string $itemtype Item type
+     * @param int    $items_id Item ID
      *
      * return array
      */
@@ -302,7 +302,7 @@ class Lockedfield extends CommonDBTM
     /**
      * Item has been deleted, remove all locks
      *
-     * @return boolean
+     * @return bool
      */
     public function itemDeleted()
     {
@@ -319,7 +319,7 @@ class Lockedfield extends CommonDBTM
     /**
      * Store value from inventory on locked fields
      *
-     * @return boolean
+     * @return bool
      */
     public function setLastValue($itemtype, $items_id, $field, $value)
     {

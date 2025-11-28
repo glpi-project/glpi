@@ -99,7 +99,7 @@ class KnowbaseItem_Revision extends CommonDBTM
     /**
      * Show linked items of a knowbase item
      *
-     * @param integer $withtemplate withtemplate param (default 0)
+     * @param int $withtemplate withtemplate param (default 0)
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
@@ -241,7 +241,7 @@ class KnowbaseItem_Revision extends CommonDBTM
      *
      * @param KnowbaseItem|KnowbaseItemTranslation $item Knowledge base item
      *
-     * @return integer|false ID of the revision created, or false on error
+     * @return int|false ID of the revision created, or false on error
      */
     public function createNew(KnowbaseItem|KnowbaseItemTranslation $item)
     {
@@ -263,7 +263,7 @@ class KnowbaseItem_Revision extends CommonDBTM
     /**
      * Get new revision number for item
      *
-     * @return integer
+     * @return int
      */
     private function getNewRevision()
     {

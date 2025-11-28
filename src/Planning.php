@@ -275,10 +275,10 @@ class Planning extends CommonGLPI
     /**
      * Dropdown of planning state
      *
-     * @param string  $name    Select name
-     * @param string  $value   Default value (default '')
-     * @param boolean $display Display of send string ? (true by default)
-     * @param array   $options
+     * @param string $name    Select name
+     * @param string $value   Default value (default '')
+     * @param bool   $display Display of send string ? (true by default)
+     * @param array  $options
      **/
     public static function dropdownState($name, $value = '', $display = true, $options = [])
     {
@@ -326,10 +326,10 @@ JAVASCRIPT;
     /**
      * Check already planned user for a period
      *
-     * @param integer $users_id user id
-     * @param string  $begin    begin date
-     * @param string  $end      end date
-     * @param array   $except   items which not be into account ['Reminder' => [1, 2, id_of_items]]
+     * @param int    $users_id user id
+     * @param string $begin    begin date
+     * @param string $end      end date
+     * @param array  $except   items which not be into account ['Reminder' => [1, 2, id_of_items]]
      **/
     public static function checkAlreadyPlanned($users_id, $begin, $end, $except = [])
     {
@@ -621,8 +621,8 @@ JAVASCRIPT;
      * Return an hexa color from a palette
      *
      * @since  9.1.1
-     * @param string  $palette_name the short name for palette (bg, fg, ev)
-     * @param integer $color_index  The color index in this palette
+     * @param string $palette_name the short name for palette (bg, fg, ev)
+     * @param int    $color_index  The color index in this palette
      * @return mixed                 the color in hexa (ex: #FFFFFF) or false
      */
     public static function getPaletteColor($palette_name = 'bg', $color_index = 0)
@@ -1376,7 +1376,7 @@ TWIG, $twig_params);
      *
      * @param array $event the event to clone
      *
-     * @return integer|false the id (integer) or false if it failed
+     * @return int|false the id (integer) or false if it failed
      */
     public static function cloneEvent(array $event = [])
     {
@@ -2128,9 +2128,9 @@ TWIG, $twig_params);
      * Display a Planning Item
      *
      * @param array                           $val      Array of the item to display
-     * @param integer                         $who      ID of the user (0 if all)
+     * @param int                             $who      ID of the user (0 if all)
      * @param 'in'|'through'|'begin'|'end'|'' $type     Position of the item in the time block (in, through, begin or end)
-     * @param boolean                         $complete complete display (more details)
+     * @param bool                            $complete complete display (more details)
      *
      * @return string
      **/
@@ -2158,7 +2158,7 @@ TWIG, $twig_params);
     /**
      * Show the planning for the central page of a user
      *
-     * @param integer $who ID of the user
+     * @param int $who ID of the user
      *
      * @return void
      **/
@@ -2197,9 +2197,9 @@ TWIG, ['msg' => __('Your planning')]);
     /**
      *  Generate ical file content
      *
-     * @param integer $who           user ID
-     * @param integer $whogroup      group ID
-     * @param string  $limititemtype itemtype only display this itemtype (default '')
+     * @param int    $who           user ID
+     * @param int    $whogroup      group ID
+     * @param string $limititemtype itemtype only display this itemtype (default '')
      *
      * @return void Outputs ical contents
      **/
@@ -2386,7 +2386,7 @@ TWIG, ['msg' => __('Your planning')]);
      *
      * @param string $key
      *
-     * @return integer|null
+     * @return int|null
      */
     public static function getActorIdFromPlanningKey($key)
     {
@@ -2397,8 +2397,8 @@ TWIG, ['msg' => __('Your planning')]);
     /**
      * Returns planning key for given actor (key is used in user 'plannings' field).
      *
-     * @param string  $itemtype
-     * @param integer $items_id
+     * @param string $itemtype
+     * @param int    $items_id
      *
      * @return string
      */

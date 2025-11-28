@@ -264,16 +264,16 @@ class Search
      *
      * @since 9.4
      *
-     * @param array   $criteria  list of search criterion, we should have these keys:
-     *                           - link (optionnal): AND, OR, NOT AND, NOT OR
-     *                           - field: id of the searchoption
-     *                           - searchtype: how to match value (contains, equals, etc)
-     *                           - value
-     * @param array   $data      common array used by search engine,
-     *                           contains all the search part (sql, criteria, params, itemtype etc)
-     *                           TODO: should be a property of the class
-     * @param array   $searchopt Search options for the current itemtype
-     * @param boolean $is_having Do we construct sql WHERE or HAVING part
+     * @param array $criteria  list of search criterion, we should have these keys:
+     *                         - link (optionnal): AND, OR, NOT AND, NOT OR
+     *                         - field: id of the searchoption
+     *                         - searchtype: how to match value (contains, equals, etc)
+     *                         - value
+     * @param array $data      common array used by search engine,
+     *                         contains all the search part (sql, criteria, params, itemtype etc)
+     *                         TODO: should be a property of the class
+     * @param array $searchopt Search options for the current itemtype
+     * @param bool  $is_having Do we construct sql WHERE or HAVING part
      *
      * @return string             the sql sub string
      */
@@ -315,8 +315,8 @@ class Search
      *
      * @since 0.85
      *
-     * @param array   $data      array of search data prepared to get data
-     * @param boolean $onlycount If we just want to count results
+     * @param array $data      array of search data prepared to get data
+     * @param bool  $onlycount If we just want to count results
      *
      * @return void|false May return false if the SQL data in $data is not valid
      **/
@@ -575,10 +575,10 @@ class Search
      *
      * @since 9.4: $num param has been dropped
      *
-     * @param string  $itemtype  item type
-     * @param integer $ID        ID of the item to add
-     * @param boolean $meta      boolean is a meta
-     * @param string  $meta_type meta item type
+     * @param string $itemtype  item type
+     * @param int    $ID        ID of the item to add
+     * @param bool   $meta      boolean is a meta
+     * @param string $meta_type meta item type
      *
      * @return string Select string
      **/
@@ -628,9 +628,9 @@ class Search
      * Generic Function to add where to a request
      *
      * @param string                   $link       Link string
-     * @param boolean                  $nott       Is it a negative search ?
+     * @param bool                     $nott       Is it a negative search ?
      * @param class-string<CommonDBTM> $itemtype   Item type
-     * @param integer                  $ID         ID of the item to search
+     * @param int                      $ID         ID of the item to search
      * @param string                   $searchtype Searchtype used (equals or contains)
      * @param string                   $val        Item num in the request
      * @param bool                     $meta       Is a meta search (meta=2 in search.class.php) (default 0)
@@ -688,15 +688,15 @@ class Search
     /**
      * Generic Function to add left join to a request
      *
-     * @param string  $itemtype            Item type
-     * @param string  $ref_table           Reference table
-     * @param array   $already_link_tables Array of tables already joined
-     * @param string  $new_table           New table to join
-     * @param string  $linkfield           Linkfield for LeftJoin
-     * @param boolean $meta                Is it a meta item ? (default 0)
-     * @param string  $meta_type           Meta item type
-     * @param array   $joinparams          Array join parameters (condition / joinbefore...)
-     * @param string  $field               Field to display (needed for translation join) (default '')
+     * @param string $itemtype            Item type
+     * @param string $ref_table           Reference table
+     * @param array  $already_link_tables Array of tables already joined
+     * @param string $new_table           New table to join
+     * @param string $linkfield           Linkfield for LeftJoin
+     * @param bool   $meta                Is it a meta item ? (default 0)
+     * @param string $meta_type           Meta item type
+     * @param array  $joinparams          Array join parameters (condition / joinbefore...)
+     * @param string $field               Field to display (needed for translation join) (default '')
      *
      * @return string Left join string
      **/
@@ -762,9 +762,9 @@ class Search
      *
      * @since 9.4: $num param has been dropped
      *
-     * @param string  $itemtype item type
-     * @param integer $ID       ID of the SEARCH_OPTION item
-     * @param array   $data     array retrieved data array
+     * @param string $itemtype item type
+     * @param int    $ID       ID of the SEARCH_OPTION item
+     * @param array  $data     array retrieved data array
      *
      * @return string String to print
      **/
@@ -779,12 +779,12 @@ class Search
      *
      * @since 9.4: $num param has been dropped
      *
-     * @param string  $itemtype        item type
-     * @param integer $ID              ID of the SEARCH_OPTION item
-     * @param array   $data            array containing data results
-     * @param boolean $meta            is a meta item ? (default false)
-     * @param array   $addobjectparams array added parameters for union search
-     * @param string  $orig_itemtype   Original itemtype, used for union_search_type
+     * @param string $itemtype        item type
+     * @param int    $ID              ID of the SEARCH_OPTION item
+     * @param array  $data            array containing data results
+     * @param bool   $meta            is a meta item ? (default false)
+     * @param array  $addobjectparams array added parameters for union search
+     * @param string $orig_itemtype   Original itemtype, used for union_search_type
      *
      * @return string String to print
      **/
@@ -814,11 +814,11 @@ class Search
     /**
      * Completion of the URL $_GET values with the $_SESSION values or define default values
      *
-     * @param string  $itemtype      Item type to manage
-     * @param array   $params        Params to parse
-     * @param boolean $usesession    Use datas save in session (true by default)
-     * @param boolean $forcebookmark Force trying to load parameters from default bookmark:
-     *                               used for global search (false by default)
+     * @param string $itemtype      Item type to manage
+     * @param array  $params        Params to parse
+     * @param bool   $usesession    Use datas save in session (true by default)
+     * @param bool   $forcebookmark Force trying to load parameters from default bookmark:
+     *                              used for global search (false by default)
      *
      * @return array parsed params
      **/
@@ -835,10 +835,10 @@ class Search
     /**
      * Clean search options depending of user active profile
      *
-     * @param string  $itemtype    Item type to manage
-     * @param integer $action      Action which is used to manupulate searchoption
-     *                             (default READ)
-     * @param boolean $withplugins Get plugins options (true by default)
+     * @param string $itemtype    Item type to manage
+     * @param int    $action      Action which is used to manupulate searchoption
+     *                            (default READ)
+     * @param bool   $withplugins Get plugins options (true by default)
      *
      * @return array Clean $SEARCH_OPTION array
      **/
@@ -855,7 +855,7 @@ class Search
      * @param class-string<CommonDBTM> $itemtype Item type
      * @param string                   $field    Name
      *
-     * @return integer
+     * @return int
      **/
     public static function getOptionNumber($itemtype, $field)
     {
@@ -867,8 +867,8 @@ class Search
     /**
      * Get the SEARCH_OPTION array
      *
-     * @param string  $itemtype    Item type
-     * @param boolean $withplugins Get search options from plugins (true by default)
+     * @param string $itemtype    Item type
+     * @param bool   $withplugins Get search options from plugins (true by default)
      *
      * @return array The array of search options for the given item type
      **/
@@ -880,10 +880,10 @@ class Search
     /**
      * Is the search item related to infocoms
      *
-     * @param string  $itemtype Item type
-     * @param integer $searchID ID of the element in $SEARCHOPTION
+     * @param string $itemtype Item type
+     * @param int    $searchID ID of the element in $SEARCHOPTION
      *
-     * @return boolean
+     * @return bool
      **/
     public static function isInfocomOption($itemtype, $searchID)
     {
@@ -892,8 +892,8 @@ class Search
 
 
     /**
-     * @param string  $itemtype
-     * @param integer $field_num
+     * @param string $itemtype
+     * @param int    $field_num
      **/
     public static function getActionsFor($itemtype, $field_num)
     {
@@ -904,13 +904,13 @@ class Search
     /**
      * Print generic Header Column
      *
-     * @param integer         $type    Display type (see Search::*_OUTPUT constants)
-     * @param string          $value   Value to display. This value may contain HTML data. Non-HTML content should be escaped before calling this function.
-     * @param integer         &$num    Column number
-     * @param string          $linkto  Link display element (HTML specific) (default '')
-     * @param boolean|integer $issort  Is the sort column ? (default 0)
-     * @param string          $order   Order type ASC or DESC (defaut '')
-     * @param string          $options Options to add (default '')
+     * @param int      $type    Display type (see Search::*_OUTPUT constants)
+     * @param string   $value   Value to display. This value may contain HTML data. Non-HTML content should be escaped before calling this function.
+     * @param int      &$num    Column number
+     * @param string   $linkto  Link display element (HTML specific) (default '')
+     * @param bool|int $issort  Is the sort column ? (default 0)
+     * @param string   $order   Order type ASC or DESC (defaut '')
+     * @param string   $options Options to add (default '')
      *
      * @return string HTML to display
      **/
@@ -934,11 +934,11 @@ class Search
     /**
      * Print generic normal Item Cell
      *
-     * @param integer $type       Display type (see Search::*_OUTPUT constants)
-     * @param string  $value      Value to display
-     * @param integer &$num       Column number
-     * @param integer $row        Row number
-     * @param string  $extraparam Extra parameters for display (default '')
+     * @param int    $type       Display type (see Search::*_OUTPUT constants)
+     * @param string $value      Value to display
+     * @param int    &$num       Column number
+     * @param int    $row        Row number
+     * @param string $extraparam Extra parameters for display (default '')
      *
      * @return string HTML to display
      **/
@@ -960,8 +960,8 @@ class Search
     /**
      * Print generic error
      *
-     * @param integer $type    Display type (see Search::*_OUTPUT constants)
-     * @param string  $message Message to display, if empty "no item found" will be displayed
+     * @param int    $type    Display type (see Search::*_OUTPUT constants)
+     * @param string $message Message to display, if empty "no item found" will be displayed
      *
      * @return string HTML to display
      **/
@@ -982,9 +982,9 @@ class Search
     /**
      * Print generic footer
      *
-     * @param integer $type  Display type (see Search::*_OUTPUT constants)
-     * @param string  $title title of file : used for PDF (default '')
-     * @param integer $count Total number of results
+     * @param int    $type  Display type (see Search::*_OUTPUT constants)
+     * @param string $title title of file : used for PDF (default '')
+     * @param int    $count Total number of results
      *
      * @return string HTML to display
      **/
@@ -1001,10 +1001,10 @@ class Search
     /**
      * Print generic footer
      *
-     * @param integer         $type  Display type (see Search::*_OUTPUT constants)
-     * @param integer         $rows  Number of rows
-     * @param integer         $cols  Number of columns
-     * @param boolean|integer $fixed Used tab_cadre_fixe table for HTML export ? (default 0)
+     * @param int      $type  Display type (see Search::*_OUTPUT constants)
+     * @param int      $rows  Number of rows
+     * @param int      $cols  Number of columns
+     * @param bool|int $fixed Used tab_cadre_fixe table for HTML export ? (default 0)
      *
      * @return string HTML to display
      **/
@@ -1023,7 +1023,7 @@ class Search
      *
      *
      * @since 0.85
-     * @param integer $type Display type (see Search::*_OUTPUT constants)
+     * @param int $type Display type (see Search::*_OUTPUT constants)
      *
      * @return string HTML to display
      **/
@@ -1042,7 +1042,7 @@ class Search
      *
      *
      * @since 0.85
-     * @param integer $type Display type (see Search::*_OUTPUT constants)
+     * @param int $type Display type (see Search::*_OUTPUT constants)
      *
      * @return string to display
      **/
@@ -1059,9 +1059,9 @@ class Search
     /**
      * Print generic new line
      *
-     * @param integer $type       Display type (see Search::*_OUTPUT constants)
-     * @param boolean $odd        Is it a new odd line ? (false by default)
-     * @param boolean $is_deleted Is it a deleted search ? (false by default)
+     * @param int  $type       Display type (see Search::*_OUTPUT constants)
+     * @param bool $odd        Is it a new odd line ? (false by default)
+     * @param bool $is_deleted Is it a deleted search ? (false by default)
      *
      * @return string HTML to display
      **/
@@ -1078,7 +1078,7 @@ class Search
     /**
      * Print generic end line
      *
-     * @param integer $type Display type (see Search::*_OUTPUT constants)
+     * @param int $type Display type (see Search::*_OUTPUT constants)
      *
      * @return string HTML to display
      **/
@@ -1101,10 +1101,10 @@ class Search
     /**
      * Create SQL search condition
      *
-     * @param string  $field Nname (should be ` protected)
-     * @param string  $val   Value to search
-     * @param boolean $not   Is a negative search ? (false by default)
-     * @param string  $link  With previous criteria (default 'AND')
+     * @param string $field Nname (should be ` protected)
+     * @param string $val   Value to search
+     * @param bool   $not   Is a negative search ? (false by default)
+     * @param string $link  With previous criteria (default 'AND')
      *
      * @return string Search SQL string
      **/
@@ -1130,8 +1130,8 @@ class Search
     /**
      * Create SQL search condition
      *
-     * @param string  $val Value to search
-     * @param boolean $not Is a negative search ? (false by default)
+     * @param string $val Value to search
+     * @param bool   $not Is a negative search ? (false by default)
      *
      * @return string Search string
      **/

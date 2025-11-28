@@ -328,8 +328,8 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
     /**
      * Move direct connections from old printer to the new one
      *
-     * @param integer $ID              the old printer's id
-     * @param integer $new_printers_id the new printer's id
+     * @param int $ID              the old printer's id
+     * @param int $new_printers_id the new printer's id
      *
      * @return void
      **/

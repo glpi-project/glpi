@@ -115,11 +115,11 @@ class CalendarSegment extends CommonDBChild
     /**
      * Get segments of a calendar between 2 date
      *
-     * @param integer $calendars_id id of the calendar
-     * @param integer $begin_day    begin day number
-     * @param string  $begin_time   begin time to check
-     * @param integer $end_day      end day number
-     * @param string  $end_time     end time to check
+     * @param int    $calendars_id id of the calendar
+     * @param int    $begin_day    begin day number
+     * @param string $begin_time   begin time to check
+     * @param int    $end_day      end day number
+     * @param string $end_time     end time to check
      *
      * @return array
      **/
@@ -150,12 +150,12 @@ class CalendarSegment extends CommonDBChild
     /**
      * Get active time between begin and end time in a day
      *
-     * @param integer $calendars_id id of the calendar
-     * @param integer $day          day number
-     * @param string  $begin_time   begin time to check
-     * @param string  $end_time     end time to check
+     * @param int    $calendars_id id of the calendar
+     * @param int    $day          day number
+     * @param string $begin_time   begin time to check
+     * @param string $end_time     end time to check
      *
-     * @return integer Time in seconds
+     * @return int Time in seconds
      **/
     public static function getActiveTimeBetween($calendars_id, $day, $begin_time, $end_time)
     {
@@ -190,11 +190,11 @@ class CalendarSegment extends CommonDBChild
     /**
      * Add a delay of a starting hour in a specific day
      *
-     * @param integer $calendars_id   id of the calendar
-     * @param integer $day            day number
-     * @param string  $begin_time     begin time
-     * @param integer $delay          timestamp delay to add
-     * @param bool    $negative_delay are we adding or removing time ?
+     * @param int    $calendars_id   id of the calendar
+     * @param int    $day            day number
+     * @param string $begin_time     begin time
+     * @param int    $delay          timestamp delay to add
+     * @param bool   $negative_delay are we adding or removing time ?
      *
      * @return string|false Ending timestamp (HH:mm:dd) of delay or false if not applicable.
      **/
@@ -278,8 +278,8 @@ class CalendarSegment extends CommonDBChild
     /**
      * Get first working hour of a day
      *
-     * @param integer $calendars_id id of the calendar
-     * @param integer $day          day number
+     * @param int $calendars_id id of the calendar
+     * @param int $day          day number
      *
      * @return string Timestamp (HH:mm:dd) of first working hour
      **/
@@ -302,8 +302,8 @@ class CalendarSegment extends CommonDBChild
     /**
      * Get last working hour of a day
      *
-     * @param integer $calendars_id id of the calendar
-     * @param integer $day          day number
+     * @param int $calendars_id id of the calendar
+     * @param int $day          day number
      *
      * @return string Timestamp (HH:mm:dd) of last working hour
      **/
@@ -326,11 +326,11 @@ class CalendarSegment extends CommonDBChild
     /**
      * Is the hour passed is a working hour ?
      *
-     * @param integer $calendars_id id of the calendar
-     * @param integer $day          day number
-     * @param string  $hour         hour (Format HH:MM::SS)
+     * @param int    $calendars_id id of the calendar
+     * @param int    $day          day number
+     * @param string $hour         hour (Format HH:MM::SS)
      *
-     * @return boolean
+     * @return bool
      **/
     public static function isAWorkingHour($calendars_id, $day, $hour)
     {

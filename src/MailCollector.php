@@ -266,7 +266,7 @@ class MailCollector extends CommonDBTM
      * @param $options array
      *                 - target filename : where to go when done.
      *
-     * @return boolean item found
+     * @return bool item found
      **/
     public function showForm($ID, array $options = [])
     {
@@ -574,8 +574,8 @@ class MailCollector extends CommonDBTM
     /**
      * Do collect
      *
-     * @param integer $mailgateID ID of the mailgate
-     * @param boolean $display    display messages in MessageAfterRedirect or just return error (default 0=)
+     * @param int  $mailgateID ID of the mailgate
+     * @param bool $display    display messages in MessageAfterRedirect or just return error (default 0=)
      *
      * @return string|void
      **/
@@ -1460,7 +1460,7 @@ class MailCollector extends CommonDBTM
     /**
      * Number of entries in the mailbox
      *
-     * @return integer
+     * @return int
      **/
     public function getTotalMails()
     {
@@ -1472,11 +1472,11 @@ class MailCollector extends CommonDBTM
      * Recursivly get attached documents
      * Result is stored in $this->files
      *
-     * @param Part    $part    Message part
-     * @param string  $path    Temporary path
-     * @param integer $maxsize Maximum size of document to be retrieved
-     * @param string  $subject Message subject
-     * @param string  $subpart Subpart index (used in document filenames)
+     * @param Part   $part    Message part
+     * @param string $path    Temporary path
+     * @param int    $maxsize Maximum size of document to be retrieved
+     * @param string $subject Message subject
+     * @param string $subpart Subpart index (used in document filenames)
      *
      * @return void
      **/
@@ -1639,7 +1639,7 @@ class MailCollector extends CommonDBTM
      *
      * @param Message $message Message
      * @param string  $path    Temporary path
-     * @param integer $maxsize Maximaum size of document to be retrieved
+     * @param int     $maxsize Maximaum size of document to be retrieved
      *
      * @return array containing extracted filenames in file/_tmp
      **/
@@ -1758,7 +1758,7 @@ class MailCollector extends CommonDBTM
      * @param string $uid    mail UID
      * @param string $folder Folder to move (delete if empty) (default '')
      *
-     * @return boolean
+     * @return bool
      **/
     public function deleteMails($uid, $folder = '')
     {
@@ -2009,9 +2009,9 @@ class MailCollector extends CommonDBTM
     /**
      * Count collectors
      *
-     * @param boolean $active Count active only, defaults to false
+     * @param bool $active Count active only, defaults to false
      *
-     * @return integer
+     * @return int
      */
     public static function countCollectors($active = false)
     {
@@ -2034,7 +2034,7 @@ class MailCollector extends CommonDBTM
     /**
      * Count active collectors
      *
-     * @return integer
+     * @return int
      */
     public static function countActiveCollectors()
     {

@@ -66,7 +66,7 @@ class HTMLTableGroup extends HTMLTableBase
     }
 
     /**
-     * @return boolean
+     * @return bool
      **/
     public function haveHeader(HTMLTableHeader $header)
     {
@@ -140,14 +140,14 @@ class HTMLTableGroup extends HTMLTableBase
     /**
      * Display the current group (with headers and rows)
      *
-     * @param integer $totalNumberOfColumn Total number of columns : to span correctly the title
-     * @param array   $params              array of possible options:
-     *                                     'display_super_for_each_group'           display the super header (ie.: big header of the table)
-     *                                     before the group specific headers
-     *                                     'display_title_for_each_group'           display the title of the header before the group
-     *                                     specific headers
-     *                                     'display_header_for_each_group'          display the header of each group
-     *                                     'display_header_on_foot_for_each_group'  repeat group header on foot of group
+     * @param int   $totalNumberOfColumn Total number of columns : to span correctly the title
+     * @param array $params              array of possible options:
+     *                                   'display_super_for_each_group'           display the super header (ie.: big header of the table)
+     *                                   before the group specific headers
+     *                                   'display_title_for_each_group'           display the title of the header before the group
+     *                                   specific headers
+     *                                   'display_header_for_each_group'          display the header of each group
+     *                                   'display_header_on_foot_for_each_group'  repeat group header on foot of group
      *
      * @return void
      **/

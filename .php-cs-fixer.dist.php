@@ -83,6 +83,10 @@ return (new PhpCsFixer\Config())
         // The correct case must be used for standard PHP types in PHPDoc.
         // https://mlocati.github.io/php-cs-fixer-configurator/#version:3.90|fixer:phpdoc_types
         'phpdoc_types' => true,
+        // phpdoc_scalar
+        // Scalar types should always be written in the same form. int not integer, bool not boolean, float not real or double.
+        // https://mlocati.github.io/php-cs-fixer-configurator/#version:3.90|fixer:phpdoc_scalar
+        'phpdoc_scalar' => true,
     ])
     ->setFinder($finder)
 ;

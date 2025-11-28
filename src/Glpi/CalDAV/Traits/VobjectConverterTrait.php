@@ -196,8 +196,6 @@ trait VobjectConverterTrait
     /**
      * Return the most relevant caldav component according to configuration.
      *
-     * @param boolean $is_planned
-     * @param boolean $is_task
      *
      * @return string|null
      */
@@ -303,7 +301,7 @@ trait VobjectConverterTrait
      * Get state input from component (see Planning constants).
      *
      *
-     * @return integer|null
+     * @return int|null
      */
     private function getStateInputFromVComponent(Component $vcomponent)
     {

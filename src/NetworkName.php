@@ -311,8 +311,8 @@ class NetworkName extends FQDNLabel
      *
      * The address can be unaffected, and remain "free"
      *
-     * @param integer $items_id the id of the item
-     * @param string  $itemtype the type of the item
+     * @param int    $items_id the id of the item
+     * @param string $itemtype the type of the item
      *
      * @return void
      **/
@@ -339,7 +339,7 @@ class NetworkName extends FQDNLabel
      *
      * The address can be unaffected, and remain "free"
      *
-     * @param integer $networkNameID the id of the NetworkName
+     * @param int $networkNameID the id of the NetworkName
      *
      * @return bool
      **/
@@ -349,9 +349,9 @@ class NetworkName extends FQDNLabel
     }
 
     /**
-     * @param integer $networkNameID
-     * @param integer $items_id
-     * @param string  $itemtype
+     * @param int    $networkNameID
+     * @param int    $items_id
+     * @param string $itemtype
      * @return bool
      */
     public static function affectAddress($networkNameID, $items_id, $itemtype)
@@ -365,7 +365,7 @@ class NetworkName extends FQDNLabel
     }
 
     /**
-     * @param integer $networkPortID
+     * @param int $networkPortID
      * @used-by templates/pages/assets/networkport/form.html.twig
      *
      * @return void
@@ -651,7 +651,7 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
      * NetworkName, remove, ...) or if readden from item of the item (for instance from the computer
      * form through NetworkPort::ShowForItem).
      *
-     * @param integer $withtemplate
+     * @param int $withtemplate
      * @return false|void
      * @throws Exception
      */

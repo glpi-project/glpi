@@ -58,14 +58,14 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Display list on Navigation Header
      *
-     * @var boolean
+     * @var bool
      */
     protected $displaylist          = true;
 
     /**
      * Show Debug
      *
-     * @var boolean
+     * @var bool
      */
     public $showdebug               = false;
 
@@ -86,7 +86,7 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Need to get item to show tab
      *
-     * @var boolean
+     * @var bool
      */
     public $get_item_to_display_tab = false;
 
@@ -565,7 +565,7 @@ class CommonGLPI implements CommonGLPIInterface
      * @since 0.83
      *
      * @param CommonGLPI $item         Item on which the tab need to be displayed
-     * @param integer    $withtemplate is a template object ?
+     * @param int        $withtemplate is a template object ?
      *
      *  @return string|string[] The tab(s) name(s).
      *      Must be:
@@ -635,7 +635,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @param CommonGLPI $item         Item on which the tab need to be displayed
      * @param string|-1  $tab          Tab identifier (see `defineTabs()` return value)
-     * @param integer    $withtemplate Is a template object ? (default 0)
+     * @param int        $withtemplate Is a template object ? (default 0)
      * @param array      $options      Additional options to pass
      *
      * @return bool

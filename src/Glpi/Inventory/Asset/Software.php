@@ -526,8 +526,8 @@ class Software extends InventoryAsset
     /**
      * Get software comparison key
      *
-     * @param string  $name             Software name
-     * @param integer $manufacturers_id Manufacturers id
+     * @param string $name             Software name
+     * @param int    $manufacturers_id Manufacturers id
      *
      */
     protected function getSoftwareKey($name, $manufacturers_id): string
@@ -542,7 +542,7 @@ class Software extends InventoryAsset
      * Get software version comparison key
      *
      * @param stdClass $val          Version name
-     * @param integer  $softwares_id Software id
+     * @param int      $softwares_id Software id
      *
      */
     protected function getVersionKey($val, $softwares_id): string

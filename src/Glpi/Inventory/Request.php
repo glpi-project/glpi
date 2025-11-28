@@ -71,7 +71,6 @@ class Request extends AbstractRequest
      * @param string     $action  Query mode (one of self::*_QUERY or self::*_ACTION)
      * @param mixed|null $content Contents, optional
      *
-     * @return boolean
      */
     protected function handleAction(string $action, mixed $content = null): bool
     {

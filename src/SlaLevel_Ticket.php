@@ -49,10 +49,10 @@ class SlaLevel_Ticket extends CommonDBTM
      *
      *
      * @since 9.1 2 mandatory parameters
-     * @param integer           $ID      of the item to get
+     * @param int               $ID      of the item to get
      * @param SLM::TTR|SLM::TTO $slaType
      *
-     * @return boolean
+     * @return bool
      * @used-by LevelAgreement::getNextActionForTicket()
      **/
     public function getFromDBForTicket($ID, $slaType)
@@ -94,7 +94,7 @@ class SlaLevel_Ticket extends CommonDBTM
      *
      *
      * @since 9.1 2 parameters mandatory
-     * @param integer           $tickets_id Ticket ID
+     * @param int               $tickets_id Ticket ID
      * @param SLM::TTR|SLM::TTO $slaType    Type of SLA
      *
      * @return void
@@ -153,7 +153,7 @@ class SlaLevel_Ticket extends CommonDBTM
      *
      * @param $task : CronTask object
      *
-     * @return integer (0 : nothing done - 1 : done)
+     * @return int (0 : nothing done - 1 : done)
      * @used-by CronTask
      **/
     public static function cronSlaTicket(CronTask $task)

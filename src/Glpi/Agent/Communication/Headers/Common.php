@@ -144,7 +144,7 @@ class Common
     /**
      * Get HTTP headers
      *
-     * @param boolean $legacy Set to true to shunt required headers checks
+     * @param bool $legacy Set to true to shunt required headers checks
      *
      */
     public function getHeaders(bool $legacy = true): array
