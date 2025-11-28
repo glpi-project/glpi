@@ -499,10 +499,8 @@ class NotificationEventMailing extends NotificationEventAbstract
     /**
      * Attach documents to message.
      * Documents will not be attached if configuration says they should not be.
-     *
-     * @return void
      */
-    private static function attachDocuments(Email $mail, array $documents_ids)
+    private static function attachDocuments(Email $mail, array $documents_ids): void
     {
         $document = new Document();
         foreach ($documents_ids as $document_id) {
