@@ -131,14 +131,12 @@ class NotificationTarget extends CommonDBChild
      */
     public $recipient_data              = [];
 
-    /** @var bool */
-    private $allow_response             = true;
+    private bool $allow_response        = true;
 
     /** @var Notification_NotificationTemplate::MODE_*|null */
-    private $mode                       = null;
+    private ?string $mode               = null;
 
-    /** @var string|null*/
-    private $event                      = null;
+    private ?string $event                      = null;
 
     /** @var string */
     public const TAG_LANGUAGE               = 'lang';

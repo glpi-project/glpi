@@ -218,12 +218,8 @@ class NotificationTargetUser extends NotificationTarget
 
     /**
      * Add tags for given event.
-     *
-     * @param string $event
-     *
-     * @return void
      */
-    private function addTagsForEvent($event)
+    private function addTagsForEvent(string $event): void
     {
         $lang_tags = [];
         $values_tags = [];

@@ -511,9 +511,10 @@ class NotificationTemplate extends CommonDBTM
     /**
      * Convert notification data to HTML format.
      *
-     * @return array
+     * @param array<string, string|array<string>> $data
+     * @return array<string, string|array<string>>
      */
-    private static function getDataForHtml(array $data)
+    private static function getDataForHtml(array $data): array
     {
         foreach ($data as $tag => $value) {
             if (is_array($value)) {
@@ -536,9 +537,10 @@ class NotificationTemplate extends CommonDBTM
     /**
      * Convert notification data to plain text format.
      *
-     * @return array
+     * @param array<string, string|array<string>> $data
+     * @return array array<string, string|array<string>>
      */
-    private static function getDataForPlainText(array $data)
+    private static function getDataForPlainText(array $data): array
     {
 
         foreach ($data as $tag => $value) {
