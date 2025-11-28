@@ -17,7 +17,7 @@ make e2e-db-install
 
 By default, the E2E tests server is exposed on the `8090` port.  
 If you changed this port in your docker override file, copy the `.env` file as 
-`.env.local` and update `GLPI_BASE_URL` as needed.
+`.env.local` and update `E2E_BASE_URL` as needed.
 
 #### Execute all tests
 
@@ -73,7 +73,7 @@ parameter to setup the test database.
 
 #### Setup base URL
 
-Copy the `.env` file as `.env.local` and replace `GLPI_BASE_URL` by the URL to
+Copy the `.env` file as `.env.local` and replace `E2E_BASE_URL` by the URL to
 your GLPI server running in the `e2e_testing` environment.
 
 #### Execute all tests

@@ -34,10 +34,10 @@ export class Config
 {
     public static getBaseUrl(): string
     {
-        if (process.env.GLPI_BASE_URL === undefined) {
-            throw new Error("Invalid configuration, 'GLPI_BASE_URL' is not defined");
+        if (process.env.E2E_BASE_URL === undefined) {
+            throw new Error("Invalid configuration, 'E2E_BASE_URL' is not defined");
         }
 
-        return process.env.GLPI_BASE_URL;
+        return process.env.E2E_BASE_URL;
     }
 }
