@@ -1050,9 +1050,9 @@ class Session
      *
      * @since 0.85
      *
-     * @see https://wiki.php.net/rfc/strict_sessions
      *
      * @return void|true
+     * @see https://wiki.php.net/rfc/strict_sessions
      **/
     public static function checkValidSessionId()
     {
@@ -1670,10 +1670,10 @@ class Session
     /**
      * Get new CSRF token
      *
-     * @param bool $standalone
-     *    Generates a standalone token that will not be shared with other component of current request.
      *
      * @since 0.83.3
+     * @param bool $standalone
+     *    Generates a standalone token that will not be shared with other component of current request.
      *
      * @return string
      **/

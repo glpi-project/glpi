@@ -787,13 +787,13 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @since 0.84
      *
-     * @see showAddChildButtonForItemForm()
      *
      * @param string $field_name         the name of the HTML field inside Item's form
      * @param string $child_count_js_var the name of the javascript variable containing current child
      *                                   number of items
      *
      * @return string
+     * @see showAddChildButtonForItemForm()
      **/
     public static function getJSCodeToAddForItemChild($field_name, $child_count_js_var)
     {
@@ -812,13 +812,13 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @since 0.84
      *
-     * @see showChildsForItemForm()
      *
      * @param boolean $canedit     true if we can edit the child
      * @param string  $field_name  the name of the HTML field inside Item's form
      * @param integer $id          id of the child
      *
      * @return string|void
+     * @see showChildsForItemForm()
      **/
     public function showChildForItemForm($canedit, $field_name, $id, bool $display = true)
     {
@@ -851,8 +851,6 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @since 0.84
      *
-     * @todo study if we cannot use these methods for the user emails
-     * @see showChildsForItemForm(CommonDBTM $item, $field_name)
      *
      * @param CommonDBTM   $item        the item on which to add the current CommonDBChild
      * @param string       $field_name  the name of the HTML field inside Item's form
@@ -861,6 +859,8 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      *
      * @return void|false|string the button HTML code if $display is true, void otherwise
+     * @see showChildsForItemForm(CommonDBTM $item, $field_name)
+     * @todo study if we cannot use these methods for the user emails
      **/
     public static function showAddChildButtonForItemForm(
         CommonDBTM $item,
@@ -918,14 +918,14 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @since 0.84
      *
-     * @todo study if we cannot use these methods for the user emails
-     * @see showAddChildButtonForItemForm()
      *
      * @param CommonDBTM   $item        the item on which to add the current CommonDBChild
      * @param string       $field_name  the name of the HTML field inside Item's form
      * @param boolean|null $canedit     boolean to force rights, NULL to use default behaviour
      *
      * @return void|boolean|string (display) Returns false if there is a right error.
+     * @see showAddChildButtonForItemForm()
+     * @todo study if we cannot use these methods for the user emails
      **/
     public static function showChildsForItemForm(CommonDBTM $item, $field_name, $canedit = null, bool $display = true)
     {

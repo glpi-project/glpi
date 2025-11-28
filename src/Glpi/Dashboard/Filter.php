@@ -146,9 +146,9 @@ class Filter extends CommonDBChild
      * Return all available filters.
      * Keys are filters ids, values are filters labels.
      *
-     * @return array of filters
      *
      * @deprecated 11.0.0.
+     * @return array of filters
      */
     public static function getAll(): array
     {

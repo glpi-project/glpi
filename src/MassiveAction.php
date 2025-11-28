@@ -44,9 +44,9 @@ use function Safe\preg_match;
 /**
  * Class that manages all the massive actions
  *
- * @todo all documentation !
  *
  * @since 0.85
+ * @todo all documentation !
  **/
 class MassiveAction
 {

@@ -44,9 +44,9 @@ use PHPUnit\Framework\Attributes\DataProvider;
 class ProfileTest extends DbTestCase
 {
     /**
-     * @see self::testHaveUserRight()
      *
      * @return array
+     * @see self::testHaveUserRight()
      */
     public static function haveUserRightProvider()
     {

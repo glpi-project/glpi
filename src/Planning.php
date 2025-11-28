@@ -226,8 +226,8 @@ class Planning extends CommonGLPI
     /**
      * Get status icon
      *
-     * @param int $status status ID
      * @since 10.0.9
+     * @param int $status status ID
      */
     public static function getStatusIcon($status): string
     {
@@ -243,8 +243,8 @@ class Planning extends CommonGLPI
     /**
      * Get status class
      *
-     * @param int $status status ID
      * @since 10.0.9
+     * @param int $status status ID
      */
     public static function getStatusClass($status): string
     {
@@ -259,8 +259,8 @@ class Planning extends CommonGLPI
     /**
      * Get status color
      *
-     * @param int $status status ID
      * @since 10.0.9
+     * @param int $status status ID
      */
     public static function getStatusColor($status): string
     {
@@ -603,10 +603,10 @@ JAVASCRIPT;
 
     /**
      * Return a palette array (for example self::$palette_bg)
-     * @param  string $palette_name  the short name for palette (bg, fg, ev)
-     * @return mixed                 the palette array or false
      *
      * @since  9.1.1
+     * @param  string $palette_name  the short name for palette (bg, fg, ev)
+     * @return mixed                 the palette array or false
      */
     public static function getPalette($palette_name = 'bg')
     {
@@ -619,11 +619,11 @@ JAVASCRIPT;
 
     /**
      * Return an hexa color from a palette
+     *
+     * @since  9.1.1
      * @param  string  $palette_name the short name for palette (bg, fg, ev)
      * @param  integer $color_index  The color index in this palette
      * @return mixed                 the color in hexa (ex: #FFFFFF) or false
-     *
-     * @since  9.1.1
      */
     public static function getPaletteColor($palette_name = 'bg', $color_index = 0)
     {

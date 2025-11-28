@@ -66,6 +66,10 @@ return (new PhpCsFixer\Config())
             'allow_mixed' => true,
             'remove_inheritdoc' => true,
         ],
+        // order phpdoc tags
+        // https://mlocati.github.io/php-cs-fixer-configurator/#version:3.90|fixer:phpdoc_order
+        // order defined in devdoc : https://glpi-developer-documentation.readthedocs.io/en/master/codingstandards.html
+        'phpdoc_order' => ['order' => ['deprecated', 'since', 'var', 'param', 'return', 'see', 'throw', 'todo']],
     ])
     ->setFinder($finder)
 ;

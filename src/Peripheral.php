@@ -104,9 +104,9 @@ class Peripheral extends CommonDBTM implements AssignableItemInterface, DCBreadc
     }
 
     /**
-     * @see CommonDBTM::useDeletedToLockIfDynamic()
      *
      * @since 0.84
+     * @see CommonDBTM::useDeletedToLockIfDynamic()
      **/
     public function useDeletedToLockIfDynamic()
     {
@@ -164,8 +164,8 @@ class Peripheral extends CommonDBTM implements AssignableItemInterface, DCBreadc
     /**
      * Return the linked items (`Asset_PeripheralAsset` relations)
      *
-     * @return array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
      * @since 0.84.4
+     * @return array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
      **/
     public function getLinkedItems()
     {

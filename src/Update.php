@@ -66,9 +66,9 @@ class Update
     /**
      * Constructor
      *
-     * @param object $DB   Database instance
      *
      * @since 11.0.0 The `$args` parameter has been removed.
+     * @param object $DB   Database instance
      */
     public function __construct($DB, string $migrations_directory = GLPI_ROOT . '/install/migrations/')
     {

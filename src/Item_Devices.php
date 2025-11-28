@@ -475,9 +475,9 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     /**
      * Get the Item_Device* a given item type can have
      *
-     * @param string $itemtype the type of the item that we want to know its devices
      *
      * @since 0.85
+     * @param string $itemtype the type of the item that we want to know its devices
      *
      * @return class-string<Item_Devices>[]
      **/
@@ -1221,9 +1221,9 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     /**
      * Add one or several device(s) from front/item_devices.form.php.
      *
+     * @since 0.85
      * @param array $input Array of input: should be $_POST
      * @return void
-     * @since 0.85
      **/
     public static function addDevicesFromPOST($input)
     {

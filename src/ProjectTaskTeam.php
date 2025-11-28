@@ -38,9 +38,9 @@ use Glpi\Team\Team;
 //!  ProjectTaskTeam Class
 /**
  * This class is used to manage the project task team
- * @see ProjectTask
  * @author Julien Dombre
  * @since 0.85
+ * @see ProjectTask
  **/
 class ProjectTaskTeam extends CommonDBRelation
 {

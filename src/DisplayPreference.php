@@ -545,9 +545,9 @@ class DisplayPreference extends CommonDBTM
      * The first key of string type we encouter, is our item's group name.
      *
      *
-     * @return string Return the name of the group or an empty string.
      *
      * @since 10.0.8
+     * @return string Return the name of the group or an empty string.
      */
     private function nameOfGroupForItemInSearchopt(array $search_options, int $search_option_key): string
     {

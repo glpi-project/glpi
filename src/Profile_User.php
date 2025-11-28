@@ -812,11 +812,11 @@ TWIG, $avatar_params) . $username;
     /**
      * retrieve the entities associated to a user
      *
+     *
+     * @since 0.85
      * @param $users_id     Integer  ID of the user
      * @param $child        Boolean  when true, include child entity when recursive right
      *                               (false by default)
-     *
-     * @since 0.85
      *
      * @return Array of entity ID
      **/

@@ -51,9 +51,9 @@ use UserEmail;
 /**
  * Principal backend for CalDAV server.
  *
- * @see http://sabre.io/dav/principals/
  *
  * @since 9.5.0
+ * @see http://sabre.io/dav/principals/
  */
 class Principal extends AbstractBackend
 {

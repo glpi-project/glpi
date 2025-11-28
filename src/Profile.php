@@ -788,8 +788,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      * This is only used for GLPI core rights and not rights added by plugins.
      *
      * @param string $form The tab/form name
-     * @phpstan-param non-empty-string $form
      * @param string $interface The interface name
+     * @phpstan-param non-empty-string $form
      * @phpstan-param 'all'|'central'|'helpdesk' $interface
      * @phpstan-return ($interface is 'all' ? array<string, array<string, array<string, RightDefinition[]>>> : ($form is 'all' ? array<string, array<string, RightDefinition[]>> : ($group is 'all' ? array<string, RightDefinition[]> : RightDefinition[])))
      * @internal BC not guaranteed. Only public so it can be used in tests to ensure search options are made for all rights.
@@ -3139,11 +3139,11 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     /**
      * Make a select box for rights
      *
+     ** @since 0.85
      * @param array $values Array of values to display
      * @param string $name name of the dropdown
      * @param integer $current value in database (sum of rights)
      * @param array$options
-     ** @since 0.85
      */
     public static function dropdownRights(array $values, $name, $current, $options = [])
     {
@@ -3296,8 +3296,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     }
 
     /**
-     * @return array<string, string>
      * @since 0.84
+     * @return array<string, string>
      **/
     public static function getInterfaces(): array
     {
@@ -3337,8 +3337,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     }
 
     /**
-     * @return mixed|string
      * @since 0.84
+     * @return mixed|string
      */
     public static function getHelpdeskHardwareTypeName($value)
     {

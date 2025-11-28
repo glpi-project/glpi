@@ -143,9 +143,9 @@ class Item_OperatingSystem extends CommonDBRelation
     /**
      * Print the item's operating system form
      *
-     * @param CommonDBTM $item Item instance
      *
      * @since 9.2
+     * @param CommonDBTM $item Item instance
      *
      * @return void
      **/

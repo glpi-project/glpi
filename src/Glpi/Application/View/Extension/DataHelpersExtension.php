@@ -268,11 +268,11 @@ class DataHelpersExtension extends AbstractExtension
      * Returned value will be unsanitized if it has been transformed by GLPI sanitizing process (value fetched from DB).
      * Twig autoescaping system will then ensure that value is correctly escaped in rendered HTML.
      *
-     * @param mixed  $string
      *
-     * @return mixed
      *
      * @deprecated 11.0
+     * @param mixed  $string
+     * @return mixed
      */
     public function getVerbatimValue($string)
     {

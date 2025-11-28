@@ -92,9 +92,9 @@ class SlaLevel extends LevelAgreementLevel
     /**
      * Get first level for a SLA
      *
-     * @param integer $slas_id id of the SLA
      *
      * @since 9.1 (before getFirst SlaLevel)
+     * @param integer $slas_id id of the SLA
      *
      * @return integer id of the sla level : 0 if not exists
      **/

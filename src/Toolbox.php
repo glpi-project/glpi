@@ -276,11 +276,11 @@ class Toolbox
     /**
      * Is a string seems to be UTF-8 one ?
      *
-     * @param $str string   string to analyse
      *
-     * @return boolean
      *
      * @deprecated 11.0.0
+     * @param $str string   string to analyse
+     * @return boolean
      **/
     public static function seems_utf8($str)
     {
@@ -405,13 +405,13 @@ class Toolbox
     /**
      * Generate a Backtrace
      *
+     *
+     *
+     * @since 0.85
      * @param string $log  Log file name (default php-errors) if false, return the string
      * @param string $hide Call to hide (but display script/line)
      * @param array  $skip Calls to not display at all
-     *
      * @return string
-     *
-     * @since 0.85
      **/
     public static function backtrace($log = 'php-errors', $hide = '', array $skip = [])
     {
@@ -534,14 +534,14 @@ class Toolbox
     /**
      * Switch error mode for GLPI
      *
+     *
+     *
+     * @since 0.84
      * @param integer|null $mode       From Session::*_MODE
      * @param boolean|null $removed_param No longer used (Used to be $debug_sql)
      * @param boolean|null $removed_param_2 No longer used (Used to be $debug_vars)
      * @param boolean|null $log_in_files
-     *
      * @return void
-     *
-     * @since 0.84
      **/
     public static function setDebugMode($mode = null, $removed_param = null, $removed_param_2 = null, $log_in_files = null)
     {
@@ -670,14 +670,14 @@ class Toolbox
      * Send a file (not a document) to the navigator
      * See Document->send();
      *
+     *
+     *
+     * @deprecated 11.0.0
      * @param string      $file        storage filename
      * @param string      $filename    file title
      * @param string|null $mime        file mime type
      * @param boolean     $expires_headers add expires headers maximize cacheability ?
-     *
      * @return void
-     *
-     * @deprecated 11.0.0
      */
     public static function sendFile($file, $filename, $mime = null, $expires_headers = false)
     {
@@ -690,11 +690,11 @@ class Toolbox
     /**
      *  Add slash for variable & array
      *
-     * @param string|string[] $value value to add slashes
      *
-     * @return string|string[]
      *
      * @deprecated 11.0.0
+     * @param string|string[] $value value to add slashes
+     * @return string|string[]
      **/
     public static function addslashes_deep($value)
     {
@@ -723,11 +723,11 @@ class Toolbox
     /**
      * Strip slash  for variable & array
      *
-     * @param array|string $value  item to stripslashes
      *
-     * @return array|string stripslashes item
      *
      * @deprecated 11.0.0
+     * @param array|string $value  item to stripslashes
+     * @return array|string stripslashes item
      **/
     public static function stripslashes_deep($value)
     {
@@ -2139,16 +2139,16 @@ class Toolbox
     /**
      * Create the GLPI default schema
      *
-     * @param string   $lang     Language to install
-     * @param ?DBmysql $database Database instance to use, will fallback to a new instance of DB if null
      *
-     * @return void
      *
      * @internal
      *
      * @since 9.1
      * @since 9.4.7 Added the `$database` parameter.
      * @since 11.0.0 Added the `$progress_indicator` parameter.
+     * @param string   $lang     Language to install
+     * @param ?DBmysql $database Database instance to use, will fallback to a new instance of DB if null
+     * @return void
      */
     public static function createSchema($lang = 'en_GB', ?DBmysql $database = null, ?AbstractProgressIndicator $progress_indicator = null)
     {
@@ -2318,11 +2318,11 @@ class Toolbox
     /**
      * Prepare array passed on an input form
      *
-     * @param array $value  passed array
      *
-     * @return string  encoded array
      *
      * @since 0.83.91
+     * @param array $value  passed array
+     * @return string  encoded array
      **/
     public static function prepareArrayForInput(array $value)
     {
@@ -2335,11 +2335,11 @@ class Toolbox
     /**
      * Decode array passed on an input form
      *
-     * @param string $value  encoded value
      *
-     * @return array  decoded array
      *
      * @since 0.83.91
+     * @param string $value  encoded value
+     * @return array  decoded array
      **/
     public static function decodeArrayFromInput($value)
     {
@@ -2876,12 +2876,12 @@ class Toolbox
      * Save a picture and return destination filepath.
      * /!\ This method is made to handle uploaded files and removes the source file filesystem.
      *
-     * @param string|null $src          Source path of the picture
-     * @param string      $uniq_prefix  Unique prefix that can be used to improve uniqueness of destination filename
      *
-     * @return boolean|string      Destination filepath, relative to GLPI_PICTURE_DIR, or false on failure
      *
      * @since 9.5.0
+     * @param string|null $src          Source path of the picture
+     * @param string      $uniq_prefix  Unique prefix that can be used to improve uniqueness of destination filename
+     * @return boolean|string      Destination filepath, relative to GLPI_PICTURE_DIR, or false on failure
      */
     public static function savePicture($src, $uniq_prefix = '', $keep_src = false)
     {
@@ -2933,11 +2933,11 @@ class Toolbox
     /**
      * Delete a picture.
      *
-     * @param string $path
      *
-     * @return boolean
      *
      * @since 9.5.0
+     * @param string $path
+     * @return boolean
      */
     public static function deletePicture($path)
     {
@@ -2966,12 +2966,12 @@ class Toolbox
     /**
      * Get picture URL.
      *
-     * @param string $path
-     * @param bool   $full get full path
      *
-     * @return null|string
      *
      * @since 9.5.0
+     * @param string $path
+     * @param bool   $full get full path
+     * @return null|string
      */
     public static function getPictureUrl($path, $full = true)
     {

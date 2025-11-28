@@ -106,13 +106,13 @@ class Migration
     /**
      * Add new message
      *
-     * @since 0.84
      *
-     * @param string $id Area ID
      *
-     * @return void
      *
      * @deprecated 11.0.0
+     * @since 0.84
+     * @param string $id Area ID
+     * @return void
      */
     public function addNewMessageArea($id)
     {
@@ -184,10 +184,10 @@ class Migration
     /**
      * Display a title
      *
-     * @param string $title Title to display
      *
      *
      * @deprecated 11.0.0
+     * @param string $title Title to display
      */
     public function displayTitle($title): void
     {
@@ -201,11 +201,11 @@ class Migration
     /**
      * Display a Warning
      *
-     * @param string  $msg Message to display
-     * @param boolean $red Displays with red class (false by default)
      *
      *
      * @deprecated 11.0.0
+     * @param string  $msg Message to display
+     * @param boolean $red Displays with red class (false by default)
      */
     public function displayWarning($msg, $red = false): void
     {
@@ -217,10 +217,10 @@ class Migration
     /**
      * Display an error
      *
-     * @param string  $message Message to display
      *
      *
      * @deprecated 11.0.0
+     * @param string  $message Message to display
      */
     public function displayError(string $message): void
     {
@@ -1521,14 +1521,14 @@ class Migration
      *  - renaming of foreign key fields corresponding to this itemtype;
      *  - update of "itemtype" column values in all tables.
      *
+     *
+     *
+     * @since 9.5.0
      * @param string  $old_itemtype
      * @param string  $new_itemtype
      * @param boolean $update_structure
      *    Whether to update or not DB structure (itemtype table name and foreign key fields)
-     *
      * @return void
-     *
-     * @since 9.5.0
      */
     public function renameItemtype($old_itemtype, $new_itemtype, $update_structure = true)
     {
@@ -1661,12 +1661,12 @@ class Migration
      * This does not change the actual search option ID. This must still be changed manually in the itemtype's class file.
      * The changes made by this function will only be applied when the migration is finalized through {@link Migration::executeMigration()}.
      *
+     *
+     * @since 9.5.6
      * @param string $itemtype The itemtype
      * @param int    $old_search_opt The old search option ID
      * @param int    $new_search_opt The new search option ID
-     *
      * @return void
-     * @since 9.5.6
      */
     public function changeSearchOption(string $itemtype, int $old_search_opt, int $new_search_opt)
     {
@@ -1701,8 +1701,8 @@ class Migration
     /**
      * Finalize search option migrations
      *
-     * @return void
      * @since 9.5.6
+     * @return void
      */
     private function migrateSearchOptions()
     {

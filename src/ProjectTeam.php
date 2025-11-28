@@ -41,9 +41,9 @@ use Glpi\Team\Team;
 //!  ProjectTeam Class
 /**
  * This class is used to manage the project team
- * @see Project
  * @author Julien Dombre
  * @since 0.85
+ * @see Project
  **/
 class ProjectTeam extends CommonDBRelation
 {
@@ -120,9 +120,9 @@ class ProjectTeam extends CommonDBRelation
      * Add additional data about the individual members to an array of team members for a Project or ProjectTask.
      *
      * The additional information includes data in the specific itemtype's table rather than the ProjectTeam or ProjectTaskTeam tables.
+     * @since 10.0.0
      * @param array $team Team members. The keys should correspond to the Itemtype and each sub-array should have at least the 'id' property.
      * @return array The array of team members with additional information
-     * @since 10.0.0
      */
     public static function expandTeamData(array $team)
     {

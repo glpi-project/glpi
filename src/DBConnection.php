@@ -157,13 +157,13 @@ class DBConnection extends CommonGLPI
     /**
      * Change a variable value in config(s) file.
      *
+     *
+     *
+     * @since 10.0.0
      * @param string $name
      * @param string|bool $value
      * @param bool   $update_slave
-     *
      * @return boolean
-     *
-     * @since 10.0.0
      */
     public static function updateConfigProperty($name, $value, $update_slave = true, string $config_dir = GLPI_CONFIG_DIR): bool
     {
@@ -174,11 +174,11 @@ class DBConnection extends CommonGLPI
     /**
      * Change variables value in config(s) file.
      *
-     * @param bool   $update_slave
      *
-     * @return boolean
      *
      * @since 10.0.0
+     * @param bool   $update_slave
+     * @return boolean
      */
     public static function updateConfigProperties(array $properties, $update_slave = true, string $config_dir = GLPI_CONFIG_DIR): bool
     {
@@ -489,13 +489,13 @@ class DBConnection extends CommonGLPI
     /**
      *  Establish a connection to a mysql server (main or replicate)
      *
+     *
+     *
+     * @since 11.0.0 The `$display` parameter has been removed.
      * @param boolean $use_slave try to connect to slave server first not to main server
      * @param boolean $required  connection to the specified server is required
      *                           (if connection failed, do not try to connect to the other server)
-     *
      * @return boolean True if successfull, false otherwise
-     *
-     * @since 11.0.0 The `$display` parameter has been removed.
      */
     public static function establishDBConnection($use_slave, $required)
     {

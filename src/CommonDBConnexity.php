@@ -144,7 +144,6 @@ abstract class CommonDBConnexity extends CommonDBTM
     /**
      * get associated item (defined by $itemtype and $items_id)
      *
-     * @see CommonDBConnexity::getItemFromArray()
      *
      * @param string  $itemtype          the name of the field of the type of the item to get
      * @param string  $items_id          the name of the field of the id of the item to get
@@ -153,6 +152,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @param boolean $getFromDBOrEmpty  get from DB if possible, else, getEmpty
      *
      * @return CommonDBTM|false the item or false if we cannot load the item
+     * @see CommonDBConnexity::getItemFromArray()
      **/
     public function getConnexityItem(
         $itemtype,
@@ -175,13 +175,13 @@ abstract class CommonDBConnexity extends CommonDBTM
     /**
      * get items associated to the given one (defined by $itemtype and $items_id)
      *
-     * @see CommonDBConnexity::getItemsAssociationRequest()
      * @since 9.5
      *
      * @param string  $itemtype          Itemtype for which we want data
      * @param int     $items_id          the id of the item we want the resulting items to be associated to
      *
      * @return array the items associated to the given one (empty if none was found)
+     * @see CommonDBConnexity::getItemsAssociationRequest()
      **/
     public static function getItemsAssociatedTo($itemtype, $items_id)
     {

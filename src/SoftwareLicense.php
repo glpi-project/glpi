@@ -147,10 +147,10 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
     /**
      * Compute licence validity indicator.
      *
-     * @param integer $ID        ID of the licence
-     * @param integer $number    licence count to check (default -1)
      *
      * @since 0.85
+     * @param integer $ID        ID of the licence
+     * @param integer $number    licence count to check (default -1)
      *
      * @return int validity indicator
      **/
@@ -168,9 +168,9 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
 
     /**
      * Update validity indicator of a specific license
-     * @param integer $ID ID of the licence
      *
      * @since 0.85
+     * @param integer $ID ID of the licence
      *
      * @return void
      **/

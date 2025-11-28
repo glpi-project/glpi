@@ -246,9 +246,9 @@ JAVASCRIPT
     /**
      * Get possibles keys and labels for the definition_time field
      *
-     * @return array<string, string>
      *
      * @since 10.0.0
+     * @return array<string, string>
      */
     public static function getDefinitionTimeValues(): array
     {

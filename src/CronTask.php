@@ -208,11 +208,11 @@ class CronTask extends CommonDBTM
     /**
      * Signal handler callback
      *
-     * @param integer $signo Signal number
      * @since 9.1
-     * @todo Is there an alternative way to handle this? ext-pcntl is not enabled by default in PHP and isn't available on Windows.
+     * @param integer $signo Signal number
      *
      * @return void
+     * @todo Is there an alternative way to handle this? ext-pcntl is not enabled by default in PHP and isn't available on Windows.
      */
     public function signal($signo)
     {
@@ -315,16 +315,16 @@ class CronTask extends CommonDBTM
     /**
      * End a task, timer, stat, log, ...
      *
+     *
+     *
+     * @since 9.5.5 Added parameter $log_state.
      * @param int|null $retcode
      * <ul>
      *    <li>&lt; 0: Need to run again</li>
      *    <li>0: Nothing to do</li>
      *   <li>&gt; 0: Ok</li>
      * </ul>
-     *
      * @return bool : true if ok (not start by another)
-     *
-     * @since 9.5.5 Added parameter $log_state.
      **/
     public function end($retcode, int $log_state = CronTaskLog::STATE_STOP)
     {

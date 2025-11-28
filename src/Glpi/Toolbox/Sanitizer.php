@@ -58,11 +58,11 @@ class Sanitizer
      * and would be printable in a HTML document without having to be escaped.
      * Also, DB special chars can be escaped to prevent SQL injections.
      *
-     * @param mixed $value
      *
-     * @return mixed
      *
      * @deprecated 11.0.0
+     * @param mixed $value
+     * @return mixed
      */
     public static function sanitize($value, bool $db_escape = false)
     {
@@ -99,11 +99,11 @@ class Sanitizer
     /**
      * Unsanitize a value. Reverts self::sanitize() transformation.
      *
-     * @param mixed $value
      *
-     * @return mixed
      *
      * @deprecated 11.0.0
+     * @param mixed $value
+     * @return mixed
      */
     public static function unsanitize($value, bool $db_unescape = true)
     {
@@ -292,9 +292,9 @@ class Sanitizer
      *
      *
      *
-     * @see self::encodeHtmlSpecialChars
      *
      * @deprecated 11.0.0
+     * @see self::encodeHtmlSpecialChars
      */
     public static function encodeHtmlSpecialCharsRecursive(array $values): array
     {
@@ -362,9 +362,9 @@ class Sanitizer
      *
      *
      *
-     * @see self::decodeHtmlSpecialChars
      *
      * @deprecated 11.0.0
+     * @see self::decodeHtmlSpecialChars
      */
     public static function decodeHtmlSpecialCharsRecursive(array $values): array
     {
@@ -410,9 +410,9 @@ class Sanitizer
      *
      *
      *
-     * @see self::dbEscape
      *
      * @deprecated 11.0.0
+     * @see self::dbEscape
      */
     public static function dbEscapeRecursive(array $values): array
     {
@@ -507,9 +507,9 @@ class Sanitizer
      *
      *
      *
-     * @see self::dbUnescape
      *
      * @deprecated 11.0.0
+     * @see self::dbUnescape
      */
     public static function dbUnescapeRecursive(array $values): array
     {

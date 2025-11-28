@@ -75,6 +75,9 @@ class Dropdown
     /**
      * Print out an HTML "<select>" for a dropdown with preselected value
      *
+     *
+     *
+     * @since 9.5.0 Usage of string in condition option is removed
      * @param string $itemtype  itemtype used for create dropdown
      * @param array  $options   array of possible options:
      *    - name                 : string / name of the select (default is depending itemtype)
@@ -111,10 +114,7 @@ class Dropdown
      *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
      *    - readonly             : boolean / return self::getDropdownValue if true (default false)
      *    - parent_id_field      : field used to compute parent id (to filter available values inside the dropdown tree)
-     *
      * @return string|false|integer
-     *
-     * @since 9.5.0 Usage of string in condition option is removed
      **/
     public static function show($itemtype, $options = [])
     {
@@ -511,11 +511,11 @@ class Dropdown
     /**
      * Add new condition
      *
-     * @todo should not use session to pass query parameters...
      *
      * @param array $condition Condition to add
      *
      * @return string
+     * @todo should not use session to pass query parameters...
      */
     public static function addNewCondition(array $condition)
     {
@@ -529,17 +529,17 @@ class Dropdown
      *
      * Returns the value of the dropdown from $table with ID $id.
      *
+     *
+     *
+     * @since 11.0.0 Usage of the `$withcomment` parameter is deprecated.
      * @param string  $table        the dropdown table from witch we want values on the select
      * @param integer $id           id of the element to get
      * @param boolean $withcomment  give array with name and comment (default 0)
      * @param boolean $translate    (true by default)
      * @param boolean $tooltip      (true by default) returns a tooltip, else returns only 'comment'
      * @param string  $default      default value returned when item not exists
-     *
      * @return ($withcomment is true ? array|string : string) the value of the dropdown
      *      The returned `comment` will corresponds to a safe HTML string.
-     *
-     * @since 11.0.0 Usage of the `$withcomment` parameter is deprecated.
      **/
     public static function getDropdownName($table, $id, $withcomment = false, $translate = true, $tooltip = true, string $default = '')
     {
@@ -1588,6 +1588,8 @@ HTML;
      *
      * Print a select named $name with hours options and selected value $value
      *
+     *
+     * @since 0.85 update prototype
      * @param string $name    HTML select name
      * @param array  $options options :
      *     - value              default value (default '')
@@ -1595,8 +1597,6 @@ HTML;
      *     - display   boolean  if false get string
      *     - width              specific width needed (default auto adaptive)
      *     - step               step time (defaut config GLPI)
-     *
-     * @since 0.85 update prototype
      *
      * @return integer|string
      *    integer if option display=true (random part of elements id)
@@ -2766,9 +2766,9 @@ HTML;
     /**
      * show dropdown for output format
      *
-     * @param ?class-string<CommonDBTM> $itemtype
      *
      * @since 0.83
+     * @param ?class-string<CommonDBTM> $itemtype
      *
      * @return void
      */

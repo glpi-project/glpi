@@ -823,10 +823,10 @@ TWIG, $twig_params);
     /**
      * Print the asset selection form used in the impact tab of ITIL objects
      *
-     * @param array $items
-     *    Each array should contains "itemtype", "items_id" and "name".
      *
      * @since 9.5
+     * @param array $items
+     *    Each array should contains "itemtype", "items_id" and "name".
      */
     public static function printAssetSelectionForm(array $items): void
     {
@@ -1317,10 +1317,10 @@ TWIG, $twig_params);
     /**
      * Add a node to the node list if missing
      *
-     * @param array      $nodes  Nodes of the graph
-     * @param CommonDBTM $item   Node to add
      *
      * @since 9.5
+     * @param array      $nodes  Nodes of the graph
+     * @param CommonDBTM $item   Node to add
      *
      * @return bool true if the node was missing, else false
      */
@@ -1429,13 +1429,13 @@ TWIG, $twig_params);
     /**
      * Add an edge to the edge list if missing, else update it's direction
      *
+     *
+     * @since 9.5
      * @param array      $edges      Edges of the graph
      * @param string     $key        ID of the new edge
      * @param CommonDBTM $itemA      One of the node connected to this edge
      * @param CommonDBTM $itemB      The other node connected to this edge
      * @param int        $direction  Direction of the edge : A to B or B to A ?
-     *
-     * @since 9.5
      *
      *
      * @throws InvalidArgumentException

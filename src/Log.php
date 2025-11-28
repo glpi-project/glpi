@@ -924,11 +924,11 @@ class Log extends CommonDBTM
      * Retrieve distinct values for user_name field in item log.
      * Return is made to be used as select tag options.
      *
-     * @param CommonDBTM $item  Object instance
      *
-     * @return array
      *
      * @since 9.3
+     * @param CommonDBTM $item  Object instance
+     * @return array
      **/
     public static function getDistinctUserNamesValuesInItemLog(CommonDBTM $item)
     {
@@ -965,11 +965,11 @@ class Log extends CommonDBTM
      * Retrieve distinct values for affected field in item log.
      * Return is made to be used as select tag options.
      *
-     * @param CommonDBTM $item  Object instance
      *
-     * @return array
      *
      * @since 9.3
+     * @param CommonDBTM $item  Object instance
+     * @return array
      **/
     public static function getDistinctAffectedFieldValuesInItemLog(CommonDBTM $item)
     {
@@ -1139,11 +1139,11 @@ class Log extends CommonDBTM
      * Retrieve distinct values for action in item log.
      * Return is made to be used as select tag options.
      *
-     * @param CommonDBTM $item  Object instance
      *
-     * @return array
      *
      * @since 9.3
+     * @param CommonDBTM $item  Object instance
+     * @return array
      **/
     public static function getDistinctLinkedActionValuesInItemLog(CommonDBTM $item)
     {
@@ -1205,11 +1205,11 @@ class Log extends CommonDBTM
     /**
      * Returns label corresponding to the linked action of a log entry.
      *
-     * @param integer $linked_action  Linked action value of a log entry.
      *
-     * @return string
      *
      * @since 9.3
+     * @param integer $linked_action  Linked action value of a log entry.
+     * @return string
      **/
     public static function getLinkedActionLabel($linked_action)
     {
@@ -1327,16 +1327,16 @@ class Log extends CommonDBTM
     /**
      * Convert filters values into SQL filters usable in 'WHERE' condition of request build with 'DBmysqlIterator'.
      *
+     *
+     *
+     * @since 9.3
      * @param array $filters  Filters values.
      *    Filters values must be passed as indexed array using following rules :
      *     - 'affected_fields' key for values corresponding to values built in 'self::getDistinctAffectedFieldValuesInItemLog()',
      *     - 'date' key for a date value in 'Y-m-d H:i:s' format,
      *     - 'linked_actions' key for values corresponding to values built in 'self::getDistinctLinkedActionValuesInItemLog()',
      *     - 'users_names' key for values corresponding to values built in 'self::getDistinctUserNamesValuesInItemLog()'.
-     *
      * @return array
-     *
-     * @since 9.3
      **/
     public static function convertFiltersValuesToSqlCriteria(array $filters)
     {

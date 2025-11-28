@@ -204,12 +204,12 @@ final class ResourceAccessor
      * @param array $schema The schema
      * @param array $request_params The request parameters
      * @param array $get_route The GET route to use to get the created item. This should be an array containing the controller class and method.
-     * @phpstan-param array{0: class-string<AbstractController>, 1: string} $get_route
      * @param array $extra_get_route_params Additional parameters needed to generate the GET route. This should only be needed for complex routes.
      *      This is used to re-map the parameters to the GET route.
      *      The array can contain an 'id' property which is the name of the parameter that the resulting ID is set to ('id' by default).
      *      The array may also contain a 'mapped' property which is an array of parameter names and static values.
      *      For example ['mapped' => ['subitem_type' => 'Followup']] would set the 'subitem_type' parameter to 'Followup'.
+     * @phpstan-param array{0: class-string<AbstractController>, 1: string} $get_route
      */
     public static function createBySchema(array $schema, array $request_params, array $get_route, array $extra_get_route_params = []): Response
     {

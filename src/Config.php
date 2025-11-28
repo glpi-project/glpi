@@ -710,9 +710,9 @@ class Config extends CommonDBTM
     /**
      * Display security checks on password
      *
-     * @param string $field id of the field containing password to check (default 'password')
      *
      * @since 0.84
+     * @param string $field id of the field containing password to check (default 'password')
      *
      * @return void
      */
@@ -1311,12 +1311,12 @@ class Config extends CommonDBTM
     /**
      * Get config value
      *
-     * @param $context  string   context to get values (default for glpi is core)
-     * @param $name     string   config name
      *
-     * @return mixed
      *
      * @since 10.0.0
+     * @param $context  string   context to get values (default for glpi is core)
+     * @param $name     string   config name
+     * @return mixed
      */
     public static function getConfigurationValue(string $context, string $name)
     {
@@ -1326,9 +1326,9 @@ class Config extends CommonDBTM
     /**
      * Load legacy configuration into $CFG_GLPI global variable.
      *
-     * @return boolean True for success, false if an error occurred
      *
      * @since 10.0.0 Parameter $older_to_latest is no longer used.
+     * @return boolean True for success, false if an error occurred
      */
     public static function loadLegacyConfiguration()
     {
@@ -1795,10 +1795,10 @@ class Config extends CommonDBTM
     /**
      * Get the GLPI Config without unsafe keys like passwords and emails (true on $safer)
      *
-     * @param boolean $safer do we need to clean more (avoid emails disclosure)
-     * @return array of $CFG_GLPI without unsafe keys
      *
      * @since 9.5
+     * @param boolean $safer do we need to clean more (avoid emails disclosure)
+     * @return array of $CFG_GLPI without unsafe keys
      */
     public static function getSafeConfig($safer = false)
     {

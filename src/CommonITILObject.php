@@ -212,9 +212,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     }
 
     /**
-     * @return void
      *
      * @since 0.84
+     * @return void
      **/
     public function loadActors()
     {
@@ -2337,12 +2337,12 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Processes readonly fields in the input array based on the ITIL template data.
      *
-     * @param array $input The user input data to process (often $_POST).
-     * @param bool $isAdd true if we are in a creation, will force to apply the template predefined field.
      *
-     * @return array The modified user input array after processing readonly fields.
      *
      * @since 11.0.2
+     * @param array $input The user input data to process (often $_POST).
+     * @param bool $isAdd true if we are in a creation, will force to apply the template predefined field.
+     * @return array The modified user input array after processing readonly fields.
      */
     public function enforceReadonlyFields(array $input, bool $isAdd = false): array
     {
@@ -3201,11 +3201,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     }
 
     /**
-     * @see Clonable::post_clone
      *
      * @param CommonDBTM $source
      * @param mixed $history Not used
      * @return void
+     * @see Clonable::post_clone
      */
     public function post_clone($source, $history)
     {
@@ -4042,9 +4042,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * get field part name corresponding to actor type
      *
-     * @param integer $type user type
      *
      * @since 0.84.6
+     * @param integer $type user type
      *
      * @return string|boolean Field part or false if not applicable
      **/
@@ -4311,9 +4311,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
 
     /**
-     * @return array
      *
      * @since 0.85
+     * @return array
      **/
     public function getSearchOptionsMain()
     {
@@ -4620,9 +4620,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
 
     /**
-     * @return array
      *
      * @since 0.85
+     * @return array
      **/
     public function getSearchOptionsSolution()
     {
@@ -5156,10 +5156,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Get status icon
      *
-     * @param int $status
-     * @return string
      *
      * @since 9.3
+     * @param int $status
+     * @return string
      */
     public static function getStatusIcon($status)
     {
@@ -5171,10 +5171,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Get CSS status class
      *
-     * @param int $status
-     * @return string
      *
      * @since 9.3
+     * @param int $status
+     * @return string
      */
     public static function getStatusClass($status)
     {
@@ -5197,10 +5197,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Get status key
      *
-     * @param int $status
-     * @return string
      *
      * @since 9.3
+     * @param int $status
+     * @return string
      */
     public static function getStatusKey($status)
     {
@@ -6534,14 +6534,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 0.85 (before in each object with different parameters)
      *
+     *
+     * @since 10.0.0 "followups" option has been dropped
      * @param integer $id              ID of the object
      * @param array $options           array of options
      *      row_num                : row num used for display
      *      type_for_massiveaction : itemtype for massive action
      *      id_for_massaction      : default 0 means no massive action
      * @return void
-     *
-     * @since 10.0.0 "followups" option has been dropped
      */
     public static function showShort($id, $options = [])
     {
@@ -7267,9 +7267,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Get correct Calendar: Entity or Sla
      *
-     * @return int|mixed
      *
      * @since 0.90.4
+     * @return int|mixed
      **/
     public function getCalendar()
     {
@@ -7286,12 +7286,12 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * Summary of getTimelinePosition
      * Returns the position of the $sub_type for the $user_id in the timeline
      *
+     *
+     * @since 9.2
      * @param int $items_id is the id of the ITIL object
      * @param string $sub_type is ITILFollowup, Document_Item, TicketTask, TicketValidation or Solution
      * @param int $users_id
      * @return int
-     *
-     * @since 9.2
      */
     public static function getTimelinePosition($items_id, $sub_type, $users_id)
     {
@@ -7483,6 +7483,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Retrieves all timeline items for this ITILObject
      *
+     * @since 9.4.0
      * @param array $options Possible options:
      * - with_documents     : include documents elements
      * - with_logs          : include log entries
@@ -7490,7 +7491,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * - sort_by_date_desc  : sort timeline items by date
      * - check_view_rights  : indicates whether current session rights should be checked for view rights
      * - hide_private_items : force hiding private items (followup/tasks), even if session allow it
-     * @since 9.4.0
      *
      * @return mixed[] Timeline items
      */
@@ -8196,15 +8196,15 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * Use force_template first, then try on template define for type and category
      * then use default template of active profile of connected user and then use default entity one
      *
+     *
+     *
+     * @since 9.5.0
      * @param integer      $force_template     itiltemplate_id to use (case of preview for example)
      * @param integer|null $type               type of the ticket
      *                                         (use Ticket::INCIDENT_TYPE or Ticket::DEMAND_TYPE constants value)
      * @param integer      $itilcategories_id  ticket category
      * @param integer      $entities_id
-     *
      * @return ITILTemplate
-     *
-     * @since 9.5.0
      **/
     public function getITILTemplateToUse(
         $force_template = 0,
@@ -10810,8 +10810,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Displays the current satisfaction survey for the given item or a message stating there is no survey.
      *
-     * @param CommonITILObject $item The ITIL Object
      * @since 11.0.0
+     * @param CommonITILObject $item The ITIL Object
      */
     final protected static function showSatisfactionTabContent(CommonITILObject $item): void
     {

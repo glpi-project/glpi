@@ -91,9 +91,9 @@ class OlaLevel extends LevelAgreementLevel
     /**
      * Get first level for a OLA
      *
-     * @param integer $olas_id id of the OLA
      *
      * @since 9.1 (before getFirst OlaLevel)
+     * @param integer $olas_id id of the OLA
      *
      * @return integer id of the ola level : 0 if not exists
      **/

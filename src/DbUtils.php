@@ -1390,18 +1390,18 @@ final class DbUtils
     /**
      * Get completename of a Dropdown Tree table
      *
+     *
+     *
+     *
+     * @since 11.0.0 Usage of the `$withcomment` parameter is deprecated.
      * @param string  $table       Dropdown Tree table
      * @param int     $ID          ID of the element
      * @param bool    $withcomment whether to get the array with the comments
      * @param bool    $translate   whether to get translated values
      * @param bool    $tooltip     whether to get a tooltip for additional comments
      * @param string  $default     default value returned when item not exists
-     *
      * @return ($withcomment is true ? array{name: string, comment: string} : string)
-     *
      * @see DbUtils::getTreeLeafValueName
-     *
-     * @since 11.0.0 Usage of the `$withcomment` parameter is deprecated.
      */
     public function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate = true, $tooltip = true, string $default = '&nbsp;')
     {
@@ -1661,6 +1661,10 @@ final class DbUtils
     /**
      * Format a user name.
      *
+     *
+     *
+     * @since 11.0 `$link` parameter is deprecated
+     * @since 11.0 `$cut` parameter is ignored
      * @param integer       $ID           ID of the user.
      * @param string|null   $login        login of the user
      * @param string|null   $realname     realname of the user
@@ -1668,11 +1672,7 @@ final class DbUtils
      * @param integer       $link         include link
      * @param integer       $cut          IGNORED PARAMETER
      * @param boolean       $force_config force order and id_visible to use common config
-     *
      * @return string
-     *
-     * @since 11.0 `$link` parameter is deprecated
-     * @since 11.0 `$cut` parameter is ignored
      */
     public function formatUserName($ID, $login, $realname, $firstname, $link = 0, $cut = 0, $force_config = false)
     {
@@ -1757,16 +1757,16 @@ final class DbUtils
     /**
      * Get name of the user with the given ID.
      *
+     *
+     *
+     * @since 11.0 `$link` parameter is deprecated.
      * @param int       $ID
      * @param int<0, 2> $link
      *      0 = No link
      *      1 = Show link to user.form.php
      *      2 = return array with comments and link
      * @param bool      $disable_anon   disable anonymization of username
-     *
      * @return ($link is 2 ? array{name: string, link: string, comment: string} : string)
-     *
-     * @since 11.0 `$link` parameter is deprecated.
      */
     public function getUserName($ID, $link = 0, $disable_anon = false)
     {

@@ -141,9 +141,9 @@ class Document_Item extends CommonDBRelation
      * Check if relation already exists.
      *
      *
-     * @return boolean
      *
      * @since 9.5.0
+     * @return boolean
      */
     public function alreadyExists(array $input): bool
     {

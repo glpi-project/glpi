@@ -1178,12 +1178,12 @@ class Plugin extends CommonDBTM
     /**
      * Install a plugin
      *
-     * @param integer $ID      ID of the plugin (The `id` field, not directory)
-     * @param array   $params  Additional params to pass to install hook.
      *
-     * @return void
      *
      * @since 9.5.0 Added $param parameter
+     * @param integer $ID      ID of the plugin (The `id` field, not directory)
+     * @param array   $params  Additional params to pass to install hook.
+     * @return void
      **/
     public function install($ID, array $params = [])
     {
@@ -1918,10 +1918,10 @@ class Plugin extends CommonDBTM
     /**
      * Get information from a plugin
      *
-     * @param string $plugin System name (Plugin directory)
-     * @param string $info   Wanted info (name, version, ...), NULL for all
      *
      * @since 0.84
+     * @param string $plugin System name (Plugin directory)
+     * @param string $info   Wanted info (name, version, ...), NULL for all
      *
      * @return string|array The specific information value requested or an array of all information if $info is null.
      **/
@@ -2187,11 +2187,11 @@ class Plugin extends CommonDBTM
     /**
      * Get an internationalized message for incompatible plugins (either core or php version)
      *
+     *
+     * @since 9.2
      * @param string $type Either 'php' or 'core', defaults to 'core'
      * @param string $min  Minimal required version
      * @param string $max  Maximal required version
-     *
-     * @since 9.2
      *
      * @return string
      */
@@ -2223,14 +2223,14 @@ class Plugin extends CommonDBTM
     /**
      * Get an internationalized message for missing requirement (extension, other plugin, ...)
      *
+     *
+     * @since 9.2
      * @param string $type Type of what is missing, one of:
      *                     - ext (PHP module)
      *                     - plugin (other plugin)
      *                     - compil (compilation option)
      *                     - param (GLPI configuration parameter)
      * @param string $name Missing name
-     *
-     * @since 9.2
      *
      * @return string
      */
@@ -3094,15 +3094,15 @@ class Plugin extends CommonDBTM
     /**
      * Return the web path for a given plugin key
      *
-     * @since 9.5
      *
+     *
+     *
+     * @deprecated 11.0
+     * @since 9.5
      * @param string $plugin_key plugin system key
      * @param bool $full if true, append root_doc from config
      * @param bool $use_url_base if true, url_base instead root_doc
-     *
      * @return false|string the web path
-     *
-     * @deprecated 11.0
      */
     public static function getWebDir(string $plugin_key = "", $full = true, $use_url_base = false)
     {

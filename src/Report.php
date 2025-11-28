@@ -703,10 +703,10 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
     /**
      * Show network report
      *
-     * @param 'Location'|'NetworkEquioment'|'Glpi\Socket'|null $by_itemtype
      *
      *
      * @since 10.0.0
+     * @param 'Location'|'NetworkEquioment'|'Glpi\Socket'|null $by_itemtype
      **/
     public static function showNetworkReport(?string $by_itemtype, int $by_items_id): void
     {

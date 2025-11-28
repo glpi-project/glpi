@@ -610,8 +610,8 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
     /**
      * @since 0.85
      *
-     * @see CommonDBTM::processMassiveActionsForOneItemtype()
      * @return void
+     * @see CommonDBTM::processMassiveActionsForOneItemtype()
      */
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,

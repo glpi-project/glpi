@@ -332,9 +332,9 @@ class ITILCategory extends CommonTreeDropdown
     }
 
     /**
+     * @since 9.5.0
      * @param string $value
      * @return int
-     * @since 9.5.0
      *
      */
     public static function getITILCategoryIDByCode($value)

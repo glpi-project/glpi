@@ -183,10 +183,10 @@ trait Clonable
      * The default implementation handles specific cases when the class uses the following trait(s):
      * - {@link AssignableItem}
      *
-     * @param array $input datas used to add the item
      *
-     * @return array the modified $input array
      * @since 10.0.0
+     * @param array $input datas used to add the item
+     * @return array the modified $input array
      *
      */
     public function prepareInputForClone($input)

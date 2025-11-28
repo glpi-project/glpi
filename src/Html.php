@@ -86,11 +86,11 @@ class Html
     /**
      * Recursivly execute html_entity_decode on an array
      *
-     * @param string|array $value
      *
-     * @return string|array
      *
      * @deprecated 11.0.0
+     * @param string|array $value
+     * @return string|array
      **/
     public static function entity_decode_deep($value)
     {
@@ -109,11 +109,11 @@ class Html
     /**
      * Recursivly execute htmlentities on an array
      *
-     * @param string|array $value
      *
-     * @return string|array
      *
      * @deprecated 11.0.0
+     * @param string|array $value
+     * @return string|array
      **/
     public static function entities_deep($value)
     {
@@ -197,11 +197,11 @@ class Html
     /**
      * Clean string for input text field
      *
-     * @param string $string
      *
-     * @return string
      *
      * @deprecated 11.0.0
+     * @param string $string
+     * @return string
      **/
     public static function cleanInputText($string)
     {
@@ -249,11 +249,11 @@ class Html
     /**
      * Clean post value for display in textarea
      *
-     * @param string $value
      *
-     * @return string
      *
      * @deprecated 11.0.0
+     * @param string $value
+     * @return string
      **/
     public static function cleanPostForTextArea($value)
     {
@@ -461,9 +461,9 @@ class Html
     /**
      * Display common message for item not found
      *
-     * @return void
      *
      * @deprecated 11.0.0
+     * @return void
      */
     public static function displayNotFoundError(string $additional_info = '')
     {
@@ -476,9 +476,9 @@ class Html
     /**
      * Display common message for privileges errors
      *
-     * @return void
      *
      * @deprecated 11.0.0
+     * @return void
      */
     public static function displayRightError(string $additional_info = '')
     {
@@ -563,11 +563,11 @@ class Html
     /**
      * Display Debug Information
      *
+     *
+     * @deprecated 10.0.0
      * @param boolean $with_session with session information (true by default)
      * @param boolean $ajax         If we're called from ajax (false by default)
-     *
      * @return void
-     * @deprecated 10.0.0
      **/
     public static function displayDebugInfos($with_session = true, $ajax = false, $rand = null)
     {
@@ -647,11 +647,11 @@ class Html
     /**
      * Simple Error message page
      *
-     * @param string  $message  displayed before dying
-     * @param boolean $minimal  set to true do not display app menu (false by default)
      *
      *
      * @deprecated 11.0.0
+     * @param string  $message  displayed before dying
+     * @param boolean $minimal  set to true do not display app menu (false by default)
      */
     public static function displayErrorAndDie($message, $minimal = false): void
     {
@@ -721,18 +721,18 @@ class Html
     /**
      * Manage progresse bars
      *
-     * @since 0.85
      *
+     *
+     *
+     *
+     * @deprecated 11.0.0
+     * @since 0.85
      * @param string $id HTML ID of the progress bar
      * @param array $options progress status options
      *                    - create    do we have to create it ?
      *                    - message   add or change the message (HTML allowed. Text content must be escaped)
      *                    - percent   current level (Must be cast to a numeric type)
-     *
-     *
      * @return string|void Generated HTML if `display` param is true, void otherwise.
-     *
-     * @deprecated 11.0.0
      */
     public static function progressBar($id, array $options = [])
     {
@@ -838,12 +838,12 @@ class Html
     /**
      * Create a Dynamic Progress Bar
      *
-     * @param string $msg  initial message (under the bar)
-     * @param array  $options See {@link Html::progressBar()} for available options (excluding message)
      *
-     * @return string|void
      *
      * @deprecated 11.0.0
+     * @param string $msg  initial message (under the bar)
+     * @param array  $options See {@link Html::progressBar()} for available options (excluding message)
+     * @return string|void
      */
     public static function createProgressBar($msg = null, array $options = [])
     {
@@ -868,11 +868,11 @@ class Html
     /**
      * Change the Message under the Progress Bar
      *
-     * @param string $msg message under the bar
      *
-     * @return void
      *
      * @deprecated 11.0.0
+     * @param string $msg message under the bar
+     * @return void
      */
     public static function changeProgressBarMessage($msg = "&nbsp;")
     {
@@ -889,13 +889,13 @@ class Html
     /**
      * Change the Progress Bar Position
      *
+     *
+     *
+     * @deprecated 11.0.0
      * @param float  $crt   Current Value (less then $tot)
      * @param float  $tot   Maximum Value
      * @param string $msg   message inside the bar (default is %)
-     *
      * @return void
-     *
-     * @deprecated 11.0.0
      */
     public static function changeProgressBarPosition($crt, $tot, $msg = "")
     {
@@ -926,16 +926,16 @@ class Html
     /**
      * Display a simple progress bar
      *
+     *
+     *
+     * @deprecated 11.0.0
      * @param integer $width       Width   of the progress bar
      * @param float   $percent     Percent of the progress bar
      * @param array   $options     possible options:
      *            - title : string title to display (default Progesssion)
      *            - simple : display a simple progress bar (no title / only percent)
      *            - forcepadding : boolean force str_pad to force refresh (default true)
-     *
      * @return void
-     *
-     * @deprecated 11.0.0
      */
     public static function displayProgressBar($width, $percent, $options = [])
     {
@@ -2056,11 +2056,11 @@ TWIG,
     /**
      * Flushes the system write buffers of PHP and whatever backend PHP is using (CGI, a web server, etc).
      * This attempts to push current output all the way to the browser with a few caveats.
-     * @see https://www.sitepoint.com/php-streaming-output-buffering-explained/
      *
      * @deprecated 11.0.0
      *
      * @return void
+     * @see https://www.sitepoint.com/php-streaming-output-buffering-explained/
      */
     public static function glpi_flush()
     {
@@ -2267,12 +2267,12 @@ TWIG,
 
     /**
      * @brief display a checkbox that $_POST 0 or 1 depending on if it is checked or not.
-     * @see Html::getCheckbox()
      *
      * @since 0.85
      *
      *
      * @return void
+     * @see Html::getCheckbox()
      **/
     public static function showCheckbox(array $options = [])
     {
@@ -2374,7 +2374,6 @@ TWIG,
      * @since 0.84 (before Search::displayMassiveActions)
      * @since 0.85 only 1 parameter (in 0.84 $itemtype required)
      *
-     * @todo replace 'hidden' by data-glpicore-ma-tags ?
      *
      * @param array $options  Array of parameters
      * must contains :
@@ -2402,6 +2401,7 @@ TWIG,
      *    - display          : display or return the generated html (default true)
      *
      * @return bool|string     the html if display parameter is false, or true
+     * @todo replace 'hidden' by data-glpicore-ma-tags ?
      **/
     public static function showMassiveActions($options = [])
     {
@@ -3782,11 +3782,11 @@ JS;
     /**
      * Activate autocompletion for user templates in rich text editor.
      *
-     * @param string $selector Selector of the textarea to activate autocompletion for
-     * @param array  $values   Array of values to use for autocompletion
      *
      *
      * @since 10.0.0
+     * @param string $selector Selector of the textarea to activate autocompletion for
+     * @param array  $values   Array of values to use for autocompletion
      */
     public static function activateUserTemplateAutocompletion(string $selector, array $values): void
     {
@@ -4225,11 +4225,11 @@ JAVASCRIPT
     /**
      * Create a title for list, as  "List (5 on 35)"
      *
+     *
+     * @since 0.83.1
      * @param string $string Text for title
      * @param integer $num   Number of item displayed
      * @param integer $tot   Number of item existing
-     *
-     * @since 0.83.1
      *
      * @return string
      **/
@@ -4251,6 +4251,8 @@ JAVASCRIPT
     /**
      * create a minimal form for simple action
      *
+     *
+     * @since 0.84
      * @param string       $action   URL to call on submit
      * @param string|array $btname   Button name (maybe if name <> value)
      * @param string       $btlabel  Button label
@@ -4260,8 +4262,6 @@ JAVASCRIPT
      *                           a FontAwesone/Tabler icon rather than an image.
      * @param string       $btoption Optional button option        (default '')
      * @param string|array $confirm  Optional confirm message      (default '')
-     *
-     * @since 0.84
      *
      * @return string
      */
@@ -4328,6 +4328,8 @@ JAVASCRIPT
     /**
      * create a minimal form for simple action
      *
+     *
+     * @since 0.83.3
      * @param string       $action   URL to call on submit
      * @param string       $btname   Button name
      * @param string       $btlabel  Button label
@@ -4335,8 +4337,6 @@ JAVASCRIPT
      * @param string       $btimage  Button image uri (optional) (default '')
      * @param string       $btoption Optional button option (default '')
      * @param string|array $confirm  Optional confirm message (default '')
-     *
-     * @since 0.83.3
      *
      * @return void
      */
@@ -4357,9 +4357,9 @@ JAVASCRIPT
     /**
      * Create a close form part including CSRF token
      *
-     * @param boolean $display Display or return string (default true)
      *
      * @since 0.83.
+     * @param boolean $display Display or return string (default true)
      *
      * @return string|true
      * @phpstan-return ($display is true ? true : string)
@@ -4379,9 +4379,9 @@ JAVASCRIPT
     /**
      * Clean ID used for HTML elements
      *
-     * @param string $id ID of the dom element
      *
      * @since 0.85.
+     * @param string $id ID of the dom element
      *
      * @return string
      **/
@@ -4393,13 +4393,13 @@ JAVASCRIPT
     /**
      * Get javascript code to get item by id
      *
-     * @param string $id ID of the dom element
      *
-     * @since 0.85.
      *
-     * @return string
      *
      * @deprecated 11.0.0
+     * @since 0.85.
+     * @param string $id ID of the dom element
+     * @return string
      **/
     public static function jsGetElementbyID($id)
     {
@@ -4413,14 +4413,14 @@ JAVASCRIPT
     /**
      * Set dropdown value
      *
-     * @param string $id      ID of the dom element
-     * @param string $value   Value to set
      *
-     * @since 0.85.
      *
-     * @return string
      *
      * @deprecated 11.0.0
+     * @since 0.85.
+     * @param string $id      ID of the dom element
+     * @param string $value   Value to set
+     * @return string
      **/
     public static function jsSetDropdownValue($id, $value)
     {
@@ -4434,13 +4434,13 @@ JAVASCRIPT
     /**
      * Get item value
      *
-     * @param string $id  ID of the dom element
      *
-     * @since 0.85.
      *
-     * @return string
      *
      * @deprecated 11.0.0
+     * @since 0.85.
+     * @param string $id  ID of the dom element
+     * @return string
      **/
     public static function jsGetDropdownValue($id)
     {
@@ -4453,10 +4453,10 @@ JAVASCRIPT
     /**
      * Adapt dropdown to clean JS
      *
-     * @param string $id     ID of the dom element
-     * @param array $params  Array of parameters
      *
      * @since 0.85.
+     * @param string $id     ID of the dom element
+     * @param array $params  Array of parameters
      *
      * @return string
      *
@@ -4509,6 +4509,8 @@ JS;
     /**
      * Create Ajax dropdown to clean JS
      *
+     *
+     * @since 0.85.
      * @param string $name
      * @param string $field_id  ID of the dom element
      * @param string $url       URL to get datas
@@ -4520,8 +4522,6 @@ JS;
      *                if multiple select
      *                   - 'values'      : default values selected
      *                   - 'valuesnames' : default names of selected values
-     *
-     * @since 0.85.
      *
      * @return string
      *
@@ -5181,12 +5181,12 @@ HTML;
      *
      * @since 9.4
      *
-     * @param string  $url      File to include (relative to GLPI_ROOT)
-     * @param array   $options  Array of HTML attributes
      *
-     * @return string CSS link tag
      *
      * @since 11.0.0 The `$no_debug` parameter has bbeen removed.
+     * @param string  $url      File to include (relative to GLPI_ROOT)
+     * @param array   $options  Array of HTML attributes
+     * @return string CSS link tag
      **/
     public static function scss($url, $options = [])
     {
@@ -5528,7 +5528,6 @@ HTML;
 
     /**
      * Display uploaded files area
-     * @see displayUploadedFile() in fileupload.js
      *
      * @param array $options  Array of options
      *    - name                string   field name (default filename)
@@ -5537,6 +5536,7 @@ HTML;
      *    - display             bool     display or return the generated html
      *    - uploads             array    uploads to display (done in a previous form submit)
      * @return string|true   The html if display parameter is false
+     * @see displayUploadedFile() in fileupload.js
      */
     private static function uploadedFiles($options = [])
     {
@@ -5720,16 +5720,16 @@ HTML;
     /**
      * This function provides a mechanism to send HTML form by ajax
      *
+     *
+     *
+     * @since 9.1
      * @param string $selector selector of a HTML form
      * @param string $success  JavaScript code of the success callback
      * @param string $error    JavaScript code of the error callback
      * @param string $complete JavaScript code of the complete callback
      *
-     * @see https://api.jquery.com/jQuery.ajax/
-     *
-     * @since 9.1
-     *
      * @return void
+     * @see https://api.jquery.com/jQuery.ajax/
      */
     public static function ajaxForm($selector, $success = "console.log(html);", $error = "console.error(html)", $complete = '')
     {
@@ -5892,15 +5892,15 @@ JS);
     /**
      * Get image html tag for image document.
      *
+     *
+     *
+     * @since 9.4.3
      * @param int    $document_id  identifier of the document
      * @param int    $width        width of the final image
      * @param int    $height       height of the final image
      * @param bool   $addLink      boolean, do we need to add an anchor link
      * @param string $more_link    append to the link (ex &test=true)
-     *
      * @return string
-     *
-     * @since 9.4.3
      */
     public static function getImageHtmlTagForDocument($document_id, $width, $height, $addLink = true, $more_link = "")
     {
@@ -6191,9 +6191,9 @@ JS);
      * transfer some var of php to javascript
      * (warning, don't expose all keys of $CFG_GLPI, some shouldn't be available client side)
      *
-     * @param bool $full if false, don't expose all variables from CFG_GLPI (only url_base & root_doc)
      *
      * @since 9.5
+     * @param bool $full if false, don't expose all variables from CFG_GLPI (only url_base & root_doc)
      * @return string
      */
     public static function getCoreVariablesForJavascript(bool $full = false)
@@ -6301,8 +6301,8 @@ JS);
 
     /**
      * Get all options for the menu fuzzy search
-     * @phpstan-return array<array{url: string, title: string}>
      * @since 11.0.0
+     * @phpstan-return array<array{url: string, title: string}>
      */
     public static function getMenuFuzzySearchList(): array
     {
@@ -6678,10 +6678,10 @@ CSS;
     /**
      * Return a relative for the given timestamp
      *
-     * @param mixed $ts
-     * @return string
      *
      * @since 10.0.0
+     * @param mixed $ts
+     * @return string
      */
     public static function timestampToRelativeStr($ts)
     {

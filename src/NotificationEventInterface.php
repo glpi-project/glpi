@@ -38,6 +38,9 @@ interface NotificationEventInterface
     /**
      * Raise a notification event
      *
+     *
+     *
+     * @since 11.0.0 Param `$trigger` has been added.
      * @param string               $event              Event
      * @param CommonGLPI           $item               Notification data
      * @param array                $options            Options
@@ -52,10 +55,7 @@ interface NotificationEventInterface
      *                                                 triggered the event so it can be used instead of
      *                                                 getLoginUserID
      * @param CommonDBTM|null      $trigger            Item that raises the notification (in case notification was raised by a child item).
-     *
      * @return void
-     *
-     * @since 11.0.0 Param `$trigger` has been added.
      */
     public static function raise(
         $event,

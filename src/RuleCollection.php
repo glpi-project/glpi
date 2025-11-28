@@ -988,9 +988,9 @@ TWIG, $twig_params);
     /**
      * Export rules in XML format
      *
-     * @param array $items the input data to transform to XML
      *
      * @since 0.85
+     * @param array $items the input data to transform to XML
      *
      * @return void send attachment to browser
      **/
@@ -1565,12 +1565,12 @@ TWIG, $twig_params);
     /**
      * Show form displaying results for rule collection preview
      *
-     * @param array   $values    array of data
-     * @param integer $condition condition to limit rules (default 0)
      *
-     * @return array
      *
      * @since 11.0.0 The `$target` parameter has been removed.
+     * @param array   $values    array of data
+     * @param integer $condition condition to limit rules (default 0)
+     * @return array
      */
     public function showRulesEnginePreviewCriteriasForm(array $values, $condition = 0)
     {
@@ -1761,12 +1761,12 @@ TWIG, $twig_params);
     /**
      * Show form displaying results for rule engine preview
      *
-     * @param array   $input     array of data
-     * @param integer $condition condition to limit rules (DEFAULT 0)
      *
-     * @return void
      *
      * @since 11.0.0 The `$target` parameter has been removed.
+     * @param array   $input     array of data
+     * @param integer $condition condition to limit rules (DEFAULT 0)
+     * @return void
      */
     public function showRulesEnginePreviewResultsForm(array $input, $condition = 0)
     {

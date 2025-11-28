@@ -81,43 +81,43 @@ class AuthLDAP extends CommonDBTM
 
     /**
      * Deleted user strategy: preserve user.
-     * @var int
      * @deprecated
+     * @var int
      */
     public const DELETED_USER_PRESERVE = 0;
 
     /**
      * Deleted user strategy: put user in trashbin.
-     * @var int
      * @deprecated
+     * @var int
      */
     public const DELETED_USER_DELETE = 1;
 
     /**
      * Deleted user strategy: withdraw dynamic authorizations and groups.
-     * @var int
      * @deprecated
+     * @var int
      */
     public const DELETED_USER_WITHDRAWDYNINFO = 2;
 
     /**
      * Deleted user strategy: disable user.
-     * @var int
      * @deprecated
+     * @var int
      */
     public const DELETED_USER_DISABLE = 3;
 
     /**
      * Deleted user strategy: disable user and withdraw dynamic authorizations and groups.
-     * @var int
      * @deprecated
+     * @var int
      */
     public const DELETED_USER_DISABLEANDWITHDRAWDYNINFO = 4;
 
     /**
      * Deleted user strategy: disable user and withdraw groups.
-     * @var int
      * @deprecated
+     * @var int
      */
     public const DELETED_USER_DISABLEANDDELETEGROUPS = 5;
 
@@ -138,29 +138,29 @@ class AuthLDAP extends CommonDBTM
 
     /**
      * Restored user strategy: Make no change to GLPI user
-     * @var integer
      * @since 10.0.0
+     * @var integer
      */
     public const RESTORED_USER_PRESERVE = 0;
 
     /**
      * Restored user strategy: Restore user from trash
-     * @var integer
      * @since 10.0.0
+     * @var integer
      */
     public const RESTORED_USER_RESTORE = 1;
 
     /**
      * Restored user strategy: Re-enable user
-     * @var integer
      * @since 10.0.0
+     * @var integer
      */
     public const RESTORED_USER_ENABLE  = 3;
 
     /**
      * List of TLS versions
-     * @var array
      * @since 11.0.0
+     * @var array
      */
     public const TLS_VERSIONS = [
         '1.0' => '1.0',
@@ -2111,15 +2111,15 @@ TWIG, $twig_params);
     /**
      * Show LDAP groups to add or synchronize in an entity
      *
+     *
+     *
+     * @since 11.0.0 The `$target` and the `$order` parameters have been removed.
      * @param integer $start   where to start the list
      * @param integer $sync    synchronize or add? (default 0)
      * @param string  $filter  ldap filter to use (default '')
      * @param string  $filter2 second ldap filter to use (which case?) (default '')
      * @param integer $entity  working entity
-     *
      * @return void
-     *
-     * @since 11.0.0 The `$target` and the `$order` parameters have been removed.
      */
     public static function showLdapGroups(
         $start,
@@ -2252,15 +2252,15 @@ TWIG, $twig_params);
      *
      * @since 0.84 new parameter $limitexceeded
      *
+     *
+     *
+     * @since 11.0.0 $order parameter has been removed.
      * @param integer $auths_id      ID of the server to use
      * @param string  $filter        ldap filter to use
      * @param string  $filter2       second ldap filter to use if needed
      * @param int     $entity        entity to search
      * @param boolean $limitexceeded is limit exceeded
-     *
      * @return array of the groups
-     *
-     * @since 11.0.0 $order parameter has been removed.
      */
     public static function getAllGroups(
         $auths_id,

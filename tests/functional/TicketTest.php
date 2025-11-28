@@ -2060,8 +2060,8 @@ class TicketTest extends DbTestCase
     }
 
     /**
-     * @return void
      * @deprecated 11.0.0 - Use changeTechRights() instead
+     * @return void
      */
     public function changeTechRight($rights = 168967)
     {

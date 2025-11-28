@@ -321,9 +321,9 @@ class UserEmail extends CommonDBChild
     /**
      * @since 0.84
      *
-     * @see CommonDBTM::getNameField
      *
      * @return string
+     * @see CommonDBTM::getNameField
      **/
     public static function getNameField()
     {

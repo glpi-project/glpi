@@ -161,11 +161,11 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
     /**
      * Count cartridge of the cartridge type
      *
-     * @param integer $id Item id
      *
-     * @return number of cartridges
      *
      * @since 9.2 add $id parameter
+     * @param integer $id Item id
+     * @return number of cartridges
      **/
     public static function getCount($id)
     {

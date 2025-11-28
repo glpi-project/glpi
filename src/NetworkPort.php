@@ -382,9 +382,9 @@ class NetworkPort extends CommonDBChild
      *
      * @param bool $history
      *
-     * @see splitInputForElements() for preparing the input
      *
      * @return void
+     * @see splitInputForElements() for preparing the input
      **/
     public function updateDependencies($history = true)
     {

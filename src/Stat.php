@@ -424,6 +424,8 @@ class Stat extends CommonGLPI
     }
 
     /**
+     *
+     * @since 0.85 (before show with same parameters)
      * @param class-string<CommonITILObject> $itemtype
      * @param string $type
      * @param string $date1
@@ -431,8 +433,6 @@ class Stat extends CommonGLPI
      * @param integer $start
      * @param int|string $value2
      * @return void
-     *
-     * @since 0.85 (before show with same parameters)
      **/
     public static function showTable($itemtype, $type, $date1, $date2, $start, array $value, $value2 = '')
     {

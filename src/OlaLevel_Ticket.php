@@ -50,10 +50,10 @@ class OlaLevel_Ticket extends CommonDBTM
     /**
      * Retrieve an item from the database
      *
-     * @param integer $ID        ID of the item to get
-     * @param SLM::TTR|SLM::TTO $olaType
      *
      * @since 9.1 2 mandatory parameters
+     * @param integer $ID        ID of the item to get
+     * @param SLM::TTR|SLM::TTO $olaType
      *
      * @return boolean
      **/
@@ -94,10 +94,10 @@ class OlaLevel_Ticket extends CommonDBTM
     /**
      * Delete entries for a ticket
      *
-     * @param int               $tickets_id Ticket ID
-     * @param SLM::TTR|SLM::TTO $olaType    Type of OLA
      *
      * @since 9.1 2 parameters mandatory
+     * @param int               $tickets_id Ticket ID
+     * @param SLM::TTR|SLM::TTO $olaType    Type of OLA
      *
      * @return void
      **/
@@ -202,10 +202,10 @@ class OlaLevel_Ticket extends CommonDBTM
     /**
      * Do a specific OLAlevel for a ticket
      *
-     * @param array $data data of an entry of olalevels_tickets
-     * @param SLM::TTR|SLM::TTO $olaType Type of OLA
      *
      * @since 9.1   2 parameters mandatory
+     * @param array $data data of an entry of olalevels_tickets
+     * @param SLM::TTR|SLM::TTO $olaType Type of OLA
      *
      * @return void
      **/
@@ -309,10 +309,10 @@ class OlaLevel_Ticket extends CommonDBTM
     /**
      * Replay all task needed for a specific ticket
      *
-     * @param integer $tickets_id Ticket ID
-     * @param SLM::TTR|SLM::TTO $olaType Type of ola
      *
      * @since 9.1    2 parameters mandatory
+     * @param integer $tickets_id Ticket ID
+     * @param SLM::TTR|SLM::TTO $olaType Type of ola
      *
      */
     public static function replayForTicket($tickets_id, $olaType)

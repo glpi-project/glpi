@@ -843,9 +843,9 @@ TWIG, $twig_params);
 
     /**
      * Display a widget with a donut chart
-     * @see self::pie for params
      *
      * @return string html
+     * @see self::pie for params
      */
     public static function donut(array $params = []): string
     {
@@ -857,9 +857,9 @@ TWIG, $twig_params);
 
     /**
      * Display a widget with a half donut chart
-     * @see self::pie for params
      *
      * @return string html
+     * @see self::pie for params
      */
     public static function halfDonut(array $params = []): string
     {
@@ -870,9 +870,9 @@ TWIG, $twig_params);
 
     /**
      * Display a widget with a half pie chart
-     * @see self::pie for params
      *
      * @return string html
+     * @see self::pie for params
      */
     public static function halfPie(array $params = []): string
     {
@@ -884,9 +884,9 @@ TWIG, $twig_params);
 
     /**
      * Display a widget with a bar chart (with single series)
-     * @see self::getBarsGraph for params
      *
      * @return string html
+     * @see self::getBarsGraph for params
      */
     public static function simpleBar(array $params = []): string
     {
@@ -937,9 +937,9 @@ TWIG, $twig_params);
 
     /**
      * Display a widget with an horizontal bar chart
-     * @see self::getBarsGraph for params
      *
      * @return string html
+     * @see self::getBarsGraph for params
      */
     public static function simpleHbar(array $params = []): string
     {
@@ -959,9 +959,9 @@ TWIG, $twig_params);
 
     /**
      * Display a widget with a multiple bars chart
-     * @see self::getBarsGraph for params
      *
      * @return string html
+     * @see self::getBarsGraph for params
      */
     public static function multipleBars(array $params = []): string
     {
@@ -978,9 +978,9 @@ TWIG, $twig_params);
 
     /**
      * Display a widget with a stacked multiple bars chart
-     * @see self::getBarsGraph for params
      *
      * @return string html
+     * @see self::getBarsGraph for params
      */
     public static function StackedBars(array $params = []): string
     {
@@ -992,9 +992,9 @@ TWIG, $twig_params);
 
     /**
      * Display a widget with a horizontal stacked multiple bars chart
-     * @see self::getBarsGraph for params
      *
      * @return string html
+     * @see self::getBarsGraph for params
      */
     public static function stackedHBars(array $params = []): string
     {
@@ -1006,9 +1006,9 @@ TWIG, $twig_params);
 
     /**
      * Display a widget with a horizontal multiple bars chart
-     * @see self::getBarsGraph for params
      *
      * @return string html
+     * @see self::getBarsGraph for params
      */
     public static function multipleHBars(array $params = []): string
     {
@@ -1349,9 +1349,9 @@ TWIG, $twig_params);
 
     /**
      * Display a widget with a line chart (with single series)
-     * @see self::getLinesGraph for params
      *
      * @return string html
+     * @see self::getLinesGraph for params
      */
     public static function simpleLine(array $params = []): string
     {
@@ -1389,9 +1389,9 @@ TWIG, $twig_params);
 
     /**
      * Display a widget with a area chart (with single serie)
-     * @see self::getLinesGraph for params
      *
      * @return string html
+     * @see self::getLinesGraph for params
      */
     public static function simpleArea(array $params = []): string
     {
@@ -1403,9 +1403,9 @@ TWIG, $twig_params);
 
     /**
      * Display a widget with a multiple line chart (with multiple series)
-     * @see self::getLinesGraph for params
      *
      * @return string html
+     * @see self::getLinesGraph for params
      */
     public static function multipleLines(array $params = []): string
     {
@@ -1422,9 +1422,9 @@ TWIG, $twig_params);
 
     /**
      * Display a widget with a multiple area chart (with multiple series)
-     * @see self::getLinesGraph for params
      *
      * @return string html
+     * @see self::getLinesGraph for params
      */
     public static function multipleAreas(array $params = []): string
     {

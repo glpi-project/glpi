@@ -702,9 +702,9 @@ class Auth extends CommonGLPI
     /**
      * Get the current identification error
      *
-     * @return string current identification error
      *
      * @deprecated 11.0.0
+     * @return string current identification error
      */
     public function getErr()
     {

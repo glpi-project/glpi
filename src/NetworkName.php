@@ -417,9 +417,9 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
     }
 
     /**
-     * @param class-string<CommonDBTM> $itemtype
      * @throws Exception
      * @since 0.84
+     * @param class-string<CommonDBTM> $itemtype
      *
      * @return void
      */

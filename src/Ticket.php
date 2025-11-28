@@ -400,12 +400,12 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     /**
      * Get Datas to be added for SLA add
      *
+     *
+     * @since 9.1 (before getDatasToAddSla without type parameter)
      * @param int    $slas_id      SLA id
      * @param int    $entities_id  entity ID of the ticket
      * @param string $date         begin date of the ticket
      * @param int    $type         type of SLA
-     *
-     * @since 9.1 (before getDatasToAddSla without type parameter)
      *
      * @return array of datas to add in ticket
      **/
@@ -442,12 +442,12 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     /**
      * Get Datas to be added for OLA add
      *
+     *
+     * @since 9.2 (before getDatasToAddOla without type parameter)
      * @param int    $olas_id      OLA id
      * @param int    $entities_id  entity ID of the ticket
      * @param string $date         begin date of the ticket
      * @param int    $type         type of OLA
-     *
-     * @since 9.2 (before getDatasToAddOla without type parameter)
      *
      * @return array of datas to add in ticket
      **/
@@ -5661,6 +5661,7 @@ JAVASCRIPT;
      * Merge one or more tickets into another existing ticket.
      * Optionally sub-items like followups, documents, and tasks can be copied into the merged ticket.
      * If a ticket cannot be merged, the process continues on to the next ticket.
+     * @since 9.5.0
      * @param int   $merge_target_id The ID of the ticket that the other tickets will be merged into
      * @param array $ticket_ids Array of IDs of tickets to merge into the ticket with ID $merge_target_id
      * @param array $params Array of parameters for the ticket merge.
@@ -5676,7 +5677,6 @@ JAVASCRIPT;
      *                   id => status (0 = Success, 1 = Error, 2 = Insufficient Rights).
      * @return boolean  True if the merge was successful if "full_transaction" is true.
      *                      Otherwise, true if any ticket was successfully merged.
-     * @since 9.5.0
      */
     public static function merge(int $merge_target_id, array $ticket_ids, array &$status, array $params = [])
     {

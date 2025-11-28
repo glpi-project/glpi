@@ -1021,9 +1021,9 @@ class Search
     /**
      * Print begin of header part
      *
-     * @param integer $type   Display type (see Search::*_OUTPUT constants)
      *
      * @since 0.85
+     * @param integer $type   Display type (see Search::*_OUTPUT constants)
      *
      * @return string HTML to display
      **/
@@ -1040,9 +1040,9 @@ class Search
     /**
      * Print end of header part
      *
-     * @param integer $type   Display type (see Search::*_OUTPUT constants)
      *
      * @since 0.85
+     * @param integer $type   Display type (see Search::*_OUTPUT constants)
      *
      * @return string to display
      **/
@@ -1155,13 +1155,13 @@ class Search
     /**
      * Add join for dropdown translations
      *
+     *
+     * @deprecated 11.0.0
      * @param string $alias    Alias for translation table
      * @param string $table    Table to join on
      * @param class-string<CommonDBTM> $itemtype Item type
      * @param string $field    Field name
-     *
      * @return string
-     * @deprecated 11.0.0
      */
     public static function joinDropdownTranslations($alias, $table, $itemtype, $field)
     {

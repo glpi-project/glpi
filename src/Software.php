@@ -187,9 +187,9 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
     /**
      * Update validity indicator of specific software
      *
-     * @param integer $ID ID of the licence
      *
      * @since 0.85
+     * @param integer $ID ID of the licence
      *
      * @return void
      **/

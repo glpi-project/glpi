@@ -885,9 +885,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     }
 
     /**
-     * @see CommonDBTM::cleanDBonPurge()
      *
      * @since 0.84
+     * @see CommonDBTM::cleanDBonPurge()
      **/
     public function cleanDBonPurge()
     {

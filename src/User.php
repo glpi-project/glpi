@@ -322,12 +322,12 @@ class User extends CommonDBTM implements TreeBrowseInterface
     /**
      * Load minimal session for user.
      *
-     * @param integer $entities_id  Entity to use
-     * @param boolean $is_recursive Whether to load entities recursively or not
      *
-     * @return void
      *
      * @since 0.83.7
+     * @param integer $entities_id  Entity to use
+     * @param boolean $is_recursive Whether to load entities recursively or not
+     * @return void
      */
     public function loadMinimalSession($entities_id, $is_recursive)
     {

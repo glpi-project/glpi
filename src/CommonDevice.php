@@ -389,6 +389,9 @@ abstract class CommonDevice extends CommonDropdown
 
     /**
      * get the HTMLTable Header for the current device according to the type of the item that is requesting
+     *
+     * @throws Exception
+     * @since 0.84
      * @param string $itemtype The type of the item
      * @param HTMLTableBase $base The element on which adding the header
      *                            (ie.: HTMLTableMain or HTMLTableGroup)
@@ -397,10 +400,7 @@ abstract class CommonDevice extends CommonDropdown
      * @param HTMLTableHeader|null $father The father of the current headers
      *                            (default NULL)
      * @param array $options parameter such as restriction
-     *
      * @return HTMLTableHeader|void
-     * @throws Exception
-     * @since 0.84
      */
     public static function getHTMLTableHeader(
         $itemtype,
@@ -434,13 +434,13 @@ abstract class CommonDevice extends CommonDropdown
     }
 
     /**
+     * @throws Exception
+     * @warning note the difference between getHTMLTableCellForItem and getHTMLTableCellsForItem
+     * @since 0.84
      * @param HTMLTableRow|null $row object
      * @param CommonDBTM|null $item object (default NULL)
      * @param HTMLTableCell|null $father object (default NULL)
      * @return HTMLTableCell|null
-     * @throws Exception
-     * @warning note the difference between getHTMLTableCellForItem and getHTMLTableCellsForItem
-     * @since 0.84
      */
     public function getHTMLTableCellForItem(
         ?HTMLTableRow $row = null,
@@ -560,10 +560,10 @@ abstract class CommonDevice extends CommonDropdown
     /**
      * Criteria used for import function
      *
+     * @since 0.84
      * @return array<string, string> Fieldname => Comparison type where comparison type is one of:
      * - 'equal': field must be equal
      * - 'delta:n': field must be within n of the value
-     * @since 0.84
      **/
     public function getImportCriteria()
     {
@@ -587,8 +587,8 @@ abstract class CommonDevice extends CommonDropdown
     }
 
     /**
-     * @return void
      * @since 0.85
+     * @return void
      **/
     public function post_workOnItem()
     {

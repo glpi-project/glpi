@@ -116,9 +116,9 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
 
 
     /**
-     * @see CommonDBTM::useDeletedToLockIfDynamic()
      *
      * @since 0.84
+     * @see CommonDBTM::useDeletedToLockIfDynamic()
      **/
     public function useDeletedToLockIfDynamic()
     {

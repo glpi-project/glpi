@@ -110,10 +110,10 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Executes the query
      *
-     * @param array   $criteria Query criteria
      *
      *
      * @since 11.0.0 The `$debug` parameter has been removed.
+     * @param array   $criteria Query criteria
      */
     public function execute($criteria): self
     {
@@ -129,10 +129,10 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Builds the query
      *
-     * @param array   $criteria Query criteria
      *
      *
      * @since 11.0.0 The `$log` parameter has been removed.
+     * @param array   $criteria Query criteria
      */
     public function buildQuery($criteria): void
     {

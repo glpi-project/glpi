@@ -145,11 +145,11 @@ class NotificationTarget extends CommonDBChild
     /**
      * Retrieve an item from the database for a specific target
      *
+     *
+     * @since 0.85
      * @param integer $notifications_id notification ID
      * @param string  $type             type of the target to retrive
      * @param integer $ID               ID of the target to retrieve
-     *
-     * @since 0.85
      *
      * @return boolean
      **/
@@ -854,10 +854,10 @@ class NotificationTarget extends CommonDBChild
     /**
      * Add users of a group to targets
      *
-     * @param integer $manager  0 all users, 1 only supervisors, 2 all users without supervisors
-     * @param integer $group_id id of the group
      *
      * @since 9.2
+     * @param integer $manager  0 all users, 1 only supervisors, 2 all users without supervisors
+     * @param integer $group_id id of the group
      *
      * @return void
      **/

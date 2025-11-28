@@ -2691,9 +2691,9 @@ final class Transfer extends CommonDBTM
     /**
      * Handle direct connection between a peripheral and its main asset when transferring the peripheral.
      *
-     * @param class-string<CommonDBTM> $peripheral_itemtype
      *
      * @since 0.84.4
+     * @param class-string<CommonDBTM> $peripheral_itemtype
      **/
     private function managePeripheralMainAsset(string $peripheral_itemtype, int $ID): void
     {
@@ -2967,10 +2967,10 @@ final class Transfer extends CommonDBTM
     /**
      * Get additional/updated information for the transfer of an ITIL Object (Ticket, Change, Problem)
      *
-     * @param array $data ITIL Object data
      *
-     * @return array Updated ITIL Object data
      * @since 0.85 (before transferTicketAdditionalInformations)
+     * @param array $data ITIL Object data
+     * @return array Updated ITIL Object data
      **/
     private function transferHelpdeskAdditionalInformations($data): array
     {

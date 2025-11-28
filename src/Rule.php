@@ -2109,10 +2109,10 @@ TWIG, $twig_params);
     /**
      * Show preview result of a rule
      *
-     * @param array $input     input data array
-     * @param array $params    params used (see addSpecificParamsForPreview)
      *
      * @since 11.0.0 The `$target` parameter has been removed.
+     * @param array $input     input data array
+     * @param array $params    params used (see addSpecificParamsForPreview)
      *
      * @return void
      */
@@ -2752,9 +2752,9 @@ TWIG, $twig_params);
     /**
      * Criteria form used to preview rule
      *
-     * @param int $rules_id ID of the rule
      *
      * @since 11.0.0 The `$target` parameter has been removed.
+     * @param int $rules_id ID of the rule
      * @return void
      */
     public function showRulePreviewCriteriasForm($rules_id)

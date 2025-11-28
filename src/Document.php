@@ -400,9 +400,9 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     /**
      * Send a document to navigator
      *
-     * @return void
      *
      * @deprecated 11.0.0
+     * @return void
      */
     public function send()
     {

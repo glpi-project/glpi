@@ -71,9 +71,9 @@ class Line extends CommonDBTM implements AssignableItemInterface, StateInterface
     }
 
     /**
-     * @see CommonDBTM::useDeletedToLockIfDynamic()
      *
      * @since 0.84
+     * @see CommonDBTM::useDeletedToLockIfDynamic()
      **/
     public function useDeletedToLockIfDynamic()
     {

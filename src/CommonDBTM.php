@@ -384,13 +384,13 @@ class CommonDBTM extends CommonGLPI
 
     /**
      * Generator to browse object from an iterator
-     * @see http://php.net/manual/en/language.generators.syntax.php
      *
      * @since 9.2
      *
      * @param DBmysqlIterator $iter Iterator instance
      *
      * @return iterable
+     * @see http://php.net/manual/en/language.generators.syntax.php
      */
     public static function getFromIter(DBmysqlIterator $iter)
     {
@@ -412,10 +412,10 @@ class CommonDBTM extends CommonGLPI
      * If there's more than one entry, an error is triggered
      *
      * return true if the matched object was found and updated, false otherwise (no match or multiple matches)
-     * @param array $criteria search criteria
      *
-     * @return bool
      * @since 9.2
+     * @param array $criteria search criteria
+     * @return bool
      */
     public function getFromDBByCrit(array $criteria)
     {
@@ -450,11 +450,11 @@ class CommonDBTM extends CommonGLPI
      *
      * @since 9.3
      *
-     * @see DB::request()
      *
      * @param array $request expression
      *
      * @return boolean true if succeed else false
+     * @see DB::request()
      **/
     public function getFromDBByRequest(array $request)
     {
@@ -1591,9 +1591,9 @@ class CommonDBTM extends CommonGLPI
     /**
      * Add needed information to $input (example entities_id)
      *
-     * @param array $input datas used to add the item
      *
      * @since 0.84
+     * @param array $input datas used to add the item
      *
      * @return array the modified $input array
      **/
@@ -2429,8 +2429,8 @@ class CommonDBTM extends CommonGLPI
     /**
      * Unglobalize the item : duplicate item and connections.
      *
-     * @see Asset_PeripheralAsset::unglobalizeItem()
      * @return null
+     * @see Asset_PeripheralAsset::unglobalizeItem()
      * @TODO Return a bool value (true on success, false on failure).
      */
     public function unglobalize()
@@ -2445,10 +2445,10 @@ class CommonDBTM extends CommonGLPI
      * Have I the global right to add an item for the Object
      * May be overloaded if needed (ex Ticket)
      *
-     * @param string $type itemtype of object to add
      *
-     * @return boolean
      **@since 0.83
+     * @param string $type itemtype of object to add
+     * @return boolean
      *
      */
     public function canAddItem(string $type): bool
@@ -2519,8 +2519,8 @@ class CommonDBTM extends CommonGLPI
      *
      * Default is true and check entity if the objet is entity assign
      *
-     * @return boolean
      **@since 0.85
+     * @return boolean
      *
      */
     public function canPurgeItem(): bool
@@ -2563,10 +2563,10 @@ class CommonDBTM extends CommonGLPI
     /**
      * Have I right to see action button
      *
-     * @param integer $ID ID to check
      *
-     * @return boolean
      **@since 0.85
+     * @param integer $ID ID to check
+     * @return boolean
      *
      */
     public function canEdit($ID): bool
@@ -3133,9 +3133,9 @@ class CommonDBTM extends CommonGLPI
     /**
      * Check if have right on this entity
      *
+     * @since 0.85
      * @param boolean $recursive set true to accept recursive items of ancestors
      *                           of active entities (View case for example) (default false)
-     * @since 0.85
      *
      * @return boolean
      **/
@@ -3438,8 +3438,8 @@ class CommonDBTM extends CommonGLPI
     /**
      * Return the linked items (`Asset_PeripheralAsset` relations)
      *
-     * @return array an array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
      * @since 0.84.4
+     * @return array an array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
      **/
     public function getLinkedItems()
     {
@@ -3450,8 +3450,8 @@ class CommonDBTM extends CommonGLPI
     /**
      * Return the count of linked items (`Asset_PeripheralAsset` relations)
      *
-     * @return integer number of linked items
      * @since 0.84.4
+     * @return integer number of linked items
      **/
     public function getLinkedItemsCount()
     {
@@ -3675,11 +3675,11 @@ class CommonDBTM extends CommonGLPI
     /** Get raw completename of the object
      * Maybe overloaded
      *
-     * @see CommonDBTM::getCompleteNameField
      *
      * @since 0.85
      *
      * @return string
+     * @see CommonDBTM::getCompleteNameField
      **/
     public function getRawCompleteName()
     {
@@ -3691,17 +3691,17 @@ class CommonDBTM extends CommonGLPI
     /**
      * Get the name of the object
      *
-     * @param array $options array of options
-     *    - complete     : boolean / display completename instead of name
-     *    - additional   : boolean / display additional information
      *
-     * @return string name of the object in the current language
      *
-     * @see CommonDBTM::getRawCompleteName
-     * @see CommonDBTM::getFriendlyName
      *
      * @since 11.0 `comments` option has been removed
      * @since 11.0 `icon` option has been removed
+     * @param array $options array of options
+     *    - complete     : boolean / display completename instead of name
+     *    - additional   : boolean / display additional information
+     * @return string name of the object in the current language
+     * @see CommonDBTM::getRawCompleteName
+     * @see CommonDBTM::getFriendlyName
      **/
     public function getName($options = [])
     {
@@ -3777,17 +3777,17 @@ class CommonDBTM extends CommonGLPI
      * Get the name of the object with the ID if the config is set
      * Should Not be overloaded (overload getName() instead)
      *
-     * @see CommonDBTM::getName
      *
+     *
+     *
+     * @since 11.0 `comments` option has been removed
+     * @since 11.0 `icon` option has been removed
      * @param array $options array of options
      *    - complete     : boolean / display completename instead of name
      *    - additional   : boolean / display additional information
      *    - forceid      : boolean  override config and display item's ID (false by default)
-     *
      * @return string name of the object in the current language
-     *
-     * @since 11.0 `comments` option has been removed
-     * @since 11.0 `icon` option has been removed
+     * @see CommonDBTM::getName
      **/
     public function getNameID($options = [])
     {
@@ -4003,14 +4003,14 @@ class CommonDBTM extends CommonGLPI
     /**
      * Get all the massive actions available for the current class regarding given itemtype
      *
+     *
+     **@since 0.85
      * @param array      $actions    Array of the actions to update where the keys are the internal identifier for the action and the values are the displayed value.
      *          Displayed values may contain HTML code, so text data must be sanitized before returning them from this method.
      * @param string $itemtype   the type of the item for which we want the actions
      * @param boolean    $is_deleted (default false)
      * @param ?CommonDBTM $checkitem  (default NULL)
-     *
      * @return void (update is set inside $actions)
-     **@since 0.85
      *
      */
     public static function getMassiveActionsForItemtype(
