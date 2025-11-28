@@ -1140,7 +1140,6 @@ final class ITILController extends AbstractController
 
     /**
      * @param class-string<CommonDBTM> $subtype
-     * @return string
      */
     public static function getFriendlyNameForSubtype(string $subtype): string
     {
@@ -1668,7 +1667,6 @@ final class ITILController extends AbstractController
     }
 
     /**
-     * @param CommonITILObject $item
      * @return array{role: string|int, name?: string, realname?: string, firstname?: string, display_name?: string, href: string}[]
      */
     private static function getCleanTeam(CommonITILObject $item): array

@@ -167,8 +167,6 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
 
 
     /**
-     * @param array $res_rule
-     * @param array $input
      * @return bool
      **/
     public static function somethingHasChanged(array $res_rule, array $input)
@@ -249,7 +247,6 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
      *
      * @param array &$new_printers   array containing new printers already computed
      * @param array $res_rule        array of rule results
-     * @param array $params
      * @param array &$printers_ids   array containing replay printer need to be put in trashbin
      *
      * @return void

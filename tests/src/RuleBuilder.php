@@ -115,7 +115,6 @@ class RuleBuilder
      *
      * @param int $condition RuleTicket::ONADD and/or RuleTicket::ONUPDATE
      *
-     * @return self
      */
     public function setCondtion(int $condition): self
     {
@@ -128,7 +127,6 @@ class RuleBuilder
      *
      * @param string $operator 'AND' or 'OR'
      *
-     * @return self
      */
     public function setOperator(string $operator): self
     {
@@ -141,7 +139,6 @@ class RuleBuilder
      *
      * @param bool $is_recursive
      *
-     * @return self
      */
     public function setIsRecursive(int $is_recursive): self
     {
@@ -152,9 +149,7 @@ class RuleBuilder
     /**
      * Set entity configuration
      *
-     * @param int $entities_id
      *
-     * @return self
      */
     public function setEntity(int $entities_id): self
     {
@@ -165,9 +160,7 @@ class RuleBuilder
     /**
      * Set rule rank
      *
-     * @param int $ranking
      *
-     * @return self
      */
     public function setRanking(int $ranking): self
     {
@@ -182,7 +175,6 @@ class RuleBuilder
      * @param int $condition Rule::PATTERN_IS, ...
      * @param mixed $pattern value to match
      *
-     * @return self
      */
     public function addCriteria(
         string $criteria,
@@ -204,7 +196,6 @@ class RuleBuilder
      * @param string $field key of an item of Rule::getActions()
      * @param mixed $value
      *
-     * @return self
      */
     public function addAction(
         string $action_type,
@@ -262,7 +253,6 @@ class RuleBuilder
     /**
      * Get rule entity configuration
      *
-     * @return bool
      */
     public function isRecursive(): bool
     {
@@ -272,7 +262,6 @@ class RuleBuilder
     /**
      * Get rule entity configuration
      *
-     * @return int
      */
     public function getEntity(): int
     {
@@ -282,7 +271,6 @@ class RuleBuilder
     /**
      * Get rule criteria
      *
-     * @return array
      */
     public function getCriteria(): array
     {
@@ -292,7 +280,6 @@ class RuleBuilder
     /**
      * Get rule actions
      *
-     * @return array
      */
     public function getActions(): array
     {
@@ -302,7 +289,6 @@ class RuleBuilder
     /**
      * Get rule ranking, if defined
      *
-     * @return ?int
      */
     public function getRanking(): ?int
     {

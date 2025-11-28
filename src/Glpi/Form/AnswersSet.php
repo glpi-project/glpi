@@ -279,7 +279,6 @@ final class AnswersSet extends CommonDBChild
     /**
      * Get delegation data
      *
-     * @return DelegationData
      */
     public function getDelegation(): DelegationData
     {
@@ -289,7 +288,6 @@ final class AnswersSet extends CommonDBChild
     /**
      * Set delegation data
      *
-     * @param DelegationData $delegation
      */
     public function setDelegation(DelegationData $delegation): void
     {
@@ -299,9 +297,7 @@ final class AnswersSet extends CommonDBChild
     /**
      * Count answers for a given form
      *
-     * @param Form $form
      *
-     * @return int
      */
     protected function countAnswers(Form $form): int
     {

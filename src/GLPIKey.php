@@ -108,9 +108,7 @@ class GLPIKey
      * Returns expected key path for given GLPI version.
      * Will return null for GLPI versions that was not yet handling a custom security key.
      *
-     * @param string $glpi_version
      *
-     * @return string|null
      */
     public function getExpectedKeyPath(string $glpi_version): ?string
     {
@@ -186,7 +184,6 @@ class GLPIKey
     /**
      * Get GLPI security key used for decryptable passwords
      *
-     * @return string|null
      */
     public function get(): ?string
     {
@@ -209,7 +206,6 @@ class GLPIKey
      * Get GLPI security legacy key that was used for decryptable passwords.
      * Usage of this key should only be used during migration from GLPI < 9.5 to GLPI >= 9.5.0.
      *
-     * @return string|null
      */
     public function getLegacyKey(): ?string
     {
@@ -228,7 +224,6 @@ class GLPIKey
      * Generate GLPI security key used for decryptable passwords
      * and update values in DB if necessary.
      *
-     * @return bool
      */
     public function generate(bool $update_db = true): bool
     {
@@ -279,7 +274,6 @@ class GLPIKey
     /**
      * Get fields
      *
-     * @return array
      */
     public function getFields(): array
     {
@@ -298,7 +292,6 @@ class GLPIKey
     /**
      * Get configs
      *
-     * @return array
      */
     public function getConfigs(): array
     {
@@ -318,10 +311,7 @@ class GLPIKey
     /**
      * Check if configuration is secured.
      *
-     * @param string $context
-     * @param string $name
      *
-     * @return bool
      */
     public function isConfigSecured(string $context, string $name): bool
     {
@@ -337,7 +327,6 @@ class GLPIKey
      *
      * @param string|null   $sodium_key Previous key. If null, legacy key will be used.
      *
-     * @return bool
      */
     protected function migrateFieldsInDb(?string $sodium_key): bool
     {
@@ -381,7 +370,6 @@ class GLPIKey
      *
      * @param string|null   $sodium_key Previous key. If null, legacy key will be used.
      *
-     * @return bool
      */
     protected function migrateConfigsInDb($sodium_key): bool
     {
@@ -427,7 +415,6 @@ class GLPIKey
      * @param string        $string  String to encrypt.
      * @param string|null   $key     Key to use, fallback to default key if null.
      *
-     * @return string
      */
     public function encrypt(string $string, ?string $key = null): string
     {
@@ -457,7 +444,6 @@ class GLPIKey
      * @param string|null $string String to decrypt.
      * @param string|null $key Key to use, fallback to default key if null.
      *
-     * @return string|null
      */
     public function decrypt(?string $string, ?string $key = null): ?string
     {
@@ -517,10 +503,7 @@ class GLPIKey
      * Decrypt a string using a legacy key.
      * If key is not provided, the default legacy key will be used.
      *
-     * @param string $string
-     * @param string|null $key
      *
-     * @return string
      */
     public function decryptUsingLegacyKey(string $string, ?string $key = null): string
     {

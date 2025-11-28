@@ -456,10 +456,7 @@ class Application extends BaseApplication
     /**
      * Check potentially required write access to configuration files.
      *
-     * @param Command $command
-     * @param InputInterface $input
      *
-     * @return bool
      */
     private function checkConfigWriteAccess(Command $command, InputInterface $input): bool
     {

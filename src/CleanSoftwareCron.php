@@ -49,7 +49,6 @@ class CleanSoftwareCron extends CommonDBTM
     /**
      * Get task description
      *
-     * @return string
      */
     public static function getTaskDescription(): string
     {
@@ -59,7 +58,6 @@ class CleanSoftwareCron extends CommonDBTM
     /**
      * Get task's parameter description
      *
-     * @return string
      */
     public static function getParameterDescription(): string
     {
@@ -111,7 +109,6 @@ class CleanSoftwareCron extends CommonDBTM
     /**
      * Run from cronTask
      *
-     * @param CronTask $task
      *
      * @return int
      */
@@ -127,7 +124,6 @@ class CleanSoftwareCron extends CommonDBTM
     /**
      * Get all software versions which are not installed
      *
-     * @return array
      */
     protected static function getVersionsWithNoInstallationCriteria(): array
     {
@@ -167,7 +163,6 @@ class CleanSoftwareCron extends CommonDBTM
     /**
      * Get all software with no versions
      *
-     * @return array
      */
     protected static function getSoftwareWithNoVersionsCriteria(): array
     {

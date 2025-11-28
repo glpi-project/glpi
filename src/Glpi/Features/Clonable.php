@@ -65,9 +65,7 @@ trait Clonable
     /**
      * Clean input used to clone.
      *
-     * @param array $input
      *
-     * @return array
      *
      * @since 10.0.0
      */
@@ -94,10 +92,7 @@ trait Clonable
     /**
      * Clone the item's relations.
      *
-     * @param CommonDBTM $source
-     * @param bool       $history
      *
-     * @return void
      *
      * @since 10.0.0
      */
@@ -319,9 +314,7 @@ trait Clonable
     /**
      * Returns unique clone name.
      *
-     * @param array $input
      *
-     * @return null|string
      */
     protected function getUniqueCloneName(array $input): ?string
     {
@@ -357,9 +350,7 @@ trait Clonable
     /**
      * Returns unique clone name.
      *
-     * @param array $input
      *
-     * @return null|string
      */
     protected function getUniqueCloneTemplateName(array $input): ?string
     {

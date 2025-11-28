@@ -57,7 +57,6 @@ abstract class AbstractPluginMigrationCommand extends AbstractCommand
     /**
      * Returns an instance of the migration to use.
      *
-     * @return AbstractPluginMigration
      */
     abstract public function getMigration(): AbstractPluginMigration;
 

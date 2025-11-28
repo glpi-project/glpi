@@ -134,7 +134,6 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
      * Correctly write output messages when a progress bar is displayed.
      *
      * @param string|array $messages
-     * @param ProgressBar  $progress_bar
      * @param integer      $verbosity
      *
      * @return void
@@ -248,9 +247,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
     /**
      * Ask for user confirmation before continuing command execution.
      *
-     * @param bool $default_to_yes
      *
-     * @return void
      */
     protected function askForConfirmation(bool $default_to_yes = true): void
     {
@@ -281,7 +278,6 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
     /**
      * Tell user that execution time can be long.
      *
-     * @return void
      */
     protected function warnAboutExecutionTime(): void
     {
@@ -295,11 +291,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
      * Iterate on given iterable and display a progress bar (unless on quiet mode).
      * Progress bar message can be customized.
      *
-     * @param iterable $iterable
-     * @param callable $message_callback
-     * @param int|null $count
      *
-     * @return iterable
      */
     final protected function iterate(
         iterable $iterable,
@@ -367,8 +359,6 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
      * Output a message.
      * This method handles displaying of messages in the middle of progress bar iteration.
      *
-     * @param string $message
-     * @param int $verbosity
      */
     final protected function outputMessage(string $message, int $verbosity = OutputInterface::VERBOSITY_NORMAL): void
     {

@@ -87,7 +87,6 @@ final class TranslationHandler
     /**
      * Get the item to translate
      *
-     * @return CommonDBTM
      */
     public function getItem(): CommonDBTM
     {
@@ -97,7 +96,6 @@ final class TranslationHandler
     /**
      * Get the key of the field to translate
      *
-     * @return string
      */
     public function getKey(): string
     {
@@ -107,7 +105,6 @@ final class TranslationHandler
     /**
      * Get the human-readable name of the field
      *
-     * @return string
      */
     public function getName(): string
     {
@@ -117,7 +114,6 @@ final class TranslationHandler
     /**
      * Get the default value (in the default language)
      *
-     * @return string|null
      */
     public function getValue(): ?string
     {
@@ -127,7 +123,6 @@ final class TranslationHandler
     /**
      * Check if this field contains rich text that should be edited in a rich text editor
      *
-     * @return bool
      */
     public function isRichText(): bool
     {
@@ -137,7 +132,6 @@ final class TranslationHandler
     /**
      * Get the category name for grouping translations
      *
-     * @return string|null
      */
     public function getCategory(): ?string
     {

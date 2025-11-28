@@ -49,7 +49,6 @@ trait ValidationStepTrait
 
     /**
      * @return array{\Ticket|\Change, \TicketValidationStep|\ChangeValidationStep}
-     * @param ValidationStep $validation_step
      * @param array<int, int> $validations_statuses CommonITILValidation:: statuses constants
      * @param int|null $expected_status Expected status of the created ITIL_ValidationStep
      * @param string|null $itil_classname Class name of the ITIL object to create (e.g. Ticket, Change)
@@ -143,9 +142,6 @@ trait ValidationStepTrait
     /**
      * Update an existing ITIL_ValidationStep related to a Change with a new validation percent
      *
-     * @param CommonITILValidation $validation
-     * @param int $validation_percent
-     * @return void
      */
     protected function updateITIL_ValidationStepOfItil(CommonITILValidation $validation, int $validation_percent): void
     {

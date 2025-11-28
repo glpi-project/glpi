@@ -114,21 +114,18 @@ class Router
 
     /**
      * The request as it was received by the router (and after some very basic processing).
-     * @var ?Request
      * @internal Only intended to be used by tests
      */
     private ?Request $original_request = null;
 
     /**
      * The final state of the request after it was modified by the request middlewares.
-     * @var ?Request
      * @internal Only intended to be used by tests
      */
     private ?Request $final_request = null;
 
     /**
      * The last route that was matched and invoked.
-     * @var ?RoutePath
      * @internal Only intended to be used by tests
      */
     private ?RoutePath $last_invoked_route = null;
@@ -180,8 +177,6 @@ EOT;
      * If a major and minor version is specified, the latest patch version will be used.
      * If a complete version is specified, it will be used as is.
      * If no version is specified, the latest version will be used.
-     * @param string $version
-     * @return string
      */
     final public static function normalizeAPIVersion(string $version): string
     {
@@ -206,7 +201,6 @@ EOT;
 
     /**
      * Unsets the instance so it can be recreated the next time {@link getInstance()} is called.
-     * @return void
      */
     public static function resetInstance(): void
     {
@@ -216,7 +210,6 @@ EOT;
     /**
      * Get the singleton instance of the router
      *
-     * @return Router
      */
     public static function getInstance(): Router
     {
@@ -295,7 +288,6 @@ EOT;
     }
 
     /**
-     * @return Request|null
      * @internal Only intended to be used by tests
      */
     public function getOriginalRequest(): ?Request
@@ -304,7 +296,6 @@ EOT;
     }
 
     /**
-     * @return Request|null
      * @internal Only intended to be used by tests
      */
     public function getFinalRequest(): ?Request
@@ -313,7 +304,6 @@ EOT;
     }
 
     /**
-     * @return RoutePath|null
      * @internal Only intended to be used by tests
      */
     public function getLastInvokedRoute(): ?RoutePath
@@ -323,8 +313,6 @@ EOT;
 
     /**
      * Register a route controller
-     * @param AbstractController $controller
-     * @return void
      */
     public function registerController(AbstractController $controller): void
     {
@@ -334,11 +322,7 @@ EOT;
     /**
      * Register an auth middleware
      *
-     * @param AuthMiddlewareInterface $middleware
-     * @param int $priority
-     * @param callable|null $condition
      * @phpstan-param null|callable(RoutePath): bool $condition
-     * @return void
      */
     public function registerAuthMiddleware(AuthMiddlewareInterface $middleware, int $priority = 0, ?callable $condition = null): void
     {
@@ -354,11 +338,7 @@ EOT;
     /**
      * Register a request middleware
      *
-     * @param RequestMiddlewareInterface $middleware
-     * @param int $priority
-     * @param callable|null $condition
      * @phpstan-param null|callable(RoutePath): bool $condition
-     * @return void
      */
     public function registerRequestMiddleware(RequestMiddlewareInterface $middleware, int $priority = 0, ?callable $condition = null): void
     {
@@ -374,11 +354,7 @@ EOT;
     /**
      * Register a response middleware
      *
-     * @param ResponseMiddlewareInterface $middleware
-     * @param int $priority
-     * @param callable|null $condition
      * @phpstan-param null|callable(RoutePath): bool $condition
-     * @return void
      */
     public function registerResponseMiddleware(ResponseMiddlewareInterface $middleware, int $priority = 0, ?callable $condition = null): void
     {
@@ -393,7 +369,6 @@ EOT;
 
     /**
      * @param RoutePath[] $routes
-     * @return void
      */
     private function cacheRoutes(array $routes): void
     {
@@ -488,7 +463,6 @@ EOT;
     }
 
     /**
-     * @param Request $request
      * @return RoutePath[]
      */
     public function matchAll(Request $request): array
@@ -533,8 +507,6 @@ EOT;
     }
 
     /**
-     * @param Request $request
-     * @return ?RoutePath
      */
     public function match(Request $request): ?RoutePath
     {
@@ -729,8 +701,6 @@ EOT;
 
     /**
      * Try to start a temporary session if an OAuth token is provided and handle the profile and entity headers.
-     * @param Request $request
-     * @return void
      * @throws OAuthServerException
      */
     private function handleAuth(Request $request): void

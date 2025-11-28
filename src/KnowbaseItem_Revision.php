@@ -99,7 +99,6 @@ class KnowbaseItem_Revision extends CommonDBTM
     /**
      * Show linked items of a knowbase item
      *
-     * @param CommonDBTM $item
      * @param integer $withtemplate withtemplate param (default 0)
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)

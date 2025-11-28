@@ -125,7 +125,6 @@ abstract class CommonDropdownTest extends DbTestCase
     /**
      * Create new object in database
      *
-     * @return \CommonDBTM
      */
     abstract protected function newInstance(): \CommonDBTM;
 

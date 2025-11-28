@@ -607,7 +607,6 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * Returns the target name.
      *
-     * @return string
      */
     final protected function getTargetName(): string
     {
@@ -707,7 +706,6 @@ abstract class CommonITILValidation extends CommonDBChild
      * Get Ticket validation status Name
      *
      * @param integer   $value
-     * @param bool      $decorated
      *
      * @return string
      **/
@@ -808,10 +806,7 @@ abstract class CommonITILValidation extends CommonDBChild
      *
      * @see self::getNumberToValidate()
      *
-     * @param int $users_id
-     * @param bool $search_in_groups
      *
-     * @return array
      */
     final public static function getTargetCriteriaForUser(int $users_id, bool $search_in_groups = true): array
     {
@@ -1764,7 +1759,6 @@ HTML;
 
 
     /**
-     * @param $field
      * @param $name              (default '')
      * @param $values            (default '')
      * @param $options   array
@@ -1963,7 +1957,6 @@ HTML;
     }
 
     /**
-     * @param CommonITILObject $item
      * @param string $type
      *
      * Used in twig template
@@ -2112,7 +2105,6 @@ HTML;
     /**
      * Delete, only if the itils_validationstep is not used anymore
      *
-     * @return void
      */
     private function removeUnsedITILValidationStep(): void
     {

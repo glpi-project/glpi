@@ -168,8 +168,6 @@ final class HLAPIHelper
     // @codingStandardsIgnoreEnd
 
     /**
-     * @param Router $router
-     * @param HLAPITestCase $test
      * @param string|null $api_version The API version to use. Cannot be specified or overridden by the request URL. Defaults to the current API version.
      */
     public function __construct(Router $router, HLAPITestCase $test, ?string $api_version = null)
@@ -181,7 +179,6 @@ final class HLAPIHelper
 
     /**
      * Get a new API helper with a specific API version
-     * @param string $api_version
      * @return HLAPIHelper
      */
     public function withVersion(string $api_version)
@@ -195,7 +192,6 @@ final class HLAPIHelper
     }
 
     /**
-     * @param string $endpoint
      * @return RoutePath[]
      */
     private function getRoutesForEndpoint(string $endpoint): array
@@ -288,9 +284,7 @@ final class HLAPIHelper
     }
 
     /**
-     * @param Request $request
      * @param callable(HLAPICallAsserter): void $fn
-     * @return self
      */
     public function call(Request $request, callable $fn, bool $auto_auth_header = true): self
     {
@@ -789,7 +783,6 @@ final class HLAPIHelper
     }
 
     /**
-     * @param string $endpoint
      * @param class-string<AssignableItemInterface> $itemtype
      * @return void
      */
@@ -1003,7 +996,6 @@ final class HLAPIResponseAsserter
     }
 
     /**
-     * @param callable $fn
      * @phpstan-param callable(string): void $fn
      * @return $this
      */
@@ -1014,7 +1006,6 @@ final class HLAPIResponseAsserter
     }
 
     /**
-     * @param callable $fn
      * @phpstan-param callable(array): void $fn
      * @return $this
      */

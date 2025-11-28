@@ -428,9 +428,7 @@ class StatTest extends DbTestCase
     /**
      * Create test data for statistics
      * @param string $param Parameter type
-     * @param array $expected Expected values
      * @param mixed $value Parameter value
-     * @param mixed $value2 Secondary parameter value
      * @return \Ticket $ticket
      */
     private function createTestDataForStatistics($param, $value)

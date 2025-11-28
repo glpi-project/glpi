@@ -160,7 +160,6 @@ class Fieldblacklist extends CommonDropdown
     /**
      * @since 0.84
      *
-     * @param $field
      * @param $name               (default '')
      * @param $values             (default '')
      * @param $options      array

@@ -51,7 +51,6 @@ class GenericAssetInventoryTest extends InventoryTestCase
      *
      * @param Capacity[] $capacities Capacities to activate
      *
-     * @return Asset
      */
     private function inventorySmartphone(array $capacities = []): Asset
     {
@@ -184,7 +183,6 @@ class GenericAssetInventoryTest extends InventoryTestCase
     /**
      * Test basic Generic Asset inventory
      *
-     * @return void
      */
     public function testImportSmartphone(): void
     {
@@ -327,7 +325,6 @@ class GenericAssetInventoryTest extends InventoryTestCase
     /**
      * Test Generic Asset inventory with all capacities enabled
      *
-     * @return void
      */
     public function testImportSmartphoneAllCapacities(): void
     {
@@ -762,7 +759,6 @@ class GenericAssetInventoryTest extends InventoryTestCase
      *
      * @param array<class-string> $capacities Capacities to activate
      *
-     * @return Asset
      */
     private function inventoryServer(array $capacities = []): Asset
     {
@@ -874,7 +870,6 @@ class GenericAssetInventoryTest extends InventoryTestCase
     /**
      * Test basic Generic Asset inventory
      *
-     * @return void
      */
     public function testImportServer(): void
     {

@@ -607,7 +607,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     /**
      * Try to load the session from the API Tolen
      *
-     * @return void
      * @since 9.5
      */
     private static function loadAPISessionIfExist(): void
@@ -1554,7 +1553,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      *
      * @param string $string
      *
-     * @return string
      **/
     public static function getImageTag($string): string
     {
@@ -1599,11 +1597,9 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      *
      * @since 10.0.1
      *
-     * @param string  $path
      * @param integer $width
      * @param integer $height
      *
-     * @return string
      */
     public static function getResizedImagePath(string $path, int $width, int $height): string
     {

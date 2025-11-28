@@ -205,7 +205,6 @@ class Cartridge extends InventoryAsset
     /**
      * Get existing entries from database
      *
-     * @return array
      */
     protected function getExisting(): array
     {

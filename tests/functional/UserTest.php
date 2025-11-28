@@ -1644,7 +1644,6 @@ class UserTest extends DbTestCase
     /**
      * Data provider for testValidatePassword
      *
-     * @return iterable
      */
     protected function testValidatePasswordProvider(): iterable
     {
@@ -1747,11 +1746,7 @@ class UserTest extends DbTestCase
     /**
      * Tests for $user->validatePassword()
      *
-     * @param User  $user     Test subject
-     * @param string $password Password to validate
-     * @param array  $errors   Expected errors
      *
-     * @return void
      */
     public function testValidatePassword(): void
     {
@@ -1771,7 +1766,6 @@ class UserTest extends DbTestCase
     /**
      * Tests if the last super admin user can be deleted or disabled
      *
-     * @return void
      */
     public function testLastAdministratorDeleteOrDisable(): void
     {
@@ -1900,7 +1894,6 @@ class UserTest extends DbTestCase
     /**
      * Test that user_dn_hash is correctly set on user creation and update
      *
-     * @return void
      */
     public function testUserDnIsHashedOnAddAndUpdate(): void
     {
@@ -1945,7 +1938,6 @@ class UserTest extends DbTestCase
     /**
      * Test that user_dn_hash is correctly used in getFromDBbyDn method
      *
-     * @return void
      */
     public function testUserDnHashIsUsedInGetFromDBbyDn(): void
     {

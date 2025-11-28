@@ -49,14 +49,12 @@ interface SortStrategyInterface
     /**
      * Get the label of the sort strategy
      *
-     * @return string
      */
     public function getLabel(): string;
 
     /**
      * Get the icon of the sort strategy
      *
-     * @return string
      */
     public function getIcon(): string;
 }

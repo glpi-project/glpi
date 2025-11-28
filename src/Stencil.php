@@ -64,8 +64,6 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
     /**
      * Returns the stencil associated with the given item
      *
-     * @param CommonDBTM $item
-     * @return Stencil|null
      */
     public static function getStencilFromItem(CommonDBTM $item): ?Stencil
     {
@@ -93,8 +91,6 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
     /**
      * Returns the stencil associated with the given ID
      *
-     * @param int $id
-     * @return Stencil|null
      */
     public static function getStencilFromID(int $id): ?Stencil
     {
@@ -128,7 +124,6 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
     /**
      * Returns the item associated with the stencil
      *
-     * @return CommonDBTM|null
      */
     public function getStencilItem(): ?CommonDBTM
     {
@@ -154,7 +149,6 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
     /**
      * Returns the fields to display in the stencil editor
      *
-     * @return array
      */
     public function getPicturesFields(): array
     {
@@ -174,8 +168,6 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
      * - remove_zone_label (only for editor)
      * - anchor_id (only for display)
      *
-     * @param bool $editor
-     * @return array
      */
     public function getParams(bool $editor): array
     {
@@ -185,7 +177,6 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
     /**
      * Returns the maximum number of zones allowed for the stencil
      *
-     * @return int
      */
     public function getMaxZoneNumber(): int
     {
@@ -208,8 +199,6 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
     /**
      * Add zones to the stencil
      *
-     * @param array $input
-     * @return void
      */
     public function addNewZones(array $input): void
     {
@@ -221,8 +210,6 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
     /**
      * Remove zones from the stencil
      *
-     * @param array $input
-     * @return void
      */
     public function removeZones(array $input): void
     {
@@ -246,8 +233,6 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
     /**
      * Reset zones to their default values
      *
-     * @param array $input
-     * @return void
      */
     public function resetZones(array $input): void
     {
@@ -266,7 +251,6 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
     /**
      * Load the cropper library
      *
-     * @return void
      */
     public static function loadLibs(): void
     {
@@ -364,8 +348,6 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
     /**
      * Returns the HTML code for the label of a stencil zone
      *
-     * @param bool $editor
-     * @param array $zone
      * @return string Label HTML code
      */
     public function getZoneLabel(bool $editor, array $zone): string
@@ -378,8 +360,6 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
     /**
      * Returns the HTML code for the popover of a stencil zone
      *
-     * @param bool $editor
-     * @param array $zone
      * @return string Popover HTML code
      */
     public function getZonePopover(bool $editor, array $zone): string

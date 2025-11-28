@@ -113,8 +113,6 @@ class HTMLTableMain extends HTMLTableBase
     }
 
     /**
-     * @param $itemtype
-     * @param $title
      **/
     public function addItemType($itemtype, $title)
     {

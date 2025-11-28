@@ -48,23 +48,19 @@ interface TemplatesParametersInterface
     /**
      * Get default node name to use for this class.
      *
-     * @return string
      */
     public static function getDefaultNodeName(): string;
 
     /**
      * Get object label to use for this class.
      *
-     * @return string
      */
     public static function getObjectLabel(): string;
 
     /**
      * Get values for a given item, used for template rendering
      *
-     * @param CommonDBTM $item
      *
-     * @return array
      */
     public function getValues(CommonDBTM $item): array;
 

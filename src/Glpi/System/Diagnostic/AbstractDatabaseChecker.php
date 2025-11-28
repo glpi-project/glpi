@@ -75,9 +75,7 @@ abstract class AbstractDatabaseChecker
     /**
      * Return list of column names for given table.
      *
-     * @param string $table_name
      *
-     * @return array
      */
     protected function getColumnsNames(string $table_name): array
     {
@@ -89,10 +87,7 @@ abstract class AbstractDatabaseChecker
     /**
      * Return column type.
      *
-     * @param string $table_name
-     * @param string $column_name
      *
-     * @return null|string
      */
     protected function getColumnType(string $table_name, string $column_name): ?string
     {
@@ -110,9 +105,7 @@ abstract class AbstractDatabaseChecker
     /**
      * Return column type.
      *
-     * @param string $table_name
      *
-     * @return void
      */
     private function fetchTableColumns(string $table_name): void
     {
@@ -129,9 +122,7 @@ abstract class AbstractDatabaseChecker
      * Return index for given table.
      * Array keys are index key, and values are fields related to this key.
      *
-     * @param string $table_name
      *
-     * @return array
      */
     protected function getIndex(string $table_name): array
     {

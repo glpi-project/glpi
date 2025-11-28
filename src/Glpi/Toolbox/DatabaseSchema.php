@@ -42,9 +42,7 @@ class DatabaseSchema
     /**
      * Return empty schema file path for given version.
      *
-     * @param string $version
      *
-     * @return null|string
      */
     public static function getEmptySchemaPath(string $version): ?string
     {

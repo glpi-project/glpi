@@ -229,7 +229,6 @@ class FieldUnicity extends CommonDropdown
     /**
      * Display a list of available fields for unicity checks
      *
-     * @param CommonDBTM $unicity
      *
      * @return void
      **/
@@ -508,7 +507,6 @@ class FieldUnicity extends CommonDropdown
     /**
      * List doubles
      *
-     * @param FieldUnicity $unicity
      *
      * @return void
      **/

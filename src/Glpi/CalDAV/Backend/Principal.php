@@ -106,7 +106,6 @@ class Principal extends AbstractBackend
 
     /**
      * @param string $path
-     * @param PropPatch $propPatch
      *
      * @return void
      */
@@ -240,7 +239,6 @@ class Principal extends AbstractBackend
 
     /**
      * @param string $path
-     * @param array $members
      *
      * @return void
      */
@@ -252,7 +250,6 @@ class Principal extends AbstractBackend
     /**
      * Get principal object based on item.
      *
-     * @param CommonDBTM $item
      *
      * @return null|array
      */
@@ -276,7 +273,6 @@ class Principal extends AbstractBackend
     /**
      * Get principal object based on user fields.
      *
-     * @param array $user_fields
      *
      * @return array
      */
@@ -300,7 +296,6 @@ class Principal extends AbstractBackend
     /**
      * Get principal object based on user fields.
      *
-     * @param array $group_fields
      *
      * @return array
      */

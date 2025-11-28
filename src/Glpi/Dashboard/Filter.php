@@ -95,7 +95,6 @@ class Filter extends CommonDBChild
     /**
      * Return registered filters classes.
      *
-     * @return array
      */
     public static function getRegisteredFilterClasses(): array
     {
@@ -161,7 +160,6 @@ class Filter extends CommonDBChild
     /**
      * Return filters for the provided dashboard
      *
-     * @param int $dashboards_id
      *
      * @return string the JSON representation of the filter data
      */

@@ -191,7 +191,6 @@ class Printer extends NetworkEquipment
     /**
      * Get printer counters
      *
-     * @return stdClass
      */
     public function getCounters(): stdClass
     {

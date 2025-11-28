@@ -1201,7 +1201,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @param HTMLTableBase        $base      HTMLTableBase object
      * @param HTMLTableSuperHeader $super     HTMLTableSuperHeader object (default NULL)
      * @param HTMLTableHeader      $father    HTMLTableHeader object (default NULL)
-     * @param array                $options
      * @return void
      **/
     public static function getHTMLTableHeader(
@@ -1245,7 +1244,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @param HTMLTableRow  $row      HTMLTableRow object (default NULL)
      * @param CommonDBTM    $item     CommonDBTM object (default NULL)
      * @param HTMLTableCell $father   HTMLTableCell object (default NULL)
-     * @param array         $options
      * @return void
      **/
     public static function getHTMLTableCellsForItem(
@@ -1954,9 +1952,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
     /**
      * Get SELECT param for getTypeItemsQueryParams
      *
-     * @param CommonDBTM $item
      *
-     * @return array
      */
     public static function getTypeItemsQueryParams_Select(CommonDBTM $item): array
     {
@@ -2148,7 +2144,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
     /**
      * Check if the given class match $itemtype_1 or $itemtype_2
      *
-     * @param string $class
      *
      * @return int 0 (not a part of the relation), 1 ($itemtype_1) or 2 ($itemtype_2)
      */

@@ -1133,7 +1133,6 @@ TWIG, $twig_params);
     /**
      * Get criteria related to network ports
      *
-     * @return array
      */
     public function getNetportCriteria(): array
     {
@@ -1148,7 +1147,6 @@ TWIG, $twig_params);
     /**
      * Get global criteria
      *
-     * @return array
      */
     public function getGlobalCriteria(): array
     {
@@ -1234,7 +1232,6 @@ TWIG, $twig_params);
     /**
      * Get default rules as XML
      *
-     * @return SimpleXMLElement|false
      */
     public function getDefaultRules(): SimpleXMLElement|false
     {

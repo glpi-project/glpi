@@ -375,7 +375,7 @@ class ITILSolution extends CommonDBChild
 
 
     /**
-     * {@inheritDoc}
+     *
      * @see CommonDBTM::getSpecificValueToDisplay()
      */
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
@@ -402,7 +402,7 @@ class ITILSolution extends CommonDBChild
     }
 
     /**
-     * {@inheritDoc}
+     *
      * @see CommonDBTM::getSpecificValueToSelect()
      */
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
@@ -518,7 +518,6 @@ class ITILSolution extends CommonDBChild
      *
      * @param CommonITILObject $parent Parent item
      *
-     * @return void
      */
     final public function setParentItem(CommonITILObject $parent): void
     {

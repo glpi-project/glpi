@@ -606,7 +606,6 @@ class ITILFollowup extends CommonDBChild
      * Check if $this->item already contains the correct parent item and thus
      * help us to avoid reloading it for no reason
      *
-     * @return bool
      */
     protected function isParentAlreadyLoaded(): bool
     {
@@ -1184,7 +1183,6 @@ class ITILFollowup extends CommonDBChild
      *
      * @param CommonITILObject $parent Parent item
      *
-     * @return void
      */
     final public function setParentItem(CommonITILObject $parent): void
     {

@@ -56,7 +56,6 @@ final class EngineValidationOutput implements JsonSerializable
     }
 
     /**
-     * @param int $question_id
      * @return ConditionData[]
      */
     public function getQuestionValidation(int $question_id): array

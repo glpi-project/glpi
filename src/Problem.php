@@ -1347,7 +1347,6 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * Will also display problems of linked items
      *
-     * @param CommonDBTM $item
      * @param integer    $withtemplate
      *
      * @return void|false
@@ -1384,7 +1383,6 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     /**
-     * @param CommonDBTM $item
      * @return array
      */
     public static function getListForItemRestrict(CommonDBTM $item)

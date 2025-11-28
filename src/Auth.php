@@ -79,13 +79,11 @@ class Auth extends CommonGLPI
 
     /**
      * The user's email found during the validation part of the login workflow.
-     * @var ?string
      */
     private ?string $user_email = null;
 
     /**
      * The authentication method determined during the validation part of the login workflow.
-     * @var int
      */
     private int $auth_type = 0;
 
@@ -777,7 +775,6 @@ class Auth extends CommonGLPI
      * (unless this function was called by {@link login()} in which case the login function will trigger the update).
      * @param string $login_name Login
      * @param string $login_password Password
-     * @param bool $noauto
      * @param string $login_auth Type of auth
      * @return bool True if the user could log in, false otherwise
      */
@@ -1332,7 +1329,6 @@ class Auth extends CommonGLPI
      * @param integer $authtype Authentication method
      * @param integer $auths_id Authentication method ID
      *
-     * @return string
      */
     public static function getMethodLink(int $authtype, int $auths_id): string
     {
@@ -1705,7 +1701,6 @@ class Auth extends CommonGLPI
     /**
      * Display the authentication source dropdown for login form
      *
-     * @param bool $display
      * @param int $rand
      *
      * @return string
@@ -1743,9 +1738,7 @@ class Auth extends CommonGLPI
     /**
      * Defines "rememberme" cookie.
      *
-     * @param string $cookie_value
      *
-     * @return void
      */
     public static function setRememberMeCookie(string $cookie_value): void
     {

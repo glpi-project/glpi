@@ -50,13 +50,13 @@ use Unmanaged;
  */
 class Request extends AbstractRequest
 {
-    /** @var Inventory */
+    /**  */
     private Inventory $inventory;
 
-    /** @var bool */
+    /**  */
     private bool $is_discovery = false;
 
-    /** @var string */
+    /**  */
     private string $network_inventory_mode;
 
     protected function initHeaders(): Common
@@ -116,7 +116,6 @@ class Request extends AbstractRequest
      *
      * @param string $task  Task (one of self::*_TASK)
      *
-     * @return array
      */
     protected function handleTask(string $task): array
     {
@@ -155,7 +154,6 @@ class Request extends AbstractRequest
      *
      * @param mixed $data Inventory input following specs
      *
-     * @return void
      */
     public function getParams(mixed $data): void
     {
@@ -188,7 +186,6 @@ class Request extends AbstractRequest
      *
      * @param mixed $data Inventory input following specs
      *
-     * @return void
      */
     public function prolog(mixed $data): void
     {
@@ -228,7 +225,6 @@ class Request extends AbstractRequest
      *
      * @param mixed $data Inventory input following specs
      *
-     * @return void
      */
     public function networkDiscovery(mixed $data): void
     {
@@ -243,7 +239,6 @@ class Request extends AbstractRequest
      *
      * @param mixed $data Inventory input following specs
      *
-     * @return void
      */
     public function networkInventory(mixed $data): void
     {
@@ -256,7 +251,6 @@ class Request extends AbstractRequest
      *
      * @param mixed $data Inventory input following specs
      *
-     * @return void
      */
     public function network(mixed $data): void
     {
@@ -300,7 +294,6 @@ class Request extends AbstractRequest
      *
      * @param mixed $data Inventory input following specs
      *
-     * @return void
      */
     public function contact(mixed $data): void
     {
@@ -357,7 +350,6 @@ class Request extends AbstractRequest
      *
      * @param mixed $data Inventory input following specs
      *
-     * @return void
      */
     public function inventory(mixed $data): void
     {
@@ -417,7 +409,6 @@ class Request extends AbstractRequest
      *
      * @param array $params Required hooks params
      *
-     * @return array
      */
     public function handleInventoryTask(array $params): array
     {
@@ -437,7 +428,6 @@ class Request extends AbstractRequest
      *
      * @param array $params Required hooks params
      *
-     * @return array
      */
     public function handleNetDiscoveryTask(array $params): array
     {
@@ -451,7 +441,6 @@ class Request extends AbstractRequest
      *
      * @param array $params Required hooks params
      *
-     * @return array
      */
     public function handleNetInventoryTask(array $params): array
     {
@@ -465,7 +454,6 @@ class Request extends AbstractRequest
      *
      * @param array $params Required hooks params
      *
-     * @return array
      */
     public function handleESXTask(array $params): array
     {
@@ -479,7 +467,6 @@ class Request extends AbstractRequest
      *
      * @param array $params Required hooks params
      *
-     * @return array
      */
     public function handleCollectTask(array $params): array
     {
@@ -493,7 +480,6 @@ class Request extends AbstractRequest
      *
      * @param array $params Required hooks params
      *
-     * @return array
      */
     public function handleDeployTask(array $params): array
     {
@@ -507,7 +493,6 @@ class Request extends AbstractRequest
      *
      * @param array $params Required hooks params
      *
-     * @return array
      */
     public function handleWakeOnLanTask(array $params): array
     {
@@ -521,7 +506,6 @@ class Request extends AbstractRequest
      *
      * @param array $params Required hooks params
      *
-     * @return array
      */
     public function handleRemoteInventoryTask(array $params): array
     {
@@ -533,7 +517,6 @@ class Request extends AbstractRequest
     /**
      * Get inventory request status
      *
-     * @return array
      */
     public function getInventoryStatus(): array
     {

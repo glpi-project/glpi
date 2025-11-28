@@ -116,9 +116,9 @@ abstract class AbstractRequest
 
     /** @var ?integer */
     protected ?int $mode = null;
-    /** @var string */
+    /**  */
     private string $deviceid;
-    /** @var DOMDocument|array|null */
+    /**  */
     private DOMDocument|array|null $response = null;
     /** @var ?integer */
     private ?int $compression = null;
@@ -126,11 +126,11 @@ abstract class AbstractRequest
     private bool $error = false;
     /** @var boolean */
     protected bool $test_rules = false;
-    /** @var Common */
+    /**  */
     protected Common $headers;
-    /** @var int */
+    /**  */
     private int $http_response_code = 200;
-    /** @var string */
+    /**  */
     protected string $query;
     protected bool $local = false;
 
@@ -147,7 +147,6 @@ abstract class AbstractRequest
      *
      * @param integer $mode Expected mode. One of *_MODE constants
      *
-     * @return void
      *
      * @throw RuntimeException
      */
@@ -173,9 +172,7 @@ abstract class AbstractRequest
     /**
      * Guess import mode
      *
-     * @param mixed $contents
      *
-     * @return void
      */
     private function guessMode(mixed $contents): void
     {
@@ -191,7 +188,6 @@ abstract class AbstractRequest
     /**
      * Display module name
      *
-     * @param ?string $internalModule
      *
      * @return string readable method name
      */
@@ -215,7 +211,6 @@ abstract class AbstractRequest
     /**
      * Handle request headers
      *
-     * @return void
      */
     public function handleHeaders(): void
     {
@@ -357,7 +352,6 @@ abstract class AbstractRequest
      *
      * @param string $task  Task (one of self::*_TASK)
      *
-     * @return array
      */
     abstract protected function handleTask(string $task): array;
 
@@ -449,7 +443,6 @@ abstract class AbstractRequest
      * @param ?string $message Error message
      * @param integer $code    HTTP response code
      *
-     * @return void
      */
     public function addError(?string $message, int $code = 500): void
     {
@@ -482,7 +475,6 @@ abstract class AbstractRequest
      *
      * @param array $entries Array of key => values entries
      *
-     * @return void
      */
     public function addToResponse(array $entries): void
     {
@@ -511,7 +503,6 @@ abstract class AbstractRequest
      * @param ?mixed            $name    Element name to create
      * @param array|string|null $content Element contents, if any
      *
-     * @return void
      */
     private function addNode(DOMElement $parent, mixed $name, array|string|null $content): void
     {
@@ -566,7 +557,6 @@ abstract class AbstractRequest
     /**
      * Get content-type
      *
-     * @return string
      */
     public function getContentType(): string
     {
@@ -597,7 +587,6 @@ abstract class AbstractRequest
     /**
      * Get response
      *
-     * @return string
      */
     public function getResponse(): string
     {
@@ -653,7 +642,6 @@ abstract class AbstractRequest
      *
      * @param string $type Content type
      *
-     * @return void
      */
     public function handleContentType(string $type): void
     {
@@ -733,7 +721,6 @@ abstract class AbstractRequest
     /**
      * Prepare HTTP headers
      *
-     * @return void
      */
     private function prepareHeaders(): void
     {
@@ -748,7 +735,6 @@ abstract class AbstractRequest
      *
      * @param boolean $legacy Set to true to shunt required headers checks
      *
-     * @return array
      */
     public function getHeaders(bool $legacy = true): array
     {
@@ -773,7 +759,6 @@ abstract class AbstractRequest
     /**
      * Handle GLPI framework messages
      *
-     * @return void
      */
     public function handleMessages(): void
     {

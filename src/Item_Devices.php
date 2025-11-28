@@ -642,7 +642,6 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     }
 
     /**
-     * @param CommonGLPI $item
      * @param integer $withtemplate
      * @return false|void
      */
@@ -890,13 +889,6 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      * In cas of $item is an instance, then $options contains the type of the item (Computer,
      * Printer ...).
      *
-     * @param CommonDBTM $item
-     * @param HTMLTableMain $table
-     * @param array $options
-     * @param ?HTMLTableSuperHeader $delete_all_column
-     * @param HTMLTableSuperHeader $common_column
-     * @param HTMLTableSuperHeader $specific_column
-     * @param ?HTMLTableSuperHeader $delete_column
      * @param ?HTMLTableSuperHeader $dynamic_column
      * @return void
      **/

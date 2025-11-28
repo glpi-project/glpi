@@ -372,7 +372,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     /**
      * Print the HTML array for Items linked to a ITIL object
      *
-     * @param CommonITILObject|TicketRecurrent $obj
      *
      * @return bool|void
      **/
@@ -559,7 +558,6 @@ TWIG, $twig_params);
 
     /**
      * Count number of ITIL objects for the provided item and other items linked to the requested item
-     * @param CommonDBTM $item
      * @return int
      * @see Asset_PeripheralAsset
      * @see static::getLinkedItems()
@@ -603,8 +601,6 @@ TWIG, $twig_params);
 
     /**
      * Count number of ITIL objects for the provided actor item (user, group, etc)
-     * @param CommonDBTM $item
-     * @return int
      */
     protected static function countForActor(CommonDBTM $item): int
     {
@@ -1747,9 +1743,7 @@ TWIG, $twig_params);
      * has associated ITIL items OR if the current user profile is allowed to
      * link this asset to ITIL items
      *
-     * @param CommonDBTM $asset
      *
-     * @return bool
      */
     protected function shouldDisplayTabForAsset(CommonDBTM $asset): bool
     {
@@ -1777,7 +1771,6 @@ TWIG, $twig_params);
     /**
      * Print the HTML ajax associated item add
      *
-     * @param CommonITILObject|TicketRecurrent $object
      * @param array $options   array of possible options:
      *    - id                  : ID of the ticket
      *    - _users_id_requester : ID of the requester user

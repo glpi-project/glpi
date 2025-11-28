@@ -90,7 +90,6 @@ class Item_RemoteManagement extends CommonDBChild
      * @param string     $sort  Field to sort on
      * @param string     $order Sort order
      *
-     * @return DBmysqlIterator
      */
     public static function getFromItem(CommonDBTM $item, $sort = null, $order = null): DBmysqlIterator
     {
@@ -157,7 +156,6 @@ class Item_RemoteManagement extends CommonDBChild
     /**
      * Get remote management system link
      *
-     * @return string
      */
     public function getRemoteLink(): string
     {

@@ -56,7 +56,6 @@ trait CalDAVUriUtilTrait
     /**
      * Get principal URI, relative to CalDAV server root.
      *
-     * @param CommonDBTM $item
      *
      * @return string|null
      */

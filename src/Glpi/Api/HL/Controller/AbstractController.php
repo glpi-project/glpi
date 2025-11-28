@@ -74,8 +74,6 @@ abstract class AbstractController
 
     /**
      * Get the requested API version from the request
-     * @param Request $request
-     * @return string
      */
     protected function getAPIVersion(Request $request): string
     {
@@ -93,7 +91,6 @@ abstract class AbstractController
     /**
      * Get all known schemas for this controller for the requested API version
      * @param ?string $api_version The API version or null if all versions should be returned
-     * @return array
      * @phpstan-return array<string, array>
      */
     final public static function getKnownSchemas(?string $api_version): array
@@ -121,7 +118,6 @@ abstract class AbstractController
      * Get a schema by name and API version
      * @param string $name The name of the schema
      * @param string $api_version The API version
-     * @return array|null
      */
     protected function getKnownSchema(string $name, string $api_version): ?array
     {
@@ -171,7 +167,6 @@ abstract class AbstractController
     }
 
     /**
-     * @return int
      * @throws RuntimeException if the user ID is not set in the current session
      */
     protected function getMyUserID(): int
@@ -184,12 +179,8 @@ abstract class AbstractController
     }
 
     /**
-     * @param string $status
      * @phpstan-param self::ERROR_* $status
-     * @param string $title
-     * @param string|array|null $detail
      * @param AdditionalErrorMessage[] $additionalMessages
-     * @return array
      * @phpstan-return ErrorResponseBody
      */
     public static function getErrorResponseBody(string $status, string $title, string|array|null $detail = null, array $additionalMessages = []): array
@@ -206,9 +197,6 @@ abstract class AbstractController
     }
 
     /**
-     * @param int|false $new_id
-     * @param string $api_path
-     * @return Response
      */
     public static function getCRUDCreateResponse(int|false $new_id, string $api_path): Response
     {
@@ -220,9 +208,7 @@ abstract class AbstractController
     }
 
     /**
-     * @param string $action
      * @phpstan-param self::CRUD_ACTION_* $action
-     * @return Response
      */
     public static function getCRUDErrorResponse(string $action): Response
     {
@@ -254,7 +240,6 @@ abstract class AbstractController
     }
 
     /**
-     * @return Response
      */
     public static function getNotFoundErrorResponse(): Response
     {
@@ -267,7 +252,6 @@ abstract class AbstractController
     /**
      * @param array{missing?: array<string>, invalid?: InvalidParameterInfo[]} $errors
      * @param array<string, mixed> $headers
-     * @return Response
      */
     public static function getInvalidParametersErrorResponse(array $errors = [], array $headers = []): Response
     {
@@ -300,8 +284,6 @@ abstract class AbstractController
     }
 
     /**
-     * @param array|string|null $detail
-     * @return Response
      */
     public static function getAccessDeniedErrorResponse(array|string|null $detail = null): Response
     {
@@ -316,10 +298,6 @@ abstract class AbstractController
     }
 
     /**
-     * @param int $id
-     * @param string $api_path
-     * @param int $status
-     * @return Response
      */
     public static function getItemLinkResponse(int $id, string $api_path, int $status = 200): Response
     {

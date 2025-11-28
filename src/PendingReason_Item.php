@@ -76,7 +76,6 @@ class PendingReason_Item extends CommonDBRelation
     /**
      * Create a pendingreason_item for a given item
      *
-     * @param CommonDBTM $item
      * @param array      $fields field to insert (pendingreasons_id, followup_frequency
      *                           and followups_before_resolution)
      * @return bool true on success
@@ -116,7 +115,6 @@ class PendingReason_Item extends CommonDBRelation
     /**
      * Update a pendingreason_item for a given item
      *
-     * @param CommonDBTM $item
      * @param array      $fields fields to update
      * @return bool true on success
      */
@@ -146,7 +144,6 @@ class PendingReason_Item extends CommonDBRelation
     /**
      * Delete a pendingreason_item for a given item
      *
-     * @param CommonDBTM $item
      * @return bool true on success
      */
     public static function deleteForItem(CommonDBTM $item): bool
@@ -254,7 +251,6 @@ class PendingReason_Item extends CommonDBRelation
     /**
      * Get the lastest "pending" action for the given item
      *
-     * @param CommonITILObject $item
      * @return CommonDBTM|false
      */
     public static function getLastPendingTimelineItemDataForItem(CommonITILObject $item)
@@ -307,8 +303,6 @@ class PendingReason_Item extends CommonDBRelation
      * Check that the given timeline event is the lastest "pending" action for
      * the given item
      *
-     * @param CommonITILObject $item
-     * @param CommonDBTM       $timeline_item
      * @return boolean
      */
     public static function isLastPendingForItem(
@@ -331,7 +325,6 @@ class PendingReason_Item extends CommonDBRelation
      * Check that the given timeline_item is the last one added in it's
      * parent timeline
      *
-     * @param CommonDBTM $timeline_item
      * @return boolean
      */
     public static function isLastTimelineItem(CommonDBTM $timeline_item): bool
@@ -393,7 +386,6 @@ class PendingReason_Item extends CommonDBRelation
     /**
      * Determines if a pending reason can be displayed for a given item.
      *
-     * @param CommonDBTM $item
      * @return boolean
      */
     public static function canDisplayPendingReasonForItem(CommonDBTM $item): bool
@@ -416,8 +408,6 @@ class PendingReason_Item extends CommonDBRelation
      * This method update the latest pending timeline item if the user has edited
      * the pending details while adding a new task or followup
      *
-     * @param CommonDBTM $new_timeline_item
-     * @return void
      */
     public static function handlePendingReasonUpdateFromNewTimelineItem(
         CommonDBTM $new_timeline_item
@@ -490,8 +480,6 @@ class PendingReason_Item extends CommonDBRelation
     /**
      * Handle edit on a "pending action" from an item the timeline
      *
-     * @param CommonDBTM $timeline_item
-     * @return array
      */
     public static function handleTimelineEdits(CommonDBTM $timeline_item): array
     {

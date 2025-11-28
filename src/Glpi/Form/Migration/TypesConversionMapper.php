@@ -66,7 +66,6 @@ final class TypesConversionMapper
     /**
      * Retrieve the map of types to convert
      *
-     * @return array
      */
     public function getQuestionTypesConversionMap(): array
     {

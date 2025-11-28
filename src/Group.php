@@ -537,7 +537,6 @@ class Group extends CommonTreeDropdown
      * @param boolean $user  Include members (users)
      * @param integer $start First row to retrieve
      * @param array $res     Result filled on ouput
-     * @param array $extra_criteria
      *
      * @return integer total of items
      **/
@@ -919,9 +918,7 @@ class Group extends CommonTreeDropdown
     /**
      * Get group link.
      *
-     * @param bool $enable_anonymization
      *
-     * @return string
      */
     public function getGroupLink(bool $enable_anonymization = false): string
     {

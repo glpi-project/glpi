@@ -104,7 +104,6 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
     /**
      * Get the asset definition related to concrete class.
      *
-     * @return AssetDefinition
      */
     public static function getDefinition(): AssetDefinition
     {

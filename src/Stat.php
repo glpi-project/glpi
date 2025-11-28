@@ -370,7 +370,6 @@ class Stat extends CommonGLPI
      * @param string $date1
      * @param string $date2
      * @param integer $start
-     * @param array $value
      * @param string $value2 (default '')
      * @return array|mixed
      */
@@ -430,7 +429,6 @@ class Stat extends CommonGLPI
      * @param string $date1
      * @param string $date2
      * @param integer $start
-     * @param array $value
      * @param int|string $value2
      * @return void
      *
@@ -1530,7 +1528,6 @@ class Stat extends CommonGLPI
      * @param DateTime|string $start_date
      * @param DateTime|string $end_date
      * @param class-string<CommonITILObject> $itil_type
-     * @return array
      */
     public static function getAssetsWithITIL($start_date, $end_date, $itil_type = 'Ticket'): array
     {
@@ -1799,7 +1796,6 @@ class Stat extends CommonGLPI
 
     /**
      * @param class-string<CommonITILObject> $itemtype
-     * @return array
      */
     public static function getITILStatFields(string $itemtype): array
     {
@@ -1887,7 +1883,6 @@ class Stat extends CommonGLPI
 
     /**
      * Call displayLineGraph with arguments from a StatData object
-     * @param StatData $stat_data
      */
     public function displayLineGraphFromData(StatData $stat_data)
     {

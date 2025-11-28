@@ -62,7 +62,6 @@ class Certificate_Item extends CommonDBRelation
 
 
     /**
-     * @param CommonDBTM $item
      *
      * @return void
      */

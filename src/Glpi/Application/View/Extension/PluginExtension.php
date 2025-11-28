@@ -97,10 +97,7 @@ class PluginExtension extends AbstractExtension
     }
 
     /**
-     * @param string $plugin
-     * @param string $name
      * @param array $params
-     * @param bool $return_result
      *
      * @return ($return_result is true ? mixed : void)
      */
@@ -116,11 +113,7 @@ class PluginExtension extends AbstractExtension
     /**
      * Call Plugin::getWebDir() with given params.
      *
-     * @param string  $plugin
-     * @param bool    $full
-     * @param bool    $use_url_base
      *
-     * @return string|null
      *
      * @deprecated 11.0
      */

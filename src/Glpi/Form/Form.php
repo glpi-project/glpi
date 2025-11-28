@@ -529,9 +529,7 @@ final class Form extends CommonDBTM implements
     /**
      * Cron action to purge old form drafts
      *
-     * @param CronTask $task
      *
-     * @return int
      * @used-by CronTask
      */
     public static function cronPurgeDraftForms(CronTask $task): int
@@ -709,7 +707,6 @@ final class Form extends CommonDBTM implements
     /**
      * Get questions of this form that match the given type.
      *
-     * @param string $type
      * @return Question[]
      */
     public function getQuestionsByType(string $type): array
@@ -764,7 +761,6 @@ final class Form extends CommonDBTM implements
     /**
      * Update extra form data found in other tables (sections and questions)
      *
-     * @return void
      */
     protected function updateExtraFormData(): void
     {
@@ -783,7 +779,6 @@ final class Form extends CommonDBTM implements
     /**
      * Clear lazy loaded data
      *
-     * @return void
      */
     protected function clearLazyLoadedData(): void
     {
@@ -794,7 +789,6 @@ final class Form extends CommonDBTM implements
     /**
      * Create the first section of a form
      *
-     * @return void
      */
     protected function createFirstSection(): void
     {
@@ -810,7 +804,6 @@ final class Form extends CommonDBTM implements
      * Update form's sections using the special data found in
      * $this->input['_sections']
      *
-     * @return void
      */
     protected function updateSections(): void
     {
@@ -863,7 +856,6 @@ final class Form extends CommonDBTM implements
     /**
      * Delete sections that were not found in the submitted data
      *
-     * @return void
      */
     protected function deleteMissingSections(): void
     {
@@ -908,7 +900,6 @@ final class Form extends CommonDBTM implements
      * Update form's questions using the special data found in
      * $this->input['_questions']
      *
-     * @return void
      */
     protected function updateQuestions(): void
     {
@@ -976,7 +967,6 @@ final class Form extends CommonDBTM implements
     /**
      * Delete sections that were not found in the submitted data
      *
-     * @return void
      */
     protected function deleteMissingQuestions(): void
     {
@@ -1026,7 +1016,6 @@ final class Form extends CommonDBTM implements
      * Update form's comments using the special data found in
      * $this->input['_comments']
      *
-     * @return void
      */
     protected function updateComments(): void
     {
@@ -1094,7 +1083,6 @@ final class Form extends CommonDBTM implements
     /**
      * Delete comments that were not found in the submitted data
      *
-     * @return void
      */
     protected function deleteMissingComments(): void
     {
@@ -1143,9 +1131,7 @@ final class Form extends CommonDBTM implements
     /**
      * Check if the given class is a valid access control type.
      *
-     * @param string $class
      *
-     * @return bool
      */
     protected function isValidAccessControlType(string $class): bool
     {
@@ -1202,7 +1188,6 @@ final class Form extends CommonDBTM implements
     /**
      * Get the number of times this form has been used
      *
-     * @return int
      */
     public function getUsageCount(): int
     {

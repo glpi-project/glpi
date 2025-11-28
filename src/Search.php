@@ -462,7 +462,6 @@ class Search
      *                            - num: index of the criteria
      *                            - p: params of showGenericSearch method
      *
-     * @return void
      */
     public static function displaySortCriteria(array $request = []): void
     {
@@ -1093,7 +1092,6 @@ class Search
     }
 
     /**
-     * @param array $joinparams
      */
     public static function computeComplexJoinID(array $joinparams)
     {
@@ -1183,7 +1181,6 @@ class Search
      *
      * @param class-string<CommonDBTM> $itemtype
      *
-     * @return string
      */
     public static function getOrigTableName(string $itemtype): string
     {
@@ -1193,7 +1190,6 @@ class Search
     /**
      * Check if the given field is virtual (not mapped directly with the database schema)
      * @param string $field The field name
-     * @return bool
      */
     public static function isVirtualField(string $field): bool
     {

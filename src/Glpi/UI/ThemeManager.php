@@ -97,7 +97,6 @@ class ThemeManager
 
     /**
      * Get the path to the custom themes directory
-     * @return string
      */
     public function getCustomThemesDirectory(): string
     {
@@ -192,7 +191,6 @@ class ThemeManager
      * Get the Theme object for the current $_SESSION['glpipalette'] value.
      *
      * If the "glpipalette" value is not set, the default theme is used.
-     * @return Theme
      */
     public function getCurrentTheme(): Theme
     {
@@ -211,8 +209,6 @@ class ThemeManager
 
     /**
      * Get the Theme object for the given key.
-     * @param string $key
-     * @return Theme|null
      */
     public function getTheme(string $key): ?Theme
     {

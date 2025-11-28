@@ -56,7 +56,6 @@ class FormAccessControlTest extends DbTestCase
     /**
      * Test the `getTypeName` method.
      *
-     * @return void
      */
     public function testGetTypeName(): void
     {
@@ -69,7 +68,6 @@ class FormAccessControlTest extends DbTestCase
     /**
      * Test the `getIcon` method.
      *
-     * @return void
      */
     public function testGetIcon(): void
     {
@@ -352,7 +350,6 @@ class FormAccessControlTest extends DbTestCase
      * Most tests are already handle by the `prepareInputForAdd` method, we
      * only test here update specific features.
      *
-     * @return void
      */
     public function testPrepareInputForUpdate(): void
     {
@@ -373,7 +370,6 @@ class FormAccessControlTest extends DbTestCase
     /**
      * Test the `getStrategy` method.
      *
-     * @return void
      */
     public function testGetStrategy(): void
     {
@@ -388,7 +384,6 @@ class FormAccessControlTest extends DbTestCase
     /**
      * Test the `getConfig` method.
      *
-     * @return void
      */
     public function testGetConfig(): void
     {

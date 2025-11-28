@@ -150,7 +150,6 @@ class CommonGLPI implements CommonGLPIInterface
      * @param int        $right Right to check : READ / UPDATE / DELETE / PURGE / CREATE / ...
      * @param array|null $input array of input data (used for adding item)
      *
-     * @return bool
      */
     public function can($ID, int $right, ?array &$input = null): bool
     {
@@ -167,7 +166,6 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Check the global "creation" right on the itemtype.
      *
-     * @return bool
      */
     public static function canCreate(): bool
     {
@@ -180,7 +178,6 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Check the global "view" right on the itemtype.
      *
-     * @return bool
      */
     public static function canView(): bool
     {
@@ -193,7 +190,6 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Check the global "update" right on the itemtype.
      *
-     * @return bool
      */
     public static function canUpdate(): bool
     {
@@ -206,7 +202,6 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Check the global "delete" right on the itemtype.
      *
-     * @return bool
      */
     public static function canDelete(): bool
     {
@@ -219,7 +214,6 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Check the global "purge" right on the itemtype.
      *
-     * @return bool
      */
     public static function canPurge(): bool
     {
@@ -704,7 +698,6 @@ class CommonGLPI implements CommonGLPIInterface
 
     /**
      * @param class-string<CommonGLPI>|null $form_itemtype
-     * @return string
      */
     private static function getTabIconClass(?string $form_itemtype = null): string
     {
@@ -786,7 +779,6 @@ class CommonGLPI implements CommonGLPIInterface
      * Get the URL of the list page from which the item was selected.
      * Default to the search engine for the type.
      *
-     * @return string
      *
      * @final
      */
@@ -1213,7 +1205,6 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Compute the name to be used in the main header of this item.
      *
-     * @return string
      *
      * @final
      */

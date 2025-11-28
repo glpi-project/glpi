@@ -522,9 +522,7 @@ function getUserName($ID, $link = 0, $disable_anon = false)
 /**
  * Get link of the given user.
  *
- * @param int $id
  *
- * @return string
  */
 function getUserLink(int $id): string
 {

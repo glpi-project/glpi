@@ -295,11 +295,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Get message ID for given item/event.
      *
-     * @param string $itemtype
-     * @param int $items_id
-     * @param string $event
      *
-     * @return string
      */
     final public static function getMessageIdForEvent(?string $itemtype, ?int $items_id, ?string $event): string
     {
@@ -374,9 +370,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Get the expected notification target class name for a given itemtype
      *
-     * @param string $itemtype
      *
-     * @return string
      */
     public static function getInstanceClass(string $itemtype): string
     {
@@ -483,7 +477,6 @@ class NotificationTarget extends CommonDBChild
 
 
     /**
-     * @param $input
      **/
     public static function updateTargets($input)
     {
@@ -560,7 +553,6 @@ class NotificationTarget extends CommonDBChild
 
 
     /**
-     * @param $data
      *
      * @return array
      **/
@@ -707,9 +699,6 @@ class NotificationTarget extends CommonDBChild
     /**
      * @since 0.84
      *
-     * @param $usertype
-     * @param $redirect
-     * @param $anchor
      **/
     public function formatURL($usertype, $redirect, ?string $anchor = null)
     {
@@ -961,7 +950,6 @@ class NotificationTarget extends CommonDBChild
     /**
      * Return list of notification events for which the notifications should be sent immediately.
      *
-     * @return array
      */
     public function getEventsToSendImmediately(): array
     {
@@ -989,7 +977,6 @@ class NotificationTarget extends CommonDBChild
     /**
      * Return whether the notification content corresponding to the given event can be disclosed.
      *
-     * @return bool
      */
     public function canNotificationContentBeDisclosed(string $event): bool
     {
@@ -1045,7 +1032,6 @@ class NotificationTarget extends CommonDBChild
 
 
     /**
-     * @param $entity
      **/
     final public function addGroupsToTargets($entity)
     {
@@ -1290,7 +1276,6 @@ class NotificationTarget extends CommonDBChild
     /**
      * Get the url base for the entity
      *
-     * @param $entity
      **/
     public function getUrlBase()
     {
@@ -1530,8 +1515,6 @@ class NotificationTarget extends CommonDBChild
 
 
     /**
-     * @param $event
-     * @param $options
      **/
     public function &getForTemplate($event, $options)
     {
@@ -1550,7 +1533,6 @@ class NotificationTarget extends CommonDBChild
     /**
      * Register global tags.
      *
-     * @return void
      */
     private function registerGlobalTags(): void
     {
@@ -1565,7 +1547,6 @@ class NotificationTarget extends CommonDBChild
     /**
      * Define global tags data.
      *
-     * @return array
      */
     private function getGlobalTagsData(): array
     {
@@ -1715,7 +1696,6 @@ class NotificationTarget extends CommonDBChild
      *
      * @param $group Group object
      *
-     * @return bool
      **/
     public static function showForGroup(Group $group): bool
     {
@@ -1862,7 +1842,6 @@ class NotificationTarget extends CommonDBChild
     /**
      * Check if at least one target item is recursive
      *
-     * @return bool
      */
     protected function isTargetItemRecursive(): bool
     {

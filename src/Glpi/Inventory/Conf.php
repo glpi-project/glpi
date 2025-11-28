@@ -162,7 +162,6 @@ class Conf extends CommonGLPI
     /**
      * Accepted file extension for inventories
      *
-     * @return array
      */
     public function knownInventoryExtensions(): array
     {
@@ -285,7 +284,6 @@ class Conf extends CommonGLPI
     /**
      * Get possible actions for stale agents
      *
-     * @return array
      */
     public static function getStaleAgentActions(): array
     {
@@ -1240,7 +1238,6 @@ class Conf extends CommonGLPI
      * @param int    $items_id Item ID
      * @param string $ext      File extension
      *
-     * @return string
      */
     public function buildInventoryFileName($itemtype, $items_id, $ext): string
     {

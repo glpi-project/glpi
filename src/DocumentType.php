@@ -142,7 +142,6 @@ class DocumentType extends CommonDropdown
     /**
      * @since 0.84
      *
-     * @param $field
      * @param $name               (default '')
      * @param $values             (default '')
      * @param $options      array
@@ -205,7 +204,6 @@ class DocumentType extends CommonDropdown
     /**
      * Return pattern that can be used to validate that name of an uploaded file matches accepted extensions.
      *
-     * @return string
      */
     public static function getUploadableFilePattern(): string
     {

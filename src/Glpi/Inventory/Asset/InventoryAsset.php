@@ -58,13 +58,13 @@ abstract class InventoryAsset
 {
     /** @var array */
     protected $data = [];
-    /** @var CommonDBTM */
+    /**  */
     protected CommonDBTM $item;
     /** @var ?string */
     protected $itemtype;
     /** @var array */
     protected $extra_data = [];
-    /** @var Agent */
+    /**  */
     protected Agent $agent;
     /** @var integer */
     protected $entities_id = 0;
@@ -74,7 +74,7 @@ abstract class InventoryAsset
     protected $ruleentity_data = [];
     /** @var array */
     protected $rulelocation_data = [];
-    /** @var array */
+    /**  */
     protected array $rulematchedlog_input = [];
     /** @var boolean */
     protected $links_handled = false;
@@ -84,11 +84,11 @@ abstract class InventoryAsset
     protected $main_asset;
     /** @var ?string */
     protected $request_query;
-    /** @var bool */
+    /**  */
     private bool $is_new = false;
-    /** @var array */
+    /**  */
     protected array $known_links = [];
-    /** @var array */
+    /**  */
     protected array $raw_links = [];
     /** @var array<string, mixed> */
     protected array $metadata = [];
@@ -113,7 +113,6 @@ abstract class InventoryAsset
      *
      * @param array $data Data part
      *
-     * @return InventoryAsset
      */
     public function setData(array $data): InventoryAsset
     {
@@ -142,7 +141,6 @@ abstract class InventoryAsset
     /**
      * Get current data
      *
-     * @return array
      */
     public function getData(): array
     {
@@ -152,7 +150,6 @@ abstract class InventoryAsset
     /**
      * Prepare data from raw data part
      *
-     * @return array
      */
     abstract public function prepare(): array;
 
@@ -169,7 +166,6 @@ abstract class InventoryAsset
      *
      * @param array $data Processed data
      *
-     * @return InventoryAsset
      */
     public function setExtraData($data): InventoryAsset
     {
@@ -186,7 +182,6 @@ abstract class InventoryAsset
      *
      * @param string $type Ignore type ("controllers" only for now)
      *
-     * @return array
      */
     public function getIgnored($type): array
     {
@@ -320,7 +315,6 @@ abstract class InventoryAsset
      *
      * @param array<string, mixed> $metadata Metadata
      *
-     * @return self
      */
     public function setMetadata(array $metadata): self
     {
@@ -344,7 +338,6 @@ abstract class InventoryAsset
     /**
      * Get agent
      *
-     * @return ?Agent
      */
     public function getAgent(): ?Agent
     {
@@ -405,7 +398,6 @@ abstract class InventoryAsset
      *
      * @param CommonDBTM $item Item instance
      *
-     * @return InventoryAsset
      */
     protected function setItem(CommonDBTM $item): self
     {
@@ -419,7 +411,6 @@ abstract class InventoryAsset
      *
      * @param MainAsset $mainasset Main inventory asset instance
      *
-     * @return InventoryAsset
      */
     public function setMainAsset(MainAsset $mainasset): self
     {
@@ -430,7 +421,6 @@ abstract class InventoryAsset
     /**
      * Get main inventory asset
      *
-     * @return MainAsset
      */
     public function getMainAsset(): MainAsset
     {
@@ -441,9 +431,7 @@ abstract class InventoryAsset
      * Add or move a peripheral asset.
      * If the peripheral asset is already linked to another main asset, existing link will be replaced by new link.
      *
-     * @param array $input
      *
-     * @return void
      */
     protected function addOrMoveItem(array $input): void
     {

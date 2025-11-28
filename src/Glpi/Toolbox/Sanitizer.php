@@ -59,7 +59,6 @@ class Sanitizer
      * Also, DB special chars can be escaped to prevent SQL injections.
      *
      * @param mixed $value
-     * @param bool  $db_escape
      *
      * @return mixed
      *
@@ -101,7 +100,6 @@ class Sanitizer
      * Unsanitize a value. Reverts self::sanitize() transformation.
      *
      * @param mixed $value
-     * @param bool  $db_unescape
      *
      * @return mixed
      *
@@ -132,9 +130,7 @@ class Sanitizer
     /**
      * Check if value is sanitized.
      *
-     * @param string $value
      *
-     * @return bool
      *
      * @deprecated 11.0.0
      */
@@ -162,9 +158,7 @@ class Sanitizer
      * Check if value is escaped for DB usage.
      * A value is considered as escaped if it special char (NULL, \n, \r, \, ', " and EOF) that has been escaped.
      *
-     * @param string $value
      *
-     * @return bool
      *
      * @deprecated 11.0.0
      */
@@ -242,9 +236,7 @@ class Sanitizer
      * Check whether the value correspond to a valid namespaced class (or a callable identifier related to a valid class).
      * Note: also support the {namespace}${tab number} format used for tab identifications
      *
-     * @param string $value
      *
-     * @return bool
      *
      * @deprecated 11.0.0
      */
@@ -265,9 +257,7 @@ class Sanitizer
      * Return verbatim value for an itemtype field.
      * Returned value will be unsanitized if it has been transformed by GLPI sanitizing process.
      *
-     * @param string $value
      *
-     * @return string
      *
      * @deprecated 11.0.0
      */
@@ -281,9 +271,7 @@ class Sanitizer
     /**
      * Encode HTML special chars, to prevent XSS when value is printed without using any filter.
      *
-     * @param string $value
      *
-     * @return string
      *
      * @deprecated 11.0.0
      */
@@ -302,9 +290,7 @@ class Sanitizer
     /**
      * Recursively encode HTML special chars on an array.
      *
-     * @param array $values
      *
-     * @return array
      *
      * @see self::encodeHtmlSpecialChars
      *
@@ -335,9 +321,7 @@ class Sanitizer
     /**
      * Decode HTML special chars.
      *
-     * @param string $value
      *
-     * @return string
      *
      * @deprecated 11.0.0
      */
@@ -376,9 +360,7 @@ class Sanitizer
     /**
      * Recursively decode HTML special chars on an array.
      *
-     * @param array $values
      *
-     * @return array
      *
      * @see self::decodeHtmlSpecialChars
      *
@@ -405,9 +387,7 @@ class Sanitizer
     /**
      * Escape DB special chars to protect DB queries.
      *
-     * @param string $value
      *
-     * @return string
      *
      * @deprecated 11.0.0
      */
@@ -428,9 +408,7 @@ class Sanitizer
     /**
      * Recursively escape DB special chars.
      *
-     * @param array $values
      *
-     * @return array
      *
      * @see self::dbEscape
      *
@@ -462,9 +440,7 @@ class Sanitizer
      * Revert `mysqli::real_escape_string()` transformation.
      * Inspired by https://stackoverflow.com/a/38769977
      *
-     * @param string $value
      *
-     * @return string
      *
      * @deprecated 11.0.0
      */
@@ -529,9 +505,7 @@ class Sanitizer
     /**
      * Recursively revert `mysqli::real_escape_string()` transformation.
      *
-     * @param array $values
      *
-     * @return array
      *
      * @see self::dbUnescape
      *

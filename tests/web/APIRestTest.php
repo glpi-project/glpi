@@ -1732,9 +1732,7 @@ class APIRestTest extends TestCase
      * Check errors that are expected to happen on the API server side and thus
      * can't be caught directly from the unit tests
      *
-     * @param array $expected_errors
      *
-     * @return void
      */
     protected function checkServerSideError(array $expected_errors): void
     {
@@ -3051,7 +3049,6 @@ class APIRestTest extends TestCase
     /**
      * Data provider for testReturnSanitizedContentUnit
      *
-     * @return array
      */
     public static function testReturnSanitizedContentUnitProvider(): array
     {
@@ -3074,7 +3071,6 @@ class APIRestTest extends TestCase
      * Functional test to ensure returned content is not sanitized.
      *
             $expected_output,
-     * @return void
      */
     public function testContentEncoding(): void
     {

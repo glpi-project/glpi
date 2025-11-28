@@ -56,7 +56,6 @@ abstract class AbstractController implements PublicService
      * You should only use it if you need to set some specific headers into the
      * response or to set an http return code different than 200.
      *
-     * @return Response
      */
     final protected function render(
         string $view,

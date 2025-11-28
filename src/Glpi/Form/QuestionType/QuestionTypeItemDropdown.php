@@ -185,7 +185,6 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
      * Retrieve filter ticket categories for the item question type
      *
      * @param Question|null $question The question to retrieve the filter for
-     * @return ?array
      */
     public function getCategoriesFilter(?Question $question): ?array
     {

@@ -1258,7 +1258,6 @@ HTML;
     /**
      * Data provider for testIsFloat
      *
-     * @return Generator
      */
     public static function isFloatProvider(): Generator
     {
@@ -1325,10 +1324,7 @@ HTML;
      * Tests for Toolbox::IsFloat()
      *
      * @param mixed $value
-     * @param bool $expected
-     * @param string|null $warning
      *
-     * @return void
      */
     #[DataProvider('isFloatProvider')]
     public function testIsFloat($value, bool $expected, ?string $warning = null): void
@@ -1346,7 +1342,6 @@ HTML;
     /**
      * Data provider for testgetDecimalNumbers
      *
-     * @return Generator
      */
     public static function getDecimalNumbersProvider(): Generator
     {
@@ -1408,10 +1403,7 @@ HTML;
      * Tests for Toolbox::getDecimalNumbers()
      *
      * @param mixed $value
-     * @param int $decimals
-     * @param string|null $warning
      *
-     * @return void
      */
     #[DataProvider('getDecimalNumbersProvider')]
     public function testGetDecimalNumbers($value, int $decimals, ?string $warning = null): void
@@ -1429,7 +1421,6 @@ HTML;
     /**
      * Data provider for testGetMioSizeFromString
      *
-     * @return Generator
      */
     public static function getMioSizeFromStringProvider(): Generator
     {
@@ -1492,10 +1483,8 @@ HTML;
     /**
      * Tests for Toolbox::getMioSizeFromString()
      *
-     * @param string $size
      * @param mixed  $expected
      *
-     * @return void
      */
     #[DataProvider('getMioSizeFromStringProvider')]
     public function testGetMioSizeFromString(string $size, $expected): void

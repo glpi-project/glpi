@@ -480,8 +480,6 @@ class Blacklist extends CommonDropdown
     }
 
     /**
-     * @param int $type
-     * @param string $value
      *
      * @return string
      */

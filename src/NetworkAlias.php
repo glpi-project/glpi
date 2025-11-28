@@ -126,10 +126,6 @@ class NetworkAlias extends FQDNLabel
 
     /**
      * @param class-string<CommonDBTM> $itemtype
-     * @param HTMLTableBase $base
-     * @param HTMLTableSuperHeader|null $super
-     * @param HTMLTableHeader|null $father
-     * @param array $options
      * @throws Exception
      * @since 0.84
      *
@@ -161,10 +157,6 @@ class NetworkAlias extends FQDNLabel
     }
 
     /**
-     * @param HTMLTableRow|null $row
-     * @param CommonDBTM|null $item
-     * @param HTMLTableCell|null $father
-     * @param array $options
      *
      * @return void
      */
@@ -227,7 +219,6 @@ class NetworkAlias extends FQDNLabel
      * NetworkAlias, remove, ...) or if read from item of the item (for instance from the computer
      * form through NetworkPort::ShowForItem and NetworkName::ShowForItem).
      *
-     * @param NetworkName $item
      * @param integer $withtemplate
      * @return false|void
      */

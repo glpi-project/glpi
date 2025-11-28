@@ -369,7 +369,6 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
      *
      * @param boolean $all Get all possible types or only allowed ones
      *
-     * @return array
      */
     public static function getTypes($all = false): array
     {
@@ -438,7 +437,6 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
     }
 
     /**
-     * @param CommonDBTM $item
      * @param int $withtemplate
      *
      * @return void

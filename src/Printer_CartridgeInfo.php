@@ -49,7 +49,6 @@ class Printer_CartridgeInfo extends CommonDBChild
     }
 
     /**
-     * @param Printer $printer
      *
      * @return array
      */
@@ -73,7 +72,6 @@ class Printer_CartridgeInfo extends CommonDBChild
     }
 
     /**
-     * @param Printer $printer
      *
      * @return void
      */
@@ -217,9 +215,6 @@ HTML;
     /**
      * Create a badge for a specific type of cartridge information
      *
-     * @param array $data
-     * @param string $type
-     * @return string|null
      */
     private static function createCartridgeInformationBadge(array $data, string $type): ?string
     {

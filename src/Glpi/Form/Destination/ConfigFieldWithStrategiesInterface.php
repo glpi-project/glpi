@@ -45,7 +45,6 @@ interface ConfigFieldWithStrategiesInterface
     /**
      * Get actual strategies
      *
-     * @return array
      */
     public function getStrategies(): array;
 }

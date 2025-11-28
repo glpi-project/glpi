@@ -73,7 +73,6 @@ class QueryFunction
      * @param string $func_name SQL function name
      * @param array $params Array of quoted identifiers or QueryExpressions
      * @param string|null $alias Unquoted alias
-     * @return QueryExpression
      */
     private static function getExpression(string $func_name, array $params, ?string $alias = null): QueryExpression
     {
@@ -83,8 +82,6 @@ class QueryFunction
     }
 
     /**
-     * @param string $name
-     * @param array $arguments
      *
      * @return QueryExpression
      */
@@ -113,7 +110,6 @@ class QueryFunction
      * @param int|string|QueryExpression $interval Interval to add
      * @param string $interval_unit Interval unit
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return QueryExpression
      */
     public static function dateAdd(string|QueryExpression $date, int|string|QueryExpression $interval, string $interval_unit, ?string $alias = null): QueryExpression
     {
@@ -130,7 +126,6 @@ class QueryFunction
      * @param int|string|QueryExpression $interval Interval to add
      * @param string $interval_unit Interval unit
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return QueryExpression
      */
     public static function dateSub(string|QueryExpression $date, int|string|QueryExpression $interval, string $interval_unit, ?string $alias = null): QueryExpression
     {
@@ -147,7 +142,6 @@ class QueryFunction
      * @param string|QueryExpression $true_expression Expression to return if condition is true
      * @param string|QueryExpression $false_expression Expression to return if condition is false
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return QueryExpression
      */
     public static function if(string|QueryExpression|array $condition, string|QueryExpression $true_expression, string|QueryExpression $false_expression, ?string $alias = null): QueryExpression
     {
@@ -162,7 +156,6 @@ class QueryFunction
      * @param string|QueryExpression $expression Expression to check
      * @param string|QueryExpression $value Value to return if expression is null
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return QueryExpression
      */
     public static function ifnull(string|QueryExpression $expression, string|QueryExpression $value, ?string $alias = null): QueryExpression
     {
@@ -176,7 +169,6 @@ class QueryFunction
      * @param bool $distinct Use DISTINCT or not
      * @param array|string|null $order_by Order by clause
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return QueryExpression
      */
     public static function groupConcat(string|QueryExpression $expression, ?string $separator = null, bool $distinct = false, array|string|null $order_by = null, ?string $alias = null): QueryExpression
     {
@@ -203,7 +195,6 @@ class QueryFunction
      * @param string|QueryExpression $expression Expression to sum
      * @param bool $distinct Use DISTINCT or not
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return QueryExpression
      */
     public static function sum(string|QueryExpression $expression, bool $distinct = false, ?string $alias = null): QueryExpression
     {
@@ -223,7 +214,6 @@ class QueryFunction
      * @param string|QueryExpression $expression Expression to count
      * @param bool $distinct Use DISTINCT or not
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return QueryExpression
      */
     public static function count(string|QueryExpression $expression, bool $distinct = false, ?string $alias = null): QueryExpression
     {
@@ -243,7 +233,6 @@ class QueryFunction
      * @param string|QueryExpression $expression Expression to cast
      * @param string $type Type to cast to
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return QueryExpression
      */
     public static function cast(string|QueryExpression $expression, string $type, ?string $alias = null): QueryExpression
     {
@@ -258,7 +247,6 @@ class QueryFunction
      * @param string|QueryExpression $expression Expression to convert
      * @param string $transcoding Transcoding to use
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return QueryExpression
      */
     public static function convert(string|QueryExpression $expression, string $transcoding, ?string $alias = null): QueryExpression
     {
@@ -270,7 +258,6 @@ class QueryFunction
     /**
      * Build a NOW SQL function call
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return QueryExpression
      */
     public static function now(?string $alias = null): QueryExpression
     {
@@ -280,7 +267,6 @@ class QueryFunction
     /**
      * Build a CURDATE SQL function call
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return QueryExpression
      */
     public static function curdate(?string $alias = null): QueryExpression
     {
@@ -293,7 +279,6 @@ class QueryFunction
      * @param string|QueryExpression $search String to search
      * @param string|QueryExpression $replace String to replace
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return QueryExpression
      */
     public static function replace(string|QueryExpression $expression, string|QueryExpression $search, string|QueryExpression $replace, ?string $alias = null): QueryExpression
     {
@@ -305,7 +290,6 @@ class QueryFunction
      * @param string|QueryExpression $expression Expression to convert
      * @param string|QueryExpression|null $format Function result alias
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return QueryExpression
      */
     public static function fromUnixtime(string|QueryExpression $expression, string|QueryExpression|null $format = null, ?string $alias = null): QueryExpression
     {
@@ -321,7 +305,6 @@ class QueryFunction
      * @param string|QueryExpression $expression Expression to format
      * @param string $format Format to use (Automatically quoted as a value)
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return QueryExpression
      */
     public static function dateFormat(string|QueryExpression $expression, string $format, ?string $alias = null): QueryExpression
     {
@@ -336,7 +319,6 @@ class QueryFunction
      * @param int $length Length to pad to
      * @param string $pad_string String to pad with (Automatically quoted as a value)
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return QueryExpression
      */
     public static function lpad(string|QueryExpression $expression, int $length, string $pad_string, ?string $alias = null): QueryExpression
     {
@@ -352,7 +334,6 @@ class QueryFunction
      * @param int $start Start position
      * @param int $length Length
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return QueryExpression
      */
     public static function substring(string|QueryExpression $expression, int $start, int $length, ?string $alias = null): QueryExpression
     {
@@ -366,7 +347,6 @@ class QueryFunction
      * @param string|QueryExpression $expression Expression to round
      * @param int $precision Precision to round to
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return QueryExpression
      */
     public static function round(string|QueryExpression $expression, int $precision = 0, ?string $alias = null): QueryExpression
     {
@@ -379,7 +359,6 @@ class QueryFunction
      * @param string|QueryExpression $expression Expression to check
      * @param string|QueryExpression $value Value to check against
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return QueryExpression
      */
     public static function nullif(string|QueryExpression $expression, string|QueryExpression $value, ?string $alias = null): QueryExpression
     {
@@ -392,7 +371,6 @@ class QueryFunction
      * @param string|QueryExpression $expression1 Expression to compare
      * @param string|QueryExpression $expression2 Expression to compare
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return QueryExpression
      */
     public static function timestampdiff(string $unit, string|QueryExpression $expression1, string|QueryExpression $expression2, ?string $alias = null): QueryExpression
     {
@@ -404,7 +382,6 @@ class QueryFunction
      * @param string|QueryExpression $expression1 Expression to compare
      * @param string|QueryExpression $expression2 Expression to compare
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return QueryExpression
      */
     public static function datediff(string|QueryExpression $expression1, string|QueryExpression $expression2, ?string $alias = null): QueryExpression
     {
@@ -416,7 +393,6 @@ class QueryFunction
      * @param string|QueryExpression $expression1 Expression to compare
      * @param string|QueryExpression $expression2 Expression to compare
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return QueryExpression
      */
     public static function timediff(string|QueryExpression $expression1, string|QueryExpression $expression2, ?string $alias = null): QueryExpression
     {
@@ -427,7 +403,6 @@ class QueryFunction
      * Build a UNIX_TIMSTAMP SQL function call
      * @param string|QueryExpression|null $expression Expression to convert. If null, the current timestamp will be used (NOW() implied at the DB level).
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return QueryExpression
      */
     public static function unixTimestamp(string|QueryExpression|null $expression = null, ?string $alias = null): QueryExpression
     {
@@ -443,7 +418,6 @@ class QueryFunction
      * @param string|QueryExpression $substring String to search for. Treated like a value if it's a string.
      * @param string|QueryExpression $expression Expression to search in
      * @param string|null $alias Function result alias (will be automatically quoted)
-     * @return QueryExpression
      */
     public static function locate(string|QueryExpression $substring, string|QueryExpression $expression, ?string $alias = null): QueryExpression
     {
@@ -469,7 +443,6 @@ class QueryFunction
      * @param string|QueryExpression $candidate Value to search for. String values will be treated as field identifiers.
      * @param string $path JSON path expression (e.g., '$' for root, '$.fieldname' for nested).
      * @param string|null $alias Function result alias.
-     * @return QueryExpression
      *
      * @example
      * // Search for a scalar value

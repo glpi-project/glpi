@@ -186,7 +186,6 @@ class NotificationTemplate extends CommonDBTM
 
 
     /**
-     * @param $options
      **/
     public function getAdditionnalProcessOption($options)
     {
@@ -206,7 +205,6 @@ class NotificationTemplate extends CommonDBTM
     /**
      * @param $target             NotificationTarget object
      * @param $user_infos   array
-     * @param $event
      * @param $options      array
      *
      * @return false|string id of the template in templates_by_languages / false if computation failed
@@ -339,8 +337,6 @@ class NotificationTemplate extends CommonDBTM
 
 
     /**
-     * @param $string
-     * @param $data
      **/
     public static function process($string, $data, bool $html_context = false)
     {
@@ -417,8 +413,6 @@ class NotificationTemplate extends CommonDBTM
     /**
      * Convert relative links to GLPI nto absolute links.
      *
-     * @param string $string
-     * @return string
      */
     private static function convertRelativeGlpiLinksToAbsolute(string $string, bool $html_context): string
     {
@@ -441,8 +435,6 @@ class NotificationTemplate extends CommonDBTM
 
 
     /**
-     * @param $string
-     * @param $data
      **/
     public static function processIf($string, $data)
     {
@@ -503,7 +495,6 @@ class NotificationTemplate extends CommonDBTM
     /**
      * Convert notification data to HTML format.
      *
-     * @param array $data
      * @return array
      */
     private static function getDataForHtml(array $data)
@@ -529,7 +520,6 @@ class NotificationTemplate extends CommonDBTM
     /**
      * Convert notification data to plain text format.
      *
-     * @param array $data
      * @return array
      */
     private static function getDataForPlainText(array $data)
@@ -557,7 +547,6 @@ class NotificationTemplate extends CommonDBTM
 
 
     /**
-     * @param $signature
      **/
     public function setSignature($signature)
     {
@@ -566,7 +555,6 @@ class NotificationTemplate extends CommonDBTM
 
 
     /**
-     * @param $language
      **/
     public function getByLanguage($language)
     {

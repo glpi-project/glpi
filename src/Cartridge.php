@@ -232,7 +232,6 @@ class Cartridge extends CommonDBRelation
      * Send the cartridge back to stock.
      *
      * @since 0.85 (before name was restore)
-     * @param array   $input
      * @param boolean $history
      * @return bool
      */
@@ -934,7 +933,6 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
     /**
      * Print out a link to add directly a new cartridge from a cartridge item.
      *
-     * @param CartridgeItem $cartitem
      *
      * @return boolean|void
      **/

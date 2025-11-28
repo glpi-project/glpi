@@ -97,8 +97,6 @@ function isPluginItemType($classname)
  *
  * This function will be deprecated/removed once all the HTML code of GLPI will be moved inside Twig templates.
  *
- * @param mixed $str
- * @return string
  */
 function htmlescape(mixed $str): string
 {
@@ -110,8 +108,6 @@ function htmlescape(mixed $str): string
  *
  * This function will be deprecated/removed once all the JS code of GLPI will be moved inside JS files or Twig templates.
  *
- * @param mixed $str
- * @return string
  */
 function jsescape(mixed $str): string
 {

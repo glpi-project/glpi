@@ -138,7 +138,6 @@ class ItemVirtualMachine extends CommonDBChild
      * Display form
      *
      * @param integer $ID
-     * @param array   $options
      *
      * @return boolean TRUE if form is ok
      **/

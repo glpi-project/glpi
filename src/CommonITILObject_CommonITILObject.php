@@ -254,7 +254,6 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
     /**
      * Update parent items when relation is added/deleted.
      *
-     * @return void
      */
     private function updateParentItems(): void
     {
@@ -426,7 +425,6 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
      * @param boolean $inverted  Whether to invert label
      * @param boolean $with_icon prefix label with an icon
      *
-     * @return string
      **/
     public static function getLinkName($value, bool $inverted = false, bool $with_icon = false): string
     {
@@ -497,10 +495,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
     /**
      * Count all links between given item and any CommonITILObject item.
      *
-     * @param string $itemtype
-     * @param int $items_id
      *
-     * @return int
      */
     public static function countAllLinks(string $itemtype, int $items_id): int
     {
@@ -596,7 +591,6 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
      * @param int $items_id
      * @param array $changes
      *
-     * @return void
      */
     public static function manageLinksOnChange($itemtype, $items_id, $changes): void
     {
@@ -644,9 +638,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
      * Normalize input from generic format to expected format.
      * e.g. [`itemtype_1`, `items_id_1`, `itemtype_2`, `items_id_2`, `link`] -> [`changes_id`, `problems_id`, `link`]
      *
-     * @param array $input
      *
-     * @return array
      */
     final public function normalizeInput(array $input): array
     {
@@ -693,9 +685,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
      * This method ensure to always use SON_OF relations for relation between 2 identical itemtypes, as it is
      * a prerequisite for "Parent/Child" search options that cannot use conditional `linkfield`.
      *
-     * @param array $input
      *
-     * @return array
      */
     final protected static function normalizeParentSonRelation(array $input): array
     {

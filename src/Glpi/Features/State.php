@@ -43,7 +43,6 @@ trait State
     /**
      * Check if itemtype class is present in configuration array
      *
-     * @return void
      */
     private function checkSetup(): void
     {

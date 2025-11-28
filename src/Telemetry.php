@@ -408,7 +408,6 @@ class Telemetry extends CommonGLPI
     /**
      * Disable telemetry
      *
-     * @return void
      */
     public static function disable(): void
     {

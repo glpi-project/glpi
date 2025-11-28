@@ -130,7 +130,6 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
     /**
      * Get singleton instance
      *
-     * @return AssetDefinitionManager
      */
     public static function getInstance(): self
     {
@@ -144,7 +143,6 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
     /**
      * Unset the singleton instance
      *
-     * @return void
      */
     public static function unsetInstance(): void
     {
@@ -242,8 +240,6 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
     /**
      * Autoload asset class, if requested class is a generic asset class.
      *
-     * @param string $classname
-     * @return void
      */
     public function autoloadClass(string $classname): void
     {
@@ -285,8 +281,6 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
     /**
      * Get the classes names of all assets models concrete classes.
      *
-     * @param bool $with_namespace
-     * @return array
      */
     public function getAssetModelsClassesNames(bool $with_namespace = true): array
     {
@@ -305,8 +299,6 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
     /**
      * Get the classes names of all assets types concrete classes.
      *
-     * @param bool $with_namespace
-     * @return array
      */
     public function getAssetTypesClassesNames(bool $with_namespace = true): array
     {
@@ -382,8 +374,6 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
     /**
      * Return capacity instance.
      *
-     * @param string $classname
-     * @return CapacityInterface|null
      */
     public function getCapacity(string $classname): ?CapacityInterface
     {
@@ -420,8 +410,6 @@ PHP
     /**
      * Load asset model concrete class.
      *
-     * @param AssetDefinition $definition
-     * @return void
      * @used-by self::autoloadClass()
      */
     private function loadConcreteModelClass(AssetDefinition $definition): void
@@ -441,8 +429,6 @@ PHP
     /**
      * Load asset type concrete class.
      *
-     * @param AssetDefinition $definition
-     * @return void
      * @used-by self::autoloadClass()
      */
     private function loadConcreteTypeClass(AssetDefinition $definition): void

@@ -291,7 +291,6 @@ class ProjectCost extends CommonDBChild
      * @param Project $project      object
      * @param int     $withtemplate Template or basic item (default 0)
      *
-     * @return bool
      **/
     public static function showForProject(Project $project, $withtemplate = 0): bool
     {

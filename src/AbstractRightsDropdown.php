@@ -45,7 +45,6 @@ abstract class AbstractRightsDropdown
     /**
      * To be redefined by subclasses, URL to front file
      *
-     * @return string
      */
     abstract protected static function getAjaxUrl(): string;
 
@@ -54,7 +53,6 @@ abstract class AbstractRightsDropdown
      *
      * @param array $options Additional options
      *
-     * @return array
      */
     abstract protected static function getTypes(array $options = []): array;
 
@@ -69,7 +67,6 @@ abstract class AbstractRightsDropdown
      * @param string $type Class to check
      * @param array $options Additional options
      *
-     * @return bool
      */
     protected static function isTypeEnabled(string $type, array $options = []): bool
     {
@@ -83,7 +80,6 @@ abstract class AbstractRightsDropdown
      * @param string $name  Field name
      * @param array $values Selected values
      *
-     * @return string
      */
     public static function show(string $name, array $values, array $params = []): string
     {
@@ -124,7 +120,6 @@ abstract class AbstractRightsDropdown
      * @param string $text Search string
      * @param array $options Additional options
      *
-     * @return array
      */
     public static function fetchValues(string $text = "", array $options = []): array
     {
@@ -189,7 +184,6 @@ abstract class AbstractRightsDropdown
      *
      * @param array $values Selected values
      *
-     * @return array
      */
     protected static function getValueNames(array $values): array
     {
@@ -214,7 +208,6 @@ abstract class AbstractRightsDropdown
      *
      * @param string $text Search string
      *
-     * @return array
      */
     protected static function getProfiles(string $text): array
     {
@@ -236,7 +229,6 @@ abstract class AbstractRightsDropdown
      *
      * @param string $text Search string
      *
-     * @return array
      */
     protected static function getEntities(string $text): array
     {
@@ -263,7 +255,6 @@ abstract class AbstractRightsDropdown
      * @param string $text Search string
      * @param array $options Additional options
      *
-     * @return array
      */
     protected static function getUsers(string $text, array $options): array
     {
@@ -293,7 +284,6 @@ abstract class AbstractRightsDropdown
      * @param string $text Search string
      * @param array $options Additional options
      *
-     * @return array
      */
     protected static function getGroups(string $text, array $options): array
     {
@@ -331,7 +321,6 @@ abstract class AbstractRightsDropdown
      *
      * @param string $text Search string
      *
-     * @return array
      */
     protected static function getContacts(string $text): array
     {
@@ -357,7 +346,6 @@ abstract class AbstractRightsDropdown
      *
      * @param string $text Search string
      *
-     * @return array
      */
     protected static function getSuppliers(string $text, array $options = []): array
     {

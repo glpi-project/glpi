@@ -263,9 +263,7 @@ JAVASCRIPT
     /**
      * Get the matching label for a given key (definition_time field)
      *
-     * @param string $value
      *
-     * @return string
      *
      * @since 10.0.0
      */
@@ -304,7 +302,6 @@ JAVASCRIPT
      *
      * since 10.0
      *
-     * @param Ticket $ticket
      * @param SLM::TTO|SLM::TTR $type
      *
      * @return false|OlaLevel_Ticket|SlaLevel_Ticket
@@ -756,7 +753,6 @@ TWIG, $twig_params);
      * Should calculation on this LevelAgreement target date be done using
      * the "work_in_day" parameter set to true ?
      *
-     * @return bool
      */
     public function shouldUseWorkInDayMode(): bool
     {
@@ -1055,9 +1051,7 @@ TWIG, $twig_params);
     /**
      * Remove level of previously assigned level agreements for a given ticket
      *
-     * @param int $tickets_id
      *
-     * @return void
      */
     public function clearInvalidLevels(int $tickets_id): void
     {

@@ -180,9 +180,6 @@ abstract class AbstractConfigureCommand extends AbstractCommand
     /**
      * Save database configuration file.
      *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @param bool $compute_flags_from_db
      *
      * @throws InvalidArgumentException
      *
@@ -385,7 +382,6 @@ abstract class AbstractConfigureCommand extends AbstractCommand
     /**
      * Validate configuration variables from input.
      *
-     * @param InputInterface $input
      *
      * @return void
      * @throws InvalidArgumentException
@@ -420,8 +416,6 @@ abstract class AbstractConfigureCommand extends AbstractCommand
     /**
      * Ask user to confirm DB configuration.
      *
-     * @param InputInterface $input
-     * @param OutputInterface $output
      * @param string $db_hostport DB host and port
      * @param string $db_name DB name
      * @param string $db_user DB username
@@ -448,9 +442,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
     /**
      * Check timezones availability and return availability state.
      *
-     * @param mysqli $mysqli
      *
-     * @return bool
      */
     private function checkTimezonesAvailability(mysqli $mysqli): bool
     {

@@ -84,7 +84,6 @@ class RuleImportAssetTest extends DbTestCase
      *
      * @param string $name          New rule name
      * @param array  $criteria      Rule criteria
-     * @param array  $actions       Rule actions
      * @param string $afterRuleName Rule name to insert after.
      *
      * @return void

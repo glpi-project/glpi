@@ -58,7 +58,6 @@ class HasContractsCapacityTest extends DbTestCase
      * Test that the capacity is properly registered in the configuration
      * when enabled and unregistered when disabled.
      *
-     * @return void
      */
     public function testConfigRegistration(): void
     {
@@ -91,7 +90,6 @@ class HasContractsCapacityTest extends DbTestCase
      * Test that the "Contract item" tab is registered when the capacity
      * is enabled.
      *
-     * @return void
      */
     public function testContractItemTabRegistration(): void
     {
@@ -126,7 +124,6 @@ class HasContractsCapacityTest extends DbTestCase
      * Test that any "Contract_Item" items linked to the asset are
      * deleted when the capacity is disabled.
      *
-     * @return void
      */
     public function testContractItemDataDeletion(): void
     {
@@ -189,7 +186,6 @@ class HasContractsCapacityTest extends DbTestCase
      * Test that any history entries related to "Contract_Item" and
      * "Contract" are deleted when the capacity is disabled.
      *
-     * @return void
      */
     public function testHistoryDataDeletion(): void
     {
@@ -271,7 +267,6 @@ class HasContractsCapacityTest extends DbTestCase
      * Test that any display preferences entries related to
      * "Contract" are deleted when the capacity is disabled.
      *
-     * @return void
      */
     public function testDisplayPreferencesDataDeletion(): void
     {

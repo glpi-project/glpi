@@ -57,11 +57,8 @@ enum LinkedITILObjectsFieldStrategy: string
     /**
      * Get the linked ITIL objects based on the strategy and configuration.
      *
-     * @param LinkedITILObjectsFieldStrategyConfig $config
-     * @param AnswersSet $answers_set
      * @param array<int, CommonDBTM[]> $created_objects Array mapping destination_id to created objects
      *
-     * @return array|null
      */
     public function getLinkedITILObjects(
         LinkedITILObjectsFieldStrategyConfig $config,

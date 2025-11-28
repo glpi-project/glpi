@@ -574,7 +574,6 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @param $tt ITILTemplate object
      *
-     * @return bool
      **/
     public static function showCentralPreview(ITILTemplate $tt): bool
     {
@@ -675,8 +674,6 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @since 0.90
      *
-     * @param $target_id
-     * @param  $source_id
      **/
     public function mergeTemplateFields($target_id, $source_id)
     {
@@ -732,8 +729,6 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @since 0.90
      *
-     * @param $target_id
-     * @param $source_id
      */
     public function mergeTemplateITILCategories($target_id, $source_id)
     {
@@ -790,7 +785,6 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @since 0.90
      *
-     * @param $data
      **/
     public function formatFieldsToMerge($data)
     {
@@ -907,8 +901,6 @@ abstract class ITILTemplate extends CommonDropdown
 
     /**
      * Count the number of ITIL Objects currently using the specified template
-     * @param int $templates_id
-     * @return int
      */
     public static function countAffectedItems(int $templates_id): int
     {

@@ -209,9 +209,7 @@ class Calendar_Holiday extends CommonDBRelation
     /**
      * Return holidays related to given calendar.
      *
-     * @param int $calendars_id
      *
-     * @return array
      */
     public function getHolidaysForCalendar(int $calendars_id): array
     {
@@ -247,9 +245,7 @@ class Calendar_Holiday extends CommonDBRelation
     /**
      * Invalidate cache for given holiday.
      *
-     * @param int $holidays_id
      *
-     * @return bool
      */
     public function invalidateHolidayCache(int $holidays_id): bool
     {
@@ -276,9 +272,7 @@ class Calendar_Holiday extends CommonDBRelation
     /**
      * Get cache key of cache entry containing holidays of given calendar.
      *
-     * @param int $calendars_id
      *
-     * @return string
      */
     private function getCalendarHolidaysCacheKey(int $calendars_id): string
     {
@@ -288,9 +282,7 @@ class Calendar_Holiday extends CommonDBRelation
     /**
      * Invalidate holidays cache of given calendar.
      *
-     * @param int $calendars_id
      *
-     * @return bool
      */
     private function invalidateCalendarCache(int $calendars_id): bool
     {

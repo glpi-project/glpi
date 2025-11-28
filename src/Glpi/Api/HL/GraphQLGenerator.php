@@ -180,9 +180,6 @@ final class GraphQLGenerator
     }
 
     /**
-     * @param array $property
-     * @param string|null $name
-     * @param string $prefix
      *
      * @return Closure|ListOfType|ObjectType|ScalarType|void
      */

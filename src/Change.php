@@ -816,7 +816,6 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     /**
-     * @param CommonDBTM $item
      * @param integer    $withtemplate
      *
      * @return void|false
@@ -853,7 +852,6 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     /**
-     * @param CommonDBTM $item
      * @return array
      */
     public static function getListForItemRestrict(CommonDBTM $item)

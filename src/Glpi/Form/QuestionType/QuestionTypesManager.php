@@ -48,7 +48,6 @@ final class QuestionTypesManager
 {
     /**
      * Singleton instance
-     * @var QuestionTypesManager|null
      */
     private static ?QuestionTypesManager $instance = null;
 
@@ -91,7 +90,6 @@ final class QuestionTypesManager
     /**
      * Get the singleton instance
      *
-     * @return QuestionTypesManager
      */
     public static function getInstance(): QuestionTypesManager
     {
@@ -105,7 +103,6 @@ final class QuestionTypesManager
     /**
      * Get the default question type class
      *
-     * @return string
      */
     public function getDefaultTypeClass(): string
     {

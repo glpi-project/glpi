@@ -1129,8 +1129,6 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
     }
 
     /**
-     * @param array $input
-     * @param bool $is_dynamic
      *
      * @return void
      */
@@ -1179,7 +1177,6 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
     }
 
     /**
-     * @param CronTask $task
      *
      * @return int
      */

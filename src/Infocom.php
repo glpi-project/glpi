@@ -228,7 +228,6 @@ class Infocom extends CommonDBChild
     /**
      * @since 0.84
      *
-     * @param $field
      * @param $name               (default '')
      * @param $values             (default '')
      * @param $options      array
@@ -282,7 +281,6 @@ class Infocom extends CommonDBChild
      * @param class-string<CommonDBTM> $itemtype The itemtype to get data for. The itemtype must have a `ticket_tco` field.
      * @param string $begin Date string for the beginning of the period to retrieve (based on buy or use date)
      * @param string $end Date string for the end of the period to retrieve (based on buy or use date)
-     * @return ?array
      */
     public static function getDataForAssetInfocomReport(string $itemtype, string $begin, string $end): ?array
     {
@@ -353,7 +351,6 @@ class Infocom extends CommonDBChild
      * @param class-string<CommonDBTM> $itemtype The itemtype to get data for. The itemtype must have a `ticket_tco` field.
      * @param string $begin Date string for the beginning of the period to retrieve (based on buy or use date)
      * @param string $end Date string for the end of the period to retrieve (based on buy or use date)
-     * @return ?array
      */
     public static function getDataForOtherInfocomReport(string $itemtype, string $begin, string $end): ?array
     {
@@ -626,7 +623,6 @@ class Infocom extends CommonDBChild
 
 
     /**
-     * @param $name
      **/
     public static function cronInfo($name)
     {
@@ -1400,7 +1396,6 @@ HTML;
     }
 
     /**
-     * @param $itemtype
      **/
     public static function rawSearchOptionsToAdd($itemtype = null)
     {

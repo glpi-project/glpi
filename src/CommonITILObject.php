@@ -172,7 +172,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Load linked users
      *
-     * @return void
      */
     public function loadUsers(): void
     {
@@ -187,7 +186,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Load linked groups
      *
-     * @return void
      */
     protected function loadGroups(): void
     {
@@ -202,7 +200,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Load linked suppliers
      *
-     * @return void
      */
     public function loadSuppliers(): void
     {
@@ -235,7 +232,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * Clear lazy loaded actor data so it can be recomputed again next time its
      * accessed
      *
-     * @return void
      */
     protected function clearLazyLoadedActors(): void
     {
@@ -247,7 +243,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Magic getter for lazy loaded properties
      *
-     * @param string $property_name
      * @return mixed
      */
     public function __get(string $property_name)
@@ -279,7 +274,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Magic handler for isset() calls on lazy loaded properties
      *
-     * @param string $property_name
      */
     public function __isset(string $property_name)
     {
@@ -297,7 +291,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Magic handler for unset() calls on lazy loaded properties
      *
-     * @param string $property_name
      */
     public function __unset(string $property_name)
     {
@@ -324,7 +317,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 10.0
      *
-     * @return int
      */
     public function countActors(): int
     {
@@ -579,7 +571,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @param array $options ITIL Object options array passed to showFormXXXX functions. This is passed by reference and will be modified by this function.
      * @param ?array $overriden_defaults If specified, these values will be used as the defaults instead of the ones from the {@link getDefaultValues()} function.
      * @param bool $force_set_defaults If true, the defaults are set for missing options even if the item is not new.
-     * @return void
      * @see getDefaultOptions()
      * @see restoreInput()
      * @see restoreSavedValues()
@@ -609,7 +600,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     }
 
     /**
-     * @param $ID
      * @param $options   array
      **/
     public function showForm($ID, array $options = [])
@@ -1154,9 +1144,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Check if user validation is requested.
      *
-     * @param int $users_id
      *
-     * @return bool
      */
     final protected function isUserValidationRequested(int $users_id, bool $search_in_groups): bool
     {
@@ -1252,7 +1240,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @param int $type      type to search (see constants)
      * @param int $groups_id group ID
      *
-     * @return bool
      **/
     // FIXME add params typehint in GLPI 11.0
     public function isGroup($type, $groups_id): bool
@@ -1581,9 +1568,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Count active ITIL Objects having given user as observer.
      *
-     * @param int $user_id
      *
-     * @return int
      */
     final public function countActiveObjectsForObserverUser(int $user_id): int
     {
@@ -1619,9 +1604,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Count active ITIL Objects having given group as requester.
      *
-     * @param int $group_id
      *
-     * @return int
      */
     final public function countActiveObjectsForRequesterGroup(int $group_id): int
     {
@@ -1637,9 +1620,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Count active ITIL Objects having given group as observer.
      *
-     * @param int $group_id
      *
-     * @return int
      */
     final public function countActiveObjectsForObserverGroup(int $group_id): int
     {
@@ -1909,7 +1890,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Checks if all required fields are filled
      *
-     * @return bool
      */
     public function checkRequiredFieldsFilled(): bool
     {
@@ -3080,9 +3060,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Handle input deprecations by transferring old supported input keys to new input keys.
      *
-     * @param array $input
      *
-     * @return array
      */
     private function handleInputDeprecations(array $input): array
     {
@@ -3107,9 +3085,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Check input fields consistency.
      *
-     * @param array $input
      *
-     * @return bool
      */
     private function checkFieldsConsistency(array $input): bool
     {
@@ -6905,7 +6881,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * @param integer $output_type Output type
      * @param string $mass_id      id of the form to check all
-     * @param array $params
      * @return void
      */
     public static function commonListHeader(
@@ -7487,7 +7462,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
     /**
      * Get an HTML string of all timeline actions/buttons provided by plugins via the {@link Hooks::TIMELINE_ACTIONS}  hook.
-     * @return string
      * @since 10.0.0
      */
     public function getLegacyTimelineActionsHTML(): string
@@ -7982,7 +7956,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     }
 
     /**
-     * @param CommonITILObject $item
      * @return void
      */
     public static function showEditDescriptionForm(CommonITILObject $item)
@@ -8161,7 +8134,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Check if input contains a flag set to prevent status computation.
      *
-     * @param array $input
      *
      * @return boolean
      */
@@ -8351,8 +8323,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * Get the template to use
      * If the input is not defined, it will get it from the object fields datas
      *
-     * @param array $input
-     * @return ITILTemplate|null
      *
      * @since 11.0.2
      */
@@ -8379,7 +8349,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @param int $type Type, if any
      *
-     * @return string
      */
     public function getTemplateFieldName($type = null): string
     {
@@ -8545,7 +8514,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @param bool      $bypass_rights  Whether to bypass rights checks (default: false)
      * @param User|null $user           User for rights checking (default: null = current session rights)
      *
-     * @return array
      */
     public function getAssociatedDocumentsCriteria($bypass_rights = false, ?User $user = null): array
     {
@@ -8767,7 +8735,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * Get criteria needed to match objets with an "open" status (= not resolved
      * or closed)
      *
-     * @return array
      */
     public static function getOpenCriteria(): array
     {
@@ -8887,7 +8854,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Handle notifications to be sent after item creation.
      *
-     * @return void
      */
     public function handleNewItemNotifications(): void
     {
@@ -9203,7 +9169,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * New way to do it with a general array containing all item actors.
      * We compare to old actors (in case of items's update) to know which we need to remove/add/update
      *
-     * @param bool $disable_notifications
      *
      * @since 10.0.0
      *
@@ -9605,7 +9570,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * Replay setting auto assign if set in rules engine or by auto_assign_mode
      * Do not force status if status has been set by rules
      *
-     * @param array $input
      *
      * @return array
      */
@@ -10468,7 +10432,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Returns an instance of validation class, if it exists.
      *
-     * @return CommonITILValidation|null
      */
     public static function getValidationClassInstance(): ?CommonITILValidation
     {
@@ -10515,7 +10478,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * Instead of "{itemtype} - {name}" we will use {itemtype} ({id}) - {name}
      * as the ID of a Ticket/Change/Problem is an important information
      *
-     * @return string
      */
     public function getBrowserTabName(): string
     {
@@ -10587,7 +10549,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Change $input values before applying business rules
      *
-     * @param array $input
      *
      * @return void
      */
@@ -10836,7 +10797,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
     /**
      * Returns the {@link CommonITILSatisfaction} class instance for the current itemtype
-     * @return CommonITILSatisfaction|null
      */
     public static function getSatisfactionClassInstance(): ?CommonITILSatisfaction
     {
@@ -10851,7 +10811,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * Displays the current satisfaction survey for the given item or a message stating there is no survey.
      *
      * @param CommonITILObject $item The ITIL Object
-     * @return void
      * @since 11.0.0
      */
     final protected static function showSatisfactionTabContent(CommonITILObject $item): void
@@ -10877,7 +10836,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * Must be called from {@link static::post_updateItem()}
      *
-     * @return void
      * @since 11.0.0
      */
     final protected function handleSatisfactionSurveyOnUpdate(): void
@@ -10931,9 +10889,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Transfer "_actors" input (introduced in 10.0.0) into historical input keys.
      *
-     * @param array $input
      *
-     * @return array
      */
     protected function transformActorsInput(array $input): array
     {
@@ -11186,11 +11142,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     }
 
     /**
-     * @param int $condition
      * @phpstan-param RuleCommonITILObject::ON* $condition
-     * @param array $input
-     * @param int $entid
-     * @return void
      */
     protected function processRules(int $condition, array &$input, int $entid = -1): void
     {

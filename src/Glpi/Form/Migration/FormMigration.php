@@ -125,7 +125,6 @@ class FormMigration extends AbstractPluginMigration
     /**
      * Retrieve the map of types to convert
      *
-     * @return array
      */
     public function getTypesConvertMap(): array
     {
@@ -784,7 +783,6 @@ class FormMigration extends AbstractPluginMigration
      * Sets horizontal_rank to null for blocks that are contained in a horizontal layout
      * and have only one element.
      *
-     * @return void
      */
     private function removeUselessHorizontalRanks(): void
     {
@@ -977,7 +975,6 @@ class FormMigration extends AbstractPluginMigration
     /**
      * Process migration of form targets
      *
-     * @return void
      */
     private function processMigrationOfFormTargets(): void
     {

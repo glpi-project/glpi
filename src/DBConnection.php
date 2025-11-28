@@ -98,7 +98,6 @@ class DBConnection extends CommonGLPI
      * @param boolean $use_utf8mb4               Flag that indicates if utf8mb4 charset/collation should be used
      * @param boolean $allow_datetime            Flag that indicates if datetime fields usage should be allowed
      * @param boolean $allow_signed_keys         Flag that indicates if signed integers in primary/foreign keys usage should be allowed
-     * @param string  $config_dir
      *
      * @return boolean
      */
@@ -161,7 +160,6 @@ class DBConnection extends CommonGLPI
      * @param string $name
      * @param string|bool $value
      * @param bool   $update_slave
-     * @param string $config_dir
      *
      * @return boolean
      *
@@ -176,9 +174,7 @@ class DBConnection extends CommonGLPI
     /**
      * Change variables value in config(s) file.
      *
-     * @param array  $properties
      * @param bool   $update_slave
-     * @param string $config_dir
      *
      * @return boolean
      *
@@ -247,7 +243,6 @@ class DBConnection extends CommonGLPI
      * @param boolean $use_utf8mb4               Flag that indicates if utf8mb4 charset/collation should be used
      * @param boolean $allow_datetime            Flag that indicates if datetime fields usage should be allowed
      * @param boolean $allow_signed_keys         Flag that indicates if signed integers in primary/foreign keys usage should be allowed
-     * @param string  $config_dir
      *
      * @return boolean for success
      **/
@@ -566,7 +561,6 @@ class DBConnection extends CommonGLPI
     /**
      * Get replication status information
      *
-     * @return array
      */
     public static function getReplicationStatus(): array
     {
@@ -764,7 +758,6 @@ class DBConnection extends CommonGLPI
     /**
      * Get system information
      *
-     * @return array
      * @phpstan-return array{label: string, content: string}
      **/
     public function getSystemInformation(): array
@@ -808,10 +801,7 @@ class DBConnection extends CommonGLPI
     /**
      * Set charset to use for DB connection handler.
      *
-     * @param mysqli $dbh
-     * @param bool   $use_utf8mb4
      *
-     * @return void
      *
      * @since 10.0.0
      */
@@ -839,7 +829,6 @@ class DBConnection extends CommonGLPI
     /**
      * Return default charset to use.
      *
-     * @return string
      *
      * @since 10.0.0
      */
@@ -857,7 +846,6 @@ class DBConnection extends CommonGLPI
     /**
      * Return default collation to use.
      *
-     * @return string
      *
      * @since 10.0.0
      */
@@ -875,7 +863,6 @@ class DBConnection extends CommonGLPI
     /**
      * Return default sign option to use for primary (and foreign) key fields.
      *
-     * @return string
      *
      * @since 10.0.0
      */
@@ -893,12 +880,7 @@ class DBConnection extends CommonGLPI
     /**
      * Return a DB instance using given connection parameters.
      *
-     * @param string $host
-     * @param string $user
-     * @param string $password
-     * @param string $dbname
      *
-     * @return DBmysql
      */
     public static function getDbInstanceUsingParameters(string $host, string $user, string $password, string $dbname): DBmysql
     {
@@ -922,7 +904,6 @@ class DBConnection extends CommonGLPI
 
     /**
      * Indicates whether the database service is available.
-     * @return bool
      */
     public static function isDbAvailable(): bool
     {

@@ -179,9 +179,7 @@ final class CriteriaFilter extends CommonDBChild
     /**
      * Compute the default search criteria to display for an itemtype
      *
-     * @param string $itemtype
      *
-     * @return array
      */
     public static function getDefaultSearch(string $itemtype): array
     {

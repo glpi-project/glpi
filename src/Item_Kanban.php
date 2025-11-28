@@ -118,8 +118,6 @@ class Item_Kanban extends CommonDBRelation
     /**
      * Check if a state is saved for a specific item.
      * @param class-string<CommonDBTM> $itemtype
-     * @param int $items_id
-     * @return bool
      */
     public static function hasStateForItem(string $itemtype, int $items_id): bool
     {

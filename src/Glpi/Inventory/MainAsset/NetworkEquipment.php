@@ -258,8 +258,6 @@ class NetworkEquipment extends MainAsset
     }
 
     /**
-     * @param stdClass $port
-     * @param int $netports_id
      *
      * @return void
      */
@@ -342,7 +340,6 @@ class NetworkEquipment extends MainAsset
     /**
      * Get detected switches (sorted by their index)
      *
-     * @return array
      */
     public function getStackedSwitches(): array
     {
@@ -377,7 +374,6 @@ class NetworkEquipment extends MainAsset
      *
      * @param array $components Network components
      *
-     * @return string
      */
     public function getStackComponentName(array $components): string
     {
@@ -430,7 +426,6 @@ class NetworkEquipment extends MainAsset
     /**
      * Get wireless controller access points
      *
-     * @return array
      */
     public function getAccessPoints(): array
     {
@@ -474,7 +469,6 @@ class NetworkEquipment extends MainAsset
      * Try to know if networkEquipement need to be updated from discovery
      * Only if IP has changed
      *
-     * @param \CommonDBTM $item
      * @param stdClass    $val
      *
      * @return boolean

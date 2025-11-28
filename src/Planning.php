@@ -227,7 +227,6 @@ class Planning extends CommonGLPI
      * Get status icon
      *
      * @param int $status status ID
-     * @return string
      * @since 10.0.9
      */
     public static function getStatusIcon($status): string
@@ -245,7 +244,6 @@ class Planning extends CommonGLPI
      * Get status class
      *
      * @param int $status status ID
-     * @return string
      * @since 10.0.9
      */
     public static function getStatusClass($status): string
@@ -262,7 +260,6 @@ class Planning extends CommonGLPI
      * Get status color
      *
      * @param int $status status ID
-     * @return string
      * @since 10.0.9
      */
     public static function getStatusColor($status): string
@@ -722,7 +719,6 @@ JAVASCRIPT;
      * @param $filter_data : array of filter date, must contains :
      *   * 'show_delete' (boolean): show delete button
      *   * 'filter_color_index' (integer): index of the color to use in self::$palette_bg
-     * @param $options
      *
      * @return void
      * @used-by templates/pages/assistance/planning/filters.html.twig
@@ -1338,8 +1334,6 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param array $data
-     * @return void
      * @used-by templates/pages/assistance/planning/add_classic_event.html.twig
      */
     public static function showPlanningCheck(array $data): void
@@ -1441,7 +1435,6 @@ TWIG, $twig_params);
      *
      * @param array $event the event to clone (with itemtype and items_id keys)
      *
-     * @return bool
      */
     public static function deleteEvent(array $event = []): bool
     {
@@ -1880,9 +1873,6 @@ TWIG, $twig_params);
     /**
      * Return events fetched from user external calendars.
      *
-     * @param string $limit_begin
-     * @param string $limit_end
-     * @return array
      * @throws Exception
      */
     private static function getExternalCalendarRawEvents(string $limit_begin, string $limit_end): array
@@ -2424,7 +2414,6 @@ TWIG, ['msg' => __('Your planning')]);
     /**
      * Get CalDAV base calendar URL for given actor.
      *
-     * @param CommonDBTM $item
      *
      * @return string|null
      */

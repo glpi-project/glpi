@@ -1052,10 +1052,6 @@ class SearchTest extends DbTestCase
     /**
      * Get criterion params for corresponding SO.
      *
-     * @param CommonDBTM $item
-     * @param int $so_key
-     * @param array $so_data
-     * @return null|array
      */
     private function getCriterionParams(CommonDBTM $item, int $so_key, array $so_data): ?array
     {
@@ -2977,7 +2973,6 @@ class SearchTest extends DbTestCase
     /**
      * Returns list of searchable classes.
      *
-     * @return array
      */
     private function getSearchableClasses(): array
     {
@@ -3205,9 +3200,6 @@ class SearchTest extends DbTestCase
     }
 
     /**
-     * @param string $field
-     * @param bool $expected
-     * @return void
      */
     #[DataProvider('isVirtualFieldProvider')]
     public function testIsVirtualField(string $field, bool $expected): void

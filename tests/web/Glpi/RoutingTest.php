@@ -41,7 +41,6 @@ class RoutingTest extends FrontBaseClass
     /**
      * Load plugin tester index page
      *
-     * @return void
      */
     public function testPluginRootRoute(): void
     {
@@ -55,7 +54,6 @@ class RoutingTest extends FrontBaseClass
     /**
      * Load plugin tester page that requires authentication
      *
-     * @return void
      */
     public function testPluginTestRoute(): void
     {

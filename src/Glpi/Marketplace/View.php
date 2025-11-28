@@ -66,7 +66,6 @@ class View extends CommonGLPI
     /**
      * singleton return the current api instance
      *
-     * @return PluginsApi
      */
     public static function getAPI(): PluginsApi
     {
@@ -948,8 +947,6 @@ JS;
     /**
      * Return HTML part for plugins pagination
      *
-     * @param int $current_page
-     * @param int $total
      * @param bool $only_li display only the li tags in return html (used by ajax queries)
      *
      * @return string the pagination html

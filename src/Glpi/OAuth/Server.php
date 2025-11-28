@@ -153,8 +153,6 @@ final class Server
     }
 
     /**
-     * @param Request $request
-     * @return array
      * @phpstan-return array{client_id: string, user_id: string, scopes: string[]}
      * @throws OAuthServerException
      * @throws OAuth2KeyException
@@ -174,7 +172,6 @@ final class Server
 
     /**
      * Get all scopes available for clients.
-     * @return array
      */
     public static function getAllowedScopes(): array
     {

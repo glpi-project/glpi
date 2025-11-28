@@ -387,7 +387,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     /**
      * Prepare Search url before saving it do db on creation or update
      *
-     * @param array $input
      *
      * @return array $input
      */
@@ -673,7 +672,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      * @param string $itemtype if given filter saved search by only this one
      * @param bool   $inverse if true, the `itemtype` params filter by "not" criteria
      *
-     * @return array
      */
     public function getMine(?string $itemtype = null, bool $inverse = false): array
     {
@@ -787,8 +785,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     /**
      * return Html list of saved searches for a given itemtype
      *
-     * @param string|null $itemtype
-     * @param bool   $inverse
      *
      * @return void
      */
@@ -1212,7 +1208,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @param boolean $forceall force all joins (false by default)
      *
-     * @return array
      */
     public static function getVisibilityCriteria(bool $forceall = false): array
     {

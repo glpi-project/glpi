@@ -201,7 +201,6 @@ class IsInventoriableCapacityTest extends DbTestCase
      * Test if the getCapacityUsageDescription method returns a correct description
      * of the capacity usage.
      *
-     * @return void
      */
     public function testGetCapacityUsageDescription(): void
     {

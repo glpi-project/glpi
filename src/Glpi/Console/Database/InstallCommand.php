@@ -361,8 +361,6 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
     /**
      * Check if input contains DB config options.
      *
-     * @param InputInterface $input
-     * @param OutputInterface $output
      *
      * @return boolean
      */

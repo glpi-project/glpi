@@ -791,7 +791,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      * @phpstan-param non-empty-string $form
      * @param string $interface The interface name
      * @phpstan-param 'all'|'central'|'helpdesk' $interface
-     * @return array
      * @phpstan-return ($interface is 'all' ? array<string, array<string, array<string, RightDefinition[]>>> : ($form is 'all' ? array<string, array<string, RightDefinition[]>> : ($group is 'all' ? array<string, RightDefinition[]> : RightDefinition[])))
      * @internal BC not guaranteed. Only public so it can be used in tests to ensure search options are made for all rights.
      */
@@ -3309,8 +3308,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     }
 
     /**
-     * @param $value
-     * @return string
      */
     public static function getInterfaceName($value): string
     {
@@ -3340,7 +3337,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     }
 
     /**
-     * @param $value
      * @return mixed|string
      * @since 0.84
      */
@@ -3771,7 +3767,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      * Check if this profile is the last super-admin profile (a "super-admin
      * profile" is a profile that can edit other profiles)
      *
-     * @return bool
      */
     public function isLastSuperAdminProfile(): bool
     {

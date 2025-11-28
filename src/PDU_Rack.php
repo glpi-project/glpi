@@ -304,7 +304,6 @@ class PDU_Rack extends CommonDBRelation
     }
 
     /**
-     * @param Rack $rack
      *
      * @return void
      */
@@ -361,7 +360,6 @@ class PDU_Rack extends CommonDBRelation
     }
 
     /**
-     * @param Rack $rack
      *
      * @return void
      */
@@ -515,7 +513,6 @@ JAVASCRIPT;
     }
 
     /**
-     * @param Rack      $rack
      * @param int|array $side Side to target, use an array for multiple sides
      *
      * @return void
@@ -684,7 +681,6 @@ JAVASCRIPT;
 
     /**
      * Return an iterator for all pdu used in a side of a rack
-     * @param  Rack      $rack
      * @param  int|array $side Side to target, use an array for multiple sides
      * @return DBmysqlIterator
      */

@@ -321,7 +321,6 @@ class CronTask extends CommonDBTM
      *    <li>0: Nothing to do</li>
      *   <li>&gt; 0: Ok</li>
      * </ul>
-     * @param int $log_state
      *
      * @return bool : true if ok (not start by another)
      *
@@ -1806,7 +1805,6 @@ TWIG, ['msg' => __('Last run list')]);
     /**
      * Get criteria to identify crontasks that may be dead.
      * This includes tasks running more than twice as long as their frequency or over 2 hours.
-     * @return DBmysqlIterator
      */
     public static function getZombieCronTasks(): DBmysqlIterator
     {
@@ -1910,7 +1908,6 @@ TWIG, ['msg' => __('Last run list')]);
     /**
      * Check if any web cron task exist and is enabled
      *
-     * @return bool
      **/
     public static function mustRunWebTasks(): bool
     {

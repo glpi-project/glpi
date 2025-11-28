@@ -43,7 +43,6 @@ interface TagProviderInterface
     /**
      * Get the color of the tag.
      *
-     * @return string
      */
     public function getTagColor(): string;
 

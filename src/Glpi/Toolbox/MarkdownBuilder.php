@@ -52,7 +52,6 @@ class MarkdownBuilder
     /**
      * Get the generated markdown content
      *
-     * @return string
      */
     public function getMarkdown(): string
     {
@@ -158,7 +157,6 @@ class MarkdownBuilder
     /**
      * Add a table row
      *
-     * @param array $values
      *
      * @return void
      */
@@ -170,7 +168,6 @@ class MarkdownBuilder
     /**
      * Add a table header
      *
-     * @param array $headers
      *
      * @return void
      */
@@ -186,7 +183,6 @@ class MarkdownBuilder
      *
      * @param string $code
      *
-     * @return string
      */
     public static function code($code): string
     {

@@ -44,7 +44,6 @@ abstract class HTMLTableBase
     private $super;
 
     /**
-     * @param $super
      **/
     public function __construct($super)
     {
@@ -52,7 +51,6 @@ abstract class HTMLTableBase
     }
 
     /**
-     * @param HTMLTableHeader $header_object
      * @param boolean $allow_super_header    (false by default
      **/
     public function appendHeader(HTMLTableHeader $header_object, $allow_super_header = false)

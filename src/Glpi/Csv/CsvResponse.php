@@ -42,7 +42,6 @@ class CsvResponse
     /**
      * Output a CSV file using League\Csv
      *
-     * @param ExportToCsvInterface $export
      */
     public static function output(ExportToCsvInterface $export): void
     {

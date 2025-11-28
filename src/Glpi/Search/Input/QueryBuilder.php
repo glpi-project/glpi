@@ -67,7 +67,6 @@ final class QueryBuilder implements SearchInputInterface
      * @param string $itemtype  Type to display the form
      * @param array  $params    Array of parameters may include sort, is_deleted, criteria, metacriteria
      *
-     * @return void
      **/
     public static function showGenericSearch(string $itemtype, array $params): void
     {
@@ -141,7 +140,6 @@ final class QueryBuilder implements SearchInputInterface
      * @param string $itemtype  Type to display the form
      * @param array  $params    Array of parameters may include sort, is_deleted, criteria, metacriteria
      *
-     * @return void
      */
     public static function showGenericSort(string $itemtype, array $params): void
     {
@@ -552,7 +550,6 @@ final class QueryBuilder implements SearchInputInterface
      *
      * @param  array  $request @see displayCriteria method
      *
-     * @return void
      */
     public static function displaySortCriteria(array $request = []): void
     {
@@ -926,7 +923,6 @@ final class QueryBuilder implements SearchInputInterface
      *
      * @since 11.0
      *
-     * @return void
      */
     public static function resetActiveSavedSearch(): void
     {
@@ -1009,7 +1005,6 @@ final class QueryBuilder implements SearchInputInterface
     /**
      * Get the input value validation pattern for given datatype.
      *
-     * @param string    $datatype
      * @param bool      $with_delimiters
      *      True to return a complete pattern, including delimiters.
      *      False to return a pattern without delimiters, that can be used inside another regex or in a HTML input pattern.

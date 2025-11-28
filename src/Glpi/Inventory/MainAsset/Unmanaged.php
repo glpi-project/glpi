@@ -85,9 +85,7 @@ class Unmanaged extends MainAsset
     /**
      * Prepare network device information
      *
-     * @param stdClass $val
      *
-     * @return void
      */
     protected function prepareForNetworkDevice(stdClass $val): void
     {

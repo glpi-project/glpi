@@ -161,7 +161,6 @@ class Holiday extends CommonDropdown
     /**
      * Invalidate holidays cache on linked calendars.
      *
-     * @return void
      */
     private function invalidateCalendarHolidayCache(): void
     {

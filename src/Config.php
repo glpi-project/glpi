@@ -379,9 +379,7 @@ class Config extends CommonDBTM
     /**
      * Handle SMTP input values.
      *
-     * @param array $input
      *
-     * @return array
      */
     private function handleSmtpInput(array $input): array
     {
@@ -701,7 +699,6 @@ class Config extends CommonDBTM
     /**
      * Check if the "use_password_security" parameter is enabled
      *
-     * @return bool
      */
     public static function arePasswordSecurityChecksEnabled(): bool
     {
@@ -1530,7 +1527,6 @@ class Config extends CommonDBTM
     /**
      * Get message that informs the user he is using an unstable version.
      *
-     * @param bool $is_dev
      *
      * @return string
      */
@@ -1774,12 +1770,7 @@ class Config extends CommonDBTM
     /**
      * Log config change in history.
      *
-     * @param string $context
-     * @param string $name
-     * @param string $newvalue
-     * @param string $oldvalue
      *
-     * @return void
      */
     private function logConfigChange(string $context, string $name, string $newvalue, string $oldvalue): void
     {
@@ -2039,7 +2030,6 @@ class Config extends CommonDBTM
      * Override parent: "{itemtype} - {header name}" -> "{itemtype}"
      * There is only one config, no need to display the item name
      *
-     * @return string
      */
     public function getBrowserTabName(): string
     {

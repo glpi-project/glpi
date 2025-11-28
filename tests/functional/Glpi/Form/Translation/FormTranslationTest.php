@@ -282,10 +282,6 @@ class FormTranslationTest extends DbTestCase
     /**
      * Create a form with a question and add a translation for the form name.
      *
-     * @param TranslationAwareQuestionType $type
-     * @param string $default_value
-     * @param string|null $extra_data
-     * @return Form
      */
     private function createFormWithQuestionAndTranslation(
         TranslationAwareQuestionType $type,
@@ -309,11 +305,7 @@ class FormTranslationTest extends DbTestCase
     /**
      * Assert that handlers are listed (or not) in the translation table.
      *
-     * @param array $handlers
-     * @param Crawler $crawler
      * @param int $expected_count 0 if not listed, 1 if listed
-     * @param string $message
-     * @return void
      */
     private function assertHandlersInTranslationTable(
         array $handlers,

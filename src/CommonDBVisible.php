@@ -167,7 +167,6 @@ abstract class CommonDBVisible extends CommonDBTM
      *
      * @since 9.2 moved from each class to parent class
      *
-     * @return bool
      **/
     public function showVisibility(): bool
     {

@@ -77,7 +77,6 @@ class SourceCodeIntegrityChecker
     /**
      * Get list of files/directories to check.
      *
-     * @return array
      */
     private function getPathsToCheck(): array
     {
@@ -135,7 +134,6 @@ class SourceCodeIntegrityChecker
     /**
      * Generates the source code manifest contents.
      *
-     * @param string $algorithm
      * @return array {algorithm: string, files: array<string, string>}
      */
     public function generateManifest(string $algorithm): array
@@ -178,7 +176,6 @@ class SourceCodeIntegrityChecker
     /**
      * Get a summary of differences between current source code and expected source code.
      *
-     * @return array
      */
     public function getSummary(): array
     {
@@ -216,7 +213,6 @@ class SourceCodeIntegrityChecker
     /**
      * Download the GLPI release.
      *
-     * @param array $errors
      * @return string|null Release file path.
      */
     private function getGLPIRelease(array &$errors = []): ?string
@@ -257,7 +253,6 @@ class SourceCodeIntegrityChecker
      *
      * @param bool $allow_download  Whether the release download is allowed.
      * @param array $errors         Array on which any errors will be added.
-     * @return string|null
      */
     public function getDiff(bool $allow_download = false, array &$errors = []): ?string
     {

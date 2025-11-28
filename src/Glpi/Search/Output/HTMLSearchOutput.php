@@ -279,7 +279,6 @@ class HTMLSearchOutput extends AbstractSearchOutput
      * @param bool $odd
      * @param bool $is_deleted
      *
-     * @return string
      */
     public static function showNewLine($odd = false, $is_deleted = false): string
     {
@@ -304,7 +303,6 @@ class HTMLSearchOutput extends AbstractSearchOutput
      * @param int $rows
      * @param int $cols
      * @param bool $fixed
-     * @return string
      */
     public static function showHeader($rows, $cols, $fixed = false): string
     {
@@ -323,7 +321,6 @@ class HTMLSearchOutput extends AbstractSearchOutput
      * @param string $order
      * @param string $options
      *
-     * @return string
      */
     public static function showHeaderItem($value, &$num, $linkto = "", $issort = false, $order = "", $options = ""): string
     {
@@ -355,7 +352,6 @@ class HTMLSearchOutput extends AbstractSearchOutput
      * @param int $row
      * @param string $extraparam
      *
-     * @return string
      */
     public static function showItem($value, &$num, $row, $extraparam = ''): string
     {
@@ -404,7 +400,6 @@ class HTMLSearchOutput extends AbstractSearchOutput
      * @param string $title
      * @param ?int $count
      *
-     * @return string
      */
     public static function showFooter($title = "", $count = null): string
     {
@@ -414,7 +409,6 @@ class HTMLSearchOutput extends AbstractSearchOutput
     /**
      * @param string $message
      *
-     * @return string
      */
     public static function showError($message = ''): string
     {

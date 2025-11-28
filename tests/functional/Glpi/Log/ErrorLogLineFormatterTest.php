@@ -122,7 +122,6 @@ class ErrorLogLineFormatterTest extends TestCase
     /**
      * Test CommonDBTM::getTable() method.
      *
-     * @return void
      */
     #[DataProvider('logRecordProvider')]
     public function testFormatMainLine(LogRecord $record, string $expected): void

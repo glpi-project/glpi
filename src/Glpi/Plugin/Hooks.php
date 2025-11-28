@@ -1327,7 +1327,6 @@ class Hooks
     /**
      * Get file hooks
      *
-     * @return array
      */
     public static function getFileHooks(): array
     {
@@ -1347,7 +1346,6 @@ class Hooks
     /**
      * Get functionals hooks
      *
-     * @return array
      */
     public static function getFunctionalHooks(): array
     {
@@ -1377,7 +1375,6 @@ class Hooks
     /**
      * Get items hooks
      *
-     * @return array
      */
     public static function getItemHooks(): array
     {

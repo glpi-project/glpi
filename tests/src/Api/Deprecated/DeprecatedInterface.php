@@ -38,61 +38,51 @@ interface DeprecatedInterface
 {
     /**
      * Get deprecated type
-     * @return string
      */
     public static function getDeprecatedType(): string;
 
     /**
      * Get current type
-     * @return string
      */
     public static function getCurrentType(): string;
 
     /**
      * Get deprecated expected fields
-     * @return array
      */
     public static function getDeprecatedFields(): array;
 
     /**
      * Get current add input
-     * @return array
      */
     public static function getCurrentAddInput(): array;
 
     /**
      * Get deprecated add input
-     * @return array
      */
     public static function getDeprecatedAddInput(): array;
 
     /**
      * Get deprecated update input
-     * @return array
      */
     public static function getDeprecatedUpdateInput(): array;
 
     /**
      * Get expected data after insert
-     * @return array
      */
     public static function getExpectedAfterInsert(): array;
 
     /**
      * Get expected data after update
-     * @return array
      */
     public static function getExpectedAfterUpdate(): array;
 
     /**
      * Get deprecated search query
-     * @return string
      */
     public static function getDeprecatedSearchQuery(): string;
 
     /**
      * Get current search query
-     * @return string
      */
     public static function getCurrentSearchQuery(): string;
 }

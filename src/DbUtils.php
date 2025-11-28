@@ -221,8 +221,6 @@ final class DbUtils
      * /!\ This method will only compute the expected table name and will not take into account any
      * table name override made by the class itself.
      *
-     * @param string $classname
-     * @return string
      */
     public function getExpectedTableNameForClass(string $classname): string
     {
@@ -391,7 +389,6 @@ final class DbUtils
      * Try to fix itemtype case.
      * PSR-4 loading requires classnames to be used with their correct case.
      *
-     * @param string $itemtype
      * @param string $root_dir
      *
      * @return string
@@ -1739,7 +1736,6 @@ final class DbUtils
      * @param string|null   $realname     realname of the user
      * @param string|null   $firstname    firstname of the user
      *
-     * @return string
      */
     public function formatUserLink(int $id, ?string $login, ?string $realname, ?string $firstname): string
     {
@@ -1815,9 +1811,7 @@ final class DbUtils
     /**
      * Get link of the given user.
      *
-     * @param int $id
      *
-     * @return string
      */
     public function getUserLink(int $id): string
     {

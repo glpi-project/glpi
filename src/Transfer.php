@@ -73,7 +73,6 @@ final class Transfer extends CommonDBTM
 
     /**
      * Destination entity id
-     * @var int
      */
     public int $to                    = -1;
 
@@ -169,7 +168,6 @@ final class Transfer extends CommonDBTM
      * @param int $to         entity destination ID
      * @param array $options  options used to transfer
      *
-     * @return void
      **/
     public function moveItems(array $items, int $to, array $options): void
     {
@@ -281,7 +279,6 @@ final class Transfer extends CommonDBTM
      * @param class-string<CommonDBTM> $itemtype Itemtype of the item
      * @param int $ID ID of the item
      *
-     * @return void
      **/
     private function addToBeTransfer(string $itemtype, int $ID): void
     {
@@ -295,7 +292,6 @@ final class Transfer extends CommonDBTM
      * @param class-string<CommonDBTM> $itemtype Itemtype of the item
      * @param int $ID ID of the item
      *
-     * @return void
      **/
     private function addNotToBeTransfer(string $itemtype, int $ID): void
     {
@@ -326,7 +322,6 @@ final class Transfer extends CommonDBTM
      * @param int $id The ID of the item
      * @param int|null $entities_id If specified, the entity of the item used without loading the item
      * @param bool|null $is_recursive If specified, the recursive status of the item used without loading the item.
-     * @return void
      * @see Transfer::addToBeTransfer()
      * @see Transfer::addNotToBeTransfer()
      */
@@ -1085,7 +1080,6 @@ final class Transfer extends CommonDBTM
      *
      * @param array<class-string<CommonDBTM>, int[]> $items Array of items to transfer in the format [itemtype => [ids]]
      *
-     * @return void
      **/
     private function simulateTransfer(array $items): void
     {
@@ -1131,7 +1125,6 @@ final class Transfer extends CommonDBTM
      *
      * Transfer item to a new Item if $ID==$newID : only update entities_id field :
      *                                $ID!=$new ID -> copy datas (like template system)
-     * @return void
      **/
     private function transferItem(string $itemtype, int $ID, int $newID): void
     {
@@ -1289,7 +1282,6 @@ final class Transfer extends CommonDBTM
      * @param int    $ID          ID of the item
      * @param int    $newID       ID of the new item
      *
-     * @return void
      *
      * @FIXME Parameter $key should be class-string<CommonDBTM> (and `$already_transfer` array shape should be specified).
      **/
@@ -1399,7 +1391,6 @@ final class Transfer extends CommonDBTM
      * @param int $ID     original ID of the printer
      * @param int $newID  new ID of the printer
      *
-     * @return void
      **/
     private function transferPrinterCartridges(int $ID, int $newID): void
     {
@@ -1666,7 +1657,6 @@ final class Transfer extends CommonDBTM
      * @param class-string<CommonDBTM>  $itemtype Item type
      * @param integer $ID       ID of the item
      *
-     * @return void
      */
     private function transferItem_Disks(string $itemtype, int $ID): void
     {
@@ -1682,7 +1672,6 @@ final class Transfer extends CommonDBTM
      * @param class-string<CommonDBTM> $itemtype  Type of the item
      * @param int    $ID        ID of the item
      *
-     * @return void
      **/
     private function transferItemSoftwares(string $itemtype, int $ID): void
     {
@@ -1756,7 +1745,6 @@ final class Transfer extends CommonDBTM
      *
      * @param int $ID ID of the License
      *
-     * @return void
      **/
     private function transferAffectedLicense(int $ID): void
     {
@@ -1844,7 +1832,6 @@ final class Transfer extends CommonDBTM
      *
      * @param int $ID ID of the Software
      *
-     * @return void
      **/
     private function transferSoftwareLicensesAndVersions(int $ID): void
     {
@@ -1874,7 +1861,6 @@ final class Transfer extends CommonDBTM
 
     /**
      * Delete old software versions that had already been transferred
-     * @return void
      */
     private function cleanSoftwareVersions(): void
     {
@@ -1930,7 +1916,6 @@ final class Transfer extends CommonDBTM
      * @param int $ID           Original ID of the certificate
      * @param int $newID        New ID of the certificate
      *
-     * @return void
      **/
     private function transferCertificates(string $itemtype, int $ID, int $newID): void
     {
@@ -2116,7 +2101,6 @@ final class Transfer extends CommonDBTM
      * @param int $ID           Original ID of the contract
      * @param int $newID        New ID of the contract
      *
-     * @return void
      **/
     private function transferContracts(string $itemtype, int $ID, int $newID): void
     {
@@ -2303,7 +2287,6 @@ final class Transfer extends CommonDBTM
      * @param int $ID           Original ID of the document
      * @param int $newID        New ID of the document
      *
-     * @return void
      **/
     private function transferDocuments(string $itemtype, int $ID, int $newID): void
     {
@@ -2499,7 +2482,6 @@ final class Transfer extends CommonDBTM
      * @param int $ID           ID of the item
      * @param class-string<Printer|Monitor|Peripheral|Phone> $link_type Type of the linked items to transfer
      *
-     * @return void
      **/
     private function transferDirectConnection(string $itemtype, int $ID, string $link_type): void
     {
@@ -2710,9 +2692,7 @@ final class Transfer extends CommonDBTM
      * Handle direct connection between a peripheral and its main asset when transferring the peripheral.
      *
      * @param class-string<CommonDBTM> $peripheral_itemtype
-     * @param int    $ID
      *
-     * @return void
      * @since 0.84.4
      **/
     private function managePeripheralMainAsset(string $peripheral_itemtype, int $ID): void
@@ -2779,7 +2759,6 @@ final class Transfer extends CommonDBTM
      * @param int $ID           Original ID of the ticket
      * @param int $newID        New ID of the ticket
      *
-     * @return void
      **/
     private function transferTickets(string $itemtype, int $ID, int $newID): void
     {
@@ -2864,7 +2843,6 @@ final class Transfer extends CommonDBTM
      * @param int $ID          Original ITIL Object ID
      * @param int $newID       New ITIL Object ID (not used)
      *
-     * @return void
      **/
     private function transferLinkedSuppliers(string $itemtype, int $ID, int $newID): void
     {
@@ -2940,7 +2918,6 @@ final class Transfer extends CommonDBTM
      * @param int $ID          Original ITIL Object ID
      * @param int $newID       New ITIL Object ID (not used))
      *
-     * @return void
      **/
     private function transferTaskCategory(string $itemtype, int $ID, int $newID): void
     {
@@ -3031,7 +3008,6 @@ final class Transfer extends CommonDBTM
      * @param int $ID           Original ID of the item
      * @param int $newID        New ID of the item
      *
-     * @return void
      **/
     private function transferHistory(string $itemtype, int $ID, int $newID): void
     {
@@ -3073,7 +3049,6 @@ final class Transfer extends CommonDBTM
      * @param int $ID     Original ID of the cartridge type
      * @param int $newID  New ID of the cartridge type
      *
-     * @return void
      **/
     private function transferCompatiblePrinters(int $ID, int $newID): void
     {
@@ -3104,7 +3079,6 @@ final class Transfer extends CommonDBTM
      * @param int $ID           Original ID of the item
      * @param int $newID        New ID of the item
      *
-     * @return void
      **/
     private function transferInfocoms(string $itemtype, int $ID, int $newID): void
     {
@@ -3275,7 +3249,6 @@ final class Transfer extends CommonDBTM
      * @param int $ID           Original ID of the supplier
      * @param int $newID        New ID of the supplier
      *
-     * @return void
      **/
     private function transferSupplierContacts(int $ID, int $newID): void
     {
@@ -3445,7 +3418,6 @@ final class Transfer extends CommonDBTM
      * @param int $ID           Original ID of the item
      * @param int $newID        New ID of the item
      *
-     * @return void
      **/
     private function transferReservations(string $itemtype, int $ID, int $newID): void
     {
@@ -3485,7 +3457,6 @@ final class Transfer extends CommonDBTM
      * @param int $ID           Original ID of the item
      * @param int $newID        New ID of the item
      *
-     * @return void
      **/
     private function transferDevices(string $itemtype, int $ID, int $newID): void
     {
@@ -3661,7 +3632,6 @@ final class Transfer extends CommonDBTM
      * @param int $ID           Original ID of the item
      * @param int $newID        New ID of the item
      *
-     * @return void
      **/
     private function transferNetworkLink(string $itemtype, int $ID, int $newID): void
     {
@@ -3797,7 +3767,6 @@ final class Transfer extends CommonDBTM
 
     /**
      * Display items to transfer
-     * @return void
      */
     public function showTransferList(): void
     {

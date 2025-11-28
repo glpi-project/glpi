@@ -945,7 +945,6 @@ trait PlanningEvent
      * @param array  $rrule    RRule field value
      * @param string $dtstart  Start of first occurrence
      *
-     * @return RSet
      */
     public static function getRsetFromRRuleField(array $rrule, $dtstart): RSet
     {

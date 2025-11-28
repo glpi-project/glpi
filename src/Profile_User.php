@@ -868,8 +868,6 @@ TWIG, $avatar_params) . $username;
 
 
     /**
-     * @param $user_ID
-     * @param $profile_id
      **/
     public static function haveUniqueRight($user_ID, $profile_id)
     {
@@ -888,7 +886,6 @@ TWIG, $avatar_params) . $username;
 
 
     /**
-     * @param $user_ID
      * @param $only_dynamic    (false by default)
      **/
     public static function deleteRights($user_ID, $only_dynamic = false)
@@ -1165,7 +1162,6 @@ TWIG, $avatar_params) . $username;
      * Check if this Profile_User is the last authorization of the last super-admin
      * profile (a "super-admin profile" is a profile that can edit other profiles)
      *
-     * @return bool
      */
     protected function isLastSuperAdminAuthorization(): bool
     {
@@ -1210,7 +1206,6 @@ TWIG, $avatar_params) . $username;
 
     /**
      * Log add/delete operation.
-     * @param string $type
      */
     private function logOperation(string $type): void
     {

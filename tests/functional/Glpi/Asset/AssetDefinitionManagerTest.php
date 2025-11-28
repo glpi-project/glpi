@@ -79,7 +79,6 @@ class AssetDefinitionManagerTest extends DbTestCase
     /**
      * Ensure all asset types are registered in the ticket types configuration.
      *
-     * @return void
      */
     public function testTicketTypeConfigRegistration(): void
     {
@@ -198,7 +197,6 @@ class AssetDefinitionManagerTest extends DbTestCase
      * Test that the "Tickets", "Problems" and "Changes" tabs are registered
      * if the user is allowed to see them OR if the asset has linked ITIL items.
      *
-     * @return void
      */
     public function testCommonITILTabRegistration(): void
     {

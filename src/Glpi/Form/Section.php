@@ -318,7 +318,6 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     /**
      * Get the parent form of this section
      *
-     * @return Form
      */
     public function getForm(): Form
     {
@@ -359,7 +358,6 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     /**
      * Clear lazy loaded data
      *
-     * @return void
      */
     protected function clearLazyLoadedData(): void
     {

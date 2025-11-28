@@ -55,8 +55,6 @@ final class AllowListDropdown extends AbstractRightsDropdown
     /**
      * Count users for the given criteria.
      *
-     * @param array $users
-     * @param array $groups
      *
      * @return array ['count' => int, 'link' => string]
      */

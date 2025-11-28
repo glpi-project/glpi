@@ -77,7 +77,6 @@ class TemplateDocumentation
     /**
      * Build the documentation as markdown
      *
-     * @return string
      */
     public function build(): string
     {

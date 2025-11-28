@@ -46,9 +46,7 @@ final class URL
      * (i.e. an absolute URL with a scheme or something that correspond to a path).
      * To be sure that no XSS is possible, value have to be HTML encoded when it is printed in a HTML page.
      *
-     * @param null|string $url
      *
-     * @return string
      */
     public static function sanitizeURL(?string $url): string
     {
@@ -81,9 +79,7 @@ final class URL
     /**
      * Checks whether an URL can be considered as a valid GLPI relative URL.
      *
-     * @param string $url
      *
-     * @return bool
      */
     public static function isGLPIRelativeUrl(string $url): bool
     {

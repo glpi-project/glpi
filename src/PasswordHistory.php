@@ -55,7 +55,6 @@ final class PasswordHistory
     /**
      * Get singleton instance
      *
-     * @return PasswordHistory
      */
     public static function getInstance(): self
     {
@@ -69,10 +68,7 @@ final class PasswordHistory
     /**
      * Validate that the user password was not used previously
      *
-     * @param User $user
-     * @param string $password
      *
-     * @return bool
      */
     public function validatePassword(
         User $user,
@@ -118,10 +114,8 @@ final class PasswordHistory
      * Update password history for a given user
      * Must be called after a user password is updated
      *
-     * @param User   $user
      * @param string|null $password Previous user's password, which has just been replaced
      *
-     * @return bool
      */
     public function updatePasswordHistory(User $user, ?string $password): bool
     {
@@ -160,9 +154,7 @@ final class PasswordHistory
     /**
      * Get the password history of a given user
      *
-     * @param User $user
      *
-     * @return array
      */
     private function getForUser(User $user): array
     {
@@ -189,7 +181,6 @@ final class PasswordHistory
      * This means the number of password to be checked in glpi_users.password_history
      * is always $CFG_GLPI['non_reusable_passwords_count'] - 1
      *
-     * @return int
      */
     private function getPasswordHistoryLengthToValidate(): int
     {

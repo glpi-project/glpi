@@ -84,7 +84,6 @@ class Item_OperatingSystem extends CommonDBRelation
      * @param string     $sort  Field to sort on
      * @param string     $order Sort order
      *
-     * @return DBmysqlIterator
      */
     public static function getFromItem(CommonDBTM $item, $sort = null, $order = null): DBmysqlIterator
     {

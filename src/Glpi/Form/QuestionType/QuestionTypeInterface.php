@@ -53,7 +53,6 @@ interface QuestionTypeInterface extends UsedAsCriteriaInterface
      * This method is called before saving the question.
      *
      * @param mixed $value The default value to format.
-     * @return string
      */
     public function formatDefaultValueForDB(mixed $value): ?string;
 
@@ -63,7 +62,6 @@ interface QuestionTypeInterface extends UsedAsCriteriaInterface
      *
      * @param array $input The input data to validate.
      *
-     * @return bool
      */
     public function validateExtraDataInput(array $input): bool;
 
@@ -93,7 +91,6 @@ interface QuestionTypeInterface extends UsedAsCriteriaInterface
      * The extractDefaultValue function is used to extract the default value from the form editor.
      * The convertDefaultValue function is used to convert the default value to the form editor.
      *
-     * @return string
      */
     public function getFormEditorJsOptions(): string;
 
@@ -103,7 +100,6 @@ interface QuestionTypeInterface extends UsedAsCriteriaInterface
      *
      * @param Question|null $question Given question's data. May be null for a new question.
      *
-     * @return string
      */
     public function renderAdministrationTemplate(?Question $question): string;
 
@@ -113,7 +109,6 @@ interface QuestionTypeInterface extends UsedAsCriteriaInterface
      *
      * @param Question|null $question Given question's data. May be null for a new question.
      *
-     * @return string
      */
     public function renderAdministrationOptionsTemplate(?Question $question): string;
 
@@ -133,7 +128,6 @@ interface QuestionTypeInterface extends UsedAsCriteriaInterface
      *
      * @param Question $question Given question's data.
      *
-     * @return string
      */
     public function renderEndUserTemplate(Question $question): string;
 
@@ -143,28 +137,24 @@ interface QuestionTypeInterface extends UsedAsCriteriaInterface
      *
      * @param mixed $answer Given raw answer data.
      *
-     * @return string
      */
     public function formatRawAnswer(mixed $answer, Question $question): string;
 
     /**
      * Get the name of this questions type.
      *
-     * @return string
      */
     public function getName(): string;
 
     /**
      * Get the icon of this questions type.
      *
-     * @return string
      */
     public function getIcon(): string;
 
     /**
      * Get the category of this question type.
      *
-     * @return QuestionTypeCategoryInterface
      */
     public function getCategory(): QuestionTypeCategoryInterface;
 
@@ -172,7 +162,6 @@ interface QuestionTypeInterface extends UsedAsCriteriaInterface
      * Get the weight of this question type.
      * The weight is used to sort question types in a category.
      *
-     * @return int
      */
     public function getWeight(): int;
 
@@ -180,14 +169,12 @@ interface QuestionTypeInterface extends UsedAsCriteriaInterface
      * Check if this question type is allowed for anonymous forms.
      * If this method returns false, the question type will not be displayed in the end user form.
      *
-     * @return bool
      */
     public function isAllowedForUnauthenticatedAccess(): bool;
 
     /**
      * Get the extra-data configuration class for this question type.
      *
-     * @return ?string
      */
     public function getExtraDataConfigClass(): ?string;
 
@@ -196,14 +183,12 @@ interface QuestionTypeInterface extends UsedAsCriteriaInterface
      *
      * @param array $serialized_data The serialized data to get the configuration for.
      *
-     * @return ?JsonFieldInterface
      */
     public function getExtraDataConfig(array $serialized_data): ?JsonFieldInterface;
 
     /**
      * Get the default value configuration class for this question type.
      *
-     * @return ?string
      */
     public function getDefaultValueConfigClass(): ?string;
 
@@ -212,28 +197,24 @@ interface QuestionTypeInterface extends UsedAsCriteriaInterface
      *
      * @param array $serialized_data The serialized data to get the configuration for.
      *
-     * @return ?JsonFieldInterface
      */
     public function getDefaultValueConfig(array $serialized_data): ?JsonFieldInterface;
 
     /**
      * Retrieve the allowed sub-types for the question type
      *
-     * @return array
      */
     public function getSubTypes(): array;
 
     /**
      * Retrieve the sub-type field name for the question type
      *
-     * @return string
      */
     public function getSubTypeFieldName(): string;
 
     /**
      * Retrieve the sub-type field label for the question type
      *
-     * @return string
      */
     public function getSubTypeFieldAriaLabel(): string;
 
@@ -241,7 +222,6 @@ interface QuestionTypeInterface extends UsedAsCriteriaInterface
      * Retrieve the default value for the sub-type field
      *
      * @param Question|null $question The question to get the default value for
-     * @return null|string
      */
     public function getSubTypeDefaultValue(?Question $question): ?string;
 

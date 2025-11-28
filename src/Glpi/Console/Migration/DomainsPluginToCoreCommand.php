@@ -106,7 +106,6 @@ class DomainsPluginToCoreCommand extends AbstractPluginToCoreCommand
     /**
      * Migrate domain types
      *
-     * @return void
      */
     protected function importDomainTypes(): void
     {
@@ -167,7 +166,6 @@ class DomainsPluginToCoreCommand extends AbstractPluginToCoreCommand
     /**
      * Migrate domains.
      *
-     * @return void
      */
     protected function importDomains(): void
     {
@@ -253,7 +251,6 @@ class DomainsPluginToCoreCommand extends AbstractPluginToCoreCommand
     /**
      * Migrate domain items
      *
-     * @return void
      */
     protected function importDomainItems(): void
     {

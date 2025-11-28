@@ -45,7 +45,6 @@ class Profile_UserTest extends DbTestCase
     /**
      * Tests for Profile_User->canPurgeItem()
      *
-     * @return void
      */
     public function testCanPurgeItem(): void
     {

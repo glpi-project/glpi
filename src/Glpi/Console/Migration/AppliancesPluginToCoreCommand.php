@@ -178,7 +178,6 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
     /**
      * Check that required tables exists and fields are OK for migration.
      *
-     * @return bool
      */
     private function checkPlugin(): bool
     {
@@ -253,7 +252,6 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
     /**
      * Copy plugin tables to backup tables from plugin to core keeping same ID.
      *
-     * @return bool
      */
     private function migratePlugin(): bool
     {
@@ -277,7 +275,6 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
     /**
      * Update profile rights (Associable items to a ticket).
      *
-     * @return bool
      */
     private function updateProfilesApplianceRights(): bool
     {
@@ -310,7 +307,6 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
     /**
      * Rename itemtype in core tables.
      *
-     * @return bool
      */
     private function updateItemtypes(): bool
     {
@@ -358,7 +354,6 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
     /**
      * Create appliance items.
      *
-     * @return bool
      */
     private function createApplianceItems(): bool
     {
@@ -418,7 +413,6 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
     /**
      * Create appliance environments.
      *
-     * @return bool
      */
     private function createApplianceEnvironments(): bool
     {
@@ -477,7 +471,6 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
     /**
      * Create appliances.
      *
-     * @return bool
      */
     private function createAppliances(): bool
     {
@@ -552,7 +545,6 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
     /**
      * Create appliance types.
      *
-     * @return bool
      */
     private function createApplianceTypes(): bool
     {
@@ -614,7 +606,6 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
     /**
      * Create appliance relations.
      *
-     * @return bool
      */
     private function createApplianceRelations(): bool
     {
@@ -708,7 +699,6 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
      * Output import error message.
      *
      * @param string           $message
-     * @param ProgressBar|null $progress_bar
      *
      * @return void
      */

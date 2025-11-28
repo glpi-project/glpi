@@ -405,7 +405,6 @@ class Rack extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbIn
      *
      * @param DCRoom $room DCRoom object
      *
-     * @return bool
      **/
     public static function showForRoom(DCRoom $room): bool
     {

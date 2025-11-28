@@ -186,7 +186,6 @@ class Migration
      *
      * @param string $title Title to display
      *
-     * @return void
      *
      * @deprecated 11.0.0
      */
@@ -205,7 +204,6 @@ class Migration
      * @param string  $msg Message to display
      * @param boolean $red Displays with red class (false by default)
      *
-     * @return void
      *
      * @deprecated 11.0.0
      */
@@ -221,7 +219,6 @@ class Migration
      *
      * @param string  $message Message to display
      *
-     * @return void
      *
      * @deprecated 11.0.0
      */
@@ -291,7 +288,6 @@ class Migration
      *                               if a specific default value needs to be used
      * @param boolean $nodefault     No default value (false by default)
      *
-     * @return string
      **/
     private function fieldFormat($type, $default_value, $nodefault = false): string
     {
@@ -635,7 +631,6 @@ class Migration
      * Mockable function to check if a key already exists
      * @param string $table Table name
      * @param string $indexname Index name
-     * @return bool
      * @see isIndex()
      * @note Could be removed when using dependency injection or some other refactoring
      */
@@ -1490,8 +1485,6 @@ class Migration
     /**
      * Update last rights update for given profile.
      *
-     * @param int $profile_id
-     * @return void
      */
     private function updateProfileLastRightsUpdate(int $profile_id): void
     {
@@ -1899,9 +1892,6 @@ class Migration
      * @since 11.0.0
      *
      * @param string $itemtype Usually a class-string<CommonDBTM> but may be an itemtype that doesn't exist anymore for old migrations
-     * @param string $name
-     * @param int $frequency
-     * @param int|null $param
      * @param array{mode?: int, state?: int, hourmin?: int, hourmax?: int, logs_lifetime?: int, allowmode?: int} $options
      */
     public function addCrontask(string $itemtype, string $name, int $frequency, ?int $param = null, array $options = []): void
@@ -1945,7 +1935,6 @@ class Migration
 
     /**
      * Mockable method to get the default collation of the database.
-     * @return string
      * @see DBConnection::getDefaultCollation()
      * @note Could be removed when using dependency injection or some other refactoring
      */
@@ -1956,7 +1945,6 @@ class Migration
 
     /**
      * Mockable method to get the default charset of the database.
-     * @return string
      * @see DBConnection::getDefaultCharset()
      * @note Could be removed when using dependency injection or some other refactoring
      */
@@ -1967,7 +1955,6 @@ class Migration
 
     /**
      * Mockable method to get the default key sign of the database.
-     * @return string
      * @see DBConnection::getDefaultPrimaryKeySignOption()
      * @note Could be removed when using dependency injection or some other refactoring
      */

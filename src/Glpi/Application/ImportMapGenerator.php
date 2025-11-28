@@ -88,7 +88,6 @@ class ImportMapGenerator
     /**
      * Get the singleton instance of the generator
      *
-     * @return ImportMapGenerator
      */
     public static function getInstance(): ImportMapGenerator
     {
@@ -106,7 +105,6 @@ class ImportMapGenerator
      *
      * @param string $plugin_key The plugin key
      * @param string $path The path relative to the plugin directory
-     * @return void
      */
     public function registerModulesPath(string $plugin_key, string $path): void
     {

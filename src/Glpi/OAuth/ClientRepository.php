@@ -47,7 +47,6 @@ class ClientRepository implements ClientRepositoryInterface
     /**
      * @param string $clientIdentifier
      *
-     * @return ?ClientEntityInterface
      */
     public function getClientEntity($clientIdentifier): ?ClientEntityInterface
     {
@@ -76,7 +75,6 @@ class ClientRepository implements ClientRepositoryInterface
      * @param string $clientSecret
      * @param string $grantType
      *
-     * @return bool
      * @throws OAuthServerException If the requested grant type is not allowed for the client
      */
     public function validateClient($clientIdentifier, $clientSecret, $grantType): bool

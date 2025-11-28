@@ -74,7 +74,6 @@ interface CalDAVCompatibleItemInterface
     /**
      * Get input array from a VCalendar object.
      *
-     * @param VCalendar $vcalendar
      *
      * @return array
      *

@@ -565,7 +565,6 @@ trait FormTesterTrait
      * @param Form   $form         Form to get the access control from
      * @param string $control_type Type of access control to get
      *
-     * @return FormAccessControl
      */
     protected function getAccessControl(
         Form $form,

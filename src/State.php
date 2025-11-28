@@ -92,7 +92,6 @@ class State extends CommonTreeDropdown
      *
      * @param string $lib to add for -1 value (default '')
      * @param boolean $is_inheritable
-     * @return array
      */
     final public static function getBehaviours(string $lib = "", bool $is_inheritable = false): array
     {
@@ -811,7 +810,6 @@ class State extends CommonTreeDropdown
     /**
      * Criteria to apply to assets dropdown when shown in assistance
      *
-     * @return array
      */
     public static function getDisplayConditionForAssistance(): array
     {

@@ -135,7 +135,7 @@ class Inventory
     private $mainasset;
     /** @var string */
     private $request_query;
-    /** @var bool */
+    /**  */
     private bool $is_discovery = false;
 
     /**
@@ -157,7 +157,6 @@ class Inventory
     /**
      * @param self::FULL_MODE|self::INCR_MODE $mode
      *
-     * @return self
      */
     public function setMode($mode = self::FULL_MODE): Inventory
     {
@@ -242,7 +241,6 @@ class Inventory
     }
 
     /**
-     * @param string $query
      * @return $this
      */
     public function setRequestQuery(string $query): self
@@ -254,7 +252,6 @@ class Inventory
     /**
      * Prepare inventory data
      *
-     * @return array
      */
     public function extractMetadata(): array
     {
@@ -497,7 +494,6 @@ class Inventory
     /**
      * Get inventoried items
      *
-     * @return array
      */
     public function getItems(): array
     {
@@ -518,7 +514,6 @@ class Inventory
     /**
      * Get raw data
      *
-     * @return object|null
      */
     public function getRawData(): ?object
     {
@@ -565,7 +560,6 @@ class Inventory
     /**
      * Get error
      *
-     * @return array
      */
     public function getErrors(): array
     {
@@ -1135,7 +1129,6 @@ class Inventory
     /**
      * Mark as discovery
      *
-     * @param bool $disco
      *
      * @return $this
      */

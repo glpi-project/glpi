@@ -1003,10 +1003,6 @@ final class FormSerializerDestinationTest extends DbTestCase
     /**
      * Check the import and export process for a given key
      *
-     * @param string $key
-     * @param JsonFieldInterface $config
-     * @param string[] $keys_to_skip
-     * @param Form|null $form
      * @return Form The imported form
      */
     private function checkImportAndExport(

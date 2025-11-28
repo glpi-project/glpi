@@ -116,7 +116,6 @@ abstract class AbstractPluginCommand extends AbstractCommand
     /**
      * Normalize input to symplify handling of specific arguments/options values.
      *
-     * @param InputInterface $input
      *
      * @return void
      */

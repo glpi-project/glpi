@@ -69,22 +69,18 @@ class NetworkPort extends CommonDBChild
 
     /**
      * Subset of input that will be used for NetworkPortInstantiation.
-     * @var array|null
      */
     private ?array $input_for_instantiation = null;
     /**
      * Subset of input that will be used for NetworkName.
-     * @var array|null
      */
     private ?array $input_for_NetworkName = null;
     /**
      * Subset of input that will be used for NetworkPort_NetworkPort.
-     * @var array|null
      */
     private ?array $input_for_NetworkPortConnect = null;
 
     /**
-     * @param string $property
      *
      * @return mixed
      */
@@ -115,7 +111,6 @@ class NetworkPort extends CommonDBChild
     }
 
     /**
-     * @param string $property
      * @param mixed $value
      *
      * @return void
@@ -575,7 +570,6 @@ class NetworkPort extends CommonDBChild
     /**
      * Show ports for an item
      *
-     * @param CommonDBTM $item
      * @param integer $withtemplate
      * @return false|void
      */
@@ -1764,8 +1758,6 @@ class NetworkPort extends CommonDBChild
     }
 
     /**
-     * @param CommonDBTM $item
-     * @return int
      */
     public static function countForItem(CommonDBTM $item): int
     {

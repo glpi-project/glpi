@@ -219,7 +219,6 @@ abstract class CommonDCModelDropdown extends CommonDropdown
     /**
      * Get the itemtype for this model
      *
-     * @return string
      */
     public function getItemtypeForModel(): string
     {
@@ -229,7 +228,6 @@ abstract class CommonDCModelDropdown extends CommonDropdown
     /**
      * Get the items in racks that are using this model
      *
-     * @return array
      */
     public function getItemsRackForModel(): array
     {
@@ -249,12 +247,9 @@ abstract class CommonDCModelDropdown extends CommonDropdown
     /**
      * Check if a cell is filled for a specific orientation, horizontal position and depth
      *
-     * @param array $cell
      * @param int $orientation front or rear
      * @param int $hpos left, right or full
-     * @param float $depth
      *
-     * @return bool
      */
     private function isCellFilled(array $cell, int $orientation, int $hpos, float $depth): bool
     {
@@ -304,7 +299,6 @@ abstract class CommonDCModelDropdown extends CommonDropdown
     /**
      * Check if the racks items using this model can be updated without issues
      *
-     * @param array $input
      * @return array|false
      */
     private function checkForRackIssues(array $input)

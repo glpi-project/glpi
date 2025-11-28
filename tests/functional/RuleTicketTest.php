@@ -1087,7 +1087,6 @@ class RuleTicketTest extends RuleCommonITILObjectTest
     /**
      * Data provider for testAssignLocationFromUser
      *
-     * @return iterable
      */
     protected function testAssignLocationFromUserProvider(): iterable
     {
@@ -1150,10 +1149,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
      * IF ticket location is not set AND Requester has a location
      * THEN set location from requester
      *
-     * @param int|null $input_locations_id               Input location
-     * @param int      $expected_location_after_creation Ticket final location after the rule are processed
      *
-     * @return void
      */
     public function testAssignLocationFromUser(): void
     {

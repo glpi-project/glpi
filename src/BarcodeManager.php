@@ -39,7 +39,6 @@ use Com\Tecnick\Barcode\Model;
 class BarcodeManager
 {
     /**
-     * @param CommonDBTM $item
      *
      * @return Model|false
      */
@@ -65,7 +64,6 @@ class BarcodeManager
     }
 
     /**
-     * @param CommonDBTM $item
      *
      * @return false|string
      */

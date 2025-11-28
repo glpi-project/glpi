@@ -83,7 +83,6 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
     /**
      * Print items
      * @param  DeviceCamera $camera the current camera instance
-     * @return bool
      */
     public static function showItems(DeviceCamera $camera): bool
     {

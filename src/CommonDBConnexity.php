@@ -218,7 +218,6 @@ abstract class CommonDBConnexity extends CommonDBTM
      *
      * @param string $itemtype Item type
      *
-     * @return string
      */
     abstract public static function getItemField($itemtype): string;
 

@@ -297,9 +297,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
     /**
      * Check schema integrity of installed database.
      *
-     * @param string $installed_version
      *
-     * @return void
      */
     private function checkSchemaIntegrity(string $installed_version): void
     {
@@ -353,9 +351,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
     /**
      * Get DB version to display.
      *
-     * @param string $raw_version
      *
-     * @return string
      */
     private function getPrettyDbVersion(string $raw_version): string
     {

@@ -104,7 +104,6 @@ class RequirementsList implements IteratorAggregate
     /**
      * Get messages returned by the failed mandatory requirements.
      *
-     * @return array
      */
     public function getErrorMessages(): array
     {

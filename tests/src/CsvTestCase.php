@@ -53,7 +53,6 @@ abstract class CsvTestCase extends DbTestCase
      *    - header   (exact expected content of the header array)
      *    - content  (exact expected content of the content array)
      *
-     * @return array
      */
     abstract protected function getTestData(): array;
 

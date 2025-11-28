@@ -190,7 +190,6 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
     /**
      * Show tickets for a problem
      *
-     * @param Problem $problem
      * @return void
      **/
     public static function showForProblem(Problem $problem)
@@ -341,7 +340,6 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
      *
      * @param integer $tickets_id
      *
-     * @return array
      */
     private static function getTicketProblemsData($tickets_id): array
     {
@@ -367,7 +365,6 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
      *
      * @param integer $problems_id
      *
-     * @return array
      */
     private static function getProblemTicketsData($problems_id): array
     {

@@ -98,9 +98,7 @@ class SimpleCache extends Psr16Cache implements CacheInterface
     /**
      * Returns normalized key to ensure compatibility with cache storage.
      *
-     * @param string $key
      *
-     * @return string
      */
     private function getNormalizedKey(string $key): string
     {

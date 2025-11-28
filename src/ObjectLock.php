@@ -54,7 +54,7 @@ class ObjectLock extends CommonDBTM
     }
 
     /**
-     * @inheritDoc
+     *
      * @return integer Always 0 (Root entity)
      **/
     public function getEntityID()

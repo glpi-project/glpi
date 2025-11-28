@@ -270,7 +270,6 @@ class ProfileTest extends DbTestCase
     /**
      * Tests for Profile->canPurgeItem()
      *
-     * @return void
      */
     public function testCanPurgeItem(): void
     {
@@ -307,7 +306,6 @@ class ProfileTest extends DbTestCase
     /**
      * Tests for Profile->prepareInputForUpdate()
      *
-     * @return void
      */
     public function testprepareInputForUpdate(): void
     {

@@ -2949,7 +2949,6 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      * @param int    $id         Id of the source item
      * @param string  $itemtype  Type of the source item
      *
-     * @return array
      */
     protected function getNetworkPorts(
         int $id,
@@ -3172,7 +3171,6 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      * equivalent and keep a reference to the deprecation logic so we can convert
      * the API input and/or output to the exêcted format.
      *
-     * @param string  $itemtype
      * @return string The corrected itemtype.
      */
     public function handleDepreciation(string $itemtype): string
@@ -3199,7 +3197,6 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
     /**
      * Check if the current call is using a deprecated item
      *
-     * @return bool
      */
     public function isDeprecated(): bool
     {
@@ -3264,7 +3261,6 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      *
      * @param string $itemtype    Itemtype for which to show possible massive actions
      * @param bool   $is_deleted  Should we show massive action in "deleted" mode ?
-     * @return array
      */
     public function getMassiveActionsForItemtype(
         string $itemtype,
@@ -3287,7 +3283,6 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      * Return possible massive actions for a given item.
      *
      * @param CommonDBTM $item    Item for which to show possible massive actions
-     * @return array
      */
     public function getMassiveActionsForItem(CommonDBTM $item): array
     {
@@ -3465,7 +3460,6 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
     /**
      * List of API ressources for which a valid session isn't required
      *
-     * @return array
      */
     protected function getRessourcesAllowedWithoutSession(): array
     {
@@ -3478,7 +3472,6 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
     /**
      * List of API ressources that may write php session data
      *
-     * @return array
      */
     protected function getRessourcesWithSessionWrite(): array
     {

@@ -78,7 +78,6 @@ final class Profiler
      * Starts a new section in the profiler. This section will be stopped when Profiler::stop() is called with the same name.
      * @param string $name The name of the section. This name will be used to stop the section later.
      * @param string $category The category of the section. See Profiler::CATEGORY_* for some predefined categories.
-     * @return void
      */
     public function start(string $name, string $category = self::CATEGORY_CORE): void
     {
@@ -99,7 +98,6 @@ final class Profiler
     /**
      * Pauses a section started with Profiler::start()
      * @param string $name The name of the section to pause. This name must be the same as the one used in Profiler::start()
-     * @return void
      */
     public function pause(string $name): void
     {
@@ -114,7 +112,6 @@ final class Profiler
     /**
      * Resumes a section started with Profiler::start()
      * @param string $name The name of the section to resume. This name must be the same as the one used in Profiler::start()
-     * @return void
      */
     public function resume(string $name): void
     {
@@ -164,7 +161,6 @@ final class Profiler
 
     /**
      * Stops all running sections
-     * @return void
      */
     public function stopAll(): void
     {
@@ -176,7 +172,6 @@ final class Profiler
     /**
      * Checks if a section is running
      * @param string $name The name of the section to check
-     * @return bool
      */
     public function isRunning(string $name): bool
     {

@@ -62,7 +62,6 @@ final class FormDestinationManager
     /**
      * Singleton access method
      *
-     * @return FormDestinationManager
      */
     public static function getInstance(): FormDestinationManager
     {
@@ -91,7 +90,6 @@ final class FormDestinationManager
     /**
      * Get a array of class => value pairs to be used in dropdowns.
      *
-     * @return array
      */
     public function getDestinationTypesDropdownValues(): array
     {
@@ -115,7 +113,6 @@ final class FormDestinationManager
     /**
      * Default (most common) type.
      *
-     * @return FormDestinationInterface
      */
     public function getDefaultType(): FormDestinationInterface
     {
@@ -157,7 +154,6 @@ final class FormDestinationManager
      *
      * @param class-string<AbstractCommonITILFormDestination> $destination_class The common ITIL destination class
      * @param AbstractConfigField $field The config field to register
-     * @return void
      */
     public function registerPluginCommonITILConfigField(
         string $destination_class,

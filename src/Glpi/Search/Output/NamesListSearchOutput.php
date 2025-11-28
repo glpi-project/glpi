@@ -129,7 +129,6 @@ final class NamesListSearchOutput extends ExportSearchOutput
      * @param int $cols
      * @param bool $fixed
      *
-     * @return string
      */
     public static function showHeader($rows, $cols, $fixed = false): string
     {
@@ -146,7 +145,6 @@ final class NamesListSearchOutput extends ExportSearchOutput
      * @param int $row
      * @param string $extraparam
      *
-     * @return string
      */
     public static function showItem($value, &$num, $row, $extraparam = ''): string
     {

@@ -62,7 +62,6 @@ interface ConditionHandlerInterface
      * Returns an array of parameters that will be passed to the template
      * defined in getTemplate().
      *
-     * @param ConditionData $condition
      */
     public function getTemplateParameters(ConditionData $condition): array;
 

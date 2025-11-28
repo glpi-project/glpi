@@ -52,7 +52,6 @@ class GenericNetworkAssetInventoryTest extends InventoryTestCase
      *
      * @param Capacity[] $capacities Capacities to activate
      *
-     * @return Asset
      */
     private function inventoryNetworkEquipment(array $capacities = []): Asset
     {
@@ -215,7 +214,6 @@ class GenericNetworkAssetInventoryTest extends InventoryTestCase
     /**
      * Test Generic Network Asset inventory
      *
-     * @return void
      */
     public function testImportNetworkEquipment(): void
     {
@@ -290,7 +288,6 @@ class GenericNetworkAssetInventoryTest extends InventoryTestCase
     /**
      * Test Generic Network Asset inventory with network ports
      *
-     * @return void
      */
     public function testImportNetworkEquipmentWPorts(): void
     {
@@ -472,7 +469,6 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
     /**
      * Test Generic Network Asset inventory with devices
      *
-     * @return void
      */
     public function testImportNetworkEquipmentWDevices(): void
     {

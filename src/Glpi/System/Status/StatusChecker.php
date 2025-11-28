@@ -156,7 +156,6 @@ final class StatusChecker
 
     /**
      * @param bool $public_only True if only public status information should be given.
-     * @return array
      */
     public static function getDBStatus(bool $public_only = true): array
     {
@@ -233,7 +232,6 @@ final class StatusChecker
 
     /**
      * @param bool $public_only True if only public status information should be given.
-     * @return array
      */
     public static function getLDAPStatus(bool $public_only = true): array
     {
@@ -301,7 +299,6 @@ final class StatusChecker
 
     /**
      * @param bool $public_only True if only public status information should be given.
-     * @return array
      */
     public static function getIMAPStatus(bool $public_only = true): array
     {
@@ -363,7 +360,6 @@ final class StatusChecker
 
     /**
      * @param bool $public_only True if only public status information should be given.
-     * @return array
      */
     public static function getCASStatus(bool $public_only = true): array
     {
@@ -405,7 +401,6 @@ final class StatusChecker
 
     /**
      * @param bool $public_only True if only public status information should be given.
-     * @return array
      */
     public static function getMailCollectorStatus(bool $public_only = true): array
     {
@@ -460,7 +455,6 @@ final class StatusChecker
 
     /**
      * @param bool $public_only True if only public status information should be given.
-     * @return array
      */
     public static function getCronTaskStatus(bool $public_only = true): array
     {
@@ -489,7 +483,6 @@ final class StatusChecker
 
     /**
      * @param bool $public_only True if only public status information should be given.
-     * @return array
      */
     public static function getFilesystemStatus(bool $public_only = true): array
     {
@@ -527,7 +520,6 @@ final class StatusChecker
 
     /**
      * @param bool $public_only True if only public status information should be given.
-     * @return array
      */
     public static function getPluginsStatus(bool $public_only = true): array
     {

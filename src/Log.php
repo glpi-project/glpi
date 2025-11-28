@@ -79,9 +79,9 @@ class Log extends CommonDBTM
 
     public static $rightname = 'logs';
 
-    /** @var array  */
+    /**  */
     public static array $queue = [];
-    /** @var bool  */
+    /**  */
     public static bool $use_queue = false;
 
 
@@ -218,9 +218,6 @@ class Log extends CommonDBTM
     /**
      * Log history
      *
-     * @param $items_id
-     * @param $itemtype
-     * @param $changes
      * @param $itemtype_link   (default '')
      * @param $linked_action   (default '0')
      *

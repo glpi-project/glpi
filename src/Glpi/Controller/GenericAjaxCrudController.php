@@ -51,7 +51,6 @@ class GenericAjaxCrudController extends AbstractController
 {
     /**
      * Object to update, delete, restore or purge
-     * @var CommonDBTM
      */
     protected CommonDBTM $item;
 
@@ -93,7 +92,6 @@ class GenericAjaxCrudController extends AbstractController
      *
      * @param array $input Input data
      *
-     * @return Response
      */
     protected function handleAction(array $input): Response
     {
@@ -122,7 +120,6 @@ class GenericAjaxCrudController extends AbstractController
      * @param int    $code    HTTP status code
      * @param string $message Error message
      *
-     * @return Response
      *
      * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
      * @psalm-taint-sink html $message (string will be added to HTML source)
@@ -143,7 +140,6 @@ class GenericAjaxCrudController extends AbstractController
      * @param int   $code HTTP status code
      * @param array $body Response's body
      *
-     * @return Response
      */
     final protected function successResponse(int $code, array $body): Response
     {
@@ -157,7 +153,6 @@ class GenericAjaxCrudController extends AbstractController
     /**
      * Insert session messages into the body of a response
      *
-     * @param array $body
      *
      * @return array Updated body
      */
@@ -202,7 +197,6 @@ class GenericAjaxCrudController extends AbstractController
      *
      * @param array $input Input data
      *
-     * @return Response
      */
     final protected function handleUpdateAction(array $input): Response
     {
@@ -229,7 +223,6 @@ class GenericAjaxCrudController extends AbstractController
      *
      * @param array $input Input data
      *
-     * @return Response
      */
     final protected function handleDeleteAction(array $input): Response
     {
@@ -256,7 +249,6 @@ class GenericAjaxCrudController extends AbstractController
      *
      * @param array $input Input data
      *
-     * @return Response
      */
     final protected function handleRestoreAction(array $input): Response
     {
@@ -283,7 +275,6 @@ class GenericAjaxCrudController extends AbstractController
      *
      * @param array $input Input data
      *
-     * @return Response
      */
     final protected function handlePurgeAction(array $input): Response
     {
@@ -315,7 +306,6 @@ class GenericAjaxCrudController extends AbstractController
      * @param int   $right  Specific right to check
      * @param array $input  Input data
      *
-     * @return void
      *
      * @throws HttpException
      */
@@ -345,7 +335,6 @@ class GenericAjaxCrudController extends AbstractController
      *
      * @param string $class Given class
      *
-     * @return bool
      */
     final protected function isClassAllowed(string $class): bool
     {

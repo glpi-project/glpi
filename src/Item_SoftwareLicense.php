@@ -513,7 +513,6 @@ class Item_SoftwareLicense extends CommonDBRelation
      *
      * @param SoftwareLicense $license SoftwareLicense instance
      *
-     * @return bool
      **/
     public static function showForLicenseByEntity(SoftwareLicense $license): bool
     {
@@ -595,7 +594,6 @@ class Item_SoftwareLicense extends CommonDBRelation
      *
      * @param SoftwareLicense $license SoftwareLicense instance
      *
-     * @return bool
      **/
     public static function showForLicense(SoftwareLicense $license): bool
     {

@@ -1007,10 +1007,6 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
     /**
      * @param class-string<CommonDBTM> $itemtype
-     * @param HTMLTableBase $base
-     * @param HTMLTableSuperHeader|null $super
-     * @param HTMLTableHeader|null $father
-     * @param array $options
      * @throws Exception
      * @since 0.84
      *
@@ -1040,10 +1036,6 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
 
     /**
-     * @param HTMLTableRow|null $row
-     * @param CommonDBTM|null $item
-     * @param HTMLTableCell|null $father
-     * @param array $options
      * @return void
      * @throws HTMLTableUnknownHeader
      *

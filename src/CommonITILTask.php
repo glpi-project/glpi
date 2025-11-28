@@ -308,8 +308,6 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     /**
      * @since 0.84
      *
-     * @param $field
-     * @param $values
      * @param $options   array
      **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
@@ -334,7 +332,6 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     /**
      * @since 0.84
      *
-     * @param $field
      * @param $name            (default '')
      * @param $values          (default '')
      * @param $options   array
@@ -429,7 +426,6 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      * @param array $input The input array, passed by reference.
      * @param int $timestart The start time of the task.
      * @param int $timeend The end time of the task.
-     * @return void
      */
     private function handleTaskDuration(array &$input, int $timestart, int $timeend): void
     {
@@ -2019,7 +2015,6 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     /**
      * Returns items as VCalendar objects.
      *
-     * @param array $criteria
      *
      * @return false|VCalendar[]
      */
@@ -2139,7 +2134,6 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     /**
      * Get the number of planned tasks for the parent item of this task
      *
-     * @return int
      */
     public function countPlannedTasks(): int
     {

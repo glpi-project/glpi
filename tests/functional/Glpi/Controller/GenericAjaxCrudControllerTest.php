@@ -44,7 +44,6 @@ class GenericAjaxCrudControllerTest extends DbTestCase
     /**
      * Data provider for the testHandleRequest method
      *
-     * @return iterable
      */
     protected function testHandleRequestProvider(): iterable
     {
@@ -323,7 +322,6 @@ class GenericAjaxCrudControllerTest extends DbTestCase
     /**
      * Test the handleRequest method
      *
-     * @return void
      */
     public function testHandleRequest(): void
     {

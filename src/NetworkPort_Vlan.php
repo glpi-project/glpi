@@ -86,7 +86,6 @@ class NetworkPort_Vlan extends CommonDBRelation
     }
 
     /**
-     * @param NetworkPort $port
      * @return false|void
      */
     public static function showForNetworkPort(NetworkPort $port)
@@ -198,7 +197,6 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param Vlan $vlan
      *
      * @return false|void
      */

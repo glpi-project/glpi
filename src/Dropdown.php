@@ -650,12 +650,10 @@ class Dropdown
      * Get comments of a dropdown entry.
      * The returned value is a safe HTML string.
      *
-     * @param string  $table
      * @param integer $id
      * @param boolean $translate
      * @param boolean $tooltip
      *
-     * @return string
      **/
     public static function getDropdownComments(string $table, int $id, bool $translate = true, bool $tooltip = true): string
     {
@@ -1053,7 +1051,6 @@ HTML;
     /**
      * Get possible values for a "GMT Dropdown"
      *
-     * @return array
      */
     public static function getGMTValues(): array
     {
@@ -1463,9 +1460,7 @@ HTML;
      * @param string     $title     title to display
      * @param array      $optgroup  (group of dropdown) of array (itemtype => localized name)
      * @param string     $value     URL of selected current value (default '')
-     * @param array      $options
      *
-     * @return void
      **/
     public static function showItemTypeMenu(string $title, array $optgroup, string $value = '', array $options = []): void
     {

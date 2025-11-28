@@ -123,7 +123,6 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
     /**
      * Check that required tables exists and fields are OK for migration.
      *
-     * @return void
      */
     protected function checkPlugin(): void
     {
@@ -190,10 +189,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
      * Throws a `\Glpi\Console\Exception\EarlyExitException` unless `skip-errors` option is used.
      *
      * @param string            $message
-     * @param ProgressBar|null  $progress_bar
-     * @param bool              $prevent_exit
      *
-     * @return void
      */
     protected function handleImportError($message, ?ProgressBar $progress_bar = null, bool $prevent_exit = false): void
     {
@@ -233,10 +229,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
     /**
      * Get ID of existing item that matches given fields, if any.
      *
-     * @param string $itemtype
-     * @param array $criteria
      *
-     * @return int|null
      */
     protected function getMatchingElementId(string $itemtype, array $criteria): ?int
     {
@@ -266,12 +259,9 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
     /**
      * Define target item for given source item.
      *
-     * @param string  $source_itemtype
      * @param integer $source_id
-     * @param string  $target_itemtype
      * @param integer $target_id
      *
-     * @return void
      */
     protected function defineTargetItem(string $source_itemtype, int $source_id, string $target_itemtype, int $target_id): void
     {
@@ -287,10 +277,8 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
     /**
      * Returns target item corresponding to given itemtype and id.
      *
-     * @param string  $source_itemtype
      * @param integer $source_id
      *
-     * @return null|CommonDBTM
      */
     protected function getTargetItem(string $source_itemtype, int $source_id): ?CommonDBTM
     {
@@ -321,10 +309,6 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
      * Store an item. Will update existing item if `$existing_item_id` is passed,
      * otherwise will create a new item.
      *
-     * @param string $itemtype
-     * @param int|null $existing_item_id
-     * @param array $input
-     * @param ProgressBar|null $progress_bar
      *
      * @return null|CommonDBTM Stored item.
      */
@@ -370,11 +354,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
     /**
      * Store infocom data related to given item.
      *
-     * @param CommonDBTM $item
-     * @param array $infocom_input
-     * @param ProgressBar|null $progress_bar
      *
-     * @return void
      */
     protected function storeInfocomForItem(CommonDBTM $item, array $infocom_input, ?ProgressBar $progress_bar = null): void
     {
@@ -417,14 +397,12 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
     /**
      * Returns key of the plugin handled by this migration.
      *
-     * @return string
      */
     abstract protected function getPluginKey(): string;
 
     /**
      * Returns the minimal version of plugin supported by this migration.
      *
-     * @return string|null
      */
     abstract protected function getRequiredMinimalPluginVersion(): ?string;
 
@@ -432,14 +410,12 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
      * Returns the list of database plugin fields by this migration.
      * Expected returned value is a string array containing values in `table_name.field_name` format.
      *
-     * @return array
      */
     abstract protected function getRequiredDatabasePluginFields(): array;
 
     /**
      * Migrate plugin data.
      *
-     * @return void
      */
     abstract protected function migratePlugin(): void;
 }

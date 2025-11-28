@@ -326,8 +326,6 @@ class MailCollector extends CommonDBTM
 
     /**
      * Extract an IMAP folder data to be used in Twig context.
-     * @param Folder $folder
-     * @return array
      */
     private function extractFolderData(Folder $folder): array
     {
@@ -2047,11 +2045,9 @@ class MailCollector extends CommonDBTM
      * Try to retrieve an existing item from references in message headers.
      * References corresponds to original MessageId sent by GLPI.
      *
-     * @param Message $message
      *
      * @since 9.5.4
      *
-     * @return CommonDBTM|null
      */
     public function getItemFromHeaders(Message $message): ?CommonDBTM
     {
@@ -2105,8 +2101,6 @@ class MailCollector extends CommonDBTM
     /**
      * Retrieve the message ID from headers.
      * If multiple matching headers are found, the first one parsed as a {@link MessageId} is returned.
-     * @param Message $message
-     * @return string|null
      */
     private function getMessageIdFromHeaders(Message $message): ?string
     {
@@ -2167,11 +2161,9 @@ class MailCollector extends CommonDBTM
      * Responses to GLPI messages should contains a InReplyTo or a References header
      * that matches the MessageId from original message.
      *
-     * @param Message $message
      *
      * @since 10.0.0
      *
-     * @return bool
      */
     public function isResponseToMessageSentByAnotherGlpi(Message $message): bool
     {
@@ -2206,9 +2198,7 @@ class MailCollector extends CommonDBTM
      *
      * @see NotificationTarget::getMessageIdForEvent()
      *
-     * @param string $header
      *
-     * @return array|null
      */
     private function extractValuesFromRefHeader(string $header): ?array
     {
@@ -2281,9 +2271,7 @@ class MailCollector extends CommonDBTM
     }
 
     /**
-     * @param $name
      * @param $value  (default 0)
-     * @param $rand
      **/
     public static function showMaxFilesize($name, $value = 0, $rand = null)
     {
@@ -2311,9 +2299,7 @@ class MailCollector extends CommonDBTM
     /**
      * Get the requester email address.
      *
-     * @param Message $message
      *
-     * @return string|null
      */
     private function getRequesterEmail(Message $message): ?string
     {
@@ -2335,10 +2321,7 @@ class MailCollector extends CommonDBTM
     /**
      * Get the email address from given header.
      *
-     * @param Message $message
-     * @param string  $header_name
      *
-     * @return string|null
      */
     private function getEmailFromHeader(Message $message, string $header_name): ?string
     {

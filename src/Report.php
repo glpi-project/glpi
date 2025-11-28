@@ -370,7 +370,6 @@ TWIG, $twig_params);
 
     /**
      * Get the data for the default report
-     * @return array
      * @phpstan-return ReportData
      */
     private static function getDefaultReport(): array
@@ -402,9 +401,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param array $report
      * @phpstan-param ReportData $report
-     * @return void
      */
     private static function showCountReport(array $report): void
     {
@@ -574,7 +571,6 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
 
     /**
      * @param int $locations_id The ID of the location or 0 for all locations
-     * @return array
      */
     private static function getNetworkLocationCriteria(int $locations_id): array
     {
@@ -610,7 +606,6 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
 
     /**
      * @param positive-int $sockets_id The socket ID
-     * @return array
      */
     private static function getNetworkSocketCriteria(int $sockets_id): array
     {
@@ -641,7 +636,6 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
 
     /**
      * @param positive-int $networkequipments_id The network equipment ID
-     * @return array
      */
     private static function getNetworkEquipmentCriteria(int $networkequipments_id): array
     {
@@ -664,8 +658,6 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
 
     /**
      * @param class-string<Location|NetworkEquipment|Socket> $by_itemtype
-     * @param int $by_items_id
-     * @return array
      * @phpstan-return ReportData
      */
     private static function getNetworkReport(string $by_itemtype, int $by_items_id): array
@@ -712,9 +704,7 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
      * Show network report
      *
      * @param 'Location'|'NetworkEquioment'|'Glpi\Socket'|null $by_itemtype
-     * @param int $by_items_id
      *
-     * @return void
      *
      * @since 10.0.0
      **/
@@ -844,7 +834,6 @@ TWIG, ['report' => $report, 'datatable_params' => $datatable_params]);
 
     /**
      * @param positive-int $users_id
-     * @return array
      */
     private static function getReservationReport(int $users_id): array
     {
@@ -863,7 +852,6 @@ TWIG, ['report' => $report, 'datatable_params' => $datatable_params]);
      * Show reservation report
      *
      * @param positive-int $users_id
-     * @return void
      */
     public static function showReservationReport(int $users_id): void
     {
@@ -1056,7 +1044,6 @@ TWIG, $twig_params);
      *
      * @param array<class-string<CommonDBTM>> $itemtypes
      * @param array<integer> $years
-     * @return void
      */
     public static function showYearlyAssetsReport(array $itemtypes, array $years): void
     {
@@ -1329,7 +1316,6 @@ TWIG, $twig_params);
      *
      * @param array<class-string<CommonDBTM>> $itemtypes
      * @param array<integer> $years
-     * @return void
      */
     public static function showContractAssetsReport(array $itemtypes, array $years): void
     {
@@ -1411,9 +1397,6 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param string|null $begin
-     * @param string|null $end
-     * @return array
      */
     private static function handleInfocomDates(?string $begin, ?string $end): array
     {
@@ -1437,9 +1420,6 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param ?string $begin
-     * @param ?string $end
-     * @return array
      */
     private static function getInfocomReport(?string $begin, ?string $end, bool $is_assets = true): array
     {
@@ -1506,9 +1486,6 @@ TWIG, $twig_params);
     /**
      * Show infocom report
      *
-     * @param ?string $begin
-     * @param ?string $end
-     * @return void
      */
     public static function showInfocomReport(?string $begin, ?string $end): void
     {
@@ -1734,9 +1711,6 @@ TWIG, $twig_params);
     /**
      * Show other (non-asset) infocom report
      *
-     * @param ?string $begin
-     * @param ?string $end
-     * @return void
      */
     public static function showOtherInfocomReport(?string $begin, ?string $end): void
     {
@@ -1940,9 +1914,6 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param bool $embeded
-     * @param bool $is_assets
-     * @return void
      * @used-by self::showInfocomReport()
      * @used-by self::showOtherInfocomReport()
      */

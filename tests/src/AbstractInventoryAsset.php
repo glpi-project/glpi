@@ -57,7 +57,6 @@ abstract class AbstractInventoryAsset extends InventoryTestCase
     /**
      * Data provider for asset
      *
-     * @return array
      */
     abstract public static function assetProvider(): array;
 }

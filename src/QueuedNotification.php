@@ -746,7 +746,6 @@ class QueuedNotification extends CommonDBTM
     }
 
     /**
-     * @param $string
      * @return string
      * @since 0.85
      */

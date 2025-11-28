@@ -147,10 +147,6 @@ class CheckHtmlEncodingCommandTest extends DbTestCase
 
     /**
      * @param class-string<CommonDBTM> $itemtype
-     * @param array $fields
-     * @param array $input
-     * @param array $output
-     * @return void
      */
     #[DataProvider('providerFixOneItem')]
     public function testFixOneItem(string $itemtype, array $fields, array $input, array $output): void

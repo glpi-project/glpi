@@ -670,9 +670,7 @@ class DBmysql
     /**
      * Returns tables using "MyIsam" engine.
      *
-     * @param bool $exclude_plugins
      *
-     * @return DBmysqlIterator
      */
     public function getMyIsamTables(bool $exclude_plugins = false): DBmysqlIterator
     {
@@ -691,9 +689,7 @@ class DBmysql
     /**
      * Returns tables not using "utf8mb4_*" collation.
      *
-     * @param bool $exclude_plugins
      *
-     * @return DBmysqlIterator
      */
     public function getNonUtf8mb4Tables(bool $exclude_plugins = false): DBmysqlIterator
     {
@@ -758,9 +754,7 @@ class DBmysql
     /**
      * Returns tables not compatible with timezone usage, i.e. having "datetime" columns.
      *
-     * @param bool $exclude_plugins
      *
-     * @return DBmysqlIterator
      *
      * @since 10.0.0
      */
@@ -808,7 +802,6 @@ class DBmysql
     /**
      * Returns columns that uses signed integers for primary/foreign keys.
      *
-     * @param bool $exclude_plugins
      *
      * @return DBmysqlIterator
      *
@@ -930,8 +923,6 @@ class DBmysql
     /**
      * Get field of a table
      *
-     * @param string  $table
-     * @param string  $field
      * @param boolean $usecache
      *
      * @return array|null Field characteristics
@@ -1518,7 +1509,6 @@ class DBmysql
      * @param array $where
      * @param bool $onlyone
      *
-     * @return string
      */
     public function buildUpdateOrInsert($table, $params, $where, $onlyone = true): string
     {
@@ -1688,7 +1678,6 @@ class DBmysql
      * @param string $type   Type to drop
      * @param bool   $exists Add IF EXISTS clause
      *
-     * @return string
      */
     public function buildDrop(string $name, string $type, bool $exists = false): string
     {
@@ -1946,7 +1935,6 @@ class DBmysql
     /**
      * Get character used to quote names for current database engine
      *
-     * @return string
      *
      * @since 9.5.0
      */
@@ -2040,7 +2028,6 @@ class DBmysql
     /**
      * Fetch warnings from last query.
      *
-     * @return array
      */
     private function fetchQueryWarnings(): array
     {
@@ -2076,7 +2063,6 @@ class DBmysql
     /**
      * Set charset to use for DB connection.
      *
-     * @return void
      */
     public function setConnectionCharset(): void
     {
@@ -2088,7 +2074,6 @@ class DBmysql
      *
      * @param mysqli_stmt $stmt Statement to execute
      *
-     * @return void
      */
     public function executeStatement(mysqli_stmt $stmt): void
     {
@@ -2107,9 +2092,7 @@ class DBmysql
     /**
      * Check for deprecated table options during ALTER/CREATE TABLE queries.
      *
-     * @param string $query
      *
-     * @return void
      */
     private function checkForDeprecatedTableOptions(string $query): void
     {
@@ -2180,7 +2163,6 @@ class DBmysql
     /**
      * Return configuration boolean properties computed using current state of tables.
      *
-     * @return array
      */
     public function getComputedConfigBooleanFlags(): array
     {
@@ -2248,7 +2230,6 @@ class DBmysql
      *
      * @param array $variables List of variables to get
      *
-     * @return array
      */
     final public function getGlobalVariables(array $variables): array
     {
@@ -2268,7 +2249,6 @@ class DBmysql
     /**
      * Get binary log status query, in regard of the MySQL/MariaDB version.
      *
-     * @return string
      */
     public function getBinaryLogStatusQuery(): string
     {
@@ -2288,7 +2268,6 @@ class DBmysql
     /**
      * Get replica status query, in regard of the MySQL/MariaDB version.
      *
-     * @return string
      */
     public function getReplicaStatusQuery(): string
     {

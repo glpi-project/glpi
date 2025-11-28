@@ -631,7 +631,6 @@ class MassiveActionTest extends DbTestCase
     /**
      * Data provider for testDeleteEmails
      *
-     * @return iterable
      */
     protected function deleteEmailsProvider(): iterable
     {

@@ -427,7 +427,6 @@ class Plugins
      * @param string $dest  where we store it it
      * @param string $plugin_key plugin system name
      *
-     * @return bool
      */
     public function downloadArchive(string $url, string $dest, string $plugin_key, bool $track_progress = true): bool
     {
@@ -497,7 +496,6 @@ class Plugins
     /**
      * Indicates whether the plugin list is truncated, mostly due to a marketplace API server unavailability.
      *
-     * @return bool
      */
     public function isListTruncated(): bool
     {

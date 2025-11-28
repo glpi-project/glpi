@@ -55,7 +55,6 @@ use function Safe\preg_match;
 final class ResourceAccessor
 {
     /**
-     * @param array $schema
      * @return class-string<CommonGLPI>|null
      */
     private static function getItemtypeFromSchema(array $schema): ?string
@@ -69,7 +68,6 @@ final class ResourceAccessor
     }
     /**
      * Get the related itemtype for the given schema.
-     * @param array $schema
      */
     private static function getItemFromSchema(array $schema): CommonDBTM
     {
@@ -118,9 +116,6 @@ final class ResourceAccessor
      * Only top-level properties are mapped.
      * Nested properties which would represent relations are not supported.
      * Creating/updating relations should be done using the appropriate endpoints.
-     * @param array $schema
-     * @param array $request_params
-     * @return array
      */
     public static function getInputParamsBySchema(array $schema, array $request_params): array
     {
@@ -178,7 +173,6 @@ final class ResourceAccessor
      * @param array $request_params The request parameters
      * @param string $field The unique field to match on. Defaults to ID. If different, the ID is resolved from the given other unique field.
      * The field must be present in the route path (request attributes).
-     * @return Response
      * @see self::getIDForOtherUniqueFieldBySchema()
      */
     public static function updateBySchema(array $schema, array $request_attrs, array $request_params, string $field = 'id'): Response
@@ -216,7 +210,6 @@ final class ResourceAccessor
      *      The array can contain an 'id' property which is the name of the parameter that the resulting ID is set to ('id' by default).
      *      The array may also contain a 'mapped' property which is an array of parameter names and static values.
      *      For example ['mapped' => ['subitem_type' => 'Followup']] would set the 'subitem_type' parameter to 'Followup'.
-     * @return Response
      */
     public static function createBySchema(array $schema, array $request_params, array $get_route, array $extra_get_route_params = []): Response
     {
@@ -248,9 +241,6 @@ final class ResourceAccessor
     /**
      * Search items using the given schema and request parameters.
      * Public entry point for {@link Search::getSearchResultsBySchema()} method.
-     * @param array $schema
-     * @param array $request_params
-     * @return Response
      */
     public static function searchBySchema(array $schema, array $request_params): Response
     {
@@ -306,7 +296,6 @@ final class ResourceAccessor
      * @param array $request_params The request parameters
      * @param string $field The unique field to match on. Defaults to ID. If different, the ID is resolved from the given other unique field.
      * The field must be present in the route path (request attributes).
-     * @return Response
      * @see self::getIDForOtherUniqueFieldBySchema()
      * @see ResourceAccessor::searchBySchema()
      */
@@ -349,7 +338,6 @@ final class ResourceAccessor
      * @param array $request_params The request parameters
      * @param string $field The unique field to match on. Defaults to ID. If different, the ID is resolved from the given other unique field.
      * The field must be present in the route path (request attributes).
-     * @return Response
      * @see self::getIDForOtherUniqueFieldBySchema()
      */
     public static function deleteBySchema(array $schema, array $request_attrs, array $request_params, string $field = 'id'): Response

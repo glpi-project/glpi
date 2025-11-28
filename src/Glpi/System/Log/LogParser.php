@@ -81,7 +81,6 @@ final class LogParser extends CommonGLPI
     /**
      * can we write new log file in the log directory ?
      *
-     * @return bool
      */
     public function canWriteLogs(): bool
     {
@@ -120,9 +119,7 @@ final class LogParser extends CommonGLPI
     /**
      * Get information about information given log file.
      *
-     * @param string $filepath
      *
-     * @return array|null
      */
     public function getLogFileInfo(string $filepath): ?array
     {
@@ -133,10 +130,7 @@ final class LogParser extends CommonGLPI
     /**
      * Parse a log file and return an array of log entries.
      *
-     * @param string $filepath
-     * @param int $max_nb_lines
      *
-     * @return array|null
      */
     public function parseLogFile(string $filepath, ?int $max_nb_lines = null): ?array
     {
@@ -198,7 +192,6 @@ final class LogParser extends CommonGLPI
      *
      * @param string $filepath  Path of file to display (relative to log directory)
      *
-     * @return void
      */
     public function download(string $filepath): void
     {
@@ -218,9 +211,7 @@ final class LogParser extends CommonGLPI
     /**
      * Clear a log file.
      *
-     * @param string $filepath
      *
-     * @return bool
      */
     public function empty(string $filepath): bool
     {
@@ -237,9 +228,7 @@ final class LogParser extends CommonGLPI
     /**
      * Delete a log file.
      *
-     * @param string $filepath
      *
-     * @return bool
      */
     public function delete(string $filepath): bool
     {
@@ -263,7 +252,6 @@ final class LogParser extends CommonGLPI
      *
      * @param string $filepath  Path of file to display (relative to log directory)
      *
-     * @return string|null
      */
     public function getFullPath(string $filepath): ?string
     {

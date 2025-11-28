@@ -252,7 +252,6 @@ class ItemAntivirus extends CommonDBChild
      * Display form for antivirus
      *
      * @param integer $ID      id of the antivirus
-     * @param array   $options
      *
      * @return boolean TRUE if form is ok
      **/

@@ -1143,7 +1143,6 @@ PHP
 
                 /**
                  * Similar to the parent method but without using `getRealPath` due to vfsStream limitations.
-                 * @return array
                  */
                 protected function getFilesystemPluginKeys(): array
                 {

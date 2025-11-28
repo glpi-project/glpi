@@ -164,7 +164,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
     /**
-     * @param bool $full
      * @return string
      */
     public static function getMyTasksURL(bool $full)
@@ -1671,7 +1670,6 @@ TWIG, $twig_params);
      *  Show the list of projecttasks for a user in the personal view or for a group in the group view
      *
      * @param string $itemtype The itemtype (User or Group)
-     * @return void
      * @used-by Central
      */
     public static function showListForCentral(string $itemtype): void
@@ -2151,7 +2149,6 @@ TWIG, $twig_params);
     /**
      * Recalculate the status of a project task based on the percent_done.
      * @since 11.0.0
-     * @param array $input
      * @return integer|false
      */
     public function recalculateStatus(array $input): int|false
@@ -2202,7 +2199,6 @@ TWIG, $twig_params);
     /**
      * Returns items as VCalendar objects.
      *
-     * @param array $criteria
      *
      * @return VCalendar[]
      */
@@ -2239,8 +2235,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * {@inheritdoc}
-     * @return VCalendar|null
+     *
      * @throws Exception If one or more of the datetimes are invalid
      */
     public function getAsVCalendar(): ?VCalendar

@@ -140,7 +140,6 @@ class Document_Item extends CommonDBRelation
     /**
      * Check if relation already exists.
      *
-     * @param array $input
      *
      * @return boolean
      *
@@ -327,7 +326,6 @@ class Document_Item extends CommonDBRelation
      *
      * @param Document $doc Document object
      *
-     * @return bool
      **/
     public static function showForDocument(Document $doc): bool
     {
@@ -492,7 +490,6 @@ TWIG, $twig_params);
      * @param CommonDBTM $item         Object for which associated documents must be displayed
      * @param int        $withtemplate (default 0)
      *
-     * @return bool
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0): bool
     {
@@ -523,7 +520,6 @@ TWIG, $twig_params);
     /**
      * @since 0.90
      *
-     * @param CommonDBTM $item
      * @param int $withtemplate    (default 0)
      * @param array $options
      *
@@ -609,7 +605,6 @@ TWIG, $twig_params);
     /**
      * @since 0.90
      *
-     * @param CommonDBTM $item
      * @param integer $withtemplate
      * @param array $options
      *

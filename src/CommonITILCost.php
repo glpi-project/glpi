@@ -316,7 +316,6 @@ abstract class CommonITILCost extends CommonDBChild
     /**
      * Init cost for creation based on previous cost
      *
-     * @return void
      **/
     public function initBasedOnPrevious(): void
     {

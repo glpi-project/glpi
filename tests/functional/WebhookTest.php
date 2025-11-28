@@ -278,7 +278,6 @@ JSON;
 
     /**
      * Ensure webhooks work even if the HL API is disabled
-     * @return void
      */
     public function testWithHLAPIDisabled(): void
     {

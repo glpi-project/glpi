@@ -539,9 +539,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     /**
      * Handle foreign key config fields splitting between "id" and "strategy" fields.
      *
-     * @param array $input
      *
-     * @return array
      */
     private function handleConfigStrategyFields(array $input): array
     {
@@ -567,9 +565,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     /**
      * Handle satisfaction survey configuration on update.
      *
-     * @param array $input
      *
-     * @return array
      */
     private function handleSatisfactionSurveyConfigOnUpdate(array $input): array
     {
@@ -1982,10 +1978,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     }
 
     /**
-     * @param string $field
-     * @param string $value
      *
-     * @return int
      */
     private static function getEntityIDByField(string $field, string $value): int
     {
@@ -2395,7 +2388,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      *
      * @param integer|null $val if not set, ask for all values, else for 1 value (default NULL)
      *
-     * @return string|array
      * @phpstan-return ($val is null ? array<int|string, string> : string)
      **/
     public static function getAutoAssignMode(?int $val = null): string|array
@@ -2418,7 +2410,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      *
      * @since 10.0.0
      *
-     * @return array
      **/
     public static function getDisplayUsersInitialsValues(): array
     {
@@ -2434,7 +2425,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      *
      * @since 9.5
      *
-     * @return array
      **/
     public static function getSuppliersAsPrivateValues(): array
     {
@@ -2450,7 +2440,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      *
      * @since 9.5
      *
-     * @return array
      **/
     public static function getAnonymizeSupportAgentsValues(): array
     {
@@ -2466,7 +2455,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     }
 
     /**
-     * @param array $options
      * @return int|string Returns the HTML code if the `display` option is false. Otherwise, the random number used for the dropdown is returned.
      */
     public static function dropdownAutoAssignMode(array $options): int|string
@@ -2878,10 +2866,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      *
      *
      * @param string $value
-     * @param bool $inline
-     * @param bool $display
      *
-     * @return string
      */
     public static function inheritedValue($value = "", bool $inline = false, bool $display = true): string
     {
@@ -2908,7 +2893,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      * Get the badge HTML for a field that can be inherited
      * @param string $field The field name
      * @param string|null $strategy_field The field name of the strategy
-     * @param mixed $default_value
      * @return string|null The badge HTML or null if the field is not inherited
      */
     public function getInheritedValueBadge(string $field, ?string $strategy_field = null, mixed $default_value = self::CONFIG_PARENT, mixed $inherit_parent_value = self::CONFIG_PARENT): ?string
@@ -2972,7 +2956,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     }
 
     /**
-     * @param ?int $entities_id
      *
      * @return mixed
      */
@@ -3008,10 +2991,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     /**
      * Return HTML code for entity badge showing its completename.
      *
-     * @param string $entity_string
-     * @param string|null $title
      *
-     * @return string
      */
     public static function badgeCompletename(string $entity_string = "", ?string $title = null): string
     {
@@ -3035,9 +3015,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     /**
      * Return HTML code for entity badge showing its completename.
      *
-     * @param int $entity_id
      *
-     * @return string|null
      */
     public static function badgeCompletenameById(int $entity_id): ?string
     {
@@ -3051,9 +3029,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     /**
      * Return HTML code for entity badge showing its completename with last entity as HTML link.
      *
-     * @param object $entity
      *
-     * @return string
      */
     public static function badgeCompletenameLink(object $entity): string
     {
@@ -3078,9 +3054,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     /**
      * Return HTML code for entity badge showing its completename with last entity as HTML link.
      *
-     * @param int $entity_id
      *
-     * @return string|null
      * @used-by templates/components/itilobject/fields_panel.html.twig
      */
     public static function badgeCompletenameLinkById(int $entity_id): ?string

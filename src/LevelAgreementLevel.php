@@ -391,7 +391,6 @@ abstract class LevelAgreementLevel extends RuleTicket
      * Should calculation on this LA Level target date be done using
      * the "work_in_day" parameter set to true ?
      *
-     * @return bool
      * @used-by LevelAgreement::computeExecutionDate()
      */
     public function shouldUseWorkInDayMode(): bool
@@ -428,7 +427,6 @@ abstract class LevelAgreementLevel extends RuleTicket
 
     /**
      * @param LevelAgreement $la The Level Agreement object (SLA or OLA)
-     * @return void
      */
     final protected function showForLA(LevelAgreement $la): void
     {

@@ -266,8 +266,6 @@ class Notification extends CommonDBTM implements FilterableInterface
     /**
      * @since 0.84
      *
-     * @param $field
-     * @param $values
      * @param $options   array
      **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
@@ -290,7 +288,6 @@ class Notification extends CommonDBTM implements FilterableInterface
     /**
      * @since 0.84
      *
-     * @param $field
      * @param $name               (default '')
      * @param $values             (default '')
      * @param $options      array
@@ -612,7 +609,6 @@ class Notification extends CommonDBTM implements FilterableInterface
     /**
      * Get the mailing signature for the entity
      *
-     * @param $entity
      **/
     public static function getMailingSignature($entity)
     {

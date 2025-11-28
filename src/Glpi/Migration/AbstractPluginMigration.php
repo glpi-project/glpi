@@ -122,7 +122,6 @@ abstract class AbstractPluginMigration
      * Execute (or simulate) the plugin migration.
      *
      * @param bool $simulate Whether the process should be simulated or actually executed.
-     * @return PluginMigrationResult
      */
     final public function execute(bool $simulate = false): PluginMigrationResult
     {
@@ -396,7 +395,6 @@ abstract class AbstractPluginMigration
      * @param class-string<CommonDBTM> $itemtype
      * @param array<mixed, mixed> $where
      * @param array<int, array{field: string, from: mixed, to: mixed}> $replacements
-     * @param bool $disable_unicity_check
      */
     final protected function copyItems(string $itemtype, array $where, array $replacements, bool $disable_unicity_check = false): void
     {
@@ -484,9 +482,7 @@ abstract class AbstractPluginMigration
      * Copy the polymorphic relations related to the given source item and attach them to the given target item.
      *
      * @param class-string<CommonDBTM> $source_itemtype
-     * @param int $source_items_id
      * @param class-string<CommonDBTM> $target_itemtype
-     * @param int $target_items_id
      */
     final protected function copyPolymorphicConnexityItems(
         string $source_itemtype,
@@ -628,9 +624,7 @@ abstract class AbstractPluginMigration
      * Update the polymorphic references related to the given source item and attach them to the given target item.
      *
      * @param class-string<CommonDBTM> $source_itemtype
-     * @param int $source_items_id
      * @param class-string<CommonDBTM> $target_itemtype
-     * @param int $target_items_id
      */
     final protected function updatePolymorphicReferences(
         string $source_itemtype,
@@ -698,11 +692,8 @@ abstract class AbstractPluginMigration
      *
      * @param string                    $source_itemtype Note: may be an itemtype from a deleted or disabled plugin so
      *                                                   it is not safe to assume that this is a class-string<CommonDBTM>
-     * @param int                       $source_items_id
      * @param class-string<CommonDBTM> $target_itemtype
-     * @param int                       $target_items_id
      *
-     * @return void
      */
     final protected function mapItem(
         string $source_itemtype,

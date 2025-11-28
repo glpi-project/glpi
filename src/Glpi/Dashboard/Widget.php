@@ -66,7 +66,6 @@ class Widget
      * This is used when adding a new card to display optgroups
      * This array can be hooked by plugins to add their own definitions.
      *
-     * @return array
      */
     public static function getAllTypes(): array
     {
@@ -2005,7 +2004,6 @@ JAVASCRIPT;
 
     /**
      * Get a non-gradient palette based on the number of series
-     * @param int $nb_series
      *
      * @return array of hex color strings
      */

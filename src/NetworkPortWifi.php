@@ -182,8 +182,6 @@ class NetworkPortWifi extends NetworkPortInstantiation
     }
 
     /**
-     * @param array $tab
-     * @param array $joinparams
      *
      * @return void
      */

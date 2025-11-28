@@ -96,7 +96,6 @@ final class LogViewer extends CommonGLPI
      * @param string $order Field used to sort list.
      * @param string $sort  Sort order ('asc' or 'desc').
      *
-     * @return void
      */
     public function displayList(string $order = "filename", string $sort = "asc"): void
     {
@@ -131,7 +130,6 @@ final class LogViewer extends CommonGLPI
      * @param string $filepath      Path of file to display (relative to log directory)
      * @param bool $only_content    If true, don't return the html layout.
      *
-     * @return void
      */
     public function showLogFile(string $filepath, bool $only_content = false): void
     {

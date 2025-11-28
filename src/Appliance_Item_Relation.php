@@ -55,7 +55,6 @@ class Appliance_Item_Relation extends CommonDBRelation
      *
      * @param boolean $all Get all possible types or only allowed ones
      *
-     * @return array
      */
     public static function getTypes($all = false): array
     {
@@ -171,7 +170,6 @@ class Appliance_Item_Relation extends CommonDBRelation
     /**
      * return an array of relations for a given Appliance_Item's id
      *
-     * @param int $appliances_items_id
      *
      * @return array array of string with icons and names
      */

@@ -133,15 +133,12 @@ interface KanbanInterface
     public static function getKanbanPluginFilters($itemtype);
 
     /**
-     * @param bool $full
      *
      * @return string
      */
     public static function getGlobalKanbanUrl(bool $full = true);
 
     /**
-     * @param int $items_id
-     * @param bool $full
      *
      * @return string
      */

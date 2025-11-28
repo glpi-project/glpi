@@ -1024,9 +1024,6 @@ final class FormSerializer extends AbstractFormSerializer
      *
      * Some configuration may reference other destinations
      *
-     * @param Form $form
-     * @param FormContentSpecification $form_spec
-     * @param DatabaseMapper $mapper
      * @return Form The updated form
      * @throws RuntimeException if a destination cannot be found or updated
      */

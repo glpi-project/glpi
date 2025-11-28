@@ -43,7 +43,6 @@ class PendingReasonCron extends CommonDBTM
     /**
      * Get task description
      *
-     * @return string
      */
     public static function getTaskDescription(): string
     {
@@ -60,7 +59,6 @@ class PendingReasonCron extends CommonDBTM
     /**
      * Run from cronTask
      *
-     * @param CronTask $task
      */
     public static function cronPendingreason_autobump_autosolve(CronTask $task)
     {

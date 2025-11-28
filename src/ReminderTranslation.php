@@ -198,7 +198,6 @@ TWIG, $twig_params);
      * Display translation form
      *
      * @param integer $ID
-     * @param array   $options
      */
     public function showForm($ID = -1, array $options = [])
     {

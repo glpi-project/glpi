@@ -43,10 +43,6 @@ interface DestinationFieldConverterInterface
     /**
      * Convert field config
      *
-     * @param FormMigration $migration
-     * @param Form $form
-     * @param array $rawData
-     * @return JsonFieldInterface
      */
     public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface;
 }

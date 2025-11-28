@@ -118,10 +118,7 @@ class Lockedfield extends CommonDBTM
     /**
      * Check if user can access main item entity
      *
-     * @param string $itemtype
-     * @param int    $items_id
      *
-     * @return bool
      */
     private function canAccessItemEntity(string $itemtype, int $items_id): bool
     {
@@ -411,7 +408,6 @@ class Lockedfield extends CommonDBTM
     /**
      * List of itemtypes/fields that can be locked globally
      *
-     * @return array
      */
     public function getFieldsToLock(?string $specific_itemtype = null): array
     {

@@ -150,7 +150,6 @@ class ManualLink extends CommonDBChild
 
     /**
      * Return all manual links entries for given item.
-     * @param CommonDBTM $item
      * @return array
      */
     public static function getForItem(CommonDBTM $item): iterable
@@ -212,9 +211,7 @@ class ManualLink extends CommonDBChild
     /**
      * Returns link HTML code.
      *
-     * @param array $fields
      *
-     * @return string
      */
     public static function getLinkHtml(array $fields): string
     {

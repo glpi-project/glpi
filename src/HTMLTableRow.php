@@ -46,7 +46,6 @@ class HTMLTableRow extends HTMLTableEntity
     private $linesWithAttributs = [];
 
     /**
-     * @param $group
      **/
     public function __construct($group)
     {
@@ -74,8 +73,6 @@ class HTMLTableRow extends HTMLTableEntity
     }
 
     /**
-     * @param $lineIndex
-     * @param $attributs
      **/
     public function addAttributForLine($lineIndex, $attributs)
     {
@@ -84,7 +81,6 @@ class HTMLTableRow extends HTMLTableEntity
 
     /**
      * @param HTMLTableHeader $header object
-     * @param $content
      * @param ?HTMLTableCell $father object (default NULL)
      * @param ?CommonDBTM $item object: The item associated with the current cell (default NULL)
      **/
@@ -159,7 +155,6 @@ class HTMLTableRow extends HTMLTableEntity
     }
 
     /**
-     * @param $headers
      **/
     public function displayRow($headers)
     {
@@ -197,7 +192,6 @@ class HTMLTableRow extends HTMLTableEntity
     }
 
     /**
-     * @param $name
      * @param $sub_name  (default NULL)
      */
     public function getHeaderByName($name, $sub_name = null)

@@ -109,7 +109,6 @@ class Notification_NotificationTemplate extends CommonDBRelation
      * @param Notification $notif        Notification object
      * @param integer      $withtemplate Template or basic item (default '')
      *
-     * @return bool
      **/
     public static function showForNotification(Notification $notif, $withtemplate = 0): bool
     {
@@ -213,7 +212,6 @@ TWIG, $twig_params);
      * @param NotificationTemplate $template     Notification template object
      * @param integer              $withtemplate Template or basic item (default '')
      *
-     * @return bool
      */
     public static function showForNotificationTemplate(NotificationTemplate $template, $withtemplate = 0): bool
     {

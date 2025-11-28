@@ -43,11 +43,8 @@ use Safe\DateTime;
 class AccessTokenRepository implements AccessTokenRepositoryInterface
 {
     /**
-     * @param ClientEntityInterface $clientEntity
-     * @param array $scopes
      * @param ?string $userIdentifier
      *
-     * @return AccessTokenEntityInterface
      */
     public function getNewToken(ClientEntityInterface $clientEntity, array $scopes, $userIdentifier = null): AccessTokenEntityInterface
     {
@@ -78,7 +75,6 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
     /**
      * @param string $tokenId
      *
-     * @return void
      */
     public function revokeAccessToken($tokenId): void
     {
@@ -90,7 +86,6 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
     /**
      * @param string $tokenId
      *
-     * @return bool
      */
     public function isAccessTokenRevoked($tokenId): bool
     {

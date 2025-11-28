@@ -483,7 +483,6 @@ class FormBuilder
     /**
      * Get form access controls restrictions.
      *
-     * @return array
      */
     public function getAccessControls(): array
     {
@@ -493,8 +492,6 @@ class FormBuilder
     /**
      * Add a destination to the form
      *
-     * @param string                  $strategy
-     * @param JsonFieldInterface $values
      *
      * @return self To allow chain calls
      */

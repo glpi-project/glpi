@@ -286,7 +286,6 @@ class ReservationItem extends CommonDBChild
     }
 
     /**
-     * @param CommonDBTM $item
      * @return false|void
      */
     public static function showActivationFormForItem(CommonDBTM $item)
@@ -687,7 +686,6 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param $name
      *
      * @return array
      * @used-by CronTask
@@ -930,7 +928,6 @@ TWIG, $twig_params);
      *
      * @param class-string<CommonDBTM> $itemtype
      *
-     * @return DBmysqlIterator
      */
     public static function getAvailableItems(string $itemtype): DBmysqlIterator
     {
@@ -953,7 +950,6 @@ TWIG, $twig_params);
      *
      * @param class-string<CommonDBTM> $itemtype
      *
-     * @return int
      */
     public static function countAvailableItems(string $itemtype): int
     {
@@ -970,7 +966,6 @@ TWIG, $twig_params);
      *
      * @param class-string<CommonDBTM> $itemtype
      *
-     * @return array
      */
     private static function getAvailableItemsCriteria(string $itemtype): array
     {

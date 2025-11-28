@@ -75,7 +75,6 @@ class Item_Enclosure extends CommonDBRelation
     /**
      * Print enclosure items
      *
-     * @return bool
      **/
     public static function showItems(Enclosure $enclosure): bool
     {

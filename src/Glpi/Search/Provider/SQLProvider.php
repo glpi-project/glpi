@@ -147,7 +147,6 @@ final class SQLProvider implements SearchProviderInterface
     /**
      * Generic function to get the default SELECT criteria for an item type
      * @param class-string<CommonDBTM> $itemtype
-     * @return array
      */
     public static function getDefaultSelectCriteria(string $itemtype): array
     {
@@ -1122,7 +1121,6 @@ final class SQLProvider implements SearchProviderInterface
      *
      * @param string $itemtype  Main itemtype
      *
-     * @return string
      */
     private static function getMainItemtypeSystemSQLCriteria(string $itemtype): string
     {
@@ -1150,7 +1148,6 @@ final class SQLProvider implements SearchProviderInterface
      * @param string|int $val
      * @param bool $meta
      *
-     * @return ?array
      */
     public static function getWhereCriteria($nott, $itemtype, $ID, $searchtype, $val, $meta = false): ?array
     {
@@ -2685,8 +2682,6 @@ final class SQLProvider implements SearchProviderInterface
 
     /**
      * Convert a SQL JOIN string (may contain multiple JOINs) to the iterator/array format
-     * @param string $raw_joins
-     * @return array
      */
     private static function parseJoinString(string $raw_joins): array
     {
@@ -3724,7 +3719,6 @@ final class SQLProvider implements SearchProviderInterface
     }
 
     /**
-     * @param array $joinparams
      * @return string
      */
     public static function computeComplexJoinID(array $joinparams)
@@ -3785,7 +3779,6 @@ final class SQLProvider implements SearchProviderInterface
      * @param class-string<CommonDBTM> $itemtype Item type
      * @param string $field    Field name
      *
-     * @return array
      */
     public static function getDropdownTranslationJoinCriteria($alias, $table, $itemtype, $field): array
     {
@@ -6886,9 +6879,6 @@ final class SQLProvider implements SearchProviderInterface
     /**
      * Returns the suffix to add to table identifiers joined for meta items.
      *
-     * @param string $initial_table
-     * @param string $meta_itemtype
-     * @return string
      */
     private static function getMetaTableUniqueSuffix(string $initial_table, string $meta_itemtype): string
     {

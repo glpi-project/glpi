@@ -1290,7 +1290,6 @@ class Toolbox
      * @param string    $url        URL to check
      * @param array     $allowlist  Allowlist (regex array)
      *
-     * @return bool
      */
     public static function isUrlSafe(string $url, array $allowlist = GLPI_SERVERSIDE_URL_ALLOWLIST): bool
     {
@@ -1403,12 +1402,8 @@ class Toolbox
      * Executes a curl call
      *
      * @param string $url
-     * @param array  $eopts
      * @param string $msgerr
-     * @param bool   $check_url_safeness
-     * @param array  $curl_info
      *
-     * @return string
      *
      * @throws CurlException
      * @throws EmptyCurlContentException
@@ -1507,8 +1502,6 @@ class Toolbox
 
 
     /**
-     * @param $need
-     * @param $tab
      *
      * @return boolean
      **/
@@ -1584,8 +1577,6 @@ class Toolbox
     /**
      * Compute the redirection target.
      *
-     * @param string $where
-     * @return string|null
      */
     public static function computeRedirect(string $where): ?string
     {
@@ -1756,7 +1747,6 @@ class Toolbox
     /**
      * Get max upload size from php config.
      *
-     * @return int
      */
     public static function getPhpUploadSizeLimit(): int
     {
@@ -1911,7 +1901,6 @@ class Toolbox
      *
      * @param bool  $allow_plugins_protocols    Whether plugins protocol must be allowed.
      *
-     * @return array
      */
     public static function getMailServerProtocols(bool $allow_plugins_protocols = true): array
     {
@@ -1974,7 +1963,6 @@ class Toolbox
      * Class should implements Glpi\Mail\Protocol\ProtocolInterface
      * or should be \Laminas\Mail\Protocol\Imap|\Laminas\Mail\Protocol\Pop3 for native protocols.
      *
-     * @param string    $protocol_type
      * @param bool      $allow_plugins_protocols    Whether plugins protocol must be allowed.
      *
      * @return null|ProtocolInterface|Imap|Pop3
@@ -2008,11 +1996,9 @@ class Toolbox
      *
      * Class should extends \Laminas\Mail\Storage\AbstractStorage.
      *
-     * @param string    $protocol_type
      * @param array     $params                     Storage constructor params, as defined in AbstractStorage
      * @param bool      $allow_plugins_protocols    Whether plugins protocol must be allowed.
      *
-     * @return null|AbstractStorage
      */
     public static function getMailServerStorageInstance(string $protocol_type, array $params, bool $allow_plugins_protocols = true): ?AbstractStorage
     {
@@ -2155,7 +2141,6 @@ class Toolbox
      *
      * @param string   $lang     Language to install
      * @param ?DBmysql $database Database instance to use, will fallback to a new instance of DB if null
-     * @param ?AbstractProgressIndicator $progress_indicator
      *
      * @return void
      *
@@ -2434,7 +2419,6 @@ class Toolbox
      * @param string $prefix Prefix to use (anchors cannot begin with a number)
      * @param bool   $force_special_dash Replace all special chars by a dash
      *
-     * @return string
      */
     public static function slugify(string $string = "", string $prefix = 'slug_', bool $force_special_dash = false): string
     {
@@ -2675,7 +2659,6 @@ class Toolbox
      *
      * @param mixed $json the var to test
      *
-     * @return bool
      */
     public static function isJSON($json): bool
     {
@@ -2880,9 +2863,7 @@ class Toolbox
      *
      * @since 10.0.0
      *
-     * @param string  $str
      *
-     * @return string
      *
      * @TODO Unit test
      */
@@ -3067,7 +3048,6 @@ class Toolbox
      * Inpsired by shahonseven/php-color-hash
      * @since 9.5
      *
-     * @param string $str
      *
      * @return string hex color (ex #FAFAFA)
      */
@@ -3172,7 +3152,6 @@ class Toolbox
      *
      * @since 9.5
      *
-     * @param string $name
      *
      * @return mixed The header value or null if not found
      */
@@ -3187,8 +3166,6 @@ class Toolbox
     /**
      * Check if the given class exist and extends CommonDBTM
      *
-     * @param string $class
-     * @return bool
      */
     public static function isCommonDBTM(string $class): bool
     {
@@ -3198,8 +3175,6 @@ class Toolbox
     /**
      * Check if the given class exist and implement DeprecatedInterface
      *
-     * @param string $class
-     * @return bool
      */
     public static function isAPIDeprecated(string $class): bool
     {
@@ -3309,7 +3284,6 @@ class Toolbox
      *
      * @param string $target Target argument
      *
-     * @return string
      */
     public static function cleanTarget(string $target): string
     {
@@ -3329,7 +3303,6 @@ class Toolbox
      * @param string          $itemtype Type of the item
      * @param int|string|null $id       Id the item, optional
      *
-     * @return array
      */
     public static function getAvailablesTabs(string $itemtype, $id = null): array
     {
@@ -3363,7 +3336,6 @@ class Toolbox
      *
      * @param mixed $value A possible float
      *
-     * @return bool
      */
     public static function isFloat($value): bool
     {
@@ -3389,7 +3361,6 @@ class Toolbox
      *
      * @param mixed $value A possible float
      *
-     * @return int
      */
     public static function getDecimalNumbers($value): int
     {
@@ -3448,7 +3419,6 @@ class Toolbox
     /**
      * Get itemtype name used in JS function names, etc
      *
-     * @param string $itemtype
      *
      * @return string
      */
@@ -3458,8 +3428,6 @@ class Toolbox
     }
 
     /**
-     * @param string $message
-     * @return string
      */
     public static function cleanPaths(string $message): string
     {

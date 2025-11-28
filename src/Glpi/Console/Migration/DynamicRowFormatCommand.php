@@ -77,7 +77,6 @@ class DynamicRowFormatCommand extends AbstractCommand
     /**
      * Check for migration prerequisites.
      *
-     * @return void
      */
     private function checkForPrerequisites(): void
     {
@@ -95,7 +94,6 @@ class DynamicRowFormatCommand extends AbstractCommand
      * Upgrade row format from 'Compact'/'Redundant' to 'Dynamic'.
      * This is mandatory to support large indexes.
      *
-     * @return void
      */
     private function upgradeRowFormat(): void
     {

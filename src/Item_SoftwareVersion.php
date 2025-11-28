@@ -416,7 +416,6 @@ class Item_SoftwareVersion extends CommonDBRelation
     /**
      * Show installation of a Software
      *
-     * @param Software $software
      *
      * @return void
      **/
@@ -428,7 +427,6 @@ class Item_SoftwareVersion extends CommonDBRelation
     /**
      * Show installation of a Version
      *
-     * @param SoftwareVersion $version
      *
      * @return void
      **/
@@ -876,9 +874,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      * @param CommonDBTM $item  Item instance
      * @param ?string     $sort  Field to sort on
      * @param ?string     $order Sort order
-     * @param array       $filters
      *
-     * @return DBmysqlIterator
      */
     public static function getFromItem(CommonDBTM $item, $sort = null, $order = null, array $filters = []): DBmysqlIterator
     {
@@ -975,7 +971,6 @@ class Item_SoftwareVersion extends CommonDBRelation
     /**
      * Show software installed on an asset
      *
-     * @param CommonDBTM $item
      * @param integer  $withtemplate template case of the view process
      *
      * @return void

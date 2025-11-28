@@ -64,7 +64,6 @@ final class ValidationResult
     /**
      * Check if the validation is successful
      *
-     * @return bool
      */
     public function isValid(): bool
     {
@@ -74,7 +73,6 @@ final class ValidationResult
     /**
      * Get the list of errors found during validation
      *
-     * @return array
      */
     public function getErrors(): array
     {
@@ -86,7 +84,6 @@ final class ValidationResult
      *
      * @param Question $question The question associated with the error
      * @param string   $message  The error message
-     * @return void
      */
     public function addError(Question $question, string $message): void
     {

@@ -50,7 +50,7 @@ final class FormContentSpecification
     public bool $is_active;
     public string $submit_button_visibility_strategy;
 
-    /** @var string|CustomIllustrationContentSpecification $illustration**/
+    /**  */
     public string|CustomIllustrationContentSpecification $illustration;
 
     /** @var ConditionDataSpecification[] $conditions */

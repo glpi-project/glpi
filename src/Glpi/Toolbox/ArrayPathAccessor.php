@@ -47,7 +47,6 @@ final class ArrayPathAccessor
      * @param array $array The array to check
      * @param string $path The path to the element
      * @param string $path_delimiter The delimiter used in the path
-     * @return bool
      */
     public static function hasElementByArrayPath(array $array, string $path, string $path_delimiter = '.'): bool
     {
@@ -70,7 +69,6 @@ final class ArrayPathAccessor
      * @param array $array The array to check
      * @param string $path The path to the element
      * @param string $path_delimiter The delimiter used in the path
-     * @return mixed
      */
     public static function getElementByArrayPath(array $array, string $path, string $path_delimiter = '.'): mixed
     {
@@ -94,7 +92,6 @@ final class ArrayPathAccessor
      * @param string $path The path to the element
      * @param mixed $value The value to set
      * @param string $path_delimiter The delimiter used in the path
-     * @return void
      */
     public static function setElementByArrayPath(array &$array, string $path, mixed $value, string $path_delimiter = '.'): void
     {
@@ -117,7 +114,6 @@ final class ArrayPathAccessor
      * @param array $array The array to check
      * @param string $regex The regex pattern to match against the full paths
      * @param string $path_delimiter The delimiter used in the path
-     * @return array
      */
     public static function getArrayPaths(array $array, string $regex = '/.*/', string $path_delimiter = '.'): array
     {

@@ -89,9 +89,7 @@ class Schema implements ArrayAccess
     }
 
     /**
-     * @param string $type
      * @phpstan-param self::TYPE_* $type
-     * @return ?string
      * @phpstan-return self::FORMAT_*|null
      */
     public static function getDefaultFormatForType(string $type): ?string
@@ -106,7 +104,6 @@ class Schema implements ArrayAccess
     }
 
     /**
-     * @return string
      */
     public function getType(): string
     {
@@ -114,7 +111,6 @@ class Schema implements ArrayAccess
     }
 
     /**
-     * @return string|null
      */
     public function getFormat(): ?string
     {
@@ -122,7 +118,6 @@ class Schema implements ArrayAccess
     }
 
     /**
-     * @return string|null
      */
     public function getPattern(): ?string
     {
@@ -326,8 +321,6 @@ class Schema implements ArrayAccess
 
     /**
      * Filter a schema by the requested API version. May return null if the entire schema is not applicable to the requested version.
-     * @param array $schema
-     * @param string $api_version
      * @return array|null The filtered schema or null
      */
     public static function filterSchemaByAPIVersion(array $schema, string $api_version): ?array

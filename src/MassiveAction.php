@@ -130,7 +130,6 @@ class MassiveAction
 
     /**
      * Current process start time.
-     * @var float
      */
     private float $start_time;
 
@@ -426,7 +425,6 @@ class MassiveAction
     /**
      * Get current action name.
      *
-     * @return string|null
      */
     public function getActionName(): ?string
     {
@@ -436,7 +434,6 @@ class MassiveAction
     /**
      * Get current action processor classname.
      *
-     * @return string|null
      */
     public function getProcessor(): ?string
     {
@@ -484,7 +481,6 @@ class MassiveAction
 
 
     /**
-     * @param $POST
      **/
     public function getCheckItem($POST)
     {

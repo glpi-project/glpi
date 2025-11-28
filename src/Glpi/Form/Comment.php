@@ -241,7 +241,6 @@ final class Comment extends CommonDBChild implements
     /**
      * Get the parent form of this question
      *
-     * @return Form
      */
     public function getForm(): Form
     {
@@ -278,7 +277,6 @@ final class Comment extends CommonDBChild implements
     /**
      * Manually update logs of the parent form item
      *
-     * @return void
      */
     protected function logCreationInParentForm(): void
     {
@@ -310,7 +308,6 @@ final class Comment extends CommonDBChild implements
      *
      * @param bool $history
      *
-     * @return void
      */
     protected function logUpdateInParentForm($history = true): void
     {
@@ -348,7 +345,6 @@ final class Comment extends CommonDBChild implements
     /**
      * Manually update logs of the parent form item
      *
-     * @return void
      */
     protected function logDeleteInParentForm(): void
     {

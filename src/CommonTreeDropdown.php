@@ -518,7 +518,6 @@ abstract class CommonTreeDropdown extends CommonDropdown
     /**
      * Print the HTML array children of a TreeDropdown
      *
-     * @return bool
      */
     public function showChildren(): bool
     {

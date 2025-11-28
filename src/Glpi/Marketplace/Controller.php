@@ -120,7 +120,6 @@ class Controller extends CommonGLPI
 
     /**
      * Check if the Marketplace can be used via the CLI.
-     * @return bool
      */
     public static function isCLIAllowed(): bool
     {
@@ -129,7 +128,6 @@ class Controller extends CommonGLPI
 
     /**
      * Check if the Marketplace can be used via the web interface.
-     * @return bool
      */
     public static function isWebAllowed(): bool
     {
@@ -139,7 +137,6 @@ class Controller extends CommonGLPI
     /**
      * singleton return the current api instance
      *
-     * @return PluginsApi
      */
     public static function getAPI(): PluginsApi
     {
@@ -169,7 +166,6 @@ class Controller extends CommonGLPI
      *
      * @param bool $auto_install Automatically install the plugin after download
      * @param ?string $version Download a specific version of the plugin
-     * @return bool
      */
     public function downloadPlugin($auto_install = true, ?string $version = null): bool
     {
@@ -326,7 +322,6 @@ class Controller extends CommonGLPI
     /**
      * Check if plugin can be overwritten.
      *
-     * @return bool
      */
     public function canBeOverwritten(): bool
     {
@@ -378,7 +373,6 @@ class Controller extends CommonGLPI
     /**
      * Check if a given plugin has on update online
      *
-     * @param Plugin $plugin_inst
      *
      * @return string|false new version number
      */
@@ -530,7 +524,6 @@ class Controller extends CommonGLPI
     /**
      * Check if plugin is eligible inside an higher offer.
      *
-     * @return bool
      */
     public function requiresHigherOffer(): bool
     {
@@ -559,7 +552,6 @@ class Controller extends CommonGLPI
      *
      * @param bool $disable_messages drop any messages after plugin installation
      *
-     * @return bool
      */
     public function installPlugin(bool $disable_messages = false): bool
     {
@@ -576,7 +568,6 @@ class Controller extends CommonGLPI
     /**
      * Ununstall current plugin
      *
-     * @return bool
      */
     public function uninstallPlugin(): bool
     {
@@ -587,7 +578,6 @@ class Controller extends CommonGLPI
     /**
      * Enable current plugin
      *
-     * @return bool
      */
     public function enablePlugin(): bool
     {
@@ -598,7 +588,6 @@ class Controller extends CommonGLPI
     /**
      * Disable current plugin
      *
-     * @return bool
      */
     public function disablePlugin(): bool
     {
@@ -609,7 +598,6 @@ class Controller extends CommonGLPI
     /**
      * Clean (remove database data) current plugin
      *
-     * @return bool
      */
     public function cleanPlugin(): bool
     {
@@ -628,7 +616,6 @@ class Controller extends CommonGLPI
     /**
      * Check if marketplace controller has write access to install/update plugins source code.
      *
-     * @return bool
      */
     public static function hasWriteAccess(): bool
     {
@@ -638,9 +625,7 @@ class Controller extends CommonGLPI
     /**
      * Check if a directory ".git|.hg|.svn" is present in plugins source code.
      *
-     * @param string $plugin_key
      *
-     * @return bool
      */
     public static function hasVcsDirectory(string $plugin_key): bool
     {
@@ -663,7 +648,6 @@ class Controller extends CommonGLPI
      * Call an action method (install/enable/...) for the current plugin
      * method called internally by installPlugin, uninstallPlugin, enablePlugin, disablePlugin
      *
-     * @param string $method
      *
      * @return int plugin status, @see properties of \Plugin class
      */

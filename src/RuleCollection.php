@@ -2073,7 +2073,6 @@ TWIG, $twig_params);
     /**
      * Get list of Rules
      *
-     * @return array
      */
     public static function getRules(): array
     {
@@ -2133,7 +2132,6 @@ TWIG, $twig_params);
     /**
      * Get list of dictionaries
      *
-     * @return array
      */
     public static function getDictionnaries(): array
     {

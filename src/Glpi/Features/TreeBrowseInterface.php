@@ -39,8 +39,6 @@ use CommonDBTM;
 interface TreeBrowseInterface
 {
     /**
-     * @param string $itemtype
-     * @param array $params
      * @param bool $update
      *
      * @return void
@@ -51,9 +49,7 @@ interface TreeBrowseInterface
      * Get list of document categories in fancytree format.
      *
      * @param class-string<CommonDBTM> $itemtype
-     * @param array $params
      *
-     * @return array
      */
     public static function getTreeCategoryList(string $itemtype, array $params): array;
 

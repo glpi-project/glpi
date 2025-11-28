@@ -123,7 +123,6 @@ class CommandLoader implements CommandLoaderInterface
     /**
      * Indicates if plugin commands should be included.
      *
-     * @param bool $include_plugins
      *
      * @return void
      */
@@ -367,7 +366,6 @@ class CommandLoader implements CommandLoaderInterface
     /**
      * Register a command on self.
      *
-     * @param Command $command
      *
      * @return void
      */
@@ -389,7 +387,6 @@ class CommandLoader implements CommandLoaderInterface
      * @param string      $basedir   Directory containing classes (eg GLPI_ROOT . '/inc')
      * @param array       $prefixes  Possible prefixes to add to classname (eg 'PluginExample', 'GlpiPlugin\Example')
      *
-     * @return null|Command
      */
     private function getCommandFromFile(SplFileInfo $file, $basedir, array $prefixes = []): ?Command
     {

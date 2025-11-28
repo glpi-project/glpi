@@ -290,7 +290,6 @@ class DomainRecordType extends CommonDropdown
      *
      * @param string $fields_str  Value of "fields" field (should be a JSON encoded string).
      *
-     * @return bool
      */
     private function validateFieldsDescriptor($fields_str): bool
     {
@@ -332,9 +331,7 @@ class DomainRecordType extends CommonDropdown
      * Handle decoding of sanitized value.
      * Returns null if unable to decode.
      *
-     * @param string $json_encoded_fields
      *
-     * @return array|null
      */
     public static function decodeFields(string $json_encoded_fields): ?array
     {

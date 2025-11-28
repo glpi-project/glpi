@@ -47,7 +47,6 @@ trait CommonDeprecatedTrait
     /**
      * Get the class short name for the deprecated itemtpe
      *
-     * @return string
      */
     private function getDeprecatedClass(): string
     {
@@ -78,7 +77,6 @@ trait CommonDeprecatedTrait
     /**
      * For each searchoption, update the UID ref to match the deprecated type
      *
-     * @param array $soptions
      * @return self Return self to allow method chaining
      */
     public function updateSearchOptionsUids(array &$soptions)
@@ -102,7 +100,6 @@ trait CommonDeprecatedTrait
     /**
      * For each searchoption, update the table ref to match the deprecated type
      *
-     * @param array $soptions
      * @return self Return self to allow method chaining
      */
     public function updateSearchOptionsTables(array &$soptions)
@@ -127,8 +124,6 @@ trait CommonDeprecatedTrait
      * Add a field in an array or an object
      *
      * @param array|object $fields
-     * @param string $name
-     * @param string $value
      * @return self Return self to allow method chaining
      */
     public function addField(&$fields, string $name, string $value)
@@ -150,8 +145,6 @@ trait CommonDeprecatedTrait
      * Rename a field in an array or an object
      *
      * @param array|object $fields
-     * @param string $old
-     * @param string $new
      * @return self Return self to allow method chaining
      */
     public function renameField(&$fields, string $old, string $new)
@@ -175,7 +168,6 @@ trait CommonDeprecatedTrait
      * Delete a field in an array or an object
      *
      * @param array|object $fields
-     * @param string $name
      * @return self Return self to allow method chaining
      */
     public function deleteField(&$fields, string $name)
@@ -196,9 +188,6 @@ trait CommonDeprecatedTrait
     /**
      * Add a searchoption
      *
-     * @param array $soptions
-     * @param string $key
-     * @param array $values
      * @return self Return self to allow method chaining
      */
     public function addSearchOption(
@@ -214,9 +203,6 @@ trait CommonDeprecatedTrait
     /**
      * Edit an existing searchoption
      *
-     * @param array $soptions
-     * @param string $key
-     * @param array $values
      * @return self Return self to allow method chaining
      */
     public function alterSearchOption(
@@ -234,8 +220,6 @@ trait CommonDeprecatedTrait
     /**
      * Delete an existing searchoption
      *
-     * @param array $soptions
-     * @param string $key
      * @return self Return self to allow method chaining
      */
     public function deleteSearchOption(array &$soptions, string $key)

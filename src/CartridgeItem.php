@@ -532,7 +532,6 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
     /**
      * Print a select with compatible cartridge
      *
-     * @param Printer $printer
      *
      * @return string|boolean
      **/

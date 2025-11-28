@@ -76,7 +76,6 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
     }
 
     /**
-     * @param Domain $item
      *
      * @return int
      */
@@ -535,7 +534,6 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param Domain $domain
      * @param string $name
      *
      * @return string

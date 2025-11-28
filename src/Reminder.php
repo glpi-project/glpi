@@ -208,7 +208,6 @@ class Reminder extends CommonDBVisible implements
      *
      * @param boolean $forceall force all joins (false by default)
      *
-     * @return array
      */
     public static function getVisibilityCriteria(bool $forceall = false): array
     {
@@ -863,7 +862,6 @@ class Reminder extends CommonDBVisible implements
     /**
      * Returns items as VCalendar objects.
      *
-     * @param array $query
      *
      * @return VCalendar[]
      */

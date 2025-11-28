@@ -1062,9 +1062,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      *  @since 9.1
      *
-     * @param $type
-     * @param $input
-     * @param $manual_slas_id
      */
     public function slaAffect($type, &$input, $manual_slas_id)
     {
@@ -1154,9 +1151,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      *  @since 9.1
      *
-     * @param $type
-     * @param $input
-     * @param $manual_olas_id
      */
     public function olaAffect($type, &$input, $manual_olas_id)
     {
@@ -1243,7 +1237,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @since 9.1
      *
-     * @param $slas_id
      **/
     public function manageSlaLevel($slas_id)
     {
@@ -1271,7 +1264,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @since 9.1
      *
-     * @param $slas_id
      **/
     public function manageOlaLevel($slas_id)
     {
@@ -2057,7 +2049,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      * @param int $entity_restrict check entity when search users
      *            (keep null to check with current session entities)
      *
-     * @return bool
      */
     public static function canDelegateeCreateTicket(int $requester_id, ?int $entity_restrict = null): bool
     {
@@ -3526,7 +3517,6 @@ JAVASCRIPT;
      *
      * @param array $input An associative array containing 'itilcategories_id', 'type', and 'entities_id'.
      *
-     * @return bool
      */
     public static function isCategoryValid(array $input): bool
     {
@@ -4840,7 +4830,6 @@ JAVASCRIPT;
     }
 
     /**
-     * @param $ID
      * @param $forcetab  string   name of the tab to force at the display (default '')
      **/
     public static function showVeryShort($ID, $forcetab = '')
@@ -4983,7 +4972,6 @@ JAVASCRIPT;
 
 
     /**
-     * @param $output
      **/
     public static function showPreviewAssignAction($output)
     {

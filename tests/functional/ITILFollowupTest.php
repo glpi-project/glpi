@@ -55,7 +55,6 @@ class ITILFollowupTest extends DbTestCase
      * Create a new ITILObject and return its id or the object
      *
      * @param string $itemtype ITILObject parent to test followups on
-     * @param bool   $as_object
      * @return integer|\CommonDBTM
      */
     private function getNewITILObject($itemtype, bool $as_object = false)
@@ -579,7 +578,6 @@ HTML,
     /**
      * Data provider for testIsParentAlreadyLoaded
      *
-     * @return iterable
      */
     protected function testIsParentAlreadyLoadedProvider(): iterable
     {
@@ -628,7 +626,6 @@ HTML,
     /**
      * Tests for the isParentAlreadyLoaded method
      *
-     * @return void
      */
     public function testIsParentAlreadyLoaded(): void
     {

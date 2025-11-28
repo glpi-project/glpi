@@ -294,7 +294,6 @@ class InstallCommand extends AbstractPluginCommand
     /**
      * Extract additionnal parameters from input.
      *
-     * @param InputInterface $input
      *
      * @return array
      */

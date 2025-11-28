@@ -225,7 +225,6 @@ final class RecordSet
      * @param array $dehydrated_row The dehydrated result (just the primary/foreign keys)
      * @param string $schema_name The name of the schema of the object we are building
      * @param array $fetched_records The records fetched from the DB
-     * @return array
      */
     private function assembleHydratedRecords(array $dehydrated_row, string $schema_name, array $fetched_records): array
     {
@@ -302,8 +301,6 @@ final class RecordSet
      * - Removing the keys for array typed data. When assembling the record initially, the keys are the IDs of the joined records to allow for easy lookup.
      * - Changing empty array values for object typed data to null. The value was initialized when assembling the record, but we don't know until the end of the process if any data was added to the object.
      *   If we don't do this, these show as arrays when json encoded.
-     * @param array $record
-     * @return void
      */
     private function fixupAssembledRecord(array &$record): void
     {

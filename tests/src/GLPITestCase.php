@@ -223,7 +223,6 @@ class GLPITestCase extends TestCase
      *
      * @param mixed     $instance   Class instance
      * @param string    $methodName Method to call
-     * @param mixed     ...$arg     Method arguments
      *
      * @return mixed
      */
@@ -259,7 +258,6 @@ class GLPITestCase extends TestCase
      *
      * @param mixed     $instance       Class instance
      * @param string    $propertyName   Property name
-     * @param mixed     $default        Default value if property is not set
      */
     protected function setPrivateProperty($instance, string $propertyName, $value)
     {
@@ -360,10 +358,7 @@ class GLPITestCase extends TestCase
     /**
      * Check in PHP log for a record that contains given message.
      *
-     * @param string $message
-     * @param string $level
      *
-     * @return void
      */
     protected function hasPhpLogRecordThatContains(string $message, string $level): void
     {
@@ -403,10 +398,7 @@ class GLPITestCase extends TestCase
     /**
      * Check in PHP log for a record that matches given pattern.
      *
-     * @param string $message
-     * @param string $level
      *
-     * @return void
      */
     protected function hasPhpLogRecordThatMatches(string $pattern, string $level): void
     {
@@ -459,7 +451,6 @@ class GLPITestCase extends TestCase
     /**
      * Get the "_test_root_entity" entity created by the tests's bootstrap file
      *
-     * @param bool $only_id
      *
      * @return Entity|int
      */
@@ -474,7 +465,6 @@ class GLPITestCase extends TestCase
      * Useful when you need to run some queries that may not be allowed by
      * the DBMysql object.
      *
-     * @return mysqli
      */
     protected function getDbHandle(): mysqli
     {
@@ -489,7 +479,6 @@ class GLPITestCase extends TestCase
     /**
      * Store Globals
      *
-     * @return void
      */
     private function storeGlobals(): void
     {
@@ -509,7 +498,6 @@ class GLPITestCase extends TestCase
     /**
      * Reset globals and static variables
      *
-     * @return void
      */
     private function resetGlobalsAndStaticValues(): void
     {
@@ -577,7 +565,6 @@ class GLPITestCase extends TestCase
      * Return the minimal fields required for the creation of an item of the given class.
      *
      * @param class-string $class
-     * @return array
      */
     protected function getMinimalCreationInput(string $class): array
     {

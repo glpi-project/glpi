@@ -840,7 +840,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
     /**
-     * @param array $data
      *
      * @return bool
      */
@@ -868,7 +867,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
     /**
-     * @param array $data
      *
      * @return bool
      */
@@ -1138,9 +1136,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     /**
      * Add mentionned user to recipients.
      *
-     * @param array $options
      *
-     * @return void
      */
     protected function addMentionnedUser(array $options): void
     {

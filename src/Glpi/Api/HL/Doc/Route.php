@@ -41,7 +41,6 @@ use Attribute;
 class Route
 {
     /**
-     * @param string $description
      * @param string[] $methods
      * @param Parameter[] $parameters
      * @param Response[] $responses

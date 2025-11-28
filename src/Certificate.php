@@ -611,9 +611,6 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
      * @since 0.85
      *
      * @see CommonDBTM::processMassiveActionsForOneItemtype()
-     * @param MassiveAction $ma
-     * @param CommonDBTM $item
-     * @param array $ids
      * @return void
      */
     public static function processMassiveActionsForOneItemtype(

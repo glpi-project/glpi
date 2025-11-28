@@ -269,7 +269,6 @@ class ContractCost extends CommonDBChild
     /**
      * Print the contract costs
      *
-     * @param Contract $contract
      * @param integer  $withtemplate Template or basic item
      *
      * @return void

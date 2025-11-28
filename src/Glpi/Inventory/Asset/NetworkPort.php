@@ -254,7 +254,6 @@ class NetworkPort extends InventoryAsset
      * @param array $vlans    Port vlans
      * @param int   $ifnumber Port ifnumber
      *
-     * @return array
      */
     private function prepareVlans(array $vlans, int $ifnumber): array
     {
@@ -639,8 +638,6 @@ class NetworkPort extends InventoryAsset
     }
 
     /**
-     * @param stdClass $port
-     * @param int $netports_id
      *
      * @return void
      */
@@ -650,8 +647,6 @@ class NetworkPort extends InventoryAsset
     }
 
     /**
-     * @param stdClass $port
-     * @param int $netports_id
      *
      * @return void
      */
@@ -661,8 +656,6 @@ class NetworkPort extends InventoryAsset
     }
 
     /**
-     * @param stdClass $port
-     * @param int $netports_id
      *
      * @return void
      */
@@ -980,10 +973,7 @@ class NetworkPort extends InventoryAsset
     /**
      * Add wiring between network ports.
      *
-     * @param int $netports_id_1
-     * @param int $netports_id_2
      *
-     * @return bool
      */
     private function addPortsWiring(int $netports_id_1, int $netports_id_2): bool
     {

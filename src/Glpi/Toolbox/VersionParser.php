@@ -49,10 +49,7 @@ class VersionParser
     /**
      * Normalize version number.
      *
-     * @param string $version
-     * @param bool $keep_stability_flag
      *
-     * @return string
      */
     public static function getNormalizedVersion(string $version, bool $keep_stability_flag = true): string
     {
@@ -102,9 +99,7 @@ class VersionParser
     /**
      * Check if given version is a stable release (i.e. does not contain a stability flag referring to unstable state).
      *
-     * @param string $version
      *
-     * @return bool
      */
     public static function isStableRelease(string $version): bool
     {
@@ -114,9 +109,7 @@ class VersionParser
     /**
      * Check if given version is a dev version (i.e. ends with `-dev`).
      *
-     * @param string $version
      *
-     * @return bool
      */
     public static function isDevVersion(string $version): bool
     {

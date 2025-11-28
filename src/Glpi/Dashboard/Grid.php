@@ -118,7 +118,6 @@ class Grid
      *
      * @param bool $force, if false, don't use cache
      *
-     * @return bool
      */
     public static function loadAllDashboards(bool $force = true): bool
     {
@@ -185,7 +184,6 @@ HTML;
     /**
      * Do we have the right to view at least one dashboard int the current collection
      *
-     * @return bool
      */
     public function canViewCurrent(): bool
     {
@@ -205,7 +203,6 @@ HTML;
      *
      * @param ?string $context
      *
-     * @return bool
      */
     public static function canViewOneDashboard($context = null): bool
     {
@@ -229,7 +226,6 @@ HTML;
      * @param string $key the dashboard to check
      * @param bool   $canViewAll Right to view all dashboards
      *
-     * @return bool
      */
     public static function canViewSpecificicDashboard($key, $canViewAll = false): bool
     {
@@ -511,7 +507,6 @@ TWIG, $twig_params);
     /**
      * Init embed session
      *
-     * @param array $params
      *
      * @return void
      */
@@ -601,7 +596,6 @@ TWIG, $twig_params);
      * - is_recursive: do we need to display sub entities
      * - token: the token to check
      *
-     * @return bool
      */
     public static function checkToken(array $params = []): bool
     {
@@ -1100,7 +1094,6 @@ HTML;
 
     /**
      * Return Html for a provided set of filters
-     * @param array $filters
      *
      * @return string the html
      */
@@ -1180,7 +1173,6 @@ HTML;
      * The data will contain some translated strings and thus must be kept in a
      * separate cache entry for each languages
      *
-     * @return string
      */
     public static function getAllDashboardCardsCacheKey(?string $language = null): string
     {
@@ -1200,7 +1192,6 @@ HTML;
      *
      * @param bool $force Force rebuild the catalog of cards
      *
-     * @return array
      */
     public function getAllDasboardCards($force = false): array
     {
@@ -1553,7 +1544,6 @@ HTML;
      * then on config
      * And Fallback on the first dashboard found
      *
-     * @param string $menu
      * @param bool $strict if true, do not provide a fallback
      *
      * @return string the dashboard key

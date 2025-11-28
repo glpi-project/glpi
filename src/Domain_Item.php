@@ -51,7 +51,6 @@ class Domain_Item extends CommonDBRelation
     }
 
     /**
-     * @param CommonDBTM $item
      *
      * @return void
      */
@@ -110,7 +109,6 @@ class Domain_Item extends CommonDBRelation
     }
 
     /**
-     * @param Domain $item
      *
      * @return int
      */
@@ -383,8 +381,6 @@ TWIG, $twig_params);
     /**
      * Get links between the given item and domains.
      *
-     * @param CommonDBTM $item
-     * @return DBmysqlIterator
      */
     public static function getForItem(CommonDBTM $item): DBmysqlIterator
     {

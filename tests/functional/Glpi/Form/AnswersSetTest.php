@@ -58,7 +58,6 @@ class AnswersSetTest extends DbTestCase
     /**
      * Test the "getAnswers" method
      *
-     * @return void
      */
     public function testGetAnswer(): void
     {
@@ -85,7 +84,6 @@ class AnswersSetTest extends DbTestCase
     /**
      * Test the "getCreatedItems" method
      *
-     * @return void
      */
     public function testGetCreatedItems(): void
     {

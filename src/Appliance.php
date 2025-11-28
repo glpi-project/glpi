@@ -357,7 +357,6 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
 
 
     /**
-     * @param string $itemtype
      *
      * @return array
      */
@@ -485,7 +484,6 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
      *
      * @param boolean $all Get all possible types or only allowed ones
      *
-     * @return array
      */
     public static function getTypes($all = false): array
     {

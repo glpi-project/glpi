@@ -82,13 +82,11 @@ abstract class AbstractDefinition extends CommonDBTM
 
     /**
      * Get the namespace that custom object classes of this type will be created in.
-     * @return string
      */
     abstract public static function getCustomObjectNamespace(): string;
 
     /**
      * Get the suffix to add to custom object classes.
-     * @return string
      */
     abstract public static function getCustomObjectClassSuffix(): string;
 
@@ -100,7 +98,6 @@ abstract class AbstractDefinition extends CommonDBTM
 
     /**
      * Get the CSS class name for the icon of the objects of this type.
-     * @return string
      */
     public function getCustomObjectIcon(): string
     {
@@ -112,7 +109,6 @@ abstract class AbstractDefinition extends CommonDBTM
      *
      * @param bool $with_namespace Whether to include the namespace in the class name
      *
-     * @return string
      * @phpstan-return class-string<ConcreteClass>
      */
     public function getCustomObjectClassName(bool $with_namespace = true): string
@@ -142,7 +138,6 @@ abstract class AbstractDefinition extends CommonDBTM
 
     /**
      * Get the rightname for the custom objects of this type.
-     * @return string
      */
     abstract public function getCustomObjectRightname(): string;
 
@@ -180,8 +175,6 @@ abstract class AbstractDefinition extends CommonDBTM
     /**
      * Load instance related to given system name.
      *
-     * @param string $system_name
-     * @return bool
      */
     public function getFromDBBySystemName(string $system_name): bool
     {
@@ -251,7 +244,6 @@ abstract class AbstractDefinition extends CommonDBTM
     /**
      * Display profiles form.
      *
-     * @return void
      */
     protected function showProfilesForm(): void
     {
@@ -326,7 +318,6 @@ abstract class AbstractDefinition extends CommonDBTM
     /**
      * Display translation form.
      *
-     * @return void
      */
     protected function showTranslationForm(): void
     {
@@ -500,8 +491,6 @@ abstract class AbstractDefinition extends CommonDBTM
     /**
      * Prepare common input for and an update.
      *
-     * @param array $input
-     * @return array|bool
      */
     protected function prepareInput(array $input): array|bool
     {
@@ -615,7 +604,6 @@ abstract class AbstractDefinition extends CommonDBTM
      * Remove given rights from `profiles` field.
      *
      * @param int[] $rights_to_remove
-     * @return void
      */
     protected function cleanRights(array $rights_to_remove): void
     {
@@ -633,9 +621,6 @@ abstract class AbstractDefinition extends CommonDBTM
     /**
      * Set rights for given profile.
      *
-     * @param int $profiles_id
-     * @param int $rights
-     * @return void
      */
     public function setProfileRights(int $profiles_id, int $rights): void
     {
@@ -653,7 +638,6 @@ abstract class AbstractDefinition extends CommonDBTM
     /**
      * Synchronize `profiles` field with `ProfileRights` entries.
      *
-     * @return void
      */
     protected function syncProfilesRights(): void
     {
@@ -683,7 +667,6 @@ abstract class AbstractDefinition extends CommonDBTM
     /**
      * Indicates whether at least one profile has rights enabled on object concrete class.
      *
-     * @return bool
      */
     protected function hasRightsEnabled(): bool
     {
@@ -702,8 +685,6 @@ abstract class AbstractDefinition extends CommonDBTM
     /**
      * Return translated name.
      *
-     * @param int $count
-     * @return string
      */
     public function getTranslatedName(int $count = 1): string
     {
@@ -865,8 +846,6 @@ TWIG, ['name' => $name, 'value' => $value]);
     /**
      * Get rights for profile.
      *
-     * @param int $profile_id
-     * @return int
      */
     protected function getRightsForProfile(int $profile_id): int
     {
@@ -888,7 +867,6 @@ TWIG, ['name' => $name, 'value' => $value]);
     /**
      * Return the decoded value of the `translations` field.
      *
-     * @return array
      */
     protected function getDecodedTranslationsField(): array
     {
@@ -907,8 +885,6 @@ TWIG, ['name' => $name, 'value' => $value]);
     /**
      * Validate that the given translations array contains valid values.
      *
-     * @param mixed $translations
-     * @return bool
      */
     protected function validateTranslationsArray(mixed $translations): bool
     {
@@ -948,7 +924,6 @@ TWIG, ['name' => $name, 'value' => $value]);
     /**
      * Gel plural form list for given language.
      *
-     * @param string $language
      * @return Language_Category[]
      */
     public static function getPluralFormsForLanguage(string $language): array
@@ -975,7 +950,6 @@ TWIG, ['name' => $name, 'value' => $value]);
     /**
      * Return the decoded value of the `profiles` field.
      *
-     * @return array
      * @phpstan-return array<int, int>
      */
     protected function getDecodedProfilesField(): array
@@ -995,9 +969,6 @@ TWIG, ['name' => $name, 'value' => $value]);
     /**
      * Validate that the given profiles array contains valid values.
      *
-     * @param mixed $profiles
-     * @param bool $check_values
-     * @return bool
      */
     protected function validateProfileArray(mixed $profiles, bool $check_values = true): bool
     {

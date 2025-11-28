@@ -126,9 +126,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
     /**
      * Key function to manage the children of the node
      *
-     * @param string $step
      *
-     * @return void
      */
     private function alterElementInsideTree(string $step): void
     {

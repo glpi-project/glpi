@@ -85,7 +85,6 @@ class FormTest extends DbTestCase
      * Any error while rendering the tab will still be caught by this tests so
      * we must try to send a vey complex form.
      *
-     * @return void
      */
     public function testShowForm(): void
     {
@@ -172,7 +171,6 @@ class FormTest extends DbTestCase
     /**
      * Indirectly test the test the post_getFromDB method
      *
-     * @return void
      */
     public function testPost_getFromDB(): void
     {
@@ -220,7 +218,6 @@ class FormTest extends DbTestCase
     /**
      * Indirectly test the post_addItem method by adding a form
      *
-     * @return void
      */
     public function testPost_addItem(): void
     {
@@ -246,7 +243,6 @@ class FormTest extends DbTestCase
     /**
      * Indirectly test the prepareInputForUpdate method by updating a form
      *
-     * @return void
      */
     public function testPrepareInputForUpdate(): void
     {
@@ -453,7 +449,6 @@ class FormTest extends DbTestCase
     /**
      * Indirectly test the cleanDBonPurge method by purging a form
      *
-     * @return void
      */
     public function testCleanDBonPurge(): void
     {

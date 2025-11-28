@@ -521,7 +521,6 @@ class Consumable extends CommonDBChild
      *
      * @param ConsumableItem $parent Parent consumable item
      *
-     * @return void
      */
     public static function displayConsumableList(ConsumableItem $parent): void
     {
@@ -573,7 +572,6 @@ class Consumable extends CommonDBChild
     }
 
     /**
-     * @param User $user
      *
      * @return void
      */
@@ -836,7 +834,6 @@ class Consumable extends CommonDBChild
     }
 
     /**
-     * @param ConsumableItem $item
      *
      * @return integer
      **/
@@ -846,7 +843,6 @@ class Consumable extends CommonDBChild
     }
 
     /**
-     * @param User $item
      *
      * @return integer
      **/

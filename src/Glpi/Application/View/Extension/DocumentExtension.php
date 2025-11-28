@@ -62,9 +62,7 @@ class DocumentExtension extends AbstractExtension
     /**
      * Returns icon URL for given document filename.
      *
-     * @param string $filename
      *
-     * @return string
      */
     public function getDocumentIcon(string $filename): string
     {
@@ -101,9 +99,7 @@ class DocumentExtension extends AbstractExtension
     /**
      * Returns human readable size of file matching given path (relative to GLPI_DOC_DIR).
      *
-     * @param string $filepath
      *
-     * @return null|string
      */
     public function getDocumentSize(string $filepath): ?string
     {

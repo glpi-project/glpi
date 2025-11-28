@@ -77,9 +77,7 @@ class ItemtypeExtension extends AbstractExtension
     /**
      * Returns class instance of given itemtype.
      *
-     * @param string $itemtype
      *
-     * @return CommonGLPI|null
      */
     public function getItemtypeClass(string $itemtype): ?CommonGLPI
     {
@@ -91,7 +89,6 @@ class ItemtypeExtension extends AbstractExtension
      *
      * @param string $itemtype
      *
-     * @return string|null
      */
     public function getItemtypeDropdown($itemtype, array $options = []): ?string
     {
@@ -102,10 +99,7 @@ class ItemtypeExtension extends AbstractExtension
     /**
      * Returns domain relative path of given itemtype form.
      *
-     * @param string $itemtype
-     * @param null|int $id
      *
-     * @return string|null
      */
     public function getItemtypeFormPath(string $itemtype, ?int $id = null): ?string
     {
@@ -119,9 +113,7 @@ class ItemtypeExtension extends AbstractExtension
     /**
      * Returns typename of given itemtype.
      *
-     * @param string $itemtype
      *
-     * @return string|null
      */
     public function getItemtypeIcon(string $itemtype): ?string
     {
@@ -131,10 +123,8 @@ class ItemtypeExtension extends AbstractExtension
     /**
      * Returns typename of given itemtype.
      *
-     * @param string $itemtype
      * @param number $count
      *
-     * @return string|null
      */
     public function getItemtypeName(string $itemtype, $count = 1): ?string
     {
@@ -144,9 +134,7 @@ class ItemtypeExtension extends AbstractExtension
     /**
      * Returns domain relative path of given itemtype search.
      *
-     * @param string $itemtype
      *
-     * @return string|null
      */
     public function getItemtypeSearchPath(string $itemtype): ?string
     {
@@ -159,7 +147,6 @@ class ItemtypeExtension extends AbstractExtension
      * @param string  $itemtype Itemtype of the item.
      * @param int     $id       ID of the item.
      *
-     * @return CommonDBTM|null
      */
     public function getItem($itemtype, int $id): ?CommonDBTM
     {
@@ -176,7 +163,6 @@ class ItemtypeExtension extends AbstractExtension
      * @param CommonDBTM|string $item   Item instance of itemtype of the item.
      * @param int|null $id              ID of the item, useless first argument is an already loaded item instance.
      *
-     * @return string|null
      */
     public function getItemName($item, ?int $id = null): ?string
     {
@@ -200,7 +186,6 @@ class ItemtypeExtension extends AbstractExtension
      * @param CommonDBTM|string $item   Item instance of itemtype of the item.
      * @param int|null $id              ID of the item, useless first argument is an already loaded item instance.
      *
-     * @return string|null
      */
     public function getItemComment($item, ?int $id = null): ?string
     {
@@ -226,7 +211,6 @@ class ItemtypeExtension extends AbstractExtension
      * @param array               $options Available options:
      *    - enable_anonymization (bool) Enable anonymization of helpdesk actors;
      *
-     * @return string|null
      */
     public function getItemLink($item, ?int $id = null, array $options = []): ?string
     {
@@ -267,7 +251,6 @@ class ItemtypeExtension extends AbstractExtension
      * @param CommonDBTM|string $item   Item instance of itemtype of the item.
      * @param int|null $id              ID of the item, useless first argument is an already loaded item instance.
      *
-     * @return CommonDBTM|null
      */
     private function getItemInstance($item, ?int $id = null): ?CommonDBTM
     {

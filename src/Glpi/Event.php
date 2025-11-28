@@ -482,7 +482,6 @@ class Event extends CommonDBTM
      * - Some specials types (see self::logArray)
      * - Used itemtypes
      *
-     * @return array
      */
     private static function getTypeValuesForDropdown(): array
     {
@@ -512,7 +511,6 @@ class Event extends CommonDBTM
      * Note that these values are not real itemtypes but strings like "users".
      * You need to call self::getItemtypeFromType() to get a valid GLPI itemtype
      *
-     * @return array
      */
     private static function getUsedItemtypes(): array
     {
@@ -606,9 +604,7 @@ class Event extends CommonDBTM
     /**
      * Extract itemtype from type field value.
      *
-     * @param string $type
      *
-     * @return string|null
      */
     private static function getItemtypeFromType(string $type): ?string
     {

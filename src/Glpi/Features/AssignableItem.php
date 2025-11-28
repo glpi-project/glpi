@@ -123,7 +123,6 @@ trait AssignableItem
     }
 
     /**
-     * @param string|null $item_table_reference
      * @return array[]|QueryExpression[]
      */
     private static function getAssignableVisiblityCriteriaForCentral(
@@ -167,7 +166,6 @@ trait AssignableItem
     }
 
     /**
-     * @param string|null $item_table_reference
      * @return array[]|QueryExpression[]
      */
     private static function getAssignableVisiblityCriteriaForHelpdesk(

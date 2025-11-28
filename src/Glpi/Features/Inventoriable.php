@@ -77,7 +77,6 @@ trait Inventoriable
      *
      * @param bool $prepend_dir_path Indicated whether the GLPI_INVENTORY_DIR have to be prepended to returned value.
      *
-     * @return string|null
      */
     public function getInventoryFileName(bool $prepend_dir_path = true): ?string
     {
@@ -321,9 +320,7 @@ JAVASCRIPT;
     /**
      * Get most recent agent corresponding to given conditions.
      *
-     * @param array $conditions
      *
-     * @return Agent|null
      */
     private function getMostRecentAgent(array $conditions): ?Agent
     {

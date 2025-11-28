@@ -155,7 +155,6 @@ TWIG, $twig_params);
     /**
      * Display all translated field for an KnowbaseItem
      *
-     * @param KnowbaseItem $item
      *
      * @return true
      **/
@@ -244,7 +243,6 @@ TWIG, $twig_params);
      * Display translation form
      *
      * @param integer $ID
-     * @param array   $options
      */
     public function showForm($ID = -1, array $options = [])
     {
@@ -316,7 +314,6 @@ TWIG, $twig_params);
     /**
      * Get already translated languages for item
      *
-     * @param KnowbaseItem $item
      *
      * @return array Array of already translated languages
      **/

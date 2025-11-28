@@ -437,7 +437,6 @@ abstract class CommonDevice extends CommonDropdown
      * @param HTMLTableRow|null $row object
      * @param CommonDBTM|null $item object (default NULL)
      * @param HTMLTableCell|null $father object (default NULL)
-     * @param array $options
      * @return HTMLTableCell|null
      * @throws Exception
      * @warning note the difference between getHTMLTableCellForItem and getHTMLTableCellsForItem

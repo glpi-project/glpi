@@ -118,7 +118,6 @@ final class OpenAPIGenerator
     }
 
     /**
-     * @return array
      * @phpstan-return OpenAPIInfo
      */
     private function getInfo(): array
@@ -381,8 +380,6 @@ EOT;
     /**
      * Replace any generic paths like `/Assets/{itemtype}` with the actual paths for each itemtype as long as the parameter pattern(s) are explicit lists.
      * Example: "Computer|Monitor|NetworkEquipment".
-     * @param array $paths
-     * @return array
      */
     private function expandGenericPaths(array $paths): array
     {
@@ -500,8 +497,6 @@ EOT;
     }
 
     /**
-     * @param Doc\Parameter $route_param
-     * @return array
      * @phpstan-return SchemaArray
      */
     private function getRouteParamSchema(Doc\Parameter $route_param): array
@@ -510,8 +505,6 @@ EOT;
     }
 
     /**
-     * @param RoutePath $route_path
-     * @param string $route_method
      * @return RequestBodySchema|null
      */
     private function getRequestBodySchema(RoutePath $route_path, string $route_method): ?array
@@ -557,8 +550,6 @@ EOT;
     }
 
     /**
-     * @param Doc\Parameter $route_param
-     * @return array
      * @phpstan-return PathParameterSchema
      */
     private function getPathParameterSchema(Doc\Parameter $route_param): array
@@ -575,8 +566,6 @@ EOT;
     }
 
     /**
-     * @param RoutePath $route_path
-     * @param string $route_method
      * @return array<string, array<string, mixed>>[]
      */
     private function getPathSecuritySchema(RoutePath $route_path, string $route_method): array
@@ -626,7 +615,6 @@ EOT;
     }
 
     /**
-     * @param RoutePath $route_path
      * @return array<string, array<string, PathSchema>>
      */
     private function getPathSchemas(RoutePath $route_path): array

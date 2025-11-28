@@ -90,7 +90,6 @@ class KnowbaseItem_Item extends CommonDBRelation
     /**
      * Show linked items of a knowbase item
      *
-     * @param CommonDBTM $item
      * @param integer $withtemplate withtemplate param (default 0)
      *
      **/

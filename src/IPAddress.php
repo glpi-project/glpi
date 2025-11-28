@@ -136,7 +136,6 @@ class IPAddress extends CommonDBChild
     }
 
     /**
-     * @param $input
      **/
     public function prepareInput($input)
     {
@@ -1052,7 +1051,6 @@ class IPAddress extends CommonDBChild
     }
 
     /**
-     * @param $itemtype
      * @param $base                  HTMLTableBase object
      * @param $super                 HTMLTableSuperHeader object (default NULL)
      * @param $father                HTMLTableHeader object (default NULL)
@@ -1101,8 +1099,6 @@ class IPAddress extends CommonDBChild
     /**
      * Get the SQL criteria required to show a list of IP Addresses linked to the given IPNetwork
      *
-     * @param IPNetwork $network
-     * @return array
      */
     private static function getCriteriaLinkedToNetwork(IPNetwork $network): array
     {
@@ -1261,10 +1257,6 @@ class IPAddress extends CommonDBChild
     }
 
     /**
-     * @param HTMLTableRow $row
-     * @param CommonDBTM $item
-     * @param HTMLTableCell $father
-     * @param array $options
      **/
     public static function getHTMLTableCellsForItem(
         ?HTMLTableRow $row = null,

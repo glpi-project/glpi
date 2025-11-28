@@ -1539,7 +1539,6 @@ class Contract extends CommonDBTM implements StateInterface
      *
      * @param integer $value HTML select selected value
      *
-     * @return string
      **/
     public static function getContractRenewalName(int $value): string
     {
@@ -1552,7 +1551,6 @@ class Contract extends CommonDBTM implements StateInterface
     }
 
     /**
-     * @param array $options
      *
      * @return string|integer HTML output, or random part of dropdown ID.
      **/

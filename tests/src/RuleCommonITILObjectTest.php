@@ -74,7 +74,6 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
     /**
      * Get an instance of the tested Rule class, TicketRule, ChangeRule, ...
      *
-     * @return \RuleCommonITILObject
      */
     protected function getRuleInstance(): \RuleCommonITILObject
     {
@@ -84,7 +83,6 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
 
     /**
      * Get the ITIL Object class name that the tested Rule class is related to
-     * @return string
      */
     protected function getITILObjectClass(): string
     {
@@ -95,7 +93,6 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
 
     /**
      * Get an instance of the ITIL Object class that the tested Rule class is related to
-     * @return \CommonITILObject
      */
     protected function getITILObjectInstance(): \CommonITILObject
     {
@@ -2405,7 +2402,6 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
      * Data provider for testAction
      * @see $this->testAction() for details of the expected parameters
      *
-     * @return Generator
      */
     protected function testActionProvider(): Generator
     {
@@ -2705,7 +2701,6 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
     /**
      * Test a given ticket rule
      *
-     * @return void
      */
 
     public function testAction(): void
@@ -2834,7 +2829,6 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
     /**
      * Ensure a rule using the "global_validation" criteria work as expected on updates.
      *
-     * @return void
      */
     public function testGlobalValidationCriteria(): void
     {
@@ -2906,7 +2900,6 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
      * Test that the "Code representing the ticket category" criterion works correctly
      * even when the category has been modified just before.
      *
-     * @return void
      */
     public function testCategoryCodeCriterionAfterCategoryModification(): void
     {
@@ -2956,7 +2949,6 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
 
     /**
      * Test that the "Default profile" criterion works correctly
-     * @return void
      */
     public function testDefaultProfileCriterion(): void
     {

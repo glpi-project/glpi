@@ -51,7 +51,6 @@ class Client implements ClientEntityInterface
     }
 
     /**
-     * @param string $name
      *
      * @return void
      */
@@ -61,7 +60,6 @@ class Client implements ClientEntityInterface
     }
 
     /**
-     * @param array $redirectUri
      */
     public function setRedirectUri(array $redirectUri): void
     {

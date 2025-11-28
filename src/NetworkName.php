@@ -172,7 +172,6 @@ class NetworkName extends FQDNLabel
 
     /**
      * @param array $tab the array to fill
-     * @param array $joinparams
      *
      * @return void
      **/
@@ -419,10 +418,6 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
 
     /**
      * @param class-string<CommonDBTM> $itemtype
-     * @param HTMLTableBase $base
-     * @param HTMLTableSuperHeader|null $super
-     * @param HTMLTableHeader|null $father
-     * @param array $options
      * @throws Exception
      * @since 0.84
      *
@@ -474,10 +469,6 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
     }
 
     /**
-     * @param HTMLTableRow|null $row
-     * @param CommonDBTM|null $item
-     * @param HTMLTableCell|null $father
-     * @param array $options
      * @throws Exception
      * @since 0.84
      *
@@ -660,7 +651,6 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
      * NetworkName, remove, ...) or if readden from item of the item (for instance from the computer
      * form through NetworkPort::ShowForItem).
      *
-     * @param CommonDBTM $item
      * @param integer $withtemplate
      * @return false|void
      * @throws Exception
@@ -820,8 +810,6 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param CommonDBTM $item
-     * @return int
      */
     public static function countForItem(CommonDBTM $item): int
     {

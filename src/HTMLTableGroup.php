@@ -46,9 +46,6 @@ class HTMLTableGroup extends HTMLTableBase
     private $rows = [];
 
     /**
-     * @param HTMLTableMain $table
-     * @param $name
-     * @param $content
      **/
     public function __construct(HTMLTableMain $table, $name, $content)
     {
@@ -69,7 +66,6 @@ class HTMLTableGroup extends HTMLTableBase
     }
 
     /**
-     * @param HTMLTableHeader $header
      * @return boolean
      **/
     public function haveHeader(HTMLTableHeader $header)

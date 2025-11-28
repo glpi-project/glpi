@@ -41,16 +41,12 @@ interface FormQuestionDataConverterInterface
     /**
      * Convert default value
      *
-     * @param array $rawData
-     * @return mixed
      */
     public function convertDefaultValue(array $rawData): mixed;
 
     /**
      * Convert extra data
      *
-     * @param array $rawData
-     * @return mixed
      */
     public function convertExtraData(array $rawData): mixed;
 

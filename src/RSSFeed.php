@@ -158,7 +158,6 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
      *
      * @param boolean $forceall force all joins (false by default)
      *
-     * @return array
      */
     public static function getVisibilityCriteria(bool $forceall = false): array
     {
@@ -528,8 +527,6 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 
     /**
      * Check URL given in input.
-     * @param string $url
-     * @return bool
      */
     private function checkUrlInput(string $url): bool
     {

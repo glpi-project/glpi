@@ -71,7 +71,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
 
     /**
      * Current pointer position.
-     * @var int
      */
     private ?int $position = null;
 
@@ -113,7 +112,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @param array   $criteria Query criteria
      *
-     * @return DBmysqlIterator
      *
      * @since 11.0.0 The `$debug` parameter has been removed.
      */
@@ -133,7 +131,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @param array   $criteria Query criteria
      *
-     * @return void
      *
      * @since 11.0.0 The `$log` parameter has been removed.
      */
@@ -777,7 +774,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Rewind the Iterator to the first element
      *
-     * @return void
      */
     public function rewind(): void
     {
@@ -787,7 +783,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Return the current element
      *
-     * @return mixed
      */
     public function current(): mixed
     {
@@ -797,7 +792,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Return the key of the current element
      *
-     * @return mixed
      */
     public function key(): mixed
     {
@@ -807,7 +801,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Move forward to next element
      *
-     * @return void
      */
     public function next(): void
     {
@@ -817,7 +810,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Checks if current position is valid
      *
-     * @return bool
      */
     public function valid(): bool
     {
@@ -826,7 +818,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
 
     /**
      * Check if the current result is not a {@link \mysqli_result}, indicating a failure.
-     * @return bool
      */
     public function isFailed(): bool
     {
@@ -848,7 +839,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @since 9.2
      *
-     * @return int
      */
     public function count(): int
     {
@@ -866,9 +856,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Change pointer position, and fetch corresponding row value.
      *
-     * @param int $position
      *
-     * @return void
      */
     private function setPosition(int $position): void
     {
@@ -918,8 +906,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
      * from old signature to new signature.
      * For security reasons, an exception is thrown whenever the arguments contains a direct raw query.
      *
-     * @param array $args
-     * @return array
      */
     private function convertOldRequestArgsToCriteria(array $args, string $method): array
     {

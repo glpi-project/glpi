@@ -541,7 +541,6 @@ class Agent extends CommonDBTM
     /**
      * Get item linked to current agent
      *
-     * @return CommonDBTM
      */
     public function getLinkedItem(): CommonDBTM
     {
@@ -554,7 +553,6 @@ class Agent extends CommonDBTM
     /**
      * Guess possible addresses the agent should answer on
      *
-     * @return array
      */
     public function guessAddresses(): array
     {
@@ -659,7 +657,6 @@ class Agent extends CommonDBTM
     /**
      * Get agent URLs
      *
-     * @return array
      */
     public function getAgentURLs(): array
     {
@@ -690,7 +687,6 @@ class Agent extends CommonDBTM
      *
      * @param string $endpoint Endpoint to reach
      *
-     * @return Response
      */
     public function requestAgent($endpoint): Response
     {
@@ -774,7 +770,6 @@ class Agent extends CommonDBTM
      * @param Response $response Response
      * @param string   $request  Request type (either status or now)
      *
-     * @return array
      */
     private function handleAgentResponse(Response $response, $request): array
     {

@@ -184,7 +184,6 @@ class Dashboard extends CommonDBTM
     /**
      * Return the title of the current dashboard
      *
-     * @return string
      */
     public function getTitle(): string
     {
@@ -195,7 +194,6 @@ class Dashboard extends CommonDBTM
     /**
      * Do we have the right to view the current dashboard
      *
-     * @return bool
      */
     public function canViewCurrent(): bool
     {
@@ -226,7 +224,6 @@ class Dashboard extends CommonDBTM
     /**
      * Check if user has right to update the current dashboard.
      *
-     * @return bool
      */
     public function canUpdateCurrent(): bool
     {
@@ -243,7 +240,6 @@ class Dashboard extends CommonDBTM
     /**
      * Check if user has right to detele the current dashboard.
      *
-     * @return bool
      */
     public function canDeleteCurrent(): bool
     {
@@ -266,7 +262,6 @@ class Dashboard extends CommonDBTM
      * @param array $items cards for the dashboard
      * @param array $rights for the dashboard
      *
-     * @return string
      */
     public function saveNew(
         string $title = "",
@@ -408,7 +403,6 @@ class Dashboard extends CommonDBTM
      *
      * @param string $filters filter parameters in JSON format
      *
-     * @return void
      */
     public function saveFilter(string $filters = ''): void
     {
@@ -421,7 +415,6 @@ class Dashboard extends CommonDBTM
     /**
      * Save filter in DB for the  curent dashboard
      *
-     * @return string
      */
     public function getFilter(): string
     {
@@ -559,9 +552,7 @@ class Dashboard extends CommonDBTM
     /**
      * Check a current set of rights
      *
-     * @param array $rights
      *
-     * @return bool
      */
     public static function checkRights(array $rights = []): bool
     {

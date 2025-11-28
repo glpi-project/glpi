@@ -59,7 +59,6 @@ final class FormAccessControlManagerTest extends DbTestCase
     /**
      * Test the `getInstance` method.
      *
-     * @return void
      */
     public function testGetInstance(): void
     {

@@ -98,7 +98,7 @@ abstract class MainAsset extends InventoryAsset
     protected $inventoried = [];
     /** @var boolean */
     protected $partial = false;
-    /** @var bool */
+    /**  */
     protected bool $is_discovery = false;
     /** @var int */
     protected $current_key;
@@ -115,14 +115,12 @@ abstract class MainAsset extends InventoryAsset
     /**
      * Get model foreign key field name
      *
-     * @return string
      */
     abstract protected function getModelsFieldName(): string;
 
     /**
      * Get model foreign key field name
      *
-     * @return string
      */
     abstract protected function getTypesFieldName(): string;
 
@@ -423,7 +421,6 @@ abstract class MainAsset extends InventoryAsset
      *
      * @param stdClass $val Current data values
      *
-     * @return array
      */
     public function prepareAllRulesInput(stdClass $val): array
     {
@@ -533,7 +530,6 @@ abstract class MainAsset extends InventoryAsset
      * @param stdClass $val Current data values
      * @param array     $input Input processed or all rules
      *
-     * @return array
      */
     public function prepareEntitiesRulesInput(stdClass $val, array $input): array
     {
@@ -631,7 +627,6 @@ abstract class MainAsset extends InventoryAsset
     }
 
     /**
-     * @param array $input
      *
      * @return void
      */
@@ -1087,7 +1082,6 @@ abstract class MainAsset extends InventoryAsset
      *
      * @param array $assets Prepared assets list
      *
-     * @return MainAsset
      */
     public function setAssets(array $assets): MainAsset
     {
@@ -1099,7 +1093,6 @@ abstract class MainAsset extends InventoryAsset
     /**
      * Get current item
      *
-     * @return CommonDBTM
      */
     public function getItem(): CommonDBTM
     {
@@ -1129,7 +1122,6 @@ abstract class MainAsset extends InventoryAsset
     /**
      * Set partial inventory
      *
-     * @return self
      */
     protected function setPartial(): self
     {
@@ -1163,7 +1155,6 @@ abstract class MainAsset extends InventoryAsset
     /**
      * Mark as discovery
      *
-     * @param bool $disco
      *
      * @return $this
      */

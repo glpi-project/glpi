@@ -62,7 +62,6 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
     /**
      * @param string $tokenId
      *
-     * @return void
      */
     public function revokeRefreshToken($tokenId): void
     {
@@ -76,7 +75,6 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
     /**
      * @param string $tokenId
      *
-     * @return bool
      */
     public function isRefreshTokenRevoked($tokenId): bool
     {

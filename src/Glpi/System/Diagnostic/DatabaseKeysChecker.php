@@ -51,9 +51,7 @@ class DatabaseKeysChecker extends AbstractDatabaseChecker
      *
      * Array keys are expected key names, and array values are fields that should be contained in these keys.
      *
-     * @param string $table_name
      *
-     * @return array
      */
     public function getMissingKeys(string $table_name): array
     {
@@ -117,9 +115,7 @@ class DatabaseKeysChecker extends AbstractDatabaseChecker
      *
      * Array keys are misnamed key names, and array values are expected key names.
      *
-     * @param string $table_name
      *
-     * @return array
      */
     public function getMisnamedKeys(string $table_name): array
     {
@@ -152,9 +148,7 @@ class DatabaseKeysChecker extends AbstractDatabaseChecker
      *
      * Array keys are useless key names, and array values are expected larger key names.
      *
-     * @param string $table_name
      *
-     * @return array
      */
     public function getUselessKeys(string $table_name): array
     {
@@ -192,11 +186,7 @@ class DatabaseKeysChecker extends AbstractDatabaseChecker
     /**
      * Check if fields are correctly indexed.
      *
-     * @param string $table_name
-     * @param array $fields
-     * @param string $expected_key
      *
-     * @return bool
      */
     private function areFieldsCorrecltyIndexed(string $table_name, array $fields, string $expected_key): bool
     {

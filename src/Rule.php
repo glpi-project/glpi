@@ -855,7 +855,6 @@ class Rule extends CommonDBTM
     /**
      * @param  string $field
      * @param  array $values
-     * @param  array $options
      *
      * @return string
      **/
@@ -884,7 +883,6 @@ class Rule extends CommonDBTM
      * @param  string $field
      * @param  string $name              (default '')
      * @param  string|array $values            (default '')
-     * @param  array $options
      *
      * @return string
      **/
@@ -1925,11 +1923,6 @@ TWIG, $twig_params);
 
     /**
      * Get the data for the list of rules
-     * @param bool $display_criteria
-     * @param bool $display_actions
-     * @param bool $display_entity
-     * @param bool $can_edit
-     * @return array
      * @see RuleCollection::showListRules()
      */
     final public function getDataForList(bool $display_criteria, bool $display_actions, bool $display_entity, bool $can_edit): array
@@ -2251,9 +2244,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param array $fields
      *
-     * @return array
      **/
     private function getMinimalCriteria(array $fields): array
     {
@@ -2284,9 +2275,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param array $fields
      *
-     * @return array
      **/
     private function getMinimalAction(array $fields): array
     {
@@ -3136,7 +3125,6 @@ TWIG, ['label' => $this->getTitle()]);
     }
 
     /**
-     * @param array  $action
      * @param string $value          value to display (default '')
      *
      * @return boolean
@@ -3435,7 +3423,6 @@ TWIG, ['label' => $this->getTitle()]);
     /**
      * Get all "negatives" condition (is not, does not contains, ...)
      *
-     * @return array
      */
     public static function getNegativesConditions(): array
     {
@@ -3452,7 +3439,6 @@ TWIG, ['label' => $this->getTitle()]);
      * Get all condition that may not be displayed as a simple text
      * For example, a dropdown value or a date
      *
-     * @return array
      */
     public static function getConditionsWithComplexValues(): array
     {
@@ -3474,7 +3460,6 @@ TWIG, ['label' => $this->getTitle()]);
      * @param bool      $reset      Whether to reset before adding new rules, defaults to true
      * @param ?string   $itemtype   Itemtype to work on
      *
-     * @return bool
      */
     final public function initRules(bool $reset = true, ?string $itemtype = null): bool
     {
@@ -3675,7 +3660,6 @@ TWIG, ['label' => $this->getTitle()]);
     /**
      * Get default rules as XML
      *
-     * @return SimpleXMLElement|false
      */
     public function getDefaultRules(): SimpleXMLElement|false
     {
@@ -3685,7 +3669,6 @@ TWIG, ['label' => $this->getTitle()]);
     /**
      * Returns default rules file path.
      *
-     * @return string
      */
     private static function getDefaultRulesFilePath(): string
     {

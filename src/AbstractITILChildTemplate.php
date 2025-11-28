@@ -90,9 +90,7 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
     /**
      * Validate 'content' field from input.
      *
-     * @param array $input
      *
-     * @return bool
      */
     protected function validateContentInput(array $input): bool
     {
@@ -117,9 +115,7 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
     /**
      * Get content rendered by template engine, using given ITIL item to build parameters.
      *
-     * @param CommonITILObject $itil_item
      *
-     * @return string
      */
     public function getRenderedContent(CommonITILObject $itil_item): string
     {

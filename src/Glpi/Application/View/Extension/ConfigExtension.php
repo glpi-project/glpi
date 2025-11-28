@@ -55,7 +55,6 @@ class ConfigExtension extends AbstractExtension
     /**
      * Get GLPI configuration value.
      *
-     * @param string $key
      *
      * @return mixed
      */

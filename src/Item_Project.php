@@ -85,9 +85,7 @@ class Item_Project extends CommonDBRelation
     /**
      * Print the HTML array for Items linked to a project
      *
-     * @param Project $project
      *
-     * @return bool
      **/
     public static function showForProject(Project $project): bool
     {

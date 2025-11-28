@@ -239,7 +239,6 @@ class PlanningRecall extends CommonDBChild
      * @param class-string<CommonDBTM> $itemtype The itemtype
      * @param int $items_id The item id
      * @param int $users_id The user id. If 0 (default), the current user is used.
-     * @return PlanningRecall|null
      */
     public static function getForItem(string $itemtype, int $items_id, int $users_id = 0): ?PlanningRecall
     {

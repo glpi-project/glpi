@@ -353,7 +353,6 @@ class EntityTest extends DbTestCase
      *
      * @param array $entities   The entities list. Each item is supposed to be the son of the previous item, and the
      *                          first item is supposed to be a son of the root entity.
-     * @param bool $cache
      */
     private function checkEntitiesTree(array $entities, bool $cache): void
     {

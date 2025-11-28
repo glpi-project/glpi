@@ -59,6 +59,13 @@ return (new PhpCsFixer\Config())
         'no_unused_imports' => true,
         'heredoc_indentation' => false, // This rule is mandatory due to a bug in `xgettext`, see https://savannah.gnu.org/bugs/?func=detailitem&item_id=62158
         'new_expression_parentheses' => false, // breaks compatibility with PHP < 8.4
+        // rules for phpdoc formating
+        // Removes @param, @return and @var tags that don't provide any useful information.
+        // https://mlocati.github.io/php-cs-fixer-configurator/#version:3.90|fixer:no_superfluous_phpdoc_tags
+        'no_superfluous_phpdoc_tags' => [
+            'allow_mixed' => true,
+            'remove_inheritdoc' => true,
+        ],
     ])
     ->setFinder($finder)
 ;

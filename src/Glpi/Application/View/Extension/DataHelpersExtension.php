@@ -88,9 +88,7 @@ class DataHelpersExtension extends AbstractExtension
      * Return date formatted to user preferred format.
      *
      * @param mixed $datetime
-     * @param bool $with_seconds
      *
-     * @return string|null
      */
     public function getFormattedDatetime($datetime, bool $with_seconds = false): ?string
     {
@@ -105,7 +103,6 @@ class DataHelpersExtension extends AbstractExtension
      *
      * @param mixed $date
      *
-     * @return string|null
      */
     public function getFormattedDate($date): ?string
     {
@@ -120,7 +117,6 @@ class DataHelpersExtension extends AbstractExtension
      *
      * @param mixed $datetime
      *
-     * @return string|null
      */
     public function getRelativeDatetime($datetime): ?string
     {
@@ -136,7 +132,6 @@ class DataHelpersExtension extends AbstractExtension
      * @param mixed $duration
      * @param bool $display_seconds (default: true)
      *
-     * @return string|null
      */
     public function getFormattedDuration(
         $duration,
@@ -153,7 +148,6 @@ class DataHelpersExtension extends AbstractExtension
      *
      * @param mixed $number Number to display
      *
-     * @return string
      */
     public function getFormattedInteger($number): string
     {
@@ -165,7 +159,6 @@ class DataHelpersExtension extends AbstractExtension
      *
      * @param mixed $number Number to display
      *
-     * @return string
      */
     public function getFormattedNumber($number): string
     {
@@ -177,7 +170,6 @@ class DataHelpersExtension extends AbstractExtension
      *
      * @param mixed $number
      *
-     * @return string
      */
     public function getFormattedSize($number): string
     {
@@ -192,7 +184,6 @@ class DataHelpersExtension extends AbstractExtension
      *
      * @param mixed $path
      *
-     * @return null|string
      */
     public function getPictureUrl($path): ?string
     {
@@ -206,10 +197,7 @@ class DataHelpersExtension extends AbstractExtension
     /**
      * Return string having its shortcut letter underlined.
      *
-     * @param string $string
-     * @param string $shortcut_letter
      *
-     * @return string
      */
     public function underlineShortcutLetter(string $string, string $shortcut_letter): string
     {
@@ -319,10 +307,7 @@ class DataHelpersExtension extends AbstractExtension
     /**
      * Returns a static progress bar HTML snippet.
      *
-     * @param float $percentage
-     * @param string $label
      *
-     * @return string
      */
     public function getProgressBar(float $percentage, ?string $label = null): string
     {

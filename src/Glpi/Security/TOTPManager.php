@@ -112,7 +112,6 @@ final class TOTPManager
 
     /**
      * Mainly used to get the displayed issuer for the TOTP in Authenticator app
-     * @return string
      */
     public function getIssuer(): string
     {
@@ -130,7 +129,6 @@ final class TOTPManager
     /**
      * Get an instance of the TwoFactorAuth class
      * @param string $algorithm Algorithm used to generate the TOTP code.
-     * @return TwoFactorAuth
      * @throws TwoFactorAuthException
      */
     private function getTwoFactorAuth(string $algorithm = 'sha1'): TwoFactorAuth
@@ -489,7 +487,6 @@ final class TOTPManager
 
     /**
      * Show a form asking the user for their TOTP code.
-     * @return void
      */
     public function showTOTPPrompt(): void
     {
@@ -503,7 +500,6 @@ final class TOTPManager
      * @param int $users_id ID of the user
      * @param bool $force_setup Force the setup form to be shown even if 2FA is already enabled
      * @param bool $regenerate_backup_codes Regenerate backup codes immediately when showing the status form
-     * @return void
      * @throws JsonException
      * @throws TwoFactorAuthException
      */
@@ -539,7 +535,6 @@ final class TOTPManager
     /**
      * Show a form to set up TOTP for the current user or manage the settings if it is set up already.
      * @param int $users_id User ID
-     * @return void
      */
     public function showTOTPSetupForm(int $users_id): void
     {
@@ -563,7 +558,6 @@ final class TOTPManager
     /**
      * Show the backup codes for the specified user.
      * Intended for use after setting up 2FA during the login process.
-     * @return void
      */
     public function showBackupCodes(int $users_id): void
     {

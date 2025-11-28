@@ -306,7 +306,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
     /**
      * Cache preferences for the current user in session.
      *
-     * @return void
      */
     final public function loadPreferencesInSession(): void
     {
@@ -634,10 +633,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
     /**
      * Retrieve a user from the database using it's dn and auths_id.
      *
-     * @param string $user_dn
-     * @param int $auths_id
      *
-     * @return bool
      */
     public function getFromDBbyDnAndAuth(string $user_dn, int $auths_id): bool
     {
@@ -1969,7 +1965,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
     /**
      * Get the user info card HTML.
      *
-     * @return string
      */
     public function getInfoCard(): string
     {
@@ -2004,7 +1999,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * @param string   $userdn          Basedn of the user
      * @param string   $login           User login
      *
-     * @return void
      */
     private function getFromLDAPGroupVirtual($ldap_connection, array $ldap_method, $userdn, $login): void
     {
@@ -4799,7 +4793,6 @@ HTML;
      * Get user by email, importing it from LDAP if not existing.
      *
      * @param string $email
-     * @param bool $createuserfromemail
      *
      * @return integer ID of user, 0 if not found nor imported
      */
@@ -4946,9 +4939,7 @@ HTML;
      * Handle user restored in LDAP using configured policy.
      *
      * @since 10.0.0
-     * @param $users_id
      *
-     * @return void
      */
     public static function manageRestoredUserInLdap($users_id): void
     {
@@ -5042,7 +5033,6 @@ HTML;
     /**
      * Show password update form for current user.
      *
-     * @param array $error_messages
      *
      * @return void
      */
@@ -5058,7 +5048,6 @@ HTML;
     /**
      * Show new password form of password recovery process.
      *
-     * @param $token
      *
      * @return void
      */
@@ -5073,9 +5062,7 @@ HTML;
     /**
      * Show new password form of password initialization process.
      *
-     * @param string $token
      *
-     * @return void
      *
      * @since 11.0.0
      */
@@ -5092,7 +5079,6 @@ HTML;
     /**
      * Show request form of password recovery process.
      *
-     * @return void
      *
      * @since 11.0.0
      */
@@ -5117,7 +5103,6 @@ HTML;
     /**
      * Handle password recovery form submission.
      *
-     * @param array $input
      *
      * @throws ForgetPasswordException when requirements are not met
      * @throws PasswordTooWeakException
@@ -5202,7 +5187,6 @@ HTML;
     /**
      * Displays password recovery result.
      *
-     * @param array $input
      *
      * @return void
      */
@@ -5254,7 +5238,6 @@ HTML;
      *
      * @param string $email email of the user
      *
-     * @return void
      */
     public function showInitPassword(string $email): void
     {
@@ -5275,8 +5258,6 @@ HTML;
     /**
      * Send password recovery email for a user.
      *
-     * @param string $email
-     * @param bool $firstpassword
      *
      * @throws ForgetPasswordException If the process failed and the user should
      *                                 be aware of it (e.g. incorrect email)
@@ -5375,7 +5356,6 @@ HTML;
     /**
      * Display information from LDAP server for user.
      *
-     * @return void
      */
     private function showLdapInformation(): void
     {
@@ -5830,7 +5810,6 @@ HTML;
      *
      * @param string $name Task's name
      *
-     * @return array
      */
     public static function cronInfo(string $name): array
     {
@@ -5851,7 +5830,6 @@ HTML;
      * Cron that notify users about when their password expire and deactivate their account
      * depending on password expiration policy.
      *
-     * @param CronTask $task
      *
      * @return integer
      */
@@ -6202,9 +6180,7 @@ HTML;
     /**
      * Get anonymized name for user instance.
      *
-     * @param ?int $entities_id
      *
-     * @return string|null
      */
     public function getAnonymizedName(?int $entities_id = null): ?string
     {
@@ -6226,10 +6202,7 @@ HTML;
     /**
      * Get anonymized name for user having given ID.
      *
-     * @param int $users_id
-     * @param int $entities_id
      *
-     * @return string|null
      */
     public static function getAnonymizedNameForUser(int $users_id, ?int $entities_id = null): ?string
     {
@@ -6331,9 +6304,7 @@ HTML;
     /**
      * Get user link.
      *
-     * @param bool $enable_anonymization
      *
-     * @return string
      */
     public function getUserLink(bool $enable_anonymization = false): string
     {
@@ -6353,9 +6324,7 @@ HTML;
     /**
      * Get user picture path.
      *
-     * @param bool $enable_anonymization
      *
-     * @return string
      */
     public function getPicturePath(bool $enable_anonymization = false): string
     {
@@ -6376,9 +6345,7 @@ HTML;
     /**
      * Get user thumbnail picture path.
      *
-     * @param bool $enable_anonymization
      *
-     * @return null|string
      */
     public function getThumbnailPicturePath(bool $enable_anonymization = false): ?string
     {
@@ -6398,9 +6365,7 @@ HTML;
     /**
      * Get user initials.
      *
-     * @param bool $enable_anonymization
      *
-     * @return string
      */
     public function getUserInitials(bool $enable_anonymization = false): string
     {
@@ -6429,9 +6394,7 @@ HTML;
     /**
      * Return background color corresponding to user initials.
      *
-     * @param bool $enable_anonymization
      *
-     * @return string
      */
     public function getUserInitialsBgColor(bool $enable_anonymization = false): string
     {
@@ -6605,9 +6568,7 @@ HTML;
      * Is a substitute of an other user ?
      *
      * @param integer $users_id_delegator
-     * @param bool    $use_date_range
      *
-     * @return bool
      */
     final public function isSubstituteOf(int $users_id_delegator, bool $use_date_range = true): bool
     {
@@ -6665,7 +6626,6 @@ HTML;
      *
      * @param string $password password to validate
      *
-     * @return bool
      */
     public function validatePassword(string $password, array &$errors = []): bool
     {
@@ -6706,7 +6666,6 @@ HTML;
      * Check if this User is the last super-admin user.
      * A "super-admin user" is a user that can edit GLPI's profiles.
      *
-     * @return bool
      */
     protected function isLastSuperAdminUser(): bool
     {
@@ -6729,7 +6688,6 @@ HTML;
 
     /**
      * Check if this User notification is enable
-     * @return bool
      */
     final public function isUserNotificationEnable(): bool
     {
@@ -6752,9 +6710,7 @@ HTML;
     /**
      * Toggle pin of given itemtype saved search.
      *
-     * @param string $itemtype
      *
-     * @return bool
      */
     public function toggleSavedSearchPin(string $itemtype): bool
     {

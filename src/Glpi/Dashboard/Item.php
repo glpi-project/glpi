@@ -46,7 +46,6 @@ class Item extends CommonDBChild
     /**
      * Return items for the provided dashboard
      *
-     * @param int $dashboards_id
      *
      * @return array the items
      */

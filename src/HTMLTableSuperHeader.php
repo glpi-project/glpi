@@ -57,8 +57,6 @@ class HTMLTableSuperHeader extends HTMLTableHeader implements HTMLCompositeTable
     /**
      * Compute the Least Common Multiple of two integers
      *
-     * @param $first
-     * @param $second
      *
      * @return integer LCM of $first and $second
      **/

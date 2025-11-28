@@ -77,7 +77,6 @@ trait InventoryNetworkPort
     /**
      * Get network ports
      *
-     * @return array
      */
     public function getNetworkPorts(): array
     {
@@ -556,8 +555,6 @@ trait InventoryNetworkPort
     }
 
     /**
-     * @param stdClass $port
-     * @param int $netports_id
      *
      * @return void
      */
@@ -704,8 +701,6 @@ trait InventoryNetworkPort
     }
 
     /**
-     * @param stdClass $port
-     * @param int $netports_id
      *
      * @return void
      */

@@ -84,7 +84,6 @@ abstract class AbstractCapacity implements CapacityInterface
 
     /**
      * @param class-string<Asset> $classname
-     * @return bool
      */
     public function isUsed(string $classname): bool
     {
@@ -99,8 +98,6 @@ abstract class AbstractCapacity implements CapacityInterface
      *
      * @param class-string<CommonDBTM> $asset_classname
      * @param class-string<CommonDBTM> $relation_classname
-     * @param array $specific_criteria
-     * @return int
      */
     final protected function countPeerItemsUsage(string $asset_classname, string $relation_classname, array $specific_criteria = []): int
     {
@@ -151,8 +148,6 @@ abstract class AbstractCapacity implements CapacityInterface
      *
      * @param class-string<CommonDBTM> $asset_classname
      * @param class-string<CommonDBTM> $relation_classname
-     * @param array $specific_criteria
-     * @return int
      */
     final protected function countAssetsLinkedToPeerItem(string $asset_classname, string $relation_classname, array $specific_criteria = []): int
     {
@@ -172,7 +167,6 @@ abstract class AbstractCapacity implements CapacityInterface
      * @param class-string<Asset> $classname
      * @param array<string, mixed>            $where_clause
      *
-     * @return int
      */
     protected function countAssets(string $classname, array $where_clause = []): int
     {
@@ -197,11 +191,8 @@ abstract class AbstractCapacity implements CapacityInterface
     /**
      * Delete logs related to relations between two itemtypes.
      *
-     * @param string $source_itemtype
-     * @param string $linked_itemtype
      * @param bool $both_sides = true
      *
-     * @return void
      */
     protected function deleteRelationLogs(
         string $source_itemtype,
@@ -234,9 +225,6 @@ abstract class AbstractCapacity implements CapacityInterface
     /**
      * Delete logs related to given fields (identified by their search options ID).
      *
-     * @param string $itemtype
-     * @param array $search_options
-     * @return void
      */
     protected function deleteFieldsLogs(string $itemtype, array $search_options): void
     {
@@ -260,9 +248,6 @@ abstract class AbstractCapacity implements CapacityInterface
     /**
      * Delete display preferences for given search options.
      *
-     * @param string $itemtype
-     * @param array $search_options
-     * @return void
      */
     protected function deleteDisplayPreferences(string $itemtype, array $search_options): void
     {
@@ -285,8 +270,6 @@ abstract class AbstractCapacity implements CapacityInterface
     /**
      * Extract search options IDs from a list of search options.
      *
-     * @param array $search_options
-     * @return array
      */
     private function extractOptionsIds(array $search_options): array
     {
@@ -310,9 +293,6 @@ abstract class AbstractCapacity implements CapacityInterface
     /**
      * Register the given itemtype to a type configuration.
      *
-     * @param string $config_name
-     * @param string $itemtype
-     * @return void
      */
     protected function registerToTypeConfig(string $config_name, string $itemtype): void
     {
@@ -326,9 +306,6 @@ abstract class AbstractCapacity implements CapacityInterface
     /**
      * Unregister the given itemtype from a type configuration.
      *
-     * @param string $config_name
-     * @param string $itemtype
-     * @return void
      */
     protected function unregisterFromTypeConfig(string $config_name, string $itemtype): void
     {

@@ -52,7 +52,6 @@ abstract class AssetType extends CommonType
     /**
      * Get the asset definition related to concrete class.
      *
-     * @return AssetDefinition
      */
     public static function getDefinition(): AssetDefinition
     {
@@ -152,8 +151,6 @@ abstract class AssetType extends CommonType
     /**
      * Ensure definition input corresponds to the current concrete class.
      *
-     * @param array $input
-     * @return array
      */
     private function prepareDefinitionInput(array $input): array
     {

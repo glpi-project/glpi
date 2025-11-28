@@ -71,8 +71,6 @@ final class QuestionTypeUserDevice extends AbstractQuestionType implements
     /**
      * Check if the question allows multiple devices
      *
-     * @param ?Question $question
-     * @return bool
      */
     public function isMultipleDevices(?Question $question): bool
     {

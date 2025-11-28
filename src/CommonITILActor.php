@@ -82,7 +82,6 @@ abstract class CommonITILActor extends CommonDBRelation
     }
 
     /**
-     * @param int $items_id
      * @phpstan-param positive-int $items_id
      * @return array Array of actors
      **/

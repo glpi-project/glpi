@@ -189,14 +189,12 @@ class Plugin extends CommonDBTM
     /**
      * Store additional infos for each plugins
      *
-     * @var array
      */
     private array $plugins_information = [];
 
     /**
      * Store keys of plugins found on filesystem.
      *
-     * @var array|null
      */
     private ?array $filesystem_plugin_keys = null;
 
@@ -642,7 +640,6 @@ class Plugin extends CommonDBTM
      * Load all lang files for a plugin
      *
      * @param string $plugin_key System name (Plugin directory)
-     * @return void
      */
     public static function loadAllLang(string $plugin_key): void
     {
@@ -656,8 +653,6 @@ class Plugin extends CommonDBTM
     /**
      * Return available langcode for a plugin
      *
-     * @param string $plugin_key
-     * @return array
      */
     public static function getAvailableLanguages(string $plugin_key): array
     {
@@ -1952,9 +1947,7 @@ class Plugin extends CommonDBTM
     /**
      * Get plugin files version.
      *
-     * @param string $key
      *
-     * @return string|null
      */
     public static function getPluginFilesVersion(string $key): ?string
     {
@@ -1965,7 +1958,6 @@ class Plugin extends CommonDBTM
      * Returns plugin information from directory.
      *
      * @param string $directory
-     * @param bool $with_lang
      *
      * @return array
      */
@@ -1984,9 +1976,7 @@ class Plugin extends CommonDBTM
     /**
      * Returns plugin options.
      *
-     * @param string $plugin_key
      *
-     * @return array
      */
     public function getPluginOptions(string $plugin_key): array
     {
@@ -2014,8 +2004,6 @@ class Plugin extends CommonDBTM
     /**
      * Returns plugin option.
      *
-     * @param string $plugin_key
-     * @param string $option_key
      * @param mixed  $default_value
      *
      * @return array
@@ -2031,9 +2019,7 @@ class Plugin extends CommonDBTM
     /**
      * Load plugin setup file.
      *
-     * @param string $plugin_key
      *
-     * @return bool
      */
     private function loadPluginSetupFile(string $plugin_key): bool
     {
@@ -2097,7 +2083,6 @@ class Plugin extends CommonDBTM
     /**
      * Get additional search options managed by plugins
      *
-     * @param $itemtype
      *
      * @return array Array containing plugin search options for given type
      **/
@@ -2125,7 +2110,6 @@ class Plugin extends CommonDBTM
     /**
      * Include the hook file for a plugin
      *
-     * @param string $plugin_key
      */
     public static function includeHook(string $plugin_key = "")
     {
@@ -3322,9 +3306,7 @@ class Plugin extends CommonDBTM
     /**
      * Reset cache entries that may be indirectly altered by plugins.
      *
-     * @param string $plugin_key
      *
-     * @return bool
      */
     private function resetHookableCacheEntries(string $plugin_key): bool
     {

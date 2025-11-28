@@ -159,12 +159,12 @@ class CommonDBTM extends CommonGLPI
     protected $searchopt = false;
 
     /**
-     * {@inheritDoc}
+     *
      */
     public $taborientation = 'vertical';
 
     /**
-     * {@inheritDoc}
+     *
      */
     public $get_item_to_display_tab = true;
 
@@ -304,7 +304,6 @@ class CommonDBTM extends CommonGLPI
     /**
      * Returns the default service name to use when logging events.
      *
-     * @return string
      */
     public static function getLogDefaultServiceName(): string
     {
@@ -321,7 +320,6 @@ class CommonDBTM extends CommonGLPI
      * 4: Notices (add, delete, tracking)
      * 5: Complete (all)
      *
-     * @return int
      */
     public static function getLogDefaultLevel(): int
     {
@@ -1237,8 +1235,6 @@ class CommonDBTM extends CommonGLPI
     /**
      * Extract the main item form options from the URL query parameters.
      *
-     * @param array $query_params
-     * @return array
      */
     public function getFormOptionsFromUrl(array $query_params): array
     {
@@ -3068,7 +3064,6 @@ class CommonDBTM extends CommonGLPI
      *
      * @param int $id Given id
      *
-     * @return bool
      */
     final public function checkIfExistOrNew($id): bool
     {
@@ -3089,7 +3084,6 @@ class CommonDBTM extends CommonGLPI
      * @param int $right Right to check
      * @param ?array $input array of input data (used for adding item) (default NULL)
      *
-     * @return void
      **/
     public function check($ID, int $right, ?array &$input = null): void
     {
@@ -3167,7 +3161,6 @@ class CommonDBTM extends CommonGLPI
      *
      * @param int $right Right to check
      *
-     * @return void
      **/
     public function checkGlobal(int $right): void
     {
@@ -3186,7 +3179,6 @@ class CommonDBTM extends CommonGLPI
      *
      * @param int $right Right to check: READ / UPDATE / CREATE / DELETE
      *
-     * @return bool
      **/
     public function canGlobal(int $right): bool
     {
@@ -5996,7 +5988,6 @@ class CommonDBTM extends CommonGLPI
     /**
      * Correct entity id if needed when cloning a template
      *
-     * @param array   $data
      * @param integer $parent_id
      * @param string  $parent_itemtype
      *
@@ -6033,8 +6024,6 @@ class CommonDBTM extends CommonGLPI
      * Friendly names may uses multiple fields (e.g user: first name + last name)
      * Return the computed criteria to use in a WHERE clause.
      *
-     * @param string $filter
-     * @return array
      */
     public static function getFriendlyNameSearchCriteria(string $filter): array
     {
@@ -6053,7 +6042,6 @@ class CommonDBTM extends CommonGLPI
      * Friendly names may uses multiple fields (e.g user: first name + last name)
      * Return the computed field name to use in a SELECT clause.
      *
-     * @param string $alias
      * @return mixed
      */
     public static function getFriendlyNameFields(string $alias = "name")
@@ -6067,7 +6055,6 @@ class CommonDBTM extends CommonGLPI
     /**
      * Get non logged fields
      *
-     * @return array
      */
     public function getNonLoggedFields(): array
     {
@@ -6107,7 +6094,6 @@ class CommonDBTM extends CommonGLPI
     /**
      * Returns model class foreign key field name, or null if item has no model class.
      *
-     * @return string|null
      */
     public function getModelForeignKeyField(): ?string
     {
@@ -6134,7 +6120,6 @@ class CommonDBTM extends CommonGLPI
     /**
      * Returns type class foreign key field name, or null if item has no type class.
      *
-     * @return string|null
      */
     public function getTypeForeignKeyField(): ?string
     {
@@ -6143,8 +6128,6 @@ class CommonDBTM extends CommonGLPI
     }
 
     /**
-     * @param array $picture_fields
-     * @return bool
      * @used-by templates/generic_show_form.html.twig
      */
     public function hasItemtypeOrModelPictures(array $picture_fields = ['picture_front', 'picture_rear', 'pictures']): bool
@@ -6261,7 +6244,6 @@ class CommonDBTM extends CommonGLPI
     }
 
     /**
-     * @return MassiveAction
      * @throws Exception
      * @used-by templates/components/form/single-action.html.twig
      */
@@ -6298,7 +6280,6 @@ class CommonDBTM extends CommonGLPI
      * @param array  $extra_input       Fixed value to be used when searching
      *                                  for existing values or inserting new ones
      *
-     * @return void
      */
     protected function update1NTableData(
         string $commondb_relation,
@@ -6410,7 +6391,6 @@ class CommonDBTM extends CommonGLPI
      * @param array  $extra_input       Fixed value to be used when searching
      *                                  for existing values
      *
-     * @return void
      */
     protected function load1NTableData(
         string $commondb_relation,
@@ -6454,7 +6434,6 @@ class CommonDBTM extends CommonGLPI
      * Get the browser tab name for a new item: "{itemtype} - New item"
      * To be overriden by child classes if they want to display something else
      *
-     * @return string
      */
     public static function getBrowserTabNameForNewItem(): string
     {
@@ -6470,7 +6449,6 @@ class CommonDBTM extends CommonGLPI
      * {Header name} is usually the item name (see $this->getName())
      * To be overriden by child classes if they want to display something else
      *
-     * @return string
      */
     public function getBrowserTabName(): string
     {
@@ -6501,7 +6479,6 @@ class CommonDBTM extends CommonGLPI
      *                             define their menus as object properties)
      * @param array      $options  Display options
      *
-     * @return void
      */
     public static function displayFullPageForItem(
         $id,
@@ -6573,10 +6550,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Display a header for the "central" interface
      *
-     * @param null|string $title
-     * @param array|null  $menus
      *
-     * @return void
      */
     public static function displayCentralHeader(
         ?string $title = null,
@@ -6602,10 +6576,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Display a header for the "helpdesk" interface
      *
-     * @param null|string $title
-     * @param array|null  $menus
      *
-     * @return void
      */
     public static function displayHelpdeskHeader(
         ?string $title = null,
@@ -6628,9 +6599,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Delete alerts of given types related to current item.
      *
-     * @param array $types
      *
-     * @return void
      *
      * @since 10.0.0
      */
@@ -6668,7 +6637,6 @@ class CommonDBTM extends CommonGLPI
     /**
      * Return reference event name for given event.
      *
-     * @param string $event
      *
      * @since 10.0.7
      */
@@ -6698,7 +6666,6 @@ class CommonDBTM extends CommonGLPI
      *
      * @param string|null $tablename    Table name to use for field in SQL query, can be used to prevent ambiguous field naming.
      *
-     * @return array
      */
     public static function getSystemSQLCriteria(?string $tablename = null): array
     {

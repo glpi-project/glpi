@@ -177,7 +177,6 @@ class Item_Disk extends CommonDBChild
      * @param string     $sort  Field to sort on
      * @param string     $order Sort order
      *
-     * @return DBmysqlIterator
      */
     public static function getFromItem(CommonDBTM $item, $sort = null, $order = null): DBmysqlIterator
     {
@@ -211,7 +210,6 @@ class Item_Disk extends CommonDBChild
      * @param CommonDBTM $item          Item object
      * @param integer    $withtemplate  Template or basic item (default 0)
      *
-     * @return bool
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0): bool
     {

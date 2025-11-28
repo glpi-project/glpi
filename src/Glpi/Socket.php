@@ -465,7 +465,6 @@ class Socket extends CommonDBChild
     /**
      * @since 0.84
      *
-     * @param $field
      * @param $name            (default '')
      * @param $values          (default '')
      * @param array $options   array
@@ -497,9 +496,6 @@ class Socket extends CommonDBChild
     /**
      * @since 0.84
      *
-     * @param $field
-     * @param $values
-     * @param array $options
      **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
@@ -656,7 +652,6 @@ class Socket extends CommonDBChild
      *
      * @param CommonDBTM $item
      *
-     * @return bool
      **/
     public static function showListForItem($item): bool
     {
@@ -810,9 +805,7 @@ class Socket extends CommonDBChild
     /**
      * Print the HTML array of the Socket associated to a Location
      *
-     * @param Location $item
      *
-     * @return bool
      **/
     public static function showForLocation(Location $item): bool
     {
@@ -927,9 +920,6 @@ class Socket extends CommonDBChild
     }
 
     /**
-     * @param ?HTMLTableRow $row
-     * @param ?CommonDBTM $item
-     * @param ?HTMLTableCell $father
      * @param array $options
      *
      * @return void

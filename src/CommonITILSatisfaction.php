@@ -134,7 +134,6 @@ abstract class CommonITILSatisfaction extends CommonDBTM
      * form for satisfaction
      *
      * @param CommonITILObject $item The item this satisfaction is for
-     * @param bool $add_form_header
      *
      * @return void
      */

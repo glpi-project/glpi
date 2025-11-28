@@ -751,7 +751,6 @@ EOT,
     }
 
     /**
-     * @param int $users_id
      * @return EmailData[]
      */
     private function getEmailDataForUser(int $users_id): array

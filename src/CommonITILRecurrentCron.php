@@ -45,7 +45,6 @@ class CommonITILRecurrentCron extends CommonDBTM
     /**
      * Get cron task's description
      *
-     * @return array
      */
     public static function cronInfo(): array
     {
@@ -57,7 +56,6 @@ class CommonITILRecurrentCron extends CommonDBTM
     /**
      * Run the cron task
      *
-     * @param CronTask $task
      *
      * @return int task status (0: no work to do, 1: work done)
      */

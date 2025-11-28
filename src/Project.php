@@ -376,7 +376,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
      *
      * @param boolean $forceall force all joins (false by default)
      *
-     * @return array
      */
     public static function getVisibilityCriteria(bool $forceall = false): array
     {
@@ -1419,7 +1418,6 @@ TWIG, ['projects_id' => $ID, 'label' => __('Create a sub project from this proje
 
     /**
      * Show team for a project
-     * @param Project $project
      * @return true
      **/
     public function showTeam(Project $project)
@@ -2366,7 +2364,6 @@ TWIG, $twig_params);
      *  Show the list of projects for a user in the personal view or for a group in the group view
      *
      * @param string $itemtype The itemtype (User or Group)
-     * @return void
      * @used-by Central
      */
     public static function showListForCentral(string $itemtype): void

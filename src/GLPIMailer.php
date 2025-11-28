@@ -56,25 +56,21 @@ class GLPIMailer
 {
     /**
      * Transport instance.
-     * @var TransportInterface
      */
     private TransportInterface $transport;
 
     /**
      * Email instance.
-     * @var Email
      */
     private Email $email;
 
     /**
      * Errors that may have occurred during email sending.
-     * @var string|null
      */
     private ?string $error = null;
 
     /**
      * Debug log.
-     * @var string|null
      */
     private ?string $debug = null;
 
@@ -109,7 +105,6 @@ class GLPIMailer
      *
      * @param bool $with_clear_password   Indicates whether the password should be present as clear text or redacted.
      *
-     * @return string
      */
     final public static function buildDsn(bool $with_clear_password): string
     {
@@ -187,7 +182,6 @@ class GLPIMailer
     /**
      * Get email instance.
      *
-     * @return Email
      */
     public function getEmail(): Email
     {
@@ -234,7 +228,6 @@ class GLPIMailer
     /**
      * Get message related to sending error.
      *
-     * @return string|null
      */
     public function getError(): ?string
     {
@@ -244,7 +237,6 @@ class GLPIMailer
     /**
      * Get debug log.
      *
-     * @return string|null
      */
     public function getDebug(): ?string
     {
@@ -255,8 +247,6 @@ class GLPIMailer
      * Normalize line-breaks to CRLF.
      * According to RFC2045, this is the expected line-break format in message bodies.
      *
-     * @param string $text
-     * @return string
      */
     private function normalizeLineBreaks(string $text): string
     {
@@ -271,7 +261,6 @@ class GLPIMailer
 
 
     /**
-     * @param string $property
      *
      * @return mixed
      */
@@ -324,7 +313,6 @@ class GLPIMailer
     }
 
     /**
-     * @param string $property
      * @param mixed $value
      *
      * @return void
@@ -384,8 +372,6 @@ class GLPIMailer
     }
 
     /**
-     * @param string $method
-     * @param array $arguments
      *
      * @return void
      */
@@ -485,8 +471,6 @@ class GLPIMailer
     }
 
     /**
-     * @param string $method
-     * @param array $arguments
      *
      * @return mixed
      */

@@ -84,21 +84,18 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
     /**
      * Items with invalid HTML.
      *
-     * @var array
      */
     private array $invalid_items = [];
 
     /**
      * Count of items with invalid HTML that have NOT been fixed.
      *
-     * @var int
      */
     private int $failed_items_count = 0;
 
     /**
      * Columns which contains rich text, populated by analyzing search options.
      *
-     * @var array
      */
     private array $text_fields = [];
 
@@ -177,7 +174,6 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
     /**
      * Dump items
      *
-     * @return void
      */
     private function dumpObjects(): void
     {
@@ -226,7 +222,6 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
     /**
      * Fix encoding issues.
      *
-     * @return void
      */
     private function fixItems(): void
     {
@@ -257,7 +252,6 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
      *
      * @param CommonDBTM $item item to fix
      * @param array $fields fields names to fix
-     * @return void
      */
     private function fixOneItem(CommonDBTM $item, array $fields): void
     {
@@ -289,9 +283,6 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
     /**
      * Fix a single field of an item.
      *
-     * @param CommonDBTM $item
-     * @param string $field
-     * @return string
      */
     private function fixOneField(CommonDBTM $item, string $field): string
     {
@@ -310,8 +301,6 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
      * Fix double encoded HTML entities in old followups
      * @see https://github.com/glpi-project/glpi/issues/8330
      *
-     * @param string $input
-     * @return string
      */
     private function fixEmailHeadersEncoding(string $input): string
     {
@@ -334,8 +323,6 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
      * Fix &quot; HTML entity without its final semicolon.
      * @see https://github.com/glpi-project/glpi/pull/6084
      *
-     * @param string $input
-     * @return string
      */
     private function fixQuoteEntityWithoutSemicolon(string $input): string
     {
@@ -352,7 +339,6 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
     /**
      * Find rich text fields for itemtypes given as CLI argument.
      *
-     * @return void
      */
     private function findTextFields(): void
     {
@@ -393,7 +379,6 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
     /**
      * Search in all items of an itemtype for bad HTML.
      *
-     * @return void
      */
     private function scanItems(): void
     {
@@ -410,9 +395,6 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
     /**
      * Search for bad HTML in a single column of a table
      *
-     * @param string $itemtype
-     * @param string $field
-     * @return void
      */
     private function scanField(string $itemtype, string $field): void
     {

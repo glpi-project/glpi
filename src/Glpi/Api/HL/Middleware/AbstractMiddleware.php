@@ -38,8 +38,6 @@ namespace Glpi\Api\HL\Middleware;
 abstract class AbstractMiddleware
 {
     /**
-     * @param MiddlewareInput $input
-     * @param callable $next
      * @return mixed
      */
     public function __invoke(MiddlewareInput $input, callable $next)

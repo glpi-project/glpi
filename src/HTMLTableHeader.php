@@ -69,7 +69,6 @@ abstract class HTMLTableHeader extends HTMLTableEntity
     abstract public function isSuperHeader();
 
     /**
-     * @param $itemtype
      * @param $title         (default '')
      **/
     public function setItemType($itemtype, $title = '')
@@ -91,7 +90,6 @@ abstract class HTMLTableHeader extends HTMLTableEntity
     }
 
     /**
-     * @param ?CommonDBTM $item
      * @throws Exception
      */
     public function checkItemType(?CommonDBTM $item = null)

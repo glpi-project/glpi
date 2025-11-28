@@ -74,8 +74,6 @@ abstract class StatData
     }
 
     /**
-     * @param array $params
-     * @param string $type
      *
      * @return ?array
      */

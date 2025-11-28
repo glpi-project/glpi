@@ -73,9 +73,7 @@ class Item_Plug extends CommonDBRelation
     /**
      * Print plugs
      *
-     * @param CommonDBTM $item
      *
-     * @return bool
      */
     public static function showItems(CommonDBTM $item): bool
     {

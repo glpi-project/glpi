@@ -194,7 +194,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      *
      * @param array   $params parameters to add to the URL
      * @param boolean $full  path or relative one
-     * @return string
      **/
     public static function getFormURLWithParam($params = [], $full = true): string
     {
@@ -462,7 +461,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      *
      * @param boolean $forceall force all joins (false by default)
      *
-     * @return array
      */
     public static function getVisibilityCriteria(bool $forceall = false): array
     {
@@ -621,7 +619,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     /**
      * Get criteria used to filter knowledge base articles on users
      *
-     * @return array
      */
     private static function getVisibilityCriteriaKB_User(): array
     {
@@ -634,7 +631,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     /**
      * Get criteria used to filter knowledge base articles on groups
      *
-     * @return array
      */
     private static function getVisibilityCriteriaKB_Group(): array
     {
@@ -658,7 +654,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     /**
      * Get criteria used to filter knowledge base articles on profiles
      *
-     * @return array
      */
     private static function getVisibilityCriteriaKB_Profile(): array
     {
@@ -682,7 +677,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     /**
      * Get criteria used to filter knowledge base articles on entity
      *
-     * @return array
      */
     private static function getVisibilityCriteriaKB_Entity(): array
     {
@@ -1280,9 +1274,7 @@ TWIG, $twig_params);
      * Clean search for Boolean FullText
      *
      * @since 10.0.7
-     * @param string $search
      *
-     * @return string
      **/
     private static function computeBooleanFullTextSearch(string $search): string
     {

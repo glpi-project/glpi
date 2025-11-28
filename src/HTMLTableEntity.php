@@ -66,7 +66,6 @@ abstract class HTMLTableEntity
     }
 
     /**
-     * @param HTMLTableEntity $origin
      */
     public function copyAttributsFrom(HTMLTableEntity $origin)
     {
@@ -76,7 +75,6 @@ abstract class HTMLTableEntity
     }
 
     /**
-     * @param $html_id
      **/
     public function setHTMLID($html_id)
     {
@@ -110,7 +108,6 @@ abstract class HTMLTableEntity
     }
 
     /**
-     * @param array $options
      **/
     public function displayEntityAttributs(array $options = [])
     {
@@ -145,7 +142,6 @@ abstract class HTMLTableEntity
     }
 
     /**
-     * @param $content
      *
      * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
      * @psalm-taint-sink html $content (string will be added to HTML source)

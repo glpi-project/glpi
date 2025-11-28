@@ -937,7 +937,6 @@ class Provider
      * - 'icon' of the card
      * - 'apply_filters' values from dashboard filters
      *
-     * @return array
      */
     public static function articleListItem(?CommonDBTM $item = null, array $params = []): array
     {
@@ -999,7 +998,6 @@ class Provider
      * - 'icon' of the card
      * - 'apply_filters' values from dashboard filters
      *
-     * @return array
      */
     public static function ticketsOpened(array $params = []): array
     {
@@ -1080,7 +1078,6 @@ class Provider
      * - 'icon' of the card
      * - 'apply_filters' values from dashboard filters
      *
-     * @return array
      */
     public static function getTicketsEvolution(array $params = []): array
     {
@@ -1263,7 +1260,6 @@ class Provider
      * - 'icon' of the card
      * - 'apply_filters' values from dashboard filters
      *
-     * @return array
      */
     public static function getTicketsStatus(array $params = []): array
     {
@@ -1441,7 +1437,6 @@ class Provider
      * - 'icon' of the card
      * - 'apply_filters' values from dashboard filters
      *
-     * @return array
      */
     public static function nbTicketsActor(
         string $case = "",
@@ -1773,8 +1768,6 @@ class Provider
     }
 
     /**
-     * @param string $table
-     * @param array $apply_filters
      *
      * @return array
      */

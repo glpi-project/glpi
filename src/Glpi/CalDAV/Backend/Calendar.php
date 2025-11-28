@@ -288,7 +288,6 @@ class Calendar extends AbstractBackend
     /**
      * Convert a VCalendar object to an object served by CalDAV server.
      *
-     * @param VCalendar $vcalendar
      *
      * @return array
      */

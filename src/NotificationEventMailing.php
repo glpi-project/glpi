@@ -443,7 +443,6 @@ class NotificationEventMailing extends NotificationEventAbstract
      * Handle a failure when trying to send an email
      * @param QueuedNotification $notification The notification that failed
      * @param string $error The error message to log
-     * @return void
      */
     private static function handleFailedSend(QueuedNotification $notification, string $error): void
     {
@@ -497,8 +496,6 @@ class NotificationEventMailing extends NotificationEventAbstract
      * Attach documents to message.
      * Documents will not be attached if configuration says they should not be.
      *
-     * @param Email $mail
-     * @param array $documents_ids
      *
      * @return void
      */

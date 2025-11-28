@@ -162,7 +162,6 @@ class Link extends CommonDBTM
     /**
      * Return tags completion for the monaco editor.
      *
-     * @return array
      * @phpstan-return array<int, array{name: string, type: string}>
      */
     private function getTagCompletions(): array
@@ -535,7 +534,6 @@ class Link extends CommonDBTM
 
     /**
      * Show all external and manual links for an item
-     * @param CommonDBTM $item
      * @param 'ManualLink'|'Link'|null $restrict_type Restrict to a specific type of link
      * @return void
      */
@@ -821,8 +819,6 @@ TWIG, $buttons_params);
     /**
      * Validate template fields.
      *
-     * @param array $input
-     * @return bool
      */
     private function validateTemplateFields(array $input): bool
     {

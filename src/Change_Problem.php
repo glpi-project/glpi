@@ -101,7 +101,6 @@ class Change_Problem extends CommonITILObject_CommonITILObject
     /**
      * Show tickets for a problem
      *
-     * @param Problem $problem
      * @return void
      **/
     public static function showForProblem(Problem $problem)

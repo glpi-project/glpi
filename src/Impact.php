@@ -260,7 +260,6 @@ JS);
      * @param array      $graph  array containing the graph nodes and egdes
      * @param bool       $scripts True if the JS code should be generated
      *
-     * @return void
      */
     public static function displayListView(CommonDBTM $item, array $graph, bool $scripts = false): void
     {
@@ -593,7 +592,6 @@ TWIG, $twig_params);
      * @param CommonDBTM $item         starting point of the graph
      * @param int        $max_depth    max depth from context
      *
-     * @return array
      */
     public static function buildListData(array $graph, int $direction, CommonDBTM $item, int $max_depth): array
     {
@@ -1272,10 +1270,7 @@ TWIG, $twig_params);
     /**
      * Get the icon to be displayed for the given item.
      *
-     * @param string $itemtype
-     * @param int|null $id
      *
-     * @return string
      */
     public static function getImpactIcon(string $itemtype, ?int $id = null): string
     {
@@ -1442,7 +1437,6 @@ TWIG, $twig_params);
      *
      * @since 9.5
      *
-     * @return void
      *
      * @throws InvalidArgumentException
      */
@@ -1483,7 +1477,6 @@ TWIG, $twig_params);
     /**
      * Get saved graph params for the current item
      *
-     * @param CommonDBTM $item
      *
      * @return string $item
      */
@@ -1629,7 +1622,6 @@ TWIG, $twig_params);
      *
      * @param string $itemtype Class of the asset
      * @param string $items_id id of the asset
-     * @return bool
      */
     public static function assetExist(string $itemtype, string $items_id): bool
     {
@@ -1659,7 +1651,6 @@ TWIG, $twig_params);
      *
      * @param CommonDBTM  $item Name of the node
      *
-     * @return string
      */
     public static function getNodeID(CommonDBTM $item): string
     {
@@ -1673,7 +1664,6 @@ TWIG, $twig_params);
      * @param CommonDBTM  $itemB     Second node of the edge
      * @param int         $direction Direction of the edge : A to B or B to A ?
      *
-     * @return string|null
      *
      * @throws InvalidArgumentException
      */
@@ -1765,8 +1755,6 @@ TWIG, $twig_params);
     /**
      * Check if the given itemtype is enabled in impact config
      *
-     * @param string $itemtype
-     * @return bool
      */
     public static function isEnabled(string $itemtype): bool
     {
@@ -1776,7 +1764,6 @@ TWIG, $twig_params);
     /**
      * Return enabled itemtypes
      *
-     * @return array
      */
     public static function getEnabledItemtypes(): array
     {
@@ -1800,7 +1787,6 @@ TWIG, $twig_params);
     /**
      * Return default itemtypes
      *
-     * @return array
      */
     public static function getDefaultItemtypes(): array
     {

@@ -318,7 +318,6 @@ abstract class CommonDropdown extends CommonDBTM
     /**
      * Add files from rich text fields.
      *
-     * @return void
      */
     private function addFilesFromRichText(): void
     {

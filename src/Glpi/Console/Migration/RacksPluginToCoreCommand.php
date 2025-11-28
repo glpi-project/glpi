@@ -1457,7 +1457,6 @@ class RacksPluginToCoreCommand extends AbstractCommand
      * Output import error message.
      *
      * @param string           $message
-     * @param ProgressBar|null $progress_bar
      *
      * @return void
      */

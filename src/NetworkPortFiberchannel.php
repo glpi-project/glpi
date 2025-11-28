@@ -276,8 +276,6 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param array $tab
-     * @param array $joinparams
      *
      * @return void
      */

@@ -57,7 +57,6 @@ class HasOperatingSystemCapacityTest extends DbTestCase
      * Test that the capacity is properly registered in the configuration
      * when enabled and unregistered when disabled.
      *
-     * @return void
      */
     public function testConfigRegistration(): void
     {
@@ -90,7 +89,6 @@ class HasOperatingSystemCapacityTest extends DbTestCase
      * Test that the "Operating system" tab is registered when the capacity
      * is enabled.
      *
-     * @return void
      */
     public function testOperatingSystemTabRegistration(): void
     {
@@ -128,7 +126,6 @@ class HasOperatingSystemCapacityTest extends DbTestCase
     * Test that the "Item_OperatingSystem" search options are registered when
     * the capacity is enabled and unregistered when disabled.
     *
-    * @return void
     */
     public function testSearchOptionRegistration(): void
     {
@@ -173,7 +170,6 @@ class HasOperatingSystemCapacityTest extends DbTestCase
      * Test that any "Item_OperatingSystem" items linked to the asset are
      * deleted when the capacity is disabled.
      *
-     * @return void
      */
     public function testItemOperatingSystemDataDeletion(): void
     {
@@ -219,7 +215,6 @@ class HasOperatingSystemCapacityTest extends DbTestCase
      * Test that any history entries related to "Item_OperatingSystem" and
      * "OperatingSystem" are deleted when the capacity is disabled.
      *
-     * @return void
      */
     public function testHistoryDataDeletion(): void
     {
@@ -284,7 +279,6 @@ class HasOperatingSystemCapacityTest extends DbTestCase
      * "Item_OperatingSystem" and "OperatingSystem" are deleted when the
      * capacity is disabled.
      *
-     * @return void
      */
     public function testDisplayPreferencesDataDeletion(): void
     {

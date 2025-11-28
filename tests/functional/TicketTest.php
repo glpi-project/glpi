@@ -967,10 +967,7 @@ class TicketTest extends DbTestCase
     /**
      * Check that ticket actors are matching expected actors.
      *
-     * @param Ticket $ticket
-     * @param array $expected_actors
      *
-     * @return void
      */
     private function checkActors(Ticket $ticket, array $expected_actors): void
     {
@@ -2063,7 +2060,6 @@ class TicketTest extends DbTestCase
     }
 
     /**
-     * @param $rights
      * @return void
      * @deprecated 11.0.0 - Use changeTechRights() instead
      */
@@ -7788,7 +7784,6 @@ HTML,
     /**
      * Data provider for the testCountActors function
      *
-     * @return iterable
      */
     protected function testCountActorsProvider(): iterable
     {
@@ -7923,7 +7918,6 @@ HTML,
     /**
      * Test the testCountActors method
      *
-     * @return void
      */
     public function testCountActors(): void
     {
@@ -7941,7 +7935,6 @@ HTML,
     /**
      * Data provider for the testActorsMagicProperties function
      *
-     * @return iterable
      */
     protected function testActorsMagicPropertiesProvider(): iterable
     {

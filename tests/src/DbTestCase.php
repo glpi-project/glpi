@@ -94,7 +94,6 @@ class DbTestCase extends GLPITestCase
      * @param bool $noauto disable autologin (from CAS by example)
      * @param bool $expected bool result expected from login return
      *
-     * @return Auth
      */
     protected function realLogin(
         string $user_name = TU_USER,
@@ -338,9 +337,7 @@ class DbTestCase extends GLPITestCase
      *
      * @param string $itemtype
      * @param int $id
-     * @param bool $purge
      *
-     * @return void
      */
     protected function deleteItem($itemtype, $id, bool $purge = false): void
     {
@@ -399,7 +396,6 @@ class DbTestCase extends GLPITestCase
      * @param array  $criteria Rule criteria
      * @param array  $action   Rule action
      *
-     * @return int
      */
     protected function addRule(string $type, string $name, array $criteria, array $action, ?int $ranking = null): int
     {
@@ -478,11 +474,8 @@ class DbTestCase extends GLPITestCase
     /**
      * Initialize a definition.
      *
-     * @param ?string $system_name
      * @param Capacity[] $capacities
-     * @param ?array $profiles
      *
-     * @return AssetDefinition
      */
     protected function initAssetDefinition(
         ?string $system_name = null,
@@ -531,10 +524,7 @@ class DbTestCase extends GLPITestCase
     /**
      * Initialize a definition.
      *
-     * @param ?string $system_name
-     * @param ?array $profiles
      *
-     * @return DropdownDefinition
      */
     protected function initDropdownDefinition(
         ?string $system_name = null,
@@ -564,7 +554,6 @@ class DbTestCase extends GLPITestCase
 
     /**
      * Create a random text document.
-     * @return Document
      */
     protected function createTxtDocument(): Document
     {

@@ -54,7 +54,6 @@ abstract class AssetModel extends CommonDCModelDropdown
     /**
      * Get the asset definition related to concrete class.
      *
-     * @return AssetDefinition
      */
     public static function getDefinition(): AssetDefinition
     {
@@ -156,8 +155,6 @@ abstract class AssetModel extends CommonDCModelDropdown
     /**
      * Ensure definition input corresponds to the current concrete class.
      *
-     * @param array $input
-     * @return array
      */
     private function prepareDefinitionInput(array $input): array
     {

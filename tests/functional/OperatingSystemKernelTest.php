@@ -63,7 +63,6 @@ class OperatingSystemKernelTest extends CommonDropdownTest
     /**
      * Create new Kernel in database
      *
-     * @return \CommonDBTM
      */
     protected function newInstance(): \CommonDBTM
     {

@@ -49,7 +49,6 @@ final class FormDestinationManagerTest extends DbTestCase
     /**
      * Test for the getDestinationTypes method.
      *
-     * @return void
      */
     public function testGetDestinationTypes(): void
     {
@@ -68,7 +67,6 @@ final class FormDestinationManagerTest extends DbTestCase
     /**
      * Test for the getDestinationTypesDropdownValues method.
      *
-     * @return void
      */
     public function testGetDestinationTypesDropdownValues(): void
     {
@@ -92,7 +90,6 @@ final class FormDestinationManagerTest extends DbTestCase
     /**
      * Test for the getDefaultType method.
      *
-     * @return void
      */
     public function testGetDefaultType(): void
     {

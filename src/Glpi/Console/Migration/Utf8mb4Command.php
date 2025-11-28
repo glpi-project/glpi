@@ -99,7 +99,6 @@ class Utf8mb4Command extends AbstractCommand implements ConfigurationCommandInte
     /**
      * Check for migration prerequisites.
      *
-     * @return void
      */
     private function checkForPrerequisites(): void
     {
@@ -133,7 +132,6 @@ class Utf8mb4Command extends AbstractCommand implements ConfigurationCommandInte
     /**
      * Migrate tables to utf8mb4.
      *
-     * @return void
      */
     private function migrateToUtf8mb4(): void
     {

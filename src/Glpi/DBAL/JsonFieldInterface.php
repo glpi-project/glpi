@@ -46,7 +46,6 @@ interface JsonFieldInterface extends JsonSerializable
     /**
      * Create an instance from a raw array of data.
      *
-     * @param array $data
      */
     public static function jsonDeserialize(array $data): self;
 }

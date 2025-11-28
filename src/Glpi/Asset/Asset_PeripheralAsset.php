@@ -73,8 +73,6 @@ final class Asset_PeripheralAsset extends CommonDBRelation
     /**
      * Count connections between an item and a peripheral.
      *
-     * @param CommonDBTM $main_item
-     * @param CommonDBTM $peripheral_item
      *
      * @return boolean
      */
@@ -294,7 +292,6 @@ final class Asset_PeripheralAsset extends CommonDBRelation
      * @param CommonDBTM $asset        CommonDBTM object
      * @param integer    $withtemplate Template or basic item (default 0)
      *
-     * @return void
      **/
     private static function showForAsset(CommonDBTM $asset, $withtemplate = 0): void
     {
@@ -461,7 +458,6 @@ TWIG, $twig_params);
      * @param CommonDBTM $peripheral         CommonDBTM object
      * @param integer    $withtemplate Template or basic item (default 0)
      *
-     * @return void
      **/
     private static function showForPeripheral(CommonDBTM $peripheral, $withtemplate = 0): void
     {
@@ -747,7 +743,6 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param CommonDBTM $item
      * @param array      $entities
      *
      * @return bool
@@ -980,7 +975,6 @@ TWIG, $twig_params);
      *
      * @param CommonDBTM $asset Main asset.
      * @param string $itemtype  Itemtype of the peripherals to retrieve.
-     * @return iterable
      */
     private static function getPeripheralAssets(CommonDBTM $asset, string $itemtype): iterable
     {
@@ -1018,7 +1012,6 @@ TWIG, $twig_params);
      *
      * @param CommonDBTM $peripheral Peripheral asset.
      * @param string     $itemtype   Itemtype of the main assets to retrieve.
-     * @return iterable
      */
     private static function getItemConnectionsForItemtype(CommonDBTM $peripheral, string $itemtype): iterable
     {

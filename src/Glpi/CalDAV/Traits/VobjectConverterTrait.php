@@ -70,10 +70,8 @@ trait VobjectConverterTrait
     /**
      * Get VCalendar object for given item.
      *
-     * @param CommonDBTM $item
      * @param string      $component_type  Base component type (i.e. VEVENT, VTODO, ...).
      *
-     * @return VCalendar
      */
     protected function getVCalendarForItem(CommonDBTM $item, $component_type): VCalendar
     {
@@ -229,8 +227,6 @@ trait VobjectConverterTrait
     /**
      * Get common item input for given component.
      *
-     * @param Component $vcomponent
-     * @param bool      $is_new_item
      *
      * @return array
      */
@@ -285,7 +281,6 @@ trait VobjectConverterTrait
     /**
      * Get content input from component converted into HTML format.
      *
-     * @param Component $vcomponent
      *
      * @return string|null
      */
@@ -307,7 +302,6 @@ trait VobjectConverterTrait
     /**
      * Get state input from component (see Planning constants).
      *
-     * @param Component $vcomponent
      *
      * @return integer|null
      */
@@ -326,7 +320,6 @@ trait VobjectConverterTrait
      *  - 'end':   end date in 'Y-m-d H:i:s' format.
      * If object does not contain plan information, return null.
      *
-     * @param Component $vcomponent
      *
      * @return array|null
      */
@@ -370,7 +363,6 @@ trait VobjectConverterTrait
     /**
      * Get rrule input from component in format expected by events methods.
      *
-     * @param Component $vcomponent
      *
      * @return array|null
      */

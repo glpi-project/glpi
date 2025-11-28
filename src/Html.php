@@ -438,7 +438,6 @@ class Html
     /**
      * Redirect to the previous page.
      *
-     * @return never
      **/
     public static function back(): never
     {
@@ -452,7 +451,6 @@ class Html
      * @param string $dest Redirection destination
      * @param int    $http_response_code Forces the HTTP response code to the specified value
      *
-     * @return never
      **/
     public static function redirect($dest, $http_response_code = 302): never
     {
@@ -629,7 +627,6 @@ class Html
      *
      * @since 11.0.0
      *
-     * @return string|null
      */
     public static function getRefererUrl(): ?string
     {
@@ -653,7 +650,6 @@ class Html
      * @param string  $message  displayed before dying
      * @param boolean $minimal  set to true do not display app menu (false by default)
      *
-     * @return void
      *
      * @deprecated 11.0.0
      */
@@ -986,10 +982,7 @@ HTML;
     /**
      * Returns a static progress bar HTML snippet.
      *
-     * @param float $percentage
-     * @param string $label
      *
-     * @return string
      */
     public static function getProgressBar(float $percentage, ?string $label = null): string
     {
@@ -1584,9 +1577,7 @@ TWIG,
     /**
      * Returns menu sector corresponding to given itemtype.
      *
-     * @param string $itemtype
      *
-     * @return string|null
      */
     public static function getMenuSectorForItemtype(string $itemtype): ?string
     {
@@ -1873,7 +1864,6 @@ TWIG,
     /**
      * Returns template variables that can be used for page header in any context.
      *
-     * @return array
      */
     private static function getPageHeaderTplVars(): array
     {
@@ -2020,7 +2010,6 @@ TWIG,
      * @param string  $sector    sector in which the page displayed is (default 'none')
      * @param string  $item      item corresponding to the page displayed (default 'none')
      * @param string  $option    option corresponding to the page displayed (default '')
-     * @return void
      */
     public static function zeroSecurityIframedHeader(
         string $title = "",
@@ -2282,7 +2271,6 @@ TWIG,
      *
      * @since 0.85
      *
-     * @param array $options
      *
      * @return void
      **/
@@ -2299,7 +2287,6 @@ TWIG,
      *
      * @param string  $itemtype  Massive action itemtype
      * @param string|integer $id        ID of the item
-     * @param array   $options
      *
      * @return string
      **/
@@ -2332,7 +2319,6 @@ TWIG,
      *
      * @param string  $itemtype  Massive action itemtype
      * @param string|integer $id        ID of the item
-     * @param array   $options
      *
      * @return void
      **/
@@ -3799,7 +3785,6 @@ JS;
      * @param string $selector Selector of the textarea to activate autocompletion for
      * @param array  $values   Array of values to use for autocompletion
      *
-     * @return void
      *
      * @since 10.0.0
      */
@@ -6270,7 +6255,6 @@ JS);
      *
      * @param string $url Original URL (not prefixed)
      *
-     * @return string
      */
     final public static function getPrefixedUrl(string $url): string
     {
@@ -6317,7 +6301,6 @@ JS);
 
     /**
      * Get all options for the menu fuzzy search
-     * @return array
      * @phpstan-return array<array{url: string, title: string}>
      * @since 11.0.0
      */
@@ -6618,7 +6601,6 @@ CSS;
      * This function evaluates recursivly imports to compute a hash that represent the whole
      * contents of the final SCSS.
      *
-     * @param string $filepath
      *
      * @return null|string
      */
@@ -6670,7 +6652,6 @@ CSS;
      * Get scss compilation path for given file.
      *
      * @param string $file
-     * @param string $root_dir
      *
      * @return string
      *
@@ -6686,7 +6667,6 @@ CSS;
     /**
      * Get scss compilation directory.
      *
-     * @param string $root_dir
      *
      * @return string
      */
@@ -6781,8 +6761,6 @@ CSS;
     /**
      * Sanitize a input name to prevent XSS.
      *
-     * @param string $name
-     * @return string
      */
     public static function sanitizeInputName(string $name): string
     {
@@ -6792,8 +6770,6 @@ CSS;
     /**
      * Sanitize a DOM ID to prevent XSS.
      *
-     * @param string $id
-     * @return string
      */
     public static function sanitizeDomId(string $id): string
     {

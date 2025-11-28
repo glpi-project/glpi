@@ -77,7 +77,6 @@ class NetworkPortMetrics extends CommonDBChild
      * @param NetworkPort $netport      Printer instance
      * @param array       $user_filters User filters
      *
-     * @return array
      */
     public function getMetrics(NetworkPort $netport, $user_filters = []): array
     {

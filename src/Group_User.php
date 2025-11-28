@@ -78,7 +78,6 @@ class Group_User extends CommonDBRelation
      * @param integer $users_id  User id
      * @param array   $condition Query extra condition (default [])
      *
-     * @return array
      **/
     public static function getUserGroups($users_id, $condition = []): array
     {
@@ -241,11 +240,9 @@ class Group_User extends CommonDBRelation
      *
      * @since 0.83
      *
-     * @param Group $group
      * @param array $used_ids Array of already added users
      * @param int|array $entityrestrict Array of entities
      *
-     * @return void
      */
     private static function showAddUserForm(Group $group, array $used_ids, int|array $entityrestrict): void
     {
@@ -391,7 +388,6 @@ class Group_User extends CommonDBRelation
     /**
      * Show users of a group
      *
-     * @param Group $group
      * @since 0.83
      *
      * @return void
@@ -914,7 +910,6 @@ class Group_User extends CommonDBRelation
     /**
      * Get parents members for a given group
      *
-     * @param Group $group
      * @param mixed $crit
      *
      * @return array Array of array, which will contain the keys set in

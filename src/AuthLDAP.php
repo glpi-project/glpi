@@ -186,12 +186,10 @@ class AuthLDAP extends CommonDBTM
 
     /**
      * Message of last error occurred during connection.
-     * @var ?string
      */
     private static ?string $last_error = null;
     /**
      * Numero of last error occurred during connection.
-     * @var ?int
      */
     private static ?int $last_errno = null;
 
@@ -1185,7 +1183,6 @@ TWIG, ['authldaps_id' => $ID]);
     /**
      * Get system information
      *
-     * @return array
      * @phpstan-return array{label: string, content: string}
      * @used-by templates/pages/setup/general/systeminfo_table.html.twig
      */
@@ -1419,7 +1416,6 @@ TWIG, ['authldaps_id' => $ID]);
     /**
      * Test if a socket connection is possible towards the LDAP server.
      *
-     * @param Connection|null $connection
      * @return array [success => boolean, message => string]
      * @used-by self::testLDAPServer()
      */
@@ -1460,7 +1456,6 @@ TWIG, ['authldaps_id' => $ID]);
     /**
      * Test if basedn field is correctly configured.
      *
-     * @param Connection|null $connection
      * @return array [success => boolean, message => string]
      * @used-by self::testLDAPServer()
      */
@@ -1482,7 +1477,6 @@ TWIG, ['authldaps_id' => $ID]);
     /**
      * Test if a LDAP connect object initialisation is possible.
      *
-     * @param Connection|null $connection
      * @return array [success => boolean, message => string]
      * @used-by self::testLDAPServer()
      */
@@ -1504,7 +1498,6 @@ TWIG, ['authldaps_id' => $ID]);
     /**
      * Test if a LDAP bind is possible.
      *
-     * @param Connection|null $connection
      * @return array [success => boolean, message => string]
      * @used-by self::testLDAPServer()
      */
@@ -1548,7 +1541,6 @@ TWIG, ['authldaps_id' => $ID]);
     /**
      * Test if a LDAP search is possible.
      *
-     * @param Connection|null $connection
      * @return array [success => boolean, message => string]
      * @used-by self::testLDAPServer()
      */
@@ -3572,7 +3564,6 @@ TWIG, $twig_params);
     /**
      * Sets the default values for the LDAP import if not already set.
      * @param bool $is_users If true, the default values are set for user actions, otherwise for group actions.
-     * @return void
      */
     public static function manageRequestValues(bool $is_users = true): void
     {
@@ -3926,7 +3917,6 @@ TWIG, $twig_params);
     /**
      * Get LDAP deleted user action options regarding the deleted user
      *
-     * @return array
      */
     public static function getLdapDeletedUserActionOptions_User(): array
     {
@@ -3940,7 +3930,6 @@ TWIG, $twig_params);
     /**
      * Get LDAP deleted user action options regarding the deleted user's groups
      *
-     * @return array
      */
     public static function getLdapDeletedUserActionOptions_Groups(): array
     {
@@ -3954,7 +3943,6 @@ TWIG, $twig_params);
     /**
      * Get LDAP deleted user action options regarding the deleted user's authorizations
      *
-     * @return array
      */
     public static function getLdapDeletedUserActionOptions_Authorizations(): array
     {
@@ -4414,7 +4402,6 @@ TWIG, $twig_params);
      *
      * @param string $date Value found in LDAP
      *
-     * @return string
      */
     public static function getLdapDateValue(string $date): string
     {
@@ -4440,9 +4427,7 @@ TWIG, $twig_params);
 
     /**
      * @param Connection $ds
-     * @param string $message
      *
-     * @return string
      */
     final public static function buildError($ds, string $message): string
     {
@@ -4462,10 +4447,7 @@ TWIG, $twig_params);
     /**
      * Use an LDAP connection string
      *
-     * @param string $host
-     * @param int $port
      *
-     * @return string
      */
     final public static function buildUri(string $host, int $port): string
     {

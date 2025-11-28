@@ -39,8 +39,6 @@ use Glpi\DBAL\QueryExpression;
 class Result
 {
     /**
-     * @param QueryExpression $where_criteria
-     * @param QueryExpression $having_criteria
      * @param array<string, Error> $invalid_filters
      */
     public function __construct(

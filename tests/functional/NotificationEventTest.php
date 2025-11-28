@@ -78,8 +78,6 @@ class NotificationEventTest extends DbTestCase
      * Assert a single notification is found in queued notifications
      *
      * @todo can be shared
-     * @param string $event
-     * @param array $additional_where
      */
     private function assertEventInQueue(string $event, array $additional_where = []): void
     {

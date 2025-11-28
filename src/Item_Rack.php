@@ -368,7 +368,6 @@ class Item_Rack extends CommonDBRelation
     /**
      * Print racks items
      * @param  Rack   $rack the current rack instance
-     * @return bool
      */
     public static function showItems(Rack $rack): bool
     {

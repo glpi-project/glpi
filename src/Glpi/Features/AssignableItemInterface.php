@@ -60,7 +60,6 @@ interface AssignableItemInterface
     public function getRights($interface = 'central');
 
     /**
-     * @param array $input
      *
      * @return false|array
      */

@@ -168,7 +168,6 @@ class Manufacturer extends CommonDropdown
     /**
      * @since 0.84
      *
-     * @param $itemtype
      * @param $base                  HTMLTableBase object
      * @param $super                 HTMLTableSuperHeader object (default NULL)
      * @param $father                HTMLTableHeader object (default NULL)

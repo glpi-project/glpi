@@ -640,7 +640,6 @@ final class TicketTaskTest extends CommonITILTaskTestCase
     /**
      * Check that the parent ticket status is updated when tasks are added or updated
      *
-     * @return void
      */
     public function testUpdateParentStatusOnTaskUpdate(): void
     {

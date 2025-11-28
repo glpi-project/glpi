@@ -2071,7 +2071,6 @@ HTML;
     /**
      * Data provider for testDropdownNumber
      *
-     * @return Generator
      */
     public static function dropdownNumberProvider(): Generator
     {
@@ -2144,10 +2143,7 @@ HTML;
     /**
      * Tests for Dropdown::DropdownNumber()
      *
-     * @param array $params
-     * @param array $expected
      *
-     * @return void
      */
     #[DataProvider('dropdownNumberProvider')]
     public function testDropdownNumber(array $params, array $expected): void

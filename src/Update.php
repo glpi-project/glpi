@@ -67,7 +67,6 @@ class Update
      * Constructor
      *
      * @param object $DB   Database instance
-     * @param string $migrations_directory
      *
      * @since 11.0.0 The `$args` parameter has been removed.
      */
@@ -147,7 +146,6 @@ class Update
     /**
      * Verify the database schema integrity.
      *
-     * @return bool
      */
     final public function isUpdatedSchemaConsistent(): bool
     {
@@ -168,7 +166,6 @@ class Update
      * @param string $current_version  Current version
      * @param bool   $force_latest     Force replay of latest migration
      *
-     * @return bool
      */
     public function doUpdates(
         $current_version = null,
@@ -452,7 +449,6 @@ class Update
     /**
      * Check if expected security key file is missing.
      *
-     * @return bool
      */
     public function isExpectedSecurityKeyFileMissing(): bool
     {
@@ -469,7 +465,6 @@ class Update
      * Returns expected security key file path.
      * Will return null for GLPI versions that was not yet handling a custom security key.
      *
-     * @return string|null
      */
     public function getExpectedSecurityKeyFilePath(): ?string
     {
@@ -480,10 +475,7 @@ class Update
     /**
      * Get migrations that have to be ran.
      *
-     * @param string $current_version
-     * @param bool $force_latest
      *
-     * @return array
      */
     private function getMigrationsToDo(string $current_version, bool $force_latest = false): array
     {
@@ -527,7 +519,6 @@ class Update
     /**
      * Check if database is up-to-date.
      *
-     * @return bool
      */
     public static function isDbUpToDate(): bool
     {
@@ -553,7 +544,6 @@ class Update
     /**
      * Check if database update is mandatory.
      *
-     * @return bool
      */
     public static function isUpdateMandatory(): bool
     {

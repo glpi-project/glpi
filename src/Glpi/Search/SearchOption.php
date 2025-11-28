@@ -86,7 +86,6 @@ final class SearchOption implements ArrayAccess
     }
 
     /**
-     * @param array $search_options
      * @return SearchOption[]
      */
     public static function getMultipleFromArray(array $search_options): array
@@ -124,7 +123,6 @@ final class SearchOption implements ArrayAccess
 
     /**
      * Check if this search option represents a virtual field
-     * @return bool
      */
     public function isVirtual(): bool
     {
@@ -707,8 +705,6 @@ final class SearchOption implements ArrayAccess
 
     /**
      * @param class-string<CommonDBTM> $itemtype
-     * @param array $params
-     * @return array
      */
     public static function getDefaultToView(string $itemtype, array $params = []): array
     {
@@ -792,7 +788,6 @@ final class SearchOption implements ArrayAccess
      * If an itemtype is specified, the itemtype class-level search option cache will also be cleared.
      * If no itemtype is specified, you may need to clear the needed class-level caches manually.
      * @param string|null $itemtype The itemtype to clear the cache for, or null to clear all caches.
-     * @return void
      * @see \CommonDBTM::clearSearchOptionCache()
      */
     public static function clearSearchOptionCache(?string $itemtype = null): void

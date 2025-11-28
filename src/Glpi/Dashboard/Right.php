@@ -50,7 +50,6 @@ class Right extends CommonDBChild
     /**
      * Return rights for the provided dashboard
      *
-     * @param int $dashboards_id
      *
      * @return array the rights
      */

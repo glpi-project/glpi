@@ -50,16 +50,13 @@ abstract class AbstractParameters implements TemplatesParametersInterface
      *
      * Result will be returned by `self::getValues()`.
      *
-     * @param CommonDBTM $item
      *
-     * @return array
      */
     abstract protected function defineValues(CommonDBTM $item): array;
 
     /**
      * Get supported classes by this parameter type.
      *
-     * @return array
      */
     abstract protected function getTargetClasses(): array;
 

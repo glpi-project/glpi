@@ -989,7 +989,6 @@ class SessionTest extends DbTestCase
      * This test creates a new profile, assigns it to a user,
      * and checks if the profile is correctly reloaded.
      *
-     * @return void
      */
     public function testReloadCurrentProfile(): void
     {
@@ -1048,7 +1047,6 @@ class SessionTest extends DbTestCase
     /**
      * Test the deleteMessageAfterRedirect method
      *
-     * @return void
      */
     public function testDeleteMessageAfterRedirect(): void
     {

@@ -66,7 +66,6 @@ class Response extends \GuzzleHttp\Psr7\Response
      * @param string  $message       Error message to send
      * @param string  $content_type  Response content type
      *
-     * @return never
      *
      * @deprecated 11.0.0
      */

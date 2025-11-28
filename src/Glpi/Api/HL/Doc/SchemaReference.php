@@ -55,7 +55,6 @@ final class SchemaReference implements ArrayAccess
      * @param array $attributes Attributes from the request, if we know them to help resolve placeholders in the ref.
      *                          For example: /Assets/{itemtype} when the ref is "{itemtype}". The attributes array should contain an "itemtype" key.
      * @param string $api_version The API version
-     * @return array|null
      */
     public static function resolveRef($ref, string $controller, array $attributes, string $api_version): ?array
     {

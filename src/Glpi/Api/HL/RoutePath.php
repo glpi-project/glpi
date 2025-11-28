@@ -58,7 +58,6 @@ final class RoutePath
 {
     /**
      * The Route attribute
-     * @var Route|null
      */
     private ?Route $route = null;
 
@@ -68,20 +67,17 @@ final class RoutePath
     private ?ReflectionClass $controller = null;
 
     /**
-     * @var ReflectionMethod|null
      */
     private ?ReflectionMethod $method = null;
 
     /**
      * The relative URI path with placeholder requirements inlined
-     * @var string|null
      */
     private ?string $compiled_path;
 
     /**
      * Key used to identify the controller and method this route is linked to.
      * Used for hydration.
-     * @var string
      */
     private string $key;
 
@@ -112,7 +108,6 @@ final class RoutePath
 
     /**
      * @param class-string<AbstractController> $class
-     * @param string $method
      */
     public function __construct(string $class, string $method, string $path, array $methods, int $priority, int $security, ?string $compiled_path = null)
     {
@@ -204,7 +199,6 @@ final class RoutePath
 
     /**
      * Get the attributes from the provided path when matched against this route
-     * @param string $path
      * @return array<string, string>
      */
     public function getAttributesFromPath(string $path): array
@@ -227,7 +221,6 @@ final class RoutePath
     /**
      * @param string $path
      *
-     * @return bool
      */
     public function isValidPath($path): bool
     {
@@ -283,7 +276,6 @@ final class RoutePath
     }
 
     /**
-     * @return string
      */
     public function getController(): string
     {
@@ -301,7 +293,6 @@ final class RoutePath
     }
 
     /**
-     * @return ReflectionMethod
      */
     public function getMethod(): ReflectionMethod
     {
@@ -361,8 +352,6 @@ final class RoutePath
 
     /**
      * Returns true if the route is valid for the given API version
-     * @param string $api_version
-     * @return bool
      */
     public function matchesAPIVersion(string $api_version): bool
     {
@@ -406,7 +395,6 @@ final class RoutePath
      * Combine data from the class Route attribute (if present) with the method's own attribute
      *
      * Must be called during or after hydration only.
-     * @return void
      */
     private function mergeControllerRouteData(): void
     {
@@ -436,7 +424,6 @@ final class RoutePath
      * "Compile" the path by replacing placeholders with regex patterns from the requirements or default patterns
      *
      * Must be called during or after hydration only.
-     * @return void
      */
     private function compilePath(): void
     {
@@ -498,7 +485,6 @@ final class RoutePath
 
     /**
      * Get a minimal representation of this route path that can be cached, used for basic matching, and for recreating the full object
-     * @return array
      * @phpstan-return RoutePathCacheHint
      */
     public function getCachedRouteHint(): array

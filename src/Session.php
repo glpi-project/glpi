@@ -80,7 +80,6 @@ class Session
     private const IDOR_MAX_TOKENS = 2500;
 
     /**
-     * @var bool $bypass_right_checks
      * @internal
      */
     private static bool $bypass_right_checks = false;
@@ -899,7 +898,6 @@ class Session
     /**
      * Loads all locales from the core for the translation system.
      * Should only be used during the install or update process to allow initialization of text in multiple languages.
-     * @return void
      */
     public static function loadAllCoreLocales(): void
     {
@@ -941,7 +939,6 @@ class Session
     /**
      * Return preffered language (from HTTP headers, fallback to default GLPI lang).
      *
-     * @return string
      */
     public static function getPreferredLanguage(): string
     {
@@ -1590,7 +1587,6 @@ class Session
      * @param string  $msg          Message to delete
      * @param integer $message_type Message type (INFO, WARNING, ERROR) (default INFO)
      *
-     * @return void
      */
     public static function deleteMessageAfterRedirect(
         string $msg,
@@ -1795,10 +1791,8 @@ class Session
      *
      * @since 9.5.3
      *
-     * @param string $itemtype
      * @param array  $add_params more criteria to check validity of IDOR tokens
      *
-     * @return string
      **/
     public static function getNewIDORToken(string $itemtype = "", array $add_params = []): string
     {
@@ -2226,7 +2220,6 @@ class Session
      *
      * @since 9.5.5
      *
-     * @return bool
      */
     public static function getIsActiveEntityRecursive(): bool
     {
@@ -2236,10 +2229,6 @@ class Session
     /**
      * Start session for a given user
      *
-     * @param string    $token
-     * @param string    $token_type
-     * @param int|null  $entities_id
-     * @param bool|null $is_recursive
      *
      * @return User|false
      */
@@ -2274,7 +2263,6 @@ class Session
      * @param integer $entities_id  Entity to use
      * @param boolean $is_recursive Whether to load entities recursively or not
      *
-     * @return void
      */
     public static function loadEntity($entities_id, $is_recursive): void
     {
@@ -2327,7 +2315,6 @@ class Session
     /**
      * Helper function to get the date stored in $_SESSION['glpi_currenttime']
      *
-     * @return null|string
      */
     public static function getCurrentDate(): ?string
     {
@@ -2353,7 +2340,6 @@ class Session
      * Reload the current profile from the database
      * Update the session variable accordingly
      *
-     * @return void
      */
     public static function reloadCurrentProfile(): void
     {
@@ -2377,7 +2363,6 @@ class Session
     /**
      * Get a SessionInfo object with the current session information.
      *
-     * @return ?SessionInfo
      */
     public static function getCurrentSessionInfo(): ?SessionInfo
     {
@@ -2441,9 +2426,7 @@ class Session
      * Is locale RTL
      * See native PHP 8.5 function locale_is_right_to_left
      *
-     * @param $locale
      *
-     * @return bool
      */
     public static function isRTL($locale): bool
     {

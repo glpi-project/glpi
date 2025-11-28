@@ -534,8 +534,6 @@ abstract class CommonITILRecurrent extends CommonDropdown
     /**
      * Handle predefined fields
      *
-     * @param array $predefined
-     * @param array $input
      *
      * @return array The modified $input
      */
@@ -716,7 +714,6 @@ abstract class CommonITILRecurrent extends CommonDropdown
      * Return elements related to the recurrent object.
      * Result keys corresponds to itemtypes, and values are arrays of ids `array(itemtype => array(id1, id2, id3, ...))`.
      *
-     * @return array
      */
     public function getRelatedElements(): array
     {

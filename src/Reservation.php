@@ -255,7 +255,6 @@ class Reservation extends CommonDBChild
     /**
      * Check reservation input.
      *
-     * @return bool
      */
     private function isReservationInputValid(): bool
     {
@@ -295,8 +294,6 @@ class Reservation extends CommonDBChild
 
     /**
      * Returns an integer that is not already used as a group for the given reservation item.
-     * @param $reservationitems_id
-     * @return int
      */
     public function getUniqueGroupFor($reservationitems_id): int
     {
@@ -742,7 +739,6 @@ class Reservation extends CommonDBChild
      *     <li>start: planning start (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
      *     <li>end: planning end (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
      * </ul>
-     * @return bool
      */
     public static function updateEvent(array $event): bool
     {
@@ -1046,7 +1042,6 @@ JAVASCRIPT;
     /**
      * Get reservation data for a user
      * @param int $users_id ID of the user
-     * @return array
      */
     public static function getForUser(int $users_id): array
     {
@@ -1236,7 +1231,6 @@ JAVASCRIPT;
      * Get reservable itemtypes from GLPI config, filtering out itemtype with no
      * reservable items
      *
-     * @return array
      */
     public static function getReservableItemtypes(): array
     {

@@ -245,7 +245,6 @@ final class FormAccessControl extends CommonDBChild
     /**
      * Get access control strategy for this item.
      *
-     * @return ControlTypeInterface
      */
     public function getStrategy(): ControlTypeInterface
     {
@@ -257,7 +256,6 @@ final class FormAccessControl extends CommonDBChild
      * Factory method to create a strategy instance safely.
      *
      * @param string|null $strategy_class Strategy class name
-     * @return ControlTypeInterface
      * @throws InvalidArgumentException if strategy is invalid
      */
     public function createStrategy(?string $strategy_class): ControlTypeInterface
@@ -276,7 +274,6 @@ final class FormAccessControl extends CommonDBChild
     /**
      * Get config for this item's strategy.
      *
-     * @return JsonFieldInterface
      */
     public function getConfig(): JsonFieldInterface
     {
@@ -298,8 +295,6 @@ final class FormAccessControl extends CommonDBChild
      * Encode the input name to make sure it is unique and multiple items
      * can be updated using a single form.
      *
-     * @param string $name
-     * @return string
      */
     public function getNormalizedInputName(string $name): string
     {
@@ -340,7 +335,6 @@ final class FormAccessControl extends CommonDBChild
     /**
      * Build the json encoded config form the user supplied input.
      *
-     * @param array $input
      *
      * @return array
      */

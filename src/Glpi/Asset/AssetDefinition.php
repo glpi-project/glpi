@@ -171,7 +171,6 @@ final class AssetDefinition extends AbstractDefinition
     /**
      * Display capacities form.
      *
-     * @return void
      */
     private function showCapacitiesForm(): void
     {
@@ -224,7 +223,6 @@ final class AssetDefinition extends AbstractDefinition
      * Show field options for a core field.
      * @param string $field_key The field key
      * @param array $field_option_values Field option value overrides
-     * @return void
      */
     public function showFieldOptionsForCoreField(string $field_key, array $field_option_values = []): void
     {
@@ -416,7 +414,6 @@ TWIG, $twig_params);
     /**
      * Handle the activation of a capacity.
      *
-     * @param Capacity $capacity
      */
     private function onCapacityEnabled(Capacity $capacity): void
     {
@@ -431,7 +428,6 @@ TWIG, $twig_params);
     /**
      * Handle the deactivation of a capacity.
      *
-     * @param Capacity $capacity
      */
     private function onCapacityDisabled(Capacity $capacity): void
     {
@@ -451,7 +447,6 @@ TWIG, $twig_params);
     /**
      * Handle the update of a capacity.
      *
-     * @param Capacity $capacity
      */
     private function onCapacityUpdated(Capacity $capacity): void
     {
@@ -467,8 +462,6 @@ TWIG, $twig_params);
     /**
      * Get the definition's concrete asset class name.
      *
-     * @param bool $with_namespace
-     * @return string
      * @phpstan-return class-string<Asset>
      */
     public function getAssetClassName(bool $with_namespace = true): string
@@ -479,8 +472,6 @@ TWIG, $twig_params);
     /**
      * Get the definition's concrete asset model class name.
      *
-     * @param bool $with_namespace
-     * @return string
      * @phpstan-return class-string<AssetModel>
      */
     public function getAssetModelClassName(bool $with_namespace = true): string
@@ -502,8 +493,6 @@ TWIG, $twig_params);
     /**
      * Get the definition's concrete asset type class name.
      *
-     * @param bool $with_namespace
-     * @return string
      * @phpstan-return class-string<AssetType>
      */
     public function getAssetTypeClassName(bool $with_namespace = true): string
@@ -525,8 +514,6 @@ TWIG, $twig_params);
     /**
      * Get the definition's concrete asset model dictionary class name.
      *
-     * @param bool $with_namespace
-     * @return string
      * @phpstan-return class-string<RuleDictionaryModel>
      */
     public function getAssetModelDictionaryClassName(bool $with_namespace = true): string
@@ -541,8 +528,6 @@ TWIG, $twig_params);
     /**
      * Get the definition's concrete asset model dictionary collection class name.
      *
-     * @param bool $with_namespace
-     * @return string
      * @phpstan-return class-string<RuleDictionaryModelCollection>
      */
     public function getAssetModelDictionaryCollectionClassName(bool $with_namespace = true): string
@@ -557,8 +542,6 @@ TWIG, $twig_params);
     /**
      * Get the definition's concrete asset type dictionary class name.
      *
-     * @param bool $with_namespace
-     * @return string
      * @phpstan-return class-string<RuleDictionaryType>
      */
     public function getAssetTypeDictionaryClassName(bool $with_namespace = true): string
@@ -573,8 +556,6 @@ TWIG, $twig_params);
     /**
      * Get the definition's concrete asset type dictionary collection class name.
      *
-     * @param bool $with_namespace
-     * @return string
      * @phpstan-return class-string<RuleDictionaryTypeCollection>
      */
     public function getAssetTypeDictionaryCollectionClassName(bool $with_namespace = true): string
@@ -589,8 +570,6 @@ TWIG, $twig_params);
     /**
      * Indicates whether the given capacity is enabled.
      *
-     * @param CapacityInterface $capacity
-     * @return bool
      */
     public function hasCapacityEnabled(CapacityInterface $capacity): bool
     {
@@ -785,7 +764,6 @@ TWIG, $twig_params);
     /**
      * Return the decoded value of the `fields_display` field.
      *
-     * @return array
      */
     public function getDecodedFieldsField(): array
     {
@@ -809,9 +787,6 @@ TWIG, $twig_params);
     /**
      * Validate that the given capacities array contains valid values.
      *
-     * @param mixed $capacities
-     * @param bool $check_values
-     * @return bool
      */
     private function validateCapacityArray(mixed $capacities, bool $check_values = true): bool
     {

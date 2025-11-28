@@ -2152,7 +2152,6 @@ DIFF,
     /**
      * Return DB mock that implements minimal required behaviour.
      *
-     * @return \DBmysql
      */
     private function getDbMock(array $options = []): \DBmysql
     {
