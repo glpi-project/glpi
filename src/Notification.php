@@ -144,54 +144,6 @@ class Notification extends CommonDBTM implements FilterableInterface
     // Notification to the ticket's validation substitutes (Who can approve if the target is not available)
     public const VALIDATION_TARGET_SUBSTITUTES       = 41;
 
-    /**
-     * All availables targets.
-     * Used for typing
-     */
-    public const TARGETS = [
-        self::GLOBAL_ADMINISTRATOR,
-        self::ASSIGN_TECH,
-        self::AUTHOR,
-        self::OLD_TECH_IN_CHARGE,
-        self::ITEM_TECH_IN_CHARGE,
-        self::ITEM_USER,
-        self::RECIPIENT,
-        self::SUPPLIER,
-        self::ASSIGN_GROUP,
-        self::SUPERVISOR_ASSIGN_GROUP,
-        self::ENTITY_ADMINISTRATOR,
-        self::SUPERVISOR_REQUESTER_GROUP,
-        self::REQUESTER_GROUP,
-        self::VALIDATION_APPROVER,
-        self::VALIDATION_REQUESTER,
-        self::TASK_ASSIGN_TECH,
-        self::TASK_AUTHOR,
-        self::FOLLOWUP_AUTHOR,
-        self::USER,
-        self::OBSERVER_GROUP,
-        self::OBSERVER,
-        self::SUPERVISOR_OBSERVER_GROUP,
-        self::ITEM_TECH_GROUP_IN_CHARGE,
-        self::ASSIGN_GROUP_WITHOUT_SUPERVISOR,
-        self::REQUESTER_GROUP_WITHOUT_SUPERVISOR,
-        self::OBSERVER_GROUP_WITHOUT_SUPERVISOR,
-        self::MANAGER_USER,
-        self::MANAGER_GROUP,
-        self::MANAGER_GROUP_SUPERVISOR,
-        self::MANAGER_GROUP_WITHOUT_SUPERVISOR,
-        self::TEAM_USER,
-        self::TEAM_GROUP,
-        self::TEAM_GROUP_SUPERVISOR,
-        self::TEAM_GROUP_WITHOUT_SUPERVISOR,
-        self::TEAM_CONTACT,
-        self::TEAM_SUPPLIER,
-        self::TASK_ASSIGN_GROUP,
-        self::PLANNING_EVENT_GUESTS,
-        self::MENTIONNED_USER,
-        self::VALIDATION_TARGET,
-        self::VALIDATION_TARGET_SUBSTITUTES,
-    ];
-
     // From CommonDBTM
     public $dohistory = true;
 

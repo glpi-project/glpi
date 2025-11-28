@@ -40,6 +40,8 @@ use Glpi\Plugin\Hooks;
  * NotificationTarget Class
  *
  * @template T of CommonGLPI
+ *
+ * @phpstan-type NotificationTargetValues Notification::GLOBAL_ADMINISTRATOR|Notification::ASSIGN_TECH|Notification::AUTHOR|Notification::OLD_TECH_IN_CHARGE|Notification::ITEM_TECH_IN_CHARGE|Notification::ITEM_USER|Notification::RECIPIENT|Notification::SUPPLIER|Notification::ASSIGN_GROUP|Notification::SUPERVISOR_ASSIGN_GROUP|Notification::ENTITY_ADMINISTRATOR|Notification::SUPERVISOR_REQUESTER_GROUP|Notification::REQUESTER_GROUP|Notification::VALIDATION_APPROVER|Notification::VALIDATION_REQUESTER|Notification::TASK_ASSIGN_TECH|Notification::TASK_AUTHOR|Notification::FOLLOWUP_AUTHOR|Notification::USER|Notification::OBSERVER_GROUP|Notification::OBSERVER|Notification::SUPERVISOR_OBSERVER_GROUP|Notification::ITEM_TECH_GROUP_IN_CHARGE|Notification::ASSIGN_GROUP_WITHOUT_SUPERVISOR|Notification::REQUESTER_GROUP_WITHOUT_SUPERVISOR|Notification::OBSERVER_GROUP_WITHOUT_SUPERVISOR|Notification::MANAGER_USER|Notification::MANAGER_GROUP|Notification::MANAGER_GROUP_SUPERVISOR|Notification::MANAGER_GROUP_WITHOUT_SUPERVISOR|Notification::TEAM_USER|Notification::TEAM_GROUP|Notification::TEAM_GROUP_SUPERVISOR|Notification::TEAM_GROUP_WITHOUT_SUPERVISOR|Notification::TEAM_CONTACT|Notification::TEAM_SUPPLIER|Notification::TASK_ASSIGN_GROUP|Notification::PLANNING_EVENT_GUESTS|Notification::MENTIONNED_USER|Notification::VALIDATION_TARGET|Notification::VALIDATION_TARGET_SUBSTITUTES
  **/
 class NotificationTarget extends CommonDBChild
 {
@@ -61,7 +63,7 @@ class NotificationTarget extends CommonDBChild
     public $notification_targets        = [];
 
     /**
-     * @var array<Notification::*_TYPE, array<value-of<Notification::TARGETS>, string>>
+     * @var array<Notification::*_TYPE, array<NotificationTargetValues, string>>
      */
     public $notification_targets_labels = [];
 
@@ -1064,9 +1066,9 @@ class NotificationTarget extends CommonDBChild
     }
 
     /**
-     * @param value-of<Notification::TARGETS>|'' $target
-     * @param string                             $label  Recipient label
-     * @param Notification::*_TYPE               $type   Recipient type
+     * @param NotificationTargetValues|'' $target
+     * @param string                      $label  Recipient label
+     * @param Notification::*_TYPE        $type   Recipient type
      *
      * @return void
      **/
