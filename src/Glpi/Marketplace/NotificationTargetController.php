@@ -37,9 +37,9 @@ namespace Glpi\Marketplace;
 
 use Notification;
 use NotificationTarget;
+use Override;
 use Plugin;
 use Session;
-use Override;
 
 /**
  * @extends NotificationTarget<\Glpi\Marketplace\Controller>
