@@ -1176,7 +1176,7 @@ class DBmysql
      *
      * @param string  $table    Table name for the field we're looking for
      * @param string  $field    Field name
-     * @param Boolean $usecache Use cache; @see DBmysql::listFields(), defaults to true
+     * @param boolean $usecache Use cache; @see DBmysql::listFields(), defaults to true
      *
      * @return boolean
      **/

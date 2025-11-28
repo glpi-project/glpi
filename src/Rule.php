@@ -3201,7 +3201,7 @@ TWIG, ['label' => $this->getTitle()]);
     /**
      * Clean Rule with Action is assign to an item
      *
-     * @param Object $item
+     * @param object $item
      * @param string $field name (default is FK to item) (default '')
      *
      * @return void
@@ -3239,7 +3239,7 @@ TWIG, ['label' => $this->getTitle()]);
     /**
      * Clean Rule with Criteria on an item
      *
-     * @param Object $item
+     * @param object $item
      * @param string $field name (default is FK to item) (default '')
      *
      * @return void

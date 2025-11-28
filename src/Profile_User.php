@@ -777,7 +777,7 @@ TWIG, $avatar_params) . $username;
      * @param $child       Boolean  when true, include child entity when recursive right
      *                     (false by default)
      *
-     * @return Array of entity ID
+     * @return array of entity ID
      **/
     public static function getEntitiesForProfileByUser($users_id, $profiles_id, $child = false)
     {
@@ -818,7 +818,7 @@ TWIG, $avatar_params) . $username;
      * @param $child    Boolean  when true, include child entity when recursive right
      *                  (false by default)
      *
-     * @return Array of entity ID
+     * @return array of entity ID
      **/
     public static function getEntitiesForUser($users_id, $child = false)
     {

@@ -79,6 +79,10 @@ return (new PhpCsFixer\Config())
             'align' => 'vertical',
             'tags' => ['param', 'property', 'property-read', 'property-write', 'phpstan-param', 'phpstan-property', 'phpstan-property-read', 'phpstan-property-write', 'phpstan-assert', 'phpstan-assert-if-true', 'phpstan-assert-if-false', 'psalm-param', 'psalm-param-out', 'psalm-property', 'psalm-property-read', 'psalm-property-write', 'psalm-assert', 'psalm-assert-if-true', 'psalm-assert-if-false'],
         ],
+        // phpdoc_types
+        // The correct case must be used for standard PHP types in PHPDoc.
+        // https://mlocati.github.io/php-cs-fixer-configurator/#version:3.90|fixer:phpdoc_types
+        'phpdoc_types' => true,
     ])
     ->setFinder($finder)
 ;

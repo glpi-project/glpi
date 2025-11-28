@@ -173,7 +173,7 @@ class PDU_Rack extends CommonDBRelation
      * Get already filled places
      * @param Rack    $rack The current rack
      * @param integer $side The side of rack to check
-     * @return Array   [position -> racks_id | 0]
+     * @return array   [position -> racks_id | 0]
      */
     public static function getFilled(Rack $rack, $side = 0)
     {
@@ -657,7 +657,7 @@ JAVASCRIPT;
 
     /**
      * Return all possible side in a rack where a pdu can be placed
-     * @return Array (int => label)
+     * @return array (int => label)
      */
     public static function getSides()
     {

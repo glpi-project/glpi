@@ -415,7 +415,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      *
      * @since 0.83
      *
-     * @return Boolean
+     * @return boolean
      **/
     public function isPubliclyVisible()
     {
