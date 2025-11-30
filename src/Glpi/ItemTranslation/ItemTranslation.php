@@ -114,6 +114,11 @@ abstract class ItemTranslation extends CommonDBChild
 
         $translations =  json_decode($this->fields['translations'], true);
 
+        if ($count === 1) {
+            // 1 is always singular, so ignore plural rules (https://github.com/glpi-project/glpi/issues/21003)
+            return $translations['one'] ?? null;
+        }
+
         // retrieve the formulas associated to the language
         $gettext_language = Language::getById($this->fields['language']);
         if ($gettext_language === null) {
