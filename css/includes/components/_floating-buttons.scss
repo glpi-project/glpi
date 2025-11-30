@@ -33,7 +33,7 @@
 
 .floating-buttons {
     position: fixed;
-    bottom: 10px;
+    bottom: 50px;
     left: 50%;
     z-index: 99999;
 
@@ -48,7 +48,7 @@
 
 body.debug-active {
     .floating-buttons {
-        bottom: 60px;
+        bottom: 100px;
     }
 }
 
