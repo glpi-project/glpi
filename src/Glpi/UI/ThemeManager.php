@@ -39,6 +39,7 @@ use RuntimeException;
 use Toolbox;
 
 use function Safe\file_get_contents;
+use function Safe\filemtime;
 use function Safe\glob;
 use function Safe\preg_match;
 use function Safe\scandir;
@@ -223,5 +224,26 @@ class ThemeManager
             }
         }
         return null;
+    }
+
+    /**
+     * Get all the custom themes CSS files paths.
+     *
+     * @return string[]
+     */
+    public function getCustomThemesPaths(): array
+    {
+        $paths = [];
+
+        foreach ($this->getAllThemes() as $theme) {
+            if (!$theme->isCustomTheme()) {
+                continue;
+            }
+            $theme_path = $theme->getKey() . '?is_custom_theme=1';
+            $theme_path .= "&lastupdate=" . filemtime($theme->getPath(false));
+            $paths[] = $theme_path;
+        }
+
+        return $paths;
     }
 }
