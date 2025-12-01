@@ -35,10 +35,10 @@
 namespace tests\units;
 
 use Contract_Item;
-use DbTestCase;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasContractsCapacity;
 use Glpi\Features\Clonable;
+use Glpi\Tests\DbTestCase;
 use Toolbox;
 
 class Contract_ItemTest extends DbTestCase

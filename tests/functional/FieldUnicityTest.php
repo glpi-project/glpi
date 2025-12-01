@@ -35,8 +35,8 @@
 namespace tests\units;
 
 use Computer;
-use DbTestCase;
 use FieldUnicity;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class FieldUnicityTest extends DbTestCase

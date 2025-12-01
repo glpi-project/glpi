@@ -34,11 +34,12 @@
 
 namespace tests\units;
 
+use Glpi\Tests\GLPITestCase;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Update;
 
-class UpdateTest extends \GLPITestCase
+class UpdateTest extends GLPITestCase
 {
     public function testCurrents()
     {

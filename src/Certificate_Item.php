@@ -63,6 +63,8 @@ class Certificate_Item extends CommonDBRelation
 
     /**
      * @param CommonDBTM $item
+     *
+     * @return void
      */
     public static function cleanForItem(CommonDBTM $item)
     {
@@ -121,9 +123,10 @@ class Certificate_Item extends CommonDBRelation
 
 
     /**
-     * @param $certificates_id
-     * @param $items_id
-     * @param $itemtype
+     * @param int $certificates_id
+     * @param int $items_id
+     * @param class-string<CommonDBTM> $itemtype
+     *
      * @return bool
      */
     public function getFromDBbyCertificatesAndItem($certificates_id, $items_id, $itemtype)
@@ -149,7 +152,9 @@ class Certificate_Item extends CommonDBRelation
      * Link a certificate to an item
      *
      * @since 9.2
-     * @param $values
+     * @param array $values
+     *
+     * @return void
      */
     public function addItem($values)
     {
@@ -168,6 +173,8 @@ class Certificate_Item extends CommonDBRelation
      * @param integer $certificates_id the certificate ID
      * @param integer $items_id the item's id
      * @param string $itemtype the itemtype
+     *
+     * @return bool
      */
     public function deleteItemByCertificatesAndItem($certificates_id, $items_id, $itemtype)
     {
@@ -179,8 +186,9 @@ class Certificate_Item extends CommonDBRelation
                 $itemtype
             )
         ) {
-            $this->delete(['id' => $this->fields["id"]]);
+            return $this->delete(['id' => $this->fields["id"]]);
         }
+        return false;
     }
 
     /**
@@ -309,7 +317,7 @@ TWIG, $twig_params);
      * @since 9.2
      *
      * @param CommonDBTM $item object for which associated certificates must be displayed
-     * @param $withtemplate (default 0)
+     * @param int $withtemplate (default 0)
      *
      * @return bool
      */

@@ -34,12 +34,11 @@
 
 namespace tests\units;
 
+use Glpi\Tests\GLPITestCase;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-/* Test for inc/dbconnection.class.php */
-
-class DBConnectionTest extends \GLPITestCase
+class DBConnectionTest extends GLPITestCase
 {
     public static function setConnectionCharsetProvider()
     {

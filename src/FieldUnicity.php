@@ -261,9 +261,11 @@ class FieldUnicity extends CommonDropdown
      *
      * @since 0.84
      *
-     * @param string $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      * @param array  $options
-     **/
+     *
+     * @return string|int|false
+     */
     public static function dropdownFields($itemtype, $options = [])
     {
         global $DB;
@@ -507,6 +509,8 @@ class FieldUnicity extends CommonDropdown
      * List doubles
      *
      * @param FieldUnicity $unicity
+     *
+     * @return void
      **/
     public static function showDoubles(FieldUnicity $unicity)
     {

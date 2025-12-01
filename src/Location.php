@@ -43,6 +43,7 @@ use Glpi\Socket;
 class Location extends CommonTreeDropdown
 {
     use MapGeolocation;
+    /** @use Clonable<static> */
     use Clonable;
 
     // From CommonDBTM

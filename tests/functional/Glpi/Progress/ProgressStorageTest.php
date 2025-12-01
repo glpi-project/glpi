@@ -36,7 +36,7 @@ namespace tests\units\Glpi\Progress;
 
 use Glpi\Progress\ProgressStorage;
 use Glpi\Progress\StoredProgressIndicator;
-use GLPITestCase;
+use Glpi\Tests\GLPITestCase;
 use org\bovigo\vfs\vfsStream;
 
 class ProgressStorageTest extends GLPITestCase

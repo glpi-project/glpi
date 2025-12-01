@@ -69,6 +69,9 @@ enum Environment: string
         return defined('GLPI_ENVIRONMENT_TYPE');
     }
 
+    /**
+     * @return array
+     */
     public static function getValues()
     {
         $values = [];

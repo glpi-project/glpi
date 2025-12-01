@@ -36,7 +36,6 @@ namespace tests\units\Glpi\Form\Migration;
 
 use AbstractRightsDropdown;
 use Computer;
-use DbTestCase;
 use Entity;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Form\AccessControl\ControlType\AllowList;
@@ -88,6 +87,7 @@ use Glpi\Form\Section;
 use Glpi\Message\MessageType;
 use Glpi\Migration\GenericobjectPluginMigration;
 use Glpi\Migration\PluginMigrationResult;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormTesterTrait;
 use GlpiPlugin\Tester\Form\QuestionTypeIpConverter;
 use Group;
@@ -1284,7 +1284,7 @@ final class FormMigrationTest extends DbTestCase
                 'name'                           => 'Test form migration for radio question - Question',
                 'fieldtype'                      => 'radios',
                 'default_values'                 => '1',
-                'values'                         => json_encode(['1', '2', '3']),
+                'values'                         => json_encode(['1', '2', '', '3', '']),
             ]
         ));
 
@@ -3780,87 +3780,5 @@ final class FormMigrationTest extends DbTestCase
             throw new LogicException();
         }
         $this->assertEquals(Category::class, $config->getItemtype());
-    }
-
-    protected function createSimpleFormcreatorForm(
-        string $name,
-        array $questions,
-        array $submit_conditions = [],
-        array $ticket_destinations = [],
-        array $properties = [],
-    ): int {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        // Add form
-        $DB->insert('glpi_plugin_formcreator_forms', [
-            'name' => $name,
-            'show_rule' => $submit_conditions['show_rule'] ?? 1,
-        ] + $properties);
-        $form_id = $DB->insertId();
-
-        // Add a section
-        $DB->insert('glpi_plugin_formcreator_sections', [
-            'plugin_formcreator_forms_id' => $form_id,
-        ]);
-        $section_id = $DB->insertId();
-
-        // Add questions
-        $questions_names_map = [];
-        foreach ($questions as $data) {
-            $conditions = null;
-            if (isset($data['_conditions'])) {
-                $conditions = $data['_conditions'];
-                unset($data['_conditions']);
-            }
-
-            $data['plugin_formcreator_sections_id'] = $section_id;
-            $DB->insert('glpi_plugin_formcreator_questions', $data);
-            $question_id = $DB->insertId();
-
-            // Keep track of name => id map
-            $questions_names_map[$data['name']] = $question_id;
-
-            if ($conditions) {
-                foreach ($conditions as $condition) {
-                    // Replace target question name by id
-                    $target_q_name = $condition['plugin_formcreator_questions_id'];
-                    $target_q_id = $questions_names_map[$target_q_name];
-                    $condition['plugin_formcreator_questions_id'] = $target_q_id;
-
-                    $condition['itemtype'] = 'PluginFormcreatorQuestion';
-                    $condition['items_id'] = $question_id;
-
-                    $DB->insert('glpi_plugin_formcreator_conditions', $condition);
-                }
-            }
-        }
-
-        // Add submit conditions
-        if ($submit_conditions !== []) {
-            // Replace target question name by id
-            $target_q_name = $submit_conditions['plugin_formcreator_questions_id'];
-            $target_q_id = $questions_names_map[$target_q_name];
-
-            $DB->insert('glpi_plugin_formcreator_conditions', [
-                'itemtype'                        => 'PluginFormcreatorForm',
-                'items_id'                        => $form_id,
-                'plugin_formcreator_questions_id' => $target_q_id,
-                'show_condition'                  => $submit_conditions['show_condition'],
-                'show_value'                      => $submit_conditions['show_value'],
-                'show_logic'                      => $submit_conditions['show_logic'],
-                'order'                           => $submit_conditions['order'],
-            ]);
-        }
-
-        foreach ($ticket_destinations as $ticket_destination) {
-            $ticket_destination['plugin_formcreator_forms_id'] = $form_id;
-            $DB->insert(
-                'glpi_plugin_formcreator_targettickets',
-                $ticket_destination,
-            );
-        }
-
-        return $form_id;
     }
 }

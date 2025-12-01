@@ -34,9 +34,9 @@
 
 namespace tests\units;
 
-/* Test for inc/consumable.class.php */
+use Glpi\Tests\DbTestCase;
 
-class ConsumableTest extends \DbTestCase
+class ConsumableTest extends DbTestCase
 {
     /**
      * Test "out" and "back to stock" functions.

@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use InventoryTestCase;
+use Glpi\Tests\InventoryTestCase;
 
 class RuleImportAssetCollectionTest extends InventoryTestCase
 {

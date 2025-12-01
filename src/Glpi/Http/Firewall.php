@@ -178,7 +178,7 @@ final class Firewall
         if (preg_match(Plugin::PLUGIN_RESOURCE_PATTERN, $path, $path_matches) === 1) {
             return $this->computeFallbackStrategyForPlugin(
                 $path_matches['plugin_key'],
-                $path_matches['plugin_resource']
+                $path_matches['plugin_resource'] ?: '/'
             );
         }
 

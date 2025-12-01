@@ -35,7 +35,6 @@
 namespace tests\units\Glpi\Form\Helpdesk\TilesManagerTest;
 
 use CommonDBTM;
-use DbTestCase;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Form;
@@ -46,6 +45,7 @@ use Glpi\Helpdesk\Tile\Item_Tile;
 use Glpi\Helpdesk\Tile\TileInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\Session\SessionInfo;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use GlpiPlugin\Tester\Form\CustomTile;
@@ -53,6 +53,7 @@ use InvalidArgumentException;
 use Profile;
 use Session;
 use Ticket;
+use User;
 
 final class TilesManagerTest extends DbTestCase
 {
@@ -67,10 +68,7 @@ final class TilesManagerTest extends DbTestCase
     {
         // Arrange: create a self service profile
         $manager = $this->getManager();
-        $profile = $this->createItem(Profile::class, [
-            'name' => 'Helpdesk profile',
-            'interface' => 'helpdesk',
-        ]);
+        $profile = $this->createNewHelpdeskProfile();
 
         // Act: add two tile
         $manager->addTile($profile, ExternalPageTile::class, [
@@ -133,10 +131,7 @@ final class TilesManagerTest extends DbTestCase
         // Arrange: create a self service profile and mutliple form tiles
         $forms = [];
         $manager = $this->getManager();
-        $profile = $this->createItem(Profile::class, [
-            'name' => 'Helpdesk profile',
-            'interface' => 'helpdesk',
-        ]);
+        $profile = $this->createNewHelpdeskProfile();
         $this->addRightToProfile("Helpdesk profile", Ticket::$rightname, CREATE | CREATE);
 
         $builder = new FormBuilder("Inactive form");
@@ -175,10 +170,7 @@ final class TilesManagerTest extends DbTestCase
         // Arrange: create a self service profile and mutliple form tiles
         $forms = [];
         $manager = $this->getManager();
-        $profile = $this->createItem(Profile::class, [
-            'name' => 'Helpdesk profile',
-            'interface' => 'helpdesk',
-        ]);
+        $profile = $this->createNewHelpdeskProfile();
         $this->addRightToProfile("Helpdesk profile", Ticket::$rightname, CREATE | CREATE);
 
         $builder = new FormBuilder("Form without access policies");
@@ -218,10 +210,7 @@ final class TilesManagerTest extends DbTestCase
         // Arrange: create a self service profile and mutliple form tiles
         $forms = [];
         $manager = $this->getManager();
-        $profile = $this->createItem(Profile::class, [
-            'name' => 'Helpdesk profile',
-            'interface' => 'helpdesk',
-        ]);
+        $profile = $this->createNewHelpdeskProfile();
         $this->addRightToProfile("Helpdesk profile", Ticket::$rightname, CREATE | CREATE);
 
         $builder = new FormBuilder("Form inside current entity");
@@ -267,10 +256,7 @@ final class TilesManagerTest extends DbTestCase
     {
         // Arrange: create three tiles and modify their orders
         $manager = $this->getManager();
-        $profile = $this->createItem(Profile::class, [
-            'name' => 'Helpdesk profile',
-            'interface' => 'helpdesk',
-        ]);
+        $profile = $this->createNewHelpdeskProfile();
         $this->addRightToProfile("Helpdesk profile", Ticket::$rightname, CREATE | CREATE);
         $manager->addTile($profile, ExternalPageTile::class, [
             'title'        => "GLPI project",
@@ -328,10 +314,7 @@ final class TilesManagerTest extends DbTestCase
     {
         // Arrange: create three tiles
         $manager = $this->getManager();
-        $profile = $this->createItem(Profile::class, [
-            'name' => 'Helpdesk profile',
-            'interface' => 'helpdesk',
-        ]);
+        $profile = $this->createNewHelpdeskProfile();
         $this->addRightToProfile("Helpdesk profile", Ticket::$rightname, CREATE | CREATE);
         $profile_tile_id_1 = $manager->addTile($profile, ExternalPageTile::class, [
             'title'        => "GLPI project",
@@ -388,10 +371,7 @@ final class TilesManagerTest extends DbTestCase
     {
         // Arrange: create a profile with some tiles
         $manager = $this->getManager();
-        $profile = $this->createItem(Profile::class, [
-            'name' => 'Helpdesk profile',
-            'interface' => 'helpdesk',
-        ]);
+        $profile = $this->createNewHelpdeskProfile();
         $manager->addTile($profile, ExternalPageTile::class, [
             'title'        => "GLPI project",
             'description'  => "Link to GLPI project website",
@@ -435,10 +415,7 @@ final class TilesManagerTest extends DbTestCase
 
         // Arrange: create a self service profile without tiles
         $manager = $this->getManager();
-        $profile = $this->createItem(Profile::class, [
-            'name' => 'Helpdesk profile',
-            'interface' => 'helpdesk',
-        ]);
+        $profile = $this->createNewHelpdeskProfile();
         $this->addRightToProfile("Helpdesk profile", Ticket::$rightname, CREATE | CREATE);
 
         // Act: get tiles
@@ -460,10 +437,7 @@ final class TilesManagerTest extends DbTestCase
 
         // Arrange: create a self service profile without tiles
         $manager = $this->getManager();
-        $profile = $this->createItem(Profile::class, [
-            'name' => 'Helpdesk profile',
-            'interface' => 'helpdesk',
-        ]);
+        $profile = $this->createNewHelpdeskProfile();
         $this->addRightToProfile("Helpdesk profile", Ticket::$rightname, CREATE | CREATE);
 
         // Create a tile for the current entity
@@ -703,7 +677,7 @@ final class TilesManagerTest extends DbTestCase
         $this->assertTrue($this->tilesExist("Browse help articles", $tiles));
         $this->assertTrue($this->tilesExist("Make a reservation", $tiles));
         $this->assertTrue($this->tilesExist("See your tickets", $tiles));
-        $this->assertFalse($this->tilesExist("Create a ticket", $tiles));
+        $this->assertTrue($this->tilesExist("Create a ticket", $tiles));
         $this->assertFalse($this->tilesExist("Request a service", $tiles));
         $this->assertFalse($this->tilesExist("Report an issue", $tiles));
     }
@@ -740,5 +714,74 @@ final class TilesManagerTest extends DbTestCase
         $this->assertInstanceOf(FormTile::class, $types[0]);
         $this->assertInstanceOf(GlpiPageTile::class, $types[1]);
         $this->assertInstanceOf(ExternalPageTile::class, $types[2]);
+    }
+
+    public function testServiceCatalogTileIsVisibleIfServiceCatalogIsEnabled(): void
+    {
+        // Arrange: create a profile with a helpdesk tile
+        $manager = $this->getManager();
+        $profile = $this->createNewHelpdeskProfile();
+        $manager->addTile($profile, GlpiPageTile::class, [
+            'title'        => "Service catalog",
+            'description'  => "Go to service catalog",
+            'illustration' => "request-service",
+            'page'         => GlpiPageTile::PAGE_SERVICE_CATALOG,
+        ]);
+        $this->login();
+        $this->updateItem(Entity::class, $this->getTestRootEntity(only_id: true), [
+            'enable_helpdesk_service_catalog' => 1,
+        ]);
+        $this->createUserForProfile("test_user", $profile);
+
+        // Act: get tiles for our user
+        $this->login("test_user");
+        $session = Session::getCurrentSessionInfo();
+        $tiles = $manager->getVisibleTilesForSession($session);
+        $this->assertCount(1, $tiles);
+    }
+
+    public function testServiceCatalogTileIsDisabledIfServiceCatalogIsDisabled(): void
+    {
+        // Arrange: create a profile with a helpdesk tile and disable service catalog
+        $manager = $this->getManager();
+        $profile = $this->createNewHelpdeskProfile();
+        $manager->addTile($profile, GlpiPageTile::class, [
+            'title'        => "Service catalog",
+            'description'  => "Go to service catalog",
+            'illustration' => "request-service",
+            'page'         => GlpiPageTile::PAGE_SERVICE_CATALOG,
+        ]);
+        $this->login();
+        $this->updateItem(Entity::class, $this->getTestRootEntity(only_id: true), [
+            'enable_helpdesk_service_catalog' => 0,
+        ]);
+        $this->createUserForProfile("test_user", $profile);
+
+        // Act: get tiles for our user
+        $this->login("test_user");
+        $session = Session::getCurrentSessionInfo();
+        $tiles = $manager->getVisibleTilesForSession($session);
+        $this->assertCount(0, $tiles);
+    }
+
+    private function createNewHelpdeskProfile(): Profile
+    {
+        return $this->createItem(Profile::class, [
+            'name' => 'Helpdesk profile',
+            'interface' => 'helpdesk',
+        ]);
+    }
+
+    private function createUserForProfile(string $login, Profile $profile): void
+    {
+        $this->createItem(User::class, [
+            'name'          => $login,
+            'password'      => 'password',
+            'password2'     => 'password',
+            'profiles_id'   => $profile->getID(),
+            '_profiles_id'  => $profile->getID(),
+            '_entities_id'  => $this->getTestRootEntity(only_id: true),
+            '_is_recursive' => true,
+        ], ['password', 'password2']);
     }
 }

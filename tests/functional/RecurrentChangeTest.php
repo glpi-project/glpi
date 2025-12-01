@@ -34,7 +34,8 @@
 
 namespace tests\units;
 
-/* Test for inc/recurrentchange.class.php */
+use Glpi\Tests\CommonITILRecurrentTest;
+
 class RecurrentChangeTest extends CommonITILRecurrentTest
 {
     protected function getChildClass()

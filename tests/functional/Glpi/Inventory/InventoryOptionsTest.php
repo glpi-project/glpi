@@ -36,7 +36,7 @@ namespace tests\units\Glpi\Inventory;
 
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
-use InventoryTestCase;
+use Glpi\Tests\InventoryTestCase;
 
 class InventoryOptionsTest extends InventoryTestCase
 {

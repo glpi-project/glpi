@@ -37,7 +37,6 @@ namespace Glpi\Tests;
 use Change;
 use CommonITILObject;
 use CommonITILValidation;
-use DbTestCase;
 use Document_Item;
 use Glpi\Tests\Glpi\ValidationStepTrait;
 use NotificationEventMailing;

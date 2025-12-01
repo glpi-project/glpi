@@ -389,7 +389,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
      *
      * @throws RuntimeException
      */
-    private function cleanCoreTables()
+    private function cleanCoreTables(): void
     {
 
         $core_tables = [
@@ -417,7 +417,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
     }
 
 
-    private function migratePlugin()
+    private function migratePlugin(): bool
     {
 
         $no_interaction = $this->input->getOption('no-interaction');

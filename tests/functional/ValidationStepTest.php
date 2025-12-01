@@ -36,11 +36,12 @@
 namespace tests\units;
 
 use CommonITILValidation;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\ValidationStepTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use ValidationStep;
 
-class ValidationStepTest extends \DbTestCase
+class ValidationStepTest extends DbTestCase
 {
     use ValidationStepTrait;
 

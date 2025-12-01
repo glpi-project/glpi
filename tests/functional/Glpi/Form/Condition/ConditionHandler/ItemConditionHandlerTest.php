@@ -40,11 +40,11 @@ use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdownExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
+use Glpi\Tests\AbstractConditionHandlerTest;
 use Override;
 use SoftwareCategory;
-use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
 
-final class ItemConditionHandlerTest extends AbstractConditionHandler
+final class ItemConditionHandlerTest extends AbstractConditionHandlerTest
 {
     public static function getConditionHandler(): ConditionHandlerInterface
     {

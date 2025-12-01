@@ -106,6 +106,7 @@ use Glpi\Form\QuestionType\QuestionTypeRequester;
 use Glpi\Form\QuestionType\QuestionTypeRequestType;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\QuestionType\QuestionTypeUserDevice;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -114,7 +115,7 @@ use Ticket;
 
 use function PHPUnit\Framework\assertEquals;
 
-final class FormSerializerDestinationTest extends \DbTestCase
+final class FormSerializerDestinationTest extends DbTestCase
 {
     use FormTesterTrait;
 

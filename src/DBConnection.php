@@ -74,6 +74,7 @@ class DBConnection extends CommonGLPI
      */
     public const PROPERTY_ALLOW_SIGNED_KEYS = 'allow_signed_keys';
 
+    /** @var bool */
     protected static $notable = true;
 
 
@@ -332,6 +333,8 @@ class DBConnection extends CommonGLPI
 
     /**
      * Create a default slave DB configuration file
+     *
+     * @return void
      **/
     public static function createDBSlaveConfig()
     {
@@ -353,11 +356,13 @@ class DBConnection extends CommonGLPI
     /**
      * Save changes to the slave DB configuration file
      *
-     * @param $host
-     * @param $user
-     * @param $password
-     * @param $DBname
-     **/
+     * @param string $host
+     * @param string $user
+     * @param string $password
+     * @param string $DBname
+     *
+     * @return void
+     */
     public static function saveDBSlaveConf($host, $user, $password, $DBname)
     {
         global $DB;
@@ -377,6 +382,8 @@ class DBConnection extends CommonGLPI
 
     /**
      * Delete slave DB configuration file
+     *
+     * @return void
      */
     public static function deleteDBSlaveConfig()
     {
@@ -386,7 +393,9 @@ class DBConnection extends CommonGLPI
 
     /**
      * Switch database connection to slave
-     **/
+     *
+     * @return bool
+     */
     public static function switchToSlave()
     {
         global $DB;
@@ -402,7 +411,9 @@ class DBConnection extends CommonGLPI
 
     /**
      * Switch database connection to master
-     **/
+     *
+     * @return bool
+     */
     public static function switchToMaster()
     {
         global $DB;
@@ -645,8 +656,10 @@ class DBConnection extends CommonGLPI
 
 
     /**
-     * @param $name
-     **/
+     * @param string $name
+     *
+     * @return array
+     */
     public static function cronInfo($name)
     {
 
@@ -662,7 +675,7 @@ class DBConnection extends CommonGLPI
      * @param CronTask $task to log and get param
      *
      * @return integer
-     **/
+     */
     public static function cronCheckDBreplicate(CronTask $task)
     {
         global $DB;
@@ -776,7 +789,9 @@ class DBConnection extends CommonGLPI
      * Enable or disable db replication check cron task
      *
      * @param boolean $enable Enable or disable cron task (true by default)
-     **/
+     *
+     * @return void
+     */
     public static function changeCronTaskStatus($enable = true)
     {
 
@@ -888,6 +903,12 @@ class DBConnection extends CommonGLPI
     public static function getDbInstanceUsingParameters(string $host, string $user, string $password, string $dbname): DBmysql
     {
         return new class ($host, $user, $password, $dbname) extends DBmysql {
+            /**
+             * @param string $host
+             * @param string $user
+             * @param string $password
+             * @param string $dbname
+             */
             public function __construct($host, $user, $password, $dbname)
             {
                 $this->dbhost     = $host;

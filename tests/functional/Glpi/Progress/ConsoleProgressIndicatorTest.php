@@ -36,7 +36,7 @@ namespace tests\units\Glpi\Log;
 
 use Glpi\Message\MessageType;
 use Glpi\Progress\ConsoleProgressIndicator;
-use GLPITestCase;
+use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\ConsoleSectionOutput;

@@ -42,6 +42,7 @@ use Glpi\Features\StateInterface;
  **/
 class Cluster extends CommonDBTM implements AssignableItemInterface, StateInterface
 {
+    /** @use Clonable<static> */
     use Clonable;
     use Glpi\Features\State;
     use AssignableItem;

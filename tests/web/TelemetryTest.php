@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 
 /* Test for inc/telemetry.class.php requiring the Web server*/
 

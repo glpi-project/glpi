@@ -68,10 +68,12 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     public static $itemtype     = 'Project';
     public static $items_id     = 'projects_id';
 
+    /** @var array<class-string<CommonDBTM>, array<array{id: int, projecttasks_id: int, itemtype: class-string<CommonDBTM>, items_id: int, display_name?: string}>> */
     protected $team             = [];
     public static $rightname    = 'projecttask';
     protected $usenotepad       = true;
 
+    /** @var bool */
     public $can_be_translated   = true;
 
     public const READMY      = 1;
@@ -161,6 +163,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         return false;
     }
 
+    /**
+     * @param bool $full
+     * @return string
+     */
     public static function getMyTasksURL(bool $full)
     {
         return self::getSearchURL($full) . '?' . Toolbox::append_params([
@@ -2101,6 +2107,7 @@ TWIG, $twig_params);
      * Update the specified project task's percent_done based on the percent_done of sub-tasks.
      * This function indirectly updates the percent done for all parent tasks if they are set to automatically update.
      * The parent project's percent_done is not updated here to avoid duplicate updates.
+     * @param int $ID The ID of the project task to recalculate.
      * @since 9.5.0
      * @return boolean False if the specified project task is not set to automatically update the percent done.
      */
@@ -2345,6 +2352,9 @@ TWIG, $twig_params);
         return (bool) $result;
     }
 
+    /**
+     * @return array<array{id: int, projecttasks_id: int, itemtype: class-string<CommonDBTM>, items_id: int, display_name?: string}>
+     */
     public function getTeam(): array
     {
         $team = ProjectTaskTeam::getTeamFor($this->getID(), true);

@@ -34,13 +34,11 @@
 
 namespace tests\units\Glpi\Toolbox;
 
+use Glpi\Tests\GLPITestCase;
 use Glpi\Toolbox\VersionParser;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-/**
- * Test class for src/Glpi/Toolbox/versionparser.class.php
- */
-class VersionParserTest extends \GLPITestCase
+class VersionParserTest extends GLPITestCase
 {
     public static function versionsProvider()
     {

@@ -34,8 +34,8 @@
 
 namespace tests\units;
 
-use DbTestCase;
 use Glpi\Team\Team;
+use Glpi\Tests\DbTestCase;
 use ProjectState;
 use ProjectTask;
 use ProjectTeam;

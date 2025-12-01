@@ -39,11 +39,8 @@ use Glpi\Inventory\Conf;
 use Glpi\Inventory\Converter;
 use Glpi\Inventory\Inventory;
 use Glpi\Inventory\Request;
+use Glpi\Tests\AbstractInventoryAsset;
 use PHPUnit\Framework\Attributes\DataProvider;
-
-include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
-
-/* Test for inc/inventory/asset/computer.class.php */
 
 class ComputerTest extends AbstractInventoryAsset
 {
@@ -1494,7 +1491,7 @@ class ComputerTest extends AbstractInventoryAsset
         $item_softwares = $item_software->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(1, $item_softwares);
         $this->assertSame(1, reset($item_softwares)['entities_id']);
-        //load sofware version entities_id sub
+        //load software version entities_id sub
         $softwareversion = new \SoftwareVersion();
         $this->assertTrue($softwareversion->getFromDB(reset($item_softwares)['softwareversions_id']));
         $this->assertSame(1, $softwareversion->fields['entities_id']);

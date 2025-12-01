@@ -270,6 +270,11 @@ class GLPIMailer
     }
 
 
+    /**
+     * @param string $property
+     *
+     * @return mixed
+     */
     public function __get(string $property)
     {
         $value = null;
@@ -318,6 +323,12 @@ class GLPIMailer
         return $value;
     }
 
+    /**
+     * @param string $property
+     * @param mixed $value
+     *
+     * @return void
+     */
     public function __set(string $property, $value)
     {
         $deprecation = true;
@@ -372,6 +383,12 @@ class GLPIMailer
         }
     }
 
+    /**
+     * @param string $method
+     * @param array $arguments
+     *
+     * @return void
+     */
     public function __call(string $method, array $arguments)
     {
         $lcmethod = strtolower($method); // PHP methods are not case sensitive
@@ -467,10 +484,16 @@ class GLPIMailer
         Toolbox::deprecated(sprintf('Usage of method %s::%s() is deprecated', self::class, $method));
     }
 
+    /**
+     * @param string $method
+     * @param array $arguments
+     *
+     * @return mixed
+     */
     public static function __callstatic(string $method, array $arguments)
     {
         // Trigger fatal error to block execution.
-        // As we cannot know which return value type is expected, it is safer to to ensure
+        // As we cannot know which return value type is expected, it is safer to ensure
         // that caller will not continue execution using a void return value.
         throw new RuntimeException(sprintf('Call to undefined method %s::%s()', self::class, $method));
     }

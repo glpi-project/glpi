@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 
 require_once __DIR__ . '/../NotificationSettingInstance.php';
 

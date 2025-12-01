@@ -35,7 +35,6 @@
 namespace tests\units\Glpi\Migration;
 
 use Contract_Item;
-use DbTestCase;
 use Domain_Item;
 use DropdownTranslation;
 use FieldUnicity;
@@ -54,6 +53,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Migration\GenericobjectPluginMigration;
 use Glpi\Migration\PluginMigrationResult;
+use Glpi\Tests\DbTestCase;
 use Group_Item;
 use Infocom;
 use Profile;
@@ -119,6 +119,16 @@ class GenericobjectPluginMigrationTest extends DbTestCase
         $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
 
         // Assert
+
+        // Validate that plugin data is not altered
+        $plugin_itemtypes = \array_column(
+            \getAllDataFromTable('glpi_plugin_genericobject_types'),
+            'itemtype'
+        );
+        $this->assertEqualsCanonicalizing(
+            ['PluginGenericobjectSmartphone', 'PluginGenericobjectTablet', 'PluginGenericobjectInactive'],
+            $plugin_itemtypes
+        );
 
         // Validate created asset definitions
         $expected_definitions = [

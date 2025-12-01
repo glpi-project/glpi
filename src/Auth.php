@@ -684,6 +684,7 @@ class Auth extends CommonGLPI
 
                         if (self::checkPassword($cookie_token, $hash)) {
                             $this->user->fields['name'] = $user->fields['name'];
+                            $user->update(['id' => $user->getID(), 'last_login' => $_SESSION["glpi_currenttime"]]);
                             return true;
                         } else {
                             $this->addToError(__("Invalid cookie data"));
@@ -1066,7 +1067,11 @@ class Auth extends CommonGLPI
                     if (isset($this->user_email)) {
                         $this->user->fields['_useremails'] = $this->user_email;
                     }
-                    $this->user->update($this->user->fields);
+
+                    $input = $this->user->fields;
+                    unset($input['api_token'], $input['cookie_token'], $input['password_forget_token'], $input['personal_token']);
+
+                    $this->user->update($input);
                 } elseif ($CFG_GLPI["is_users_auto_add"]) {
                     // Auto add user
                     $input = $this->user->fields;
@@ -1699,6 +1704,11 @@ class Auth extends CommonGLPI
 
     /**
      * Display the authentication source dropdown for login form
+     *
+     * @param bool $display
+     * @param int $rand
+     *
+     * @return string
      */
     public static function dropdownLogin(bool $display = true, $rand = 1)
     {
@@ -1722,6 +1732,9 @@ class Auth extends CommonGLPI
         return $out;
     }
 
+    /**
+     * @return string
+     */
     public static function getIcon()
     {
         return "ti ti-login";

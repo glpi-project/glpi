@@ -34,7 +34,6 @@
 
 namespace tests\units;
 
-// Force import because of atoum autoloader not working
-require_once __DIR__ . '/../abstracts/CommonITILSatisfaction.php';
+use Glpi\Tests\CommonITILSatisfactionTest;
 
-class TicketSatisfactionTest extends CommonITILSatisfaction {}
+class TicketSatisfactionTest extends CommonITILSatisfactionTest {}

@@ -42,12 +42,13 @@ use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Form;
 use Glpi\Session\SessionInfo;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Group;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class AllowListTest extends \DbTestCase
+class AllowListTest extends DbTestCase
 {
     use FormTesterTrait;
 

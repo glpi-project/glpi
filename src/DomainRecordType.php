@@ -42,6 +42,7 @@ class DomainRecordType extends CommonDropdown
 {
     public static $rightname = 'dropdown';
 
+    /** @var array */
     public static $knowtypes = [
         [
             'id'        => 1,
@@ -354,6 +355,9 @@ class DomainRecordType extends CommonDropdown
         return _n('Record type', 'Records types', $nb);
     }
 
+    /**
+     * @return array
+     */
     public static function getDefaults()
     {
         return array_map(
@@ -371,6 +375,8 @@ class DomainRecordType extends CommonDropdown
      *
      * @param string $str_input_id    Id of input used to get/store record data as string.
      * @param string $obj_input_id    Id of input used to get/store record data as object.
+     *
+     * @return void
      */
     public function showDataAjaxForm(string $str_input_id, string $obj_input_id)
     {

@@ -34,11 +34,11 @@
 
 namespace tests\units\Glpi;
 
-use DbTestCase;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasSocketCapacity;
 use Glpi\Features\Clonable;
 use Glpi\Socket;
+use Glpi\Tests\DbTestCase;
 use NetworkPort;
 use NetworkPortEthernet;
 use Toolbox;

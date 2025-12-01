@@ -261,6 +261,9 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
         return $tab;
     }
 
+    /**
+     * @return array
+     */
     public static function rawSearchOptionsToAdd()
     {
         $tab = [];

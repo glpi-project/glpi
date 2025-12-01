@@ -50,6 +50,15 @@ class ScopeRepository implements ScopeRepositoryInterface
         return $scope;
     }
 
+    /**
+     * @param array $scopes
+     * @param string $grantType
+     * @param ClientEntityInterface $clientEntity
+     * @param ?string $userIdentifier
+     * @param ?string $authCodeId
+     *
+     * @return ScopeEntityInterface[]
+     */
     public function finalizeScopes(array $scopes, $grantType, ClientEntityInterface $clientEntity, $userIdentifier = null, ?string $authCodeId = null): array
     {
         global $DB;

@@ -35,10 +35,9 @@
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
 use Glpi\ContentTemplates\Parameters\EntityParameters;
+use Glpi\Tests\AbstractParametersTest;
 
-include_once __DIR__ . '/../../../../abstracts/AbstractParameters.php';
-
-class EntityParametersTest extends AbstractParameters
+class EntityParametersTest extends AbstractParametersTest
 {
     public function testGetValues(): void
     {

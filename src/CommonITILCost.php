@@ -57,6 +57,9 @@ abstract class CommonITILCost extends CommonDBChild
         return Infocom::getIcon();
     }
 
+    /**
+     * @return class-string<CommonDBTM>
+     */
     public function getItilObjectItemType()
     {
         return str_replace('Cost', '', static::class);
@@ -360,6 +363,8 @@ abstract class CommonITILCost extends CommonDBChild
      * Get total action time used on costs for an item
      *
      * @param integer $items_id ID of the item
+     *
+     * @return int
      **/
     public function getTotalActionTimeForItem($items_id)
     {
@@ -371,13 +376,15 @@ abstract class CommonITILCost extends CommonDBChild
             'WHERE'  => [static::$items_id => $items_id],
         ])->current();
 
-        return $result['sumtime'];
+        return (int) $result['sumtime'];
     }
 
     /**
      * Get last datas for an item
      *
      * @param integer $items_id ID of the item
+     *
+     * @return array
      **/
     public function getLastCostForItem($items_id)
     {

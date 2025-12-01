@@ -39,7 +39,7 @@ use Change;
 use ChangeTask;
 use CommonITILObject;
 use Config;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use ITILFollowup;
 use ITILFollowupTemplate;
 use Notification;

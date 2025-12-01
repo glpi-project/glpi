@@ -34,12 +34,13 @@
 
 namespace tests\units\Glpi\Features;
 
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Test for the {@link \Glpi\Features\Clonable} feature
  */
-class ClonableTest extends \DbTestCase
+class ClonableTest extends DbTestCase
 {
     public static function massiveActionTargetingProvider()
     {

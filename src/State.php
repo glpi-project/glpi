@@ -43,6 +43,7 @@ use Glpi\Features\Clonable;
  **/
 class State extends CommonTreeDropdown
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     public $can_be_translated       = true;

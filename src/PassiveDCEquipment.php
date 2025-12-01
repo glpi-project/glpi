@@ -46,6 +46,7 @@ use Glpi\Socket;
 class PassiveDCEquipment extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInterface, StateInterface
 {
     use AssignableItem;
+    /** @use Clonable<static> */
     use Clonable;
     use DCBreadcrumb;
     use Glpi\Features\State;

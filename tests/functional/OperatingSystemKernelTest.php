@@ -34,9 +34,9 @@
 
 namespace tests\units;
 
-/* Test for inc/operatingsystemkernel.class.php */
+use Glpi\Tests\CommonDropdownTest;
 
-class OperatingSystemKernelTest extends CommonDropdown
+class OperatingSystemKernelTest extends CommonDropdownTest
 {
     public function getObjectClass()
     {

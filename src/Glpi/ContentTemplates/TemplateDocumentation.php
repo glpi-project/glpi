@@ -102,6 +102,8 @@ class TemplateDocumentation
      * @param string $title              Section's title
      * @param array $parameters          Parameters to be displayed in this section
      * @param string|null $fields_prefix Prefix to happen to the parameters fields name
+     *
+     * @return void
      */
     public function addSection(
         string $title,

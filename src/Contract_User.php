@@ -97,13 +97,13 @@ class Contract_User extends CommonDBRelation
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if (Contract::canView() && $item::class === User::class) {
-            self::showForUser($item, $withtemplate);
+            self::showForUser($item, (int) $withtemplate);
         }
 
         return true;
     }
 
-    private static function showForUser(User $user, $withtemplate = 0): void
+    private static function showForUser(User $user, int $withtemplate = 0): void
     {
         $ID = $user->fields['id'];
 
@@ -125,7 +125,7 @@ class Contract_User extends CommonDBRelation
             $contracts[$data['id']] = $data;
             $used[$data['id']]      = $data['id'];
         }
-        if ($canedit && ((int) $withtemplate !== 2)) {
+        if ($canedit && ($withtemplate !== 2)) {
             $twig_params = [
                 'user' => $user,
                 'used' => $used,
@@ -226,7 +226,7 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'showmassiveactions' => $canedit && (int) $withtemplate !== 2,
+            'showmassiveactions' => $canedit && $withtemplate !== 2,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,

@@ -34,6 +34,8 @@
 
 namespace Glpi\Form\Condition;
 
+use function Safe\json_encode;
+
 trait ConditionableValidationTrait
 {
     use ConditionableTrait {
@@ -75,5 +77,20 @@ trait ConditionableValidationTrait
         $strategy_value = $this->fields[$field_name] ?? "";
         $strategy = ValidationStrategy::tryFrom($strategy_value);
         return $strategy ?? ValidationStrategy::NO_VALIDATION;
+    }
+
+    protected function removeSavedConditionsIfNoValidation(array $input): array
+    {
+        $strategy_field = $this->getValidationStrategyFieldName();
+        $condition_field = $this->getValidationConditionsFieldName();
+
+        if (
+            isset($input[$strategy_field])
+            && $input[$strategy_field] == ValidationStrategy::NO_VALIDATION->value
+        ) {
+            $input[$condition_field] = json_encode([]);
+        }
+
+        return $input;
     }
 }

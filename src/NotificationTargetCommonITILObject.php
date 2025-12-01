@@ -37,11 +37,14 @@ use Glpi\DBAL\QueryFunction;
 
 abstract class NotificationTargetCommonITILObject extends NotificationTarget
 {
+    /** @var array */
     public $private_profiles = [];
 
     /**
      * Keep track of profiles who have acces to the "central" interface
      * Will only be loaded if the source item's entity is using anonymisation
+     *
+     * @var array
      */
     public $central_profiles = [];
 
@@ -99,10 +102,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     /**
      * Get notification subject prefix
      *
-     * @param $event Event name (default '')
+     * @param string $event Event name (default '')
      *
      * @return string
-     **/
+     */
     public function getSubjectPrefix($event = '')
     {
 
@@ -459,7 +462,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     /**
      * Add approver related to the ITIL object validation
      *
-     * @param $options array
+     * @param array $options
      *
      * @return void
      */
@@ -794,6 +797,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     }
 
 
+    /**
+     * @return void
+     */
     public function addAdditionnalInfosForTarget()
     {
         global $DB;
@@ -833,6 +839,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         ];
     }
 
+    /**
+     * @param array $data
+     *
+     * @return bool
+     */
     protected function getShowPrivateInfo(array $data)
     {
         global $DB;
@@ -856,6 +867,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         return false;
     }
 
+    /**
+     * @param array $data
+     *
+     * @return bool
+     */
     protected function getIsSelfServiceInfo(array $data)
     {
         global $DB;
@@ -1814,7 +1830,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $tmptimelineitem['##timelineitems.typename##']    = $tmptimelineitem['##timelineitems.type##']::getTypeName(0);
                 $tmptimelineitem['##timelineitems.date##']        = Html::convDateTime($timeline_data['item']['date']);
                 $tmptimelineitem['##timelineitems.description##'] = $timeline_data['item']['content'];
-                $tmptimelineitem['##timelineitems.position##']    = $this->getUserPositionFromTimelineItemPosition($timeline_data['item']['timeline_position']);
+                $tmptimelineitem['##timelineitems.position##']    = $this->getUserPositionFromTimelineItemPosition((int) $timeline_data['item']['timeline_position']);
 
                 $item_users_id = (int) $timeline_data['item']['users_id'];
 
@@ -1963,6 +1979,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         return $data;
     }
 
+    /**
+     * @return void
+     */
     public function getTags()
     {
 
@@ -2501,13 +2520,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         }
     }
 
-    private function getUserPositionFromTimelineItemPosition($position)
+    private function getUserPositionFromTimelineItemPosition(int $position): string
     {
 
         switch ($position) {
-            case CommonITILObject::TIMELINE_LEFT:
-                $user_position = 'left';
-                break;
             case CommonITILObject::TIMELINE_MIDLEFT:
                 $user_position = 'left middle';
                 break;
@@ -2517,6 +2533,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             case CommonITILObject::TIMELINE_RIGHT:
                 $user_position = 'right';
                 break;
+            case CommonITILObject::TIMELINE_LEFT:
             default:
                 $user_position = 'left';
                 break;

@@ -94,6 +94,8 @@ class Config extends CommonDBTM
         'glpinetwork_registration_key',
         'ldap_pass', // this one should not exist anymore, but may be present when admin restored config dump after migration
     ];
+
+    /** @var string[] */
     public static $saferUndisclosedFields = ['admin_email', 'replyto_email'];
 
     /**
@@ -648,11 +650,10 @@ class Config extends CommonDBTM
     /**
      * Print the config form for default user prefs
      *
-     * @param $data array containing datas
-     * (CFG_GLPI for global config / glpi_users fields for user prefs)
+     * @param array $data data (CFG_GLPI for global config / glpi_users fields for user prefs)
      *
      * @return void
-     **/
+     */
     public function showFormUserPrefs($data = [])
     {
         global $CFG_GLPI, $DB;
@@ -712,10 +713,12 @@ class Config extends CommonDBTM
     /**
      * Display security checks on password
      *
-     * @param $field string id of the field containing password to check (default 'password')
+     * @param string $field id of the field containing password to check (default 'password')
      *
      * @since 0.84
-     **/
+     *
+     * @return void
+     */
     public static function displayPasswordSecurityChecks($field = 'password')
     {
         TemplateRenderer::getInstance()->display('components/user/password_security_checks.html.twig', [
@@ -731,11 +734,13 @@ class Config extends CommonDBTM
      * - translations cache
      *
      * @since 9.1
-     **/
+     *
+     * @return void
+     */
     public function showPerformanceInformations()
     {
         if (!Config::canUpdate()) {
-            return false;
+            return;
         }
 
         $opcache_info = false;
@@ -762,6 +767,9 @@ class Config extends CommonDBTM
         ]);
     }
 
+    /**
+     * @return void
+     */
     public static function showSystemInfoTable()
     {
         global $CFG_GLPI, $DB;
@@ -847,14 +855,16 @@ class Config extends CommonDBTM
     }
 
     /**
-     * Display a HTML report about systeme information / configuration
+     * Display an HTML report about system information / configuration
+     *
+     * @return void
      **/
     public function showSystemInformations()
     {
         global $CFG_GLPI;
 
         if (!static::canUpdate()) {
-            return false;
+            return;
         }
 
         TemplateRenderer::getInstance()->display('pages/setup/general/systeminfo_form.html.twig', [
@@ -871,7 +881,9 @@ class Config extends CommonDBTM
      * @param string       $name   select name
      * @param string       $value  default value
      * @param integer|null $rand   rand
-     **/
+     *
+     * @return void
+     */
     public static function dropdownGlobalManagement($name, $value, $rand = null)
     {
         $choices = [
@@ -930,8 +942,10 @@ class Config extends CommonDBTM
     }
 
     /**
-     * Display field unicity criterias form
-     **/
+     * Display field unicity criteria form
+     *
+     * @return void
+     */
     public function showFormFieldUnicity()
     {
         Toolbox::deprecated(
@@ -1268,8 +1282,8 @@ class Config extends CommonDBTM
      *
      * @since 0.85
      *
-     * @param $context  string   context to get values (default for glpi is core)
-     * @param $names    array    of config names to get
+     * @param string $context context to get values (default for glpi is core)
+     * @param array  $names   config names to get
      *
      * @return array of config values
      **/
@@ -1422,11 +1436,11 @@ class Config extends CommonDBTM
      *
      * @since 0.85
      *
-     * @param $context  string context to get values (default for glpi is core)
-     * @param $values   array  of config names to set
+     * @param string $context context to get values (default for glpi is core)
+     * @param array  $values  config names to set
      *
      * @return void
-     **/
+     */
     public static function setConfigurationValues($context, array $values = [])
     {
 
@@ -1478,11 +1492,11 @@ class Config extends CommonDBTM
      *
      * @since 0.85
      *
-     * @param $context string  context to get values (default for glpi is core)
-     * @param $values  array   of config names to delete
+     * @param string $context context to get values (default for glpi is core)
+     * @param array  $values  config names to delete
      *
      * @return void
-     **/
+     */
     public static function deleteConfigurationValues($context, array $values = [])
     {
 

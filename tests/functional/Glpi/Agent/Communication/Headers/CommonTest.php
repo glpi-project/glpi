@@ -35,7 +35,7 @@
 namespace tests\units\Glpi\Agent\Communication\Headers;
 
 use Glpi\Agent\Communication\Headers\Common;
-use GLPITestCase;
+use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/glpi/agent/communication/headers/common.class.php */

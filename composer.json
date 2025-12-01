@@ -68,7 +68,7 @@
         "sabre/http": "^5.1",
         "sabre/uri": "^2.3",
         "sabre/vobject": "^4.5",
-        "scssphp/scssphp": "^2.0",
+        "scssphp/scssphp": "^2.1",
         "sebastian/diff": "^6.0",
         "simplepie/simplepie": "^1.9",
         "symfony/cache": "^6.4",
@@ -101,7 +101,7 @@
         "thenetworg/oauth2-azure": "^2.2",
         "twig/markdown-extra": "^3.22",
         "twig/string-extra": "^3.22",
-        "twig/twig": "^3.21",
+        "twig/twig": "^3.22",
         "wapmorgan/unified-archive": "^1.3",
         "webonyx/graphql-php": "^15.25"
     },
@@ -117,6 +117,7 @@
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpunit/phpunit": "^11.5",
         "rector/rector": "^2.2",
+        "sebastian/comparator": "^6.3",
         "shipmonk/composer-dependency-analyser": "^1.8",
         "symfony/browser-kit": "^6.4",
         "symfony/debug-bundle": "^6.4",
@@ -201,7 +202,6 @@
             "patch -f -p1 -d vendor/guzzlehttp/guzzle/ < tools/patches/guzzlehttp-guzzle-restrict-http-methods.patch || true",
             "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-laminas-mail-address-no-length-check.patch || true",
             "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-laminas-mail-invalid-header-ignore.patch || true",
-            "patch -f -p1 -d vendor/scssphp/scssphp/ < tools/patches/scssphp-scssphp-php-8.5-compat.patch || true",
             "patch -f -p1 -d vendor/wapmorgan/unified-archive/ < tools/patches/wapmorgan-unified-archive-php-8.5-compat.patch || true"
         ]
     }

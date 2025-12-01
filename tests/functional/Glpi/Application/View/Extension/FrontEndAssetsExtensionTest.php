@@ -35,11 +35,12 @@
 namespace tests\units\Glpi\Application\View\Extension;
 
 use Glpi\Application\View\Extension\FrontEndAssetsExtension;
+use Glpi\Tests\GLPITestCase;
 use Glpi\Toolbox\FrontEnd;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class FrontEndAssetsExtensionTest extends \GLPITestCase
+class FrontEndAssetsExtensionTest extends GLPITestCase
 {
     public static function cssPathProvider(): iterable
     {

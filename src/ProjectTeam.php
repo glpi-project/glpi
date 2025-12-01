@@ -59,7 +59,8 @@ class ProjectTeam extends CommonDBRelation
     public static $items_id_2          = 'items_id';
     public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
-    public static $available_types     = ['User', 'Group', 'Supplier', 'Contact'];
+    /** @var class-string<CommonDBTM>[] */
+    public static $available_types     = [User::class, Group::class, Supplier::class, Contact::class];
 
 
     /**
@@ -216,9 +217,9 @@ class ProjectTeam extends CommonDBRelation
     /**
      * Get team for a project
      *
-     * @param $projects_id
+     * @param integer $projects_id
      * @param bool $expand If true, the team member data is expanded to include specific properties like firstname, realname, ...
-     * @return array
+     * @return array<class-string<CommonDBTM>, array<array{id: int, projects_id: int, itemtype: class-string<CommonDBTM>, items_id: int, display_name?: string}>>
      */
     public static function getTeamFor($projects_id, bool $expand = false)
     {

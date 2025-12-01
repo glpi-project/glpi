@@ -36,11 +36,15 @@ namespace tests\units\Glpi\Form\Destination;
 
 use CommonGLPI;
 use DBmysql;
-use DbTestCase;
+use Glpi\Form\Condition\CreationStrategy;
+use Glpi\Form\Condition\LogicOperator;
+use Glpi\Form\Condition\Type;
+use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 
@@ -151,6 +155,32 @@ final class FormDestinationTest extends DbTestCase
             "This form is invalid, it must create at least one item.",
             $content
         );
+    }
+
+    public function testConditionsDataAreCleanedWhenStrategyIsReset(): void
+    {
+        // Arrange: create a form with creation conditions on a destination
+        $builder = new FormBuilder();
+        $builder->addQuestion("My question", QuestionTypeShortText::class);
+        $builder->setDestinationCondition("Ticket", CreationStrategy::CREATED_IF, [
+            [
+                'logic_operator' => LogicOperator::AND,
+                'item_name'      => "My question",
+                'item_type'      => Type::QUESTION,
+                'value_operator' => ValueOperator::EQUALS,
+                'value'          => "Yes",
+            ],
+        ]);
+        $form = $this->createForm($builder);
+
+        // Act: reset the destiantion's creation strategy
+        $destination_id = $this->getDestinationId($form, "Ticket");
+        $destination = $this->updateItem(FormDestination::class, $destination_id, [
+            'creation_strategy' => CreationStrategy::ALWAYS_CREATED->value,
+        ]);
+
+        // Assert: the conditions should be deleted
+        $this->assertEmpty($destination->getConfiguredConditionsData());
     }
 
     private function createAndGetFormWithFourDestinations(): Form

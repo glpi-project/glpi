@@ -65,6 +65,8 @@ class MarkdownBuilder
      * @param string $prefix Header type (#, ##, ...)
      * @param string $content Header content
      * @param string|null $css_class Css class to add to this header
+     *
+     * @return void
      */
     protected function addHeader(
         string $prefix,
@@ -80,6 +82,8 @@ class MarkdownBuilder
      *
      * @param string $content Header content
      * @param string|null $css_class Css class to add to this header
+     *
+     * @return void
      */
     public function addH1(string $content, ?string $css_class = null)
     {
@@ -91,6 +95,8 @@ class MarkdownBuilder
      *
      * @param string $content Header content
      * @param string|null $css_class Css class to add to this header
+     *
+     * @return void
      */
     public function addH2(string $content, ?string $css_class = null)
     {
@@ -102,6 +108,8 @@ class MarkdownBuilder
      *
      * @param string $content Header content
      * @param string|null $css_class Css class to add to this header
+     *
+     * @return void
      */
     public function addH3(string $content, ?string $css_class = null)
     {
@@ -113,6 +121,8 @@ class MarkdownBuilder
      *
      * @param string $content Header content
      * @param string|null $css_class Css class to add to this header
+     *
+     * @return void
      */
     public function addH4(string $content, ?string $css_class = null)
     {
@@ -124,6 +134,8 @@ class MarkdownBuilder
      *
      * @param string $content Header content
      * @param string|null $css_class Css class to add to this header
+     *
+     * @return void
      */
     public function addH5(string $content, ?string $css_class = null)
     {
@@ -135,6 +147,8 @@ class MarkdownBuilder
      *
      * @param string $content Header content
      * @param string|null $css_class Css class to add to this header
+     *
+     * @return void
      */
     public function addH6(string $content, ?string $css_class = null)
     {
@@ -145,6 +159,8 @@ class MarkdownBuilder
      * Add a table row
      *
      * @param array $values
+     *
+     * @return void
      */
     public function addTableRow(array $values)
     {
@@ -155,6 +171,8 @@ class MarkdownBuilder
      * Add a table header
      *
      * @param array $headers
+     *
+     * @return void
      */
     public function addTableHeader(array $headers)
     {
@@ -166,6 +184,8 @@ class MarkdownBuilder
     /**
      * Helper function to encapsulate single line code
      *
+     * @param string $code
+     *
      * @return string
      */
     public static function code($code): string
@@ -175,6 +195,8 @@ class MarkdownBuilder
 
     /**
      * Helper function create a navigation link
+     *
+     * @param string $label
      *
      * @return string
      */
@@ -186,6 +208,8 @@ class MarkdownBuilder
 
     /**
      * Helper function create a summary entry
+     *
+     * @param string $label
      *
      * @return void
      */

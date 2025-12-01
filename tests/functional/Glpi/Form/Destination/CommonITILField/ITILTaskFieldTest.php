@@ -34,12 +34,12 @@
 
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
-use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\ITILTaskField;
 use Glpi\Form\Destination\CommonITILField\ITILTaskFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILTaskFieldStrategy;
 use Glpi\Form\Form;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use TaskTemplate;

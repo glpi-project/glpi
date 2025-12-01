@@ -35,8 +35,8 @@
 namespace tests\units\Glpi\Console\Diagnostic;
 
 use CommonDBTM;
-use DbTestCase;
 use Glpi\Console\Diagnostic\CheckHtmlEncodingCommand;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class CheckHtmlEncodingCommandTest extends DbTestCase

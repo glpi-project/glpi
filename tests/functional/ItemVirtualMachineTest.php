@@ -34,10 +34,10 @@
 
 namespace tests\units;
 
-use DbTestCase;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasVirtualMachineCapacity;
 use Glpi\Features\Clonable;
+use Glpi\Tests\DbTestCase;
 use ItemVirtualMachine;
 use Toolbox;
 

@@ -35,12 +35,12 @@
 namespace tests\units\Glpi\Asset\Capacity;
 
 use DatabaseInstance;
-use DbTestCase;
 use Entity;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDatabaseInstanceCapacity;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
 use Glpi\Asset\Capacity\HasNotepadCapacity;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\Asset\CapacityUsageTestTrait;
 
 class HasDatabaseInstanceCapacityTest extends DbTestCase

@@ -59,6 +59,24 @@ class ProjectTask_Ticket extends CommonDBRelation
         return $forbidden;
     }
 
+    public function prepareInputForAdd($input)
+    {
+        if (
+            countElementsInTable(
+                static::getTable(),
+                [
+                    static::$items_id_1 => $input[static::$items_id_1] ?? 0,
+                    static::$items_id_2 => $input[static::$items_id_2] ?? 0,
+                ]
+            ) > 0
+        ) {
+            Session::addMessageAfterRedirect(__s('Relation already exists.'), false, ERROR);
+            return false;
+        }
+
+        return parent::prepareInputForAdd($input);
+    }
+
     public static function getTypeName($nb = 0)
     {
         return _n('Link Ticket/Project task', 'Links Ticket/Project task', $nb);
@@ -135,6 +153,7 @@ class ProjectTask_Ticket extends CommonDBRelation
      * Show tickets for a projecttask
      *
      * @param ProjectTask $projecttask object
+     * @return void|false
      **/
     public static function showForProjectTask(ProjectTask $projecttask)
     {
@@ -210,6 +229,7 @@ class ProjectTask_Ticket extends CommonDBRelation
      * Show projecttasks for a ticket
      *
      * @param Ticket $ticket object
+     * @return void|false
      **/
     public static function showForTicket(Ticket $ticket)
     {

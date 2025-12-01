@@ -35,12 +35,13 @@
 namespace tests\units\Glpi\System\Requirement;
 
 use Glpi\System\Requirement\DirectoriesWriteAccess;
+use Glpi\Tests\GLPITestCase;
 use org\bovigo\vfs\vfsStream;
 
 /**
  * Nota: Complex ACL are not tested.
  */
-class DirectoriesWriteAccessTest extends \GLPITestCase
+class DirectoriesWriteAccessTest extends GLPITestCase
 {
     public function testCheckOnExistingWritableDirs()
     {

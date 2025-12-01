@@ -46,6 +46,7 @@ use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\QuestionType\TranslationAwareQuestionType;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -54,7 +55,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 use function Safe\json_encode;
 
-class FormTranslationTest extends \DbTestCase
+class FormTranslationTest extends DbTestCase
 {
     use FormTesterTrait;
 

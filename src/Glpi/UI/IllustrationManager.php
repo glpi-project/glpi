@@ -35,6 +35,7 @@
 namespace Glpi\UI;
 
 use Glpi\Application\View\TemplateRenderer;
+use InvalidArgumentException;
 use RuntimeException;
 use Safe\Exceptions\FilesystemException;
 use Throwable;
@@ -44,6 +45,7 @@ use function Safe\json_decode;
 use function Safe\mkdir;
 use function Safe\realpath;
 use function Safe\rename;
+use function Safe\unlink;
 
 final class IllustrationManager
 {
@@ -93,6 +95,15 @@ final class IllustrationManager
         $this->validateOrInitCustomContentDir(self::CUSTOM_SCENES_DIR);
     }
 
+    public function getCustomIconIdFromPrefixedString(string $prefixed_id): string
+    {
+        $custom_icon_prefix = self::CUSTOM_ILLUSTRATION_PREFIX;
+        if (!str_starts_with($prefixed_id, $custom_icon_prefix)) {
+            throw new InvalidArgumentException("$prefixed_id is not prefixed");
+        }
+        return substr($prefixed_id, strlen($custom_icon_prefix));
+    }
+
     /**
      * @param int|null $size Height and width (px). Will be set to 100% if null.
      */
@@ -101,7 +112,7 @@ final class IllustrationManager
         $custom_icon_prefix = self::CUSTOM_ILLUSTRATION_PREFIX;
         if (str_starts_with($icon_id, $custom_icon_prefix)) {
             return $this->renderCustomIcon(
-                substr($icon_id, strlen($custom_icon_prefix)),
+                $this->getCustomIconIdFromPrefixedString($icon_id),
                 $size
             );
         } else {
@@ -235,6 +246,14 @@ final class IllustrationManager
         }
 
         return $file_path;
+    }
+
+    public function deleteCustomIllustrationFile(string $id): void
+    {
+        $file = $this->getCustomIllustrationFile($id);
+        if ($file !== null && is_writable(dirname($file))) {
+            unlink($file);
+        }
     }
 
     public function getCustomSceneFile(string $id): ?string

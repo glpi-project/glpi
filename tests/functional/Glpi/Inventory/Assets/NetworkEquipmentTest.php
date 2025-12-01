@@ -37,9 +37,8 @@ namespace tests\units\Glpi\Inventory\Asset;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Converter;
 use Glpi\Inventory\Inventory;
+use Glpi\Tests\AbstractInventoryAsset;
 use PHPUnit\Framework\Attributes\DataProvider;
-
-include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 class NetworkEquipmentTest extends AbstractInventoryAsset
 {

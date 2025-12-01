@@ -34,9 +34,10 @@
 
 namespace tests\units;
 
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class ImpactItemTest extends \DbTestCase
+class ImpactItemTest extends DbTestCase
 {
     public function testFindForItem_inexistent()
     {

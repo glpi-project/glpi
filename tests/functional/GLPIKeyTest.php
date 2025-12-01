@@ -35,13 +35,12 @@
 namespace tests\units;
 
 use Glpi\Plugin\Hooks;
+use Glpi\Tests\DbTestCase;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 
-/* Test for inc/glpikey.class.php */
-
-class GLPIKeyTest extends \DbTestCase
+class GLPIKeyTest extends DbTestCase
 {
     public static function getExpectedKeyPathProvider()
     {
@@ -441,11 +440,16 @@ class GLPIKeyTest extends \DbTestCase
 
         $this->assertEquals(
             [
+                'glpi_apiclients.app_token',
                 'glpi_authldaps.rootdn_passwd',
                 'glpi_mailcollectors.passwd',
                 'glpi_oauthclients.secret',
                 'glpi_snmpcredentials.auth_passphrase',
                 'glpi_snmpcredentials.priv_passphrase',
+                'glpi_users.api_token',
+                'glpi_users.cookie_token',
+                'glpi_users.password_forget_token',
+                'glpi_users.personal_token',
                 'glpi_plugin_myplugin_remote.key',
                 'glpi_plugin_myplugin_remote.secret',
                 'glpi_plugin_anotherplugin_link.pass',

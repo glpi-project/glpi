@@ -37,13 +37,14 @@ namespace tests\units;
 use CommonDBTM;
 use Computer;
 use Glpi\Plugin\Hooks;
+use Glpi\Tests\DbTestCase;
 use ImpactCompound;
 use ImpactItem;
 use ImpactRelation;
 use Item_Ticket;
 use Ticket;
 
-class ImpactTest extends \DbTestCase
+class ImpactTest extends DbTestCase
 {
     public function setUp(): void
     {

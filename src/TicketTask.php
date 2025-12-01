@@ -43,7 +43,7 @@ class TicketTask extends CommonITILTask
     /**
      * Populate the planning with planned ticket tasks
      *
-     * @param $options   array of possible options:
+     * @param array $options   array of possible options:
      *    - who          ID of the user (0 = undefined)
      *    - whogroup     ID of the group of users (0 = undefined)
      *    - begin        Date
@@ -60,7 +60,7 @@ class TicketTask extends CommonITILTask
     /**
      * Populate the planning with planned ticket tasks
      *
-     * @param $options   array of possible options:
+     * @param array $options   array of possible options:
      *    - who          ID of the user (0 = undefined)
      *    - whogroup     ID of the group of users (0 = undefined)
      *    - begin        Date

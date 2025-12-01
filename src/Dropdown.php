@@ -970,6 +970,7 @@ class Dropdown
      * @param mixed   $value       the preselected value we want
      * @param string  $store_path  path where icons are stored (No longer used)
      * @param boolean $display     display of get string ? (true by default)
+     * @param array   $options
      *
      *
      * @return void|string
@@ -1085,6 +1086,8 @@ HTML;
      *
      * @param string $name   select name
      * @param mixed  $value  default value (default '')
+     *
+     * @return void
      **/
     public static function showGMT($name, $value = '')
     {
@@ -1530,6 +1533,8 @@ HTML;
      * @param array  $options  array of additionnal options:
      *    - display_emptychoice : allow selection of no language
      *    - emptylabel          : specific string to empty label if display_emptychoice is true
+     *
+     * @return int|string
      **/
     public static function showLanguages($myname, $options = [])
     {
@@ -1572,7 +1577,9 @@ HTML;
     /**
      * @since 0.84
      *
-     * @param $value
+     * @param string $value
+     *
+     * @return string
      **/
     public static function getLanguageName($value)
     {
@@ -1586,8 +1593,8 @@ HTML;
      *
      * Print a select named $name with hours options and selected value $value
      *
-     *@param $name             string   HTML select name
-     *@param $options array of options :
+     * @param string $name    HTML select name
+     * @param array  $options options :
      *     - value              default value (default '')
      *     - limit_planning     limit planning to the configuration range (default false)
      *     - display   boolean  if false get string
@@ -1950,7 +1957,9 @@ HTML;
      *     - on_change string / value to transmit to "onChange"
      *     - used      array / Already used items ID: not to display in dropdown (default empty)
      *     - class : class to pass to html select
-     **/
+     *
+     * @return int|string
+     */
     public static function showNumber($myname, $options = [])
     {
         global $CFG_GLPI;
@@ -2030,6 +2039,8 @@ HTML;
      * @param integer $value    numeric value
      * @param string  $unit     unit (maybe year, month, day, hour, % for standard management)
      * @param integer $decimals number of decimal
+     *
+     * @return string
      **/
     public static function getValueWithUnit($value, $unit, $decimals = 0)
     {
@@ -2104,7 +2115,9 @@ HTML;
      *    - width           : string / display width of the item
      *    - allow_max_change: boolean / allow to change max value according to max($params['value'], $params['max']) (default true).
      *                        If false and the value is greater than the max, the value will be adjusted based on the step and then added to the dropdown as an extra option.
-     **/
+     *
+     * @return int|string
+     */
     public static function showTimeStamp($myname, $options = [])
     {
         global $CFG_GLPI;
@@ -2593,7 +2606,7 @@ HTML;
      * Dropdown for global item management
      *
      * @param integer $ID           item ID
-     * @param array   $attrs   array which contains the extra paramters
+     * @param array   $attrs   array which contains the extra parameters
      *
      * Parameters can be :
      * - target target for actions
@@ -2602,6 +2615,8 @@ HTML;
      * - class : class to pass to html select
      * - management_restrict global management restrict mode
      * - width specific width needed (default not set)
+     *
+     * @return void
      **/
     public static function showGlobalSwitch($ID, $attrs = [])
     {
@@ -2756,8 +2771,12 @@ HTML;
     /**
      * show dropdown for output format
      *
+     * @param ?class-string<CommonDBTM> $itemtype
+     *
      * @since 0.83
-     **/
+     *
+     * @return void
+     */
     public static function showOutputFormat($itemtype = null)
     {
         global $CFG_GLPI;
@@ -2789,10 +2808,11 @@ HTML;
     /**
      * show dropdown to select list limit
      *
-     * @since 0.83
-     *
      * @param string $onchange  Optional, for ajax (default '')
-     **/
+     * @param bool $display
+     *
+     * @return ($display is true ? int : string)
+     */
     public static function showListLimit($onchange = '', $display = true)
     {
         global $CFG_GLPI;
@@ -2968,9 +2988,9 @@ HTML;
                         $where = array_merge($where, $value['WHERE']);
                     } elseif (!is_numeric($key) && !in_array($key, ['AND', 'OR', 'NOT']) && !str_contains($key, '.')) {
                         // Ensure condition contains table name to prevent ambiguity with fields from `glpi_entities` table
-                        $where["$table.$key"] = $value;
+                        $where[] = ["$table.$key" => $value];
                     } else {
-                        $where[$key] = $value;
+                        $where[] = [$key => $value];
                     }
                 }
             }
@@ -4885,12 +4905,18 @@ HTML;
     }
 
 
+    /**
+     * @param array $post
+     * @param bool $json
+     *
+     * @return false|($json is true ? string : array)
+     */
     public static function getDropdownActors($post, $json = true)
     {
         global $CFG_GLPI;
 
         if (!Session::validateIDOR($post)) {
-            return;
+            return false;
         }
 
         $defaults = [

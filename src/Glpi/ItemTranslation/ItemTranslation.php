@@ -67,6 +67,11 @@ abstract class ItemTranslation extends CommonDBChild
         return $this->prepapreInput($input);
     }
 
+    /**
+     * @param array $input
+     *
+     * @return array
+     */
     public function prepapreInput($input): array
     {
         if (isset($input['translations'])) {

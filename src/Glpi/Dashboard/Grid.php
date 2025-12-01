@@ -61,16 +61,24 @@ use function Safe\preg_replace;
 
 class Grid
 {
+    /** @var int */
     protected $cell_margin     = 3;
+    /** @var int */
     protected $grid_cols       = 26;
+    /** @var int */
     protected $grid_rows       = 24;
+    /** @var string */
     protected $current         = "";
     /** @var Dashboard|null */
     protected $dashboard       = null;
+    /** @var array */
     protected $items           = [];
+    /** @var string */
     protected $context            = '';
 
+    /** @var bool */
     public static $embed              = false;
+    /** @var array */
     public static $all_dashboards     = [];
 
     public function __construct(string $dashboard_key = "central", int $grid_cols = 26, int $grid_rows = 24, string $context = 'core')
@@ -194,6 +202,9 @@ HTML;
      * Do we have the right to view at least one dashboard?
      *
      * This can be optionally restricted to a specific context.
+     *
+     * @param ?string $context
+     *
      * @return bool
      */
     public static function canViewOneDashboard($context = null): bool
@@ -486,6 +497,9 @@ TWIG, $twig_params);
     }
 
 
+    /**
+     * @return void
+     */
     public function showDefault()
     {
         echo "<div class='card p-3'>";
@@ -496,6 +510,10 @@ TWIG, $twig_params);
 
     /**
      * Init embed session
+     *
+     * @param array $params
+     *
+     * @return void
      */
     public function initEmbedSession(array $params = [])
     {
@@ -960,6 +978,8 @@ HTML;
     {
         global $GLPI_CACHE;
 
+        $start = microtime(true);
+
         $force = ($card_options['args']['force'] ?? $card_options['force'] ?? false);
 
         // retrieve card
@@ -1068,9 +1088,10 @@ HTML;
         Profiler::getInstance()->stop(__METHOD__ . ' get card data');
 
         if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
-            // Use the current PHP request duration as the execution time for a more accurate card loading time
-            $execution_time = Profiler::getInstance()->getCurrentDuration('php_request');
-            $html .= '<span class="debug-card">' . \htmlescape($execution_time) . 'ms</span>';
+            $html .= '<span class="debug-card">';
+            $html .= "total: " . \htmlescape(Profiler::getInstance()->getCurrentDuration('php_request')) . 'ms - ';
+            $html .= "card: " . \htmlescape(round((microtime(true) - $start) * 1000)) . 'ms';
+            $html .= '</span>';
         }
 
         return $html;
@@ -1464,6 +1485,11 @@ HTML;
     }
 
 
+    /**
+     * @param string $interface
+     *
+     * @return array
+     */
     public function getRights($interface = 'central')
     {
         return [

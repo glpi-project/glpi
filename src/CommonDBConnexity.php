@@ -71,6 +71,7 @@ use function Safe\preg_match;
  **/
 abstract class CommonDBConnexity extends CommonDBTM
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     public const DONT_CHECK_ITEM_RIGHTS  = 1; // Don't check the parent => always can*Child

@@ -44,6 +44,11 @@ use function Safe\json_decode;
 
 class ClientRepository implements ClientRepositoryInterface
 {
+    /**
+     * @param string $clientIdentifier
+     *
+     * @return ?ClientEntityInterface
+     */
     public function getClientEntity($clientIdentifier): ?ClientEntityInterface
     {
         global $DB;
@@ -67,6 +72,11 @@ class ClientRepository implements ClientRepositoryInterface
     }
 
     /**
+     * @param string $clientIdentifier
+     * @param string $clientSecret
+     * @param string $grantType
+     *
+     * @return bool
      * @throws OAuthServerException If the requested grant type is not allowed for the client
      */
     public function validateClient($clientIdentifier, $clientSecret, $grantType): bool

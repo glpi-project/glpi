@@ -191,4 +191,16 @@ class Item_DeviceSimcard extends Item_Devices implements AssignableItemInterface
             'msin' => 'equal',
         ];
     }
+
+    public function getRights($interface = 'central')
+    {
+        $rights = parent::getRights($interface);
+        // Update labels to match other assets
+        $rights[READ] = __('View all');
+        $rights[UPDATE] = __('Update all');
+        unset($rights[CREATE]);
+        unset($rights[DELETE]);
+        unset($rights[PURGE]);
+        return $rights;
+    }
 }

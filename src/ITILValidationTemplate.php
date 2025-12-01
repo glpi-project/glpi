@@ -40,6 +40,7 @@ use Glpi\Features\Clonable;
  **/
 class ITILValidationTemplate extends AbstractITILChildTemplate
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     // From CommonDBTM

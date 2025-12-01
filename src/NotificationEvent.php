@@ -141,8 +141,7 @@ class NotificationEvent extends CommonDBTM
                 $notification = Notification::getById($data['id']);
                 if (
                     !$notification instanceof Notification
-                    || !$item instanceof CommonDBTM
-                    || !$notification->itemMatchFilter($item)
+                    || ($item instanceof CommonDBTM && !$notification->itemMatchFilter($item))
                 ) {
                     continue;
                 }

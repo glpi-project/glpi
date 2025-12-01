@@ -115,8 +115,8 @@ final class Lexer
         // If the operator is =in=, =out= or some other operator which takes a list of values, the value will be a comma-separated list of values inside parentheses.
 
         while ($pos < $length) {
-            $char = $query[$pos];
-            $prev_char = $pos - 1 >= 0 ? $query[$pos - 1] : null;
+            $char = mb_substr($query, $pos, 1, 'UTF-8');
+            $prev_char = $pos - 1 >= 0 ? mb_substr($query, $pos - 1, 1, 'UTF-8') : null;
 
             if (!$in_value && $char === self::CHAR_GROUP_OPEN && $prev_char !== self::CHAR_ESCAPE) {
                 $tokens[] = [self::T_GROUP_OPEN, $char];
@@ -129,23 +129,27 @@ final class Lexer
             } elseif (!$in_filter && preg_match(self::CHARS_PROPERTY, $char)) {
                 $in_filter = true;
                 $buffer .= $char;
+                $nextChar = mb_substr($query, $pos + 1, 1, 'UTF-8');
                 // Property should continue until a '=' or '!' (in the case of != operator) is found.
-                while ($pos + 1 < $length && $query[$pos + 1] !== '=' && $query[$pos + 1] !== '!') {
-                    $buffer .= $query[++$pos];
+                while ($pos + 1 < $length && $nextChar !== '=' && $nextChar !== '!') {
+                    $buffer .= mb_substr($query, ++$pos, 1, 'UTF-8');
+                    $nextChar = mb_substr($query, $pos + 1, 1, 'UTF-8');
                 }
                 $tokens[] = [self::T_PROPERTY, $buffer];
                 // Now the operator is started
                 $pos++;
-                if (!isset($query[$pos]) || ($query[$pos] !== '=' && $query[$pos] !== '!')) {
+                $char = mb_substr($query, $pos, 1, 'UTF-8');
+                if (empty($char) || ($char !== '=' && $char !== '!')) {
                     throw new RSQLException('', sprintf(__('RSQL query is missing an operator in filter for property "%1$s"'), $tokens[count($tokens) - 1][1]));
                 }
                 $fn_validate_pos();
-                $buffer = $query[$pos];
+                $buffer = $char;
                 // Operator should continue until the next '=' is found.
-                while ($pos + 1 < $length && $query[$pos + 1] !== '=') {
-                    $buffer .= $query[++$pos];
+                while ($pos + 1 < $length && mb_substr($query, $pos + 1, 1, 'UTF-8') !== '=') {
+                    $buffer .= mb_substr($query, ++$pos, 1, 'UTF-8');
                 }
-                if (!isset($query[$pos + 1]) || $query[$pos + 1] !== '=') {
+                $nextChar = mb_substr($query, $pos + 1, 1, 'UTF-8');
+                if (empty($nextChar) || $nextChar !== '=') {
                     throw new RSQLException('', sprintf(__('RSQL query has an incomplete operator in filter for property "%1$s"'), $tokens[count($tokens) - 1][1]));
                 }
                 $tokens[] = [self::T_OPERATOR, $buffer . '='];
@@ -154,13 +158,13 @@ final class Lexer
                 $pos += 2;
                 $fn_validate_pos();
                 $in_value = true;
-                if (!isset($query[$pos])) {
+                $char = mb_substr($query, $pos, 1, 'UTF-8');
+                if (empty($char)) {
                     $tokens[] = [self::T_UNSPECIFIED_VALUE, ''];
                     break;
                 }
                 // If the current char is ', ", or (, then the value continues until the matching closing quote or parenthesis is found.
                 // When matching, we ignore escaped quotes and parenthesis.
-                $char = $query[$pos];
                 $starting_char = $char;
                 $expected_ending_char = null;
                 $buffer = $char;
@@ -170,10 +174,10 @@ final class Lexer
                     // We have no starting quote or parenthesis, so the value continues until an unescaped comma, unescaped semicolon, unescaped close parenthesis, or end of string is found.
                 }
                 while ($pos + 1 < $length) {
-                    $char = $query[++$pos];
+                    $char = mb_substr($query, ++$pos, 1, 'UTF-8');
                     if ($char === self::CHAR_ESCAPE) {
                         // If the current char is an escape character, then the next character is part of the value.
-                        $buffer .= $query[++$pos];
+                        $buffer .= $char;
                     } elseif ($expected_ending_char !== null && $char === $expected_ending_char) {
                         // If the current char is the expected ending char, then the value is complete.
                         $buffer .= $char;

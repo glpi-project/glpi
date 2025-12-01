@@ -43,10 +43,10 @@ use CommonITILValidation;
 use Computer;
 use Contract;
 use CronTask;
-use DbTestCase;
 use Entity;
 use Glpi\Search\SearchOption;
 use Glpi\Team\Team;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\ITILTrait;
 use Glpi\Tests\Glpi\ValidationStepTrait;
 use Group;
@@ -1742,7 +1742,7 @@ class TicketTest extends DbTestCase
             category: false,
             requestSource: false,
             location: false,
-            itil_form: false,
+            itil_form: true,
             cancel_ticket: true,
         );
 
@@ -1775,7 +1775,7 @@ class TicketTest extends DbTestCase
             $category = false,
             $requestSource = false,
             $location = false,
-            itil_form: false,
+            itil_form: true,
             cancel_ticket: false, // Can no longer cancel once a followup is added
         );
 
@@ -3042,6 +3042,77 @@ class TicketTest extends DbTestCase
         $this->assertSame($urgency, $result['urgency']);
         $this->assertSame($impact, $result['impact']);
         $this->assertSame($priority, $result['priority']);
+    }
+
+    public function testComputePriorityWithPermissions()
+    {
+        $this->login();
+
+        $ticket = new Ticket();
+        $ticket_id = $ticket->add([
+            'name'    => 'Test priority recalculation',
+            'content' => 'Testing priority computation with permissions',
+            'urgency' => 3,
+            'impact'  => 3,
+            'priority' => 3,
+        ]);
+        $this->assertGreaterThan(0, $ticket_id);
+
+        $this->login('tech', 'tech');
+        $this->assertFalse((bool) Session::haveRight(Ticket::$rightname, Ticket::CHANGEPRIORITY));
+
+        $ticket->getFromDB($ticket_id);
+
+        $result = $ticket->prepareInputForUpdate([
+            'id'     => $ticket_id,
+            'impact' => 5,
+        ]);
+        $this->assertSame(3, $result['urgency']);
+        $this->assertSame(5, $result['impact']);
+        $this->assertSame(4, $result['priority']);
+
+        $result = $ticket->prepareInputForUpdate([
+            'id'      => $ticket_id,
+            'urgency' => 5,
+        ]);
+        $this->assertSame(5, $result['urgency']);
+        $this->assertSame(3, $result['impact']);
+        $this->assertSame(4, $result['priority']);
+
+        $_SESSION['glpiactiveprofile']['ticket'] |= Ticket::CHANGEPRIORITY;
+        $this->assertTrue((bool) Session::haveRight(Ticket::$rightname, Ticket::CHANGEPRIORITY));
+
+        $result = $ticket->prepareInputForUpdate([
+            'id'     => $ticket_id,
+            'impact' => 5,
+        ]);
+        $this->assertSame(3, $result['urgency']);
+        $this->assertSame(5, $result['impact']);
+        $this->assertSame(4, $result['priority']);
+
+        $result = $ticket->prepareInputForUpdate([
+            'id'       => $ticket_id,
+            'impact'   => 5,
+            'priority' => 3,
+        ]);
+        $this->assertSame(3, $result['priority']);
+
+        $result = $ticket->prepareInputForUpdate([
+            'id'      => $ticket_id,
+            'urgency' => 5,
+        ]);
+        $this->assertSame(5, $result['urgency']);
+        $this->assertSame(3, $result['impact']);
+        $this->assertSame(4, $result['priority']);
+
+        $result = $ticket->prepareInputForUpdate([
+            'id'      => $ticket_id,
+            'urgency' => 5,
+            'impact'  => 5,
+        ]);
+        $this->assertSame(5, $result['urgency']);
+        $this->assertSame(5, $result['impact']);
+        $this->assertSame(5, $result['priority']);
     }
 
     public function testGetDefaultValues()

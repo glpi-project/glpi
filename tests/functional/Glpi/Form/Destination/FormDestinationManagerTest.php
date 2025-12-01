@@ -34,10 +34,10 @@
 
 namespace tests\units\Glpi\Form\Destination;
 
-use DbTestCase;
 use Glpi\Form\Condition\CreationStrategy;
 use Glpi\Form\Destination\FormDestinationInterface;
 use Glpi\Form\Destination\FormDestinationManager;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use GlpiPlugin\Tester\Form\ComputerDestination;

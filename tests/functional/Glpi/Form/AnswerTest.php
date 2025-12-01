@@ -36,7 +36,7 @@ namespace tests\unit\Glpi\Form;
 
 use Glpi\Form\Answer;
 use Glpi\Form\Question;
-use GLPITestCase;
+use Glpi\Tests\GLPITestCase;
 
 final class AnswerTest extends GLPITestCase
 {

@@ -35,7 +35,6 @@
 namespace tests\units\Glpi\Form\AnswersHandler;
 
 use CommonITILObject;
-use DbTestCase;
 use Entity;
 use Glpi\Form\Answer;
 use Glpi\Form\AnswersHandler\AnswersHandler;
@@ -59,6 +58,7 @@ use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\ValidationResult;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Location;
@@ -236,6 +236,29 @@ class AnswersHandlerTest extends DbTestCase
             'expectedIsValid' => false,
             'expectedErrors' => [
                 'Mandatory Name' => 'This field is mandatory',
+            ],
+        ];
+
+        $mandatory_number_form_builder = (new FormBuilder("Validation Test Form"))
+                ->addQuestion("Mandatory Number", QuestionTypeNumber::class, is_mandatory: true);
+
+        yield 'Zero in mandatory number field - should be valid' => [
+            'builder' => $mandatory_number_form_builder,
+            'answers' => [
+                'Mandatory Number' => 0,
+            ],
+            'expectedIsValid' => true,
+            'expectedErrors' => [],
+        ];
+
+        yield 'Empty mandatory number field - should be invalid' => [
+            'builder' => $mandatory_number_form_builder,
+            'answers' => [
+                'Mandatory Number' => '',
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Mandatory Number' => 'Please enter a valid number',
             ],
         ];
 

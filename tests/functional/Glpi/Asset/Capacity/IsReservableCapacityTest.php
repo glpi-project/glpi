@@ -34,13 +34,13 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
-use DbTestCase;
 use DisplayPreference;
 use Entity;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
 use Glpi\Asset\Capacity\HasNotepadCapacity;
 use Glpi\Asset\Capacity\IsReservableCapacity;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Log;
 use ReservationItem;
@@ -91,8 +91,16 @@ class IsReservableCapacityTest extends DbTestCase
             // Check that the class is globally registered
             if ($has_capacity) {
                 $this->assertContains($classname, $CFG_GLPI['reservation_types']);
+                $this->assertEquals(
+                    ['fullcalendar', 'reservations'],
+                    $CFG_GLPI['javascript']['assets'][strtolower($classname)]
+                );
             } else {
                 $this->assertNotContains($classname, $CFG_GLPI['reservation_types']);
+                $this->assertArrayNotHasKey(
+                    strtolower($classname),
+                    $CFG_GLPI['javascript']['assets']
+                );
             }
 
             // Check that the corresponding tab is present on items

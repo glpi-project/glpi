@@ -38,7 +38,7 @@ use DateTimeImmutable;
 use Glpi\Message\MessageType;
 use Glpi\Progress\ProgressStorage;
 use Glpi\Progress\StoredProgressIndicator;
-use GLPITestCase;
+use Glpi\Tests\GLPITestCase;
 
 class StoredProgressIndicatorTest extends GLPITestCase
 {

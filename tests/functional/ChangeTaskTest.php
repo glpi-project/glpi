@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use ChangeTask;
+use Glpi\Tests\CommonITILTaskTestCase;
 use Override;
 
 final class ChangeTaskTest extends CommonITILTaskTestCase

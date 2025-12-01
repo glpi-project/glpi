@@ -42,6 +42,7 @@ use Glpi\Features\Clonable;
  **/
 class ProblemTemplate extends ITILTemplate
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     #[Override]

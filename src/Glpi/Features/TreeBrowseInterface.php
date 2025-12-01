@@ -38,6 +38,13 @@ use CommonDBTM;
 
 interface TreeBrowseInterface
 {
+    /**
+     * @param string $itemtype
+     * @param array $params
+     * @param bool $update
+     *
+     * @return void
+     */
     public static function showBrowseView(string $itemtype, array $params, $update = false);
 
     /**

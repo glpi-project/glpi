@@ -50,6 +50,11 @@ class Client implements ClientEntityInterface
         $this->isConfidential = true;
     }
 
+    /**
+     * @param string $name
+     *
+     * @return void
+     */
     public function setName(string $name)
     {
         $this->name = $name;

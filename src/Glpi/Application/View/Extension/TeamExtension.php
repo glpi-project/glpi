@@ -35,6 +35,7 @@
 
 namespace Glpi\Application\View\Extension;
 
+use CommonDBTM;
 use Glpi\Features\TeamworkInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -51,6 +52,13 @@ class TeamExtension extends AbstractExtension
         ];
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $role
+     * @param int $nb
+     *
+     * @return string
+     */
     public function getTeamRoleName($itemtype, int $role, int $nb = 1): string
     {
         if (is_a($itemtype, TeamworkInterface::class, true)) {

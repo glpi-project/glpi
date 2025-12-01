@@ -37,7 +37,7 @@ namespace tests\units;
 use Auth;
 use AuthLDAP;
 use AuthMail;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use User;
 
@@ -308,5 +308,24 @@ class AuthTest extends DbTestCase
         $new_cost = null;
         preg_match('/\$2y\$(\d+)\$.+/', $user->fields['password'], $new_cost);
         $this->assertGreaterThan(5, (int) $new_cost[1]);
+    }
+
+    public function testRememberMeLastLogin(): void
+    {
+        $user = getItemByTypeName(User::class, 'post-only');
+        $token = $user->getAuthToken('cookie_token', true);
+        $this->assertnull($user->fields['last_login']);
+
+        $_COOKIE[session_name() . '_rememberme'] = json_encode([
+            $user->getID(),
+            $token,
+        ]);
+
+        //login using remember_me cookie just set
+        $this->assertTrue((new Auth())->login('', ''));
+
+        //check if last_login is now set
+        $this->assertTrue($user->getFromDB($user->getID()));
+        $this->assertNotNull($user->fields['last_login']);
     }
 }

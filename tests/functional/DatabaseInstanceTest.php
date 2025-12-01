@@ -35,10 +35,10 @@
 namespace tests\units;
 
 use DatabaseInstance;
-use DbTestCase;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDatabaseInstanceCapacity;
 use Glpi\Features\Clonable;
+use Glpi\Tests\DbTestCase;
 use Toolbox;
 
 class DatabaseInstanceTest extends DbTestCase

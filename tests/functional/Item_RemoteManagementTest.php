@@ -34,10 +34,10 @@
 
 namespace tests\units;
 
-use DbTestCase;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasRemoteManagementCapacity;
 use Glpi\Features\Clonable;
+use Glpi\Tests\DbTestCase;
 use Item_RemoteManagement;
 use Toolbox;
 

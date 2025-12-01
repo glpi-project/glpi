@@ -42,7 +42,7 @@ use Glpi\Asset\Capacity\HasOperatingSystemCapacity;
 use Glpi\Asset\Capacity\HasVolumesCapacity;
 use Glpi\Asset\Capacity\IsInventoriableCapacity;
 use Glpi\Inventory\Request;
-use InventoryTestCase;
+use Glpi\Tests\InventoryTestCase;
 
 class GenericAssetInventoryTest extends InventoryTestCase
 {

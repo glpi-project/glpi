@@ -38,10 +38,10 @@ use Computer;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\QuestionType\QuestionTypeUserDevice;
 use Glpi\Form\QuestionType\QuestionTypeUserDevicesConfig;
+use Glpi\Tests\AbstractConditionHandlerTest;
 use Override;
-use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
 
-final class UserDevicesConditionHandlerTest extends AbstractConditionHandler
+final class UserDevicesConditionHandlerTest extends AbstractConditionHandlerTest
 {
     public static function getConditionHandler(): array
     {

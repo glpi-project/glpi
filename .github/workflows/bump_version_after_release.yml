@@ -50,7 +50,7 @@ jobs:
           echo "CHANGELOG_ENTRY=${CHANGELOG_ENTRY//$'\n'/'\n'}" >> $GITHUB_ENV
       - name: "Checkout"
         if: ${{ env.IS_STABLE_RELEASE == 'yes' }}
-        uses: "actions/checkout@v5"
+        uses: "actions/checkout@v6"
       - name: "Update codebase"
         if: ${{ env.IS_STABLE_RELEASE == 'yes' }}
         run: |

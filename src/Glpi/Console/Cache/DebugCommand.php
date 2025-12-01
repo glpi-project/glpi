@@ -46,6 +46,7 @@ use function Safe\json_encode;
 
 class DebugCommand extends Command
 {
+    /** @var bool */
     protected $requires_db_up_to_date = false;
 
     protected function configure()

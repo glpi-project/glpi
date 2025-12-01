@@ -78,12 +78,14 @@
         ) }}
     {% endset %}
 
-    {{ fields.textField(
+    {{ fields.passwordField(
         'app_token',
-        item.fields['app_token'],
+        item.fields['app_token']|decrypt,
         __('%1$s (%2$s)')|format(__('Application token'), 'app_token'),
         {
-            'add_field_html': reset_btn
+            'add_field_html': reset_btn,
+            'is_disclosable': true,
+            'clearable': false,
         }
     ) }}
 

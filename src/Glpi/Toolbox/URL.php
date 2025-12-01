@@ -188,7 +188,7 @@ final class URL
         }
     }
 
-    private static function extractedPathContainsNamespace(string $path)
+    private static function extractedPathContainsNamespace(string $path): bool
     {
         return str_contains($path, "/");
     }

@@ -52,6 +52,7 @@ use Glpi\Search\FilterableInterface;
 use Glpi\Search\SearchOption;
 use Glpi\Socket;
 use Glpi\Toolbox\UuidStore;
+use Glpi\UI\IllustrationManager;
 
 use function Safe\getimagesize;
 use function Safe\preg_grep;
@@ -2037,7 +2038,32 @@ class CommonDBTM extends CommonGLPI
      **/
     public function prepareInputForUpdate($input)
     {
+        $this->deleteUnusedCustomIllustrationFile($input);
+
         return $input;
+    }
+
+    private function deleteUnusedCustomIllustrationFile(array $input): void
+    {
+        if (
+            // This item support illustrations?
+            isset($this->fields['illustration'])
+            // An illustration was set before these changes?
+            && str_starts_with(
+                $this->fields['illustration'],
+                IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX,
+            )
+            // A new illustration value exist in the input?
+            && isset($input['illustration'])
+            // The new illustration value is different?
+            && $input['illustration'] !== $this->fields['illustration']
+        ) {
+            $manager = (new IllustrationManager());
+            $id = $manager->getCustomIconIdFromPrefixedString(
+                $this->fields['illustration']
+            );
+            $manager->deleteCustomIllustrationFile($id);
+        }
     }
 
     /**
@@ -5573,6 +5599,7 @@ class CommonDBTM extends CommonGLPI
                     //TRANS: Default document to files attached to tickets : %d is the ticket id
                     $input2["name"] = sprintf(__('Document Ticket %d'), $this->getID());
                     $input2["tickets_id"] = $this->getID();
+                    $input2['itemtype'] = Ticket::class;
                 }
 
                 if (isset($input['_tag'][$key])) {
@@ -5582,7 +5609,6 @@ class CommonDBTM extends CommonGLPI
 
                 $input2["entities_id"]             = $entities_id;
                 $input2["is_recursive"]            = $is_recursive;
-                $input2["documentcategories_id"]   = $CFG_GLPI["documentcategories_id_forticket"];
                 $input2["_only_if_upload_succeed"] = 1;
                 $input2["_filename"]               = [$file];
                 if (isset($this->input[$prefixUploadName][$key])) {
@@ -6304,6 +6330,10 @@ class CommonDBTM extends CommonGLPI
 
         // Get input value
         $input_value = $this->input[$field] ?? null;
+
+        if ($input_value === '') {
+            $input_value = [];
+        }
 
         // See dropdownField twig macro, needed for empty values as an empty
         // array won't be sent in the HTML form

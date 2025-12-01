@@ -52,6 +52,8 @@ interface ProtocolInterface
      * @param  string      $host  hostname or IP address of POP3 server
      * @param  int|null    $port  server port, null value with fallback to default port
      * @param  string|bool $ssl   use 'SSL', 'TLS' or false
+     *
+     * @return void
      */
     public function connect($host, $port = null, $ssl = false);
 

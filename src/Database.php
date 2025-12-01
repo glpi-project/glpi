@@ -246,6 +246,9 @@ class Database extends CommonDBChild
         return $tab;
     }
 
+    /**
+     * @return array
+     */
     public static function rawSearchOptionsToAdd()
     {
         $tab = [];

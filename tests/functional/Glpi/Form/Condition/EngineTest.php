@@ -34,7 +34,6 @@
 
 namespace tests\units\Glpi\Form\Condition;
 
-use DbTestCase;
 use Glpi\Form\Condition\CreationStrategy;
 use Glpi\Form\Condition\Engine;
 use Glpi\Form\Condition\EngineInput;
@@ -48,6 +47,7 @@ use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeRadio;
 use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use PHPUnit\Framework\Attributes\DataProvider;

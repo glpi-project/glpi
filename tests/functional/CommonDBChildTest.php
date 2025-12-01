@@ -36,7 +36,7 @@ namespace tests\units;
 
 use CommonDBChild;
 use Computer;
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 
 class CommonDBChildTest extends DbTestCase
 {

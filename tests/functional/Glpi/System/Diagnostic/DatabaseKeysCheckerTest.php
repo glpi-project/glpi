@@ -35,9 +35,10 @@
 namespace tests\units\Glpi\System\Diagnostic;
 
 use Glpi\System\Diagnostic\DatabaseKeysChecker;
+use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class DatabaseKeysCheckerTest extends \GLPITestCase
+class DatabaseKeysCheckerTest extends GLPITestCase
 {
     public static function sqlProvider()
     {

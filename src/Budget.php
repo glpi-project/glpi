@@ -44,6 +44,7 @@ use Glpi\Features\Clonable;
  */
 class Budget extends CommonDropdown
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     // From CommonDBTM

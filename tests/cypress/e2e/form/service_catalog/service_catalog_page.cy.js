@@ -430,7 +430,7 @@ describe('Service catalog page', () => {
         cy.findByPlaceholderText('Search for forms...').type(time);
 
         // Check breadcrumb
-        cy.findByRole('navigation', { 'name': 'Service catalog categories' }).within(() => {
+        cy.findByRole('main').findByRole('navigation', { 'name': 'Service catalog categories' }).within(() => {
             cy.findByRole('link', { 'name': 'Service catalog' }).should('exist');
             cy.findByRole('link', { 'name': `Root Category ${time}` }).should('not.exist');
             cy.findByRole('link', { 'name': `Child Category 1 ${time}` }).should('not.exist');
@@ -443,7 +443,7 @@ describe('Service catalog page', () => {
         });
 
         // Check breadcrumb
-        cy.findByRole('navigation', { 'name': 'Service catalog categories' }).within(() => {
+        cy.findByRole('main').findByRole('navigation', { 'name': 'Service catalog categories' }).within(() => {
             cy.findByRole('link', { 'name': 'Service catalog' }).should('exist');
             cy.findByRole('link', { 'name': `Root Category ${time}` }).should('not.exist');
             cy.findByRole('link', { 'name': `Child Category 1 ${time}` }).should('exist');
@@ -456,10 +456,10 @@ describe('Service catalog page', () => {
         });
 
         // Go back to the root category
-        cy.findByRole('link', { 'name': 'Service catalog' }).click();
+        cy.findByRole('main').findByRole('link', { 'name': 'Service catalog' }).click();
 
         // Check breadcrumb
-        cy.findByRole('navigation', { 'name': 'Service catalog categories' }).within(() => {
+        cy.findByRole('main').findByRole('navigation', { 'name': 'Service catalog categories' }).within(() => {
             cy.findByRole('link', { 'name': 'Service catalog' }).should('exist');
             cy.findByRole('link', { 'name': `Root Category ${time}` }).should('not.exist');
             cy.findByRole('link', { 'name': `Child Category 1 ${time}` }).should('not.exist');

@@ -94,6 +94,7 @@ final class Form extends CommonDBTM implements
     ConditionableVisibilityInterface
 {
     use ConditionableVisibilityTrait;
+    /** @use Clonable<static> */
     use Clonable {
         Clonable::prepareInputForClone as parentPrepareInputForClone;
         Clonable::post_clone as parentPostClone;
@@ -373,6 +374,8 @@ final class Form extends CommonDBTM implements
             $input['submit_button_conditions'] = json_encode($input['_conditions']);
             unset($input['_submit_button_conditions']);
         }
+
+        $input = $this->removeSavedConditionsIfAlwaysVisible($input);
 
         return $input;
     }

@@ -39,6 +39,7 @@ use Glpi\Features\Clonable;
 /// @todo study if we should integrate getHTMLTableHeader and getHTMLTableCellsForItem ...
 class Manufacturer extends CommonDropdown
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     public $can_be_translated = false;

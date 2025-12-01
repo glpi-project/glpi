@@ -34,9 +34,9 @@
 
 namespace tests\units;
 
-use DbTestCase;
 use Entity;
 use Generator;
+use Glpi\Tests\DbTestCase;
 use Notification;
 use NotificationTarget;
 use PHPUnit\Framework\Attributes\DataProvider;

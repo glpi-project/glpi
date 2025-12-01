@@ -34,7 +34,6 @@
 
 namespace tests\units\Glpi\Form\Condition;
 
-use DbTestCase;
 use Glpi\Form\Comment;
 use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\LogicOperator;
@@ -47,6 +46,7 @@ use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypeUserDevice;
 use Glpi\Form\QuestionType\QuestionTypeUserDevicesConfig;
 use Glpi\Form\Section;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 final class ConditionDataTest extends DbTestCase

@@ -34,7 +34,6 @@
 
 namespace tests\units\Glpi\Form\Migration;
 
-use DbTestCase;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\CommonITILField\AssigneeField;
@@ -42,10 +41,16 @@ use Glpi\Form\Destination\CommonITILField\AssigneeFieldConfig;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsField;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldConfig;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\BackupPlanField;
+use Glpi\Form\Destination\CommonITILField\CausesField;
+use Glpi\Form\Destination\CommonITILField\CheckListField;
 use Glpi\Form\Destination\CommonITILField\ContentField;
+use Glpi\Form\Destination\CommonITILField\ControlsListField;
+use Glpi\Form\Destination\CommonITILField\DeploymentPlanField;
 use Glpi\Form\Destination\CommonITILField\EntityField;
 use Glpi\Form\Destination\CommonITILField\EntityFieldConfig;
 use Glpi\Form\Destination\CommonITILField\EntityFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\ImpactsField;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryField;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldConfig;
@@ -83,6 +88,7 @@ use Glpi\Form\Destination\CommonITILField\SLATTRField;
 use Glpi\Form\Destination\CommonITILField\SLATTRFieldConfig;
 use Glpi\Form\Destination\CommonITILField\SLMFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\StatusField;
+use Glpi\Form\Destination\CommonITILField\SymptomsField;
 use Glpi\Form\Destination\CommonITILField\TemplateField;
 use Glpi\Form\Destination\CommonITILField\TemplateFieldConfig;
 use Glpi\Form\Destination\CommonITILField\TemplateFieldStrategy;
@@ -100,6 +106,7 @@ use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\Migration\FormMigration;
 use Glpi\Migration\PluginMigrationResult;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormTesterTrait;
 use GlpiPlugin\Tester\Form\ExternalIDField;
 use GlpiPlugin\Tester\Form\ExternalIDFieldConfig;
@@ -273,6 +280,11 @@ final class TargetsMigrationTest extends DbTestCase
                                 strategy: null, // No specific strategy for linked ITIL objects
                             ),
                         ]),
+                        ImpactsField::getKey()        => new SimpleValueConfig(""),
+                        ControlsListField::getKey()   => new SimpleValueConfig(""),
+                        DeploymentPlanField::getKey() => new SimpleValueConfig(""),
+                        BackupPlanField::getKey()     => new SimpleValueConfig(""),
+                        CheckListField::getKey()      => new SimpleValueConfig(""),
                     ],
                 ],
                 [
@@ -328,6 +340,9 @@ final class TargetsMigrationTest extends DbTestCase
                                 strategy: null, // No specific strategy for linked ITIL objects
                             ),
                         ]),
+                        ImpactsField::getKey()  => new SimpleValueConfig(""),
+                        CausesField::getKey()   => new SimpleValueConfig(""),
+                        SymptomsField::getKey() => new SimpleValueConfig(""),
                     ],
                 ],
             ],
@@ -405,6 +420,136 @@ final class TargetsMigrationTest extends DbTestCase
             count($expected_destinations),
             $destinations,
             'The number of destinations is not the expected one'
+        );
+    }
+
+    public function testMigrationOfChangesSpecificFields(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Arrange: create a form with a change target
+        $form_id = $this->createSimpleFormcreatorForm("Form with change", [
+            ['name' => 'Question 1', 'fieldtype' => 'text'],
+            ['name' => 'Question 2', 'fieldtype' => 'text'],
+            ['name' => 'Question 3', 'fieldtype' => 'text'],
+            ['name' => 'Question 4', 'fieldtype' => 'text'],
+            ['name' => 'Question 5', 'fieldtype' => 'text'],
+        ]);
+        $q1 = $this->getFormCreatorQuestionId("Question 1");
+        $q2 = $this->getFormCreatorQuestionId("Question 2");
+        $q3 = $this->getFormCreatorQuestionId("Question 3");
+        $q4 = $this->getFormCreatorQuestionId("Question 4");
+        $q5 = $this->getFormCreatorQuestionId("Question 5");
+        $this->addChangeTargetToFromcreatorForm($form_id, [
+            'name'               => 'My change',
+            'target_name'        => 'My change',
+            'content'            => "##FULLFORM##",
+            'impactcontent'      => "##question_$q1##",
+            'controlistcontent'  => "##question_$q2##",
+            'rolloutplancontent' => "##question_$q3##",
+            'backoutplancontent' => "##question_$q4##",
+            'checklistcontent'   => "##question_$q5##",
+        ]);
+
+        // Act: execute migration
+        $control_manager = FormAccessControlManager::getInstance();
+        $migration = new FormMigration(
+            db: $DB,
+            formAccessControlManager: $control_manager,
+            specificFormsIds: [$form_id],
+        );
+        $migration->execute();
+
+        // Assert: a form destination should be populated with the specific fields
+        $form = getItemByTypeName(Form::class, "Form with change");
+        $destinations = $form->getDestinations();
+        $this->assertCount(1, $destinations);
+
+        $destination = current($destinations);
+        $this->assertEquals(
+            FormDestinationChange::class,
+            $destination->fields['itemtype'],
+        );
+
+        $config = json_decode($destination->fields['config'], true);
+        $this->assertStringContainsString(
+            "#Question: Question 1",
+            $config['glpi-form-destination-commonitilfield-impactsfield']['value'],
+        );
+        $this->assertStringContainsString(
+            "#Question: Question 2",
+            $config['glpi-form-destination-commonitilfield-controlslistfield']['value'],
+        );
+        $this->assertStringContainsString(
+            "#Question: Question 3",
+            $config['glpi-form-destination-commonitilfield-deploymentplanfield']['value'],
+        );
+        $this->assertStringContainsString(
+            "#Question: Question 4",
+            $config['glpi-form-destination-commonitilfield-backupplanfield']['value'],
+        );
+        $this->assertStringContainsString(
+            "#Question: Question 5",
+            $config['glpi-form-destination-commonitilfield-checklistfield']['value'],
+        );
+    }
+
+    public function testMigrationOfProblemsSpecificFields(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Arrange: create a form with a problem target
+        $form_id = $this->createSimpleFormcreatorForm("Form with problem", [
+            ['name' => 'Question 1', 'fieldtype' => 'text'],
+            ['name' => 'Question 2', 'fieldtype' => 'text'],
+            ['name' => 'Question 3', 'fieldtype' => 'text'],
+        ]);
+        $q1 = $this->getFormCreatorQuestionId("Question 1");
+        $q2 = $this->getFormCreatorQuestionId("Question 2");
+        $q3 = $this->getFormCreatorQuestionId("Question 3");
+        $this->addProblemTargetToFromcreatorForm($form_id, [
+            'name'           => 'My problem',
+            'target_name'    => 'My problem',
+            'content'        => "##FULLFORM##",
+            'impactcontent'  => "##question_$q1##",
+            'causecontent'   => "##question_$q2##",
+            'symptomcontent' => "##question_$q3##",
+        ]);
+
+        // Act: execute migration
+        $control_manager = FormAccessControlManager::getInstance();
+        $migration = new FormMigration(
+            db: $DB,
+            formAccessControlManager: $control_manager,
+            specificFormsIds: [$form_id],
+        );
+        $migration->execute();
+
+        // Assert: a form destination should be populated with the specific fields
+        $form = getItemByTypeName(Form::class, "Form with problem");
+        $destinations = $form->getDestinations();
+        $this->assertCount(1, $destinations);
+
+        $destination = current($destinations);
+        $this->assertEquals(
+            FormDestinationProblem::class,
+            $destination->fields['itemtype'],
+        );
+
+        $config = json_decode($destination->fields['config'], true);
+        $this->assertStringContainsString(
+            "#Question: Question 1",
+            $config['glpi-form-destination-commonitilfield-impactsfield']['value'],
+        );
+        $this->assertStringContainsString(
+            "#Question: Question 2",
+            $config['glpi-form-destination-commonitilfield-causesfield']['value'],
+        );
+        $this->assertStringContainsString(
+            "#Question: Question 3",
+            $config['glpi-form-destination-commonitilfield-symptomsfield']['value'],
         );
     }
 }

@@ -30,7 +30,7 @@ jobs:
           --volume /glpi:/var/www/glpi
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v5"
+        uses: "actions/checkout@v6"
         with:
           ref: ${{ matrix.branch }}
       - name: "Define variables"
@@ -60,7 +60,7 @@ jobs:
           docker exec --interactive ${{ job.services.app.id }} tools/make_release.sh -y . ${{ steps.vars.outputs.release_name }}
           docker cp ${{ job.services.app.id }}:/tmp/glpi-${{ steps.vars.outputs.release_name }}.tgz ${{ github.workspace }}/${{ steps.vars.outputs.release_name }}.tar.gz
           cp ${{ github.workspace }}/${{ steps.vars.outputs.release_name }}.tar.gz ${{ github.workspace }}/${{ matrix.version-name }}.tar.gz
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         if: ${{ steps.vars.outputs.build == 'yes' }}
         with:
           repository: ${{ github.repository_owner }}/glpi-project.github.io

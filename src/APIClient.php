@@ -245,6 +245,10 @@ class APIClient extends CommonDBTM
             $input['app_token_date'] = $_SESSION['glpi_currenttime'];
         }
 
+        if (isset($input['app_token'])) {
+            $input['app_token'] = (new GLPIKey())->encrypt($input['app_token']);
+        }
+
         return $input;
     }
 

@@ -47,23 +47,4 @@ class Group_Ticket extends CommonITILActor
     public static $items_id_1 = 'tickets_id';
     public static $itemtype_2 = 'Group';
     public static $items_id_2 = 'groups_id';
-
-
-    public function post_addItem()
-    {
-
-        switch ($this->input['type']) {  // Values from CommonITILObject::getSearchOptionsActors()
-            case CommonITILActor::REQUESTER:
-                $this->_force_log_option = 71;
-                break;
-            case CommonITILActor::OBSERVER:
-                $this->_force_log_option = 65;
-                break;
-            case CommonITILActor::ASSIGN:
-                $this->_force_log_option = 8;
-                break;
-        }
-        parent::post_addItem();
-        $this->_force_log_option = 0;
-    }
 }

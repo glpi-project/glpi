@@ -224,6 +224,11 @@ final class RoutePath
         return $attributes;
     }
 
+    /**
+     * @param string $path
+     *
+     * @return bool
+     */
     public function isValidPath($path): bool
     {
         // Ensure no placeholders are left
@@ -368,13 +373,13 @@ final class RoutePath
         );
     }
 
-    private function setPath(string $path)
+    private function setPath(string $path): void
     {
         $this->path = $path;
         $this->route->path = $path;
     }
 
-    private function setPriority(int $priority)
+    private function setPriority(int $priority): void
     {
         $this->priority = $priority;
         $this->route->priority = $priority;

@@ -334,7 +334,9 @@ class DropdownTranslation extends CommonDBChild
      * Display all translated field for a dropdown
      *
      * @param CommonDropdown $item  A Dropdown item
-     **/
+     *
+     * @return void
+     */
     public static function showTranslations(CommonDropdown $item)
     {
         global $DB;

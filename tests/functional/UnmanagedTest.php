@@ -34,9 +34,9 @@
 
 namespace tests\units;
 
-use DbTestCase;
 use Glpi\Inventory\Converter;
 use Glpi\Inventory\Inventory;
+use Glpi\Tests\DbTestCase;
 
 /* Test for inc/unmanaged.class.php */
 

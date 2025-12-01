@@ -35,12 +35,13 @@
 namespace tests\units\Glpi\Toolbox;
 
 use Glpi\Form\Form;
+use Glpi\Tests\GLPITestCase;
 use Glpi\Toolbox\URL;
 use GlpiPlugin\Foo\A\B\C\D\E\F\G\Bar;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Ticket;
 
-class URLTest extends \GLPITestCase
+class URLTest extends GLPITestCase
 {
     public static function urlProvider(): iterable
     {

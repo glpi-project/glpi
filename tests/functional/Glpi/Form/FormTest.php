@@ -35,7 +35,6 @@
 namespace tests\units\Glpi\Form;
 
 use CronTask;
-use DbTestCase;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\ControlType\DirectAccess;
@@ -43,6 +42,10 @@ use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Comment;
+use Glpi\Form\Condition\LogicOperator;
+use Glpi\Form\Condition\Type;
+use Glpi\Form\Condition\ValueOperator;
+use Glpi\Form\Condition\VisibilityStrategy;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Destination\FormDestinationChange;
 use Glpi\Form\Destination\FormDestinationProblem;
@@ -59,8 +62,10 @@ use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\Section;
 use Glpi\Helpdesk\Tile\FormTile;
+use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Glpi\UI\IllustrationManager;
 use Item_Ticket;
 use Log;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -550,6 +555,39 @@ class FormTest extends DbTestCase
         $this->assertEquals(2 + $linked_items, countElementsInTable(Item_Ticket::getTable()));
     }
 
+    public function testCustomIllustrationsAreDeleted(): void
+    {
+        // Arrange: create a form with a custom illustration
+        $illustration_manager = new IllustrationManager();
+
+        $custom_icon_source = GLPI_ROOT . "/tests/fixtures/uploads/foo.png";
+        $file_name = Uuid::uuid4() . "-foo.png";
+        $tmp_file_path = GLPI_TMP_DIR . "/$file_name";
+
+        copy($custom_icon_source, $tmp_file_path);
+        $illustration_manager->saveCustomIllustration($file_name, $tmp_file_path);
+
+        $saved_icon_path = GLPI_PICTURE_DIR . "/illustrations/" . $file_name;
+        if (!file_exists($saved_icon_path)) {
+            $this->fail("Failed to save icon");
+        }
+
+        $icon_key = IllustrationManager::CUSTOM_SCENE_PREFIX . "$file_name";
+        $form = $this->createItem(Form::class, [
+            'name'         => "My form with a custom icon",
+            'illustration' => $icon_key,
+            'entities_id'  => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // Act: set another icon on the form
+        $this->updateItem(Form::class, $form->getID(), [
+            'illustration' => 'laptop',
+        ]);
+
+        // Assert: file should be deleted
+        $this->assertFalse(file_exists($saved_icon_path));
+    }
+
     /**
      * Test the purgedraftforms cron task
      */
@@ -810,5 +848,30 @@ class FormTest extends DbTestCase
 
         // Assert: the tabs should match the expected data
         $this->assertEquals($expected_tabs, $tabs);
+    }
+
+    public function testSubmitConditionsDataAreCleanedWhenStrategyIsReset(): void
+    {
+        // Arrange: create a form with a condition on its submit button
+        $builder = new FormBuilder();
+        $builder->addQuestion("My question", QuestionTypeShortText::class);
+        $builder->setSubmitButtonVisibility(VisibilityStrategy::VISIBLE_IF, [
+            [
+                'logic_operator' => LogicOperator::AND,
+                'item_name'      => "My question",
+                'item_type'      => Type::QUESTION,
+                'value_operator' => ValueOperator::EQUALS,
+                'value'          => "Yes",
+            ],
+        ]);
+        $form = $this->createForm($builder);
+
+        // Act: reset the submit button's visibility strategy
+        $form = $this->updateItem(Form::class, $form->getID(), [
+            'submit_button_visibility_strategy' => VisibilityStrategy::ALWAYS_VISIBLE->value,
+        ]);
+
+        // Assert: the conditions should be deleted
+        $this->assertEmpty($form->getConfiguredConditionsData());
     }
 }

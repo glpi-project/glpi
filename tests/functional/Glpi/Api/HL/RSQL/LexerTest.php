@@ -36,7 +36,7 @@ namespace tests\units\Glpi\Api\HL\RSQL;
 
 use Glpi\Api\HL\RSQL\Lexer;
 use Glpi\Api\HL\RSQL\RSQLException;
-use GLPITestCase;
+use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class LexerTest extends GLPITestCase
@@ -128,6 +128,11 @@ class LexerTest extends GLPITestCase
             [
                 'name=notempty=',
                 [[5, 'name'], [6, '=notempty='], [8, '']],
+            ],
+            [
+                // Multibyte test
+                'name==テスト',
+                [[5, 'name'], [6, '=='], [7, 'テスト']],
             ],
         ];
     }

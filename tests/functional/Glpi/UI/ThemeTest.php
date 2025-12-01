@@ -34,7 +34,7 @@
 
 namespace tests\units\Glpi\UI;
 
-use DbTestCase;
+use Glpi\Tests\DbTestCase;
 use Glpi\UI\Theme;
 use Glpi\UI\ThemeManager;
 use org\bovigo\vfs\vfsStream;

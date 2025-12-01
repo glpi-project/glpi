@@ -3287,4 +3287,28 @@ describe ('Conditions', () => {
         // Section should still exist
         cy.findAllByRole('region', {'name': 'Form section'}).should('have.length', 3);
     });
+
+    it('can duplicate section with conditions', () => {
+        cy.importForm('with-condition-on-sections.json').visitFormTab('Form');
+
+        // Duplicate second section
+        cy.findAllByRole('region', {name: 'Form section'})
+            .eq(1)
+            .findByRole('button', {name: 'More actions'})
+            .click()
+        ;
+        cy.findByRole('button', {name: "Duplicate section"}).click();
+
+        // Save and reload form
+        cy.saveFormEditorAndReload();
+
+        // Check that conditions have been applied to the new section
+        cy.findAllByRole('region', {name: 'Form section'})
+            .eq(2)
+            .click()
+        ;
+        cy.get('[data-glpi-editor-visibility-badge="visible_if"]')
+            .should('be.visible')
+        ;
+    });
 });

@@ -34,13 +34,11 @@
 
 namespace tests\units\Glpi\Toolbox;
 
+use Glpi\Tests\GLPITestCase;
 use Glpi\Toolbox\DataExport;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-/**
- * Test class for src/Glpi/Toolbox/dataexport.class.php
- */
-class DataExportTest extends \GLPITestCase
+class DataExportTest extends GLPITestCase
 {
     public static function normalizeValueForTextExportProvider(): iterable
     {

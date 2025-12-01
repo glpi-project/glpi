@@ -46,6 +46,7 @@ use Glpi\Features\StateInterface;
  **/
 class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterface, StateInterface
 {
+    /** @use Clonable<static> */
     use Clonable;
     use Glpi\Features\State;
     use AssetImage;

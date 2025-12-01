@@ -50,6 +50,7 @@ use Glpi\Tests\Api\Deprecated\Computer_SoftwareVersion;
 use Glpi\Tests\Api\Deprecated\ComputerAntivirus;
 use Glpi\Tests\Api\Deprecated\ComputerVirtualMachine;
 use Glpi\Tests\Api\Deprecated\TicketFollowup;
+use GLPIKey;
 use GuzzleHttp;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
@@ -62,6 +63,7 @@ use Psr\Http\Message\ResponseInterface;
 use QueuedNotification;
 use TicketTemplate;
 use TicketTemplateMandatoryField;
+use User;
 
 /**
  * @engine isolate
@@ -139,8 +141,10 @@ class APIRestTest extends TestCase
             ])
         );
 
-        $app_token = $apiclient->fields['app_token'];
-        $this->assertNotEmpty($app_token);
+        $encrypted_app_token = $apiclient->fields['app_token'];
+        $this->assertNotEmpty($encrypted_app_token);
+
+        $app_token = (new GLPIKey())->decrypt($encrypted_app_token);
         $this->assertSame(40, strlen($app_token));
 
         // test valid app token -> expect ok session
@@ -1630,8 +1634,11 @@ class APIRestTest extends TestCase
 
         // get the password recovery token
         $user = getItemByTypeName('User', TU_USER);
-        $token = $user->fields['password_forget_token'];
-        $this->assertNotEmpty($token);
+
+        $encrypted_token = $user->fields['password_forget_token'];
+        $this->assertNotEmpty($encrypted_token);
+
+        $token = (new GLPIKey())->decrypt($encrypted_token);
 
         // Test reset password with a bad token
         $this->query(
@@ -1906,11 +1913,11 @@ class APIRestTest extends TestCase
 
         // generate a new api token TU_USER user
         global $DB;
-        $token = \User::getUniqueToken('api_token');
+        $token = User::getUniqueToken('api_token');
         $updated = $DB->update(
             'glpi_users',
             [
-                'api_token' => $token,
+                'api_token' => (new GLPIKey())->encrypt($token),
             ],
             ['id' => $uid]
         );
@@ -2242,7 +2249,7 @@ class APIRestTest extends TestCase
         $pic = "test_picture.png";
         $params = ['headers' => ['Session-Token' => $this->session_token]];
         $id = getItemByTypeName('User', 'glpi', true);
-        $user = new \User();
+        $user = new User();
 
         /**
          * Case 1: normal execution
@@ -3296,14 +3303,26 @@ class APIRestTest extends TestCase
 
     public function testUndisclosedNotificationContent()
     {
+        global $DB;
+
+        $user = getItemByTypeName(User::class, TU_USER);
+
         // Enable notifications
         Config::setConfigurationValues('core', [
             'use_notifications' => '1',
             'notifications_mailing' => '1',
         ]);
 
+        // Empty existing notifications
+        $DB->delete(
+            QueuedNotification::getTable(),
+            [
+                'itemtype' => User::class,
+                'items_id' => $user->getID(),
+            ]
+        );
+
         // Trigger a notification sending
-        $user = getItemByTypeName('User', TU_USER);
         $this->query(
             'lostPassword',
             [
@@ -3333,6 +3352,12 @@ class APIRestTest extends TestCase
             [
                 'itemtype' => QueuedNotification::class,
                 'headers'  => ['Session-Token' => $data['session_token']],
+                'query'     => [
+                    'searchText' => [
+                        'itemtype' => User::class,
+                        'items_id' => $user->getID(),
+                    ],
+                ],
             ],
             200
         );
@@ -3359,6 +3384,18 @@ class APIRestTest extends TestCase
                 'headers'  => ['Session-Token' => $data['session_token']],
                 'query'    => [
                     'reset'         => 'reset',
+                    'criteria'      => [
+                        [
+                            'field'      => 20,
+                            'searchtype' => 'equals',
+                            'value'      => User::class,
+                        ],
+                        [
+                            'field'      => 21,
+                            'searchtype' => 'equals',
+                            'value'      => $user->getID(),
+                        ],
+                    ],
                     'forcedisplay'  => [12, 13],
                 ],
             ],

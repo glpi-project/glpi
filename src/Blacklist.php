@@ -44,6 +44,7 @@ use function Safe\preg_match;
  **/
 class Blacklist extends CommonDropdown
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     // From CommonDBTM
@@ -68,6 +69,7 @@ class Blacklist extends CommonDropdown
     public const NAME           = 7;
     public const MANUFACTURER   = 8;
 
+    /** @return int */
     public function maxActionsCount()
     {
         return 0;
@@ -260,7 +262,7 @@ class Blacklist extends CommonDropdown
         return $this->blacklists ?? $this->loadBlacklists();
     }
 
-    private function loadBlacklists()
+    private function loadBlacklists(): array
     {
         global $DB;
 
@@ -477,6 +479,12 @@ class Blacklist extends CommonDropdown
         return $defaults;
     }
 
+    /**
+     * @param int $type
+     * @param string $value
+     *
+     * @return string
+     */
     public function process(int $type, string $value)
     {
         $criteria = $this->getBlacklists()[$type] ?? [];
@@ -492,7 +500,12 @@ class Blacklist extends CommonDropdown
         return $value;
     }
 
-    public function processBlackList(&$value)
+    /**
+     * @param object $value
+     *
+     * @return void
+     */
+    public function processBlackList($value)
     {
 
         if (

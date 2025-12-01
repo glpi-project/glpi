@@ -45,6 +45,7 @@ use function Safe\preg_replace;
  **/
 class NotificationTemplate extends CommonDBTM
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     // From CommonDBTM

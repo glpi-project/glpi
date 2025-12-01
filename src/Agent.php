@@ -69,6 +69,7 @@ class Agent extends CommonDBTM
     public static $rightname = 'agent';
     //static $rightname = 'inventory';
 
+    /** @var bool */
     private static $found_address = false;
 
     public $history_blacklist = ['last_contact'];
@@ -275,6 +276,9 @@ class Agent extends CommonDBTM
     }
 
 
+    /**
+     * @return array
+     */
     public static function rawSearchOptionsToAdd()
     {
         $tab = [];

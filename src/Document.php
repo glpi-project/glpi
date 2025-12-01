@@ -68,6 +68,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     protected static $forward_entity_to = ['Document_Item'];
 
     public static $rightname                   = 'document';
+    /** @var string */
     public static $tag_prefix                  = '#';
     protected $usenotepad               = true;
 
@@ -376,6 +377,8 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
     /**
      * Get max upload size from php config
+     *
+     * @return string
      **/
     public static function getMaxUploadSize()
     {
@@ -812,6 +815,11 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         return true;
     }
 
+    /**
+     * @param ?class-string<CommonDBTM> $itemtype
+     *
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
         $tab = [];
@@ -1331,6 +1339,8 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      * Is this file a valid file ? check based on file extension
      *
      * @param string $filename filename to clean
+     *
+     * @return string
      **/
     public static function isValidDoc($filename)
     {
@@ -1542,7 +1552,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     /**
      * @since 0.85
      *
-     * @param $string
+     * @param string $string
      *
      * @return string
      **/

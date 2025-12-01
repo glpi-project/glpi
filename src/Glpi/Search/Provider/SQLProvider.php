@@ -1142,7 +1142,17 @@ final class SQLProvider implements SearchProviderInterface
         return $dbi->analyseCrit($criteria);
     }
 
-    public static function getWhereCriteria($nott, $itemtype, $ID, $searchtype, $val, $meta = 0): ?array
+    /**
+     * @param bool $nott
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $ID
+     * @param string $searchtype
+     * @param string|int $val
+     * @param bool $meta
+     *
+     * @return ?array
+     */
+    public static function getWhereCriteria($nott, $itemtype, $ID, $searchtype, $val, $meta = false): ?array
     {
         global $DB;
 
@@ -4947,7 +4957,7 @@ final class SQLProvider implements SearchProviderInterface
             if (isset($data['search']['savedsearches_id'])) {
                 SavedSearch::updateExecutionTime(
                     (int) $data['search']['savedsearches_id'],
-                    $DBread->execution_time
+                    (int) $DBread->execution_time
                 );
             }
 

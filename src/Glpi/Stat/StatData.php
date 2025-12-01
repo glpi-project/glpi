@@ -42,11 +42,17 @@ use Stat;
  */
 abstract class StatData
 {
+    /** @var array */
     protected $labels;
+    /** @var array */
     protected $series;
+    /** @var int */
     protected $total;
+    /** @var string */
     protected $csv_link;
+    /** @var array */
     protected $options;
+    /** @var array */
     protected $params;
 
     public function __construct(array $params = [])
@@ -67,6 +73,12 @@ abstract class StatData
         $this->total  = 0;
     }
 
+    /**
+     * @param array $params
+     * @param string $type
+     *
+     * @return ?array
+     */
     public function getDataByType(array $params, string $type)
     {
         return Stat::constructEntryValues(

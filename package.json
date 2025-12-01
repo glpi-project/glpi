@@ -68,7 +68,7 @@
         "tinycolor2": "^1.6.0",
         "tinymce": "^7.9.1",
         "tinymce-i18n": "^25.10.27",
-        "vue": "^3.5.22"
+        "vue": "^3.5.25"
     },
     "scripts": {
         "build:pack": "webpack --config .webpack.config.js",
@@ -88,7 +88,7 @@
     "devDependencies": {
         "@babel/plugin-transform-modules-commonjs": "^7.27.1",
         "@babel/preset-env": "^7.28.5",
-        "@eslint/eslintrc": "^3.3.1",
+        "@eslint/eslintrc": "^3.3.3",
         "@eslint/js": "^9.39.0",
         "@testing-library/cypress": "^10.1.0",
         "@testing-library/jest-dom": "^6.9.1",

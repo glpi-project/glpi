@@ -34,10 +34,10 @@
 
 namespace tests\units;
 
-use DbTestCase;
 use DropdownTranslation;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Form\Category;
+use Glpi\Tests\DbTestCase;
 use ITILCategory;
 
 class DropdownTranslationTest extends DbTestCase

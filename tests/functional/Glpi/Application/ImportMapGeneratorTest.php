@@ -35,7 +35,7 @@
 namespace tests\units\Glpi\Application;
 
 use Glpi\Application\ImportMapGenerator;
-use GLPITestCase;
+use Glpi\Tests\GLPITestCase;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\MockObject\MockObject;

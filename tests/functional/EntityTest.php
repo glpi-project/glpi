@@ -36,7 +36,6 @@ namespace tests\units;
 
 use CommonITILActor;
 use Contract;
-use DbTestCase;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Controller\ServiceCatalog\IndexController;
@@ -44,6 +43,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\Form\Category;
 use Glpi\Form\Form;
 use Glpi\Helpdesk\HomePageTabs;
+use Glpi\Tests\DbTestCase;
 use ITILFollowup;
 use ITILSolution;
 use NotificationTarget;

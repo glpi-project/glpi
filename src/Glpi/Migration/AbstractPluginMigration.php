@@ -581,7 +581,7 @@ abstract class AbstractPluginMigration
         if ($excluded_relations !== []) {
             $itemtype_column_criteria[] = [
                 'NOT' => [
-                    'table_name' => \array_map(fn(string $classname) => $classname::getTable(), $excluded_relations),
+                    'table_name' => \array_map(fn(string $classname) => getTableForItemType($classname), $excluded_relations),
                 ],
             ];
         }

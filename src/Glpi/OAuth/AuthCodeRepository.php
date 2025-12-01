@@ -61,6 +61,11 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
         ]);
     }
 
+    /**
+     * @param string $codeId
+     *
+     * @return void
+     */
     public function revokeAuthCode($codeId): void
     {
         global $DB;
@@ -68,6 +73,11 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
         $DB->delete('glpi_oauth_auth_codes', ['identifier' => $codeId]);
     }
 
+    /**
+     * @param string $codeId
+     *
+     * @return bool
+     */
     public function isAuthCodeRevoked($codeId): bool
     {
         global $DB;

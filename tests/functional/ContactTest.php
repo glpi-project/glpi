@@ -34,9 +34,9 @@
 
 namespace tests\units;
 
-/* Test for src/Contact.php */
+use Glpi\Tests\DbTestCase;
 
-class ContactTest extends \DbTestCase
+class ContactTest extends DbTestCase
 {
     public function testClone()
     {

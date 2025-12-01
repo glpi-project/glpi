@@ -34,8 +34,8 @@
 
 namespace tests\units\Glpi\Dashboard;
 
-use DbTestCase;
 use Glpi\Dashboard\Widget;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/dashboard/widget.class.php */

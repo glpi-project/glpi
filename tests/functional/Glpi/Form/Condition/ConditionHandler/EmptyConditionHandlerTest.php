@@ -61,12 +61,12 @@ use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\QuestionType\QuestionTypeUserDevice;
 use Glpi\Form\QuestionType\QuestionTypeUserDevicesConfig;
+use Glpi\Tests\AbstractConditionHandlerTest;
 use Location;
 use Override;
 use Software;
-use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
 
-final class EmptyConditionHandlerTest extends AbstractConditionHandler
+final class EmptyConditionHandlerTest extends AbstractConditionHandlerTest
 {
     public static function getConditionHandler(): ConditionHandlerInterface
     {

@@ -34,23 +34,21 @@
 
 namespace tests\units;
 
-include_once __DIR__ . '/../abstracts/AbstractITILChildTemplate.php';
+use AbstractITILChildTemplate;
+use Glpi\Tests\AbstractITILChildTemplateTest;
+use TaskTemplate;
 
-use tests\units\Glpi\AbstractITILChildTemplate;
-
-/* Test for inc/tasktemplate.class.php */
-
-class TaskTemplateTest extends AbstractITILChildTemplate
+class TaskTemplateTest extends AbstractITILChildTemplateTest
 {
-    protected function getInstance(): \AbstractITILChildTemplate
+    protected function getInstance(): AbstractITILChildTemplate
     {
-        return new \TaskTemplate();
+        return new TaskTemplate();
     }
 
     public function testCurrentUserFeature()
     {
         $this->login();
-        $template = new \TaskTemplate();
+        $template = new TaskTemplate();
 
         $template_id = $this->createItem(
             'TaskTemplate',
@@ -116,7 +114,7 @@ class TaskTemplateTest extends AbstractITILChildTemplate
             'users_id_tech' => -1,
             'use_current_user' => 1,
         ];
-        $result = \TaskTemplate::getSpecificValueToDisplay('users_id_tech', $values);
+        $result = TaskTemplate::getSpecificValueToDisplay('users_id_tech', $values);
         $this->assertEquals(__('Current logged-in user'), $result);
 
         $specific_user_id = getItemByTypeName('User', 'tech', true);
@@ -124,7 +122,7 @@ class TaskTemplateTest extends AbstractITILChildTemplate
             'users_id_tech' => $specific_user_id,
             'use_current_user' => 0,
         ];
-        $result = \TaskTemplate::getSpecificValueToDisplay('users_id_tech', $values);
+        $result = TaskTemplate::getSpecificValueToDisplay('users_id_tech', $values);
         $this->assertStringContainsString('tech', $result);
     }
 
@@ -160,13 +158,13 @@ class TaskTemplateTest extends AbstractITILChildTemplate
             ]
         )->getID();
 
-        $condition = \TaskTemplate::addWhere('AND', 0, \TaskTemplate::class, 7, 'equals', -1);
+        $condition = TaskTemplate::addWhere('AND', 0, TaskTemplate::class, 7, 'equals', -1);
         $this->assertEquals(' AND (`glpi_tasktemplates`.`use_current_user` = 1)', $condition);
 
-        $condition = \TaskTemplate::addWhere('AND', 0, \TaskTemplate::class, 7, 'equals', $specific_user_id);
+        $condition = TaskTemplate::addWhere('AND', 0, TaskTemplate::class, 7, 'equals', $specific_user_id);
         $this->assertEquals(" AND (`glpi_tasktemplates`.`use_current_user` = 0 AND `glpi_tasktemplates`.`users_id_tech` = $specific_user_id)", $condition);
 
-        $condition = \TaskTemplate::addWhere('AND', 0, \TaskTemplate::class, 7, 'equals', 0);
+        $condition = TaskTemplate::addWhere('AND', 0, TaskTemplate::class, 7, 'equals', 0);
         $this->assertEquals(' AND (`glpi_tasktemplates`.`use_current_user` = 0 AND `glpi_tasktemplates`.`users_id_tech` = 0)', $condition);
     }
 }

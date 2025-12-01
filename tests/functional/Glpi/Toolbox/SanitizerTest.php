@@ -34,13 +34,11 @@
 
 namespace tests\units\Glpi\Toolbox;
 
+use Glpi\Tests\GLPITestCase;
 use Glpi\Toolbox\Sanitizer;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-/**
- * Test class for src/Glpi/Toolbox/sanitizer.class.php
- */
-class SanitizerTest extends \GLPITestCase
+class SanitizerTest extends GLPITestCase
 {
     public static function rawValueProvider(): iterable
     {

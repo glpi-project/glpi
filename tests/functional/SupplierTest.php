@@ -34,20 +34,19 @@
 
 namespace tests\units;
 
-/* Test for src/Supplier.php */
-
 use Cartridge;
 use CartridgeItem;
 use Computer;
 use Consumable;
 use ConsumableItem;
 use DeviceSimcard;
+use Glpi\Tests\DbTestCase;
 use Infocom;
 use Item_DeviceSimcard;
 use Supplier;
 use Symfony\Component\DomCrawler\Crawler;
 
-class SupplierTest extends \DbTestCase
+class SupplierTest extends DbTestCase
 {
     public function testClone()
     {

@@ -36,9 +36,11 @@ namespace tests\units;
 
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Search\SearchOption;
+use Glpi\Tests\DbTestCase;
 use Psr\Log\LogLevel;
+use Webhook;
 
-class WebhookTest extends \DbTestCase
+class WebhookTest extends DbTestCase
 {
     /**
      * Make sure all webhook item types have an ID search option so that the criteria filters can be applied properly
@@ -46,7 +48,7 @@ class WebhookTest extends \DbTestCase
      */
     public function testWebhookTypesHaveIDOpt()
     {
-        $supported = \Webhook::getItemtypesDropdownValues();
+        $supported = Webhook::getItemtypesDropdownValues();
         $itemtypes = [];
         foreach ($supported as $types) {
             $itemtypes = array_merge($itemtypes, array_keys($types));
@@ -228,7 +230,7 @@ JSON;
     public function testGetResultForPath()
     {
         $this->login();
-        /** @var \Webhook $webhook */
+        /** @var Webhook $webhook */
         $webhook = $this->createItem('Webhook', [
             'name' => 'Test webhook',
             'entities_id' => $_SESSION['glpiactive_entity'],
@@ -249,7 +251,7 @@ JSON;
         $this->login();
         $this->initAssetDefinition();
 
-        $supported_types = \Webhook::getAPIItemtypeData();
+        $supported_types = Webhook::getAPIItemtypeData();
         foreach ($supported_types as $controller => $type_data) {
             $this->assertTrue(is_subclass_of($controller, AbstractController::class));
             foreach ($type_data as $category => $types) {
@@ -266,7 +268,7 @@ JSON;
     {
         $this->login();
 
-        $webhook = new \Webhook();
+        $webhook = new Webhook();
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $this->assertEquals('/Assets/Computer/' . $computer->getID(), $webhook->getAPIPath($computer));
 
@@ -283,7 +285,7 @@ JSON;
         global $CFG_GLPI;
         $this->login();
         $CFG_GLPI['enable_hlapi'] = 0;
-        /** @var \Webhook $webhook */
+        /** @var Webhook $webhook */
         $webhook = $this->createItem('Webhook', [
             'name' => 'Test webhook',
             'entities_id' => $_SESSION['glpiactive_entity'],
@@ -301,12 +303,12 @@ JSON;
 
     public function testGetMonacoSuggestions()
     {
-        $itemtypes = \Webhook::getItemtypesDropdownValues();
+        $itemtypes = Webhook::getItemtypesDropdownValues();
 
         foreach ($itemtypes as $types) {
             $this->assertIsArray($types);
             foreach ($types as $itemtype => $label) {
-                $suggestions = \Webhook::getMonacoSuggestions($itemtype);
+                $suggestions = Webhook::getMonacoSuggestions($itemtype);
                 $this->assertNotEmpty($suggestions, "Missing suggestions for $itemtype");
             }
         }
@@ -316,7 +318,7 @@ JSON;
     {
         global $DB;
 
-        $this->createItem(\Webhook::class, [
+        $this->createItem(Webhook::class, [
             'name' => 'Test webhook',
             'entities_id' => $_SESSION['glpiactive_entity'],
             'url' => 'http://localhost',
@@ -359,5 +361,36 @@ JSON;
                 ),
             ]
         );
+    }
+
+    public function testItemtypeDropdownExcludesNoReadItemtypes()
+    {
+        $this->login();
+        $this->assertContains('Computer', Webhook::getItemtypesDropdownValues()['Assets']);
+        $this->assertContains('Monitor', Webhook::getItemtypesDropdownValues()['Assets']);
+        $_SESSION['glpiactiveprofile']['computer'] = ALLSTANDARDRIGHT & ~READ;
+        $this->assertNotContains('Computer', Webhook::getItemtypesDropdownValues()['Assets']);
+        $this->assertContains('Monitor', Webhook::getItemtypesDropdownValues()['Assets']);
+    }
+
+    public function testCreateUpdateNoReadItemtypes()
+    {
+        $this->login();
+        $webhook = $this->createItem('Webhook', [
+            'name' => 'Test webhook',
+            'entities_id' => $_SESSION['glpiactive_entity'],
+            'url' => 'http://localhost',
+            'itemtype' => 'Computer',
+            'event' => 'new',
+            'is_active' => 1,
+            'use_default_payload' => 1,
+        ]);
+        $this->assertTrue($webhook->canUpdateItem());
+        $_SESSION['glpiactiveprofile']['computer'] = ALLSTANDARDRIGHT & ~READ;
+        $this->assertFalse($webhook->canUpdateItem());
+
+        $this->assertFalse($webhook->canCreateItem());
+        $webhook->fields['itemtype'] = 'Monitor';
+        $this->assertTrue($webhook->canCreateItem());
     }
 }

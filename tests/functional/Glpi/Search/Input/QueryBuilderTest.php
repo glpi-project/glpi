@@ -35,9 +35,10 @@
 namespace tests\units\Glpi\Search\Input;
 
 use Glpi\Search\Input\QueryBuilder;
+use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class QueryBuilderTest extends \GLPITestCase
+class QueryBuilderTest extends GLPITestCase
 {
     public static function inputValidationPatternProvider(): iterable
     {

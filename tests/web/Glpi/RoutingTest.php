@@ -34,7 +34,9 @@
 
 namespace tests\units\Glpi;
 
-class RoutingTest extends \FrontBaseClass
+use Glpi\Tests\FrontBaseClass;
+
+class RoutingTest extends FrontBaseClass
 {
     /**
      * Load plugin tester index page

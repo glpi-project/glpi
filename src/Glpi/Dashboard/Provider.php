@@ -130,9 +130,11 @@ class Provider
                 $where += getEntitiesRestrictCriteria($item::getTable(), '', '', $item->maybeRecursive());
             }
             $request = [
-                'SELECT' => ['COUNT DISTINCT' => $item::getTableField($item::getIndexName()) . ' as cpt'],
-                'FROM'   => $i_table,
-                'WHERE'  => $where,
+                'SELECT'   => $item::getTableField($item::getIndexName()),
+                'COUNT'    => 'cpt',
+                'DISTINCT' => true,
+                'FROM'     => $i_table,
+                'WHERE'    => $where,
             ];
         }
 
@@ -141,6 +143,15 @@ class Provider
             self::getFiltersCriteria($i_table, $params['apply_filters']),
             $item instanceof Ticket ? Ticket::getCriteriaFromProfile() : []
         );
+
+        // avoid costly DISTINCT if there isn't any JOIN (/3 perf gain)
+        if (!isset($criteria['LEFT JOIN'])
+            && !isset($criteria['JOIN'])
+            && !isset($criteria['INNER JOIN'])
+            && !isset($criteria['RIGHT JOIN'])) {
+            unset($criteria['DISTINCT']);
+        }
+
         Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
         $iterator = $DB->request($criteria);
 
@@ -167,6 +178,9 @@ class Provider
     /**
      * @method array bigNumberItem(CommonDBTM $item, array $params = [])
      * @method array nbItemByFk(CommonDBTM $item, array $params = [])
+     * @method array articleListItem(CommonDBTM $item, array $params = [])
+     *
+     * @return array|void
      */
     public static function __callStatic(string $name = "", array $arguments = [])
     {
@@ -868,7 +882,7 @@ class Provider
                         ],
                     ],
                 ],
-                'GROUPBY'   => "$fk_table.$name",
+                'GROUPBY'   => "$fk_table.id",
                 'ORDERBY'   => "cpt DESC",
                 'LIMIT'     => $params['limit'],
             ],
@@ -1279,6 +1293,14 @@ class Provider
             Ticket::getCriteriaFromProfile(),
             self::getFiltersCriteria($t_table, $params['apply_filters'])
         );
+
+        // avoid costly DISTINCT if there isn't any JOIN (/3 perf gain)
+        if (!isset($sub_query['LEFT JOIN'])
+            && !isset($sub_query['JOIN'])
+            && !isset($sub_query['INNER JOIN'])
+            && !isset($sub_query['RIGHT JOIN'])) {
+            unset($sub_query['DISTINCT']);
+        }
 
         $criteria = [
             'SELECT'   => [
@@ -1750,6 +1772,12 @@ class Provider
         return ['criteria' => $s_criteria];
     }
 
+    /**
+     * @param string $table
+     * @param array $apply_filters
+     *
+     * @return array
+     */
     public static function getFiltersCriteria(string $table = "", array $apply_filters = [])
     {
         $where = [];

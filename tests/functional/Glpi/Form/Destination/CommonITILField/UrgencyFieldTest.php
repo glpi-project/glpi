@@ -39,13 +39,12 @@ use Glpi\Form\Destination\CommonITILField\UrgencyFieldConfig;
 use Glpi\Form\Destination\CommonITILField\UrgencyFieldStrategy;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
+use Glpi\Tests\AbstractDestinationFieldTest;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Override;
 use TicketTemplate;
 use TicketTemplatePredefinedField;
-
-include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
 
 final class UrgencyFieldTest extends AbstractDestinationFieldTest
 {

@@ -41,6 +41,8 @@ enum Category: string
     case TIMELINE         = 'timeline';
     case SERVICE_LEVEL    = 'service_level';
     case ASSOCIATED_ITEMS = 'associated_items';
+    case ANALYSIS         = 'analysis';
+    case PLANS            = 'plans';
 
     public function getLabel(): string
     {
@@ -50,6 +52,8 @@ enum Category: string
             self::TIMELINE         => __("Timeline"),
             self::SERVICE_LEVEL    => __("Service levels"),
             self::ASSOCIATED_ITEMS => __("Associated items"),
+            self::ANALYSIS         => __("Analysis"),
+            self::PLANS            => __("Plans"),
         };
     }
 
@@ -61,6 +65,8 @@ enum Category: string
             self::TIMELINE         => 30,
             self::SERVICE_LEVEL    => 40,
             self::ASSOCIATED_ITEMS => 50,
+            self::ANALYSIS         => 60,
+            self::PLANS            => 70,
         };
     }
 
@@ -72,6 +78,8 @@ enum Category: string
             self::TIMELINE         => 'ti ti-messages',
             self::SERVICE_LEVEL    => 'ti ti-stopwatch',
             self::ASSOCIATED_ITEMS => 'ti ti-link',
+            self::ANALYSIS         => 'ti ti-eyeglass',
+            self::PLANS            => 'ti ti-checkup-list',
         };
     }
 }

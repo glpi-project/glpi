@@ -63,9 +63,11 @@ use function Safe\session_write_close;
  */
 class Controller extends CommonGLPI
 {
+    /** @var string */
     protected $plugin_key = "";
 
     public static $rightname = 'config';
+    /** @var ?PluginsApi */
     public static $api       = null;
 
     /**
@@ -425,6 +427,11 @@ class Controller extends CommonGLPI
     }
 
 
+    /**
+     * @param string $name
+     *
+     * @return array
+     */
     public static function cronInfo($name)
     {
         return ['description' => __('Check all plugin updates')];

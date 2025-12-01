@@ -34,9 +34,10 @@
 
 namespace tests\units;
 
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class OAuthClientTest extends \DbTestCase
+class OAuthClientTest extends DbTestCase
 {
     public static function validateAllowedIPsProvider()
     {

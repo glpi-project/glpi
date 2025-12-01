@@ -35,9 +35,9 @@
 namespace tests\units\Glpi\Dashboard;
 
 use Computer;
-use DbTestCase;
 use Glpi\Dashboard\Filters\GroupRequesterFilter;
 use Glpi\Dashboard\Filters\GroupTechFilter;
+use Glpi\Tests\DbTestCase;
 use Group;
 use Ticket;
 

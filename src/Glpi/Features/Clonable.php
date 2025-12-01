@@ -43,6 +43,7 @@ use Session;
 
 /**
  * Clonable objects
+ * @template T of CommonDBTM
  **/
 trait Clonable
 {
@@ -418,8 +419,9 @@ trait Clonable
      * The default implementation handles specific cases when the class uses the following trait(s):
      * - {@link AssignableItem}
      *
-     * @param $source
-     * @param $history
+     * @param T $source
+     * @param bool $history
+     * @return void
      */
     public function post_clone($source, $history)
     {

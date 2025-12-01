@@ -35,8 +35,8 @@
 namespace tests\units;
 
 use Computer;
-use DbTestCase;
 use Generator;
+use Glpi\Tests\DbTestCase;
 use Rule;
 use RuleAction;
 use RuleCriteria;

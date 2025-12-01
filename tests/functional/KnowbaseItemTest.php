@@ -34,8 +34,8 @@
 
 namespace test\units;
 
-use DbTestCase;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/knowbaseitem.class.php */
@@ -1662,6 +1662,48 @@ HTML,
                     'itemtype'      => 'KnowbaseItem',
                     'items_id'      => $clonedKbitem->fields['id'],
                 ]
+            )
+        );
+    }
+
+    /**
+     * @return void
+     * @see https://github.com/glpi-project/glpi/issues/21873
+     */
+    public function testUnsetCateogry(): void
+    {
+        $this->login();
+        $kbi = getItemByTypeName('KnowbaseItem', '_knowbaseitem01', false);
+
+        $category = $this->createItem('KnowbaseItemCategory', [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_recursive' => 1,
+            'knowbaseitemcategories_id' => 0,
+        ]);
+
+        $kbi->update([
+            'id' => $kbi->getID(),
+            '_categories' => [$category->getID()],
+            '__categories_defined' => 1,
+        ]);
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                \KnowbaseItem_KnowbaseItemCategory::getTable(),
+                ['knowbaseitems_id' => $kbi->getID()]
+            )
+        );
+        $kbi->update([
+            'id' => $kbi->getID(),
+            '_categories' => '',
+            '__categories_defined' => 1,
+        ]);
+        $this->assertEquals(
+            0,
+            countElementsInTable(
+                \KnowbaseItem_KnowbaseItemCategory::getTable(),
+                ['knowbaseitems_id' => $kbi->getID()]
             )
         );
     }

@@ -34,10 +34,10 @@
 
 namespace tests\units;
 
-use DBTestCase;
+use Glpi\Tests\DbTestCase;
 use Report;
 
-class ReportTest extends DBTestCase
+class ReportTest extends DbTestCase
 {
     public function testShowNetworkReport(): void
     {

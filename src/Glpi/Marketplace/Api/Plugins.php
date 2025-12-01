@@ -36,6 +36,7 @@
 namespace Glpi\Marketplace\Api;
 
 use GLPINetwork;
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Message;
@@ -50,13 +51,15 @@ use function Safe\session_write_close;
 
 class Plugins
 {
+    /** @var ?Client */
     protected $httpClient  = null;
+    /** @var ?array  */
     protected $last_error  = null;
 
     public const COL_PAGE    = 200;
 
     /**
-     * Max request attemps on READ operations.
+     * Max request attempts on READ operations.
      *
      * @var integer
      */
@@ -69,6 +72,7 @@ class Plugins
      */
     protected $is_list_truncated = false;
 
+    /** @var ?array */
     public static $plugins = null;
 
     public function __construct()

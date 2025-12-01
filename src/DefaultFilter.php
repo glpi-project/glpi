@@ -108,6 +108,9 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
         return $tab;
     }
 
+    /**
+     * @return array
+     */
     public function getAdditionalFields()
     {
         return [
@@ -170,6 +173,11 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
         return null;
     }
 
+    /**
+     * @param array $input
+     *
+     * @return false|array
+     */
     private function prepareInput($input)
     {
         // Checks that the itemtype is not already in use

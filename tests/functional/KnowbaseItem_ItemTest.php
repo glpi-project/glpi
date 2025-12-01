@@ -34,10 +34,10 @@
 
 namespace test\units;
 
-use DbTestCase;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasKnowbaseCapacity;
 use Glpi\Features\Clonable;
+use Glpi\Tests\DbTestCase;
 use KnowbaseItem_Item;
 use Toolbox;
 

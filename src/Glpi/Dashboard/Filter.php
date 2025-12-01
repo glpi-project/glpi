@@ -69,6 +69,13 @@ class Filter extends CommonDBChild
      */
     public static function getAppliableFilters(string $table): array
     {
+        global $GLPI_CACHE;
+
+        $cache_key = "dashboard_filters_appliable_$table" . Session::getLoginUserID();
+        if (($filters_ids = $GLPI_CACHE->get($cache_key)) !== null) {
+            return $filters_ids;
+        }
+
         $filters_ids = [];
 
         foreach (self::getRegisteredFilterClasses() as $filter_class) {
@@ -76,6 +83,11 @@ class Filter extends CommonDBChild
                 $filters_ids[] = $filter_class::getId();
             }
         }
+
+        // Set a short cache to have an auto-invalidation;
+        // 5s should be enough to load a full dashboard
+        // and expiring before the user hit another request.
+        $GLPI_CACHE->set($cache_key, $filters_ids, 5);
 
         return $filters_ids;
     }

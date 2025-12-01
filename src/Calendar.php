@@ -41,6 +41,7 @@ use function Safe\strtotime;
  **/
 class Calendar extends CommonDropdown
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     // From CommonDBTM
@@ -207,9 +208,6 @@ class Calendar extends CommonDropdown
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
-    /**
-     * @see Clonable::post_clone
-     */
     public function post_clone($source, $history)
     {
         $this->updateDurationCache($this->getID());
@@ -621,6 +619,13 @@ class Calendar extends CommonDropdown
         return $actualdate;
     }
 
+    /**
+     * @param int $current_time
+     * @param int $number
+     * @param bool $negative
+     *
+     * @return int
+     */
     public static function getActualTime($current_time, $number = 0, $negative = false)
     {
         if ($negative) {

@@ -44,6 +44,7 @@ use Glpi\Features\StateInterface;
  **/
 class Appliance extends CommonDBTM implements AssignableItemInterface, StateInterface
 {
+    /** @use Clonable<static> */
     use Clonable;
     use Glpi\Features\State;
     use AssetImage;
@@ -355,6 +356,11 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
     }
 
 
+    /**
+     * @param string $itemtype
+     *
+     * @return array
+     */
     public static function rawSearchOptionsToAdd(string $itemtype)
     {
         $tab = [];

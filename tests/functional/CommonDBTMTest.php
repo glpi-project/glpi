@@ -36,13 +36,13 @@ namespace tests\units;
 
 use CommonDBTM;
 use Computer;
-use DbTestCase;
 use Document;
 use Document_Item;
 use Entity;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use SoftwareVersion;

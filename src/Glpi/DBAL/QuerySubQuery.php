@@ -44,7 +44,7 @@ use RuntimeException;
  **/
 class QuerySubQuery extends AbstractQuery
 {
-    private $dbiterator;
+    private DBmysqlIterator $dbiterator;
 
     /**
      * Create a sub query

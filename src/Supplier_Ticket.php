@@ -48,8 +48,9 @@ class Supplier_Ticket extends CommonITILActor
 
 
     /**
-     * @param $items_id
-     * @param $email
+     * @param int $items_id
+     * @param string $email
+     * @return bool
      *
      * @since 0.85
      **/
@@ -77,17 +78,5 @@ class Supplier_Ticket extends CommonITILActor
             return true;
         }
         return false;
-    }
-
-    public function post_addItem()
-    {
-
-        switch ($this->input['type']) { // Values from CommonITILObject::getSearchOptionsActors()
-            case CommonITILActor::ASSIGN:
-                $this->_force_log_option = 6;
-                break;
-        }
-        parent::post_addItem();
-        $this->_force_log_option = 0;
     }
 }

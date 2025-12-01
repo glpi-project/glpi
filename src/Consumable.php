@@ -48,6 +48,7 @@ use function Safe\ob_start;
  **/
 class Consumable extends CommonDBChild
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     // From CommonDBTM

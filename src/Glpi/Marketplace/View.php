@@ -53,6 +53,7 @@ use function Safe\parse_url;
 class View extends CommonGLPI
 {
     public static $rightname = 'config';
+    /** @var ?PluginsApi */
     public static $api       = null;
 
     public $get_item_to_display_tab = true;
@@ -85,6 +86,9 @@ class View extends CommonGLPI
     }
 
 
+    /**
+     * @return string
+     */
     public static function getIcon()
     {
         return "ti ti-building-store";

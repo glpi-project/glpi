@@ -34,9 +34,11 @@
 
 namespace tests\units\Glpi\Inventory;
 
+use Config;
+use GLpi\Tests\GLPITestCase;
 use GuzzleHttp;
 
-class InventoryTest extends \GLPITestCase
+class InventoryTest extends GLPITestCase
 {
     private $http_client;
     private $base_uri;
@@ -45,6 +47,11 @@ class InventoryTest extends \GLPITestCase
     {
         $this->http_client = new GuzzleHttp\Client();
         $this->base_uri    = trim(GLPI_URI, '/') . '/';
+
+        // Enable inventory
+        Config::setConfigurationValues('inventory', [
+            'enabled_inventory' => '1',
+        ]);
 
         parent::setUp();
     }

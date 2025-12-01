@@ -40,6 +40,7 @@ use Glpi\Features\Clonable;
  **/
 class TaskCategory extends CommonTreeDropdown
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     // From CommonDBTM

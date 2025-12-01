@@ -35,7 +35,7 @@
 namespace tests\units\Glpi\Api\HL\Doc;
 
 use Glpi\Api\HL\Doc;
-use GLPITestCase;
+use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class SchemaTest extends GLPITestCase

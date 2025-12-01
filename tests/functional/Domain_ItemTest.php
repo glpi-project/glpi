@@ -35,12 +35,12 @@
 namespace tests\units;
 
 use Computer;
-use DbTestCase;
 use Domain;
 use Domain_Item;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDomainsCapacity;
 use Glpi\Features\Clonable;
+use Glpi\Tests\DbTestCase;
 use Group;
 use Toolbox;
 

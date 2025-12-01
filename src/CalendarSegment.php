@@ -120,6 +120,8 @@ class CalendarSegment extends CommonDBChild
      * @param string  $begin_time      begin time to check
      * @param integer $end_day         end day number
      * @param string  $end_time        end time to check
+     *
+     * @return array
      **/
     public static function getSegmentsBetween($calendars_id, $begin_day, $begin_time, $end_day, $end_time)
     {
@@ -352,6 +354,8 @@ class CalendarSegment extends CommonDBChild
      * Show segments of a calendar
      *
      * @param $calendar Calendar object
+     *
+     * @return void
      **/
     public static function showForCalendar(Calendar $calendar)
     {
@@ -359,7 +363,7 @@ class CalendarSegment extends CommonDBChild
 
         $ID = $calendar->getField('id');
         if (!$calendar->can($ID, READ)) {
-            return false;
+            return;
         }
 
         $canedit = $calendar->can($ID, UPDATE);

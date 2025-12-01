@@ -43,6 +43,7 @@ use Glpi\Search\Provider\SQLProvider;
  **/
 class Group extends CommonTreeDropdown
 {
+    /** @use Clonable<static> */
     use Clonable;
 
     public $dohistory       = true;
@@ -512,7 +513,9 @@ class Group extends CommonTreeDropdown
     }
 
     /**
-     * @param $ID
+     * @param int $ID
+     *
+     * @return void
      **/
     public function showSecurityForm($ID)
     {
@@ -685,7 +688,9 @@ class Group extends CommonTreeDropdown
      * Show items for the group
      *
      * @param boolean $tech False search groups_id, true, search groups_id_tech
-     **/
+     *
+     * @return void
+     */
     public function showItems($tech)
     {
         global $CFG_GLPI;
@@ -967,8 +972,10 @@ class Group extends CommonTreeDropdown
 
     /**
      * Mark groups data as "changed"
-     * This will triger a rebuilding of the 'glpigroups' session data for all
+     * This will trigger a rebuilding of the 'glpigroups' session data for all
      * users
+     *
+     * @return void
      */
     public static function updateLastGroupChange()
     {

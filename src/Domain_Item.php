@@ -50,6 +50,11 @@ class Domain_Item extends CommonDBRelation
         return _n('Domain item', 'Domain items', $nb);
     }
 
+    /**
+     * @param CommonDBTM $item
+     *
+     * @return void
+     */
     public static function cleanForItem(CommonDBTM $item)
     {
         $temp = new self();
@@ -104,6 +109,11 @@ class Domain_Item extends CommonDBRelation
         return true;
     }
 
+    /**
+     * @param Domain $item
+     *
+     * @return int
+     */
     public static function countForDomain(Domain $item)
     {
         $types = $item->getTypes();
@@ -136,6 +146,13 @@ class Domain_Item extends CommonDBRelation
         );
     }
 
+    /**
+     * @param int $domains_id
+     * @param int $items_id
+     * @param class-string<CommonDBTM> $itemtype
+     *
+     * @return bool
+     */
     public function getFromDBbyDomainsAndItem($domains_id, $items_id, $itemtype)
     {
         $criteria = ['domains_id' => $domains_id];
@@ -152,9 +169,14 @@ class Domain_Item extends CommonDBRelation
         return $this->getFromDBByCrit($criteria);
     }
 
+    /**
+     * @param array $values
+     *
+     * @return false|int
+     */
     public function addItem($values)
     {
-        $this->add([
+        return $this->add([
             'domains_id'         => $values['domains_id'],
             'items_id'           => $values['items_id'],
             'itemtype'           => $values['itemtype'],
@@ -162,11 +184,19 @@ class Domain_Item extends CommonDBRelation
         ]);
     }
 
+    /**
+     * @param int $domains_id
+     * @param int $items_id
+     * @param class-string<CommonDBTM> $itemtype
+     *
+     * @return bool
+     */
     public function deleteItemByDomainsAndItem($domains_id, $items_id, $itemtype)
     {
         if ($this->getFromDBbyDomainsAndItem($domains_id, $items_id, $itemtype)) {
-            $this->delete(['id' => $this->fields["id"]]);
+            return $this->delete(['id' => $this->fields["id"]]);
         }
+        return false;
     }
 
     /**
