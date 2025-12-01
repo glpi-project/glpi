@@ -1785,7 +1785,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public static function itemAddForm(CommonITILObject|TicketRecurrent $object, $options = [])
+    public static function itemAddForm(CommonITILObject|CommonITILRecurrent $object, $options = [])
     {
         if (!(is_a($object, static::$itemtype_1))) {
             return;
