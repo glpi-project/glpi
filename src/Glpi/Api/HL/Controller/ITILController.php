@@ -648,9 +648,9 @@ final class ITILController extends AbstractController
                     ],
                     'description' => <<<EOT
                         The state of the task.
-                        - 1: Information
-                        - 2: To do
-                        - 3: Done
+                        - 0: Information
+                        - 1: To do
+                        - 2: Done
                         EOT,
                 ],
                 'category' => self::getDropdownTypeSchema(class: TaskCategory::class, full_schema: 'TaskCategory'),
