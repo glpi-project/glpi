@@ -19,6 +19,7 @@ PLAYWRIGHT = docker run \
 	-v .:/app \
 	-w /app \
 	-p 9323:9323 \
+	--add-host host.docker.internal:host-gateway \
 	mcr.microsoft.com/playwright:v$(PLAYWRIGHT_VERSION)-noble \
 	npx playwright
 
