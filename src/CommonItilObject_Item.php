@@ -141,6 +141,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 ]
             ) > 0
         ) {
+            //TODO add Session::addMessageAfterRedirect() w/ relevant msg
             return false;
         }
 

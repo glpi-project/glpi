@@ -70,6 +70,7 @@ class ProjectTask_Ticket extends CommonDBRelation
                 ]
             ) > 0
         ) {
+            Session::addMessageAfterRedirect(__s('Relation already exists.'), false, ERROR);
             return false;
         }
 

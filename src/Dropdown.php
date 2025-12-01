@@ -2988,13 +2988,9 @@ HTML;
                         $where = array_merge($where, $value['WHERE']);
                     } elseif (!is_numeric($key) && !in_array($key, ['AND', 'OR', 'NOT']) && !str_contains($key, '.')) {
                         // Ensure condition contains table name to prevent ambiguity with fields from `glpi_entities` table
-                        $where["$table.$key"] = $value;
+                        $where[] = ["$table.$key" => $value];
                     } else {
-                        if (isset($where[$key])) {
-                            $where[] = [$key => $value];
-                        } else {
-                            $where[$key] = $value;
-                        }
+                        $where[$key] = $value;
                     }
                 }
             }

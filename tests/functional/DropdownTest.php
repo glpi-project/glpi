@@ -2851,7 +2851,7 @@ HTML;
         }
     }
 
-    public function testGetDropdownValueWithUsedAndConditionNot(): void
+    public function testGetDropdownValueConditionNotOverridesUsed(): void
     {
         $this->login();
 
@@ -2870,12 +2870,17 @@ HTML;
             'projects_id' => $project->getID(),
         ]);
 
+        $task_excluded = $this->createItem(\ProjectTask::class, [
+            'name' => 'Task excluded by condition',
+            'projects_id' => $project->getID(),
+        ]);
+
         $params = [
             'itemtype' => \ProjectTask::class,
             'display_emptychoice' => false,
             'entity_restrict' => 0,
             'used' => [$task_used->getID() => $task_used->getID()],
-            'condition' => ['NOT' => ['glpi_projecttasks.name' => ['Nonexistent']]],
+            'condition' => ['NOT' => ['glpi_projecttasks.name' => ['Task excluded by condition']]],
         ];
         $params['_idor_token'] = Session::getNewIDORToken(\ProjectTask::class, $params);
 
@@ -2888,7 +2893,8 @@ HTML;
             }
         }
 
-        $this->assertNotContains($task_used->getID(), $ids);
+        $this->assertContains($task_used->getID(), $ids);
         $this->assertContains($task_available->getID(), $ids);
+        $this->assertNotContains($task_excluded->getID(), $ids);
     }
 }

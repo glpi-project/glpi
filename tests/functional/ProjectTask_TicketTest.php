@@ -34,7 +34,7 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
+use DbTestCase;
 
 class ProjectTask_TicketTest extends DbTestCase
 {
@@ -69,5 +69,6 @@ class ProjectTask_TicketTest extends DbTestCase
                 'tickets_id' => $ticket->getID(),
             ])
         );
+        $this->hasSessionMessages(ERROR, ['Relation already exists.']);
     }
 }
