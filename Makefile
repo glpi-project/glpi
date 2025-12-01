@@ -8,9 +8,8 @@ DB = $(COMPOSE) exec db
 CONSOLE = $(PHP) bin/console
 INI_DIR = /usr/local/etc/php/custom_conf.d
 
-# Store playwright's version in a variable so that the correct docker image is used.
-# When the playwright npm package is updated,
-PLAYWRIGHT_VERSION = 1.56.1
+# Get playwright's version so that the correct docker image is used.
+PLAYWRIGHT_VERSION = $(shell grep '"@playwright/test"' package.json | sed -E 's/.*"@playwright\/test": *"[^0-9]*([0-9.]+)".*/\1/')
 
 # See: https://playwright.dev/docs/docker
 PLAYWRIGHT = docker run \
