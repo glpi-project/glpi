@@ -35,7 +35,6 @@
 
 namespace Glpi\UI;
 
-use Plugin;
 use RuntimeException;
 use Toolbox;
 
@@ -227,39 +226,23 @@ class ThemeManager
     }
 
     /**
-     * Get theme for anonymous pages (login page)
+     * Get all the custom themes CSS files paths.
      *
-     * This method checks if there's a custom theme configured for anonymous pages
-     * by using plugin hooks instead of directly calling plugin classes.
-     *
-     * @return Theme Custom theme if found via plugin hook, default theme otherwise
+     * @return string[]
      */
-    public function getAnonymousTheme(): Theme
+    public function getCustomThemesPaths(): array
     {
-        // Use plugin hook to allow plugins to define an anonymous theme
-        $anonymous_theme_data = Plugin::doHookFunction('anonymous_theme', [
-            'entity_id' => 0, // Root entity for anonymous pages
-            'theme_key' => null
-        ]);
+        $paths = [];
 
-        // If a plugin provided a theme key, try to get that theme
-        if (!empty($anonymous_theme_data['theme_key'])) {
-            $custom_theme = $this->getTheme($anonymous_theme_data['theme_key']);
-            if ($custom_theme !== null) {
-                return $custom_theme;
+        foreach ($this->getAllThemes() as $theme) {
+            if (!$theme->isCustomTheme()) {
+                continue;
             }
+            $theme_path = $theme->getKey() . '?is_custom_theme=1';
+            $theme_path .= "&lastupdate=" . filemtime($theme->getPath(false));
+            $paths[] = $theme_path;
         }
 
-        // Fallback: check if any custom themes exist and use the first one found
-        // This provides a fallback for existing installations
-        $custom_themes = $this->getCustomThemes();
-        foreach ($custom_themes as $theme) {
-            if (str_starts_with($theme->getKey(), 'plugin_branding_')) {
-                return $theme;
-            }
-        }
-
-        // Final fallback to default theme
-        return $this->getTheme(self::DEFAULT_THEME) ?? $this->getCoreThemes()[0];
+        return $paths;
     }
 }

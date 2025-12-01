@@ -78,9 +78,7 @@ class FrontEndAssetsExtension extends AbstractExtension
             new TwigFunction('config_js', [$this, 'configJs'], ['is_safe' => ['html']]),
             new TwigFunction('locales_js', [$this, 'localesJs'], ['is_safe' => ['html']]),
             new TwigFunction('current_theme', [$this, 'currentTheme']),
-            new TwigFunction('anonymous_theme', [$this, 'anonymousTheme']),
-            new TwigFunction('get_themes', [$this, 'getThemes']),
-            new TwigFunction('file_mtime', [$this, 'fileMtime']),
+            new TwigFunction('get_custom_themes_paths', [$this, 'getCustomThemesPaths']),
             new TwigFunction('importmap', [$this, 'importmap'], ['is_safe' => ['html']]),
         ];
     }
@@ -96,34 +94,13 @@ class FrontEndAssetsExtension extends AbstractExtension
     }
 
     /**
-     * Anonymous theme for login and other non-logged pages
+     * Get all the custom themes CSS files paths.
      *
-     * @return Theme
+     * @return string[]
      */
-    public function anonymousTheme(): Theme
+    public function getCustomThemesPaths(): array
     {
-        return ThemeManager::getInstance()->getAnonymousTheme();
-    }
-
-    /**
-     * Get all themes from ThemeManager
-     *
-     * @return array
-     */
-    public function getThemes(): array
-    {
-        return ThemeManager::getInstance()->getAllThemes();
-    }
-
-    /**
-     * Get file modification time
-     *
-     * @param string $filepath
-     * @return int
-     */
-    public function fileMtime(string $filepath): int
-    {
-        return file_exists($filepath) ? filemtime($filepath) : 0;
+        return ThemeManager::getInstance()->getCustomThemesPaths();
     }
 
     /**

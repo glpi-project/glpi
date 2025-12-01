@@ -60,7 +60,6 @@ use ScssPhp\ScssPhp\Compiler;
 use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\file_get_contents;
-use function Safe\filemtime;
 use function Safe\filesize;
 use function Safe\json_encode;
 use function Safe\mktime;
@@ -1207,13 +1206,8 @@ TWIG,
         $tpl_vars['css_files'][] = ['path' => 'lib/tabler.css'];
         $tpl_vars['css_files'][] = ['path' => 'css/glpi.scss'];
         $tpl_vars['css_files'][] = ['path' => 'css/core_palettes.scss'];
-        foreach (ThemeManager::getInstance()->getAllThemes() as $info) {
-            if (!$info->isCustomTheme()) {
-                continue;
-            }
-            $theme_path = $info->getKey() . '?is_custom_theme=1';
-            // Custom theme files might be modified by external source
-            $theme_path .= "&lastupdate=" . filemtime($info->getPath(false));
+
+        foreach (ThemeManager::getInstance()->getCustomThemesPaths() as $theme_path) {
             $tpl_vars['css_files'][] = ['path' => $theme_path];
         }
 
