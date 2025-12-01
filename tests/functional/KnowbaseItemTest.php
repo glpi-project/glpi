@@ -1685,7 +1685,7 @@ HTML,
         $kbi->update([
             'id' => $kbi->getID(),
             '_categories' => [$category->getID()],
-            '__categories_defined' => 1
+            '__categories_defined' => 1,
         ]);
         $this->assertEquals(
             1,
@@ -1697,7 +1697,7 @@ HTML,
         $kbi->update([
             'id' => $kbi->getID(),
             '_categories' => '',
-            '__categories_defined' => 1
+            '__categories_defined' => 1,
         ]);
         $this->assertEquals(
             0,
