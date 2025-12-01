@@ -31,27 +31,6 @@
  * ---------------------------------------------------------------------
  */
 
-.floating-buttons {
-    position: fixed;
-    bottom: 10px;
-    left: 50%;
-    z-index: 99999;
-
-    #backtotop {
-        cursor: pointer;
-
-        &:hover {
-            opacity: 0.8;
-        }
-    }
-}
-
-body.debug-active {
-    .floating-buttons {
-        bottom: 60px;
-    }
-}
-
 #maintenance-float {
     top: 0;
     left: 250px;
