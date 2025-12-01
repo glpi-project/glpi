@@ -180,7 +180,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     /**
      * Print the HTML ajax associated item add
      *
-     * @param CommonITILObject|TicketRecurrent $obj  object holding the item
+     * @param CommonITILObject|CommonITILRecurrent $obj  object holding the item
      * @param array $options
      *    - id                  : ID of the object holding the items
      *    - _users_id_requester : ID of the requester user
@@ -188,7 +188,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      *
      * @return void|false
      */
-    protected static function displayItemAddForm(CommonITILObject|TicketRecurrent $obj, array $options = [])
+    protected static function displayItemAddForm(CommonITILObject|CommonITILRecurrent $obj, array $options = [])
     {
         if (!(is_a($obj, static::$itemtype_1))) {
             return false;
@@ -373,11 +373,11 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     /**
      * Print the HTML array for Items linked to a ITIL object
      *
-     * @param CommonITILObject|TicketRecurrent $obj
+     * @param CommonITILObject|CommonITILRecurrent $obj
      *
      * @return bool|void
      **/
-    protected static function showForObject(CommonITILObject|TicketRecurrent $obj)
+    protected static function showForObject(CommonITILObject|CommonITILRecurrent $obj)
     {
         if (!(is_a($obj, static::$itemtype_1))) {
             return false;
@@ -1783,7 +1783,7 @@ TWIG, $twig_params);
     /**
      * Print the HTML ajax associated item add
      *
-     * @param CommonITILObject|TicketRecurrent $object
+     * @param CommonITILObject|CommonITILRecurrent $object
      * @param array $options   array of possible options:
      *    - id                  : ID of the ticket
      *    - _users_id_requester : ID of the requester user
@@ -1791,7 +1791,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public static function itemAddForm(CommonITILObject|TicketRecurrent $object, $options = [])
+    public static function itemAddForm(CommonITILObject|CommonITILRecurrent $object, $options = [])
     {
         if (!(is_a($object, static::$itemtype_1))) {
             return;

@@ -42,7 +42,7 @@ Html::header_nocache();
 // See: change_item.php, item_problem.php, item_ticket.php and item_ticketrecurrent.php
 $obj ??= null;
 $item_obj ??= null;
-$valid_obj = $obj instanceof CommonITILObject || $obj instanceof TicketRecurrent;
+$valid_obj = $obj instanceof CommonITILObject || $obj instanceof CommonITILRecurrent;
 if (!$valid_obj || !($item_obj instanceof CommonItilObject_Item)) {
     throw new BadRequestHttpException();
 }
