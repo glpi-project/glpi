@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/glpi_fixture';
 
 test('has title', async ({ page }) => {
     await page.goto('https://playwright.dev/');
@@ -49,7 +49,22 @@ test('get started link', async ({ page }) => {
     await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
 });
 
-test('real GLPI page', async ({page}) => {
+test('anonymous GLPI page', async ({anonymousPage}) => {
+    await anonymousPage.goto('');
+    await expect(anonymousPage).toHaveTitle("Authentication - GLPI");
+});
+
+test('logged in GLPI page', async ({page}) => {
     await page.goto('');
-    await expect(page).toHaveTitle("Authentication - GLPI");
+    await expect(page).toHaveTitle("Standard interface - GLPI");
+});
+
+test('logged and anonymous page in the same test', async ({page, anonymousPage}) => {
+    // This can be useful if you need to change some settings as an admin, then
+    // validate with an anonymous user that they are applied
+    await page.goto('');
+    await expect(page).toHaveTitle("Standard interface - GLPI");
+
+    await anonymousPage.goto('');
+    await expect(anonymousPage).toHaveTitle("Authentication - GLPI");
 });
