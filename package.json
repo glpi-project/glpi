@@ -54,7 +54,7 @@
         "leaflet.markercluster": "^1.4.1",
         "lodash": "^4.17.21",
         "masonry-layout": "^4.2.2",
-        "monaco-editor": "^0.54.0",
+        "monaco-editor": "^0.55.1",
         "path-browserify": "^1.0.1",
         "photoswipe": "^5.4.4",
         "process": "^0.11.10",
