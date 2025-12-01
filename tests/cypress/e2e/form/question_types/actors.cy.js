@@ -53,12 +53,21 @@ describe('Actor form question type', () => {
             cy.getDropdownByLabelText('Question type').selectDropdownValue('Actors');
 
             // Define question sub type
+            cy.getDropdownByLabelText('Question sub type').should(
+                'contain.text',
+                'Requesters',
+            );
             cy.getDropdownByLabelText('Question sub type').selectDropdownValue('Assignees');
+            cy.getDropdownByLabelText('Question sub type').should(
+                'contain.text',
+                'Assignees',
+            );
         });
     });
 
     it('should be able to define an actor as default value', () => {
         // Ensure we don't allow multiple actors
+        cy.findByRole('button', { name: "Show more settings" }).click();
         cy.findByRole('checkbox', { name: 'Allow multiple actors' }).should('not.be.checked');
 
         // Define default value
@@ -76,6 +85,7 @@ describe('Actor form question type', () => {
 
     it('should be able to define multiple actors as default value', () => {
         // Allow multiple actors
+        cy.findByRole('button', { name: "Show more settings" }).click();
         cy.findByRole('checkbox', { name: 'Allow multiple actors' }).check();
 
         // Define default values
@@ -95,6 +105,7 @@ describe('Actor form question type', () => {
 
     it('should be able to switch between multiple actors and single actor', () => {
         // Double switch
+        cy.findByRole('button', { name: "Show more settings" }).click();
         cy.findByRole('checkbox', { name: 'Allow multiple actors' }).check();
         cy.findByRole('checkbox', { name: 'Allow multiple actors' }).uncheck();
 
@@ -115,6 +126,7 @@ describe('Actor form question type', () => {
             .findByRole('textbox', { name: 'Question name' }).click();
 
         // Switch to multiple actors
+        cy.findByRole('button', { name: "Show more settings" }).click();
         cy.findByRole('checkbox', { name: 'Allow multiple actors' }).check();
 
         // Check the default value
@@ -135,6 +147,10 @@ describe('Actor form question type', () => {
     });
 
     it('can duplicate a single actor question', () => {
+        // I don't know why this is needed
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
+        cy.wait(500);
+
         // Define default value
         cy.getDropdownByLabelText('Select an actor...').selectDropdownValue('E2E Tests');
 
@@ -150,6 +166,7 @@ describe('Actor form question type', () => {
 
     it('can duplicate a multiple actors question', () => {
         // Allow multiple actors
+        cy.findByRole('button', { name: "Show more settings" }).click();
         cy.findByRole('checkbox', { name: 'Allow multiple actors' }).check();
 
         // Define default values
@@ -221,6 +238,7 @@ describe('Actor form question type', () => {
 
     it('can submit a form with an empty actor question with multiple actors allowed', () => {
         // Allow multiple actors
+        cy.findByRole('button', { name: "Show more settings" }).click();
         cy.findByRole('checkbox', { name: 'Allow multiple actors' }).check();
 
         // Save
@@ -252,5 +270,24 @@ describe('Actor form question type', () => {
 
         // Check the form was submitted
         cy.checkAndCloseAlert('Item successfully created');
+    });
+
+    it('can disable itemtypes', () => {
+        // Disable users
+        cy.findByRole('button', { name: "Show more settings" }).click();
+        cy.findByRole('checkbox', { name: 'Users' }).uncheck();
+
+        // Save
+        cy.findByRole('button', { name: 'Save' }).click();
+
+        // Go to preview
+        cy.findByRole('link', { 'name': "Preview" })
+            .invoke('removeAttr', 'target') // Cypress can't handle tab changes
+            .click();
+
+        // Display the dropdown, only groups should be found
+        cy.getDropdownByLabelText('Test actor question').click();
+        cy.findByRole('group', { 'name': 'Group' }).should('exist');
+        cy.findByRole('group', { 'name': 'User' }).should('not.exist');
     });
 });
