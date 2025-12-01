@@ -7,6 +7,8 @@ on:
 
 jobs:
   trigger-docker-releases:
+    permissions:
+      contents: "read"
     name: "Trigger Docker releases"
     uses: "glpi-project/docker-images/.github/workflows/glpi.yml@main"
     # Workflows that call reusable workflows in the same organization or enterprise

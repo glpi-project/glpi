@@ -28,6 +28,8 @@ jobs:
   lint:
     # Do not run scheduled lint on tier repositories
     if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
+    permissions:
+      contents: "read"
     name: "Lint on PHP ${{ matrix.php-version }}"
     runs-on: "ubuntu-latest"
     strategy:
@@ -104,6 +106,8 @@ jobs:
   generate-tests-matrix:
     # Do not run scheduled tests on tier repositories
     if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
+    permissions:
+      contents: "read"
     name: "Generate tests matrix"
     runs-on: "ubuntu-latest"
     outputs:
@@ -137,6 +141,8 @@ jobs:
   tests:
     # Do not run scheduled tests on tier repositories
     if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
+    permissions:
+      contents: "read"
     name: "Test on PHP ${{ matrix.php-version }} using ${{ matrix.db-image }}"
     needs: "generate-tests-matrix"
     runs-on: "ubuntu-latest"

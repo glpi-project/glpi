@@ -17,6 +17,8 @@ on:
 
 jobs:
   coverage:
+    permissions:
+      contents: "read"
     name: "Code coverage"
     runs-on: "ubuntu-latest"
     strategy:

@@ -10,6 +10,8 @@ on:
 
 jobs:
   build:
+    permissions:
+      contents: "read"
     name: "Build GLPI"
     runs-on: "ubuntu-latest"
     services:
