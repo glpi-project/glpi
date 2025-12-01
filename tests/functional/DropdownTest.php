@@ -2893,7 +2893,7 @@ HTML;
             }
         }
 
-        $this->assertContains($task_used->getID(), $ids);
+        $this->assertNotContains($task_used->getID(), $ids);
         $this->assertContains($task_available->getID(), $ids);
         $this->assertNotContains($task_excluded->getID(), $ids);
     }
