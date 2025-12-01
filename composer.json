@@ -55,7 +55,7 @@
         "monolog/monolog": "^3.9",
         "paragonie/sodium_compat": "^2.4",
         "phpdocumentor/reflection-docblock": "^5.6",
-        "phpoffice/phpspreadsheet": "^5.2",
+        "phpoffice/phpspreadsheet": "^5.3",
         "psr/cache": "^3.0",
         "psr/container": "^1.1",
         "psr/log": "^3.0",

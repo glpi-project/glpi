@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d13227b5b2bbe60c9ff43034348e725d",
+    "content-hash": "e3754255ded2bd8c8aa8cff5f1bd4bd5",
     "packages": [
         {
             "name": "altcha-org/altcha",
@@ -3803,16 +3803,16 @@
         },
         {
             "name": "phpoffice/phpspreadsheet",
-            "version": "5.2.0",
+            "version": "5.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPOffice/PhpSpreadsheet.git",
-                "reference": "3b8994b3aac4b61018bc04fc8c441f4fd68c18eb"
+                "reference": "4d597c1aacdde1805a33c525b9758113ea0d90df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/3b8994b3aac4b61018bc04fc8c441f4fd68c18eb",
-                "reference": "3b8994b3aac4b61018bc04fc8c441f4fd68c18eb",
+                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/4d597c1aacdde1805a33c525b9758113ea0d90df",
+                "reference": "4d597c1aacdde1805a33c525b9758113ea0d90df",
                 "shasum": ""
             },
             "require": {
@@ -3854,7 +3854,7 @@
             },
             "suggest": {
                 "dompdf/dompdf": "Option for rendering PDF with PDF Writer",
-                "ext-intl": "PHP Internationalization Functions, regquired for NumberFormat Wizard",
+                "ext-intl": "PHP Internationalization Functions, required for NumberFormat Wizard",
                 "mitoteam/jpgraph": "Option for rendering charts, or including charts with PDF or HTML Writers",
                 "mpdf/mpdf": "Option for rendering PDF with PDF Writer",
                 "tecnickcom/tcpdf": "Option for rendering PDF with PDF Writer"
@@ -3903,9 +3903,9 @@
             ],
             "support": {
                 "issues": "https://github.com/PHPOffice/PhpSpreadsheet/issues",
-                "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/5.2.0"
+                "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/5.3.0"
             },
-            "time": "2025-10-26T15:54:22+00:00"
+            "time": "2025-11-24T15:47:10+00:00"
         },
         {
             "name": "phpstan/phpdoc-parser",
@@ -12618,16 +12618,16 @@
         },
         {
             "name": "revolt/event-loop",
-            "version": "v1.0.7",
+            "version": "v1.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/revoltphp/event-loop.git",
-                "reference": "09bf1bf7f7f574453efe43044b06fafe12216eb3"
+                "reference": "b6fc06dce8e9b523c9946138fa5e62181934f91c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/revoltphp/event-loop/zipball/09bf1bf7f7f574453efe43044b06fafe12216eb3",
-                "reference": "09bf1bf7f7f574453efe43044b06fafe12216eb3",
+                "url": "https://api.github.com/repos/revoltphp/event-loop/zipball/b6fc06dce8e9b523c9946138fa5e62181934f91c",
+                "reference": "b6fc06dce8e9b523c9946138fa5e62181934f91c",
                 "shasum": ""
             },
             "require": {
@@ -12684,9 +12684,9 @@
             ],
             "support": {
                 "issues": "https://github.com/revoltphp/event-loop/issues",
-                "source": "https://github.com/revoltphp/event-loop/tree/v1.0.7"
+                "source": "https://github.com/revoltphp/event-loop/tree/v1.0.8"
             },
-            "time": "2025-01-25T19:27:39+00:00"
+            "time": "2025-08-27T21:33:23+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -13675,16 +13675,16 @@
         },
         {
             "name": "spatie/array-to-xml",
-            "version": "3.4.0",
+            "version": "3.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/array-to-xml.git",
-                "reference": "7dcfc67d60b0272926dabad1ec01f6b8a5fb5e67"
+                "reference": "7b9202dccfe18d4e3a13303156d6bbcc1c61dabf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/array-to-xml/zipball/7dcfc67d60b0272926dabad1ec01f6b8a5fb5e67",
-                "reference": "7dcfc67d60b0272926dabad1ec01f6b8a5fb5e67",
+                "url": "https://api.github.com/repos/spatie/array-to-xml/zipball/7b9202dccfe18d4e3a13303156d6bbcc1c61dabf",
+                "reference": "7b9202dccfe18d4e3a13303156d6bbcc1c61dabf",
                 "shasum": ""
             },
             "require": {
@@ -13727,7 +13727,7 @@
                 "xml"
             ],
             "support": {
-                "source": "https://github.com/spatie/array-to-xml/tree/3.4.0"
+                "source": "https://github.com/spatie/array-to-xml/tree/3.4.3"
             },
             "funding": [
                 {
@@ -13739,7 +13739,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-12-16T12:45:15+00:00"
+            "time": "2025-11-27T09:08:26+00:00"
         },
         {
             "name": "staabm/side-effects-detector",
