@@ -39,7 +39,8 @@
     {{ fields.smallTitle(__('ITIL Templates')) }}
     {{ fields.dropdownField('TicketTemplate', 'tickettemplates_id', item.fields['tickettemplates_id'], __('Default ticket template'), {
         full_width: true,
-        condition: {entities_id: 0}|merge(is_multi_entities_mode() ? {is_recursive: 1} : {}),
+        entity: 0,
+        condition: {}|merge(is_multi_entities_mode() ? {is_recursive: 1} : {}),
         addicon: is_root_entity_active
     }) }}
 
