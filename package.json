@@ -68,7 +68,7 @@
         "tinycolor2": "^1.6.0",
         "tinymce": "^7.9.1",
         "tinymce-i18n": "^25.10.27",
-        "vue": "^3.5.22"
+        "vue": "^3.5.25"
     },
     "scripts": {
         "build:pack": "webpack --config .webpack.config.js",
