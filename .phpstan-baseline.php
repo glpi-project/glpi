@@ -3032,12 +3032,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Contract_Item.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function sprintf\\(\\) on a separate line has no effect\\.$#',
-	'identifier' => 'function.resultUnused',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Contract_Supplier.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$contract of static method Contract_Supplier\\:\\:showForContract\\(\\) expects Contract, CommonGLPI given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -4094,6 +4088,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Inventory/Asset/Cartridge.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Offset \'cleaningkitmax\'\\|\'cleaningkitremaining\'\\|\'cleaningkitused\'\\|\'developermax\'\\|\'developerremaining\'\\|\'developerused\'\\|\'fuserkitmax\'\\|\'fuserkitremaining\'\\|\'fuserkitused\'\\|\'maintenancekitmax\'\\|\'maintenancekitremai…\'\\|\'maintenancekitused\'\\|\'transferkitmax\'\\|\'transferkitremaining\'\\|\'transferkitused\'\\|\'wastetonermax\'\\|\'wastetonerremaining\'\\|\'wastetonerused\' on array\\{tonerblack\\: array\\{\'tonerblack2\'\\}, tonerblackmax\\: array\\{\'tonerblack2max\'\\}, tonerblackused\\: array\\{\'tonerblack2used\'\\}, tonerblackremaining\\: array\\{\'tonerblack2remaining\'\\}\\} in isset\\(\\) does not exist\\.$#',
+	'identifier' => 'isset.offset',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Inventory/Asset/Cartridge.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Argument of an invalid type stdClass supplied for foreach, only iterables are supported\\.$#',
 	'identifier' => 'foreach.nonIterable',
 	'count' => 1,
@@ -4284,6 +4284,48 @@ $ignoreErrors[] = [
 	'identifier' => 'nullCoalesce.property',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Inventory/Asset/Unmanaged.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$comment on array\\<string\\>\\|float\\|object\\|string\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Inventory/Asset/VirtualMachine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$cpus on array\\<string\\>\\|float\\|object\\|string\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Inventory/Asset/VirtualMachine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$memories on array\\<string\\>\\|float\\|object\\|string\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Inventory/Asset/VirtualMachine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$networks on array\\<string\\>\\|float\\|object\\|string\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Inventory/Asset/VirtualMachine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$ram on array\\<string\\>\\|float\\|object\\|string\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Inventory/Asset/VirtualMachine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$uuid on array\\<string\\>\\|float\\|object\\|string\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Inventory/Asset/VirtualMachine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$vcpu on array\\<string\\>\\|float\\|object\\|string\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Inventory/Asset/VirtualMachine.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
