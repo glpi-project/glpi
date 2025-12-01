@@ -47,8 +47,10 @@ use Glpi\Api\HL\RSQL\Parser;
 use Glpi\Api\HL\RSQL\RSQLException;
 use Glpi\Api\HL\Search\RecordSet;
 use Glpi\Api\HL\Search\SearchContext;
+use Glpi\Application\Environment;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Debug\Profiler;
 use Glpi\Toolbox\ArrayPathAccessor;
@@ -125,42 +127,47 @@ final class Search
 
     public function getSQLFieldForProperty(string $prop_name): string
     {
-        $prop = $this->context->getFlattenedProperties()[$prop_name];
-        $is_scalar_join = false;
-        $is_join = $this->context->isJoinedProperty($prop_name);
-        if (isset($this->context->getJoins()[$prop_name])) {
-            // Scalar property whose value exists in another table
-            $is_scalar_join = true;
-            $sql_field = $prop['x-field'];
-        } else {
-            $sql_field = $prop['x-field'] ?? $prop_name;
-        }
-        $is_computed = isset($prop['computation']);
-
-        // Computed fields may be used in HAVING clauses so we have no refer to the fields by the alias
-        if ($is_computed) {
-            return str_replace('.', chr(0x1F), trim($prop_name, '.'));
-        }
-
-        if (!$is_join) {
-            // Only add the _. prefix if it isn't a join. '_' is the table alias for the main item.
-            // Still need to replace all except the last '.' with 0x1F in case it is a nested property.
-            $sql_field_parts = explode('.', $sql_field);
-            $field_name = array_pop($sql_field_parts);
-            $sql_field = trim(implode(chr(0x1F), $sql_field_parts) . '.' . $field_name, '.');
-            if (!str_contains($sql_field, chr(0x1F))) {
-                $sql_field = '_.' . $sql_field;
+        static $cache = [];
+        if (!isset($cache[$prop_name]) || Environment::get() === Environment::TESTING) {
+            $prop = $this->context->getFlattenedProperties()[$prop_name];
+            $is_scalar_join = false;
+            $is_join = $this->context->isJoinedProperty($prop_name);
+            if (isset($this->context->getJoins()[$prop_name])) {
+                // Scalar property whose value exists in another table
+                $is_scalar_join = true;
+                $sql_field = $prop['x-field'];
+            } else {
+                $sql_field = $prop['x-field'] ?? $prop_name;
             }
-        } else {
-            if ($is_scalar_join) {
-                return str_replace('.', chr(0x1F), $prop_name) . '.' . $sql_field;
+            $is_computed = isset($prop['computation']);
+
+            // Computed fields may be used in HAVING clauses so we have no refer to the fields by the alias
+            if ($is_computed) {
+                $cache[$prop_name] = str_replace('.', chr(0x1F), trim($prop_name, '.'));
+                return $cache[$prop_name];
             }
-            $join_alias = substr($prop_name, 0, strrpos($prop_name, '.'));
-            $sql_field = trim(preg_replace('/^' . preg_quote($join_alias, '/') . '/', '', $sql_field), '.');
-            $join_alias = str_replace('.', chr(0x1F), trim($join_alias, '.'));
-            $sql_field = "{$join_alias}.{$sql_field}";
+
+            if (!$is_join) {
+                // Only add the _. prefix if it isn't a join. '_' is the table alias for the main item.
+                // Still need to replace all except the last '.' with 0x1F in case it is a nested property.
+                $sql_field_parts = explode('.', $sql_field);
+                $field_name = array_pop($sql_field_parts);
+                $cache[$prop_name] = trim(implode(chr(0x1F), $sql_field_parts) . '.' . $field_name, '.');
+                if (!str_contains($cache[$prop_name], chr(0x1F))) {
+                    $cache[$prop_name] = '_.' . $cache[$prop_name];
+                }
+            } else {
+                if ($is_scalar_join) {
+                    $cache[$prop_name] = str_replace('.', chr(0x1F), $prop_name) . '.' . $sql_field;
+                    return $cache[$prop_name];
+                }
+                $join_alias = substr($prop_name, 0, strrpos($prop_name, '.'));
+                $sql_field = trim(preg_replace('/^' . preg_quote($join_alias, '/') . '/', '', $sql_field), '.');
+                $join_alias = str_replace('.', chr(0x1F), trim($join_alias, '.'));
+                $cache[$prop_name] = "{$join_alias}.{$sql_field}";
+            }
         }
-        return $sql_field;
+        return $cache[$prop_name];
     }
 
     /**
@@ -182,7 +189,8 @@ final class Search
             $prop = $prop['items'];
         }
         if (array_key_exists('type', $prop) && $prop['type'] !== Doc\Schema::TYPE_OBJECT) {
-            if (isset($prop['x-mapper']) || isset($prop['x-mapped-property'])) {
+            $mapped_from_self = isset($prop['x-mapped-from']) && $prop['x-mapped-from'] === $prop_name;
+            if ((isset($prop['x-mapper']) || isset($prop['x-mapped-property'])) && !$mapped_from_self) {
                 // Do not select fields mapped after the results are retrieved
                 return null;
             }
@@ -192,7 +200,7 @@ final class Search
                 $sql_field = $this->getSQLFieldForProperty($prop_name);
                 $expression = $this->db_read::quoteName($sql_field);
                 if (str_contains($sql_field, '.')) {
-                    $join_name = $this->getJoinNameForProperty($prop_name);
+                    $join_name = $this->context->getJoinNameForProperty($prop_name);
                     // Check if the join property is in an array. If so, we need to concat each result.
                     if (array_key_exists($join_name, $this->context->getJoins())) {
                         $join_def = $this->context->getJoins()[$join_name];
@@ -553,25 +561,13 @@ final class Search
         return false;
     }
 
-    public function getJoinNameForProperty(string $prop_name): string
-    {
-        $joins = $this->context->getJoins();
-        $prop_name = str_replace(chr(0x1F), '.', $prop_name);
-        if (array_key_exists($prop_name, $joins)) {
-            $join_name = $prop_name;
-        } else {
-            $join_name = substr($prop_name, 0, strrpos($prop_name, '.'));
-        }
-        return $join_name;
-    }
-
     /**
-     * @param bool $ignore_pagination
-     * @return RecordSet
+     * @param bool $count_only
+     * @return RecordSet|int
      * @throws APIException
      * @throws RSQLException
      */
-    private function getMatchingRecords($ignore_pagination = false): RecordSet
+    private function getMatchingRecords(bool $count_only = false): RecordSet|int
     {
         $records = [];
 
@@ -581,7 +577,7 @@ final class Search
 
         $criteria = array_merge_recursive($criteria, $this->getSearchCriteria());
 
-        if ($ignore_pagination) {
+        if ($count_only) {
             unset($criteria['START'], $criteria['LIMIT']);
         }
 
@@ -599,14 +595,35 @@ final class Search
                 $criteria['SELECT'][] = '_itemtype';
                 $criteria['GROUPBY'] = ['_itemtype', '_.id'];
             } else {
-                $criteria['SELECT'][] = '_.id';
-                foreach (array_keys($this->context->getJoins()) as $join_alias) {
-                    $s = $this->getSelectCriteriaForProperty($this->context->getPrimaryKeyPropertyForJoin($join_alias), true);
-                    if ($s !== null) {
-                        $criteria['SELECT'][] = $s;
+                if (!$count_only) {
+                    foreach (array_keys($this->context->getJoins()) as $join_alias) {
+                        $s = $this->getSelectCriteriaForProperty($this->context->getPrimaryKeyPropertyForJoin($join_alias), true);
+                        if ($s !== null) {
+                            $criteria['SELECT'][] = $s;
+                        }
                     }
                 }
                 $criteria['GROUPBY'] = ['_.id'];
+            }
+
+            if ($count_only) {
+                if (!array_key_exists('HAVING', $criteria) || empty($criteria['HAVING'])) {
+                    $table_alias = '_';
+                    unset($criteria['GROUPBY'], $criteria['ORDERBY']);
+                } else {
+                    // Some queries may use HAVING to filter on computed fields so the main query must be done as a subquery and then count that
+                    $table_alias = 'subquery_count';
+                    $subquery_criteria = new QuerySubQuery($criteria, 'subquery_count');
+                    $criteria = [
+                        'FROM' => $subquery_criteria,
+                    ];
+                }
+                if ($this->context->isUnionSearchMode()) {
+                    $count_select = [QueryFunction::count(QueryFunction::concat(['_itemtype', new QueryExpression('0x1E'), "$table_alias.id",]), true, 'count')];
+                } else {
+                    $count_select = [QueryFunction::count("$table_alias.id", true, 'count')];
+                }
+                $criteria['SELECT'] = $count_select;
             }
 
             // request just to get the ids/union itemtypes
@@ -614,57 +631,66 @@ final class Search
             $this->validateIterator($iterator);
         } catch (RightConditionNotMetException) {
             // The read restrict check seems to have returned false indicating that we already know the user cannot view any of these resources
+            if ($count_only) {
+                return 0;
+            }
             global $DB;
             $iterator = new DBmysqlIterator($DB);
             // No validation done because we know the inner result isn't a mysqli result
         }
 
-        if ($this->context->isUnionSearchMode()) {
-            // group by _itemtype
-            foreach ($iterator as $row) {
-                if (!isset($records[$row['_itemtype']])) {
-                    $records[$row['_itemtype']] = [];
-                }
-                $records[$row['_itemtype']][$row['id']] = $row;
-            }
-        } else {
-            foreach ($iterator as $row) {
-                if (!isset($records[$this->context->getSchemaItemtype()])) {
-                    $records[$this->context->getSchemaItemtype()] = [];
-                }
-                $records[$this->context->getSchemaItemtype()][$row['id']] = $row;
-            }
-        }
-
-        if ($this->criteriaHasJoinFilter($criteria['WHERE'] ?? [])) {
-            // There was a filter on joined data, so the IDs we got are only the ones that match the filter.
-            // We want to get all related items in the result and not just the ones that match the filter.
-            $criteria['WHERE'] = [];
+        if (!$count_only) {
             if ($this->context->isUnionSearchMode()) {
-                foreach ($records as $schema_name => $type_records) {
-                    if (!isset($criteria['WHERE']['OR'])) {
-                        $criteria['WHERE']['OR'] = [];
+                // group by _itemtype
+                foreach ($iterator as $row) {
+                    if (!isset($records[$row['_itemtype']])) {
+                        $records[$row['_itemtype']] = [];
                     }
-                    $criteria['WHERE']['OR'][] = [
-                        'id' => array_column($type_records, 'id'),
-                        '_itemtype' => $schema_name,
-                    ];
+                    $records[$row['_itemtype']][$row['id']] = $row;
                 }
             } else {
-                $type_records = $records[$this->context->getSchemaItemtype()];
-                $criteria['WHERE'] = [
-                    '_.id' => array_column($type_records, 'id'),
-                ];
-            }
-            $iterator = $this->db_read->request($criteria);
-            $this->validateIterator($iterator);
-            foreach ($iterator as $data) {
-                $itemtype = $this->context->isUnionSearchMode() ? $data['_itemtype'] : $this->context->getSchemaItemtype();
-                if (!isset($records[$itemtype])) {
-                    $records[$itemtype] = [];
+                foreach ($iterator as $row) {
+                    if (!isset($records[$this->context->getSchemaItemtype()])) {
+                        $records[$this->context->getSchemaItemtype()] = [];
+                    }
+                    $records[$this->context->getSchemaItemtype()][$row['id']] = $row;
                 }
-                $records[$itemtype][$data['id']] = $data;
             }
+
+            if ($this->criteriaHasJoinFilter($criteria['WHERE'] ?? [])) {
+                // There was a filter on joined data, so the IDs we got are only the ones that match the filter.
+                // We want to get all related items in the result and not just the ones that match the filter.
+                $criteria['WHERE'] = [];
+                if ($this->context->isUnionSearchMode()) {
+                    foreach ($records as $schema_name => $type_records) {
+                        if (!isset($criteria['WHERE']['OR'])) {
+                            $criteria['WHERE']['OR'] = [];
+                        }
+                        $criteria['WHERE']['OR'][] = [
+                            'id' => array_column($type_records, 'id'),
+                            '_itemtype' => $schema_name,
+                        ];
+                    }
+                } else {
+                    $type_records = $records[$this->context->getSchemaItemtype()];
+                    $criteria['WHERE'] = [
+                        '_.id' => array_column($type_records, 'id'),
+                    ];
+                }
+                $iterator = $this->db_read->request($criteria);
+                $this->validateIterator($iterator);
+                foreach ($iterator as $data) {
+                    $itemtype = $this->context->isUnionSearchMode() ? $data['_itemtype'] : $this->context->getSchemaItemtype();
+                    if (!isset($records[$itemtype])) {
+                        $records[$itemtype] = [];
+                    }
+                    $records[$itemtype][$data['id']] = $data;
+                }
+            }
+        } else {
+            // Count only mode
+            $row = $iterator->current();
+            return (int) $row['count'];
         }
 
         return new RecordSet($this, $records);
@@ -783,7 +809,7 @@ final class Search
                 $data = array_merge($existing_data, $data);
                 ArrayPathAccessor::setElementByArrayPath($result, $path, $data);
             }
-            $result = Doc\Schema::fromArray($schema)->castProperties($result);
+            Doc\Schema::castProperties($result, $search->context->getFlattenedProperties());
         }
         Profiler::getInstance()->stop('Map and cast properties');
         unset($result);
@@ -792,7 +818,7 @@ final class Search
         // Count the total number of results with the same criteria, but without the offset and limit
         $criteria = $search->getSearchCriteria();
         // We only need the total count, so we don't need to hydrate the records
-        $all_records = $search->getMatchingRecords(true);
+        $total = $search->getMatchingRecords(true);
         Profiler::getInstance()->stop('Query for the total count');
         Profiler::getInstance()->stop('Search::getSearchResultsBySchema');
 
@@ -800,7 +826,7 @@ final class Search
             'results' => array_values($results),
             'start' => $criteria['START'] ?? 0,
             'limit' => $criteria['LIMIT'] ?? count($results),
-            'total' => $all_records->getTotalCount(),
+            'total' => $total,
         ];
     }
 }

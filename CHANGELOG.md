@@ -3,6 +3,28 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
+## [11.0.4] unreleased
+
+### Added
+
+### Changed
+- High-Level API performance improvements for both REST and GraphQL requests (3.3-10x performance uplift on average)
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
 ## [11.0.3] unreleased
 
 ### Added
