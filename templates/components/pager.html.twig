@@ -115,7 +115,7 @@
 
     {% if short_display and nb_pages <= 1 %}
         <span class="text-muted mx-2 my-0 page-infos">
-            {{ __('Showing %s to %s of %s rows')|format(current_start, current_end, count) }}
+            {{ __('%s-%s of %s')|format(current_start, current_end, count) }}
         </span>
     {% endif %}
 
