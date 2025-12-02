@@ -738,7 +738,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
                 'content' => self::getMissingPermissionsHtmlAlert(),
                 'field_params' => [
                     'full_width' => true,
-                    'mb' => 'my-4'
+                    'mb' => 'my-4',
                 ],
             ];
         }
@@ -746,7 +746,8 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         return $fields;
     }
 
-    public static function getMissingPermissionsHtmlAlert(): string {
+    public static function getMissingPermissionsHtmlAlert(): string
+    {
         $message = __("To create a child entity, you must be in entity recursivity mode.");
         return "
             <div class='alert alert-danger mb-0' role='alert'>
