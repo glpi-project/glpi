@@ -35,26 +35,36 @@
 
 /**
  * @since 0.84
- **/
+ *
+ * @method void addItemType(string $itemtype, string $title)
+ */
 abstract class HTMLTableBase
 {
+    /** @var array<string, array<string, HTMLTableHeader>> */
     private $headers = [];
+    /** @var string[] */
     private $headers_order = [];
+    /** @var array<string, string[]> */
     private $headers_sub_order = [];
+    /** @var bool */
     private $super;
 
     /**
-     * @param $super
-     **/
+     * @param bool $super
+     */
     public function __construct($super)
     {
         $this->super = $super;
     }
 
     /**
-     * @param HTMLTableHeader $header_object
-     * @param boolean $allow_super_header    (false by default
-     **/
+     * @template T of HTMLTableHeader
+     *
+     * @param T $header_object
+     * @param bool $allow_super_header    (false by default)
+     *
+     * @return T
+     */
     public function appendHeader(HTMLTableHeader $header_object, $allow_super_header = false)
     {
         $header_name    = '';
@@ -150,7 +160,9 @@ abstract class HTMLTableBase
 
     /**
      * @param string $name
-     **/
+     *
+     * @return HTMLTableHeader
+     */
     public function getSuperHeaderByName($name)
     {
         return $this->getHeaderByName($name, '');
@@ -159,6 +171,8 @@ abstract class HTMLTableBase
     /**
      * @param string $name
      * @param ?string $sub_name (default NULL)
+     *
+     * @return HTMLTableHeader
      *
      * @throws HTMLTableUnknownHeader
      */
@@ -180,8 +194,10 @@ abstract class HTMLTableBase
     }
 
     /**
-     * @param $header_name  (default '')
-     **/
+     * @param string $header_name  (default '')
+     *
+     * @return array<string, array<string, HTMLTableHeader>>|array<string, HTMLTableHeader>
+     */
     public function getHeaders($header_name = '')
     {
         if (empty($header_name)) {
@@ -194,8 +210,10 @@ abstract class HTMLTableBase
     }
 
     /**
-     * @param $header_name  (default '')
-     **/
+     * @param string $header_name  (default '')
+     *
+     * @return string[]
+     */
     public function getHeaderOrder($header_name = '')
     {
         if (empty($header_name)) {

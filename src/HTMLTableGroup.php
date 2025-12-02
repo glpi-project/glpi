@@ -38,18 +38,22 @@
  **/
 class HTMLTableGroup extends HTMLTableBase
 {
+    /** @var string */
     private $name;
+    /** @var string */
     private $content;
+    /** @var ?HTMLTableHeader[] */
     private $ordered_headers;
+    /** @var HTMLTableMain */
     private $table;
-    /** @var array<HTMLTableRow> */
+    /** @var HTMLTableRow[] */
     private $rows = [];
 
     /**
      * @param HTMLTableMain $table
-     * @param $name
-     * @param $content
-     **/
+     * @param string $name
+     * @param string $content
+     */
     public function __construct(HTMLTableMain $table, $name, $content)
     {
         parent::__construct(false);
@@ -58,11 +62,17 @@ class HTMLTableGroup extends HTMLTableBase
         $this->content    = $content;
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return $this->name;
     }
 
+    /**
+     * @return HTMLTableMain
+     */
     public function getTable()
     {
         return $this->table;
@@ -70,8 +80,9 @@ class HTMLTableGroup extends HTMLTableBase
 
     /**
      * @param HTMLTableHeader $header
-     * @return boolean
-     **/
+     *
+     * @return bool
+     */
     public function haveHeader(HTMLTableHeader $header)
     {
         $header_name    = '';
@@ -96,6 +107,9 @@ class HTMLTableGroup extends HTMLTableBase
         }
     }
 
+    /**
+     * @return HTMLTableRow
+     */
     public function createRow()
     {
         $new_row      = new HTMLTableRow($this);
@@ -103,6 +117,9 @@ class HTMLTableGroup extends HTMLTableBase
         return $new_row;
     }
 
+    /**
+     * @return void
+     */
     public function prepareDisplay()
     {
         foreach ($this->table->getHeaderOrder() as $super_header_name) {
@@ -229,6 +246,9 @@ class HTMLTableGroup extends HTMLTableBase
         }
     }
 
+    /**
+     * @return int
+     */
     public function getNumberOfRows()
     {
         return count(array_filter($this->rows, static fn($r) => $r->notEmpty()));
