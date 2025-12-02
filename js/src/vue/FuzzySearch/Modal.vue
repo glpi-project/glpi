@@ -1,6 +1,7 @@
 <script setup>
     /* global hotkeys, fuzzy */
     import {computed, ref, watch} from "vue";
+    import {Button, InputText} from 'primevue';
 
     let shortcut = `<kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>G</kbd>`;
     if (navigator.userAgent.includes('Mac')) {
@@ -103,14 +104,14 @@
                         <i class="ti ti-arrow-big-right me-2"></i>
                         {{ header_message }}
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <Button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></Button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-info d-flex" role="alert">
                         <i class="ti ti-alert-circle-filled fa-2x me-2"></i>
                         <p v-html="shortcut_message"></p>
                     </div>
-                    <input type="text" class="form-control" :placeholder="placeholder" v-model="input_text">
+                    <InputText :placeholder="placeholder" v-model="input_text"/>
                     <ul class="results list-group mt-2">
                         <li v-for="result in results" :key="result.index" class="list-group-item">
                             <a :href="result.original.url" v-html="result.string"></a>
