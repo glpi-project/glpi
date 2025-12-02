@@ -300,7 +300,6 @@ class NotificationTemplate extends CommonDBTM
                         <body>\n" . (!empty($add_header) ? htmlescape($add_header) . "\n<br><br>" : '')
                         . $template_datas['content_html']
                      . "<br><br>-- \n<br>" . $signature_html
-                     . "<br>" . htmlescape($footer_string)
                      . "<br><br>\n" . (!empty($add_footer) ? htmlescape($add_footer) . "\n<br><br>" : '')
                      . "\n</body></html>";
                 }
