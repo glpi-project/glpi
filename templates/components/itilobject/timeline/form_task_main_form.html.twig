@@ -205,15 +205,29 @@
                 {% endset %}
 
                 {% if subitem.fields['actiontime'] <= 360000 %}
-                    {{ fields.dropdownTimestampField('actiontime', subitem.fields['actiontime'], task_actiontime_lbl, {
+                    {% set duration_dropdown = {} %}
+                    {% for i in 1..9 %}
+                        {% set duration_dropdown = duration_dropdown|merge({(i * constant('MINUTE_TIMESTAMP')): '%dh%02d'|format(0, i)}) %}
+                    {% endfor %}
+
+                    {% for i in range(10, 595, 5) %}
+                        {% set minutes = i % 60 %}
+                        {% set hours = i // 60 %}
+                        {% set duration_dropdown = duration_dropdown|merge({(i * constant('MINUTE_TIMESTAMP')): '%dh%02d'|format(hours, minutes)}) %}
+                    {% endfor %}
+
+                    {% for i in 10..119 %}
+                        {% set duration_dropdown = duration_dropdown|merge({(i * constant('HOUR_TIMESTAMP')): '%dh%02d'|format(i, 0)}) %}
+                    {% endfor %}
+
+                    {% for i in 5..366 %}
+                        {% set duration_dropdown = duration_dropdown|merge({(i * constant('DAY_TIMESTAMP')): _n('%s day', '%s days', i)|format(i)}) %}
+                    {% endfor %}
+                    {{ fields.dropdownArrayField('actiontime', subitem.fields['actiontime'], duration_dropdown, task_actiontime_lbl, {
                         'full_width': true,
                         'icon_label': true,
                         'rand': rand,
-                        'min': 0,
-                        'max': 8 * constant('HOUR_TIMESTAMP'),
-                        'addfirstminutes': true,
-                        'inhours': true,
-                        'toadd': range(9, 100)|map(i => i * constant('HOUR_TIMESTAMP')),
+                        'display_emptychoice': true,
                     }) }}
                 {% else %}
                     {{ fields.htmlField(
