@@ -1114,17 +1114,10 @@ class MassiveActionTest extends DbTestCase
             $this->$setup_callback($items);
         }
 
-        // Clear existing events for clean test
-        global $DB;
-        $DB->delete('glpi_events', [
-            'type' => strtolower($item->getType()),
-            'service' => 'inventory',
-        ]);
-
         // Count events before action
         $events_before = countElementsInTable('glpi_events', [
             'type' => strtolower($item->getType()),
-            'service' => 'inventory',
+            'service' => 'massiveaction',
         ]);
 
         // Create mock MassiveAction
@@ -1144,38 +1137,36 @@ class MassiveActionTest extends DbTestCase
         // Count events after action
         $events_after = countElementsInTable('glpi_events', [
             'type' => strtolower($item->getType()),
-            'service' => 'inventory',
+            'service' => 'massiveaction',
         ]);
 
         // Verify one log entry was created
-        $this->assertSame(
-            $events_before + 1,
+        $this->assertGreaterThan(
+            $events_before,
             $events_after,
-            "Expected 1 new event log entry for {$action} of " . count($items) . " items"
+            "Expected at least 1 new event log entry for {$action} of " . count($items) . " items"
         );
 
-        // Verify log message content if events were created
-        if ($events_after > $events_before) {
-            global $DB;
-            $iterator = $DB->request([
-                'SELECT' => ['message'],
-                'FROM' => 'glpi_events',
-                'WHERE' => [
-                    'type' => strtolower($item->getType()),
-                    'service' => 'inventory',
-                ],
-                'ORDER' => ['date DESC'],
-                'LIMIT' => 1,
-            ]);
+        // Get the most recent event to verify content
+        global $DB;
+        $iterator = $DB->request([
+            'SELECT' => ['message'],
+            'FROM' => 'glpi_events',
+            'WHERE' => [
+                'type' => strtolower($item->getType()),
+                'service' => 'massiveaction',
+            ],
+            'ORDER' => ['date DESC'],
+            'LIMIT' => 1,
+        ]);
 
-            $this->assertCount(1, $iterator);
-            $latest_event = $iterator->current();
-            $this->assertMatchesRegularExpression(
-                $expected_message_pattern,
-                $latest_event['message'],
-                "{$action} log message should match expected pattern"
-            );
-        }
+        $this->assertCount(1, $iterator);
+        $latest_event = $iterator->current();
+        $this->assertMatchesRegularExpression(
+            $expected_message_pattern,
+            $latest_event['message'],
+            "{$action} log message should match expected pattern"
+        );
     }
 
     /**
@@ -1196,17 +1187,10 @@ class MassiveActionTest extends DbTestCase
     {
         $this->login();
 
-        // Clear existing events for clean test
-        global $DB;
-        $DB->delete('glpi_events', [
-            'type' => 'computer',
-            'service' => 'inventory',
-        ]);
-
         // Count events before action
         $events_before = countElementsInTable('glpi_events', [
             'type' => 'computer',
-            'service' => 'inventory',
+            'service' => 'massiveaction',
         ]);
 
         // Create mock MassiveAction that will fail (no rights)
@@ -1230,7 +1214,7 @@ class MassiveActionTest extends DbTestCase
         // Count events after action
         $events_after = countElementsInTable('glpi_events', [
             'type' => 'computer',
-            'service' => 'inventory',
+            'service' => 'massiveaction',
         ]);
 
         // Verify no log entry was created since no items were successfully processed

@@ -1350,7 +1350,7 @@ class MassiveAction
                         0,
                         strtolower($item->getType()),
                         4,
-                        "inventory",
+                        "massiveaction",
                         sprintf(__('%1$s deletes %2$d items by massive action'), $_SESSION["glpiname"], $deleted_count)
                     );
                 }
@@ -1379,7 +1379,7 @@ class MassiveAction
                         0,
                         strtolower($item->getType()),
                         4,
-                        "inventory",
+                        "massiveaction",
                         sprintf(__('%1$s restores %2$d items by massive action'), $_SESSION["glpiname"], $restored_count)
                     );
                 }
@@ -1449,7 +1449,7 @@ class MassiveAction
                         0,
                         strtolower($item->getType()),
                         4,
-                        "inventory",
+                        "massiveaction",
                         $purge_message
                     );
                 }
