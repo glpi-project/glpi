@@ -2284,7 +2284,7 @@ class TicketTest extends DbTestCase
         );
 
         // Assign right without UPDATE
-        $this->changeTechRight(Ticket::ASSIGN | Ticket::READALL);
+        $this->changeTechRights(['ticket' => Ticket::ASSIGN | Ticket::READALL]);
         $this->checkFormOutput(
             $ticket,
             $name = false,
@@ -5727,7 +5727,7 @@ HTML,
         $this->assertEquals(0, $ticket->countUsers(CommonITILActor::ASSIGN));
         $this->assertEquals(0, $ticket->countUsers(CommonITILActor::REQUESTER));
 
-        $this->changeTechRight(Ticket::ASSIGN | Ticket::READALL);
+        $this->changeTechRights(['ticket' => Ticket::ASSIGN | Ticket::READALL]);
         $this->assertFalse($ticket->canUpdateItem());
         $this->assertTrue((bool) $ticket->canAssign());
         $this->assertTrue($ticket->update([
@@ -5780,7 +5780,7 @@ HTML,
         $this->assertEquals(0, $ticket->countUsers(CommonITILActor::ASSIGN));
         $this->assertEquals(0, $ticket->countUsers(CommonITILActor::REQUESTER));
 
-        $this->changeTechRight(Ticket::READALL | UPDATE);
+        $this->changeTechRights(['ticket' => Ticket::READALL | UPDATE]);
         $this->assertTrue($ticket->canUpdateItem());
         $this->assertFalse((bool) $ticket->canAssign());
         $this->assertTrue($ticket->update([
@@ -5833,7 +5833,7 @@ HTML,
         $this->assertEquals(0, $ticket->countUsers(CommonITILActor::ASSIGN));
         $this->assertEquals(0, $ticket->countUsers(CommonITILActor::REQUESTER));
 
-        $this->changeTechRight(Ticket::ASSIGN | UPDATE | Ticket::READALL);
+        $this->changeTechRights(['ticket' => Ticket::ASSIGN | UPDATE | Ticket::READALL]);
         $this->assertTrue($ticket->canUpdateItem());
         $this->assertTrue((bool) $ticket->canAssign());
         $this->assertTrue($ticket->update([
@@ -6935,7 +6935,7 @@ HTML,
         ]);
         $this->assertGreaterThan(0, $tickets_id);
 
-        $this->changeTechRight(Ticket::READMY);
+        $this->changeTechRights(['ticket' => Ticket::READMY]);
         $this->assertFalse($ticket->canViewItem());
     }
 
@@ -6950,7 +6950,7 @@ HTML,
         ]);
         $this->assertGreaterThan(0, $tickets_id);
 
-        $this->changeTechRight(Ticket::READNEWTICKET);
+        $this->changeTechRights(['ticket' => Ticket::READNEWTICKET]);
         $this->assertTrue($ticket->canViewItem());
     }
 
