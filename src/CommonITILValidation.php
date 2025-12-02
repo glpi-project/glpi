@@ -159,7 +159,6 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * Is the current user have right to delete the current validation ?
      *
-     * @return boolean
      **/
     public function canCreateItem(): bool
     {
@@ -204,7 +203,6 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * Is the current user have right to delete the current validation ?
      *
-     * @return boolean
      **/
     public function canDeleteItem(): bool
     {
@@ -222,7 +220,6 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * Does the current user have the rights needed to update the current validation?
      *
-     * @return boolean
      */
     public function canUpdateItem(): bool
     {
@@ -607,7 +604,6 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * Returns the target name.
      *
-     * @return string
      */
     final protected function getTargetName(): string
     {
@@ -633,8 +629,8 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * get the Ticket validation status list
      *
-     * @param bool $withmetaforsearch  false by default
-     * @param bool $global             true for global status, with "no validation" option, false by default
+     * @param bool $withmetaforsearch false by default
+     * @param bool $global            true for global status, with "no validation" option, false by default
      *
      * @return array
      */
@@ -666,12 +662,12 @@ abstract class CommonITILValidation extends CommonDBChild
      *
      * @param string $name    select name
      * @param array  $options possible options:
-     *      - value    : default value (default waiting)
-     *      - all      : boolean display all (default false)
-     *      - global   : for global validation (default false)
-     *      - display  : boolean display or get string ? (default true)
+     *                        - value    : default value (default waiting)
+     *                        - all      : boolean display all (default false)
+     *                        - global   : for global validation (default false)
+     *                        - display  : boolean display or get string ? (default true)
      *
-     * @return string|integer Output string if display option is set to false,
+     * @return string|int Output string if display option is set to false,
      *                        otherwise random part of dropdown id
      **/
     public static function dropdownStatus($name, $options = [])
@@ -706,8 +702,7 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * Get Ticket validation status Name
      *
-     * @param integer   $value
-     * @param bool      $decorated
+     * @param int $value
      *
      * @return string
      **/
@@ -808,10 +803,7 @@ abstract class CommonITILValidation extends CommonDBChild
      *
      * @see self::getNumberToValidate()
      *
-     * @param int $users_id
-     * @param bool $search_in_groups
      *
-     * @return array
      */
     final public static function getTargetCriteriaForUser(int $users_id, bool $search_in_groups = true): array
     {
@@ -1300,8 +1292,8 @@ HTML;
     /**
      * Print the validation form
      *
-     * @param $ID        integer  ID of the item
-     * @param $options   array    options used
+     * @param $ID      integer  ID of the item
+     * @param $options array    options used
      **/
     public function showForm($ID, array $options = [])
     {
@@ -1764,10 +1756,9 @@ HTML;
 
 
     /**
-     * @param $field
-     * @param $name              (default '')
-     * @param $values            (default '')
-     * @param $options   array
+     * @param $name    (default '')
+     * @param $values  (default '')
+     * @param $options array
      **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
@@ -1805,17 +1796,17 @@ HTML;
      *
      * Display (or return) html fragment with a select element plus the javascript that will trigger an ajax request to populate the options.
      *
-     * @param $options   array of options
-     *  - prefix                  : inputs prefix
-     *                              - an empty prefix will result in having `itemtype` and `items_id` inputs
-     *                              - a `_validator` prefix will result in having `_validator[itemtype]` and `_validator[items_id]` inputs
-     *  - id                      : ID of object > 0 Update, < 0 New
-     *  - entity                  : ID of entity
-     *  - right                   : validation rights
-     *  - groups_id               : ID of preselected group when validator are users of a same group
-     *  - itemtype_target         : Validator itemtype (User or Group)
-     *  - items_id_target         : Validator id (can be an array)
-     *  - applyto
+     * @param $options array of options
+     *                 - prefix                  : inputs prefix
+     *                 - an empty prefix will result in having `itemtype` and `items_id` inputs
+     *                 - a `_validator` prefix will result in having `_validator[itemtype]` and `_validator[items_id]` inputs
+     *                 - id                      : ID of object > 0 Update, < 0 New
+     *                 - entity                  : ID of entity
+     *                 - right                   : validation rights
+     *                 - groups_id               : ID of preselected group when validator are users of a same group
+     *                 - itemtype_target         : Validator itemtype (User or Group)
+     *                 - items_id_target         : Validator id (can be an array)
+     *                 - applyto
      *
      * @return string|int Output if $options['display'] is false, else return rand
      **/
@@ -1909,10 +1900,10 @@ HTML;
     /**
      * Get list of users from a group which have validation rights
      *
-     * @param $options   array   possible:
-     *       groups_id
-     *       right
-     *       entity
+     * @param $options array   possible:
+     *                 groups_id
+     *                 right
+     *                 entity
      *
      * @return array
      **/
@@ -1963,7 +1954,6 @@ HTML;
     }
 
     /**
-     * @param CommonITILObject $item
      * @param string $type
      *
      * Used in twig template
@@ -2112,7 +2102,6 @@ HTML;
     /**
      * Delete, only if the itils_validationstep is not used anymore
      *
-     * @return void
      */
     private function removeUnsedITILValidationStep(): void
     {

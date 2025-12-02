@@ -118,9 +118,7 @@ class Itil_Project extends CommonDBRelation
     /**
      * Show ITIL items for a project.
      *
-     * @param Project $project
      *
-     * @return bool
      **/
     public static function showForProject(Project $project): bool
     {
@@ -247,9 +245,7 @@ TWIG, $twig_params);
     /**
      * Show projects for an ITIL item.
      *
-     * @param CommonITILObject $itil
      *
-     * @return bool
      **/
     public static function showForItil(CommonITILObject $itil): bool
     {

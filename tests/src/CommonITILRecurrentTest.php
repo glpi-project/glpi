@@ -535,9 +535,9 @@ abstract class CommonITILRecurrentTest extends DbTestCase
     /**
      * Get next working day for reference date.
      *
-     * @param array  $working_days    List of working days (0 for sunday, 6 for saturday).
-     * @param string $reference_date  Reference date.
-     * @param string $format          Date return format.
+     * @param array  $working_days   List of working days (0 for sunday, 6 for saturday).
+     * @param string $reference_date Reference date.
+     * @param string $format         Date return format.
      *
      * @return string
      */

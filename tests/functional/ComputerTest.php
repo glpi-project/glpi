@@ -935,7 +935,6 @@ class ComputerTest extends DbTestCase
     /**
      * Data provider for the testFormatSessionMessageAfterAction method
      *
-     * @return iterable
      */
     public static function formatSessionMessageAfterActionProvider(): iterable
     {
@@ -962,11 +961,9 @@ class ComputerTest extends DbTestCase
     /**
      * Test the formatSessionMessageAfterAction method
      *
-     * @param string $item                       Item string to create
      * @param string $raw_message                Raw message to format
      * @param string $expected_formatted_message Expected formatted message
      *
-     * @return void
      */
     #[DataProvider('formatSessionMessageAfterActionProvider')]
     public function testFormatSessionMessageAfterAction(

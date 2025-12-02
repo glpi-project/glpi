@@ -168,8 +168,6 @@ final class HLAPIHelper
     // @codingStandardsIgnoreEnd
 
     /**
-     * @param Router $router
-     * @param HLAPITestCase $test
      * @param string|null $api_version The API version to use. Cannot be specified or overridden by the request URL. Defaults to the current API version.
      */
     public function __construct(Router $router, HLAPITestCase $test, ?string $api_version = null)
@@ -181,7 +179,6 @@ final class HLAPIHelper
 
     /**
      * Get a new API helper with a specific API version
-     * @param string $api_version
      * @return HLAPIHelper
      */
     public function withVersion(string $api_version)
@@ -195,7 +192,6 @@ final class HLAPIHelper
     }
 
     /**
-     * @param string $endpoint
      * @return RoutePath[]
      */
     private function getRoutesForEndpoint(string $endpoint): array
@@ -288,9 +284,7 @@ final class HLAPIHelper
     }
 
     /**
-     * @param Request $request
      * @param callable(HLAPICallAsserter): void $fn
-     * @return self
      */
     public function call(Request $request, callable $fn, bool $auto_auth_header = true): self
     {
@@ -501,27 +495,27 @@ final class HLAPIHelper
 
     /**
      * Automatically tests CRUD endpoints for a specific itemtype to check that responses are correct when the user lacks permissions.
-     * @param string $endpoint The base endpoint to test
-     * @param class-string<CommonDBTM> $itemtype The itemtype related to this endpoint
-     * @param int $items_id A specific, existing itm ID to test with
-     * @param callable|null $deny_read A callable to customize how READ access is denied.
-     *     The callable should "reset" the permissions in a way so that only READ is denied.
-     *     If not specified, the permissions for the specified itemtype are set to (ALLSTANDARDRIGHT & ~READ).
-     * @param callable|null $deny_create A callable to customize how CREATE access is denied.
-     *     The callable should "reset" the permissions in a way so that only CREATE is denied.
-     *     If not specified, the permissions for the specified itemtype are set to (ALLSTANDARDRIGHT & ~CREATE).
-     * @param callable|null $deny_update A callable to customize how UPDATE access is denied.
-     *     The callable should "reset" the permissions in a way so that only UPDATE is denied.
-     *     If not specified, the permissions for the specified itemtype are set to (ALLSTANDARDRIGHT & ~UPDATE).
-     * @param callable|null $deny_delete A callable to customize how DELETE access is denied.
-     *     The callable should "reset" the permissions in a way so that only DELETE is denied.
-     *     If not specified, the permissions for the specified itemtype are set to (ALLSTANDARDRIGHT & ~DELETE).
-     * @param callable|null $deny_purge A callable to customize how PURGE access is denied.
-     *     The callable should "reset" the permissions in a way so that only PURGE is denied.
-     *     If not specified, the permissions for the specified itemtype are set to (ALLSTANDARDRIGHT & ~PURGE).
-     * @param callable|null $deny_restore A callable to customize how RESTORE access is denied.
-     *     The callable should "reset" the permissions in a way so that only RESTORE is denied.
-     *     If not specified, the permissions for the specified itemtype are set to (ALLSTANDARDRIGHT & ~DELETE & ~UPDATE).
+     * @param string                   $endpoint     The base endpoint to test
+     * @param class-string<CommonDBTM> $itemtype     The itemtype related to this endpoint
+     * @param int                      $items_id     A specific, existing itm ID to test with
+     * @param callable|null            $deny_read    A callable to customize how READ access is denied.
+     *                                               The callable should "reset" the permissions in a way so that only READ is denied.
+     *                                               If not specified, the permissions for the specified itemtype are set to (ALLSTANDARDRIGHT & ~READ).
+     * @param callable|null            $deny_create  A callable to customize how CREATE access is denied.
+     *                                               The callable should "reset" the permissions in a way so that only CREATE is denied.
+     *                                               If not specified, the permissions for the specified itemtype are set to (ALLSTANDARDRIGHT & ~CREATE).
+     * @param callable|null            $deny_update  A callable to customize how UPDATE access is denied.
+     *                                               The callable should "reset" the permissions in a way so that only UPDATE is denied.
+     *                                               If not specified, the permissions for the specified itemtype are set to (ALLSTANDARDRIGHT & ~UPDATE).
+     * @param callable|null            $deny_delete  A callable to customize how DELETE access is denied.
+     *                                               The callable should "reset" the permissions in a way so that only DELETE is denied.
+     *                                               If not specified, the permissions for the specified itemtype are set to (ALLSTANDARDRIGHT & ~DELETE).
+     * @param callable|null            $deny_purge   A callable to customize how PURGE access is denied.
+     *                                               The callable should "reset" the permissions in a way so that only PURGE is denied.
+     *                                               If not specified, the permissions for the specified itemtype are set to (ALLSTANDARDRIGHT & ~PURGE).
+     * @param callable|null            $deny_restore A callable to customize how RESTORE access is denied.
+     *                                               The callable should "reset" the permissions in a way so that only RESTORE is denied.
+     *                                               If not specified, the permissions for the specified itemtype are set to (ALLSTANDARDRIGHT & ~DELETE & ~UPDATE).
      * @return $this
      */
     public function autoTestCRUDNoRights(
@@ -789,7 +783,6 @@ final class HLAPIHelper
     }
 
     /**
-     * @param string $endpoint
      * @param class-string<AssignableItemInterface> $itemtype
      * @return void
      */
@@ -897,10 +890,10 @@ final class HLAPIHelper
 
 // @codingStandardsIgnoreStart
 /**
- * @property HLAPIRequestAsserter $originalRequest
- * @property HLAPIRequestAsserter $finalRequest
+ * @property HLAPIRequestAsserter  $originalRequest
+ * @property HLAPIRequestAsserter  $finalRequest
  * @property HLAPIResponseAsserter $response
- * @property HLAPIRouteAsserter $route
+ * @property HLAPIRouteAsserter    $route
  */
 final class HLAPICallAsserter
 {
@@ -1003,7 +996,6 @@ final class HLAPIResponseAsserter
     }
 
     /**
-     * @param callable $fn
      * @phpstan-param callable(string): void $fn
      * @return $this
      */
@@ -1014,7 +1006,6 @@ final class HLAPIResponseAsserter
     }
 
     /**
-     * @param callable $fn
      * @phpstan-param callable(array): void $fn
      * @return $this
      */

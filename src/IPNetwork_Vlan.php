@@ -92,7 +92,6 @@ class IPNetwork_Vlan extends CommonDBRelation
 
 
     /**
-     * @param IPNetwork $port
      *
      * @return void|false
      */

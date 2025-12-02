@@ -79,7 +79,6 @@ class OperatingSystemKernelVersionTest extends CommonDropdownTest
     /**
      * Create new kernel version in database
      *
-     * @return \CommonDBTM
      */
     protected function newInstance(): \CommonDBTM
     {

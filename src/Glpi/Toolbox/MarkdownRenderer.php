@@ -51,7 +51,6 @@ class MarkdownRenderer
      * Render markdown
      *
      * @param string $md_content Markdown to render
-     * @return string
      * @throws CommonMarkException
      */
     public function render(string $md_content): string

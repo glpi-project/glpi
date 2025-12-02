@@ -62,8 +62,6 @@ final class Parser
     }
 
     /**
-     * @param string $str_array
-     * @return array
      * @throws RSQLException If the string is not a valid RSQL group.
      */
     private function rsqlGroupToArray(string $str_array): array

@@ -58,35 +58,35 @@ abstract class AbstractConfigureCommand extends AbstractCommand
     /**
      * Error code returned if DB configuration succeed.
      *
-     * @var integer
+     * @var int
      */
     public const SUCCESS = 0;
 
     /**
      * Error code returned if DB connection initialization fails.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_DB_CONNECTION_FAILED = 1;
 
     /**
      * Error code returned if DB engine is unsupported.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_DB_ENGINE_UNSUPPORTED = 2;
 
     /**
      * Error code returned when trying to configure and having a DB config already set.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_DB_CONFIG_ALREADY_SET = 3;
 
     /**
      * Error code returned when failing to save database configuration file.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_DB_CONFIG_FILE_NOT_SAVED = 4;
 
@@ -180,9 +180,6 @@ abstract class AbstractConfigureCommand extends AbstractCommand
     /**
      * Save database configuration file.
      *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @param bool $compute_flags_from_db
      *
      * @throws InvalidArgumentException
      *
@@ -337,11 +334,11 @@ abstract class AbstractConfigureCommand extends AbstractCommand
              * @param string $dbuser
              * @param string $dbpassword
              * @param string $dbdefault
-             * @param bool $use_timezones
-             * @param bool $log_deprecation_warnings
-             * @param bool $use_utf8mb4
-             * @param bool $allow_datetime
-             * @param bool $allow_signed_keys
+             * @param bool   $use_timezones
+             * @param bool   $log_deprecation_warnings
+             * @param bool   $use_utf8mb4
+             * @param bool   $allow_datetime
+             * @param bool   $allow_signed_keys
              */
             public function __construct(
                 $dbhost,
@@ -374,7 +371,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
     /**
      * Check if DB is already configured.
      *
-     * @return boolean
+     * @return bool
      */
     protected function isDbAlreadyConfigured()
     {
@@ -385,7 +382,6 @@ abstract class AbstractConfigureCommand extends AbstractCommand
     /**
      * Validate configuration variables from input.
      *
-     * @param InputInterface $input
      *
      * @return void
      * @throws InvalidArgumentException
@@ -420,11 +416,9 @@ abstract class AbstractConfigureCommand extends AbstractCommand
     /**
      * Ask user to confirm DB configuration.
      *
-     * @param InputInterface $input
-     * @param OutputInterface $output
      * @param string $db_hostport DB host and port
-     * @param string $db_name DB name
-     * @param string $db_user DB username
+     * @param string $db_name     DB name
+     * @param string $db_user     DB username
      *
      * @return void
      */
@@ -448,9 +442,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
     /**
      * Check timezones availability and return availability state.
      *
-     * @param mysqli $mysqli
      *
-     * @return bool
      */
     private function checkTimezonesAvailability(mysqli $mysqli): bool
     {

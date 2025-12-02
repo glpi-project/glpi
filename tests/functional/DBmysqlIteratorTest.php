@@ -44,7 +44,7 @@ use Psr\Log\LogLevel;
 
 class DBmysqlIteratorTest extends DbTestCase
 {
-    /** @var \DBmysqlIterator */
+    /**  */
     private \DBmysqlIterator $it;
 
     public function setUp(): void
@@ -1588,7 +1588,6 @@ class DBmysqlIteratorTest extends DbTestCase
     /**
      * Returns a fake users table that can be used to test iterator.
      *
-     * @return QueryExpression
      */
     private function getUsersFakeTable(): QueryExpression
     {

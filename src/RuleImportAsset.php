@@ -60,13 +60,13 @@ class RuleImportAsset extends Rule
 
     public static $rightname         = 'rule_import';
 
-    /** @var integer */
+    /** @var int */
     private $found_criteria = 0;
     /** @var array */
     private $complex_criteria = [];
-    /** @var boolean */
+    /** @var bool */
     private $only_these_criteria = false;
-    /** @var boolean */
+    /** @var bool */
     private $link_criteria_port = false;
 
     public function getTitle()
@@ -254,7 +254,7 @@ class RuleImportAsset extends Rule
     }
 
     /**
-     * @param array $criteria
+     * @param array  $criteria
      * @param string $name
      * @param string $value
      *
@@ -375,7 +375,6 @@ class RuleImportAsset extends Rule
      *
      * @param array $input Input
      *
-     * @return boolean
      */
     public function preComputeCriteria(array $input): bool
     {
@@ -1119,9 +1118,9 @@ TWIG, $twig_params);
     {
         $class = new class {
             /**
-             * @param int $items_id
+             * @param int                      $items_id
              * @param class-string<CommonDBTM> $itemtype
-             * @param int $rules_id
+             * @param int                      $rules_id
              *
              * @return void
              */
@@ -1133,7 +1132,6 @@ TWIG, $twig_params);
     /**
      * Get criteria related to network ports
      *
-     * @return array
      */
     public function getNetportCriteria(): array
     {
@@ -1148,7 +1146,6 @@ TWIG, $twig_params);
     /**
      * Get global criteria
      *
-     * @return array
      */
     public function getGlobalCriteria(): array
     {
@@ -1194,7 +1191,6 @@ TWIG, $twig_params);
      *
      * @param string $criterion Criterion to check
      *
-     * @return boolean
      */
     public function isNetPort($criterion): bool
     {
@@ -1234,7 +1230,6 @@ TWIG, $twig_params);
     /**
      * Get default rules as XML
      *
-     * @return SimpleXMLElement|false
      */
     public function getDefaultRules(): SimpleXMLElement|false
     {

@@ -42,7 +42,7 @@ use stdClass;
 
 class Volume extends InventoryAsset
 {
-    /** @var Conf */
+    /**  */
     private Conf $conf;
 
     public function prepare(): array
@@ -116,7 +116,6 @@ class Volume extends InventoryAsset
     /**
      * Get existing entries from database
      *
-     * @return array
      */
     protected function getExisting(): array
     {
@@ -197,7 +196,6 @@ class Volume extends InventoryAsset
      *
      * @param stdClass $raw_data Raw data from inventory
      *
-     * @return bool
      */
     public function isNetworkDrive(stdClass $raw_data): bool
     {

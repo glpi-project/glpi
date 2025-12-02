@@ -40,7 +40,7 @@ use function Safe\preg_match;
 /**
  * Is the script launch in Command line?
  *
- * @return boolean
+ * @return bool
  */
 function isCommandLine()
 {
@@ -50,7 +50,7 @@ function isCommandLine()
 /**
  * Is the script launched From API?
  *
- * @return boolean
+ * @return bool
  */
 function isAPI()
 {
@@ -70,7 +70,7 @@ function isAPI()
  *
  * @param string $classname Class name to analyze
  *
- * @return boolean|array False or an array containing plugin name and class name
+ * @return bool|array False or an array containing plugin name and class name
  */
 function isPluginItemType($classname)
 {
@@ -97,8 +97,6 @@ function isPluginItemType($classname)
  *
  * This function will be deprecated/removed once all the HTML code of GLPI will be moved inside Twig templates.
  *
- * @param mixed $str
- * @return string
  */
 function htmlescape(mixed $str): string
 {
@@ -110,8 +108,6 @@ function htmlescape(mixed $str): string
  *
  * This function will be deprecated/removed once all the JS code of GLPI will be moved inside JS files or Twig templates.
  *
- * @param mixed $str
- * @return string
  */
 function jsescape(mixed $str): string
 {

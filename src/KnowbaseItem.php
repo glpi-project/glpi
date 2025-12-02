@@ -158,7 +158,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     /**
      * Check if current user can comment on KB entries
      *
-     * @return boolean
+     * @return bool
      */
     public function canComment()
     {
@@ -192,9 +192,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     /**
      * Get the form page URL for the current classe
      *
-     * @param array   $params parameters to add to the URL
-     * @param boolean $full  path or relative one
-     * @return string
+     * @param array $params parameters to add to the URL
+     * @param bool  $full   path or relative one
      **/
     public static function getFormURLWithParam($params = [], $full = true): string
     {
@@ -416,7 +415,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      *
      * @since 0.83
      *
-     * @return Boolean
+     * @return bool
      **/
     public function isPubliclyVisible()
     {
@@ -460,9 +459,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      *
      * @since 9.2
      *
-     * @param boolean $forceall force all joins (false by default)
+     * @param bool $forceall force all joins (false by default)
      *
-     * @return array
      */
     public static function getVisibilityCriteria(bool $forceall = false): array
     {
@@ -621,7 +619,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     /**
      * Get criteria used to filter knowledge base articles on users
      *
-     * @return array
      */
     private static function getVisibilityCriteriaKB_User(): array
     {
@@ -634,7 +631,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     /**
      * Get criteria used to filter knowledge base articles on groups
      *
-     * @return array
      */
     private static function getVisibilityCriteriaKB_Group(): array
     {
@@ -658,7 +654,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     /**
      * Get criteria used to filter knowledge base articles on profiles
      *
-     * @return array
      */
     private static function getVisibilityCriteriaKB_Profile(): array
     {
@@ -682,7 +677,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     /**
      * Get criteria used to filter knowledge base articles on entity
      *
-     * @return array
      */
     private static function getVisibilityCriteriaKB_Entity(): array
     {
@@ -863,7 +857,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      *
      * @param array $options Array of options
      *
-     * @return boolean|string
+     * @return bool|string
      **/
     public function showFull($options = [])
     {
@@ -957,7 +951,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     /**
      * Print out an HTML form for Search knowbase item
      *
-     * @param $options   $_GET
+     * @param $options $_GET
      *
      * @return void
      **/
@@ -1012,8 +1006,8 @@ TWIG, $twig_params);
      *
      * @since 0.83
      *
-     * @param array $params (contains, knowbaseitemcategories_id, faq)
-     * @param string $type search type : browse / search (default search)
+     * @param array  $params (contains, knowbaseitemcategories_id, faq)
+     * @param string $type   search type : browse / search (default search)
      *
      * @return array : SQL request
      **/
@@ -1280,9 +1274,7 @@ TWIG, $twig_params);
      * Clean search for Boolean FullText
      *
      * @since 10.0.7
-     * @param string $search
      *
-     * @return string
      **/
     private static function computeBooleanFullTextSearch(string $search): string
     {
@@ -1350,8 +1342,8 @@ TWIG, $twig_params);
     /**
      * Print out list kb item
      *
-     * @param array $options            $_GET
-     * @param string $type search type : browse / search (default search)
+     * @param array  $options $_GET
+     * @param string $type    search type : browse / search (default search)
      **/
     public static function showList($options, $type = 'search')
     {
@@ -2036,9 +2028,9 @@ TWIG, $twig_params);
     /**
      * Reverts item contents to specified revision
      *
-     * @param integer $revid Revision ID
+     * @param int $revid Revision ID
      *
-     * @return boolean
+     * @return bool
      */
     public function revertTo($revid)
     {
@@ -2069,8 +2061,8 @@ TWIG, $twig_params);
     /**
      * Get ids of KBI in given category
      *
-     * @param int           $category_id   id of the parent category
-     * @param KnowbaseItem  $kbi           used only for unit tests
+     * @param int          $category_id id of the parent category
+     * @param KnowbaseItem $kbi         used only for unit tests
      *
      * @return array        Array of ids
      */

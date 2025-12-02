@@ -54,10 +54,9 @@ final class RichText
      *
      * @since 10.0.0
      *
-     * @param null|string   $content        HTML string to be made safe
-     * @param boolean       $encode_output  Indicates whether the output should be encoded (encoding of HTML special chars)
+     * @param null|string $content       HTML string to be made safe
+     * @param bool        $encode_output Indicates whether the output should be encoded (encoding of HTML special chars)
      *
-     * @return string
      *
      * @psalm-taint-escape html
      * @psalm-taint-escape has_quotes
@@ -88,13 +87,12 @@ final class RichText
      *
      * @since 10.0.0
      *
-     * @param string  $content                HTML string to be made safe
-     * @param boolean $keep_presentation      Indicates whether the presentation elements have to be replaced by plaintext equivalents
-     * @param boolean $compact                Indicates whether the output should be compact (limited line length, no links URL, ...)
-     * @param boolean $encode_output          Indicates whether the output should be encoded (encoding of HTML special chars)
-     * @param boolean $preserve_line_breaks   Indicates whether the line breaks should be preserved
+     * @param string $content              HTML string to be made safe
+     * @param bool   $keep_presentation    Indicates whether the presentation elements have to be replaced by plaintext equivalents
+     * @param bool   $compact              Indicates whether the output should be compact (limited line length, no links URL, ...)
+     * @param bool   $encode_output        Indicates whether the output should be encoded (encoding of HTML special chars)
+     * @param bool   $preserve_line_breaks Indicates whether the line breaks should be preserved
      *
-     * @return string
      */
     public static function getTextFromHtml(
         string $content,
@@ -169,9 +167,7 @@ final class RichText
     /**
      * Check if provided content is rich-text HTML content.
      *
-     * @param string $content
      *
-     * @return bool
      */
     public static function isRichTextHtmlContent(string $content): bool
     {
@@ -210,7 +206,6 @@ final class RichText
     /**
      * Normalize HTML content.
      *
-     * @param string $content
      *
      * @return string
      */
@@ -260,10 +255,9 @@ final class RichText
      *
      * @since 10.0.0
      *
-     * @param null|string   $content HTML string to enahnce
-     * @param array         $params  Enhancement parameters
+     * @param null|string $content HTML string to enahnce
+     * @param array       $params  Enhancement parameters
      *
-     * @return string
      */
     public static function getEnhancedHtml(?string $content, array $params = []): string
     {
@@ -311,9 +305,7 @@ HTML;
      * Ensure current GLPI URL prefix (`$CFG_GLPI["root_doc"]`) is used in images URLs.
      * It permits to fix path to images that are broken when GLPI URL prefix is changed.
      *
-     * @param string $content
      *
-     * @return string
      */
     private static function fixImagesPath(string $content): string
     {
@@ -356,9 +348,7 @@ HTML;
      *
      * @since 10.0.3
      *
-     * @param string  $content
      *
-     * @return string
      */
     private static function loadImagesLazy(string $content): string
     {
@@ -374,9 +364,7 @@ HTML;
      *
      * @since 10.0.0
      *
-     * @param string  $content
      *
-     * @return string
      */
     private static function replaceImagesByGallery(string $content): string
     {
@@ -436,11 +424,10 @@ HTML;
      *
      * @since 10.0.0
      *
-     * @param array $imgs  Array of image info
-     *                      - src The public path of img
-     *                      - w   The width of img
-     *                      - h   The height of img
-     * @param array $options
+     * @param array $imgs Array of image info
+     *                    - src The public path of img
+     *                    - w   The width of img
+     *                    - h   The height of img
      * @return string completed gallery
      */
     private static function imageGallery(array $imgs, array $options = []): string

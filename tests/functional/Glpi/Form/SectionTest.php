@@ -52,7 +52,6 @@ class SectionTest extends DbTestCase
     /**
      * Indirectly test the post_getFromDB method by editing and reloading an item
      *
-     * @return void
      */
     public function testPost_getFromDB(): void
     {

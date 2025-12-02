@@ -306,7 +306,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
     /**
      * Cache preferences for the current user in session.
      *
-     * @return void
      */
     final public function loadPreferencesInSession(): void
     {
@@ -323,12 +322,12 @@ class User extends CommonDBTM implements TreeBrowseInterface
     /**
      * Load minimal session for user.
      *
-     * @param integer $entities_id  Entity to use
-     * @param boolean $is_recursive Whether to load entities recursively or not
      *
-     * @return void
      *
      * @since 0.83.7
+     * @param int  $entities_id  Entity to use
+     * @param bool $is_recursive Whether to load entities recursively or not
+     * @return void
      */
     public function loadMinimalSession($entities_id, $is_recursive)
     {
@@ -575,7 +574,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @param string $name Login of the user
      *
-     * @return boolean
+     * @return bool
      */
     public function getFromDBbyName($name)
     {
@@ -585,11 +584,11 @@ class User extends CommonDBTM implements TreeBrowseInterface
     /**
      * Retrieve a user from the database using its login.
      *
-     * @param string  $name     Login of the user
-     * @param integer $authtype Auth type (see Auth constants)
-     * @param integer $auths_id ID of auth server
+     * @param string $name     Login of the user
+     * @param int    $authtype Auth type (see Auth constants)
+     * @param int    $auths_id ID of auth server
      *
-     * @return boolean
+     * @return bool
      */
     public function getFromDBbyNameAndAuth($name, $authtype, $auths_id)
     {
@@ -605,7 +604,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @param string $value Value of the sync field
      *
-     * @return boolean
+     * @return bool
      */
     public function getFromDBbySyncField($value)
     {
@@ -617,7 +616,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @param string $user_dn dn of the user
      *
-     * @return boolean
+     * @return bool
      */
     public function getFromDBbyDn($user_dn)
     {
@@ -634,10 +633,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
     /**
      * Retrieve a user from the database using it's dn and auths_id.
      *
-     * @param string $user_dn
-     * @param int $auths_id
      *
-     * @return bool
      */
     public function getFromDBbyDnAndAuth(string $user_dn, int $auths_id): bool
     {
@@ -710,7 +706,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * @param string $email     user email
      * @param array  $condition add condition
      *
-     * @return boolean
+     * @return bool
      */
     public function getFromDBbyEmail($email, $condition = [])
     {
@@ -760,7 +756,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @param string $email
      *
-     * @return boolean
+     * @return bool
      */
     public function isEmail($email)
     {
@@ -778,7 +774,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * @param string $token user token
      * @param string $field the field storing the token
      *
-     * @return boolean
+     * @return bool
      */
     public function getFromDBbyToken($token, $field = 'personal_token')
     {
@@ -1466,7 +1462,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
     /**
      * Apply rules to determine dynamic rights of the user.
      *
-     * @return boolean true if rules are applied, false otherwise
+     * @return bool true if rules are applied, false otherwise
      */
     public function applyRightRules()
     {
@@ -1702,7 +1698,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @since 0.85
      *
-     * @return string|boolean Filename to be stored in user picture field, false if no picture found
+     * @return string|bool Filename to be stored in user picture field, false if no picture found
      */
     public function syncLdapPhoto()
     {
@@ -1969,7 +1965,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
     /**
      * Get the user info card HTML.
      *
-     * @return string
      */
     public function getInfoCard(): string
     {
@@ -2000,11 +1995,10 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * by searching in the attributes of the User.
      *
      * @param Connection $ldap_connection LDAP connection
-     * @param array    $ldap_method     LDAP method
-     * @param string   $userdn          Basedn of the user
-     * @param string   $login           User login
+     * @param array      $ldap_method     LDAP method
+     * @param string     $userdn          Basedn of the user
+     * @param string     $login           User login
      *
-     * @return void
      */
     private function getFromLDAPGroupVirtual($ldap_connection, array $ldap_method, $userdn, $login): void
     {
@@ -2115,11 +2109,11 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * by searching in the attributes of the Groups.
      *
      * @param Connection $ldap_connection LDAP connection
-     * @param array    $ldap_method        LDAP method
-     * @param string   $userdn             Basedn of the user
-     * @param string   $login              User login
+     * @param array      $ldap_method     LDAP method
+     * @param string     $userdn          Basedn of the user
+     * @param string     $login           User login
      *
-     * @return boolean true if search is applicable, false otherwise
+     * @return bool true if search is applicable, false otherwise
      */
     private function getFromLDAPGroupDiscret($ldap_connection, array $ldap_method, $userdn, $login)
     {
@@ -2171,12 +2165,12 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * Function that tries to load the user information from LDAP.
      *
      * @param Connection $ldap_connection LDAP connection
-     * @param array    $ldap_method     LDAP method
-     * @param string   $userdn          Basedn of the user
-     * @param string   $login           User Login
-     * @param boolean  $import          true for import, false for update
+     * @param array      $ldap_method     LDAP method
+     * @param string     $userdn          Basedn of the user
+     * @param string     $login           User Login
+     * @param bool       $import          true for import, false for update
      *
-     * @return boolean true if found / false if not
+     * @return bool true if found / false if not
      */
     public function getFromLDAP($ldap_connection, array $ldap_method, $userdn, $login, $import = true)
     {
@@ -2437,13 +2431,13 @@ class User extends CommonDBTM implements TreeBrowseInterface
     /**
      * Get all groups a user belongs to.
      *
-     * @param Connection $ds ldap connection
-     * @param string   $ldap_base_dn       Basedn used
-     * @param string   $user_dn            Basedn of the user
-     * @param string   $group_condition    group search condition
-     * @param string   $group_member_field group field member in a user object
-     * @param boolean  $use_dn             search dn of user ($login_field=$user_dn) in group_member_field
-     * @param string   $login_field        user login field
+     * @param Connection $ds                 ldap connection
+     * @param string     $ldap_base_dn       Basedn used
+     * @param string     $user_dn            Basedn of the user
+     * @param string     $group_condition    group search condition
+     * @param string     $group_member_field group field member in a user object
+     * @param bool       $use_dn             search dn of user ($login_field=$user_dn) in group_member_field
+     * @param string     $login_field        user login field
      *
      * @return array Groups of the user located in [0][$group_member_field] in returned array
      */
@@ -2511,10 +2505,10 @@ class User extends CommonDBTM implements TreeBrowseInterface
     /**
      * Function that tries to load the user information from IMAP.
      *
-     * @param array  $mail_method  mail method description array
-     * @param string $name         login of the user
+     * @param array  $mail_method mail method description array
+     * @param string $name        login of the user
      *
-     * @return boolean true if method is applicable, false otherwise
+     * @return bool true if method is applicable, false otherwise
      */
     public function getFromIMAP(array $mail_method, $name)
     {
@@ -2571,7 +2565,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @since 0.84
      *
-     * @return boolean true if method is applicable, false otherwise
+     * @return bool true if method is applicable, false otherwise
      */
     public function getFromSSO()
     {
@@ -2703,9 +2697,9 @@ class User extends CommonDBTM implements TreeBrowseInterface
     /**
      * Check if current user have more right than the specified one.
      *
-     * @param integer $ID ID of the user
+     * @param int $ID ID of the user
      *
-     * @return boolean
+     * @return bool
      */
     public function currentUserHaveMoreRightThan($ID)
     {
@@ -2782,12 +2776,12 @@ HTML;
     /**
      * Print the user form.
      *
-     * @param integer $ID    ID of the user
+     * @param int   $ID      ID of the user
      * @param array $options Options
-     *     - string   target        Form target
-     *     - boolean  withtemplate  Template or basic item
+     *                       - string   target        Form target
+     *                       - boolean  withtemplate  Template or basic item
      *
-     * @return boolean true if user found, false otherwise
+     * @return bool true if user found, false otherwise
      */
     public function showForm($ID, array $options = [])
     {
@@ -2871,10 +2865,10 @@ HTML;
     /**
      * Print the user preference form.
      *
-     * @param string  $target Form target
-     * @param integer $ID     ID of the user
+     * @param string $target Form target
+     * @param int    $ID     ID of the user
      *
-     * @return boolean true if user found, false otherwise
+     * @return bool true if user found, false otherwise
      */
     public function showMyForm($target, $ID)
     {
@@ -3706,9 +3700,9 @@ HTML;
      *
      * @since 0.83
      *
-     * @param integer|string $entities_id ID of the entity to restrict
+     * @param int|string $entities_id ID of the entity to restrict
      *
-     * @return integer[]
+     * @return int[]
      */
     public static function getDelegateGroupsForUser($entities_id = '')
     {
@@ -3742,7 +3736,7 @@ HTML;
     /**
      * Get all users from groups where the current user have delegating, plus the current user.
      *
-     * @param integer|string $entities_id ID of the entity to restrict
+     * @param int|string $entities_id ID of the entity to restrict
      *
      * @return array<int, string> Array of user IDs mapped to their friendly names, sorted alphabetically, with "Myself" first.
      */
@@ -3775,15 +3769,15 @@ HTML;
      *
      * Internaly used by showGroup_Users, dropdownUsers and ajax/getDropdownUsers.php
      *
-     * @param boolean         $count            true if execute an count(*) (true by default)
+     * @param bool            $count            true if execute an count(*) (true by default)
      * @param string|string[] $right            limit user who have specific right (default 'all')
-     * @param integer|array   $entity_restrict  Restrict to a defined entity (default -1)
-     * @param integer         $value            default value (default 0)
-     * @param integer[]       $used             Already used items ID: not to display in dropdown
+     * @param int|array       $entity_restrict  Restrict to a defined entity (default -1)
+     * @param int             $value            default value (default 0)
+     * @param int[]           $used             Already used items ID: not to display in dropdown
      * @param string          $search           pattern (default '')
-     * @param integer         $start            start LIMIT value (default 0)
-     * @param integer         $limit            limit LIMIT value (default -1 no limit)
-     * @param boolean         $inactive_deleted true to retrieve also inactive or deleted users
+     * @param int             $start            start LIMIT value (default 0)
+     * @param int             $limit            limit LIMIT value (default -1 no limit)
+     * @param bool            $inactive_deleted true to retrieve also inactive or deleted users
      *
      * @return DBmysqlIterator
      */
@@ -4167,43 +4161,43 @@ HTML;
      * Make a select box with all glpi users where select key = name
      *
      * @param $options array of possible options:
-     *    - name             : string / name of the select (default is users_id)
-     *    - value
-     *    - values           : in case of select[multiple], pass the array of multiple values
-     *    - right            : string / limit user who have specific right :
-     *                             id -> only current user (default case);
-     *                             interface -> central;
-     *                             all -> all users;
-     *                             specific right like Ticket::READALL, CREATE.... (is array passed one of all passed right is needed)
-     *    - comments         : boolean / is the comments displayed near the dropdown (default true)
-     *    - entity           : integer or array / restrict to a defined entity or array of entities
-     *                          (default -1 : no restriction)
-     *    - entity_sons      : boolean / if entity restrict specified auto select its sons
-     *                          only available if entity is a single value not an array(default false)
-     *    - all              : Nobody or All display for none selected
-     *                             all=0 (default) -> Nobody
-     *                             all=1 -> All
-     *                             all=-1-> nothing
-     *    - rand             : integer / already computed rand value
-     *    - toupdate         : array / Update a specific item on select change on dropdown
-     *                          (need value_fieldname, to_update, url
-     *                          (see Ajax::updateItemOnSelectEvent for information)
-     *                          and may have moreparams)
-     *    - used             : array / Already used items ID: not to display in dropdown (default empty)
-     *    - ldap_import
-     *    - on_change        : string / value to transmit to "onChange"
-     *    - display          : boolean / display or get string (default true)
-     *    - width            : specific width needed
-     *    - specific_tags    : array of HTML5 tags to add to the field
-     *    - class            : class to pass to html select
-     *    - url              : url of the ajax php code which should return the json data to show in
-     *                         the dropdown (default /ajax/getDropdownUsers.php)
-     *    - inactive_deleted : retreive also inactive or deleted users
-     *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
-     *    - readonly         : boolean / return getUserName is true (default false)
-     *    - required         : boolean / is the field required (default false)
+     *                 - name             : string / name of the select (default is users_id)
+     *                 - value
+     *                 - values           : in case of select[multiple], pass the array of multiple values
+     *                 - right            : string / limit user who have specific right :
+     *                 id -> only current user (default case);
+     *                 interface -> central;
+     *                 all -> all users;
+     *                 specific right like Ticket::READALL, CREATE.... (is array passed one of all passed right is needed)
+     *                 - comments         : boolean / is the comments displayed near the dropdown (default true)
+     *                 - entity           : integer or array / restrict to a defined entity or array of entities
+     *                 (default -1 : no restriction)
+     *                 - entity_sons      : boolean / if entity restrict specified auto select its sons
+     *                 only available if entity is a single value not an array(default false)
+     *                 - all              : Nobody or All display for none selected
+     *                 all=0 (default) -> Nobody
+     *                 all=1 -> All
+     *                 all=-1-> nothing
+     *                 - rand             : integer / already computed rand value
+     *                 - toupdate         : array / Update a specific item on select change on dropdown
+     *                 (need value_fieldname, to_update, url
+     *                 (see Ajax::updateItemOnSelectEvent for information)
+     *                 and may have moreparams)
+     *                 - used             : array / Already used items ID: not to display in dropdown (default empty)
+     *                 - ldap_import
+     *                 - on_change        : string / value to transmit to "onChange"
+     *                 - display          : boolean / display or get string (default true)
+     *                 - width            : specific width needed
+     *                 - specific_tags    : array of HTML5 tags to add to the field
+     *                 - class            : class to pass to html select
+     *                 - url              : url of the ajax php code which should return the json data to show in
+     *                 the dropdown (default /ajax/getDropdownUsers.php)
+     *                 - inactive_deleted : retreive also inactive or deleted users
+     *                 - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
+     *                 - readonly         : boolean / return getUserName is true (default false)
+     *                 - required         : boolean / is the field required (default false)
      *
-     * @return integer|string Random value if displayed, string otherwise
+     * @return int|string Random value if displayed, string otherwise
      */
     public static function dropdown($options = [])
     {
@@ -4469,7 +4463,7 @@ HTML;
     /**
      * Show simple add user form for external auth.
      *
-     * @return void|boolean false if user does not have rights to import users from external sources,
+     * @return void|bool false if user does not have rights to import users from external sources,
      *    print form otherwise
      */
     public static function showAddExtAuthForm()
@@ -4509,11 +4503,11 @@ HTML;
     /**
      * Change auth method for given users.
      *
-     * @param integer[] $IDs      IDs of users
-     * @param integer   $authtype Auth type (see Auth constants)
-     * @param integer   $server   ID of auth server
+     * @param int[] $IDs      IDs of users
+     * @param int   $authtype Auth type (see Auth constants)
+     * @param int   $server   ID of auth server
      *
-     * @return boolean
+     * @return bool
      */
     public static function changeAuthMethod(array $IDs = [], $authtype = 1, $server = 0)
     {
@@ -4625,7 +4619,7 @@ HTML;
     /**
      * Show items of the current user.
      *
-     * @param boolean $tech false to display items owned by user, true to display items managed by user
+     * @param bool $tech false to display items owned by user, true to display items managed by user
      *
      * @return void
      */
@@ -4799,9 +4793,8 @@ HTML;
      * Get user by email, importing it from LDAP if not existing.
      *
      * @param string $email
-     * @param bool $createuserfromemail
      *
-     * @return integer ID of user, 0 if not found nor imported
+     * @return int ID of user, 0 if not found nor imported
      */
     public static function getOrImportByEmail($email = '', bool $createuserfromemail = false)
     {
@@ -4864,7 +4857,7 @@ HTML;
     /**
      * Handle user deleted in LDAP using configured policy.
      *
-     * @param integer $users_id
+     * @param int $users_id
      *
      * @return void
      */
@@ -4946,9 +4939,7 @@ HTML;
      * Handle user restored in LDAP using configured policy.
      *
      * @since 10.0.0
-     * @param $users_id
      *
-     * @return void
      */
     public static function manageRestoredUserInLdap($users_id): void
     {
@@ -5002,7 +4993,7 @@ HTML;
      *
      * @param string $name User name
      *
-     * @return integer
+     * @return int
      */
     public static function getIdByName($name)
     {
@@ -5019,7 +5010,7 @@ HTML;
      * @param string $field Field name
      * @param string $value Field value
      *
-     * @return false|integer
+     * @return false|int
      */
     public static function getIdByField($field, $value)
     {
@@ -5042,7 +5033,6 @@ HTML;
     /**
      * Show password update form for current user.
      *
-     * @param array $error_messages
      *
      * @return void
      */
@@ -5058,7 +5048,6 @@ HTML;
     /**
      * Show new password form of password recovery process.
      *
-     * @param $token
      *
      * @return void
      */
@@ -5073,9 +5062,7 @@ HTML;
     /**
      * Show new password form of password initialization process.
      *
-     * @param string $token
      *
-     * @return void
      *
      * @since 11.0.0
      */
@@ -5092,7 +5079,6 @@ HTML;
     /**
      * Show request form of password recovery process.
      *
-     * @return void
      *
      * @since 11.0.0
      */
@@ -5117,12 +5103,11 @@ HTML;
     /**
      * Handle password recovery form submission.
      *
-     * @param array $input
      *
      * @throws ForgetPasswordException when requirements are not met
      * @throws PasswordTooWeakException
      *
-     * @return boolean true if password successfully changed, false otherwise
+     * @return bool true if password successfully changed, false otherwise
      */
     public function updateForgottenPassword(array $input)
     {
@@ -5202,7 +5187,6 @@ HTML;
     /**
      * Displays password recovery result.
      *
-     * @param array $input
      *
      * @return void
      */
@@ -5254,7 +5238,6 @@ HTML;
      *
      * @param string $email email of the user
      *
-     * @return void
      */
     public function showInitPassword(string $email): void
     {
@@ -5275,8 +5258,6 @@ HTML;
     /**
      * Send password recovery email for a user.
      *
-     * @param string $email
-     * @param bool $firstpassword
      *
      * @throws ForgetPasswordException If the process failed and the user should
      *                                 be aware of it (e.g. incorrect email)
@@ -5375,7 +5356,6 @@ HTML;
     /**
      * Display information from LDAP server for user.
      *
-     * @return void
      */
     private function showLdapInformation(): void
     {
@@ -5514,10 +5494,10 @@ HTML;
     /**
      * Get token of a user. If not exists generate it.
      *
-     * @param integer $ID    User ID
-     * @param string  $field Field storing the token
+     * @param int    $ID    User ID
+     * @param string $field Field storing the token
      *
-     * @return string|boolean User token, false if user does not exist
+     * @return string|bool User token, false if user does not exist
      */
     public static function getToken($ID, $field = 'personal_token')
     {
@@ -5535,8 +5515,8 @@ HTML;
      *
      * @since 9.4
      *
-     * @param string $field the field storing the token
-     * @param boolean $force_new force generation of a new token
+     * @param string $field     the field storing the token
+     * @param bool   $force_new force generation of a new token
      *
      * @return string|false token or false in case of error
      */
@@ -5628,7 +5608,7 @@ HTML;
      * @since 0.85
      *
      * @param string $picture Picture field value
-     * @param bool  $full     get full path
+     * @param bool   $full    get full path
      *
      * @return string
      */
@@ -5813,7 +5793,7 @@ HTML;
     /**
      * Get list of entities ids for current user.
      *
-     * @return integer[]
+     * @return int[]
      */
     private function getEntities()
     {
@@ -5830,7 +5810,6 @@ HTML;
      *
      * @param string $name Task's name
      *
-     * @return array
      */
     public static function cronInfo(string $name): array
     {
@@ -5851,9 +5830,8 @@ HTML;
      * Cron that notify users about when their password expire and deactivate their account
      * depending on password expiration policy.
      *
-     * @param CronTask $task
      *
-     * @return integer
+     * @return int
      */
     public static function cronPasswordExpiration(CronTask $task)
     {
@@ -6035,7 +6013,7 @@ HTML;
     /**
      * Check if password should be changed (if it expires soon).
      *
-     * @return boolean
+     * @return bool
      */
     public function shouldChangePassword()
     {
@@ -6063,7 +6041,7 @@ HTML;
     /**
      * Check if password expired.
      *
-     * @return boolean
+     * @return bool
      */
     public function hasPasswordExpired()
     {
@@ -6202,9 +6180,7 @@ HTML;
     /**
      * Get anonymized name for user instance.
      *
-     * @param ?int $entities_id
      *
-     * @return string|null
      */
     public function getAnonymizedName(?int $entities_id = null): ?string
     {
@@ -6226,10 +6202,7 @@ HTML;
     /**
      * Get anonymized name for user having given ID.
      *
-     * @param int $users_id
-     * @param int $entities_id
      *
-     * @return string|null
      */
     public static function getAnonymizedNameForUser(int $users_id, ?int $entities_id = null): ?string
     {
@@ -6256,12 +6229,12 @@ HTML;
     /**
      * Print a simplified user form.
      *
-     * @param integer $ID    ID of the user
+     * @param int   $ID      ID of the user
      * @param array $options Options
-     *     - string   target        Form target
-     *     - boolean  withtemplate  Template or basic item
+     *                       - string   target        Form target
+     *                       - boolean  withtemplate  Template or basic item
      *
-     * @return boolean true
+     * @return bool true
      */
     public function showSystemUserForm($ID, array $options = []): bool
     {
@@ -6331,9 +6304,7 @@ HTML;
     /**
      * Get user link.
      *
-     * @param bool $enable_anonymization
      *
-     * @return string
      */
     public function getUserLink(bool $enable_anonymization = false): string
     {
@@ -6353,9 +6324,7 @@ HTML;
     /**
      * Get user picture path.
      *
-     * @param bool $enable_anonymization
      *
-     * @return string
      */
     public function getPicturePath(bool $enable_anonymization = false): string
     {
@@ -6376,9 +6345,7 @@ HTML;
     /**
      * Get user thumbnail picture path.
      *
-     * @param bool $enable_anonymization
      *
-     * @return null|string
      */
     public function getThumbnailPicturePath(bool $enable_anonymization = false): ?string
     {
@@ -6398,9 +6365,7 @@ HTML;
     /**
      * Get user initials.
      *
-     * @param bool $enable_anonymization
      *
-     * @return string
      */
     public function getUserInitials(bool $enable_anonymization = false): string
     {
@@ -6429,9 +6394,7 @@ HTML;
     /**
      * Return background color corresponding to user initials.
      *
-     * @param bool $enable_anonymization
      *
-     * @return string
      */
     public function getUserInitialsBgColor(bool $enable_anonymization = false): string
     {
@@ -6526,7 +6489,7 @@ HTML;
     /**
      * Get name of the user with ID
      *
-     * @param integer $ID   ID of the user.
+     * @param int $ID ID of the user.
      *
      * @return string username string (realname if not empty and name if realname is empty).
      */
@@ -6604,10 +6567,7 @@ HTML;
     /**
      * Is a substitute of an other user ?
      *
-     * @param integer $users_id_delegator
-     * @param bool    $use_date_range
      *
-     * @return bool
      */
     final public function isSubstituteOf(int $users_id_delegator, bool $use_date_range = true): bool
     {
@@ -6665,7 +6625,6 @@ HTML;
      *
      * @param string $password password to validate
      *
-     * @return bool
      */
     public function validatePassword(string $password, array &$errors = []): bool
     {
@@ -6706,7 +6665,6 @@ HTML;
      * Check if this User is the last super-admin user.
      * A "super-admin user" is a user that can edit GLPI's profiles.
      *
-     * @return bool
      */
     protected function isLastSuperAdminUser(): bool
     {
@@ -6729,7 +6687,6 @@ HTML;
 
     /**
      * Check if this User notification is enable
-     * @return bool
      */
     final public function isUserNotificationEnable(): bool
     {
@@ -6752,9 +6709,7 @@ HTML;
     /**
      * Toggle pin of given itemtype saved search.
      *
-     * @param string $itemtype
      *
-     * @return bool
      */
     public function toggleSavedSearchPin(string $itemtype): bool
     {
@@ -6797,11 +6752,11 @@ HTML;
     /**
      * User has right for given module and right.
      *
-     * @param string  $module Module to check
-     * @param integer $right  Right to check
-     * @param integer $entities_id Entity to check
+     * @param string $module      Module to check
+     * @param int    $right       Right to check
+     * @param int    $entities_id Entity to check
      *
-     * @return boolean|int
+     * @return bool|int
      **/
     public function hasRight($module, $right, $entities_id)
     {

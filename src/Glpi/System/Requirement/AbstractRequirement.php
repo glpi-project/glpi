@@ -57,7 +57,6 @@ abstract class AbstractRequirement implements RequirementInterface
     /**
      * Flag that indicates if requirement is recommended for security reasons.
      *
-     * @var bool|null
      */
     protected ?bool $recommended_for_security;
 

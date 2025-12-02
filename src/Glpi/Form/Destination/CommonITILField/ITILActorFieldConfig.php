@@ -50,8 +50,8 @@ abstract class ITILActorFieldConfig implements
 
     /**
      * @param array<ITILActorFieldStrategy> $strategies
-     * @param array<int>                   $specific_itilactors_ids
-     * @param array<int>                   $specific_question_ids
+     * @param array<int>                    $specific_itilactors_ids
+     * @param array<int>                    $specific_question_ids
      */
     public function __construct(
         private array $strategies,

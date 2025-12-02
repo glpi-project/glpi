@@ -47,9 +47,7 @@ class DataExport
     /**
      * Normalize a value for text export (PDF, CSV, ...).
      *
-     * @param string $value
      *
-     * @return string
      */
     public static function normalizeValueForTextExport(string $value): string
     {

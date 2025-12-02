@@ -59,8 +59,8 @@ class PhpVersion extends AbstractRequirement
     private $max_version;
 
     /**
-     * @param string $min_version  Minimal required PHP version (inclusive)
-     * @param string $max_version  Maximum required PHP version (inclusive)
+     * @param string $min_version Minimal required PHP version (inclusive)
+     * @param string $max_version Maximum required PHP version (inclusive)
      */
     public function __construct(string $min_version, string $max_version)
     {

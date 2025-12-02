@@ -54,7 +54,6 @@ final class DropdownDefinitionManager extends AbstractDefinitionManager
     /**
      * Get singleton instance
      *
-     * @return DropdownDefinitionManager
      */
     public static function getInstance(): self
     {
@@ -68,7 +67,6 @@ final class DropdownDefinitionManager extends AbstractDefinitionManager
     /**
      * Unset the singleton instance
      *
-     * @return void
      */
     public static function unsetInstance(): void
     {

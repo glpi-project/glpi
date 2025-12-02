@@ -53,10 +53,6 @@ trait SLMTrait
     public const SLA_TTR_DELAY = [3, 'day'];
 
     /**
-     * @param array $data
-     * @param int $ola_type
-     * @param Group|null $group
-     * @param SLM|null $slm
      *
      * @return array{ola: OLA, slm: SLM, group: Group}
      */
@@ -88,9 +84,6 @@ trait SLMTrait
     }
 
     /**
-     * @param array $data
-     * @param int $sla_type
-     * @param SLM|null $slm
      *
      * @return array{sla: SLA, slm: SLM}
      */
@@ -143,7 +136,6 @@ trait SLMTrait
     /**
      * beware that DateInterval expects self::xxx to be ['minutes, etc ... doc à compléter) @todoseb
      *
-     * @return DateInterval
      */
     private function getDefaultOlaTtoDelayInterval(): DateInterval
     {

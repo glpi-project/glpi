@@ -156,9 +156,8 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
      *
      * @since 9.4
      *
-     * @param boolean $forceall force all joins (false by default)
+     * @param bool $forceall force all joins (false by default)
      *
-     * @return array
      */
     public static function getVisibilityCriteria(bool $forceall = false): array
     {
@@ -528,8 +527,6 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 
     /**
      * Check URL given in input.
-     * @param string $url
-     * @return bool
      */
     private function checkUrlInput(string $url): bool
     {
@@ -563,9 +560,9 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     /**
      * Print the rssfeed form
      *
-     * @param integer $ID Id of the item to print
+     * @param int   $ID      Id of the item to print
      * @param array $options Array of possible options:
-     *     - target filename : where to go when done.
+     *                       - target filename : where to go when done.
      **/
     public function showForm($ID, array $options = [])
     {
@@ -597,7 +594,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
     /**
      * Set error field
      *
-     * @param boolean $error   (false by default)
+     * @param bool $error (false by default)
      **/
     public function setError($error = false)
     {
@@ -660,8 +657,8 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
     /**
      * Get a specific RSS feed.
      *
-     * @param string    $url            URL of the feed or array of URL
-     * @param int       $cache_duration Cache duration, in seconds
+     * @param string $url            URL of the feed or array of URL
+     * @param int    $cache_duration Cache duration, in seconds
      *
      * @return SimplePie|false
      **/
@@ -749,8 +746,8 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
     /**
      * Show list for central view
      *
-     * @param boolean $personal display rssfeeds created by me?
-     * @param boolean $display  if false, return html
+     * @param bool $personal display rssfeeds created by me?
+     * @param bool $display  if false, return html
      *
      * @return false|void|string
      **/

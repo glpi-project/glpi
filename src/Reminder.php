@@ -206,9 +206,8 @@ class Reminder extends CommonDBVisible implements
      *
      * @since 9.4
      *
-     * @param boolean $forceall force all joins (false by default)
+     * @param bool $forceall force all joins (false by default)
      *
-     * @return array
      */
     public static function getVisibilityCriteria(bool $forceall = false): array
     {
@@ -517,10 +516,10 @@ class Reminder extends CommonDBVisible implements
     /**
      * Print the reminder form
      *
-     * @param integer $ID ID of the item to print
-     * @param array $options   array of possible options:
-     *     - target filename : where to go when done.
-     *     - from_planning_ajax : set to disable planning form part
+     * @param int   $ID      ID of the item to print
+     * @param array $options array of possible options:
+     *                       - target filename : where to go when done.
+     *                       - from_planning_ajax : set to disable planning form part
      **/
     public function showForm($ID, array $options = [])
     {
@@ -682,8 +681,8 @@ class Reminder extends CommonDBVisible implements
     /**
      * Show list for central view
      *
-     * @param boolean $personal display reminders created by me?
-     * @param boolean $display if false return html
+     * @param bool $personal display reminders created by me?
+     * @param bool $display  if false return html
      *
      * @return string|void
      * @phpstan-return ($display is true ? void : string)
@@ -863,7 +862,6 @@ class Reminder extends CommonDBVisible implements
     /**
      * Returns items as VCalendar objects.
      *
-     * @param array $query
      *
      * @return VCalendar[]
      */

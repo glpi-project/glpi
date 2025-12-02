@@ -369,8 +369,6 @@ final class CustomFieldDefinition extends CommonDBChild
     /**
      * Validate that the given translations array contains valid values.
      *
-     * @param mixed $translations
-     * @return bool
      */
     protected function validateTranslationsArray(mixed $translations): bool
     {

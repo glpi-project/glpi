@@ -212,7 +212,6 @@ class Contact_Supplier extends CommonDBRelation
     /**
      * Show contacts associated to an enterprise
      *
-     * @param Supplier $supplier
      *
      * @return void
      */

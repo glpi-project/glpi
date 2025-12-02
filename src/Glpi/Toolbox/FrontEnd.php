@@ -43,9 +43,7 @@ class FrontEnd
      * Provide a cache key that can be use in URLs for given version, without actually exposing
      * the version to everyone.
      *
-     * @param string $version
      *
-     * @return string
      */
     public static function getVersionCacheKey(string $version): string
     {

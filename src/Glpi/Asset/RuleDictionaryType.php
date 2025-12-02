@@ -52,7 +52,6 @@ abstract class RuleDictionaryType extends RuleDictionnaryDropdown
     /**
      * Get the asset definition related to concrete class.
      *
-     * @return AssetDefinition
      */
     public static function getDefinition(): AssetDefinition
     {

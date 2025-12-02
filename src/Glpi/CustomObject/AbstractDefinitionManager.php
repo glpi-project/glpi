@@ -57,13 +57,11 @@ abstract class AbstractDefinitionManager
 
     /**
      * Returns the regex pattern of reserved system names
-     * @return string
      */
     abstract public function getReservedSystemNamesPattern(): string;
 
     /**
      * Register the class autoload function.
-     * @return void
      */
     final public function registerAutoload(): void
     {
@@ -79,8 +77,6 @@ abstract class AbstractDefinitionManager
     /**
      * Autoload custom object class, if requested class is managed by this definition manager.
      *
-     * @param string $classname
-     * @return void
      */
     abstract public function autoloadClass(string $classname): void;
 
@@ -116,7 +112,6 @@ abstract class AbstractDefinitionManager
 
     /**
      * Bootstrap the definition.
-     * @param AbstractDefinition $definition
      * @phpstan-param ConcreteDefinition $definition
      * @return void
      */
@@ -136,7 +131,6 @@ abstract class AbstractDefinitionManager
     /**
      * Get the definition corresponding to given system name.
      *
-     * @param string $system_name
      * @phpstan-return ConcreteDefinition|null
      */
     final public function getDefinition(string $system_name): ?AbstractDefinition
@@ -155,7 +149,6 @@ abstract class AbstractDefinitionManager
     /**
      * Get all the definitions.
      *
-     * @param bool $only_active
      * @return AbstractDefinition[]
      * @phpstan-return ConcreteDefinition[]
      */

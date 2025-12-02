@@ -92,7 +92,6 @@ final class CheckDocumentsIntegrityCommand extends AbstractCommand
     /**
      * Get all documents from db
      *
-     * @return iterable
      */
     protected function getDocuments(): iterable
     {
@@ -116,7 +115,6 @@ final class CheckDocumentsIntegrityCommand extends AbstractCommand
     /**
      * Get the number of documents in the database db
      *
-     * @return int
      */
     protected function countDocuments(): int
     {
@@ -153,7 +151,6 @@ final class CheckDocumentsIntegrityCommand extends AbstractCommand
      * @param int   $type         Error type
      * @param array $document_row Invalid document's data
      *
-     * @return string
      */
     protected function getDetailedError(int $type, array $document_row): string
     {

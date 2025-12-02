@@ -71,7 +71,6 @@ class SessionExtension extends AbstractExtension
     /**
      * Returns current interface.
      *
-     * @return string|null
      */
     public function getCurrentInterface(): ?string
     {
@@ -81,7 +80,6 @@ class SessionExtension extends AbstractExtension
     /**
      * Returns current connected user.
      *
-     * @return User|null
      */
     public function getCurrentUser(): ?User
     {
@@ -94,10 +92,7 @@ class SessionExtension extends AbstractExtension
     /**
      * Check global right on itemtype.
      *
-     * @param string   $itemtype
-     * @param int      $right
      *
-     * @return bool
      */
     public function hasItemtypeRight(string $itemtype, int $right): bool
     {
@@ -113,8 +108,6 @@ class SessionExtension extends AbstractExtension
     /**
      * Get user preference.
      *
-     * @param string $name
-     * @param bool   $decode
      *
      * @return null|mixed
      */
@@ -133,7 +126,6 @@ class SessionExtension extends AbstractExtension
     /**
      * Get session value.
      *
-     * @param string $name
      *
      * @return mixed
      */
@@ -146,9 +138,7 @@ class SessionExtension extends AbstractExtension
     /**
      * Check if a current user have access has access to given user entities.
      *
-     * @param int $users_id
      *
-     * @return bool
      */
     public function hasAccessToUserEntities(int $users_id): bool
     {
@@ -175,7 +165,6 @@ class SessionExtension extends AbstractExtension
      * Helpdesk interface is always horizontal.
      * Central interface depends on the user preferences.
      *
-     * @return string
      */
     public function getPageLayout(): string
     {

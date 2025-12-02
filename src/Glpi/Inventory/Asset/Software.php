@@ -526,10 +526,9 @@ class Software extends InventoryAsset
     /**
      * Get software comparison key
      *
-     * @param string  $name             Software name
-     * @param integer $manufacturers_id Manufacturers id
+     * @param string $name             Software name
+     * @param int    $manufacturers_id Manufacturers id
      *
-     * @return string
      */
     protected function getSoftwareKey($name, $manufacturers_id): string
     {
@@ -542,10 +541,9 @@ class Software extends InventoryAsset
     /**
      * Get software version comparison key
      *
-     * @param stdClass $val Version name
-     * @param integer   $softwares_id Software id
+     * @param stdClass $val          Version name
+     * @param int      $softwares_id Software id
      *
-     * @return string
      */
     protected function getVersionKey($val, $softwares_id): string
     {
@@ -562,7 +560,6 @@ class Software extends InventoryAsset
      *
      * @param stdClass $val Object values
      *
-     * @return string
      */
     protected function getFullCompareKey(stdClass $val, bool $with_version = true): string
     {
@@ -582,7 +579,6 @@ class Software extends InventoryAsset
      *
      * @param stdClass $val Object values
      *
-     * @return string
      */
     protected function getSimpleCompareKey(stdClass $val): string
     {
@@ -600,7 +596,6 @@ class Software extends InventoryAsset
      *
      * @param array $parts Values parts
      *
-     * @return string
      *
      * @FIXME Remove this method in GLPI 11.0.
      */

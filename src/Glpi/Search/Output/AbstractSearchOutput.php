@@ -49,8 +49,6 @@ abstract class AbstractSearchOutput
      * This is useful if some criteria need injected such as the Location in the case of the Map output.
      * This is called after the search input form is shown, so any new criteria will be hidden.
      * @param class-string<CommonGLPI> $itemtype
-     * @param array $params
-     * @return array
      */
     public static function prepareInputParams(string $itemtype, array $params): array
     {
@@ -60,7 +58,7 @@ abstract class AbstractSearchOutput
     /**
      * Display the search results
      *
-     * @param array $data Array of search data prepared to get data
+     * @param array $data   Array of search data prepared to get data
      * @param array $params The original search parameters
      *
      * @return void|false

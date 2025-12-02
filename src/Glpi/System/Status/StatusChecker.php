@@ -79,9 +79,9 @@ final class StatusChecker
 
     /**
      * Get all registered services
+     * @since 10.0.0
      * @return array Array of services keyed by name.
      *    The value for each service is expected to be an array containing a class name and a method name relating to the method that will do the check.
-     * @since 10.0.0
      */
     public static function getServices(): array
     {
@@ -99,10 +99,10 @@ final class StatusChecker
 
     /**
      * Calculate the overall GLPI status or the overall service status based on all child status checks
+     * @since 10.0.0
      * @param array $status The status array for all services or a specific service check.
      * @return string The calculated status.
      *    One of {@link STATUS_NO_DATA}, {@link STATUS_OK}, {@link STATUS_WARNING}, or {@link STATUS_PROBLEM}.
-     * @since 10.0.0
      */
     public static function calculateGlobalStatus(array $status)
     {
@@ -119,11 +119,11 @@ final class StatusChecker
     /**
      * Get a service's status
      *
-     * @param string|null $service The name of the service or if null/'all' all services will be checked
-     * @param bool $public_only True if only public information should be available in the status check.
-     *    If true, assume the data is being viewed by an anonymous user.
-     * @return array An array with the status information
      * @since 10.0.0
+     * @param string|null $service     The name of the service or if null/'all' all services will be checked
+     * @param bool        $public_only True if only public information should be available in the status check.
+     *                                 If true, assume the data is being viewed by an anonymous user.
+     * @return array An array with the status information
      */
     public static function getServiceStatus(?string $service, $public_only = true): array
     {
@@ -156,7 +156,6 @@ final class StatusChecker
 
     /**
      * @param bool $public_only True if only public status information should be given.
-     * @return array
      */
     public static function getDBStatus(bool $public_only = true): array
     {
@@ -233,7 +232,6 @@ final class StatusChecker
 
     /**
      * @param bool $public_only True if only public status information should be given.
-     * @return array
      */
     public static function getLDAPStatus(bool $public_only = true): array
     {
@@ -301,7 +299,6 @@ final class StatusChecker
 
     /**
      * @param bool $public_only True if only public status information should be given.
-     * @return array
      */
     public static function getIMAPStatus(bool $public_only = true): array
     {
@@ -363,7 +360,6 @@ final class StatusChecker
 
     /**
      * @param bool $public_only True if only public status information should be given.
-     * @return array
      */
     public static function getCASStatus(bool $public_only = true): array
     {
@@ -405,7 +401,6 @@ final class StatusChecker
 
     /**
      * @param bool $public_only True if only public status information should be given.
-     * @return array
      */
     public static function getMailCollectorStatus(bool $public_only = true): array
     {
@@ -460,7 +455,6 @@ final class StatusChecker
 
     /**
      * @param bool $public_only True if only public status information should be given.
-     * @return array
      */
     public static function getCronTaskStatus(bool $public_only = true): array
     {
@@ -489,7 +483,6 @@ final class StatusChecker
 
     /**
      * @param bool $public_only True if only public status information should be given.
-     * @return array
      */
     public static function getFilesystemStatus(bool $public_only = true): array
     {
@@ -527,7 +520,6 @@ final class StatusChecker
 
     /**
      * @param bool $public_only True if only public status information should be given.
-     * @return array
      */
     public static function getPluginsStatus(bool $public_only = true): array
     {

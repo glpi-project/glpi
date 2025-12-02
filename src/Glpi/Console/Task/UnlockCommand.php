@@ -163,7 +163,6 @@ class UnlockCommand extends AbstractCommand
     /**
      * Validate command input.
      *
-     * @param InputInterface $input
      *
      * @return void
      *

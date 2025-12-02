@@ -50,7 +50,6 @@ final class QuestionTypeRequestType extends AbstractQuestionType implements Used
      * Retrieve the default value for the request type question type
      *
      * @param Question|null $question The question to retrieve the default value from
-     * @return int
      */
     public function getDefaultValue(?Question $question): int
     {

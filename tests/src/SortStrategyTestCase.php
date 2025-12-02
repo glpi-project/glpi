@@ -66,13 +66,11 @@ abstract class SortStrategyTestCase extends DbTestCase
 
     /**
      * Return the sort strategy enum to be tested
-     * @return SortStrategyEnum
      */
     abstract protected function getSortStrategyEnum(): SortStrategyEnum;
 
     /**
      * Return the expected order of sorted items
-     * @return array
      */
     abstract protected function provideExpectedSortedItems(): array;
 

@@ -48,9 +48,9 @@ class DirectoriesWriteAccess extends AbstractRequirement
     private $paths;
 
     /**
-     * @param string   $title     Requirement title.
-     * @param string[] $paths     Directories paths.
-     * @param bool     $optional  Indicated if write access is optional.
+     * @param string   $title    Requirement title.
+     * @param string[] $paths    Directories paths.
+     * @param bool     $optional Indicated if write access is optional.
      */
     public function __construct(string $title, array $paths, bool $optional = false)
     {

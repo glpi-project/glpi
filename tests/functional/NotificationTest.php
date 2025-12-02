@@ -110,7 +110,6 @@ class NotificationTest extends DbTestCase
     /**
      * Functionnal test on filtering a notification's target
      *
-     * @return void
      */
     public function testFilter(): void
     {
@@ -553,7 +552,6 @@ HTML,
     /**
      * Data provider for the testEntityRestriction case
      *
-     * @return iterable
      */
     protected function testEntityRestrictionProvider(): iterable
     {
@@ -637,7 +635,6 @@ HTML,
      * Test that entity restriction are applied correctly for notifications (a
      * user should only receive notification on items he is allowed to see)
      *
-     * @return void
      */
     public function testEntityRestriction(): void
     {

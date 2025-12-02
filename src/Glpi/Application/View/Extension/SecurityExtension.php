@@ -63,7 +63,6 @@ class SecurityExtension extends AbstractExtension
 
     /**
      * @param string|null $value
-     * @return string
      */
     public function decrypt($value): string
     {

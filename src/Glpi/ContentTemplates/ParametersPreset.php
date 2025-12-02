@@ -66,9 +66,7 @@ class ParametersPreset
      * This is useful when sending data through a form, the controller can
      * receive a key value and fetch the parameters with this method.
      *
-     * @param string $key
      *
-     * @return array
      */
     public static function getByKey(string $key): array
     {
@@ -87,9 +85,7 @@ class ParametersPreset
     /**
      * Get context to be displayed in the variable list page for each keys
      *
-     * @param string $key
      *
-     * @return string
      */
     public static function getContextByKey(string $key): string
     {
@@ -114,7 +110,6 @@ class ParametersPreset
     /**
      * Twig parameters that will be avaiable in solution/task/followup form
      *
-     * @return array
      */
     public static function getForAbstractTemplates(): array
     {
@@ -130,7 +125,6 @@ class ParametersPreset
      * Twig parameters that will be available in the solution massive actions
      * form for tickets
      *
-     * @return array
      */
     public static function getForTicketSolution(): array
     {

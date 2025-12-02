@@ -310,7 +310,6 @@ class NotificationTargetTest extends DbTestCase
     /**
      * Provider for testGetSender
      *
-     * @return Generator
      */
     protected function getSenderProvider(): Generator
     {
@@ -386,7 +385,6 @@ class NotificationTargetTest extends DbTestCase
     /**
      * Functional tests for the getSender method
      *
-     * @return void
      */
     public function testGetSender(): void
     {

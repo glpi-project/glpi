@@ -53,7 +53,7 @@ use function Safe\preg_replace;
  **/
 class Agent extends CommonDBTM
 {
-    /** @var integer */
+    /** @var int */
     public const DEFAULT_PORT = 62354;
 
     /** @var string */
@@ -62,7 +62,7 @@ class Agent extends CommonDBTM
     /** @var string */
     public const ACTION_INVENTORY = 'inventory';
 
-    /** @var boolean */
+    /** @var bool */
     public $dohistory = true;
 
     /** @var string */
@@ -362,10 +362,10 @@ class Agent extends CommonDBTM
     /**
      * Display form for agent configuration
      *
-     * @param integer $id      ID of the agent
-     * @param array   $options Options
+     * @param int   $id      ID of the agent
+     * @param array $options Options
      *
-     * @return boolean
+     * @return bool
      */
     public function showForm($id, array $options = [])
     {
@@ -396,7 +396,7 @@ class Agent extends CommonDBTM
      *
      * @param array $metadata Agents metadata from Inventory
      *
-     * @return integer
+     * @return int
      */
     public function handleAgent($metadata)
     {
@@ -541,7 +541,6 @@ class Agent extends CommonDBTM
     /**
      * Get item linked to current agent
      *
-     * @return CommonDBTM
      */
     public function getLinkedItem(): CommonDBTM
     {
@@ -554,7 +553,6 @@ class Agent extends CommonDBTM
     /**
      * Guess possible addresses the agent should answer on
      *
-     * @return array
      */
     public function guessAddresses(): array
     {
@@ -659,7 +657,6 @@ class Agent extends CommonDBTM
     /**
      * Get agent URLs
      *
-     * @return array
      */
     public function getAgentURLs(): array
     {
@@ -690,7 +687,6 @@ class Agent extends CommonDBTM
      *
      * @param string $endpoint Endpoint to reach
      *
-     * @return Response
      */
     public function requestAgent($endpoint): Response
     {
@@ -774,7 +770,6 @@ class Agent extends CommonDBTM
      * @param Response $response Response
      * @param string   $request  Request type (either status or now)
      *
-     * @return array
      */
     private function handleAgentResponse(Response $response, $request): array
     {

@@ -166,8 +166,8 @@ class EntityTest extends DbTestCase
     /**
      * Run getSonsOf tests
      *
-     * @param boolean $cache Is cache enabled?
-     * @param boolean $hit   Do we expect a cache hit? (ie. data already exists)
+     * @param bool $cache Is cache enabled?
+     * @param bool $hit   Do we expect a cache hit? (ie. data already exists)
      *
      * @return void
      */
@@ -351,9 +351,8 @@ class EntityTest extends DbTestCase
     /**
      * Check that the entities tree is correctly returned by `getAncestorsOf`/`getSonsOf` methods.
      *
-     * @param array $entities   The entities list. Each item is supposed to be the son of the previous item, and the
-     *                          first item is supposed to be a son of the root entity.
-     * @param bool $cache
+     * @param array $entities The entities list. Each item is supposed to be the son of the previous item, and the
+     *                        first item is supposed to be a son of the root entity.
      */
     private function checkEntitiesTree(array $entities, bool $cache): void
     {

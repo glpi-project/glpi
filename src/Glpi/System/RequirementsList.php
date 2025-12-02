@@ -74,7 +74,7 @@ class RequirementsList implements IteratorAggregate
     /**
      * Indicates if a mandatory requirement is missing.
      *
-     * @return boolean
+     * @return bool
      */
     public function hasMissingMandatoryRequirements()
     {
@@ -89,7 +89,7 @@ class RequirementsList implements IteratorAggregate
     /**
      * Indicates if an optional requirement is missing.
      *
-     * @return boolean
+     * @return bool
      */
     public function hasMissingOptionalRequirements()
     {
@@ -104,7 +104,6 @@ class RequirementsList implements IteratorAggregate
     /**
      * Get messages returned by the failed mandatory requirements.
      *
-     * @return array
      */
     public function getErrorMessages(): array
     {

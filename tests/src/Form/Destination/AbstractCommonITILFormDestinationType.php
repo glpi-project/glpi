@@ -55,7 +55,6 @@ abstract class AbstractCommonITILFormDestinationType extends DbTestCase
     /**
      * Get the tested instance
      *
-     * @return AbstractCommonITILFormDestination
      */
     abstract protected function getTestedInstance(): AbstractCommonITILFormDestination;
 

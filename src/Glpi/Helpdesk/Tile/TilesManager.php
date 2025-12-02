@@ -46,7 +46,6 @@ final class TilesManager
 {
     /**
      * Singleton instance
-     * @var TilesManager|null
      */
     private static ?TilesManager $instance = null;
 
@@ -65,7 +64,6 @@ final class TilesManager
     /**
      * Get the singleton instance
      *
-     * @return TilesManager
      */
     public static function getInstance(): TilesManager
     {

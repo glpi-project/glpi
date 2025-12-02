@@ -98,9 +98,7 @@ class SLM extends CommonDBTM
      * Handle negative input in `calendars_id`.
      * This method is usefull to be able to propose a `-1` special value in Calendar dropdown.
      *
-     * @param array $input
      *
-     * @return array
      */
     private function handleCalendarStrategy(array $input): array
     {

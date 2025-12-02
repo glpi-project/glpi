@@ -109,10 +109,10 @@ class Event extends CommonDBTM
      * $level is above or equal to setting from configuration.
      *
      * @param string|int $items_id
-     * @param string $type
-     * @param int $level
-     * @param string $service
-     * @param string $event
+     * @param string     $type
+     * @param int        $level
+     * @param string     $service
+     * @param string     $event
      *
      * @return void
      */
@@ -158,7 +158,7 @@ class Event extends CommonDBTM
      *
      * @param int $day
      *
-     * @return integer number of events deleted
+     * @return int number of events deleted
      **/
     public static function cleanOld($day)
     {
@@ -223,7 +223,7 @@ class Event extends CommonDBTM
 
     /**
      * @param class-string<CommonDBTM> $type
-     * @param int $items_id
+     * @param int                      $items_id
      *
      * @return void
      **/
@@ -285,8 +285,8 @@ class Event extends CommonDBTM
      *
      * Print a great tab to present lasts events occurred on glpi
      *
-     * @param string $user  name user to search on message (default '')
-     * @param bool $display if false, return html
+     * @param string $user    name user to search on message (default '')
+     * @param bool   $display if false, return html
      *
      * @return void|string
      */
@@ -482,7 +482,6 @@ class Event extends CommonDBTM
      * - Some specials types (see self::logArray)
      * - Used itemtypes
      *
-     * @return array
      */
     private static function getTypeValuesForDropdown(): array
     {
@@ -512,7 +511,6 @@ class Event extends CommonDBTM
      * Note that these values are not real itemtypes but strings like "users".
      * You need to call self::getItemtypeFromType() to get a valid GLPI itemtype
      *
-     * @return array
      */
     private static function getUsedItemtypes(): array
     {
@@ -606,9 +604,7 @@ class Event extends CommonDBTM
     /**
      * Extract itemtype from type field value.
      *
-     * @param string $type
      *
-     * @return string|null
      */
     private static function getItemtypeFromType(string $type): ?string
     {

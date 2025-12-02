@@ -50,7 +50,7 @@ class Group_Reminder extends CommonDBRelation
     /**
      * Get groups for a reminder
      *
-     * @param integer $reminders_id ID of the reminder
+     * @param int $reminders_id ID of the reminder
      *
      * @return array of groups linked to a reminder
      **/

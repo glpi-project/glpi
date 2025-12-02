@@ -97,7 +97,7 @@ class SsoVariable extends CommonDropdown
     /**
      * Check if variable is used in auth process.
      *
-     * @return boolean
+     * @return bool
      */
     private function isUsedInAuth()
     {

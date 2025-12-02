@@ -84,7 +84,7 @@ abstract class MainAsset extends InventoryAsset
     protected $raw_data;
     /* @var array */
     protected $hardware;
-    /** @var ?integer */
+    /** @var ?int */
     protected $states_id_default;
     /** @var stdClass */
     private $current_data;
@@ -96,9 +96,9 @@ abstract class MainAsset extends InventoryAsset
     protected $refused = [];
     /** @var array */
     protected $inventoried = [];
-    /** @var boolean */
-    protected $partial = false;
     /** @var bool */
+    protected $partial = false;
+    /**  */
     protected bool $is_discovery = false;
     /** @var int */
     protected $current_key;
@@ -115,14 +115,12 @@ abstract class MainAsset extends InventoryAsset
     /**
      * Get model foreign key field name
      *
-     * @return string
      */
     abstract protected function getModelsFieldName(): string;
 
     /**
      * Get model foreign key field name
      *
-     * @return string
      */
     abstract protected function getTypesFieldName(): string;
 
@@ -423,7 +421,6 @@ abstract class MainAsset extends InventoryAsset
      *
      * @param stdClass $val Current data values
      *
-     * @return array
      */
     public function prepareAllRulesInput(stdClass $val): array
     {
@@ -530,10 +527,9 @@ abstract class MainAsset extends InventoryAsset
     /**
      * Prepare input for Entities rules
      *
-     * @param stdClass $val Current data values
-     * @param array     $input Input processed or all rules
+     * @param stdClass $val   Current data values
+     * @param array    $input Input processed or all rules
      *
-     * @return array
      */
     public function prepareEntitiesRulesInput(stdClass $val, array $input): array
     {
@@ -631,7 +627,6 @@ abstract class MainAsset extends InventoryAsset
     }
 
     /**
-     * @param array $input
      *
      * @return void
      */
@@ -687,10 +682,10 @@ abstract class MainAsset extends InventoryAsset
     /**
      * After rule engine passed, update task (log) and create item if required
      *
-     * @param integer       $items_id id of the item (0 if new)
-     * @param string        $itemtype Item type
-     * @param int|null      $rules_id Matched rule id, if any (else null)
-     * @param integer|array $ports_id Matched port id, if any
+     * @param int       $items_id id of the item (0 if new)
+     * @param string    $itemtype Item type
+     * @param int|null  $rules_id Matched rule id, if any (else null)
+     * @param int|array $ports_id Matched port id, if any
      *
      * @return void
      */
@@ -1012,7 +1007,7 @@ abstract class MainAsset extends InventoryAsset
     /**
      * Retrieve computer entities id
      *
-     * @return integer
+     * @return int
      */
     public function getEntityID()
     {
@@ -1022,7 +1017,7 @@ abstract class MainAsset extends InventoryAsset
     /**
      * Retrieve computer entities is_recursive
      *
-     * @return integer
+     * @return int
      */
     public function getEntityRecursive()
     {
@@ -1087,7 +1082,6 @@ abstract class MainAsset extends InventoryAsset
      *
      * @param array $assets Prepared assets list
      *
-     * @return MainAsset
      */
     public function setAssets(array $assets): MainAsset
     {
@@ -1099,7 +1093,6 @@ abstract class MainAsset extends InventoryAsset
     /**
      * Get current item
      *
-     * @return CommonDBTM
      */
     public function getItem(): CommonDBTM
     {
@@ -1129,7 +1122,6 @@ abstract class MainAsset extends InventoryAsset
     /**
      * Set partial inventory
      *
-     * @return self
      */
     protected function setPartial(): self
     {
@@ -1140,7 +1132,6 @@ abstract class MainAsset extends InventoryAsset
     /**
      * Is inventory partial
      *
-     * @return boolean
      */
     public function isPartial(): bool
     {
@@ -1153,7 +1144,6 @@ abstract class MainAsset extends InventoryAsset
      *
      * @param stdClass $object
      *
-     * @return boolean
      */
     protected function isAccessPoint($object): bool
     {
@@ -1163,7 +1153,6 @@ abstract class MainAsset extends InventoryAsset
     /**
      * Mark as discovery
      *
-     * @param bool $disco
      *
      * @return $this
      */

@@ -214,8 +214,8 @@ class DisplayPreference extends CommonDBTM
     /**
      * Get display preference for a user for an itemtype
      *
-     * @param string  $itemtype  itemtype
-     * @param integer $user_id   user ID
+     * @param string $itemtype itemtype
+     * @param int    $user_id  user ID
      *
      * @return array
      **/
@@ -253,7 +253,7 @@ class DisplayPreference extends CommonDBTM
     /**
      * Active personal config based on global one
      *
-     * @param $input  array parameter (itemtype,users_id)
+     * @param $input array parameter (itemtype,users_id)
      *
      * @return void|false
      */
@@ -307,10 +307,6 @@ class DisplayPreference extends CommonDBTM
     }
 
     /**
-     * @param string $itemtype
-     * @param int $users_id
-     * @param array $order
-     * @param string $interface
      *
      * @return void
      */
@@ -362,7 +358,7 @@ class DisplayPreference extends CommonDBTM
      * Order to move an item
      *
      * @param array  $input  array parameter (id,itemtype,users_id)
-     * @param string $action       up or down
+     * @param string $action up or down
      *
      * @return void|false
      */
@@ -440,7 +436,7 @@ class DisplayPreference extends CommonDBTM
 
     /**
      * @param string $itemtype The itemtype
-     * @param bool $global True if global config, false if personal config
+     * @param bool   $global   True if global config, false if personal config
      * @return void|false
      */
     private function showConfigForm(string $itemtype, bool $global, string $interface = 'central')
@@ -529,7 +525,7 @@ class DisplayPreference extends CommonDBTM
     /**
      * Print the search config form
      *
-     * @param string $itemtype  item type
+     * @param string $itemtype item type
      *
      * @return null|false (display) Returns false if there is a rights error.
      **/
@@ -548,12 +544,10 @@ class DisplayPreference extends CommonDBTM
      * starting from the position before the item which we want to get the group name.
      * The first key of string type we encouter, is our item's group name.
      *
-     * @param array $search_options
-     * @param int   $search_option_key
      *
-     * @return string Return the name of the group or an empty string.
      *
      * @since 10.0.8
+     * @return string Return the name of the group or an empty string.
      */
     private function nameOfGroupForItemInSearchopt(array $search_options, int $search_option_key): string
     {
@@ -571,7 +565,7 @@ class DisplayPreference extends CommonDBTM
     /**
      * Print the search config form
      *
-     * @param class-string<CommonDBTM> $itemtype  item type
+     * @param class-string<CommonDBTM> $itemtype item type
      *
      * @return null|false (display) Returns false if there is a rights error.
      **/
@@ -583,7 +577,6 @@ class DisplayPreference extends CommonDBTM
     /**
      * @param class-string<CommonDBTM> $itemtype
      *
-     * @return void
      */
     public function showFormHelpdesk($itemtype): void
     {
@@ -599,7 +592,7 @@ class DisplayPreference extends CommonDBTM
     /**
      * show defined display preferences for a user
      *
-     * @param int $users_id  ID
+     * @param int $users_id ID
      *
      * @return void
      */

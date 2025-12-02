@@ -118,7 +118,7 @@ class UploadHandler
 
     /**
      * @param ?array $options
-     * @param bool $initialize
+     * @param bool   $initialize
      * @param ?array $error_messages
      */
     public function __construct($options = null, $initialize = false, $error_messages = null)
@@ -318,7 +318,7 @@ class UploadHandler
     /**
      * @param string $file_name
      * @param string $version
-     * @param bool $direct
+     * @param bool   $direct
      *
      * @return string
      */
@@ -384,7 +384,7 @@ class UploadHandler
 
     /**
      * @param string $file_path
-     * @param bool $clear_stat_cache
+     * @param bool   $clear_stat_cache
      *
      * @return float|int
      */
@@ -566,10 +566,10 @@ class UploadHandler
     }
 
     /**
-     * @param string $uploaded_file
+     * @param string   $uploaded_file
      * @param stdClass $file
-     * @param int $error
-     * @param int $index
+     * @param int      $error
+     * @param int      $index
      *
      * @return bool
      */
@@ -608,11 +608,11 @@ class UploadHandler
     }
 
     /**
-     * @param string $uploaded_file
+     * @param string   $uploaded_file
      * @param stdClass $file
-     * @param int $error
-     * @param int $index
-     * @param ?array $content_range
+     * @param int      $error
+     * @param int      $index
+     * @param ?array   $content_range
      *
      * @return bool
      */
@@ -700,10 +700,10 @@ class UploadHandler
     /**
      * @param string $file_path
      * @param string $name
-     * @param int $size
+     * @param int    $size
      * @param string $type
-     * @param int $error
-     * @param int $index
+     * @param int    $error
+     * @param int    $index
      * @param ?array $content_range
      *
      * @return string
@@ -755,10 +755,10 @@ class UploadHandler
     /**
      * @param string $file_path
      * @param string $name
-     * @param int $size
+     * @param int    $size
      * @param string $type
-     * @param int $error
-     * @param int $index
+     * @param int    $error
+     * @param int    $index
      * @param ?array $content_range
      *
      * @return string
@@ -798,10 +798,10 @@ class UploadHandler
     /**
      * @param string $file_path
      * @param string $name
-     * @param int $size
+     * @param int    $size
      * @param string $type
-     * @param int $error
-     * @param int $index
+     * @param int    $error
+     * @param int    $index
      * @param ?array $content_range
      *
      * @return string
@@ -839,11 +839,11 @@ class UploadHandler
     /**
      * @param string $file_path
      * @param string $name
-     * @param int $size
+     * @param int    $size
      * @param string $type
-     * @param int $error
-     * @param int $index
-     * @param array $content_range
+     * @param int    $error
+     * @param int    $index
+     * @param array  $content_range
      *
      * @return string
      */
@@ -908,7 +908,7 @@ class UploadHandler
     /**
      * @param string $file_path
      * @param string $func
-     * @param bool $no_cache
+     * @param bool   $no_cache
      *
      * @return mixed
      */
@@ -922,7 +922,7 @@ class UploadHandler
     }
 
     /**
-     * @param string $file_path
+     * @param string  $file_path
      * @param GdImage $image
      *
      * @return void
@@ -949,7 +949,7 @@ class UploadHandler
 
     /**
      * @param GdImage $image
-     * @param int $mode
+     * @param int     $mode
      *
      * @return bool|GdImage
      */
@@ -1002,7 +1002,7 @@ class UploadHandler
     }
 
     /**
-     * @param string $file_path
+     * @param string  $file_path
      * @param GdImage $src_img
      *
      * @return bool
@@ -1066,7 +1066,7 @@ class UploadHandler
     /**
      * @param string $file_name
      * @param string $version
-     * @param array $options
+     * @param array  $options
      *
      * @return bool
      */
@@ -1210,7 +1210,7 @@ class UploadHandler
     /**
      * @param string $file_name
      * @param string $version
-     * @param array $options
+     * @param array  $options
      *
      * @return bool
      */
@@ -1280,7 +1280,7 @@ class UploadHandler
     }
 
     /**
-     * @param string $file_path
+     * @param string   $file_path
      * @param stdClass $file
      *
      * @return void
@@ -1313,10 +1313,10 @@ class UploadHandler
     /**
      * @param string $uploaded_file
      * @param string $name
-     * @param int $size
+     * @param int    $size
      * @param string $type
-     * @param int $error
-     * @param int $index
+     * @param int    $error
+     * @param int    $index
      * @param ?array $content_range
      *
      * @return stdClass
@@ -1476,7 +1476,7 @@ class UploadHandler
 
     /**
      * @param stdClass $file
-     * @param int $index
+     * @param int      $index
      *
      * @return void
      */
@@ -1627,7 +1627,7 @@ class UploadHandler
 
     /**
      * @param array $content
-     * @param bool $print_response
+     * @param bool  $print_response
      *
      * @return ?array
      */

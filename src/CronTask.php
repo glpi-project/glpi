@@ -133,10 +133,10 @@ class CronTask extends CommonDBTM
      *
      * Used by plugins to load its crontasks
      *
-     * @param string $itemtype  itemtype of the crontask
-     * @param string $name      name of the task
+     * @param string $itemtype itemtype of the crontask
+     * @param string $name     name of the task
      *
-     * @return boolean true if succeed else false
+     * @return bool true if succeed else false
      **/
     public function getFromDBbyName($itemtype, $name)
     {
@@ -150,7 +150,7 @@ class CronTask extends CommonDBTM
     /**
      * Check if the task is disabled and the reason if so.
      *
-     * @return integer
+     * @return int
      * <ul>
      *    <li>0: Enabled</li>
      *    <li>1: Disabled by task configuration</li>
@@ -208,11 +208,11 @@ class CronTask extends CommonDBTM
     /**
      * Signal handler callback
      *
-     * @param integer $signo Signal number
      * @since 9.1
-     * @todo Is there an alternative way to handle this? ext-pcntl is not enabled by default in PHP and isn't available on Windows.
+     * @param int $signo Signal number
      *
      * @return void
+     * @todo Is there an alternative way to handle this? ext-pcntl is not enabled by default in PHP and isn't available on Windows.
      */
     public function signal($signo)
     {
@@ -315,17 +315,16 @@ class CronTask extends CommonDBTM
     /**
      * End a task, timer, stat, log, ...
      *
-     * @param int|null $retcode
-     * <ul>
-     *    <li>&lt; 0: Need to run again</li>
-     *    <li>0: Nothing to do</li>
-     *   <li>&gt; 0: Ok</li>
-     * </ul>
-     * @param int $log_state
      *
-     * @return bool : true if ok (not start by another)
      *
      * @since 9.5.5 Added parameter $log_state.
+     * @param int|null $retcode
+     *                          <ul>
+     *                          <li>&lt; 0: Need to run again</li>
+     *                          <li>0: Nothing to do</li>
+     *                          <li>&gt; 0: Ok</li>
+     *                          </ul>
+     * @return bool : true if ok (not start by another)
      **/
     public function end($retcode, int $log_state = CronTaskLog::STATE_STOP)
     {
@@ -407,11 +406,11 @@ class CronTask extends CommonDBTM
     /**
      * read the first task which need to be run by cron
      *
-     * @param integer $mode >0 retrieve task configured for this mode
-     *                      <0 retrieve task allowed for this mode (force, no time check)
-     * @param string $name  one specify action
+     * @param int    $mode >0 retrieve task configured for this mode
+     *                     <0 retrieve task allowed for this mode (force, no time check)
+     * @param string $name one specify action
      *
-     * @return boolean false if no task to run
+     * @return bool false if no task to run
      **/
     public function getNeedToRun($mode = 0, $name = '')
     {
@@ -598,12 +597,12 @@ class CronTask extends CommonDBTM
     /**
      * Print the contact form
      *
-     * @param integer $ID
-     * @param array   $options
-     *     - target filename : where to go when done.
-     *     - withtemplate boolean : template or basic item
+     * @param int   $ID
+     * @param array $options
+     *                       - target filename : where to go when done.
+     *                       - withtemplate boolean : template or basic item
      *
-     * @return boolean
+     * @return bool
      **/
     public function showForm($ID, array $options = [])
     {
@@ -701,7 +700,7 @@ class CronTask extends CommonDBTM
     /**
      * Translate task description
      *
-     * @param integer $id ID of the crontask
+     * @param int $id ID of the crontask
      *
      * @return string
      **/
@@ -742,7 +741,7 @@ class CronTask extends CommonDBTM
     /**
      * Translate state to string
      *
-     * @param integer $state
+     * @param         int           $state
      * @phpstan-param self::STATE_* $state
      *
      * @return string
@@ -760,11 +759,11 @@ class CronTask extends CommonDBTM
     /**
      * Dropdown of state
      *
-     * @param string  $name     select name
-     * @param integer $value    default value
-     * @param boolean $display  display or get string
+     * @param string $name    select name
+     * @param int    $value   default value
+     * @param bool   $display display or get string
      *
-     * @return string|integer HTML output, or random part of dropdown ID.
+     * @return string|int HTML output, or random part of dropdown ID.
      **/
     public static function dropdownState($name, $value = 0, $display = true)
     {
@@ -782,7 +781,7 @@ class CronTask extends CommonDBTM
     /**
      * Translate Mode to string
      *
-     * @param integer $mode
+     * @param         int          $mode
      * @phpstan-param self::MODE_* $mode
      *
      * @return string
@@ -799,7 +798,7 @@ class CronTask extends CommonDBTM
     /**
      * Get a global database lock for cron
      *
-     * @return boolean
+     * @return bool
      **/
     private static function get_lock()
     {
@@ -832,11 +831,11 @@ class CronTask extends CommonDBTM
     /**
      * Launch the need cron tasks
      *
-     * @param integer $mode   (internal/external, <0 to force)
-     * @param integer $max    number of task to launch
-     * @param string  $name   name of task to run
+     * @param int    $mode (internal/external, <0 to force)
+     * @param int    $max  number of task to launch
+     * @param string $name name of task to run
      *
-     * @return string|boolean the name of last task launched, or false if execution not available
+     * @return string|bool the name of last task launched, or false if execution not available
      **/
     public static function launch($mode, $max = 1, $name = '')
     {
@@ -955,11 +954,11 @@ class CronTask extends CommonDBTM
     /**
      * Register new task for plugin (called by plugin during install)
      *
-     * @param string  $itemtype  itemtype of the plugin object
-     * @param string  $name      task name
-     * @param integer $frequency execution frequency
-     * @param array   $options   optional options
-     *       (state, mode, allowmode, hourmin, hourmax, logs_lifetime, param, comment)
+     * @param string $itemtype  itemtype of the plugin object
+     * @param string $name      task name
+     * @param int    $frequency execution frequency
+     * @param array  $options   optional options
+     *                          (state, mode, allowmode, hourmin, hourmax, logs_lifetime, param, comment)
      * @phpstan-param array{
      *   state?: CronTask::STATE_*,
      *   mode?: CronTask::MODE_*,
@@ -971,7 +970,7 @@ class CronTask extends CommonDBTM
      *   comment?: string
      * } $options
      *
-     * @return boolean
+     * @return bool
      **/
     public static function register($itemtype, $name, $frequency, $options = [])
     {
@@ -1534,7 +1533,7 @@ TWIG, ['msg' => __('Last run list')]);
      *
      * @param CronTask $task for log
      *
-     * @return integer
+     * @return int
      * @used-by self
      **/
     public static function cronSession(CronTask $task)
@@ -1582,7 +1581,7 @@ TWIG, ['msg' => __('Last run list')]);
      *
      * @param CronTask $task for log
      *
-     * @return integer
+     * @return int
      * @used-by self
      **/
     public static function cronCircularlogs(CronTask $task)
@@ -1650,7 +1649,7 @@ TWIG, ['msg' => __('Last run list')]);
      *
      * @param CronTask $task for log
      *
-     * @return integer
+     * @return int
      * @used-by self
      **/
     public static function cronGraph(CronTask $task)
@@ -1694,7 +1693,7 @@ TWIG, ['msg' => __('Last run list')]);
      *
      * @param CronTask $task for log
      *
-     * @return integer
+     * @return int
      * @used-by self
      **/
     public static function cronTemp(CronTask $task)
@@ -1763,7 +1762,7 @@ TWIG, ['msg' => __('Last run list')]);
      *
      * @param CronTask $task
      *
-     * @return integer
+     * @return int
      * @used-by self
      **/
     public static function cronLogs($task)
@@ -1792,7 +1791,7 @@ TWIG, ['msg' => __('Last run list')]);
      *
      * @param CronTask $task for log
      *
-     * @return integer
+     * @return int
      * @used-by self
      **/
     public static function cronCheckUpdate($task)
@@ -1806,7 +1805,6 @@ TWIG, ['msg' => __('Last run list')]);
     /**
      * Get criteria to identify crontasks that may be dead.
      * This includes tasks running more than twice as long as their frequency or over 2 hours.
-     * @return DBmysqlIterator
      */
     public static function getZombieCronTasks(): DBmysqlIterator
     {
@@ -1830,7 +1828,7 @@ TWIG, ['msg' => __('Last run list')]);
      *
      * @param CronTask $task for log
      *
-     * @return integer
+     * @return int
      * @used-by self
      **/
     public static function cronWatcher($task)
@@ -1893,7 +1891,7 @@ TWIG, ['msg' => __('Last run list')]);
     /**
      * Call cron without time check
      *
-     * @return boolean : true if launched
+     * @return bool : true if launched
      **/
     public static function callCronForce()
     {
@@ -1910,7 +1908,6 @@ TWIG, ['msg' => __('Last run list')]);
     /**
      * Check if any web cron task exist and is enabled
      *
-     * @return bool
      **/
     public static function mustRunWebTasks(): bool
     {

@@ -55,7 +55,6 @@ trait CapacityUsageTestTrait
      * Test if the method isUsed returns true if the capacity can be disabled
      * without data loss.
      *
-     * @return void
      */
     #[DataProvider('provideIsUsed')]
     public function testIsUsed(
@@ -128,7 +127,6 @@ trait CapacityUsageTestTrait
      * Test if the getCapacityUsageDescription method returns a correct description
      * of the capacity usage.
      *
-     * @return void
      */
     #[DataProvider('provideGetCapacityUsageDescription')]
     public function testGetCapacityUsageDescription(

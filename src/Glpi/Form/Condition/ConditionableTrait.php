@@ -42,7 +42,6 @@ trait ConditionableTrait
      * Get the field name used for conditions
      * Can be overridden in the class using this trait
      *
-     * @return string
      */
     protected function getConditionsFieldName(): string
     {

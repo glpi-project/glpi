@@ -65,10 +65,10 @@ class NetworkAlias extends FQDNLabel
     /**
      * Print the network alias form
      *
-     * @param integer $ID ID of the item
+     * @param int   $ID      ID of the item
      * @param array $options
-     *     - target for the Form
-     *     - withtemplate template or basic computer
+     *                       - target for the Form
+     *                       - withtemplate template or basic computer
      *
      * @return bool
      **/
@@ -125,13 +125,9 @@ class NetworkAlias extends FQDNLabel
     }
 
     /**
-     * @param class-string<CommonDBTM> $itemtype
-     * @param HTMLTableBase $base
-     * @param HTMLTableSuperHeader|null $super
-     * @param HTMLTableHeader|null $father
-     * @param array $options
      * @throws Exception
      * @since 0.84
+     * @param class-string<CommonDBTM> $itemtype
      *
      * @return void
      */
@@ -161,10 +157,6 @@ class NetworkAlias extends FQDNLabel
     }
 
     /**
-     * @param HTMLTableRow|null $row
-     * @param CommonDBTM|null $item
-     * @param HTMLTableCell|null $father
-     * @param array $options
      *
      * @return void
      */
@@ -227,8 +219,7 @@ class NetworkAlias extends FQDNLabel
      * NetworkAlias, remove, ...) or if read from item of the item (for instance from the computer
      * form through NetworkPort::ShowForItem and NetworkName::ShowForItem).
      *
-     * @param NetworkName $item
-     * @param integer $withtemplate
+     * @param int $withtemplate
      * @return false|void
      */
     public static function showForNetworkName(NetworkName $item, $withtemplate = 0)
@@ -365,8 +356,8 @@ class NetworkAlias extends FQDNLabel
     /**
      * Show the aliases contained by the alias
      *
-     * @param FQDN $item The FQDN owning the aliases
-     * @param integer $withtemplate
+     * @param FQDN $item         The FQDN owning the aliases
+     * @param int  $withtemplate
      *
      * @return void
      */

@@ -102,7 +102,7 @@ trait AssignableItem
 
     /**
      * @param string|null $item_table_reference Table name to use in criteria, defaults to static::getTable().
-     * Useful if the criteria that this will be used with uses aliases.
+     *                                          Useful if the criteria that this will be used with uses aliases.
      * @return array[]|QueryExpression[]
      * @see AssignableItemInterface::getAssignableVisiblityCriteria()
      */
@@ -123,7 +123,6 @@ trait AssignableItem
     }
 
     /**
-     * @param string|null $item_table_reference
      * @return array[]|QueryExpression[]
      */
     private static function getAssignableVisiblityCriteriaForCentral(
@@ -167,7 +166,6 @@ trait AssignableItem
     }
 
     /**
-     * @param string|null $item_table_reference
      * @return array[]|QueryExpression[]
      */
     private static function getAssignableVisiblityCriteriaForHelpdesk(
@@ -339,9 +337,9 @@ trait AssignableItem
     }
 
     /**
-     * @see AssignableItemInterface::post_addItem()
      *
      * @return void
+     * @see AssignableItemInterface::post_addItem()
      */
     public function post_addItem()
     {
@@ -350,11 +348,11 @@ trait AssignableItem
     }
 
     /**
-     * @see AssignableItemInterface::post_updateItem()
      *
      * @param bool $history
      *
      *@return void
+     * @see AssignableItemInterface::post_updateItem()
      */
     public function post_updateItem($history = true)
     {
@@ -363,9 +361,9 @@ trait AssignableItem
     }
 
     /**
-     * @see AssignableItemInterface::getEmpty()
      *
      * @return bool
+     * @see AssignableItemInterface::getEmpty()
      */
     public function getEmpty()
     {
@@ -404,9 +402,9 @@ trait AssignableItem
     }
 
     /**
-     * @see AssignableItemInterface::post_getFromDB()
      *
      * @return void
+     * @see AssignableItemInterface::post_getFromDB()
      */
     public function post_getFromDB()
     {

@@ -73,7 +73,7 @@ class Link extends CommonDBTM
     /**
      * For plugins, add a tag to the links tags
      *
-     * @param $tag    string    class name
+     * @param $tag string    class name
      **/
     public static function registerTag($tag)
     {
@@ -162,7 +162,6 @@ class Link extends CommonDBTM
     /**
      * Return tags completion for the monaco editor.
      *
-     * @return array
      * @phpstan-return array<int, array{name: string, type: string}>
      */
     private function getTagCompletions(): array
@@ -413,10 +412,10 @@ class Link extends CommonDBTM
     /**
      * Generate link(s).
      *
-     * @param string        $link           original string content
-     * @param CommonDBTM    $item           item used to make replacements
-     * @param bool          $safe_url       indicates whether URL should be sanitized or not
-     * @param array         $custom_vars    custom variables that will be passed to link template renderer
+     * @param string     $link        original string content
+     * @param CommonDBTM $item        item used to make replacements
+     * @param bool       $safe_url    indicates whether URL should be sanitized or not
+     * @param array      $custom_vars custom variables that will be passed to link template renderer
      *
      * @return array of link contents (may have several when item have several IP / MAC cases)
      */
@@ -535,7 +534,6 @@ class Link extends CommonDBTM
 
     /**
      * Show all external and manual links for an item
-     * @param CommonDBTM $item
      * @param 'ManualLink'|'Link'|null $restrict_type Restrict to a specific type of link
      * @return void
      */
@@ -647,7 +645,7 @@ TWIG, $buttons_params);
      *
      * @since 0.85
      *
-     * @param CommonDBTM $item The item
+     * @param CommonDBTM                                                                   $item   The item
      * @param array{id: int, name: string, link: string, data: string, open_window: ?bool} $params
      **/
     public static function getAllLinksFor($item, $params)
@@ -821,8 +819,6 @@ TWIG, $buttons_params);
     /**
      * Validate template fields.
      *
-     * @param array $input
-     * @return bool
      */
     private function validateTemplateFields(array $input): bool
     {

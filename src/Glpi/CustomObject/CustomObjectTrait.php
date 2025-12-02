@@ -152,8 +152,6 @@ trait CustomObjectTrait
     /**
      * Ensure definition input corresponds to the current concrete class.
      *
-     * @param array $input
-     * @return array
      */
     protected function prepareDefinitionInput(array $input): array
     {
@@ -182,9 +180,7 @@ trait CustomObjectTrait
     /**
      * Amend the class search options to define their concrete `itemtype`.
      *
-     * @param array $search_options
      *
-     * @return array
      */
     protected function amendSearchOptions(array $search_options): array
     {

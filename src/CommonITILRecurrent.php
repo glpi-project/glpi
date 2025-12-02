@@ -373,15 +373,15 @@ abstract class CommonITILRecurrent extends CommonDropdown
     /**
      * Compute next creation date of an item.
      *
-     * @param string         $begin_date     Begin date of the recurrent item in 'Y-m-d H:i:s' format.
-     * @param string         $end_date       End date of the recurrent item in 'Y-m-d H:i:s' format,
-     *                                       or 'NULL' or empty value.
-     * @param string|integer $periodicity    Periodicity of creation, could be:
-     *                                        - an integer corresponding to seconds,
-     *                                        - a string using "/([0-9]+)(MONTH|YEAR)/" pattern.
-     * @param int            $create_before  Anticipated creation delay in seconds.
-     * @param int|null       $calendars_id   ID of the calendar to use to restrict creation to working hours,
-     *                                       or 0 / null for no calendar.
+     * @param string     $begin_date    Begin date of the recurrent item in 'Y-m-d H:i:s' format.
+     * @param string     $end_date      End date of the recurrent item in 'Y-m-d H:i:s' format,
+     *                                  or 'NULL' or empty value.
+     * @param string|int $periodicity   Periodicity of creation, could be:
+     *                                  - an integer corresponding to seconds,
+     *                                  - a string using "/([0-9]+)(MONTH|YEAR)/" pattern.
+     * @param int        $create_before Anticipated creation delay in seconds.
+     * @param int|null   $calendars_id  ID of the calendar to use to restrict creation to working hours,
+     *                                  or 0 / null for no calendar.
      *
      * @return string  Next creation date in 'Y-m-d H:i:s' format.
      */
@@ -534,8 +534,6 @@ abstract class CommonITILRecurrent extends CommonDropdown
     /**
      * Handle predefined fields
      *
-     * @param array $predefined
-     * @param array $input
      *
      * @return array The modified $input
      */
@@ -586,9 +584,9 @@ abstract class CommonITILRecurrent extends CommonDropdown
      *
      * @param array $linked_items array of elements (itemtype => array(id1, id2, id3, ...))
      *
-     * @param CommonITILObject|null $created_item   Will contain the created item instance
+     * @param CommonITILObject|null $created_item Will contain the created item instance
      *
-     * @return boolean
+     * @return bool
      */
     public function createItem(array $linked_items = [], ?CommonITILObject &$created_item = null)
     {
@@ -716,7 +714,6 @@ abstract class CommonITILRecurrent extends CommonDropdown
      * Return elements related to the recurrent object.
      * Result keys corresponds to itemtypes, and values are arrays of ids `array(itemtype => array(id1, id2, id3, ...))`.
      *
-     * @return array
      */
     public function getRelatedElements(): array
     {

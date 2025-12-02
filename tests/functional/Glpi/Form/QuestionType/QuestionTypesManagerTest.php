@@ -66,7 +66,6 @@ final class QuestionTypesManagerTest extends DbTestCase
     /**
      * Test the getQuestionTypes method
      *
-     * @return void
      */
     public function testGetDefaultTypeClass(): void
     {
@@ -90,7 +89,6 @@ final class QuestionTypesManagerTest extends DbTestCase
     /**
      * Test the getQuestionTypes method
      *
-     * @return void
      */
     public function testGetCategories(): void
     {
@@ -238,7 +236,6 @@ final class QuestionTypesManagerTest extends DbTestCase
      * This prevent us from forgetting to update this provider when adding new
      * questions types
      *
-     * @return void
      */
     public function testEnsureAllCategoriesAreTested(): void
     {

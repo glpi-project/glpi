@@ -52,7 +52,7 @@ class InventoryTestCase extends DbTestCase
      */
     protected const INVENTORY_ARCHIVE_PATH = GLPI_TMP_DIR . '/to_inventory.zip';
 
-    /** @var int */
+    /**  */
     protected int $nblogs;
 
     public function setUp(): void
@@ -129,8 +129,8 @@ class InventoryTestCase extends DbTestCase
     /**
      * Execute an inventory
      *
-     * @param mixed   $source Source as JSON or XML
-     * @param boolean $is_xml XML or JSON
+     * @param mixed $source Source as JSON or XML
+     * @param bool  $is_xml XML or JSON
      *
      * @return Inventory
      */

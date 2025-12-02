@@ -63,7 +63,6 @@ class RoutingExtension extends AbstractExtension
     /**
      * Return index path.
      *
-     * @return string
      */
     public function indexPath(): string
     {
@@ -79,9 +78,7 @@ class RoutingExtension extends AbstractExtension
     /**
      * Return domain-relative path of a resource.
      *
-     * @param string $resource
      *
-     * @return string
      */
     public function path(string $resource, array $parameters = []): string
     {
@@ -106,9 +103,7 @@ class RoutingExtension extends AbstractExtension
     /**
      * Return absolute URL of a resource.
      *
-     * @param string $resource
      *
-     * @return string
      */
     public function url(string $resource, array $parameters = []): string
     {

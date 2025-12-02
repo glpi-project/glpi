@@ -100,7 +100,7 @@ class Config extends CommonDBTM
 
     /**
      * Indicates whether the GLPI configuration has been loaded.
-     * @var boolean
+     * @var bool
      */
     private static $loaded = false;
 
@@ -379,9 +379,7 @@ class Config extends CommonDBTM
     /**
      * Handle SMTP input values.
      *
-     * @param array $input
      *
-     * @return array
      */
     private function handleSmtpInput(array $input): array
     {
@@ -701,7 +699,6 @@ class Config extends CommonDBTM
     /**
      * Check if the "use_password_security" parameter is enabled
      *
-     * @return bool
      */
     public static function arePasswordSecurityChecksEnabled(): bool
     {
@@ -713,9 +710,9 @@ class Config extends CommonDBTM
     /**
      * Display security checks on password
      *
-     * @param string $field id of the field containing password to check (default 'password')
      *
      * @since 0.84
+     * @param string $field id of the field containing password to check (default 'password')
      *
      * @return void
      */
@@ -878,9 +875,9 @@ class Config extends CommonDBTM
     /**
      * Dropdown for global management config
      *
-     * @param string       $name   select name
-     * @param string       $value  default value
-     * @param integer|null $rand   rand
+     * @param string   $name  select name
+     * @param string   $value default value
+     * @param int|null $rand  rand
      *
      * @return void
      */
@@ -1082,10 +1079,10 @@ class Config extends CommonDBTM
      *
      * @since 9.3
      *
-     * @param boolean $fordebug display for debug (no html required) (false by default)
-     * @param string  $version  Version to check (mainly from install), defaults to null
+     * @param bool   $fordebug display for debug (no html required) (false by default)
+     * @param string $version  Version to check (mainly from install), defaults to null
      *
-     * @return integer 2: missing extension,  1: missing optional extension, 0: OK,
+     * @return int 2: missing extension,  1: missing optional extension, 0: OK,
      **/
     public static function displayCheckDbEngine($fordebug = false, $version = null)
     {
@@ -1160,7 +1157,7 @@ class Config extends CommonDBTM
      *
      * @since 9.2 Method signature and return has changed
      *
-     * @param null|array $list     Extensions list (from plugins)
+     * @param null|array $list Extensions list (from plugins)
      *
      * @return array [
      *                'error'     => integer 2: missing extension,  1: missing optionnal extension, 0: OK,
@@ -1314,12 +1311,12 @@ class Config extends CommonDBTM
     /**
      * Get config value
      *
-     * @param $context  string   context to get values (default for glpi is core)
-     * @param $name     string   config name
      *
-     * @return mixed
      *
      * @since 10.0.0
+     * @param $context string   context to get values (default for glpi is core)
+     * @param $name    string   config name
+     * @return mixed
      */
     public static function getConfigurationValue(string $context, string $name)
     {
@@ -1329,9 +1326,9 @@ class Config extends CommonDBTM
     /**
      * Load legacy configuration into $CFG_GLPI global variable.
      *
-     * @return boolean True for success, false if an error occurred
      *
      * @since 10.0.0 Parameter $older_to_latest is no longer used.
+     * @return bool True for success, false if an error occurred
      */
     public static function loadLegacyConfiguration()
     {
@@ -1530,7 +1527,6 @@ class Config extends CommonDBTM
     /**
      * Get message that informs the user he is using an unstable version.
      *
-     * @param bool $is_dev
      *
      * @return string
      */
@@ -1570,7 +1566,7 @@ class Config extends CommonDBTM
      *
      * @since 9.3
      *
-     * @return void|boolean (display) Returns false if there is a rights error.
+     * @return void|bool (display) Returns false if there is a rights error.
      */
     public function showFormLogs()
     {
@@ -1631,7 +1627,7 @@ class Config extends CommonDBTM
      *
      * @since 9.5.0
      *
-     * @return void|boolean (display) Returns false if there is a rights error.
+     * @return void|bool (display) Returns false if there is a rights error.
      */
     public function showFormSecurity()
     {
@@ -1652,7 +1648,7 @@ class Config extends CommonDBTM
      *
      * @since 10.0.0
      *
-     * @return void|boolean (display) Returns false if there is a rights error.
+     * @return void|bool (display) Returns false if there is a rights error.
      */
     public function showFormManagement()
     {
@@ -1774,12 +1770,7 @@ class Config extends CommonDBTM
     /**
      * Log config change in history.
      *
-     * @param string $context
-     * @param string $name
-     * @param string $newvalue
-     * @param string $oldvalue
      *
-     * @return void
      */
     private function logConfigChange(string $context, string $name, string $newvalue, string $oldvalue): void
     {
@@ -1804,10 +1795,10 @@ class Config extends CommonDBTM
     /**
      * Get the GLPI Config without unsafe keys like passwords and emails (true on $safer)
      *
-     * @param boolean $safer do we need to clean more (avoid emails disclosure)
-     * @return array of $CFG_GLPI without unsafe keys
      *
      * @since 9.5
+     * @param bool $safer do we need to clean more (avoid emails disclosure)
+     * @return array of $CFG_GLPI without unsafe keys
      */
     public static function getSafeConfig($safer = false)
     {
@@ -1871,10 +1862,10 @@ class Config extends CommonDBTM
     /**
      * Try to find a valid sender email from the GLPI configuration
      *
-     * @param int|null $entities_id  Entity configuration to be used, default to
-     *                               global configuration
-     * @param bool     $no_reply     Should the configured "noreply" address be
-     *                               used (default: false)
+     * @param int|null $entities_id Entity configuration to be used, default to
+     *                              global configuration
+     * @param bool     $no_reply    Should the configured "noreply" address be
+     *                              used (default: false)
      *
      * @return array [email => sender address, name => sender name]
      */
@@ -1921,8 +1912,8 @@ class Config extends CommonDBTM
     /**
      * Try to find a valid "from" email from the GLPI configuration
      *
-     * @param int|null $entities_id  Entity configuration to be used, default to
-     *                               global configuration
+     * @param int|null $entities_id Entity configuration to be used, default to
+     *                              global configuration
      *
      * @return array [email => sender address, name => sender name]
      */
@@ -1934,8 +1925,8 @@ class Config extends CommonDBTM
     /**
      * Try to find a valid "admin_email" email from the GLPI configuration
      *
-     * @param int|null $entities_id  Entity configuration to be used, default to
-     *                               global configuration
+     * @param int|null $entities_id Entity configuration to be used, default to
+     *                              global configuration
      *
      * @return array [email => sender address, name => sender name]
      */
@@ -1947,8 +1938,8 @@ class Config extends CommonDBTM
     /**
      * Try to find a valid noreply email from the GLPI configuration
      *
-     * @param int|null $entities_id  Entity configuration to be used, default to
-     *                               global configuration
+     * @param int|null $entities_id Entity configuration to be used, default to
+     *                              global configuration
      *
      * @return array [email => noreply address, name => noreply name]
      */
@@ -1960,8 +1951,8 @@ class Config extends CommonDBTM
     /**
      * Try to find a valid replyto email from the GLPI configuration
      *
-     * @param int|null $entities_id  Entity configuration to be used, default to
-     *                               global configuration
+     * @param int|null $entities_id Entity configuration to be used, default to
+     *                              global configuration
      *
      * @return array [email => replyto address, name => replyto name]
      */
@@ -1973,9 +1964,9 @@ class Config extends CommonDBTM
     /**
      * Try to find a valid email from the GLPI configuration
      *
-     * @param string   $config_name  Configuration name
-     * @param int|null $entities_id  Entity configuration to be used, default to
-     *                               global configuration
+     * @param string   $config_name Configuration name
+     * @param int|null $entities_id Entity configuration to be used, default to
+     *                              global configuration
      *
      * @return array [email => address, name => name]
      */
@@ -2039,7 +2030,6 @@ class Config extends CommonDBTM
      * Override parent: "{itemtype} - {header name}" -> "{itemtype}"
      * There is only one config, no need to display the item name
      *
-     * @return string
      */
     public function getBrowserTabName(): string
     {

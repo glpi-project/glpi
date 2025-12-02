@@ -274,7 +274,6 @@ class TestUpdatedDataCommand extends Command
     /**
      * Return list of tables to exclude from comparison.
      *
-     * @return array
      */
     private function getExcludedTables(): array
     {
@@ -320,7 +319,6 @@ class TestUpdatedDataCommand extends Command
      * Keys are table name (or * for fields that should be excluded for all tables).
      * Values are an array of fields identifiers.
      *
-     * @return array
      */
     private function getExcludedFields(string $table_name): array
     {
@@ -363,11 +361,7 @@ class TestUpdatedDataCommand extends Command
     /**
      * Return field type.
      *
-     * @param DBmysql $db
-     * @param string $table
-     * @param string $field
      *
-     * @return string|null
      */
     private function getFieldType(DBmysql $db, string $table, string $field): ?string
     {

@@ -1521,7 +1521,6 @@ class AuthLdapTest extends DbTestCase
     /**
      * Data provider for testRemovedUser
      *
-     * @return iterable
      */
     public static function removedUserProvider(): iterable
     {
@@ -1556,11 +1555,7 @@ class AuthLdapTest extends DbTestCase
     /**
      * Test expected behaviors when a user is deleted from ldap
      *
-     * @param int $user_option_value
-     * @param int $groups_option_value
-     * @param int $authorizations_option_value
      *
-     * @return void
      */
     #[RequiresPhpExtension('ldap')]
     #[DataProvider('removedUserProvider')]

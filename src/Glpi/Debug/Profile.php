@@ -92,7 +92,6 @@ final class Profile
     /**
      * Stops the collection of new debug data.
      * This does not clear any existing data or prevent the existing data from being saved.
-     * @return void
      */
     public function disable(): void
     {
@@ -101,7 +100,6 @@ final class Profile
 
     /**
      * Re-enables the collection of new debug data.
-     * @return void
      */
     public function enable(): void
     {
@@ -139,7 +137,6 @@ final class Profile
     }
 
     /**
-     * @param string $widget
      * @param mixed $data
      *
      * @return void
@@ -156,11 +153,6 @@ final class Profile
     }
 
     /**
-     * @param string $query
-     * @param float $time
-     * @param int $rows
-     * @param string $errors
-     * @param string $warnings
      *
      * @return void
      */

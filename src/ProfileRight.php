@@ -49,7 +49,7 @@ class ProfileRight extends CommonDBChild
     public $dohistory       = true;
 
     /**
-     * {@inheritDoc}
+     *
      * @note Unlike the default implementation, this one handles the fact that some or all profile rights
      *       are already in the DB (but set to 0) when the cloned profile is created.
      *       Therefore, we need to use update or insert DB queries rather than `CommonDBTM::add`.
@@ -119,8 +119,7 @@ class ProfileRight extends CommonDBChild
     }
 
     /**
-     * @param $profiles_id
-     * @param $rights         array
+     * @param $rights array
      **/
     public static function getProfileRights($profiles_id, array $rights = [])
     {
@@ -143,9 +142,9 @@ class ProfileRight extends CommonDBChild
 
 
     /**
-     * @param $rights   array
+     * @param $rights array
      *
-     * @return boolean
+     * @return bool
      **/
     public static function addProfileRights(array $rights)
     {
@@ -179,9 +178,9 @@ class ProfileRight extends CommonDBChild
 
 
     /**
-     * @param $rights   array
+     * @param $rights array
      *
-     * @return boolean
+     * @return bool
      **/
     public static function deleteProfileRights(array $rights)
     {
@@ -204,7 +203,6 @@ class ProfileRight extends CommonDBChild
     }
 
     /**
-     * @param $profiles_id
      **/
     public static function fillProfileRights($profiles_id)
     {
@@ -250,8 +248,7 @@ class ProfileRight extends CommonDBChild
     /**
      * Update the rights of a profile (static since 0.90.1)
      *
-     * @param $profiles_id
-     * @param $rights         array
+     * @param $rights array
      */
     public static function updateProfileRights($profiles_id, array $rights = [])
     {
@@ -298,8 +295,6 @@ class ProfileRight extends CommonDBChild
     /**
      * Update last rights update for given profile.
      *
-     * @param int $profile_id
-     * @return void
      */
     private function updateProfileLastRightsUpdate(int $profile_id): void
     {
@@ -312,9 +307,7 @@ class ProfileRight extends CommonDBChild
     /**
      * @since 085
      *
-     * @param $field
-     * @param $values
-     * @param $options   array
+     * @param $options array
      **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {

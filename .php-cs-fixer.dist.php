@@ -59,6 +59,34 @@ return (new PhpCsFixer\Config())
         'no_unused_imports' => true,
         'heredoc_indentation' => false, // This rule is mandatory due to a bug in `xgettext`, see https://savannah.gnu.org/bugs/?func=detailitem&item_id=62158
         'new_expression_parentheses' => false, // breaks compatibility with PHP < 8.4
+        // rules for phpdoc formating
+        // Removes @param, @return and @var tags that don't provide any useful information.
+        // https://mlocati.github.io/php-cs-fixer-configurator/#version:3.90|fixer:no_superfluous_phpdoc_tags
+        'no_superfluous_phpdoc_tags' => [
+            'allow_mixed' => true,
+            'remove_inheritdoc' => true,
+        ],
+        // order phpdoc tags
+        // https://mlocati.github.io/php-cs-fixer-configurator/#version:3.90|fixer:phpdoc_order
+        // order defined in devdoc : https://glpi-developer-documentation.readthedocs.io/en/master/codingstandards.html
+        'phpdoc_order' => ['order' => ['deprecated', 'since', 'var', 'param', 'return', 'see', 'throw', 'todo']],
+        // phpdoc param in same order as signature
+        // https://mlocati.github.io/php-cs-fixer-configurator/#version:3.90|fixer:phpdoc_param_order
+        'phpdoc_param_order' => true,
+        // align tags
+        // https://mlocati.github.io/php-cs-fixer-configurator/#version:3.90|fixer:phpdoc_align
+        'phpdoc_align' => [
+            'align' => 'vertical',
+            'tags' => ['param', 'property', 'property-read', 'property-write', 'phpstan-param', 'phpstan-property', 'phpstan-property-read', 'phpstan-property-write', 'phpstan-assert', 'phpstan-assert-if-true', 'phpstan-assert-if-false', 'psalm-param', 'psalm-param-out', 'psalm-property', 'psalm-property-read', 'psalm-property-write', 'psalm-assert', 'psalm-assert-if-true', 'psalm-assert-if-false'],
+        ],
+        // phpdoc_types
+        // The correct case must be used for standard PHP types in PHPDoc.
+        // https://mlocati.github.io/php-cs-fixer-configurator/#version:3.90|fixer:phpdoc_types
+        'phpdoc_types' => true,
+        // phpdoc_scalar
+        // Scalar types should always be written in the same form. int not integer, bool not boolean, float not real or double.
+        // https://mlocati.github.io/php-cs-fixer-configurator/#version:3.90|fixer:phpdoc_scalar
+        'phpdoc_scalar' => true,
     ])
     ->setFinder($finder)
 ;

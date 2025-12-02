@@ -102,7 +102,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     /**
      * Is the current user have right to show the current project ?
      *
-     * @return boolean
      **/
     public function canViewItem(): bool
     {
@@ -122,7 +121,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     /**
      * Is the current user have right to create the current change ?
      *
-     * @return boolean
      **/
     public function canCreateItem(): bool
     {
@@ -374,9 +372,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
      *
      * @since 9.4
      *
-     * @param boolean $forceall force all joins (false by default)
+     * @param bool $forceall force all joins (false by default)
      *
-     * @return array
      */
     public static function getVisibilityCriteria(bool $forceall = false): array
     {
@@ -428,7 +425,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     /**
      * Is the current user in the team?
      *
-     * @return boolean
+     * @return bool
      **/
     public function isInTheTeam()
     {
@@ -458,7 +455,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     /**
      * Is the current user in manager group?
      *
-     * @return boolean
+     * @return bool
      **/
     public function isInTheManagerGroup()
     {
@@ -478,7 +475,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     /**
      * Get team member count
      *
-     * @return integer
+     * @return int
      **/
     public function getTeamCount()
     {
@@ -1155,9 +1152,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
 
     /**
      * @param array{item_id: int, id: int, itemtype: class-string<CommonDBTM>}[] $data
-     *        - item_id: The ID of the Project
-     *        - id: The ID of the entry in the datatable (probably the ID of the link between the Project and another item)
-     *        - itemtype: The type of the entry in the datatable (Project or a link itemtype between the Project and another item)
+     *                                                                                 - item_id: The ID of the Project
+     *                                                                                 - id: The ID of the entry in the datatable (probably the ID of the link between the Project and another item)
+     *                                                                                 - itemtype: The type of the entry in the datatable (Project or a link itemtype between the Project and another item)
      * @return array The data with the other required fields added
      * @see Project::getCommonDatatableColumns()
      */
@@ -1366,10 +1363,10 @@ TWIG, ['projects_id' => $ID, 'label' => __('Create a sub project from this proje
     /**
      * Print the Project form
      *
-     * @param integer $ID ID of the item
+     * @param int   $ID      ID of the item
      * @param array $options
-     *     - target for the Form
-     *     - withtemplate : 1 for newtemplate, 2 for newobject from template
+     *                       - target for the Form
+     *                       - withtemplate : 1 for newtemplate, 2 for newobject from template
      *
      * @return bool true if displayed  false if item not found or not right to display
      **/
@@ -1419,7 +1416,6 @@ TWIG, ['projects_id' => $ID, 'label' => __('Create a sub project from this proje
 
     /**
      * Show team for a project
-     * @param Project $project
      * @return true
      **/
     public function showTeam(Project $project)
@@ -2225,8 +2221,8 @@ TWIG, $twig_params);
     /**
      * Get the list of active projects for a list of groups.
      *
-     * @param array $groups_id The group IDs.
-     * @param bool $search_in_team Whether to search in the team.
+     * @param array $groups_id      The group IDs.
+     * @param bool  $search_in_team Whether to search in the team.
      * @return array The list of project IDs.
      */
     public static function getActiveProjectIDsForGroup(
@@ -2284,9 +2280,9 @@ TWIG, $twig_params);
     /**
      * Get the list of active projects for a list of users.
      *
-     * @param array $users_id The user IDs.
-     * @param bool $search_in_groups Whether to search in groups.
-     * @param bool $search_in_team Whether to search in the team.
+     * @param array $users_id         The user IDs.
+     * @param bool  $search_in_groups Whether to search in groups.
+     * @param bool  $search_in_team   Whether to search in the team.
      * @return array The list of project IDs.
      */
     public static function getActiveProjectIDsForUser(
@@ -2366,7 +2362,6 @@ TWIG, $twig_params);
      *  Show the list of projects for a user in the personal view or for a group in the group view
      *
      * @param string $itemtype The itemtype (User or Group)
-     * @return void
      * @used-by Central
      */
     public static function showListForCentral(string $itemtype): void
@@ -2502,9 +2497,9 @@ TWIG, $twig_params);
     /**
      * Update the specified project's percent_done based on the percent_done of subprojects and tasks.
      * This function indirectly updates the percent done for all parents if they are set to automatically update.
-     * @param int $ID The ID of the project to recalculate.
      * @since 9.5.0
-     * @return boolean False if the specified project is not set to automatically update the percent done.
+     * @param int $ID The ID of the project to recalculate.
+     * @return bool False if the specified project is not set to automatically update the percent done.
      */
     public static function recalculatePercentDone($ID)
     {

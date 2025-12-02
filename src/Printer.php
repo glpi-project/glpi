@@ -106,9 +106,9 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
     }
 
     /**
-     * @see CommonDBTM::useDeletedToLockIfDynamic()
      *
      * @since 0.84
+     * @see CommonDBTM::useDeletedToLockIfDynamic()
      **/
     public function useDeletedToLockIfDynamic()
     {
@@ -160,7 +160,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
      *
      * Overloaded from CommonDBTM
      *
-     * @return boolean
+     * @return bool
      **/
     public function canUnrecurs()
     {
@@ -305,12 +305,12 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
     /**
      * Print the printer form
      *
-     * @param $ID integer ID of the item
+     * @param $ID      integer ID of the item
      * @param $options array
-     *     - target filename : where to go when done.
-     *     - withtemplate boolean : template or basic item
+     *                 - target filename : where to go when done.
+     *                 - withtemplate boolean : template or basic item
      *
-     * @return boolean item found
+     * @return bool item found
      **/
     public function showForm($ID, array $options = [])
     {
@@ -326,8 +326,8 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
     /**
      * Return the linked items (`Asset_PeripheralAsset` relations)
      *
-     * @return array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
      * @since 0.84.4
+     * @return array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
      **/
     public function getLinkedItems()
     {
@@ -762,10 +762,10 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
     /**
      * Add a printer. If already exist in trashbin restore it
      *
-     * @param string $name          the printer's name
-     * @param string $manufacturer  the software's manufacturer
-     * @param int    $entity        the entity in which the software must be added
-     * @param string $comment       comment (default '')
+     * @param string $name         the printer's name
+     * @param string $manufacturer the software's manufacturer
+     * @param int    $entity       the entity in which the software must be added
+     * @param string $comment      comment (default '')
      *
      * @return int
      **/
@@ -807,12 +807,12 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
     /**
      * Create a new printer
      *
-     * @param string  $name         the printer's name
-     * @param string  $manufacturer the printer's manufacturer
-     * @param integer $entity       the entity in which the printer must be added
-     * @param string  $comment      (default '')
+     * @param string $name         the printer's name
+     * @param string $manufacturer the printer's manufacturer
+     * @param int    $entity       the entity in which the printer must be added
+     * @param string $comment      (default '')
      *
-     * @return integer the printer's ID
+     * @return int the printer's ID
      **/
     public function addPrinter($name, $manufacturer, $entity, $comment = '')
     {

@@ -97,7 +97,6 @@ class CableStrand extends CommonDropdown
     /**
      * Print the HTML array of items related to cable strand.
      *
-     * @return bool
      */
     public function showItems(): bool
     {

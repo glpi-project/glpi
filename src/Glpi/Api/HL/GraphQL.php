@@ -178,7 +178,7 @@ final class GraphQL
 
     /**
      * Find the related itemtype of the given partial or complete schema.
-     * @param array $schema The schema to find the itemtype of.
+     * @param array  $schema      The schema to find the itemtype of.
      * @param string $api_version The API version
      * @return string|null The itemtype of the given schema or null if it could not be found.
      */
@@ -208,11 +208,11 @@ final class GraphQL
      *    <li>Is this a primary key?</li>
      *    <li>Is this referenced by an `x-mapped-from` property?</li>
      * </ul>
-     * @param class-string<CommonDBTM>|null $itemtype The itemtype of the object that contains the property. Used to determine the index field name.
-     * @param string $property The key of the property to remove or hide.
-     * @param array $schema_properties The schema properties of the object that contains the property.
-     * @param array $other_requested The other properties that were requested.
-     * @param string|null $object_prop_key The key of the object in the parent object. If not null, this is used complete the $other_requested properties.
+     * @param class-string<CommonDBTM>|null $itemtype          The itemtype of the object that contains the property. Used to determine the index field name.
+     * @param string                        $property          The key of the property to remove or hide.
+     * @param array                         $schema_properties The schema properties of the object that contains the property.
+     * @param array                         $other_requested   The other properties that were requested.
+     * @param string|null                   $object_prop_key   The key of the object in the parent object. If not null, this is used complete the $other_requested properties.
      * @return array The modified object schema
      */
     private static function hideOrRemoveProperty(?string $itemtype, string $property, array $schema_properties, array $other_requested, ?string $object_prop_key = null): array

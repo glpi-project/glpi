@@ -95,7 +95,6 @@ class Filter extends CommonDBChild
     /**
      * Return registered filters classes.
      *
-     * @return array
      */
     public static function getRegisteredFilterClasses(): array
     {
@@ -147,9 +146,9 @@ class Filter extends CommonDBChild
      * Return all available filters.
      * Keys are filters ids, values are filters labels.
      *
-     * @return array of filters
      *
      * @deprecated 11.0.0.
+     * @return array of filters
      */
     public static function getAll(): array
     {
@@ -161,7 +160,6 @@ class Filter extends CommonDBChild
     /**
      * Return filters for the provided dashboard
      *
-     * @param int $dashboards_id
      *
      * @return string the JSON representation of the filter data
      */
@@ -185,8 +183,8 @@ class Filter extends CommonDBChild
     /**
      * Save filter in DB for the provided dashboard
      *
-     * @param int $dashboards_id id (not key) of the dashboard
-     * @param string $settings contains a JSON representation of the filter data
+     * @param int    $dashboards_id id (not key) of the dashboard
+     * @param string $settings      contains a JSON representation of the filter data
      *
      * @return void
      */

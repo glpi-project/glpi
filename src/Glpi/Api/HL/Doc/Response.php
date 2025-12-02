@@ -52,7 +52,6 @@ class Response implements ArrayAccess
     ) {}
 
     /**
-     * @return string
      */
     public function getDescription(): string
     {
@@ -60,7 +59,6 @@ class Response implements ArrayAccess
     }
 
     /**
-     * @return array
      */
     public function getHeaders(): array
     {
@@ -68,7 +66,6 @@ class Response implements ArrayAccess
     }
 
     /**
-     * @return Schema|SchemaReference|null
      */
     public function getSchema(): Schema|SchemaReference|null
     {
@@ -81,7 +78,6 @@ class Response implements ArrayAccess
     }
 
     /**
-     * @return array
      */
     public function getExamples(): array
     {
@@ -89,7 +85,6 @@ class Response implements ArrayAccess
     }
 
     /**
-     * @return string
      */
     public function getMediaType(): string
     {
@@ -97,7 +92,6 @@ class Response implements ArrayAccess
     }
 
     /**
-     * @return int
      */
     public function getStatusCode(): int
     {

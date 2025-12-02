@@ -48,9 +48,9 @@ class Extension extends AbstractRequirement
     protected $name;
 
     /**
-     * @param string      $name         Required extension name.
-     * @param bool        $optional     Indicate if extension is optional.
-     * @param string|null $description  Describe usage of the extension.
+     * @param string      $name        Required extension name.
+     * @param bool        $optional    Indicate if extension is optional.
+     * @param string|null $description Describe usage of the extension.
      */
     public function __construct(string $name, bool $optional = false, ?string $description = null)
     {

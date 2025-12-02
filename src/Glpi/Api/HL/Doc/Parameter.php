@@ -58,7 +58,6 @@ final readonly class Parameter implements ArrayAccess
     ) {}
 
     /**
-     * @return string
      */
     public function getName(): string
     {
@@ -66,7 +65,6 @@ final readonly class Parameter implements ArrayAccess
     }
 
     /**
-     * @return string
      */
     public function getDescription(): string
     {
@@ -74,7 +72,6 @@ final readonly class Parameter implements ArrayAccess
     }
 
     /**
-     * @return string
      */
     public function getLocation(): string
     {
@@ -82,7 +79,6 @@ final readonly class Parameter implements ArrayAccess
     }
 
     /**
-     * @return Schema|SchemaReference
      */
     public function getSchema(): Schema|SchemaReference
     {
@@ -90,7 +86,6 @@ final readonly class Parameter implements ArrayAccess
     }
 
     /**
-     * @return string|null
      */
     public function getExample(): ?string
     {
@@ -98,7 +93,6 @@ final readonly class Parameter implements ArrayAccess
     }
 
     /**
-     * @return mixed
      */
     public function getDefaultValue(): mixed
     {
@@ -109,7 +103,6 @@ final readonly class Parameter implements ArrayAccess
     }
 
     /**
-     * @return bool
      */
     public function getRequired(): bool
     {

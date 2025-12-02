@@ -41,7 +41,6 @@ class ImpactContext extends CommonDBTM
     /**
      * Get ImpactContext for the given ImpactItem
      *
-     * @param ImpactItem $item
      * @return ImpactContext|false
      */
     public static function findForImpactItem(ImpactItem $item)

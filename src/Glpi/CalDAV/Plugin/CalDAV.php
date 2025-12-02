@@ -72,8 +72,6 @@ class CalDAV extends Plugin
     }
 
     /**
-     * @param PropFind $propFind
-     * @param INode $node
      *
      * @return void
      */

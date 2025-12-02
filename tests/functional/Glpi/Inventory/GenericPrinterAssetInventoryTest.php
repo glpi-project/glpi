@@ -50,7 +50,6 @@ class GenericPrinterAssetInventoryTest extends InventoryTestCase
      *
      * @param Capacity[] $capacities Capacities to activate
      *
-     * @return Asset
      */
     private function inventoryPrinter(array $capacities = []): Asset
     {
@@ -201,7 +200,6 @@ class GenericPrinterAssetInventoryTest extends InventoryTestCase
     /**
      * Test Generic Printer Asset inventory
      *
-     * @return void
      */
     public function testImportPrinter(): void
     {
@@ -219,7 +217,6 @@ class GenericPrinterAssetInventoryTest extends InventoryTestCase
     /**
      * Test Generic Network Asset inventory with network ports
      *
-     * @return void
      */
     public function testImportNetworkEquipmentWPorts(): void
     {

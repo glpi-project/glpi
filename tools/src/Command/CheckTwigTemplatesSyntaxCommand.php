@@ -50,7 +50,7 @@ class CheckTwigTemplatesSyntaxCommand extends Command
     /**
      * Error code returned when some templates have invalid yntax.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_INVALID_TEMPLATES = 1;
 

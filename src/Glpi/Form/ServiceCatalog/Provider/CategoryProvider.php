@@ -89,7 +89,6 @@ final class CategoryProvider implements CompositeProviderInterface
     }
 
     /**
-     * @param ItemRequest $item_request
      * @return array<array{id: int, name: string}>
      */
     public function getAncestors(ItemRequest $item_request): array

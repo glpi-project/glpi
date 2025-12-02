@@ -48,35 +48,35 @@ class Utf8mb4Command extends AbstractCommand implements ConfigurationCommandInte
     /**
      * Error code returned if migration failed on, at least, one table.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_MIGRATION_FAILED_FOR_SOME_TABLES = 1;
 
     /**
      * Error code returned if DB configuration file cannot be updated.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_UNABLE_TO_UPDATE_CONFIG = 2;
 
     /**
      * Error code returned if some tables are still using MyISAM engine.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_INNODB_REQUIRED = 3;
 
     /**
      * Error code returned if some tables are still using Redundant/Compact row format.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_DYNAMIC_ROW_FORMAT_REQUIRED = 4;
 
     /**
      * Error code returned if DB configuration is not compatible with large indexes.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_INCOMPATIBLE_DB_CONFIG = 5;
 
@@ -99,7 +99,6 @@ class Utf8mb4Command extends AbstractCommand implements ConfigurationCommandInte
     /**
      * Check for migration prerequisites.
      *
-     * @return void
      */
     private function checkForPrerequisites(): void
     {
@@ -133,7 +132,6 @@ class Utf8mb4Command extends AbstractCommand implements ConfigurationCommandInte
     /**
      * Migrate tables to utf8mb4.
      *
-     * @return void
      */
     private function migrateToUtf8mb4(): void
     {

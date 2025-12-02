@@ -60,7 +60,7 @@ class CronTaskLog extends CommonDBChild
      * @param int $id   ID of the CronTask
      * @param int $days number of day to keep
      *
-     * @return integer number of events deleted
+     * @return int number of events deleted
      **/
     public static function cleanOld($id, $days)
     {

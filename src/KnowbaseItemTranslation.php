@@ -155,7 +155,6 @@ TWIG, $twig_params);
     /**
      * Display all translated field for an KnowbaseItem
      *
-     * @param KnowbaseItem $item
      *
      * @return true
      **/
@@ -243,8 +242,7 @@ TWIG, $twig_params);
     /**
      * Display translation form
      *
-     * @param integer $ID
-     * @param array   $options
+     * @param int $ID
      */
     public function showForm($ID = -1, array $options = [])
     {
@@ -273,8 +271,8 @@ TWIG, $twig_params);
     /**
      * Get a translation for a value
      *
-     * @param KnowbaseItem $item   item to translate
-     * @param string       $field  field to return (default 'name')
+     * @param KnowbaseItem $item  item to translate
+     * @param string       $field field to return (default 'name')
      *
      * @return string  the field translated if a translation is available, or the original field if not
      **/
@@ -303,7 +301,7 @@ TWIG, $twig_params);
      *
      * @param KnowbaseItem $item
      *
-     * @return integer  the number of translations for this item
+     * @return int  the number of translations for this item
      **/
     public static function getNumberOfTranslationsForItem($item)
     {
@@ -316,7 +314,6 @@ TWIG, $twig_params);
     /**
      * Get already translated languages for item
      *
-     * @param KnowbaseItem $item
      *
      * @return array Array of already translated languages
      **/
@@ -349,9 +346,9 @@ TWIG, $twig_params);
     /**
      * Reverts item translation contents to specified revision
      *
-     * @param integer $revid Revision ID
+     * @param int $revid Revision ID
      *
-     * @return boolean
+     * @return bool
      */
     public function revertTo($revid)
     {

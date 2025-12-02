@@ -107,9 +107,8 @@ class Notification_NotificationTemplate extends CommonDBRelation
      * Print the notification templates
      *
      * @param Notification $notif        Notification object
-     * @param integer      $withtemplate Template or basic item (default '')
+     * @param int          $withtemplate Template or basic item (default '')
      *
-     * @return bool
      **/
     public static function showForNotification(Notification $notif, $withtemplate = 0): bool
     {
@@ -211,9 +210,8 @@ TWIG, $twig_params);
      * Print associated notifications
      *
      * @param NotificationTemplate $template     Notification template object
-     * @param integer              $withtemplate Template or basic item (default '')
+     * @param int                  $withtemplate Template or basic item (default '')
      *
-     * @return bool
      */
     public static function showForNotificationTemplate(NotificationTemplate $template, $withtemplate = 0): bool
     {
@@ -312,12 +310,12 @@ TWIG, $twig_params);
     /**
      * Print the form
      *
-     * @param integer $ID      ID of the item
-     * @param array   $options array
-     *     - target for the Form
-     *     - computers_id ID of the computer for add process
+     * @param int   $ID      ID of the item
+     * @param array $options array
+     *                       - target for the Form
+     *                       - computers_id ID of the computer for add process
      *
-     * @return boolean true if displayed  false if item not found or not right to display
+     * @return bool true if displayed  false if item not found or not right to display
      **/
     public function showForm($ID, array $options = [])
     {
@@ -457,7 +455,7 @@ TWIG, $twig_params);
      *
      * @param array $options array of options
      *
-     * @return integer|string
+     * @return int|string
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      */
@@ -484,7 +482,7 @@ TWIG, $twig_params);
     /**
      * Get class name for specified mode
      *
-     * @param string $mode      Requested mode
+     * @param string               $mode      Requested mode
      * @param 'event'|'setting'|'' $extratype Extra type
      *
      * @return (
@@ -539,7 +537,7 @@ TWIG, $twig_params);
     /**
      * Check if at least one mode is currently enabled
      *
-     * @return boolean
+     * @return bool
      */
     public static function hasActiveMode()
     {

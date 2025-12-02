@@ -50,9 +50,7 @@ final class Filesystem
     /**
      * Checks if the file with given path can be written.
      *
-     * @param string $path
      *
-     * @return bool
      */
     public static function canWriteFile(string $path): bool
     {
@@ -79,7 +77,6 @@ final class Filesystem
      *
      * @param string[] $paths
      *
-     * @return bool
      */
     public static function canWriteFiles(array $paths): bool
     {
@@ -95,10 +92,7 @@ final class Filesystem
     /**
      * Checks if the given file path is safe.
      *
-     * @param string $path
-     * @param string $restricted_directory
      *
-     * @return bool
      */
     public static function isFilepathSafe(string $path, ?string $restricted_directory = null): bool
     {
@@ -136,8 +130,6 @@ final class Filesystem
     /**
      * Normalize a path, to make comparisons and relative paths computation easier.
      *
-     * @param string $path
-     * @return string
      */
     private static function normalizePath(string $path): string
     {

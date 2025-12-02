@@ -58,7 +58,6 @@ final class FormAccessControlManager
     /**
      * Singleton access method.
      *
-     * @return FormAccessControlManager
      */
     public static function getInstance(): FormAccessControlManager
     {
@@ -108,10 +107,7 @@ final class FormAccessControlManager
     /**
      * Check if the current user can answer the given form.
      *
-     * @param Form $form
-     * @param FormAccessParameters $parameters
      *
-     * @return bool
      */
     public function canAnswerForm(
         Form $form,
@@ -165,7 +161,6 @@ final class FormAccessControlManager
      * Get an array access controls warnings messages (string) for a given
      * form.
      *
-     * @param Form $form
      * @return string[]
      */
     public function getWarnings(Form $form): array

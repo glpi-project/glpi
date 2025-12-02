@@ -145,10 +145,6 @@ class DeviceNetworkCard extends CommonDevice
     }
 
     /**
-     * @param HTMLTableRow|null $row
-     * @param CommonDBTM|null $item
-     * @param HTMLTableCell|null $father
-     * @param array $options
      * @return void
      */
     public static function getHTMLTableCellsForItem(
@@ -212,7 +208,7 @@ class DeviceNetworkCard extends CommonDevice
 
     /**
      * @param class-string<CommonDBTM> $itemtype
-     * @param array $main_joinparams
+     * @param array                    $main_joinparams
      * @return array
      */
     public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)

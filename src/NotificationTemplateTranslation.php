@@ -119,7 +119,7 @@ class NotificationTemplateTranslation extends CommonDBChild
 
     /**
      * @param NotificationTemplate $template object
-     * @param array $options
+     * @param array                $options
      **/
     public function showSummary(NotificationTemplate $template, $options = [])
     {
@@ -182,7 +182,6 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param array $input
      * @return array
      */
     public static function cleanContentHtml(array $input)
@@ -286,7 +285,6 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param $language_id
      * @return array
      */
     public static function getAllUsedLanguages($language_id)
@@ -310,7 +308,6 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param $itemtype
      * @return void
      **/
     public static function showAvailableTags($itemtype)

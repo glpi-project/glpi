@@ -48,9 +48,9 @@ class ExtensionFunction extends Extension
     private $function_name;
 
     /**
-     * @param string $name           Extension name.
-     * @param string $function_name  Required function name.
-     * @param bool $optional         Indicated if extension is optional.
+     * @param string $name          Extension name.
+     * @param string $function_name Required function name.
+     * @param bool   $optional      Indicated if extension is optional.
      */
     public function __construct(string $name, string $function_name, bool $optional = false)
     {

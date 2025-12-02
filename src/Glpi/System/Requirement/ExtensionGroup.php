@@ -48,10 +48,10 @@ class ExtensionGroup extends AbstractRequirement
     protected $extensions;
 
     /**
-     * @param string      $title        Extension group title.
-     * @param string[]    $extensions   Required extensions names.
-     * @param bool        $optional     Indicate if extension is optional.
-     * @param string|null $description  Describe usage of the extension.
+     * @param string      $title       Extension group title.
+     * @param string[]    $extensions  Required extensions names.
+     * @param bool        $optional    Indicate if extension is optional.
+     * @param string|null $description Describe usage of the extension.
      */
     public function __construct(string $title, array $extensions, bool $optional = false, ?string $description = null)
     {

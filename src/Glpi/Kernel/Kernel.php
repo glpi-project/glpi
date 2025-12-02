@@ -286,8 +286,6 @@ final class Kernel extends BaseKernel
      * occurs when handling the GLPI legacy scripts using a streamed response, but may also rarely occurs
      * in other contexts.
      *
-     * @param Request $request
-     * @param Response $response
      */
     public function sendResponse(Request $request, Response $response): void
     {

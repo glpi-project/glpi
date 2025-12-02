@@ -101,9 +101,9 @@ class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrum
     }
 
     /**
-     * @see CommonDBTM::useDeletedToLockIfDynamic()
      *
      * @since 0.84
+     * @see CommonDBTM::useDeletedToLockIfDynamic()
      **/
     public function useDeletedToLockIfDynamic()
     {
@@ -161,12 +161,12 @@ class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrum
     /**
      * Print the monitor form
      *
-     * @param $ID integer ID of the item
+     * @param $ID      integer ID of the item
      * @param $options array
-     *     - target filename : where to go when done.
-     *     - withtemplate boolean : template or basic item
+     *                 - target filename : where to go when done.
+     *                 - withtemplate boolean : template or basic item
      *
-     * @return boolean item found
+     * @return bool item found
      **/
     public function showForm($ID, array $options = [])
     {
@@ -182,8 +182,8 @@ class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrum
     /**
      * Return the linked items (`Asset_PeripheralAsset` relations)
      *
-     * @return array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
      * @since 0.84.4
+     * @return array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
      **/
     public function getLinkedItems()
     {

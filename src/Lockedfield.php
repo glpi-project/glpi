@@ -118,10 +118,7 @@ class Lockedfield extends CommonDBTM
     /**
      * Check if user can access main item entity
      *
-     * @param string $itemtype
-     * @param int    $items_id
      *
-     * @return bool
      */
     private function canAccessItemEntity(string $itemtype, int $items_id): bool
     {
@@ -237,8 +234,8 @@ class Lockedfield extends CommonDBTM
     /**
      * Get locked fields
      *
-     * @param string  $itemtype Item type
-     * @param integer $items_id Item ID
+     * @param string $itemtype Item type
+     * @param int    $items_id Item ID
      *
      * return array
      */
@@ -269,8 +266,8 @@ class Lockedfield extends CommonDBTM
     /**
      * Get locked fields
      *
-     * @param string  $itemtype Item type
-     * @param integer $items_id Item ID
+     * @param string $itemtype Item type
+     * @param int    $items_id Item ID
      *
      * return array
      */
@@ -305,7 +302,7 @@ class Lockedfield extends CommonDBTM
     /**
      * Item has been deleted, remove all locks
      *
-     * @return boolean
+     * @return bool
      */
     public function itemDeleted()
     {
@@ -322,7 +319,7 @@ class Lockedfield extends CommonDBTM
     /**
      * Store value from inventory on locked fields
      *
-     * @return boolean
+     * @return bool
      */
     public function setLastValue($itemtype, $items_id, $field, $value)
     {
@@ -411,7 +408,6 @@ class Lockedfield extends CommonDBTM
     /**
      * List of itemtypes/fields that can be locked globally
      *
-     * @return array
      */
     public function getFieldsToLock(?string $specific_itemtype = null): array
     {

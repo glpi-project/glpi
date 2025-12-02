@@ -46,9 +46,6 @@ interface FormDestinationInterface
     /**
      * Create one or multiple items for a given form and its answers
      *
-     * @param Form       $form
-     * @param AnswersSet $answers_set
-     * @param array      $config
      *
      * @return CommonDBTM[]
      *
@@ -65,12 +62,8 @@ interface FormDestinationInterface
      *
      * This method is called after all destination items have been created.
      *
-     * @param Form                     $form
-     * @param AnswersSet               $answers_set
-     * @param FormDestination          $destination
      * @param array<int, CommonDBTM[]> $created_items Array of created items, indexed by destination ID.
      *
-     * @return void
      */
     public function postCreateDestinationItems(
         Form $form,
@@ -83,9 +76,6 @@ interface FormDestinationInterface
     /**
      * Render the configuration form for this destination type.
      *
-     * @param Form  $form
-     * @param FormDestination $destination
-     * @param array $config
      * @return string The rendered HTML content
      */
     public function renderConfigForm(

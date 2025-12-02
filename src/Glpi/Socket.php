@@ -107,13 +107,13 @@ class Socket extends CommonDBChild
     /**
      * Print the version form
      *
-     * @param integer $ID ID of the item
+     * @param int   $ID      ID of the item
      * @param array $options
-     *     - target for the Form
-     *     - itemtype type of the item for add process
-     *     - items_id ID of the item for add process
+     *                       - target for the Form
+     *                       - itemtype type of the item for add process
+     *                       - items_id ID of the item for add process
      *
-     * @return boolean true if displayed  false if item not found or not right to display
+     * @return bool true if displayed  false if item not found or not right to display
      **/
     public function showForm($ID, array $options = [])
     {
@@ -270,10 +270,10 @@ class Socket extends CommonDBChild
     /**
      * Dropdown of Wiring Side
      *
-     * @param string $name   select name
+     * @param string $name    select name
      * @param array  $options possible options:
-     *    - value       : integer / preselected value (default 0)
-     *    - display
+     *                        - value       : integer / preselected value (default 0)
+     *                        - display
      * @return string ID of the select
      **/
     public static function dropdownWiringSide($name, $options = [], bool $full = false)
@@ -465,10 +465,9 @@ class Socket extends CommonDBChild
     /**
      * @since 0.84
      *
-     * @param $field
-     * @param $name            (default '')
-     * @param $values          (default '')
-     * @param array $options   array
+     * @param       $name    (default '')
+     * @param       $values  (default '')
+     * @param array $options array
      *
      * @return string
      **/
@@ -497,9 +496,6 @@ class Socket extends CommonDBChild
     /**
      * @since 0.84
      *
-     * @param $field
-     * @param $values
-     * @param array $options
      **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
@@ -529,7 +525,7 @@ class Socket extends CommonDBChild
      *
      * @param array $input Array of values to import (name, locations_id)
      *
-     * @return integer the ID of the new (or -1 if not found)
+     * @return int the ID of the new (or -1 if not found)
      **/
     public function findID(array &$input)
     {
@@ -656,7 +652,6 @@ class Socket extends CommonDBChild
      *
      * @param CommonDBTM $item
      *
-     * @return bool
      **/
     public static function showListForItem($item): bool
     {
@@ -810,9 +805,7 @@ class Socket extends CommonDBChild
     /**
      * Print the HTML array of the Socket associated to a Location
      *
-     * @param Location $item
      *
-     * @return bool
      **/
     public static function showForLocation(Location $item): bool
     {
@@ -927,9 +920,6 @@ class Socket extends CommonDBChild
     }
 
     /**
-     * @param ?HTMLTableRow $row
-     * @param ?CommonDBTM $item
-     * @param ?HTMLTableCell $father
      * @param array $options
      *
      * @return void

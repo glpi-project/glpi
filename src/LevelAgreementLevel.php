@@ -298,13 +298,13 @@ abstract class LevelAgreementLevel extends RuleTicket
     /**
      * Dropdown execution time for SLA
      *
-     * @param string $name name of the select
-     * @param array $options Array of possible options:
-     *       - value : default value
-     *       - max_time : max time to use
-     *       - used : already used values
+     * @param string $name    name of the select
+     * @param array  $options Array of possible options:
+     *                        - value : default value
+     *                        - max_time : max time to use
+     *                        - used : already used values
      *
-     * @return integer|string
+     * @return int|string
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      **/
@@ -335,7 +335,7 @@ abstract class LevelAgreementLevel extends RuleTicket
     /**
      * Get already used execution time for a OLA
      *
-     * @param integer $las_id id of the OLA
+     * @param int $las_id id of the OLA
      *
      * @return array of already used execution times
      **/
@@ -391,7 +391,6 @@ abstract class LevelAgreementLevel extends RuleTicket
      * Should calculation on this LA Level target date be done using
      * the "work_in_day" parameter set to true ?
      *
-     * @return bool
      * @used-by LevelAgreement::computeExecutionDate()
      */
     public function shouldUseWorkInDayMode(): bool
@@ -428,7 +427,6 @@ abstract class LevelAgreementLevel extends RuleTicket
 
     /**
      * @param LevelAgreement $la The Level Agreement object (SLA or OLA)
-     * @return void
      */
     final protected function showForLA(LevelAgreement $la): void
     {

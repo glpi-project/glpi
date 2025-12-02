@@ -128,7 +128,6 @@ class HasLinksCapacity extends AbstractCapacity
      * Count external links defined for given asset class.
      *
      * @param class-string<CommonDBTM> $asset_classname
-     * @return int
      */
     private function countExternalLinks(string $asset_classname): int
     {

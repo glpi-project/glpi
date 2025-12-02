@@ -48,28 +48,24 @@ interface ControlTypeInterface
     /**
      * Get the label of this control type.
      *
-     * @return string
      */
     public function getLabel(): string;
 
     /**
      * Icon to display for this control type (css classes).
      *
-     * @return string
      */
     public function getIcon(): string;
 
     /**
      * Get a new instance of the config object for this control type.
      *
-     * @return JsonFieldInterface
      */
     public function getConfig(): JsonFieldInterface;
 
     /**
      * Get the warnings for the given form.
      *
-     * @param  Form $form
      * @return string[]
      */
     public function getWarnings(Form $form): array;
@@ -77,7 +73,6 @@ interface ControlTypeInterface
     /**
      * Render the configuration form of this control type.
      *
-     * @param FormAccessControl $access_control
      *
      * @return string Rendered content
      */
@@ -86,16 +81,13 @@ interface ControlTypeInterface
     /**
      * Get weight of this control type (used to sort controls types).
      *
-     * @return int
      */
     public function getWeight(): int;
 
     /**
      * Create a new config object from input data.
      *
-     * @param array $input
      *
-     * @return JsonFieldInterface
      */
     public function createConfigFromUserInput(array $input): JsonFieldInterface;
 
@@ -112,8 +104,6 @@ interface ControlTypeInterface
     /**
      * Define if an unauthenticated user can view the form.
      *
-     * @param JsonFieldInterface $config
-     * @return bool
      */
     public function allowUnauthenticated(JsonFieldInterface $config): bool;
 

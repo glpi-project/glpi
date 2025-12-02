@@ -266,9 +266,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     /**
      * @since 0.84
      *
-     * @param $field
-     * @param $values
-     * @param $options   array
+     * @param $options array
      **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
@@ -290,10 +288,9 @@ class Notification extends CommonDBTM implements FilterableInterface
     /**
      * @since 0.84
      *
-     * @param $field
-     * @param $name               (default '')
-     * @param $values             (default '')
-     * @param $options      array
+     * @param $name    (default '')
+     * @param $values  (default '')
+     * @param $options array
      **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
@@ -561,7 +558,6 @@ class Notification extends CommonDBTM implements FilterableInterface
     /**
      * Is the current user have right to update the current notification ?
      *
-     * @return boolean
      **/
     public function canCreateItem(): bool
     {
@@ -612,7 +608,6 @@ class Notification extends CommonDBTM implements FilterableInterface
     /**
      * Get the mailing signature for the entity
      *
-     * @param $entity
      **/
     public static function getMailingSignature($entity)
     {

@@ -226,7 +226,6 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
      *
      * @param array $input
      *
-     * @return array
      */
     public function prepareInput($input): array
     {
@@ -292,7 +291,6 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
     /**
      * Get the concrete destination item using the specified class.
      *
-     * @return FormDestinationInterface|null
      */
     public function getConcreteDestinationItem(): ?FormDestinationInterface
     {
@@ -341,9 +339,7 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
     /**
      * Count the number of form_desinations items for a form
      *
-     * @param Form $form
      *
-     * @return int
      */
     protected function countForForm(Form $form): int
     {
@@ -356,7 +352,6 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
     /**
      * Get and decode JSON config.
      *
-     * @return array
      */
     public function getConfig(): array
     {

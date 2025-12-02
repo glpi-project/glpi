@@ -76,10 +76,10 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @since 0.83
      *
-     * @param $ID                    integer  ID of the item to get
-     * @param $withtypeandcategory   boolean  with type and category (true by default)
+     * @param $ID                  integer  ID of the item to get
+     * @param $withtypeandcategory boolean  with type and category (true by default)
      *
-     * @return boolean
+     * @return bool
      **/
     public function getFromDBWithData($ID, $withtypeandcategory = true)
     {
@@ -231,8 +231,8 @@ abstract class ITILTemplate extends CommonDropdown
     }
 
     /**
-     * @param boolean $withtypeandcategory (default 0)
-     * @param boolean $withitemtype        (default 0)
+     * @param bool $withtypeandcategory (default 0)
+     * @param bool $withitemtype        (default 0)
      **/
     public static function getAllowedFields($withtypeandcategory = false, $withitemtype = false)
     {
@@ -383,8 +383,8 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @since 9.5.0
      *
-     * @param boolean $withtypeandcategory (default 0)
-     * @param boolean $withitemtype        (default 0)
+     * @param bool $withtypeandcategory (default 0)
+     * @param bool $withitemtype        (default 0)
      *
      * @return array
      *
@@ -397,8 +397,8 @@ abstract class ITILTemplate extends CommonDropdown
 
 
     /**
-     * @param $withtypeandcategory   (default 0)
-     * @param $with_items_id         (default 0)
+     * @param $withtypeandcategory (default 0)
+     * @param $with_items_id       (default 0)
      **/
     public function getAllowedFieldsNames($withtypeandcategory = 0, $with_items_id = 0)
     {
@@ -476,8 +476,8 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @since 0.83
      *
-     * @param $field  string   field
-     * @param $force  boolean  force display based on global config (false by default)
+     * @param $field string   field
+     * @param $force boolean  force display based on global config (false by default)
      *
      * @return string to display
      **/
@@ -574,7 +574,6 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @param $tt ITILTemplate object
      *
-     * @return bool
      **/
     public static function showCentralPreview(ITILTemplate $tt): bool
     {
@@ -675,8 +674,6 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @since 0.90
      *
-     * @param $target_id
-     * @param  $source_id
      **/
     public function mergeTemplateFields($target_id, $source_id)
     {
@@ -732,8 +729,6 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @since 0.90
      *
-     * @param $target_id
-     * @param $source_id
      */
     public function mergeTemplateITILCategories($target_id, $source_id)
     {
@@ -790,7 +785,6 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @since 0.90
      *
-     * @param $data
      **/
     public function formatFieldsToMerge($data)
     {
@@ -809,9 +803,9 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @since 0.90
      *
-     * @param array $input  array of value to import (name, ...)
+     * @param array $input array of value to import (name, ...)
      *
-     * @return integer|boolean true in case of success, -1 otherwise
+     * @return int|bool true in case of success, -1 otherwise
      **/
     public function import(array $input)
     {
@@ -907,8 +901,6 @@ abstract class ITILTemplate extends CommonDropdown
 
     /**
      * Count the number of ITIL Objects currently using the specified template
-     * @param int $templates_id
-     * @return int
      */
     public static function countAffectedItems(int $templates_id): int
     {

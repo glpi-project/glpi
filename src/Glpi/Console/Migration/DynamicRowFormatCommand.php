@@ -45,14 +45,14 @@ class DynamicRowFormatCommand extends AbstractCommand
     /**
      * Error code returned if migration failed on, at least, one table.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_MIGRATION_FAILED_FOR_SOME_TABLES = 1;
 
     /**
      * Error code returned if some tables are still using MyISAM engine.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_INNODB_REQUIRED = 2;
 
@@ -77,7 +77,6 @@ class DynamicRowFormatCommand extends AbstractCommand
     /**
      * Check for migration prerequisites.
      *
-     * @return void
      */
     private function checkForPrerequisites(): void
     {
@@ -95,7 +94,6 @@ class DynamicRowFormatCommand extends AbstractCommand
      * Upgrade row format from 'Compact'/'Redundant' to 'Dynamic'.
      * This is mandatory to support large indexes.
      *
-     * @return void
      */
     private function upgradeRowFormat(): void
     {

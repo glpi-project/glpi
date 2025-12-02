@@ -92,7 +92,6 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
     /**
      * Get list of all known PCIIDs
      *
-     * @return array
      */
     public static function getList(): array
     {
@@ -115,7 +114,6 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
     /**
      * Get PCIIDs from database
      *
-     * @return array
      */
     private function getDbList(): array
     {
@@ -142,7 +140,6 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
     /**
      * Clean cache
      *
-     * @return void
      * @throws InvalidArgumentException
      */
     public function invalidateListCache(): void
@@ -157,7 +154,6 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
      *
      * @param string $vendorid Vendor ID to look for
      *
-     * @return string|false
      */
     public function getManufacturer($vendorid): false|string
     {
@@ -172,7 +168,6 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
      * @param string $vendorid Vendor ID to look for
      * @param string $deviceid Device ID to look for
      *
-     * @return string|false
      */
     public function getProductName($vendorid, $deviceid): false|string
     {

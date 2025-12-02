@@ -75,7 +75,6 @@ class PurgeSoftwareCommand extends AbstractCommand
     /**
      * Validate command input.
      *
-     * @param InputInterface $input
      *
      * @return void
      * @throws InvalidArgumentException

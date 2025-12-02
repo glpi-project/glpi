@@ -193,7 +193,6 @@ final class SearchContext
     /**
      * Check if a property is within a join or is itself a join in the case of scalar joined properties.
      * @param string $prop_name The property name
-     * @return bool
      */
     public function isJoinedProperty(string $prop_name): bool
     {
@@ -239,7 +238,7 @@ final class SearchContext
 
     /**
      * Resolve the DB table for the given foreign key and schema.
-     * @param string $fkey The foreign key name (In the fully qualified property name format, not the SQL field name)
+     * @param string $fkey        The foreign key name (In the fully qualified property name format, not the SQL field name)
      * @param string $schema_name The schema name
      * @return string|null The DB table name or null if the fkey parameter doesn't seem to be a foreign key.
      */

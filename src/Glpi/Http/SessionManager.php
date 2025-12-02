@@ -54,8 +54,8 @@ class SessionManager
     private static array $plugins_statelass_paths = [];
 
     /**
-     * @param ?string $glpi_root             GLPI root directory on filesystem
-     * @param ?array  $plugin_directories         GLPI plugins root directories on filesystem
+     * @param ?string $glpi_root          GLPI root directory on filesystem
+     * @param ?array  $plugin_directories GLPI plugins root directories on filesystem
      */
     public function __construct(?string $glpi_root = null, ?array $plugin_directories = null)
     {
@@ -66,8 +66,8 @@ class SessionManager
     /**
      * Add a pattern of stateless path for the given plugin.
      *
-     * @param string $plugin_key    The plugin key.
-     * @param string $pattern       The resource pattern, relative to the plugin root URI (e.g. `#^/front/api.php/#`).
+     * @param string $plugin_key The plugin key.
+     * @param string $pattern    The resource pattern, relative to the plugin root URI (e.g. `#^/front/api.php/#`).
      */
     public static function registerPluginStatelessPath(string $plugin_key, string $pattern): void
     {

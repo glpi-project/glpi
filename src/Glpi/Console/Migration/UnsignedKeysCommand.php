@@ -57,7 +57,7 @@ class UnsignedKeysCommand extends AbstractCommand implements ConfigurationComman
     /**
      * Error code returned if DB configuration file cannot be updated.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_UNABLE_TO_UPDATE_CONFIG = 2;
 

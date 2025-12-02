@@ -63,7 +63,6 @@ class OperatingSystemArchitectureTest extends CommonDropdownTest
     /**
      * Create new Architecture system in database
      *
-     * @return \CommonDBTM
      */
     protected function newInstance(): \CommonDBTM
     {

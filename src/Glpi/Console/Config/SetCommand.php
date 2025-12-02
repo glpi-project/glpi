@@ -51,7 +51,7 @@ class SetCommand extends AbstractCommand
     /**
      * Error thrown when context is invalid.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_INVALID_CONTEXT = 1;
 

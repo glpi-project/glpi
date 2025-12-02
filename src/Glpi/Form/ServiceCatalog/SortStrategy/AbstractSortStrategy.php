@@ -75,8 +75,6 @@ abstract class AbstractSortStrategy implements SortStrategyInterface
     /**
      * Compare two service catalog items according to the specific strategy
      *
-     * @param ServiceCatalogItemInterface $a
-     * @param ServiceCatalogItemInterface $b
      * @return int Negative if $a should come before $b, positive if $b should come before $a, 0 if equal
      */
     abstract protected function compareItems(

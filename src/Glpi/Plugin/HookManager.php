@@ -64,7 +64,6 @@ class HookManager
     /**
      * Add a given javascript file
      *
-     * @param string $file
      */
     public function registerJavascriptFile(string $file): void
     {
@@ -74,7 +73,6 @@ class HookManager
     /**
      * Add a given CSS file
      *
-     * @param string $file
      */
     public function registerCSSFile(string $file): void
     {
@@ -84,8 +82,6 @@ class HookManager
     /**
      * Add a given file for the given hook
      *
-     * @param string $hook
-     * @param string $file
      */
     protected function registerFile(string $hook, string $file): void
     {
@@ -109,8 +105,6 @@ class HookManager
     /**
      * Add a functional hook
      *
-     * @param string $hook
-     * @param callable $function
      */
     public function registerFunctionalHook(
         string $hook,
@@ -130,9 +124,6 @@ class HookManager
     /**
      * Add an item hook
      *
-     * @param string $hook
-     * @param string $itemtype
-     * @param callable $function
      */
     public function registerItemHook(
         string $hook,
@@ -165,7 +156,6 @@ class HookManager
     /**
      * Register configuration values that need to be encrypted
      *
-     * @param array $configs
      */
     public function registerSecureConfigs(array $configs): void
     {

@@ -50,7 +50,6 @@ class Right extends CommonDBChild
     /**
      * Return rights for the provided dashboard
      *
-     * @param int $dashboards_id
      *
      * @return array the rights
      */
@@ -78,12 +77,12 @@ class Right extends CommonDBChild
     /**
      * Save rights in DB for the provided dashboard
      *
-     * @param int $dashboards_id id (not key) of the dashboard
-     * @param array $rights contains these data:
-     * - 'users_id'    => [items_id]
-     * - 'groups_id'   => [items_id]
-     * - 'entities_id' => [items_id]
-     * - 'profiles_id' => [items_id]
+     * @param int   $dashboards_id id (not key) of the dashboard
+     * @param array $rights        contains these data:
+     *                             - 'users_id'    => [items_id]
+     *                             - 'groups_id'   => [items_id]
+     *                             - 'entities_id' => [items_id]
+     *                             - 'profiles_id' => [items_id]
      *
      * @return void
      */

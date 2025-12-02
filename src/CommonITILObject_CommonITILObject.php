@@ -254,7 +254,6 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
     /**
      * Update parent items when relation is added/deleted.
      *
-     * @return void
      */
     private function updateParentItems(): void
     {
@@ -282,7 +281,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
      * Get links to given item.
      *
      * @param string $itemtype Itemtype of the ITIL Object (Ticket, Change, or Problem)
-     * @param int $items_id ID of the ITIL Object
+     * @param int    $items_id ID of the ITIL Object
      *
      * @return array Array of linked ITIL Objects  array(id=>linktype)
      **/
@@ -361,7 +360,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
      * Get linked CommonITILObjects to a specific CommonITILObject
      *
      * @param string $itemtype Itemtype of the ITIL Object (Ticket, Change, or Problem)
-     * @param int $items_id ID of the ITIL Object
+     * @param int    $items_id ID of the ITIL Object
      *
      * @return array Array of linked ITIL Objects  array(id=>linktype)
      **/
@@ -408,8 +407,8 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
     /**
      * Dropdown for link types
      *
-     * @param string  $myname select name
-     * @param integer $value  default value (default self::LINK_TO)
+     * @param string $myname select name
+     * @param int    $value  default value (default self::LINK_TO)
      *
      * @return void
      **/
@@ -422,11 +421,10 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
     /**
      * Get Link Name
      *
-     * @param integer $value     Current value
-     * @param boolean $inverted  Whether to invert label
-     * @param boolean $with_icon prefix label with an icon
+     * @param int  $value     Current value
+     * @param bool $inverted  Whether to invert label
+     * @param bool $with_icon prefix label with an icon
      *
-     * @return string
      **/
     public static function getLinkName($value, bool $inverted = false, bool $with_icon = false): string
     {
@@ -497,10 +495,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
     /**
      * Count all links between given item and any CommonITILObject item.
      *
-     * @param string $itemtype
-     * @param int $items_id
      *
-     * @return int
      */
     public static function countAllLinks(string $itemtype, int $items_id): int
     {
@@ -511,12 +506,12 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
     /**
      * Count linked ITIL Objects.
      *
-     * @param class-string<CommonITILObject> $itemtype The given item's type
-     * @param int $items_id The given item's ID
-     * @param array<int> $status Optional array of statuses that the linked item must have to be included.
-     *  If no statuses are specified, then linked items of all statuses will be included.
-     * @param array<int> $link_types Optional array of link types that the linked item must have to be included.
-     *  If no link types are specified, then linked items of all link types will be included.
+     * @param class-string<CommonITILObject> $itemtype   The given item's type
+     * @param int                            $items_id   The given item's ID
+     * @param array<int>                     $status     Optional array of statuses that the linked item must have to be included.
+     *                                                   If no statuses are specified, then linked items of all statuses will be included.
+     * @param array<int>                     $link_types Optional array of link types that the linked item must have to be included.
+     *                                                   If no link types are specified, then linked items of all link types will be included.
      * @return int The number of linked ITIL Objects
      */
     public static function countLinksByStatus(string $itemtype, int $items_id, array $status = [], array $link_types = []): int
@@ -593,10 +588,9 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
 
     /**
      * @param class-string<CommonDBTM> $itemtype
-     * @param int $items_id
-     * @param array $changes
+     * @param int                      $items_id
+     * @param array                    $changes
      *
-     * @return void
      */
     public static function manageLinksOnChange($itemtype, $items_id, $changes): void
     {
@@ -644,9 +638,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
      * Normalize input from generic format to expected format.
      * e.g. [`itemtype_1`, `items_id_1`, `itemtype_2`, `items_id_2`, `link`] -> [`changes_id`, `problems_id`, `link`]
      *
-     * @param array $input
      *
-     * @return array
      */
     final public function normalizeInput(array $input): array
     {
@@ -693,9 +685,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
      * This method ensure to always use SON_OF relations for relation between 2 identical itemtypes, as it is
      * a prerequisite for "Parent/Child" search options that cannot use conditional `linkfield`.
      *
-     * @param array $input
      *
-     * @return array
      */
     final protected static function normalizeParentSonRelation(array $input): array
     {

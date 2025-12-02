@@ -195,7 +195,6 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     /**
      * Get type object for the current object.
      *
-     * @return QuestionTypeInterface|null
      */
     public function getQuestionType(): ?QuestionTypeInterface
     {
@@ -410,7 +409,6 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     /**
      * Manually update logs of the parent form item
      *
-     * @return void
      */
     protected function logCreationInParentForm(): void
     {
@@ -442,7 +440,6 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
      *
      * @param bool $history
      *
-     * @return void
      */
     protected function logUpdateInParentForm($history = true): void
     {
@@ -480,7 +477,6 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     /**
      * Manually update logs of the parent form item
      *
-     * @return void
      */
     protected function logDeleteInParentForm(): void
     {

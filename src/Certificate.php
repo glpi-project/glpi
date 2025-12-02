@@ -534,12 +534,12 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
     /**
      * Print the certificate form
      *
-     * @param $ID integer ID of the item
+     * @param $ID      integer ID of the item
      * @param $options array
-     *     - target filename : where to go when done.
-     *     - withtemplate boolean : template or basic item
+     *                 - target filename : where to go when done.
+     *                 - withtemplate boolean : template or basic item
      *
-     * @return boolean item found
+     * @return bool item found
      **/
     public function showForm($ID, array $options = [])
     {
@@ -610,11 +610,8 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
     /**
      * @since 0.85
      *
-     * @see CommonDBTM::processMassiveActionsForOneItemtype()
-     * @param MassiveAction $ma
-     * @param CommonDBTM $item
-     * @param array $ids
      * @return void
+     * @see CommonDBTM::processMassiveActionsForOneItemtype()
      */
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
@@ -682,7 +679,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
     /**
      * Type than could be linked to a certificate
      *
-     * @param boolean $all Get all possible types or only allowed ones
+     * @param bool $all Get all possible types or only allowed ones
      *
      * @return array of types
      **/
@@ -720,7 +717,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
      *
      * @param CronTask $task CronTask to log, if NULL display (default NULL)
      *
-     * @return integer 0 : nothing to do 1 : done with success
+     * @return int 0 : nothing to do 1 : done with success
      */
     public static function cronCertificate($task = null)
     {

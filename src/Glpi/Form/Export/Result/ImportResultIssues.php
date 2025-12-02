@@ -43,7 +43,6 @@ final class ImportResultIssues
     private array $issues = [];
 
     /**
-     * @param int $form_id
      * @param DataRequirementSpecification[] $issues
      */
     public function addIssuesForForm(int $form_id, array $issues): void

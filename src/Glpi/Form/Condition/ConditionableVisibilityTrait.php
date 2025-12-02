@@ -44,7 +44,6 @@ trait ConditionableVisibilityTrait
      * Get the field name used for visibility strategy
      * Classes using this trait can override this method to customize the field name
      *
-     * @return string
      */
     protected function getVisibilityStrategyFieldName(): string
     {

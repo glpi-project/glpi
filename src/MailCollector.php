@@ -262,11 +262,11 @@ class MailCollector extends CommonDBTM
     /**
      * Print the mailgate form
      *
-     * @param $ID        integer  Id of the item to print
-     * @param $options   array
-     *     - target filename : where to go when done.
+     * @param $ID      integer  Id of the item to print
+     * @param $options array
+     *                 - target filename : where to go when done.
      *
-     * @return boolean item found
+     * @return bool item found
      **/
     public function showForm($ID, array $options = [])
     {
@@ -326,8 +326,6 @@ class MailCollector extends CommonDBTM
 
     /**
      * Extract an IMAP folder data to be used in Twig context.
-     * @param Folder $folder
-     * @return array
      */
     private function extractFolderData(Folder $folder): array
     {
@@ -451,9 +449,9 @@ class MailCollector extends CommonDBTM
 
 
     /**
-     * @param $emails_ids   array
-     * @param $action                (default 0)
-     * @param $entity                (default 0)
+     * @param $emails_ids array
+     * @param $action     (default 0)
+     * @param $entity     (default 0)
      **/
     public function deleteOrImportSeveralEmails($emails_ids = [], $action = 0, $entity = 0)
     {
@@ -576,8 +574,8 @@ class MailCollector extends CommonDBTM
     /**
      * Do collect
      *
-     * @param integer $mailgateID  ID of the mailgate
-     * @param boolean $display     display messages in MessageAfterRedirect or just return error (default 0=)
+     * @param int  $mailgateID ID of the mailgate
+     * @param bool $display    display messages in MessageAfterRedirect or just return error (default 0=)
      *
      * @return string|void
      **/
@@ -910,9 +908,9 @@ class MailCollector extends CommonDBTM
     /**
      * Builds and returns the main structure of the ticket to be created
      *
-     * @param string                        $uid     UID of the message
+     * @param string  $uid     UID of the message
      * @param Message $message Messge
-     * @param array                         $options  Possible options
+     * @param array   $options Possible options
      *
      * @return array ticket fields
      */
@@ -1462,7 +1460,7 @@ class MailCollector extends CommonDBTM
     /**
      * Number of entries in the mailbox
      *
-     * @return integer
+     * @return int
      **/
     public function getTotalMails()
     {
@@ -1474,11 +1472,11 @@ class MailCollector extends CommonDBTM
      * Recursivly get attached documents
      * Result is stored in $this->files
      *
-     * @param Part $part Message part
-     * @param string                     $path     Temporary path
-     * @param integer                    $maxsize  Maximum size of document to be retrieved
-     * @param string                     $subject  Message subject
-     * @param string                     $subpart  Subpart index (used in document filenames)
+     * @param Part   $part    Message part
+     * @param string $path    Temporary path
+     * @param int    $maxsize Maximum size of document to be retrieved
+     * @param string $subject Message subject
+     * @param string $subpart Subpart index (used in document filenames)
      *
      * @return void
      **/
@@ -1640,8 +1638,8 @@ class MailCollector extends CommonDBTM
      * Get attached documents in a mail
      *
      * @param Message $message Message
-     * @param string                        $path     Temporary path
-     * @param integer                       $maxsize  Maximaum size of document to be retrieved
+     * @param string  $path    Temporary path
+     * @param int     $maxsize Maximaum size of document to be retrieved
      *
      * @return array containing extracted filenames in file/_tmp
      **/
@@ -1760,7 +1758,7 @@ class MailCollector extends CommonDBTM
      * @param string $uid    mail UID
      * @param string $folder Folder to move (delete if empty) (default '')
      *
-     * @return boolean
+     * @return bool
      **/
     public function deleteMails($uid, $folder = '')
     {
@@ -1953,8 +1951,8 @@ class MailCollector extends CommonDBTM
 
 
     /**
-     * @param $to        (default '')
-     * @param $subject   (default '')
+     * @param $to      (default '')
+     * @param $subject (default '')
      **/
     public function sendMailRefusedResponse($to = '', $subject = '')
     {
@@ -2011,9 +2009,9 @@ class MailCollector extends CommonDBTM
     /**
      * Count collectors
      *
-     * @param boolean $active Count active only, defaults to false
+     * @param bool $active Count active only, defaults to false
      *
-     * @return integer
+     * @return int
      */
     public static function countCollectors($active = false)
     {
@@ -2036,7 +2034,7 @@ class MailCollector extends CommonDBTM
     /**
      * Count active collectors
      *
-     * @return integer
+     * @return int
      */
     public static function countActiveCollectors()
     {
@@ -2047,11 +2045,9 @@ class MailCollector extends CommonDBTM
      * Try to retrieve an existing item from references in message headers.
      * References corresponds to original MessageId sent by GLPI.
      *
-     * @param Message $message
      *
      * @since 9.5.4
      *
-     * @return CommonDBTM|null
      */
     public function getItemFromHeaders(Message $message): ?CommonDBTM
     {
@@ -2105,8 +2101,6 @@ class MailCollector extends CommonDBTM
     /**
      * Retrieve the message ID from headers.
      * If multiple matching headers are found, the first one parsed as a {@link MessageId} is returned.
-     * @param Message $message
-     * @return string|null
      */
     private function getMessageIdFromHeaders(Message $message): ?string
     {
@@ -2167,11 +2161,9 @@ class MailCollector extends CommonDBTM
      * Responses to GLPI messages should contains a InReplyTo or a References header
      * that matches the MessageId from original message.
      *
-     * @param Message $message
      *
      * @since 10.0.0
      *
-     * @return bool
      */
     public function isResponseToMessageSentByAnotherGlpi(Message $message): bool
     {
@@ -2206,9 +2198,7 @@ class MailCollector extends CommonDBTM
      *
      * @see NotificationTarget::getMessageIdForEvent()
      *
-     * @param string $header
      *
-     * @return array|null
      */
     private function extractValuesFromRefHeader(string $header): ?array
     {
@@ -2281,9 +2271,7 @@ class MailCollector extends CommonDBTM
     }
 
     /**
-     * @param $name
-     * @param $value  (default 0)
-     * @param $rand
+     * @param $value (default 0)
      **/
     public static function showMaxFilesize($name, $value = 0, $rand = null)
     {
@@ -2311,9 +2299,7 @@ class MailCollector extends CommonDBTM
     /**
      * Get the requester email address.
      *
-     * @param Message $message
      *
-     * @return string|null
      */
     private function getRequesterEmail(Message $message): ?string
     {
@@ -2335,10 +2321,7 @@ class MailCollector extends CommonDBTM
     /**
      * Get the email address from given header.
      *
-     * @param Message $message
-     * @param string  $header_name
      *
-     * @return string|null
      */
     private function getEmailFromHeader(Message $message, string $header_name): ?string
     {

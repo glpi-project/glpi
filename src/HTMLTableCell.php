@@ -53,9 +53,9 @@ class HTMLTableCell extends HTMLTableEntity
     /**
      * @param HTMLTableRow    $row
      * @param HTMLTableHeader $header
-     * @param string          $content  see HTMLTableEntity#__construct()
-     * @param ?HTMLTableCell  $father   HTMLTableCell object (default NULL)
-     * @param ?CommonDBTM     $item     The item associated with the current cell (default NULL)
+     * @param string          $content see HTMLTableEntity#__construct()
+     * @param ?HTMLTableCell  $father  HTMLTableCell object (default NULL)
+     * @param ?CommonDBTM     $item    The item associated with the current cell (default NULL)
      **/
     public function __construct(
         $row,
@@ -123,7 +123,6 @@ class HTMLTableCell extends HTMLTableEntity
     }
 
     /**
-     * @param $attributForTheRow
      **/
     public function setAttributForTheRow($attributForTheRow)
     {
@@ -144,8 +143,6 @@ class HTMLTableCell extends HTMLTableEntity
     }
 
     /**
-     * @param HTMLTableCell $son
-     * @param HTMLTableHeader $sons_header
      **/
     public function addSon(HTMLTableCell $son, HTMLTableHeader $sons_header)
     {
@@ -180,7 +177,6 @@ class HTMLTableCell extends HTMLTableEntity
     }
 
     /**
-     * @param $value
      **/
     public function addToNumberOfLines($value)
     {
@@ -189,7 +185,6 @@ class HTMLTableCell extends HTMLTableEntity
 
     /**
      * @param array<self> $cells
-     * @param $totalNumberOflines
      **/
     public static function updateCellSteps(array $cells, $totalNumberOflines)
     {
@@ -210,7 +205,6 @@ class HTMLTableCell extends HTMLTableEntity
     }
 
     /**
-     * @param &$start
      **/
     public function computeStartEnd(&$start)
     {
@@ -234,8 +228,6 @@ class HTMLTableCell extends HTMLTableEntity
     }
 
     /**
-     * @param $index
-     * @param array $options
      **/
     public function displayCell($index, array $options = [])
     {

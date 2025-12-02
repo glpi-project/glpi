@@ -553,9 +553,7 @@ HTML,
     /**
      * Create user_mention notification / template / targets for given itemtype.
      *
-     * @param string $itemtype
      *
-     * @return void
      */
     private function createNotification(string $itemtype): void
     {

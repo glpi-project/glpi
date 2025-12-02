@@ -180,11 +180,11 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     /**
      * Print the HTML ajax associated item add
      *
-     * @param CommonITILObject|TicketRecurrent $obj  object holding the item
-     * @param array $options
-     *    - id                  : ID of the object holding the items
-     *    - _users_id_requester : ID of the requester user
-     *    - items_id            : array of elements (itemtype => array(id1, id2, id3, ...))
+     * @param CommonITILObject|TicketRecurrent $obj     object holding the item
+     * @param array                            $options
+     *                                                  - id                  : ID of the object holding the items
+     *                                                  - _users_id_requester : ID of the requester user
+     *                                                  - items_id            : array of elements (itemtype => array(id1, id2, id3, ...))
      *
      * @return void|false
      */
@@ -324,13 +324,13 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     /**
      * Print the HTML ajax associated item add
      *
-     * @param int $object_id  object id from item_ticket but it seems to be useless UNUSED
-     * @param class-string<CommonDBTM> $itemtype   type of the item t show
-     * @param int $items_id   item id
-     * @param array $options   array of possible options:
-     *    - id                  : ID of the object holding the items
-     *    - _users_id_requester : ID of the requester user
-     *    - items_id            : array of elements (itemtype => array(id1, id2, id3, ...))
+     * @param int                      $object_id object id from item_ticket but it seems to be useless UNUSED
+     * @param class-string<CommonDBTM> $itemtype  type of the item t show
+     * @param int                      $items_id  item id
+     * @param array                    $options   array of possible options:
+     *                                            - id                  : ID of the object holding the items
+     *                                            - _users_id_requester : ID of the requester user
+     *                                            - items_id            : array of elements (itemtype => array(id1, id2, id3, ...))
      *
      * @return string
      **/
@@ -373,7 +373,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     /**
      * Print the HTML array for Items linked to a ITIL object
      *
-     * @param CommonITILObject|TicketRecurrent $obj
      *
      * @return bool|void
      **/
@@ -560,7 +559,6 @@ TWIG, $twig_params);
 
     /**
      * Count number of ITIL objects for the provided item and other items linked to the requested item
-     * @param CommonDBTM $item
      * @return int
      * @see Asset_PeripheralAsset
      * @see static::getLinkedItems()
@@ -604,8 +602,6 @@ TWIG, $twig_params);
 
     /**
      * Count number of ITIL objects for the provided actor item (user, group, etc)
-     * @param CommonDBTM $item
-     * @return int
      */
     protected static function countForActor(CommonDBTM $item): int
     {
@@ -656,7 +652,7 @@ TWIG, $twig_params);
      * Will also display objects of linked items
      *
      * @param CommonDBTM $item         CommonDBTM object
-     * @param integer    $withtemplate (default 0)
+     * @param int        $withtemplate (default 0)
      * @param array      $options
      *
      * @return bool|void (display a table)
@@ -771,13 +767,13 @@ TWIG, $twig_params);
     /**
      * Make a select box for Object my devices
      *
-     * @param integer $userID           User ID for my device section (default 0)
-     * @param integer $entity_restrict  restrict to a specific entity (default -1)
-     * @param string  $itemtype         of selected item (default 0)
-     * @param integer $items_id         of selected item (default 0) UNUSED
-     * @param array   $options          array of possible options:
-     *    - used     : ID of the requester user
-     *    - multiple : allow multiple choice
+     * @param int    $userID          User ID for my device section (default 0)
+     * @param int    $entity_restrict restrict to a specific entity (default -1)
+     * @param string $itemtype        of selected item (default 0)
+     * @param int    $items_id        of selected item (default 0) UNUSED
+     * @param array  $options         array of possible options:
+     *                                - used     : ID of the requester user
+     *                                - multiple : allow multiple choice
      *
      * @return void
      **/
@@ -849,7 +845,7 @@ TWIG, $twig_params);
      * Retrieves a list of devices associated with a user, including their own devices,
      * devices owned by their groups, installed software, and linked items to computers.
      *
-     * @param int $userID The ID of the user whose devices are to be retrieved.
+     * @param int       $userID          The ID of the user whose devices are to be retrieved.
      * @param int|array $entity_restrict Optional. The entity restriction to apply. Default is -1.
      *
      * @return array<string, array<string, string>> An associative array of devices associated with the user.
@@ -945,9 +941,9 @@ TWIG, $twig_params);
     /**
      * Retrieves the devices assigned to a specific user within a restricted entity.
      *
-     * @param int $userID The ID of the user for whom to retrieve the devices.
+     * @param int       $userID          The ID of the user for whom to retrieve the devices.
      * @param int|array $entity_restrict Optional. The entity restriction criteria. Default is -1 (no restriction).
-     * @param array &$already_add Optional. An array to keep track of already added devices to avoid duplicates.
+     * @param array     &$already_add    Optional. An array to keep track of already added devices to avoid duplicates.
      *
      * @return array<string, array>  An associative array of devices assigned to the user, categorized by item type.
      */
@@ -999,9 +995,9 @@ TWIG, $twig_params);
     /**
      * Retrieves the devices associated with the groups of a given user.
      *
-     * @param int $userID The ID of the user whose groups' devices are to be retrieved.
+     * @param int       $userID          The ID of the user whose groups' devices are to be retrieved.
      * @param int|array $entity_restrict Optional. The entity restriction criteria. Default is -1 (no restriction).
-     * @param array &$already_add Optional. An array to keep track of already added devices to avoid duplicates.
+     * @param array     &$already_add    Optional. An array to keep track of already added devices to avoid duplicates.
      *
      * @return array<string, array> An associative array of devices grouped by item type.
      */
@@ -1097,9 +1093,9 @@ TWIG, $twig_params);
     /**
      * Retrieves a list of linked software for a given user.
      *
-     * @param array $devices The devices to retrieve linked software for.
+     * @param array     $devices         The devices to retrieve linked software for.
      * @param int|array $entity_restrict Optional. The entity restriction criteria. Default is -1 (no restriction).
-     * @param array &$already_add Reference to an array that keeps track of already added items to avoid duplicates.
+     * @param array     &$already_add    Reference to an array that keeps track of already added items to avoid duplicates.
      *
      * @return array An array of linked software information, including software name, version, and ID.
      */
@@ -1164,9 +1160,9 @@ TWIG, $twig_params);
     /**
      * Retrieves linked items to computers based on the given user ID and entity restriction.
      *
-     * @param array $devices The computers to retrieve linked items for.
-     * @param int $entity_restrict The entity restriction to apply. Default is -1 (no restriction).
-     * @param array &$already_add Reference to an array that keeps track of already added items.
+     * @param array $devices         The computers to retrieve linked items for.
+     * @param int   $entity_restrict The entity restriction to apply. Default is -1 (no restriction).
+     * @param array &$already_add    Reference to an array that keeps track of already added items.
      *
      * @return array<class-string<CommonDBTM>, array> An array of linked items categorized by their item types.
      */
@@ -1236,23 +1232,23 @@ TWIG, $twig_params);
      * Make a select box with all glpi items
      *
      * @param array $options array of possible options:
-     *    - name         : string / name of the select (default is users_id)
-     *    - value
-     *    - comments     : boolean / is the comments displayed near the dropdown (default true)
-     *    - entity       : integer or array / restrict to a defined entity or array of entities
-     *                      (default -1 : no restriction)
-     *    - entity_sons  : boolean / if entity restrict specified auto select its sons
-     *                      only available if entity is a single value not an array(default false)
-     *    - rand         : integer / already computed rand value
-     *    - toupdate     : array / Update a specific item on select change on dropdown
-     *                      (need value_fieldname, to_update, url
-     *                      (see Ajax::updateItemOnSelectEvent for information)
-     *                      and may have moreparams)
-     *    - used         : array / Already used items ID: not to display in dropdown (default empty)
-     *    - on_change    : string / value to transmit to "onChange"
-     *    - display      : boolean / display or get string (default true)
-     *    - width        : specific width needed
-     *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
+     *                       - name         : string / name of the select (default is users_id)
+     *                       - value
+     *                       - comments     : boolean / is the comments displayed near the dropdown (default true)
+     *                       - entity       : integer or array / restrict to a defined entity or array of entities
+     *                       (default -1 : no restriction)
+     *                       - entity_sons  : boolean / if entity restrict specified auto select its sons
+     *                       only available if entity is a single value not an array(default false)
+     *                       - rand         : integer / already computed rand value
+     *                       - toupdate     : array / Update a specific item on select change on dropdown
+     *                       (need value_fieldname, to_update, url
+     *                       (see Ajax::updateItemOnSelectEvent for information)
+     *                       and may have moreparams)
+     *                       - used         : array / Already used items ID: not to display in dropdown (default empty)
+     *                       - on_change    : string / value to transmit to "onChange"
+     *                       - display      : boolean / display or get string (default true)
+     *                       - width        : specific width needed
+     *                       - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
      *
      **/
     public static function dropdown($options = [])
@@ -1314,7 +1310,7 @@ TWIG, $twig_params);
     /**
      * Return used items for a ITIL object
      *
-     * @param integer $items_id ITIL object on which the used item are attached
+     * @param int $items_id ITIL object on which the used item are attached
      *
      * @return array
      */
@@ -1622,11 +1618,11 @@ TWIG, $twig_params);
     /**
      * @param string $myname
      * @param string $itemtype
-     * @param int $items_id
-     * @param int $admin
-     * @param int $users_id
-     * @param int $entity_restrict
-     * @param array $options
+     * @param int    $items_id
+     * @param int    $admin
+     * @param int    $users_id
+     * @param int    $entity_restrict
+     * @param array  $options
      * @return int
      */
     public static function dropdownAllDevices(
@@ -1748,9 +1744,7 @@ TWIG, $twig_params);
      * has associated ITIL items OR if the current user profile is allowed to
      * link this asset to ITIL items
      *
-     * @param CommonDBTM $asset
      *
-     * @return bool
      */
     protected function shouldDisplayTabForAsset(CommonDBTM $asset): bool
     {
@@ -1778,11 +1772,10 @@ TWIG, $twig_params);
     /**
      * Print the HTML ajax associated item add
      *
-     * @param CommonITILObject|TicketRecurrent $object
-     * @param array $options   array of possible options:
-     *    - id                  : ID of the ticket
-     *    - _users_id_requester : ID of the requester user
-     *    - items_id            : array of elements (itemtype => array(id1, id2, id3, ...))
+     * @param array $options array of possible options:
+     *                       - id                  : ID of the ticket
+     *                       - _users_id_requester : ID of the requester user
+     *                       - items_id            : array of elements (itemtype => array(id1, id2, id3, ...))
      *
      * @return void
      **/

@@ -155,9 +155,7 @@ class Calendar_HolidayTest extends DbTestCase
     /**
      * Add some holidays on given calendar.
      *
-     * @param int $calendar_id
      *
-     * @return void
      */
     private function addHolidaysToCalendar(int $calendar_id): void
     {
@@ -244,9 +242,7 @@ class Calendar_HolidayTest extends DbTestCase
     /**
      * Validate that holidays cache for given calendar matches "getHolidaysForCalendar" method result.
      *
-     * @param int $calendar_id
      *
-     * @return void
      */
     private function validateHolidayCacheMatchesMethodResult(int $calendar_id): void
     {

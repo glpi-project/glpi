@@ -119,9 +119,9 @@ class ProjectTask_Ticket extends CommonDBRelation
     /**
      * Get total duration of tickets linked to a project task
      *
-     * @param integer $projecttasks_id ID of the project task
+     * @param int $projecttasks_id ID of the project task
      *
-     * @return integer total actiontime
+     * @return int total actiontime
      **/
     public static function getTicketsTotalActionTime($projecttasks_id)
     {

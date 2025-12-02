@@ -69,14 +69,12 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
     /**
      * Retrieve the allowed actor types
      *
-     * @return array
      */
     abstract public function getAllowedActorTypes(): array;
 
     /**
      * Retrieve the right to use to retrieve users
      *
-     * @return string
      */
     public function getRightForUsers(): string
     {
@@ -86,7 +84,6 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
     /**
      * Retrieve the group conditions
      *
-     * @return array
      */
     abstract public function getGroupConditions(): array;
 
@@ -203,8 +200,6 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
     /**
      * Check if the question allows multiple actors
      *
-     * @param ?Question $question
-     * @return bool
      */
     public function isMultipleActors(?Question $question): bool
     {
@@ -227,9 +222,6 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
     /**
      * Retrieve the default value
      *
-     * @param ?Question $question
-     * @param bool $multiple
-     * @return array
      */
     public function getDefaultValue(?Question $question, bool $multiple = false): array
     {

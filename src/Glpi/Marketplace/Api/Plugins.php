@@ -61,14 +61,14 @@ class Plugins
     /**
      * Max request attempts on READ operations.
      *
-     * @var integer
+     * @var int
      */
     protected const MAX_REQUEST_ATTEMPTS = 3;
 
     /**
      * Flag that indicates that plugin list is truncated (due to an errored response from marketplace API).
      *
-     * @var boolean
+     * @var bool
      */
     protected $is_list_truncated = false;
 
@@ -89,8 +89,8 @@ class Plugins
      * using the base url set in constructor and the current endpoint
      *
      * @param string $endpoint which resource whe need to query
-     * @param array $options array of options for guzzle lib
-     * @param string $method GET/POST, etc
+     * @param array  $options  array of options for guzzle lib
+     * @param string $method   GET/POST, etc
      *
      * @return ResponseInterface|false
      */
@@ -139,8 +139,8 @@ class Plugins
      * Send an http request on an endpoint accepting paginated queries
      *
      * @param string $endpoint which resource whe need to query
-     * @param array $options array of options for guzzle lib
-     * @param string $method GET/POST, etc
+     * @param array  $options  array of options for guzzle lib
+     * @param string $method   GET/POST, etc
      *
      * @return array full collection
      */
@@ -185,9 +185,9 @@ class Plugins
      * Return the full list of avaibles plugins on services API
      *
      * @param bool   $force_refresh if false, we will return results stored in local cache
-     * @param string $tag_filter filter the plugin list by given tag
+     * @param string $tag_filter    filter the plugin list by given tag
      * @param string $string_filter filter the plugin list by given string
-     * @param string $sort sort-alpha-asc|sort-alpha-desc|sort-dl|sort-update|sort-added|sort-note
+     * @param string $sort          sort-alpha-asc|sort-alpha-desc|sort-dl|sort-update|sort-added|sort-note
      *
      * @return array collection of plugins
      */
@@ -288,12 +288,12 @@ class Plugins
      * Return plugins list for the given page
      *
      * @param bool   $force_refresh if false, we will return results stored in local cache
-     * @param string $tag_filter filter the plugin list by given tag
+     * @param string $tag_filter    filter the plugin list by given tag
      * @param string $string_filter filter the plugin list by given string
-     * @param int    $page which page to query
-     * @param int    $nb_per_page how manyu per page we want
-     * @param string $sort sort-alpha-asc|sort-alpha-desc|sort-dl|sort-update|sort-added|sort-note
-     * @param int    $total Total count of plugin found with given filters
+     * @param int    $page          which page to query
+     * @param int    $nb_per_page   how manyu per page we want
+     * @param string $sort          sort-alpha-asc|sort-alpha-desc|sort-dl|sort-update|sort-added|sort-note
+     * @param int    $total         Total count of plugin found with given filters
      *
      * @return array full collection
      */
@@ -333,8 +333,8 @@ class Plugins
     /**
      * Get a single plugin array
      *
-     * @param string $key plugin system name
-     * @param bool $force_refresh if false, we will return results stored in local cache
+     * @param string $key           plugin system name
+     * @param bool   $force_refresh if false, we will return results stored in local cache
      *
      * @return array plugin data
      */
@@ -350,8 +350,8 @@ class Plugins
      * Inform plugins API that a plugin (by its key) has been downloaded
      * and the download counter must be incremented
      *
-     * @param string $key      plugin system key
-     * @param string $version  plugin version
+     * @param string $key     plugin system key
+     * @param string $version plugin version
      *
      * @return void we don't wait for a response, this a fire and forget request
      */
@@ -394,8 +394,8 @@ class Plugins
     /**
      * get a plugins collection for the givent tag
      *
-     * @param string $tag to filter plugins
-     * @param bool $force_refresh if false, we will return results stored in local cache
+     * @param string $tag           to filter plugins
+     * @param bool   $force_refresh if false, we will return results stored in local cache
      *
      * @return array filtered plugin collection
      */
@@ -423,11 +423,10 @@ class Plugins
     /**
      * Download plugin archive and follow progress with a session var `marketplace_dl_progress`
      *
-     * @param string $url where is the plugin
-     * @param string $dest  where we store it it
+     * @param string $url        where is the plugin
+     * @param string $dest       where we store it it
      * @param string $plugin_key plugin system name
      *
-     * @return bool
      */
     public function downloadArchive(string $url, string $dest, string $plugin_key, bool $track_progress = true): bool
     {
@@ -497,7 +496,6 @@ class Plugins
     /**
      * Indicates whether the plugin list is truncated, mostly due to a marketplace API server unavailability.
      *
-     * @return bool
      */
     public function isListTruncated(): bool
     {

@@ -44,9 +44,9 @@ use PHPUnit\Framework\Attributes\DataProvider;
 class ProfileTest extends DbTestCase
 {
     /**
-     * @see self::testHaveUserRight()
      *
      * @return array
+     * @see self::testHaveUserRight()
      */
     public static function haveUserRightProvider()
     {
@@ -100,8 +100,8 @@ class ProfileTest extends DbTestCase
     /**
      * Tests user rights checking.
      *
-     * @param array   $user     Array containing 'login' and 'password' fields of tested user.
-     * @param array   $rightset Array of arrays containing 'name', 'value' and 'expected' result of a right.
+     * @param array $user     Array containing 'login' and 'password' fields of tested user.
+     * @param array $rightset Array of arrays containing 'name', 'value' and 'expected' result of a right.
      */
     #[DataProvider('haveUserRightProvider')]
     public function testHaveUserRight(array $user, array $rightset)
@@ -270,7 +270,6 @@ class ProfileTest extends DbTestCase
     /**
      * Tests for Profile->canPurgeItem()
      *
-     * @return void
      */
     public function testCanPurgeItem(): void
     {
@@ -307,7 +306,6 @@ class ProfileTest extends DbTestCase
     /**
      * Tests for Profile->prepareInputForUpdate()
      *
-     * @return void
      */
     public function testprepareInputForUpdate(): void
     {

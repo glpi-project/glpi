@@ -47,20 +47,17 @@ abstract class AbstractGroupFilter extends AbstractFilter
 {
     /**
      * Get the group type
-     * @return int
      * @phpstan-return Group_Item::GROUP_TYPE_*
      */
     abstract protected static function getGroupType(): int;
 
     /**
      * Get the field name for the group when stored directly in the item's table.
-     * @return string
      */
     abstract protected static function getGroupFieldName(): string;
 
     /**
      * Get the search option ID for the group field for Tickets, Changes and Problems.
-     * @return int
      */
     abstract protected static function getITILSearchOptionID(): int;
 

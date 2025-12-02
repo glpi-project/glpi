@@ -58,14 +58,14 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Display list on Navigation Header
      *
-     * @var boolean
+     * @var bool
      */
     protected $displaylist          = true;
 
     /**
      * Show Debug
      *
-     * @var boolean
+     * @var bool
      */
     public $showdebug               = false;
 
@@ -86,7 +86,7 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Need to get item to show tab
      *
-     * @var boolean
+     * @var bool
      */
     public $get_item_to_display_tab = false;
 
@@ -109,7 +109,7 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Return the localized name of the current item type.
      *
-     * @param int   $nb Number of items
+     * @param int $nb Number of items
      *
      * @return string
      */
@@ -150,7 +150,6 @@ class CommonGLPI implements CommonGLPIInterface
      * @param int        $right Right to check : READ / UPDATE / DELETE / PURGE / CREATE / ...
      * @param array|null $input array of input data (used for adding item)
      *
-     * @return bool
      */
     public function can($ID, int $right, ?array &$input = null): bool
     {
@@ -167,7 +166,6 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Check the global "creation" right on the itemtype.
      *
-     * @return bool
      */
     public static function canCreate(): bool
     {
@@ -180,7 +178,6 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Check the global "view" right on the itemtype.
      *
-     * @return bool
      */
     public static function canView(): bool
     {
@@ -193,7 +190,6 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Check the global "update" right on the itemtype.
      *
-     * @return bool
      */
     public static function canUpdate(): bool
     {
@@ -206,7 +202,6 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Check the global "delete" right on the itemtype.
      *
-     * @return bool
      */
     public static function canDelete(): bool
     {
@@ -219,7 +214,6 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Check the global "purge" right on the itemtype.
      *
-     * @return bool
      */
     public static function canPurge(): bool
     {
@@ -234,10 +228,10 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @since 0.83
      *
-     * @param class-string<CommonGLPI>  $typeform  object class name to add tab on form
-     * @param class-string<CommonGLPI>  $typetab   object class name which manage the tab
-     * @param int                       $order     Weight value used when sorting tabs.
-     *                                             Lower values will be displayed before higher values.
+     * @param class-string<CommonGLPI> $typeform object class name to add tab on form
+     * @param class-string<CommonGLPI> $typetab  object class name which manage the tab
+     * @param int                      $order    Weight value used when sorting tabs.
+     *                                           Lower values will be displayed before higher values.
      *
      * @return void
      *
@@ -257,7 +251,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @since 0.83
      *
-     * @param class-string<CommonGLPI>  $typeform   object class name on which we want to get managed tabs
+     * @param class-string<CommonGLPI> $typeform object class name on which we want to get managed tabs
      *
      * @return class-string<CommonGLPI>[]
      *
@@ -277,7 +271,7 @@ class CommonGLPI implements CommonGLPIInterface
      * Define tabs to display.
      *
      * @param array<string, mixed> $options Options
-     *     - withtemplate is a template view ?
+     *                                      - withtemplate is a template view ?
      *
      * @return array    Array where keys are tabs identifier (e.g. `Ticket$main`)
      *                  and values are the HTML snippet corresponding to the tab name.
@@ -302,7 +296,7 @@ class CommonGLPI implements CommonGLPIInterface
      * @since 0.83
      *
      * @param array<string, mixed> $options Options
-     *     - withtemplate is a template view ?
+     *                                      - withtemplate is a template view ?
      *
      * @return array    Array where keys are tabs identifier (e.g. `Ticket$main`)
      *                  and values are the HTML snippet corresponding to the tab name.
@@ -373,8 +367,8 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Add the impact tab if enabled for this item type.
      *
-     * @param array                 $ong        defined tabs (see `defineTabs()` return value)
-     * @param array<string, mixed>  $options    options (for withtemplate)
+     * @param array                $ong     defined tabs (see `defineTabs()` return value)
+     * @param array<string, mixed> $options options (for withtemplate)
      *
      * @return static
      *
@@ -397,7 +391,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @since 0.85
      *
-     * @param array $ong    defined tabs (see `defineTabs()` return value)
+     * @param array $ong defined tabs (see `defineTabs()` return value)
      *
      * @return static
      */
@@ -570,8 +564,8 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @since 0.83
      *
-     * @param CommonGLPI $item          Item on which the tab need to be displayed
-     * @param integer    $withtemplate  is a template object ?
+     * @param CommonGLPI $item         Item on which the tab need to be displayed
+     * @param int        $withtemplate is a template object ?
      *
      *  @return string|string[] The tab(s) name(s).
      *      Must be:
@@ -623,9 +617,9 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @since 0.83
      *
-     * @param CommonGLPI    $item           Item on which the tab need to be displayed
-     * @param int           $tabnum         The tab index
-     * @param int           $withtemplate   Is a template object ?
+     * @param CommonGLPI $item         Item on which the tab need to be displayed
+     * @param int        $tabnum       The tab index
+     * @param int        $withtemplate Is a template object ?
      *
      * @return bool
      *
@@ -639,10 +633,10 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Display standard tab contents.
      *
-     * @param CommonGLPI $item          Item on which the tab need to be displayed
-     * @param string|-1  $tab           Tab identifier (see `defineTabs()` return value)
-     * @param integer    $withtemplate  Is a template object ? (default 0)
-     * @param array      $options       Additional options to pass
+     * @param CommonGLPI $item         Item on which the tab need to be displayed
+     * @param string|-1  $tab          Tab identifier (see `defineTabs()` return value)
+     * @param int        $withtemplate Is a template object ? (default 0)
+     * @param array      $options      Additional options to pass
      *
      * @return bool
      *
@@ -704,7 +698,6 @@ class CommonGLPI implements CommonGLPIInterface
 
     /**
      * @param class-string<CommonGLPI>|null $form_itemtype
-     * @return string
      */
     private static function getTabIconClass(?string $form_itemtype = null): string
     {
@@ -736,11 +729,11 @@ class CommonGLPI implements CommonGLPIInterface
      * This should be called on the itemtype whose form is being displayed and not on the tab itemtype for the correct
      * icon to be displayed, unless you manually specify the icon.
      *
-     * @param string                        $text           text to display
-     * @param int                           $nb             number of items displayed
-     * @param class-string<CommonGLPI>|null $form_itemtype  itemtype whose form is being displayed
-     * @param string                        $icon           icon class
-     * @param ?int                          $total_nb       total number of items
+     * @param string                        $text          text to display
+     * @param int                           $nb            number of items displayed
+     * @param class-string<CommonGLPI>|null $form_itemtype itemtype whose form is being displayed
+     * @param string                        $icon          icon class
+     * @param ?int                          $total_nb      total number of items
      *
      * @return string The tab HTML snippet (including icon and counter if applicable)
      *
@@ -786,7 +779,6 @@ class CommonGLPI implements CommonGLPIInterface
      * Get the URL of the list page from which the item was selected.
      * Default to the search engine for the type.
      *
-     * @return string
      *
      * @final
      */
@@ -837,8 +829,8 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Get the tabs URL for the current class.
      *
-     * @param bool  $full   If true, will return the full path of the URL,
-     *                      otherwise, it will return the path relative to GLPI root.
+     * @param bool $full If true, will return the full path of the URL,
+     *                   otherwise, it will return the path relative to GLPI root.
      *
      * @return string
      *
@@ -852,8 +844,8 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Get the search page URL for the current class.
      *
-     * @param bool  $full   If true, will return the full path of the URL,
-     *                      otherwise, it will return the path relative to GLPI root.
+     * @param bool $full If true, will return the full path of the URL,
+     *                   otherwise, it will return the path relative to GLPI root.
      *
      * @return string
      */
@@ -865,8 +857,8 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Get the form page URL for the current class.
      *
-     * @param bool  $full   If true, will return the full path of the URL,
-     *                      otherwise, it will return the path relative to GLPI root.
+     * @param bool $full If true, will return the full path of the URL,
+     *                   otherwise, it will return the path relative to GLPI root.
      *
      * @return string
      **/
@@ -880,9 +872,9 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @since 0.90
      *
-     * @param int   $id     Item ID.
-     * @param bool  $full   If true, will return the full path of the URL,
-     *                      otherwise, it will return the path relative to GLPI root.
+     * @param int  $id   Item ID.
+     * @param bool $full If true, will return the full path of the URL,
+     *                   otherwise, it will return the path relative to GLPI root.
      *
      * @return string
      */
@@ -899,7 +891,7 @@ class CommonGLPI implements CommonGLPIInterface
      * @since 0.85
      *
      * @param array $options parameters to add to URLs and ajax
-     *     - withtemplate is a template view ?
+     *                       - withtemplate is a template view ?
      *
      * @return void
      *
@@ -1012,7 +1004,7 @@ class CommonGLPI implements CommonGLPIInterface
      * Show navigation header.
      *
      * @param array $options parameters to add to URLs and ajax
-     *     - withtemplate is a template view ?
+     *                       - withtemplate is a template view ?
      *
      * @return void
      *
@@ -1213,7 +1205,6 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Compute the name to be used in the main header of this item.
      *
-     * @return string
      *
      * @final
      */
@@ -1295,8 +1286,8 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @since 0.85
      *
-     * @param int       $error  error type (ERROR_* constant)
-     * @param string    $object string to use instead of item link
+     * @param int    $error  error type (ERROR_* constant)
+     * @param string $object string to use instead of item link
      *
      * @phpstan-param ERROR_ALREADY_DEFINED|ERROR_COMPAT|ERROR_NOT_FOUND|ERROR_ON_ACTION|ERROR_RIGHT $error
      *

@@ -227,7 +227,6 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
     /**
      * Returns items as VCalendar objects.
      *
-     * @param array $criteria
      *
      * @return VCalendar[]
      */

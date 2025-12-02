@@ -126,12 +126,12 @@ class Budget extends CommonDropdown
     /**
      * Print the contact form
      *
-     * @param integer $ID      Integer ID of the item
-     * @param array  $options  Array of possible options:
-     *     - target for the Form
-     *     - withtemplate : template or basic item
+     * @param int   $ID      Integer ID of the item
+     * @param array $options Array of possible options:
+     *                       - target for the Form
+     *                       - withtemplate : template or basic item
      *
-     * @return void|boolean (display) Returns false if there is a rights error.
+     * @return void|bool (display) Returns false if there is a rights error.
      **/
     public function showForm($ID, array $options = [])
     {
@@ -282,7 +282,6 @@ class Budget extends CommonDropdown
     /**
      * Get the SQL union query to get the list of items on a budget and the associated costs
      * @param bool $entity_restrict Whether to restrict the items to the current entity
-     * @return QueryUnion
      */
     private function getItemListCriteria(bool $entity_restrict = true): QueryUnion
     {
@@ -441,7 +440,6 @@ class Budget extends CommonDropdown
     /**
      * Print the HTML array of Items on a budget
      *
-     * @return bool
      **/
     public function showItems(): bool
     {
@@ -541,7 +539,6 @@ class Budget extends CommonDropdown
     /**
      * Print the HTML array of value consumed for a budget
      *
-     * @return bool
      **/
     public function showValuesByEntity(): bool
     {

@@ -152,7 +152,6 @@ class QuestionTypeItem extends AbstractQuestionType implements
     /**
      * Retrieve the allowed item types
      *
-     * @return array
      */
     public function getAllowedItemtypes(): array
     {
@@ -186,7 +185,6 @@ class QuestionTypeItem extends AbstractQuestionType implements
      * Retrieve the default value for the item question type
      *
      * @param Question|null $question The question to retrieve the default value from
-     * @return ?string
      */
     public function getDefaultValueItemtype(?Question $question): ?string
     {
@@ -207,7 +205,6 @@ class QuestionTypeItem extends AbstractQuestionType implements
      * Retrieve the default value for the item question type
      *
      * @param Question|null $question The question to retrieve the default value from
-     * @return int
      */
     public function getDefaultValueItemId(?Question $question): int
     {
@@ -577,7 +574,6 @@ class QuestionTypeItem extends AbstractQuestionType implements
      * Get parameters for dropdown restrictions based on the question
      *
      * @param Question|null $question The question to retrieve the parameters for
-     * @return array
      */
     public function getDropdownRestrictionParams(?Question $question): array
     {
@@ -637,7 +633,6 @@ class QuestionTypeItem extends AbstractQuestionType implements
      * Retrieve root items ID for the item question type
      *
      * @param Question|null $question The question to retrieve the root items ID for
-     * @return int
      */
     public function getRootItemsId(?Question $question): int
     {
@@ -658,7 +653,6 @@ class QuestionTypeItem extends AbstractQuestionType implements
      * Retrieve subtree depth for the item question type
      *
      * @param Question|null $question The question to retrieve the subtree depth for
-     * @return int
      */
     public function getSubtreeDepth(?Question $question): int
     {
@@ -679,7 +673,6 @@ class QuestionTypeItem extends AbstractQuestionType implements
      * Check if tree root is selectable for the item question type
      *
      * @param Question|null $question The question to check
-     * @return bool
      */
     public function isSelectableTreeRoot(?Question $question): bool
     {

@@ -57,8 +57,8 @@ abstract class AbstractParameterType implements ParameterTypeInterface
     protected $label;
 
     /**
-     * @param string  $key     Key to access this value
-     * @param string  $label   Label to display in the autocompletion widget
+     * @param string $key   Key to access this value
+     * @param string $label Label to display in the autocompletion widget
      */
     public function __construct(string $key, string $label)
     {

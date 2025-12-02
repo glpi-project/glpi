@@ -95,31 +95,31 @@ class DBmysql
     /**
      * Defines if connection must use SSL.
      *
-     * @var boolean
+     * @var bool
      */
     public $dbssl              = false;
 
     /**
      * The path name to the key file (used in case of SSL connection).
      *
-     * @see mysqli::ssl_set()
      * @var string|null
+     * @see mysqli::ssl_set()
      */
     public $dbsslkey           = null;
 
     /**
      * The path name to the certificate file (used in case of SSL connection).
      *
-     * @see mysqli::ssl_set()
      * @var string|null
+     * @see mysqli::ssl_set()
      */
     public $dbsslcert          = null;
 
     /**
      * The path name to the certificate authority file (used in case of SSL connection).
      *
-     * @see mysqli::ssl_set()
      * @var string|null
+     * @see mysqli::ssl_set()
      */
     public $dbsslca            = null;
 
@@ -127,16 +127,16 @@ class DBmysql
      * The pathname to a directory that contains trusted SSL CA certificates in PEM format
      * (used in case of SSL connection).
      *
-     * @see mysqli::ssl_set()
      * @var string|null
+     * @see mysqli::ssl_set()
      */
     public $dbsslcapath        = null;
 
     /**
      * A list of allowable ciphers to use for SSL encryption (used in case of SSL connection).
      *
-     * @see mysqli::ssl_set()
      * @var string|null
+     * @see mysqli::ssl_set()
      */
     public $dbsslcacipher      = null;
 
@@ -223,7 +223,7 @@ class DBmysql
     /**
      * Constructor / Connect to the MySQL Database
      *
-     * @param integer $choice host number (default NULL)
+     * @param int $choice host number (default NULL)
      *
      * @return void
      */
@@ -236,7 +236,7 @@ class DBmysql
      * Connect using current database settings
      * Use dbhost, dbuser, dbpassword and dbdefault
      *
-     * @param integer $choice host number (default NULL)
+     * @param int $choice host number (default NULL)
      *
      * @return void
      */
@@ -302,9 +302,9 @@ class DBmysql
      * Will  check for an existing loaded timezone from user,
      * then will check in preferences and finally will fallback to system one.
      *
-     * @return string
      *
      * @since 9.5.0
+     * @return string
      */
     public function guessTimezone()
     {
@@ -356,11 +356,11 @@ class DBmysql
     /**
      * Execute a MySQL query
      *
-     * @param string $query Query to execute
      *
-     * @return mysqli_result|boolean Query result handler
      *
      * @deprecated 10.0.11
+     * @param string $query Query to execute
+     * @return mysqli_result|bool Query result handler
      */
     public function query($query)
     {
@@ -374,7 +374,7 @@ class DBmysql
      *
      * @param string $query Query to execute
      *
-     * @return mysqli_result|boolean Query result handler
+     * @return mysqli_result|bool Query result handler
      */
     public function doQuery($query)
     {
@@ -450,14 +450,14 @@ class DBmysql
      * Execute a MySQL query and throw an exception
      * (optionally with a message) if it fails
      *
-     * @since 0.84
      *
-     * @param string $query   Query to execute
-     * @param string $message Explanation of query (default '')
      *
-     * @return mysqli_result Query result handler
      *
      * @deprecated 10.0.11
+     * @since 0.84
+     * @param string $query   Query to execute
+     * @param string $message Explanation of query (default '')
+     * @return mysqli_result Query result handler
      */
     public function queryOrDie($query, $message = '')
     {
@@ -467,12 +467,12 @@ class DBmysql
     /**
      * Execute a MySQL query and throw an exception if it fails.
      *
-     * @param string $query   Query to execute
-     * @param string $message Explanation of query (default '')
      *
-     * @return mysqli_result Query result handler
      *
      * @deprecated 11.0.0
+     * @param string $query   Query to execute
+     * @param string $message Explanation of query (default '')
+     * @return mysqli_result Query result handler
      */
     public function doQueryOrDie($query, $message = '')
     {
@@ -531,7 +531,7 @@ class DBmysql
      *
      * @param mysqli_result $result MySQL result handler
      *
-     * @return integer number of rows
+     * @return int number of rows
      */
     public function numrows($result)
     {
@@ -591,9 +591,9 @@ class DBmysql
      * Move current pointer of a Mysql result to the specific row
      *
      * @param mysqli_result $result MySQL result handler
-     * @param integer       $num    Row to move current pointer
+     * @param int           $num    Row to move current pointer
      *
-     * @return boolean
+     * @return bool
      */
     public function dataSeek($result, $num)
     {
@@ -634,7 +634,7 @@ class DBmysql
      * Give name of a field of a Mysql result
      *
      * @param mysqli_result $result MySQL result handler
-     * @param integer       $nb     ID of the field
+     * @param int           $nb     ID of the field
      *
      * @return string name of the field
      */
@@ -670,9 +670,7 @@ class DBmysql
     /**
      * Returns tables using "MyIsam" engine.
      *
-     * @param bool $exclude_plugins
      *
-     * @return DBmysqlIterator
      */
     public function getMyIsamTables(bool $exclude_plugins = false): DBmysqlIterator
     {
@@ -691,9 +689,7 @@ class DBmysql
     /**
      * Returns tables not using "utf8mb4_*" collation.
      *
-     * @param bool $exclude_plugins
      *
-     * @return DBmysqlIterator
      */
     public function getNonUtf8mb4Tables(bool $exclude_plugins = false): DBmysqlIterator
     {
@@ -758,9 +754,7 @@ class DBmysql
     /**
      * Returns tables not compatible with timezone usage, i.e. having "datetime" columns.
      *
-     * @param bool $exclude_plugins
      *
-     * @return DBmysqlIterator
      *
      * @since 10.0.0
      */
@@ -808,11 +802,10 @@ class DBmysql
     /**
      * Returns columns that uses signed integers for primary/foreign keys.
      *
-     * @param bool $exclude_plugins
      *
-     * @return DBmysqlIterator
      *
      * @since 9.5.7
+     * @return DBmysqlIterator
      */
     public function getSignedKeysColumns(bool $exclude_plugins = false)
     {
@@ -870,9 +863,9 @@ class DBmysql
     /**
      * Returns foreign keys constraints.
      *
-     * @return DBmysqlIterator
      *
      * @since 9.5.7
+     * @return DBmysqlIterator
      */
     public function getForeignKeysContraints()
     {
@@ -902,8 +895,8 @@ class DBmysql
     /**
      * List fields of a table
      *
-     * @param string  $table    Table name condition
-     * @param boolean $usecache If use field list cache (default true)
+     * @param string $table    Table name condition
+     * @param bool   $usecache If use field list cache (default true)
      *
      * @return mixed list of fields
      */
@@ -930,9 +923,7 @@ class DBmysql
     /**
      * Get field of a table
      *
-     * @param string  $table
-     * @param string  $field
-     * @param boolean $usecache
+     * @param bool $usecache
      *
      * @return array|null Field characteristics
      */
@@ -958,7 +949,7 @@ class DBmysql
      *
      * @param mysqli_result $result MySQL result handler
      *
-     * @return boolean
+     * @return bool
      */
     public function freeResult($result)
     {
@@ -989,7 +980,7 @@ class DBmysql
     /**
      * Close MySQL connection
      *
-     * @return boolean TRUE on success or FALSE on failure.
+     * @return bool TRUE on success or FALSE on failure.
      */
     public function close()
     {
@@ -1002,7 +993,7 @@ class DBmysql
     /**
      * is a slave database ?
      *
-     * @return boolean
+     * @return bool
      */
     public function isSlave()
     {
@@ -1014,7 +1005,7 @@ class DBmysql
      *
      * @param string $path with file full path
      *
-     * @return boolean true if all query are successfull
+     * @return bool true if all query are successfull
      */
     public function runFile($path)
     {
@@ -1052,11 +1043,11 @@ class DBmysql
     /**
      * Instanciate a Simple DBIterator
      *
-     * @param array|QueryUnion  $criteria Query criteria
      *
-     * @return DBmysqlIterator
      *
      * @since 11.0.0 The `$debug` parameter has been removed.
+     * @param array|QueryUnion $criteria Query criteria
+     * @return DBmysqlIterator
      */
     public function request($criteria)
     {
@@ -1107,7 +1098,7 @@ class DBmysql
      *
      * @param string $name lock's name
      *
-     * @return boolean
+     * @return bool
      */
     public function getLock($name)
     {
@@ -1126,7 +1117,7 @@ class DBmysql
      *
      * @param string $name lock's name
      *
-     * @return boolean
+     * @return bool
      */
     public function releaseLock($name)
     {
@@ -1145,10 +1136,10 @@ class DBmysql
      * @since 9.2
      * @since 9.5 Added $usecache parameter.
      *
-     * @param string  $tablename Table name
-     * @param boolean $usecache  If use table list cache
+     * @param string $tablename Table name
+     * @param bool   $usecache  If use table list cache
      *
-     * @return boolean
+     * @return bool
      **/
     public function tableExists($tablename, $usecache = true)
     {
@@ -1183,11 +1174,11 @@ class DBmysql
      *
      * @since 9.2
      *
-     * @param string  $table    Table name for the field we're looking for
-     * @param string  $field    Field name
-     * @param Boolean $usecache Use cache; @see DBmysql::listFields(), defaults to true
+     * @param string $table    Table name for the field we're looking for
+     * @param string $field    Field name
+     * @param bool   $usecache Use cache; @see DBmysql::listFields(), defaults to true
      *
-     * @return boolean
+     * @return bool
      **/
     public function fieldExists($table, $field, $usecache = true)
     {
@@ -1299,8 +1290,8 @@ class DBmysql
      *
      * @since 9.3
      *
-     * @param string $table  Table name
-     * @param QuerySubQuery|array  $params Array of field => value pairs or a QuerySubQuery for INSERT INTO ... SELECT
+     * @param         string                             $table  Table name
+     * @param         QuerySubQuery|array                $params Array of field => value pairs or a QuerySubQuery for INSERT INTO ... SELECT
      * @phpstan-param array<string, mixed>|QuerySubQuery $params
      *
      * @return string
@@ -1341,10 +1332,10 @@ class DBmysql
      *
      * @since 9.3
      *
-     * @param string $table  Table name
-     * @param QuerySubQuery|array  $params Array of field => value pairs or a QuerySubQuery for INSERT INTO ... SELECT
+     * @param string              $table  Table name
+     * @param QuerySubQuery|array $params Array of field => value pairs or a QuerySubQuery for INSERT INTO ... SELECT
      *
-     * @return mysqli_result|boolean Query result handler
+     * @return mysqli_result|bool Query result handler
      */
     public function insert($table, $params)
     {
@@ -1357,15 +1348,15 @@ class DBmysql
     /**
      * Insert a row in the database and throw an exception if it fails.
      *
-     * @since 9.3
      *
-     * @param string $table  Table name
-     * @param array  $params  Query parameters ([field name => field value)
-     * @param string $message Explanation of query (default '')
      *
-     * @return mysqli_result|boolean Query result handler
      *
      * @deprecated 11.0.0
+     * @since 9.3
+     * @param string $table   Table name
+     * @param array  $params  Query parameters ([field name => field value)
+     * @param string $message Explanation of query (default '')
+     * @return mysqli_result|bool Query result handler
      */
     public function insertOrDie($table, $params, $message = '')
     {
@@ -1379,12 +1370,12 @@ class DBmysql
      *
      * @since 9.3
      *
+     *
+     * @since 9.4.0 $joins parameter added
      * @param string $table   Table name
      * @param array  $params  Query parameters ([field name => field value)
      * @param array  $clauses Clauses to use. If not 'WHERE' key specified, will b the WHERE clause (@see DBmysqlIterator capabilities)
-     * @param array  $joins  JOINS criteria array
-     *
-     * @since 9.4.0 $joins parameter added
+     * @param array  $joins   JOINS criteria array
      * @return string
      */
     public function buildUpdate($table, $params, $clauses, array $joins = [])
@@ -1456,13 +1447,13 @@ class DBmysql
      *
      * @since 9.3
      *
+     *
+     * @since 9.4.0 $joins parameter added
      * @param string $table  Table name
      * @param array  $params Query parameters ([:field name => field value)
      * @param array  $where  WHERE clause
      * @param array  $joins  JOINS criteria array
-     *
-     * @since 9.4.0 $joins parameter added
-     * @return mysqli_result|boolean Query result handler
+     * @return mysqli_result|bool Query result handler
      */
     public function update($table, $params, $where, array $joins = [])
     {
@@ -1474,18 +1465,18 @@ class DBmysql
     /**
      * Update a row in the database and throw an exception if it fails.
      *
-     * @since 9.3
      *
+     *
+     *
+     * @deprecated 11.0.0
+     * @since 9.3
+     * @since 9.4.0 $joins parameter added
      * @param string $table   Table name
      * @param array  $params  Query parameters ([:field name => field value)
      * @param array  $where   WHERE clause
      * @param string $message Explanation of query (default '')
      * @param array  $joins   JOINS criteria array
-     *
-     * @since 9.4.0 $joins parameter added
-     * @return mysqli_result|boolean Query result handler
-     *
-     * @deprecated 11.0.0
+     * @return mysqli_result|bool Query result handler
      */
     public function updateOrDie($table, $params, $where, $message = '', array $joins = [])
     {
@@ -1499,12 +1490,12 @@ class DBmysql
      *
      * @since 9.4
      *
-     * @param string  $table   Table name
-     * @param array   $params  Query parameters ([:field name => field value)
-     * @param array   $where   WHERE clause
-     * @param boolean $onlyone Do the update only one element, defaults to true
+     * @param string $table   Table name
+     * @param array  $params  Query parameters ([:field name => field value)
+     * @param array  $where   WHERE clause
+     * @param bool   $onlyone Do the update only one element, defaults to true
      *
-     * @return mysqli_result|boolean Query result handler
+     * @return mysqli_result|bool Query result handler
      */
     public function updateOrInsert($table, $params, $where, $onlyone = true)
     {
@@ -1514,11 +1505,10 @@ class DBmysql
 
     /**
      * @param string $table
-     * @param array $params
-     * @param array $where
-     * @param bool $onlyone
+     * @param array  $params
+     * @param array  $where
+     * @param bool   $onlyone
      *
-     * @return string
      */
     public function buildUpdateOrInsert($table, $params, $where, $onlyone = true): string
     {
@@ -1538,11 +1528,11 @@ class DBmysql
      *
      * @since 9.3
      *
-     * @param string $table  Table name
-     * @param array  $where  WHERE clause (@see DBmysqlIterator capabilities)
-     * @param array  $joins  JOINS criteria array
      *
      * @since 9.4.0 $joins parameter added
+     * @param string $table Table name
+     * @param array  $where WHERE clause (@see DBmysqlIterator capabilities)
+     * @param array  $joins JOINS criteria array
      * @return string
      */
     public function buildDelete($table, $where, array $joins = [])
@@ -1566,12 +1556,12 @@ class DBmysql
      *
      * @since 9.3
      *
-     * @param string $table  Table name
-     * @param array  $where  WHERE clause
-     * @param array  $joins  JOINS criteria array
      *
      * @since 9.4.0 $joins parameter added
-     * @return mysqli_result|boolean Query result handler
+     * @param string $table Table name
+     * @param array  $where WHERE clause
+     * @param array  $joins JOINS criteria array
+     * @return mysqli_result|bool Query result handler
      */
     public function delete($table, $where, array $joins = [])
     {
@@ -1583,17 +1573,17 @@ class DBmysql
     /**
      * Delete a row in the database and throw an exception if it fails.
      *
-     * @since 9.3
      *
+     *
+     *
+     * @deprecated 11.0.0
+     * @since 9.3
+     * @since 9.4.0 $joins parameter added
      * @param string $table   Table name
      * @param array  $where   WHERE clause
      * @param string $message Explanation of query (default '')
      * @param array  $joins   JOINS criteria array
-     *
-     * @since 9.4.0 $joins parameter added
-     * @return mysqli_result|boolean Query result handler
-     *
-     * @deprecated 11.0.0
+     * @return mysqli_result|bool Query result handler
      */
     public function deleteOrDie($table, $where, $message = '', array $joins = [])
     {
@@ -1606,13 +1596,13 @@ class DBmysql
     /**
      * Truncate table in the database
      *
-     * @since 10.0.0
      *
-     * @param string $table Table name
      *
-     * @return mysqli_result|boolean Query result handler
      *
      * @deprecated 11.0.0
+     * @since 10.0.0
+     * @param string $table Table name
+     * @return mysqli_result|bool Query result handler
      */
     public function truncate($table)
     {
@@ -1626,14 +1616,14 @@ class DBmysql
      * Truncate table in the database or throw an exception
      * (optionally with a message) if it fails
      *
-     * @since 10.0.0
      *
-     * @param string $table   Table name
-     * @param string $message Explanation of query (default '')
      *
-     * @return mysqli_result|boolean Query result handler
      *
      * @deprecated 11.0.0
+     * @since 10.0.0
+     * @param string $table   Table name
+     * @param string $message Explanation of query (default '')
+     * @return mysqli_result|bool Query result handler
      */
     public function truncateOrDie($table, $message = '')
     {
@@ -1688,7 +1678,6 @@ class DBmysql
      * @param string $type   Type to drop
      * @param bool   $exists Add IF EXISTS clause
      *
-     * @return string
      */
     public function buildDrop(string $name, string $type, bool $exists = false): string
     {
@@ -1873,9 +1862,9 @@ class DBmysql
     /**
      * Returns list of available timezones.
      *
-     * @return string[]
      *
      * @since 9.5.0
+     * @return string[]
      */
     public function getTimezones()
     {
@@ -1930,12 +1919,12 @@ class DBmysql
      * Should be used for PDO, but this will prevent heavy
      * replacements in the source code in the future.
      *
-     * @param mixed   $value Value to quote
-     * @param integer $type  Value type, defaults to PDO::PARAM_STR
      *
-     * @return mixed
      *
      * @since 9.5.0
+     * @param mixed $value Value to quote
+     * @param int   $type  Value type, defaults to PDO::PARAM_STR
+     * @return mixed
      */
     public function quote($value, int $type = 2/*\PDO::PARAM_STR*/)
     {
@@ -1946,7 +1935,6 @@ class DBmysql
     /**
      * Get character used to quote names for current database engine
      *
-     * @return string
      *
      * @since 9.5.0
      */
@@ -1958,11 +1946,10 @@ class DBmysql
     /**
      * Is value quoted as database field/expression?
      *
-     * @param string|QueryExpression $value Value to check
      *
-     * @return boolean
      *
      * @since 9.5.0
+     * @param string|QueryExpression $value Value to check
      */
     public static function isNameQuoted($value): bool
     {
@@ -2007,12 +1994,12 @@ class DBmysql
 
     /**
      * Remove remarks and comments from SQL
-     * @see DBmysql::removeSqlComments()
-     * © 2011 PHPBB Group
      *
      * @param string $sql SQL statements
      *
      * @return string
+     * @see DBmysql::removeSqlComments()
+     * © 2011 PHPBB Group
      */
     public function removeSqlRemarks($sql)
     {
@@ -2040,7 +2027,6 @@ class DBmysql
     /**
      * Fetch warnings from last query.
      *
-     * @return array
      */
     private function fetchQueryWarnings(): array
     {
@@ -2076,7 +2062,6 @@ class DBmysql
     /**
      * Set charset to use for DB connection.
      *
-     * @return void
      */
     public function setConnectionCharset(): void
     {
@@ -2088,7 +2073,6 @@ class DBmysql
      *
      * @param mysqli_stmt $stmt Statement to execute
      *
-     * @return void
      */
     public function executeStatement(mysqli_stmt $stmt): void
     {
@@ -2107,9 +2091,7 @@ class DBmysql
     /**
      * Check for deprecated table options during ALTER/CREATE TABLE queries.
      *
-     * @param string $query
      *
-     * @return void
      */
     private function checkForDeprecatedTableOptions(string $query): void
     {
@@ -2180,7 +2162,6 @@ class DBmysql
     /**
      * Return configuration boolean properties computed using current state of tables.
      *
-     * @return array
      */
     public function getComputedConfigBooleanFlags(): array
     {
@@ -2248,7 +2229,6 @@ class DBmysql
      *
      * @param array $variables List of variables to get
      *
-     * @return array
      */
     final public function getGlobalVariables(array $variables): array
     {
@@ -2268,7 +2248,6 @@ class DBmysql
     /**
      * Get binary log status query, in regard of the MySQL/MariaDB version.
      *
-     * @return string
      */
     public function getBinaryLogStatusQuery(): string
     {
@@ -2288,7 +2267,6 @@ class DBmysql
     /**
      * Get replica status query, in regard of the MySQL/MariaDB version.
      *
-     * @return string
      */
     public function getReplicaStatusQuery(): string
     {

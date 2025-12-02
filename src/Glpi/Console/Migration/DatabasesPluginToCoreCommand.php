@@ -125,7 +125,6 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
     /**
      * Update profile rights (Associable items to a ticket).
      *
-     * @return void
      */
     private function updateProfiles(): void
     {
@@ -172,7 +171,6 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
     /**
      * Import items relations.
      *
-     * @return void
      */
     private function importItemsRelations(): void
     {
@@ -274,7 +272,6 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
     /**
      * Import database instance categories.
      *
-     * @return void
      */
     private function importDatabaseInstanceCategories(): void
     {
@@ -333,7 +330,6 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
     /**
      * Create databases.
      *
-     * @return void
      */
     private function importDatabases(): void
     {
@@ -427,7 +423,6 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
     /**
      * Import databases instances.
      *
-     * @return void
      */
     private function importDatabaseInstances(): void
     {
@@ -556,7 +551,6 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
     /**
      * Import database instance types.
      *
-     * @return void
      */
     private function importDatabaseInstanceTypes(): void
     {

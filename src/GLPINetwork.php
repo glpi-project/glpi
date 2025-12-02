@@ -100,7 +100,6 @@ class GLPINetwork extends CommonGLPI
     /**
      * Get GLPI User Agent in expected format from GLPI Network services.
      *
-     * @return string
      */
     public static function getGlpiUserAgent(): string
     {
@@ -116,7 +115,6 @@ class GLPINetwork extends CommonGLPI
     /**
      * Get GLPI Network UID to pass in requests to GLPI Network Services.
      *
-     * @return string
      */
     public static function getGlpiNetworkUid(): string
     {
@@ -129,7 +127,6 @@ class GLPINetwork extends CommonGLPI
      * A registration key is a base64 encoded JSON string with a key 'signature' containing the binary
      * signature of the whole.
      *
-     * @return string
      */
     public static function getRegistrationKey(): string
     {
@@ -140,7 +137,6 @@ class GLPINetwork extends CommonGLPI
     /**
      * Get GLPI Network registration information.
      *
-     * @param bool $force_refresh
      *
      * @return array  Registration data:
      *    - is_valid (boolean):          indicates if key is valid;
@@ -234,7 +230,6 @@ class GLPINetwork extends CommonGLPI
     /**
      * Check if GLPI Network registration is existing and valid.
      *
-     * @return boolean
      */
     public static function isRegistered(): bool
     {
@@ -277,9 +272,8 @@ class GLPINetwork extends CommonGLPI
     /**
      * Executes a curl call
      *
-     * @param string $curl_error  will contains original curl error string if an error occurs
+     * @param string $curl_error will contains original curl error string if an error occurs
      *
-     * @return boolean
      */
     public static function isServicesAvailable(&$curl_error = null): bool
     {

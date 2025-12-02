@@ -240,7 +240,6 @@ TWIG, $twig_params);
     /**
      * Get criteria related to network ports
      *
-     * @return array
      */
     public function getNetportCriteria(): array
     {

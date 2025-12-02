@@ -142,11 +142,11 @@ class ITILSolution extends CommonDBChild
     /**
      * Print the phone form
      *
-     * @param $ID integer ID of the item
+     * @param $ID      integer ID of the item
      * @param $options array
-     *     - item: CommonITILObject instance
+     *                 - item: CommonITILObject instance
      *
-     * @return boolean item found
+     * @return bool item found
      **/
     public function showForm($ID, array $options = [])
     {
@@ -166,10 +166,10 @@ class ITILSolution extends CommonDBChild
     /**
      * Count solutions for specific item
      *
-     * @param string  $itemtype Item type
-     * @param integer $items_id Item ID
+     * @param string $itemtype Item type
+     * @param int    $items_id Item ID
      *
-     * @return integer
+     * @return int
      */
     public static function countFor($itemtype, $items_id)
     {
@@ -375,7 +375,7 @@ class ITILSolution extends CommonDBChild
 
 
     /**
-     * {@inheritDoc}
+     *
      * @see CommonDBTM::getSpecificValueToDisplay()
      */
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
@@ -402,7 +402,7 @@ class ITILSolution extends CommonDBChild
     }
 
     /**
-     * {@inheritDoc}
+     *
      * @see CommonDBTM::getSpecificValueToSelect()
      */
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
@@ -518,7 +518,6 @@ class ITILSolution extends CommonDBChild
      *
      * @param CommonITILObject $parent Parent item
      *
-     * @return void
      */
     final public function setParentItem(CommonITILObject $parent): void
     {

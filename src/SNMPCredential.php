@@ -134,7 +134,6 @@ class SNMPCredential extends CommonDBTM
     /**
      * Real version of SNMP
      *
-     * @return string
      */
     public function getRealVersion(): string
     {
@@ -152,7 +151,6 @@ class SNMPCredential extends CommonDBTM
     /**
      * Get SNMP authentication protocol
      *
-     * @return string
      */
     public function getAuthProtocol(): string
     {
@@ -177,7 +175,6 @@ class SNMPCredential extends CommonDBTM
     /**
      * Get SNMP encryption protocol
      *
-     * @return string
      */
     public function getEncryption(): string
     {

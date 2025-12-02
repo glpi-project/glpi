@@ -63,7 +63,6 @@ class DropdownDefinitionManagerTest extends DbTestCase
     /**
      * Ensure all asset types are registered in the ticket types configuration.
      *
-     * @return void
      */
     public function testStandardDropdownRegistration(): void
     {

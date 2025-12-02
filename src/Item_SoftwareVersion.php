@@ -269,10 +269,10 @@ class Item_SoftwareVersion extends CommonDBRelation
     /**
      * Get number of installed licenses of a version
      *
-     * @param integer          $softwareversions_id version ID
-     * @param string|integer[] $entity              to search for item in ('' = all active entities)
+     * @param int          $softwareversions_id version ID
+     * @param string|int[] $entity              to search for item in ('' = all active entities)
      *
-     * @return integer number of installations
+     * @return int number of installations
      **/
     public static function countForVersion($softwareversions_id, $entity = '')
     {
@@ -333,7 +333,7 @@ class Item_SoftwareVersion extends CommonDBRelation
     /**
      * Get number of installed versions of a software
      *
-     * @param integer $softwares_id software ID
+     * @param int $softwares_id software ID
      *
      * @return number of installations
      **/
@@ -416,7 +416,6 @@ class Item_SoftwareVersion extends CommonDBRelation
     /**
      * Show installation of a Software
      *
-     * @param Software $software
      *
      * @return void
      **/
@@ -428,7 +427,6 @@ class Item_SoftwareVersion extends CommonDBRelation
     /**
      * Show installation of a Version
      *
-     * @param SoftwareVersion $version
      *
      * @return void
      **/
@@ -440,8 +438,8 @@ class Item_SoftwareVersion extends CommonDBRelation
     /**
      * Show installations of a software
      *
-     * @param integer $searchID  value of the ID to search
-     * @param string  $crit      to search : softwares_id (software) or id (version)
+     * @param int    $searchID value of the ID to search
+     * @param string $crit     to search : softwares_id (software) or id (version)
      *
      * @return void
      **/
@@ -874,11 +872,9 @@ class Item_SoftwareVersion extends CommonDBRelation
      * Get software related to a given item
      *
      * @param CommonDBTM $item  Item instance
-     * @param ?string     $sort  Field to sort on
-     * @param ?string     $order Sort order
-     * @param array       $filters
+     * @param ?string    $sort  Field to sort on
+     * @param ?string    $order Sort order
      *
-     * @return DBmysqlIterator
      */
     public static function getFromItem(CommonDBTM $item, $sort = null, $order = null, array $filters = []): DBmysqlIterator
     {
@@ -975,8 +971,7 @@ class Item_SoftwareVersion extends CommonDBRelation
     /**
      * Show software installed on an asset
      *
-     * @param CommonDBTM $item
-     * @param integer  $withtemplate template case of the view process
+     * @param int $withtemplate template case of the view process
      *
      * @return void
      **/
@@ -1360,14 +1355,14 @@ class Item_SoftwareVersion extends CommonDBRelation
     /**
      * Display a installed software for a category
      *
-     * @param array   $data         data used to display
-     * @param string  $itemtype     Type of the item
-     * @param integer $items_id     ID of the item
-     * @param integer $withtemplate template case of the view process
-     * @param boolean $canedit      user can edit software ?
-     * @param boolean $display      display and calculate if true or just calculate
+     * @param array  $data         data used to display
+     * @param string $itemtype     Type of the item
+     * @param int    $items_id     ID of the item
+     * @param int    $withtemplate template case of the view process
+     * @param bool   $canedit      user can edit software ?
+     * @param bool   $display      display and calculate if true or just calculate
      *
-     * @return integer[] Found licenses ids
+     * @return int[] Found licenses ids
      **/
     private static function softwareByCategory(
         $data,
@@ -1489,9 +1484,9 @@ class Item_SoftwareVersion extends CommonDBRelation
     /**
      * Display a software for a License (not installed)
      *
-     * @param array   $data         data used to display
-     * @param integer $withtemplate template case of the view process
-     * @param boolean $canedit      user can edit software ?
+     * @param array $data         data used to display
+     * @param int   $withtemplate template case of the view process
+     * @param bool  $canedit      user can edit software ?
      *
      * @return void
      */
@@ -1551,9 +1546,9 @@ class Item_SoftwareVersion extends CommonDBRelation
     /**
      * Update version installed on a item
      *
-     * @param integer $instID              ID of the installed software link
-     * @param integer $softwareversions_id ID of the new version
-     * @param boolean $dohistory           Do history ? (default 1)
+     * @param int  $instID              ID of the installed software link
+     * @param int  $softwareversions_id ID of the new version
+     * @param bool $dohistory           Do history ? (default 1)
      *
      * @return void
      **/

@@ -56,7 +56,7 @@ class SynchronizeUsersCommand extends AbstractCommand
     /**
      * Error code returned if LDAP connection failed.
      *
-     * @var integer
+     * @var int
      * @FIXME Remove in GLPI 11.0.
      */
     public const ERROR_LDAP_CONNECTION_FAILED = 1;
@@ -64,7 +64,7 @@ class SynchronizeUsersCommand extends AbstractCommand
     /**
      * Error code returned if LDAP limit exceeded.
      *
-     * @var integer
+     * @var int
      * @FIXME Remove in GLPI 11.0.
      */
     public const ERROR_LDAP_LIMIT_EXCEEDED = 2;
@@ -183,9 +183,7 @@ class SynchronizeUsersCommand extends AbstractCommand
     /**
      * Format array of options into a list
      *
-     * @param array $options
      *
-     * @return string
      */
     protected function formatPossiblesDeletedUserOptions(array $options): string
     {
@@ -474,7 +472,6 @@ class SynchronizeUsersCommand extends AbstractCommand
     /**
      * Validate command input.
      *
-     * @param InputInterface  $input
      *
      * @return void
      *

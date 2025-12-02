@@ -56,7 +56,6 @@ trait CalDAVUriUtilTrait
     /**
      * Get principal URI, relative to CalDAV server root.
      *
-     * @param CommonDBTM $item
      *
      * @return string|null
      */
@@ -80,7 +79,7 @@ trait CalDAVUriUtilTrait
     /**
      * Get principal URI for a group, relative to CalDAV server root.
      *
-     * @param integer $group_id
+     * @param int $group_id
      *
      * @return string
      */
@@ -191,7 +190,7 @@ trait CalDAVUriUtilTrait
     /**
      * Returns calendar item for given UID.
      *
-     * @param string  $uid
+     * @param string $uid
      *
      * @return (CalDAVCompatibleItemInterface&CommonDBTM)|null
      */
@@ -274,7 +273,7 @@ trait CalDAVUriUtilTrait
     /**
      * Returns calendar item for given path.
      *
-     * @param string  $path
+     * @param string $path
      *
      * @return (CalDAVCompatibleItemInterface&CommonDBTM)|null
      */

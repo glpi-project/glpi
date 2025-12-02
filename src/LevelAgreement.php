@@ -78,7 +78,7 @@ abstract class LevelAgreement extends CommonDBChild
     /**
      * Get table fields
      *
-     * @param integer $subtype of OLA/SLA, can be SLM::TTO or SLM::TTR
+     * @param int $subtype of OLA/SLA, can be SLM::TTO or SLM::TTR
      *
      * @return array of 'date' and 'sla' field names
      */
@@ -120,7 +120,7 @@ abstract class LevelAgreement extends CommonDBChild
     /**
      * Define calendar of the ticket using the SLA/OLA when using this calendar as sla/ola-s calendar
      *
-     * @param integer $calendars_id calendars_id of the ticket
+     * @param int $calendars_id calendars_id of the ticket
      **/
     public function setTicketCalendar($calendars_id)
     {
@@ -246,9 +246,9 @@ JAVASCRIPT
     /**
      * Get possibles keys and labels for the definition_time field
      *
-     * @return array<string, string>
      *
      * @since 10.0.0
+     * @return array<string, string>
      */
     public static function getDefinitionTimeValues(): array
     {
@@ -263,9 +263,7 @@ JAVASCRIPT
     /**
      * Get the matching label for a given key (definition_time field)
      *
-     * @param string $value
      *
-     * @return string
      *
      * @since 10.0.0
      */
@@ -304,7 +302,6 @@ JAVASCRIPT
      *
      * since 10.0
      *
-     * @param Ticket $ticket
      * @param SLM::TTO|SLM::TTR $type
      *
      * @return false|OlaLevel_Ticket|SlaLevel_Ticket
@@ -666,7 +663,7 @@ TWIG, $twig_params);
      *
      * The time to own or to resolve duration
      *
-     * @return integer own/resolution time (default 0)
+     * @return int own/resolution time (default 0)
      **/
     public function getTime()
     {
@@ -686,9 +683,9 @@ TWIG, $twig_params);
      * Elapsed time between two dates in seconds
      *
      * @param string $start start date formated 'Y-m-d H:i:s'
-     * @param string $end end date formated 'Y-m-d H:i:s'
+     * @param string $end   end date formated 'Y-m-d H:i:s'
      *
-     * @return integer elapsed time in seconds
+     * @return int elapsed time in seconds
      **/
     public function getActiveTimeBetween($start, $end)
     {
@@ -716,8 +713,8 @@ TWIG, $twig_params);
     /**
      * Get due date for current agreement
      *
-     * @param string  $start_date        datetime start date ('Y-m-d H:i:s')
-     * @param integer $additional_delay  integer  additional delay to add or substract (for waiting time)
+     * @param string $start_date       datetime start date ('Y-m-d H:i:s')
+     * @param int    $additional_delay integer  additional delay to add or substract (for waiting time)
      *
      * @return string|null  due datetime 'Y-m-d H:i:s' (NULL if sla/ola not exists)
      **/
@@ -756,7 +753,6 @@ TWIG, $twig_params);
      * Should calculation on this LevelAgreement target date be done using
      * the "work_in_day" parameter set to true ?
      *
-     * @return bool
      */
     public function shouldUseWorkInDayMode(): bool
     {
@@ -769,9 +765,9 @@ TWIG, $twig_params);
     /**
      * Get execution date of a level
      *
-     * @param string  $start_date        start date
-     * @param integer $levels_id         sla/ola level id
-     * @param integer $additional_delay  additional delay to add or substract (for waiting time)
+     * @param string $start_date       start date
+     * @param int    $levels_id        sla/ola level id
+     * @param int    $additional_delay additional delay to add or substract (for waiting time)
      *
      * @return string|null  execution date time (NULL if ola/sla not exists)
      **/
@@ -842,7 +838,7 @@ TWIG, $twig_params);
     /**
      * Get types name
      *
-     * @param  integer $type
+     * @param int $type
      * @return string  name
      **/
     public static function getOneTypeName($type)
@@ -911,8 +907,8 @@ TWIG, $twig_params);
      * Add an entry in slalevels_tickets | olalevels_tickets table
      * The level is set by $levels_id parameter or the current level set in slalevels_id_ttr | olalevels_id_ttr (if set)
      *
-     * @param Ticket  $ticket Ticket object
-     * @param integer $levels_id SlaLevel or OlaLevel ID
+     * @param Ticket $ticket    Ticket object
+     * @param int    $levels_id SlaLevel or OlaLevel ID
      *
      * @return void
      **/
@@ -1055,9 +1051,7 @@ TWIG, $twig_params);
     /**
      * Remove level of previously assigned level agreements for a given ticket
      *
-     * @param int $tickets_id
      *
-     * @return void
      */
     public function clearInvalidLevels(int $tickets_id): void
     {

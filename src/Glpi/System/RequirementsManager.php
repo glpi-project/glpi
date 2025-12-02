@@ -62,7 +62,6 @@ class RequirementsManager
      *
      * @param DBmysql|null $db DB instance (if null BD requirements will not be returned).
      *
-     * @return RequirementsList
      */
     public function getCoreRequirementList(?DBmysql $db = null): RequirementsList
     {

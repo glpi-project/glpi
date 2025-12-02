@@ -70,7 +70,6 @@ abstract class ItemTranslation extends CommonDBChild
     /**
      * @param array $input
      *
-     * @return array
      */
     public function prepapreInput($input): array
     {
@@ -134,7 +133,6 @@ abstract class ItemTranslation extends CommonDBChild
     /**
      * Check if the translation is possibly obsolete
      *
-     * @return bool
      */
     public function isPossiblyObsolete(): bool
     {

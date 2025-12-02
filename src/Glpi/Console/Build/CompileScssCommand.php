@@ -58,7 +58,7 @@ class CompileScssCommand extends Command
     /**
      * Error code returned if unable to write compiled CSS.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_UNABLE_TO_WRITE_COMPILED_FILE = 1;
 

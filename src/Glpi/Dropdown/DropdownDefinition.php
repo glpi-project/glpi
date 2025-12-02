@@ -78,8 +78,6 @@ final class DropdownDefinition extends AbstractDefinition
     /**
      * Get the definition's concrete dropdown class name.
      *
-     * @param bool $with_namespace
-     * @return string
      * @phpstan-return class-string<Dropdown>
      */
     public function getDropdownClassName(bool $with_namespace = true): string

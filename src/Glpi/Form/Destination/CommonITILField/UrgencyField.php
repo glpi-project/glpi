@@ -177,7 +177,6 @@ final class UrgencyField extends AbstractConfigField implements DestinationField
     /**
      * Retrieve available urgency levels
      *
-     * @return array
      */
     private function getUrgencyLevels(): array
     {

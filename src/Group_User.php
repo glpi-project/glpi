@@ -56,10 +56,10 @@ class Group_User extends CommonDBRelation
      *
      * @since 9.4
      *
-     * @param integer $users_id  the user ID
-     * @param integer $groups_id the group ID
+     * @param int $users_id  the user ID
+     * @param int $groups_id the group ID
      *
-     * @return boolean true if the user belongs to the group
+     * @return bool true if the user belongs to the group
      */
     public static function isUserInGroup($users_id, $groups_id): bool
     {
@@ -75,10 +75,9 @@ class Group_User extends CommonDBRelation
     /**
      * Get groups for a user
      *
-     * @param integer $users_id  User id
-     * @param array   $condition Query extra condition (default [])
+     * @param int   $users_id  User id
+     * @param array $condition Query extra condition (default [])
      *
-     * @return array
      **/
     public static function getUserGroups($users_id, $condition = []): array
     {
@@ -116,8 +115,8 @@ class Group_User extends CommonDBRelation
      *
      * @since 0.84
      *
-     * @param integer $groups_id Group ID
-     * @param array   $condition Query extra condition (default [])
+     * @param int   $groups_id Group ID
+     * @param array $condition Query extra condition (default [])
      *
      * @return array
      **/
@@ -155,7 +154,7 @@ class Group_User extends CommonDBRelation
     /**
      * Show groups of a user
      *
-     * @param User $user   User object
+     * @param User $user User object
      *
      * @return void
      */
@@ -241,11 +240,9 @@ class Group_User extends CommonDBRelation
      *
      * @since 0.83
      *
-     * @param Group $group
-     * @param array $used_ids Array of already added users
+     * @param array     $used_ids       Array of already added users
      * @param int|array $entityrestrict Array of entities
      *
-     * @return void
      */
     private static function showAddUserForm(Group $group, array $used_ids, int|array $entityrestrict): void
     {
@@ -270,12 +267,12 @@ class Group_User extends CommonDBRelation
      *
      * @since 0.83
      *
-     * @param Group    $group            Group object
-     * @param array    $members          Array filled on output of member (filtered)
-     * @param array    $ids              Array of ids (not filtered)
-     * @param string|array $crit         Filter key (is_manager, is_userdelegate) or array of filters (default '')
-     * @param bool|int $tree             True to include member of sub-group (default 0)
-     * @param bool     $check_entities   Apply entities restrictions ?
+     * @param Group        $group          Group object
+     * @param array        $members        Array filled on output of member (filtered)
+     * @param array        $ids            Array of ids (not filtered)
+     * @param string|array $crit           Filter key (is_manager, is_userdelegate) or array of filters (default '')
+     * @param bool|int     $tree           True to include member of sub-group (default 0)
+     * @param bool         $check_entities Apply entities restrictions ?
      *
      * @return array|int Entities for restriction
      **/
@@ -391,7 +388,6 @@ class Group_User extends CommonDBRelation
     /**
      * Show users of a group
      *
-     * @param Group $group
      * @since 0.83
      *
      * @return void
@@ -676,7 +672,7 @@ class Group_User extends CommonDBRelation
     }
 
     /**
-     * @param int $user_ID
+     * @param int  $user_ID
      * @param bool $only_dynamic (false by default)
      *
      * @return void
@@ -764,7 +760,7 @@ class Group_User extends CommonDBRelation
      * @since 9.3.1
      *
      * @param CommonDBTM $item  Item instance
-     * @param boolean    $noent Flag to not compute entity information (see Document_Item::getListForItemParams)
+     * @param bool       $noent Flag to not compute entity information (see Document_Item::getListForItemParams)
      *
      * @return array
      */
@@ -914,7 +910,6 @@ class Group_User extends CommonDBRelation
     /**
      * Get parents members for a given group
      *
-     * @param Group $group
      * @param mixed $crit
      *
      * @return array Array of array, which will contain the keys set in

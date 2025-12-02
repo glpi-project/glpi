@@ -84,9 +84,9 @@ class CommandLoader implements CommandLoaderInterface
     private $plugin = null;
 
     /**
-     * @param bool          $include_plugins
-     * @param string        $rootdir         Root directory path of application.
-     * @param Plugin|null   $plugin          Needed for units test as we lack DI.
+     * @param bool        $include_plugins
+     * @param string      $rootdir         Root directory path of application.
+     * @param Plugin|null $plugin          Needed for units test as we lack DI.
      */
     public function __construct($include_plugins = true, $rootdir = GLPI_ROOT, ?Plugin $plugin = null)
     {
@@ -123,7 +123,6 @@ class CommandLoader implements CommandLoaderInterface
     /**
      * Indicates if plugin commands should be included.
      *
-     * @param bool $include_plugins
      *
      * @return void
      */
@@ -367,7 +366,6 @@ class CommandLoader implements CommandLoaderInterface
     /**
      * Register a command on self.
      *
-     * @param Command $command
      *
      * @return void
      */
@@ -385,11 +383,10 @@ class CommandLoader implements CommandLoaderInterface
     /**
      * Return class instance of command contained in file, if file contains one.
      *
-     * @param SplFileInfo $file      File to inspect
-     * @param string      $basedir   Directory containing classes (eg GLPI_ROOT . '/inc')
-     * @param array       $prefixes  Possible prefixes to add to classname (eg 'PluginExample', 'GlpiPlugin\Example')
+     * @param SplFileInfo $file     File to inspect
+     * @param string      $basedir  Directory containing classes (eg GLPI_ROOT . '/inc')
+     * @param array       $prefixes Possible prefixes to add to classname (eg 'PluginExample', 'GlpiPlugin\Example')
      *
-     * @return null|Command
      */
     private function getCommandFromFile(SplFileInfo $file, $basedir, array $prefixes = []): ?Command
     {

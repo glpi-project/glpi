@@ -47,7 +47,7 @@ trait AsyncOperationProgressControllerTrait
     /**
      * Return the response to be used by the `ProgressIndicator` js module to be able to follow the operation progress.
      *
-     * @param callable $operation_callable  The callable corresponding to the operation to execute.
+     * @param callable $operation_callable The callable corresponding to the operation to execute.
      */
     protected function getProgressInitResponse(
         StoredProgressIndicator $progress_indicator,

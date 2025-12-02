@@ -55,17 +55,17 @@ use function Safe\json_encode;
 final class TOTPManager
 {
     /**
-     * @var integer Length of the secret in bits
+     * @var int Length of the secret in bits
      */
     public const SECRET_LENGTH_BITS = 160;
 
     /**
-     * @var integer Number of digits in the TOTP code
+     * @var int Number of digits in the TOTP code
      */
     public const CODE_LENGTH_DIGITS = 6;
 
     /**
-     * @var integer Number of seconds the TOTP code is valid for.
+     * @var int Number of seconds the TOTP code is valid for.
      * For compatibility with Google Authenticator, this should be 30 because that app support anything else.
      */
     public const CODE_VALIDITY_SECONDS = 30;
@@ -81,27 +81,27 @@ final class TOTPManager
     public const CODE_ALGORITHM = ['sha1', 'sha256'];
 
     /**
-     * @var integer 2FA is not enforced. Users can choose to enable it or not.
+     * @var int 2FA is not enforced. Users can choose to enable it or not.
      */
     public const ENFORCEMENT_OPTIONAL = 0;
 
     /**
-     * @var integer 2FA is enforced, but users have some time before they are forced to enable it.
+     * @var int 2FA is enforced, but users have some time before they are forced to enable it.
      */
     public const ENFORCEMENT_MANDATORY_GRACE_PERIOD = 1;
 
     /**
-     * @var integer 2FA is enforced, and users must enable it (no grace period remaining).
+     * @var int 2FA is enforced, and users must enable it (no grace period remaining).
      */
     public const ENFORCEMENT_MANDATORY = 2;
 
     /**
-     * @var integer Number of backup codes to generate
+     * @var int Number of backup codes to generate
      */
     public const BACKUP_CODES_COUNT = 5;
 
     /**
-     * @var integer Length of backup codes in characters
+     * @var int Length of backup codes in characters
      */
     public const BACKUP_CODES_LENGTH = 16;
 
@@ -112,7 +112,6 @@ final class TOTPManager
 
     /**
      * Mainly used to get the displayed issuer for the TOTP in Authenticator app
-     * @return string
      */
     public function getIssuer(): string
     {
@@ -130,7 +129,6 @@ final class TOTPManager
     /**
      * Get an instance of the TwoFactorAuth class
      * @param string $algorithm Algorithm used to generate the TOTP code.
-     * @return TwoFactorAuth
      * @throws TwoFactorAuthException
      */
     private function getTwoFactorAuth(string $algorithm = 'sha1'): TwoFactorAuth
@@ -160,8 +158,8 @@ final class TOTPManager
 
     /**
      * Set the TOTP secret code for a user
-     * @param int $users_id ID of the user
-     * @param string $secret The secret code
+     * @param int    $users_id ID of the user
+     * @param string $secret   The secret code
      * @return bool True on success, false otherwise
      */
     public function setSecretForUser(int $users_id, string $secret, ?string $algorithm = null): bool
@@ -259,8 +257,8 @@ final class TOTPManager
 
     /**
      * Verify a TOTP code for a user
-     * @param string $code The code to verify
-     * @param int $users_id ID of the user
+     * @param string $code     The code to verify
+     * @param int    $users_id ID of the user
      * @return bool True if the code is valid, false otherwise
      * @throws JsonException
      * @throws TwoFactorAuthException
@@ -276,7 +274,7 @@ final class TOTPManager
 
     /**
      * Verify a TOTP code for a secret
-     * @param string $code The code to verify
+     * @param string $code   The code to verify
      * @param string $secret The secret to use
      * @return string|false The algorithm matched if the code is valid, false otherwise
      * @throws TwoFactorAuthException
@@ -360,9 +358,9 @@ final class TOTPManager
 
     /**
      * Verify a backup code for a user
-     * @param string $code Backup code
-     * @param int $users_id User ID
-     * @param bool $consume_code If true, the backup code will be consumed and will not be usable again
+     * @param string $code         Backup code
+     * @param int    $users_id     User ID
+     * @param bool   $consume_code If true, the backup code will be consumed and will not be usable again
      * @return bool True if the code is valid, false otherwise
      * @throws JsonException
      */
@@ -489,7 +487,6 @@ final class TOTPManager
 
     /**
      * Show a form asking the user for their TOTP code.
-     * @return void
      */
     public function showTOTPPrompt(): void
     {
@@ -500,10 +497,9 @@ final class TOTPManager
 
     /**
      * Show a form to set up TOTP for the current user or manage the settings if it is set up already.
-     * @param int $users_id ID of the user
-     * @param bool $force_setup Force the setup form to be shown even if 2FA is already enabled
+     * @param int  $users_id                ID of the user
+     * @param bool $force_setup             Force the setup form to be shown even if 2FA is already enabled
      * @param bool $regenerate_backup_codes Regenerate backup codes immediately when showing the status form
-     * @return void
      * @throws JsonException
      * @throws TwoFactorAuthException
      */
@@ -539,7 +535,6 @@ final class TOTPManager
     /**
      * Show a form to set up TOTP for the current user or manage the settings if it is set up already.
      * @param int $users_id User ID
-     * @return void
      */
     public function showTOTPSetupForm(int $users_id): void
     {
@@ -563,7 +558,6 @@ final class TOTPManager
     /**
      * Show the backup codes for the specified user.
      * Intended for use after setting up 2FA during the login process.
-     * @return void
      */
     public function showBackupCodes(int $users_id): void
     {

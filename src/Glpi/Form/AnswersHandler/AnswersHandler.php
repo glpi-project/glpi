@@ -64,7 +64,6 @@ final class AnswersHandler
 {
     /**
      * Singleton instance
-     * @var AnswersHandler|null
      */
     protected static ?AnswersHandler $instance = null;
 
@@ -76,7 +75,6 @@ final class AnswersHandler
     /**
      * Get the singleton instance
      *
-     * @return AnswersHandler
      */
     public static function getInstance(): AnswersHandler
     {
@@ -91,7 +89,7 @@ final class AnswersHandler
      * Check if the given answers are valid for the given form
      *
      * @param Form|Section $questions_container The form or section to check
-     * @param array $answers The answers to check
+     * @param array        $answers             The answers to check
      * @return ValidationResult The validation result
      */
     public function validateAnswers(
@@ -301,7 +299,6 @@ final class AnswersHandler
      *
      * @param Form $form The form to increment the usage count for
      *
-     * @return void
      */
     protected function incrementFormUsageCount(Form $form): void
     {
@@ -398,12 +395,9 @@ final class AnswersHandler
     /**
      * Create destinations for a given form and its answers
      *
-     * @param Form       $form
-     * @param AnswersSet $answers_set
      *
      * @throws Exception If the data can't be saved
      *
-     * @return void
      */
     protected function createDestinations(Form $form, AnswersSet $answers_set): void
     {

@@ -621,7 +621,6 @@ class PendingReasonTest extends DbTestCase
     /**
      * Data provider for testHandlePendingReasonUpdateFromNewTimelineItem
      *
-     * @return iterable
      */
     protected function testUpdatesFromNewTimelineItemProvider(): iterable
     {
@@ -957,7 +956,6 @@ class PendingReasonTest extends DbTestCase
      * This validate the "testHandlePendingReasonUpdateFromNewTimelineItem" method
      * and its references in ITILFollowup's and CommonITILTask's post_addItem() method
      *
-     * @return void
      */
     public function testHandlePendingReasonUpdateFromNewTimelineItem(): void
     {

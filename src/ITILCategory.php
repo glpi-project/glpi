@@ -332,9 +332,9 @@ class ITILCategory extends CommonTreeDropdown
     }
 
     /**
+     * @since 9.5.0
      * @param string $value
      * @return int
-     * @since 9.5.0
      *
      */
     public static function getITILCategoryIDByCode($value)
@@ -436,8 +436,7 @@ class ITILCategory extends CommonTreeDropdown
     }
 
     /**
-     * @param ITILTemplate $tt
-     * @param integer $withtemplate (default 0)
+     * @param int $withtemplate (default 0)
      * @return false|void
      */
     public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0)

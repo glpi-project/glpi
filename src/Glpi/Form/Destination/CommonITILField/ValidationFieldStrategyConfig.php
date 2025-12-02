@@ -50,8 +50,8 @@ final class ValidationFieldStrategyConfig implements JsonFieldInterface
     public const SPECIFIC_VALIDATION_STEP_ID = 'specific_validation_step_id';
 
     /**
-     * @param array<int> $specific_validationtemplate_ids
-     * @param array<int> $specific_question_ids
+     * @param array<int>           $specific_validationtemplate_ids
+     * @param array<int>           $specific_question_ids
      * @param array<string, int[]> $specific_actors
      */
     public function __construct(

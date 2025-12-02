@@ -111,7 +111,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Is the current user have right to show the current task ?
      *
-     * @return boolean
      **/
     public function canViewItem(): bool
     {
@@ -146,7 +145,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Is the current user have right to edit the current task ?
      *
-     * @return boolean
      **/
     public function canUpdateItem(): bool
     {
@@ -164,7 +162,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
     /**
-     * @param bool $full
      * @return string
      */
     public static function getMyTasksURL(bool $full)
@@ -411,7 +408,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Is the current user in the team?
      *
-     * @return boolean
+     * @return bool
      **/
     public function isInTheTeam()
     {
@@ -441,7 +438,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Get team member count
      *
-     * @return integer
+     * @return int
      */
     public function getTeamCount()
     {
@@ -644,7 +641,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Set automatically the effective duration if not set
      * @param string $startdate the start date
-     * @param string $enddate the end date
+     * @param string $enddate   the end date
      *
      * @return int the effective duration
      * @throws Exception if the start or end date is not valid dates
@@ -676,7 +673,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Get all tasks for a project
      *
-     * @param integer $ID ID of the project
+     * @param int $ID ID of the project
      *
      * @return array of tasks ordered by dates
      **/
@@ -702,7 +699,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Get all sub-tasks for a project task
      * @since 9.5.0
-     * @param integer $ID ID of the project task
+     * @param int $ID ID of the project task
      *
      * @return array of tasks ordered by dates
      **/
@@ -728,7 +725,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Get all linked tickets for a project
      *
-     * @param integer $ID ID of the project
+     * @param int $ID ID of the project
      *
      * @return array of tickets
      **/
@@ -762,10 +759,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Print the Project task form
      *
-     * @param integer $ID Id of the project task
+     * @param int   $ID      Id of the project task
      * @param array $options of possible options:
-     *     - target form target
-     *     - projects_id ID of the software for add process
+     *                       - target form target
+     *                       - projects_id ID of the software for add process
      *
      * @return bool True if displayed, false if item not found or not right to display
      **/
@@ -821,9 +818,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Get total effective duration of a project task (sum of effective duration + sum of action time of tickets)
      *
-     * @param integer $projecttasks_id $projecttasks_id ID of the project task
+     * @param int $projecttasks_id $projecttasks_id ID of the project task
      *
-     * @return integer total effective duration
+     * @return int total effective duration
      **/
     public static function getTotalEffectiveDuration($projecttasks_id)
     {
@@ -870,9 +867,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Get total effective duration of a project (sum of effective duration + sum of action time of tickets)
      *
-     * @param integer $projects_id $project_id ID of the project
+     * @param int $projects_id $project_id ID of the project
      *
-     * @return integer total effective duration
+     * @return int total effective duration
      **/
     public static function getTotalEffectiveDurationForProject($projects_id)
     {
@@ -893,9 +890,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Get total planned duration of a project
      *
-     * @param integer $projects_id $project_id ID of the project
+     * @param int $projects_id $project_id ID of the project
      *
-     * @return integer total effective duration
+     * @return int total effective duration
      **/
     public static function getTotalPlannedDurationForProject($projects_id)
     {
@@ -1458,7 +1455,7 @@ TWIG, $twig_params);
      *
      * @param ProjectTask $task object
      *
-     * @return boolean
+     * @return bool
      **/
     public function showTeam(ProjectTask $task)
     {
@@ -1598,8 +1595,8 @@ TWIG, $twig_params);
     /**
      * Get the list of active project tasks for a list of users
      *
-     * @param array $users_id The user IDs.
-     * @param bool $search_in_groups Whether to search in groups.
+     * @param array $users_id         The user IDs.
+     * @param bool  $search_in_groups Whether to search in groups.
      * @return array The list of projecttask IDs.
      */
     public static function getActiveProjectTaskIDsForUser(array $users_id, bool $search_in_groups = true): array
@@ -1671,7 +1668,6 @@ TWIG, $twig_params);
      *  Show the list of projecttasks for a user in the personal view or for a group in the group view
      *
      * @param string $itemtype The itemtype (User or Group)
-     * @return void
      * @used-by Central
      */
     public static function showListForCentral(string $itemtype): void
@@ -1796,12 +1792,12 @@ TWIG, $twig_params);
      * @since 9.1
      *
      * @param array $options of possible options:
-     *    - who         ID of the user (0 = undefined)
-     *    - whogroup    ID of the group of users (0 = undefined)
-     *    - begin       Date
-     *    - end         Date
-     *    - color
-     *    - event_type_color
+     *                       - who         ID of the user (0 = undefined)
+     *                       - whogroup    ID of the group of users (0 = undefined)
+     *                       - begin       Date
+     *                       - end         Date
+     *                       - color
+     *                       - event_type_color
      *
      * @return array of planning item
      **/
@@ -2005,12 +2001,12 @@ TWIG, $twig_params);
      * @since 9.1
      *
      * @param array $options of possible options:
-     *    - who         ID of the user (0 = undefined)
-     *    - whogroup    ID of the group of users (0 = undefined)
-     *    - begin       Date
-     *    - end         Date
-     *    - color
-     *    - event_type_color
+     *                       - who         ID of the user (0 = undefined)
+     *                       - whogroup    ID of the group of users (0 = undefined)
+     *                       - begin       Date
+     *                       - end         Date
+     *                       - color
+     *                       - event_type_color
      *
      * @return array of planning item
      * @used-by Planning
@@ -2026,11 +2022,11 @@ TWIG, $twig_params);
      *
      * @since 9.1
      *
-     * @param array $val Array of the items to display
-     * @param integer $who ID of the user (0 if all)
-     * @param string $type Position of the item in the time block (in, through, begin or end)
+     * @param array  $val      Array of the items to display
+     * @param int    $who      ID of the user (0 if all)
+     * @param string $type     Position of the item in the time block (in, through, begin or end)
      *                         (default '')
-     * @param integer $complete (Not used)
+     * @param int    $complete (Not used)
      *
      * @return string
      **/
@@ -2109,9 +2105,9 @@ TWIG, $twig_params);
      * Update the specified project task's percent_done based on the percent_done of sub-tasks.
      * This function indirectly updates the percent done for all parent tasks if they are set to automatically update.
      * The parent project's percent_done is not updated here to avoid duplicate updates.
-     * @param int $ID The ID of the project task to recalculate.
      * @since 9.5.0
-     * @return boolean False if the specified project task is not set to automatically update the percent done.
+     * @param int $ID The ID of the project task to recalculate.
+     * @return bool False if the specified project task is not set to automatically update the percent done.
      */
     public static function recalculatePercentDone($ID)
     {
@@ -2151,8 +2147,6 @@ TWIG, $twig_params);
     /**
      * Recalculate the status of a project task based on the percent_done.
      * @since 11.0.0
-     * @param array $input
-     * @return integer|false
      */
     public function recalculateStatus(array $input): int|false
     {
@@ -2202,7 +2196,6 @@ TWIG, $twig_params);
     /**
      * Returns items as VCalendar objects.
      *
-     * @param array $criteria
      *
      * @return VCalendar[]
      */
@@ -2239,8 +2232,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * {@inheritdoc}
-     * @return VCalendar|null
+     *
      * @throws Exception If one or more of the datetimes are invalid
      */
     public function getAsVCalendar(): ?VCalendar

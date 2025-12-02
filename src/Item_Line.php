@@ -128,7 +128,6 @@ class Item_Line extends CommonDBRelation
     /**
      * Count the number of lines associated to an item through a simcard.
      *
-     * @param CommonDBTM $item
      * @return int
      */
     protected static function countSimcardLinesForItem(CommonDBTM $item)
@@ -145,7 +144,6 @@ class Item_Line extends CommonDBRelation
     /**
      * Count the number of items associated to a line through a simcard.
      *
-     * @param Line $line
      * @return int
      */
     protected static function countSimcardItemsForLine(Line $line)
@@ -292,7 +290,6 @@ class Item_Line extends CommonDBRelation
      * This includes directly linked lines and lines linked by a simcard.
      * It allows linking lines directly to an item.
      *
-     * @param CommonDBTM $item
      * @return void|false False if the item is not valid or the user does not have the right to view the item
      **/
     public static function showLinesForItem(CommonDBTM $item)

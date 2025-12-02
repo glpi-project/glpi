@@ -116,9 +116,9 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
 
 
     /**
-     * @see CommonDBTM::useDeletedToLockIfDynamic()
      *
      * @since 0.84
+     * @see CommonDBTM::useDeletedToLockIfDynamic()
      **/
     public function useDeletedToLockIfDynamic()
     {
@@ -181,7 +181,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
      *
      * Overloaded from CommonDBTM
      *
-     * @return boolean
+     * @return bool
      **/
     public function canUnrecurs()
     {

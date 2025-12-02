@@ -63,7 +63,6 @@ abstract class AbstractMarketplaceCommand extends AbstractCommand
 
     /**
      * Get the plugin choice question prompt
-     * @return string
      */
     abstract protected function getPluginChoiceQuestion(): string;
 

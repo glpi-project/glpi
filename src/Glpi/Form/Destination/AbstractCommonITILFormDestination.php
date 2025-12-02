@@ -325,8 +325,6 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
     /**
      * Get a configurable field by its key.
      *
-     * @param string $key
-     * @return AbstractConfigField|null
      */
     public function getConfigurableFieldByKey(string $key): ?AbstractConfigField
     {

@@ -43,7 +43,7 @@ class CheckDatabaseSchemaConsistencyCommand extends AbstractCommand
     /**
      * Error code returned when missing fields are found.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_FOUND_MISSING_FIELDS = 1;
 

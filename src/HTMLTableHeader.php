@@ -54,7 +54,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
     /**
      * get its name and subname : usefull for instance to create an index for arrays
      *
-     * @param string $header_name [out]     header name
+     * @param string $header_name    [out]     header name
      * @param string $subheader_name [out]  sub header name ( = '' in case of super header)
      *
      * @return void
@@ -64,13 +64,12 @@ abstract class HTMLTableHeader extends HTMLTableEntity
     /**
      * check to see if it is a super header or not
      *
-     * @return boolean
+     * @return bool
      **/
     abstract public function isSuperHeader();
 
     /**
-     * @param $itemtype
-     * @param $title         (default '')
+     * @param $title (default '')
      **/
     public function setItemType($itemtype, $title = '')
     {
@@ -91,7 +90,6 @@ abstract class HTMLTableHeader extends HTMLTableEntity
     }
 
     /**
-     * @param ?CommonDBTM $item
      * @throws Exception
      */
     public function checkItemType(?CommonDBTM $item = null)
@@ -113,7 +111,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
     }
 
     /**
-     * @param integer $colSpan
+     * @param int $colSpan
      **/
     public function setColSpan($colSpan)
     {
@@ -136,8 +134,8 @@ abstract class HTMLTableHeader extends HTMLTableEntity
     }
 
     /**
-     * @param boolean $with_content do we display the content ?
-     * @param boolean $main_header  main header (from table) or secondary (from group) ? (true by default)
+     * @param bool $with_content do we display the content ?
+     * @param bool $main_header  main header (from table) or secondary (from group) ? (true by default)
      **/
     public function displayTableHeader($with_content, $main_header = true)
     {

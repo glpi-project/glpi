@@ -79,9 +79,9 @@ class Log extends CommonDBTM
 
     public static $rightname = 'logs';
 
-    /** @var array  */
+    /**  */
     public static array $queue = [];
-    /** @var bool  */
+    /**  */
     public static bool $use_queue = false;
 
 
@@ -130,11 +130,11 @@ class Log extends CommonDBTM
     /**
      * Construct  history for an item
      *
-     * @param $item               CommonDBTM object
-     * @param $oldvalues    array of old values updated
-     * @param $values       array of all values of the item
+     * @param $item      CommonDBTM object
+     * @param $oldvalues array of old values updated
+     * @param $values    array of all values of the item
      *
-     * @return boolean for success (at least 1 log entry added)
+     * @return bool for success (at least 1 log entry added)
      **/
     public static function constructHistory(CommonDBTM $item, $oldvalues, $values)
     {
@@ -218,13 +218,10 @@ class Log extends CommonDBTM
     /**
      * Log history
      *
-     * @param $items_id
-     * @param $itemtype
-     * @param $changes
-     * @param $itemtype_link   (default '')
-     * @param $linked_action   (default '0')
+     * @param $itemtype_link (default '')
+     * @param $linked_action (default '0')
      *
-     * @return boolean success
+     * @return bool success
      **/
     public static function history($items_id, $itemtype, $changes, $itemtype_link = '', $linked_action = '0')
     {
@@ -307,8 +304,8 @@ class Log extends CommonDBTM
     /**
      * Show History of an item
      *
-     * @param $item                     CommonDBTM object
-     * @param $withtemplate    integer  withtemplate param (default 0)
+     * @param $item         CommonDBTM object
+     * @param $withtemplate integer  withtemplate param (default 0)
      *
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
@@ -365,8 +362,8 @@ class Log extends CommonDBTM
      * Retrieve last history Data for an item
      *
      * @param CommonDBTM $item       Object instance
-     * @param integer    $start      First line to retrieve (default 0)
-     * @param integer    $limit      Max number of line to retrieve (0 for all) (default 0)
+     * @param int        $start      First line to retrieve (default 0)
+     * @param int        $limit      Max number of line to retrieve (0 for all) (default 0)
      * @param array      $sqlfilters SQL filters applied to history (default [])
      *
      * @return array of log entries, each containing the following keys:
@@ -927,11 +924,11 @@ class Log extends CommonDBTM
      * Retrieve distinct values for user_name field in item log.
      * Return is made to be used as select tag options.
      *
-     * @param CommonDBTM $item  Object instance
      *
-     * @return array
      *
      * @since 9.3
+     * @param CommonDBTM $item Object instance
+     * @return array
      **/
     public static function getDistinctUserNamesValuesInItemLog(CommonDBTM $item)
     {
@@ -968,11 +965,11 @@ class Log extends CommonDBTM
      * Retrieve distinct values for affected field in item log.
      * Return is made to be used as select tag options.
      *
-     * @param CommonDBTM $item  Object instance
      *
-     * @return array
      *
      * @since 9.3
+     * @param CommonDBTM $item Object instance
+     * @return array
      **/
     public static function getDistinctAffectedFieldValuesInItemLog(CommonDBTM $item)
     {
@@ -1142,11 +1139,11 @@ class Log extends CommonDBTM
      * Retrieve distinct values for action in item log.
      * Return is made to be used as select tag options.
      *
-     * @param CommonDBTM $item  Object instance
      *
-     * @return array
      *
      * @since 9.3
+     * @param CommonDBTM $item Object instance
+     * @return array
      **/
     public static function getDistinctLinkedActionValuesInItemLog(CommonDBTM $item)
     {
@@ -1208,11 +1205,11 @@ class Log extends CommonDBTM
     /**
      * Returns label corresponding to the linked action of a log entry.
      *
-     * @param integer $linked_action  Linked action value of a log entry.
      *
-     * @return string
      *
      * @since 9.3
+     * @param int $linked_action Linked action value of a log entry.
+     * @return string
      **/
     public static function getLinkedActionLabel($linked_action)
     {
@@ -1330,16 +1327,16 @@ class Log extends CommonDBTM
     /**
      * Convert filters values into SQL filters usable in 'WHERE' condition of request build with 'DBmysqlIterator'.
      *
-     * @param array $filters  Filters values.
-     *    Filters values must be passed as indexed array using following rules :
-     *     - 'affected_fields' key for values corresponding to values built in 'self::getDistinctAffectedFieldValuesInItemLog()',
-     *     - 'date' key for a date value in 'Y-m-d H:i:s' format,
-     *     - 'linked_actions' key for values corresponding to values built in 'self::getDistinctLinkedActionValuesInItemLog()',
-     *     - 'users_names' key for values corresponding to values built in 'self::getDistinctUserNamesValuesInItemLog()'.
      *
-     * @return array
      *
      * @since 9.3
+     * @param array $filters Filters values.
+     *                       Filters values must be passed as indexed array using following rules :
+     *                       - 'affected_fields' key for values corresponding to values built in 'self::getDistinctAffectedFieldValuesInItemLog()',
+     *                       - 'date' key for a date value in 'Y-m-d H:i:s' format,
+     *                       - 'linked_actions' key for values corresponding to values built in 'self::getDistinctLinkedActionValuesInItemLog()',
+     *                       - 'users_names' key for values corresponding to values built in 'self::getDistinctUserNamesValuesInItemLog()'.
+     * @return array
      **/
     public static function convertFiltersValuesToSqlCriteria(array $filters)
     {

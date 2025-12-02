@@ -153,9 +153,6 @@ class PendingReason extends CommonDropdown
     /**
      * Display specific "followup_frequency" field
      *
-     * @param $value
-     * @param $name
-     * @param $options
      * @param $long_label If false give less details in the default label
      */
     public static function displayFollowupFrequencyfield(
@@ -217,9 +214,6 @@ class PendingReason extends CommonDropdown
     /**
      * Display specific "followups_before_resolution" field
      *
-     * @param $value
-     * @param $name
-     * @param $options
      * @param $long_label If false give less details in the default label
      */
     public static function displayFollowupsNumberBeforeResolutionField(
@@ -260,9 +254,6 @@ class PendingReason extends CommonDropdown
     /**
      * Display specific "is_default" field
      *
-     * @param $value
-     * @param $name
-     * @param $options
      */
     private function displayIsDefaultPendingReasonField(bool $value): string
     {

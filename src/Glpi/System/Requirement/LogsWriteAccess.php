@@ -52,7 +52,6 @@ class LogsWriteAccess extends AbstractRequirement
 
     /**
      *
-     * @param LoggerInterface $logger
      */
     public function __construct(LoggerInterface $logger)
     {

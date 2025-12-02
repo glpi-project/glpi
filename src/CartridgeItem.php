@@ -161,11 +161,11 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
     /**
      * Count cartridge of the cartridge type
      *
-     * @param integer $id Item id
      *
-     * @return number of cartridges
      *
      * @since 9.2 add $id parameter
+     * @param int $id Item id
+     * @return number of cartridges
      **/
     public static function getCount($id)
     {
@@ -182,10 +182,10 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
     /**
      * Add a compatible printer type for a cartridge type
      *
-     * @param integer $cartridgeitems_id cartridge type identifier
-     * @param integer $printermodels_id  printer type identifier
+     * @param int $cartridgeitems_id cartridge type identifier
+     * @param int $printermodels_id  printer type identifier
      *
-     * @return boolean : true for success
+     * @return bool : true for success
      **/
     public static function addCompatibleType($cartridgeitems_id, $printermodels_id)
     {
@@ -532,9 +532,8 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
     /**
      * Print a select with compatible cartridge
      *
-     * @param Printer $printer
      *
-     * @return string|boolean
+     * @return string|bool
      **/
     public static function dropdownForPrinter(Printer $printer)
     {

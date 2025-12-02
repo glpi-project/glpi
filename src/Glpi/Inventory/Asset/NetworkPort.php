@@ -254,7 +254,6 @@ class NetworkPort extends InventoryAsset
      * @param array $vlans    Port vlans
      * @param int   $ifnumber Port ifnumber
      *
-     * @return array
      */
     private function prepareVlans(array $vlans, int $ifnumber): array
     {
@@ -639,8 +638,6 @@ class NetworkPort extends InventoryAsset
     }
 
     /**
-     * @param stdClass $port
-     * @param int $netports_id
      *
      * @return void
      */
@@ -650,8 +647,6 @@ class NetworkPort extends InventoryAsset
     }
 
     /**
-     * @param stdClass $port
-     * @param int $netports_id
      *
      * @return void
      */
@@ -661,8 +656,6 @@ class NetworkPort extends InventoryAsset
     }
 
     /**
-     * @param stdClass $port
-     * @param int $netports_id
      *
      * @return void
      */
@@ -677,10 +670,10 @@ class NetworkPort extends InventoryAsset
     /**
      * After rule engine passed, update task (log) and create item if required
      *
-     * @param integer       $items_id id of the item (0 if new)
-     * @param string        $itemtype Item type
-     * @param integer       $rules_id Matched rule id, if any
-     * @param integer|array $ports_id Matched port ids, if any
+     * @param int       $items_id id of the item (0 if new)
+     * @param string    $itemtype Item type
+     * @param int       $rules_id Matched rule id, if any
+     * @param int|array $ports_id Matched port ids, if any
      *
      * @return void
      */
@@ -815,7 +808,6 @@ class NetworkPort extends InventoryAsset
      *
      * @param stdClass $port Port
      *
-     * @return boolean
      */
     protected function isLLDP($port): bool
     {
@@ -827,7 +819,7 @@ class NetworkPort extends InventoryAsset
 
     /**
      * @param ?string $itemtype
-     * @param ?int $items_id
+     * @param ?int    $items_id
      *
      * @return void
      */
@@ -897,8 +889,8 @@ class NetworkPort extends InventoryAsset
     /**
      * Handle a hub (many MAC on a port means we face a hub)
      *
-     * @param array   $found_macs  ID of ports foudn by mac
-     * @param integer $netports_id Network port id
+     * @param array $found_macs  ID of ports foudn by mac
+     * @param int   $netports_id Network port id
      *
      * @return void
      */
@@ -980,10 +972,7 @@ class NetworkPort extends InventoryAsset
     /**
      * Add wiring between network ports.
      *
-     * @param int $netports_id_1
-     * @param int $netports_id_2
      *
-     * @return bool
      */
     private function addPortsWiring(int $netports_id_1, int $netports_id_2): bool
     {

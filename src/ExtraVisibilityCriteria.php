@@ -40,9 +40,8 @@ interface ExtraVisibilityCriteria
      *
      * @since 9.5
      *
-     * @param boolean $forceall force all joins (false by default)
+     * @param bool $forceall force all joins (false by default)
      *
-     * @return array
      */
     public static function getVisibilityCriteria(bool $forceall = false): array;
 }

@@ -70,7 +70,6 @@ class OperatingSystemEditionTest extends CommonDropdownTest
     /**
      * Create new Operating system in database
      *
-     * @return \CommonDBTM
      */
     protected function newInstance(): \CommonDBTM
     {

@@ -62,9 +62,9 @@ final class FormProvider implements LeafProviderInterface
     /**
      * Get entity restriction criteria with caching
      *
-     * @param string $table The table name
-     * @param mixed $value The entities values
-     * @param bool $is_recursive Whether recursive entities are included
+     * @param string $table        The table name
+     * @param mixed  $value        The entities values
+     * @param bool   $is_recursive Whether recursive entities are included
      * @return array The entity restriction criteria
      */
     private function getCachedEntityRestriction(string $table, mixed $value, bool $is_recursive): array

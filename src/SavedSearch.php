@@ -393,7 +393,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     /**
      * Prepare Search url before saving it do db on creation or update
      *
-     * @param array $input
      *
      * @return array $input
      */
@@ -491,8 +490,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     /**
      * Prepare query to store depending on the type
      *
-     * @param integer $type      Saved search type (self::SEARCH, self::URI or self::ALERT)
-     * @param array   $query_tab Parameters
+     * @param int   $type      Saved search type (self::SEARCH, self::URI or self::ALERT)
+     * @param array $query_tab Parameters
      *
      * @return array clean query array
      **/
@@ -521,7 +520,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     /**
      * Load a saved search
      *
-     * @param integer $ID ID of the saved search
+     * @param int $ID ID of the saved search
      *
      * @return void
      **/
@@ -552,7 +551,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     /**
      * Get saved search parameters
      *
-     * @param integer $ID ID of the saved search
+     * @param int $ID ID of the saved search
      *
      * @return array|false
      **/
@@ -575,7 +574,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     /**
      * Mark saved search as default view for the currect user
      *
-     * @param integer $ID ID of the saved search
+     * @param int $ID ID of the saved search
      *
      * @return void
      **/
@@ -618,7 +617,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     /**
      * Unmark savedsearch as default view for the current user
      *
-     * @param integer $ID ID of the saved search
+     * @param int $ID ID of the saved search
      *
      * @return void
      **/
@@ -655,7 +654,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @param array $ids IDs of the saved searches
      *
-     * @return boolean
+     * @return bool
      **/
     public function unmarkDefaults(array $ids)
     {
@@ -677,9 +676,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      * return an array of saved searches for a given itemtype
      *
      * @param string $itemtype if given filter saved search by only this one
-     * @param bool   $inverse if true, the `itemtype` params filter by "not" criteria
+     * @param bool   $inverse  if true, the `itemtype` params filter by "not" criteria
      *
-     * @return array
      */
     public function getMine(?string $itemtype = null, bool $inverse = false): array
     {
@@ -793,8 +791,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     /**
      * return Html list of saved searches for a given itemtype
      *
-     * @param string|null $itemtype
-     * @param bool   $inverse
      *
      * @return void
      */
@@ -811,7 +807,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @param array $items Ordered ids
      *
-     * @return boolean
+     * @return bool
      */
     public function saveOrder(array $items)
     {
@@ -864,8 +860,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     /**
      * Update bookmark execution time after it has been loaded
      *
-     * @param integer $id   Saved search ID
-     * @param integer $time Execution time, in milliseconds
+     * @param int $id   Saved search ID
+     * @param int $time Execution time, in milliseconds
      *
      * @return void
      **/
@@ -959,10 +955,10 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     /**
      * Set do_count from massive actions
      *
-     * @param array   $ids      Items IDs
-     * @param integer $do_count One of self::COUNT_*
+     * @param array $ids      Items IDs
+     * @param int   $do_count One of self::COUNT_*
      *
-     * @return boolean
+     * @return bool
      */
     public function setDoCount(array $ids, $do_count)
     {
@@ -983,11 +979,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     /**
      * Set entity and recursivity from massive actions
      *
-     * @param array   $ids   Items IDs
-     * @param integer $eid   Entityy ID
-     * @param boolean $recur Recursivity
+     * @param array $ids   Items IDs
+     * @param int   $eid   Entityy ID
+     * @param bool  $recur Recursivity
      *
-     * @return boolean
+     * @return bool
      */
     public function setEntityRecur(array $ids, $eid, $recur)
     {
@@ -1020,7 +1016,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @param CronTask $task CronTask instance
      *
-     * @return integer
+     * @return int
      **/
     public static function croncountAll($task)
     {
@@ -1096,8 +1092,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     /**
      * Execute current saved search and return results
      *
-     * @param boolean $force Force query execution even if it should not be executed
-     *                       (default false)
+     * @param bool $force Force query execution even if it should not be executed
+     *                    (default false)
      *
      * @throws RuntimeException
      *
@@ -1216,9 +1212,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @since 9.4
      *
-     * @param boolean $forceall force all joins (false by default)
+     * @param bool $forceall force all joins (false by default)
      *
-     * @return array
      */
     public static function getVisibilityCriteria(bool $forceall = false): array
     {

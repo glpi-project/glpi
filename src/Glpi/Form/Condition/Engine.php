@@ -192,7 +192,6 @@ final class Engine
     }
 
     /**
-     * @param Question $question
      * @return ConditionData[]
      */
     private function computeItemValidation(Question $question): array
@@ -233,9 +232,8 @@ final class Engine
     }
 
     /**
-     * @param ConditionData[] $conditions
+     * @param ConditionData[]  $conditions
      * @param array<int, bool> &$result_per_condition
-     * @return bool
      */
     private function computeConditions(array $conditions, array &$result_per_condition = []): bool
     {

@@ -1852,7 +1852,6 @@ VCALENDAR
      * Validate that method invocation on server will result in a
      * NotAuthenticated exception.
      *
-     * @param Server $server
      */
     private function validateThatAuthenticationIsRequired(Server $server)
     {
@@ -1864,9 +1863,7 @@ VCALENDAR
     /**
      * Validate that response is OK.
      *
-     * @param Response $response
-     * @param integer              $status
-     * @param string|null          $content_type
+     * @param string|null $content_type
      */
     private function validateResponseIsOk(Response $response, int $status, string $content_type)
     {
@@ -1885,10 +1882,7 @@ VCALENDAR
     /**
      * Get a server instance.
      *
-     * @param string $http_method
-     * @param string $path
      *
-     * @return Server
      */
     private function getServerInstance(string $http_method, string $path): Server
     {
@@ -1905,9 +1899,7 @@ VCALENDAR
     /**
      * Get a XPath object from response.
      *
-     * @param Response $response
      *
-     * @return \DOMXPath
      */
     private function getXpathFromResponse(Response $response): \DOMXPath
     {
@@ -1919,8 +1911,6 @@ VCALENDAR
     /**
      * Validate common VComponent properies based on object fields.
      *
-     * @param Component $vcomp
-     * @param array $fields
      */
     private function validateCommonVComponentProperties(Component $vcomp, array $fields)
     {

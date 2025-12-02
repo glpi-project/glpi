@@ -60,7 +60,6 @@ final class OauthConfig
     /**
      * Get singleton instance.
      *
-     * @return OauthConfig
      */
     public static function getInstance(): OauthConfig
     {
@@ -141,7 +140,6 @@ final class OauthConfig
     /**
      * Return list of available oauth providers classnames.
      *
-     * @return array
      */
     public function getSupportedProviders(): array
     {

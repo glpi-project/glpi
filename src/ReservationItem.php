@@ -100,9 +100,9 @@ class ReservationItem extends CommonDBChild
      * Retrieve an item from the database for a specific item
      *
      * @param class-string<CommonDBTM> $itemtype Type of the item
-     * @param int $ID ID of the item
+     * @param int                      $ID       ID of the item
      *
-     * @return boolean true if succeed else false
+     * @return bool true if succeed else false
      **/
     public function getFromDBbyItem($itemtype, $ID)
     {
@@ -286,7 +286,6 @@ class ReservationItem extends CommonDBChild
     }
 
     /**
-     * @param CommonDBTM $item
      * @return false|void
      */
     public static function showActivationFormForItem(CommonDBTM $item)
@@ -687,7 +686,6 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param $name
      *
      * @return array
      * @used-by CronTask
@@ -702,7 +700,7 @@ TWIG, $twig_params);
      *
      * @param CronTask $task Task to log, if NULL use display (default NULL)
      *
-     * @return integer 0 : nothing to do 1 : done with success
+     * @return int 0 : nothing to do 1 : done with success
      * @used-by CronTask
      **/
     public static function cronReservation($task = null)
@@ -897,10 +895,10 @@ TWIG, $twig_params);
      * Display a dropdown with only reservable items
      *
      * @param array{idtable: string, name: string} $post
-     * <ul>
-     *     <li>idtable: itemtype of items to show</li>
-     *     <li>name: input name</li>
-     * </ul>
+     *                                                   <ul>
+     *                                                   <li>idtable: itemtype of items to show</li>
+     *                                                   <li>name: input name</li>
+     *                                                   </ul>
      *
      * @return void
      */
@@ -930,7 +928,6 @@ TWIG, $twig_params);
      *
      * @param class-string<CommonDBTM> $itemtype
      *
-     * @return DBmysqlIterator
      */
     public static function getAvailableItems(string $itemtype): DBmysqlIterator
     {
@@ -953,7 +950,6 @@ TWIG, $twig_params);
      *
      * @param class-string<CommonDBTM> $itemtype
      *
-     * @return int
      */
     public static function countAvailableItems(string $itemtype): int
     {
@@ -970,7 +966,6 @@ TWIG, $twig_params);
      *
      * @param class-string<CommonDBTM> $itemtype
      *
-     * @return array
      */
     private static function getAvailableItemsCriteria(string $itemtype): array
     {

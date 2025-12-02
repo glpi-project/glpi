@@ -65,8 +65,6 @@ class UserEmail extends CommonDBChild
     /**
      * Indicates whether the current user can alter the email addresses from the target user.
      *
-     * @param int $target_user_id
-     * @return bool
      */
     private function canAlterUserEmails(int $target_user_id): bool
     {
@@ -147,10 +145,10 @@ class UserEmail extends CommonDBChild
     /**
      * is an email of the user
      *
-     * @param $users_id           user ID
-     * @param $email     string   email to check user ID
+     * @param $users_id user ID
+     * @param $email    string   email to check user ID
      *
-     * @return boolean is this email set for the user ?
+     * @return bool is this email set for the user ?
      **/
     public static function isEmailForUser($users_id, $email)
     {
@@ -192,9 +190,6 @@ class UserEmail extends CommonDBChild
     /**
      * @since 0.85 (since 0.85 but param $id since 0.85)
      *
-     * @param $canedit
-     * @param $field_name
-     * @param $id
      **/
     public function showChildForItemForm($canedit, $field_name, $id, bool $display = true)
     {
@@ -266,7 +261,6 @@ class UserEmail extends CommonDBChild
 
 
     /**
-     * @param $user
      **/
     public static function showAddEmailButton(User $user)
     {
@@ -316,9 +310,7 @@ class UserEmail extends CommonDBChild
     /**
      * Check validity of email passed in input.
      *
-     * @param array $input
      *
-     * @return bool
      */
     private function checkInputEmailValidity(array $input): bool
     {
@@ -329,9 +321,9 @@ class UserEmail extends CommonDBChild
     /**
      * @since 0.84
      *
-     * @see CommonDBTM::getNameField
      *
      * @return string
+     * @see CommonDBTM::getNameField
      **/
     public static function getNameField()
     {

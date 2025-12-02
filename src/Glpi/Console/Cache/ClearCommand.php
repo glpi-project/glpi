@@ -47,7 +47,7 @@ class ClearCommand extends Command
     /**
      * Error code returned when failed to clear chache.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_CACHE_CLEAR_FAILURE = 1;
 

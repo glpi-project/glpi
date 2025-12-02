@@ -45,7 +45,7 @@ trait AssetImage
 {
     /**
      * Add/remove front, rear, and miscellaneous images
-     * @param  array $input the form input
+     * @param array $input the form input
      * @return array        the altered input
      */
     public function managePictures($input)

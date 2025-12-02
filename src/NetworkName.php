@@ -172,7 +172,6 @@ class NetworkName extends FQDNLabel
 
     /**
      * @param array $tab the array to fill
-     * @param array $joinparams
      *
      * @return void
      **/
@@ -312,8 +311,8 @@ class NetworkName extends FQDNLabel
      *
      * The address can be unaffected, and remain "free"
      *
-     * @param integer $items_id  the id of the item
-     * @param string  $itemtype  the type of the item
+     * @param int    $items_id the id of the item
+     * @param string $itemtype the type of the item
      *
      * @return void
      **/
@@ -340,7 +339,7 @@ class NetworkName extends FQDNLabel
      *
      * The address can be unaffected, and remain "free"
      *
-     * @param integer $networkNameID the id of the NetworkName
+     * @param int $networkNameID the id of the NetworkName
      *
      * @return bool
      **/
@@ -350,8 +349,8 @@ class NetworkName extends FQDNLabel
     }
 
     /**
-     * @param integer $networkNameID
-     * @param integer $items_id
+     * @param int    $networkNameID
+     * @param int    $items_id
      * @param string $itemtype
      * @return bool
      */
@@ -366,7 +365,7 @@ class NetworkName extends FQDNLabel
     }
 
     /**
-     * @param integer $networkPortID
+     * @param int $networkPortID
      * @used-by templates/pages/assets/networkport/form.html.twig
      *
      * @return void
@@ -418,13 +417,9 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
     }
 
     /**
-     * @param class-string<CommonDBTM> $itemtype
-     * @param HTMLTableBase $base
-     * @param HTMLTableSuperHeader|null $super
-     * @param HTMLTableHeader|null $father
-     * @param array $options
      * @throws Exception
      * @since 0.84
+     * @param class-string<CommonDBTM> $itemtype
      *
      * @return void
      */
@@ -474,10 +469,6 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
     }
 
     /**
-     * @param HTMLTableRow|null $row
-     * @param CommonDBTM|null $item
-     * @param HTMLTableCell|null $father
-     * @param array $options
      * @throws Exception
      * @since 0.84
      *
@@ -660,8 +651,7 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
      * NetworkName, remove, ...) or if readden from item of the item (for instance from the computer
      * form through NetworkPort::ShowForItem).
      *
-     * @param CommonDBTM $item
-     * @param integer $withtemplate
+     * @param int $withtemplate
      * @return false|void
      * @throws Exception
      */
@@ -820,8 +810,6 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param CommonDBTM $item
-     * @return int
      */
     public static function countForItem(CommonDBTM $item): int
     {

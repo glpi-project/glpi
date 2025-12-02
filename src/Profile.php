@@ -495,7 +495,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * @since 0.85
      *
-     * @return boolean
+     * @return bool
      **/
     public function pre_deleteItem()
     {
@@ -711,7 +711,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * @param array<int> $IDs array of profile ID to test
      *
-     * @return boolean true if have more right
+     * @return bool true if have more right
      **/
     public static function currentUserHaveMoreRightThan($IDs = [])
     {
@@ -787,11 +787,10 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * This is only used for GLPI core rights and not rights added by plugins.
      *
-     * @param string $form The tab/form name
-     * @phpstan-param non-empty-string $form
-     * @param string $interface The interface name
+     * @param         string                     $interface The interface name
+     * @param         string                     $form      The tab/form name
+     * @phpstan-param non-empty-string           $form
      * @phpstan-param 'all'|'central'|'helpdesk' $interface
-     * @return array
      * @phpstan-return ($interface is 'all' ? array<string, array<string, array<string, RightDefinition[]>>> : ($form is 'all' ? array<string, array<string, RightDefinition[]>> : ($group is 'all' ? array<string, RightDefinition[]> : RightDefinition[])))
      * @internal BC not guaranteed. Only public so it can be used in tests to ensure search options are made for all rights.
      */
@@ -800,8 +799,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         /**
          * Helper function to streamline rights definition
          * @param class-string<CommonDBTM>|null $itemtype
-         * @param string $interface
-         * @param array $options
+         * @param string                        $interface
+         * @param array                         $options
          * @return array
          */
         $fn_get_rights = static function (?string $itemtype, string $interface, array $options = []) {
@@ -1241,11 +1240,11 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * @since 0.85
      *
-     * @param string $title          the kind of lifecycle
-     * @param string $html_field     field that is sent to _POST
-     * @param string $db_field       field inside the DB (to get current state)
-     * @param array $statuses       all available statuses for the given cycle (obj::getAllStatusArray())
-     * @param boolean $canedit        can we edit the elements ?
+     * @param string $title      the kind of lifecycle
+     * @param string $html_field field that is sent to _POST
+     * @param string $db_field   field inside the DB (to get current state)
+     * @param array  $statuses   all available statuses for the given cycle (obj::getAllStatusArray())
+     * @param bool   $canedit    can we edit the elements ?
      *
      * @return void
      * @used-by templates/pages/admin/profile/base_tab.html.twig
@@ -1305,10 +1304,10 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * @since 0.85
      *
-     * @param string $title          the kind of lifecycle
-     * @param string $html_field     field that is sent to _POST
-     * @param string $db_field       field inside the DB (to get current state)
-     * @param boolean $canedit        can we edit the elements ?
+     * @param string $title      the kind of lifecycle
+     * @param string $html_field field that is sent to _POST
+     * @param string $db_field   field inside the DB (to get current state)
+     * @param bool   $canedit    can we edit the elements ?
      *
      * @return void
      * @used-by templates/pages/admin/profile/lifecycle_simple.html.twig
@@ -3140,11 +3139,11 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     /**
      * Make a select box for rights
      *
-     * @param array $values Array of values to display
-     * @param string $name name of the dropdown
-     * @param integer $current value in database (sum of rights)
-     * @param array$options
      ** @since 0.85
+     * @param array  $values  Array of values to display
+     * @param string $name    name of the dropdown
+     * @param int    $current value in database (sum of rights)
+     * @param array  $options
      */
     public static function dropdownRights(array $values, $name, $current, $options = [])
     {
@@ -3185,16 +3184,16 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * @since 0.84
      *
-     * @param string $name          select name
-     * @param array $options array of possible options:
-     *       - value   : preselected value.
-     *       - nonone  : hide none choice ? (default false)
-     *       - noread  : hide read choice ? (default false)
-     *       - nowrite : hide write choice ? (default false)
-     *       - display : display or get string (default true)
-     *       - rand    : specific rand (default is generated one)
+     * @param string $name    select name
+     * @param array  $options array of possible options:
+     *                        - value   : preselected value.
+     *                        - nonone  : hide none choice ? (default false)
+     *                        - noread  : hide read choice ? (default false)
+     *                        - nowrite : hide write choice ? (default false)
+     *                        - display : display or get string (default true)
+     *                        - rand    : specific rand (default is generated one)
      *
-     * @return integer|string
+     * @return int|string
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      **/
@@ -3237,8 +3236,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      * Dropdown profiles which have rights under the active one
      *
      * @param array $options array of possible options:
-     *    - name : string / name of the select (default is profiles_id)
-     *    - value : integer / preselected value (default 0)
+     *                       - name : string / name of the select (default is profiles_id)
+     *                       - value : integer / preselected value (default 0)
      *
      **/
     public static function dropdownUnder($options = [])
@@ -3281,7 +3280,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     /**
      * Get the default Profile for new user
      *
-     * @return integer profiles_id
+     * @return int profiles_id
      **/
     public static function getDefault()
     {
@@ -3297,8 +3296,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     }
 
     /**
-     * @return array<string, string>
      * @since 0.84
+     * @return array<string, string>
      **/
     public static function getInterfaces(): array
     {
@@ -3309,8 +3308,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     }
 
     /**
-     * @param $value
-     * @return string
      */
     public static function getInterfaceName($value): string
     {
@@ -3320,7 +3317,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     /**
      * @since 0.84
      *
-     * @param boolean $rights
+     * @param bool $rights
      **/
     public static function getHelpdeskHardwareTypes($rights = false)
     {
@@ -3340,9 +3337,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     }
 
     /**
-     * @param $value
-     * @return mixed|string
      * @since 0.84
+     * @return mixed|string
      */
     public static function getHelpdeskHardwareTypeName($value)
     {
@@ -3395,8 +3391,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      * @since 0.84
      *
      * @param array $options array of possible options:
-     *    - name : string / name of the select (default is profiles_id)
-     *    - values : array of values
+     *                       - name : string / name of the select (default is profiles_id)
+     *                       - values : array of values
      **/
     public static function dropdownHelpdeskItemtypes($options)
     {
@@ -3422,12 +3418,12 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * @since 0.84
      *
-     * @param integer $user_id id of the user
-     * @param string $rightname name of right to check
-     * @param integer $rightvalue value of right to check
-     * @param integer $entity_id id of the entity
+     * @param int    $user_id    id of the user
+     * @param string $rightname  name of right to check
+     * @param int    $rightvalue value of right to check
+     * @param int    $entity_id  id of the entity
      *
-     * @return boolean
+     * @return bool
      */
     public static function haveUserRight($user_id, $rightname, $rightvalue, $entity_id)
     {
@@ -3473,8 +3469,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * @since 0.85
      *
-     * @param class-string<CommonDBTM> $itemtype itemtype
-     * @param string $interface (default 'central')
+     * @param class-string<CommonDBTM> $itemtype  itemtype
+     * @param string                   $interface (default 'central')
      *
      * @return array
      **/
@@ -3492,18 +3488,18 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * @since 0.85
      *
-     * @param array $rights    possible:
-     *             'itemtype'   => the type of the item to check (as passed to self::getRightsFor())
-     *             'rights'     => when use of self::getRightsFor() is impossible
-     *             'label'      => the label for the right
-     *             'field'      => the name of the field inside the DB and HTML form (prefixed by '_')
-     *             'html_field' => when $html_field != '_'.$field
-     * @param array $options   possible:
-     *             'title'         the title of the matrix
-     *             'canedit'
-     *             'default_class' the default CSS class used for the row
+     * @param array $rights  possible:
+     *                       'itemtype'   => the type of the item to check (as passed to self::getRightsFor())
+     *                       'rights'     => when use of self::getRightsFor() is impossible
+     *                       'label'      => the label for the right
+     *                       'field'      => the name of the field inside the DB and HTML form (prefixed by '_')
+     *                       'html_field' => when $html_field != '_'.$field
+     * @param array $options possible:
+     *                       'title'         the title of the matrix
+     *                       'canedit'
+     *                       'default_class' the default CSS class used for the row
      *
-     * @return integer random value used to generate the ids
+     * @return int random value used to generate the ids
      **/
     public function displayRightsChoiceMatrix(array $rights, array $options = [])
     {
@@ -3638,16 +3634,16 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      * @since 0.85
      *
      * @param array $elements all pair identifier => label
-     * @param array $options possible:
-     *             'canedit'
-     *             'field'         name of the HTML field
-     *             'value'         the value inside the database
-     *             'max_per_line'  maximum number of elements per line
-     *             'check_all'     add a checkbox to check or uncheck every checkbox
-     *             'rand'          random value used to generate the ids
-     *             'zero_on_empty' do we send 0 when checkbox is not checked ?
-     *             'display'
-     *             'check_method'  method used to check the right
+     * @param array $options  possible:
+     *                        'canedit'
+     *                        'field'         name of the HTML field
+     *                        'value'         the value inside the database
+     *                        'max_per_line'  maximum number of elements per line
+     *                        'check_all'     add a checkbox to check or uncheck every checkbox
+     *                        'rand'          random value used to generate the ids
+     *                        'zero_on_empty' do we send 0 when checkbox is not checked ?
+     *                        'display'
+     *                        'check_method'  method used to check the right
      *
      * @return string|void Return generated content if `display` parameter is true.
      * @used-by templates/pages/admin/profile/assistance.html.twig
@@ -3771,7 +3767,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      * Check if this profile is the last super-admin profile (a "super-admin
      * profile" is a profile that can edit other profiles)
      *
-     * @return bool
      */
     public function isLastSuperAdminProfile(): bool
     {

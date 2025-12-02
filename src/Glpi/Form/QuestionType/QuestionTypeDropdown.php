@@ -84,8 +84,6 @@ final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable implemen
     /**
      * Check if the question allows multiple options to be selected
      *
-     * @param ?Question $question
-     * @return bool
      */
     public function isMultipleDropdown(?Question $question): bool
     {

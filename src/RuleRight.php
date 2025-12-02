@@ -361,8 +361,6 @@ class RuleRight extends Rule
     /**
      * Get all ldap rules criteria from the DB and add them into the RULES_CRITERIAS
      *
-     * @param array &$criteria
-     * @return void
      **/
     public function addSpecificCriteriasToArray(array &$criteria): void
     {

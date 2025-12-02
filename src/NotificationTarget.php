@@ -145,13 +145,13 @@ class NotificationTarget extends CommonDBChild
     /**
      * Retrieve an item from the database for a specific target
      *
-     * @param integer $notifications_id notification ID
-     * @param string  $type             type of the target to retrive
-     * @param integer $ID               ID of the target to retrieve
      *
      * @since 0.85
+     * @param int    $notifications_id notification ID
+     * @param string $type             type of the target to retrive
+     * @param int    $ID               ID of the target to retrieve
      *
-     * @return boolean
+     * @return bool
      **/
     public function getFromDBForTarget($notifications_id, $type, $ID)
     {
@@ -174,18 +174,18 @@ class NotificationTarget extends CommonDBChild
      *
      * @since 0.84 (new parameter)
      *
-     * @param string  $event     notification event
-     * @param array   $infos     destination of the notification
-     * @param boolean $notify_me notify me on my action ?
-     *                           ($infos contains users_id to check if the target is me)
-     *                           (false by default)
-     * @param mixed $emitter     if this action is executed by the cron, we can
-     *                           supply the id of the user (or the email if this
-     *                           is an anonymous user with no account) who
-     *                           triggered the event so it can be used instead of
-     *                           getLoginUserID
+     * @param string $event     notification event
+     * @param array  $infos     destination of the notification
+     * @param bool   $notify_me notify me on my action ?
+     *                          ($infos contains users_id to check if the target is me)
+     *                          (false by default)
+     * @param mixed  $emitter   if this action is executed by the cron, we can
+     *                          supply the id of the user (or the email if this
+     *                          is an anonymous user with no account) who
+     *                          triggered the event so it can be used instead of
+     *                          getLoginUserID
      *
-     * @return boolean
+     * @return bool
      **/
     public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null)
     {
@@ -232,9 +232,8 @@ class NotificationTarget extends CommonDBChild
     /**
      * Check if notification (for a specific event) can be disabled
      *
-     * @param string  $event     notification event
+     * @param string $event notification event
      *
-     * @return boolean
      **/
     protected function canNotificationBeDisabled(string $event): bool
     {
@@ -243,7 +242,7 @@ class NotificationTarget extends CommonDBChild
 
 
     /**
-     * @param $event  (default '')
+     * @param $event (default '')
      **/
     public function getSubjectPrefix($event = '')
     {
@@ -295,11 +294,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Get message ID for given item/event.
      *
-     * @param string $itemtype
-     * @param int $items_id
-     * @param string $event
      *
-     * @return string
      */
     final public static function getMessageIdForEvent(?string $itemtype, ?int $items_id, ?string $event): string
     {
@@ -346,9 +341,9 @@ class NotificationTarget extends CommonDBChild
     /**
      * Get a notificationtarget class by giving the object which raises the event
      *
-     * @param $item            the object which raises the event
-     * @param $event           the event which will be used (default '')
-     * @param $options   array of options
+     * @param $item    the object which raises the event
+     * @param $event   the event which will be used (default '')
+     * @param $options array of options
      *
      * @return NotificationTarget|false
      **/
@@ -374,9 +369,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Get the expected notification target class name for a given itemtype
      *
-     * @param string $itemtype
      *
-     * @return string
      */
     public static function getInstanceClass(string $itemtype): string
     {
@@ -399,9 +392,9 @@ class NotificationTarget extends CommonDBChild
     /**
      * Get a notificationtarget class by giving an itemtype
      *
-     * @param $itemtype           the itemtype of the object which raises the event
-     * @param $event              the event which will be used (default '')
-     * @param $options   array    of options
+     * @param $itemtype the itemtype of the object which raises the event
+     * @param $event    the event which will be used (default '')
+     * @param $options  array    of options
      *
      * @return NotificationTarget|false
      **/
@@ -483,7 +476,6 @@ class NotificationTarget extends CommonDBChild
 
 
     /**
-     * @param $input
      **/
     public static function updateTargets($input)
     {
@@ -560,7 +552,6 @@ class NotificationTarget extends CommonDBChild
 
 
     /**
-     * @param $data
      *
      * @return array
      **/
@@ -707,9 +698,6 @@ class NotificationTarget extends CommonDBChild
     /**
      * @since 0.84
      *
-     * @param $usertype
-     * @param $redirect
-     * @param $anchor
      **/
     public function formatURL($usertype, $redirect, ?string $anchor = null)
     {
@@ -865,10 +853,10 @@ class NotificationTarget extends CommonDBChild
     /**
      * Add users of a group to targets
      *
-     * @param integer $manager  0 all users, 1 only supervisors, 2 all users without supervisors
-     * @param integer $group_id id of the group
      *
      * @since 9.2
+     * @param int $manager  0 all users, 1 only supervisors, 2 all users without supervisors
+     * @param int $group_id id of the group
      *
      * @return void
      **/
@@ -961,7 +949,6 @@ class NotificationTarget extends CommonDBChild
     /**
      * Return list of notification events for which the notifications should be sent immediately.
      *
-     * @return array
      */
     public function getEventsToSendImmediately(): array
     {
@@ -989,7 +976,6 @@ class NotificationTarget extends CommonDBChild
     /**
      * Return whether the notification content corresponding to the given event can be disclosed.
      *
-     * @return bool
      */
     public function canNotificationContentBeDisclosed(string $event): bool
     {
@@ -1014,9 +1000,9 @@ class NotificationTarget extends CommonDBChild
 
 
     /**
-     * @param $target    (default '') Typically the ID of the recipient
-     * @param $label     (default '') The recipient label
-     * @param $type      (=Notification::USER_TYPE) Type of the recipient
+     * @param $target (default '') Typically the ID of the recipient
+     * @param $label  (default '') The recipient label
+     * @param $type   (=Notification::USER_TYPE) Type of the recipient
      **/
     public function addTarget($target = '', $label = '', $type = Notification::USER_TYPE)
     {
@@ -1045,7 +1031,6 @@ class NotificationTarget extends CommonDBChild
 
 
     /**
-     * @param $entity
      **/
     final public function addGroupsToTargets($entity)
     {
@@ -1099,7 +1084,7 @@ class NotificationTarget extends CommonDBChild
      * Can be updated by implementing the addAdditionnalTargets() method
      * Can be overriden (like dbconnection)
      *
-     * @param integer $entity the entity on which the event is raised
+     * @param int $entity the entity on which the event is raised
      *
      * @return void
      **/
@@ -1141,7 +1126,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Fetch item associated with the object on which the event was raised
      *
-     * @param $event  (default '')
+     * @param $event (default '')
      *
      * @return void
      **/
@@ -1154,10 +1139,10 @@ class NotificationTarget extends CommonDBChild
     /**
      * Add user to the notified users list
      *
-     * @param string  $field            look for user looking for this field in the object
-     *                                  which raises the event
-     * @param boolean $search_in_object search is done in the object ? if not  in target object
-     *                                  (false by default)
+     * @param string $field            look for user looking for this field in the object
+     *                                 which raises the event
+     * @param bool   $search_in_object search is done in the object ? if not  in target object
+     *                                 (false by default)
      *
      * @return void
      **/
@@ -1231,7 +1216,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Add users from a profile
      *
-     * @param integer $profiles_id the profile ID
+     * @param int $profiles_id the profile ID
      *
      * @return void
      */
@@ -1290,7 +1275,6 @@ class NotificationTarget extends CommonDBChild
     /**
      * Get the url base for the entity
      *
-     * @param $entity
      **/
     public function getUrlBase()
     {
@@ -1530,8 +1514,6 @@ class NotificationTarget extends CommonDBChild
 
 
     /**
-     * @param $event
-     * @param $options
      **/
     public function &getForTemplate($event, $options)
     {
@@ -1550,7 +1532,6 @@ class NotificationTarget extends CommonDBChild
     /**
      * Register global tags.
      *
-     * @return void
      */
     private function registerGlobalTags(): void
     {
@@ -1565,7 +1546,6 @@ class NotificationTarget extends CommonDBChild
     /**
      * Define global tags data.
      *
-     * @return array
      */
     private function getGlobalTagsData(): array
     {
@@ -1583,14 +1563,14 @@ class NotificationTarget extends CommonDBChild
 
     /**
      * @param $options array{
-     *   tag: string|false,
-     *   value: bool,
-     *   label: string|false,
-     *   events: array<string>|self::TAG_FOR_ALL_EVENTS,
-     *   foreach: bool,
-     *   lang: bool,
-     *   allowed_values: array<mixed>
-     * }
+     *                 tag: string|false,
+     *                 value: bool,
+     *                 label: string|false,
+     *                 events: array<string>|self::TAG_FOR_ALL_EVENTS,
+     *                 foreach: bool,
+     *                 lang: bool,
+     *                 allowed_values: array<mixed>
+     *                 }
      **/
     public function addTagToList($options = [])
     {
@@ -1678,7 +1658,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @param $group Group object
      *
-     * @return integer
+     * @return int
      **/
     public static function countForGroup(Group $group)
     {
@@ -1715,7 +1695,6 @@ class NotificationTarget extends CommonDBChild
      *
      * @param $group Group object
      *
-     * @return bool
      **/
     public static function showForGroup(Group $group): bool
     {
@@ -1818,7 +1797,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Is current mode for mail
      *
-     * @return boolean
+     * @return bool
      */
     protected function isMailMode()
     {
@@ -1862,7 +1841,6 @@ class NotificationTarget extends CommonDBChild
     /**
      * Check if at least one target item is recursive
      *
-     * @return bool
      */
     protected function isTargetItemRecursive(): bool
     {

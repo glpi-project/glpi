@@ -71,7 +71,6 @@ class Camera extends Device
     }
 
     /**
-     * @param Item_Devices $itemdevice
      * @param stdClass $val
      *
      * @return void

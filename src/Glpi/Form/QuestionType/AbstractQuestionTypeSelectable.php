@@ -90,8 +90,6 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType imple
     /**
      * Specific input type for child classes
      *
-     * @param ?Question $question
-     * @return string
      */
     abstract public function getInputType(?Question $question): string;
 
@@ -103,7 +101,6 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType imple
      * - question_type: the question type class
      * - rand: a random number
      *
-     * @return string
      */
     protected function getFormInlineScript(): string
     {
@@ -275,8 +272,6 @@ TWIG;
     /**
      * Retrieve the options
      *
-     * @param ?Question $question
-     * @return array
      */
     public function getOptions(?Question $question): array
     {
@@ -296,8 +291,6 @@ TWIG;
     /**
      * Retrieve the values
      *
-     * @param ?Question $question
-     * @return array
      */
     public function getValues(?Question $question): array
     {
@@ -323,7 +316,6 @@ TWIG;
     /**
      * Retrieve the selectable question options class
      *
-     * @return string
      */
     protected function getSelectableQuestionOptionsClass(): string
     {

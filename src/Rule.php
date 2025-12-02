@@ -155,7 +155,7 @@ class Rule extends CommonDBTM
      *
      *  @since 0.84
      *
-     *  @param int $rules_id ID of the rule
+     * @param int $rules_id ID of the rule
      *
      * @return ?Rule
      */
@@ -190,7 +190,7 @@ class Rule extends CommonDBTM
     /**
      * Is this rule use condition
      *
-     * @return boolean
+     * @return bool
      **/
     public function useConditions()
     {
@@ -226,7 +226,7 @@ class Rule extends CommonDBTM
     /**
      * Get rule condition type Name
      *
-     * @param integer $value condition ID
+     * @param int $value condition ID
      *
      * @return string
      **/
@@ -853,9 +853,8 @@ class Rule extends CommonDBTM
     }
 
     /**
-     * @param  string $field
-     * @param  array $values
-     * @param  array $options
+     * @param string $field
+     * @param array  $values
      *
      * @return string
      **/
@@ -881,10 +880,9 @@ class Rule extends CommonDBTM
     }
 
     /**
-     * @param  string $field
-     * @param  string $name              (default '')
-     * @param  string|array $values            (default '')
-     * @param  array $options
+     * @param string       $field
+     * @param string       $name   (default '')
+     * @param string|array $values (default '')
      *
      * @return string
      **/
@@ -985,7 +983,7 @@ class Rule extends CommonDBTM
      *
      * @param array $options array of parameters
      *
-     * @return integer|string
+     * @return int|string
      **/
     protected function dropdownRulesMatch($options = [])
     {
@@ -1003,11 +1001,11 @@ class Rule extends CommonDBTM
     /**
      * Get all criteria for a given rule and saves them in the object
      *
-     * @param integer $ID              the rule_description ID
-     * @param boolean $withcriterias   1 to retrieve all the criteria for a given rule (default 0)
-     * @param boolean $withactions     1 to retrieve all the actions for a given rule (default 0)
+     * @param int  $ID            the rule_description ID
+     * @param bool $withcriterias 1 to retrieve all the criteria for a given rule (default 0)
+     * @param bool $withactions   1 to retrieve all the actions for a given rule (default 0)
      *
-     * @return boolean
+     * @return bool
      * @see {@link actions}
      * @see {@link criterias}
      **/
@@ -1059,7 +1057,7 @@ class Rule extends CommonDBTM
     /**
      * Get maximum number of Actions of the Rule (0 = unlimited)
      *
-     * @return integer the maximum number of actions
+     * @return int the maximum number of actions
      **/
     public function maxActionsCount()
     {
@@ -1069,8 +1067,8 @@ class Rule extends CommonDBTM
     /**
      * Display all rules actions
      *
-     * @param integer $rules_id rule ID
-     * @param array   $options  array of options : may be readonly
+     * @param int   $rules_id rule ID
+     * @param array $options  array of options : may be readonly
      *
      * @return void
      **/
@@ -1200,8 +1198,8 @@ TWIG, $twig_params);
     /**
      * Display all rules criteria
      *
-     * @param integer $rules_id
-     * @param array $options   array of options : may be readonly
+     * @param int   $rules_id
+     * @param array $options  array of options : may be readonly
      *
      * @return void
      **/
@@ -1316,7 +1314,7 @@ TWIG, $twig_params);
      *
      * @param array $options array of options : may be readonly
      *
-     * @return integer|string the initial value (first)
+     * @return int|string the initial value (first)
      **/
     public function dropdownCriteria($options = [])
     {
@@ -1359,7 +1357,7 @@ TWIG, $twig_params);
      *
      * @param array $options already used actions
      *
-     * @return integer|string the initial value (first non used)
+     * @return int|string the initial value (first non used)
      **/
     public function dropdownActions($options = [])
     {
@@ -1465,11 +1463,11 @@ TWIG, $twig_params);
     /**
      * Process the rule
      *
-     * @param array &$input the input data used to check criteria
-     * @param array &$output the initial output array used to be manipulated by actions
-     * @param array &$params parameters for all internal functions
+     * @param array &$input   the input data used to check criteria
+     * @param array &$output  the initial output array used to be manipulated by actions
+     * @param array &$params  parameters for all internal functions
      * @param array &$options array options:
-     *                     - only_criteria : only react on specific criteria
+     *                        - only_criteria : only react on specific criteria
      *
      * @return void
      */
@@ -1500,10 +1498,10 @@ TWIG, $twig_params);
     /**
      * Update Only criteria options if needed
      *
-     * @param array &$options   options :
-     *                            - only_criteria : only react on specific criteria
-     * @param array $refoutput   the initial output array used to be manipulated by actions
-     * @param array $newoutput   the output array after actions process
+     * @param array &$options  options :
+     *                         - only_criteria : only react on specific criteria
+     * @param array $refoutput the initial output array used to be manipulated by actions
+     * @param array $newoutput the output array after actions process
      *
      * @return void
      **/
@@ -1551,7 +1549,7 @@ TWIG, $twig_params);
      *
      * @param array $options
      *
-     * @return boolean
+     * @return bool
      **/
     public function validateCriterias($options)
     {
@@ -1579,7 +1577,7 @@ TWIG, $twig_params);
      *
      * @param array $input the input data used to check criteri
      *
-     * @return boolean if criteria match
+     * @return bool if criteria match
      **/
     public function checkCriterias($input)
     {
@@ -1645,10 +1643,10 @@ TWIG, $twig_params);
     /**
      * Process a criteria of a rule
      *
-     * @param RuleCriteria $criteria  criteria to check
-     * @param array &$input     the input data used to check criteria
+     * @param RuleCriteria $criteria criteria to check
+     * @param array        &$input   the input data used to check criteria
      *
-     * @return boolean
+     * @return bool
      **/
     public function checkCriteria($criteria, &$input)
     {
@@ -1803,9 +1801,9 @@ TWIG, $twig_params);
      * @since 0.84
      *
      * @param RuleAction $action
-     * @param array      $output  rule execution output
-     * @param array      $params  parameters
-     * @param array      $input   the input data
+     * @param array      $output rule execution output
+     * @param array      $params parameters
+     * @param array      $input  the input data
      *
      * @return array Updated output
      */
@@ -1842,9 +1840,9 @@ TWIG, $twig_params);
      *
      * @since 9.3.2 Added $input parameter
      *
-     * @param array $output  the fields to manipulate
-     * @param array $params  parameters
-     * @param array $input   the input data
+     * @param array $output the fields to manipulate
+     * @param array $params parameters
+     * @param array $input  the input data
      *
      * @return array Updated output
      **/
@@ -1925,11 +1923,6 @@ TWIG, $twig_params);
 
     /**
      * Get the data for the list of rules
-     * @param bool $display_criteria
-     * @param bool $display_actions
-     * @param bool $display_entity
-     * @param bool $can_edit
-     * @return array
      * @see RuleCollection::showListRules()
      */
     final public function getDataForList(bool $display_criteria, bool $display_actions, bool $display_entity, bool $can_edit): array
@@ -2094,7 +2087,7 @@ TWIG, $twig_params);
      * Get the next ranking for a specified rule
      * @param string|null $sub_type Specific class for the rule. Defaults to the current class at runtime.
      *
-     * @return integer
+     * @return int
      **/
     public function getNextRanking(?string $sub_type = null)
     {
@@ -2116,10 +2109,10 @@ TWIG, $twig_params);
     /**
      * Show preview result of a rule
      *
-     * @param array $input     input data array
-     * @param array $params    params used (see addSpecificParamsForPreview)
      *
      * @since 11.0.0 The `$target` parameter has been removed.
+     * @param array $input  input data array
+     * @param array $params params used (see addSpecificParamsForPreview)
      *
      * @return void
      */
@@ -2237,7 +2230,7 @@ TWIG, $twig_params);
 
     /**
      * @param array  $fields
-     * @param string $addtotd   (default '')
+     * @param string $addtotd (default '')
      *
      * @return string
      **/
@@ -2251,9 +2244,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param array $fields
      *
-     * @return array
      **/
     private function getMinimalCriteria(array $fields): array
     {
@@ -2270,7 +2261,7 @@ TWIG, $twig_params);
 
     /**
      * @param array  $fields
-     * @param string $addtotd   (default '')
+     * @param string $addtotd (default '')
      *
      * @return string
      **/
@@ -2284,9 +2275,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param array $fields
      *
-     * @return array
      **/
     private function getMinimalAction(array $fields): array
     {
@@ -2306,9 +2295,9 @@ TWIG, $twig_params);
     /**
      * Return a value associated with a pattern associated to a criteria to display it
      *
-     * @param string           $ID        the given criteria
-     * @param integer          $condition condition used
-     * @param string|int|null  $pattern   the pattern
+     * @param string          $ID        the given criteria
+     * @param int             $condition condition used
+     * @param string|int|null $pattern   the pattern
      *
      * @return ?string
      **/
@@ -2417,9 +2406,9 @@ TWIG, $twig_params);
     /**
      * Used to get specific criteria patterns
      *
-     * @param string  $ID        the given criteria
-     * @param integer $condition condition used
-     * @param string  $pattern   the pattern
+     * @param string $ID        the given criteria
+     * @param int    $condition condition used
+     * @param string $pattern   the pattern
      *
      * @return mixed|false  A value associated with the criteria, or false otherwise
      **/
@@ -2435,7 +2424,7 @@ TWIG, $twig_params);
      * @param string          $ID        the given criteria
      * @param self::PATTERN_* $condition condition used
      * @param string          $value     the pattern (default '')
-     * @param boolean         $test      Is to test rule ? (false by default)
+     * @param bool            $test      Is to test rule ? (false by default)
      *
      * @return void
      **/
@@ -2615,9 +2604,9 @@ TWIG, $twig_params);
     /**
      * Return a "display" value associated with a pattern associated to a criteria
      *
-     * @param string $ID     the given action
-     * @param string  $type   the type of action
-     * @param int|string $value  the value
+     * @param string     $ID    the given action
+     * @param string     $type  the type of action
+     * @param int|string $value the value
      *
      * @return string|int
      **/
@@ -2708,8 +2697,8 @@ TWIG, $twig_params);
      * Return a value associated with a pattern associated to a criteria to display it
      *
      * @param string $ID        the given criteria
-     * @param integer $condition condition used
-     * @param string  $value     the pattern
+     * @param int    $condition condition used
+     * @param string $value     the pattern
      *
      * @return string
      **/
@@ -2763,9 +2752,9 @@ TWIG, $twig_params);
     /**
      * Criteria form used to preview rule
      *
-     * @param int $rules_id ID of the rule
      *
      * @since 11.0.0 The `$target` parameter has been removed.
+     * @param int $rules_id ID of the rule
      * @return void
      */
     public function showRulePreviewCriteriasForm($rules_id)
@@ -2841,9 +2830,9 @@ TWIG, $twig_params);
      * Dropdown rules for a defined sub_type of rule
      *
      * @param array $options array of possible options:
-     *    - name : string / name of the select (default is depending on itemtype)
-     *    - sub_type : integer / sub_type of rule
-     *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
+     *                       - name : string / name of the select (default is depending on itemtype)
+     *                       - sub_type : integer / sub_type of rule
+     *                       - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
      **/
     public static function dropdown($options = [])
     {
@@ -2916,9 +2905,9 @@ TWIG, $twig_params);
      *
      *  @since 0.84
      *
-     * @param string $hook            the hook to execute (getRuleActions, getRuleCriteria)
-     * @param array $params   array  input parameters
-     * @param string $itemtype        (default '')
+     * @param string $hook     the hook to execute (getRuleActions, getRuleCriteria)
+     * @param array  $params   array  input parameters
+     * @param string $itemtype (default '')
      *
      * @return array input parameters merged with hook parameters
      **/
@@ -3123,12 +3112,12 @@ TWIG, ['label' => $this->getTitle()]);
 
     /**
      * @param self::PATTERN_* $condition
-     * @param array $criteria
-     * @param string $name
-     * @param string $value
-     * @param bool $test (false by default)
+     * @param array           $criteria
+     * @param string          $name
+     * @param string          $value
+     * @param bool            $test      (false by default)
      *
-     * @return boolean
+     * @return bool
      */
     public function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false)
     {
@@ -3136,10 +3125,9 @@ TWIG, ['label' => $this->getTitle()]);
     }
 
     /**
-     * @param array  $action
-     * @param string $value          value to display (default '')
+     * @param string $value value to display (default '')
      *
-     * @return boolean
+     * @return bool
      **/
     public function displayAdditionalRuleAction(array $action, $value = '')
     {
@@ -3213,7 +3201,7 @@ TWIG, ['label' => $this->getTitle()]);
     /**
      * Clean Rule with Action is assign to an item
      *
-     * @param Object $item
+     * @param object $item
      * @param string $field name (default is FK to item) (default '')
      *
      * @return void
@@ -3251,7 +3239,7 @@ TWIG, ['label' => $this->getTitle()]);
     /**
      * Clean Rule with Criteria on an item
      *
-     * @param Object $item
+     * @param object $item
      * @param string $field name (default is FK to item) (default '')
      *
      * @return void
@@ -3435,7 +3423,6 @@ TWIG, ['label' => $this->getTitle()]);
     /**
      * Get all "negatives" condition (is not, does not contains, ...)
      *
-     * @return array
      */
     public static function getNegativesConditions(): array
     {
@@ -3452,7 +3439,6 @@ TWIG, ['label' => $this->getTitle()]);
      * Get all condition that may not be displayed as a simple text
      * For example, a dropdown value or a date
      *
-     * @return array
      */
     public static function getConditionsWithComplexValues(): array
     {
@@ -3471,10 +3457,9 @@ TWIG, ['label' => $this->getTitle()]);
     /**
      * Create rules (initialisation).
      *
-     * @param bool      $reset      Whether to reset before adding new rules, defaults to true
-     * @param ?string   $itemtype   Itemtype to work on
+     * @param bool    $reset    Whether to reset before adding new rules, defaults to true
+     * @param ?string $itemtype Itemtype to work on
      *
-     * @return bool
      */
     final public function initRules(bool $reset = true, ?string $itemtype = null): bool
     {
@@ -3665,7 +3650,6 @@ TWIG, ['label' => $this->getTitle()]);
     /**
      * Check whether default rules exists.
      *
-     * @return boolean
      */
     final public static function hasDefaultRules(): bool
     {
@@ -3675,7 +3659,6 @@ TWIG, ['label' => $this->getTitle()]);
     /**
      * Get default rules as XML
      *
-     * @return SimpleXMLElement|false
      */
     public function getDefaultRules(): SimpleXMLElement|false
     {
@@ -3685,7 +3668,6 @@ TWIG, ['label' => $this->getTitle()]);
     /**
      * Returns default rules file path.
      *
-     * @return string
      */
     private static function getDefaultRulesFilePath(): string
     {

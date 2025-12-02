@@ -45,7 +45,6 @@ class CalendarTest extends DbTestCase
     /**
      * Data provider for the testComputeEndDate function
      *
-     * @return iterable
      */
     protected function testComputeEndDateProvider(): iterable
     {
@@ -89,7 +88,6 @@ class CalendarTest extends DbTestCase
     /**
      * Test cases for the computeEndDate function
      *
-     * @return void
      */
     public function testComputeEndDate(): void
     {

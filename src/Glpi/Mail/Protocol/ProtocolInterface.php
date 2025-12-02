@@ -40,7 +40,7 @@ interface ProtocolInterface
     /**
      * Do not validate SSL certificate
      *
-     * @param  bool $novalidatecert Set to true to disable certificate validation
+     * @param bool $novalidatecert Set to true to disable certificate validation
      *
      * @return self
      */
@@ -49,9 +49,9 @@ interface ProtocolInterface
     /**
      * Open connection to server.
      *
-     * @param  string      $host  hostname or IP address of POP3 server
-     * @param  int|null    $port  server port, null value with fallback to default port
-     * @param  string|bool $ssl   use 'SSL', 'TLS' or false
+     * @param string      $host hostname or IP address of POP3 server
+     * @param int|null    $port server port, null value with fallback to default port
+     * @param string|bool $ssl  use 'SSL', 'TLS' or false
      *
      * @return void
      */
@@ -60,8 +60,8 @@ interface ProtocolInterface
     /**
      * Login to server.
      *
-     * @param  string $user      username
-     * @param  string $password  password
+     * @param string $user     username
+     * @param string $password password
      *
      * @return bool
      */

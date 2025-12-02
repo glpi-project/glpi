@@ -116,7 +116,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     /**
      * Get type name for device (used in Log)
      *
-     * @param integer $nb Count
+     * @param int $nb Count
      *
      * @return string
      */
@@ -475,9 +475,9 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     /**
      * Get the Item_Device* a given item type can have
      *
-     * @param string $itemtype the type of the item that we want to know its devices
      *
      * @since 0.85
+     * @param string $itemtype the type of the item that we want to know its devices
      *
      * @return class-string<Item_Devices>[]
      **/
@@ -559,8 +559,8 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     /**
      * get items associated to the given one (defined by $itemtype and $items_id)
      *
-     * @param string  $itemtype          the type of the item we want the resulting items to be associated to
-     * @param string  $items_id          the name of the item we want the resulting items to be associated to
+     * @param string $itemtype the type of the item we want the resulting items to be associated to
+     * @param string $items_id the name of the item we want the resulting items to be associated to
      *
      * @return array the items associated to the given one (empty if none was found)
      **/
@@ -642,8 +642,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     }
 
     /**
-     * @param CommonGLPI $item
-     * @param integer $withtemplate
+     * @param int $withtemplate
      * @return false|void
      */
     public static function showForItem(CommonGLPI $item, $withtemplate = 0)
@@ -823,7 +822,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     }
 
     /**
-     * @param CommonDBTM $item
+     * @param CommonDBTM                    $item
      * @param class-string<CommonDBTM>|null $peer_type
      * @return array
      */
@@ -890,13 +889,6 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      * In cas of $item is an instance, then $options contains the type of the item (Computer,
      * Printer ...).
      *
-     * @param CommonDBTM $item
-     * @param HTMLTableMain $table
-     * @param array $options
-     * @param ?HTMLTableSuperHeader $delete_all_column
-     * @param HTMLTableSuperHeader $common_column
-     * @param HTMLTableSuperHeader $specific_column
-     * @param ?HTMLTableSuperHeader $delete_column
      * @param ?HTMLTableSuperHeader $dynamic_column
      * @return void
      **/
@@ -1191,11 +1183,11 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
 
     /**
-     * @param positive-int $numberToAdd
+     * @param positive-int                    $numberToAdd
      * @param class-string<CommonDBTM>|string $itemtype
-     * @param int $items_id
-     * @param int $devices_id
-     * @param array $input Array to complete (permit to define values)
+     * @param int                             $items_id
+     * @param int                             $devices_id
+     * @param array                           $input       Array to complete (permit to define values)
      * @return void
      **/
     public function addDevices($numberToAdd, $itemtype, $items_id, $devices_id, $input = [])
@@ -1229,9 +1221,9 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     /**
      * Add one or several device(s) from front/item_devices.form.php.
      *
+     * @since 0.85
      * @param array $input Array of input: should be $_POST
      * @return void
-     * @since 0.85
      **/
     public static function addDevicesFromPOST($input)
     {
@@ -1397,11 +1389,11 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     /**
      * @since 0.85
      *
-     * @param positive-int $item_devices_id
-     * @param positive-int $items_id
+     * @param positive-int             $item_devices_id
+     * @param positive-int             $items_id
      * @param class-string<CommonDBTM> $itemtype
      *
-     * @return boolean
+     * @return bool
      **/
     public static function affectItem_Device($item_devices_id, $items_id, $itemtype)
     {
@@ -1416,8 +1408,8 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
     /**
      * @param class-string<CommonDBTM> $itemtype
-     * @param positive-int $items_id
-     * @param boolean $unaffect
+     * @param positive-int             $items_id
+     * @param bool                     $unaffect
      * @return void
      **/
     public static function cleanItemDeviceDBOnItemDelete($itemtype, $items_id, $unaffect)

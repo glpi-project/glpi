@@ -135,12 +135,12 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
     /**
      * Print the appliance form
      *
-     * @param $ID        integer ID of the item
-     * @param $options   array
-     *     - target filename : where to go when done.
-     *     - withtemplate boolean : template or basic item
+     * @param $ID      integer ID of the item
+     * @param $options array
+     *                 - target filename : where to go when done.
+     *                 - withtemplate boolean : template or basic item
      *
-     * @return boolean item found
+     * @return bool item found
      */
     public function showForm($ID, array $options = [])
     {
@@ -357,7 +357,6 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
 
 
     /**
-     * @param string $itemtype
      *
      * @return array
      */
@@ -483,9 +482,8 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
     /**
      * Get item types that can be linked to an appliance
      *
-     * @param boolean $all Get all possible types or only allowed ones
+     * @param bool $all Get all possible types or only allowed ones
      *
-     * @return array
      */
     public static function getTypes($all = false): array
     {

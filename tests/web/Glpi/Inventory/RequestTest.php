@@ -75,7 +75,7 @@ class RequestTest extends TestCase
      *
      * @param Response $res   Request response
      * @param string   $reply Reply tag contents
-     * @param integer  $reply Reply HTTP code
+     * @param int      $reply Reply HTTP code
      *
      * @return void
      */
@@ -97,7 +97,7 @@ class RequestTest extends TestCase
      *
      * @param Response $res   Request response
      * @param string   $reply Reply tag contents
-     * @param integer  $reply Reply HTTP code
+     * @param int      $reply Reply HTTP code
      *
      * @return void
      */

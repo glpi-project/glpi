@@ -92,9 +92,9 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
     /**
      * Show the printer types that are compatible with a cartridge type
      *
-     * @param $item   CartridgeItem object
+     * @param $item CartridgeItem object
      *
-     * @return boolean|void
+     * @return bool|void
      **/
     public static function showForCartridgeItem(CartridgeItem $item)
     {

@@ -197,8 +197,7 @@ TWIG, $twig_params);
     /**
      * Display translation form
      *
-     * @param integer $ID
-     * @param array   $options
+     * @param int $ID
      */
     public function showForm($ID = -1, array $options = [])
     {
@@ -225,8 +224,8 @@ TWIG, $twig_params);
     /**
      * Get a translation for a value
      *
-     * @param Reminder $item   item to translate
-     * @param string       $field  field to return (default 'name')
+     * @param Reminder $item  item to translate
+     * @param string   $field field to return (default 'name')
      *
      * @return string  the field translated if a translation is available, or the original field if not
      **/
@@ -255,7 +254,7 @@ TWIG, $twig_params);
      *
      * @param Reminder $item
      *
-     * @return integer  the number of translations for this item
+     * @return int  the number of translations for this item
      **/
     public static function getNumberOfTranslationsForItem($item)
     {

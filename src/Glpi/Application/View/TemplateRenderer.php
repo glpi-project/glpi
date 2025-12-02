@@ -132,7 +132,6 @@ class TemplateRenderer
     /**
      * Return singleton instance of self.
      *
-     * @return TemplateRenderer
      */
     public static function getInstance(): TemplateRenderer
     {
@@ -148,7 +147,6 @@ class TemplateRenderer
     /**
      * Return Twig environment used to handle templates.
      *
-     * @return TwigEnvironment
      */
     public function getEnvironment(): TwigEnvironment
     {
@@ -158,10 +156,7 @@ class TemplateRenderer
     /**
      * Renders a template.
      *
-     * @param string $template
-     * @param array  $variables
      *
-     * @return string
      */
     public function render(string $template, array $variables = []): string
     {
@@ -176,10 +171,7 @@ class TemplateRenderer
     /**
      * Displays a template.
      *
-     * @param string $template
-     * @param array  $variables
      *
-     * @return void
      */
     public function display(string $template, array $variables = []): void
     {
@@ -194,10 +186,7 @@ class TemplateRenderer
     /**
      * Renders a template from a string.
      *
-     * @param string $template
-     * @param array  $variables
      *
-     * @return string
      */
     public function renderFromStringTemplate(string $template, array $variables = []): string
     {

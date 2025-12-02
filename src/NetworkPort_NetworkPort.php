@@ -52,9 +52,9 @@ class NetworkPort_NetworkPort extends CommonDBRelation
     /**
      * Retrieve an item from the database
      *
-     * @param integer $ID ID of the item to get
+     * @param int $ID ID of the item to get
      *
-     * @return boolean  true if succeed else false
+     * @return bool  true if succeed else false
      **/
     public function getFromDBForNetworkPort($ID)
     {
@@ -70,9 +70,9 @@ class NetworkPort_NetworkPort extends CommonDBRelation
     /**
      * Get port opposite port ID
      *
-     * @param integer $ID networking port ID
+     * @param int $ID networking port ID
      *
-     * @return integer|false  ID of opposite port. false if not found
+     * @return int|false  ID of opposite port. false if not found
      **/
     public function getOppositeContact($ID)
     {
@@ -90,10 +90,10 @@ class NetworkPort_NetworkPort extends CommonDBRelation
     /**
      * Creates a new hub
      *
-     * @param integer $netports_id Network port id
-     * @param integer $entities_id Entity id
+     * @param int $netports_id Network port id
+     * @param int $entities_id Entity id
      *
-     * @return integer
+     * @return int
      */
     public function createHub($netports_id, $entities_id = 0)
     {
@@ -124,8 +124,8 @@ class NetworkPort_NetworkPort extends CommonDBRelation
     /**
      * Connects to a hub
      *
-     * @param integer $ports_id Port to link
-     * @param integer $hubs_id  Hub to link
+     * @param int $ports_id Port to link
+     * @param int $hubs_id  Hub to link
      *
      * @return int
      */
@@ -177,9 +177,9 @@ class NetworkPort_NetworkPort extends CommonDBRelation
     /**
      * Disconnect a port
      *
-     * @param integer $ports_id Port id
+     * @param int $ports_id Port id
      *
-     * @return boolean
+     * @return bool
      */
     public function disconnectFrom($ports_id)
     {

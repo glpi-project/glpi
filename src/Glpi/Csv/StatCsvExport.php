@@ -52,8 +52,6 @@ class StatCsvExport implements ExportToCsvInterface
     /**
      * Parse values from $series into header and content
      *
-     * @param array $series
-     * @param array $options
      */
     protected function parseSeries(array $series, array $options): void
     {

@@ -118,7 +118,6 @@ class Grid
      *
      * @param bool $force, if false, don't use cache
      *
-     * @return bool
      */
     public static function loadAllDashboards(bool $force = true): bool
     {
@@ -185,7 +184,6 @@ HTML;
     /**
      * Do we have the right to view at least one dashboard int the current collection
      *
-     * @return bool
      */
     public function canViewCurrent(): bool
     {
@@ -205,7 +203,6 @@ HTML;
      *
      * @param ?string $context
      *
-     * @return bool
      */
     public static function canViewOneDashboard($context = null): bool
     {
@@ -226,10 +223,9 @@ HTML;
     /**
      * Do we have the right to view the specified dashboard int the current collection
      *
-     * @param string $key the dashboard to check
+     * @param string $key        the dashboard to check
      * @param bool   $canViewAll Right to view all dashboards
      *
-     * @return bool
      */
     public static function canViewSpecificicDashboard($key, $canViewAll = false): bool
     {
@@ -511,7 +507,6 @@ TWIG, $twig_params);
     /**
      * Init embed session
      *
-     * @param array $params
      *
      * @return void
      */
@@ -540,10 +535,10 @@ TWIG, $twig_params);
      * and initialize related session variables.
      *
      * @param array $params contains those keys:
-     * - dashboard: the dashboard system name
-     * - entities_id: entity to init in session
-     * - is_recursive: do we need to display sub entities
-     * - token: the token to check
+     *                      - dashboard: the dashboard system name
+     *                      - entities_id: entity to init in session
+     *                      - is_recursive: do we need to display sub entities
+     *                      - token: the token to check
      *
      * @return void (display)
      */
@@ -596,12 +591,11 @@ TWIG, $twig_params);
      * Check token variables (compare it to `dashboard`, `entities_id` and `is_recursive` paramater)
      *
      * @param array $params contains theses keys:
-     * - dashboard: the dashboard system name
-     * - entities_id: entity to init in session
-     * - is_recursive: do we need to display sub entities
-     * - token: the token to check
+     *                      - dashboard: the dashboard system name
+     *                      - entities_id: entity to init in session
+     *                      - is_recursive: do we need to display sub entities
+     *                      - token: the token to check
      *
-     * @return bool
      */
     public static function checkToken(array $params = []): bool
     {
@@ -664,13 +658,13 @@ HTML;
     /**
      * Add a new grid item
      *
-     * @param string $html content of the card
+     * @param string $html         content of the card
      * @param string $gridstack_id unique id identifying the card (used in gridstack)
-     * @param int $x position in the grid
-     * @param int $y position in the grid
-     * @param int $width size in the grid
-     * @param int $height size in the grid
-     * @param array $data_option aditional options passed to the widget, contains at least thses keys:
+     * @param int    $x            position in the grid
+     * @param int    $y            position in the grid
+     * @param int    $width        size in the grid
+     * @param int    $height       size in the grid
+     * @param array  $data_option  aditional options passed to the widget, contains at least thses keys:
      *                             - string 'color'
      * @return void
      */
@@ -758,16 +752,16 @@ HTML;
      * Display mini configuration form to add or edit a widget
      *
      * @param array $params with these keys:
-     * - int    'gridstack_id': unique identifier of the card
-     * - int    'x': position in the grid
-     * - int    'y: position in the grid
-     * - int    'width': size in the grid
-     * - int    'height': size in the grid
-     * - string 'rand': unique identifier for the dom
-     * - string 'action': [display_add_widget|display_edit_widget] current action for the form
-     * - array  'card_options': aditionnal options for the card, contains at least:
-     *     - string 'card_id': identifier return by @see self::getAllDasboardCards
-     *     - string 'color'
+     *                      - int    'gridstack_id': unique identifier of the card
+     *                      - int    'x': position in the grid
+     *                      - int    'y: position in the grid
+     *                      - int    'width': size in the grid
+     *                      - int    'height': size in the grid
+     *                      - string 'rand': unique identifier for the dom
+     *                      - string 'action': [display_add_widget|display_edit_widget] current action for the form
+     *                      - array  'card_options': aditionnal options for the card, contains at least:
+     *                      - string 'card_id': identifier return by @see self::getAllDasboardCards
+     *                      - string 'color'
      *
      * @return void
      */
@@ -835,7 +829,7 @@ HTML;
      * Display mini form to add filter to the current dashboard
      *
      * @param array $params default values for
-     * - 'used' already used filters
+     *                      - 'used' already used filters
      *
      * @return void
      */
@@ -965,12 +959,12 @@ HTML;
     /**
      * Return the html for the given card_id
      *
-     * @param string $card_id identifier return by @see self::getAllDasboardCards
-     * @param array $card_options contains these keys:
-     * - array 'args':
-     *    - string 'gridstack_id' unique identifier of the card in the grid, used to return html by cache
-     *    - bool 'force' if true, cache will be bypassed
-     *    - bool 'embed' is the dashboard emebeded or not
+     * @param string $card_id      identifier return by @see self::getAllDasboardCards
+     * @param array  $card_options contains these keys:
+     *                             - array 'args':
+     *                             - string 'gridstack_id' unique identifier of the card in the grid, used to return html by cache
+     *                             - bool 'force' if true, cache will be bypassed
+     *                             - bool 'embed' is the dashboard emebeded or not
      *
      * @return string html of the card
      */
@@ -1100,7 +1094,6 @@ HTML;
 
     /**
      * Return Html for a provided set of filters
-     * @param array $filters
      *
      * @return string the html
      */
@@ -1119,9 +1112,9 @@ HTML;
     /**
      * Return Html for a provided filter name
      *
-     * @param string $filter_id the system name of a filter (ex dates)
+     * @param string       $filter_id     the system name of a filter (ex dates)
      * @param string|array $filter_values init the input with these values,
-     *                     will be a string if empty values
+     *                                    will be a string if empty values
      *
      * @return string the html
      */
@@ -1180,7 +1173,6 @@ HTML;
      * The data will contain some translated strings and thus must be kept in a
      * separate cache entry for each languages
      *
-     * @return string
      */
     public static function getAllDashboardCardsCacheKey(?string $language = null): string
     {
@@ -1200,7 +1192,6 @@ HTML;
      *
      * @param bool $force Force rebuild the catalog of cards
      *
-     * @return array
      */
     public function getAllDasboardCards($force = false): array
     {
@@ -1507,7 +1498,7 @@ HTML;
     /**
      * Save last dashboard viewed
      *
-     * @param string $page current page
+     * @param string $page      current page
      * @param string $dashboard current dashboard
      *
      * @return void
@@ -1553,7 +1544,6 @@ HTML;
      * then on config
      * And Fallback on the first dashboard found
      *
-     * @param string $menu
      * @param bool $strict if true, do not provide a fallback
      *
      * @return string the dashboard key

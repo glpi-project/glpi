@@ -1175,7 +1175,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
      * Check whether a field with the given name is a custom field.
      *
      * @param class-string<CommonDBTM> $itemtype The generic object itemtype.
-     * @param string                    $field      The field name.
+     * @param string                   $field    The field name.
      */
     private function isACustomField(string $itemtype, string $field): bool
     {
@@ -1222,9 +1222,9 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
     /**
      * Get the specifications related to a custom field.
      *
-     * @param class-string<CommonDBTM> $itemtype The generic object itemtype.
-     * @param string                    $field_name The field name.
-     * @param string                    $field_type The field type (fetched from a `SHOW COLUMNS FROM` query).
+     * @param class-string<CommonDBTM> $itemtype   The generic object itemtype.
+     * @param string                   $field_name The field name.
+     * @param string                   $field_type The field type (fetched from a `SHOW COLUMNS FROM` query).
      *
      * @return array{system_name: string, label: string, type: class-string<AbstractType>, itemtype?: class-string<CommonDBTM>, options?: array{min?: int, max?: int, step?: int}}
      */
@@ -1364,9 +1364,9 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
     /**
      * Get the target field for a given genericobject main item field.
      *
-     * @param class-string<CommonDBTM> $itemtype The generic object itemtype.
-     * @param string                    $field          The field name.
-     * @param bool                      $with_prefix    Whether to append the `custom_` prefix on custom fields.
+     * @param class-string<CommonDBTM> $itemtype    The generic object itemtype.
+     * @param string                   $field       The field name.
+     * @param bool                     $with_prefix Whether to append the `custom_` prefix on custom fields.
      */
     private function getTargetField(string $itemtype, string $field, bool $with_prefix = true): ?string
     {

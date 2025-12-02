@@ -39,14 +39,12 @@ interface ConditionableVisibilityInterface extends ConditionableInterface
     /**
      * Get the configured visibility strategy from the database.
      *
-     * @return VisibilityStrategy
      */
     public function getConfiguredVisibilityStrategy(): VisibilityStrategy;
 
     /**
      * Get the UUID of the item.
      *
-     * @return string
      */
     public function getUUID(): string;
 

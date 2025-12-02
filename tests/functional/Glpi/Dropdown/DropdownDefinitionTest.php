@@ -672,9 +672,6 @@ class DropdownDefinitionTest extends DbTestCase
     /**
      * Check that actual profile rights matches expected ones.
      *
-     * @param string $rightname
-     * @param array $expected_profilerights
-     * @return void
      */
     private function checkProfileRights(string $rightname, array $expected_profilerights): void
     {

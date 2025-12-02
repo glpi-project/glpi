@@ -55,7 +55,6 @@ use function Safe\preg_match;
 final class ResourceAccessor
 {
     /**
-     * @param array $schema
      * @return class-string<CommonGLPI>|null
      */
     private static function getItemtypeFromSchema(array $schema): ?string
@@ -69,7 +68,6 @@ final class ResourceAccessor
     }
     /**
      * Get the related itemtype for the given schema.
-     * @param array $schema
      */
     private static function getItemFromSchema(array $schema): CommonDBTM
     {
@@ -85,9 +83,9 @@ final class ResourceAccessor
 
     /**
      * Get the primary ID field given some other unique field.
-     * @param array $schema The schema
-     * @param string $field The unique field name
-     * @param mixed $value The unique field value
+     * @param array  $schema The schema
+     * @param string $field  The unique field name
+     * @param mixed  $value  The unique field value
      * @return int|null The ID or null if not found
      */
     public static function getIDForOtherUniqueFieldBySchema(array $schema, string $field, mixed $value): ?int
@@ -118,9 +116,6 @@ final class ResourceAccessor
      * Only top-level properties are mapped.
      * Nested properties which would represent relations are not supported.
      * Creating/updating relations should be done using the appropriate endpoints.
-     * @param array $schema
-     * @param array $request_params
-     * @return array
      */
     public static function getInputParamsBySchema(array $schema, array $request_params): array
     {
@@ -173,12 +168,11 @@ final class ResourceAccessor
 
     /**
      * Update an item of the given schema using the given request parameters.
-     * @param array $schema The schema
-     * @param array $request_attrs The request attributes
-     * @param array $request_params The request parameters
-     * @param string $field The unique field to match on. Defaults to ID. If different, the ID is resolved from the given other unique field.
-     * The field must be present in the route path (request attributes).
-     * @return Response
+     * @param array  $schema         The schema
+     * @param array  $request_attrs  The request attributes
+     * @param array  $request_params The request parameters
+     * @param string $field          The unique field to match on. Defaults to ID. If different, the ID is resolved from the given other unique field.
+     *                               The field must be present in the route path (request attributes).
      * @see self::getIDForOtherUniqueFieldBySchema()
      */
     public static function updateBySchema(array $schema, array $request_attrs, array $request_params, string $field = 'id'): Response
@@ -207,16 +201,15 @@ final class ResourceAccessor
 
     /**
      * Create an item of the given schema using the given request parameters.
-     * @param array $schema The schema
-     * @param array $request_params The request parameters
-     * @param array $get_route The GET route to use to get the created item. This should be an array containing the controller class and method.
+     * @param         array                                                 $schema                 The schema
+     * @param         array                                                 $request_params         The request parameters
+     * @param         array                                                 $get_route              The GET route to use to get the created item. This should be an array containing the controller class and method.
+     * @param         array                                                 $extra_get_route_params Additional parameters needed to generate the GET route. This should only be needed for complex routes.
+     *                                                                                              This is used to re-map the parameters to the GET route.
+     *                                                                                              The array can contain an 'id' property which is the name of the parameter that the resulting ID is set to ('id' by default).
+     *                                                                                              The array may also contain a 'mapped' property which is an array of parameter names and static values.
+     *                                                                                              For example ['mapped' => ['subitem_type' => 'Followup']] would set the 'subitem_type' parameter to 'Followup'.
      * @phpstan-param array{0: class-string<AbstractController>, 1: string} $get_route
-     * @param array $extra_get_route_params Additional parameters needed to generate the GET route. This should only be needed for complex routes.
-     *      This is used to re-map the parameters to the GET route.
-     *      The array can contain an 'id' property which is the name of the parameter that the resulting ID is set to ('id' by default).
-     *      The array may also contain a 'mapped' property which is an array of parameter names and static values.
-     *      For example ['mapped' => ['subitem_type' => 'Followup']] would set the 'subitem_type' parameter to 'Followup'.
-     * @return Response
      */
     public static function createBySchema(array $schema, array $request_params, array $get_route, array $extra_get_route_params = []): Response
     {
@@ -248,9 +241,6 @@ final class ResourceAccessor
     /**
      * Search items using the given schema and request parameters.
      * Public entry point for {@link Search::getSearchResultsBySchema()} method.
-     * @param array $schema
-     * @param array $request_params
-     * @return Response
      */
     public static function searchBySchema(array $schema, array $request_params): Response
     {
@@ -301,12 +291,11 @@ final class ResourceAccessor
 
     /**
      * Get a single item of the given schema, request data and unique field.
-     * @param array $schema The schema
-     * @param array $request_attrs The request attributes
-     * @param array $request_params The request parameters
-     * @param string $field The unique field to match on. Defaults to ID. If different, the ID is resolved from the given other unique field.
-     * The field must be present in the route path (request attributes).
-     * @return Response
+     * @param array  $schema         The schema
+     * @param array  $request_attrs  The request attributes
+     * @param array  $request_params The request parameters
+     * @param string $field          The unique field to match on. Defaults to ID. If different, the ID is resolved from the given other unique field.
+     *                               The field must be present in the route path (request attributes).
      * @see self::getIDForOtherUniqueFieldBySchema()
      * @see ResourceAccessor::searchBySchema()
      */
@@ -344,12 +333,11 @@ final class ResourceAccessor
 
     /**
      * Delete an item of the given schema using the given request parameters.
-     * @param array $schema The schema
-     * @param array $request_attrs The request attributes
-     * @param array $request_params The request parameters
-     * @param string $field The unique field to match on. Defaults to ID. If different, the ID is resolved from the given other unique field.
-     * The field must be present in the route path (request attributes).
-     * @return Response
+     * @param array  $schema         The schema
+     * @param array  $request_attrs  The request attributes
+     * @param array  $request_params The request parameters
+     * @param string $field          The unique field to match on. Defaults to ID. If different, the ID is resolved from the given other unique field.
+     *                               The field must be present in the route path (request attributes).
      * @see self::getIDForOtherUniqueFieldBySchema()
      */
     public static function deleteBySchema(array $schema, array $request_attrs, array $request_params, string $field = 'id'): Response

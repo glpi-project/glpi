@@ -817,7 +817,6 @@ class SLMTest extends DbTestCase
      * Functional tests to ensure all SLA and OLA target dates are set properly
      * in a ticket, as well as their escalation date
      *
-     * @return void
      */
     public function testDatesAndEscalation(): void
     {
@@ -1370,7 +1369,6 @@ class SLMTest extends DbTestCase
      * Assign SLA and OLA to a ticket then change them with a rule
      * The ticket should only have the escalation level of the second set of SLA / OLA
      *
-     * @return void
      */
     public function testLaChange(): void
     {
@@ -1943,7 +1941,6 @@ class SLMTest extends DbTestCase
     /**
      * Check recalculating the SLA when the SLA is changed to an SLA with a different calendar
      *
-     * @return void
      */
     public function testLaChangeCalendar(): void
     {

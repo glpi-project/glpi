@@ -123,9 +123,7 @@ class CacheManager
     /**
      * Defines cache namespace prefix.
      *
-     * @param string $namespace_prefix
      *
-     * @return bool
      */
     public function setNamespacePrefix(string $namespace_prefix): bool
     {
@@ -138,11 +136,8 @@ class CacheManager
     /**
      * Defines cache configuration for given context.
      *
-     * @param string          $context
      * @param string|string[] $dsn
-     * @param array           $options
      *
-     * @return bool
      */
     public function setConfiguration(string $context, $dsn, array $options = []): bool
     {
@@ -165,9 +160,7 @@ class CacheManager
     /**
      * Unset cache configuration for given context.
      *
-     * @param string $context
      *
-     * @return bool
      */
     public function unsetConfiguration(string $context): bool
     {
@@ -185,9 +178,7 @@ class CacheManager
      * Test connection to given DSN. Conection failure will trigger an exception.
      *
      * @param string|string[] $dsn
-     * @param array           $options
      *
-     * @return void
      */
     public function testConnection($dsn, array $options = []): void
     {
@@ -215,9 +206,7 @@ class CacheManager
     /**
      * Get cache instance for given context.
      *
-     * @param string $context
      *
-     * @return CacheInterface
      */
     public function getCacheInstance(string $context): CacheInterface
     {
@@ -227,7 +216,6 @@ class CacheManager
     /**
      * Get cache storage adapter for given context.
      *
-     * @return CacheItemPoolInterface
      */
     public function getCacheStorageAdapter(string $context): CacheItemPoolInterface
     {
@@ -289,7 +277,6 @@ class CacheManager
     /**
      * Get core cache instance.
      *
-     * @return CacheInterface
      */
     public function getCoreCacheInstance(): CacheInterface
     {
@@ -300,7 +287,6 @@ class CacheManager
     /**
      * Get translations cache instance.
      *
-     * @return CacheInterface
      */
     public function getTranslationsCacheInstance(): CacheInterface
     {
@@ -310,7 +296,6 @@ class CacheManager
     /**
      * Reset all caches.
      *
-     * @return bool
      */
     public function resetAllCaches(): bool
     {
@@ -391,7 +376,6 @@ class CacheManager
      *
      * @param string|string[] $dsn
      *
-     * @return string|null
      */
     public function extractScheme($dsn): ?string
     {
@@ -430,7 +414,6 @@ class CacheManager
     /**
      * Returns raw configuration from configuration file.
      *
-     * @return array
      */
     private function getRawConfig(): array
     {
@@ -469,9 +452,7 @@ class CacheManager
     /**
      * Write cache configuration to disk.
      *
-     * @param array $config
      *
-     * @return bool
      */
     private function writeConfig(array $config): bool
     {
@@ -488,10 +469,7 @@ PHP;
     /**
      * Check if context key is valid.
      *
-     * @param string $context
-     * @param bool $only_configurable
      *
-     * @return bool
      */
     public function isContextValid(string $context, bool $only_configurable = false): bool
     {
@@ -510,7 +488,6 @@ PHP;
      *
      * @param string|string[] $dsn
      *
-     * @return bool
      */
     public function isDsnValid($dsn): bool
     {
@@ -539,9 +516,7 @@ PHP;
     /**
      * Normalize namespace to prevent usage of reserved chars.
      *
-     * @param string $namespace
      *
-     * @return string
      */
     private function normalizeNamespace(string $namespace): string
     {

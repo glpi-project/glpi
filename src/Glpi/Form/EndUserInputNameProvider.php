@@ -49,8 +49,6 @@ final class EndUserInputNameProvider
     /**
      * Get the end user input name for a given question
      *
-     * @param Question $question
-     * @return string
      */
     public function getEndUserInputName(Question $question): string
     {
@@ -87,7 +85,6 @@ final class EndUserInputNameProvider
      * The answers are indexed by question ID
      *
      * @param array $inputs The inputs submitted by the end user
-     * @return array
      */
     public function getAnswers(array $inputs): array
     {
@@ -101,8 +98,6 @@ final class EndUserInputNameProvider
      * Filter the answers submitted by the end user
      * Only the answers that match the end user input name pattern are kept
      *
-     * @param array $answers
-     * @return array
      */
     private function filterAnswers(array $answers): array
     {
@@ -126,8 +121,6 @@ final class EndUserInputNameProvider
      * Reindex the answers submitted by the end user
      * The answers are indexed by question ID
      *
-     * @param array $answers
-     * @return array
      */
     private function reindexAnswers(array $answers): array
     {

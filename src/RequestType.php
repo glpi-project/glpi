@@ -236,7 +236,7 @@ class RequestType extends CommonDropdown
      *
      * @param $source string
      *
-     * @return integer requesttypes_id
+     * @return int requesttypes_id
      **/
     public static function getDefault($source)
     {
@@ -292,7 +292,7 @@ class RequestType extends CommonDropdown
     /**
      * Check if type is used as default for new tickets.
      *
-     * @return boolean
+     * @return bool
      */
     private function isUsedAsDefaultRequestType()
     {

@@ -90,7 +90,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      *
      * @param string|object $item An object or a string
      *
-     * @return boolean
      **/
     public static function canApplyOn($item): bool
     {
@@ -400,9 +399,9 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     /**
      * Send a document to navigator
      *
-     * @return void
      *
      * @deprecated 11.0.0
+     * @return void
      */
     public function send()
     {
@@ -414,8 +413,8 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     /**
      * Get download link for a document
      *
-     * @param CommonDBTM|null   $linked_item    Item linked to the document, to check access right
-     * @param integer           $len            maximum length of displayed string (default 20)
+     * @param CommonDBTM|null $linked_item Item linked to the document, to check access right
+     * @param int             $len         maximum length of displayed string (default 20)
      * @return string HTML link
      **/
     public function getDownloadLink($linked_item = null, $len = 20): string
@@ -497,10 +496,10 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     /**
      * find a document with a file attached
      *
-     * @param integer $entity    entity of the document
-     * @param string  $path      path of the searched file
+     * @param int    $entity entity of the document
+     * @param string $path   path of the searched file
      *
-     * @return boolean
+     * @return bool
      **/
     public function getFromDBbyContent($entity, $path)
     {
@@ -541,12 +540,12 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      * Check is the curent user is allowed to see the file.
      *
      * @param array $options array of possible options used to check rights:
-     *     - itemtype/items_id:     itemtype and ID of item linked to document
-     *     - changes_id (legacy):   ID of Change linked to document. Ignored if itemtype/items_id options are set.
-     *     - problems_id (legacy):  ID of Problem linked to document. Ignored if itemtype/items_id options are set.
-     *     - tickets_id (legacy):   ID of Ticket linked to document. Ignored if itemtype/items_id options are set.
+     *                       - itemtype/items_id:     itemtype and ID of item linked to document
+     *                       - changes_id (legacy):   ID of Change linked to document. Ignored if itemtype/items_id options are set.
+     *                       - problems_id (legacy):  ID of Problem linked to document. Ignored if itemtype/items_id options are set.
+     *                       - tickets_id (legacy):   ID of Ticket linked to document. Ignored if itemtype/items_id options are set.
      *
-     * @return boolean
+     * @return bool
      **/
     public function canViewFile(array $options = [])
     {
@@ -607,7 +606,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     /**
      * Try to load the session from the API Tolen
      *
-     * @return void
      * @since 9.5
      */
     private static function loadAPISessionIfExist(): void
@@ -634,7 +632,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     /**
      * Check if file of current instance can be viewed from a Reminder.
      *
-     * @return boolean
+     * @return bool
      */
     private function canViewFileFromReminder()
     {
@@ -676,7 +674,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      *
      * @global array $CFG_GLPI
      * @global DBmysql $DB
-     * @return boolean
+     * @return bool
      */
     private function canViewFileFromKnowbaseItem()
     {
@@ -731,9 +729,9 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      * Check if file of current instance can be viewed from a CommonITILObject.
      *
      * @global DBmysql $DB
-     * @param string  $itemtype
-     * @param integer $items_id
-     * @return boolean
+     * @param string $itemtype
+     * @param int    $items_id
+     * @return bool
      */
     private function canViewFileFromItilObject($itemtype, $items_id)
     {
@@ -773,10 +771,9 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      *
      * @global DBmysql $DB
      *
-     * @param string  $itemtype
-     * @param integer $items_id
+     * @param string $itemtype
+     * @param int    $items_id
      *
-     * @return boolean
      */
     private function canViewFileFromItem($itemtype, $items_id): bool
     {
@@ -993,10 +990,10 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      * Move a file to a new location
      * Work even if dest file already exists
      *
-     * @param string $srce   source file path
-     * @param string $dest   destination file path
+     * @param string $srce source file path
+     * @param string $dest destination file path
      *
-     * @return boolean : success
+     * @return bool : success
      **/
     public static function renameForce($srce, $dest)
     {
@@ -1018,10 +1015,10 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     /**
      * Move an uploaded document (files in GLPI_DOC_DIR."/_uploads" dir)
      *
-     * @param array  $input     array of datas used in adding process (need current_filepath)
-     * @param string $filename  filename to move
+     * @param array  $input    array of datas used in adding process (need current_filepath)
+     * @param string $filename filename to move
      *
-     * @return boolean for success / $input array is updated
+     * @return bool for success / $input array is updated
      **/
     public function moveUploadedDocument(array &$input, $filename)
     {
@@ -1138,10 +1135,10 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     /**
      * Move a document (files in GLPI_DOC_DIR."/_tmp" dir)
      *
-     * @param array  $input     array of datas used in adding process (need current_filepath)
-     * @param string $filename  filename to move
+     * @param array  $input    array of datas used in adding process (need current_filepath)
+     * @param string $filename filename to move
      *
-     * @return boolean for success / $input array is updated
+     * @return bool for success / $input array is updated
      **/
     public static function moveDocument(array &$input, $filename)
     {
@@ -1247,8 +1244,8 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     /**
      * Find a valid path for the new file
      *
-     * @param string $dir      dir to search a free path for the file
-     * @param string $sha1sum  SHA1 of the file
+     * @param string $dir     dir to search a free path for the file
+     * @param string $sha1sum SHA1 of the file
      *
      * @return string
      **/
@@ -1394,7 +1391,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      *
      * @param array $options Array of possible options
      *
-     * @return integer|string|void
+     * @return int|string|void
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      *    void if hide_if_no_elements=true and no elements
@@ -1554,7 +1551,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      *
      * @param string $string
      *
-     * @return string
      **/
     public static function getImageTag($string): string
     {
@@ -1568,7 +1564,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      *
      * @param string $file File name
      *
-     * @return boolean
      */
     public static function isImage($file): bool
     {
@@ -1599,11 +1594,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      *
      * @since 10.0.1
      *
-     * @param string  $path
-     * @param integer $width
-     * @param integer $height
      *
-     * @return string
      */
     public static function getResizedImagePath(string $path, int $width, int $height): string
     {
@@ -1665,7 +1656,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      *
      * @param CronTask $task CronTask object
      *
-     * @return integer (0 : nothing done - 1 : done)
+     * @return int (0 : nothing done - 1 : done)
      * @used-by CronTask
      **/
     public static function cronCleanOrphans(CronTask $task): int
@@ -1716,10 +1707,9 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     /**
      * Find and load a document which is a duplicate of a file, with respect of blacklisting
      *
-     * @param integer $entities_id    Entity of the document
-     * @param string  $filename      Name of the searched file
+     * @param int    $entities_id Entity of the document
+     * @param string $filename    Name of the searched file
      *
-     * @return boolean
      */
     public function getDuplicateOf(int $entities_id, string $filename): bool
     {
@@ -1739,7 +1729,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      *
      * @param string $filename The name of the file to check.
      *
-     * @return boolean
      */
     public function checkAvailability(string $filename): bool
     {

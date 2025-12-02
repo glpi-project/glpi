@@ -64,7 +64,6 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
     /**
      * @param string $codeId
      *
-     * @return void
      */
     public function revokeAuthCode($codeId): void
     {
@@ -76,7 +75,6 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
     /**
      * @param string $codeId
      *
-     * @return bool
      */
     public function isAuthCodeRevoked($codeId): bool
     {

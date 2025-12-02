@@ -47,7 +47,6 @@ trait ConditionableValidationTrait
      * Get the field name used for visibility strategy
      * Classes using this trait can override this method to customize the field name
      *
-     * @return string
      */
     protected function getValidationStrategyFieldName(): string
     {
@@ -64,7 +63,6 @@ trait ConditionableValidationTrait
      * Override the getConditionsFieldName method from ConditionableTrait
      * to return the validation conditions field name
      *
-     * @return string
      */
     protected function getValidationConditionsFieldName(): string
     {

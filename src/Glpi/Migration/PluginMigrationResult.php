@@ -125,7 +125,6 @@ class PluginMigrationResult
      * Mark an item as created.
      *
      * @param class-string<CommonDBTM> $itemtype
-     * @param int $id
      */
     public function markItemAsCreated(string $itemtype, int $id): void
     {
@@ -150,7 +149,6 @@ class PluginMigrationResult
      * Mark an item as reused.
      *
      * @param class-string<CommonDBTM> $itemtype
-     * @param int $id
      */
     public function markItemAsReused(string $itemtype, int $id): void
     {
@@ -175,7 +173,6 @@ class PluginMigrationResult
      * Mark an item as ignored.
      *
      * @param class-string<CommonDBTM> $itemtype
-     * @param int $id
      */
     public function markItemAsIgnored(string $itemtype, int $id): void
     {

@@ -234,7 +234,6 @@ final class ServiceCatalogManager
      * Sort items using the specified sort strategy
      *
      * @param ServiceCatalogItemInterface[] $items
-     * @param SortStrategyEnum $strategy
      * @return ServiceCatalogItemInterface[]
      */
     private function sortItems(array $items, SortStrategyEnum $strategy): array

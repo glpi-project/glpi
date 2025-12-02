@@ -110,7 +110,6 @@ class SessionsSecurityConfiguration extends AbstractRequirement
     }
 
     /**
-     * @return string
      */
     protected function getCookiesSamesite(): string
     {

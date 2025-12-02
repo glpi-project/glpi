@@ -1140,7 +1140,6 @@ final class ITILController extends AbstractController
 
     /**
      * @param class-string<CommonDBTM> $subtype
-     * @return string
      */
     public static function getFriendlyNameForSubtype(string $subtype): string
     {
@@ -1255,9 +1254,9 @@ final class ITILController extends AbstractController
 
     /**
      * Get the timeline items for a given item
-     * @param CommonITILObject $item The item to get the timeline items for
-     * @param Request $request The original request
-     * @param array $subitem_types The subitem types to include or all if empty
+     * @param CommonITILObject $item          The item to get the timeline items for
+     * @param Request          $request       The original request
+     * @param array            $subitem_types The subitem types to include or all if empty
      * @return array|null Array of results. Null may be returned if a specific subitem was requested but not found.
      */
     private function getITILTimelineItems(CommonITILObject $item, Request $request, array $subitem_types = []): ?array
@@ -1668,7 +1667,6 @@ final class ITILController extends AbstractController
     }
 
     /**
-     * @param CommonITILObject $item
      * @return array{role: string|int, name?: string, realname?: string, firstname?: string, display_name?: string, href: string}[]
      */
     private static function getCleanTeam(CommonITILObject $item): array

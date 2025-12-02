@@ -102,7 +102,6 @@ abstract class CommonITILSatisfaction extends CommonDBTM
     /**
      * Is the current user have right to update the current satisfaction
      *
-     * @return boolean
      **/
     public function canUpdateItem(): bool
     {
@@ -134,7 +133,6 @@ abstract class CommonITILSatisfaction extends CommonDBTM
      * form for satisfaction
      *
      * @param CommonITILObject $item The item this satisfaction is for
-     * @param bool $add_form_header
      *
      * @return void
      */
@@ -252,8 +250,8 @@ abstract class CommonITILSatisfaction extends CommonDBTM
     /**
      * display satisfaction value
      *
-     * @param int|float $value Between 0 and 10
-     * @param int $entities_id
+     * @param int|float $value       Between 0 and 10
+     * @param int       $entities_id
      *
      * @return string
      */

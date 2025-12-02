@@ -93,7 +93,6 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
     /**
      * Get list of all known USBIDs
      *
-     * @return array
      */
     public static function getList(): array
     {
@@ -117,7 +116,6 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
     /**
      * Get USBIDs from database
      *
-     * @return array
      */
     private function getDbList(): array
     {
@@ -144,7 +142,6 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
     /**
      * Clean cache
      *
-     * @return void
      * @throws InvalidArgumentException
      */
     public function invalidateListCache(): void
@@ -159,7 +156,6 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
      *
      * @param string $vendorid Vendor ID to look for
      *
-     * @return string|false
      */
     public function getManufacturer($vendorid): false|string
     {
@@ -183,7 +179,6 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
      * @param string $vendorid Vendor ID to look for
      * @param string $deviceid Device ID to look for
      *
-     * @return string|false
      */
     public function getProductName($vendorid, $deviceid): false|string
     {

@@ -389,12 +389,12 @@ class FormBuilder
     /**
      * Add a question to the form
      *
-     * @param string $name          Question name
-     * @param string $type          Question type
-     * @param mixed  $default_value Question default value
+     * @param string  $name          Question name
+     * @param string  $type          Question type
+     * @param mixed   $default_value Question default value
      * @param ?string $extra_data    Question extra data
-     * @param string $description   Question description
-     * @param bool   $is_mandatory  Is the question mandatory ?
+     * @param string  $description   Question description
+     * @param bool    $is_mandatory  Is the question mandatory ?
      *
      * @return self To allow chain calls
      */
@@ -483,7 +483,6 @@ class FormBuilder
     /**
      * Get form access controls restrictions.
      *
-     * @return array
      */
     public function getAccessControls(): array
     {
@@ -493,8 +492,6 @@ class FormBuilder
     /**
      * Add a destination to the form
      *
-     * @param string                  $strategy
-     * @param JsonFieldInterface $values
      *
      * @return self To allow chain calls
      */

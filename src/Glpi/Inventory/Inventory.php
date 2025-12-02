@@ -105,7 +105,7 @@ class Inventory
     public const FULL_MODE = 0;
     public const INCR_MODE = 1;
 
-    /** @var integer */
+    /** @var int */
     protected $mode;
     /** @var ?stdClass */
     protected $raw_data = null;
@@ -129,19 +129,19 @@ class Inventory
     private $inventory_tmpfile = false;
     /** @var ?string */
     private $inventory_content;
-    /** @var integer */
+    /** @var int */
     private $inventory_format;
     /** @var ?MainAsset */
     private $mainasset;
     /** @var string */
     private $request_query;
-    /** @var bool */
+    /**  */
     private bool $is_discovery = false;
 
     /**
-     * @param mixed   $data   Inventory data, optional
-     * @param integer $mode   One of self::*_MODE
-     * @param integer $format One of Request::*_MODE
+     * @param mixed $data   Inventory data, optional
+     * @param int   $mode   One of self::*_MODE
+     * @param int   $format One of Request::*_MODE
      */
     public function __construct($data = null, $mode = self::FULL_MODE, $format = Request::JSON_MODE)
     {
@@ -157,7 +157,6 @@ class Inventory
     /**
      * @param self::FULL_MODE|self::INCR_MODE $mode
      *
-     * @return self
      */
     public function setMode($mode = self::FULL_MODE): Inventory
     {
@@ -168,10 +167,9 @@ class Inventory
     /**
      * Set data, and convert them if we're using legacy format
      *
-     * @param mixed   $data   Inventory data, optional
-     * @param integer $format One of self::*_FORMAT
+     * @param mixed $data   Inventory data, optional
+     * @param int   $format One of self::*_FORMAT
      *
-     * @return boolean
      */
     public function setData($data, $format = Request::JSON_MODE): bool
     {
@@ -242,7 +240,6 @@ class Inventory
     }
 
     /**
-     * @param string $query
      * @return $this
      */
     public function setRequestQuery(string $query): self
@@ -254,7 +251,6 @@ class Inventory
     /**
      * Prepare inventory data
      *
-     * @return array
      */
     public function extractMetadata(): array
     {
@@ -306,7 +302,7 @@ class Inventory
     /**
      * Do inventory
      *
-     * @param boolean $test_rules Only to test rules, do not store anything
+     * @param bool $test_rules Only to test rules, do not store anything
      *
      * @return array
      */
@@ -497,7 +493,6 @@ class Inventory
     /**
      * Get inventoried items
      *
-     * @return array
      */
     public function getItems(): array
     {
@@ -518,7 +513,6 @@ class Inventory
     /**
      * Get raw data
      *
-     * @return object|null
      */
     public function getRawData(): ?object
     {
@@ -565,7 +559,6 @@ class Inventory
     /**
      * Get error
      *
-     * @return array
      */
     public function getErrors(): array
     {
@@ -575,7 +568,6 @@ class Inventory
     /**
      * Check if errors has been thrown
      *
-     * @return boolean
      */
     public function inError(): bool
     {
@@ -872,10 +864,10 @@ class Inventory
     /**
      * Add bench value
      *
-     * @param string        $asset Asset
-     * @param string        $type Either prepare or handle
-     * @param float|integer $start Start time
-     * @param string        $extra Extra value to be used as label
+     * @param string    $asset Asset
+     * @param string    $type  Either prepare or handle
+     * @param float|int $start Start time
+     * @param string    $extra Extra value to be used as label
      *
      * @return void
      */
@@ -1135,7 +1127,6 @@ class Inventory
     /**
      * Mark as discovery
      *
-     * @param bool $disco
      *
      * @return $this
      */

@@ -51,7 +51,6 @@ final class QuestionTypeUrgency extends AbstractQuestionType implements UsedAsCr
      * Retrieve the default value for the urgency question type
      *
      * @param Question|null $question The question to retrieve the default value from
-     * @return int
      */
     public function getDefaultValue(?Question $question): int
     {
@@ -72,7 +71,6 @@ final class QuestionTypeUrgency extends AbstractQuestionType implements UsedAsCr
     /**
      * Retrieve available urgency levels
      *
-     * @return array
      */
     private function getUrgencyLevels(): array
     {

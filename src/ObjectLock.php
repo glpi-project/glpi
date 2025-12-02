@@ -54,8 +54,8 @@ class ObjectLock extends CommonDBTM
     }
 
     /**
-     * @inheritDoc
-     * @return integer Always 0 (Root entity)
+     *
+     * @return int Always 0 (Root entity)
      **/
     public function getEntityID()
     {
@@ -192,7 +192,7 @@ class ObjectLock extends CommonDBTM
 
     /**
      * @param string $itemtype
-     * @param integer $items_id
+     * @param int    $items_id
      *
      * @return false|ObjectLock returns ObjectLock if locked, else false
      **/
@@ -251,8 +251,8 @@ class ObjectLock extends CommonDBTM
     /**
      * Is the main function to be called in order to lock an item
      *
-     * @param  string $itemtype
-     * @param  array $options
+     * @param string $itemtype
+     * @param array  $options
      **/
     public static function manageObjectLock($itemtype, &$options)
     {
@@ -384,8 +384,8 @@ TWIG;
     }
 
     /**
-     * @param  string $itemtype
-     * @param  string $interface
+     * @param string $itemtype
+     * @param string $interface
      *
      * @return array empty array if itemtype is not lockable; else returns UNLOCK right
      **/
@@ -429,7 +429,7 @@ TWIG;
      *
      * @param CronTask $task Crontask object
      *
-     * @return integer  >0: done. -1: error, 0: nothing to do
+     * @return int  >0: done. -1: error, 0: nothing to do
      * @used-by CronTask
      **/
     public static function cronUnlockObject($task)

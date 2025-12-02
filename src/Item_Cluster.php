@@ -84,7 +84,6 @@ class Item_Cluster extends CommonDBRelation
     /**
      * Print enclosure items
      *
-     * @return bool
      **/
     public static function showItems(Cluster $cluster): bool
     {

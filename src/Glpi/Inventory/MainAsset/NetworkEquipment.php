@@ -197,10 +197,10 @@ class NetworkEquipment extends MainAsset
     /**
      * After rule engine passed, update task (log) and create item if required
      *
-     * @param integer       $items_id id of the item (0 if new)
-     * @param string        $itemtype Item type
-     * @param integer       $rules_id Matched rule id, if any
-     * @param integer|array $ports_id Matched port id, if any
+     * @param int       $items_id id of the item (0 if new)
+     * @param string    $itemtype Item type
+     * @param int       $rules_id Matched rule id, if any
+     * @param int|array $ports_id Matched port id, if any
      *
      * @return void
      */
@@ -258,8 +258,6 @@ class NetworkEquipment extends MainAsset
     }
 
     /**
-     * @param stdClass $port
-     * @param int $netports_id
      *
      * @return void
      */
@@ -305,9 +303,8 @@ class NetworkEquipment extends MainAsset
      * Is device a stacked switch
      * Relies on level/dependencies of network_components
      *
-     * @param integer $parent_index Parent index for recursive calls
+     * @param int $parent_index Parent index for recursive calls
      *
-     * @return boolean
      */
     public function isStackedSwitch($parent_index = 0): bool
     {
@@ -342,7 +339,6 @@ class NetworkEquipment extends MainAsset
     /**
      * Get detected switches (sorted by their index)
      *
-     * @return array
      */
     public function getStackedSwitches(): array
     {
@@ -377,7 +373,6 @@ class NetworkEquipment extends MainAsset
      *
      * @param array $components Network components
      *
-     * @return string
      */
     public function getStackComponentName(array $components): string
     {
@@ -406,7 +401,6 @@ class NetworkEquipment extends MainAsset
      * Is device a wireless controller
      * Relies on level/dependencies of network_components
      *
-     * @return boolean
      */
     public function isWirelessController(): bool
     {
@@ -430,7 +424,6 @@ class NetworkEquipment extends MainAsset
     /**
      * Get wireless controller access points
      *
-     * @return array
      */
     public function getAccessPoints(): array
     {
@@ -474,10 +467,9 @@ class NetworkEquipment extends MainAsset
      * Try to know if networkEquipement need to be updated from discovery
      * Only if IP has changed
      *
-     * @param \CommonDBTM $item
-     * @param stdClass    $val
+     * @param stdClass $val
      *
-     * @return boolean
+     * @return bool
      */
     public static function needToBeUpdatedFromDiscovery(\CommonDBTM $item, $val)
     {

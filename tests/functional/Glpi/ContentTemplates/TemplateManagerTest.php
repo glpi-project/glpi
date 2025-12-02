@@ -159,7 +159,6 @@ class TemplateManagerTest extends DbTestCase
     /**
      * Get all possible CommonITILObject classes.
      *
-     * @return array
      */
     public static function commonITILObjectclassesProvider(): array
     {
@@ -173,7 +172,6 @@ class TemplateManagerTest extends DbTestCase
     /**
      * Verify that actors are rendered correctly on creation (commonitilobject)
      *
-     * @return void
      */
     #[DataProvider('commonITILObjectclassesProvider')]
     public function testActorsOnCreate(string $common_itil_object_class): void

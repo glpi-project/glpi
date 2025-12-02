@@ -165,7 +165,6 @@ final class OAuthClient extends CommonDBTM
 
     /**
      * Ensure the allowed IPs input is a comma-separated list of valid IP addresses or CIDR ranges.
-     * @param string|null $allowed_ips
      * @return bool
      */
     private function validateAllowedIPs(?string $allowed_ips)

@@ -44,7 +44,6 @@ final class PasswordHistoryTest extends DbTestCase
     /**
      * Data provider for testValidatePassword
      *
-     * @return iterable
      */
     protected function testValidatePasswordProvider(): iterable
     {
@@ -135,7 +134,6 @@ final class PasswordHistoryTest extends DbTestCase
     /**
      * Test method for PasswordHistory->validatePassword()
      *
-     * @return void
      */
     public function testValidatePassword(): void
     {
@@ -153,7 +151,6 @@ final class PasswordHistoryTest extends DbTestCase
     /**
      * Data provider for testUpdatePasswordHistory
      *
-     * @return iterable
      */
     protected function testUpdatePasswordHistoryProvider(): iterable
     {
@@ -228,7 +225,6 @@ final class PasswordHistoryTest extends DbTestCase
     /**
      * Test method for PasswordHistory->updatePasswordHistory()
      *
-     * @return void
      */
     public function testUpdatePasswordHistory(): void
     {

@@ -67,7 +67,6 @@ final class Theme implements JsonSerializable
     }
 
     /**
-     * @return bool
      * @used-by "templates/layout/parts/head.html.twig"
      */
     public function isDarkTheme(): bool
@@ -93,9 +92,7 @@ final class Theme implements JsonSerializable
     /**
      * Return preview file path, if any.
      *
-     * @param bool $relative
      *
-     * @return string|null
      */
     public function getPreviewPath(bool $relative = true): ?string
     {

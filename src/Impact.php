@@ -242,7 +242,7 @@ JS);
     /**
      * Display the impact analysis as an interactive graph
      *
-     * @param CommonDBTM $item    starting point of the graph
+     * @param CommonDBTM $item starting point of the graph
      */
     public static function displayGraphView(CommonDBTM $item): void
     {
@@ -256,11 +256,10 @@ JS);
     /**
      * Display the impact analysis as a list
      *
-     * @param CommonDBTM $item   starting point of the graph
-     * @param array      $graph  array containing the graph nodes and egdes
+     * @param CommonDBTM $item    starting point of the graph
+     * @param array      $graph   array containing the graph nodes and egdes
      * @param bool       $scripts True if the JS code should be generated
      *
-     * @return void
      */
     public static function displayListView(CommonDBTM $item, array $graph, bool $scripts = false): void
     {
@@ -520,9 +519,9 @@ TWIG, $twig_params);
      * number of iitilobjets found, use the highest priority as it's background
      * color and is a link to matching search result
      *
-     * @param array   $itil_objects
-     * @param string  $type
-     * @param string  $node_id
+     * @param array  $itil_objects
+     * @param string $type
+     * @param string $node_id
      */
     private static function displayListNumber($itil_objects, $type, $node_id): void
     {
@@ -587,13 +586,12 @@ TWIG, $twig_params);
     /**
      * Build the data used to represent the impact graph as a semi-flat list
      *
-     * @param array      $graph        array containing the graph nodes and egdes
-     * @param int        $direction    should the list be build for item that are
-     *                                 impacted by $item or that impact $item ?
-     * @param CommonDBTM $item         starting point of the graph
-     * @param int        $max_depth    max depth from context
+     * @param array      $graph     array containing the graph nodes and egdes
+     * @param int        $direction should the list be build for item that are
+     *                              impacted by $item or that impact $item ?
+     * @param CommonDBTM $item      starting point of the graph
+     * @param int        $max_depth max depth from context
      *
-     * @return array
      */
     public static function buildListData(array $graph, int $direction, CommonDBTM $item, int $max_depth): array
     {
@@ -658,8 +656,8 @@ TWIG, $twig_params);
     /**
      * Return a subgraph matching the given direction
      *
-     * @param array $graph      array containing the graph nodes and egdes
-     * @param int   $direction  direction to match
+     * @param array $graph     array containing the graph nodes and egdes
+     * @param int   $direction direction to match
      *
      * @return array
      */
@@ -690,10 +688,10 @@ TWIG, $twig_params);
     /**
      * Evaluate the path from one node to another using BFS algorithm
      *
-     * @param array  $graph          array containing the graph nodes and egdes
-     * @param array  $a              a node of the graph
-     * @param array  $b              a node of the graph
-     * @param int    $direction      direction used to travel the graph
+     * @param array $graph     array containing the graph nodes and egdes
+     * @param array $a         a node of the graph
+     * @param array $b         a node of the graph
+     * @param int   $direction direction used to travel the graph
      * @return array                 the path from $a to $b
      */
     public static function bfs(array $graph, array $a, array $b, int $direction): array
@@ -763,9 +761,9 @@ TWIG, $twig_params);
     /**
      * Print the title and view switch
      *
-     * @param string  $graph      The network graph (json)
-     * @param string  $params     Params of the graph (json)
-     * @param bool    $readonly   Is the graph editable ?
+     * @param string $graph    The network graph (json)
+     * @param string $params   Params of the graph (json)
+     * @param bool   $readonly Is the graph editable ?
      */
     public static function printHeader(
         string $graph,
@@ -825,10 +823,10 @@ TWIG, $twig_params);
     /**
      * Print the asset selection form used in the impact tab of ITIL objects
      *
-     * @param array $items
-     *    Each array should contains "itemtype", "items_id" and "name".
      *
      * @since 9.5
+     * @param array $items
+     *                     Each array should contains "itemtype", "items_id" and "name".
      */
     public static function printAssetSelectionForm(array $items): void
     {
@@ -886,10 +884,10 @@ TWIG, $twig_params);
     /**
      * Search asset by itemtype and name
      *
-     * @param string  $itemtype   type
-     * @param array   $used       ids to exlude from the search
-     * @param string  $filter     filter on name
-     * @param int     $page       page offset
+     * @param string $itemtype type
+     * @param array  $used     ids to exlude from the search
+     * @param string $filter   filter on name
+     * @param int    $page     page offset
      * @return array Result of the search
      */
     public static function searchAsset(string $itemtype, array $used, string $filter, int $page = 0): array
@@ -1185,8 +1183,8 @@ TWIG, $twig_params);
      *
      * @since 9.5
      *
-     * @param array      $edges          Edges of the graph
      * @param array      $nodes          Nodes of the graph
+     * @param array      $edges          Edges of the graph
      * @param CommonDBTM $node           Current node
      * @param int        $direction      The direction in which the graph
      *                                   is being explored : DIRECTION_FORWARD
@@ -1272,10 +1270,7 @@ TWIG, $twig_params);
     /**
      * Get the icon to be displayed for the given item.
      *
-     * @param string $itemtype
-     * @param int|null $id
      *
-     * @return string
      */
     public static function getImpactIcon(string $itemtype, ?int $id = null): string
     {
@@ -1322,10 +1317,10 @@ TWIG, $twig_params);
     /**
      * Add a node to the node list if missing
      *
-     * @param array      $nodes  Nodes of the graph
-     * @param CommonDBTM $item   Node to add
      *
      * @since 9.5
+     * @param array      $nodes Nodes of the graph
+     * @param CommonDBTM $item  Node to add
      *
      * @return bool true if the node was missing, else false
      */
@@ -1434,15 +1429,14 @@ TWIG, $twig_params);
     /**
      * Add an edge to the edge list if missing, else update it's direction
      *
-     * @param array      $edges      Edges of the graph
-     * @param string     $key        ID of the new edge
-     * @param CommonDBTM $itemA      One of the node connected to this edge
-     * @param CommonDBTM $itemB      The other node connected to this edge
-     * @param int        $direction  Direction of the edge : A to B or B to A ?
      *
      * @since 9.5
+     * @param array      $edges     Edges of the graph
+     * @param string     $key       ID of the new edge
+     * @param CommonDBTM $itemA     One of the node connected to this edge
+     * @param CommonDBTM $itemB     The other node connected to this edge
+     * @param int        $direction Direction of the edge : A to B or B to A ?
      *
-     * @return void
      *
      * @throws InvalidArgumentException
      */
@@ -1483,7 +1477,6 @@ TWIG, $twig_params);
     /**
      * Get saved graph params for the current item
      *
-     * @param CommonDBTM $item
      *
      * @return string $item
      */
@@ -1629,7 +1622,6 @@ TWIG, $twig_params);
      *
      * @param string $itemtype Class of the asset
      * @param string $items_id id of the asset
-     * @return bool
      */
     public static function assetExist(string $itemtype, string $items_id): bool
     {
@@ -1657,9 +1649,8 @@ TWIG, $twig_params);
     /**
      * Create an ID for a node (itemtype::items_id)
      *
-     * @param CommonDBTM  $item Name of the node
+     * @param CommonDBTM $item Name of the node
      *
-     * @return string
      */
     public static function getNodeID(CommonDBTM $item): string
     {
@@ -1669,11 +1660,10 @@ TWIG, $twig_params);
     /**
      * Create an ID for an edge (NodeID->NodeID)
      *
-     * @param CommonDBTM  $itemA     First node of the edge
-     * @param CommonDBTM  $itemB     Second node of the edge
-     * @param int         $direction Direction of the edge : A to B or B to A ?
+     * @param CommonDBTM $itemA     First node of the edge
+     * @param CommonDBTM $itemB     Second node of the edge
+     * @param int        $direction Direction of the edge : A to B or B to A ?
      *
-     * @return string|null
      *
      * @throws InvalidArgumentException
      */
@@ -1765,8 +1755,6 @@ TWIG, $twig_params);
     /**
      * Check if the given itemtype is enabled in impact config
      *
-     * @param string $itemtype
-     * @return bool
      */
     public static function isEnabled(string $itemtype): bool
     {
@@ -1776,7 +1764,6 @@ TWIG, $twig_params);
     /**
      * Return enabled itemtypes
      *
-     * @return array
      */
     public static function getEnabledItemtypes(): array
     {
@@ -1800,7 +1787,6 @@ TWIG, $twig_params);
     /**
      * Return default itemtypes
      *
-     * @return array
      */
     public static function getDefaultItemtypes(): array
     {

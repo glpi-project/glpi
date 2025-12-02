@@ -144,7 +144,6 @@ final class FormTranslation extends ItemTranslation
     /**
      * Get remaining languages that can be added to a form translation
      *
-     * @param int $form_id
      * @return array<string, string> List of languages (code => name)
      */
     public static function getLanguagesCanBeAddedToTranslation(int $form_id): array

@@ -88,11 +88,11 @@ class GLPIUploadHandler extends UploadHandler
     }
 
     /**
-     * @param string $uploaded_file
+     * @param string   $uploaded_file
      * @param stdClass $file
-     * @param int $error
-     * @param int $index
-     * @param ?array $content_range
+     * @param int      $error
+     * @param int      $index
+     * @param ?array   $content_range
      *
      * @return bool
      */

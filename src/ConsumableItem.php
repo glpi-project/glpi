@@ -332,7 +332,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
      *
      * @param CronTask|null $task to log, if NULL display (default NULL)
      *
-     * @return integer 0 : nothing to do 1 : done with success
+     * @return int 0 : nothing to do 1 : done with success
      * @used-by CronTask
      **/
     public static function cronConsumable(?CronTask $task = null)

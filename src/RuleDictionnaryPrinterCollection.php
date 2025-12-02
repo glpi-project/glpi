@@ -167,8 +167,6 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
 
 
     /**
-     * @param array $res_rule
-     * @param array $input
      * @return bool
      **/
     public static function somethingHasChanged(array $res_rule, array $input)
@@ -187,7 +185,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
     /**
      * Replay dictionary on several printers
      *
-     * @param array $IDs of printers IDs to replay
+     * @param array $IDs      of printers IDs to replay
      * @param array $res_rule of rule results
      *
      * @return void
@@ -247,10 +245,9 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
     /**
      * Replay dictionary on one printer
      *
-     * @param array &$new_printers   array containing new printers already computed
-     * @param array $res_rule        array of rule results
-     * @param array $params
-     * @param array &$printers_ids   array containing replay printer need to be put in trashbin
+     * @param array &$new_printers array containing new printers already computed
+     * @param array $res_rule      array of rule results
+     * @param array &$printers_ids array containing replay printer need to be put in trashbin
      *
      * @return void
      */
@@ -331,8 +328,8 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
     /**
      * Move direct connections from old printer to the new one
      *
-     * @param integer $ID                 the old printer's id
-     * @param integer $new_printers_id    the new printer's id
+     * @param int $ID              the old printer's id
+     * @param int $new_printers_id the new printer's id
      *
      * @return void
      **/

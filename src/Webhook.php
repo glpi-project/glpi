@@ -289,7 +289,6 @@ class Webhook extends CommonDBTM implements FilterableInterface
      * Return a list of GLPI events that are valid for an itemtype.
      *
      * @param class-string<CommonDBTM>|null $itemtype
-     * @return array
      */
     public static function getGlpiEventsList(?string $itemtype): array
     {
@@ -303,7 +302,6 @@ class Webhook extends CommonDBTM implements FilterableInterface
     /**
     * Return a list of default events.
     *
-    * @return array
     */
     public static function getDefaultEventsList(): array
     {
@@ -318,7 +316,6 @@ class Webhook extends CommonDBTM implements FilterableInterface
      * Return default event name.
      *
      * @param string $event_name
-     * @return string
      */
     public static function getDefaultEventsListLabel($event_name): string
     {
@@ -329,7 +326,6 @@ class Webhook extends CommonDBTM implements FilterableInterface
     /**
     * Return a list of HTTP methods.
     *
-    * @return array
     */
     public static function getHttpMethod(): array
     {
@@ -345,7 +341,6 @@ class Webhook extends CommonDBTM implements FilterableInterface
     /**
     * Return status icon
     *
-    * @return string
     */
     public static function getStatusIcon($status): string
     {
@@ -402,7 +397,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
             /**
              * @param class-string<CommonDBTM> $itemtype
-             * @param array $schemas
+             * @param array                    $schemas
              * @return array|null
              * @phpstan-return array{name: string, schema: array}|null
              */
@@ -522,12 +517,11 @@ class Webhook extends CommonDBTM implements FilterableInterface
     /**
      * Get the body of a webhook request for the given event and API data.
      * In some cases, the provided itemtype and items_id may be used to inject some information about the parent item into a top-level 'parent_item' object.
-     * @param string $event The event to use in the payload.
-     * @param array $api_data The data to use in the payload.
-     * @param string $itemtype The related itemtype.
-     * @param int $items_id The related items_id.
-     * @param bool $raw_output Whether to return the raw JSON or process it through the payload template.
-     * @return string|null
+     * @param string $event      The event to use in the payload.
+     * @param array  $api_data   The data to use in the payload.
+     * @param string $itemtype   The related itemtype.
+     * @param int    $items_id   The related items_id.
+     * @param bool   $raw_output Whether to return the raw JSON or process it through the payload template.
      */
     private function getWebhookBody(string $event, array $api_data, string $itemtype, int $items_id, bool $raw_output = false): ?string
     {
@@ -569,7 +563,6 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
     /**
      * @param string $itemtype The itemtype to get the parent item schema for.
-     * @return array
      */
     private static function getParentItemSchema(string $itemtype): array
     {
@@ -614,10 +607,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
     }
 
     /**
-     * @param array $data
      * @param class-string<CommonDBTM> $itemtype
-     * @param int $items_id
-     * @return void
      */
     private function addParentItemData(array &$data, string $itemtype, int $items_id): void
     {
@@ -655,12 +645,11 @@ class Webhook extends CommonDBTM implements FilterableInterface
     /**
      * Get a result from the API for a given path.
      * In some cases, the provided itemtype and items_id may be used to inject some information about the parent item into a top-level 'parent_item' object.
-     * @param string $path The API path to get the data from.
-     * @param string $event The event to use in the payload.
-     * @param class-string<CommonDBTM> $itemtype The itemtype related to the path.
-     * @param int $items_id The items_id related to the path.
-     * @param bool $raw_output Whether to return the raw JSON or process it through the payload template.
-     * @return string|null
+     * @param string                   $path       The API path to get the data from.
+     * @param string                   $event      The event to use in the payload.
+     * @param class-string<CommonDBTM> $itemtype   The itemtype related to the path.
+     * @param int                      $items_id   The items_id related to the path.
+     * @param bool                     $raw_output Whether to return the raw JSON or process it through the payload template.
      */
     public function getResultForPath(string $path, string $event, string $itemtype, int $items_id, bool $raw_output = false): ?string
     {
@@ -917,7 +906,6 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
     /**
      * @param class-string<CommonDBTM> $itemtype The itemtype to get the schema for
-     * @return array|null
      */
     public static function getAPISchemaBySupportedItemtype(string $itemtype): ?array
     {
@@ -1118,9 +1106,8 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
     /**
      * Raise an event for an item to trigger related outgoing webhooks
-     * @param string $event The event being raised
-     * @param CommonDBTM $item The item the event is being raised for
-     * @return void
+     * @param string     $event The event being raised
+     * @param CommonDBTM $item  The item the event is being raised for
      */
     public static function raise(string $event, CommonDBTM $item): void
     {
@@ -1240,7 +1227,6 @@ class Webhook extends CommonDBTM implements FilterableInterface
     /**
      * Send a webhook to the queue
      * @param array $data The data for the webhook
-     * @return void
      */
     public static function send(array $data): void
     {

@@ -112,7 +112,6 @@ class Contract_Supplier extends CommonDBRelation
      *
      * @since 0.84
      *
-     * @param Supplier $supplier
      *
      * @return void
      **/

@@ -110,9 +110,9 @@ class GLPIPDF extends TCPDF
     /**
      * Page header
      *
-     * @see TCPDF::Header()
      *
      * @return void
+     * @see TCPDF::Header()
     */
     public function Header()
     {
@@ -124,9 +124,9 @@ class GLPIPDF extends TCPDF
     /**
      * Page footer
      *
-     * @see TCPDF::Footer()
      *
      * @return void
+     * @see TCPDF::Footer()
     */
     public function Footer()
     {
@@ -199,7 +199,7 @@ class GLPIPDF extends TCPDF
     /**
      * Set total results count
      *
-     * @param integer $count Total number of results
+     * @param int $count Total number of results
      *
      * @return GLPIPDF
      */

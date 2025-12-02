@@ -444,9 +444,7 @@ class Location extends CommonTreeDropdown
     /**
      * get item location
      *
-     * @param CommonDBTM  $item
      *
-     * @return Location|null
      **/
     final public static function getFromItem(CommonDBTM $item): ?Location
     {
@@ -464,7 +462,6 @@ class Location extends CommonTreeDropdown
      *
      * @since 0.85
      *
-     * @return bool
      **/
     public function showItems(): bool
     {

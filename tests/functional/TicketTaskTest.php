@@ -50,9 +50,9 @@ final class TicketTaskTest extends CommonITILTaskTestCase
     /**
      * Create a new ticket
      *
-     * @param boolean $as_object Return Ticket object or its id
+     * @param bool $as_object Return Ticket object or its id
      *
-     * @return integer|\Ticket
+     * @return int|\Ticket
      */
     private function getNewTicket($as_object = false)
     {
@@ -640,7 +640,6 @@ final class TicketTaskTest extends CommonITILTaskTestCase
     /**
      * Check that the parent ticket status is updated when tasks are added or updated
      *
-     * @return void
      */
     public function testUpdateParentStatusOnTaskUpdate(): void
     {

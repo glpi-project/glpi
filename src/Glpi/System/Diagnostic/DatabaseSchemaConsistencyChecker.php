@@ -45,9 +45,7 @@ class DatabaseSchemaConsistencyChecker extends AbstractDatabaseChecker
     /**
      * Get list of missing fields, basing detection on other fields.
      *
-     * @param string $table_name
      *
-     * @return array
      */
     public function getMissingFields(string $table_name): array
     {

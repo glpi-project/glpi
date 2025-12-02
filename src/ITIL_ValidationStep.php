@@ -194,8 +194,6 @@ abstract class ITIL_ValidationStep extends CommonDBChild
     }
 
     /**
-     * @param CommonITILObject $itil
-     * @return int
      */
     public static function getValidationStatusForITIL(CommonITILObject $itil): int
     {
@@ -226,7 +224,6 @@ abstract class ITIL_ValidationStep extends CommonDBChild
      *
      * Return each step status for an itil in an array
      *
-     * @param CommonITILObject $itil
      * @return int[] array of validation steps status : ComomITILValidation::WAITING|ComomITILValidation::ACCEPTED|ComomITILValidation::REFUSED
      */
     public static function getValidationStepsStatus(CommonITILObject $itil): array

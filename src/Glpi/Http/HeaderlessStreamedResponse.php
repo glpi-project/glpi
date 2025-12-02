@@ -44,8 +44,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  * - https://bugs.php.net/bug.php?id=81451
  * - https://stackoverflow.com/questions/69197771/why-is-function-http-response-code-acting-strange-that-was-called-after-functi/69213593#69213593
  *
- * @since 11.0.0
  * @deprecated 11.0.0
+ * @since 11.0.0
  */
 class HeaderlessStreamedResponse extends StreamedResponse
 {

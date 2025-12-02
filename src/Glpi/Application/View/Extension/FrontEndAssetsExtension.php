@@ -86,7 +86,6 @@ class FrontEndAssetsExtension extends AbstractExtension
     /**
      * Current theme
      *
-     * @return Theme
      */
     public function currentTheme(): Theme
     {
@@ -106,9 +105,7 @@ class FrontEndAssetsExtension extends AbstractExtension
     /**
      * Return domain-relative path of an asset.
      *
-     * @param string $path
      *
-     * @return string
      */
     public function assetPath(string $path): string
     {
@@ -118,10 +115,7 @@ class FrontEndAssetsExtension extends AbstractExtension
     /**
      * Return domain-relative path of a CSS file.
      *
-     * @param string $path
-     * @param array $options
      *
-     * @return string
      */
     public function cssPath(string $path, array $options = []): string
     {
@@ -170,10 +164,7 @@ class FrontEndAssetsExtension extends AbstractExtension
     /**
      * Return domain-relative path of a JS file.
      *
-     * @param string $path
-     * @param array $options
      *
-     * @return string
      */
     public function jsPath(string $path, array $options = []): string
     {
@@ -194,9 +185,7 @@ class FrontEndAssetsExtension extends AbstractExtension
     /**
      * Get path suffixed with asset version.
      *
-     * @param string $path
      *
-     * @return string
      */
     private function getVersionnedPath(string $path, array $options = []): string
     {
@@ -209,7 +198,6 @@ class FrontEndAssetsExtension extends AbstractExtension
     /**
      * Return custom CSS for active entity.
      *
-     * @return string
      */
     public function customCss(): string
     {
@@ -236,7 +224,6 @@ class FrontEndAssetsExtension extends AbstractExtension
     /**
      * Return locales JS code.
      *
-     * @return string
      */
     public function localesJs(): string
     {
@@ -290,7 +277,6 @@ class FrontEndAssetsExtension extends AbstractExtension
     /**
      * Return config (CFG_GLPI) JS code.
      *
-     * @return string
      */
     public function configJs(): string
     {

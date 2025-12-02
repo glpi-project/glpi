@@ -70,7 +70,6 @@ class PhpExtension extends AbstractExtension
     /**
      * Get PHP configuration value.
      *
-     * @param string $name
      *
      * @return mixed
      */
@@ -82,8 +81,6 @@ class PhpExtension extends AbstractExtension
     /**
      * Call function of static method.
      *
-     * @param string|array $callable
-     * @param array $parameters
      *
      * @return mixed
      */
@@ -99,7 +96,6 @@ class PhpExtension extends AbstractExtension
      * Return static property value.
      *
      * @param mixed $class
-     * @param string $property
      *
      * @return mixed
      */
@@ -117,7 +113,6 @@ class PhpExtension extends AbstractExtension
      * @param mixed  $value
      * @param string $classname
      *
-     * @return bool
      */
     public function isInstanceof($value, $classname): bool
     {
@@ -130,7 +125,6 @@ class PhpExtension extends AbstractExtension
      * @param mixed  $value
      * @param string $trait
      *
-     * @return bool
      */
     public function isUsingTrait($value, $trait): bool
     {

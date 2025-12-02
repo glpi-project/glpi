@@ -49,7 +49,6 @@ abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType impl
     /**
      * Specific input type for child classes
      *
-     * @return string
      */
     abstract public function getInputType(): string;
 
@@ -97,7 +96,6 @@ abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType impl
     /**
      * Provide additional attributes for the input field
      *
-     * @return array
      */
     public function getInputAttributes(): array
     {

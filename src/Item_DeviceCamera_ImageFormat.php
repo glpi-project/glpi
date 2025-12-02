@@ -82,8 +82,7 @@ class Item_DeviceCamera_ImageFormat extends CommonDBRelation
 
     /**
      * Print items
-     * @param  DeviceCamera $camera the current camera instance
-     * @return bool
+     * @param DeviceCamera $camera the current camera instance
      */
     public static function showItems(DeviceCamera $camera): bool
     {

@@ -165,9 +165,8 @@ final class Search
 
     /**
      * Get the SQL SELECT criteria required to get the data for the specified property.
-     * @param string $prop_name The property name
-     * @param bool $distinct_groups Whether to use DISTINCT in GROUP_CONCAT
-     * @return QueryExpression|null
+     * @param string $prop_name       The property name
+     * @param bool   $distinct_groups Whether to use DISTINCT in GROUP_CONCAT
      */
     private function getSelectCriteriaForProperty(string $prop_name, bool $distinct_groups = false): ?QueryExpression
     {
@@ -261,8 +260,8 @@ final class Search
 
     /**
      * Get all JOIN clauses for the specified join definition
-     * @param string $join_alias The alias/name for the join
-     * @param array $join_definition The join definition
+     * @param string $join_alias      The alias/name for the join
+     * @param array  $join_definition The join definition
      * @return array JOIN clauses in array format used bt {@link \DBmysqlIterator}
      */
     private function getJoins(string $join_alias, array $join_definition): array
@@ -497,7 +496,6 @@ final class Search
     /**
      * If the schema has a read right condition, add it to the criteria.
      * @param array $criteria The current criteria. Will be modified in-place.
-     * @return void
      * @throws RightConditionNotMetException If the read condition check returns false indicating we know the user cannot view any of the resources without needing to check the database.
      */
     private function addReadRestrictCriteria(array &$criteria): void
@@ -532,7 +530,6 @@ final class Search
     /**
      * Check if the criteria has a filter on joined data.
      * @param array $where The WHERE criteria
-     * @return bool
      */
     private function criteriaHasJoinFilter(array $where): bool
     {
@@ -567,7 +564,6 @@ final class Search
 
     /**
      * @param bool $ignore_pagination
-     * @return RecordSet
      * @throws APIException
      * @throws RSQLException
      */
@@ -720,8 +716,6 @@ final class Search
     /**
      * Fetch results for the given schema and request parameters.
      * Use {@link ResourceAccessor::getOneBySchema()} or {@link ResourceAccessor::searchBySchema()} instead of suing this directly.
-     * @param array $schema
-     * @param array $request_params
      * @return array The search results
      * @phpstan-return array{results: array, start: int, limit: int, total: int}
      * @throws RSQLException|APIException

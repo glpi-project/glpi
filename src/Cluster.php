@@ -215,9 +215,7 @@ class Cluster extends CommonDBTM implements AssignableItemInterface, StateInterf
     /**
      * Get the cluster of an item
      *
-     * @param CommonDBTM $item
      *
-     * @return Cluster|null
      */
     public static function getClusterByItem(CommonDBTM $item): ?Cluster
     {

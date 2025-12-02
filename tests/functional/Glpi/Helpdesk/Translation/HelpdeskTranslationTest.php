@@ -374,11 +374,7 @@ class HelpdeskTranslationTest extends DbTestCase
     /**
      * Assert that handlers are listed (or not) in the translation table.
      *
-     * @param array $handlers
-     * @param Crawler $crawler
      * @param int $expected_count 0 if not listed, 1 if listed
-     * @param string $message
-     * @return void
      */
     private function assertHandlersInTranslationTable(
         array $handlers,

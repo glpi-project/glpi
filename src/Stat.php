@@ -68,10 +68,10 @@ class Stat extends CommonGLPI
 
     /**
      * @param class-string<CommonGLPI> $itemtype
-     * @param string $date1
-     * @param string $date2
-     * @param string $type
-     * @param int $parent (default 0)
+     * @param string                   $date1
+     * @param string                   $date2
+     * @param string                   $type
+     * @param int                      $parent   (default 0)
      * @return array
      */
     public static function getItems($itemtype, $date1, $date2, $type, $parent = 0)
@@ -366,12 +366,11 @@ class Stat extends CommonGLPI
 
     /**
      * @param class-string<CommonITILObject> $itemtype
-     * @param string $type
-     * @param string $date1
-     * @param string $date2
-     * @param integer $start
-     * @param array $value
-     * @param string $value2 (default '')
+     * @param string                         $type
+     * @param string                         $date1
+     * @param string                         $date2
+     * @param int                            $start
+     * @param string                         $value2   (default '')
      * @return array|mixed
      */
     public static function getData($itemtype, $type, $date1, $date2, $start, array $value, $value2 = "")
@@ -425,16 +424,15 @@ class Stat extends CommonGLPI
     }
 
     /**
-     * @param class-string<CommonITILObject> $itemtype
-     * @param string $type
-     * @param string $date1
-     * @param string $date2
-     * @param integer $start
-     * @param array $value
-     * @param int|string $value2
-     * @return void
      *
      * @since 0.85 (before show with same parameters)
+     * @param class-string<CommonITILObject> $itemtype
+     * @param string                         $type
+     * @param string                         $date1
+     * @param string                         $date2
+     * @param int                            $start
+     * @param int|string                     $value2
+     * @return void
      **/
     public static function showTable($itemtype, $type, $date1, $date2, $start, array $value, $value2 = '')
     {
@@ -924,13 +922,13 @@ class Stat extends CommonGLPI
 
     /**
      * @param class-string<CommonITILObject> $itemtype
-     * @param string $type
-     * @param string $begin
-     * @param string $end
-     * @param string $param
-     * @param string|array $value
-     * @param string $value2 (default '')
-     * @param $add_criteria          (default [''])
+     * @param string                         $type
+     * @param string                         $begin
+     * @param string                         $end
+     * @param string                         $param
+     * @param string|array                   $value
+     * @param string                         $value2       (default '')
+     * @param                                $add_criteria (default [''])
      *
      * @return array|void
      */
@@ -1527,10 +1525,9 @@ class Stat extends CommonGLPI
     }
 
     /**
-     * @param DateTime|string $start_date
-     * @param DateTime|string $end_date
+     * @param DateTime|string                $start_date
+     * @param DateTime|string                $end_date
      * @param class-string<CommonITILObject> $itil_type
-     * @return array
      */
     public static function getAssetsWithITIL($start_date, $end_date, $itil_type = 'Ticket'): array
     {
@@ -1596,10 +1593,10 @@ class Stat extends CommonGLPI
     }
 
     /**
-     * @param string $target
-     * @param string $date1
-     * @param string $date2
-     * @param integer $start
+     * @param string                              $target
+     * @param string                              $date1
+     * @param string                              $date2
+     * @param int                                 $start
      * @param class-string<CommonITILObject>|null $itemtype
      **/
     public static function showItems($target, $date1, $date2, $start, $itemtype = null)
@@ -1799,7 +1796,6 @@ class Stat extends CommonGLPI
 
     /**
      * @param class-string<CommonITILObject> $itemtype
-     * @return array
      */
     public static function getITILStatFields(string $itemtype): array
     {
@@ -1887,7 +1883,6 @@ class Stat extends CommonGLPI
 
     /**
      * Call displayLineGraph with arguments from a StatData object
-     * @param StatData $stat_data
      */
     public function displayLineGraphFromData(StatData $stat_data)
     {
@@ -1908,15 +1903,15 @@ class Stat extends CommonGLPI
     /**
      * Display line graph
      *
-     * @param string   $title  Graph title
-     * @param string[] $labels Labels to display
-     * @param array    $series Series data. An array of the form:
-     *                 [
-     *                    ['name' => 'a name', 'data' => []],
-     *                    ['name' => 'another name', 'data' => []]
-     *                 ]
-     * @param array    $options  Options
-     * @param boolean  $display  Whether to display directly; defauts to true
+     * @param string      $title    Graph title
+     * @param string[]    $labels   Labels to display
+     * @param array       $series   Series data. An array of the form:
+     *                              [
+     *                              ['name' => 'a name', 'data' => []],
+     *                              ['name' => 'another name', 'data' => []]
+     *                              ]
+     * @param array       $options  Options
+     * @param bool        $display  Whether to display directly; defauts to true
      * @param string|null $csv_link Link to download the dataset as csv
      *
      * @return string|void
@@ -2082,15 +2077,15 @@ TWIG, $twig_params);
     /**
      * Display pie graph
      *
-     * @param string   $title  Graph title
-     * @param string[] $labels Labels to display
-     * @param array    $series Series data. An array of the form:
-     *                 [
-     *                    ['name' => 'a name', 'data' => []],
-     *                    ['name' => 'another name', 'data' => []]
-     *                 ]
-     * @param array    $options  Options
-     * @param boolean  $display  Whether to display directly; defauts to true
+     * @param string      $title    Graph title
+     * @param string[]    $labels   Labels to display
+     * @param array       $series   Series data. An array of the form:
+     *                              [
+     *                              ['name' => 'a name', 'data' => []],
+     *                              ['name' => 'another name', 'data' => []]
+     *                              ]
+     * @param array       $options  Options
+     * @param bool        $display  Whether to display directly; defauts to true
      * @param string|null $csv_link Link to download the dataset as csv
      *
      * @return string|void
@@ -2218,10 +2213,10 @@ TWIG, $twig_params);
     /**
      * Display search form
      *
-     * @param string  $itemtype Item type
-     * @param string  $date1    First date
-     * @param string  $date2    Second date
-     * @param boolean $display  Whether to display directly; defauts to true
+     * @param string $itemtype Item type
+     * @param string $date1    First date
+     * @param string $date2    Second date
+     * @param bool   $display  Whether to display directly; defauts to true
      *
      * @return void|string
      * @phpstan-return ($display is true ? void : string)

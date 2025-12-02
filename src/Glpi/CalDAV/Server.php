@@ -90,7 +90,6 @@ class Server extends DAV\Server
     }
 
     /**
-     * @param Throwable $exception
      *
      * @return void
      */

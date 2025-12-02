@@ -69,7 +69,6 @@ class GLPITest extends GLPITestCase
     /**
      * Verify the value of the GLPI_YEAR const
      *
-     * @return void
      */
     public function test_GlpiYear(): void
     {

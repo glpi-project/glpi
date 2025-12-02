@@ -93,9 +93,6 @@ use function Safe\preg_match;
 final class SearchEngine
 {
     /**
-     * @param int $output_type
-     * @param array $data
-     * @return AbstractSearchOutput
      */
     public static function getOutputForLegacyKey(int $output_type, array $data = []): AbstractSearchOutput
     {
@@ -189,7 +186,6 @@ final class SearchEngine
      * Returns parents itemtypes having subitems defined in given config key.
      * This list is filtered and is only valid in a "meta" search context.
      *
-     * @param string $config_key
      *
      * @return string[]
      */
@@ -226,10 +222,7 @@ final class SearchEngine
     /**
      * Check if an itemtype is a possible subitem of another itemtype in a "meta" search context.
      *
-     * @param string $parent_itemtype
-     * @param string $child_itemtype
      *
-     * @return boolean
      */
     public static function isPossibleMetaSubitemOf(string $parent_itemtype, string $child_itemtype): bool
     {
@@ -291,10 +284,10 @@ final class SearchEngine
      *
      * @since 0.85
      *
-     * @param string $itemtype      Item type
-     * @param array  $params        Array of parameters
-     *                               may include sort, order, start, list_limit, deleted, criteria, metacriteria
-     * @param array  $forcedisplay  Array of columns to display (default empty = empty use display pref and search criteria)
+     * @param string $itemtype     Item type
+     * @param array  $params       Array of parameters
+     *                             may include sort, order, start, list_limit, deleted, criteria, metacriteria
+     * @param array  $forcedisplay Array of columns to display (default empty = empty use display pref and search criteria)
      *
      * @return array prepare to be used for a search (include criteria and others needed information)
      **/
@@ -521,7 +514,6 @@ final class SearchEngine
     /**
      * Reset save searches
      *
-     * @return void
      **/
     public static function resetSaveSearch(): void
     {
@@ -531,7 +523,6 @@ final class SearchEngine
 
     /**
      * @param bool $only_not
-     * @return array
      */
     public static function getLogicalOperators($only_not = false): array
     {
@@ -553,9 +544,7 @@ final class SearchEngine
     /**
      * Get table name for item type
      *
-     * @param string $itemtype
      *
-     * @return string
      */
     public static function getOrigTableName(string $itemtype): string
     {
@@ -563,7 +552,6 @@ final class SearchEngine
     }
 
     /**
-     * @param array $params
      * @return class-string<SearchInputInterface>
      */
     private static function getSearchInputClass(array $params = []): string
@@ -573,7 +561,6 @@ final class SearchEngine
     }
 
     /**
-     * @param array $params
      * @return class-string<SearchProviderInterface>
      */
     private static function getSearchProviderClass(array $params = []): string
@@ -590,9 +577,8 @@ final class SearchEngine
      * - The $_GET or $get array is passed to the search input class to be parsed and have some default values set.
      * - The returned parameters are then merged with the $params array. Anything set in both arrays will be overwritten by the result of {@link SearchInputInterface::manageParams()}.
      * @param class-string<CommonDBTM> $itemtype
-     * @param array $params Array of options:
-     *                       - (bool) init_session_data - default: false
-     * @return void
+     * @param array                    $params   Array of options:
+     *                                           - (bool) init_session_data - default: false
      */
     public static function show(string $itemtype, array $params = []): void
     {
@@ -667,10 +653,9 @@ final class SearchEngine
     }
 
     /**
-     * @param string $itemtype The itemtype being displayed
-     * @param array $params The search parameters
-     * @param array $forced_display Array of columns to display (default empty = empty use display pref and search criteria)
-     * @return void
+     * @param string $itemtype       The itemtype being displayed
+     * @param array  $params         The search parameters
+     * @param array  $forced_display Array of columns to display (default empty = empty use display pref and search criteria)
      */
     public static function showOutput(string $itemtype, array $params, array $forced_display = []): void
     {
