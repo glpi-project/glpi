@@ -5656,6 +5656,26 @@ HTML;
                            .text(file.error)
                            .css('width', '100%')
                            .show();
+
+                        // Remove failed image from TinyMCE editor to prevent base64 data in DB
+                        var editor_id = '{$p['editor_id']}';
+                        if (editor_id && typeof tinyMCE !== 'undefined') {
+                            var editor = tinyMCE.get(editor_id);
+                            if (editor) {
+                                var uploaded_image = uploaded_images.find(function(entry) {
+                                    return entry.filename === file.name;
+                                });
+                                if (uploaded_image) {
+                                    var img = editor.dom.select('img[data-upload_id=\"' + uploaded_image.upload_id + '\"]');
+                                    if (img.length > 0) {
+                                        editor.dom.remove(img);
+                                    }
+                                    uploaded_images = uploaded_images.filter(function(entry) {
+                                        return entry.upload_id !== uploaded_image.upload_id;
+                                    });
+                                }
+                            }
+                        }
                         return;
                      }
                   }
