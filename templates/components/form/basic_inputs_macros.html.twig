@@ -137,7 +137,8 @@
         'step': 1,
     }|merge(options) %}
 
-    {% if options.decimals is not defined and not (options.readonly is defined and options.readonly or options.disabled is defined and options.disabled) %}
+    {% if options.decimals is not defined and not options.readonly|default(false) and not options.disabled|default(false) %}
+        {# Automatically define the decimal count based on the configured step. #}
         {% set decimals_part = options.step|split('.') %}
         {% set decimals = decimals_part[1] is defined ? decimals_part[1]|length : 0 %}
         {% set options = options|merge({'decimals': decimals}) %}
