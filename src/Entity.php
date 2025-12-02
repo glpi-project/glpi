@@ -276,7 +276,11 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      */
     public static function canCreateChild(): bool
     {
-        return !(Session::isMultiEntitiesMode() && isset($_SESSION["glpiactive_entity_recursive"]) && !$_SESSION["glpiactive_entity_recursive"]);
+        if (!Session::isMultiEntitiesMode()) {
+            return true;
+        }
+
+        return !empty($_SESSION["glpiactive_entity_recursive"]);
     }
 
     public static function canCreate(): bool
