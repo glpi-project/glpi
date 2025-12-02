@@ -34,9 +34,17 @@
 
 namespace tests\units;
 
+use Budget;
+use CartridgeItem;
 use CommonDBTM;
+use CommonDevice;
+use CommonDropdown;
 use CommonITILObject;
 use Computer;
+use ComputerModel;
+use ConsumableItem;
+use DocumentType;
+use Dropdown;
 use Entity;
 use Generator;
 use Glpi\Asset\Asset_PeripheralAsset;
@@ -44,15 +52,30 @@ use Glpi\Features\AssignableItem;
 use Glpi\Features\Clonable;
 use Glpi\Socket;
 use Glpi\Tests\DbTestCase;
+use Group;
+use Group_User;
 use Item_DeviceSimcard;
+use Location;
 use Monitor;
+use NetworkEquipment;
+use NetworkName;
+use Peripheral;
+use Phone;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Printer;
 use Profile;
+use Project;
+use ProjectTask;
 use Session;
+use Software;
 use State;
+use Supplier;
 use Symfony\Component\DomCrawler\Crawler;
+use TaskCategory;
 use Ticket;
+use Toolbox;
 use User;
+use UserTitle;
 
 /* Test for inc/dropdown.class.php */
 
@@ -62,14 +85,14 @@ class DropdownTest extends DbTestCase
     {
 
         $opt = [ 'display_emptychoice' => true, 'display' => false ];
-        $out = \Dropdown::showLanguages('dropfoo', $opt);
+        $out = Dropdown::showLanguages('dropfoo', $opt);
         $this->assertStringContainsString("name='dropfoo'", $out);
         $this->assertStringContainsString("value='' selected", $out);
         $this->assertStringNotContainsString("value='0'", $out);
         $this->assertStringContainsString("value='fr_FR'", $out);
 
         $opt = ['display' => false, 'value' => 'cs_CZ', 'rand' => '1234'];
-        $out = \Dropdown::showLanguages('language', $opt);
+        $out = Dropdown::showLanguages('language', $opt);
         $this->assertStringNotContainsString("value=''", $out);
         $this->assertStringNotContainsString("value='0'", $out);
         $this->assertStringContainsString("name='language' id='dropdown_language1234", $out);
@@ -92,10 +115,10 @@ class DropdownTest extends DbTestCase
     #[DataProvider('dataTestImport')]
     public function testImport($input, $result, $msg)
     {
-        $id = \Dropdown::import('UserTitle', $input);
+        $id = Dropdown::import(UserTitle::class, $input);
         if ($result) {
             $this->assertGreaterThan(0, (int) $id);
-            $ut = new \UserTitle();
+            $ut = new UserTitle();
             $this->assertTrue($ut->getFromDB($id));
             $this->assertSame($result, $ut->getField('name'));
         } else {
@@ -125,11 +148,11 @@ class DropdownTest extends DbTestCase
     #[DataProvider('dataTestTreeImport')]
     public function testTreeImport($input, $result, $complete, $msg)
     {
-        $input['entities_id'] = getItemByTypeName('Entity', '_test_root_entity', true);
-        $id = \Dropdown::import('Location', $input);
+        $input['entities_id'] = getItemByTypeName(Entity::class, '_test_root_entity', true);
+        $id = Dropdown::import(Location::class, $input);
         if ($result) {
             $this->assertGreaterThan(0, (int) $id, $msg);
-            $ut = new \Location();
+            $ut = new Location();
             $this->assertTrue($ut->getFromDB($id));
             $this->assertSame($result, $ut->getField('name'));
             $this->assertSame($complete, $ut->getField('completename'));
@@ -140,14 +163,14 @@ class DropdownTest extends DbTestCase
 
     public function testGetDropdownNameAndComment()
     {
-        $ret = \Dropdown::getDropdownName('not_a_known_table', 1);
+        $ret = Dropdown::getDropdownName('not_a_known_table', 1);
         $this->assertSame('', $ret);
 
-        $subcat_id = getItemByTypeName('TaskCategory', '_subcat_1', true);
+        $subcat_id = getItemByTypeName(TaskCategory::class, '_subcat_1', true);
 
         // basic test returns string only
         $expected_name = '_cat_1 > _subcat_1';
-        $ret = \Dropdown::getDropdownName('glpi_taskcategories', $subcat_id);
+        $ret = Dropdown::getDropdownName('glpi_taskcategories', $subcat_id);
         $this->assertSame($expected_name, $ret);
 
         // test of return with comments
@@ -157,18 +180,18 @@ class DropdownTest extends DbTestCase
     
 Comment for sub-category _subcat_1
 HTML;
-        $ret = @\Dropdown::getDropdownName('glpi_taskcategories', $subcat_id, withcomment: true);
+        $ret = @Dropdown::getDropdownName('glpi_taskcategories', $subcat_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = \Dropdown::getDropdownComments('glpi_taskcategories', $subcat_id);
+        $ret = Dropdown::getDropdownComments('glpi_taskcategories', $subcat_id);
         $this->assertSame($expected_comments, $ret);
 
         // test of return without $tooltip
         $expected_comments = 'Comment for sub-category _subcat_1';
-        $ret = @\Dropdown::getDropdownName('glpi_taskcategories', $subcat_id, withcomment: true, tooltip: false);
+        $ret = @Dropdown::getDropdownName('glpi_taskcategories', $subcat_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = \Dropdown::getDropdownComments('glpi_taskcategories', $subcat_id, tooltip: false);
+        $ret = Dropdown::getDropdownComments('glpi_taskcategories', $subcat_id, tooltip: false);
         $this->assertSame($expected_comments, $ret);
 
         // test of return with translations
@@ -177,13 +200,13 @@ HTML;
         $expected_name = 'FR - _cat_1 > FR - _subcat_1';
         $expected_comments = 'FR - Commentaire pour sous-catégorie _subcat_1';
 
-        $ret = \Dropdown::getDropdownName('glpi_taskcategories', $subcat_id);
+        $ret = Dropdown::getDropdownName('glpi_taskcategories', $subcat_id);
         $this->assertSame($expected_name, $ret);
 
-        $ret = @\Dropdown::getDropdownName('glpi_taskcategories', $subcat_id, withcomment: true, tooltip: false);
+        $ret = @Dropdown::getDropdownName('glpi_taskcategories', $subcat_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = \Dropdown::getDropdownComments('glpi_taskcategories', $subcat_id, tooltip: false);
+        $ret = Dropdown::getDropdownComments('glpi_taskcategories', $subcat_id, tooltip: false);
         $this->assertSame($expected_comments, $ret);
 
         // switch back to default language
@@ -195,17 +218,17 @@ HTML;
 
         ///////////
         // Computer
-        $computer_id = getItemByTypeName('Computer', '_test_pc01', true);
+        $computer_id = getItemByTypeName(Computer::class, '_test_pc01', true);
 
         $expected_name = '_test_pc01';
-        $ret = \Dropdown::getDropdownName('glpi_computers', $computer_id);
+        $ret = Dropdown::getDropdownName('glpi_computers', $computer_id);
         $this->assertSame($expected_name, $ret);
 
         $expected_comments = 'Comment for computer _test_pc01';
-        $ret = @\Dropdown::getDropdownName('glpi_computers', $computer_id, withcomment: true);
+        $ret = @Dropdown::getDropdownName('glpi_computers', $computer_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = \Dropdown::getDropdownComments('glpi_computers', $computer_id);
+        $ret = Dropdown::getDropdownComments('glpi_computers', $computer_id);
         $this->assertSame($expected_comments, $ret);
 
         //////////
@@ -213,7 +236,7 @@ HTML;
         $contact_id = getItemByTypeName('Contact', '_contact01_name', true);
 
         $expected_name = '_contact01_name _contact01_firstname';
-        $ret = \Dropdown::getDropdownName('glpi_contacts', $contact_id);
+        $ret = Dropdown::getDropdownName('glpi_contacts', $contact_id);
         $this->assertSame($expected_name, $ret);
 
         // test of return with comments
@@ -227,26 +250,26 @@ HTML;
     
 Comment for contact _contact01_name
 HTML;
-        $ret = @\Dropdown::getDropdownName('glpi_contacts', $contact_id, withcomment: true);
+        $ret = @Dropdown::getDropdownName('glpi_contacts', $contact_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = \Dropdown::getDropdownComments('glpi_contacts', $contact_id);
+        $ret = Dropdown::getDropdownComments('glpi_contacts', $contact_id);
         $this->assertSame($expected_comments, $ret);
 
         // test of return without $tooltip
         $expected_comments = 'Comment for contact _contact01_name';
-        $ret = @\Dropdown::getDropdownName('glpi_contacts', $contact_id, withcomment: true, tooltip: false);
+        $ret = @Dropdown::getDropdownName('glpi_contacts', $contact_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = \Dropdown::getDropdownComments('glpi_contacts', $contact_id, tooltip: false);
+        $ret = Dropdown::getDropdownComments('glpi_contacts', $contact_id, tooltip: false);
         $this->assertSame($expected_comments, $ret);
 
         ///////////
         // Supplier
-        $supplier_id = getItemByTypeName('Supplier', '_suplier01_name', true);
+        $supplier_id = getItemByTypeName(Supplier::class, '_suplier01_name', true);
 
         $expected_name = '_suplier01_name';
-        $ret = \Dropdown::getDropdownName('glpi_suppliers', $supplier_id);
+        $ret = Dropdown::getDropdownName('glpi_suppliers', $supplier_id);
         $this->assertSame($expected_name, $ret);
 
         // test of return with comments
@@ -258,26 +281,26 @@ HTML;
     
 Comment for supplier _suplier01_name
 HTML;
-        $ret = @\Dropdown::getDropdownName('glpi_suppliers', $supplier_id, withcomment: true);
+        $ret = @Dropdown::getDropdownName('glpi_suppliers', $supplier_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = \Dropdown::getDropdownComments('glpi_suppliers', $supplier_id);
+        $ret = Dropdown::getDropdownComments('glpi_suppliers', $supplier_id);
         $this->assertSame($expected_comments, $ret);
 
         // test of return without $tooltip
         $expected_comments = 'Comment for supplier _suplier01_name';
-        $ret = @\Dropdown::getDropdownName('glpi_suppliers', $supplier_id, withcomment: true, tooltip: false);
+        $ret = @Dropdown::getDropdownName('glpi_suppliers', $supplier_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = \Dropdown::getDropdownComments('glpi_suppliers', $supplier_id, tooltip: false);
+        $ret = Dropdown::getDropdownComments('glpi_suppliers', $supplier_id, tooltip: false);
         $this->assertSame($expected_comments, $ret);
 
         ///////////
         // Budget
-        $budget_id = getItemByTypeName('Budget', '_budget01', true);
+        $budget_id = getItemByTypeName(Budget::class, '_budget01', true);
 
         $expected_name = '_budget01';
-        $ret = \Dropdown::getDropdownName('glpi_budgets', $budget_id);
+        $ret = Dropdown::getDropdownName('glpi_budgets', $budget_id);
         $this->assertSame($expected_name, $ret);
 
         // test of return with comments
@@ -290,26 +313,26 @@ HTML;
     
 Comment for budget _budget01
 HTML;
-        $ret = @\Dropdown::getDropdownName('glpi_budgets', $budget_id, withcomment: true);
+        $ret = @Dropdown::getDropdownName('glpi_budgets', $budget_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = \Dropdown::getDropdownComments('glpi_budgets', $budget_id);
+        $ret = Dropdown::getDropdownComments('glpi_budgets', $budget_id);
         $this->assertSame($expected_comments, $ret);
 
         // test of return without $tooltip
         $expected_comments = 'Comment for budget _budget01';
-        $ret = @\Dropdown::getDropdownName('glpi_budgets', $budget_id, withcomment: true, tooltip: false);
+        $ret = @Dropdown::getDropdownName('glpi_budgets', $budget_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = \Dropdown::getDropdownComments('glpi_budgets', $budget_id, tooltip: false);
+        $ret = Dropdown::getDropdownComments('glpi_budgets', $budget_id, tooltip: false);
         $this->assertSame($expected_comments, $ret);
 
         ///////////
         // Location
-        $location_id = getItemByTypeName('Location', '_location01', true);
+        $location_id = getItemByTypeName(Location::class, '_location01', true);
 
         $expected_name = '_location01';
-        $ret = \Dropdown::getDropdownName('glpi_locations', $location_id);
+        $ret = Dropdown::getDropdownName('glpi_locations', $location_id);
         $this->assertSame($expected_name, $ret);
 
         // test of return with comments
@@ -319,25 +342,25 @@ HTML;
     
 Comment for location _location01
 HTML;
-        $ret = @\Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true);
+        $ret = @Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = \Dropdown::getDropdownComments('glpi_locations', $location_id);
+        $ret = Dropdown::getDropdownComments('glpi_locations', $location_id);
         $this->assertSame($expected_comments, $ret);
 
         // test of return without $tooltip
         $expected_comments = 'Comment for location _location01';
-        $ret = @\Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true, tooltip: false);
+        $ret = @Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = \Dropdown::getDropdownComments('glpi_locations', $location_id, tooltip: false);
+        $ret = Dropdown::getDropdownComments('glpi_locations', $location_id, tooltip: false);
         $this->assertSame($expected_comments, $ret);
 
         //Location with code only:
-        $location_id = getItemByTypeName('Location', '_location02 > _sublocation02', true);
+        $location_id = getItemByTypeName(Location::class, '_location02 > _sublocation02', true);
 
         $expected_name = "_location02 > _sublocation02 - code_sublocation02";
-        $ret = \Dropdown::getDropdownName('glpi_locations', $location_id);
+        $ret = Dropdown::getDropdownName('glpi_locations', $location_id);
         $this->assertSame($expected_name, $ret);
 
         // test of return with comments
@@ -348,25 +371,25 @@ HTML;
     
 Comment for location _sublocation02
 HTML;
-        $ret = @\Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true);
+        $ret = @Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = \Dropdown::getDropdownComments('glpi_locations', $location_id);
+        $ret = Dropdown::getDropdownComments('glpi_locations', $location_id);
         $this->assertSame($expected_comments, $ret);
 
         // test of return without $tooltip
         $expected_comments = 'Comment for location _sublocation02';
-        $ret = @\Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true, tooltip: false);
+        $ret = @Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = \Dropdown::getDropdownComments('glpi_locations', $location_id, tooltip: false);
+        $ret = Dropdown::getDropdownComments('glpi_locations', $location_id, tooltip: false);
         $this->assertSame($expected_comments, $ret);
 
         //Location with alias only:
-        $location_id = getItemByTypeName('Location', '_location02 > _sublocation03', true);
+        $location_id = getItemByTypeName(Location::class, '_location02 > _sublocation03', true);
 
         $expected_name = "alias_sublocation03";
-        $ret = \Dropdown::getDropdownName('glpi_locations', $location_id);
+        $ret = Dropdown::getDropdownName('glpi_locations', $location_id);
         $this->assertSame($expected_name, $ret);
 
         // test of return with comments
@@ -377,25 +400,25 @@ HTML;
     
 Comment for location _sublocation03
 HTML;
-        $ret = @\Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true);
+        $ret = @Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = \Dropdown::getDropdownComments('glpi_locations', $location_id);
+        $ret = Dropdown::getDropdownComments('glpi_locations', $location_id);
         $this->assertSame($expected_comments, $ret);
 
         // test of return without $tooltip
         $expected_comments = 'Comment for location _sublocation03';
-        $ret = @\Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true, tooltip: false);
+        $ret = @Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = \Dropdown::getDropdownComments('glpi_locations', $location_id, tooltip: false);
+        $ret = Dropdown::getDropdownComments('glpi_locations', $location_id, tooltip: false);
         $this->assertSame($expected_comments, $ret);
 
         //Location with alias and code:
-        $location_id = getItemByTypeName('Location', '_location02 > _sublocation04', true);
+        $location_id = getItemByTypeName(Location::class, '_location02 > _sublocation04', true);
 
         $expected_name = "alias_sublocation04 - code_sublocation04";
-        $ret = \Dropdown::getDropdownName('glpi_locations', $location_id);
+        $ret = Dropdown::getDropdownName('glpi_locations', $location_id);
         $this->assertSame($expected_name, $ret);
 
         // test of return with comments
@@ -407,18 +430,18 @@ HTML;
     
 Comment for location _sublocation04
 HTML;
-        $ret = @\Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true);
+        $ret = @Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = \Dropdown::getDropdownComments('glpi_locations', $location_id);
+        $ret = Dropdown::getDropdownComments('glpi_locations', $location_id);
         $this->assertSame($expected_comments, $ret);
 
         // test of return without $tooltip
         $expected_comments = 'Comment for location _sublocation04';
-        $ret = @\Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true, tooltip: false);
+        $ret = @Dropdown::getDropdownName('glpi_locations', $location_id, withcomment: true, tooltip: false);
         $this->assertSame(['name' => $expected_name, 'comment' => $expected_comments], $ret);
 
-        $ret = \Dropdown::getDropdownComments('glpi_locations', $location_id, tooltip: false);
+        $ret = Dropdown::getDropdownComments('glpi_locations', $location_id, tooltip: false);
         $this->assertSame($expected_comments, $ret);
     }
 
@@ -432,7 +455,7 @@ HTML;
                 'entities_id' => $this->getTestRootEntity(true),
             ],
         );
-        $this->assertSame('', \Dropdown::getDropdownComments('glpi_computers', $item->getID()));
+        $this->assertSame('', Dropdown::getDropdownComments('glpi_computers', $item->getID()));
     }
 
     public static function dataGetValueWithUnit()
@@ -471,8 +494,8 @@ HTML;
     public function testGetValueWithUnit($input, $unit, $decimals, $expected)
     {
         $value = $decimals !== null
-         ? \Dropdown::getValueWithUnit($input, $unit, $decimals)
-         : \Dropdown::getValueWithUnit($input, $unit);
+         ? Dropdown::getValueWithUnit($input, $unit, $decimals)
+         : Dropdown::getValueWithUnit($input, $unit);
         $this->assertSame($expected, $value);
     }
 
@@ -482,7 +505,7 @@ HTML;
             [
                 'params' => [
                     'display_emptychoice'   => 0,
-                    'itemtype'              => 'TaskCategory',
+                    'itemtype'              => TaskCategory::class,
                 ],
                 'expected'  => [
                     'results' => [
@@ -490,28 +513,28 @@ HTML;
                             'text'      => 'Root entity',
                             'children'  => [
                                 0 => [
-                                    'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'id'             => getItemByTypeName(TaskCategory::class, '_cat_1', true),
                                     'text'           => '_cat_1',
                                     'level'          => 1,
                                     'title'          => '_cat_1 - Comment for category _cat_1',
                                     'selection_text' => '_cat_1',
                                 ],
                                 1 => [
-                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                                    'id'             => getItemByTypeName(TaskCategory::class, '_subcat_1', true),
                                     'text'           => '_subcat_1',
                                     'level'          => 2,
                                     'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                                     'selection_text' => '_cat_1 > _subcat_1',
                                 ],
                                 2 => [
-                                    'id'             => getItemByTypeName('TaskCategory', 'R&D', true),
+                                    'id'             => getItemByTypeName(TaskCategory::class, 'R&D', true),
                                     'text'           => 'R&D',
                                     'level'          => 2,
                                     'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
                                     'selection_text' => '_cat_1 > R&D',
                                 ],
                             ],
-                            'itemtype' => 'Entity',
+                            'itemtype' => Entity::class,
                         ],
                     ],
                     'count' => 3,
@@ -519,7 +542,7 @@ HTML;
             ], [
                 'params' => [
                     'display_emptychoice'   => 0,
-                    'itemtype'              => 'TaskCategory',
+                    'itemtype'              => TaskCategory::class,
                     'searchText'            => 'subcat',
                 ],
                 'expected'  => [
@@ -528,20 +551,20 @@ HTML;
                             'text'      => 'Root entity',
                             'children'  => [
                                 0 => [
-                                    'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'id'     => getItemByTypeName(TaskCategory::class, '_cat_1', true),
                                     'text'   => '_cat_1',
                                     'level'  => 1,
                                     'disabled' => true,
                                 ],
                                 1 => [
-                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                                    'id'             => getItemByTypeName(TaskCategory::class, '_subcat_1', true),
                                     'text'           => '_subcat_1',
                                     'level'          => 2,
                                     'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                                     'selection_text' => '_cat_1 > _subcat_1',
                                 ],
                             ],
-                            'itemtype' => 'Entity',
+                            'itemtype' => Entity::class,
                         ],
                     ],
                     'count' => 1,
@@ -549,7 +572,7 @@ HTML;
             ], [
                 'params' => [
                     'display_emptychoice'   => 0,
-                    'itemtype'              => 'TaskCategory',
+                    'itemtype'              => TaskCategory::class,
                     'searchText'            => '_cat_1 > _subcat',
                 ],
                 'expected'  => [
@@ -558,20 +581,20 @@ HTML;
                             'text'      => 'Root entity',
                             'children'  => [
                                 0 => [
-                                    'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'id'     => getItemByTypeName(TaskCategory::class, '_cat_1', true),
                                     'text'   => '_cat_1',
                                     'level'  => 1,
                                     'disabled' => true,
                                 ],
                                 1 => [
-                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                                    'id'             => getItemByTypeName(TaskCategory::class, '_subcat_1', true),
                                     'text'           => '_subcat_1',
                                     'level'          => 2,
                                     'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                                     'selection_text' => '_cat_1 > _subcat_1',
                                 ],
                             ],
-                            'itemtype' => 'Entity',
+                            'itemtype' => Entity::class,
                         ],
                     ],
                     'count' => 1,
@@ -579,7 +602,7 @@ HTML;
             ], [
                 'params' => [
                     'display_emptychoice'   => 0,
-                    'itemtype'              => 'TaskCategory',
+                    'itemtype'              => TaskCategory::class,
                     'searchText'            => 'R&D',
                 ],
                 'expected'  => [
@@ -588,20 +611,20 @@ HTML;
                             'text'      => 'Root entity',
                             'children'  => [
                                 0 => [
-                                    'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'id'     => getItemByTypeName(TaskCategory::class, '_cat_1', true),
                                     'text'   => '_cat_1',
                                     'level'  => 1,
                                     'disabled' => true,
                                 ],
                                 1 => [
-                                    'id'             => getItemByTypeName('TaskCategory', 'R&D', true),
+                                    'id'             => getItemByTypeName(TaskCategory::class, 'R&D', true),
                                     'text'           => 'R&D',
                                     'level'          => 2,
                                     'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
                                     'selection_text' => '_cat_1 > R&D',
                                 ],
                             ],
-                            'itemtype' => 'Entity',
+                            'itemtype' => Entity::class,
                         ],
                     ],
                     'count' => 1,
@@ -610,7 +633,7 @@ HTML;
                 'params' => [
                     'display_emptychoice'   => 1,
                     'emptylabel'            => 'EEEEEE',
-                    'itemtype'              => 'TaskCategory',
+                    'itemtype'              => TaskCategory::class,
                 ],
                 'expected'  => [
                     'results' => [
@@ -622,28 +645,28 @@ HTML;
                             'text'      => 'Root entity',
                             'children'  => [
                                 0 => [
-                                    'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'id'             => getItemByTypeName(TaskCategory::class, '_cat_1', true),
                                     'text'           => '_cat_1',
                                     'level'          => 1,
                                     'title'          => '_cat_1 - Comment for category _cat_1',
                                     'selection_text' => '_cat_1',
                                 ],
                                 1 => [
-                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                                    'id'             => getItemByTypeName(TaskCategory::class, '_subcat_1', true),
                                     'text'           => '_subcat_1',
                                     'level'          => 2,
                                     'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                                     'selection_text' => '_cat_1 > _subcat_1',
                                 ],
                                 2 => [
-                                    'id'             => getItemByTypeName('TaskCategory', 'R&D', true),
+                                    'id'             => getItemByTypeName(TaskCategory::class, 'R&D', true),
                                     'text'           => 'R&D',
                                     'level'          => 2,
                                     'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
                                     'selection_text' => '_cat_1 > R&D',
                                 ],
                             ],
-                            'itemtype' => 'Entity',
+                            'itemtype' => Entity::class,
                         ],
                     ],
                     'count' => 3,
@@ -651,8 +674,8 @@ HTML;
             ], [
                 'params' => [
                     'display_emptychoice'   => 0,
-                    'itemtype'              => 'TaskCategory',
-                    'used'                  => [getItemByTypeName('TaskCategory', '_cat_1', true)],
+                    'itemtype'              => TaskCategory::class,
+                    'used'                  => [getItemByTypeName(TaskCategory::class, '_cat_1', true)],
                 ],
                 'expected'  => [
                     'results' => [
@@ -660,27 +683,27 @@ HTML;
                             'text'      => 'Root entity',
                             'children'  => [
                                 0 => [
-                                    'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'id'     => getItemByTypeName(TaskCategory::class, '_cat_1', true),
                                     'text'   => '_cat_1',
                                     'level'  => 1,
                                     'disabled' => true,
                                 ],
                                 1 => [
-                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                                    'id'             => getItemByTypeName(TaskCategory::class, '_subcat_1', true),
                                     'text'           => '_subcat_1',
                                     'level'          => 2,
                                     'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                                     'selection_text' => '_cat_1 > _subcat_1',
                                 ],
                                 2 => [
-                                    'id'             => getItemByTypeName('TaskCategory', 'R&D', true),
+                                    'id'             => getItemByTypeName(TaskCategory::class, 'R&D', true),
                                     'text'           => 'R&D',
                                     'level'          => 2,
                                     'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
                                     'selection_text' => '_cat_1 > R&D',
                                 ],
                             ],
-                            'itemtype' => 'Entity',
+                            'itemtype' => Entity::class,
                         ],
                     ],
                     'count' => 2,
@@ -688,8 +711,8 @@ HTML;
             ], [
                 'params' => [
                     'display_emptychoice'   => 0,
-                    'itemtype'              => 'Computer',
-                    'entity_restrict'       => getItemByTypeName('Entity', '_test_child_2', true),
+                    'itemtype'              => Computer::class,
+                    'entity_restrict'       => getItemByTypeName(Entity::class, '_test_child_2', true),
                 ],
                 'expected'  => [
                     'results'   => [
@@ -697,17 +720,17 @@ HTML;
                             'text'      => 'Root entity > _test_root_entity > _test_child_2',
                             'children'  => [
                                 0 => [
-                                    'id'     => getItemByTypeName('Computer', '_test_pc21', true),
+                                    'id'     => getItemByTypeName(Computer::class, '_test_pc21', true),
                                     'text'   => '_test_pc21',
                                     'title'  => '_test_pc21',
                                 ],
                                 1 => [
-                                    'id'     => getItemByTypeName('Computer', '_test_pc22', true),
+                                    'id'     => getItemByTypeName(Computer::class, '_test_pc22', true),
                                     'text'   => '_test_pc22',
                                     'title'  => '_test_pc22',
                                 ],
                             ],
-                            'itemtype' => 'Entity',
+                            'itemtype' => Entity::class,
                         ],
                     ],
                     'count'     => 2,
@@ -715,8 +738,8 @@ HTML;
             ], [
                 'params' => [
                     'display_emptychoice'   => 0,
-                    'itemtype'              => 'Computer',
-                    'entity_restrict'       => '[' . getItemByTypeName('Entity', '_test_child_2', true) . ']',
+                    'itemtype'              => Computer::class,
+                    'entity_restrict'       => '[' . getItemByTypeName(Entity::class, '_test_child_2', true) . ']',
                 ],
                 'expected'  => [
                     'results'   => [
@@ -724,17 +747,17 @@ HTML;
                             'text'      => 'Root entity > _test_root_entity > _test_child_2',
                             'children'  => [
                                 0 => [
-                                    'id'     => getItemByTypeName('Computer', '_test_pc21', true),
+                                    'id'     => getItemByTypeName(Computer::class, '_test_pc21', true),
                                     'text'   => '_test_pc21',
                                     'title'  => '_test_pc21',
                                 ],
                                 1 => [
-                                    'id'     => getItemByTypeName('Computer', '_test_pc22', true),
+                                    'id'     => getItemByTypeName(Computer::class, '_test_pc22', true),
                                     'text'   => '_test_pc22',
                                     'title'  => '_test_pc22',
                                 ],
                             ],
-                            'itemtype' => 'Entity',
+                            'itemtype' => Entity::class,
                         ],
                     ],
                     'count'     => 2,
@@ -742,8 +765,8 @@ HTML;
             ], [
                 'params' => [
                     'display_emptychoice'   => 0,
-                    'itemtype'              => 'Computer',
-                    'entity_restrict'       => getItemByTypeName('Entity', '_test_child_2', true),
+                    'itemtype'              => Computer::class,
+                    'entity_restrict'       => getItemByTypeName(Entity::class, '_test_child_2', true),
                     'searchText'            => '22',
                 ],
                 'expected'  => [
@@ -752,12 +775,12 @@ HTML;
                             'text'      => 'Root entity > _test_root_entity > _test_child_2',
                             'children'  => [
                                 0 => [
-                                    'id'     => getItemByTypeName('Computer', '_test_pc22', true),
+                                    'id'     => getItemByTypeName(Computer::class, '_test_pc22', true),
                                     'text'   => '_test_pc22',
                                     'title'  => '_test_pc22',
                                 ],
                             ],
-                            'itemtype' => 'Entity',
+                            'itemtype' => Entity::class,
                         ],
                     ],
                     'count'     => 1,
@@ -765,7 +788,7 @@ HTML;
             ], [
                 'params' => [
                     'display_emptychoice'   => 0,
-                    'itemtype'              => 'TaskCategory',
+                    'itemtype'              => TaskCategory::class,
                     'searchText'            => 'subcat',
                     'toadd'                 => [
                         'key'  => 'value',
@@ -786,20 +809,20 @@ HTML;
                             'text'      => 'Root entity',
                             'children'  => [
                                 0 => [
-                                    'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'id'     => getItemByTypeName(TaskCategory::class, '_cat_1', true),
                                     'text'   => '_cat_1',
                                     'level'  => 1,
                                     'disabled' => true,
                                 ],
                                 1 => [
-                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                                    'id'             => getItemByTypeName(TaskCategory::class, '_subcat_1', true),
                                     'text'           => '_subcat_1',
                                     'level'          => 2,
                                     'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                                     'selection_text' => '_cat_1 > _subcat_1',
                                 ],
                             ],
-                            'itemtype' => 'Entity',
+                            'itemtype' => Entity::class,
                         ],
                     ],
                     'count' => 1,
@@ -807,7 +830,7 @@ HTML;
             ], [
                 'params' => [
                     'display_emptychoice'   => 0,
-                    'itemtype'              => 'TaskCategory',
+                    'itemtype'              => TaskCategory::class,
                     'searchText'            => 'subcat',
                 ],
                 'expected'  => [
@@ -816,14 +839,14 @@ HTML;
                             'text'      => 'Root entity',
                             'children'  => [
                                 0 => [
-                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                                    'id'             => getItemByTypeName(TaskCategory::class, '_subcat_1', true),
                                     'text'           => '_cat_1 > _subcat_1',
                                     'level'          => 0,
                                     'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                                     'selection_text' => '_cat_1 > _subcat_1',
                                 ],
                             ],
-                            'itemtype' => 'Entity',
+                            'itemtype' => Entity::class,
                         ],
                     ],
                     'count' => 1,
@@ -834,7 +857,7 @@ HTML;
             ], [
                 'params' => [
                     'display_emptychoice'   => 0,
-                    'itemtype'              => 'TaskCategory',
+                    'itemtype'              => TaskCategory::class,
                 ],
                 'expected'  => [
                     'results' => [
@@ -842,28 +865,28 @@ HTML;
                             'text'      => 'Root entity',
                             'children'  => [
                                 0 => [
-                                    'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'id'             => getItemByTypeName(TaskCategory::class, '_cat_1', true),
                                     'text'           => '_cat_1',
                                     'level'          => 0,
                                     'title'          => '_cat_1 - Comment for category _cat_1',
                                     'selection_text' => '_cat_1',
                                 ],
                                 1 => [
-                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                                    'id'             => getItemByTypeName(TaskCategory::class, '_subcat_1', true),
                                     'text'           => '_cat_1 > _subcat_1',
                                     'level'          => 0,
                                     'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                                     'selection_text' => '_cat_1 > _subcat_1',
                                 ],
                                 2 => [
-                                    'id'             => getItemByTypeName('TaskCategory', 'R&D', true),
+                                    'id'             => getItemByTypeName(TaskCategory::class, 'R&D', true),
                                     'text'           => '_cat_1 > R&D',
                                     'level'          => 0,
                                     'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
                                     'selection_text' => '_cat_1 > R&D',
                                 ],
                             ],
-                            'itemtype' => 'Entity',
+                            'itemtype' => Entity::class,
                         ],
                     ],
                     'count' => 3,
@@ -874,7 +897,7 @@ HTML;
             ], [
                 'params' => [
                     'display_emptychoice'   => 0,
-                    'itemtype'              => 'TaskCategory',
+                    'itemtype'              => TaskCategory::class,
                     'searchText'            => 'subcat',
                     'permit_select_parent'  => true,
                 ],
@@ -884,21 +907,21 @@ HTML;
                             'text'      => 'Root entity',
                             'children'  => [
                                 0 => [
-                                    'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'id'             => getItemByTypeName(TaskCategory::class, '_cat_1', true),
                                     'text'           => '_cat_1',
                                     'level'          => 1,
                                     'title'          => '_cat_1 - Comment for category _cat_1',
                                     'selection_text' => '_cat_1',
                                 ],
                                 1 => [
-                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                                    'id'             => getItemByTypeName(TaskCategory::class, '_subcat_1', true),
                                     'text'           => '_subcat_1',
                                     'level'          => 2,
                                     'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                                     'selection_text' => '_cat_1 > _subcat_1',
                                 ],
                             ],
-                            'itemtype' => 'Entity',
+                            'itemtype' => Entity::class,
                         ],
                     ],
                     'count' => 1,
@@ -907,8 +930,8 @@ HTML;
                 // search using id on CommonTreeDropdown but without "glpiis_ids_visible" set to true -> no results
                 'params' => [
                     'display_emptychoice'   => 0,
-                    'itemtype'              => 'TaskCategory',
-                    'searchText'            => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                    'itemtype'              => TaskCategory::class,
+                    'searchText'            => getItemByTypeName(TaskCategory::class, '_subcat_1', true),
                 ],
                 'expected'  => [
                     'results' => [
@@ -922,8 +945,8 @@ HTML;
                 // search using id on CommonTreeDropdown with "glpiis_ids_visible" set to true -> results
                 'params' => [
                     'display_emptychoice'   => 0,
-                    'itemtype'              => 'TaskCategory',
-                    'searchText'            => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                    'itemtype'              => TaskCategory::class,
+                    'searchText'            => getItemByTypeName(TaskCategory::class, '_subcat_1', true),
                 ],
                 'expected'  => [
                     'results' => [
@@ -931,20 +954,20 @@ HTML;
                             'text'      => 'Root entity',
                             'children'  => [
                                 0 => [
-                                    'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'id'             => getItemByTypeName(TaskCategory::class, '_cat_1', true),
                                     'text'           => '_cat_1',
                                     'level'          => 1,
                                     'disabled'       => true,
                                 ],
                                 1 => [
-                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
-                                    'text'           => '_subcat_1 (' . getItemByTypeName('TaskCategory', '_subcat_1', true) . ')',
+                                    'id'             => getItemByTypeName(TaskCategory::class, '_subcat_1', true),
+                                    'text'           => '_subcat_1 (' . getItemByTypeName(TaskCategory::class, '_subcat_1', true) . ')',
                                     'level'          => 2,
                                     'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                                     'selection_text' => '_cat_1 > _subcat_1',
                                 ],
                             ],
-                            'itemtype' => 'Entity',
+                            'itemtype' => Entity::class,
                         ],
                     ],
                     'count' => 1,
@@ -956,8 +979,8 @@ HTML;
                 // search using id on "not a CommonTreeDropdown" but without "glpiis_ids_visible" set to true -> no results
                 'params' => [
                     'display_emptychoice'   => 0,
-                    'itemtype'              => 'DocumentType',
-                    'searchText'            => getItemByTypeName('DocumentType', 'markdown', true),
+                    'itemtype'              => DocumentType::class,
+                    'searchText'            => getItemByTypeName(DocumentType::class, 'markdown', true),
                 ],
                 'expected'  => [
                     'results' => [
@@ -971,14 +994,14 @@ HTML;
                 // search using id on "not a CommonTreeDropdown" with "glpiis_ids_visible" set to true -> results
                 'params' => [
                     'display_emptychoice'   => 0,
-                    'itemtype'              => 'DocumentType',
-                    'searchText'            => getItemByTypeName('DocumentType', 'markdown', true),
+                    'itemtype'              => DocumentType::class,
+                    'searchText'            => getItemByTypeName(DocumentType::class, 'markdown', true),
                 ],
                 'expected'  => [
                     'results' => [
                         0 => [
-                            'id'             => getItemByTypeName('DocumentType', 'markdown', true),
-                            'text'           => 'markdown (' . getItemByTypeName('DocumentType', 'markdown', true) . ')',
+                            'id'             => getItemByTypeName(DocumentType::class, 'markdown', true),
+                            'text'           => 'markdown (' . getItemByTypeName(DocumentType::class, 'markdown', true) . ')',
                             'title'          => 'markdown',
                         ],
                     ],
@@ -990,17 +1013,17 @@ HTML;
             ], [
                 'params' => [
                     'display_emptychoice' => 0,
-                    'itemtype'            => 'ComputerModel',
+                    'itemtype'            => ComputerModel::class,
                 ],
                 'expected'  => [
                     'results'   => [
                         [
-                            'id'     => getItemByTypeName('ComputerModel', '_test_computermodel_1', true),
+                            'id'     => getItemByTypeName(ComputerModel::class, '_test_computermodel_1', true),
                             'text'   => '_test_computermodel_1 - CMP_ADEAF5E1',
                             'title'  => '_test_computermodel_1 - CMP_ADEAF5E1',
                         ],
                         [
-                            'id'     => getItemByTypeName('ComputerModel', '_test_computermodel_2', true),
+                            'id'     => getItemByTypeName(ComputerModel::class, '_test_computermodel_2', true),
                             'text'   => '_test_computermodel_2 - CMP_567AEC68',
                             'title'  => '_test_computermodel_2 - CMP_567AEC68',
                         ],
@@ -1010,13 +1033,13 @@ HTML;
             ], [
                 'params' => [
                     'display_emptychoice' => 0,
-                    'itemtype'            => 'ComputerModel',
+                    'itemtype'            => ComputerModel::class,
                     'searchText'          => 'CMP_56',
                 ],
                 'expected'  => [
                     'results'   => [
                         [
-                            'id'     => getItemByTypeName('ComputerModel', '_test_computermodel_2', true),
+                            'id'     => getItemByTypeName(ComputerModel::class, '_test_computermodel_2', true),
                             'text'   => '_test_computermodel_2 - CMP_567AEC68',
                             'title'  => '_test_computermodel_2 - CMP_567AEC68',
                         ],
@@ -1049,8 +1072,8 @@ HTML;
             [
                 'params' => [
                     'display_emptychoice' => 0,
-                    'itemtype'            => 'TaskCategory',
-                    'searchText'          => (int) getItemByTypeName(\TaskCategory::class, '_cat_1', true), // search commonTreeDropdown by id as int
+                    'itemtype'            => TaskCategory::class,
+                    'searchText'          => (int) getItemByTypeName(TaskCategory::class, '_cat_1', true), // search commonTreeDropdown by id as int
                 ],
                 'expected'  => [
                     'results'   => [
@@ -1058,28 +1081,28 @@ HTML;
                             'text'   => 'Root entity',
                             'children' => [
                                 0 => [
-                                    'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'id'             => getItemByTypeName(TaskCategory::class, '_cat_1', true),
                                     'text'           => '_cat_1',
                                     'level'          => 1,
                                     'title'          => '_cat_1 - Comment for category _cat_1',
                                     'selection_text' => '_cat_1',
                                 ],
                                 1 => [
-                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                                    'id'             => getItemByTypeName(TaskCategory::class, '_subcat_1', true),
                                     'text'           => '_subcat_1',
                                     'level'          => 2,
                                     'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                                     'selection_text' => '_cat_1 > _subcat_1',
                                 ],
                                 2 => [
-                                    'id'             => getItemByTypeName('TaskCategory', 'R&D', true),
+                                    'id'             => getItemByTypeName(TaskCategory::class, 'R&D', true),
                                     'text'           => 'R&D',
                                     'level'          => 2,
                                     'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
                                     'selection_text' => '_cat_1 > R&D',
                                 ],
                             ],
-                            'itemtype' => 'Entity',
+                            'itemtype' => Entity::class,
                         ],
                     ],
                     'count'     => 3,
@@ -1088,8 +1111,8 @@ HTML;
             [
                 'params' => [
                     'display_emptychoice' => 0,
-                    'itemtype'            => 'TaskCategory',
-                    'searchText'          => (string) getItemByTypeName(\TaskCategory::class, '_cat_1', true), // search commonTreeDropdown by id as string
+                    'itemtype'            => TaskCategory::class,
+                    'searchText'          => (string) getItemByTypeName(TaskCategory::class, '_cat_1', true), // search commonTreeDropdown by id as string
                 ],
                 'expected'  => [
                     'results'   => [
@@ -1097,28 +1120,28 @@ HTML;
                             'text'   => 'Root entity',
                             'children' => [
                                 0 => [
-                                    'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'id'             => getItemByTypeName(TaskCategory::class, '_cat_1', true),
                                     'text'           => '_cat_1',
                                     'level'          => 1,
                                     'title'          => '_cat_1 - Comment for category _cat_1',
                                     'selection_text' => '_cat_1',
                                 ],
                                 1 => [
-                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                                    'id'             => getItemByTypeName(TaskCategory::class, '_subcat_1', true),
                                     'text'           => '_subcat_1',
                                     'level'          => 2,
                                     'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                                     'selection_text' => '_cat_1 > _subcat_1',
                                 ],
                                 2 => [
-                                    'id'             => getItemByTypeName('TaskCategory', 'R&D', true),
+                                    'id'             => getItemByTypeName(TaskCategory::class, 'R&D', true),
                                     'text'           => 'R&D',
                                     'level'          => 2,
                                     'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
                                     'selection_text' => '_cat_1 > R&D',
                                 ],
                             ],
-                            'itemtype' => 'Entity',
+                            'itemtype' => Entity::class,
                         ],
                     ],
                     'count'     => 3,
@@ -1127,13 +1150,13 @@ HTML;
             [
                 'params' => [
                     'display_emptychoice' => 0,
-                    'itemtype'            => 'ComputerModel',
-                    'searchText'          => (int) getItemByTypeName('ComputerModel', '_test_computermodel_1', true), // search CommonDropdown by id as int
+                    'itemtype'            => ComputerModel::class,
+                    'searchText'          => (int) getItemByTypeName(ComputerModel::class, '_test_computermodel_1', true), // search CommonDropdown by id as int
                 ],
                 'expected'  => [
                     'results'   => [
                         [
-                            'id'     => getItemByTypeName('ComputerModel', '_test_computermodel_1', true),
+                            'id'     => getItemByTypeName(ComputerModel::class, '_test_computermodel_1', true),
                             'text'   => '_test_computermodel_1 - CMP_ADEAF5E1',
                             'title'  => '_test_computermodel_1 - CMP_ADEAF5E1',
                         ],
@@ -1144,13 +1167,13 @@ HTML;
             [
                 'params' => [
                     'display_emptychoice' => 0,
-                    'itemtype'            => 'ComputerModel',
-                    'searchText'          => (string) getItemByTypeName('ComputerModel', '_test_computermodel_1', true), // search CommonDropdown by id as string
+                    'itemtype'            => ComputerModel::class,
+                    'searchText'          => (string) getItemByTypeName(ComputerModel::class, '_test_computermodel_1', true), // search CommonDropdown by id as string
                 ],
                 'expected'  => [
                     'results'   => [
                         [
-                            'id'     => getItemByTypeName('ComputerModel', '_test_computermodel_1', true),
+                            'id'     => getItemByTypeName(ComputerModel::class, '_test_computermodel_1', true),
                             'text'   => '_test_computermodel_1 - CMP_ADEAF5E1',
                             'title'  => '_test_computermodel_1 - CMP_ADEAF5E1',
                         ],
@@ -1179,7 +1202,7 @@ HTML;
 
         $params['_idor_token'] = $this->generateIdor($params);
 
-        $result = \Dropdown::getDropdownValue($params, false);
+        $result = Dropdown::getDropdownValue($params, false);
 
         //reset session params before executing test
         if (count($session_params)) {
@@ -1200,8 +1223,8 @@ HTML;
         return [
             [
                 'params'    => [
-                    'fromtype'  => 'Computer',
-                    'itemtype'  => 'Printer',
+                    'fromtype'  => Computer::class,
+                    'itemtype'  => Printer::class,
                 ],
                 'expected'  => [
                     'results' => [
@@ -1213,11 +1236,11 @@ HTML;
                             'text' => "Root entity > _test_root_entity",
                             'children' => [
                                 0 => [
-                                    'id'     => getItemByTypeName('Printer', '_test_printer_all', true),
+                                    'id'     => getItemByTypeName(Printer::class, '_test_printer_all', true),
                                     'text'   => '_test_printer_all',
                                 ],
                                 1 => [
-                                    'id'     => getItemByTypeName('Printer', '_test_printer_ent0', true),
+                                    'id'     => getItemByTypeName(Printer::class, '_test_printer_ent0', true),
                                     'text'   => '_test_printer_ent0',
                                 ],
                             ],
@@ -1226,7 +1249,7 @@ HTML;
                             'text' => "Root entity > _test_root_entity > _test_child_1",
                             'children' => [
                                 0 => [
-                                    'id'     => getItemByTypeName('Printer', '_test_printer_ent1', true),
+                                    'id'     => getItemByTypeName(Printer::class, '_test_printer_ent1', true),
                                     'text'   => '_test_printer_ent1',
                                 ],
                             ],
@@ -1235,7 +1258,7 @@ HTML;
                             'text' => "Root entity > _test_root_entity > _test_child_2",
                             'children' => [
                                 0 => [
-                                    'id'     => getItemByTypeName('Printer', '_test_printer_ent2', true),
+                                    'id'     => getItemByTypeName(Printer::class, '_test_printer_ent2', true),
                                     'text'   => '_test_printer_ent2',
                                 ],
                             ],
@@ -1244,12 +1267,12 @@ HTML;
                 ],
             ], [
                 'params'    => [
-                    'fromtype'  => 'Computer',
-                    'itemtype'  => 'Printer',
+                    'fromtype'  => Computer::class,
+                    'itemtype'  => Printer::class,
                     'used'      => [
-                        'Printer' => [
-                            getItemByTypeName('Printer', '_test_printer_ent0', true),
-                            getItemByTypeName('Printer', '_test_printer_ent2', true),
+                        Printer::class => [
+                            getItemByTypeName(Printer::class, '_test_printer_ent0', true),
+                            getItemByTypeName(Printer::class, '_test_printer_ent2', true),
                         ],
                     ],
                 ],
@@ -1263,7 +1286,7 @@ HTML;
                             'text' => "Root entity > _test_root_entity",
                             'children' => [
                                 0 => [
-                                    'id'     => getItemByTypeName('Printer', '_test_printer_all', true),
+                                    'id'     => getItemByTypeName(Printer::class, '_test_printer_all', true),
                                     'text'   => '_test_printer_all',
                                 ],
                             ],
@@ -1272,7 +1295,7 @@ HTML;
                             'text' => "Root entity > _test_root_entity > _test_child_1",
                             'children' => [
                                 0 => [
-                                    'id'     => getItemByTypeName('Printer', '_test_printer_ent1', true),
+                                    'id'     => getItemByTypeName(Printer::class, '_test_printer_ent1', true),
                                     'text'   => '_test_printer_ent1',
                                 ],
                             ],
@@ -1281,8 +1304,8 @@ HTML;
                 ],
             ], [
                 'params'    => [
-                    'fromtype'     => 'Computer',
-                    'itemtype'     => 'Printer',
+                    'fromtype'     => Computer::class,
+                    'itemtype'     => Printer::class,
                     'searchText'   => 'ent0',
                 ],
                 'expected'  => [
@@ -1291,7 +1314,7 @@ HTML;
                             'text' => "Root entity > _test_root_entity",
                             'children' => [
                                 0 => [
-                                    'id'     => getItemByTypeName('Printer', '_test_printer_ent0', true),
+                                    'id'     => getItemByTypeName(Printer::class, '_test_printer_ent0', true),
                                     'text'   => '_test_printer_ent0',
                                 ],
                             ],
@@ -1300,8 +1323,8 @@ HTML;
                 ],
             ], [
                 'params'    => [
-                    'fromtype'     => 'Computer',
-                    'itemtype'     => 'Printer',
+                    'fromtype'     => Computer::class,
+                    'itemtype'     => Printer::class,
                     'searchText'   => 'ent0',
                 ],
                 'expected'  => [
@@ -1310,8 +1333,8 @@ HTML;
                             'text' => "Root entity > _test_root_entity",
                             'children' => [
                                 0 => [
-                                    'id'     => getItemByTypeName('Printer', '_test_printer_ent0', true),
-                                    'text'   => '_test_printer_ent0 (' . getItemByTypeName('Printer', '_test_printer_ent0', true) . ')',
+                                    'id'     => getItemByTypeName(Printer::class, '_test_printer_ent0', true),
+                                    'text'   => '_test_printer_ent0 (' . getItemByTypeName(Printer::class, '_test_printer_ent0', true) . ')',
                                 ],
                             ],
                         ],
@@ -1342,7 +1365,7 @@ HTML;
 
         $params['_idor_token'] = $this->generateIdor($params);
 
-        $result = \Dropdown::getDropdownConnect($params, false);
+        $result = Dropdown::getDropdownConnect($params, false);
 
         //reset session params before executing test
         if (count($session_params)) {
@@ -1514,7 +1537,7 @@ HTML;
         global $CFG_GLPI;
         $orig_max = $CFG_GLPI['dropdown_max'];
         $CFG_GLPI['dropdown_max'] = 10;
-        $result = \Dropdown::getDropdownNumber($params, false);
+        $result = Dropdown::getDropdownNumber($params, false);
         $CFG_GLPI['dropdown_max'] = $orig_max;
         $this->assertSame($expected, $result);
     }
@@ -1531,32 +1554,32 @@ HTML;
                             'text'   => '-----',
                         ],
                         1 => [
-                            'id'     => (int) getItemByTypeName('User', '_test_user', true),
+                            'id'     => (int) getItemByTypeName(User::class, '_test_user', true),
                             'text'   => '_test_user',
                             'title'  => '_test_user - _test_user',
                         ],
                         2 => [
-                            'id'     => (int) getItemByTypeName('User', 'glpi', true),
+                            'id'     => (int) getItemByTypeName(User::class, 'glpi', true),
                             'text'   => 'glpi',
                             'title'  => 'glpi - glpi',
                         ],
                         3 => [
-                            'id'     => (int) getItemByTypeName('User', 'normal', true),
+                            'id'     => (int) getItemByTypeName(User::class, 'normal', true),
                             'text'   => 'normal',
                             'title'  => 'normal - normal',
                         ],
                         4 => [
-                            'id'     => (int) getItemByTypeName('User', 'post-only', true),
+                            'id'     => (int) getItemByTypeName(User::class, 'post-only', true),
                             'text'   => 'post-only',
                             'title'  => 'post-only - post-only',
                         ],
                         5 => [
-                            'id'     => (int) getItemByTypeName('User', 'tech', true),
+                            'id'     => (int) getItemByTypeName(User::class, 'tech', true),
                             'text'   => 'tech',
                             'title'  => 'tech - tech',
                         ],
                         6 => [
-                            'id'     => (int) getItemByTypeName('User', 'jsmith123', true),
+                            'id'     => (int) getItemByTypeName(User::class, 'jsmith123', true),
                             'text'   => 'Smith John',
                             'title'  => 'Smith John - jsmith123',
                         ],
@@ -1566,8 +1589,8 @@ HTML;
             ], [
                 'params'    => [
                     'used'   => [
-                        getItemByTypeName('User', 'glpi', true),
-                        getItemByTypeName('User', 'tech', true),
+                        getItemByTypeName(User::class, 'glpi', true),
+                        getItemByTypeName(User::class, 'tech', true),
                     ],
                 ],
                 'expected'  => [
@@ -1577,22 +1600,22 @@ HTML;
                             'text'   => '-----',
                         ],
                         1 => [
-                            'id'     => (int) getItemByTypeName('User', '_test_user', true),
+                            'id'     => (int) getItemByTypeName(User::class, '_test_user', true),
                             'text'   => '_test_user',
                             'title'  => '_test_user - _test_user',
                         ],
                         2 => [
-                            'id'     => (int) getItemByTypeName('User', 'normal', true),
+                            'id'     => (int) getItemByTypeName(User::class, 'normal', true),
                             'text'   => 'normal',
                             'title'  => 'normal - normal',
                         ],
                         3 => [
-                            'id'     => (int) getItemByTypeName('User', 'post-only', true),
+                            'id'     => (int) getItemByTypeName(User::class, 'post-only', true),
                             'text'   => 'post-only',
                             'title'  => 'post-only - post-only',
                         ],
                         4 => [
-                            'id'     => (int) getItemByTypeName('User', 'jsmith123', true),
+                            'id'     => (int) getItemByTypeName(User::class, 'jsmith123', true),
                             'text'   => 'Smith John',
                             'title'  => 'Smith John - jsmith123',
                         ],
@@ -1603,10 +1626,10 @@ HTML;
                 'params'    => [
                     'all'    => true,
                     'used'   => [
-                        getItemByTypeName('User', 'glpi', true),
-                        getItemByTypeName('User', 'tech', true),
-                        getItemByTypeName('User', 'normal', true),
-                        getItemByTypeName('User', 'post-only', true),
+                        getItemByTypeName(User::class, 'glpi', true),
+                        getItemByTypeName(User::class, 'tech', true),
+                        getItemByTypeName(User::class, 'normal', true),
+                        getItemByTypeName(User::class, 'post-only', true),
                     ],
                 ],
                 'expected'  => [
@@ -1616,12 +1639,12 @@ HTML;
                             'text'   => 'All',
                         ],
                         1 => [
-                            'id'     => (int) getItemByTypeName('User', '_test_user', true),
+                            'id'     => (int) getItemByTypeName(User::class, '_test_user', true),
                             'text'   => '_test_user',
                             'title'  => '_test_user - _test_user',
                         ],
                         2 => [
-                            'id'     => (int) getItemByTypeName('User', 'jsmith123', true),
+                            'id'     => (int) getItemByTypeName(User::class, 'jsmith123', true),
                             'text'   => 'Smith John',
                             'title'  => 'Smith John - jsmith123',
                         ],
@@ -1637,8 +1660,8 @@ HTML;
     {
         $this->login();
 
-        $params['_idor_token'] = Session::getNewIDORToken('User');
-        $result = \Dropdown::getDropdownUsers($params, false);
+        $params['_idor_token'] = Session::getNewIDORToken(User::class);
+        $result = Dropdown::getDropdownUsers($params, false);
         $this->assertSame($expected, $result);
     }
 
@@ -1651,7 +1674,7 @@ HTML;
     public function testGetDropdownValuePaginate()
     {
         //let's add some content in Locations
-        $location = new \Location();
+        $location = new Location();
         for ($i = 0; $i <= 20; ++$i) {
             $this->assertGreaterThan(
                 0,
@@ -1669,7 +1692,7 @@ HTML;
             'page_limit'            => 10,
             '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0]),
         ];
-        $values = \Dropdown::getDropdownValue($post);
+        $values = Dropdown::getDropdownValue($post);
         $values = (array) json_decode($values);
 
         $this->assertSame(10, $values['count']);
@@ -1687,7 +1710,7 @@ HTML;
         $list_results = (array) $results[1];
         $this->assertCount(3, $list_results);
         $this->assertSame('Root entity', $list_results['text']);
-        $this->assertSame('Entity', $list_results['itemtype']);
+        $this->assertSame(Entity::class, $list_results['itemtype']);
 
         $children = (array) $list_results['children'];
         $this->assertCount(10, $children);
@@ -1703,7 +1726,7 @@ HTML;
         );
 
         $post['page'] = 2;
-        $values = \Dropdown::getDropdownValue($post);
+        $values = Dropdown::getDropdownValue($post);
         $values = (array) json_decode($values);
 
         $this->assertEquals(10, $values['count']);
@@ -1730,7 +1753,7 @@ HTML;
             'page_limit'            => 10,
             '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => ['name' => ['LIKE', "%3%"]]]),
         ];
-        $values = \Dropdown::getDropdownValue($post);
+        $values = Dropdown::getDropdownValue($post);
         $values = (array) json_decode($values);
 
         $this->assertEquals(3, $values['count']);
@@ -1746,7 +1769,7 @@ HTML;
             'page_limit'            => 10,
             '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]]]),
         ];
-        $values = \Dropdown::getDropdownValue($post);
+        $values = Dropdown::getDropdownValue($post);
         $values = (array) json_decode($values);
 
         $this->assertEquals(3, $values['count']);
@@ -1762,7 +1785,7 @@ HTML;
             'page_limit'            => 10,
             '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => [0 => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]]]]),
         ];
-        $values = \Dropdown::getDropdownValue($post);
+        $values = Dropdown::getDropdownValue($post);
         $values = (array) json_decode($values);
 
         $this->assertEquals(3, $values['count']);
@@ -1774,7 +1797,7 @@ HTML;
         $_SESSION['glpicondition'][$condition_key] = $post['condition'];
         $post['condition']   = $condition_key;
         $post['_idor_token'] = Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => $condition_key]);
-        $values = \Dropdown::getDropdownValue($post);
+        $values = Dropdown::getDropdownValue($post);
         $values = (array) json_decode($values);
 
         $this->assertEquals(3, $values['count']);
@@ -1790,7 +1813,7 @@ HTML;
             'page_limit'            => 10,
             '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => '`name` LIKE "%4%"']),
         ];
-        $values = \Dropdown::getDropdownValue($post);
+        $values = Dropdown::getDropdownValue($post);
         $values = (array) json_decode($values);
 
         $this->assertEquals(10, $values['count']);
@@ -1862,7 +1885,7 @@ HTML;
         $this->assertGreaterThan(0, $state_2_1_id);
 
         // Check filtering on "State 1"
-        $tree_1 = \Dropdown::getDropdownValue(
+        $tree_1 = Dropdown::getDropdownValue(
             [
                 'itemtype'            => $state->getType(),
                 'parent_id'           => $state_1_id,
@@ -1907,7 +1930,7 @@ HTML;
                                 'selection_text' => 'State 1 > State 1.2',
                             ],
                         ],
-                        'itemtype' => 'Entity',
+                        'itemtype' => Entity::class,
                     ],
                 ],
                 'count' => 3,
@@ -1916,7 +1939,7 @@ HTML;
         );
 
         // Check filtering on "State 1.1"
-        $tree_1 = \Dropdown::getDropdownValue(
+        $tree_1 = Dropdown::getDropdownValue(
             [
                 'itemtype'            => $state->getType(),
                 'parent_id'           => $state_1_1_id,
@@ -1953,7 +1976,7 @@ HTML;
                                 'selection_text' => 'State 1 > State 1.1 > State 1.1.1',
                             ],
                         ],
-                        'itemtype' => 'Entity',
+                        'itemtype' => Entity::class,
                     ],
                 ],
                 'count' => 1,
@@ -1962,7 +1985,7 @@ HTML;
         );
 
         // Check filtering on "State 2"
-        $tree_1 = \Dropdown::getDropdownValue(
+        $tree_1 = Dropdown::getDropdownValue(
             [
                 'itemtype'            => $state->getType(),
                 'parent_id'           => $state_2_id,
@@ -1993,7 +2016,7 @@ HTML;
                                 'selection_text' => 'State 2 > State 2.1',
                             ],
                         ],
-                        'itemtype' => 'Entity',
+                        'itemtype' => Entity::class,
                     ],
                 ],
                 'count' => 1,
@@ -2154,7 +2177,7 @@ HTML;
     {
         $params['display'] = false;
 
-        $data = \Dropdown::getDropdownNumber($params, false);
+        $data = Dropdown::getDropdownNumber($params, false);
         $this->assertArrayHasKey('results', $data);
         $this->assertCount(count($expected), $data['results']);
         $this->assertSame(count($expected), $data['count']);
@@ -2174,11 +2197,11 @@ HTML;
     {
         $this->login();
 
-        $dropdowns = \Dropdown::getStandardDropdownItemTypes();
+        $dropdowns = Dropdown::getStandardDropdownItemTypes();
         foreach ($dropdowns as $items) {
             foreach ($items as $itemclass => $n) {
-                if (is_subclass_of($itemclass, \CommonDropdown::class) && \Toolbox::hasTrait($itemclass, Clonable::class)) {
-                    /** @var \CommonDropdown&Clonable $item */
+                if (is_subclass_of($itemclass, CommonDropdown::class) && Toolbox::hasTrait($itemclass, Clonable::class)) {
+                    /** @var CommonDropdown&Clonable $item */
                     $item = new $itemclass();
 
                     $extra_fields = $item->getAdditionalFields();
@@ -2209,8 +2232,8 @@ HTML;
                             $input[$field['name']] = $value;
                         }
                     }
-                    if ($itemclass === \NetworkName::class) {
-                        $input['itemtype'] = 'Computer';
+                    if ($itemclass === NetworkName::class) {
+                        $input['itemtype'] = Computer::class;
                         $input['items_id'] = 1;
                     }
                     $this->assertGreaterThan(0, $original_items_id = $item->add($input));
@@ -2227,8 +2250,8 @@ HTML;
     public static function assignableAssetsProvider()
     {
         return [
-            [\CartridgeItem::class], [Computer::class], [\ConsumableItem::class], [Monitor::class], [\NetworkEquipment::class],
-            [\Peripheral::class], [\Phone::class], [\Printer::class], [\Software::class],
+            [CartridgeItem::class], [Computer::class], [ConsumableItem::class], [Monitor::class], [NetworkEquipment::class],
+            [Peripheral::class], [Phone::class], [Printer::class], [Software::class],
         ];
     }
 
@@ -2237,10 +2260,10 @@ HTML;
     {
         $this->login();
 
-        $this->assertTrue(\Toolbox::hasTrait($itemtype, AssignableItem::class));
+        $this->assertTrue(Toolbox::hasTrait($itemtype, AssignableItem::class));
 
         // Create group for the user
-        $group = new \Group();
+        $group = new Group();
         $this->assertGreaterThan(
             0,
             $groups_id = $group->add([
@@ -2250,7 +2273,7 @@ HTML;
             ])
         );
         // Add user to group
-        $group_user = new \Group_User();
+        $group_user = new Group_User();
         $this->assertGreaterThan(
             0,
             $group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']])
@@ -2284,7 +2307,7 @@ HTML;
             ])
         );
 
-        $results = \Dropdown::getDropdownValue([
+        $results = Dropdown::getDropdownValue([
             'itemtype' => $itemtype,
             'display_emptychoice' => 0,
             '_idor_token' => Session::getNewIDORToken($itemtype),
@@ -2298,7 +2321,7 @@ HTML;
 
         // Remove permission to read all items
         $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
-        $results = \Dropdown::getDropdownValue([
+        $results = Dropdown::getDropdownValue([
             'itemtype' => $itemtype,
             'display_emptychoice' => 0,
             '_idor_token' => Session::getNewIDORToken($itemtype),
@@ -2309,7 +2332,7 @@ HTML;
 
         // Remove permission to read assigned items
         $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = 0;
-        $results = \Dropdown::getDropdownValue([
+        $results = Dropdown::getDropdownValue([
             'itemtype' => $itemtype,
             'display_emptychoice' => 0,
             '_idor_token' => Session::getNewIDORToken($itemtype),
@@ -2328,10 +2351,10 @@ HTML;
     {
         $this->login();
 
-        $this->assertTrue(\Toolbox::hasTrait($itemtype, AssignableItem::class));
+        $this->assertTrue(Toolbox::hasTrait($itemtype, AssignableItem::class));
 
         // Create group for the user
-        $group = new \Group();
+        $group = new Group();
         $this->assertGreaterThan(
             0,
             $groups_id = $group->add([
@@ -2341,7 +2364,7 @@ HTML;
             ])
         );
         // Add user to group
-        $group_user = new \Group_User();
+        $group_user = new Group_User();
         $this->assertGreaterThan(
             0,
             $group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']])
@@ -2392,7 +2415,7 @@ HTML;
             ])
         );
 
-        $results = \Dropdown::getDropdownFindNum([
+        $results = Dropdown::getDropdownFindNum([
             'itemtype' => $itemtype,
             'table' => $itemtype::getTable(),
             '_idor_token' => Session::getNewIDORToken($itemtype, [
@@ -2408,7 +2431,7 @@ HTML;
 
         // Remove permission to read all items
         $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
-        $results = \Dropdown::getDropdownFindNum([
+        $results = Dropdown::getDropdownFindNum([
             'itemtype' => $itemtype,
             'table' => $itemtype::getTable(),
             '_idor_token' => Session::getNewIDORToken($itemtype, [
@@ -2423,7 +2446,7 @@ HTML;
         $this->assertNotContains(__FUNCTION__ . '5', array_column($results, 'text'));
 
         $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_OWNED;
-        $results = \Dropdown::getDropdownFindNum([
+        $results = Dropdown::getDropdownFindNum([
             'itemtype' => $itemtype,
             'table' => $itemtype::getTable(),
             '_idor_token' => Session::getNewIDORToken($itemtype, [
@@ -2439,7 +2462,7 @@ HTML;
 
         // Remove permission to read assigned items
         $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = 0;
-        $results = \Dropdown::getDropdownFindNum([
+        $results = Dropdown::getDropdownFindNum([
             'itemtype' => $itemtype,
             'table' => $itemtype::getTable(),
             '_idor_token' => Session::getNewIDORToken($itemtype, [
@@ -2471,7 +2494,7 @@ HTML;
     #[DataProvider('displayWithProvider')]
     public function testFilterDisplayWith(CommonDBTM $item, array $displaywith, array $filtered): void
     {
-        $instance = new \Dropdown();
+        $instance = new Dropdown();
         $this->assertEquals(
             $filtered,
             $this->callPrivateMethod($instance, 'filterDisplayWith', $item, $displaywith)
@@ -2481,7 +2504,7 @@ HTML;
     public function testFilterDisplayWithLoggedIn(): void
     {
         $this->login('post-only', 'postonly');
-        $dd = new \Dropdown();
+        $dd = new Dropdown();
         $this->assertEquals(
             ['serial'], // pin and puk disallowed by profile
             $this->callPrivateMethod(
@@ -2493,7 +2516,7 @@ HTML;
         );
 
         $this->login();
-        $dd = new \Dropdown();
+        $dd = new Dropdown();
         $this->assertEquals(
             ['serial', 'pin', 'puk'], // pin and puk allowed by profile
             $this->callPrivateMethod(
@@ -2505,7 +2528,7 @@ HTML;
         );
 
         $this->logOut();
-        $dd = new \Dropdown();
+        $dd = new Dropdown();
         $this->assertEquals(
             ['serial'], // pin and puk disallowed when not connected
             $this->callPrivateMethod(
@@ -2517,7 +2540,7 @@ HTML;
         );
 
         $this->login('post-only', 'postonly');
-        $dd = new \Dropdown();
+        $dd = new Dropdown();
         $this->assertEquals(
             ['id', 'firstname'], // all sensitive fields removed, and password_forget_token disallowed by profile
             $this->callPrivateMethod(
@@ -2529,7 +2552,7 @@ HTML;
         );
 
         $this->login();
-        $dd = new \Dropdown();
+        $dd = new Dropdown();
         $this->assertEquals(
             ['id', 'firstname', 'password_forget_token'], // password_forget_token allowed by profile
             $this->callPrivateMethod(
@@ -2541,7 +2564,7 @@ HTML;
         );
 
         $this->logOut();
-        $dd = new \Dropdown();
+        $dd = new Dropdown();
         $this->assertEquals(
             ['id', 'firstname'], // all sensitive fields removed, and password_forget_token disallowed when not connected
             $this->callPrivateMethod(
@@ -2560,13 +2583,13 @@ HTML;
     public function testSupplierActorDropdownOnlyActive()
     {
         $this->login();
-        $this->createItem(\Supplier::class, [
+        $this->createItem(Supplier::class, [
             'name' => __FUNCTION__ . '_active',
             'is_active' => 1,
             'entities_id' => $this->getTestRootEntity(true),
             'is_recursive' => 1,
         ]);
-        $inactive_supplier = $this->createItem(\Supplier::class, [
+        $inactive_supplier = $this->createItem(Supplier::class, [
             'name' => __FUNCTION__ . '_inactive',
             'is_active' => 0,
             'entities_id' => $this->getTestRootEntity(true),
@@ -2575,47 +2598,47 @@ HTML;
         $params = [
             'itemtype' => Ticket::class,
             'actortype' => 'assign',
-            'returned_itemtypes' => [\Supplier::class],
+            'returned_itemtypes' => [Supplier::class],
             'searchText' => '',
         ];
-        $results = \Dropdown::getDropdownActors($params + ['_idor_token' => Session::getNewIDORToken(Ticket::class, $params)], false);
+        $results = Dropdown::getDropdownActors($params + ['_idor_token' => Session::getNewIDORToken(Ticket::class, $params)], false);
         $this->assertNotEmpty($results['results'][0]['children']);
         $this->assertCount(0, array_filter($results['results'][0]['children'], function ($result) use ($inactive_supplier) {
-            return $result['id'] === \Supplier::class . '_' . $inactive_supplier->getID();
+            return $result['id'] === Supplier::class . '_' . $inactive_supplier->getID();
         }));
 
         // If asking for inactive_deleted, it should return the inactive supplier
         $params['inactive_deleted'] = 1;
-        $results = \Dropdown::getDropdownActors($params + ['_idor_token' => Session::getNewIDORToken(Ticket::class, $params)], false);
+        $results = Dropdown::getDropdownActors($params + ['_idor_token' => Session::getNewIDORToken(Ticket::class, $params)], false);
         $this->assertNotEmpty($results['results'][0]['children']);
         $this->assertCount(1, array_filter($results['results'][0]['children'], function ($result) use ($inactive_supplier) {
-            return $result['id'] === \Supplier::class . '_' . $inactive_supplier->getID();
+            return $result['id'] === Supplier::class . '_' . $inactive_supplier->getID();
         }));
     }
 
     public function testGetDeviceItemTypes()
     {
         $this->login();
-        \Dropdown::resetItemtypesStaticCache();
-        $types = \Dropdown::getDeviceItemTypes();
+        Dropdown::resetItemtypesStaticCache();
+        $types = Dropdown::getDeviceItemTypes();
         // Not grouped by default (BC reasons)
         $this->assertCount(1, $types);
         $types = reset($types);
         $this->assertGreaterThanOrEqual(2, $types);
         foreach ($types as $type => $label) {
-            $this->assertTrue(is_subclass_of($type, \CommonDevice::class));
+            $this->assertTrue(is_subclass_of($type, CommonDevice::class));
             $this->assertIsString($label);
         }
 
-        \Dropdown::resetItemtypesStaticCache();
-        $types = \Dropdown::getDeviceItemTypes(true);
+        Dropdown::resetItemtypesStaticCache();
+        $types = Dropdown::getDeviceItemTypes(true);
         $this->assertGreaterThanOrEqual(3, $types);
         foreach ($types as $category => $types_list) {
             $this->assertIsString($category);
             $this->assertIsArray($types_list);
             $this->assertGreaterThanOrEqual(1, $types_list);
             foreach ($types_list as $type => $label) {
-                $this->assertTrue(is_subclass_of($type, \CommonDevice::class));
+                $this->assertTrue(is_subclass_of($type, CommonDevice::class));
                 $this->assertIsString($label);
             }
         }
@@ -2625,7 +2648,7 @@ HTML;
     {
         global $CFG_GLPI;
         $CFG_GLPI["time_step"] = 30;
-        $out = \Dropdown::showTimeStamp('timestamp', [
+        $out = Dropdown::showTimeStamp('timestamp', [
             'display' => false,
             'min' => 30,
             'max' => 2 * DAY_TIMESTAMP,
@@ -2646,131 +2669,227 @@ HTML;
     {
         global $CFG_GLPI;
 
-        $this->assertCount(count($CFG_GLPI['languages']), \Dropdown::getLanguages());
+        $this->assertCount(count($CFG_GLPI['languages']), Dropdown::getLanguages());
     }
 
     public function testGetDropdownMyDevices()
     {
         $this->login();
 
-        // Use existing admin user (ID 2) from test DB
-        $userID = 2;
-        $entity_id = $this->getTestRootEntity(true); // true to get ID instead of object
+        $user_id   = \getItemByTypeName(User::class, 'glpi', true);
+        $group_id  = \getItemByTypeName(Group::class, '_test_group_1', true);
+        $entity_id = $this->getTestRootEntity(true);
 
-        // Create test equipment owned by user using GLPI's createItem helper
-        $computer = $this->createItem('Computer', [
+        // Add `glpi` user inside the test group
+        $this->createItem(
+            Group_User::class,
+            [
+                'groups_id' => $group_id,
+                'users_id'  => $user_id,
+            ]
+        );
+
+        // Create test equipment owned by user/group using GLPI's createItem helper
+        $computer_1 = $this->createItem(Computer::class, [
             'name' => 'Test Laptop',
-            'users_id' => $userID,
+            'users_id' => $user_id,
             'entities_id' => $entity_id,
             'serial' => 'LAP123',
             'otherserial' => 'INV456',
         ]);
+        $computer_2 = $this->createItem(Computer::class, [
+            'name' => 'Test group Laptop',
+            'groups_id' => [$group_id],
+            'entities_id' => $entity_id,
+            'serial' => 'LAP456',
+            'otherserial' => 'INV789',
+        ]);
 
-        $monitor = $this->createItem('Monitor', [
+        $monitor_1 = $this->createItem(Monitor::class, [
             'name' => 'Test Monitor 24"',
-            'users_id' => $userID,
+            'users_id' => $user_id,
             'entities_id' => $entity_id,
             'serial' => 'MON789',
         ]);
+        $monitor_2 = $this->createItem(Monitor::class, [
+            'name' => 'Test group Monitor 24"',
+            'groups_id' => [$group_id],
+            'entities_id' => $entity_id,
+            'serial' => 'MON999',
+        ]);
 
-        $printer = $this->createItem('Printer', [
+        $printer_1 = $this->createItem(Printer::class, [
             'name' => 'Test Printer HP',
-            'users_id' => $userID,
+            'users_id' => $user_id,
             'entities_id' => $entity_id,
             'serial' => 'PRT321',
+        ]);
+        $printer_2 = $this->createItem(Printer::class, [
+            'name' => 'Test group Printer HP',
+            'users_id' => \getItemByTypeName(User::class, 'post-only', true), // not visible for glpi user
+            'groups_id' => [\getItemByTypeName(Group::class, '_test_group_1', true)], // not visible for _test_group_1
+            'entities_id' => $entity_id,
+            'serial' => 'PRT975',
         ]);
 
         // Connect monitor to computer to test connected devices
         $this->createItem(Asset_PeripheralAsset::class, [
             'itemtype_asset'      => Computer::class,
-            'items_id_asset'      => $computer->getID(),
+            'items_id_asset'      => $computer_1->getID(),
             'itemtype_peripheral' => Monitor::class,
-            'items_id_peripheral' => $monitor->getID(),
+            'items_id_peripheral' => $monitor_1->getID(),
+        ]);
+        $this->createItem(Asset_PeripheralAsset::class, [
+            'itemtype_asset'      => Computer::class,
+            'items_id_asset'      => $computer_2->getID(),
+            'itemtype_peripheral' => Monitor::class,
+            'items_id_peripheral' => $monitor_2->getID(),
         ]);
 
-        // Ensure proper permissions and helpdesk types
+        // Check with user that can see only its own hardware
+        $_SESSION["glpiactiveprofile"]["show_group_hardware"] = 0; // cannot see group hardware
         $_SESSION["glpiactiveprofile"]["helpdesk_hardware"] = pow(2, Ticket::HELPDESK_MY_HARDWARE);
-        $_SESSION["glpiactiveprofile"]["helpdesk_item_type"] = ['Computer', 'Monitor', 'Printer'];
+        $_SESSION["glpiactiveprofile"]["helpdesk_item_type"] = [Computer::class, Monitor::class, Printer::class];
 
         $post = [
-            'userID' => $userID,
+            'userID' => $user_id,
             'entity_restrict' => $entity_id,
             'page' => 1,
             'page_limit' => 20, // Increase limit to see all items
         ];
 
-        $result = \Dropdown::getDropdownMyDevices($post, false);
+        $result = Dropdown::getDropdownMyDevices($post, false);
 
-        // Basic structure validation
         $this->assertIsArray($result);
         $this->assertArrayHasKey('count', $result);
         $this->assertArrayHasKey('results', $result);
         $this->assertIsArray($result['results']);
-
-        // Should have empty value plus our devices
-        $this->assertGreaterThan(1, count($result['results']));
-        $this->assertEquals('', $result['results'][0]['id']);
-        $this->assertEquals('-----', $result['results'][0]['text']);
-
-        // Verify hierarchical structure and find our devices
-        $found_devices = [
-            'computer' => false,
-            'monitor' => false,
-            'printer' => false,
-            'connected_monitor' => false,
-        ];
-
-        foreach ($result['results'] as $group) {
-            if (isset($group['text']) && isset($group['children'])) {
-                // This is a hierarchical group
-                $this->assertIsString($group['text']);
-                $this->assertIsArray($group['children']);
-
-                foreach ($group['children'] as $item) {
-                    // Each item should have required structure
-                    $this->assertArrayHasKey('id', $item);
-                    $this->assertArrayHasKey('text', $item);
-                    $this->assertArrayHasKey('itemtype', $item);
-                    $this->assertArrayHasKey('items_id', $item);
-
-                    // Check for our specific devices
-                    if ($item['itemtype'] === 'Computer' && $item['items_id'] == $computer->getID()) {
-                        $found_devices['computer'] = true;
-                        $this->assertStringContainsString('Test Laptop', $item['text']);
-                        $this->assertStringContainsString('LAP123', $item['text']);
-                    }
-
-                    if ($item['itemtype'] === 'Monitor' && $item['items_id'] == $monitor->getID()) {
-                        if (strpos($group['text'], 'Connected') !== false) {
-                            $found_devices['connected_monitor'] = true;
-                        } else {
-                            $found_devices['monitor'] = true;
-                        }
-                        $this->assertStringContainsString('Test Monitor', $item['text']);
-                        $this->assertStringContainsString('MON789', $item['text']);
-                    }
-
-                    if ($item['itemtype'] === 'Printer' && $item['items_id'] == $printer->getID()) {
-                        $found_devices['printer'] = true;
-                        $this->assertStringContainsString('Test Printer', $item['text']);
-                        $this->assertStringContainsString('PRT321', $item['text']);
-                    }
-                }
-            }
-        }
-
-        // Verify all devices were found
-        $this->assertTrue($found_devices['computer'], 'Computer should be found in "My devices" section');
-        $this->assertTrue($found_devices['printer'], 'Printer should be found in "My devices" section');
-
-        // Monitor can be in either "My devices" or "Connected devices" section
-        $this->assertTrue(
-            $found_devices['monitor'] || $found_devices['connected_monitor'],
-            'Monitor should be found in either "My devices" or "Connected devices" section'
+        $this->assertEquals(
+            [
+                [
+                    'id' => '',
+                    'text' => '-----',
+                ],
+                [
+                    'text' => 'My Computers',
+                    'children' => [
+                        [
+                            'id'       => Computer::class . '_' . $computer_1->getID(),
+                            'text'     => 'Test Laptop - LAP123 - INV456',
+                            'itemtype' => Computer::class,
+                            'items_id' => $computer_1->getID(),
+                        ],
+                    ],
+                ],
+                [
+                    'text' => 'My Monitors',
+                    'children' => [
+                        [
+                            'id'       => Monitor::class . '_' . $monitor_1->getID(),
+                            'text'     => 'Test Monitor 24" - MON789',
+                            'itemtype' => Monitor::class,
+                            'items_id' => $monitor_1->getID(),
+                        ],
+                        [
+                            'id'       => Monitor::class . '_' . $monitor_1->getID(),
+                            'text'     => 'Test Monitor 24" - MON789',
+                            'itemtype' => Monitor::class,
+                            'items_id' => $monitor_1->getID(),
+                        ],
+                    ],
+                ],
+                [
+                    'text' => 'My Printers',
+                    'children' => [
+                        [
+                            'id'       => Printer::class . '_' . $printer_1->getID(),
+                            'text'     => 'Test Printer HP - PRT321',
+                            'itemtype' => Printer::class,
+                            'items_id' => $printer_1->getID(),
+                        ],
+                    ],
+                ],
+            ],
+            $result['results']
         );
 
-        // Test that count is accurate
-        $this->assertGreaterThan(0, $result['count']);
+        // Check with user that can see its own hardware + its groups hardware
+        $_SESSION["glpiactiveprofile"]["show_group_hardware"] = READ; // can see group hardware
+
+        $result = Dropdown::getDropdownMyDevices($post, false);
+
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('count', $result);
+        $this->assertArrayHasKey('results', $result);
+        $this->assertIsArray($result['results']);
+        $_SESSION["glpiactiveprofile"]["show_group_hardware"] = 0;
+
+        $this->assertEquals(
+            [
+                [
+                    'id' => '',
+                    'text' => '-----',
+                ],
+                [
+                    'text' => 'My Computers',
+                    'children' => [
+                        [
+                            'id'       => Computer::class . '_' . $computer_1->getID(),
+                            'text'     => 'Test Laptop - LAP123 - INV456',
+                            'itemtype' => Computer::class,
+                            'items_id' => $computer_1->getID(),
+                        ],
+                        [
+                            'id'       => Computer::class . '_' . $computer_2->getID(),
+                            'text'     => 'Test group Laptop - LAP456 - INV789',
+                            'itemtype' => Computer::class,
+                            'items_id' => $computer_2->getID(),
+                        ],
+                    ],
+                ],
+                [
+                    'text' => 'My Monitors',
+                    'children' => [
+                        [
+                            'id'       => Monitor::class . '_' . $monitor_1->getID(),
+                            'text'     => 'Test Monitor 24" - MON789',
+                            'itemtype' => Monitor::class,
+                            'items_id' => $monitor_1->getID(),
+                        ],
+                        [
+                            'id'       => Monitor::class . '_' . $monitor_2->getID(),
+                            'text'     => 'Test group Monitor 24" - MON999',
+                            'itemtype' => Monitor::class,
+                            'items_id' => $monitor_2->getID(),
+                        ],
+                        [
+                            'id'       => Monitor::class . '_' . $monitor_1->getID(),
+                            'text'     => 'Test Monitor 24" - MON789',
+                            'itemtype' => Monitor::class,
+                            'items_id' => $monitor_1->getID(),
+                        ],
+                    ],
+                ],
+                [
+                    'text' => 'My Printers',
+                    'children' => [
+                        [
+                            'id'       => Printer::class . '_' . $printer_1->getID(),
+                            'text'     => 'Test Printer HP - PRT321',
+                            'itemtype' => Printer::class,
+                            'items_id' => $printer_1->getID(),
+                        ],
+                        [
+                            'id'       => Printer::class . '_' . $printer_2->getID(),
+                            'text'     => 'Test group Printer HP - PRT975',
+                            'itemtype' => Printer::class,
+                            'items_id' => $printer_2->getID(),
+                        ],
+                    ],
+                ],
+            ],
+            $result['results']
+        );
     }
 
     public static function assetsDropdownForHelpdeskProvider(): iterable
@@ -2838,7 +2957,7 @@ HTML;
             'itemtype' => Computer::class,
         ];
         $params['_idor_token'] = Session::getNewIDORToken(Computer::class, $params);
-        $results = \Dropdown::getDropdownValue($params, false);
+        $results = Dropdown::getDropdownValue($params, false);
 
         // Assert: only one computer should be count
         $this->assertEquals(count($expected), $results["count"]);
@@ -2855,36 +2974,36 @@ HTML;
     {
         $this->login();
 
-        $project = $this->createItem(\Project::class, [
+        $project = $this->createItem(Project::class, [
             'name' => 'Test Project',
             'entities_id' => 0,
         ]);
 
-        $task_used = $this->createItem(\ProjectTask::class, [
+        $task_used = $this->createItem(ProjectTask::class, [
             'name' => 'Task in used',
             'projects_id' => $project->getID(),
         ]);
 
-        $task_available = $this->createItem(\ProjectTask::class, [
+        $task_available = $this->createItem(ProjectTask::class, [
             'name' => 'Task available',
             'projects_id' => $project->getID(),
         ]);
 
-        $task_excluded = $this->createItem(\ProjectTask::class, [
+        $task_excluded = $this->createItem(ProjectTask::class, [
             'name' => 'Task excluded by condition',
             'projects_id' => $project->getID(),
         ]);
 
         $params = [
-            'itemtype' => \ProjectTask::class,
+            'itemtype' => ProjectTask::class,
             'display_emptychoice' => false,
             'entity_restrict' => 0,
             'used' => [$task_used->getID() => $task_used->getID()],
             'condition' => ['NOT' => ['glpi_projecttasks.name' => ['Task excluded by condition']]],
         ];
-        $params['_idor_token'] = Session::getNewIDORToken(\ProjectTask::class, $params);
+        $params['_idor_token'] = Session::getNewIDORToken(ProjectTask::class, $params);
 
-        $result = \Dropdown::getDropdownValue($params, false);
+        $result = Dropdown::getDropdownValue($params, false);
 
         $ids = [];
         foreach ($result['results'] as $group) {
