@@ -844,6 +844,11 @@ class Session
             {
                 $this->cache = $cache; // @phpstan-ignore assign.propertyType (laminas...)
             }
+
+            public function removeCoreTranslationsForLanguage(string $language): void
+            {
+                $this->messages['glpi'][$language] = [];
+            }
         };
 
         $TRANSLATE->setLocale($trytoload);
@@ -899,6 +904,13 @@ class Session
     /**
      * Loads all locales from the core for the translation system.
      * Should only be used during the install or update process to allow initialization of text in multiple languages.
+     *
+     * Note: be careful as this method may lead to a big chunk of the available
+     * memory being used to store all translations.
+     * A given language translation will be added to memory the first time
+     * a translation is requested for this language (so note that the memory
+     * usage is a bit delayed and won't be visible right after this method end).
+     *
      * @return void
      */
     public static function loadAllCoreLocales(): void
