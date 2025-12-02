@@ -121,15 +121,18 @@ describe('Entity', () => {
         cy.findByRole('gridcell', {'name': subentity_name}).findByRole('button').click();
 
         cy.visit(`/front/entity.form.php`);
-        cy.intercept(`/front/entity.form.php`).as('formSent');
 
-        // We create the sub-subentity
+        // We can't create the sub-subentity
+        cy.findByRole('button', {'name': "Add"}).should('not.exist');
+
+        // We switch context to be in recursive mode
+        cy.openEntitySelector();
+        cy.get('header').findByTitle('Root entity > E2ETestEntity (full structure)').should('not.exist');
+        cy.findByRole("button", {'name': "Select all"}).click();
+
+        cy.visit(`/front/entity.form.php`);
         cy.findByLabelText('Name').type(`Sub-${subentity_name}`);
         cy.findByRole('button', {'name': "Add"}).click();
-
-        cy.wait('@formSent').then((interception) => {
-            expect(interception.response.statusCode).to.eq(302);
-        });
         cy.findByRole('link', {name: 'User menu'}).children().children().should('contain.text', `${subentity_name} (tree structure)`);
     });
 });
