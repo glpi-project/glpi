@@ -347,10 +347,7 @@ class DBmysql
      */
     public function escape($string)
     {
-        if (!is_string($string)) {
-            return $string;
-        }
-        return $this->dbh->real_escape_string($string);
+        return $this->dbh->real_escape_string((string) $string);
     }
 
     /**
@@ -1286,6 +1283,8 @@ class DBmysql
         } elseif (is_bool($value)) {
             // transform boolean as int (prevent `false` to be transformed to empty string)
             $value = "'" . (int) $value . "'";
+        } elseif (is_int($value) || is_float($value)) {
+            $value = "'$value'";
         } else {
             global $DB;
             $value = DBConnection::isDbAvailable() ? $DB->escape($value) : $value;
