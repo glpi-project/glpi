@@ -254,6 +254,11 @@ class HTMLTableGroup extends HTMLTableBase
         return count(array_filter($this->rows, static fn($r) => $r->notEmpty()));
     }
 
+    /**
+     * @param string $name
+     *
+     * @return HTMLTableHeader
+     */
     public function getSuperHeaderByName($name)
     {
         try {

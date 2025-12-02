@@ -169,6 +169,7 @@ class DeviceNetworkCard extends CommonDevice
                 return;
             }
             $item = $father->getItem();
+            /** @var CommonDBTM $item */
         }
 
         if (in_array($item::class, NetworkPort::getNetworkPortInstantiations())) {

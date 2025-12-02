@@ -498,6 +498,7 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
                 return;
             }
             $item = $father->getItem();
+            /** @var CommonDBTM $item */
         }
 
         $table = static::getTable();
