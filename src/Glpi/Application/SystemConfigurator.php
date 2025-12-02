@@ -156,9 +156,10 @@ final class SystemConfigurator
                 'GLPI_INSTALL_MODE'                 => is_dir($this->root_dir . '/.git') ? 'GIT' : 'TARBALL', // Install mode for telemetry
                 'GLPI_NETWORK_MAIL'                 => 'glpi@teclib.com',
                 'GLPI_NETWORK_SERVICES'             => 'https://services.glpi-network.com', // GLPI Network services project URL
-                'GLPI_NETWORK_REGISTRATION_API_URL' => '{GLPI_NETWORK_SERVICES}/api/registration/',
+                'GLPI_NETWORK_API_URL'              => '{GLPI_NETWORK_SERVICES}/api', // GLPI Network API base URL
+                'GLPI_NETWORK_REGISTRATION_API_URL' => '{GLPI_NETWORK_API_URL}/registration/',
                 'GLPI_MARKETPLACE_ENABLE'           => 3, // 0 = Completely disabled, 1 = CLI only, 2 = Web only, 3 = CLI and Web
-                'GLPI_MARKETPLACE_PLUGINS_API_URI'  => '{GLPI_NETWORK_SERVICES}/api/marketplace/',
+                'GLPI_MARKETPLACE_PLUGINS_API_URI'  => '{GLPI_NETWORK_API_URL}/marketplace/',
                 'GLPI_MARKETPLACE_PRERELEASES'      => preg_match('/-(dev|alpha\d*|beta\d*|rc\d*)$/', GLPI_VERSION) === 1, // allow marketplace to expose unstable plugins versions
                 'GLPI_MARKETPLACE_ALLOW_OVERRIDE'   => true, // allow marketplace to override a plugin found outside GLPI_MARKETPLACE_DIR
                 'GLPI_MARKETPLACE_MANUAL_DOWNLOADS' => true, // propose manual download link of plugins which cannot be installed/updated by marketplace

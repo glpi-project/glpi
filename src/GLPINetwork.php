@@ -284,7 +284,7 @@ class GLPINetwork extends CommonGLPI
     public static function isServicesAvailable(&$curl_error = null): bool
     {
         $error_msg = null;
-        $content = Toolbox::callCurl(GLPI_NETWORK_REGISTRATION_API_URL, [], $error_msg, $curl_error);
+        $content = Toolbox::callCurl(rtrim(GLPI_NETWORK_API_URL, '/') . '/ping', [], $error_msg, $curl_error);
         return $content !== '';
     }
 
