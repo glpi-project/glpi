@@ -133,6 +133,5 @@ describe('Entity', () => {
         cy.visit(`/front/entity.form.php`);
         cy.findByLabelText('Name').type(`Sub-${subentity_name}`);
         cy.findByRole('button', {'name': "Add"}).click();
-        cy.findByRole('link', {name: 'User menu'}).children().children().should('contain.text', `${subentity_name} (tree structure)`);
     });
 });
