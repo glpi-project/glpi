@@ -1050,9 +1050,15 @@ class Toolbox
      **/
     public static function checkNewVersionAvailable()
     {
-        //parse github releases (get last version number)
+        global $CFG_GLPI;
+
+        //parse GitHub releases (get last version number)
         $error = "";
-        $json_gh_releases = self::getURLContent("https://api.github.com/repos/glpi-project/glpi/releases", $error);
+        $eopts = [];
+        if (in_array(GLPINetwork::class, $CFG_GLPI['proxy_exclusions'])) {
+            $eopts['proxy_excluded'] = true;
+        }
+        $json_gh_releases = self::getURLContent("https://api.github.com/repos/glpi-project/glpi/releases", $error, 0, $eopts);
         if (empty($json_gh_releases)) {
             return $error;
         }
@@ -1318,13 +1324,14 @@ class Toolbox
      * @param string  $url    URL to retrieve
      * @param string  $msgerr set if problem encountered (default NULL)
      * @param integer $rec    internal use only Must be 0 (default 0)
+     * @param array   $eopts  CURL options (or 'proxy_excluded')
      *
      * @return string content of the page (or empty)
      **/
-    public static function getURLContent($url, &$msgerr = null, $rec = 0)
+    public static function getURLContent($url, &$msgerr = null, $rec = 0, array $eopts = [])
     {
         $curl_error = null;
-        $content = self::callCurl($url, [], $msgerr, $curl_error, true);
+        $content = self::callCurl($url, $eopts, $msgerr, $curl_error, true);
         return $content;
     }
 
@@ -1338,8 +1345,8 @@ class Toolbox
         global $CFG_GLPI;
 
         $options = $extra_options + ['connect_timeout' => 5];
-        // add proxy string if configured in glpi
-        if (!empty($CFG_GLPI["proxy_name"])) {
+        // add proxy string if configured in glpi - and not excluded
+        if (!empty($CFG_GLPI["proxy_name"]) && ($extra_options['proxy_excluded'] ?? false) === false) {
             $proxy_creds = "";
             if (!empty($CFG_GLPI["proxy_user"])) {
                 $proxy_user = rawurlencode($CFG_GLPI["proxy_user"]);
@@ -1357,9 +1364,9 @@ class Toolbox
      *
      * @param string $url         URL to retrieve
      * @param array  $eopts       Extra curl opts
-     * @param string $msgerr      will contains a human readable error string if an error occurs of url returns empty contents
-     * @param bool   $check_url_safeness    indicated whether the URL have to be filetered by safety checks
-     * @param array  $curl_info   will contains contents provided by `curl_getinfo`
+     * @param string $msgerr      will contain a human-readable error string if an error occurs of url returns empty contents
+     * @param bool   $check_url_safeness    indicated whether the URL have to be filtered by safety checks
+     * @param ?array $curl_info   will contain contents provided by `curl_getinfo`
      *
      * @return string
      */
@@ -1379,7 +1386,7 @@ class Toolbox
             $PHPLOGGER->error($e->getMessage(), ['exception' => $e]);
 
             $curl_error = $e->getMessage();
-            if (empty($CFG_GLPI["proxy_name"])) {
+            if (empty($CFG_GLPI["proxy_name"]) || ($eopts['proxy_excluded'] ?? false)) {
                 $msgerr = sprintf(
                     __('Connection failed. If you use a proxy, please configure it. (%s)'),
                     $curl_error
@@ -1446,6 +1453,11 @@ class Toolbox
         }
 
         $ch = curl_init($url);
+        $proxy_excluded = false;
+        if (isset($eopts['proxy_excluded'])) {
+            $proxy_excluded = (bool) $eopts['proxy_excluded'];
+            unset($eopts['proxy_excluded']);
+        }
         $opts = [
             CURLOPT_URL             => $url,
             CURLOPT_USERAGENT       => "GLPI/" . trim($CFG_GLPI["version"]),
@@ -1457,7 +1469,7 @@ class Toolbox
             $opts[CURLOPT_FOLLOWLOCATION] = false;
         }
 
-        if (!empty($CFG_GLPI["proxy_name"])) {
+        if (!empty($CFG_GLPI["proxy_name"]) && !$proxy_excluded) {
             // Connection using proxy
             $opts += [
                 CURLOPT_PROXY           => $CFG_GLPI['proxy_name'],

@@ -38,6 +38,7 @@ namespace Glpi\System\Diagnostic;
 use Exception;
 use FilesystemIterator;
 use Glpi\Toolbox\VersionParser;
+use GLPINetwork;
 use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 use RecursiveDirectoryIterator;
@@ -226,9 +227,13 @@ class SourceCodeIntegrityChecker
         $version_to_get = VersionParser::getNormalizedVersion(GLPI_VERSION);
         $gh_releases_endpoint = 'https://api.github.com/repos/glpi-project/glpi/releases/tags/' . $version_to_get;
 
-        $client = Toolbox::getGuzzleClient([
+        $eopts = [
             'connect_timeout' => 10, // 10 seconds timeout
-        ]);
+        ];
+        if (in_array(GLPINetwork::class, $CFG_GLPI['proxy_exclusions'])) {
+            $eopts['proxy_excluded'] = true;
+        }
+        $client = Toolbox::getGuzzleClient($eopts);
 
         $dest = null;
         try {

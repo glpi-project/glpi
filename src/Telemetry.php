@@ -299,6 +299,8 @@ class Telemetry extends CommonGLPI
      */
     public static function cronTelemetry($task): ?int
     {
+        global $CFG_GLPI;
+
         $data = self::getTelemetryInfos();
         $infos = json_encode(['data' => $data]);
 
@@ -307,6 +309,9 @@ class Telemetry extends CommonGLPI
             CURLOPT_POSTFIELDS      => $infos,
             CURLOPT_HTTPHEADER      => ['Content-Type:application/json'],
         ];
+        if (in_array(GLPINetwork::class, $CFG_GLPI['proxy_exclusions'])) {
+            $opts['proxy_excluded'] = true;
+        }
 
         $errstr = null;
         $content = json_decode(Toolbox::callCurl($url, $opts, $errstr));
