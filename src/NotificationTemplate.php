@@ -294,6 +294,7 @@ class NotificationTemplate extends CommonDBTM
                          <meta name='viewport' content='width=device-width, initial-scale=1' />
                          <title>" . htmlescape($lang['subject']) . "</title>
                          <style type='text/css'>
+                           img { max-width: 100%; height: auto; }
                            {$css}
                          </style>
                         </head>
