@@ -184,7 +184,7 @@ final class GraphQLGenerator
      * @param string|null $name
      * @param string $prefix
      *
-     * @return Closure|ListOfType|ObjectType|ScalarType|void
+     * @return Type|ListOfType<Type|Closure>|Closure|null
      */
     private function convertRESTPropertyToGraphQLType(array $property, ?string $name = null, string $prefix = '')
     {
@@ -204,7 +204,7 @@ final class GraphQLGenerator
         if ($type === Doc\Schema::TYPE_ARRAY) {
             $items = $property['items'];
             $graphql_type = $this->convertRESTPropertyToGraphQLType($items, $name, $prefix);
-            return Type::listOf($graphql_type);
+            return new ListOfType($graphql_type);
         }
 
         if ($type === Doc\Schema::TYPE_OBJECT) {
@@ -224,5 +224,6 @@ final class GraphQLGenerator
                 'fields' => $fields,
             ]);
         }
+        return null;
     }
 }
