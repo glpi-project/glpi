@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,8 +37,8 @@ namespace Glpi\Config;
 final readonly class ProxyExclusion
 {
     public function __construct(
-        private string  $classname,
-        private string  $label,
+        private string $classname,
+        private string $label,
         private string $description = ''
     ) {
         //
