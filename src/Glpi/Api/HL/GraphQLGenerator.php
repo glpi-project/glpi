@@ -40,7 +40,6 @@ use Glpi\Api\HL\Doc as Doc;
 use Glpi\Debug\Profiler;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 use Throwable;
 
