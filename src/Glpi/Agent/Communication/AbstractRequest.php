@@ -281,6 +281,7 @@ abstract class AbstractRequest
                     }
                 }
                 if (!$allowed) {
+                    $this->headers->setHeader("www-authenticate", 'Basic realm="basic"');
                     $this->addError('Access denied. Wrong login or password for basic authentication.', 401);
                     return false;
                 }
