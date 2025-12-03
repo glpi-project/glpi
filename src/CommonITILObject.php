@@ -9111,12 +9111,32 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             // Validation user added on ticket form
             if (array_key_exists('_validation_targets', $input)) {
                 foreach ($input['_validation_targets'] as $validation_target) {
-                    if (
+                    if (isset($validation_target['_template_id'])) {
+                        $validation_template = ITILValidationTemplate::getById(
+                            $validation_target['_template_id']
+                        );
+                        if (!$validation_template) {
+                            continue;
+                        }
+
+                        $targets = ITILValidationTemplate_Target::getTargets(
+                            $validation_target['_template_id']
+                        );
+                        $validation_target['items_id_target'] = [];
+                        foreach ($targets as $target) {
+                            $validation_target['itemtype_target'] = $target['itemtype'];
+                            $validation_target['items_id_target'][] = $target['items_id'];
+                        }
+
+                        $validation_target['validationsteps_id'] = $validation_template->fields['validationsteps_id'];
+                        $validation_target['comment_submission'] = $validation_template->getRenderedContent($this);
+                    } elseif (
                         !array_key_exists('itemtype_target', $validation_target)
                         || !array_key_exists('items_id_target', $validation_target)
                     ) {
                         continue; // User may have not selected both fields
                     }
+
                     if (!is_array($validation_target['items_id_target'])) {
                         $validation_target['items_id_target'] = [$validation_target['items_id_target']];
                     }
@@ -9125,6 +9145,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                             'itemtype_target'    => $validation_target['itemtype_target'],
                             'items_id_target'    => $items_id_target,
                             'validationsteps_id' => $validation_target['validationsteps_id'] ?? null,
+                            'comment_submission' => $validation_target['comment_submission'] ?? null,
                         ];
                     }
                 }
@@ -9169,6 +9190,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         $values['itemtype_target']     = $validation_to_send['itemtype_target'];
                         $values['items_id_target']     = $validation_to_send['items_id_target'];
                         $values['_validationsteps_id'] = $validation_to_send['validationsteps_id'] ?? null;
+                        $values['comment_submission']  = $validation_to_send['comment_submission'] ?? null;
 
                         // add validation step
                         if (isset($input['_validationsteps_id']) && $values['_validationsteps_id'] === null) {
