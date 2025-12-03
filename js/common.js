@@ -1688,7 +1688,7 @@ function setupAjaxDropdown(config) {
         minimumInputLength: 0,
         quietMillis: 100,
         dropdownAutoWidth: true,
-        dropdownParent: $('#' + field_id).closest('div.modal, div.offcanvas, div.dropdown-menu, body'),
+        dropdownParent: $('#' + field_id).closest('div.modal, div.offcanvas, div.dropdown-menu:not([data-select2-dont-use-as-parent]), body'),
         minimumResultsForSearch: config.ajax_limit_count,
         ajax: {
             url: config.url,
@@ -1792,7 +1792,7 @@ function setupAdaptDropdown(config)
         width: config.width,
         dropdownAutoWidth: true,
         dropdownCssClass: config.dropdown_css_class,
-        dropdownParent: $('#' + field_id).closest('div.modal, div.offcanvas, div.dropdown-menu, body'),
+        dropdownParent: $('#' + field_id).closest('div.modal, div.offcanvas, div.dropdown-menu:not([data-select2-dont-use-as-parent]), body'),
         quietMillis: 100,
         minimumResultsForSearch: config.ajax_limit_count,
         matcher: function (params, data) {
