@@ -14,8 +14,8 @@
 # Aaron Wang <evildeepblue@gmail.com>, 2025
 # ShaoPin Cheng <cjt74392@ms10.hinet.net>, 2025
 # Cédric Anne, 2025
-# DWXXX, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
+# DWXXX, 2025
 # 
 #, fuzzy
 msgid ""
@@ -24,7 +24,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-18 16:31+0100\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2025\n"
+"Last-Translator: DWXXX, 2025\n"
 "Language-Team: Chinese (Taiwan) (https://app.transifex.com/glpi/teams/1637/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -153,7 +153,7 @@ msgstr "名稱"
 #: src/ComputerVirtualMachine.php:288 src/Features/PlanningEvent.php:1087
 msgid "Comment"
 msgid_plural "Comments"
-msgstr[0] ""
+msgstr[0] "注释"
 
 #: templates/dropdown_form.html.twig templates/generic_show_form.html.twig
 #: templates/components/form/pictures.html.twig src/AuthLDAP.php:1004
@@ -277,7 +277,7 @@ msgstr "可與待辦事項關聯的項目"
 #: templates/generic_show_form.html.twig src/Cable.php:305 src/Cable.php:320
 #: src/Datacenter.php:153
 msgid "Data center position"
-msgstr ""
+msgstr "数据中心位置"
 
 #: templates/generic_show_form.html.twig
 #: templates/components/itilobject/selfservice.html.twig
@@ -556,7 +556,7 @@ msgstr "出版商"
 #: src/DatabaseInstance.php:488 src/Rack.php:267
 #: src/PassiveDCEquipment.php:175 src/ConsumableItem.php:256
 msgid "Group in charge"
-msgstr ""
+msgstr "负责群组"
 
 #: templates/generic_show_form.html.twig front/stat.location.php:107
 #: src/DeviceGraphicCard.php:78 src/DeviceGraphicCard.php:118
@@ -890,11 +890,11 @@ msgstr "最后启动日期"
 #: templates/layout/parts/saved_searches.html.twig src/SavedSearch.php:69
 msgid "Saved search"
 msgid_plural "Saved searches"
-msgstr[0] ""
+msgstr[0] "保存的查询"
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Manage all saved searches"
-msgstr ""
+msgstr "管理所有保存的查询"
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Pin this panel for the current page"
@@ -902,7 +902,7 @@ msgstr ""
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Close the panel"
-msgstr ""
+msgstr "关闭仪表盘"
 
 #: templates/layout/parts/saved_searches.html.twig src/Log.php:961
 #: src/Log.php:983 src/Log.php:1037 src/Log.php:1051 src/Auth.php:125
@@ -912,7 +912,7 @@ msgstr "其它"
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Filter list"
-msgstr ""
+msgstr "过滤清单"
 
 #: templates/layout/parts/menu.html.twig src/Central.php:79 src/Html.php:6660
 msgid "Dashboard"
@@ -921,7 +921,7 @@ msgstr "儀錶板"
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/page_header.html.twig
 msgid "You are bypassing a needed update"
-msgstr ""
+msgstr "您跳过了一个需要的更新"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/breadcrumbs.html.twig
@@ -973,11 +973,11 @@ msgstr "總結"
 
 #: templates/layout/parts/context_links.html.twig
 msgid "Global Kanban"
-msgstr ""
+msgstr "全局看板"
 
 #: templates/layout/parts/context_links.html.twig
 msgid "Transfer list"
-msgstr ""
+msgstr "传输清单"
 
 #: templates/layout/parts/context_links.html.twig
 #: templates/pages/setup/authentication.html.twig front/rule.test.php:64
@@ -992,15 +992,15 @@ msgstr "設定"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "Change mode"
-msgstr ""
+msgstr "变更模式"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "Debug mode enabled"
-msgstr ""
+msgstr "排障模式已启用"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "Debug mode disabled"
-msgstr ""
+msgstr "排障模式已禁用"
 
 #: templates/layout/parts/user_header.html.twig src/DocumentType.php:188
 #: src/DocumentType.php:189
@@ -1009,7 +1009,7 @@ msgstr "幫助"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "About"
-msgstr ""
+msgstr "关于"
 
 #: templates/layout/parts/user_header.html.twig src/Html.php:1399
 msgid "My settings"
@@ -1052,7 +1052,7 @@ msgstr ""
 
 #: templates/layout/parts/goto_button.html.twig
 msgid "Ctrl+Alt+G"
-msgstr ""
+msgstr "Ctrl+Alt+G"
 
 #: templates/layout/parts/goto_button.html.twig
 msgid "Option+Command+G"
@@ -1060,7 +1060,7 @@ msgstr "Option+Command+G"
 
 #: templates/layout/parts/goto_button.html.twig
 msgid "Find menu"
-msgstr ""
+msgstr "查找菜单"
 
 #: templates/layout/parts/page_footer.html.twig
 msgid "Back to top of the page"
@@ -1068,7 +1068,7 @@ msgstr ""
 
 #: templates/layout/parts/page_footer.html.twig
 msgid "Top of the page"
-msgstr ""
+msgstr "页面顶部"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Profiles"
@@ -1081,11 +1081,11 @@ msgstr "選擇所需的實體"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Ctrl + Alt + E"
-msgstr ""
+msgstr "Ctrl + Alt + E"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "⌥ (option) + ⌘ (command) + E"
-msgstr ""
+msgstr "⌥ (option) + ⌘ (command) + E"
 
 #: templates/layout/parts/profile_selector.html.twig src/Html.php:6611
 #, php-format
@@ -1105,11 +1105,11 @@ msgstr ""
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Search entity"
-msgstr ""
+msgstr "查找实体"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Clear search"
-msgstr ""
+msgstr "清除查找"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Select all"
@@ -1122,7 +1122,7 @@ msgstr "未发现实体"
 #: templates/layout/parts/global_search_form.html.twig
 #: src/Features/TreeBrowse.php:159
 msgid "Search…"
-msgstr ""
+msgstr "查找..."
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Collapse menu"
@@ -1138,11 +1138,11 @@ msgstr "預設的搜尋"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "mark as default"
-msgstr ""
+msgstr "设置为默认"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "private"
-msgstr ""
+msgstr "私有"
 
 #: templates/password_form.html.twig src/User.php:5646
 msgid ""
@@ -1177,7 +1177,7 @@ msgstr "密碼的安全策略"
 
 #: templates/password_form.html.twig
 msgid "Save new password"
-msgstr ""
+msgstr "保存新密码"
 
 #: templates/password_form.html.twig
 msgid ""
@@ -1240,7 +1240,7 @@ msgstr ""
 #: templates/components/pager.html.twig
 #, php-format
 msgid "%s-%s/%s"
-msgstr ""
+msgstr "%s-%s/%s"
 
 #: templates/components/pager.html.twig
 #: templates/components/form/support_hours.html.twig src/APIClient.php:134
@@ -1434,7 +1434,7 @@ msgstr "所有頁面以 CSV 導出"
 
 #: templates/components/search/controls.html.twig src/Dropdown.php:2576
 msgid "Copy names to clipboard"
-msgstr ""
+msgstr "复制名称到粘贴版"
 
 #: templates/components/search/controls.html.twig
 msgid "Close modal"
@@ -1442,7 +1442,7 @@ msgstr ""
 
 #: templates/components/search/display_data.html.twig
 msgid "View all"
-msgstr ""
+msgstr "查看所有"
 
 #: templates/components/messages_after_redirect_toasts.html.twig
 #: templates/components/messages_after_redirect_alerts.html.twig
@@ -3242,7 +3242,7 @@ msgstr "選擇/取消 全部"
 #: templates/components/plugin_uninstall_modal.html.twig
 msgctxt "uninstall_plugin"
 msgid "Are you sure?"
-msgstr ""
+msgstr "确定？"
 
 #: templates/components/plugin_uninstall_modal.html.twig
 #, php-format
@@ -3339,7 +3339,7 @@ msgstr "更新"
 
 #: templates/components/logs.html.twig src/Item_SoftwareVersion.php:1146
 msgid "Filter"
-msgstr ""
+msgstr "过滤器"
 
 #: templates/components/logs.html.twig
 msgid "Export"
@@ -10424,11 +10424,11 @@ msgstr ""
 
 #: src/Search.php:406
 msgid "An error occurred loading data :("
-msgstr ""
+msgstr "加载数据时出错 :("
 
 #: src/Search.php:413
 msgid "Reload"
-msgstr ""
+msgstr "重新加载"
 
 #: src/Search.php:1751
 msgid ""
@@ -10505,7 +10505,7 @@ msgstr "空白"
 
 #: src/Search.php:2883 src/Search.php:3137
 msgid "Delete a rule"
-msgstr ""
+msgstr "删除一个规则"
 
 #: src/Search.php:3041
 msgid "Delete a global rule"
@@ -12984,7 +12984,7 @@ msgstr "會計和管理資訊的註釋"
 #: src/Cluster.php:56
 msgid "Cluster"
 msgid_plural "Clusters"
-msgstr[0] ""
+msgstr[0] "簇"
 
 #: src/Appliance_Item_Relation.php:48
 msgctxt "appliance"
@@ -18783,11 +18783,11 @@ msgstr "將更新認證方法為"
 
 #: src/User.php:5529
 msgid "Your password has expired. You must change it to be able to login."
-msgstr ""
+msgstr "您的密码已过期。您必须更改后方可登录。"
 
 #: src/User.php:5545
 msgid "Current password"
-msgstr ""
+msgstr "当前密码"
 
 #: src/User.php:5554
 msgid "New password"
@@ -18931,16 +18931,16 @@ msgstr "在右边"
 
 #: src/Features/DCBreadcrumb.php:86 src/PDU_Rack.php:451
 msgid "On top"
-msgstr ""
+msgstr "在顶部"
 
 #: src/Features/DCBreadcrumb.php:89 src/PDU_Rack.php:455
 msgid "On bottom"
-msgstr ""
+msgstr "在底部"
 
 #: src/Features/DCBreadcrumb.php:210 src/Features/DCBreadcrumb.php:236
 #, php-format
 msgid "(U%1$u)"
-msgstr ""
+msgstr "(U%1$u)"
 
 #: src/Features/PlanningEvent.php:138 src/Features/PlanningEvent.php:197
 #: src/RSSFeed.php:632

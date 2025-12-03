@@ -8,8 +8,8 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2023
 # Daniel M, 2025
 # Cédric Anne, 2025
-# Peter Rundqvist, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
+# Peter Rundqvist, 2025
 # 
 #, fuzzy
 msgid ""
@@ -18,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-18 16:31+0100\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2025\n"
+"Last-Translator: Peter Rundqvist, 2025\n"
 "Language-Team: Swedish (Sweden) (https://app.transifex.com/glpi/teams/1637/sv_SE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1033,7 +1033,7 @@ msgstr "Stäng"
 
 #: templates/layout/parts/user_header.html.twig src/Config.php:1972
 msgid "This version is UNSTABLE and some SECURITY FIXES may not be included."
-msgstr ""
+msgstr "Den här versionen är instabil och vissa säkerhetsfixar kan saknas!"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."
