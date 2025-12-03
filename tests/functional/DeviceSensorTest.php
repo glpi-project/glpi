@@ -107,4 +107,58 @@ class DeviceSensorTest extends DbTestCase
         ];
         $this->assertTrue($obj->delete($in));
     }
+
+    public static function importProvider(): iterable
+    {
+        yield [
+            'input'  => [],
+            'result' => null,
+        ];
+
+        yield [
+            'input'  => [
+                'designation' => 'test',
+            ],
+            'result' => [
+                'designation' => 'test',
+            ],
+        ];
+
+        yield [
+            'input'  => [
+                'designation' => '(>-<)',
+            ],
+            'result' => [
+                'designation' => '(>-<)',
+            ],
+        ];
+
+        yield [
+            'input'  => [
+                'designation' => 'A&B',
+            ],
+            'result' => [
+                'designation' => 'A&B',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider importProvider
+     */
+    public function testImport(array $input, ?array $result): void
+    {
+        $input['entities_id'] = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $device = new \DeviceSensor();
+        $id = $device->import($input);
+
+        if ($result === null) {
+            $this->assertEquals(0, $id);
+        } else {
+            $imported = new \DeviceSensor();
+            $this->assertTrue($imported->getFromDB($id));
+            $this->assertSame($result['designation'], $imported->fields['designation']);
+        }
+    }
 }
