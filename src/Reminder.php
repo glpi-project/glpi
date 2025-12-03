@@ -626,7 +626,7 @@ class Reminder extends CommonDBVisible implements
                 'DISTINCT'        => true,
                 'FROM'            => 'glpi_reminders',
                 'WHERE'           => $visibility_criteria,
-                'ORDERBY'         => 'name',
+                'ORDERBY'         => 'glpi_reminders.name',
             ],
             self::getVisibilityCriteria()
         );
