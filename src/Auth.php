@@ -78,10 +78,10 @@ class Auth extends CommonGLPI
     public $user_found = false;
 
     /**
-     * The user's email found during the validation part of the login workflow.
-     * @var ?string
+     * The user's emails found during the validation part of the login workflow.
+     * @var string[]
      */
-    private ?string $user_email = null;
+    private array $user_emails = [];
 
     /**
      * The authentication method determined during the validation part of the login workflow.
@@ -821,7 +821,7 @@ class Auth extends CommonGLPI
                 $user_dn                           = false;
 
                 if (array_key_exists('_useremails', $this->user->fields)) {
-                    $this->user_email = $this->user->fields['_useremails'];
+                    $this->user_emails = $this->user->fields['_useremails'];
                 }
 
                 $ldapservers = [];
@@ -1064,8 +1064,8 @@ class Auth extends CommonGLPI
             } else {
                 if ($this->user_present) {
                     // Add the user e-mail if present
-                    if (isset($this->user_email)) {
-                        $this->user->fields['_useremails'] = $this->user_email;
+                    if (count($this->user_emails) > 0) {
+                        $this->user->fields['_useremails'] = $this->user_emails;
                     }
 
                     $input = $this->user->fields;
