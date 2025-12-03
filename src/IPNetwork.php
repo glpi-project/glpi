@@ -1062,10 +1062,6 @@ class IPNetwork extends CommonImplicitTreeDropdown
             $item = $father->getItem();
         }
 
-        if ($item->getType() != 'IPAddress') {
-            return;
-        }
-
         if (!($item instanceof IPAddress)) {
             return;
         }

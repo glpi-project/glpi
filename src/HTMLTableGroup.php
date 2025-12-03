@@ -139,7 +139,9 @@ class HTMLTableGroup extends HTMLTableBase
                 if ($count === 0) {
                     $this->ordered_headers[] = $super_header;
                 } else {
-                    $super_header->updateNumberOfSubHeader($count);
+                    if ($super_header instanceof HTMLTableSuperHeader) {
+                        $super_header->updateNumberOfSubHeader($count);
+                    }
                     foreach ($sub_header_names as $sub_header_name) {
                         $sub_header = $this->getHeaderByName($super_header_name, $sub_header_name);
                         if ($sub_header->hasToDisplay()) {

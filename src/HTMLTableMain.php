@@ -66,10 +66,9 @@ class HTMLTableMain extends HTMLTableBase
 {
     /** @var ?string */
     private $title;
-
     /** @var array<string, HTMLTableGroup> */
     private $groups    = [];
-    /** @var array<string, string> */
+    /** @var array<class-string<CommonDBTM>, string> */
     private $itemtypes = [];
 
     public function __construct()

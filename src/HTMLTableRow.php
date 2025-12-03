@@ -199,6 +199,9 @@ class HTMLTableRow extends HTMLTableEntity
             }
             echo "\t\t<tr class='tab_bg_1'>\n";
             foreach ($headers as $header) {
+                if (!$header instanceof HTMLCompositeTableInterface) {
+                    continue;
+                }
                 $header_name = $header->getCompositeName();
                 if (isset($this->cells[$header_name])) {
                     $display = false;

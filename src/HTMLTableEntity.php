@@ -48,8 +48,7 @@ abstract class HTMLTableEntity
     private $html_style = [];
     /** @var string[] */
     private $html_class = [];
-
-    /** @var string|array|null */
+    /** @var string|string[] */
     private $content;
 
     /**
@@ -159,7 +158,7 @@ abstract class HTMLTableEntity
     }
 
     /**
-     * @param string|array $content
+     * @param string|string[] $content
      *
      * @return void
      *
@@ -189,7 +188,7 @@ abstract class HTMLTableEntity
             }
         } else {
             // Manage __RAND__ to be computed on display
-            $content = $this->content ?? '';
+            $content = $this->content;
             $content = str_replace('__RAND__', (string) mt_rand(), $content);
             echo $content;
         }

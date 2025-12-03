@@ -36,8 +36,6 @@
 /**
  * @since 0.84
  *
- * @method void updateNumberOfSubHeader(int $number)
- * @method string getCompositeName()
  */
 abstract class HTMLTableHeader extends HTMLTableEntity
 {
@@ -118,7 +116,10 @@ abstract class HTMLTableHeader extends HTMLTableEntity
             if (!isset($this->itemtypes[$item->getType()])) {
                 throw new Exception('Implementation error: type mismatch between header and cell');
             }
-            $this->getTable()->addItemType($item->getType(), $this->itemtypes[$item->getType()]);
+            $table = $this->getTable();
+            if ($table instanceof HTMLTableMain) {
+                $table->addItemType($item->getType(), $this->itemtypes[$item->getType()]);
+            }
         }
     }
 

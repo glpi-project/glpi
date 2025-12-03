@@ -36,7 +36,6 @@
 /**
  * @since 0.84
  *
- * @method void addItemType(string $itemtype, string $title)
  */
 abstract class HTMLTableBase
 {
@@ -196,7 +195,7 @@ abstract class HTMLTableBase
     /**
      * @param string $header_name  (default '')
      *
-     * @return array<string, array<string, HTMLTableHeader>>|array<string, HTMLTableHeader>
+     * @return ($header_name is '' ? array<string, array<string, HTMLTableHeader>> : array<string, HTMLTableHeader>)
      */
     public function getHeaders($header_name = '')
     {
