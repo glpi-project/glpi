@@ -1484,10 +1484,7 @@ class User extends CommonDBTM
                             )]);
                         } elseif ($data['is_dynamic']) {
                             // Get groups that will be added by authorization rules
-                            $rules_groups = [];
-                            if (isset($this->input["_ldap_rules"]['groups_id'])) {
-                                $rules_groups = $this->input["_ldap_rules"]['groups_id'];
-                            }
+                            $rules_groups = $this->input["_ldap_rules"]['groups_id'] ?? [];
                             // Delete only dynamic groups not matching rules
                             if (!in_array($data["groups_id"], $rules_groups)) {
                                 $groupuser->delete(['id' => $data["id"]]);
