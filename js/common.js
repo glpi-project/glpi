@@ -1370,8 +1370,11 @@ function flashIconButton(button, button_classes, icon_classes, duration) {
  * @see https://stackoverflow.com/a/48593447
  */
 function uniqid(prefix = "", more_entropy = false) {
-    const sec = Date.now() * 1000 + Math.random() * 1000;
-    const id = sec.toString(16).replace(/\./g, "").padEnd(14, "0");
+    const random = crypto.getRandomValues(new Uint32Array(10)).reduce(
+        (accumulator, value) => accumulator * value,
+        1,
+    );
+    const id = random.toString(16).slice(0, 14).padEnd(14, "0");
     const suffix = more_entropy
         ? '.' + Math.floor(Math.random() * 100000000).toString().padStart(8, '0')
         : '';
