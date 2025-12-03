@@ -3,7 +3,7 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [11.0.3] unreleased
+## [11.0.3] 2025-12-03
 
 ### Added
 - Support for setting a dropdown value like `status` for assets by using the `id` property (ex: `"status": {"id": 5}`) as it shows in the OpenAPI schema for the High-Level API.
