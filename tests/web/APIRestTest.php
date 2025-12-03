@@ -47,6 +47,8 @@ use Glpi\Helpdesk\Tile\GlpiPageTile;
 use Glpi\Tests\Api\Deprecated\Computer_Item;
 use Glpi\Tests\Api\Deprecated\Computer_SoftwareLicense;
 use Glpi\Tests\Api\Deprecated\Computer_SoftwareVersion;
+use Glpi\Tests\Api\Deprecated\ComputerAntivirus;
+use Glpi\Tests\Api\Deprecated\ComputerVirtualMachine;
 use Glpi\Tests\Api\Deprecated\TicketFollowup;
 use GLPIKey;
 use GuzzleHttp;
@@ -2310,6 +2312,8 @@ class APIRestTest extends TestCase
             ['provider' => TicketFollowup::class],
             ['provider' => Computer_SoftwareVersion::class],
             ['provider' => Computer_SoftwareLicense::class],
+            ['provider' => ComputerAntivirus::class],
+            ['provider' => ComputerVirtualMachine::class],
             ['provider' => Computer_Item::class],
         ];
     }

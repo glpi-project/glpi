@@ -1,0 +1,49 @@
+{
+    "common": {
+        "name": "Characteristics"
+    },
+    "1": {
+        "name": "Name",
+        "table": "glpi_computervirtualmachines",
+        "field": "name",
+        "datatype": "itemlink",
+        "nosearch": false,
+        "nodisplay": false,
+        "available_searchtypes": [
+            "contains",
+            "notcontains",
+            "equals",
+            "notequals",
+            "empty"
+        ],
+        "uid": "ComputerVirtualMachine.name"
+    },
+    "2": {
+        "name": "UUID",
+        "table": "glpi_computervirtualmachines",
+        "field": "uuid",
+        "datatype": "string",
+        "nosearch": false,
+        "nodisplay": false,
+        "available_searchtypes": [
+            "contains",
+            "notcontains",
+            "empty"
+        ],
+        "uid": "ComputerVirtualMachine.uuid"
+    },
+    "3": {
+        "name": "Memory",
+        "table": "glpi_computervirtualmachines",
+        "field": "ram",
+        "datatype": "string",
+        "nosearch": false,
+        "nodisplay": false,
+        "available_searchtypes": [
+            "contains",
+            "notcontains",
+            "empty"
+        ],
+        "uid": "ComputerVirtualMachine.ram"
+    }
+}
