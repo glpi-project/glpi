@@ -1192,7 +1192,7 @@ function updateItemOnEvent(dropdown_ids, target, url, params = {}, events = ['ch
         $(events).each((i2, event) => {
             //TODO Manage buffer time
 
-            const cleaned_zone_id = zone.replace('[', '_').replace(']', '_');
+            const cleaned_zone_id = zone.replaceAll('[', '_').replaceAll(']', '_');
             const zone_obj = $(`#${CSS.escape(cleaned_zone_id)}`);
 
             zone_obj.on(event, () => {
