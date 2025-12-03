@@ -110,7 +110,7 @@ var glpi_html_dialog = function({
          <div class="modal-dialog ${_.escape(dialogclass)}">
             <div class="modal-content">
                <div class="modal-header">
-                  <h2 id="${id}_title" class="fs-4 modal-title" tabindex="-1">${title}</h2>
+                  <h2 id="${_.escape(id)}_title" class="fs-4 modal-title" tabindex="-1">${title}</h2>
                   <button type="button" class="btn-close" data-bs-dismiss="modal"
                            aria-label="${__("Close")}"></button>
                </div>
