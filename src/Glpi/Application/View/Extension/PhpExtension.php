@@ -90,7 +90,7 @@ class PhpExtension extends AbstractExtension
     public function call(string|array $callable, array $parameters = [])
     {
         if (!is_callable($callable)) {
-            \trigger_error(sprintf('Invalid callable `%s`.', $callable), E_USER_WARNING);
+            \trigger_error(sprintf('Invalid callable %s.', \json_encode($callable)), E_USER_WARNING);
             return null;
         }
         return call_user_func_array($callable, $parameters);
