@@ -2021,7 +2021,7 @@ var GLPIImpact = {
             GLPIImpact.maxDepth = GLPIImpact.NO_DEPTH_LIMIT;
         }
 
-        $(GLPIImpact.selectors.maxDepthView).html(max);
+        $(GLPIImpact.selectors.maxDepthView).text(max);
         GLPIImpact.updateStyle();
         GLPIImpact.cy.trigger("change");
     },
