@@ -15,12 +15,12 @@
 # Oriol Lladó, 2023
 # Lluís Forns Puigmartí, 2024
 # Joan F, 2024
-# Nuria Costa <nuria.costa@uvic.cat>, 2025
 # Ivan Fustero, 2025
 # David Marti, 2025
 # Jordi Domene, 2025
 # Cédric Anne, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
+# Nuria Costa <nuria.costa@uvic.cat>, 2025
 # 
 #, fuzzy
 msgid ""
@@ -29,7 +29,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-18 16:31+0100\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2025\n"
+"Last-Translator: Nuria Costa <nuria.costa@uvic.cat>, 2025\n"
 "Language-Team: Catalan (Spain) (https://app.transifex.com/glpi/teams/1637/ca_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25115,7 +25115,7 @@ msgstr "Fus horari del servidor GLPI"
 
 #: src/Config.php:745
 msgid "Use the replica for the search engine"
-msgstr ""
+msgstr "Utilitza la rèplica per al motor de cerca"
 
 #: src/Config.php:747
 msgid "If synced (all changes)"

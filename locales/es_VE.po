@@ -1042,6 +1042,8 @@ msgstr "Cerrar"
 #: templates/layout/parts/user_header.html.twig src/Config.php:1972
 msgid "This version is UNSTABLE and some SECURITY FIXES may not be included."
 msgstr ""
+"Esta versión es INESTABLE y es posible que algunas CORRECCIONES DE SEGURIDAD"
+" no estén incluidas."
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."

@@ -1029,6 +1029,8 @@ msgstr "閉じる"
 #: templates/layout/parts/user_header.html.twig src/Config.php:1972
 msgid "This version is UNSTABLE and some SECURITY FIXES may not be included."
 msgstr ""
+"このバージョンは UNSTABLE ( 不安定 ) バージョンで、SECURITY FIXES ( セキュリティー修正 ) "
+"の一部を含んでいない可能性があります。"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."
