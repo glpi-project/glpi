@@ -52,7 +52,6 @@ class PluginExtension extends AbstractExtension
             new TwigFunction('call_plugin_hook', [$this, 'callPluginHook']),
             new TwigFunction('call_plugin_hook_func', [$this, 'callPluginHookFunction']),
             new TwigFunction('call_plugin_one_hook', [$this, 'callPluginOneHook']),
-            new TwigFunction('get_plugin_web_dir', [$this, 'getPluginWebDir']),
             new TwigFunction('get_plugins_css_files', [$this, 'getPluginsCssFiles']),
             new TwigFunction('get_plugins_js_scripts_files', [$this, 'getPluginsJsScriptsFiles']),
             new TwigFunction('get_plugins_js_modules_files', [$this, 'getPluginsJsModulesFiles']),
