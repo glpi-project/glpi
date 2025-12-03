@@ -567,7 +567,7 @@ class Auth extends CommonGLPI
 
                 // extract e-mail information
                 if (phpCAS::hasAttribute("mail")) {
-                    $this->user->fields['_useremails'] = [phpCAS::getAttribute("mail")];
+                    $this->user->fields['_useremails'] = phpCAS::getAttribute("mail");
                 }
 
                 return true;
