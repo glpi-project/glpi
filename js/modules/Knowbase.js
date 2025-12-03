@@ -79,8 +79,8 @@ class Knowbase {
 
         $(document).on('click', '.compare', (e) => {
             e.preventDefault();
-            const _oldid = $('[name="oldid"]:checked').val();
-            const _diffid = $('[name="diff"]:checked').val();
+            const _oldid = Number.parseInt($('[name="oldid"]:checked').val());
+            const _diffid = Number.parseInt($('[name="diff"]:checked').val());
             const kbitem_id = $(e.currentTarget).data('kbitem_id');
             this.#showRevisionComparison(kbitem_id, _oldid, _diffid);
         });
