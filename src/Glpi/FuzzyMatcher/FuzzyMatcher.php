@@ -67,18 +67,19 @@ final class FuzzyMatcher
             return false;
         }
 
-        // Actual fuzzy matching, use the costs and threshold defined in the
-        // strategy.
-        $cost = levenshtein(
-            string1: $subject,
-            string2: $filter,
-            insertion_cost: $this->strategy->insertionCost(),
-            replacement_cost: $this->strategy->replacementCost(),
-            deletion_cost: $this->strategy->deletionCost(),
-        );
-        if ($cost <= $this->strategy->maxCostForSuccess()) {
-            return true;
-        }
+        // No fuzzy matching, the original version using levenshtein is not
+        // precise enough. TODO: use something else more reliable.
+        // Code is kept as a comment to show how it worked.
+        // $cost = levenshtein(
+        //     string1: $subject,
+        //     string2: $filter,
+        //     insertion_cost: $this->strategy->insertionCost(),
+        //     replacement_cost: $this->strategy->replacementCost(),
+        //     deletion_cost: $this->strategy->deletionCost(),
+        // );
+        // if ($cost <= $this->strategy->maxCostForSuccess()) {
+        //     return true;
+        // }
 
         return false;
     }
