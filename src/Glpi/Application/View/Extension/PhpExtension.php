@@ -89,10 +89,11 @@ class PhpExtension extends AbstractExtension
      */
     public function call(string|array $callable, array $parameters = [])
     {
-        if (is_callable($callable)) {
-            return call_user_func_array($callable, $parameters);
+        if (!is_callable($callable)) {
+            \trigger_error(sprintf('Invalid callable `%s`.', $callable), E_USER_WARNING);
+            return null;
         }
-        return null;
+        return call_user_func_array($callable, $parameters);
     }
 
     /**
@@ -105,10 +106,29 @@ class PhpExtension extends AbstractExtension
      */
     public function getStatic($class, string $property)
     {
-        if ((is_object($class) || class_exists($class)) && property_exists($class, $property)) {
-            return $class::$$property;
+        if (!is_object($class) && !class_exists($class)) {
+            \trigger_error(
+                sprintf(
+                    'Invalid class or object `%s`.',
+                    \is_string($class) ? $class : \get_debug_type($class)
+                ),
+                E_USER_WARNING
+            );
+            return null;
         }
-        return null;
+        if (!property_exists($class, $property)) {
+            \trigger_error(
+                sprintf(
+                    'Invalid property `%s::%s.',
+                    \is_string($class) ? $class : \get_debug_type($class),
+                    $property
+                ),
+                E_USER_WARNING
+            );
+            return null;
+        }
+
+        return $class::$$property;
     }
 
     /**
