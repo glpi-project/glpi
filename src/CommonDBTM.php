@@ -5342,6 +5342,7 @@ class CommonDBTM extends CommonGLPI
         if ($add) {
             $entries[] = [
                 'name' => '<a href="' . htmlescape($target_blank) . '">' . __s('Blank Template') . '</a>',
+                'original_url' => $target_blank,
             ];
         }
 
@@ -5370,6 +5371,7 @@ class CommonDBTM extends CommonGLPI
                 $add_params = (strpos($target, '?') ? '&' : '?') . "id=" . $data['id'] . "&withtemplate=2";
                 $target_add = $target . $add_params;
                 $entry['name'] = '<a href="' . htmlescape($target_add) . '">' . htmlescape($templname) . '</a>';
+                $entry['original_url'] = $target_add;
             }
             $entries[] = $entry;
         }
