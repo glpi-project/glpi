@@ -79,7 +79,6 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Application\View\Extension\DataHelpersExtension::getVerbatimValue()`
 - `Glpi\Application\View\Extension\PluginExtension::getPluginWebDir()`
 - `Glpi\Dashoboard\Filter::getAll()`
-- `Glpi\Http\HeaderlessStreamedResponse` class
 - `Glpi\Http\Response::sendError()`
 - `Glpi\Http\Response::sendHeaders()`
 - `Glpi\Http\Response::sendContent()`
