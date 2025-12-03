@@ -1007,7 +1007,7 @@ msgstr "Aldrig"
 #: templates/generic_show_form.html.twig src/CartridgeItem.php:345
 #: src/ConsumableItem.php:290
 msgid "Alert threshold"
-msgstr "Larmnivå"
+msgstr "Varningsnivå"
 
 #: templates/generic_show_form.html.twig src/Peripheral.php:340
 #: src/Phone.php:404
@@ -1138,7 +1138,7 @@ msgstr "Hem"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Read-only mode"
-msgstr "Endast läsrättighet"
+msgstr "Skrivskyddat läge"
 
 #: templates/layout/parts/objectlock_message.html.twig
 #: templates/components/notepad/form.html.twig
@@ -1277,7 +1277,7 @@ msgstr "Stäng"
 #: templates/layout/parts/user_header.html.twig
 #: templates/pages/setup/general/systeminfo_table.html.twig
 msgid "This version is UNSTABLE and some SECURITY FIXES may not be included."
-msgstr ""
+msgstr "Den här versionen är instabil och vissa säkerhetsfixar kan saknas!"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."
@@ -1392,7 +1392,7 @@ msgstr "Minimera meny"
 #: templates/layout/parts/profile_selector_form.html.twig
 #, php-format
 msgid "Select %1s entity with all its sub entities"
-msgstr ""
+msgstr "Välj %1s-enheten och alla dess underenheter"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "You have not recorded any saved searches yet"
@@ -2166,7 +2166,7 @@ msgstr "Redigera anteckning"
 #: src/Profile.php:987 src/Profile.php:1055 src/Profile.php:1064
 #: src/Profile.php:1128
 msgid "Update"
-msgstr "Uppdatering"
+msgstr "Uppdatera"
 
 #: templates/components/plugin_update_modal.html.twig
 msgctxt "button"
@@ -3481,7 +3481,7 @@ msgstr[1] "Supportnivåer"
 #: templates/components/itilobject/fields_panel.html.twig
 #: src/NotificationTargetProblem.php:201 src/Problem.php:526
 msgid "Impacts"
-msgstr "Påverkan"
+msgstr "Påverkar"
 
 #: templates/components/itilobject/fields_panel.html.twig
 #: src/NotificationTargetProblem.php:202 src/Problem.php:536
@@ -4413,7 +4413,7 @@ msgstr "Detta ärende är för %1$s"
 
 #: templates/components/logs.html.twig
 msgid "No historical"
-msgstr "Ingen historik funnen"
+msgstr "Hittade ingen historik"
 
 #: templates/components/logs.html.twig
 #: templates/pages/admin/transfer_list.html.twig
@@ -4667,7 +4667,7 @@ msgstr "Giltig till %s"
 #: templates/pages/admin/entity/notifications.html.twig src/Infocom.php:1932
 #: src/NotificationTargetInfocom.php:43 src/Entity.php:1232
 msgid "Alarms on financial and administrative information"
-msgstr "Notifiera"
+msgstr "Ekonomiska och administrativa meddelanden"
 
 #: templates/components/assets/link_existing_or_new_item_device.html.twig
 msgid "No unaffected device!"
@@ -6303,7 +6303,7 @@ msgstr "Inställningar för notiser"
 
 #: templates/pages/setup/setup_notifications.html.twig
 msgid "You must enable at least one notification mode."
-msgstr "Du måste välja minst en notifieringsmetod."
+msgstr "Du måste välja minst en kanal."
 
 #: templates/pages/setup/setup_notifications.html.twig
 #: templates/pages/setup/general/preferences_setup.html.twig
@@ -6354,7 +6354,7 @@ msgstr "CLI"
 
 #: templates/pages/setup/crontask/crontask.html.twig src/CronTask.php:1424
 msgid "Run mode"
-msgstr "Körläge"
+msgstr "Körningsläge"
 
 #: templates/pages/setup/crontask/crontask.html.twig
 msgid "Run period"
@@ -6512,7 +6512,7 @@ msgstr "Begränsa hantering av telefoner"
 #: src/Project.php:1502 src/Stat.php:1720 src/Stat.php:1732 src/Stat.php:1745
 #: src/RuleImportAssetCollection.php:72 src/Html.php:1443
 msgid "Global"
-msgstr "Globala"
+msgstr "Alla"
 
 #: templates/pages/setup/general/assets_setup.html.twig
 msgid "By entity"
@@ -7423,7 +7423,7 @@ msgstr "Skrivbar"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Read-Only"
-msgstr "Endast läsa"
+msgstr "Skrivskyddad"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "MySQL server returned an error:"
@@ -7842,7 +7842,7 @@ msgstr "Sök efter uppdateringar"
 
 #: templates/pages/setup/calendar_holiday.html.twig src/Calendar.php:101
 msgid "Add a close time"
-msgstr "Lägg till en stängningstid"
+msgstr "Lägg till helgdag"
 
 #: templates/pages/setup/manuallink.html.twig
 #: templates/pages/setup/externallink.html.twig
@@ -8520,7 +8520,7 @@ msgstr "Se inställningar"
 #: templates/pages/setup/notification/group_notifications.html.twig
 #: src/Notification.php:367
 msgid "Notification method"
-msgstr "Notifieringsmetod"
+msgstr "Kanal"
 
 #: templates/pages/setup/notification/template.html.twig
 msgid "CSS"
@@ -9588,7 +9588,7 @@ msgstr "Agent-konfiguration"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Network discovery threads"
-msgstr "Trådar för nätverksupptäckning"
+msgstr "Trådar för nätverksupptäckt"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Network discovery timeout"
@@ -9605,7 +9605,7 @@ msgstr "Timeout för nätverksinventering"
 #: templates/pages/admin/inventory/agent.html.twig src/Profile.php:2063
 #: src/Config.php:964
 msgid "General setup"
-msgstr "Allmänna inställningar"
+msgstr "Standard"
 
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Supported tasks"
@@ -10371,13 +10371,15 @@ msgstr "Villkor"
 
 #: templates/pages/admin/form/section_element_has_conditions_for_deletion_modal.html.twig
 msgid "Child items have conditions and cannot be deleted"
-msgstr ""
+msgstr "Underordnade objekt har villkor och kan inte tas bort."
 
 #: templates/pages/admin/form/section_element_has_conditions_for_deletion_modal.html.twig
 msgid ""
 "This section has child elements that are used in conditions of other form "
 "elements"
 msgstr ""
+"Det här avsnittet har underordnade element som används i villkor för andra "
+"formulärelement."
 
 #: templates/pages/admin/form/form_toolbar.html.twig
 msgid "Add a question"
@@ -10531,15 +10533,15 @@ msgstr "Villkorad validering är inte tillgänglig för denna frågetyp."
 
 #: templates/pages/admin/form/delete_non_empty_section_modal.html.twig
 msgid "Delete non-empty section"
-msgstr ""
+msgstr "Ta bort avsnitt som inte är tomt"
 
 #: templates/pages/admin/form/delete_non_empty_section_modal.html.twig
 msgid "This section contains elements"
-msgstr ""
+msgstr "Detta avsnitt innehåller formulärelement"
 
 #: templates/pages/admin/form/delete_non_empty_section_modal.html.twig
 msgid "Delete section and all its elements"
-msgstr ""
+msgstr "Ta bort avsnitt och alla dess element"
 
 #: templates/pages/admin/profile/management.html.twig
 msgid "Manageable domain records"
@@ -11062,7 +11064,7 @@ msgstr "Antal dagar innan en licens löper ut som larm ska skickas"
 
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:1302
 msgid "Alarms on expired certificates"
-msgstr "Varna vid utgångna certifikat"
+msgstr "Meddela vid utgångna certifikat"
 
 #: templates/pages/admin/entity/notifications.html.twig
 msgid "Send certificates alarms before"
@@ -11079,7 +11081,7 @@ msgstr "Varningar för reservationer"
 
 #: templates/pages/admin/entity/notifications.html.twig
 msgid "Alerts on tickets which are not solved since"
-msgstr "Larm för ärenden som ej lösts sedan"
+msgstr "Varningar för ärenden som ej lösts sedan"
 
 #: templates/pages/admin/entity/notifications.html.twig
 msgid "Approval reminder frequency"
@@ -12226,7 +12228,7 @@ msgstr "avancerade-instrumentpaneler"
 #: resources/.illustrations_translations.php:4
 msgctxt "Icon"
 msgid "Advanced forms"
-msgstr ""
+msgstr "Avancerade formulär"
 
 #: resources/.illustrations_translations.php:5
 msgctxt "Icon"
@@ -12372,7 +12374,7 @@ msgstr "Affärsinsikter och rapportering 3"
 #: resources/.illustrations_translations.php:33
 msgctxt "Icon"
 msgid "Business Intelligence and Reporting 4"
-msgstr ""
+msgstr "Business Intelligence och Rapportering 4"
 
 #: resources/.illustrations_translations.php:34
 msgctxt "Icon"
@@ -12487,7 +12489,7 @@ msgstr "Moln-nätverk 2"
 #: resources/.illustrations_translations.php:56
 msgctxt "Icon"
 msgid "Cloud usage"
-msgstr ""
+msgstr "Molnanvändning"
 
 #: resources/.illustrations_translations.php:57
 msgctxt "Icon"
@@ -12544,7 +12546,7 @@ msgstr "databas"
 #: resources/.illustrations_translations.php:67
 msgctxt "Icon"
 msgid "Add database"
-msgstr ""
+msgstr "Lägg till databas"
 
 #: resources/.illustrations_translations.php:68
 msgctxt "Icon"
@@ -12554,7 +12556,7 @@ msgstr "Leverans"
 #: resources/.illustrations_translations.php:69
 msgctxt "Icon"
 msgid "Diagnostic"
-msgstr ""
+msgstr "Diagnostik"
 
 #: resources/.illustrations_translations.php:70
 msgctxt "Icon"
@@ -12614,7 +12616,7 @@ msgstr "Rättar bugg"
 #: resources/.illustrations_translations.php:81
 msgctxt "Icon"
 msgid "Fixing bug 2"
-msgstr ""
+msgstr "Buggrättning 2"
 
 #: resources/.illustrations_translations.php:82
 msgctxt "Icon"
@@ -12629,7 +12631,7 @@ msgstr "formskapare"
 #: resources/.illustrations_translations.php:84
 msgctxt "Icon"
 msgid "Gantt"
-msgstr ""
+msgstr "Gantt"
 
 #: resources/.illustrations_translations.php:85
 msgctxt "Icon"
@@ -12714,12 +12716,12 @@ msgstr "Inventarier"
 #: resources/.illustrations_translations.php:101
 msgctxt "Icon"
 msgid "Inventory numbers"
-msgstr ""
+msgstr "Inventarienummer"
 
 #: resources/.illustrations_translations.php:102
 msgctxt "Icon"
 msgid "Items export"
-msgstr ""
+msgstr "Export av objekt"
 
 #: resources/.illustrations_translations.php:103
 msgctxt "Icon"
@@ -12729,17 +12731,17 @@ msgstr "Kunskapsbas och FAQ"
 #: resources/.illustrations_translations.php:104
 msgctxt "Icon"
 msgid "LDAP diagnostic"
-msgstr ""
+msgstr "LDAP-diagnostik"
 
 #: resources/.illustrations_translations.php:105
 msgctxt "Icon"
 msgid "LDAP inventory"
-msgstr ""
+msgstr "LDAP-inventering"
 
 #: resources/.illustrations_translations.php:106
 msgctxt "Icon"
 msgid "LDAP manage"
-msgstr ""
+msgstr "LDAP-hantering"
 
 #: resources/.illustrations_translations.php:107
 msgctxt "Icon"
@@ -12779,12 +12781,12 @@ msgstr "Mobilitet"
 #: resources/.illustrations_translations.php:114
 msgctxt "Icon"
 msgid "Monitoring"
-msgstr "Övervakning"
+msgstr "Bevakning"
 
 #: resources/.illustrations_translations.php:115
 msgctxt "Icon"
 msgid "More options"
-msgstr ""
+msgstr "Fler alternativ"
 
 #: resources/.illustrations_translations.php:116
 msgctxt "Icon"
@@ -12794,7 +12796,7 @@ msgstr "ytterligare-nöjdhet"
 #: resources/.illustrations_translations.php:117
 msgctxt "Icon"
 msgid "Network inventory"
-msgstr ""
+msgstr "Nätverksinventering"
 
 #: resources/.illustrations_translations.php:118
 msgctxt "Icon"
@@ -12859,12 +12861,12 @@ msgstr "Partner"
 #: resources/.illustrations_translations.php:130
 msgctxt "Icon"
 msgid "PDF export"
-msgstr ""
+msgstr "PDF-export"
 
 #: resources/.illustrations_translations.php:131
 msgctxt "Icon"
 msgid "Phone inventory"
-msgstr ""
+msgstr "Telefoninventering"
 
 #: resources/.illustrations_translations.php:132
 #: resources/.illustrations_translations.php:382
@@ -12880,7 +12882,7 @@ msgstr "Utskriftsjobb"
 #: resources/.illustrations_translations.php:134
 msgctxt "Icon"
 msgid "Printer inventory"
-msgstr ""
+msgstr "Skrivarinventering"
 
 #: resources/.illustrations_translations.php:135
 msgctxt "Icon"
@@ -13476,7 +13478,7 @@ msgstr "chatt"
 #: resources/.illustrations_translations.php:257
 msgctxt "Icon"
 msgid "billing"
-msgstr ""
+msgstr "Fakturering"
 
 #: resources/.illustrations_translations.php:258
 msgctxt "Icon"
@@ -13556,12 +13558,12 @@ msgstr "leverans"
 #: resources/.illustrations_translations.php:273
 msgctxt "Icon"
 msgid "troubleshooting"
-msgstr ""
+msgstr "Felsökning"
 
 #: resources/.illustrations_translations.php:274
 msgctxt "Icon"
 msgid "analysis"
-msgstr ""
+msgstr "Analys"
 
 #: resources/.illustrations_translations.php:275
 msgctxt "Icon"
@@ -13691,7 +13693,7 @@ msgstr "katalog"
 #: resources/.illustrations_translations.php:300
 msgctxt "Icon"
 msgid "project-management"
-msgstr ""
+msgstr "Projektadministration"
 
 #: resources/.illustrations_translations.php:301
 msgctxt "Icon"
@@ -13836,7 +13838,7 @@ msgstr "resurser"
 #: resources/.illustrations_translations.php:329
 msgctxt "Icon"
 msgid "assets"
-msgstr ""
+msgstr "Tillgångar"
 
 #: resources/.illustrations_translations.php:330
 msgctxt "Icon"
@@ -13871,12 +13873,12 @@ msgstr "pin"
 #: resources/.illustrations_translations.php:336
 msgctxt "Icon"
 msgid "places"
-msgstr ""
+msgstr "Platser"
 
 #: resources/.illustrations_translations.php:337
 msgctxt "Icon"
 msgid "arborescence"
-msgstr ""
+msgstr "Trädstruktur"
 
 #: resources/.illustrations_translations.php:338
 msgctxt "Icon"
@@ -13911,12 +13913,12 @@ msgstr "CSAT"
 #: resources/.illustrations_translations.php:344
 msgctxt "Icon"
 msgid "devices"
-msgstr ""
+msgstr "Enheter"
 
 #: resources/.illustrations_translations.php:345
 msgctxt "Icon"
 msgid "agent"
-msgstr ""
+msgstr "Agent"
 
 #: resources/.illustrations_translations.php:346
 msgctxt "Icon"
@@ -13971,12 +13973,12 @@ msgstr "inköp"
 #: resources/.illustrations_translations.php:356
 msgctxt "Icon"
 msgid "export"
-msgstr ""
+msgstr "Export"
 
 #: resources/.illustrations_translations.php:357
 msgctxt "Icon"
 msgid "phone"
-msgstr ""
+msgstr "Telefon"
 
 #: resources/.illustrations_translations.php:358
 msgctxt "Icon"
@@ -14275,7 +14277,7 @@ msgstr "Varje månad, samma veckodag"
 #: src/RuleCollection.php:1457
 #, php-format
 msgid "%s updates an item"
-msgstr "%s uppdaterar ett objekt"
+msgstr "%s uppdaterade ett objekt"
 
 #: ajax/webhook.php:119
 msgid "Please select an itemtype"
@@ -14502,7 +14504,7 @@ msgstr "Översättningen av kunskapsartikeln återställdes inte till version %s
 #: front/problem_ticket.form.php:58 src/Document.php:324
 #, php-format
 msgid "%s adds a link with an item"
-msgstr "%s skapar en länk till ett objekt"
+msgstr "%s skapade en länk till ett objekt"
 
 #: front/ticket.form.php:127 front/commonitiltask.form.php:135
 #: front/itilfollowup.form.php:125 front/itilsolution.form.php:117
@@ -14526,7 +14528,7 @@ msgstr ""
 #: front/networkequipment.form.php:76
 #, php-format
 msgid "%s deletes an item"
-msgstr "%s tar bort ett objekt"
+msgstr "%s tog bort ett objekt"
 
 #. TRANS: %s is the user login
 #: front/ticket.form.php:154 front/snmpcredential.form.php:102
@@ -14574,7 +14576,7 @@ msgstr "%s återställer ett objekt"
 #: front/problem.form.php:200
 #, php-format
 msgid "%s adds an actor"
-msgstr "%s lägger till en deltagare"
+msgstr "%s lade till en deltagare"
 
 #: front/ticket.form.php:291 front/change.form.php:209
 #: front/problem.form.php:212
@@ -14604,7 +14606,7 @@ msgstr "%s Kanban"
 #: src/RuleCollection.php:1442 src/Ticket.php:1652
 #, php-format
 msgid "%1$s adds the item %2$s"
-msgstr "%1$s lägger till objektet %2$s"
+msgstr "%1$s lade till objektet %2$s"
 
 #. TRANS: %s is the user login
 #: front/networkport_vlan.form.php:58 front/ipnetwork_vlan.form.php:58
@@ -14616,7 +14618,7 @@ msgstr "%s associerar ett VLAN till en nätverksport"
 #: front/projecttask.form.php:67 front/commonitiltask.form.php:78
 #, php-format
 msgid "%s adds a task"
-msgstr "%s lägger till en aktivitet"
+msgstr "%s lade till en aktivitet"
 
 #. TRANS: %s is the user login
 #: front/projecttask.form.php:84
@@ -14640,19 +14642,19 @@ msgstr "%s rensar bort en aktivitet"
 #: front/projecttask.form.php:123 front/commonitiltask.form.php:105
 #, php-format
 msgid "%s updates a task"
-msgstr "%s uppdaterar en aktivitet"
+msgstr "%s uppdaterade en aktivitet"
 
 #. TRANS: %s is the user login
 #: front/commonitilvalidation.form.php:89
 #, php-format
 msgid "%s adds an approval"
-msgstr "%s lägger till ett godkännande"
+msgstr "%s lade till ett godkännande"
 
 #. TRANS: %s is the user login
 #: front/commonitilvalidation.form.php:103
 #, php-format
 msgid "%s updates an approval"
-msgstr "%s uppdaterar ett godkännande"
+msgstr "%s uppdaterade ett godkännande"
 
 #. TRANS: %s is the user login
 #: front/commonitilvalidation.form.php:116
@@ -14694,7 +14696,7 @@ msgstr "Helpdesköversikt"
 #: front/group_problem.form.php:59
 #, php-format
 msgid "%s deletes an actor"
-msgstr "%s tar bort en deltagare"
+msgstr "%s tog bort en deltagare"
 
 #: front/change_user.form.php:76 front/change_group.form.php:66
 #: front/group_ticket.form.php:66 front/ticket_user.form.php:74
@@ -14709,13 +14711,13 @@ msgstr ""
 #: front/softwarelicense.form.php:62
 #, php-format
 msgid "%1$s adds the license %2$s"
-msgstr "%1$s lägger till licensen %2$s"
+msgstr "%1$s lade till licensen %2$s"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:91
 #, php-format
 msgid "%1$s deletes the license %2$s"
-msgstr "%1$s tar bort licensen %2$s"
+msgstr "%1$s tog bort licensen %2$s"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:103
@@ -14727,7 +14729,7 @@ msgstr "%1$s rensar bort licensen %2$s"
 #: front/softwarelicense.form.php:116
 #, php-format
 msgid "%1$s updates the license %2$s"
-msgstr "%1$s uppdaterar licensen %2$s"
+msgstr "%1$s uppdaterade licensen %2$s"
 
 #: front/user.form.php:47 front/user.form.php:166
 msgid "Lang has been changed!"
@@ -14763,19 +14765,19 @@ msgstr[1] "Avtal"
 #: front/contract_supplier.form.php:69 front/contact_supplier.form.php:61
 #, php-format
 msgid "%s adds a link with a supplier"
-msgstr "%s skapar en länk till en leverantör"
+msgstr "%s skapade en länk till en leverantör"
 
 #. TRANS: %s is the user login
 #: front/commonitiltask.form.php:119
 #, php-format
 msgid "%s unplans a task"
-msgstr "%s tar bort en aktivitet ur kalendern"
+msgstr "%s tog bort en aktivitet ur kalendern"
 
 #. TRANS: %s is the user login
 #: front/item_disk.form.php:63
 #, php-format
 msgid "%s adds a volume"
-msgstr "%s lägger till en volym"
+msgstr "%s lade till en volym"
 
 #. TRANS: %s is the user login
 #: front/item_disk.form.php:93
@@ -14787,13 +14789,13 @@ msgstr "%s rensar bort en volym"
 #: front/item_disk.form.php:111
 #, php-format
 msgid "%s updates a volume"
-msgstr "%s uppdaterar en volym"
+msgstr "%s uppdaterade en volym"
 
 #. TRANS: %s is the user login
 #: front/itemvirtualmachine.form.php:65
 #, php-format
 msgid "%s adds a virtual machine"
-msgstr "%s lägger till en virtuell maskin"
+msgstr "%s lade till en virtuell maskin"
 
 #. TRANS: %s is the user login
 #: front/itemvirtualmachine.form.php:98
@@ -14805,7 +14807,7 @@ msgstr "%s rensar bort en virtuell maskin"
 #: front/itemvirtualmachine.form.php:115
 #, php-format
 msgid "%s updates a virtual machine"
-msgstr "%s uppdaterar en virtuell maskin"
+msgstr "%s uppdaterade en virtuell maskin"
 
 #. TRANS: %s is the user login
 #: front/itemvirtualmachine.form.php:128
@@ -14827,13 +14829,13 @@ msgstr "Körningen av alla aktiva tillägg har pausats."
 #: front/cartridge.form.php:58
 #, php-format
 msgid "%s adds cartridges"
-msgstr "%s lägger till färgpatroner"
+msgstr "%s lade till färgpatroner"
 
 #. TRANS: %s is the user login
 #: front/cartridge.form.php:71
 #, php-format
 msgid "%s purges a cartridge"
-msgstr "%s tar bort en färgpatron"
+msgstr "%s tog bort en färgpatron"
 
 #. TRANS: %s is the user login
 #: front/cartridge.form.php:86
@@ -14845,7 +14847,7 @@ msgstr "%s installerar en färgpatron"
 #: front/cartridge.form.php:102
 #, php-format
 msgid "%s updates a cartridge"
-msgstr "%s uppdaterar en färgpatron"
+msgstr "%s uppdaterade en färgpatron"
 
 #: front/initpassword.php:50
 msgid "Sending password initialization notification is not enabled."
@@ -14859,7 +14861,7 @@ msgstr "Bortglömd initiering"
 #: front/databaseinstance.form.php:60
 #, php-format
 msgid "%s adds a database instance"
-msgstr "%s lägger till en databasinstans"
+msgstr "%s lade till en databasinstans"
 
 #. TRANS: %s is the user login
 #: front/databaseinstance.form.php:77
@@ -14883,7 +14885,7 @@ msgstr "%s rensar en databasinstans"
 #: front/databaseinstance.form.php:118
 #, php-format
 msgid "%s updates a database instance"
-msgstr "%s uppdaterar en databasinstans"
+msgstr "%s uppdaterade en databasinstans"
 
 #: front/plugin.php:63
 msgid "See the catalog of plugins"
@@ -14903,12 +14905,12 @@ msgstr "Testet misslyckades"
 #: front/projectteam.form.php:58 front/projecttaskteam.form.php:58
 #, php-format
 msgid "%s adds a team member"
-msgstr "%s lägger till en gruppmedlem"
+msgstr "%s lade till en gruppmedlem"
 
 #: front/item_device.common.form.php:76
 #, php-format
 msgid "%1$s adds an item"
-msgstr "%1$s lägger till ett objekt"
+msgstr "%1$s lade till ett objekt"
 
 #: front/document.send.php:57
 msgid "Unknown file"
@@ -14939,7 +14941,7 @@ msgstr "Ogiltig kod"
 #: front/itemantivirus.form.php:63
 #, php-format
 msgid "%s adds an antivirus"
-msgstr "%s lägger till ett antivirus"
+msgstr "%s lade till ett AV-program"
 
 #. TRANS: %s is the user login
 #: front/itemantivirus.form.php:80
@@ -14951,14 +14953,14 @@ msgstr "%s rensar ett antivirus"
 #: front/itemantivirus.form.php:98
 #, php-format
 msgid "%s updates an antivirus"
-msgstr "%s uppdaterar ett antivirus"
+msgstr "%s uppdaterade ett antivirus"
 
 #. TRANS: %s is the user login
 #: front/reminder.form.php:132 front/rssfeed.form.php:132
 #: front/knowbaseitem.form.php:142 src/KnowbaseItem.php:343
 #, php-format
 msgid "%s adds a target"
-msgstr "%s lägger till ett mål"
+msgstr "%s lade till ett mål"
 
 #. TRANS: %s is user name
 #: front/pluginimage.send.php:62
@@ -14982,7 +14984,7 @@ msgstr "%s rensa upp länkar mellan ITIL-objekt"
 #: front/projectcost.form.php:65 front/ticketcost.form.php:58
 #, php-format
 msgid "%s adds a cost"
-msgstr "%s lägger till en kostnad"
+msgstr "%s lade till en kostnad"
 
 #. TRANS: %s is the user login
 #: front/contractcost.form.php:79 front/commonitilcost.form.php:85
@@ -14996,7 +14998,7 @@ msgstr "%s rensar bort en kostnad"
 #: front/projectcost.form.php:94 front/ticketcost.form.php:85
 #, php-format
 msgid "%s updates a cost"
-msgstr "%s uppdaterar en kostnad"
+msgstr "%s uppdaterade en kostnad"
 
 #. TRANS: %s is the user login
 #: front/group.form.php:116 src/Glpi/Controller/DropdownFormController.php:154
@@ -15008,7 +15010,7 @@ msgstr "%s ersätter ett objekt"
 #: front/itilfollowup.form.php:66
 #, php-format
 msgid "%s adds a followup"
-msgstr "%s lägger till en uppföljning"
+msgstr "%s lade till en uppföljning"
 
 #. TRANS: %s is the user login
 #: front/itilfollowup.form.php:83
@@ -15020,7 +15022,7 @@ msgstr "%s godkänner eller nekar en lösning"
 #: front/itilfollowup.form.php:96
 #, php-format
 msgid "%s updates a followup"
-msgstr "%s uppdaterar en uppföljning"
+msgstr "%s uppdaterade en uppföljning"
 
 #. TRANS: %s is the user login
 #: front/itilfollowup.form.php:110
@@ -15042,7 +15044,7 @@ msgstr "Lägg till från LDAP"
 #: front/item_remotemanagement.form.php:63
 #, php-format
 msgid "%s adds a remote management"
-msgstr "%s lägger till en fjärrhantering"
+msgstr "%s lade till en fjärrhantering"
 
 #. TRANS: %s is the user login
 #: front/item_remotemanagement.form.php:80
@@ -15054,7 +15056,7 @@ msgstr "%s rensar en fjärrhantering"
 #: front/item_remotemanagement.form.php:98
 #, php-format
 msgid "%s updates a remote management"
-msgstr "%s uppdaterar en fjärrhantering"
+msgstr "%s uppdaterade en fjärrhantering"
 
 #: front/knowbaseitem_item.form.php:46
 #: front/knowbaseitem_knowbaseitemcategory.form.php:45
@@ -15067,7 +15069,7 @@ msgstr "Det saknas värden för obligatoriska fält!"
 #: front/knowbaseitem_item.form.php:62
 #, php-format
 msgid "%s adds a link with an knowledge base"
-msgstr "%s lägger till en länk med kunskapsbasen"
+msgstr "%s lade till en länk med en kunskapsbas"
 
 #. TRANS: %s is a task name
 #: front/crontask.form.php:59
@@ -15079,7 +15081,7 @@ msgstr "Aktiviteten %s påbörjades"
 #: front/networkport.form.php:73 front/networkname.form.php:55
 #, php-format
 msgid "%s adds an item"
-msgstr "%s lägger till ett objekt"
+msgstr "%s lade till ett objekt"
 
 #: front/networkport.form.php:86 front/socket.form.php:77
 msgid "'To' should not be smaller than 'From'"
@@ -15089,13 +15091,13 @@ msgstr "'Till' ska vara mindre än 'Från'"
 #: front/networkport.form.php:112
 #, php-format
 msgid "%s adds several network ports"
-msgstr "%s lägger till flera nätverksportar"
+msgstr "%s lade till flera nätverksportar"
 
 #. TRANS: %s is the user login
 #: front/profile_user.form.php:54
 #, php-format
 msgid "%s adds a user to an entity"
-msgstr "%s lägger till en användare till en enhet"
+msgstr "%s lade till en användare till en enhet"
 
 #. TRANS: %s is the user login
 #: front/ticket_ticket.form.php:62
@@ -15145,30 +15147,30 @@ msgstr "fördefinierad"
 
 #: front/itiltemplatefield.form.php:87
 msgid "readonly"
-msgstr "endast läsa"
+msgstr "skrivskyddat"
 
 #. TRANS: %1$s is the user login, %2$s the field type
 #: front/itiltemplatefield.form.php:98
 #, php-format
 msgid "%1$s adds %2$s field"
-msgstr "%1$s lägger till %2$s fält"
+msgstr "%1$s lade till %2$s fält"
 
 #. TRANS: %s is the user login
 #: front/group_user.form.php:58
 #, php-format
 msgid "%s adds a user to a group"
-msgstr "%s lägger till en användare till en grupp"
+msgstr "%s lade till en användare till en grupp"
 
 #. TRANS: %s is the user login
 #: front/socket.form.php:65
 #, php-format
 msgid "%s adds a socket"
-msgstr "%s lägger till ett uttag"
+msgstr "%s lade till ett uttag"
 
 #: front/socket.form.php:103
 #, php-format
 msgid "%1$s adds several sockets"
-msgstr "%1$s lägger till flera uttag"
+msgstr "%1$s lade till flera uttag"
 
 #. TRANS: %s is the user login
 #: front/socket.form.php:117
@@ -15180,7 +15182,7 @@ msgstr "%s rensar upp ett uttag"
 #: front/socket.form.php:131
 #, php-format
 msgid "%s updates a socket"
-msgstr "%s uppdaterar ett uttag"
+msgstr "%s uppdaterade ett uttag"
 
 #: front/itilsolution.form.php:60
 msgid "You cannot solve this item!"
@@ -15200,7 +15202,7 @@ msgstr "Tillgänglighet"
 #: front/olalevel.form.php:57
 #, php-format
 msgid "%s updates an ola level"
-msgstr "%s uppdaterar OLA-nivå"
+msgstr "%s uppdaterade OLA-nivån"
 
 #. TRANS: %s is the user login
 #: front/olalevel.form.php:88
@@ -15212,7 +15214,7 @@ msgstr "%s rensar en ola-nivå"
 #: front/slalevel.form.php:53
 #, php-format
 msgid "%s updates a sla level"
-msgstr "%s uppdaterar en SLA-nivå"
+msgstr "%s uppdaterade en SLA-nivå"
 
 #. TRANS: %s is the user login
 #: front/slalevel.form.php:84
@@ -15254,7 +15256,7 @@ msgstr "Arbetet färdig om %s"
 #: front/softwareversion.form.php:61
 #, php-format
 msgid "%1$s adds the version %2$s"
-msgstr "%1$s lägger till version %2$s"
+msgstr "%1$s lade till version %2$s"
 
 #. TRANS: %s is the user login, %2$s is the version id
 #: front/softwareversion.form.php:75
@@ -15266,17 +15268,17 @@ msgstr "%1$s rensar bort version %2$s"
 #: front/softwareversion.form.php:88
 #, php-format
 msgid "%1$s updates the version %2$s"
-msgstr "%1$s uppdaterar version %2$s"
+msgstr "%1$s uppdaterade version %2$s"
 
 #: front/knowbaseitem_knowbaseitemcategory.form.php:55
 #, php-format
 msgid "%s adds a link with a category"
-msgstr "%s lägger till en länk med en kategori"
+msgstr "%s lade till en länk med en kategori"
 
 #: front/reservationitem.form.php:57
 #, php-format
 msgid "%1$s adds the item %2$s (%3$d)"
-msgstr "%1$s lägger till objektet %2$s (%3$d)"
+msgstr "%1$s lade till objektet %2$s (%3$d)"
 
 #: front/auth.settings.php:43 front/auth.others.php:51 front/setup.auth.php:42
 msgid "External authentication sources"
@@ -15328,7 +15330,7 @@ msgstr "Logga in"
 #: front/savedsearch_alert.form.php:60
 #, php-format
 msgid "%s adds an alert"
-msgstr "%s lägger till en varning"
+msgstr "%s lade till en varning"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:77
@@ -15340,7 +15342,7 @@ msgstr "%s rensar en varning"
 #: front/savedsearch_alert.form.php:93
 #, php-format
 msgid "%s updates an alert"
-msgstr "%s uppdaterar en varning"
+msgstr "%s uppdaterade en varning"
 
 #: front/massiveaction.php:46
 msgid "Bulk modification error"
@@ -15403,7 +15405,7 @@ msgstr "Kunskapsdatabas"
 #: front/knowbaseitem_comment.form.php:65
 #, php-format
 msgid "%s adds a comment on knowledge base"
-msgstr "%s lägger till en kommentar i kunskapsbasen"
+msgstr "%s lade till en kommentar i kunskapsbasen"
 
 #: front/knowbaseitem_comment.form.php:68
 msgid "Your comment has been added"
@@ -15474,7 +15476,7 @@ msgstr[1] "Länkade element"
 #: front/consumable.form.php:58
 #, php-format
 msgid "%s adds consumables"
-msgstr "%s lägger till förbrukningsartiklar"
+msgstr "%s lade till förbrukningsartiklar"
 
 #: front/dashboard_assets.php:57
 msgid "Assets Dashboard"
@@ -15734,7 +15736,7 @@ msgstr "Uppdatera länk till objekt"
 
 #: src/Log.php:1272
 msgid "Delete a link with an item"
-msgstr "Ta bort koppling till objekt"
+msgstr "Tog bort koppling till objekt"
 
 #: src/Log.php:1276
 msgid "Lock a link with an item"
@@ -15867,7 +15869,7 @@ msgstr "Konto eller lösenord saknas"
 #: src/Auth.php:1124
 #, php-format
 msgid "%1$s log in from IP %2$s"
-msgstr "%1$s är inloggad från ip %2$s"
+msgstr "%1$s loggade in från IP %2$s"
 
 #: src/Auth.php:1131
 #, php-format
@@ -16048,8 +16050,8 @@ msgstr "Återkommande"
 #: src/Calendar_Holiday.php:167 src/Holiday.php:48
 msgid "Close time"
 msgid_plural "Close times"
-msgstr[0] "Stängningstid"
-msgstr[1] "Stängningstider"
+msgstr[0] "Helgdag"
+msgstr[1] "Helgdagar"
 
 #: src/ITILTemplateHiddenField.php:48
 msgid "Hidden field"
@@ -16487,7 +16489,7 @@ msgstr "Stängning av ett problemärende"
 
 #: src/NotificationTargetProblem.php:53
 msgid "Deleting a problem"
-msgstr "Borttag av ett problemärende"
+msgstr "Problemärende tas bort"
 
 #: src/NotificationTargetProblem.php:199
 #: src/NotificationTargetProjectTask.php:602
@@ -16664,8 +16666,7 @@ msgstr "Kör \"%1$s\"-kommandot för att migrera dem."
 #: src/Central.php:542
 #, php-format
 msgid "%1$s columns are using the deprecated datetime storage field type."
-msgstr ""
-"%1$s kolumnen använder det utfasade lagringsfältet för datumtidstypen."
+msgstr "%1$s kolumner är av den föråldrade datetime-typen. "
 
 #: src/Update.php:326 src/Central.php:547
 #, php-format
@@ -16839,7 +16840,7 @@ msgstr "Antal användare"
 #: src/Group_User.php:837
 #, php-format
 msgid "%s deletes users from a group"
-msgstr "%s tar bort användare från en grupp"
+msgstr "%s tog bort användare från en grupp"
 
 #: src/ContractCost.php:314 src/CommonITILCost.php:507 src/ProjectCost.php:337
 msgid "Add a new cost"
@@ -16998,7 +16999,7 @@ msgstr "Uppdatering av projektaktivitet"
 
 #: src/NotificationTargetProjectTask.php:53
 msgid "Deletion of a project task"
-msgstr "Borttagning av en projektaktivitet"
+msgstr "Projektaktivitet tas bort"
 
 #: src/NotificationTargetProjectTask.php:63
 msgid "Project task team user"
@@ -17155,7 +17156,7 @@ msgstr "Uppdatera en ändring"
 
 #: src/NotificationTargetChange.php:62
 msgid "Change solved"
-msgstr "Ändring utförd"
+msgstr "Ändringsärende löst"
 
 #: src/NotificationTargetChange.php:64 src/CommonITILObject.php:7797
 #: src/NotificationTargetTicket.php:142
@@ -17164,7 +17165,7 @@ msgstr "Svar på begäran"
 
 #: src/NotificationTargetChange.php:65
 msgid "Closure of a change"
-msgstr "Stängning av en förändring"
+msgstr "Ändringsärende stängs"
 
 #: src/NotificationTargetChange.php:66
 msgid "Deleting a change"
@@ -17176,7 +17177,7 @@ msgstr "Tog bort ändring"
 #: src/CommonITILSatisfaction.php:360 src/Ticket.php:4421
 #: src/NotificationTargetTicket.php:149
 msgid "Satisfaction survey"
-msgstr "Kundenkäter"
+msgstr "Kundenkät"
 
 #: src/NotificationTargetChange.php:68 src/NotificationTargetTicket.php:150
 msgid "Satisfaction survey answer"
@@ -18021,7 +18022,7 @@ msgstr "Objektet har uppdaterats"
 
 #: src/CommonDBTM.php:2247 src/CommonItilObject_Item.php:1562
 msgid "Item successfully deleted"
-msgstr "Radering av objekt lyckades"
+msgstr "Objektet togs bort"
 
 #: src/CommonDBTM.php:2282
 msgid "Item successfully purged"
@@ -18352,7 +18353,7 @@ msgstr "Sammanfoga"
 #: src/NotificationTargetCronTask.php:43 src/NotificationTargetCronTask.php:90
 #: src/CronTask.php:1871
 msgid "Monitoring of automatic actions"
-msgstr "Övervakning av automatiserade aktiviteter"
+msgstr "Bevakning av automatiserade aktiviteter"
 
 #: src/NotificationTargetCronTask.php:104
 msgid "Automatic actions list"
@@ -19615,7 +19616,7 @@ msgstr "Alternativ"
 
 #: src/Glpi/Form/QuestionType/AbstractQuestionTypeSelectable.php:428
 msgid "Move option"
-msgstr "Flytta alternativ"
+msgstr "Alternativ för flytta"
 
 #: src/Glpi/Form/QuestionType/AbstractQuestionTypeSelectable.php:430
 msgid "Remove option"
@@ -20766,7 +20767,7 @@ msgstr "Antal"
 #: src/Glpi/Stat/Data/Graph/StatDataTicketNumber.php:67
 #: src/CommonITILObject.php:5708 src/Stat.php:574
 msgid "Closure"
-msgstr "Stänger"
+msgstr "Stängning"
 
 #: src/Glpi/Stat/Data/Sglobal/StatDataTicketAverageTime.php:74
 #: src/Glpi/Stat/Data/Graph/StatDataTicketNumber.php:70
@@ -25393,7 +25394,7 @@ msgstr[1] "Sensormodeller"
 
 #: src/NotificationTargetDBConnection.php:55
 msgid "Desynchronization SQL replica"
-msgstr "Avsynkronisering SQL replika"
+msgstr "Inaktivera SQL-replikering"
 
 #: src/NotificationTargetDBConnection.php:63
 msgid "Can't connect to the database."
@@ -25530,7 +25531,7 @@ msgstr "Ett minimum av 64 Mb krävs vanligtvis för GLPI."
 #: src/CronTask.php:851
 msgid "No task with Run mode = CLI, fix your tasks configuration"
 msgstr ""
-"Ingen aktivitet med Run mode = CLI. Åtgärda aktivitetskonfigurationen."
+"Ingen aktivitet med Körningsläge = CLI. Åtgärda aktivitetskonfigurationen."
 
 #. TRANS: %1$s is mode (external or internal), %2$s is an order number,
 #: src/CronTask.php:860 src/Link.php:689 src/Link.php:714
@@ -25599,12 +25600,12 @@ msgstr[1] ""
 #: src/CronTask.php:1597
 #, php-format
 msgid "Deletion of archived log file: %s"
-msgstr "Radering av arkiverad loggfil: %s"
+msgstr "Borttagning av arkiverad loggfil: %s"
 
 #: src/CronTask.php:1600
 #, php-format
 msgid "Unable to delete archived log file: %s"
-msgstr "Lyckades inte radera arkiverad loggfil: %s"
+msgstr "Kunde inte ta bort arkiverad loggfil: %s"
 
 #: src/CronTask.php:1618
 #, php-format
@@ -25660,7 +25661,7 @@ msgstr "Rensa tempfiler"
 
 #: src/CronTask.php:1874
 msgid "Archives log files and deletes aging ones"
-msgstr "Arkiverar loggfiler och raderar föråldrade loggfiler"
+msgstr "Arkiverar loggfiler och tar bort föråldrade loggfiler"
 
 #: src/CronTask.php:1875
 msgid "Number of days to keep archived logs"
@@ -25921,7 +25922,7 @@ msgstr "Uppdatering av projekt"
 
 #: src/NotificationTargetProject.php:51
 msgid "Deletion of a project"
-msgstr "Borttagning av ett projekt"
+msgstr "Projekt tas bort"
 
 #: src/NotificationTargetProject.php:62 src/NotificationTargetProject.php:645
 #: src/Project.php:626 src/Project.php:1138
@@ -26314,7 +26315,7 @@ msgstr "regex matchar inte"
 
 #: src/RuleCriteria.php:592
 msgid "exists"
-msgstr "förekommer"
+msgstr "finns"
 
 #: src/RuleCriteria.php:593
 msgid "does not exist"
@@ -26677,7 +26678,7 @@ msgstr "Beror på"
 
 #: src/Impact.php:1115
 msgid "Impact and depends"
-msgstr "Påverkan och beroenden"
+msgstr "Påverkar och beror på"
 
 #: src/Impact.php:1130
 msgid "Undo"
@@ -26709,7 +26710,7 @@ msgstr "Fullskärm"
 
 #: src/Impact.php:1826
 msgid "Impact analysis configuration"
-msgstr "Konfiguration för påverkansanalys"
+msgstr "Inställningar för påverkansanalys"
 
 #: src/Impact.php:1838
 msgid "Enabled itemtypes"
@@ -27409,7 +27410,7 @@ msgstr "Inga valda objekt"
 #: src/Reservation.php:231
 #, php-format
 msgid "%1$s adds the reservation %2$s for item %3$s"
-msgstr "%1$s lägger till reservationen %2$s till objekt %3$s"
+msgstr "%1$s lade till reservationen %2$s till %3$s-objektet"
 
 #: src/Reservation.php:245
 #, php-format
@@ -27586,7 +27587,7 @@ msgstr "Uppdatera en aktivitet"
 
 #: src/NotificationTargetCommonITILObject.php:142
 msgid "Deletion of a task"
-msgstr "Borttagning av en aktivitet"
+msgstr "Aktivitet tas bort"
 
 #: src/NotificationTargetCommonITILObject.php:143
 msgid "New followup"
@@ -28257,7 +28258,7 @@ msgstr "Enhetsreservationer som löper ut i dag"
 
 #: src/ReservationItem.php:822
 msgid "Send reservation alert failed"
-msgstr "Misslyckades med att skicka reservationslarm"
+msgstr "Misslyckades med att skicka reservationsvarning"
 
 #: src/ReservationItem.php:913
 msgid "No reservable item!"
@@ -28313,7 +28314,7 @@ msgstr "Välj typ av objekt som denna åtgärd ska utföras på"
 #: src/MassiveAction.php:595
 msgctxt "button"
 msgid "Add to transfer list"
-msgstr "Lägg till i flyttlistan"
+msgstr "Flytta"
 
 #: src/MassiveAction.php:644
 msgctxt "button"
@@ -28362,8 +28363,8 @@ msgstr "Hur många kopior vill du skapa?"
 #: src/MassiveAction.php:1209
 msgid "Are you sure you want to add this item to transfer list?"
 msgid_plural "Are you sure you want to add these items to transfer list?"
-msgstr[0] "Är du säker på att du vill lägga till detta objekt i flyttlistan?"
-msgstr[1] "Är du säker på att du vill lägga till dessa objekt i flyttlistan?"
+msgstr[0] "Är du säker på att du vill flytta detta objekt?"
+msgstr[1] "Är du säker på att du vill flytta dessa objekt?"
 
 #: src/MassiveAction.php:1223
 msgid "Amendment to insert"
@@ -28699,8 +28700,8 @@ msgstr "Instanstyp"
 #: src/SavedSearch_Alert.php:62
 msgid "Saved search alert"
 msgid_plural "Saved searches alerts"
-msgstr[0] "Notis för sparad sökning"
-msgstr[1] "Notiser för sparade sökningar"
+msgstr[0] "Varning för sparad sökning"
+msgstr[1] "Varningar för sparade sökningar"
 
 #: src/SavedSearch_Alert.php:266
 msgid "Saved searches alerts"
@@ -28826,7 +28827,7 @@ msgstr "Lägger till fulltextindex - %s"
 #: src/Migration.php:818
 #, php-format
 msgid "Adding unicity indices - %s"
-msgstr "Lägger till unicity-index - %s"
+msgstr "Lägger till Fältindex - %s"
 
 #: src/Migration.php:857
 #, php-format
@@ -29415,7 +29416,7 @@ msgstr "Var %1$s dag"
 #: src/Alert.php:289
 #, php-format
 msgid "Alert sent on %s"
-msgstr "Larm skickat den %s"
+msgstr "Varning skickad %s"
 
 #: src/RuleDictionnaryDropdownCollection.php:137
 msgid "Error replaying rules"
@@ -30303,7 +30304,7 @@ msgstr "Logginlägg"
 #: src/CommonITILObject.php:9188
 #, php-format
 msgid "%1$s updates the item %2$s"
-msgstr "%1$s uppdaterar objektet %2$s"
+msgstr "%1$s uppdaterade objektet %2$s"
 
 #: src/CommonITILObject.php:10067 src/Project.php:1885
 #, php-format
@@ -30924,7 +30925,7 @@ msgstr "föremålet är inte länkat till något objekt"
 #: src/CommonDBChild.php:462
 #, php-format
 msgid "Parent item %s #%s is invalid."
-msgstr ""
+msgstr "Överordnat objekt %s #%s är ogiltigt."
 
 #: src/CommonDBChild.php:895
 #, php-format
@@ -31148,7 +31149,7 @@ msgstr "Ej hämtade meddelanden"
 
 #: src/MailCollector.php:436 src/NotificationTargetMailCollector.php:80
 msgid "Connection errors"
-msgstr "Kopplingsfel"
+msgstr "Anslutningsfel"
 
 #: src/MailCollector.php:444
 msgid "Date of last collection"
@@ -31251,7 +31252,7 @@ msgstr "Filen %s togs bort."
 #: src/Document.php:193
 #, php-format
 msgid "Failed to delete the file %s"
-msgstr "Radering av fil misslyckades %s"
+msgstr "Borttagning av fil misslyckades %s"
 
 #: src/Document.php:288 src/Document.php:349
 msgid "Invalid link"
@@ -31270,7 +31271,7 @@ msgstr "Katalog för uppladdning existerar inte"
 #: src/Document.php:1089 src/Document.php:1208
 #, php-format
 msgid "Failed to delete the file %1$s"
-msgstr "Radering av fil misslyckades %1$s"
+msgstr "Misslyckades med att ta bort filen '%1$s'"
 
 #: src/Document.php:1106
 msgid "Document move succeeded."
@@ -31473,7 +31474,7 @@ msgstr "Förfallna domäner"
 
 #: src/NotificationTargetDomain.php:42 src/NotificationTargetDomain.php:78
 msgid "Expiring domains"
-msgstr "Utgående domäner"
+msgstr "Domän förfaller"
 
 #: src/NotificationTargetDomain.php:50
 msgid "Technician in charge of the domain"
@@ -31491,7 +31492,7 @@ msgstr ""
 
 #: src/NotificationTargetCertificate.php:49
 msgid "Alarm on expired certificate"
-msgstr "Varna vid utgången certifikat"
+msgstr "Meddela att certifikat förfallit"
 
 #: src/NotificationTargetCertificate.php:56
 msgid "Technician in charge of the certificate"
@@ -31547,7 +31548,7 @@ msgstr "Du har angivit väntandeorsaker utan några motsvarande aktiva %s."
 
 #: src/Central.php:629 src/Html.php:1662
 msgid "SQL replica: read only"
-msgstr "SQL-replika: endast läs"
+msgstr "SQL-replika: skrivskyddad"
 
 #: src/Agent.php:78
 msgid "Agent"
@@ -31708,7 +31709,7 @@ msgstr "Automatisk"
 
 #: src/WifiNetwork.php:99
 msgid "Infrastructure (with access point)"
-msgstr "Infrastruktur ( utan accesspunkt)"
+msgstr "Infrastruktur (med accesspunkt)"
 
 #: src/WifiNetwork.php:100
 msgid "Ad-hoc (without access point)"
@@ -32051,7 +32052,7 @@ msgstr "Typer av hanterade domänposter"
 
 #: src/Profile.php:3221
 msgid "No access"
-msgstr "Ingen access"
+msgstr "Ingen åtkomst"
 
 #: src/Profile.php:3227
 msgid "Write"
@@ -32236,7 +32237,7 @@ msgstr "Nätverksfiberuttag"
 
 #: src/Item_Plug.php:111
 msgid "Add a new plug"
-msgstr "Lägg till en ny plugg"
+msgstr "Lägg till en ny kontakt"
 
 #: src/ChangeValidationStep.php:42
 msgid "Change Approval step"
@@ -33052,7 +33053,7 @@ msgstr "Ärendet stängs"
 
 #: src/NotificationTargetTicket.php:145
 msgid "Deletion of a ticket"
-msgstr "Borttag av ett ärende"
+msgstr "Ärende tas bort"
 
 #: src/NotificationTargetTicket.php:147
 msgid "Automatic reminders of SLAs"
@@ -33245,7 +33246,7 @@ msgstr "Försiktigt: det finns inget standard-värde"
 
 #: src/NotificationTargetUser.php:44
 msgid "Password expires"
-msgstr "Lösenordet utgår"
+msgstr "Lösenordet förfaller"
 
 #: src/NotificationTargetUser.php:226
 msgid "Account lock date if password is not changed"
@@ -33257,7 +33258,7 @@ msgstr "Lösenordets förfallodatum"
 
 #: src/NotificationTargetUser.php:228
 msgid "Password has expired"
-msgstr "Lösenordet har utgått"
+msgstr "Lösenordet har förfallit"
 
 #: src/NotificationTargetUser.php:232
 msgid "We inform you that your password will expire soon."
@@ -33325,7 +33326,7 @@ msgstr "Sökvarning för \"%1$s\" (%2$s)"
 
 #: src/NotificationTargetSavedSearch_Alert.php:64
 msgid "Private search alert"
-msgstr "Privat sökvarning"
+msgstr "Meddelande vid privat sökning"
 
 #: src/NotificationTargetSavedSearch_Alert.php:103
 msgid "Number of results"
@@ -33745,7 +33746,7 @@ msgstr "Antal dagar innan en certifikat löper ut som larm ska skickas"
 
 #: src/Entity.php:1376
 msgid "Alerts on tickets which are not solved"
-msgstr "Larm på ärenden, ej lösta sedan"
+msgstr "Varningar för ärenden, ej lösta sedan"
 
 #: src/Entity.php:1386
 msgid "Automatic assignment of tickets"
@@ -33775,7 +33776,7 @@ msgstr "URL till kundenkät (%s)"
 #: src/Entity.php:1633
 #, php-format
 msgid "%s adds the item"
-msgstr "%s lägger till objektet"
+msgstr "%s lade till objektet"
 
 #: src/Entity.php:1729 src/Entity.php:1739 src/Entity.php:1749
 #: src/Entity.php:2613 src/Entity.php:2798 src/Entity.php:2820
@@ -34850,20 +34851,21 @@ msgstr "Skicka-knappens synlighet"
 #: js/modules/Forms/EditorController.js:2248
 msgid "question"
 msgid_plural "questions"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Fråga"
+msgstr[1] "Frågor"
 
 #: js/modules/Forms/EditorController.js:2252
 msgid "comment"
 msgid_plural "comments"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kommentar"
+msgstr[1] "Kommentarer"
 
 #: js/modules/Forms/EditorController.js:2257
 #, javascript-format
 msgid ""
 "Deleting this section will also delete %s. This action cannot be undone."
 msgstr ""
+"Om du tar bort det här avsnittet tas även %s bort. Åtgärden kan inte ångras."
 
 #: js/modules/Forms/EditorController.js:2629
 #, javascript-format
@@ -34927,7 +34929,7 @@ msgstr "Kan inte ta bort sista fältet"
 
 #: js/src/vue/CustomObject/FieldPreview/FieldDisplay.vue:316
 msgid "Readonly"
-msgstr "Endast läs"
+msgstr "Skrivskyddat"
 
 #: js/src/vue/CustomObject/FieldPreview/Sidebar.vue:42
 msgid "Add more fields"

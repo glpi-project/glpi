@@ -18,11 +18,11 @@
 # Pierre <plebel@teclib.com>, 2025
 # alexis swyngedauw, 2025
 # Xavier CAILLAUD <thetsmr@gmail.com>, 2025
-# Adrien Clairembault, 2025
 # Legastelois François <flegastelois@teclib.com>, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # Cédric Anne, 2025
 # Johan Cwiklinski, 2025
+# Adrien Clairembault, 2025
 # 
 #, fuzzy
 msgid ""
@@ -31,7 +31,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-18 16:35+0100\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Johan Cwiklinski, 2025\n"
+"Last-Translator: Adrien Clairembault, 2025\n"
 "Language-Team: French (France) (https://app.transifex.com/glpi/teams/1637/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -13057,7 +13057,7 @@ msgstr "renamer"
 #: resources/.illustrations_translations.php:137
 msgctxt "Icon"
 msgid "Report an issue"
-msgstr "Signaler un problème"
+msgstr "Signaler un incident"
 
 #: resources/.illustrations_translations.php:138
 msgctxt "Icon"
@@ -19937,7 +19937,7 @@ msgstr "Sélectionner un actif disponible et le réserver pour une date donnée.
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:189
 msgid "Report an issue"
-msgstr "Signaler un problème"
+msgstr "Signaler un incident"
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:190
 msgid "Ask for support from our helpdesk team."

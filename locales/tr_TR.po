@@ -1276,7 +1276,7 @@ msgstr "Kapat"
 #: templates/layout/parts/user_header.html.twig
 #: templates/pages/setup/general/systeminfo_table.html.twig
 msgid "This version is UNSTABLE and some SECURITY FIXES may not be included."
-msgstr ""
+msgstr "Bu sürüm KARARSIZ ve bazı GÜVENLİK DÜZELTMELERİ eklenmemiş olabilir."
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."
@@ -1391,7 +1391,7 @@ msgstr "Menüyü daralt"
 #: templates/layout/parts/profile_selector_form.html.twig
 #, php-format
 msgid "Select %1s entity with all its sub entities"
-msgstr ""
+msgstr "%1s birimi tüm alt birimleri ile seç"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "You have not recorded any saved searches yet"
@@ -10364,13 +10364,15 @@ msgstr "Koşullar"
 
 #: templates/pages/admin/form/section_element_has_conditions_for_deletion_modal.html.twig
 msgid "Child items have conditions and cannot be deleted"
-msgstr ""
+msgstr "Alt ögenin koşulları bulunduğundan silinemez"
 
 #: templates/pages/admin/form/section_element_has_conditions_for_deletion_modal.html.twig
 msgid ""
 "This section has child elements that are used in conditions of other form "
 "elements"
 msgstr ""
+"Bu bölümde, diğer form bileşenlerinin koşullarında kullanılan alt bileşenler"
+" var"
 
 #: templates/pages/admin/form/form_toolbar.html.twig
 msgid "Add a question"
@@ -10524,15 +10526,15 @@ msgstr "Bu soru türünde koşullu uygulama kullanılamaz."
 
 #: templates/pages/admin/form/delete_non_empty_section_modal.html.twig
 msgid "Delete non-empty section"
-msgstr ""
+msgstr "Boş olmayan bölümü sil"
 
 #: templates/pages/admin/form/delete_non_empty_section_modal.html.twig
 msgid "This section contains elements"
-msgstr ""
+msgstr "Bu bölümde bileşenler var"
 
 #: templates/pages/admin/form/delete_non_empty_section_modal.html.twig
 msgid "Delete section and all its elements"
-msgstr ""
+msgstr "Bölümü ve tüm bileşenlerini sil"
 
 #: templates/pages/admin/profile/management.html.twig
 msgid "Manageable domain records"
@@ -12208,7 +12210,7 @@ msgstr "gelismis-panolar"
 #: resources/.illustrations_translations.php:4
 msgctxt "Icon"
 msgid "Advanced forms"
-msgstr ""
+msgstr "Gelişmiş formlar"
 
 #: resources/.illustrations_translations.php:5
 msgctxt "Icon"
@@ -13818,7 +13820,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:329
 msgctxt "Icon"
 msgid "assets"
-msgstr "varlıklar"
+msgstr "varlık"
 
 #: resources/.illustrations_translations.php:330
 msgctxt "Icon"

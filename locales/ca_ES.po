@@ -1949,7 +1949,7 @@ msgstr "Esborra"
 
 #: templates/components/search/query_builder/sort/criteria.html.twig
 msgid "Delete a sort"
-msgstr ""
+msgstr "Elimina l'ordre"
 
 #: templates/components/search/query_builder/sort/criteria.html.twig
 msgid "ASC"
@@ -1961,16 +1961,16 @@ msgstr ""
 
 #: templates/components/search/query_builder/sort/main.html.twig
 msgid "Add another sort"
-msgstr ""
+msgstr "Afegeix una altra ordenació"
 
 #: templates/components/search/query_builder/sort/main.html.twig
 #: templates/components/search/controls.html.twig
 msgid "Sort"
-msgstr ""
+msgstr "Ordena"
 
 #: templates/components/search/query_builder/sort/main.html.twig
 msgid "Reset sort"
-msgstr ""
+msgstr "Restableix l'ordre"
 
 #: templates/components/search/query_builder/metacriteria.html.twig
 msgid "Delete a global rule"
@@ -2023,7 +2023,7 @@ msgstr ""
 
 #: templates/components/search/controls.html.twig
 msgid "Show as table"
-msgstr ""
+msgstr "Mostra com una taula"
 
 #: templates/components/search/controls.html.twig
 msgid "Show as map"
@@ -4373,7 +4373,7 @@ msgstr ""
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "Service catalog pages"
-msgstr ""
+msgstr "Pàgines del catàleg de serveis"
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "First page"
@@ -4696,12 +4696,12 @@ msgstr "Afegeix nous dispositius"
 #: templates/components/illustration/icon_picker_search_results.html.twig
 #, php-format
 msgid "Page %s of %s"
-msgstr ""
+msgstr "Pàgina %s de %s"
 
 #: templates/components/illustration/icon_picker_search_results.html.twig
 #, php-format
 msgid "Go to page %s"
-msgstr ""
+msgstr "Ves a la pàgina %s"
 
 #: templates/components/illustration/icon_picker_modal.html.twig
 msgid "Pick an illustration"
@@ -5806,8 +5806,8 @@ msgstr "PMF"
 #: src/Glpi/Form/Category.php:57
 msgid "Service catalog category"
 msgid_plural "Service catalog categories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Categoria del catàleg de serveis"
+msgstr[1] "Categories del catàleg de serveis"
 
 #: templates/pages/self-service/service_catalog.html.twig
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
@@ -5815,61 +5815,61 @@ msgstr[1] ""
 #: src/Glpi/Helpdesk/Tile/GlpiPageTile.php:92
 #: js/modules/Forms/ServiceCatalogController.js:168
 msgid "Service catalog"
-msgstr ""
+msgstr "Catàleg de serveis"
 
 #: templates/pages/self-service/service_catalog.html.twig
 msgid "Sort by: "
-msgstr ""
+msgstr "Ordena per:"
 
 #: templates/pages/self-service/service_catalog.html.twig
 msgid "Sort by"
-msgstr ""
+msgstr "Ordena per"
 
 #: templates/pages/self-service/service_catalog.html.twig
 msgid "Search for forms..."
-msgstr ""
+msgstr "Cerca per formularis..."
 
 #: templates/pages/self-service/service_catalog.html.twig
 msgid "Forms"
-msgstr ""
+msgstr "Formularis"
 
 #: templates/pages/form_renderer.html.twig src/Glpi/Form/Form.php:457
 msgid "Form title"
-msgstr ""
+msgstr "Títol del formulari"
 
 #: templates/pages/form_renderer.html.twig
 #: templates/pages/admin/form/form_editor.html.twig src/Glpi/Form/Form.php:466
 msgid "Form description"
-msgstr ""
+msgstr "Descripció del formulari"
 
 #: templates/pages/form_renderer.html.twig
 msgid "Untitled section"
-msgstr ""
+msgstr "Secció sense títol"
 
 #: templates/pages/form_renderer.html.twig
 #, php-format
 msgid "%s description"
-msgstr ""
+msgstr "%s descripció"
 
 #: templates/pages/form_renderer.html.twig
 msgid "Submit"
-msgstr ""
+msgstr "Envia"
 
 #: templates/pages/form_renderer.html.twig
 msgid "Form submitted"
-msgstr ""
+msgstr "Formulari enviat"
 
 #: templates/pages/form_renderer.html.twig
 msgid "Your form has been submitted successfully."
-msgstr ""
+msgstr "El formulari s'ha enviat correctament."
 
 #: templates/pages/form_renderer.html.twig
 msgid "Go back to service catalog"
-msgstr ""
+msgstr "Torna al catàleg de serveis"
 
 #: templates/pages/form_renderer.html.twig
 msgid "See my tickets"
-msgstr ""
+msgstr "Veure els meus tiquets"
 
 #: templates/pages/login_error.html.twig
 msgid "Log in again"
@@ -6971,7 +6971,7 @@ msgstr "Ordre de la cronologia"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Show search form above results"
-msgstr ""
+msgstr "Mostra el formulari de cerca a sobre dels resultats"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Show search pagination above results"
@@ -7382,7 +7382,7 @@ msgstr "Sempre"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Use the replica for the search engine"
-msgstr ""
+msgstr "Utilitza la rèplica per al motor de cerca"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Replication status"
@@ -9112,7 +9112,7 @@ msgstr ""
 
 #: templates/pages/helpdesk/index.html.twig
 msgid "Search for knowledge base entries or forms"
-msgstr ""
+msgstr "Cerca entrades o formularis de la base de coneixement"
 
 #: templates/pages/helpdesk/index.html.twig
 msgid "Search results"
@@ -9486,7 +9486,7 @@ msgstr ""
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Expand categories in the service catalog"
-msgstr ""
+msgstr "Expandir categories al catàleg de serveis"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Save general settings"
@@ -9851,7 +9851,7 @@ msgstr ""
 
 #: templates/pages/admin/ldap.group_criteria.html.twig
 msgid "Search criteria for groups"
-msgstr ""
+msgstr "Criteris de cerca per a grups"
 
 #: templates/pages/admin/ldap.group_criteria.html.twig
 #: templates/pages/admin/ldap.user_criteria.html.twig
@@ -10208,7 +10208,7 @@ msgstr ""
 
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 msgid "Service catalog configuration"
-msgstr ""
+msgstr "Configuració del catàleg de serveis"
 
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 msgid " Active"
@@ -10216,7 +10216,7 @@ msgstr "Actiu"
 
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 msgid "Pin to top of the service catalog"
-msgstr ""
+msgstr "Fixa a la part superior del catàleg de serveis"
 
 #: templates/pages/admin/form/condition_handler_templates/input.html.twig
 msgid "Enter a value..."
@@ -10811,15 +10811,15 @@ msgstr ""
 
 #: templates/pages/admin/logs_list.html.twig
 msgid "Sort by file path"
-msgstr ""
+msgstr "Ordena per la ruta de fitxer"
 
 #: templates/pages/admin/logs_list.html.twig
 msgid "Sort by size"
-msgstr ""
+msgstr "Ordena per mida"
 
 #: templates/pages/admin/logs_list.html.twig
 msgid "Sort by date"
-msgstr ""
+msgstr "Ordena per data"
 
 #: templates/pages/admin/logs_list.html.twig
 #: templates/pages/admin/log_viewer.html.twig
@@ -12270,7 +12270,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:36
 msgctxt "Icon"
 msgid "Browse help articles"
-msgstr ""
+msgstr "Navega pels articles d'ajuda"
 
 #: resources/.illustrations_translations.php:37
 msgctxt "Icon"
@@ -14064,7 +14064,7 @@ msgstr "món"
 #: resources/.illustrations_translations.php:399
 msgctxt "Icon"
 msgid "browser"
-msgstr ""
+msgstr "navegador"
 
 #: resources/.illustrations_translations.php:400
 msgctxt "Icon"
@@ -18341,11 +18341,11 @@ msgstr "Les escales definides en ONA s'activaran en aquesta nova data."
 
 #: src/NotificationAjaxSetting.php:45
 msgid "Browser notifications configuration"
-msgstr ""
+msgstr "Configuració de les notificacions del navegador"
 
 #: src/NotificationAjaxSetting.php:50
 msgid "Enable browser notifications"
-msgstr ""
+msgstr "Activa les notificacions del navegador"
 
 #: src/NotificationAjaxSetting.php:71
 msgid "Send a test browser notification to you"
@@ -19251,7 +19251,7 @@ msgstr ""
 
 #: src/Glpi/Form/Form.php:475
 msgid "Service catalog description"
-msgstr ""
+msgstr "Descripció del catàleg de serveis"
 
 #: src/Glpi/Form/Form.php:521
 msgid "Purge old form drafts"
@@ -19452,11 +19452,11 @@ msgstr ""
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:100
 msgid "Browse help articles"
-msgstr ""
+msgstr "Navega pels articles d'ajuda"
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:101
 msgid "See all available help articles and our FAQ."
-msgstr ""
+msgstr "Consulta tots els articles d'ajuda disponibles i les nostres FAQ."
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:115 src/Ticket.php:4668
 #: src/Profile.php:2697 src/Html.php:1494
@@ -19466,14 +19466,15 @@ msgstr "Obre una incidència"
 #: src/Glpi/Helpdesk/DefaultDataManager.php:116
 msgid "Go to our service catalog and pick a form to create a new ticket."
 msgstr ""
+"Ves al catàleg de serveis i tria un formulari per crear un tiquet nou."
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:122
 msgid "See your tickets"
-msgstr ""
+msgstr "Els teus tiquets"
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:123
 msgid "View all the tickets that you have created."
-msgstr ""
+msgstr "Visualitza tots els tiquets que has creat."
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:129 src/ReservationItem.php:840
 msgid "Make a reservation"
@@ -24404,7 +24405,7 @@ msgstr ""
 #: src/Glpi/Search/Output/Spreadsheet.php:516
 #, php-format
 msgid "Search results for %1$s"
-msgstr ""
+msgstr "Resultats de la cerca per a %1$s"
 
 #: src/Glpi/Search/Output/HTMLSearchOutput.php:175 src/Item_Devices.php:1073
 #: src/KnowbaseItem.php:1790
@@ -24421,7 +24422,7 @@ msgstr ""
 #: src/Glpi/Search/Output/HTMLSearchOutput.php:206
 #, php-format
 msgid "Sorted by %s"
-msgstr ""
+msgstr "Ordenat per %s"
 
 #: src/Glpi/Search/SearchOption.php:435 src/Glpi/Search/SearchOption.php:464
 #: src/Glpi/Search/SearchOption.php:502 src/Glpi/Search/SearchOption.php:529
@@ -26928,7 +26929,7 @@ msgstr "Dies per guardar els missatges enviats"
 
 #: src/QueuedNotification.php:533
 msgid "Clean stale queued browser notifications"
-msgstr ""
+msgstr "Neteja les notificacions del navegador en cua obsoletes"
 
 #: src/DeviceProcessor.php:46
 msgid "Processor"
@@ -27719,7 +27720,7 @@ msgstr "Els teus tiquets en curs"
 
 #: src/Ticket.php:4274
 msgid "Your tickets to approve"
-msgstr ""
+msgstr "Els teus tiquets pendents d'aprovar"
 
 #: src/Ticket.php:4291
 msgid "Your tickets having rejected approval status"

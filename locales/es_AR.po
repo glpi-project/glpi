@@ -29,7 +29,7 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # DOMBRE Julien <moyo@indepnet.net>, 2025
 # Dario, 2025
-# Alan Lehoux, 2025
+# Alan Ivés Lehoux, 2025
 # 
 #, fuzzy
 msgid ""
@@ -38,7 +38,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-18 16:35+0100\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Alan Lehoux, 2025\n"
+"Last-Translator: Alan Ivés Lehoux, 2025\n"
 "Language-Team: Spanish (Argentina) (https://app.transifex.com/glpi/teams/1637/es_AR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1308,6 +1308,8 @@ msgstr "Cerrar"
 #: templates/pages/setup/general/systeminfo_table.html.twig
 msgid "This version is UNSTABLE and some SECURITY FIXES may not be included."
 msgstr ""
+"Esta versión es INESTABLE y algunas CORRECCIONES DE SEGURIDAD pueden no "
+"estar incluidas."
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."
@@ -1423,7 +1425,7 @@ msgstr "Plegar menú"
 #: templates/layout/parts/profile_selector_form.html.twig
 #, php-format
 msgid "Select %1s entity with all its sub entities"
-msgstr ""
+msgstr "Seleccionar entidad %1s con todas sus subentidades"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "You have not recorded any saved searches yet"
@@ -10504,13 +10506,15 @@ msgstr "Condiciones"
 
 #: templates/pages/admin/form/section_element_has_conditions_for_deletion_modal.html.twig
 msgid "Child items have conditions and cannot be deleted"
-msgstr ""
+msgstr "Los elementos hijos tienen condiciones y no pueden ser eliminados"
 
 #: templates/pages/admin/form/section_element_has_conditions_for_deletion_modal.html.twig
 msgid ""
 "This section has child elements that are used in conditions of other form "
 "elements"
 msgstr ""
+"Esta sección tiene elementos hijos que son usados en condiciones de otros "
+"elementos del formulario"
 
 #: templates/pages/admin/form/form_toolbar.html.twig
 msgid "Add a question"
@@ -10667,15 +10671,15 @@ msgstr ""
 
 #: templates/pages/admin/form/delete_non_empty_section_modal.html.twig
 msgid "Delete non-empty section"
-msgstr ""
+msgstr "Eliminar sección no vacía"
 
 #: templates/pages/admin/form/delete_non_empty_section_modal.html.twig
 msgid "This section contains elements"
-msgstr ""
+msgstr "Esta sección contiene elementos"
 
 #: templates/pages/admin/form/delete_non_empty_section_modal.html.twig
 msgid "Delete section and all its elements"
-msgstr ""
+msgstr "Eliminar sección y todos sus elementos"
 
 #: templates/pages/admin/profile/management.html.twig
 msgid "Manageable domain records"
@@ -12377,7 +12381,7 @@ msgstr "paneles-avanzados"
 #: resources/.illustrations_translations.php:4
 msgctxt "Icon"
 msgid "Advanced forms"
-msgstr ""
+msgstr "Formularios avanzados"
 
 #: resources/.illustrations_translations.php:5
 msgctxt "Icon"
@@ -12523,7 +12527,7 @@ msgstr "Inteligencia de Negocios e Informes 3"
 #: resources/.illustrations_translations.php:33
 msgctxt "Icon"
 msgid "Business Intelligence and Reporting 4"
-msgstr ""
+msgstr "Inteligencia de Negocios e Informes 4"
 
 #: resources/.illustrations_translations.php:34
 msgctxt "Icon"
@@ -12638,7 +12642,7 @@ msgstr "Red en la Nube 2"
 #: resources/.illustrations_translations.php:56
 msgctxt "Icon"
 msgid "Cloud usage"
-msgstr ""
+msgstr "Uso de la nube"
 
 #: resources/.illustrations_translations.php:57
 msgctxt "Icon"
@@ -12695,7 +12699,7 @@ msgstr "base de datos"
 #: resources/.illustrations_translations.php:67
 msgctxt "Icon"
 msgid "Add database"
-msgstr ""
+msgstr "Agregar base de datos"
 
 #: resources/.illustrations_translations.php:68
 msgctxt "Icon"
@@ -12705,7 +12709,7 @@ msgstr "Entrega"
 #: resources/.illustrations_translations.php:69
 msgctxt "Icon"
 msgid "Diagnostic"
-msgstr ""
+msgstr "Diagnóstico"
 
 #: resources/.illustrations_translations.php:70
 msgctxt "Icon"
@@ -12765,7 +12769,7 @@ msgstr "Corrigiendo error"
 #: resources/.illustrations_translations.php:81
 msgctxt "Icon"
 msgid "Fixing bug 2"
-msgstr ""
+msgstr "Corrigiendo error 2"
 
 #: resources/.illustrations_translations.php:82
 msgctxt "Icon"
@@ -12780,7 +12784,7 @@ msgstr "formcreator"
 #: resources/.illustrations_translations.php:84
 msgctxt "Icon"
 msgid "Gantt"
-msgstr ""
+msgstr "Gantt"
 
 #: resources/.illustrations_translations.php:85
 msgctxt "Icon"
@@ -12865,12 +12869,12 @@ msgstr "Inventario"
 #: resources/.illustrations_translations.php:101
 msgctxt "Icon"
 msgid "Inventory numbers"
-msgstr ""
+msgstr "Números de inventario"
 
 #: resources/.illustrations_translations.php:102
 msgctxt "Icon"
 msgid "Items export"
-msgstr ""
+msgstr "Exportación de elementos"
 
 #: resources/.illustrations_translations.php:103
 msgctxt "Icon"
@@ -12880,17 +12884,17 @@ msgstr "Base de conocimientos y Preguntas Frecuentes"
 #: resources/.illustrations_translations.php:104
 msgctxt "Icon"
 msgid "LDAP diagnostic"
-msgstr ""
+msgstr "Diagnóstico LDAP"
 
 #: resources/.illustrations_translations.php:105
 msgctxt "Icon"
 msgid "LDAP inventory"
-msgstr ""
+msgstr "Inventario LDAP"
 
 #: resources/.illustrations_translations.php:106
 msgctxt "Icon"
 msgid "LDAP manage"
-msgstr ""
+msgstr "Administración LDAP"
 
 #: resources/.illustrations_translations.php:107
 msgctxt "Icon"
@@ -12935,7 +12939,7 @@ msgstr "Monitoreo"
 #: resources/.illustrations_translations.php:115
 msgctxt "Icon"
 msgid "More options"
-msgstr ""
+msgstr "Más opciones"
 
 #: resources/.illustrations_translations.php:116
 msgctxt "Icon"
@@ -12945,7 +12949,7 @@ msgstr "más-satisfacción"
 #: resources/.illustrations_translations.php:117
 msgctxt "Icon"
 msgid "Network inventory"
-msgstr ""
+msgstr "Inventario de red"
 
 #: resources/.illustrations_translations.php:118
 msgctxt "Icon"
@@ -13010,12 +13014,12 @@ msgstr "Socio"
 #: resources/.illustrations_translations.php:130
 msgctxt "Icon"
 msgid "PDF export"
-msgstr ""
+msgstr "Exportar a PDF"
 
 #: resources/.illustrations_translations.php:131
 msgctxt "Icon"
 msgid "Phone inventory"
-msgstr ""
+msgstr "Inventario de teléfonos"
 
 #: resources/.illustrations_translations.php:132
 #: resources/.illustrations_translations.php:382
@@ -13031,7 +13035,7 @@ msgstr "Imprimir trabajo"
 #: resources/.illustrations_translations.php:134
 msgctxt "Icon"
 msgid "Printer inventory"
-msgstr ""
+msgstr "Inventario de impresoras"
 
 #: resources/.illustrations_translations.php:135
 msgctxt "Icon"
@@ -13627,7 +13631,7 @@ msgstr "charlar"
 #: resources/.illustrations_translations.php:257
 msgctxt "Icon"
 msgid "billing"
-msgstr ""
+msgstr "facturación"
 
 #: resources/.illustrations_translations.php:258
 msgctxt "Icon"
@@ -13707,12 +13711,12 @@ msgstr "envío"
 #: resources/.illustrations_translations.php:273
 msgctxt "Icon"
 msgid "troubleshooting"
-msgstr ""
+msgstr "resolución de problemas"
 
 #: resources/.illustrations_translations.php:274
 msgctxt "Icon"
 msgid "analysis"
-msgstr ""
+msgstr "análisis"
 
 #: resources/.illustrations_translations.php:275
 msgctxt "Icon"
@@ -13842,7 +13846,7 @@ msgstr "directorio"
 #: resources/.illustrations_translations.php:300
 msgctxt "Icon"
 msgid "project-management"
-msgstr ""
+msgstr "gestión-de-proyecto"
 
 #: resources/.illustrations_translations.php:301
 msgctxt "Icon"
@@ -14022,12 +14026,12 @@ msgstr "fijar"
 #: resources/.illustrations_translations.php:336
 msgctxt "Icon"
 msgid "places"
-msgstr ""
+msgstr "lugares"
 
 #: resources/.illustrations_translations.php:337
 msgctxt "Icon"
 msgid "arborescence"
-msgstr ""
+msgstr "arborescencia"
 
 #: resources/.illustrations_translations.php:338
 msgctxt "Icon"
@@ -14062,12 +14066,12 @@ msgstr "satisfacción del cliente"
 #: resources/.illustrations_translations.php:344
 msgctxt "Icon"
 msgid "devices"
-msgstr ""
+msgstr "dispositivos"
 
 #: resources/.illustrations_translations.php:345
 msgctxt "Icon"
 msgid "agent"
-msgstr ""
+msgstr "agente"
 
 #: resources/.illustrations_translations.php:346
 msgctxt "Icon"
@@ -14122,12 +14126,12 @@ msgstr "compra"
 #: resources/.illustrations_translations.php:356
 msgctxt "Icon"
 msgid "export"
-msgstr ""
+msgstr "exportar"
 
 #: resources/.illustrations_translations.php:357
 msgctxt "Icon"
 msgid "phone"
-msgstr ""
+msgstr "teléfono"
 
 #: resources/.illustrations_translations.php:358
 msgctxt "Icon"
@@ -16810,19 +16814,19 @@ msgstr "Ocurrió un error durante la actualización. El error fue: %s"
 
 #: src/Update.php:293 src/Toolbox.php:2244
 msgid "Creating default forms…"
-msgstr "Creando formularios predeterminados..."
+msgstr "Creando formularios por defecto..."
 
 #: src/Update.php:298 src/Toolbox.php:2249
 msgid "Default forms created."
-msgstr "Formularios predeterminados creados."
+msgstr "Formularios por defecto creados."
 
 #: src/Update.php:301 src/Toolbox.php:2251
 msgid "Initializing default rules…"
-msgstr "Inicializando reglas predeterminadas..."
+msgstr "Inicializando reglas por defecto..."
 
 #: src/Update.php:304 src/Toolbox.php:2254
 msgid "Default rules initialized."
-msgstr "Reglas predeterminadas inicializadas."
+msgstr "Reglas por defecto inicializadas."
 
 #: src/Update.php:306
 msgid "Checking the database structure…"
@@ -17825,11 +17829,11 @@ msgstr "Estructura de la base de datos creada."
 
 #: src/Toolbox.php:2210
 msgid "Importing default data…"
-msgstr "Importando datos predeterminados..."
+msgstr "Importando datos por defecto..."
 
 #: src/Toolbox.php:2242
 msgid "Default data imported."
-msgstr "Datos predeterminados importados."
+msgstr "Datos por defecto importados."
 
 #: src/Toolbox.php:2262
 msgid "Defining configuration defaults…"
@@ -21801,7 +21805,7 @@ msgid ""
 "(default: 1800)"
 msgstr ""
 "Tiempo de ejecución (en segundos) a partir del cual la tarea se considera "
-"atascada (predeterminado: 1800)"
+"bloqueada (por defecto: 1800)"
 
 #: src/Glpi/Console/Task/UnlockCommand.php:86
 msgid "Itemtype::name of task to unlock (e.g: \"MailCollector::mailgate\")"
@@ -22354,7 +22358,7 @@ msgstr "¿Dónde querés importar \"%s\"?"
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:545
 msgid "Ignore (default)"
-msgstr "Ignorar (predeterminado)"
+msgstr "Ignorar (por defecto)"
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:602
 #, php-format
@@ -22553,8 +22557,8 @@ msgid ""
 "Migration of column \"%s.%s\" cannot be done as its default value is "
 "negative."
 msgstr ""
-"No se puede realizar la migración de la columna \"%s.%s\" ya que su valor "
-"predeterminado es negativo."
+"La migración de la columna \"%s.%s\" no se puede realizar ya que su valor "
+"por defecto es negativo."
 
 #: src/Glpi/Console/Migration/UnsignedKeysCommand.php:161
 #, php-format
@@ -23863,8 +23867,8 @@ msgid ""
 "Output language (default value is existing GLPI \"language\" configuration "
 "or \"en_GB\")"
 msgstr ""
-"Idioma de salida (el valor predeterminado es la configuración existente de "
-"GLPI \"idioma\" o \"en_GB\")"
+"Idioma de salida (el valor por defecto es la configuración de \"idioma\" "
+"existente de GLPI o \"en_GB\")"
 
 #: src/Glpi/Console/Application.php:217
 msgid "Allow the console to be executed by the root user"
@@ -24117,7 +24121,7 @@ msgstr ""
 
 #: src/Glpi/Console/Database/InstallCommand.php:112
 msgid "Default language of GLPI"
-msgstr "Idioma predeterminado de GLPI"
+msgstr "Idioma por defecto de GLPI"
 
 #: src/Glpi/Console/Database/InstallCommand.php:120
 msgid "Force execution of installation, overriding existing database"
@@ -25016,7 +25020,7 @@ msgstr ""
 
 #: src/Glpi/Controller/IndexController.php:130
 msgid "Default (from user profile)"
-msgstr "Valor por defecto (definido en el perfil del usuario)"
+msgstr "Por defecto (del perfil de usuario)"
 
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:151
 #: src/Glpi/Search/Provider/SQLProvider.php:6378 src/KnowbaseItem.php:1528
@@ -27006,7 +27010,7 @@ msgstr "Nueva relación"
 
 #: src/OlaLevel_Ticket.php:47
 msgid "OLA level for Ticket"
-msgstr "Nivel OLA del Ticket"
+msgstr "Nivel OLA para el Ticket"
 
 #: src/OlaLevel_Ticket.php:148
 msgid "Automatic actions of OLA"
@@ -28601,7 +28605,7 @@ msgstr "Apropiarse"
 
 #: src/Ticket.php:5295
 msgid "Steal a ticket"
-msgstr "Adjudicarse un ticket"
+msgstr "Apropiarse un ticket"
 
 #. TRANS: short for : To be in charge of a ticket
 #: src/Ticket.php:5298
@@ -29478,7 +29482,7 @@ msgstr "1/4"
 
 #: src/SlaLevel_Ticket.php:44
 msgid "SLA level for Ticket"
-msgstr "Nivel de SLA del Ticket"
+msgstr "Nivel SLA para el Ticket"
 
 #: src/SlaLevel_Ticket.php:146
 msgid "Automatic actions of SLA"
@@ -29958,7 +29962,7 @@ msgstr "Agregar desde una fuente externa"
 
 #: src/User.php:216
 msgid "You must define a default profile to create a new user"
-msgstr "Debés definir un perfil predeterminado para crear un nuevo usuario"
+msgstr "Debés definir un perfil por defecto para crear un nuevo usuario"
 
 #: src/User.php:354 src/Group.php:139
 msgid "Used items"
@@ -31471,7 +31475,7 @@ msgstr "Elemento no enlazado a un objeto"
 #: src/CommonDBChild.php:462
 #, php-format
 msgid "Parent item %s #%s is invalid."
-msgstr ""
+msgstr "El elemento padre %s #%s es inválido."
 
 #: src/CommonDBChild.php:895
 #, php-format
@@ -32093,8 +32097,8 @@ msgstr "Vista global"
 msgid ""
 "For security reasons, please change the password for the default users: %s"
 msgstr ""
-"Por razones de seguridad, por favor cambiá la contraseña de los usuarios "
-"predeterminados: %s"
+"Por razones de seguridad, por favor cambiá la contraseña de los usuarios por"
+" defecto: %s"
 
 #: src/Central.php:565
 msgid "You have some forms from the 'Formcreator' plugin."
@@ -32334,7 +32338,7 @@ msgstr "Duración planificada"
 
 #: src/Project.php:1281
 msgid "Invalid planned dates. Dates not updated."
-msgstr "Fechas planeadas inválidas. Fechas no actualizadas."
+msgstr "Fechas planificadas inválidas. Fechas no actualizadas."
 
 #: src/Project.php:1292
 msgid "Invalid real dates. Dates not updated."
@@ -33116,11 +33120,11 @@ msgstr "Pantalla de usuario"
 #. TRANS: short for : Search result default display
 #: src/DisplayPreference.php:715
 msgid "Default display"
-msgstr "Pantalla por defecto"
+msgstr "Visualización por defecto"
 
 #: src/DisplayPreference.php:716
 msgid "Search result default display"
-msgstr "Presentación de búsqueda por defecto"
+msgstr "Visualización por defecto de resultados de búsqueda"
 
 #: src/DisplayPreference.php:807
 msgid "Search option ID"
@@ -33841,7 +33845,7 @@ msgstr "Por defecto para tickets"
 
 #: src/RequestType.php:57 src/RequestType.php:97
 msgid "Default for followups"
-msgstr "Predeterminado para seguimientos"
+msgstr "Por defecto para seguimientos"
 
 #: src/RequestType.php:61 src/RequestType.php:106
 msgid "Default for mail recipients"
@@ -35509,27 +35513,29 @@ msgstr "fallido"
 
 #: js/modules/Forms/EditorController.js:1365
 msgid "Submit button visibility"
-msgstr ""
+msgstr "Visibilidad del botón Enviar"
 
 #: js/modules/Forms/EditorController.js:2248
 msgid "question"
 msgid_plural "questions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "pregunta"
+msgstr[1] "preguntas"
+msgstr[2] "preguntas"
 
 #: js/modules/Forms/EditorController.js:2252
 msgid "comment"
 msgid_plural "comments"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "comentario"
+msgstr[1] "comentarios"
+msgstr[2] "comentarios"
 
 #: js/modules/Forms/EditorController.js:2257
 #, javascript-format
 msgid ""
 "Deleting this section will also delete %s. This action cannot be undone."
 msgstr ""
+"Eliminar esta sección también eliminará %s. Esta acción no se puede "
+"deshacer."
 
 #: js/modules/Forms/EditorController.js:2629
 #, javascript-format

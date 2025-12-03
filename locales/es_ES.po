@@ -27,12 +27,12 @@
 # A C, 2025
 # Gabriel Cano Camacho, 2025
 # Lucas Pomez, 2025
-# Lucas Pomez, 2025
 # Cédric Anne, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # LatinSuD <sdsd@latinsud.com>, 2025
 # Pruebas, 2025
 # DOMBRE Julien <moyo@indepnet.net>, 2025
+# LukeZemp, 2025
 # 
 #, fuzzy
 msgid ""
@@ -41,7 +41,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-18 16:35+0100\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>, 2025\n"
+"Last-Translator: LukeZemp, 2025\n"
 "Language-Team: Spanish (Spain) (https://app.transifex.com/glpi/teams/1637/es_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1311,6 +1311,8 @@ msgstr "Cerrar"
 #: templates/pages/setup/general/systeminfo_table.html.twig
 msgid "This version is UNSTABLE and some SECURITY FIXES may not be included."
 msgstr ""
+"Esta versión es INESTABLE y es posible que algunas CORRECCIONES DE SEGURIDAD"
+" no estén incluidas."
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."
@@ -9829,7 +9831,7 @@ msgstr "Importar nuevos usuarios"
 #: templates/pages/admin/helpdesk_home_translation.html.twig
 #: templates/pages/admin/form/form_translation.html.twig
 msgid "No default value"
-msgstr ""
+msgstr "Sin valor por defecto"
 
 #: templates/pages/admin/helpdesk_home_translation.html.twig
 #: templates/pages/admin/form/form_translation.html.twig
@@ -12363,7 +12365,7 @@ msgstr "tableros-avanzados"
 #: resources/.illustrations_translations.php:4
 msgctxt "Icon"
 msgid "Advanced forms"
-msgstr ""
+msgstr "Formularios avanzados"
 
 #: resources/.illustrations_translations.php:5
 msgctxt "Icon"
@@ -12509,7 +12511,7 @@ msgstr "Inteligencia de negocios e informes 3"
 #: resources/.illustrations_translations.php:33
 msgctxt "Icon"
 msgid "Business Intelligence and Reporting 4"
-msgstr ""
+msgstr "Inteligencia de negocios e informes 4"
 
 #: resources/.illustrations_translations.php:34
 msgctxt "Icon"
@@ -12624,7 +12626,7 @@ msgstr "Red en la nube 2"
 #: resources/.illustrations_translations.php:56
 msgctxt "Icon"
 msgid "Cloud usage"
-msgstr ""
+msgstr "Uso de la nube"
 
 #: resources/.illustrations_translations.php:57
 msgctxt "Icon"
@@ -12681,7 +12683,7 @@ msgstr "bbdd"
 #: resources/.illustrations_translations.php:67
 msgctxt "Icon"
 msgid "Add database"
-msgstr ""
+msgstr "Añadir base de datos"
 
 #: resources/.illustrations_translations.php:68
 msgctxt "Icon"
@@ -12691,17 +12693,17 @@ msgstr "Entrega"
 #: resources/.illustrations_translations.php:69
 msgctxt "Icon"
 msgid "Diagnostic"
-msgstr ""
+msgstr "Diagnóstico"
 
 #: resources/.illustrations_translations.php:70
 msgctxt "Icon"
 msgid "Developer documentation"
-msgstr ""
+msgstr "Documentación para desarrolladores"
 
 #: resources/.illustrations_translations.php:71
 msgctxt "Icon"
 msgid "Documentation"
-msgstr ""
+msgstr "Documentación"
 
 #: resources/.illustrations_translations.php:72
 msgctxt "Icon"
@@ -12726,7 +12728,7 @@ msgstr "Fábrica"
 #: resources/.illustrations_translations.php:76
 msgctxt "Icon"
 msgid "Frequently Asked Questions"
-msgstr ""
+msgstr "Preguntas frecuentes (FAQs)"
 
 #: resources/.illustrations_translations.php:77
 msgctxt "Icon"
@@ -12751,7 +12753,7 @@ msgstr "Corrigiendo error"
 #: resources/.illustrations_translations.php:81
 msgctxt "Icon"
 msgid "Fixing bug 2"
-msgstr ""
+msgstr "Corrigiendo bug 2"
 
 #: resources/.illustrations_translations.php:82
 msgctxt "Icon"
@@ -12766,7 +12768,7 @@ msgstr "creador-formularios"
 #: resources/.illustrations_translations.php:84
 msgctxt "Icon"
 msgid "Gantt"
-msgstr ""
+msgstr "Gantt"
 
 #: resources/.illustrations_translations.php:85
 msgctxt "Icon"
@@ -12851,12 +12853,12 @@ msgstr "Inventario"
 #: resources/.illustrations_translations.php:101
 msgctxt "Icon"
 msgid "Inventory numbers"
-msgstr ""
+msgstr "Números de inventario"
 
 #: resources/.illustrations_translations.php:102
 msgctxt "Icon"
 msgid "Items export"
-msgstr ""
+msgstr "Exportación de elementos"
 
 #: resources/.illustrations_translations.php:103
 msgctxt "Icon"
@@ -12866,17 +12868,17 @@ msgstr "Base de conocimientos y FAQ"
 #: resources/.illustrations_translations.php:104
 msgctxt "Icon"
 msgid "LDAP diagnostic"
-msgstr ""
+msgstr "Diagnóstico LDAP"
 
 #: resources/.illustrations_translations.php:105
 msgctxt "Icon"
 msgid "LDAP inventory"
-msgstr ""
+msgstr "Inventario LDAP"
 
 #: resources/.illustrations_translations.php:106
 msgctxt "Icon"
 msgid "LDAP manage"
-msgstr ""
+msgstr "Administración LDAP"
 
 #: resources/.illustrations_translations.php:107
 msgctxt "Icon"
@@ -12921,7 +12923,7 @@ msgstr "Monitorización"
 #: resources/.illustrations_translations.php:115
 msgctxt "Icon"
 msgid "More options"
-msgstr ""
+msgstr "Más opciones"
 
 #: resources/.illustrations_translations.php:116
 msgctxt "Icon"
@@ -12931,7 +12933,7 @@ msgstr "más-satisfacción"
 #: resources/.illustrations_translations.php:117
 msgctxt "Icon"
 msgid "Network inventory"
-msgstr ""
+msgstr "Inventario de red"
 
 #: resources/.illustrations_translations.php:118
 msgctxt "Icon"
@@ -12996,12 +12998,12 @@ msgstr "Socio"
 #: resources/.illustrations_translations.php:130
 msgctxt "Icon"
 msgid "PDF export"
-msgstr ""
+msgstr "Exportar a PDF"
 
 #: resources/.illustrations_translations.php:131
 msgctxt "Icon"
 msgid "Phone inventory"
-msgstr ""
+msgstr "Inventario de teléfonos"
 
 #: resources/.illustrations_translations.php:132
 #: resources/.illustrations_translations.php:382
@@ -13017,7 +13019,7 @@ msgstr "Imprimir un trabajo"
 #: resources/.illustrations_translations.php:134
 msgctxt "Icon"
 msgid "Printer inventory"
-msgstr ""
+msgstr "Inventario de impresoras"
 
 #: resources/.illustrations_translations.php:135
 msgctxt "Icon"
@@ -13158,7 +13160,7 @@ msgstr "traducción"
 #: resources/.illustrations_translations.php:162
 msgctxt "Icon"
 msgid "Tutorial"
-msgstr ""
+msgstr "Tutorial"
 
 #: resources/.illustrations_translations.php:163
 msgctxt "Icon"
@@ -13223,7 +13225,7 @@ msgstr "Mundo"
 #: resources/.illustrations_translations.php:175
 msgctxt "Icon"
 msgid "YouTube"
-msgstr ""
+msgstr "YouTube"
 
 #: resources/.illustrations_translations.php:176
 msgctxt "Icon"
@@ -13613,7 +13615,7 @@ msgstr "chat"
 #: resources/.illustrations_translations.php:257
 msgctxt "Icon"
 msgid "billing"
-msgstr ""
+msgstr "facturación"
 
 #: resources/.illustrations_translations.php:258
 msgctxt "Icon"
@@ -13693,42 +13695,42 @@ msgstr "envío"
 #: resources/.illustrations_translations.php:273
 msgctxt "Icon"
 msgid "troubleshooting"
-msgstr ""
+msgstr "resolución de problemas"
 
 #: resources/.illustrations_translations.php:274
 msgctxt "Icon"
 msgid "analysis"
-msgstr ""
+msgstr "análisis"
 
 #: resources/.illustrations_translations.php:275
 msgctxt "Icon"
 msgid "developer"
-msgstr ""
+msgstr "desarrollador"
 
 #: resources/.illustrations_translations.php:276
 msgctxt "Icon"
 msgid "api"
-msgstr ""
+msgstr "api"
 
 #: resources/.illustrations_translations.php:277
 msgctxt "Icon"
 msgid "code"
-msgstr ""
+msgstr "código"
 
 #: resources/.illustrations_translations.php:278
 msgctxt "Icon"
 msgid "docs"
-msgstr ""
+msgstr "documentos"
 
 #: resources/.illustrations_translations.php:279
 msgctxt "Icon"
 msgid "manual"
-msgstr ""
+msgstr "manual"
 
 #: resources/.illustrations_translations.php:280
 msgctxt "Icon"
 msgid "guide"
-msgstr ""
+msgstr "guía"
 
 #: resources/.illustrations_translations.php:281
 msgctxt "Icon"
@@ -13763,7 +13765,7 @@ msgstr "industria"
 #: resources/.illustrations_translations.php:287
 msgctxt "Icon"
 msgid "questions"
-msgstr ""
+msgstr "preguntas"
 
 #: resources/.illustrations_translations.php:288
 msgctxt "Icon"
@@ -13828,7 +13830,7 @@ msgstr "directorio"
 #: resources/.illustrations_translations.php:300
 msgctxt "Icon"
 msgid "project-management"
-msgstr ""
+msgstr "gestión-proyectos"
 
 #: resources/.illustrations_translations.php:301
 msgctxt "Icon"
@@ -13963,12 +13965,12 @@ msgstr "inventario"
 #: resources/.illustrations_translations.php:327
 msgctxt "Icon"
 msgid "items"
-msgstr ""
+msgstr "elementos"
 
 #: resources/.illustrations_translations.php:328
 msgctxt "Icon"
 msgid "resources"
-msgstr ""
+msgstr "recursos"
 
 #: resources/.illustrations_translations.php:329
 msgctxt "Icon"
@@ -14008,12 +14010,12 @@ msgstr "fijar"
 #: resources/.illustrations_translations.php:336
 msgctxt "Icon"
 msgid "places"
-msgstr ""
+msgstr "lugares"
 
 #: resources/.illustrations_translations.php:337
 msgctxt "Icon"
 msgid "arborescence"
-msgstr ""
+msgstr "arborescencia"
 
 #: resources/.illustrations_translations.php:338
 msgctxt "Icon"
@@ -14048,12 +14050,12 @@ msgstr "CSAT"
 #: resources/.illustrations_translations.php:344
 msgctxt "Icon"
 msgid "devices"
-msgstr ""
+msgstr "dispositivos"
 
 #: resources/.illustrations_translations.php:345
 msgctxt "Icon"
 msgid "agent"
-msgstr ""
+msgstr "agente"
 
 #: resources/.illustrations_translations.php:346
 msgctxt "Icon"
@@ -14108,12 +14110,12 @@ msgstr "compra"
 #: resources/.illustrations_translations.php:356
 msgctxt "Icon"
 msgid "export"
-msgstr ""
+msgstr "exportar"
 
 #: resources/.illustrations_translations.php:357
 msgctxt "Icon"
 msgid "phone"
-msgstr ""
+msgstr "teléfono"
 
 #: resources/.illustrations_translations.php:358
 msgctxt "Icon"
@@ -14278,12 +14280,12 @@ msgstr "l10n"
 #: resources/.illustrations_translations.php:391
 msgctxt "Icon"
 msgid "tutorial"
-msgstr ""
+msgstr "tutorial"
 
 #: resources/.illustrations_translations.php:392
 msgctxt "Icon"
 msgid "how-to"
-msgstr ""
+msgstr "cómo-hacer"
 
 #: resources/.illustrations_translations.php:393
 msgctxt "Icon"
@@ -14353,17 +14355,17 @@ msgstr "planeta"
 #: resources/.illustrations_translations.php:406
 msgctxt "Icon"
 msgid "video"
-msgstr ""
+msgstr "vídeo"
 
 #: resources/.illustrations_translations.php:407
 msgctxt "Icon"
 msgid "youtube"
-msgstr ""
+msgstr "youtube"
 
 #: resources/.illustrations_translations.php:408
 msgctxt "Icon"
 msgid "channel"
-msgstr ""
+msgstr "canal"
 
 #: ajax/savedsearch.php:49
 msgid "Search has been saved"
@@ -18955,7 +18957,7 @@ msgstr ""
 #: src/Glpi/Form/Export/Serializer/FormSerializer.php:153
 #, php-format
 msgid "Missing plugin: %s"
-msgstr ""
+msgstr "Plugin faltante: %s"
 
 #: src/Glpi/Form/Section.php:89
 msgid "Section"
@@ -23528,6 +23530,8 @@ msgid ""
 "Download and update all plugins to their latest compatible versions, then "
 "reactivate active ones."
 msgstr ""
+"Descarga y actualiza todos los complementos a sus últimas versiones "
+"compatibles y, a continuación, reactiva los que estuviesen activos."
 
 #: src/Glpi/Console/Marketplace/UpgradeCommand.php:99
 #, php-format
@@ -34065,17 +34069,17 @@ msgstr "Todas las páginas en formato Office Open XML (.xlsx)"
 #: src/Dropdown.php:4223
 #, php-format
 msgid "My %s"
-msgstr ""
+msgstr "Mi %s"
 
 #: src/Dropdown.php:4333
 #, php-format
 msgid "My groups %s"
-msgstr ""
+msgstr "Mis grupos %s"
 
 #: src/Dropdown.php:4582
 #, php-format
 msgid "Connected %s"
-msgstr ""
+msgstr "Conectado %s"
 
 #: src/RuleDictionnaryPeripheralModelCollection.php:43
 msgid "Dictionary of device models"
@@ -35278,27 +35282,29 @@ msgstr "fallido"
 
 #: js/modules/Forms/EditorController.js:1365
 msgid "Submit button visibility"
-msgstr ""
+msgstr "Visibilidad del botón de enviar"
 
 #: js/modules/Forms/EditorController.js:2248
 msgid "question"
 msgid_plural "questions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "pregunta"
+msgstr[1] "preguntas"
+msgstr[2] "preguntas"
 
 #: js/modules/Forms/EditorController.js:2252
 msgid "comment"
 msgid_plural "comments"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "comentario"
+msgstr[1] "comentarios"
+msgstr[2] "comentarios"
 
 #: js/modules/Forms/EditorController.js:2257
 #, javascript-format
 msgid ""
 "Deleting this section will also delete %s. This action cannot be undone."
 msgstr ""
+"Eliminar esta sección también eliminará %s. Esta acción no se puede "
+"deshacer."
 
 #: js/modules/Forms/EditorController.js:2629
 #, javascript-format
@@ -35321,7 +35327,7 @@ msgstr ""
 
 #: js/modules/Forms/RendererController.js:319
 msgid "Details:"
-msgstr ""
+msgstr "Detalles:"
 
 #: js/modules/Search/Table.js:72
 msgid "Submit current search before saving it"

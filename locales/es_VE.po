@@ -1287,6 +1287,8 @@ msgstr "Cerrar"
 #: templates/pages/setup/general/systeminfo_table.html.twig
 msgid "This version is UNSTABLE and some SECURITY FIXES may not be included."
 msgstr ""
+"Esta versión es INESTABLE y es posible que algunas CORRECCIONES DE SEGURIDAD"
+" no estén incluidas."
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."
@@ -1401,7 +1403,7 @@ msgstr "Ocultar menú"
 #: templates/layout/parts/profile_selector_form.html.twig
 #, php-format
 msgid "Select %1s entity with all its sub entities"
-msgstr ""
+msgstr "Seleccione la entidad %1s con todas sus subentidades"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "You have not recorded any saved searches yet"
@@ -10489,13 +10491,15 @@ msgstr "Condiciones"
 
 #: templates/pages/admin/form/section_element_has_conditions_for_deletion_modal.html.twig
 msgid "Child items have conditions and cannot be deleted"
-msgstr ""
+msgstr "Los elementos secundarios tienen condiciones y no se pueden eliminar"
 
 #: templates/pages/admin/form/section_element_has_conditions_for_deletion_modal.html.twig
 msgid ""
 "This section has child elements that are used in conditions of other form "
 "elements"
 msgstr ""
+"Esta sección contiene elementos secundarios que se utilizan en las "
+"condiciones de otros elementos de formulario"
 
 #: templates/pages/admin/form/form_toolbar.html.twig
 msgid "Add a question"
@@ -10652,15 +10656,15 @@ msgstr ""
 
 #: templates/pages/admin/form/delete_non_empty_section_modal.html.twig
 msgid "Delete non-empty section"
-msgstr ""
+msgstr "Eliminar sección no vacía"
 
 #: templates/pages/admin/form/delete_non_empty_section_modal.html.twig
 msgid "This section contains elements"
-msgstr ""
+msgstr "Esta sección contiene elementos"
 
 #: templates/pages/admin/form/delete_non_empty_section_modal.html.twig
 msgid "Delete section and all its elements"
-msgstr ""
+msgstr "Eliminar sección y todos sus elementos"
 
 #: templates/pages/admin/profile/management.html.twig
 msgid "Manageable domain records"
@@ -12356,7 +12360,7 @@ msgstr "paneles-avanzados"
 #: resources/.illustrations_translations.php:4
 msgctxt "Icon"
 msgid "Advanced forms"
-msgstr ""
+msgstr "Formularios avanzados"
 
 #: resources/.illustrations_translations.php:5
 msgctxt "Icon"
@@ -12502,7 +12506,7 @@ msgstr "Inteligencia de negocios e informes 3"
 #: resources/.illustrations_translations.php:33
 msgctxt "Icon"
 msgid "Business Intelligence and Reporting 4"
-msgstr ""
+msgstr "Inteligencia empresarial e informes 4"
 
 #: resources/.illustrations_translations.php:34
 msgctxt "Icon"
@@ -12617,7 +12621,7 @@ msgstr "Red en la nube 2"
 #: resources/.illustrations_translations.php:56
 msgctxt "Icon"
 msgid "Cloud usage"
-msgstr ""
+msgstr "Uso de la nube"
 
 #: resources/.illustrations_translations.php:57
 msgctxt "Icon"
@@ -12674,7 +12678,7 @@ msgstr "base de datos"
 #: resources/.illustrations_translations.php:67
 msgctxt "Icon"
 msgid "Add database"
-msgstr ""
+msgstr "Agregar base de datos"
 
 #: resources/.illustrations_translations.php:68
 msgctxt "Icon"
@@ -12684,7 +12688,7 @@ msgstr "Entrega"
 #: resources/.illustrations_translations.php:69
 msgctxt "Icon"
 msgid "Diagnostic"
-msgstr ""
+msgstr "Diagnóstico"
 
 #: resources/.illustrations_translations.php:70
 msgctxt "Icon"
@@ -12744,7 +12748,7 @@ msgstr "Corrección de errores"
 #: resources/.illustrations_translations.php:81
 msgctxt "Icon"
 msgid "Fixing bug 2"
-msgstr ""
+msgstr "Corrección del error 2"
 
 #: resources/.illustrations_translations.php:82
 msgctxt "Icon"
@@ -12759,7 +12763,7 @@ msgstr "creador-de-formularios"
 #: resources/.illustrations_translations.php:84
 msgctxt "Icon"
 msgid "Gantt"
-msgstr ""
+msgstr "Gantt"
 
 #: resources/.illustrations_translations.php:85
 msgctxt "Icon"
@@ -12844,12 +12848,12 @@ msgstr "Inventario"
 #: resources/.illustrations_translations.php:101
 msgctxt "Icon"
 msgid "Inventory numbers"
-msgstr ""
+msgstr "Números de inventario"
 
 #: resources/.illustrations_translations.php:102
 msgctxt "Icon"
 msgid "Items export"
-msgstr ""
+msgstr "Exportación de artículos"
 
 #: resources/.illustrations_translations.php:103
 msgctxt "Icon"
@@ -12859,17 +12863,17 @@ msgstr "Base de conocimientos y preguntas frecuentes"
 #: resources/.illustrations_translations.php:104
 msgctxt "Icon"
 msgid "LDAP diagnostic"
-msgstr ""
+msgstr "Diagnóstico LDAP"
 
 #: resources/.illustrations_translations.php:105
 msgctxt "Icon"
 msgid "LDAP inventory"
-msgstr ""
+msgstr "Inventario LDAP"
 
 #: resources/.illustrations_translations.php:106
 msgctxt "Icon"
 msgid "LDAP manage"
-msgstr ""
+msgstr "Gestión de LDAP"
 
 #: resources/.illustrations_translations.php:107
 msgctxt "Icon"
@@ -12914,7 +12918,7 @@ msgstr "Monitoreo"
 #: resources/.illustrations_translations.php:115
 msgctxt "Icon"
 msgid "More options"
-msgstr ""
+msgstr "Más opciones"
 
 #: resources/.illustrations_translations.php:116
 msgctxt "Icon"
@@ -12924,7 +12928,7 @@ msgstr "más-satisfacción"
 #: resources/.illustrations_translations.php:117
 msgctxt "Icon"
 msgid "Network inventory"
-msgstr ""
+msgstr "Inventario de la red"
 
 #: resources/.illustrations_translations.php:118
 msgctxt "Icon"
@@ -12989,12 +12993,12 @@ msgstr "Socio"
 #: resources/.illustrations_translations.php:130
 msgctxt "Icon"
 msgid "PDF export"
-msgstr ""
+msgstr "Exportar a PDF"
 
 #: resources/.illustrations_translations.php:131
 msgctxt "Icon"
 msgid "Phone inventory"
-msgstr ""
+msgstr "Inventario telefónico"
 
 #: resources/.illustrations_translations.php:132
 #: resources/.illustrations_translations.php:382
@@ -13010,7 +13014,7 @@ msgstr "Imprimir un trabajo"
 #: resources/.illustrations_translations.php:134
 msgctxt "Icon"
 msgid "Printer inventory"
-msgstr ""
+msgstr "Inventario de impresoras"
 
 #: resources/.illustrations_translations.php:135
 msgctxt "Icon"
@@ -13606,7 +13610,7 @@ msgstr "chat"
 #: resources/.illustrations_translations.php:257
 msgctxt "Icon"
 msgid "billing"
-msgstr ""
+msgstr "facturación"
 
 #: resources/.illustrations_translations.php:258
 msgctxt "Icon"
@@ -13686,17 +13690,17 @@ msgstr "envío"
 #: resources/.illustrations_translations.php:273
 msgctxt "Icon"
 msgid "troubleshooting"
-msgstr ""
+msgstr "solución de problemas"
 
 #: resources/.illustrations_translations.php:274
 msgctxt "Icon"
 msgid "analysis"
-msgstr ""
+msgstr "análisis"
 
 #: resources/.illustrations_translations.php:275
 msgctxt "Icon"
 msgid "developer"
-msgstr "Desarrollador"
+msgstr "desarrollador"
 
 #: resources/.illustrations_translations.php:276
 msgctxt "Icon"
@@ -13821,7 +13825,7 @@ msgstr "directorio"
 #: resources/.illustrations_translations.php:300
 msgctxt "Icon"
 msgid "project-management"
-msgstr ""
+msgstr "gestión-proyectos"
 
 #: resources/.illustrations_translations.php:301
 msgctxt "Icon"
@@ -14001,12 +14005,12 @@ msgstr "sujetar"
 #: resources/.illustrations_translations.php:336
 msgctxt "Icon"
 msgid "places"
-msgstr ""
+msgstr "lugares"
 
 #: resources/.illustrations_translations.php:337
 msgctxt "Icon"
 msgid "arborescence"
-msgstr ""
+msgstr "arborescencia"
 
 #: resources/.illustrations_translations.php:338
 msgctxt "Icon"
@@ -14041,12 +14045,12 @@ msgstr "CSAT"
 #: resources/.illustrations_translations.php:344
 msgctxt "Icon"
 msgid "devices"
-msgstr ""
+msgstr "dispositivos"
 
 #: resources/.illustrations_translations.php:345
 msgctxt "Icon"
 msgid "agent"
-msgstr ""
+msgstr "agente"
 
 #: resources/.illustrations_translations.php:346
 msgctxt "Icon"
@@ -14101,12 +14105,12 @@ msgstr "compra"
 #: resources/.illustrations_translations.php:356
 msgctxt "Icon"
 msgid "export"
-msgstr ""
+msgstr "exportar"
 
 #: resources/.illustrations_translations.php:357
 msgctxt "Icon"
 msgid "phone"
-msgstr ""
+msgstr "teléfono"
 
 #: resources/.illustrations_translations.php:358
 msgctxt "Icon"
@@ -31449,7 +31453,7 @@ msgstr "Elemento no enlazado a un objeto"
 #: src/CommonDBChild.php:462
 #, php-format
 msgid "Parent item %s #%s is invalid."
-msgstr ""
+msgstr "El elemento padre %s #%s no es válido."
 
 #: src/CommonDBChild.php:895
 #, php-format
@@ -35490,22 +35494,24 @@ msgstr "Visibilidad del botón Enviar"
 #: js/modules/Forms/EditorController.js:2248
 msgid "question"
 msgid_plural "questions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "pregunta"
+msgstr[1] "preguntas"
+msgstr[2] "preguntas"
 
 #: js/modules/Forms/EditorController.js:2252
 msgid "comment"
 msgid_plural "comments"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "comentario"
+msgstr[1] "comentarios"
+msgstr[2] "comentarios"
 
 #: js/modules/Forms/EditorController.js:2257
 #, javascript-format
 msgid ""
 "Deleting this section will also delete %s. This action cannot be undone."
 msgstr ""
+"Eliminar esta sección también eliminará %s. Esta acción no se puede "
+"deshacer."
 
 #: js/modules/Forms/EditorController.js:2629
 #, javascript-format
