@@ -74,6 +74,7 @@ $CFG_GLPI['languages'] = [
     'ar_SY'  => ['العربية سوريا',             'ar_SY.mo',    'ar',    'ar', 'syria arabic',         103],
     'az_AZ'  => ['Azərbaycan dili',           'az_AZ.mo',    'az',    'az', 'azerbaijani',          2],
     'bg_BG'  => ['Български',                 'bg_BG.mo',    'bg',    'bg', 'bulgarian',            2],
+    'bn_BD'  => ['বাংলা (বাংলাদেশ)',          'bn_BD.mo',    'bn',    'bn_BD', 'bengali',           2],
     'id_ID'  => ['Bahasa Indonesia',          'id_ID.mo',    'id',    'id', 'indonesian',           2],
     'ms_MY'  => ['Bahasa Melayu',             'ms_MY.mo',    'ms',    'ms', 'malay',                2],
     'ca_ES'  => ['Català',                    'ca_ES.mo',    'ca',    'ca', 'catalan',              2], // ca_CA
