@@ -91,7 +91,7 @@ class Vlan extends CommonDropdown
     }
 
     /**
-     * @param string $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      * @param HTMLTableBase $base
      * @param HTMLTableSuperHeader|null $super
      * @param HTMLTableHeader|null $father
@@ -142,7 +142,9 @@ class Vlan extends CommonDropdown
                 return;
             }
             $item = $father->getItem();
-            /** @var CommonDBTM $item */
+            if ($item === false) {
+                return;
+            }
         }
 
         if ($item::class === NetworkPort_Vlan::class) {

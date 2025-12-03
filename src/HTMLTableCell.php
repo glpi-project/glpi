@@ -202,7 +202,7 @@ class HTMLTableCell extends HTMLTableEntity
     }
 
     /**
-     * @param int|float $value
+     * @param int $value
      *
      * @return void
      */
@@ -225,7 +225,7 @@ class HTMLTableCell extends HTMLTableEntity
         }
 
         $numberEmpty = $totalNumberOflines - $numberOfLines;
-        $step        = floor($numberEmpty / (count($cells)));
+        $step        = (int) floor($numberEmpty / (count($cells)));
         $last        = $numberEmpty % (count($cells));
         $index       = 0;
 

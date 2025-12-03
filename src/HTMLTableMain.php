@@ -115,7 +115,7 @@ class HTMLTableMain extends HTMLTableBase
     }
 
     /**
-     * @param string $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      * @param string $title
      *
      * @return void

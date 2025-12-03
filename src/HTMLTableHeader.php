@@ -45,9 +45,9 @@ abstract class HTMLTableHeader extends HTMLTableEntity
     private $name;
     /** @var ?HTMLTableHeader */
     private $father;
-    /** @var array<string, string> */
+    /** @var array<class-string<CommonDBTM>, string> */
     private $itemtypes   = [];
-    /** @var int|float */
+    /** @var int */
     private $colSpan     = 1;
     /** @var int */
     private $numberCells = 0;
@@ -131,7 +131,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
     }
 
     /**
-     * @param int|float $colSpan
+     * @param int $colSpan
      *
      * @return void
      */
@@ -157,7 +157,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
     }
 
     /**
-     * @return int|float
+     * @return int
      */
     public function getColSpan()
     {

@@ -1065,7 +1065,10 @@ class IPNetwork extends CommonImplicitTreeDropdown
         if ($item->getType() != 'IPAddress') {
             return;
         }
-        /** @var IPAddress $item */
+
+        if (!($item instanceof IPAddress)) {
+            return;
+        }
 
         $column_name = self::class;
         if (isset($options['dont_display'][$column_name])) {
