@@ -432,22 +432,6 @@ class ToolboxTest extends DbTestCase
         $this->assertSame($upper, \Toolbox::strtoupper($lower));
     }
 
-    public static function utfProvider()
-    {
-        return [
-            ['a simple string', true],
-            ['caractère', true],
-            [mb_convert_encoding('caractère', 'ISO-8859-15'), false],
-            [mb_convert_encoding('simple string', 'ISO-8859-15'), true],
-        ];
-    }
-
-    #[DataProvider('utfProvider')]
-    public function testSeems_utf8($string, $utf)
-    {
-        $this->assertSame($utf, @\Toolbox::seems_utf8($string));
-    }
-
     public function testSaveAndDeletePicture()
     {
         // Save an image twice

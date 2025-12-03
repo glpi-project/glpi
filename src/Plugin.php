@@ -47,7 +47,6 @@ use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\VersionParser;
-use Safe\Exceptions\FilesystemException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 use function Safe\ini_get;
@@ -55,7 +54,6 @@ use function Safe\ob_end_clean;
 use function Safe\ob_start;
 use function Safe\preg_grep;
 use function Safe\preg_match;
-use function Safe\realpath;
 use function Safe\scandir;
 
 class Plugin extends CommonDBTM
@@ -1793,10 +1791,6 @@ class Plugin extends CommonDBTM
                         continue;
                     }
 
-                    if ($name === Hooks::SHOW_IN_TIMELINE) { // @phpstan-ignore classConstant.deprecated
-                        Toolbox::deprecated('`show_in_timeline` hook is deprecated, use `timeline_items` instead.');
-                    }
-
                     if (isset($tab[$itemtype])) {
                         Profiler::getInstance()->start("{$plugin_key}:{$name}", Profiler::CATEGORY_PLUGINS);
                         self::includeHook($plugin_key);
@@ -3104,56 +3098,6 @@ class Plugin extends CommonDBTM
         }
 
         return str_replace('\\', '/', $directory);
-    }
-
-
-    /**
-     * Return the web path for a given plugin key
-     *
-     * @since 9.5
-     *
-     * @param string $plugin_key plugin system key
-     * @param bool $full if true, append root_doc from config
-     * @param bool $use_url_base if true, url_base instead root_doc
-     *
-     * @return false|string the web path
-     *
-     * @deprecated 11.0
-     */
-    public static function getWebDir(string $plugin_key = "", $full = true, $use_url_base = false)
-    {
-        global $CFG_GLPI;
-
-        Toolbox::deprecated('All plugins resources should be accessed from the `/plugins/` path.');
-
-        try {
-            $marketplace_dir = realpath(GLPI_MARKETPLACE_DIR);
-        } catch (FilesystemException) {
-            $marketplace_dir = null;
-        }
-
-        $found       = false;
-        $marketplace = false;
-        foreach (static::getPluginDirectories() as $plugins_directory) {
-            if (is_dir("$plugins_directory/$plugin_key")) {
-                $found       = true;
-                $marketplace = realpath($plugins_directory) === $marketplace_dir;
-                break;
-            }
-        }
-
-        if (!$found) {
-            return false;
-        }
-
-        $path = ($marketplace ? 'marketplace' : 'plugins') . '/' . $plugin_key;
-
-        if ($full) {
-            $root = $use_url_base ? $CFG_GLPI['url_base'] : $CFG_GLPI["root_doc"];
-            $path = "$root/$path";
-        }
-
-        return $path;
     }
 
 

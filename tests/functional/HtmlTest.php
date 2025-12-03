@@ -106,13 +106,6 @@ class HtmlTest extends DbTestCase
         $this->assertSame($expected, \Html::convDateTime($mydate, 2, true));
     }
 
-    public function testCleanInputText()
-    {
-        $origin = 'This is a \'string\' with some "replacements" needed, but not « others »!';
-        $expected = 'This is a &#039;string&#039; with some &quot;replacements&quot; needed, but not « others »!';
-        $this->assertSame($expected, @\Html::cleanInputText($origin));
-    }
-
     public function cleanParametersURL()
     {
         $url = 'http://host/glpi/path/to/file.php?var1=2&var2=3';
@@ -668,17 +661,6 @@ class HtmlTest extends DbTestCase
         }
     }
 
-    public function testEntitiesDeep()
-    {
-        $value = 'Should be \' "escaped" éè!';
-        $expected = 'Should be &#039; &quot;escaped&quot; &eacute;&egrave;!';
-        $result = @\Html::entities_deep($value);
-        $this->assertSame($expected, $result);
-
-        $result = @\Html::entities_deep([$value, $value, $value]);
-        $this->assertSame([$expected, $expected, $expected], $result);
-    }
-
     public function testCleanParametersURL()
     {
         $url = 'http://perdu.com';
@@ -742,13 +724,6 @@ class HtmlTest extends DbTestCase
         $actions = '$("#mydiv").focus();';
         $expected = 'onclick="if (window.confirm(&quot;Are U&amp;#039; OK?&quot;)){ $(&quot;#mydiv&quot;).focus();return true;} else { return false;}"';
         $this->assertSame($expected, \Html::addConfirmationOnAction($string, $actions));
-    }
-
-    public function testJsFunctions()
-    {
-        $this->assertSame("$('#myid')", @\Html::jsGetElementbyID('myid'));
-        $this->assertSame("$('#myid').trigger('setValue', 'myval');", @\Html::jsSetDropdownValue('myid', 'myval'));
-        $this->assertSame("$('#myid').val()", @\Html::jsGetDropdownValue('myid'));
     }
 
     public function testCleanId()

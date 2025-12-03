@@ -52,7 +52,6 @@ use Glpi\Dashboard\Filters\{
 use Glpi\Plugin\Hooks;
 use Plugin;
 use Session;
-use Toolbox;
 
 /**
  * Filter class
@@ -141,21 +140,6 @@ class Filter extends CommonDBChild
         }
 
         return $filters;
-    }
-
-    /**
-     * Return all available filters.
-     * Keys are filters ids, values are filters labels.
-     *
-     * @return array of filters
-     *
-     * @deprecated 11.0.0.
-     */
-    public static function getAll(): array
-    {
-        Toolbox::deprecated();
-
-        return self::getFilterChoices();
     }
 
     /**
