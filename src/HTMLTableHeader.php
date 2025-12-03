@@ -79,7 +79,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
     abstract public function isSuperHeader();
 
     /**
-     * @param string $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      * @param string $title         (default '')
      *
      * @return void
