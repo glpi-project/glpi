@@ -47,7 +47,6 @@ use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\VersionParser;
-use Safe\Exceptions\FilesystemException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 use function Safe\ini_get;
@@ -55,7 +54,6 @@ use function Safe\ob_end_clean;
 use function Safe\ob_start;
 use function Safe\preg_grep;
 use function Safe\preg_match;
-use function Safe\realpath;
 use function Safe\scandir;
 
 class Plugin extends CommonDBTM

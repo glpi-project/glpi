@@ -36,7 +36,6 @@
 namespace Glpi\Application\View\Extension;
 
 use Glpi\RichText\RichText;
-use Glpi\Toolbox\Sanitizer;
 use Html;
 use Toolbox;
 use Twig\Extension\AbstractExtension;

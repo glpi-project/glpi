@@ -36,7 +36,6 @@
 namespace Glpi\Plugin;
 
 use LogicException;
-use Toolbox;
 
 class HookManager
 {

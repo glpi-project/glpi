@@ -35,10 +35,6 @@
 
 namespace Glpi\Http;
 
-use Toolbox;
-
-use function Safe\json_encode;
-
 /**
  * @since 10.0.0
  */

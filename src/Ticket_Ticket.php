@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
 
 /// Class Ticket links
 class Ticket_Ticket extends CommonITILObject_CommonITILObject

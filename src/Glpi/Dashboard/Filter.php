@@ -52,7 +52,6 @@ use Glpi\Dashboard\Filters\{
 use Glpi\Plugin\Hooks;
 use Plugin;
 use Session;
-use Toolbox;
 
 /**
  * Filter class

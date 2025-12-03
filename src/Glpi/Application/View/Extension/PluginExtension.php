@@ -37,7 +37,6 @@ namespace Glpi\Application\View\Extension;
 
 use Glpi\Plugin\Hooks;
 use Plugin;
-use Toolbox;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
