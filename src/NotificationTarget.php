@@ -82,6 +82,17 @@ class NotificationTarget extends CommonDBChild
      */
     public $recipient_data              = [];
 
+    /**
+     * Current recipient user info for template generation.
+     * Contains the user information (users_id, email, language, etc.) for the recipient
+     * currently being processed. This allows plugins to generate user-specific data
+     * (like unique tokens) during the ITEM_GET_DATA hook.
+     *
+     * @var array
+     * @since 10.0.21
+     */
+    public $current_user_infos          = [];
+
     private $allow_response             = true;
     private $mode                       = null;
     private $event                      = null;
@@ -1391,6 +1402,11 @@ class NotificationTarget extends CommonDBChild
     public function &getForTemplate($event, $options)
     {
         $this->data = [];
+
+        // Store current user info for plugins to access during ITEM_GET_DATA hook
+        if (isset($options['_user_infos'])) {
+            $this->current_user_infos = $options['_user_infos'];
+        }
 
         $this->addDataForTemplate($event, $options);
 
