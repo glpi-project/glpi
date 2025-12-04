@@ -1876,7 +1876,7 @@ TWIG,
         $found_new_version = null;
         if (!empty($CFG_GLPI['found_new_version'] ?? null)) {
             $current_version     = preg_replace('/^((\d+\.?)+).*$/', '$1', GLPI_VERSION);
-            $found_new_version = version_compare($current_version, $CFG_GLPI['founded_new_version'], '<')
+            $found_new_version = version_compare($current_version, $CFG_GLPI['found_new_version'], '<')
             ? $CFG_GLPI['found_new_version']
             : null;
         }
@@ -1907,7 +1907,7 @@ TWIG,
         return [
             'is_debug_active'       => $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE,
             'is_impersonate_active' => Session::isImpersonateActive(),
-            'found_new_version'   => $founded_new_version,
+            'found_new_version'   => $found_new_version,
             'user'                  => $user instanceof User ? $user : null,
             'platform'              => $platform,
             'help_url'              => URL::sanitizeURL($help_url),
