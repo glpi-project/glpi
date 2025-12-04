@@ -116,7 +116,9 @@
             {% endif %}
 
             <div class="middle-controls d-flex">
-                {% do call([itemtype, 'showSearchStatusArea']) %}
+                {% if call('method_exists', [itemtype, 'showSearchStatusArea']) %}
+                    {% do call([itemtype, 'showSearchStatusArea']) %}
+                {% endif %}
 
                 {% if user_pref('search_pagination_on_top') %}
                     {% if data['display_type'] != constant('Search::GLOBAL_SEARCH') and data['search']['as_map'] == 0 %}
