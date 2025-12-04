@@ -3531,7 +3531,7 @@ JS;
         if ($theme->isCustomTheme()) {
             $content_css_paths[] = $theme->getPath();
         }
-        $content_css = $CFG_GLPI['root_doc'] . '/lib/tinymce/skins/ui/oxide/content.css';
+        $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('lib/tinymce/skins/ui/oxide/content.css', ['force_no_version' => true]));
         $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('lib/base.css', ['force_no_version' => true]));
         $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('lib/tabler.css', ['force_no_version' => true]));
         $content_css .= ',' . implode(',', array_map(static fn($path) => preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($path, ['force_no_version' => true])), $content_css_paths));
