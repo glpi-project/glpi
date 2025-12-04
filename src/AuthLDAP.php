@@ -3841,11 +3841,6 @@ class AuthLDAP extends CommonDBTM
                     if (empty($_SESSION['ldap_import']['basedn'])) {
                         $_SESSION['ldap_import']['basedn'] = $authldap->getField('basedn');
                     }
-
-                    if ($entity->getField('entity_ldapfilter') != NOT_AVAILABLE) {
-                        $_SESSION['ldap_import']['entity_filter']
-                        = $entity->getField('entity_ldapfilter');
-                    }
                 } else {
                     if (
                         $_SESSION['ldap_import']['authldaps_id'] == NOT_AVAILABLE
@@ -3858,6 +3853,10 @@ class AuthLDAP extends CommonDBTM
                         $authldap->getFromDB($_SESSION['ldap_import']['authldaps_id']);
                         $_SESSION['ldap_import']['basedn'] = $authldap->getField('basedn');
                     }
+                }
+
+                if ($entity->getField('entity_ldapfilter') != NOT_AVAILABLE) {
+                    $_SESSION['ldap_import']['entity_filter'] = $entity->getField('entity_ldapfilter');
                 }
 
                 if ($_SESSION['ldap_import']['authldaps_id'] > 0) {
@@ -3879,6 +3878,7 @@ class AuthLDAP extends CommonDBTM
                     !isset($_SESSION['ldap_import']['ldap_filter'])
                     || $_SESSION['ldap_import']['ldap_filter'] == ''
                 ) {
+                    $t = $_SESSION['ldap_import'];
                     $authldap->getFromDB($_SESSION['ldap_import']['authldaps_id']);
                     $_SESSION['ldap_import']['basedn']      = $authldap->getField('basedn');
                     $_SESSION['ldap_import']['ldap_filter'] = self::buildLdapFilter($authldap);
@@ -3960,10 +3960,12 @@ class AuthLDAP extends CommonDBTM
                      "\" " . (!$_SESSION['ldap_import']['basedn'] ? "disabled" : "") . ">";
                     echo "</td></tr>";
 
+                    $t = $_SESSION['ldap_import'];
                     echo "<tr><td class='text-end'><label for='ldap_filter'>" . __('Search filter for users') . "</label></td><td colspan='3'>";
                     echo "<input type='text' class='form-control' id='ldap_filter' name='ldap_filter' value=\"" .
                       htmlspecialchars($_SESSION['ldap_import']['ldap_filter'], ENT_QUOTES) . "\">";
                     echo "</td></tr>";
+
                 }
                 break;
 
