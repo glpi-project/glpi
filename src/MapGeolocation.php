@@ -42,6 +42,8 @@ trait MapGeolocation
 {
     /**
      * get openstreetmap
+     *
+     * @return void
      */
     public function showMap()
     {

@@ -779,7 +779,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $tpl_key = static::getTemplateFormFieldName();
 
         if ($this->isNewItem()) {
-            if (isset($tt->predefined) && count($tt->predefined)) {
+            if (count($tt->predefined)) {
                 foreach ($tt->predefined as $predeffield => $predefvalue) {
                     if (isset($options[$predeffield]) && isset($default_values[$predeffield])) {
                         // Is always default value : not set
@@ -1114,6 +1114,13 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
         return true;
     }
+
+    /**
+     * Can ITIL object be reopened?
+     *
+     * @return bool
+     */
+    abstract public function canReopen();
 
 
     /**

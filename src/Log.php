@@ -130,12 +130,12 @@ class Log extends CommonDBTM
     /**
      * Construct  history for an item
      *
-     * @param $item               CommonDBTM object
-     * @param $oldvalues    array of old values updated
-     * @param $values       array of all values of the item
+     * @param CommonDBTM $item      CommonDBTM object
+     * @param array      $oldvalues array of old values updated
+     * @param array      $values    array of all values of the item
      *
      * @return boolean for success (at least 1 log entry added)
-     **/
+     */
     public static function constructHistory(CommonDBTM $item, $oldvalues, $values)
     {
 
@@ -218,15 +218,15 @@ class Log extends CommonDBTM
     /**
      * Log history
      *
-     * @param $items_id
-     * @param $itemtype
-     * @param $changes
-     * @param $itemtype_link   (default '')
-     * @param $linked_action   (default '0')
+     * @param int $items_id
+     * @param class-string<CommonDBTM> $itemtype
+     * @param array $changes
+     * @param int|string $itemtype_link   (default '')
+     * @param int $linked_action   (default 0)
      *
      * @return boolean success
-     **/
-    public static function history($items_id, $itemtype, $changes, $itemtype_link = '', $linked_action = '0')
+     */
+    public static function history($items_id, $itemtype, $changes, $itemtype_link = '', $linked_action = 0)
     {
         global $DB;
 
@@ -307,10 +307,11 @@ class Log extends CommonDBTM
     /**
      * Show History of an item
      *
-     * @param $item                     CommonDBTM object
-     * @param $withtemplate    integer  withtemplate param (default 0)
+     * @param CommonDBTM $item         CommonDBTM object
+     * @param int        $withtemplate withtemplate param (default 0)
      *
-     **/
+     * @return void
+     */
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         global $CFG_GLPI;
@@ -1425,6 +1426,11 @@ class Log extends CommonDBTM
         static::$use_queue = true;
     }
 
+    /**
+     * @param array $var
+     *
+     * @return void
+     */
     public static function queue($var): void
     {
         static::$queue[] = $var;

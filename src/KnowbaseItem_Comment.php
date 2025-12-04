@@ -94,7 +94,9 @@ class KnowbaseItem_Comment extends CommonDBTM
      *
      * @param CommonDBTM $item
      * @param integer $withtemplate withtemplate param (default 0)
-     **/
+     *
+     * @return void
+     */
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         $kbitem_id = $item::class === KnowbaseItem::class ? $item->getID() : $item->fields['knowbaseitems_id'];

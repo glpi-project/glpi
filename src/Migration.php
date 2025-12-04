@@ -47,14 +47,14 @@ use function Safe\preg_replace;
  **/
 class Migration
 {
-    private $change    = [];
-    private $fulltexts = [];
-    private $uniques   = [];
-    private $search_opts = [];
-    protected $version;
-    private $lastMessage;
-    private $log_errors = 0;
-    private $queries = [
+    private array $change    = [];
+    private array $fulltexts = [];
+    private array $uniques   = [];
+    private array $search_opts = [];
+    protected string $version;
+    private array $lastMessage;
+    private int $log_errors = 0;
+    private array $queries = [
         'pre'    => [],
         'post'   => [],
     ];
@@ -85,7 +85,7 @@ class Migration
     {
         global $DB;
         $this->db = $DB;
-        $this->version = $ver;
+        $this->version = (string) $ver;
         $this->progress_indicator = $progress_indicator;
     }
 
@@ -100,7 +100,7 @@ class Migration
      **/
     public function setVersion($ver)
     {
-        $this->version = $ver;
+        $this->version = (string) $ver;
     }
 
     /**
@@ -1864,6 +1864,8 @@ class Migration
      * @param string $table Table name
      * @param class-string<CommonDBTM> $class_1 First itemtype (CommonDBTM)
      * @param class-string<CommonDBTM> $class_2 Second itemtype (CommonDBTM)
+     *
+     * @return void
      */
     public function createLinkTable(
         string $table,
