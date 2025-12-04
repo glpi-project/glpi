@@ -35,4 +35,4 @@
  * @var Migration $migration
  */
 $migration->addConfig(['found_new_version' => ''], 'core');
-$migration->removeConfig(['founded_new_version' => '']);
+$migration->removeConfig(['founded_new_version']);
