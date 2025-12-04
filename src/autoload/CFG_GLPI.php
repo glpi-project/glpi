@@ -168,7 +168,7 @@ $CFG_GLPI['document_types']               = [Budget::class, CartridgeItem::class
     ChangeTask::class, ProblemTask::class, TicketTask::class, Appliance::class,
     DatabaseInstance::class, Rack::class, ComputerModel::class, MonitorModel::class,
     NetworkEquipmentModel::class, PeripheralModel::class, PhoneModel::class, PrinterModel::class,
-    DeviceGenericModel::class
+    DeviceGenericModel::class,
 ];
 
 $CFG_GLPI['consumables_types']            = [Group::class, User::class];
