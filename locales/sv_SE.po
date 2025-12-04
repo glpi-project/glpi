@@ -351,7 +351,7 @@ msgstr "Status"
 #: src/ProjectTaskTemplate.php:67 src/ProjectTaskTemplate.php:141
 #: src/ITILCategory.php:56
 msgid "As child of"
-msgstr "Som barn till"
+msgstr "Är barn till"
 
 #: templates/generic_show_form.html.twig src/Software.php:485
 #: src/Appliance.php:339 src/RuleDictionnarySoftware.php:103
@@ -4176,7 +4176,7 @@ msgstr "Rapporterad prioritet"
 #: src/NotificationTargetCommonITILObject.php:1985
 #: src/CommonITILObject.php:4402 src/Stat.php:1810
 msgid "Impact"
-msgstr "Påverkan"
+msgstr "Påverkar"
 
 #: templates/components/itilobject/fields/priority_matrix.html.twig
 #: templates/pages/tools/project.html.twig front/stat.graph.php:222
@@ -5410,7 +5410,7 @@ msgstr "Börjar"
 #: src/State.php:650 src/State.php:670 src/State.php:690 src/State.php:710
 #: src/SavedSearch.php:135
 msgid "Visibility"
-msgstr "Synlighet"
+msgstr "Visningsalternativ"
 
 #: templates/pages/tools/reminder.html.twig
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
@@ -8414,11 +8414,11 @@ msgstr "SMTP måste användas."
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Way of sending emails"
-msgstr "Sätt att skicka mejl"
+msgstr "Sändmetod"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Max. delivery retries"
-msgstr "Max antal försök att skicka"
+msgstr "Max antal försök"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Try to deliver again in (minutes)"
@@ -15748,11 +15748,11 @@ msgstr "Lås upp en koppling till ett objekt"
 
 #: src/Log.php:1288
 msgid "Update an item"
-msgstr "Uppdatera ett objekt"
+msgstr "Uppdaterade objektet"
 
 #: src/Log.php:1292
 msgid "Delete an item"
-msgstr "Ta bort objekt"
+msgstr "Tog bort objektet"
 
 #: src/Log.php:1296
 msgid "Lock an item"
@@ -18740,7 +18740,7 @@ msgstr "Importerar översättningar..."
 
 #: src/Glpi/Form/Migration/FormMigration.php:1335
 msgid "Importing visibility conditions..."
-msgstr "Importerar villkor för synlighet..."
+msgstr "Importerar villkor för visningsalternativ..."
 
 #: src/Glpi/Form/Migration/FormMigration.php:1483
 #, php-format
@@ -34488,7 +34488,7 @@ msgstr "Oväntat fel."
 #: js/impact.js:2471
 msgid "Draw a line between two assets to add an impact relation"
 msgstr ""
-"Dra en linje mellan två tillgångar för att lägga till en effektrelation"
+"Dra en linje mellan två tillgångar för att lägga till en påverkansrelation"
 
 #: js/impact.js:2478
 msgid "Click on an element to remove it from the network"
@@ -34496,7 +34496,7 @@ msgstr "Klicka på en tillgång för att ta bort den från nätverket"
 
 #: js/impact.js:2486
 msgid "Draw a square containing the assets you wish to group"
-msgstr "Rita en ruta som innehåller de tillgångar du vill gruppera"
+msgstr "Rita en ruta runt de tillgångar du vill gruppera"
 
 #: js/impact.js:2614
 msgid "Requests"
@@ -34846,7 +34846,7 @@ msgstr "misslyckades"
 
 #: js/modules/Forms/EditorController.js:1365
 msgid "Submit button visibility"
-msgstr "Skicka-knappens synlighet"
+msgstr "Visningsalternativ för 'Skicka'-knappen"
 
 #: js/modules/Forms/EditorController.js:2248
 msgid "question"
