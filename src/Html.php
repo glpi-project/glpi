@@ -3529,7 +3529,8 @@ JS;
         if ($theme->isCustomTheme()) {
             $content_css_paths[] = $theme->getPath();
         }
-        $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('lib/base.css', ['force_no_version' => true]));
+        $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('lib/tinymce/skins/ui/oxide/content.css', ['force_no_version' => true]));
+        $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('lib/base.css', ['force_no_version' => true]));
         $tabler_path = ($_SESSION['glpiisrtl'] ?? false) ? 'lib/tabler.rtl.css' : 'lib/tabler.css';
         $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css($tabler_path, ['force_no_version' => true]));
         $content_css .= ',' . implode(',', array_map(static fn($path) => preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($path, ['force_no_version' => true])), $content_css_paths));
