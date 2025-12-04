@@ -378,7 +378,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                                 // 'cid' must be identical as second arg used in `embedFromPath` method
                                 // Symfony/Mime will then replace it by an auto-generated value
                                 // see Symfony\Mime\Email::prepareParts()
-                                'src="cid:' . $filename . '"',
+                                'src="cid:' . $filename . '" style="max-width: 100%; height: auto;"',
                                 'href="' . htmlescape($CFG_GLPI['url_base'] . '/front/document.send.php?docid=' . $docID) . '$1"',
                             ],
                             $current->fields['body_html']
