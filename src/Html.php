@@ -3639,8 +3639,6 @@ JS;
                     autoresize_bottom_margin: 1, // Avoid excessive bottom padding
                     autoresize_overflow_padding: 0,
 
-                    object_resizing: true,
-
                     min_height: $editor_height,
                     height: $editor_height, // Must be used with min_height to prevent "height jump" when the page is loaded
                     resize: true,
