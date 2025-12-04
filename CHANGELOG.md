@@ -754,7 +754,28 @@ The present file will list all changes made to the project; according to the
 - Usage of the `$link` and `$name` parameters in `Auth::getMethodName()`.
 
 
-## [10.0.22] unreleased
+## [10.0.23] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.22] 2025-12-04
 
 ### Added
 
