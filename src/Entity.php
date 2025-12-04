@@ -271,7 +271,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
     /**
      * Verify the current user can create a child entity.
-     * This method is used for example in the prepareInputForAdd.
+     * This method is used for example in the showSearchStatusArea.
      * @return bool
      */
     public static function canCreateChild(): bool
@@ -285,6 +285,9 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
     public static function canCreate(): bool
     {
+        if (!self::canCreateChild()) {
+            return false;
+        }
         // Do not show the create button if no recusive access on current entity
         return parent::canCreate() && Session::haveRecursiveAccessToEntity(Session::getActiveEntity());
     }
@@ -370,15 +373,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     public function prepareInputForAdd($input)
     {
         global $DB;
-        if (!self::canCreateChild()) {
-            Session::addMessageAfterRedirect(
-                __s("To create a child entity, you must enable entity tree structure."),
-                false,
-                ERROR
-            );
-            return false;
-        }
-
         $input['name'] = isset($input['name']) ? trim($input['name']) : '';
         if (empty($input["name"])) {
             Session::addMessageAfterRedirect(
@@ -716,6 +710,22 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     }
 
 
+    /**
+     * This method is used to display an error message on the entities list page.
+     *
+     * @return void
+     * @used-by templates/components/search/controls.html.twig
+     */
+    public static function showSearchStatusArea(): void
+    {
+        if (!self::canCreateChild()) {
+            Session::addMessageAfterRedirect(
+                __s("To create a child entity, you must enable entity tree structure."),
+                false,
+                ERROR
+            );
+        }
+    }
 
     public function showForm($ID, array $options = [])
     {

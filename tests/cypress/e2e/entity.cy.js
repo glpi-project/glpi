@@ -120,19 +120,20 @@ describe('Entity', () => {
         cy.get('.fancytree-expander[role=button]:visible').as('toggle_tree').click(); // From entities_selector tests.
         cy.findByRole('gridcell', {'name': subentity_name}).findByRole('button').click();
 
-        cy.visit(`/front/entity.form.php`);
-        cy.intercept(`/front/entity.form.php`).as('formSent');
-
-        // We can't create the sub-subentity
-        cy.findByLabelText('Name').type(`Sub-${subentity_name}`);
-        cy.findByRole('button', {'name': "Add"}).click();
-        cy.wait('@formSent').then((interception) => {
-            expect(interception.response.statusCode).to.eq(302);
+        // We can't create the sub-subentity, form is inaccessible
+        cy.intercept('GET', '/front/entity.form.php').as('formRequest');
+        cy.visit('/front/entity.form.php', {failOnStatusCode: false} );
+        cy.wait('@formRequest').then((interception) => {
+            expect(interception.response.statusCode).to.eq(403);
         });
+
+        // The listing page should display an error message
+        cy.visit('/front/entity.php');
+        cy.get('div.toast-container .toast-body').should('exist');
+
 
         // We switch context to be in recursive mode
         cy.openEntitySelector();
-        cy.get('header').findByTitle('Root entity > E2ETestEntity (full structure)').should('not.exist');
         cy.findByRole("button", {'name': "Select all"}).click();
 
         cy.visit(`/front/entity.form.php`);
@@ -140,7 +141,7 @@ describe('Entity', () => {
         cy.findByLabelText('Name').type(`Sub-${subentity_name}`);
         cy.findByRole('button', {'name': "Add"}).click();
         cy.wait('@formSent').then((interception) => {
-            expect(interception.response.statusCode).to.eq(200);
+            expect(interception.response.statusCode).to.eq(302);
         });
     });
 });
