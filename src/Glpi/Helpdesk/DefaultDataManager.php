@@ -59,9 +59,9 @@ use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Helpdesk\Tile\FormTile;
 use Glpi\Helpdesk\Tile\GlpiPageTile;
 use Glpi\Helpdesk\Tile\TilesManager;
+use Glpi\ItemTranslation\Context\TranslationHandler;
 use Glpi\ItemTranslation\ItemTranslation;
 use ITILCategory;
-use Laminas\I18n\Translator\Translator;
 use Location;
 use RuntimeException;
 use Session;
@@ -93,6 +93,7 @@ final class DefaultDataManager
     {
         $incident_form = $this->createIncidentForm();
         $request_form = $this->createRequestForm();
+        $this->addFormsTranslations([$incident_form, $request_form]);
 
         $root_entity = Entity::getById(0);
 
@@ -131,6 +132,8 @@ final class DefaultDataManager
             'illustration' => "reservation",
             'page'         => GlpiPageTile::PAGE_RESERVATION,
         ]);
+
+        // TODO: the default tiles should also be translated
     }
 
     private function dataHasBeenInitialized(): bool
@@ -138,46 +141,154 @@ final class DefaultDataManager
         return countElementsInTable(Form::getTable()) > 0;
     }
 
-    private function addFormTranslations(int $forms_id, string $name, string $description): void
-    {
-        global $CFG_GLPI, $TRANSLATE, $DB;
+    private function applyTranslation(
+        TranslationHandler $to_translate,
+        string $lang
+    ): ?string {
+        global $TRANSLATE;
 
-        $form_query = $DB->buildInsert(ItemTranslation::getTable(), [
-            'itemtype' => Form::class,
-            'items_id' => $forms_id,
-            'key'      => new QueryParam(),
-            'language' => new QueryParam(),
+        if (
+            $to_translate->getItem() instanceof Question
+            && $to_translate->getValue() == _n('Category', 'Categories', 1)
+        ) {
+            // Specific translation for the category question
+            $translated_value = $TRANSLATE->translatePlural(
+                'Category',
+                'Categories',
+                1,
+                'glpi',
+                $lang
+            );
+        } elseif (
+            $to_translate->getItem() instanceof Question
+            && $to_translate->getValue() == _n('Location', 'Locations', 1)
+        ) {
+            // Specific translation for the location question
+            $translated_value = $TRANSLATE->translatePlural(
+                'Location',
+                'Locations',
+                1,
+                'glpi',
+                $lang
+            );
+        } elseif (
+            $to_translate->getItem() instanceof Question
+            && $to_translate->getValue() == _n(
+                'Observer',
+                'Observers',
+                Session::getPluralNumber()
+            )
+        ) {
+            // Specific translation for the observers question
+            $translated_value = $TRANSLATE->translatePlural(
+                'Observer',
+                'Observers',
+                Session::getPluralNumber(),
+                'glpi',
+                $lang
+            );
+        } else {
+            // Standard translation
+            $translated_value = $TRANSLATE->translate(
+                $to_translate->getValue(),
+                'glpi',
+                $lang,
+            );
+        }
+
+        // The translate method of laminas says it return a string in its
+        // PHPDoc but this is a LIE, do not believe it.
+        // I found that it also return `null` or an array of translations.
+        if ($translated_value === null) {
+            return null;
+        } elseif (is_array($translated_value)) {
+            // It seems we get an array with multiple values depending
+            // of the number of item.
+            // We'll take the first item here as forms translation are
+            // always for singular items.
+            return $translated_value[0];
+        } else {
+            return $translated_value;
+        }
+    }
+
+    /** @param Form[] $forms */
+    private function addFormsTranslations(array $forms): void
+    {
+        global $CFG_GLPI, $DB, $TRANSLATE;
+
+        // List all values that need to be translated
+        /** @var TranslationHandler[] $values_to_translate */
+        $values_to_translate = [];
+        foreach ($forms as $form) {
+            $form->getFromDB($form->getID()); // Reset lazy loaded content
+            $forms_items_to_translate = $form->listTranslationsHandlers();
+            foreach ($forms_items_to_translate as $item_to_translate) {
+                array_push($values_to_translate, ...$item_to_translate);
+            }
+        }
+
+        // Keep track of the current language and load all core locales
+        $current_language = Session::getLanguage();
+        Session::loadAllCoreLocales();
+
+        $add_translation_query = $DB->buildInsert(ItemTranslation::getTable(), [
+            'itemtype'     => new QueryParam(),
+            'items_id'     => new QueryParam(),
+            'key'          => new QueryParam(),
+            'language'     => new QueryParam(),
             'translations' => new QueryParam(),
-            'hash' => new QueryParam(),
+            'hash'         => new QueryParam(),
         ]);
-        $section_query = $DB->buildInsert(ItemTranslation::getTable(), [
-            'itemtype' => Section::class,
-            'items_id' => new QueryParam(),
-            'key'      => new QueryParam(),
-            'language' => new QueryParam(),
-            'translations' => new QueryParam(),
-            'hash' => new QueryParam(),
-        ]);
-        $form_stmt = $DB->prepare($form_query);
-        $section_stmt = $DB->prepare($section_query);
-        $first_section = current(Form::getById($forms_id)->getSections());
-        $name_hash = md5($name);
-        $description_hash = md5($description);
-        $section_name_hash = md5($first_section->fields['name']);
+        $add_translation_stmt = $DB->prepare($add_translation_query);
+
         foreach (array_keys($CFG_GLPI['languages']) as $lang) {
-            $translated_name = $TRANSLATE->translate($name, 'glpi', $lang);
-            $translated_description = $TRANSLATE->translate($description, 'glpi', $lang);
-            if ($translated_name !== $name) {
-                $form_stmt->execute([Form::TRANSLATION_KEY_NAME, $lang, json_encode(['one' => $translated_name]), $name_hash]);
-            } else {
-                $form_stmt->execute([Form::TRANSLATION_KEY_NAME, $lang, '{}',  $name_hash]);
+            foreach ($values_to_translate as $value_to_translate) {
+                // Translate value
+                $translated_value = $this->applyTranslation(
+                    $value_to_translate,
+                    $lang,
+                );
+
+                if ($translated_value === null) {
+                    continue;
+                }
+
+                // Make sure a real translation exist for this value
+                // TODO: in this case, is there a point to saving the data,
+                // can't we just skip the value with a `continue;` statement?
+                // I didn't risk it when rewritting this code but maybe we can
+                // investigate this later.
+                if ($translated_value === $value_to_translate->getValue()) {
+                    $translations = '{}';
+                } else {
+                    $translations = json_encode(['one' => $translated_value]);
+                }
+
+                // Store to database
+                $add_translation_stmt->execute([
+                    $value_to_translate->getItem()::class,
+                    $value_to_translate->getItem()->getID(),
+                    $value_to_translate->getKey(),
+                    $lang,
+                    $translations,
+                    md5($value_to_translate->getValue()),
+                ]);
             }
-            if ($translated_description !== $description) {
-                $form_stmt->execute([Form::TRANSLATION_KEY_DESCRIPTION, $lang, json_encode(['one' => $translated_description]), $description_hash]);
-            }
-            $translated_section_name = $TRANSLATE->translate($first_section->fields['name'], 'glpi', $lang);
-            if ($translated_section_name !== $first_section->fields['name']) {
-                $section_stmt->execute([$first_section->getID(), Section::TRANSLATION_KEY_NAME, $lang, json_encode(['one' => $translated_section_name]), $section_name_hash]);
+
+            // Unload languages when we are done with them to avoid wasting
+            // memory.
+            if ($lang !== $current_language) {
+                // This is a custom method we added on an anonymous class so
+                // phpstan doesn't recognize it.
+                // We could create an interface and make the anonymous class
+                // implement it but it would "officialize" this method, which
+                // I am not sure is something we want since this is already a
+                // hacky solution.
+                // To be improved when we use something else than laminas for
+                // translations.
+                // @phpstan-ignore method.notFound
+                $TRANSLATE->removeCoreTranslationsForLanguage($lang);
             }
         }
     }
@@ -190,7 +301,6 @@ final class DefaultDataManager
             description: __("Ask for support from our helpdesk team."),
             illustration: 'report-issue',
         );
-        $this->addFormTranslations($form->getID(), 'Report an issue', 'Ask for support from our helpdesk team.');
 
         // Get first section
         $sections = $form->getSections();
@@ -251,7 +361,6 @@ final class DefaultDataManager
             description: __("Ask for a service to be provided by our team."),
             illustration: 'request-service',
         );
-        $this->addFormTranslations($form->getID(), 'Request a service', 'Ask for a service to be provided by our team.');
 
         // Get first section
         $sections = $form->getSections();
@@ -334,7 +443,7 @@ final class DefaultDataManager
         Section $section,
         array $question_data,
     ): Question {
-        global $CFG_GLPI, $TRANSLATE, $DB;
+        global $CFG_GLPI, $DB;
 
         // Refresh data
         $section->getFromDB($section->getID());
@@ -351,30 +460,6 @@ final class DefaultDataManager
             );
         }
 
-        if (isset($question_data['translation'])) {
-            $query = $DB->buildInsert(ItemTranslation::getTable(), [
-                'itemtype' => Question::class,
-                'items_id' => $question->getID(),
-                'key'      => new QueryParam(),
-                'language' => new QueryParam(),
-                'translations' => new QueryParam(),
-                'hash' => new QueryParam(),
-            ]);
-            $stmt = $DB->prepare($query);
-            $hash = md5($question_data['name']);
-            foreach (array_keys($CFG_GLPI['languages']) as $lang) {
-                $translated_name = $question_data['translation'](
-                    $TRANSLATE,
-                    $lang,
-                    'question_name'
-                );
-                if ($translated_name === null || $translated_name === $question_data['name']) {
-                    continue;
-                }
-                $stmt->execute(['question_name', $lang, json_encode(['one' => $translated_name]), $hash]);
-            }
-        }
-
         return $question;
     }
 
@@ -383,7 +468,6 @@ final class DefaultDataManager
         return [
             'type' => QuestionTypeShortText::class,
             'name' => __("Title"),
-            'translation' => static fn(Translator $trans, string $lang, string $key) => $key === 'question_name' ? $trans->translate('Title', 'glpi', $lang) : null,
         ];
     }
 
@@ -392,7 +476,6 @@ final class DefaultDataManager
         return [
             'type' => QuestionTypeLongText::class,
             'name' => __("Description"),
-            'translation' => static fn(Translator $trans, string $lang, string $key) => $key === 'question_name' ? $trans->translate('Description', 'glpi', $lang) : null,
             'is_mandatory' => true,
         ];
     }
@@ -402,7 +485,6 @@ final class DefaultDataManager
         return [
             'type' => QuestionTypeItemDropdown::class,
             'name' => _n('Category', 'Categories', 1),
-            'translation' => static fn(Translator $trans, string $lang, string $key) => $key === 'question_name' ? $trans->translatePlural('Category', 'Categories', 1, 'glpi', $lang) : null,
             'default_value' => null,
             'extra_data' => json_encode([
                 'itemtype'             => ITILCategory::class,
@@ -419,7 +501,6 @@ final class DefaultDataManager
         return [
             'type' => QuestionTypeUserDevice::class,
             'name' => __("User devices"),
-            'translation' => static fn(Translator $trans, string $lang, string $key) => $key === 'question_name' ? $trans->translate('User devices', 'glpi', $lang) : null,
             'default_value' => 0,
             'extra_data' => json_encode(['is_multiple_devices' => false]),
         ];
@@ -430,7 +511,6 @@ final class DefaultDataManager
         return [
             'type' => QuestionTypeItemDropdown::class,
             'name' => _n('Location', 'Locations', 1),
-            'translation' => static fn(Translator $trans, string $lang, string $key) => $key === 'question_name' ? $trans->translatePlural('Location', 'Locations', 1, 'glpi', $lang) : null,
             'default_value' => null,
             'extra_data' => json_encode([
                 'itemtype'             => Location::class,
@@ -447,7 +527,6 @@ final class DefaultDataManager
         return [
             'type' => QuestionTypeUrgency::class,
             'name' => __("Urgency"),
-            'translation' => static fn(Translator $trans, string $lang, string $key) => $key === 'question_name' ? $trans->translate('Urgency', 'glpi', $lang) : null,
         ];
     }
 
@@ -456,7 +535,6 @@ final class DefaultDataManager
         return [
             'type' => QuestionTypeObserver::class,
             'name' => _n('Observer', 'Observers', Session::getPluralNumber()),
-            'translation' => static fn(Translator $trans, string $lang, string $key) => $key === 'question_name' ? $trans->translatePlural('Observer', 'Observers', Session::getPluralNumber(), 'glpi', $lang) : null,
             'extra_data' => json_encode(['is_multiple_actors' => true]),
         ];
     }
