@@ -37,7 +37,6 @@
     {% set rand          = random() %}
     {% set base_fields_params = fields_params ?? [] %}
     {% set params        = params ?? [] %}
-    {% set show_buttons  = params['show_buttons'] ?? true %}
     {% set target        = params['target'] ?? item.getFormURL() %}
     {% set withtemplate  = params['withtemplate'] ?? '' %}
 
@@ -198,8 +197,6 @@
                             {% set fields_params = fields_params|merge({'types': config(field['itemtype_list'])}) %}
                         {% endif %}
                         {{ fields.dropdownItemTypes(field['name'], item.fields[field['name']], field['label'], fields_params) }}
-                    {% elseif type == 'no_label' %}
-                        {{ fields.noLabelField(field['content'], field['id'] ?? '', field['add_html'] ?? '', fields_params|merge(field['field_params'] ?? [])) }}
                     {% else %}
                         {% set field_value %}
                             {{ item.displaySpecificTypeField(item.fields['id'], field, fields_params) }}
@@ -249,7 +246,5 @@
         {% block more_fields %}
         {% endblock %}
     </div>
-    {% if show_buttons %}
-        {{ include('components/form/buttons.html.twig') }}
-    {% endif %}
+    {{ include('components/form/buttons.html.twig') }}
 </div>

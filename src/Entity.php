@@ -271,7 +271,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
     /**
      * Verify the current user can create a child entity.
-     * This method is used to hide the "Add" button on the form and display a warning message instead.
+     * This method is used for example in the prepareInputForAdd.
      * @return bool
      */
     public static function canCreateChild(): bool
@@ -370,6 +370,15 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     public function prepareInputForAdd($input)
     {
         global $DB;
+        if (!self::canCreateChild()) {
+            Session::addMessageAfterRedirect(
+                __s("To create a child entity, you must enable entity tree structure."),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
         $input['name'] = isset($input['name']) ? trim($input['name']) : '';
         if (empty($input["name"])) {
             Session::addMessageAfterRedirect(
@@ -675,9 +684,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
         switch ($tabnum) {
             case 1:
-                if (!self::canCreateChild()) {
-                    echo self::getMissingPermissionsHtmlAlert();
-                }
                 return $item->showChildren();
 
             case 2:
@@ -718,49 +724,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             $options['candel'] = false;
         }
 
-        // Hide "Add" button on the creation form.
-        if (!self::canCreateChild() && $ID == -1) {
-            $options['show_buttons'] = false;
-        }
-
         return parent::showForm($ID, $options);
-    }
-
-    public function getAdditionalFields(): array
-    {
-        $fields = parent::getAdditionalFields();
-
-        if (!self::canCreateChild()) {
-
-            $fields[] = [
-                'type' => 'no_label',
-                'name' => 'alert',
-                'content' => self::getMissingPermissionsHtmlAlert(),
-                'field_params' => [
-                    'full_width' => true,
-                    'mb' => 'my-4',
-                ],
-            ];
-        }
-
-        return $fields;
-    }
-
-    public static function getMissingPermissionsHtmlAlert(): string
-    {
-        $message = __s("To create a child entity, you must enable entity tree structure.");
-        return "
-            <div class='alert alert-danger mb-0' role='alert'>
-                <div class='d-flex'>
-                    <div>
-                        <i class='ti ti-alert-circle me-2'></i>
-                    </div>
-                    <div>
-                        <div>$message</div>
-                    </div>
-                </div>
-            </div>
-        ";
     }
 
     /**
