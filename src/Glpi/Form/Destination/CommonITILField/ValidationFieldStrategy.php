@@ -37,7 +37,6 @@ namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\Form\AnswersSet;
 use ITILValidationTemplate;
-use ITILValidationTemplate_Target;
 
 enum ValidationFieldStrategy: string
 {
@@ -132,17 +131,9 @@ enum ValidationFieldStrategy: string
                 continue;
             }
 
-            $targets = ITILValidationTemplate_Target::getTargets($validation_template_id);
-            if (empty($targets)) {
-                continue;
-            }
-
-            foreach ($targets as $target) {
-                $actors[] = [
-                    'itemtype' => $target['itemtype'],
-                    'items_id' => $target['items_id'],
-                ];
-            }
+            $actors[] = [
+                '_template_id' => $validation_template->getId(),
+            ];
         }
 
         return $actors;
