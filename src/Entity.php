@@ -274,7 +274,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      * This method is used for example in the showSearchStatusArea.
      * @return bool
      */
-    public static function canCreateChild(): bool
+    private static function canCreateChild(): bool
     {
         if (!Session::isMultiEntitiesMode()) {
             return true;
