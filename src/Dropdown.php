@@ -5113,4 +5113,37 @@ HTML;
         self::$devices_itemtypes_options_grouped = null;
         self::$standard_itemtypes_options = null;
     }
+
+    public static function getDurationDropdown(): array
+    {
+        $durationDropdown = [];
+
+        // 1..9 minutes
+        for ($i = 1; $i <= 9; $i++) {
+            $key = $i * MINUTE_TIMESTAMP;
+            $durationDropdown[$key] = sprintf('%dh%02d', 0, $i);
+        }
+
+        // 10..595 step 5 (minutes)
+        for ($i = 10; $i < 595; $i += 5) {
+            $minutes = $i % 60;
+            $hours = intdiv($i, 60);
+            $key = $i * MINUTE_TIMESTAMP;
+            $durationDropdown[$key] = sprintf('%dh%02d', $hours, $minutes);
+        }
+
+        // 10..119 hours
+        for ($i = 10; $i <= 119; $i++) {
+            $key = $i * HOUR_TIMESTAMP;
+            $durationDropdown[$key] = sprintf('%dh%02d', $i, 0);
+        }
+
+        // 5..366 days (use translation function _n)
+        for ($i = 5; $i <= 366; $i++) {
+            $key = $i * DAY_TIMESTAMP;
+            $durationDropdown[$key] = sprintf(_n('%s day', '%s days', $i), $i);
+        }
+
+        return $durationDropdown;
+    }
 }
