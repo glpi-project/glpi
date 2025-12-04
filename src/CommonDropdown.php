@@ -222,9 +222,15 @@ abstract class CommonDropdown extends CommonDBTM
 
     public function defineTabs($options = [])
     {
+        global $CFG_GLPI;
 
         $ong = [];
         $this->addDefaultFormTab($ong);
+
+        if (in_array($this->getType(), $CFG_GLPI['document_types'])) {
+            $this->addStandardTab(Document_Item::class, $ong, $options);
+        }
+
         if ($this->dohistory) {
             $this->addStandardTab(Log::class, $ong, $options);
         }
