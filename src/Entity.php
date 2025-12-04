@@ -718,7 +718,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      */
     public static function showSearchStatusArea(): void
     {
-        if (!self::canCreateChild()) {
+        if (!self::canCreateChild() && Session::haveRight(static::$rightname, CREATE)) {
             Session::addMessageAfterRedirect(
                 __s("To create a child entity, you must enable entity tree structure."),
                 false,
