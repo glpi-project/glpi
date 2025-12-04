@@ -1691,7 +1691,7 @@ class DocumentTest extends DbTestCase
             '_tag_filename'     => ['tag-itilsolution-888888'],
             '_prefix_filename'  => ['itilsolution_doc.888888'],
         ];
-        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' .$filename);
+        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
         $itilSolutions_id = $itilSolution->add($inputSolution);
         $this->assertGreaterThan(0, $itilSolutions_id);
 
