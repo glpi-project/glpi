@@ -151,7 +151,7 @@ class MassiveAction
      * Itemtype currently processed.
      * @var ?class-string<CommonDBTM>
      */
-    private ?string $current_itemtype;
+    private ?string $current_itemtype = null;
 
     private bool $from_single_item = false;
 

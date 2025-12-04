@@ -1713,7 +1713,7 @@ class Migration
      */
     private function migrateSearchOptions()
     {
-        if (empty($this->search_opts)) {
+        if ($this->search_opts === []) {
             return;
         }
 
