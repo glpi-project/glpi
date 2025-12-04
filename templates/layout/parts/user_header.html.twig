@@ -87,6 +87,7 @@
                   {{ __('Help') }}
                </a>
 
+      {% if has_profile_right('config', constant('READ')) %}
                <a href="#" class="dropdown-item" title="{{ __('About') }}"
                   id="show_about_modal_{{ rand_header }}">
                   <i class="ti fa-fw ti-info-circle"></i>
@@ -96,6 +97,7 @@
                         1
                      </span>
                   {% endif %}
+      {% endif %}
                </a>
 
                <div class="dropdown-divider"></div>
@@ -112,6 +114,7 @@
          </div>
       </div>
 
+      {% if has_profile_right('config', constant('READ')) %}
       <div class="modal fade" id="about_modal_{{ rand_header }}" role="dialog">
          <div class="modal-dialog">
             <div class="modal-content">
@@ -144,6 +147,7 @@
             </div>
          </div>
       </div>
+      {% endif %}
 
    {% elseif constant('GLPI_DEMO_MODE') %}
       <div class="dropdown-item">
