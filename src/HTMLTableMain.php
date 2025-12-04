@@ -64,10 +64,11 @@
  */
 class HTMLTableMain extends HTMLTableBase
 {
+    /** @var ?string */
     private $title;
-
-    /** @var array<HTMLTableGroup> */
+    /** @var array<string, HTMLTableGroup> */
     private $groups    = [];
+    /** @var array<class-string<CommonDBTM>, string> */
     private $itemtypes = [];
 
     public function __construct()
@@ -113,9 +114,11 @@ class HTMLTableMain extends HTMLTableBase
     }
 
     /**
-     * @param $itemtype
-     * @param $title
-     **/
+     * @param class-string<CommonDBTM> $itemtype
+     * @param string $title
+     *
+     * @return void
+     */
     public function addItemType($itemtype, $title)
     {
         $this->itemtypes[$itemtype] = $title;
@@ -135,7 +138,9 @@ class HTMLTableMain extends HTMLTableBase
 
     /**
      * Display the super headers, for the global table, or the groups
-     **/
+     *
+     * @return void
+     */
     public function displaySuperHeader()
     {
         echo "\t\t<tr class='noHover'>\n";
