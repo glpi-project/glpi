@@ -5594,8 +5594,14 @@ class CommonDBTM extends CommonGLPI
                     $doc->update($input2);
                 }
             } else {
-                if (($input['_job'] ?? $this) instanceof Ticket) {
-                    $ticket_id = $input['_job']->getID() ?? $this->getID();
+
+                if ($this->getType() == 'Ticket' || (isset($input['_job']) && $input['_job'] instanceof Ticket)) {
+                    //TRANS: Default document to files attached to tickets : %d is the ticket id
+                    if (isset($input['_job']) && $input['_job'] instanceof Ticket) {
+                        $ticket_id = $input['_job']->getID();
+                    } else {
+                        $ticket_id = $this->getID();
+                    }
                     $input2["name"]       = addslashes(sprintf(__('Document Ticket %d'), $ticket_id));
                     $input2["tickets_id"] = $ticket_id;
                     $input2['itemtype']   = Ticket::class;
