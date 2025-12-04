@@ -279,6 +279,15 @@ final class DefaultDataManager
             // Unload languages when we are done with them to avoid wasting
             // memory.
             if ($lang !== $current_language) {
+                // This is a custom method we added on an anonymous class so
+                // phpstan doesn't recognize it.
+                // We could create an interface and make the anonymous class
+                // implement it but it would "officialize" this method, which
+                // I am not sure is something we want since this is already a
+                // hacky solution.
+                // To be improved when we use something else than laminas for
+                // translations.
+                // @phpstan-ignore method.notFound
                 $TRANSLATE->removeCoreTranslationsForLanguage($lang);
             }
         }
