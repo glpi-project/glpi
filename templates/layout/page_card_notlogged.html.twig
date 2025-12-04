@@ -38,6 +38,11 @@
        {'path': 'css/glpi.scss'},
        {'path': 'css/core_palettes.scss'}
    ] %}
+
+   {% for theme_path in get_custom_themes_paths() %}
+      {% set css_files = css_files|merge([{'path': theme_path}]) %}
+   {% endfor %}
+
    {# TODO : load hight contrast css #}
 {% endif %}
 {% if js_files is not defined %}

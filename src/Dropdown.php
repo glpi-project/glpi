@@ -2988,9 +2988,9 @@ HTML;
                         $where = array_merge($where, $value['WHERE']);
                     } elseif (!is_numeric($key) && !in_array($key, ['AND', 'OR', 'NOT']) && !str_contains($key, '.')) {
                         // Ensure condition contains table name to prevent ambiguity with fields from `glpi_entities` table
-                        $where["$table.$key"] = $value;
+                        $where[] = ["$table.$key" => $value];
                     } else {
-                        $where[$key] = $value;
+                        $where[] = [$key => $value];
                     }
                 }
             }
@@ -4293,11 +4293,26 @@ HTML;
                     ) {
                         $itemtable  = getTableForItemType($itemtype);
                         $criteria = [
+                            'SELECT' => [$itemtable . '.*'],
                             'FROM'   => $itemtable,
+                            'LEFT JOIN' => [
+                                Group_Item::getTable() => [
+                                    'ON' => [
+                                        $itemtable             => 'id',
+                                        Group_Item::getTable() => 'items_id', [
+                                            'AND' => [
+                                                Group_Item::getTable() . '.itemtype' => $itemtype,
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
                             'WHERE'  => [
-                                'groups_id' => $groups,
+                                Group_Item::getTable() . '.type'      => Group_Item::GROUP_TYPE_NORMAL,
+                                Group_Item::getTable() . '.groups_id' => $groups,
                             ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict, $item->maybeRecursive())
                             + $itemtype::getSystemSQLCriteria(),
+                            'GROUPBY' => $itemtable . '.id',
                             'ORDER'  => $item->getNameField(),
                         ];
 

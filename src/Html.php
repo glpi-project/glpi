@@ -60,7 +60,6 @@ use ScssPhp\ScssPhp\Compiler;
 use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\file_get_contents;
-use function Safe\filemtime;
 use function Safe\filesize;
 use function Safe\json_encode;
 use function Safe\mktime;
@@ -1204,16 +1203,15 @@ TWIG,
         // load log filters everywhere
         Html::requireJs('log_filters');
 
-        $tpl_vars['css_files'][] = ['path' => 'lib/tabler.css'];
+        if ($_SESSION['glpiisrtl'] ?? false) {
+            $tpl_vars['css_files'][] = ['path' => 'lib/tabler.rtl.css'];
+        } else {
+            $tpl_vars['css_files'][] = ['path' => 'lib/tabler.css'];
+        }
         $tpl_vars['css_files'][] = ['path' => 'css/glpi.scss'];
         $tpl_vars['css_files'][] = ['path' => 'css/core_palettes.scss'];
-        foreach (ThemeManager::getInstance()->getAllThemes() as $info) {
-            if (!$info->isCustomTheme()) {
-                continue;
-            }
-            $theme_path = $info->getKey() . '?is_custom_theme=1';
-            // Custom theme files might be modified by external source
-            $theme_path .= "&lastupdate=" . filemtime($info->getPath(false));
+
+        foreach (ThemeManager::getInstance()->getCustomThemesPaths() as $theme_path) {
             $tpl_vars['css_files'][] = ['path' => $theme_path];
         }
 
@@ -3533,7 +3531,8 @@ JS;
         }
         $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('lib/tinymce/skins/ui/oxide/content.css', ['force_no_version' => true]));
         $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('lib/base.css', ['force_no_version' => true]));
-        $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('lib/tabler.css', ['force_no_version' => true]));
+        $tabler_path = ($_SESSION['glpiisrtl'] ?? false) ? 'lib/tabler.rtl.css' : 'lib/tabler.css';
+        $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css($tabler_path, ['force_no_version' => true]));
         $content_css .= ',' . implode(',', array_map(static fn($path) => preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($path, ['force_no_version' => true])), $content_css_paths));
         // Fix & encoding so it can be loaded as expected in debug mode
         $content_css = str_replace('&amp;', '&', $content_css);

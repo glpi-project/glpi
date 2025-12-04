@@ -64,7 +64,7 @@
 } %}
 
 {% set glpi_info_precontent %}
-    {% if not call('\Glpi\Toolbox\VersionParser::isStableRelease', [constant('GLPI_VERSION')]) %}
+    {% if not call('\\Glpi\\Toolbox\\VersionParser::isStableRelease', [constant('GLPI_VERSION')]) %}
         <div class='alert alert-important alert-warning d-flex'>
             <strong>⚠️  {{ __("This version is UNSTABLE and some SECURITY FIXES may not be included.") }} ⚠️</strong>
         </div>

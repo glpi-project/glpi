@@ -1271,7 +1271,7 @@ msgstr "关闭"
 #: templates/layout/parts/user_header.html.twig
 #: templates/pages/setup/general/systeminfo_table.html.twig
 msgid "This version is UNSTABLE and some SECURITY FIXES may not be included."
-msgstr ""
+msgstr "此版本不稳定且存在未修复的安全问题。"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."
@@ -1386,7 +1386,7 @@ msgstr "折叠菜单"
 #: templates/layout/parts/profile_selector_form.html.twig
 #, php-format
 msgid "Select %1s entity with all its sub entities"
-msgstr ""
+msgstr "选择实体 %1s 时包含所有子实体"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "You have not recorded any saved searches yet"
@@ -10157,13 +10157,13 @@ msgstr "条件"
 
 #: templates/pages/admin/form/section_element_has_conditions_for_deletion_modal.html.twig
 msgid "Child items have conditions and cannot be deleted"
-msgstr ""
+msgstr "子项包含条件无法删除"
 
 #: templates/pages/admin/form/section_element_has_conditions_for_deletion_modal.html.twig
 msgid ""
 "This section has child elements that are used in conditions of other form "
 "elements"
-msgstr ""
+msgstr "此区域的子元素用于其他表元素的条件中"
 
 #: templates/pages/admin/form/form_toolbar.html.twig
 msgid "Add a question"
@@ -10313,15 +10313,15 @@ msgstr "有条件认证对于此问题类型无效。"
 
 #: templates/pages/admin/form/delete_non_empty_section_modal.html.twig
 msgid "Delete non-empty section"
-msgstr ""
+msgstr "删除非空区域"
 
 #: templates/pages/admin/form/delete_non_empty_section_modal.html.twig
 msgid "This section contains elements"
-msgstr ""
+msgstr "此区域包含元素"
 
 #: templates/pages/admin/form/delete_non_empty_section_modal.html.twig
 msgid "Delete section and all its elements"
-msgstr ""
+msgstr "删除区域及其元素"
 
 #: templates/pages/admin/profile/management.html.twig
 msgid "Manageable domain records"
@@ -11944,7 +11944,7 @@ msgstr "高级仪表板"
 #: resources/.illustrations_translations.php:4
 msgctxt "Icon"
 msgid "Advanced forms"
-msgstr ""
+msgstr "高级表单"
 
 #: resources/.illustrations_translations.php:5
 msgctxt "Icon"
@@ -12090,7 +12090,7 @@ msgstr "商业智能和汇报3"
 #: resources/.illustrations_translations.php:33
 msgctxt "Icon"
 msgid "Business Intelligence and Reporting 4"
-msgstr ""
+msgstr "商业智能及汇报4"
 
 #: resources/.illustrations_translations.php:34
 msgctxt "Icon"
@@ -12205,7 +12205,7 @@ msgstr "云网络2"
 #: resources/.illustrations_translations.php:56
 msgctxt "Icon"
 msgid "Cloud usage"
-msgstr ""
+msgstr "云用量"
 
 #: resources/.illustrations_translations.php:57
 msgctxt "Icon"
@@ -12262,7 +12262,7 @@ msgstr "数据库"
 #: resources/.illustrations_translations.php:67
 msgctxt "Icon"
 msgid "Add database"
-msgstr ""
+msgstr "增加数据库"
 
 #: resources/.illustrations_translations.php:68
 msgctxt "Icon"
@@ -12272,7 +12272,7 @@ msgstr "运输"
 #: resources/.illustrations_translations.php:69
 msgctxt "Icon"
 msgid "Diagnostic"
-msgstr ""
+msgstr "诊断"
 
 #: resources/.illustrations_translations.php:70
 msgctxt "Icon"
@@ -12332,7 +12332,7 @@ msgstr "修复错误"
 #: resources/.illustrations_translations.php:81
 msgctxt "Icon"
 msgid "Fixing bug 2"
-msgstr ""
+msgstr "修复错误2"
 
 #: resources/.illustrations_translations.php:82
 msgctxt "Icon"
@@ -12347,7 +12347,7 @@ msgstr "表单创建"
 #: resources/.illustrations_translations.php:84
 msgctxt "Icon"
 msgid "Gantt"
-msgstr ""
+msgstr "甘特图"
 
 #: resources/.illustrations_translations.php:85
 msgctxt "Icon"
@@ -12432,12 +12432,12 @@ msgstr "资产盘点"
 #: resources/.illustrations_translations.php:101
 msgctxt "Icon"
 msgid "Inventory numbers"
-msgstr ""
+msgstr "资产号"
 
 #: resources/.illustrations_translations.php:102
 msgctxt "Icon"
 msgid "Items export"
-msgstr ""
+msgstr "项导出"
 
 #: resources/.illustrations_translations.php:103
 msgctxt "Icon"
@@ -12447,17 +12447,17 @@ msgstr "知识库和FAQ"
 #: resources/.illustrations_translations.php:104
 msgctxt "Icon"
 msgid "LDAP diagnostic"
-msgstr ""
+msgstr "LDAP诊断"
 
 #: resources/.illustrations_translations.php:105
 msgctxt "Icon"
 msgid "LDAP inventory"
-msgstr ""
+msgstr "LDAP资产"
 
 #: resources/.illustrations_translations.php:106
 msgctxt "Icon"
 msgid "LDAP manage"
-msgstr ""
+msgstr "LDAP管理"
 
 #: resources/.illustrations_translations.php:107
 msgctxt "Icon"
@@ -12502,7 +12502,7 @@ msgstr "监测"
 #: resources/.illustrations_translations.php:115
 msgctxt "Icon"
 msgid "More options"
-msgstr ""
+msgstr "更多选项"
 
 #: resources/.illustrations_translations.php:116
 msgctxt "Icon"
@@ -12512,7 +12512,7 @@ msgstr "more-satisfaction"
 #: resources/.illustrations_translations.php:117
 msgctxt "Icon"
 msgid "Network inventory"
-msgstr ""
+msgstr "网络资产"
 
 #: resources/.illustrations_translations.php:118
 msgctxt "Icon"
@@ -12577,12 +12577,12 @@ msgstr "伙伴"
 #: resources/.illustrations_translations.php:130
 msgctxt "Icon"
 msgid "PDF export"
-msgstr ""
+msgstr "PDF导出"
 
 #: resources/.illustrations_translations.php:131
 msgctxt "Icon"
 msgid "Phone inventory"
-msgstr ""
+msgstr "电话资产"
 
 #: resources/.illustrations_translations.php:132
 #: resources/.illustrations_translations.php:382
@@ -12598,7 +12598,7 @@ msgstr "打印作业"
 #: resources/.illustrations_translations.php:134
 msgctxt "Icon"
 msgid "Printer inventory"
-msgstr ""
+msgstr "打印机资产"
 
 #: resources/.illustrations_translations.php:135
 msgctxt "Icon"
@@ -13194,7 +13194,7 @@ msgstr "交谈"
 #: resources/.illustrations_translations.php:257
 msgctxt "Icon"
 msgid "billing"
-msgstr ""
+msgstr "帐单"
 
 #: resources/.illustrations_translations.php:258
 msgctxt "Icon"
@@ -13274,12 +13274,12 @@ msgstr "运输"
 #: resources/.illustrations_translations.php:273
 msgctxt "Icon"
 msgid "troubleshooting"
-msgstr ""
+msgstr "故障查找"
 
 #: resources/.illustrations_translations.php:274
 msgctxt "Icon"
 msgid "analysis"
-msgstr ""
+msgstr "分析"
 
 #: resources/.illustrations_translations.php:275
 msgctxt "Icon"
@@ -13409,7 +13409,7 @@ msgstr "目录"
 #: resources/.illustrations_translations.php:300
 msgctxt "Icon"
 msgid "project-management"
-msgstr ""
+msgstr "项目管理"
 
 #: resources/.illustrations_translations.php:301
 msgctxt "Icon"
@@ -13589,12 +13589,12 @@ msgstr "pin"
 #: resources/.illustrations_translations.php:336
 msgctxt "Icon"
 msgid "places"
-msgstr ""
+msgstr "地点"
 
 #: resources/.illustrations_translations.php:337
 msgctxt "Icon"
 msgid "arborescence"
-msgstr ""
+msgstr "树状"
 
 #: resources/.illustrations_translations.php:338
 msgctxt "Icon"
@@ -13629,12 +13629,12 @@ msgstr "CSAT"
 #: resources/.illustrations_translations.php:344
 msgctxt "Icon"
 msgid "devices"
-msgstr ""
+msgstr "设备"
 
 #: resources/.illustrations_translations.php:345
 msgctxt "Icon"
 msgid "agent"
-msgstr ""
+msgstr "代理"
 
 #: resources/.illustrations_translations.php:346
 msgctxt "Icon"
@@ -13689,12 +13689,12 @@ msgstr "采购"
 #: resources/.illustrations_translations.php:356
 msgctxt "Icon"
 msgid "export"
-msgstr ""
+msgstr "导出"
 
 #: resources/.illustrations_translations.php:357
 msgctxt "Icon"
 msgid "phone"
-msgstr ""
+msgstr "电话"
 
 #: resources/.illustrations_translations.php:358
 msgctxt "Icon"
@@ -29983,7 +29983,7 @@ msgstr "品项未关联到对象"
 #: src/CommonDBChild.php:462
 #, php-format
 msgid "Parent item %s #%s is invalid."
-msgstr ""
+msgstr "父项 %s #%s 无效。"
 
 #: src/CommonDBChild.php:895
 #, php-format
@@ -33748,18 +33748,18 @@ msgstr "提交按钮可见"
 #: js/modules/Forms/EditorController.js:2248
 msgid "question"
 msgid_plural "questions"
-msgstr[0] ""
+msgstr[0] "问题"
 
 #: js/modules/Forms/EditorController.js:2252
 msgid "comment"
 msgid_plural "comments"
-msgstr[0] ""
+msgstr[0] "评论"
 
 #: js/modules/Forms/EditorController.js:2257
 #, javascript-format
 msgid ""
 "Deleting this section will also delete %s. This action cannot be undone."
-msgstr ""
+msgstr "删除此区域将会删除 %s。此操作无法回撤。"
 
 #: js/modules/Forms/EditorController.js:2629
 #, javascript-format

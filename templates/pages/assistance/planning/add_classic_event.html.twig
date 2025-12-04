@@ -73,15 +73,16 @@
                     emptylabel: display_dates ? __('Specify an end date') : constant('Dropdown::EMPTY_VALUE'),
                     rand: rand,
                 }]) %}
+                <br>
             {% else %}
                 {{ fields.hiddenField('plan[_duration]', default_delay) }}
                 {{ fields.htmlField(
                     '',
                     default_delay|formatted_duration,
-                    ''
+                    '',
+                    {no_label: true, full_width: true, mb: 0}
                 ) }}
             {% endif %}
-            <br>
             <div id="date_end{{ rand }}"></div>
 
             {% if display_dates %}

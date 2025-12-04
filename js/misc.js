@@ -41,7 +41,7 @@ window.old_alert = window.alert;
 window.alert = function(message, caption) {
     // Don't apply methods on undefined objects... ;-) #3866
     if(typeof message == 'string') {
-        message = message.replace("\n", '<br>');
+        message = message.replaceAll("\n", '<br>');
     }
     caption = caption || _n('Information', 'Information', 1);
 

@@ -81,6 +81,7 @@
     define('GLPI_MARKETPLACE_MANUAL_DOWNLOADS', $random_val([false, true]));
     define('GLPI_MARKETPLACE_PLUGINS_API_URI', 'https://services.glpi-network.com/api/marketplace/');
     define('GLPI_MARKETPLACE_PRERELEASES', $random_val([false, true]));
+    define('GLPI_NETWORK_API_URL', 'https://services.glpi-network.com/api');
     define('GLPI_NETWORK_REGISTRATION_API_URL', 'https://services.glpi-network.com/api/registration/');
     define('GLPI_NETWORK_MAIL', 'glpi@teclib.com');
     define('GLPI_NETWORK_SERVICES', 'https://services.glpi-network.com');

@@ -78,6 +78,7 @@ class FrontEndAssetsExtension extends AbstractExtension
             new TwigFunction('config_js', [$this, 'configJs'], ['is_safe' => ['html']]),
             new TwigFunction('locales_js', [$this, 'localesJs'], ['is_safe' => ['html']]),
             new TwigFunction('current_theme', [$this, 'currentTheme']),
+            new TwigFunction('get_custom_themes_paths', [$this, 'getCustomThemesPaths']),
             new TwigFunction('importmap', [$this, 'importmap'], ['is_safe' => ['html']]),
         ];
     }
@@ -90,6 +91,16 @@ class FrontEndAssetsExtension extends AbstractExtension
     public function currentTheme(): Theme
     {
         return ThemeManager::getInstance()->getCurrentTheme();
+    }
+
+    /**
+     * Get all the custom themes CSS files paths.
+     *
+     * @return string[]
+     */
+    public function getCustomThemesPaths(): array
+    {
+        return ThemeManager::getInstance()->getCustomThemesPaths();
     }
 
     /**

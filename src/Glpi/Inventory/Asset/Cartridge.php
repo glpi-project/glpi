@@ -103,11 +103,6 @@ class Cartridge extends InventoryAsset
                             $slabel
                         ),
                     ];
-                    if (isset($aliases[$type . $state])) {
-                        foreach ($aliases[$type . $state] as $alias) {
-                            $tags[$alias] = $tags[$type . $state];
-                        }
-                    }
                 }
             } else {
                 //types colored: add an entry with type + color and type + color + state

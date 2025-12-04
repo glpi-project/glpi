@@ -382,6 +382,16 @@ class DBTest extends GLPITestCase
         $this->assertSame("First\\nSecond", $instance->escape("First\nSecond"));
         $this->assertSame("First\\rSecond", $instance->escape("First\rSecond"));
         $this->assertSame('Hi, \\"you\\"', $instance->escape('Hi, "you"'));
+
+        $stringable_object = new class ("L'Appel de Cthulhu") {
+            public function __construct(private string $val) {}
+
+            public function __toString()
+            {
+                return $this->val;
+            }
+        };
+        $this->assertSame("L\'Appel de Cthulhu", $instance->escape($stringable_object));
     }
 
     public static function commentsProvider()

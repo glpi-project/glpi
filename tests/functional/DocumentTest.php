@@ -559,6 +559,16 @@ class DocumentTest extends DbTestCase
             ])
         );
 
+        $unrelatedDocument = new \Document();
+        $this->assertGreaterThan(
+            0,
+            $unrelatedDocument->add([
+                'name'     => 'unrelated document',
+                'filename' => 'unrelated.png',
+                'users_id' => '2', // user "glpi"
+            ])
+        );
+
         $kbItem = new \KnowbaseItem();
         $this->assertGreaterThan(
             0,
@@ -590,9 +600,20 @@ class DocumentTest extends DbTestCase
             ])
         );
 
+        $this->assertGreaterThan(
+            0,
+            $document_item->add([
+                'documents_id' => $unrelatedDocument->getID(),
+                'items_id'     => \getItemByTypeName(\Computer::class, '_test_pc01', true),
+                'itemtype'     => \Computer::class,
+                'users_id'     => getItemByTypeName('User', 'normal', true),
+            ])
+        );
+
         // anonymous cannot see documents if not linked to FAQ items
         $this->assertFalse($basicDocument->canViewFile());
         $this->assertFalse($inlinedDocument->canViewFile());
+        $this->assertFalse($unrelatedDocument->canViewFile());
 
         // anonymous cannot see documents linked to FAQ items if public FAQ is not active
         $CFG_GLPI['use_public_faq'] = 0;
@@ -617,12 +638,14 @@ class DocumentTest extends DbTestCase
 
         $this->assertFalse($basicDocument->canViewFile());
         $this->assertFalse($inlinedDocument->canViewFile());
+        $this->assertFalse($unrelatedDocument->canViewFile());
 
         // anonymous can see documents linked to FAQ items when public FAQ is active
         $CFG_GLPI['use_public_faq'] = 1;
 
         $this->assertTrue($basicDocument->canViewFile());
         $this->assertTrue($inlinedDocument->canViewFile());
+        $this->assertFalse($unrelatedDocument->canViewFile());
 
         $CFG_GLPI['use_public_faq'] = 0;
 
@@ -631,6 +654,7 @@ class DocumentTest extends DbTestCase
 
         $this->assertTrue($basicDocument->canViewFile());
         $this->assertTrue($inlinedDocument->canViewFile());
+        $this->assertFalse($unrelatedDocument->canViewFile());
 
         // post-only cannot see documents if not linked to FAQ items
         $this->assertTrue(
@@ -649,6 +673,16 @@ class DocumentTest extends DbTestCase
 
         $this->assertFalse($basicDocument->canViewFile());
         $this->assertFalse($inlinedDocument->canViewFile());
+        $this->assertFalse($unrelatedDocument->canViewFile());
+
+        // KB admin cannot see documents if not linked to FAQ items
+        $this->login('tech', 'tech');
+        $_SESSION["glpiactiveprofile"][\Document::$rightname] = 0; // remove rights on documents
+        $_SESSION["glpiactiveprofile"][\KnowbaseItem::$rightname] = READ | \KnowbaseItem::KNOWBASEADMIN; // give KB admin rights
+
+        $this->assertTrue($basicDocument->canViewFile());
+        $this->assertTrue($inlinedDocument->canViewFile());
+        $this->assertFalse($unrelatedDocument->canViewFile());
     }
 
     /**
@@ -876,6 +910,76 @@ class DocumentTest extends DbTestCase
         $this->assertFalse($inlinedDocument->canViewFile()); // False without params
         $this->assertTrue($inlinedDocument->canViewFile([$fkey => $itil->getID()]));
         $this->assertTrue($inlinedDocument->canViewFile(['itemtype' => $itil->getType(), 'items_id' => $itil->getID()]));
+    }
+
+    /**
+     * Check visibility of document attached to an item identified in URL.
+     */
+    public function testCanViewFileFromItem()
+    {
+        global $CFG_GLPI;
+
+        $glpi_user_id   = \getItemByTypeName('User', 'glpi', true);
+        $normal_user_id = \getItemByTypeName('User', 'normal', true);
+
+        $computer_id = \getItemByTypeName(\Computer::class, '_test_pc01', true);
+        $printer_id  = \getItemByTypeName(\Printer::class, '_test_printer_all', true);
+
+        $document_1 = $this->createItem(
+            \Document::class,
+            [
+                'name'     => 'document 1',
+                'filename' => 'doc.xls',
+                'users_id' => $glpi_user_id,
+            ]
+        );
+        $this->createItem(
+            \Document_Item::class,
+            [
+                'documents_id' => $document_1->getID(),
+                'items_id'     => $computer_id,
+                'itemtype'     => \Computer::class,
+                'users_id'     => $glpi_user_id,
+            ]
+        );
+        $document_2 = $this->createItem(
+            \Document::class,
+            [
+                'name'     => 'document 2',
+                'filename' => 'whatever.xls',
+            ]
+        );
+        $this->createItem(
+            \Document_Item::class,
+            [
+                'documents_id' => $document_2->getID(),
+                'items_id'     => $printer_id,
+                'itemtype'     => \Printer::class,
+                'users_id'     => $glpi_user_id,
+            ]
+        );
+
+        // `glpi` user can access all documents, options does not alter the result
+        $this->login('glpi', 'glpi');
+        $this->assertTrue($document_1->canViewFile());
+        $this->assertTrue($document_1->canViewFile(['items_id' => $computer_id, 'itemtype' => \Computer::class]));
+        $this->assertTrue($document_1->canViewFile(['items_id' => $printer_id, 'itemtype' => \Printer::class]));
+        $this->assertTrue($document_2->canViewFile());
+        $this->assertTrue($document_2->canViewFile(['items_id' => $computer_id, 'itemtype' => \Computer::class]));
+        $this->assertTrue($document_2->canViewFile(['items_id' => $printer_id, 'itemtype' => \Printer::class]));
+
+        // check that viewing document is only allowed if reading item specified in the options is allowed and
+        // document is attached to it
+        $this->login('normal', 'normal');
+        $_SESSION["glpiactiveprofile"][\Document::$rightname] = 0; // remove access to all documents
+        $_SESSION["glpiactiveprofile"][\Computer::$rightname] = 1; // give access to all computers
+        $_SESSION["glpiactiveprofile"][\Printer::$rightname] = 0; // remove access to all printers
+        $this->assertFalse($document_1->canViewFile());
+        $this->assertTrue($document_1->canViewFile(['items_id' => $computer_id, 'itemtype' => \Computer::class]));
+        $this->assertFalse($document_1->canViewFile(['items_id' => $printer_id, 'itemtype' => \Printer::class]));
+        $this->assertFalse($document_2->canViewFile());
+        $this->assertFalse($document_2->canViewFile(['items_id' => $computer_id, 'itemtype' => \Computer::class]));
+        $this->assertFalse($document_2->canViewFile(['items_id' => $printer_id, 'itemtype' => \Printer::class]));
     }
 
     public function testCronCleanorphans()

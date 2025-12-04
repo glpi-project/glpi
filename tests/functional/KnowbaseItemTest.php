@@ -36,6 +36,7 @@ namespace test\units;
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\Tests\DbTestCase;
+use KnowbaseItem_User;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/knowbaseitem.class.php */
@@ -97,7 +98,7 @@ class KnowbaseItemTest extends DbTestCase
         );
 
         //add an user
-        $kbu = new \KnowbaseItem_User();
+        $kbu = new KnowbaseItem_User();
         $this->assertGreaterThan(
             0,
             (int) $kbu->add([
@@ -159,7 +160,7 @@ class KnowbaseItemTest extends DbTestCase
         $relations = [
             $comment->getTable(),
             \KnowbaseItem_Revision::getTable(),
-            \KnowbaseItem_User::getTable(),
+            KnowbaseItem_User::getTable(),
             \Entity_KnowbaseItem::getTable(),
             \Group_KnowbaseItem::getTable(),
             \KnowbaseItem_Profile::getTable(),
@@ -1664,5 +1665,87 @@ HTML,
                 ]
             )
         );
+    }
+
+    /**
+     * @return void
+     * @see https://github.com/glpi-project/glpi/issues/21873
+     */
+    public function testUnsetCateogry(): void
+    {
+        $this->login();
+        $kbi = getItemByTypeName('KnowbaseItem', '_knowbaseitem01', false);
+
+        $category = $this->createItem('KnowbaseItemCategory', [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_recursive' => 1,
+            'knowbaseitemcategories_id' => 0,
+        ]);
+
+        $kbi->update([
+            'id' => $kbi->getID(),
+            '_categories' => [$category->getID()],
+            '__categories_defined' => 1,
+        ]);
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                \KnowbaseItem_KnowbaseItemCategory::getTable(),
+                ['knowbaseitems_id' => $kbi->getID()]
+            )
+        );
+        $kbi->update([
+            'id' => $kbi->getID(),
+            '_categories' => '',
+            '__categories_defined' => 1,
+        ]);
+        $this->assertEquals(
+            0,
+            countElementsInTable(
+                \KnowbaseItem_KnowbaseItemCategory::getTable(),
+                ['knowbaseitems_id' => $kbi->getID()]
+            )
+        );
+    }
+
+    public function testVisibilityRestrictionsInSearch()
+    {
+        $this->login();
+
+        $fn_can_tech_see_kb = static function () {
+            $criteria = [
+                'itemtype' => \KnowbaseItem::class,
+                'criteria' => [
+                    [
+                        'field' => 1,
+                        'searchtype' => 'contains',
+                        'value' => 'KB visible to tech',
+                    ],
+                ],
+            ];
+            ob_start();
+            \Search::showList(\KnowbaseItem::class, $criteria, [7]);
+            $output = ob_get_clean();
+            return str_contains($output, "KB anwser");
+        };
+
+        $tech_user = getItemByTypeName("User", "tech", true);
+        $kb_item = $this->createItem(\KnowbaseItem::class, [
+            'name'     => 'KB visible to tech',
+            'answer'   => 'KB anwser',
+            'is_faq'   => false,
+            'users_id' => $_SESSION['glpiID'],
+        ]);
+
+        $this->login('tech', 'tech');
+
+        $this->assertFalse($fn_can_tech_see_kb());
+
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $kb_item->getID(),
+            'users_id'         => $tech_user,
+        ]);
+        $this->assertTrue($fn_can_tech_see_kb());
     }
 }

@@ -32,39 +32,43 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller\ItemType\Form;
+namespace tests\units;
 
-use Glpi\Controller\GenericFormController;
-use Glpi\Http\Firewall;
-use Glpi\Http\RedirectResponse;
-use Glpi\Routing\Attribute\ItemtypeFormRoute;
-use Glpi\Security\Attribute\SecurityStrategy;
-use Html;
-use SavedSearch;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Glpi\Tests\DbTestCase;
 
-class SavedSearchFormController extends GenericFormController
+class ProjectTask_TicketTest extends DbTestCase
 {
-    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
-    #[ItemtypeFormRoute(SavedSearch::class)]
-    public function __invoke(Request $request): Response
+    public function testDuplicateLinkPrevention(): void
     {
-        $request->attributes->set('class', SavedSearch::class);
+        $this->login();
 
-        if ($request->query->has('create_notif')) {
-            return $this->createNotif();
-        }
+        $project = $this->createItem('Project', [
+            'name' => 'Test Project',
+        ]);
 
-        return parent::__invoke($request);
-    }
+        $task = $this->createItem('ProjectTask', [
+            'name' => 'Test Task',
+            'projects_id' => $project->getID(),
+        ]);
 
-    public function createNotif(): RedirectResponse
-    {
-        $savedsearch = new SavedSearch();
-        $savedsearch->check($_GET['id'], UPDATE);
-        $savedsearch->createNotif();
+        $ticket = $this->createItem('Ticket', [
+            'name' => 'Test Ticket',
+            'content' => 'Test content',
+        ]);
 
-        return new RedirectResponse(Html::getBackUrl());
+        $link = new \ProjectTask_Ticket();
+        $link_id = $link->add([
+            'projecttasks_id' => $task->getID(),
+            'tickets_id' => $ticket->getID(),
+        ]);
+        $this->assertGreaterThan(0, $link_id);
+
+        $this->assertFalse(
+            $link->add([
+                'projecttasks_id' => $task->getID(),
+                'tickets_id' => $ticket->getID(),
+            ])
+        );
+        $this->hasSessionMessages(ERROR, ['Relation already exists.']);
     }
 }

@@ -6331,6 +6331,10 @@ class CommonDBTM extends CommonGLPI
         // Get input value
         $input_value = $this->input[$field] ?? null;
 
+        if ($input_value === '') {
+            $input_value = [];
+        }
+
         // See dropdownField twig macro, needed for empty values as an empty
         // array won't be sent in the HTML form
         $input_defined = (bool) ($this->input["_{$field}_defined"] ?? false);

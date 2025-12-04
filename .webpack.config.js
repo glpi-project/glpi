@@ -4,6 +4,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+const RtlCssPlugin = require('rtlcss-webpack-plugin');
 
 const { globSync } = require('glob');
 const path = require('path');
@@ -122,6 +123,7 @@ const config = {
             'languages': ['html', 'javascript', 'typescript', 'json', 'markdown', 'twig', 'css', 'scss', 'shell'],
             'publicPath': '/lib/'
         }),
+        new RtlCssPlugin('[name].rtl.css'), // Generate RTL CSS files
     ],
     resolve: {
         fallback: {

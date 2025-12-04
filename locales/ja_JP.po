@@ -351,7 +351,7 @@ msgstr "状態"
 #: src/ProjectTaskTemplate.php:67 src/ProjectTaskTemplate.php:141
 #: src/ITILCategory.php:56
 msgid "As child of"
-msgstr "上位 : "
+msgstr "指定のアイテムの下位に"
 
 #: templates/generic_show_form.html.twig src/Software.php:485
 #: src/Appliance.php:339 src/RuleDictionnarySoftware.php:103
@@ -1269,7 +1269,7 @@ msgstr "閉じる"
 #: templates/layout/parts/user_header.html.twig
 #: templates/pages/setup/general/systeminfo_table.html.twig
 msgid "This version is UNSTABLE and some SECURITY FIXES may not be included."
-msgstr ""
+msgstr "このバージョンは「不安定」バージョンで、「セキュリティー修正」の一部を含んでいない可能性があります。"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."
@@ -1384,7 +1384,7 @@ msgstr "メニューをたたむ"
 #: templates/layout/parts/profile_selector_form.html.twig
 #, php-format
 msgid "Select %1s entity with all its sub entities"
-msgstr ""
+msgstr "%1s エンティティーを下位のサブエンティティーを含めて選択"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "You have not recorded any saved searches yet"
@@ -10169,13 +10169,13 @@ msgstr "条件"
 
 #: templates/pages/admin/form/section_element_has_conditions_for_deletion_modal.html.twig
 msgid "Child items have conditions and cannot be deleted"
-msgstr ""
+msgstr "下位アイテムが条件を含んでいるため削除できません"
 
 #: templates/pages/admin/form/section_element_has_conditions_for_deletion_modal.html.twig
 msgid ""
 "This section has child elements that are used in conditions of other form "
 "elements"
-msgstr ""
+msgstr "現在のセクションには、他のフォーム要素の条件として利用されている下位要素が含まれています"
 
 #: templates/pages/admin/form/form_toolbar.html.twig
 msgid "Add a question"
@@ -10325,15 +10325,15 @@ msgstr "条件による検証は、この質問型では無効です"
 
 #: templates/pages/admin/form/delete_non_empty_section_modal.html.twig
 msgid "Delete non-empty section"
-msgstr ""
+msgstr "空ではないセクションを削除"
 
 #: templates/pages/admin/form/delete_non_empty_section_modal.html.twig
 msgid "This section contains elements"
-msgstr ""
+msgstr "このセクションは要素をふくんでいます"
 
 #: templates/pages/admin/form/delete_non_empty_section_modal.html.twig
 msgid "Delete section and all its elements"
-msgstr ""
+msgstr "セクションとその下位のすべての要素を削除"
 
 #: templates/pages/admin/profile/management.html.twig
 msgid "Manageable domain records"
@@ -11958,7 +11958,7 @@ msgstr "高度ダッシュボード"
 #: resources/.illustrations_translations.php:4
 msgctxt "Icon"
 msgid "Advanced forms"
-msgstr ""
+msgstr "高度なフォーム"
 
 #: resources/.illustrations_translations.php:5
 msgctxt "Icon"
@@ -12104,7 +12104,7 @@ msgstr "ビジネスインテリジェンスとレポート 3"
 #: resources/.illustrations_translations.php:33
 msgctxt "Icon"
 msgid "Business Intelligence and Reporting 4"
-msgstr ""
+msgstr "ビジネスインテリジェンスとレポート 4"
 
 #: resources/.illustrations_translations.php:34
 msgctxt "Icon"
@@ -12219,7 +12219,7 @@ msgstr "クラウドネットワーク 2"
 #: resources/.illustrations_translations.php:56
 msgctxt "Icon"
 msgid "Cloud usage"
-msgstr ""
+msgstr "クラウド使用"
 
 #: resources/.illustrations_translations.php:57
 msgctxt "Icon"
@@ -12276,7 +12276,7 @@ msgstr "データベース"
 #: resources/.illustrations_translations.php:67
 msgctxt "Icon"
 msgid "Add database"
-msgstr ""
+msgstr "データベース追加"
 
 #: resources/.illustrations_translations.php:68
 msgctxt "Icon"
@@ -12286,7 +12286,7 @@ msgstr "配達"
 #: resources/.illustrations_translations.php:69
 msgctxt "Icon"
 msgid "Diagnostic"
-msgstr ""
+msgstr "診断"
 
 #: resources/.illustrations_translations.php:70
 msgctxt "Icon"
@@ -12346,7 +12346,7 @@ msgstr "バグ修正"
 #: resources/.illustrations_translations.php:81
 msgctxt "Icon"
 msgid "Fixing bug 2"
-msgstr ""
+msgstr "バグ修正 2"
 
 #: resources/.illustrations_translations.php:82
 msgctxt "Icon"
@@ -12361,7 +12361,7 @@ msgstr "フォーム作成"
 #: resources/.illustrations_translations.php:84
 msgctxt "Icon"
 msgid "Gantt"
-msgstr ""
+msgstr "GANTT"
 
 #: resources/.illustrations_translations.php:85
 msgctxt "Icon"
@@ -12446,12 +12446,12 @@ msgstr "資産"
 #: resources/.illustrations_translations.php:101
 msgctxt "Icon"
 msgid "Inventory numbers"
-msgstr ""
+msgstr "資産番号"
 
 #: resources/.illustrations_translations.php:102
 msgctxt "Icon"
 msgid "Items export"
-msgstr ""
+msgstr "アイテムエクスポート"
 
 #: resources/.illustrations_translations.php:103
 msgctxt "Icon"
@@ -12461,17 +12461,17 @@ msgstr "ナレッジベース・FAQ"
 #: resources/.illustrations_translations.php:104
 msgctxt "Icon"
 msgid "LDAP diagnostic"
-msgstr ""
+msgstr "LDAP 診断"
 
 #: resources/.illustrations_translations.php:105
 msgctxt "Icon"
 msgid "LDAP inventory"
-msgstr ""
+msgstr "LDAP インベントリー"
 
 #: resources/.illustrations_translations.php:106
 msgctxt "Icon"
 msgid "LDAP manage"
-msgstr ""
+msgstr "LDAP 管理"
 
 #: resources/.illustrations_translations.php:107
 msgctxt "Icon"
@@ -12516,7 +12516,7 @@ msgstr "監視"
 #: resources/.illustrations_translations.php:115
 msgctxt "Icon"
 msgid "More options"
-msgstr ""
+msgstr "その他のオプション"
 
 #: resources/.illustrations_translations.php:116
 msgctxt "Icon"
@@ -12526,7 +12526,7 @@ msgstr "満足度向上"
 #: resources/.illustrations_translations.php:117
 msgctxt "Icon"
 msgid "Network inventory"
-msgstr ""
+msgstr "ネットワーク インベントリー"
 
 #: resources/.illustrations_translations.php:118
 msgctxt "Icon"
@@ -12591,12 +12591,12 @@ msgstr "パートナー"
 #: resources/.illustrations_translations.php:130
 msgctxt "Icon"
 msgid "PDF export"
-msgstr ""
+msgstr "PDF エクスポート"
 
 #: resources/.illustrations_translations.php:131
 msgctxt "Icon"
 msgid "Phone inventory"
-msgstr ""
+msgstr "電話インベントリー"
 
 #: resources/.illustrations_translations.php:132
 #: resources/.illustrations_translations.php:382
@@ -12612,7 +12612,7 @@ msgstr "ジョブを印刷"
 #: resources/.illustrations_translations.php:134
 msgctxt "Icon"
 msgid "Printer inventory"
-msgstr ""
+msgstr "プリンターインベントリー"
 
 #: resources/.illustrations_translations.php:135
 msgctxt "Icon"
@@ -13208,7 +13208,7 @@ msgstr "チャット"
 #: resources/.illustrations_translations.php:257
 msgctxt "Icon"
 msgid "billing"
-msgstr ""
+msgstr "請求"
 
 #: resources/.illustrations_translations.php:258
 msgctxt "Icon"
@@ -13288,12 +13288,12 @@ msgstr "出荷"
 #: resources/.illustrations_translations.php:273
 msgctxt "Icon"
 msgid "troubleshooting"
-msgstr ""
+msgstr "トラブルシューティング"
 
 #: resources/.illustrations_translations.php:274
 msgctxt "Icon"
 msgid "analysis"
-msgstr ""
+msgstr "分析"
 
 #: resources/.illustrations_translations.php:275
 msgctxt "Icon"
@@ -13423,7 +13423,7 @@ msgstr "ディレクトリー"
 #: resources/.illustrations_translations.php:300
 msgctxt "Icon"
 msgid "project-management"
-msgstr ""
+msgstr "プロジェクト管理"
 
 #: resources/.illustrations_translations.php:301
 msgctxt "Icon"
@@ -13603,12 +13603,12 @@ msgstr "ピン"
 #: resources/.illustrations_translations.php:336
 msgctxt "Icon"
 msgid "places"
-msgstr ""
+msgstr "場所"
 
 #: resources/.illustrations_translations.php:337
 msgctxt "Icon"
 msgid "arborescence"
-msgstr ""
+msgstr "ツリー構造"
 
 #: resources/.illustrations_translations.php:338
 msgctxt "Icon"
@@ -13643,12 +13643,12 @@ msgstr "顧客満足度"
 #: resources/.illustrations_translations.php:344
 msgctxt "Icon"
 msgid "devices"
-msgstr ""
+msgstr "デバイス"
 
 #: resources/.illustrations_translations.php:345
 msgctxt "Icon"
 msgid "agent"
-msgstr ""
+msgstr "エージェント"
 
 #: resources/.illustrations_translations.php:346
 msgctxt "Icon"
@@ -13703,12 +13703,12 @@ msgstr "購入"
 #: resources/.illustrations_translations.php:356
 msgctxt "Icon"
 msgid "export"
-msgstr ""
+msgstr "エクスポート"
 
 #: resources/.illustrations_translations.php:357
 msgctxt "Icon"
 msgid "phone"
-msgstr ""
+msgstr "電話"
 
 #: resources/.illustrations_translations.php:358
 msgctxt "Icon"
@@ -25421,7 +25421,7 @@ msgstr "上位 : "
 
 #: src/CommonITILObject_CommonITILObject.php:401 src/Ticket.php:2238
 msgid "Parent of"
-msgstr "下位 : "
+msgstr "指定のアイテムの上位として"
 
 #: src/CommonITILObject_CommonITILObject.php:446
 msgid "Duplicated by"
@@ -30018,7 +30018,7 @@ msgstr "アイテムはオブジェクトにリンクしていません"
 #: src/CommonDBChild.php:462
 #, php-format
 msgid "Parent item %s #%s is invalid."
-msgstr ""
+msgstr "上位アイテムの %s #%s は無効です。"
 
 #: src/CommonDBChild.php:895
 #, php-format
@@ -33785,18 +33785,18 @@ msgstr "送信ボタンの表示・非表示"
 #: js/modules/Forms/EditorController.js:2248
 msgid "question"
 msgid_plural "questions"
-msgstr[0] ""
+msgstr[0] "質問"
 
 #: js/modules/Forms/EditorController.js:2252
 msgid "comment"
 msgid_plural "comments"
-msgstr[0] ""
+msgstr[0] "コメント"
 
 #: js/modules/Forms/EditorController.js:2257
 #, javascript-format
 msgid ""
 "Deleting this section will also delete %s. This action cannot be undone."
-msgstr ""
+msgstr "このセクションを削除すると、%s も削除されます。この操作は元に戻せません。"
 
 #: js/modules/Forms/EditorController.js:2629
 #, javascript-format
