@@ -1120,7 +1120,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      */
-    abstract public function canReopen();
+    public function canReopen()
+    {
+        return true;
+    }
 
 
     /**
