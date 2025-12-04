@@ -3531,7 +3531,8 @@ JS;
         if ($theme->isCustomTheme()) {
             $content_css_paths[] = $theme->getPath();
         }
-        $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('lib/base.css', ['force_no_version' => true]));
+        $content_css = $CFG_GLPI['root_doc'] . '/lib/tinymce/skins/ui/oxide/content.css';
+        $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('lib/base.css', ['force_no_version' => true]));
         $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('lib/tabler.css', ['force_no_version' => true]));
         $content_css .= ',' . implode(',', array_map(static fn($path) => preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($path, ['force_no_version' => true])), $content_css_paths));
         // Fix & encoding so it can be loaded as expected in debug mode
@@ -3637,6 +3638,8 @@ JS;
                     highlight_on_focus: false,
                     autoresize_bottom_margin: 1, // Avoid excessive bottom padding
                     autoresize_overflow_padding: 0,
+
+                    object_resizing: true,
 
                     min_height: $editor_height,
                     height: $editor_height, // Must be used with min_height to prevent "height jump" when the page is loaded
