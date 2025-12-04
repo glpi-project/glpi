@@ -1072,7 +1072,7 @@ class Toolbox
         } else {
             $currentVersion = preg_replace('/^((\d+\.?)+).*$/', '$1', GLPI_VERSION);
             if (version_compare($currentVersion, $latest_version, '<')) {
-                Config::setConfigurationValues('core', ['founded_new_version' => $latest_version]);
+                Config::setConfigurationValues('core', ['found_new_version' => $latest_version]);
                 return sprintf(__('A new version is available: %s.'), $latest_version);
             } else {
                 return __('You have the latest available version');

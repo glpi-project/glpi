@@ -360,7 +360,7 @@ class Update
             'version'             => GLPI_VERSION,
             'dbversion'           => GLPI_SCHEMA_VERSION,
             'language'            => $this->language,
-            'founded_new_version' => '',
+            'found_new_version' => '',
         ];
         foreach ($configs as $name => $value) {
             $DB->updateOrInsert(
