@@ -117,6 +117,7 @@
         "monaco-editor-webpack-plugin": "^7.1.1",
         "null-loader": "^4.0.1",
         "patch-package": "^8.0.1",
+        "rtlcss-webpack-plugin": "^4.0.7",
         "sass": "^1.89.2",
         "sass-loader": "^16.0.6",
         "script-loader": "^0.7.2",
