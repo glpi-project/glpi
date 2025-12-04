@@ -1326,9 +1326,9 @@ function tableToDetails(table) {
     section_els.each((i, e) => {
         if (e.classList.contains('section-header')) {
             if (in_details) {
-                details += '</pre></details>';
+                details += '\n</pre></details>';
             }
-            details += `<details><summary>${_.escape(e.innerText)}</summary><pre>`;
+            details += `<details><summary>${_.escape(e.innerText)}</summary><pre>\n`;
             in_details = true;
         } else {
             if (in_details) {
@@ -1338,7 +1338,7 @@ function tableToDetails(table) {
     });
 
     if (in_details) {
-        details += '</pre></details>';
+        details += '\n</pre></details>';
     }
     return details;
 }
@@ -1969,4 +1969,3 @@ document.addEventListener('focusin', (e) => {
         e.stopImmediatePropagation();
     }
 });
-
