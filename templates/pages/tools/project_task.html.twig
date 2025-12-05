@@ -53,7 +53,7 @@
     ) }}
 
     <script>
-        const form = $('#{{ form_id }}');
+        var form = $('#{{ form_id }}');
         function projecttasktemplate_update(value) {
             $.ajax({
                 url: CFG_GLPI.root_doc + "/ajax/projecttask.php",
@@ -164,8 +164,11 @@
         }
     ) }}
     <script>
-        form.find("input[name=auto_percent_done]").on('change', function() {
-            $("select[name='percent_done']").prop('disabled', $("input[name='auto_percent_done']").eq(1).prop('checked'));
+        $(function() {
+            var form = $('#{{ form_id }}');
+            form.find("input[name=auto_percent_done]").on('change', function() {
+                $("select[name='percent_done']").prop('disabled', $("input[name='auto_percent_done']").eq(1).prop('checked'));
+            });
         });
     </script>
 
@@ -175,8 +178,11 @@
         __('Milestone'),
     ) }}
     <script>
-        form.find('select[name=is_milestone]').on('change', function() {
-            $('.is_milestone').toggleClass('d-none', Boolean(Number(this.value)));
+        $(function() {
+            var form = $('#{{ form_id }}');
+            form.find('select[name=is_milestone]').on('change', function() {
+                $('.is_milestone').toggleClass('d-none', Boolean(Number(this.value)));
+            });
         });
     </script>
 
