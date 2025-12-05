@@ -37,7 +37,7 @@ namespace Glpi\Form\Destination\CommonITILField;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset;
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Features\AssignableItemInterface;
+use Glpi\Features\AssignableItem;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
@@ -364,7 +364,12 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
                     return false;
                 }
 
-                // For custom assets, check if the tech user/group fields are enabled
+                // Check if the itemtype uses the AssignableItem trait (including parent classes)
+                if (!\Toolbox::hasTrait($question_itemtype, AssignableItem::class)) {
+                    return false;
+                }
+
+                // For custom assets, also check if the tech user/group fields are enabled
                 if (is_a($question_itemtype, Asset::class, true)) {
                     /** @var class-string<Asset> $question_itemtype */
                     $definition = $question_itemtype::getDefinition();
@@ -374,8 +379,7 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
                         || in_array('groups_id_tech', $enabled_fields, true);
                 }
 
-                // For other itemtypes, check if they implement AssignableItemInterface
-                return is_a($question_itemtype, AssignableItemInterface::class, true);
+                return true;
             }
         );
 
