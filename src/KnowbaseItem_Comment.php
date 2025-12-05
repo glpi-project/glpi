@@ -141,13 +141,22 @@ class KnowbaseItem_Comment extends CommonDBTM
         foreach ($db_comments as $db_comment) {
             if (!isset($user_data_cache[$db_comment['users_id']])) {
                 $user = new User();
-                $user->getFromDB($db_comment['users_id']);
-                $user_data_cache[$db_comment['users_id']] = [
-                    'avatar' => User::getThumbnailURLForPicture($user->fields['picture']),
-                    'link'   => $user->getLinkURL(),
-                    'initials' => $user->getUserInitials(),
-                    'initials_bg_color' => $user->getUserInitialsBgColor(),
-                ];
+                if ($user->getFromDB($db_comment['users_id'])) {
+                    $user_data_cache[$db_comment['users_id']] = [
+                        'avatar' => User::getThumbnailURLForPicture($user->fields['picture']),
+                        'link'   => $user->getLinkURL(),
+                        'initials' => $user->getUserInitials(),
+                        'initials_bg_color' => $user->getUserInitialsBgColor(),
+                    ];
+                } else {
+                    // User has been deleted, use default values
+                    $user_data_cache[$db_comment['users_id']] = [
+                        'avatar' => User::getThumbnailURLForPicture(''),
+                        'link'   => '',
+                        'initials' => '',
+                        'initials_bg_color' => '#cccccc',
+                    ];
+                }
             }
             $db_comment['answers'] = self::getCommentsForKbItem($kbitem_id, $lang, $db_comment['id'], $user_data_cache);
             $db_comment['user_info'] = $user_data_cache[$db_comment['users_id']];
