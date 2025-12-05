@@ -3420,7 +3420,7 @@ class RuleTicketTest extends DbTestCase
             'entities_id' => 0,
         ]);
 
-        $this->createItem('RuleCriteria', [
+        $criterion = $this->createItem('RuleCriteria', [
             'rules_id'  => $rule->getID(),
             'criteria'  => 'locations_id',
             'condition' => \Rule::PATTERN_DOES_NOT_EXISTS,
@@ -3434,8 +3434,14 @@ class RuleTicketTest extends DbTestCase
         $check_results = [];
         $ruleticket->testCriterias($input, $check_results);
 
-        $this->assertCount(1, $check_results);
-        $this->assertEquals(1, $check_results[array_key_first($check_results)]['result']);
+        $this->assertSame([
+            $criterion->getID() => [
+                'name'   => 'locations_id',
+                'value'  => '1',
+                'result' => 1,
+                'id'     => $criterion->getID(),
+            ]
+        ], $check_results);
     }
 
     /**
