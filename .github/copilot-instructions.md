@@ -7,9 +7,10 @@ Never create .md or .txt files to explain changes.
 Never explain what you did.
 Do not add unnecessary comments or TODO notes.
 Follow the MVC pattern, routing, and controllers wherever possible.
-Do not create /front/ files — always use controllers and routes.
+Do not create /front/ files — always use controllers and routes if possible.
 Never output raw HTML with echo; always use Twig templates.
 Never execute raw SQL — always use GLPI’s ORM and database abstraction layer.
 Do not ask clarification questions, except when a real choice between two technical solutions must be made.
 Do not generate tests unless requested.
 When generating code, always ensure it is secure and free from vulnerabilities.
+When importing libraries or packages, prefer already imported ones; if using new ones, they must be compatible with GLPI GPLv3+ License.
