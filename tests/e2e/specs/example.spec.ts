@@ -1,5 +1,3 @@
-<?php
-
 /**
  * ---------------------------------------------------------------------
  *
@@ -32,34 +30,21 @@
  * ---------------------------------------------------------------------
  */
 
-$finder = (new PhpCsFixer\Finder())
-    ->in(__DIR__)
-    ->exclude([
-        '.git/',
-        'config/',
-        'files/',
-        'marketplace/',
-        'node_modules/',
-        'plugins/',
-        'tests/config/',
-        'tests/files/',
-        'tests/e2e/',
-        'vendor/',
-    ])
-;
+import { test, expect } from '@playwright/test';
 
-return (new PhpCsFixer\Config())
-    ->setUnsupportedPhpVersionAllowed(true) // allow upcoming PHP versions
-    ->setParallelConfig(PhpCsFixer\Runner\Parallel\ParallelConfigFactory::detect())
-    ->setCacheFile('files/_cache/php-cs-fixer/php-cs-fixer.cache')
-    ->setRules([
-        '@PER-CS3.0' => true,
-        '@PHP84Migration' => true,
-        'fully_qualified_strict_types' => ['import_symbols' => true],
-        'ordered_imports' => ['imports_order' => ['class', 'const', 'function']],
-        'no_unused_imports' => true,
-        'heredoc_indentation' => false, // This rule is mandatory due to a bug in `xgettext`, see https://savannah.gnu.org/bugs/?func=detailitem&item_id=62158
-        'new_expression_parentheses' => false, // breaks compatibility with PHP < 8.4
-    ])
-    ->setFinder($finder)
-;
+test('has title', async ({ page }) => {
+    await page.goto('https://playwright.dev/');
+
+    // Expect a title "to contain" a substring.
+    await expect(page).toHaveTitle(/Playwright/);
+});
+
+test('get started link', async ({ page }) => {
+    await page.goto('https://playwright.dev/');
+
+    // Click the get started link.
+    await page.getByRole('link', { name: 'Get started' }).click();
+
+    // Expects page to have a heading with the name of Installation.
+    await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
+});

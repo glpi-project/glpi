@@ -8,6 +8,20 @@ DB = $(COMPOSE) exec db
 CONSOLE = $(PHP) bin/console
 INI_DIR = /usr/local/etc/php/custom_conf.d
 
+# Get playwright's version so that the correct docker image is used.
+PLAYWRIGHT_VERSION = $(shell grep '"@playwright/test"' package.json | sed -E 's/.*"@playwright\/test": *"[^0-9]*([0-9.]+)".*/\1/')
+
+# See: https://playwright.dev/docs/docker
+PLAYWRIGHT = docker run \
+	-it \
+	--rm \
+	--ipc=host \
+	-v .:/app \
+	-w /app \
+	-p 9323:9323 \
+	mcr.microsoft.com/playwright:v$(PLAYWRIGHT_VERSION)-noble \
+	npx playwright
+
 # Helper variables
 _TITLE := "\033[32m[%s]\033[0m %s\n" # Green text
 _ERROR := "\033[31m[%s]\033[0m %s\n" # Red text
@@ -156,6 +170,28 @@ test-db-update: ## Update testing's database
 		--env=testing
 .PHONY: test-db-update
 
+e2e-db-install: ## Install e2e testing's database
+	@$(CONSOLE) database:install \
+		-r -f \
+		--db-host=db \
+		--db-port=3306 \
+		--db-name=glpi_e2e \
+		--db-user=root \
+		--db-password=glpi \
+		--no-interaction \
+		--no-telemetry \
+		--env=e2e_testing
+.PHONY: e2e-db-install
+
+e2e-db-update: ## Update e2e testing's database
+	@$(CONSOLE) database:update \
+		-n \
+		--allow-unstable \
+		--force \
+		--skip-db-checks  \
+		--env=e2e_testing
+.PHONY: e2e-db-update
+
 ## —— Dependencies —————————————————————————————————————————————————————————————
 composer: ## Run a composer command, example: make composer c='require mypackage/package'
 	@$(eval c ?=)
@@ -222,6 +258,21 @@ cypress-open: ## Open cypress UI
 	@$(PHP) bash -c 'node_modules/.bin/cypress verify || node_modules/.bin/cypress install'
 	@$(PHP) node_modules/.bin/cypress open --e2e --browser electron --project tests $(c)
 .PHONY: cypress-open
+
+playwright: ## Run playwright tests
+	@$(eval c ?=)
+	@$(PLAYWRIGHT) test $(c)
+.PHONY: playwright
+
+playwright-report: ## View playwright reports
+	@$(eval c ?=)
+	@$(PLAYWRIGHT) show-report tests/e2e/results --host=0.0.0.0 $(c)
+.PHONY: playwright-report
+
+playwright-ui: ## Open playwright's UI mode
+	@$(eval c ?=)
+	@$(PLAYWRIGHT) test --ui-host=0.0.0.0 --ui-port=9323 $(c)
+.PHONY: playwright-ui
 
 ## —— Coding standards —————————————————————————————————————————————————————————
 phpcsfixer-check: ## Check for php coding standards issues
