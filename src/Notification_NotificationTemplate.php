@@ -59,11 +59,13 @@ class Notification_NotificationTemplate extends CommonDBRelation
     public const MODE_XMPP      = 'xmpp';
     public const MODE_IRC       = 'irc';
 
+    #[Override]
     public static function getTypeName($nb = 0)
     {
         return _n('Template', 'Templates', $nb);
     }
 
+    #[Override]
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
@@ -91,6 +93,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
         return '';
     }
 
+    #[Override]
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         switch (get_class($item)) {
@@ -286,6 +289,8 @@ TWIG, $twig_params);
 
     /**
      * Form for Notification on Massive action
+     *
+     * @return void
      **/
     public static function showFormMassiveAction()
     {
@@ -304,21 +309,13 @@ TWIG, $twig_params);
         echo Html::submit(_x('button', 'Add'), ['name' => 'massiveaction']);
     }
 
+    #[Override]
     public function getName($options = [])
     {
         return (string) $this->getID();
     }
 
-    /**
-     * Print the form
-     *
-     * @param integer $ID      ID of the item
-     * @param array   $options array
-     *     - target for the Form
-     *     - computers_id ID of the computer for add process
-     *
-     * @return boolean true if displayed  false if item not found or not right to display
-     **/
+    #[Override]
     public function showForm($ID, array $options = [])
     {
         if (!Session::haveRight("notification", UPDATE)) {
@@ -418,6 +415,7 @@ TWIG, $twig_params);
         return $CFG_GLPI['notifications_modes'];
     }
 
+    #[Override]
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
         if (!is_array($values)) {
@@ -436,6 +434,7 @@ TWIG, $twig_params);
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
+    #[Override]
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
         if (!is_array($values)) {
@@ -484,7 +483,7 @@ TWIG, $twig_params);
     /**
      * Get class name for specified mode
      *
-     * @param string $mode      Requested mode
+     * @param string               $mode      Requested mode
      * @param 'event'|'setting'|'' $extratype Extra type
      *
      * @return (

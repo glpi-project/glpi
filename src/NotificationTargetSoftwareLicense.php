@@ -35,9 +35,13 @@
 
 /**
  * NotificationTargetSoftwareLicense Class
+ *
+ * @extends \NotificationTarget<\SoftwareLicense>
+ *
  **/
 class NotificationTargetSoftwareLicense extends NotificationTarget
 {
+    #[Override]
     public function getEvents()
     {
         return ['alert' => __('Alarms on expired licenses')];
@@ -83,6 +87,7 @@ class NotificationTargetSoftwareLicense extends NotificationTarget
     }
 
 
+    #[Override]
     public function getTags()
     {
 

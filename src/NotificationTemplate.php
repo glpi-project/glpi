@@ -51,14 +51,19 @@ class NotificationTemplate extends CommonDBTM
     // From CommonDBTM
     public $dohistory = true;
 
-    //Signature to add to the template
+    /**
+     * @var string Signature to add to the template
+     */
     public $signature = '';
 
-    //Store templates for each language
+    /**
+     * @var array<string, array{subject: string, content_html:string, content_text:string}> Store templates for each language
+     */
     public $templates_by_languages = [];
 
     public static $rightname = 'config';
 
+    #[Override]
     public function getCloneRelations(): array
     {
         return [
@@ -66,32 +71,37 @@ class NotificationTemplate extends CommonDBTM
         ];
     }
 
+    #[Override]
     public static function getTypeName($nb = 0)
     {
         return _n('Notification template', 'Notification templates', $nb);
     }
 
+    #[Override]
     public static function getSectorizedDetails(): array
     {
         return ['config', Notification::class, self::class];
     }
 
+    #[Override]
     public static function getIcon()
     {
         return 'ti ti-template';
     }
 
+    #[Override]
     public static function canCreate(): bool
     {
         return static::canUpdate();
     }
 
+    #[Override]
     public static function canPurge(): bool
     {
         return static::canUpdate();
     }
 
-
+    #[Override]
     public function defineTabs($options = [])
     {
 
@@ -104,16 +114,16 @@ class NotificationTemplate extends CommonDBTM
         return $ong;
     }
 
-
     /**
      * Reset already computed templates
+     * @return void
      **/
     public function resetComputedTemplates()
     {
         $this->templates_by_languages = [];
     }
 
-
+    #[Override]
     public function showForm($ID, array $options = [])
     {
         if (!Config::canUpdate()) {
@@ -126,7 +136,7 @@ class NotificationTemplate extends CommonDBTM
         return true;
     }
 
-
+    #[Override]
     public function rawSearchOptions()
     {
         $tab = [];
@@ -166,13 +176,14 @@ class NotificationTemplate extends CommonDBTM
         return $tab;
     }
 
-
     /**
      * Display templates available for an itemtype
      *
-     * @param $name      the dropdown name
-     * @param $itemtype  display templates for this itemtype only
-     * @param $value     the dropdown's default value (0 by default)
+     * @param string                   $name     dropdown name
+     * @param class-string<CommonDBTM> $itemtype templates for this itemtype only
+     * @param string|int               $value    default value
+     *
+     * @return void
      **/
     public static function dropdownTemplates($name, $itemtype, $value = 0)
     {
@@ -184,13 +195,15 @@ class NotificationTemplate extends CommonDBTM
         ]);
     }
 
-
     /**
-     * @param $options
+     * @param array{sendprivate?: bool} $options
+     * @return 0|1
+     * @todo can probably be removed
+     *
+     * @return int
      **/
     public function getAdditionnalProcessOption($options)
     {
-
         //Additionnal option can be given for template processing
         //For the moment, only option to see private tasks & followups is available
         if (
@@ -202,12 +215,11 @@ class NotificationTemplate extends CommonDBTM
         return 0;
     }
 
-
     /**
-     * @param $target             NotificationTarget object
-     * @param $user_infos   array
-     * @param $event
-     * @param $options      array
+     * @param NotificationTarget<CommonGLPI> $target
+     * @param array<mixed>                   $user_infos
+     * @param string                         $event
+     * @param array<mixed>                   $options
      *
      * @return false|string id of the template in templates_by_languages / false if computation failed
      **/
@@ -247,14 +259,14 @@ class NotificationTemplate extends CommonDBTM
                 $orig_tz = $DB->guessTimezone();
                 $DB->setTimezone($user_infos['additionnaloption']['timezone']);
 
-                if (is_a($options['item'], CommonDBTM::class, true)) {
+                if ($options['item'] instanceof CommonDBTM) {
                     // reload item to ensure timestamps will be converted to the current user timezone
                     $options['item']->getFromDB($options['item']->fields['id']);
                 }
             }
 
             //If event is raised by a plugin, load it in order to get the language file available
-            if ($plug = isPluginItemType(get_class($target->obj))) {
+            if ($plug = isPluginItemType($target->obj !== null ? get_class($target->obj) : self::class)) {
                 Plugin::loadLang(strtolower($plug['plugin']), $language);
             }
 
@@ -334,17 +346,17 @@ class NotificationTemplate extends CommonDBTM
         if (isset($this->templates_by_languages[$tid])) {
             return $tid;
         }
+
         return false;
     }
 
-
     /**
-     * @param $string
-     * @param $data
+     * @param string               $string
+     * @param array<string, mixed> $data
+     * @return string
      **/
     public static function process($string, $data, bool $html_context = false)
     {
-
         $cleandata = [];
         // clean data for strtr
         foreach ($data as $field => $value) {
@@ -416,9 +428,6 @@ class NotificationTemplate extends CommonDBTM
 
     /**
      * Convert relative links to GLPI nto absolute links.
-     *
-     * @param string $string
-     * @return string
      */
     private static function convertRelativeGlpiLinksToAbsolute(string $string, bool $html_context): string
     {
@@ -439,14 +448,13 @@ class NotificationTemplate extends CommonDBTM
         return $string;
     }
 
-
     /**
-     * @param $string
-     * @param $data
+     * @param string $string
+     * @param array  $data<string, string>
+     * @return string
      **/
     public static function processIf($string, $data)
     {
-
         if (preg_match_all("/##IF([a-z-0-9\._]*)[=]?(.*?)##/i", $string, $out)) {
             foreach ($out[1] as $key => $tag_infos) {
                 $if_field = $tag_infos;
@@ -503,10 +511,10 @@ class NotificationTemplate extends CommonDBTM
     /**
      * Convert notification data to HTML format.
      *
-     * @param array $data
-     * @return array
+     * @param array<string, string|array<string>> $data
+     * @return array<string, string|array<string>>
      */
-    private static function getDataForHtml(array $data)
+    private static function getDataForHtml(array $data): array
     {
         foreach ($data as $tag => $value) {
             if (is_array($value)) {
@@ -529,10 +537,10 @@ class NotificationTemplate extends CommonDBTM
     /**
      * Convert notification data to plain text format.
      *
-     * @param array $data
-     * @return array
+     * @param array<string, string|array<string>> $data
+     * @return array array<string, string|array<string>>
      */
-    private static function getDataForPlainText(array $data)
+    private static function getDataForPlainText(array $data): array
     {
 
         foreach ($data as $tag => $value) {
@@ -555,18 +563,19 @@ class NotificationTemplate extends CommonDBTM
         return $data;
     }
 
-
     /**
-     * @param $signature
+     * @param string $signature
+     *
+     * @return void
      **/
     public function setSignature($signature)
     {
         $this->signature = $signature;
     }
 
-
     /**
-     * @param $language
+     * @param string $language
+     * @return false|array<string, mixed>
      **/
     public function getByLanguage($language)
     {
@@ -589,13 +598,12 @@ class NotificationTemplate extends CommonDBTM
         return false;
     }
 
-
     /**
-     * @param NotificationTarget $target     Target instance
-     * @param string             $tid        template computed id
-     * @param mixed              $to         Recipient
-     * @param array              $user_infos Extra user infos
-     * @param array              $options    Options
+     * @param NotificationTarget<CommonGLPI> $target     Target instance
+     * @param string                         $tid        template computed id
+     * @param mixed                          $to         Recipient
+     * @param array                          $user_infos Extra user infos
+     * @param array                          $options    Options
      *
      * @return array
      **/
@@ -629,7 +637,7 @@ class NotificationTemplate extends CommonDBTM
         return $mailing_options;
     }
 
-
+    #[Override]
     public function cleanDBonPurge()
     {
 

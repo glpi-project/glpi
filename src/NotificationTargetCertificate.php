@@ -34,16 +34,14 @@
  */
 
 /**
- * @since 9.2
- */
-
-
-
-/**
  * NotificationTargetSoftwareLicense Class
+ *
+ * @since 9.2
+ * @extends NotificationTarget<Certificate>
  **/
 class NotificationTargetCertificate extends NotificationTarget
 {
+    #[Override]
     public function getEvents()
     {
         return ['alert' => __('Alarm on expired certificate')];
@@ -60,7 +58,7 @@ class NotificationTargetCertificate extends NotificationTarget
             __('Group in charge of the certificate')
         );
     }
-
+    #[Override]
     public function addDataForTemplate($event, $options = [])
     {
 
@@ -121,6 +119,7 @@ class NotificationTargetCertificate extends NotificationTarget
     }
 
 
+    #[Override]
     public function getTags()
     {
 

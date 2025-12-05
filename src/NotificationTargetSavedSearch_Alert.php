@@ -33,8 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @extends NotificationTarget<SavedSearch_Alert>
+ */
 class NotificationTargetSavedSearch_Alert extends NotificationTarget
 {
+    #[Override]
     public function getEvents()
     {
         global $DB;
@@ -66,7 +70,6 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
         return $events;
     }
 
-
     public function addDataForTemplate($event, $options = [])
     {
         global $CFG_GLPI;
@@ -78,8 +81,8 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
         $this->data['##savedsearch.action##']    = $events[$event];
         $this->data['##savedsearch.name##']      = $savedsearch->getField('name');
         $this->data['##savedsearch.message##']   = $options['msg'];
-        $this->data['##savedsearch.id##']        = $savedsearch->getID();
-        $this->data['##savedsearch.count##']     = (int) $options['data']['totalcount'];
+        $this->data['##savedsearch.id##']        = (string) $savedsearch->getID();
+        $this->data['##savedsearch.count##']     = (string) $options['data']['totalcount'];
         $this->data['##savedsearch.type##']      = $savedsearch->getField('itemtype');
         $url = $savedsearch::getSearchURL(false) . "?action=load&id=" . $savedsearch->getID();
         $this->data['##savedsearch.url##']       = $this->formatURL($options['additionnaloption']['usertype'], $url);
@@ -92,7 +95,7 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
         }
     }
 
-
+    #[Override]
     public function getTags()
     {
         $tags = [
@@ -114,7 +117,7 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
         asort($this->tag_descriptions);
     }
 
-
+    #[Override]
     public function addNotificationTargets($entity)
     {
         if ($this->raiseevent == 'alert') {
@@ -124,7 +127,7 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
         }
     }
 
-
+    #[Override]
     public function addSpecificTargets($data, $options)
     {
         //Look for all targets whose type is Notification::ITEM_USER
