@@ -52,41 +52,6 @@
         }
     ) }}
 
-    <script>
-        var form = $('#{{ form_id }}');
-        function projecttasktemplate_update(value) {
-            $.ajax({
-                url: CFG_GLPI.root_doc + "/ajax/projecttask.php",
-                type: "POST",
-                data: {
-                    projecttasktemplates_id: value
-                }
-            }).done(function(data) {
-                // Set simple inputs
-                form.find('input[name=name]').val(data.name);
-                form.find('textarea[name=comment]').val(data.comments);
-
-                // Set flatpickr dates
-                form.find('input[name=plan_start_date]').parent()[0]._flatpickr.setDate(data.plan_start_date);
-                form.find('input[name=plan_end_date]').parent()[0]._flatpickr.setDate(data.plan_end_date);
-                form.find('input[name=real_start_date]').parent()[0]._flatpickr.setDate(data.real_start_date);
-                form.find('input[name=real_end_date]').parent()[0]._flatpickr.setDate(data.real_end_date);
-
-                // Set content
-                setRichTextEditorContent("{{ content_field_id }}", data.description);
-
-                // Set dropdowns and dates
-                form.find('select[name=projecttasks_id]').trigger("setValue", data.projecttasks_id);
-                form.find('select[name=projectstates_id]').trigger("setValue", data.projectstates_id);
-                form.find('select[name=projecttasktypes_id]').trigger("setValue", data.projecttasktypes_id);
-                form.find('select[name=percent_done]').trigger("setValue", data.percent_done);
-                form.find('select[name=is_milestone]').trigger("setValue", data.is_milestone);
-                form.find('select[name=effective_duration]').trigger("setValue", data.effective_duration);
-                form.find('select[name=planned_duration]').trigger("setValue", data.planned_duration);
-            });
-         }
-    </script>
-
     {{ fields.nullField() }}
 
     {% set project_link %}
@@ -163,28 +128,12 @@
             'add_field_html': tooltip,
         }
     ) }}
-    <script>
-        $(function() {
-            var form = $('#{{ form_id }}');
-            form.find("input[name=auto_percent_done]").on('change', function() {
-                $("select[name='percent_done']").prop('disabled', $("input[name='auto_percent_done']").eq(1).prop('checked'));
-            });
-        });
-    </script>
 
     {{ fields.dropdownYesNo(
         'is_milestone',
         item.fields.is_milestone,
         __('Milestone'),
     ) }}
-    <script>
-        $(function() {
-            var form = $('#{{ form_id }}');
-            form.find('select[name=is_milestone]').on('change', function() {
-                $('.is_milestone').toggleClass('d-none', Boolean(Number(this.value)));
-            });
-        });
-    </script>
 
     {{ fields.nullField() }}
 
@@ -294,5 +243,52 @@
             'field_class' : "col-12",
         }
     ) }}
+
+    <script type="module">
+        const form = $('#{{ form_id }}');
+
+        // Template update function (exposed globally for inline on_change handler)
+        window.projecttasktemplate_update = function(value) {
+            $.ajax({
+                url: CFG_GLPI.root_doc + "/ajax/projecttask.php",
+                type: "POST",
+                data: {
+                    projecttasktemplates_id: value
+                }
+            }).done(function(data) {
+                // Set simple inputs
+                form.find('input[name=name]').val(data.name);
+                form.find('textarea[name=comment]').val(data.comments);
+
+                // Set flatpickr dates
+                form.find('input[name=plan_start_date]').parent()[0]._flatpickr.setDate(data.plan_start_date);
+                form.find('input[name=plan_end_date]').parent()[0]._flatpickr.setDate(data.plan_end_date);
+                form.find('input[name=real_start_date]').parent()[0]._flatpickr.setDate(data.real_start_date);
+                form.find('input[name=real_end_date]').parent()[0]._flatpickr.setDate(data.real_end_date);
+
+                // Set content
+                setRichTextEditorContent("{{ content_field_id }}", data.description);
+
+                // Set dropdowns
+                form.find('select[name=projecttasks_id]').trigger("setValue", data.projecttasks_id);
+                form.find('select[name=projectstates_id]').trigger("setValue", data.projectstates_id);
+                form.find('select[name=projecttasktypes_id]').trigger("setValue", data.projecttasktypes_id);
+                form.find('select[name=percent_done]').trigger("setValue", data.percent_done);
+                form.find('select[name=is_milestone]').trigger("setValue", data.is_milestone);
+                form.find('select[name=effective_duration]').trigger("setValue", data.effective_duration);
+                form.find('select[name=planned_duration]').trigger("setValue", data.planned_duration);
+            });
+        };
+
+        // Auto percent done toggle
+        form.find("input[name=auto_percent_done]").on('change', function() {
+            $("select[name='percent_done']").prop('disabled', $("input[name='auto_percent_done']").eq(1).prop('checked'));
+        });
+
+        // Milestone toggle
+        form.find('select[name=is_milestone]').on('change', function() {
+            $('.is_milestone').toggleClass('d-none', Boolean(Number(this.value)));
+        });
+    </script>
 
 {% endblock %}
