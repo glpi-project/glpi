@@ -64,6 +64,35 @@
     {% endif %}
     {{ fields.textField('name', item.fields['name'], __('Name')) }}
     {{ fields.textField('ifalias', item.fields['ifalias'], __('Alias')) }}
+
+    {% set is_readonly = item.fields['is_dynamic']|default(false) %}
+
+    {{ fields.numberField('ifmtu', item.fields['ifmtu'], __('MTU'), {
+        min: 0,
+        readonly: is_readonly
+    }) }}
+
+    {% set internal_status_values = {
+        '': __('Unknown'),
+        '1': __('Up'),
+        '2': __('Down'),
+        '3': __('Test')
+    } %}
+    {{ fields.dropdownArrayField('ifinternalstatus', item.fields['ifinternalstatus'], internal_status_values, __('Internal status'), {
+        readonly: is_readonly
+    }) }}
+
+    {% set connection_status_values = {
+        0: __('Unknown'),
+        1: __('Connected'),
+        2: __('Not connected'),
+        3: __('Testing'),
+        5: __('Dormant')
+    } %}
+    {{ fields.dropdownArrayField('ifconnectionstatus', item.fields['ifconnectionstatus'], connection_status_values, _n('Connection', 'Connections', 1), {
+        readonly: is_readonly
+    }) }}
+
     {{ fields.textareaField('comment', item.fields['comment'], __('Comments')) }}
 
     {% if instantiation != false %}
