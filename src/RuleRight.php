@@ -411,6 +411,7 @@ class RuleRight extends Rule
             'match_operators' => $this->getRulesMatch(),
             'conditions' => static::getConditionsArray(),
             'rand' => mt_rand(),
+            'short' => false,
             'test_url' => $CFG_GLPI["root_doc"] . "/front/rule.test.php",
             'params' => [
                 'canedit' => $canedit,
