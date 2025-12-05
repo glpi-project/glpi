@@ -152,6 +152,9 @@ class Search
      * @var int
      */
     public static $output_type = self::HTML_OUTPUT;
+    /**
+     * @var array
+     */
     public static $search = [];
 
     /**
@@ -742,9 +745,10 @@ class Search
      * @param string $from_type             Reference item type ID
      * @param string $to_type               Item type to add
      * @param array  $already_link_tables2  Array of tables already joined
-     *showGenericSearch
+     * @param array $joinparams             Array join parameters (condition / joinbefore...)
+     *
      * @return string Meta Left join string
-     **/
+     */
     public static function addMetaLeftJoin(
         $from_type,
         $to_type,
@@ -895,7 +899,9 @@ class Search
     /**
      * @param string  $itemtype
      * @param integer $field_num
-     **/
+     *
+     * @return array
+     */
     public static function getActionsFor($itemtype, $field_num)
     {
         return SearchOption::getActionsFor($itemtype, $field_num);
@@ -1094,6 +1100,8 @@ class Search
 
     /**
      * @param array $joinparams
+     *
+     * @return string
      */
     public static function computeComplexJoinID(array $joinparams)
     {

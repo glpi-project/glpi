@@ -38,9 +38,9 @@
 class RSSFeed_User extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1          = 'RSSFeed';
+    public static $itemtype_1          = RSSFeed::class;
     public static $items_id_1          = 'rssfeeds_id';
-    public static $itemtype_2          = 'User';
+    public static $itemtype_2          = User::class;
     public static $items_id_2          = 'users_id';
 
     public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
@@ -50,10 +50,10 @@ class RSSFeed_User extends CommonDBRelation
     /**
      * Get users for a rssfeed
      *
-     * @param $rssfeeds_id ID of the rssfeed
+     * @param int $rssfeeds_id ID of the rssfeed
      *
      * @return array of users linked to a rssfeed
-     **/
+     */
     public static function getUsers($rssfeeds_id)
     {
         global $DB;

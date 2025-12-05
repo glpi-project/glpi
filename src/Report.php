@@ -51,6 +51,7 @@ use function Safe\mktime;
  **/
 class Report extends CommonGLPI
 {
+    /** @var bool */
     protected static $notable = false;
     public static $rightname         = 'reports';
 
@@ -131,7 +132,9 @@ class Report extends CommonGLPI
 
     /**
      * Show report selector which always appears on the top of the report pages
-     **/
+     *
+     * @return void
+     */
     public static function title()
     {
         $twig_params = [
@@ -1896,11 +1899,19 @@ TWIG, $twig_params);
 TWIG, $twig_params);
     }
 
+    /**
+     * @param string $interface
+     *
+     * @return array
+     */
     public function getRights($interface = 'central')
     {
         return [ READ => __('Read')];
     }
 
+    /**
+     * @return string
+     */
     public static function getIcon()
     {
         return "ti ti-report";

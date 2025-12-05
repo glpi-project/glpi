@@ -276,7 +276,7 @@ class Toolbox
     /**
      * Is a string seems to be UTF-8 one ?
      *
-     * @param $str string   string to analyse
+     * @param string $str string to analyse
      *
      * @return boolean
      *
@@ -387,6 +387,8 @@ class Toolbox
 
     /**
      * PHP debug log
+     *
+     * @return void
      */
     public static function logDebug()
     {
@@ -395,6 +397,8 @@ class Toolbox
 
     /**
      * PHP info log
+     *
+     * @return void
      */
     public static function logInfo()
     {
@@ -1148,8 +1152,8 @@ class Toolbox
      * @param string  $itemtype  item type
      * @param boolean $full      path or relative one
      *
-     * return string itemtype Form URL
-     **/
+     * @return string itemtype Form URL
+     */
     public static function getItemTypeFormURL($itemtype, $full = true)
     {
         global $CFG_GLPI;
@@ -1176,8 +1180,8 @@ class Toolbox
      * @param string  $itemtype  item type
      * @param boolean $full      path or relative one
      *
-     * return string itemtype search URL
-     **/
+     * @return string itemtype search URL
+     */
     public static function getItemTypeSearchURL($itemtype, $full = true)
     {
         global $CFG_GLPI;
@@ -1210,8 +1214,8 @@ class Toolbox
      * @param string  $itemtype  item type
      * @param boolean $full      path or relative one
      *
-     * return string itemtype tabs URL
-     **/
+     * @return string itemtype tabs URL
+     */
     public static function getItemTypeTabsURL($itemtype, $full = true)
     {
         global $CFG_GLPI;
@@ -1355,11 +1359,12 @@ class Toolbox
     /**
      * Executes a curl call
      *
-     * @param string $url         URL to retrieve
-     * @param array  $eopts       Extra curl opts
-     * @param string $msgerr      will contains a human readable error string if an error occurs of url returns empty contents
-     * @param bool   $check_url_safeness    indicated whether the URL have to be filetered by safety checks
-     * @param array  $curl_info   will contains contents provided by `curl_getinfo`
+     * @param string  $url         URL to retrieve
+     * @param array   $eopts       Extra curl opts
+     * @param ?string $msgerr      will contain a human-readable error string if an error occurs of url returns empty contents
+     * @param ?string $curl_error  will contain curl error message if an error occurs
+     * @param bool    $check_url_safeness    indicated whether the URL have to be filtered by safety checks
+     * @param ?array  $curl_info   will contain contents provided by `curl_getinfo`
      *
      * @return string
      */
@@ -1402,16 +1407,17 @@ class Toolbox
     /**
      * Executes a curl call
      *
-     * @param string $url
-     * @param array  $eopts
-     * @param string $msgerr
-     * @param bool   $check_url_safeness
-     * @param array  $curl_info
+     * @param string  $url
+     * @param array   $eopts
+     * @param ?string $msgerr
+     * @param ?string $curl_error
+     * @param bool    $check_url_safeness
+     * @param ?array  $curl_info
      *
      * @return string
      *
      * @throws CurlException
-     * @throws EmptyCurlContentException
+     * @throws EmptyCurlContentException|UrlException
      */
     private static function doCallCurl(
         $url,
@@ -1507,11 +1513,11 @@ class Toolbox
 
 
     /**
-     * @param $need
-     * @param $tab
+     * @param string|int $need
+     * @param array $tab
      *
      * @return boolean
-     **/
+     */
     public static function key_exists_deep($need, $tab)
     {
 
@@ -2896,6 +2902,7 @@ class Toolbox
      *
      * @param string|null $src          Source path of the picture
      * @param string      $uniq_prefix  Unique prefix that can be used to improve uniqueness of destination filename
+     * @param boolean     $keep_src     Whether to keep the source file or not
      *
      * @return boolean|string      Destination filepath, relative to GLPI_PICTURE_DIR, or false on failure
      *
@@ -3270,10 +3277,10 @@ class Toolbox
         return false;
     }
 
-    /*
+    /**
      * Normalizes file name
      *
-     * @param string filename
+     * @param string $filename
      *
      * @return string
      */

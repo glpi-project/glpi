@@ -1539,7 +1539,6 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                         $interv[$key]["device"] = [];
                         if (
                             $parentitem instanceof Ticket
-                            && isset($parentitem->hardwaredatas)
                             && !empty($parentitem->hardwaredatas)
                         ) {
                             foreach ($parentitem->hardwaredatas as $hardwaredata) {

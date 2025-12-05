@@ -74,18 +74,12 @@ abstract class LevelAgreementLevel extends RuleTicket
      */
     abstract public function showForParent(LevelAgreement $la);
 
-    /**
-     * @since 0.85
-     **/
     public static function getConditionsArray()
     {
         // Override ruleticket one
         return [];
     }
 
-    /**
-     * @since 0.84
-     **/
     public function getForbiddenStandardMassiveAction()
     {
         $forbidden   = parent::getForbiddenStandardMassiveAction();

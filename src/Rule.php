@@ -3419,6 +3419,11 @@ TWIG, ['label' => $this->getTitle()]);
         return "ti ti-book";
     }
 
+    /**
+     * @param array $input
+     *
+     * @return array
+     */
     public function prepareInputForClone($input)
     {
         // get ranking

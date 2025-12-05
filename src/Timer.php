@@ -39,7 +39,10 @@
  */
 class Timer
 {
-    //! Timer value
+    /**
+     * Timer value
+     * @var int|float
+     */
     public $timer = 0;
 
 

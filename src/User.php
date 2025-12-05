@@ -67,6 +67,7 @@ use function Safe\unlink;
 
 class User extends CommonDBTM implements TreeBrowseInterface
 {
+    /** @use Clonable<static> */
     use Clonable {
         Clonable::computeCloneName as baseComputeCloneName;
     }
@@ -78,7 +79,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         'publicbookmarkorder', 'privatebookmarkorder',
     ];
 
-    private $must_process_ruleright = false;
+    private bool $must_process_ruleright = false;
 
     // NAME FIRSTNAME ORDER TYPE
     public const REALNAME_BEFORE   = 0;
@@ -100,7 +101,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         '2fa',
     ];
 
-    private $entities = null;
+    private ?array $entities = null;
 
     public function getCloneRelations(): array
     {
@@ -112,6 +113,11 @@ class User extends CommonDBTM implements TreeBrowseInterface
         ];
     }
 
+    /**
+     * @param array $input
+     *
+     * @return array
+     */
     public function prepareInputForClone($input)
     {
         unset($input['last_login']);
@@ -126,6 +132,12 @@ class User extends CommonDBTM implements TreeBrowseInterface
         return $input;
     }
 
+    /**
+     * @param CommonDBTM $source
+     * @param bool $history
+     *
+     * @return void
+     */
     public function post_clone($source, $history)
     {
         //FIXME? clone config
@@ -3773,7 +3785,7 @@ HTML;
     /**
      * Execute the query to select box with all glpi users where select key = name
      *
-     * Internaly used by showGroup_Users, dropdownUsers and ajax/getDropdownUsers.php
+     * Internally used by showGroup_Users, dropdownUsers and ajax/getDropdownUsers.php
      *
      * @param boolean         $count            true if execute an count(*) (true by default)
      * @param string|string[] $right            limit user who have specific right (default 'all')
@@ -3784,6 +3796,7 @@ HTML;
      * @param integer         $start            start LIMIT value (default 0)
      * @param integer         $limit            limit LIMIT value (default -1 no limit)
      * @param boolean         $inactive_deleted true to retrieve also inactive or deleted users
+     * @param boolean         $with_no_right    true to include users without any rights assigned
      *
      * @return DBmysqlIterator
      */
@@ -3797,11 +3810,9 @@ HTML;
         $start = 0,
         $limit = -1,
         $inactive_deleted = false,
-        $with_no_right = 0
+        $with_no_right = false
     ) {
         global $DB;
-
-
 
         // No entity define : use active ones
         if (!is_array($entity_restrict) && $entity_restrict < 0) {
@@ -4946,7 +4957,7 @@ HTML;
      * Handle user restored in LDAP using configured policy.
      *
      * @since 10.0.0
-     * @param $users_id
+     * @param int $users_id
      *
      * @return void
      */
@@ -5058,7 +5069,7 @@ HTML;
     /**
      * Show new password form of password recovery process.
      *
-     * @param $token
+     * @param string $token
      *
      * @return void
      */
@@ -6162,6 +6173,8 @@ HTML;
 
     /**
      * Add groups stored in "_ldap_rules/groups_id" special input
+     *
+     * @return void
      */
     public function applyGroupsRules()
     {
@@ -6417,6 +6430,13 @@ HTML;
         );
     }
 
+    /**
+     * @param string $name
+     * @param string $firstname
+     * @param string $realname
+     *
+     * @return string
+     */
     public static function getInitialsForUserName($name, $firstname, $realname): string
     {
         $initials = mb_substr($firstname ?? '', 0, 1) . mb_substr($realname ?? '', 0, 1);
