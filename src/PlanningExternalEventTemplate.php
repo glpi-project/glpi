@@ -166,6 +166,11 @@ class PlanningExternalEventTemplate extends CommonDropdown
     }
 
 
+    /**
+     * @param array $input
+     *
+     * @return array
+     */
     public function prepareInputForupdate($input)
     {
         $saved_input = $input;
@@ -174,6 +179,12 @@ class PlanningExternalEventTemplate extends CommonDropdown
         return $this->parseExtraInput($saved_input, $input);
     }
 
+    /**
+     * @param array $orig_input
+     * @param array $input
+     *
+     * @return array
+     */
     public function parseExtraInput(array $orig_input = [], array $input = [])
     {
         if (

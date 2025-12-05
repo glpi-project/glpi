@@ -44,6 +44,11 @@ class PurgeLogs extends CommonDBTM
         return __('Logs purge');
     }
 
+    /**
+     * @param CronTask $task
+     *
+     * @return int
+     */
     public static function cronPurgeLogs($task)
     {
         $cron_status = 0;
@@ -70,6 +75,11 @@ class PurgeLogs extends CommonDBTM
         return $cron_status;
     }
 
+    /**
+     * @param string $name
+     *
+     * @return array
+     */
     public static function cronInfo($name)
     {
         return ['description' => __("Purge history")];

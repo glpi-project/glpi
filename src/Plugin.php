@@ -289,7 +289,7 @@ class Plugin extends CommonDBTM
         return $input;
     }
 
-    private function prepareInput(array $input)
+    private function prepareInput(array $input): array|false
     {
         if ($this->isNewItem() || array_key_exists('directory', $input)) {
             if (preg_match(self::PLUGIN_KEY_PATTERN, $input['directory'] ?? '') !== 1) {
@@ -411,6 +411,8 @@ class Plugin extends CommonDBTM
 
     /**
      * Initialize active plugins.
+     *
+     * @return void
      */
     public function init()
     {
@@ -801,7 +803,7 @@ class Plugin extends CommonDBTM
      *
      * @param string $plugin_key System name (Plugin directory)
      *
-     * return void
+     * @return void
      */
     public function checkPluginState($plugin_key, bool $check_for_replacement = false)
     {
@@ -1118,14 +1120,15 @@ class Plugin extends CommonDBTM
      * Uninstall a plugin
      *
      * @param integer $ID ID of the plugin (The `id` field, not directory)
-     **/
+     *
+     * @return void
+     */
     public function uninstall($ID)
     {
         if ($this->isPluginsExecutionSuspended()) {
             throw new RuntimeException('Executing a plugin maintenance method is forbidden when plugins execution is suspended.');
         }
 
-        $message = '';
         $type = ERROR;
 
         if ($this->getFromDB($ID)) {
@@ -1501,7 +1504,9 @@ class Plugin extends CommonDBTM
      * clean a plugin
      *
      * @param int $ID ID of the plugin
-     **/
+     *
+     * @return void
+     */
     public function clean($ID)
     {
         if ($this->isPluginsExecutionSuspended()) {
@@ -2097,10 +2102,10 @@ class Plugin extends CommonDBTM
     /**
      * Get additional search options managed by plugins
      *
-     * @param $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      *
      * @return array Array containing plugin search options for given type
-     **/
+     */
     public static function getAddSearchOptions($itemtype)
     {
         if ((new Plugin())->isPluginsExecutionSuspended()) {
@@ -2126,6 +2131,8 @@ class Plugin extends CommonDBTM
      * Include the hook file for a plugin
      *
      * @param string $plugin_key
+     *
+     * @return void
      */
     public static function includeHook(string $plugin_key = "")
     {

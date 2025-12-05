@@ -56,7 +56,10 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
     // Specific ones
 
-    /// Helpdesk fields of helpdesk profiles
+    /**
+     * Helpdesk fields of helpdesk profiles
+     * @var string[]
+     */
     public static $helpdesk_rights = [
         'create_ticket_on_login',
         'changetemplates_id',
@@ -81,7 +84,10 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     ];
 
 
-    /// Common fields used for all profiles type
+    /**
+     * Common fields used for all profiles type
+     * @var string[]
+     */
     public static $common_fields  = ['id', 'interface', 'is_default', 'name', '2fa_enforced'];
 
     public $dohistory             = true;
@@ -90,10 +96,15 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
     /**
      * Profile rights to update after profile update.
-     * @var ?array
+     * @var array
      */
-    private $profileRight;
+    private array $profileRight = [];
 
+    /**
+     * @param string $property
+     *
+     * @return mixed
+     */
     public function __get(string $property)
     {
         $value = null;
@@ -113,6 +124,12 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         return $value;
     }
 
+    /**
+     * @param string $property
+     * @param mixed $value
+     *
+     * @return void
+     */
     public function __set(string $property, $value)
     {
         switch ($property) {
@@ -238,7 +255,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             }
 
             ProfileRight::updateProfileRights($this->getID(), $this->profileRight);
-            $this->profileRight = null;
+            $this->profileRight = [];
         }
 
         if (in_array('is_default', $this->updates, true) && ((int) $this->input["is_default"] === 1)) {
@@ -570,6 +587,11 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         return $input;
     }
 
+    /**
+     * @param array $input
+     *
+     * @return array
+     */
     public function prepareInputForClone($input)
     {
         $input_arrays = ['helpdesk_item_type', 'managed_domainrecordtypes', 'ticket_status', 'problem_status', 'change_status'];
@@ -583,7 +605,9 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
     /**
      * Unset unused rights for helpdesk
-     **/
+     *
+     * @return void
+     */
     public function cleanProfile()
     {
         if (isset($this->fields['interface']) && $this->fields["interface"] === "helpdesk") {
@@ -748,6 +772,9 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         return true;
     }
 
+    /**
+     * @return void
+     */
     public function showLegend()
     {
         TemplateRenderer::getInstance()->display('pages/admin/profile/legend.html.twig');
@@ -3143,8 +3170,9 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      * @param array $values Array of values to display
      * @param string $name name of the dropdown
      * @param integer $current value in database (sum of rights)
-     * @param array$options
-     ** @since 0.85
+     * @param array $options
+     *
+     * @return int|string
      */
     public static function dropdownRights(array $values, $name, $current, $options = [])
     {
@@ -3240,6 +3268,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *    - name : string / name of the select (default is profiles_id)
      *    - value : integer / preselected value (default 0)
      *
+     * @return void
+     *
      **/
     public static function dropdownUnder($options = [])
     {
@@ -3298,8 +3328,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
     /**
      * @return array<string, string>
-     * @since 0.84
-     **/
+     */
     public static function getInterfaces(): array
     {
         return [
@@ -3309,7 +3338,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     }
 
     /**
-     * @param $value
+     * @param string $value
+     *
      * @return string
      */
     public static function getInterfaceName($value): string
@@ -3318,9 +3348,9 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     }
 
     /**
-     * @since 0.84
-     *
      * @param boolean $rights
+     *
+     * @return array<int, string>
      **/
     public static function getHelpdeskHardwareTypes($rights = false)
     {
@@ -3340,9 +3370,9 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     }
 
     /**
-     * @param $value
-     * @return mixed|string
-     * @since 0.84
+     * @param int $value
+     *
+     * @return string
      */
     public static function getHelpdeskHardwareTypeName($value)
     {
@@ -3350,8 +3380,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     }
 
     /**
-     * @since 0.85
-     **/
+     * @return array
+     */
     public static function getHelpdeskItemtypes()
     {
         global $CFG_GLPI;
@@ -3392,12 +3422,12 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     /**
      * Dropdown profiles which have rights under the active one
      *
-     * @since 0.84
-     *
      * @param array $options array of possible options:
      *    - name : string / name of the select (default is profiles_id)
      *    - values : array of values
-     **/
+     *
+     * @return int|string
+     */
     public static function dropdownHelpdeskItemtypes($options)
     {
         $p['name']    = 'helpdesk_item_type';

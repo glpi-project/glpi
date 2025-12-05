@@ -38,6 +38,9 @@
  */
 class QueryUnion extends Glpi\DBAL\QueryUnion
 {
+    /**
+     * @param array $expression
+     */
     public function __construct($expression)
     {
         Toolbox::deprecated('\QueryUnion is deprecated, use \Glpi\DBAL\QueryUnion instead');

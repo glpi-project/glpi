@@ -156,7 +156,10 @@ class Notepad extends CommonDBChild
 
 
     /**
-     * @param $item   CommonDBTM object
+     * @param $item CommonDBTM object
+     * @param ?class-string<CommonDBTM> $target
+     *
+     * @return array
      **/
     public static function getAllForItem(CommonDBTM $item, $target = null)
     {
@@ -217,7 +220,9 @@ class Notepad extends CommonDBChild
         return $data;
     }
 
-
+    /**
+     * @return array
+     */
     public static function rawSearchOptionsToAdd()
     {
         $tab = [];
@@ -311,9 +316,11 @@ class Notepad extends CommonDBChild
     /**
      * Show notepads for an item
      *
-     * @param $item                  CommonDBTM object
-     * @param $withtemplate integer  template or basic item (default 0)
-     **/
+     * @param CommonDBTM $item         CommonDBTM object
+     * @param int        $withtemplate template or basic item (default 0)
+     *
+     * @return bool
+     */
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         if (!Session::haveRight($item::$rightname, READNOTE)) {

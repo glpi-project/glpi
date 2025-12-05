@@ -52,6 +52,12 @@ class PendingReason_Item extends CommonDBRelation
         return _n('Item', 'Items', $nb);
     }
 
+    /**
+     * @param CommonDBTM $item
+     * @param bool $get_empty
+     *
+     * @return false|PendingReason_Item
+     */
     public static function getForItem(CommonDBTM $item, bool $get_empty = false)
     {
         $em = new self();

@@ -203,6 +203,9 @@ class NotImportedEmail extends CommonDBTM
     }
 
 
+    /**
+     * @return void
+     */
     public static function deleteLog()
     {
         global $DB;
@@ -212,8 +215,10 @@ class NotImportedEmail extends CommonDBTM
 
 
     /**
-     * @param $reason_id
-     **/
+     * @param int $reason_id
+     *
+     * @return string
+     */
     public static function getReason($reason_id)
     {
 
@@ -223,9 +228,9 @@ class NotImportedEmail extends CommonDBTM
 
 
     /**
-     * @since versin 0.84
-     *
      * Get All possible reasons array
+     *
+     * @return array
      **/
     public static function getAllReasons()
     {
