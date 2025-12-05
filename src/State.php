@@ -129,13 +129,18 @@ class State extends CommonTreeDropdown
      * @param integer $value
      * @param boolean $is_inheritable
      * @used-by templates/pages/admin/entity/assets.html.twig
-     **/
+     *
+     * @return void
+     */
     public static function dropdownBehaviour($name, $lib = "", $value = 0, $is_inheritable = false)
     {
         $elements = self::getBehaviours($lib, $is_inheritable);
         Dropdown::showFromArray($name, $elements, ['value' => $value]);
     }
 
+    /**
+     * @return void
+     */
     public static function showSummary()
     {
         global $CFG_GLPI, $DB;

@@ -598,7 +598,9 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
      * Set error field
      *
      * @param boolean $error   (false by default)
-     **/
+     *
+     * @return void
+     */
     public function setError($error = false)
     {
         if (!isset($this->fields['id']) && !isset($this->fields['have_error'])) {

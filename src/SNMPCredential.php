@@ -55,6 +55,9 @@ class SNMPCredential extends CommonDBTM
         return ['admin', Inventory::class, self::class];
     }
 
+    /**
+     * @return array
+     */
     public static function rawSearchOptionsToAdd()
     {
         $tab = [];
@@ -223,7 +226,7 @@ class SNMPCredential extends CommonDBTM
         return $input;
     }
 
-    private function checkRequiredFields($input): bool
+    private function checkRequiredFields(array $input): bool
     {
         // Require a snmpversion
         if (!isset($input['snmpversion']) || $input['snmpversion'] == '0') {

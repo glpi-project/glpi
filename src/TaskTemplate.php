@@ -313,7 +313,7 @@ class TaskTemplate extends AbstractITILChildTemplate
         return $input;
     }
 
-    private function prepareInput($input)
+    private function prepareInput(array|false $input): array|false
     {
         if ($input === false) {
             return false;
@@ -339,6 +339,16 @@ class TaskTemplate extends AbstractITILChildTemplate
         return [];
     }
 
+    /**
+     * @param string $link
+     * @param int $nott
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $ID
+     * @param string $searchtype
+     * @param int|string $val
+     *
+     * @return false|string
+     */
     public static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val)
     {
         if ($itemtype !== self::class) {

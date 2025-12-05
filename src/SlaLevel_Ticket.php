@@ -134,7 +134,7 @@ class SlaLevel_Ticket extends CommonDBTM
     /**
      * Give cron information
      *
-     * @param $name : task's name
+     * @param string $name task's name
      *
      * @return array of information
      * @used-by CronTask
@@ -319,6 +319,8 @@ class SlaLevel_Ticket extends CommonDBTM
      * @param SLM::TTR|SLM::TTO $slaType
      *
      * @since 9.1    2 parameters mandatory
+     *
+     * @return void
      */
     public static function replayForTicket($tickets_id, $slaType)
     {
