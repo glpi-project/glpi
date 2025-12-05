@@ -33,6 +33,10 @@
 let entity_id;
 
 describe('Entity', () => {
+    beforeEach(() => {
+        cy.login();
+    });
+
     it('Can configure assistance properties', () => {
         const unique_id = (new Date()).getTime();
         cy.createWithAPI("Entity", {
@@ -52,7 +56,6 @@ describe('Entity', () => {
     });
 
     it('Survey options change by type and rate', () => {
-        cy.login();
         cy.visit(`/front/entity.form.php?id=1&forcetab=Entity$5`);
         cy.findByLabelText('Configuring the satisfaction survey: Tickets').within(() => {
             cy.getDropdownByLabelText('Configuring the satisfaction survey').selectDropdownValue('Internal survey');
@@ -101,6 +104,44 @@ describe('Entity', () => {
             cy.findByText('For Tickets closed after').should('exist');
             cy.findByText('Valid tags').should('be.visible');
             cy.findByLabelText('URL').should('be.visible');
+        });
+    });
+
+    it('Should be able to create a sub-subentity in a sub-entity context', () => {
+        const rand = Math.floor(Math.random() * 1000);
+        const subentity_name = `Subentity ${rand}`;
+
+        cy.visit(`/front/entity.form.php`);
+        cy.findByLabelText('Name').type(subentity_name);
+        cy.findByRole('button', {'name': "Add"}).click();
+
+        // We switch context to the newly created subentity
+        cy.openEntitySelector();
+        cy.get('.fancytree-expander[role=button]:visible').as('toggle_tree').click(); // From entities_selector tests.
+        cy.findByRole('gridcell', {'name': subentity_name}).findByRole('button').click();
+
+        // We can't create the sub-subentity, form is inaccessible
+        cy.intercept('GET', '/front/entity.form.php').as('formRequest');
+        cy.visit('/front/entity.form.php', {failOnStatusCode: false} );
+        cy.wait('@formRequest').then((interception) => {
+            expect(interception.response.statusCode).to.eq(403);
+        });
+
+        // The listing page should display an error message
+        cy.visit('/front/entity.php');
+        cy.get('div.toast-container .toast-body').should('exist');
+
+
+        // We switch context to be in recursive mode
+        cy.openEntitySelector();
+        cy.findByRole("button", {'name': "Select all"}).click();
+
+        cy.visit(`/front/entity.form.php`);
+        cy.intercept(`/front/entity.form.php`).as('formSent');
+        cy.findByLabelText('Name').type(`Sub-${subentity_name}`);
+        cy.findByRole('button', {'name': "Add"}).click();
+        cy.wait('@formSent').then((interception) => {
+            expect(interception.response.statusCode).to.eq(302);
         });
     });
 });
