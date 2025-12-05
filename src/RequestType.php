@@ -234,10 +234,10 @@ class RequestType extends CommonDropdown
     /**
      * Get the default request type for a given source (mail, helpdesk)
      *
-     * @param $source string
+     * @param string $source
      *
      * @return integer requesttypes_id
-     **/
+     */
     public static function getDefault($source)
     {
         global $DB;

@@ -60,6 +60,7 @@ class Reminder extends CommonDBVisible implements
 
     // From CommonDBTM
     public $dohistory                   = true;
+    /** @var bool */
     public $can_be_translated           = true;
 
     public static $rightname    = 'reminder_public';
@@ -153,6 +154,11 @@ class Reminder extends CommonDBVisible implements
         );
     }
 
+    /**
+     * @param array $input
+     *
+     * @return array
+     */
     public function prepareInputForClone($input)
     {
         // regenerate uuid
@@ -546,7 +552,15 @@ class Reminder extends CommonDBVisible implements
         return true;
     }
 
-    public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
+    /**
+     * @param array $val
+     * @param int $who
+     * @param string $type
+     * @param bool $complete
+     *
+     * @return string
+     */
+    public static function displayPlanningItem(array $val, $who, $type = "", $complete = false)
     {
         global $CFG_GLPI;
 

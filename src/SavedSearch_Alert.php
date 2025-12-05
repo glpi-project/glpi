@@ -259,6 +259,11 @@ class SavedSearch_Alert extends CommonDBChild
         return ($id === null ? $ops : $ops[$id]);
     }
 
+    /**
+     * @param string $name
+     *
+     * @return array
+     */
     public static function cronInfo($name)
     {
         switch ($name) {
@@ -275,7 +280,7 @@ class SavedSearch_Alert extends CommonDBChild
      *
      * @return array[] which contains a copy of $_SESSION and $CFG_GLPI
      */
-    private static function saveContext()
+    private static function saveContext(): array
     {
         global $CFG_GLPI;
         $context = [];
@@ -291,9 +296,9 @@ class SavedSearch_Alert extends CommonDBChild
      * to be sure that logs will be in GLPI default datetime and language
      * and that session is restored for the next crontaskaction
      *
-     * @param mixed $context is the array returned by saveContext
+     * @param array $context is the array returned by saveContext
      */
-    private static function restoreContext($context)
+    private static function restoreContext(array $context): void
     {
         global $CFG_GLPI;
         $_SESSION = $context['$_SESSION'];

@@ -1006,6 +1006,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return $result;
     }
 
+    /**
+     * @param string $name
+     *
+     * @return array
+     */
     public static function cronInfo($name)
     {
         switch ($name) {

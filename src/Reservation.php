@@ -295,7 +295,9 @@ class Reservation extends CommonDBChild
 
     /**
      * Returns an integer that is not already used as a group for the given reservation item.
-     * @param $reservationitems_id
+     *
+     * @param int $reservationitems_id
+     *
      * @return int
      */
     public function getUniqueGroupFor($reservationitems_id): int
@@ -511,13 +513,15 @@ class Reservation extends CommonDBChild
      * Show reservation calendar
      *
      * @param integer $ID   ID of the reservation item (if 0 display all)
-     **/
+     *
+     * @return void
+     */
     public static function showCalendar(int $ID = 0)
     {
         global $CFG_GLPI;
 
         if (!Session::haveRightsOr("reservation", [READ, ReservationItem::RESERVEANITEM])) {
-            return false;
+            return;
         }
 
         $rand = mt_rand();
@@ -531,7 +535,7 @@ class Reservation extends CommonDBChild
                 echo __s('Device temporarily unavailable');
                 Html::displayBackLink();
                 echo "</div>";
-                return false;
+                return;
             }
             $type = $m->fields["itemtype"];
             $name = NOT_AVAILABLE;
@@ -696,6 +700,9 @@ class Reservation extends CommonDBChild
         return $events;
     }
 
+    /**
+     * @return array
+     */
     public static function getResources()
     {
         global $DB;
@@ -873,6 +880,8 @@ class Reservation extends CommonDBChild
      * @param string $begin  Planning start (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)
      * @param string $end    Planning end (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)
      * @param array{type: 'day'|'week'|'month', end: string, subtype?: string, days?: integer} $options Periodicity parameters
+     *
+     * @return array
      **/
     public static function computePeriodicities($begin, $end, $options)
     {
