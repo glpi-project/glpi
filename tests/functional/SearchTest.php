@@ -5089,6 +5089,74 @@ class SearchTest extends DbTestCase
         $this->assertEquals($expected, $items);
     }
 
+    public function testSatisfactionSurveySearch()
+    {
+        $this->login('glpi', 'glpi');
+
+        $entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
+        $user_id = $_SESSION['glpiID'];
+
+        // Configure entity for satisfaction survey
+        $this->updateItem(Entity::class, $entity_id, [
+            'inquest_config'   => 1,
+            'inquest_duration' => 5,
+        ]);
+
+        // Create a closed ticket
+        $ticket = $this->createItem(Ticket::class, [
+            'entities_id' => $entity_id,
+            'name' => __FUNCTION__ . ' ticket',
+            'content' => __FUNCTION__ . ' ticket content',
+            'solvedate' => $_SESSION['glpi_currenttime'],
+            'status' => \CommonITILObject::CLOSED,
+            'users_id_recipient' => $user_id,
+        ]);
+
+        // Add satisfaction survey (not answered)
+        $this->createItem(\TicketSatisfaction::class, [
+            'tickets_id' => $ticket->getID(),
+            'type' => \CommonITILSatisfaction::TYPE_INTERNAL,
+            'date_begin' => $_SESSION['glpi_currenttime'],
+            'date_answered' => null,
+        ]);
+
+        // This search simulates clicking on "Satisfaction surveys to answer" in personal view
+        // It should not throw SQL error about unknown column 'glpi_entities.id'
+        $search_params = [
+            'is_deleted' => 0,
+            'start' => 0,
+            'criteria' => [
+                [
+                    'field' => 12, // status
+                    'searchtype' => 'equals',
+                    'value' => \CommonITILObject::CLOSED,
+                ],
+                [
+                    'field' => 60, // satisfaction date_begin (not null)
+                    'searchtype' => 'contains',
+                    'value' => '^.+$', // not empty regex
+                ],
+                [
+                    'field' => 61, // satisfaction date_answered (null)
+                    'searchtype' => 'contains',
+                    'value' => 'NULL',
+                ],
+                [
+                    'field' => 75, // satisfaction end date - this was causing the SQL error
+                    'searchtype' => 'morethan',
+                    'value' => $_SESSION['glpi_currenttime'],
+                ],
+            ],
+        ];
+
+        // This should not throw any SQL error
+        $data = $this->doSearch(Ticket::class, $search_params);
+
+        // Verify the query executed successfully
+        $this->assertArrayHasKey('data', $data);
+        $this->assertArrayHasKey('rows', $data['data']);
+    }
+
     public function testInvalidCriteria()
     {
         $search_params = [
