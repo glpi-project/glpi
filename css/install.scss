@@ -163,6 +163,17 @@ h3 {
 
 .form-control {
     color: rgb(32, 32, 32) !important;
+
+    &:autofill,
+    &:-webkit-autofill {
+        &, &:hover, &:focus, &:active {
+            /* stylelint-disable-next-line property-no-vendor-prefix */
+            -webkit-text-fill-color: rgb(32, 32, 32) !important;
+            /* stylelint-disable-next-line property-no-vendor-prefix */
+            -webkit-box-shadow: 0 0 0 30px #fff inset !important;
+            box-shadow: 0 0 0 30px #fff inset !important;
+        }
+    }
 }
 
 .popover.validation-messages {
