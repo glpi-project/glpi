@@ -1,7 +1,7 @@
 Follow GLPI’s latest coding standards and best practices: naming, indentation, comments, and PSR-12 compliance.
 Use the GLPI framework whenever possible.
 Do not use deprecated code.
-Do not use PHP features older than version 7.4.
+Do not use PHP features older than version 8.2.
 Do not use GLPI code or APIs older than version 10.0.
 Never create .md or .txt files to explain changes.
 Never explain what you did.
