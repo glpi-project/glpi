@@ -763,7 +763,6 @@ class QueuedNotification extends CommonDBTM
     /**
      * @param string $string
      * @return string
-     * @since 0.85
      */
     public static function cleanHtml($string)
     {

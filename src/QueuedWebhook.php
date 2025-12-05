@@ -89,6 +89,12 @@ class QueuedWebhook extends CommonDBChild
         return $forbidden;
     }
 
+    /**
+     * @param CommonDBTM $checkitem
+     * @param bool $is_deleted
+     *
+     * @return array
+     */
     public function getSpecificMassiveActions($checkitem = null, $is_deleted = false)
     {
         $isadmin = static::canUpdate();
@@ -411,6 +417,12 @@ class QueuedWebhook extends CommonDBChild
         return $tab;
     }
 
+    /**
+     * @param int $value
+     * @param int|null $id
+     *
+     * @return string
+     */
     public static function getStatusCodeBadge($value, ?int $id = null): string
     {
         $display_value = (int) $value;

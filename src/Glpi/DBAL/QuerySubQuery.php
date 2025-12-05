@@ -49,8 +49,8 @@ class QuerySubQuery extends AbstractQuery
     /**
      * Create a sub query
      *
-     * @param array $crit Array of query criteria. Any valid DBmysqlIterator parameters are valid.
-     * @param string $alias Alias for the whole subquery
+     * @param array   $crit Array of query criteria. Any valid DBmysqlIterator parameters are valid.
+     * @param ?string $alias Alias for the whole subquery
      */
     public function __construct(array $crit, $alias = null)
     {

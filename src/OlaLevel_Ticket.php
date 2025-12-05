@@ -136,9 +136,9 @@ class OlaLevel_Ticket extends CommonDBTM
     /**
      * Give cron information
      *
-     * @param $name : task's name
+     * @param string $name task's name
      *
-     * @return array of information
+     * @return array
      * @used-by CronTask
      **/
     public static function cronInfo($name)
@@ -314,6 +314,7 @@ class OlaLevel_Ticket extends CommonDBTM
      *
      * @since 9.1    2 parameters mandatory
      *
+     * @return void
      */
     public static function replayForTicket($tickets_id, $olaType)
     {

@@ -50,6 +50,11 @@ class PendingReasonCron extends CommonDBTM
         return __("Send automated follow-ups on pending tickets and solve them if necessary");
     }
 
+    /**
+     * @param string $name
+     *
+     * @return array
+     */
     public static function cronInfo($name)
     {
         return [
@@ -61,6 +66,8 @@ class PendingReasonCron extends CommonDBTM
      * Run from cronTask
      *
      * @param CronTask $task
+     *
+     * @return int
      */
     public static function cronPendingreason_autobump_autosolve(CronTask $task)
     {
