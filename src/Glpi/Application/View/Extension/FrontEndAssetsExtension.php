@@ -179,10 +179,21 @@ class FrontEndAssetsExtension extends AbstractExtension
     {
         $is_debug = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE;
 
-        $minified_path = str_replace('.js', '.min.js', $path);
+        if (!$is_debug) {
+            if (!str_starts_with($path, '/')) {
+                $path = '/' . $path; // be sure to have a path starting with `/`
+            }
 
-        if (!$is_debug && file_exists($this->root_dir . '/' . $minified_path)) {
-            $path = $minified_path;
+            $path_matches = [];
+            if (preg_match(Plugin::PLUGIN_RESOURCE_PATTERN, $path, $path_matches) === 1) {
+                $fs_path  = Plugin::getPhpDir($path_matches['plugin_key']) . '/public' . $path_matches['plugin_resource'];
+            } else {
+                $fs_path  = $this->root_dir . '/public/' . $path;
+            }
+
+            if (file_exists(str_replace('.js', '.min.js', $fs_path))) {
+                $path = str_replace('.js', '.min.js', $path);
+            }
         }
 
         $path = Html::getPrefixedUrl($path);
