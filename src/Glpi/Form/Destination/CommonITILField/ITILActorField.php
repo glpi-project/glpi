@@ -35,8 +35,9 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\Asset;
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Features\AssignableItem;
+use Glpi\Features\AssignableItemInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
@@ -57,8 +58,6 @@ use InvalidArgumentException;
 use Override;
 use Supplier;
 use User;
-
-use function Safe\class_uses;
 
 abstract class ITILActorField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
@@ -365,7 +364,18 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
                     return false;
                 }
 
-                return class_uses($question_itemtype)[AssignableItem::class] ?? false;
+                // For custom assets, check if the tech user/group fields are enabled
+                if (is_a($question_itemtype, Asset::class, true)) {
+                    /** @var class-string<Asset> $question_itemtype */
+                    $definition = $question_itemtype::getDefinition();
+                    $enabled_fields = array_column($definition->getDecodedFieldsField(), 'key');
+                    // Check if at least one of the tech fields is enabled
+                    return in_array('users_id_tech', $enabled_fields, true)
+                        || in_array('groups_id_tech', $enabled_fields, true);
+                }
+
+                // For other itemtypes, check if they implement AssignableItemInterface
+                return is_a($question_itemtype, AssignableItemInterface::class, true);
             }
         );
 
