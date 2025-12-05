@@ -902,7 +902,7 @@ class Ticket extends CommonITILObject
                             ($item->fields['status'] == self::CLOSED)
                             && $satisfaction->getFromDB($_GET["id"])
                         ) {
-                            $duration = Entity::getUsedConfig('inquest_duration', $item->fields['entities_id']);
+                            $duration = Entity::getUsedConfig('inquest_config', $item->fields['entities_id'], 'inquest_duration');
                             $date2    = strtotime($satisfaction->fields['date_begin']);
                             if (
                                 ($duration == 0)
