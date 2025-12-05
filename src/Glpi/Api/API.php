@@ -1914,6 +1914,7 @@ abstract class API
                     //add current item
                     $message = '';
                     try {
+                        $item->fields = []; // reset fields which can be set by $item->can(), avoid side effects
                         $new_id = $item->add($object);
                         $message = $this->getGlpiLastMessage();
                     } catch (RuntimeException $e) {
