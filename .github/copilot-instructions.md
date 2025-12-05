@@ -1,4 +1,4 @@
-Follow GLPI’s latest coding standards and best practices: naming, indentation, comments, and PSR-12 compliance.
+Follow GLPI’s latest coding standards and best practices: naming, indentation, comments, and PER Coding Style 3.0 compliance.
 Use the GLPI framework whenever possible.
 Do not use deprecated code.
 Do not use PHP features older than version 8.2.
