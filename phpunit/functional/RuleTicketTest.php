@@ -3404,6 +3404,47 @@ class RuleTicketTest extends DbTestCase
     }
 
     /**
+     * Test that the PATTERN_DOES_NOT_EXISTS condition correctly matches
+     * when testing a rule with an empty input value.
+     *
+     * @return void
+     */
+    public function testPatternDoesNotExistsWithEmptyInput(): void
+    {
+        $rule = $this->createItem('RuleTicket', [
+            'name'        => 'test pattern does not exists',
+            'match'       => 'AND',
+            'is_active'   => 1,
+            'sub_type'    => 'RuleTicket',
+            'condition'   => \RuleTicket::ONADD,
+            'entities_id' => 0,
+        ]);
+
+        $criterion = $this->createItem('RuleCriteria', [
+            'rules_id'  => $rule->getID(),
+            'criteria'  => 'locations_id',
+            'condition' => \Rule::PATTERN_DOES_NOT_EXISTS,
+            'pattern'   => 1,
+        ]);
+
+        $ruleticket = new \RuleTicket();
+        $ruleticket->getRuleWithCriteriasAndActions($rule->getID(), true, false);
+
+        $input = ['locations_id' => ''];
+        $check_results = [];
+        $ruleticket->testCriterias($input, $check_results);
+
+        $this->assertSame([
+            $criterion->getID() => [
+                'name'   => 'locations_id',
+                'value'  => '1',
+                'result' => 1,
+                'id'     => $criterion->getID(),
+            ],
+        ], $check_results);
+    }
+
+    /**
      * Ensure a rule using the "global_validation" criteria work as expected on
      * ticket updates
      *
