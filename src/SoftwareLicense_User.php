@@ -52,6 +52,48 @@ class SoftwareLicense_User extends CommonDBRelation
 
     public static $checkItem_2_Rights = self::HAVE_SAME_RIGHT_ON_ITEM;
 
+    public function prepareInputForAdd($input)
+    {
+        if (
+            !isset($input['softwarelicenses_id'])
+            || !is_numeric($input['softwarelicenses_id'])
+            || !isset($input['users_id'])
+        ) {
+            return false;
+        }
+
+        $softwarelicenses_id = (int) $input['softwarelicenses_id'];
+
+        $license = new SoftwareLicense();
+        if (!$license->getFromDB($softwarelicenses_id)) {
+            return false;
+        }
+
+        // Check quota if not unlimited (-1) and over-quota not allowed
+        if (
+            $license->getField('number') != -1
+            && !$license->getField('allow_overquota')
+        ) {
+            // Count current assignments (users + items)
+            $count = self::countForLicense($softwarelicenses_id);
+            $count += Item_SoftwareLicense::countForLicense($softwarelicenses_id);
+
+            if ($count >= $license->getField('number')) {
+                Session::addMessageAfterRedirect(
+                    sprintf(
+                        __('Maximum number of items reached for license "%s".'),
+                        $license->getName()
+                    ),
+                    false,
+                    ERROR
+                );
+                return false;
+            }
+        }
+
+        return parent::prepareInputForAdd($input);
+    }
+
     public static function getTypeName($nb = 0)
     {
         return SoftwareLicense::getTypeName($nb);

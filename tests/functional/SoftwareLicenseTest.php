@@ -349,11 +349,12 @@ class SoftwareLicenseTest extends DbTestCase
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ])->getID();
 
-        // Create a license
+        // Create a license with overquota allowed (this test explicitly exceeds quota)
         $license_id = $this->createItem(\SoftwareLicense::class, [
             'name' => 'Test license for counting consistency',
             'softwares_id' => $software_id,
             'number' => 5,
+            'allow_overquota' => 1,
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ])->getID();
 
@@ -621,6 +622,9 @@ class SoftwareLicenseTest extends DbTestCase
 
         // Expected: false (assignment rejected due to quota)
         $this->assertFalse($result);
+
+        // Consume the error message added by prepareInputForAdd
+        $this->hasSessionMessages(ERROR, ['Maximum number of items reached for license "Test license strict quota".']);
 
         // Verify count remains at 1 (no over-quota bypass)
         $count_after_second = \SoftwareLicense_User::countForLicense($license_id);
