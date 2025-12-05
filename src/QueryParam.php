@@ -39,6 +39,7 @@
 class QueryParam extends Glpi\DBAL\QueryParam
 {
     /**
+     * @param string $expression
      * @phpstan-ignore constructor.unusedParameter
      */
     public function __construct($expression = '?')

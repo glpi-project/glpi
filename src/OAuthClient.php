@@ -108,6 +108,7 @@ final class OAuthClient extends CommonDBTM
     }
 
     /**
+     * @return string
      * @throws Exception
      */
     public static function getNewIDOrSecret()

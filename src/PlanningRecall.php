@@ -68,6 +68,9 @@ class PlanningRecall extends CommonDBChild
         $class->cleanDBonItemDelete(static::class, $this->fields['id']);
     }
 
+    /**
+     * @return int
+     */
     public static function isAvailable()
     {
         global $CFG_GLPI;
@@ -128,7 +131,9 @@ class PlanningRecall extends CommonDBChild
      * Manage recall set
      *
      * @param array $data array of data to manage
-     **/
+     *
+     * @return void|false
+     */
     public static function manageDatas(array $data)
     {
         // Check data information
@@ -334,7 +339,7 @@ TWIG, $p);
     /**
      * Give cron information
      *
-     * @param $name : task's name
+     * @param string $name task's name
      *
      * @return array of information
      * @used-by CronTask
@@ -353,7 +358,9 @@ TWIG, $p);
      *
      * @param CronTask $task for log, if NULL display (default NULL)
      * @used-by CronTask
-     **/
+     *
+     * @return int
+     */
     public static function cronPlanningRecall($task = null)
     {
         global $CFG_GLPI, $DB;

@@ -38,7 +38,7 @@
 class Profile_RSSFeed extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1          = 'RSSFeed';
+    public static $itemtype_1          = RSSFeed::class;
     public static $items_id_1          = 'rssfeeds_id';
     public static $itemtype_2          = 'Profile';
     public static $items_id_2          = 'profiles_id';
@@ -50,10 +50,10 @@ class Profile_RSSFeed extends CommonDBRelation
     /**
      * Get profiles for a rssfeed
      *
-     * @param $rssfeeds_id ID of the rssfeed
+     * @param int $rssfeeds_id ID of the rssfeed
      *
-     * @return array of profiles linked to a rssfeed
-     **/
+     * @return array
+     */
     public static function getProfiles($rssfeeds_id)
     {
         global $DB;

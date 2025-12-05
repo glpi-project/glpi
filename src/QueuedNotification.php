@@ -111,6 +111,12 @@ class QueuedNotification extends CommonDBTM
         return $forbidden;
     }
 
+    /**
+     * @param CommonDBTM $checkitem
+     * @param bool $is_deleted
+     *
+     * @return array
+     */
     public function getSpecificMassiveActions($checkitem = null, $is_deleted = false)
     {
         $isadmin = static::canUpdate();
@@ -514,10 +520,10 @@ class QueuedNotification extends CommonDBTM
     /**
      * Give cron information
      *
-     * @param $name : task's name
+     * @param string $name task's name
      *
-     * @return array of information
-     **/
+     * @return array
+     */
     public static function cronInfo($name)
     {
         return match ($name) {
@@ -746,9 +752,9 @@ class QueuedNotification extends CommonDBTM
     }
 
     /**
-     * @param $string
+     * @param string $string
+     *
      * @return string
-     * @since 0.85
      */
     public static function cleanHtml($string)
     {

@@ -153,10 +153,12 @@ class PendingReason extends CommonDropdown
     /**
      * Display specific "followup_frequency" field
      *
-     * @param $value
-     * @param $name
-     * @param $options
-     * @param $long_label If false give less details in the default label
+     * @param ?string $value
+     * @param string $name
+     * @param array $options
+     * @param bool $long_label If false give less details in the default label
+     *
+     * @return int|string
      */
     public static function displayFollowupFrequencyfield(
         $value = null,
@@ -217,10 +219,12 @@ class PendingReason extends CommonDropdown
     /**
      * Display specific "followups_before_resolution" field
      *
-     * @param $value
-     * @param $name
-     * @param $options
-     * @param $long_label If false give less details in the default label
+     * @param ?string $value
+     * @param string $name
+     * @param array $options
+     * @param bool $long_label If false give less details in the default label
+     *
+     * @return int|string
      */
     public static function displayFollowupsNumberBeforeResolutionField(
         $value = null,
@@ -257,13 +261,6 @@ class PendingReason extends CommonDropdown
         return Dropdown::showFromArray($name, $values, $options);
     }
 
-    /**
-     * Display specific "is_default" field
-     *
-     * @param $value
-     * @param $name
-     * @param $options
-     */
     private function displayIsDefaultPendingReasonField(bool $value): string
     {
         $defaultPendingReason = self::getDefault();
@@ -364,6 +361,9 @@ class PendingReason extends CommonDropdown
         return null;
     }
 
+    /**
+     * @return bool
+     */
     public static function isDefaultPending()
     {
         $default_pending = self::getDefault();
@@ -371,6 +371,9 @@ class PendingReason extends CommonDropdown
         return $default_pending && $default_pending->fields['is_pending_per_default'];
     }
 
+    /**
+     * @return void
+     */
     public function updateDefaultPendingReason()
     {
         if (isset($this->input['is_default']) && $this->input['is_default']) {
@@ -391,6 +394,11 @@ class PendingReason extends CommonDropdown
         $this->updateDefaultPendingReason();
     }
 
+    /**
+     * @param array $input
+     *
+     * @return array
+     */
     public function prepareInput($input)
     {
         $input['is_pending_per_default'] = isset($input['is_default']) && $input['is_default']
