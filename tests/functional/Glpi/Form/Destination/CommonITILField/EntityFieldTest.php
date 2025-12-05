@@ -39,12 +39,21 @@ use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\EntityField;
 use Glpi\Form\Destination\CommonITILField\EntityFieldConfig;
 use Glpi\Form\Destination\CommonITILField\EntityFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\RequesterField;
+use Glpi\Form\Destination\CommonITILField\RequesterFieldConfig;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeItem;
+use Glpi\Form\QuestionType\QuestionTypeRequester;
 use Glpi\Tests\AbstractDestinationFieldTest;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Override;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Profile_User;
+use User;
+
+use function Safe\json_encode;
 
 final class EntityFieldTest extends AbstractDestinationFieldTest
 {
@@ -335,6 +344,122 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
         ];
     }
 
+    public static function entityFromRequesterProvider(): iterable
+    {
+        yield 'user with single profile' => [
+            'profiles' => [
+                // Super admin
+                ['profiles_id' => 4, 'entities_id' => "_test_child_3"],
+            ],
+            // The only found profile is used
+            'expected_entity' => "_test_child_3",
+        ];
+
+        yield 'users with two profiles, one is helpdesk' => [
+            'profiles' => [
+                // Super admin
+                ['profiles_id' => 4, 'entities_id' => "_test_child_3"],
+                // Self-service
+                ['profiles_id' => 1, 'entities_id' => "_test_child_2"],
+            ],
+            // First helpdesk profile is used
+            'expected_entity' => "_test_child_2",
+        ];
+
+        yield 'users with two helpdesk profiles' => [
+            'profiles' => [
+                // Self-service
+                ['profiles_id' => 1, 'entities_id' => "_test_child_3"],
+                // Self-service
+                ['profiles_id' => 1, 'entities_id' => "_test_child_2"],
+            ],
+            // First profile is used
+            'expected_entity' => "_test_child_3",
+        ];
+
+        yield 'users with two central profiles' => [
+            'profiles' => [
+                // Super admin
+                ['profiles_id' => 4, 'entities_id' => "_test_child_1"],
+                // Super admin
+                ['profiles_id' => 4, 'entities_id' => "_test_child_2"],
+            ],
+            // First profile is used
+            'expected_entity' => "_test_child_1",
+        ];
+    }
+
+    #[DataProvider('entityFromRequesterProvider')]
+    public function testEntityFromRequester(
+        array $profiles,
+        string $expected_entity,
+    ): void {
+        // Arrange: create a form with an actor question used as the requester
+        $builder = new FormBuilder();
+        $builder->addQuestion("Requester", QuestionTypeRequester::class);
+        $form = $this->createForm($builder);
+
+        // The form requester will be picked from the "Requester" question
+        $requester_config = new RequesterFieldConfig(
+            strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
+            specific_question_ids: [$this->getQuestionId($form, "Requester")]
+        );
+        $this->setDestinationFieldConfig(
+            form: $form,
+            key: RequesterField::getKey(),
+            config: $requester_config,
+        );
+
+        // The entity will be taken from the requester
+        $form = Form::getById($form->getId());
+        $entity_config = new EntityFieldConfig(
+            strategy: EntityFieldStrategy::REQUESTER_ENTITY,
+        );
+        $this->setDestinationFieldConfig(
+            form: $form,
+            key: EntityField::getKey(),
+            config: $entity_config,
+        );
+
+        // Create an user to use as a requester
+        $default_profile = array_shift($profiles);
+        $user = $this->createItem(User::class, [
+            'name' => 'My_user',
+            '_profiles_id'  => $default_profile['profiles_id'],
+            '_entities_id'  => getItemByTypeName(
+                Entity::class,
+                $default_profile['entities_id'],
+                true,
+            ),
+            '_is_recursive' => true,
+        ]);
+
+        // Add others profiles if needed
+        foreach ($profiles as $profile) {
+            $this->createItem(Profile_User::class, [
+                'users_id'     => $user->getID(),
+                'profiles_id'  => $profile['profiles_id'],
+                'entities_id'  => getItemByTypeName(
+                    Entity::class,
+                    $profile['entities_id'],
+                    true,
+                ),
+                'is_recursive' => true,
+            ]);
+        }
+
+        // Act: submit an answer to the form
+        $ticket = $this->sendFormAndGetCreatedTicket($form, [
+            "Requester" => "users_id-{$user->getID()}",
+        ]);
+
+        // Assert: the ticket entity should be "_test_child_3"
+        $this->assertEquals(
+            getItemByTypeName(Entity::class, $expected_entity, true),
+            $ticket->fields['entities_id'],
+        );
+    }
+
     private function sendFormAndAssertTicketEntity(
         Form $form,
         EntityFieldConfig $config,
@@ -365,7 +490,7 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
         $answers = $answers_handler->saveAnswers(
             $form,
             $formatted_answers,
-            getItemByTypeName(\User::class, TU_USER, true)
+            getItemByTypeName(User::class, TU_USER, true)
         );
 
         // Get created ticket
