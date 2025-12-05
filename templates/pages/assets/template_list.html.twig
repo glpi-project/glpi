@@ -128,14 +128,14 @@
         $(document).ready(function() {
             var selectedTemplateUrl = '';
 
-            // Intercepter les clics sur les liens de templates
+            // Intercept clicks on template links
             $('.template-create-link').on('click', function(e) {
                 e.preventDefault();
 
                 var templateName = $(this).data('template-name') || $(this).text().trim();
                 var templateUrl = $(this).data('template-url');
 
-                // Si on n'a pas d'URL dans data-template-url, on reconstruit l'URL
+                // If we don't have URL in data-template-url, rebuild the URL
                 if (!templateUrl) {
                     var href = $(this).attr('href');
                     if (href && href !== '#') {
@@ -145,16 +145,16 @@
 
                 selectedTemplateUrl = templateUrl;
 
-                // Mettre à jour le texte de la modale avec le nom du template
+                // Update modal text with template name
                 $('#{{ confirm_modal_id }} .modal-body').html(
                     '{{ __('Voulez-vous créer un nouveau projet à partir du template') }} <strong>' + templateName + '</strong> ?'
                 );
 
-                // Afficher la modale
+                // Show the modal
                 $('#{{ confirm_modal_id }}').modal('show');
             });
 
-            // Fonction appelée quand on confirme
+            // Function called when confirming selection
             window.confirmTemplateSelection = function() {
                 if (selectedTemplateUrl) {
                     window.location.href = selectedTemplateUrl;
