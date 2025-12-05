@@ -624,7 +624,7 @@ class SoftwareLicenseTest extends DbTestCase
         $this->assertFalse($result);
 
         // Consume the error message added by prepareInputForAdd
-        $this->hasSessionMessages(ERROR, ['Maximum number of items reached for license "Test license strict quota".']);
+        $this->hasSessionMessages(ERROR, ['Maximum number of items reached for this license.']);
 
         // Verify count remains at 1 (no over-quota bypass)
         $count_after_second = \SoftwareLicense_User::countForLicense($license_id);
