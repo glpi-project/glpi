@@ -221,6 +221,10 @@ class Item_RemoteManagement extends CommonDBChild
         return $tab;
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype)
     {
         $tab = [];

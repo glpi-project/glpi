@@ -181,6 +181,11 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
         }
     }
 
+    /**
+     * @param int $history
+     *
+     * @return void
+     */
     public function post_addItem($history = 1)
     {
         $this->postTargets();

@@ -385,6 +385,11 @@ TWIG, $twig_params);
         return $tab;
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     *
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype)
     {
         global $DB;

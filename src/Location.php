@@ -138,6 +138,9 @@ class Location extends CommonTreeDropdown
         return _n('Location', 'Locations', $nb);
     }
 
+    /**
+     * @return array
+     */
     public static function rawSearchOptionsToAdd()
     {
         $tab = [];

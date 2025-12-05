@@ -57,6 +57,14 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
         return Session::haveRight(static::$rightname, UPDATE);
     }
 
+    /**
+     * @param CommonDBTM $item
+     * @param int $start
+     * @param int $limit
+     * @param bool $used
+     *
+     * @return array
+     */
     public static function getItems(CommonDBTM $item, $start = 0, $limit = 0, $used = false)
     {
         global $DB;

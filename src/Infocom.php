@@ -194,8 +194,10 @@ class Infocom extends CommonDBChild
 
 
     /**
-     * @param $item   Supplier  object
-     **/
+     * @param Supplier $item
+     *
+     * @return int
+     */
     public static function countForSupplier(Supplier $item)
     {
 
@@ -626,8 +628,10 @@ class Infocom extends CommonDBChild
 
 
     /**
-     * @param $name
-     **/
+     * @param string $name
+     *
+     * @return array
+     */
     public static function cronInfo($name)
     {
         return ['description' => __('Send alarms on financial and administrative information')];
@@ -819,8 +823,10 @@ class Infocom extends CommonDBChild
 
 
     /**
-     * @param $options array
-     **/
+     * @param array $options
+     *
+     * @return int|string
+     */
     public static function dropdownAlert($options)
     {
 
@@ -852,6 +858,8 @@ class Infocom extends CommonDBChild
      * @param string  $name      select name
      * @param integer $value     default value (default 0)
      * @param boolean $display   display or get string (true by default)
+     *
+     * @return int|string
      **/
     public static function dropdownAmortType($name, $value = 0, $display = true)
     {
@@ -874,7 +882,9 @@ class Infocom extends CommonDBChild
      * Get amortissement type name for infocoms
      *
      * @param integer $value status ID
-     **/
+     *
+     * @return  string
+     */
     public static function getAmortTypeName($value)
     {
 
@@ -886,6 +896,7 @@ class Infocom extends CommonDBChild
                 return __('Decreasing');
 
             case 0:
+            default:
                 return " ";
         }
     }
@@ -1363,14 +1374,16 @@ HTML;
     /**
      * Show Infocom form for an item (not a standard showForm)
      *
-     * @param $item                  CommonDBTM object
-     * @param $withtemplate integer  template or basic item (default 0)
-     **/
+     * @param CommonDBTM $item
+     * @param int $withtemplate template or basic item (default 0)
+     *
+     * @return void
+     */
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         // Show Infocom or blank form
         if (!self::canView()) {
-            return false;
+            return;
         }
 
         $dev_ID   = $item->getField('id');
@@ -1400,8 +1413,10 @@ HTML;
     }
 
     /**
-     * @param $itemtype
-     **/
+     * @param class-string<CommonDBTM> $itemtype
+     *
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
         $specific_itemtype = '';

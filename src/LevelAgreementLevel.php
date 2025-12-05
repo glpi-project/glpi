@@ -67,6 +67,11 @@ abstract class LevelAgreementLevel extends RuleTicket
         // Override in order not to use glpi_rules table.
     }
 
+    /**
+     * @param LevelAgreement $la
+     *
+     * @return void
+     */
     abstract public function showForParent(LevelAgreement $la);
 
     /**
@@ -229,6 +234,11 @@ abstract class LevelAgreementLevel extends RuleTicket
         return $criteria;
     }
 
+    /**
+     * @param array $options
+     *
+     * @return array
+     */
     public static function getExecutionTimes($options = [])
     {
         $p = [

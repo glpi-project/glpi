@@ -52,7 +52,9 @@ abstract class LevelAgreement extends CommonDBChild
     public static $itemtype = 'SLM';
     public static $items_id = 'slms_id';
 
+    /** @var string  */
     protected static $prefix            = '';
+    /** @var string  */
     protected static $prefixticket      = '';
     /** @var ''|class-string<LevelAgreementLevel> */
     protected static $levelclass        = '';
@@ -121,7 +123,9 @@ abstract class LevelAgreement extends CommonDBChild
      * Define calendar of the ticket using the SLA/OLA when using this calendar as sla/ola-s calendar
      *
      * @param integer $calendars_id calendars_id of the ticket
-     **/
+     *
+     * @return void
+     */
     public function setTicketCalendar($calendars_id)
     {
         if ($this->fields['use_ticket_calendar']) {
@@ -325,11 +329,13 @@ JAVASCRIPT
      * Print the HTML for a SLM
      *
      * @param SLM $slm Slm item
+     *
+     * @return void
      */
     public static function showForSLM(SLM $slm)
     {
         if (!$slm->can($slm->fields['id'], READ)) {
-            return false;
+            return;
         }
 
         $instID   = $slm->fields['id'];

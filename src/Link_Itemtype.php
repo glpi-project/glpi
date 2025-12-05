@@ -39,9 +39,6 @@ class Link_Itemtype extends CommonDBChild
     public static $itemtype = 'Link';
     public static $items_id = 'links_id';
 
-    /**
-     * @since 0.84
-     **/
     public function getForbiddenStandardMassiveAction()
     {
         $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -53,9 +50,9 @@ class Link_Itemtype extends CommonDBChild
      *
      * Remove all associations for an itemtype
      *
-     * @since 0.85
+     * @param class-string<CommonDBTM> $itemtype  itemtype for which all link associations must be removed
      *
-     * @param string $itemtype  itemtype for which all link associations must be removed
+     * @return void
      */
     public static function deleteForItemtype($itemtype)
     {

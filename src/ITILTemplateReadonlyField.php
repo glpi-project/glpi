@@ -106,11 +106,11 @@ abstract class ITILTemplateReadonlyField extends ITILTemplateField
     /**
      * Get Readonly fields for a template
      *
-     * @param $ID                    integer  the template ID
-     * @param $withtypeandcategory   boolean  with type and category (false by default)
+     * @param int  $ID                  the template ID
+     * @param bool $withtypeandcategory with type and category (false by default)
      *
      * @return array of Readonly fields
-     **/
+     */
     public function getReadonlyFields($ID, $withtypeandcategory = false)
     {
         global $DB;

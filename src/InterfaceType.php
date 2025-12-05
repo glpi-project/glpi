@@ -46,13 +46,13 @@ class InterfaceType extends CommonDropdown
 
 
     /**
-     * @since 0.84
+     * @param class-string<CommonDBTM> $itemtype
+     * @param HTMLTableBase $base
+     * @param ?HTMLTableSuperHeader $super
+     * @param ?HTMLTableHeader $father
+     * @param array $options
      *
-     * @param $itemtype
-     * @param $base               HTMLTableBase object
-     * @param $super              HTMLTableSuperHeader object (default NULL)
-     * @param $father             HTMLTableHeader object (default NULL)
-     * @param $options   array
+     * @return void
      **/
     public static function getHTMLTableHeader(
         $itemtype,
@@ -73,12 +73,12 @@ class InterfaceType extends CommonDropdown
 
 
     /**
-     * @since 0.84
+     * @param ?HTMLTableRow $row
+     * @param ?CommonDBTM $item
+     * @param ?HTMLTableCell $father
+     * @param array $options
      *
-     * @param $row                HTMLTableRow object (default NULL)
-     * @param $item               CommonDBTM object (default NULL)
-     * @param $father             HTMLTableCell object (default NULL)
-     * @param $options   array
+     * @return void
      **/
     public static function getHTMLTableCellsForItem(
         ?HTMLTableRow $row = null,

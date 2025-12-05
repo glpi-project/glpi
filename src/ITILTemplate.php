@@ -55,13 +55,25 @@ abstract class ITILTemplate extends CommonDropdown
     public $can_be_translated            = false;
 
     // Specific fields
-    /// Mandatory Fields
+    /**
+     * Mandatory Fields
+     * @var array
+     */
     public $mandatory  = [];
-    /// Hidden fields
+    /**
+     * Hidden fields
+     * @var array
+     */
     public $hidden     = [];
-    /// Predefined fields
+    /**
+     * Predefined fields
+     * @var array
+     */
     public $predefined = [];
-    /// Readonly fields
+    /**
+     * Readonly fields
+     * @var array
+     */
     public $readonly   = [];
     /// Related ITIL type
 
@@ -74,13 +86,11 @@ abstract class ITILTemplate extends CommonDropdown
     /**
      * Retrieve an item from the database with additional datas
      *
-     * @since 0.83
-     *
-     * @param $ID                    integer  ID of the item to get
-     * @param $withtypeandcategory   boolean  with type and category (true by default)
+     * @param int  $ID                  ID of the item to get
+     * @param bool $withtypeandcategory with type and category (true by default)
      *
      * @return boolean
-     **/
+     */
     public function getFromDBWithData($ID, $withtypeandcategory = true)
     {
         if ($this->getFromDB($ID)) {
@@ -231,9 +241,11 @@ abstract class ITILTemplate extends CommonDropdown
     }
 
     /**
-     * @param boolean $withtypeandcategory (default 0)
-     * @param boolean $withitemtype        (default 0)
-     **/
+     * @param boolean $withtypeandcategory
+     * @param boolean $withitemtype
+     *
+     * @return array
+     */
     public static function getAllowedFields($withtypeandcategory = false, $withitemtype = false)
     {
 
@@ -383,8 +395,8 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @since 9.5.0
      *
-     * @param boolean $withtypeandcategory (default 0)
-     * @param boolean $withitemtype        (default 0)
+     * @param boolean $withtypeandcategory
+     * @param boolean $withitemtype
      *
      * @return array
      *
@@ -397,10 +409,12 @@ abstract class ITILTemplate extends CommonDropdown
 
 
     /**
-     * @param $withtypeandcategory   (default 0)
-     * @param $with_items_id         (default 0)
-     **/
-    public function getAllowedFieldsNames($withtypeandcategory = 0, $with_items_id = 0)
+     * @param bool $withtypeandcategory
+     * @param bool $with_items_id
+     *
+     * @return array
+     */
+    public function getAllowedFieldsNames($withtypeandcategory = false, $with_items_id = false)
     {
 
         $itiltype = static::getITILObjectClass();
@@ -474,13 +488,11 @@ abstract class ITILTemplate extends CommonDropdown
     /**
      * Get mandatory mark if field is mandatory
      *
-     * @since 0.83
-     *
-     * @param $field  string   field
-     * @param $force  boolean  force display based on global config (false by default)
+     * @param string $field
+     * @param bool $force force display based on global config (false by default)
      *
      * @return string to display
-     **/
+     */
     public function getMandatoryMark($field, $force = false)
     {
 
@@ -492,14 +504,12 @@ abstract class ITILTemplate extends CommonDropdown
 
 
     /**
-     * Is it an hidden field ?
+     * Is it a hidden field?
      *
-     * @since 0.83
-     *
-     * @param $field string field
+     * @param string $field field
      *
      * @return bool
-     **/
+     */
     public function isHiddenField($field)
     {
 
@@ -511,14 +521,12 @@ abstract class ITILTemplate extends CommonDropdown
 
 
     /**
-     * Is it an predefined field ?
+     * Is it a predefined field?
      *
-     * @since 0.83
-     *
-     * @param $field string field
+     * @param string $field
      *
      * @return bool
-     **/
+     */
     public function isPredefinedField($field)
     {
 
@@ -530,11 +538,9 @@ abstract class ITILTemplate extends CommonDropdown
 
 
     /**
-     * Is it an mandatory field ?
+     * Is it a mandatory field?
      *
-     * @since 0.83
-     *
-     * @param $field string field
+     * @param string $field
      *
      * @return bool
      **/
@@ -549,14 +555,14 @@ abstract class ITILTemplate extends CommonDropdown
 
 
     /**
-     * Is it a read only field ?
+     * Is it a read only field?
      *
      * @since 11.0.0
      *
-     * @param $field string field
+     * @param string $field
      *
      * @return bool
-     **/
+     */
     public function isReadonlyField($field)
     {
 
@@ -570,12 +576,10 @@ abstract class ITILTemplate extends CommonDropdown
     /**
      * Print preview for ITIL template
      *
-     * @since 0.83
-     *
-     * @param $tt ITILTemplate object
+     * @param ITILTemplate $tt object
      *
      * @return bool
-     **/
+     */
     public static function showCentralPreview(ITILTemplate $tt): bool
     {
 
@@ -673,11 +677,11 @@ abstract class ITILTemplate extends CommonDropdown
     /**
      * Merge fields linked to template
      *
-     * @since 0.90
+     * @param int $target_id
+     * @param  int $source_id
      *
-     * @param $target_id
-     * @param  $source_id
-     **/
+     * @return void
+     */
     public function mergeTemplateFields($target_id, $source_id)
     {
         global $DB;
@@ -730,10 +734,10 @@ abstract class ITILTemplate extends CommonDropdown
     /**
      * Merge Itilcategories linked to template
      *
-     * @since 0.90
+     * @param int $target_id
+     * @param int $source_id
      *
-     * @param $target_id
-     * @param $source_id
+     * @return void
      */
     public function mergeTemplateITILCategories($target_id, $source_id)
     {
@@ -788,10 +792,10 @@ abstract class ITILTemplate extends CommonDropdown
     /**
      * Format template fields to merge
      *
-     * @since 0.90
+     * @param array $data
      *
-     * @param $data
-     **/
+     * @return array
+     */
     public function formatFieldsToMerge($data)
     {
 

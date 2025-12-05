@@ -57,11 +57,13 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     use Clonable;
     use TreeBrowse;
 
+    /** @var bool */
     public static $browse_default = true;
 
     // From CommonDBTM
     public $dohistory    = true;
 
+    /** @var array */
     protected $items     = [];
 
     public const KNOWBASEADMIN = 1024;
@@ -840,7 +842,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     /**
      * Increase the view counter of the current knowbaseitem
      *
-     * @since 0.83
+     * @return void
      */
     public function updateCounter()
     {
@@ -957,10 +959,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     /**
      * Print out an HTML form for Search knowbase item
      *
-     * @param $options   $_GET
+     * @param array $options   $_GET
      *
      * @return void
-     **/
+     */
     public function searchForm($options)
     {
         global $CFG_GLPI;
@@ -1352,7 +1354,9 @@ TWIG, $twig_params);
      *
      * @param array $options            $_GET
      * @param string $type search type : browse / search (default search)
-     **/
+     *
+     * @return void
+     */
     public static function showList($options, $type = 'search')
     {
         global $CFG_GLPI;
@@ -1374,13 +1378,13 @@ TWIG, $twig_params);
         switch ($type) {
             case 'myunpublished':
                 if (!Session::haveRightsOr(self::$rightname, [UPDATE, self::PUBLISHFAQ])) {
-                    return false;
+                    return;
                 }
                 break;
 
             case 'allunpublished':
                 if (!Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
-                    return false;
+                    return;
                 }
                 break;
 
@@ -2119,6 +2123,11 @@ TWIG, $twig_params);
         return "ti ti-lifebuoy";
     }
 
+    /**
+     * @param array $params
+     *
+     * @return array
+     */
     public static function getAdditionalSearchCriteria($params)
     {
         if (!self::canView()) {
