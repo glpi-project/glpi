@@ -3440,7 +3440,7 @@ class RuleTicketTest extends DbTestCase
                 'value'  => '1',
                 'result' => 1,
                 'id'     => $criterion->getID(),
-            ]
+            ],
         ], $check_results);
     }
 
