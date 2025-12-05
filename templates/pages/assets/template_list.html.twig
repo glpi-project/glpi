@@ -30,10 +30,25 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/modals_macros.html.twig' as modals %}
+
 {% macro template_row(template, target, add_mode) %}
+    {% set rand = random() %}
     <tr>
         <td>
-            {{ template['name']|raw }}
+            {% if add_mode %}
+                {% if template['original_url'] is defined %}
+                    {% set link_class = 'template-create-link' %}
+                    {% set data_template_name = template['name']|striptags %}
+                    <a href="#" class="{{ link_class }}" data-template-url="{{ template['original_url'] }}" data-template-name="{{ data_template_name }}" data-template-id="{{ template['id']|default('') }}">
+                        {{ template['name']|striptags }}
+                    </a>
+                {% else %}
+                    {{ template['name']|raw }}
+                {% endif %}
+            {% else %}
+                {{ template['name']|raw }}
+            {% endif %}
         </td>
         {% if not add_mode and session('glpi_multientitiesmode')|default(false) %}
             <td>{{ template['entity'] }}</td>
@@ -95,3 +110,56 @@
         {% endif %}
     </div>
 </div>
+
+{% if add_mode %}
+    {% set confirm_modal_id = 'template_confirm_modal_' ~ random() %}
+    {{ modals.confirm(
+        __('Créer un projet'),
+        __('Voulez-vous créer un nouveau projet à partir de ce template ?'),
+        {
+            'id': confirm_modal_id,
+            'confirm_label': '<i class="ti ti-plus me-1"></i>' ~ __('Créer le projet'),
+            'confirm_event': 'confirmTemplateSelection();',
+            'cancel_label': __('Annuler')
+        }
+    ) }}
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var selectedTemplateUrl = '';
+
+            // Intercept clicks on template links
+            $('.template-create-link').on('click', function(e) {
+                e.preventDefault();
+
+                var templateName = $(this).data('template-name') || $(this).text().trim();
+                var templateUrl = $(this).data('template-url');
+
+                // If we don't have URL in data-template-url, rebuild the URL
+                if (!templateUrl) {
+                    var href = $(this).attr('href');
+                    if (href && href !== '#') {
+                        templateUrl = href;
+                    }
+                }
+
+                selectedTemplateUrl = templateUrl;
+
+                // Update modal text with template name
+                $('#{{ confirm_modal_id }} .modal-body').html(
+                    '{{ __('Voulez-vous créer un nouveau projet à partir du template') }} <strong>' + templateName + '</strong> ?'
+                );
+
+                // Show the modal
+                $('#{{ confirm_modal_id }}').modal('show');
+            });
+
+            // Function called when confirming selection
+            window.confirmTemplateSelection = function() {
+                if (selectedTemplateUrl) {
+                    window.location.href = selectedTemplateUrl;
+                }
+            };
+        });
+    </script>
+{% endif %}
