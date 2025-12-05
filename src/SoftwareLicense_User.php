@@ -80,10 +80,7 @@ class SoftwareLicense_User extends CommonDBRelation
 
             if ($count >= $license->getField('number')) {
                 Session::addMessageAfterRedirect(
-                    sprintf(
-                        __('Maximum number of items reached for license "%s".'),
-                        $license->getName()
-                    ),
+                    __s('Maximum number of items reached for this license.'),
                     false,
                     ERROR
                 );
