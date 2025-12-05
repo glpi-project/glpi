@@ -87,11 +87,18 @@ final class EntityFieldConfig implements
         return self::STRATEGY;
     }
 
+    public function getStrategy(): EntityFieldStrategy
+    {
+        return $this->strategy;
+    }
+
     /**
      * @return array<EntityFieldStrategy>
      */
     public function getStrategies(): array
     {
+        // TODO: why does this field seems to support multiple stategies?
+        // It doesn't make sense IMO, can you take a look @ccailly?
         return [$this->strategy];
     }
 

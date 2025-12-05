@@ -36,6 +36,7 @@ namespace Glpi\Tests;
 
 use Change;
 use CommonDBTM;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\AnswersSet;
@@ -849,21 +850,27 @@ trait FormTesterTrait
     private function setDestinationFieldConfig(
         Form $form,
         string $key,
-        string $config
+        string|JsonFieldInterface $config
     ): void {
-        $config = new SimpleValueConfig($config);
+        if (is_string($config)) {
+            $config = new SimpleValueConfig($config);
+        }
 
         $destinations = $form->getDestinations();
         $this->assertCount(1, $destinations);
 
         $destination = current($destinations);
+        $original_config = json_decode($destination->fields['config'], true);
+        $added_config = [
+            $key => $config->jsonSerialize(),
+        ];
+        $new_config = array_merge($original_config, $added_config);
+
         $this->updateItem(
             $destination::getType(),
             $destination->getId(),
             [
-                'config' => [
-                    $key => $config->jsonSerialize(),
-                ],
+                'config' => $new_config,
             ],
             ["config"],
         );

@@ -119,7 +119,7 @@ final class EntityField extends AbstractConfigField implements DestinationFieldC
         $strategy = current($config->getStrategies());
 
         // Compute value according to strategy
-        $entity_id = $strategy->getEntityID($config, $answers_set);
+        $entity_id = $strategy->getEntityID($config, $answers_set, $input);
 
         // We always need a valid value for entities
         if (Entity::getById($entity_id) === false) {
