@@ -139,7 +139,7 @@ class MassiveAction
      * Variable is used for caching purpose.
      * @var CommonDBTM|null
      */
-    private ?CommonDBTM $check_item;
+    private ?CommonDBTM $check_item = null;
 
     /**
      * Redirect URL used after actions are processed.
