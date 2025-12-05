@@ -1443,7 +1443,7 @@ class Auth extends CommonGLPI
             return true;
         }
 
-        // Using API login with personnal token
+        // Using API login with personal token
         if (!empty($_REQUEST['user_token'])) {
             return true;
         }

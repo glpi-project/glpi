@@ -911,7 +911,7 @@ TWIG, $twig_params);
 
         // show only users with right to add planning events
         $rights = ['change', 'problem', 'reminder', 'task', 'projecttask'];
-        // Can we see only personnal planning ?
+        // Can we see only personal planning ?
         if (!Session::haveRightsOr('planning', [self::READALL, self::READGROUP])) {
             $rights = 'id';
         }
@@ -2355,7 +2355,7 @@ TWIG, ['msg' => __('Your planning')]);
 
     public function getRights($interface = 'central')
     {
-        $values[self::READMY]    = __('See personnal planning');
+        $values[self::READMY]    = __('See personal planning');
         $values[self::READGROUP] = __('See schedule of people in my groups');
         $values[self::READALL]   = __('See all plannings');
 
