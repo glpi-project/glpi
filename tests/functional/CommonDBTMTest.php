@@ -830,10 +830,8 @@ class CommonDBTMTest extends DbTestCase
         $input = ['entities_id' => $ent1];
         $this->assertFalse($entity->can(-1, CREATE, $input), "Fail: can create entity in root");
         $input = ['entities_id' => $ent2];
-        // next should be false (or not).... but check is done on glpiactiveprofile
-        // will require to save current state in session - this is probably acceptable
-        // this allow creation when no child defined yet (no way to select tree in this case)
-        $this->assertTrue($entity->can(-1, CREATE, $input), "Fail: can't create entity in 2");
+        // this forbidden creation when not in tree structure
+        $this->assertFalse($entity->can(-1, CREATE, $input), "Fail: can't create entity in 2");
         $input = ['entities_id' => $ent3];
         $this->assertFalse($entity->can(-1, CREATE, $input), "Fail: can create entity in 2.1");
     }
