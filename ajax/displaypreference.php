@@ -52,13 +52,13 @@ if (isset($_POST["activate"])) {
         ]);
     }
 } elseif (isset($_POST['action']) && $_POST['action'] === 'update_order') {
-    if (!isset($_POST['itemtype'], $_POST['users_id'], $_POST['opts'])) {
+    if (!isset($_POST['itemtype'], $_POST['users_id'])) {
         throw new BadRequestHttpException();
     }
     $setupdisplay->updateOrder(
         $_POST['itemtype'],
         $_POST['users_id'],
-        $_POST['opts'],
+        $_POST['opts'] ?? [],
         $_POST['interface'] ?? 'central'
     );
 } else {
