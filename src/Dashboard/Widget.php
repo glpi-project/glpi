@@ -444,12 +444,12 @@ HTML;
                 $color     = Toolbox::getFgColor($bgcolor);
 
                 $palette_style .= "
-               #chart-{$p['rand']} .line-$letter {
+               #chart-{$p['rand']} .line-$index {
                   background-color: $bgcolor;
                   color: $color;
                }
 
-               #chart-{$p['rand']} .line-$letter:hover {
+               #chart-{$p['rand']} .line-$index:hover {
                   background-color: $bgcolor_h;
                   font-weight: bold;
                }
