@@ -720,7 +720,7 @@ class MigrationTest extends DbTestCase
             ],
         ]));
 
-        $this->assertCount(8, $DB->request([
+        $this->assertCount(9, $DB->request([
             'FROM' => 'glpi_profilerights',
             'WHERE'  => [
                 'name'   => 'test_addright_4',
@@ -764,7 +764,7 @@ class MigrationTest extends DbTestCase
                 'rights' => READ,
             ],
         ]));
-        $this->assertCount(1, $DB->request([
+        $this->assertCount(2, $DB->request([
             'FROM' => 'glpi_profilerights',
             'WHERE'  => [
                 'name'   => 'testright2',
@@ -1138,7 +1138,7 @@ class MigrationTest extends DbTestCase
         //Test updating a READ right when profile with no requirements
         $migration->replaceRight('test_replaceright_3', READ, []);
 
-        $this->assertCount(8, $DB->request([
+        $this->assertCount(9, $DB->request([
             'FROM' => 'glpi_profilerights',
             'WHERE'  => [
                 'name'   => 'test_replaceright_3',
