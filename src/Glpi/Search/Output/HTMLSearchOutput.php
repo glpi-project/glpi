@@ -84,6 +84,13 @@ class HTMLSearchOutput extends AbstractSearchOutput
         }
     }
 
+    public static function displayPreSearchResultsContent(string $itemtype): void
+    {
+        if (\method_exists($itemtype, 'displaySearchStatusAreaContent')) {
+            $itemtype::displaySearchStatusAreaContent();
+        }
+    }
+
     public function displayData(array $data, array $params = [])
     {
         global $CFG_GLPI;

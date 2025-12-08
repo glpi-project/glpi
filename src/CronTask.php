@@ -1951,8 +1951,15 @@ TWIG, ['msg' => __('Last run list')]);
     /**
      * @return void
      * @used-by templates/components/search/controls.html.twig
+     *
+     * @TODO Remove it in GLPI 12.0.
      */
-    public static function showSearchStatusArea()
+    public static function showSearchStatusArea() {}
+
+    /**
+     * @return void
+     */
+    public static function displayPreSearchResultsContent(): void
     {
         global $CFG_GLPI;
 

@@ -627,6 +627,8 @@ final class SearchEngine
             $search_input_class::showGenericSearch($itemtype, $params);
         }
 
+        $output::displayPreSearchResultsContent($itemtype);
+
         $params = $output::prepareInputParams($itemtype, $params);
         $item = getItemForItemtype($itemtype);
         if ((int) $params['browse'] === 1 && $item instanceof TreeBrowseInterface) {

@@ -1977,8 +1977,15 @@ class MailCollector extends CommonDBTM
     /**
      * @return void
      * @used-by templates/components/search/controls.html.twig
+     *
+     * @TODO Remove it in GLPI 12.0.
      */
-    public static function showSearchStatusArea()
+    public static function showSearchStatusArea() {}
+
+    /**
+     * @return void
+     */
+    public static function displayPreSearchResultsContent(): void
     {
         $errors  = getAllDataFromTable(self::getTable(), ['errors' => ['>', 0]]);
         $collector = new self();

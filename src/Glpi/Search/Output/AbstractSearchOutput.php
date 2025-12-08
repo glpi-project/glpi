@@ -35,6 +35,7 @@
 
 namespace Glpi\Search\Output;
 
+use CommonDBTM;
 use CommonGLPI;
 
 /**
@@ -56,6 +57,14 @@ abstract class AbstractSearchOutput
     {
         return $params;
     }
+
+    /**
+     * Display any content prior to the search results.
+     *
+     * @param class-string<CommonDBTM> $itemtype
+     * @return void
+     */
+    public static function displayPreSearchResultsContent(string $itemtype): void {}
 
     /**
      * Display the search results
