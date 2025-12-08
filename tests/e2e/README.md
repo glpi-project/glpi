@@ -13,6 +13,12 @@ Official documentation: https://playwright.dev/docs/intro
 make e2e-db-install
 ```
 
+#### Setup base URL
+
+By default, the E2E tests server is exposed on the `8090` port.  
+If you changed this port in your docker override file, copy the `.env` file as 
+`.env.local` and update `E2E_BASE_URL` as needed.
+
 #### Execute all tests
 
 ```sh
@@ -64,6 +70,11 @@ See examples:
 
 Use the `glpi:database:install` console command with the `--env=e2e_testing`
 parameter to setup the test database.
+
+#### Setup base URL
+
+Copy the `.env` file as `.env.local` and replace `E2E_BASE_URL` by the URL to
+your GLPI server running in the `e2e_testing` environment.
 
 #### Execute all tests
 
