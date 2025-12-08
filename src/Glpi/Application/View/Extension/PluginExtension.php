@@ -37,7 +37,6 @@ namespace Glpi\Application\View\Extension;
 
 use Glpi\Plugin\Hooks;
 use Plugin;
-use Toolbox;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -52,7 +51,6 @@ class PluginExtension extends AbstractExtension
             new TwigFunction('call_plugin_hook', [$this, 'callPluginHook']),
             new TwigFunction('call_plugin_hook_func', [$this, 'callPluginHookFunction']),
             new TwigFunction('call_plugin_one_hook', [$this, 'callPluginOneHook']),
-            new TwigFunction('get_plugin_web_dir', [$this, 'getPluginWebDir']),
             new TwigFunction('get_plugins_css_files', [$this, 'getPluginsCssFiles']),
             new TwigFunction('get_plugins_js_scripts_files', [$this, 'getPluginsJsScriptsFiles']),
             new TwigFunction('get_plugins_js_modules_files', [$this, 'getPluginsJsModulesFiles']),
@@ -111,26 +109,6 @@ class PluginExtension extends AbstractExtension
         if ($return_result) {
             return $result;
         }
-    }
-
-    /**
-     * Call Plugin::getWebDir() with given params.
-     *
-     * @param string  $plugin
-     * @param bool    $full
-     * @param bool    $use_url_base
-     *
-     * @return string|null
-     *
-     * @deprecated 11.0
-     */
-    public function getPluginWebDir(
-        string $plugin,
-        bool $full = true,
-        bool $use_url_base = false
-    ): ?string {
-        Toolbox::deprecated('All plugins resources should be accessed from the `/plugins/` path.');
-        return Plugin::getWebDir($plugin, $full, $use_url_base) ?: null;
     }
 
     /**

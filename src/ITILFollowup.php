@@ -54,19 +54,6 @@ class ITILFollowup extends CommonDBChild
     public static $log_history_update = Log::HISTORY_LOG_SIMPLE_MESSAGE;
     public static $log_history_delete = Log::HISTORY_LOG_SIMPLE_MESSAGE;
 
-    /**
-     * @deprecated 11.0 Use ITILFollowup::ADDMY
-     */
-    public const ADDMYTICKET     = self::ADDMY;
-    /**
-     * @deprecated 11.0 Use ITILFollowup::ADD_AS_GROUP
-     */
-    public const ADDGROUPTICKET  = self::ADD_AS_GROUP;
-    /**
-     * @deprecated 11.0 Use ITILFollowup::ADDALLITEM
-     */
-    public const ADDALLTICKET    = self::ADDALLITEM;
-
     public static $itemtype = 'itemtype';
     public static $items_id = 'items_id';
 

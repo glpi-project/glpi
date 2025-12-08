@@ -29,6 +29,77 @@ The present file will list all changes made to the project; according to the
 
 #### Removed
 
+- `js/Forms/FaIconSelector.js` module
+- `Auth::getErr()`
+- `AuthLDAP::DELETED_USER_PRESERVE`
+- `AuthLDAP::DELETED_USER_DELETE`
+- `AuthLDAP::DELETED_USER_WITHDRAWDYNINFO`
+- `AuthLDAP::DELETED_USER_DISABLE`
+- `AuthLDAP::DELETED_USER_DISABLEANDWITHDRAWDYNINFO`
+- `AuthLDAP::DELETED_USER_DISABLEANDDELETEGROUPS`
+- `SynchronizeUsersCommand::convertOldDeleteStrategyToNew()`
+- `ComputerAntivirus` class
+- `ComputerVirtualMachine` class
+- `DBmysql::query()`
+- `DBmysql::queryOrDie()`
+- `DBmysql::doQueryOrDie()`
+- `DBmysql::insertOrDie()`
+- `DBmysql::updateOrDie()`
+- `DBmysql::deleteOrDie()`
+- `DBmysql::truncate()`
+- `DBmysql::truncateOrDie()`
+- `Glpi\Toolbox\Sanitizer` class
+- `Migration::setOutputHandler()`
+- `Migration::addNewMessageArea()`
+- `Migration::displayTitle()`
+- `Migration::displayWarning()`
+- `Migration::displayError()`
+- `Timer` class
+- `Toolbox::seems_utf8()`
+- `Toolbox::sendFile()`
+- `Toolbox::addslashes_deep()`
+- `Toolbox::stripslashes_deep()`
+- `Html::entity_decode_deep()`
+- `Html::entities_deep()`
+- `Html::cleanInputText()`
+- `Html::cleanPostForTextArea()`
+- `Html::displayNotFoundError()`
+- `Html::displayRightError()`
+- `Html::displayDebugInfos()`
+- `Html::displayErrorAndDie()`
+- `Html::progressBar()`
+- `Html::createProgressBar()`
+- `Html::changeProgressBarMessage()`
+- `Html::changeProgressBarPosition()`
+- `Html::displayProgressBar()`
+- `Html::ajaxFooter()`
+- `Html::glpi_flush()`
+- `Html::jsGetElementbyID()`
+- `Html::jsSetDropdownValue()`
+- `Html::jsGetDropdownValue()`
+- `Document::send()`
+- `Glpi\Application\View\Extension\DataHelpersExtension::getVerbatimValue()`
+- `Glpi\Application\View\Extension\PluginExtension::getPluginWebDir()`
+- `Glpi\Dashoboard\Filter::getAll()`
+- `Glpi\Http\Response::sendError()`
+- `Glpi\Http\Response::sendHeaders()`
+- `Glpi\Http\Response::sendContent()`
+- `Glpi\Http\Response::send()`
+- `Glpi\Plugin\HookManager::enableCSRF()`
+- `Glpi\Plugin\Hook::CSRF_COMPLIANT` constant
+- `Glpi\Plugin\Hook::SHOW_IN_TIMELINE` constant
+- `ITILFollowup::ADDMYTICKET` constant
+- `ITILFollowup::ADDGROUPTICKET` constant
+- `ITILFollowup::ADDALLTICKET` constant
+- `Pdu_Plug` class
+- `Plugin::getWebDir()`
+- `QueryExprfession` class
+- `QueryParam` class
+- `QuerySubQuery` class
+- `QueryUnion` class
+- `Search::joinDropdownTranslations()`
+- `Ticket_Ticket::getLinkedTicketsTo()`
+
 
 ## [11.0.3] unreleased
 

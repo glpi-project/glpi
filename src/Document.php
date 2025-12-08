@@ -398,20 +398,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     }
 
     /**
-     * Send a document to navigator
-     *
-     * @return void
-     *
-     * @deprecated 11.0.0
-     */
-    public function send()
-    {
-        Toolbox::deprecated();
-
-        $this->getAsResponse()->send();
-    }
-
-    /**
      * Get download link for a document
      *
      * @param CommonDBTM|null   $linked_item    Item linked to the document, to check access right

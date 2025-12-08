@@ -1155,30 +1155,6 @@ class Search
     }
 
     /**
-     * Add join for dropdown translations
-     *
-     * @param string $alias    Alias for translation table
-     * @param string $table    Table to join on
-     * @param class-string<CommonDBTM> $itemtype Item type
-     * @param string $field    Field name
-     *
-     * @return string
-     * @deprecated 11.0.0
-     */
-    public static function joinDropdownTranslations($alias, $table, $itemtype, $field)
-    {
-        global $DB;
-
-        Toolbox::deprecated();
-
-        return "LEFT JOIN " . $DB::quoteName('glpi_dropdowntranslations') . " AS " . $DB::quoteName($alias) . "
-                  ON (" . $DB::quoteName($alias . '.itemtype') . " = " . $DB->quote($itemtype) . "
-                    AND " . $DB::quoteName($alias . '.items_id') . " = " . $DB::quoteName($table . '.id') . "
-                    AND " . $DB::quoteName($alias . '.language') . " = " . $DB->quote($_SESSION['glpilanguage']) . "
-                    AND " . $DB::quoteName($alias . '.field') . " = " . $DB->quote($field) . ")";
-    }
-
-    /**
      * Get table name for item type
      *
      * @param class-string<CommonDBTM> $itemtype
