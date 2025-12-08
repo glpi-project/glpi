@@ -69,6 +69,7 @@
 
     {{ fields.numberField('ifmtu', item.fields['ifmtu'], __('MTU'), {
         min: 0,
+        max: 65535,
         readonly: is_readonly
     }) }}
 
