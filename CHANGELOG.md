@@ -38,6 +38,8 @@ The present file will list all changes made to the project; according to the
 - `AuthLDAP::DELETED_USER_DISABLEANDWITHDRAWDYNINFO`
 - `AuthLDAP::DELETED_USER_DISABLEANDDELETEGROUPS`
 - `SynchronizeUsersCommand::convertOldDeleteStrategyToNew()`
+- `ComputerAntivirus` class
+- `ComputerVirtualMachine` class
 - `DBmysql::query()`
 - `DBmysql::queryOrDie()`
 - `DBmysql::doQueryOrDie()`
