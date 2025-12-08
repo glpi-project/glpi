@@ -31,6 +31,12 @@
  */
 
 import { defineConfig, devices } from '@playwright/test';
+import { config } from 'dotenv' ;
+import { Config } from './tests/e2e/utils/Config';
+
+// Load .env file so it is available everywhere.
+config({path: './tests/e2e/.env.local', quiet: true});
+config({path: './tests/e2e/.env', quiet: true});
 
 /**
  * Playwright configuration file
@@ -85,6 +91,10 @@ export default defineConfig({
     // Shared settings for all the projects below.
     // See:  https://playwright.dev/docs/api/class-testoptions.
     use: {
+        // Base URL to use in actions like `await page.goto('/')`
+        // See: https://playwright.dev/docs/api/class-testoptions#test-options-base-url
+        baseURL: Config.getBaseUrl(),
+
         // Collect trace when retrying the failed test.
         // See: https://playwright.dev/docs/trace-viewer */
         trace: 'on-first-retry',
