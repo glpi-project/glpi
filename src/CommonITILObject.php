@@ -7982,7 +7982,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             ];
         }
 
-        Plugin::doHook(Hooks::SHOW_IN_TIMELINE, ['item' => $this, 'timeline' => &$timeline]); // @phpstan-ignore classConstant.deprecated
         Plugin::doHook(Hooks::TIMELINE_ITEMS, ['item' => $this, 'timeline' => &$timeline]);
 
         //sort timeline items by date. If items have the same date, sort by id
