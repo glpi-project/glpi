@@ -1300,7 +1300,7 @@ HTML;
                         if ({{ distributed ? 'true' : 'false' }}) {
                             serie['itemStyle'] = {
                                 ...serie['itemStyle'],
-                                'color': (param) => palette[param.dataIndex]
+                                'color': (param) => palette[param.dataIndex % palette.length]
                             }
                         }
                         serie['label'] = {
