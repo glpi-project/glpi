@@ -722,7 +722,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             Session::addMessageAfterRedirect(
                 __s("To create a child entity, you must enable entity tree structure."),
                 false,
-                ERROR
+                INFO
             );
         }
     }
@@ -779,10 +779,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     public function post_addItem()
     {
         parent::post_addItem();
-        // If first time, we allow the creation of an entity and switch to recursive mode
-        if (!Session::isMultiEntitiesMode()) {
-            $_SESSION["glpiactive_entity_recursive"] = true;
-        }
 
         // Add right to current user - Hack to avoid login/logout
         $_SESSION['glpiactiveentities'][$this->fields['id']] = $this->fields['id'];
