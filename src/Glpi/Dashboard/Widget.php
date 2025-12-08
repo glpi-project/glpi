@@ -511,28 +511,33 @@ HTML;
 
         $rand = (int) $p['rand'];
 
-        $palette_style = "";
+        $colors = self::getPalette($p['palette'], $i);
         if ($p['use_gradient']) {
-            $palette = self::getGradientPalette($p['color'], $i, false);
-            foreach ($palette['names'] as $index => $letter) {
-                $bgcolor   = $palette['colors'][$index];
-                $bgcolor_h = Toolbox::getFgColor($bgcolor, 10);
-                $color     = Toolbox::getFgColor($bgcolor);
+            $palette = self::getGradientPalette(
+                $p['color'],
+                $i,
+                false
+            );
+            $colors = $palette['colors'];
+        }
 
-                $palette_style .= "
-                    #chart-{$rand} .line-$letter {
+        $palette_style = "";
+        foreach ($colors as $index => $bgcolor) {
+            $bgcolor_h = Toolbox::getFgColor($bgcolor, 10);
+            $color     = Toolbox::getFgColor($bgcolor);
+
+            $palette_style .= "
+                    #chart-{$rand} .line-$index {
                         background-color: $bgcolor;
                         color: $color;
                     }
 
-                    #chart-{$rand} .line-$letter:hover {
+                    #chart-{$rand} .line-$index:hover {
                         background-color: $bgcolor_h;
                         font-weight: bold;
                     }
                 ";
-            }
         }
-
 
         $label = \htmlescape($p['label']);
         $alt = \htmlescape($p['alt']);
