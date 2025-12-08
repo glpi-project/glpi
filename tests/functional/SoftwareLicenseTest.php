@@ -580,9 +580,6 @@ class SoftwareLicenseTest extends DbTestCase
         return array_key_exists($action_key, $actions);
     }
 
-    /**
-     * Helper method to check if an action exists in the actions array
-     */
     public function testOverQuotaBypassWhenAssigningUserDirectly()
     {
         $this->login();
