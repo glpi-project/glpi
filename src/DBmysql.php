@@ -292,7 +292,7 @@ class DBmysql
 
             $this->connected = true;
 
-            $this->setTimezone($this->guessTimezone());
+            $this->setTimezone(date_default_timezone_get());
         }
     }
 
@@ -305,12 +305,14 @@ class DBmysql
      * @return string
      *
      * @since 9.5.0
+     *
+     * @TODO Remove this method in GLPI 12.0
      */
     public function guessTimezone()
     {
         if ($this->use_timezones) {
-            if (isset($_SESSION['glpi_tz'])) {
-                $zone = $_SESSION['glpi_tz'];
+            if (isset($_SESSION['glpitimezone'])) {
+                $zone = $_SESSION['glpitimezone'];
             } else {
                 $conf_tz = ['value' => null];
                 if (

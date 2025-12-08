@@ -383,7 +383,7 @@ $empty_data_builder = new class {
             'plugins_execution_mode' => Plugin::EXECUTION_MODE_ON,
             'glpinetwork_registration_key' => null,
             'impact_assets_list' => '[]',
-            'timezone' => null,
+            'timezone' => '0',
             'glpi_11_form_migration' => 0,
             'glpi_11_assets_migration' => 0,
         ];
