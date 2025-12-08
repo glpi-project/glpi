@@ -675,6 +675,13 @@ function loadDataset()
                 'users_id_recipient' => TU_USER,
                 'entities_id'    => '_test_root_entity',
             ],
+        ], Profile::class => [
+            // This dummy profile is usefull to have another helpdesk profile
+            // available that is not the default one (self-service)
+            [
+                'name'       => 'helpdesk',
+                'is_default' => 0,
+            ],
         ], 'Project' => [
             [
                 'name'           => '_project01',

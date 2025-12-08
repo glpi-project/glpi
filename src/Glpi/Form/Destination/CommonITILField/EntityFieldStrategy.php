@@ -68,7 +68,7 @@ enum EntityFieldStrategy: string
     public function getEntityID(
         EntityFieldConfig $config,
         AnswersSet $answers_set,
-        // TODO: remove default value on main, it was only added to prevent BC breaks
+        // TODO: remove default value on 12.0, it was only added to prevent BC breaks
         array $input = [],
     ): int {
         return match ($this) {
@@ -169,6 +169,24 @@ enum EntityFieldStrategy: string
             return $profile['entities_id'];
         }
 
+        // Look for default profile
+        $default_profiles = (new Profile_User())->find([
+            'users_id' => $requester->getID(),
+            'profiles_id' => new QuerySubQuery([
+                'SELECT' => 'id',
+                'FROM'   => Profile::getTable(),
+                'WHERE'  => [
+                    'interface'  => 'helpdesk',
+                    'is_default' => 1,
+                ],
+            ]),
+        ]);
+        if (count($default_profiles) == 1) {
+            $default_profile = current($default_profiles);
+            return $default_profile['entities_id'];
+        }
+
+        // If one or more helpdesk profiles, use entity of the first profile
         $helpdesk_profiles = (new Profile_User())->find([
             'users_id' => $requester->getID(),
             'profiles_id' => new QuerySubQuery([
@@ -177,8 +195,6 @@ enum EntityFieldStrategy: string
                 'WHERE'  => ['interface' => 'helpdesk'],
             ]),
         ]);
-
-        // If one or more helpdesk profiles, use entity of the first profile
         if (count($helpdesk_profiles) > 0) {
             $helpdesk_profile = current($helpdesk_profiles);
             return $helpdesk_profile['entities_id'];

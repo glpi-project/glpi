@@ -50,6 +50,7 @@ use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Profile;
 use Profile_User;
 use User;
 
@@ -346,10 +347,13 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
 
     public static function entityFromRequesterProvider(): iterable
     {
+        $admin_profile       = getItemByTypeName(Profile::class, "Super-Admin", true);
+        $selfservice_profile = getItemByTypeName(Profile::class, "Self-Service", true);
+        $helpdesk_profile    = getItemByTypeName(Profile::class, "helpdesk", true);
+
         yield 'user with single profile' => [
             'profiles' => [
-                // Super admin
-                ['profiles_id' => 4, 'entities_id' => "_test_child_3"],
+                ['profiles_id' => $admin_profile, 'entities_id' => "_test_child_3"],
             ],
             // The only found profile is used
             'expected_entity' => "_test_child_3",
@@ -357,10 +361,8 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
 
         yield 'users with two profiles, one is helpdesk' => [
             'profiles' => [
-                // Super admin
-                ['profiles_id' => 4, 'entities_id' => "_test_child_3"],
-                // Self-service
-                ['profiles_id' => 1, 'entities_id' => "_test_child_2"],
+                ['profiles_id' => $admin_profile, 'entities_id' => "_test_child_3"],
+                ['profiles_id' => $selfservice_profile, 'entities_id' => "_test_child_2"],
             ],
             // First helpdesk profile is used
             'expected_entity' => "_test_child_2",
@@ -368,25 +370,33 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
 
         yield 'users with two helpdesk profiles' => [
             'profiles' => [
-                // Self-service
-                ['profiles_id' => 1, 'entities_id' => "_test_child_3"],
-                // Self-service
-                ['profiles_id' => 1, 'entities_id' => "_test_child_2"],
+                ['profiles_id' => $selfservice_profile, 'entities_id' => "_test_child_3"],
+                ['profiles_id' => $selfservice_profile, 'entities_id' => "_test_child_2"],
             ],
             // First profile is used
             'expected_entity' => "_test_child_3",
         ];
 
+        yield 'users with two helpdesk profiles, one being the default' => [
+            'profiles' => [
+                ['profiles_id' => $helpdesk_profile, 'entities_id' => "_test_child_3"],
+                ['profiles_id' => $selfservice_profile, 'entities_id' => "_test_child_2"],
+            ],
+            // Default profile is used
+            'expected_entity' => "_test_child_2",
+        ];
+
         yield 'users with two central profiles' => [
             'profiles' => [
-                // Super admin
-                ['profiles_id' => 4, 'entities_id' => "_test_child_1"],
-                // Super admin
-                ['profiles_id' => 4, 'entities_id' => "_test_child_2"],
+                ['profiles_id' => $admin_profile, 'entities_id' => "_test_child_1"],
+                ['profiles_id' => $admin_profile, 'entities_id' => "_test_child_2"],
             ],
             // First profile is used
             'expected_entity' => "_test_child_1",
         ];
+
+        // No case for the default profile as we only have one helpdesk profile
+        // in our test dataset and we cant create another in a provider
     }
 
     #[DataProvider('entityFromRequesterProvider')]
