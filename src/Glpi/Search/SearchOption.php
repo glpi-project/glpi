@@ -48,6 +48,7 @@ use Domain;
 use Entity;
 use Glpi\Socket;
 use Group;
+use Group_Item;
 use Infocom;
 use Link;
 use Location;
@@ -270,9 +271,20 @@ final class SearchOption implements ArrayAccess
 
                 $search[$itemtype][49]['table']          = 'glpi_groups';
                 $search[$itemtype][49]['field']          = 'completename';
-                $search[$itemtype][49]['linkfield']      = 'groups_id_tech';
+                $search[$itemtype][49]['linkfield']      = 'groups_id';
                 $search[$itemtype][49]['name']           = __('Group in charge');
                 $search[$itemtype][49]['condition']      = ['is_assign' => 1];
+                $search[$itemtype][49]['joinparams']     = [
+                    'beforejoin'         => [
+                        'table'              => 'glpi_groups_items',
+                        'joinparams'         => [
+                            'jointype'           => 'itemtype_item',
+                            'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],
+                        ],
+                    ],
+                ];
+                $search[$itemtype][49]['forcegroupby']   = true;
+                $search[$itemtype][49]['massiveaction']  = false;
                 $search[$itemtype][49]['datatype']       = 'dropdown';
 
                 $search[$itemtype][80]['table']         = 'glpi_entities';
