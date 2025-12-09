@@ -871,17 +871,20 @@ TWIG, $twig_params);
         return $tab;
     }
 
+    public function countChildren(): int
+    {
+        $fk = $this->getForeignKeyField();
+        $id = $this->fields['id'];
+
+        return countElementsInTable($this->getTable(), [$fk => $id]);
+    }
 
     /**
      * @return bool
      */
     public function haveChildren()
     {
-
-        $fk = $this->getForeignKeyField();
-        $id = $this->fields['id'];
-
-        return (countElementsInTable($this->getTable(), [$fk => $id]) > 0);
+        return $this->countChildren() > 0;
     }
 
     /** @return iterable<static> */
